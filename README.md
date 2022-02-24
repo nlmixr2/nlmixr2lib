@@ -6,7 +6,7 @@ The 'modellib.rds' file is a saved version of a dataframe including all meta dat
 When running the function without arguments, it will list all available models. When a modelname is given, the function will return a vector with the model code.
 The function can be easily adapted to return other types as well, e.g.:
 
--  to console: `cat(modr,sep="\n)``
+-  to console: `cat(modr,sep="\n)`
 -  to file: `writeLines(modr,paste0(model,".r"))`
 -  directly evaluated: `eval(parse(text=modr))`
 -  to Rstudio's current script: `rstudioapi::insertText(paste(modr,"\n"))`
@@ -14,9 +14,9 @@ The function can be easily adapted to return other types as well, e.g.:
 Within the function, the parameters for IIV or the type of residual error can be provided. In this case the model is extended using the available pipe syntax.
 Some examples for usage:
 
-`modellib(model="PK_1cmt")`
-`modellib(model="PK_1cmt",iiv = c("ka","v"),reserr = "add")`
-`modellib(model="PK_1cmt",reserr = "add")`
+`modellib(model="PK_1cmt")
+ modellib(model="PK_1cmt",iiv = c("ka","v"),reserr = "add")
+ modellib(model="PK_1cmt",reserr = "add")`
 
 # Assumptions and remarks
 
