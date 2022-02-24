@@ -14,9 +14,11 @@ The function can be easily adapted to return other types as well, e.g.:
 Within the function, the parameters for IIV or the type of residual error can be provided. In this case the model is extended using the available pipe syntax.
 Some examples for usage:
 
-`modellib(model="PK_1cmt")
- modellib(model="PK_1cmt",iiv = c("ka","v"),reserr = "add")
- modellib(model="PK_1cmt",reserr = "add")`
+```
+modellib(model="PK_1cmt")
+modellib(model="PK_1cmt",iiv = c("ka","v"),reserr = "add")
+modellib(model="PK_1cmt",reserr = "add")
+```
 
 # Assumptions and remarks
 
