@@ -1,0 +1,16 @@
+Package: nlmixr.lib
+Type: Package
+Version: 0.0.1
+Title: Initial attempt in creating a model library for nlmixr
+Description: Model library for nlmixr
+Authors@R: c(
+  person("Richard","Hooijmaijers", ,"richardhooijmaijers@gmail.com",role=c("aut", "cre"))
+  )
+Depends:
+    R (>= 3.2.0)
+License: GPL (>= 2)
+LazyData: true
+RoxygenNote: 7.1.0
+VignetteBuilder: knitr
+URL: https://github.com/RichardHooijmaijers/nlmixr.lib
+Encoding: UTF-8
