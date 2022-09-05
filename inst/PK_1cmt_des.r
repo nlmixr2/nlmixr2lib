@@ -1,5 +1,5 @@
 # Description: One compartment PK model with linear clearance using differential equations
-PK_1cmt <- function() {
+PK_1cmt_des <- function() {
   ini({
     lka <- 0.45 ; label("Absorption rate (Ka)")
     lcl <- 1 ; label("Clearance (CL)")
