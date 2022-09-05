@@ -1,4 +1,3 @@
-#------------------------------------------ modellib ------------------------------------------
 #' Get the model from the model library
 #'
 #' This function gets a model from the available model library
@@ -6,8 +5,7 @@
 #' @param model character with the name of the model to load (if NULL, lists all available base models)
 #' @param iiv vector with the parameters to add IIV on
 #' @param reserr character with the type of residual error (currently "add","prop" and "add+prop" are accepted)
-#' @param rds character with the basename of the rds which include the model library
-#' @param loc character with the location of the rds database and models
+#' @param loc character with the location of the models
 #'
 #' @details This is a very first draft just to look at the proof of concept
 #'
@@ -21,9 +19,7 @@
 #'   modellib(model="PK_1cmt",iiv = c("ka","v"),reserr = "add")
 #'   modellib(model="PK_1cmt",reserr = "add")
 #' }
-modellib <- function(model=NULL,iiv=NULL,reserr=NULL,rds="modellib.rds",loc=system.file(package = "nlmixr.lib")){
-  modeldb <- try(readRDS(paste0(loc,"/",rds)))
-  if("try-error"%in%class(modeldb)) stop("model database could not be loaded")
+modellib <- function(model=NULL, iiv=NULL, reserr=NULL, loc=system.file(package = "nlmixr2lib")){
   if(is.null(model)){
     cat(paste0(modeldb$name," (",modeldb$description,")"),sep="\n")
   }else if(!model%in%modeldb$name){

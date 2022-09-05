@@ -8,8 +8,7 @@ modellib(
   model = NULL,
   iiv = NULL,
   reserr = NULL,
-  rds = "modellib.rds",
-  loc = system.file(package = "nlmixr.lib")
+  loc = system.file(package = "nlmixr2lib")
 )
 }
 \arguments{
@@ -19,9 +18,7 @@ modellib(
 
 \item{reserr}{character with the type of residual error (currently "add","prop" and "add+prop" are accepted)}
 
-\item{rds}{character with the basename of the rds which include the model library}
-
-\item{loc}{character with the location of the rds database and models}
+\item{loc}{character with the location of the models}
 }
 \value{
 The function returns a character string with the model code
