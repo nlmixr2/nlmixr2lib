@@ -16,3 +16,5 @@ RoxygenNote: 7.1.0
 VignetteBuilder: knitr
 URL: https://github.com/nlmixr2/nlmixr2lib
 Encoding: UTF-8
+Suggests: 
+    knitr
