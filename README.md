@@ -1,3 +1,7 @@
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/nlmixr2/nlmixr2lib/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/nlmixr2/nlmixr2lib/actions/workflows/R-CMD-check.yaml)
+<!-- badges: end -->
+
 # nlmixr2lib
 
 This is a very early draft to see if a model library can be set up for `nlmixr2` using a separate R package.
