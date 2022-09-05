@@ -1,18 +1,19 @@
+# Description: Two compartment PK model with linear clearance
 PK_2cmt <- function() {
   ini({
-    ka <- 0.45  # Log Ka
-    cl <- 1     # Log Cl
-    v2 <- 3     # Log V2
-    v3 <- 5     # Log V3
-    q  <- 0.1   # Log Q
-    prop.err <- 0.5
+    lka <- 0.45 ; label("Absorption rate (Ka)")
+    lcl <- 1 ; label("Clearance (CL)")
+    lv  <- 3 ; label("Central volume of distribution (V)")
+    lvp  <- 5 ; label("Peripheral volume of distribution (Vp)")
+    lq  <- 0.1 ; label("Intercompartmental clearance (Q)")
+    prop.err <- 0.5 ; label("Proportional residual error (fraction)")
   })
   model({
-    ka <- exp(ka)
-    cl <- exp(cl)
-    v2 <- exp(v2)
-    v3 <- exp(v3)
-    q  <- exp(q)
+    ka <- exp(lka)
+    cl <- exp(lcl)
+    v <- exp(lv)
+    vp <- exp(lvp)
+    q  <- exp(lq)
     linCmt() ~ prop(prop.err)
   })
 }
