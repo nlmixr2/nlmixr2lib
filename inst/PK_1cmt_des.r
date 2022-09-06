@@ -10,10 +10,13 @@ PK_1cmt_des <- function() {
     ka <- exp(lka)
     cl <- exp(lcl)
     v  <- exp(lv)
-    kel <- cl / v;
-    d/dt(depot)  = -ka*depot;
-    d/dt(centr)  =  ka*depot-kel*centr;
-    cp = centr / v;
+
+    kel <- cl / v
+
+    d/dt(depot) <- -ka*depot
+    d/dt(center) <- ka*depot-kel*center
+
+    cp = center / v
     cp ~ prop(prop.err)
   })
 }

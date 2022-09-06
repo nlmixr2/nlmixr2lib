@@ -10,6 +10,7 @@ PK_1cmt <- function() {
     ka <- exp(lka)
     cl <- exp(lcl)
     v  <- exp(lv)
+
     linCmt() ~ prop(prop.err)
   })
 }

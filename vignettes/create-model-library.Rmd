@@ -1,0 +1,102 @@
+---
+title: "Creating a model library"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Creating a model library}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r knitr-setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+Model libraries are useful to have consistent high-quality basic models that can
+be used as a model itself or as a building block for other models.
+
+# Model library conventions within nlmixr2lib
+
+Compartment and parameter names should be all lower case when on their own and
+should use snakeCase when combined in some way.
+
+Compartment and parameter names are selected to align with those used by
+`rxode2::linCmt()` which are described in the vignette:
+vignette("rxode2-model-types", package = "rxode2").
+
+## Compartment naming
+
+Compartment naming follows compartment names with the `linCmt()` with
+augmentation for other compartments:
+
+* `depot`: The extravascular dosing compartment (for example, the gut for oral
+  dosing or subcutaneous space for subcutaneous dosing)
+* `central`: The intravascular compartment used for intravenous dosing or for
+  typical pharmacokinetic (PK) model samping of the drug
+* `peripheral1`, `peripheral2`: The first and second peripheral compartments for
+  2- and 3-compartment PK models
+* `effect`: The compartment for effect compartment models
+
+## Parameter naming
+
+PK models should use the following parameter naming conventions:
+
+* `ka`: absorption rate
+* `cl`: clearance
+* `q`: intercompartmental clearance (`central` to and from `peripheral1`
+  compartments)
+* `q2`: second intercompartmental clearance (`central` to and from `peripheral2`
+  compartments)
+* `v`: central volume of distribution
+* `vp`, `vp2`: first and second peripheral compartment volumes
+
+When micro-constants are used, they should use the following naming conventions:
+
+* `kel` elimination rate (`cl/v`)
+* `k12`, `k21`, `k13`, `k31`: intercompartmental transit rates (`q/v`, `q/vp`,
+  `q2/v`, and  `q2/vp2`, respectively)
+
+## Parameter transforms
+
+Parameters are often estimated on a transformed scale.  For instance, a natural
+logarithm transform is often used for parameters that must be positive, and a
+logit transform is often used when a parameter must remain within a specific
+range.
+
+Transformed parameters should be prefixed with an indicator of the
+transformation.  Preferred transformation prefixes are:
+
+* `l` (lower case L): natural log transform
+* `logit`: logit transform
+* `probit`: probit transform
+* Any other transform should similarly include the full transform as the prefix
+
+Generally, for any transform other than natural logarithm, include the full name
+as a prefix.  For example, natural logarithm-transformed `ka` would be `lka` and
+logit-transformed `emax` would be `logitemax`.
+
+## Random effects
+
+Random effects are estimates as part of a distribution varying by some grouping
+facter.  The grouping factor is often a subject in a clinical trial.  (For
+NONMEM users, random effects are often referred to as inter-individual
+variability.)
+
+Random effect parameters should prefix the (transformed) parameter name with
+`eta`.  For example, a random effect on log-transformed clearance would be named
+`etalcl`.
+
+# Model files
+
+Files in a model library should have the following characteristics:
+
+* The first line of the file should be a comment with the word "Description", a
+  colon, and a description of the model (for example,
+  `# Description: 1-compartment PK model`).
+* The remainder of the file should be an nlmixr2 model in a function with a
+  typical `ini()` and `model()` block.
+* The name of the file should match the name of the model within the file.
+
+For examples, see the package installation directory.

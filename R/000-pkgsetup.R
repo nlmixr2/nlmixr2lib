@@ -2,25 +2,23 @@ modeldb <- data.frame()
 
 .onLoad <- function(libname, pkgname) {
   loadPath <- file.path(libname, pkgname, "inst")
+  addDirToModelDb(dir = loadPath)
+}
+
+addDirToModelDb <- function(dir) {
   filesToLoad <-
     list.files(
-      path = loadPath,
+      path = dir,
       pattern = "\\.R$",
       ignore.case = TRUE
     )
   for (currentFile in filesToLoad) {
-    modeldb <<-
-      rbind(
-        modeldb,
-        addToModelDb(dir = loadPath, file = currentFile)
-      )
-    if (any(duplicated(modeldb$name))) {
-      stop("Duplicated model name: ", modeldb$name[duplicated(modeldb$name)]) # nocov
-    }
+    addFileToModelDb(dir = dir, file = currentFile)
   }
+  modeldb
 }
 
-addToModelDb <- function(dir, file) {
+addFileToModelDb <- function(dir, file) {
   fileName <- file.path(dir, file)
   # Extract the description from the first line of the file
   desc <- readLines(con = fileName, n = 1)
@@ -36,7 +34,7 @@ addToModelDb <- function(dir, file) {
     stop("Loading model failed due to filename/modelName mismatch: ", fileName) # nocov
   }
 
-  # Parse the model
+  # Parse the model to get the fixed effects and DV parameters
   mod <- nlmixr2::nlmixr2(eval(parsedFile[[1]][[3]]))
   
   # Extract the parameter names
@@ -59,5 +57,9 @@ addToModelDb <- function(dir, file) {
       Parameters=paste(modParamFixed$name, collapse = ","),
       DV=paramErr
     )
+  modeldb <<- rbind(modeldb, ret)
+  if (any(duplicated(modeldb$name))) {
+    stop("Duplicated model name: ", modeldb$name[duplicated(modeldb$name)]) # nocov
+  }
   ret
 }
