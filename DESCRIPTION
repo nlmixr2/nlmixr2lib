@@ -17,4 +17,5 @@ VignetteBuilder: knitr
 URL: https://github.com/nlmixr2/nlmixr2lib
 Encoding: UTF-8
 Suggests: 
-    knitr
+    knitr,
+    rmarkdown
