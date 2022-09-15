@@ -1,5 +1,5 @@
 #' Search within a model to replace part of the model
-#' 
+#'
 #' @inheritParams nlmixr2::nlmixr2
 #' @return \code{object} with \code{find} replaced with \code{replace}
 #' @export
@@ -12,9 +12,16 @@ searchReplace <- function(object, find, replace) {
   if (is.character(replace)) {
     replace <- str2lang(replace)
   }
-  nlmixr2::nlmixr2(
-    searchReplaceHelper(object = object$fun, find = find, replace = replace)
-  )
+  objFunction <- object$fun
+  if (is.null(objFunction)) {
+    objFunction <- object$ui$fun
+  }
+  if (is.null(objFunction)) {
+    stop("Could not extract the function from the object")
+  }
+  #nlmixr2::nlmixr2(
+    searchReplaceHelper(object = objFunction, find = find, replace = replace)
+  #)
 }
 
 #' @export
