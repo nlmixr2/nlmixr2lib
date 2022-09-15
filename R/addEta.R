@@ -12,7 +12,7 @@ addEta <- function(model, eta) {
     # Assign a default value
     eta <- setNames(rep(0.1, length(eta)), eta)
   }
-  checkmate::expect_number(eta, na.ok = FALSE, lower = 0, null.ok = FALSE)
+  checkmate::expect_numeric(eta, lower = 0, null.ok = FALSE, min.len = 1)
   # Get the mu-referenced parameter names
   murefNames <- rxode2::rxode2(model)$getSplitMuModel$pureMuRef
   for (currentEta in names(eta)) {

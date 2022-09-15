@@ -17,7 +17,7 @@
 #'
 #' \dontrun{
 #'   modellib(name="PK_1cmt")
-#'   modellib(name="PK_1cmt", eta = c("ka", "v"), reserr = "add")
+#'   modellib(name="PK_1cmt", eta = c("ka", "vc"), reserr = "add")
 #'   modellib(name="PK_1cmt", reserr = "add")
 #' }
 modellib <- function(name=NULL, eta=NULL, reserr=NULL){
