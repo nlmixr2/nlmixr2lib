@@ -1,11 +1,13 @@
 #' Search within a model to replace part of the model
 #'
 #' @inheritParams nlmixr2::nlmixr2
+#' @param find,replace Character scalars of parts of the model to replace
 #' @return \code{object} with \code{find} replaced with \code{replace}
+#' @keywords Internal
 #' @export
 searchReplace <- function(object, find, replace) {
-  # ensure that it is an nlmixr2 object
-  object <- nlmixr2::nlmixr2(object)
+  # ensure that it is an rxode2 object
+  object <- rxode2::rxode(object)
   if (is.character(find)) {
     find <- str2lang(find)
   }
@@ -19,11 +21,11 @@ searchReplace <- function(object, find, replace) {
   if (is.null(objFunction)) {
     stop("Could not extract the function from the object")
   }
-  #nlmixr2::nlmixr2(
-    searchReplaceHelper(object = objFunction, find = find, replace = replace)
-  #)
+  searchReplaceHelper(object = objFunction, find = find, replace = replace)
 }
 
+#' @describeIn searchReplace A helper function for searchReplace (not intended
+#'   for users to use directly)
 #' @export
 searchReplaceHelper <- function(object, find, replace) {
   UseMethod("searchReplaceHelper")
@@ -31,7 +33,7 @@ searchReplaceHelper <- function(object, find, replace) {
 
 #' @export
 searchReplaceHelper.function <- function(object, find, replace) {
-  functionBody(object) <- searchReplaceHelper(object = functionBody(object), find = find, replace = replace)
+  methods::functionBody(object) <- searchReplaceHelper(object = methods::functionBody(object), find = find, replace = replace)
   object
 }
 

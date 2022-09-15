@@ -11,6 +11,9 @@ Authors@R: c(
 Depends:
     R (>= 4.0)
 Imports: 
+    checkmate,
+    cli,
+    methods,
     rxode2
 License: GPL (>= 2)
 LazyData: true

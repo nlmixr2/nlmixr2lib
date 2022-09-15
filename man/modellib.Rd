@@ -30,7 +30,7 @@ This is a very first draft just to look at the proof of concept
 
 \dontrun{
   modellib(name="PK_1cmt")
-  modellib(name="PK_1cmt", eta = c("ka", "v"), reserr = "add")
+  modellib(name="PK_1cmt", eta = c("ka", "vc"), reserr = "add")
   modellib(name="PK_1cmt", reserr = "add")
 }
 }

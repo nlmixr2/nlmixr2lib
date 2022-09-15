@@ -35,7 +35,7 @@ addFileToModelDb <- function(dir, file) {
   }
 
   # Parse the model to get the fixed effects and DV parameters
-  mod <- nlmixr2::nlmixr2(eval(parsedFile[[1]][[3]]))
+  mod <- rxode2::rxode(eval(parsedFile[[1]][[3]]))
 
   description <- mod$meta$description
   if (is.null(description)) {

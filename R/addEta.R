@@ -10,7 +10,7 @@
 addEta <- function(model, eta) {
   if (is.character(eta)) {
     # Assign a default value
-    eta <- setNames(rep(0.1, length(eta)), eta)
+    eta <- stats::setNames(rep(0.1, length(eta)), eta)
   }
   checkmate::expect_numeric(eta, lower = 0, null.ok = FALSE, min.len = 1)
   # Get the mu-referenced parameter names
@@ -32,7 +32,7 @@ addEta <- function(model, eta) {
         replace = sprintf("%s + eta%s", currentEta, currentEta)
       )
   }
-  etaIni <- lapply(X = paste0("eta", names(eta), "~", eta), FUN = as.formula)
+  etaIni <- lapply(X = paste0("eta", names(eta), "~", eta), FUN = stats::as.formula)
   iniArgs <-
     append(
       list(model), etaIni

@@ -18,3 +18,6 @@ The model with residual error modified
 \description{
 Add residual error to a model
 }
+\examples{
+readModelDb("PK_1cmt") \%>\% addResErr("add")
+}
