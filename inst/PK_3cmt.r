@@ -1,9 +1,9 @@
-# Description: Three compartment PK model with linear clearance
 PK_3cmt <- function() {
+  description <- "Three compartment PK model with linear clearance"
   ini({
     lka <- 0.45 ; label("Absorption rate (Ka)")
     lcl <- 1 ; label("Clearance (CL)")
-    lv  <- 3 ; label("Central volume of distribution (V)")
+    lvc  <- 3 ; label("Central volume of distribution (V)")
     lvp  <- 5 ; label("Peripheral volume of distribution (Vp)")
     lvp2  <- 8 ; label("Second peripheral volume of distribution (Vp2)")
     lq  <- 0.1 ; label("Intercompartmental clearance (Q)")
@@ -13,7 +13,7 @@ PK_3cmt <- function() {
   model({
     ka <- exp(lka)
     cl <- exp(lcl)
-    v <- exp(lv)
+    vc <- exp(lvc)
     vp <- exp(lvp)
     vp2 <- exp(lvp2)
     q  <- exp(lq)
