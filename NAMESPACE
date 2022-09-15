@@ -3,6 +3,8 @@
 S3method(searchReplaceHelper,"function")
 S3method(searchReplaceHelper,call)
 S3method(searchReplaceHelper,default)
+export(addEta)
+export(addResErr)
 export(modellib)
 export(readModelDb)
 export(searchReplace)

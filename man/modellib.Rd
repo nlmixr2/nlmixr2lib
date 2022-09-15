@@ -4,24 +4,21 @@
 \alias{modellib}
 \title{Get the model from the model library}
 \usage{
-modellib(
-  model = NULL,
-  iiv = NULL,
-  reserr = NULL,
-  loc = system.file(package = "nlmixr2lib")
-)
+modellib(name = NULL, eta = NULL, reserr = NULL)
 }
 \arguments{
-\item{model}{character with the name of the model to load (if NULL, lists all available base models)}
+\item{name}{character with the name of the model to load (if \code{NULL},
+lists all available base models)}
 
-\item{iiv}{vector with the parameters to add IIV on}
+\item{eta}{vector with the parameters to add random effects (sometimes
+referred to as inter-individual variability, IIV) on}
 
-\item{reserr}{character with the type of residual error (currently "add","prop" and "add+prop" are accepted)}
-
-\item{loc}{character with the location of the models}
+\item{reserr}{character with the type of residual error (currently "add",
+"prop" and "add+prop" are accepted)}
 }
 \value{
-The function returns a character string with the model code
+The function returns a function the model code (or \code{NULL} if the
+  \code{model = NULL})
 }
 \description{
 This function gets a model from the available model library
@@ -32,8 +29,8 @@ This is a very first draft just to look at the proof of concept
 \examples{
 
 \dontrun{
-  modellib(model="PK_1cmt")
-  modellib(model="PK_1cmt",iiv = c("ka","v"),reserr = "add")
-  modellib(model="PK_1cmt",reserr = "add")
+  modellib(name="PK_1cmt")
+  modellib(name="PK_1cmt", eta = c("ka", "v"), reserr = "add")
+  modellib(name="PK_1cmt", reserr = "add")
 }
 }

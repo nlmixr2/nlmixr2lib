@@ -10,6 +10,8 @@ Authors@R: c(
   )
 Depends:
     R (>= 4.0)
+Imports: 
+    rxode2
 License: GPL (>= 2)
 LazyData: true
 RoxygenNote: 7.2.1

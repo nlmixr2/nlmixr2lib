@@ -55,7 +55,6 @@ searchReplaceHelper.call <- function(object, find, replace) {
 #' @export
 searchReplaceHelper.default <- function(object, find, replace) {
   if (identical(object, find)) {
-    message("found")
     object <- replace
   } else if (length(object) != 1) {
     for (idx in seq_along(object)) {
