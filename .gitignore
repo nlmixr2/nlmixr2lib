@@ -4,3 +4,6 @@ inst/doc
 /src/dbver.o
 /src/Makevars
 /src/dbver.h
+.RData
+*.dll
+*.Rout
