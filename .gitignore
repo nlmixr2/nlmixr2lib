@@ -1,0 +1,6 @@
+inst/doc
+.Rhistory
+/src/nlmixr2lib.so
+/src/dbver.o
+/src/Makevars
+/src/dbver.h

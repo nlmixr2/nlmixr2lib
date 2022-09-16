@@ -1,0 +1,17 @@
+#' Model library for nlmixr2
+#'
+#' This is a data frame of the availble models in nlmixr2lib, it is generated at compile time
+#'
+#'
+#' @format A data frame with XXX rows and 5 columns
+#'
+#' \describe{
+#'   \item{name}{Model name that can be used to extract the model from the model library}
+#'   \item{description}{Model description in free from text; in model itself}
+#'   \item{parameters}{A comma separated string listing either the parameter in the model defined by population/individual effects or a population effect parameter}
+#'   \item{DV}{The definition of the dependent variable(s)}
+#'   \item{filename}{Filename of the model.  By default these are installed in the model library and read on demand}
+#' }
+"modeldb"
+
+utils::globalVariables(c("modeldb"))

@@ -1,18 +1,22 @@
-PK_1cmt <- function() {
+PK_1cmt_des <- function() {
+  description <- "One compartment PK model with linear clearance using differential equations"
   ini({
-    ka <- 0.45 # Log Ka
-    cl <- 1    # Log Cl
-    v  <- 3.45  # log V
-    prop.err <- 0.5
+    lka <- 0.45 ; label("Absorption rate (Ka)")
+    lcl <- 1 ; label("Clearance (CL)")
+    lvc  <- 3.45 ; label("Central volume of distribution (V)")
+    prop.err <- 0.5 ; label("Proportional residual error (fraction)")
   })
   model({
-    ka <- exp(ka)
-    cl <- exp(cl)
-    v  <- exp(v)
-    kel <- cl / v;
-    d/dt(depot)  = -ka*depot;
-    d/dt(centr)  =  ka*depot-kel*centr;
-    cp = centr / v;
+    ka <- exp(lka)
+    cl <- exp(lcl)
+    vc  <- exp(lvc)
+
+    kel <- cl / vc
+
+    d/dt(depot) <- -ka*depot
+    d/dt(center) <- ka*depot-kel*center
+
+    cp = center / v
     cp ~ prop(prop.err)
   })
 }

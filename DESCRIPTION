@@ -10,11 +10,22 @@ Authors@R: c(
   )
 Depends:
     R (>= 4.0)
+Imports: 
+    checkmate,
+    cli,
+    methods,
+    rxode2,
+    nlmixr2est
 License: GPL (>= 2)
 LazyData: true
-RoxygenNote: 7.1.0
+RoxygenNote: 7.2.1
 VignetteBuilder: knitr
 URL: https://github.com/nlmixr2/nlmixr2lib
 Encoding: UTF-8
 Suggests: 
-    knitr
+    knitr,
+    rmarkdown,
+    testthat (>= 3.0.0)
+Biarch: true
+NeedsCompilation: yes
+Config/testthat/edition: 3
