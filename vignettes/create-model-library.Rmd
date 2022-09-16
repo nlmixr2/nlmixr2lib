@@ -49,14 +49,14 @@ PK models should use the following parameter naming conventions:
   compartments)
 * `q2`: second intercompartmental clearance (`central` to and from `peripheral2`
   compartments)
-* `v`: central volume of distribution
+* `vc`: central volume of distribution
 * `vp`, `vp2`: first and second peripheral compartment volumes
 
 When micro-constants are used, they should use the following naming conventions:
 
-* `kel` elimination rate (`cl/v`)
-* `k12`, `k21`, `k13`, `k31`: intercompartmental transit rates (`q/v`, `q/vp`,
-  `q2/v`, and  `q2/vp2`, respectively)
+* `kel` elimination rate (`cl/vc`)
+* `k12`, `k21`, `k13`, `k31`: intercompartmental transit rates (`q/vc`, `q/vp`,
+  `q2/vc`, and  `q2/vp2`, respectively)
 
 ## Parameter transforms
 
@@ -92,9 +92,9 @@ Random effect parameters should prefix the (transformed) parameter name with
 
 Files in a model library should have the following characteristics:
 
-* The first line of the file should be a comment with the word "Description", a
-  colon, and a description of the model (for example,
-  `# Description: 1-compartment PK model`).
+* The first line inside the function should have a description
+  assignment.  That is `description <- "This is the description of the
+  model"` right inside the `function()` before the `ini({})` block.
 * The remainder of the file should be an nlmixr2 model in a function with a
   typical `ini()` and `model()` block.
 * The name of the file should match the name of the model within the file.
