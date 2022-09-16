@@ -15,3 +15,6 @@ The model as a function
 \description{
 Read a model from the nlmixr2 model database
 }
+\examples{
+readModelDb("PK_1cmt")
+}

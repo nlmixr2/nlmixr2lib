@@ -14,7 +14,9 @@ addEta <- function(model, eta) {
   }
   checkmate::expect_numeric(eta, lower = 0, null.ok = FALSE, min.len = 1)
   # Get the mu-referenced parameter names
-  murefNames <- rxode2::rxode2(model)$getSplitMuModel$pureMuRef
+  # getSplitMuModel requires nlmixr2est, so the model is parsed from there...
+  # This will add the S3 method to allow $getSplitModel to work
+  murefNames <- nlmixr2est::nlmixr2(model)$getSplitMuModel$pureMuRef
   for (currentEta in names(eta)) {
     if (currentEta %in% names(murefNames)) {
       # do nothing

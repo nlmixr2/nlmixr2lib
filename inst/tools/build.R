@@ -80,6 +80,7 @@ if (!dir.exists("data")) {
 }
 
 .md5 <- digest::digest(modeldb)
+if (file.exists("data/modeldb.rda")) unlink("data/modeldb.rda")
 save(modeldb, file="data/modeldb.rda", compress="bzip2", version=2, ascii=FALSE)
 
 file.out <- file("src/dbver.h", "wb")
