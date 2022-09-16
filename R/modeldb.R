@@ -12,5 +12,6 @@
 #'   \item{DV}{The definition of the dependent variable(s)}
 #'   \item{filename}{Filename of the model.  By default these are installed in the model library and read on demand}
 #' }
-#'
 "modeldb"
+
+utils::globalVariables(c("modeldb"))
