@@ -24,8 +24,13 @@ SEXP _nlmixr2libMd5() {
 
 void R_init_nlmixr2lib(DllInfo *info){
   R_CallMethodDef callMethods[]  = {
-    {"_nlmixr2libMd5", (DL_FUNC) &_nlmixr2libMd5, 4},
+    {"_nlmixr2libMd5", (DL_FUNC) &_nlmixr2libMd5, 0},
     {NULL, NULL, 0}
   };
+  static const R_CMethodDef cMethods[] = {
+    {NULL, NULL, 0, NULL}
+  };
+  R_registerRoutines(info, cMethods, callMethods, NULL, NULL);
   R_RegisterCCallable("nlmixr2lib", "_nlmixr2libMd5", (DL_FUNC) _nlmixr2libMd5);
+  R_useDynamicSymbols(info, FALSE);
 }

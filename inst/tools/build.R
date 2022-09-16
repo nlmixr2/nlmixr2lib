@@ -33,7 +33,7 @@ addFileToModelDb <- function(dir, file) {
   }
 
   # Parse the model to get the fixed effects and DV parameters
-  mod <- rxode2::rxode(eval(parsedFile[[1]][[3]]))
+  mod <- nlmixr2est::nlmixr(eval(parsedFile[[1]][[3]]))
 
   description <- mod$meta$description
   if (is.null(description)) {
@@ -64,7 +64,7 @@ addFileToModelDb <- function(dir, file) {
       description=description,
       Parameters=paste(modParamFixed, collapse = ","),
       DV=paramErr,
-      filename = gsub("inst[/\\]", fileName)
+      filename = gsub("inst[/\\]", "", fileName)
     )
   modeldb <<- rbind(modeldb, ret)
   if (any(duplicated(modeldb$name))) {
@@ -80,6 +80,7 @@ if (!dir.exists("data")) {
 }
 
 .md5 <- digest::digest(modeldb)
+print(modeldb)
 if (file.exists("data/modeldb.rda")) unlink("data/modeldb.rda")
 save(modeldb, file="data/modeldb.rda", compress="bzip2", version=2, ascii=FALSE)
 
