@@ -62,7 +62,7 @@ addFileToModelDb <- function(dir, file) {
     data.frame(
       name=modelName,
       description=description,
-      Parameters=paste(modParamFixed, collapse = ","),
+      parameters=paste(modParamFixed, collapse = ","),
       DV=paramErr,
       filename = gsub("inst[/\\]", "", fileName)
     )
@@ -81,8 +81,16 @@ if (!dir.exists("data")) {
 
 .md5 <- digest::digest(modeldb)
 print(modeldb)
+.len <- length(modeldb$name)
 if (file.exists("data/modeldb.rda")) unlink("data/modeldb.rda")
 save(modeldb, file="data/modeldb.rda", compress="bzip2", version=2, ascii=FALSE)
+
+modeldb.Rd <- suppressWarnings(readLines(con = "man/modeldb.Rd"))
+modeldb.Rd <- gsub("XXX", .len, modeldb.Rd)
+
+file.out <- file("man/modeldb.Rd", "wb")
+writeLines(modeldb.Rd, file.out)
+close(file.out)
 
 file.out <- file("src/dbver.h", "wb")
 writeLines(c(paste0("#define __MD5__ \"", .md5, "\""),
