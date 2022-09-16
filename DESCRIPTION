@@ -1,12 +1,13 @@
 Package: nlmixr2lib
 Type: Package
 Version: 0.0.1
-Title: Initial attempt in creating a model library for nlmixr
-Description: Model library for nlmixr. 
+Title: A model library for nlmixr2
+Description: Model library for nlmixr2.
 Authors@R: c(
   person("Richard","Hooijmaijers", email="richardhooijmaijers@gmail.com",role=c("aut", "cre")),
   person("Matthew","Fidler", email="richardhooijmaijers@gmail.com",role=c("aut"),
-    comment=c(ORCID="0000-0001-8538-6691"))
+    comment=c(ORCID="0000-0001-8538-6691")),
+  person("Bill", "Denney", email="wdenney@humanpredictions.com", role="aut", comment=c(ORCID="0000-0002-5759-428X"))
   )
 Depends:
     R (>= 4.0)
