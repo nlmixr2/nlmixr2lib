@@ -20,7 +20,8 @@ License: GPL (>= 2)
 LazyData: true
 RoxygenNote: 7.2.1
 VignetteBuilder: knitr
-URL: https://github.com/nlmixr2/nlmixr2lib
+URL: https://github.com/nlmixr2/nlmixr2lib,
+    https://nlmixr2.github.io/nlmixr2lib/
 Encoding: UTF-8
 Suggests: 
     covr,
