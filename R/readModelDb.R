@@ -7,7 +7,13 @@ readModelDb <- function(name) {
   if (!(name %in% modeldb$name)) {
     stop("'name' not in database")
   } else {
-    ret <- eval(parse(file = modeldb$filename[modeldb$name == name]))
+    .fileName <- modeldb$filename[modeldb$name == name]
+    if (!file.exists(.fileName)) {
+      if (file.exists(system(.fileName, package="nlmixr2lib"))) {
+        .fileName <- system(.fileName, package="nlmixr2lib")
+      }
+    }
+    ret <- eval(parse(file = .fileName, keep.source=TRUE))
   }
   ret
 }

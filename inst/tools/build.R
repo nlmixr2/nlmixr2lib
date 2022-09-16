@@ -64,7 +64,7 @@ addFileToModelDb <- function(dir, file) {
       description=description,
       Parameters=paste(modParamFixed, collapse = ","),
       DV=paramErr,
-      filename=fileName
+      filename = gsub("inst[/\\]", fileName)
     )
   modeldb <<- rbind(modeldb, ret)
   if (any(duplicated(modeldb$name))) {
