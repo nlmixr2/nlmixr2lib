@@ -22,7 +22,7 @@ PK_3cmt_des <- function() {
     kel <- cl/vc
     k12 <- q/vc
     k21 <- q/vp
-    k13 <- q2/v
+    k13 <- q2/vc
     k31 <- q2/vp2
 
     d/dt(depot) <- -ka*depot
