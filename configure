@@ -1,0 +1,11 @@
+#! /bin/sh
+
+#echo --------[begin Workaround]--------
+${R_HOME}/bin/R CMD BATCH  inst/tools/build.R
+#cat workaround.Rout
+cat build.Rout
+rm build.Rout
+
+echo --------[begin src/Makevars]--------
+cat src/Makevars
+echo --------[end src/Makevars]--------

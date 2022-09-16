@@ -1,10 +1,5 @@
 modeldb <- data.frame()
 
-.onLoad <- function(libname, pkgname) {
-  loadPath <- file.path(libname, pkgname, "inst")
-  addDirToModelDb(dir = loadPath)
-}
-
 addDirToModelDb <- function(dir) {
   filesToLoad <-
     list.files(
@@ -13,12 +8,14 @@ addDirToModelDb <- function(dir) {
       ignore.case = TRUE
     )
   for (currentFile in filesToLoad) {
+    message("parse currentFile")
     addFileToModelDb(dir = dir, file = currentFile)
   }
   modeldb
 }
 
 addFileToModelDb <- function(dir, file) {
+  
   fileName <- file.path(dir, file)
   # Extract the description from the first line of the file
   desc <- readLines(con = fileName, n = 1)
@@ -31,7 +28,8 @@ addFileToModelDb <- function(dir, file) {
   modelName <- as.character(parsedFile[[1]][[2]])
   packageStartupMessage("Loading ", modelName, " from ", fileName)
   if (modelName != tools::file_path_sans_ext(file)) {
-    stop("Loading model failed due to filename/modelName mismatch: ", fileName) # nocov
+    stop("Loading model failed due to filename/modelName mismatch: ", fileName,
+         call.=FALSE) # nocov
   }
 
   # Parse the model to get the fixed effects and DV parameters
@@ -73,4 +71,30 @@ addFileToModelDb <- function(dir, file) {
     stop("Duplicated model name: ", modeldb$name[duplicated(modeldb$name)]) # nocov
   }
   ret
+}
+
+addDirToModelDb(dir = "inst")
+
+if (!dir.exists("data")) {
+  dir.create("data")
+}
+
+.md5 <- digest::digest(modeldb)
+save(modeldb, file="data/modeldb.rda", compress="bzip2", version=2, ascii=FALSE)
+
+file.out <- file("src/dbver.h", "wb")
+writeLines(c(paste0("#define __MD5__ \"", .md5, "\""),
+             ""), file.out)
+close(file.out)
+
+
+.in <- suppressWarnings(readLines("src/Makevars.in"))
+if (.Platform$OS.type == "windows" && !file.exists("src/Makevars.win")) {
+  file.out <- file("src/Makevars.win", "wb")
+  writeLines(.in, file.out)
+  close(file.out)
+} else {
+  file.out <- file("src/Makevars", "wb")
+  writeLines(.in, file.out)
+  close(file.out)
 }

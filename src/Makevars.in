@@ -1,0 +1,9 @@
+# -*- mode: makefile-gmake -*-
+PKG_CFLAGS  =  -D_isNlmixr2lib_
+SOURCES_C = dbver.c
+OBJECTS = $(SOURCES_C:.c=.o)
+
+.PHONY: all 
+all: $(SHLIB)
+
+
