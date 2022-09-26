@@ -8,6 +8,8 @@
 
 utils::globalVariables(c("modeldb"))
 
+## nocov start
+
 #' Build the default model database used in nlmixr2lib
 #'
 #' The function is only used during the build process, and it is not needed for
@@ -118,9 +120,10 @@ addFileToModelDb <- function(dir, file, modeldb) {
 
   # swap modeled parameter names for the mu-ref parameter names, where
   # applicable
-  #for (nm in names(mod$getSplitMuModel$pureMuRef)) {
-  #  modParamFixed[modParamFixed %in% nm] <- mod$getSplitMuModel$pureMuRef[[nm]]
-  #}
+  .ref <- mod$getSplitMuModel$pureMuRef
+  for (nm in names(.ref)) {
+   modParamFixed[modParamFixed %in% nm] <- mod$getSplitMuModel$pureMuRef[[nm]]
+  }
 
   # Error model
   paramErr <- mod$predDf$cond
@@ -134,7 +137,7 @@ addFileToModelDb <- function(dir, file, modeldb) {
       description=description,
       parameters=paste(modParamFixed, collapse = ","),
       DV=paramErr,
-      filename = gsub("inst[/\\]", "", fileName)
+      filename = basename(fileName)
     )
   modeldb <- rbind(modeldb, ret)
   if (any(duplicated(modeldb$name))) {
@@ -142,3 +145,4 @@ addFileToModelDb <- function(dir, file, modeldb) {
   }
   modeldb
 }
+## nocov end

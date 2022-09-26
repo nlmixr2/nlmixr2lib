@@ -26,6 +26,18 @@ jobs:
           extra-packages: any::covr
           needs: coverage
 
+      - name: Install remotes
+        run: |
+          install.packages('remotes')
+          remotes::install_github("nlmixr2/lotri")
+          remotes::install_github("nlmixr2/rxode2ll")
+          remotes::install_github("nlmixr2/rxode2")
+          remotes::install_github("nlmixr2/nlmixr2est")
+          remotes::install_github("nlmixr2/nlmixr2extra")
+          remotes::install_github("nlmixr2/nlmixr2plot")
+          remotes::install_github("nlmixr2/nlmixr2")
+          shell: Rscript {0}
+
       - name: Test coverage
         run: covr::codecov(quiet = FALSE)
         shell: Rscript {0}
