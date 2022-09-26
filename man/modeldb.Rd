@@ -6,7 +6,6 @@
 \title{Model library for nlmixr2}
 \format{
 A data frame with XXX rows and 5 columns
-
 \describe{
   \item{name}{Model name that can be used to extract the model from the model library}
   \item{description}{Model description in free from text; in model itself}
