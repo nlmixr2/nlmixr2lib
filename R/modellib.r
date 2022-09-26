@@ -20,7 +20,6 @@
 #'   modellib(name="PK_1cmt", eta = c("ka", "vc"), reserr = "add")
 #'   modellib(name="PK_1cmt", reserr = "add")
 #' }
-#' @useDynLib nlmixr2lib, .registration=TRUE
 modellib <- function(name=NULL, eta=NULL, reserr=NULL) {
   if (is.null(name)) {
     # List available models

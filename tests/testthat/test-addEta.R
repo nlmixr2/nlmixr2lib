@@ -88,7 +88,7 @@ test_that("addEta named parameter", {
 
 test_that("addEta non-existent parameter", {
   model <- readModelDb("PK_1cmt")
-  expect_error(
+  suppressMessages(expect_error(
     addEta(model, eta = "foo")
-  )
+  ))
 })
