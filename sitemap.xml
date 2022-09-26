@@ -16,6 +16,9 @@
     <loc>https://nlmixr2.github.io/nlmixr2lib/index.html</loc>
   </url>
   <url>
+    <loc>https://nlmixr2.github.io/nlmixr2lib/reference/addDirToModelDb.html</loc>
+  </url>
+  <url>
     <loc>https://nlmixr2.github.io/nlmixr2lib/reference/addEta.html</loc>
   </url>
   <url>
@@ -29,9 +32,6 @@
   </url>
   <url>
     <loc>https://nlmixr2.github.io/nlmixr2lib/reference/modellib.html</loc>
-  </url>
-  <url>
-    <loc>https://nlmixr2.github.io/nlmixr2lib/reference/nlmix2libMd5.html</loc>
   </url>
   <url>
     <loc>https://nlmixr2.github.io/nlmixr2lib/reference/readModelDb.html</loc>

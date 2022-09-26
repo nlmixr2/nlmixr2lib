@@ -67,32 +67,25 @@
 <div class="section level1">
 <div class="page-header"><h1 id="nlmixr2lib">nlmixr2lib<a class="anchor" aria-label="anchor" href="#nlmixr2lib"></a>
 </h1></div>
-<p>This is a very early draft to see if a model library can be set up for <code>nlmixr2</code> using a separate R package. The package currently contains one function <code>modellib</code> that loads the base models using the ‘modellib.rds’, both available in the ‘inst’ directory. The ‘modellib.rds’ file is a saved version of a dataframe including all meta data for the available models. When running the function without arguments, it will list all available models. When a modelname is given, the function will return a vector with the model code. The function can be easily adapted to return other types as well, e.g.:</p>
-<ul>
-<li>to console: <code>cat(modr,sep="\n)</code>
-</li>
-<li>to file: <code>writeLines(modr,paste0(model,".r"))</code>
-</li>
-<li>directly evaluated: <code>eval(parse(text=modr))</code>
-</li>
-<li>to Rstudio’s current script: <code>rstudioapi::insertText(paste(modr,"\n"))</code>
-</li>
-</ul>
-<p>Within the function, the parameters for IIV or the type of residual error can be provided. In this case the model is extended using the available pipe syntax. Some examples for usage:</p>
-<pre><code><span><span class="fu"><a href="reference/modellib.html">modellib</a></span><span class="op">(</span>model<span class="op">=</span><span class="st">"PK_1cmt"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="reference/modellib.html">modellib</a></span><span class="op">(</span>model<span class="op">=</span><span class="st">"PK_1cmt"</span>,iiv <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ka"</span>,<span class="st">"v"</span><span class="op">)</span>,reserr <span class="op">=</span> <span class="st">"add"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="reference/modellib.html">modellib</a></span><span class="op">(</span>model<span class="op">=</span><span class="st">"PK_1cmt"</span>,reserr <span class="op">=</span> <span class="st">"add"</span><span class="op">)</span></span></code></pre>
+<p>This is a model library for <code>nlmixr2</code>. The package allows a few ways to interact with the model library:</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># See all available models</span></span>
+<span><span class="fu"><a href="reference/modellib.html">modellib</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co"># Load the "PK_1cmt" model</span></span>
+<span><span class="fu"><a href="reference/modellib.html">modellib</a></span><span class="op">(</span>name<span class="op">=</span><span class="st">"PK_1cmt"</span><span class="op">)</span></span>
+<span><span class="co"># Switch residual error to additive</span></span>
+<span><span class="fu"><a href="reference/modellib.html">modellib</a></span><span class="op">(</span>name<span class="op">=</span><span class="st">"PK_1cmt"</span>, reserr <span class="op">=</span> <span class="st">"add"</span><span class="op">)</span></span>
+<span><span class="co"># Add inter-individual variability on ka and v and switch residual error to</span></span>
+<span><span class="co"># additive and proportional</span></span>
+<span><span class="fu"><a href="reference/modellib.html">modellib</a></span><span class="op">(</span>name<span class="op">=</span><span class="st">"PK_1cmt"</span>, eta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"lka"</span>, <span class="st">"lv"</span><span class="op">)</span>, reserr <span class="op">=</span> <span class="st">"add+prop"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level1">
-<h1 id="assumptions-and-remarks">Assumptions and remarks<a class="anchor" aria-label="anchor" href="#assumptions-and-remarks"></a>
+<h1 id="modifying-models-by-piping">Modifying models by piping<a class="anchor" aria-label="anchor" href="#modifying-models-by-piping"></a>
 </h1>
-<p>Please take into account the following when evaluating the package:</p>
-<ul>
-<li><p>This package currently only provides a proof of concept</p></li>
-<li><p>The dataframe including all meta data contains the bare minimum, other variables to include should be considered (e.g. modeltype= PK,PD,PKPD,etc.)</p></li>
-<li><p>Added DV variable in rds dataset, this is currently used for residual error (coded as cp~prop(prop.err) or linCmt()~prop(prop.err))</p></li>
-<li><p>Piping is now used to add IIV and residual error. For IIV the parameters are used/checked from the rds dataset. For residual error, now a default of proportional error is always assumed and the user can choose from pre-defined options: add, prop, add+prop</p></li>
-</ul>
+<p>You may also modify any model from the library (or your own models) with a piping interface. The code below adds inter-individual variability on ka and v and then switches residual error to additive and proportional.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">modellib</span>(<span class="at">name=</span><span class="st">"PK_1cmt"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">addEta</span>(<span class="fu">c</span>(<span class="st">"lka"</span>, <span class="st">"lv"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">addResErr</span>(<span class="st">"add+prop"</span>)</span></code></pre></div>
 </div>
 <div class="section level1">
 <h1 id="possible-extensions">Possible extensions<a class="anchor" aria-label="anchor" href="#possible-extensions"></a>
