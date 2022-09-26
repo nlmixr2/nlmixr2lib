@@ -1,19 +1,69 @@
 #' Model library for nlmixr2
 #'
-#' This is a data frame of the availble models in nlmixr2lib, it is generated at compile time
+#' This is a data frame of the availble models in nlmixr2lib, it is generated
+#' with the package.  Custom modeldb may be used.
 #'
-#'
-#' @format A data frame with XXX rows and 5 columns
-#' \describe{
-#'   \item{name}{Model name that can be used to extract the model from the model library}
-#'   \item{description}{Model description in free from text; in model itself}
-#'   \item{parameters}{A comma separated string listing either the parameter in the model defined by population/individual effects or a population effect parameter}
-#'   \item{DV}{The definition of the dependent variable(s)}
-#'   \item{filename}{Filename of the model.  By default these are installed in the model library and read on demand}
-#' }
+#' @eval buildModelDb()
 "modeldb"
 
 utils::globalVariables(c("modeldb"))
+
+#' Build the default model database used in nlmixr2lib
+#'
+#' The function is only used during the build process, and it is not needed for
+#' general use.  See the documentation of "modeldb" for its output.
+#'
+#' @return The text needed for documenting the "modeldb" object (see the modeldb
+#'   roxygen eval statement)
+#' @noRd
+buildModelDb <- function() {
+  # Find the package root directory
+  packageDirectory <- normalizePath(".", winslash = "/")
+  origPackageDirectory <- packageDirectory
+  while (!file.exists(file.path(packageDirectory, "DESCRIPTION"))) {
+    oldPackageDirectory <- packageDirectory
+    packageDirectory <- normalizePath(file.path(oldPackageDirectory, ".."), winslash = "/")
+    if (oldPackageDirectory == packageDirectory) {
+      stop("Could not find root package directory from ", origPackageDirectory)
+    }
+  }
+  message("Building the modeldb from ", packageDirectory)
+  modeldb <- addDirToModelDb(file.path(packageDirectory, "inst/modeldb"))
+  # Drop the base package directory name so that will be installation-agnostic
+  modeldb$filename <-
+    gsub(
+      x = modeldb$filename,
+      pattern = paste0(packageDirectory, "/"),
+      replacement = "inst/",
+      fixed = TRUE
+    )
+  savefile <- file.path(packageDirectory, "data/modeldb.rda")
+  message("Saving the modeldb to ", savefile)
+  save(modeldb, file=savefile, compress="bzip2", version=2, ascii=FALSE)
+  message("Done saving the modeldb to ", savefile)
+
+  colDesc <-
+    list(
+      name="Model name that can be used to extract the model from the model library",
+      description="Model description in free from text; in model itself",
+      parameters="A comma separated string listing either the parameter in the model defined by population/individual effects or a population effect parameter",
+      DV="The definition of the dependent variable(s)",
+      filename="Filename of the model.  By default these are installed in the model library and read on demand"
+    )
+  # The names must exactly match
+  stopifnot(all(names(modeldb) %in% names(colDesc)))
+  stopifnot(all(names(colDesc) %in% names(modeldb)))
+  formatText <- sprintf("@format A data frame with %g rows and %g columns", nrow(modeldb), ncol(modeldb))
+  describeText <-
+    sprintf(
+      "\\describe{\n%s}\n",
+      paste(
+        sprintf("  \\item{%s}{%s}\n", names(colDesc), unlist(colDesc)),
+        collapse = ""
+      )
+    )
+  paste(formatText, describeText, sep="\n")
+}
 
 #' Add a directory to the modeldb
 #'
@@ -30,7 +80,7 @@ addDirToModelDb <- function(dir, modeldb=data.frame()) {
     )
   for (currentFile in filesToLoad) {
     message("parse currentFile")
-    addFileToModelDb(dir = dir, file = currentFile)
+    modeldb <- addFileToModelDb(dir = dir, file = currentFile, modeldb = modeldb)
   }
   modeldb
 }
@@ -39,11 +89,7 @@ addDirToModelDb <- function(dir, modeldb=data.frame()) {
 #' @param file The file name (without the directory name)
 #' @export
 addFileToModelDb <- function(dir, file, modeldb) {
-
   fileName <- file.path(dir, file)
-  # Extract the description from the first line of the file
-  desc <- readLines(con = fileName, n = 1)
-  descClean <- gsub(x = desc, pattern = "^# *Description: *", replacement = "")
 
   # Extract the model from the file
   parsedFile <- parse(file = fileName)
@@ -57,7 +103,7 @@ addFileToModelDb <- function(dir, file, modeldb) {
   }
 
   # Parse the model to get the fixed effects and DV parameters
-  mod <- nlmixr2est::nlmixr(eval(parsedFile[[1]][[3]]))
+  mod <- nlmixr2est::nlmixr(eval(parsedFile))
 
   description <- mod$meta$description
   if (is.null(description)) {
@@ -72,9 +118,9 @@ addFileToModelDb <- function(dir, file, modeldb) {
 
   # swap modeled parameter names for the mu-ref parameter names, where
   # applicable
-  for (nm in names(mod$getSplitMuModel$pureMuRef)) {
-    modParamFixed[modParamFixed %in% nm] <- mod$getSplitMuModel$pureMuRef[[nm]]
-  }
+  #for (nm in names(mod$getSplitMuModel$pureMuRef)) {
+  #  modParamFixed[modParamFixed %in% nm] <- mod$getSplitMuModel$pureMuRef[[nm]]
+  #}
 
   # Error model
   paramErr <- mod$predDf$cond
@@ -94,5 +140,5 @@ addFileToModelDb <- function(dir, file, modeldb) {
   if (any(duplicated(modeldb$name))) {
     stop("Duplicated model name: ", modeldb$name[duplicated(modeldb$name)]) # nocov
   }
-  ret
+  modeldb
 }

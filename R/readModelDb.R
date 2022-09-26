@@ -9,8 +9,10 @@ readModelDb <- function(name) {
   if (!(name %in% modeldb$name)) {
     stop("'name' not in database")
   } else {
+    # Check for the base file path
     .fileName <- modeldb$filename[modeldb$name == name]
     if (!file.exists(.fileName)) {
+      # Check within the package
       .fileName <- gsub("inst[/\\]", "", .fileName)
       if (file.exists(system.file(.fileName, package="nlmixr2lib"))) {
         .fileName <- system.file(.fileName, package="nlmixr2lib")
