@@ -41,21 +41,15 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: any::rcmdcheck
-          needs: check
-          
-      - name: Install remotes
-        run: |
-          install.packages('remotes')
-          remotes::install_github("nlmixr2/lotri")
-          remotes::install_github("nlmixr2/rxode2ll")
-          remotes::install_github("nlmixr2/rxode2")
-          remotes::install_github("nlmixr2/nlmixr2est")
-          remotes::install_github("nlmixr2/nlmixr2extra")
-          remotes::install_github("nlmixr2/nlmixr2plot")
-          remotes::install_github("nlmixr2/nlmixr2")
-        shell: Rscript {0}
-
+          extra-packages: |
+            any::rcmdcheck
+            github::nlmixr2/lotri
+            github::nlmixr2/rxode2ll
+            github::nlmixr2/rxode2
+            github::nlmixr2/nlmixr2est
+            github::nlmixr2/nlmixr2extra
+            github::nlmixr2/nlmixr2plot
+            github::nlmixr2/nlmixr2
 
       - uses: r-lib/actions/check-r-package@v2
         with:

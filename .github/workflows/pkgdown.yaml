@@ -33,17 +33,17 @@ jobs:
           extra-packages: any::pkgdown, local::.
           needs: website
 
-      - name: Install remotes
-        run: |
-          install.packages('remotes')
-          remotes::install_github("nlmixr2/lotri")
-          remotes::install_github("nlmixr2/rxode2ll")
-          remotes::install_github("nlmixr2/rxode2")
-          remotes::install_github("nlmixr2/nlmixr2est")
-          remotes::install_github("nlmixr2/nlmixr2extra")
-          remotes::install_github("nlmixr2/nlmixr2plot")
-          remotes::install_github("nlmixr2/nlmixr2")
-          shell: Rscript {0}
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: |
+            any::rcmdcheck
+            github::nlmixr2/lotri
+            github::nlmixr2/rxode2ll
+            github::nlmixr2/rxode2
+            github::nlmixr2/nlmixr2est
+            github::nlmixr2/nlmixr2extra
+            github::nlmixr2/nlmixr2plot
+            github::nlmixr2/nlmixr2
 
       - name: Build site
         run: pkgdown::build_site_github_pages(new_process = FALSE, install = FALSE)
