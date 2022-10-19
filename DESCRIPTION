@@ -29,6 +29,4 @@ Suggests:
     knitr,
     rmarkdown,
     testthat (>= 3.0.0)
-Biarch: true
-NeedsCompilation: yes
 Config/testthat/edition: 3

@@ -11,6 +11,7 @@ PK_1cmt <- function() {
     cl <- exp(lcl)
     vc  <- exp(lvc)
 
-    linCmt() ~ prop(prop.err)
+    cp <- linCmt()
+    cp ~ prop(prop.err)
   })
 }

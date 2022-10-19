@@ -31,8 +31,8 @@ test_that("addResErr with linCmt model, changing to additive error", {
   expect_equal(
     functionBody(
       modelUpdate
-    )[[4]][[2]][[5]],
-    str2lang("linCmt() ~ add(add.err)")
+    )[[4]][[2]][[6]],
+    str2lang("cp ~ add(add.err)")
   )
 })
 

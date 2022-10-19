@@ -38,6 +38,21 @@ augmentation for other compartments:
 * `peripheral1`, `peripheral2`: The first and second peripheral compartments for
   2- and 3-compartment PK models
 * `effect`: The compartment for effect compartment models
+* Therapeutic-area-specific models should use consistent compartment and
+  parameter naming.  When adding a new therapeutic area model to the library,
+  please discuss naming first in a new GitHub issue.
+
+## Estimated parameter naming
+
+To enable more consistent cross-model compatibility, the following conventions should be used unless there is a strong reason for an exception:
+
+* Pharmacokinetic concentrations in the central compartment should be named
+  `cp`.  `cp` should be used even when using a `linCmt()` model (in which case
+  `cp <- linCmt()` should be used and the residual error should be applied to
+  the `cp` parameter).
+* Therapeutic-area-specific models should use consistent compartment and
+  parameter naming.  When adding a new therapeutic area model to the library,
+  please discuss naming first in a new GitHub issue.
 
 ## Parameter naming
 
@@ -80,7 +95,7 @@ logit-transformed `emax` would be `logitemax`.
 ## Random effects
 
 Random effects are estimates as part of a distribution varying by some grouping
-facter.  The grouping factor is often a subject in a clinical trial.  (For
+factor.  The grouping factor is often a subject in a clinical trial.  (For
 NONMEM users, random effects are often referred to as inter-individual
 variability.)
 
@@ -93,8 +108,9 @@ Random effect parameters should prefix the (transformed) parameter name with
 Files in a model library should have the following characteristics:
 
 * The first line inside the function should have a description
-  assignment.  That is `description <- "This is the description of the
-  model"` right inside the `function()` before the `ini({})` block.* The remainder of the file should be an nlmixr2 model in a function with a
+  assignment.  That is `description <- "This is the description of the model"`
+  right inside the `function()` before the `ini({})` block.
+* The remainder of the file should be an nlmixr2 model in a function with a
   typical `ini()` and `model()` block.
 * The name of the file should match the name of the model within the file.
 
