@@ -9,8 +9,8 @@ addResErr(model, reserr)
 \arguments{
 \item{model}{The model as a function}
 
-\item{reserr}{character with the type of residual error (currently "add",
-"prop" and "add+prop" are accepted)}
+\item{reserr}{character with the type of residual error (currently "addSd",
+"propSd" and "addSd+propSd" are accepted)}
 }
 \value{
 The model with residual error modified
@@ -19,5 +19,5 @@ The model with residual error modified
 Add residual error to a model
 }
 \examples{
-readModelDb("PK_1cmt") \%>\% addResErr("add")
+readModelDb("PK_1cmt") \%>\% addResErr("addSd")
 }
