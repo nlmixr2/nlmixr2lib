@@ -6,7 +6,7 @@ PK_2cmt <- function() {
     lvc  <- 3 ; label("Central volume of distribution (V)")
     lvp  <- 5 ; label("Peripheral volume of distribution (Vp)")
     lq  <- 0.1 ; label("Intercompartmental clearance (Q)")
-    prop.err <- 0.5 ; label("Proportional residual error (fraction)")
+    propSd <- 0.5 ; label("Proportional residual error (fraction)")
   })
   model({
     ka <- exp(lka)
@@ -16,6 +16,6 @@ PK_2cmt <- function() {
     q  <- exp(lq)
 
     cp <- linCmt()
-    cp ~ prop(prop.err)
+    cp ~ prop(propSd)
   })
 }
