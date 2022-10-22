@@ -1,6 +1,6 @@
 #' Model library for nlmixr2
 #'
-#' This is a data frame of the availble models in nlmixr2lib, it is generated
+#' This is a data frame of the available models in nlmixr2lib, it is generated
 #' with the package.  Custom modeldb may be used.
 #'
 #' @eval buildModelDb()

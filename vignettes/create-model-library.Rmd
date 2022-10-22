@@ -34,7 +34,7 @@ augmentation for other compartments:
 * `depot`: The extravascular dosing compartment (for example, the gut for oral
   dosing or subcutaneous space for subcutaneous dosing)
 * `central`: The intravascular compartment used for intravenous dosing or for
-  typical pharmacokinetic (PK) model samping of the drug
+  typical pharmacokinetic (PK) model sampling of the drug
 * `peripheral1`, `peripheral2`: The first and second peripheral compartments for
   2- and 3-compartment PK models
 * `effect`: The compartment for effect compartment models
