@@ -14,10 +14,10 @@ modellib()
 # Load the "PK_1cmt" model
 modellib(name="PK_1cmt")
 # Switch residual error to additive
-modellib(name="PK_1cmt", reserr = "add")
+modellib(name="PK_1cmt", reserr = "addSd")
 # Add inter-individual variability on ka and v and switch residual error to
 # additive and proportional
-modellib(name="PK_1cmt", eta = c("lka", "lv"), reserr = "add+prop")
+modellib(name="PK_1cmt", eta = c("lka", "lv"), reserr = "addSd+propSd")
 ```
 
 # Modifying models by piping
@@ -29,7 +29,7 @@ and then switches residual error to additive and proportional.
 ```r
 modellib(name="PK_1cmt") %>%
   addEta(c("lka", "lv") %>%
-  addResErr("add+prop")
+  addResErr("addSd+propSd")
 ```
 
 # Possible extensions

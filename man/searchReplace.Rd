@@ -10,7 +10,7 @@ searchReplace(object, find, replace)
 searchReplaceHelper(object, find, replace)
 }
 \arguments{
-\item{object}{Fitted object or function specifying the model.}
+\item{object}{function specifying the nlmixr2 model}
 
 \item{find, replace}{Character scalars of parts of the model to replace}
 }

@@ -8,7 +8,7 @@ PK_3cmt_des <- function() {
     lvp2  <- 8 ; label("Second peripheral volume of distribution (Vp2)")
     lq  <- 0.1 ; label("Intercompartmental clearance (Q)")
     lq2  <- 0.5 ; label("Second intercompartmental clearance (Q2)")
-    prop.err <- 0.5 ; label("Proportional residual error (fraction)")
+    propSd <- 0.5 ; label("Proportional residual error (fraction)")
   })
   model({
     ka <- exp(lka)
@@ -31,6 +31,6 @@ PK_3cmt_des <- function() {
     d/dt(peripheral2) <- k13*center - k31*peripheral2
     cp <- center / vc
 
-    cp ~ prop(prop.err)
+    cp ~ prop(propSd)
   })
 }
