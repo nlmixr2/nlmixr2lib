@@ -1,6 +1,6 @@
 Package: nlmixr2lib
 Type: Package
-Version: 0.0.1
+Version: 0.1.0
 Title: A model library for nlmixr2
 Description: Model library for nlmixr2.
 Authors@R: c(
