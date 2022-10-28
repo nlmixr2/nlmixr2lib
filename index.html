@@ -92,7 +92,7 @@
 <span><span class="fu"><a href="reference/modellib.html">modellib</a></span><span class="op">(</span>name<span class="op">=</span><span class="st">"PK_1cmt"</span>, reserr <span class="op">=</span> <span class="st">"addSd"</span><span class="op">)</span></span>
 <span><span class="co"># Add inter-individual variability on ka and v and switch residual error to</span></span>
 <span><span class="co"># additive and proportional</span></span>
-<span><span class="fu"><a href="reference/modellib.html">modellib</a></span><span class="op">(</span>name<span class="op">=</span><span class="st">"PK_1cmt"</span>, eta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"lka"</span>, <span class="st">"lv"</span><span class="op">)</span>, reserr <span class="op">=</span> <span class="st">"addSd+propSd"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="reference/modellib.html">modellib</a></span><span class="op">(</span>name<span class="op">=</span><span class="st">"PK_1cmt"</span>, eta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"lka"</span>, <span class="st">"lv"</span><span class="op">)</span>, reserr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"addSd"</span>, <span class="st">"propSd"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level1">
 <h1 id="modifying-models-by-piping">Modifying models by piping<a class="anchor" aria-label="anchor" href="#modifying-models-by-piping"></a>
@@ -100,7 +100,7 @@
 <p>You may also modify any model from the library (or your own models) with a piping interface. The code below adds inter-individual variability on ka and v and then switches residual error to additive and proportional.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">modellib</span>(<span class="at">name=</span><span class="st">"PK_1cmt"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">addEta</span>(<span class="fu">c</span>(<span class="st">"lka"</span>, <span class="st">"lv"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">addResErr</span>(<span class="st">"addSd+propSd"</span>)</span></code></pre></div>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">addResErr</span>(<span class="fu">c</span>(<span class="st">"addSd"</span>, <span class="st">"propSd"</span>))</span></code></pre></div>
 </div>
 <div class="section level1">
 <h1 id="possible-extensions">Possible extensions<a class="anchor" aria-label="anchor" href="#possible-extensions"></a>
