@@ -110,6 +110,9 @@ Files in a model library should have the following characteristics:
 * The first line inside the function should have a description
   assignment.  That is `description <- "This is the description of the model"`
   right inside the `function()` before the `ini({})` block.
+* If the model has a literature reference associated with it, then the second
+  line of inside the function should have the reference, for example,
+  `reference <- Richard Hooijmaijers, Matthew Fidler, William S. Denney (2022).  nlmixr2lib: A Model Library for 'nlmixr2'.  https://nlmixr2.github.io/nlmixr2lib/`
 * The remainder of the file should be an nlmixr2 model in a function with a
   typical `ini()` and `model()` block.
 * The name of the file should match the name of the model within the file.
