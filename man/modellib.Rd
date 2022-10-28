@@ -13,8 +13,8 @@ lists all available base models)}
 \item{eta}{vector with the parameters to add random effects (sometimes
 referred to as inter-individual variability, IIV) on}
 
-\item{reserr}{character with the type of residual error (currently "add",
-"prop" and "add+prop" are accepted)}
+\item{reserr}{character with the type of residual error (currently "addSd",
+"propSd" and "addSd+propSd" are accepted)}
 }
 \value{
 The function returns a function the model code (or \code{NULL} if the
@@ -30,7 +30,7 @@ This is a very first draft just to look at the proof of concept
 
 \dontrun{
   modellib(name="PK_1cmt")
-  modellib(name="PK_1cmt", eta = c("ka", "vc"), reserr = "add")
-  modellib(name="PK_1cmt", reserr = "add")
+  modellib(name="PK_1cmt", eta = c("ka", "vc"), reserr = "addSd")
+  modellib(name="PK_1cmt", reserr = "addSd")
 }
 }

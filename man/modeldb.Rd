@@ -18,7 +18,7 @@ A data frame with 6 rows and 5 columns
 modeldb
 }
 \description{
-This is a data frame of the availble models in nlmixr2lib, it is generated
+This is a data frame of the available models in nlmixr2lib, it is generated
 with the package.  Custom modeldb may be used.
 }
 \keyword{datasets}
