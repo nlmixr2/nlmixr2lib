@@ -1,13 +1,19 @@
 Package: nlmixr2lib
 Type: Package
-Version: 0.0.1
-Title: A model library for nlmixr2
-Description: Model library for nlmixr2.
+Version: 0.1.0
+Title: A Model Library for 'nlmixr2'
+Description: A model library for 'nlmixr2'.  The models in
+  the package include (and plan to include) pharmacokinetic,
+  pharmacodynamic, and disease models used in pharmacomwtrics.
+  Where applicable, references for each model are included in
+  the meta-data for each individual model.  The package also
+  includes model composition and modification functions to make
+  model updates easier.
 Authors@R: c(
-  person("Richard","Hooijmaijers", email="richardhooijmaijers@gmail.com",role=c("aut", "cre")),
+  person("Richard","Hooijmaijers", email="richardhooijmaijers@gmail.com",role="aut"),
   person("Matthew","Fidler", email="richardhooijmaijers@gmail.com",role=c("aut"),
     comment=c(ORCID="0000-0001-8538-6691")),
-  person("Bill", "Denney", email="wdenney@humanpredictions.com", role="aut", comment=c(ORCID="0000-0002-5759-428X"))
+  person("Bill", "Denney", email="wdenney@humanpredictions.com", role=c("aut", "cre"), comment=c(ORCID="0000-0002-5759-428X"))
   )
 Depends:
     R (>= 4.0)
@@ -29,6 +35,4 @@ Suggests:
     knitr,
     rmarkdown,
     testthat (>= 3.0.0)
-Biarch: true
-NeedsCompilation: yes
 Config/testthat/edition: 3

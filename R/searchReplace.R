@@ -1,6 +1,6 @@
 #' Search within a model to replace part of the model
 #'
-#' @inheritParams nlmixr2::nlmixr2
+#' @param object function specifying the nlmixr2 model
 #' @param find,replace Character scalars of parts of the model to replace
 #' @return \code{object} with \code{find} replaced with \code{replace}
 #' @keywords Internal

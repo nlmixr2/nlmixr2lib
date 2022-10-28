@@ -4,7 +4,7 @@ PK_1cmt_des <- function() {
     lka <- 0.45 ; label("Absorption rate (Ka)")
     lcl <- 1 ; label("Clearance (CL)")
     lvc  <- 3.45 ; label("Central volume of distribution (V)")
-    prop.err <- 0.5 ; label("Proportional residual error (fraction)")
+    propSd <- 0.5 ; label("Proportional residual error (fraction)")
   })
   model({
     ka <- exp(lka)
@@ -16,7 +16,7 @@ PK_1cmt_des <- function() {
     d/dt(depot) <- -ka*depot
     d/dt(center) <- ka*depot-kel*center
 
-    cp = center / vc
-    cp ~ prop(prop.err)
+    cp <- center / vc
+    cp ~ prop(propSd)
   })
 }
