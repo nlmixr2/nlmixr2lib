@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">nlmixr2lib</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -26,6 +26,9 @@
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/create-model-library.html">Creating a model library</a>
   </div>
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
@@ -64,8 +67,8 @@
 
 
 <dt>reserr</dt>
-<dd><p>character with the type of residual error (currently "add",
-"prop" and "add+prop" are accepted)</p></dd>
+<dd><p>character with the type of residual error (currently "addSd",
+"propSd" and "addSd+propSd" are accepted)</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -77,11 +80,12 @@
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="readModelDb.html">readModelDb</a></span><span class="op">(</span><span class="st">"PK_1cmt"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu">addResErr</span><span class="op">(</span><span class="st">"add"</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="readModelDb.html">readModelDb</a></span><span class="op">(</span><span class="st">"PK_1cmt"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu">addResErr</span><span class="op">(</span><span class="st">"addSd"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> remove population parameter `prop.err`</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> add residual parameter `add.err` and set estimate to 1</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> change initial estimate of `add.err` to `1`</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> remove population parameter `propSd`</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> add residual parameter `addSd` and set estimate to 1</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> change initial estimate of `addSd` to `1`</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> function () </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     description &lt;- "One compartment PK model with linear clearance"</span>
@@ -92,17 +96,17 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span>         label("Clearance (CL)")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         lvc &lt;- 3.45</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         label("Central volume of distribution (V)")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         add.err &lt;- c(0, 1)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         addSd &lt;- c(0, 1)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     })</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     model({</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         ka &lt;- exp(lka)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         cl &lt;- exp(lcl)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         vc &lt;- exp(lvc)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         cp &lt;- linCmt()</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         cp ~ add(add.err)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         cp ~ add(addSd)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     })</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x564535687fd0&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x55bc4a5d5358&gt;</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

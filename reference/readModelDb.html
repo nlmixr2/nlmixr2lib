@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">nlmixr2lib</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -26,6 +26,9 @@
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/create-model-library.html">Creating a model library</a>
   </div>
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
@@ -79,7 +82,7 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span>     lka &lt;- 0.45 ; label("Absorption rate (Ka)")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     lcl &lt;- 1 ; label("Clearance (CL)")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     lvc  &lt;- 3.45 ; label("Central volume of distribution (V)")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     prop.err &lt;- 0.5 ; label("Proportional residual error (fraction)")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     propSd &lt;- 0.5 ; label("Proportional residual error (fraction)")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   })</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   model({</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     ka &lt;- exp(lka)</span>
@@ -87,10 +90,10 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span>     vc  &lt;- exp(lvc)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     cp &lt;- linCmt()</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     cp ~ prop(prop.err)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     cp ~ prop(propSd)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   })</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x564534b079c0&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x55bc4a08c370&gt;</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

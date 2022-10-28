@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">nlmixr2lib</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -43,6 +43,9 @@
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/create-model-library.html">Creating a model library</a>
   </div>
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
       </ul>
 <form class="form-inline my-2 my-lg-0" role="search">
@@ -77,35 +80,57 @@
 
     
     
-<p>Model libraries are useful to have consistent high-quality basic models that can be used as a model itself or as a building block for other models.</p>
+<p>Model libraries are useful to have consistent high-quality basic
+models that can be used as a model itself or as a building block for
+other models.</p>
 <div class="section level2">
 <h2 id="model-library-conventions-within-nlmixr2lib">Model library conventions within nlmixr2lib<a class="anchor" aria-label="anchor" href="#model-library-conventions-within-nlmixr2lib"></a>
 </h2>
-<p>Compartment and parameter names should be all lower case when on their own and should use snakeCase when combined in some way.</p>
-<p>Compartment and parameter names are selected to align with those used by <code>rxode2::linCmt()</code> which are described in the vignette: vignette(“rxode2-model-types”, package = “rxode2”).</p>
+<p>Compartment and parameter names should be all lower case when on
+their own and should use snakeCase when combined in some way.</p>
+<p>Compartment and parameter names are selected to align with those used
+by <code>rxode2::linCmt()</code> which are described in the vignette:
+vignette(“rxode2-model-types”, package = “rxode2”).</p>
 <div class="section level3">
 <h3 id="compartment-naming">Compartment naming<a class="anchor" aria-label="anchor" href="#compartment-naming"></a>
 </h3>
-<p>Compartment naming follows compartment names with the <code>linCmt()</code> with augmentation for other compartments:</p>
+<p>Compartment naming follows compartment names with the
+<code>linCmt()</code> with augmentation for other compartments:</p>
 <ul>
 <li>
-<code>depot</code>: The extravascular dosing compartment (for example, the gut for oral dosing or subcutaneous space for subcutaneous dosing)</li>
+<code>depot</code>: The extravascular dosing compartment (for
+example, the gut for oral dosing or subcutaneous space for subcutaneous
+dosing)</li>
 <li>
-<code>central</code>: The intravascular compartment used for intravenous dosing or for typical pharmacokinetic (PK) model samping of the drug</li>
+<code>central</code>: The intravascular compartment used for
+intravenous dosing or for typical pharmacokinetic (PK) model sampling of
+the drug</li>
 <li>
-<code>peripheral1</code>, <code>peripheral2</code>: The first and second peripheral compartments for 2- and 3-compartment PK models</li>
+<code>peripheral1</code>, <code>peripheral2</code>: The first and
+second peripheral compartments for 2- and 3-compartment PK models</li>
 <li>
-<code>effect</code>: The compartment for effect compartment models</li>
-<li>Therapeutic-area-specific models should use consistent compartment and parameter naming. When adding a new therapeutic area model to the library, please discuss naming first in a new GitHub issue.</li>
+<code>effect</code>: The compartment for effect compartment
+models</li>
+<li>Therapeutic-area-specific models should use consistent compartment
+and parameter naming. When adding a new therapeutic area model to the
+library, please discuss naming first in a new GitHub issue.</li>
 </ul>
 </div>
 <div class="section level3">
 <h3 id="estimated-parameter-naming">Estimated parameter naming<a class="anchor" aria-label="anchor" href="#estimated-parameter-naming"></a>
 </h3>
-<p>To enable more consistent cross-model compatibility, the following conventions should be used unless there is a strong reason for an exception:</p>
+<p>To enable more consistent cross-model compatibility, the following
+conventions should be used unless there is a strong reason for an
+exception:</p>
 <ul>
-<li>Pharmacokinetic concentrations in the central compartment should be named <code>cp</code>. <code>cp</code> should be used even when using a <code>linCmt()</code> model (in which case <code>cp &lt;- linCmt()</code> should be used and the residual error should be applied to the <code>cp</code> parameter).</li>
-<li>Therapeutic-area-specific models should use consistent compartment and parameter naming. When adding a new therapeutic area model to the library, please discuss naming first in a new GitHub issue.</li>
+<li>Pharmacokinetic concentrations in the central compartment should be
+named <code>cp</code>. <code>cp</code> should be used even when using a
+<code>linCmt()</code> model (in which case
+<code>cp &lt;- linCmt()</code> should be used and the residual error
+should be applied to the <code>cp</code> parameter).</li>
+<li>Therapeutic-area-specific models should use consistent compartment
+and parameter naming. When adding a new therapeutic area model to the
+library, please discuss naming first in a new GitHub issue.</li>
 </ul>
 </div>
 <div class="section level3">
@@ -118,27 +143,39 @@
 <li>
 <code>cl</code>: clearance</li>
 <li>
-<code>q</code>: intercompartmental clearance (<code>central</code> to and from <code>peripheral1</code> compartments)</li>
+<code>q</code>: intercompartmental clearance (<code>central</code>
+to and from <code>peripheral1</code> compartments)</li>
 <li>
-<code>q2</code>: second intercompartmental clearance (<code>central</code> to and from <code>peripheral2</code> compartments)</li>
+<code>q2</code>: second intercompartmental clearance
+(<code>central</code> to and from <code>peripheral2</code>
+compartments)</li>
 <li>
 <code>vc</code>: central volume of distribution</li>
 <li>
-<code>vp</code>, <code>vp2</code>: first and second peripheral compartment volumes</li>
+<code>vp</code>, <code>vp2</code>: first and second peripheral
+compartment volumes</li>
 </ul>
-<p>When micro-constants are used, they should use the following naming conventions:</p>
+<p>When micro-constants are used, they should use the following naming
+conventions:</p>
 <ul>
 <li>
 <code>kel</code> elimination rate (<code>cl/vc</code>)</li>
 <li>
-<code>k12</code>, <code>k21</code>, <code>k13</code>, <code>k31</code>: intercompartmental transit rates (<code>q/vc</code>, <code>q/vp</code>, <code>q2/vc</code>, and <code>q2/vp2</code>, respectively)</li>
+<code>k12</code>, <code>k21</code>, <code>k13</code>,
+<code>k31</code>: intercompartmental transit rates (<code>q/vc</code>,
+<code>q/vp</code>, <code>q2/vc</code>, and <code>q2/vp2</code>,
+respectively)</li>
 </ul>
 </div>
 <div class="section level3">
 <h3 id="parameter-transforms">Parameter transforms<a class="anchor" aria-label="anchor" href="#parameter-transforms"></a>
 </h3>
-<p>Parameters are often estimated on a transformed scale. For instance, a natural logarithm transform is often used for parameters that must be positive, and a logit transform is often used when a parameter must remain within a specific range.</p>
-<p>Transformed parameters should be prefixed with an indicator of the transformation. Preferred transformation prefixes are:</p>
+<p>Parameters are often estimated on a transformed scale. For instance,
+a natural logarithm transform is often used for parameters that must be
+positive, and a logit transform is often used when a parameter must
+remain within a specific range.</p>
+<p>Transformed parameters should be prefixed with an indicator of the
+transformation. Preferred transformation prefixes are:</p>
 <ul>
 <li>
 <code>l</code> (lower case L): natural log transform</li>
@@ -146,25 +183,46 @@
 <code>logit</code>: logit transform</li>
 <li>
 <code>probit</code>: probit transform</li>
-<li>Any other transform should similarly include the full transform as the prefix</li>
+<li>Any other transform should similarly include the full transform as
+the prefix</li>
 </ul>
-<p>Generally, for any transform other than natural logarithm, include the full name as a prefix. For example, natural logarithm-transformed <code>ka</code> would be <code>lka</code> and logit-transformed <code>emax</code> would be <code>logitemax</code>.</p>
+<p>Generally, for any transform other than natural logarithm, include
+the full name as a prefix. For example, natural logarithm-transformed
+<code>ka</code> would be <code>lka</code> and logit-transformed
+<code>emax</code> would be <code>logitemax</code>.</p>
 </div>
 <div class="section level3">
 <h3 id="random-effects">Random effects<a class="anchor" aria-label="anchor" href="#random-effects"></a>
 </h3>
-<p>Random effects are estimates as part of a distribution varying by some grouping factor. The grouping factor is often a subject in a clinical trial. (For NONMEM users, random effects are often referred to as inter-individual variability.)</p>
-<p>Random effect parameters should prefix the (transformed) parameter name with <code>eta</code>. For example, a random effect on log-transformed clearance would be named <code>etalcl</code>.</p>
+<p>Random effects are estimates as part of a distribution varying by
+some grouping factor. The grouping factor is often a subject in a
+clinical trial. (For NONMEM users, random effects are often referred to
+as inter-individual variability.)</p>
+<p>Random effect parameters should prefix the (transformed) parameter
+name with <code>eta</code>. For example, a random effect on
+log-transformed clearance would be named <code>etalcl</code>.</p>
 </div>
 </div>
 <div class="section level2">
 <h2 id="model-files">Model files<a class="anchor" aria-label="anchor" href="#model-files"></a>
 </h2>
-<p>Files in a model library should have the following characteristics:</p>
+<p>Files in a model library should have the following
+characteristics:</p>
 <ul>
-<li>The first line inside the function should have a description assignment. That is <code>description &lt;- "This is the description of the model"</code> right inside the <code>function()</code> before the <code>ini({})</code> block.</li>
-<li>The remainder of the file should be an nlmixr2 model in a function with a typical <code>ini()</code> and <code>model()</code> block.</li>
-<li>The name of the file should match the name of the model within the file.</li>
+<li>The first line inside the function should have a description
+assignment. That is
+<code>description &lt;- "This is the description of the model"</code>
+right inside the <code>function()</code> before the <code>ini({})</code>
+block.</li>
+<li>If the model has a literature reference associated with it, then the
+second line of inside the function should have the reference, for
+example,
+<code>reference &lt;- Richard Hooijmaijers, Matthew Fidler, William S. Denney (2022).  nlmixr2lib: A Model Library for 'nlmixr2'.  https://nlmixr2.github.io/nlmixr2lib/</code>
+</li>
+<li>The remainder of the file should be an nlmixr2 model in a function
+with a typical <code>ini()</code> and <code>model()</code> block.</li>
+<li>The name of the file should match the name of the model within the
+file.</li>
 </ul>
 <p>For examples, see the package installation directory.</p>
 </div>
