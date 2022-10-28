@@ -20,9 +20,9 @@ PK_2cmt_des <- function() {
     k21 <- q/vp
 
     d/dt(depot) <- -ka*depot
-    d/dt(center) <-  ka*depot - kel*center - k12*center + k21*peripheral1
-    d/dt(peripheral1) <- k12*center - k21*peripheral1
-    cp <- center / vc
+    d/dt(central) <-  ka*depot - kel*central - k12*central + k21*peripheral1
+    d/dt(peripheral1) <- k12*central - k21*peripheral1
+    cp <- central / vc
 
     cp ~ prop(propSd)
   })
