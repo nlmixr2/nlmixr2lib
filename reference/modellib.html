@@ -47,7 +47,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="" class="logo" alt=""><h1>Get the model from the model library</h1>
-      <small class="dont-index">Source: <a href="https://github.com/nlmixr2/nlmixr2lib/blob/HEAD/R/modellib.r" class="external-link"><code>R/modellib.r</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/nlmixr2/nlmixr2lib/blob/HEAD/R/modellib.R" class="external-link"><code>R/modellib.R</code></a></small>
       <div class="d-none name"><code>modellib.Rd</code></div>
     </div>
 
@@ -73,8 +73,8 @@ referred to as inter-individual variability, IIV) on</p></dd>
 
 
 <dt>reserr</dt>
-<dd><p>character with the type of residual error (currently "addSd",
-"propSd" and "addSd+propSd" are accepted)</p></dd>
+<dd><p>The type or types of residual error (currently <code>"addSd"</code>,
+<code>"propSd"</code>, and <code>"lnormSd"</code> are accepted)</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -92,12 +92,103 @@ referred to as inter-individual variability, IIV) on</p></dd>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span>  <span class="fu">modellib</span><span class="op">(</span>name<span class="op">=</span><span class="st">"PK_1cmt"</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="fu">modellib</span><span class="op">(</span>name<span class="op">=</span><span class="st">"PK_1cmt"</span>, eta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ka"</span>, <span class="st">"vc"</span><span class="op">)</span>, reserr <span class="op">=</span> <span class="st">"addSd"</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="fu">modellib</span><span class="op">(</span>name<span class="op">=</span><span class="st">"PK_1cmt"</span>, reserr <span class="op">=</span> <span class="st">"addSd"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">modellib</span><span class="op">(</span>name<span class="op">=</span><span class="st">"PK_1cmt"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> function() {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   description &lt;- "One compartment PK model with linear clearance"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ini({</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     lka &lt;- 0.45 ; label("Absorption rate (Ka)")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     lcl &lt;- 1 ; label("Clearance (CL)")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     lvc  &lt;- 3.45 ; label("Central volume of distribution (V)")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     propSd &lt;- 0.5 ; label("Proportional residual error (fraction)")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   })</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   model({</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     ka &lt;- exp(lka)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     cl &lt;- exp(lcl)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     vc  &lt;- exp(lvc)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     cp &lt;- linCmt()</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     cp ~ prop(propSd)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   })</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x560ce2c9fc28&gt;</span>
+<span class="r-in"><span><span class="fu">modellib</span><span class="op">(</span>name<span class="op">=</span><span class="st">"PK_1cmt"</span>, eta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ka"</span>, <span class="st">"vc"</span><span class="op">)</span>, reserr <span class="op">=</span> <span class="st">"addSd"</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> → Adding eta to lka instead of ka due to mu-referencing</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> → Adding eta to lvc instead of vc due to mu-referencing</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> parameter labels from comments are typically ignored in non-interactive mode</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Need to run with the source intact to parse comments</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> parameter labels from comments are typically ignored in non-interactive mode</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Need to run with the source intact to parse comments</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> promote `etalka` to between subject variability with initial estimate 0.1</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> change initial estimate of `etalka` to `0.1`</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> promote `etalvc` to between subject variability with initial estimate 0.1</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> change initial estimate of `etalvc` to `0.1`</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> parameter labels from comments are typically ignored in non-interactive mode</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Need to run with the source intact to parse comments</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> remove population parameter `propSd`</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> add residual parameter `cpaddSd` and set estimate to 1</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> change initial estimate of `cpaddSd` to `1`</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> function () </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     description &lt;- "One compartment PK model with linear clearance"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     ini({</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         lka &lt;- 0.45</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         label("Absorption rate (Ka)")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         lcl &lt;- 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         label("Clearance (CL)")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         lvc &lt;- 3.45</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         label("Central volume of distribution (V)")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         cpaddSd &lt;- c(0, 1)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         etalka ~ 0.1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         etalvc ~ 0.1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     })</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     model({</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         ka &lt;- exp(lka + etalka)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         cl &lt;- exp(lcl)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         vc &lt;- exp(lvc + etalvc)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         cp &lt;- linCmt()</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         cp ~ add(cpaddSd)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     })</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x560ce2b6e030&gt;</span>
+<span class="r-in"><span><span class="fu">modellib</span><span class="op">(</span>name<span class="op">=</span><span class="st">"PK_1cmt"</span>, reserr <span class="op">=</span> <span class="st">"addSd"</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> remove population parameter `propSd`</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> add residual parameter `cpaddSd` and set estimate to 1</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> change initial estimate of `cpaddSd` to `1`</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> function () </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     description &lt;- "One compartment PK model with linear clearance"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     ini({</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         lka &lt;- 0.45</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         label("Absorption rate (Ka)")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         lcl &lt;- 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         label("Clearance (CL)")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         lvc &lt;- 3.45</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         label("Central volume of distribution (V)")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         cpaddSd &lt;- c(0, 1)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     })</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     model({</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         ka &lt;- exp(lka)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         cl &lt;- exp(lcl)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         vc &lt;- exp(lvc)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         cp &lt;- linCmt()</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         cp ~ add(cpaddSd)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     })</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x560ce2a80700&gt;</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
