@@ -2,13 +2,13 @@ Package: nlmixr2lib
 Type: Package
 Version: 0.1.0
 Title: A Model Library for 'nlmixr2'
-Description: A model library for 'nlmixr2'.  The models in
-  the package include (and plan to include) pharmacokinetic,
-  pharmacodynamic, and disease models used in pharmacomwtrics.
-  Where applicable, references for each model are included in
-  the meta-data for each individual model.  The package also
-  includes model composition and modification functions to make
-  model updates easier.
+Description: A model library for 'nlmixr2'.  The models include
+  (and plan to include) pharmacokinetic, pharmacodynamic, and
+  disease models used in pharmacomwtrics.  Where applicable,
+  references for each model are included in the meta-data for
+  each individual model.  The package also includes model
+  composition and modification functions to make model updates
+  easier.
 Authors@R: c(
   person("Richard","Hooijmaijers", email="richardhooijmaijers@gmail.com",role="aut"),
   person("Matthew","Fidler", email="richardhooijmaijers@gmail.com",role=c("aut"),
