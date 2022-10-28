@@ -9,8 +9,8 @@ addResErr(model, reserr)
 \arguments{
 \item{model}{The model as a function}
 
-\item{reserr}{character with the type of residual error (currently "addSd",
-"propSd" and "addSd+propSd" are accepted)}
+\item{reserr}{The type or types of residual error (currently \code{"addSd"},
+\code{"propSd"}, and \code{"lnormSd"} are accepted)}
 }
 \value{
 The model with residual error modified
@@ -18,6 +18,14 @@ The model with residual error modified
 \description{
 Add residual error to a model
 }
+\details{
+For \code{reserr}, the parameter will be named with the dependent
+  variable from the model as a prefix.  For example, if the dependent
+  variable in the model is \code{cp}, the parameter name for \code{propSd}
+  will become \code{cppropSd}.
+}
 \examples{
 readModelDb("PK_1cmt") \%>\% addResErr("addSd")
+readModelDb("PK_1cmt") \%>\% addResErr("lnormSd")
+readModelDb("PK_1cmt") \%>\% addResErr(c("addSd", "propSd"))
 }

@@ -12,7 +12,7 @@ addEta <- function(model, eta) {
     # Assign a default value
     eta <- stats::setNames(rep(0.1, length(eta)), eta)
   }
-  checkmate::expect_numeric(eta, lower = 0, null.ok = FALSE, min.len = 1)
+  checkmate::assert_numeric(eta, lower = 0, null.ok = FALSE, min.len = 1)
   # Get the mu-referenced parameter names
   # getSplitMuModel requires nlmixr2est, so the model is parsed from there...
   # This will add the S3 method to allow $getSplitModel to work
