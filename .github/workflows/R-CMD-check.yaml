@@ -18,7 +18,7 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {os: macOS-latest,   r: 'release'}
+          - {os: macos-latest,   r: 'release'}
           - {os: windows-latest, r: 'release'}
           - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
           - {os: ubuntu-latest,   r: 'release'}
@@ -29,7 +29,15 @@ jobs:
       R_KEEP_PKG_SOURCE: yes
 
     steps:
-      - uses: actions/checkout@v2
+      - name: Install deps on MacOS
+        if: runner.os == 'macOS'
+        run: |
+          brew install --cask xquartz
+          brew install cairo
+          brew install udunits
+        shell: bash
+
+      - uses: actions/checkout@v3
 
       - uses: r-lib/actions/setup-pandoc@v2
 
@@ -44,13 +52,17 @@ jobs:
           pak-version: devel
           extra-packages: |
             any::rcmdcheck
-            github::nlmixr2/lotri
-            github::nlmixr2/rxode2ll
-            github::nlmixr2/rxode2
-            github::nlmixr2/nlmixr2est
-            github::nlmixr2/nlmixr2extra
-            github::nlmixr2/nlmixr2plot
-            github::nlmixr2/nlmixr2
+            nlmixr2/lotri
+            nlmixr2/rxode2ll
+            nlmixr2/rxode2parse
+            nlmixr2/rxode2random
+            nlmixr2/rxode2et
+            nlmixr2/rxode2
+            nlmixr2/nlmixr2est
+            nlmixr2/nlmixr2extra
+            nlmixr2/nlmixr2plot
+            nlmixr2/nlmixr2
+          needs: check
 
       - uses: r-lib/actions/check-r-package@v2
         with:
