@@ -26,10 +26,10 @@ PK_3cmt_des <- function() {
     k31 <- q2/vp2
 
     d/dt(depot) <- -ka*depot
-    d/dt(center) <-  ka*depot - kel*center - k12*center + k21*peripheral1 - k13*center + k31*peripheral2
-    d/dt(peripheral1) <- k12*center - k21*peripheral1
-    d/dt(peripheral2) <- k13*center - k31*peripheral2
-    cp <- center / vc
+    d/dt(central) <-  ka*depot - kel*central - k12*central + k21*peripheral1 - k13*central + k31*peripheral2
+    d/dt(peripheral1) <- k12*central - k21*peripheral1
+    d/dt(peripheral2) <- k13*central - k31*peripheral2
+    cp <- central / vc
 
     cp ~ prop(propSd)
   })
