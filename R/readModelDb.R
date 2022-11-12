@@ -16,6 +16,10 @@ readModelDb <- function(name) {
       .fileName <- system.file(file.path("modeldb", .fileName), package = "nlmixr2lib")
     }
     ret <- eval(parse(file = .fileName, keep.source=TRUE))
+    msg <- attr(ret, "message")
+    if (!is.null(msg)) {
+      cli::cli_alert_info(msg, class = "nlmixr2lib_model_message")
+    }
   }
   ret
 }
