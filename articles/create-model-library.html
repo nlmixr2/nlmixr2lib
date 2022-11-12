@@ -202,6 +202,25 @@ as inter-individual variability.)</p>
 name with <code>eta</code>. For example, a random effect on
 log-transformed clearance would be named <code>etalcl</code>.</p>
 </div>
+<div class="section level3">
+<h3 id="drug-effects">Drug effects<a class="anchor" aria-label="anchor" href="#drug-effects"></a>
+</h3>
+<p>Different drug effects may be investigated during model building.
+And, multiple drug effect styles (linear, E<sub>max</sub>, threshold,
+etc.) may be investigated by the user.</p>
+<p>To enable simpler changes to drug effects and to minimize the chance
+of parameter name collisions when combining models, the following rules
+are strongly recommended:</p>
+<ul>
+<li>Drug effects should be calculated on a model by themselves to enable
+changing the type of drug effect (e.g. linear to E<sub>max</sub>).</li>
+<li>The parameter name for the drug effect should be called
+<code>drugEffect</code> followed by the name of the part of the model
+that is most closely associated with the drug effect. For example, in
+the Simeoni 2004 model, the drug effect is called
+<code>drugEffectCyclingCells</code>.</li>
+</ul>
+</div>
 </div>
 <div class="section level2">
 <h2 id="model-files">Model files<a class="anchor" aria-label="anchor" href="#model-files"></a>
@@ -217,13 +236,29 @@ block.</li>
 <li>If the model has a literature reference associated with it, then the
 second line of inside the function should have the reference, for
 example,
-<code>reference &lt;- Richard Hooijmaijers, Matthew Fidler, William S. Denney (2022).  nlmixr2lib: A Model Library for 'nlmixr2'.  https://nlmixr2.github.io/nlmixr2lib/</code>
+<code>reference &lt;- "Richard Hooijmaijers, Matthew Fidler, William S. Denney (2022).  nlmixr2lib: A Model Library for 'nlmixr2'.  https://nlmixr2.github.io/nlmixr2lib/"</code>
 </li>
+<li>If it would be helpful to give the user some information about the
+model on load, it can be added as meta-data as a <code>"message"</code>
+attribute to the model. Note that in that case, you must give the
+function name as the last line of the model to ensure that it is the
+returned value from evaluation of the file. (See
+<code>oncology_xenograft_simeoni_2004.R</code> for an example of adding
+a message.)</li>
 <li>The remainder of the file should be an nlmixr2 model in a function
 with a typical <code>ini()</code> and <code>model()</code> block.</li>
 <li>The name of the file should match the name of the model within the
 file.</li>
 </ul>
+<p>If a function to modify, self-start, or otherwise help the user would
+make sense, add it as a new file in the <code>R/</code> directory with
+the file name and function name <code>updateModelName()</code> using the
+word update followed by the model name in camelCase
+(e.g. <code>updateOncologyXenograftSimeoni2004</code>). If such a
+function is added, please add it in the <code>messages</code> described
+above, as well. Update functions must be able to take in a function, an
+rxUi object, or an nlmixr2fitCore object and should usually return an
+rxUi object.</p>
 <p>For examples, see the package installation directory.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

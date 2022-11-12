@@ -3,7 +3,7 @@ pkgdown: 2.0.6
 pkgdown_sha: ~
 articles:
   create-model-library: create-model-library.html
-last_built: 2022-11-12T22:37Z
+last_built: 2022-11-12T22:41Z
 urls:
   reference: https://nlmixr2.github.io/nlmixr2lib/reference
   article: https://nlmixr2.github.io/nlmixr2lib/articles
