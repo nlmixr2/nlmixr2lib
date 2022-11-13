@@ -153,7 +153,7 @@ tumor volume (the sum of undamaged and damaged cells)</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         cyclingCells(0) &lt;- tumorVol0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         psi &lt;- 20</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         tumorVol &lt;- cyclingCells + damagedCells1 + damagedCells2 + </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             damagedCells3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             damagedCells3 + damagedCells4 + damagedCells5</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         drugEffectCyclingCells &lt;- drugSlope * cp</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         d/dt(cyclingCells) &lt;- tumorExpGrowth * cyclingCells/(1 + </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             (tumorExpGrowth/tumorLinGrowth * tumorVol)^psi)^(1/psi) - </span>
