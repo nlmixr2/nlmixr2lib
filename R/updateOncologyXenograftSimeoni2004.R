@@ -51,6 +51,6 @@ updateOncologyXenograftSimeoni2004 <- function(object, ncmt, damagedCmtName = "d
   dropOldLines <- sprintf("-d/dt(%s)", currentStates[startsWith(currentStates, damagedCmtName)])
   objectNoOld <- do.call(rxode2::model, append(list(object), lapply(X = dropOldLines, FUN = str2lang)))
   objectTumor <- do.call(rxode2::model, append(list(objectNoOld), lapply(X = tumorLine, FUN = str2lang)))
-  objectDamage <- do.call(rxode2::model, append(list(objectNoOld, append = TRUE), lapply(X = damagedLines, FUN = str2lang)))
+  objectDamage <- do.call(rxode2::model, append(list(objectTumor, append = TRUE), lapply(X = damagedLines, FUN = str2lang)))
   objectDamage
 }
