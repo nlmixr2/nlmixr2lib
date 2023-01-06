@@ -120,9 +120,9 @@ addFileToModelDb <- function(dir, file, modeldb) {
 
   # swap modeled parameter names for the mu-ref parameter names, where
   # applicable
-  .ref <- mod$getSplitMuModel$pureMuRef
+  .ref <- .getVarLhs(mod)
   for (nm in names(.ref)) {
-   modParamFixed[modParamFixed %in% nm] <- mod$getSplitMuModel$pureMuRef[[nm]]
+   modParamFixed[modParamFixed %in% nm] <- .ref[nm]
   }
 
   # Error model
