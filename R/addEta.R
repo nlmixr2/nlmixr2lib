@@ -45,7 +45,7 @@ addEta <- function(model, eta) {
         replace = sprintf("%s + eta%s", currentEta, currentEta)
       )
   }
-  etaIni <- lapply(X = paste0("eta", names(eta), "~", eta), FUN = stats::as.formula)
+  etaIni <- lapply(X = paste0("eta", names(eta), "~", eta), FUN = base::str2lang)
   iniArgs <-
     append(
       list(model), etaIni

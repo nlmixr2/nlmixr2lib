@@ -7,6 +7,8 @@
   `message` meta-data.
 * Models can now be in different directories.  The change is for ease of
   maintaining the library, it is not a change that affects users.
+* A regression where `addEta()` did not change the parameter, related to a
+  change in `rxode2`, was fixed.
 
 # Version 0.1.0
 
