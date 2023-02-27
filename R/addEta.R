@@ -9,6 +9,11 @@
   .varLhs
 }
 
+.dropEnv <- c("nonmemData", "etaData", "ipredAtol", "ipredRtol",
+              "ipredCompare", "predAtol", "predRtol", "predCompare",
+              "thetaMat", "dfSub", "dfObs")
+# keep sigma
+
 #' Add random effects to a model
 #'
 #' @param model The model as a function
@@ -62,11 +67,28 @@ addEta <- function(model, eta) {
   # Return the parsed ui itself
   .ret <- do.call(rxode2::ini, iniArgs)$fun()
   if (!is.null(.ls)) {
-    .ret <- rxode2::rxUiDecompress(.ret) 
+    .ret <- rxode2::rxUiDecompress(.ret)
     .ls2 <- ls(.ret)
+    .env <- new.env(parent=emptyenv())
+    .env$ignore <- NULL
+    .env$keep <- NULL
     lapply(setdiff(.ls, .ls2), function(v) {
+      if (v %in% .dropEnv) {
+        .env$ignore <- c(.env$ignore, v)
+        return(NULL)
+      }
+      .env$keep <- c(.env$keep, v)
       assign(v, get(v, envir=.model), envir=.ret)
+      NULL
     })
+    if (length(.env$keep) > 0) {
+      cli::cli_alert(sprintf("Kept in model: '%s'",
+                             paste(paste0("$",.env$keep), collapse="', '")))
+    }
+    if (length(.env$ignore) > 0) {
+      cli::cli_alert(sprintf("Removed from model: '%s'",
+                             paste(paste0("$", .env$ignore), collapse="', '")))
+    }
     if (inherits(.model, "raw")) {
       .ret <- rxode2::rxUiCompress(.ret)
     }
