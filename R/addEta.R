@@ -24,6 +24,13 @@ addEta <- function(model, eta) {
     eta <- stats::setNames(rep(0.1, length(eta)), eta)
   }
   checkmate::assert_numeric(eta, lower = 0, null.ok = FALSE, min.len = 1)
+  .ls <- NULL
+  .cls <- NULL
+  if (inherits(model, "rxUi")) {
+    .model <- rxode2::rxUiDecompress(model)
+    .ls <- ls(envir=.model)
+    .cls <- class(model)
+  }
   # Get the mu-referenced parameter names
   # getSplitMuModel requires nlmixr2est, so the model is parsed from there...
   # This will add the S3 method to allow $getSplitModel to work
@@ -52,6 +59,18 @@ addEta <- function(model, eta) {
     )
   # Work around rxode2 issue #277
   lotri <- rxode2::lotri
-  # Return the function itself
-  do.call(rxode2::ini, iniArgs)$fun
+  # Return the parsed ui itself
+  .ret <- do.call(rxode2::ini, iniArgs)$fun()
+  if (!is.null(.ls)) {
+    .ret <- rxode2::rxUiDecompress(.ret) 
+    .ls2 <- ls(.ret)
+    lapply(setdiff(.ls, .ls2), function(v) {
+      assign(v, get(v, envir=.model), envir=.ret)
+    })
+    if (inherits(.model, "raw")) {
+      .ret <- rxode2::rxUiCompress(.ret)
+    }
+    class(.ret) <- .cls
+  }
+  return(.ret)
 }
