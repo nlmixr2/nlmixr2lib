@@ -15,6 +15,7 @@
 #' readModelDb("PK_1cmt") %>% addResErr(c("addSd", "propSd"))
 #' @export
 addResErr <- function(model, reserr) {
+  mod <- model
   modelUi <- rxode2::rxode(model)
   paramErr <- modelUi$predDf$cond
   if ("rxLinCmt" %in% paramErr) {
@@ -53,6 +54,7 @@ addResErr <- function(model, reserr) {
   # estimates
   modelUi <- do.call(rxode2::model, list(modelUi, str2lang(newErrLine)))
   modelUi <- rxode2::ini(modelUi, newIniEst)
-  # Return the model function
-  modelUi$fun
+  # Return the model function or ui with props
+  rxode2(mod) <- modelUi$fun
+  mod
 }
