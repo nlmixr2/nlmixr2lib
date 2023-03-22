@@ -51,8 +51,10 @@ addEta <- function(model, eta) {
     append(
       list(model), etaIni
     )
+  # Work around rxode2 issue #277
+  lotri <- rxode2::lotri
   # Return the function itself or the updated ui
   fun <- do.call(rxode2::ini, iniArgs)$fun
-  rxode2(mod) <- body(fun)
+  rxode2::rxode2(mod) <- body(fun)
   mod
 }

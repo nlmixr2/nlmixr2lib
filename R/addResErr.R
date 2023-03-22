@@ -55,6 +55,6 @@ addResErr <- function(model, reserr) {
   modelUi <- do.call(rxode2::model, list(modelUi, str2lang(newErrLine)))
   modelUi <- rxode2::ini(modelUi, newIniEst)
   # Return the model function or ui with props
-  rxode2(mod) <- modelUi$fun
+  rxode2::rxode2(mod) <- modelUi$fun
   mod
 }
