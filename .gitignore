@@ -8,3 +8,4 @@ inst/doc
 *.dll
 *.Rout
 docs
+*-nonmem

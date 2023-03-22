@@ -1,3 +1,14 @@
+.getVarLhs <- function(model) {
+  if (!inherits(model, "rxUi")) {
+    .ui <- nlmixr2est::nlmixr2(model)
+  } else {
+    .ui <- model
+  }
+  .varLhs <- .ui$varLhs
+  if (is.null(.varLhs)) .varLhs <- .ui$getSplitMuModel$pureMuRef
+  .varLhs
+}
+
 #' Add random effects to a model
 #'
 #' @param model The model as a function
@@ -12,11 +23,11 @@ addEta <- function(model, eta) {
     # Assign a default value
     eta <- stats::setNames(rep(0.1, length(eta)), eta)
   }
-  checkmate::expect_numeric(eta, lower = 0, null.ok = FALSE, min.len = 1)
+  checkmate::assert_numeric(eta, lower = 0, null.ok = FALSE, min.len = 1)
   # Get the mu-referenced parameter names
   # getSplitMuModel requires nlmixr2est, so the model is parsed from there...
   # This will add the S3 method to allow $getSplitModel to work
-  murefNames <- nlmixr2est::nlmixr2(model)$getSplitMuModel$pureMuRef
+  murefNames <- .getVarLhs(model)
   for (currentEta in names(eta)) {
     if (currentEta %in% names(murefNames)) {
       # do nothing
@@ -34,7 +45,7 @@ addEta <- function(model, eta) {
         replace = sprintf("%s + eta%s", currentEta, currentEta)
       )
   }
-  etaIni <- lapply(X = paste0("eta", names(eta), "~", eta), FUN = stats::as.formula)
+  etaIni <- lapply(X = paste0("eta", names(eta), "~", eta), FUN = base::str2lang)
   iniArgs <-
     append(
       list(model), etaIni

@@ -1,14 +1,14 @@
 Package: nlmixr2lib
 Type: Package
-Version: 0.1.0
+Version: 0.1.0.9000
 Title: A Model Library for 'nlmixr2'
-Description: A model library for 'nlmixr2'.  The models in
-  the package include (and plan to include) pharmacokinetic,
-  pharmacodynamic, and disease models used in pharmacomwtrics.
-  Where applicable, references for each model are included in
-  the meta-data for each individual model.  The package also
-  includes model composition and modification functions to make
-  model updates easier.
+Description: A model library for 'nlmixr2'.  The models include
+  (and plan to include) pharmacokinetic, pharmacodynamic, and
+  disease models used in pharmacometrics.  Where applicable,
+  references for each model are included in the meta-data for
+  each individual model.  The package also includes model
+  composition and modification functions to make model updates
+  easier.
 Authors@R: c(
   person("Richard","Hooijmaijers", email="richardhooijmaijers@gmail.com",role="aut"),
   person("Matthew","Fidler", email="richardhooijmaijers@gmail.com",role=c("aut"),
@@ -25,7 +25,7 @@ Imports:
     nlmixr2est
 License: GPL (>= 2)
 LazyData: true
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3
 VignetteBuilder: knitr
 URL: https://github.com/nlmixr2/nlmixr2lib,
     https://nlmixr2.github.io/nlmixr2lib/

@@ -103,6 +103,23 @@ Random effect parameters should prefix the (transformed) parameter name with
 `eta`.  For example, a random effect on log-transformed clearance would be named
 `etalcl`.
 
+## Drug effects
+
+Different drug effects may be investigated during model building.  And, multiple
+drug effect styles (linear, E~max~, threshold, etc.) may be investigated by the
+user.
+
+To enable simpler changes to drug effects and to minimize the chance of
+parameter name collisions when combining models, the following rules are
+strongly recommended:
+
+* Drug effects should be calculated on a model by themselves to enable changing
+  the type of drug effect (e.g. linear to E~max~).
+* The parameter name for the drug effect should be called `drugEffect` followed
+  by the name of the part of the model that is most closely associated with the
+  drug effect.  For example, in the Simeoni 2004 model, the drug effect is
+  called `drugEffectCyclingCells`.
+
 # Model files
 
 Files in a model library should have the following characteristics:
@@ -112,9 +129,22 @@ Files in a model library should have the following characteristics:
   right inside the `function()` before the `ini({})` block.
 * If the model has a literature reference associated with it, then the second
   line of inside the function should have the reference, for example,
-  `reference <- Richard Hooijmaijers, Matthew Fidler, William S. Denney (2022).  nlmixr2lib: A Model Library for 'nlmixr2'.  https://nlmixr2.github.io/nlmixr2lib/`
+  `reference <- "Richard Hooijmaijers, Matthew Fidler, William S. Denney (2022).  nlmixr2lib: A Model Library for 'nlmixr2'.  https://nlmixr2.github.io/nlmixr2lib/"`
+* If it would be helpful to give the user some information about the model on
+  load, it can be added as meta-data as a `"message"` attribute to the model.
+  Note that in that case, you must give the function name as the last line of
+  the model to ensure that it is the returned value from evaluation of the file.
+  (See `oncology_xenograft_simeoni_2004.R` for an example of adding a message.)
 * The remainder of the file should be an nlmixr2 model in a function with a
   typical `ini()` and `model()` block.
 * The name of the file should match the name of the model within the file.
+
+If a function to modify, self-start, or otherwise help the user would make
+sense, add it as a new file in the `R/` directory with the file name and
+function name `updateModelName()` using the word update followed by the model
+name in camelCase (e.g. `updateOncologyXenograftSimeoni2004`). If such a
+function is added, please add it in the `messages` described above, as well.
+Update functions must be able to take in a function, an rxUi object, or an
+nlmixr2fitCore object and should usually return an rxUi object.
 
 For examples, see the package installation directory.

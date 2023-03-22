@@ -1,6 +1,7 @@
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/nlmixr2/nlmixr2lib/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/nlmixr2/nlmixr2lib/actions/workflows/R-CMD-check.yaml)
 [![Codecov test coverage](https://codecov.io/gh/nlmixr2/nlmixr2lib/branch/main/graph/badge.svg)](https://app.codecov.io/gh/nlmixr2/nlmixr2lib?branch=main)
+[![CRAN status](https://www.r-pkg.org/badges/version/nlmixr2lib)](https://CRAN.R-project.org/package=nlmixr2lib)
 <!-- badges: end -->
 
 # nlmixr2lib
@@ -17,7 +18,7 @@ modellib(name="PK_1cmt")
 modellib(name="PK_1cmt", reserr = "addSd")
 # Add inter-individual variability on ka and v and switch residual error to
 # additive and proportional
-modellib(name="PK_1cmt", eta = c("lka", "lv"), reserr = "addSd+propSd")
+modellib(name="PK_1cmt", eta = c("lka", "lv"), reserr = c("addSd", "propSd"))
 ```
 
 # Modifying models by piping
@@ -29,7 +30,7 @@ and then switches residual error to additive and proportional.
 ```r
 modellib(name="PK_1cmt") %>%
   addEta(c("lka", "lv") %>%
-  addResErr("addSd+propSd")
+  addResErr(c("addSd", "propSd"))
 ```
 
 # Possible extensions

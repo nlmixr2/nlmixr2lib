@@ -35,9 +35,8 @@ buildModelDb <- function() {
   modeldb$filename <-
     gsub(
       x = modeldb$filename,
-      pattern = paste0(packageDirectory, "/"),
-      replacement = "inst/",
-      fixed = TRUE
+      pattern = "^.*modeldb/",
+      replacement = ""
     )
   savefile <- file.path(packageDirectory, "data/modeldb.rda")
   message("Saving the modeldb to ", savefile)
@@ -78,7 +77,8 @@ addDirToModelDb <- function(dir, modeldb=data.frame()) {
     list.files(
       path = dir,
       pattern = "\\.R$",
-      ignore.case = TRUE
+      ignore.case = TRUE,
+      recursive = TRUE
     )
   for (currentFile in filesToLoad) {
     message("parse currentFile")
@@ -99,7 +99,7 @@ addFileToModelDb <- function(dir, file, modeldb) {
 
   modelName <- as.character(parsedFile[[1]][[2]])
   packageStartupMessage("Loading ", modelName, " from ", fileName)
-  if (modelName != tools::file_path_sans_ext(file)) {
+  if (modelName != tools::file_path_sans_ext(basename(file))) {
     stop("Loading model failed due to filename/modelName mismatch: ", fileName,
          call.=FALSE) # nocov
   }
@@ -120,9 +120,9 @@ addFileToModelDb <- function(dir, file, modeldb) {
 
   # swap modeled parameter names for the mu-ref parameter names, where
   # applicable
-  .ref <- mod$getSplitMuModel$pureMuRef
+  .ref <- .getVarLhs(mod)
   for (nm in names(.ref)) {
-   modParamFixed[modParamFixed %in% nm] <- mod$getSplitMuModel$pureMuRef[[nm]]
+   modParamFixed[modParamFixed %in% nm] <- .ref[nm]
   }
 
   # Error model
@@ -137,7 +137,7 @@ addFileToModelDb <- function(dir, file, modeldb) {
       description=description,
       parameters=paste(modParamFixed, collapse = ","),
       DV=paramErr,
-      filename = basename(fileName)
+      filename = fileName
     )
   modeldb <- rbind(modeldb, ret)
   if (any(duplicated(modeldb$name))) {
