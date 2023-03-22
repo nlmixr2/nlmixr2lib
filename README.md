@@ -1,6 +1,7 @@
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/nlmixr2/nlmixr2lib/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/nlmixr2/nlmixr2lib/actions/workflows/R-CMD-check.yaml)
 [![Codecov test coverage](https://codecov.io/gh/nlmixr2/nlmixr2lib/branch/main/graph/badge.svg)](https://app.codecov.io/gh/nlmixr2/nlmixr2lib?branch=main)
+[![CRAN status](https://www.r-pkg.org/badges/version/nlmixr2lib)](https://CRAN.R-project.org/package=nlmixr2lib)
 <!-- badges: end -->
 
 # nlmixr2lib

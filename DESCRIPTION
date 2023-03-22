@@ -1,6 +1,6 @@
 Package: nlmixr2lib
 Type: Package
-Version: 0.1.0
+Version: 0.1.0.9000
 Title: A Model Library for 'nlmixr2'
 Description: A model library for 'nlmixr2'.  The models include
   (and plan to include) pharmacokinetic, pharmacodynamic, and
@@ -25,7 +25,7 @@ Imports:
     nlmixr2est
 License: GPL (>= 2)
 LazyData: true
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3
 VignetteBuilder: knitr
 URL: https://github.com/nlmixr2/nlmixr2lib,
     https://nlmixr2.github.io/nlmixr2lib/
