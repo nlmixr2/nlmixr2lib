@@ -92,3 +92,12 @@ test_that("addEta non-existent parameter", {
     addEta(model, eta = "foo")
   ))
 })
+
+
+test_that("compiled ui object", {
+  model <- readModelDb("PK_1cmt")
+  model <- rxode2::rxode2(model)
+  expect_true(inherits(model, "rxUi"))
+  suppressMessages(modelUpdate <- addEta(model, eta = "lka"))
+  expect_true(inherits(modelUpdate, "rxUi"))
+})

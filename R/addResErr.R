@@ -10,11 +10,13 @@
 #'   \code{"propSd"}, and \code{"lnormSd"} are accepted)
 #' @return The model with residual error modified
 #' @examples
+#' library(rxode2)
 #' readModelDb("PK_1cmt") %>% addResErr("addSd")
 #' readModelDb("PK_1cmt") %>% addResErr("lnormSd")
 #' readModelDb("PK_1cmt") %>% addResErr(c("addSd", "propSd"))
 #' @export
 addResErr <- function(model, reserr) {
+  mod <- model
   modelUi <- rxode2::rxode(model)
   paramErr <- modelUi$predDf$cond
   if ("rxLinCmt" %in% paramErr) {
@@ -53,6 +55,7 @@ addResErr <- function(model, reserr) {
   # estimates
   modelUi <- do.call(rxode2::model, list(modelUi, str2lang(newErrLine)))
   modelUi <- rxode2::ini(modelUi, newIniEst)
-  # Return the model function
-  modelUi$fun
+  # Return the model function or ui with props
+  rxode2::rxode2(mod) <- modelUi$fun
+  mod
 }
