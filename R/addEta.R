@@ -16,9 +16,11 @@
 #'   referred to as inter-individual variability, IIV) on
 #' @return The model with eta added to the requested parameters
 #' @examples
+#' library(rxode2)
 #' readModelDb("PK_1cmt") %>% addEta("ka")
 #' @export
 addEta <- function(model, eta) {
+  mod <- model # save to apply everything later
   if (is.character(eta)) {
     # Assign a default value
     eta <- stats::setNames(rep(0.1, length(eta)), eta)
@@ -52,6 +54,8 @@ addEta <- function(model, eta) {
     )
   # Work around rxode2 issue #277
   lotri <- rxode2::lotri
-  # Return the function itself
-  do.call(rxode2::ini, iniArgs)$fun
+  # Return the function itself or the updated ui
+  fun <- do.call(rxode2::ini, iniArgs)$fun
+  rxode2::rxode2(mod) <- body(fun)
+  mod
 }

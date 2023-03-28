@@ -1,5 +1,10 @@
 # babelmixr2
 
+# Development version
+
+* Work with the new `rxode2` version 2.0.12 `model()` and `ini()` assignment
+  methods.
+
 # Version 0.2.0
 
 * Therapeutic-area specific models have begun being added.
