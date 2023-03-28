@@ -19,5 +19,6 @@ The model with eta added to the requested parameters
 Add random effects to a model
 }
 \examples{
+library(rxode2)
 readModelDb("PK_1cmt") \%>\% addEta("ka")
 }

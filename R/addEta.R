@@ -16,6 +16,7 @@
 #'   referred to as inter-individual variability, IIV) on
 #' @return The model with eta added to the requested parameters
 #' @examples
+#' library(rxode2)
 #' readModelDb("PK_1cmt") %>% addEta("ka")
 #' @export
 addEta <- function(model, eta) {
