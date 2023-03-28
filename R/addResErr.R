@@ -10,6 +10,7 @@
 #'   \code{"propSd"}, and \code{"lnormSd"} are accepted)
 #' @return The model with residual error modified
 #' @examples
+#' library(rxode2)
 #' readModelDb("PK_1cmt") %>% addResErr("addSd")
 #' readModelDb("PK_1cmt") %>% addResErr("lnormSd")
 #' readModelDb("PK_1cmt") %>% addResErr(c("addSd", "propSd"))
