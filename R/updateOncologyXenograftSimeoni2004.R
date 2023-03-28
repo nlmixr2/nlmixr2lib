@@ -8,6 +8,7 @@
 #' @param drugEffectName,transitRateName character string names of the drug effect and transit rate (as used in the model block)
 #' @return An updated model with the new number of compartments
 #' @examples
+#' library(rxode2)
 #' readModelDb("oncology_xenograft_simeoni_2004") %>%
 #'   updateOncologyXenograftSimeoni2004(ncmt = 5)
 #' @export
