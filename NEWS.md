@@ -20,6 +20,7 @@
 * Add Liu (2017) time-dependent clearance model based on nivolumab
 * Add Kovalenko (2020) dupilumab PK model
 * Add Soehoel (2022) tralokinumab PK model
+* Add Zhu (2017) lebrikizumab PK model
 
 # Version 0.1.0
 
