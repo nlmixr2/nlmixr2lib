@@ -16,8 +16,9 @@
 
 ## Models added
 
-* Add Kovalenko (2020) dupilumab PK model
 * Add Davda (2014) mAb consensus model
+* Add Liu (2017) time-dependent clearance model based on nivolumab
+* Add Kovalenko (2020) dupilumab PK model
 * Add Soehoel (2022) tralokinumab PK model
 
 # Version 0.1.0
