@@ -17,7 +17,8 @@
 ## Models added
 
 * Add Kovalenko (2020) dupilumab PK model
-* Add Davda (2014) mAb concensus model
+* Add Davda (2014) mAb consensus model
+* Add Soehoel (2022) tralokinumab PK model
 
 # Version 0.1.0
 
