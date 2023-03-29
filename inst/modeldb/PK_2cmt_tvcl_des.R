@@ -1,6 +1,6 @@
 PK_2cmt_tvcl_des <- function() {
   description <- "Two compartment PK model with time-dependent clearance using differential equations"
-  reference <- "Justin to add"
+  reference <- "C Liu, J Yu, H Li, J Liu, Y Xu, P Song, Q Liu, H Zhao, J Xu, V E Maher, B P Booth, G Kim, A Rahman, Y Wang; Association of time-varying clearance of nivolumab with disease dynamics and its implications on exposure response analysis.  Clin Pharmacol Ther May 2017; 101(5): 657-666. https://doi.org/10.1002/cpt.656"
   ini({
     lcl <- log(0.2) ; label("Time-stationary clearance (CLTS)")
     lcltmax <- log(0.22) ; label("Typical value of the maximal change of clearance relative to baseline (Tmax)")
