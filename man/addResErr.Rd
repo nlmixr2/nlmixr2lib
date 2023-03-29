@@ -25,6 +25,7 @@ For \code{reserr}, the parameter will be named with the dependent
   will become \code{cppropSd}.
 }
 \examples{
+library(rxode2)
 readModelDb("PK_1cmt") \%>\% addResErr("addSd")
 readModelDb("PK_1cmt") \%>\% addResErr("lnormSd")
 readModelDb("PK_1cmt") \%>\% addResErr(c("addSd", "propSd"))

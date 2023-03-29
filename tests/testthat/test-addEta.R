@@ -92,3 +92,40 @@ test_that("addEta non-existent parameter", {
     addEta(model, eta = "foo")
   ))
 })
+
+
+test_that("compiled ui object", {
+  model <- readModelDb("PK_1cmt")
+  model <- rxode2::rxode2(model)
+  expect_true(inherits(model, "rxUi"))
+  suppressMessages(modelUpdate <- addEta(model, eta = "lka"))
+  expect_true(inherits(modelUpdate, "rxUi"))
+})
+
+test_that("addEta() correctly adds IIV when there is a covariate (#27)", {
+  model <- function() {
+    ini({
+      lka <- 0.45
+      lcl <- 1
+      lvc <- 3.45
+      propSd <- c(0, 0.5)
+      allo_cl <- 0.75
+    })
+    model({
+      ka <- exp(lka)
+      cl <- exp(lcl + allo_cl * WT)
+      vc <- exp(lvc)
+      cp <- linCmt()
+      cp ~ prop(propSd)
+    })
+  }
+  # Update the model detecting the correct parameter for cl
+  suppressMessages(
+    newEtaRemap <- addEta(model, "cl")
+  )
+  # Update the model where the correct parameter cor cl is given
+  suppressMessages(
+    newEta <- addEta(model, "lcl")
+  )
+  expect_equal(newEtaRemap, newEta, ignore_function_env = TRUE)
+})

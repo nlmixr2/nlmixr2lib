@@ -32,6 +32,7 @@ An updated model with the new number of compartments
 Update an oncology xenograft model based on Simeoni 2004
 }
 \examples{
+library(rxode2)
 readModelDb("oncology_xenograft_simeoni_2004") \%>\%
   updateOncologyXenograftSimeoni2004(ncmt = 5)
 }

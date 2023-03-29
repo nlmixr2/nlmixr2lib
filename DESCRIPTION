@@ -21,8 +21,8 @@ Imports:
     checkmate,
     cli,
     methods,
-    rxode2,
-    nlmixr2est
+    nlmixr2est,
+    rxode2 (>= 2.0.12)
 License: GPL (>= 2)
 LazyData: true
 RoxygenNote: 7.2.3
