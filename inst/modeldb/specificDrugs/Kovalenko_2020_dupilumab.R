@@ -2,6 +2,10 @@ Kovalenko_2020_dupilumab <- function() {
   reference <- "Kovalenko P, Davis JD, Li M, et al. Base and Covariate Population Pharmacokinetic Analyses of Dupilumab Using Phase 3 Data. Clinical Pharmacology in Drug Development. 2020;9(6):756-767. doi:10.1002/cpdd.780"
   # Model 1 from table 1 and supplementary Table 2 in the publication and its
   # supplement.
+  covariateData <-
+    list(
+      WT = "Body weight in kg"
+    )
   ini({
     lvc <- log(2.48); label("central volume (L)")
     lke <- log(0.0534); label("elimination rate (1/d)")
@@ -11,7 +15,7 @@ Kovalenko_2020_dupilumab <- function() {
     lMTT <- log(0.105); label("mean transit time (d)")
     lVm <- log(1.07); label("maximum target-mediated rate of elimination (mg/L/d)")
     Km <- fixed(0.01); label("Michaelis-Menten constant (mg/L)")
-    Fdepot <- 0.643; label("Bioavailability (fraction)")
+    lfdepot <- log(0.643); label("Bioavailability (fraction)")
     e_wt_vc <- 0.711; label("Exponent of weight on central volume (unitless)")
 
     etalvc ~ 0.285
@@ -19,8 +23,8 @@ Kovalenko_2020_dupilumab <- function() {
     etalvm ~ 0.236
     etamtt ~ 0.525 # etamtt is assumed to be on log-scale MTT to prevent negative values; this is a difference relative to Supplementary Table 2
 
-    cppropSd <- 0.15
-    cpaddSd <- fixed(0.03)
+    cppropSd <- 0.15; label("Proportional residual error (fraction)")
+    cpaddSd <- fixed(0.03); label("Additive residual error (mg/L)")
   })
   model({
     # Weight normalization to 75 kg is assumed based on prior publication.  It
@@ -48,8 +52,10 @@ Kovalenko_2020_dupilumab <- function() {
     d/dt(central) <-                 ka*transit3 - ke*central - kcp*central + kpc*periph - central*(Vm/(Km + central/vc))
     d/dt(periph) <-                                             kcp*central - kpc*periph
 
-    f(depot) <- Fdepot
-    cp <- central/vc # units of mg/L
+    f(depot) <- exp(lfdepot)
+    # No unit conversion is required to change mg/L (dosing amount/central
+    # volume unit) to mg/L (measurement unit)
+    cp <- central/vc
     cp ~ add(cpaddSd) + prop(cppropSd)
   })
 }

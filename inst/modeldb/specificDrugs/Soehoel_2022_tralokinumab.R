@@ -8,12 +8,12 @@ Soehoel_2022_tralokinumab <- function() {
       dilution = "Was the drug diluted as it was in study D2213C00001? 1 = yes, 0 = no (0 is typical)"
     )
   ini({
-    lka <- log(0.184); label("Absorption rate constant (1/day)")
+    lka <- log(0.184); label("Absorption rate (1/day)")
     lvc <- log(2.71); label("Central volume of distribution (L)")
     lcl <- log(0.149); label("Clearance (L/day)")
     lvp <- log(1.44); label("Peripheral volume of distribution (L)")
-    lq <- log(0.159); label("Intercompartmental clearance")
-    tvFdepot <- 0.761; label("Subcutaneous bioavailability (fraction)")
+    lq <- log(0.159); label("Intercompartmental clearance (L/day)")
+    lfdepot <- log(0.761); label("Subcutaneous bioavailability (fraction)")
     cpaddSd <- 0.238; label("Additive residual error (ug/mL)")
     cppropSd <- 0.216; label("Proportional residual error (fraction)")
 
@@ -27,14 +27,17 @@ Soehoel_2022_tralokinumab <- function() {
     etavc + etacl ~ c(0.386148, 0.2683494, 0.3057157)
   })
   model({
-    Fdepot <- tvFdepot*(1 + e_f_dilution*dilution)
+    fdepot <- exp(lfdepot)*(1 + e_f_dilution*dilution)
     ka <- exp(lka)*(1 + e_ka_dilution*dilution)
     cl <- exp(lcl + etacl)*(WT/75)^e_wt_clq * (1 + e_nonECZTRA_cl*nonECZTRA)
     vc <- exp(lvc + etavc)*(WT/75)^e_wt_vcvp * (1 + e_nonECZTRA_vc*nonECZTRA)
     q <- exp(lq)*(WT/75)^e_wt_clq
     vp <- exp(lvp)*(WT/75)^e_wt_vcvp
 
+    # No unit conversion is required to change mg/L (dosing amount/central
+    # volume unit) to ug/mL (measurement unit)
     cp <- linCmt()
+    f(depot) <- fdepot
     cp ~ add(cpaddSd) + prop(cppropSd)
   })
 }
