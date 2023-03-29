@@ -5,6 +5,8 @@
     .ui <- model
   }
   .varLhs <- .ui$varLhs
+  # getSplitMuModel requires nlmixr2est, so the model is parsed from there...
+  # This will add the S3 method to allow $getSplitModel to work
   if (is.null(.varLhs)) .varLhs <- .ui$getSplitMuModel$pureMuRef
   .varLhs
 }
@@ -27,8 +29,6 @@ addEta <- function(model, eta) {
   }
   checkmate::assert_numeric(eta, lower = 0, null.ok = FALSE, min.len = 1)
   # Get the mu-referenced parameter names
-  # getSplitMuModel requires nlmixr2est, so the model is parsed from there...
-  # This will add the S3 method to allow $getSplitModel to work
   murefNames <- .getVarLhs(model)
   for (currentEta in names(eta)) {
     if (currentEta %in% names(murefNames)) {
@@ -37,6 +37,9 @@ addEta <- function(model, eta) {
       # Remap the parameter to the mu-referenced value for modification
       priorEta <- currentEta
       currentEta <- names(murefNames)[murefNames %in% currentEta]
+      if (length(currentEta) > 1) {
+        currentEta <- currentEta[1]
+      }
       names(eta)[names(eta) == priorEta] <- currentEta
       cli::cli_alert(sprintf("Adding eta to %s instead of %s due to mu-referencing", currentEta, priorEta))
     }

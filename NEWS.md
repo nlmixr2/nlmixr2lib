@@ -11,6 +11,8 @@
   maintaining the library, it is not a change that affects users.
 * A regression where `addEta()` did not change the parameter, related to a
   change in `rxode2`, was fixed.
+* `addEta()` detects where to add etas more robustly when covariates are on the
+  parameter.
 
 ## Models added
 
