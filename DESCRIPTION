@@ -30,6 +30,7 @@ VignetteBuilder: knitr
 URL: https://github.com/nlmixr2/nlmixr2lib,
     https://nlmixr2.github.io/nlmixr2lib/
 Encoding: UTF-8
+Language: en-US
 Suggests: 
     covr,
     knitr,

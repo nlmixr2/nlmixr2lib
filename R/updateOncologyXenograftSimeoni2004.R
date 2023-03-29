@@ -3,7 +3,7 @@
 #' @inheritParams nlmixr2est::nlmixr2
 #' @param ncmt The desired number of damaged cell compartments
 #' @param damagedCmtName,undamagedCmtName,tumorVolName character string names
-#'   for the compartments for damaged cells, undamaged cells, and the calcualted
+#'   for the compartments for damaged cells, undamaged cells, and the calculated
 #'   tumor volume (the sum of undamaged and damaged cells)
 #' @param drugEffectName,transitRateName character string names of the drug effect and transit rate (as used in the model block)
 #' @return An updated model with the new number of compartments

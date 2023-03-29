@@ -20,7 +20,7 @@ updateOncologyXenograftSimeoni2004(
 \item{ncmt}{The desired number of damaged cell compartments}
 
 \item{damagedCmtName, undamagedCmtName, tumorVolName}{character string names
-for the compartments for damaged cells, undamaged cells, and the calcualted
+for the compartments for damaged cells, undamaged cells, and the calculated
 tumor volume (the sum of undamaged and damaged cells)}
 
 \item{drugEffectName, transitRateName}{character string names of the drug effect and transit rate (as used in the model block)}
