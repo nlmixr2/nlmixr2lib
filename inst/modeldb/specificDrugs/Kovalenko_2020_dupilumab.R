@@ -18,8 +18,9 @@ Kovalenko_2020_dupilumab <- function() {
     lfdepot <- log(0.643); label("Bioavailability (fraction)")
     e_wt_vc <- 0.711; label("Exponent of weight on central volume (unitless)")
 
-    etalvc ~ 0.285
-    etalke ~ 0.474
+    etalvc ~ 0.192
+    etalke ~ 0.285
+    etalka ~ 0.474
     etalvm ~ 0.236
     etamtt ~ 0.525 # etamtt is assumed to be on log-scale MTT to prevent negative values; this is a difference relative to Supplementary Table 2
 
@@ -36,7 +37,7 @@ Kovalenko_2020_dupilumab <- function() {
     vc <- exp(lvc + etalvc)*(WT/75)^e_wt_vc
     ke <- exp(lke + etalke)
     kcp <- exp(lkcp)
-    ka <- exp(lka)
+    ka <- exp(lka + etalka)
     MTT <- exp(lMTT + etamtt)
     Vm <- exp(lVm + etalvm)
 
