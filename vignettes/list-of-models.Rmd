@@ -1,0 +1,20 @@
+---
+title: "List of models"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{List of models}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+library(nlmixr2lib)
+```
+
+```{r listing}
+knitr::kable(modeldb[, c("name", "description")])
+```
