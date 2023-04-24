@@ -64,9 +64,9 @@ Cirincione_2017_exenatide <- function() {
     f(depot) <- fdepot
     
     cp <- central/vc
-    
-    OTHERSTUDY <- 1 - (STUDY1 + STUDY5)
-    cpexpSd <- expSdOther*OTHERSTUDY + expSdStudy1*STUDY1 + expSdStudy5*STUDY5
-    cp ~ exp(cpexpSd)
+
+    cp ~ lnorm(expSdOther) | otherStudy
+    cp ~ lnorm(expSdStudy1) | study1
+    cp ~ lnorm(expSdStudy5) | study5
   })
 }
