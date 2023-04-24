@@ -1,5 +1,9 @@
 # nlmixr2lib
 
+# Version 0.2.0.9000
+
+* Add Carlsson Petri (2021) liraglutide PK model
+
 # Version 0.2.0
 
 * Work with the new `rxode2` version 2.0.12 `model()` and `ini()` assignment
