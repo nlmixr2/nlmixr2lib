@@ -2,6 +2,7 @@
 
 # Version 0.2.0.9000
 
+* Add Cirincione (2017) exenatide immediate-release PK model
 * Add Carlsson Petri (2021) liraglutide PK model
 
 # Version 0.2.0
