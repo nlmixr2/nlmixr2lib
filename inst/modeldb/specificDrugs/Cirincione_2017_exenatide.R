@@ -66,7 +66,7 @@ Cirincione_2017_exenatide <- function() {
     cp <- central/vc
     
     OTHERSTUDY <- 1 - (STUDY1 + STUDY5)
-    propSd <- expSdOther*OTHERSTUDY + expSdStudy1*STUDY1 + expSdStudy5*STUDY5
-    cp ~ exp(propSd)
+    cpexpSd <- expSdOther*OTHERSTUDY + expSdStudy1*STUDY1 + expSdStudy5*STUDY5
+    cp ~ exp(cpexpSd)
   })
 }
