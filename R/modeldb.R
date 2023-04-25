@@ -126,7 +126,7 @@ addFileToModelDb <- function(dir, file, modeldb) {
   }
 
   # Error model
-  paramErr <- mod$predDf$cond
+  paramErr <- mod$predDf$var
   if ("rxLinCmt" %in% paramErr) {
     paramErr[paramErr %in% "rxLinCmt"] <- "linCmt()"
   }
@@ -136,7 +136,7 @@ addFileToModelDb <- function(dir, file, modeldb) {
       name=modelName,
       description=description,
       parameters=paste(modParamFixed, collapse = ","),
-      DV=paramErr,
+      DV=paste(unique(paramErr), collapse = ","),
       filename = fileName
     )
   modeldb <- rbind(modeldb, ret)
