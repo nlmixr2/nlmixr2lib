@@ -76,8 +76,11 @@ Cirincione_2017_exenatide <- function() {
 
     cp <- central/vc
 
+    cp1 <- cp
+    cp5 <- cp
+    
     cp ~ lnorm(expSdOther) | otherStudy
-    cp ~ lnorm(expSdStudy1) | study1
-    cp ~ lnorm(expSdStudy5) | study5
+    cp1 ~ lnorm(expSdStudy1) | study1
+    cp5 ~ lnorm(expSdStudy5) | study5
   })
 }
