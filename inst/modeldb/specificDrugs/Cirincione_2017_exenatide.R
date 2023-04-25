@@ -7,8 +7,7 @@ Cirincione_2017_exenatide <- function() {
       DV = "Exenatide plasma concentration (pg/mL)",
       eGFR = "Modification of Diet in Renal Disease estimate of glomerular filtration rate (mL/min/(1.73m^2))",
       WT = "Baseline body weight (kg)",
-      STUDY1 = "Was the subject in study 1?  0 = no, 1 = yes (typically 0)",
-      STUDY5 = "Was the subject in study 5?  0 = no, 1 = yes (typically 0)"
+      DVID = "Was the subject in Study 1 ('study1'), Study 5 ('study5'), or another study ('otherStudy')?  Typically 'otherStudy'"
     )
   # parameters are from Table 2 in the paper
   ini({
@@ -57,17 +56,18 @@ Cirincione_2017_exenatide <- function() {
     fr <- expit(logitfr)
 
     kel <- cl/vc + vmax/(km*vc + central)
+    k12 <- q/vc
+    k21 <- q/vp
 
     # Need to turn k0 off at time > tau
     mtime(tau) <- ttau
 
-    kzero <- (1-fr)*Dose/tau
+    kzero <- (1-fr)*podo(depot)/tau
     if (tad(depot) > tau) kzero <- 0.0
 
     # Need to turn ka on at time > tau
     ka <- fr*kamax/(kmka + depot)
     if (tad(depot) <= tau) ka <- 0.0
-
 
     d/dt(depot) <-  -ka*depot - kzero
     d/dt(central) <- ka*depot + kzero - kel*central - k12*central + k21*peripheral1
