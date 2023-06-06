@@ -19,7 +19,7 @@ PK_3cmt <- function() {
     q  <- exp(lq)
     q2  <- exp(lq2)
 
-    cp <- linCmt()
-    cp ~ prop(propSd)
+    Cc <- linCmt()
+    Cc ~ prop(propSd)
   })
 }
