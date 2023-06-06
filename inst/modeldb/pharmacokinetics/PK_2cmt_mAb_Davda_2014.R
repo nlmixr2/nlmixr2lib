@@ -32,7 +32,7 @@ PK_2cmt_mAb_Davda_2014 <- function() {
     vp <- exp(lvp + allov*wtnorm + etavp)
 
     # Units are dosing units/L (typically mg/L = ug/mL)
-    linCmt() ~ prop(prop.err)
+    Cc ~ prop(prop.err)
     f(depot) <- fdepot
   })
 }
