@@ -5,7 +5,14 @@
 \alias{modeldb}
 \title{Model library for nlmixr2}
 \format{
-An object of class \code{data.frame} with 15 rows and 5 columns.
+A data frame with 18 rows and 5 columns
+\describe{
+  \item{name}{Model name that can be used to extract the model from the model library}
+  \item{description}{Model description in free from text; in model itself}
+  \item{parameters}{A comma separated string listing either the parameter in the model defined by population/individual effects or a population effect parameter}
+  \item{DV}{The definition of the dependent variable(s)}
+  \item{filename}{Filename of the model.  By default these are installed in the model library and read on demand}
+}
 }
 \usage{
 modeldb
