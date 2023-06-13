@@ -3,7 +3,7 @@ PK_3cmt_mm <- function() {
   ini({
     lka <- 0.45 ; label("Absorption rate (Ka)")
     lvm <- 0.04; label("maximum target-mediated rate of elimination (mg/L/d)")
-    Km <- 0.01; label("Michaelis-Menten constant (mg/L)")
+    lkm <- 0.01; label("Michaelis-Menten constant (mg/L)")
     lvc  <- 3 ; label("Central volume of distribution (V)")
     lvp  <- 5 ; label("Peripheral volume of distribution (Vp)")
     lvp2  <- 8 ; label("Second peripheral volume of distribution (Vp2)")
@@ -13,7 +13,8 @@ PK_3cmt_mm <- function() {
   })
   model({
     ka <- exp(lka)
-    Vm <- exp(lvm)
+    vm <- exp(lvm)
+    km <- exp(lkm)
     vc <- exp(lvc)
     vp <- exp(lvp)
     vp2 <- exp(lvp2)
@@ -26,7 +27,7 @@ PK_3cmt_mm <- function() {
     k31 <- q2/vp2
     
     d/dt(depot) <- -ka*depot
-    d/dt(central) <-  ka*depot - (Vm/(Km + central/vc))*central - k12*central + k21*peripheral1 - k13*central + k31*peripheral2
+    d/dt(central) <-  ka*depot - (vm/(km + central/vc))*central - k12*central + k21*peripheral1 - k13*central + k31*peripheral2
     d/dt(peripheral1) <- k12*central - k21*peripheral1
     d/dt(peripheral2) <- k13*central - k31*peripheral2
     Cc <- central / vc
