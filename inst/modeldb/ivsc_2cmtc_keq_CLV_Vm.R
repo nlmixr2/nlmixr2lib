@@ -9,7 +9,7 @@ ivsc_2cmtc_keq_CLV_Vm <- function() {
     lvm    <- 0.1  ; label("maximum target-mediated rate of elimination (mg/L/d)")
     lkeT  <- 0.1 ; label("Target elimination rate (1/d)")
     lkeDT <- 0.4 ; label("Internalisation rate (1/d)")
-    lkeq <- 0.35 ; label("")
+    lkeq <- 0.35 ; label("Eqilibrium dissociation rate (Keq)")
     lfdepot <- 0.4; label("Bioavailability (F)")
     propSd <- 0.5 ; label("Proportional residual error (fraction)")
   })

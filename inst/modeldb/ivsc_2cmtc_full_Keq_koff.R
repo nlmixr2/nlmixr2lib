@@ -12,7 +12,7 @@ ivsc_2cmtc_full_Keq_koff <- function() {
     lkoff <- 0.35 ; label("Drug-target dissociation rate (Koff)")
     lkeq <- 0.37 ; label("")
     lfdepot <- 0.4; label("Bioavailability (F)")
-    propSd <- 0.5 ; label("Proportional residual error (frcentraltion)")
+    propSd <- 0.5 ; label("Proportional residual error (fraction)")
   })
   model({
     ka <- exp(lka)
