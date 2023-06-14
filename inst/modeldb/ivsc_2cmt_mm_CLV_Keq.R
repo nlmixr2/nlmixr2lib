@@ -31,7 +31,6 @@ ivsc_2cmt_mm_CLV_Keq <- function() {
     d/dt(central)    <- ka*depot -(vm/(km + central/vc))*central- k12*central + k21*peripheral1 - kel*central
     d/dt(peripheral1)<- k12*central - k21*peripheral1
     
-    
     Cc <-  central/vc
     Cc ~ prop(propSd)
   })
