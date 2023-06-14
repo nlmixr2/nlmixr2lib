@@ -3,7 +3,7 @@ ivsc_2cmt_mm_CLV_kSynKeq <- function() {
   ini({
     lka    <- 0.45 ; label("Absorption rate (Ka)")
     lvc    <- 3.45 ; label("Central volume of distribution (Vc)")
-    lvp    <- 5 ; label("Peripheral volume of distribution (Vp)")
+    lvp    <- 0.5 ; label("Peripheral volume of distribution (Vp)")
     lksyn  <- 0.4; label("Synthesis rate (1/d)")
     lkeq   <- 0.1; label ("Michaelis-Menten constant (mg/L)")
     lcl    <- 0.1; label("Clearance (CL)")
@@ -31,7 +31,6 @@ ivsc_2cmt_mm_CLV_kSynKeq <- function() {
     f(depot)         <- fdepot
     d/dt(central)    <- ka*depot -(vm/(km + central/vc))*central- k12*central + k21*peripheral1 - kel*central
     d/dt(peripheral1)<- k12*central - k21*peripheral1
-    
     
     Cc <-  central/vc
     Cc ~ prop(propSd)
