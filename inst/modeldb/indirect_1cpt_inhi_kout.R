@@ -1,5 +1,5 @@
-indirect_1cpt_inhibition_kin  <- function() {
-  description <- "One compartment indirect response model with inhibition of kin."
+indirect_1cpt_inhi_kout  <- function() {
+  description <- "One compartment indirect response model with inhibition of kout."
   ini({
     lka  <- 0.45 ; label("Absorption rate (Ka)")
     lkel <- 0.534; label("elimination rate (1/d)")
@@ -16,12 +16,12 @@ indirect_1cpt_inhibition_kin  <- function() {
     kin <- exp(lkin)
     kout <- exp(lkout)
     fdepot   <- exp(lfdepot)
-    
+
     
     d/dt(depot)      <- -ka*depot
     f(depot)         <- fdepot
     d/dt(central)    <- ka*depot -(cl/vc)*central
-    d/dt(effect) <- kin*(1-Cc/(Cc + IC50)) - kout*effect
+    d/dt(effect) <- kin - kout*(1-Cc/(Cc + IC50))*effect
     
     Cc <-  central/vc
     Cc ~ prop(propSd)
