@@ -17,7 +17,7 @@ PK_double_sim_01 <- function() {
     
     d/dt(depot1) <- -k01
     d/dt(depot2) <- -ka2*depot2
-    d/dt(central) <-  k01+ka2*depot2 - kel*central 
+    d/dt(central) <-  k01+ka2*depot2-kel*central 
     
     Cc <- central / vc
     

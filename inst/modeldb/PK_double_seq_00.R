@@ -17,9 +17,9 @@ PK_double_seq_00 <- function() {
     lag2 <- k01
     
     d/dt(depot1) <- -k01
-    d/dt(depot2) <- -k02
+    d/dt(depot2) <- k01-k02*depot
     alag(depot2)  <- lag2
-    d/dt(central) <-  k01+k02 - kel*central 
+    d/dt(central) <-  k02*depot - kel*central 
     
     Cc <- central / vc
     
