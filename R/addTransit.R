@@ -4,7 +4,6 @@
 #' @examples
 #' readModelDb("PK_1cmt") %>% addTransit(.,3)
 addTransit <- function(model,transit,central="central",depot="depot",transitComp ="transit",ktr="ktr"){
-  #browser()
   checkmate::assertCharacter(central, pattern= "^[.]*[a-zA-Z]+[a-zA-Z0-9._]*$",len=1,any.missing = FALSE,min.chars = 1)
   checkmate::assertCharacter(depot,pattern= "^[.]*[a-zA-Z]+[a-zA-Z0-9._]*$",len=1,any.missing = FALSE,min.chars = 1)
   checkmate::assertCharacter(transitComp,pattern= "^[.]*[a-zA-Z]+[a-zA-Z0-9._]*$",len=1,any.missing = FALSE,min.chars = 1)
@@ -31,13 +30,16 @@ addTransit <- function(model,transit,central="central",depot="depot",transitComp
   rhs <- sub(".*<-\\s*","",center)
   rhs <- sub("\\s*ka\\s*\\*\\s*depot", "",rhs)
   line <- str2lang(paste0("d/dt(",central,") <- ",ktr,transit,"*",transitComp,transit,deparse(str2lang(rhs))))
- 
+  
+  
   #ODEs for transit compartments
   equation1 <- list(str2lang(paste0(ktr,"1 <- exp(l",ktr,"1)")))
   equation2 <- list(str2lang(paste0("d/dt(",transitComp,"1) <- ka*",depot," - ",ktr,"1*",transitComp,"1")))
-  for (i in 2:transit){
-    equation1 <- c(equation1,str2lang(paste0("ktr",i,"<-exp(lktr",i,")")))
-    equation2 <- c(equation2,str2lang(paste0("d/dt(",transitComp,i,")<- ",ktr,i-1,"*",transitComp,i-1,"-",ktr,i,"*",transitComp,i)))
+  if(transit>1){
+    for (i in 2:transit){
+      equation1 <- c(equation1,str2lang(paste0("ktr",i,"<-exp(lktr",i,")")))
+      equation2 <- c(equation2,str2lang(paste0("d/dt(",transitComp,i,")<- ",ktr,i-1,"*",transitComp,i-1,"-",ktr,i,"*",transitComp,i)))
+  }
   }
   #modify ini block
   equationIni <- rep(0.05,transit)

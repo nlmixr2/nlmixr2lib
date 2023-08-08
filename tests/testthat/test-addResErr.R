@@ -9,42 +9,42 @@ test_that("addResErr with each expected residual distribution and combinations",
     functionBody(
       modelUpdateAdd
     )[[4]][[2]][[6]],
-    str2lang("cp ~ add(cpaddSd)")
+    str2lang("Cc ~ add(CcaddSd)")
   )
   expect_equal(
     functionBody(
       modelUpdateProp
     )[[4]][[2]][[6]],
-    str2lang("cp ~ prop(cppropSd)")
+    str2lang("Cc ~ prop(CCpropSd)")
   )
   expect_equal(
     functionBody(
       modelUpdateLnorm
     )[[4]][[2]][[6]],
-    str2lang("cp ~ lnorm(cplnormSd)")
+    str2lang("Cc ~ lnorm(CclnormSd)")
   )
   expect_equal(
     functionBody(
       modelUpdateAll
     )[[4]][[2]][[6]],
-    str2lang("cp ~ add(cpaddSd) + prop(cppropSd) + lnorm(cplnormSd)")
+    str2lang("Cc ~ add(CcaddSd) + prop(CcpropSd) + lnorm(CclnormSd)")
   )
   # Check that initial conditions were set correctly
   suppressMessages(expect_equal(
     nlmixr2est::fixef(rxode2::rxode(modelUpdateAdd)),
-    c(lka = 0.45, lcl = 1, lvc = 3.45, cpaddSd = 1)
+    c(lka = 0.45, lcl = 1, lvc = 3.45, CcaddSd = 1)
   ))
   suppressMessages(expect_equal(
     nlmixr2est::fixef(rxode2::rxode(modelUpdateProp)),
-    c(lka = 0.45, lcl = 1, lvc = 3.45, cppropSd = 0.5)
+    c(lka = 0.45, lcl = 1, lvc = 3.45, CcpropSd = 0.5)
   ))
   suppressMessages(expect_equal(
     nlmixr2est::fixef(rxode2::rxode(modelUpdateLnorm)),
-    c(lka = 0.45, lcl = 1, lvc = 3.45, cplnormSd = 0.5)
+    c(lka = 0.45, lcl = 1, lvc = 3.45, CclnormSd = 0.5)
   ))
   suppressMessages(expect_equal(
     nlmixr2est::fixef(rxode2::rxode(modelUpdateAll)),
-    c(lka = 0.45, lcl = 1, lvc = 3.45, cpaddSd = 1, cppropSd = 0.5, cplnormSd = 0.5)
+    c(lka = 0.45, lcl = 1, lvc = 3.45, CcaddSd = 1, CcpropSd = 0.5, CclnormSd = 0.5)
   ))
 })
 
@@ -53,7 +53,7 @@ test_that("addResErr with named numeric values sets the reserr", {
   suppressMessages(modelUpdateAdd <- addResErr(model, reserr = c(addSd=10)))
   suppressMessages(expect_equal(
     nlmixr2est::fixef(rxode2::rxode(modelUpdateAdd)),
-    c(lka = 0.45, lcl = 1, lvc = 3.45, cpaddSd = 10)
+    c(lka = 0.45, lcl = 1, lvc = 3.45, CcaddSd = 10)
   ))
 })
 
@@ -65,14 +65,14 @@ test_that("addResErr with des model, changing to additive error", {
     functionBody(
       modelUpdate
     )[[3]][[2]][[8]],
-    str2lang("cpaddSd <- c(0, 1)")
+    str2lang("CcaddSd <- c(0, 1)")
   )
   # residual error model is added
   expect_equal(
     functionBody(
       modelUpdate
     )[[4]][[2]][[9]],
-    str2lang("cp ~ add(cpaddSd)")
+    str2lang("Cc ~ add(CcaddSd)")
   )
 })
 
@@ -84,14 +84,14 @@ test_that("addResErr with linCmt model, changing to additive error", {
     functionBody(
       modelUpdate
     )[[3]][[2]][[8]],
-    str2lang("cpaddSd <- c(0, 1)")
+    str2lang("CcaddSd <- c(0, 1)")
   )
   # residual error model is added
   expect_equal(
     functionBody(
       modelUpdate
     )[[4]][[2]][[6]],
-    str2lang("cp ~ add(cpaddSd)")
+    str2lang("Cc ~ add(CcaddSd)")
   )
 })
 
@@ -103,20 +103,20 @@ test_that("addResErr with des model, changing to additive and proportional error
     functionBody(
       modelUpdate
     )[[3]][[2]][[8]],
-    str2lang("cpaddSd <- c(0, 1)")
+    str2lang("CcaddSd <- c(0, 1)")
   )
   expect_equal(
     functionBody(
       modelUpdate
     )[[3]][[2]][[9]],
-    str2lang("cppropSd <- c(0, 0.5)")
+    str2lang("CcpropSd <- c(0, 0.5)")
   )
   # eta is added
   expect_equal(
     functionBody(
       modelUpdate
     )[[4]][[2]][[9]],
-    str2lang("cp ~ add(cpaddSd) + prop(cppropSd)")
+    str2lang("Cc ~ add(CcaddSd) + prop(CcpropSd)")
   )
 })
 

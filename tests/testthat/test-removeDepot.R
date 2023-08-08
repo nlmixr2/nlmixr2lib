@@ -9,7 +9,7 @@ test_that("removeDepot throws error in model with invalid central compartment",{
 })
 
 test_that("removeDepot removes depot compartment", {
-  modelTest <- readModelDb("PK_3cmt_mm")
+  modelTest <- readModelDb("PK_2cmt_des")
   suppressMessages(modelUpdate <- removeDepot(modelTest, central="central",depot="depot"))
   temp <- rxode2::assertRxUi(modelUpdate)
   mv <- rxode2::rxModelVars(temp)
@@ -17,7 +17,7 @@ test_that("removeDepot removes depot compartment", {
 })
 
 test_that("removeDepot removes ka in model block",{
-  modelTest <- readModelDb("PK_3cmt_mm")
+  modelTest <- readModelDb("PK_2cmt_des")
   suppressMessages(modelUpdate <- removeDepot(modelTest, central="central",depot="depot"))
   temp <- rxode2::assertRxUi(modelUpdate)
   mv <- rxode2::rxModelVars(temp)
@@ -31,7 +31,7 @@ test_that("removeDepot modifies ODE for central compartment", {
   expect_equal(grepl(".*<-\\s*",centralLine),TRUE)
 })
 test_that("removeDepot removes lka in ini block",{
-  modelTest <- readModelDb("PK_3cmt_mm")
+  modelTest <- readModelDb("PK_2cmt_des")
   suppressMessages(modelUpdate <- removeDepot(modelTest, central="central",depot="depot"))
   temp <- rxode2::assertRxUi(modelUpdate)
   mv <- rxode2::rxModelVars(temp)

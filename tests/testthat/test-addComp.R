@@ -1,5 +1,5 @@
 test_that("addComp adds a peripheral compartment", {
-  modelTest <- readModelDb("PK_1cmt_mm")
+  modelTest <- readModelDb("PK_2cmt_des")
   suppressMessages(modelUpdate <- addComp(modelTest, 1))
   #check for lvp in ini block
   temp <- rxode2::assertRxUi(modelUpdate)
@@ -24,15 +24,15 @@ test_that("addComp adds a peripheral compartment", {
 
 # Test if the function throws an error when invalid input for 'central' is provided
 test_that("addComp throws an error with invalid 'central'", {
-  expect_error(addComp(readModelDb("PK_1cmt_mm"), 3, "cent", "depot"), "'cent' needs to be in the model")
+  expect_error(addComp(readModelDb("PK_2cmt_des"), 3, "cent", "depot"), "'cent' needs to be in the model")
 })
 
 test_that("addComp throws an error with invalid 'numPeripheral'", {
-  expect_error(addComp(readModelDb("PK_1cmt_mm"), -1), "Assertion on 'numPeripheral' failed: Element 1 is not >= 1")
+  expect_error(addComp(readModelDb("PK_2cmt_des"), -1), "Assertion on 'numPeripheral' failed: Element 1 is not >= 1")
 })
 
 test_that("addComp removes existing peripheral compartments before adding new", {
-  modelTest <- readModelDb("PK_3cmt_mm")
+  modelTest <- readModelDb("PK_2cmt_des")
   suppressMessages(modelUpdate <- addComp(modelTest, 1))
   temp <- rxode2::assertRxUi(modelUpdate)
   mv <- rxode2::rxModelVars(temp)

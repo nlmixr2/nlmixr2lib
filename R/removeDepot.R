@@ -5,7 +5,6 @@
 #' library(rxode2)
 #' 
 removeDepot <- function(model,central="central",depot="depot"){
-  #browser()
   checkmate::assertCharacter(central,len=1,any.missing = FALSE,min.chars = 1)
   checkmate::assertCharacter(depot,len=1,any.missing = FALSE,min.chars = 1)
   temp  <- rxode2::assertRxUi(model)
@@ -16,13 +15,23 @@ removeDepot <- function(model,central="central",depot="depot"){
   if (!(depot %in% mv$state)){
     stop("'",depot,"' needs to be in the model")
   }
-  #browser()
+  if (any(grepl("^transit",mv$state))){
+    transit<- eval(str2lang(paste0("rxode2::modelExtract(temp,d/dt(transit1),lines=TRUE)")))
+    transitLine <- attr(transit,"lines")
+    transitNew <- str2lang(sub("\\s*ka\\s*\\*\\s*depot", "",transit))
+  }
+
   
   model <- rxode2::modelExtract(temp,endpoint=NA)
   center<- eval(str2lang(paste0("rxode2::modelExtract(temp,d/dt(",central,"),lines=TRUE)")))
   centralLine <- attr(center,"lines")
   rhs <- str2lang(sub("\\s*ka\\s*\\*\\s*depot", "",center))
-  rxode2::model(temp) <- c(model[1:(centralLine-1)],rhs, model[(centralLine+1):length(model)])
+  if (any(grepl("^transit",mv$state))){
+    rxode2::model(temp) <- c(model[1:(transitLine-1)],transitNew,model[(transitLine+1):(centralLine-1)], rhs, model[(centralLine+1):length(model)])
+  }else{
+    rxode2::model(temp) <- c(model[1:(centralLine-1)],rhs, model[(centralLine+1):length(model)]) 
+  }
+  
   if ("fdepot" %in% mv$lhs){
     temp <- temp%>%model(-ka,-fdepot,-f(depot),-d/dt(depot))
   }else{

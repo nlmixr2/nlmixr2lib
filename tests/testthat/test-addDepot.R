@@ -1,5 +1,5 @@
 test_that("addDepot adds depot", {
-  model <- readModelDb("PK_2cmt_des")
+  model <- readModelDb("PK_2cmt_no_depot")
   suppressMessages(modelUpdate <- addDepot(model, central="central",depot="depot"))
   #check for lka in ini block
   suppressMessages(temp <- modelUpdate)
@@ -33,7 +33,7 @@ test_that("addDepot adds depot", {
 
 
 test_that("addDepot adds other than default agruments",{
-  model <- readModelDb("PK_2cmt_mm")
+  model <- readModelDb("PK_2cmt_no_depot")
   
   # suppressMessages(modelUpdate <- addDepot(model, central="cent",depot="depot",absRate = "ka"))
   # temp <- rxode2::assertRxUi(modelUpdate)

@@ -23,6 +23,12 @@ addDepot <- function(model,central="central",depot="depot",absRate="ka",lag=FALS
   if (depot %in% mv$state){
     stop("'",depot,"' cannot be in the model")
   }
+  if (any(grepl("^transit",mv$state))){
+    transit<- eval(str2lang(paste0("rxode2::modelExtract(temp,d/dt(transit1),lines=TRUE)")))
+    transitLine <- attr(transit,"lines")
+    transitRhs <- sub(".*<-\\s*","",transit)
+    transitODE <- str2lang(paste0("d/dt(transit1) <- ",absRate,"*",depot,deparse1(str2lang(transitRhs))))
+  }
   #Extract model
   model <- rxode2::modelExtract(temp,endpoint=NA)
   
@@ -30,6 +36,7 @@ addDepot <- function(model,central="central",depot="depot",absRate="ka",lag=FALS
   center<- eval(str2lang(paste0("rxode2::modelExtract(temp,d/dt(",central,"),lines=TRUE)")))
   rhs <- sub(".*<-\\s*","",center)
   line <- str2lang(paste0("d/dt(",central,") <- ",absRate,"*",depot,"+",deparse1(str2lang(rhs))))
+  lineNew <- str2lang(paste0("d/dt(",central,") <- ",deparse1(str2lang(rhs))))
   centralLine <- attr(center, "lines")
   
   #Additional equations to be added to model block
@@ -37,7 +44,7 @@ addDepot <- function(model,central="central",depot="depot",absRate="ka",lag=FALS
   fdepotModel <- paste0("f",depot," <- exp(lf",depot,")")
   lagModel <- paste0(tlag," <- exp(la",tlag,")")
   fdepotODE <- paste0("f(",depot,") <- f",depot)
-  depotODE <-  paste0("d/dt(",depot,") <- ",absRate,"*",depot)
+  depotODE <-  paste0("d/dt(",depot,") <- -",absRate,"*",depot)
   lagODE <- paste0("alag(",depot,") <- ",tlag)
   
   #Modify model block
@@ -47,6 +54,9 @@ addDepot <- function(model,central="central",depot="depot",absRate="ka",lag=FALS
     rxode2::model(temp) <- c(absrateModel,fdepotModel,lagModel,model[1:(centralLine-1)],depotODE, fdepotODE,lagODE, line, model[(centralLine+1):length(model)])
   }
   
+  if (any(grepl("^transit",mv$state))){
+    rxode2::model(temp) <- c(absrateModel,fdepotModel,lagModel,model[1:(transitLine-1)],depotODE, fdepotODE,lagODE,transitODE,model[(transitLine+1):(centralLine-1)], lineNew, model[(centralLine+1):length(model)])
+  }
   
   #Modify ini block
   rateIni <- str2lang(paste0("l",absRate," <-0.02"))
