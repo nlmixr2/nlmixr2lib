@@ -16,7 +16,7 @@ PK_1cmt_des <- function() {
     d/dt(depot) <- -ka*depot
     d/dt(central) <- ka*depot-kel*central
 
-    cp <- central / vc
-    cp ~ prop(propSd)
+    Cc <- central / vc
+    Cc ~ prop(propSd)
   })
 }

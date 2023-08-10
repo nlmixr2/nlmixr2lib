@@ -62,8 +62,8 @@ Zhu_2017_lebrikizumab <- function() {
     q <- exp(lq) * WTNORM^e_q_wt
     ka <- exp(lka + etaka) * e_ka_form_nso^FORM_NSO * e_ka_form_cho_phase2^FORM_CHO_PHASE2
     fdepot <- exp(lfdepot) * e_f_form_nso^FORM_NSO * e_f_form_cho_phase2^FORM_CHO_PHASE2
-    cp <- linCmt()
+    Cc <- linCmt()
     f(depot) <- fdepot
-    cp ~ add(cpaddSd) + prop(cppropSd)
+    Cc ~ add(cpaddSd) + prop(cppropSd)
   })
 }

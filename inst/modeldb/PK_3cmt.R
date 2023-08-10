@@ -16,10 +16,10 @@ PK_3cmt <- function() {
     vc <- exp(lvc)
     vp <- exp(lvp)
     vp2 <- exp(lvp2)
-    q  <- exp(lq)
+    q   <- exp(lq)
     q2  <- exp(lq2)
 
-    cp <- linCmt()
-    cp ~ prop(propSd)
+    Cc <- linCmt()
+    Cc ~ prop(propSd)
   })
 }
