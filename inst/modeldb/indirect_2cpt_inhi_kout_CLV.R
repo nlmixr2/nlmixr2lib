@@ -1,11 +1,12 @@
-indirect_1cpt_inhi_kin_CLV <- function() {
-  description <- "One compartment indirect response model with inhibition of kin."
+indirect_2cpt_inhi_kout_CLV <- function() {
+  description <- "Two compartment indirect response model with inhibition of kout."
   ini({
     lka  <- 0.45 ; label("Absorption rate (Ka)")
-    lvc  <- log(90) ; label("Central volume of distribution (Vc)")
+    lvc  <- 3.45 ; label("Central volume of distribution (Vc)")
     lcl <- 1 ; label("Clearance (Cl)")
+    lvp  <- 5 ; label("Peripheral volume of distribution (Vp)")
+    lq  <- 0.1 ; label("Intercompartmental clearance (Q)")
     lIC50 <- 0.67; label("Drug concentration producing 50% of maximum inhibition at effect site (IC50)")
-    limax <- 0.56; label("Maximum inhibitory factor attributed to drug (Imax)")
     lkin <- 0.48; label("Zero-order rate constant for production of drug response(1/d)")
     lkout <- 0.34; label("First-order rate constant for loss of drug response")
     lfdepot <- 0.4; label("Bioavailability (F)")
@@ -15,22 +16,24 @@ indirect_1cpt_inhi_kin_CLV <- function() {
     ka  <- exp(lka)
     vc  <- exp(lvc)
     cl  <- exp(lcl)
+    vp <- exp(lvp)
+    q  <- exp(lq)
     IC50 <- exp(lIC50)
-    imax <- exp(limax)
     kin <- exp(lkin)
     kout <- exp(lkout)
     fdepot   <- exp(lfdepot)
     
     kel <- cl/vc
+    k12 <- q/vc
+    k21 <- q/vp
     
     d/dt(depot)      <- -ka*depot
     f(depot)         <- fdepot
-    d/dt(central)    <- ka*depot -(kel)*central
-    Cc <-  central/vc
+    d/dt(central)    <- ka*depot -(kel)*central- k12*central + k21*peripheral1
+    d/dt(peripheral1) <- k12*central - k21*peripheral1
+    d/dt(effect) <- kin - kout*(1-Cc/(Cc + IC50))*effect
     
-    d/dt(effect) <- kin*(1-imax*Cc/(Cc + IC50)) - kout*effect
-   
+    Cc <-  central/vc
     Cc ~ prop(propSd)
   })
 }
-
