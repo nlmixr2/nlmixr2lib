@@ -26,9 +26,11 @@ indirect_1cpt_stim_kout_CLV <- function() {
     d/dt(depot)      <- -ka*depot
     f(depot)         <- fdepot
     d/dt(central)    <- ka*depot -(kel)*central
+    Cc <-  central/vc
+    
     d/dt(effect) <- kin - kout*(1+Emax*Cc/(Cc + EC50))*effect
     
-    Cc <-  central/vc
+    
     Cc ~ prop(propSd)
   })
 }

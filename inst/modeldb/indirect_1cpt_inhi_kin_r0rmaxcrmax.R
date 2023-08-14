@@ -32,9 +32,10 @@ indirect_1cpt_inhi_kin_r0rmaxcrmax <- function() {
     d/dt(depot)      <- -ka*depot
     f(depot)         <- fdepot
     d/dt(central)    <- ka*depot -(kel)*central
+    Cc <-  central/vc
+    
     d/dt(effect) <- kin*(1-imax*Cc/(Cc + IC50)) - kout*effect
     
-    Cc <-  central/vc
     Cc ~ prop(propSd)
   })
 }
