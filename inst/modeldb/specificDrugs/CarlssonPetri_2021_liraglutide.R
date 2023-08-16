@@ -31,7 +31,7 @@ CarlssonPetri_2021_liraglutide <- function() {
     vc_wt <- (WT/100)^e_wt_vc # Not in the paper, based on Equation 2 in the paper
     vc  <- exp(lvc + etalvc)*vc_wt # Equation 5 in the paper
     
-    cp <- linCmt()
-    cp ~ prop(propSd)
+    Cc <- linCmt()
+    Cc ~ prop(propSd)
   })
 }

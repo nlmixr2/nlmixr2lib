@@ -37,9 +37,9 @@ Soehoel_2022_tralokinumab <- function() {
 
     # No unit conversion is required to change mg/L (dosing amount/central
     # volume unit) to ug/mL (measurement unit)
-    cp <- linCmt()
+    Cc <- linCmt()
     f(depot) <- fdepot
-    cp ~ add(cpaddSd) + prop(cppropSd)
+    Cc ~ add(cpaddSd) + prop(cppropSd)
   })
 }
 

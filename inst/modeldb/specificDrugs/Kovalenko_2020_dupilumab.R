@@ -57,7 +57,7 @@ Kovalenko_2020_dupilumab <- function() {
     f(depot) <- exp(lfdepot)
     # No unit conversion is required to change mg/L (dosing amount/central
     # volume unit) to mg/L (measurement unit)
-    cp <- central/vc
-    cp ~ add(cpaddSd) + prop(cppropSd)
+    Cc <- central/vc
+    Cc ~ add(cpaddSd) + prop(cppropSd)
   })
 }
