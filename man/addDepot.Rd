@@ -27,5 +27,5 @@ To convert from Infusion/intravenous administration to first order oral absorpti
 }
 \examples{
 library(rxode2)
-readModelDb("PK_1cmt") \%>\% addDepot()
+readModelDb("PK_1cmt") |> addDepot()
 }

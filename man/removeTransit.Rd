@@ -22,6 +22,5 @@ removeTransit(
 To remove transit compartments from the model
 }
 \examples{
-library(rxode2)
-readModelDb("PK_1cmt") \%>\% removeTransit(.,3)
+readModelDb("PK_1cmt") |> removeTransit(.,3)
 }

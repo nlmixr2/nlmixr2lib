@@ -1,6 +1,7 @@
 #' To add transit compartments to the model
 #' @param model The model as a function
 #' @param equation The modified ODE for central compartment in the model
+#' @export
 #' @examples
 #' readModelDb("PK_1cmt") |> addTransit(.,3)
 addTransit <- function(model,transit,central="central",depot="depot",transitComp ="transit",ktr="ktr"){

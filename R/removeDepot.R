@@ -1,9 +1,8 @@
 #' To convert from first order oral absorption to IV/Intravenous
 #' @param model The model as a function
 #' @param equation The modified ODE for central compartment in the model
+#' @export
 #' @examples
-#' library(rxode2)
-#' 
 removeDepot <- function(model,central="central",depot="depot"){
   checkmate::assertCharacter(central,len=1,any.missing = FALSE,min.chars = 1)
   checkmate::assertCharacter(depot,len=1,any.missing = FALSE,min.chars = 1)

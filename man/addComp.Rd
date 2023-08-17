@@ -24,5 +24,5 @@ addComp(
 To add additional compartments to the model
 }
 \examples{
-#' readModelDb("PK_1cmt_mm") \%>\% addComp(.,1)
+#' readModelDb("PK_1cmt_mm") |> addComp(.,1)
 }

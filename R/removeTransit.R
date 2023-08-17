@@ -1,8 +1,8 @@
 #' To remove transit compartments from the model
 #' @param model The model as a function
 #' @param transit The number of transit compartments to remove
+#' @export
 #' @examples
-#' library(rxode2)
 #' readModelDb("PK_1cmt") |> removeTransit(.,3)
 removeTransit <- function(model,transit,central="central",depot="depot",transitComp ="transit", ktr="ktr"){
   checkmate::assertCharacter(central, pattern= "^[.]*[a-zA-Z]+[a-zA-Z0-9._]*$",len=1,any.missing = FALSE,min.chars = 1)

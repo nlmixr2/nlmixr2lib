@@ -2,6 +2,7 @@
 #' @param model The model as a function
 #' @param peripheral The number of peripheral compartments to remove
 #' @examples
+#' @export
 #' library(rxode2)
 #' readModelDb("PK_1cmt") |> removeComp(.,3)
 removeComp <- function(model,peripheral,central="central",depot="depot",peripheralComp ="peripheral",vp="vp",vc="vc",q="q"){

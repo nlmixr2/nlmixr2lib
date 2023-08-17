@@ -22,5 +22,5 @@ addTransit(
 To add transit compartments to the model
 }
 \examples{
-readModelDb("PK_1cmt") \%>\% addTransit(.,3)
+readModelDb("PK_1cmt") |> addTransit(.,3)
 }

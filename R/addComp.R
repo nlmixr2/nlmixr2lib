@@ -1,6 +1,7 @@
 #' To add additional compartments to the model
 #' @param model The model as a function
 #' @param numPeripheral number of peripheral compartments to be added to the model
+#' @export
 #' @examples
 #' #' readModelDb("PK_1cmt_mm") |> addComp(.,1)
 addComp <- function(model,numPeripheral, central="central",depot= "depot",peripheralComp ="peripheral",vp="vp",vc="vc",q="q"){

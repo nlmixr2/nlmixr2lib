@@ -14,7 +14,3 @@ removeDepot(model, central = "central", depot = "depot")
 \description{
 To convert from first order oral absorption to IV/Intravenous
 }
-\examples{
-library(rxode2)
-
-}

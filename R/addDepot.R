@@ -2,7 +2,8 @@
 #' @param model The model as a function
 #' @param central central compartment name
 #' @param depot depot name
-#' @param absRate absorption rate 
+#' @param absRate absorption rate
+#' @export
 #' @examples
 #' library(rxode2)
 #' readModelDb("PK_1cmt") |> addDepot()

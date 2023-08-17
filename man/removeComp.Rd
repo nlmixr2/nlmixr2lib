@@ -23,7 +23,3 @@ removeComp(
 \description{
 To remove peripheral compartments from the model
 }
-\examples{
-library(rxode2)
-readModelDb("PK_1cmt") \%>\% removeComp(.,3)
-}
