@@ -29,8 +29,8 @@ PK_3cmt_des <- function() {
     d/dt(central) <-  ka*depot - kel*central - k12*central + k21*peripheral1 - k13*central + k31*peripheral2
     d/dt(peripheral1) <- k12*central - k21*peripheral1
     d/dt(peripheral2) <- k13*central - k31*peripheral2
-    cp <- central / vc
+    Cc <- central / vc
 
-    cp ~ prop(propSd)
+    Cc ~ prop(propSd)
   })
 }

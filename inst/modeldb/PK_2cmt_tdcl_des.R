@@ -28,8 +28,8 @@ PK_2cmt_tdcl_des <- function() {
 
     d/dt(central)     <- - kel*central - k12*central + k21*peripheral1
     d/dt(peripheral1) <- k12*central - k21*peripheral1
-    cp <- central / vc
+    Cc <- central / vc
 
-    cp ~ prop(propSd)
+    Cc ~ prop(propSd)
   })
 }
