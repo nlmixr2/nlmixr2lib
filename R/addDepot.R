@@ -5,8 +5,11 @@
 #' @param absRate absorption rate
 #' @export
 #' @examples
-#' library(rxode2)
-#' readModelDb("PK_1cmt") |> addDepot()
+#' # most of the examples in the model library already have a depot.
+#' # for this example we will remove the depot and then add it back 
+#' readModelDb("PK_1cmt_des") |>
+#'   removeDepot() |>
+#'   addDepot()
 addDepot <- function(model,central="central",depot="depot",absRate="ka",lag=FALSE,tlag="lagD") {
   #browser()
   checkmate::assertCharacter(central,pattern= "^[.]*[a-zA-Z]+[a-zA-Z0-9._]*$", len=1,any.missing = FALSE,min.chars = 1)

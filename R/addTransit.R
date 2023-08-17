@@ -3,7 +3,8 @@
 #' @param equation The modified ODE for central compartment in the model
 #' @export
 #' @examples
-#' readModelDb("PK_1cmt") |> addTransit(.,3)
+#' readModelDb("PK_1cmt_des") |>
+#'   addTransit(3)
 addTransit <- function(model,transit,central="central",depot="depot",transitComp ="transit",ktr="ktr"){
   checkmate::assertCharacter(central, pattern= "^[.]*[a-zA-Z]+[a-zA-Z0-9._]*$",len=1,any.missing = FALSE,min.chars = 1)
   checkmate::assertCharacter(depot,pattern= "^[.]*[a-zA-Z]+[a-zA-Z0-9._]*$",len=1,any.missing = FALSE,min.chars = 1)

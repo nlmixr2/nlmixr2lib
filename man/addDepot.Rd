@@ -26,6 +26,9 @@ addDepot(
 To convert from Infusion/intravenous administration to first order oral absorption
 }
 \examples{
-library(rxode2)
-readModelDb("PK_1cmt") |> addDepot()
+# most of the examples in the model library already have a depot.
+# for this example we will remove the depot and then add it back 
+readModelDb("PK_1cmt_des") |>
+  removeDepot() |>
+  addDepot()
 }

@@ -22,5 +22,10 @@ removeTransit(
 To remove transit compartments from the model
 }
 \examples{
-readModelDb("PK_1cmt") |> removeTransit(.,3)
+
+# In this example the transit is added and then a few are removed
+
+readModelDb("PK_1cmt_des") |>
+   addTransit(4)  |>
+   removeTransit(3)
 }
