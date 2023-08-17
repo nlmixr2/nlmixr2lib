@@ -3,7 +3,7 @@
 #' @param peripheral The number of peripheral compartments to remove
 #' @examples
 #' library(rxode2)
-#' readModelDb("PK_1cmt") %>% removeComp(.,3)
+#' readModelDb("PK_1cmt") |> removeComp(.,3)
 removeComp <- function(model,peripheral,central="central",depot="depot",peripheralComp ="peripheral",vp="vp",vc="vc",q="q"){
   
   checkmate::assertCharacter(central, pattern= "^[.]*[a-zA-Z]+[a-zA-Z0-9._]*$",len=1,any.missing = FALSE,min.chars = 1)
@@ -86,7 +86,7 @@ removeComp <- function(model,peripheral,central="central",depot="depot",peripher
   
   #Insert modified ODE for central compartment into the model and modify model{}
   rxode2::model(temp) <- modelNew
-  temp2 <- temp %>%
+  temp2 <- temp |>
     rxode2::model(line)
   temp2
   

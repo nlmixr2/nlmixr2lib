@@ -2,7 +2,7 @@
 #' @param model The model as a function
 #' @param equation The modified ODE for central compartment in the model
 #' @examples
-#' readModelDb("PK_1cmt") %>% addTransit(.,3)
+#' readModelDb("PK_1cmt") |> addTransit(.,3)
 addTransit <- function(model,transit,central="central",depot="depot",transitComp ="transit",ktr="ktr"){
   checkmate::assertCharacter(central, pattern= "^[.]*[a-zA-Z]+[a-zA-Z0-9._]*$",len=1,any.missing = FALSE,min.chars = 1)
   checkmate::assertCharacter(depot,pattern= "^[.]*[a-zA-Z]+[a-zA-Z0-9._]*$",len=1,any.missing = FALSE,min.chars = 1)
@@ -47,8 +47,7 @@ addTransit <- function(model,transit,central="central",depot="depot",transitComp
   
   #modify model block 
   rxode2::model(temp) <- c(equation1, model[1:(centralLine-1)],equation2, line,model[(centralLine+1):length(model)])
-  temp2 <- temp %>%
-    rxode2::ini(equationIni)
+  temp2 <- rxode2::ini(temp, equationIni)
   temp3 <- temp2$iniDf
   w <- which(temp3$name %in% names(equationIni))
   temp3$lower[w] <- 0

@@ -2,7 +2,7 @@
 #' @param model The model as a function
 #' @param numPeripheral number of peripheral compartments to be added to the model
 #' @examples
-#' #' readModelDb("PK_1cmt_mm") %>% addComp(.,1)
+#' #' readModelDb("PK_1cmt_mm") |> addComp(.,1)
 addComp <- function(model,numPeripheral, central="central",depot= "depot",peripheralComp ="peripheral",vp="vp",vc="vc",q="q"){
   checkmate::assertCharacter(central,len=1,any.missing = FALSE,min.chars = 1)
   checkmate::assertCharacter(depot,len=1,any.missing = FALSE,min.chars = 1)
@@ -81,8 +81,7 @@ addComp <- function(model,numPeripheral, central="central",depot= "depot",periph
    }
  }
  names(equationIni) <- ini
-  temp2 <- temp %>%
-    rxode2::ini(equationIni)
+  temp2 <- rxode2::ini(temp, equationIni)
  temp3 <- temp2$iniDf
  rxode2::ini(temp) <- temp3
  temp    
