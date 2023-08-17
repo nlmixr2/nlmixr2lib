@@ -32,7 +32,7 @@ test_that("removeComp removes k21 in model block",{
 
 test_that("removeComp removes vp in model block",{
   modelTest <- readModelDb("PK_2cmt_des")
-  suppressMessages(modelUpdate <- removeDepot(modelTest, central="central",depot="depot"))
+  suppressMessages(modelUpdate <- removeComp(modelTest, central="central",depot="depot"))
   temp <- rxode2::assertRxUi(modelUpdate)
   mv <- rxode2::rxModelVars(temp)
   expect_equal("vp" %in% mv$lhs,FALSE)
@@ -40,7 +40,7 @@ test_that("removeComp removes vp in model block",{
 
 test_that("removeComp removes q in model block",{
   modelTest <- readModelDb("PK_2cmt_des")
-  suppressMessages(modelUpdate <- removeDepot(modelTest, central="central",depot="depot"))
+  suppressMessages(modelUpdate <- removeComp(modelTest, central="central",depot="depot"))
   temp <- rxode2::assertRxUi(modelUpdate)
   mv <- rxode2::rxModelVars(temp)
   expect_equal("q" %in% mv$lhs,FALSE)
