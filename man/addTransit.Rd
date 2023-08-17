@@ -16,7 +16,16 @@ addTransit(
 \arguments{
 \item{model}{The model as a function}
 
-\item{equation}{The modified ODE for central compartment in the model}
+\item{transit}{the number of transit compartments to be added}
+
+\item{central}{a character vector representing the central
+compartment}
+
+\item{depot}{a character vector representing the depot compartment}
+
+\item{transitComp}{the transit compartment prefix}
+
+\item{ktr}{the parameter name for the transit compartment rate}
 }
 \description{
 To add transit compartments to the model

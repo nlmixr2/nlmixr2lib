@@ -3,6 +3,9 @@
 #' @param central central compartment name
 #' @param depot depot name
 #' @param absRate absorption rate
+#' @param lag A boolean representing if you are going to add a lag to this compartment
+#' @param tlag a character vector representing the lag time
+#' @return a model with the depot added
 #' @export
 #' @examples
 #' # most of the examples in the model library already have a depot.
@@ -11,11 +14,10 @@
 #'   removeDepot() |>
 #'   addDepot()
 addDepot <- function(model,central="central",depot="depot",absRate="ka",lag=FALSE,tlag="lagD") {
-  #browser()
-  checkmate::assertCharacter(central,pattern= "^[.]*[a-zA-Z]+[a-zA-Z0-9._]*$", len=1,any.missing = FALSE,min.chars = 1)
   checkmate::assertCharacter(depot,pattern= "^[.]*[a-zA-Z]+[a-zA-Z0-9._]*$", len=1,any.missing = FALSE,min.chars = 1)
   checkmate::assertCharacter(absRate,pattern= "^[.]*[a-zA-Z]+[a-zA-Z0-9._]*$",len=1,any.missing = FALSE,min.chars = 1)
-  checkmate::assertLogical(lag,len=1,any.missing = FALSE)
+checkmate::assertLogical(lag,len=1,any.missing = FALSE)
+  checkmate::assertCharacter(tlag,pattern= "^[.]*[a-zA-Z]+[a-zA-Z0-9._]*$", len=1,any.missing = FALSE,min.chars = 1)
   temp  <- rxode2::assertRxUi(model)
   mv <- rxode2::rxModelVars(temp)
   if (absRate %in% mv$params) {
@@ -52,7 +54,7 @@ addDepot <- function(model,central="central",depot="depot",absRate="ka",lag=FALS
   lagODE <- paste0("alag(",depot,") <- ",tlag)
   
   #Modify model block
-  if (lag==FALSE){
+  if (lag==FALSE) {
     rxode2::model(temp) <- c(absrateModel,fdepotModel,model[1:(centralLine-1)],depotODE, fdepotODE, line, model[(centralLine+1):length(model)])
   }else{
     rxode2::model(temp) <- c(absrateModel,fdepotModel,lagModel,model[1:(centralLine-1)],depotODE, fdepotODE,lagODE, line, model[(centralLine+1):length(model)])

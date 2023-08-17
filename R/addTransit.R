@@ -1,6 +1,9 @@
 #' To add transit compartments to the model
 #' @param model The model as a function
-#' @param equation The modified ODE for central compartment in the model
+#' @param transit the number of transit compartments to be added
+#' @param transitComp the transit compartment prefix
+#' @param ktr the parameter name for the transit compartment rate
+#' @inheritParams addComp
 #' @export
 #' @examples
 #' readModelDb("PK_1cmt_des") |>
@@ -10,6 +13,7 @@ addTransit <- function(model,transit,central="central",depot="depot",transitComp
   checkmate::assertCharacter(depot,pattern= "^[.]*[a-zA-Z]+[a-zA-Z0-9._]*$",len=1,any.missing = FALSE,min.chars = 1)
   checkmate::assertCharacter(transitComp,pattern= "^[.]*[a-zA-Z]+[a-zA-Z0-9._]*$",len=1,any.missing = FALSE,min.chars = 1)
   checkmate::assertNumeric(transit, lower=1, upper=10)
+  checkmate::assertCharacter(ktr,pattern= "^[.]*[a-zA-Z]+[a-zA-Z0-9._]*$",len=1,any.missing = FALSE,min.chars = 1)
   temp  <- rxode2::assertRxUi(model)
   mv <- rxode2::rxModelVars(temp)
   if (!(central %in% mv$state)){
@@ -31,28 +35,25 @@ addTransit <- function(model,transit,central="central",depot="depot",transitComp
   #Modify ODE for central compartment
   rhs <- sub(".*<-\\s*","",center)
   rhs <- sub("\\s*ka\\s*\\*\\s*depot", "",rhs)
-  line <- str2lang(paste0("d/dt(",central,") <- ",ktr,transit,"*",transitComp,transit,deparse(str2lang(rhs))))
+  line <- str2lang(paste0("d/dt(",central,") <- ",ktr,"*",transitComp,transit,deparse(str2lang(rhs))))
   
   
   #ODEs for transit compartments
-  equation1 <- list(str2lang(paste0(ktr,"1 <- exp(l",ktr,"1)")))
-  equation2 <- list(str2lang(paste0("d/dt(",transitComp,"1) <- ka*",depot," - ",ktr,"1*",transitComp,"1")))
+  equation1 <- list(str2lang(paste0(ktr," <- exp(l",ktr,")")))
+  equation2 <- list(str2lang(paste0("d/dt(",transitComp,"1) <- ka*",depot," - ",ktr,"*",transitComp,"1")))
   if(transit>1){
     for (i in 2:transit){
-      equation1 <- c(equation1,str2lang(paste0("ktr",i,"<-exp(lktr",i,")")))
-      equation2 <- c(equation2,str2lang(paste0("d/dt(",transitComp,i,")<- ",ktr,i-1,"*",transitComp,i-1,"-",ktr,i,"*",transitComp,i)))
+      equation2 <- c(equation2,str2lang(paste0("d/dt(",transitComp,i,")<- ",ktr,"*",transitComp,i-1,"-",ktr,"*",transitComp,i)))
   }
   }
   #modify ini block
-  equationIni <- rep(0.05,transit)
-  names(equationIni)<-paste0("l",ktr,1:transit)
+  equationIni <- setNames(0.05, paste0("l",ktr))
   
   #modify model block 
   rxode2::model(temp) <- c(equation1, model[1:(centralLine-1)],equation2, line,model[(centralLine+1):length(model)])
   temp2 <- rxode2::ini(temp, equationIni)
   temp3 <- temp2$iniDf
   w <- which(temp3$name %in% names(equationIni))
-  temp3$lower[w] <- 0
   
   #Update labels in ini block
   for (i in 1:transit){

@@ -21,6 +21,13 @@ addDepot(
 \item{depot}{depot name}
 
 \item{absRate}{absorption rate}
+
+\item{lag}{A boolean representing if you are going to add a lag to this compartment}
+
+\item{tlag}{a character vector representing the lag time}
+}
+\value{
+a model with the depot added
 }
 \description{
 To convert from Infusion/intravenous administration to first order oral absorption

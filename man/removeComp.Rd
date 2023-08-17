@@ -19,6 +19,24 @@ removeComp(
 \item{model}{The model as a function}
 
 \item{peripheral}{The number of peripheral compartments to remove}
+
+\item{central}{a character vector representing the central
+compartment}
+
+\item{depot}{a character vector representing the depot compartment}
+
+\item{peripheralComp}{A character vector representing the prefix of
+peripheral compartments}
+
+\item{vp}{parameter representing the peripheral volume of the first
+(central) compartment and the prefix of the other compartments}
+
+\item{vc}{parameter representing the central volume of the first
+(central) compartment and the prefix of the other compartment's
+volume}
+
+\item{q}{inter-compartmental clearance parameter or prefix
+(depending on the model)}
 }
 \description{
 To remove peripheral compartments from the model

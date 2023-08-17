@@ -17,6 +17,15 @@ removeTransit(
 \item{model}{The model as a function}
 
 \item{transit}{The number of transit compartments to remove}
+
+\item{central}{a character vector representing the central
+compartment}
+
+\item{depot}{a character vector representing the depot compartment}
+
+\item{transitComp}{the transit compartment prefix}
+
+\item{ktr}{the parameter name for the transit compartment rate}
 }
 \description{
 To remove transit compartments from the model

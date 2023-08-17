@@ -9,8 +9,17 @@ removeDepot(model, central = "central", depot = "depot")
 \arguments{
 \item{model}{The model as a function}
 
-\item{equation}{The modified ODE for central compartment in the model}
+\item{central}{This is a character vector that represents the central compartment in the model}
+
+\item{depot}{This is a character vector that represents the depot in the model}
+}
+\value{
+Returns a model with the depot from a first order absorption model removed
 }
 \description{
 To convert from first order oral absorption to IV/Intravenous
+}
+\examples{
+readModelDb("PK_1cmt_des") |>
+  removeDepot()
 }

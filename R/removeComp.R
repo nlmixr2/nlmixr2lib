@@ -1,6 +1,7 @@
 #' To remove peripheral compartments from the model
 #' @param model The model as a function
 #' @param peripheral The number of peripheral compartments to remove
+#' @inheritParams addComp
 #' @examples
 #' @export
 #' library(rxode2)
