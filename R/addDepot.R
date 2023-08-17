@@ -6,7 +6,7 @@
 #' @examples
 #' library(rxode2)
 #' readModelDb("PK_1cmt") %>% addDepot()
-addDepot <- function(model,central="central",depot="depot",absRate="ka",lag=FALSE,tlag="lagD"){
+addDepot <- function(model,central="central",depot="depot",absRate="ka",lag=FALSE,tlag="lagD") {
   #browser()
   checkmate::assertCharacter(central,pattern= "^[.]*[a-zA-Z]+[a-zA-Z0-9._]*$", len=1,any.missing = FALSE,min.chars = 1)
   checkmate::assertCharacter(depot,pattern= "^[.]*[a-zA-Z]+[a-zA-Z0-9._]*$", len=1,any.missing = FALSE,min.chars = 1)
@@ -14,16 +14,16 @@ addDepot <- function(model,central="central",depot="depot",absRate="ka",lag=FALS
   checkmate::assertLogical(lag,len=1,any.missing = FALSE)
   temp  <- rxode2::assertRxUi(model)
   mv <- rxode2::rxModelVars(temp)
-  if (absRate %in% mv$params){
+  if (absRate %in% mv$params) {
     stop("'",absRate,"' cannot be in the model")
   }
-  if (!(central %in% mv$state)){
-     stop("'",central,"' needs to be in the model")
+  if (!(central %in% mv$state)) {
+    stop("'",central,"' needs to be in the model")
   }
-  if (depot %in% mv$state){
+  if (depot %in% mv$state) {
     stop("'",depot,"' cannot be in the model")
   }
-  if (any(grepl("^transit",mv$state))){
+  if (any(grepl("^transit",mv$state))) {
     transit<- eval(str2lang(paste0("rxode2::modelExtract(temp,d/dt(transit1),lines=TRUE)")))
     transitLine <- attr(transit,"lines")
     transitRhs <- sub(".*<-\\s*","",transit)
@@ -62,13 +62,18 @@ addDepot <- function(model,central="central",depot="depot",absRate="ka",lag=FALS
   rateIni <- str2lang(paste0("l",absRate," <-0.02"))
   lfdepotIni <- str2lang(paste0("lf",depot," <-0.04"))
   lalagIni <- str2lang(paste0("la",tlag," <-0.09"))
-  if(lag==FALSE){
-  temp <- temp%>%ini(rateIni,append=0)%>%ini(lfdepotIni)
-  temp2 <- temp$iniDf
-  suppressMessages(temp2$label[temp2$name==paste0("l",absRate)] <- paste0("First order absorption rate (",absRate,")"))
-  suppressMessages(temp2$label[temp2$name==paste0("lf",depot)] <- "Bioavailability (F)")
-  }else{
-    temp <- temp%>%ini(rateIni,append=0)%>%ini(lfdepotIni)%>%ini(lalagIni)
+  if (lag==FALSE) {
+    temp <- temp %>%
+      rxode2::ini(rateIni,append=0) %>%
+      rxode2::ini(lfdepotIni)
+    temp2 <- temp$iniDf
+    suppressMessages(temp2$label[temp2$name==paste0("l",absRate)] <- paste0("First order absorption rate (",absRate,")"))
+    suppressMessages(temp2$label[temp2$name==paste0("lf",depot)] <- "Bioavailability (F)")
+  } else {
+    temp <- temp %>%
+      rxode2::ini(rateIni,append=0) %>%
+      rxode2::ini(lfdepotIni) %>%
+      rxode2::ini(lalagIni) 
     temp2 <- temp$iniDf
     suppressMessages(temp2$label[temp2$name==paste0("l",absRate)] <- paste0("First order absorption rate (",absRate,")"))
     suppressMessages(temp2$label[temp2$name==paste0("lf",depot)] <- "Bioavailability (F)")
@@ -78,7 +83,7 @@ addDepot <- function(model,central="central",depot="depot",absRate="ka",lag=FALS
   
   #return
   temp
- }
+}
 
 
 

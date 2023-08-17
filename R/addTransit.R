@@ -47,7 +47,8 @@ addTransit <- function(model,transit,central="central",depot="depot",transitComp
   
   #modify model block 
   rxode2::model(temp) <- c(equation1, model[1:(centralLine-1)],equation2, line,model[(centralLine+1):length(model)])
-  temp2 <- temp%>%ini(equationIni)
+  temp2 <- temp %>%
+    rxode2::ini(equationIni)
   temp3 <- temp2$iniDf
   w <- which(temp3$name %in% names(equationIni))
   temp3$lower[w] <- 0

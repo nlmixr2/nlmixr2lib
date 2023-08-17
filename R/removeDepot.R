@@ -33,9 +33,9 @@ removeDepot <- function(model,central="central",depot="depot"){
   }
   
   if ("fdepot" %in% mv$lhs){
-    temp <- temp%>%model(-ka,-fdepot,-f(depot),-d/dt(depot))
+    temp <- rxode2::model(temp, -ka,-fdepot,-f(depot),-d/dt(depot))
   }else{
-    temp <- temp%>%model(-ka,-d/dt(depot))
+    temp <- rxode2::model(temp, -ka,-d/dt(depot))
   }
   temp
 }

@@ -86,17 +86,8 @@ removeComp <- function(model,peripheral,central="central",depot="depot",peripher
   
   #Insert modified ODE for central compartment into the model and modify model{}
   rxode2::model(temp) <- modelNew
-  # mvNew <- rxode2::rxModelVars(temp)
-  # indices <- grep(peripheralComp,mvNew$state)
-  # obj <- mvNew$state[indices]
-  # rhsNew=list()
-  # for (i in 1:length(obj)){
-  #   rhsNew <- c(rhsNew,paste0(deparse(str2lang(rhs)),deparse(str2lang(paste0("- k1",i+1,"*",central,"+ k",i+1,"1 *",peripheralComp,i)))))
-  #   
-  # }
-  #line <- paste0("d/dt(",central,") <- ",rhsNew)
-  temp2 <- temp%>%model(line)
-  #rxode2::model(temp)<- c(modelNew[1:(centralLine-1)],line,modelNew[(centralLine+1):length(modelNew)])
+  temp2 <- temp %>%
+    rxode2::model(line)
   temp2
   
   

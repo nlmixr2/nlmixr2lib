@@ -3,7 +3,6 @@
 #' @param numPeripheral number of peripheral compartments to be added to the model
 #' @examples
 #' #' readModelDb("PK_1cmt_mm") %>% addComp(.,1)
-
 addComp <- function(model,numPeripheral, central="central",depot= "depot",peripheralComp ="peripheral",vp="vp",vc="vc",q="q"){
   checkmate::assertCharacter(central,len=1,any.missing = FALSE,min.chars = 1)
   checkmate::assertCharacter(depot,len=1,any.missing = FALSE,min.chars = 1)
@@ -62,16 +61,6 @@ addComp <- function(model,numPeripheral, central="central",depot= "depot",periph
   }
   center <- paste0(rhs,newElements)
   
-  #Build new model block{}
-  # 
-  # if (vp %in% mv$lhs){
-  #   vpLine <- eval(str2lang(paste0("rxode2::modelExtract(temp,",vp,",lines=TRUE)")))
-  #   vpLine <- attr(vpLine,"lines")
-  #   rateLine <- eval(str2lang(paste0("rxode2::modelExtract(temp,k12,lines=TRUE)")))
-  #   rateLine <- attr(rateLine,"lines")
-  #   rxode2::model(temp) <- c(model[1:(vpLine-1)],periVP,periq,model[(vpLine+1):(rateLine-1)],rates,center,periODE,model[(length(model)-1):length(model)])
-  #   
-  # }else{
   vcLine <- eval(str2lang(paste0("rxode2::modelExtract(temp,",vc,",lines=TRUE)")))
   vcLine <- attr(vcLine,"lines")
   rxode2::model(temp) <- c(model[1:vcLine],periVP,periq,rates,center,periODE,model[(length(model)-1):length(model)])
@@ -92,14 +81,9 @@ addComp <- function(model,numPeripheral, central="central",depot= "depot",periph
    }
  }
  names(equationIni) <- ini
- temp2 <- temp%>%ini(equationIni)
+  temp2 <- temp %>%
+    rxode2::ini(equationIni)
  temp3 <- temp2$iniDf
  rxode2::ini(temp) <- temp3
- temp
-
-    
-    
-    
-    
-  
+ temp    
 }

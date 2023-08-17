@@ -1,11 +1,11 @@
 test_that("removeDepot throws error in model with no depot compartment",{
   
-  expect_error(removeDepot(readModelDb("PK_2cmt_mm"), "central", "depot"), "'depot' needs to be in the model")
+  expect_error(removeDepot(readModelDb("PK_2cmt_des"), "central", "depot"), "'depot' needs to be in the model")
 })
 
 test_that("removeDepot throws error in model with invalid central compartment",{
   
-  expect_error(removeDepot(readModelDb("PK_3cmt_mm"), "cent", "depot"), "'cent' needs to be in the model")
+  expect_error(removeDepot(readModelDb("PK_3cmt_des"), "cent", "depot"), "'cent' needs to be in the model")
 })
 
 test_that("removeDepot removes depot compartment", {

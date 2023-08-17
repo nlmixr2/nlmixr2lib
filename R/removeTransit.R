@@ -5,7 +5,6 @@
 #' library(rxode2)
 #' readModelDb("PK_1cmt") %>% removeTransit(.,3)
 removeTransit <- function(model,transit,central="central",depot="depot",transitComp ="transit", ktr="ktr"){
-  browser()
   checkmate::assertCharacter(central, pattern= "^[.]*[a-zA-Z]+[a-zA-Z0-9._]*$",len=1,any.missing = FALSE,min.chars = 1)
   checkmate::assertCharacter(depot, pattern= "^[.]*[a-zA-Z]+[a-zA-Z0-9._]*$",len=1,any.missing = FALSE,min.chars = 1)
   checkmate::assertCharacter(transitComp, pattern= "^[.]*[a-zA-Z]+[a-zA-Z0-9._]*$",len=1,any.missing = FALSE,min.chars = 1)
@@ -80,7 +79,7 @@ removeTransit <- function(model,transit,central="central",depot="depot",transitC
   # rhs <- sub(".*<-\\s*","",center)
   # rhs <- sub(paste0("\\s*",ktr,"\\d*\\s*\\*\\s*",transitComp,"\\d*"),"",rhs)
   # line <- str2lang(paste0("d/dt(",central,") <- ",ktr,(totalTransit - transit),"*",transitComp,(totalTransit - transit),deparse(str2lang(rhs))))
-  temp <- temp%>%model(line)
+  temp <- rxode2::model(temp, line)
   
   #return 
   temp

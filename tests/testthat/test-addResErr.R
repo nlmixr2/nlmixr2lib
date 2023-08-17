@@ -15,7 +15,7 @@ test_that("addResErr with each expected residual distribution and combinations",
     functionBody(
       modelUpdateProp
     )[[4]][[2]][[6]],
-    str2lang("Cc ~ prop(CCpropSd)")
+    str2lang("Cc ~ prop(CcpropSd)")
   )
   expect_equal(
     functionBody(
