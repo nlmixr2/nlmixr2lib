@@ -22,6 +22,12 @@
     <loc>https://nlmixr2.github.io/nlmixr2lib/news/index.html</loc>
   </url>
   <url>
+    <loc>https://nlmixr2.github.io/nlmixr2lib/reference/addComp.html</loc>
+  </url>
+  <url>
+    <loc>https://nlmixr2.github.io/nlmixr2lib/reference/addDepot.html</loc>
+  </url>
+  <url>
     <loc>https://nlmixr2.github.io/nlmixr2lib/reference/addDirToModelDb.html</loc>
   </url>
   <url>
@@ -29,6 +35,9 @@
   </url>
   <url>
     <loc>https://nlmixr2.github.io/nlmixr2lib/reference/addResErr.html</loc>
+  </url>
+  <url>
+    <loc>https://nlmixr2.github.io/nlmixr2lib/reference/addTransit.html</loc>
   </url>
   <url>
     <loc>https://nlmixr2.github.io/nlmixr2lib/reference/index.html</loc>
@@ -41,6 +50,15 @@
   </url>
   <url>
     <loc>https://nlmixr2.github.io/nlmixr2lib/reference/readModelDb.html</loc>
+  </url>
+  <url>
+    <loc>https://nlmixr2.github.io/nlmixr2lib/reference/removeComp.html</loc>
+  </url>
+  <url>
+    <loc>https://nlmixr2.github.io/nlmixr2lib/reference/removeDepot.html</loc>
+  </url>
+  <url>
+    <loc>https://nlmixr2.github.io/nlmixr2lib/reference/removeTransit.html</loc>
   </url>
   <url>
     <loc>https://nlmixr2.github.io/nlmixr2lib/reference/searchReplace.html</loc>
