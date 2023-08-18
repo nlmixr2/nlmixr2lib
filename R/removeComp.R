@@ -5,9 +5,8 @@
 #' @examples
 #' @export
 #' library(rxode2)
-#' readModelDb("PK_1cmt") |> removeComp(.,3)
+#' readModelDb("PK_2cmt_des") |> removeComp(1)
 removeComp <- function(model,peripheral,central="central",depot="depot",peripheralComp ="peripheral",vp="vp",vc="vc",q="q"){
-  
   checkmate::assertCharacter(central, pattern= "^[.]*[a-zA-Z]+[a-zA-Z0-9._]*$",len=1,any.missing = FALSE,min.chars = 1)
   checkmate::assertCharacter(depot, pattern= "^[.]*[a-zA-Z]+[a-zA-Z0-9._]*$",len=1,any.missing = FALSE,min.chars = 1)
   checkmate::assertCharacter(peripheralComp, pattern= "^[.]*[a-zA-Z]+[a-zA-Z0-9._]*$",len=1,any.missing = FALSE,min.chars = 1)
@@ -22,7 +21,6 @@ removeComp <- function(model,peripheral,central="central",depot="depot",peripher
   
   temp  <- rxode2::assertRxUi(model)
   
-  #browser()
   mv <- rxode2::rxModelVars(temp)
   
   
@@ -48,8 +46,9 @@ removeComp <- function(model,peripheral,central="central",depot="depot",peripher
   
   if(missing(peripheral)){
     peripheral <- totalPeripheral
-    line <- str2lang(paste0("d/dt(",central,") <- ",rhs))
+    
   }
+  line <- str2lang(paste0("d/dt(",central,") <- ",rhs))
   
   #Modify ini{}
   temp2<- temp$iniDf
@@ -61,12 +60,12 @@ removeComp <- function(model,peripheral,central="central",depot="depot",peripher
       ini1 <- c(ini1,paste0("l",vp,i+1))
       ini2 <- c(ini2,paste0("l",q,i+1))
       
-  }
+    }
   }
   temp4 <- temp3[!(temp3 %in% c(ini1,ini2))]
   temp2 <- temp2[temp2$name %in% temp4, ]
   rxode2::ini(temp) <-temp2
-  #browser()
+ 
   #Locate the ODEs for peripheral compartments to be deleted
   obj=c()
   for (i in totalPeripheral:(totalPeripheral-peripheral+1)){
@@ -88,21 +87,8 @@ removeComp <- function(model,peripheral,central="central",depot="depot",peripher
   
   #Insert modified ODE for central compartment into the model and modify model{}
   rxode2::model(temp) <- modelNew
-  temp2 <- temp |>
-    rxode2::model(line)
-  temp2
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-}
+  temp <- rxode2::model(temp,line)
 
+  temp
+}

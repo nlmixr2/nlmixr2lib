@@ -44,7 +44,7 @@ addTransit <- function(model,transit,central="central",depot="depot",transitComp
   if(transit>1){
     for (i in 2:transit){
       equation2 <- c(equation2,str2lang(paste0("d/dt(",transitComp,i,")<- ",ktr,"*",transitComp,i-1,"-",ktr,"*",transitComp,i)))
-  }
+    }
   }
   #modify ini block
   equationIni <- setNames(0.05, paste0("l",ktr))
