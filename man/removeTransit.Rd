@@ -38,6 +38,6 @@ To remove transit compartments from the model
 # In this example the transit is added and then a few are removed
 
 readModelDb("PK_1cmt_des") |>
-   addTransit(4)  |>
-   removeTransit(3)
+  addTransit(4) |>
+  removeTransit(3)
 }

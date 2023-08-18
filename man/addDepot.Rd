@@ -34,7 +34,7 @@ To convert from Infusion/intravenous administration to first order oral absorpti
 }
 \examples{
 # most of the examples in the model library already have a depot.
-# for this example we will remove the depot and then add it back 
+# for this example we will remove the depot and then add it back
 readModelDb("PK_1cmt_des") |>
   removeDepot() |>
   addDepot()
