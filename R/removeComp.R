@@ -68,7 +68,7 @@ removeComp <- function(model,peripheral,central="central",depot="depot",peripher
   rxode2::ini(temp) <-temp2
  
   #Locate the ODEs for peripheral compartments to be deleted
-  obj=c()
+  obj <- NULL
   for (i in totalPeripheral:(totalPeripheral-peripheral+1)){
     obj1 <- eval(str2lang(paste0("rxode2::modelExtract(temp,d/dt(",peripheralComp,i,"), lines = TRUE)")))
     obj2 <- eval(str2lang(paste0("rxode2::modelExtract(temp, k1",i+1,",lines = TRUE)")))

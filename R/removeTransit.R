@@ -63,7 +63,7 @@ removeTransit <- function(model,transit,central="central",depot="depot",transitC
   }
 
   #Modify model{}
-  obj <- c()
+  obj <- NULL
   indices <- totalTransit:(totalTransit - transit + 1)
   obj <- unlist(lapply(indices, function(i) {
     obj1 <- eval(str2lang(paste0("rxode2::modelExtract(temp, d/dt(transit", i, "), lines = TRUE)")))
