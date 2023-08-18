@@ -89,6 +89,7 @@ addDirToModelDb <- function(dir, modeldb=data.frame()) {
 
 #' @describeIn addDirToModelDb Add a file to the modeldb
 #' @param file The file name (without the directory name)
+#' @return the model database
 #' @export
 addFileToModelDb <- function(dir, file, modeldb) {
   fileName <- file.path(dir, file)

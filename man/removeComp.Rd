@@ -38,6 +38,13 @@ volume}
 \item{q}{inter-compartmental clearance parameter or prefix
 (depending on the model)}
 }
+\value{
+rxode2 model function/ui with a compartment removed
+}
 \description{
 To remove peripheral compartments from the model
+}
+\examples{
+library(rxode2)
+readModelDb("PK_2cmt_des") |> removeComp(1)
 }

@@ -27,6 +27,9 @@ compartment}
 
 \item{ktr}{the parameter name for the transit compartment rate}
 }
+\value{
+a model with transit compartment added
+}
 \description{
 To add transit compartments to the model
 }

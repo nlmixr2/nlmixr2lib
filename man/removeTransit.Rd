@@ -27,6 +27,9 @@ compartment}
 
 \item{ktr}{the parameter name for the transit compartment rate}
 }
+\value{
+rxode2 model with transit compartment removed
+}
 \description{
 To remove transit compartments from the model
 }

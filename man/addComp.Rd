@@ -39,6 +39,9 @@ volume}
 \item{q}{inter-compartmental clearance parameter or prefix
 (depending on the model)}
 }
+\value{
+A rxode2 model function with an additional compartment added
+}
 \description{
 To add additional compartments to the model
 }

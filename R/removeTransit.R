@@ -3,6 +3,7 @@
 #' @param transit The number of transit compartments to remove
 #' @inheritParams addTransit
 #' @inheritParams addComp
+#' @return rxode2 model with transit compartment removed
 #' @export
 #' @examples
 #'

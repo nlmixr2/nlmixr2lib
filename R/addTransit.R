@@ -4,6 +4,7 @@
 #' @param transitComp the transit compartment prefix
 #' @param ktr the parameter name for the transit compartment rate
 #' @inheritParams addComp
+#' @return a model with transit compartment added
 #' @export
 #' @examples
 #' readModelDb("PK_1cmt_des") |>

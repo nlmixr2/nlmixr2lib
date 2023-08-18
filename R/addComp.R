@@ -14,6 +14,7 @@
 #'   volume
 #' @param q inter-compartmental clearance parameter or prefix
 #'   (depending on the model)
+#' @return A rxode2 model function with an additional compartment added
 #' @export
 #' @examples
 #' readModelDb("PK_1cmt_des") |>
