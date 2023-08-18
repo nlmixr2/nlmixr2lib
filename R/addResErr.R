@@ -25,9 +25,9 @@ addResErr <- function(model, reserr) {
   checkmate::assert_character(paramErr, len = 1, min.chars = 1)
   errFunMap <-
     c(
-      addSd="add(%s)",
-      propSd="prop(%s)",
-      lnormSd="lnorm(%s)"
+      addSd = "add(%s)",
+      propSd = "prop(%s)",
+      lnormSd = "lnorm(%s)"
     )
   defaultIniEst <- c(addSd = 1, propSd = 0.5, lnormSd = 0.5)
   # Confirm that the code is up to date

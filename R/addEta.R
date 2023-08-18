@@ -17,7 +17,7 @@
 #' @param eta vector with the parameters to add random effects (sometimes
 #'   referred to as inter-individual variability, IIV) on
 #' @return The model with eta added to the requested parameters
-#' @export 
+#' @export
 #' @examples
 #' library(rxode2)
 #' readModelDb("PK_1cmt") |> addEta("ka")

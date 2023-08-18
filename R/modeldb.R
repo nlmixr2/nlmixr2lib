@@ -40,16 +40,16 @@ buildModelDb <- function() {
     )
   savefile <- file.path(packageDirectory, "data/modeldb.rda")
   message("Saving the modeldb to ", savefile)
-  save(modeldb, file=savefile, compress="bzip2", version=2, ascii=FALSE)
+  save(modeldb, file = savefile, compress = "bzip2", version = 2, ascii = FALSE)
   message("Done saving the modeldb to ", savefile)
 
   colDesc <-
     list(
-      name="Model name that can be used to extract the model from the model library",
-      description="Model description in free from text; in model itself",
-      parameters="A comma separated string listing either the parameter in the model defined by population/individual effects or a population effect parameter",
-      DV="The definition of the dependent variable(s)",
-      filename="Filename of the model.  By default these are installed in the model library and read on demand"
+      name = "Model name that can be used to extract the model from the model library",
+      description = "Model description in free from text; in model itself",
+      parameters = "A comma separated string listing either the parameter in the model defined by population/individual effects or a population effect parameter",
+      DV = "The definition of the dependent variable(s)",
+      filename = "Filename of the model.  By default these are installed in the model library and read on demand"
     )
   # The names must exactly match
   stopifnot(all(names(modeldb) %in% names(colDesc)))
@@ -63,7 +63,7 @@ buildModelDb <- function() {
         collapse = ""
       )
     )
-  paste(formatText, describeText, sep="\n")
+  paste(formatText, describeText, sep = "\n")
 }
 
 #' Add a directory to the modeldb
@@ -72,7 +72,7 @@ buildModelDb <- function() {
 #' @param modeldb The starting modeldb data.frame
 #' @return The updated modeldb data.frame
 #' @export
-addDirToModelDb <- function(dir, modeldb=data.frame()) {
+addDirToModelDb <- function(dir, modeldb = data.frame()) {
   filesToLoad <-
     list.files(
       path = dir,
@@ -102,7 +102,8 @@ addFileToModelDb <- function(dir, file, modeldb) {
   packageStartupMessage("Loading ", modelName, " from ", fileName)
   if (modelName != tools::file_path_sans_ext(basename(file))) {
     stop("Loading model failed due to filename/modelName mismatch: ", fileName,
-         call.=FALSE) # nocov
+      call. = FALSE
+    ) # nocov
   }
 
   # Parse the model to get the fixed effects and DV parameters
@@ -123,7 +124,7 @@ addFileToModelDb <- function(dir, file, modeldb) {
   # applicable
   .ref <- .getVarLhs(mod)
   for (nm in names(.ref)) {
-   modParamFixed[modParamFixed %in% nm] <- .ref[nm]
+    modParamFixed[modParamFixed %in% nm] <- .ref[nm]
   }
 
   # Error model
@@ -134,10 +135,10 @@ addFileToModelDb <- function(dir, file, modeldb) {
 
   ret <-
     data.frame(
-      name=modelName,
-      description=description,
-      parameters=paste(modParamFixed, collapse = ","),
-      DV=paramErr,
+      name = modelName,
+      description = description,
+      parameters = paste(modParamFixed, collapse = ","),
+      DV = paramErr,
       filename = fileName
     )
   modeldb <- rbind(modeldb, ret)
