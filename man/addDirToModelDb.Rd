@@ -18,6 +18,8 @@ addFileToModelDb(dir, file, modeldb)
 }
 \value{
 The updated modeldb data.frame
+
+the model database
 }
 \description{
 Add a directory to the modeldb
