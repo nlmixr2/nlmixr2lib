@@ -48,7 +48,7 @@ addTransit <- function(model,transit,central="central",depot="depot",transitComp
     }
   }
   #modify ini block
-  equationIni <- setNames(0.05, paste0("l",ktr))
+  equationIni <- stats::setNames(0.05, paste0("l",ktr))
   
   #modify model block 
   rxode2::model(temp) <- c(equation1, model[1:(centralLine-1)],equation2, line,model[(centralLine+1):length(model)])
