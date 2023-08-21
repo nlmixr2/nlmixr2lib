@@ -10,7 +10,7 @@ tmdd_2cmt_QSS_CLV_VmTtotssTmult <- function() {
     lT0    <- 0.1  ; label("")
     lTmult <- 0.4  ; label("")
     lTtotss<- 0.5  ; label("Total target concentration")
-    lkeq   <- 0.35 ;
+    lkeq   <- 0.35 ; label("")
     lfdepot<- 0.4  ; label("Bioavailability (F)")
     propSd <- 0.5  ; label("Proportional residual error (fraction)")
   })

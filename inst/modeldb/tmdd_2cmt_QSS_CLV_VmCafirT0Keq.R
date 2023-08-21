@@ -8,7 +8,7 @@ tmdd_2cmt_QSS_CLV_VmCafirT0Keq <- function() {
     lvp    <- 0.38 ; label("Peripheral volume of distribution (Vp)")
     lvm    <- 0.1  ; label("maximum target-mediated rate of elimination (mg/L/d)")
     lT0    <- 0.36 ; label("Intial target concentration (T0)")
-    lkeq   <- 0.35 ;
+    lkeq   <- 0.35 ; label("")
     lcafir  <- 0.1; label ("Averaged Free target concentration to Initial target concentration Ratio")
     lfdepot   <- 0.4; label("Bioavailability (F)")
     propSd <- 0.5 ; label("Proportional residual error (fraction)")
