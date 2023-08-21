@@ -27,7 +27,7 @@ This function gets a model from the available model library
 This is a very first draft just to look at the proof of concept
 }
 \examples{
-modellib(name="PK_1cmt")
-modellib(name="PK_1cmt", eta = c("ka", "vc"), reserr = "addSd")
-modellib(name="PK_1cmt", reserr = "addSd")
+modellib(name = "PK_1cmt")
+modellib(name = "PK_1cmt", eta = c("ka", "vc"), reserr = "addSd")
+modellib(name = "PK_1cmt", reserr = "addSd")
 }

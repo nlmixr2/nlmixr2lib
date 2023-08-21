@@ -50,7 +50,7 @@ test_that("addResErr with each expected residual distribution and combinations",
 
 test_that("addResErr with named numeric values sets the reserr", {
   model <- readModelDb("PK_1cmt")
-  suppressMessages(modelUpdateAdd <- addResErr(model, reserr = c(addSd=10)))
+  suppressMessages(modelUpdateAdd <- addResErr(model, reserr = c(addSd = 10)))
   suppressMessages(expect_equal(
     nlmixr2est::fixef(rxode2::rxode(modelUpdateAdd)),
     c(lka = 0.45, lcl = 1, lvc = 3.45, CcaddSd = 10)

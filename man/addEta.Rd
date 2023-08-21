@@ -20,5 +20,5 @@ Add random effects to a model
 }
 \examples{
 library(rxode2)
-readModelDb("PK_1cmt") \%>\% addEta("ka")
+readModelDb("PK_1cmt") |> addEta("ka")
 }

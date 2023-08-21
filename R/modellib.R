@@ -14,13 +14,13 @@
 #'
 #' @export
 #' @examples
-#' modellib(name="PK_1cmt")
-#' modellib(name="PK_1cmt", eta = c("ka", "vc"), reserr = "addSd")
-#' modellib(name="PK_1cmt", reserr = "addSd")
-modellib <- function(name=NULL, eta=NULL, reserr=NULL) {
+#' modellib(name = "PK_1cmt")
+#' modellib(name = "PK_1cmt", eta = c("ka", "vc"), reserr = "addSd")
+#' modellib(name = "PK_1cmt", reserr = "addSd")
+modellib <- function(name = NULL, eta = NULL, reserr = NULL) {
   if (is.null(name)) {
     # List available models
-    cat(paste0(modeldb$name," (",modeldb$description,")"),sep="\n")
+    cat(paste0(modeldb$name, " (", modeldb$description, ")"), sep = "\n")
     return(invisible(NULL))
   }
   modr <- readModelDb(name = name)
