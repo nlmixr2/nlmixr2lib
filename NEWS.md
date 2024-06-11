@@ -3,6 +3,8 @@
 # Version 0.2.0.9000
 
 * Add Carlsson Petri (2021) liraglutide PK model
+* `cp` and related `cpaddSd` and `cppropSd` were renamed to `Cc`, `CcaddSd` and
+  `CcpropSd` (fix #70).
 
 # Version 0.2.0
 

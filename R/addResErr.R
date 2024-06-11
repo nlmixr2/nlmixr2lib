@@ -2,8 +2,8 @@
 #'
 #' @details For \code{reserr}, the parameter will be named with the dependent
 #'   variable from the model as a prefix.  For example, if the dependent
-#'   variable in the model is \code{cp}, the parameter name for \code{propSd}
-#'   will become \code{cppropSd}.
+#'   variable in the model is \code{Cc}, the parameter name for \code{propSd}
+#'   will become \code{CcpropSd}.
 #'
 #' @param model The model as a function
 #' @param reserr The type or types of residual error (currently \code{"addSd"},

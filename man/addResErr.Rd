@@ -21,8 +21,8 @@ Add residual error to a model
 \details{
 For \code{reserr}, the parameter will be named with the dependent
   variable from the model as a prefix.  For example, if the dependent
-  variable in the model is \code{cp}, the parameter name for \code{propSd}
-  will become \code{cppropSd}.
+  variable in the model is \code{Cc}, the parameter name for \code{propSd}
+  will become \code{CcpropSd}.
 }
 \examples{
 library(rxode2)

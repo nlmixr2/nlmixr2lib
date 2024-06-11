@@ -44,8 +44,8 @@ Zhu_2017_lebrikizumab <- function() {
         0.04505552, 0.06625708, 0.39242834
       )
 
-    cppropSd <- 0.0490; label("Proportional residual error (fraction)")
-    cpaddSd <- 0.00154; label("Additive residual error (ug/mL)")
+    CcpropSd <- 0.0490; label("Proportional residual error (fraction)")
+    CcaddSd <- 0.00154; label("Additive residual error (ug/mL)")
   })
   model({
     # Normalized continuous covariate values based on footnote to Table 3
@@ -64,6 +64,6 @@ Zhu_2017_lebrikizumab <- function() {
     fdepot <- exp(lfdepot) * e_f_form_nso^FORM_NSO * e_f_form_cho_phase2^FORM_CHO_PHASE2
     Cc <- linCmt()
     f(depot) <- fdepot
-    Cc ~ add(cpaddSd) + prop(cppropSd)
+    Cc ~ add(CcaddSd) + prop(CcpropSd)
   })
 }
