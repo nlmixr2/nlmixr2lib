@@ -25,8 +25,8 @@ Kovalenko_2020_dupilumab <- function() {
     etalvm ~ 0.236
     etamtt ~ 0.525 # etamtt is assumed to be on log-scale MTT to prevent negative values; this is a difference relative to Supplementary Table 2
 
-    cppropSd <- 0.15; label("Proportional residual error (fraction)")
-    cpaddSd <- fixed(0.03); label("Additive residual error (mg/L)")
+    CcpropSd <- 0.15; label("Proportional residual error (fraction)")
+    CcaddSd <- fixed(0.03); label("Additive residual error (mg/L)")
   })
   model({
     # Weight normalization to 75 kg is assumed based on prior publication.  It
@@ -58,6 +58,6 @@ Kovalenko_2020_dupilumab <- function() {
     # No unit conversion is required to change mg/L (dosing amount/central
     # volume unit) to mg/L (measurement unit)
     Cc <- central/vc
-    Cc ~ add(cpaddSd) + prop(cppropSd)
+    Cc ~ add(CcaddSd) + prop(CcpropSd)
   })
 }

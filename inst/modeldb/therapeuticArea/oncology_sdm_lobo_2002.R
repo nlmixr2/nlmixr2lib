@@ -14,12 +14,12 @@ oncology_sdm_lobo_2002 <- function() {
     tumorVoladdSd <- c(0, 50, 1000) ; label("Additive residual error (tumor volume units)")
   })
   model({
-    # cp is the drug concentration
+    # Cc is the drug concentration
     kng <- exp(lkng)
     tau <- exp(ltau)
     ec50 <- exp(lec50)
 
-    drugEffectTumorVol <- kmax*cp/(ec50 + cp)
+    drugEffectTumorVol <- kmax*Cc/(ec50 + Cc)
 
     tumorVol(0) <- tumorVol0
     d/dt(tumorVol) <- kng*tumorVol - transit4*tumorVol
