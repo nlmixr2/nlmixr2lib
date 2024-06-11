@@ -132,6 +132,9 @@ addFileToModelDb <- function(dir, file, modeldb) {
   if ("rxLinCmt" %in% paramErr) {
     paramErr[paramErr %in% "rxLinCmt"] <- "linCmt()"
   }
+  if (is.null(paramErr)) {
+    paramErr <- ""
+  }
 
   ret <-
     data.frame(
