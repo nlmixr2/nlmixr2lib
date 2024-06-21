@@ -64,14 +64,14 @@ test_that("addResErr with des model, changing to additive error", {
   expect_equal(
     functionBody(
       modelUpdate
-    )[[3]][[2]][[8]],
+    )[[4]][[2]][[8]],
     str2lang("CcaddSd <- c(0, 1)")
   )
   # residual error model is added
   expect_equal(
     functionBody(
       modelUpdate
-    )[[4]][[2]][[9]],
+    )[[5]][[2]][[9]],
     str2lang("Cc ~ add(CcaddSd)")
   )
 })
@@ -102,20 +102,20 @@ test_that("addResErr with des model, changing to additive and proportional error
   expect_equal(
     functionBody(
       modelUpdate
-    )[[3]][[2]][[8]],
+    )[[4]][[2]][[8]],
     str2lang("CcaddSd <- c(0, 1)")
   )
   expect_equal(
     functionBody(
       modelUpdate
-    )[[3]][[2]][[9]],
+    )[[4]][[2]][[9]],
     str2lang("CcpropSd <- c(0, 0.5)")
   )
   # eta is added
   expect_equal(
     functionBody(
       modelUpdate
-    )[[4]][[2]][[9]],
+    )[[5]][[2]][[9]],
     str2lang("Cc ~ add(CcaddSd) + prop(CcpropSd)")
   )
 })

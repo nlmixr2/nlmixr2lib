@@ -143,7 +143,7 @@ Files in a model library should have the following characteristics:
 * It can also be helpful to specify the compartments where dosing is expected. 
   This can be done in the following manner: `dosing <- c("central", "depot")`
 * Units used in the model can be specified using a list
-  `units  <- list("dosing"= "mg/kg", "time"="hr")`
+  `units  <- list(dosing= "mg/kg", time="hr")`
   To add more fields to this list please discuss first in a GitHub issue.
   
   
