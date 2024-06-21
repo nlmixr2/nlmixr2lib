@@ -51,6 +51,7 @@ buildModelDb <- function() {
       DV = "The definition of the dependent variable(s)",
       linCmt = "Logical flag indicating if solved models are used (TRUE) or not (FALSE)",
       dosing = "A comma separated string of identified dosing compartments",
+      depends = "A comma separated string of objects the model depends on",
       filename = "Filename of the model.  By default these are installed in the model library and read on demand"
     )
   # The names must exactly match
@@ -117,6 +118,7 @@ addFileToModelDb <- function(dir, file, modeldb) {
     description <- NA_character_
   }
 
+  # Finding dosing
   dosing <- NULL
   dosing_meta <- mod$meta$dosing
   if(!is.null(dosing_meta)){
@@ -129,7 +131,17 @@ addFileToModelDb <- function(dir, file, modeldb) {
     dosing = paste(dosing, collapse=",")
   }
   if(is.null(dosing)){
-    dosing = ""
+    dosing = NA_character_ 
+  }
+
+  # Finding depends
+  depends <- NULL
+  depends_meta <- mod$meta$depends
+  if(!is.null(depends_meta)){
+    depends = paste(depends_meta, collapse=",")
+  }
+  if(is.null(depends)){
+    depends = NA_character_ 
   }
 
   # Extract the parameter names
@@ -161,6 +173,7 @@ addFileToModelDb <- function(dir, file, modeldb) {
       DV          = paramErr,
       linCmt      = mod$params$linCmt,
       dosing      = dosing,
+      depends     = depends,
       filename    = fileName
     )
   modeldb <- rbind(modeldb, ret)
