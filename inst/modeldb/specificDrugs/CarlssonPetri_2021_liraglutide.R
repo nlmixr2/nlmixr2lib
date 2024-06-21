@@ -1,6 +1,7 @@
 CarlssonPetri_2021_liraglutide <- function() {
   description <- "Liraglutide PK model in adolescents (Carlsson Petri 2021)"
   reference <- "Carlsson Petri KC, Hale PM, Hesse D, Rathor N, Mastrandrea LD. Liraglutide pharmacokinetics and exposure-response in adolescents with obesity. Pediatric Obesity. 2021;16(10):e12799. doi:10.1111/ijpo.12799"
+  units <-c("time"="hr", "dosing"="mg")
   covariateData <-
     list(
       WT = "Baseline body weight in kg",

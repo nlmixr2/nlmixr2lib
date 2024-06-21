@@ -49,6 +49,8 @@ buildModelDb <- function() {
       description = "Model description in free from text; in model itself",
       parameters = "A comma separated string listing either the parameter in the model defined by population/individual effects or a population effect parameter",
       DV = "The definition of the dependent variable(s)",
+      linCmt = "Logical flag indicating if solved models are used (TRUE) or not (FALSE)",
+      dosing = "A comma separated string of identified dosing compartments",
       filename = "Filename of the model.  By default these are installed in the model library and read on demand"
     )
   # The names must exactly match
@@ -115,6 +117,21 @@ addFileToModelDb <- function(dir, file, modeldb) {
     description <- NA_character_
   }
 
+  dosing <- NULL
+  dosing_meta <- mod$meta$dosing
+  if(!is.null(dosing_meta)){
+    dosing = paste(dosing_meta, collapse=",")
+  }else {
+    if("depot" %in% mod$params$cmt){
+      dosing = c(dosing, "depot") }
+    if("central" %in% mod$params$cmt){
+      dosing = c(dosing, "central") }
+    dosing = paste(dosing, collapse=",")
+  }
+  if(is.null(dosing)){
+    dosing = ""
+  }
+
   # Extract the parameter names
   modParam <- mod$iniDf
   # Fixed effects
@@ -138,11 +155,13 @@ addFileToModelDb <- function(dir, file, modeldb) {
 
   ret <-
     data.frame(
-      name = modelName,
+      name        = modelName,
       description = description,
-      parameters = paste(modParamFixed, collapse = ","),
-      DV = paramErr,
-      filename = fileName
+      parameters  = paste(modParamFixed, collapse = ","),
+      DV          = paramErr,
+      linCmt      = mod$params$linCmt,
+      dosing      = dosing,
+      filename    = fileName
     )
   modeldb <- rbind(modeldb, ret)
   if (any(duplicated(modeldb$name))) {
