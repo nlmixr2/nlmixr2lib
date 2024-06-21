@@ -128,10 +128,11 @@ addFileToModelDb <- function(dir, file, modeldb) {
       dosing = c(dosing, "depot") }
     if("central" %in% mod$params$cmt){
       dosing = c(dosing, "central") }
-    dosing = paste(dosing, collapse=",")
-  }
-  if(is.null(dosing)){
-    dosing = NA_character_ 
+    if(!is.null(dosing)){
+      dosing = paste(dosing, collapse=",")
+    } else {
+      dosing = NA_character_ 
+    }
   }
 
   # Finding depends
