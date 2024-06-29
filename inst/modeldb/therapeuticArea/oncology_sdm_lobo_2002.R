@@ -1,7 +1,7 @@
 oncology_sdm_lobo_2002 <- function() {
   description <- "Signal transduction model for delayed concentration effects on cancer cell growth"
   reference <- "Lobo ED, Balthasar JP. Pharmacodynamic modeling of chemotherapeutic effects: Application of a transit compartment model to characterize methotrexate effects in vitro. AAPS J. 2002;4(4):212-222. doi:10.1208/ps040442"
-  depends<-c("Cc")
+  depends<-"Cc"
   units<-list(time="hr")
   # Values for lkng, ltau, lec50, and kmax are for methotrexate from Lobo 2002,
   # Table 2.  propErr and addErr are added as reasonable values though not from
