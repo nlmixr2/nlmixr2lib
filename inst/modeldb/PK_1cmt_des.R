@@ -1,5 +1,6 @@
 PK_1cmt_des <- function() {
   description <- "One compartment PK model with linear clearance using differential equations"
+  dosing<-c("central", "depot")
   ini({
     lka <- 0.45 ; label("Absorption rate (Ka)")
     lcl <- 1 ; label("Clearance (CL)")

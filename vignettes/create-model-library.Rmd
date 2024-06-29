@@ -47,9 +47,9 @@ augmentation for other compartments:
 To enable more consistent cross-model compatibility, the following conventions should be used unless there is a strong reason for an exception:
 
 * Pharmacokinetic concentrations in the central compartment should be named
-  `cp`.  `cp` should be used even when using a `linCmt()` model (in which case
-  `cp <- linCmt()` should be used and the residual error should be applied to
-  the `cp` parameter).
+  `Cc`.  `Cc` should be used even when using a `linCmt()` model (in which case
+  `Cc <- linCmt()` should be used and the residual error should be applied to
+  the `Cc` parameter).
 * Therapeutic-area-specific models should use consistent compartment and
   parameter naming.  When adding a new therapeutic area model to the library,
   please discuss naming first in a new GitHub issue.
@@ -135,6 +135,16 @@ Files in a model library should have the following characteristics:
   Note that in that case, you must give the function name as the last line of
   the model to ensure that it is the returned value from evaluation of the file.
   (See `oncology_xenograft_simeoni_2004.R` for an example of adding a message.)
+  
+* If the model is to be combined with other models and it expects certain objects
+  will be defined a depends value should be specified. For example if there is 
+  a tumor growth model that is driven by the drug concentration in the central 
+  compartment, then the following could be used:  `depends <"Cc"` 
+* It can also be helpful to specify the compartments where dosing is expected. 
+  This can be done in the following manner: `dosing <- c("central", "depot")`
+* Units used in the model can be specified using a list
+  `units  <- list(dosing= "mg/kg", time="hr")`
+  To add more fields to this list please discuss first in a GitHub issue.
 * The remainder of the file should be an nlmixr2 model in a function with a
   typical `ini()` and `model()` block.
 * The name of the file should match the name of the model within the file.

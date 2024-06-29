@@ -1,6 +1,7 @@
 Soehoel_2022_tralokinumab <- function() {
   description <- "Tralokinumab PK model (Soehoel 2022)"
   reference <- "Soehoel A, Larsen MS, Timmermann S. Population Pharmacokinetics of Tralokinumab in Adult Subjects With Moderate to Severe Atopic Dermatitis. Clinical Pharmacology in Drug Development. 2022;11(8):910-921. doi:10.1002/cpdd.1113"
+  units<-list(time="day",dosing="mg") 
   # From Table 2 footnotes
   covariateData <-
     list(

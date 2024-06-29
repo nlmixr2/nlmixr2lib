@@ -1,6 +1,7 @@
 Zhu_2017_lebrikizumab <- function() {
   description <- "Lebrikizumab PK model (Zhu 2017)"
   reference <- "Zhu R, Zheng Y, Dirks NL, et al. Model-based clinical pharmacology profiling and exposure-response relationships of the efficacy and biomarker of lebrikizumab in patients with moderate-to-severe asthma. Pulmonary Pharmacology & Therapeutics. 2017;46:88-98. doi:10.1016/j.pupt.2017.08.010"
+  units <- list(time="day", dosing="mg")
   covariateData <-
     list(
       WT = "Baseline body weight in kg",
