@@ -139,14 +139,12 @@ Files in a model library should have the following characteristics:
 * If the model is to be combined with other models and it expects certain objects
   will be defined a depends value should be specified. For example if there is 
   a tumor growth model that is driven by the drug concentration in the central 
-  compartment, then the following could be used:  `depends <-c("Cc")` 
+  compartment, then the following could be used:  `depends <"Cc"` 
 * It can also be helpful to specify the compartments where dosing is expected. 
   This can be done in the following manner: `dosing <- c("central", "depot")`
 * Units used in the model can be specified using a list
   `units  <- list(dosing= "mg/kg", time="hr")`
   To add more fields to this list please discuss first in a GitHub issue.
-  
-  
 * The remainder of the file should be an nlmixr2 model in a function with a
   typical `ini()` and `model()` block.
 * The name of the file should match the name of the model within the file.
