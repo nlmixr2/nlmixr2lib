@@ -127,8 +127,10 @@ tumor volume (the sum of undamaged and damaged cells)</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 6                  6    damagedCells5</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ── <span style="font-weight: bold;">Model (Normalized Syntax):</span> ── </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> function() {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     depends &lt;- "Cc"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     description &lt;- "Oncology tumor growth model in xenograft models"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     reference &lt;- "Monica Simeoni, Paolo Magni, Cristiano Cammia, Giuseppe De Nicolao, Valter Croci, Enrico Pesenti, Massimiliano Germani, Italo Poggesi, Maurizio Rocchetti; Predictive Pharmacokinetic-Pharmacodynamic Modeling of Tumor Growth Kinetics in Xenograft Models after Administration of Anticancer Agents. Cancer Res 1 February 2004; 64 (3): 1094–1101. https://doi.org/10.1158/0008-5472.CAN-03-2524"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     units &lt;- list(time = "day")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     ini({</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         ldamageTransit &lt;- c(-2.30258509299405, -0.0325231917055601, </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             2.30258509299405)</span>

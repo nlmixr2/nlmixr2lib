@@ -66,7 +66,7 @@ with the package.  Custom modeldb may be used.</p>
 
     <div class="section level2">
     <h2 id="format">Format<a class="anchor" aria-label="anchor" href="#format"></a></h2>
-    <p>A data frame with 17 rows and 5 columns</p><dl><dt>name</dt>
+    <p>A data frame with 17 rows and 9 columns</p><dl><dt>name</dt>
 <dd><p>Model name that can be used to extract the model from the model library</p></dd>
 
   <dt>description</dt>
@@ -77,6 +77,18 @@ with the package.  Custom modeldb may be used.</p>
 
   <dt>DV</dt>
 <dd><p>The definition of the dependent variable(s)</p></dd>
+
+  <dt>linCmt</dt>
+<dd><p>Logical flag indicating if solved models are used (TRUE) or not (FALSE)</p></dd>
+
+  <dt>algebraic</dt>
+<dd><p>Logical flag indicating if the model is purely algebraic: TRUE no linCmt() and no ODEs; FALSE otherwise</p></dd>
+
+  <dt>dosing</dt>
+<dd><p>A comma separated string of identified dosing compartments</p></dd>
+
+  <dt>depends</dt>
+<dd><p>A comma separated string of objects the model depends on</p></dd>
 
   <dt>filename</dt>
 <dd><p>Filename of the model.  By default these are installed in the model library and read on demand</p></dd>

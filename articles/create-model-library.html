@@ -125,10 +125,10 @@ conventions should be used unless there is a strong reason for an
 exception:</p>
 <ul>
 <li>Pharmacokinetic concentrations in the central compartment should be
-named <code>cp</code>. <code>cp</code> should be used even when using a
+named <code>Cc</code>. <code>Cc</code> should be used even when using a
 <code>linCmt()</code> model (in which case
-<code>cp &lt;- linCmt()</code> should be used and the residual error
-should be applied to the <code>cp</code> parameter).</li>
+<code>Cc &lt;- linCmt()</code> should be used and the residual error
+should be applied to the <code>Cc</code> parameter).</li>
 <li>Therapeutic-area-specific models should use consistent compartment
 and parameter naming. When adding a new therapeutic area model to the
 library, please discuss naming first in a new GitHub issue.</li>
@@ -229,27 +229,38 @@ the Simeoni 2004 model, the drug effect is called
 <p>Files in a model library should have the following
 characteristics:</p>
 <ul>
-<li>The first line inside the function should have a description
+<li><p>The first line inside the function should have a description
 assignment. That is
 <code>description &lt;- "This is the description of the model"</code>
 right inside the <code>function()</code> before the <code>ini({})</code>
-block.</li>
-<li>If the model has a literature reference associated with it, then the
-second line of inside the function should have the reference, for
+block.</p></li>
+<li><p>If the model has a literature reference associated with it, then
+the second line of inside the function should have the reference, for
 example,
-<code>reference &lt;- "Richard Hooijmaijers, Matthew Fidler, William S. Denney (2022).  nlmixr2lib: A Model Library for 'nlmixr2'.  https://nlmixr2.github.io/nlmixr2lib/"</code>
-</li>
-<li>If it would be helpful to give the user some information about the
-model on load, it can be added as meta-data as a <code>"message"</code>
-attribute to the model. Note that in that case, you must give the
-function name as the last line of the model to ensure that it is the
-returned value from evaluation of the file. (See
+<code>reference &lt;- "Richard Hooijmaijers, Matthew Fidler, William S. Denney (2022).  nlmixr2lib: A Model Library for 'nlmixr2'.  https://nlmixr2.github.io/nlmixr2lib/"</code></p></li>
+<li><p>If it would be helpful to give the user some information about
+the model on load, it can be added as meta-data as a
+<code>"message"</code> attribute to the model. Note that in that case,
+you must give the function name as the last line of the model to ensure
+that it is the returned value from evaluation of the file. (See
 <code>oncology_xenograft_simeoni_2004.R</code> for an example of adding
-a message.)</li>
-<li>The remainder of the file should be an nlmixr2 model in a function
-with a typical <code><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini()</a></code> and <code><a href="https://nlmixr2.github.io/rxode2/reference/model.html" class="external-link">model()</a></code> block.</li>
-<li>The name of the file should match the name of the model within the
-file.</li>
+a message.)</p></li>
+<li><p>If the model is to be combined with other models and it expects
+certain objects will be defined a depends value should be specified. For
+example if there is a tumor growth model that is driven by the drug
+concentration in the central compartment, then the following could be
+used: <code>depends &lt;"Cc"</code></p></li>
+<li><p>It can also be helpful to specify the compartments where dosing
+is expected. This can be done in the following manner:
+<code>dosing &lt;- c("central", "depot")</code></p></li>
+<li><p>Units used in the model can be specified using a list
+<code>units  &lt;- list(dosing= "mg/kg", time="hr")</code> To add more
+fields to this list please discuss first in a GitHub issue.</p></li>
+<li><p>The remainder of the file should be an nlmixr2 model in a
+function with a typical <code><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini()</a></code> and <code><a href="https://nlmixr2.github.io/rxode2/reference/model.html" class="external-link">model()</a></code>
+block.</p></li>
+<li><p>The name of the file should match the name of the model within
+the file.</p></li>
 </ul>
 <p>If a function to modify, self-start, or otherwise help the user would
 make sense, add it as a new file in the <code>R/</code> directory with
