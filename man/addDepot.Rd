@@ -2,7 +2,8 @@
 % Please edit documentation in R/addDepot.R
 \name{addDepot}
 \alias{addDepot}
-\title{To convert from Infusion/intravenous administration to first order oral absorption}
+\title{To convert from Infusion/intravenous administration to first order
+oral absorption}
 \usage{
 addDepot(
   model,
@@ -10,7 +11,11 @@ addDepot(
   depot = "depot",
   absRate = "ka",
   lag = FALSE,
-  tlag = "lagD"
+  tlag = "lagD",
+  fdepot = FALSE,
+  lagIni = 0,
+  fdepotIni = 1,
+  absRateIni = 1
 )
 }
 \arguments{
@@ -22,15 +27,26 @@ addDepot(
 
 \item{absRate}{absorption rate}
 
-\item{lag}{A boolean representing if you are going to add a lag to this compartment}
+\item{lag}{A boolean representing if you are going to add a lag to
+this compartment}
 
 \item{tlag}{a character vector representing the lag time}
+
+\item{fdepot}{boolean that determines if the bioavailability of the
+depot compartment is included.}
+
+\item{lagIni}{Initial value for the lag time}
+
+\item{fdepotIni}{Initial value for the depot}
+
+\item{absRateIni}{Initial value for the first order rate}
 }
 \value{
 a model with the depot added
 }
 \description{
-To convert from Infusion/intravenous administration to first order oral absorption
+To convert from Infusion/intravenous administration to first order
+oral absorption
 }
 \examples{
 # most of the examples in the model library already have a depot.

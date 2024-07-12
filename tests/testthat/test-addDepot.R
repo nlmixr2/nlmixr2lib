@@ -1,6 +1,6 @@
 test_that("addDepot adds depot", {
   model <- readModelDb("PK_1cmt_des") |> removeDepot()
-  suppressMessages(modelUpdate <- addDepot(model, central = "central", depot = "depot"))
+  suppressMessages(modelUpdate <- addDepot(model, central = "central", depot = "depot",fdepot=TRUE))
   # check for lka in ini block
   suppressMessages(temp <- modelUpdate)
   temp2 <- temp$iniDf
@@ -10,6 +10,18 @@ test_that("addDepot adds depot", {
   suppressMessages(temp <- modelUpdate)
   temp2 <- temp$iniDf
   expect_equal("lfdepot" %in% temp2$name, TRUE)
+  
+  model <- readModelDb("PK_1cmt_des") |> removeDepot()
+  suppressMessages(modelUpdate <- addDepot(model, central = "central", depot = "depot",fdepot=FALSE))
+  # check for lka in ini block
+  suppressMessages(temp <- modelUpdate)
+  temp2 <- temp$iniDf
+  expect_equal("lka" %in% temp2$name, TRUE)
+  
+  # check for lfdepot in ini block
+  suppressMessages(temp <- modelUpdate)
+  temp2 <- temp$iniDf
+  expect_equal("lfdepot" %in% temp2$name, FALSE)
 
   # check for labels for lka
   suppressMessages(temp <- modelUpdate)
