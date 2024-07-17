@@ -2,35 +2,44 @@
 % Please edit documentation in R/addDepot.R
 \name{addDepot}
 \alias{addDepot}
-\title{To convert from Infusion/intravenous administration to first order oral absorption}
+\title{To convert from infusion/intravenous administration to first-order oral
+absorption}
 \usage{
 addDepot(
   model,
   central = "central",
   depot = "depot",
   absRate = "ka",
-  lag = FALSE,
-  tlag = "lagD"
+  lag = paste0("lag", depot),
+  lagIni = NA,
+  fdepotIni = NA,
+  absRateIni = 1
 )
 }
 \arguments{
-\item{model}{The model as a function}
+\item{model}{The model as a function (or something convertible to an rxUi
+object)}
 
 \item{central}{central compartment name}
 
-\item{depot}{depot name}
+\item{depot}{depot compartment name}
 
-\item{absRate}{absorption rate}
+\item{absRate}{absorption rate parameter name}
 
-\item{lag}{A boolean representing if you are going to add a lag to this compartment}
+\item{lag}{lag parameter name}
 
-\item{tlag}{a character vector representing the lag time}
+\item{lagIni}{Initial value for the lag time (`NA` to omit)}
+
+\item{fdepotIni}{Initial value for the depot bioavailability (`NA` to omit)}
+
+\item{absRateIni}{Initial value for the first order rate}
 }
 \value{
 a model with the depot added
 }
 \description{
-To convert from Infusion/intravenous administration to first order oral absorption
+To convert from infusion/intravenous administration to first-order oral
+absorption
 }
 \examples{
 # most of the examples in the model library already have a depot.
