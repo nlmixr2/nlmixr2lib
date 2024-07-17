@@ -28,4 +28,8 @@ Verify that a value is a valid nlmixr2 compartment name
 \item \code{assertParameterValue()}: Verify that a value is a valid nlmixr2 parameter value
 
 }}
+\seealso{
+Other Assertions: 
+\code{\link{assertCompartmentExists}()}
+}
 \concept{Assertions}
