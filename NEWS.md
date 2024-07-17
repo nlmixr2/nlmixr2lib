@@ -8,6 +8,8 @@
 * Added `assertCompartmentName()`, `assertVariableName()`, and
   `assertParameterValue()` to verify that a value is a valid nlmixr2 compartment
   name, variable name, or parameter value.
+* Added `addBioavailability()` and `removeBioavailability()` to simplify adding
+  and removing bioavailability parameters.
 
 # Version 0.2.0
 

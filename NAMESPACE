@@ -3,6 +3,7 @@
 S3method(searchReplaceHelper,"function")
 S3method(searchReplaceHelper,call)
 S3method(searchReplaceHelper,default)
+export(addBioavailability)
 export(addComp)
 export(addDepot)
 export(addDirToModelDb)
