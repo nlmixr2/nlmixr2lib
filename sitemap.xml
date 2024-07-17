@@ -1,69 +1,27 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://nlmixr2.github.io/nlmixr2lib/404.html</loc>
-  </url>
-  <url>
-    <loc>https://nlmixr2.github.io/nlmixr2lib/articles/create-model-library.html</loc>
-  </url>
-  <url>
-    <loc>https://nlmixr2.github.io/nlmixr2lib/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>https://nlmixr2.github.io/nlmixr2lib/articles/list-of-models.html</loc>
-  </url>
-  <url>
-    <loc>https://nlmixr2.github.io/nlmixr2lib/authors.html</loc>
-  </url>
-  <url>
-    <loc>https://nlmixr2.github.io/nlmixr2lib/index.html</loc>
-  </url>
-  <url>
-    <loc>https://nlmixr2.github.io/nlmixr2lib/news/index.html</loc>
-  </url>
-  <url>
-    <loc>https://nlmixr2.github.io/nlmixr2lib/reference/addComp.html</loc>
-  </url>
-  <url>
-    <loc>https://nlmixr2.github.io/nlmixr2lib/reference/addDepot.html</loc>
-  </url>
-  <url>
-    <loc>https://nlmixr2.github.io/nlmixr2lib/reference/addDirToModelDb.html</loc>
-  </url>
-  <url>
-    <loc>https://nlmixr2.github.io/nlmixr2lib/reference/addEta.html</loc>
-  </url>
-  <url>
-    <loc>https://nlmixr2.github.io/nlmixr2lib/reference/addResErr.html</loc>
-  </url>
-  <url>
-    <loc>https://nlmixr2.github.io/nlmixr2lib/reference/addTransit.html</loc>
-  </url>
-  <url>
-    <loc>https://nlmixr2.github.io/nlmixr2lib/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://nlmixr2.github.io/nlmixr2lib/reference/modeldb.html</loc>
-  </url>
-  <url>
-    <loc>https://nlmixr2.github.io/nlmixr2lib/reference/modellib.html</loc>
-  </url>
-  <url>
-    <loc>https://nlmixr2.github.io/nlmixr2lib/reference/readModelDb.html</loc>
-  </url>
-  <url>
-    <loc>https://nlmixr2.github.io/nlmixr2lib/reference/removeComp.html</loc>
-  </url>
-  <url>
-    <loc>https://nlmixr2.github.io/nlmixr2lib/reference/removeDepot.html</loc>
-  </url>
-  <url>
-    <loc>https://nlmixr2.github.io/nlmixr2lib/reference/removeTransit.html</loc>
-  </url>
-  <url>
-    <loc>https://nlmixr2.github.io/nlmixr2lib/reference/searchReplace.html</loc>
-  </url>
-  <url>
-    <loc>https://nlmixr2.github.io/nlmixr2lib/reference/updateOncologyXenograftSimeoni2004.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://nlmixr2.github.io/nlmixr2lib/404.html</loc></url>
+<url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/create-model-library.html</loc></url>
+<url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/index.html</loc></url>
+<url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/list-of-models.html</loc></url>
+<url><loc>https://nlmixr2.github.io/nlmixr2lib/authors.html</loc></url>
+<url><loc>https://nlmixr2.github.io/nlmixr2lib/index.html</loc></url>
+<url><loc>https://nlmixr2.github.io/nlmixr2lib/news/index.html</loc></url>
+<url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/addComp.html</loc></url>
+<url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/addDepot.html</loc></url>
+<url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/addDirToModelDb.html</loc></url>
+<url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/addEta.html</loc></url>
+<url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/addResErr.html</loc></url>
+<url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/addTransit.html</loc></url>
+<url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/assertCompartmentExists.html</loc></url>
+<url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/assertCompartmentName.html</loc></url>
+<url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/index.html</loc></url>
+<url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/modeldb.html</loc></url>
+<url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/modellib.html</loc></url>
+<url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/readModelDb.html</loc></url>
+<url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/removeComp.html</loc></url>
+<url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/removeDepot.html</loc></url>
+<url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/removeTransit.html</loc></url>
+<url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/searchReplace.html</loc></url>
+<url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/updateOncologyXenograftSimeoni2004.html</loc></url>
 </urlset>
+
