@@ -23,15 +23,16 @@ assertCompartmentName <- function(x) {
 #' @family Assertions
 #' @export
 assertCompartmentExists <- function(ui, x) {
-  .vn <- as.character(eval.parent(substitute(substitute(x))))
+  .vn <- as.character(substitute(x))
   checkmate::assertCharacter(
-    x,
+    .vn,
     pattern = "^[.]*[a-zA-Z]+[a-zA-Z0-9._]*$",
     len = 1,
     any.missing = FALSE,
     min.chars = 1,
     .var.name = paste0(deparse(eval.parent(substitute(substitute(x))), width.cutoff = 500L), collapse = "\n")
   )
+  
   .ui <-rxode2::assertRxUi(ui)
   if (.vn %in% c(rxode2::rxModelVars(.ui)$state)) return(invisible())
   stop("'", .vn, "' is not in the model")

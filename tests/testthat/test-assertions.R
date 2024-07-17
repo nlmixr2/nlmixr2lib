@@ -1,3 +1,12 @@
+test_that("assertCompartmentExists", {
+  expect_error(assertCompartmentExists(readModelDb("PK_1cmt_des"), "central"), NA)
+  expect_error(assertCompartmentExists(readModelDb("PK_1cmt_des"), "funny"),
+               "'funny' is not in the model")
+  expect_error(assertCompartmentExists(readModelDb("PK_1cmt_des"), funny),
+               "'funny' is not in the model")
+  expect_error(assertCompartmentExists(readModelDb("PK_1cmt_des"), central), NA)
+})
+
 test_that("assertCompartmentName", {
   expect_equal(assertCompartmentName("x"), "x")
   expect_equal(assertCompartmentName("x.y"), "x.y")
