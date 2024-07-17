@@ -24,7 +24,7 @@ addDepot <- function(model, central = "central", depot = "depot", absRate = "ka"
                      fdepot=FALSE,
                      lagIni=0.0, fdepotIni=1.0,
                      absRateIni=1.0) {
-  checkmate::assertCharacter(depot, pattern = "^[.]*[a-zA-Z]+[a-zA-Z0-9._]*$", len = 1, any.missing = FALSE, min.chars = 1)
+  assertCompartmentName(depot)
   checkmate::assertCharacter(absRate, pattern = "^[.]*[a-zA-Z]+[a-zA-Z0-9._]*$", len = 1, any.missing = FALSE, min.chars = 1)
   checkmate::assertLogical(lag, len = 1, any.missing = FALSE)
   checkmate::assertLogical(fdepot, len = 1, any.missing = FALSE)

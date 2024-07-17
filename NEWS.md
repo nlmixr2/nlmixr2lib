@@ -5,8 +5,9 @@
 * Add Carlsson Petri (2021) liraglutide PK model
 * `cp` and related `cpaddSd` and `cppropSd` were renamed to `Cc`, `CcaddSd` and
   `CcpropSd` (fix #70).
-* Added `assertCompartmentName()` to verify that a value is a valid nlmixr2
-  compartment name.
+* Added `assertCompartmentName()`, `assertVariableName()`, and
+  `assertParameterValue()` to verify that a value is a valid nlmixr2 compartment
+  name, variable name, or parameter value.
 
 # Version 0.2.0
 
