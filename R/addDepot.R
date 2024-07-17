@@ -23,7 +23,9 @@ addDepot <- function(model,
                      absRate = "ka", lag = paste0("lag", depot),
                      lagIni=NA, fdepotIni=NA,
                      absRateIni=1.0) {
+  model <- rxode2::assertRxUi(model)
   assertCompartmentName(depot)
+  assertCompartmentExists(model, central)
   assertVariableName(absRate)
   assertVariableName(lag)
   if (!is.na(lagIni)) {
