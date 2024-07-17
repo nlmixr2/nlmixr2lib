@@ -1,52 +1,54 @@
 test_that("addDepot adds depot", {
-  model <- readModelDb("PK_1cmt_des") |> removeDepot()
-  suppressMessages(modelUpdate <- addDepot(model, central = "central", depot = "depot",fdepot=TRUE))
-  # check for lka in ini block
-  suppressMessages(temp <- modelUpdate)
-  temp2 <- temp$iniDf
-  expect_equal("lka" %in% temp2$name, TRUE)
+  suppressMessages(
+    model <- readModelDb("PK_1cmt_des") |> removeDepot()
+  )
+  suppressMessages(
+    modelUpdate <- addDepot(model, central = "central", depot = "depot", fdepotIni = 1)
+  )
+  # check for change in lka in ini block
+  expect_false("lka" %in% model$iniDf$name)
+  expect_true("lka" %in% modelUpdate$iniDf$name)
 
-  # check for lfdepot in ini block
-  suppressMessages(temp <- modelUpdate)
-  temp2 <- temp$iniDf
-  expect_equal("lfdepot" %in% temp2$name, TRUE)
+  # check for change in lfdepot in ini block
+  expect_false("lfdepot" %in% model$iniDf$name)
+  expect_true("lfdepot" %in% modelUpdate$iniDf$name)
+
+  suppressMessages(
+    model <- readModelDb("PK_1cmt_des") |> removeDepot()
+  )
+  suppressMessages(
+    modelUpdate <- addDepot(model, central = "central", depot = "depot", fdepotIni = NA)
+  )
+  # check for change in lka in ini block
+  expect_false("lka" %in% model$iniDf$name)
+  expect_true("lka" %in% modelUpdate$iniDf$name)
   
-  model <- readModelDb("PK_1cmt_des") |> removeDepot()
-  suppressMessages(modelUpdate <- addDepot(model, central = "central", depot = "depot",fdepot=FALSE))
-  # check for lka in ini block
-  suppressMessages(temp <- modelUpdate)
-  temp2 <- temp$iniDf
-  expect_equal("lka" %in% temp2$name, TRUE)
-  
-  # check for lfdepot in ini block
-  suppressMessages(temp <- modelUpdate)
-  temp2 <- temp$iniDf
-  expect_equal("lfdepot" %in% temp2$name, FALSE)
+  # check for no change in lfdepot in ini block
+  expect_false("lfdepot" %in% model$iniDf$name)
+  expect_false("lfdepot" %in% modelUpdate$iniDf$name)
 
   # check for labels for lka
-  suppressMessages(temp <- modelUpdate)
-  temp2 <- temp$iniDf
-  expect_equal("First order absorption rate (ka)" %in% temp2$label, TRUE)
+  expect_true("First order absorption rate (ka)" %in% modelUpdate$iniDf$label)
 
   # check for labels for lfdepot
-  suppressMessages(temp <- modelUpdate)
-  temp2 <- temp$iniDf
-  expect_equal("Proportional residual error (fraction)" %in% temp2$label, TRUE)
+  expect_true("Proportional residual error (fraction)" %in% modelUpdate$iniDf$label)
 
   # check for ka in model block
   suppressMessages(kaLine <- rxode2::modelExtract(modelUpdate, "ka", lines = TRUE))
-  expect_equal(grepl("\\s*^ka", kaLine), TRUE)
+  expect_true(grepl("\\s*^ka", kaLine))
 
   # check for ODE for depot
   suppressMessages(depotLine <- rxode2::modelExtract(modelUpdate, "d/dt(depot)", lines = TRUE))
-  expect_equal(grepl("\\s*ka\\s*\\*\\s*depot", depotLine), TRUE)
+  expect_true(grepl("\\s*ka\\s*\\*\\s*depot", depotLine))
 })
 
-
 test_that("addDepot adds other than default agruments", {
-  model <- readModelDb("PK_1cmt_des") |> removeDepot()
-  suppressMessages(modelUpdate <- addDepot(model, central = "central", depot = "depot", absRate = "ktr"))
-  temp <- rxode2::assertRxUi(modelUpdate)
-  mv <- rxode2::rxModelVars(temp)
-  expect_equal("ktr" %in% mv$lhs, TRUE)
+  suppressMessages(
+    model <- readModelDb("PK_1cmt_des") |> removeDepot()
+  )
+  suppressMessages(
+    modelUpdate <- addDepot(model, central = "central", depot = "depot", absRate = "ktr")
+  )
+  mv <- rxode2::rxModelVars(modelUpdate)
+  expect_true("ktr" %in% mv$lhs)
 })

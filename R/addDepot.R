@@ -1,16 +1,14 @@
-#' To convert from Infusion/intravenous administration to first order
-#' oral absorption
-#' @param model The model as a function
+#' To convert from infusion/intravenous administration to first-order oral
+#' absorption
+#'
+#' @param model The model as a function (or something convertible to an rxUi
+#'   object)
 #' @param central central compartment name
-#' @param depot depot name
-#' @param absRate absorption rate
-#' @param lag A boolean representing if you are going to add a lag to
-#'   this compartment
-#' @param tlag a character vector representing the lag time
-#' @param fdepot boolean that determines if the bioavailability of the
-#'   depot compartment is included.
-#' @param lagIni Initial value for the lag time
-#' @param fdepotIni Initial value for the depot
+#' @param depot depot compartment name
+#' @param absRate absorption rate parameter name
+#' @param lag lag parameter name
+#' @param lagIni Initial value for the lag time (`NA` to omit)
+#' @param fdepotIni Initial value for the depot bioavailability (`NA` to omit)
 #' @param absRateIni Initial value for the first order rate
 #' @return a model with the depot added
 #' @export
@@ -20,19 +18,23 @@
 #' readModelDb("PK_1cmt_des") |>
 #'   removeDepot() |>
 #'   addDepot()
-addDepot <- function(model, central = "central", depot = "depot", absRate = "ka", lag = FALSE, tlag = "lagD",
-                     fdepot=FALSE,
-                     lagIni=0.0, fdepotIni=1.0,
+addDepot <- function(model,
+                     central = "central", depot = "depot",
+                     absRate = "ka", lag = paste0("lag", depot),
+                     lagIni=NA, fdepotIni=NA,
                      absRateIni=1.0) {
   assertCompartmentName(depot)
   assertVariableName(absRate)
-  checkmate::assertLogical(lag, len = 1, any.missing = FALSE)
-  checkmate::assertLogical(fdepot, len = 1, any.missing = FALSE)
-  assertVariableName(tlag)
-  assertParameterValue(lagIni)
-  assertParameterValue(fdepotIni)
+  assertVariableName(lag)
+  if (!is.na(lagIni)) {
+    assertParameterValue(lagIni)
+  }
+  if (!is.na(fdepotIni)) {
+    assertParameterValue(fdepotIni)
+  }
   assertParameterValue(absRateIni)
   temp <- rxode2::assertRxUi(model)
+
   mv <- rxode2::rxModelVars(temp)
   if (absRate %in% mv$params) {
     stop("'", absRate, "' cannot be in the model")
@@ -61,50 +63,78 @@ addDepot <- function(model, central = "central", depot = "depot", absRate = "ka"
 
   # Additional equations to be added to model block
   absrateModel <- paste0(absRate, " <- exp(l", absRate, ")")
-  lagModel <- paste0(tlag, " <- exp(la", tlag, ")")
-
-  fdepotModel <- paste0("f", depot, " <- exp(lf", depot, ")")
-  fdepotODE <- paste0("f(", depot, ") <- f", depot)
-  if (!fdepot) {
+  
+  # Lag equations
+  if (is.na(lagIni)) {
+    lagModel <- lagODE <- NULL
+  } else {
+    lagModel <- paste0(lag, " <- exp(la", lag, ")")
+    lagODE <- paste0("alag(", depot, ") <- ", tlag)
+  }
+  
+  # Bioavailability equations
+  if (is.na(fdepotIni)) {
     fdepotModel <- fdepotODE <- NULL
+  } else {
+    fdepotModel <- paste0("f", depot, " <- exp(lf", depot, ")")
+    fdepotODE <- paste0("f(", depot, ") <- f", depot)
   }
 
   depotODE <- paste0("d/dt(", depot, ") <- -", absRate, "*", depot)
-  lagODE <- paste0("alag(", depot, ") <- ", tlag)
 
   # Modify model block
-  if (lag == FALSE) {
-    rxode2::model(temp) <- c(absrateModel, fdepotModel, model[1:(centralLine - 1)], depotODE, fdepotODE, line, model[(centralLine + 1):length(model)])
-  } else {
-    rxode2::model(temp) <- c(absrateModel, fdepotModel, lagModel, model[1:(centralLine - 1)], depotODE, fdepotODE, lagODE, line, model[(centralLine + 1):length(model)])
-  }
-
   if (any(grepl("^transit", mv$state))) {
-    rxode2::model(temp) <- c(absrateModel, fdepotModel, lagModel, model[1:(transitLine - 1)], depotODE, fdepotODE, lagODE, transitODE, model[(transitLine + 1):(centralLine - 1)], lineNew, model[(centralLine + 1):length(model)])
+    rxode2::model(temp) <-
+      c(
+        absrateModel,
+        fdepotModel,
+        lagModel,
+        model[1:(transitLine - 1)],
+        depotODE,
+        fdepotODE,
+        lagODE,
+        transitODE,
+        model[(transitLine + 1):(centralLine - 1)],
+        lineNew,
+        model[(centralLine + 1):length(model)]
+      )
+  } else {
+    rxode2::model(temp) <-
+      c(
+        absrateModel,
+        fdepotModel,
+        lagModel,
+        model[1:(centralLine - 1)],
+        depotODE,
+        fdepotODE,
+        lagODE,
+        line,
+        model[(centralLine + 1):length(model)]
+      )
   }
 
   # Modify ini block
   rateIni <- str2lang(paste0("l", absRate, " <-", absRateIni))
   lfdepotIni <- str2lang(paste0("lf", depot, " <-", fdepotIni))
-  lalagIni <- str2lang(paste0("la", tlag, " <-", lagIni))
-  if (lag == FALSE) {
+  if (is.na(lagIni)) {
     temp <- rxode2::ini(temp, rateIni, append = 0)
-    if (fdepot) {
+    if (!is.na(fdepotIni)) {
       temp <- rxode2::ini(temp, lfdepotIni)
     }
     temp2 <- temp$iniDf
     suppressMessages(temp2$label[temp2$name == paste0("l", absRate)] <- paste0("First order absorption rate (", absRate, ")"))
     suppressMessages(temp2$label[temp2$name == paste0("lf", depot)] <- "Bioavailability (F)")
   } else {
+    lalagIni <- str2lang(paste0("la", tlag, " <-", lagIni))
     temp <- temp |>
       rxode2::ini(rateIni, append = 0) |>
       rxode2::ini(lalagIni)
-    if (fdepot) {
+    if (!is.na(fdepotIni)) {
       temp <- rxode2::ini(temp, lfdepotIni)
     }
     temp2 <- temp$iniDf
     suppressMessages(temp2$label[temp2$name == paste0("l", absRate)] <- paste0("First order absorption rate (", absRate, ")"))
-    if (fdepot) {
+    if (!is.na(fdepotIni)) {
       suppressMessages(temp2$label[temp2$name == paste0("lf", depot)] <- "Bioavailability (F)")
     }
     suppressMessages(temp2$label[temp2$name == paste0("la", tlag)] <- paste0("Lag time (", tlag, ")"))

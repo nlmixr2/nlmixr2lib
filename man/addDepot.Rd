@@ -10,11 +10,9 @@ addDepot(
   central = "central",
   depot = "depot",
   absRate = "ka",
-  lag = FALSE,
-  tlag = "lagD",
-  fdepot = FALSE,
-  lagIni = 0,
-  fdepotIni = 1,
+  lag = paste0("lag", depot),
+  lagIni = NA,
+  fdepotIni = NA,
   absRateIni = 1
 )
 }
@@ -30,16 +28,16 @@ addDepot(
 \item{lag}{A boolean representing if you are going to add a lag to
 this compartment}
 
-\item{tlag}{a character vector representing the lag time}
-
-\item{fdepot}{boolean that determines if the bioavailability of the
-depot compartment is included.}
-
 \item{lagIni}{Initial value for the lag time}
 
 \item{fdepotIni}{Initial value for the depot}
 
 \item{absRateIni}{Initial value for the first order rate}
+
+\item{tlag}{a character vector representing the lag time}
+
+\item{fdepot}{boolean that determines if the bioavailability of the
+depot compartment is included.}
 }
 \value{
 a model with the depot added
