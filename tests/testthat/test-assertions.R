@@ -27,5 +27,5 @@ test_that("assertParameterValue", {
   expect_equal(assertParameterValue(-9), -9)
   expect_equal(assertParameterValue(0), 0)
   expect_error(assertParameterValue(Inf))
-  expect_equal(assertParameterValue(NA))
+  expect_error(assertParameterValue(NA))
 })
