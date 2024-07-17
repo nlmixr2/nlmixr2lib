@@ -69,7 +69,7 @@ addDepot <- function(model,
     lagModel <- lagODE <- NULL
   } else {
     lagModel <- paste0(lag, " <- exp(la", lag, ")")
-    lagODE <- paste0("alag(", depot, ") <- ", tlag)
+    lagODE <- paste0("alag(", depot, ") <- ", lag)
   }
   
   # Bioavailability equations
@@ -125,7 +125,7 @@ addDepot <- function(model,
     suppressMessages(temp2$label[temp2$name == paste0("l", absRate)] <- paste0("First order absorption rate (", absRate, ")"))
     suppressMessages(temp2$label[temp2$name == paste0("lf", depot)] <- "Bioavailability (F)")
   } else {
-    lalagIni <- str2lang(paste0("la", tlag, " <-", lagIni))
+    lalagIni <- str2lang(paste0("la", lag, " <-", lagIni))
     temp <- temp |>
       rxode2::ini(rateIni, append = 0) |>
       rxode2::ini(lalagIni)
@@ -137,7 +137,7 @@ addDepot <- function(model,
     if (!is.na(fdepotIni)) {
       suppressMessages(temp2$label[temp2$name == paste0("lf", depot)] <- "Bioavailability (F)")
     }
-    suppressMessages(temp2$label[temp2$name == paste0("la", tlag)] <- paste0("Lag time (", tlag, ")"))
+    suppressMessages(temp2$label[temp2$name == paste0("la", lag)] <- paste0("Lag time (", lag, ")"))
   }
   rxode2::ini(temp) <- temp2
 
