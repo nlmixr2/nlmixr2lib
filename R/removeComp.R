@@ -8,12 +8,12 @@
 #' library(rxode2)
 #' readModelDb("PK_2cmt_des") |> removeComp(1)
 removeComp <- function(model, peripheral, central = "central", depot = "depot", peripheralComp = "peripheral", vp = "vp", vc = "vc", q = "q") {
-  checkmate::assertCharacter(central, pattern = "^[.]*[a-zA-Z]+[a-zA-Z0-9._]*$", len = 1, any.missing = FALSE, min.chars = 1)
-  checkmate::assertCharacter(depot, pattern = "^[.]*[a-zA-Z]+[a-zA-Z0-9._]*$", len = 1, any.missing = FALSE, min.chars = 1)
-  checkmate::assertCharacter(peripheralComp, pattern = "^[.]*[a-zA-Z]+[a-zA-Z0-9._]*$", len = 1, any.missing = FALSE, min.chars = 1)
-  checkmate::assertCharacter(vp, pattern = "^[.]*[a-zA-Z]+[a-zA-Z0-9._]*$", len = 1, any.missing = FALSE, min.chars = 1)
-  checkmate::assertCharacter(vc, pattern = "^[.]*[a-zA-Z]+[a-zA-Z0-9._]*$", len = 1, any.missing = FALSE, min.chars = 1)
-  checkmate::assertCharacter(q, pattern = "^[.]*[a-zA-Z]+[a-zA-Z0-9._]*$", len = 1, any.missing = FALSE, min.chars = 1)
+  assertCompartmentName(central)
+  assertCompartmentName(depot)
+  assertCompartmentName(peripheralComp)
+  assertVariableName(vp)
+  assertVariableName(vc)
+  assertVariableName(q)
 
   if (!missing(peripheral)) {
     checkmate::assertIntegerish(peripheral, lower = 1, any.missing = FALSE, len = 1)

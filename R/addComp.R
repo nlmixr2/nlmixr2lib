@@ -20,12 +20,12 @@
 #' readModelDb("PK_1cmt_des") |>
 #'   addComp(1)
 addComp <- function(model, numPeripheral, central = "central", depot = "depot", peripheralComp = "peripheral", vp = "vp", vc = "vc", q = "q") {
-  checkmate::assertCharacter(central, len = 1, any.missing = FALSE, min.chars = 1)
-  checkmate::assertCharacter(depot, len = 1, any.missing = FALSE, min.chars = 1)
-  checkmate::assertCharacter(peripheralComp, pattern = "^[.]*[a-zA-Z]+[a-zA-Z0-9._]*$", len = 1, any.missing = FALSE, min.chars = 1)
-  checkmate::assertCharacter(vp, pattern = "^[.]*[a-zA-Z]+[a-zA-Z0-9._]*$", len = 1, any.missing = FALSE, min.chars = 1)
-  checkmate::assertCharacter(vc, pattern = "^[.]*[a-zA-Z]+[a-zA-Z0-9._]*$", len = 1, any.missing = FALSE, min.chars = 1)
-  checkmate::assertCharacter(q, pattern = "^[.]*[a-zA-Z]+[a-zA-Z0-9._]*$", len = 1, any.missing = FALSE, min.chars = 1)
+  assertCompartmentName(central)
+  assertCompartmentName(depot)
+  assertCompartmentName(peripheralComp)
+  assertVariableName(vp)
+  assertVariableName(vc)
+  assertVariableName(q)
 
   checkmate::assertIntegerish(numPeripheral, lower = 1, upper = 4)
   temp <- rxode2::assertRxUi(model)

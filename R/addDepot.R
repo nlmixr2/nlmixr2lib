@@ -25,13 +25,13 @@ addDepot <- function(model, central = "central", depot = "depot", absRate = "ka"
                      lagIni=0.0, fdepotIni=1.0,
                      absRateIni=1.0) {
   assertCompartmentName(depot)
-  checkmate::assertCharacter(absRate, pattern = "^[.]*[a-zA-Z]+[a-zA-Z0-9._]*$", len = 1, any.missing = FALSE, min.chars = 1)
+  assertVariableName(absRate)
   checkmate::assertLogical(lag, len = 1, any.missing = FALSE)
   checkmate::assertLogical(fdepot, len = 1, any.missing = FALSE)
-  checkmate::assertCharacter(tlag, pattern = "^[.]*[a-zA-Z]+[a-zA-Z0-9._]*$", len = 1, any.missing = FALSE, min.chars = 1)
-  checkmate::assertNumeric(lagIni, len=1, any.missing=FALSE, finite = TRUE)
-  checkmate::assertNumeric(fdepotIni, len=1, any.missing=FALSE, finite = TRUE)
-  checkmate::assertNumeric(absRateIni, len=1, any.missing=FALSE, finite = TRUE)
+  assertVariableName(tlag)
+  assertParameterValue(lagIni)
+  assertParameterValue(fdepotIni)
+  assertParameterValue(absRateIni)
   temp <- rxode2::assertRxUi(model)
   mv <- rxode2::rxModelVars(temp)
   if (absRate %in% mv$params) {

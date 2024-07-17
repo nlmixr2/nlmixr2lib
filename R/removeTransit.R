@@ -13,19 +13,17 @@
 #'   addTransit(4) |>
 #'   removeTransit(3)
 removeTransit <- function(model, transit, central = "central", depot = "depot", transitComp = "transit", ktr = "ktr") {
-  checkmate::assertCharacter(central, pattern = "^[.]*[a-zA-Z]+[a-zA-Z0-9._]*$", len = 1, any.missing = FALSE, min.chars = 1)
-  checkmate::assertCharacter(depot, pattern = "^[.]*[a-zA-Z]+[a-zA-Z0-9._]*$", len = 1, any.missing = FALSE, min.chars = 1)
-  checkmate::assertCharacter(transitComp, pattern = "^[.]*[a-zA-Z]+[a-zA-Z0-9._]*$", len = 1, any.missing = FALSE, min.chars = 1)
-  checkmate::assertCharacter(ktr, pattern = "^[.]*[a-zA-Z]+[a-zA-Z0-9._]*$", len = 1, any.missing = FALSE, min.chars = 1)
+  assertCompartmentName(central)
+  assertCompartmentName(depot)
+  assertCompartmentName(transitComp)
+  assertVariableName(ktr)
 
   if (!missing(transit)) {
     checkmate::assertIntegerish(transit, lower = 1, any.missing = FALSE, len = 1)
   }
   temp <- rxode2::assertRxUi(model)
 
-  # browser()
   mv <- rxode2::rxModelVars(temp)
-
 
   if (!(central %in% mv$state)) {
     stop("'", central, "' needs to be in the model")

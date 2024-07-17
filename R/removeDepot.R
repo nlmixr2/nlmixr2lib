@@ -8,8 +8,9 @@
 #' readModelDb("PK_1cmt_des") |>
 #'   removeDepot()
 removeDepot <- function(model, central = "central", depot = "depot") {
-  checkmate::assertCharacter(central, len = 1, any.missing = FALSE, min.chars = 1, pattern = "^[.]*[a-zA-Z]+[a-zA-Z0-9._]*$")
-  checkmate::assertCharacter(depot, len = 1, any.missing = FALSE, min.chars = 1, pattern = "^[.]*[a-zA-Z]+[a-zA-Z0-9._]*$")
+  assertCompartmentName(central)
+  assertCompartmentName(depot)
+
   temp <- rxode2::assertRxUi(model)
   mv <- rxode2::rxModelVars(temp)
   if (!(central %in% mv$state)) {

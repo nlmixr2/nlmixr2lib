@@ -10,11 +10,11 @@
 #' readModelDb("PK_1cmt_des") |>
 #'   addTransit(3)
 addTransit <- function(model, transit, central = "central", depot = "depot", transitComp = "transit", ktr = "ktr") {
-  checkmate::assertCharacter(central, pattern = "^[.]*[a-zA-Z]+[a-zA-Z0-9._]*$", len = 1, any.missing = FALSE, min.chars = 1)
-  checkmate::assertCharacter(depot, pattern = "^[.]*[a-zA-Z]+[a-zA-Z0-9._]*$", len = 1, any.missing = FALSE, min.chars = 1)
-  checkmate::assertCharacter(transitComp, pattern = "^[.]*[a-zA-Z]+[a-zA-Z0-9._]*$", len = 1, any.missing = FALSE, min.chars = 1)
+  assertCompartmentName(central)
+  assertCompartmentName(depot)
+  assertCompartmentName(transitComp)
   checkmate::assertNumeric(transit, lower = 1, upper = 10)
-  checkmate::assertCharacter(ktr, pattern = "^[.]*[a-zA-Z]+[a-zA-Z0-9._]*$", len = 1, any.missing = FALSE, min.chars = 1)
+  assertVariableName(ktr)
   temp <- rxode2::assertRxUi(model)
   mv <- rxode2::rxModelVars(temp)
   if (!(central %in% mv$state)) {
