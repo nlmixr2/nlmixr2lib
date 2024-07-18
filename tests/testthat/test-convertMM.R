@@ -130,4 +130,46 @@ test_that("convertMM fun", {
 
   expect_error(convertMM(f), NA)
 
+  f <- function() {
+    ini({
+      lka <- 0.45 ; label("Absorption rate (Ka)")
+      lvc  <- 3.45 ; label("Central volume of distribution (V)")
+    })
+    model({
+      ka <- exp(lka)
+      cl <- exp(lcl)
+      vc  <- exp(lvc)
+      d/dt(depot) <- -ka*depot
+      d/dt(central) <- ka*depot-kel*central
+      Cc <- central / vc
+    })
+  }
+  # doesn't need endpoint
+  expect_error(convertMM(f), NA)
+
+  # doesn't need estimates
+  f <- function() {
+    model({
+      d/dt(depot) <- -ka*depot
+      d/dt(central) <- ka*depot-kel*central
+      Cc <- central / vc
+    })
+  }
+
+  expect_error(convertMM(f), NA)
+
+  # handles only eta
+  f <- function() {
+    ini({
+      kel ~ 0.1
+    })
+    model({
+      d/dt(depot) <- -ka*depot
+      d/dt(central) <- ka*depot-kel*central
+      Cc <- central / vc
+    })
+  }
+
+  expect_error(convertMM(f), NA)
+
 })

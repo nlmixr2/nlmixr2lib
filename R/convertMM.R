@@ -210,7 +210,27 @@ convertMM <- function(ui, central="central",
   .eta <- .iniDf[!is.na(.iniDf$neta1),, drop = FALSE]
   .theta <- .iniDf[is.na(.iniDf$neta1),, drop = FALSE]
   if (length(.theta$ntheta) == 0) {
-    stop("need to have at least one population/residual parameter in the model", call.=FALSE)
+    .theta1 <- lapply(names(.theta),
+           function(n) {
+             switch(n,
+                    ntheta=1L,
+                    neta1=NA,
+                    neta2=NA,
+                    name="_dummy",
+                    lower= -Inf,
+                    est=0,
+                    upper=Inf,
+                    fix=FALSE,
+                    label=NA_character_,
+                    backTransform=NA_character_,
+                    condition=NA_character_,
+                    err=NA_character_,
+                    NA)
+           })
+    names(.theta1) <- names(.theta)
+    .theta1 <- as.data.frame(.theta1)
+  } else {
+    .theta1 <- .theta[1, ]
   }
   .line <- rxode2::modelExtract(.ui, elimination)
   .modelLines <- .ui$lstExpr
@@ -229,22 +249,31 @@ convertMM <- function(ui, central="central",
     .theta <- .ret$theta
     .eta <- .ret$eta
   }
-  .ntheta <- max(.theta$ntheta)
-  .theta1 <- .theta[1, ]
+  if(length(.theta$ntheta) == 0) {
+    .ntheta <- 0
+  } else {
+    .ntheta <- max(.theta$ntheta)
+  }
   .thetaVm <- .theta1
+  .thetaVm$ntheta <- .ntheta + 1
+  .ntheta <- .ntheta + 1
   .thetaVm$name <- paste0("l", vm)
   .thetaVm$lower <- -Inf
   .thetaVm$est <- 0.1
   .thetaVm$upper <- Inf
   .thetaVm$fix <- FALSE
   .thetaVm$label <- NA_character_
+
   .thetakm <- .theta1
+  .thetaVm$ntheta <- .ntheta + 1
+  .ntheta <- .ntheta + 1
   .thetakm$name <- paste0("l", km)
   .thetakm$lower <- -Inf
   .thetakm$est <- 0.1
   .thetakm$upper <- Inf
   .thetakm$fix <- FALSE
   .thetakm$label <- NA_character_
+
   .ui <- rxode2::rxUiDecompress(.ui)
   .ui$iniDf <- rbind(.theta,
         .thetaVm,
