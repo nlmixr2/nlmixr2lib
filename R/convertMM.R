@@ -44,12 +44,12 @@
               identical(x[[3]], v2)) ||
              (identical(x[[3]], v1) &&
                 identical(x[[2]], v2)))) {
-      return(ret)
+      ret
     } else {
-      return(as.call(lapply(x, .replaceMultC, v1=v1, v2=v2, ret=ret)))
+      as.call(lapply(x, .replaceMultC, v1=v1, v2=v2, ret=ret))
     }
   } else {
-    return(x)
+    x
   }
 }
 #' replace multiplication expressions
