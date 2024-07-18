@@ -204,25 +204,27 @@ convertMM <- function(ui, central="central",
   rxode2::assertVariableName(vm)
   rxode2::assertVariableName(km)
   rxode2::assertVariableName(vc)
-  ui <- rxode2::assertRxUi(ui)
-  rxode2::assertCompartmentExists(ui, central)
-  .iniDf <- ui$iniDf
+  .ui <- rxode2::assertRxUi(ui)
+  rxode2::assertCompartmentExists(.ui, central)
+  .iniDf <- .ui$iniDf
   .eta <- .iniDf[!is.na(.iniDf$neta1),, drop = FALSE]
   .theta <- .iniDf[is.na(.iniDf$neta1),, drop = FALSE]
   if (length(.theta$ntheta) == 0) {
     stop("need to have at least one population/residual parameter in the model", call.=FALSE)
   }
-  .line <- rxode2::modelExtract(ui, elimination)
-  .modelLines <- ui$lstExpr
+  .line <- rxode2::modelExtract(.ui, elimination)
+  .modelLines <- .ui$lstExpr
   if (identical(.line, character(0))) {
     # line not in model; kel estimated directly
+    .theta <- .dropTheta(.theta, elimination)
+    .eta <- .dropEta(.eta, elimination)
   } else {
     .modelLines <- .removeLines(.modelLines, elimination)
     .vars <- rxode2::rxModelVars(.line)$params
     .vars <- .vars[!(.vars %in% c(vm, km, vc))]
     .theta <- .dropTheta(.theta, .vars)
     .eta <- .dropEta(.eta, .vars)
-    .ret <- .dropLines(ui, .modelLines, .theta, .eta, .vars)
+    .ret <- .dropLines(.ui, .modelLines, .theta, .eta, .vars)
     .modelLines <- .ret$modelLines
     .theta <- .ret$theta
     .eta <- .ret$eta
@@ -243,8 +245,8 @@ convertMM <- function(ui, central="central",
   .thetakm$upper <- Inf
   .thetakm$fix <- FALSE
   .thetakm$label <- NA_character_
-  ui <- rxode2::rxUiDecompress(ui)
-  ui$iniDf <- rbind(.theta,
+  .ui <- rxode2::rxUiDecompress(.ui)
+  .ui$iniDf <- rbind(.theta,
         .thetaVm,
         .thetakm,
         .eta)
@@ -253,9 +255,9 @@ convertMM <- function(ui, central="central",
     .replaceMult(.modelLines, elimination, central,
                paste0("(", vm, "*", central, "/", vc, ")/(", km,
                       "+", central, "/", vc, ")")))
-  if (exists("description", envir=ui$meta)) {
-    rm("description", envir=ui$meta)
+  if (exists("description", envir=.ui$meta)) {
+    rm("description", envir=.ui$meta)
   }
-  rxode2::model(ui) <- .model
-  ui
+  rxode2::model(.ui) <- .model
+  .ui
 }

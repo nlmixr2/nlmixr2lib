@@ -22,3 +22,112 @@ test_that(".replaceMultC works", {
                e1)
 
 })
+
+
+test_that("convertMM fun", {
+
+  f <- function() {
+    ini({
+      lka <- 0.45 ; label("Absorption rate (Ka)")
+      lcl <- 1 ; label("Clearance (CL)")
+      lvc  <- 3.45 ; label("Central volume of distribution (V)")
+      propSd <- 0.5 ; label("Proportional residual error (fraction)")
+    })
+    model({
+      ka <- exp(lka)
+      cl <- exp(lcl)
+      vc  <- exp(lvc)
+      kel <- cl / vc
+      d/dt(depot) <- -ka*depot
+      d/dt(central) <- ka*depot-kel*central
+      Cc <- central / vc
+      Cc ~ prop(propSd)
+    })
+  }
+
+  expect_error(convertMM(f), NA)
+
+  f <- function() {
+    ini({
+      lka <- 0.45 ; label("Absorption rate (Ka)")
+      lkel <- 1 ; label("lkel")
+      lvc  <- 3.45 ; label("Central volume of distribution (V)")
+      propSd <- 0.5 ; label("Proportional residual error (fraction)")
+      eta.cl ~ 0.1
+    })
+    model({
+      ka <- exp(lka)
+      cl <- exp(lcl + eta.cl)
+      vc  <- exp(lvc)
+      kel <- exp(lkel)
+      d/dt(depot) <- -ka*depot
+      d/dt(central) <- ka*depot-kel*central
+      Cc <- central / vc
+      Cc ~ prop(propSd)
+    })
+  }
+
+  expect_error(convertMM(f), NA)
+
+  f <- function() {
+    ini({
+      lka <- 0.45 ; label("Absorption rate (Ka)")
+      lkel <- 1 ; label("lkel")
+      lvc  <- 3.45 ; label("Central volume of distribution (V)")
+      propSd <- 0.5 ; label("Proportional residual error (fraction)")
+      eta.kel ~ 0.1
+    })
+    model({
+      ka <- exp(lka)
+      cl <- exp(lcl)
+      vc  <- exp(lvc)
+      kel <- exp(lkel + eta.kel)
+      d/dt(depot) <- -ka*depot
+      d/dt(central) <- ka*depot-kel*central
+      Cc <- central / vc
+      Cc ~ prop(propSd)
+    })
+  }
+
+  expect_error(convertMM(f), NA)
+
+  f <- function() {
+    ini({
+      lka <- 0.45 ; label("Absorption rate (Ka)")
+      lvc  <- 3.45 ; label("Central volume of distribution (V)")
+      propSd <- 0.5 ; label("Proportional residual error (fraction)")
+      kel <- 0.1
+    })
+    model({
+      ka <- exp(lka)
+      cl <- exp(lcl)
+      vc  <- exp(lvc)
+      d/dt(depot) <- -ka*depot
+      d/dt(central) <- ka*depot-kel*central
+      Cc <- central / vc
+      Cc ~ prop(propSd)
+    })
+  }
+
+  expect_error(convertMM(f), NA)
+
+  f <- function() {
+    ini({
+      lka <- 0.45 ; label("Absorption rate (Ka)")
+      lvc  <- 3.45 ; label("Central volume of distribution (V)")
+      propSd <- 0.5 ; label("Proportional residual error (fraction)")
+    })
+    model({
+      ka <- exp(lka)
+      cl <- exp(lcl)
+      vc  <- exp(lvc)
+      d/dt(depot) <- -ka*depot
+      d/dt(central) <- ka*depot-kel*central
+      Cc <- central / vc
+      Cc ~ prop(propSd)
+    })
+  }
+
+  expect_error(convertMM(f), NA)
+
+})
