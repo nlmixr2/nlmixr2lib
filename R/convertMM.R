@@ -70,6 +70,101 @@
            .replaceMultC(modelLines[[i]], v1=.v1, v2=.v2, ret=.ret)
          })
 }
+#' This drops thetas in the theta section of an iniDf
+#'
+#'
+#' @param theta theta iniDf data.frame
+#' @param pars  parameters to drop
+#' @return  theta data frame
+#' @noRd
+#' @author Matthew L. Fidler
+.dropTheta <- function(theta, pars) {
+  .theta <- theta
+  .w <- which(.theta$name %in% pars)
+  if (length(.w) > 0) {
+    # These are directly estimated, drop
+    .theta <- .theta[-.w,, drop = FALSE]
+    .theta$ntheta <- seq_along(.theta$name)
+  }
+  .theta
+}
+#' Drop the etas in the eta iniDf data frame
+#'
+#' @param eta eta iniDf data.frame
+#' @param pars parameters
+#' @return eta data frame
+#' @noRd
+#' @author Matthew L. Fidler
+.dropEta <- function(eta, pars) {
+  .eta <- eta
+  .w <- which(.eta$name %in% pars)
+  if (length(.w) > 0) {
+    # Convert to matrix and drop columns
+    .e <- vapply(.w, function(i) {
+      .eta$neta1[i]
+    }, double(1), USE.NAMES=FALSE)
+    .eta <- .eta[!(.eta$neta1 %in% .e),, drop = FALSE]
+    .eta <- .eta[!(.eta$neta2 %in% .e),, drop = FALSE]
+    if (length(.eta$name) > 0) {
+      .eta <- .eta[order(.eta$neta1, .eta$neta2),]
+      .eta$neta1 <- as.integer(factor(.eta$neta1))
+      .eta$neta2 <- as.integer(factor(.eta$neta2))
+    }
+  }
+  .eta
+}
+
+#' This drops a single line from a model and recursively removes items
+#'
+#'
+#' @param ui original ui
+#' @param modelLines model lines
+#' @param theta iniDf theta name
+#' @param eta iniDf eta name
+#' @param par1 a single parameter to remove from the model
+#' @return list of modelLines, theta, and eta
+#' @noRd
+#' @author Matthew L. Fidler
+.dropLine1 <- function(ui, modelLines, theta, eta, par1) {
+  .line <- rxode2::modelExtract(ui, par1)
+  if (length(.line) == 0) {
+    return(list(modelLines=modelLines, theta=theta, eta=eta))
+  }
+  .modelLines <- .removeLines(modelLines, par1)
+  .vars <- rxode2::rxModelVars(.line)$params
+  .theta <- .dropTheta(theta, .vars)
+  .eta <- .dropEta(eta, .vars)
+  for (.v in .vars) {
+    .ret <- .dropLine1(ui, .modelLines, .theta, .eta, .v)
+    .theta <- .ret$theta
+    .eta <- .ret$eta
+    .modelLines <- .ret$modelLines
+  }
+  list(modelLines=.modelLines, theta=.theta, eta=.eta)
+}
+#' Drop the lines from the model
+#'
+#'
+#' @param ui original ui
+#' @param modelLines model lines where this will be dropped
+#' @param theta theta section of iniDf
+#' @param eta eta section of iniDf
+#' @param vars variables to drop
+#' @return list of modelLines, theta, and eta
+#' @noRd
+#' @author Matthew L. Fidler
+.dropLines <- function(ui, modelLines, theta, eta, vars) {
+  .modelLines <- modelLines
+  .theta <- theta
+  .eta <- eta
+  for (.v in vars) {
+    .ret <- .dropLine1(ui, .modelLines, .theta, .eta, .v)
+    .theta <- .ret$theta
+    .eta <- .ret$eta
+    .modelLines <- .ret$modelLines
+  }
+  list(modelLines=.modelLines, theta=.theta, eta=.eta)
+}
 
 #' Convert models from linear elimination to MM elimination
 #'
@@ -104,23 +199,33 @@
 #'
 convertMM <- function(ui, central="central",
                       elimination="kel",
-                      vm="vm", km="km", vc="vc",
-                      cl="cl") {
+                      vm="vm", km="km", vc="vc") {
+  rxode2::assertVariableName(elimination)
+  rxode2::assertVariableName(vm)
+  rxode2::assertVariableName(km)
+  rxode2::assertVariableName(vc)
   ui <- rxode2::assertRxUi(ui)
   rxode2::assertCompartmentExists(ui, central)
-  ui <- eval(str2lang(paste0("rxode2::model(ui, -", cl, ")")))
-  .modelLines <- ui$lstExpr
-  .l <- length(.modelLines)
-  .modelLines <- .removeLines(.modelLines, elimination)
-  if (length(.modelLines) == .l) {
-    stop("assumes '", elimination, "' is a derived variable",
-         call.=FALSE)
-  }
   .iniDf <- ui$iniDf
   .eta <- .iniDf[!is.na(.iniDf$neta1),, drop = FALSE]
   .theta <- .iniDf[is.na(.iniDf$neta1),, drop = FALSE]
   if (length(.theta$ntheta) == 0) {
     stop("need to have at least one population/residual parameter in the model", call.=FALSE)
+  }
+  .line <- rxode2::modelExtract(ui, elimination)
+  .modelLines <- ui$lstExpr
+  if (identical(.line, character(0))) {
+    # line not in model; kel estimated directly
+  } else {
+    .modelLines <- .removeLines(.modelLines, elimination)
+    .vars <- rxode2::rxModelVars(.line)$params
+    .vars <- .vars[!(.vars %in% c(vm, km, vc))]
+    .theta <- .dropTheta(.theta, .vars)
+    .eta <- .dropEta(.eta, .vars)
+    .ret <- .dropLines(ui, .modelLines, .theta, .eta, .vars)
+    .modelLines <- .ret$modelLines
+    .theta <- .ret$theta
+    .eta <- .ret$eta
   }
   .ntheta <- max(.theta$ntheta)
   .theta1 <- .theta[1, ]
