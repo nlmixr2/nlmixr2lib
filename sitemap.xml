@@ -12,12 +12,11 @@
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/addEta.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/addResErr.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/addTransit.html</loc></url>
-<url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/assertCompartmentExists.html</loc></url>
-<url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/assertCompartmentName.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/index.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/modeldb.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/modellib.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/readModelDb.html</loc></url>
+<url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/reexports.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/removeComp.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/removeDepot.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/removeTransit.html</loc></url>
