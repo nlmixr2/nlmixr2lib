@@ -10,7 +10,7 @@ rxode2::assertRxUiPrediction
 #' @export
 rxode2::assertRxUiSingleEndpoint
 
-#' @importFrom rxode2 assertRxUiSingleEndpoint
+#' @importFrom rxode2 assertRxUiTransformNormal
 #' @export
 rxode2::assertRxUiTransformNormal
 
