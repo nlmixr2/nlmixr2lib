@@ -1,10 +1,8 @@
 #' Remove model lines
 #'
 #' @param modelLines model line expression
-#'
 #' @param lhs left handed variable
-#'
-#' @return model with lhs assignments dropped without checking
+#' @returns model with lhs assignments dropped without checking
 #'
 #' @noRd
 #' @author Matthew L. Fidler
@@ -33,7 +31,8 @@
 #' @param v1 expression for the first multiplication term
 #' @param v2 expression for the second multiplication term
 #' @param ret return expression that v1*v2 will be replaced
-#' @return expression with multiplications replaced with ret
+#' @returns expression with multiplications replaced with ret
+#'
 #' @noRd
 #' @author Matthew L. Fidler
 .replaceMultC <- function(x, v1, v2, ret) {
@@ -52,13 +51,14 @@
     x
   }
 }
-#' replace multiplication expressions
+#' Replace multiplication expressions
 #'
 #' @param modelLines model lines to replace multiplication expressions
 #' @param v1 variable one to replace
 #' @param v2 variable two to replace
 #' @param ret new expression with multiplication replaced
-#' @return modelLines with multiplication expressions removedes
+#' @returns modelLines with multiplication expressions removedes
+#'
 #' @noRd
 #' @author Matthew L. Fidler
 .replaceMult <- function(modelLines, v1, v2, ret) {
@@ -70,12 +70,12 @@
            .replaceMultC(modelLines[[i]], v1=.v1, v2=.v2, ret=.ret)
          })
 }
-#' This drops thetas in the theta section of an iniDf
-#'
+#' Drop thetas in the theta section of an iniDf
 #'
 #' @param theta theta iniDf data.frame
 #' @param pars  parameters to drop
-#' @return  theta data frame
+#' @returns theta data frame
+#'
 #' @noRd
 #' @author Matthew L. Fidler
 .dropTheta <- function(theta, pars) {
@@ -88,11 +88,13 @@
   }
   .theta
 }
+
 #' Drop the etas in the eta iniDf data frame
 #'
 #' @param eta eta iniDf data.frame
 #' @param pars parameters
-#' @return eta data frame
+#' @returns eta data frame
+#'
 #' @noRd
 #' @author Matthew L. Fidler
 .dropEta <- function(eta, pars) {
@@ -114,15 +116,15 @@
   .eta
 }
 
-#' This drops a single line from a model and recursively removes items
-#'
+#' Drops a single line from a model and recursively removes items
 #'
 #' @param ui original ui
 #' @param modelLines model lines
 #' @param theta iniDf theta name
 #' @param eta iniDf eta name
 #' @param par1 a single parameter to remove from the model
-#' @return list of modelLines, theta, and eta
+#' @returns list of modelLines, theta, and eta
+#'
 #' @noRd
 #' @author Matthew L. Fidler
 .dropLine1 <- function(ui, modelLines, theta, eta, par1) {
@@ -150,7 +152,7 @@
 #' @param theta theta section of iniDf
 #' @param eta eta section of iniDf
 #' @param vars variables to drop
-#' @return list of modelLines, theta, and eta
+#' @returns list of modelLines, theta, and eta
 #' @noRd
 #' @author Matthew L. Fidler
 .dropLines <- function(ui, modelLines, theta, eta, vars) {
@@ -166,27 +168,19 @@
   list(modelLines=.modelLines, theta=.theta, eta=.eta)
 }
 
-#' Convert models from linear elimination to MM elimination
+#' Convert models from linear elimination to Michaelis-Menten elimination
 #'
 #' @param ui model to convert
-#'
 #' @param central the central compartment where the elimination is present
-#'
 #' @param elimination variable for the elimination constant in the
 #'   model
-#'
 #' @param vm variable name for Vmax in the model
-#'
 #' @param km variable name for Km in the model
-#'
 #' @param vc variable name for Vc in the model
-#'
-#' @return new model changing linear elimination to MM elimination
+#' @returns new model changing linear elimination to Michaelis-Menten elimination
 #'
 #' @export
-#'
 #' @author Matthew L. Fidler
-#'
 #' @examples
 #'
 #' readModelDb("PK_1cmt_des") |> convertMM()
@@ -196,7 +190,6 @@
 #' readModelDb("PK_3cmt_des") |> convertMM()
 #'
 #' readModelDb("PK_3cmt_des") |> removeDepot() |> convertMM()
-#'
 convertMM <- function(ui, central="central",
                       elimination="kel",
                       vm="vm", km="km", vc="vc") {
