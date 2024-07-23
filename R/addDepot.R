@@ -5,7 +5,7 @@
 #'   object)
 #' @param central central compartment name
 #' @param depot depot compartment name
-#' @param absRate absorption rate parameter name
+#' @param ka absorption rate parameter name
 #' @param lag lag parameter name
 #' @param lagIni Initial value for the lag time (`NA` to omit)
 #' @param fdepotIni Initial value for the depot bioavailability (`NA` to omit)
@@ -20,13 +20,13 @@
 #'   addDepot()
 addDepot <- function(model,
                      central = "central", depot = "depot",
-                     absRate = "ka", lag = paste0("lag", depot),
+                     ka = "ka", lag = paste0("lag", depot),
                      lagIni=NA, fdepotIni=NA,
                      absRateIni=1.0) {
   model <- rxode2::assertRxUi(model)
   assertCompartmentName(depot)
   assertCompartmentExists(model, central)
-  assertVariableName(absRate)
+  assertVariableName(ka)
   assertVariableName(lag)
   if (!is.na(lagIni)) {
     assertParameterValue(lagIni)
@@ -34,12 +34,12 @@ addDepot <- function(model,
   if (!is.na(fdepotIni)) {
     assertParameterValue(fdepotIni)
   }
-  assertParameterValue(absRateIni)
+  assertParameterValue(kaIni)
   temp <- rxode2::assertRxUi(model)
 
   mv <- rxode2::rxModelVars(temp)
-  if (absRate %in% mv$params) {
-    stop("'", absRate, "' cannot be in the model")
+  if (ka %in% mv$params) {
+    stop("'", ka, "' cannot be in the model")
   }
   if (!(central %in% mv$state)) {
     stop("'", central, "' needs to be in the model")
@@ -51,7 +51,7 @@ addDepot <- function(model,
     transit <- eval(str2lang(paste0("rxode2::modelExtract(temp,d/dt(transit1),lines=TRUE)")))
     transitLine <- attr(transit, "lines")
     transitRhs <- sub(".*<-\\s*", "", transit)
-    transitODE <- str2lang(paste0("d/dt(transit1) <- ", absRate, "*", depot, deparse1(str2lang(transitRhs))))
+    transitODE <- str2lang(paste0("d/dt(transit1) <- ", ka, "*", depot, deparse1(str2lang(transitRhs))))
   }
   # Extract model
   model <- rxode2::modelExtract(temp, endpoint = NA)
@@ -59,13 +59,13 @@ addDepot <- function(model,
   # Extract and modify ODE for central compartment
   center <- eval(str2lang(paste0("rxode2::modelExtract(temp,d/dt(", central, "),lines=TRUE)")))
   rhs <- sub(".*<-\\s*", "", center)
-  line <- str2lang(paste0("d/dt(", central, ") <- ", absRate, "*", depot, "+", deparse1(str2lang(rhs))))
+  line <- str2lang(paste0("d/dt(", central, ") <- ", ka, "*", depot, "+", deparse1(str2lang(rhs))))
   lineNew <- str2lang(paste0("d/dt(", central, ") <- ", deparse1(str2lang(rhs))))
   centralLine <- attr(center, "lines")
 
   # Additional equations to be added to model block
-  absrateModel <- paste0(absRate, " <- exp(l", absRate, ")")
-  
+  kaModel <- paste0(ka, " <- exp(l", ka, ")")
+
   # Lag equations
   if (is.na(lagIni)) {
     lagModel <- lagODE <- NULL
@@ -73,7 +73,7 @@ addDepot <- function(model,
     lagModel <- paste0(lag, " <- exp(la", lag, ")")
     lagODE <- paste0("alag(", depot, ") <- ", lag)
   }
-  
+
   # Bioavailability equations
   if (is.na(fdepotIni)) {
     fdepotModel <- fdepotODE <- NULL
@@ -82,13 +82,13 @@ addDepot <- function(model,
     fdepotODE <- paste0("f(", depot, ") <- f", depot)
   }
 
-  depotODE <- paste0("d/dt(", depot, ") <- -", absRate, "*", depot)
+  depotODE <- paste0("d/dt(", depot, ") <- -", ka, "*", depot)
 
   # Modify model block
   if (any(grepl("^transit", mv$state))) {
     rxode2::model(temp) <-
       c(
-        absrateModel,
+        kaModel,
         fdepotModel,
         lagModel,
         model[1:(transitLine - 1)],
@@ -103,7 +103,7 @@ addDepot <- function(model,
   } else {
     rxode2::model(temp) <-
       c(
-        absrateModel,
+        kaModel,
         fdepotModel,
         lagModel,
         model[1:(centralLine - 1)],
@@ -116,7 +116,7 @@ addDepot <- function(model,
   }
 
   # Modify ini block
-  rateIni <- str2lang(paste0("l", absRate, " <-", absRateIni))
+  rateIni <- str2lang(paste0("l", ka, " <-", kaIni))
   lfdepotIni <- str2lang(paste0("lf", depot, " <-", fdepotIni))
   if (is.na(lagIni)) {
     temp <- rxode2::ini(temp, rateIni, append = 0)
@@ -124,7 +124,7 @@ addDepot <- function(model,
       temp <- rxode2::ini(temp, lfdepotIni)
     }
     temp2 <- temp$iniDf
-    suppressMessages(temp2$label[temp2$name == paste0("l", absRate)] <- paste0("First order absorption rate (", absRate, ")"))
+    suppressMessages(temp2$label[temp2$name == paste0("l", ka)] <- paste0("First order absorption rate (", ka, ")"))
     suppressMessages(temp2$label[temp2$name == paste0("lf", depot)] <- "Bioavailability (F)")
   } else {
     lalagIni <- str2lang(paste0("la", lag, " <-", lagIni))
@@ -135,7 +135,7 @@ addDepot <- function(model,
       temp <- rxode2::ini(temp, lfdepotIni)
     }
     temp2 <- temp$iniDf
-    suppressMessages(temp2$label[temp2$name == paste0("l", absRate)] <- paste0("First order absorption rate (", absRate, ")"))
+    suppressMessages(temp2$label[temp2$name == paste0("l", ka)] <- paste0("First order absorption rate (", ka, ")"))
     if (!is.na(fdepotIni)) {
       suppressMessages(temp2$label[temp2$name == paste0("lf", depot)] <- "Bioavailability (F)")
     }
@@ -159,7 +159,7 @@ addDepot <- function(model,
 removeDepot <- function(model, central = "central", depot = "depot") {
   assertCompartmentName(central)
   assertCompartmentName(depot)
-  
+
   temp <- rxode2::assertRxUi(model)
   mv <- rxode2::rxModelVars(temp)
   if (!(central %in% mv$state)) {
@@ -173,8 +173,8 @@ removeDepot <- function(model, central = "central", depot = "depot") {
     transitLine <- attr(transit, "lines")
     transitNew <- str2lang(sub("\\s*ka\\s*\\*\\s*depot", "", transit))
   }
-  
-  
+
+
   model <- rxode2::modelExtract(temp, endpoint = NA)
   center <- eval(str2lang(paste0("rxode2::modelExtract(temp,d/dt(", central, "),lines=TRUE)")))
   centralLine <- attr(center, "lines")
@@ -184,7 +184,7 @@ removeDepot <- function(model, central = "central", depot = "depot") {
   } else {
     rxode2::model(temp) <- c(model[1:(centralLine - 1)], rhs, model[(centralLine + 1):length(model)])
   }
-  
+
   ka <- fdepot <- depot <- d <- dt <- f <- NULL
   if ("fdepot" %in% mv$lhs) {
     temp <- rxode2::model(temp, -ka, -fdepot, -f(depot), -d / dt(depot))

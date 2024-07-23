@@ -65,10 +65,10 @@
   .v1 <- str2lang(v1)
   .v2 <- str2lang(v2)
   .ret <- str2lang(ret)
-  lapply(seq_along(modelLines),
+  as.call(lapply(seq_along(modelLines),
          function(i) {
            .replaceMultC(modelLines[[i]], v1=.v1, v2=.v2, ret=.ret)
-         })
+         }))
 }
 #' Drop thetas in the theta section of an iniDf
 #'
@@ -167,6 +167,70 @@
   }
   list(modelLines=.modelLines, theta=.theta, eta=.eta)
 }
+#' Returns the iniDf, theta, eta and theta1 data frames
+#'
+#' @param ui rxode2 ui function
+#' @return A list of iniDf, theta, eta, and theta1. If there is no
+#'   population information the theta1 will be generated
+#' @noRd
+#' @author Matthew L. Fidler
+.getEtaThetaTheta1 <- function(ui) {
+  .ui <- ui
+  .iniDf <- .ui$iniDf
+  .eta <- .iniDf[!is.na(.iniDf$neta1),, drop = FALSE]
+  .theta <- .iniDf[is.na(.iniDf$neta1),, drop = FALSE]
+  if (length(.theta$ntheta) == 0) {
+    .theta1 <- lapply(names(.theta),
+                      function(n) {
+                        switch(n,
+                               ntheta=1L,
+                               neta1=NA,
+                               neta2=NA,
+                               name="_dummy",
+                               lower= -Inf,
+                               est=0,
+                               upper=Inf,
+                               fix=FALSE,
+                               label=NA_character_,
+                               backTransform=NA_character_,
+                               condition=NA_character_,
+                               err=NA_character_,
+                               NA)
+                      })
+    names(.theta1) <- names(.theta)
+    .theta1 <- as.data.frame(.theta1)
+  } else {
+    .theta1 <- .theta[1, ]
+  }
+  list(iniDf=.iniDf, theta=.theta, theta1=.theta1)
+}
+#' Get a single theta estimate
+#'
+#'
+#' @param vm name of the estimate; will pre-pend l to this
+#' @param theta1 theta1 dataset
+#' @param ntheta number of thetas, will increment to ntheta+1
+#' @param lower lower estimate, default -Inf
+#' @param est estimate, default 0.1
+#' @param upper upper estimate, default Inf
+#' @param fix fixed default FALSE
+#' @param label default NA_character_
+#' @return a single theta for integration with iniDf
+#' @noRd
+#' @author Matthew L. Fidler
+.get1theta <- function(vm, theta1, ntheta,
+                       lower= -Inf, est=0.1, upper=Inf,
+                       fix=FALSE, label=NA_character_) {
+  .thetaVm <- theta1
+  .thetaVm$ntheta <- ntheta + 1
+  .thetaVm$name <- paste0("l", vm)
+  .thetaVm$lower <-lower
+  .thetaVm$est <- est
+  .thetaVm$upper <- upper
+  .thetaVm$fix <- fix
+  .thetaVm$label <- label
+  .thetaVm
+}
 
 #' Convert models from linear elimination to Michaelis-Menten elimination
 #'
@@ -199,32 +263,11 @@ convertMM <- function(ui, central="central",
   rxode2::assertVariableName(vc)
   .ui <- rxode2::assertRxUi(ui)
   rxode2::assertCompartmentExists(.ui, central)
-  .iniDf <- .ui$iniDf
-  .eta <- .iniDf[!is.na(.iniDf$neta1),, drop = FALSE]
-  .theta <- .iniDf[is.na(.iniDf$neta1),, drop = FALSE]
-  if (length(.theta$ntheta) == 0) {
-    .theta1 <- lapply(names(.theta),
-           function(n) {
-             switch(n,
-                    ntheta=1L,
-                    neta1=NA,
-                    neta2=NA,
-                    name="_dummy",
-                    lower= -Inf,
-                    est=0,
-                    upper=Inf,
-                    fix=FALSE,
-                    label=NA_character_,
-                    backTransform=NA_character_,
-                    condition=NA_character_,
-                    err=NA_character_,
-                    NA)
-           })
-    names(.theta1) <- names(.theta)
-    .theta1 <- as.data.frame(.theta1)
-  } else {
-    .theta1 <- .theta[1, ]
-  }
+  .tmp <- .getEtaThetaTheta1(ui)
+  .iniDf <- .tmp$iniDf
+  .theta <- .tmp$theta
+  .theta1 <- .tmp$theta1
+  .eta <- .tmp$eta
   .line <- rxode2::modelExtract(.ui, elimination)
   .modelLines <- .ui$lstExpr
   if (identical(.line, character(0))) {
@@ -247,25 +290,11 @@ convertMM <- function(ui, central="central",
   } else {
     .ntheta <- max(.theta$ntheta)
   }
-  .thetaVm <- .theta1
-  .thetaVm$ntheta <- .ntheta + 1
+  .thetaVm <- .get1theta(vm, .theta1, .ntheta)
   .ntheta <- .ntheta + 1
-  .thetaVm$name <- paste0("l", vm)
-  .thetaVm$lower <- -Inf
-  .thetaVm$est <- 0.1
-  .thetaVm$upper <- Inf
-  .thetaVm$fix <- FALSE
-  .thetaVm$label <- NA_character_
 
-  .thetakm <- .theta1
-  .thetaVm$ntheta <- .ntheta + 1
+  .thetakm <- .get1theta(km, .theta1, .ntheta)
   .ntheta <- .ntheta + 1
-  .thetakm$name <- paste0("l", km)
-  .thetakm$lower <- -Inf
-  .thetakm$est <- 0.1
-  .thetakm$upper <- Inf
-  .thetakm$fix <- FALSE
-  .thetakm$label <- NA_character_
 
   .ui <- rxode2::rxUiDecompress(.ui)
   .ui$iniDf <- rbind(.theta,

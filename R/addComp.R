@@ -4,7 +4,6 @@
 #'   to the model
 #' @param central a character vector representing the central
 #'   compartment
-#' @param depot a character vector representing the depot compartment
 #' @param peripheralComp A character vector representing the prefix of
 #'   peripheral compartments
 #' @param vp parameter representing the peripheral volume of the first
@@ -19,9 +18,9 @@
 #' @examples
 #' readModelDb("PK_1cmt_des") |>
 #'   addComp(1)
-addComp <- function(model, numPeripheral, central = "central", depot = "depot", peripheralComp = "peripheral", vp = "vp", vc = "vc", q = "q") {
+addComp <- function(model, numPeripheral, central = "central",
+                    peripheralComp = "peripheral", vp = "vp", vc = "vc", q = "q") {
   assertCompartmentName(central)
-  assertCompartmentName(depot)
   assertCompartmentName(peripheralComp)
   assertVariableName(vp)
   assertVariableName(vc)
@@ -111,48 +110,47 @@ addComp <- function(model, numPeripheral, central = "central", depot = "depot", 
 #' @examples
 #' library(rxode2)
 #' readModelDb("PK_2cmt_des") |> removeComp(1)
-removeComp <- function(model, peripheral, central = "central", depot = "depot", peripheralComp = "peripheral", vp = "vp", vc = "vc", q = "q") {
+removeComp <- function(model, peripheral, central = "central", peripheralComp = "peripheral", vp = "vp", vc = "vc", q = "q") {
   assertCompartmentName(central)
-  assertCompartmentName(depot)
   assertCompartmentName(peripheralComp)
   assertVariableName(vp)
   assertVariableName(vc)
   assertVariableName(q)
-  
+
   if (!missing(peripheral)) {
     checkmate::assertIntegerish(peripheral, lower = 1, any.missing = FALSE, len = 1)
   }
-  
+
   temp <- rxode2::assertRxUi(model)
-  
+
   mv <- rxode2::rxModelVars(temp)
-  
-  
+
+
   if (!(central %in% mv$state)) {
     stop("'", central, "' needs to be in the model")
   }
   if (!(any(grepl("^peripheral", mv$state)))) {
     stop("'", peripheralComp, " need to be in the model")
   }
-  
+
   # Extract model
   modelNew <- rxode2::modelExtract(temp, endpoint = NA)
-  
+
   # modify ODE for central compartment to delete all elements related to peripheral compartments
   center <- eval(str2lang(paste0("rxode2::modelExtract(temp,d/dt(", central, "),lines=TRUE)")))
   centralLine <- attr(center, "lines")
   rhs <- sub(".*<-\\s*", "", center)
   rhs <- gsub("\\s*[+-]?\\s*k(?:[0-9][0-9])\\s*\\*\\s*\\w+\\d*", "", rhs)
-  
+
   # Find total number of peripheral compartments in the model
   obj <- c(unlist(modelNew)[which(grepl("\\s*^peripheral", mv$state))])
   totalPeripheral <- length(obj)
-  
+
   if (missing(peripheral)) {
     peripheral <- totalPeripheral
   }
   line <- str2lang(paste0("d/dt(", central, ") <- ", rhs))
-  
+
   # Modify ini{}
   temp2 <- temp$iniDf
   temp3 <- temp2$name
@@ -167,7 +165,7 @@ removeComp <- function(model, peripheral, central = "central", depot = "depot", 
   temp4 <- temp3[!(temp3 %in% c(ini1, ini2))]
   temp2 <- temp2[temp2$name %in% temp4, ]
   rxode2::ini(temp) <- temp2
-  
+
   # Locate the ODEs for peripheral compartments to be deleted
   obj <- NULL
   for (i in totalPeripheral:(totalPeripheral - peripheral + 1)) {
@@ -176,21 +174,21 @@ removeComp <- function(model, peripheral, central = "central", depot = "depot", 
     obj3 <- eval(str2lang(paste0("rxode2::modelExtract(temp, k", i + 1, "1,lines = TRUE)")))
     obj4 <- eval(str2lang(paste0("rxode2::modelExtract(temp,", vp, i, ",lines = TRUE)")))
     obj5 <- eval(str2lang(paste0("rxode2::modelExtract(temp,", q, i, ",lines = TRUE)")))
-    
+
     obj <- c(obj, obj1, obj2, obj3, obj4, obj5)
   }
   obj6 <- rxode2::modelExtract(temp, vp, q, lines = TRUE)
   obj <- c(obj, obj6)
-  
+
   for (i in obj) {
     index <- which(modelNew == i)
     modelNew <- modelNew[-index]
   }
-  
+
   # Insert modified ODE for central compartment into the model and modify model{}
   rxode2::model(temp) <- modelNew
-  
+
   temp <- rxode2::model(temp, line)
-  
+
   temp
 }
