@@ -62,6 +62,7 @@
 #' @noRd
 #' @author Matthew L. Fidler
 .replaceMult <- function(modelLines, v1, v2, ret) {
+  if (!is.list(modelLines)) modelLines <- list(modelLines)
   .v1 <- str2lang(v1)
   .v2 <- str2lang(v2)
   .ret <- str2lang(ret)

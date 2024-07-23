@@ -37,5 +37,5 @@ test_that("addTransit adds transit compartments correctly with 'depot'", {
 
 # Test if the function adds transit compartments  when 'depot' is not present
 test_that("addTransit does not add transit compartments  without 'depot'", {
-  expect_error(addTransit(readModelDb("PK_2cmt_no_depot"), 1), "'depot' needs to be in the model")
+  expect_warning(addTransit(readModelDb("PK_2cmt_no_depot"), 1), "'depot' added to model for transit model")
 })
