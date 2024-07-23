@@ -65,10 +65,10 @@
   .v1 <- str2lang(v1)
   .v2 <- str2lang(v2)
   .ret <- str2lang(ret)
-  as.call(lapply(seq_along(modelLines),
+  lapply(seq_along(modelLines),
          function(i) {
-           .replaceMultC(modelLines[[i]], v1=.v1, v2=.v2, ret=.ret)
-         }))
+           as.call(.replaceMultC(modelLines[[i]], v1=.v1, v2=.v2, ret=.ret))
+         })
 }
 #' Drop thetas in the theta section of an iniDf
 #'
@@ -263,7 +263,7 @@ convertMM <- function(ui, central="central",
   rxode2::assertVariableName(vc)
   .ui <- rxode2::assertRxUi(ui)
   rxode2::assertCompartmentExists(.ui, central)
-  .tmp <- .getEtaThetaTheta1(ui)
+  .tmp <- .getEtaThetaTheta1(.ui)
   .iniDf <- .tmp$iniDf
   .theta <- .tmp$theta
   .theta1 <- .tmp$theta1
