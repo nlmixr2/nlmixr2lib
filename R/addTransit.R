@@ -80,6 +80,18 @@
 #' @inheritParams addDepot
 #' @inheritParams addComp
 #' @return a model with transit compartment added
+#'
+#' This matches
+#'
+#' `dose->a0->a1->abs cmt->central`
+#'
+#' But `a0` is depot so dosing records labeled depot do not need to be
+#' changed
+#'
+#' The abs cmt becomes the last "transit" compartment
+#'
+#' This is simply for convienience
+#'
 #' @export
 #' @examples
 #' readModelDb("PK_1cmt_des") |> addTransit(3)
@@ -89,17 +101,15 @@ addTransit <- function(ui, ntransit, central = "central",
                        ktr = "ktr",
                        ka="ka") {
   rxode2::assertCompartmentName(transit)
-  rxode2::assertVariableName(ka)
   checkmate::assertIntegerish(ntransit, lower = 1)
-  rxode2::assertVariableName(ktr)
   .ui <- rxode2::assertRxUi(ui)
   rxode2::assertCompartmentExists(.ui, central)
   .mv <- rxode2::rxModelVars(.ui)
-  if (!any(.mv$state == depot)) {
+  if (!rxode2::testCompartmentExists(.ui, depot)) {
     .ui <- addDepot(.ui, central=central, depot=depot, ka=ka)
     .mv <- rxode2::rxModelVars(.ui)
     warning("'", depot, "' added to model for transit model", call.=FALSE)
-  } else if (any(.mv$state == paste0(transit, "1"))) {
+  } else if (rxode2::testCompartmentExists(.ui, paste0(transit, "1"))) {
     .ui <- removeTransit(ui,
                          central = central,
                          depot = depot, transit=transit,
@@ -122,26 +132,29 @@ addTransit <- function(ui, ntransit, central = "central",
   .pre <- .tmp$pre
   .central <- .replaceMult(.tmp$w,
                            v1=depot, v2=ka,
-                           ret=paste0(ktr, "*", transit, ntransit))
+                           ret=paste0(ka, "*", transit, ntransit))
   .post <- .tmp$post
   .v <- seq_len(ntransit)
-  .v <- .v[-1]
   # ODEs for the transit compartment (except the one from the depot)
-  .transMid <- list()
-  if (length(.v) > 0) {
-    .transMid <- lapply(.v,
-                        function(i) {
+  .transMid <- lapply(.v,
+                      function(i) {
+                        if (i == 1) {
+                          str2lang(paste0("d/dt(", transit, i, ")<- ",
+                                          ktr, "*", depot, "-",
+                                          ifelse(ntransit == 1, ka, ktr),
+                                          "*", transit, i))
+                        } else if (i == ntransit) {
+                          str2lang(paste0("d/dt(", transit, i, ")<- ",
+                                          ktr, "*", transit, i - 1, "-", ka,
+                                          "*", transit, i))
+                        } else {
                           str2lang(paste0("d/dt(", transit, i, ")<- ",
                                           ktr, "*", transit, i - 1, "-", ktr,
                                           "*", transit, i))
-                        })
-  }
-
+                        }
+                      })
   # combine the lines for now
   .modelLines <- c(.pre,
-                   list(str2lang(paste0("d/dt(", transit,
-                                        "1) <- ", ka, "*", depot, "-",
-                                        ktr, "*", transit, "1"))),
                    .transMid,
                    .central,
                    .post)
@@ -153,8 +166,7 @@ addTransit <- function(ui, ntransit, central = "central",
                    .tmp$pre,
                    .replaceMult(.tmp$w,
                                 v1=ka, v2=depot,
-                                ret=paste0(ka, "*", depot, " - ",
-                                           ktr, "*", transit, "1")),
+                                ret=paste0(ktr, "*", depot)),
                    .tmp$post)
   if (length(.theta$name == 0L)) {
     .ntheta <- 0
@@ -190,9 +202,9 @@ addTransit <- function(ui, ntransit, central = "central",
 #'
 #' # In this example the transit is added and then a few are removed
 #'
-#' readModelDb("PK_1cmt_des") |>
-#'   addTransit(4) |>
-#'   removeTransit(3)
+#' readModelDb("PK_1cmt_des") |> addTransit(4) |> removeTransit(3)
+#'
+#' readModelDb("PK_1cmt_des") |> addTransit(4) |> removeTransit()
 removeTransit <- function(ui, ntransit, central = "central",
                           depot = "depot", transit = "transit",
                           ktr = "ktr",
@@ -200,8 +212,8 @@ removeTransit <- function(ui, ntransit, central = "central",
   .ui <- rxode2::assertRxUi(ui)
   rxode2::assertCompartmentExists(.ui, central)
   rxode2::assertCompartmentExists(.ui, depot)
-  rxode2::assertCompartmentName(transit)
-  assertVariableName(ktr)
+  rxode2::assertCompartmentExists(.ui, paste0(transit, "1"))
+  rxode2::assertVariableName(ktr)
   .mv <- rxode2::rxModelVars(.ui)
   .transitCmts <- .mv$state
   .transitCmts <- .transitCmts[grepl(paste0("^", transit), .transitCmts)]
@@ -216,11 +228,11 @@ removeTransit <- function(ui, ntransit, central = "central",
     ntransit <- .totTransit
   }
   if (ntransit > .totTransit) {
-    warning("number of transit ")
+    warning("reset ntransit to ", .totTransit, call.=FALSE)
+    ntransit <- .totTransit
   }
-  .rm <- seq_len(.totTransit)[-seq_len(ntransit)]
   .ui <- rxode2::rxUiDecompress(.ui)
-  if (length(.rm) == 0L) {
+  if (ntransit == .totTransit) {
     # remove all
     .tmp <- .getEtaThetaTheta1(.ui)
     .iniDf <- .tmp$iniDf
@@ -236,8 +248,11 @@ removeTransit <- function(ui, ntransit, central = "central",
     .w <- .whichDdt(.modelLines, central)
     .tmp <- .extractModelLinesAtW(.modelLines, .w)
     .tmp$w <- .replaceMult(.tmp$w,
-                           v1=paste0(transit, .totTransit), v2=ktr,
+                           v1=paste0(transit, .totTransit), v2=ka,
                            ret=paste0(ka, "*", depot))
+    .tmp$pre <- .replaceMult(.tmp$pre,
+                             v1=depot, v2=ktr,
+                             ret=paste0(ka, "*", depot))
     .modelLines <- c(.tmp$pre,
                      .tmp$w,
                      .tmp$post)
@@ -249,13 +264,17 @@ removeTransit <- function(ui, ntransit, central = "central",
                        .eta)
   } else {
     # remove some, but not all
-    .transit <- paste0(transit, .rm)
+    .ftransit <- .totTransit - ntransit
+    .transit <- paste0(transit, seq_len(.totTransit)[-seq_len(.ftransit)])
     .modelLines <- .rmDdt(.ui$lstExpr, .transit)
     .w <- .whichDdt(.modelLines, central)
     .tmp <- .extractModelLinesAtW(.modelLines, .w)
     .tmp$w <- .replaceMult(.tmp$w,
-                           v1=paste0(transit, .totTransit), v2=ktr,
-                           ret=paste0(ktr, "*", transit, ntransit))
+                           v1=paste0(transit, .totTransit), v2=ka,
+                           ret=paste0(ka, "*", transit, .ftransit))
+    .tmp$pre <- .replaceMult(.tmp$pre,
+                           v1=paste0(transit, ntransit), v2=ktr,
+                           ret=paste0(ka, "*", transit, .ftransit))
     .modelLines <- c(.tmp$pre,
                      .tmp$w,
                      .tmp$post)

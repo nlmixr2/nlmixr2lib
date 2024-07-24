@@ -38,12 +38,28 @@
 .replaceMultC <- function(x, v1, v2, ret) {
   if (is.call(x)) {
     if (length(x) == 3 &&
-          identical(x[[1]], quote(`*`)) &&
-          ((identical(x[[2]], v1) &&
-              identical(x[[3]], v2)) ||
-             (identical(x[[3]], v1) &&
-                identical(x[[2]], v2)))) {
-      ret
+          identical(x[[1]], quote(`*`))) {
+      .neg <- FALSE
+      if (length(x[[2]]) == 2 &&
+            identical(x[[2]][[1]], quote(`+`))) {
+        x[[2]] <- x[[2]][[2]]
+      }
+      if (length(x[[2]]) == 2 &&
+            identical(x[[2]][[1]], quote(`-`))) {
+        .neg <- TRUE
+        x[[2]] <- x[[2]][[2]]
+      }
+      if ((identical(x[[2]], v1) &&
+             identical(x[[3]], v2)) ||
+            (identical(x[[3]], v1) &&
+               identical(x[[2]], v2))) {
+        if (.neg) {
+          return(str2lang(paste0("-", deparse1(ret))))
+        } else {
+          return(ret)
+        }
+      }
+      as.call(lapply(x, .replaceMultC, v1=v1, v2=v2, ret=ret))
     } else {
       as.call(lapply(x, .replaceMultC, v1=v1, v2=v2, ret=ret))
     }

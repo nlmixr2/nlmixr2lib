@@ -15,7 +15,7 @@ test_that("addTransit adds transit compartment", {
 
 # Test if the function throws an error when invalid input for 'central' is provided
 test_that("addTransit throws an error with invalid 'central'", {
-  expect_error(addTransit(readModelDb("PK_2cmt_des"), 3, "cent", "depot"), "'cent' needs to be in the model")
+  expect_error(addTransit(readModelDb("PK_2cmt_des"), 3, "cent", "depot"), "'cent' compartment is not in the model")
 })
 
 # Test if the function throws an error when invalid input for 'transit' is provided
