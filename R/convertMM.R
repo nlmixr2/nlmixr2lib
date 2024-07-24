@@ -220,7 +220,7 @@
   } else {
     .theta1 <- .theta[1, ]
   }
-  list(iniDf=.iniDf, theta=.theta, theta1=.theta1)
+  list(iniDf=.iniDf, theta=.theta, theta1=.theta1, eta=.eta)
 }
 #' Get a single theta estimate
 #'

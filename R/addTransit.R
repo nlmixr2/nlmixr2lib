@@ -168,7 +168,7 @@ addTransit <- function(ui, ntransit, central = "central",
                                 v1=ka, v2=depot,
                                 ret=paste0(ktr, "*", depot)),
                    .tmp$post)
-  if (length(.theta$name == 0L)) {
+  if (length(.theta$name) == 0L) {
     .ntheta <- 0
   } else {
     .ntheta <- max(.theta$ntheta)

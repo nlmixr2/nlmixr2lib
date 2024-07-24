@@ -39,3 +39,43 @@ test_that("addTransit adds transit compartments correctly with 'depot'", {
 test_that("addTransit does not add transit compartments  without 'depot'", {
   expect_warning(addTransit(readModelDb("PK_2cmt_no_depot"), 1), "'depot' added to model for transit model")
 })
+
+test_that("extreme model cases", {
+
+  f <- function() {
+    model({
+      d/dt(depot) <- -ka*depot
+      d/dt(central) <- ka*depot-kel*central
+      Cc <- central / vc
+    })
+  }
+
+  f <- rxode2::rxode2(f)
+
+  expect_error(f %>% addTransit(4), NA)
+  expect_warning(f %>% addTransit(4), NA)
+
+  f <- function() {
+    ini({
+      e ~ 0.1
+    })
+    model({
+      ka <- exp(e)
+      d/dt(depot) <- -ka*depot
+      d/dt(central) <- ka*depot-kel*central
+      Cc <- central / vc
+    })
+  }
+
+  f <- rxode2::rxode2(f)
+
+  omega <- f$omega
+
+  expect_error(f %>% addTransit(4), NA)
+  expect_warning(f %>% addTransit(4), NA)
+
+  tmp <- f %>% addTransit(4)
+
+  expect_equal(omega, tmp$omega)
+
+})
