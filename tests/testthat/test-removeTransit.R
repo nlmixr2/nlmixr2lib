@@ -58,7 +58,6 @@ test_that("extreme model cases", {
 
   f <- function() {
     ini({
-      ka <- 1
       lktr <- 1
     })
     model({
@@ -102,6 +101,23 @@ test_that("extreme model cases", {
   expect_warning(f %>% removeTransit(), NA)
   tmp <- f %>% removeTransit()
   expect_true(length(tmp$iniDf$name) == 0)
+
+  f <- function() {
+    ini({
+      ka <- 1
+      lktr ~ 1
+    })
+    model({
+      ktr <- exp(lktr)
+      d/dt(depot) <- -ktr * depot
+      d/dt(transit1) <- ktr * depot - ktr * transit1
+      d/dt(transit2) <- ktr * transit1 - ktr * transit2
+      d/dt(transit3) <- ktr * transit2 - ktr * transit3
+      d/dt(transit4) <- ktr * transit3 - ka * transit4
+      d/dt(central) <- ka * transit4 - kel * central
+      Cc <- central/vc
+    })
+  }
 
   f <- rxode2::rxode2(f)
 
