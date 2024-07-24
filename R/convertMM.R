@@ -238,10 +238,11 @@
 #' @author Matthew L. Fidler
 .get1theta <- function(vm, theta1, ntheta,
                        lower= -Inf, est=0.1, upper=Inf,
-                       fix=FALSE, label=NA_character_) {
+                       fix=FALSE, label=NA_character_,
+                       name=paste0("l", vm)) {
   .thetaVm <- theta1
   .thetaVm$ntheta <- ntheta + 1
-  .thetaVm$name <- paste0("l", vm)
+  .thetaVm$name <- name
   .thetaVm$lower <-lower
   .thetaVm$est <- est
   .thetaVm$upper <- upper
