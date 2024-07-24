@@ -4,7 +4,7 @@
 # })
 
 test_that("removeDepot throws error in model with invalid central compartment", {
-  expect_error(removeDepot(readModelDb("PK_1cmt_des"), "cent", "depot"), "'cent' needs to be in the model")
+  expect_error(removeDepot(readModelDb("PK_1cmt_des"), "cent", "depot"), "'cent' compartment is not in the model")
 })
 
 test_that("removeDepot removes depot compartment", {
@@ -14,7 +14,8 @@ test_that("removeDepot removes depot compartment", {
   temp <- rxode2::assertRxUi(modelUpdate)
   mv <- rxode2::rxModelVars(temp)
   expect_equal("depot" %in% mv$state, FALSE)
-  expect_error(removeDepot(temp, "central", "depot"), "'depot' needs to be in the model")
+  expect_error(removeDepot(temp, "central", "depot"),
+               "'depot' compartment is not in the model")
 })
 
 test_that("removeDepot removes ka in model block", {

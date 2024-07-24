@@ -1,13 +1,10 @@
 test_that("removeTransit throws error in model with no transit compartment", {
-  expect_error(removeTransit(readModelDb("PK_2cmt_des"), "central", "depot", transitComp = "transit"), "Assertion on 'transit' failed: Must be of type 'integerish', not 'character'")
-})
-test_that("removeTransit throws error in model with invalid central compartment", {
-  expect_error(removeTransit(readModelDb("PK_2cmt_des"), "cent", "depot"), "Assertion on 'transit' failed: Must be of type 'integerish', not 'character'")
+  expect_error(removeTransit(readModelDb("PK_2cmt_des"), "central", transit = "transit"), "Assertion on 'ntransit' failed: Must be of type 'integerish', not 'character'")
 })
 test_that("removeTransit removes transit compartment", {
   modelTest <- readModelDb("PK_1cmt_des") |> addTransit(1)
   modelTest <- rxode2::assertRxUi(modelTest)
-  suppressMessages(modelUpdate <- removeTransit(modelTest, central = "central", depot = "depot", transitComp = "transit"))
+  suppressMessages(modelUpdate <- removeTransit(modelTest, central = "central", depot = "depot", transit = "transit"))
   temp <- rxode2::assertRxUi(modelUpdate)
   mv <- rxode2::rxModelVars(temp)
   expect_equal("transit1" %in% mv$state, FALSE)
@@ -15,7 +12,7 @@ test_that("removeTransit removes transit compartment", {
 test_that("removeTransit removes ktr in model block", {
   modelTest <- readModelDb("PK_1cmt_des") |> addTransit(1)
   modelTest <- rxode2::assertRxUi(modelTest)
-  suppressMessages(modelUpdate <- removeTransit(modelTest, central = "central", depot = "depot", transitComp = "transit"))
+  suppressMessages(modelUpdate <- removeTransit(modelTest, central = "central", depot = "depot", transit = "transit"))
   temp <- rxode2::assertRxUi(modelUpdate)
   mv <- rxode2::rxModelVars(temp)
   expect_equal("ktr" %in% mv$lhs, FALSE)

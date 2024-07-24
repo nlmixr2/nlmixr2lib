@@ -100,8 +100,8 @@ addTransit <- function(ui, ntransit, central = "central",
                        transit = "transit",
                        ktr = "ktr",
                        ka="ka") {
-  rxode2::assertCompartmentName(transit)
   checkmate::assertIntegerish(ntransit, lower = 1)
+  rxode2::assertCompartmentName(transit)
   .ui <- rxode2::assertRxUi(ui)
   rxode2::assertCompartmentExists(.ui, central)
   .mv <- rxode2::rxModelVars(.ui)
@@ -209,6 +209,9 @@ removeTransit <- function(ui, ntransit, central = "central",
                           depot = "depot", transit = "transit",
                           ktr = "ktr",
                           ka="ka") {
+  if (!missing(ntransit)) {
+    checkmate::assertIntegerish(ntransit, lower = 1, any.missing = FALSE)
+  }
   .ui <- rxode2::assertRxUi(ui)
   rxode2::assertCompartmentExists(.ui, central)
   rxode2::assertCompartmentExists(.ui, depot)
