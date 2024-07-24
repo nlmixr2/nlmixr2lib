@@ -78,7 +78,6 @@ addIndirectLin <- function(ui,
   .modelLines <- .ui$lstExpr
   if (.doStim) {
     rxode2::assertVariableNew(.ui, ek)
-    print(stim)
     if (stim == "in") {
       .eff <- str2lang(paste0("d/dt(", R, ") <- ", kin,
                               "*(1+", ek, "*", cc, ") - ", kout, "*", R))
