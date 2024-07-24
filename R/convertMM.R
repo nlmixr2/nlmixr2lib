@@ -51,6 +51,7 @@
     x
   }
 }
+
 #' Replace multiplication expressions
 #'
 #' @param modelLines model lines to replace multiplication expressions
