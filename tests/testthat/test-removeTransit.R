@@ -58,6 +58,7 @@ test_that("extreme model cases", {
 
   f <- function() {
     ini({
+      ka <- 1
       lktr <- 1
     })
     model({
