@@ -31,6 +31,17 @@ addTransit(
 }
 \value{
 a model with transit compartment added
+
+This matches
+
+`dose->a0->a1->abs cmt->central`
+
+But `a0` is depot so dosing records labeled depot do not need to be
+changed
+
+The abs cmt becomes the last "transit" compartment
+
+This is simply for convienience
 }
 \description{
 To add transit compartments to the model
