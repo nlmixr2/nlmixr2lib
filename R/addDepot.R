@@ -61,6 +61,7 @@ addDepot <- function(ui,
 #' @param x expression
 #' @return expression with dot removed
 #' @author Matthew L. Fidler
+#' @noRd
 #' @examples
 #' .dropDotAddExpr(str2lang("x+.+4"))
 #' .dropDotAddExpr(str2lang("+.+4"))
@@ -141,9 +142,8 @@ addDepot <- function(ui,
 
 
 #' To convert from first order oral absorption to IV/Intravenous
-#' @param ui The model as a function
-#' @param central This is a character vector that represents the central compartment in the model
-#' @param depot  This is a character vector that represents the depot in the model
+
+#' @inheritParams addDepot
 #' @return Returns a model with the depot from a first order absorption model removed
 #' @export
 #' @examples
