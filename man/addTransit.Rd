@@ -5,27 +5,29 @@
 \title{To add transit compartments to the model}
 \usage{
 addTransit(
-  model,
-  transit,
+  ui,
+  ntransit,
   central = "central",
   depot = "depot",
-  transitComp = "transit",
-  ktr = "ktr"
+  transit = "transit",
+  ktr = "ktr",
+  ka = "ka"
 )
 }
 \arguments{
-\item{model}{The model as a function}
+\item{ui}{The model as a function}
 
-\item{transit}{the number of transit compartments to be added}
+\item{ntransit}{the number of transit compartments to be added}
 
-\item{central}{a character vector representing the central
-compartment}
+\item{central}{central compartment name}
 
-\item{depot}{a character vector representing the depot compartment}
+\item{depot}{depot compartment name}
 
-\item{transitComp}{the transit compartment prefix}
+\item{transit}{the transit compartment prefix}
 
 \item{ktr}{the parameter name for the transit compartment rate}
+
+\item{ka}{absorption rate parameter name}
 }
 \value{
 a model with transit compartment added
@@ -34,6 +36,5 @@ a model with transit compartment added
 To add transit compartments to the model
 }
 \examples{
-readModelDb("PK_1cmt_des") |>
-  addTransit(3)
+readModelDb("PK_1cmt_des") |> addTransit(3)
 }

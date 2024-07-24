@@ -8,7 +8,6 @@ removeComp(
   model,
   peripheral,
   central = "central",
-  depot = "depot",
   peripheralComp = "peripheral",
   vp = "vp",
   vc = "vc",
@@ -22,8 +21,6 @@ removeComp(
 
 \item{central}{a character vector representing the central
 compartment}
-
-\item{depot}{a character vector representing the depot compartment}
 
 \item{peripheralComp}{A character vector representing the prefix of
 peripheral compartments}

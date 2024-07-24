@@ -77,6 +77,7 @@
 #' @param ntransit the number of transit compartments to be added
 #' @param transit the transit compartment prefix
 #' @param ktr the parameter name for the transit compartment rate
+#' @inheritParams addDepot
 #' @inheritParams addComp
 #' @return a model with transit compartment added
 #' @export
@@ -178,8 +179,9 @@ addTransit <- function(ui, ntransit, central = "central",
 }
 
 #' To remove transit compartments from the model
-#' @param model The model as a function
+#' @param ui The model as a function
 #' @param transit The number of transit compartments to remove
+#' @inheritParams addDepot
 #' @inheritParams addTransit
 #' @inheritParams addComp
 #' @return rxode2 model with transit compartment removed

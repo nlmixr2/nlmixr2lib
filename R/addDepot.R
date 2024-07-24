@@ -1,150 +1,60 @@
 #' To convert from infusion/intravenous administration to first-order oral
 #' absorption
 #'
-#' @param model The model as a function (or something convertible to an rxUi
+#' @param ui The model as a function (or something convertible to an rxUi
 #'   object)
 #' @param central central compartment name
 #' @param depot depot compartment name
 #' @param ka absorption rate parameter name
-#' @param lag lag parameter name
-#' @param lagIni Initial value for the lag time (`NA` to omit)
-#' @param fdepotIni Initial value for the depot bioavailability (`NA` to omit)
-#' @param absRateIni Initial value for the first order rate
 #' @return a model with the depot added
 #' @export
 #' @examples
-#' # most of the examples in the model library already have a depot.
-#' # for this example we will remove the depot and then add it back
-#' readModelDb("PK_1cmt_des") |>
-#'   removeDepot() |>
-#'   addDepot()
-addDepot <- function(model,
+#' # most of the examples in the model library already have a depot
+#' # the PK_2cmt_no_depot is an exception
+#' readModelDb("PK_2cmt_no_depot")  |> addDepot()
+addDepot <- function(ui,
                      central = "central", depot = "depot",
-                     ka = "ka", lag = paste0("lag", depot),
-                     lagIni=NA, fdepotIni=NA,
-                     absRateIni=1.0) {
-  model <- rxode2::assertRxUi(model)
+                     ka="ka") {
+  .ui <- rxode2::assertRxUi(ui)
   assertCompartmentName(depot)
-  assertCompartmentExists(model, central)
+  assertCompartmentExists(.ui, central)
   assertVariableName(ka)
-  assertVariableName(lag)
-  if (!is.na(lagIni)) {
-    assertParameterValue(lagIni)
-  }
-  if (!is.na(fdepotIni)) {
-    assertParameterValue(fdepotIni)
-  }
-  assertParameterValue(kaIni)
-  temp <- rxode2::assertRxUi(model)
+  .mv <- rxode2::rxModelVars(.ui)
+  # Get the central ODE and add depot to it
+  .modelLines <- .ui$lstExpr
+  .w <- .whichDdt(.modelLines, central)
+  .tmp <- .extractModelLinesAtW(.modelLines, .w)
+  .tmp$w <- str2lang(paste0(deparse1(.tmp$w), "+", ka, "*", depot))
+  .modelLines <- c(list(str2lang(paste0(ka, "<- exp(l", ka, ")"))),
+                   .tmp$pre,
+                   list(str2lang(paste0("d/dt(", depot, ") <- -", ka, "*", depot))),
+                   list(.tmp$w),
+                   .tmp$post)
 
-  mv <- rxode2::rxModelVars(temp)
-  if (ka %in% mv$params) {
-    stop("'", ka, "' cannot be in the model")
-  }
-  if (!(central %in% mv$state)) {
-    stop("'", central, "' needs to be in the model")
-  }
-  if (depot %in% mv$state) {
-    stop("'", depot, "' cannot be in the model")
-  }
-  if (any(grepl("^transit", mv$state))) {
-    transit <- eval(str2lang(paste0("rxode2::modelExtract(temp,d/dt(transit1),lines=TRUE)")))
-    transitLine <- attr(transit, "lines")
-    transitRhs <- sub(".*<-\\s*", "", transit)
-    transitODE <- str2lang(paste0("d/dt(transit1) <- ", ka, "*", depot, deparse1(str2lang(transitRhs))))
-  }
-  # Extract model
-  model <- rxode2::modelExtract(temp, endpoint = NA)
-
-  # Extract and modify ODE for central compartment
-  center <- eval(str2lang(paste0("rxode2::modelExtract(temp,d/dt(", central, "),lines=TRUE)")))
-  rhs <- sub(".*<-\\s*", "", center)
-  line <- str2lang(paste0("d/dt(", central, ") <- ", ka, "*", depot, "+", deparse1(str2lang(rhs))))
-  lineNew <- str2lang(paste0("d/dt(", central, ") <- ", deparse1(str2lang(rhs))))
-  centralLine <- attr(center, "lines")
-
-  # Additional equations to be added to model block
-  kaModel <- paste0(ka, " <- exp(l", ka, ")")
-
-  # Lag equations
-  if (is.na(lagIni)) {
-    lagModel <- lagODE <- NULL
+  .tmp <- .getEtaThetaTheta1(.ui)
+  .iniDf <- .tmp$iniDf
+  .theta <- .tmp$theta
+  .theta1 <- .tmp$theta1
+  .eta <- .tmp$eta
+  if (length(.iniDf$name) == 0L)  {
+    .ntheta <- 0
   } else {
-    lagModel <- paste0(lag, " <- exp(la", lag, ")")
-    lagODE <- paste0("alag(", depot, ") <- ", lag)
+    .ntheta <- max(.iniDf$ntheta)
   }
 
-  # Bioavailability equations
-  if (is.na(fdepotIni)) {
-    fdepotModel <- fdepotODE <- NULL
-  } else {
-    fdepotModel <- paste0("f", depot, " <- exp(lf", depot, ")")
-    fdepotODE <- paste0("f(", depot, ") <- f", depot)
+  .thetaka <- .get1theta(ka, .theta1, .ntheta,
+                         label=paste0("First order absorption rate (", ka, ")"))
+  .ntheta <- .ntheta + 1
+
+  .ui <- rxode2::rxUiDecompress(.ui)
+  .ui$iniDf <- rbind(.theta,
+                     .thetaka,
+                     .eta)
+  if (exists("description", envir=.ui$meta)) {
+    rm("description", envir=.ui$meta)
   }
-
-  depotODE <- paste0("d/dt(", depot, ") <- -", ka, "*", depot)
-
-  # Modify model block
-  if (any(grepl("^transit", mv$state))) {
-    rxode2::model(temp) <-
-      c(
-        kaModel,
-        fdepotModel,
-        lagModel,
-        model[1:(transitLine - 1)],
-        depotODE,
-        fdepotODE,
-        lagODE,
-        transitODE,
-        model[(transitLine + 1):(centralLine - 1)],
-        lineNew,
-        model[(centralLine + 1):length(model)]
-      )
-  } else {
-    rxode2::model(temp) <-
-      c(
-        kaModel,
-        fdepotModel,
-        lagModel,
-        model[1:(centralLine - 1)],
-        depotODE,
-        fdepotODE,
-        lagODE,
-        line,
-        model[(centralLine + 1):length(model)]
-      )
-  }
-
-  # Modify ini block
-  rateIni <- str2lang(paste0("l", ka, " <-", kaIni))
-  lfdepotIni <- str2lang(paste0("lf", depot, " <-", fdepotIni))
-  if (is.na(lagIni)) {
-    temp <- rxode2::ini(temp, rateIni, append = 0)
-    if (!is.na(fdepotIni)) {
-      temp <- rxode2::ini(temp, lfdepotIni)
-    }
-    temp2 <- temp$iniDf
-    suppressMessages(temp2$label[temp2$name == paste0("l", ka)] <- paste0("First order absorption rate (", ka, ")"))
-    suppressMessages(temp2$label[temp2$name == paste0("lf", depot)] <- "Bioavailability (F)")
-  } else {
-    lalagIni <- str2lang(paste0("la", lag, " <-", lagIni))
-    temp <- temp |>
-      rxode2::ini(rateIni, append = 0) |>
-      rxode2::ini(lalagIni)
-    if (!is.na(fdepotIni)) {
-      temp <- rxode2::ini(temp, lfdepotIni)
-    }
-    temp2 <- temp$iniDf
-    suppressMessages(temp2$label[temp2$name == paste0("l", ka)] <- paste0("First order absorption rate (", ka, ")"))
-    if (!is.na(fdepotIni)) {
-      suppressMessages(temp2$label[temp2$name == paste0("lf", depot)] <- "Bioavailability (F)")
-    }
-    suppressMessages(temp2$label[temp2$name == paste0("la", lag)] <- paste0("Lag time (", lag, ")"))
-  }
-  rxode2::ini(temp) <- temp2
-
-  # return
-  temp
+  rxode2::model(.ui) <- .modelLines
+  rxode2::rxUiCompress(.ui)
 }
 
 #' To convert from first order oral absorption to IV/Intravenous

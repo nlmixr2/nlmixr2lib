@@ -8,7 +8,6 @@ addComp(
   model,
   numPeripheral,
   central = "central",
-  depot = "depot",
   peripheralComp = "peripheral",
   vp = "vp",
   vc = "vc",
@@ -23,8 +22,6 @@ to the model}
 
 \item{central}{a character vector representing the central
 compartment}
-
-\item{depot}{a character vector representing the depot compartment}
 
 \item{peripheralComp}{A character vector representing the prefix of
 peripheral compartments}

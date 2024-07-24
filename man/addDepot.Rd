@@ -5,34 +5,17 @@
 \title{To convert from infusion/intravenous administration to first-order oral
 absorption}
 \usage{
-addDepot(
-  model,
-  central = "central",
-  depot = "depot",
-  absRate = "ka",
-  lag = paste0("lag", depot),
-  lagIni = NA,
-  fdepotIni = NA,
-  absRateIni = 1
-)
+addDepot(ui, central = "central", depot = "depot", ka = "ka")
 }
 \arguments{
-\item{model}{The model as a function (or something convertible to an rxUi
+\item{ui}{The model as a function (or something convertible to an rxUi
 object)}
 
 \item{central}{central compartment name}
 
 \item{depot}{depot compartment name}
 
-\item{absRate}{absorption rate parameter name}
-
-\item{lag}{lag parameter name}
-
-\item{lagIni}{Initial value for the lag time (`NA` to omit)}
-
-\item{fdepotIni}{Initial value for the depot bioavailability (`NA` to omit)}
-
-\item{absRateIni}{Initial value for the first order rate}
+\item{ka}{absorption rate parameter name}
 }
 \value{
 a model with the depot added
@@ -42,9 +25,7 @@ To convert from infusion/intravenous administration to first-order oral
 absorption
 }
 \examples{
-# most of the examples in the model library already have a depot.
-# for this example we will remove the depot and then add it back
-readModelDb("PK_1cmt_des") |>
-  removeDepot() |>
-  addDepot()
+# most of the examples in the model library already have a depot
+# the PK_2cmt_no_depot is an exception
+readModelDb("PK_2cmt_no_depot")  |> addDepot()
 }
