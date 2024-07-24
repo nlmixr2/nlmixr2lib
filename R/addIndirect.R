@@ -22,9 +22,11 @@
 #'
 #' @param kout this is the kout parameter name
 #'
+#' @param R drug response compartment
+#'
 #' @param cc the concentration value
 #'
-#' @param effect the effect compartment that will be modeled
+#' @param effect the effect variable that will be modeled
 #'
 #' @return model with linear indirect effect added;
 #'
@@ -53,7 +55,6 @@ addIndirectLin <- function(ui,
                            kin="kin", kout="kout",
                            cc="Cc",
                            R="R",
-                           R0="R0",
                            effect="effect") {
   if ((missing(stim) && missing(inhib)) ||
         (!missing(stim) && !missing(inhib))) {
@@ -157,4 +158,73 @@ addIndirectLin <- function(ui,
   rxode2::model(.ui) <- .modelLines
   .ui
 
+}
+
+#' Convert linear effect to Emax effect
+#'
+#'
+#' @param ui rxode2 model
+#'
+#' @param emax Emax parameter
+#' @param ec50 EC50 parameter
+#' @inheritParams  addIndirectLin
+#'
+#' @family PD
+#'
+#' @return Model with the linear effect converted to an Emax effect
+#'
+#' @export
+#' @author Matthew L. Fidler
+#' @examples
+#'
+#' readModelDb("PK_2cmt_no_depot") |>
+#'   addIndirectLin(stim="in") |>
+#'   convertEmax()
+convertEmax <- function(ui, emax="Emax", ec50="EC50",
+                        ek="Ek", cc="Cc") {
+  .ui <- rxode2::assertRxUi(ui)
+  rxode2::assertVariableExists(.ui, cc)
+  rxode2::assertVariableNew(.ui, emax)
+  rxode2::assertVariableNew(.ui, ec50)
+  rxode2::assertVariableExists(.ui, ek)
+  .modelLines <- .replaceMult(.ui$lstExpr,
+                              v1=ek, v2=cc,
+                              ret=paste0(emax, "*", cc, "/(", cc, "+", ec50, ")"))
+  .tmp <- .getEtaThetaTheta1(.ui)
+  .iniDf <- .tmp$iniDf
+  .theta <- .tmp$theta
+  .theta1 <- .tmp$theta1
+  .eta <- .tmp$eta
+  .tmp <- .dropLines(.ui, .modelLines, .theta, .eta, ek)
+  .modelLines <- .tmp$modelLines
+  .theta <- .tmp$theta
+  .eta <- .tmp$eta
+
+  if (length(.theta$ntheta) == 0) {
+    .ntheta <- 0
+  } else {
+    .ntheta <- max(.theta$ntheta)
+  }
+
+  .thetaEmax <- .get1theta(emax, .theta1, .ntheta,
+                          label=paste0("Maximum effect (", emax, ")"))
+  .ntheta <- .ntheta + 1
+
+  .thetaEc50 <- .get1theta(ec50, .theta1, .ntheta,
+                           label=paste0("Concentration of 50% ", emax,
+                                        " (", emax, ")"))
+  .ntheta <- .ntheta + 1
+
+  .ui <- rxode2::rxUiDecompress(.ui)
+  .ui$iniDf <- rbind(.theta,
+                     .thetaEmax,
+                     .thetaEc50,
+                     .eta)
+  if (exists("description", envir=.ui$meta)) {
+    rm("description", envir=.ui$meta)
+  }
+  rxode2::model(.ui) <- c(list(str2lang(paste0(emax, "<- exp(l", emax, ")")),
+                               str2lang(paste0(ec50, "<- exp(l", ec50, ")"))),
+                          .modelLines)
+  .ui
 }

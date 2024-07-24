@@ -14,7 +14,6 @@ addIndirectLin(
   kout = "kout",
   cc = "Cc",
   R = "R",
-  R0 = "R0",
   effect = "effect"
 )
 }
@@ -43,7 +42,9 @@ addIndirectLin(
 
 \item{cc}{the concentration value}
 
-\item{effect}{the effect compartment that will be modeled}
+\item{R}{drug response compartment}
+
+\item{effect}{the effect variable that will be modeled}
 }
 \value{
 model with linear indirect effect added;

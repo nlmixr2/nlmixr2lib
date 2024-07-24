@@ -141,7 +141,7 @@
 #' @param theta iniDf theta name
 #' @param eta iniDf eta name
 #' @param par1 a single parameter to remove from the model
-#' @returns list of modelLines, theta, and eta
+#' @return list of modelLines, theta, and eta
 #'
 #' @noRd
 #' @author Matthew L. Fidler
@@ -170,7 +170,7 @@
 #' @param theta theta section of iniDf
 #' @param eta eta section of iniDf
 #' @param vars variables to drop
-#' @returns list of modelLines, theta, and eta
+#' @return list of modelLines, theta, and eta
 #' @noRd
 #' @author Matthew L. Fidler
 .dropLines <- function(ui, modelLines, theta, eta, vars) {
