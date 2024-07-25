@@ -195,6 +195,9 @@ convertEmax <- function(ui, emax="Emax", ec50="EC50",
     rxode2::assertVariableNew(.ui, emax)
   } else if (is.numeric(emax) && emax == 1.0) {
     .emaxMult <- ""
+  } else {
+    stop("'", emax, "' not specified correctly",
+         call.=FALSE)
   }
   rxode2::assertVariableNew(.ui, ec50)
   rxode2::assertVariableExists(.ui, ek)
@@ -260,6 +263,12 @@ convertEmax <- function(ui, emax="Emax", ec50="EC50",
 #'   addIndirectLin(stim="in") |>
 #'   convertEmaxHill()
 #'
+#' # can also specify as emax=1
+#'
+#' readModelDb("PK_2cmt_no_depot") |>
+#'   addIndirectLin(stim="in") |>
+#'   convertEmaxHill(emax=1)
+#'
 convertEmaxHill <- function(ui, emax="Emax", ec50="EC50", g="g",
                             ek="Ek", cc="Cc") {
   .ui <- rxode2::assertRxUi(ui)
@@ -269,6 +278,9 @@ convertEmaxHill <- function(ui, emax="Emax", ec50="EC50", g="g",
     rxode2::assertVariableNew(.ui, emax)
   } else if (is.numeric(emax) && emax == 1.0) {
     .emaxMult <- ""
+  } else {
+    stop("'", emax, "' not specified correctly",
+         call.=FALSE)
   }
   rxode2::assertVariableNew(.ui, ec50)
   rxode2::assertVariableExists(.ui, ek)
@@ -333,4 +345,80 @@ convertEmaxHill <- function(ui, emax="Emax", ec50="EC50", g="g",
                                str2lang(paste0(g, "<- expit(lg", g, ", 0.1, 10)"))),
                           .modelLines)
   .ui
+}
+#' Add an indirect response model to a PK model
+#'
+#' @inheritParams addIndirectLin
+#' @inheritParams convertEmaxHill
+#' @param hill boolean stating if a hill sigmoid cofficient will be added
+#' @param imax
+#' @param ic50
+#' @return pk model with indirect response model added
+#' @export
+#' @author Matthew L. Fidler
+#' @examples
+#'
+#' readModelDb("PK_2cmt_no_depot") |>
+#'   addIndirect(stim="in",hill=TRUE)
+#'
+#' ereadModelDb("PK_2cmt_no_depot") |>
+#'   addIndirect(inhib="out", imax=1)
+addIndirect <- function(ui,
+                        stim=c("in", "out"),
+                        inhib=c("in", "out"),
+                        hill=FALSE,
+                        ek="Ek",
+                        ik="Ik",
+                        emax="Emax",
+                        ec50="EC50",
+                        imax="Imax",
+                        ic50="IC50",
+                        kin="kin", kout="kout",
+                        g="g",
+                        cc="Cc",
+                        R="R",
+                        effect="effect") {
+  if ((missing(stim) && missing(inhib)) ||
+        (!missing(stim) && !missing(inhib))) {
+    stop("need to either 'stim' or 'inhib'",
+         call.=FALSE)
+  }
+  .doStim <- FALSE
+  if (!missing(stim)) {
+    .doStim <- TRUE
+    stim <- match.arg(stim)
+  } else {
+    inhib <- match.arg(inhib)
+  }
+  if (.doStim) {
+    .mod1 <- addIndirectLin(ui, stim=stim,
+                            ek=ek,
+                            ik=ik,
+                            kin=kin, kout=kout,
+                            cc=cc,
+                            R=R,
+                            effect=effect)
+    if (hill) {
+      convertEmaxHill(.mod1, emax=emax, ec50=ec50, g=g,
+                      ek=ek, cc=cc)
+    } else {
+      convertEmax(.mod1, emax=emax, ec50=ec50,
+                  ek=ek, cc=cc)
+    }
+  } else {
+    .mod1 <- addIndirectLin(ui, inhib=inhib,
+                            ek=ek,
+                            ik=ik,
+                            kin=kin, kout=kout,
+                            cc=cc,
+                            R=R,
+                            effect=effect)
+    if (hill) {
+      convertEmaxHill(.mod1, emax=imax, ec50=ic50, g=g,
+                      ek=ik, cc=cc)
+    } else {
+      convertEmax(.mod1, emax=imax, ec50=ic50,
+                  ek=ik, cc=cc)
+    }
+  }
 }
