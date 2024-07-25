@@ -22,7 +22,7 @@ addDirectLin <- function(ui,
                          cc="Cc",
                          effect="effect") {
   .ui <- rxode2::assertRxUi(ui)
-  rxode2::assertVariableExists(.ui, cc)
+  rxode2::assertExists(.ui, cc)
   .effectSd <- paste0(effect, "Sd")
   rxode2::assertVariableNew(.ui, ek)
   rxode2::assertVariableNew(.ui, effect)
@@ -84,7 +84,7 @@ addDirectLin <- function(ui,
 #'   convertLogLin()
 convertLogLin <- function(ui, ek="Ek", cc="Cc") {
   .ui <- rxode2::assertRxUi(ui)
-  rxode2::assertVariableExists(.ui, cc)
+  rxode2::assertExists(.ui, cc)
   rxode2::assertVariableExists(.ui, ek)
   .modelLines <- .replaceMult(.ui$lstExpr,
                               v1=ek, v2=cc,
@@ -122,7 +122,7 @@ convertLogLin <- function(ui, ek="Ek", cc="Cc") {
 convertQuad <- function(ui, ek="Ek", cc="Cc", ek2="Ek2") {
   .ui <- rxode2::assertRxUi(ui)
   .ui <- rxode2::rxUiDecompress(.ui)
-  rxode2::assertVariableExists(.ui, cc)
+  rxode2::assertExists(.ui, cc)
   rxode2::assertVariableExists(.ui, ek)
   .modelLines <- c(list(str2lang(paste0(ek2, " <- u", ek2))),
                    .replaceMult(.ui$lstExpr,

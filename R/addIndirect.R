@@ -70,7 +70,7 @@ addIndirectLin <- function(ui,
   }
   .effectSd <- paste0(effect, "Sd")
   .ui <- rxode2::assertRxUi(ui)
-  rxode2::assertVariableExists(.ui, cc)
+  rxode2::assertExists(.ui, cc)
   rxode2::assertVariableNew(.ui, kin)
   rxode2::assertVariableNew(.ui, kout)
   rxode2::assertCompartmentNew(.ui, R)
@@ -105,8 +105,7 @@ addIndirectLin <- function(ui,
                    list(str2lang(paste0(R, "(0) <- ", kin, "/", kout)),
                         .eff,
                         str2lang(paste0(effect, " <- ", R)),
-                        str2lang(paste0(effect, " ~ add(", .effectSd, ")"))
-                        ))
+                        str2lang(paste0(effect, " ~ add(", .effectSd, ")"))))
 
   .tmp <- .getEtaThetaTheta1(.ui)
   .iniDf <- .tmp$iniDf
@@ -180,8 +179,7 @@ addIndirectLin <- function(ui,
 #'   addIndirectLin(stim="in") |>
 #'   convertEmax()
 #'
-#' #' # When emax=1
-#'
+#' # When emax=1
 #' readModelDb("PK_2cmt_no_depot") |>
 #'   addIndirectLin(stim="in") |>
 #'   convertEmax(emax=1)
@@ -189,7 +187,7 @@ addIndirectLin <- function(ui,
 convertEmax <- function(ui, emax="Emax", ec50="EC50",
                         ek="Ek", cc="Cc") {
   .ui <- rxode2::assertRxUi(ui)
-  rxode2::assertVariableExists(.ui, cc)
+  rxode2::assertExists(.ui, cc)
   .emaxMult <- paste0(emax, "*")
   if (inherits(emax, "character")) {
     rxode2::assertVariableNew(.ui, emax)
@@ -272,7 +270,7 @@ convertEmax <- function(ui, emax="Emax", ec50="EC50",
 convertEmaxHill <- function(ui, emax="Emax", ec50="EC50", g="g",
                             ek="Ek", cc="Cc") {
   .ui <- rxode2::assertRxUi(ui)
-  rxode2::assertVariableExists(.ui, cc)
+  rxode2::assertExists(.ui, cc)
   .emaxMult <- paste0(emax, "*")
   if (inherits(emax, "character")) {
     rxode2::assertVariableNew(.ui, emax)
