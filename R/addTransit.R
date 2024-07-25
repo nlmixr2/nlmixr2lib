@@ -27,13 +27,16 @@
 #'
 #' @param modelLines modelLines expression list
 #' @param central name of central compartment
+#' @param ddt is this a derivative expression
 #' @return which item in modelLines is the central compartment (or
 #'   error if there is multiple lines)
 #' @noRd
 #' @author Matthew L. Fidler
-.whichDdt <- function(modelLines, central) {
-  .ddtCentral1 <- str2lang(paste0("d/dt(", central, ") <- ."))
-  .ddtCentral2 <- str2lang(paste0("d/dt(", central, ") = ."))
+.whichDdt <- function(modelLines, central, ddt=TRUE) {
+  .dd1 <- ifelse(ddt, "d/dt(", "")
+  .dd2 <- ifelse(ddt, ")", "")
+  .ddtCentral1 <- str2lang(paste0(.dd1, central, .dd2, " <- ."))
+  .ddtCentral2 <- str2lang(paste0(.dd1, central, .dd2, " = ."))
   .w <- which(vapply(seq_along(modelLines),
                      function(i) {
                        .cur <- modelLines[[i]]
@@ -41,7 +44,13 @@
                          rxode2::.matchesLangTemplate(.cur, .ddtCentral2)
                      }, logical(1), USE.NAMES = FALSE))
   # Modify ODE for central compartment
-  if (length(.w) != 1) stop("'d/dt(", central, ")' must be on a single line")
+  if (length(.w) != 1) {
+    stop("'",
+         .dd1,
+         central, ifelse(ddt, ")", ""),
+         .dd2,
+         call.=FALSE)
+  }
   .w
 }
 #' Remove all the d/dt(cmts) in modelLines

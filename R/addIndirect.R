@@ -351,8 +351,8 @@ convertEmaxHill <- function(ui, emax="Emax", ec50="EC50", g="g",
 #' @inheritParams addIndirectLin
 #' @inheritParams convertEmaxHill
 #' @param hill boolean stating if a hill sigmoid cofficient will be added
-#' @param imax
-#' @param ic50
+#' @param imax maximum inhibitory concentration
+#' @param ic50 concentration where half of the imax occurs
 #' @return pk model with indirect response model added
 #' @export
 #' @author Matthew L. Fidler
@@ -361,7 +361,7 @@ convertEmaxHill <- function(ui, emax="Emax", ec50="EC50", g="g",
 #' readModelDb("PK_2cmt_no_depot") |>
 #'   addIndirect(stim="in",hill=TRUE)
 #'
-#' ereadModelDb("PK_2cmt_no_depot") |>
+#' readModelDb("PK_2cmt_no_depot") |>
 #'   addIndirect(inhib="out", imax=1)
 addIndirect <- function(ui,
                         stim=c("in", "out"),

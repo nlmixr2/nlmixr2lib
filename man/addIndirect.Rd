@@ -48,6 +48,10 @@ addIndirect(
 
 \item{ec50}{EC50 parameter}
 
+\item{imax}{maximum inhibitory concentration}
+
+\item{ic50}{concentration where half of the imax occurs}
+
 \item{kin}{this is the kin parameter name}
 
 \item{kout}{this is the kout parameter name}
@@ -71,7 +75,7 @@ Add an indirect response model to a PK model
 readModelDb("PK_2cmt_no_depot") |>
   addIndirect(stim="in",hill=TRUE)
 
-ereadModelDb("PK_2cmt_no_depot") |>
+readModelDb("PK_2cmt_no_depot") |>
   addIndirect(inhib="out", imax=1)
 }
 \author{
