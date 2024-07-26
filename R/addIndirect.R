@@ -278,7 +278,7 @@ convertEmax <- function(ui, emax="Emax", ec50="EC50",
 #'
 convertEmaxHill <- function(ui, emax="Emax", ec50="EC50", g="g",
                             imax="Imax", ic50="IC50",
-                            ek="Ek", cc=c("Ec", "Cc")) {
+                            ek=c("Ik", "Ek"), cc=c("Ec", "Cc")) {
   .ui <- rxode2::assertRxUi(ui)
   cc <- rxode2::assertExists(.ui, cc)
   ek <- rxode2::assertVariableExists(.ui, ek)
