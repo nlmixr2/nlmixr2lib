@@ -18,7 +18,7 @@
 #'   convertEmax()
 #'
 addDirectLin <- function(ui,
-                         ek=c("Ik", "Ek"),
+                         ek="Ek",
                          cc=c("Ce", "Cc"),
                          effect="effect") {
   .ui <- rxode2::assertRxUi(ui)
