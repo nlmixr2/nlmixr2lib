@@ -14,7 +14,7 @@
 #' # Can also be changed to the more typical Emax with constant (estimated) baselie
 #' readModelDb("PK_2cmt_no_depot") |>
 #'   addEffectCmtLin() |>
-#'   convertEmaxHill(cc="ce") |>
+#'   convertEmaxHill() |>
 #'   addBaselineConst()
 #'
 addEffectCmtLin <- function(ui,

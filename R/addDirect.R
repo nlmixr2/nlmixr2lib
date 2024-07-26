@@ -18,13 +18,13 @@
 #'   convertEmax()
 #'
 addDirectLin <- function(ui,
-                         ek="Ek",
-                         cc="Cc",
+                         ek=c("Ik", "Ek"),
+                         cc=c("Ce", "Cc"),
                          effect="effect") {
   .ui <- rxode2::assertRxUi(ui)
-  rxode2::assertExists(.ui, cc)
+  cc <- rxode2::assertExists(.ui, cc)
   .effectSd <- paste0(effect, "Sd")
-  rxode2::assertVariableNew(.ui, ek)
+  ek <- rxode2::assertVariableNew(.ui, ek)
   rxode2::assertVariableNew(.ui, effect)
   rxode2::assertVariableNew(.ui, effectSd)
 
@@ -82,10 +82,10 @@ addDirectLin <- function(ui,
 #' readModelDb("PK_2cmt_no_depot") |>
 #'   addIndirectLin(stim="out") |>
 #'   convertLogLin()
-convertLogLin <- function(ui, ek="Ek", cc="Cc") {
+convertLogLin <- function(ui, ek=c("Ik", "Ek"), cc=c("Ce", "Cc")) {
   .ui <- rxode2::assertRxUi(ui)
-  rxode2::assertExists(.ui, cc)
-  rxode2::assertVariableExists(.ui, ek)
+  cc <- rxode2::assertExists(.ui, cc)
+  ek <- rxode2::assertVariableExists(.ui, ek)
   .modelLines <- .replaceMult(.ui$lstExpr,
                               v1=ek, v2=cc,
                               ret=paste0(ek, "*log(", cc, ")"))
@@ -119,11 +119,11 @@ convertLogLin <- function(ui, ek="Ek", cc="Cc") {
 #'   addDirectLin() |>
 #'   convertQuad()
 #'
-convertQuad <- function(ui, ek="Ek", cc="Cc", ek2="Ek2") {
+convertQuad <- function(ui, ek=c("Ik", "Ek"), cc=c("Ce", "Cc"), ek2="Ek2") {
   .ui <- rxode2::assertRxUi(ui)
   .ui <- rxode2::rxUiDecompress(.ui)
-  rxode2::assertExists(.ui, cc)
-  rxode2::assertVariableExists(.ui, ek)
+  cc <- rxode2::assertExists(.ui, cc)
+  ek <- rxode2::assertVariableExists(.ui, ek)
   .modelLines <- c(list(str2lang(paste0(ek2, " <- u", ek2))),
                    .replaceMult(.ui$lstExpr,
                               v1=ek, v2=cc,

@@ -165,7 +165,11 @@ addIndirectLin <- function(ui,
 #'
 #' @param emax Emax parameter
 #' @param ec50 EC50 parameter
-#' @inheritParams  addIndirectLin
+#' @param imax Imax parameter used when input model contains "Ik"
+#'   instead of "Ek"
+#' @param ic50 IC50 parameter used when input model contains "Ik"
+#'   instead of "Ek"
+#' @inheritParams addIndirectLin
 #'
 #' @family PD
 #'
@@ -185,10 +189,15 @@ addIndirectLin <- function(ui,
 #'   convertEmax(emax=1)
 #'
 convertEmax <- function(ui, emax="Emax", ec50="EC50",
-                        ek="Ek", cc="Cc") {
+                        imax="Imax", ic50="IC50",
+                        ek=c("Ik", "Ek"), cc=c("Ec", "Cc")) {
   .ui <- rxode2::assertRxUi(ui)
-  rxode2::assertExists(.ui, cc)
-  .emaxMult <- paste0(emax, "*")
+  cc <- rxode2::assertExists(.ui, cc)
+  ek <- rxode2::assertVariableExists(.ui, ek)
+  if (ek == "Ik") {
+    emax <- imax
+    ec50 <- ic50
+  }
   if (inherits(emax, "character")) {
     rxode2::assertVariableNew(.ui, emax)
   } else if (is.numeric(emax) && emax == 1.0) {
@@ -198,7 +207,6 @@ convertEmax <- function(ui, emax="Emax", ec50="EC50",
          call.=FALSE)
   }
   rxode2::assertVariableNew(.ui, ec50)
-  rxode2::assertVariableExists(.ui, ek)
   .modelLines <- .replaceMult(.ui$lstExpr,
                               v1=ek, v2=cc,
                               ret=paste0(.emaxMult,
@@ -268,9 +276,15 @@ convertEmax <- function(ui, emax="Emax", ec50="EC50",
 #'   convertEmaxHill(emax=1)
 #'
 convertEmaxHill <- function(ui, emax="Emax", ec50="EC50", g="g",
-                            ek="Ek", cc="Cc") {
+                            imax="Imax", ic50="IC50",
+                            ek="Ek", cc=c("Ec", "Cc")) {
   .ui <- rxode2::assertRxUi(ui)
-  rxode2::assertExists(.ui, cc)
+  cc <- rxode2::assertExists(.ui, cc)
+  ek <- rxode2::assertVariableExists(.ui, ek)
+  if (ek == "Ik") {
+    emax <- imax
+    ec50 <- ic50
+  }
   .emaxMult <- paste0(emax, "*")
   if (inherits(emax, "character")) {
     rxode2::assertVariableNew(.ui, emax)
@@ -281,7 +295,7 @@ convertEmaxHill <- function(ui, emax="Emax", ec50="EC50", g="g",
          call.=FALSE)
   }
   rxode2::assertVariableNew(.ui, ec50)
-  rxode2::assertVariableExists(.ui, ek)
+
   .modelLines <- .replaceMult(.ui$lstExpr,
                               v1=ek, v2=cc,
                               ret=paste0(.emaxMult, cc, "^", g,
