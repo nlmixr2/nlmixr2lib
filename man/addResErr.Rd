@@ -4,13 +4,17 @@
 \alias{addResErr}
 \title{Add residual error to a model}
 \usage{
-addResErr(model, reserr)
+addResErr(ui, reserr, endpoint)
 }
 \arguments{
-\item{model}{The model as a function}
+\item{ui}{The model as a function}
 
-\item{reserr}{The type or types of residual error (currently \code{"addSd"},
-\code{"propSd"}, and \code{"lnormSd"} are accepted)}
+\item{reserr}{The type or types of residual error (currently
+\code{"addSd"}, \code{"propSd"}, and \code{"lnormSd"} are
+accepted)}
+
+\item{endpoint}{the endpoint to apply the error; will default to
+the first error in the model}
 }
 \value{
 The model with residual error modified

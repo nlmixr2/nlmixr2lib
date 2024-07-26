@@ -13,8 +13,9 @@ lists all available base models)}
 \item{eta}{vector with the parameters to add random effects (sometimes
 referred to as inter-individual variability, IIV) on}
 
-\item{reserr}{The type or types of residual error (currently \code{"addSd"},
-\code{"propSd"}, and \code{"lnormSd"} are accepted)}
+\item{reserr}{The type or types of residual error (currently
+\code{"addSd"}, \code{"propSd"}, and \code{"lnormSd"} are
+accepted)}
 }
 \value{
 The function returns a function the model code (or \code{NULL} if the
