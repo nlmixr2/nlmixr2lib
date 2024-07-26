@@ -29,8 +29,7 @@ readModelDb("PK_2cmt_no_depot") |>
   addIndirectLin(stim="in") |>
   convertEmax()
 
-#' # When emax=1
-
+# When emax=1
 readModelDb("PK_2cmt_no_depot") |>
   addIndirectLin(stim="in") |>
   convertEmax(emax=1)

@@ -1,11 +1,9 @@
 #' Add effect compartment
 #'
 #' @inheritParams addIndirect
-#' @param ui
-#' @param ke0
-#' @param cc
-#' @param ce
-#' @return
+#' @param ke0 This is the effect compartment keo rate
+#' @param ce This is the concentration in the effect compartment
+#' @return a model with an effect compartment attached
 #' @export
 #' @author Matthew L. Fidler
 #' @examples
