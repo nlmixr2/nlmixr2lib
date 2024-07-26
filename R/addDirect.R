@@ -21,6 +21,10 @@ addDirectLin <- function(ui,
                          ek="Ek",
                          cc=c("Ce", "Cc"),
                          effect="effect") {
+  if (missing(ui)) {
+    return(fakeCc(addDirectLin,
+                  ek=ek, cc=cc, effect=effect))
+  }
   .ui <- rxode2::assertRxUi(ui)
   cc <- rxode2::assertExists(.ui, cc)
   .effectSd <- paste0(effect, "Sd")

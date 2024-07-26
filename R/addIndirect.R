@@ -56,6 +56,7 @@ addIndirectLin <- function(ui,
                            cc="Cc",
                            R="R",
                            effect="effect") {
+
   if ((missing(stim) && missing(inhib)) ||
         (!missing(stim) && !missing(inhib))) {
     stop("need to either 'stim' or 'inhib'",
@@ -63,9 +64,25 @@ addIndirectLin <- function(ui,
   }
   .doStim <- FALSE
   if (!missing(stim)) {
+    if (missing(ui)) {
+      return(fakeCc(addIndirectLin, stim=stim,
+                    ek=ek, ik=ik,
+                    kin=kin, kout=kout,
+                    cc=cc,
+                    R=R,
+                    effect=effect))
+    }
     .doStim <- TRUE
     stim <- match.arg(stim)
   } else {
+    if (missing(ui)) {
+      return(fakeCc(addIndirectLin, stim=stim,
+                    ek=ek, ik=ik,
+                    kin=kin, kout=kout,
+                    cc=cc,
+                    R=R,
+                    effect=effect))
+    }
     inhib <- match.arg(inhib)
   }
   .effectSd <- paste0(effect, "Sd")

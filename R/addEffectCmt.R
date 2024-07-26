@@ -23,6 +23,9 @@ addEffectCmtLin <- function(ui,
                             ce="Ce",
                             ek="Ek",
                             effect="effect") {
+  if (missing(ui)) {
+    return(fakeCc(addEffectCmtLin, ke0=ke0, cc=cc, ce=ce, ek=ek, effect=effect))
+  }
   .effectSd <- paste0(effect, "Sd")
   .ui <- rxode2::assertRxUi(ui)
   .ui <- rxode2::rxUiDecompress(.ui)
