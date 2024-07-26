@@ -200,6 +200,7 @@ convertEmax <- function(ui, emax="Emax", ec50="EC50",
   }
   if (inherits(emax, "character")) {
     rxode2::assertVariableNew(.ui, emax)
+    .emaxMult <- paste0(emax, "*")
   } else if (is.numeric(emax) && emax == 1.0) {
     .emaxMult <- ""
   } else {
