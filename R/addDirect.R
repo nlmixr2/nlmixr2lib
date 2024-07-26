@@ -24,7 +24,7 @@ addDirectLin <- function(ui,
   .ui <- rxode2::assertRxUi(ui)
   cc <- rxode2::assertExists(.ui, cc)
   .effectSd <- paste0(effect, "Sd")
-  ek <- rxode2::assertVariableNew(.ui, ek)
+  rxode2::assertVariableNew(.ui, ek)
   rxode2::assertVariableNew(.ui, effect)
   rxode2::assertVariableNew(.ui, effectSd)
 
