@@ -4,7 +4,7 @@
 \alias{convertQuad}
 \title{Convert linear elimination to quadratic elimination}
 \usage{
-convertQuad(ui, ek = "Ek", cc = "Cc", ek2 = "Ek2")
+convertQuad(ui, ek = c("Ik", "Ek"), cc = c("Ce", "Cc"), ek2 = "Ek2")
 }
 \arguments{
 \item{ui}{rxode2 model}

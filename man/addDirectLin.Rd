@@ -4,7 +4,7 @@
 \alias{addDirectLin}
 \title{Add direct linear effect with baseline=0}
 \usage{
-addDirectLin(ui, ek = "Ek", cc = "Cc", effect = "effect")
+addDirectLin(ui, ek = "Ek", cc = c("Ce", "Cc"), effect = "effect")
 }
 \arguments{
 \item{ui}{rxode2 model}

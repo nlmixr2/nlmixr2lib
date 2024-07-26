@@ -4,7 +4,15 @@
 \alias{convertEmax}
 \title{Convert linear effect to Emax effect}
 \usage{
-convertEmax(ui, emax = "Emax", ec50 = "EC50", ek = "Ek", cc = "Cc")
+convertEmax(
+  ui,
+  emax = "Emax",
+  ec50 = "EC50",
+  imax = "Imax",
+  ic50 = "IC50",
+  ek = c("Ik", "Ek"),
+  cc = c("Ec", "Cc")
+)
 }
 \arguments{
 \item{ui}{rxode2 model}
@@ -12,6 +20,12 @@ convertEmax(ui, emax = "Emax", ec50 = "EC50", ek = "Ek", cc = "Cc")
 \item{emax}{Emax parameter}
 
 \item{ec50}{EC50 parameter}
+
+\item{imax}{Imax parameter used when input model contains "Ik"
+instead of "Ek"}
+
+\item{ic50}{IC50 parameter used when input model contains "Ik"
+instead of "Ek"}
 
 \item{ek}{simulation linear constant}
 

@@ -9,8 +9,10 @@ convertEmaxHill(
   emax = "Emax",
   ec50 = "EC50",
   g = "g",
-  ek = "Ek",
-  cc = "Cc"
+  imax = "Imax",
+  ic50 = "IC50",
+  ek = c("Ik", "Ek"),
+  cc = c("Ec", "Cc")
 )
 }
 \arguments{
@@ -21,6 +23,12 @@ convertEmaxHill(
 \item{ec50}{EC50 parameter}
 
 \item{g}{hill coefficient}
+
+\item{imax}{Imax parameter used when input model contains "Ik"
+instead of "Ek"}
+
+\item{ic50}{IC50 parameter used when input model contains "Ik"
+instead of "Ek"}
 
 \item{ek}{simulation linear constant}
 

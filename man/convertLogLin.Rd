@@ -4,7 +4,7 @@
 \alias{convertLogLin}
 \title{Converts a linear effect to a log-linear effect}
 \usage{
-convertLogLin(ui, ek = "Ek", cc = "Cc")
+convertLogLin(ui, ek = c("Ik", "Ek"), cc = c("Ce", "Cc"))
 }
 \arguments{
 \item{ui}{rxode2 model}
