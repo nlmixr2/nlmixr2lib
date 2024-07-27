@@ -4,7 +4,7 @@
 #' @param ... arguments sent PD function
 #' @param cc character name of the concentration in the central
 #'   compartment that will be faked to allow models that require Cc to
-#'   change to models with Cc as a covariate.
+#'   change to models with Cc as a covariate
 #' @return Model where Cc is a covariate
 #' @export
 #' @author Matthew L. Fidler

@@ -48,7 +48,9 @@
     stop("'",
          .dd1,
          central, ifelse(ddt, ")", ""),
+         "'",
          .dd2,
+          "' not found in model",
          call.=FALSE)
   }
   .w
