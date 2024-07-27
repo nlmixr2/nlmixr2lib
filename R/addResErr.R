@@ -19,7 +19,7 @@
 #' readModelDb("PK_1cmt") |> addResErr(c("addSd", "propSd"))
 #' @export
 addResErr <- function(ui, reserr, endpoint) {
-  mod <- rxode2::assertRxUi(ui)
+  modelUi <- mod <- rxode2::assertRxUi(ui)
   rxode2::assertRxUiPrediction(ui) # needs to have a prediction
   if (missing(endpoint)) {
     paramErr <- modelUi$predDf$cond
@@ -57,12 +57,13 @@ addResErr <- function(ui, reserr, endpoint) {
 
   newErrLineRhs <-
     paste(
-      sprintf(errFunMap[names(reserr)], paste0(paramErr, names(reserr))),
+      sprintf(errFunMap[names(reserr)], defaultCombine(paramErr, names(reserr))),
       collapse = " + "
     )
   newErrLine <- sprintf("%s ~ %s", paramErr, newErrLineRhs)
   newIniEst <- reserr
-  names(newIniEst) <- paste0(paramErr, names(reserr))
+
+  names(newIniEst) <- defaultCombine(paramErr, names(reserr))
 
   # Update the model with the new residual error line and the new initial
   # estimates
