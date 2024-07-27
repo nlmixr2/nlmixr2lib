@@ -181,6 +181,8 @@ addLogEstimates <- function(ui, vars,
 #'
 #'  - \code{"k21"}: Change to k21 constant (k21, alpha, beta, vc) or (k21, k31, alpha, beta, gam, vc)
 #'
+#' - \code{"alpha"}: Change to macro constants  (alpha, beta, gam, A, B, C, vc)
+#'
 #' @param k13 name of rate constant from central to periph2
 #' @param k31 name of rate constant from periph2 to central
 #' @param k12 name of rate constant from central to periph1
@@ -214,12 +216,14 @@ addLogEstimates <- function(ui, vars,
 #' readModelDb("PK_3cmt_des") |>
 #'   pkTrans("k21")
 #'
+#' readModelDb("PK_3cmt_des") |>
+#'   pkTrans("alpha")
+#'
 #' # The most types of transformations are
 #' # available for 2 compartment models
 #'
 #' readModelDb("PK_2cmt_des") |>
 #'   pkTrans("k")
-#'
 #'
 #' readModelDb("PK_2cmt_des") |>
 #'   pkTrans("vss")
@@ -230,8 +234,16 @@ addLogEstimates <- function(ui, vars,
 #' readModelDb("PK_2cmt_des") |>
 #'   pkTrans("k21")
 #'
+#' readModelDb("PK_2cmt_des") |>
+#'   pkTrans("alpha")
+#'
+#' # One compartment transformations are also available:
+#'
 #' readModelDb("PK_1cmt_des") |>
 #'   pkTrans("k")
+#'
+#' readModelDb("PK_1cmt_des") |>
+#'   pkTrans("alpha")
 #'
 #' # also works without depot:
 #'
@@ -239,8 +251,9 @@ addLogEstimates <- function(ui, vars,
 #'   removeDepot() |>
 #'   pkTrans("k")
 #'
+#'
 pkTrans <- function(ui,
-                    type=c("k", "cl", "k21", "vss", "aob"),
+                    type=c("k", "cl", "k21", "vss", "aob", "alpha"),
                     k13="k13",
                     k31="k31",
                     k12="k12",
@@ -257,8 +270,8 @@ pkTrans <- function(ui,
                     alpha="alpha",
                     beta="beta",
                     gam="gam",
-                    s="s",
-                    p="p",
+                    A="A", B="B", C="C",
+                    s="s", p="p",tmp="tmp",
                     beforeCmt=c("depot", "central")) {
   typ <- match.arg(type)
   .ui <- rxode2::assertRxUi(ui)
@@ -434,6 +447,78 @@ pkTrans <- function(ui,
                                                k21, "-", k31))))
       return(.ui)
     }
+  } else if (type == "alpha") {
+    if (.cmt == 3L) {
+      # trans 10
+      rxode2::assertVariableNew(.ui, tmp)
+      .est <- setNames(c(
+        paste0("alpha macro constant (", alpha, ")"),
+        paste0("beta macro constant (", beta, ")"),
+        paste0("gam macro constant (", gam, ")"),
+        paste0("A coefficient (", A, ")"),
+        paste0("B coefficient (", B, ")"),
+        paste0("C coefficent (", C, ")")),
+        c(alpha, beta, gam, A, B, C))
+      rxode2::assertVariableNew(.ui, s)
+      rxode2::assertVariableNew(.ui, p)
+      .ui <- addLogEstimates(.ui, .est, beforeCmt=beforeCmt,
+                             extraLines=list(
+                               str2lang(paste0(vc, "<- 1/(", A, "+", B, "+", C, ")")),
+                               str2lang(paste0(s, "<- -(",
+                                               alpha, "*", C, "+",
+                                               alpha, "*", B, "+",
+                                               gam, "*", A, "+",
+                                               gam, "*", B,  "+",
+                                               beta, "*", A, "+",
+                                               beta, "*", C,
+                                               ")*", vc)),
+                               str2lang(paste0(p, "<- (",
+                                               alpha, "*", beta, "*", C, "+",
+                                               alpha, "*", gam, "*", B, "+",
+                                               beta, "*", gam,"*", A, ")*", vc)),
+                               str2lang(paste0(tmp, "<- sqrt(", p, "*", p,
+                                               "-4*", s, ")")),
+                               str2lang(paste0(k21, "<- 0.5*(-", p, "+", tmp, ")")),
+                               str2lang(paste0(k31, "<- 0.5*(-", p, "-", tmp, ")")),
+                               str2lang(paste0(kel, "<-", alpha, "*", beta, "*",
+                                               gam, "/(", k21, "*", k31, ")")),
+                               str2lang(paste0(k12, "<- ((", beta, "*", gam, "+",
+                                               alpha, "*", beta, "+",
+                                               alpha, "*", gam, ") - ",
+                                               k21, "*(", alpha, "+", beta, "+", gam,
+                                               ")-", kel, "*", k31, "+",
+                                               k21, "*", k21, ")/(", k31, "-", k21, ")")),
+                               str2lang(paste0(k13, "<-",
+                                               alpha, "+", beta, "+", gam, "-(",
+                                               kel, "+", k12, "+", k21, "+", k31, ")"))))
+      return(.ui)
+    } else if (.cmt == 2L) {
+      .est <- setNames(c(
+        paste0("alpha macro constant (", alpha, ")"),
+        paste0("beta macro constant (", beta, ")"),
+        paste0("A coefficient (", A, ")"),
+        paste0("B coefficient (", B, ")")),
+        c(alpha, beta, A, B))
+      .ui <- addLogEstimates(.ui, .est, beforeCmt=beforeCmt,
+                             extraLines=list(str2lang(paste0(vc, "<-1/(", A, "+", B,
+                                                             ")")),
+                                             str2lang(paste0(k21, "<-(", A, "*", beta, "+",
+                                                             B, "*", alpha, ")*", vc)),
+                                             str2lang(paste0(kel, "<-", alpha, "*",
+                                                             beta, "/", k21)),
+                                             str2lang(paste0(k12, "<-", alpha, "+",
+                                                             beta, "-", k21, "-", kel))))
+      return(.ui)
+    } else if (.cmt == 1L) {
+      .est <- setNames(c(
+        paste0("alpha macro constant (", alpha, ")"),
+        paste0("A coefficient (", A, ")")),
+        c(alpha, A))
+      .ui <- addLogEstimates(.ui, .est, beforeCmt=beforeCmt,
+                             extraLines=list(str2lang(paste0(kel, "<-", alpha)),
+                                             str2lang(paste0(vc, "<- 1/", A))))
+      return(.ui)
+    }
   }
-  stop("halt", call.=FALSE)
+  stop("should not get here", call.=FALSE) # nocov
 }
