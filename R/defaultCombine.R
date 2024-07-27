@@ -134,6 +134,6 @@ blankCombine <- function(...) {
 
 #' @describeIn defaultCombine
 #' @export
-setCombineType <- function(type=c("snake", "camel", "dot", "blank")) {
-  .combineEnv$default <- type
+setCombineType <- function(combineType=c("snake", "camel", "dot", "blank")) {
+  .combineEnv$default <- combineType
 }

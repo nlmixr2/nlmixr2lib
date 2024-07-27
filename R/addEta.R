@@ -13,25 +13,50 @@
 
 #' Add random effects to a model
 #'
-#' @param model The model as a function
-#' @param eta vector with the parameters to add random effects (sometimes
-#'   referred to as inter-individual variability, IIV) on
+#' @param ui The model as a function
+#' @param eta vector with the parameters to add random effects
+#'   (sometimes referred to as inter-individual variability, IIV) on
+#' @param priorName logical, if TRUE, the parameter name specified in
+#'   `eta` will be used to add the eta value prior name is used
+#'   instead of the left handed side of the equation.
 #' @return The model with eta added to the requested parameters
 #' @export
 #' @examples
 #' library(rxode2)
 #' readModelDb("PK_1cmt") |> addEta("ka")
 #' @export
-addEta <- function(model, eta) {
-  mod <- model # save to apply everything later
+addEta <- function(ui, eta, priorName=getOption("nlmixr2lib.priorEta", FALSE),
+                   etaCombineType=c("default", "snake", "camel", "dot", "blank")) {
+  if (missing(etaCombineType)) {
+    .tmp <- getOption("nlmixr2lib.etaCombineType", "default")
+    if (!(.tmp %in% c("default", "snake", "camel", "dot", "blank"))) {
+      warning('option(nlmixr2lib.etaCombineType) must be one of: "default", "snake", "camel", "dot", "blank"', call.=FALSE)
+      .tmp <- "default"
+    }
+    etaCombineType <- .tmp
+  }
+  if (etaCombineType != "default") {
+    .combineEnv$old <- .combineEnv$default
+    .combineEnv$default <- etaCombineType
+    on.exit({.combineEnv$default <- .combineEnv$old})
+  }
+  checkmate::assertLogical(priorName, any.missing = FALSE)
+  mod <- ui # save to apply everything later
+  .eta <- as.character(substitute(eta))
+  .eta2 <- try(force(eta))
+  if (inherits(.eta2, "try-error")) {
+    eta <- .eta
+  }
   if (is.character(eta)) {
     # Assign a default value
     eta <- stats::setNames(rep(0.1, length(eta)), eta)
   }
   checkmate::assert_numeric(eta, lower = 0, null.ok = FALSE, min.len = 1)
   # Get the mu-referenced parameter names
-  murefNames <- .getVarLhs(model)
+  murefNames <- .getVarLhs(ui)
+  etaMap <- character(0)
   for (currentEta in names(eta)) {
+    etaName <- currentEta
     if (currentEta %in% names(murefNames)) {
       # do nothing
     } else if (currentEta %in% murefNames) {
@@ -43,18 +68,24 @@ addEta <- function(model, eta) {
       }
       names(eta)[names(eta) == priorEta] <- currentEta
       cli::cli_alert(sprintf("Adding eta to %s instead of %s due to mu-referencing", currentEta, priorEta))
+      if (priorName) {
+        etaName <- priorEta
+      }
     }
-    model <-
+    etaName <- defaultCombine("eta", etaName)
+    etaMap <- c(etaMap, setNames(etaName, currentEta))
+    ui <-
       searchReplace(
-        object = model,
+        object = ui,
         find = currentEta,
-        replace = sprintf("%s + eta%s", currentEta, currentEta)
+        replace = sprintf("%s + %s", currentEta, etaName)
       )
   }
-  etaIni <- lapply(X = paste0("eta", names(eta), "~", eta), FUN = base::str2lang)
+  etaIni <- lapply(X = paste0(etaMap[names(eta)],
+                              "~", eta), FUN = base::str2lang)
   iniArgs <-
     append(
-      list(model), etaIni
+      list(ui), etaIni
     )
   # Work around rxode2 issue #277
   lotri <- rxode2::lotri
