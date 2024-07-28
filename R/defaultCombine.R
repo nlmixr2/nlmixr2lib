@@ -97,6 +97,50 @@ defaultCombine <- function(...) {
     Reduce(.defaultCombine2, .args)
   }
 }
+#' @title Combine two strings using
+#'
+#' Combine two in a manner similar to `paste()` strings using the
+#' default combine type
+#'
+#' @param a first string to combine
+#' @param b second string to combine
+#' @return  combined strings separated with defautCombine
+#' @export
+#' @author Matthew L. Fidler
+#' @examples
+#'
+#' combinePaste2("f", "depot")
+#'
+#' combinePaste2("f", "depot", "snake")
+#'
+#' combinePaste2("f", "depot", "dot")
+#'
+#' combinePaste2("f", "depot", "blank")
+#'
+combinePaste2 <- function(a, b, combineType=c("default", "snake", "camel", "dot", "blank")) {
+  combineType <- match.arg(combineType)
+  if (combineType != "default") {
+    .combineEnv$old <- .combineEnv$default
+    .combineEnv$default <- combineType
+    on.exit({.combineEnv$default <- .combineEnv$old})
+  }
+  if (checkmate::testCharacter(a, len=1, any.missing=FALSE)) {
+    vapply(b, function(x) {
+      .defaultCombine2(a, x)
+    }, character(1), USE.NAMES=FALSE)
+  } else if (checkmate::testCharacter(b, len=1, any.missing=FALSE)) {
+    vapply(a, function(x) {
+      .defaultCombine2(x, b)
+    }, character(1), USE.NAMES=FALSE)
+  } else if (checkmate::testCharacter(a, any.missing=FALSE) &&
+               checkmate::testCharacter(b, any.missing=FALSE) &&
+               length(a) == length(b)) {
+    mapply(.defaultCombine2, a, b, SIMPLIFY=TRUE, USE.NAMES = FALSE)
+    } else {
+      stop("combinePaste2 needs arguments that are the same size or one of the arguments to be a single string",
+           call.=FALSE)
+    }
+}
 #' @describeIn defaultCombine
 #' @export
 snakeCombine <- function(...) {

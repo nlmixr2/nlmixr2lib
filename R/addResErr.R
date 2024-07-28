@@ -57,13 +57,13 @@ addResErr <- function(ui, reserr, endpoint) {
 
   newErrLineRhs <-
     paste(
-      sprintf(errFunMap[names(reserr)], defaultCombine(paramErr, names(reserr))),
+      sprintf(errFunMap[names(reserr)], combinePaste2(paramErr, names(reserr))),
       collapse = " + "
     )
   newErrLine <- sprintf("%s ~ %s", paramErr, newErrLineRhs)
   newIniEst <- reserr
 
-  names(newIniEst) <- defaultCombine(paramErr, names(reserr))
+  names(newIniEst) <- combinePaste2(paramErr, names(reserr))
 
   # Update the model with the new residual error line and the new initial
   # estimates
