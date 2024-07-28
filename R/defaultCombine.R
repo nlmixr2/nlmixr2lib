@@ -9,7 +9,7 @@
 #' @noRd
 #' @author Matthew L. Fidler
 .defaultCombine2 <- function(v1, v2) {
-  if (checkmate::testCharacter(v1, min.len=2, any.missing = FALSE)) {
+  if (checkmate::testCharacter(v1, min.len=2L, any.missing = FALSE)) {
     v1 <- do.call(defaultCombine, as.list(v1))
   }
   if (checkmate::testCharacter(v1, min.len=2, any.missing = FALSE)) {
@@ -192,7 +192,7 @@ setCombineType <- function(combineType=c("snake", "camel", "dot", "blank")) {
   if (checkmate::testCharacter(.tmp, len=1, any.missing=FALSE) &&
         !(.tmp %in% c("default", "snake", "camel", "dot", "blank"))) {
     .tmp <- "default"
-  } else if (!checkmate::testCharacter(.tmp, len=1, any.missing=FALSE)) {
+  } else if (!checkmate::testCharacter(.tmp, len=1L, any.missing=FALSE)) {
     .tmp <- "default"
   }
   .tmp
