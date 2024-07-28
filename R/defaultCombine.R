@@ -137,3 +137,19 @@ blankCombine <- function(...) {
 setCombineType <- function(combineType=c("snake", "camel", "dot", "blank")) {
   .combineEnv$default <- combineType
 }
+
+#' @title Get the combine type from the R option
+#' @param op the option to get the combine type from
+#' @return the combine type
+#' @author Matthew L. Fidler
+#' @noRd
+.getCombineTypeFromRoption <- function(op) {
+  .tmp <- getOption(op, "default")
+  if (checkmate::testCharacter(.tmp, len=1, any.missing=FALSE) &&
+        !(.tmp %in% c("default", "snake", "camel", "dot", "blank"))) {
+    .tmp <- "default"
+  } else if (!checkmate::testCharacter(.tmp, len=1, any.missing=FALSE)) {
+    .tmp <- "default"
+  }
+  .tmp
+}

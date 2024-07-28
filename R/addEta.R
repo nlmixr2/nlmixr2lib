@@ -1,3 +1,8 @@
+#' @title Get the left handed of the model based on defined initial conditions
+#' @param model rxode2 model
+#' @return The variable to left handed side of the model return
+#' @noRd
+#' @author Matthew L. Fidler
 .getVarLhs <- function(model) {
   if (!inherits(model, "rxUi")) {
     .ui <- nlmixr2est::nlmixr2(model)
@@ -11,6 +16,7 @@
   .varLhs
 }
 
+
 #' Add random effects to a model
 #'
 #' @param ui The model as a function
@@ -20,20 +26,16 @@
 #'   `eta` will be used to add the eta value prior name is used
 #'   instead of the left handed side of the equation.
 #' @return The model with eta added to the requested parameters
+#' @author Bill Denney, Richard Hooijmaijers & Matthew L. Fidler
 #' @export
 #' @examples
 #' library(rxode2)
 #' readModelDb("PK_1cmt") |> addEta("ka")
 #' @export
-addEta <- function(ui, eta, priorName=getOption("nlmixr2lib.priorEta", FALSE),
+addEta <- function(ui, eta, priorName=getOption("nlmixr2lib.priorEta", TRUE),
                    etaCombineType=c("default", "snake", "camel", "dot", "blank")) {
   if (missing(etaCombineType)) {
-    .tmp <- getOption("nlmixr2lib.etaCombineType", "default")
-    if (!(.tmp %in% c("default", "snake", "camel", "dot", "blank"))) {
-      warning('option(nlmixr2lib.etaCombineType) must be one of: "default", "snake", "camel", "dot", "blank"', call.=FALSE)
-      .tmp <- "default"
-    }
-    etaCombineType <- .tmp
+    etaCombineType <- .getCombineTypeFromRoption("nlmixr2lib.etaCombineType")
   }
   if (etaCombineType != "default") {
     .combineEnv$old <- .combineEnv$default
@@ -70,6 +72,8 @@ addEta <- function(ui, eta, priorName=getOption("nlmixr2lib.priorEta", FALSE),
       cli::cli_alert(sprintf("Adding eta to %s instead of %s due to mu-referencing", currentEta, priorEta))
       if (priorName) {
         etaName <- priorEta
+      } else {
+        etaName <- currentEta
       }
     }
     etaName <- defaultCombine("eta", etaName)
