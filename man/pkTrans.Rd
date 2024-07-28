@@ -6,7 +6,7 @@
 \usage{
 pkTrans(
   ui,
-  type = c("k", "cl", "k21", "vss", "aob"),
+  type = c("k", "cl", "k21", "vss", "aob", "alpha"),
   k13 = "k13",
   k31 = "k31",
   k12 = "k12",
@@ -23,8 +23,12 @@ pkTrans(
   alpha = "alpha",
   beta = "beta",
   gam = "gam",
+  A = "A",
+  B = "B",
+  C = "C",
   s = "s",
   p = "p",
+  tmp = "tmp",
   beforeCmt = c("depot", "central")
 )
 }
@@ -41,7 +45,9 @@ pkTrans(
 
  - \code{"aob"}: Change to A/B ratio (aob, alpha, beta, vc)
 
- - \code{"k21"}: Change to k21 constant (k21, alpha, beta, vc) or (k21, k31, alpha, beta, gam, vc)}
+ - \code{"k21"}: Change to k21 constant (k21, alpha, beta, vc) or (k21, k31, alpha, beta, gam, vc)
+
+- \code{"alpha"}: Change to macro constants  (alpha, beta, gam, A, B, C, vc)}
 
 \item{k13}{name of rate constant from central to periph2}
 
@@ -59,11 +65,13 @@ pkTrans(
 
 \item{vp}{name of volume of periph1}
 
-\item{q}{name of intercompartmental clearance between central and periph1}
+\item{q}{name of intercompartmental clearance between central and
+periph1}
 
 \item{vp2}{name of volume of periph2}
 
-\item{q2}{name of intercompartmental clearance between central and periph2}
+\item{q2}{name of intercompartmental clearance between central and
+periph2}
 
 \item{vss}{name of volume of distribution at steady state}
 
@@ -75,12 +83,25 @@ pkTrans(
 
 \item{gam}{macro constant name for third exponential decay term}
 
+\item{A}{macro coefficient for the first exponential decay term
+(corresponds with alpha)}
+
+\item{B}{macro coefficient for the second exponential decay term
+(corresponds with beta)}
+
+\item{C}{macro coefficient for the third exponential decay term
+(corresponds with gam)}
+
 \item{s}{sum constant name for the k12 three compartment}
 
 \item{p}{product constant name for the k12 three compartment}
 
+\item{tmp}{name of temporary variable for the three compartment
+with `A`, `B`, `C`, `alpha`, `beta` and `gam`.}
+
 \item{beforeCmt}{if the model is compartmental you can specify the
-preferred names where the estimates and extra lines are added before}
+preferred names where the estimates and extra lines are added
+before}
 }
 \value{
 ui with no PK parameters estimated
@@ -90,6 +111,7 @@ Change the transformation type for PK models
 }
 \examples{
 
+\donttest{
 # Three compartment model translations
 
 readModelDb("PK_3cmt_des") |>
@@ -98,12 +120,14 @@ readModelDb("PK_3cmt_des") |>
 readModelDb("PK_3cmt_des") |>
   pkTrans("k21")
 
+readModelDb("PK_3cmt_des") |>
+  pkTrans("alpha")
+
 # The most types of transformations are
 # available for 2 compartment models
 
 readModelDb("PK_2cmt_des") |>
   pkTrans("k")
-
 
 readModelDb("PK_2cmt_des") |>
   pkTrans("vss")
@@ -114,8 +138,16 @@ readModelDb("PK_2cmt_des") |>
 readModelDb("PK_2cmt_des") |>
   pkTrans("k21")
 
+readModelDb("PK_2cmt_des") |>
+  pkTrans("alpha")
+
+# One compartment transformations are also available:
+
 readModelDb("PK_1cmt_des") |>
   pkTrans("k")
+
+readModelDb("PK_1cmt_des") |>
+  pkTrans("alpha")
 
 # also works without depot:
 
@@ -123,6 +155,7 @@ readModelDb("PK_3cmt_des") |>
   removeDepot() |>
   pkTrans("k")
 
+}
 }
 \author{
 Matthew L. Fidler

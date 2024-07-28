@@ -23,7 +23,7 @@ fakeCc <- function(fun, ..., cc="Cc") {
     stop(paste0(fun, " is not a function"))
   }
   .f <- paste0(cc, " <- NA\n")
-  .f <- suppressMessages(rxode2::as.rxUi(rxode2::rxModelVars(.v)))
+  .f <- suppressMessages(rxode2::as.rxUi(rxode2::rxModelVars(.f)))
   .cc <- .fun(ui=.f, ..., cc=cc)
   .modelLines <- .cc$lstExpr
   .w <- .whichDdt(.modelLines, cc, ddt=FALSE)

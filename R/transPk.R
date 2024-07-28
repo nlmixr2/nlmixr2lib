@@ -191,23 +191,35 @@ addLogEstimates <- function(ui, vars,
 #' @param vc name of central compartment volume
 #' @param cl name of clearance
 #' @param vp name of volume of periph1
-#' @param q name of intercompartmental clearance between central and periph1
+#' @param q name of intercompartmental clearance between central and
+#'   periph1
 #' @param vp2 name of volume of periph2
-#' @param q2 name of intercompartmental clearance between central and periph2
+#' @param q2 name of intercompartmental clearance between central and
+#'   periph2
 #' @param vss name of volume of distribution at steady state
 #' @param aob A/B ratio
 #' @param alpha macro constant name for first exponential decay term
 #' @param beta macro constant name for second exponential decay term
 #' @param gam macro constant name for third exponential decay term
+#' @param A macro coefficient for the first exponential decay term
+#'   (corresponds with alpha)
+#' @param B macro coefficient for the second exponential decay term
+#'   (corresponds with beta)
+#' @param C macro coefficient for the third exponential decay term
+#'   (corresponds with gam)
 #' @param s sum constant name for the k12 three compartment
 #' @param p product constant name for the k12 three compartment
+#' @param tmp name of temporary variable for the three compartment
+#'   with `A`, `B`, `C`, `alpha`, `beta` and `gam`.
 #' @param beforeCmt if the model is compartmental you can specify the
-#'  preferred names where the estimates and extra lines are added before
+#'   preferred names where the estimates and extra lines are added
+#'   before
 #' @return ui with no PK parameters estimated
 #' @export
 #' @author Matthew L. Fidler
 #' @examples
 #'
+#' \donttest{
 #' # Three compartment model translations
 #'
 #' readModelDb("PK_3cmt_des") |>
@@ -251,7 +263,7 @@ addLogEstimates <- function(ui, vars,
 #'   removeDepot() |>
 #'   pkTrans("k")
 #'
-#'
+#' }
 pkTrans <- function(ui,
                     type=c("k", "cl", "k21", "vss", "aob", "alpha"),
                     k13="k13",

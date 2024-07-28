@@ -25,6 +25,9 @@
 #' @param priorName logical, if TRUE, the parameter name specified in
 #'   `eta` will be used to add the eta value prior name is used
 #'   instead of the left handed side of the equation.
+#' @param etaCombineType the option for the how to ccombine the eta
+#'   with the parameter name.  Can be: "default", "snake", "camel",
+#'   "dot", "blank"
 #' @return The model with eta added to the requested parameters
 #' @author Bill Denney, Richard Hooijmaijers & Matthew L. Fidler
 #' @export

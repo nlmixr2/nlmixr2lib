@@ -39,7 +39,6 @@
 #' Default combine strings
 #'
 #' @param ... uses default to combine strings
-#' @param type type of combine to use (set with `setCombineType()`)
 #' @return combined strings
 #' @export
 #' @author Matthew L. Fidler
@@ -101,13 +100,25 @@ defaultCombine <- function(...) {
     Reduce(.defaultCombine2, .args)
   }
 }
-#' @title Combine two strings using
+#' Combine two strings using a naming convention
 #'
 #' Combine two in a manner similar to `paste()` strings using the
 #' default combine type
 #'
 #' @param a first string to combine
-#' @param b second string to combinef
+#' @param b second string to combine
+#' @param combineType is the type of combination; can be:
+#'
+#' - \code{"default"}: default combine (set with `setDefualtCombine()`)
+#'
+#' - \code{"camel"}: camelCase combine
+#'
+#' - \code{"snake"}: snake_case combine
+#'
+#' - \code{"dot"}: dot combine (i.e. "a.b")
+#'
+#' - \code{"blank"}: no separator (i.e. "ab")
+#'
 #' @return  combined strings separated with defautCombine
 #' @export
 #' @author Matthew L. Fidler
@@ -152,7 +163,7 @@ combinePaste2 <- function(a, b,
     )
   }
 }
-#' @describeIn defaultCombine
+#' @describeIn defaultCombine use snake_case to combine 2 strings
 #' @export
 snakeCombine <- function(...) {
   .combineEnv$old <- .combineEnv$default
@@ -162,7 +173,7 @@ snakeCombine <- function(...) {
   })
   defaultCombine(...)
 }
-#' @describeIn defaultCombine
+#' @describeIn defaultCombine use camelCase to combine strings
 #' @export
 camelCombine <- function(...) {
   .combineEnv$old <- .combineEnv$default
@@ -173,7 +184,7 @@ camelCombine <- function(...) {
   defaultCombine(...)
 }
 
-#' @describeIn defaultCombine
+#' @describeIn defaultCombine use the default method for combining two strings
 #' @export
 dotCombine <- function(...) {
   .combineEnv$old <- .combineEnv$default
@@ -184,7 +195,7 @@ dotCombine <- function(...) {
   defaultCombine(...)
 }
 
-#' @describeIn defaultCombine
+#' @describeIn defaultCombine combine using a blank separator
 #' @export
 blankCombine <- function(...) {
   .combineEnv$old <- .combineEnv$default
@@ -195,8 +206,30 @@ blankCombine <- function(...) {
   defaultCombine(...)
 }
 
-#' @describeIn defaultCombine
+#' Change the default combine type for the package
+#'
+#'
+#' @param combineType this is the default combine type:
+#' - \code{"default"}: default combine
+#' - \code{"snake"}: snake_case combine
+#' - \code{"camel"}: camelCase combine
+#' - \code{"dot"}: dot combine (i.e. "a.b")
+#' - \code{"blank"}: no separator (i.e. "ab")
+#' @author Matthew L. Fidler
 #' @export
+#' @examples
+#'
+#' # Change to the popular snake_case
+#' setCombineType("snake")
+#' defaultCombine("a", "b")
+#'
+#' # Change back to nlmixr2/rxode2 default camelCase
+#'
+#' setCombineType("camel")
+#' defaultCombine("a", "b")
+#'
+#' # This is used to change the naming convention for parameters
+#' # produced by this package
 setCombineType <- function(combineType = c("snake", "camel", "dot", "blank")) {
   .combineEnv$default <- combineType
 }

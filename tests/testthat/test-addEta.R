@@ -17,79 +17,84 @@ test_that("addEta named parameter", {
     )[[4]][[2]][[2]],
     str2lang("ka <- exp(lka + etaLka)"))
 
-  withr::with_options(list(nlmixr2lib.etaCombineType="snake"), {
-    suppressMessages(modelUpdate <- addEta(model, eta = "lka"))
-    expect_equal(
-      functionBody(
-        modelUpdate
-      )[[3]][[2]][[10]],
-      str2lang("eta_lka ~ 0.1"))
-    # eta is added
-    expect_equal(
-      functionBody(
-        modelUpdate
-      )[[4]][[2]][[2]],
-      str2lang("ka <- exp(lka + eta_lka)"))
-  })
+  if (requireNamespace("withr", quietly = TRUE)) {
 
-  withr::with_options(list(nlmixr2lib.etaCombineType="dot"), {
-    suppressMessages(modelUpdate <- addEta(model, eta = "lka"))
-    expect_equal(
-      functionBody(
-        modelUpdate
-      )[[3]][[2]][[10]],
-      str2lang("eta.lka ~ 0.1"))
-    # eta is added
-    expect_equal(
-      functionBody(
-        modelUpdate
-      )[[4]][[2]][[2]],
-      str2lang("ka <- exp(lka + eta.lka)"))
-  })
+    withr::with_options(list(nlmixr2lib.etaCombineType="snake"), {
+      suppressMessages(modelUpdate <- addEta(model, eta = "lka"))
+      expect_equal(
+        functionBody(
+          modelUpdate
+        )[[3]][[2]][[10]],
+        str2lang("eta_lka ~ 0.1"))
+      # eta is added
+      expect_equal(
+        functionBody(
+          modelUpdate
+        )[[4]][[2]][[2]],
+        str2lang("ka <- exp(lka + eta_lka)"))
+    })
+
+    withr::with_options(list(nlmixr2lib.etaCombineType="dot"), {
+      suppressMessages(modelUpdate <- addEta(model, eta = "lka"))
+      expect_equal(
+        functionBody(
+          modelUpdate
+        )[[3]][[2]][[10]],
+        str2lang("eta.lka ~ 0.1"))
+      # eta is added
+      expect_equal(
+        functionBody(
+          modelUpdate
+        )[[4]][[2]][[2]],
+        str2lang("ka <- exp(lka + eta.lka)"))
+    })
 
 
-  withr::with_options(list(nlmixr2lib.etaCombineType="blank"), {
-    suppressMessages(modelUpdate <- addEta(model, eta = "lka"))
-    expect_equal(
-      functionBody(
-        modelUpdate
-      )[[3]][[2]][[10]],
-      str2lang("etalka ~ 0.1"))
-    # eta is added
-    expect_equal(
-      functionBody(
-        modelUpdate
-      )[[4]][[2]][[2]],
-      str2lang("ka <- exp(lka + etalka)"))
-  })
+    withr::with_options(list(nlmixr2lib.etaCombineType="blank"), {
+      suppressMessages(modelUpdate <- addEta(model, eta = "lka"))
+      expect_equal(
+        functionBody(
+          modelUpdate
+        )[[3]][[2]][[10]],
+        str2lang("etalka ~ 0.1"))
+      # eta is added
+      expect_equal(
+        functionBody(
+          modelUpdate
+        )[[4]][[2]][[2]],
+        str2lang("ka <- exp(lka + etalka)"))
+    })
 
-  withr::with_options(list(nlmixr2lib.etaCombineType="camel"), {
-    suppressMessages(modelUpdate <- addEta(model, eta = "lka"))
-    expect_equal(
-      functionBody(
-        modelUpdate
-      )[[3]][[2]][[10]],
-      str2lang("etaLka ~ 0.1"))
-    # eta is added
-    expect_equal(
-      functionBody(
-        modelUpdate
-      )[[4]][[2]][[2]],
-      str2lang("ka <- exp(lka + etaLka)"))
-  })
-  withr::with_options(list(nlmixr2lib.etaCombineType=4), {
-    expect_equal(
-      functionBody(
-        modelUpdate
-      )[[3]][[2]][[10]],
-      str2lang("etaLka ~ 0.1"))
-    # eta is added
-    expect_equal(
-      functionBody(
-        modelUpdate
-      )[[4]][[2]][[2]],
-      str2lang("ka <- exp(lka + etaLka)"))
-  })
+    withr::with_options(list(nlmixr2lib.etaCombineType="camel"), {
+      suppressMessages(modelUpdate <- addEta(model, eta = "lka"))
+      expect_equal(
+        functionBody(
+          modelUpdate
+        )[[3]][[2]][[10]],
+        str2lang("etaLka ~ 0.1"))
+      # eta is added
+      expect_equal(
+        functionBody(
+          modelUpdate
+        )[[4]][[2]][[2]],
+        str2lang("ka <- exp(lka + etaLka)"))
+    })
+
+    withr::with_options(list(nlmixr2lib.etaCombineType=4), {
+      expect_equal(
+        functionBody(
+          modelUpdate
+        )[[3]][[2]][[10]],
+        str2lang("etaLka ~ 0.1"))
+      # eta is added
+      expect_equal(
+        functionBody(
+          modelUpdate
+        )[[4]][[2]][[2]],
+        str2lang("ka <- exp(lka + etaLka)"))
+    })
+  }
+
 })
 
 test_that("addEta mu-ref parameter", {

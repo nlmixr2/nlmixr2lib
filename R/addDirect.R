@@ -30,7 +30,7 @@ addDirectLin <- function(ui,
   .effectSd <- paste0(effect, "Sd")
   rxode2::assertVariableNew(.ui, ek)
   rxode2::assertVariableNew(.ui, effect)
-  rxode2::assertVariableNew(.ui, effectSd)
+  rxode2::assertVariableNew(.ui, .effectSd)
 
   .eff <- str2lang(paste0(effect, " <- ", ek, "*", cc))
   .modelLines <- c(list(paste0(ek, " <- u", ek)),

@@ -34,7 +34,6 @@ addWeibullAbs <- function(ui, ntransit, central = "central",
   ka <- rxode2::assertVariableExists(.ui, ka)
   rxode2::assertVariableNew(.ui, wa)
   rxode2::assertVariableNew(.ui, wb)
-  rxode2::assertVariableNew(.ui, wbk)
 
   # replace ka*depot with Weibull absorption model in central
   .modelLines <- .ui$lstExpr
