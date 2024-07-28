@@ -77,7 +77,7 @@ addEta <- function(ui, eta, priorName=getOption("nlmixr2lib.priorEta", TRUE),
       }
     }
     etaName <- defaultCombine("eta", etaName)
-    etaMap <- c(etaMap, setNames(etaName, currentEta))
+    etaMap <- c(etaMap, stats::setNames(etaName, currentEta))
     ui <-
       searchReplace(
         object = ui,

@@ -294,14 +294,14 @@ pkTrans <- function(ui,
   if (type == "k") {
     # These would be transformations in terms of rate constants alone
     if (.cmt == 1L) {
-      .est <- setNames(c(
+      .est <- stats::setNames(c(
         paste0("Elimination from central (", kel, ")"),
         paste0("Central compartment volume (", vc, ")")),
         c(kel, vc))
       .ui <- addLogEstimates(.ui, .est, beforeCmt=beforeCmt)
       return(.ui)
     } else if (.cmt == 2L) {
-      .est <- setNames(c(
+      .est <- stats::setNames(c(
         paste0("Central->Periph1 constant (", k12, ")"),
         paste0("Periph1->Central constant (", k21, ")"),
         paste0("Elimination from central (", kel, ")"),
@@ -310,7 +310,7 @@ pkTrans <- function(ui,
       .ui <- addLogEstimates(.ui, .est, beforeCmt=beforeCmt)
       return(.ui)
     } else if (.cmt == 3L) {
-      .est <- setNames(c(
+      .est <- stats::setNames(c(
         paste0("Central->Periph1 constant (", k12, ")"),
         paste0("Periph1->Central constant (", k21, ")"),
         paste0("Central->Periph2 constant (", k13, ")"),
@@ -326,7 +326,7 @@ pkTrans <- function(ui,
     # default models it is a bit silly, but you could transfer back
     # and forth if you really wanted/needed to...
     if (.cmt == 1L) {
-      .est <- setNames(c(
+      .est <- stats::setNames(c(
         paste0("Clearance (", cl, ")"),
         paste0("Central compartment volume (", vc, ")")),
         c(cl, vc))
@@ -335,7 +335,7 @@ pkTrans <- function(ui,
                                str2lang(paste0(kel, "<-", cl, "/", vc))))
       return(.ui)
     } else if (.cmt == 2L) {
-      .est <- setNames(c(
+      .est <- stats::setNames(c(
         paste0("Clearance (", cl, ")"),
         paste0("Central compartment volume (", vc, ")"),
         paste0("Periph1<->Central inter-compartmental clearance (", q, ")"),
@@ -349,7 +349,7 @@ pkTrans <- function(ui,
                              ))
       return(.ui)
     } else if (.cmt == 3L) {
-      .est <- setNames(c(
+      .est <- stats::setNames(c(
         paste0("Clearance (", cl, ")"),
         paste0("Central compartment volume (", vc, ")"),
         paste0("Periph1<->Central inter-compartmental clearance (", q, ")"),
@@ -371,7 +371,7 @@ pkTrans <- function(ui,
       stop("vss transformation only works for 2 compartment models",
            call.=FALSE)
     }
-    .est <- setNames(c(
+    .est <- stats::setNames(c(
       paste0("Clearance (", cl, ")"),
       paste0("Central compartment volume (", vc, ")"),
       paste0("Periph1<->Central inter-compartmental clearance (", q, ")"),
@@ -388,7 +388,7 @@ pkTrans <- function(ui,
       stop("aob transformation only works for 2 compartment models",
            call.=FALSE)
     }
-    .est <- setNames(c(
+    .est <- stats::setNames(c(
       paste0("A/B (", aob, ")"),
       paste0("alpha macro constant (", alpha, ")"),
       paste0("beta macro constant (", beta, ")"),
@@ -410,7 +410,7 @@ pkTrans <- function(ui,
            call.=FALSE)
     }
     if (.cmt == 2L) {
-      .est <- setNames(c(
+      .est <- stats::setNames(c(
         paste0("Periph1->Central constant (", k21, ")"),
         paste0("alpha macro constant (", alpha, ")"),
         paste0("beta macro constant (", beta, ")"),
@@ -425,7 +425,7 @@ pkTrans <- function(ui,
     } else {
       rxode2::assertVariableNew(.ui, p)
       rxode2::assertVariableNew(.ui, s)
-      .est <- setNames(c(
+      .est <- stats::setNames(c(
         paste0("Periph1->Central constant (", k21, ")"),
         paste0("Periph2->Central constant (", k31, ")"),
         paste0("alpha macro constant (", alpha, ")"),
@@ -451,7 +451,7 @@ pkTrans <- function(ui,
     if (.cmt == 3L) {
       # trans 10
       rxode2::assertVariableNew(.ui, tmp)
-      .est <- setNames(c(
+      .est <- stats::setNames(c(
         paste0("alpha macro constant (", alpha, ")"),
         paste0("beta macro constant (", beta, ")"),
         paste0("gam macro constant (", gam, ")"),
@@ -493,7 +493,7 @@ pkTrans <- function(ui,
                                                kel, "+", k12, "+", k21, "+", k31, ")"))))
       return(.ui)
     } else if (.cmt == 2L) {
-      .est <- setNames(c(
+      .est <- stats::setNames(c(
         paste0("alpha macro constant (", alpha, ")"),
         paste0("beta macro constant (", beta, ")"),
         paste0("A coefficient (", A, ")"),
@@ -510,7 +510,7 @@ pkTrans <- function(ui,
                                                              beta, "-", k21, "-", kel))))
       return(.ui)
     } else if (.cmt == 1L) {
-      .est <- setNames(c(
+      .est <- stats::setNames(c(
         paste0("alpha macro constant (", alpha, ")"),
         paste0("A coefficient (", A, ")")),
         c(alpha, A))
