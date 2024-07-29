@@ -137,6 +137,16 @@ combinePaste2 <- function(a, b,
                             "default", "snake", "camel",
                             "dot", "blank"
                           )) {
+  if (missing(a) && missing(b)) {
+    stop("no arguments provided",
+      call. = FALSE
+    )
+  }
+  checkmate::assertCharacter(a, min.len = 1L, any.missing = FALSE)
+  if (missing(b)) {
+    return(a)
+  }
+  checkmate::assertCharacter(b, min.len = 1L, any.missing = FALSE)
   combineType <- match.arg(combineType)
   if (combineType != "default") {
     .combineEnv$old <- .combineEnv$default
