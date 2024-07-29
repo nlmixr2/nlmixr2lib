@@ -12,7 +12,7 @@
   if (checkmate::testCharacter(v1, min.len = 2L, any.missing = FALSE)) {
     v1 <- do.call(defaultCombine, as.list(v1))
   }
-  if (checkmate::testCharacter(v1, min.len = 2L, any.missing = FALSE)) {
+  if (checkmate::testCharacter(v2, min.len = 2L, any.missing = FALSE)) {
     v2 <- do.call(defaultCombine, as.list(v2))
   }
   checkmate::assertCharacter(v1, len = 1L, any.missing = FALSE)
@@ -250,6 +250,9 @@ setCombineType <- function(combineType = c("snake", "camel", "dot", "blank")) {
 #' @author Matthew L. Fidler
 #' @noRd
 .getCombineTypeFromRoption <- function(op) {
+  if (!checkmate::testCharacter(op, len = 1, any.missing = FALSE)) {
+    return("default")
+  }
   .tmp <- getOption(op, "default")
   if (checkmate::testCharacter(.tmp, len = 1, any.missing = FALSE) &&
     !(.tmp %in% c("default", "snake", "camel", "dot", "blank"))) {
