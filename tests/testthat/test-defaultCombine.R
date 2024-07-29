@@ -1,5 +1,3 @@
-
-# Define the tests
 test_that("defaultCombine works correctly", {
 
   # By default the function works with camel case, not snake case
@@ -143,4 +141,7 @@ test_that(".defaultCombine2", {
   # Test if v1 and v2 are longer than one and the same length, the output makes sense
   expect_equal(.defaultCombine2(c("a", "b"), "b"), "aBB")
   expect_equal(.defaultCombine2("b", c("a", "b")), "bAB")
+
+  # Test the case that the second argument is a empty string
+  expect_equal(.defaultCombine2("a", ""), "a")
 })
