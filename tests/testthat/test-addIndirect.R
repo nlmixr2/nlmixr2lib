@@ -64,3 +64,11 @@ test_that("addIndirectLin/addIndirect with a blank ui will generate a model", {
   expect_error(addIndirectLin(inhib="in"), NA)
   expect_error(addIndirectLin(inhib="out"), NA)
 })
+
+
+test_that("both arguments present or neither argument present for stim/in errors",{
+  expect_error(addIndirectLin(stim="in", inhib="in"))
+  expect_error(addIndirectLin())
+  expect_error(addIndirect(stim="in", inhib="out"))
+  expect_error(addIndirect())
+})

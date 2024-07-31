@@ -59,7 +59,7 @@ addIndirectLin <- function(ui,
 
   if ((missing(stim) && missing(inhib)) ||
         (!missing(stim) && !missing(inhib))) {
-    stop("need to either 'stim' or 'inhib'",
+    stop("need either 'stim' or 'inhib' specified",
          call.=FALSE)
   }
   .doStim <- FALSE
@@ -210,7 +210,7 @@ addIndirect <- function(ui,
                         effect="effect") {
   if ((missing(stim) && missing(inhib)) ||
         (!missing(stim) && !missing(inhib))) {
-    stop("need to either 'stim' or 'inhib'",
+    stop("need either 'stim' or 'inhib' specified",
          call.=FALSE)
   }
   .doStim <- FALSE
