@@ -76,9 +76,7 @@ test_that("Test addBaselineLin function", {
   expect_null(result$meta$description)
   expect_equal(rxode2::modelExtract(result, effect),
                "effect <- Ek * Cc + Eb * time")
-
   expect_equal(result$theta, c(uEb = 0.1))
-
   expect_equal(result$iniDf$label, "untransformed constant baseline (Eb)")
 
 })
