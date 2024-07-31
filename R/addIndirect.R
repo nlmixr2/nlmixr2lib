@@ -223,7 +223,7 @@ addIndirect <- function(ui,
   if (.doStim) {
     .mod1 <- addIndirectLin(ui, stim=stim,
                             ek=ek,
-                            ik=ik,
+                            ik=ek,
                             kin=kin, kout=kout,
                             cc=cc,
                             R=R,
@@ -237,7 +237,7 @@ addIndirect <- function(ui,
     }
   } else {
     .mod1 <- addIndirectLin(ui, inhib=inhib,
-                            ek=ek,
+                            ek=ik,
                             ik=ik,
                             kin=kin, kout=kout,
                             cc=cc,
