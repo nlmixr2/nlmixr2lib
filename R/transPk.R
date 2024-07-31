@@ -173,8 +173,6 @@ addLogEstimates <- function(ui, vars,
 #'
 #'  - \code{"k"}: Change to rate constants (kel, k12, k21, k13, k31)
 #'
-#'  - \code{"cl"}: Change to clearance (cl, vc, q, vp, q2, vp2)
-#'
 #'  - \code{"vss"}: Change to volume of distribution at steady state (cl, vc, q, vss)
 #'
 #'  - \code{"aob"}: Change to A/B ratio (aob, alpha, beta, vc)
@@ -265,7 +263,7 @@ addLogEstimates <- function(ui, vars,
 #'
 #' }
 pkTrans <- function(ui,
-                    type=c("k", "cl", "k21", "vss", "aob", "alpha"),
+                    type=c("k", "k21", "vss", "aob", "alpha"),
                     k13="k13",
                     k31="k31",
                     k12="k12",
@@ -331,51 +329,6 @@ pkTrans <- function(ui,
         paste0("Central compartment volume (", vc, ")")),
         c(k12, k21, k13, k31, kel, vc))
       .ui <- addLogEstimates(.ui, .est, beforeCmt=beforeCmt)
-      return(.ui)
-    }
-  } else if (type == "cl") {
-    # Change to clearance; Since this is already parameterized in the
-    # default models it is a bit silly, but you could transfer back
-    # and forth if you really wanted/needed to...
-    if (.cmt == 1L) {
-      .est <- stats::setNames(c(
-        paste0("Clearance (", cl, ")"),
-        paste0("Central compartment volume (", vc, ")")),
-        c(cl, vc))
-      .ui <- addLogEstimates(.ui, .est, beforeCmt=beforeCmt,
-                             extraLines=list(
-                               str2lang(paste0(kel, "<-", cl, "/", vc))))
-      return(.ui)
-    } else if (.cmt == 2L) {
-      .est <- stats::setNames(c(
-        paste0("Clearance (", cl, ")"),
-        paste0("Central compartment volume (", vc, ")"),
-        paste0("Periph1<->Central inter-compartmental clearance (", q, ")"),
-        paste0("Periph1 volume (", vp, ")")),
-        c(cl, vc, q, vp))
-      .ui <- addLogEstimates(.ui, .est, beforeCmt=beforeCmt,
-                             extraLines=list(
-                               str2lang(paste0(kel, "<-", cl, "/", vc)),
-                               str2lang(paste0(k12, "<-", q, "/", vc)),
-                               str2lang(paste0(k21, "<-", q, "/", vp))
-                             ))
-      return(.ui)
-    } else if (.cmt == 3L) {
-      .est <- stats::setNames(c(
-        paste0("Clearance (", cl, ")"),
-        paste0("Central compartment volume (", vc, ")"),
-        paste0("Periph1<->Central inter-compartmental clearance (", q, ")"),
-        paste0("Periph1 volume (", vp, ")"),
-        paste0("Periph2<->Central inter-compartmental clearance (", q2, ")"),
-        paste0("Periph2 volume (", vp2, ")")),
-        c(cl, vc, q, vp, q2, vp2))
-      .ui <- addLogEstimates(.ui, .est, beforeCmt=beforeCmt,
-                             extraLines=list(
-                               str2lang(paste0(kel, "<-", cl, "/", vc)),
-                               str2lang(paste0(k12, "<-", q, "/", vc)),
-                               str2lang(paste0(k21, "<-", q, "/", vp)),
-                               str2lang(paste0(k13, "<-", q2, "/", vc)),
-                               str2lang(paste0(k31, "<-", q2, "/", vp2))))
       return(.ui)
     }
   } else if (type == "vss") {
