@@ -22,10 +22,9 @@
   if (length(.w) != 1) {
     stop("'",
          .dd1,
-         central, ifelse(ddt, ")", ""),
-         "'",
+         central,
          .dd2,
-         "' not found in model",
+         "' not found or duplicated in model",
          call.=FALSE)
   }
   .w
