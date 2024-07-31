@@ -1,3 +1,19 @@
+f <- function() {
+  description <- "A two compartment model with a direct effect , no endpoints and no thetas"
+  model({
+    d/dt(central) <- -kel * central - k12 * central + k21 *
+      peripheral1
+    d/dt(peripheral1) <- k12 * central - k21 * peripheral1
+    Cc <- central/vc
+  })
+
+}
+
+test_that("addCmpProp removes description", {
+  res <- rxode2::rxode2(f) |> addCmtProp("f", "central")
+  expect_null(res$meta$description)
+})
+
 res0 <- readModelDb("PK_1cmt_des")
 
 test_that("control --nothing exists", {
