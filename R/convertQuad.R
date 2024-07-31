@@ -42,7 +42,7 @@ convertQuad <- function(ui, ek=c("Ik", "Ek"), cc=c("Ce", "Cc"), ek2="Ek2") {
   }
   .thetaEk2 <- .get1theta(ek2, .theta1, .ntheta,
                           name=paste0("u", ek2),
-                          label=paste0("untransformed quadratic slope (", ek, ")"))
+                          label=paste0("untransformed quadratic slope (", ek2, ")"))
   .ui$iniDf <- rbind(.theta,
                      .thetaEk2,
                      .eta)

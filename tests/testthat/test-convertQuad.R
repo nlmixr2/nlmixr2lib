@@ -21,4 +21,35 @@ test_that("convertQuad", {
     expect_equal(rxode2::modelExtract(r1, "effect"),
                  "effect <- Ek * Ce + Ek2 * Ce^2")
 
+    f <- function() {
+      description<- "PK model with 2 compartments and no depot and linear effect"
+      model({
+        Ek <- uEk
+        cl <- exp(lcl)
+        vc <- exp(lvc)
+        vp <- exp(lvp)
+        q <- exp(lq)
+        kel <- cl/vc
+        k12 <- q/vc
+        k21 <- q/vp
+        d/dt(central) <- -kel * central - k12 * central + k21 *
+          peripheral1
+        d/dt(peripheral1) <- k12 * central - k21 * peripheral1
+        Cc <- central/vc
+        effect <- Ek * Cc
+      })
+    }
+
+    r1 <- rxode2::rxode2(f) |>
+      convertQuad()
+
+    expect_null(r1$meta$description)
+    expect_equal(rxode2::modelExtract(r1, "effect"),
+                 "effect <- Ek * Cc + Ek2 * Cc^2")
+
+    expect_equal(r1$theta, c(uEk2 = 0.1))
+
+    expect_equal(r1$iniDf$label,
+                 "untransformed quadratic slope (Ek2)")
+
 })
