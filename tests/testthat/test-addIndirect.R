@@ -29,27 +29,24 @@ for (v in c("in", "out")) {
       expect_error(readModelDb(m) |> addIndirect(inhib=v, hill=TRUE), NA)
     })
   }
-  test_that("add indirect works with a model that has no thetas", {
-    test_that(paste0("addIndirectLin: f(); stim=", v), {
-      expect_error(rxode2::rxode2(f) |> addIndirectLin(stim=v), NA)
-    })
-    test_that(paste0("addIndirectLin: f(); inhib=", v), {
-      expect_error(rxode2::rxode2(f) |> addIndirectLin(inhib=v), NA)
-    })
-    test_that(paste0("addIndirect: f(); stim=", v), {
-      expect_error(rxode2::rxode2(f) |> addIndirect(stim=v), NA)
-    })
-    test_that(paste0("addIndirect: f(); inhib=", v), {
-      expect_error(rxode2::rxode2(f) |> addIndirect(inhib=v), NA)
-    })
-    test_that(paste0("addIndirect: f(); stim=", v, ", hill"), {
-      expect_error(rxode2::rxode2(f) |> addIndirect(stim=v, hill=TRUE), NA)
-    })
-    test_that(paste0("addIndirect: f(); inhib=", v, ", hill"), {
-      expect_error(rxode2::rxode2(f) |> addIndirect(inhib=v, hill=TRUE), NA)
-    })
+  test_that(paste0("addIndirectLin: f(); stim=", v), {
+    expect_error(rxode2::rxode2(f) |> addIndirectLin(stim=v), NA)
   })
-
+  test_that(paste0("addIndirectLin: f(); inhib=", v), {
+    expect_error(rxode2::rxode2(f) |> addIndirectLin(inhib=v), NA)
+  })
+  test_that(paste0("addIndirect: f(); stim=", v), {
+    expect_error(rxode2::rxode2(f) |> addIndirect(stim=v), NA)
+  })
+  test_that(paste0("addIndirect: f(); inhib=", v), {
+    expect_error(rxode2::rxode2(f) |> addIndirect(inhib=v), NA)
+  })
+  test_that(paste0("addIndirect: f(); stim=", v, ", hill"), {
+    expect_error(rxode2::rxode2(f) |> addIndirect(stim=v, hill=TRUE), NA)
+  })
+  test_that(paste0("addIndirect: f(); inhib=", v, ", hill"), {
+    expect_error(rxode2::rxode2(f) |> addIndirect(inhib=v, hill=TRUE), NA)
+  })
 }
 
 test_that("addIndirectLin/addIndirect with a blank ui will generate a model", {
