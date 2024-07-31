@@ -21,15 +21,14 @@ addWeibullAbs <- function(ui, ntransit, central = "central",
   central <- rxode2::assertCompartmentExists(.ui, central)
   if (!rxode2::testCompartmentExists(.ui, depot)) {
     .ui <- addDepot(.ui, central=central, depot=depot, ka=ka)
-    .mv <- rxode2::rxModelVars(.ui)
-    warning("'", depot, "' added to model for weibull absroption model", call.=FALSE)
+    warning("'", depot, "' added to model for Weibull absorption model", call.=FALSE)
   } else if (rxode2::testCompartmentExists(.ui, paste0(transit, "1"))) {
     .ui <- removeTransit(.ui,
                          central = central,
                          depot = depot, transit=transit,
                          ktr = ktr,
                          ka=ka)
-    warning("transit compartments removed for weibull absroption model", call.=FALSE)
+    warning("transit compartments removed for Weibull absorption model", call.=FALSE)
   }
   ka <- rxode2::assertVariableExists(.ui, ka)
   rxode2::assertVariableNew(.ui, wa)
@@ -64,6 +63,11 @@ addWeibullAbs <- function(ui, ntransit, central = "central",
   .theta <- .tmp$theta
   .theta1 <- .tmp$theta1
   .eta <- .tmp$eta
+  .tmp <- .dropLines(.ui, .modelLines, .theta, .eta, ka)
+  .modelLines <- .tmp$modelLines
+  .theta <- .tmp$theta
+  .eta <- .tmp$eta
+  .ntheta <- .tmp$ntheta
 
   if (length(.theta$name) == 0L) {
     .ntheta <- 0
