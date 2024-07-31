@@ -5,7 +5,7 @@
 #'
 #'  - \code{F}: bioavailability
 #'
-#'  - \code{alag}: absorption lag time
+#'  - \code{lag}: absorption lag time
 #'
 #' - \code{dur}: modeled duration of infusion
 #'
@@ -32,7 +32,7 @@
 #'
 #' readModelDb("PK_3cmt_des") |> addIni(depot)
 #'
-addCmtProp <- function(ui, prop=c("f", "alag", "dur", "rate", "ini"),
+addCmtProp <- function(ui, prop=c("f", "lag", "dur", "rate", "ini"),
                        cmt) {
   .ui <- rxode2::assertRxUi(ui)
   .cmt <- as.character(substitute(cmt))
@@ -40,6 +40,7 @@ addCmtProp <- function(ui, prop=c("f", "alag", "dur", "rate", "ini"),
   if (inherits(cmt, "try-error")) {
     cmt <- .cmt
   }
+  prop <- match.arg(prop)
   if (rxode2::testCompartmentExists(.ui, cmt)) {
     .cmt <- rxode2::assertCompartmentExists(.ui, cmt)
     .modelLines <- .ui$lstExpr
@@ -89,7 +90,7 @@ addLag <- function(ui, cmt) {
   if (inherits(cmt, "try-error")) {
     cmt <- .cmt
   }
-  addCmtProp(ui, prop="alag", cmt=cmt)
+  addCmtProp(ui, prop="lag", cmt=cmt)
 }
 
 #' @describeIn addCmtProp Adds the modeled duration to a compartment in the model
