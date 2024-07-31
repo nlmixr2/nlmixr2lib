@@ -6,6 +6,7 @@
 \alias{addLag}
 \alias{addDur}
 \alias{addRate}
+\alias{addIni}
 \title{Add a property to a compartment}
 \usage{
 addCmtProp(ui, prop = c("f", "alag", "dur", "rate", "ini"), cmt)
@@ -17,6 +18,8 @@ addLag(ui, cmt)
 addDur(ui, cmt)
 
 addRate(ui, cmt)
+
+addIni(ui, cmt)
 }
 \arguments{
 \item{ui}{rxode2 ui object}
@@ -29,7 +32,9 @@ addRate(ui, cmt)
 
 - \code{dur}: modeled duration of infusion
 
-- \code{rate}: modeled infusion rate}
+- \code{rate}: modeled infusion rate
+
+- \code{ini}: initial value of the compartment}
 
 \item{cmt}{compartment to apply the property to}
 }
@@ -49,9 +54,23 @@ Add a property to a compartment
 
 \item \code{addRate()}: Adds the modeled rate to a compartment in the model
 
+\item \code{addIni()}: Adds the inital value to the compartment
+
 }}
 \examples{
+
 readModelDb("PK_3cmt_des") |> addCmtProp("f", "depot")
+
+readModelDb("PK_3cmt_des") |> addBioavailability(depot)
+
+readModelDb("PK_3cmt_des") |> addLag(depot)
+
+readModelDb("PK_3cmt_des") |> addDur(depot)
+
+readModelDb("PK_3cmt_des") |> addRate(depot)
+
+readModelDb("PK_3cmt_des") |> addIni(depot)
+
 }
 \author{
 Matthew L. Fidler

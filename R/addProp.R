@@ -11,6 +11,8 @@
 #'
 #' - \code{rate}: modeled infusion rate
 #'
+#' - \code{ini}: initial value of the compartment
+#'
 #' @param cmt compartment to apply the property to
 #'
 #' @return rxode2 ui object with property applied
@@ -21,6 +23,14 @@
 #' readModelDb("PK_3cmt_des") |> addCmtProp("f", "depot")
 #'
 #' readModelDb("PK_3cmt_des") |> addBioavailability(depot)
+#'
+#' readModelDb("PK_3cmt_des") |> addLag(depot)
+#'
+#' readModelDb("PK_3cmt_des") |> addDur(depot)
+#'
+#' readModelDb("PK_3cmt_des") |> addRate(depot)
+#'
+#' readModelDb("PK_3cmt_des") |> addIni(depot)
 #'
 addCmtProp <- function(ui, prop=c("f", "alag", "dur", "rate", "ini"),
                        cmt) {
@@ -101,4 +111,15 @@ addRate <- function(ui, cmt) {
     cmt <- .cmt
   }
   addCmtProp(ui, prop="rate", cmt=cmt)
+}
+
+#' @describeIn addCmtProp Adds the inital value to the compartment
+#' @export
+addIni <- function(ui, cmt) {
+  .cmt <- as.character(substitute(cmt))
+  cmt <-try(force(cmt), silent=TRUE)
+  if (inherits(cmt, "try-error")) {
+    cmt <- .cmt
+  }
+  addCmtProp(ui, prop="ini", cmt=cmt)
 }
