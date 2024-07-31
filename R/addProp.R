@@ -17,10 +17,19 @@
 #' @export
 #' @author Matthew L. Fidler
 #' @examples
+#'
 #' readModelDb("PK_3cmt_des") |> addCmtProp("f", "depot")
+#'
+#' readModelDb("PK_3cmt_des") |> addBioavailability(depot)
+#'
 addCmtProp <- function(ui, prop=c("f", "alag", "dur", "rate", "ini"),
                        cmt) {
   .ui <- rxode2::assertRxUi(ui)
+  .cmt <- as.character(substitute(cmt))
+  cmt <-try(force(cmt), silent=TRUE)
+  if (inherits(cmt, "try-error")) {
+    cmt <- .cmt
+  }
   if (rxode2::testCompartmentExists(.ui, cmt)) {
     .cmt <- rxode2::assertCompartmentExists(.ui, cmt)
     .modelLines <- .ui$lstExpr
@@ -49,4 +58,47 @@ addCmtProp <- function(ui, prop=c("f", "alag", "dur", "rate", "ini"),
   } else {
     stop("Compartment ", cmt, " does not exist")
   }
+}
+
+#' @describeIn addCmtProp Adds the bioavailability to a compartment in the model
+#' @export
+addBioavailability <- function(ui, cmt) {
+  .cmt <- as.character(substitute(cmt))
+  cmt <-try(force(cmt), silent=TRUE)
+  if (inherits(cmt, "try-error")) {
+    cmt <- .cmt
+  }
+  addCmtProp(ui, prop="f", cmt=cmt)
+}
+
+#' @describeIn addCmtProp Adds the lag-time to a compartment in the model
+#' @export
+addLag <- function(ui, cmt) {
+  .cmt <- as.character(substitute(cmt))
+  cmt <-try(force(cmt), silent=TRUE)
+  if (inherits(cmt, "try-error")) {
+    cmt <- .cmt
+  }
+  addCmtProp(ui, prop="alag", cmt=cmt)
+}
+
+#' @describeIn addCmtProp Adds the modeled duration to a compartment in the model
+#' @export
+addDur <- function(ui, cmt) {
+  .cmt <- as.character(substitute(cmt))
+  cmt <-try(force(cmt), silent=TRUE)
+  if (inherits(cmt, "try-error")) {
+    cmt <- .cmt
+  }
+  addCmtProp(ui, prop="dur", cmt=cmt)
+}
+#' @describeIn addCmtProp Adds the modeled rate to a compartment in the model
+#' @export
+addRate <- function(ui, cmt) {
+  .cmt <- as.character(substitute(cmt))
+  cmt <-try(force(cmt), silent=TRUE)
+  if (inherits(cmt, "try-error")) {
+    cmt <- .cmt
+  }
+  addCmtProp(ui, prop="rate", cmt=cmt)
 }

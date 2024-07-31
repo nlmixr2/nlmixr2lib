@@ -2,9 +2,21 @@
 % Please edit documentation in R/addProp.R
 \name{addCmtProp}
 \alias{addCmtProp}
+\alias{addBioavailability}
+\alias{addLag}
+\alias{addDur}
+\alias{addRate}
 \title{Add a property to a compartment}
 \usage{
 addCmtProp(ui, prop = c("f", "alag", "dur", "rate", "ini"), cmt)
+
+addBioavailability(ui, cmt)
+
+addLag(ui, cmt)
+
+addDur(ui, cmt)
+
+addRate(ui, cmt)
 }
 \arguments{
 \item{ui}{rxode2 ui object}
@@ -27,6 +39,17 @@ rxode2 ui object with property applied
 \description{
 Add a property to a compartment
 }
+\section{Functions}{
+\itemize{
+\item \code{addBioavailability()}: Adds the bioavailability to a compartment in the model
+
+\item \code{addLag()}: Adds the lag-time to a compartment in the model
+
+\item \code{addDur()}: Adds the modeled duration to a compartment in the model
+
+\item \code{addRate()}: Adds the modeled rate to a compartment in the model
+
+}}
 \examples{
 readModelDb("PK_3cmt_des") |> addCmtProp("f", "depot")
 }
