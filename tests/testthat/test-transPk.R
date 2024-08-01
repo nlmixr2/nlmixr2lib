@@ -11,7 +11,7 @@ test_that("transPk -- k", {
 
   p1k <- readModelDb("PK_1cmt_des") |>
     pkTrans("k")
-  expect_true(all(c("lkel") %in% names(p1k$theta)))
+  expect_true(all("lkel" %in% names(p1k$theta)))
   expect_true(!any(c("lk12", "lk21", "lk13", "lk31") %in% names(p1k$theta)))
 
 })
@@ -65,7 +65,7 @@ test_that("transPk --k21", {
 
   expect_true(all(c("lalpha", "lbeta",
                     "lk21") %in% names(pk2$theta)))
-  expect_true(!any(c("lk12") %in% names(pk2$theta)))
+  expect_true(!any("lk12" %in% names(pk2$theta)))
 
 
   expect_error(readModelDb("PK_1cmt_des") |>
