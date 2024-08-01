@@ -6,7 +6,7 @@
 \usage{
 pkTrans(
   ui,
-  type = c("k", "cl", "k21", "vss", "aob", "alpha"),
+  type = c("k", "k21", "vss", "aob", "alpha"),
   k13 = "k13",
   k31 = "k31",
   k12 = "k12",
@@ -38,8 +38,6 @@ pkTrans(
 \item{type}{the type of PK transformation to make:
 
  - \code{"k"}: Change to rate constants (kel, k12, k21, k13, k31)
-
- - \code{"cl"}: Change to clearance (cl, vc, q, vp, q2, vp2)
 
  - \code{"vss"}: Change to volume of distribution at steady state (cl, vc, q, vss)
 

@@ -31,6 +31,11 @@ readModelDb("PK_2cmt_no_depot") |>
   addDirectLin() |>
   convertQuad()
 
+readModelDb("PK_2cmt_no_depot") |>
+ addEffectCmtLin() |>
+ convertQuad()
+
+
 }
 \seealso{
 Other PD: 

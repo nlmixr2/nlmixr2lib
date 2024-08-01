@@ -9,7 +9,7 @@
 \alias{addIni}
 \title{Add a property to a compartment}
 \usage{
-addCmtProp(ui, prop = c("f", "alag", "dur", "rate", "ini"), cmt)
+addCmtProp(ui, prop = c("f", "lag", "dur", "rate", "ini"), cmt)
 
 addBioavailability(ui, cmt)
 
@@ -28,7 +28,7 @@ addIni(ui, cmt)
 
  - \code{F}: bioavailability
 
- - \code{alag}: absorption lag time
+ - \code{lag}: absorption lag time
 
 - \code{dur}: modeled duration of infusion
 
