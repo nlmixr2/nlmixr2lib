@@ -1,3 +1,11 @@
+#' @importFrom rxode2 logit
+#' @export
+rxode2::logit
+
+#' @importFrom rxode2 expit
+#' @export
+rxode2::expit
+
 #' @importFrom rxode2 assertRxUi
 #' @export
 rxode2::assertRxUi

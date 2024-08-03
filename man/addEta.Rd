@@ -4,13 +4,26 @@
 \alias{addEta}
 \title{Add random effects to a model}
 \usage{
-addEta(model, eta)
+addEta(
+  ui,
+  eta,
+  priorName = getOption("nlmixr2lib.priorEta", TRUE),
+  etaCombineType = c("default", "snake", "camel", "dot", "blank")
+)
 }
 \arguments{
-\item{model}{The model as a function}
+\item{ui}{The model as a function}
 
-\item{eta}{vector with the parameters to add random effects (sometimes
-referred to as inter-individual variability, IIV) on}
+\item{eta}{vector with the parameters to add random effects
+(sometimes referred to as inter-individual variability, IIV) on}
+
+\item{priorName}{logical, if TRUE, the parameter name specified in
+`eta` will be used to add the eta value prior name is used
+instead of the left handed side of the equation.}
+
+\item{etaCombineType}{the option for the how to ccombine the eta
+with the parameter name.  Can be: "default", "snake", "camel",
+"dot", "blank"}
 }
 \value{
 The model with eta added to the requested parameters
@@ -21,4 +34,7 @@ Add random effects to a model
 \examples{
 library(rxode2)
 readModelDb("PK_1cmt") |> addEta("ka")
+}
+\author{
+Bill Denney, Richard Hooijmaijers & Matthew L. Fidler
 }

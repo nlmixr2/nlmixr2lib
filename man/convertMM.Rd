@@ -2,7 +2,7 @@
 % Please edit documentation in R/convertMM.R
 \name{convertMM}
 \alias{convertMM}
-\title{Convert models from linear elimination to MM elimination}
+\title{Convert models from linear elimination to Michaelis-Menten elimination}
 \usage{
 convertMM(
   ui,
@@ -28,10 +28,10 @@ model}
 \item{vc}{variable name for Vc in the model}
 }
 \value{
-new model changing linear elimination to MM elimination
+new model changing linear elimination to Michaelis-Menten elimination
 }
 \description{
-Convert models from linear elimination to MM elimination
+Convert models from linear elimination to Michaelis-Menten elimination
 }
 \examples{
 
@@ -42,7 +42,6 @@ readModelDb("PK_2cmt_des") |> convertMM()
 readModelDb("PK_3cmt_des") |> convertMM()
 
 readModelDb("PK_3cmt_des") |> removeDepot() |> convertMM()
-
 }
 \author{
 Matthew L. Fidler

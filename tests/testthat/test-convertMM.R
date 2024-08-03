@@ -1,5 +1,29 @@
 test_that(".replaceMultC works", {
 
+  # uniary operators
+  e1 <- str2lang("d/dt(central) <- - ka * depot")
+  e2 <- str2lang("d/dt(central) <- - fun")
+
+  expect_equal(.replaceMultC(e1, str2lang("ka"),
+                             str2lang("depot"),
+                             str2lang("fun")),
+               e2)
+
+  e1 <- str2lang("d/dt(central) <- + ka * depot")
+  e2 <- str2lang("d/dt(central) <- fun")
+
+  expect_equal(.replaceMultC(e1, str2lang("ka"),
+                             str2lang("depot"),
+                             str2lang("fun")),
+               e2)
+
+
+  expect_equal(.replaceMultC(e1, str2lang("ka"),
+                             str2lang("depot"),
+                             str2lang("fun")),
+               e2)
+
+
   e1 <- str2lang("d/dt(central) <- ka * depot - kel * central")
 
   e2 <- str2lang("d/dt(central) <- ka * depot - (vm * central/vc)/(km + central/vc)")

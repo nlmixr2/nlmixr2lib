@@ -5,9 +5,12 @@
 #'   variable in the model is \code{Cc}, the parameter name for \code{propSd}
 #'   will become \code{CcpropSd}.
 #'
-#' @param model The model as a function
-#' @param reserr The type or types of residual error (currently \code{"addSd"},
-#'   \code{"propSd"}, and \code{"lnormSd"} are accepted)
+#' @param ui The model as a function
+#' @param reserr The type or types of residual error (currently
+#'   \code{"addSd"}, \code{"propSd"}, and \code{"lnormSd"} are
+#'   accepted)
+#' @param endpoint the endpoint to apply the error; will default to
+#'   the first error in the model
 #' @return The model with residual error modified
 #' @examples
 #' library(rxode2)
@@ -15,10 +18,20 @@
 #' readModelDb("PK_1cmt") |> addResErr("lnormSd")
 #' readModelDb("PK_1cmt") |> addResErr(c("addSd", "propSd"))
 #' @export
-addResErr <- function(model, reserr) {
-  mod <- model
-  modelUi <- rxode2::rxode(model)
-  paramErr <- modelUi$predDf$cond
+addResErr <- function(ui, reserr, endpoint) {
+  modelUi <- mod <- rxode2::assertRxUi(ui)
+  rxode2::assertRxUiPrediction(ui) # needs to have a prediction
+  if (missing(endpoint)) {
+    paramErr <- modelUi$predDf$cond
+  } else {
+    rxode2::assertVariableName(endpoint)
+    if (endpoint %in% modelUi$predDf$cond)  {
+      paramErr <- modelUi$predDf$cond
+    } else {
+      stop("requested to add/change residual error for '", endpoint, "' but not defined as a modeled endpoint",
+           call.=FALSE)
+    }
+  }
   if ("rxLinCmt" %in% paramErr) {
     paramErr[paramErr %in% "rxLinCmt"] <- "linCmt()"
   }
@@ -44,12 +57,13 @@ addResErr <- function(model, reserr) {
 
   newErrLineRhs <-
     paste(
-      sprintf(errFunMap[names(reserr)], paste0(paramErr, names(reserr))),
+      sprintf(errFunMap[names(reserr)], combinePaste2(paramErr, names(reserr))),
       collapse = " + "
     )
   newErrLine <- sprintf("%s ~ %s", paramErr, newErrLineRhs)
   newIniEst <- reserr
-  names(newIniEst) <- paste0(paramErr, names(reserr))
+
+  names(newIniEst) <- combinePaste2(paramErr, names(reserr))
 
   # Update the model with the new residual error line and the new initial
   # estimates

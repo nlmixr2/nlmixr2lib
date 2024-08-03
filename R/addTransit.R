@@ -1,156 +1,218 @@
 #' To add transit compartments to the model
-#' @param model The model as a function
-#' @param transit the number of transit compartments to be added
-#' @param transitComp the transit compartment prefix
+#'
+#' @param ui The model as a function
+#' @param ntransit the number of transit compartments to be added
+#' @param transit the transit compartment prefix
 #' @param ktr the parameter name for the transit compartment rate
-#' @inheritParams addComp
+#' @inheritParams addDepot
+#' @family absorption
 #' @return a model with transit compartment added
+#'
+#' This matches
+#'
+#' `dose->a0->a1->abs cmt->central`
+#'
+#' But `a0` is depot so dosing records labeled depot do not need to be
+#' changed
+#'
+#' The abs cmt becomes the last "transit" compartment
+#'
+#' This is simply for convienience
+#'
 #' @export
 #' @examples
-#' readModelDb("PK_1cmt_des") |>
-#'   addTransit(3)
-addTransit <- function(model, transit, central = "central", depot = "depot", transitComp = "transit", ktr = "ktr") {
-  assertCompartmentName(central)
-  assertCompartmentName(depot)
-  assertCompartmentName(transitComp)
-  checkmate::assertNumeric(transit, lower = 1, upper = 10)
-  assertVariableName(ktr)
-  temp <- rxode2::assertRxUi(model)
-  mv <- rxode2::rxModelVars(temp)
-  if (!(central %in% mv$state)) {
-    stop("'", central, "' needs to be in the model")
+#' readModelDb("PK_1cmt_des") |> addTransit(3)
+addTransit <- function(ui, ntransit, central = "central",
+                       depot = "depot",
+                       transit = "transit",
+                       ktr = "ktr",
+                       ka="ka") {
+  checkmate::assertIntegerish(ntransit, lower = 1)
+  rxode2::assertCompartmentName(transit)
+  .ui <- rxode2::assertRxUi(ui)
+  rxode2::assertCompartmentExists(.ui, central)
+  .mv <- rxode2::rxModelVars(.ui)
+  if (!rxode2::testCompartmentExists(.ui, depot)) {
+    .ui <- addDepot(.ui, central=central, depot=depot, ka=ka)
+    .mv <- rxode2::rxModelVars(.ui)
+    warning("'", depot, "' added to model for transit model", call.=FALSE)
+  } else if (rxode2::testCompartmentExists(.ui, paste0(transit, "1"))) {
+    .ui <- removeTransit(ui,
+                         central = central,
+                         depot = depot, transit=transit,
+                         ktr = ktr,
+                         ka=ka)
   }
-  if (!(depot %in% mv$state)) {
-    stop("'", depot, "' needs to be in the model")
-  }
-  if ((any(grepl("^transit", mv$state)))) {
-    model <- removeTransit(model)
-    temp <- rxode2::assertRxUi(model)
-  }
+  rxode2::assertCompartmentExists(.ui, depot)
 
   # Extract model and central ODE
-  model <- rxode2::modelExtract(temp, endpoint = NA)
-  center <- eval(str2lang(paste0("rxode2::modelExtract(temp,d/dt(", central, "),lines=TRUE)")))
-  centralLine <- attr(center, "lines")
+  .tmp <- .getEtaThetaTheta1(.ui)
+  .iniDf <- .tmp$iniDf
+  .theta <- .tmp$theta
+  .theta1 <- .tmp$theta1
+  .eta <- .tmp$eta
+  .modelLines <- .ui$lstExpr
+  # Get the central ODE and modify the depot expression to a transit
+  # expression
+  .w <- .whichDdt(.modelLines, central)
+  .tmp <- .extractModelLinesAtW(.modelLines, .w)
+  .pre <- .tmp$pre
+  .central <- .replaceMult(.tmp$w,
+                           v1=depot, v2=ka,
+                           ret=paste0(ka, "*", transit, ntransit))
+  .post <- .tmp$post
+  .v <- seq_len(ntransit)
+  # ODEs for the transit compartment (except the one from the depot)
+  .transMid <- lapply(.v,
+                      function(i) {
+                        if (i == 1) {
+                          str2lang(paste0("d/dt(", transit, i, ")<- ",
+                                          ktr, "*", depot, "-",
+                                          ifelse(ntransit == 1, ka, ktr),
+                                          "*", transit, i))
+                        } else if (i == ntransit) {
+                          str2lang(paste0("d/dt(", transit, i, ")<- ",
+                                          ktr, "*", transit, i - 1, "-", ka,
+                                          "*", transit, i))
+                        } else {
+                          str2lang(paste0("d/dt(", transit, i, ")<- ",
+                                          ktr, "*", transit, i - 1, "-", ktr,
+                                          "*", transit, i))
+                        }
+                      })
+  # combine the lines for now
+  .modelLines <- c(.pre,
+                   .transMid,
+                   .central,
+                   .post)
 
-  # Modify ODE for central compartment
-  rhs <- sub(".*<-\\s*", "", center)
-  rhs <- sub("\\s*ka\\s*\\*\\s*depot", "", rhs)
-  line <- str2lang(paste0("d/dt(", central, ") <- ", ktr, "*", transitComp, transit, deparse(str2lang(rhs))))
-
-
-  # ODEs for transit compartments
-  equation1 <- list(str2lang(paste0(ktr, " <- exp(l", ktr, ")")))
-  equation2 <- list(str2lang(paste0("d/dt(", transitComp, "1) <- ka*", depot, " - ", ktr, "*", transitComp, "1")))
-  if (transit > 1) {
-    for (i in 2:transit) {
-      equation2 <- c(equation2, str2lang(paste0("d/dt(", transitComp, i, ")<- ", ktr, "*", transitComp, i - 1, "-", ktr, "*", transitComp, i)))
-    }
+  # Now extract the depot and split the model based on the depot cmt
+  .w <- .whichDdt(.modelLines, depot)
+  .tmp <- .extractModelLinesAtW(.modelLines, .w)
+  .modelLines <- c(list(str2lang(paste0(ktr, " <- exp(l", ktr, ")"))),
+                   .tmp$pre,
+                   .replaceMult(.tmp$w,
+                                v1=ka, v2=depot,
+                                ret=paste0(ktr, "*", depot)),
+                   .tmp$post)
+  if (length(.theta$name) == 0L) {
+    .ntheta <- 0
+  } else {
+    .ntheta <- max(.theta$ntheta)
   }
-  # modify ini block
-  equationIni <- stats::setNames(0.05, paste0("l", ktr))
+  .thetaktr <- .get1theta(ktr, .theta1, .ntheta,
+                          label=paste0("First order transition rate (", ktr, ")"))
+  .ntheta <- .ntheta + 1
+
+  .ui <- rxode2::rxUiDecompress(.ui)
+  .ui$iniDf <- rbind(.theta,
+                     .thetaktr,
+                     .eta)
+  if (exists("description", envir=.ui$meta)) {
+    rm("description", envir=.ui$meta)
+  }
 
   # modify model block
-  rxode2::model(temp) <- c(equation1, model[1:(centralLine - 1)], equation2, line, model[(centralLine + 1):length(model)])
-  temp2 <- rxode2::ini(temp, equationIni)
-  temp3 <- temp2$iniDf
-  w <- which(temp3$name %in% names(equationIni))
-
-  # Update labels in ini block
-  for (i in 1:transit) {
-    suppressMessages(temp3$label[temp3$name == paste0("l", ktr, i)] <- paste0("First order transition rate (", ktr, i, ")"))
-  }
-  rxode2::ini(temp2) <- temp3
-  temp2
+  rxode2::model(.ui) <- .modelLines
+  .ui
 }
 
 #' To remove transit compartments from the model
-#' @param model The model as a function
+#' @param ui The model as a function
 #' @param transit The number of transit compartments to remove
+#' @inheritParams addDepot
 #' @inheritParams addTransit
-#' @inheritParams addComp
 #' @return rxode2 model with transit compartment removed
+#' @family absorption
 #' @export
 #' @examples
 #'
 #' # In this example the transit is added and then a few are removed
 #'
-#' readModelDb("PK_1cmt_des") |>
-#'   addTransit(4) |>
-#'   removeTransit(3)
-removeTransit <- function(model, transit, central = "central", depot = "depot", transitComp = "transit", ktr = "ktr") {
-  assertCompartmentName(central)
-  assertCompartmentName(depot)
-  assertCompartmentName(transitComp)
-  assertVariableName(ktr)
-  
-  if (!missing(transit)) {
-    checkmate::assertIntegerish(transit, lower = 1, any.missing = FALSE, len = 1)
+#' readModelDb("PK_1cmt_des") |> addTransit(4) |> removeTransit(3)
+#'
+#' readModelDb("PK_1cmt_des") |> addTransit(4) |> removeTransit()
+removeTransit <- function(ui, ntransit, central = "central",
+                          depot = "depot", transit = "transit",
+                          ktr = "ktr",
+                          ka="ka") {
+  if (!missing(ntransit)) {
+    checkmate::assertIntegerish(ntransit, lower = 1, any.missing = FALSE)
   }
-  temp <- rxode2::assertRxUi(model)
-  
-  mv <- rxode2::rxModelVars(temp)
-  
-  if (!(central %in% mv$state)) {
-    stop("'", central, "' needs to be in the model")
-  }
-  if (!(any(grepl("^transit", mv$state)))) {
-    stop("'", transitComp, " need to be in the model")
-  }
-  if (!(depot %in% mv$state)) {
-    stop("'", depot, "' needs to be in the model")
-  }
-  # Extract model
-  modelNew <- rxode2::modelExtract(temp, endpoint = NA)
-  
-  # modify ODE for central compartment
-  center <- eval(str2lang(paste0("rxode2::modelExtract(temp,d/dt(", central, "),lines=TRUE)")))
-  rhs <- sub(".*<-\\s*", "", center)
-  # could be made less fragile by using transitive property
-  rhs <- sub(paste0("\\s*", ktr, "\\s*\\*\\s*", transitComp, "\\d*"), "", rhs)
-  
-  # Find total number of transit compartments in the model
-  totalTransit <- sum(grepl(paste0("\\s*^", transitComp, "[1-9][0-9]*"), mv$state))
-  
-  if (missing(transit)) {
-    transit <- totalTransit
-    line <- str2lang(paste0("d/dt(", central, ") <- ", rhs))
+  .ui <- rxode2::assertRxUi(ui)
+  rxode2::assertCompartmentExists(.ui, central)
+  rxode2::assertCompartmentExists(.ui, depot)
+  rxode2::assertCompartmentExists(.ui, paste0(transit, "1"))
+  rxode2::assertVariableName(ktr)
+  .mv <- rxode2::rxModelVars(.ui)
+  .transitCmts <- .mv$state
+  .transitCmts <- .transitCmts[grepl(paste0("^", transit), .transitCmts)]
+  .nc <- nchar(transit) + 1
+  .totTransit <- max(vapply(.transitCmts,
+                            function(n) {
+                              as.integer(substr(n, .nc, nchar(n)))
+                            }, integer(1), USE.NAMES = FALSE))
+  if (!missing(ntransit)) {
+    checkmate::assertIntegerish(ntransit, lower = 1, any.missing = FALSE, len = 1)
   } else {
-    line <- str2lang(paste0("d/dt(", central, ") <- ", ktr, "*", transitComp, (totalTransit - transit), deparse(str2lang(rhs))))
+    ntransit <- .totTransit
   }
-  
-  
-  # Modify ini{}
-  if (transit == totalTransit) {
-    # remove parameter
-    rxode2::ini(temp) <- temp$iniDf[which(temp$iniDf$name != "lktr"), ]
+  if (ntransit > .totTransit) {
+    warning("reset ntransit to ", .totTransit, call.=FALSE)
+    ntransit <- .totTransit
   }
-  
-  # Modify model{}
-  obj <- NULL
-  indices <- totalTransit:(totalTransit - transit + 1)
-  obj <- unlist(lapply(indices, function(i) {
-    obj1 <- eval(str2lang(paste0("rxode2::modelExtract(temp, d/dt(transit", i, "), lines = TRUE)")))
-    obj <- c(obj, obj1)
-  }))
-  
-  
-  obj2 <- eval(str2lang(paste0("rxode2::modelExtract(temp,", ktr, ",lines = TRUE)")))
-  if (transit == totalTransit) {
-    obj <- c(obj, obj2)
+  .ui <- rxode2::rxUiDecompress(.ui)
+  if (ntransit == .totTransit) {
+    # remove all
+    .tmp <- .getEtaThetaTheta1(.ui)
+    .iniDf <- .tmp$iniDf
+    .eta <- .tmp$eta
+    .theta <- .tmp$theta
+    .theta1 <- .tmp$theta1
+    .theta <- .dropTheta(.theta, ktr)
+    .eta <- .dropEta(.eta, ktr)
+
+    .rm <- seq_len(.totTransit)
+    .transit <- paste0(transit, .rm)
+    .modelLines <- .rmDdt(.ui$lstExpr, .transit)
+    .w <- .whichDdt(.modelLines, central)
+    .tmp <- .extractModelLinesAtW(.modelLines, .w)
+    .tmp$w <- .replaceMult(.tmp$w,
+                           v1=paste0(transit, .totTransit), v2=ka,
+                           ret=paste0(ka, "*", depot))
+    .tmp$pre <- .replaceMult(.tmp$pre,
+                             v1=depot, v2=ktr,
+                             ret=paste0(ka, "*", depot))
+    .modelLines <- c(.tmp$pre,
+                     .tmp$w,
+                     .tmp$post)
+    .tmp <- .dropLines(.ui, .modelLines, .theta, .eta, ktr)
+    .modelLines <- .tmp$modelLines
+    .theta <- .tmp$theta
+    .eta <- .tmp$eta
+    .ui$iniDf <- rbind(.theta,
+                       .eta)
+  } else {
+    # remove some, but not all
+    .ftransit <- .totTransit - ntransit
+    .transit <- paste0(transit, seq_len(.totTransit)[-seq_len(.ftransit)])
+    .modelLines <- .rmDdt(.ui$lstExpr, .transit)
+    .w <- .whichDdt(.modelLines, central)
+    .tmp <- .extractModelLinesAtW(.modelLines, .w)
+    .tmp$w <- .replaceMult(.tmp$w,
+                           v1=paste0(transit, .totTransit), v2=ka,
+                           ret=paste0(ka, "*", transit, .ftransit))
+    .tmp$pre <- .replaceMult(.tmp$pre,
+                           v1=paste0(transit, ntransit), v2=ktr,
+                           ret=paste0(ka, "*", transit, .ftransit))
+    .modelLines <- c(.tmp$pre,
+                     .tmp$w,
+                     .tmp$post)
+
   }
-  
-  
-  for (i in obj) {
-    index <- which(modelNew == i)
-    modelNew <- modelNew[-index]
+  if (exists("description", envir=.ui$meta)) {
+    rm("description", envir=.ui$meta)
   }
-  
-  rxode2::model(temp) <- modelNew
-  
-  # modify ODE for central compartment
-  temp <- rxode2::model(temp, line)
-  
-  # return
-  temp
+  rxode2::model(.ui) <- .modelLines
+  return(rxode2::rxUiCompress(.ui))
 }

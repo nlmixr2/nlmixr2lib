@@ -4,14 +4,17 @@
 \alias{removeDepot}
 \title{To convert from first order oral absorption to IV/Intravenous}
 \usage{
-removeDepot(model, central = "central", depot = "depot")
+removeDepot(ui, central = "central", depot = "depot", ka = "ka")
 }
 \arguments{
-\item{model}{The model as a function}
+\item{ui}{The model as a function (or something convertible to an rxUi
+object)}
 
-\item{central}{This is a character vector that represents the central compartment in the model}
+\item{central}{central compartment name}
 
-\item{depot}{This is a character vector that represents the depot in the model}
+\item{depot}{depot compartment name}
+
+\item{ka}{absorption rate parameter name}
 }
 \value{
 Returns a model with the depot from a first order absorption model removed
@@ -20,6 +23,5 @@ Returns a model with the depot from a first order absorption model removed
 To convert from first order oral absorption to IV/Intravenous
 }
 \examples{
-readModelDb("PK_1cmt_des") |>
-  removeDepot()
+readModelDb("PK_1cmt_des") |> removeDepot()
 }

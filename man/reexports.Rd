@@ -3,6 +3,8 @@
 \docType{import}
 \name{reexports}
 \alias{reexports}
+\alias{logit}
+\alias{expit}
 \alias{assertRxUi}
 \alias{assertRxUiPrediction}
 \alias{assertRxUiSingleEndpoint}
@@ -24,6 +26,6 @@ These objects are imported from other packages. Follow the links
 below to see their documentation.
 
 \describe{
-  \item{rxode2}{\code{\link[rxode2]{assertCompartmentExists}}, \code{\link[rxode2]{assertCompartmentName}}, \code{\link[rxode2:assertCompartmentName]{assertParameterValue}}, \code{\link[rxode2]{assertRxUi}}, \code{\link[rxode2:assertRxUi]{assertRxUiEstimatedResiduals}}, \code{\link[rxode2:assertRxUi]{assertRxUiMixedOnly}}, \code{\link[rxode2:assertRxUi]{assertRxUiMuRefOnly}}, \code{\link[rxode2:assertRxUi]{assertRxUiNormal}}, \code{\link[rxode2:assertRxUi]{assertRxUiPopulationOnly}}, \code{\link[rxode2:assertRxUi]{assertRxUiPrediction}}, \code{\link[rxode2:assertRxUi]{assertRxUiRandomOnIdOnly}}, \code{\link[rxode2:assertRxUi]{assertRxUiSingleEndpoint}}, \code{\link[rxode2:assertRxUi]{assertRxUiTransformNormal}}, \code{\link[rxode2:assertCompartmentName]{assertVariableName}}}
+  \item{rxode2}{\code{\link[rxode2]{assertCompartmentExists}}, \code{\link[rxode2]{assertCompartmentName}}, \code{\link[rxode2:assertCompartmentName]{assertParameterValue}}, \code{\link[rxode2]{assertRxUi}}, \code{\link[rxode2:assertRxUi]{assertRxUiEstimatedResiduals}}, \code{\link[rxode2:assertRxUi]{assertRxUiMixedOnly}}, \code{\link[rxode2:assertRxUi]{assertRxUiMuRefOnly}}, \code{\link[rxode2:assertRxUi]{assertRxUiNormal}}, \code{\link[rxode2:assertRxUi]{assertRxUiPopulationOnly}}, \code{\link[rxode2:assertRxUi]{assertRxUiPrediction}}, \code{\link[rxode2:assertRxUi]{assertRxUiRandomOnIdOnly}}, \code{\link[rxode2:assertRxUi]{assertRxUiSingleEndpoint}}, \code{\link[rxode2:assertRxUi]{assertRxUiTransformNormal}}, \code{\link[rxode2:assertCompartmentName]{assertVariableName}}, \code{\link[rxode2:logit]{expit}}, \code{\link[rxode2]{logit}}}
 }}
 
