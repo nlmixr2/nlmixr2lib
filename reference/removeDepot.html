@@ -44,23 +44,28 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">removeDepot</span><span class="op">(</span><span class="va">model</span>, central <span class="op">=</span> <span class="st">"central"</span>, depot <span class="op">=</span> <span class="st">"depot"</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">removeDepot</span><span class="op">(</span><span class="va">ui</span>, central <span class="op">=</span> <span class="st">"central"</span>, depot <span class="op">=</span> <span class="st">"depot"</span>, ka <span class="op">=</span> <span class="st">"ka"</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
 
 
-<dl><dt id="arg-model">model<a class="anchor" aria-label="anchor" href="#arg-model"></a></dt>
-<dd><p>The model as a function</p></dd>
+<dl><dt id="arg-ui">ui<a class="anchor" aria-label="anchor" href="#arg-ui"></a></dt>
+<dd><p>The model as a function (or something convertible to an rxUi
+object)</p></dd>
 
 
 <dt id="arg-central">central<a class="anchor" aria-label="anchor" href="#arg-central"></a></dt>
-<dd><p>This is a character vector that represents the central compartment in the model</p></dd>
+<dd><p>central compartment name</p></dd>
 
 
 <dt id="arg-depot">depot<a class="anchor" aria-label="anchor" href="#arg-depot"></a></dt>
-<dd><p>This is a character vector that represents the depot in the model</p></dd>
+<dd><p>depot compartment name</p></dd>
+
+
+<dt id="arg-ka">ka<a class="anchor" aria-label="anchor" href="#arg-ka"></a></dt>
+<dd><p>absorption rate parameter name</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -70,11 +75,9 @@
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="readModelDb.html">readModelDb</a></span><span class="op">(</span><span class="st">"PK_1cmt_des"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>  <span class="fu">removeDepot</span><span class="op">(</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="readModelDb.html">readModelDb</a></span><span class="op">(</span><span class="st">"PK_1cmt_des"</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">removeDepot</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> remove population parameter `lka`</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">rxode2-based free-form 1-cmt ODE model</span> <span style="color: #00BBBB;">──────────────────────────────────────</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ── <span style="font-weight: bold;">Initalization:</span> ──  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Fixed Effects</span> (<span style="color: #0000BB; font-weight: bold;">$theta</span>): </span>
@@ -86,7 +89,6 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1                  1          central</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ── <span style="font-weight: bold;">Model (Normalized Syntax):</span> ── </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> function() {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     description &lt;- "One compartment PK model with linear clearance using differential equations"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     dosing &lt;- c("central", "depot")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     ini({</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         lcl &lt;- 1</span>

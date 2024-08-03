@@ -44,20 +44,26 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">addResErr</span><span class="op">(</span><span class="va">model</span>, <span class="va">reserr</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">addResErr</span><span class="op">(</span><span class="va">ui</span>, <span class="va">reserr</span>, <span class="va">endpoint</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
 
 
-<dl><dt id="arg-model">model<a class="anchor" aria-label="anchor" href="#arg-model"></a></dt>
+<dl><dt id="arg-ui">ui<a class="anchor" aria-label="anchor" href="#arg-ui"></a></dt>
 <dd><p>The model as a function</p></dd>
 
 
 <dt id="arg-reserr">reserr<a class="anchor" aria-label="anchor" href="#arg-reserr"></a></dt>
-<dd><p>The type or types of residual error (currently <code>"addSd"</code>,
-<code>"propSd"</code>, and <code>"lnormSd"</code> are accepted)</p></dd>
+<dd><p>The type or types of residual error (currently
+<code>"addSd"</code>, <code>"propSd"</code>, and <code>"lnormSd"</code> are
+accepted)</p></dd>
+
+
+<dt id="arg-endpoint">endpoint<a class="anchor" aria-label="anchor" href="#arg-endpoint"></a></dt>
+<dd><p>the endpoint to apply the error; will default to
+the first error in the model</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -78,11 +84,18 @@
 <span class="r-in"><span><span class="fu"><a href="readModelDb.html">readModelDb</a></span><span class="op">(</span><span class="st">"PK_1cmt"</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">addResErr</span><span class="op">(</span><span class="st">"addSd"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> remove population parameter `propSd`</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> add residual parameter `CcaddSd` and set estimate to 1</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> change initial estimate of `CcaddSd` to `1`</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> function () </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> {</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> add residual parameter `CcAddSd` and set estimate to 1</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> change initial estimate of `CcAddSd` to `1`</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">rxode2-based solved PK 1-compartment model with first-order absorption</span> <span style="color: #00BBBB;">──────</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ── <span style="font-weight: bold;">Initalization:</span> ──  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Fixed Effects</span> (<span style="color: #0000BB; font-weight: bold;">$theta</span>): </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     lka     lcl     lvc CcAddSd </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    0.45    1.00    3.45    1.00 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ── <span style="font-weight: bold;">Model (Normalized Syntax):</span> ── </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> function() {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     description &lt;- "One compartment PK model with linear clearance"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     ini({</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         lka &lt;- 0.45</span>
@@ -91,25 +104,31 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span>         label("Clearance (CL)")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         lvc &lt;- 3.45</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         label("Central volume of distribution (V)")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         CcaddSd &lt;- c(0, 1)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         CcAddSd &lt;- c(0, 1)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     })</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     model({</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         ka &lt;- exp(lka)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         cl &lt;- exp(lcl)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         vc &lt;- exp(lvc)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         Cc &lt;- linCmt()</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         Cc ~ add(CcaddSd)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         Cc ~ add(CcAddSd)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     })</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x5557720a0720&gt;</span>
 <span class="r-in"><span><span class="fu"><a href="readModelDb.html">readModelDb</a></span><span class="op">(</span><span class="st">"PK_1cmt"</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">addResErr</span><span class="op">(</span><span class="st">"lnormSd"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> remove population parameter `propSd`</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> add residual parameter `CclnormSd` and set estimate to 1</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> change initial estimate of `CclnormSd` to `0.5`</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> function () </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> {</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> add residual parameter `CcLnormSd` and set estimate to 1</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> change initial estimate of `CcLnormSd` to `0.5`</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">rxode2-based solved PK 1-compartment model with first-order absorption</span> <span style="color: #00BBBB;">──────</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ── <span style="font-weight: bold;">Initalization:</span> ──  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Fixed Effects</span> (<span style="color: #0000BB; font-weight: bold;">$theta</span>): </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       lka       lcl       lvc CcLnormSd </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      0.45      1.00      3.45      0.50 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ── <span style="font-weight: bold;">Model (Normalized Syntax):</span> ── </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> function() {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     description &lt;- "One compartment PK model with linear clearance"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     ini({</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         lka &lt;- 0.45</span>
@@ -118,27 +137,33 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span>         label("Clearance (CL)")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         lvc &lt;- 3.45</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         label("Central volume of distribution (V)")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         CclnormSd &lt;- c(0, 0.5)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         CcLnormSd &lt;- c(0, 0.5)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     })</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     model({</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         ka &lt;- exp(lka)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         cl &lt;- exp(lcl)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         vc &lt;- exp(lvc)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         Cc &lt;- linCmt()</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         Cc ~ lnorm(CclnormSd)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         Cc ~ lnorm(CcLnormSd)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     })</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x555770b6c0b0&gt;</span>
 <span class="r-in"><span><span class="fu"><a href="readModelDb.html">readModelDb</a></span><span class="op">(</span><span class="st">"PK_1cmt"</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">addResErr</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"addSd"</span>, <span class="st">"propSd"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> remove population parameter `propSd`</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> add residual parameter `CcaddSd` and set estimate to 1</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> add residual parameter `CcpropSd` and set estimate to 1</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> change initial estimate of `CcaddSd` to `1`</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> change initial estimate of `CcpropSd` to `0.5`</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> function () </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> {</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> add residual parameter `CcAddSd` and set estimate to 1</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> add residual parameter `CcPropSd` and set estimate to 1</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> change initial estimate of `CcAddSd` to `1`</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> change initial estimate of `CcPropSd` to `0.5`</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">rxode2-based solved PK 1-compartment model with first-order absorption</span> <span style="color: #00BBBB;">──────</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ── <span style="font-weight: bold;">Initalization:</span> ──  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Fixed Effects</span> (<span style="color: #0000BB; font-weight: bold;">$theta</span>): </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      lka      lcl      lvc  CcAddSd CcPropSd </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     0.45     1.00     3.45     1.00     0.50 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ── <span style="font-weight: bold;">Model (Normalized Syntax):</span> ── </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> function() {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     description &lt;- "One compartment PK model with linear clearance"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     ini({</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         lka &lt;- 0.45</span>
@@ -147,18 +172,17 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span>         label("Clearance (CL)")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         lvc &lt;- 3.45</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         label("Central volume of distribution (V)")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         CcaddSd &lt;- c(0, 1)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         CcpropSd &lt;- c(0, 0.5)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         CcAddSd &lt;- c(0, 1)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         CcPropSd &lt;- c(0, 0.5)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     })</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     model({</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         ka &lt;- exp(lka)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         cl &lt;- exp(lcl)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         vc &lt;- exp(lvc)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         Cc &lt;- linCmt()</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         Cc ~ add(CcaddSd) + prop(CcpropSd)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         Cc ~ add(CcAddSd) + prop(CcPropSd)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     })</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x555770cc0480&gt;</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

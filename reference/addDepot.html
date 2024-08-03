@@ -47,23 +47,14 @@ absorption</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">addDepot</span><span class="op">(</span></span>
-<span>  <span class="va">model</span>,</span>
-<span>  central <span class="op">=</span> <span class="st">"central"</span>,</span>
-<span>  depot <span class="op">=</span> <span class="st">"depot"</span>,</span>
-<span>  absRate <span class="op">=</span> <span class="st">"ka"</span>,</span>
-<span>  lag <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"lag"</span>, <span class="va">depot</span><span class="op">)</span>,</span>
-<span>  lagIni <span class="op">=</span> <span class="cn">NA</span>,</span>
-<span>  fdepotIni <span class="op">=</span> <span class="cn">NA</span>,</span>
-<span>  absRateIni <span class="op">=</span> <span class="fl">1</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">addDepot</span><span class="op">(</span><span class="va">ui</span>, central <span class="op">=</span> <span class="st">"central"</span>, depot <span class="op">=</span> <span class="st">"depot"</span>, ka <span class="op">=</span> <span class="st">"ka"</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
 
 
-<dl><dt id="arg-model">model<a class="anchor" aria-label="anchor" href="#arg-model"></a></dt>
+<dl><dt id="arg-ui">ui<a class="anchor" aria-label="anchor" href="#arg-ui"></a></dt>
 <dd><p>The model as a function (or something convertible to an rxUi
 object)</p></dd>
 
@@ -76,24 +67,8 @@ object)</p></dd>
 <dd><p>depot compartment name</p></dd>
 
 
-<dt id="arg-absrate">absRate<a class="anchor" aria-label="anchor" href="#arg-absrate"></a></dt>
+<dt id="arg-ka">ka<a class="anchor" aria-label="anchor" href="#arg-ka"></a></dt>
 <dd><p>absorption rate parameter name</p></dd>
-
-
-<dt id="arg-lag">lag<a class="anchor" aria-label="anchor" href="#arg-lag"></a></dt>
-<dd><p>lag parameter name</p></dd>
-
-
-<dt id="arg-lagini">lagIni<a class="anchor" aria-label="anchor" href="#arg-lagini"></a></dt>
-<dd><p>Initial value for the lag time (`NA` to omit)</p></dd>
-
-
-<dt id="arg-fdepotini">fdepotIni<a class="anchor" aria-label="anchor" href="#arg-fdepotini"></a></dt>
-<dd><p>Initial value for the depot bioavailability (`NA` to omit)</p></dd>
-
-
-<dt id="arg-absrateini">absRateIni<a class="anchor" aria-label="anchor" href="#arg-absrateini"></a></dt>
-<dd><p>Initial value for the first order rate</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -103,47 +78,51 @@ object)</p></dd>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># most of the examples in the model library already have a depot.</span></span></span>
-<span class="r-in"><span><span class="co"># for this example we will remove the depot and then add it back</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="readModelDb.html">readModelDb</a></span><span class="op">(</span><span class="st">"PK_1cmt_des"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="removeDepot.html">removeDepot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>  <span class="fu">addDepot</span><span class="op">(</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># most of the examples in the model library already have a depot</span></span></span>
+<span class="r-in"><span><span class="co"># the PK_2cmt_no_depot is an exception</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="readModelDb.html">readModelDb</a></span><span class="op">(</span><span class="st">"PK_2cmt_no_depot"</span><span class="op">)</span>  <span class="op">|&gt;</span> <span class="fu">addDepot</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> remove population parameter `lka`</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> promote `lka` to population parameter with initial estimate 1</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> change initial estimate of `lka` to `1`</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">rxode2-based free-form 2-cmt ODE model</span> <span style="color: #00BBBB;">──────────────────────────────────────</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">rxode2-based free-form 3-cmt ODE model</span> <span style="color: #00BBBB;">──────────────────────────────────────</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ── <span style="font-weight: bold;">Initalization:</span> ──  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Fixed Effects</span> (<span style="color: #0000BB; font-weight: bold;">$theta</span>): </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    lka    lcl    lvc propSd </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   1.00   1.00   3.45   0.50 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    lcl    lvc    lvp     lq propSd    lka </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    1.0    3.0    5.0    0.1    0.5    0.1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">States</span> (<span style="color: #0000BB; font-weight: bold;">$state</span> or <span style="color: #0000BB; font-weight: bold;">$stateDf</span>): </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Compartment Number Compartment Name</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1                  1            depot</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2                  2          central</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3                  3      peripheral1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ── <span style="font-weight: bold;">Model (Normalized Syntax):</span> ── </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> function() {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     description &lt;- "One compartment PK model with linear clearance using differential equations"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     dosing &lt;- c("central", "depot")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     ini({</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         lka &lt;- 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         label("First order absorption rate (ka)")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         lcl &lt;- 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         label("Clearance (CL)")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         lvc &lt;- 3.45</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         lvc &lt;- 3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         label("Central volume of distribution (V)")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         lvp &lt;- 5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         label("Peripheral volume of distribution (Vp)")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         lq &lt;- 0.1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         label("Intercompartmental clearance (Q)")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         propSd &lt;- c(0, 0.5)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         label("Proportional residual error (fraction)")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         lka &lt;- 0.1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         label("First order absorption rate (ka)")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     })</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     model({</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         ka &lt;- exp(lka)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         cl &lt;- exp(lcl)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         vc &lt;- exp(lvc)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         vp &lt;- exp(lvp)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         q &lt;- exp(lq)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         kel &lt;- cl/vc</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         k12 &lt;- q/vc</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         k21 &lt;- q/vp</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         d/dt(depot) &lt;- -ka * depot</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         d/dt(central) &lt;- ka * depot + -kel * central</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         d/dt(central) &lt;- -kel * central - k12 * central + k21 * </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             peripheral1 + ka * depot</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         d/dt(peripheral1) &lt;- k12 * central - k21 * peripheral1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         Cc &lt;- central/vc</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         Cc ~ prop(propSd)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     })</span>

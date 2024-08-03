@@ -49,10 +49,34 @@
 
       <dl><dt>
 
-          <code><a href="addComp.html">addComp()</a></code>
+          <code><a href="addBaseline1exp.html">addBaseline1exp()</a></code>
 
         </dt>
-        <dd>To add additional compartments to the model</dd>
+        <dd>Add baseline that decays exponential with time</dd>
+      </dl><dl><dt>
+
+          <code><a href="addBaselineConst.html">addBaselineConst()</a></code>
+
+        </dt>
+        <dd>Add an estimated baseline constant</dd>
+      </dl><dl><dt>
+
+          <code><a href="addBaselineExp.html">addBaselineExp()</a></code>
+
+        </dt>
+        <dd>Add baseline that decays exponential with time</dd>
+      </dl><dl><dt>
+
+          <code><a href="addBaselineLin.html">addBaselineLin()</a></code>
+
+        </dt>
+        <dd>Add an estimated baseline linear constant</dd>
+      </dl><dl><dt>
+
+          <code><a href="addCmtProp.html">addCmtProp()</a></code> <code><a href="addCmtProp.html">addBioavailability()</a></code> <code><a href="addCmtProp.html">addLag()</a></code> <code><a href="addCmtProp.html">addDur()</a></code> <code><a href="addCmtProp.html">addRate()</a></code> <code><a href="addCmtProp.html">addIni()</a></code>
+
+        </dt>
+        <dd>Add a property to a compartment</dd>
       </dl><dl><dt>
 
           <code><a href="addDepot.html">addDepot()</a></code>
@@ -67,10 +91,40 @@
         <dd>Add a directory to the modeldb</dd>
       </dl><dl><dt>
 
+          <code><a href="addDirectLin.html">addDirectLin()</a></code>
+
+        </dt>
+        <dd>Add direct linear effect with baseline=0</dd>
+      </dl><dl><dt>
+
+          <code><a href="addEffectCmtLin.html">addEffectCmtLin()</a></code>
+
+        </dt>
+        <dd>Add effect compartment</dd>
+      </dl><dl><dt>
+
           <code><a href="addEta.html">addEta()</a></code>
 
         </dt>
         <dd>Add random effects to a model</dd>
+      </dl><dl><dt>
+
+          <code><a href="addIndirect.html">addIndirect()</a></code>
+
+        </dt>
+        <dd>Add an indirect response model to a PK model</dd>
+      </dl><dl><dt>
+
+          <code><a href="addIndirectLin.html">addIndirectLin()</a></code>
+
+        </dt>
+        <dd>Add linear indirect response model</dd>
+      </dl><dl><dt>
+
+          <code><a href="addLogEstimates.html">addLogEstimates()</a></code>
+
+        </dt>
+        <dd>Add log estimates to a model</dd>
       </dl><dl><dt>
 
           <code><a href="addResErr.html">addResErr()</a></code>
@@ -85,10 +139,58 @@
         <dd>To add transit compartments to the model</dd>
       </dl><dl><dt>
 
+          <code><a href="addWeibullAbs.html">addWeibullAbs()</a></code>
+
+        </dt>
+        <dd>Converts first order absorption model to Weibull absorption model</dd>
+      </dl><dl><dt>
+
+          <code><a href="combinePaste2.html">combinePaste2()</a></code>
+
+        </dt>
+        <dd>Combine two strings using a naming convention</dd>
+      </dl><dl><dt>
+
+          <code><a href="convertEmax.html">convertEmax()</a></code>
+
+        </dt>
+        <dd>Convert linear effect to Emax effect</dd>
+      </dl><dl><dt>
+
+          <code><a href="convertEmaxHill.html">convertEmaxHill()</a></code>
+
+        </dt>
+        <dd>Convert linear effect to Emax-Hill effect</dd>
+      </dl><dl><dt>
+
+          <code><a href="convertLogLin.html">convertLogLin()</a></code>
+
+        </dt>
+        <dd>Converts a linear effect to a log-linear effect</dd>
+      </dl><dl><dt>
+
           <code><a href="convertMM.html">convertMM()</a></code>
 
         </dt>
-        <dd>Convert models from linear elimination to MM elimination</dd>
+        <dd>Convert models from linear elimination to Michaelis-Menten elimination</dd>
+      </dl><dl><dt>
+
+          <code><a href="convertQuad.html">convertQuad()</a></code>
+
+        </dt>
+        <dd>Convert linear elimination to quadratic elimination</dd>
+      </dl><dl><dt>
+
+          <code><a href="defaultCombine.html">defaultCombine()</a></code> <code><a href="defaultCombine.html">snakeCombine()</a></code> <code><a href="defaultCombine.html">camelCombine()</a></code> <code><a href="defaultCombine.html">dotCombine()</a></code> <code><a href="defaultCombine.html">blankCombine()</a></code>
+
+        </dt>
+        <dd>Default combine strings</dd>
+      </dl><dl><dt>
+
+          <code><a href="fakeCc.html">fakeCc()</a></code>
+
+        </dt>
+        <dd>Fake blank Cc for creating PD only models</dd>
       </dl><dl><dt>
 
           <code><a href="modeldb.html">modeldb</a></code>
@@ -103,22 +205,28 @@
         <dd>Get the model from the model library</dd>
       </dl><dl><dt>
 
+          <code><a href="pkTrans.html">pkTrans()</a></code>
+
+        </dt>
+        <dd>Change the transformation type for PK models</dd>
+      </dl><dl><dt>
+
           <code><a href="readModelDb.html">readModelDb()</a></code>
 
         </dt>
         <dd>Read a model from the nlmixr2 model database</dd>
       </dl><dl><dt>
 
-          <code><a href="removeComp.html">removeComp()</a></code>
-
-        </dt>
-        <dd>To remove peripheral compartments from the model</dd>
-      </dl><dl><dt>
-
           <code><a href="removeDepot.html">removeDepot()</a></code>
 
         </dt>
         <dd>To convert from first order oral absorption to IV/Intravenous</dd>
+      </dl><dl><dt>
+
+          <code><a href="removeLinesAndInis.html">removeLinesAndInis()</a></code>
+
+        </dt>
+        <dd>Removes lines and inis from a model</dd>
       </dl><dl><dt>
 
           <code><a href="removeTransit.html">removeTransit()</a></code>
@@ -131,6 +239,12 @@
 
         </dt>
         <dd>Search within a model to replace part of the model</dd>
+      </dl><dl><dt>
+
+          <code><a href="setCombineType.html">setCombineType()</a></code>
+
+        </dt>
+        <dd>Change the default combine type for the package</dd>
       </dl><dl><dt>
 
           <code><a href="updateOncologyXenograftSimeoni2004.html">updateOncologyXenograftSimeoni2004()</a></code>
