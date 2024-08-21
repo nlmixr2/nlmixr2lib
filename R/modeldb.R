@@ -123,16 +123,18 @@ addFileToModelDb <- function(dir, file, modeldb) {
   dosing <- NULL
   dosing_meta <- mod$meta$dosing
   if(!is.null(dosing_meta)){
-    dosing = paste(dosing_meta, collapse=",")
+    dosing <- paste(dosing_meta, collapse=",")
   }else {
-    if("depot" %in% mod$params$cmt){
-      dosing = c(dosing, "depot") }
-    if("central" %in% mod$params$cmt){
-      dosing = c(dosing, "central") }
-    if(!is.null(dosing)){
-      dosing = paste(dosing, collapse=",")
+    if("depot" %in% mod$props$cmt) {
+      dosing <- c(dosing, "depot")
+    }
+    if("central" %in% mod$props$cmt) {
+      dosing <- c(dosing, "central")
+    }
+    if(!is.null(dosing)) {
+      dosing <- paste(dosing, collapse=",")
     } else {
-      dosing = NA_character_ 
+      dosing <- NA_character_
     }
   }
 
@@ -143,7 +145,7 @@ addFileToModelDb <- function(dir, file, modeldb) {
     depends = paste(depends_meta, collapse=",")
   }
   if(is.null(depends)){
-    depends = NA_character_ 
+    depends = NA_character_
   }
 
   # Extract the parameter names
@@ -166,14 +168,14 @@ addFileToModelDb <- function(dir, file, modeldb) {
   if (is.null(paramErr)) {
     paramErr <- ""
   }
-  
-  
-  if(!mod$params$linCmt && (length(mod$params$cmt)  == 0)){
+
+
+  if(!mod$props$linCmt && (length(mod$props$cmt)  == 0)){
     algebraic = TRUE
   } else {
     algebraic = FALSE
   }
-   
+
 
   ret <-
     data.frame(
@@ -181,7 +183,7 @@ addFileToModelDb <- function(dir, file, modeldb) {
       description = description,
       parameters  = paste(modParamFixed, collapse = ","),
       DV          = paramErr,
-      linCmt      = mod$params$linCmt,
+      linCmt      = mod$props$linCmt,
       algebraic   = algebraic,
       dosing      = dosing,
       depends     = depends,
