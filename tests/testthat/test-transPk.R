@@ -4,6 +4,10 @@ test_that("transPk -- k", {
     pkTrans("k")
   expect_true(all(c("lkel", "lk12", "lk21", "lk13", "lk31") %in% names(p3k$theta)))
 
+  # Issue #87 -- Make sure depot is not dropped
+  expect_equal(rxode2::modelExtract(pk3, "d/dt(depot)"),
+               "d/dt(depot) <- -ka * depot")
+
   p2k <- readModelDb("PK_2cmt_des") |>
     pkTrans("k")
   expect_true(all(c("lkel", "lk12", "lk21") %in% names(p2k$theta)))
