@@ -209,7 +209,7 @@ before</p></dd>
 <span class="r-in"><span>  <span class="fu">pkTrans</span><span class="op">(</span><span class="st">"k"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">rxode2-based free-form 3-cmt ODE model</span> <span style="color: #00BBBB;">──────────────────────────────────────</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">rxode2-based free-form 4-cmt ODE model</span> <span style="color: #00BBBB;">──────────────────────────────────────</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ── <span style="font-weight: bold;">Initalization:</span> ──  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Fixed Effects</span> (<span style="color: #0000BB; font-weight: bold;">$theta</span>): </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    lka propSd   lk12   lk21   lk13   lk31   lkel    lvc </span>
@@ -217,9 +217,10 @@ before</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">States</span> (<span style="color: #0000BB; font-weight: bold;">$state</span> or <span style="color: #0000BB; font-weight: bold;">$stateDf</span>): </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Compartment Number Compartment Name</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1                  1          central</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2                  2      peripheral1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3                  3      peripheral2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1                  1            depot</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2                  2          central</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3                  3      peripheral1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4                  4      peripheral2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ── <span style="font-weight: bold;">Model (Normalized Syntax):</span> ── </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> function() {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     ini({</span>
@@ -248,6 +249,7 @@ before</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         k31 &lt;- exp(lk31)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         kel &lt;- exp(lkel)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         vc &lt;- exp(lvc)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         d/dt(depot) &lt;- -ka * depot</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         d/dt(central) &lt;- ka * depot - kel * central - k12 * central + </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             k21 * peripheral1 - k13 * central + k31 * peripheral2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         d/dt(peripheral1) &lt;- k12 * central - k21 * peripheral1</span>
@@ -261,7 +263,7 @@ before</p></dd>
 <span class="r-in"><span>  <span class="fu">pkTrans</span><span class="op">(</span><span class="st">"k21"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">rxode2-based free-form 3-cmt ODE model</span> <span style="color: #00BBBB;">──────────────────────────────────────</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">rxode2-based free-form 4-cmt ODE model</span> <span style="color: #00BBBB;">──────────────────────────────────────</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ── <span style="font-weight: bold;">Initalization:</span> ──  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Fixed Effects</span> (<span style="color: #0000BB; font-weight: bold;">$theta</span>): </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    lka propSd   lk21   lk31 lalpha  lbeta   lgam    lvc </span>
@@ -269,9 +271,10 @@ before</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">States</span> (<span style="color: #0000BB; font-weight: bold;">$state</span> or <span style="color: #0000BB; font-weight: bold;">$stateDf</span>): </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Compartment Number Compartment Name</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1                  1          central</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2                  2      peripheral1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3                  3      peripheral2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1                  1            depot</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2                  2          central</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3                  3      peripheral1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4                  4      peripheral2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ── <span style="font-weight: bold;">Model (Normalized Syntax):</span> ── </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> function() {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     ini({</span>
@@ -305,6 +308,7 @@ before</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         p &lt;- alpha * beta + alpha * gam + beta * gam</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         k13 &lt;- (p + k31 * k31 - k31 * s - kel * k21)/(k21 - k31)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         k12 &lt;- s - kel - k13 - k21 - k31</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         d/dt(depot) &lt;- -ka * depot</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         d/dt(central) &lt;- ka * depot - kel * central - k12 * central + </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             k21 * peripheral1 - k13 * central + k31 * peripheral2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         d/dt(peripheral1) &lt;- k12 * central - k21 * peripheral1</span>
@@ -318,7 +322,7 @@ before</p></dd>
 <span class="r-in"><span>  <span class="fu">pkTrans</span><span class="op">(</span><span class="st">"alpha"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">rxode2-based free-form 3-cmt ODE model</span> <span style="color: #00BBBB;">──────────────────────────────────────</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">rxode2-based free-form 4-cmt ODE model</span> <span style="color: #00BBBB;">──────────────────────────────────────</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ── <span style="font-weight: bold;">Initalization:</span> ──  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Fixed Effects</span> (<span style="color: #0000BB; font-weight: bold;">$theta</span>): </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    lka propSd lalpha  lbeta   lgam     lA     lB     lC </span>
@@ -326,9 +330,10 @@ before</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">States</span> (<span style="color: #0000BB; font-weight: bold;">$state</span> or <span style="color: #0000BB; font-weight: bold;">$stateDf</span>): </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Compartment Number Compartment Name</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1                  1          central</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2                  2      peripheral1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3                  3      peripheral2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1                  1            depot</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2                  2          central</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3                  3      peripheral1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4                  4      peripheral2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ── <span style="font-weight: bold;">Model (Normalized Syntax):</span> ── </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> function() {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     ini({</span>
@@ -370,6 +375,7 @@ before</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             (alpha + beta + gam) - kel * k31 + k21 * k21)/(k31 - </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             k21)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         k13 &lt;- alpha + beta + gam - (kel + k12 + k21 + k31)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         d/dt(depot) &lt;- -ka * depot</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         d/dt(central) &lt;- ka * depot - kel * central - k12 * central + </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             k21 * peripheral1 - k13 * central + k31 * peripheral2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         d/dt(peripheral1) &lt;- k12 * central - k21 * peripheral1</span>
@@ -386,7 +392,7 @@ before</p></dd>
 <span class="r-in"><span>  <span class="fu">pkTrans</span><span class="op">(</span><span class="st">"k"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">rxode2-based free-form 2-cmt ODE model</span> <span style="color: #00BBBB;">──────────────────────────────────────</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">rxode2-based free-form 3-cmt ODE model</span> <span style="color: #00BBBB;">──────────────────────────────────────</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ── <span style="font-weight: bold;">Initalization:</span> ──  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Fixed Effects</span> (<span style="color: #0000BB; font-weight: bold;">$theta</span>): </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    lka propSd   lk12   lk21   lkel    lvc </span>
@@ -394,8 +400,9 @@ before</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">States</span> (<span style="color: #0000BB; font-weight: bold;">$state</span> or <span style="color: #0000BB; font-weight: bold;">$stateDf</span>): </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Compartment Number Compartment Name</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1                  1          central</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2                  2      peripheral1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1                  1            depot</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2                  2          central</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3                  3      peripheral1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ── <span style="font-weight: bold;">Model (Normalized Syntax):</span> ── </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> function() {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     ini({</span>
@@ -418,6 +425,7 @@ before</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         k21 &lt;- exp(lk21)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         kel &lt;- exp(lkel)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         vc &lt;- exp(lvc)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         d/dt(depot) &lt;- -ka * depot</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         d/dt(central) &lt;- ka * depot - kel * central - k12 * central + </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             k21 * peripheral1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         d/dt(peripheral1) &lt;- k12 * central - k21 * peripheral1</span>
@@ -430,7 +438,7 @@ before</p></dd>
 <span class="r-in"><span>  <span class="fu">pkTrans</span><span class="op">(</span><span class="st">"vss"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">rxode2-based free-form 2-cmt ODE model</span> <span style="color: #00BBBB;">──────────────────────────────────────</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">rxode2-based free-form 3-cmt ODE model</span> <span style="color: #00BBBB;">──────────────────────────────────────</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ── <span style="font-weight: bold;">Initalization:</span> ──  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Fixed Effects</span> (<span style="color: #0000BB; font-weight: bold;">$theta</span>): </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    lka propSd    lcl    lvc     lq   lvss </span>
@@ -438,8 +446,9 @@ before</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">States</span> (<span style="color: #0000BB; font-weight: bold;">$state</span> or <span style="color: #0000BB; font-weight: bold;">$stateDf</span>): </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Compartment Number Compartment Name</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1                  1          central</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2                  2      peripheral1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1                  1            depot</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2                  2          central</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3                  3      peripheral1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ── <span style="font-weight: bold;">Model (Normalized Syntax):</span> ── </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> function() {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     ini({</span>
@@ -465,6 +474,7 @@ before</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         kel &lt;- cl/vc</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         k12 &lt;- q/vc</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         k21 &lt;- q/(vss - vc)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         d/dt(depot) &lt;- -ka * depot</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         d/dt(central) &lt;- ka * depot - kel * central - k12 * central + </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             k21 * peripheral1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         d/dt(peripheral1) &lt;- k12 * central - k21 * peripheral1</span>
@@ -477,7 +487,7 @@ before</p></dd>
 <span class="r-in"><span>  <span class="fu">pkTrans</span><span class="op">(</span><span class="st">"aob"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">rxode2-based free-form 2-cmt ODE model</span> <span style="color: #00BBBB;">──────────────────────────────────────</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">rxode2-based free-form 3-cmt ODE model</span> <span style="color: #00BBBB;">──────────────────────────────────────</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ── <span style="font-weight: bold;">Initalization:</span> ──  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Fixed Effects</span> (<span style="color: #0000BB; font-weight: bold;">$theta</span>): </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    lka propSd   laob lalpha  lbeta    lvc </span>
@@ -485,8 +495,9 @@ before</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">States</span> (<span style="color: #0000BB; font-weight: bold;">$state</span> or <span style="color: #0000BB; font-weight: bold;">$stateDf</span>): </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Compartment Number Compartment Name</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1                  1          central</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2                  2      peripheral1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1                  1            depot</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2                  2          central</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3                  3      peripheral1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ── <span style="font-weight: bold;">Model (Normalized Syntax):</span> ── </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> function() {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     ini({</span>
@@ -512,6 +523,7 @@ before</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         k21 &lt;- (aob * beta + alpha)/(aob + 1)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         kel &lt;- (alpha * beta)/k21</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         k12 &lt;- alpha + beta - k21 - kel</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         d/dt(depot) &lt;- -ka * depot</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         d/dt(central) &lt;- ka * depot - kel * central - k12 * central + </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             k21 * peripheral1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         d/dt(peripheral1) &lt;- k12 * central - k21 * peripheral1</span>
@@ -524,7 +536,7 @@ before</p></dd>
 <span class="r-in"><span>  <span class="fu">pkTrans</span><span class="op">(</span><span class="st">"k21"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">rxode2-based free-form 2-cmt ODE model</span> <span style="color: #00BBBB;">──────────────────────────────────────</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">rxode2-based free-form 3-cmt ODE model</span> <span style="color: #00BBBB;">──────────────────────────────────────</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ── <span style="font-weight: bold;">Initalization:</span> ──  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Fixed Effects</span> (<span style="color: #0000BB; font-weight: bold;">$theta</span>): </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    lka propSd   lk21 lalpha  lbeta    lvc </span>
@@ -532,8 +544,9 @@ before</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">States</span> (<span style="color: #0000BB; font-weight: bold;">$state</span> or <span style="color: #0000BB; font-weight: bold;">$stateDf</span>): </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Compartment Number Compartment Name</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1                  1          central</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2                  2      peripheral1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1                  1            depot</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2                  2          central</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3                  3      peripheral1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ── <span style="font-weight: bold;">Model (Normalized Syntax):</span> ── </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> function() {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     ini({</span>
@@ -558,6 +571,7 @@ before</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         vc &lt;- exp(lvc)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         kel &lt;- alpha * beta/k21</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         k12 &lt;- alpha + beta - k21 - kel</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         d/dt(depot) &lt;- -ka * depot</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         d/dt(central) &lt;- ka * depot - kel * central - k12 * central + </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             k21 * peripheral1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         d/dt(peripheral1) &lt;- k12 * central - k21 * peripheral1</span>
@@ -570,7 +584,7 @@ before</p></dd>
 <span class="r-in"><span>  <span class="fu">pkTrans</span><span class="op">(</span><span class="st">"alpha"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">rxode2-based free-form 2-cmt ODE model</span> <span style="color: #00BBBB;">──────────────────────────────────────</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">rxode2-based free-form 3-cmt ODE model</span> <span style="color: #00BBBB;">──────────────────────────────────────</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ── <span style="font-weight: bold;">Initalization:</span> ──  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Fixed Effects</span> (<span style="color: #0000BB; font-weight: bold;">$theta</span>): </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    lka propSd lalpha  lbeta     lA     lB </span>
@@ -578,8 +592,9 @@ before</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">States</span> (<span style="color: #0000BB; font-weight: bold;">$state</span> or <span style="color: #0000BB; font-weight: bold;">$stateDf</span>): </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Compartment Number Compartment Name</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1                  1          central</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2                  2      peripheral1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1                  1            depot</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2                  2          central</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3                  3      peripheral1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ── <span style="font-weight: bold;">Model (Normalized Syntax):</span> ── </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> function() {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     ini({</span>
@@ -606,6 +621,7 @@ before</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         k21 &lt;- (A * beta + B * alpha) * vc</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         kel &lt;- alpha * beta/k21</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         k12 &lt;- alpha + beta - k21 - kel</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         d/dt(depot) &lt;- -ka * depot</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         d/dt(central) &lt;- ka * depot - kel * central - k12 * central + </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             k21 * peripheral1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         d/dt(peripheral1) &lt;- k12 * central - k21 * peripheral1</span>
@@ -620,7 +636,7 @@ before</p></dd>
 <span class="r-in"><span>  <span class="fu">pkTrans</span><span class="op">(</span><span class="st">"k"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">rxode2-based free-form 1-cmt ODE model</span> <span style="color: #00BBBB;">──────────────────────────────────────</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">rxode2-based free-form 2-cmt ODE model</span> <span style="color: #00BBBB;">──────────────────────────────────────</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ── <span style="font-weight: bold;">Initalization:</span> ──  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Fixed Effects</span> (<span style="color: #0000BB; font-weight: bold;">$theta</span>): </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    lka propSd   lkel    lvc </span>
@@ -628,7 +644,8 @@ before</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">States</span> (<span style="color: #0000BB; font-weight: bold;">$state</span> or <span style="color: #0000BB; font-weight: bold;">$stateDf</span>): </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Compartment Number Compartment Name</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1                  1          central</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1                  1            depot</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2                  2          central</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ── <span style="font-weight: bold;">Model (Normalized Syntax):</span> ── </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> function() {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     dosing &lt;- c("central", "depot")</span>
@@ -646,6 +663,7 @@ before</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         ka &lt;- exp(lka)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         kel &lt;- exp(lkel)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         vc &lt;- exp(lvc)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         d/dt(depot) &lt;- -ka * depot</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         d/dt(central) &lt;- ka * depot - kel * central</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         Cc &lt;- central/vc</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         Cc ~ prop(propSd)</span>
@@ -656,7 +674,7 @@ before</p></dd>
 <span class="r-in"><span>  <span class="fu">pkTrans</span><span class="op">(</span><span class="st">"alpha"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">rxode2-based free-form 1-cmt ODE model</span> <span style="color: #00BBBB;">──────────────────────────────────────</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">rxode2-based free-form 2-cmt ODE model</span> <span style="color: #00BBBB;">──────────────────────────────────────</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ── <span style="font-weight: bold;">Initalization:</span> ──  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Fixed Effects</span> (<span style="color: #0000BB; font-weight: bold;">$theta</span>): </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    lka propSd lalpha     lA </span>
@@ -664,7 +682,8 @@ before</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">States</span> (<span style="color: #0000BB; font-weight: bold;">$state</span> or <span style="color: #0000BB; font-weight: bold;">$stateDf</span>): </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Compartment Number Compartment Name</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1                  1          central</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1                  1            depot</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2                  2          central</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ── <span style="font-weight: bold;">Model (Normalized Syntax):</span> ── </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> function() {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     dosing &lt;- c("central", "depot")</span>
@@ -684,6 +703,7 @@ before</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         A &lt;- exp(lA)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         kel &lt;- alpha</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         vc &lt;- 1/A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         d/dt(depot) &lt;- -ka * depot</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         d/dt(central) &lt;- ka * depot - kel * central</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         Cc &lt;- central/vc</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         Cc ~ prop(propSd)</span>
@@ -697,7 +717,7 @@ before</p></dd>
 <span class="r-in"><span>  <span class="fu">pkTrans</span><span class="op">(</span><span class="st">"k"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">rxode2-based free-form 2-cmt ODE model</span> <span style="color: #00BBBB;">──────────────────────────────────────</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">rxode2-based free-form 3-cmt ODE model</span> <span style="color: #00BBBB;">──────────────────────────────────────</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ── <span style="font-weight: bold;">Initalization:</span> ──  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Fixed Effects</span> (<span style="color: #0000BB; font-weight: bold;">$theta</span>): </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> propSd   lk12   lk21   lk13   lk31   lkel    lvc </span>
@@ -705,8 +725,9 @@ before</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">States</span> (<span style="color: #0000BB; font-weight: bold;">$state</span> or <span style="color: #0000BB; font-weight: bold;">$stateDf</span>): </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Compartment Number Compartment Name</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1                  1      peripheral1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2                  2      peripheral2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1                  1          central</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2                  2      peripheral1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3                  3      peripheral2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ── <span style="font-weight: bold;">Model (Normalized Syntax):</span> ── </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> function() {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     ini({</span>
@@ -732,6 +753,8 @@ before</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         k31 &lt;- exp(lk31)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         kel &lt;- exp(lkel)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         vc &lt;- exp(lvc)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         d/dt(central) &lt;- -kel * central - k12 * central + k21 * </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             peripheral1 - k13 * central + k31 * peripheral2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         d/dt(peripheral1) &lt;- k12 * central - k21 * peripheral1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         d/dt(peripheral2) &lt;- k13 * central - k31 * peripheral2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         Cc &lt;- central/vc</span>
