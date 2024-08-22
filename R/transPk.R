@@ -160,6 +160,7 @@ addLogEstimates <- function(ui, vars,
       .tmp$pre,
       .extra,
       extraLines,
+      .tmp$w,
       .tmp$post
     )
   }
