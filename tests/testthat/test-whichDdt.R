@@ -10,9 +10,9 @@ test_that("whichDdt", {
   f <- rxode2::rxode2(f)
 
 
-  expect_equal(.whichDdt(f$lstExpr, "central", ddt=TRUE), 1L)
-  expect_error(.whichDdt(f$lstExpr, "matt", ddt=TRUE))
-  expect_error(.whichDdt(f$lstExpr, "central", ddt=FALSE))
+  expect_equal(.whichDdt(f$lstExpr, "central"), 1L)
+  expect_error(.whichDdt(f$lstExpr, "matt"))
+  expect_error(.whichDdt(f$lstExpr, "central", start="", end=""))
 
 
   f <- function() {
@@ -26,8 +26,8 @@ test_that("whichDdt", {
   }
   f <- rxode2::rxode2(f)
 
-  expect_error(.whichDdt(f$lstExpr, "central", ddt=TRUE))
-  expect_error(.whichDdt(f$lstExpr, "peripheral1", ddt=FALSE))
-  expect_equal(.whichDdt(f$lstExpr, "matt", ddt=FALSE), 1L)
+  expect_error(.whichDdt(f$lstExpr, "central"))
+  expect_error(.whichDdt(f$lstExpr, "peripheral1", start="", end=""))
+  expect_equal(.whichDdt(f$lstExpr, "matt", start="", end=""), 1L)
 
 })
