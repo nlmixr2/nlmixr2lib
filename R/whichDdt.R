@@ -2,7 +2,8 @@
 #'
 #' @param modelLines modelLines expression list
 #' @param central name of central compartment
-#' @param ddt is this a derivative expression
+#' @param start is the start of the expression, by default it is "d/dt("
+#' @param end is the end of the expression, by default it is ")"
 #' @return which item in modelLines is the central compartment (or
 #'   error if there is multiple lines)
 #' @noRd
