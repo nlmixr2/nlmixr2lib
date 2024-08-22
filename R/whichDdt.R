@@ -7,9 +7,9 @@
 #'   error if there is multiple lines)
 #' @noRd
 #' @author Matthew L. Fidler
-.whichDdt <- function(modelLines, central, ddt=TRUE) {
-  .dd1 <- ifelse(ddt, "d/dt(", "")
-  .dd2 <- ifelse(ddt, ")", "")
+.whichDdt <- function(modelLines, central, start="d/dt(", end=")") {
+  .dd1 <- start
+  .dd2 <- end
   .ddtCentral1 <- str2lang(paste0(.dd1, central, .dd2, " <- ."))
   .ddtCentral2 <- str2lang(paste0(.dd1, central, .dd2, " = ."))
   .w <- which(vapply(seq_along(modelLines),

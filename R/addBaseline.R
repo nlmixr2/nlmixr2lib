@@ -10,7 +10,7 @@
 .addBaseline <- function(ui, effect="effect",
                          eb="Eb") {
   .modelLines <- ui$lstExpr
-  .w <- .whichDdt(.modelLines, effect, ddt=FALSE)
+  .w <- .whichDdt(.modelLines, effect, start="", end="")
   .tmp <- .extractModelLinesAtW(.modelLines, .w)
   .tmp$w <- list(str2lang(paste0(deparse1(.tmp$w), "+", eb)))
   c(.tmp$pre,

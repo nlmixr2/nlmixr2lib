@@ -26,7 +26,7 @@ fakeCc <- function(fun, ..., cc="Cc") {
   .f <- suppressMessages(rxode2::as.rxUi(rxode2::rxModelVars(.f)))
   .cc <- .fun(ui=.f, ..., cc=cc)
   .modelLines <- .cc$lstExpr
-  .w <- .whichDdt(.modelLines, cc, ddt=FALSE)
+  .w <- .whichDdt(.modelLines, cc, start="", end="")
   .f <- rxode2::rxode2(.f)
   .tmp <- .extractModelLinesAtW(.modelLines, .w)
   rxode2::model(.cc) <- c(.tmp$pre,
