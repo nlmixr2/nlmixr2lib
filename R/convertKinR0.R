@@ -34,7 +34,7 @@ convertKinR0 <- function(ui,
   }
   .modelLines <- .ui$lstExpr
   .w <- .whichDdt(.modelLines, R, start="", end="(0)")
-  if (!length(.w)) {
+  if (length(.w) != 1L) {
     stop(paste0("the model does not have the expected ",
                 R, "(0) expression"),
          call.=FALSE)
