@@ -17,6 +17,10 @@ oncology_xenograft_simeoni_2004 <- function() {
     tumorVoladdSd <- 30 ; label("Additive residual error (tumor volume)")
   })
   model({
+    cmt(cyclingCells)
+    cmt(damagedCells1)
+    cmt(damagedCells2)
+    cmt(damagedCells3)
     damageTransit <- exp(ldamageTransit)
     drugSlope <- exp(ldrugSlope)
     tumorExpGrowth <- exp(ltumorExpGrowth)
