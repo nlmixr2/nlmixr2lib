@@ -320,8 +320,8 @@ convertMM <- function(ui, central="central",
         .thetaVm,
         .thetakm,
         .eta)
-  .model <- c(list(str2lang(paste0(vm, " <- log(l", vm, ")")),
-         str2lang(paste0(km, " <- log(l", km, ")"))),
+  .model <- c(list(str2lang(paste0(vm, " <- exp(l", vm, ")")),
+         str2lang(paste0(km, " <- exp(l", km, ")"))),
     .replaceMult(.modelLines, elimination, central,
                paste0("(", vm, "*", central, "/", vc, ")/(", km,
                       "+", central, "/", vc, ")")))
