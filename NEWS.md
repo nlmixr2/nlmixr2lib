@@ -92,6 +92,7 @@
       - `addLag()` adds a lag time to the a compartment
 
 * Add Carlsson Petri (2021) liraglutide PK model
+* Add a variety of indirect response models
 * `cp` and related `cpddSd` and `cppropSd` were renamed to `Cc`, `CcAddSd` and
   `CcPropSd` (fix #70).
 
