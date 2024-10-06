@@ -92,6 +92,7 @@
       - `addLag()` adds a lag time to the a compartment
 
 * Add Carlsson Petri (2021) liraglutide PK model
+* Add Cirincione (2017) exenatide immediate-release PK model
 * Add a variety of indirect response models
 * Add a variety of tumor growth inhibition models and move all oncology models
   into a new model database directory
