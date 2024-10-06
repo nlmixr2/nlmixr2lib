@@ -20,6 +20,7 @@ tgi_no_sat_expoLinear <- function() {
     
     kel <- cl / vc
     tumorSize(0) <- ts0
+    # Something is missing here
     tau <- 
     
     d/dt(depot) <- -ka*depot
