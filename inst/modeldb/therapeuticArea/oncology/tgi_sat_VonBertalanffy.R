@@ -1,4 +1,4 @@
-tgi_sat_genLogistic <- function() {
+tgi_sat_VonBertalanffy <- function() {
   description <- "One compartment TGI model where tumor growth is limited by a loss term, with saturation."
   ini({
     lts0 <- 0.3; label("Initial tumor size (TS0)") 

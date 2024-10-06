@@ -1,4 +1,4 @@
-tgi_sat_genLogistic <- function() {
+tgi_sat_genVonBertalanffy <- function() {
   description <- "One compartment TGI model where tumor growth is limited by a loss term, with saturation."
   ini({
     lts0 <- 0.3; label("Initial tumor size (TS0)") 
@@ -9,8 +9,9 @@ tgi_sat_genLogistic <- function() {
     lkg <- 0.7; label("Birth rate")
     lkd <- 0.7; label ("Death rate")
     lgamma <- 0.95; label("proliferative cells as a fraction of the full tumor volume (gamma)")
-    propSd <- 0.5 ; label("Proportional residual error (fraction)")
-    addSd <- 30 ; label("Additive residual error (tumor volume)")
+    CcpropSd <- 0.5 ; label("PK proportional residual error (fraction)")
+    tumorSizepropSd <- 0.5 ; label("Tumor size proportional residual error (fraction)")
+    tumorSizeaddSd <- 30 ; label("Tumor size additive residual error (tumor volume)")
   })
   model({
     ts0 <- exp(lts0)
@@ -31,7 +32,7 @@ tgi_sat_genLogistic <- function() {
     d/dt(tumorSize) <- kg*tumorSize^(gamma)-kd*tumorSize
     
     Cc <- central / vc
-    Cc ~ prop(propSd)
-    tumorSize ~ prop(propSd) + add(addSd)
+    Cc ~ prop(CcpropSd)
+    tumorSize ~ prop(tumorSizepropSd) + add(tumorSizeaddSd)
   })
 }
