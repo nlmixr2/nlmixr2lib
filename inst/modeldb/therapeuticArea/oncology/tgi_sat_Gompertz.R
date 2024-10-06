@@ -9,8 +9,9 @@ tgi_sat_genLogistic <- function() {
     lkgl <- 0.7; label("Zero-order linear growth rate")
     lalpha <- 0.6; label("parameter one")
     lbeta <- 0.8; label("parameter two")
-    propSd <- 0.5 ; label("Proportional residual error (fraction)")
-    addSd <- 30 ; label("Additive residual error (tumor volume)")
+    CcpropSd <- 0.5 ; label("PK proportional residual error (fraction)")
+    tumorSizepropSd <- 0.5 ; label("Tumor size proportional residual error (fraction)")
+    tumorSizeaddSd <- 30 ; label("Tumor size additive residual error (tumor volume)")
   })
   model({
     ts0 <- exp(lts0)
@@ -24,14 +25,13 @@ tgi_sat_genLogistic <- function() {
     
     kel <- cl / vc
     tumorSize(0) <- ts0
-    
-    
+
     d/dt(depot) <- -ka*depot
     d/dt(central) <- ka*depot-kel*central
     d/dt(tumorSize) <- (alpha-beta*l(tumorSize))*tumorSize
     
     Cc <- central / vc
-    Cc ~ prop(propSd)
-    tumorSize ~ prop(propSd) + add(addSd)
+    Cc ~ prop(CcpropSd)
+    tumorSize ~ prop(tumorSizepropSd) + add(tumorSizeaddSd)
   })
 }

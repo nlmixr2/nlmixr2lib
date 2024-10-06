@@ -8,8 +8,9 @@ tgi_no_sat_powerLaw <- function() {
     lgamma <- 0.95; label("proliferative cells as a fraction of the full tumor volume (gamma)")
     lkgl <- 0.7; label("Zero-order linear growth rate")
     lkge <- 0.7; label("First-order exponential growth rate")
-    propSd <- 0.5 ; label("Proportional residual error (fraction)")
-    addSd <- 30 ; label("Additive residual error (tumor volume)")
+    CcpropSd <- 0.5 ; label("PK proportional residual error (fraction)")
+    tumorSizepropSd <- 0.5 ; label("Tumor size proportional residual error (fraction)")
+    tumorSizeaddSd <- 30 ; label("Tumor size additive residual error (tumor volume)")
   })
   model({
     ts0 <- exp(lts0)
@@ -28,7 +29,7 @@ tgi_no_sat_powerLaw <- function() {
     d/dt(tumorSize) <- kge*tumorSize^gamma
     
     Cc <- central / vc
-    Cc ~ prop(propSd)
-    tumorSize ~ prop(propSd) + add(addSd)
+    Cc ~ prop(CcpropSd)
+    tumorSize ~ prop(tumorSizepropSd) + add(tumorSizeaddSd)
   })
 }

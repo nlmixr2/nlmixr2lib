@@ -97,6 +97,8 @@
   into a new model database directory
 * `cp` and related `cpddSd` and `cppropSd` were renamed to `Cc`, `CcAddSd` and
   `CcPropSd` (fix #70).
+* Multiple-endpoint models will have the `DV` column in the modeldb separated by
+  commas.
 
 # Version 0.2.0
 
