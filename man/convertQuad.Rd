@@ -13,7 +13,7 @@ convertQuad(ui, ek = c("Ik", "Ek"), cc = c("Ce", "Cc"), ek2 = "Ek2")
 
 \item{cc}{the concentration value}
 
-\item{ek2}{quadratic coeffficent}
+\item{ek2}{quadratic coefficient}
 }
 \value{
 model with linear effect converted to quadratic effect
@@ -34,8 +34,6 @@ readModelDb("PK_2cmt_no_depot") |>
 readModelDb("PK_2cmt_no_depot") |>
  addEffectCmtLin() |>
  convertQuad()
-
-
 }
 \seealso{
 Other PD: 

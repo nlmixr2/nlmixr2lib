@@ -47,11 +47,10 @@ addIndirectLin(
 \item{effect}{the effect variable that will be modeled}
 }
 \value{
-model with linear indirect effect added;
+model with linear indirect effect added
 
-note that while linear indirect effects are not common, it allows
-an easier hook to produce all sorts of standard effect curves, like
-Emax/Imax, Hill, etc.
+Note that while linear indirect effects are not common, it allows an easier
+hook to produce other standard effect curves like Emax/Imax, Hill, etc.
 }
 \description{
 Add linear indirect response model
@@ -67,7 +66,12 @@ readModelDb("PK_2cmt_no_depot") |> addIndirectLin(inhib="in")
 readModelDb("PK_2cmt_no_depot") |> addIndirectLin(inhib="out")
 
 }
+\seealso{
+Other Indirect response: 
+\code{\link{addIndirect}()},
+\code{\link{convertKinR0}()}
+}
 \author{
 Matthew L. Fidler
 }
-\concept{idr, PK}
+\concept{Indirect response}

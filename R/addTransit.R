@@ -17,7 +17,7 @@
 #'
 #' The abs cmt becomes the last "transit" compartment
 #'
-#' This is simply for convienience
+#' This is simply for convenience
 #'
 #' @export
 #' @examples

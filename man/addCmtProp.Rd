@@ -54,7 +54,7 @@ Add a property to a compartment
 
 \item \code{addRate()}: Adds the modeled rate to a compartment in the model
 
-\item \code{addIni()}: Adds the inital value to the compartment
+\item \code{addIni()}: Adds the initial value to the compartment
 
 }}
 \examples{

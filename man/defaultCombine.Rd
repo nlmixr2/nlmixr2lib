@@ -71,7 +71,6 @@ blankCombine("f", "depot")
 blankCombine(list(c("a", "funny", "c")))
 
 blankCombine(c("a", "funny", "c"))
-
 }
 \author{
 Matthew L. Fidler

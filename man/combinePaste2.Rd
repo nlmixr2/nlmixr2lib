@@ -17,7 +17,7 @@ combinePaste2(
 
 \item{combineType}{is the type of combination; can be:
 
-- \code{"default"}: default combine (set with `setDefualtCombine()`)
+- \code{"default"}: default combine (set with `defaultCombine()`)
 
 - \code{"camel"}: camelCase combine
 
@@ -28,7 +28,7 @@ combinePaste2(
 - \code{"blank"}: no separator (i.e. "ab")}
 }
 \value{
-combined strings separated with defautCombine
+Combined strings separated with `defaultCombine()`
 }
 \description{
 Combine two in a manner similar to `paste()` strings using the
@@ -43,7 +43,6 @@ combinePaste2("f", "depot", "snake")
 combinePaste2("f", "depot", "dot")
 
 combinePaste2("f", "depot", "blank")
-
 }
 \author{
 Matthew L. Fidler

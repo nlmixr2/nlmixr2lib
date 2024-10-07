@@ -114,7 +114,7 @@ addRate <- function(ui, cmt) {
   addCmtProp(ui, prop="rate", cmt=cmt)
 }
 
-#' @describeIn addCmtProp Adds the inital value to the compartment
+#' @describeIn addCmtProp Adds the initial value to the compartment
 #' @export
 addIni <- function(ui, cmt) {
   .cmt <- as.character(substitute(cmt))

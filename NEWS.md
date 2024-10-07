@@ -1,6 +1,6 @@
 # nlmixr2lib
 
-# Version 0.2.0.9000
+# Version 0.3.0
 
 * Added ability to choose style type when modifying models.  Currently
   supported styles are: "camel" for `variablesLikeThis`, "snake" for
@@ -25,7 +25,7 @@
 
      - `addWeibullAbs()` which adds a Weibull absorption to a PK model
 
-     - `convertMM()` converts linear elimination to Michelis-Menton elimination
+     - `convertMM()` converts linear elimination to Michaelis-Menten elimination
 
      - `transPK()` converts the `cl` style parameter transformations
        to various other PK transformations like `k`, `aob`, `alpha`,
@@ -38,7 +38,7 @@
      uses a simple linear effect of `Cc*Ek` or `Cc*Ik` so it will be
      easy to parse and turn into other functional forms (like `Emax`
      or `Hill`).  If the PK model is not present it will use `Cc` as a
-     covarite in a purely PD models.
+     covariate in a purely PD models.
 
    - `addIndirect()` -- this builds on `addIndirectLin()` and adds
      `Emax` or `Hill` models to a PK model. You can also set `imax=1`
@@ -92,8 +92,15 @@
       - `addLag()` adds a lag time to the a compartment
 
 * Add Carlsson Petri (2021) liraglutide PK model
+* Add Cirincione (2017) exenatide immediate-release PK model
+* Add a variety of indirect response models
+* Add a variety of tumor growth inhibition models and move all oncology models
+  into a new model database directory
+* Add a variety of double-absorption PK models
 * `cp` and related `cpddSd` and `cppropSd` were renamed to `Cc`, `CcAddSd` and
   `CcPropSd` (fix #70).
+* Multiple-endpoint models will have the `DV` column in the modeldb separated by
+  commas.
 
 # Version 0.2.0
 

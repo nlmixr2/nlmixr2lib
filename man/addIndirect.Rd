@@ -38,7 +38,7 @@ addIndirect(
 
 - `out`: inhibition of output}
 
-\item{hill}{boolean stating if a hill sigmoid cofficient will be added}
+\item{hill}{Boolean stating if a hill sigmoid coefficient will be added}
 
 \item{ek}{simulation linear constant}
 
@@ -50,7 +50,7 @@ addIndirect(
 
 \item{imax}{maximum inhibitory concentration}
 
-\item{ic50}{concentration where half of the imax occurs}
+\item{ic50}{concentration where half of the Imax occurs}
 
 \item{kin}{this is the kin parameter name}
 
@@ -78,6 +78,12 @@ readModelDb("PK_2cmt_no_depot") |>
 readModelDb("PK_2cmt_no_depot") |>
   addIndirect(inhib="out", imax=1)
 }
+\seealso{
+Other Indirect response: 
+\code{\link{addIndirectLin}()},
+\code{\link{convertKinR0}()}
+}
 \author{
 Matthew L. Fidler
 }
+\concept{Indirect response}

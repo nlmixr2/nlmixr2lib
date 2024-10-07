@@ -41,7 +41,7 @@ changed
 
 The abs cmt becomes the last "transit" compartment
 
-This is simply for convienience
+This is simply for convenience
 }
 \description{
 To add transit compartments to the model

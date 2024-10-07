@@ -28,15 +28,14 @@
 #'
 #' @param effect the effect variable that will be modeled
 #'
-#' @return model with linear indirect effect added;
+#' @return model with linear indirect effect added
 #'
-#' note that while linear indirect effects are not common, it allows
-#' an easier hook to produce all sorts of standard effect curves, like
-#' Emax/Imax, Hill, etc.
+#' Note that while linear indirect effects are not common, it allows an easier
+#' hook to produce other standard effect curves like Emax/Imax, Hill, etc.
 #'
 #' @export
 #' @author Matthew L. Fidler
-#' @family idr, PK
+#' @family Indirect response
 #' @examples
 #'
 #' readModelDb("PK_2cmt_no_depot") |> addIndirectLin(stim="in")
@@ -180,12 +179,13 @@ addIndirectLin <- function(ui,
 #'
 #' @inheritParams addIndirectLin
 #' @inheritParams convertEmaxHill
-#' @param hill boolean stating if a hill sigmoid cofficient will be added
+#' @param hill Boolean stating if a hill sigmoid coefficient will be added
 #' @param imax maximum inhibitory concentration
-#' @param ic50 concentration where half of the imax occurs
+#' @param ic50 concentration where half of the Imax occurs
 #' @return pk model with indirect response model added
 #' @export
 #' @author Matthew L. Fidler
+#' @family Indirect response
 #' @examples
 #'
 #' readModelDb("PK_2cmt_no_depot") |>

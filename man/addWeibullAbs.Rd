@@ -27,16 +27,16 @@ addWeibullAbs(
 
 \item{transit}{the transit compartment prefix}
 
-\item{wa}{weibull alpha parameter name}
+\item{wa}{Weibull alpha parameter name}
 
-\item{wb}{weibull beta parameter name}
+\item{wb}{Weibull beta parameter name}
 
 \item{ka}{absorption rate parameter name}
 
 \item{ktr}{the parameter name for the transit compartment rate}
 }
 \value{
-model where first order absorption is changed to weibull absorption model
+model where first order absorption is changed to Weibull absorption model
 }
 \description{
 Converts first order absorption model to Weibull absorption model

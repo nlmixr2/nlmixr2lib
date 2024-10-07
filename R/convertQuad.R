@@ -1,7 +1,7 @@
 #' Convert linear elimination to quadratic elimination
 #'
 #' @inheritParams addIndirect
-#' @param ek2 quadratic coeffficent
+#' @param ek2 quadratic coefficient
 #' @family PD
 #' @return model with linear effect converted to quadratic effect
 #' @export
@@ -19,8 +19,6 @@
 #' readModelDb("PK_2cmt_no_depot") |>
 #'  addEffectCmtLin() |>
 #'  convertQuad()
-#'
-#'
 convertQuad <- function(ui, ek=c("Ik", "Ek"), cc=c("Ce", "Cc"), ek2="Ek2") {
   .ui <- rxode2::assertRxUi(ui)
   .ui <- rxode2::rxUiDecompress(.ui)

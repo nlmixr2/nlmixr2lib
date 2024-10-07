@@ -182,7 +182,7 @@ addFileToModelDb <- function(dir, file, modeldb) {
       name        = modelName,
       description = description,
       parameters  = paste(modParamFixed, collapse = ","),
-      DV          = paramErr,
+      DV          = paste(paramErr, collapse = ","),
       linCmt      = mod$props$linCmt,
       algebraic   = algebraic,
       dosing      = dosing,

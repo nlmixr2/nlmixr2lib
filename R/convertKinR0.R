@@ -1,6 +1,7 @@
 #' Convert a kin/kout indirect response model to R0 and kout
 #'
-#' This replaces the kin/kout parametrization to the R0 and kout parametrization
+#' This replaces the kin/kout parameterization to the R0 and kout
+#' parameterization
 #'
 #' @param ui a rxode2 user function
 #' @param kin the kin variable (by default is "kin")
@@ -10,6 +11,7 @@
 #' @return a model where the estimated kin is changed to the estimated R0
 #' @export
 #' @author Matthew L. Fidler
+#' @family Indirect response
 #' @examples
 #'
 #' addIndirect(stim="in") |> convertKinR0()
