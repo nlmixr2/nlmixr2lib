@@ -1,6 +1,6 @@
 # nlmixr2lib
 
-# Version 0.2.0.9000
+# Version 0.3.0
 
 * Added ability to choose style type when modifying models.  Currently
   supported styles are: "camel" for `variablesLikeThis`, "snake" for
