@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">nlmixr2lib</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,7 +38,7 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.2.0.9000" id="version-0209000">Version 0.2.0.9000<a class="anchor" aria-label="anchor" href="#version-0209000"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.3.0" id="version-030">Version 0.3.0<a class="anchor" aria-label="anchor" href="#version-030"></a></h2>
 <ul><li><p>Added ability to choose style type when modifying models. Currently supported styles are: “camel” for <code>variablesLikeThis</code>, “snake” for <code>variables_like_this</code>, “dot” for <code>variables.like.this</code> and “blank” for <code>variableslikethis</code>. This can be selected with <code><a href="../reference/setCombineType.html">setCombineType()</a></code>.</p></li>
 <li><p>With the new combination style, you can change how <code>eta</code> variables are constructed with the <code>option(nlmixr2lib.etaCombineType="camel")</code> or whatever you wish it to the variable style to be.</p></li>
 <li>
@@ -48,11 +48,11 @@
 <ul><li><p><code><a href="../reference/addTransit.html">addTransit()</a></code>/<code><a href="../reference/removeTransit.html">removeTransit()</a></code> which were present before, but now modified and made a bit more robust, more closely matching literature method of transit compartments.</p></li>
 <li><p><code><a href="../reference/addDepot.html">addDepot()</a></code>/<code><a href="../reference/removeDepot.html">removeDepot()</a></code> which were present before, but modified to be a bit more robust.</p></li>
 <li><p><code><a href="../reference/addWeibullAbs.html">addWeibullAbs()</a></code> which adds a Weibull absorption to a PK model</p></li>
-<li><p><code><a href="../reference/convertMM.html">convertMM()</a></code> converts linear elimination to Michelis-Menton elimination</p></li>
+<li><p><code><a href="../reference/convertMM.html">convertMM()</a></code> converts linear elimination to Michaelis-Menten elimination</p></li>
 <li><p><code>transPK()</code> converts the <code>cl</code> style parameter transformations to various other PK transformations like <code>k</code>, <code>aob</code>, <code>alpha</code>, <code>k12</code></p></li>
 </ul></li>
 <li><p><strong>PD model building functions</strong></p></li>
-<li><p><code><a href="../reference/addIndirectLin.html">addIndirectLin()</a></code> – this adds an indirect effect model to a PK model that has a concentration <code>Cc</code> in the model. This purposely uses a simple linear effect of <code>Cc*Ek</code> or <code>Cc*Ik</code> so it will be easy to parse and turn into other functional forms (like <code>Emax</code> or <code>Hill</code>). If the PK model is not present it will use <code>Cc</code> as a covarite in a purely PD models.</p></li>
+<li><p><code><a href="../reference/addIndirectLin.html">addIndirectLin()</a></code> – this adds an indirect effect model to a PK model that has a concentration <code>Cc</code> in the model. This purposely uses a simple linear effect of <code>Cc*Ek</code> or <code>Cc*Ik</code> so it will be easy to parse and turn into other functional forms (like <code>Emax</code> or <code>Hill</code>). If the PK model is not present it will use <code>Cc</code> as a covariate in a purely PD models.</p></li>
 <li><p><code><a href="../reference/addIndirect.html">addIndirect()</a></code> – this builds on <code><a href="../reference/addIndirectLin.html">addIndirectLin()</a></code> and adds <code>Emax</code> or <code>Hill</code> models to a PK model. You can also set <code>imax=1</code> or <code>emax=1</code> to drop these parameters from being estimated in the model. Additionally <code>hill=TRUE</code> will add a Hill coefficient to the sigmoid model.</p></li>
 <li><p><code><a href="../reference/addEffectCmtLin.html">addEffectCmtLin()</a></code> – this adds an effect compartment based on the <code>Cc</code> in the model. The linear effect can be modified into other function forms.</p></li>
 <li><p><code><a href="../reference/addDirectLin.html">addDirectLin()</a></code> – this adds a direct effect model based on the <code>Cc</code> in the model.</p></li>
@@ -80,7 +80,12 @@
 </ul></li>
 </ul></li>
 <li><p>Add Carlsson Petri (2021) liraglutide PK model</p></li>
+<li><p>Add Cirincione (2017) exenatide immediate-release PK model</p></li>
+<li><p>Add a variety of indirect response models</p></li>
+<li><p>Add a variety of tumor growth inhibition models and move all oncology models into a new model database directory</p></li>
+<li><p>Add a variety of double-absorption PK models</p></li>
 <li><p><code>cp</code> and related <code>cpddSd</code> and <code>cppropSd</code> were renamed to <code>Cc</code>, <code>CcAddSd</code> and <code>CcPropSd</code> (fix <a href="https://github.com/nlmixr2/nlmixr2lib/issues/70" class="external-link">#70</a>).</p></li>
+<li><p>Multiple-endpoint models will have the <code>DV</code> column in the modeldb separated by commas.</p></li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.0" id="version-020">Version 0.2.0<a class="anchor" aria-label="anchor" href="#version-020"></a></h2><p class="text-muted">CRAN release: 2023-03-29</p>
@@ -113,7 +118,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer></div>

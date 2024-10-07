@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">nlmixr2lib</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -70,8 +70,8 @@
 <code class="sourceCode R"><span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">modeldb</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"name"</span>, <span class="st">"description"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <colgroup>
-<col width="20%">
-<col width="79%">
+<col width="19%">
+<col width="80%">
 </colgroup>
 <thead><tr class="header">
 <th align="left">name</th>
@@ -126,14 +126,161 @@ healthy subjects and patients with PKU</td>
 clearance using differential equations</td>
 </tr>
 <tr class="odd">
+<td align="left">indirect_1cpt_inhi_kin</td>
+<td align="left">One compartment indirect response model with inhibition
+of kin.</td>
+</tr>
+<tr class="even">
+<td align="left">indirect_1cpt_inhi_kin_CLV</td>
+<td align="left">One compartment indirect response model with inhibition
+of kin.</td>
+</tr>
+<tr class="odd">
+<td align="left">indirect_1cpt_inhi_kin_r0rmaxcrmax</td>
+<td align="left">One compartment indirect response model with inhibition
+of kin.</td>
+</tr>
+<tr class="even">
+<td align="left">indirect_1cpt_inhi_kout</td>
+<td align="left">One compartment indirect response model with inhibition
+of kout.</td>
+</tr>
+<tr class="odd">
+<td align="left">indirect_1cpt_inhi_kout_CLV</td>
+<td align="left">One compartment indirect response model with inhibition
+of kout.</td>
+</tr>
+<tr class="even">
+<td align="left">indirect_1cpt_inhi_kout_r0rmaxcrmax</td>
+<td align="left">One compartment indirect response model with inhibition
+of kout.</td>
+</tr>
+<tr class="odd">
+<td align="left">indirect_1cpt_stim_kin</td>
+<td align="left">One compartment indirect response model with
+stimulation of kin.Parameterized using rate cosntants</td>
+</tr>
+<tr class="even">
+<td align="left">indirect_1cpt_stim_kin_CLV</td>
+<td align="left">One compartment indirect response model with
+stimulation of kin.</td>
+</tr>
+<tr class="odd">
+<td align="left">indirect_1cpt_stim_kin_r0rmaxcrmax</td>
+<td align="left">One compartment indirect response model with
+stimulation of kin.</td>
+</tr>
+<tr class="even">
+<td align="left">indirect_1cpt_stim_kout</td>
+<td align="left">One compartment indirect response model with
+stimulation of kout.Parameterized using rate cosntants</td>
+</tr>
+<tr class="odd">
+<td align="left">indirect_1cpt_stim_kout_CLV</td>
+<td align="left">One compartment indirect response model with
+stimulation of kout.</td>
+</tr>
+<tr class="even">
+<td align="left">indirect_1cpt_stim_kout_r0rmaxcrmax</td>
+<td align="left">One compartment indirect response model with
+stimulation of kout.</td>
+</tr>
+<tr class="odd">
+<td align="left">indirect_circ_1cpt_inhi_kin_kin_t</td>
+<td align="left">One compartment indirect response model with inhibition
+of kin and circadian kin_t.</td>
+</tr>
+<tr class="even">
+<td align="left">indirect_circ_1cpt_inhi_kin_kout_t</td>
+<td align="left">One compartment indirect response model with inhibition
+of kin and circadian kin_t.</td>
+</tr>
+<tr class="odd">
+<td align="left">indirect_circ_1cpt_inhi_kout_kin_t</td>
+<td align="left">One compartment indirect response model with inhibition
+of kout and circadian kin_t.</td>
+</tr>
+<tr class="even">
+<td align="left">indirect_circ_1cpt_inhi_kout_kout_t</td>
+<td align="left">One compartment indirect response model with inhibition
+of kout and circadian kin_t.</td>
+</tr>
+<tr class="odd">
+<td align="left">indirect_circ_1cpt_stim_kin_kin_t</td>
+<td align="left">One compartment indirect response model with
+stimulation of kin and circadian kin_t.Parameterized using rate
+cosntants</td>
+</tr>
+<tr class="even">
+<td align="left">indirect_circ_1cpt_stim_kin_kout_t</td>
+<td align="left">One compartment indirect response model with
+stimulation of kin and circadian kout_t.Parameterized using rate
+constants</td>
+</tr>
+<tr class="odd">
+<td align="left">indirect_circ_1cpt_stim_kout_kin_t</td>
+<td align="left">One compartment indirect response model with
+stimulation of kout and circadian kin_t.Parameterized using rate
+cosntants</td>
+</tr>
+<tr class="even">
+<td align="left">indirect_circ_1cpt_stim_kout_kout_t</td>
+<td align="left">One compartment indirect response model with
+stimulation of kout and circadian kout_t.Parameterized using rate
+cosntants</td>
+</tr>
+<tr class="odd">
+<td align="left">indirect_prec_1cpt_inhi_CLV</td>
+<td align="left">One compartment precursor-dependent indirect response
+model with inhibition of drug response. Parameterized with clearance and
+volume. (effect).</td>
+</tr>
+<tr class="even">
+<td align="left">indirect_prec_1cpt_inhi_r0rmaxcrmax</td>
+<td align="left">One compartment precursor-dependent indirect response
+model with inhibition of drug response (effect).</td>
+</tr>
+<tr class="odd">
+<td align="left">indirect_prec_1cpt_stim_CLV</td>
+<td align="left">One compartment precursor-dependent indirect response
+model with inhibition of drug response (effect). Parameterized with
+clearance and volume</td>
+</tr>
+<tr class="even">
+<td align="left">indirect_prec_1cpt_stim_r0rmaxcrmax</td>
+<td align="left">One compartment precursor-dependent indirect response
+model with inhibition of drug response (effect). Parameterized with
+clearance and volume</td>
+</tr>
+<tr class="odd">
 <td align="left">PK_2cmt_mAb_Davda_2014</td>
 <td align="left">Two compartment PK model with linear clearance for
 average monoclonal antibodies (Davda 2014)</td>
 </tr>
 <tr class="even">
+<td align="left">PK_double_sim_01</td>
+<td align="left">PK double absorption model with simultaneous zero order
+and first order absorptions</td>
+</tr>
+<tr class="odd">
+<td align="left">PK_double_sim_10</td>
+<td align="left">PK double absorption model with simultaneous first
+order and zero order absorptions</td>
+</tr>
+<tr class="even">
+<td align="left">PK_double_sim_11</td>
+<td align="left">PK double absorption model with simultaneous first
+order absorptions</td>
+</tr>
+<tr class="odd">
 <td align="left">CarlssonPetri_2021_liraglutide</td>
 <td align="left">Liraglutide PK model in adolescents (Carlsson Petri
 2021)</td>
+</tr>
+<tr class="even">
+<td align="left">Cirincione_2017_exenatide</td>
+<td align="left">Exenatide immediate-release PK model (Cirincione
+2017)</td>
 </tr>
 <tr class="odd">
 <td align="left">Kovalenko_2020_dupilumab</td>
@@ -156,6 +303,41 @@ effects on cancer cell growth</td>
 <td align="left">oncology_xenograft_simeoni_2004</td>
 <td align="left">Oncology tumor growth model in xenograft models</td>
 </tr>
+<tr class="even">
+<td align="left">tgi_no_sat_Koch</td>
+<td align="left">One compartment TGI model with with exponential tumor
+growth, without saturation.</td>
+</tr>
+<tr class="odd">
+<td align="left">tgi_no_sat_expo</td>
+<td align="left">One compartment TGI model with with exponential tumor
+growth, without saturation.</td>
+</tr>
+<tr class="even">
+<td align="left">tgi_no_sat_linear</td>
+<td align="left">One compartment TGI model with with linear tumor
+growth, without saturation.</td>
+</tr>
+<tr class="odd">
+<td align="left">tgi_no_sat_powerLaw</td>
+<td align="left">One compartment TGI model with with exponential tumor
+growth, without saturation.</td>
+</tr>
+<tr class="even">
+<td align="left">tgi_sat_VonBertalanffy</td>
+<td align="left">One compartment TGI model where tumor growth is limited
+by a loss term, with saturation.</td>
+</tr>
+<tr class="odd">
+<td align="left">tgi_sat_genVonBertalanffy</td>
+<td align="left">One compartment TGI model where tumor growth is limited
+by a loss term, with saturation.</td>
+</tr>
+<tr class="even">
+<td align="left">tgi_sat_logistic</td>
+<td align="left">One compartment TGI model with with exponential tumor
+growth that decelerates linearly, with saturation.</td>
+</tr>
 </tbody>
 </table></main>
 </div>
@@ -167,7 +349,7 @@ effects on cancer cell growth</td>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer>
