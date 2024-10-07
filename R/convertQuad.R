@@ -1,7 +1,7 @@
 #' Convert linear elimination to quadratic elimination
 #'
 #' @inheritParams addIndirect
-#' @param ek2 quadratic coeffficent
+#' @param ek2 quadratic coefficient
 #' @family PD
 #' @return model with linear effect converted to quadratic effect
 #' @export

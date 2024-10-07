@@ -21,7 +21,7 @@ addEta(
 `eta` will be used to add the eta value prior name is used
 instead of the left handed side of the equation.}
 
-\item{etaCombineType}{the option for the how to ccombine the eta
+\item{etaCombineType}{the option for the how to combine the eta
 with the parameter name.  Can be: "default", "snake", "camel",
 "dot", "blank"}
 }

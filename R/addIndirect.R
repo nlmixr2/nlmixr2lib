@@ -180,9 +180,9 @@ addIndirectLin <- function(ui,
 #'
 #' @inheritParams addIndirectLin
 #' @inheritParams convertEmaxHill
-#' @param hill boolean stating if a hill sigmoid cofficient will be added
+#' @param hill Boolean stating if a hill sigmoid coefficient will be added
 #' @param imax maximum inhibitory concentration
-#' @param ic50 concentration where half of the imax occurs
+#' @param ic50 concentration where half of the Imax occurs
 #' @return pk model with indirect response model added
 #' @export
 #' @author Matthew L. Fidler

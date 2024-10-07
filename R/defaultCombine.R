@@ -36,6 +36,7 @@
     )
   }
 }
+
 #' Default combine strings
 #'
 #' @param ... uses default to combine strings
@@ -75,7 +76,6 @@
 #' blankCombine(list(c("a", "funny", "c")))
 #'
 #' blankCombine(c("a", "funny", "c"))
-#'
 defaultCombine <- function(...) {
   .args <- list(...)
   .n <- length(.args)
@@ -100,6 +100,7 @@ defaultCombine <- function(...) {
     Reduce(.defaultCombine2, .args)
   }
 }
+
 #' Combine two strings using a naming convention
 #'
 #' Combine two in a manner similar to `paste()` strings using the
@@ -109,7 +110,7 @@ defaultCombine <- function(...) {
 #' @param b second string to combine
 #' @param combineType is the type of combination; can be:
 #'
-#' - \code{"default"}: default combine (set with `setDefualtCombine()`)
+#' - \code{"default"}: default combine (set with `defaultCombine()`)
 #'
 #' - \code{"camel"}: camelCase combine
 #'
@@ -119,7 +120,7 @@ defaultCombine <- function(...) {
 #'
 #' - \code{"blank"}: no separator (i.e. "ab")
 #'
-#' @return  combined strings separated with defautCombine
+#' @return Combined strings separated with `defaultCombine()`
 #' @export
 #' @author Matthew L. Fidler
 #' @examples
@@ -131,7 +132,6 @@ defaultCombine <- function(...) {
 #' combinePaste2("f", "depot", "dot")
 #'
 #' combinePaste2("f", "depot", "blank")
-#'
 combinePaste2 <- function(a, b,
                           combineType = c(
                             "default", "snake", "camel",
@@ -217,7 +217,6 @@ blankCombine <- function(...) {
 }
 
 #' Change the default combine type for the package
-#'
 #'
 #' @param combineType this is the default combine type:
 #' - \code{"default"}: default combine

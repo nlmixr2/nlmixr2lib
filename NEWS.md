@@ -25,7 +25,7 @@
 
      - `addWeibullAbs()` which adds a Weibull absorption to a PK model
 
-     - `convertMM()` converts linear elimination to Michelis-Menton elimination
+     - `convertMM()` converts linear elimination to Michaelis-Menten elimination
 
      - `transPK()` converts the `cl` style parameter transformations
        to various other PK transformations like `k`, `aob`, `alpha`,
@@ -38,7 +38,7 @@
      uses a simple linear effect of `Cc*Ek` or `Cc*Ik` so it will be
      easy to parse and turn into other functional forms (like `Emax`
      or `Hill`).  If the PK model is not present it will use `Cc` as a
-     covarite in a purely PD models.
+     covariate in a purely PD models.
 
    - `addIndirect()` -- this builds on `addIndirectLin()` and adds
      `Emax` or `Hill` models to a PK model. You can also set `imax=1`

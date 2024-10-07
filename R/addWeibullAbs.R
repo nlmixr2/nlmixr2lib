@@ -1,9 +1,9 @@
 #' Converts first order absorption model to Weibull absorption model
 #'
 #' @inheritParams addTransit
-#' @param wa weibull alpha parameter name
-#' @param wb weibull beta parameter name
-#' @return model where first order absorption is changed to weibull absorption model
+#' @param wa Weibull alpha parameter name
+#' @param wb Weibull beta parameter name
+#' @return model where first order absorption is changed to Weibull absorption model
 #' @family absorption
 #' @export
 #' @author Matthew L. Fidler
