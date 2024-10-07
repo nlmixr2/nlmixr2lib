@@ -4,7 +4,7 @@ pkgdown_sha: ~
 articles:
   create-model-library: create-model-library.html
   list-of-models: list-of-models.html
-last_built: 2024-10-07T14:26Z
+last_built: 2024-10-07T14:29Z
 urls:
   reference: https://nlmixr2.github.io/nlmixr2lib/reference
   article: https://nlmixr2.github.io/nlmixr2lib/articles
