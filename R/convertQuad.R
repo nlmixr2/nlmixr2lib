@@ -19,8 +19,6 @@
 #' readModelDb("PK_2cmt_no_depot") |>
 #'  addEffectCmtLin() |>
 #'  convertQuad()
-#'
-#'
 convertQuad <- function(ui, ek=c("Ik", "Ek"), cc=c("Ce", "Cc"), ek2="Ek2") {
   .ui <- rxode2::assertRxUi(ui)
   .ui <- rxode2::rxUiDecompress(.ui)

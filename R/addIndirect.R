@@ -28,15 +28,14 @@
 #'
 #' @param effect the effect variable that will be modeled
 #'
-#' @return model with linear indirect effect added;
+#' @return model with linear indirect effect added
 #'
-#' note that while linear indirect effects are not common, it allows
-#' an easier hook to produce all sorts of standard effect curves, like
-#' Emax/Imax, Hill, etc.
+#' Note that while linear indirect effects are not common, it allows an easier
+#' hook to produce other standard effect curves like Emax/Imax, Hill, etc.
 #'
 #' @export
 #' @author Matthew L. Fidler
-#' @family idr, PK
+#' @family Indirect response
 #' @examples
 #'
 #' readModelDb("PK_2cmt_no_depot") |> addIndirectLin(stim="in")
@@ -186,6 +185,7 @@ addIndirectLin <- function(ui,
 #' @return pk model with indirect response model added
 #' @export
 #' @author Matthew L. Fidler
+#' @family Indirect response
 #' @examples
 #'
 #' readModelDb("PK_2cmt_no_depot") |>

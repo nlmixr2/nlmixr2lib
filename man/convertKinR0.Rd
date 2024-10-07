@@ -21,12 +21,19 @@ convertKinR0(ui, kin = "kin", kout = "kout", R = "R", R0 = "R0")
 a model where the estimated kin is changed to the estimated R0
 }
 \description{
-This replaces the kin/kout parametrization to the R0 and kout parametrization
+This replaces the kin/kout parameterization to the R0 and kout
+parameterization
 }
 \examples{
 
 addIndirect(stim="in") |> convertKinR0()
 }
+\seealso{
+Other Indirect response: 
+\code{\link{addIndirect}()},
+\code{\link{addIndirectLin}()}
+}
 \author{
 Matthew L. Fidler
 }
+\concept{Indirect response}
