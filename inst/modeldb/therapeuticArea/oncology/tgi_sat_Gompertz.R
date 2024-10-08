@@ -1,4 +1,4 @@
-tgi_sat_genLogistic <- function() {
+tgi_sat_Gompertz<- function() {
   description <- "One compartment TGI model with tumor growth proportional to tumor size through a generalized logistic function, with saturation."
   ini({
     lts0 <- 0.3; label("Initial tumor size (TS0)") 
