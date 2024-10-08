@@ -28,8 +28,7 @@ tgi_sat_genLogistic <- function() {
 
     d/dt(depot) <- -ka*depot
     d/dt(central) <- ka*depot-kel*central
-    # The l() function is not found. Should it be log?
-    d/dt(tumorSize) <- (alpha-beta*ln(tumorSize))*tumorSize
+    d/dt(tumorSize) <- (alpha-beta*log(tumorSize))*tumorSize
     
     Cc <- central / vc
     Cc ~ prop(CcpropSd)
