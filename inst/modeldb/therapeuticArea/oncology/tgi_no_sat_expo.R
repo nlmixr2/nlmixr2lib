@@ -21,13 +21,7 @@ tgi_no_sat_expo <- function() {
     
     kel <- cl / vc
     tumorSize(0) <- ts0
-    depot(0) <- 0
-    central(0) <- 0
-    
     tau <- (1 / kge) * log(kgl / (kge * ts0))
-    
-   
-    
     
     d/dt(depot) <- -ka * depot
     d/dt(central) <- ka * depot - kel * central
