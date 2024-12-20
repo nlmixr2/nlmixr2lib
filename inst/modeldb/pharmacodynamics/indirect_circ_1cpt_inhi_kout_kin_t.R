@@ -24,6 +24,7 @@ indirect_circ_1cpt_inhi_kout_kin_t  <- function() {
     fdepot   <- exp(lfdepot)
     
     kin_t <- kout*rm+kout*ra*cos(0.2616*(t-tz))-0.2616*ra*sin(0.2616*(t-tz))
+    Cc <-  central/vc
     
     
     d/dt(depot)      <- -ka*depot
@@ -31,7 +32,6 @@ indirect_circ_1cpt_inhi_kout_kin_t  <- function() {
     d/dt(central)    <- ka*depot -(cl/vc)*central
     d/dt(effect) <- kin_t - kout*(1-imax*Cc/(Cc + IC50))*effect
     
-    Cc <-  central/vc
     Cc ~ prop(propSd)
   })
 }

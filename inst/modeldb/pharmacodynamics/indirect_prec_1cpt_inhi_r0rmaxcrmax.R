@@ -27,6 +27,7 @@ indirect_prec_1cpt_inhi_r0rmaxcrmax  <- function() {
     imax <- (r0-rmax)/r0
     kin <- (kout*(kin+kpout)*r0)/kpin
     IC50 <- crmax*(rmax-(1-imax)*r0)/(r0-rmax)
+    Cc <-  central/vc
     
     d/dt(depot)      <- -ka*depot
     f(depot)         <- fdepot
@@ -34,7 +35,6 @@ indirect_prec_1cpt_inhi_r0rmaxcrmax  <- function() {
     d/dt(precursor)  <- kpin -(kin + kpout)*(1-imax*Cc/(Cc + IC50))*precursor
     d/dt(effect)   <- kin*(1-imax*Cc/(Cc + IC50))*precursor-kout*effect
     
-    Cc <-  central/vc
     Cc ~ prop(propSd)
   })
 }
