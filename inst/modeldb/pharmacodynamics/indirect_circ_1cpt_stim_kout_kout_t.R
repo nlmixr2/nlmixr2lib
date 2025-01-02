@@ -24,13 +24,13 @@ indirect_circ_1cpt_stim_kout_kout_t <- function() {
     fdepot   <- exp(lfdepot)
     
     kout_t <- kin + 0.2616*ra*sin(0.2616*(t-tz))/(rm+ra*cos*(0.2616*(t-tz)))
+    Cc <-  central/vc
     
     d/dt(depot)      <- -ka*depot
     f(depot)         <- fdepot
     d/dt(central)    <- ka*depot -kel*central
     d/dt(effect) <- kin_t - kout*(1+Emax*Cc/(Cc + IC50))*effect
     
-    Cc <-  central/vc
     Cc ~ prop(propSd)
   })
 }
