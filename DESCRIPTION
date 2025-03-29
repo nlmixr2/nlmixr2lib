@@ -22,7 +22,7 @@ Imports:
     methods,
     nlmixr2est,
     rxode2 (>= 2.0.12)
-License: GPL (>= 2)
+License: MIT + file LICENSE
 LazyData: true
 RoxygenNote: 7.3.2
 VignetteBuilder: knitr
