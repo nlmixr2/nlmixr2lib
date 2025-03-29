@@ -12,7 +12,8 @@ Description: A model library for 'nlmixr2'.  The models include
 Authors@R: c(
   person("Richard","Hooijmaijers", email="richardhooijmaijers@gmail.com",role="aut"),
   person("Matthew","Fidler", email="richardhooijmaijers@gmail.com",role=c("aut"), comment=c(ORCID="0000-0001-8538-6691")),
-  person("Bill", "Denney", email="wdenney@humanpredictions.com", role=c("aut", "cre"), comment=c(ORCID="0000-0002-5759-428X"))
+  person("Bill", "Denney", email="wdenney@humanpredictions.com", role=c("aut", "cre"), comment=c(ORCID="0000-0002-5759-428X")),
+  person("Kiranmayi", "Vedantham", email="kiranmayi.vedantham@gmail.com", role=c("aut"),comment=c(ORCID="0009-0003-0828-6445"))
   )
 Depends:
     R (>= 4.0)
