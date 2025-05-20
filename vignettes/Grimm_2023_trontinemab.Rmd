@@ -1,0 +1,64 @@
+---
+title: "Trontinemab PK in plasma and brain (Grimm 2023)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Trontinemab PK in plasma and brain (Grimm 2023)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(nlmixr2lib)
+library(dplyr)
+library(ggplot2)
+```
+
+# Simulate trontinemab PK in plasma
+
+Replicate figure 2 in the publication with a single 10 mg/kg dose to a
+cynomolgus monkey.
+
+```{r model-setup}
+dSimDose <-
+  data.frame(
+    ID = 1,
+    AMT = 10, # mg/kg
+    WT = 5, # cynomologus monkey body weight according to the paper
+    TIME = 0,
+    EVID = 1,
+    CMT = "central"
+  )
+dSimObs <-
+  data.frame(
+    ID = 1,
+    AMT = 0,
+    WT = 5,
+    TIME = c(5/60, 1, 2, 4, 8, 12, seq(24, 336, by = 24)),
+    EVID = 0,
+    CMT = "central"
+  )
+dSimPrep <- dplyr::bind_rows(dSimDose, dSimObs)
+Grimm2023 <- readModelDb("Grimm_2023_trontinemab")
+dSim <- nlmixr2::nlmixr2(Grimm2023, data = dSimPrep, est = "rxSolve")
+```
+
+Plot the results.
+
+```{r plot-plasma}
+ggplot(dSim, aes(x = time, y = sim)) +
+  geom_line() +
+  labs(
+    x = "Time (h)",
+    y = "Concentration (ng/mL)"
+  ) +
+  scale_y_log10() +
+  scale_x_continuous(breaks = seq(0, 336, by = 48)) +
+  coord_cartesian(ylim = c(1e3, NA))
+```

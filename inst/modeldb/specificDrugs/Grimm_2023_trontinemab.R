@@ -7,8 +7,8 @@ Grimm_2023_trontinemab <- function() {
       WT = "Body weight (kg)"
     )
   ini({
-    lcl <- log(1.01); label("Clearance (mL/h/kg)") # from table 1
     lvc <- log(45.4); label("Central volume of distribution (mL/kg)") # from table 1
+    lcl <- log(1.01); label("Clearance (mL/h/kg)") # from table 1
     lvp <- log(63.2); label("Peripheral volume of distribution (mL/kg)") # from table 1
     lq <- log(0.746); label("Intercompartmental clearance (mL/h/kg)") # from table 1
     lvm <- log(78.8); label("Michaelis-Menten maximum clearance (mL/h/kg)") # CLmax from supplement
@@ -20,10 +20,10 @@ Grimm_2023_trontinemab <- function() {
     CcaddSd <- 0; label("Additive residual error (ug/mL)")
   })
   model({
-    cl <- exp(lcl + log(WT/70)*allo_cl)
-    vc <- exp(lvc + log(WT/70)*allo_v)
-    vp <- exp(lvp + log(WT/70)*allo_v)
-    q <- exp(lq + log(WT/70)*allo_cl)
+    cl <- exp(lcl + log(WT/5)*allo_cl)
+    vc <- exp(lvc + log(WT/5)*allo_v)
+    vp <- exp(lvp + log(WT/5)*allo_v)
+    q <- exp(lq + log(WT/5)*allo_cl)
     vm <- exp(lvm)
     km <- exp(lkm)
     
@@ -31,9 +31,9 @@ Grimm_2023_trontinemab <- function() {
     k12 <- q/vc
     k21 <- q/vp
 
-    d/dt(central) <- -kel*central - (vm * central/vc*1e6)/(km + central/vc*1e6) - k12 * central + k21 * peripheral1
+    d/dt(central) <- -kel*central - central*(vm/vc) /(1 + (central/vc*1e6) / km) - k12 * central + k21 * peripheral1
     d/dt(peripheral1) <- k12 * central - k21 * peripheral1
-    # *1e6 for unit conversion from mg/mL to ng/mL
+    # Unit conversion from mg/kg to ng/mL
     Cc <- central / vc * 1e6
     
     Cc ~ add(CcaddSd) + prop(CcpropSd)

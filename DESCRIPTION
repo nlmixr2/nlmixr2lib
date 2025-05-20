@@ -19,6 +19,7 @@ Depends:
 Imports: 
     checkmate,
     cli,
+    ggplot2,
     methods,
     nlmixr2est,
     rxode2 (>= 2.0.12)
