@@ -33,8 +33,10 @@ Encoding: UTF-8
 Language: en-US
 Suggests: 
     covr,
+    dplyr,
     knitr,
     rmarkdown,
     testthat (>= 3.0.0),
+    tidyr,
     withr
 Config/testthat/edition: 3

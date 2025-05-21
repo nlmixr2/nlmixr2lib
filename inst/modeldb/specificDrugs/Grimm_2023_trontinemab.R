@@ -1,7 +1,24 @@
 Grimm_2023_trontinemab <- function() {
   description <- "Trontinemab PK model (Grimm 2017)"
   reference <- "Grimm HP, Schumacher ,Vanessa, Schäfer ,Martin, et al. Delivery of the Brainshuttle™ amyloid-beta antibody fusion trontinemab to non-human primate brain and projected efficacious dose regimens in humans. mAbs. 2023;15(1):2261509. doi:10.1080/19420862.2023.2261509"
-  units <- list(time = "hour", dosing = "mg/kg", dv = "ng/mL")
+  units <-
+    list(
+      time = "hour",
+      dosing = "mg/kg",
+      Cc = "ng/mL",
+      Ccerebellum = "ng/g",
+      Cbrain_cerebellum = "ng/g",
+      Chippocampus = "ng/g",
+      Cbrain_hippocampus = "ng/g",
+      Cstriatum = "ng/g",
+      Cbrain_striatum = "ng/g",
+      Ccortex = "ng/g",
+      Cbrain_cortex = "ng/g",
+      Cchoroid_plexus = "ng/g",
+      Cbrain_choroid_plexus = "ng/g",
+      Ccsf = "ng/g",
+      Cbrain_csf = "ng/g"
+    )
   covariateData <-
     list(
       WT = "Body weight (kg)"
@@ -15,6 +32,30 @@ Grimm_2023_trontinemab <- function() {
     lkm <- log(78.6); label("Michaelis-Menten half-maximal concentration (ng/mL)") # from supplement
     allo_cl <- fixed(0.85); label("Allometric exponent for clearance") # from text on page 11
     allo_v <- fixed(1); label("Allometric exponent for clearance") # from text on page 11
+    
+    kp_cerebellum <- 5.17e-3; label("Brain distribution coefficient, cerebellum (unitless)")
+    kout_cerebellum <- 0.0624; label("Brain outflow rate, cerebellum (1/h)")
+    fpla_cerebellum <- 1.26e-3; label("Residual plasma fraction, cerebellum")
+
+    kp_hippocampus <- 5.59e-3; label("Brain distribution coefficient, hippocampus (unitless)")
+    kout_hippocampus <- 0.0433; label("Brain outflow rate, hippocampus (1/h)")
+    fpla_hippocampus <- 0.621e-3; label("Residual plasma fraction, hippocampus")
+    
+    kp_striatum <- 7.76e-3; label("Brain distribution coefficient, striatum (unitless)")
+    kout_striatum <- 0.0371; label("Brain outflow rate, striatum (1/h)")
+    fpla_striatum <- 0.298e-3; label("Residual plasma fraction, striatum")
+    
+    kp_cortex <- 4.62e-3; label("Brain distribution coefficient, cortex (unitless)")
+    kout_cortex <- 0.0344; label("Brain outflow rate, cortex (1/h)")
+    fpla_cortex <- 0.782e-3; label("Residual plasma fraction, cortex")
+    
+    kp_choroid_plexus <- 4.31e-3; label("Brain distribution coefficient, choroid plexus (unitless)")
+    kout_choroid_plexus <- 0.0318; label("Brain outflow rate, choroid plexus (1/h)")
+    fpla_choroid_plexus <- 18.4e-3; label("Residual plasma fraction, choroid plexus")
+    
+    kp_csf <- 2.34e-3; label("Brain distribution coefficient, cerebrospinal fluid (unitless)")
+    kout_csf <- 0.0373; label("Brain outflow rate, cerebrospinal fluid (1/h)")
+    fpla_csf <- fixed(0); label("Residual plasma fraction, cerebrospinal fluid")
     
     CcpropSd <- 0; label("Proportional residual error (fraction)")
     CcaddSd <- 0; label("Additive residual error (ug/mL)")
@@ -35,6 +76,26 @@ Grimm_2023_trontinemab <- function() {
     d/dt(peripheral1) <- k12 * central - k21 * peripheral1
     # Unit conversion from mg/kg to ng/mL
     Cc <- central / vc * 1e6
+    
+    # Equation 1 (page 11): dCext/dt = kout*(Kp*Cpla - Cext)
+    d/dt(Ccerebellum) <- kout_cerebellum*(kp_cerebellum*Cc - Ccerebellum)
+    # Equation 2 (page 11): Cbrn = fpla*Cpla + Cext
+    Cbrain_cerebellum <- fpla_cerebellum*Cc + Ccerebellum
+    
+    d/dt(Chippocampus) <- kout_hippocampus*(kp_hippocampus*Cc - Chippocampus)
+    Cbrain_hippocampus <- fpla_hippocampus*Cc + Chippocampus
+    
+    d/dt(Cstriatum) <- kout_striatum*(kp_striatum*Cc - Cstriatum)
+    Cbrain_striatum <- fpla_striatum*Cc + Cstriatum
+    
+    d/dt(Ccortex) <- kout_cortex*(kp_cortex*Cc - Ccortex)
+    Cbrain_cortex <- fpla_cortex*Cc + Ccortex
+    
+    d/dt(Cchoroid_plexus) <- kout_choroid_plexus*(kp_choroid_plexus*Cc - Cchoroid_plexus)
+    Cbrain_choroid_plexus <- fpla_choroid_plexus*Cc + Cchoroid_plexus
+    
+    d/dt(Ccsf) <- kout_csf*(kp_csf*Cc - Ccsf)
+    Cbrain_csf <- fpla_csf*Cc + Ccsf
     
     Cc ~ add(CcaddSd) + prop(CcpropSd)
   })
