@@ -4,7 +4,6 @@ on:
   push:
     branches: [main, master]
   pull_request:
-    branches: [main, master]
 
 name: R-CMD-check.yaml
 
@@ -24,21 +23,13 @@ jobs:
           - {os: windows-latest, r: 'release'}
           - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
           - {os: ubuntu-latest,   r: 'release'}
-          #- {os: ubuntu-latest,   r: 'oldrel-1'}
+          - {os: ubuntu-latest,   r: 'oldrel-1'}
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       R_KEEP_PKG_SOURCE: yes
 
     steps:
-      - name: Install deps on MacOS
-        if: runner.os == 'macOS'
-        run: |
-          brew install --cask xquartz
-          brew install cairo
-          brew install udunits
-        shell: bash
-
       - uses: actions/checkout@v4
 
       - uses: r-lib/actions/setup-pandoc@v2
@@ -51,20 +42,7 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          cache-version: 2
-          extra-packages: |
-            any::rcmdcheck
-            nlmixr2/dparser-R
-            nlmixr2/lbfgsb3c
-            nlmixr2/lotri
-            nlmixr2/PreciseSums
-            nlmixr2/n1qn1c
-            nlmixr2/rxode2ll
-            nlmixr2/rxode2
-            nlmixr2/nlmixr2est
-            nlmixr2/nlmixr2extra
-            nlmixr2/nlmixr2plot
-            nlmixr2/nlmixr2
+          extra-packages: any::rcmdcheck
           needs: check
 
       - uses: r-lib/actions/check-r-package@v2
