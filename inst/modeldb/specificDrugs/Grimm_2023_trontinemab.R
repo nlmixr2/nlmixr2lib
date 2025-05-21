@@ -36,22 +36,27 @@ Grimm_2023_trontinemab <- function() {
     kp_cerebellum <- 5.17e-3; label("Brain distribution coefficient, cerebellum (unitless)")
     kout_cerebellum <- 0.0624; label("Brain outflow rate, cerebellum (1/h)")
     fpla_cerebellum <- 1.26e-3; label("Residual plasma fraction, cerebellum")
+    bsv_fpla_cerebellum ~ 1.93
 
     kp_hippocampus <- 5.59e-3; label("Brain distribution coefficient, hippocampus (unitless)")
     kout_hippocampus <- 0.0433; label("Brain outflow rate, hippocampus (1/h)")
     fpla_hippocampus <- 0.621e-3; label("Residual plasma fraction, hippocampus")
+    bsv_fpla_hippocampus ~ 1.04
     
     kp_striatum <- 7.76e-3; label("Brain distribution coefficient, striatum (unitless)")
     kout_striatum <- 0.0371; label("Brain outflow rate, striatum (1/h)")
     fpla_striatum <- 0.298e-3; label("Residual plasma fraction, striatum")
+    bsv_fpla_striatum ~ 1.96
     
     kp_cortex <- 4.62e-3; label("Brain distribution coefficient, cortex (unitless)")
     kout_cortex <- 0.0344; label("Brain outflow rate, cortex (1/h)")
     fpla_cortex <- 0.782e-3; label("Residual plasma fraction, cortex")
+    bsv_fpla_cortex ~ 1.57
     
     kp_choroid_plexus <- 4.31e-3; label("Brain distribution coefficient, choroid plexus (unitless)")
     kout_choroid_plexus <- 0.0318; label("Brain outflow rate, choroid plexus (1/h)")
     fpla_choroid_plexus <- 18.4e-3; label("Residual plasma fraction, choroid plexus")
+    bsv_fpla_choroid_plexus ~ 1.09
     
     kp_csf <- 2.34e-3; label("Brain distribution coefficient, cerebrospinal fluid (unitless)")
     kout_csf <- 0.0373; label("Brain outflow rate, cerebrospinal fluid (1/h)")
@@ -68,6 +73,12 @@ Grimm_2023_trontinemab <- function() {
     vm <- exp(lvm)
     km <- exp(lkm)
     
+    fpla_cerebellum_i <- fpla_cerebellum * exp(bsv_fpla_cerebellum)
+    fpla_hippocampus_i <- fpla_hippocampus * exp(bsv_fpla_hippocampus)
+    fpla_striatum_i <- fpla_striatum * exp(bsv_fpla_striatum)
+    fpla_cortex_i <- fpla_cortex * exp(bsv_fpla_cortex)
+    fpla_choroid_plexus_i <- fpla_choroid_plexus * exp(bsv_fpla_choroid_plexus)
+    
     kel <- cl/vc
     k12 <- q/vc
     k21 <- q/vp
@@ -80,19 +91,19 @@ Grimm_2023_trontinemab <- function() {
     # Equation 1 (page 11): dCext/dt = kout*(Kp*Cpla - Cext)
     d/dt(Ccerebellum) <- kout_cerebellum*(kp_cerebellum*Cc - Ccerebellum)
     # Equation 2 (page 11): Cbrn = fpla*Cpla + Cext
-    Cbrain_cerebellum <- fpla_cerebellum*Cc + Ccerebellum
+    Cbrain_cerebellum <- fpla_cerebellum_i*Cc + Ccerebellum
     
     d/dt(Chippocampus) <- kout_hippocampus*(kp_hippocampus*Cc - Chippocampus)
-    Cbrain_hippocampus <- fpla_hippocampus*Cc + Chippocampus
+    Cbrain_hippocampus <- fpla_hippocampus_i*Cc + Chippocampus
     
     d/dt(Cstriatum) <- kout_striatum*(kp_striatum*Cc - Cstriatum)
-    Cbrain_striatum <- fpla_striatum*Cc + Cstriatum
+    Cbrain_striatum <- fpla_striatum_i*Cc + Cstriatum
     
     d/dt(Ccortex) <- kout_cortex*(kp_cortex*Cc - Ccortex)
-    Cbrain_cortex <- fpla_cortex*Cc + Ccortex
+    Cbrain_cortex <- fpla_cortex_i*Cc + Ccortex
     
     d/dt(Cchoroid_plexus) <- kout_choroid_plexus*(kp_choroid_plexus*Cc - Cchoroid_plexus)
-    Cbrain_choroid_plexus <- fpla_choroid_plexus*Cc + Cchoroid_plexus
+    Cbrain_choroid_plexus <- fpla_choroid_plexus_i*Cc + Cchoroid_plexus
     
     d/dt(Ccsf) <- kout_csf*(kp_csf*Cc - Ccsf)
     Cbrain_csf <- fpla_csf*Cc + Ccsf

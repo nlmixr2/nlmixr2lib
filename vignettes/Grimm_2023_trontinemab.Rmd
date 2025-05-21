@@ -46,12 +46,13 @@ dSimObs <-
   )
 dSimPrep <- dplyr::bind_rows(dSimDose, dSimObs)
 Grimm2023 <- readModelDb("Grimm_2023_trontinemab")
-dSim <- nlmixr2::nlmixr2(Grimm2023, data = dSimPrep, est = "rxSolve")
+# Set BSV to zero for simulation to get a reproducible result
+dSim <- nlmixr2::nlmixr2(Grimm2023 |> rxode2::zeroRe(), data = dSimPrep, est = "rxSolve")
 ```
 
 # Plot plasma PK
 
-Replicating figure 2 from the paper.
+Replicate figure 2 from the paper.
 
 ```{r plot-plasma}
 ggplot(dSim, aes(x = time, y = sim)) +
@@ -67,7 +68,7 @@ ggplot(dSim, aes(x = time, y = sim)) +
 
 # Plot brain PK
 
-Replicating figure 3 from the paper.
+Replicate figure 3 from the paper.
 
 ```{r plot-brain}
 d_plot_brain <-
