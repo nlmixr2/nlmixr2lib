@@ -19,6 +19,7 @@ Petri
 Pharmacokinetic
 Simeoni
 Soehoel
+Trontinemab
 Vc
 Vmax
 Zhu
@@ -26,6 +27,7 @@ aob
 bioavailability
 camelCase
 cmt
+cynomolgus
 defaultCombine
 dupilumab
 exenatide
@@ -53,9 +55,9 @@ pharmacometrics
 rxUi
 rxode
 searchReplace
-sigmoid
 snakeCase
 tralokinumab
+trontinemab
 ui
 vc
 vss
