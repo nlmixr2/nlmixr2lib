@@ -22,8 +22,6 @@ Imports:
     methods,
     nlmixr2est,
     rxode2 (>= 2.0.12)
-Suggests:
-    qs
 License: GPL (>= 2)
 LazyData: true
 RoxygenNote: 7.3.2
@@ -37,5 +35,6 @@ Suggests:
     knitr,
     rmarkdown,
     testthat (>= 3.0.0),
+    qs,
     withr
 Config/testthat/edition: 3
