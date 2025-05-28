@@ -4,7 +4,6 @@ on:
   push:
     branches: [main, master]
   pull_request:
-    branches: [main, master]
 
 name: test-coverage.yaml
 
@@ -25,22 +24,7 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          cache-version: 2
-          pak-version: devel
-          extra-packages: |
-            any::covr
-            any::xml2
-            nlmixr2/dparser-R
-            nlmixr2/lbfgsb3c
-            nlmixr2/lotri
-            nlmixr2/PreciseSums
-            nlmixr2/n1qn1c
-            nlmixr2/rxode2ll
-            nlmixr2/rxode2
-            nlmixr2/nlmixr2est
-            nlmixr2/nlmixr2extra
-            nlmixr2/nlmixr2plot
-            nlmixr2/nlmixr2
+          extra-packages: any::covr, any::xml2
           needs: coverage
 
       - name: Test coverage
@@ -50,14 +34,16 @@ jobs:
             clean = FALSE,
             install_path = file.path(normalizePath(Sys.getenv("RUNNER_TEMP"), winslash = "/"), "package")
           )
+          print(cov)
           covr::to_cobertura(cov)
         shell: Rscript {0}
 
-      - uses: codecov/codecov-action@v4
+      - uses: codecov/codecov-action@v5
         with:
-          fail_ci_if_error: ${{ github.event_name != 'pull_request' && true || false }}
-          file: ./cobertura.xml
-          plugin: noop
+          # Fail if error if not on PR, or if on PR and token is given
+          fail_ci_if_error: ${{ github.event_name != 'pull_request' || secrets.CODECOV_TOKEN }}
+          files: ./cobertura.xml
+          plugins: noop
           disable_search: true
           token: ${{ secrets.CODECOV_TOKEN }}
 
