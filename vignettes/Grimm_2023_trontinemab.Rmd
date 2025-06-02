@@ -47,7 +47,7 @@ dSimObs <-
 dSimPrep <- dplyr::bind_rows(dSimDose, dSimObs)
 Grimm2023 <- readModelDb("Grimm_2023_trontinemab")
 # Set BSV to zero for simulation to get a reproducible result
-dSim <- nlmixr2::nlmixr2(Grimm2023 |> rxode2::zeroRe(), data = dSimPrep, est = "rxSolve")
+dSim <- rxode2::rxSolve(Grimm2023 |> rxode2::zeroRe(), events = dSimPrep)
 ```
 
 # Plot plasma PK
