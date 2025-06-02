@@ -6,11 +6,12 @@
 #' @examples
 #' readModelDb("PK_1cmt")
 readModelDb <- function(name) {
-  if (!(name %in% modeldb$name)) {
+  .modeldb <- qs::qread(system.file("modeldb.qs", package="nlmixr2lib"))
+  if (!(name %in% .modeldb$name)) {
     stop("'name' not in database")
   } else {
     # Check for the base file path
-    .fileName <- modeldb$filename[modeldb$name == name]
+    .fileName <- .modeldb$filename[.modeldb$name == name]
     if (!file.exists(.fileName)) {
       # Check within the package
       .fileName <- system.file(file.path("modeldb", .fileName), package = "nlmixr2lib")
