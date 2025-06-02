@@ -19,6 +19,7 @@ Depends:
 Imports:
     checkmate,
     cli,
+    ggplot2,
     methods,
     nlmixr2est,
     rxode2 (>= 2.0.12)
@@ -32,9 +33,11 @@ Encoding: UTF-8
 Language: en-US
 Suggests:
     covr,
+    dplyr,
     knitr,
     rmarkdown,
     testthat (>= 3.0.0),
     qs,
+    tidyr,
     withr
 Config/testthat/edition: 3
