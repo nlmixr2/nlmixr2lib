@@ -2,7 +2,7 @@
 title: "Trontinemab and gantenerumab PK in plasma and brain (Grimm 2023)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Trontinemab PK in plasma and brain (Grimm 2023)}
+  %\VignetteIndexEntry{Trontinemab and gantenerumab PK in plasma and brain (Grimm 2023)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -58,7 +58,7 @@ dSimTront$Analyte <- "Trontinemab"
 Replicate figures 2 and 3 in the publication with a single 20 mg/kg dose to a
 cynomolgus monkey.
 
-```{r model-setup-trontinemab}
+```{r model-setup-gantenerumab}
 dSimDose <-
   data.frame(
     ID = 1,
