@@ -1,5 +1,5 @@
-Grimm_2023_trontinemab <- function() {
-  description <- "Trontinemab PK model (Grimm 2017)"
+Grimm_2023_gantenerumab <- function() {
+  description <- "Gantenerumab PK model (Grimm 2017)"
   reference <- "Grimm HP, Schumacher ,Vanessa, Schäfer ,Martin, et al. Delivery of the Brainshuttle™ amyloid-beta antibody fusion trontinemab to non-human primate brain and projected efficacious dose regimens in humans. mAbs. 2023;15(1):2261509. doi:10.1080/19420862.2023.2261509"
   units <-
     list(
@@ -24,43 +24,41 @@ Grimm_2023_trontinemab <- function() {
       WT = "Body weight (kg)"
     )
   ini({
-    lvc <- log(45.4); label("Central volume of distribution (mL/kg)") # from table 1
-    lcl <- log(1.01); label("Clearance (mL/h/kg)") # from table 1
-    lvp <- log(63.2); label("Peripheral volume of distribution (mL/kg)") # from table 1
-    lq <- log(0.746); label("Intercompartmental clearance (mL/h/kg)") # from table 1
-    lvm <- log(78.8); label("Michaelis-Menten maximum clearance (mL/h/kg)") # CLmax from supplement
-    lkm <- log(78.6); label("Michaelis-Menten half-maximal concentration (ng/mL)") # from supplement
+    lvc <- log(50.8); label("Central volume of distribution (mL/kg)") # from table 1
+    lcl <- log(0.537); label("Clearance (mL/h/kg)") # from table 1
+    lvp <- log(97.1); label("Peripheral volume of distribution (mL/kg)") # from table 1
+    lq <- log(2.86); label("Intercompartmental clearance (mL/h/kg)") # from table 1
     allo_cl <- fixed(0.85); label("Allometric exponent for clearance") # from text on page 11
     allo_v <- fixed(1); label("Allometric exponent for clearance") # from text on page 11
     
     # From supplementary Table 1
-    kp_cerebellum <- 5.17e-3; label("Brain distribution coefficient, cerebellum (unitless)")
+    kp_cerebellum <- 0.726e-3; label("Brain distribution coefficient, cerebellum (unitless)")
     kout_cerebellum <- 0.0624; label("Brain outflow rate, cerebellum (1/h)")
     fpla_cerebellum <- 1.26e-3; label("Residual plasma fraction, cerebellum")
     bsv_fpla_cerebellum ~ 1.93
 
-    kp_hippocampus <- 5.59e-3; label("Brain distribution coefficient, hippocampus (unitless)")
+    kp_hippocampus <- 0.298e-3; label("Brain distribution coefficient, hippocampus (unitless)")
     kout_hippocampus <- 0.0433; label("Brain outflow rate, hippocampus (1/h)")
     fpla_hippocampus <- 0.621e-3; label("Residual plasma fraction, hippocampus")
     bsv_fpla_hippocampus ~ 1.04
     
-    kp_striatum <- 7.76e-3; label("Brain distribution coefficient, striatum (unitless)")
+    kp_striatum <- 0.235e-3; label("Brain distribution coefficient, striatum (unitless)")
     kout_striatum <- 0.0371; label("Brain outflow rate, striatum (1/h)")
     fpla_striatum <- 0.298e-3; label("Residual plasma fraction, striatum")
     bsv_fpla_striatum ~ 1.96
     
-    kp_cortex <- 4.62e-3; label("Brain distribution coefficient, cortex (unitless)")
+    kp_cortex <- 0.406e-3; label("Brain distribution coefficient, cortex (unitless)")
     kout_cortex <- 0.0344; label("Brain outflow rate, cortex (1/h)")
     fpla_cortex <- 0.782e-3; label("Residual plasma fraction, cortex")
     bsv_fpla_cortex ~ 1.57
     
-    kp_choroid_plexus <- 4.31e-3; label("Brain distribution coefficient, choroid plexus (unitless)")
+    kp_choroid_plexus <- 1.66e-3; label("Brain distribution coefficient, choroid plexus (unitless)")
     kout_choroid_plexus <- 0.0318; label("Brain outflow rate, choroid plexus (1/h)")
     fpla_choroid_plexus <- 18.4e-3; label("Residual plasma fraction, choroid plexus")
     bsv_fpla_choroid_plexus ~ 1.09
     
-    kp_csf <- 2.34e-3; label("Brain distribution coefficient, cerebrospinal fluid (unitless)")
-    kout_csf <- 0.0373; label("Brain outflow rate, cerebrospinal fluid (1/h)")
+    kp_csf <- 3.00e-3; label("Brain distribution coefficient, cerebrospinal fluid (unitless)")
+    kout_csf <- 0.0134; label("Brain outflow rate, cerebrospinal fluid (1/h)")
     fpla_csf <- fixed(0); label("Residual plasma fraction, cerebrospinal fluid")
     
     CcpropSd <- 0; label("Proportional residual error (fraction)")
@@ -71,9 +69,7 @@ Grimm_2023_trontinemab <- function() {
     vc <- exp(lvc + log(WT/5)*allo_v)
     vp <- exp(lvp + log(WT/5)*allo_v)
     q <- exp(lq + log(WT/5)*allo_cl)
-    vm <- exp(lvm)
-    km <- exp(lkm)
-    
+
     fpla_cerebellum_i <- fpla_cerebellum * exp(bsv_fpla_cerebellum)
     fpla_hippocampus_i <- fpla_hippocampus * exp(bsv_fpla_hippocampus)
     fpla_striatum_i <- fpla_striatum * exp(bsv_fpla_striatum)
@@ -84,7 +80,7 @@ Grimm_2023_trontinemab <- function() {
     k12 <- q/vc
     k21 <- q/vp
 
-    d/dt(central) <- -kel*central - central*(vm/vc) /(1 + (central/vc*1e6) / km) - k12 * central + k21 * peripheral1
+    d/dt(central) <- -kel*central - k12 * central + k21 * peripheral1
     d/dt(peripheral1) <- k12 * central - k21 * peripheral1
     # Unit conversion from mg/kg to ng/mL
     Cc <- central / vc * 1e6
