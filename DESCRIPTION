@@ -1,6 +1,6 @@
 Package: nlmixr2lib
 Type: Package
-Version: 0.3.0
+Version: 0.3.0.9000
 Title: A Model Library for 'nlmixr2'
 Description: A model library for 'nlmixr2'.  The models include
   (and plan to include) pharmacokinetic, pharmacodynamic, and
