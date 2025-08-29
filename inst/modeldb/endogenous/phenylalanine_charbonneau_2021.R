@@ -39,7 +39,7 @@ phenylalanine_charbonneau_2021 <- function() {
     v_renal <- phe * cl_renal * vd # units: (mmol/L)/hr
 
     d/dt(gut) <- -ka_gut*gut
-    d/dt(phe) <- ka*gut*f_gut_plasma + v_npd - v_pah - v_trans - v_renal
+    d/dt(phe) <- ka_gut*gut*f_gut_plasma + v_npd - v_pah - v_trans - v_renal
     gut(0) <- bl_gut
     phe(0) <- bl_phe
     phe_umol <- phe * 1000 # units: umol/L (more commonly used in clinical laboratories)
