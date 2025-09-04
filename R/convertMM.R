@@ -63,17 +63,7 @@
       if (.neg) {
         x[[2]] <- .x20
       }
-      ret <- as.call(lapply(x, .replaceMultC, v1=v1, v2=v2, ret=ret))
-
-      ## if (.neg) {
-      ##   if (substr(deparse1(ret), 1, 1) != "-") {
-      ##     return(str2lang(paste0("-", deparse1(ret))))
-      ##   } else {
-      ##     return(ret)
-      ##   }
-      ## } else {
-      return(ret)
-      ## }
+      as.call(lapply(x, .replaceMultC, v1=v1, v2=v2, ret=ret))
     } else {
       as.call(lapply(x, .replaceMultC, v1=v1, v2=v2, ret=ret))
     }

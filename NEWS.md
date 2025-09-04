@@ -1,5 +1,7 @@
 # nlmixr2lib
 
+* Bug fix for replacement of multiplicative expressions in `nlmixr2lib`
+
 # Version 0.3.0
 
 * Added ability to choose style type when modifying models.  Currently
