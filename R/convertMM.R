@@ -59,7 +59,12 @@
           return(ret)
         }
       }
-      as.call(lapply(x, .replaceMultC, v1=v1, v2=v2, ret=ret))
+      ret <- as.call(lapply(x, .replaceMultC, v1=v1, v2=v2, ret=ret))
+      if (.neg) {
+        return(str2lang(paste0("-", deparse1(ret))))
+      } else {
+        return(ret)
+      }
     } else {
       as.call(lapply(x, .replaceMultC, v1=v1, v2=v2, ret=ret))
     }
