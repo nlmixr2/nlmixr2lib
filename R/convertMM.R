@@ -40,6 +40,7 @@
     if (length(x) == 3 &&
           identical(x[[1]], quote(`*`))) {
       .neg <- FALSE
+      .x20 <- x[[2]]
       if (length(x[[2]]) == 2 &&
             identical(x[[2]][[1]], quote(`+`))) {
         x[[2]] <- x[[2]][[2]]
@@ -59,12 +60,20 @@
           return(ret)
         }
       }
-      ret <- as.call(lapply(x, .replaceMultC, v1=v1, v2=v2, ret=ret))
       if (.neg) {
-        return(str2lang(paste0("-", deparse1(ret))))
-      } else {
-        return(ret)
+        x[[2]] <- .x20
       }
+      ret <- as.call(lapply(x, .replaceMultC, v1=v1, v2=v2, ret=ret))
+
+      ## if (.neg) {
+      ##   if (substr(deparse1(ret), 1, 1) != "-") {
+      ##     return(str2lang(paste0("-", deparse1(ret))))
+      ##   } else {
+      ##     return(ret)
+      ##   }
+      ## } else {
+      return(ret)
+      ## }
     } else {
       as.call(lapply(x, .replaceMultC, v1=v1, v2=v2, ret=ret))
     }
