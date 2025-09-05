@@ -19,7 +19,6 @@ Depends:
 Imports:
     checkmate,
     cli,
-    ggplot2,
     methods,
     nlmixr2est,
     rxode2 (>= 2.0.12)
@@ -39,5 +38,6 @@ Suggests:
     testthat (>= 3.0.0),
     qs,
     tidyr,
+    ggplot2,
     withr
 Config/testthat/edition: 3
