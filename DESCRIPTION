@@ -15,7 +15,7 @@ Authors@R: c(
   person("Bill", "Denney", email="wdenney@humanpredictions.com", role=c("aut", "cre"), comment=c(ORCID="0000-0002-5759-428X"))
   )
 Depends:
-    R (>= 4.0)
+    R (>= 4.1)
 Imports:
     checkmate,
     cli,
