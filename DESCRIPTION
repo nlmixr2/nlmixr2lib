@@ -15,17 +15,16 @@ Authors@R: c(
   person("Bill", "Denney", email="wdenney@humanpredictions.com", role=c("aut", "cre"), comment=c(ORCID="0000-0002-5759-428X"))
   )
 Depends:
-    R (>= 4.0)
+    R (>= 4.1)
 Imports:
     checkmate,
     cli,
-    ggplot2,
     methods,
     nlmixr2est,
     rxode2 (>= 2.0.12)
 License: GPL (>= 2)
 LazyData: true
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 VignetteBuilder: knitr
 URL: https://github.com/nlmixr2/nlmixr2lib,
     https://nlmixr2.github.io/nlmixr2lib/
@@ -39,5 +38,6 @@ Suggests:
     testthat (>= 3.0.0),
     qs,
     tidyr,
+    ggplot2,
     withr
 Config/testthat/edition: 3

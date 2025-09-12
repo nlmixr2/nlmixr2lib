@@ -40,6 +40,7 @@
     if (length(x) == 3 &&
           identical(x[[1]], quote(`*`))) {
       .neg <- FALSE
+      .x20 <- x[[2]]
       if (length(x[[2]]) == 2 &&
             identical(x[[2]][[1]], quote(`+`))) {
         x[[2]] <- x[[2]][[2]]
@@ -58,6 +59,9 @@
         } else {
           return(ret)
         }
+      }
+      if (.neg) {
+        x[[2]] <- .x20
       }
       as.call(lapply(x, .replaceMultC, v1=v1, v2=v2, ret=ret))
     } else {

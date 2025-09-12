@@ -33,7 +33,7 @@ test_that("Test addWeibullAbs function adds depot", {
   expect_equal(rxode2::modelExtract(result, "d/dt(depot)"),
                "d/dt(depot) <- -(wb/wa) * (tad0(depot)/wa)^(wb - 1) * depot")
   expect_equal(rxode2::modelExtract(result, "d/dt(central)"),
-               "d/dt(central) <- kel * central - k12 * central + k21 * peripheral1 + (wb/wa) * (tad0(depot)/wa)^(wb - 1) * depot")
+               "d/dt(central) <- -kel * central - k12 * central + k21 * peripheral1 + (wb/wa) * (tad0(depot)/wa)^(wb - 1) * depot")
 
   expect_false("lka" %in% names(result$theta))
   expect_true("lwa" %in% names(result$theta))
