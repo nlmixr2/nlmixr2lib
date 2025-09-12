@@ -135,7 +135,7 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span>         kel &lt;- cl/vc</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         k12 &lt;- q/vc</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         k21 &lt;- q/vp</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         d/dt(central) &lt;- kel * central - k12 * central + k21 * </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         d/dt(central) &lt;- -kel * central - k12 * central + k21 * </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             peripheral1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         d/dt(peripheral1) &lt;- k12 * central - k21 * peripheral1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         Cc &lt;- central/vc</span>
@@ -202,7 +202,7 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span>         kel &lt;- cl/vc</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         k12 &lt;- q/vc</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         k21 &lt;- q/vp</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         d/dt(central) &lt;- kel * central - k12 * central + k21 * </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         d/dt(central) &lt;- -kel * central - k12 * central + k21 * </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             peripheral1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         d/dt(peripheral1) &lt;- k12 * central - k21 * peripheral1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         Cc &lt;- central/vc</span>

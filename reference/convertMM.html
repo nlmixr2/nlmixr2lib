@@ -127,7 +127,7 @@ model</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         km &lt;- exp(lkm)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         ka &lt;- exp(lka)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         vc &lt;- exp(lvc)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         d/dt(depot) &lt;- ka * depot</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         d/dt(depot) &lt;- -ka * depot</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         d/dt(central) &lt;- ka * depot - (vm * central/vc)/(km + </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             central/vc)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         Cc &lt;- central/vc</span>
@@ -174,7 +174,7 @@ model</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         q &lt;- exp(lq)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         k12 &lt;- q/vc</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         k21 &lt;- q/vp</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         d/dt(depot) &lt;- ka * depot</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         d/dt(depot) &lt;- -ka * depot</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         d/dt(central) &lt;- ka * depot - (vm * central/vc)/(km + </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             central/vc) - k12 * central + k21 * peripheral1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         d/dt(peripheral1) &lt;- k12 * central - k21 * peripheral1</span>
@@ -231,7 +231,7 @@ model</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         k21 &lt;- q/vp</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         k13 &lt;- q2/vc</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         k31 &lt;- q2/vp2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         d/dt(depot) &lt;- ka * depot</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         d/dt(depot) &lt;- -ka * depot</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         d/dt(central) &lt;- ka * depot - (vm * central/vc)/(km + </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             central/vc) - k12 * central + k21 * peripheral1 - </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             k13 * central + k31 * peripheral2</span>

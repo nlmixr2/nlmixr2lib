@@ -139,7 +139,7 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span>         cl &lt;- exp(lcl)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         vc &lt;- exp(lvc)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         kel &lt;- cl/vc</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         d/dt(depot) &lt;- ktr * depot</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         d/dt(depot) &lt;- -ktr * depot</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         d/dt(transit1) &lt;- ktr * depot - ktr * transit1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         d/dt(central) &lt;- ka * transit1 - kel * central</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         Cc &lt;- central/vc</span>
