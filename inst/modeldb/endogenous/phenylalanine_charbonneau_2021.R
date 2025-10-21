@@ -14,7 +14,7 @@ phenylalanine_charbonneau_2021 <- function() {
     bl_gut <- 0; label("Baseline Phe in the gut (mg)")
 
     ka_gut <- 0.25; label("Absorption rate from gut to plasma")
-    v_npd <- 0.015; label("Rate of net protein breakdown ((mmol/L)/hr)")
+    v_npd <- 0.012; label("Rate of net protein breakdown ((mmol/L)/hr)")
 
     vmax_pah <- 0.9; label("Maximum rate of Phe breakdown by PAH in a healthy subject ((mmol/L)/hr)")
     f_pah <- 0; label("Fraction of healthy PAH activity (PKU patient = 0 to 0.02)")
