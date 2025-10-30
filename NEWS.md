@@ -1,5 +1,9 @@
 # nlmixr2lib
 
+# Development version
+
+* Add Kim 2006 model for IgG metabolism
+
 # Version 0.3.1
 
 * Bug fix for replacement of multiplicative expressions in `nlmixr2lib`
