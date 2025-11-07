@@ -147,4 +147,4 @@ ggplot(d_plot, aes(x = time, y = prob_blq_c7dm)) +
 
 # Reference
 
-* `r mod$reference`
+* `r Xie_2019_agomelatine$reference`
