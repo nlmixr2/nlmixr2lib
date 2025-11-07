@@ -3,6 +3,7 @@
 # Development version
 
 * Add Kim 2006 model for IgG metabolism
+* Add Xie 2019 agomelatine PK model
 
 # Version 0.3.1
 
