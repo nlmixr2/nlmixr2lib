@@ -51,8 +51,7 @@ d_sim_prep$ooc1 <- 1
 d_sim_prep$ooc2 <- 
   d_sim_prep$ooc3 <- 
   d_sim_prep$ooc4 <- 0
-d_sim <- nlmixr2(Xie_2019_agomelatine |> zeroRe(), data = d_sim_prep, est = "rxSolve")
-d_sim_pop <- nlmixr2(Xie_2019_agomelatine, data = d_sim_prep, est = "rxSolve", control = rxControl(nStud = 1000))
+d_sim_pop <- nlmixr2(Xie_2019_agomelatine, data = d_sim_prep, est = "rxSolve", control = list(nStud = 1000))
 ```
 
 ```{r plotting-setup}
@@ -60,20 +59,20 @@ d_plot <-
   d_sim_pop |>
   group_by(time) |>
   summarize(
-    Q05_calmt = quantile(calmt, probs = 0.05),
-    Q50_calmt = quantile(calmt, probs = 0.5),
-    Q95_calmt = quantile(calmt, probs = 0.95),
-    prob_blq_calmt = sum(calmt < 0.046)/n(),
+    Q05_calmt = quantile(calmt, probs = 0.05, na.rm = TRUE),
+    Q50_calmt = quantile(calmt, probs = 0.5, na.rm = TRUE),
+    Q95_calmt = quantile(calmt, probs = 0.95, na.rm = TRUE),
+    prob_blq_calmt = sum(calmt < 0.046, na.rm = TRUE)/n(),
     
-    Q05_c3oh = quantile(c3oh, probs = 0.05),
-    Q50_c3oh = quantile(c3oh, probs = 0.5),
-    Q95_c3oh = quantile(c3oh, probs = 0.95),
-    prob_blq_c3oh = sum(c3oh < 0.460)/n(),
+    Q05_c3oh = quantile(c3oh, probs = 0.05, na.rm = TRUE),
+    Q50_c3oh = quantile(c3oh, probs = 0.5, na.rm = TRUE),
+    Q95_c3oh = quantile(c3oh, probs = 0.95, na.rm = TRUE),
+    prob_blq_c3oh = sum(c3oh < 0.460, na.rm = TRUE)/n(),
     
-    Q05_c7dm = quantile(c7dm, probs = 0.05),
-    Q50_c7dm = quantile(c7dm, probs = 0.5),
-    Q95_c7dm = quantile(c7dm, probs = 0.95),
-    prob_blq_c7dm = sum(c7dm < 0.137)/n()
+    Q05_c7dm = quantile(c7dm, probs = 0.05, na.rm = TRUE),
+    Q50_c7dm = quantile(c7dm, probs = 0.5, na.rm = TRUE),
+    Q95_c7dm = quantile(c7dm, probs = 0.95, na.rm = TRUE),
+    prob_blq_c7dm = sum(c7dm < 0.137, na.rm = TRUE)/n()
   ) |>
   ungroup()
 ```
