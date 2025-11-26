@@ -1,0 +1,87 @@
+# Package index
+
+## All functions
+
+- [`addBaseline1exp()`](https://nlmixr2.github.io/nlmixr2lib/reference/addBaseline1exp.md)
+  : Add baseline that decays exponential with time
+- [`addBaselineConst()`](https://nlmixr2.github.io/nlmixr2lib/reference/addBaselineConst.md)
+  : Add an estimated baseline constant
+- [`addBaselineExp()`](https://nlmixr2.github.io/nlmixr2lib/reference/addBaselineExp.md)
+  : Add baseline that decays exponential with time
+- [`addBaselineLin()`](https://nlmixr2.github.io/nlmixr2lib/reference/addBaselineLin.md)
+  : Add an estimated baseline linear constant
+- [`addCmtProp()`](https://nlmixr2.github.io/nlmixr2lib/reference/addCmtProp.md)
+  [`addBioavailability()`](https://nlmixr2.github.io/nlmixr2lib/reference/addCmtProp.md)
+  [`addLag()`](https://nlmixr2.github.io/nlmixr2lib/reference/addCmtProp.md)
+  [`addDur()`](https://nlmixr2.github.io/nlmixr2lib/reference/addCmtProp.md)
+  [`addRate()`](https://nlmixr2.github.io/nlmixr2lib/reference/addCmtProp.md)
+  [`addIni()`](https://nlmixr2.github.io/nlmixr2lib/reference/addCmtProp.md)
+  : Add a property to a compartment
+- [`addDepot()`](https://nlmixr2.github.io/nlmixr2lib/reference/addDepot.md)
+  : To convert from infusion/intravenous administration to first-order
+  oral absorption
+- [`addDirToModelDb()`](https://nlmixr2.github.io/nlmixr2lib/reference/addDirToModelDb.md)
+  [`addFileToModelDb()`](https://nlmixr2.github.io/nlmixr2lib/reference/addDirToModelDb.md)
+  : Add a directory to the modeldb
+- [`addDirectLin()`](https://nlmixr2.github.io/nlmixr2lib/reference/addDirectLin.md)
+  : Add direct linear effect with baseline=0
+- [`addEffectCmtLin()`](https://nlmixr2.github.io/nlmixr2lib/reference/addEffectCmtLin.md)
+  : Add effect compartment
+- [`addEta()`](https://nlmixr2.github.io/nlmixr2lib/reference/addEta.md)
+  : Add random effects to a model
+- [`addIndirect()`](https://nlmixr2.github.io/nlmixr2lib/reference/addIndirect.md)
+  : Add an indirect response model to a PK model
+- [`addIndirectLin()`](https://nlmixr2.github.io/nlmixr2lib/reference/addIndirectLin.md)
+  : Add linear indirect response model
+- [`addLogEstimates()`](https://nlmixr2.github.io/nlmixr2lib/reference/addLogEstimates.md)
+  : Add log estimates to a model
+- [`addResErr()`](https://nlmixr2.github.io/nlmixr2lib/reference/addResErr.md)
+  : Add residual error to a model
+- [`addTransit()`](https://nlmixr2.github.io/nlmixr2lib/reference/addTransit.md)
+  : To add transit compartments to the model
+- [`addWeibullAbs()`](https://nlmixr2.github.io/nlmixr2lib/reference/addWeibullAbs.md)
+  : Converts first order absorption model to Weibull absorption model
+- [`combinePaste2()`](https://nlmixr2.github.io/nlmixr2lib/reference/combinePaste2.md)
+  : Combine two strings using a naming convention
+- [`convertEmax()`](https://nlmixr2.github.io/nlmixr2lib/reference/convertEmax.md)
+  : Convert linear effect to Emax effect
+- [`convertEmaxHill()`](https://nlmixr2.github.io/nlmixr2lib/reference/convertEmaxHill.md)
+  : Convert linear effect to Emax-Hill effect
+- [`convertKinR0()`](https://nlmixr2.github.io/nlmixr2lib/reference/convertKinR0.md)
+  : Convert a kin/kout indirect response model to R0 and kout
+- [`convertLogLin()`](https://nlmixr2.github.io/nlmixr2lib/reference/convertLogLin.md)
+  : Converts a linear effect to a log-linear effect
+- [`convertMM()`](https://nlmixr2.github.io/nlmixr2lib/reference/convertMM.md)
+  : Convert models from linear elimination to Michaelis-Menten
+  elimination
+- [`convertQuad()`](https://nlmixr2.github.io/nlmixr2lib/reference/convertQuad.md)
+  : Convert linear elimination to quadratic elimination
+- [`defaultCombine()`](https://nlmixr2.github.io/nlmixr2lib/reference/defaultCombine.md)
+  [`snakeCombine()`](https://nlmixr2.github.io/nlmixr2lib/reference/defaultCombine.md)
+  [`camelCombine()`](https://nlmixr2.github.io/nlmixr2lib/reference/defaultCombine.md)
+  [`dotCombine()`](https://nlmixr2.github.io/nlmixr2lib/reference/defaultCombine.md)
+  [`blankCombine()`](https://nlmixr2.github.io/nlmixr2lib/reference/defaultCombine.md)
+  : Default combine strings
+- [`fakeCc()`](https://nlmixr2.github.io/nlmixr2lib/reference/fakeCc.md)
+  : Fake blank Cc for creating PD only models
+- [`modeldb`](https://nlmixr2.github.io/nlmixr2lib/reference/modeldb.md)
+  : Model library for nlmixr2
+- [`modellib()`](https://nlmixr2.github.io/nlmixr2lib/reference/modellib.md)
+  : Get the model from the model library
+- [`pkTrans()`](https://nlmixr2.github.io/nlmixr2lib/reference/pkTrans.md)
+  : Change the transformation type for PK models
+- [`readModelDb()`](https://nlmixr2.github.io/nlmixr2lib/reference/readModelDb.md)
+  : Read a model from the nlmixr2 model database
+- [`removeDepot()`](https://nlmixr2.github.io/nlmixr2lib/reference/removeDepot.md)
+  : To convert from first order oral absorption to IV/Intravenous
+- [`removeLinesAndInis()`](https://nlmixr2.github.io/nlmixr2lib/reference/removeLinesAndInis.md)
+  : Removes lines and inis from a model
+- [`removeTransit()`](https://nlmixr2.github.io/nlmixr2lib/reference/removeTransit.md)
+  : To remove transit compartments from the model
+- [`searchReplace()`](https://nlmixr2.github.io/nlmixr2lib/reference/searchReplace.md)
+  [`searchReplaceHelper()`](https://nlmixr2.github.io/nlmixr2lib/reference/searchReplace.md)
+  : Search within a model to replace part of the model
+- [`setCombineType()`](https://nlmixr2.github.io/nlmixr2lib/reference/setCombineType.md)
+  : Change the default combine type for the package
+- [`updateOncologyXenograftSimeoni2004()`](https://nlmixr2.github.io/nlmixr2lib/reference/updateOncologyXenograftSimeoni2004.md)
+  : Update an oncology xenograft model based on Simeoni 2004
