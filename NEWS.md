@@ -1,9 +1,10 @@
 # nlmixr2lib
 
-# Development version
+# Version 0.3.2
 
 * Add Kim 2006 model for IgG metabolism
 * Add Xie 2019 agomelatine PK model
+* Drop `qs` since it will be archived
 
 # Version 0.3.1
 

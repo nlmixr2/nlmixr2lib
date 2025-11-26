@@ -1,6 +1,6 @@
 Package: nlmixr2lib
 Type: Package
-Version: 0.3.1.9000
+Version: 0.3.2
 Title: A Model Library for 'nlmixr2'
 Description: A model library for 'nlmixr2'.  The models include
   (and plan to include) pharmacokinetic, pharmacodynamic, and
@@ -36,7 +36,7 @@ Suggests:
     knitr,
     rmarkdown,
     testthat (>= 3.0.0),
-    qs,
+    qs2,
     tidyr,
     ggplot2,
     withr

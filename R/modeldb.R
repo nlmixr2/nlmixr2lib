@@ -41,7 +41,7 @@ buildModelDb <- function() {
   savefile <- file.path(packageDirectory, "data/modeldb.rda")
   message("Saving the modeldb to ", savefile)
   save(modeldb, file = savefile, compress = "bzip2", version = 2, ascii = FALSE)
-  qs::qsave(modeldb, file=file.path(packageDirectory, "inst/modeldb.qs"))
+  qs2::qs_save(modeldb, file=file.path(packageDirectory, "inst/modeldb.qs2"))
   message("Done saving the modeldb to ", savefile)
 
   colDesc <-
