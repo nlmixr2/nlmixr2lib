@@ -9,7 +9,7 @@
 #' @return An updated model with the new number of compartments
 #' @examples
 #' library(rxode2)
-#' readModelDb("oncology_xenograft_simeoni_2004") %>%
+#' readModelDb("oncology_xenograft_simeoni_2004") |>
 #'   updateOncologyXenograftSimeoni2004(ncmt = 5)
 #' @export
 updateOncologyXenograftSimeoni2004 <- function(object, ncmt, damagedCmtName = "damagedCells", drugEffectName = "drugEffectCyclingCells", undamagedCmtName = "cyclingCells", tumorVolName = "tumorVol", transitRateName = "damageTransit") {

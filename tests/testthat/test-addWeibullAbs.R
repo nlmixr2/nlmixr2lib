@@ -43,7 +43,7 @@ test_that("Test addWeibullAbs function adds depot", {
 
 test_that("Test addWeibullAbs function removes transit", {
 
-  ui <- rxode2::rxode2(readModelDb("PK_1cmt_des")) %>% addTransit(3)
+  ui <- rxode2::rxode2(readModelDb("PK_1cmt_des")) |> addTransit(3)
 
   expect_warning(addWeibullAbs(ui))
   result <- suppressWarnings(addWeibullAbs(ui))
