@@ -45,7 +45,7 @@ An updated model with the new number of compartments
 
 ``` r
 library(rxode2)
-readModelDb("oncology_xenograft_simeoni_2004") %>%
+readModelDb("oncology_xenograft_simeoni_2004") |>
   updateOncologyXenograftSimeoni2004(ncmt = 5)
 #> ℹ You can modify the number of damaged cell compartments in the model using the function updateOncologyXenograftSimeoni2004(model, ncmt)
 #>  

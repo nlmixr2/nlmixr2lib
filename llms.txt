@@ -22,8 +22,8 @@ a piping interface. The code below adds inter-individual variability on
 ka and v and then switches residual error to additive and proportional.
 
 ``` r
-modellib(name="PK_1cmt") %>%
-  addEta(c("lka", "lv") %>%
+modellib(name="PK_1cmt") |>
+  addEta(c("lka", "lv") |>
   addResErr(c("addSd", "propSd"))
 ```
 

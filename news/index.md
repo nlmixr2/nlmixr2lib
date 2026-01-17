@@ -6,6 +6,9 @@
 - Add Xie 2019 agomelatine PK model
 - Drop `qs` since it will be archived
 - Update tumor growth inhibition models
+- [`addResErr()`](https://nlmixr2.github.io/nlmixr2lib/reference/addResErr.md)
+  now works with multiple-endpoint models
+- Additional testing
 
 ## Version 0.3.1
 
