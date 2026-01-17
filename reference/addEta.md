@@ -47,7 +47,7 @@ Bill Denney, Richard Hooijmaijers & Matthew L. Fidler
 
 ``` r
 library(rxode2)
-#> rxode2 4.1.1 using 2 threads (see ?getRxThreads)
+#> rxode2 5.0.1 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 readModelDb("PK_1cmt") |> addEta("ka")
 #>  
@@ -85,5 +85,5 @@ readModelDb("PK_1cmt") |> addEta("ka")
 #>         Cc ~ prop(propSd)
 #>     })
 #> }
-#> <environment: 0x55af8fbd5c18>
+#> <environment: 0x556373948128>
 ```

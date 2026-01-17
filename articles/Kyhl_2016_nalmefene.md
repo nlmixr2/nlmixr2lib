@@ -53,7 +53,6 @@ dSimPrep <-
 Kyhl2016Nalmefene <- readModelDb("Kyhl_2016_nalmefene")
 # Set BSV to zero for simulation to get a reproducible result
 dSimNalmefene <- rxode2::rxSolve(Kyhl2016Nalmefene, events = dSimPrep, nStud = 500)
-#> using C compiler: ‘gcc (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0’
 dSimNalmefene$Analyte <- "Nalmefene"
 ```
 

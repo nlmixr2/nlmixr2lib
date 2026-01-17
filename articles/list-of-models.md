@@ -57,9 +57,11 @@ knitr::kable(modeldb[, c("name", "description")])
 | oncology_sdm_lobo_2002              | Signal transduction model for delayed concentration effects on cancer cell growth                                                                |
 | oncology_xenograft_simeoni_2004     | Oncology tumor growth model in xenograft models                                                                                                  |
 | tgi_no_sat_Koch                     | One compartment TGI model with with exponential tumor growth, without saturation.                                                                |
-| tgi_no_sat_expo                     | One compartment TGI model with with exponential tumor growth, without saturation.                                                                |
+| tgi_no_sat_expo                     | One-compartment TGI model with exponential tumor growth, without saturation.                                                                     |
 | tgi_no_sat_linear                   | One compartment TGI model with with linear tumor growth, without saturation.                                                                     |
 | tgi_no_sat_powerLaw                 | One compartment TGI model with with exponential tumor growth, without saturation.                                                                |
+| tgi_sat_Gompertz                    | One compartment TGI model with tumor growth proportional to tumor size through a generalized logistic function, with saturation.                 |
 | tgi_sat_VonBertalanffy              | One compartment TGI model where tumor growth is limited by a loss term, with saturation.                                                         |
+| tgi_sat_genLogistic                 | One compartment TGI model with tumor growth proportional to tumor size through a generalized logistic function, with saturation.                 |
 | tgi_sat_genVonBertalanffy           | One compartment TGI model where tumor growth is limited by a loss term, with saturation.                                                         |
 | tgi_sat_logistic                    | One compartment TGI model with with exponential tumor growth that decelerates linearly, with saturation.                                         |

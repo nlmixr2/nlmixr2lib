@@ -44,7 +44,6 @@ dSimPrep <- dplyr::bind_rows(dSimDose, dSimObs)
 Grimm2023Tront <- readModelDb("Grimm_2023_trontinemab")
 # Set BSV to zero for simulation to get a reproducible result
 dSimTront <- rxode2::rxSolve(Grimm2023Tront |> rxode2::zeroRe(), events = dSimPrep)
-#> using C compiler: ‘gcc (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0’
 #> ℹ omega/sigma items treated as zero: 'bsv_fpla_cerebellum', 'bsv_fpla_hippocampus', 'bsv_fpla_striatum', 'bsv_fpla_cortex', 'bsv_fpla_choroid_plexus'
 dSimTront$Analyte <- "Trontinemab"
 ```
@@ -77,7 +76,6 @@ dSimPrep <- dplyr::bind_rows(dSimDose, dSimObs)
 Grimm2023Gant <- readModelDb("Grimm_2023_gantenerumab")
 # Set BSV to zero for simulation to get a reproducible result
 dSimGant <- rxode2::rxSolve(Grimm2023Gant |> rxode2::zeroRe(), events = dSimPrep)
-#> using C compiler: ‘gcc (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0’
 #> ℹ omega/sigma items treated as zero: 'bsv_fpla_cerebellum', 'bsv_fpla_hippocampus', 'bsv_fpla_striatum', 'bsv_fpla_cortex', 'bsv_fpla_choroid_plexus'
 dSimGant$Analyte <- "Gantenerumab"
 ```
