@@ -1,4 +1,3 @@
-
 f <- function() {
   description <- "A two compartment model with a direct effect , no endpoints and no thetas"
   model({
@@ -11,7 +10,6 @@ f <- function() {
 }
 
 test_that("Test addBaselineConst function", {
-
   ui <- readModelDb("PK_2cmt_no_depot") |> addDirectLin()
   result <- addBaselineConst(ui)
 

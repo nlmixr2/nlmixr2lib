@@ -4,7 +4,6 @@ on:
   push:
     branches: [main, master]
   pull_request:
-    branches: [main, master]
   release:
     types: [published]
   workflow_dispatch:
@@ -34,21 +33,7 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          cache-version: 2
-          extra-packages: |
-            any::pkgdown
-            nlmixr2/dparser-R
-            nlmixr2/lbfgsb3c
-            nlmixr2/lotri
-            nlmixr2/PreciseSums
-            nlmixr2/n1qn1c
-            nlmixr2/rxode2ll
-            nlmixr2/rxode2
-            nlmixr2/nlmixr2est
-            nlmixr2/nlmixr2extra
-            nlmixr2/nlmixr2plot
-            nlmixr2/nlmixr2
-            local::.
+          extra-packages: any::pkgdown, local::.
           needs: website
 
       - name: Build site

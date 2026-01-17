@@ -14,7 +14,7 @@ phenylalanine_charbonneau_2021 <- function() {
     bl_gut <- 0; label("Baseline Phe in the gut (mg)")
 
     ka_gut <- 0.25; label("Absorption rate from gut to plasma")
-    v_npd <- 0.015; label("Rate of net protein breakdown ((mmol/L)/hr)")
+    v_npd <- 0.012; label("Rate of net protein breakdown ((mmol/L)/hr)")
 
     vmax_pah <- 0.9; label("Maximum rate of Phe breakdown by PAH in a healthy subject ((mmol/L)/hr)")
     f_pah <- 0; label("Fraction of healthy PAH activity (PKU patient = 0 to 0.02)")
@@ -39,7 +39,7 @@ phenylalanine_charbonneau_2021 <- function() {
     v_renal <- phe * cl_renal * vd # units: (mmol/L)/hr
 
     d/dt(gut) <- -ka_gut*gut
-    d/dt(phe) <- ka*gut*f_gut_plasma + v_npd - v_pah - v_trans - v_renal
+    d/dt(phe) <- ka_gut*gut*f_gut_plasma + v_npd - v_pah - v_trans - v_renal
     gut(0) <- bl_gut
     phe(0) <- bl_phe
     phe_umol <- phe * 1000 # units: umol/L (more commonly used in clinical laboratories)

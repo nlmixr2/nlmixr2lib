@@ -1,0 +1,149 @@
+---
+title: "Xie_2019_agomelatine"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Xie_2019_agomelatine}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(nlmixr2lib)
+library(nlmixr2est)
+library(rxode2)
+library(dplyr)
+library(ggplot2)
+```
+
+# Recreate figure 4 from the original paper
+
+The dose was a single 25 mg dose based on the methods section of the reference.
+
+```{r sim-setup}
+Xie_2019_agomelatine <- nlmixr(readModelDb("Xie_2019_agomelatine"))
+
+d_sim_dosing <-
+  data.frame(
+    ID = 1,
+    EVID = 1,
+    AMT = 25, # mg
+    TIME = 0,
+    CMT = c("DEPOT1", "DEPOT2")
+  )
+d_sim_obs <-
+  data.frame(
+    ID = 1,
+    EVID = 0,
+    AMT = 0,
+    TIME = seq(0, 8, by = 0.1),
+    CMT = "lcalmt"
+  )
+d_sim_prep <- rbind(d_sim_dosing, d_sim_obs)
+d_sim_prep$WT <- 60 # kg, based on table 1 from the paper
+d_sim_prep$ooc1 <- 1
+d_sim_prep$ooc2 <- 
+  d_sim_prep$ooc3 <- 
+  d_sim_prep$ooc4 <- 0
+d_sim_pop <- nlmixr2(Xie_2019_agomelatine, data = d_sim_prep, est = "rxSolve", control = list(nStud = 1000))
+```
+
+```{r plotting-setup}
+d_plot <-
+  d_sim_pop |>
+  group_by(time) |>
+  summarize(
+    Q05_calmt = quantile(calmt, probs = 0.05, na.rm = TRUE),
+    Q50_calmt = quantile(calmt, probs = 0.5, na.rm = TRUE),
+    Q95_calmt = quantile(calmt, probs = 0.95, na.rm = TRUE),
+    prob_blq_calmt = sum(calmt < 0.046, na.rm = TRUE)/n(),
+    
+    Q05_c3oh = quantile(c3oh, probs = 0.05, na.rm = TRUE),
+    Q50_c3oh = quantile(c3oh, probs = 0.5, na.rm = TRUE),
+    Q95_c3oh = quantile(c3oh, probs = 0.95, na.rm = TRUE),
+    prob_blq_c3oh = sum(c3oh < 0.460, na.rm = TRUE)/n(),
+    
+    Q05_c7dm = quantile(c7dm, probs = 0.05, na.rm = TRUE),
+    Q50_c7dm = quantile(c7dm, probs = 0.5, na.rm = TRUE),
+    Q95_c7dm = quantile(c7dm, probs = 0.95, na.rm = TRUE),
+    prob_blq_c7dm = sum(c7dm < 0.137, na.rm = TRUE)/n()
+  ) |>
+  ungroup()
+```
+
+
+```{r fig4a}
+ggplot(d_plot, aes(x = time, y = Q50_calmt, ymin = Q05_calmt, ymax = Q95_calmt)) +
+  geom_ribbon(colour = NA, linetype = "63", fill = "gray", alpha = 0.5) +
+  geom_line() +
+  geom_hline(yintercept = 0.046, linetype = "63", colour = "gray") +
+  scale_y_log10(sec.axis = sec_axis(transform = identity, breaks = 0.046, labels = "LLOQ")) +
+  labs(
+    x = "Time after dose (hours)",
+    y = "Plasma agomelatine concentration (ng/mL)\nMedian and 90% prediction intervals"
+  )
+```
+
+```{r fig4d}
+ggplot(d_plot, aes(x = time, y = prob_blq_calmt)) +
+  geom_line() +
+  labs(
+    x = "Time after dose (hours)",
+    y = "Probability of BLQ plasma agomelatine concentration"
+  )
+```
+
+```{r fig4b}
+ggplot(d_plot, aes(x = time, y = Q50_c3oh, ymin = Q05_c3oh, ymax = Q95_c3oh)) +
+  geom_ribbon(colour = NA, linetype = "63", fill = "gray", alpha = 0.5) +
+  geom_line() +
+  geom_hline(yintercept = 0.460, linetype = "63", colour = "gray") +
+  scale_y_log10(sec.axis = sec_axis(transform = identity, breaks = 0.460, labels = "LLOQ")) +
+  labs(
+    x = "Time after dose (hours)",
+    y = "Plasma 3-hydroxy-agomelatine concentration (ng/mL)\nMedian and 90% prediction intervals"
+  )
+```
+
+A figure for BQL 3-hydroxy-agomelatine is not in the original paper. It is added
+here for completeness.
+
+```{r}
+ggplot(d_plot, aes(x = time, y = prob_blq_c3oh)) +
+  geom_line() +
+  labs(
+    x = "Time after dose (hours)",
+    y = "Probability of BLQ plasma 3-hydroxy-agomelatine concentration"
+  )
+```
+
+```{r fig4c}
+ggplot(d_plot, aes(x = time, y = Q50_c7dm, ymin = Q05_c7dm, ymax = Q95_c7dm)) +
+  geom_ribbon(colour = NA, linetype = "63", fill = "gray", alpha = 0.5) +
+  geom_line() +
+  geom_hline(yintercept = 0.137, linetype = "63", colour = "gray") +
+  scale_y_log10(sec.axis = sec_axis(transform = identity, breaks = 0.137, labels = "LLOQ")) +
+  labs(
+    x = "Time after dose (hours)",
+    y = "Plasma 7-desmethyl-agomelatine concentration (ng/mL)\nMedian and 90% prediction intervals"
+  )
+```
+
+```{r fig4e}
+ggplot(d_plot, aes(x = time, y = prob_blq_c7dm)) +
+  geom_line() +
+  labs(
+    x = "Time after dose (hours)",
+    y = "Probability of BLQ plasma 7-desmethyl-agomelatine concentration"
+  )
+```
+
+# Reference
+
+* `r Xie_2019_agomelatine$reference`

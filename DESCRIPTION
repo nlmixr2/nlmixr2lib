@@ -1,6 +1,6 @@
 Package: nlmixr2lib
 Type: Package
-Version: 0.3.0
+Version: 0.3.2
 Title: A Model Library for 'nlmixr2'
 Description: A model library for 'nlmixr2'.  The models include
   (and plan to include) pharmacokinetic, pharmacodynamic, and
@@ -11,13 +11,13 @@ Description: A model library for 'nlmixr2'.  The models include
   easier.
 Authors@R: c(
   person("Richard","Hooijmaijers", email="richardhooijmaijers@gmail.com",role="aut"),
-  person("Matthew","Fidler", email="richardhooijmaijers@gmail.com",role=c("aut"), comment=c(ORCID="0000-0001-8538-6691")),
+  person("Matthew","Fidler", email="matthew.fidler@gmail.com",role=c("aut"), comment=c(ORCID="0000-0001-8538-6691")),
   person("Bill", "Denney", email="wdenney@humanpredictions.com", role=c("aut", "cre"), comment=c(ORCID="0000-0002-5759-428X")),
   person("Kiranmayi", "Vedantham", email="kiranmayi.vedantham@gmail.com", role=c("aut"),comment=c(ORCID="0009-0003-0828-6445"))
   )
 Depends:
-    R (>= 4.0)
-Imports: 
+    R (>= 4.1)
+Imports:
     checkmate,
     cli,
     methods,
@@ -25,16 +25,20 @@ Imports:
     rxode2 (>= 2.0.12)
 License: GPL (>= 2)
 LazyData: true
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 VignetteBuilder: knitr
 URL: https://github.com/nlmixr2/nlmixr2lib,
     https://nlmixr2.github.io/nlmixr2lib/
 Encoding: UTF-8
 Language: en-US
-Suggests: 
+Suggests:
     covr,
+    dplyr,
     knitr,
     rmarkdown,
     testthat (>= 3.0.0),
+    qs2,
+    tidyr,
+    ggplot2,
     withr
 Config/testthat/edition: 3
