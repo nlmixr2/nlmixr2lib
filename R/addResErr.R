@@ -23,10 +23,13 @@ addResErr <- function(ui, reserr, endpoint) {
   rxode2::assertRxUiPrediction(ui) # needs to have a prediction
   if (missing(endpoint)) {
     paramErr <- modelUi$predDf$cond
+    if (length(paramErr) > 1) {
+      stop("multiple endpoints detected, choose one: ", paste(paramErr, collapse = ", "))
+    }
   } else {
     rxode2::assertVariableName(endpoint)
     if (endpoint %in% modelUi$predDf$cond)  {
-      paramErr <- modelUi$predDf$cond
+      paramErr <- endpoint
     } else {
       stop("requested to add/change residual error for '", endpoint, "' but not defined as a modeled endpoint",
            call.=FALSE)

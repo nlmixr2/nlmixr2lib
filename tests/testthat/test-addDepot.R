@@ -29,6 +29,23 @@ test_that("addDepot adds depot", {
   # check for ODE for depot
   suppressMessages(depotLine <- rxode2::modelExtract(modelUpdate, "d/dt(depot)", lines = TRUE))
   expect_true(grepl("\\s*ka\\s*\\*\\s*depot", depotLine))
+
+  # Add a depot when there are no parameters in the model
+  modelNoDepot <-
+    suppressMessages(
+      readModelDb("PK_1cmt_des") |>
+        rxode2::model(-Cc~.) |>
+        rxode2::ini(-lka, -lcl, -lvc) |>
+        removeDepot()
+    )
+  expect_s3_class(modelNoDepot, "rxUi")
+  expect_equal(modelNoDepot$state, "central")
+  modelDepot <-
+    suppressMessages(
+      addDepot(modelNoDepot)
+    )
+  expect_s3_class(modelDepot, "rxUi")
+  expect_equal(modelDepot$state, c("depot", "central"))
 })
 
 test_that("addDepot adds other than default agruments", {
