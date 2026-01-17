@@ -81,11 +81,17 @@ test_that("extreme model cases", {
 
 })
 
-# Reemove transit ----
+# Remove transit ----
 
 test_that("removeTransit throws error in model with no transit compartment", {
   expect_error(removeTransit(readModelDb("PK_2cmt_des"), "central", transit = "transit"), "Assertion on 'ntransit' failed: Must be of type 'integerish', not 'character'")
+  expect_error(
+    removeTransit(modelTest, ntransit = "A"),
+    regexp = "Assertion on 'ntransit' failed: Must be of type 'integerish', not 'character'",
+    fixed = TRUE
+  )
 })
+
 test_that("removeTransit removes transit compartment", {
   modelTest <- readModelDb("PK_1cmt_des") |> addTransit(1)
   modelTest <- rxode2::assertRxUi(modelTest)
@@ -94,6 +100,7 @@ test_that("removeTransit removes transit compartment", {
   mv <- rxode2::rxModelVars(temp)
   expect_equal("transit1" %in% mv$state, FALSE)
 })
+
 test_that("removeTransit removes ktr in model block", {
   modelTest <- readModelDb("PK_1cmt_des") |> addTransit(1)
   modelTest <- rxode2::assertRxUi(modelTest)
@@ -102,6 +109,7 @@ test_that("removeTransit removes ktr in model block", {
   mv <- rxode2::rxModelVars(temp)
   expect_equal("ktr" %in% mv$lhs, FALSE)
 })
+
 test_that("removeTransit modifies ODE for central compartment", {
   modelTest <- readModelDb("PK_1cmt_des") |> addTransit(1)
   modelTest <- rxode2::assertRxUi(modelTest)
@@ -109,6 +117,7 @@ test_that("removeTransit modifies ODE for central compartment", {
   suppressMessages(centralLine <- rxode2::modelExtract(modelUpdate, "d/dt(central)", lines = TRUE))
   expect_equal(grepl(".*<-\\s*", centralLine), TRUE)
 })
+
 test_that("removeTransit removes lktr in ini block", {
   modelTest <- readModelDb("PK_1cmt_des") |> addTransit(1)
   modelTest <- rxode2::assertRxUi(modelTest)
@@ -118,9 +127,40 @@ test_that("removeTransit removes lktr in ini block", {
   expect_equal("lktr1" %in% mv$params, FALSE)
 })
 
+test_that("remove some but not all compartments", {
+  modelTest <- readModelDb("PK_1cmt_des") |> addTransit(2)
+  expect_equal(
+    functionBody(as.function(removeTransit(modelTest, ntransit = 1))),
+    functionBody(function() {
+      dosing <- c("central", "depot")
+      ini({
+          lka <- 0.45; label("Absorption rate (Ka)")
+          lcl <- 1; label("Clearance (CL)")
+          lvc <- 3.45; label("Central volume of distribution (V)")
+          propSd <- c(0, 0.5); label("Proportional residual error (fraction)")
+          lktr <- 0.1; label("First order transition rate (ktr)")
+      })
+      model({
+          ktr <- exp(lktr)
+          ka <- exp(lka)
+          cl <- exp(lcl)
+          vc <- exp(lvc)
+          kel <- cl/vc
+          d/dt(depot) <- -ktr * depot
+          d/dt(transit1) <- ktr * depot - ka * transit1
+          d/dt(central) <- ka * transit1 - kel * central
+          Cc <- central/vc
+          Cc ~ prop(propSd)
+      })
+    })
+  )
+  expect_warning(
+    removeTransit(modelTest, ntransit = 4),
+    regexp = "reset ntransit to 2"
+  )
+})
 
 test_that("extreme model cases", {
-
   f <- function() {
     model({
       ktr <- exp(lktr)
