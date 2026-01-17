@@ -1,3 +1,4 @@
+BQL
 CMD
 Carlsson
 Cirincione
@@ -7,6 +8,7 @@ Ek
 Emax
 IC
 IIV
+IgG
 Ik
 Imax
 Kovalenko
@@ -25,10 +27,13 @@ Soehoel
 Trontinemab
 Vc
 Vmax
+Xie
 Zhu
+agomelatine
 aob
 bioavailability
 camelCase
+charbonneau
 cmt
 cynomolgus
 defaultCombine
@@ -38,6 +43,7 @@ extravascular
 fitCore
 gam
 gantenerumab
+hydroxy
 inis
 intercompartmental
 intravascular
@@ -57,6 +63,7 @@ periph
 pharmacodynamic
 pharmacokinetic
 pharmacometrics
+phenylalanine
 rxUi
 rxode
 searchReplace
