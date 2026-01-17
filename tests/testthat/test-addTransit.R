@@ -53,8 +53,8 @@ test_that("extreme model cases", {
 
   f <- rxode2::rxode2(f)
 
-  expect_error(f %>% addTransit(4), NA)
-  expect_warning(f %>% addTransit(4), NA)
+  expect_error(f |> addTransit(4), NA)
+  expect_warning(f |> addTransit(4), NA)
 
   f <- function() {
     ini({
@@ -72,10 +72,10 @@ test_that("extreme model cases", {
 
   omega <- f$omega
 
-  expect_error(f %>% addTransit(4), NA)
-  expect_warning(f %>% addTransit(4), NA)
+  expect_error(f |> addTransit(4), NA)
+  expect_warning(f |> addTransit(4), NA)
 
-  tmp <- f %>% addTransit(4)
+  tmp <- f |> addTransit(4)
 
   expect_equal(omega, tmp$omega)
 
@@ -176,9 +176,9 @@ test_that("extreme model cases", {
 
   f <- rxode2::rxode2(f)
 
-  expect_error(f %>% removeTransit(), NA)
-  expect_warning(f %>% removeTransit(), NA)
-  tmp <- f %>% removeTransit()
+  expect_error(f |> removeTransit(), NA)
+  expect_warning(f |> removeTransit(), NA)
+  tmp <- f |> removeTransit()
   expect_true(length(tmp$iniDf$name) == 0)
 
   f <- function() {
@@ -199,9 +199,9 @@ test_that("extreme model cases", {
 
   f <- rxode2::rxode2(f)
 
-  expect_error(f %>% removeTransit(), NA)
-  expect_warning(f %>% removeTransit(), NA)
-  tmp <- f %>% removeTransit()
+  expect_error(f |> removeTransit(), NA)
+  expect_warning(f |> removeTransit(), NA)
+  tmp <- f |> removeTransit()
   expect_true(length(tmp$iniDf$name) == 0)
 
   f <- function() {
@@ -222,9 +222,9 @@ test_that("extreme model cases", {
 
   f <- rxode2::rxode2(f)
 
-  expect_error(f %>% removeTransit(), NA)
-  expect_warning(f %>% removeTransit(), NA)
-  tmp <- f %>% removeTransit()
+  expect_error(f |> removeTransit(), NA)
+  expect_warning(f |> removeTransit(), NA)
+  tmp <- f |> removeTransit()
   expect_true(length(tmp$iniDf$name) == 0)
 
   f <- function() {
@@ -246,9 +246,9 @@ test_that("extreme model cases", {
 
   f <- rxode2::rxode2(f)
 
-  expect_error(f %>% removeTransit(), NA)
+  expect_error(f |> removeTransit(), NA)
 
-  tmp <- f %>% removeTransit()
+  tmp <- f |> removeTransit()
 
   expect_equal(tmp$iniDf$name, "ka")
   expect_equal(tmp$iniDf$ntheta, 1)
@@ -272,9 +272,9 @@ test_that("extreme model cases", {
 
   f <- rxode2::rxode2(f)
 
-  expect_error(f %>% removeTransit(), NA)
+  expect_error(f |> removeTransit(), NA)
 
-  tmp <- f %>% removeTransit()
+  tmp <- f |> removeTransit()
 
   expect_equal(tmp$iniDf$name, "ka")
   expect_equal(tmp$iniDf$neta1, 1)
