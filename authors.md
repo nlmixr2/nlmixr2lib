@@ -15,7 +15,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/nlmixr2/nlmixr2lib/blob/main/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/nlmixr2/nlmixr2lib/blob/v0.3.2/DESCRIPTION)
 
 Hooijmaijers R, Fidler M, Denney B, Vedantham K (2026). *nlmixr2lib: A
 Model Library for 'nlmixr2'*. R package version 0.3.2,
