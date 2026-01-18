@@ -2,6 +2,8 @@
 
 ## Version 0.3.2
 
+CRAN release: 2026-01-18
+
 - Add Kim 2006 model for IgG metabolism
 - Add Xie 2019 agomelatine PK model
 - Drop `qs` since it will be archived
