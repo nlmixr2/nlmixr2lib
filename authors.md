@@ -15,16 +15,16 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/nlmixr2/nlmixr2lib/blob/v0.3.2/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/nlmixr2/nlmixr2lib/blob/main/DESCRIPTION)
 
 Hooijmaijers R, Fidler M, Denney B, Vedantham K (2026). *nlmixr2lib: A
-Model Library for 'nlmixr2'*. R package version 0.3.2,
+Model Library for 'nlmixr2'*. R package version 0.3.2.9000,
 <https://github.com/nlmixr2/nlmixr2lib>.
 
     @Manual{,
       title = {nlmixr2lib: A Model Library for 'nlmixr2'},
       author = {Richard Hooijmaijers and Matthew Fidler and Bill Denney and Kiranmayi Vedantham},
       year = {2026},
-      note = {R package version 0.3.2},
+      note = {R package version 0.3.2.9000},
       url = {https://github.com/nlmixr2/nlmixr2lib},
     }
