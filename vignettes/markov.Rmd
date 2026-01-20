@@ -110,7 +110,7 @@ Simulations can be plotted,
 ggplot(dSim, aes(x = time, y = current)) +
   geom_line(
     aes(colour = paste(sim.id, id), group = paste(sim.id, id)),
-    show.legend = FALSE)
+    show.legend = FALSE
   ) +
   geom_count()
 ```
