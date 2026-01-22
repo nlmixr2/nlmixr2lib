@@ -298,10 +298,11 @@ createMarkovModelDataset.default <- function(x, colCur, colPrev = x, prefixPrev 
 }
 
 #' @export
-createMarkovModelDataset.factor <- function(x, colCur, ...) {
+createMarkovModelDataset.factor <- function(x, colCur, colPrev=x, ...) {
   # Factor levels must match (consider handling if one's levels are a strict superset of the other's)
-  checkmate::assert_factor(x)
-  checkmate::assert_factor(colCur, levels = levels(x))
+  checkmate::assertFactor(x)
+  checkmate::assertFactor(colPrev)
+  checkmate::assertFactor(colCur, levels = levels(colPrev))
   createMarkovModelDataset.default(colPrev = x, colCur = colCur, ...)
 }
 
