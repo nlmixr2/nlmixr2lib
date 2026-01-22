@@ -21,7 +21,7 @@ library(ggplot2)
 
 # Create your dataset
 
-Start from an initial dataset that has a previous state and a current state column. For this exercise, we will use a hypthetical adverse event profile switching between "none", "mild", and "moderate" severities.
+Start from an initial dataset that has a previous state and a current state column. For this exercise, we will use a hypothetical adverse event profile switching between "none", "mild", and "moderate" severities.
 
 ```{r data-setup}
 dMarkov <-
@@ -83,7 +83,7 @@ At this point, the model is a character string. Use advanced R methods (with sta
 modFun <- eval(str2lang(mod))
 ```
 
-The model can be subsequently be modified the same as any other `nlmixr2` model, for example to add drug effects, etc.
+The model can subsequently be modified the same as any other `nlmixr2` model, for example to add drug effects, etc.
 
 # Fit the model
 

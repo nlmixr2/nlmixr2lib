@@ -1,8 +1,8 @@
 #' Create a Markov model for `nlmixr2`
 #'
 #' @param ... Passed to `createMarkovTransitionMatrix()`
-#' @param ignoreProbLt Do not estimate probabiliities less than the given probabilty. Set to 0 to estimate all probabilities with any transition chance, use `estimateZeroTransitions` to give an initial estimate when there is zero probability of transition into the state.
-#' @param ignoreProbGt Do not estimate probabiliities on a row where any probability is greater than the given probabilty (treating it as a collector row). Set to 1 to estimate all probabilities with any transition chance away from the state, use `estimateZeroTransitions` to give an initial estimate when there is zero probability of transition from the state.
+#' @param ignoreProbLt Do not estimate probabilities less than the given probability. Set to 0 to estimate all probabilities with any transition chance, use `estimateZeroTransitions` to give an initial estimate when there is zero probability of transition into the state.
+#' @param ignoreProbGt Do not estimate probabilities on a row where any probability is greater than the given probability (treating it as a collector row). Set to 1 to estimate all probabilities with any transition chance away from the state, use `estimateZeroTransitions` to give an initial estimate when there is zero probability of transition from the state.
 #' @param transitions Use this manually-created transition matrix rather than an automatically-creating one
 #' @returns A template `nlmixr2` model as a character string with `ini()` and `model()` blocks for the Markov model
 #' @family Markov models
@@ -46,6 +46,23 @@ createMarkovModel <- function(..., ignoreProbLt = 0, ignoreProbGt = 1, transitio
     maskKeepHighProb <- transitionsCumSum[[nm]] > ignoreProbLt
     transitionsCumSum[[nm]] <- transitionsCumSum[[nm]][maskKeepHighProb]
   }
+  # Validate that each non-collector state still has at least two transitions
+  insufficientTransitions <-
+    vapply(
+      X = transitionsCumSum,
+      FUN = function(x) length(x) <= 1L,
+      FUN.VALUE = logical(1L)
+    )
+  if (any(insufficientTransitions)) {
+    stop(
+      sprintf(
+        "After filtering with ignoreProbLt = %g, the following states have insufficient outgoing transitions (<= 1): %s",
+        ignoreProbLt,
+        paste(names(transitionsCumSum)[insufficientTransitions], collapse = ", ")
+      ),
+      call. = FALSE
+    )
+  }
   uiPartsPerState <-
     lapply(
       X = stats::setNames(nm = names(transitionsCumSum)),
@@ -69,7 +86,7 @@ createMarkovModel <- function(..., ignoreProbLt = 0, ignoreProbGt = 1, transitio
 
   iniFull <- c("ini({", paste(" ", iniParts), "})")
   modelFull <- c("model({", paste(" ", c(modelCallStr, modelParts)), "})")
-  metaMarkovStates <- sprintf("markovStates <- %s", deparse(dput(allStates)))
+  metaMarkovStates <- sprintf("markovStates <- %s", deparse(allStates))
   paste(
     c("function() {", paste(" ", c(metaMarkovStates, iniFull, modelFull)), "}"),
     collapse = "\n"
@@ -78,7 +95,7 @@ createMarkovModel <- function(..., ignoreProbLt = 0, ignoreProbGt = 1, transitio
 
 #' Create the parts of a Markov model for transitioning from a single state
 #' @param transitionRow a single-element named list with a named vector of all transitions
-#' @param stateNames a named vecotor of state names where the name is the name for use in the model parameters
+#' @param stateNames a named vector of state names where the name is the name for use in the model parameters
 #' @returns A list with two elements, "ini" and "model", where each element is a character vector of lines of code for the model
 #' @keywords Internal
 createMarkovModelFromSingleState <- function(transitionRow, stateNames) {
@@ -108,11 +125,14 @@ createMarkovModelFromSingleState <- function(transitionRow, stateNames) {
     }
     iniParam <- sprintf("l%sto%s", fromStateName, toStateName)
     iniParams <- c(iniParams, iniParam)
+    # Safely escape state names for use in string literals
+    fromStateEscaped <- gsub('"', '\\\\"', fromState, fixed = TRUE)
+    toStateEscaped <- gsub('"', '\\\\"', toState, fixed = TRUE)
     retIni[length(retIni) + 1] <-
       sprintf(
         '%s <- %g; label("Probability of transition from state %s to %s (%s)")',
         iniParam, signif(iniValue, digits = 4),
-        fromState, toState, iniUnit
+        fromStateEscaped, toStateEscaped, iniUnit
       )
 
     modelParam <- sprintf("%sto%s", fromStateName, toStateName)
@@ -178,7 +198,7 @@ createMarkovModelFromSingleState <- function(transitionRow, stateNames) {
 #'
 #' @param statePrior The prior state as a vector (may be any type of variable that can be coerced to a character vector)
 #' @param stateCurrent The current state as a vector
-#' @param estimateZeroTransitions Should transitions that have zero occurrentces be estimated? This is done by setting the state to have a single transition.
+#' @param estimateZeroTransitions Should transitions that have zero occurrences be estimated? This is done by setting the state to have a single transition.
 #' @param estimateZeroTransitionsInitial Should transitions that are only initial states be estimated (ignored if `estimateZeroTransitions = FALSE`)
 #' @param ... Ignored
 #' @returns A square matrix with row and column names for each state where rows are the prior state and columns are the current state.
@@ -278,11 +298,12 @@ createMarkovModelDataset.default <- function(x, colCur, colPrev = x, prefixPrev 
 }
 
 #' @export
-createMarkovModelDataset.factor <- function(x, colCur, colPrev = x, ...) {
+createMarkovModelDataset.factor <- function(x, colCur, colPrev=x, ...) {
   # Factor levels must match (consider handling if one's levels are a strict superset of the other's)
-  checkmate::assert_factor(colPrev)
-  checkmate::assert_factor(colCur, levels = levels(colPrev))
-  createMarkovModelDataset.default(colPrev, colCur, ...)
+  checkmate::assertFactor(x)
+  checkmate::assertFactor(colPrev)
+  checkmate::assertFactor(colCur, levels = levels(colPrev))
+  createMarkovModelDataset.default(colPrev = x, colCur = colCur, ...)
 }
 
 #' @describeIn createMarkovModelDataset Create a Markov dataset from a data.frame
@@ -308,6 +329,9 @@ simMarkov <- function(ui, initialState, states, colPrev = "previous", colCur = "
   ret <- as.data.frame(ui)
   ret[[colPrev]] <- ret[[colCur]] <- NA
   idCol <- names(ret)[tolower(names(ret)) == "id"]
+  if (length(idCol) == 0L) {
+    stop("Could not find an ID column in `ui`; expected a column named 'id' (case-insensitive).")
+  }
   if (!("sim.id" %in% names(ret))) {
     ret$sim.id <- 1
   }

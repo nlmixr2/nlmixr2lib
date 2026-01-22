@@ -9,9 +9,9 @@ createMarkovModel(..., ignoreProbLt = 0, ignoreProbGt = 1, transitions = NULL)
 \arguments{
 \item{...}{Passed to `createMarkovTransitionMatrix()`}
 
-\item{ignoreProbLt}{Do not estimate probabiliities less than the given probabilty. Set to 0 to estimate all probabilities with any transition chance, use `estimateZeroTransitions` to give an initial estimate when there is zero probability of transition into the state.}
+\item{ignoreProbLt}{Do not estimate probabilities less than the given probability. Set to 0 to estimate all probabilities with any transition chance, use `estimateZeroTransitions` to give an initial estimate when there is zero probability of transition into the state.}
 
-\item{ignoreProbGt}{Do not estimate probabiliities on a row where any probability is greater than the given probabilty (treating it as a collector row). Set to 1 to estimate all probabilities with any transition chance away from the state, use `estimateZeroTransitions` to give an initial estimate when there is zero probability of transition from the state.}
+\item{ignoreProbGt}{Do not estimate probabilities on a row where any probability is greater than the given probability (treating it as a collector row). Set to 1 to estimate all probabilities with any transition chance away from the state, use `estimateZeroTransitions` to give an initial estimate when there is zero probability of transition from the state.}
 
 \item{transitions}{Use this manually-created transition matrix rather than an automatically-creating one}
 }
