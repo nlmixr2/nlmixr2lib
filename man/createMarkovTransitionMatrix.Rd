@@ -17,7 +17,7 @@ createMarkovTransitionMatrix(
 
 \item{stateCurrent}{The current state as a vector}
 
-\item{estimateZeroTransitions}{Should transitions that have zero occurrentces be estimated? This is done by setting the state to have a single transition.}
+\item{estimateZeroTransitions}{Should transitions that have zero occurrences be estimated? This is done by setting the state to have a single transition.}
 
 \item{estimateZeroTransitionsInitial}{Should transitions that are only initial states be estimated (ignored if `estimateZeroTransitions = FALSE`)}
 
