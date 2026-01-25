@@ -1,3 +1,40 @@
+test_that("createMarkovModel", {
+  d <- data.frame(id = 1, prev = c(1, 2, 1), cur = c(1, 2, 2))
+  expect_equal(
+    suppressMessages(createMarkovModel(colPrev = d$prev, colCur = d$cur)),
+    paste(
+      c(
+        "function() {",
+        "  markovStates <- c(X1 = \"1\", X2 = \"2\")",
+        "  ini({",
+        "    lX1toX1 <- -0.6931; label(\"Probability of transition from state 1 to 1 (log-link)\")",
+        "  })",
+        "  model({",
+        "    # Create the following one-hot encoded columns for previous and current Markov states (this can be done with `createMarkovModelDataset()`)",
+        "    # For state 1: prevX1, curX1",
+        "    # For state 2: prevX2, curX2",
+        "    # No transitions created for collector state, 2",
+        "    # transition from state \"1\" to state \"1\"",
+        "    X1toX1 <- exp(lX1toX1)",
+        "    cumprX1toX1 <- expit(X1toX1)",
+        "    # transition from state \"1\" to state \"2\"",
+        "    cumprX1toX2 <- 1 # The final state has a cumulative probability of 1",
+        "    # Probability of each state transition",
+        "    prX1toX1 <- cumprX1toX1 # Probability of transition from state 1 to 1",
+        "    prX1toX2 <- cumprX1toX2 - cumprX1toX1 # Probability of transition from state 1 to 2",
+        "    # log-likelihood of any transition from state 1",
+        "    llX1 <- prevX1*(curX1*log(prX1toX1) + curX2*log(prX1toX2))",
+        "    # Overall Markov model log-likelihood",
+        "    llMarkov <- llX1",
+        "    ll(err) ~ llMarkov",
+        "  })",
+        "}"
+      ),
+      sep = "\n"
+    )
+  )
+})
+
 test_that("createMarkovModelFromSingleState", {
   expect_equal(
     createMarkovModelFromSingleState(
@@ -5,39 +42,47 @@ test_that("createMarkovModelFromSingleState", {
       stateNames = c(none = "none", mild = "mild", moderate = "moderate")
     ),
     list(
-      ini =
-        c(
-          "lnonetonone <- -0.6931; label(\"Probability of transition from state none to none (log-link)\")",
-          "lnonetomild <- 0.47; label(\"Probability of transition from state none to mild (log-logit link difference from prior state)\")"
-        ),
-      model =
-        c(
-          "# transition from state \"none\" to state \"none\"",
-          "nonetonone <- exp(lnonetonone)", "cumprnonetonone <- expit(nonetonone)",
-          "# transition from state \"none\" to state \"mild\"",
-          "nonetomild <- exp(lnonetomild)",
-          "cumprnonetomild <- expit(nonetonone + nonetomild)",
-          "# transition from state \"none\" to state \"moderate\"",
-          "cumprnonetomoderate <- 1 # The final state has a cumulative probability of 1",
-          "# Probability of each state transition",
-          "prnonetonone <- cumprnonetonone # Probability of transition from state none to none",
-          "prnonetomild <- cumprnonetomild - cumprnonetonone # Probability of transition from state none to mild",
-          "prnonetomoderate <- cumprnonetomoderate - cumprnonetomild # Probability of transition from state none to moderate",
-          "# log-likelihood of any transition from state none", "llnone <- prevnone*(curnone*log(prnonetonone) + curmild*log(prnonetomild) + curmoderate*log(prnonetomoderate))"
-        )
+      ini = c(
+        "lnonetonone <- -0.6931; label(\"Probability of transition from state none to none (log-link)\")",
+        "lnonetomild <- 0.47; label(\"Probability of transition from state none to mild (log-logit link difference from prior state)\")"
+      ),
+      model = c(
+        "# transition from state \"none\" to state \"none\"",
+        "nonetonone <- exp(lnonetonone)",
+        "cumprnonetonone <- expit(nonetonone)",
+        "# transition from state \"none\" to state \"mild\"",
+        "nonetomild <- exp(lnonetomild)",
+        "cumprnonetomild <- expit(nonetonone + nonetomild)",
+        "# transition from state \"none\" to state \"moderate\"",
+        "cumprnonetomoderate <- 1 # The final state has a cumulative probability of 1",
+        "# Probability of each state transition",
+        "prnonetonone <- cumprnonetonone # Probability of transition from state none to none",
+        "prnonetomild <- cumprnonetomild - cumprnonetonone # Probability of transition from state none to mild",
+        "prnonetomoderate <- cumprnonetomoderate - cumprnonetomild # Probability of transition from state none to moderate",
+        "# log-likelihood of any transition from state none",
+        "llnone <- prevnone*(curnone*log(prnonetonone) + curmild*log(prnonetomild) + curmoderate*log(prnonetomoderate))"
+      )
     )
   )
 })
 
 test_that("createMarkovTransitionMatrix", {
   expect_message(
-    transition <- createMarkovTransitionMatrix(colPrev = c(1, 2, 1), colCur = c(2, 1, 1)),
+    transition <- createMarkovTransitionMatrix(
+      colPrev = c(1, 2, 1),
+      colCur = c(2, 1, 1)
+    ),
     regexp = "The following appear only to be collecting state(s): 2",
     fixed = TRUE
   )
   expect_equal(
     transition,
-    matrix(c(0.5, 0.5, 1, 0), nrow = 2, byrow = TRUE, dimnames = list(c("1", "2"), c("1", "2")))
+    matrix(
+      c(0.5, 0.5, 1, 0),
+      nrow = 2,
+      byrow = TRUE,
+      dimnames = list(c("1", "2"), c("1", "2"))
+    )
   )
   expect_error(
     createMarkovTransitionMatrix(colPrev = c(1, 2, NA), colCur = c(2, 1, 1)),
@@ -52,12 +97,18 @@ test_that("createMarkovTransitionMatrix", {
     regexp = "Only one state detected, cannot create a nontrivial Markov model"
   )
   expect_message(
-    createMarkovTransitionMatrix(colPrev = c(1, 1, 2, 3, 2, 3), colCur = c(2, 3, 3, 2, 2, 3)),
+    createMarkovTransitionMatrix(
+      colPrev = c(1, 1, 2, 3, 2, 3),
+      colCur = c(2, 3, 3, 2, 2, 3)
+    ),
     regexp = "The following state(s) appear only to be initial states: 1",
     fixed = TRUE
   )
   expect_message(
-    createMarkovTransitionMatrix(colPrev = c(1, 2, 3, 1, 2), colCur = c(3, 3, 3, 2, 1)),
+    createMarkovTransitionMatrix(
+      colPrev = c(1, 2, 3, 1, 2),
+      colCur = c(3, 3, 3, 2, 1)
+    ),
     regexp = "The following appear only to be collecting state(s): 3",
     fixed = TRUE
   )
@@ -79,7 +130,10 @@ test_that("createMarkovModelDataset.default", {
 
 test_that("createMarkovModelDataset.factor", {
   expect_equal(
-    createMarkovModelDataset(factor(c("A", "B", "A")), factor(c("B", "A", "B"))),
+    createMarkovModelDataset(
+      factor(c("A", "B", "A")),
+      factor(c("B", "A", "B"))
+    ),
     data.frame(
       prevA = c(TRUE, FALSE, TRUE),
       curA = c(FALSE, TRUE, FALSE),
@@ -88,7 +142,10 @@ test_that("createMarkovModelDataset.factor", {
     )
   )
   expect_error(
-    createMarkovModelDataset(factor(c("A", "B", "A")), factor(c("B", "A", "C"))),
+    createMarkovModelDataset(
+      factor(c("A", "B", "A")),
+      factor(c("B", "A", "C"))
+    ),
     regexp = "Assertion on 'colCur' failed: Must have levels: A,B"
   )
 })
@@ -97,7 +154,8 @@ test_that("createMarkovModelDataset.data.frame", {
   expect_equal(
     createMarkovModelDataset(
       data.frame(prev = c(1, 2, 1), cur = c(1, 2, 3)),
-      colPrev = "prev", colCur = "cur"
+      colPrev = "prev",
+      colCur = "cur"
     ),
     data.frame(
       prev = c(1, 2, 1),
@@ -113,7 +171,8 @@ test_that("createMarkovModelDataset.data.frame", {
   expect_error(
     createMarkovModelDataset(
       data.frame(prev = c(1, 2, 1), cur = c(1, 2, 3)),
-      colPrev = "prev", colCur = "foo"
+      colPrev = "prev",
+      colCur = "foo"
     ),
     regexp = "Names must include the elements {'prev','foo'}, but is missing elements {'foo'}",
     fixed = TRUE
