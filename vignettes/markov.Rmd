@@ -118,8 +118,8 @@ ggplot(dSim, aes(x = time, y = current)) +
 tabulated,
 
 ```{r tabulate-simulation}
-createMarkovTransitionMatrix(statePrior = dMarkov$previous, stateCurrent = dMarkov$current)
-createMarkovTransitionMatrix(statePrior = dSim$previous, stateCurrent = dSim$current)
+createMarkovTransitionMatrix(colPrev = dMarkov$previous, colCur = dMarkov$current)
+createMarkovTransitionMatrix(colPrev = dSim$previous, colCur = dSim$current)
 ```
 
 or summarized in any other useful way.
