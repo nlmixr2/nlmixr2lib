@@ -1,3 +1,34 @@
+test_that("createMarkovModelFromSingleState", {
+  expect_equal(
+    createMarkovModelFromSingleState(
+      transitionRow = list(none = c(none = 0.5, mild = 0.3, moderate = 0.2)),
+      stateNames = c(none = "none", mild = "mild", moderate = "moderate")
+    ),
+    list(
+      ini =
+        c(
+          "lnonetonone <- -0.6931; label(\"Probability of transition from state none to none (log-link)\")",
+          "lnonetomild <- 0.47; label(\"Probability of transition from state none to mild (log-logit link difference from prior state)\")"
+        ),
+      model =
+        c(
+          "# transition from state \"none\" to state \"none\"",
+          "nonetonone <- exp(lnonetonone)", "cumprnonetonone <- expit(nonetonone)",
+          "# transition from state \"none\" to state \"mild\"",
+          "nonetomild <- exp(lnonetomild)",
+          "cumprnonetomild <- expit(nonetonone + nonetomild)",
+          "# transition from state \"none\" to state \"moderate\"",
+          "cumprnonetomoderate <- 1 # The final state has a cumulative probability of 1",
+          "# Probability of each state transition",
+          "prnonetonone <- cumprnonetonone # Probability of transition from state none to none",
+          "prnonetomild <- cumprnonetomild - cumprnonetonone # Probability of transition from state none to mild",
+          "prnonetomoderate <- cumprnonetomoderate - cumprnonetomild # Probability of transition from state none to moderate",
+          "# log-likelihood of any transition from state none", "llnone <- prevnone*(curnone*log(prnonetonone) + curmild*log(prnonetomild) + curmoderate*log(prnonetomoderate))"
+        )
+    )
+  )
+})
+
 test_that("createMarkovTransitionMatrix", {
   expect_message(
     transition <- createMarkovTransitionMatrix(colPrev = c(1, 2, 1), colCur = c(2, 1, 1)),

@@ -73,7 +73,7 @@ dMarkov$DV <- 0
 To automatically generate a Markov model structure from your data, use the `createMarkovModel()` function:
 
 ```{r create-model}
-mod <- createMarkovModel(statePrior = dMarkov$previous, stateCurrent = dMarkov$current)
+mod <- createMarkovModel(colPrev = dMarkov$previous, colCur = dMarkov$current)
 cat(mod)
 ```
 
