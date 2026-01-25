@@ -30,8 +30,25 @@ test_that("createMarkovModel", {
         "  })",
         "}"
       ),
-      sep = "\n"
+      collapse = "\n"
     )
+  )
+  # Not square
+  expect_error(
+    createMarkovModel(transitions = matrix(c(0.1, 0.9), nrow = 1)),
+    regexp = "`transitions` matrix must be square"
+  )
+  # Unqeual row and column names
+  expect_error(
+    createMarkovModel(
+      transitions =
+        matrix(
+          c(0.1, 0.9, 0.2, 0.8),
+          byrow = TRUE, nrow = 2,
+          dimnames = list(c("a", "b"), c("c", "b"))
+        )
+    ),
+    regexp = "row and column names of `transitions` matrix must be the same"
   )
 })
 
