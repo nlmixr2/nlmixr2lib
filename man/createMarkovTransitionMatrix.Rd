@@ -5,17 +5,17 @@
 \title{Create a Markov transition matrix with probabilities of transitioning between every state}
 \usage{
 createMarkovTransitionMatrix(
-  statePrior,
-  stateCurrent,
+  colPrev,
+  colCur,
   estimateZeroTransitions = FALSE,
   estimateZeroTransitionsInitial = FALSE,
   ...
 )
 }
 \arguments{
-\item{statePrior}{The prior state as a vector (may be any type of variable that can be coerced to a character vector)}
-
-\item{stateCurrent}{The current state as a vector}
+\item{colPrev, colCur}{Column names in the dataset for the previous and
+current states (may be any R object that can be coerced to a character
+string, ordered objects are usually preferred)}
 
 \item{estimateZeroTransitions}{Should transitions that have zero occurrences be estimated? This is done by setting the state to have a single transition.}
 

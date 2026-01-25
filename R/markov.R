@@ -197,23 +197,22 @@ createMarkovModelFromSingleState <- function(transitionRow, stateNames) {
 
 #' Create a Markov transition matrix with probabilities of transitioning between every state
 #'
-#' @param statePrior The prior state as a vector (may be any type of variable that can be coerced to a character vector)
-#' @param stateCurrent The current state as a vector
+#' @inheritParams createMarkovModelDataset
 #' @param estimateZeroTransitions Should transitions that have zero occurrences be estimated? This is done by setting the state to have a single transition.
 #' @param estimateZeroTransitionsInitial Should transitions that are only initial states be estimated (ignored if `estimateZeroTransitions = FALSE`)
 #' @param ... Ignored
 #' @returns A square matrix with row and column names for each state where rows are the prior state and columns are the current state.
 #' @family Markov models
 #' @export
-createMarkovTransitionMatrix <- function(statePrior, stateCurrent, estimateZeroTransitions = FALSE, estimateZeroTransitionsInitial = FALSE, ...) {
+createMarkovTransitionMatrix <- function(colPrev, colCur, estimateZeroTransitions = FALSE, estimateZeroTransitionsInitial = FALSE, ...) {
   # Create the transition matrix
-  if (any(is.na(statePrior))) {
-    stop("`statePrior` cannot be `NA`")
-  } else if (any(is.na(stateCurrent))) {
-    stop("`stateCurrent` cannot be `NA`")
+  if (any(is.na(colPrev))) {
+    stop("`colPrev` cannot be `NA`")
+  } else if (any(is.na(colCur))) {
+    stop("`colCur` cannot be `NA`")
   }
   # find all states in the data
-  allStates <- sort(unique(c(statePrior, stateCurrent)))
+  allStates <- sort(unique(c(colPrev, colCur)))
   if (length(allStates) < 2) {
     stop("Only one state detected, cannot create a nontrivial Markov model")
   }
@@ -225,9 +224,9 @@ createMarkovTransitionMatrix <- function(statePrior, stateCurrent, estimateZeroT
     )
   # From state is the row, to state is the column
   for (idx1 in seq_along(allStates)) {
-    mask1 <- statePrior %in% allStates[idx1]
+    mask1 <- colPrev %in% allStates[idx1]
     for (idx2 in seq_along(allStates)) {
-      mask2 <- stateCurrent %in% allStates[idx2]
+      mask2 <- colCur %in% allStates[idx2]
       transitionCount[idx1, idx2] <- sum(mask1 & mask2)
     }
   }
@@ -368,7 +367,7 @@ simMarkov <- function(ui, initialState, states, colPrev = "previous", colCur = "
 
   transitionPrCols <-
     lapply(
-      X = setNames(nm = names(states)),
+      X = stats::setNames(nm = names(states)),
       FUN = function(x) {
         allPrCols <- stats::setNames(paste0("pr", x, "to", names(states)), nm = names(states))
         # Don't use intersect() to preserve the names
@@ -431,7 +430,7 @@ simMarkovId <- function(data, initialState, prCols) {
   }
   ret <- data.frame(prev = rep(NA, nrow(data)), cur = NA)
   prevState <- initialState
-  randNums <- runif(n = nrow(data))
+  randNums <- stats::runif(n = nrow(data))
   # The state that goes from the final percentage to 100% is the last one in the list
   for (idx in seq_len(nrow(ret))) {
     ret$prev[idx] <- prevState

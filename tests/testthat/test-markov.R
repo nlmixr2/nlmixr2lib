@@ -1,3 +1,37 @@
+test_that("createMarkovTransitionMatrix", {
+  expect_message(
+    transition <- createMarkovTransitionMatrix(colPrev = c(1, 2, 1), colCur = c(2, 1, 1)),
+    regexp = "The following appear only to be collecting state(s): 2",
+    fixed = TRUE
+  )
+  expect_equal(
+    transition,
+    matrix(c(0.5, 0.5, 1, 0), nrow = 2, byrow = TRUE, dimnames = list(c("1", "2"), c("1", "2")))
+  )
+  expect_error(
+    createMarkovTransitionMatrix(colPrev = c(1, 2, NA), colCur = c(2, 1, 1)),
+    regexp = "`colPrev` cannot be `NA`"
+  )
+  expect_error(
+    createMarkovTransitionMatrix(colPrev = c(1, 2, 1), colCur = c(2, 1, NA)),
+    regexp = "`colCur` cannot be `NA`"
+  )
+  expect_error(
+    createMarkovTransitionMatrix(colPrev = c(1, 1, 1), colCur = c(1, 1, 1)),
+    regexp = "Only one state detected, cannot create a nontrivial Markov model"
+  )
+  expect_message(
+    createMarkovTransitionMatrix(colPrev = c(1, 1, 2, 3, 2, 3), colCur = c(2, 3, 3, 2, 2, 3)),
+    regexp = "The following state(s) appear only to be initial states: 1",
+    fixed = TRUE
+  )
+  expect_message(
+    createMarkovTransitionMatrix(colPrev = c(1, 2, 3, 1, 2), colCur = c(3, 3, 3, 2, 1)),
+    regexp = "The following appear only to be collecting state(s): 3",
+    fixed = TRUE
+  )
+})
+
 test_that("createMarkovModelDataset.default", {
   expect_equal(
     createMarkovModelDataset.default(colPrev = c(1, 2, 1), colCur = c(1, 2, 3)),
