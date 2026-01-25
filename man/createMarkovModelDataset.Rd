@@ -46,6 +46,9 @@ Create a Markov model dataset for use in estimating Markov models
 \seealso{
 Other Markov models: 
 \code{\link{createMarkovModel}()},
-\code{\link{createMarkovTransitionMatrix}()}
+\code{\link{createMarkovModelFromSingleState}()},
+\code{\link{createMarkovTransitionMatrix}()},
+\code{\link{simMarkov}()},
+\code{\link{simMarkovId}()}
 }
 \concept{Markov models}

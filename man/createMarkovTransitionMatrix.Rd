@@ -32,6 +32,9 @@ Create a Markov transition matrix with probabilities of transitioning between ev
 \seealso{
 Other Markov models: 
 \code{\link{createMarkovModel}()},
-\code{\link{createMarkovModelDataset}()}
+\code{\link{createMarkovModelDataset}()},
+\code{\link{createMarkovModelFromSingleState}()},
+\code{\link{simMarkov}()},
+\code{\link{simMarkovId}()}
 }
 \concept{Markov models}

@@ -12,6 +12,27 @@ test_that("createMarkovModelDataset.default", {
   )
 })
 
+test_that("simMarkov", {
+  d <-
+    data.frame(
+      id = c(1, 2),
+      prAtoA = rep(c(0.2, 0.1), 2),
+      prAtoB = rep(c(0.8, 0.9), 2),
+      prBtoA = rep(c(0.2, 0.1), 2),
+      prBtoB = rep(c(0.8, 0.9), 2)
+    )
+  simresult <- simMarkov(ui = d, initialState = "A", states = c("A", "B"))
+  expect_named(
+    simresult,
+    c("id", "prAtoA", "prAtoB", "prBtoA", "prBtoB", "current", "previous")
+  )
+  expect_error(
+    simMarkov(ui = d[, 2:5], initialState = "A", states = c("A", "B")),
+    regexp = "Could not find an ID column in `ui`; expected a column named 'id' (case-insensitive).",
+    fixed = TRUE
+  )
+})
+
 test_that("simMarkovId", {
   d <-
     data.frame(

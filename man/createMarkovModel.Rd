@@ -24,6 +24,9 @@ Create a Markov model for `nlmixr2`
 \seealso{
 Other Markov models: 
 \code{\link{createMarkovModelDataset}()},
-\code{\link{createMarkovTransitionMatrix}()}
+\code{\link{createMarkovModelFromSingleState}()},
+\code{\link{createMarkovTransitionMatrix}()},
+\code{\link{simMarkov}()},
+\code{\link{simMarkovId}()}
 }
 \concept{Markov models}

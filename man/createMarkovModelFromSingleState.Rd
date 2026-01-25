@@ -17,4 +17,13 @@ A list with two elements, "ini" and "model", where each element is a character v
 \description{
 Create the parts of a Markov model for transitioning from a single state
 }
+\seealso{
+Other Markov models: 
+\code{\link{createMarkovModel}()},
+\code{\link{createMarkovModelDataset}()},
+\code{\link{createMarkovTransitionMatrix}()},
+\code{\link{simMarkov}()},
+\code{\link{simMarkovId}()}
+}
+\concept{Markov models}
 \keyword{Internal}

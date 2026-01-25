@@ -37,4 +37,13 @@ probCols <-
   )
 simMarkovId(data = d, initialState = "A", prCols = probCols)
 }
+\seealso{
+Other Markov models: 
+\code{\link{createMarkovModel}()},
+\code{\link{createMarkovModelDataset}()},
+\code{\link{createMarkovModelFromSingleState}()},
+\code{\link{createMarkovTransitionMatrix}()},
+\code{\link{simMarkov}()}
+}
+\concept{Markov models}
 \keyword{Internal}

@@ -98,6 +98,7 @@ createMarkovModel <- function(..., ignoreProbLt = 0, ignoreProbGt = 1, transitio
 #' @param stateNames a named vector of state names where the name is the name for use in the model parameters
 #' @returns A list with two elements, "ini" and "model", where each element is a character vector of lines of code for the model
 #' @keywords Internal
+#' @family Markov models
 createMarkovModelFromSingleState <- function(transitionRow, stateNames) {
   checkmate::assert_list(transitionRow, len = 1)
   checkmate::assert_named(transitionRow)
@@ -318,22 +319,38 @@ createMarkovModelDataset.data.frame <- function(x, colPrev, colCur, ...) {
 
 #' Convert nlmixr2 simulations to Markov states
 #'
-#' @param ui a model to simulate from
+#' Simulations are performed per sim.id (if applicable) and per subject id
+#' within the simulation. The `sim.id` column must be named exactly that, and
+#' the `id` column is detected case-insensitvely.
+#'
+#' See the Markov vignette (\code{vignette("markov", package = "nlmixr2lib")})
+#' for an example.
+#'
+#' @param ui a model fit or simulation object to simulate from or a data.frame
+#'   containing the transition probability columns
 #' @param initialState The initial Markov state
 #' @param states All states in the model as a character vector
 #' @inheritParams createMarkovModelDataset
-#' @returns A data.frame with the original data along with the new state columns added
+#' @returns A data.frame with the original data along with the new state columns
+#'   (`colPrev` and `colCur`) added
+#' @family Markov models
 #' @export
 simMarkov <- function(ui, initialState, states, colPrev = "previous", colCur = "current", ...) {
-  stopifnot(initialState %in% states)
+  checkmate::assert_choice(initialState, choices = states, null.ok = FALSE)
+  checkmate::assert_character(states, min.len = 2, any.missing = FALSE)
+  if (is.null(names(states))) {
+    names(states) <- make.names(states, unique = TRUE)
+  }
   ret <- as.data.frame(ui)
   ret[[colPrev]] <- ret[[colCur]] <- NA
   idCol <- names(ret)[tolower(names(ret)) == "id"]
   if (length(idCol) == 0L) {
     stop("Could not find an ID column in `ui`; expected a column named 'id' (case-insensitive).")
   }
+  addSimId <- FALSE
   if (!("sim.id" %in% names(ret))) {
     ret$sim.id <- 1
+    addSimId <- TRUE
   }
 
   transitionPrCols <-
@@ -347,6 +364,7 @@ simMarkov <- function(ui, initialState, states, colPrev = "previous", colCur = "
     )
 
   for (simCur in unique(ret$sim.id)) {
+    # Handle multiple simulations
     maskSim <- ret$sim.id %in% simCur
     for (idCur in unique(ret[[idCol]])) {
       maskId <- maskSim & (ret[[idCol]] %in% idCur)
@@ -357,6 +375,9 @@ simMarkov <- function(ui, initialState, states, colPrev = "previous", colCur = "
   }
   ret[[colPrev]] <- factor(ret[[colPrev]], levels = states)
   ret[[colCur]] <- factor(ret[[colCur]], levels = states)
+  if (addSimId) {
+    ret$sim.id <- NULL
+  }
   ret
 }
 
@@ -369,6 +390,7 @@ simMarkov <- function(ui, initialState, states, colPrev = "previous", colCur = "
 #'   columns.
 #' @returns A data.frame with two columns named "prev" and "cur"
 #' @keywords Internal
+#' @family Markov models
 #' @examples
 #' d <-
 #'   data.frame(
@@ -387,12 +409,12 @@ simMarkovId <- function(data, initialState, prCols) {
   checkmate::assert_data_frame(data)
   # Make sure that the data has all of the columns used as probability columns
   checkmate::assert_names(names(data), must.include = unlist(prCols))
-  checkmate::assert_list(probCols, names = "unique")
+  checkmate::assert_list(prCols, names = "unique")
   for (nm in names(prCols)) {
-    checkmate::assert_character(probCols[[nm]], names = "unique", min.len = 1)
+    checkmate::assert_character(prCols[[nm]], names = "unique", min.len = 1)
     # Verify that each of the probability column specifications is named for a
     # state
-    checkmate::assert_names(names(probCols[[nm]]), subset.of = names(prCols))
+    checkmate::assert_names(names(prCols[[nm]]), subset.of = names(prCols))
   }
   ret <- data.frame(prev = rep(NA, nrow(data)), cur = NA)
   prevState <- initialState
