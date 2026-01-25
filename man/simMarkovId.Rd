@@ -22,4 +22,19 @@ A data.frame with two columns named "prev" and "cur"
 \description{
 Simulate a Markov model broken down by ID
 }
+\examples{
+d <-
+  data.frame(
+    prAtoA = c(0.2, 0.1),
+    prAtoB = c(0.8, 0.9),
+    prBtoA = c(0.2, 0.1),
+    prBtoB = c(0.8, 0.9)
+  )
+probCols <-
+  list(
+    A = c(A = "prAtoA", B = "prAtoB"),
+    B = c(A = "prBtoA", B = "prBtoB")
+  )
+simMarkovId(data = d, initialState = "A", prCols = probCols)
+}
 \keyword{Internal}
