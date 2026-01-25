@@ -11,3 +11,48 @@ test_that("createMarkovModelDataset.default", {
     )
   )
 })
+
+test_that("simMarkovId", {
+  d <-
+    data.frame(
+      prAtoA = c(0.2, 0.1),
+      prAtoB = c(0.8, 0.9),
+      prBtoA = c(0.2, 0.1),
+      prBtoB = c(0.8, 0.9)
+    )
+  probCols <-
+    list(
+      A = c(A = "prAtoA", B = "prAtoB"),
+      B = c(A = "prBtoA", B = "prBtoB")
+    )
+
+  expect_equal(
+    withr::with_seed(
+      5,
+      simMarkovId(data = d, initialState = "A", prCols = probCols)
+    ),
+    data.frame(prev = c("A", "B"), cur = c("B", "B"))
+  )
+
+  # A probability column that is not in the data is an error
+  probCols <-
+    list(
+      A = c(A = "prAtoX", B = "prAtoB"),
+      B = c(A = "prBtoA", B = "prBtoB")
+    )
+  expect_error(
+    simMarkovId(data = d, initialState = "A", prCols = probCols),
+    regexp = "Names must include the elements.*but is missing elements.*prAtoX"
+  )
+  # A name in the probability column list that is not within the outer list is
+  # an error
+  probCols <-
+    list(
+      A = c(A = "prAtoA", B = "prAtoB"),
+      B = c(X = "prBtoA", B = "prBtoB")
+    )
+  expect_error(
+    simMarkovId(data = d, initialState = "A", prCols = probCols),
+    regexp = "Names must be a subset of.*but has additional elements.*'X'"
+  )
+})

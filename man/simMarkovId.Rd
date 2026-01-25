@@ -7,11 +7,14 @@
 simMarkovId(data, initialState, prCols)
 }
 \arguments{
-\item{data}{A data.frame for the individual}
+\item{data}{A data.frame for the individual with columns for each of the
+state transition probabilities}
 
 \item{initialState}{The initial Markov state}
 
-\item{prCols}{A named list of probability columns. List names are the previous state, and list values are a character vector of probability columns.}
+\item{prCols}{A named list of probability columns. List names are the
+previous state, and list values are a character vector of probability
+columns.}
 }
 \value{
 A data.frame with two columns named "prev" and "cur"

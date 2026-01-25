@@ -361,12 +361,25 @@ simMarkov <- function(ui, initialState, states, colPrev = "previous", colCur = "
 }
 
 #' Simulate a Markov model broken down by ID
-#' @param data A data.frame for the individual
+#' @param data A data.frame for the individual with columns for each of the
+#'   state transition probabilities
 #' @inheritParams simMarkov
-#' @param prCols A named list of probability columns. List names are the previous state, and list values are a character vector of probability columns.
+#' @param prCols A named list of probability columns. List names are the
+#'   previous state, and list values are a character vector of probability
+#'   columns.
 #' @returns A data.frame with two columns named "prev" and "cur"
 #' @keywords Internal
 simMarkovId <- function(data, initialState, prCols) {
+  checkmate::assert_data_frame(data)
+  # Make sure that the data has all of the columns used as probability columns
+  checkmate::assert_names(names(data), must.include = unlist(prCols))
+  checkmate::assert_list(probCols, names = "unique")
+  for (nm in names(prCols)) {
+    checkmate::assert_character(probCols[[nm]], names = "unique", min.len = 1)
+    # Verify that each of the probability column specifications is named for a
+    # state
+    checkmate::assert_names(names(probCols[[nm]]), subset.of = names(prCols))
+  }
   ret <- data.frame(prev = rep(NA, nrow(data)), cur = NA)
   prevState <- initialState
   randNums <- runif(n = nrow(data))
@@ -377,8 +390,9 @@ simMarkovId <- function(data, initialState, prCols) {
     # cumulative probability columns
     availableCols <- prCols[[ret$prev[idx]]]
     transitionVec <- data[idx, availableCols, drop = FALSE]
-    # Find the first cumulative probability greater than the randomly selected probability.
-    # Protect from floating point issues where the sum could add to a value <1 by always having the final category as a default, last value.
+    # Find the first cumulative probability greater than the randomly selected
+    # probability. Protect from floating point issues where the sum could add to
+    # a value <1 by always having the final category as a default, last value.
     curStateIdx <- c(which(cumsum(unlist(transitionVec)) > randNums[idx]), length(availableCols))[1]
     ret$cur[idx] <- prevState <- names(availableCols[curStateIdx])
   }
