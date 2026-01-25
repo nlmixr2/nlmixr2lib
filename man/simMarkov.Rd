@@ -21,7 +21,9 @@ containing the transition probability columns}
 
 \item{states}{All states in the model as a character vector}
 
-\item{colPrev, colCur}{Column names in the dataset for the previous and current states (may be any R object that can be coerced to a character string, ordered objects are usually preferred)}
+\item{colPrev, colCur}{Column names in the dataset for the previous and
+current states (may be any R object that can be coerced to a character
+string, ordered objects are usually preferred)}
 
 \item{...}{Passed to methods}
 }

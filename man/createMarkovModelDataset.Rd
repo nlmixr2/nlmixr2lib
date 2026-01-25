@@ -24,25 +24,35 @@ createMarkovModelDataset(x, ...)
 
 \item{...}{Passed to methods}
 
-\item{colPrev, colCur}{Column names in the dataset for the previous and current states (may be any R object that can be coerced to a character string, ordered objects are usually preferred)}
+\item{colPrev, colCur}{Column names in the dataset for the previous and
+current states (may be any R object that can be coerced to a character
+string, ordered objects are usually preferred)}
 
-\item{prefixPrev, prefixCur}{Column name prefixes for the previous and current states}
+\item{prefixPrev, prefixCur}{Column name prefixes for the previous and current
+states}
 }
 \value{
-The data.frame modified by adding one-hot columns for the previous and current states
+The data.frame modified by adding one-hot columns for the previous
+  and current states
 
-The data.frame modified by adding one-hot columns for the previous and current states
+The data.frame modified by adding one-hot columns for the previous
+  and current states
 }
 \description{
 Create a Markov model dataset for use in estimating Markov models
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{createMarkovModelDataset(default)}: Create a Markov dataset from a pair of vectors
+\item \code{createMarkovModelDataset(default)}: Create a Markov dataset from a pair of
+vectors
 
-\item \code{createMarkovModelDataset(data.frame)}: Create a Markov dataset from a data.frame
+\item \code{createMarkovModelDataset(data.frame)}: Create a Markov dataset from a
+data.frame
 
 }}
+\examples{
+createMarkovModelDataset(c(1, 2, 1), colCur = c(1, 2, 3))
+}
 \seealso{
 Other Markov models: 
 \code{\link{createMarkovModel}()},

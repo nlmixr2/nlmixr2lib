@@ -273,11 +273,18 @@ createMarkovModelDataset <- function(x, ...) {
   UseMethod("createMarkovModelDataset")
 }
 
-#' @describeIn createMarkovModelDataset Create a Markov dataset from a pair of vectors
-#' @param colPrev,colCur Vectors for the previous and current states (may be any R object that can be coerced to a character string, ordered objects are usually preferred)
-#' @param prefixPrev,prefixCur Column name prefixes for the previous and current states
-#' @returns The data.frame modified by adding one-hot columns for the previous and current states
+#' @describeIn createMarkovModelDataset Create a Markov dataset from a pair of
+#'   vectors
+#' @param colPrev,colCur Vectors for the previous and current states (may be any
+#'   R object that can be coerced to a character string, ordered objects are
+#'   usually preferred)
+#' @param prefixPrev,prefixCur Column name prefixes for the previous and current
+#'   states
+#' @returns The data.frame modified by adding one-hot columns for the previous
+#'   and current states
 #' @export
+#' @examples
+#' createMarkovModelDataset(c(1, 2, 1), colCur = c(1, 2, 3))
 createMarkovModelDataset.default <- function(x, colCur, colPrev = x, prefixPrev = "prev", prefixCur = "cur", ...) {
   checkmate::assert_vector(colPrev)
   checkmate::assert_vector(colCur)
@@ -300,16 +307,22 @@ createMarkovModelDataset.default <- function(x, colCur, colPrev = x, prefixPrev 
 
 #' @export
 createMarkovModelDataset.factor <- function(x, colCur, colPrev=x, ...) {
-  # Factor levels must match (consider handling if one's levels are a strict superset of the other's)
-  checkmate::assertFactor(x)
-  checkmate::assertFactor(colPrev)
-  checkmate::assertFactor(colCur, levels = levels(colPrev))
+  checkmate::assert_factor(x)
+  checkmate::assert_factor(colPrev)
+  checkmate::assert_factor(colCur)
+  # Factor levels must match (consider handling if one's levels are a strict
+  # superset of the other's)
+  checkmate::assert_factor(colCur, levels = levels(colPrev))
   createMarkovModelDataset.default(colPrev = x, colCur = colCur, ...)
 }
 
-#' @describeIn createMarkovModelDataset Create a Markov dataset from a data.frame
-#' @param colPrev,colCur Column names in the dataset for the previous and current states (may be any R object that can be coerced to a character string, ordered objects are usually preferred)
-#' @returns The data.frame modified by adding one-hot columns for the previous and current states
+#' @describeIn createMarkovModelDataset Create a Markov dataset from a
+#'   data.frame
+#' @param colPrev,colCur Column names in the dataset for the previous and
+#'   current states (may be any R object that can be coerced to a character
+#'   string, ordered objects are usually preferred)
+#' @returns The data.frame modified by adding one-hot columns for the previous
+#'   and current states
 #' @export
 createMarkovModelDataset.data.frame <- function(x, colPrev, colCur, ...) {
   checkmate::assert_data_frame(x)

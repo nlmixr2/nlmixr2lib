@@ -12,6 +12,49 @@ test_that("createMarkovModelDataset.default", {
   )
 })
 
+test_that("createMarkovModelDataset.factor", {
+  expect_equal(
+    createMarkovModelDataset(factor(c("A", "B", "A")), factor(c("B", "A", "B"))),
+    data.frame(
+      prevA = c(TRUE, FALSE, TRUE),
+      curA = c(FALSE, TRUE, FALSE),
+      prevB = c(FALSE, TRUE, FALSE),
+      curB = c(TRUE, FALSE, TRUE)
+    )
+  )
+  expect_error(
+    createMarkovModelDataset(factor(c("A", "B", "A")), factor(c("B", "A", "C"))),
+    regexp = "Assertion on 'colCur' failed: Must have levels: A,B"
+  )
+})
+
+test_that("createMarkovModelDataset.data.frame", {
+  expect_equal(
+    createMarkovModelDataset(
+      data.frame(prev = c(1, 2, 1), cur = c(1, 2, 3)),
+      colPrev = "prev", colCur = "cur"
+    ),
+    data.frame(
+      prev = c(1, 2, 1),
+      cur = c(1, 2, 3),
+      prevX1 = c(TRUE, FALSE, TRUE),
+      curX1 = c(TRUE, FALSE, FALSE),
+      prevX2 = c(FALSE, TRUE, FALSE),
+      curX2 = c(FALSE, TRUE, FALSE),
+      prevX3 = c(FALSE, FALSE, FALSE),
+      curX3 = c(FALSE, FALSE, TRUE)
+    )
+  )
+  expect_error(
+    createMarkovModelDataset(
+      data.frame(prev = c(1, 2, 1), cur = c(1, 2, 3)),
+      colPrev = "prev", colCur = "foo"
+    ),
+    regexp = "Names must include the elements {'prev','foo'}, but is missing elements {'foo'}",
+    fixed = TRUE
+  )
+})
+
 test_that("simMarkov", {
   d <-
     data.frame(
