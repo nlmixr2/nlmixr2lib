@@ -1,0 +1,125 @@
+---
+title: "Markov modeling"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Markov modeling}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(nlmixr2lib)
+library(ggplot2)
+```
+
+# Create your dataset
+
+Start from an initial dataset that has a previous state and a current state column. For this exercise, we will use a hypothetical adverse event profile switching between "none", "mild", and "moderate" severities.
+
+```{r data-setup}
+dMarkov <-
+  rbind(
+    data.frame(
+      ID = 1,
+      TIME = 0:4,
+      previous = c("none", "mild", "moderate", "mild", "mild"),
+      current = c("mild", "moderate", "mild", "mild", "none")
+    ),
+    data.frame(
+      ID = 2,
+      TIME = 0:4,
+      previous = c("none", "moderate", "moderate", "none", "none"),
+      current = c("moderate", "moderate", "none", "none", "none")
+    ),
+    data.frame(
+      ID = 3,
+      TIME = 0:4,
+      previous = c("none", "mild", "mild", "mild", "none"),
+      current = c("none", "mild", "mild", "none", "mild")
+    )
+  )
+```
+
+To make interpretability easier later, put the states in order, if they are not numeric. Putting the levels in order is not required, but if not done, then they will be sorted alphabetically in the modeling which may not make sense (e.g. "none" coming after "moderate").
+
+```{r state-order}
+stateLevels <- c("none", "mild", "moderate")
+dMarkov$previous <- factor(dMarkov$previous, levels = stateLevels)
+dMarkov$current <- factor(dMarkov$current, levels = stateLevels)
+```
+
+The dataset for estimation requires one-hot encoded columns in the dataset. That more simply means we need columns set to 1 for when a Markov state applies and 0 when it does not.
+
+```{r one-hot-prep}
+dMarkov <- createMarkovModelDataset(dMarkov, colPrev = "previous", colCur = "current")
+knitr::knit_print(dMarkov)
+```
+
+A DV column is required for `nlmixr2` to work, but it will be ignored for this model.
+
+```{r add-dv-col}
+dMarkov$DV <- 0
+```
+
+# Create your model
+
+To automatically generate a Markov model structure from your data, use the `createMarkovModel()` function:
+
+```{r create-model}
+mod <- createMarkovModel(colPrev = dMarkov$previous, colCur = dMarkov$current)
+cat(mod)
+```
+
+At this point, the model is a character string. Use advanced R methods (with standard R functions) to convert that to a function for `nlmixr2`.
+
+```{r create-model-fun}
+modFun <- eval(str2lang(mod))
+```
+
+The model can subsequently be modified the same as any other `nlmixr2` model, for example to add drug effects, etc.
+
+# Fit the model
+
+```{r fit}
+fit <- nlmixr2est::nlmixr(modFun, data = dMarkov, est = "focei", control = list(print = 0))
+fit
+```
+
+# Simulate your data
+
+To simulate from a Markov model, you first need to run a typical simulation from the model to get probabilities of each state. Then, post-process the simulation results to get the states.
+
+```{r simulate}
+#dSim <- nlmixr2est::vpcSim(fit, normRelated = FALSE)
+dSimRaw <- nlmixr2est::nlmixr(fit, est = "rxSolve", control = list(nStud = 5))
+dSim <- simMarkov(dSimRaw, states = fit$markovStates, initialState = "none", colPrev = "previous", colCur = "current")
+```
+
+## Summarize the simulations
+
+Simulations can be plotted,
+
+```{r plot-simulation}
+ggplot(dSim, aes(x = time, y = current)) +
+  geom_line(
+    aes(colour = paste(sim.id, id), group = paste(sim.id, id)),
+    show.legend = FALSE
+  ) +
+  geom_count()
+```
+
+tabulated,
+
+```{r tabulate-simulation}
+createMarkovTransitionMatrix(colPrev = dMarkov$previous, colCur = dMarkov$current)
+createMarkovTransitionMatrix(colPrev = dSim$previous, colCur = dSim$current)
+```
+
+or summarized in any other useful way.
