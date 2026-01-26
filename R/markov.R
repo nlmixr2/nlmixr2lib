@@ -403,20 +403,6 @@ simMarkov <- function(ui, initialState, states, colPrev = "previous", colCur = "
 #' @returns A data.frame with two columns named "prev" and "cur"
 #' @keywords Internal
 #' @family Markov models
-#' @examples
-#' d <-
-#'   data.frame(
-#'     prAtoA = c(0.2, 0.1),
-#'     prAtoB = c(0.8, 0.9),
-#'     prBtoA = c(0.2, 0.1),
-#'     prBtoB = c(0.8, 0.9)
-#'   )
-#' probCols <-
-#'   list(
-#'     A = c(A = "prAtoA", B = "prAtoB"),
-#'     B = c(A = "prBtoA", B = "prBtoB")
-#'   )
-#' simMarkovId(data = d, initialState = "A", prCols = probCols)
 simMarkovId <- function(data, initialState, prCols) {
   checkmate::assert_data_frame(data)
   # Make sure that the data has all of the columns used as probability columns
