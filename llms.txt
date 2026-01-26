@@ -95,6 +95,16 @@ this way.
   elimination
 - [`convertQuad()`](https://nlmixr2.github.io/nlmixr2lib/reference/convertQuad.md)
   : Convert linear elimination to quadratic elimination
+- [`createMarkovModel()`](https://nlmixr2.github.io/nlmixr2lib/reference/createMarkovModel.md)
+  : Create a Markov model for \`nlmixr2\`
+- [`createMarkovModelDataset()`](https://nlmixr2.github.io/nlmixr2lib/reference/createMarkovModelDataset.md)
+  : Create a Markov model dataset for use in estimating Markov models
+- [`createMarkovModelFromSingleState()`](https://nlmixr2.github.io/nlmixr2lib/reference/createMarkovModelFromSingleState.md)
+  : Create the parts of a Markov model for transitioning from a single
+  state
+- [`createMarkovTransitionMatrix()`](https://nlmixr2.github.io/nlmixr2lib/reference/createMarkovTransitionMatrix.md)
+  : Create a Markov transition matrix with probabilities of
+  transitioning between every state
 - [`defaultCombine()`](https://nlmixr2.github.io/nlmixr2lib/reference/defaultCombine.md)
   [`snakeCombine()`](https://nlmixr2.github.io/nlmixr2lib/reference/defaultCombine.md)
   [`camelCombine()`](https://nlmixr2.github.io/nlmixr2lib/reference/defaultCombine.md)
@@ -122,6 +132,10 @@ this way.
   : Search within a model to replace part of the model
 - [`setCombineType()`](https://nlmixr2.github.io/nlmixr2lib/reference/setCombineType.md)
   : Change the default combine type for the package
+- [`simMarkov()`](https://nlmixr2.github.io/nlmixr2lib/reference/simMarkov.md)
+  : Convert nlmixr2 simulations to Markov states
+- [`simMarkovId()`](https://nlmixr2.github.io/nlmixr2lib/reference/simMarkovId.md)
+  : Simulate a Markov model broken down by ID
 - [`updateOncologyXenograftSimeoni2004()`](https://nlmixr2.github.io/nlmixr2lib/reference/updateOncologyXenograftSimeoni2004.md)
   : Update an oncology xenograft model based on Simeoni 2004
 
@@ -136,4 +150,6 @@ this way.
 - [Kyhl_2016_nalmefene](https://nlmixr2.github.io/nlmixr2lib/articles/Kyhl_2016_nalmefene.md):
 - [List of
   models](https://nlmixr2.github.io/nlmixr2lib/articles/list-of-models.md):
+- [Markov
+  modeling](https://nlmixr2.github.io/nlmixr2lib/articles/markov.md):
 - [Xie_2019_agomelatine](https://nlmixr2.github.io/nlmixr2lib/articles/Xie_2019_agomelatine.md):

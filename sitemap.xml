@@ -6,6 +6,7 @@
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/create-model-library.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/index.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/list-of-models.html</loc></url>
+<url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/markov.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/authors.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/index.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/news/index.html</loc></url>
@@ -32,6 +33,10 @@
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/convertLogLin.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/convertMM.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/convertQuad.html</loc></url>
+<url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/createMarkovModel.html</loc></url>
+<url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/createMarkovModelDataset.html</loc></url>
+<url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/createMarkovModelFromSingleState.html</loc></url>
+<url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/createMarkovTransitionMatrix.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/defaultCombine.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/fakeCc.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/index.html</loc></url>
@@ -45,6 +50,8 @@
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/removeTransit.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/searchReplace.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/setCombineType.html</loc></url>
+<url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/simMarkov.html</loc></url>
+<url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/simMarkovId.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/reference/updateOncologyXenograftSimeoni2004.html</loc></url>
 </urlset>
 

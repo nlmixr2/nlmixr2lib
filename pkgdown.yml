@@ -6,8 +6,9 @@ articles:
   Grimm_2023: Grimm_2023.html
   Kyhl_2016_nalmefene: Kyhl_2016_nalmefene.html
   list-of-models: list-of-models.html
+  markov: markov.html
   Xie_2019_agomelatine: Xie_2019_agomelatine.html
-last_built: 2026-01-20T17:30Z
+last_built: 2026-01-26T01:05Z
 urls:
   reference: https://nlmixr2.github.io/nlmixr2lib/reference
   article: https://nlmixr2.github.io/nlmixr2lib/articles
