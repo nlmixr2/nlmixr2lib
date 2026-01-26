@@ -50,6 +50,18 @@ test_that("createMarkovModel", {
     ),
     regexp = "row and column names of `transitions` matrix must be the same"
   )
+  expect_error(
+    createMarkovModel(transitions =
+      matrix(
+        c(0.1, 0.9, 0.2, 0.8),
+        byrow = TRUE, nrow = 2,
+        dimnames = list(c("a", "b"), c("a", "b"))
+      ),
+      ignoreProbLt = 0.15
+    ),
+    regexp = "After filtering with ignoreProbLt = 0.15, the following states have insufficient outgoing transitions (<= 1): a",
+    fixed = TRUE
+  )
 })
 
 test_that("createMarkovModelFromSingleState", {
@@ -96,6 +108,21 @@ test_that("createMarkovTransitionMatrix", {
     transition,
     matrix(
       c(0.5, 0.5, 1, 0),
+      nrow = 2,
+      byrow = TRUE,
+      dimnames = list(c("1", "2"), c("1", "2"))
+    )
+  )
+  expect_equal(
+    suppressMessages(
+      createMarkovTransitionMatrix(
+        colPrev = c(1, 2, 1),
+        colCur = c(2, 1, 1),
+        estimateZeroTransitions = TRUE
+      )
+    ),
+    matrix(
+      c(0.5, 0.5, 0.5, 0.5),
       nrow = 2,
       byrow = TRUE,
       dimnames = list(c("1", "2"), c("1", "2"))
