@@ -7,7 +7,7 @@ test_that("createMarkovModel", {
         "function() {",
         "  markovStates <- c(X1 = \"1\", X2 = \"2\")",
         "  ini({",
-        "    lX1toX1 <- -0.6931; label(\"Probability of transition from state 1 to 1 (log-link)\")",
+        "    logitX1toX1 <- -0; label(\"Probability of transition from state 1 to 1 (logit probability)\")",
         "  })",
         "  model({",
         "    # Create the following one-hot encoded columns for previous and current Markov states (this can be done with `createMarkovModelDataset()`)",
@@ -15,13 +15,11 @@ test_that("createMarkovModel", {
         "    # For state 2: prevX2, curX2",
         "    # No transitions created for collector state, 2",
         "    # transition from state \"1\" to state \"1\"",
-        "    X1toX1 <- exp(lX1toX1)",
-        "    cumprX1toX1 <- expit(X1toX1)",
-        "    # transition from state \"1\" to state \"2\"",
-        "    cumprX1toX2 <- 1 # The final state has a cumulative probability of 1",
+        "    linkX1toX1 <- logitX1toX1",
+        "    cumprX1toX1 <- expit(linkX1toX1)",
         "    # Probability of each state transition",
         "    prX1toX1 <- cumprX1toX1 # Probability of transition from state 1 to 1",
-        "    prX1toX2 <- cumprX1toX2 - cumprX1toX1 # Probability of transition from state 1 to 2",
+        "    prX1toX2 <- 1 - cumprX1toX1 # Probability of transition from state 1 to 2",
         "    # log-likelihood of any transition from state 1",
         "    llX1 <- prevX1*(curX1*log(prX1toX1) + curX2*log(prX1toX2))",
         "    # Overall Markov model log-likelihood",
@@ -41,20 +39,21 @@ test_that("createMarkovModel", {
   # Unqeual row and column names
   expect_error(
     createMarkovModel(
-      transitions =
-        matrix(
-          c(0.1, 0.9, 0.2, 0.8),
-          byrow = TRUE, nrow = 2,
-          dimnames = list(c("a", "b"), c("c", "b"))
-        )
+      transitions = matrix(
+        c(0.1, 0.9, 0.2, 0.8),
+        byrow = TRUE,
+        nrow = 2,
+        dimnames = list(c("a", "b"), c("c", "b"))
+      )
     ),
     regexp = "row and column names of `transitions` matrix must be the same"
   )
   expect_error(
-    createMarkovModel(transitions =
-      matrix(
+    createMarkovModel(
+      transitions = matrix(
         c(0.1, 0.9, 0.2, 0.8),
-        byrow = TRUE, nrow = 2,
+        byrow = TRUE,
+        nrow = 2,
         dimnames = list(c("a", "b"), c("a", "b"))
       ),
       ignoreProbLt = 0.15
@@ -67,27 +66,25 @@ test_that("createMarkovModel", {
 test_that("createMarkovModelFromSingleState", {
   expect_equal(
     createMarkovModelFromSingleState(
-      transitionRow = list(none = c(none = 0.5, mild = 0.3, moderate = 0.2)),
+      transitionRow = list(none = c(none = 0.4, mild = 0.3, moderate = 0.3)),
       stateNames = c(none = "none", mild = "mild", moderate = "moderate")
     ),
     list(
       ini = c(
-        "lnonetonone <- -0.6931; label(\"Probability of transition from state none to none (log-link)\")",
-        "lnonetomild <- 0.47; label(\"Probability of transition from state none to mild (log-logit link difference from prior state)\")"
+        "logitnonetonone <- -0.4055; label(\"Probability of transition from state none to none (logit probability)\")",
+        "lognonetomild <- -1.204; label(\"Probability of transition from state none to mild (log-logit link difference from prior state)\")"
       ),
       model = c(
         "# transition from state \"none\" to state \"none\"",
-        "nonetonone <- exp(lnonetonone)",
-        "cumprnonetonone <- expit(nonetonone)",
+        "linknonetonone <- logitnonetonone",
+        "cumprnonetonone <- expit(linknonetonone)",
         "# transition from state \"none\" to state \"mild\"",
-        "nonetomild <- exp(lnonetomild)",
-        "cumprnonetomild <- expit(nonetonone + nonetomild)",
-        "# transition from state \"none\" to state \"moderate\"",
-        "cumprnonetomoderate <- 1 # The final state has a cumulative probability of 1",
+        "linknonetomild <- linknonetonone + exp(lognonetomild)",
+        "cumprnonetomild <- expit(linknonetomild)",
         "# Probability of each state transition",
         "prnonetonone <- cumprnonetonone # Probability of transition from state none to none",
         "prnonetomild <- cumprnonetomild - cumprnonetonone # Probability of transition from state none to mild",
-        "prnonetomoderate <- cumprnonetomoderate - cumprnonetomild # Probability of transition from state none to moderate",
+        "prnonetomoderate <- 1 - cumprnonetomild # Probability of transition from state none to moderate",
         "# log-likelihood of any transition from state none",
         "llnone <- prevnone*(curnone*log(prnonetonone) + curmild*log(prnonetomild) + curmoderate*log(prnonetomoderate))"
       )

@@ -86,7 +86,7 @@ createMarkovModel <- function(..., ignoreProbLt = 0, ignoreProbGt = 1, transitio
 
   iniFull <- c("ini({", paste(" ", iniParts), "})")
   modelFull <- c("model({", paste(" ", c(modelCallStr, modelParts)), "})")
-  metaMarkovStates <- sprintf("markovStates <- %s", deparse(allStates))
+  metaMarkovStates <- sprintf("markovStates <- %s", paste(deparse(allStates), collapse = " "))
   paste(
     c("function() {", paste(" ", c(metaMarkovStates, iniFull, modelFull)), "}"),
     collapse = "\n"
@@ -104,77 +104,78 @@ createMarkovModelFromSingleState <- function(transitionRow, stateNames) {
   checkmate::assert_named(transitionRow)
   fromState <- names(transitionRow)
   fromStateName <- names(stateNames[stateNames == fromState])
+  # The cumulative probability of transitioning between each state
   cumsumRow <- cumsum(transitionRow[[1]])
   stopifnot(length(cumsumRow) > 1)
-  iniParams <- character()
-  retIni <- character()
 
-  modelParams <- character()
-  modelCumProbParams <- character()
-  retModel <- character()
+  # Setup the ini() part
+
+  # The initial value that will go into the ini() block
+  iniValue <- rep(NA_real_, length(cumsumRow) - 1)
+  ## The first initial value is simply the logit
+  iniValue[1] <- logit(cumsumRow[1])
+  ## Subsequent initial values are the log of the difference in cumulative
+  ## probability from the previous value
+  if (length(iniValue) > 1) {
+    indices <- 2:length(iniValue)
+    iniValue[indices] <- log(diff(cumsumRow[-length(cumsumRow)]))
+  }
+  toState <- names(cumsumRow)
+  toStateName <- names(stateNames[stateNames %in% names(cumsumRow)])
+  # Many Markov operations are different for the final state. Give a simple way
+  # to index that out of the operations.
+  notLastState <- -length(cumsumRow)
+
+  iniParamPrefix <- ifelse(seq_along(iniValue) == 1, "logit", "log")
+  iniParams <- sprintf("%s%sto%s", iniParamPrefix, fromStateName, toStateName[notLastState])
+  iniUnit <- ifelse(seq_along(iniValue) == 1, "logit probability", "log-logit link difference from prior state")
+
+  # Safely escape state names for use in string literals
+  fromStateEscaped <- gsub('"', '\\\\"', fromState[notLastState], fixed = TRUE)
+  toStateEscaped <- gsub('"', '\\\\"', toState[notLastState], fixed = TRUE)
+
+  retIni <-
+    sprintf(
+      '%s <- %g; label("Probability of transition from state %s to %s (%s)")',
+      iniParams, signif(iniValue, digits = 4),
+      fromStateEscaped, toStateEscaped, iniUnit
+    )
+
+  # Setup the model() part
+  modelParams <- sprintf("%sto%s", fromStateName, toStateName)
+  modelLinkParams <- paste0("link", modelParams) # link function
+  modelCumProbParams <- paste0("cumpr", modelParams) # cumulative probability
+  modelProbParams <- paste0("pr", modelParams) # probability
+  retModel <- character() # The code for the model (as a character vector)
 
   # Do not estimate a value for the final probability as it's the difference with 100%
   for (idx in seq_len(length(cumsumRow) - 1)) {
-    toState <- names(cumsumRow)[idx]
-    toStateName <- names(stateNames[stateNames == toState])
+    retModel[length(retModel) + 1] <- sprintf('# transition from state "%s" to state "%s"', fromState, toState[idx])
     if (idx == 1) {
-      iniValue <- log(cumsumRow[[idx]])
-      iniUnit <- "log-link"
+      retModel[length(retModel) + 1] <- sprintf("%s <- %s", modelLinkParams[idx], iniParams[idx])
     } else {
-      iniValue <- log(cumsumRow[[idx]]) - log(cumsumRow[[idx - 1]])
-      iniUnit <- "log-logit link difference from prior state"
+      retModel[length(retModel) + 1] <- sprintf("%s <- %s + exp(%s)", modelLinkParams[idx], modelLinkParams[idx-1], iniParams[idx])
     }
-    iniParam <- sprintf("l%sto%s", fromStateName, toStateName)
-    iniParams <- c(iniParams, iniParam)
-    # Safely escape state names for use in string literals
-    fromStateEscaped <- gsub('"', '\\\\"', fromState, fixed = TRUE)
-    toStateEscaped <- gsub('"', '\\\\"', toState, fixed = TRUE)
-    retIni[length(retIni) + 1] <-
-      sprintf(
-        '%s <- %g; label("Probability of transition from state %s to %s (%s)")',
-        iniParam, signif(iniValue, digits = 4),
-        fromStateEscaped, toStateEscaped, iniUnit
-      )
-
-    modelParam <- sprintf("%sto%s", fromStateName, toStateName)
-    modelParams <- c(modelParams, modelParam)
-    modelCumProbParam <- sprintf("cumpr%sto%s", fromStateName, toStateName)
-    modelCumProbParams <- c(modelCumProbParams, modelCumProbParam)
-    retModel[length(retModel) + 1] <- sprintf('# transition from state "%s" to state "%s"', fromState, toState)
-    retModel[length(retModel) + 1] <- sprintf('%s <- exp(%s)', modelParam, iniParam)
-    retModel[length(retModel) + 1] <- sprintf('%s <- expit(%s)', modelCumProbParam, paste(modelParams, collapse = " + "))
+    retModel[length(retModel) + 1] <- sprintf('%s <- expit(%s)', modelCumProbParams[idx], modelLinkParams[idx])
   }
 
-  # The final state
-  toState <- names(cumsumRow)[length(cumsumRow)]
-  toStateName <- names(stateNames[stateNames == toState])
-  modelCumProbParam <- sprintf("cumpr%sto%s", fromStateName, toStateName)
-  modelCumProbParams <- c(modelCumProbParams, modelCumProbParam)
-  retModel[length(retModel) + 1] <- sprintf('# transition from state "%s" to state "%s"', fromState, toState)
-  retModel[length(retModel) + 1] <- sprintf('%s <- 1 # The final state has a cumulative probability of 1', modelCumProbParam)
-
   # Probability of each state transition
-  modelProbParams <- character()
   retModel[length(retModel) + 1] <- "# Probability of each state transition"
   for (idx in seq_along(cumsumRow)) {
-    toState <- names(cumsumRow)[idx]
-    modelProbParam <- gsub(x = modelCumProbParams[[idx]], pattern = "^cum", replacement = "")
-    modelProbParams <- c(modelProbParams, modelProbParam)
     if (idx == 1) {
-      retModel[length(retModel) + 1] <-
-        sprintf(
-          "%s <- %s # Probability of transition from state %s to %s",
-           modelProbParam, modelCumProbParams[[idx]],
-           fromState, toState
-        )
+      # The initial state
+      retModel[length(retModel) + 1] <- sprintf('%s <- %s', modelProbParams[idx], modelCumProbParams[[idx]])
+    } else if (idx == length(cumsumRow)) {
+      # The final state
+      retModel[length(retModel) + 1] <- sprintf('%s <- 1 - %s', modelProbParams[idx], modelCumProbParams[[idx - 1]])
     } else {
-      retModel[length(retModel) + 1] <-
-        sprintf(
-          "%s <- %s - %s # Probability of transition from state %s to %s",
-           modelProbParam, modelCumProbParams[[idx]], modelCumProbParams[[idx - 1]],
-           fromState, toState
-        )
+      retModel[length(retModel) + 1] <- sprintf("%s <- %s - %s", modelProbParams[idx], modelCumProbParams[[idx]], modelCumProbParams[[idx - 1]])
     }
+    retModel[length(retModel)] <-
+      sprintf(
+        "%s # Probability of transition from state %s to %s",
+        retModel[length(retModel)], fromState, toState[idx]
+      )
   }
 
   # Overall probability of state transition when from the current state
@@ -184,7 +185,7 @@ createMarkovModelFromSingleState <- function(transitionRow, stateNames) {
       'll%s <- prev%s*(%s)',
       fromStateName, fromStateName,
       paste(
-        sprintf("cur%s*log(%s)", names(stateNames[stateNames %in% names(cumsumRow)]), modelProbParams),
+        sprintf("cur%s*log(%s)", toStateName, modelProbParams),
         collapse = " + "
       )
     )
