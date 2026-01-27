@@ -121,13 +121,13 @@ createMarkovModelFromSingleState <- function(transitionRow, stateNames) {
     iniValue[indices] <- log(diff(cumsumRow[-length(cumsumRow)]))
   }
   toState <- names(cumsumRow)
-  toStateName <- names(stateNames)
+  toStateName <- names(stateNames[stateNames %in% names(cumsumRow)])
   # Many Markov operations are different for the final state. Give a simple way
   # to index that out of the operations.
   notLastState <- -length(cumsumRow)
 
   iniParamPrefix <- ifelse(seq_along(iniValue) == 1, "logit", "log")
-  iniParams <- sprintf("%s%sto%s", iniParamPrefix, fromStateName[notLastState], toStateName[notLastState])
+  iniParams <- sprintf("%s%sto%s", iniParamPrefix, fromStateName, toStateName[notLastState])
   iniUnit <- ifelse(seq_along(iniValue) == 1, "logit probability", "log-logit link difference from prior state")
 
   # Safely escape state names for use in string literals
@@ -185,7 +185,7 @@ createMarkovModelFromSingleState <- function(transitionRow, stateNames) {
       'll%s <- prev%s*(%s)',
       fromStateName, fromStateName,
       paste(
-        sprintf("cur%s*log(%s)", names(stateNames[stateNames %in% names(cumsumRow)]), modelProbParams),
+        sprintf("cur%s*log(%s)", toStateName, modelProbParams),
         collapse = " + "
       )
     )
