@@ -108,12 +108,12 @@ cat(mod)
 #> function() {
 #>   markovStates <- c(none = "none", mild = "mild", moderate = "moderate")
 #>   ini({
-#>     lnonetonone <- -0.6931; label("Probability of transition from state none to none (log-link)")
-#>     lnonetomild <- 0.5108; label("Probability of transition from state none to mild (log-logit link difference from prior state)")
-#>     lmildtonone <- -1.099; label("Probability of transition from state mild to none (log-link)")
-#>     lmildtomild <- 0.9163; label("Probability of transition from state mild to mild (log-logit link difference from prior state)")
-#>     lmoderatetonone <- -1.099; label("Probability of transition from state moderate to none (log-link)")
-#>     lmoderatetomild <- 0.6931; label("Probability of transition from state moderate to mild (log-logit link difference from prior state)")
+#>     logitnonetonone <- -0; label("Probability of transition from state none to none (logit probability)")
+#>     lognonetomild <- -1.099; label("Probability of transition from state none to mild (log-logit link difference from prior state)")
+#>     logitmildtonone <- -0.6931; label("Probability of transition from state mild to none (logit probability)")
+#>     logmildtomild <- -0.6931; label("Probability of transition from state mild to mild (log-logit link difference from prior state)")
+#>     logitmoderatetonone <- -0.6931; label("Probability of transition from state moderate to none (logit probability)")
+#>     logmoderatetomild <- -1.099; label("Probability of transition from state moderate to mild (log-logit link difference from prior state)")
 #>   })
 #>   model({
 #>     # Create the following one-hot encoded columns for previous and current Markov states (this can be done with `createMarkovModelDataset()`)
@@ -121,45 +121,39 @@ cat(mod)
 #>     # For state mild: prevmild, curmild
 #>     # For state moderate: prevmoderate, curmoderate
 #>     # transition from state "none" to state "none"
-#>     nonetonone <- exp(lnonetonone)
-#>     cumprnonetonone <- expit(nonetonone)
+#>     linknonetonone <- logitnonetonone
+#>     cumprnonetonone <- expit(linknonetonone)
 #>     # transition from state "none" to state "mild"
-#>     nonetomild <- exp(lnonetomild)
-#>     cumprnonetomild <- expit(nonetonone + nonetomild)
-#>     # transition from state "none" to state "moderate"
-#>     cumprnonetomoderate <- 1 # The final state has a cumulative probability of 1
+#>     linknonetomild <- linknonetonone + exp(lognonetomild)
+#>     cumprnonetomild <- expit(linknonetomild)
 #>     # Probability of each state transition
 #>     prnonetonone <- cumprnonetonone # Probability of transition from state none to none
 #>     prnonetomild <- cumprnonetomild - cumprnonetonone # Probability of transition from state none to mild
-#>     prnonetomoderate <- cumprnonetomoderate - cumprnonetomild # Probability of transition from state none to moderate
+#>     prnonetomoderate <- 1 - cumprnonetomild # Probability of transition from state none to moderate
 #>     # log-likelihood of any transition from state none
 #>     llnone <- prevnone*(curnone*log(prnonetonone) + curmild*log(prnonetomild) + curmoderate*log(prnonetomoderate))
 #>     # transition from state "mild" to state "none"
-#>     mildtonone <- exp(lmildtonone)
-#>     cumprmildtonone <- expit(mildtonone)
+#>     linkmildtonone <- logitmildtonone
+#>     cumprmildtonone <- expit(linkmildtonone)
 #>     # transition from state "mild" to state "mild"
-#>     mildtomild <- exp(lmildtomild)
-#>     cumprmildtomild <- expit(mildtonone + mildtomild)
-#>     # transition from state "mild" to state "moderate"
-#>     cumprmildtomoderate <- 1 # The final state has a cumulative probability of 1
+#>     linkmildtomild <- linkmildtonone + exp(logmildtomild)
+#>     cumprmildtomild <- expit(linkmildtomild)
 #>     # Probability of each state transition
 #>     prmildtonone <- cumprmildtonone # Probability of transition from state mild to none
 #>     prmildtomild <- cumprmildtomild - cumprmildtonone # Probability of transition from state mild to mild
-#>     prmildtomoderate <- cumprmildtomoderate - cumprmildtomild # Probability of transition from state mild to moderate
+#>     prmildtomoderate <- 1 - cumprmildtomild # Probability of transition from state mild to moderate
 #>     # log-likelihood of any transition from state mild
 #>     llmild <- prevmild*(curnone*log(prmildtonone) + curmild*log(prmildtomild) + curmoderate*log(prmildtomoderate))
 #>     # transition from state "moderate" to state "none"
-#>     moderatetonone <- exp(lmoderatetonone)
-#>     cumprmoderatetonone <- expit(moderatetonone)
+#>     linkmoderatetonone <- logitmoderatetonone
+#>     cumprmoderatetonone <- expit(linkmoderatetonone)
 #>     # transition from state "moderate" to state "mild"
-#>     moderatetomild <- exp(lmoderatetomild)
-#>     cumprmoderatetomild <- expit(moderatetonone + moderatetomild)
-#>     # transition from state "moderate" to state "moderate"
-#>     cumprmoderatetomoderate <- 1 # The final state has a cumulative probability of 1
+#>     linkmoderatetomild <- linkmoderatetonone + exp(logmoderatetomild)
+#>     cumprmoderatetomild <- expit(linkmoderatetomild)
 #>     # Probability of each state transition
 #>     prmoderatetonone <- cumprmoderatetonone # Probability of transition from state moderate to none
 #>     prmoderatetomild <- cumprmoderatetomild - cumprmoderatetonone # Probability of transition from state moderate to mild
-#>     prmoderatetomoderate <- cumprmoderatetomoderate - cumprmoderatetomild # Probability of transition from state moderate to moderate
+#>     prmoderatetomoderate <- 1 - cumprmoderatetomild # Probability of transition from state moderate to moderate
 #>     # log-likelihood of any transition from state moderate
 #>     llmoderate <- prevmoderate*(curnone*log(prmoderatetonone) + curmild*log(prmoderatetomild) + curmoderate*log(prmoderatetomoderate))
 #>     # Overall Markov model log-likelihood
@@ -204,35 +198,44 @@ fit <- nlmixr2est::nlmixr(modFun, data = dMarkov, est = "focei", control = list(
 fit
 #> ── nlmixr² log-likelihood Population Only (outer: nlminb) ──
 #> 
-#>          OBJF      AIC      BIC Log-likelihood Condition#(Cov) Condition#(Cor)
-#> lPop 62.32601 101.8942 106.1425      -44.94708         1.93075        1.000083
+#>          OBJF      AIC     BIC Log-likelihood Condition#(Cov) Condition#(Cor)
+#> lPop 70.21154 109.7797 114.028      -48.88985        4.404546        1.000178
 #> 
 #> ── Time (sec fit$time): ──
 #> 
 #>            setup optimize covariance table    other
-#> elapsed 0.019889 0.002733   0.002734 0.036 2.947644
+#> elapsed 0.020297 0.002024   0.002024 0.031 2.753655
 #> 
 #> ── (fit$parFixed or fit$parFixedDf): ──
 #> 
-#>                                                                                                          Parameter
-#> lnonetonone                                           Probability of transition from state none to none (log-link)
-#> lnonetomild         Probability of transition from state none to mild (log-logit link difference from prior state)
-#> lmildtonone                                           Probability of transition from state mild to none (log-link)
-#> lmildtomild         Probability of transition from state mild to mild (log-logit link difference from prior state)
-#> lmoderatetonone                                   Probability of transition from state moderate to none (log-link)
-#> lmoderatetomild Probability of transition from state moderate to mild (log-logit link difference from prior state)
-#>                   Est.     SE %RSE Back-transformed(95%CI) BSV(SD) Shrink(SD)%
-#> lnonetonone     -0.693 0.0184 2.65      0.5 (0.482, 0.518)                    
-#> lnonetomild      0.511 0.0164 3.21       1.67 (1.61, 1.72)                    
-#> lmildtonone       -1.1 0.0228 2.08    0.333 (0.319, 0.348)                    
-#> lmildtomild      0.916 0.0208 2.27          2.5 (2.4, 2.6)                    
-#> lmoderatetonone   -1.1 0.0228 2.08    0.333 (0.319, 0.348)                    
-#> lmoderatetomild  0.693 0.0184 2.65          2 (1.93, 2.07)                    
+#>                                                                                                              Parameter
+#> logitnonetonone                                  Probability of transition from state none to none (logit probability)
+#> lognonetomild           Probability of transition from state none to mild (log-logit link difference from prior state)
+#> logitmildtonone                                  Probability of transition from state mild to none (logit probability)
+#> logmildtomild           Probability of transition from state mild to mild (log-logit link difference from prior state)
+#> logitmoderatetonone                          Probability of transition from state moderate to none (logit probability)
+#> logmoderatetomild   Probability of transition from state moderate to mild (log-logit link difference from prior state)
+#>                          Est.     SE     %RSE     Back-transformed(95%CI)
+#> logitnonetonone     -0.000185 0.0112 6.06e+03 -0.000185 (-0.0221, 0.0218)
+#> lognonetomild            -1.1 0.0235     2.14         -1.1 (-1.15, -1.05)
+#> logitmildtonone        -0.693 0.0189     2.73      -0.693 (-0.73, -0.656)
+#> logmildtomild          -0.693 0.0189     2.73      -0.693 (-0.73, -0.656)
+#> logitmoderatetonone    -0.693 0.0189     2.73      -0.693 (-0.73, -0.656)
+#> logmoderatetomild        -1.1 0.0235     2.14         -1.1 (-1.15, -1.05)
+#>                     BSV(SD) Shrink(SD)%
+#> logitnonetonone                        
+#> lognonetomild                          
+#> logitmildtonone                        
+#> logmildtomild                          
+#> logitmoderatetonone                    
+#> logmoderatetomild                      
 #>  
 #>   Covariance Type (fit$covMethod): r
 #>   Information about run found (fit$runInfo):
 #>    • gradient problems with initial estimate and covariance; see $scaleInfo 
 #>    • last objective function was not at minimum, possible problems in optimization 
+#>    • Hessian reset during optimization; (can control by foceiControl(resetHessianAndEta=.)) 
+#>    • bad solve during optimization 
 #>   Censoring (fit$censInformation): No censoring
 #>   Minimization message (fit$message):  
 #>     false convergence (8) 
@@ -244,18 +247,18 @@ fit
 #> 
 #> ── Fit Data (object fit is a modified tibble): ──
 #> # A tibble: 15 × 29
-#>   ID     TIME    DV IPRED nonetonone cumprnonetonone nonetomild cumprnonetomild
-#>   <fct> <dbl> <dbl> <dbl>      <dbl>           <dbl>      <dbl>           <dbl>
-#> 1 1         0     0 -1.29      0.500           0.622       1.67           0.897
-#> 2 1         1     0 -2.89      0.500           0.622       1.67           0.897
-#> 3 1         2     0 -1.11      0.500           0.622       1.67           0.897
+#>   ID     TIME    DV  IPRED linknonetonone cumprnonetonone linknonetomild
+#>   <fct> <dbl> <dbl>  <dbl>          <dbl>           <dbl>          <dbl>
+#> 1 1         0     0 -2.49       -0.000185           0.500          0.333
+#> 2 1         1     0 -0.601      -0.000185           0.500          0.333
+#> 3 1         2     0 -2.56       -0.000185           0.500          0.333
 #> # ℹ 12 more rows
-#> # ℹ 21 more variables: prnonetonone <dbl>, prnonetomild <dbl>,
-#> #   prnonetomoderate <dbl>, llnone <dbl>, mildtonone <dbl>,
-#> #   cumprmildtonone <dbl>, mildtomild <dbl>, cumprmildtomild <dbl>,
-#> #   prmildtonone <dbl>, prmildtomild <dbl>, prmildtomoderate <dbl>,
-#> #   llmild <dbl>, moderatetonone <dbl>, cumprmoderatetonone <dbl>,
-#> #   moderatetomild <dbl>, cumprmoderatetomild <dbl>, prmoderatetonone <dbl>, …
+#> # ℹ 22 more variables: cumprnonetomild <dbl>, prnonetonone <dbl>,
+#> #   prnonetomild <dbl>, prnonetomoderate <dbl>, llnone <dbl>,
+#> #   linkmildtonone <dbl>, cumprmildtonone <dbl>, linkmildtomild <dbl>,
+#> #   cumprmildtomild <dbl>, prmildtonone <dbl>, prmildtomild <dbl>,
+#> #   prmildtomoderate <dbl>, llmild <dbl>, linkmoderatetonone <dbl>,
+#> #   cumprmoderatetonone <dbl>, linkmoderatetomild <dbl>, …
 ```
 
 ## Simulate your data
@@ -300,10 +303,10 @@ createMarkovTransitionMatrix(colPrev = dMarkov$previous, colCur = dMarkov$curren
 #> mild     0.3333333 0.5000000 0.1666667
 #> moderate 0.3333333 0.3333333 0.3333333
 createMarkovTransitionMatrix(colPrev = dSim$previous, colCur = dSim$current)
-#>               none      mild   moderate
-#> none     0.6666667 0.2407407 0.09259259
-#> mild     0.6875000 0.3125000 0.00000000
-#> moderate 0.6000000 0.2000000 0.20000000
+#>               none       mild  moderate
+#> none     0.5128205 0.12820513 0.3589744
+#> mild     0.0000000 0.12500000 0.8750000
+#> moderate 0.4642857 0.07142857 0.4642857
 ```
 
 or summarized in any other useful way.
