@@ -1,5 +1,9 @@
 # nlmixr2lib
 
+# development version
+
+* Markov modeling creation functions including `createMarkovModel()` were added
+
 # Version 0.3.2
 
 * Add Kim 2006 model for IgG metabolism
