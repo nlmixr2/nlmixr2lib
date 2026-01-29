@@ -409,16 +409,23 @@ simMarkovId <- function(data, initialState, prCols) {
   # Make sure that the data has all of the columns used as probability columns
   checkmate::assert_names(names(data), must.include = unlist(prCols))
   checkmate::assert_list(prCols, names = "unique")
+  collectingStates <- character()
   for (nm in names(prCols)) {
-    checkmate::assert_character(prCols[[nm]], names = "unique", min.len = 1)
-    # Verify that each of the probability column specifications is named for a
-    # state
-    checkmate::assert_names(names(prCols[[nm]]), subset.of = names(prCols))
+    if (length(prCols[[nm]]) > 0) {
+      varName <- sprintf("prCols[['%s']]", nm)
+      checkmate::assert_character(prCols[[nm]], names = "unique", .var.name = varName)
+      # Verify that each of the probability column specifications is named for a
+      # state
+      checkmate::assert_names(names(prCols[[nm]]), subset.of = names(prCols), .var.name = varName)
+    } else {
+      collectingStates <- c(collectingStates, nm)
+    }
   }
   ret <- data.frame(prev = rep(NA, nrow(data)), cur = NA)
   prevState <- initialState
   randNums <- stats::runif(n = nrow(data))
-  # The state that goes from the final percentage to 100% is the last one in the list
+  # The state that goes from the final percentage to 100% is the last one in the
+  # list
   for (idx in seq_len(nrow(ret))) {
     ret$prev[idx] <- prevState
     # Create the transition matrix row of cumulative sums
@@ -430,6 +437,12 @@ simMarkovId <- function(data, initialState, prCols) {
     # a value <1 by always having the final category as a default, last value.
     curStateIdx <- c(which(cumsum(unlist(transitionVec)) > randNums[idx]), length(availableCols))[1]
     ret$cur[idx] <- prevState <- names(availableCols[curStateIdx])
+    if ((prevState %in% collectingStates) && (idx < nrow(ret))) {
+      # If the simulation enters a collecting state, the rest of the results
+      # stay in that state
+      ret$prev[(idx+1):nrow(ret)] <- ret$cur[(idx+1):nrow(ret)] <- prevState
+      break
+    }
   }
   ret
 }

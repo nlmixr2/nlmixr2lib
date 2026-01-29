@@ -284,4 +284,23 @@ test_that("simMarkovId", {
     simMarkovId(data = d, initialState = "A", prCols = probCols),
     regexp = "Names must be a subset of.*but has additional elements.*'X'"
   )
+
+  # Simulate a collecting state
+    d <-
+    data.frame(
+      prAtoA = c(0, 0, 0),
+      prAtoB = c(1, 0, 0),
+      prBtoC = c(0, 1, 0)
+    )
+  probCols <-
+    list(
+      A = c(A = "prAtoA", B = "prAtoB"),
+      B = c(C = "prBtoC"),
+      C = character()
+    )
+
+  expect_equal(
+    simMarkovId(data = d, initialState = "A", prCols = probCols),
+    data.frame(prev = c("A", "B", "C"), cur = c("B", "C", "C"))
+  )
 })
