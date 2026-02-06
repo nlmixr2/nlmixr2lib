@@ -3,6 +3,7 @@
 # development version
 
 * Markov modeling creation functions including `createMarkovModel()` were added
+* Add Clegg (2024) nirsevimab model in infants
 
 # Version 0.3.2
 
