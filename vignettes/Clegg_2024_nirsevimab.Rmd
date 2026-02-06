@@ -1,0 +1,275 @@
+---
+title: "Nirsevimab Population Pharmacokinetics in Preterm and Term Infants"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Nirsevimab Population Pharmacokinetics in Preterm and Term Infants}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+bibliography: references.bib
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 5
+)
+```
+
+## Source
+
+This model is a re-implementation of the final population pharmacokinetic
+model for nirsevimab described in:
+
+> Clegg L, Freshwater E, Leach A, Villafana T, Wählby Hamrén U. Population
+> Pharmacokinetics of Nirsevimab in Preterm and Term Infants. *The Journal of
+> Clinical Pharmacology*. 2024;64(5):555--567.
+> [doi:10.1002/jcph.2401](https://doi.org/10.1002/jcph.2401)
+
+Parameter estimates were taken from Table 2 of the publication and
+cross-checked against the NONMEM control stream provided in the Supplementary
+Information.
+
+## Loading the model
+
+```{r load}
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+library(nlmixr2)
+library(rxode2)
+library(nlmixr2lib)
+
+mod <- readModelDb("Clegg_2024_nirsevimab")
+
+# Inspect the model
+mod
+```
+
+## Important covariate details
+
+### Postmenstrual age (PAGE)
+
+PAGE is the single most important covariate to understand when working with
+this model. It is defined as:
+$$
+\text{PAGE (months)} = \frac{\text{Gestational age (weeks)}}{4.35} + \text{Postnatal age (months)}
+$$
+
+PAGE captures both prematurity and postnatal maturation in a single variable.
+A term infant born at 40 weeks gestational age (GA) has a PAGE of
+$40 / 4.35 \approx 9.2$ months at birth. A preterm infant born at 29 weeks GA
+has a PAGE of $29 / 4.35 \approx 6.7$ months at birth. These differences
+directly influence the maturation function on CL:
+
+$$
+\text{CL}_\text{mat} = 1 - (1 - \beta_\text{CL}) \times
+  \exp\!\left(-\frac{(\text{PAGE} - 40/4.35) \times \ln 2}{T50_\text{CL}}\right)
+$$
+
+where $\beta_\text{CL} = 0.364$ is the fractional CL at term birth relative to
+full maturation and $T50_\text{CL} = 14.8$ months is the maturation half-life.
+This means a term infant at birth has CL that is ~64% lower than a fully
+mature individual (after accounting for body weight), and this gap halves
+roughly every 15 months.
+
+### Race indicators
+
+The model uses two binary (one-hot encoded) race indicators rather than a
+single multi-level factor. The helper function `Clegg_2024_nirsevimab_derive_race_indicators()`
+creates these from a character race column:
+
+| Original race category                 | `RACE_BLK_OTH` | `RACE_ASN_AMI_MUL` |
+|:---------------------------------------|:--------------:|:------------------:|
+| White                                  |       0        |         0          |
+| Native Hawaiian / Pacific Islander     |       0        |         0          |
+| Black or African American              |       1        |         0          |
+| Other                                  |       1        |         0          |
+| Asian                                  |       0        |         1          |
+| American Indian or Alaskan Native      |       0        |         1          |
+| Multiple races                         |       0        |         1          |
+| Missing                                |       0        |         0          |
+
+### Units
+
+| Quantity      | Unit   |
+|:--------------|:-------|
+| Dose (AMT)    | mg     |
+| Concentration (DV) | µg/mL |
+| Volume        | mL     |
+| Clearance     | mL/day |
+| Time          | days   |
+
+The model internally converts mg to µg/mL via the factor of 1000 in the `Cc`
+line (`Cc <- 1000 * central / v2`).
+
+## Building an example dataset
+
+We will construct a dataset of 12 virtual infants spanning three gestational
+age groups (very preterm, moderate preterm, and term), each receiving a single
+weight-banded IM dose of nirsevimab at the start of their first RSV season.
+
+```{r example-data}
+# ── Define virtual infant characteristics ────────────────────────────────────
+infants <-
+  data.frame(
+    GA_weeks = c(
+      # Very preterm (GA 24–28 wks): 4 infants
+      25, 26, 27, 28,
+      # Moderate/late preterm (GA 29–34 wks): 4 infants
+      30, 32, 33, 34,
+      # Term (GA ≥35 wks): 4 infants
+      36, 38, 39, 40
+    ),
+    WT_dose = c(
+      # Approximate weights (kg) at start of RSV season
+      2.5, 2.8, 3.0, 3.5,
+      3.8, 4.2, 4.5, 4.8,
+      5.2, 5.8, 6.5, 7.0
+    ),
+    POSTNATAL_AGE_months = c(
+      # Postnatal age at dosing (months) – preterm infants are older
+      # at the start of season because they were born earlier
+      4.0, 3.5, 3.0, 2.5,
+      2.0, 1.5, 1.0, 0.5,
+      1.0, 0.5, 0.3, 0.1
+    ),
+    RACE = c(
+      "White", "Black or African American", "Asian", "White",
+      "Other", "White", "American Indian or Alaskan Native", "White",
+      "Multiple", "White", "White", "Asian"
+    ),
+    ADACAT  = 0L,   # All ADA-negative
+    SEASON2 = 0L    # All first RSV season
+  ) |>
+  mutate(
+    ID = row_number(),
+    PAGE = GA_weeks / 4.35 + POSTNATAL_AGE_months,
+    DOSE_mg = ifelse(WT_dose < 5, 50, 100),
+    GA_group = factor(
+      case_when(
+        GA_weeks < 29 ~ "Very preterm (<29 wks)",
+        GA_weeks < 35 ~ "Moderate preterm (29-34 wks)",
+        TRUE ~ "Term (≥35 wks)"
+      ),
+      levels = c("Very preterm (<29 wks)",
+                "Moderate preterm (29-34 wks)",
+                "Term (≥35 wks)")
+      )
+  ) |>
+  # Derive one-hot race indicators using the helper
+  Clegg_2024_nirsevimab_derive_race_indicators()
+```
+
+Now expand each infant into a full event table with daily observation times
+over 365 days:
+
+```{r expand-events}
+dDose <-
+  infants |>
+  mutate(
+    AMT = DOSE_mg,
+    EVID = 1,
+    CMT = "depot",
+    WT = WT_dose,
+    TIME = 0
+  )
+
+dObs <-
+  infants |>
+  mutate(
+    AMT = 0,
+    EVID = 0,
+    CMT = "central",
+    WT = WT_dose # should have a maturation function
+  ) |>
+  crossing(
+    TIME = seq(0, 365, by = 1)
+  )
+
+sim_data <-
+  bind_rows(dDose, dObs) |>
+  arrange(ID, TIME, desc(EVID))
+
+head(sim_data)
+```
+
+Note that in this example we hold body weight constant over the simulation
+period. For higher-fidelity simulations, you could supply time-varying weight
+records derived from WHO or Fenton growth charts, as was done in the original
+publication.
+
+## Simulating concentration–time profiles
+
+### Typical (population-level) profiles
+
+Setting all eta values to zero gives the typical (population-predicted)
+profiles:
+
+```{r simulate-typical}
+sim_typical <- nlmixr2(mod |> zeroRe(), sim_data, est = "rxSolve", control = list(keep = c("DOSE_mg", "GA_group")))
+```
+
+```{r plot-typical, fig.height=6}
+ec90 <- 6.8  # preclinical EC90 (µg/mL)
+
+ggplot(sim_typical, aes(x = time, y = Cc, linetype = factor(DOSE_mg), group = factor(id))) +
+  geom_line() +
+  geom_hline(yintercept = ec90, linetype = "dashed", colour = "grey40") +
+    annotate(
+      "text", x = 350, y = ec90 * 1.3, label = "EC[90]",
+      parse = TRUE, colour = "grey40", size = 3.5
+    ) +
+    facet_wrap(~ GA_group, ncol = 1) +
+    scale_y_log10(limits = c(1, 500)) +
+    labs(
+      x = "Time after dose (days)",
+      y = "Nirsevimab serum concentration (µg/mL)",
+      linetype = "Dose"
+    ) +
+    theme_bw() +
+    theme(legend.position = "bottom")
+```
+
+### Simulating with between-subject variability
+
+To generate prediction intervals, simulate with BSV by omitting the
+`params` override. The omega matrix from the model will be sampled
+automatically. We use `nSub` to replicate each of the 12 infants
+across 100 virtual subjects sharing the same covariates:
+
+```{r simulate-bsv}
+set.seed(12345)
+
+sim_bsv <- nlmixr2(mod, sim_data, est = "rxSolve", control = list(keep = c("DOSE_mg", "GA_group"), nStud = 100))
+```
+
+```{r plot-bsv, fig.height=6}
+# Summarise to median and 90% prediction interval per GA group and time
+sim_summary <-
+  sim_bsv |>
+  group_by(time, GA_group) |>
+  summarize(
+    median = median(Cc),
+    lo = quantile(Cc, 0.05, names = FALSE),
+    hi = quantile(Cc, 0.95, names = FALSE)
+  )
+
+ggplot(sim_summary, aes(x = time)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi, fill = GA_group), alpha = 0.25) +
+  geom_line(aes(y = median, colour = GA_group), linewidth = 0.7) +
+  geom_hline(yintercept = ec90, linetype = "dashed", colour = "grey40") +
+  annotate("text", x = 350, y = ec90 * 1.3, label = "EC[90]",
+           parse = TRUE, colour = "grey40", size = 3.5) +
+  scale_y_log10(limits = c(0.5, 500)) +
+  labs(
+    x = "Time after dose (days)",
+    y = "Nirsevimab serum concentration (µg/mL)\nMedian and 90% prediction interval",
+    colour = "GA group",
+    fill = "GA group"
+  ) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
