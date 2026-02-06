@@ -38,7 +38,7 @@ library(dplyr)
 library(tidyr)
 library(ggplot2)
 
-library(nlmixr2)
+library(nlmixr2est)
 library(rxode2)
 library(nlmixr2lib)
 
