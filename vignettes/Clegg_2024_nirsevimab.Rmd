@@ -5,7 +5,6 @@ vignette: >
   %\VignetteIndexEntry{Nirsevimab Population Pharmacokinetics in Preterm and Term Infants}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
-bibliography: references.bib
 ---
 
 ```{r setup, include=FALSE}
