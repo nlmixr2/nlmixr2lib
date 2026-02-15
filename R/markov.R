@@ -381,7 +381,8 @@ simMarkov <- function(ui, initialState, states, colPrev = "previous", colCur = "
     maskSim <- ret$sim.id %in% simCur
     for (idCur in unique(ret[[idCol]])) {
       maskId <- maskSim & (ret[[idCol]] %in% idCur)
-      retId <- simMarkovId(ret[maskId, ], initialState = initialState, prCols = transitionPrCols)
+      initialStateName <- names(states)[states == initialState]
+      retId <- simMarkovId(ret[maskId, ], initialState = initialStateName, prCols = transitionPrCols)
       ret[[colPrev]][maskId] <- retId$prev
       ret[[colCur]][maskId] <- retId$cur
     }
