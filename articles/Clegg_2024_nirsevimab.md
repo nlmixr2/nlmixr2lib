@@ -166,7 +166,6 @@ out_f4 <- rxode2::rxSolve(mod, events = sim_f4) |>
 
 ``` r
 d_f4 <- out_f4 |>
-  filter(time > 0) |>
   group_by(trial, time) |>
   summarise(
     Q05 = quantile(Cc, 0.05, na.rm = TRUE),
@@ -188,7 +187,7 @@ ggplot(d_f4, aes(x = time, y = Q50)) +
   geom_line(colour = "#4682b4", linewidth = 0.8) +
   facet_wrap(~trial, scales = "free_x", nrow = 2) +
   scale_y_log10(
-    limits = c(0.1, 200),
+    limits = c(0.1, NA),
     labels = scales::label_number(drop0trailing = TRUE)
   ) +
   scale_x_continuous(breaks = seq(0, 500, by = 100)) +
@@ -200,10 +199,10 @@ ggplot(d_f4, aes(x = time, y = Q50)) +
   ) +
   theme_bw() +
   theme(strip.text = element_text(size = 9))
-#> Warning: Removed 77 rows containing missing values or values outside the scale range
-#> (`geom_ribbon()`).
-#> Warning: Removed 50 rows containing missing values or values outside the scale range
-#> (`geom_line()`).
+#> Warning in scale_y_log10(limits = c(0.1, NA), labels = scales::label_number(drop0trailing = TRUE)): log-10 transformation introduced infinite values.
+#> log-10 transformation introduced infinite values.
+#> log-10 transformation introduced infinite values.
+#> log-10 transformation introduced infinite values.
 ```
 
 ![](Clegg_2024_nirsevimab_files/figure-html/fig4-plot-1.png)
@@ -226,7 +225,6 @@ out_f5 <- rxode2::rxSolve(mod, events = d_f5) |> as.data.frame()
 
 ``` r
 d_f5_plot <- out_f5 |>
-  filter(time > 0) |>
   group_by(time) |>
   summarise(
     Q10 = quantile(Cc, 0.10, na.rm = TRUE),
@@ -243,7 +241,7 @@ ggplot(d_f5_plot, aes(x = time, y = Q50)) +
   geom_line(aes(y = Q10), linetype = "dashed", linewidth = 0.5) +
   geom_line(aes(y = Q90), linetype = "dashed", linewidth = 0.5) +
   scale_y_log10(
-    limits = c(0.5, 300),
+    limits = c(0.5, NA),
     labels = scales::label_number(drop0trailing = TRUE)
   ) +
   scale_x_continuous(breaks = seq(0, 360, by = 30)) +
@@ -254,6 +252,12 @@ ggplot(d_f5_plot, aes(x = time, y = Q50)) +
     caption = "Simulated 10th/50th/90th percentiles (N = 500 virtual infants, \u226535 wGA).\nOriginal observed data not available."
   ) +
   theme_bw()
+#> Warning in scale_y_log10(limits = c(0.5, NA), labels = scales::label_number(drop0trailing = TRUE)): log-10 transformation introduced infinite values.
+#> log-10 transformation introduced infinite values.
+#> log-10 transformation introduced infinite values.
+#> log-10 transformation introduced infinite values.
+#> log-10 transformation introduced infinite values.
+#> log-10 transformation introduced infinite values.
 ```
 
 ![](Clegg_2024_nirsevimab_files/figure-html/fig5-plot-1.png)
@@ -314,8 +318,7 @@ sim_f6_list <- lapply(ga_groups, function(g) {
            BLACK_OTH, ASIAN_AMIND_MULTI, SEASON2, ADA_POS, WT_0)
 
   out <- rxode2::rxSolve(mod, events = d_events) |>
-    as.data.frame() |>
-    filter(time > 0)
+    as.data.frame()
 
   # NCA by individual
   nca <- out |>
