@@ -3,6 +3,7 @@
 # development version
 
 * Markov modeling creation functions including `createMarkovModel()` were added
+* Add Hu 2026 clesrovimab two-compartment population PK model for preterm and full-term infants with allometric weight scaling, postnatal age maturation function, and race effects on clearance
 
 # Version 0.3.2
 
