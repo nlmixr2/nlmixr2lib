@@ -2,6 +2,7 @@
 
 ### All vignettes
 
+- [Clegg_2024_nirsevimab](https://nlmixr2.github.io/nlmixr2lib/articles/Clegg_2024_nirsevimab.md):
 - [Creating a model
   library](https://nlmixr2.github.io/nlmixr2lib/articles/create-model-library.md):
 - [Trontinemab and gantenerumab PK in plasma and brain (Grimm

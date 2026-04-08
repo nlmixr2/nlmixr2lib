@@ -47,6 +47,7 @@ knitr::kable(modeldb[, c("name", "description")])
 | PK_3cmt                             | Three compartment PK model with linear clearance                                                                                                 |
 | CarlssonPetri_2021_liraglutide      | Liraglutide PK model in adolescents (Carlsson Petri 2021)                                                                                        |
 | Cirincione_2017_exenatide           | Exenatide immediate-release PK model (Cirincione 2017)                                                                                           |
+| Clegg_2024_nirsevimab               | Two-compartment population PK model for nirsevimab in preterm and term infants (Clegg 2024)                                                      |
 | Grimm_2023_gantenerumab             | Gantenerumab PK model (Grimm 2017)                                                                                                               |
 | Grimm_2023_trontinemab              | Trontinemab PK model (Grimm 2017)                                                                                                                |
 | Hu_2026_clesrovimab                 | Two-compartment population PK model for clesrovimab in preterm and full-term infants (Hu 2026)                                                   |
