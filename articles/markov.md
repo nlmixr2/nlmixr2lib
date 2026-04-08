@@ -188,7 +188,7 @@ fit <- nlmixr2est::nlmixr(modFun, data = dMarkov, est = "focei", control = list(
 #> [====|====|====|====|====|====|====|====|====|====] 0:00:00
 #> → compiling EBE model...
 #> ✔ done
-#> rxode2 5.0.1 using 2 threads (see ?getRxThreads)
+#> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 #> calculating covariance matrix
 #> [====|====|====|====|====|====|====|====|====|====] 0:00:00 
@@ -204,7 +204,7 @@ fit
 #> ── Time (sec fit$time): ──
 #> 
 #>            setup optimize covariance table compress    other
-#> elapsed 0.020537 0.002769   0.002771 0.031    0.001 2.871923
+#> elapsed 0.018615 0.002678    0.00268 0.031    0.001 2.423027
 #> 
 #> ── (fit$parFixed or fit$parFixedDf): ──
 #> 

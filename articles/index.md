@@ -6,6 +6,7 @@
   library](https://nlmixr2.github.io/nlmixr2lib/articles/create-model-library.md):
 - [Trontinemab and gantenerumab PK in plasma and brain (Grimm
   2023)](https://nlmixr2.github.io/nlmixr2lib/articles/Grimm_2023.md):
+- [Hu_2026_clesrovimab](https://nlmixr2.github.io/nlmixr2lib/articles/Hu_2026_clesrovimab.md):
 - [Kyhl_2016_nalmefene](https://nlmixr2.github.io/nlmixr2lib/articles/Kyhl_2016_nalmefene.md):
 - [List of
   models](https://nlmixr2.github.io/nlmixr2lib/articles/list-of-models.md):
