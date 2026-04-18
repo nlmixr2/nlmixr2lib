@@ -79,18 +79,19 @@ Zhu_2017_lebrikizumab <- function() {
   )
 
   population <- list(
-    n_subjects     = "TODO: from source paper",
-    n_studies      = "TODO: from source paper",
-    age_range      = "TODO: from source paper",
-    age_median     = "TODO: from source paper",
-    weight_range   = "TODO: from source paper",
-    weight_median  = "TODO: from source paper",
-    sex_female_pct = "TODO: from source paper",
-    race_ethnicity = "TODO: from source paper",
-    disease_state  = "Adults with moderate-to-severe asthma (primary indication in Zhu 2017); model also pooled data from atopic dermatitis program formulations.",
-    dose_range     = "TODO: from source paper",
-    regions        = "TODO: from source paper",
-    notes          = "Reference covariate values are WT = 70 kg and AGE = 40 years (Table 3 footnote)."
+    n_subjects     = 2148L,
+    n_observations = 21917L,
+    n_studies      = 6L,
+    age_range      = "18-75 years (adults only)",
+    age_median     = "48 years",
+    weight_range   = "40-165 kg",
+    weight_median  = "~77 kg",
+    sex_female_pct = 58,
+    race_ethnicity = "White majority; Black, Asian, and 'Other' categories also represented (each with a separate CL effect in the final model).",
+    disease_state  = "Pooled analysis across 6 studies: 2 Phase I studies in healthy volunteers (n=114), 1 Phase II study in asthma, 1 Phase II study in atopic dermatitis, 1 Phase II study in idiopathic pulmonary fibrosis, and the Phase III MILLY program in moderate-to-severe asthma.",
+    dose_range     = "37.5-250 mg SC (pooled analysis also included some IV data from the Phase I studies).",
+    regions        = "Multi-regional (not reported in detail in Zhu 2017).",
+    notes          = "Reference covariate values are WT = 70 kg and AGE = 40 years (Table 3 footnote). Three formulations were evaluated: the reference CHO formulation used in late development, an early-development NS0 formulation, and an interim CHO formulation used in Phase 2 ('CHO Phase 2'); indicator covariates FORM_NS0 and FORM_CHO_PHASE2 are both 0 for the reference formulation."
   )
 
   ini({
@@ -101,6 +102,9 @@ Zhu_2017_lebrikizumab <- function() {
     lka <- log(0.239); label("Absorption rate (1/day)")
     lfdepot <- log(0.856); label("Subcutaneous bioavailability (fraction)")
 
+    # Zhu 2017 Table 3 reports WT effect on CL as 1.00; ambiguous whether this was
+    # fixed (theta locked at 1.00) or estimated to ~1.00. Kept as estimated; flag
+    # for follow-up if the intended behavior is fixed allometry.
     e_cl_wt <- 1.00; label("Effect of body weight on clearance (unitless)")
     e_vc_wt <- 0.814; label("Effect of body weight on central volume (unitless)")
     e_vp_wt <- 0.692; label("Effect of body weight on peripheral volume (unitless)")
@@ -116,12 +120,14 @@ Zhu_2017_lebrikizumab <- function() {
     e_f_form_cho_phase2 <- 0.973; label("Effect of CHO formulation used during Phase 2 on bioavailability (unitless)")
     e_cl_ada_positive<- 1.04; label("Effect of anti-drug antibody (ADA) positivity on clearance (unitless)")
 
-    # converted from covariance matrix reported in Table 3
+    # IIV variance-covariance matrix (omega^2 / cov) from Zhu 2017 Table 3.
+    # Lower-triangular order is var(CL); cov(CL,Vc), var(Vc); cov(CL,ka), cov(Vc,ka), var(ka).
+    # A prior version of this file stored sqrt(variance) in these slots; this is the fix.
     etalcl + etalvc + etalka ~
       c(
-        0.32403703,
-        0.28844410, 0.35213634,
-        0.04505552, 0.06625708, 0.39242834
+        0.105,
+        0.0832, 0.124,
+        0.00203, 0.00439, 0.154
       )
 
     CcpropSd <- 0.0490; label("Proportional residual error (fraction)")

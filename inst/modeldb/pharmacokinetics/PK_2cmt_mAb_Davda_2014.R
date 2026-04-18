@@ -15,16 +15,17 @@ PK_2cmt_mAb_Davda_2014 <- function() {
   )
 
   population <- list(
-    n_subjects     = "TODO: from source paper",
-    n_studies      = "TODO: from source paper",
-    age_range      = "TODO: from source paper",
-    weight_range   = "TODO: from source paper",
-    sex_female_pct = "TODO: from source paper",
-    race_ethnicity = "TODO: from source paper",
-    disease_state  = "Model-based meta-analysis across 18 therapeutic monoclonal antibodies; consensus average-mAb PK in humans.",
-    dose_range     = "TODO: from source paper",
-    regions        = "TODO: from source paper",
-    notes          = "Meta-analysis of published population PK parameters across multiple therapeutic mAbs; detailed population-level demographics pooled from the underlying studies (see Davda 2014 Tables 1-2)."
+    n_subjects     = 171,
+    n_studies      = 4,
+    n_observations = 2716,
+    age_range      = NA,
+    weight_range   = NA,
+    sex_female_pct = NA,
+    race_ethnicity = NA,
+    disease_state  = "Healthy volunteers enrolled in first-in-human studies of four therapeutic monoclonal antibodies (mAb a/b/c: human IgG2; mAb d: IgG1). All four antibodies target soluble ligands.",
+    dose_range     = "IV: 1-700 mg; SC: 2.1-700 mg",
+    regions        = NA,
+    notes          = "Model-based meta-analysis pooling individual-level data from 4 FIH studies (171 subjects, 2716 serum concentrations: 1153 IV, 1563 SC). Per-study demographic breakdowns (age, sex, weight, race) are not tabulated in the published paper; reference weight for allometric scaling is 70 kg."
   )
 
   ini({

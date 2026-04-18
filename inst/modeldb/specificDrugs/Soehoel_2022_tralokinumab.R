@@ -32,18 +32,18 @@ Soehoel_2022_tralokinumab <- function() {
   )
 
   population <- list(
-    n_subjects     = "TODO: from source paper",
-    n_studies      = "TODO: from source paper",
-    age_range      = "TODO: from source paper",
-    age_median     = "TODO: from source paper",
-    weight_range   = "TODO: from source paper",
-    weight_median  = "TODO: from source paper",
-    sex_female_pct = "TODO: from source paper",
-    race_ethnicity = "TODO: from source paper",
-    disease_state  = "Adults with moderate-to-severe atopic dermatitis",
-    dose_range     = "TODO: from source paper",
-    regions        = "TODO: from source paper",
-    notes          = "TODO: from source paper (Soehoel 2022 Table 1 baseline demographics). Pooled analysis across ECZTRA and non-ECZTRA studies; one study (D2213C00001) used diluted drug product."
+    n_subjects     = 2561,
+    n_studies      = 10,
+    age_range      = "18-92 years",
+    age_median     = "38 years (131 subjects >=65 years)",
+    weight_range   = "36-165 kg",
+    weight_median  = "74.5 kg",
+    sex_female_pct = 44.9,
+    race_ethnicity = "White 1721 (67%), Asian 560 (22%), Black/African American 183 (7%), Other 4%; Hispanic/Latino 222 (8.7%), Not Hispanic/Latino 2339 (91%)",
+    disease_state  = "Pooled across indications: atopic dermatitis 2066 (81%), asthma 441 (17%), healthy 54 (2%); baseline EASI median 27.5 (range 12-72) in AD subjects",
+    dose_range     = "Single-dose phase 1 through multi-dose phase 3; labelled AD regimen is a 600 mg SC loading dose followed by 300 mg SC every 2 weeks (Q4W extensions evaluated)",
+    regions        = "Not explicitly stated in Soehoel 2022 Table 1; pooled from 10 multinational trials (3 phase 3 ECZTRA, 4 phase 2, 3 phase 1)",
+    notes          = "Demographics from Soehoel 2022 Table 1 (pooled analysis population, n=2561). 2204 subjects (86%) enrolled in ECZTRA phase 3 atopic-dermatitis trials; 49 subjects (2%) received diluted drug product in study D2213C00001."
   )
 
   ini({
@@ -56,14 +56,20 @@ Soehoel_2022_tralokinumab <- function() {
     CcaddSd <- 0.238; label("Additive residual error (ug/mL)")
     CcpropSd <- 0.216; label("Proportional residual error (fraction)")
 
-    e_wt_vcvp <- 0.793; label("Effect of body weight on central and peripheral volumes (unitless)")
+    e_wt_vcvp <- 0.783; label("Effect of body weight on central and peripheral volumes (unitless)")
     e_wt_clq <- 0.873; label("Effect of body weight on clearance and intercompartmental clearance (unitless)")
     e_nonECZTRA_cl <- 0.344; label("Effect of non-ECZTRA trials on clearance (unitless)")
     e_nonECZTRA_vc <- 0.258; label("Effect of non-ECZTRA trials on central volume (unitless)")
     e_f_dilution <- 0.354; label("Effect of dilution on bioavailability (unitless)")
     e_ka_dilution <- -0.519; label("Effect of dilution trials on absorption rate (unitless)")
 
-    etalvc + etalcl ~ c(0.386148, 0.2683494, 0.3057157)
+    # Variance-covariance matrix for (etalvc, etalcl); Table 2 reports
+    # IIV via CV% = sqrt(exp(omega^2) - 1) * 100%, so omega^2 = log(1 + CV^2).
+    # CV_V2 = 40.1% -> omega^2_V2 = log(1 + 0.401^2) = 0.148971
+    # CV_CL = 31.3% -> omega^2_CL = log(1 + 0.313^2) = 0.093459
+    # correlation 0.61 -> cov = 0.61 * sqrt(0.148971 * 0.093459) = 0.071977
+    etalvc + etalcl ~ c(0.148971,
+                        0.071977, 0.093459)
   })
   model({
     fdepot <- exp(lfdepot)*(1 + e_f_dilution*dilution)
@@ -81,8 +87,14 @@ Soehoel_2022_tralokinumab <- function() {
   })
 }
 
-# etavc, etacl, and the covariance were calculated from the Table 2 footnotes
-# as:
-# etavc: sqrt(log(0.313^2 + 1)) = 0.386148
-# etacl: sqrt(log(0.401^2 + 1)) = 0.3057157
-# cov(etavc, etacl): sqrt(0.61*0.386148*0.3057157)
+# IIV variance/covariance derivation (Soehoel 2022 Table 2 footnote: IIV was
+# computed as sqrt(exp(omega^2) - 1), i.e. CV on the log-normal scale). In
+# ini(), the "etalvc + etalcl ~ c(...)" form stores the variance-covariance
+# matrix directly (variances on the diagonal, covariance off-diagonal):
+#   omega^2_V2  = log(1 + 0.401^2) = 0.148971
+#   omega^2_CL  = log(1 + 0.313^2) = 0.093459
+#   cov(V2, CL) = 0.61 * sqrt(0.148971 * 0.093459) = 0.071977
+#
+# A prior revision of this file stored sqrt(.) values (SDs) in the
+# variance-covariance triple and used an off-diagonal of
+# sqrt(0.61 * omega_V2 * omega_CL), both of which were incorrect.
