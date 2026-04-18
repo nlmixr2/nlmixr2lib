@@ -207,12 +207,6 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
 - **Example models:** `Soehoel_2022_tralokinumab.R`.
 - **Notes:** Mixed case preserved from source; future models should rename to `NON_ECZTRA` or `STUDY_NON_ECZTRA`.
 
-### DVID
-- **Description:** Study identifier, character-valued: `"study1"`, `"study5"`, `"otherStudy"`.
-- **Type:** categorical
-- **Example models:** `Cirincione_2017_exenatide.R`.
-- **Notes:** Used to switch conditional residual-error models. Character type is atypical; new models should prefer numeric encoding or separate binary indicators.
-
 ### SEASON2
 - **Description:** 1 = second RSV season at dosing, 0 = first RSV season.
 - **Type:** binary
@@ -237,5 +231,5 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
 ## Summary
 
 - Files audited: 61 R files under `inst/modeldb/` (12 of which reference covariates).
-- Canonical entries: 22.
+- Canonical entries: 21.
 - Aliases mapped: 7 (including SEXM→SEXF, ADA→ADA_POS, BLACK→RACE_BLACK, ASIAN→RACE_ASIAN, MULTIRACIAL→RACE_MULTI, BLACK_OTH→RACE_BLACK_OTH, ASIAN_AMIND_MULTI→RACE_ASIAN_AMIND_MULTI).

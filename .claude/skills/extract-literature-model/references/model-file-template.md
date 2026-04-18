@@ -29,20 +29,35 @@ Related references:
   )
 
   population <- list(
-    #! Common fields, all optional except n_subjects. Add more keys as the source warrants.
+    #! Common fields, all optional except n_subjects. Units and wording are not fixed —
+    #! match the source. Pick whichever age/weight units match the study population.
+    #! Example A (adult study):
+    #!   age_range     = "18-75 years"
+    #!   age_median    = "52 years"
+    #!   weight_range  = "50-120 kg"
+    #!   weight_median = "78 kg"
+    #!   disease_state = "moderate-to-severe atopic dermatitis"
+    #!   dose_range    = "150-300 mg SC Q2W"
+    #! Example B (pediatric study):
+    #!   age_range     = "0-24 months"
+    #!   age_median    = "3 months"
+    #!   weight_range  = "2-12 kg"
+    #!   weight_median = "5 kg"
+    #!   disease_state = "healthy infants at risk for RSV"
+    #!   dose_range    = "50-200 mg IM single dose"
+    #! Additional keys welcome (ga_range, renal_function, hepatic_function, co_medication, ...).
     n_subjects     = <integer>,
     n_studies      = <integer>,
-    age_range      = "<e.g., 0-24 months>",
-    age_median     = "<e.g., 3 months>",
-    weight_range   = "<e.g., 2-12 kg>",
-    weight_median  = "<e.g., 5 kg>",
+    age_range      = "<adult: '18-75 years' | pediatric: '0-24 months'>",
+    age_median     = "<adult: '52 years' | pediatric: '3 months'>",
+    weight_range   = "<adult: '50-120 kg' | pediatric: '2-12 kg'>",
+    weight_median  = "<adult: '78 kg' | pediatric: '5 kg'>",
     sex_female_pct = <numeric>,
     race_ethnicity = c(White = <pct>, Black = <pct>, Asian = <pct>, Other = <pct>),
-    disease_state  = "<e.g., healthy infants at risk for RSV>",
-    dose_range     = "<e.g., 50-200 mg IM single dose>",
+    disease_state  = "<e.g., 'moderate-to-severe atopic dermatitis' or 'healthy infants at risk for RSV'>",
+    dose_range     = "<e.g., '150-300 mg SC Q2W' or '50-200 mg IM single dose'>",
     regions        = "<e.g., North America, EU>",
     notes          = "<free text; cite the Table in the source that lists baseline demographics>"
-    #! Additional keys welcome (ga_range, renal_function, hepatic_function, co_medication, ...).
   )
 
   ini({

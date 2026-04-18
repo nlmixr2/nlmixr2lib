@@ -35,6 +35,18 @@ library(ggplot2)
 
 * Citation: `r rxode2::rxode(readModelDb("<FirstAuthor>_<Year>_<drug>"))$reference`
 * Description: `r rxode2::rxode(readModelDb("<FirstAuthor>_<Year>_<drug>"))$description`
+* Article: [<Journal short citation>](<direct DOI or publisher URL>)
+
+<!--
+Always include a direct link to the original article (DOI preferred) so readers
+can jump to the source without searching for the citation. If a free
+supplementary document exists (open access supplement, regulatory review,
+author-hosted preprint), add additional lines for each. Examples:
+
+* Article: <https://doi.org/10.1002/cpt.3447>
+* Supplement: <https://doi.org/10.1002/cpt.3447-sup-0001>
+-->
+
 
 # Population
 
@@ -132,19 +144,19 @@ compared against any per-group values reported in the source paper. See
 steady-state, multiple-dose, and sparse-sampling cases.
 
 ```{r pknca}
-# Concentrations
+# Concentrations — keep the column named Cc (nlmixr2lib convention)
 sim_nca <- sim |>
-  filter(!is.na(Cc)) |>
-  transmute(id, time, conc = Cc, treatment)
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, treatment)
 
-conc_obj <- PKNCA::PKNCAconc(sim_nca, conc ~ time | id / treatment)
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id)
 
-# Doses — one row per dose event per subject
+# Doses — one row per dose event per subject; keep the column named amt
 dose_df <- events |>
-  filter(evid == 1) |>
-  transmute(id, time, dose = amt, treatment)
+  dplyr::filter(evid == 1) |>
+  dplyr::select(id, time, amt, treatment)
 
-dose_obj <- PKNCA::PKNCAdose(dose_df, dose ~ time | id / treatment)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id)
 
 # Intervals: what parameters to compute, over what time window
 intervals <- data.frame(
@@ -181,10 +193,14 @@ match.>
 
 ## Notes
 
-- PKNCA formulas must include the `| id/treatment` grouping (or `| id/cohort`,
-  `| id/regimen` — whatever stratification the source paper uses). Omitting the
-  treatment grouping collapses all subjects into a single group and defeats the
-  comparison against per-group published values.
+- PKNCA formulas must include a treatment grouping (`| treatment + id`, or
+  `| cohort + id`, `| regimen + id` — whatever stratification the source paper
+  uses). The treatment grouping variable goes **before** `id` so summaries roll
+  up per treatment. Omitting the grouping collapses all subjects into a single
+  group and defeats the comparison against per-group published values.
+- Keep the column named `Cc` (observation variable in nlmixr2 models), not
+  `conc`. Keep dose named `amt`, not `dose`. This matches the rest of the
+  nlmixr2lib / rxode2 pipeline.
 - For endogenous / turnover models (where NCA isn't the right validation),
   replace the PKNCA section with:
   - baseline recovery (simulate with drug removed and confirm return to

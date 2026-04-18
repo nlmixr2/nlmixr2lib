@@ -6,10 +6,12 @@ PKNCA reference: `?PKNCA::PKNCA` and `vignette("Introduction-and-Usage", package
 
 ## Data shape required
 
-- **Concentration data:** one row per subject × time. Columns: `id`, `time`, `conc` (the `Cc` output from simulation), plus the grouping column (`treatment`, `cohort`, `regimen`, or similar).
-- **Dose data:** one row per dose event. Columns: `id`, `time`, `dose` (amount), plus the same grouping column.
+- **Concentration data:** one row per subject × time. Columns: `id`, `time`, `Cc` (the simulated concentration from the model — keep the column named `Cc` to match nlmixr2lib conventions), plus the grouping column (`treatment`, `cohort`, `regimen`, or similar).
+- **Dose data:** one row per dose event. Columns: `id`, `time`, `amt` (dose amount — keep the rxode2/nlmixr2 column name), plus the same grouping column.
 
 Both frames must agree on `id` and the grouping column.
+
+The formula is always `Cc ~ time | treatment + id` (and `amt ~ time | treatment + id` for dose). The **treatment grouping variable goes first**, before `id`, so PKNCA summaries roll up per treatment as reported in most source papers.
 
 ## Recipe 1 — Single-dose, dense sampling (Cmax, Tmax, AUC0-inf, half-life)
 
@@ -18,16 +20,16 @@ Use when the paper reports NCA after a single dose with enough sampling to chara
 ```r
 library(PKNCA)
 
-conc_df <- sim |>
-  filter(!is.na(Cc)) |>
-  transmute(id, time, conc = Cc, treatment)
+sim_nca <- sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, treatment)
 
 dose_df <- events |>
-  filter(evid == 1) |>
-  transmute(id, time, dose = amt, treatment)
+  dplyr::filter(evid == 1) |>
+  dplyr::select(id, time, amt, treatment)
 
-conc_obj <- PKNCAconc(conc_df, conc ~ time | id / treatment)
-dose_obj <- PKNCAdose(dose_df, dose ~ time | id / treatment)
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id)
 
 intervals <- data.frame(
   start      = 0,
@@ -41,7 +43,7 @@ intervals <- data.frame(
   lambda.z   = TRUE
 )
 
-res <- pk.nca(PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
 summary(res)
 ```
 
@@ -52,13 +54,13 @@ Use when terminal sampling is too sparse to estimate `lambda.z` reliably.
 ```r
 intervals <- data.frame(
   start     = 0,
-  end       = max(conc_df$time),
+  end       = max(sim_nca$time),
   cmax      = TRUE,
   tmax      = TRUE,
   auclast   = TRUE,
   clast.obs = TRUE
 )
-res <- pk.nca(PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
 ```
 
 ## Recipe 3 — Steady state (AUC0-tau, Cmax,ss, Cmin,ss, Cavg,ss)
@@ -83,7 +85,7 @@ intervals <- data.frame(
   ctau     = TRUE    # concentration at end of interval
 )
 
-res <- pk.nca(PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
 ```
 
 ## Recipe 4 — Multiple-dose with accumulation
@@ -98,7 +100,7 @@ intervals <- data.frame(
   auclast  = TRUE
 )
 
-res <- pk.nca(PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
 # Accumulation ratio = AUC0-tau at SS / AUC0-tau after first dose
 ```
 
@@ -112,9 +114,9 @@ baseline weight band), join the group metadata after summarizing:
 res_tbl <- as.data.frame(res$result)
 
 res_joined <- res_tbl |>
-  left_join(cohort |> select(id, weight_band), by = "id") |>
-  group_by(treatment, weight_band, PPTESTCD) |>
-  summarise(
+  dplyr::left_join(cohort |> dplyr::select(id, weight_band), by = "id") |>
+  dplyr::group_by(treatment, weight_band, PPTESTCD) |>
+  dplyr::summarise(
     median_value = median(PPORRES),
     q05          = quantile(PPORRES, 0.05),
     q95          = quantile(PPORRES, 0.95),
@@ -128,19 +130,19 @@ When the source paper reports NCA values (e.g., geometric mean with 95% CI), the
 vignette should render a side-by-side table. A simple pattern:
 
 ```r
-published <- tibble(
+published <- tibble::tibble(
   treatment   = c("50 mg", "100 mg"),
   Cmax_pub    = c(<value>, <value>),
   AUCinf_pub  = c(<value>, <value>)
 )
 
 simulated <- res_tbl |>
-  filter(PPTESTCD %in% c("cmax", "aucinf.obs")) |>
-  group_by(treatment, PPTESTCD) |>
-  summarise(value = median(PPORRES), .groups = "drop") |>
-  pivot_wider(names_from = PPTESTCD, values_from = value)
+  dplyr::filter(PPTESTCD %in% c("cmax", "aucinf.obs")) |>
+  dplyr::group_by(treatment, PPTESTCD) |>
+  dplyr::summarise(value = median(PPORRES), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = value)
 
-comparison <- published |> left_join(simulated, by = "treatment")
+comparison <- published |> dplyr::left_join(simulated, by = "treatment")
 knitr::kable(comparison)
 ```
 
@@ -148,11 +150,15 @@ Flag any differences > 20% in the narrative; do not tune parameters to match.
 
 ## Common pitfalls
 
-- **Missing treatment grouping** — if the formula is `conc ~ time | id` with no
-  `/ treatment`, PKNCA aggregates across dose groups and the Cmax / AUC results
-  are uninterpretable. Always include the grouping.
+- **Missing treatment grouping** — if the formula is `Cc ~ time | id` with no
+  treatment, PKNCA aggregates across dose groups and the Cmax / AUC results
+  are uninterpretable. Always include the treatment grouping, and put it
+  **before** `id` (`Cc ~ time | treatment + id`).
+- **Renaming `Cc` to `conc`** — keep the column named `Cc` (same as the
+  observation variable in the nlmixr2 model) rather than renaming it to
+  `conc`. Same for dose: keep `amt`, not `dose`.
 - **Dose units ≠ concentration units** — PKNCA doesn't check. Confirm dose is
-  in the same mass unit as `conc × volume` implied by the model (e.g., mg vs.
+  in the same mass unit as `Cc × volume` implied by the model (e.g., mg vs.
   ng × L).
 - **`lambda.z` warnings** — PKNCA will emit warnings when there aren't enough
   post-peak points. That's informational; if the paper used a specific
