@@ -4,6 +4,8 @@
 #' @param ntransit the number of transit compartments to be added
 #' @param transit the transit compartment prefix
 #' @param ktr the parameter name for the transit compartment rate
+#' @param model Deprecated alias for \code{ui}. Supplying \code{model}
+#'   instead of \code{ui} still works but emits a deprecation warning.
 #' @inheritParams addDepot
 #' @family absorption
 #' @return a model with transit compartment added
@@ -26,7 +28,9 @@ addTransit <- function(ui, ntransit, central = "central",
                        depot = "depot",
                        transit = "transit",
                        ktr = "ktr",
-                       ka="ka") {
+                       ka="ka",
+                       model) {
+  .useModelAsUi()
   checkmate::assertIntegerish(ntransit, lower = 1)
   rxode2::assertCompartmentName(transit)
   .ui <- rxode2::assertRxUi(ui)
@@ -135,7 +139,9 @@ addTransit <- function(ui, ntransit, central = "central",
 removeTransit <- function(ui, ntransit, central = "central",
                           depot = "depot", transit = "transit",
                           ktr = "ktr",
-                          ka="ka") {
+                          ka="ka",
+                          model) {
+  .useModelAsUi()
   if (!missing(ntransit)) {
     checkmate::assertIntegerish(ntransit, lower = 1, any.missing = FALSE)
   }

@@ -11,7 +11,8 @@ removeTransit(
   depot = "depot",
   transit = "transit",
   ktr = "ktr",
-  ka = "ka"
+  ka = "ka",
+  model
 )
 }
 \arguments{
@@ -28,6 +29,9 @@ removeTransit(
 \item{ktr}{the parameter name for the transit compartment rate}
 
 \item{ka}{absorption rate parameter name}
+
+\item{model}{Deprecated alias for \code{ui}. Supplying \code{model}
+instead of \code{ui} still works but emits a deprecation warning.}
 }
 \value{
 rxode2 model with transit compartment removed

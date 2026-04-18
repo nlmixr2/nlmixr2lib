@@ -6,6 +6,8 @@
 #' @param central central compartment name
 #' @param depot depot compartment name
 #' @param ka absorption rate parameter name
+#' @param model Deprecated alias for \code{ui}. Supplying \code{model}
+#'   instead of \code{ui} still works but emits a deprecation warning.
 #' @return a model with the depot added
 #' @export
 #' @examples
@@ -14,7 +16,9 @@
 #' readModelDb("PK_2cmt_no_depot")  |> addDepot()
 addDepot <- function(ui,
                      central = "central", depot = "depot",
-                     ka="ka") {
+                     ka="ka",
+                     model) {
+  .useModelAsUi()
   .ui <- rxode2::assertRxUi(ui)
   assertCompartmentName(depot)
   assertCompartmentExists(.ui, central)
@@ -66,7 +70,9 @@ addDepot <- function(ui,
 #' @examples
 #' readModelDb("PK_1cmt_des") |> removeDepot()
 removeDepot <- function(ui, central = "central", depot = "depot",
-                        ka="ka") {
+                        ka="ka",
+                        model) {
+  .useModelAsUi()
   .ui <- rxode2::assertRxUi(ui)
   assertCompartmentExists(.ui, central)
   assertCompartmentExists(.ui, depot)
