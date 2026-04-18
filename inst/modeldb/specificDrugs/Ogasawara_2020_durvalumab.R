@@ -39,9 +39,12 @@ Ogasawara_2020_durvalumab <- function() {
     e_sex_vc   <- 0.790  ; label("Multiplicative factor on Vc for females (unitless)")
     e_mm_vc    <- 0.820  ; label("Multiplicative factor on Vc for multiple myeloma (unitless)")
 
-    # Inter-individual variability (diagonal)
-    etacl ~ 0.0654   # 25.8% CV
-    etavc ~ 0.0599   # 24.7% CV
+    # Inter-individual variability (diagonal).  nlmixr2 `etaX ~ value` stores the
+    # variance (omega^2).  For log-normal parameters the paper's %CV back-converts
+    # via omega^2 = log(1 + CV^2); sqrt(exp(omega^2) - 1) is the %CV actually
+    # implied by the stored variance.  sqrt(exp(0.0654) - 1) = 25.6%, not 25.8%.
+    etacl ~ 0.0654   # implies 25.6% CV; paper Table 3 reports 25.8% CV
+    etavc ~ 0.0599   # implies 24.5% CV; paper Table 3 reports 24.7% CV
 
     # Residual error: log-additive (concentrations were log-transformed;
     # additive error on log scale = proportional-like on original scale)
@@ -50,13 +53,13 @@ Ogasawara_2020_durvalumab <- function() {
   model({
     # Covariate-adjusted PK parameters
     # Reference values are study population medians from Table 2:
-    #   ALB = 40 g/L, IgG = 7.61 g/L, sPD-L1 = 173.8 pg/mL,
+    #   ALB = 40 g/L, IgG = 7.6 g/L, sPD-L1 = 173.8 pg/mL,
     #   LDH = 216 U/L, WT = 74.7 kg
     # Equations from Table 3 footnotes b and c
 
     cl <- exp(lcl + etacl) *
       (ALB / 40)^e_alb_cl *
-      (IGG / 7.61)^e_igg_cl *
+      (IGG / 7.6)^e_igg_cl *
       (SPDL1 / 173.8)^e_spdl1_cl *
       (LDH / 216)^e_ldh_cl *
       (WT / 74.7)^e_wt_cl *
