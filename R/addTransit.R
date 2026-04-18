@@ -86,15 +86,19 @@ addTransit <- function(ui, ntransit, central = "central",
                    .central,
                    .post)
 
-  # Now extract the depot and split the model based on the depot cmt
+  # Insert ktr <- exp(lktr) immediately before d/dt(depot) and modify
+  # d/dt(depot) in place so every pre-existing line (including any
+  # interleaved residual-error ~ specs) keeps its original position.
   .w <- .whichDdt(.modelLines, depot)
-  .tmp <- .extractModelLinesAtW(.modelLines, .w)
-  .modelLines <- c(list(str2lang(paste0(ktr, " <- exp(l", ktr, ")"))),
-                   .tmp$pre,
-                   .replaceMult(.tmp$w,
-                                v1=ka, v2=depot,
-                                ret=paste0(ktr, "*", depot)),
-                   .tmp$post)
+  .modRep <- .replaceMult(.modelLines[[.w]],
+                          v1=ka, v2=depot,
+                          ret=paste0(ktr, "*", depot))
+  .before <- if (.w > 1L) .modelLines[seq_len(.w - 1L)] else list()
+  .after  <- if (.w < length(.modelLines)) .modelLines[(.w + 1L):length(.modelLines)] else list()
+  .modelLines <- c(.before,
+                   list(str2lang(paste0(ktr, " <- exp(l", ktr, ")"))),
+                   .modRep,
+                   .after)
   if (length(.theta$name) == 0L) {
     .ntheta <- 0
   } else {
@@ -214,5 +218,5 @@ removeTransit <- function(ui, ntransit, central = "central",
     rm("description", envir=.ui$meta)
   }
   rxode2::model(.ui) <- .modelLines
-  return(rxode2::rxUiCompress(.ui))
+  rxode2::rxUiCompress(.ui)
 }
