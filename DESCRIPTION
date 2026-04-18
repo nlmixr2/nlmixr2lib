@@ -35,6 +35,7 @@ Suggests:
     covr,
     dplyr,
     knitr,
+    PKNCA,
     rmarkdown,
     testthat (>= 3.0.0),
     qs2,
