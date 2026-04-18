@@ -123,7 +123,6 @@ object)</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         label("First order absorption rate (ka)")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     })</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     model({</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         ka &lt;- exp(lka)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         cl &lt;- exp(lcl)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         vc &lt;- exp(lvc)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         vp &lt;- exp(lvp)</span>
@@ -131,6 +130,7 @@ object)</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         kel &lt;- cl/vc</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         k12 &lt;- q/vc</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         k21 &lt;- q/vp</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         ka &lt;- exp(lka)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         d/dt(depot) &lt;- -ka * depot</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         d/dt(central) &lt;- -kel * central - k12 * central + k21 * </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             peripheral1 + ka * depot</span>

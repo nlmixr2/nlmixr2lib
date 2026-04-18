@@ -91,11 +91,11 @@ readModelDb("PK_1cmt_des") |> addTransit(4) |> removeTransit(3)
 #>         label("First order transition rate (ktr)")
 #>     })
 #>     model({
-#>         ktr <- exp(lktr)
 #>         ka <- exp(lka)
 #>         cl <- exp(lcl)
 #>         vc <- exp(lvc)
 #>         kel <- cl/vc
+#>         ktr <- exp(lktr)
 #>         d/dt(depot) <- -ktr * depot
 #>         d/dt(transit1) <- ktr * depot - ktr * transit1
 #>         d/dt(central) <- ka * transit1 - kel * central

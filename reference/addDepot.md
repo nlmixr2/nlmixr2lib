@@ -67,7 +67,6 @@ readModelDb("PK_2cmt_no_depot")  |> addDepot()
 #>         label("First order absorption rate (ka)")
 #>     })
 #>     model({
-#>         ka <- exp(lka)
 #>         cl <- exp(lcl)
 #>         vc <- exp(lvc)
 #>         vp <- exp(lvp)
@@ -75,6 +74,7 @@ readModelDb("PK_2cmt_no_depot")  |> addDepot()
 #>         kel <- cl/vc
 #>         k12 <- q/vc
 #>         k21 <- q/vp
+#>         ka <- exp(lka)
 #>         d/dt(depot) <- -ka * depot
 #>         d/dt(central) <- -kel * central - k12 * central + k21 * 
 #>             peripheral1 + ka * depot
