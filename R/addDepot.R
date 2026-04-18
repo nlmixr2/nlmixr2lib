@@ -24,16 +24,18 @@ addDepot <- function(ui,
   assertCompartmentExists(.ui, central)
   assertVariableName(ka)
   .mv <- rxode2::rxModelVars(.ui)
-  # Get the central ODE and add depot to it
+  # Insert the new lines immediately before d/dt(central) and modify
+  # d/dt(central) in place so every pre-existing line keeps its original
+  # position (and any interleaved residual-error ~ lines continue to
+  # capture their source-order semantics).
   .modelLines <- .ui$lstExpr
   .w <- .whichDdt(.modelLines, central)
-  .tmp <- .extractModelLinesAtW(.modelLines, .w)
-  .tmp$w <- str2lang(paste0(deparse1(.tmp$w), "+", ka, "*", depot))
-  .modelLines <- c(list(str2lang(paste0(ka, "<- exp(l", ka, ")"))),
-                   .tmp$pre,
-                   list(str2lang(paste0("d/dt(", depot, ") <- -", ka, "*", depot))),
-                   list(.tmp$w),
-                   .tmp$post)
+  .modLine <- str2lang(paste0(deparse1(.modelLines[[.w]]), "+", ka, "*", depot))
+  .newLines <- list(str2lang(paste0(ka, " <- exp(l", ka, ")")),
+                    str2lang(paste0("d/dt(", depot, ") <- -", ka, "*", depot)))
+  .before <- if (.w > 1L) .modelLines[seq_len(.w - 1L)] else list()
+  .after  <- if (.w < length(.modelLines)) .modelLines[(.w + 1L):length(.modelLines)] else list()
+  .modelLines <- c(.before, .newLines, list(.modLine), .after)
 
   .tmp <- .getEtaThetaTheta1(.ui)
   .iniDf <- .tmp$iniDf
