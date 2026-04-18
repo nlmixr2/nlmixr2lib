@@ -13,7 +13,7 @@ Ogasawara_2020_durvalumab <- function() {
     MM    = "Multiple myeloma (0 = no, 1 = yes)"
   )
   # Note: ADA (anti-drug antibodies) were NOT examined as a covariate in this analysis
-  dosing <- c("central")
+  dosing <- "central"
   ini({
     # Structural parameters (time in hours)
     # From Table 3 of the paper
