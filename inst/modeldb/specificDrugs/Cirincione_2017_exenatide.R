@@ -85,11 +85,6 @@ Cirincione_2017_exenatide <- function() {
   })
 
   model({
-    # Compartment order
-    cmt(depot)
-    cmt(central)
-    cmt(peripheral1)
-
     # Individual PK parameters
     cl    <- exp(lcl + etalcl) * (eGFR / 80)^e_cl_gfr
     q     <- exp(lq)
@@ -123,10 +118,9 @@ Cirincione_2017_exenatide <- function() {
 
     f(depot) <- fdepot
 
-    # Observation: central is in ug, vc is in L, so central/vc is in ug/L = ng/mL. Convert to pg/mL for reporting
-    # against Table 2 / published figures.
-    cp <- central / vc
-    Cc <- cp * 1000
+    # central is in ug, vc is in L, so central/vc is in ug/L = ng/mL. Multiply by 1000 to report Cc in pg/mL
+    # for comparison with Table 2 / Figure 5.
+    Cc <- (central / vc) * 1000
 
     # Residual error: a single model switched by binary study indicators (STUDY1, STUDY5)
     expSd <- expSdStudy1 * STUDY1 + expSdStudy5 * STUDY5 + expSdOther * (1 - STUDY1 - STUDY5)
