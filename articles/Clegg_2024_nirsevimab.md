@@ -89,8 +89,8 @@ make_cohort <- function(n, ga_range, pna0_range, max_day,
     SEASON2   = as.integer(season2),
     ADA_POS   = 0L,
     # All White/Nat.Haw reference race for simplicity
-    BLACK_OTH          = 0L,
-    ASIAN_AMIND_MULTI  = 0L
+    RACE_BLACK_OTH         = 0L,
+    RACE_ASIAN_AMIND_MULTI = 0L
   )
 
   # Dose records
@@ -114,7 +114,7 @@ make_cohort <- function(n, ga_range, pna0_range, max_day,
   bind_rows(d_dose, d_obs) |>
     arrange(ID, TIME, desc(EVID)) |>
     select(ID, TIME, AMT, EVID, CMT, DV, WT, PAGE,
-           BLACK_OTH, ASIAN_AMIND_MULTI, SEASON2, ADA_POS, WT_0)
+           RACE_BLACK_OTH, RACE_ASIAN_AMIND_MULTI, SEASON2, ADA_POS, WT_0)
 }
 ```
 
@@ -296,7 +296,7 @@ sim_f6_list <- lapply(ga_groups, function(g) {
   pop <- data.frame(
     ID = seq_len(n_per_ga), GA, PNA_0, wt_z, WT_0, AMT,
     SEASON2 = 0L, ADA_POS = 0L,
-    BLACK_OTH = 0L, ASIAN_AMIND_MULTI = 0L
+    RACE_BLACK_OTH = 0L, RACE_ASIAN_AMIND_MULTI = 0L
   )
 
   d_dose <- pop |>
@@ -315,7 +315,7 @@ sim_f6_list <- lapply(ga_groups, function(g) {
   d_events <- bind_rows(d_dose, d_obs) |>
     arrange(ID, TIME, desc(EVID)) |>
     select(ID, TIME, AMT, EVID, CMT, DV, WT, PAGE,
-           BLACK_OTH, ASIAN_AMIND_MULTI, SEASON2, ADA_POS, WT_0)
+           RACE_BLACK_OTH, RACE_ASIAN_AMIND_MULTI, SEASON2, ADA_POS, WT_0)
 
   out <- rxode2::rxSolve(mod, events = d_events) |>
     as.data.frame()

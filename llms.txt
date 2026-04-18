@@ -143,6 +143,7 @@ this way.
 
 ### All vignettes
 
+- [CarlssonPetri_2021_liraglutide](https://nlmixr2.github.io/nlmixr2lib/articles/CarlssonPetri_2021_liraglutide.md):
 - [Cirincione_2017_exenatide](https://nlmixr2.github.io/nlmixr2lib/articles/Cirincione_2017_exenatide.md):
 - [Clegg_2024_nirsevimab](https://nlmixr2.github.io/nlmixr2lib/articles/Clegg_2024_nirsevimab.md):
 - [Creating a model
@@ -150,9 +151,13 @@ this way.
 - [Trontinemab and gantenerumab PK in plasma and brain (Grimm
   2023)](https://nlmixr2.github.io/nlmixr2lib/articles/Grimm_2023.md):
 - [Hu_2026_clesrovimab](https://nlmixr2.github.io/nlmixr2lib/articles/Hu_2026_clesrovimab.md):
+- [Kovalenko_2020_dupilumab](https://nlmixr2.github.io/nlmixr2lib/articles/Kovalenko_2020_dupilumab.md):
 - [Kyhl_2016_nalmefene](https://nlmixr2.github.io/nlmixr2lib/articles/Kyhl_2016_nalmefene.md):
 - [List of
   models](https://nlmixr2.github.io/nlmixr2lib/articles/list-of-models.md):
 - [Markov
   modeling](https://nlmixr2.github.io/nlmixr2lib/articles/markov.md):
+- [PK_2cmt_mAb_Davda_2014](https://nlmixr2.github.io/nlmixr2lib/articles/PK_2cmt_mAb_Davda_2014.md):
+- [Soehoel_2022_tralokinumab](https://nlmixr2.github.io/nlmixr2lib/articles/Soehoel_2022_tralokinumab.md):
 - [Xie_2019_agomelatine](https://nlmixr2.github.io/nlmixr2lib/articles/Xie_2019_agomelatine.md):
+- [Zhu_2017_lebrikizumab](https://nlmixr2.github.io/nlmixr2lib/articles/Zhu_2017_lebrikizumab.md):

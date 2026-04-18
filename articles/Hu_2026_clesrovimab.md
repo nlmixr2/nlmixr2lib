@@ -80,19 +80,19 @@ wt_z <- pmax(-2, pmin(2, rnorm(n_subj, 0, 1)))
 
 # Race: approximate study demographics
 race_draw <- runif(n_subj)
-ASIAN       <- as.integer(race_draw < 0.15)
-BLACK       <- as.integer(race_draw >= 0.15 & race_draw < 0.35)
-MULTIRACIAL <- as.integer(race_draw >= 0.35 & race_draw < 0.40)
+RACE_ASIAN <- as.integer(race_draw < 0.15)
+RACE_BLACK <- as.integer(race_draw >= 0.15 & race_draw < 0.35)
+RACE_MULTI <- as.integer(race_draw >= 0.35 & race_draw < 0.40)
 # White/Other: race_draw >= 0.40 (reference; all indicators = 0)
 
 pop <- data.frame(
-  ID          = seq_len(n_subj),
-  GA          = GA,
-  PNA_0       = PNA_0,
-  wt_z        = wt_z,
-  ASIAN       = ASIAN,
-  BLACK       = BLACK,
-  MULTIRACIAL = MULTIRACIAL
+  ID         = seq_len(n_subj),
+  GA         = GA,
+  PNA_0      = PNA_0,
+  wt_z       = wt_z,
+  RACE_ASIAN = RACE_ASIAN,
+  RACE_BLACK = RACE_BLACK,
+  RACE_MULTI = RACE_MULTI
 )
 
 # Baseline weight for stratification
@@ -144,7 +144,7 @@ d_dose <- d_dose |>
 
 d_sim <- bind_rows(d_dose, d_obs) |>
   arrange(ID, TIME, desc(EVID)) |>
-  select(ID, TIME, AMT, EVID, CMT, DV, WT, PNA, GA, ASIAN, BLACK, MULTIRACIAL,
+  select(ID, TIME, AMT, EVID, CMT, DV, WT, PNA, GA, RACE_ASIAN, RACE_BLACK, RACE_MULTI,
          wt_group, wt_z)
 ```
 

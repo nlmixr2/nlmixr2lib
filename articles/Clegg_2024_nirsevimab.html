@@ -33,15 +33,20 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/Cirincione_2017_exenatide.html">Cirincione_2017_exenatide</a></li>
+<li><a class="dropdown-item" href="../articles/CarlssonPetri_2021_liraglutide.html">CarlssonPetri_2021_liraglutide</a></li>
+    <li><a class="dropdown-item" href="../articles/Cirincione_2017_exenatide.html">Cirincione_2017_exenatide</a></li>
     <li><a class="dropdown-item" href="../articles/Clegg_2024_nirsevimab.html">Clegg_2024_nirsevimab</a></li>
     <li><a class="dropdown-item" href="../articles/create-model-library.html">Creating a model library</a></li>
     <li><a class="dropdown-item" href="../articles/Grimm_2023.html">Trontinemab and gantenerumab PK in plasma and brain (Grimm 2023)</a></li>
     <li><a class="dropdown-item" href="../articles/Hu_2026_clesrovimab.html">Hu_2026_clesrovimab</a></li>
+    <li><a class="dropdown-item" href="../articles/Kovalenko_2020_dupilumab.html">Kovalenko_2020_dupilumab</a></li>
     <li><a class="dropdown-item" href="../articles/Kyhl_2016_nalmefene.html">Kyhl_2016_nalmefene</a></li>
     <li><a class="dropdown-item" href="../articles/list-of-models.html">List of models</a></li>
     <li><a class="dropdown-item" href="../articles/markov.html">Markov modeling</a></li>
+    <li><a class="dropdown-item" href="../articles/PK_2cmt_mAb_Davda_2014.html">PK_2cmt_mAb_Davda_2014</a></li>
+    <li><a class="dropdown-item" href="../articles/Soehoel_2022_tralokinumab.html">Soehoel_2022_tralokinumab</a></li>
     <li><a class="dropdown-item" href="../articles/Xie_2019_agomelatine.html">Xie_2019_agomelatine</a></li>
+    <li><a class="dropdown-item" href="../articles/Zhu_2017_lebrikizumab.html">Zhu_2017_lebrikizumab</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -164,8 +169,8 @@ TRUE for Season 2 (200 mg flat dose, Season 2 CL effect applied).
 <span>    SEASON2   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">season2</span><span class="op">)</span>,</span>
 <span>    ADA_POS   <span class="op">=</span> <span class="fl">0L</span>,</span>
 <span>    <span class="co"># All White/Nat.Haw reference race for simplicity</span></span>
-<span>    BLACK_OTH          <span class="op">=</span> <span class="fl">0L</span>,</span>
-<span>    ASIAN_AMIND_MULTI  <span class="op">=</span> <span class="fl">0L</span></span>
+<span>    RACE_BLACK_OTH         <span class="op">=</span> <span class="fl">0L</span>,</span>
+<span>    RACE_ASIAN_AMIND_MULTI <span class="op">=</span> <span class="fl">0L</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
 <span>  <span class="co"># Dose records</span></span>
@@ -189,7 +194,7 @@ TRUE for Season 2 (200 mg flat dose, Season 2 CL effect applied).
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">d_dose</span>, <span class="va">d_obs</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">ID</span>, <span class="va">TIME</span>, <span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">EVID</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">ID</span>, <span class="va">TIME</span>, <span class="va">AMT</span>, <span class="va">EVID</span>, <span class="va">CMT</span>, <span class="va">DV</span>, <span class="va">WT</span>, <span class="va">PAGE</span>,</span>
-<span>           <span class="va">BLACK_OTH</span>, <span class="va">ASIAN_AMIND_MULTI</span>, <span class="va">SEASON2</span>, <span class="va">ADA_POS</span>, <span class="va">WT_0</span><span class="op">)</span></span>
+<span>           <span class="va">RACE_BLACK_OTH</span>, <span class="va">RACE_ASIAN_AMIND_MULTI</span>, <span class="va">SEASON2</span>, <span class="va">ADA_POS</span>, <span class="va">WT_0</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 </div>
 <div class="section level3">
@@ -386,7 +391,7 @@ Day-151 concentration panel).</p>
 <span>  <span class="va">pop</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>    ID <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n_per_ga</span><span class="op">)</span>, <span class="va">GA</span>, <span class="va">PNA_0</span>, <span class="va">wt_z</span>, <span class="va">WT_0</span>, <span class="va">AMT</span>,</span>
 <span>    SEASON2 <span class="op">=</span> <span class="fl">0L</span>, ADA_POS <span class="op">=</span> <span class="fl">0L</span>,</span>
-<span>    BLACK_OTH <span class="op">=</span> <span class="fl">0L</span>, ASIAN_AMIND_MULTI <span class="op">=</span> <span class="fl">0L</span></span>
+<span>    RACE_BLACK_OTH <span class="op">=</span> <span class="fl">0L</span>, RACE_ASIAN_AMIND_MULTI <span class="op">=</span> <span class="fl">0L</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
 <span>  <span class="va">d_dose</span> <span class="op">&lt;-</span> <span class="va">pop</span> <span class="op">|&gt;</span></span>
@@ -405,7 +410,7 @@ Day-151 concentration panel).</p>
 <span>  <span class="va">d_events</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">d_dose</span>, <span class="va">d_obs</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">ID</span>, <span class="va">TIME</span>, <span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">EVID</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">ID</span>, <span class="va">TIME</span>, <span class="va">AMT</span>, <span class="va">EVID</span>, <span class="va">CMT</span>, <span class="va">DV</span>, <span class="va">WT</span>, <span class="va">PAGE</span>,</span>
-<span>           <span class="va">BLACK_OTH</span>, <span class="va">ASIAN_AMIND_MULTI</span>, <span class="va">SEASON2</span>, <span class="va">ADA_POS</span>, <span class="va">WT_0</span><span class="op">)</span></span>
+<span>           <span class="va">RACE_BLACK_OTH</span>, <span class="va">RACE_ASIAN_AMIND_MULTI</span>, <span class="va">SEASON2</span>, <span class="va">ADA_POS</span>, <span class="va">WT_0</span><span class="op">)</span></span>
 <span></span>
 <span>  <span class="va">out</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod</span>, events <span class="op">=</span> <span class="va">d_events</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>

@@ -33,15 +33,20 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/Cirincione_2017_exenatide.html">Cirincione_2017_exenatide</a></li>
+<li><a class="dropdown-item" href="../articles/CarlssonPetri_2021_liraglutide.html">CarlssonPetri_2021_liraglutide</a></li>
+    <li><a class="dropdown-item" href="../articles/Cirincione_2017_exenatide.html">Cirincione_2017_exenatide</a></li>
     <li><a class="dropdown-item" href="../articles/Clegg_2024_nirsevimab.html">Clegg_2024_nirsevimab</a></li>
     <li><a class="dropdown-item" href="../articles/create-model-library.html">Creating a model library</a></li>
     <li><a class="dropdown-item" href="../articles/Grimm_2023.html">Trontinemab and gantenerumab PK in plasma and brain (Grimm 2023)</a></li>
     <li><a class="dropdown-item" href="../articles/Hu_2026_clesrovimab.html">Hu_2026_clesrovimab</a></li>
+    <li><a class="dropdown-item" href="../articles/Kovalenko_2020_dupilumab.html">Kovalenko_2020_dupilumab</a></li>
     <li><a class="dropdown-item" href="../articles/Kyhl_2016_nalmefene.html">Kyhl_2016_nalmefene</a></li>
     <li><a class="dropdown-item" href="../articles/list-of-models.html">List of models</a></li>
     <li><a class="dropdown-item" href="../articles/markov.html">Markov modeling</a></li>
+    <li><a class="dropdown-item" href="../articles/PK_2cmt_mAb_Davda_2014.html">PK_2cmt_mAb_Davda_2014</a></li>
+    <li><a class="dropdown-item" href="../articles/Soehoel_2022_tralokinumab.html">Soehoel_2022_tralokinumab</a></li>
     <li><a class="dropdown-item" href="../articles/Xie_2019_agomelatine.html">Xie_2019_agomelatine</a></li>
+    <li><a class="dropdown-item" href="../articles/Zhu_2017_lebrikizumab.html">Zhu_2017_lebrikizumab</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -149,19 +154,19 @@ approximating the study population.</p>
 <span></span>
 <span><span class="co"># Race: approximate study demographics</span></span>
 <span><span class="va">race_draw</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">n_subj</span><span class="op">)</span></span>
-<span><span class="va">ASIAN</span>       <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">race_draw</span> <span class="op">&lt;</span> <span class="fl">0.15</span><span class="op">)</span></span>
-<span><span class="va">BLACK</span>       <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">race_draw</span> <span class="op">&gt;=</span> <span class="fl">0.15</span> <span class="op">&amp;</span> <span class="va">race_draw</span> <span class="op">&lt;</span> <span class="fl">0.35</span><span class="op">)</span></span>
-<span><span class="va">MULTIRACIAL</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">race_draw</span> <span class="op">&gt;=</span> <span class="fl">0.35</span> <span class="op">&amp;</span> <span class="va">race_draw</span> <span class="op">&lt;</span> <span class="fl">0.40</span><span class="op">)</span></span>
+<span><span class="va">RACE_ASIAN</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">race_draw</span> <span class="op">&lt;</span> <span class="fl">0.15</span><span class="op">)</span></span>
+<span><span class="va">RACE_BLACK</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">race_draw</span> <span class="op">&gt;=</span> <span class="fl">0.15</span> <span class="op">&amp;</span> <span class="va">race_draw</span> <span class="op">&lt;</span> <span class="fl">0.35</span><span class="op">)</span></span>
+<span><span class="va">RACE_MULTI</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">race_draw</span> <span class="op">&gt;=</span> <span class="fl">0.35</span> <span class="op">&amp;</span> <span class="va">race_draw</span> <span class="op">&lt;</span> <span class="fl">0.40</span><span class="op">)</span></span>
 <span><span class="co"># White/Other: race_draw &gt;= 0.40 (reference; all indicators = 0)</span></span>
 <span></span>
 <span><span class="va">pop</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span>  ID          <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n_subj</span><span class="op">)</span>,</span>
-<span>  GA          <span class="op">=</span> <span class="va">GA</span>,</span>
-<span>  PNA_0       <span class="op">=</span> <span class="va">PNA_0</span>,</span>
-<span>  wt_z        <span class="op">=</span> <span class="va">wt_z</span>,</span>
-<span>  ASIAN       <span class="op">=</span> <span class="va">ASIAN</span>,</span>
-<span>  BLACK       <span class="op">=</span> <span class="va">BLACK</span>,</span>
-<span>  MULTIRACIAL <span class="op">=</span> <span class="va">MULTIRACIAL</span></span>
+<span>  ID         <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n_subj</span><span class="op">)</span>,</span>
+<span>  GA         <span class="op">=</span> <span class="va">GA</span>,</span>
+<span>  PNA_0      <span class="op">=</span> <span class="va">PNA_0</span>,</span>
+<span>  wt_z       <span class="op">=</span> <span class="va">wt_z</span>,</span>
+<span>  RACE_ASIAN <span class="op">=</span> <span class="va">RACE_ASIAN</span>,</span>
+<span>  RACE_BLACK <span class="op">=</span> <span class="va">RACE_BLACK</span>,</span>
+<span>  RACE_MULTI <span class="op">=</span> <span class="va">RACE_MULTI</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Baseline weight for stratification</span></span>
@@ -212,7 +217,7 @@ event at time 0.</p>
 <span></span>
 <span><span class="va">d_sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">d_dose</span>, <span class="va">d_obs</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">ID</span>, <span class="va">TIME</span>, <span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">EVID</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">ID</span>, <span class="va">TIME</span>, <span class="va">AMT</span>, <span class="va">EVID</span>, <span class="va">CMT</span>, <span class="va">DV</span>, <span class="va">WT</span>, <span class="va">PNA</span>, <span class="va">GA</span>, <span class="va">ASIAN</span>, <span class="va">BLACK</span>, <span class="va">MULTIRACIAL</span>,</span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">ID</span>, <span class="va">TIME</span>, <span class="va">AMT</span>, <span class="va">EVID</span>, <span class="va">CMT</span>, <span class="va">DV</span>, <span class="va">WT</span>, <span class="va">PNA</span>, <span class="va">GA</span>, <span class="va">RACE_ASIAN</span>, <span class="va">RACE_BLACK</span>, <span class="va">RACE_MULTI</span>,</span>
 <span>         <span class="va">wt_group</span>, <span class="va">wt_z</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">

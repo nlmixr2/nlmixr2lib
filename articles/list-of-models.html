@@ -33,15 +33,20 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/Cirincione_2017_exenatide.html">Cirincione_2017_exenatide</a></li>
+<li><a class="dropdown-item" href="../articles/CarlssonPetri_2021_liraglutide.html">CarlssonPetri_2021_liraglutide</a></li>
+    <li><a class="dropdown-item" href="../articles/Cirincione_2017_exenatide.html">Cirincione_2017_exenatide</a></li>
     <li><a class="dropdown-item" href="../articles/Clegg_2024_nirsevimab.html">Clegg_2024_nirsevimab</a></li>
     <li><a class="dropdown-item" href="../articles/create-model-library.html">Creating a model library</a></li>
     <li><a class="dropdown-item" href="../articles/Grimm_2023.html">Trontinemab and gantenerumab PK in plasma and brain (Grimm 2023)</a></li>
     <li><a class="dropdown-item" href="../articles/Hu_2026_clesrovimab.html">Hu_2026_clesrovimab</a></li>
+    <li><a class="dropdown-item" href="../articles/Kovalenko_2020_dupilumab.html">Kovalenko_2020_dupilumab</a></li>
     <li><a class="dropdown-item" href="../articles/Kyhl_2016_nalmefene.html">Kyhl_2016_nalmefene</a></li>
     <li><a class="dropdown-item" href="../articles/list-of-models.html">List of models</a></li>
     <li><a class="dropdown-item" href="../articles/markov.html">Markov modeling</a></li>
+    <li><a class="dropdown-item" href="../articles/PK_2cmt_mAb_Davda_2014.html">PK_2cmt_mAb_Davda_2014</a></li>
+    <li><a class="dropdown-item" href="../articles/Soehoel_2022_tralokinumab.html">Soehoel_2022_tralokinumab</a></li>
     <li><a class="dropdown-item" href="../articles/Xie_2019_agomelatine.html">Xie_2019_agomelatine</a></li>
+    <li><a class="dropdown-item" href="../articles/Zhu_2017_lebrikizumab.html">Zhu_2017_lebrikizumab</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -77,8 +82,8 @@
 <code class="sourceCode R"><span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">modeldb</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"name"</span>, <span class="st">"description"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <colgroup>
-<col width="14%">
-<col width="85%">
+<col width="12%">
+<col width="87%">
 </colgroup>
 <thead><tr class="header">
 <th align="left">name</th>
@@ -303,11 +308,17 @@ preterm and term infants (Clegg 2024)</td>
 </tr>
 <tr class="odd">
 <td align="left">Grimm_2023_gantenerumab</td>
-<td align="left">Gantenerumab PK model (Grimm 2017)</td>
+<td align="left">Gantenerumab PK model in cynomolgus monkeys (Grimm
+2023): two-compartment plasma PK with brain extracellular distribution
+across six brain regions (cerebellum, hippocampus, striatum, cortex,
+choroid plexus, CSF).</td>
 </tr>
 <tr class="even">
 <td align="left">Grimm_2023_trontinemab</td>
-<td align="left">Trontinemab PK model (Grimm 2017)</td>
+<td align="left">Trontinemab PK model in non-human primates (Grimm
+2023): two-compartment plasma PK with Michaelis-Menten elimination and
+brain-region effect-compartment distribution (cerebellum, hippocampus,
+striatum, cortex, choroid plexus, CSF).</td>
 </tr>
 <tr class="odd">
 <td align="left">Hu_2026_clesrovimab</td>
@@ -320,11 +331,16 @@ preterm and full-term infants (Hu 2026)</td>
 </tr>
 <tr class="odd">
 <td align="left">Kyhl_2016_nalmefene</td>
-<td align="left">NA</td>
+<td align="left">Population PK model for nalmefene in healthy volunteers
+(Kyhl 2016): two-compartment model with first-order absorption after
+oral dosing, separate absorption rates for tablet and solution
+formulations, and a link to mu-opioid receptor occupancy.</td>
 </tr>
 <tr class="even">
 <td align="left">Soehoel_2022_tralokinumab</td>
-<td align="left">Tralokinumab PK model (Soehoel 2022)</td>
+<td align="left">Two-compartment population PK model for tralokinumab
+(Soehoel 2022) in adults with moderate-to-severe atopic dermatitis, with
+SC first-order absorption and allometric body-weight effects.</td>
 </tr>
 <tr class="odd">
 <td align="left">Xie_2019_agomelatine</td>
@@ -333,7 +349,9 @@ agomelatine and its metabolites in Chinese healthy volunteers</td>
 </tr>
 <tr class="even">
 <td align="left">Zhu_2017_lebrikizumab</td>
-<td align="left">Lebrikizumab PK model (Zhu 2017)</td>
+<td align="left">Lebrikizumab population PK model (Zhu 2017):
+two-compartment model with first-order absorption after SC dosing in
+adults with moderate-to-severe asthma.</td>
 </tr>
 <tr class="odd">
 <td align="left">oncology_sdm_lobo_2002</td>
