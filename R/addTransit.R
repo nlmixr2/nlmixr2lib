@@ -4,6 +4,8 @@
 #' @param ntransit the number of transit compartments to be added
 #' @param transit the transit compartment prefix
 #' @param ktr the parameter name for the transit compartment rate
+#' @param model Deprecated alias for \code{ui}. Supplying \code{model}
+#'   instead of \code{ui} still works but emits a deprecation warning.
 #' @inheritParams addDepot
 #' @family absorption
 #' @return a model with transit compartment added
@@ -26,7 +28,9 @@ addTransit <- function(ui, ntransit, central = "central",
                        depot = "depot",
                        transit = "transit",
                        ktr = "ktr",
-                       ka="ka") {
+                       ka="ka",
+                       model) {
+  .useModelAsUi()
   checkmate::assertIntegerish(ntransit, lower = 1)
   rxode2::assertCompartmentName(transit)
   .ui <- rxode2::assertRxUi(ui)
@@ -86,15 +90,19 @@ addTransit <- function(ui, ntransit, central = "central",
                    .central,
                    .post)
 
-  # Now extract the depot and split the model based on the depot cmt
+  # Insert ktr <- exp(lktr) immediately before d/dt(depot) and modify
+  # d/dt(depot) in place so every pre-existing line (including any
+  # interleaved residual-error ~ specs) keeps its original position.
   .w <- .whichDdt(.modelLines, depot)
-  .tmp <- .extractModelLinesAtW(.modelLines, .w)
-  .modelLines <- c(list(str2lang(paste0(ktr, " <- exp(l", ktr, ")"))),
-                   .tmp$pre,
-                   .replaceMult(.tmp$w,
-                                v1=ka, v2=depot,
-                                ret=paste0(ktr, "*", depot)),
-                   .tmp$post)
+  .modRep <- .replaceMult(.modelLines[[.w]],
+                          v1=ka, v2=depot,
+                          ret=paste0(ktr, "*", depot))
+  .before <- if (.w > 1L) .modelLines[seq_len(.w - 1L)] else list()
+  .after  <- if (.w < length(.modelLines)) .modelLines[(.w + 1L):length(.modelLines)] else list()
+  .modelLines <- c(.before,
+                   list(str2lang(paste0(ktr, " <- exp(l", ktr, ")"))),
+                   .modRep,
+                   .after)
   if (length(.theta$name) == 0L) {
     .ntheta <- 0
   } else {
@@ -135,7 +143,9 @@ addTransit <- function(ui, ntransit, central = "central",
 removeTransit <- function(ui, ntransit, central = "central",
                           depot = "depot", transit = "transit",
                           ktr = "ktr",
-                          ka="ka") {
+                          ka="ka",
+                          model) {
+  .useModelAsUi()
   if (!missing(ntransit)) {
     checkmate::assertIntegerish(ntransit, lower = 1, any.missing = FALSE)
   }
@@ -214,5 +224,5 @@ removeTransit <- function(ui, ntransit, central = "central",
     rm("description", envir=.ui$meta)
   }
   rxode2::model(.ui) <- .modelLines
-  return(rxode2::rxUiCompress(.ui))
+  rxode2::rxUiCompress(.ui)
 }
