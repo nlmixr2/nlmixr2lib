@@ -218,5 +218,5 @@ removeTransit <- function(ui, ntransit, central = "central",
     rm("description", envir=.ui$meta)
   }
   rxode2::model(.ui) <- .modelLines
-  return(rxode2::rxUiCompress(.ui))
+  rxode2::rxUiCompress(.ui)
 }
