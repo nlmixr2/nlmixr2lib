@@ -2,6 +2,8 @@
 
 # development version
 
+* `addEta()`, `addResErr()`, `addDepot()`, `removeDepot()`, `addTransit()`, and `removeTransit()` now accept `model` as a deprecated alias for `ui` (issue #84). Passing `model = ...` emits a deprecation warning; passing both `ui` and `model` is an error.
+* `addDepot()` and `addTransit()` now work correctly when `d/dt(central)` or `d/dt(depot)` appears at the beginning or end of the model block, or when transit-compartment ODEs and residual-error (`~`) specs are interleaved with assignment lines. The newly introduced helper and ODE lines are inserted immediately adjacent to the modified ODE so that the relative order of every pre-existing model line is preserved (#77, #78).
 * Markov modeling creation functions including `createMarkovModel()` were added
 * Add Hu 2026 clesrovimab two-compartment population PK model for preterm and full-term infants with allometric weight scaling, postnatal age maturation function, and race effects on clearance
 * Add Clegg 2024 nirsevimab two-compartment population PK model for preterm and term infants with allometric weight scaling, postmenstrual age maturation, race, season, and ADA effects

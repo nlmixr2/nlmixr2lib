@@ -141,11 +141,11 @@ test_that("remove some but not all compartments", {
           lktr <- 0.1; label("First order transition rate (ktr)")
       })
       model({
-          ktr <- exp(lktr)
           ka <- exp(lka)
           cl <- exp(lcl)
           vc <- exp(lvc)
           kel <- cl/vc
+          ktr <- exp(lktr)
           d/dt(depot) <- -ktr * depot
           d/dt(transit1) <- ktr * depot - ka * transit1
           d/dt(central) <- ka * transit1 - kel * central
@@ -278,4 +278,72 @@ test_that("extreme model cases", {
 
   expect_equal(tmp$iniDf$name, "ka")
   expect_equal(tmp$iniDf$neta1, 1)
+})
+
+# Issue #77 / #78 — addTransit preserves source order of existing lines ----
+
+test_that("addTransit preserves endpoint placement when d/dt(central) is the last line", {
+  m <- function() {
+    ini({
+      lka <- 0; lcl <- 1; lvc <- 3.45; propSd <- 0.5
+    })
+    model({
+      central ~ prop(propSd)
+      d/dt(depot) <- -exp(lka) * depot
+      d/dt(central) <- exp(lka) * depot - exp(lcl)/exp(lvc) * central
+    })
+  }
+  res <- addTransit(m, 2)
+  expect_s3_class(res, "rxUi")
+  expect_true("lktr" %in% res$iniDf$name)
+  lines <- vapply(res$lstExpr, function(e) paste(deparse(e), collapse = " "),
+                  character(1))
+  normalized <- gsub("\\s+", " ", trimws(lines))
+  # Original endpoint must stay at its original position (first line).
+  expect_true(grepl("^central ~ prop", normalized[[1]]))
+  # ktr helper and depot ODE should sit adjacent to the now-modified depot
+  # line, not at the top of the model.
+  wKtr <- which(normalized == "ktr <- exp(lktr)")
+  wDepot <- which(grepl("^d/dt\\(depot\\)", normalized))
+  expect_length(wKtr, 1L)
+  expect_length(wDepot, 1L)
+  expect_equal(wKtr + 1L, wDepot)
+  # Two transit compartments were added.
+  expect_true(any(grepl("^d/dt\\(transit1\\)", normalized)))
+  expect_true(any(grepl("^d/dt\\(transit2\\)", normalized)))
+})
+
+test_that("addTransit preserves source order when an assignment line sits above d/dt(depot)", {
+  m <- function() {
+    ini({
+      lka <- 0; lcl <- 1; lvc <- 3.45; propSd <- 0.5
+    })
+    model({
+      kel <- exp(lcl) / exp(lvc)
+      d/dt(depot) <- -exp(lka) * depot
+      d/dt(central) <- exp(lka) * depot - kel * central
+      Cc <- central / exp(lvc)
+      Cc ~ prop(propSd)
+    })
+  }
+  res <- addTransit(m, 2)
+  expect_s3_class(res, "rxUi")
+  lines <- vapply(res$lstExpr, function(e) paste(deparse(e), collapse = " "),
+                  character(1))
+  normalized <- gsub("\\s+", " ", trimws(lines))
+  # Every pre-existing line (except d/dt(depot) whose RHS was rewritten and
+  # d/dt(central) which the first splice modifies) stays in its original
+  # relative order.
+  kept <- c("kel <- exp(lcl)/exp(lvc)",
+            "Cc <- central/exp(lvc)",
+            "Cc ~ prop(propSd)")
+  pos <- vapply(kept, function(k) match(TRUE, normalized == k), integer(1))
+  expect_false(any(is.na(pos)))
+  expect_true(all(diff(pos) > 0))
+  # Endpoint remains last.
+  expect_true(grepl("^Cc ~ prop", normalized[[length(normalized)]]))
+  # ktr helper sits immediately before d/dt(depot), not at the top of the model.
+  wKtr <- which(normalized == "ktr <- exp(lktr)")
+  wDepot <- which(grepl("^d/dt\\(depot\\)", normalized))
+  expect_equal(wKtr + 1L, wDepot)
 })
