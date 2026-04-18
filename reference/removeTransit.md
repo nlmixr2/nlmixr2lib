@@ -12,7 +12,8 @@ removeTransit(
   depot = "depot",
   transit = "transit",
   ktr = "ktr",
-  ka = "ka"
+  ka = "ka",
+  model
 )
 ```
 
@@ -45,6 +46,11 @@ removeTransit(
 - ka:
 
   absorption rate parameter name
+
+- model:
+
+  Deprecated alias for `ui`. Supplying `model` instead of `ui` still
+  works but emits a deprecation warning.
 
 ## Value
 

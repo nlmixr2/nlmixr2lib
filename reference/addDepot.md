@@ -6,7 +6,7 @@ absorption
 ## Usage
 
 ``` r
-addDepot(ui, central = "central", depot = "depot", ka = "ka")
+addDepot(ui, central = "central", depot = "depot", ka = "ka", model)
 ```
 
 ## Arguments
@@ -26,6 +26,11 @@ addDepot(ui, central = "central", depot = "depot", ka = "ka")
 - ka:
 
   absorption rate parameter name
+
+- model:
+
+  Deprecated alias for `ui`. Supplying `model` instead of `ui` still
+  works but emits a deprecation warning.
 
 ## Value
 

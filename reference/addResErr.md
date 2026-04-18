@@ -5,7 +5,7 @@ Add residual error to a model
 ## Usage
 
 ``` r
-addResErr(ui, reserr, endpoint)
+addResErr(ui, reserr, endpoint, model)
 ```
 
 ## Arguments
@@ -23,6 +23,11 @@ addResErr(ui, reserr, endpoint)
 
   the endpoint to apply the error; will default to the first error in
   the model
+
+- model:
+
+  Deprecated alias for `ui`. Supplying `model` instead of `ui` still
+  works but emits a deprecation warning.
 
 ## Value
 

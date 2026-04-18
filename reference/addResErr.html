@@ -56,7 +56,7 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">addResErr</span><span class="op">(</span><span class="va">ui</span>, <span class="va">reserr</span>, <span class="va">endpoint</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">addResErr</span><span class="op">(</span><span class="va">ui</span>, <span class="va">reserr</span>, <span class="va">endpoint</span>, <span class="va">model</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -76,6 +76,11 @@ accepted)</p></dd>
 <dt id="arg-endpoint">endpoint<a class="anchor" aria-label="anchor" href="#arg-endpoint"></a></dt>
 <dd><p>the endpoint to apply the error; will default to
 the first error in the model</p></dd>
+
+
+<dt id="arg-model">model<a class="anchor" aria-label="anchor" href="#arg-model"></a></dt>
+<dd><p>Deprecated alias for <code>ui</code>. Supplying <code>model</code>
+instead of <code>ui</code> still works but emits a deprecation warning.</p></dd>
 
 </dl></div>
     <div class="section level2">

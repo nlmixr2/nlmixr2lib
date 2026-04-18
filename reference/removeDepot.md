@@ -5,7 +5,7 @@ To convert from first order oral absorption to IV/Intravenous
 ## Usage
 
 ``` r
-removeDepot(ui, central = "central", depot = "depot", ka = "ka")
+removeDepot(ui, central = "central", depot = "depot", ka = "ka", model)
 ```
 
 ## Arguments
@@ -25,6 +25,11 @@ removeDepot(ui, central = "central", depot = "depot", ka = "ka")
 - ka:
 
   absorption rate parameter name
+
+- model:
+
+  Deprecated alias for `ui`. Supplying `model` instead of `ui` still
+  works but emits a deprecation warning.
 
 ## Value
 

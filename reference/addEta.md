@@ -9,7 +9,8 @@ addEta(
   ui,
   eta,
   priorName = getOption("nlmixr2lib.priorEta", TRUE),
-  etaCombineType = c("default", "snake", "camel", "dot", "blank")
+  etaCombineType = c("default", "snake", "camel", "dot", "blank"),
+  model
 )
 ```
 
@@ -34,6 +35,11 @@ addEta(
 
   the option for the how to combine the eta with the parameter name. Can
   be: "default", "snake", "camel", "dot", "blank"
+
+- model:
+
+  Deprecated alias for `ui`. Supplying `model` instead of `ui` still
+  works but emits a deprecation warning.
 
 ## Value
 
@@ -85,5 +91,5 @@ readModelDb("PK_1cmt") |> addEta("ka")
 #>         Cc ~ prop(propSd)
 #>     })
 #> }
-#> <environment: 0x55a4e8b0a180>
+#> <environment: 0x5629d4e7c160>
 ```

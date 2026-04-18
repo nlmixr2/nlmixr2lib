@@ -60,7 +60,8 @@
 <span>  <span class="va">ui</span>,</span>
 <span>  <span class="va">eta</span>,</span>
 <span>  priorName <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"nlmixr2lib.priorEta"</span>, <span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span>  etaCombineType <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"default"</span>, <span class="st">"snake"</span>, <span class="st">"camel"</span>, <span class="st">"dot"</span>, <span class="st">"blank"</span><span class="op">)</span></span>
+<span>  etaCombineType <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"default"</span>, <span class="st">"snake"</span>, <span class="st">"camel"</span>, <span class="st">"dot"</span>, <span class="st">"blank"</span><span class="op">)</span>,</span>
+<span>  <span class="va">model</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -87,6 +88,11 @@ instead of the left handed side of the equation.</p></dd>
 <dd><p>the option for the how to combine the eta
 with the parameter name.  Can be: "default", "snake", "camel",
 "dot", "blank"</p></dd>
+
+
+<dt id="arg-model">model<a class="anchor" aria-label="anchor" href="#arg-model"></a></dt>
+<dd><p>Deprecated alias for <code>ui</code>. Supplying <code>model</code>
+instead of <code>ui</code> still works but emits a deprecation warning.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -139,7 +145,7 @@ with the parameter name.  Can be: "default", "snake", "camel",
 <span class="r-out co"><span class="r-pr">#&gt;</span>         Cc ~ prop(propSd)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     })</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x55a4e8b0a180&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x5629d4e7c160&gt;</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
