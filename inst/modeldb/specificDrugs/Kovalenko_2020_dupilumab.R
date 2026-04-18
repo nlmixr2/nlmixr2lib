@@ -1,21 +1,43 @@
 Kovalenko_2020_dupilumab <- function() {
   description <- "Dupilumab PK model (Kovalenko 2020)"
   reference <- "Kovalenko P, Davis JD, Li M, et al. Base and Covariate Population Pharmacokinetic Analyses of Dupilumab Using Phase 3 Data. Clinical Pharmacology in Drug Development. 2020;9(6):756-767. doi:10.1002/cpdd.780"
-  units<-list(time="day", dosing="mg")
+  units <- list(time = "day", dosing = "mg", concentration = "mg/L")
   # Model 1 from table 1 and supplementary Table 2 in the publication and its
   # supplement.
-  covariateData <-
-    list(
-      WT = "Body weight in kg"
+  covariateData <- list(
+    WT = list(
+      description        = "Body weight",
+      units              = "kg",
+      type               = "continuous",
+      reference_category = NULL,
+      notes              = "Power effect on central volume; reference weight 75 kg (assumed from prior Kovalenko 2016 publication; not explicitly stated in Kovalenko 2020).",
+      source_name        = "WT"
     )
+  )
+
+  population <- list(
+    n_subjects     = "TODO: from source paper",
+    n_studies      = "TODO: from source paper",
+    age_range      = "TODO: from source paper",
+    age_median     = "TODO: from source paper",
+    weight_range   = "TODO: from source paper",
+    weight_median  = "TODO: from source paper",
+    sex_female_pct = "TODO: from source paper",
+    race_ethnicity = "TODO: from source paper",
+    disease_state  = "Adult atopic dermatitis",
+    dose_range     = "TODO: from source paper",
+    regions        = "TODO: from source paper",
+    notes          = "TODO: from source paper (Phase 3 pooled population PK analysis)."
+  )
+
   ini({
     lvc <- log(2.48); label("central volume (L)")
     lke <- log(0.0534); label("elimination rate (1/d)")
     lkcp <- log(0.213); label("central-to-peripheral rate (1/d)")
     Mpc <- 0.686; label("ratio of kcp and kpc (kpc is peripheral to central rate with units of 1/d)")
     lka <- log(0.256); label("absorption rate (1/d)")
-    lMTT <- log(0.105); label("mean transit time (d)")
-    lVm <- log(1.07); label("maximum target-mediated rate of elimination (mg/L/d)")
+    lmtt <- log(0.105); label("mean transit time (d)")
+    lvm <- log(1.07); label("maximum target-mediated rate of elimination (mg/L/d)")
     Km <- fixed(0.01); label("Michaelis-Menten constant (mg/L)")
     lfdepot <- log(0.643); label("Bioavailability (fraction)")
     e_wt_vc <- 0.711; label("Exponent of weight on central volume (unitless)")
@@ -24,7 +46,7 @@ Kovalenko_2020_dupilumab <- function() {
     etalke ~ 0.285
     etalka ~ 0.474
     etalvm ~ 0.236
-    etamtt ~ 0.525 # etamtt is assumed to be on log-scale MTT to prevent negative values; this is a difference relative to Supplementary Table 2
+    etalmtt ~ 0.525 # etalmtt is assumed to be on log-scale MTT to prevent negative values; this is a difference relative to Supplementary Table 2
 
     CcpropSd <- 0.15; label("Proportional residual error (fraction)")
     CcaddSd <- fixed(0.03); label("Additive residual error (mg/L)")
@@ -40,8 +62,8 @@ Kovalenko_2020_dupilumab <- function() {
     ke <- exp(lke + etalke)
     kcp <- exp(lkcp)
     ka <- exp(lka + etalka)
-    MTT <- exp(lMTT + etamtt)
-    Vm <- exp(lVm + etalvm)
+    MTT <- exp(lmtt + etalmtt)
+    Vm <- exp(lvm + etalvm)
 
     # Derived parameters
     kpc <- kcp/Mpc

@@ -7,18 +7,66 @@ Xie_2019_agomelatine <- function () {
     list(
       time = "hr",
       dosing = "mg",
-      calmt = "ng/mL", # plasma agomelatine
-      c3oh = "ng/mL", # plasma 3‐hydroxy‐agomelatine
-      c7dm = "ng/mL" # plasma 7‐desmethyl‐agomelatine
+      concentration = "ng/mL" # applied to all three plasma outputs: calmt (agomelatine), c3oh (3-hydroxy-agomelatine), c7dm (7-desmethyl-agomelatine)
     )
-  covariates <-
-    list(
-      ooc1 = "1 if period 1; 0 otherwise",
-      ooc2 = "1 if period 2; 0 otherwise",
-      ooc3 = "1 if period 3; 0 otherwise",
-      ooc4 = "1 if period 4; 0 otherwise",
-      WT = "Body weight in kg"
+
+  covariateData <- list(
+    WT = list(
+      description        = "Body weight",
+      units              = "kg",
+      type               = "continuous",
+      reference_category = NULL,
+      notes              = "Used inside liver-volume allometry: lv = 0.05012 * WT^0.78. No explicit reference weight reported; the allometric form uses the raw WT value directly.",
+      source_name        = "WT"
+    ),
+    ooc1 = list(
+      description        = "Occasion indicator for period 1 of the four-period crossover study",
+      units              = "(binary)",
+      type               = "binary",
+      reference_category = "Not applicable; ooc1..ooc4 are a mutually exclusive set (exactly one is 1 per observation)",
+      notes              = "Lower-case name preserved from source per covariate-columns.md register. Used to select the period-specific IOV eta across k13, alag2, k23, clint, and the logit-fraction partitioning absorption between DEPOT1 and DEPOT2.",
+      source_name        = "ooc1"
+    ),
+    ooc2 = list(
+      description        = "Occasion indicator for period 2 of the four-period crossover study",
+      units              = "(binary)",
+      type               = "binary",
+      reference_category = "Not applicable; ooc1..ooc4 are a mutually exclusive set (exactly one is 1 per observation)",
+      notes              = "Lower-case name preserved from source per covariate-columns.md register.",
+      source_name        = "ooc2"
+    ),
+    ooc3 = list(
+      description        = "Occasion indicator for period 3 of the four-period crossover study",
+      units              = "(binary)",
+      type               = "binary",
+      reference_category = "Not applicable; ooc1..ooc4 are a mutually exclusive set (exactly one is 1 per observation)",
+      notes              = "Lower-case name preserved from source per covariate-columns.md register.",
+      source_name        = "ooc3"
+    ),
+    ooc4 = list(
+      description        = "Occasion indicator for period 4 of the four-period crossover study",
+      units              = "(binary)",
+      type               = "binary",
+      reference_category = "Not applicable; ooc1..ooc4 are a mutually exclusive set (exactly one is 1 per observation)",
+      notes              = "Lower-case name preserved from source per covariate-columns.md register.",
+      source_name        = "ooc4"
     )
+  )
+
+  population <- list(
+    n_subjects     = "TODO: from source paper",
+    n_studies      = 1,
+    age_range      = "TODO: from source paper",
+    age_median     = "TODO: from source paper",
+    weight_range   = "TODO: from source paper",
+    weight_median  = "60 kg (used as representative weight in vignette simulations per Table 1 of source)",
+    sex_female_pct = "TODO: from source paper",
+    race_ethnicity = c(Asian = 100),
+    disease_state  = "Healthy Chinese volunteers",
+    dose_range     = "25 mg single oral dose (vignette simulation; confirm full design in source)",
+    regions        = "China",
+    notes          = "Four-period crossover design (occasions ooc1..ooc4) with IOV on multiple PK parameters. TODO: fill exact demographics from Table 1 of Xie 2019."
+  )
 
   ini({
     ltvk13 <- log(4.54); label("K13 (1/h)")
@@ -39,21 +87,21 @@ Xie_2019_agomelatine <- function () {
     sdalmt <- 0.39; label("Residual standard deviation of agomelatine (log-scale, additive error)")
     sd3oh <- 0.228; label("Residual standard deviation of 3-hydroxy-agomelatine (log-scale, additive error)")
     sd7dm <- 0.297; label("SD7DM")
-    IIV_K13 ~ 0.101
-    IIV_V4 ~ 0.0374
-    IIV_CLint ~ 0.998
-    IIV_BA3 ~ 0.175
-    IIV_BA4 ~ c(0.153, 0.231)
-    IIV_CL3OH ~ 0.0414
-    IIV_CL7DM ~ c(0.0492, 0.0774)
-    IIV_ALAG1 ~ 0.0628
-    IIV_K23 ~ 3.78
-    IIV_ALAG2 ~ 3.3
-    IIV_F1 ~ 0.526
-    IIV_Q7DM ~ fix(0.001)
-    IIV_V7DM ~ fix(0.001)
-    IIV_QALMT ~ 1.46
-    IIV_VALMT ~ fix(0.001)
+    etaltvk13 ~ 0.101
+    etaltvv4 ~ 0.0374
+    etaltvclint ~ 0.998
+    etalBA3 ~ 0.175
+    etalBA4 ~ c(0.153, 0.231)
+    etaltvcl3oh ~ 0.0414
+    etaltvcl7dm ~ c(0.0492, 0.0774)
+    etaltvalag1 ~ 0.0628
+    etaltvk23 ~ 3.78
+    etaltvalag2 ~ 3.3
+    etaF1 ~ 0.526
+    etalvq7dm ~ fix(0.001)
+    etalvv7dm ~ fix(0.001)
+    etalvqalmt ~ 1.46
+    etalvvalmt ~ fix(0.001)
     e.IOV1 ~ 1.52
     eta17 ~ fix(1.52)
     eta18 ~ fix(1.52)
@@ -82,14 +130,14 @@ Xie_2019_agomelatine <- function () {
     iov4 <- ooc1 * e.IOV4 + ooc2 * eta29 + ooc3 * eta30 + ooc4 * eta31
     iov5 <- ooc1 * e.IOV5 + ooc2 * eta33 + ooc3 * eta34 + ooc4 * eta35
 
-    k13 <- exp(ltvk13 + IIV_K13) * exp(iov1)
-    v4 <- exp(ltvv4 + IIV_V4)
-    clint <- exp(ltvclint + IIV_CLint + iov4)
-    alag1 <- exp(ltvalag1 + IIV_ALAG1)
-    k23 <- exp(ltvk23 + IIV_K23) * exp(iov3)
-    alag2 <- exp(ltvalag2 + IIV_ALAG2 + iov2)
+    k13 <- exp(ltvk13 + etaltvk13) * exp(iov1)
+    v4 <- exp(ltvv4 + etaltvv4)
+    clint <- exp(ltvclint + etaltvclint + iov4)
+    alag1 <- exp(ltvalag1 + etaltvalag1)
+    k23 <- exp(ltvk23 + etaltvk23) * exp(iov3)
+    alag2 <- exp(ltvalag2 + etaltvalag2 + iov2)
 
-    expp <- log(F1/(1 - F1)) + IIV_F1
+    expp <- log(F1/(1 - F1)) + etaF1
     fDepot1 <- exp(expp + iov5)/(1 + exp(expp + iov5))
     fDepot2 <- 1 - fDepot1
     lv <- 0.05012 * WT^0.78
@@ -101,16 +149,16 @@ Xie_2019_agomelatine <- function () {
     fh <- 1 - eh
     clh <- qh * eh/pbr
     cl <- clh
-    ba3 <- exp(lBA3 + IIV_BA3)
-    ba4 <- exp(lBA4 + IIV_BA4)
+    ba3 <- exp(lBA3 + etalBA3)
+    ba4 <- exp(lBA4 + etalBA4)
     fm3oh <- ba3/(1 + ba3 + ba4)
     fm7dm <- ba4/(1 + ba3 + ba4)
-    cl3oh <- exp(ltvcl3oh + IIV_CL3OH)
-    cl7dm <- exp(ltvcl7dm + IIV_CL7DM)
-    q7dm <- exp(lvq7dm + IIV_Q7DM)
-    v7dm <- exp(lvv7dm + IIV_V7DM)
-    qalmt <- exp(lvqalmt + IIV_QALMT)
-    valmt <- exp(lvvalmt + IIV_VALMT)
+    cl3oh <- exp(ltvcl3oh + etaltvcl3oh)
+    cl7dm <- exp(ltvcl7dm + etaltvcl7dm)
+    q7dm <- exp(lvq7dm + etalvq7dm)
+    v7dm <- exp(lvv7dm + etalvv7dm)
+    qalmt <- exp(lvqalmt + etalvqalmt)
+    valmt <- exp(lvvalmt + etalvvalmt)
     mpr1 <- 259/243
     mpr2 <- 229/243
     v5 <- v4

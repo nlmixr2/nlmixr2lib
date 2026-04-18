@@ -1,14 +1,51 @@
 Soehoel_2022_tralokinumab <- function() {
-  description <- "Tralokinumab PK model (Soehoel 2022)"
+  description <- "Two-compartment population PK model for tralokinumab (Soehoel 2022) in adults with moderate-to-severe atopic dermatitis, with SC first-order absorption and allometric body-weight effects."
   reference <- "Soehoel A, Larsen MS, Timmermann S. Population Pharmacokinetics of Tralokinumab in Adult Subjects With Moderate to Severe Atopic Dermatitis. Clinical Pharmacology in Drug Development. 2022;11(8):910-921. doi:10.1002/cpdd.1113"
-  units<-list(time="day",dosing="mg") 
+  units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
+
   # From Table 2 footnotes
-  covariateData <-
-    list(
-      nonECZTRA = "1 = any study other than ECZTRA; 0 = ECZTRA study",
-      WT = "Body weight in kg",
-      dilution = "Was the drug diluted as it was in study D2213C00001? 1 = yes, 0 = no (0 is typical)"
+  covariateData <- list(
+    WT = list(
+      description        = "Body weight",
+      units              = "kg",
+      type               = "continuous",
+      reference_category = NULL,
+      notes              = "Allometric-style effect on CL/Q and Vc/Vp with reference weight 75 kg.",
+      source_name        = "WT"
+    ),
+    nonECZTRA = list(
+      description        = "Indicator for non-ECZTRA trial enrollment",
+      units              = "(binary)",
+      type               = "binary",
+      reference_category = "0 (ECZTRA trial)",
+      notes              = "1 = any study other than ECZTRA; 0 = ECZTRA study. Mixed-case preserved from source per covariate-columns.md; future models should rename to NON_ECZTRA.",
+      source_name        = "nonECZTRA"
+    ),
+    dilution = list(
+      description        = "Indicator for diluted drug product (study D2213C00001)",
+      units              = "(binary)",
+      type               = "binary",
+      reference_category = "0 (not diluted)",
+      notes              = "1 = drug diluted as in study D2213C00001; 0 = not diluted (typical). Lower-case preserved from source per covariate-columns.md; future models should rename to DILUTION.",
+      source_name        = "dilution"
     )
+  )
+
+  population <- list(
+    n_subjects     = "TODO: from source paper",
+    n_studies      = "TODO: from source paper",
+    age_range      = "TODO: from source paper",
+    age_median     = "TODO: from source paper",
+    weight_range   = "TODO: from source paper",
+    weight_median  = "TODO: from source paper",
+    sex_female_pct = "TODO: from source paper",
+    race_ethnicity = "TODO: from source paper",
+    disease_state  = "Adults with moderate-to-severe atopic dermatitis",
+    dose_range     = "TODO: from source paper",
+    regions        = "TODO: from source paper",
+    notes          = "TODO: from source paper (Soehoel 2022 Table 1 baseline demographics). Pooled analysis across ECZTRA and non-ECZTRA studies; one study (D2213C00001) used diluted drug product."
+  )
+
   ini({
     lka <- log(0.184); label("Absorption rate (1/day)")
     lvc <- log(2.71); label("Central volume of distribution (L)")
@@ -26,13 +63,13 @@ Soehoel_2022_tralokinumab <- function() {
     e_f_dilution <- 0.354; label("Effect of dilution on bioavailability (unitless)")
     e_ka_dilution <- -0.519; label("Effect of dilution trials on absorption rate (unitless)")
 
-    etavc + etacl ~ c(0.386148, 0.2683494, 0.3057157)
+    etalvc + etalcl ~ c(0.386148, 0.2683494, 0.3057157)
   })
   model({
     fdepot <- exp(lfdepot)*(1 + e_f_dilution*dilution)
     ka <- exp(lka)*(1 + e_ka_dilution*dilution)
-    cl <- exp(lcl + etacl)*(WT/75)^e_wt_clq * (1 + e_nonECZTRA_cl*nonECZTRA)
-    vc <- exp(lvc + etavc)*(WT/75)^e_wt_vcvp * (1 + e_nonECZTRA_vc*nonECZTRA)
+    cl <- exp(lcl + etalcl)*(WT/75)^e_wt_clq * (1 + e_nonECZTRA_cl*nonECZTRA)
+    vc <- exp(lvc + etalvc)*(WT/75)^e_wt_vcvp * (1 + e_nonECZTRA_vc*nonECZTRA)
     q <- exp(lq)*(WT/75)^e_wt_clq
     vp <- exp(lvp)*(WT/75)^e_wt_vcvp
 
