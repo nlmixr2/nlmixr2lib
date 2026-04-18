@@ -5,6 +5,7 @@
 * Markov modeling creation functions including `createMarkovModel()` were added
 * Add Hu 2026 clesrovimab two-compartment population PK model for preterm and full-term infants with allometric weight scaling, postnatal age maturation function, and race effects on clearance
 * Add Clegg 2024 nirsevimab two-compartment population PK model for preterm and term infants with allometric weight scaling, postmenstrual age maturation, race, season, and ADA effects
+* Retrofit Cirincione 2017 exenatide model to the `extract-literature-model` skill conventions and fix parameter encoding bugs: `ka_max` corrected from `0.0813` to paper value `12.8` /hr, `Km` rescaled to ng/mL so units are consistent with `Cc = central / vc`, and IIV variances rewritten as `log(1 + CV^2)` rather than the `log(1 + CV)` shortcut. Replaces the character-valued `DVID` covariate with `STUDY1` / `STUDY5` binary indicators and adds a companion validation vignette with PKNCA checks against the paper's Figure 5 typical values.
 
 # Version 0.3.2
 

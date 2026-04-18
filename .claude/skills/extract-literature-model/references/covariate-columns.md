@@ -213,6 +213,24 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
 - **Example models:** `Clegg_2024_nirsevimab.R`.
 - **Notes:** Study-specific but semantically general (second-exposure indicator).
 
+### STUDY1
+- **Description:** 1 = subject enrolled in Study 1 of the Cirincione 2017 pooled analysis, 0 = other. Used to switch the residual-error magnitude per study.
+- **Type:** binary
+- **Reference category:** 0 (all other studies; combined with `STUDY5 = 0` selects the pooled "other" residual error).
+- **Source aliases:**
+  - `DVID = "study1"` (character-valued study identifier; `STUDY1 = as.integer(DVID == "study1")`) — legacy form previously used in `Cirincione_2017_exenatide.R`.
+- **Example models:** `Cirincione_2017_exenatide.R`.
+- **Notes:** Paired with `STUDY5`. When both are 0, the subject is in the pooled "other studies" residual-error group.
+
+### STUDY5
+- **Description:** 1 = subject enrolled in Study 5 of the Cirincione 2017 pooled analysis, 0 = other. Used to switch the residual-error magnitude per study.
+- **Type:** binary
+- **Reference category:** 0 (all other studies).
+- **Source aliases:**
+  - `DVID = "study5"` (character-valued study identifier; `STUDY5 = as.integer(DVID == "study5")`) — legacy form previously used in `Cirincione_2017_exenatide.R`.
+- **Example models:** `Cirincione_2017_exenatide.R`.
+- **Notes:** Paired with `STUDY1`. When both are 0, the subject is in the pooled "other studies" residual-error group.
+
 ## Occasion / period (IOV)
 
 ### ooc1, ooc2, ooc3, ooc4
@@ -231,5 +249,5 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
 ## Summary
 
 - Files audited: 61 R files under `inst/modeldb/` (12 of which reference covariates).
-- Canonical entries: 21.
-- Aliases mapped: 7 (including SEXM→SEXF, ADA→ADA_POS, BLACK→RACE_BLACK, ASIAN→RACE_ASIAN, MULTIRACIAL→RACE_MULTI, BLACK_OTH→RACE_BLACK_OTH, ASIAN_AMIND_MULTI→RACE_ASIAN_AMIND_MULTI).
+- Canonical entries: 23.
+- Aliases mapped: 9 (including SEXM→SEXF, ADA→ADA_POS, BLACK→RACE_BLACK, ASIAN→RACE_ASIAN, MULTIRACIAL→RACE_MULTI, BLACK_OTH→RACE_BLACK_OTH, ASIAN_AMIND_MULTI→RACE_ASIAN_AMIND_MULTI, DVID→STUDY1/STUDY5).
