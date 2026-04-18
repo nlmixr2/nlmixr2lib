@@ -8,7 +8,7 @@ Fasanmade_2009_infliximab <- function() {
     ADA = "Anti-drug antibody status (0 = negative, 1 = positive; called ATI [antibodies to infliximab] in the original publication; time-invariant: positive if detected at any visit through week 42/54)",
     SEX = "Sex (0 = male, 1 = female)"
   )
-  dosing <- c("central")
+  dosing <- "central"
   ini({
     # Structural parameters (typical values for 77-kg male,
     # albumin 4.1 g/dL, ADA-negative)
