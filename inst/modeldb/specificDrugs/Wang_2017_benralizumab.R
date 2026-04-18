@@ -34,7 +34,7 @@ Wang_2017_benralizumab <- function() {
     etavc ~ 0.0524   # 23.1% CV
     etaq  ~ 0.0791   # 28.5% CV
     etavp ~ 0.1029   # 32.7% CV
-    etaka ~ 0.2510   # 52.7% CV
+    etaka ~ 0.2444   # 52.7% CV (omega^2 = log(1 + 0.527^2))
     etaf  ~ 0.1013   # 32.4% CV
 
     # Residual error (combined, separate for SC and IV routes)
@@ -45,9 +45,10 @@ Wang_2017_benralizumab <- function() {
   model({
     # Covariate-adjusted PK parameters
     # Allometric scaling: paper states "normalized to the population median"
-    # Overall mean weight = 77.0 kg (Table 2); exact median not stated.
-    # The reported typical CL of 0.323 L/day corresponds to the population median weight.
-    # Using 77 kg (the reported mean, likely close to median) as the reference.
+    # (Methods, PK model description). The median body weight is not published;
+    # Table 2 reports only mean 77.0 ± 19.0 kg. Using 77 kg as a best-available
+    # proxy for the unpublished median. If the median is later recovered from
+    # a supplement or regulatory review, update this reference value.
     cl <- exp(lcl + etacl) * (WT / 77)^0.75 * exp(e_ada_cl * ADA)
     vc <- exp(lvc + etavc) * (WT / 77)^allovc * e_jpn_vc^JAPANESE_HV
     q  <- exp(lq + etaq)
