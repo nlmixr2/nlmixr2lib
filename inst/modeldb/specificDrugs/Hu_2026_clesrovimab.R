@@ -2,14 +2,73 @@ Hu_2026_clesrovimab <- function() {
   description <- "Two-compartment population PK model for clesrovimab in preterm and full-term infants (Hu 2026)"
   reference <- "Hu Z, Hellmann F, Zang X, et al. Population Pharmacokinetics of Clesrovimab in Preterm and Full-Term Infants. Clin Pharmacol Ther. 2026;119(4):1036-1046. doi:10.1002/cpt.70199"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
-  covariates <- list(
-    WT          = "Body weight (kg), time-varying",
-    PNA         = "Postnatal age (months), time-varying",
-    GA          = "Gestational age at birth (weeks), time-fixed per subject",
-    ASIAN       = "1 if Asian race, 0 otherwise",
-    BLACK       = "1 if Black/African American race, 0 otherwise",
-    MULTIRACIAL = "1 if multiracial, 0 otherwise (White/Other is reference)"
+
+  covariateData <- list(
+    WT = list(
+      description        = "Body weight",
+      units              = "kg",
+      type               = "continuous",
+      reference_category = NULL,
+      notes              = "Time-varying; used for allometric scaling with reference weight 5 kg.",
+      source_name        = "WT"
+    ),
+    PNA = list(
+      description        = "Postnatal age (chronological time since birth)",
+      units              = "months",
+      type               = "continuous",
+      reference_category = NULL,
+      notes              = "Time-varying; combined with GA to produce the adjusted postnatal age used in the CL maturation function.",
+      source_name        = "PNA"
+    ),
+    GA = list(
+      description        = "Gestational age at birth",
+      units              = "weeks",
+      type               = "continuous",
+      reference_category = NULL,
+      notes              = "Time-fixed per subject; used together with PNA to adjust postnatal age for prematurity via (GA - 40)/4.345.",
+      source_name        = "GA"
+    ),
+    RACE_ASIAN = list(
+      description        = "Asian race indicator",
+      units              = "(binary)",
+      type               = "binary",
+      reference_category = "0 (White/Other race)",
+      notes              = "Multiplicative race effect on CL/F relative to the White/Other reference group.",
+      source_name        = "ASIAN"
+    ),
+    RACE_BLACK = list(
+      description        = "Black / African American race indicator",
+      units              = "(binary)",
+      type               = "binary",
+      reference_category = "0 (White/Other race)",
+      notes              = "Multiplicative race effect on CL/F relative to the White/Other reference group.",
+      source_name        = "BLACK"
+    ),
+    RACE_MULTI = list(
+      description        = "Multiracial race indicator",
+      units              = "(binary)",
+      type               = "binary",
+      reference_category = "0 (White/Other race)",
+      notes              = "Multiplicative race effect on CL/F relative to the White/Other reference group.",
+      source_name        = "MULTIRACIAL"
+    )
   )
+
+  population <- list(
+    n_subjects     = "TODO: from source paper",
+    n_studies      = "TODO: from source paper",
+    age_range      = "TODO: from source paper",
+    age_median     = "TODO: from source paper",
+    weight_range   = "TODO: from source paper",
+    weight_median  = "TODO: from source paper",
+    sex_female_pct = "TODO: from source paper",
+    race_ethnicity = "TODO: from source paper",
+    disease_state  = "Preterm and full-term infants at risk for RSV (clesrovimab population PK analysis).",
+    dose_range     = "TODO: from source paper",
+    regions        = "TODO: from source paper",
+    notes          = "TODO: from source paper; baseline demographics per Hu 2026."
+  )
+
   ini({
     lka  <- log(0.286);  label("Absorption rate (Ka, 1/day)")
     lcl  <- log(0.0197); label("Apparent clearance at 5 kg reference weight, full maturation, White/Other race (CL/F, L/day)")
@@ -30,10 +89,10 @@ Hu_2026_clesrovimab <- function() {
     e_multiracial <-  0.0872; label("Race effect on CL/F: Multiracial vs White/Other (fraction)")
 
     # Inter-individual variability (omega^2 = log(CV^2 + 1))
-    etaka ~ 0.05376  # 23.5% CV
-    etacl ~ 0.020524 # 14.4% CV
+    etalka ~ 0.05376  # 23.5% CV
+    etalcl ~ 0.020524 # 14.4% CV
     # Note: Vc/F IIV had high shrinkage (71.9%) in the original analysis
-    etavc ~ 0.006572 # 8.12% CV
+    etalvc ~ 0.006572 # 8.12% CV
 
     # Residual error
     propSd <- 0.143; label("Proportional residual error (fraction)")
@@ -48,13 +107,13 @@ Hu_2026_clesrovimab <- function() {
     maturation_cl <- 1 - (1 - beta_cl) * exp(-AAGEADJ * log(2) / t50_cl)
 
     # Race effect on CL (multiplicative; White/Other is reference = 1)
-    race_cl <- 1 + e_asian * ASIAN + e_black * BLACK + e_multiracial * MULTIRACIAL
+    race_cl <- 1 + e_asian * RACE_ASIAN + e_black * RACE_BLACK + e_multiracial * RACE_MULTI
 
-    ka  <- exp(lka + etaka)
-    cl  <- exp(lcl + etacl) * (WT / 5)^allo_cl * maturation_cl * race_cl
-    vc  <- exp(lvc + etavc) * (WT / 5)^allo_v
-    vp  <- exp(lvp)         * (WT / 5)^allo_v
-    q   <- exp(lq)          * (WT / 5)^allo_cl
+    ka  <- exp(lka + etalka)
+    cl  <- exp(lcl + etalcl) * (WT / 5)^allo_cl * maturation_cl * race_cl
+    vc  <- exp(lvc + etalvc) * (WT / 5)^allo_v
+    vp  <- exp(lvp)          * (WT / 5)^allo_v
+    q   <- exp(lq)           * (WT / 5)^allo_cl
 
     kel <- cl / vc
     k12 <- q  / vc
