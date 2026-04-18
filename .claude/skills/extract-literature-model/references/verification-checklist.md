@@ -25,6 +25,7 @@ Do not silently resolve ambiguity. Do not tune parameters to make a validation o
 - [ ] **Bioavailability** (`f(depot) <- ...`) applied to the correct compartment. `F1` in NONMEM sometimes targets a different compartment than you'd expect.
 - [ ] **Lag time / Tlag**, transit compartments, and zero-order absorption phases match the source.
 - [ ] **Units consistency.** Dose units × bioavailability ÷ volume units must yield the concentration units declared in `units`. Walk through the dimensional analysis at least once.
+- [ ] **Full dimensional analysis (mandatory for endogenous / mechanistic models).** For every ODE term and every derived rate / flux, write down units of each symbol and multiply them out. The right-hand side of `d/dt(state)` must equal `[state]/[time]`. Past endogenous-model bugs caught only here: `igg_kim_2006` V1 mislabeled `(mg/kg)` instead of `(mL/kg)`; `phenylalanine_charbonneau_2021` `daily_phe_intake` augmentation line carried a stray `vd` factor, reporting `(L/kg)·mg/day` instead of `mg/day`. See `references/endogenous-validation.md`.
 
 ## C. Covariate effects
 
@@ -55,6 +56,17 @@ Do not silently resolve ambiguity. Do not tune parameters to make a validation o
 - [ ] `rxode2::rxSolve(mod, events)` produces non-NaN, non-negative concentrations across the relevant time window.
 - [ ] Simulated Cmax, AUC, and half-life are within ~20% of published values for a typical dose in a typical subject. Larger discrepancies: investigate, don't tune.
 - [ ] A simulated VPC visually resembles the paper's VPC (dose-proportional scaling, right terminal slope, reasonable spread).
+
+### F.1 Endogenous / mechanistic models
+
+For models with no dosing (endogenous, mechanistic, steady-state turnover), replace the PK sanity checks above with:
+
+- [ ] Steady-state hold: simulate with `<state>(0) <- <baseline>` and no perturbation; the state stays at baseline within numerical tolerance. Example: `igg_kim_2006` must hold `igg = 12.1` across the full simulation horizon.
+- [ ] Perturbation recovery: initialize at `0.5 × baseline` and `2 × baseline`; the trajectory monotonically returns to baseline.
+- [ ] Mass-balance / flux check: at steady state, sum every production and elimination flux; the sum equals zero symbolically (not just numerically).
+- [ ] All augmentation outputs (e.g., `daily_phe_intake`) have correct units — verified by dimensional analysis, not just plausible magnitude.
+
+See `references/endogenous-validation.md` for full recipes.
 
 ## G. Registration
 
