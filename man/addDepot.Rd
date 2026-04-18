@@ -5,7 +5,7 @@
 \title{To convert from infusion/intravenous administration to first-order oral
 absorption}
 \usage{
-addDepot(ui, central = "central", depot = "depot", ka = "ka")
+addDepot(ui, central = "central", depot = "depot", ka = "ka", model)
 }
 \arguments{
 \item{ui}{The model as a function (or something convertible to an rxUi
@@ -16,6 +16,9 @@ object)}
 \item{depot}{depot compartment name}
 
 \item{ka}{absorption rate parameter name}
+
+\item{model}{Deprecated alias for \code{ui}. Supplying \code{model}
+instead of \code{ui} still works but emits a deprecation warning.}
 }
 \value{
 a model with the depot added
