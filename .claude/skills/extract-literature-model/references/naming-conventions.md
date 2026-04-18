@@ -13,6 +13,16 @@ Lower case. Snake case only when combining concepts.
 - `transit1`, `transit2`, … — transit-compartment absorption chains.
 - Therapeutic-area or mechanism-specific compartments: open a GitHub issue before adding new names.
 
+### Do not declare compartment order
+
+Do **not** add explicit `cmt(depot)`, `cmt(central)`, … declarations at the top
+of `model()`. rxode2 / nlmixr2 infer compartment order from the order the
+`d/dt(...)` lines appear, and user data can set the compartment via the `cmt`
+column on dose rows. Explicit `cmt()` declarations are almost never needed; they
+clutter the model and can mask ordering bugs. Only add them when the source
+paper *requires* a specific numeric order that isn't what the ODE declarations
+would imply (very rare) and flag the reason in a comment.
+
 ## Observation variable
 
 - `Cc` — concentration in the central compartment. Use even with `linCmt()`: `Cc <- linCmt()`.
