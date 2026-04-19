@@ -120,6 +120,23 @@ addFileToModelDb <- function(dir, file, modeldb) {
   # Parse the model to get the fixed effects and DV parameters
   mod <- nlmixr2est::nlmixr(eval(parsedFile))
 
+  # Convention check. Reports deviations but does not halt the build so that
+  # grandfathered models continue to regenerate while their issues surface.
+  issues <- tryCatch(
+    suppressWarnings(checkModelConventions(mod, verbose = FALSE)),
+    error = function(e) NULL
+  )
+  if (!is.null(issues) && nrow(issues) > 0) {
+    n_err <- sum(issues$severity == "error")
+    n_warn <- sum(issues$severity == "warning")
+    if (n_err + n_warn > 0) {
+      message(sprintf(
+        "  %s: %d convention error(s), %d warning(s) - run checkModelConventions(\"%s\") for details",
+        modelName, n_err, n_warn, modelName
+      ))
+    }
+  }
+
   description <- mod$meta$description
   if (is.null(description)) {
     message("No description for model in ", fileName)
