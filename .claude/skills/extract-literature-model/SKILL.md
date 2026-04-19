@@ -15,7 +15,7 @@ Work through the six phases below. Stop and ask the user at any of the decision 
 Read these on demand; don't load them up front.
 
 - `references/naming-conventions.md` — parameter, compartment, IIV, and error-model names.
-- `references/covariate-columns.md` — authoritative register of covariate column names. Consult before introducing any new covariate.
+- `inst/references/covariate-columns.md` — authoritative register of covariate column names. Consult before introducing any new covariate. (Installed with the package so R code like `checkModelConventions()` can parse it at runtime.)
 - `references/model-file-template.md` — skeleton for the `.R` file.
 - `references/vignette-template.md` — skeleton for the validation vignette.
 - `references/pknca-recipes.md` — PKNCA setups for single-dose, steady-state, and multi-dose NCA.
@@ -44,6 +44,12 @@ git checkout -b <firstauthor>-<year>-<drug> origin/main
 
 Local `main` may be stale. The regenerated `data/modeldb.rda` / `inst/modeldb.qs2` must reflect current origin/main or they will clobber models added upstream. Never push directly to `main`; always open a PR.
 
+(When this skill runs as a task under `claude_runner`, the runner's preamble
+will note that a fresh worktree has already been set up — verify with
+`git branch --show-current` and skip the `git fetch` / `git checkout -b`
+in that case. The runner provides the authoritative instructions for its
+own environment.)
+
 ## Phase 3 — Model file
 
 File path: `inst/modeldb/<category>/<FirstAuthor>_<Year>_<drug>.R`.
@@ -68,7 +74,7 @@ Follow `references/naming-conventions.md` strictly:
 - Residual error: `propSd`, `addSd`. Multi-output: `CcpropSd`, `tumorSizeaddSd`, etc.
 - Compartments: `depot`, `central`, `peripheral1`, `peripheral2`, `effect`. Observation: `Cc`.
 
-Covariate columns come from `references/covariate-columns.md`. Before writing any covariate into the file:
+Covariate columns come from `inst/references/covariate-columns.md`. Before writing any covariate into the file:
 
 - If the canonical name exists, use it and record the source column name in `covariateData[[name]]$source_name`.
 - If the source name is an alias of an existing canonical name (e.g., source uses `SEXM`, canonical is `SEXF`), use the canonical name, note the required value transformation (`SEXF = 1 - SEXM`), and **ask the user to confirm the effect-coefficient sign and reference-category implications** before committing.
@@ -134,7 +140,7 @@ Naming conventions for mechanistic parameters are documented in `references/nami
    ```
    - Added <Author> <Year> population PK model for <drug> (#PR).
    ```
-5. Commit the model file, the vignette, the regenerated `modeldb.rda` / `modeldb.qs2`, the `NEWS.md` entry, and any updates to `references/covariate-columns.md` (if a new covariate was registered) together on the feature branch.
+5. Commit the model file, the vignette, the regenerated `modeldb.rda` / `modeldb.qs2`, the `NEWS.md` entry, and any updates to `inst/references/covariate-columns.md` (if a new covariate was registered) together on the feature branch.
 6. Push the branch and open a PR against `main`. Use `gh pr create` with a title like `Add <Author> <Year> <drug> model`.
 
 ## Stop-and-ask triggers (consolidated)
@@ -144,7 +150,7 @@ Don't guess — ask the user when:
 - The source has multiple non-hierarchical models and it's not obvious which to extract.
 - Parameter values look like initial estimates rather than final.
 - Covariate encoding isn't fully specified (reference category, units, transformation).
-- A source column name is not in `references/covariate-columns.md` (propose a new entry and confirm).
+- A source column name is not in `inst/references/covariate-columns.md` (propose a new entry and confirm).
 - A source column is an alias of an existing canonical name and the mapping involves value inversion or a reference-category flip.
 - A parameter name deviates from the nlmixr2lib standard (propose the canonical name and confirm).
 - PKNCA output disagrees with a published NCA table by more than ~20% after careful review.
@@ -154,6 +160,11 @@ Don't guess — ask the user when:
 Use this fixed format for ambiguities:
 
 > Ambiguity at [source location]. Two plausible interpretations: (A) …, (B) …. Which applies?
+
+When running interactively, use `AskUserQuestion`. When running under
+`claude_runner`, follow the runner's injected preamble instructions for
+the sidecar stop-and-ask protocol (the runner provides the file paths and
+schema).
 
 ## Constraints
 

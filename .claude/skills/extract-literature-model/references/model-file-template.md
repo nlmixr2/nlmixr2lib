@@ -14,7 +14,7 @@ Related references:
   units       <- list(time = "<day|hour>", dosing = "<mg|mg/kg>", concentration = "<ug/mL|ng/mL>")
 
   covariateData <- list(
-    #! One entry per covariate. Canonical names come from references/covariate-columns.md.
+    #! One entry per covariate. Canonical names come from inst/references/covariate-columns.md.
     #! If the source paper uses a different column name, set source_name and, if values must be
     #! transformed (e.g., SEXM -> SEXF), note the transformation in notes and confirm with user.
     WT = list(

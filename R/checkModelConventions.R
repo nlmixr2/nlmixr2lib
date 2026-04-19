@@ -3,7 +3,7 @@
 #' Parses a model and reports deviations from the nlmixr2lib conventions
 #' documented in `vignettes/create-model-library.Rmd` and the
 #' `extract-literature-model` skill references (especially
-#' `naming-conventions.md` and `covariate-columns.md`). The checker inspects:
+#' `naming-conventions.md` and `inst/references/covariate-columns.md`). The checker inspects:
 #' file-level metadata (description, reference, units, covariateData);
 #' parameter names (log-prefix PK params, `eta`-prefix IIV, `propSd`/`addSd`
 #' residual error); parameter labels; covariates (canonical register, units,
@@ -52,7 +52,7 @@ checkModelConventions <- function(model, verbose = TRUE) {
   resolved <- .resolveModel(model)
   ui <- resolved$ui
   model_name <- resolved$name
-  conv <- .nlmixr2libConventions
+  conv <- .nlmixr2libConventions()
 
   checks <- list(
     .checkFileMetadata(ui, conv),
@@ -390,7 +390,7 @@ checkModelConventions <- function(model, verbose = TRUE) {
         issues <- rbind(issues, .issue(
           "covariates", "warning", nm,
           sprintf("Covariate '%s' is not in the canonical register.", nm),
-          "Rename to a canonical name (see `.claude/skills/extract-literature-model/references/covariate-columns.md`) or register a new canonical entry."
+          "Rename to a canonical name (see `inst/references/covariate-columns.md`) or register a new canonical entry."
         ))
       }
     }

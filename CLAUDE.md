@@ -19,7 +19,7 @@ Repo-scoped skills live under `.claude/skills/`:
 
 - **`extract-literature-model`** — guided workflow for extracting a pharmacometric model from a scientific source (journal article, supplement, poster, regulatory document) into the package. Use when a user provides a paper and asks to add the model. See `.claude/skills/extract-literature-model/SKILL.md`.
 
-The skill's `references/` folder contains the templates and standards it enforces. The authoritative covariate-column register is `.claude/skills/extract-literature-model/references/covariate-columns.md` — consult it before introducing any new covariate column.
+The skill's `references/` folder contains the templates and standards it enforces. The authoritative covariate-column register is `inst/references/covariate-columns.md` — consult it before introducing any new covariate column. The register is installed with the package so `checkModelConventions()` can parse it at runtime; update the file (not R code) when ratifying a new canonical covariate.
 
 ## Conventions (quick reference)
 
@@ -29,7 +29,7 @@ For full details see `vignettes/create-model-library.Rmd` and `.claude/skills/ex
 - PK parameters (log-scale): `lka`, `lcl`, `lvc`, `lvp`, `lq`, `lfdepot`; derived `ka`, `cl`, `vc`, `vp`, `q`, `kel`, `k12`, etc.
 - IIV: `eta` + transformed name (`etalcl`, `etalvc`). Use `etalcl` even when the paper used `etacl`.
 - Residual error: `propSd`, `addSd`; multi-output prefixes with the output (`CcpropSd`).
-- Covariate columns: canonical names in `covariate-columns.md`. Standardized choices include `SEXF` (1 = female), `ADA_POS` (1 = ADA-positive), and a `RACE_<GROUP>` prefix for race indicators.
+- Covariate columns: canonical names in `inst/references/covariate-columns.md`. Standardized choices include `SEXF` (1 = female), `ADA_POS` (1 = ADA-positive), and a `RACE_<GROUP>` prefix for race indicators.
 
 ## Git workflow
 

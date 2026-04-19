@@ -265,6 +265,26 @@ test_that("iterating with no argument returns stacked data.frame with model colu
   expect_gt(length(unique(res$model)), 1)
 })
 
+test_that("canonical covariates are parsed from inst/references/covariate-columns.md", {
+  canon <- nlmixr2lib:::.loadCanonicalCovariates()
+  expect_true(length(canon) > 20)
+  expect_true(all(c("WT", "SEXF", "ADA_POS", "RACE_BLACK",
+                    "RACE_BLACK_OTH", "CREAT", "ALB", "hsCRP") %in%
+                    names(canon)))
+  expect_true("SEXM" %in% canon$SEXF$aliases)
+  expect_true("ADA" %in% canon$ADA_POS$aliases)
+  expect_true("BLACK_OTH" %in% canon$RACE_BLACK_OTH$aliases)
+  # ALB has no source aliases in the register ("none; ALB is the universal...")
+  expect_equal(length(canon$ALB$aliases), 0)
+})
+
+test_that("covariate alias map resolves document-order last-writes-win", {
+  map <- nlmixr2lib:::.nlmixr2libCovariateAliasMap()
+  expect_equal(map[["BLACK_OTH"]], "RACE_BLACK_OTH")
+  expect_equal(map[["SEXM"]], "SEXF")
+  expect_equal(map[["ADA"]], "ADA_POS")
+})
+
 test_that("an rxUi object is accepted directly", {
   good <- function() {
     description <- "A"; reference <- "R"

@@ -115,6 +115,39 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
 - **Example models:** `Cirincione_2017_exenatide.R` (reference 80 mL/min/1.73 m², exponent 0.838).
 - **Notes:** Case preserved (lowercase `e`) because `eGFR` is the widely-used clinical notation.
 
+### CREAT (**canonical for serum creatinine**)
+- **Description:** Serum creatinine concentration (baseline or time-varying).
+- **Units:** µmol/L or mg/dL — document the unit used in each model via `covariateData[[CREAT]]$units`.
+- **Type:** continuous
+- **Reference category:** n/a — used with power scaling `(CREAT / ref)^exponent`.
+- **Source aliases:**
+  - `CRE` (µmol/L, reference 70.73) — used in `Thakre_2022_risankizumab.R`.
+  - `SCR` — common clinical-PK abbreviation.
+- **Example models:** `Thakre_2022_risankizumab.R`.
+- **Notes:** `CREAT` chosen over the shorter `CRE`/`SCR` as the NONMEM/clinical-PK convention that is unambiguous. Per-model reference values must be documented in `covariateData[[CREAT]]$notes`.
+
+### ALB (**canonical for serum albumin**)
+- **Description:** Serum albumin concentration.
+- **Units:** g/dL or g/L — document the unit used in each model via `covariateData[[ALB]]$units`.
+- **Type:** continuous
+- **Reference category:** n/a — used with power scaling `(ALB / ref)^exponent`.
+- **Source aliases:** none; `ALB` is the universal abbreviation.
+- **Example models:** `Fasanmade_2009_infliximab.R` (g/dL, reference 4.1), `Thakre_2022_risankizumab.R` (g/L, reference 45).
+- **Notes:** Ratified canonically on 2026-04-19 after cross-model review. Unit varies by paper (g/dL in US-convention papers, g/L in SI-convention papers); the per-model `covariateData[[ALB]]$units` field is load-bearing. Effect-coefficient magnitude is meaningless without the unit.
+
+## Inflammation markers
+
+### hsCRP (**canonical for high-sensitivity C-reactive protein**)
+- **Description:** High-sensitivity C-reactive protein concentration (baseline or time-varying).
+- **Units:** mg/L (document per-model via `covariateData[[hsCRP]]$units`).
+- **Type:** continuous
+- **Reference category:** n/a — used with power scaling `(hsCRP / ref)^exponent`.
+- **Source aliases:**
+  - `CRPHS` (mg/L, reference 5.21) — used in `Thakre_2022_risankizumab.R`.
+  - `HSCRP` (all caps).
+- **Example models:** `Thakre_2022_risankizumab.R`.
+- **Notes:** Case preserved (`hsCRP`) because that is the widely recognized clinical notation, mirroring the `eGFR` precedent. Distinct from non-hs CRP — only use for assays validated for the low-range sensitivity.
+
 ## Race / ethnicity
 
 **Canonical pattern: `RACE_<GROUP>`.** Use one indicator per race/ethnicity group the source models. Reference category is the implicit 0 = all other groups; document explicitly which groups are in the reference. When the source uses composite groups (e.g., "Black or Other"), name them accordingly (`RACE_BLACK_OTHER`) and list the components in `notes`.
@@ -244,10 +277,17 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
 ## Change log
 
 - **Initial seed** (this PR): Every covariate observed in `inst/modeldb/` as of the audit. Canonical names established: `SEXF`, `ADA_POS`, `RACE_<GROUP>` prefix. Aliases documented but existing model files not modified.
+- **2026-04-19** — Added `CREAT`, `hsCRP`, `ALB` canonical entries after the
+  Phase 6 pilot extracted Fasanmade 2009 infliximab and Thakre 2022
+  risankizumab. `ALB` had been used informally in two models; now ratified
+  with per-model unit documentation (g/dL vs g/L). `CREAT` chosen over
+  `CRE`/`SCR`; `hsCRP` preserves lowercase `hs` prefix per the `eGFR`
+  precedent. See `tracking/decision_log.md` in the mab_human_consensus
+  project for the deliberation.
 - Subsequent additions: append new canonical entries as new papers are processed. When adding, bump the audit-completed count in the summary below.
 
 ## Summary
 
 - Files audited: 61 R files under `inst/modeldb/` (12 of which reference covariates).
-- Canonical entries: 23.
-- Aliases mapped: 9 (including SEXM→SEXF, ADA→ADA_POS, BLACK→RACE_BLACK, ASIAN→RACE_ASIAN, MULTIRACIAL→RACE_MULTI, BLACK_OTH→RACE_BLACK_OTH, ASIAN_AMIND_MULTI→RACE_ASIAN_AMIND_MULTI, DVID→STUDY1/STUDY5).
+- Canonical entries: 26.
+- Aliases mapped: 11 (including SEXM→SEXF, ADA→ADA_POS, BLACK→RACE_BLACK, ASIAN→RACE_ASIAN, MULTIRACIAL→RACE_MULTI, BLACK_OTH→RACE_BLACK_OTH, ASIAN_AMIND_MULTI→RACE_ASIAN_AMIND_MULTI, DVID→STUDY1/STUDY5, CRE→CREAT, CRPHS→hsCRP).

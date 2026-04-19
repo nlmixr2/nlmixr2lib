@@ -24,7 +24,7 @@ Invisibly, a `data.frame` with one row per issue and columns
 Parses a model and reports deviations from the nlmixr2lib conventions
 documented in `vignettes/create-model-library.Rmd` and the
 `extract-literature-model` skill references (especially
-`naming-conventions.md` and `covariate-columns.md`). The checker inspects:
+`naming-conventions.md` and `inst/references/covariate-columns.md`). The checker inspects:
 file-level metadata (description, reference, units, covariateData);
 parameter names (log-prefix PK params, `eta`-prefix IIV, `propSd`/`addSd`
 residual error); parameter labels; covariates (canonical register, units,
