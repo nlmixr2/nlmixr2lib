@@ -6,7 +6,7 @@
 #' @examples
 #' readModelDb("PK_1cmt")
 readModelDb <- function(name) {
-  .modeldb <- qs2::qs_read(system.file("modeldb.qs2", package="nlmixr2lib"))
+  .modeldb <- qs2::qs_read(system.file("modeldb.qs2", package = "nlmixr2lib"))
   if (!(name %in% .modeldb$name)) {
     stop("'name' not in database")
   } else {

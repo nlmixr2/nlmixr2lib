@@ -57,13 +57,13 @@ Add linear indirect response model
 }
 \examples{
 
-readModelDb("PK_2cmt_no_depot") |> addIndirectLin(stim="in")
+readModelDb("PK_2cmt_no_depot") |> addIndirectLin(stim = "in")
 
-readModelDb("PK_2cmt_no_depot") |> addIndirectLin(stim="out")
+readModelDb("PK_2cmt_no_depot") |> addIndirectLin(stim = "out")
 
-readModelDb("PK_2cmt_no_depot") |> addIndirectLin(inhib="in")
+readModelDb("PK_2cmt_no_depot") |> addIndirectLin(inhib = "in")
 
-readModelDb("PK_2cmt_no_depot") |> addIndirectLin(inhib="out")
+readModelDb("PK_2cmt_no_depot") |> addIndirectLin(inhib = "out")
 
 }
 \seealso{

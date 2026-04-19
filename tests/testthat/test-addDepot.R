@@ -34,7 +34,7 @@ test_that("addDepot adds depot", {
   modelNoDepot <-
     suppressMessages(
       readModelDb("PK_1cmt_des") |>
-        rxode2::model(-Cc~.) |>
+        rxode2::model(-Cc ~ .) |>
         rxode2::ini(-lka, -lcl, -lvc) |>
         removeDepot()
     )

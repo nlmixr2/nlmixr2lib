@@ -43,14 +43,14 @@ Convert linear effect to Emax-Hill effect
 \examples{
 
 readModelDb("PK_2cmt_no_depot") |>
-  addIndirectLin(stim="in") |>
+  addIndirectLin(stim = "in") |>
   convertEmaxHill()
 
 # can also specify as emax=1
 
 readModelDb("PK_2cmt_no_depot") |>
-  addIndirectLin(stim="in") |>
-  convertEmaxHill(emax=1)
+  addIndirectLin(stim = "in") |>
+  convertEmaxHill(emax = 1)
 
 }
 \author{

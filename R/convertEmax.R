@@ -19,17 +19,17 @@
 #' @examples
 #'
 #' readModelDb("PK_2cmt_no_depot") |>
-#'   addIndirectLin(stim="in") |>
+#'   addIndirectLin(stim = "in") |>
 #'   convertEmax()
 #'
 #' # When emax=1
 #' readModelDb("PK_2cmt_no_depot") |>
-#'   addIndirectLin(stim="in") |>
-#'   convertEmax(emax=1)
+#'   addIndirectLin(stim = "in") |>
+#'   convertEmax(emax = 1)
 #'
-convertEmax <- function(ui, emax="Emax", ec50="EC50",
-                        imax="Imax", ic50="IC50",
-                        ek=c("Ik", "Ek"), cc=c("Ec", "Cc")) {
+convertEmax <- function(ui, emax = "Emax", ec50 = "EC50",
+                        imax = "Imax", ic50 = "IC50",
+                        ek = c("Ik", "Ek"), cc = c("Ec", "Cc")) {
   .ui <- rxode2::assertRxUi(ui)
   cc <- rxode2::assertExists(.ui, cc)
   ek <- rxode2::assertVariableExists(.ui, ek)
@@ -44,13 +44,13 @@ convertEmax <- function(ui, emax="Emax", ec50="EC50",
     .emaxMult <- ""
   } else {
     stop("'", emax, "' not specified correctly",
-         call.=FALSE)
+      call. = FALSE)
   }
   rxode2::assertVariableNew(.ui, ec50)
   .modelLines <- .replaceMult(.ui$lstExpr,
-                              v1=ek, v2=cc,
-                              ret=paste0(.emaxMult,
-                                         cc, "/(", cc, "+", ec50, ")"))
+    v1 = ek, v2 = cc,
+    ret = paste0(.emaxMult,
+      cc, "/(", cc, "+", ec50, ")"))
   .tmp <- .getEtaThetaTheta1(.ui)
   .iniDf <- .tmp$iniDf
   .theta <- .tmp$theta
@@ -71,28 +71,28 @@ convertEmax <- function(ui, emax="Emax", ec50="EC50",
   if (.emaxMult != "") {
     .emaxLine <- list(str2lang(paste0(emax, "<- exp(l", emax, ")")))
     .thetaEmax <- .get1theta(emax, .theta1, .ntheta,
-                             label=paste0("Maximum effect (", emax, ")"))
+      label = paste0("Maximum effect (", emax, ")"))
     .ntheta <- .ntheta + 1
   } else {
     .thetaEmax <- NULL
   }
 
   .thetaEc50 <- .get1theta(ec50, .theta1, .ntheta,
-                           label=paste0("Concentration of 50% ", emax,
-                                        " (", emax, ")"))
+    label = paste0("Concentration of 50% ", emax,
+      " (", emax, ")"))
   .ntheta <- .ntheta + 1
 
   .ui <- rxode2::rxUiDecompress(.ui)
   .ui$iniDf <- rbind(.theta,
-                     .thetaEmax,
-                     .thetaEc50,
-                     .eta)
-  if (exists("description", envir=.ui$meta)) {
-    rm("description", envir=.ui$meta)
+    .thetaEmax,
+    .thetaEc50,
+    .eta)
+  if (exists("description", envir = .ui$meta)) {
+    rm("description", envir = .ui$meta)
   }
   rxode2::model(.ui) <- c(.emaxLine,
-                          list(str2lang(paste0(ec50, "<- exp(l", ec50, ")"))),
-                          .modelLines)
+    list(str2lang(paste0(ec50, "<- exp(l", ec50, ")"))),
+    .modelLines)
   .ui
 }
 
@@ -106,18 +106,18 @@ convertEmax <- function(ui, emax="Emax", ec50="EC50",
 #' @examples
 #'
 #' readModelDb("PK_2cmt_no_depot") |>
-#'   addIndirectLin(stim="in") |>
+#'   addIndirectLin(stim = "in") |>
 #'   convertEmaxHill()
 #'
 #' # can also specify as emax=1
 #'
 #' readModelDb("PK_2cmt_no_depot") |>
-#'   addIndirectLin(stim="in") |>
-#'   convertEmaxHill(emax=1)
+#'   addIndirectLin(stim = "in") |>
+#'   convertEmaxHill(emax = 1)
 #'
-convertEmaxHill <- function(ui, emax="Emax", ec50="EC50", g="g",
-                            imax="Imax", ic50="IC50",
-                            ek=c("Ik", "Ek"), cc=c("Ec", "Cc")) {
+convertEmaxHill <- function(ui, emax = "Emax", ec50 = "EC50", g = "g",
+                            imax = "Imax", ic50 = "IC50",
+                            ek = c("Ik", "Ek"), cc = c("Ec", "Cc")) {
   .ui <- rxode2::assertRxUi(ui)
   cc <- rxode2::assertExists(.ui, cc)
   ek <- rxode2::assertVariableExists(.ui, ek)
@@ -132,15 +132,15 @@ convertEmaxHill <- function(ui, emax="Emax", ec50="EC50", g="g",
     .emaxMult <- ""
   } else {
     stop("'", emax, "' not specified correctly",
-         call.=FALSE)
+      call. = FALSE)
   }
   rxode2::assertVariableNew(.ui, ec50)
 
   .modelLines <- .replaceMult(.ui$lstExpr,
-                              v1=ek, v2=cc,
-                              ret=paste0(.emaxMult, cc, "^", g,
-                                         "/(", cc, "^", g,
-                                         "+", ec50, "^", g, ")"))
+    v1 = ek, v2 = cc,
+    ret = paste0(.emaxMult, cc, "^", g,
+      "/(", cc, "^", g,
+      "+", ec50, "^", g, ")"))
   .tmp <- .getEtaThetaTheta1(.ui)
   .iniDf <- .tmp$iniDf
   .theta <- .tmp$theta
@@ -161,40 +161,40 @@ convertEmaxHill <- function(ui, emax="Emax", ec50="EC50", g="g",
   if (.emaxMult != "") {
     .emaxLine <- list(str2lang(paste0(emax, "<- exp(l", emax, ")")))
     .thetaEmax <- .get1theta(emax, .theta1, .ntheta,
-                             label=paste0("Maximum effect (", emax, ")"))
+      label = paste0("Maximum effect (", emax, ")"))
     .ntheta <- .ntheta + 1
   } else {
     .thetaEmax <- NULL
   }
 
   .thetaEc50 <- .get1theta(ec50, .theta1, .ntheta,
-                           label=paste0("Concentration of 50% ", emax,
-                                        " (", emax, ")"))
+    label = paste0("Concentration of 50% ", emax,
+      " (", emax, ")"))
   .ntheta <- .ntheta + 1
 
   .thetaEc50 <- .get1theta(ec50, .theta1, .ntheta,
-                           label=paste0("Concentration of 50% ", emax,
-                                        " (", emax, ")"))
+    label = paste0("Concentration of 50% ", emax,
+      " (", emax, ")"))
   .ntheta <- .ntheta + 1
 
-  .thetaG <- .get1theta(g, .theta1, .ntheta, name=paste0("lg", g),
-                        est=logit(1, 0.1, 10),
-                        label=paste0("logit-constrained Hill coefficient ", g))
+  .thetaG <- .get1theta(g, .theta1, .ntheta, name = paste0("lg", g),
+    est = logit(1, 0.1, 10),
+    label = paste0("logit-constrained Hill coefficient ", g))
   .ntheta <- .ntheta + 1
 
 
   .ui <- rxode2::rxUiDecompress(.ui)
   .ui$iniDf <- rbind(.theta,
-                     .thetaEmax,
-                     .thetaEc50,
-                     .thetaG,
-                     .eta)
-  if (exists("description", envir=.ui$meta)) {
-    rm("description", envir=.ui$meta)
+    .thetaEmax,
+    .thetaEc50,
+    .thetaG,
+    .eta)
+  if (exists("description", envir = .ui$meta)) {
+    rm("description", envir = .ui$meta)
   }
   rxode2::model(.ui) <- c(.emaxLine,
-                          list(str2lang(paste0(ec50, "<- exp(l", ec50, ")")),
-                               str2lang(paste0(g, "<- expit(lg", g, ", 0.1, 10)"))),
-                          .modelLines)
+    list(str2lang(paste0(ec50, "<- exp(l", ec50, ")")),
+      str2lang(paste0(g, "<- expit(lg", g, ", 0.1, 10)"))),
+    .modelLines)
   .ui
 }

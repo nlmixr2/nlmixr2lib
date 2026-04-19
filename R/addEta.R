@@ -35,15 +35,17 @@
 #' library(rxode2)
 #' readModelDb("PK_1cmt") |> addEta("ka")
 #' @export
-addEta <- function(ui, eta, priorName=getOption("nlmixr2lib.priorEta", TRUE),
-                   etaCombineType=c("default", "snake", "camel", "dot", "blank")) {
+addEta <- function(ui, eta, priorName = getOption("nlmixr2lib.priorEta", TRUE),
+                   etaCombineType = c("default", "snake", "camel", "dot", "blank")) {
   if (missing(etaCombineType)) {
     etaCombineType <- .getCombineTypeFromRoption("nlmixr2lib.etaCombineType")
   }
   if (etaCombineType != "default") {
     .combineEnv$old <- .combineEnv$default
     .combineEnv$default <- etaCombineType
-    on.exit({.combineEnv$default <- .combineEnv$old})
+    on.exit({
+      .combineEnv$default <- .combineEnv$old
+    })
   }
   checkmate::assertLogical(priorName, any.missing = FALSE)
   mod <- ui # save to apply everything later
@@ -89,7 +91,7 @@ addEta <- function(ui, eta, priorName=getOption("nlmixr2lib.priorEta", TRUE),
       )
   }
   etaIni <- lapply(X = paste0(etaMap[names(eta)],
-                              "~", eta), FUN = base::str2lang)
+    "~", eta), FUN = base::str2lang)
   iniArgs <-
     append(
       list(ui), etaIni

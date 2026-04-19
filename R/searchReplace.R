@@ -33,7 +33,12 @@ searchReplaceHelper <- function(object, find, replace) {
 
 #' @export
 searchReplaceHelper.function <- function(object, find, replace) {
-  methods::functionBody(object) <- searchReplaceHelper(object = methods::functionBody(object), find = find, replace = replace)
+  methods::functionBody(object) <-
+    searchReplaceHelper(
+      object = methods::functionBody(object),
+      find = find,
+      replace = replace
+    )
   object
 }
 

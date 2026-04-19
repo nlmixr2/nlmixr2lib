@@ -40,13 +40,13 @@ Convert linear effect to Emax effect
 \examples{
 
 readModelDb("PK_2cmt_no_depot") |>
-  addIndirectLin(stim="in") |>
+  addIndirectLin(stim = "in") |>
   convertEmax()
 
 # When emax=1
 readModelDb("PK_2cmt_no_depot") |>
-  addIndirectLin(stim="in") |>
-  convertEmax(emax=1)
+  addIndirectLin(stim = "in") |>
+  convertEmax(emax = 1)
 
 }
 \seealso{

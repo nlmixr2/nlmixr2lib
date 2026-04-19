@@ -98,10 +98,10 @@ cohort <- tibble(
 )
 
 obs_times <- c(
-  seq(0, 1, by = 1/24),        # first 24 h hourly
-  seq(1.25, 7, by = 0.25),     # first week quarter-day
-  seq(7.5, 28, by = 0.5),      # out to day 28 twice-daily
-  seq(29, 84, by = 1)          # to day 84 daily
+  seq(0, 1, by = 1 / 24), # first 24 h hourly
+  seq(1.25, 7, by = 0.25), # first week quarter-day
+  seq(7.5, 28, by = 0.5), # out to day 28 twice-daily
+  seq(29, 84, by = 1) # to day 84 daily
 )
 
 make_events <- function(cohort, route = c("IV", "SC")) {
@@ -110,7 +110,7 @@ make_events <- function(cohort, route = c("IV", "SC")) {
   doses <- cohort |>
     dplyr::mutate(
       time = 0,
-      amt = 2 * WT,             # 2 mg/kg
+      amt = 2 * WT, # 2 mg/kg
       cmt = cmt_dose,
       evid = 1L
     ) |>
@@ -149,13 +149,13 @@ comparison of IV vs SC, zero out random effects:
 mod_typical <- mod |> rxode2::zeroRe()
 
 typical_cohort <- tibble(id = 1:2, WT = 70,
-                         treatment = c("IV", "SC"))
+  treatment = c("IV", "SC"))
 
 ev_typical <- dplyr::bind_rows(
   tibble(id = 1, time = 0, amt = 140, cmt = "central", evid = 1L, WT = 70,
-         treatment = "IV"),
-  tibble(id = 2, time = 0, amt = 140, cmt = "depot",   evid = 1L, WT = 70,
-         treatment = "SC")
+    treatment = "IV"),
+  tibble(id = 2, time = 0, amt = 140, cmt = "depot", evid = 1L, WT = 70,
+    treatment = "SC")
 ) |>
   dplyr::bind_rows(
     typical_cohort |>
@@ -185,9 +185,9 @@ sim_typical |>
   geom_line(linewidth = 0.8) +
   scale_y_log10() +
   labs(x = "Time (days)", y = "Serum concentration (mg/L)",
-       colour = "Route",
-       title = "Typical mAb PK: 2 mg/kg IV vs SC (70 kg subject)",
-       caption = "Davda 2014 consensus parameters; typical values (no IIV). Compare to Figure 1 of Davda 2014.") +
+    colour = "Route",
+    title = "Typical mAb PK: 2 mg/kg IV vs SC (70 kg subject)",
+    caption = "Davda 2014 consensus parameters; typical values (no IIV). Compare to Figure 1 of Davda 2014.") +
   theme_minimal() +
   theme(legend.position = "bottom")
 ```
@@ -214,8 +214,8 @@ sim |>
   scale_y_log10() +
   facet_wrap(~treatment) +
   labs(x = "Time (days)", y = "Serum concentration (mg/L)",
-       title = "Simulated 5-50-95 percentiles",
-       caption = "2 mg/kg; virtual cohort (N = 200). Compare to Figure 3 of Davda 2014 (VPC).") +
+    title = "Simulated 5-50-95 percentiles",
+    caption = "2 mg/kg; virtual cohort (N = 200). Compare to Figure 3 of Davda 2014 (VPC).") +
   theme_minimal() +
   theme(legend.position = "none")
 ```
@@ -297,7 +297,10 @@ typical_tbl <- as.data.frame(nca_typical$result) |>
 knitr::kable(
   typical_tbl,
   digits = 3,
-  caption = "Typical-subject (70 kg, 2 mg/kg) NCA for the Davda 2014 consensus model. The paper does not publish NCA for comparison; values shown for reader inspection."
+  caption = paste(
+    "Typical-subject (70 kg, 2 mg/kg) NCA for the Davda 2014 consensus model.",
+    "The paper does not publish NCA for comparison; values shown for reader inspection."
+  )
 )
 ```
 

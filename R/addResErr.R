@@ -28,11 +28,11 @@ addResErr <- function(ui, reserr, endpoint) {
     }
   } else {
     rxode2::assertVariableName(endpoint)
-    if (endpoint %in% modelUi$predDf$cond)  {
+    if (endpoint %in% modelUi$predDf$cond) {
       paramErr <- endpoint
     } else {
       stop("requested to add/change residual error for '", endpoint, "' but not defined as a modeled endpoint",
-           call.=FALSE)
+        call. = FALSE)
     }
   }
   if ("rxLinCmt" %in% paramErr) {

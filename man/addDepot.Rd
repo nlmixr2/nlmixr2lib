@@ -27,5 +27,5 @@ absorption
 \examples{
 # most of the examples in the model library already have a depot
 # the PK_2cmt_no_depot is an exception
-readModelDb("PK_2cmt_no_depot")  |> addDepot()
+readModelDb("PK_2cmt_no_depot") |> addDepot()
 }

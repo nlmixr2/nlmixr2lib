@@ -10,7 +10,7 @@ test_that("createMarkovModel", {
         "    logitX1toX1 <- -0; label(\"Probability of transition from state 1 to 1 (logit probability)\")",
         "  })",
         "  model({",
-        "    # Create the following one-hot encoded columns for previous and current Markov states (this can be done with `createMarkovModelDataset()`)",
+        "    # Create the following one-hot encoded columns for previous and current Markov states (this can be done with `createMarkovModelDataset()`)", # nolint: line_length_linter.
         "    # For state 1: prevX1, curX1",
         "    # For state 2: prevX2, curX2",
         "    # No transitions created for collector state, 2",
@@ -58,7 +58,7 @@ test_that("createMarkovModel", {
       ),
       ignoreProbLt = 0.15
     ),
-    regexp = "After filtering with ignoreProbLt = 0.15, the following states have insufficient outgoing transitions (<= 1): a",
+    regexp = "After filtering with ignoreProbLt = 0.15, the following states have insufficient outgoing transitions (<= 1): a", # nolint: line_length_linter.
     fixed = TRUE
   )
 })
@@ -72,7 +72,7 @@ test_that("createMarkovModelFromSingleState", {
     list(
       ini = c(
         "logitnonetonone <- -0.4055; label(\"Probability of transition from state none to none (logit probability)\")",
-        "lognonetomild <- -1.204; label(\"Probability of transition from state none to mild (log-logit link difference from prior state)\")"
+        "lognonetomild <- -1.204; label(\"Probability of transition from state none to mild (log-logit link difference from prior state)\")" # nolint: line_length_linter.
       ),
       model = c(
         "# transition from state \"none\" to state \"none\"",
