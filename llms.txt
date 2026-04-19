@@ -80,6 +80,8 @@ this way.
   : To add transit compartments to the model
 - [`addWeibullAbs()`](https://nlmixr2.github.io/nlmixr2lib/reference/addWeibullAbs.md)
   : Converts first order absorption model to Weibull absorption model
+- [`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
+  : Check a model against nlmixr2lib conventions
 - [`combinePaste2()`](https://nlmixr2.github.io/nlmixr2lib/reference/combinePaste2.md)
   : Combine two strings using a naming convention
 - [`convertEmax()`](https://nlmixr2.github.io/nlmixr2lib/reference/convertEmax.md)

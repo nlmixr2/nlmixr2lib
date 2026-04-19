@@ -77,7 +77,7 @@
 <p>Repo-scoped skills live under <code>.claude/skills/</code>:</p>
 <ul><li>
 <strong><code>extract-literature-model</code></strong> — guided workflow for extracting a pharmacometric model from a scientific source (journal article, supplement, poster, regulatory document) into the package. Use when a user provides a paper and asks to add the model. See <code>.claude/skills/extract-literature-model/SKILL.md</code>.</li>
-</ul><p>The skill’s <code>references/</code> folder contains the templates and standards it enforces. The authoritative covariate-column register is <code>.claude/skills/extract-literature-model/references/covariate-columns.md</code> — consult it before introducing any new covariate column.</p>
+</ul><p>The skill’s <code>references/</code> folder contains the templates and standards it enforces. The authoritative covariate-column register is <code>inst/references/covariate-columns.md</code> — consult it before introducing any new covariate column. The register is installed with the package so <code><a href="reference/checkModelConventions.html">checkModelConventions()</a></code> can parse it at runtime; update the file (not R code) when ratifying a new canonical covariate.</p>
 </div>
 <div class="section level2">
 <h2 id="conventions-quick-reference">Conventions (quick reference)<a class="anchor" aria-label="anchor" href="#conventions-quick-reference"></a></h2>
@@ -86,7 +86,7 @@
 <li>PK parameters (log-scale): <code>lka</code>, <code>lcl</code>, <code>lvc</code>, <code>lvp</code>, <code>lq</code>, <code>lfdepot</code>; derived <code>ka</code>, <code>cl</code>, <code>vc</code>, <code>vp</code>, <code>q</code>, <code>kel</code>, <code>k12</code>, etc.</li>
 <li>IIV: <code>eta</code> + transformed name (<code>etalcl</code>, <code>etalvc</code>). Use <code>etalcl</code> even when the paper used <code>etacl</code>.</li>
 <li>Residual error: <code>propSd</code>, <code>addSd</code>; multi-output prefixes with the output (<code>CcpropSd</code>).</li>
-<li>Covariate columns: canonical names in <code>covariate-columns.md</code>. Standardized choices include <code>SEXF</code> (1 = female), <code>ADA_POS</code> (1 = ADA-positive), and a <code>RACE_&lt;GROUP&gt;</code> prefix for race indicators.</li>
+<li>Covariate columns: canonical names in <code>inst/references/covariate-columns.md</code>. Standardized choices include <code>SEXF</code> (1 = female), <code>ADA_POS</code> (1 = ADA-positive), and a <code>RACE_&lt;GROUP&gt;</code> prefix for race indicators.</li>
 </ul></div>
 <div class="section level2">
 <h2 id="git-workflow">Git workflow<a class="anchor" aria-label="anchor" href="#git-workflow"></a></h2>
