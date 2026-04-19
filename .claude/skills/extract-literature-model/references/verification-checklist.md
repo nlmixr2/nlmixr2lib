@@ -30,7 +30,7 @@ Do not silently resolve ambiguity. Do not tune parameters to make a validation o
 
 ## C. Covariate effects
 
-- [ ] Every covariate used in `model()` is registered in `references/covariate-columns.md` with a canonical name, or the PR adds a new entry.
+- [ ] Every covariate used in `model()` is registered in `inst/references/covariate-columns.md` with a canonical name, or the PR adds a new entry.
 - [ ] Source column names different from the canonical names are recorded in `covariateData[[name]]$source_name` and any value transformation (e.g., `SEXM → SEXF` inverts values and flips the effect sign) is documented in `notes`.
 - [ ] **Reference categories** for categorical effects match the paper (especially after composite race groups like `RACE_BLACK_OTH` — the reference is everyone NOT in the composite).
 - [ ] **Effect form** is correct: multiplicative (`1 + e × COV`), power (`COV^e`), or exponential (`exp(e × COV)`). The form determines what `e` means.
@@ -83,7 +83,7 @@ Ask the user when:
 
 - Parameters look like initial estimates, not final values, and no final-estimate table is available.
 - The source paper uses a covariate encoding that conflicts with an existing registered name (e.g., inverted sex convention) and a value transformation is required.
-- A new covariate is needed that isn't in `references/covariate-columns.md`.
+- A new covariate is needed that isn't in `inst/references/covariate-columns.md`.
 - The source defines multiple non-hierarchical models and it's unclear which to implement.
 - The simulation disagrees with a published figure or NCA table by more than ~20%.
 - Units in the source are ambiguous (e.g., "CL = 38.8" without units stated in the immediate context).
