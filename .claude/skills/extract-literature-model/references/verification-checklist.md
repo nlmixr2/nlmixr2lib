@@ -8,6 +8,7 @@ Do not silently resolve ambiguity. Do not tune parameters to make a validation o
 
 ## A. Parameter values
 
+- [ ] **Errata / corrigenda checked.** Confirmed search for published corrections to the source; any erratum value supersedes the main publication for conflicting values, with the most recent erratum winning when multiple exist. Erratum citation recorded in the model file's `reference` field, and each affected `ini()` comment points to the erratum.
 - [ ] Every parameter in `ini()` has an in-file trailing comment pointing to the source location (table, equation, page, or figure). Re-check each comment matches what the source actually says.
 - [ ] Values are **final estimates**, not initial estimates. Supplement NONMEM control streams often list initial values in `$THETA` and `$OMEGA`; the final values come from the `$TABLE` output or the main paper. If the only source is a control stream, confirm the values match any published point estimates.
 - [ ] **Log-vs-linear reporting.** NONMEM often reports THETAs on the estimation scale (already log), but tables in the paper usually show the back-transformed value. A `log()` wrapper in `ini()` must match what the paper reports: `lcl <- log(0.0388)` is correct when the paper says "CL = 0.0388 L/day."
