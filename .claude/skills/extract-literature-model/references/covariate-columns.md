@@ -154,6 +154,36 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
 - **Description:** 1 = race category "Other," 0 = not.
 - **Example models:** `Zhu_2017_lebrikizumab.R`.
 
+## Laboratory / disease-activity
+
+### ALBR
+- **Description:** Serum albumin normalized to the laboratory's upper limit of normal (`albumin_observed / ULN_albumin`).
+- **Units:** (unitless ratio)
+- **Type:** continuous
+- **Reference category:** n/a — used as a power term `(ALBR / <ref>)^exponent`. Reference 0.78 used in Xu 2019 (corresponds to a median serum albumin of 38 g/L at a typical ULN of ~48.7 g/L).
+- **Source aliases:** none.
+- **Example models:** `Xu_2019_sarilumab.R`.
+- **Notes:** Xu 2019 normalizes to each site's ULN so that values across multiple labs with different reference ranges can be pooled.
+
+### CRCL_BSA
+- **Description:** Body-surface-area-normalized creatinine clearance, computed as `1.73 * CrCl / BSA` where `CrCl` is in mL/min and `BSA` is in m^2.
+- **Units:** mL/min/1.73 m^2
+- **Type:** continuous
+- **Reference category:** n/a — used as a power term `(CRCL_BSA / <ref>)^exponent`. Reference 100 mL/min/1.73 m^2 in Xu 2019.
+- **Source aliases:**
+  - `1.73*CrCl/BSA` (the formula appearing in Xu 2019 Eq. for Vm) — used in `Xu_2019_sarilumab.R`.
+- **Example models:** `Xu_2019_sarilumab.R`.
+- **Notes:** Distinct from `eGFR`: CRCL_BSA is derived from a measured creatinine clearance rather than an MDRD / CKD-EPI estimate.
+
+### BLCRP
+- **Description:** Baseline (pre-treatment) C-reactive protein concentration.
+- **Units:** mg/L
+- **Type:** continuous
+- **Reference category:** n/a — used as a power term `(BLCRP / <ref>)^exponent`. Reference 14.2 mg/L in Xu 2019.
+- **Source aliases:** none.
+- **Example models:** `Xu_2019_sarilumab.R`.
+- **Notes:** Time-fixed per subject (baseline value only). Xu 2019 reports it as a significant covariate on Vm with a small exponent (0.0299).
+
 ## Immunogenicity
 
 ### ADA_POS (**canonical**)
@@ -163,7 +193,8 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
 - **Reference category:** 0 (ADA-negative).
 - **Source aliases:**
   - `ADA` (semantically "ever positive") — used in `Zhu_2017_lebrikizumab.R`. When translating from a paper that uses `ADA` as "ever positive," verify the time-frame matches ADA_POS semantics before renaming.
-- **Example models:** `Clegg_2024_nirsevimab.R`, `Hu_2026_clesrovimab.R`.
+  - `ADA` (time-varying positivity, primary covariate in Xu 2019) — used in `Xu_2019_sarilumab.R`.
+- **Example models:** `Clegg_2024_nirsevimab.R`, `Hu_2026_clesrovimab.R`, `Xu_2019_sarilumab.R`.
 
 ## Formulation / assay / study
 
@@ -194,6 +225,16 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
 - **Description:** 1 = CHO Phase 2 formulation, 0 = other.
 - **Type:** binary
 - **Example models:** `Zhu_2017_lebrikizumab.R`.
+
+### FORM_DP2
+- **Description:** 1 = sarilumab drug product 2 formulation (used in some phase I studies and the dose-ranging phase II study), 0 = other drug product (DP1 or DP3; DP3 is the commercial formulation).
+- **Units:** (binary)
+- **Type:** binary
+- **Reference category:** 0 (DP1 or DP3).
+- **Source aliases:**
+  - `DP2` — used in `Xu_2019_sarilumab.R`.
+- **Example models:** `Xu_2019_sarilumab.R`.
+- **Notes:** Affects both CLO/F (1.30x multiplier) and Ka (0.663x multiplier) in Xu 2019. Set to 0 for routine commercial-formulation simulation.
 
 ### dilution
 - **Description:** 1 = drug diluted (Soehoel 2022 study D2213C00001), 0 = not diluted.
@@ -245,9 +286,10 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
 
 - **Initial seed** (this PR): Every covariate observed in `inst/modeldb/` as of the audit. Canonical names established: `SEXF`, `ADA_POS`, `RACE_<GROUP>` prefix. Aliases documented but existing model files not modified.
 - Subsequent additions: append new canonical entries as new papers are processed. When adding, bump the audit-completed count in the summary below.
+- **Xu 2019 sarilumab**: Added canonical entries `ALBR` (albumin / ULN ratio), `CRCL_BSA` (BSA-normalized creatinine clearance), `BLCRP` (baseline C-reactive protein), and `FORM_DP2` (sarilumab drug product 2 indicator). Extended the `ADA_POS` alias list to include the time-varying `ADA` column used in Xu 2019.
 
 ## Summary
 
 - Files audited: 61 R files under `inst/modeldb/` (12 of which reference covariates).
-- Canonical entries: 23.
-- Aliases mapped: 9 (including SEXM→SEXF, ADA→ADA_POS, BLACK→RACE_BLACK, ASIAN→RACE_ASIAN, MULTIRACIAL→RACE_MULTI, BLACK_OTH→RACE_BLACK_OTH, ASIAN_AMIND_MULTI→RACE_ASIAN_AMIND_MULTI, DVID→STUDY1/STUDY5).
+- Canonical entries: 27.
+- Aliases mapped: 10 (including SEXM→SEXF, ADA→ADA_POS, BLACK→RACE_BLACK, ASIAN→RACE_ASIAN, MULTIRACIAL→RACE_MULTI, BLACK_OTH→RACE_BLACK_OTH, ASIAN_AMIND_MULTI→RACE_ASIAN_AMIND_MULTI, DVID→STUDY1/STUDY5, 1.73*CrCl/BSA→CRCL_BSA, DP2→FORM_DP2).
