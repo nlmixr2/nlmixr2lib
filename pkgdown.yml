@@ -6,6 +6,7 @@ articles:
   Cirincione_2017_exenatide: Cirincione_2017_exenatide.html
   Clegg_2024_nirsevimab: Clegg_2024_nirsevimab.html
   create-model-library: create-model-library.html
+  Fasanmade_2009_infliximab: Fasanmade_2009_infliximab.html
   Grimm_2023: Grimm_2023.html
   Hu_2026_clesrovimab: Hu_2026_clesrovimab.html
   Kovalenko_2020_dupilumab: Kovalenko_2020_dupilumab.html
@@ -18,7 +19,7 @@ articles:
   Wang_2017_benralizumab: Wang_2017_benralizumab.html
   Xie_2019_agomelatine: Xie_2019_agomelatine.html
   Zhu_2017_lebrikizumab: Zhu_2017_lebrikizumab.html
-last_built: 2026-04-18T21:28Z
+last_built: 2026-04-19T01:36Z
 urls:
   reference: https://nlmixr2.github.io/nlmixr2lib/reference
   article: https://nlmixr2.github.io/nlmixr2lib/articles
