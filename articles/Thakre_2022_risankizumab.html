@@ -249,8 +249,8 @@ individual parameters bracket the paper’s reference covariates.</p>
 <span>  ID    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n_subj</span><span class="op">)</span>,</span>
 <span>  WT    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Lognormal.html" class="external-link">rlnorm</a></span><span class="op">(</span><span class="va">n_subj</span>, <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">85</span><span class="op">)</span>, <span class="fl">0.22</span><span class="op">)</span>,  <span class="co"># median ~85 kg</span></span>
 <span>  AGE   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n_subj</span>, <span class="fl">51</span>, <span class="fl">12</span><span class="op">)</span>, <span class="fl">18</span><span class="op">)</span>, <span class="fl">80</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  ALB   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n_subj</span>, <span class="fl">43</span>, <span class="fl">3.5</span><span class="op">)</span>, <span class="fl">30</span><span class="op">)</span>, <span class="fl">52</span><span class="op">)</span>,     <span class="co"># g/L</span></span>
-<span>  CREAT <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n_subj</span>, <span class="fl">72</span>, <span class="fl">16</span><span class="op">)</span>, <span class="fl">40</span><span class="op">)</span>, <span class="fl">140</span><span class="op">)</span>,     <span class="co"># umol/L</span></span>
+<span>  ALB   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n_subj</span>, <span class="fl">43</span>, <span class="fl">3.5</span><span class="op">)</span>, <span class="fl">30</span><span class="op">)</span>, <span class="fl">52</span><span class="op">)</span>,     <span class="co"># units g/L</span></span>
+<span>  CREAT <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n_subj</span>, <span class="fl">72</span>, <span class="fl">16</span><span class="op">)</span>, <span class="fl">40</span><span class="op">)</span>, <span class="fl">140</span><span class="op">)</span>,     <span class="co"># units umol/L</span></span>
 <span>  hsCRP <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Lognormal.html" class="external-link">rlnorm</a></span><span class="op">(</span><span class="va">n_subj</span>, <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">6</span><span class="op">)</span>, <span class="fl">1.1</span><span class="op">)</span>                     <span class="co"># mg/L, skewed right</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -365,7 +365,14 @@ intervals (weeks 0-4, 4-16, 16-28) and compare against Thakre 2022 Table
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
 <span>  <span class="va">ivl_summary</span>,</span>
 <span>  digits <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>  caption <span class="op">=</span> <span class="st">"Simulated per-interval exposures (compare with Thakre 2022 Table 2: interval-1 Cmax median 9.40, interval-2 Cmax median 14.1, interval-3 Cmax median 11.0 ug/mL; interval-1 Ctrough median 5.68, interval-2 Ctrough median 1.93, interval-3 Ctrough median 1.52 ug/mL; interval AUC medians 207, 565, 439 ug*day/mL)."</span></span>
+<span>  caption <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span></span>
+<span>    <span class="st">"Simulated per-interval exposures (compare with Thakre 2022 Table 2:"</span>,</span>
+<span>    <span class="st">"interval-1 Cmax median 9.40, interval-2 Cmax median 14.1,"</span>,</span>
+<span>    <span class="st">"interval-3 Cmax median 11.0 ug/mL;"</span>,</span>
+<span>    <span class="st">"interval-1 Ctrough median 5.68, interval-2 Ctrough median 1.93,"</span>,</span>
+<span>    <span class="st">"interval-3 Ctrough median 1.52 ug/mL;"</span>,</span>
+<span>    <span class="st">"interval AUC medians 207, 565, 439 ug*day/mL)."</span></span>
+<span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <caption>Simulated per-interval exposures (compare with Thakre 2022
@@ -461,17 +468,19 @@ maintenance), which is the one reported as
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">nca_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="va">data_obj</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■                            </span>  10% |  ETA: 17s</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■                      </span>  28% |  ETA: 13s</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■                 </span>  46% |  ETA:  9s</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■            </span>  64% |  ETA:  6s</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■       </span>  81% |  ETA:  3s</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ </span>  99% |  ETA:  0s</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■                            </span>  10% |  ETA: 16s</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■                      </span>  31% |  ETA: 11s</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■                </span>  51% |  ETA:  8s</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■          </span>  71% |  ETA:  4s</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■    </span>  90% |  ETA:  1s</span></span>
 <span><span class="va">nca_summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">nca_results</span><span class="op">)</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
 <span>  <span class="va">nca_summary</span>,</span>
 <span>  digits  <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>  caption <span class="op">=</span> <span class="st">"PKNCA summary for the third dosing interval (weeks 16-28). Compare Cmax / AUClast against Thakre 2022 Table 2 interval 3."</span></span>
+<span>  caption <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span></span>
+<span>    <span class="st">"PKNCA summary for the third dosing interval (weeks 16-28)."</span>,</span>
+<span>    <span class="st">"Compare Cmax / AUClast against Thakre 2022 Table 2 interval 3."</span></span>
+<span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <table style="width:100%;" class="table">
 <caption>PKNCA summary for the third dosing interval (weeks 16-28).

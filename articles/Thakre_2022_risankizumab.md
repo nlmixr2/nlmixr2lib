@@ -83,8 +83,8 @@ pop <- data.frame(
   ID    = seq_len(n_subj),
   WT    = rlnorm(n_subj, log(85), 0.22),  # median ~85 kg
   AGE   = round(pmin(pmax(rnorm(n_subj, 51, 12), 18), 80)),
-  ALB   = pmin(pmax(rnorm(n_subj, 43, 3.5), 30), 52),     # g/L
-  CREAT = pmin(pmax(rnorm(n_subj, 72, 16), 40), 140),     # umol/L
+  ALB   = pmin(pmax(rnorm(n_subj, 43, 3.5), 30), 52),     # units g/L
+  CREAT = pmin(pmax(rnorm(n_subj, 72, 16), 40), 140),     # units umol/L
   hsCRP = rlnorm(n_subj, log(6), 1.1)                     # mg/L, skewed right
 )
 ```
@@ -202,7 +202,14 @@ ivl_summary <- intervals %>%
 knitr::kable(
   ivl_summary,
   digits = 2,
-  caption = "Simulated per-interval exposures (compare with Thakre 2022 Table 2: interval-1 Cmax median 9.40, interval-2 Cmax median 14.1, interval-3 Cmax median 11.0 ug/mL; interval-1 Ctrough median 5.68, interval-2 Ctrough median 1.93, interval-3 Ctrough median 1.52 ug/mL; interval AUC medians 207, 565, 439 ug*day/mL)."
+  caption = paste(
+    "Simulated per-interval exposures (compare with Thakre 2022 Table 2:",
+    "interval-1 Cmax median 9.40, interval-2 Cmax median 14.1,",
+    "interval-3 Cmax median 11.0 ug/mL;",
+    "interval-1 Ctrough median 5.68, interval-2 Ctrough median 1.93,",
+    "interval-3 Ctrough median 1.52 ug/mL;",
+    "interval AUC medians 207, 565, 439 ug*day/mL)."
+  )
 )
 ```
 
@@ -257,17 +264,19 @@ data_obj <- PKNCAdata(
   )
 )
 nca_results <- pk.nca(data_obj)
-#>  ■■■■                              10% |  ETA: 17s
-#>  ■■■■■■■■■■                        28% |  ETA: 13s
-#>  ■■■■■■■■■■■■■■■                   46% |  ETA:  9s
-#>  ■■■■■■■■■■■■■■■■■■■■              64% |  ETA:  6s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■         81% |  ETA:  3s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■   99% |  ETA:  0s
+#>  ■■■■                              10% |  ETA: 16s
+#>  ■■■■■■■■■■                        31% |  ETA: 11s
+#>  ■■■■■■■■■■■■■■■■                  51% |  ETA:  8s
+#>  ■■■■■■■■■■■■■■■■■■■■■■            71% |  ETA:  4s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      90% |  ETA:  1s
 nca_summary <- summary(nca_results)
 knitr::kable(
   nca_summary,
   digits  = 2,
-  caption = "PKNCA summary for the third dosing interval (weeks 16-28). Compare Cmax / AUClast against Thakre 2022 Table 2 interval 3."
+  caption = paste(
+    "PKNCA summary for the third dosing interval (weeks 16-28).",
+    "Compare Cmax / AUClast against Thakre 2022 Table 2 interval 3."
+  )
 )
 ```
 
