@@ -184,7 +184,7 @@ data_obj <- PKNCAdata(conc_obj, dose_obj,
                                               auclast = TRUE, half.life = TRUE))
 nca_results <- pk.nca(data_obj)
 #>  ■■■■■■■                           20% |  ETA: 11s
-#>  ■■■■■■■■■■■■■■                    42% |  ETA:  8s
+#>  ■■■■■■■■■■■■■                     42% |  ETA:  8s
 #>  ■■■■■■■■■■■■■■■■■■■■              64% |  ETA:  5s
 #>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■       86% |  ETA:  2s
 nca_summary <- summary(nca_results)

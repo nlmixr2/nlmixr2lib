@@ -161,6 +161,7 @@ this way.
 - [Ogasawara_2020_durvalumab](https://nlmixr2.github.io/nlmixr2lib/articles/Ogasawara_2020_durvalumab.md):
 - [PK_2cmt_mAb_Davda_2014](https://nlmixr2.github.io/nlmixr2lib/articles/PK_2cmt_mAb_Davda_2014.md):
 - [Soehoel_2022_tralokinumab](https://nlmixr2.github.io/nlmixr2lib/articles/Soehoel_2022_tralokinumab.md):
+- [Thakre_2022_risankizumab](https://nlmixr2.github.io/nlmixr2lib/articles/Thakre_2022_risankizumab.md):
 - [Wang_2017_benralizumab](https://nlmixr2.github.io/nlmixr2lib/articles/Wang_2017_benralizumab.md):
 - [Xie_2019_agomelatine](https://nlmixr2.github.io/nlmixr2lib/articles/Xie_2019_agomelatine.md):
 - [Zhu_2017_lebrikizumab](https://nlmixr2.github.io/nlmixr2lib/articles/Zhu_2017_lebrikizumab.md):
