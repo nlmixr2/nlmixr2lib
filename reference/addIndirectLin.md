@@ -90,7 +90,7 @@ Matthew L. Fidler
 ## Examples
 
 ``` r
-readModelDb("PK_2cmt_no_depot") |> addIndirectLin(stim="in")
+readModelDb("PK_2cmt_no_depot") |> addIndirectLin(stim = "in")
 #>  
 #>  
 #>  ── rxode2-based free-form 3-cmt ODE model ────────────────────────────────────── 
@@ -157,7 +157,7 @@ readModelDb("PK_2cmt_no_depot") |> addIndirectLin(stim="in")
 #>     })
 #> }
 
-readModelDb("PK_2cmt_no_depot") |> addIndirectLin(stim="out")
+readModelDb("PK_2cmt_no_depot") |> addIndirectLin(stim = "out")
 #>  
 #>  
 #>  ── rxode2-based free-form 3-cmt ODE model ────────────────────────────────────── 
@@ -224,7 +224,7 @@ readModelDb("PK_2cmt_no_depot") |> addIndirectLin(stim="out")
 #>     })
 #> }
 
-readModelDb("PK_2cmt_no_depot") |> addIndirectLin(inhib="in")
+readModelDb("PK_2cmt_no_depot") |> addIndirectLin(inhib = "in")
 #>  
 #>  
 #>  ── rxode2-based free-form 3-cmt ODE model ────────────────────────────────────── 
@@ -291,7 +291,7 @@ readModelDb("PK_2cmt_no_depot") |> addIndirectLin(inhib="in")
 #>     })
 #> }
 
-readModelDb("PK_2cmt_no_depot") |> addIndirectLin(inhib="out")
+readModelDb("PK_2cmt_no_depot") |> addIndirectLin(inhib = "out")
 #>  
 #>  
 #>  ── rxode2-based free-form 3-cmt ODE model ────────────────────────────────────── 

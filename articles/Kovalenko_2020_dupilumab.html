@@ -301,12 +301,12 @@ publications.</p>
 <span><span class="co"># Labelled AD regimen: 600 mg SC loading dose on day 0, 300 mg SC Q2W</span></span>
 <span><span class="co"># for 12 additional doses -&gt; study window 0-182 days. By dose 10+ the</span></span>
 <span><span class="co"># profile is close to steady state (typical half-life ~2-3 weeks).</span></span>
-<span><span class="va">load_dose</span>  <span class="op">&lt;-</span> <span class="fl">600</span></span>
+<span><span class="va">load_dose</span> <span class="op">&lt;-</span> <span class="fl">600</span></span>
 <span><span class="va">maint_dose</span> <span class="op">&lt;-</span> <span class="fl">300</span></span>
-<span><span class="va">tau</span>        <span class="op">&lt;-</span> <span class="fl">14</span></span>
-<span><span class="va">n_maint</span>    <span class="op">&lt;-</span> <span class="fl">12</span></span>
-<span><span class="va">dose_days</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="va">tau</span>, <span class="va">tau</span> <span class="op">*</span> <span class="va">n_maint</span>, by <span class="op">=</span> <span class="va">tau</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">amt_vec</span>    <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">load_dose</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">maint_dose</span>, <span class="va">n_maint</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">tau</span> <span class="op">&lt;-</span> <span class="fl">14</span></span>
+<span><span class="va">n_maint</span> <span class="op">&lt;-</span> <span class="fl">12</span></span>
+<span><span class="va">dose_days</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="va">tau</span>, <span class="va">tau</span> <span class="op">*</span> <span class="va">n_maint</span>, by <span class="op">=</span> <span class="va">tau</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">amt_vec</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">load_dose</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">maint_dose</span>, <span class="va">n_maint</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">ev_dose</span> <span class="op">&lt;-</span> <span class="va">cohort</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/expand.html" class="external-link">crossing</a></span><span class="op">(</span>time <span class="op">=</span> <span class="va">dose_days</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -377,8 +377,8 @@ dosing cycles.</p>
 <p>Zoomed-in view of the final Q2W cycle (days 168-182) to isolate the
 steady-state peak, trough, and AUC_tau used by the NCA below.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">ss_start</span> <span class="op">&lt;-</span> <span class="va">tau</span> <span class="op">*</span> <span class="va">n_maint</span>        <span class="co"># day 168 (time of dose 13)</span></span>
-<span><span class="va">ss_end</span>   <span class="op">&lt;-</span> <span class="va">ss_start</span> <span class="op">+</span> <span class="va">tau</span>       <span class="co"># day 182</span></span>
+<code class="sourceCode R"><span><span class="va">ss_start</span> <span class="op">&lt;-</span> <span class="va">tau</span> <span class="op">*</span> <span class="va">n_maint</span> <span class="co"># day 168 (time of dose 13)</span></span>
+<span><span class="va">ss_end</span> <span class="op">&lt;-</span> <span class="va">ss_start</span> <span class="op">+</span> <span class="va">tau</span> <span class="co"># day 182</span></span>
 <span></span>
 <span><span class="va">ss_summary</span> <span class="op">&lt;-</span> <span class="va">sim</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&gt;=</span> <span class="va">ss_start</span>, <span class="va">time</span> <span class="op">&lt;=</span> <span class="va">ss_end</span>, <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -413,7 +413,7 @@ average concentration per simulated subject.</p>
 <code class="sourceCode R"><span><span class="va">nca_conc</span> <span class="op">&lt;-</span> <span class="va">sim</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&gt;=</span> <span class="va">ss_start</span>, <span class="va">time</span> <span class="op">&lt;=</span> <span class="va">ss_end</span>, <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>time_nom <span class="op">=</span> <span class="va">time</span> <span class="op">-</span> <span class="va">ss_start</span>,</span>
-<span>                treatment <span class="op">=</span> <span class="st">"300mg_Q2W_SS"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    treatment <span class="op">=</span> <span class="st">"300mg_Q2W_SS"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, time <span class="op">=</span> <span class="va">time_nom</span>, <span class="va">Cc</span>, <span class="va">treatment</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">nca_dose</span> <span class="op">&lt;-</span> <span class="va">cohort</span> <span class="op">|&gt;</span></span>
@@ -424,15 +424,16 @@ average concentration per simulated subject.</p>
 <span><span class="va">dose_obj</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdose.html" class="external-link">PKNCAdose</a></span><span class="op">(</span><span class="va">nca_dose</span>, <span class="va">amt</span> <span class="op">~</span> <span class="va">time</span> <span class="op">|</span> <span class="va">treatment</span> <span class="op">+</span> <span class="va">id</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">intervals</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span>  start  <span class="op">=</span> <span class="fl">0</span>,</span>
-<span>  end    <span class="op">=</span> <span class="va">tau</span>,</span>
-<span>  cmax   <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  cmin   <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  start <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  end <span class="op">=</span> <span class="va">tau</span>,</span>
+<span>  cmax <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  cmin <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  auclast <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  cav    <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  cav <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">nca_res</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_obj</span>, <span class="va">dose_obj</span>, intervals <span class="op">=</span> <span class="va">intervals</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■                  </span>  43% |  ETA:  2s</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">nca_res</span><span class="op">)</span></span>
 <span><span class="co">#&gt;  start end    treatment   N     auclast        cmax        cmin         cav</span></span>
 <span><span class="co">#&gt;      0  14 300mg_Q2W_SS 400 1190 [43.9] 95.0 [41.9] 70.4 [49.2] 85.1 [43.9]</span></span>
@@ -466,18 +467,18 @@ provides a direct self-consistency check:</p>
 <span></span>
 <span><span class="va">typical_summary</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
 <span>  metric <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Cmax (mg/L)"</span>, <span class="st">"Cmin/Ctrough (mg/L)"</span>,</span>
-<span>             <span class="st">"Cavg (mg/L)"</span>, <span class="st">"AUC_tau (day*mg/L)"</span><span class="op">)</span>,</span>
+<span>    <span class="st">"Cavg (mg/L)"</span>, <span class="st">"AUC_tau (day*mg/L)"</span><span class="op">)</span>,</span>
 <span>  typical_value <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">ss_typical</span><span class="op">$</span><span class="va">Cc</span><span class="op">)</span>,</span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">ss_typical</span><span class="op">$</span><span class="va">Cc</span><span class="op">)</span>,</span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">ss_typical</span><span class="op">$</span><span class="va">Cc</span><span class="op">)</span>,</span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/diff.html" class="external-link">diff</a></span><span class="op">(</span><span class="va">ss_typical</span><span class="op">$</span><span class="va">time</span><span class="op">)</span> <span class="op">*</span></span>
-<span>          <span class="op">(</span><span class="va">ss_typical</span><span class="op">$</span><span class="va">Cc</span><span class="op">[</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">ss_typical</span><span class="op">$</span><span class="va">Cc</span><span class="op">)</span><span class="op">]</span> <span class="op">+</span></span>
-<span>             <span class="va">ss_typical</span><span class="op">$</span><span class="va">Cc</span><span class="op">[</span><span class="op">-</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span> <span class="op">/</span> <span class="fl">2</span><span class="op">)</span></span>
+<span>      <span class="op">(</span><span class="va">ss_typical</span><span class="op">$</span><span class="va">Cc</span><span class="op">[</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">ss_typical</span><span class="op">$</span><span class="va">Cc</span><span class="op">)</span><span class="op">]</span> <span class="op">+</span></span>
+<span>        <span class="va">ss_typical</span><span class="op">$</span><span class="va">Cc</span><span class="op">[</span><span class="op">-</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span> <span class="op">/</span> <span class="fl">2</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">typical_summary</span>, digits <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>             caption <span class="op">=</span> <span class="st">"Typical-subject steady-state exposure (WT = 75 kg; IIV zeroed)."</span><span class="op">)</span></span></code></pre></div>
+<span>  caption <span class="op">=</span> <span class="st">"Typical-subject steady-state exposure (WT = 75 kg; IIV zeroed)."</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <caption>Typical-subject steady-state exposure (WT = 75 kg; IIV
 zeroed).</caption>

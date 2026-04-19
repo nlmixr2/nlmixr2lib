@@ -53,8 +53,8 @@ d_sim_obs <-
 d_sim_prep <- rbind(d_sim_dosing, d_sim_obs)
 d_sim_prep$WT <- 60 # kg, based on table 1 from the paper
 d_sim_prep$ooc1 <- 1
-d_sim_prep$ooc2 <- 
-  d_sim_prep$ooc3 <- 
+d_sim_prep$ooc2 <-
+  d_sim_prep$ooc3 <-
   d_sim_prep$ooc4 <- 0
 d_sim_pop <- nlmixr2(Xie_2019_agomelatine, data = d_sim_prep, est = "rxSolve", control = list(nStud = 1000))
 #> unhandled error message: EE:[lsoda] 70000 steps taken before reaching tout
@@ -71,17 +71,17 @@ d_plot <-
     Q05_calmt = quantile(calmt, probs = 0.05, na.rm = TRUE),
     Q50_calmt = quantile(calmt, probs = 0.5, na.rm = TRUE),
     Q95_calmt = quantile(calmt, probs = 0.95, na.rm = TRUE),
-    prob_blq_calmt = sum(calmt < 0.046, na.rm = TRUE)/n(),
-    
+    prob_blq_calmt = sum(calmt < 0.046, na.rm = TRUE) / n(),
+
     Q05_c3oh = quantile(c3oh, probs = 0.05, na.rm = TRUE),
     Q50_c3oh = quantile(c3oh, probs = 0.5, na.rm = TRUE),
     Q95_c3oh = quantile(c3oh, probs = 0.95, na.rm = TRUE),
-    prob_blq_c3oh = sum(c3oh < 0.460, na.rm = TRUE)/n(),
-    
+    prob_blq_c3oh = sum(c3oh < 0.460, na.rm = TRUE) / n(),
+
     Q05_c7dm = quantile(c7dm, probs = 0.05, na.rm = TRUE),
     Q50_c7dm = quantile(c7dm, probs = 0.5, na.rm = TRUE),
     Q95_c7dm = quantile(c7dm, probs = 0.95, na.rm = TRUE),
-    prob_blq_c7dm = sum(c7dm < 0.137, na.rm = TRUE)/n()
+    prob_blq_c7dm = sum(c7dm < 0.137, na.rm = TRUE) / n()
   ) |>
   ungroup()
 ```

@@ -40,11 +40,11 @@ weight = M × (1 + L × S × z)^(1/L)
 who_lms <- data.frame(
   age_mo = 0:10,
   L = c(0.3487, 0.2297, 0.1970, 0.1738, 0.1553, 0.1395,
-        0.1257, 0.1125, 0.0998, 0.0875, 0.0756),
+    0.1257, 0.1125, 0.0998, 0.0875, 0.0756),
   M = c(3.3464, 4.4709, 5.5675, 6.3762, 7.0023, 7.5105,
-        7.9340, 8.2970, 8.6151, 8.9014, 9.1649),
+    7.9340, 8.2970, 8.6151, 8.9014, 9.1649),
   S = c(0.14602, 0.13395, 0.12385, 0.11876, 0.11535, 0.11254,
-        0.11056, 0.10947, 0.10868, 0.10814, 0.10765)
+    0.11056, 0.10947, 0.10868, 0.10814, 0.10765)
 )
 
 # Returns weight (kg) for a given age (months) and individual z-score
@@ -117,7 +117,7 @@ obs_times_day <- seq(0, 150, by = 7)
 d_dose <- pop |>
   mutate(
     TIME = 0,
-    AMT  = 105,    # mg, single IM dose
+    AMT  = 105, # mg, single IM dose
     EVID = 1,
     CMT  = "depot",
     DV   = NA
@@ -131,8 +131,8 @@ d_obs <- pop[rep(seq_len(n_subj), each = length(obs_times_day)), ] |>
     EVID = 0,
     CMT  = "central",
     DV   = NA,
-    PNA  = PNA_0 + TIME / 30.44,      # postnatal age in months
-    WT   = who_weight(PNA, wt_z)       # time-varying weight from WHO curves
+    PNA  = PNA_0 + TIME / 30.44, # postnatal age in months
+    WT   = who_weight(PNA, wt_z) # time-varying weight from WHO curves
   )
 
 # Dose records also need WT and PNA at time 0
@@ -145,7 +145,7 @@ d_dose <- d_dose |>
 d_sim <- bind_rows(d_dose, d_obs) |>
   arrange(ID, TIME, desc(EVID)) |>
   select(ID, TIME, AMT, EVID, CMT, DV, WT, PNA, GA, RACE_ASIAN, RACE_BLACK, RACE_MULTI,
-         wt_group, wt_z)
+    wt_group, wt_z)
 ```
 
 ### Load model and simulate
@@ -171,7 +171,7 @@ wt_grp_map <- d_sim |>
 
 sim_plot <- sim_out |>
   as.data.frame() |>
-  filter(time > 0) |>                 # exclude pre-dose time point
+  filter(time > 0) |> # exclude pre-dose time point
   left_join(wt_grp_map, by = c("id" = "ID"))
 
 # Overall population quantiles
@@ -208,8 +208,8 @@ ggplot(d_overall, aes(x = time, y = Q50)) +
   ) +
   scale_x_continuous(breaks = seq(0, 150, by = 30)) +
   labs(
-    x    = "Time after dose (days)",
-    y    = "Clesrovimab concentration (\u03bcg/mL)",
+    x = "Time after dose (days)",
+    y = "Clesrovimab concentration (\u03bcg/mL)",
     title = "Overall population\nMedian and 90% prediction interval"
   ) +
   theme_bw()
@@ -229,8 +229,8 @@ ggplot(d_strat, aes(x = time, y = Q50)) +
   ) +
   scale_x_continuous(breaks = seq(0, 150, by = 60)) +
   labs(
-    x    = "Time after dose (days)",
-    y    = "Clesrovimab concentration (\u03bcg/mL)",
+    x = "Time after dose (days)",
+    y = "Clesrovimab concentration (\u03bcg/mL)",
     title = "By baseline body weight category\nMedian and 90% prediction interval"
   ) +
   theme_bw()

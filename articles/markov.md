@@ -204,7 +204,7 @@ fit
 #> ── Time (sec fit$time): ──
 #> 
 #>            setup optimize covariance table compress    other
-#> elapsed 0.016192  0.00207   0.002071 0.026    0.001 2.232667
+#> elapsed 0.015992 0.002617    0.00262 0.028    0.001 2.327771
 #> 
 #> ── (fit$parFixed or fit$parFixedDf): ──
 #> 
@@ -268,7 +268,6 @@ simulation from the model to get probabilities of each state. Then,
 post-process the simulation results to get the states.
 
 ``` r
-#dSim <- nlmixr2est::vpcSim(fit, normRelated = FALSE)
 dSimRaw <- nlmixr2est::nlmixr(fit, est = "rxSolve", control = list(nStud = 5))
 #> ℹ use `data` from prior/supplied fit
 #> ℹ using population uncertainty from fitted model (`thetaMat`)

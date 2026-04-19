@@ -27,7 +27,7 @@ simulation settings were not used.
 dSimDose <-
   data.frame(
     ID = 1,
-    AMT = 20, # mg/kg
+    AMT = 20, # dose in mg/kg # nolint: commented_code_linter.
     TIME = 0,
     EVID = 1,
     CMT = "depot"

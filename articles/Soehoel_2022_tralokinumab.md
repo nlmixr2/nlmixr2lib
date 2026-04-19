@@ -102,7 +102,7 @@ maint_dose <- 300
 tau <- 14
 n_maint <- 12
 dose_days <- c(0, seq(tau, tau * n_maint, by = tau))
-amt_vec   <- c(load_dose, rep(maint_dose, n_maint))
+amt_vec <- c(load_dose, rep(maint_dose, n_maint))
 
 ev_dose <- cohort |>
   tidyr::crossing(time = dose_days) |>
@@ -125,7 +125,7 @@ ev_obs <- cohort |>
 events <- dplyr::bind_rows(ev_dose, ev_obs) |>
   dplyr::arrange(id, time, dplyr::desc(evid)) |>
   dplyr::select(id, time, amt, cmt, evid,
-                WT, SEXF, nonECZTRA, dilution)
+    WT, SEXF, nonECZTRA, dilution)
 ```
 
 ## Simulation
@@ -180,8 +180,8 @@ Zoomed-in view of the final Q2W cycle (days 168-182) to isolate the
 steady-state peak, trough, and AUC_tau used by the NCA below.
 
 ``` r
-ss_start <- tau * n_maint       # day 168 (time of dose 13)
-ss_end   <- ss_start + tau      # day 182
+ss_start <- tau * n_maint # day 168 (time of dose 13)
+ss_end <- ss_start + tau # day 182
 
 ss_summary <- sim |>
   dplyr::filter(time >= ss_start, time <= ss_end, !is.na(Cc)) |>
@@ -218,7 +218,7 @@ cohort.
 nca_conc <- sim |>
   dplyr::filter(time >= ss_start, time <= ss_end, !is.na(Cc)) |>
   dplyr::mutate(time_nom = time - ss_start,
-                treatment = "300mg_Q2W_SS") |>
+    treatment = "300mg_Q2W_SS") |>
   dplyr::select(id, time = time_nom, Cc, treatment)
 
 nca_dose <- cohort |>
@@ -238,7 +238,6 @@ intervals <- data.frame(
 )
 
 nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
-#>  ■■■■■■■■■■■■■                     40% |  ETA:  2s
 summary(nca_res)
 #>  start end    treatment   N     auclast       cmax       cmin        cav
 #>      0  14 300mg_Q2W_SS 400 2110 [41.5] 163 [40.7] 130 [43.4] 151 [41.5]
@@ -284,18 +283,18 @@ ss_typical <- sim_typical |>
 
 typical_summary <- tibble::tibble(
   metric = c("Cmax (ug/mL)", "Cmin/Ctrough (ug/mL)",
-             "Cavg (ug/mL)", "AUC_tau (day*ug/mL)"),
+    "Cavg (ug/mL)", "AUC_tau (day*ug/mL)"),
   typical_value = c(
     max(ss_typical$Cc),
     min(ss_typical$Cc),
     mean(ss_typical$Cc),
     sum(diff(ss_typical$time) *
-          (ss_typical$Cc[-length(ss_typical$Cc)] +
-             ss_typical$Cc[-1]) / 2)
+      (ss_typical$Cc[-length(ss_typical$Cc)] +
+        ss_typical$Cc[-1]) / 2)
   )
 )
 knitr::kable(typical_summary, digits = 2,
-             caption = "Typical-subject steady-state exposure (WT = 75 kg, nonECZTRA = 0, dilution = 0; IIV zeroed).")
+  caption = "Typical-subject steady-state exposure (WT = 75 kg, nonECZTRA = 0, dilution = 0; IIV zeroed).")
 ```
 
 | metric               | typical_value |

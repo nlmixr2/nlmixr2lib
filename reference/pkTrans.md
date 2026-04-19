@@ -724,6 +724,5 @@ readModelDb("PK_3cmt_des") |>
 #>         Cc ~ prop(propSd)
 #>     })
 #> }
-
 # }
 ```

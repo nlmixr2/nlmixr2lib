@@ -102,11 +102,11 @@ readModelDb("PK_3cmt_des") |>
 
 readModelDb("PK_3cmt_des") |>
   removeLinesAndInis(c("kel", "k12", "k21", "k13", "k31", "vc")) |>
-  addLogEstimates(c(kel="elimination", k12="k12 constant",
-                    k21="k21 constant",
-                    k13="k13 constant",
-                    k31="k31 constant",
-                    vc="volume of central compartment"))
+  addLogEstimates(c(kel = "elimination", k12 = "k12 constant",
+    k21 = "k21 constant",
+    k13 = "k13 constant",
+    k31 = "k31 constant",
+    vc = "volume of central compartment"))
 #>  
 #>  
 #>  ── rxode2-based free-form 4-cmt ODE model ────────────────────────────────────── 

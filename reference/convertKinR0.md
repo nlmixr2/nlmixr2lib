@@ -48,7 +48,7 @@ Matthew L. Fidler
 ## Examples
 
 ``` r
-addIndirect(stim="in") |> convertKinR0()
+addIndirect(stim = "in") |> convertKinR0()
 #>  
 #>  
 #>  ── rxode2-based free-form 1-cmt ODE model ────────────────────────────────────── 

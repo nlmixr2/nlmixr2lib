@@ -118,11 +118,11 @@ weight = M × (1 + L × S × z)^(1/L)</p>
 <code class="sourceCode R"><span><span class="va">who_lms</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  age_mo <span class="op">=</span> <span class="fl">0</span><span class="op">:</span><span class="fl">10</span>,</span>
 <span>  L <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.3487</span>, <span class="fl">0.2297</span>, <span class="fl">0.1970</span>, <span class="fl">0.1738</span>, <span class="fl">0.1553</span>, <span class="fl">0.1395</span>,</span>
-<span>        <span class="fl">0.1257</span>, <span class="fl">0.1125</span>, <span class="fl">0.0998</span>, <span class="fl">0.0875</span>, <span class="fl">0.0756</span><span class="op">)</span>,</span>
+<span>    <span class="fl">0.1257</span>, <span class="fl">0.1125</span>, <span class="fl">0.0998</span>, <span class="fl">0.0875</span>, <span class="fl">0.0756</span><span class="op">)</span>,</span>
 <span>  M <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3.3464</span>, <span class="fl">4.4709</span>, <span class="fl">5.5675</span>, <span class="fl">6.3762</span>, <span class="fl">7.0023</span>, <span class="fl">7.5105</span>,</span>
-<span>        <span class="fl">7.9340</span>, <span class="fl">8.2970</span>, <span class="fl">8.6151</span>, <span class="fl">8.9014</span>, <span class="fl">9.1649</span><span class="op">)</span>,</span>
+<span>    <span class="fl">7.9340</span>, <span class="fl">8.2970</span>, <span class="fl">8.6151</span>, <span class="fl">8.9014</span>, <span class="fl">9.1649</span><span class="op">)</span>,</span>
 <span>  S <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.14602</span>, <span class="fl">0.13395</span>, <span class="fl">0.12385</span>, <span class="fl">0.11876</span>, <span class="fl">0.11535</span>, <span class="fl">0.11254</span>,</span>
-<span>        <span class="fl">0.11056</span>, <span class="fl">0.10947</span>, <span class="fl">0.10868</span>, <span class="fl">0.10814</span>, <span class="fl">0.10765</span><span class="op">)</span></span>
+<span>    <span class="fl">0.11056</span>, <span class="fl">0.10947</span>, <span class="fl">0.10868</span>, <span class="fl">0.10814</span>, <span class="fl">0.10765</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Returns weight (kg) for a given age (months) and individual z-score</span></span>
@@ -193,7 +193,7 @@ event at time 0.</p>
 <span><span class="va">d_dose</span> <span class="op">&lt;-</span> <span class="va">pop</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
 <span>    TIME <span class="op">=</span> <span class="fl">0</span>,</span>
-<span>    AMT  <span class="op">=</span> <span class="fl">105</span>,    <span class="co"># mg, single IM dose</span></span>
+<span>    AMT  <span class="op">=</span> <span class="fl">105</span>, <span class="co"># mg, single IM dose</span></span>
 <span>    EVID <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>    CMT  <span class="op">=</span> <span class="st">"depot"</span>,</span>
 <span>    DV   <span class="op">=</span> <span class="cn">NA</span></span>
@@ -207,8 +207,8 @@ event at time 0.</p>
 <span>    EVID <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>    CMT  <span class="op">=</span> <span class="st">"central"</span>,</span>
 <span>    DV   <span class="op">=</span> <span class="cn">NA</span>,</span>
-<span>    PNA  <span class="op">=</span> <span class="va">PNA_0</span> <span class="op">+</span> <span class="va">TIME</span> <span class="op">/</span> <span class="fl">30.44</span>,      <span class="co"># postnatal age in months</span></span>
-<span>    WT   <span class="op">=</span> <span class="fu">who_weight</span><span class="op">(</span><span class="va">PNA</span>, <span class="va">wt_z</span><span class="op">)</span>       <span class="co"># time-varying weight from WHO curves</span></span>
+<span>    PNA  <span class="op">=</span> <span class="va">PNA_0</span> <span class="op">+</span> <span class="va">TIME</span> <span class="op">/</span> <span class="fl">30.44</span>, <span class="co"># postnatal age in months</span></span>
+<span>    WT   <span class="op">=</span> <span class="fu">who_weight</span><span class="op">(</span><span class="va">PNA</span>, <span class="va">wt_z</span><span class="op">)</span> <span class="co"># time-varying weight from WHO curves</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Dose records also need WT and PNA at time 0</span></span>
@@ -221,7 +221,7 @@ event at time 0.</p>
 <span><span class="va">d_sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">d_dose</span>, <span class="va">d_obs</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">ID</span>, <span class="va">TIME</span>, <span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">EVID</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">ID</span>, <span class="va">TIME</span>, <span class="va">AMT</span>, <span class="va">EVID</span>, <span class="va">CMT</span>, <span class="va">DV</span>, <span class="va">WT</span>, <span class="va">PNA</span>, <span class="va">GA</span>, <span class="va">RACE_ASIAN</span>, <span class="va">RACE_BLACK</span>, <span class="va">RACE_MULTI</span>,</span>
-<span>         <span class="va">wt_group</span>, <span class="va">wt_z</span><span class="op">)</span></span></code></pre></div>
+<span>    <span class="va">wt_group</span>, <span class="va">wt_z</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="load-model-and-simulate">Load model and simulate<a class="anchor" aria-label="anchor" href="#load-model-and-simulate"></a>
@@ -247,7 +247,7 @@ event at time 0.</p>
 <span></span>
 <span><span class="va">sim_plot</span> <span class="op">&lt;-</span> <span class="va">sim_out</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span>                 <span class="co"># exclude pre-dose time point</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="co"># exclude pre-dose time point</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">wt_grp_map</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span> <span class="op">=</span> <span class="st">"ID"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Overall population quantiles</span></span>
@@ -284,8 +284,8 @@ event at time 0.</p>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_x_continuous</a></span><span class="op">(</span>breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">150</span>, by <span class="op">=</span> <span class="fl">30</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
-<span>    x    <span class="op">=</span> <span class="st">"Time after dose (days)"</span>,</span>
-<span>    y    <span class="op">=</span> <span class="st">"Clesrovimab concentration (\u03bcg/mL)"</span>,</span>
+<span>    x <span class="op">=</span> <span class="st">"Time after dose (days)"</span>,</span>
+<span>    y <span class="op">=</span> <span class="st">"Clesrovimab concentration (\u03bcg/mL)"</span>,</span>
 <span>    title <span class="op">=</span> <span class="st">"Overall population\nMedian and 90% prediction interval"</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
@@ -304,8 +304,8 @@ event at time 0.</p>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_x_continuous</a></span><span class="op">(</span>breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">150</span>, by <span class="op">=</span> <span class="fl">60</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
-<span>    x    <span class="op">=</span> <span class="st">"Time after dose (days)"</span>,</span>
-<span>    y    <span class="op">=</span> <span class="st">"Clesrovimab concentration (\u03bcg/mL)"</span>,</span>
+<span>    x <span class="op">=</span> <span class="st">"Time after dose (days)"</span>,</span>
+<span>    y <span class="op">=</span> <span class="st">"Clesrovimab concentration (\u03bcg/mL)"</span>,</span>
 <span>    title <span class="op">=</span> <span class="st">"By baseline body weight category\nMedian and 90% prediction interval"</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>

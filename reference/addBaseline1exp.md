@@ -52,7 +52,7 @@ Matthew L. Fidler
 ## Examples
 
 ``` r
- readModelDb("PK_2cmt_no_depot") |>
+readModelDb("PK_2cmt_no_depot") |>
   addDirectLin() |>
   convertQuad() |>
   addBaseline1exp()

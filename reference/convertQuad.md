@@ -49,7 +49,7 @@ Matthew L. Fidler
 
 ``` r
 readModelDb("PK_2cmt_no_depot") |>
-  addIndirectLin(stim="out") |>
+  addIndirectLin(stim = "out") |>
   convertQuad()
 #>  
 #>  
@@ -182,8 +182,8 @@ readModelDb("PK_2cmt_no_depot") |>
 #> }
 
 readModelDb("PK_2cmt_no_depot") |>
- addEffectCmtLin() |>
- convertQuad()
+  addEffectCmtLin() |>
+  convertQuad()
 #>  
 #>  
 #>  ── rxode2-based free-form 3-cmt ODE model ────────────────────────────────────── 

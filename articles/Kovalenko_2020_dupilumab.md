@@ -111,12 +111,12 @@ cohort <- tibble::tibble(
 # Labelled AD regimen: 600 mg SC loading dose on day 0, 300 mg SC Q2W
 # for 12 additional doses -> study window 0-182 days. By dose 10+ the
 # profile is close to steady state (typical half-life ~2-3 weeks).
-load_dose  <- 600
+load_dose <- 600
 maint_dose <- 300
-tau        <- 14
-n_maint    <- 12
-dose_days  <- c(0, seq(tau, tau * n_maint, by = tau))
-amt_vec    <- c(load_dose, rep(maint_dose, n_maint))
+tau <- 14
+n_maint <- 12
+dose_days <- c(0, seq(tau, tau * n_maint, by = tau))
+amt_vec <- c(load_dose, rep(maint_dose, n_maint))
 
 ev_dose <- cohort |>
   tidyr::crossing(time = dose_days) |>
@@ -190,8 +190,8 @@ Zoomed-in view of the final Q2W cycle (days 168-182) to isolate the
 steady-state peak, trough, and AUC_tau used by the NCA below.
 
 ``` r
-ss_start <- tau * n_maint        # day 168 (time of dose 13)
-ss_end   <- ss_start + tau       # day 182
+ss_start <- tau * n_maint # day 168 (time of dose 13)
+ss_end <- ss_start + tau # day 182
 
 ss_summary <- sim |>
   dplyr::filter(time >= ss_start, time <= ss_end, !is.na(Cc)) |>
@@ -227,7 +227,7 @@ average concentration per simulated subject.
 nca_conc <- sim |>
   dplyr::filter(time >= ss_start, time <= ss_end, !is.na(Cc)) |>
   dplyr::mutate(time_nom = time - ss_start,
-                treatment = "300mg_Q2W_SS") |>
+    treatment = "300mg_Q2W_SS") |>
   dplyr::select(id, time = time_nom, Cc, treatment)
 
 nca_dose <- cohort |>
@@ -238,15 +238,16 @@ conc_obj <- PKNCA::PKNCAconc(nca_conc, Cc ~ time | treatment + id)
 dose_obj <- PKNCA::PKNCAdose(nca_dose, amt ~ time | treatment + id)
 
 intervals <- data.frame(
-  start  = 0,
-  end    = tau,
-  cmax   = TRUE,
-  cmin   = TRUE,
+  start = 0,
+  end = tau,
+  cmax = TRUE,
+  cmin = TRUE,
   auclast = TRUE,
-  cav    = TRUE
+  cav = TRUE
 )
 
 nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+#>  ■■■■■■■■■■■■■■                    43% |  ETA:  2s
 summary(nca_res)
 #>  start end    treatment   N     auclast        cmax        cmin         cav
 #>      0  14 300mg_Q2W_SS 400 1190 [43.9] 95.0 [41.9] 70.4 [49.2] 85.1 [43.9]
@@ -282,18 +283,18 @@ ss_typical <- sim_typical |>
 
 typical_summary <- tibble::tibble(
   metric = c("Cmax (mg/L)", "Cmin/Ctrough (mg/L)",
-             "Cavg (mg/L)", "AUC_tau (day*mg/L)"),
+    "Cavg (mg/L)", "AUC_tau (day*mg/L)"),
   typical_value = c(
     max(ss_typical$Cc),
     min(ss_typical$Cc),
     mean(ss_typical$Cc),
     sum(diff(ss_typical$time) *
-          (ss_typical$Cc[-length(ss_typical$Cc)] +
-             ss_typical$Cc[-1]) / 2)
+      (ss_typical$Cc[-length(ss_typical$Cc)] +
+        ss_typical$Cc[-1]) / 2)
   )
 )
 knitr::kable(typical_summary, digits = 2,
-             caption = "Typical-subject steady-state exposure (WT = 75 kg; IIV zeroed).")
+  caption = "Typical-subject steady-state exposure (WT = 75 kg; IIV zeroed).")
 ```
 
 | metric              | typical_value |

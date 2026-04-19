@@ -69,7 +69,7 @@ Matthew L. Fidler
 
 ``` r
 readModelDb("PK_2cmt_no_depot") |>
-  addIndirectLin(stim="in") |>
+  addIndirectLin(stim = "in") |>
   convertEmax()
 #>  
 #>  
@@ -143,8 +143,8 @@ readModelDb("PK_2cmt_no_depot") |>
 
 # When emax=1
 readModelDb("PK_2cmt_no_depot") |>
-  addIndirectLin(stim="in") |>
-  convertEmax(emax=1)
+  addIndirectLin(stim = "in") |>
+  convertEmax(emax = 1)
 #>  
 #>  
 #>  ── rxode2-based free-form 3-cmt ODE model ────────────────────────────────────── 

@@ -103,7 +103,7 @@ readModelDb("PK_2cmt_no_depot") |>
 #> }
 
 readModelDb("PK_2cmt_no_depot") |>
-  addIndirectLin(stim="out") |>
+  addIndirectLin(stim = "out") |>
   convertLogLin()
 #>  
 #>  

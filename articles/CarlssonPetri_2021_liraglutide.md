@@ -91,16 +91,16 @@ hour during the last dosing interval to capture steady-state shape) is
 constructed below.
 
 ``` r
-sim_days  <- 28
-tau       <- 24                       # dosing interval (h)
-n_doses   <- sim_days                 # one dose per day
+sim_days <- 28
+tau <- 24 # dosing interval (h)
+n_doses <- sim_days # one dose per day
 dose_times <- seq(0, by = tau, length.out = n_doses)
 
 # Dense sampling on the final dosing interval (for Cmax / Tmax / AUCtau),
 # plus coarse sampling earlier (for visual steady-state approach).
 final_dose_time <- dose_times[n_doses]
 obs_times <- sort(unique(c(
-  seq(0, final_dose_time, by = 6),                 # every 6 h across the run-in
+  seq(0, final_dose_time, by = 6), # every 6 h across the run-in
   final_dose_time + c(0, 0.5, 1, 2, 3, 4, 6, 8, 12, 16, 20, 24)
 )))
 
@@ -170,8 +170,8 @@ sim_typical |>
   ggplot(aes(time / 24, Cc)) +
   geom_line(linewidth = 0.8) +
   labs(x = "Time (days)", y = "Liraglutide concentration (nmol/L)",
-       title = "Typical adolescent: 3 mg QD SC, 100 kg female",
-       caption = "Deterministic typical-value prediction.") +
+    title = "Typical adolescent: 3 mg QD SC, 100 kg female",
+    caption = "Deterministic typical-value prediction.") +
   theme_minimal()
 ```
 
@@ -198,8 +198,8 @@ sim |>
   geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.25) +
   geom_line() +
   labs(x = "Time (days)", y = "Liraglutide concentration (nmol/L)",
-       title = "Simulated 5-50-95 percentiles across adolescent cohort (3 mg QD SC)",
-       caption = "Cohort covariates approximate Carlsson Petri 2021 Table 1 (trial NN2211-4180).")
+    title = "Simulated 5-50-95 percentiles across adolescent cohort (3 mg QD SC)",
+    caption = "Cohort covariates approximate Carlsson Petri 2021 Table 1 (trial NN2211-4180).")
 ```
 
 ![](CarlssonPetri_2021_liraglutide_files/figure-html/figure-vpc-1.png)
@@ -215,7 +215,7 @@ subject’s Cavg over the final dosing interval.
 ``` r
 cavg_by_id <- sim |>
   dplyr::filter(time >= final_dose_time, time <= final_dose_time + tau,
-                !is.na(Cc)) |>
+    !is.na(Cc)) |>
   dplyr::group_by(id, WT, SEXF) |>
   dplyr::summarise(
     Cavg_nmol_L = mean(Cc),
@@ -227,8 +227,8 @@ ggplot(cavg_by_id, aes(WT, Cavg_nmol_L, colour = Sex)) +
   geom_point(alpha = 0.6) +
   geom_smooth(method = "loess", se = FALSE) +
   labs(x = "Body weight (kg)", y = "C_avg,ss (nmol/L)",
-       title = "Steady-state Cavg vs. body weight",
-       caption = "Replicates the shape of Carlsson Petri 2021 Figure 3A (adolescents, 3 mg QD).") +
+    title = "Steady-state Cavg vs. body weight",
+    caption = "Replicates the shape of Carlsson Petri 2021 Figure 3A (adolescents, 3 mg QD).") +
   theme_minimal()
 #> `geom_smooth()` using formula = 'y ~ x'
 ```
@@ -267,9 +267,9 @@ intervals <- data.frame(
 )
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
-nca_res  <- PKNCA::pk.nca(nca_data)
+nca_res <- PKNCA::pk.nca(nca_data)
 knitr::kable(summary(nca_res),
-             caption = "Steady-state NCA at the final 24-h dosing interval (3 mg QD SC adolescent cohort).")
+  caption = "Steady-state NCA at the final 24-h dosing interval (3 mg QD SC adolescent cohort).")
 ```
 
 | start | end | treatment            | N   | auclast      | cmax          | cmin          | tmax                | cav           |
@@ -295,27 +295,27 @@ factor on CL (adolescent/adult), so typical CL = 1.01 \* (100/100)^0.762
 `3 / (1.0706 * 24) * 1e6 / 3751.2 = 31.1 nmol/L`.
 
 ``` r
-typical_cl <- 1.01 * (100/100)^0.762 * 1.12^(1 - 1) * 1.06^1 # female (SEXF=1), 100 kg, ADOLESCENT
+typical_cl <- 1.01 * (100 / 100)^0.762 * 1.12^(1 - 1) * 1.06^1 # female (SEXF=1), 100 kg, ADOLESCENT
 typical_cavg_mg_L <- dose_mg / (typical_cl * 24)
 typical_cavg_nmol_L <- typical_cavg_mg_L * 1e6 / lira_mw
 
 # Median simulated Cavg from the stochastic cohort
 sim_cavg <- cavg_by_id |>
   dplyr::summarise(median_Cavg_nmol_L = median(Cavg_nmol_L),
-                   q05 = quantile(Cavg_nmol_L, 0.05),
-                   q95 = quantile(Cavg_nmol_L, 0.95))
+    q05 = quantile(Cavg_nmol_L, 0.05),
+    q95 = quantile(Cavg_nmol_L, 0.95))
 
 compare_tbl <- tibble::tibble(
-  Source      = c("Typical-value closed form",
-                  "Simulated cohort (median)",
-                  "Simulated cohort (90% range)"),
+  Source = c("Typical-value closed form",
+    "Simulated cohort (median)",
+    "Simulated cohort (90% range)"),
   Cavg_nmol_L = c(sprintf("%.1f", typical_cavg_nmol_L),
-                  sprintf("%.1f", sim_cavg$median_Cavg_nmol_L),
-                  sprintf("%.1f - %.1f", sim_cavg$q05, sim_cavg$q95))
+    sprintf("%.1f", sim_cavg$median_Cavg_nmol_L),
+    sprintf("%.1f - %.1f", sim_cavg$q05, sim_cavg$q95))
 )
 
 knitr::kable(compare_tbl,
-             caption = "Predicted steady-state Cavg for the 3 mg QD adolescent cohort.")
+  caption = "Predicted steady-state Cavg for the 3 mg QD adolescent cohort.")
 ```
 
 | Source                       | Cavg_nmol_L |

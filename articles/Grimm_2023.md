@@ -25,7 +25,7 @@ to a cynomolgus monkey.
 dSimDose <-
   data.frame(
     ID = 1,
-    AMT = 10, # mg/kg
+    AMT = 10, # dose in mg/kg # nolint: commented_code_linter.
     WT = 5, # cynomologus monkey body weight according to the paper
     TIME = 0,
     EVID = 1,
@@ -36,7 +36,7 @@ dSimObs <-
     ID = 1,
     AMT = 0,
     WT = 5,
-    TIME = c(5/60, 1, 2, 4, 8, 12, seq(24, 336, by = 24)),
+    TIME = c(5 / 60, 1, 2, 4, 8, 12, seq(24, 336, by = 24)),
     EVID = 0,
     CMT = "central"
   )
@@ -58,7 +58,7 @@ to a cynomolgus monkey.
 dSimDose <-
   data.frame(
     ID = 1,
-    AMT = 20, # mg/kg
+    AMT = 20, # dose in mg/kg # nolint: commented_code_linter.
     WT = 5, # cynomologus monkey body weight according to the paper
     TIME = 0,
     EVID = 1,
@@ -69,7 +69,7 @@ dSimObs <-
     ID = 1,
     AMT = 0,
     WT = 5,
-    TIME = c(5/60, 1, 2, 4, 8, 12, seq(24, 336, by = 24)),
+    TIME = c(5 / 60, 1, 2, 4, 8, 12, seq(24, 336, by = 24)),
     EVID = 0,
     CMT = "central"
   )

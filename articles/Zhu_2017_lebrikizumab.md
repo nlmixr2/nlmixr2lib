@@ -93,14 +93,14 @@ set.seed(20260418)
 n_subj <- 400
 
 race_levels <- c("white", "black", "asian", "other")
-race_probs  <- c(0.75, 0.10, 0.10, 0.05)
+race_probs <- c(0.75, 0.10, 0.10, 0.05)
 
 cohort <- tibble::tibble(
-  id     = seq_len(n_subj),
-  WT     = pmin(pmax(rnorm(n_subj, mean = 77, sd = 17), 40), 165),
-  AGE    = runif(n_subj, 18, 75),
-  SEXF   = as.integer(runif(n_subj) < 0.58),
-  race   = sample(race_levels, n_subj, replace = TRUE, prob = race_probs),
+  id = seq_len(n_subj),
+  WT = pmin(pmax(rnorm(n_subj, mean = 77, sd = 17), 40), 165),
+  AGE = runif(n_subj, 18, 75),
+  SEXF = as.integer(runif(n_subj) < 0.58),
+  race = sample(race_levels, n_subj, replace = TRUE, prob = race_probs),
   ADA_POS = 0L,
   FORM_NS0 = 0L,
   FORM_CHO_PHASE2 = 0L
@@ -114,9 +114,9 @@ cohort <- tibble::tibble(
 # Q4W regimen: 6 SC doses (weeks 0, 4, 8, 12, 16, 20 = days 0, 28, 56, 84, 112, 140)
 # Observe to day 196 so the 5th and 6th dose cycles are at steady state.
 dose_days <- seq(0, 140, by = 28)
-obs_days  <- sort(unique(c(
-  seq(0, 196, by = 2),   # dense regular sampling
-  dose_days + 2,         # early absorption peak window
+obs_days <- sort(unique(c(
+  seq(0, 196, by = 2), # dense regular sampling
+  dose_days + 2, # early absorption peak window
   dose_days + 0.25,
   dose_days + 1
 )))
@@ -132,9 +132,9 @@ ev_obs <- cohort |>
 events <- dplyr::bind_rows(ev_dose, ev_obs) |>
   dplyr::arrange(id, time, dplyr::desc(evid)) |>
   dplyr::select(id, time, amt, cmt, evid,
-                WT, AGE, SEXF, ADA_POS,
-                RACE_BLACK, RACE_ASIAN, RACE_OTHER,
-                FORM_NS0, FORM_CHO_PHASE2)
+    WT, AGE, SEXF, ADA_POS,
+    RACE_BLACK, RACE_ASIAN, RACE_OTHER,
+    FORM_NS0, FORM_CHO_PHASE2)
 ```
 
 ## Simulation
@@ -142,9 +142,9 @@ events <- dplyr::bind_rows(ev_dose, ev_obs) |>
 ``` r
 mod <- rxode2::rxode2(readModelDb("Zhu_2017_lebrikizumab"))
 sim <- rxode2::rxSolve(mod, events = events,
-                       keep = c("WT", "AGE", "SEXF",
-                                "RACE_BLACK", "RACE_ASIAN", "RACE_OTHER",
-                                "ADA_POS", "FORM_NS0", "FORM_CHO_PHASE2"))
+  keep = c("WT", "AGE", "SEXF",
+    "RACE_BLACK", "RACE_ASIAN", "RACE_OTHER",
+    "ADA_POS", "FORM_NS0", "FORM_CHO_PHASE2"))
 ```
 
 ## Replicate published figures
@@ -225,7 +225,7 @@ simulated subject, then summarize across the cohort.
 nca_conc <- sim |>
   dplyr::filter(time >= 140, time <= 168, !is.na(Cc)) |>
   dplyr::mutate(time_nom = time - 140,
-                treatment = "125mg_Q4W_SS") |>
+    treatment = "125mg_Q4W_SS") |>
   dplyr::select(id, time = time_nom, Cc, treatment)
 
 nca_dose <- cohort |>
@@ -244,6 +244,7 @@ intervals <- data.frame(
 )
 
 nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+#>  ■■■■■■■■■■■■■■                    44% |  ETA:  2s
 nca_tbl <- as.data.frame(nca_res$result)
 summary(nca_res)
 #>  start end    treatment   N    auclast        cmax        cmin
@@ -291,7 +292,10 @@ typ_metrics <- tibble::tibble(
 )
 knitr::kable(
   typ_metrics, digits = 3,
-  caption = "Typical-subject steady-state exposure: 125 mg SC Q4W (reference CHO, white, male, 70 kg, age 40, ADA-negative)."
+  caption = paste(
+    "Typical-subject steady-state exposure: 125 mg SC Q4W",
+    "(reference CHO, white, male, 70 kg, age 40, ADA-negative)."
+  )
 )
 ```
 

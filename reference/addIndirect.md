@@ -117,7 +117,7 @@ Matthew L. Fidler
 
 ``` r
 readModelDb("PK_2cmt_no_depot") |>
-  addIndirect(stim="in",hill=TRUE)
+  addIndirect(stim = "in", hill = TRUE)
 #>  
 #>  
 #>  ── rxode2-based free-form 3-cmt ODE model ────────────────────────────────────── 
@@ -192,7 +192,7 @@ readModelDb("PK_2cmt_no_depot") |>
 #> }
 
 readModelDb("PK_2cmt_no_depot") |>
-  addIndirect(inhib="out", imax=1)
+  addIndirect(inhib = "out", imax = 1)
 #>  
 #>  
 #>  ── rxode2-based free-form 3-cmt ODE model ────────────────────────────────────── 

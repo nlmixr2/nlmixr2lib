@@ -268,7 +268,7 @@ methods (with standard R functions) to convert that to a function for
 <span><span class="co">#&gt; <span style="font-weight: bold;">── Time (sec </span><span style="color: #BBBB00; font-weight: bold;">fit</span><span style="color: #0000BB; font-weight: bold;">$time</span><span style="font-weight: bold;">): ──</span></span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;            setup optimize covariance table compress    other</span></span>
-<span><span class="co">#&gt; elapsed 0.016192  0.00207   0.002071 0.026    0.001 2.232667</span></span>
+<span><span class="co">#&gt; elapsed 0.015992 0.002617    0.00262 0.028    0.001 2.327771</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">── (</span><span style="color: #BBBB00; font-weight: bold;">fit</span><span style="color: #0000BB; font-weight: bold;">$parFixed</span><span style="font-weight: bold;"> or </span><span style="color: #BBBB00; font-weight: bold;">fit</span><span style="color: #0000BB; font-weight: bold;">$parFixedDf</span><span style="font-weight: bold;">): ──</span></span></span>
 <span><span class="co">#&gt; </span></span>
@@ -331,8 +331,7 @@ methods (with standard R functions) to convert that to a function for
 simulation from the model to get probabilities of each state. Then,
 post-process the simulation results to get the states.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">#dSim &lt;- nlmixr2est::vpcSim(fit, normRelated = FALSE)</span></span>
-<span><span class="va">dSimRaw</span> <span class="op">&lt;-</span> <span class="fu">nlmixr2est</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/nlmixr2est/reference/nlmixr2.html" class="external-link">nlmixr</a></span><span class="op">(</span><span class="va">fit</span>, est <span class="op">=</span> <span class="st">"rxSolve"</span>, control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>nStud <span class="op">=</span> <span class="fl">5</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">dSimRaw</span> <span class="op">&lt;-</span> <span class="fu">nlmixr2est</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/nlmixr2est/reference/nlmixr2.html" class="external-link">nlmixr</a></span><span class="op">(</span><span class="va">fit</span>, est <span class="op">=</span> <span class="st">"rxSolve"</span>, control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>nStud <span class="op">=</span> <span class="fl">5</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> use `data` from prior/supplied fit</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> using population uncertainty from fitted model (`thetaMat`)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> using `dfObs=15` from the number of observations in fitted model</span></span>
