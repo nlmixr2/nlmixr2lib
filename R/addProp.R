@@ -32,11 +32,11 @@
 #'
 #' readModelDb("PK_3cmt_des") |> addIni(depot)
 #'
-addCmtProp <- function(ui, prop=c("f", "lag", "dur", "rate", "ini"),
+addCmtProp <- function(ui, prop = c("f", "lag", "dur", "rate", "ini"),
                        cmt) {
   .ui <- rxode2::assertRxUi(ui)
   .cmt <- as.character(substitute(cmt))
-  cmt <-try(force(cmt), silent=TRUE)
+  cmt <- try(force(cmt), silent = TRUE)
   if (inherits(cmt, "try-error")) {
     cmt <- .cmt
   }
@@ -51,19 +51,19 @@ addCmtProp <- function(ui, prop=c("f", "lag", "dur", "rate", "ini"),
     .tmp <- .extractModelLinesAtW(.modelLines, .w)
 
     .ui <- rxode2::rxUiDecompress(.ui)
-    if (exists("description", envir=.ui$meta)) {
-      rm("description", envir=.ui$meta)
+    if (exists("description", envir = .ui$meta)) {
+      rm("description", envir = .ui$meta)
     }
     if (prop == "ini") {
       rxode2::model(.ui) <- c(.tmp$pre,
-                              .tmp$w,
-                              str2lang(paste0(.cmt, "(0) <- ", .var)),
-                              .tmp$post)
+        .tmp$w,
+        str2lang(paste0(.cmt, "(0) <- ", .var)),
+        .tmp$post)
     } else {
       rxode2::model(.ui) <- c(.tmp$pre,
-                              .tmp$w,
-                              str2lang(paste0(prop, "(", .cmt, ") <- ", .var)),
-                              .tmp$post)
+        .tmp$w,
+        str2lang(paste0(prop, "(", .cmt, ") <- ", .var)),
+        .tmp$post)
     }
     .ui
   } else {
@@ -75,52 +75,52 @@ addCmtProp <- function(ui, prop=c("f", "lag", "dur", "rate", "ini"),
 #' @export
 addBioavailability <- function(ui, cmt) {
   .cmt <- as.character(substitute(cmt))
-  cmt <-try(force(cmt), silent=TRUE)
+  cmt <- try(force(cmt), silent = TRUE)
   if (inherits(cmt, "try-error")) {
     cmt <- .cmt
   }
-  addCmtProp(ui, prop="f", cmt=cmt)
+  addCmtProp(ui, prop = "f", cmt = cmt)
 }
 
 #' @describeIn addCmtProp Adds the lag-time to a compartment in the model
 #' @export
 addLag <- function(ui, cmt) {
   .cmt <- as.character(substitute(cmt))
-  cmt <-try(force(cmt), silent=TRUE)
+  cmt <- try(force(cmt), silent = TRUE)
   if (inherits(cmt, "try-error")) {
     cmt <- .cmt
   }
-  addCmtProp(ui, prop="lag", cmt=cmt)
+  addCmtProp(ui, prop = "lag", cmt = cmt)
 }
 
 #' @describeIn addCmtProp Adds the modeled duration to a compartment in the model
 #' @export
 addDur <- function(ui, cmt) {
   .cmt <- as.character(substitute(cmt))
-  cmt <-try(force(cmt), silent=TRUE)
+  cmt <- try(force(cmt), silent = TRUE)
   if (inherits(cmt, "try-error")) {
     cmt <- .cmt
   }
-  addCmtProp(ui, prop="dur", cmt=cmt)
+  addCmtProp(ui, prop = "dur", cmt = cmt)
 }
 #' @describeIn addCmtProp Adds the modeled rate to a compartment in the model
 #' @export
 addRate <- function(ui, cmt) {
   .cmt <- as.character(substitute(cmt))
-  cmt <-try(force(cmt), silent=TRUE)
+  cmt <- try(force(cmt), silent = TRUE)
   if (inherits(cmt, "try-error")) {
     cmt <- .cmt
   }
-  addCmtProp(ui, prop="rate", cmt=cmt)
+  addCmtProp(ui, prop = "rate", cmt = cmt)
 }
 
 #' @describeIn addCmtProp Adds the initial value to the compartment
 #' @export
 addIni <- function(ui, cmt) {
   .cmt <- as.character(substitute(cmt))
-  cmt <-try(force(cmt), silent=TRUE)
+  cmt <- try(force(cmt), silent = TRUE)
   if (inherits(cmt, "try-error")) {
     cmt <- .cmt
   }
-  addCmtProp(ui, prop="ini", cmt=cmt)
+  addCmtProp(ui, prop = "ini", cmt = cmt)
 }

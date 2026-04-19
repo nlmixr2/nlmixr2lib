@@ -41,20 +41,26 @@ buildModelDb <- function() {
   savefile <- file.path(packageDirectory, "data/modeldb.rda")
   message("Saving the modeldb to ", savefile)
   save(modeldb, file = savefile, compress = "bzip2", version = 2, ascii = FALSE)
-  qs2::qs_save(modeldb, file=file.path(packageDirectory, "inst/modeldb.qs2"))
+  qs2::qs_save(modeldb, file = file.path(packageDirectory, "inst/modeldb.qs2"))
   message("Done saving the modeldb to ", savefile)
 
   colDesc <-
     list(
       name = "Model name that can be used to extract the model from the model library",
       description = "Model description in free from text; in model itself",
-      parameters  = "A comma separated string listing either the parameter in the model defined by population/individual effects or a population effect parameter",
-      DV          = "The definition of the dependent variable(s)",
-      linCmt      = "Logical flag indicating if solved models are used (TRUE) or not (FALSE)",
-      algebraic   = "Logical flag indicating if the model is purely algebraic: TRUE no linCmt() and no ODEs; FALSE otherwise",
-      dosing      = "A comma separated string of identified dosing compartments",
-      depends     = "A comma separated string of objects the model depends on",
-      filename    = "Filename of the model.  By default these are installed in the model library and read on demand"
+      parameters = paste(
+        "A comma separated string listing either the parameter in the model",
+        "defined by population/individual effects or a population effect parameter"
+      ),
+      DV = "The definition of the dependent variable(s)",
+      linCmt = "Logical flag indicating if solved models are used (TRUE) or not (FALSE)",
+      algebraic = paste(
+        "Logical flag indicating if the model is purely algebraic:",
+        "TRUE no linCmt() and no ODEs; FALSE otherwise"
+      ),
+      dosing = "A comma separated string of identified dosing compartments",
+      depends = "A comma separated string of objects the model depends on",
+      filename = "Filename of the model.  By default these are installed in the model library and read on demand"
     )
   # The names must exactly match
   stopifnot(all(names(modeldb) %in% names(colDesc)))
@@ -123,17 +129,17 @@ addFileToModelDb <- function(dir, file, modeldb) {
   # Finding dosing
   dosing <- NULL
   dosing_meta <- mod$meta$dosing
-  if(!is.null(dosing_meta)){
-    dosing <- paste(dosing_meta, collapse=",")
-  }else {
-    if("depot" %in% mod$props$cmt) {
+  if (!is.null(dosing_meta)) {
+    dosing <- paste(dosing_meta, collapse = ",")
+  } else {
+    if ("depot" %in% mod$props$cmt) {
       dosing <- c(dosing, "depot")
     }
-    if("central" %in% mod$props$cmt) {
+    if ("central" %in% mod$props$cmt) {
       dosing <- c(dosing, "central")
     }
-    if(!is.null(dosing)) {
-      dosing <- paste(dosing, collapse=",")
+    if (!is.null(dosing)) {
+      dosing <- paste(dosing, collapse = ",")
     } else {
       dosing <- NA_character_
     }
@@ -142,11 +148,11 @@ addFileToModelDb <- function(dir, file, modeldb) {
   # Finding depends
   depends <- NULL
   depends_meta <- mod$meta$depends
-  if(!is.null(depends_meta)){
-    depends = paste(depends_meta, collapse=",")
+  if (!is.null(depends_meta)) {
+    depends <- paste(depends_meta, collapse = ",")
   }
-  if(is.null(depends)){
-    depends = NA_character_
+  if (is.null(depends)) {
+    depends <- NA_character_
   }
 
   # Extract the parameter names
@@ -171,10 +177,10 @@ addFileToModelDb <- function(dir, file, modeldb) {
   }
 
 
-  if(!mod$props$linCmt && (length(mod$props$cmt)  == 0)){
-    algebraic = TRUE
+  if (!mod$props$linCmt && (length(mod$props$cmt) == 0)) {
+    algebraic <- TRUE
   } else {
-    algebraic = FALSE
+    algebraic <- FALSE
   }
 
 

@@ -34,7 +34,7 @@ test_that("addDepot adds depot", {
   modelNoDepot <-
     suppressMessages(
       readModelDb("PK_1cmt_des") |>
-        rxode2::model(-Cc~.) |>
+        rxode2::model(-Cc ~ .) |>
         rxode2::ini(-lka, -lcl, -lvc) |>
         removeDepot()
     )
@@ -74,19 +74,19 @@ test_that("addDepot adds other than default agruments", {
   i > length(needle)
 }
 
-# Issue #77 / #78 — addDepot edge cases ----
+# Issue 77 / 78 -- addDepot edge cases ----
 
 test_that("addDepot works when d/dt(central) is the only / last model line (#77)", {
-  # #77 "central at end": residual error precedes d/dt(central)
+  # Issue 77 "central at end": residual error precedes d/dt(central)
   m <- function() {
     ini({
-      lcl <- 1; label("CL")
-      lvc <- 3.45; label("V")
-      propSd <- 0.5; label("prop err")
+      lcl <- 1
+      lvc <- 3.45
+      propSd <- 0.5
     })
     model({
       central ~ prop(propSd)
-      d/dt(central) <- -exp(lcl)/exp(lvc) * central
+      d / dt(central) <- -exp(lcl) / exp(lvc) * central
     })
   }
   res <- addDepot(m)
@@ -105,12 +105,12 @@ test_that("addDepot works when d/dt(central) is the only / last model line (#77)
 test_that("addDepot works when d/dt(central) is the first model line (#77)", {
   m <- function() {
     ini({
-      lcl <- 1; label("CL")
-      lvc <- 3.45; label("V")
-      propSd <- 0.5; label("prop err")
+      lcl <- 1
+      lvc <- 3.45
+      propSd <- 0.5
     })
     model({
-      d/dt(central) <- -exp(lcl)/exp(lvc) * central
+      d / dt(central) <- -exp(lcl) / exp(lvc) * central
       central ~ prop(propSd)
     })
   }
@@ -130,13 +130,16 @@ test_that("addDepot preserves the relative order of interleaved residual-error a
   # repeated assignment form.
   m <- function() {
     ini({
-      lcl <- 1; lvc <- 3.45; addSd <- 0.1; propSd <- 0.5
+      lcl <- 1
+      lvc <- 3.45
+      addSd <- 0.1
+      propSd <- 0.5
     })
     model({
       obs <- 1
       obs ~ add(addSd)
       obs <- 2
-      d/dt(central) <- -exp(lcl)/exp(lvc) * central
+      d / dt(central) <- -exp(lcl) / exp(lvc) * central
       obs ~ prop(propSd)
     })
   }
@@ -164,11 +167,14 @@ test_that("addDepot preserves the relative order of interleaved residual-error a
 test_that("addDepot works when a transit ODE is the first model line (#78)", {
   m <- function() {
     ini({
-      lktr <- 0; lcl <- 1; lvc <- 3.45; propSd <- 0.5
+      lktr <- 0
+      lcl <- 1
+      lvc <- 3.45
+      propSd <- 0.5
     })
     model({
-      d/dt(transit1) <- -exp(lktr) * transit1
-      d/dt(central) <- exp(lktr) * transit1 - exp(lcl)/exp(lvc) * central
+      d / dt(transit1) <- -exp(lktr) * transit1
+      d / dt(central) <- exp(lktr) * transit1 - exp(lcl) / exp(lvc) * central
       Cc <- central / exp(lvc)
       Cc ~ prop(propSd)
     })
@@ -188,12 +194,15 @@ test_that("addDepot works when a transit ODE is the first model line (#78)", {
 test_that("addDepot works when a transit ODE sits above d/dt(central) (#78)", {
   m <- function() {
     ini({
-      lktr <- 0; lcl <- 1; lvc <- 3.45; propSd <- 0.5
+      lktr <- 0
+      lcl <- 1
+      lvc <- 3.45
+      propSd <- 0.5
     })
     model({
       kel <- exp(lcl) / exp(lvc)
-      d/dt(transit1) <- -exp(lktr) * transit1
-      d/dt(central) <- exp(lktr) * transit1 - kel * central
+      d / dt(transit1) <- -exp(lktr) * transit1
+      d / dt(central) <- exp(lktr) * transit1 - kel * central
       Cc <- central / exp(lvc)
       Cc ~ prop(propSd)
     })

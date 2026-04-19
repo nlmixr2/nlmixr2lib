@@ -26,7 +26,7 @@ parameterization
 }
 \examples{
 
-addIndirect(stim="in") |> convertKinR0()
+addIndirect(stim = "in") |> convertKinR0()
 }
 \seealso{
 Other Indirect response: 

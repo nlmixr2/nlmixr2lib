@@ -24,7 +24,7 @@ Convert linear elimination to quadratic elimination
 \examples{
 
 readModelDb("PK_2cmt_no_depot") |>
-  addIndirectLin(stim="out") |>
+  addIndirectLin(stim = "out") |>
   convertQuad()
 
 readModelDb("PK_2cmt_no_depot") |>
@@ -32,8 +32,8 @@ readModelDb("PK_2cmt_no_depot") |>
   convertQuad()
 
 readModelDb("PK_2cmt_no_depot") |>
- addEffectCmtLin() |>
- convertQuad()
+  addEffectCmtLin() |>
+  convertQuad()
 }
 \seealso{
 Other PD: 

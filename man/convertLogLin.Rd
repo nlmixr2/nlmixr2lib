@@ -26,7 +26,7 @@ readModelDb("PK_2cmt_no_depot") |>
   convertLogLin()
 
 readModelDb("PK_2cmt_no_depot") |>
-  addIndirectLin(stim="out") |>
+  addIndirectLin(stim = "out") |>
   convertLogLin()
 }
 \seealso{

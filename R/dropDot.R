@@ -18,9 +18,9 @@
 .dropDotAddExpr <- function(x) {
   if (is.list(x)) {
     return(lapply(seq_along(x),
-                  function(i) {
-                    .dropDotAddExpr(x[[i]])
-                  }))
+      function(i) {
+        .dropDotAddExpr(x[[i]])
+      }))
   }
   if (is.call(x)) {
     if (length(x) == 2) {
@@ -35,7 +35,7 @@
         .x2 <- x[[2]]
       }
       if (identical(.x1, quote(`+`)) ||
-            identical(.x1, quote(`-`))) {
+        identical(.x1, quote(`-`))) {
         return(.x2)
       }
     }
@@ -56,7 +56,7 @@
         .x3 <- x[[3]]
       }
       if (identical(.x1, quote(`=`)) ||
-            identical(.x1, quote(`<-`))) {
+        identical(.x1, quote(`<-`))) {
         return(as.call(list(.x1, .x2, .x3)))
       }
       if (identical(.x1, quote(`-`))) {

@@ -97,7 +97,6 @@ fit
 To simulate from a Markov model, you first need to run a typical simulation from the model to get probabilities of each state. Then, post-process the simulation results to get the states.
 
 ```{r simulate}
-#dSim <- nlmixr2est::vpcSim(fit, normRelated = FALSE)
 dSimRaw <- nlmixr2est::nlmixr(fit, est = "rxSolve", control = list(nStud = 5))
 dSim <- simMarkov(dSimRaw, states = fit$markovStates, initialState = "none", colPrev = "previous", colCur = "current")
 ```

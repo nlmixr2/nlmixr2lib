@@ -23,7 +23,8 @@ updateOncologyXenograftSimeoni2004(
 for the compartments for damaged cells, undamaged cells, and the calculated
 tumor volume (the sum of undamaged and damaged cells)}
 
-\item{drugEffectName, transitRateName}{character string names of the drug effect and transit rate (as used in the model block)}
+\item{drugEffectName, transitRateName}{character string names of the drug
+effect and transit rate (as used in the model block)}
 }
 \value{
 An updated model with the new number of compartments

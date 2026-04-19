@@ -10,5 +10,5 @@ test_that("searchReplace", {
 
 test_that(".replaceMult will keep -kel*central", {
   expect_equal(.replaceMult(list(str2lang("d/dt(central) <- -kel * central")), "Ek", "Cc", "Emax*Cc/(Cc+EC50)"),
-               list(str2lang("d/dt(central) <- -kel * central")))
+    list(str2lang("d/dt(central) <- -kel * central")))
 })

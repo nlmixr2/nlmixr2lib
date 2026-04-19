@@ -45,8 +45,8 @@ test_that("extreme model cases", {
 
   f <- function() {
     model({
-      d/dt(depot) <- -ka*depot
-      d/dt(central) <- ka*depot-kel*central
+      d / dt(depot) <- -ka * depot
+      d / dt(central) <- ka * depot - kel * central
       Cc <- central / vc
     })
   }
@@ -62,8 +62,8 @@ test_that("extreme model cases", {
     })
     model({
       ka <- exp(e)
-      d/dt(depot) <- -ka*depot
-      d/dt(central) <- ka*depot-kel*central
+      d / dt(depot) <- -ka * depot
+      d / dt(central) <- ka * depot - kel * central
       Cc <- central / vc
     })
   }
@@ -84,7 +84,10 @@ test_that("extreme model cases", {
 # Remove transit ----
 
 test_that("removeTransit throws error in model with no transit compartment", {
-  expect_error(removeTransit(readModelDb("PK_2cmt_des"), "central", transit = "transit"), "Assertion on 'ntransit' failed: Must be of type 'integerish', not 'character'")
+  expect_error( # nolint: line_length_linter.
+    removeTransit(readModelDb("PK_2cmt_des"), "central", transit = "transit"),
+    "Assertion on 'ntransit' failed: Must be of type 'integerish', not 'character'"
+  )
   expect_error(
     removeTransit(modelTest, ntransit = "A"),
     regexp = "Assertion on 'ntransit' failed: Must be of type 'integerish', not 'character'",
@@ -134,23 +137,28 @@ test_that("remove some but not all compartments", {
     functionBody(function() {
       dosing <- c("central", "depot")
       ini({
-          lka <- 0.45; label("Absorption rate (Ka)")
-          lcl <- 1; label("Clearance (CL)")
-          lvc <- 3.45; label("Central volume of distribution (V)")
-          propSd <- c(0, 0.5); label("Proportional residual error (fraction)")
-          lktr <- 0.1; label("First order transition rate (ktr)")
+        lka <- 0.45
+        label("Absorption rate (Ka)")
+        lcl <- 1
+        label("Clearance (CL)")
+        lvc <- 3.45
+        label("Central volume of distribution (V)")
+        propSd <- c(0, 0.5)
+        label("Proportional residual error (fraction)")
+        lktr <- 0.1
+        label("First order transition rate (ktr)")
       })
       model({
-          ka <- exp(lka)
-          cl <- exp(lcl)
-          vc <- exp(lvc)
-          kel <- cl/vc
-          ktr <- exp(lktr)
-          d/dt(depot) <- -ktr * depot
-          d/dt(transit1) <- ktr * depot - ka * transit1
-          d/dt(central) <- ka * transit1 - kel * central
-          Cc <- central/vc
-          Cc ~ prop(propSd)
+        ka <- exp(lka)
+        cl <- exp(lcl)
+        vc <- exp(lvc)
+        kel <- cl / vc
+        ktr <- exp(lktr)
+        d / dt(depot) <- -ktr * depot
+        d / dt(transit1) <- ktr * depot - ka * transit1
+        d / dt(central) <- ka * transit1 - kel * central
+        Cc <- central / vc
+        Cc ~ prop(propSd)
       })
     })
   )
@@ -164,13 +172,13 @@ test_that("extreme model cases", {
   f <- function() {
     model({
       ktr <- exp(lktr)
-      d/dt(depot) <- -ktr * depot
-      d/dt(transit1) <- ktr * depot - ktr * transit1
-      d/dt(transit2) <- ktr * transit1 - ktr * transit2
-      d/dt(transit3) <- ktr * transit2 - ktr * transit3
-      d/dt(transit4) <- ktr * transit3 - ka * transit4
-      d/dt(central) <- ka * transit4 - kel * central
-      Cc <- central/vc
+      d / dt(depot) <- -ktr * depot
+      d / dt(transit1) <- ktr * depot - ktr * transit1
+      d / dt(transit2) <- ktr * transit1 - ktr * transit2
+      d / dt(transit3) <- ktr * transit2 - ktr * transit3
+      d / dt(transit4) <- ktr * transit3 - ka * transit4
+      d / dt(central) <- ka * transit4 - kel * central
+      Cc <- central / vc
     })
   }
 
@@ -187,13 +195,13 @@ test_that("extreme model cases", {
     })
     model({
       ktr <- exp(lktr)
-      d/dt(depot) <- -ktr * depot
-      d/dt(transit1) <- ktr * depot - ktr * transit1
-      d/dt(transit2) <- ktr * transit1 - ktr * transit2
-      d/dt(transit3) <- ktr * transit2 - ktr * transit3
-      d/dt(transit4) <- ktr * transit3 - ka * transit4
-      d/dt(central) <- ka * transit4 - kel * central
-      Cc <- central/vc
+      d / dt(depot) <- -ktr * depot
+      d / dt(transit1) <- ktr * depot - ktr * transit1
+      d / dt(transit2) <- ktr * transit1 - ktr * transit2
+      d / dt(transit3) <- ktr * transit2 - ktr * transit3
+      d / dt(transit4) <- ktr * transit3 - ka * transit4
+      d / dt(central) <- ka * transit4 - kel * central
+      Cc <- central / vc
     })
   }
 
@@ -210,13 +218,13 @@ test_that("extreme model cases", {
     })
     model({
       ktr <- exp(lktr)
-      d/dt(depot) <- -ktr * depot
-      d/dt(transit1) <- ktr * depot - ktr * transit1
-      d/dt(transit2) <- ktr * transit1 - ktr * transit2
-      d/dt(transit3) <- ktr * transit2 - ktr * transit3
-      d/dt(transit4) <- ktr * transit3 - ka * transit4
-      d/dt(central) <- ka * transit4 - kel * central
-      Cc <- central/vc
+      d / dt(depot) <- -ktr * depot
+      d / dt(transit1) <- ktr * depot - ktr * transit1
+      d / dt(transit2) <- ktr * transit1 - ktr * transit2
+      d / dt(transit3) <- ktr * transit2 - ktr * transit3
+      d / dt(transit4) <- ktr * transit3 - ka * transit4
+      d / dt(central) <- ka * transit4 - kel * central
+      Cc <- central / vc
     })
   }
 
@@ -234,13 +242,13 @@ test_that("extreme model cases", {
     })
     model({
       ktr <- exp(lktr)
-      d/dt(depot) <- -ktr * depot
-      d/dt(transit1) <- ktr * depot - ktr * transit1
-      d/dt(transit2) <- ktr * transit1 - ktr * transit2
-      d/dt(transit3) <- ktr * transit2 - ktr * transit3
-      d/dt(transit4) <- ktr * transit3 - ka * transit4
-      d/dt(central) <- ka * transit4 - kel * central
-      Cc <- central/vc
+      d / dt(depot) <- -ktr * depot
+      d / dt(transit1) <- ktr * depot - ktr * transit1
+      d / dt(transit2) <- ktr * transit1 - ktr * transit2
+      d / dt(transit3) <- ktr * transit2 - ktr * transit3
+      d / dt(transit4) <- ktr * transit3 - ka * transit4
+      d / dt(central) <- ka * transit4 - kel * central
+      Cc <- central / vc
     })
   }
 
@@ -260,13 +268,13 @@ test_that("extreme model cases", {
     })
     model({
       ktr <- exp(lktr)
-      d/dt(depot) <- -ktr * depot
-      d/dt(transit1) <- ktr * depot - ktr * transit1
-      d/dt(transit2) <- ktr * transit1 - ktr * transit2
-      d/dt(transit3) <- ktr * transit2 - ktr * transit3
-      d/dt(transit4) <- ktr * transit3 - ka * transit4
-      d/dt(central) <- ka * transit4 - kel * central
-      Cc <- central/vc
+      d / dt(depot) <- -ktr * depot
+      d / dt(transit1) <- ktr * depot - ktr * transit1
+      d / dt(transit2) <- ktr * transit1 - ktr * transit2
+      d / dt(transit3) <- ktr * transit2 - ktr * transit3
+      d / dt(transit4) <- ktr * transit3 - ka * transit4
+      d / dt(central) <- ka * transit4 - kel * central
+      Cc <- central / vc
     })
   }
 
@@ -280,17 +288,20 @@ test_that("extreme model cases", {
   expect_equal(tmp$iniDf$neta1, 1)
 })
 
-# Issue #77 / #78 — addTransit preserves source order of existing lines ----
+# Issue 77 / 78 -- addTransit preserves source order of existing lines ----
 
 test_that("addTransit preserves endpoint placement when d/dt(central) is the last line", {
   m <- function() {
     ini({
-      lka <- 0; lcl <- 1; lvc <- 3.45; propSd <- 0.5
+      lka <- 0
+      lcl <- 1
+      lvc <- 3.45
+      propSd <- 0.5
     })
     model({
       central ~ prop(propSd)
-      d/dt(depot) <- -exp(lka) * depot
-      d/dt(central) <- exp(lka) * depot - exp(lcl)/exp(lvc) * central
+      d / dt(depot) <- -exp(lka) * depot
+      d / dt(central) <- exp(lka) * depot - exp(lcl) / exp(lvc) * central
     })
   }
   res <- addTransit(m, 2)
@@ -316,12 +327,15 @@ test_that("addTransit preserves endpoint placement when d/dt(central) is the las
 test_that("addTransit preserves source order when an assignment line sits above d/dt(depot)", {
   m <- function() {
     ini({
-      lka <- 0; lcl <- 1; lvc <- 3.45; propSd <- 0.5
+      lka <- 0
+      lcl <- 1
+      lvc <- 3.45
+      propSd <- 0.5
     })
     model({
       kel <- exp(lcl) / exp(lvc)
-      d/dt(depot) <- -exp(lka) * depot
-      d/dt(central) <- exp(lka) * depot - kel * central
+      d / dt(depot) <- -exp(lka) * depot
+      d / dt(central) <- exp(lka) * depot - kel * central
       Cc <- central / exp(lvc)
       Cc ~ prop(propSd)
     })

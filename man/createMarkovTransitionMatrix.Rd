@@ -17,14 +17,18 @@ createMarkovTransitionMatrix(
 current states (may be any R object that can be coerced to a character
 string, ordered objects are usually preferred)}
 
-\item{estimateZeroTransitions}{Should transitions that have zero occurrences be estimated? This is done by setting the state to have a single transition.}
+\item{estimateZeroTransitions}{Should transitions that have zero occurrences
+be estimated? This is done by setting the state to have a single
+transition.}
 
-\item{estimateZeroTransitionsInitial}{Should transitions that are only initial states be estimated (ignored if `estimateZeroTransitions = FALSE`)}
+\item{estimateZeroTransitionsInitial}{Should transitions that are only
+initial states be estimated (ignored if `estimateZeroTransitions = FALSE`)}
 
 \item{...}{Ignored}
 }
 \value{
-A square matrix with row and column names for each state where rows are the prior state and columns are the current state.
+A square matrix with row and column names for each state where
+  rows are the prior state and columns are the current state.
 }
 \description{
 Create a Markov transition matrix with probabilities of transitioning between every state

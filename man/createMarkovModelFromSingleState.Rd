@@ -12,7 +12,8 @@ createMarkovModelFromSingleState(transitionRow, stateNames)
 \item{stateNames}{a named vector of state names where the name is the name for use in the model parameters}
 }
 \value{
-A list with two elements, "ini" and "model", where each element is a character vector of lines of code for the model
+A list with two elements, "ini" and "model", where each element is
+  a character vector of lines of code for the model
 }
 \description{
 Create the parts of a Markov model for transitioning from a single state
