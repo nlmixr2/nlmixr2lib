@@ -48,6 +48,7 @@
     <li><a class="dropdown-item" href="../articles/PK_2cmt_mAb_Davda_2014.html">PK_2cmt_mAb_Davda_2014</a></li>
     <li><a class="dropdown-item" href="../articles/Soehoel_2022_tralokinumab.html">Soehoel_2022_tralokinumab</a></li>
     <li><a class="dropdown-item" href="../articles/Thakre_2022_risankizumab.html">Thakre_2022_risankizumab</a></li>
+    <li><a class="dropdown-item" href="../articles/tmdd_archetypes.html">TMDD archetypes: full, QSS, and Michaelis-Menten approximations</a></li>
     <li><a class="dropdown-item" href="../articles/Wang_2017_benralizumab.html">Wang_2017_benralizumab</a></li>
     <li><a class="dropdown-item" href="../articles/Xie_2019_agomelatine.html">Xie_2019_agomelatine</a></li>
     <li><a class="dropdown-item" href="../articles/Zhu_2017_lebrikizumab.html">Zhu_2017_lebrikizumab</a></li>
@@ -237,201 +238,226 @@ model with inhibition of drug response (effect). Parameterized with
 clearance and volume</td>
 </tr>
 <tr class="even">
+<td align="left">PK_1cmt_tmdd_full</td>
+<td align="left">One-compartment TMDD archetype with explicit
+drug-target binding (Mager &amp; Jusko 2001 full model)</td>
+</tr>
+<tr class="odd">
+<td align="left">PK_1cmt_tmdd_mm</td>
+<td align="left">One-compartment TMDD archetype, Michaelis-Menten (MM)
+approximation (Gibiansky et al. 2008)</td>
+</tr>
+<tr class="even">
+<td align="left">PK_1cmt_tmdd_qss</td>
+<td align="left">One-compartment TMDD archetype, quasi-steady-state
+(QSS) approximation (Gibiansky et al. 2008)</td>
+</tr>
+<tr class="odd">
 <td align="left">PK_2cmt_mAb_Davda_2014</td>
 <td align="left">Two compartment PK model with linear clearance for
 average monoclonal antibodies (Davda 2014)</td>
 </tr>
+<tr class="even">
+<td align="left">PK_2cmt_tmdd_mm</td>
+<td align="left">Two-compartment TMDD archetype, Michaelis-Menten (MM)
+approximation (Gibiansky et al. 2008)</td>
+</tr>
 <tr class="odd">
+<td align="left">PK_2cmt_tmdd_qss</td>
+<td align="left">Two-compartment TMDD archetype, quasi-steady-state
+(QSS) approximation (Gibiansky et al. 2008)</td>
+</tr>
+<tr class="even">
 <td align="left">PK_double_sim_01</td>
 <td align="left">PK double absorption model with simultaneous zero order
 and first order absorptions</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">PK_double_sim_10</td>
 <td align="left">PK double absorption model with simultaneous first
 order and zero order absorptions</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">PK_double_sim_11</td>
 <td align="left">PK double absorption model with simultaneous first
 order absorptions</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">PK_1cmt_des</td>
 <td align="left">One compartment PK model with linear clearance using
 differential equations</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">PK_1cmt</td>
 <td align="left">One compartment PK model with linear clearance</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">PK_2cmt_des</td>
 <td align="left">Two compartment PK model with linear clearance using
 differential equations</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">PK_2cmt_no_depot</td>
 <td align="left">Two compartment PK model with linear clearance using
 differential equations</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">PK_2cmt_tdcl_des</td>
 <td align="left">Two compartment PK model with time-dependent clearance
 using differential equations (structured like nivolumab PK model)</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">PK_2cmt</td>
 <td align="left">Two compartment PK model with linear clearance</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">PK_3cmt_des</td>
 <td align="left">Three compartment PK model with linear clearance using
 differential equations</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">PK_3cmt</td>
 <td align="left">Three compartment PK model with linear clearance</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">CarlssonPetri_2021_liraglutide</td>
 <td align="left">Liraglutide PK model in adolescents (Carlsson Petri
 2021)</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">Cirincione_2017_exenatide</td>
 <td align="left">Population PK model for exenatide immediate-release
 (Cirincione 2017): two-compartment, parallel linear and Michaelis-Menten
 elimination, sequential zero-order then saturable first-order absorption
 after SC dosing.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">Clegg_2024_nirsevimab</td>
 <td align="left">Two-compartment population PK model for nirsevimab in
 preterm and term infants (Clegg 2024)</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">Fasanmade_2009_infliximab</td>
 <td align="left">Two-compartment population PK model of infliximab
 (anti-TNF-alpha) in patients with ulcerative colitis (Fasanmade
 2009)</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">Grimm_2023_gantenerumab</td>
 <td align="left">Gantenerumab PK model in cynomolgus monkeys (Grimm
 2023): two-compartment plasma PK with brain extracellular distribution
 across six brain regions (cerebellum, hippocampus, striatum, cortex,
 choroid plexus, CSF).</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">Grimm_2023_trontinemab</td>
 <td align="left">Trontinemab PK model in non-human primates (Grimm
 2023): two-compartment plasma PK with Michaelis-Menten elimination and
 brain-region effect-compartment distribution (cerebellum, hippocampus,
 striatum, cortex, choroid plexus, CSF).</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">Hu_2026_clesrovimab</td>
 <td align="left">Two-compartment population PK model for clesrovimab in
 preterm and full-term infants (Hu 2026)</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">Kovalenko_2020_dupilumab</td>
 <td align="left">Dupilumab PK model (Kovalenko 2020)</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">Kyhl_2016_nalmefene</td>
 <td align="left">Population PK model for nalmefene in healthy volunteers
 (Kyhl 2016): two-compartment model with first-order absorption after
 oral dosing, separate absorption rates for tablet and solution
 formulations, and a link to mu-opioid receptor occupancy.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">Ogasawara_2020_durvalumab</td>
 <td align="left">Two compartment PK model of durvalumab (anti-PD-L1) in
 patients with hematologic malignancies (Ogasawara 2020)</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">Soehoel_2022_tralokinumab</td>
 <td align="left">Two-compartment population PK model for tralokinumab
 (Soehoel 2022) in adults with moderate-to-severe atopic dermatitis, with
 SC first-order absorption and allometric body-weight effects.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">Thakre_2022_risankizumab</td>
 <td align="left">Two-compartment population PK model of risankizumab
 (anti-IL-23 mAb) with first-order SC absorption in patients with active
 psoriatic arthritis (Thakre 2022)</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">Wang_2017_benralizumab</td>
 <td align="left">Two compartment PK model of benralizumab
 (anti-IL-5Ralpha) in healthy volunteers and patients with asthma (Wang
 2017)</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">Xie_2019_agomelatine</td>
 <td align="left">A semiphysiological population pharmacokinetic model of
 agomelatine and its metabolites in Chinese healthy volunteers</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">Zhu_2017_lebrikizumab</td>
 <td align="left">Lebrikizumab population PK model (Zhu 2017):
 two-compartment model with first-order absorption after SC dosing in
 adults with moderate-to-severe asthma.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">oncology_sdm_lobo_2002</td>
 <td align="left">Signal transduction model for delayed concentration
 effects on cancer cell growth</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">oncology_xenograft_simeoni_2004</td>
 <td align="left">Oncology tumor growth model in xenograft models</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">tgi_no_sat_expo</td>
 <td align="left">One-compartment TGI model with exponential tumor
 growth, without saturation.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">tgi_no_sat_Koch</td>
 <td align="left">One compartment TGI model with with exponential tumor
 growth, without saturation.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">tgi_no_sat_linear</td>
 <td align="left">One compartment TGI model with with linear tumor
 growth, without saturation.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">tgi_no_sat_powerLaw</td>
 <td align="left">One compartment TGI model with with exponential tumor
 growth, without saturation.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">tgi_sat_genLogistic</td>
 <td align="left">One compartment TGI model with tumor growth
 proportional to tumor size through a generalized logistic function, with
 saturation.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">tgi_sat_genVonBertalanffy</td>
 <td align="left">One compartment TGI model where tumor growth is limited
 by a loss term, with saturation.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">tgi_sat_Gompertz</td>
 <td align="left">One compartment TGI model with tumor growth
 proportional to tumor size through a generalized logistic function, with
 saturation.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">tgi_sat_logistic</td>
 <td align="left">One compartment TGI model with with exponential tumor
 growth that decelerates linearly, with saturation.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">tgi_sat_VonBertalanffy</td>
 <td align="left">One compartment TGI model where tumor growth is limited
 by a loss term, with saturation.</td>

@@ -257,7 +257,7 @@ data_obj <- PKNCAdata(
   )
 )
 nca_results <- pk.nca(data_obj)
-#>  ■■■■                              11% |  ETA: 17s
+#>  ■■■■                              10% |  ETA: 17s
 #>  ■■■■■■■■■■                        28% |  ETA: 13s
 #>  ■■■■■■■■■■■■■■■                   46% |  ETA:  9s
 #>  ■■■■■■■■■■■■■■■■■■■■              64% |  ETA:  6s

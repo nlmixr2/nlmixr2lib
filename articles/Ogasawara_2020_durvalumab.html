@@ -48,6 +48,7 @@
     <li><a class="dropdown-item" href="../articles/PK_2cmt_mAb_Davda_2014.html">PK_2cmt_mAb_Davda_2014</a></li>
     <li><a class="dropdown-item" href="../articles/Soehoel_2022_tralokinumab.html">Soehoel_2022_tralokinumab</a></li>
     <li><a class="dropdown-item" href="../articles/Thakre_2022_risankizumab.html">Thakre_2022_risankizumab</a></li>
+    <li><a class="dropdown-item" href="../articles/tmdd_archetypes.html">TMDD archetypes: full, QSS, and Michaelis-Menten approximations</a></li>
     <li><a class="dropdown-item" href="../articles/Wang_2017_benralizumab.html">Wang_2017_benralizumab</a></li>
     <li><a class="dropdown-item" href="../articles/Xie_2019_agomelatine.html">Xie_2019_agomelatine</a></li>
     <li><a class="dropdown-item" href="../articles/Zhu_2017_lebrikizumab.html">Zhu_2017_lebrikizumab</a></li>
@@ -259,10 +260,10 @@ Infusion over 1 hour.</p>
 <span>                                              cmax <span class="op">=</span> <span class="cn">TRUE</span>, tmax <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>                                              auclast <span class="op">=</span> <span class="cn">TRUE</span>, half.life <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">nca_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="va">data_obj</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■                         </span>  20% |  ETA: 11s</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■                   </span>  42% |  ETA:  8s</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■            </span>  64% |  ETA:  5s</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■     </span>  86% |  ETA:  2s</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■                        </span>  24% |  ETA: 10s</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■                 </span>  46% |  ETA:  7s</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■           </span>  68% |  ETA:  4s</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■    </span>  90% |  ETA:  1s</span></span>
 <span><span class="va">nca_summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">nca_results</span><span class="op">)</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">nca_summary</span>, digits <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>             caption <span class="op">=</span> <span class="st">"NCA summary (3rd dosing interval, weeks 8-12)"</span><span class="op">)</span></span></code></pre></div>

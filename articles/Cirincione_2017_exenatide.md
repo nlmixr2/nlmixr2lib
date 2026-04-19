@@ -257,6 +257,7 @@ nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = interv
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
 #>  ■■                                 3% |  ETA:  1m
 #> Warning: Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
@@ -315,7 +316,6 @@ nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = interv
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
 #>  ■■■■                               8% |  ETA: 49s
 #> Warning: Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
@@ -497,7 +497,8 @@ nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = interv
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#>  ■■■■■■■■■                         26% |  ETA: 37s
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#>  ■■■■■■■■■                         27% |  ETA: 37s
 #> Warning: Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
@@ -619,9 +620,8 @@ nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = interv
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#>  ■■■■■■■■■■■■■                     38% |  ETA: 31s
+#>  ■■■■■■■■■■■■■                     39% |  ETA: 31s
 #> Warning: Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
@@ -802,7 +802,9 @@ nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = interv
 #> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
 #> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
 #> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#>  ■■■■■■■■■■■■■■■■■■                57% |  ETA: 20s
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#>  ■■■■■■■■■■■■■■■■■■                57% |  ETA: 19s
 #> Warning: Too few points for half-life calculation (min.hl.points=3 with only 0 points)
 #> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
 #> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
@@ -1120,11 +1122,9 @@ nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = interv
 #> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
 #> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
 #> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      89% |  ETA:  4s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      88% |  ETA:  4s
 #> Warning: Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
 #> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
 #> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
 #> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
