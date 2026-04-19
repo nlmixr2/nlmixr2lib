@@ -106,7 +106,7 @@ For multi-output models, prefix with the output variable: `CcpropSd`, `CcaddSd`,
 
 ## Covariate column names
 
-Not listed here. See `references/covariate-columns.md` — the authoritative register. Any covariate used in a model must exist in that register; if it doesn't, propose adding an entry (skill workflow step).
+Not listed here. See `inst/references/covariate-columns.md` — the authoritative register. Any covariate used in a model must exist in that register; if it doesn't, propose adding an entry (skill workflow step).
 
 ## File-level metadata
 
