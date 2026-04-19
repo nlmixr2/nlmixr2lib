@@ -30,8 +30,31 @@ PK model from Fasanmade et al. (2009) in patients with ulcerative colitis
 from the ACT 1 and ACT 2 phase III trials (N = 482).
 
 The model is a 2-compartment IV infusion model with linear elimination.
-Covariates include serum albumin, anti-drug antibody (ATI) status, and sex
-on clearance, and body weight and sex on central volume.
+Covariates in the final model are serum albumin, anti-drug antibody
+(ATI / ADA) status, and sex on clearance, and body weight and sex on
+central volume. Concomitant immunomodulators (azathioprine, 6-mercaptopurine)
+were evaluated but did not have a statistically significant effect on CL.
+
+## Source trace
+
+| Element | Source location | Value / form |
+| --- | --- | --- |
+| CL, Vc, Vp, Q | Fasanmade 2009 Table 3 | 0.407 L/day, 3.29 L, 4.13 L, 7.14 L/day |
+| ALB on CL | Fasanmade 2009 Table 3 | Power: (ALB/4.1)^-1.54 |
+| ADA on CL | Fasanmade 2009 Table 3 | Multiplicative: 1 + 0.471 * ADA_POS |
+| SEX on CL | Fasanmade 2009 Table 3 | Multiplicative: 1 + (-0.236) * SEXF |
+| WT on Vc | Fasanmade 2009 Table 3 | Power: (WT/77)^0.538 |
+| SEX on Vc | Fasanmade 2009 Table 3 | Multiplicative: 1 + (-0.137) * SEXF |
+| IIV CL, Vc | Fasanmade 2009 Table 3 | omega^2 = 0.131 (37.7% CV), 0.048 (22.1% CV) |
+| Residual error | Fasanmade 2009 Table 3 | Proportional 0.403, additive 0.0413 ug/mL |
+| Dosing regimen | Fasanmade 2009 Methods | 5 mg/kg IV at weeks 0, 2, 6, then q8w |
+
+## Covariate column naming
+
+| Source column | Canonical column used here |
+| --- | --- |
+| `ATI` (antibodies to infliximab) | `ADA_POS` (per `.claude/skills/extract-literature-model/references/covariate-columns.md`) |
+| `SEX` (1 = female, 0 = male) | `SEXF` (same 0/1 encoding, canonical name) |
 
 ## Virtual population
 
@@ -40,11 +63,11 @@ set.seed(2009)
 n_subj <- 500
 
 pop <- data.frame(
-  ID  = seq_len(n_subj),
-  WT  = rlnorm(n_subj, log(77), 0.22),   # Median 77 kg, range ~40-177
-  ALB = rnorm(n_subj, 4.1, 0.4),         # Mean 4.1, SD 0.4 g/dL
-  SEX = rbinom(n_subj, 1, 0.392),        # 39.2% female
-  ATI = rbinom(n_subj, 1, 0.068)         # 6.8% ATI-positive
+  ID      = seq_len(n_subj),
+  WT      = rlnorm(n_subj, log(77), 0.22),   # Median 77 kg, range ~40-177
+  ALB     = rnorm(n_subj, 4.1, 0.4),         # Mean 4.1, SD 0.4 g/dL
+  SEXF    = rbinom(n_subj, 1, 0.392),        # 39.2% female
+  ADA_POS = rbinom(n_subj, 1, 0.068)         # 6.8% ADA-positive
 )
 pop$ALB <- pmax(2.0, pmin(pop$ALB, 5.5))
 ```
@@ -118,61 +141,110 @@ ggplot(sim_summary, aes(x = time / 7)) +
 
 ## Effect of anti-drug antibodies on PK
 
-```{r ati-stratified, fig.width = 7, fig.height = 5}
-sim_ati <- sim %>%
-  left_join(pop %>% select(ID, ATI), by = "ID") %>%
+```{r ada-stratified, fig.width = 7, fig.height = 5}
+sim_ada <- sim %>%
   filter(time > 0) %>%
-  mutate(ATI_label = ifelse(ATI == 1, "ATI-positive", "ATI-negative")) %>%
-  group_by(time, ATI_label) %>%
+  mutate(ADA_label = ifelse(ADA_POS == 1, "ADA-positive", "ADA-negative")) %>%
+  group_by(time, ADA_label) %>%
   summarise(
     median = median(Cc, na.rm = TRUE),
     .groups = "drop"
   )
 
-ggplot(sim_ati, aes(x = time / 7, y = median, color = ATI_label)) +
+ggplot(sim_ada, aes(x = time / 7, y = median, color = ADA_label)) +
   geom_line(linewidth = 1) +
   scale_y_log10() +
-  scale_color_manual(values = c("ATI-negative" = "steelblue", "ATI-positive" = "tomato")) +
+  scale_color_manual(values = c("ADA-negative" = "steelblue", "ADA-positive" = "tomato")) +
   labs(
     x = "Time (weeks)",
     y = "Infliximab concentration (ug/mL)",
-    title = "Infliximab median concentrations by ATI status",
-    subtitle = "ATI-positive patients have 47% higher clearance",
+    title = "Infliximab median concentrations by ADA status",
+    subtitle = "ADA-positive patients have 47% higher clearance",
     color = "Immunogenicity",
     caption = "Model: Fasanmade et al. (2009)"
   ) +
   theme_bw()
 ```
 
-## NCA analysis
+## NCA validation
+
+Run PKNCA on the maintenance dosing interval (after the 5th dose, weeks
+22–30). Stratify by ADA status so each treatment group has its own NCA
+summary, as required by the skill's PKNCA recipe.
 
 ```{r nca}
-# Use maintenance interval (week 22-30, after 5th dose)
-nca_data <- sim %>%
+nca_conc <- sim %>%
   filter(time >= 154, time <= 210, Cc > 0) %>%
-  mutate(time_rel = time - 154) %>%
-  select(ID, time_rel, Cc)
+  mutate(
+    time_rel = time - 154,
+    treatment = ifelse(ADA_POS == 1, "ADA-positive", "ADA-negative")
+  ) %>%
+  rename(ID = id) %>%
+  select(ID, time_rel, Cc, treatment)
 
-conc_obj <- PKNCAconc(nca_data, Cc ~ time_rel | ID)
-dose_obj <- PKNCAdose(
-  data.frame(ID = unique(nca_data$ID), time_rel = 0, AMT = 5 * 77),
-  AMT ~ time_rel | ID
+nca_dose <- pop %>%
+  mutate(
+    time_rel  = 0,
+    AMT       = 5 * WT,
+    treatment = ifelse(ADA_POS == 1, "ADA-positive", "ADA-negative")
+  ) %>%
+  select(ID, time_rel, AMT, treatment)
+
+conc_obj <- PKNCAconc(nca_conc, Cc ~ time_rel | treatment + ID)
+dose_obj <- PKNCAdose(nca_dose, AMT ~ time_rel | treatment + ID)
+data_obj <- PKNCAdata(
+  conc_obj,
+  dose_obj,
+  intervals = data.frame(
+    start     = 0,
+    end       = 56,
+    cmax      = TRUE,
+    tmax      = TRUE,
+    auclast   = TRUE,
+    half.life = TRUE
+  )
 )
-data_obj <- PKNCAdata(conc_obj, dose_obj,
-                       intervals = data.frame(start = 0, end = 56,
-                                              cmax = TRUE, tmax = TRUE,
-                                              auclast = TRUE, half.life = TRUE))
 nca_results <- pk.nca(data_obj)
 nca_summary <- summary(nca_results)
-knitr::kable(nca_summary, digits = 2,
-             caption = "NCA summary (maintenance interval, weeks 22-30)")
+knitr::kable(
+  nca_summary,
+  digits  = 2,
+  caption = "NCA summary (maintenance interval, weeks 22-30), stratified by ADA status"
+)
 ```
+
+## Assumptions and deviations
+
+Fasanmade 2009 does not publish individual PK or per-subject covariate
+values, so the virtual population above approximates the reported
+distributions rather than reproducing them:
+
+- **Weight:** sampled log-normal around a 77 kg median with SD 0.22 on
+  the log scale (≈ 40–177 kg), matching the reported range.
+- **Albumin:** sampled normal around mean 4.1 g/dL, SD 0.4 g/dL,
+  clipped to [2.0, 5.5] g/dL.
+- **Sex and ADA status:** sampled independently at 39.2% female and
+  6.8% ADA-positive, respectively. In the pooled ACT 1 / ACT 2 data
+  these are not fully independent, but the joint distribution is not
+  reported.
+- **No correlation** between WT and ALB is imposed; the paper does not
+  report one.
+- **Dosing regimen** uses the 5 mg/kg induction + q8w maintenance
+  schedule. Fasanmade 2009 pooled this with a 10 mg/kg arm; the 5 mg/kg
+  schedule is the approved label dose and the most relevant typical use.
+- **Race** is not included because it was not retained as a covariate in
+  the final model.
 
 ## Notes
 
 - **Model:** 2-compartment IV with linear elimination. No TMDD.
-- **Key covariates:** Albumin (strongest, power -1.54 on CL), ATI status
-  (+47.1% CL), and sex (-23.6% CL and -13.7% V1 for females).
-- **Body weight** was only significant on V1 (exponent 0.538), NOT on CL
+- **Key covariates:** Albumin (strongest, power -1.54 on CL), ADA status
+  (+47.1% CL), and sex (-23.6% CL and -13.7% Vc for females).
+- **Body weight** was only significant on Vc (exponent 0.538), NOT on CL
   (unlike most mAb models).
-- **Concomitant immunomodulators** (AZA, 6-MP) did NOT affect PK.
+- **Concomitant immunomodulators** (AZA, 6-MP) did NOT affect PK in the
+  final model.
+
+## Reference
+
+* `r rxode2::rxode(readModelDb("Fasanmade_2009_infliximab"))$reference`
