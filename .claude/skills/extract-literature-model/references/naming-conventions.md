@@ -11,7 +11,12 @@ Lower case. Snake case only when combining concepts.
 - `peripheral1`, `peripheral2` — peripheral compartments for 2- and 3-compartment models.
 - `effect` — effect compartment for PK/PD models.
 - `transit1`, `transit2`, … — transit-compartment absorption chains.
+- `target` — free (unbound) target species in explicit-binding TMDD models.
+- `complex` — drug–target complex in explicit-binding TMDD models (Mager & Jusko 2001).
+- `total_target` — total (free + bound) target in QSS / MM TMDD approximations where the bound species is not carried as a separate state (Gibiansky et al. 2008).
 - Therapeutic-area or mechanism-specific compartments: open a GitHub issue before adding new names.
+
+The `target` / `complex` / `total_target` names follow the convention proposed by @iamstein in review of PR #60 and are standard in the TMDD literature.
 
 ### Do not declare compartment order
 
