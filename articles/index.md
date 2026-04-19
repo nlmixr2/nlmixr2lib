@@ -8,6 +8,7 @@
 - [Creating a model
   library](https://nlmixr2.github.io/nlmixr2lib/articles/create-model-library.md):
 - [Fasanmade_2009_infliximab](https://nlmixr2.github.io/nlmixr2lib/articles/Fasanmade_2009_infliximab.md):
+- [Fiedler-Kelly_2019_fremanezumab](https://nlmixr2.github.io/nlmixr2lib/articles/Fiedler-Kelly_2019_fremanezumab.md):
 - [Trontinemab and gantenerumab PK in plasma and brain (Grimm
   2023)](https://nlmixr2.github.io/nlmixr2lib/articles/Grimm_2023.md):
 - [Hu_2026_clesrovimab](https://nlmixr2.github.io/nlmixr2lib/articles/Hu_2026_clesrovimab.md):
