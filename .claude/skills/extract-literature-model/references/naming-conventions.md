@@ -69,6 +69,28 @@ Multiplicative additive effect: `e_<cov>_<param>`. Examples: `e_wt_cl`, `e_ada_c
 
 Power-style effect: keep the same naming and apply as `cov^e_cov_param` if the source parameterizes it that way; comment the form.
 
+## Endogenous / mechanistic parameters
+
+For endogenous turnover, steady-state, and enzyme-kinetic models (e.g., `igg_kim_2006`, `phenylalanine_charbonneau_2021`), parameters come from mechanism rather than from a CL/V parameterization. Use the names the paper uses; lower-case snake-case by default. Log-transform only positive-constrained parameters that are being *estimated* — not mechanistic constants that the source paper reports as point values.
+
+Recommended patterns:
+
+- `Vmax`, `Km` — Michaelis–Menten constants for each enzyme / transporter. Name-disambiguate when several coexist: `vmax_pah`, `km_pah`, `vmax_trans`, `km_trans`.
+- `kint`, `kcat`, `kpro`, `krmr` — fractional rate constants (1/time). When a rate is recomputed at steady state vs. dynamically, suffix the steady-state value with `_0` (e.g., `kcat_0`) and leave the dynamic one unsuffixed.
+- `bl_<species>` — baseline concentration of an endogenous species (e.g., `bl_phe`, `bl_gut`). Use this as the initial condition: `<species>(0) <- bl_<species>`.
+- `f_<fraction>` — unitless fractional-activity scalars (e.g., `f_pah` = fraction of healthy PAH activity).
+- `vd` — body-weight-normalized volume of distribution (L/kg) when the paper uses it that way. Don't rename to `vc` if the paper's mechanism makes `vd` meaningful.
+
+Constants spelled out in the `model()` block (molecular weights, stoichiometric conversion factors, reference weights) should sit at the **top** of `model()` before any derived quantity, with a unit comment.
+
+Endogenous models typically have:
+
+- **No `eta*` IIV parameters.** The model is a typical-value mechanism.
+- **No residual error.** Deterministic simulation is the intended use.
+- **No dosing events.** The state starts at biological baseline.
+
+When the paper *does* report variability or residual error for an endogenous model, follow the standard IIV / residual conventions below.
+
 ## Residual error
 
 - Proportional: `propSd`

@@ -19,6 +19,7 @@ Read these on demand; don't load them up front.
 - `references/model-file-template.md` — skeleton for the `.R` file.
 - `references/vignette-template.md` — skeleton for the validation vignette.
 - `references/pknca-recipes.md` — PKNCA setups for single-dose, steady-state, and multi-dose NCA.
+- `references/endogenous-validation.md` — validation strategy for endogenous / mechanistic / turnover models where PKNCA is not the right check.
 - `references/verification-checklist.md` — checklist to walk after the first-pass implementation.
 
 ## Phase 1 — Source acquisition and scoping
@@ -109,7 +110,19 @@ Use `references/vignette-template.md`. Required sections, in order:
 8. **Comparison against published NCA** — if the source paper reports Cmax / Tmax / AUC / half-life, render a side-by-side comparison table. Flag differences > 20% in the narrative and investigate the source — do not tune.
 9. **Assumptions and deviations** — explicit list of what you had to assume because the paper didn't say (race distribution, z-score stability, etc.).
 
-For **endogenous / turnover models** where NCA isn't the right validation, replace the PKNCA section with a baseline-recovery / steady-state check. For **multi-output models**, run one PKNCA block per output.
+For **endogenous / turnover models** where NCA isn't the right validation, replace the PKNCA section with the steady-state / perturbation-recovery / mass-balance checks described in `references/endogenous-validation.md`. For **multi-output models**, run one PKNCA block per output.
+
+### Endogenous and mechanistic models
+
+Papers that describe endogenous turnover, steady-state balance, or mechanistic enzyme kinetics (e.g., Kim 2006 IgG FcRn recycling, Charbonneau 2021 phenylalanine) have a different shape than drug PK models:
+
+- Parameters are mechanistic constants (`Vmax`, `Km`, `kint`, `kcat`, `kpro`, baseline concentrations `bl_<species>`, fractional-activity scalars like `f_<enzyme>`) rather than log-transformed CL/V.
+- `ini()` usually has **no IIV etas and no residual error** — the model describes population-typical mechanism, not variability.
+- `model()` has **no dosing events**; the state starts at a biological baseline (`<state>(0) <- bl_<state>` or `<state>(0) <- css`).
+- Validation is **not** PKNCA. Use steady-state / perturbation-recovery / mass-balance checks. See `references/endogenous-validation.md`.
+- Dimensional analysis is load-bearing. These models often mix `mg/mL`, `mg/kg`, `L/kg`, `1/day`; a single unit slip silently corrupts the balance. Walk through every term in every ODE and the derived rates.
+
+Naming conventions for mechanistic parameters are documented in `references/naming-conventions.md` under "Endogenous / mechanistic parameters."
 
 ## Phase 6 — Registration, tests, docs, PR
 

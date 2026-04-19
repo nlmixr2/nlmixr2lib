@@ -28,6 +28,8 @@
 #' @param etaCombineType the option for the how to combine the eta
 #'   with the parameter name.  Can be: "default", "snake", "camel",
 #'   "dot", "blank"
+#' @param model Deprecated alias for \code{ui}. Supplying \code{model}
+#'   instead of \code{ui} still works but emits a deprecation warning.
 #' @return The model with eta added to the requested parameters
 #' @author Bill Denney, Richard Hooijmaijers & Matthew L. Fidler
 #' @export
@@ -36,7 +38,9 @@
 #' readModelDb("PK_1cmt") |> addEta("ka")
 #' @export
 addEta <- function(ui, eta, priorName = getOption("nlmixr2lib.priorEta", TRUE),
-                   etaCombineType = c("default", "snake", "camel", "dot", "blank")) {
+                   etaCombineType = c("default", "snake", "camel", "dot", "blank"),
+                   model) {
+  .useModelAsUi()
   if (missing(etaCombineType)) {
     etaCombineType <- .getCombineTypeFromRoption("nlmixr2lib.etaCombineType")
   }
