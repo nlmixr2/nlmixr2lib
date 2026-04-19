@@ -81,7 +81,9 @@
 
   for (line in lines) {
     if (startsWith(line, "## ") && !startsWith(line, "### ")) {
-      flush(); current <- NULL; state <- "idle"
+      flush()
+      current <- NULL
+      state <- "idle"
       next
     }
     if (startsWith(line, "### ")) {
@@ -98,11 +100,15 @@
 
     m <- regmatches(line, regexec("^- \\*\\*Units:\\*\\*\\s*(.*)$", line))[[1]]
     if (length(m) == 2) {
-      current$units <- trimws(m[[2]]); state <- "header"; next
+      current$units <- trimws(m[[2]])
+      state <- "header"
+      next
     }
     m <- regmatches(line, regexec("^- \\*\\*Type:\\*\\*\\s*(.*)$", line))[[1]]
     if (length(m) == 2) {
-      current$type <- trimws(m[[2]]); state <- "header"; next
+      current$type <- trimws(m[[2]])
+      state <- "header"
+      next
     }
     if (grepl("^- \\*\\*Source aliases:\\*\\*", line)) {
       state <- "aliases"

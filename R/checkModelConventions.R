@@ -135,7 +135,10 @@ checkModelConventions <- function(model, verbose = TRUE) {
     )
   } else {
     msg <- sprintf(
-      "%d convention issue(s) found across %d models. Run `checkModelConventions(<name>)` for the full report per model.",
+      paste0(
+        "%d convention issue(s) found across %d models. ",
+        "Run `checkModelConventions(<name>)` for the full report per model."
+      ),
       nrow(bad), length(models)
     )
   }
@@ -284,7 +287,13 @@ checkModelConventions <- function(model, verbose = TRUE) {
     if (!(nm %in% canonical_reserr) && !.matchesDeprecatedReserr(nm, conv)) {
       issues <- rbind(issues, .issue(
         "parameter_naming", "warning", nm,
-        sprintf("Residual-error parameter '%s' does not match canonical propSd/addSd (or '<output>propSd'/'<output>addSd').", nm),
+        sprintf(
+          paste0(
+            "Residual-error parameter '%s' does not match canonical ",
+            "propSd/addSd (or '<output>propSd'/'<output>addSd')."
+          ),
+          nm
+        ),
         sprintf("Rename to one of: %s.", paste(canonical_reserr, collapse = ", "))
       ))
     }
@@ -382,8 +391,21 @@ checkModelConventions <- function(model, verbose = TRUE) {
         if (!declared) {
           issues <- rbind(issues, .issue(
             "covariates", "warning", nm,
-            sprintf("Covariate '%s' is an alias of canonical '%s'; alias mapping is not declared via source_name.", nm, canon),
-            sprintf("Either rename to '%s' in the model and data, or document the mapping by adding `source_name = \"%s\"` under covariateData[[\"%s\"]] using the canonical name.", canon, nm, canon)
+            sprintf(
+              paste0(
+                "Covariate '%s' is an alias of canonical '%s'; ",
+                "alias mapping is not declared via source_name."
+              ),
+              nm, canon
+            ),
+            sprintf(
+              paste0(
+                "Either rename to '%s' in the model and data, or ",
+                "document the mapping by adding `source_name = \"%s\"` ",
+                "under covariateData[[\"%s\"]] using the canonical name."
+              ),
+              canon, nm, canon
+            )
           ))
         }
       } else {
@@ -497,16 +519,32 @@ checkModelConventions <- function(model, verbose = TRUE) {
           !.unitsSameDimension(dosing, conc_num)) {
         issues <- rbind(issues, .issue(
           "units", "warning", "dosing_concentration",
-          sprintf("units$dosing ('%s') and units$concentration numerator ('%s') appear dimensionally incompatible.",
-                  dosing, conc_num),
-          "Confirm the dosing unit dimension matches the concentration numerator dimension (both mass, or both molar, etc.)."
+          sprintf(
+            paste0(
+              "units$dosing ('%s') and units$concentration numerator ",
+              "('%s') appear dimensionally incompatible."
+            ),
+            dosing, conc_num
+          ),
+          paste0(
+            "Confirm the dosing unit dimension matches the concentration ",
+            "numerator dimension (both mass, or both molar, etc.)."
+          )
         ))
       } else if (!.unitsCompatible(dosing, conc_num)) {
         issues <- rbind(issues, .issue(
           "units", "info", "dosing_concentration",
-          sprintf("units$dosing ('%s') and units$concentration numerator ('%s') differ in magnitude; ensure scaling is applied in model().",
-                  dosing, conc_num),
-          "When dosing is mg but concentration is ug/mL (= mg/L), no conversion is needed if volume is in L. Verify the relationship."
+          sprintf(
+            paste0(
+              "units$dosing ('%s') and units$concentration numerator ",
+              "('%s') differ in magnitude; ensure scaling is applied in model()."
+            ),
+            dosing, conc_num
+          ),
+          paste0(
+            "When dosing is mg but concentration is ug/mL (= mg/L), no ",
+            "conversion is needed if volume is in L. Verify the relationship."
+          )
         ))
       }
     }
@@ -529,7 +567,8 @@ checkModelConventions <- function(model, verbose = TRUE) {
   mass <- c("kg", "g", "mg", "ug", "ng", "pg")
   molar <- c("mol", "mmol", "umol", "nmol", "pmol")
   iu <- c("iu", "miu", "uiu", "niu")
-  a <- .normUnit(a); b <- .normUnit(b)
+  a <- .normUnit(a)
+  b <- .normUnit(b)
   (a %in% mass && b %in% mass) ||
     (a %in% molar && b %in% molar) ||
     (a %in% iu && b %in% iu)

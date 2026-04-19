@@ -1,3 +1,10 @@
+# Model fixtures below use the canonical rxode2/nlmixr2 DSL inside ini() and
+# model() blocks, which relies on idioms that lintr flags as style warnings:
+#   - ini() uses `param <- value; label("...")` on one line (semicolon_linter)
+#   - model() uses `d/dt(cmt)` without spaces around `/` (infix_spaces_linter)
+# Both are intentional — do not rewrite them.
+# nolint start: semicolon_linter, infix_spaces_linter
+
 test_that("checkModelConventions returns a data.frame with the expected columns", {
   res <- suppressWarnings(checkModelConventions("PK_1cmt", verbose = FALSE))
   expect_s3_class(res, "data.frame")
@@ -40,7 +47,8 @@ test_that("conventional parameter names produce no naming issues", {
 
 test_that("etacl on lcl is flagged with etalcl suggestion", {
   bad <- function() {
-    description <- "A"; reference <- "R"
+    description <- "A"
+    reference <- "R"
     units <- list(time = "day", dosing = "mg", concentration = "mg/L")
     ini({
       lka <- 0.1; label("a (1/day)")
@@ -68,17 +76,20 @@ test_that("etacl on lcl is flagged with etalcl suggestion", {
 
 test_that("deprecated residual error names are flagged", {
   bad <- function() {
-    description <- "A"; reference <- "R"
+    description <- "A"
+    reference <- "R"
     units <- list(time = "day", dosing = "mg", concentration = "mg/L")
     ini({
       lka <- 0.1; label("a")
       lcl <- 1;   label("b")
       lvc <- 1;   label("c")
       prop.err <- 0.1; label("d")
-      add.err  <- 0.01; label("e")
+      add.err <- 0.01; label("e")
     })
     model({
-      ka <- exp(lka); cl <- exp(lcl); vc <- exp(lvc)
+      ka <- exp(lka)
+      cl <- exp(lcl)
+      vc <- exp(lvc)
       kel <- cl / vc
       d/dt(depot) <- -ka * depot
       d/dt(central) <- ka * depot - kel * central
@@ -94,7 +105,8 @@ test_that("deprecated residual error names are flagged", {
 
 test_that("missing units$concentration is flagged as an error when residual error exists", {
   bad <- function() {
-    description <- "A"; reference <- "R"
+    description <- "A"
+    reference <- "R"
     units <- list(time = "day", dosing = "mg")
     ini({
       lka <- 0.1; label("a")
@@ -103,7 +115,9 @@ test_that("missing units$concentration is flagged as an error when residual erro
       propSd <- 0.1; label("d")
     })
     model({
-      ka <- exp(lka); cl <- exp(lcl); vc <- exp(lvc)
+      ka <- exp(lka)
+      cl <- exp(lcl)
+      vc <- exp(lvc)
       kel <- cl / vc
       d/dt(depot) <- -ka * depot
       d/dt(central) <- ka * depot - kel * central
@@ -119,10 +133,12 @@ test_that("missing units$concentration is flagged as an error when residual erro
 
 test_that("a covariate used but not in covariateData is an error", {
   bad <- function() {
-    description <- "A"; reference <- "R"
+    description <- "A"
+    reference <- "R"
     units <- list(time = "day", dosing = "mg", concentration = "mg/L")
     ini({
-      lcl <- 1; label("a"); lvc <- 1; label("b")
+      lcl <- 1; label("a")
+      lvc <- 1; label("b")
       propSd <- 0.1; label("d")
     })
     model({
@@ -141,14 +157,16 @@ test_that("a covariate used but not in covariateData is an error", {
 
 test_that("a covariate alias without declared source_name produces a warning", {
   bad <- function() {
-    description <- "A"; reference <- "R"
+    description <- "A"
+    reference <- "R"
     units <- list(time = "day", dosing = "mg", concentration = "mg/L")
     covariateData <- list(
       ADA = list(description = "Anti-drug antibody", units = "(binary)",
                  type = "binary")
     )
     ini({
-      lcl <- 1; label("a"); lvc <- 1; label("b")
+      lcl <- 1; label("a")
+      lvc <- 1; label("b")
       e_ada_cl <- 0.5; label("c")
       propSd <- 0.1; label("d")
     })
@@ -170,14 +188,16 @@ test_that("a covariate alias without declared source_name produces a warning", {
 
 test_that("declared alias via source_name produces no alias warning", {
   good <- function() {
-    description <- "A"; reference <- "R"
+    description <- "A"
+    reference <- "R"
     units <- list(time = "day", dosing = "mg", concentration = "mg/L")
     covariateData <- list(
       ADA_POS = list(description = "ADA-positive", units = "(binary)",
                      type = "binary", source_name = "ADA")
     )
     ini({
-      lcl <- 1; label("a"); lvc <- 1; label("b")
+      lcl <- 1; label("a")
+      lvc <- 1; label("b")
       e_ada_cl <- 0.5; label("c")
       propSd <- 0.1; label("d")
     })
@@ -197,15 +217,19 @@ test_that("declared alias via source_name produces no alias warning", {
 
 test_that("non-canonical compartment is flagged as a warning", {
   bad <- function() {
-    description <- "A"; reference <- "R"
+    description <- "A"
+    reference <- "R"
     units <- list(time = "day", dosing = "mg", concentration = "mg/L")
     ini({
       lka <- 0.1; label("a")
-      lcl <- 1; label("b"); lvc <- 1; label("c")
+      lcl <- 1; label("b")
+      lvc <- 1; label("c")
       propSd <- 0.1; label("d")
     })
     model({
-      ka <- exp(lka); cl <- exp(lcl); vc <- exp(lvc)
+      ka <- exp(lka)
+      cl <- exp(lcl)
+      vc <- exp(lvc)
       kel <- cl / vc
       d/dt(absorption) <- -ka * absorption
       d/dt(central) <- ka * absorption - kel * central
@@ -221,7 +245,8 @@ test_that("non-canonical compartment is flagged as a warning", {
 
 test_that("warning is emitted when issues exist and suppressed when clean", {
   good <- function() {
-    description <- "A"; reference <- "R"
+    description <- "A"
+    reference <- "R"
     units <- list(time = "day", dosing = "mg", concentration = "mg/L")
     ini({
       lka <- 0.1; label("a (1/day)")
@@ -230,7 +255,9 @@ test_that("warning is emitted when issues exist and suppressed when clean", {
       propSd <- 0.1; label("d (fraction)")
     })
     model({
-      ka <- exp(lka); cl <- exp(lcl); vc <- exp(lvc)
+      ka <- exp(lka)
+      cl <- exp(lcl)
+      vc <- exp(lvc)
       kel <- cl / vc
       d/dt(depot) <- -ka * depot
       d/dt(central) <- ka * depot - kel * central
@@ -287,7 +314,8 @@ test_that("covariate alias map resolves document-order last-writes-win", {
 
 test_that("an rxUi object is accepted directly", {
   good <- function() {
-    description <- "A"; reference <- "R"
+    description <- "A"
+    reference <- "R"
     units <- list(time = "day", dosing = "mg", concentration = "mg/L")
     ini({
       lka <- 0.1; label("a (1/day)")
@@ -296,7 +324,9 @@ test_that("an rxUi object is accepted directly", {
       propSd <- 0.1; label("d")
     })
     model({
-      ka <- exp(lka); cl <- exp(lcl); vc <- exp(lvc)
+      ka <- exp(lka)
+      cl <- exp(lcl)
+      vc <- exp(lvc)
       kel <- cl / vc
       d/dt(depot) <- -ka * depot
       d/dt(central) <- ka * depot - kel * central
@@ -308,3 +338,5 @@ test_that("an rxUi object is accepted directly", {
   res <- suppressWarnings(checkModelConventions(ui, verbose = FALSE))
   expect_s3_class(res, "data.frame")
 })
+
+# nolint end
