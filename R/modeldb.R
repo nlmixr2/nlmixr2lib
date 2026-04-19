@@ -30,7 +30,20 @@ buildModelDb <- function() {
     }
   }
   message("Building the modeldb from ", packageDirectory)
-  modeldb <- addDirToModelDb(file.path(packageDirectory, "inst/modeldb"))
+  cachePath <- file.path(packageDirectory, "data-raw/modeldb-cache.rds")
+  cache <- .modeldbCacheRead(cachePath)
+  sig <- .modeldbGlobalSig(packageDirectory)
+  if (is.null(cache) || !identical(cache$globalSig, sig)) {
+    if (!is.null(cache)) {
+      message("modeldb cache invalidated (global signature changed)")
+    }
+    cache <- list(globalSig = sig, entries = list())
+  }
+  result <- .addDirToModelDbCached(
+    dir = file.path(packageDirectory, "inst/modeldb"),
+    entries = cache$entries
+  )
+  modeldb <- result$modeldb
   # Drop the base package directory name so that will be installation-agnostic
   modeldb$filename <-
     gsub(
@@ -42,6 +55,7 @@ buildModelDb <- function() {
   message("Saving the modeldb to ", savefile)
   save(modeldb, file = savefile, compress = "bzip2", version = 2, ascii = FALSE)
   qs2::qs_save(modeldb, file = file.path(packageDirectory, "inst/modeldb.qs2"))
+  .modeldbCacheWrite(cachePath, list(globalSig = sig, entries = result$entries))
   message("Done saving the modeldb to ", savefile)
 
   colDesc <-
@@ -119,6 +133,23 @@ addFileToModelDb <- function(dir, file, modeldb) {
 
   # Parse the model to get the fixed effects and DV parameters
   mod <- nlmixr2est::nlmixr(eval(parsedFile))
+
+  # Convention check. Reports deviations but does not halt the build so that
+  # grandfathered models continue to regenerate while their issues surface.
+  issues <- tryCatch(
+    suppressWarnings(checkModelConventions(mod, verbose = FALSE)),
+    error = function(e) NULL
+  )
+  if (!is.null(issues) && nrow(issues) > 0) {
+    n_err <- sum(issues$severity == "error")
+    n_warn <- sum(issues$severity == "warning")
+    if (n_err + n_warn > 0) {
+      message(sprintf(
+        "  %s: %d convention error(s), %d warning(s) - run checkModelConventions(\"%s\") for details",
+        modelName, n_err, n_warn, modelName
+      ))
+    }
+  }
 
   description <- mod$meta$description
   if (is.null(description)) {
@@ -203,3 +234,93 @@ addFileToModelDb <- function(dir, file, modeldb) {
   modeldb
 }
 ## nocov end
+
+# Walk a modeldb directory and return rows + updated cache entries. Reuses a
+# cached row when the file's md5 matches the cached hash; otherwise re-parses
+# via addFileToModelDb(). Files not present on disk are dropped from entries
+# by virtue of iterating only over live files.
+.addDirToModelDbCached <- function(dir, entries) {
+  filesToLoad <-
+    list.files(
+      path = dir,
+      pattern = "\\.R$",
+      ignore.case = TRUE,
+      recursive = TRUE
+    )
+  modeldb <- data.frame()
+  newEntries <- list()
+  for (currentFile in filesToLoad) {
+    fullPath <- file.path(dir, currentFile)
+    fileHash <- unname(tools::md5sum(fullPath))
+    cached <- entries[[currentFile]]
+    if (!is.null(cached) && identical(cached$hash, fileHash)) {
+      message("modeldb cache hit: ", currentFile)
+      row <- cached$row
+      row$filename <- fullPath
+      modeldb <- rbind(modeldb, row)
+      newEntries[[currentFile]] <- cached
+    } else {
+      message("modeldb cache miss: ", currentFile)
+      before <- nrow(modeldb)
+      modeldb <- addFileToModelDb(dir = dir, file = currentFile, modeldb = modeldb)
+      newRow <- modeldb[before + 1L, , drop = FALSE]
+      rownames(newRow) <- NULL
+      newEntries[[currentFile]] <- list(hash = fileHash, row = newRow)
+    }
+  }
+  list(modeldb = modeldb, entries = newEntries)
+}
+
+# Build the global signature used to invalidate all entries at once. Changes to
+# the extraction code (R/modeldb.R) or to any upstream parser version force a
+# full rebuild. Silent upstream breakage without a version bump is not covered
+# here; the escape hatch is `unlink("data-raw/modeldb-cache.rds")`.
+.modeldbGlobalSig <- function(packageDirectory) {
+  safeVersion <- function(pkg) {
+    tryCatch(
+      as.character(utils::packageVersion(pkg)),
+      error = function(e) NA_character_
+    )
+  }
+  list(
+    cacheVersion = 1L,
+    rVersion     = R.version.string,
+    nlmixr2      = safeVersion("nlmixr2"),
+    nlmixr2est   = safeVersion("nlmixr2est"),
+    rxode2       = safeVersion("rxode2"),
+    modeldbRhash = unname(tools::md5sum(file.path(packageDirectory, "R/modeldb.R")))
+  )
+}
+
+.modeldbCacheRead <- function(path) {
+  if (!file.exists(path)) {
+    return(NULL)
+  }
+  tryCatch(
+    {
+      cache <- readRDS(path)
+      if (!is.list(cache) || !all(c("globalSig", "entries") %in% names(cache))) {
+        return(NULL)
+      }
+      cache
+    },
+    error = function(e) NULL
+  )
+}
+
+.modeldbCacheWrite <- function(path, cache) {
+  reportFailure <- function(c) {
+    warning("Could not write modeldb cache to ", path, ": ", conditionMessage(c))
+  }
+  tryCatch(
+    {
+      dir.create(dirname(path), showWarnings = FALSE, recursive = TRUE)
+      tmp <- paste0(path, ".tmp")
+      saveRDS(cache, file = tmp)
+      file.rename(tmp, path)
+    },
+    warning = reportFailure,
+    error = reportFailure
+  )
+  invisible(NULL)
+}
