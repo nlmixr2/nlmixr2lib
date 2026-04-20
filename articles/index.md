@@ -2,6 +2,7 @@
 
 ### All vignettes
 
+- [Budha_2023_tislelizumab](https://nlmixr2.github.io/nlmixr2lib/articles/Budha_2023_tislelizumab.md):
 - [CarlssonPetri_2021_liraglutide](https://nlmixr2.github.io/nlmixr2lib/articles/CarlssonPetri_2021_liraglutide.md):
 - [Cirincione_2017_exenatide](https://nlmixr2.github.io/nlmixr2lib/articles/Cirincione_2017_exenatide.md):
 - [Clegg_2024_nirsevimab](https://nlmixr2.github.io/nlmixr2lib/articles/Clegg_2024_nirsevimab.md):
