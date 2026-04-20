@@ -161,6 +161,7 @@ this way.
   models](https://nlmixr2.github.io/nlmixr2lib/articles/list-of-models.md):
 - [Markov
   modeling](https://nlmixr2.github.io/nlmixr2lib/articles/markov.md):
+- [Masters_2022_avelumab](https://nlmixr2.github.io/nlmixr2lib/articles/Masters_2022_avelumab.md):
 - [Ogasawara_2020_durvalumab](https://nlmixr2.github.io/nlmixr2lib/articles/Ogasawara_2020_durvalumab.md):
 - [PK_2cmt_mAb_Davda_2014](https://nlmixr2.github.io/nlmixr2lib/articles/PK_2cmt_mAb_Davda_2014.md):
 - [Soehoel_2022_tralokinumab](https://nlmixr2.github.io/nlmixr2lib/articles/Soehoel_2022_tralokinumab.md):
