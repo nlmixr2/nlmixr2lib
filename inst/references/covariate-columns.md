@@ -167,6 +167,7 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
 - **Example models:** `Kotani_2022_astegolimab.R` (reference 180 cells/µL).
 - **Notes:** Baseline-only (time-fixed per subject). Used as a surrogate of inflammatory burden that correlates with protein turnover and therefore mAb clearance.
 
+
 ### CRP (**canonical for C-reactive protein**)
 - **Description:** C-reactive protein concentration (baseline or time-varying) from a standard (not low-range / high-sensitivity) assay.
 - **Units:** mg/L (document per-model via `covariateData[[CRP]]$units`).
@@ -329,6 +330,17 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
   - `ADA` (semantically "ever positive") — used in `Zhu_2017_lebrikizumab.R`. When translating from a paper that uses `ADA` as "ever positive," verify the time-frame matches ADA_POS semantics before renaming.
   - `ADA` (time-varying positivity, primary covariate in Xu 2019) — used in `Xu_2019_sarilumab.R`.
 - **Example models:** `Clegg_2024_nirsevimab.R`, `Hu_2026_clesrovimab.R`, `Xu_2019_sarilumab.R`.
+
+### ADA_TITRE (**canonical for continuous ADA titre**)
+- **Description:** Antidrug-antibody titre reported as the reciprocal dilution (the integer after the colon in clinical notation `1:N`). Time-varying; matched in time to the PK sample.
+- **Units:** titre (dimensionless reciprocal dilution, e.g. 10, 20, 40, …, 2560)
+- **Type:** continuous
+- **Reference category:** n/a — used in a log-linear multiplicative effect `(1 + coef * log_e(ADA_TITRE))`.
+- **Encoding for ADA-negative samples:** `ADA_TITRE = 1` so that `log_e(1) = 0` cancels the covariate effect. This convention is the NONMEM standard used in the source papers that parameterize ADA effects on a log-titre scale. Documented per-model in `covariateData[[ADA_TITRE]]$notes`.
+- **Source aliases:**
+  - `ADA titre` — British-spelling long form.
+- **Example models:** `Jackson_2022_ixekizumab.R` (reference: 58.6 kg paediatric psoriasis dataset; ADA-negative samples are 85.8% of the dataset and are encoded with `ADA_TITRE = 1`).
+- **Notes:** Ratified 2026-04-20 during extraction of Jackson 2022. Distinct from `ADA_POS` because the effect here is driven by magnitude of titre, not presence/absence. Distinct from `ADA_TITER` (American spelling, zero for negative). Both columns may coexist in a dataset; use `ADA_TITRE` when the source parameterizes `log_e` titre on CL.
 
 ### ADA_TITER (**canonical**)
 - **Description:** Continuous antidrug antibody titer (time-varying). Zero for ADA-negative observations.
@@ -518,12 +530,18 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
   `RACE_<GROUP>` decomposition so categorical tumor-type effects are
   stored as indicator columns with an explicit "all other tumor types"
   reference.
+- **2026-04-20** — Added `ADA_TITRE` canonical entry while extracting the
+  Jackson 2022 ixekizumab paediatric psoriasis PopPK model. Distinct from
+  both `ADA_POS` (binary) and `ADA_TITER` (zero for negative); encodes the
+  continuous reciprocal-dilution titre with the NONMEM convention
+  `ADA_TITRE = 1` for ADA-negative samples (so that `log_e(1) = 0` cancels
+  the covariate effect). Ratified via sidecar stop-and-ask during task 006.
 - Subsequent additions: append new canonical entries as new papers are processed. When adding, bump the audit-completed count in the summary below.
 - **Xu 2019 sarilumab**: Added canonical entries `ALBR` (albumin / ULN ratio), `CRCL_BSA` (BSA-normalized creatinine clearance), `BLCRP` (baseline C-reactive protein), and `FORM_DP2` (sarilumab drug product 2 indicator). Extended the `ADA_POS` alias list to include the time-varying `ADA` column used in Xu 2019.
 - **Ma 2020 sarilumab DAS28-CRP**: Added canonical entries `BLPHYVAS` (baseline Physician's Global Assessment of Disease Activity, 100-mm VAS), `BLHAQ` (baseline HAQ-DI), and `PRICORT` (prior corticosteroid treatment). Extended the `BLCRP` entry to record Ma 2020 as a second example model (reference 15.7 mg/L, covariate on DAS28-CRP BASE and log(Emax)).
 
 ## Summary
 
-- Files audited: 64 R files under `inst/modeldb/` (15 of which reference covariates).
-- Canonical entries: 51.
+- Files audited: 65 R files under `inst/modeldb/` (16 of which reference covariates).
+- Canonical entries: 52.
 - Aliases mapped: 16 (including SEXM→SEXF, ADA→ADA_POS, ADAT→ADA_TITER, BLACK→RACE_BLACK, ASIAN→RACE_ASIAN, MULTIRACIAL→RACE_MULTI, BLACK_OTH→RACE_BLACK_OTH, ASIAN_AMIND_MULTI→RACE_ASIAN_AMIND_MULTI, DVID→STUDY1/STUDY5, CRE→CREAT, CRPHS→hsCRP, 1.73*CrCl/BSA→CRCL_BSA, DP2→FORM_DP2, DISEXT→DISEXT_EP/DISEXT_OTHER, BEASI→EASI, TUMTP→TUMTP_CHL/TUMTP_GC).

@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Jackson 2022 ixekizumab ([doi:10.1111/bcp.15034](https://doi.org/10.1111/bcp.15034)) — paediatric patients with moderate-to-severe plaque psoriasis.
 * Add Moein 2022 etrolizumab ([doi:10.1002/psp4.12846](https://doi.org/10.1002/psp4.12846)) — patients with moderately-to-severely active ulcerative colitis.
 * Add Chua 2025 mirikizumab ([doi:10.1111/cts.70320](https://doi.org/10.1111/cts.70320)) — patients with moderately-to-severely active Crohn's disease.
 * Add Ma 2020 sarilumab ANC ([doi:10.1007/s40262-020-00899-7](https://doi.org/10.1007/s40262-020-00899-7)) — adults with rheumatoid arthritis.
