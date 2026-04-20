@@ -11,6 +11,7 @@ exclusions: list(
     "data-raw",
     "data",
     "docs",
-    "src"
+    "src",
+    "vignettes"
   )
 encoding: "UTF-8"

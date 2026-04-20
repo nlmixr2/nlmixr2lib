@@ -77,6 +77,35 @@ See `references/endogenous-validation.md` for full recipes.
 - [ ] Vignette builds cleanly.
 - [ ] `NEWS.md` entry added.
 
+### Verifying against the **worktree's** nlmixr2lib, not the system install
+
+When this task runs under `claude_runner`, your `working_dir` is a fresh
+git worktree — NOT the system-installed `nlmixr2lib`. Any verification
+that uses `library(nlmixr2lib)` or `system.file("modeldb.qs2", package =
+"nlmixr2lib")` will read from the system-installed package, which is
+almost always **stale** (it predates your extraction and has no
+awareness of the new model). You will get a spurious `FALSE` even when
+the worktree is correct.
+
+Always verify against the worktree:
+
+```r
+# Wrong — reads from the stale system install:
+# library(nlmixr2lib)
+# "My_2024_drug" %in% nlmixr2lib::modellib()
+
+# Right — loads the worktree's in-development package:
+devtools::load_all(".")                       # cwd is the worktree root
+"My_2024_drug" %in% nlmixr2lib::modellib()    # now reads worktree modeldb
+```
+
+`devtools::check()` already does the right thing (it installs and loads
+from the worktree temp build), so use that as the canonical
+registration check. The `library(...)` / `qs2::qs_read(system.file(...))`
+path is fine only for a quick *sanity smoke* against the old installed
+state — don't rely on its `TRUE`/`FALSE` result when the worktree is
+under development.
+
 ## Common escalations
 
 Ask the user when:
