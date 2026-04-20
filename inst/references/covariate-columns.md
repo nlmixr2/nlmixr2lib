@@ -135,6 +135,18 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
 - **Example models:** `Fasanmade_2009_infliximab.R` (g/dL, reference 4.1), `Thakre_2022_risankizumab.R` (g/L, reference 45).
 - **Notes:** Ratified canonically on 2026-04-19 after cross-model review. Unit varies by paper (g/dL in US-convention papers, g/L in SI-convention papers); the per-model `covariateData[[ALB]]$units` field is load-bearing. Effect-coefficient magnitude is meaningless without the unit.
 
+## Disease severity scores
+
+### EASI (**canonical for Eczema Area and Severity Index**)
+- **Description:** Eczema Area and Severity Index score (atopic-dermatitis severity composite; bounded continuous, scale 0-72 with higher values = more severe disease).
+- **Units:** (score)
+- **Type:** continuous
+- **Reference category:** n/a — healthy volunteers have EASI = 0. Effect enters as an additive term in models that pool AD patients with HV (e.g., `Tiraboschi_2025_amlitelimab.R`).
+- **Source aliases:**
+  - `BEASI` (baseline EASI) — used in `Tiraboschi_2025_amlitelimab.R`.
+- **Example models:** `Tiraboschi_2025_amlitelimab.R`.
+- **Notes:** When used as a time-invariant baseline covariate (`BEASI`), document in `covariateData[[EASI]]$notes`. Canonical name is `EASI` without the `B` prefix to match the `AGE` / `WT` / `ALB` pattern where baseline vs time-varying status is recorded in notes rather than the column name.
+
 ## Inflammation markers
 
 ### hsCRP (**canonical for high-sensitivity C-reactive protein**)
@@ -356,6 +368,11 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
   `CRE`/`SCR`; `hsCRP` preserves lowercase `hs` prefix per the `eGFR`
   precedent. See `tracking/decision_log.md` in the mab_human_consensus
   project for the deliberation.
+- **2026-04-20** — Added `EASI` canonical entry for the Eczema Area and
+  Severity Index, introduced by `Tiraboschi_2025_amlitelimab.R` (source
+  alias `BEASI` for baseline EASI). Canonical name omits the `B` prefix to
+  match the `AGE`/`WT`/`ALB` pattern where baseline vs time-varying status
+  is noted in `covariateData[[...]]$notes` rather than the column name.
 - **2026-04-20** — Added `TUMSZ`, `TUMTP_CHL`, `TUMTP_GC` canonical entries
   with the Budha 2023 tislelizumab extraction. `TUMSZ` centralizes the
   baseline-tumor-size continuous covariate; `TUMTP_<GROUP>` mirrors the
@@ -368,5 +385,5 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
 ## Summary
 
 - Files audited: 61 R files under `inst/modeldb/` (12 of which reference covariates).
-- Canonical entries: 33.
-- Aliases mapped: 13 (including SEXM→SEXF, ADA→ADA_POS, BLACK→RACE_BLACK, ASIAN→RACE_ASIAN, MULTIRACIAL→RACE_MULTI, BLACK_OTH→RACE_BLACK_OTH, ASIAN_AMIND_MULTI→RACE_ASIAN_AMIND_MULTI, DVID→STUDY1/STUDY5, CRE→CREAT, CRPHS→hsCRP, 1.73*CrCl/BSA→CRCL_BSA, DP2→FORM_DP2, TUMTP→TUMTP_CHL/TUMTP_GC).
+- Canonical entries: 34.
+- Aliases mapped: 14 (including SEXM→SEXF, ADA→ADA_POS, BLACK→RACE_BLACK, ASIAN→RACE_ASIAN, MULTIRACIAL→RACE_MULTI, BLACK_OTH→RACE_BLACK_OTH, ASIAN_AMIND_MULTI→RACE_ASIAN_AMIND_MULTI, DVID→STUDY1/STUDY5, CRE→CREAT, CRPHS→hsCRP, 1.73*CrCl/BSA→CRCL_BSA, DP2→FORM_DP2, BEASI→EASI, TUMTP→TUMTP_CHL/TUMTP_GC).
