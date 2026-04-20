@@ -1,6 +1,7 @@
 `Fiedler-Kelly_2019_fremanezumab` <- function() {
   description <- "Two-compartment population PK model for fremanezumab (anti-CGRP IgG2 delta-a/kappa mAb) with first-order SC absorption and allometric weight scaling (Fiedler-Kelly 2019)"
   reference <- "Fiedler-Kelly JB, Cohen-Barak O, Morris DN, et al. Population pharmacokinetic modelling and simulation of fremanezumab in healthy subjects and patients with migraine. Br J Clin Pharmacol. 2019;85(12):2721-2733. doi:10.1111/bcp.14096"
+  vignette <- "Fiedler-Kelly_2019_fremanezumab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 
   covariateData <- list(

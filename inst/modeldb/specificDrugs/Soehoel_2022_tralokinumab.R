@@ -1,6 +1,7 @@
 Soehoel_2022_tralokinumab <- function() {
   description <- "Two-compartment population PK model for tralokinumab (Soehoel 2022) in adults with moderate-to-severe atopic dermatitis, with SC first-order absorption and allometric body-weight effects."
   reference <- "Soehoel A, Larsen MS, Timmermann S. Population Pharmacokinetics of Tralokinumab in Adult Subjects With Moderate to Severe Atopic Dermatitis. Clinical Pharmacology in Drug Development. 2022;11(8):910-921. doi:10.1002/cpdd.1113"
+  vignette <- "Soehoel_2022_tralokinumab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 
   # From Table 2 footnotes

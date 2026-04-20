@@ -1,6 +1,7 @@
 Thakre_2022_risankizumab <- function() {
   description <- "Two-compartment population PK model of risankizumab (anti-IL-23 mAb) with first-order SC absorption in patients with active psoriatic arthritis (Thakre 2022)"
   reference <- "Thakre N, D'Cunha R, Goebel A, Liu W, Pang Y, Suleiman AA. Population Pharmacokinetics and Exposure-Response Analyses for Risankizumab in Patients with Active Psoriatic Arthritis. Rheumatol Ther. 2022;9(6):1587-1603. doi:10.1007/s40744-022-00495-0"
+  vignette <- "Thakre_2022_risankizumab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 
   covariateData <- list(

@@ -1,6 +1,7 @@
 Zhu_2017_lebrikizumab <- function() {
   description <- "Lebrikizumab population PK model (Zhu 2017): two-compartment model with first-order absorption after SC dosing in adults with moderate-to-severe asthma."
   reference <- "Zhu R, Zheng Y, Dirks NL, et al. Model-based clinical pharmacology profiling and exposure-response relationships of the efficacy and biomarker of lebrikizumab in patients with moderate-to-severe asthma. Pulmonary Pharmacology & Therapeutics. 2017;46:88-98. doi:10.1016/j.pupt.2017.08.010"
+  vignette <- "Zhu_2017_lebrikizumab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 
   covariateData <- list(

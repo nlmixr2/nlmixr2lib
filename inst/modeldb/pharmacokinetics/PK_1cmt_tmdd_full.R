@@ -1,6 +1,7 @@
 PK_1cmt_tmdd_full <- function() {
   description <- "One-compartment TMDD archetype with explicit drug-target binding (Mager & Jusko 2001 full model)"
   reference <- "Mager DE, Jusko WJ. General pharmacokinetic model for drugs exhibiting target-mediated drug disposition. J Pharmacokinet Pharmacodyn. 2001;28(6):507-532. doi:10.1023/A:1014414520282"
+  vignette <- "tmdd_archetypes"
   units <- list(time = "day", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list()
