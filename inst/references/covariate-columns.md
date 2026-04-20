@@ -255,10 +255,41 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
 - **Description:** Baseline (pre-treatment) C-reactive protein concentration.
 - **Units:** mg/L
 - **Type:** continuous
-- **Reference category:** n/a — used as a power term `(BLCRP / <ref>)^exponent`. Reference 14.2 mg/L in Xu 2019.
+- **Reference category:** n/a — used as a power term `(BLCRP / <ref>)^exponent`. Reference 14.2 mg/L in Xu 2019; 15.7 mg/L in Ma 2020.
 - **Source aliases:** none.
-- **Example models:** `Xu_2019_sarilumab.R`.
-- **Notes:** Time-fixed per subject (baseline value only). Xu 2019 reports it as a significant covariate on Vm with a small exponent (0.0299).
+- **Example models:** `Xu_2019_sarilumab.R`, `Ma_2020_sarilumab_das28crp.R`.
+- **Notes:** Time-fixed per subject (baseline value only). Xu 2019 reports it as a significant covariate on Vm with a small exponent (0.0299). Ma 2020 uses it as a power covariate on DAS28-CRP BASE and as an additive log-linear effect on logit(Emax).
+
+## Rheumatoid-arthritis disease-activity covariates
+
+### BLPHYVAS
+- **Description:** Baseline Physician's Global Assessment of Disease Activity, 100-mm visual analogue scale (0 = no disease activity, 100 = maximum). Time-fixed per subject.
+- **Units:** mm (0-100 VAS)
+- **Type:** continuous
+- **Reference category:** n/a — used as a power term `(BLPHYVAS / <ref>)^exponent`. Reference 66 used in Ma 2020.
+- **Source aliases:** none.
+- **Example models:** `Ma_2020_sarilumab_das28crp.R`.
+- **Notes:** One of the components of the DAS28 composite score; in Ma 2020 it appears as a baseline covariate on the DAS28-CRP disease-activity BASE rather than on the score itself.
+
+### BLHAQ
+- **Description:** Baseline Health Assessment Questionnaire Disability Index (HAQ-DI; 0 = no disability, 3 = maximum disability). Time-fixed per subject.
+- **Units:** unitless (0-3 composite score)
+- **Type:** continuous
+- **Reference category:** n/a — used as a power term `(BLHAQ / <ref>)^exponent`. Reference 1.75 used in Ma 2020.
+- **Source aliases:** none.
+- **Example models:** `Ma_2020_sarilumab_das28crp.R`.
+- **Notes:** Patient-reported disability score frequently used as a baseline covariate in rheumatoid-arthritis PK/PD analyses.
+
+## Concomitant / prior medication
+
+### PRICORT
+- **Description:** 1 = patient received systemic corticosteroid treatment prior to study entry, 0 = no prior corticosteroid use. Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Reference category:** 0 (no prior corticosteroid use).
+- **Source aliases:** none.
+- **Example models:** `Ma_2020_sarilumab_das28crp.R` (multiplicative 1.26 on DAS28-CRP Kout).
+- **Notes:** Ma 2020 applies it as a multiplicative effect of the form `Kout_i = Kout * theta^PRICORT`.
 
 ## Immunogenicity
 
@@ -381,9 +412,10 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
   reference.
 - Subsequent additions: append new canonical entries as new papers are processed. When adding, bump the audit-completed count in the summary below.
 - **Xu 2019 sarilumab**: Added canonical entries `ALBR` (albumin / ULN ratio), `CRCL_BSA` (BSA-normalized creatinine clearance), `BLCRP` (baseline C-reactive protein), and `FORM_DP2` (sarilumab drug product 2 indicator). Extended the `ADA_POS` alias list to include the time-varying `ADA` column used in Xu 2019.
+- **Ma 2020 sarilumab DAS28-CRP**: Added canonical entries `BLPHYVAS` (baseline Physician's Global Assessment of Disease Activity, 100-mm VAS), `BLHAQ` (baseline HAQ-DI), and `PRICORT` (prior corticosteroid treatment). Extended the `BLCRP` entry to record Ma 2020 as a second example model (reference 15.7 mg/L, covariate on DAS28-CRP BASE and log(Emax)).
 
 ## Summary
 
 - Files audited: 61 R files under `inst/modeldb/` (12 of which reference covariates).
-- Canonical entries: 34.
+- Canonical entries: 37.
 - Aliases mapped: 14 (including SEXM→SEXF, ADA→ADA_POS, BLACK→RACE_BLACK, ASIAN→RACE_ASIAN, MULTIRACIAL→RACE_MULTI, BLACK_OTH→RACE_BLACK_OTH, ASIAN_AMIND_MULTI→RACE_ASIAN_AMIND_MULTI, DVID→STUDY1/STUDY5, CRE→CREAT, CRPHS→hsCRP, 1.73*CrCl/BSA→CRCL_BSA, DP2→FORM_DP2, BEASI→EASI, TUMTP→TUMTP_CHL/TUMTP_GC).
