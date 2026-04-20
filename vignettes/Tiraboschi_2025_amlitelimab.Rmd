@@ -257,13 +257,13 @@ into linear and TMDD (Michaelis-Menten) components, reproducing Figure 3.
 
 ```{r fig3-clearance, fig.width=6, fig.height=4}
 cc_grid    <- 10^seq(log10(0.01), log10(100), length.out = 200)
-tvcll      <- 0.115            # L/day (TVCLL at 75 kg ref)
-e_easi_cl  <- 0.00111          # L/day per EASI unit
-vmax_mgday <- 0.0362           # mg/day (TVVM; label typo "ug/day" in Table S2)
-km_ugmL    <- 0.0783           # ug/mL = mg/L
+tvcll      <- 0.115            # unit: L/day (TVCLL at 75 kg ref)
+e_easi_cl  <- 0.00111          # unit: L/day per EASI unit
+vmax_mgday <- 0.0362           # unit: mg/day (TVVM; label typo "ug/day" in Table S2)
+km_ugmL    <- 0.0783           # unit: ug/mL (equivalently mg/L)
 
 cl_linear <- tvcll + e_easi_cl * 27.5                 # CL for 75 kg, EASI 27.5
-cl_tmdd   <- vmax_mgday / (km_ugmL + cc_grid)         # L/day (since VM is mg/day, KM+C in mg/L)
+cl_tmdd   <- vmax_mgday / (km_ugmL + cc_grid)         # unit: L/day (since VM is mg/day, KM+C in mg/L)
 cl_total  <- cl_linear + cl_tmdd
 
 df_cl <- data.frame(
