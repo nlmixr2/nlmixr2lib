@@ -162,9 +162,9 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
 - **Description:** C-reactive protein concentration (baseline or time-varying) from a standard (not low-range / high-sensitivity) assay.
 - **Units:** mg/L (document per-model via `covariateData[[CRP]]$units`).
 - **Type:** continuous
-- **Reference category:** n/a — used with power scaling `(CRP / ref)^exponent` or linear effects.
+- **Reference category:** n/a — document per-model reference value in `covariateData[[CRP]]$notes`.
 - **Source aliases:** none known.
-- **Example models:** `Chua_2025_mirikizumab.R` (mg/L, reference 7.41).
+- **Example models:** `Chua_2025_mirikizumab.R` (mg/L, reference 7.41); `Moein_2022_etrolizumab.R` (reference 4.23 mg/L, exponential effect on CL).
 - **Notes:** Use when the source paper reports "CRP" without specifying a high-sensitivity assay. In IBD and other chronic-inflammation populations, baseline CRP is typically well above the hs-CRP sensitivity range, so a standard assay is adequate. Distinct from `hsCRP`; do not conflate.
 
 ### hsCRP (**canonical for high-sensitivity C-reactive protein**)
@@ -321,6 +321,47 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
   - `ADA` (time-varying positivity, primary covariate in Xu 2019) — used in `Xu_2019_sarilumab.R`.
 - **Example models:** `Clegg_2024_nirsevimab.R`, `Hu_2026_clesrovimab.R`, `Xu_2019_sarilumab.R`.
 
+### ADA_TITER (**canonical**)
+- **Description:** Continuous antidrug antibody titer (time-varying). Zero for ADA-negative observations.
+- **Units:** (titer units; typically log2 or arbitrary assay units — document per-model in `covariateData[[ADA_TITER]]$units`).
+- **Type:** continuous
+- **Reference category:** n/a — ADA-negative corresponds to titer = 0.
+- **Source aliases:**
+  - `ADAT` — used in `Moein_2022_etrolizumab.R`.
+- **Example models:** `Moein_2022_etrolizumab.R` (exponential effect on CL, per-unit-titer theta = 0.0365).
+- **Notes:** Paired conceptually with `ADA_POS` (binary). When the paper reports both, the final model usually keeps only one. Imputation rules (LOCF / NOCB / baseline-as-negative) should be documented per-model.
+
+## Disease / treatment history
+
+### PRIOR_TNF (**canonical**)
+- **Description:** 1 = subject previously treated with an anti-TNF (tumor necrosis factor) inhibitor, 0 = TNF-naive.
+- **Units:** (binary)
+- **Type:** binary
+- **Reference category:** 0 (TNF-naive).
+- **Source aliases:**
+  - `PRIORTNF` (all caps, no underscore) — acceptable alternative spelling.
+- **Example models:** `Moein_2022_etrolizumab.R` (multiplicative fractional effect on CL, +4.9%).
+- **Notes:** Use when the source paper reports a binary "prior anti-TNF inhibitor" covariate on any PK parameter.
+
+### DISEXT_EP (**canonical for extensive colitis / pancolitis indicator**)
+- **Description:** 1 = extensive colitis or pancolitis disease extension, 0 = not.
+- **Units:** (binary)
+- **Type:** binary
+- **Reference category:** 0 (left-sided colitis, when paired with `DISEXT_OTHER = 0`).
+- **Source aliases:**
+  - Derived from a multi-level `DISEXT` column in the source (levels: left-sided colitis, extensive/pancolitis, other): `DISEXT_EP = as.integer(DISEXT == "extensive/pancolitis")`.
+- **Example models:** `Moein_2022_etrolizumab.R` (multiplicative effect on CL, +8.2% vs. left-sided colitis).
+- **Notes:** Paired with `DISEXT_OTHER`. `DISEXT_EP = DISEXT_OTHER = 0` corresponds to the left-sided colitis reference group. UC-specific covariate; analogous indicators could be used for other inflammatory bowel disease models.
+
+### DISEXT_OTHER (**canonical for 'other disease extension' indicator**)
+- **Description:** 1 = disease extension other than left-sided colitis or extensive/pancolitis, 0 = not.
+- **Units:** (binary)
+- **Type:** binary
+- **Reference category:** 0 (left-sided colitis, when paired with `DISEXT_EP = 0`).
+- **Source aliases:** Derived from a multi-level `DISEXT` column: `DISEXT_OTHER = as.integer(DISEXT == "other")`.
+- **Example models:** `Moein_2022_etrolizumab.R` (multiplicative effect on CL, +18% vs. left-sided colitis; large uncertainty due to 2% prevalence).
+- **Notes:** Paired with `DISEXT_EP`; together they encode the three-level disease-extension categorical.
+
 ## Lifestyle / medical history
 
 ### SMOKE
@@ -429,11 +470,18 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
   `CRE`/`SCR`; `hsCRP` preserves lowercase `hs` prefix per the `eGFR`
   precedent. See `tracking/decision_log.md` in the mab_human_consensus
   project for the deliberation.
-- **2026-04-20** — Added `CRP` (standard C-reactive protein, distinct from
-  `hsCRP`) and `BMI` canonical entries for Chua 2025 mirikizumab (VIVID-1
-  popPK). `CRP` is for papers that report a standard CRP assay where the
-  baseline values are well above the hs-CRP sensitivity range, as is
-  typical in moderate-to-severe IBD populations.
+- **2026-04-19** — Added `ADA_TITER`, `PRIOR_TNF`, `DISEXT_EP`,
+  `DISEXT_OTHER` canonical entries while extracting Moein 2022 etrolizumab.
+  `ADA_TITER` is the continuous-titer companion to binary `ADA_POS`;
+  `PRIOR_TNF` captures prior anti-TNF therapy (common covariate in IBD
+  biologic PK models); `DISEXT_EP` / `DISEXT_OTHER` are paired indicators
+  that encode the three-level ulcerative-colitis disease-extension
+  categorical (reference = left-sided colitis). Extended the `CRP` entry
+  to add Moein 2022 as a second example model.
+- **2026-04-20** — Added `CRP` and `BMI` canonical entries for Chua 2025
+  mirikizumab (VIVID-1 popPK). `CRP` is for papers that report a standard
+  CRP assay where the baseline values are well above the hs-CRP sensitivity
+  range, as is typical in moderate-to-severe IBD populations.
 - **2026-04-20** — Added `SMOKE` canonical entry from the Ma 2020 sarilumab
   ANC PopPK/PD extraction. Binary baseline-only indicator used as a
   power-form covariate (`BASE * 1.15^SMOKE` on baseline ANC). Extended the
@@ -455,6 +503,6 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
 
 ## Summary
 
-- Files audited: 61 R files under `inst/modeldb/` (12 of which reference covariates).
-- Canonical entries: 45.
-- Aliases mapped: 14 (including SEXM→SEXF, ADA→ADA_POS, BLACK→RACE_BLACK, ASIAN→RACE_ASIAN, MULTIRACIAL→RACE_MULTI, BLACK_OTH→RACE_BLACK_OTH, ASIAN_AMIND_MULTI→RACE_ASIAN_AMIND_MULTI, DVID→STUDY1/STUDY5, CRE→CREAT, CRPHS→hsCRP, 1.73*CrCl/BSA→CRCL_BSA, DP2→FORM_DP2, BEASI→EASI, TUMTP→TUMTP_CHL/TUMTP_GC).
+- Files audited: 63 R files under `inst/modeldb/` (14 of which reference covariates).
+- Canonical entries: 49.
+- Aliases mapped: 16 (including SEXM→SEXF, ADA→ADA_POS, ADAT→ADA_TITER, BLACK→RACE_BLACK, ASIAN→RACE_ASIAN, MULTIRACIAL→RACE_MULTI, BLACK_OTH→RACE_BLACK_OTH, ASIAN_AMIND_MULTI→RACE_ASIAN_AMIND_MULTI, DVID→STUDY1/STUDY5, CRE→CREAT, CRPHS→hsCRP, 1.73*CrCl/BSA→CRCL_BSA, DP2→FORM_DP2, DISEXT→DISEXT_EP/DISEXT_OTHER, BEASI→EASI, TUMTP→TUMTP_CHL/TUMTP_GC).
