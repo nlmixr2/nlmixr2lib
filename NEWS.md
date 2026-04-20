@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Chua 2025 mirikizumab ([doi:10.1111/cts.70320](https://doi.org/10.1111/cts.70320)) — patients with moderately-to-severely active Crohn's disease.
 * Add Ma 2020 sarilumab ANC ([doi:10.1007/s40262-020-00899-7](https://doi.org/10.1007/s40262-020-00899-7)) — adults with rheumatoid arthritis.
 * Add Ma 2020 sarilumab DAS28-CRP ([doi:10.1007/s40262-020-00899-7](https://doi.org/10.1007/s40262-020-00899-7)) — adults with rheumatoid arthritis.
 * Add Tiraboschi 2025 amlitelimab ([doi:10.1002/psp4.70121](https://doi.org/10.1002/psp4.70121)) — adults with moderate-to-severe atopic dermatitis.
