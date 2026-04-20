@@ -2,6 +2,24 @@
 
 # development version
 
+* Add Ma 2020 sarilumab DAS28-CRP PK/PD model for rheumatoid arthritis. The
+  disease-activity score (DAS28-CRP) is driven by an indirect-response model
+  with inhibition of the production rate through a sigmoidal Emax function
+  that includes a background DMARD placebo concentration term
+  (`CeffP = Cc + PLB`). Parameters for the PD block come from Ma 2020 Table 3
+  (DAS28-CRP column); the sarilumab concentration driver is the Xu 2019
+  two-compartment parallel linear + Michaelis-Menten PK embedded in-file at
+  its typical covariate-reference values (approach (a) in the paper). The
+  model carries five canonical covariates (`WT`, `BLCRP`, `BLPHYVAS`, `BLHAQ`
+  on BASE via power form; `BLCRP` on logit(Emax) via additive log-linear form;
+  `PRICORT` on Kout via multiplicative form). Registers `BLPHYVAS`, `BLHAQ`,
+  and `PRICORT` as new canonical covariate-column names and extends the
+  `BLCRP` entry. Includes a validation vignette that reproduces the paper's
+  typical-patient week-24 DAS28-CRP values for placebo, 150 mg Q2W, and
+  200 mg Q2W arms to within 3% of the reported reductions, plus a VPC that
+  reproduces Ma 2020 Figure 2d. A companion ANC PD model from the same paper
+  (with a known decimal-point typo in Table 4) is packaged separately as
+  `Ma_2020_sarilumab_anc`.
 * Add Xu 2019 sarilumab two-compartment population PK model with first-order SC absorption and parallel linear plus Michaelis-Menten (target-mediated) elimination in adults with rheumatoid arthritis (pooled analysis of 1770 patients / 7676 concentrations across 7 phase I, 1 phase II, and 4 phase III studies). Final covariates are body weight on CLO/F and Vm; ALBR, CRCL_BSA, and BLCRP on Vm; ADA positivity and drug-product formulation DP2 on CLO/F; drug-product formulation DP2 on Ka; and biological sex on CLO/F. Built to the `extract-literature-model` skill conventions (block-correlated `etalvm` + `etalcl`, diagonal `etalvc` and `etalka`, log-additive residual converted to `propSd = sqrt(0.395)`, canonical `WT` / `SEXF` / `ADA_POS` / `FORM_DP2` / `ALBR` / `CRCL_BSA` / `BLCRP` covariate columns) with a companion validation vignette that replicates the Table 4 typical-patient steady-state exposures (Cmax, Ctrough, AUC0-14d) for the labelled 200 mg SC Q2W and dose-reduced 150 mg SC Q2W regimens and runs PKNCA on the final steady-state dosing interval. Registers `ALBR`, `CRCL_BSA`, `BLCRP`, and `FORM_DP2` as new canonical covariate-column names in the `extract-literature-model` skill.
 * `checkModelConventions()` — new function that reports deviations from the package's parameter-naming, covariate, compartment, and metadata conventions for a single model or the entire `modeldb`. Called automatically during `buildModelDb()` so convention drift surfaces at package-build time (existing grandfathered deviations continue to build). Canonical standards (PK parameter prefixes, `eta`-prefixed IIV, `propSd`/`addSd` residual error, canonical covariate column register with aliases, canonical compartment vocabulary) are codified in an internal `.nlmixr2libConventions` list that mirrors the `extract-literature-model` skill references. Addresses issue #39.
 * Added canonical TMDD archetype models under `inst/modeldb/pharmacokinetics/`: `PK_1cmt_tmdd_full` (Mager & Jusko 2001), `PK_1cmt_tmdd_qss`, `PK_1cmt_tmdd_mm`, `PK_2cmt_tmdd_qss`, and `PK_2cmt_tmdd_mm` (Gibiansky et al. 2008 QSS and MM approximations). Built to the `extract-literature-model` skill conventions with `reference` / `units` / `population` metadata, per-parameter source-trace comments, and CL/V parameterization with `kel` derived inside `model()` so later transforms can re-parameterize. Replaces the 38 draft models from PR #60 (#60).
