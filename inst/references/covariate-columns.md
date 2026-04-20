@@ -59,6 +59,15 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
 - **Source aliases:** none.
 - **Example models:** `Kyhl_2016_nalmefene.R` (reference 56.28 kg, exponent 0.626 on CL).
 
+### BMI
+- **Description:** Body mass index at baseline.
+- **Units:** kg/m²
+- **Type:** continuous
+- **Reference category:** n/a — used with a linear-deviation form (`1 + e * (BMI - ref)`) or a power form (`(BMI / ref)^e`). Document the reference value in `covariateData[[BMI]]$notes`.
+- **Source aliases:** none known.
+- **Example models:** `Chua_2025_mirikizumab.R` (reference 24.75 kg/m²; linear-deviation effect on logit of bioavailability).
+- **Notes:** Universal clinical-trial demographic. Derived as `WT / (height_m)^2`; assume time-fixed at baseline unless the source paper states otherwise.
+
 ### SEXF (**canonical for sex**)
 - **Description:** Biological sex indicator, 1 = female, 0 = male.
 - **Units:** (binary)
@@ -136,6 +145,15 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
 - **Notes:** Ratified canonically on 2026-04-19 after cross-model review. Unit varies by paper (g/dL in US-convention papers, g/L in SI-convention papers); the per-model `covariateData[[ALB]]$units` field is load-bearing. Effect-coefficient magnitude is meaningless without the unit.
 
 ## Inflammation markers
+
+### CRP (**canonical for C-reactive protein**)
+- **Description:** C-reactive protein concentration (baseline or time-varying) from a standard (not low-range / high-sensitivity) assay.
+- **Units:** mg/L (document per-model via `covariateData[[CRP]]$units`).
+- **Type:** continuous
+- **Reference category:** n/a — used with power scaling `(CRP / ref)^exponent` or linear effects.
+- **Source aliases:** none known.
+- **Example models:** `Chua_2025_mirikizumab.R` (mg/L, reference 7.41).
+- **Notes:** Use when the source paper reports "CRP" without specifying a high-sensitivity assay. In IBD and other chronic-inflammation populations, baseline CRP is typically well above the hs-CRP sensitivity range, so a standard assay is adequate. Distinct from `hsCRP`; do not conflate.
 
 ### hsCRP (**canonical for high-sensitivity C-reactive protein**)
 - **Description:** High-sensitivity C-reactive protein concentration (baseline or time-varying).
@@ -228,6 +246,17 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
   - `ADA` (semantically "ever positive") — used in `Zhu_2017_lebrikizumab.R`. When translating from a paper that uses `ADA` as "ever positive," verify the time-frame matches ADA_POS semantics before renaming.
   - `ADA` (time-varying positivity, primary covariate in Xu 2019) — used in `Xu_2019_sarilumab.R`.
 - **Example models:** `Clegg_2024_nirsevimab.R`, `Hu_2026_clesrovimab.R`, `Xu_2019_sarilumab.R`.
+
+### ADA_TITRE (**canonical for continuous ADA titre**)
+- **Description:** Antidrug-antibody titre reported as the reciprocal dilution (the integer after the colon in clinical notation `1:N`). Time-varying; matched in time to the PK sample.
+- **Units:** titre (dimensionless reciprocal dilution, e.g. 10, 20, 40, …, 2560)
+- **Type:** continuous
+- **Reference category:** n/a — used in a log-linear multiplicative effect `(1 + coef * log_e(ADA_TITRE))`.
+- **Encoding for ADA-negative samples:** `ADA_TITRE = 1` so that `log_e(1) = 0` cancels the covariate effect. This convention is the NONMEM standard used in the source papers that parameterize ADA effects on a log-titre scale. Documented per-model in `covariateData[[ADA_TITRE]]$notes`.
+- **Source aliases:**
+  - `ADA titre` / `ADA_TITER` / `ADAT` — likely aliases from other publications; add here when encountered.
+- **Example models:** `Jackson_2022_ixekizumab.R` (reference: 58.6 kg paediatric psoriasis dataset; ADA-negative samples are 85.8% of the dataset and are encoded with `ADA_TITRE = 1`).
+- **Notes:** Ratified 2026-04-20 during extraction of Jackson 2022. Distinct from `ADA_POS` because the effect here is driven by magnitude of titre, not presence/absence. Both columns may coexist in a dataset; use `ADA_TITRE` when the source parameterizes `log_e` titre on CL.
 
 ## Formulation / assay / study
 
@@ -325,11 +354,22 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
   `CRE`/`SCR`; `hsCRP` preserves lowercase `hs` prefix per the `eGFR`
   precedent. See `tracking/decision_log.md` in the mab_human_consensus
   project for the deliberation.
+- **2026-04-20** — Added `CRP` (standard C-reactive protein, distinct from
+  `hsCRP`) and `BMI` canonical entries for Chua 2025 mirikizumab (VIVID-1
+  popPK). `CRP` is for papers that report a standard CRP assay where the
+  baseline values are well above the hs-CRP sensitivity range, as is
+  typical in moderate-to-severe IBD populations.
+- **2026-04-20** — Added `ADA_TITRE` canonical entry while extracting the
+  Jackson 2022 ixekizumab paediatric psoriasis PopPK model. Distinct from
+  the existing binary `ADA_POS`; encodes the continuous reciprocal-dilution
+  titre with the NONMEM convention `ADA_TITRE = 1` for ADA-negative
+  samples (so that `log_e(1) = 0` cancels the covariate effect). Ratified
+  via sidecar stop-and-ask during task 006.
 - Subsequent additions: append new canonical entries as new papers are processed. When adding, bump the audit-completed count in the summary below.
 - **Xu 2019 sarilumab**: Added canonical entries `ALBR` (albumin / ULN ratio), `CRCL_BSA` (BSA-normalized creatinine clearance), `BLCRP` (baseline C-reactive protein), and `FORM_DP2` (sarilumab drug product 2 indicator). Extended the `ADA_POS` alias list to include the time-varying `ADA` column used in Xu 2019.
 
 ## Summary
 
 - Files audited: 61 R files under `inst/modeldb/` (12 of which reference covariates).
-- Canonical entries: 30.
+- Canonical entries: 31.
 - Aliases mapped: 12 (including SEXM→SEXF, ADA→ADA_POS, BLACK→RACE_BLACK, ASIAN→RACE_ASIAN, MULTIRACIAL→RACE_MULTI, BLACK_OTH→RACE_BLACK_OTH, ASIAN_AMIND_MULTI→RACE_ASIAN_AMIND_MULTI, DVID→STUDY1/STUDY5, CRE→CREAT, CRPHS→hsCRP, 1.73*CrCl/BSA→CRCL_BSA, DP2→FORM_DP2).
