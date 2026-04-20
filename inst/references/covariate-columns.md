@@ -288,8 +288,8 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
 - **Type:** binary
 - **Reference category:** 0 (no prior corticosteroid use).
 - **Source aliases:** none.
-- **Example models:** `Ma_2020_sarilumab_das28crp.R` (multiplicative 1.26 on DAS28-CRP Kout).
-- **Notes:** Ma 2020 applies it as a multiplicative effect of the form `Kout_i = Kout * theta^PRICORT`.
+- **Example models:** `Ma_2020_sarilumab_das28crp.R` (multiplicative on DAS28-CRP Kout: `Kout * theta^PRICORT`); `Ma_2020_sarilumab_anc.R` (power-form on Emax: `Emax * 0.819^PRICORT`).
+- **Notes:** Ma 2020 applies it as a multiplicative effect of the form `param * theta^PRICORT` in both DAS28-CRP and ANC PD models.
 
 ## Immunogenicity
 
@@ -302,6 +302,18 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
   - `ADA` (semantically "ever positive") — used in `Zhu_2017_lebrikizumab.R`. When translating from a paper that uses `ADA` as "ever positive," verify the time-frame matches ADA_POS semantics before renaming.
   - `ADA` (time-varying positivity, primary covariate in Xu 2019) — used in `Xu_2019_sarilumab.R`.
 - **Example models:** `Clegg_2024_nirsevimab.R`, `Hu_2026_clesrovimab.R`, `Xu_2019_sarilumab.R`.
+
+## Lifestyle / medical history
+
+### SMOKE
+- **Description:** 1 = current smoker at baseline, 0 = non-smoker.
+- **Units:** (binary)
+- **Type:** binary
+- **Reference category:** 0 (non-smoker).
+- **Source aliases:**
+  - `Smoking` (case-insensitive) — used in `Ma_2020_sarilumab_anc.R`.
+- **Example models:** `Ma_2020_sarilumab_anc.R` (power-form on baseline ANC: `BASE * 1.15^SMOKE`).
+- **Notes:** Baseline-only indicator; does not track within-study smoking-cessation changes.
 
 ## Formulation / assay / study
 
@@ -399,6 +411,10 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
   `CRE`/`SCR`; `hsCRP` preserves lowercase `hs` prefix per the `eGFR`
   precedent. See `tracking/decision_log.md` in the mab_human_consensus
   project for the deliberation.
+- **2026-04-20** — Added `SMOKE` canonical entry from the Ma 2020 sarilumab
+  ANC PopPK/PD extraction. Binary baseline-only indicator used as a
+  power-form covariate (`BASE * 1.15^SMOKE` on baseline ANC). Extended the
+  `PRICORT` entry to record the ANC model as a second example.
 - **2026-04-20** — Added `EASI` canonical entry for the Eczema Area and
   Severity Index, introduced by `Tiraboschi_2025_amlitelimab.R` (source
   alias `BEASI` for baseline EASI). Canonical name omits the `B` prefix to
@@ -417,5 +433,5 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
 ## Summary
 
 - Files audited: 61 R files under `inst/modeldb/` (12 of which reference covariates).
-- Canonical entries: 37.
+- Canonical entries: 43.
 - Aliases mapped: 14 (including SEXM→SEXF, ADA→ADA_POS, BLACK→RACE_BLACK, ASIAN→RACE_ASIAN, MULTIRACIAL→RACE_MULTI, BLACK_OTH→RACE_BLACK_OTH, ASIAN_AMIND_MULTI→RACE_ASIAN_AMIND_MULTI, DVID→STUDY1/STUDY5, CRE→CREAT, CRPHS→hsCRP, 1.73*CrCl/BSA→CRCL_BSA, DP2→FORM_DP2, BEASI→EASI, TUMTP→TUMTP_CHL/TUMTP_GC).
