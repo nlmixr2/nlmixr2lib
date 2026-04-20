@@ -11,6 +11,11 @@ exclusions: list(
     "data-raw",
     "data",
     "docs",
-    "src"
+    "src",
+    # Vignettes typically contain long lines in URLs, equation comments,
+    # and prose; the long-line linter adds noise with no impact on
+    # package code quality. Keep other linters active on vignettes by
+    # exempting only line_length_linter here.
+    list("vignettes", linters = "line_length_linter")
   )
 encoding: "UTF-8"
