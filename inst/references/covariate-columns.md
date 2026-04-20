@@ -59,6 +59,15 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
 - **Source aliases:** none.
 - **Example models:** `Kyhl_2016_nalmefene.R` (reference 56.28 kg, exponent 0.626 on CL).
 
+### BMI
+- **Description:** Body mass index at baseline.
+- **Units:** kg/m²
+- **Type:** continuous
+- **Reference category:** n/a — used with a linear-deviation form (`1 + e * (BMI - ref)`) or a power form (`(BMI / ref)^e`). Document the reference value in `covariateData[[BMI]]$notes`.
+- **Source aliases:** none known.
+- **Example models:** `Chua_2025_mirikizumab.R` (reference 24.75 kg/m²; linear-deviation effect on logit of bioavailability).
+- **Notes:** Universal clinical-trial demographic. Derived as `WT / (height_m)^2`; assume time-fixed at baseline unless the source paper states otherwise.
+
 ### SEXF (**canonical for sex**)
 - **Description:** Biological sex indicator, 1 = female, 0 = male.
 - **Units:** (binary)
@@ -136,6 +145,15 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
 - **Notes:** Ratified canonically on 2026-04-19 after cross-model review. Unit varies by paper (g/dL in US-convention papers, g/L in SI-convention papers); the per-model `covariateData[[ALB]]$units` field is load-bearing. Effect-coefficient magnitude is meaningless without the unit.
 
 ## Inflammation markers
+
+### CRP (**canonical for C-reactive protein**)
+- **Description:** C-reactive protein concentration (baseline or time-varying) from a standard (not low-range / high-sensitivity) assay.
+- **Units:** mg/L (document per-model via `covariateData[[CRP]]$units`).
+- **Type:** continuous
+- **Reference category:** n/a — used with power scaling `(CRP / ref)^exponent` or linear effects.
+- **Source aliases:** none known.
+- **Example models:** `Chua_2025_mirikizumab.R` (mg/L, reference 7.41).
+- **Notes:** Use when the source paper reports "CRP" without specifying a high-sensitivity assay. In IBD and other chronic-inflammation populations, baseline CRP is typically well above the hs-CRP sensitivity range, so a standard assay is adequate. Distinct from `hsCRP`; do not conflate.
 
 ### hsCRP (**canonical for high-sensitivity C-reactive protein**)
 - **Description:** High-sensitivity C-reactive protein concentration (baseline or time-varying).
@@ -325,11 +343,16 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
   `CRE`/`SCR`; `hsCRP` preserves lowercase `hs` prefix per the `eGFR`
   precedent. See `tracking/decision_log.md` in the mab_human_consensus
   project for the deliberation.
+- **2026-04-20** — Added `CRP` (standard C-reactive protein, distinct from
+  `hsCRP`) and `BMI` canonical entries for Chua 2025 mirikizumab (VIVID-1
+  popPK). `CRP` is for papers that report a standard CRP assay where the
+  baseline values are well above the hs-CRP sensitivity range, as is
+  typical in moderate-to-severe IBD populations.
 - Subsequent additions: append new canonical entries as new papers are processed. When adding, bump the audit-completed count in the summary below.
 - **Xu 2019 sarilumab**: Added canonical entries `ALBR` (albumin / ULN ratio), `CRCL_BSA` (BSA-normalized creatinine clearance), `BLCRP` (baseline C-reactive protein), and `FORM_DP2` (sarilumab drug product 2 indicator). Extended the `ADA_POS` alias list to include the time-varying `ADA` column used in Xu 2019.
 
 ## Summary
 
 - Files audited: 61 R files under `inst/modeldb/` (12 of which reference covariates).
-- Canonical entries: 30.
+- Canonical entries: 32.
 - Aliases mapped: 12 (including SEXM→SEXF, ADA→ADA_POS, BLACK→RACE_BLACK, ASIAN→RACE_ASIAN, MULTIRACIAL→RACE_MULTI, BLACK_OTH→RACE_BLACK_OTH, ASIAN_AMIND_MULTI→RACE_ASIAN_AMIND_MULTI, DVID→STUDY1/STUDY5, CRE→CREAT, CRPHS→hsCRP, 1.73*CrCl/BSA→CRCL_BSA, DP2→FORM_DP2).
