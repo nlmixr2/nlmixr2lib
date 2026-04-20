@@ -50,13 +50,18 @@
 #' Parse the canonical covariate register from covariate-columns.md.
 #'
 #' Walks the Markdown register and extracts one entry per H3 heading
-#' (`### NAME (**...**)`). For each entry, captures the `Units`, `Type`, and
-#' the names of any `Source aliases` given as backticked identifiers. Aliases
-#' whose backticked content is not a bare R identifier (e.g. `DVID = "study1"`)
-#' are skipped.
+#' (`### NAME (**...**)`). For each entry, captures the `Units`, `Type`,
+#' `Scope`, `Source aliases`, and `Example models` fields. Aliases whose
+#' backticked content is not a bare R identifier (e.g. `DVID = "study1"`)
+#' are skipped. Example-model tokens are accepted as backticked file names
+#' ending in `.R`; the `.R` suffix is stripped so the value matches the
+#' bare model function name used throughout the rest of the package.
 #'
 #' @param path Path to the markdown file.
-#' @return A named list keyed by canonical name.
+#' @return A named list keyed by canonical name. Each entry is a list with
+#'   `units`, `type`, `scope` (one of `"general"` / `"specific"` / `NA`),
+#'   `aliases` (character vector of alias names), and `example_models`
+#'   (character vector of model function names).
 #' @keywords internal
 #' @noRd
 .parseCovariateColumns <- function(path) {
@@ -71,13 +76,28 @@
       entries[[nm]] <<- list(
         units = current$units %||% "",
         type = current$type %||% "",
-        aliases = current$aliases %||% character()
+        scope = current$scope %||% NA_character_,
+        aliases = current$aliases %||% character(),
+        example_models = current$example_models %||% character()
       )
     }
   }
 
   aliasRegex <- "^\\s*-\\s*`([^`]+)`"
   identRegex <- "^[A-Za-z_][A-Za-z0-9_]*$"
+  modelFileRegex <- "^[A-Za-z_][A-Za-z0-9_]*\\.R$"
+
+  extractBacktickedModels <- function(text) {
+    toks <- regmatches(text, gregexpr("`([^`]+)`", text))[[1]]
+    models <- character()
+    for (tok in toks) {
+      inner <- gsub("`", "", tok)
+      if (grepl(modelFileRegex, inner)) {
+        models <- c(models, sub("\\.R$", "", inner))
+      }
+    }
+    models
+  }
 
   for (line in lines) {
     if (startsWith(line, "## ") && !startsWith(line, "### ")) {
@@ -92,7 +112,8 @@
       heading <- sub("\\s*\\(\\*\\*.*\\*\\*\\)\\s*$", "", heading)
       nms <- trimws(strsplit(heading, ",")[[1]])
       nms <- nms[grepl(identRegex, nms)]
-      current <- list(names = nms, aliases = character())
+      current <- list(names = nms, aliases = character(),
+                      example_models = character())
       state <- "header"
       next
     }
@@ -110,10 +131,19 @@
       state <- "header"
       next
     }
+    m <- regmatches(line, regexec("^- \\*\\*Scope:\\*\\*\\s*(.*)$", line))[[1]]
+    if (length(m) == 2) {
+      scope_raw <- tolower(trimws(sub("\\.$", "", m[[2]])))
+      if (scope_raw %in% c("general", "specific")) {
+        current$scope <- scope_raw
+      }
+      state <- "header"
+      next
+    }
     if (grepl("^- \\*\\*Source aliases:\\*\\*", line)) {
       state <- "aliases"
       after <- sub("^- \\*\\*Source aliases:\\*\\*\\s*", "", line)
-      # "none", "none known", "none;"- style declarations have no aliases.
+      # "none", "none known", "none;"-style declarations have no aliases.
       if (grepl("^none\\b", after, ignore.case = TRUE)) next
       # Capture inline aliases up to the first em-dash prose separator.
       after <- strsplit(after, "\\s+\u2014\\s+", perl = TRUE)[[1]][1]
@@ -126,6 +156,13 @@
       }
       next
     }
+    if (grepl("^- \\*\\*Example models:\\*\\*", line)) {
+      state <- "example_models"
+      after <- sub("^- \\*\\*Example models:\\*\\*\\s*", "", line)
+      current$example_models <- c(current$example_models,
+                                  extractBacktickedModels(after))
+      next
+    }
 
     if (state == "aliases") {
       m <- regmatches(line, regexec(aliasRegex, line))[[1]]
@@ -134,6 +171,18 @@
         if (grepl(identRegex, inner)) {
           current$aliases <- c(current$aliases, inner)
         }
+        next
+      }
+      if (grepl("^- \\*\\*", line)) {
+        state <- "header"
+      }
+    }
+
+    if (state == "example_models") {
+      # Continuation bullet lines in a multi-line Example-models list.
+      if (grepl("^\\s+-\\s", line)) {
+        current$example_models <- c(current$example_models,
+                                    extractBacktickedModels(line))
         next
       }
       if (grepl("^- \\*\\*", line)) {

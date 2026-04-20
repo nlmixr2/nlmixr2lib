@@ -7,12 +7,21 @@ This file is the authoritative register of covariate column names used in nlmixr
 1. **Before adding a covariate to a new model**, search this file (by canonical name and by source alias) for the concept you need.
 2. **If the canonical name exists**, use it exactly. Document any source-paper rename in the model's `covariateData[[name]]$source_name` field.
 3. **If the source paper uses an alias listed under an existing canonical name**, use the canonical name and note in `covariateData[[name]]$notes` whether the values must be transformed (e.g., `SEXM → SEXF` inverts values; the effect coefficient sign / reference category must be inverted as well).
-4. **If the covariate is not in this register at all**, propose a new entry with a canonical name, description, units, type, and source aliases. Verify with the user before committing. The addition is part of the model's PR.
+4. **If the covariate is not in this register at all**, propose a new entry with a canonical name, description, units, type, scope, and source aliases. Verify with the user before committing. The addition is part of the model's PR.
 5. **Do not modify existing model files when you discover an alias**; simply document the mapping in the register. Retrofitting existing models is a separate effort.
+
+## Scope: general vs specific
+
+Each entry has a `Scope:` field declaring whether it is **general** (any model may use it without warning) or **specific** (only the models listed under `Example models` may use it; other usage is flagged by `checkModelConventions()`). This prevents accidentally reusing a covariate name whose meaning is tied to a particular paper.
+
+- **Scope: general** — the covariate has a stable, paper-independent meaning and any future model may use it. Examples: `WT`, `AGE`, `SEXF`, `CREAT`, `ADA_POS`, `CRP`, `CRCL`.
+- **Scope: specific** — the covariate's semantics depend on a particular study's design (a specific study indicator, a drug-product variant, a composite race grouping, a tumor-type decomposition, etc.). If a new paper needs the same concept with different semantics, register a new canonical name; if the concept matches, extend the `Example models` list (and consider promoting to general).
+
+When adding or updating an entry, choose the most conservative scope: if in doubt, start with `specific` and promote when a second model legitimately ratifies the name.
 
 ## Case convention
 
-Covariate column names should be ALL CAPS unless the source paper uses a specific case that is well-known and unambiguous (e.g., `eGFR` is widely recognized in that case). Current registered non-all-caps names are noted below; new entries should default to all caps.
+Covariate column names should be ALL CAPS. Current non-all-caps canonical names are `dilution` and `nonECZTRA` (both scope: specific), preserved from their source files with "future rename" notes. New entries should default to all caps.
 
 ## Entry schema
 
@@ -21,6 +30,7 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
   description: <one-sentence definition>
   units: <unit string, or "(binary)" / "(categorical)">
   type: continuous | binary | categorical | count
+  scope: general | specific
   reference_category: <the 0 group for binary/categorical, or NULL>
   source_aliases:
     - <ALIAS_NAME> (<transformation if any>) — used in <model.R>
@@ -37,15 +47,17 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
 - **Description:** Body weight (baseline or time-varying).
 - **Units:** kg
 - **Type:** continuous
+- **Scope:** general
 - **Reference category:** n/a — used with allometric scaling `(WT / ref_wt)^exponent`. Reference weights observed: 70 kg (adults), 75 kg, 84.8 kg, 5 kg (infants).
 - **Source aliases:** none known.
-- **Example models:** `Clegg_2024_nirsevimab.R`, `Hu_2026_clesrovimab.R`, `Zhu_2017_lebrikizumab.R`, `Kovalenko_2020_dupilumab.R`, `CarlssonPetri_2021_liraglutide.R`, `Cirincione_2017_exenatide.R`, `Grimm_2023_gantenerumab.R`, `Grimm_2023_trontinemab.R`, `Kyhl_2016_nalmefene.R`, `Soehoel_2022_tralokinumab.R`, `Xie_2019_agomelatine.R`, `PK_2cmt_mAb_Davda_2014.R`, `phenylalanine_charbonneau_2021.R`.
+- **Example models:** `Clegg_2024_nirsevimab.R`, `Hu_2026_clesrovimab.R`, `Zhu_2017_lebrikizumab.R`, `Kovalenko_2020_dupilumab.R`, `CarlssonPetri_2021_liraglutide.R`, `Cirincione_2017_exenatide.R`, `Grimm_2023_gantenerumab.R`, `Grimm_2023_trontinemab.R`, `Kyhl_2016_nalmefene.R`, `Soehoel_2022_tralokinumab.R`, `Xie_2019_agomelatine.R`, `PK_2cmt_mAb_Davda_2014.R`, `phenylalanine_charbonneau_2021.R`, `Chua_2025_mirikizumab.R`, `Jackson_2022_ixekizumab.R`, `Kotani_2022_astegolimab.R`, `Ma_2020_sarilumab_anc.R`, `Ma_2020_sarilumab_das28crp.R`, `Moein_2022_etrolizumab.R`, `Tiraboschi_2025_amlitelimab.R`.
 - **Notes:** Universal. Verify time-varying vs. baseline-only against the source paper.
 
 ### AGE
 - **Description:** Subject age in years.
 - **Units:** years
 - **Type:** continuous
+- **Scope:** general
 - **Reference category:** n/a
 - **Source aliases:** none.
 - **Example models:** `Kyhl_2016_nalmefene.R`, `Zhu_2017_lebrikizumab.R`.
@@ -55,6 +67,7 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
 - **Description:** Lean body mass.
 - **Units:** kg
 - **Type:** continuous
+- **Scope:** general
 - **Reference category:** n/a
 - **Source aliases:** none.
 - **Example models:** `Kyhl_2016_nalmefene.R` (reference 56.28 kg, exponent 0.626 on CL).
@@ -63,6 +76,7 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
 - **Description:** Body surface area (typically computed by DuBois, Mosteller, or Haycock from height and weight).
 - **Units:** m^2
 - **Type:** continuous
+- **Scope:** general
 - **Reference category:** n/a — used with power scaling `(BSA / ref)^exponent`.
 - **Source aliases:** none.
 - **Example models:** `Yamada_2025_zolbetuximab.R` (reference 1.70 m^2; exponents 1.06 on clearances and 0.968 on volumes).
@@ -72,6 +86,7 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
 - **Description:** Body mass index at baseline.
 - **Units:** kg/m²
 - **Type:** continuous
+- **Scope:** general
 - **Reference category:** n/a — used with a linear-deviation form (`1 + e * (BMI - ref)`) or a power form (`(BMI / ref)^e`). Document the reference value in `covariateData[[BMI]]$notes`.
 - **Source aliases:** none known.
 - **Example models:** `Chua_2025_mirikizumab.R` (reference 24.75 kg/m²; linear-deviation effect on logit of bioavailability).
@@ -81,6 +96,7 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
 - **Description:** Biological sex indicator, 1 = female, 0 = male.
 - **Units:** (binary)
 - **Type:** binary
+- **Scope:** general
 - **Reference category:** 0 (male).
 - **Source aliases:**
   - `SEXM` (values inverted: `SEXF = 1 - SEXM`; effect coefficient sign and reference category both invert) — used in `CarlssonPetri_2021_liraglutide.R`.
@@ -92,6 +108,7 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
 - **Description:** 1 = subject is a child, 0 = not a child.
 - **Units:** (binary)
 - **Type:** binary
+- **Scope:** general
 - **Reference category:** 0 (not child, i.e., adult baseline).
 - **Example models:** `CarlssonPetri_2021_liraglutide.R`.
 - **Notes:** Age-group indicator used alongside `ADOLESCENT`; paper's age cutoffs must be captured in `covariateData[[CHILD]]$notes`.
@@ -100,6 +117,7 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
 - **Description:** 1 = subject is an adolescent, 0 = not.
 - **Units:** (binary)
 - **Type:** binary
+- **Scope:** general
 - **Reference category:** 0.
 - **Example models:** `CarlssonPetri_2021_liraglutide.R`.
 - **Notes:** Paired with `CHILD`. Document age cutoffs.
@@ -110,33 +128,44 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
 - **Description:** Postmenstrual age in months (`GA_weeks / 4.35 + postnatal_months`). Time-varying.
 - **Units:** months
 - **Type:** continuous
+- **Scope:** general
 - **Example models:** `Clegg_2024_nirsevimab.R`.
 
 ### PNA
 - **Description:** Postnatal age (chronological since birth). Time-varying.
 - **Units:** months
 - **Type:** continuous
+- **Scope:** general
 - **Example models:** `Hu_2026_clesrovimab.R`.
 
 ### GA
 - **Description:** Gestational age at birth. Time-fixed per subject.
 - **Units:** weeks
 - **Type:** continuous
+- **Scope:** general
 - **Example models:** `Hu_2026_clesrovimab.R`, used implicitly in `Clegg_2024_nirsevimab.R` (folded into PAGE).
 
 ## Renal / hepatic function
 
-### eGFR
-- **Description:** Estimated glomerular filtration rate (MDRD equation).
+### CRCL (**canonical for creatinine-based renal function, BSA-normalized**)
+- **Description:** Creatinine-based renal function expressed in mL/min/1.73 m². Accepts either an MDRD-/CKD-EPI-estimated glomerular filtration rate or a measured creatinine clearance that has been BSA-normalized as `1.73 × CrCl / BSA`. The per-model `covariateData[[CRCL]]$description` and `notes` must state which method the source paper used.
 - **Units:** mL/min/1.73 m²
 - **Type:** continuous
-- **Example models:** `Cirincione_2017_exenatide.R` (reference 80 mL/min/1.73 m², exponent 0.838).
-- **Notes:** Case preserved (lowercase `e`) because `eGFR` is the widely-used clinical notation.
+- **Scope:** general
+- **Reference category:** n/a — used with power scaling `(CRCL / ref)^exponent`. Reference values observed: 80 mL/min/1.73 m² (Cirincione 2017, MDRD eGFR), 100 mL/min/1.73 m² (Xu 2019, measured-CrCl BSA-normalized).
+- **Source aliases:**
+  - `eGFR` — MDRD-estimated glomerular filtration rate; used in `Cirincione_2017_exenatide.R` and `Kotani_2022_astegolimab.R`.
+  - `EGFR` — all-caps variant.
+  - `CRCL_BSA` — BSA-normalized creatinine clearance (measured CrCl ÷ BSA × 1.73); used in `Xu_2019_sarilumab.R`.
+  - `1.73*CrCl/BSA` — the formula form appearing in Xu 2019 Eq. for Vm.
+- **Example models:** `Cirincione_2017_exenatide.R` (MDRD eGFR), `Xu_2019_sarilumab.R` (measured CrCl BSA-normalized), `Kotani_2022_astegolimab.R` (MDRD eGFR).
+- **Notes:** The two estimation methods (MDRD/CKD-EPI vs measured CrCl) produce values in the same units and are operationally interchangeable as a covariate on clearance. Document the method explicitly in each model's `covariateData[[CRCL]]$description` so future reviewers can trace the source assay.
 
 ### CREAT (**canonical for serum creatinine**)
 - **Description:** Serum creatinine concentration (baseline or time-varying).
 - **Units:** µmol/L or mg/dL — document the unit used in each model via `covariateData[[CREAT]]$units`.
 - **Type:** continuous
+- **Scope:** general
 - **Reference category:** n/a — used with power scaling `(CREAT / ref)^exponent`.
 - **Source aliases:**
   - `CRE` (µmol/L, reference 70.73) — used in `Thakre_2022_risankizumab.R`.
@@ -148,15 +177,17 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
 - **Description:** Serum albumin concentration.
 - **Units:** g/dL or g/L — document the unit used in each model via `covariateData[[ALB]]$units`.
 - **Type:** continuous
+- **Scope:** general
 - **Reference category:** n/a — used with power scaling `(ALB / ref)^exponent`.
 - **Source aliases:** none; `ALB` is the universal abbreviation.
-- **Example models:** `Fasanmade_2009_infliximab.R` (g/dL, reference 4.1), `Thakre_2022_risankizumab.R` (g/L, reference 45).
+- **Example models:** `Fasanmade_2009_infliximab.R` (g/dL, reference 4.1), `Thakre_2022_risankizumab.R` (g/L, reference 45), `Chua_2025_mirikizumab.R`, `Moein_2022_etrolizumab.R`, `Tiraboschi_2025_amlitelimab.R`, `Yamada_2025_zolbetuximab.R`.
 - **Notes:** Ratified canonically on 2026-04-19 after cross-model review. Unit varies by paper (g/dL in US-convention papers, g/L in SI-convention papers); the per-model `covariateData[[ALB]]$units` field is load-bearing. Effect-coefficient magnitude is meaningless without the unit.
 
 ### TBILI (**canonical for total bilirubin**)
 - **Description:** Total serum bilirubin concentration.
 - **Units:** mg/dL or umol/L — document the unit used in each model via `covariateData[[TBILI]]$units`.
 - **Type:** continuous
+- **Scope:** general
 - **Reference category:** n/a — used with power scaling `(TBILI / ref)^exponent`.
 - **Source aliases:** none; `TBILI` is the common NONMEM / clinical-PK abbreviation.
 - **Example models:** `Yamada_2025_zolbetuximab.R` (mg/dL, reference 0.38; small positive exponent 0.0347 on V1).
@@ -168,6 +199,7 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
 - **Description:** Blood hemoglobin concentration.
 - **Units:** g/L or g/dL — document the unit used in each model via `covariateData[[HGB]]$units`.
 - **Type:** continuous
+- **Scope:** general
 - **Reference category:** n/a — used with power scaling `(HGB / ref)^exponent`.
 - **Source aliases:** none; `HGB` is the common NONMEM / clinical-PK abbreviation.
 - **Example models:** `Yamada_2025_zolbetuximab.R` (g/L, reference 118; exponent -0.374 on V1).
@@ -179,6 +211,7 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
 - **Description:** Eczema Area and Severity Index score (atopic-dermatitis severity composite; bounded continuous, scale 0-72 with higher values = more severe disease).
 - **Units:** (score)
 - **Type:** continuous
+- **Scope:** general
 - **Reference category:** n/a — healthy volunteers have EASI = 0. Effect enters as an additive term in models that pool AD patients with HV (e.g., `Tiraboschi_2025_amlitelimab.R`).
 - **Source aliases:**
   - `BEASI` (baseline EASI) — used in `Tiraboschi_2025_amlitelimab.R`.
@@ -187,85 +220,100 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
 
 ## Inflammation markers
 
-### BEOS (**canonical for baseline blood eosinophil count**)
-- **Description:** Baseline blood eosinophil count.
+### EOS (**canonical for blood eosinophil count**)
+- **Description:** Blood eosinophil count (baseline or time-varying).
 - **Units:** cells/µL
 - **Type:** continuous
-- **Reference category:** n/a — used with power scaling `(BEOS / ref)^exponent`.
-- **Source aliases:** none.
-- **Example models:** `Kotani_2022_astegolimab.R` (reference 180 cells/µL).
-- **Notes:** Baseline-only (time-fixed per subject). Used as a surrogate of inflammatory burden that correlates with protein turnover and therefore mAb clearance.
-
+- **Scope:** general
+- **Reference category:** n/a — used with power scaling `(EOS / ref)^exponent`.
+- **Source aliases:**
+  - `BEOS` (baseline EOS) — used in `Kotani_2022_astegolimab.R`.
+- **Example models:** `Kotani_2022_astegolimab.R` (reference 180 cells/µL, baseline).
+- **Notes:** Used as a surrogate of inflammatory burden that correlates with protein turnover and therefore mAb clearance. Canonical name drops the `B` prefix to match the `EASI` / `AGE` / `WT` / `ALB` pattern; baseline-vs-time-varying status is documented in `covariateData[[EOS]]$notes`.
 
 ### CRP (**canonical for C-reactive protein**)
-- **Description:** C-reactive protein concentration (baseline or time-varying) from a standard (not low-range / high-sensitivity) assay.
+- **Description:** C-reactive protein concentration. Covers both standard and high-sensitivity (hs-CRP) assays and both baseline and time-varying usages. Each model's `covariateData[[CRP]]$description` and `notes` must state the assay type (standard vs hs-CRP) and whether the column carries a baseline-only or time-varying value, including the paper-specific reference value used for power scaling.
 - **Units:** mg/L (document per-model via `covariateData[[CRP]]$units`).
 - **Type:** continuous
-- **Reference category:** n/a — document per-model reference value in `covariateData[[CRP]]$notes`.
-- **Source aliases:** none known.
-- **Example models:** `Chua_2025_mirikizumab.R` (mg/L, reference 7.41); `Moein_2022_etrolizumab.R` (reference 4.23 mg/L, exponential effect on CL).
-- **Notes:** Use when the source paper reports "CRP" without specifying a high-sensitivity assay. In IBD and other chronic-inflammation populations, baseline CRP is typically well above the hs-CRP sensitivity range, so a standard assay is adequate. Distinct from `hsCRP`; do not conflate.
-
-### hsCRP (**canonical for high-sensitivity C-reactive protein**)
-- **Description:** High-sensitivity C-reactive protein concentration (baseline or time-varying).
-- **Units:** mg/L (document per-model via `covariateData[[hsCRP]]$units`).
-- **Type:** continuous
-- **Reference category:** n/a — used with power scaling `(hsCRP / ref)^exponent`.
+- **Scope:** general
+- **Reference category:** n/a — used with power scaling `(CRP / ref)^exponent` or exponential effects `exp(coef * (CRP - ref))`. Reference values observed: 4.23 mg/L (Moein 2022, IBD standard assay), 4.31 mg/L (Moein 2022 Table 3 median), 5.21 mg/L (Thakre 2022, baseline hs-CRP), 7.41 mg/L (Chua 2025, baseline standard assay), 14.2 mg/L (Xu 2019, baseline standard assay), 15.7 mg/L (Ma 2020, baseline standard assay).
 - **Source aliases:**
-  - `CRPHS` (mg/L, reference 5.21) — used in `Thakre_2022_risankizumab.R`.
-  - `HSCRP` (all caps).
-- **Example models:** `Thakre_2022_risankizumab.R`.
-- **Notes:** Case preserved (`hsCRP`) because that is the widely recognized clinical notation, mirroring the `eGFR` precedent. Distinct from non-hs CRP — only use for assays validated for the low-range sensitivity.
+  - `hsCRP` — high-sensitivity CRP (mixed-case preserved from earlier register drafts).
+  - `HSCRP` — all-caps variant.
+  - `CRPHS` — used in `Thakre_2022_risankizumab.R` (baseline, high-sensitivity assay).
+  - `BLCRP` — baseline CRP; used in `Xu_2019_sarilumab.R` and `Ma_2020_sarilumab_das28crp.R`.
+- **Example models:** `Thakre_2022_risankizumab.R`, `Xu_2019_sarilumab.R`, `Chua_2025_mirikizumab.R`, `Moein_2022_etrolizumab.R`, `Ma_2020_sarilumab_das28crp.R`.
+- **Notes:** The prior separate `hsCRP`, `BLCRP`, and standard-assay `CRP` canonicals were merged on 2026-04-20 to a single general-scope `CRP` canonical. Assay type (standard vs hs-CRP), baseline-vs-time-varying status, and the paper-specific reference value all live in each model's `covariateData[[CRP]]$description` / `notes`. Only aggregate values from hs-validated assays as CRP when the downstream analysis relies on low-range sensitivity; for most inflammatory-disease cohorts (IBD, RA/PsA), baseline CRP is well above the hs-sensitivity range and the distinction is moot.
 
 ## Race / ethnicity
 
-**Canonical pattern: `RACE_<GROUP>`.** Use one indicator per race/ethnicity group the source models. Reference category is the implicit 0 = all other groups; document explicitly which groups are in the reference. When the source uses composite groups (e.g., "Black or Other"), name them accordingly (`RACE_BLACK_OTHER`) and list the components in `notes`.
+**Canonical pattern: `RACE_<GROUP>`.** Use one indicator per race/ethnicity group the source models. Reference category is the implicit 0 = all other groups; document explicitly which groups are in the reference. When the source uses composite groups (e.g., "Black or Other"), name them accordingly (`RACE_BLACK_OTHER`) and list the components in `notes`. The base `RACE_<GROUP>` indicators are scope: general; composite groupings are scope: specific because the grouping is tied to the study's analysis plan.
 
 ### RACE_BLACK (**canonical**)
 - **Description:** 1 = Black / African American, 0 = other.
 - **Units:** (binary)
 - **Type:** binary
+- **Scope:** general
 - **Reference category:** 0 (document the actual reference groups used).
 - **Source aliases:**
   - `BLACK` — used in `Hu_2026_clesrovimab.R`.
-  - `BLACK_OTH` (Black or Other composite; reference: White or Native Hawaiian/Pacific Islander) — used in `Clegg_2024_nirsevimab.R`. Register as its own canonical `RACE_BLACK_OTH` since the grouping is not equivalent.
 - **Example models:** `Zhu_2017_lebrikizumab.R` (canonical form).
 
 ### RACE_BLACK_OTH (**canonical for composite Black/Other group**)
 - **Description:** 1 = Black/African American or Other race, 0 = other groups.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
 - **Reference category:** 0 = White or Native Hawaiian/Pacific Islander (Clegg 2024 grouping).
 - **Source aliases:** `BLACK_OTH` — used in `Clegg_2024_nirsevimab.R`.
+- **Example models:** `Clegg_2024_nirsevimab.R`.
 - **Notes:** Kept distinct from `RACE_BLACK` because the composite is not interchangeable.
 
 ### RACE_ASIAN (**canonical**)
 - **Description:** 1 = Asian, 0 = other.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
 - **Source aliases:** `ASIAN` — used in `Hu_2026_clesrovimab.R`.
 - **Example models:** `Zhu_2017_lebrikizumab.R` (canonical form).
 
 ### RACE_ASIAN_AMIND_MULTI (**canonical for composite group**)
 - **Description:** 1 = Asian, American Indian / Alaskan Native, or Multiple races, 0 = other.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
 - **Reference category:** 0 = White, Black / African American, Native Hawaiian / Pacific Islander, or Other (Clegg 2024 grouping).
 - **Source aliases:** `ASIAN_AMIND_MULTI` — used in `Clegg_2024_nirsevimab.R`.
+- **Example models:** `Clegg_2024_nirsevimab.R`.
 - **Notes:** Clegg 2024 applies this covariate to both CL and V2 with different coefficients.
 
 ### RACE_MULTI
 - **Description:** 1 = multiracial, 0 = other.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
 - **Source aliases:** `MULTIRACIAL` — used in `Hu_2026_clesrovimab.R`.
+- **Example models:** `Hu_2026_clesrovimab.R`.
 
 ### RACE_OTHER
 - **Description:** 1 = race category "Other," 0 = not.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
 - **Example models:** `Zhu_2017_lebrikizumab.R`.
 
 ## Surgical history / disease state
 
-### GAST
-- **Description:** Prior (partial or total) gastrectomy indicator, 1 = prior gastrectomy, 0 = no prior gastrectomy.
+### PRIOR_GAST (**canonical for prior gastrectomy**)
+- **Description:** Prior (partial or total) gastrectomy indicator, 1 = prior gastrectomy, 0 = no prior gastrectomy. Time-fixed per subject.
 - **Units:** (binary)
 - **Type:** binary
+- **Scope:** general
 - **Reference category:** 0 (no prior gastrectomy).
-- **Source aliases:** none.
+- **Source aliases:**
+  - `GAST` — used in `Yamada_2025_zolbetuximab.R`.
 - **Example models:** `Yamada_2025_zolbetuximab.R` (fractional effects on CLss, CLT, V1).
-- **Notes:** Named `GAST` in the source paper; adopted as the canonical name. Captures a time-fixed surgical-history indicator; no distinction between partial vs total gastrectomy unless the paper separates them.
+- **Notes:** Renamed from `GAST` on 2026-04-20 to follow the `PRIOR_TNF` / `PRICORT` naming pattern for prior-treatment and surgical-history indicators. Applicable to any PK model where gastrointestinal anatomy affects absorption, first-pass, or protein turnover; not inherently oncology-specific. No distinction between partial vs total gastrectomy unless the source paper separates them.
 
 ## Oncology
 
@@ -273,15 +321,17 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
 - **Description:** Baseline tumor size. For solid tumors, the sum of diameters of target lesions per RECIST; for classical Hodgkin lymphoma, the sum of products of perpendicular diameters (SPPD).
 - **Units:** mm
 - **Type:** continuous
+- **Scope:** general
 - **Reference category:** n/a — used with power scaling `(TUMSZ / ref)^exponent`. Reference values observed: 63 mm (Budha 2023).
 - **Source aliases:** none.
 - **Example models:** `Budha_2023_tislelizumab.R` (reference 63 mm).
-- **Notes:** The SPPD convention for cHL and the sum-of-diameters convention for solid tumors are pooled onto a single column by convention; document the per-model mixture where relevant.
+- **Notes:** Promoted to scope: general on 2026-04-20 as a conventional oncology baseline-tumor-size measure (RECIST for solid tumors, SPPD for cHL). The SPPD vs sum-of-diameters convention is pooled onto a single column; document the per-model mixture where relevant.
 
 ### TUMTP_CHL (**canonical for classical Hodgkin lymphoma tumor-type indicator**)
 - **Description:** 1 = classical Hodgkin lymphoma (cHL), 0 = other tumor types.
 - **Units:** (binary)
 - **Type:** binary
+- **Scope:** specific
 - **Reference category:** 0 = all other tumor types (e.g., NSCLC, EC, HCC, UC, GC, CRC, NPC, OC, "Other" solid tumors in the Budha 2023 cohort).
 - **Source aliases:**
   - `TUMTP` (categorical column with levels like `cHL`, `GC`, ...) — decompose into `TUMTP_CHL = as.integer(TUMTP == "cHL")`.
@@ -292,6 +342,7 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
 - **Description:** 1 = gastric cancer (GC), 0 = other tumor types.
 - **Units:** (binary)
 - **Type:** binary
+- **Scope:** specific
 - **Reference category:** 0 = all other tumor types (same reference group as `TUMTP_CHL`).
 - **Source aliases:**
   - `TUMTP` (categorical column) — decompose into `TUMTP_GC = as.integer(TUMTP == "GC")`.
@@ -304,29 +355,11 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
 - **Description:** Serum albumin normalized to the laboratory's upper limit of normal (`albumin_observed / ULN_albumin`).
 - **Units:** (unitless ratio)
 - **Type:** continuous
+- **Scope:** specific
 - **Reference category:** n/a — used as a power term `(ALBR / <ref>)^exponent`. Reference 0.78 used in Xu 2019 (corresponds to a median serum albumin of 38 g/L at a typical ULN of ~48.7 g/L).
 - **Source aliases:** none.
 - **Example models:** `Xu_2019_sarilumab.R`.
-- **Notes:** Xu 2019 normalizes to each site's ULN so that values across multiple labs with different reference ranges can be pooled.
-
-### CRCL_BSA
-- **Description:** Body-surface-area-normalized creatinine clearance, computed as `1.73 * CrCl / BSA` where `CrCl` is in mL/min and `BSA` is in m^2.
-- **Units:** mL/min/1.73 m^2
-- **Type:** continuous
-- **Reference category:** n/a — used as a power term `(CRCL_BSA / <ref>)^exponent`. Reference 100 mL/min/1.73 m^2 in Xu 2019.
-- **Source aliases:**
-  - `1.73*CrCl/BSA` (the formula appearing in Xu 2019 Eq. for Vm) — used in `Xu_2019_sarilumab.R`.
-- **Example models:** `Xu_2019_sarilumab.R`.
-- **Notes:** Distinct from `eGFR`: CRCL_BSA is derived from a measured creatinine clearance rather than an MDRD / CKD-EPI estimate.
-
-### BLCRP
-- **Description:** Baseline (pre-treatment) C-reactive protein concentration.
-- **Units:** mg/L
-- **Type:** continuous
-- **Reference category:** n/a — used as a power term `(BLCRP / <ref>)^exponent`. Reference 14.2 mg/L in Xu 2019; 15.7 mg/L in Ma 2020.
-- **Source aliases:** none.
-- **Example models:** `Xu_2019_sarilumab.R`, `Ma_2020_sarilumab_das28crp.R`.
-- **Notes:** Time-fixed per subject (baseline value only). Xu 2019 reports it as a significant covariate on Vm with a small exponent (0.0299). Ma 2020 uses it as a power covariate on DAS28-CRP BASE and as an additive log-linear effect on logit(Emax).
+- **Notes:** Xu 2019 normalizes to each site's ULN so that values across multiple labs with different reference ranges can be pooled. Scoped specific because the ULN-normalization convention is tied to the Xu 2019 analysis plan; future papers using the same ratio should either add themselves to the example_models list or promote this entry to general.
 
 ## Rheumatoid-arthritis disease-activity covariates
 
@@ -334,15 +367,17 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
 - **Description:** Baseline Physician's Global Assessment of Disease Activity, 100-mm visual analogue scale (0 = no disease activity, 100 = maximum). Time-fixed per subject.
 - **Units:** mm (0-100 VAS)
 - **Type:** continuous
+- **Scope:** general
 - **Reference category:** n/a — used as a power term `(BLPHYVAS / <ref>)^exponent`. Reference 66 used in Ma 2020.
 - **Source aliases:** none.
 - **Example models:** `Ma_2020_sarilumab_das28crp.R`.
-- **Notes:** One of the components of the DAS28 composite score; in Ma 2020 it appears as a baseline covariate on the DAS28-CRP disease-activity BASE rather than on the score itself.
+- **Notes:** One of the components of the DAS28 composite score; in Ma 2020 it appears as a baseline covariate on the DAS28-CRP disease-activity BASE rather than on the score itself. Applicable to any rheumatology model where baseline physician-assessed disease activity is used as a PK/PD covariate.
 
 ### BLHAQ
 - **Description:** Baseline Health Assessment Questionnaire Disability Index (HAQ-DI; 0 = no disability, 3 = maximum disability). Time-fixed per subject.
 - **Units:** unitless (0-3 composite score)
 - **Type:** continuous
+- **Scope:** general
 - **Reference category:** n/a — used as a power term `(BLHAQ / <ref>)^exponent`. Reference 1.75 used in Ma 2020.
 - **Source aliases:** none.
 - **Example models:** `Ma_2020_sarilumab_das28crp.R`.
@@ -354,10 +389,11 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
 - **Description:** 1 = patient received systemic corticosteroid treatment prior to study entry, 0 = no prior corticosteroid use. Time-fixed per subject.
 - **Units:** (binary)
 - **Type:** binary
+- **Scope:** general
 - **Reference category:** 0 (no prior corticosteroid use).
 - **Source aliases:** none.
 - **Example models:** `Ma_2020_sarilumab_das28crp.R` (multiplicative on DAS28-CRP Kout: `Kout * theta^PRICORT`); `Ma_2020_sarilumab_anc.R` (power-form on Emax: `Emax * 0.819^PRICORT`).
-- **Notes:** Ma 2020 applies it as a multiplicative effect of the form `param * theta^PRICORT` in both DAS28-CRP and ANC PD models.
+- **Notes:** Ma 2020 applies it as a multiplicative effect of the form `param * theta^PRICORT` in both DAS28-CRP and ANC PD models. Generally applicable clinical-history indicator.
 
 ## Immunogenicity
 
@@ -365,32 +401,25 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
 - **Description:** 1 = antidrug-antibody-positive, 0 = ADA-negative.
 - **Units:** (binary)
 - **Type:** binary
+- **Scope:** general
 - **Reference category:** 0 (ADA-negative).
 - **Source aliases:**
   - `ADA` (semantically "ever positive") — used in `Zhu_2017_lebrikizumab.R`. When translating from a paper that uses `ADA` as "ever positive," verify the time-frame matches ADA_POS semantics before renaming.
   - `ADA` (time-varying positivity, primary covariate in Xu 2019) — used in `Xu_2019_sarilumab.R`.
 - **Example models:** `Clegg_2024_nirsevimab.R`, `Hu_2026_clesrovimab.R`, `Xu_2019_sarilumab.R`.
 
-### ADA_TITRE (**canonical for continuous ADA titre**)
-- **Description:** Antidrug-antibody titre reported as the reciprocal dilution (the integer after the colon in clinical notation `1:N`). Time-varying; matched in time to the PK sample.
-- **Units:** titre (dimensionless reciprocal dilution, e.g. 10, 20, 40, …, 2560)
+### ADA_TITER (**canonical for continuous antidrug-antibody titer/titre**)
+- **Description:** Continuous antidrug-antibody titer/titre (time-varying; matched in time to the PK sample). Covers both the British-spelling reciprocal-dilution convention (`ADA_TITRE`, with `ADA_TITRE = 1` for ADA-negative so `log_e(1) = 0` cancels a log-linear effect) and the American-spelling linear-titer convention (`ADA_TITER`, with `ADA_TITER = 0` for ADA-negative). The per-model `covariateData[[ADA_TITER]]$description` and `notes` must state which zero-encoding convention is in force so the covariate column cannot be misinterpreted.
+- **Units:** Reciprocal dilution (e.g., 10, 20, 40, …, 2560) OR assay units (log2 or arbitrary) — document per-model in `covariateData[[ADA_TITER]]$units`.
 - **Type:** continuous
-- **Reference category:** n/a — used in a log-linear multiplicative effect `(1 + coef * log_e(ADA_TITRE))`.
-- **Encoding for ADA-negative samples:** `ADA_TITRE = 1` so that `log_e(1) = 0` cancels the covariate effect. This convention is the NONMEM standard used in the source papers that parameterize ADA effects on a log-titre scale. Documented per-model in `covariateData[[ADA_TITRE]]$notes`.
+- **Scope:** general
+- **Reference category:** n/a — ADA-negative encoded per-model (see zero-encoding note).
 - **Source aliases:**
-  - `ADA titre` — British-spelling long form.
-- **Example models:** `Jackson_2022_ixekizumab.R` (reference: 58.6 kg paediatric psoriasis dataset; ADA-negative samples are 85.8% of the dataset and are encoded with `ADA_TITRE = 1`).
-- **Notes:** Ratified 2026-04-20 during extraction of Jackson 2022. Distinct from `ADA_POS` because the effect here is driven by magnitude of titre, not presence/absence. Distinct from `ADA_TITER` (American spelling, zero for negative). Both columns may coexist in a dataset; use `ADA_TITRE` when the source parameterizes `log_e` titre on CL.
-
-### ADA_TITER (**canonical**)
-- **Description:** Continuous antidrug antibody titer (time-varying). Zero for ADA-negative observations.
-- **Units:** (titer units; typically log2 or arbitrary assay units — document per-model in `covariateData[[ADA_TITER]]$units`).
-- **Type:** continuous
-- **Reference category:** n/a — ADA-negative corresponds to titer = 0.
-- **Source aliases:**
-  - `ADAT` — used in `Moein_2022_etrolizumab.R`.
-- **Example models:** `Moein_2022_etrolizumab.R` (exponential effect on CL, per-unit-titer theta = 0.0365).
-- **Notes:** Paired conceptually with `ADA_POS` (binary). When the paper reports both, the final model usually keeps only one. Imputation rules (LOCF / NOCB / baseline-as-negative) should be documented per-model.
+  - `ADA_TITRE` — British spelling (reciprocal-dilution convention; `1` for negative).
+  - `ADA titre` — British spelling long form.
+  - `ADAT` — used in `Moein_2022_etrolizumab.R` (American linear-titer convention; `0` for negative).
+- **Example models:** `Jackson_2022_ixekizumab.R` (reciprocal-dilution reference convention with `ADA_TITER = 1` for negatives and `(1 + coef * log_e(ADA_TITER))` on CL), `Moein_2022_etrolizumab.R` (linear-titer convention with `ADA_TITER = 0` for negatives and `exp(theta * ADA_TITER)` on CL, per-unit-titer theta = 0.0365).
+- **Notes:** The prior separate `ADA_TITRE` (British, `1` = negative) and `ADA_TITER` (American, `0` = negative) canonicals were merged on 2026-04-20 into a single general-scope `ADA_TITER`. The zero-encoding convention is the load-bearing semantic and must be documented per-model. Distinct from `ADA_POS` (binary presence/absence); when the paper reports both, the final model usually keeps only one. Imputation rules (LOCF / NOCB / baseline-as-negative) should be documented per-model.
 
 ## Disease / treatment history
 
@@ -398,26 +427,29 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
 - **Description:** 1 = subject previously treated with an anti-TNF (tumor necrosis factor) inhibitor, 0 = TNF-naive.
 - **Units:** (binary)
 - **Type:** binary
+- **Scope:** general
 - **Reference category:** 0 (TNF-naive).
 - **Source aliases:**
   - `PRIORTNF` (all caps, no underscore) — acceptable alternative spelling.
 - **Example models:** `Moein_2022_etrolizumab.R` (multiplicative fractional effect on CL, +4.9%).
-- **Notes:** Use when the source paper reports a binary "prior anti-TNF inhibitor" covariate on any PK parameter.
+- **Notes:** Use when the source paper reports a binary "prior anti-TNF inhibitor" covariate on any PK parameter. Generally applicable across RA/PsA/IBD/axSpA biologic PK models.
 
 ### DISEXT_EP (**canonical for extensive colitis / pancolitis indicator**)
 - **Description:** 1 = extensive colitis or pancolitis disease extension, 0 = not.
 - **Units:** (binary)
 - **Type:** binary
+- **Scope:** specific
 - **Reference category:** 0 (left-sided colitis, when paired with `DISEXT_OTHER = 0`).
 - **Source aliases:**
   - Derived from a multi-level `DISEXT` column in the source (levels: left-sided colitis, extensive/pancolitis, other): `DISEXT_EP = as.integer(DISEXT == "extensive/pancolitis")`.
 - **Example models:** `Moein_2022_etrolizumab.R` (multiplicative effect on CL, +8.2% vs. left-sided colitis).
-- **Notes:** Paired with `DISEXT_OTHER`. `DISEXT_EP = DISEXT_OTHER = 0` corresponds to the left-sided colitis reference group. UC-specific covariate; analogous indicators could be used for other inflammatory bowel disease models.
+- **Notes:** Paired with `DISEXT_OTHER`. `DISEXT_EP = DISEXT_OTHER = 0` corresponds to the left-sided colitis reference group. UC-specific covariate; analogous indicators could be registered for other inflammatory-bowel-disease models by promoting this entry or adding new `DISEXT_<CATEGORY>` canonicals.
 
 ### DISEXT_OTHER (**canonical for 'other disease extension' indicator**)
 - **Description:** 1 = disease extension other than left-sided colitis or extensive/pancolitis, 0 = not.
 - **Units:** (binary)
 - **Type:** binary
+- **Scope:** specific
 - **Reference category:** 0 (left-sided colitis, when paired with `DISEXT_EP = 0`).
 - **Source aliases:** Derived from a multi-level `DISEXT` column: `DISEXT_OTHER = as.integer(DISEXT == "other")`.
 - **Example models:** `Moein_2022_etrolizumab.R` (multiplicative effect on CL, +18% vs. left-sided colitis; large uncertainty due to 2% prevalence).
@@ -429,6 +461,7 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
 - **Description:** 1 = current smoker at baseline, 0 = non-smoker.
 - **Units:** (binary)
 - **Type:** binary
+- **Scope:** general
 - **Reference category:** 0 (non-smoker).
 - **Source aliases:**
   - `Smoking` (case-insensitive) — used in `Ma_2020_sarilumab_anc.R`.
@@ -439,36 +472,48 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
 
 ### FED
 - **Description:** 1 = fed state at dosing, 0 = fasted.
+- **Units:** (binary)
 - **Type:** binary
+- **Scope:** general
 - **Reference category:** 0 (fasted).
 - **Example models:** `Kyhl_2016_nalmefene.R`.
 
 ### TABLET
 - **Description:** 1 = tablet formulation, 0 = solution.
+- **Units:** (binary)
 - **Type:** binary
+- **Scope:** specific
 - **Reference category:** 0 (solution).
 - **Example models:** `Kyhl_2016_nalmefene.R`.
+- **Notes:** Scoped specific because the "tablet vs solution" contrast is tied to Kyhl 2016's formulation-comparison design. Future formulation-comparison models should either add themselves here or register a more general `FORM_TABLET` entry.
 
 ### RIA_ASSAY
 - **Description:** 1 = radioimmunoassay; 0 = LC-MS/MS.
+- **Units:** (binary)
 - **Type:** binary
+- **Scope:** specific
 - **Example models:** `Kyhl_2016_nalmefene.R`.
 - **Notes:** Switches the additive residual-error magnitude.
 
 ### FORM_NS0
 - **Description:** 1 = NS0 cell-line formulation, 0 = other.
+- **Units:** (binary)
 - **Type:** binary
+- **Scope:** specific
 - **Example models:** `Zhu_2017_lebrikizumab.R`.
 
 ### FORM_CHO_PHASE2
 - **Description:** 1 = CHO Phase 2 formulation, 0 = other.
+- **Units:** (binary)
 - **Type:** binary
+- **Scope:** specific
 - **Example models:** `Zhu_2017_lebrikizumab.R`.
 
 ### COMB_EOX
 - **Description:** 1 = concomitant epirubicin + oxaliplatin + capecitabine (EOX) chemotherapy backbone, 0 = other backbone (e.g., mFOLFOX6, CAPOX, or single-agent).
 - **Units:** (binary)
 - **Type:** binary
+- **Scope:** specific
 - **Reference category:** 0 (non-EOX backbone).
 - **Source aliases:** `COMB` (used by Yamada 2025 Table 1 with the EOX level coded as the non-reference category; renamed to `COMB_EOX` to preserve the semantic meaning of the 1-level).
 - **Example models:** `Yamada_2025_zolbetuximab.R` (fractional effect on V1).
@@ -478,6 +523,7 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
 - **Description:** 1 = sarilumab drug product 2 formulation (used in some phase I studies and the dose-ranging phase II study), 0 = other drug product (DP1 or DP3; DP3 is the commercial formulation).
 - **Units:** (binary)
 - **Type:** binary
+- **Scope:** specific
 - **Reference category:** 0 (DP1 or DP3).
 - **Source aliases:**
   - `DP2` — used in `Xu_2019_sarilumab.R`.
@@ -486,26 +532,33 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
 
 ### dilution
 - **Description:** 1 = drug diluted (Soehoel 2022 study D2213C00001), 0 = not diluted.
+- **Units:** (binary)
 - **Type:** binary
+- **Scope:** specific
 - **Example models:** `Soehoel_2022_tralokinumab.R`.
 - **Notes:** Lower-case preserved from source; future models should rename to `DILUTION`. Kept as alias here to match existing file.
 
 ### nonECZTRA
 - **Description:** 1 = not the ECZTRA trial; 0 = ECZTRA.
+- **Units:** (binary)
 - **Type:** binary
+- **Scope:** specific
 - **Example models:** `Soehoel_2022_tralokinumab.R`.
 - **Notes:** Mixed case preserved from source; future models should rename to `NON_ECZTRA` or `STUDY_NON_ECZTRA`.
 
 ### SEASON2
 - **Description:** 1 = second RSV season at dosing, 0 = first RSV season.
+- **Units:** (binary)
 - **Type:** binary
+- **Scope:** specific
 - **Example models:** `Clegg_2024_nirsevimab.R`.
-- **Notes:** Study-specific but semantically general (second-exposure indicator).
+- **Notes:** Study-specific but semantically general (second-exposure indicator). Promote to general if a second RSV-season model adopts the same semantics.
 
 ### DOSE_70MG
 - **Description:** 1 = subject is on the 70 mg SC Q4W dose regimen, 0 = subject is on the 210 or 490 mg SC Q4W regimen.
 - **Units:** (binary)
 - **Type:** binary
+- **Scope:** specific
 - **Reference category:** 0 (210 mg or 490 mg Q4W regimen).
 - **Source aliases:** derived per subject from the trial-assigned dose level.
 - **Example models:** `Kotani_2022_astegolimab.R`.
@@ -513,7 +566,9 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
 
 ### STUDY1
 - **Description:** 1 = subject enrolled in Study 1 of the Cirincione 2017 pooled analysis, 0 = other. Used to switch the residual-error magnitude per study.
+- **Units:** (binary)
 - **Type:** binary
+- **Scope:** specific
 - **Reference category:** 0 (all other studies; combined with `STUDY5 = 0` selects the pooled "other" residual error).
 - **Source aliases:**
   - `DVID = "study1"` (character-valued study identifier; `STUDY1 = as.integer(DVID == "study1")`) — legacy form previously used in `Cirincione_2017_exenatide.R`.
@@ -522,7 +577,9 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
 
 ### STUDY5
 - **Description:** 1 = subject enrolled in Study 5 of the Cirincione 2017 pooled analysis, 0 = other. Used to switch the residual-error magnitude per study.
+- **Units:** (binary)
 - **Type:** binary
+- **Scope:** specific
 - **Reference category:** 0 (all other studies).
 - **Source aliases:**
   - `DVID = "study5"` (character-valued study identifier; `STUDY5 = as.integer(DVID == "study5")`) — legacy form previously used in `Cirincione_2017_exenatide.R`.
@@ -533,7 +590,9 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
 
 ### ooc1, ooc2, ooc3, ooc4
 - **Description:** Mutually exclusive occasion indicators for a crossover / multi-period design. Exactly one is 1 per observation.
+- **Units:** (binary)
 - **Type:** binary
+- **Scope:** specific
 - **Example models:** `Xie_2019_agomelatine.R`.
 - **Notes:** Lower case preserved from source file. Future models should standardize on `OCC` as a categorical column with integer values (`OCC = 1`, `2`, …) and use `IOV` on the appropriate parameters.
 
@@ -541,7 +600,7 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
 
 ## Change log
 
-- **Initial seed** (this PR): Every covariate observed in `inst/modeldb/` as of the audit. Canonical names established: `SEXF`, `ADA_POS`, `RACE_<GROUP>` prefix. Aliases documented but existing model files not modified.
+- **Initial seed**: Every covariate observed in `inst/modeldb/` as of the audit. Canonical names established: `SEXF`, `ADA_POS`, `RACE_<GROUP>` prefix. Aliases documented but existing model files not modified.
 - **2026-04-19** — Added `CREAT`, `hsCRP`, `ALB` canonical entries after the
   Phase 6 pilot extracted Fasanmade 2009 infliximab and Thakre 2022
   risankizumab. `ALB` had been used informally in two models; now ratified
@@ -552,51 +611,29 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
 - **2026-04-19** — Added `BSA`, `HGB`, `TBILI`, `GAST`, and `COMB_EOX`
   canonical entries in support of Yamada 2025 zolbetuximab. New sections
   created for `Hematology` and `Surgical history / disease state`.
-  `TBILI` placed under the existing `Renal / hepatic function` section;
-  `COMB_EOX` placed under `Formulation / assay / study` with `COMB`
-  recorded as the source alias.
 - **2026-04-19** — Added `BEOS` (baseline blood eosinophil count, cells/µL)
   and `DOSE_70MG` (Zenyatta 70 mg dose-group indicator) canonical entries
   after extracting the Kotani 2022 astegolimab population PK model.
 - **2026-04-19** — Added `ADA_TITER`, `PRIOR_TNF`, `DISEXT_EP`,
   `DISEXT_OTHER` canonical entries while extracting Moein 2022 etrolizumab.
-  `ADA_TITER` is the continuous-titer companion to binary `ADA_POS`;
-  `PRIOR_TNF` captures prior anti-TNF therapy (common covariate in IBD
-  biologic PK models); `DISEXT_EP` / `DISEXT_OTHER` are paired indicators
-  that encode the three-level ulcerative-colitis disease-extension
-  categorical (reference = left-sided colitis). Extended the `CRP` entry
-  to add Moein 2022 as a second example model.
 - **2026-04-20** — Added `CRP` and `BMI` canonical entries for Chua 2025
-  mirikizumab (VIVID-1 popPK). `CRP` is for papers that report a standard
-  CRP assay where the baseline values are well above the hs-CRP sensitivity
-  range, as is typical in moderate-to-severe IBD populations.
+  mirikizumab.
 - **2026-04-20** — Added `SMOKE` canonical entry from the Ma 2020 sarilumab
-  ANC PopPK/PD extraction. Binary baseline-only indicator used as a
-  power-form covariate (`BASE * 1.15^SMOKE` on baseline ANC). Extended the
-  `PRICORT` entry to record the ANC model as a second example.
+  ANC PopPK/PD extraction.
 - **2026-04-20** — Added `EASI` canonical entry for the Eczema Area and
-  Severity Index, introduced by `Tiraboschi_2025_amlitelimab.R` (source
-  alias `BEASI` for baseline EASI). Canonical name omits the `B` prefix to
-  match the `AGE`/`WT`/`ALB` pattern where baseline vs time-varying status
-  is noted in `covariateData[[...]]$notes` rather than the column name.
+  Severity Index, introduced by `Tiraboschi_2025_amlitelimab.R`.
 - **2026-04-20** — Added `TUMSZ`, `TUMTP_CHL`, `TUMTP_GC` canonical entries
-  with the Budha 2023 tislelizumab extraction. `TUMSZ` centralizes the
-  baseline-tumor-size continuous covariate; `TUMTP_<GROUP>` mirrors the
-  `RACE_<GROUP>` decomposition so categorical tumor-type effects are
-  stored as indicator columns with an explicit "all other tumor types"
-  reference.
+  with the Budha 2023 tislelizumab extraction.
 - **2026-04-20** — Added `ADA_TITRE` canonical entry while extracting the
-  Jackson 2022 ixekizumab paediatric psoriasis PopPK model. Distinct from
-  both `ADA_POS` (binary) and `ADA_TITER` (zero for negative); encodes the
-  continuous reciprocal-dilution titre with the NONMEM convention
-  `ADA_TITRE = 1` for ADA-negative samples (so that `log_e(1) = 0` cancels
-  the covariate effect). Ratified via sidecar stop-and-ask during task 006.
-- Subsequent additions: append new canonical entries as new papers are processed. When adding, bump the audit-completed count in the summary below.
+  Jackson 2022 ixekizumab paediatric psoriasis PopPK model.
 - **Xu 2019 sarilumab**: Added canonical entries `ALBR` (albumin / ULN ratio), `CRCL_BSA` (BSA-normalized creatinine clearance), `BLCRP` (baseline C-reactive protein), and `FORM_DP2` (sarilumab drug product 2 indicator). Extended the `ADA_POS` alias list to include the time-varying `ADA` column used in Xu 2019.
-- **Ma 2020 sarilumab DAS28-CRP**: Added canonical entries `BLPHYVAS` (baseline Physician's Global Assessment of Disease Activity, 100-mm VAS), `BLHAQ` (baseline HAQ-DI), and `PRICORT` (prior corticosteroid treatment). Extended the `BLCRP` entry to record Ma 2020 as a second example model (reference 15.7 mg/L, covariate on DAS28-CRP BASE and log(Emax)).
+- **Ma 2020 sarilumab DAS28-CRP**: Added canonical entries `BLPHYVAS`, `BLHAQ`, and `PRICORT`. Extended the `BLCRP` entry to record Ma 2020 as a second example model.
+- **2026-04-20 (scope + mergers)** — Introduced the `Scope:` field (general vs specific) on every entry; `checkModelConventions()` now warns when a scope-specific covariate appears in a model that is not in its `Example models` list. Merged `hsCRP` + `BLCRP` + the previously separate standard-assay `CRP` into a single general-scope `CRP` canonical (assay and baseline-vs-time-varying nuances now live in per-model `covariateData[[CRP]]$description` / `notes`). Merged `eGFR` + `CRCL_BSA` into a single general-scope `CRCL` canonical (MDRD-estimated vs measured-CrCl-BSA-normalized nuances now live per-model). Merged `ADA_TITRE` + `ADA_TITER` into a single general-scope `ADA_TITER` canonical (British-reciprocal-dilution vs American-linear-titer zero-encoding conventions now live per-model). Renamed `BEOS` → `EOS` and `GAST` → `PRIOR_GAST` to follow the `EASI` / `AGE` / `ALB` (baseline status in notes, not column name) and `PRIOR_TNF` / `PRICORT` (prior-treatment / surgical-history) naming patterns. Promoted `TUMSZ` from Budha-specific to general oncology.
+- Subsequent additions: append new canonical entries as new papers are processed. When adding, bump the audit-completed count in the summary below.
 
 ## Summary
 
-- Files audited: 66 R files under `inst/modeldb/` (17 of which reference covariates).
-- Canonical entries: 57.
-- Aliases mapped: 17 (including SEXM→SEXF, ADA→ADA_POS, ADAT→ADA_TITER, BLACK→RACE_BLACK, ASIAN→RACE_ASIAN, MULTIRACIAL→RACE_MULTI, BLACK_OTH→RACE_BLACK_OTH, ASIAN_AMIND_MULTI→RACE_ASIAN_AMIND_MULTI, DVID→STUDY1/STUDY5, CRE→CREAT, CRPHS→hsCRP, 1.73*CrCl/BSA→CRCL_BSA, DP2→FORM_DP2, DISEXT→DISEXT_EP/DISEXT_OTHER, BEASI→EASI, TUMTP→TUMTP_CHL/TUMTP_GC, COMB→COMB_EOX).
+- Files audited: 69 R files under `inst/modeldb/` (20 of which reference covariates).
+- Canonical H3 entries: 53 (56 parsed entries when counting each `ooc<n>` individually; was ~57 before the 2026-04-20 mergers of `hsCRP`+`BLCRP`+standard-`CRP` → `CRP`, `eGFR`+`CRCL_BSA` → `CRCL`, and `ADA_TITRE`+`ADA_TITER` → `ADA_TITER`).
+- Scope: general: 33. Scope: specific: 23 (counting each `ooc<n>` individually, or 20 counting the `### ooc1, ooc2, ooc3, ooc4` heading as one entry).
+- Aliases mapped (selected): SEXM→SEXF, ADA→ADA_POS, ADA_TITRE/ADAT→ADA_TITER, BLACK→RACE_BLACK, ASIAN→RACE_ASIAN, MULTIRACIAL→RACE_MULTI, BLACK_OTH→RACE_BLACK_OTH, ASIAN_AMIND_MULTI→RACE_ASIAN_AMIND_MULTI, DVID→STUDY1/STUDY5, CRE→CREAT, hsCRP/HSCRP/CRPHS/BLCRP→CRP, eGFR/EGFR/CRCL_BSA/1.73*CrCl/BSA→CRCL, DP2→FORM_DP2, DISEXT→DISEXT_EP/DISEXT_OTHER, BEASI→EASI, BEOS→EOS, GAST→PRIOR_GAST, COMB→COMB_EOX, TUMTP→TUMTP_CHL/TUMTP_GC.

@@ -13,13 +13,13 @@ Ma_2020_sarilumab_das28crp <- function() {
       notes              = "Power effect on DAS28-CRP BASE normalized as WT/72.8 (Ma 2020 Table 3 reference weight = median of DAS28-CRP final dataset per paper narrative). The 71 kg reference used for the embedded Xu 2019 PK typical profile is internal to the model and is not exposed through this covariate.",
       source_name        = "WT"
     ),
-    BLCRP = list(
-      description        = "Baseline (pre-treatment) C-reactive protein measured by the routine clinical assay",
+    CRP = list(
+      description        = "Baseline (pre-treatment) C-reactive protein measured by the routine clinical assay; time-fixed per subject",
       units              = "mg/L",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject. Power effect on BASE and additive log-linear effect on the logit-transformed Emax (Ma 2020 Table 3); reference 15.7 mg/L is the median baseline CRP of the DAS28-CRP dataset per paper narrative. Distinct from hsCRP (which uses the high-sensitivity assay).",
-      source_name        = "BLCRP"
+      notes              = "Power effect on BASE and additive log-linear effect on the logit-transformed Emax (Ma 2020 Table 3); reference 15.7 mg/L is the median baseline CRP of the DAS28-CRP dataset per paper narrative. Source column 'CRP' (baseline CRP, standard assay) maps to the canonical general-scope CRP covariate; the baseline-only and standard-assay semantics are documented here in the covariateData entry rather than via a separate CRP canonical.",
+      source_name        = "CRP"
     ),
     BLPHYVAS = list(
       description        = "Baseline Physician's Global Assessment of Disease Activity (100-mm VAS)",
@@ -59,8 +59,8 @@ Ma_2020_sarilumab_das28crp <- function() {
     dose_range        = "Sarilumab 100, 150, or 200 mg SC q2w, and 100 or 150 mg SC qw; placebo arm also modelled. Treatment durations 12, 24, and 52 weeks across studies.",
     regions           = "Multi-regional (North America, EU, Latin America, and other regions represented in MOBILITY and TARGET phase II-III programs).",
     baseline_biomarkers = list(
-      BLCRP_mean_sd_mg_L = "24.1 (25.1)",
-      BLCRP_median_mg_L  = 15.7,
+      CRP_mean_sd_mg_L = "24.1 (25.1)",
+      CRP_median_mg_L  = 15.7,
       BLIL6_mean_sd_pg_mL = "41.8 (67.2)",
       BLPHYVAS_mean_sd   = "64.6 (16.8)",
       BLPHYVAS_median    = 66,
@@ -81,7 +81,7 @@ Ma_2020_sarilumab_das28crp <- function() {
     # PK backbone (Xu 2019 Table 3) - fixed at typical reference-covariate values.
     # The current model uses these as structural constants so a single file
     # reproduces the full sarilumab PK/PD cascade; individual PK covariates
-    # (ADA, drug product, sex, ALBR, CrCl, WT-on-PK, BLCRP-on-Vm) are omitted
+    # (ADA, drug product, sex, ALBR, CrCl, WT-on-PK, CRP-on-Vm) are omitted
     # here because the Ma 2020 PopPK/PD analysis used sequential individual-PK
     # Bayes estimates as the exposure input. See the vignette's Assumptions and
     # deviations for the discussion of approach (a) vs (b).
@@ -97,7 +97,7 @@ Ma_2020_sarilumab_das28crp <- function() {
     # --------------------------------------------------------------------------
     # DAS28-CRP indirect-response PD model (Ma 2020 Table 3, final-model column)
     # Reference covariate values taken from Ma 2020 narrative (median of the
-    # DAS28-CRP dataset): BLCRP 15.7 mg/L, BLPHYVAS 66, BLHAQ 1.75, WT 72.8 kg.
+    # DAS28-CRP dataset): CRP 15.7 mg/L, BLPHYVAS 66, BLHAQ 1.75, WT 72.8 kg.
     # --------------------------------------------------------------------------
     lBase  <- log(6.06);  label("Typical DAS28-CRP baseline (unitless score)")            # Ma 2020 Table 3, BASE row (6.06)
     lEmax  <- 0.237;      label("Logit-transformed maximum drug effect on kin (unitless)") # Ma 2020 Table 3, Log(Emax) row; Emax = 1/(1+exp(-lEmax)) = 0.559, matching the paper's stated 55.9% maximum decrease
@@ -108,13 +108,13 @@ Ma_2020_sarilumab_das28crp <- function() {
 
     # Continuous-covariate exponents on BASE (power form; paper narrative describes
     # small effects for each covariate, clinically not meaningful per Ma 2020).
-    e_blcrp_base    <- 0.0564; label("Power exponent of BLCRP/15.7 on BASE (unitless)")   # Ma 2020 Table 3, BLCRP on BASE row
+    e_crp_base    <- 0.0564; label("Power exponent of CRP/15.7 on BASE (unitless)")   # Ma 2020 Table 3, CRP on BASE row
     e_blphyvas_base <- 0.105;  label("Power exponent of BLPHYVAS/66 on BASE (unitless)")  # Ma 2020 Table 3, BLPHYVAS on BASE row
     e_blhaq_base    <- 0.0779; label("Power exponent of BLHAQ/1.75 on BASE (unitless)")   # Ma 2020 Table 3, BLHAQ on BASE row
     e_wt_base       <- 0.0522; label("Power exponent of WT/72.8 on BASE (unitless)")      # Ma 2020 Table 3, Weight on BASE row
 
     # Covariate effect on logit-transformed Emax (additive on log ratio scale).
-    e_blcrp_lemax   <- 0.333;  label("Additive effect of log(BLCRP/15.7) on lEmax (unitless)") # Ma 2020 Table 3, BLCRP on Log(Emax) row
+    e_crp_lemax   <- 0.333;  label("Additive effect of log(CRP/15.7) on lEmax (unitless)") # Ma 2020 Table 3, CRP on Log(Emax) row
 
     # Binary-covariate multiplier on Kout.
     e_pricort_kout  <- 1.26;   label("Multiplicative effect on Kout for PRICORT = 1 (unitless)") # Ma 2020 Table 3, PRICORT on Kout row; paper narrative 0.0333 vs 0.0264 day^-1
@@ -175,11 +175,11 @@ Ma_2020_sarilumab_das28crp <- function() {
     #    Kout carries one binary covariate (multiplicative).
     # ------------------------------------------------------------------
     Base <- exp(lBase + etalBase) *
-            (BLCRP    / 15.7)^e_blcrp_base    *
+            (CRP    / 15.7)^e_crp_base    *
             (BLPHYVAS / 66  )^e_blphyvas_base *
             (BLHAQ    / 1.75)^e_blhaq_base    *
             (WT       / 72.8)^e_wt_base
-    lEmax_i <- lEmax + etalEmax + e_blcrp_lemax * log(BLCRP / 15.7)
+    lEmax_i <- lEmax + etalEmax + e_crp_lemax * log(CRP / 15.7)
     Emax    <- 1 / (1 + exp(-lEmax_i))
     IC50    <- exp(lIC50 + etalIC50)
     Kout    <- exp(lKout + etalKout) * e_pricort_kout^PRICORT

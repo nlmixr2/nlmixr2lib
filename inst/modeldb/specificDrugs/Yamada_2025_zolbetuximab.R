@@ -21,12 +21,12 @@ Yamada_2025_zolbetuximab <- function() {
       notes              = "Time-fixed baseline value. Power effect on CLss (exponent -0.535) and Kdecay (exponent 1.48); reference 39.1 g/L per the Yamada 2025 Figure 1 reference population.",
       source_name        = "ALB"
     ),
-    GAST = list(
-      description        = "Prior gastrectomy indicator",
+    PRIOR_GAST = list(
+      description        = "Prior gastrectomy indicator (time-fixed per subject)",
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (no prior gastrectomy)",
-      notes              = "Time-fixed per subject. Fractional-change (dummy-variable) effects on CLss (-0.182), CLT (-0.495), and V1 (+0.103) in the final time-dependent-clearance model (Yamada 2025 Table 1).",
+      notes              = "Fractional-change (dummy-variable) effects on CLss (-0.182), CLT (-0.495), and V1 (+0.103) in the final time-dependent-clearance model (Yamada 2025 Table 1). Source column 'GAST' maps to the canonical general-scope PRIOR_GAST covariate.",
       source_name        = "GAST"
     ),
     SEXF = list(
@@ -102,9 +102,9 @@ Yamada_2025_zolbetuximab <- function() {
     e_alb_kdecay <-  1.48;   label("Power exponent of albumin on Kdecay (unitless)")                 # Yamada 2025 Table 1
     e_hgb_vc     <- -0.374;  label("Power exponent of hemoglobin on V1 (unitless)")                  # Yamada 2025 Table 1
     e_tbili_vc   <-  0.0347; label("Power exponent of total bilirubin on V1 (unitless)")             # Yamada 2025 Table 1
-    e_gast_clss  <- -0.182;  label("Fractional change in CLss for prior gastrectomy (unitless)")      # Yamada 2025 Table 1
-    e_gast_clt   <- -0.495;  label("Fractional change in CLT for prior gastrectomy (unitless)")       # Yamada 2025 Table 1
-    e_gast_vc    <-  0.103;  label("Fractional change in V1 for prior gastrectomy (unitless)")        # Yamada 2025 Table 1
+    e_prior_gast_clss  <- -0.182;  label("Fractional change in CLss for prior gastrectomy (unitless)")      # Yamada 2025 Table 1
+    e_prior_gast_clt   <- -0.495;  label("Fractional change in CLT for prior gastrectomy (unitless)")       # Yamada 2025 Table 1
+    e_prior_gast_vc    <-  0.103;  label("Fractional change in V1 for prior gastrectomy (unitless)")        # Yamada 2025 Table 1
     e_sex_clss   <- -0.195;  label("Fractional change in CLss for females (unitless)")                # Yamada 2025 Table 1
     e_sex_vc     <- -0.108;  label("Fractional change in V1 for females (unitless)")                  # Yamada 2025 Table 1
     e_eox_vc     <-  0.466;  label("Fractional change in V1 for EOX chemotherapy backbone (unitless)")# Yamada 2025 Table 1
@@ -134,12 +134,12 @@ Yamada_2025_zolbetuximab <- function() {
     clss <- exp(lclss + etalclss) *
       (BSA / 1.70)^e_bsa_cl *
       (ALB / 39.1)^e_alb_clss *
-      (1 + e_gast_clss * GAST) *
+      (1 + e_prior_gast_clss * PRIOR_GAST) *
       (1 + e_sex_clss * SEXF)
 
     clt <- exp(lclt + etalclt) *
       (BSA / 1.70)^e_bsa_cl *
-      (1 + e_gast_clt * GAST)
+      (1 + e_prior_gast_clt * PRIOR_GAST)
 
     kdecay <- exp(lkdecay + etalkdecay) *
       (ALB / 39.1)^e_alb_kdecay
@@ -148,7 +148,7 @@ Yamada_2025_zolbetuximab <- function() {
       (BSA / 1.70)^e_bsa_v *
       (HGB / 118)^e_hgb_vc *
       (TBILI / 0.38)^e_tbili_vc *
-      (1 + e_gast_vc * GAST) *
+      (1 + e_prior_gast_vc * PRIOR_GAST) *
       (1 + e_sex_vc * SEXF) *
       (1 + e_eox_vc * COMB_EOX)
 

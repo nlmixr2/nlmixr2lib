@@ -45,20 +45,20 @@ Xu_2019_sarilumab <- function() {
       notes              = "Applied as (ALBR / 0.78)^e_albr_vm on Vm. Reference 0.78 corresponds to a median serum albumin of 38 g/L at a typical ULN of ~48.7 g/L per Xu 2019 final-model narrative.",
       source_name        = "ALBR"
     ),
-    CRCL_BSA = list(
-      description        = "Body-surface-area-normalized creatinine clearance",
+    CRCL = list(
+      description        = "Body-surface-area-normalized creatinine clearance (measured CrCl; CRCL = 1.73 * CrCl / BSA)",
       units              = "mL/min/1.73 m^2",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Xu 2019 defines the Vm covariate term as (1.73 * CrCl / BSA / 100)^theta13 where CrCl is in mL/min and BSA in m^2; this canonical column carries the precomputed 1.73*CrCl/BSA value with reference 100 mL/min/1.73 m^2.",
+      notes              = "Xu 2019 defines the Vm covariate term as (1.73 * CrCl / BSA / 100)^theta13 where CrCl is in mL/min and BSA in m^2; this canonical column carries the precomputed 1.73*CrCl/BSA value with reference 100 mL/min/1.73 m^2. Mapped to the canonical general-scope CRCL covariate (which also accepts MDRD-estimated eGFR in the same units); the measured-CrCl vs estimated-eGFR distinction is documented here in the description.",
       source_name        = "1.73*CrCl/BSA"
     ),
-    BLCRP = list(
-      description        = "Baseline (pre-treatment) C-reactive protein",
+    CRP = list(
+      description        = "Baseline (pre-treatment) C-reactive protein; time-fixed per subject",
       units              = "mg/L",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject; applied as (BLCRP / 14.2)^e_blcrp_vm on Vm per Xu 2019 Table 3 and the Vm equation. Reference 14.2 mg/L is the median of the Pop-PK dataset.",
+      notes              = "Applied as (CRP / 14.2)^e_crp_vm on Vm per Xu 2019 Table 3 and the Vm equation. Reference 14.2 mg/L is the median of the Pop-PK dataset. Source column 'BLCRP' (baseline CRP) maps to the canonical general-scope CRP covariate; the baseline-only semantics are documented here in the covariateData entry.",
       source_name        = "BLCRP"
     )
   )
@@ -81,7 +81,7 @@ Xu_2019_sarilumab <- function() {
 
   ini({
     # Structural PK parameters - Xu 2019 Table 3 final-model estimates (reference covariate
-    # values: typical 71 kg female, ADA-negative, non-DP2 drug product, ALBR = 0.78, CrCl =
+    # values: typical 71 kg female, ADA-negative, non-DP2 drug product, ALBR = 0.78, CRCL =
     # 100 mL/min/1.73 m^2, baseline CRP = 14.2 mg/L).
     lka <- log(0.136); label("Absorption rate Ka (1/day)")                                    # Xu 2019 Table 3, Ka row
     lcl <- log(0.260); label("Apparent linear clearance CLO/F (L/day)")                       # Xu 2019 Table 3, CLO/F row
@@ -98,8 +98,8 @@ Xu_2019_sarilumab <- function() {
     e_wt_cl    <-  0.885;  label("Power exponent of WT/71 on CLO/F (unitless)")                 # Xu 2019 Table 3: WT effect on CLO/F
     e_wt_vm    <-  0.516;  label("Power exponent of WT/71 on Vm (unitless)")                    # Xu 2019 Table 3: WT effect on Vm
     e_albr_vm  <- -0.844;  label("Power exponent of ALBR/0.78 on Vm (unitless)")                # Xu 2019 Table 3: ALBR effect on Vm
-    e_crcl_vm  <-  0.212;  label("Power exponent of CRCL_BSA/100 on Vm (unitless)")             # Xu 2019 Table 3: CrCl effect on Vm
-    e_blcrp_vm <-  0.0299; label("Power exponent of BLCRP/14.2 on Vm (unitless)")               # Xu 2019 Table 3: BLCRP effect on Vm
+    e_crcl_vm  <-  0.212;  label("Power exponent of CRCL/100 on Vm (unitless)")                 # Xu 2019 Table 3: CrCl effect on Vm
+    e_crp_vm   <-  0.0299; label("Power exponent of CRP/14.2 on Vm (unitless)")                 # Xu 2019 Table 3: baseline CRP effect on Vm
     e_dp2_ka   <-  0.663;  label("Multiplier on Ka for drug product DP2 (unitless)")            # Xu 2019 Table 3: DP2 effect on Ka
     e_ada_cl   <-  1.43;   label("Multiplier on CLO/F for ADA-positive (unitless)")             # Xu 2019 Table 3: ADA effect on CLO/F
     e_dp2_cl   <-  1.30;   label("Multiplier on CLO/F for drug product DP2 (unitless)")         # Xu 2019 Table 3: DP2 effect on CLO/F
@@ -126,8 +126,8 @@ Xu_2019_sarilumab <- function() {
     vm <- exp(lvm + etalvm) *
           (WT / 71)^e_wt_vm *
           (ALBR / 0.78)^e_albr_vm *
-          (CRCL_BSA / 100)^e_crcl_vm *
-          (BLCRP / 14.2)^e_blcrp_vm
+          (CRCL / 100)^e_crcl_vm *
+          (CRP / 14.2)^e_crp_vm
     km <- exp(lkm)
     vc <- exp(lvc + etalvc)
     cl <- exp(lcl + etalcl) *

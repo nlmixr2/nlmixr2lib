@@ -34,8 +34,8 @@ extension, and two pivotal phase 3 PsA studies, KEEPsAKE 1 and KEEPsAKE 2)
 
 The model is a two-compartment model with first-order subcutaneous
 absorption and first-order elimination. The final covariate set is
-body weight, age, serum albumin, serum creatinine, and high-sensitivity
-C-reactive protein (hsCRP) on clearance, plus body weight on central
+body weight, age, serum albumin, serum creatinine, and baseline
+high-sensitivity C-reactive protein (CRP) on clearance, plus body weight on central
 volume of distribution. ADA titers on CL and body weight on V2 were
 evaluated but did not meet retention criteria and are not in the final
 model.
@@ -48,7 +48,7 @@ model.
 | WT on CL | Thakre 2022 Eq. 2 / Table 1 | Power: (WTKG/70)^0.869 |
 | ALB on CL | Thakre 2022 Eq. 2 / Table 1 | Power: (ALB/45)^-0.703 |
 | CREAT on CL | Thakre 2022 Eq. 2 / Table 1 | Power: (CRE/70.73)^-0.201 |
-| hsCRP on CL | Thakre 2022 Eq. 2 / Table 1 | Power: (CRPHS/5.21)^0.0471 |
+| CRP (hs-CRP) on CL | Thakre 2022 Eq. 2 / Table 1 | Power: (CRPHS/5.21)^0.0471 |
 | AGE on CL | Thakre 2022 Eq. 2 / Table 1 | Power: (AGE/52)^-0.138 |
 | WT on Vc | Thakre 2022 Eq. 3 / Table 1 | Power: (WTKG/70)^1.46 |
 | IIV CL / V1 (correlated) | Thakre 2022 Table 1 | var(CL)=0.0943, var(V1)=0.171, cov=0.0836 (correlation ~66%) |
@@ -64,7 +64,7 @@ model.
 | `AGE` | `AGE` |
 | `ALB` (g/L) | `ALB` (g/L) |
 | `CRE` (umol/L) | `CREAT` (umol/L; canonical name) |
-| `CRPHS` (mg/L) | `hsCRP` (mg/L; canonical name) |
+| `CRPHS` (mg/L) | `CRP` (mg/L; canonical general-scope name; hs-CRP assay documented in `covariateData[[CRP]]`) |
 
 ## Virtual population
 
@@ -83,7 +83,7 @@ pop <- data.frame(
   AGE   = round(pmin(pmax(rnorm(n_subj, 51, 12), 18), 80)),
   ALB   = pmin(pmax(rnorm(n_subj, 43, 3.5), 30), 52),     # units g/L
   CREAT = pmin(pmax(rnorm(n_subj, 72, 16), 40), 140),     # units umol/L
-  hsCRP = rlnorm(n_subj, log(6), 1.1)                     # mg/L, skewed right
+  CRP   = rlnorm(n_subj, log(6), 1.1)                     # mg/L, skewed right (hs-CRP)
 )
 ```
 
@@ -273,8 +273,8 @@ phase 2/3 populations rather than reproducing them:
   30-52 g/L (reference 45 g/L).
 - **Serum creatinine:** normal around 72 umol/L, SD 16, clipped to
   40-140 umol/L (reference 70.73 umol/L).
-- **hsCRP:** log-normal around a median of 6 mg/L (reference 5.21
-  mg/L). hsCRP is highly skewed in PsA.
+- **CRP (hs-CRP assay):** log-normal around a median of 6 mg/L (reference 5.21
+  mg/L). hs-CRP is highly skewed in PsA.
 - **No correlation** between continuous covariates is imposed; the
   paper does not report joint distributions.
 - **Dosing regimen** uses the approved PsA label (150 mg SC at

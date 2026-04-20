@@ -13,20 +13,20 @@ Kotani_2022_astegolimab <- function() {
       notes              = "Baseline-only (time-fixed per subject in Kotani 2022). Shared allometric exponent on CL and Q; separate shared exponent on Vc and Vp. Reference 79 kg (median in the PK analysis data set, Table 1).",
       source_name        = "BWT"
     ),
-    eGFR = list(
-      description        = "Baseline estimated glomerular filtration rate",
+    CRCL = list(
+      description        = "Baseline MDRD-estimated glomerular filtration rate (creatinine-based, BSA-normalized); time-fixed per subject",
       units              = "mL/min/1.73 m^2",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Baseline-only (time-fixed per subject). Power effect on CL. Reference 87.9 mL/min/1.73 m^2 (median in the PK analysis data set, Table 1).",
+      notes              = "Power effect on CL. Reference 87.9 mL/min/1.73 m^2 (median in the PK analysis data set, Table 1). Source column 'BEGFR' (baseline MDRD eGFR) maps to the canonical general-scope CRCL covariate (which also accepts measured CrCl BSA-normalized in the same units); the MDRD estimation method and baseline-only semantics are documented here.",
       source_name        = "BEGFR"
     ),
-    BEOS = list(
-      description        = "Baseline blood eosinophil count",
+    EOS = list(
+      description        = "Baseline blood eosinophil count; time-fixed per subject",
       units              = "cells/uL",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Baseline-only (time-fixed per subject). Power effect on CL. Reference 180 cells/uL (median in the PK analysis data set, Table 1).",
+      notes              = "Power effect on CL. Reference 180 cells/uL (median in the PK analysis data set, Table 1). Source column 'BEOS' maps to the canonical general-scope EOS covariate; the baseline-only semantics are documented here rather than via a separate BEOS canonical.",
       source_name        = "BEOS"
     ),
     DOSE_70MG = list(
@@ -63,7 +63,7 @@ Kotani_2022_astegolimab <- function() {
   )
 
   ini({
-    # Structural parameters - reference subject: 79 kg, eGFR 87.9 mL/min/1.73 m^2,
+    # Structural parameters - reference subject: 79 kg, CRCL 87.9 mL/min/1.73 m^2 (MDRD eGFR),
     # blood eosinophil 180 cells/uL, 210 or 490 mg Q4W dose (reference dose group).
     lka <- log(0.0437); label("Absorption rate constant (ka, 1/day)")                                 # Table 2 (ka = 0.0437 day^-1)
     lcl <- log(0.244);  label("Apparent clearance for reference subject (CL/F, L/day)")              # Table 2 (CL/F = 0.244 L/day)
@@ -77,7 +77,7 @@ Kotani_2022_astegolimab <- function() {
     allo_v   <- 1.02;  label("Allometric exponent on Vc and Vp (unitless)") # Table 2 (BWT on Vtot = 1.02)
 
     # Power effects on CL
-    e_egfr_cl <- 0.431;  label("Power exponent for baseline eGFR on CL (unitless)")                    # Table 2 (BEGFR on CL = 0.431)
+    e_crcl_cl <- 0.431;  label("Power exponent for baseline CRCL (MDRD eGFR) on CL (unitless)")        # Table 2 (BEGFR on CL = 0.431)
     e_eos_cl  <- 0.0905; label("Power exponent for baseline blood eosinophil count on CL (unitless)")  # Table 2 (BEOS on CL = 0.0905)
 
     # Relative bioavailability effect for the 70 mg dose arm (fractional change).
@@ -100,9 +100,9 @@ Kotani_2022_astegolimab <- function() {
   })
   model({
     # Covariate-adjusted multipliers on apparent clearance and volume parameters.
-    # Reference values (medians, Table 1): WT = 79 kg, eGFR = 87.9 mL/min/1.73 m^2,
-    # BEOS = 180 cells/uL.
-    cl_cov <- (WT / 79)^allo_clq * (eGFR / 87.9)^e_egfr_cl * (BEOS / 180)^e_eos_cl
+    # Reference values (medians, Table 1): WT = 79 kg, CRCL = 87.9 mL/min/1.73 m^2 (MDRD eGFR),
+    # EOS = 180 cells/uL (baseline).
+    cl_cov <- (WT / 79)^allo_clq * (CRCL / 87.9)^e_crcl_cl * (EOS / 180)^e_eos_cl
     q_cov  <- (WT / 79)^allo_clq
     v_cov  <- (WT / 79)^allo_v
 

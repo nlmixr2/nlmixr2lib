@@ -64,9 +64,9 @@ Every PD parameter, covariate effect, IIV element, and residual-error term
 below is taken from Ma 2020 Table 3 (final-model column, DAS28-CRP). The PK
 backbone is reproduced from Xu 2019 Table 3 evaluated at its typical
 reference-covariate values (adult female, 71 kg, ADA-negative, commercial
-drug product, ALBR = 0.78, CRCL_BSA = 100 mL/min/1.73 m^2, BLCRP = 14.2 mg/L);
+drug product, ALBR = 0.78, CRCL = 100 mL/min/1.73 m^2, CRP = 14.2 mg/L);
 the reference covariate values for the *DAS28-CRP* model, by contrast, are
-set from the DAS28-CRP-dataset medians per the Ma 2020 narrative (BLCRP 15.7
+set from the DAS28-CRP-dataset medians per the Ma 2020 narrative (CRP 15.7
 mg/L, BLPHYVAS 66, BLHAQ 1.75, WT 72.8 kg).
 
 | Equation / parameter                                    | Value               | Source location |
@@ -84,11 +84,11 @@ mg/L, BLPHYVAS 66, BLHAQ 1.75, WT 72.8 kg).
 | `lKout`                                                 | `log(0.0264)` 1/day | Ma 2020 Table 3, Kout row |
 | `lPLB` (placebo/background DMARD equiv. concentration)  | `log(0.991)` mg/L   | Ma 2020 Table 3, PLB row |
 | `gamma` (Hill coefficient)                              | `fixed(1)`          | Ma 2020 Table 3, gamma row (fixed to 1) |
-| `e_blcrp_base`                                          | `0.0564`            | Ma 2020 Table 3, BLCRP on BASE |
+| `e_crp_base`                                          | `0.0564`            | Ma 2020 Table 3, CRP on BASE |
 | `e_blphyvas_base`                                       | `0.105`             | Ma 2020 Table 3, BLPHYVAS on BASE |
 | `e_blhaq_base`                                          | `0.0779`            | Ma 2020 Table 3, BLHAQ on BASE |
 | `e_wt_base`                                             | `0.0522`            | Ma 2020 Table 3, Weight on BASE |
-| `e_blcrp_lemax`                                         | `0.333`             | Ma 2020 Table 3, BLCRP on Log(Emax) |
+| `e_crp_lemax`                                         | `0.333`             | Ma 2020 Table 3, CRP on Log(Emax) |
 | `e_pricort_kout` (Kout multiplier for PRICORT = 1)      | `1.26`              | Ma 2020 Table 3, PRICORT on Kout; 0.0264 * 1.26 = 0.0333 matches paper narrative |
 | `var(etalvm)`                                           | `log(0.324^2 + 1) = 0.0998` | Xu 2019 Table 3: Vm IIV 32.4% CV |
 | `var(etalcl)`                                           | `log(0.553^2 + 1) = 0.2669` | Xu 2019 Table 3: CLO/F IIV 55.3% CV |
@@ -113,7 +113,7 @@ mg/L, BLPHYVAS 66, BLHAQ 1.75, WT 72.8 kg).
   the *logit*: `Emax = 1 / (1 + exp(-lEmax))` → `1 / (1 + exp(-0.237)) =
   0.559` (i.e., 55.9%). The covariate effect of baseline CRP on
   `Log(Emax)` is therefore additive on the logit scale:
-  `lEmax_i = lEmax + etalEmax + theta * log(BLCRP / 15.7)`.
+  `lEmax_i = lEmax + etalEmax + theta * log(CRP / 15.7)`.
 - **Indirect response with placebo term.** The inhibitory effect uses the
   *sum* of sarilumab concentration and the placebo-equivalent term:
   `CeffP = Cc + PLB`, where `PLB` has concentration units (mg/L). Ma 2020
@@ -123,9 +123,9 @@ mg/L, BLPHYVAS 66, BLHAQ 1.75, WT 72.8 kg).
   to reproduce the placebo-arm DAS28-CRP decrease reported in Ma 2020
   Table 3 narrative (~25% at week 24).
 - **Baseline carries four continuous covariates.** The paper's Table 3 lists
-  BLCRP, BLPHYVAS, BLHAQ, and WT as covariates on BASE with power-form
+  CRP, BLPHYVAS, BLHAQ, and WT as covariates on BASE with power-form
   exponents 0.0564, 0.105, 0.0779, and 0.0522 respectively. Reference
-  values are the DAS28-CRP-dataset medians (BLCRP 15.7 mg/L, BLPHYVAS 66,
+  values are the DAS28-CRP-dataset medians (CRP 15.7 mg/L, BLPHYVAS 66,
   BLHAQ 1.75, WT 72.8 kg) per the narrative.
 - **PRICORT is a Kout multiplier.** Table 3's PRICORT-on-Kout effect is
   1.26. The paper narrates `0.0333` vs `0.0264` day^-1 for PRICORT = 1 vs 0,
@@ -161,7 +161,7 @@ n_subj <- 60
 cohort <- tibble::tibble(
   id       = seq_len(n_subj),
   WT       = pmin(pmax(rnorm(n_subj, mean = 74.6, sd = 18.8), 40, 170)),
-  BLCRP    = pmax(rlnorm(n_subj, log(15.7) - 0.5 * 1.0^2, 1.0), 0.5),
+  CRP    = pmax(rlnorm(n_subj, log(15.7) - 0.5 * 1.0^2, 1.0), 0.5),
   BLPHYVAS = pmin(pmax(rnorm(n_subj, mean = 64.6, sd = 16.8), 10, 100)),
   BLHAQ    = pmin(pmax(rnorm(n_subj, mean = 1.68, sd = 0.640), 0, 3)),
   PRICORT  = rbinom(n_subj, 1, 0.646)
@@ -214,7 +214,7 @@ sim_one <- function(subj_row, dose_amt, treatment) {
   events <- dplyr::bind_rows(ev_dose, ev_cc, ev_das) |>
     dplyr::arrange(id, time, dplyr::desc(evid)) |>
     dplyr::select(id, time, amt, cmt, evid,
-                  WT, BLCRP, BLPHYVAS, BLHAQ, PRICORT)
+                  WT, CRP, BLPHYVAS, BLHAQ, PRICORT)
   out <- as.data.frame(rxode2::rxSolve(mod, events = events))
   out$id        <- subj_row$id
   out$treatment <- treatment
@@ -236,13 +236,13 @@ sim <- dplyr::bind_rows(
 
 For the deterministic typical-patient comparison against the paper's
 week-24 statistics, we zero the random effects and use reference covariate
-values (BLCRP 15.7 mg/L, BLPHYVAS 66, BLHAQ 1.75, WT 72.8 kg, PRICORT = 0):
+values (CRP 15.7 mg/L, BLPHYVAS 66, BLHAQ 1.75, WT 72.8 kg, PRICORT = 0):
 
 ```{r simulate-typical}
 mod_typical <- mod |> rxode2::zeroRe()
 
 typical_cov <- tibble::tibble(
-  id = 1L, WT = 72.8, BLCRP = 15.7, BLPHYVAS = 66, BLHAQ = 1.75, PRICORT = 0L
+  id = 1L, WT = 72.8, CRP = 15.7, BLPHYVAS = 66, BLHAQ = 1.75, PRICORT = 0L
 )
 
 ev_typ <- function(dose) {
@@ -258,7 +258,7 @@ ev_typ <- function(dose) {
   dplyr::bind_rows(ev_dose, ev_cc, ev_das) |>
     dplyr::arrange(id, time, dplyr::desc(evid)) |>
     dplyr::select(id, time, amt, cmt, evid,
-                  WT, BLCRP, BLPHYVAS, BLHAQ, PRICORT)
+                  WT, CRP, BLPHYVAS, BLHAQ, PRICORT)
 }
 
 sim_typ <- dplyr::bind_rows(
@@ -387,7 +387,7 @@ knitr::kable(comparison, digits = 2,
 
 ## Baseline reproduction check
 
-With reference covariates (BLCRP 15.7, BLPHYVAS 66, BLHAQ 1.75, WT 72.8,
+With reference covariates (CRP 15.7, BLPHYVAS 66, BLHAQ 1.75, WT 72.8,
 PRICORT = 0) the model's typical `BASE` must equal `exp(log(6.06)) = 6.06`.
 The DAS28-CRP state is initialized to `Base`, so the `t = 0` value of the
 DAS28-CRP compartment should be 6.06 regardless of regimen.
@@ -428,7 +428,7 @@ knitr::kable(placebo_check, digits = 2,
   input to the PD fit. To keep this library model self-contained in a
   single file, we embed the Xu 2019 typical PK parameters and retain only
   the Xu 2019 PK IIV (Vm/CLO/F block, Vc/F, Ka). PK covariate effects
-  (ADA, drug product, sex, ALBR, CRCL_BSA, WT-on-PK, BLCRP-on-Vm) are
+  (ADA, drug product, sex, ALBR, CRCL, WT-on-PK, CRP-on-Vm) are
   omitted. The `Xu_2019_sarilumab` model in this library is the
   full-covariate PK alternative (approach (b)); users who need
   covariate-aware PK in a PK/PD simulation should compose the two or
@@ -437,10 +437,10 @@ knitr::kable(placebo_check, digits = 2,
   indirect-response PD block.
 - **Reference-covariate values for the embedded PK.** Xu 2019 typical
   reference values are 71 kg female, ADA-negative, commercial (non-DP2)
-  formulation, ALBR 0.78, CRCL_BSA 100 mL/min/1.73 m^2, BLCRP 14.2 mg/L.
+  formulation, ALBR 0.78, CRCL 100 mL/min/1.73 m^2, CRP 14.2 mg/L.
   These are *internal* to the model and not exposed as user-facing
   covariates on the PK side. The DAS28-CRP-model reference covariates
-  are distinct (BLCRP 15.7, BLPHYVAS 66, BLHAQ 1.75, WT 72.8, PRICORT = 0)
+  are distinct (CRP 15.7, BLPHYVAS 66, BLHAQ 1.75, WT 72.8, PRICORT = 0)
   per the Ma 2020 narrative.
 - **Emax reported as Log(Emax) = 0.237 is a logit transform.** The paper
   doesn't state the transform explicitly, but `Emax = logit^-1(0.237) =
@@ -470,7 +470,7 @@ knitr::kable(placebo_check, digits = 2,
   ANC model `Ma_2020_sarilumab_anc` (task 005) corrects this. The
   DAS28-CRP model here is unaffected.
 - **Virtual-cohort covariate distributions.** Weight drawn from
-  `N(74.6, 18.8)` kg truncated to [40, 170]; BLCRP from a log-normal
+  `N(74.6, 18.8)` kg truncated to [40, 170]; CRP from a log-normal
   with median 15.7 mg/L and GSD `exp(1.0) ~ 2.7x`; BLPHYVAS from
   `N(64.6, 16.8)` truncated to [10, 100]; BLHAQ from `N(1.68, 0.640)`
   truncated to [0, 3]; PRICORT Bernoulli(0.646). These ranges

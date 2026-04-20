@@ -84,7 +84,7 @@ Programmatic access: `readModelDb("Jackson_2022_ixekizumab")$population`.
 | Source column | Canonical column used here |
 | --- | --- |
 | `WT` (baseline body weight, kg) | `WT` |
-| `ADA titre` (continuous reciprocal dilution; 1:10, 1:20, …, 1:2560) | `ADA_TITRE` (per `inst/references/covariate-columns.md`). ADA-negative samples encoded as `ADA_TITRE = 1` so that `log_e(1) = 0` cancels the covariate effect (85.8% of the dataset). |
+| `ADA titre` (continuous reciprocal dilution; 1:10, 1:20, …, 1:2560) | `ADA_TITER` (per `inst/references/covariate-columns.md`). ADA-negative samples encoded as `ADA_TITER = 1` so that `log_e(1) = 0` cancels the covariate effect (85.8% of the dataset). |
 
 # Virtual cohort
 
@@ -118,7 +118,7 @@ simulate_weight <- function(group) {
 }
 WT <- vapply(weight_group, simulate_weight, numeric(1))
 
-# ADA titre: 85.8% ADA-negative (ADA_TITRE = 1); 14.2% TE-ADA-positive with
+# ADA titre: 85.8% ADA-negative (ADA_TITER = 1); 14.2% TE-ADA-positive with
 # titres in three bands per Results section 3.1:
 #   - Low    (<1:160)        : 52.6% of ADA+ samples
 #   - Moderate (>=1:160, <1:1280): 38.5%
@@ -146,7 +146,7 @@ cohort <- tibble(
   ID           = seq_len(n_subj),
   weight_group = weight_group,
   WT           = WT,
-  ADA_TITRE    = ada_titre
+  ADA_TITER    = ada_titre
 )
 
 summary_tbl <- cohort |>
@@ -155,7 +155,7 @@ summary_tbl <- cohort |>
     n           = dplyr::n(),
     mean_WT     = mean(WT),
     median_WT   = median(WT),
-    pct_ada_pos = 100 * mean(ADA_TITRE > 1),
+    pct_ada_pos = 100 * mean(ADA_TITER > 1),
     .groups     = "drop"
   )
 knitr::kable(summary_tbl, digits = 2,
@@ -410,7 +410,7 @@ cohort.
   Results section 3.1; the per-band split (52.6% low / 38.5% moderate /
   9.0% high titre) applies the paper's band-level percentages uniformly at
   the patient level, whereas the paper reports them at the sample level.
-  ADA-negative patients (85.8%) carry `ADA_TITRE = 1` so the log-linear
+  ADA-negative patients (85.8%) carry `ADA_TITER = 1` so the log-linear
   effect is zero.
 - **Time-varying ADA not modelled.** The paper uses time-matched ADA titre
   but does not publish per-subject longitudinal trajectories; each virtual

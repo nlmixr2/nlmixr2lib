@@ -26,7 +26,7 @@ Moein_2022_etrolizumab <- function() {
       units              = "mg/L",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Exponential effect on CL: exp(theta * (CRP - 4.23)). Reference 4.23 mg/L is the reference-patient value reported in the Figure 1 forest plot caption (close to the Table 3 median of 4.31 mg/L).",
+      notes              = "Exponential effect on CL: exp(theta * (CRP - 4.23)). Reference 4.23 mg/L is the reference-patient value reported in the Figure 1 forest plot caption (close to the Table 3 median of 4.31 mg/L). Standard CRP assay (typical of moderate-to-severe IBD populations where baseline CRP is well above the hs-CRP sensitivity range); the canonical general-scope CRP covariate covers both standard and high-sensitivity assays.",
       source_name        = "CRP"
     ),
     ADA_TITER = list(
@@ -34,7 +34,7 @@ Moein_2022_etrolizumab <- function() {
       units              = "(titer units)",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Exponential effect on CL: exp(theta * ADA_TITER). Time-varying covariate -- use the actual titer at the time of each observation; paper imputes missing baseline as 0 (ADA negative) and postdose missingness by LOCF / NOCB.",
+      notes              = "Exponential effect on CL: exp(theta * ADA_TITER). Time-varying covariate -- use the actual titer at the time of each observation; paper imputes missing baseline as 0 (ADA negative) and postdose missingness by LOCF / NOCB. ADA-negative samples are encoded as ADA_TITER = 0 (American-spelling linear-titer convention, appropriate for exp(theta * ADA_TITER) effects); distinct from the reciprocal-dilution convention used in Jackson_2022_ixekizumab where ADA_TITER = 1 for negatives so log(1) = 0 cancels a log-linear effect.",
       source_name        = "ADAT"
     ),
     PRIOR_TNF = list(

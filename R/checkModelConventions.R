@@ -59,7 +59,7 @@ checkModelConventions <- function(model, verbose = TRUE) {
     .checkParameterNames(ui, conv),
     .checkParameterLabels(ui, conv),
     .checkParameterUnits(ui, conv),
-    .checkCovariates(ui, conv),
+    .checkCovariates(ui, conv, model_name),
     .checkCompartments(ui, conv),
     .checkObservation(ui, conv),
     .checkUnits(ui, conv),
@@ -361,7 +361,7 @@ checkModelConventions <- function(model, verbose = TRUE) {
   issues
 }
 
-.checkCovariates <- function(ui, conv) {
+.checkCovariates <- function(ui, conv, model_name) {
   issues <- .emptyIssues()
   covs_all <- ui$covariates %||% character()
   depends <- as.list(ui$meta)$depends %||% character()
@@ -381,6 +381,14 @@ checkModelConventions <- function(model, verbose = TRUE) {
         sprintf("Covariate '%s' is used in model() but has no entry in covariateData.", nm),
         sprintf("Add `%s = list(description=..., units=..., type=...)` to covariateData.", nm)
       ))
+    }
+    # Resolve the canonical entry for `nm` (may be nm itself or via alias map).
+    canon_name <- if (nm %in% canonical) {
+      nm
+    } else if (nm %in% names(alias_map)) {
+      alias_map[[nm]]
+    } else {
+      NA_character_
     }
     if (!(nm %in% canonical)) {
       if (nm %in% names(alias_map)) {
@@ -413,6 +421,39 @@ checkModelConventions <- function(model, verbose = TRUE) {
           "covariates", "warning", nm,
           sprintf("Covariate '%s' is not in the canonical register.", nm),
           "Rename to a canonical name (see `inst/references/covariate-columns.md`) or register a new canonical entry."
+        ))
+      }
+    }
+    # Scope check: a canonical covariate marked `scope: specific` is only
+    # permitted in the models listed under its `Example models` field.
+    # This catches authors who unknowingly reuse a study-specific name
+    # (e.g., STUDY1, FORM_DP2, TUMTP_CHL) for a different purpose.
+    if (!is.na(canon_name)) {
+      entry <- conv$canonicalCovariates[[canon_name]]
+      if (identical(entry$scope, "specific") &&
+          !(model_name %in% entry$example_models)) {
+        allowed <- if (length(entry$example_models) == 0) {
+          "(none)"
+        } else {
+          paste(entry$example_models, collapse = ", ")
+        }
+        issues <- rbind(issues, .issue(
+          "covariates", "warning", nm,
+          sprintf(
+            paste0(
+              "Covariate '%s' is canonical but scoped 'specific' to ",
+              "model(s) %s; using it in '%s' is not permitted."
+            ),
+            nm, allowed, model_name
+          ),
+          sprintf(
+            paste0(
+              "Rename to a different canonical name, promote '%s' to ",
+              "`Scope: general` in inst/references/covariate-columns.md, ",
+              "or add '%s' to that entry's Example models list."
+            ),
+            canon_name, model_name
+          )
         ))
       }
     }

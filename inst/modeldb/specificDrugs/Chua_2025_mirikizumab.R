@@ -26,7 +26,7 @@ Chua_2025_mirikizumab <- function() {
       units              = "mg/L",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on CL with reference 7.41 mg/L per Table 2 footnote c. Standard CRP assay (not high-sensitivity); see covariate-columns.md for CRP vs hsCRP distinction.",
+      notes              = "Power effect on CL with reference 7.41 mg/L per Table 2 footnote c. Standard CRP assay (not high-sensitivity); the canonical general-scope CRP covariate covers both standard and high-sensitivity assays, with the assay type documented here in the covariateData entry rather than via separate canonical names.",
       source_name        = "CRP"
     ),
     BMI = list(

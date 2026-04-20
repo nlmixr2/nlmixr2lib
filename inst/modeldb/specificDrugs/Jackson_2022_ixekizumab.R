@@ -13,12 +13,12 @@ Jackson_2022_ixekizumab <- function() {
       notes              = "Allometric scaling on CL, Q, V2, V3 with reference weight 58.6 kg (paediatric dataset reference; Jackson 2022 Table 2 footnotes). Baseline weight used; over-108-week weight change in 23% of subjects was not modelled (Discussion, page 1083).",
       source_name        = "WT"
     ),
-    ADA_TITRE = list(
-      description        = "Antidrug-antibody titre (continuous reciprocal dilution)",
-      units              = "titre",
+    ADA_TITER = list(
+      description        = "Antidrug-antibody titer/titre (continuous reciprocal dilution, British convention)",
+      units              = "titer (dimensionless reciprocal dilution, e.g. 10, 20, 40, ..., 2560)",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Log-linear multiplicative effect on CL per Jackson 2022 Table 2 footnote: CL_i = CL * (WT/58.6)^0.989 * (1 + 0.0292 * log_e[ADA titre]). ADA-negative samples (85.8% of the dataset) are encoded as ADA_TITRE = 1 so that log_e(1) = 0 cancels the effect (NONMEM convention; canonical encoding per inst/references/covariate-columns.md).",
+      notes              = "Log-linear multiplicative effect on CL per Jackson 2022 Table 2 footnote: CL_i = CL * (WT/58.6)^0.989 * (1 + 0.0292 * log_e[ADA titre]). ADA-negative samples (85.8% of the dataset) are encoded as ADA_TITER = 1 so that log_e(1) = 0 cancels the effect (NONMEM convention; reciprocal-dilution encoding). Source column 'ADA titre' (British spelling) maps to the canonical general-scope ADA_TITER covariate; the reciprocal-dilution zero-encoding convention is documented here.",
       source_name        = "ADA titre"
     )
   )
@@ -64,8 +64,8 @@ Jackson_2022_ixekizumab <- function() {
     propSd  <- 0.277;          label("Proportional residual error (fraction)")                                    # Table 2: residual error (proportional) = 27.7%
   })
   model({
-    # ADA-titre effect on CL: multiplicative, log-linear. ADA-negative samples use ADA_TITRE = 1 so log_e(1) = 0.
-    ada_cl <- 1 + e_ada_cl * log(ADA_TITRE)
+    # ADA-titer effect on CL: multiplicative, log-linear. ADA-negative samples use ADA_TITER = 1 so log_e(1) = 0.
+    ada_cl <- 1 + e_ada_cl * log(ADA_TITER)
 
     # Individual PK parameters with allometric weight scaling (reference 58.6 kg)
     ka <- exp(lka)
