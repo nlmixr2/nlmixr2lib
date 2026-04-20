@@ -59,6 +59,15 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
 - **Source aliases:** none.
 - **Example models:** `Kyhl_2016_nalmefene.R` (reference 56.28 kg, exponent 0.626 on CL).
 
+### BSA
+- **Description:** Body surface area (typically computed by DuBois, Mosteller, or Haycock from height and weight).
+- **Units:** m^2
+- **Type:** continuous
+- **Reference category:** n/a — used with power scaling `(BSA / ref)^exponent`.
+- **Source aliases:** none.
+- **Example models:** `Yamada_2025_zolbetuximab.R` (reference 1.70 m^2; exponents 1.06 on clearances and 0.968 on volumes).
+- **Notes:** Oncology mAbs dosed by BSA (mg/m^2) often use BSA in place of body weight for allometric-style scaling. Document the BSA computation formula (DuBois / Mosteller / Haycock) the source paper used; if unstated, record "unspecified."
+
 ### BMI
 - **Description:** Body mass index at baseline.
 - **Units:** kg/m²
@@ -144,6 +153,26 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
 - **Example models:** `Fasanmade_2009_infliximab.R` (g/dL, reference 4.1), `Thakre_2022_risankizumab.R` (g/L, reference 45).
 - **Notes:** Ratified canonically on 2026-04-19 after cross-model review. Unit varies by paper (g/dL in US-convention papers, g/L in SI-convention papers); the per-model `covariateData[[ALB]]$units` field is load-bearing. Effect-coefficient magnitude is meaningless without the unit.
 
+### TBILI (**canonical for total bilirubin**)
+- **Description:** Total serum bilirubin concentration.
+- **Units:** mg/dL or umol/L — document the unit used in each model via `covariateData[[TBILI]]$units`.
+- **Type:** continuous
+- **Reference category:** n/a — used with power scaling `(TBILI / ref)^exponent`.
+- **Source aliases:** none; `TBILI` is the common NONMEM / clinical-PK abbreviation.
+- **Example models:** `Yamada_2025_zolbetuximab.R` (mg/dL, reference 0.38; small positive exponent 0.0347 on V1).
+- **Notes:** Hepatic-function marker. Unit varies by paper (US convention mg/dL, SI convention umol/L; 1 mg/dL ~= 17.1 umol/L). The per-model `covariateData[[TBILI]]$units` field is load-bearing.
+
+## Hematology
+
+### HGB (**canonical for hemoglobin**)
+- **Description:** Blood hemoglobin concentration.
+- **Units:** g/L or g/dL — document the unit used in each model via `covariateData[[HGB]]$units`.
+- **Type:** continuous
+- **Reference category:** n/a — used with power scaling `(HGB / ref)^exponent`.
+- **Source aliases:** none; `HGB` is the common NONMEM / clinical-PK abbreviation.
+- **Example models:** `Yamada_2025_zolbetuximab.R` (g/L, reference 118; exponent -0.374 on V1).
+- **Notes:** Unit varies by paper (SI g/L, US g/dL; 1 g/dL = 10 g/L). The per-model `covariateData[[HGB]]$units` field is load-bearing.
+
 ## Disease severity scores
 
 ### EASI (**canonical for Eczema Area and Severity Index**)
@@ -226,6 +255,17 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
 ### RACE_OTHER
 - **Description:** 1 = race category "Other," 0 = not.
 - **Example models:** `Zhu_2017_lebrikizumab.R`.
+
+## Surgical history / disease state
+
+### GAST
+- **Description:** Prior (partial or total) gastrectomy indicator, 1 = prior gastrectomy, 0 = no prior gastrectomy.
+- **Units:** (binary)
+- **Type:** binary
+- **Reference category:** 0 (no prior gastrectomy).
+- **Source aliases:** none.
+- **Example models:** `Yamada_2025_zolbetuximab.R` (fractional effects on CLss, CLT, V1).
+- **Notes:** Named `GAST` in the source paper; adopted as the canonical name. Captures a time-fixed surgical-history indicator; no distinction between partial vs total gastrectomy unless the paper separates them.
 
 ## Oncology
 
@@ -425,6 +465,15 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
 - **Type:** binary
 - **Example models:** `Zhu_2017_lebrikizumab.R`.
 
+### COMB_EOX
+- **Description:** 1 = concomitant epirubicin + oxaliplatin + capecitabine (EOX) chemotherapy backbone, 0 = other backbone (e.g., mFOLFOX6, CAPOX, or single-agent).
+- **Units:** (binary)
+- **Type:** binary
+- **Reference category:** 0 (non-EOX backbone).
+- **Source aliases:** `COMB` (used by Yamada 2025 Table 1 with the EOX level coded as the non-reference category; renamed to `COMB_EOX` to preserve the semantic meaning of the 1-level).
+- **Example models:** `Yamada_2025_zolbetuximab.R` (fractional effect on V1).
+- **Notes:** Disease-backbone indicator. If a future model needs more backbone categories, encode each as its own indicator (`COMB_CAPOX`, `COMB_FOLFOX`, …) with a single reference group.
+
 ### FORM_DP2
 - **Description:** 1 = sarilumab drug product 2 formulation (used in some phase I studies and the dose-ranging phase II study), 0 = other drug product (DP1 or DP3; DP3 is the commercial formulation).
 - **Units:** (binary)
@@ -500,6 +549,12 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
   `CRE`/`SCR`; `hsCRP` preserves lowercase `hs` prefix per the `eGFR`
   precedent. See `tracking/decision_log.md` in the mab_human_consensus
   project for the deliberation.
+- **2026-04-19** — Added `BSA`, `HGB`, `TBILI`, `GAST`, and `COMB_EOX`
+  canonical entries in support of Yamada 2025 zolbetuximab. New sections
+  created for `Hematology` and `Surgical history / disease state`.
+  `TBILI` placed under the existing `Renal / hepatic function` section;
+  `COMB_EOX` placed under `Formulation / assay / study` with `COMB`
+  recorded as the source alias.
 - **2026-04-19** — Added `BEOS` (baseline blood eosinophil count, cells/µL)
   and `DOSE_70MG` (Zenyatta 70 mg dose-group indicator) canonical entries
   after extracting the Kotani 2022 astegolimab population PK model.
@@ -542,6 +597,6 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
 
 ## Summary
 
-- Files audited: 65 R files under `inst/modeldb/` (16 of which reference covariates).
-- Canonical entries: 52.
-- Aliases mapped: 16 (including SEXM→SEXF, ADA→ADA_POS, ADAT→ADA_TITER, BLACK→RACE_BLACK, ASIAN→RACE_ASIAN, MULTIRACIAL→RACE_MULTI, BLACK_OTH→RACE_BLACK_OTH, ASIAN_AMIND_MULTI→RACE_ASIAN_AMIND_MULTI, DVID→STUDY1/STUDY5, CRE→CREAT, CRPHS→hsCRP, 1.73*CrCl/BSA→CRCL_BSA, DP2→FORM_DP2, DISEXT→DISEXT_EP/DISEXT_OTHER, BEASI→EASI, TUMTP→TUMTP_CHL/TUMTP_GC).
+- Files audited: 66 R files under `inst/modeldb/` (17 of which reference covariates).
+- Canonical entries: 57.
+- Aliases mapped: 17 (including SEXM→SEXF, ADA→ADA_POS, ADAT→ADA_TITER, BLACK→RACE_BLACK, ASIAN→RACE_ASIAN, MULTIRACIAL→RACE_MULTI, BLACK_OTH→RACE_BLACK_OTH, ASIAN_AMIND_MULTI→RACE_ASIAN_AMIND_MULTI, DVID→STUDY1/STUDY5, CRE→CREAT, CRPHS→hsCRP, 1.73*CrCl/BSA→CRCL_BSA, DP2→FORM_DP2, DISEXT→DISEXT_EP/DISEXT_OTHER, BEASI→EASI, TUMTP→TUMTP_CHL/TUMTP_GC, COMB→COMB_EOX).

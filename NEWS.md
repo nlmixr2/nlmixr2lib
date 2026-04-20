@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Yamada 2025 zolbetuximab ([doi:10.1111/cts.70280](https://doi.org/10.1111/cts.70280)) — patients with locally advanced unresectable or metastatic gastric/gastroesophageal junction adenocarcinoma.
 * Add Jackson 2022 ixekizumab ([doi:10.1111/bcp.15034](https://doi.org/10.1111/bcp.15034)) — paediatric patients with moderate-to-severe plaque psoriasis.
 * Add Moein 2022 etrolizumab ([doi:10.1002/psp4.12846](https://doi.org/10.1002/psp4.12846)) — patients with moderately-to-severely active ulcerative colitis.
 * Add Chua 2025 mirikizumab ([doi:10.1111/cts.70320](https://doi.org/10.1111/cts.70320)) — patients with moderately-to-severely active Crohn's disease.
