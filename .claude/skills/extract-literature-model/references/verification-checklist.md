@@ -47,7 +47,8 @@ Do not silently resolve ambiguity. Do not tune parameters to make a validation o
 
 - [ ] File path is `inst/modeldb/<category>/<FirstAuthor>_<Year>_<drug>.R`.
 - [ ] Function name inside the file **equals** the filename minus `.R`. `buildModelDb()` rejects mismatches.
-- [ ] `description`, `reference`, `units`, `covariateData`, `population` all present before `ini()`.
+- [ ] `description`, `reference`, `vignette`, `units`, `covariateData`, `population` all present before `ini()`.
+- [ ] Validation vignette lives at `vignettes/articles/<FirstAuthor>_<Year>_<drug>.Rmd`, and the model file's `vignette <- "..."` value matches that basename (no path, no extension). Confirm `readModelDb("<model>")$meta$vignette` returns the basename after `devtools::load_all()`.
 - [ ] `population` uses the extensible schema documented in `naming-conventions.md`; any paper-specific keys are allowed.
 - [ ] No stray `#!` instruction comments from the template remain.
 

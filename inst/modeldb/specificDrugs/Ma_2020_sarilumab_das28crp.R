@@ -1,6 +1,7 @@
 Ma_2020_sarilumab_das28crp <- function() {
   description <- "Indirect-response PK/PD model of sarilumab on the 28-joint disease activity score by C-reactive protein (DAS28-CRP) in adults with rheumatoid arthritis (Ma 2020). Sarilumab inhibits the DAS28-CRP production rate (kin) via a sigmoid Emax function that includes a background DMARD placebo component (PLB). The PK driver is the two-compartment, parallel linear + Michaelis-Menten model of Xu 2019 evaluated at its typical covariate-reference values (adult female, 71 kg, ADA-negative, commercial drug product, ALBR = 0.78, CrCl = 100 mL/min/1.73 m^2, baseline CRP = 14.2 mg/L)."
   reference <- "Ma L, Xu C, Paccaly A, Kanamaluru V. Population Pharmacokinetic-Pharmacodynamic Relationships of Sarilumab Using Disease Activity Score 28-Joint C-Reactive Protein and Absolute Neutrophil Counts in Patients with Rheumatoid Arthritis. Clin Pharmacokinet. 2020;59(11):1451-1466. doi:10.1007/s40262-020-00899-7. PMID: 32451909. PK backbone from Xu C, Su Y, Paccaly A, Kanamaluru V. Population Pharmacokinetics of Sarilumab in Patients with Rheumatoid Arthritis. Clin Pharmacokinet. 2019;58(11):1455-1467. doi:10.1007/s40262-019-00765-1."
+  vignette <- "Ma_2020_sarilumab_das28crp"
   units <- list(time = "day", dosing = "mg", concentration = "mg/L", response = "DAS28-CRP score (unitless, 0-10 scale)")
 
   covariateData <- list(

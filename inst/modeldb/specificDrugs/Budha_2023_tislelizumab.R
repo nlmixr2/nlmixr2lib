@@ -1,6 +1,7 @@
 Budha_2023_tislelizumab <- function() {
   description <- "Three-compartment population PK model for intravenous tislelizumab (anti-PD-1 IgG4) in patients with advanced tumors (Budha 2023)"
   reference <- "Budha N, Wu CY, Tang Z, et al. Model-based population pharmacokinetic analysis of tislelizumab in patients with advanced tumors. CPT Pharmacometrics Syst Pharmacol. 2023;12(1):95-109. doi:10.1002/psp4.12880"
+  vignette <- "Budha_2023_tislelizumab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 
   covariateData <- list(

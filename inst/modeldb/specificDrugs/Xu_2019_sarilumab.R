@@ -1,6 +1,7 @@
 Xu_2019_sarilumab <- function() {
   description <- "Two-compartment population PK model for sarilumab in adults with rheumatoid arthritis (Xu 2019), with first-order SC absorption and parallel linear plus Michaelis-Menten (target-mediated) elimination from the central compartment."
   reference <- "Xu C, Su Y, Paccaly A, Kanamaluru V. Population Pharmacokinetics of Sarilumab in Patients with Rheumatoid Arthritis. Clin Pharmacokinet. 2019;58(11):1455-1467. doi:10.1007/s40262-019-00765-1"
+  vignette <- "Xu_2019_sarilumab"
   units <- list(time = "day", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(

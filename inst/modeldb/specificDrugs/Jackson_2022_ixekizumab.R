@@ -1,6 +1,7 @@
 Jackson_2022_ixekizumab <- function() {
   description <- "Two-compartment linear population PK model for subcutaneous ixekizumab in paediatric patients with moderate-to-severe plaque psoriasis (IXORA-PEDS; Jackson 2022)"
   reference <- "Jackson K, Chua L, Velez de Mendizabal N, et al. Population pharmacokinetic and exposure-efficacy analysis of ixekizumab in paediatric patients with moderate-to-severe plaque psoriasis (IXORA-PEDS). Br J Clin Pharmacol. 2022;88(3):1074-1086. doi:10.1111/bcp.15034"
+  vignette <- "Jackson_2022_ixekizumab"
   units <- list(time = "hour", dosing = "mg", concentration = "ug/mL")
 
   covariateData <- list(

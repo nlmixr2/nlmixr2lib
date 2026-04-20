@@ -9,3 +9,4 @@
 ^\.Rproj\.user$
 ^data-raw$
 ^\.lintr$
+^vignettes/articles$

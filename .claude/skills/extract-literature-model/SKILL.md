@@ -6,7 +6,7 @@ description: This skill should be used when the user wants to "add a model from 
 # Extract a pharmacometric model from the literature
 
 Input: a scientific source describing a pharmacometric model (journal article, supplement, conference poster, or regulatory review).
-Output: a packaged nlmixr2lib model file under `inst/modeldb/`, a validation vignette under `vignettes/`, and updated registry artifacts — opened as a pull request against `main`.
+Output: a packaged nlmixr2lib model file under `inst/modeldb/`, a validation vignette under `vignettes/articles/`, and updated registry artifacts — opened as a pull request against `main`.
 
 Work through the six phases below. Stop and ask the user at any of the decision points called out explicitly; ambiguity is the main failure mode for this workflow, and silent assumptions are what get shipped as bugs.
 
@@ -63,7 +63,7 @@ Use `references/model-file-template.md` as the starting skeleton and the two bes
 
 The file body has this shape:
 
-1. `description`, `reference`, `units`, `covariateData`, `population` — metadata before `ini()`.
+1. `description`, `reference`, `vignette`, `units`, `covariateData`, `population` — metadata before `ini()`. `vignette` is the basename of the validation vignette in `vignettes/articles/` (e.g., `"Clegg_2024_nirsevimab"`, no path, no extension); `buildModelDb()` extracts it so the list-of-models table can link to the rendered vignette on the pkgdown site.
 2. `ini()` — parameters with `label()` and a trailing **in-file comment pointing to the source location** for every value.
 3. `model()` — derived terms → individual parameters → micro-constants → ODEs → bioavailability → observation and error.
 
@@ -103,7 +103,7 @@ Never silently resolve ambiguity. Never tune parameter values to match a validat
 
 ## Phase 5 — Validation vignette
 
-File path: `vignettes/<FirstAuthor>_<Year>_<drug>.Rmd`, with matching `VignetteIndexEntry`.
+File path: `vignettes/articles/<FirstAuthor>_<Year>_<drug>.Rmd`, with matching `VignetteIndexEntry`. Drug-specific vignettes live under `vignettes/articles/` so pkgdown builds them for the site but CRAN does not — `.Rbuildignore` excludes that directory. The basename (without `.Rmd`) must match the `vignette <- "..."` field in the model file.
 
 Use `references/vignette-template.md`. Required sections, in order:
 
@@ -158,7 +158,7 @@ Naming conventions for mechanistic parameters are documented in `references/nami
    residual-error form, data origin, study counts, PKNCA sentence, or
    anything else that lives in the model file's metadata or vignette. A
    reviewer who wants those details clicks through to the model file.
-5. Commit the model file, the vignette, the regenerated `modeldb.rda` / `modeldb.qs2`, the `NEWS.md` entry, and any updates to `inst/references/covariate-columns.md` (if a new covariate was registered) together on the feature branch.
+5. Commit the model file, the vignette under `vignettes/articles/`, the regenerated `modeldb.rda` / `modeldb.qs2`, the `NEWS.md` entry, and any updates to `inst/references/covariate-columns.md` (if a new covariate was registered) together on the feature branch.
 6. Push the branch and open a PR against `main`. Use `gh pr create` with a title like `Add <Author> <Year> <drug> model`.
 
 ## Stop-and-ask triggers (consolidated)

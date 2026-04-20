@@ -1,6 +1,7 @@
 Masters_2022_avelumab <- function() {
   description <- "Two-compartment population PK model for avelumab (anti-PD-L1 IgG1) with time-dependent clearance in patients with advanced solid tumors (Masters 2022)"
   reference <- "Masters JC, Khandelwal A, di Pietro A, Dai H, Brar S. Model-informed drug development supporting the approval of the avelumab flat-dose regimen in patients with advanced renal cell carcinoma. CPT Pharmacometrics Syst Pharmacol. 2022;11(4):458-468. doi:10.1002/psp4.12771"
+  vignette <- "Masters_2022_avelumab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 
   covariateData <- list(
