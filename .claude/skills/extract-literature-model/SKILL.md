@@ -134,12 +134,30 @@ Naming conventions for mechanistic parameters are documented in `references/nami
 ## Phase 6 — Registration, tests, docs, PR
 
 1. Re-confirm the branch is on top of fresh `origin/main` (`git fetch origin && git rebase origin/main` if needed).
-2. Run `nlmixr2lib::buildModelDb()` to regenerate `data/modeldb.rda` and `inst/modeldb.qs2`. Confirm the new model appears in `modellib()`.
+2. Run `nlmixr2lib::buildModelDb()` to regenerate `data/modeldb.rda` and `inst/modeldb.qs2`. Confirm the new model appears in `modellib()`. **When verifying in R, do `devtools::load_all(".")` first so `modellib()` reads the worktree's in-development package, not the stale system install** — see `references/verification-checklist.md` § "Verifying against the worktree's nlmixr2lib" for why a bare `library(nlmixr2lib)` can return a misleading `FALSE`.
 3. Run `devtools::check()`. Vignettes must build cleanly.
-4. Add a `NEWS.md` entry under the current development version:
+4. Add a short, single-line `NEWS.md` entry under the current development
+   version. The goal is a scannable changelog — the model file and vignette
+   already contain the full detail, so NEWS should only mention:
+   - the drug,
+   - a minimal reference (author + year + DOI link — not a full citation),
+   - and the population studied.
+
+   Format:
    ```
-   - Added <Author> <Year> population PK model for <drug> (#PR).
+   - Add <Author> <Year> <drug> ([doi:<doi>](https://doi.org/<doi>)) — <population phrase>.
    ```
+
+   Examples:
+   ```
+   - Add Xu 2019 sarilumab ([doi:10.1007/s40262-019-00765-1](https://doi.org/10.1007/s40262-019-00765-1)) — adults with rheumatoid arthritis.
+   - Add Clegg 2024 nirsevimab ([doi:10.1007/s40262-024-01387-y](https://doi.org/10.1007/s40262-024-01387-y)) — preterm and term infants.
+   ```
+
+   Do NOT include: covariate list, compartment count, IIV structure,
+   residual-error form, data origin, study counts, PKNCA sentence, or
+   anything else that lives in the model file's metadata or vignette. A
+   reviewer who wants those details clicks through to the model file.
 5. Commit the model file, the vignette, the regenerated `modeldb.rda` / `modeldb.qs2`, the `NEWS.md` entry, and any updates to `inst/references/covariate-columns.md` (if a new covariate was registered) together on the feature branch.
 6. Push the branch and open a PR against `main`. Use `gh pr create` with a title like `Add <Author> <Year> <drug> model`.
 
