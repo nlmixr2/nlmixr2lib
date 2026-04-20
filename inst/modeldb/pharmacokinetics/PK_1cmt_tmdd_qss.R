@@ -1,6 +1,7 @@
 PK_1cmt_tmdd_qss <- function() {
   description <- "One-compartment TMDD archetype, quasi-steady-state (QSS) approximation (Gibiansky et al. 2008)"
   reference <- "Gibiansky L, Gibiansky E, Kakkar T, Ma P. Approximations of the target-mediated drug disposition model and identifiability of model parameters. J Pharmacokinet Pharmacodyn. 2008;35(5):573-591. doi:10.1007/s10928-008-9102-8"
+  vignette <- "tmdd_archetypes"
   units <- list(time = "day", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list()

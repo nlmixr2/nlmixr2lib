@@ -5,7 +5,7 @@
 \alias{modeldb}
 \title{Model library for nlmixr2}
 \format{
-A data frame with 82 rows and 9 columns
+A data frame with 82 rows and 10 columns
 \describe{
   \item{name}{Model name that can be used to extract the model from the model library}
   \item{description}{Model description in free from text; in model itself}
@@ -15,6 +15,7 @@ A data frame with 82 rows and 9 columns
   \item{algebraic}{Logical flag indicating if the model is purely algebraic: TRUE no linCmt() and no ODEs; FALSE otherwise}
   \item{dosing}{A comma separated string of identified dosing compartments}
   \item{depends}{A comma separated string of objects the model depends on}
+  \item{vignette}{Basename of the vignette associated with this model (without path or extension); NA if none}
   \item{filename}{Filename of the model.  By default these are installed in the model library and read on demand}
 }
 }

@@ -11,6 +11,7 @@ Related references:
 <FirstAuthor>_<Year>_<drug> <- function() {
   description <- "<One-sentence summary, e.g., 'Two-compartment population PK model for <drug> in <population>'>"
   reference   <- "<Full citation with DOI>"
+  vignette    <- "<FirstAuthor>_<Year>_<drug>"  #! basename of vignettes/articles/<FirstAuthor>_<Year>_<drug>.Rmd; used by list-of-models to link here
   units       <- list(time = "<day|hour>", dosing = "<mg|mg/kg>", concentration = "<ug/mL|ng/mL>")
 
   covariateData <- list(

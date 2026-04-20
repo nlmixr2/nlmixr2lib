@@ -1,6 +1,7 @@
 Yamada_2025_zolbetuximab <- function() {
   description <- "Two-compartment population PK model of zolbetuximab (anti-CLDN18.2 IgG1 mAb) with zero-order IV input and time-dependent clearance in patients with locally advanced unresectable or metastatic gastric/gastroesophageal junction (G/GEJ) adenocarcinoma (Yamada 2025)"
   reference <- "Yamada A, Takeuchi M, Komatsu K, Bonate PL, Poondru S, Yang J. Population PK and Exposure-Response Analyses of Zolbetuximab in Patients With Locally Advanced Unresectable or Metastatic G/GEJ Adenocarcinoma. Clinical and Translational Science. 2025;18(7):e70280. doi:10.1111/cts.70280"
+  vignette <- "Yamada_2025_zolbetuximab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 
   covariateData <- list(

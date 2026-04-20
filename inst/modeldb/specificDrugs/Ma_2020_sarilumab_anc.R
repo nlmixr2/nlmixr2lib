@@ -4,6 +4,7 @@ Ma_2020_sarilumab_anc <- function() {
     "Ma L, Xu C, Paccaly A, Kanamaluru V. Population Pharmacokinetic-Pharmacodynamic Relationships of Sarilumab Using Disease Activity Score 28-Joint C-Reactive Protein and Absolute Neutrophil Counts in Patients with Rheumatoid Arthritis. Clin Pharmacokinet. 2020;59(11):1451-1466. doi:10.1007/s40262-020-00899-7 (PMID 32451909). PK backbone:",
     "Xu C, Su Y, Paccaly A, Kanamaluru V. Population Pharmacokinetics of Sarilumab in Patients with Rheumatoid Arthritis. Clin Pharmacokinet. 2019;58(11):1455-1467. doi:10.1007/s40262-019-00765-1 (PMID 31055792)."
   )
+  vignette <- "Ma_2020_sarilumab_anc"
   units <- list(time = "day", dosing = "mg", concentration = "mg/L", ANC = "10^9/L")
 
   covariateData <- list(

@@ -1,6 +1,7 @@
 Chua_2025_mirikizumab <- function() {
   description <- "Two-compartment population PK model for mirikizumab (anti-IL-23p19 IgG4 mAb) in patients with moderately-to-severely active Crohn's disease (Chua 2025 VIVID-1 phase 3)"
   reference <- "Chua L, Otani Y, Lin Z, Friedrich S, Durand F, Zhang XC. Mirikizumab Pharmacokinetics and Exposure-Response in Patients With Moderately-To-Severely Active Crohn's Disease: Results From Two Randomized Studies. Clin Transl Sci. 2025;18(8):e70320. doi:10.1111/cts.70320"
+  vignette <- "Chua_2025_mirikizumab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 
   covariateData <- list(

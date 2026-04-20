@@ -1,6 +1,7 @@
 Hu_2026_clesrovimab <- function() {
   description <- "Two-compartment population PK model for clesrovimab in preterm and full-term infants (Hu 2026)"
   reference <- "Hu Z, Hellmann F, Zang X, et al. Population Pharmacokinetics of Clesrovimab in Preterm and Full-Term Infants. Clin Pharmacol Ther. 2026;119(4):1036-1046. doi:10.1002/cpt.70199"
+  vignette <- "Hu_2026_clesrovimab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 
   covariateData <- list(

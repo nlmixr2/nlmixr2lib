@@ -15,6 +15,19 @@ knitr::opts_chunk$set(
 library(nlmixr2lib)
 ```
 
+Drug-specific validation vignettes (one per published model) are published on
+the package website at
+<https://nlmixr2.github.io/nlmixr2lib/articles/>. The **name** column below
+links to the vignette when one exists for that model.
+
 ```{r listing}
-knitr::kable(modeldb[, c("name", "description")])
+display <- modeldb
+has_vig <- !is.na(display$vignette)
+base_url <- "https://nlmixr2.github.io/nlmixr2lib/articles/"
+display$name <- ifelse(
+  has_vig,
+  sprintf("[%s](%s%s.html)", display$name, base_url, display$vignette),
+  display$name
+)
+knitr::kable(display[, c("name", "description")])
 ```

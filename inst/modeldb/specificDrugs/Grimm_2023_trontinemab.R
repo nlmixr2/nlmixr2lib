@@ -1,6 +1,7 @@
 Grimm_2023_trontinemab <- function() {
   description <- "Trontinemab PK model in non-human primates (Grimm 2023): two-compartment plasma PK with Michaelis-Menten elimination and brain-region effect-compartment distribution (cerebellum, hippocampus, striatum, cortex, choroid plexus, CSF)."
   reference <- "Grimm HP, Schumacher V, Schafer M, et al. Delivery of the Brainshuttle amyloid-beta antibody fusion trontinemab to non-human primate brain and projected efficacious dose regimens in humans. mAbs. 2023;15(1):2261509. doi:10.1080/19420862.2023.2261509"
+  vignette <- "Grimm_2023"
   units <- list(
     time = "hour",
     dosing = "mg/kg",

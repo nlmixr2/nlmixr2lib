@@ -74,6 +74,7 @@ buildModelDb <- function() {
       ),
       dosing = "A comma separated string of identified dosing compartments",
       depends = "A comma separated string of objects the model depends on",
+      vignette = "Basename of the vignette associated with this model (without path or extension); NA if none",
       filename = "Filename of the model.  By default these are installed in the model library and read on demand"
     )
   # The names must exactly match
@@ -157,6 +158,11 @@ addFileToModelDb <- function(dir, file, modeldb) {
     description <- NA_character_
   }
 
+  vignette <- mod$meta$vignette
+  if (is.null(vignette)) {
+    vignette <- NA_character_
+  }
+
   # Finding dosing
   dosing <- NULL
   dosing_meta <- mod$meta$dosing
@@ -225,6 +231,7 @@ addFileToModelDb <- function(dir, file, modeldb) {
       algebraic   = algebraic,
       dosing      = dosing,
       depends     = depends,
+      vignette    = vignette,
       filename    = fileName
     )
   modeldb <- rbind(modeldb, ret)
@@ -283,7 +290,7 @@ addFileToModelDb <- function(dir, file, modeldb) {
     )
   }
   list(
-    cacheVersion = 1L,
+    cacheVersion = 2L,
     rVersion     = R.version.string,
     nlmixr2      = safeVersion("nlmixr2"),
     nlmixr2est   = safeVersion("nlmixr2est"),

@@ -1,6 +1,6 @@
 # Validation vignette template
 
-File path: `vignettes/<FirstAuthor>_<Year>_<drug>.Rmd`.
+File path: `vignettes/articles/<FirstAuthor>_<Year>_<drug>.Rmd`. Drug-specific vignettes live under `vignettes/articles/` so pkgdown builds them for the site but CRAN skips them (`.Rbuildignore` excludes the directory). The basename must match the `vignette <- "..."` field in the model file.
 
 A validation vignette has two jobs:
 

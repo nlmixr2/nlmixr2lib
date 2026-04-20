@@ -1,6 +1,7 @@
 Moein_2022_etrolizumab <- function() {
   description <- "Two-compartment population PK model for etrolizumab with first-order SC absorption and time-decreasing clearance in adults with moderately-to-severely active ulcerative colitis (Moein 2022)"
   reference <- "Moein A, Lu T, Jonsson S, et al. Population pharmacokinetic analysis of etrolizumab in patients with moderately-to-severely active ulcerative colitis. CPT Pharmacometrics Syst Pharmacol. 2022;11(9):1244-1255. doi:10.1002/psp4.12846"
+  vignette <- "Moein_2022_etrolizumab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 
   covariateData <- list(

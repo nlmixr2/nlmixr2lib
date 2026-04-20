@@ -1,6 +1,7 @@
 Clegg_2024_nirsevimab <- function() {
   description <- "Two-compartment population PK model for nirsevimab in preterm and term infants (Clegg 2024)"
   reference <- "Clegg L, Freshwater E, Leach A, Villafana T, Wahlby Hamren U. Population Pharmacokinetics of Nirsevimab in Preterm and Term Infants. J Clin Pharmacol. 2024;64(5):555-567. doi:10.1002/jcph.2401"
+  vignette <- "Clegg_2024_nirsevimab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 
   covariateData <- list(

@@ -1,6 +1,7 @@
 Cirincione_2017_exenatide <- function() {
   description <- "Population PK model for exenatide immediate-release (Cirincione 2017): two-compartment, parallel linear and Michaelis-Menten elimination, sequential zero-order then saturable first-order absorption after SC dosing."
   reference <- "Cirincione B, Mager DE. Population pharmacokinetics of exenatide. British Journal of Clinical Pharmacology. 2017;83(3):517-526. doi:10.1111/bcp.13135"
+  vignette <- "Cirincione_2017_exenatide"
   units <- list(time = "hour", dosing = "ug", concentration = "pg/mL")
 
   covariateData <- list(
