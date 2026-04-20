@@ -158,6 +158,15 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
 
 ## Inflammation markers
 
+### BEOS (**canonical for baseline blood eosinophil count**)
+- **Description:** Baseline blood eosinophil count.
+- **Units:** cells/µL
+- **Type:** continuous
+- **Reference category:** n/a — used with power scaling `(BEOS / ref)^exponent`.
+- **Source aliases:** none.
+- **Example models:** `Kotani_2022_astegolimab.R` (reference 180 cells/µL).
+- **Notes:** Baseline-only (time-fixed per subject). Used as a surrogate of inflammatory burden that correlates with protein turnover and therefore mAb clearance.
+
 ### CRP (**canonical for C-reactive protein**)
 - **Description:** C-reactive protein concentration (baseline or time-varying) from a standard (not low-range / high-sensitivity) assay.
 - **Units:** mg/L (document per-model via `covariateData[[CRP]]$units`).
@@ -432,6 +441,15 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
 - **Example models:** `Clegg_2024_nirsevimab.R`.
 - **Notes:** Study-specific but semantically general (second-exposure indicator).
 
+### DOSE_70MG
+- **Description:** 1 = subject is on the 70 mg SC Q4W dose regimen, 0 = subject is on the 210 or 490 mg SC Q4W regimen.
+- **Units:** (binary)
+- **Type:** binary
+- **Reference category:** 0 (210 mg or 490 mg Q4W regimen).
+- **Source aliases:** derived per subject from the trial-assigned dose level.
+- **Example models:** `Kotani_2022_astegolimab.R`.
+- **Notes:** Zenyatta-study categorical covariate flagging the 70 mg group (lowest dose), modeled as a −15.3% relative change on relative bioavailability. Modeled by Kotani 2022 as `70 mg vs {210 mg, 490 mg}` combined reference.
+
 ### STUDY1
 - **Description:** 1 = subject enrolled in Study 1 of the Cirincione 2017 pooled analysis, 0 = other. Used to switch the residual-error magnitude per study.
 - **Type:** binary
@@ -470,6 +488,9 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
   `CRE`/`SCR`; `hsCRP` preserves lowercase `hs` prefix per the `eGFR`
   precedent. See `tracking/decision_log.md` in the mab_human_consensus
   project for the deliberation.
+- **2026-04-19** — Added `BEOS` (baseline blood eosinophil count, cells/µL)
+  and `DOSE_70MG` (Zenyatta 70 mg dose-group indicator) canonical entries
+  after extracting the Kotani 2022 astegolimab population PK model.
 - **2026-04-19** — Added `ADA_TITER`, `PRIOR_TNF`, `DISEXT_EP`,
   `DISEXT_OTHER` canonical entries while extracting Moein 2022 etrolizumab.
   `ADA_TITER` is the continuous-titer companion to binary `ADA_POS`;
@@ -503,6 +524,6 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
 
 ## Summary
 
-- Files audited: 63 R files under `inst/modeldb/` (14 of which reference covariates).
-- Canonical entries: 49.
+- Files audited: 64 R files under `inst/modeldb/` (15 of which reference covariates).
+- Canonical entries: 51.
 - Aliases mapped: 16 (including SEXM→SEXF, ADA→ADA_POS, ADAT→ADA_TITER, BLACK→RACE_BLACK, ASIAN→RACE_ASIAN, MULTIRACIAL→RACE_MULTI, BLACK_OTH→RACE_BLACK_OTH, ASIAN_AMIND_MULTI→RACE_ASIAN_AMIND_MULTI, DVID→STUDY1/STUDY5, CRE→CREAT, CRPHS→hsCRP, 1.73*CrCl/BSA→CRCL_BSA, DP2→FORM_DP2, DISEXT→DISEXT_EP/DISEXT_OTHER, BEASI→EASI, TUMTP→TUMTP_CHL/TUMTP_GC).
