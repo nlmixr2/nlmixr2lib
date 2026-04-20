@@ -148,6 +148,15 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
 - **Example models:** `Thakre_2022_risankizumab.R`.
 - **Notes:** Case preserved (`hsCRP`) because that is the widely recognized clinical notation, mirroring the `eGFR` precedent. Distinct from non-hs CRP — only use for assays validated for the low-range sensitivity.
 
+### CRP (**canonical for standard C-reactive protein**)
+- **Description:** Standard (non-high-sensitivity) C-reactive protein concentration.
+- **Units:** mg/L (document per-model via `covariateData[[CRP]]$units`).
+- **Type:** continuous
+- **Reference category:** n/a — document per-model reference value in `covariateData[[CRP]]$notes`.
+- **Source aliases:** `CRP` (standard clinical abbreviation).
+- **Example models:** `Moein_2022_etrolizumab.R` (reference 4.23 mg/L, exponential effect on CL).
+- **Notes:** Distinct from `hsCRP`. Use `CRP` when the paper reports CRP from a standard assay and does not explicitly specify the high-sensitivity variant. If the paper only says "CRP" without further context, prefer `CRP` over `hsCRP`.
+
 ## Race / ethnicity
 
 **Canonical pattern: `RACE_<GROUP>`.** Use one indicator per race/ethnicity group the source models. Reference category is the implicit 0 = all other groups; document explicitly which groups are in the reference. When the source uses composite groups (e.g., "Black or Other"), name them accordingly (`RACE_BLACK_OTHER`) and list the components in `notes`.
@@ -228,6 +237,47 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
   - `ADA` (semantically "ever positive") — used in `Zhu_2017_lebrikizumab.R`. When translating from a paper that uses `ADA` as "ever positive," verify the time-frame matches ADA_POS semantics before renaming.
   - `ADA` (time-varying positivity, primary covariate in Xu 2019) — used in `Xu_2019_sarilumab.R`.
 - **Example models:** `Clegg_2024_nirsevimab.R`, `Hu_2026_clesrovimab.R`, `Xu_2019_sarilumab.R`.
+
+### ADA_TITER (**canonical**)
+- **Description:** Continuous antidrug antibody titer (time-varying). Zero for ADA-negative observations.
+- **Units:** (titer units; typically log2 or arbitrary assay units — document per-model in `covariateData[[ADA_TITER]]$units`).
+- **Type:** continuous
+- **Reference category:** n/a — ADA-negative corresponds to titer = 0.
+- **Source aliases:**
+  - `ADAT` — used in `Moein_2022_etrolizumab.R`.
+- **Example models:** `Moein_2022_etrolizumab.R` (exponential effect on CL, per-unit-titer theta = 0.0365).
+- **Notes:** Paired conceptually with `ADA_POS` (binary). When the paper reports both, the final model usually keeps only one. Imputation rules (LOCF / NOCB / baseline-as-negative) should be documented per-model.
+
+## Disease / treatment history
+
+### PRIOR_TNF (**canonical**)
+- **Description:** 1 = subject previously treated with an anti-TNF (tumor necrosis factor) inhibitor, 0 = TNF-naive.
+- **Units:** (binary)
+- **Type:** binary
+- **Reference category:** 0 (TNF-naive).
+- **Source aliases:**
+  - `PRIORTNF` (all caps, no underscore) — acceptable alternative spelling.
+- **Example models:** `Moein_2022_etrolizumab.R` (multiplicative fractional effect on CL, +4.9%).
+- **Notes:** Use when the source paper reports a binary "prior anti-TNF inhibitor" covariate on any PK parameter.
+
+### DISEXT_EP (**canonical for extensive colitis / pancolitis indicator**)
+- **Description:** 1 = extensive colitis or pancolitis disease extension, 0 = not.
+- **Units:** (binary)
+- **Type:** binary
+- **Reference category:** 0 (left-sided colitis, when paired with `DISEXT_OTHER = 0`).
+- **Source aliases:**
+  - Derived from a multi-level `DISEXT` column in the source (levels: left-sided colitis, extensive/pancolitis, other): `DISEXT_EP = as.integer(DISEXT == "extensive/pancolitis")`.
+- **Example models:** `Moein_2022_etrolizumab.R` (multiplicative effect on CL, +8.2% vs. left-sided colitis).
+- **Notes:** Paired with `DISEXT_OTHER`. `DISEXT_EP = DISEXT_OTHER = 0` corresponds to the left-sided colitis reference group. UC-specific covariate; analogous indicators could be used for other inflammatory bowel disease models.
+
+### DISEXT_OTHER (**canonical for 'other disease extension' indicator**)
+- **Description:** 1 = disease extension other than left-sided colitis or extensive/pancolitis, 0 = not.
+- **Units:** (binary)
+- **Type:** binary
+- **Reference category:** 0 (left-sided colitis, when paired with `DISEXT_EP = 0`).
+- **Source aliases:** Derived from a multi-level `DISEXT` column: `DISEXT_OTHER = as.integer(DISEXT == "other")`.
+- **Example models:** `Moein_2022_etrolizumab.R` (multiplicative effect on CL, +18% vs. left-sided colitis; large uncertainty due to 2% prevalence).
+- **Notes:** Paired with `DISEXT_EP`; together they encode the three-level disease-extension categorical.
 
 ## Formulation / assay / study
 
@@ -325,11 +375,19 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
   `CRE`/`SCR`; `hsCRP` preserves lowercase `hs` prefix per the `eGFR`
   precedent. See `tracking/decision_log.md` in the mab_human_consensus
   project for the deliberation.
+- **2026-04-19** — Added `CRP`, `ADA_TITER`, `PRIOR_TNF`, `DISEXT_EP`,
+  `DISEXT_OTHER` canonical entries while extracting Moein 2022 etrolizumab.
+  `CRP` is the non-high-sensitivity analogue of `hsCRP`; `ADA_TITER` is
+  the continuous-titer companion to binary `ADA_POS`; `PRIOR_TNF` captures
+  prior anti-TNF therapy (common covariate in IBD biologic PK models);
+  `DISEXT_EP` / `DISEXT_OTHER` are paired indicators that encode the
+  three-level ulcerative-colitis disease-extension categorical (reference
+  = left-sided colitis).
 - Subsequent additions: append new canonical entries as new papers are processed. When adding, bump the audit-completed count in the summary below.
 - **Xu 2019 sarilumab**: Added canonical entries `ALBR` (albumin / ULN ratio), `CRCL_BSA` (BSA-normalized creatinine clearance), `BLCRP` (baseline C-reactive protein), and `FORM_DP2` (sarilumab drug product 2 indicator). Extended the `ADA_POS` alias list to include the time-varying `ADA` column used in Xu 2019.
 
 ## Summary
 
-- Files audited: 61 R files under `inst/modeldb/` (12 of which reference covariates).
-- Canonical entries: 30.
-- Aliases mapped: 12 (including SEXM→SEXF, ADA→ADA_POS, BLACK→RACE_BLACK, ASIAN→RACE_ASIAN, MULTIRACIAL→RACE_MULTI, BLACK_OTH→RACE_BLACK_OTH, ASIAN_AMIND_MULTI→RACE_ASIAN_AMIND_MULTI, DVID→STUDY1/STUDY5, CRE→CREAT, CRPHS→hsCRP, 1.73*CrCl/BSA→CRCL_BSA, DP2→FORM_DP2).
+- Files audited: 63 R files under `inst/modeldb/` (14 of which reference covariates).
+- Canonical entries: 35.
+- Aliases mapped: 14 (including SEXM→SEXF, ADA→ADA_POS, ADAT→ADA_TITER, BLACK→RACE_BLACK, ASIAN→RACE_ASIAN, MULTIRACIAL→RACE_MULTI, BLACK_OTH→RACE_BLACK_OTH, ASIAN_AMIND_MULTI→RACE_ASIAN_AMIND_MULTI, DVID→STUDY1/STUDY5, CRE→CREAT, CRPHS→hsCRP, 1.73*CrCl/BSA→CRCL_BSA, DP2→FORM_DP2, DISEXT→DISEXT_EP/DISEXT_OTHER).
