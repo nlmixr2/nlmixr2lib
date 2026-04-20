@@ -2,37 +2,23 @@
 
 # development version
 
-* Add Ma 2020 sarilumab DAS28-CRP PK/PD model for rheumatoid arthritis. The
-  disease-activity score (DAS28-CRP) is driven by an indirect-response model
-  with inhibition of the production rate through a sigmoidal Emax function
-  that includes a background DMARD placebo concentration term
-  (`CeffP = Cc + PLB`). Parameters for the PD block come from Ma 2020 Table 3
-  (DAS28-CRP column); the sarilumab concentration driver is the Xu 2019
-  two-compartment parallel linear + Michaelis-Menten PK embedded in-file at
-  its typical covariate-reference values (approach (a) in the paper). The
-  model carries five canonical covariates (`WT`, `BLCRP`, `BLPHYVAS`, `BLHAQ`
-  on BASE via power form; `BLCRP` on logit(Emax) via additive log-linear form;
-  `PRICORT` on Kout via multiplicative form). Registers `BLPHYVAS`, `BLHAQ`,
-  and `PRICORT` as new canonical covariate-column names and extends the
-  `BLCRP` entry. Includes a validation vignette that reproduces the paper's
-  typical-patient week-24 DAS28-CRP values for placebo, 150 mg Q2W, and
-  200 mg Q2W arms to within 3% of the reported reductions, plus a VPC that
-  reproduces Ma 2020 Figure 2d. A companion ANC PD model from the same paper
-  (with a known decimal-point typo in Table 4) is packaged separately as
-  `Ma_2020_sarilumab_anc`.
-* Add Xu 2019 sarilumab two-compartment population PK model with first-order SC absorption and parallel linear plus Michaelis-Menten (target-mediated) elimination in adults with rheumatoid arthritis (pooled analysis of 1770 patients / 7676 concentrations across 7 phase I, 1 phase II, and 4 phase III studies). Final covariates are body weight on CLO/F and Vm; ALBR, CRCL_BSA, and BLCRP on Vm; ADA positivity and drug-product formulation DP2 on CLO/F; drug-product formulation DP2 on Ka; and biological sex on CLO/F. Built to the `extract-literature-model` skill conventions (block-correlated `etalvm` + `etalcl`, diagonal `etalvc` and `etalka`, log-additive residual converted to `propSd = sqrt(0.395)`, canonical `WT` / `SEXF` / `ADA_POS` / `FORM_DP2` / `ALBR` / `CRCL_BSA` / `BLCRP` covariate columns) with a companion validation vignette that replicates the Table 4 typical-patient steady-state exposures (Cmax, Ctrough, AUC0-14d) for the labelled 200 mg SC Q2W and dose-reduced 150 mg SC Q2W regimens and runs PKNCA on the final steady-state dosing interval. Registers `ALBR`, `CRCL_BSA`, `BLCRP`, and `FORM_DP2` as new canonical covariate-column names in the `extract-literature-model` skill.
+* Add Ma 2020 sarilumab DAS28-CRP ([doi:10.1007/s40262-020-00899-7](https://doi.org/10.1007/s40262-020-00899-7)) — adults with rheumatoid arthritis.
+* Add Tiraboschi 2025 amlitelimab ([doi:10.1002/psp4.70121](https://doi.org/10.1002/psp4.70121)) — adults with moderate-to-severe atopic dermatitis.
+* Add Budha 2023 tislelizumab ([doi:10.1002/psp4.12880](https://doi.org/10.1002/psp4.12880)) — patients with advanced tumors.
+* Add Masters 2022 avelumab ([doi:10.1002/psp4.12771](https://doi.org/10.1002/psp4.12771)) — patients with advanced solid tumors.
+* Add Xu 2019 sarilumab ([doi:10.1007/s40262-019-00765-1](https://doi.org/10.1007/s40262-019-00765-1)) — adults with rheumatoid arthritis.
 * `checkModelConventions()` — new function that reports deviations from the package's parameter-naming, covariate, compartment, and metadata conventions for a single model or the entire `modeldb`. Called automatically during `buildModelDb()` so convention drift surfaces at package-build time (existing grandfathered deviations continue to build). Canonical standards (PK parameter prefixes, `eta`-prefixed IIV, `propSd`/`addSd` residual error, canonical covariate column register with aliases, canonical compartment vocabulary) are codified in an internal `.nlmixr2libConventions` list that mirrors the `extract-literature-model` skill references. Addresses issue #39.
 * Added canonical TMDD archetype models under `inst/modeldb/pharmacokinetics/`: `PK_1cmt_tmdd_full` (Mager & Jusko 2001), `PK_1cmt_tmdd_qss`, `PK_1cmt_tmdd_mm`, `PK_2cmt_tmdd_qss`, and `PK_2cmt_tmdd_mm` (Gibiansky et al. 2008 QSS and MM approximations). Built to the `extract-literature-model` skill conventions with `reference` / `units` / `population` metadata, per-parameter source-trace comments, and CL/V parameterization with `kel` derived inside `model()` so later transforms can re-parameterize. Replaces the 38 draft models from PR #60 (#60).
 * Registered `target`, `complex`, and `total_target` as canonical TMDD compartment names in the `extract-literature-model` skill naming conventions (per @iamstein's proposal on PR #60).
 * Added `vignettes/tmdd_archetypes.Rmd` comparing the five TMDD archetypes with typical-value trajectories of drug, free target, and complex, and a regime-convergence check showing QSS/MM collapsing onto the full Mager & Jusko 2001 model in the fast-binding regime of Gibiansky 2008.
-* Add Thakre 2022 risankizumab two-compartment population PK model with first-order SC absorption in patients with active psoriatic arthritis, pooled across one phase 1, one phase 2, and two pivotal phase 3 studies (KEEPsAKE 1 / KEEPsAKE 2). Final covariates are body weight, age, serum albumin, serum creatinine, and hsCRP on clearance, and body weight on central volume. Built to `extract-literature-model` skill conventions (`etalcl + etalvc` block correlation, `etalka` diagonal, proportional residual error, canonical `WT` / `AGE` / `ALB` / `CREAT` / `hsCRP` covariate columns) with a companion validation vignette that replicates the Table 2 per-dosing-interval exposures and runs PKNCA on the third dosing interval.
+* Add Thakre 2022 risankizumab ([doi:10.1007/s40744-022-00495-0](https://doi.org/10.1007/s40744-022-00495-0)) — patients with active psoriatic arthritis.
 * `addEta()`, `addResErr()`, `addDepot()`, `removeDepot()`, `addTransit()`, and `removeTransit()` now accept `model` as a deprecated alias for `ui` (issue #84). Passing `model = ...` emits a deprecation warning; passing both `ui` and `model` is an error.
 * `addDepot()` and `addTransit()` now work correctly when `d/dt(central)` or `d/dt(depot)` appears at the beginning or end of the model block, or when transit-compartment ODEs and residual-error (`~`) specs are interleaved with assignment lines. The newly introduced helper and ODE lines are inserted immediately adjacent to the modified ODE so that the relative order of every pre-existing model line is preserved (#77, #78).
 * Markov modeling creation functions including `createMarkovModel()` were added
-* Add Fasanmade 2009 infliximab two-compartment population PK model in ulcerative colitis (ACT 1 / ACT 2 pooled), with albumin, ADA (ATI), and sex effects on CL and weight and sex effects on Vc. Built to the `extract-literature-model` skill conventions: structured `covariateData`, `population` metadata, canonical `etalcl` / `etalvc`, `propSd` / `addSd`, `peripheral1`, and `SEXF` / `ADA_POS` covariate columns. Includes a validation vignette with source-trace table and PKNCA check stratified by ADA status.
-* Add Fiedler-Kelly 2019 fremanezumab two-compartment population PK model with first-order SC absorption, absorption lag time, and allometric weight scaling on CL (exponent 1.05) and Vc (exponent 1.53) relative to a 71 kg reference. Pooled from seven phase 1 / 2b / 3 studies (N = 2546, 13,745 concentrations). Q, Vp, F, and tlag are held `fixed()` per the source paper. SC combined additive + proportional residual error. Includes a validation vignette that replicates Figures 7 and 8 and compares simulated accumulation ratios against Table 3 of the paper.
-* Add Hu 2026 clesrovimab two-compartment population PK model for preterm and full-term infants with allometric weight scaling, postnatal age maturation function, and race effects on clearance
-* Add Clegg 2024 nirsevimab two-compartment population PK model for preterm and term infants with allometric weight scaling, postmenstrual age maturation, race, season, and ADA effects
+* Add Fasanmade 2009 infliximab ([doi:10.1007/s00228-009-0718-4](https://doi.org/10.1007/s00228-009-0718-4)) — adults with moderately-to-severely active ulcerative colitis.
+* Add Fiedler-Kelly 2019 fremanezumab ([doi:10.1111/bcp.14096](https://doi.org/10.1111/bcp.14096)) — adults with chronic or episodic migraine.
+* Add Hu 2026 clesrovimab ([doi:10.1002/cpt.70199](https://doi.org/10.1002/cpt.70199)) — preterm and full-term infants.
+* Add Clegg 2024 nirsevimab ([doi:10.1002/jcph.2401](https://doi.org/10.1002/jcph.2401)) — preterm and term infants.
 * Verified all published-literature specific-drug and mAb-consensus models against their source papers and fixed several parameter-encoding bugs that had been latent in the package since their original addition:
   - **CarlssonPetri 2021 liraglutide**: fixed categorical covariate encoding that was zeroing individual clearance for subjects not in the indexed group. `(1 - SEXF)^e_sex_cl` → `e_sex_cl^(1 - SEXF)` (previously evaluated `0^1.12 = 0` for females); `CHILD^e_age_child_cl * ADOLESCENT^e_age_adolescent_cl` → `e_age_child_cl^CHILD * e_age_adolescent_cl^ADOLESCENT` (previously evaluated `0^1.11 * 0^1.06 = 0` for adults). IIV rewritten as `omega^2 = log(1 + CV^2)` per Table 3's explicit `%CV = sqrt(exp(omega^2) - 1) * 100` footnote.
   - **Zhu 2017 lebrikizumab**: fixed IIV variance-covariance block that was storing `sqrt(variance)` (SDs) instead of variances/covariances from Table 3.
