@@ -2,6 +2,13 @@
 
 # development version
 
+* Add Yamada 2025 zolbetuximab ([doi:10.1111/cts.70280](https://doi.org/10.1111/cts.70280)) — patients with locally advanced unresectable or metastatic gastric/gastroesophageal junction adenocarcinoma.
+* Add Jackson 2022 ixekizumab ([doi:10.1111/bcp.15034](https://doi.org/10.1111/bcp.15034)) — paediatric patients with moderate-to-severe plaque psoriasis.
+* Add Moein 2022 etrolizumab ([doi:10.1002/psp4.12846](https://doi.org/10.1002/psp4.12846)) — patients with moderately-to-severely active ulcerative colitis.
+* Add Chua 2025 mirikizumab ([doi:10.1111/cts.70320](https://doi.org/10.1111/cts.70320)) — patients with moderately-to-severely active Crohn's disease.
+* Add Ma 2020 sarilumab ANC ([doi:10.1007/s40262-020-00899-7](https://doi.org/10.1007/s40262-020-00899-7)) — adults with rheumatoid arthritis.
+* Add Ma 2020 sarilumab DAS28-CRP ([doi:10.1007/s40262-020-00899-7](https://doi.org/10.1007/s40262-020-00899-7)) — adults with rheumatoid arthritis.
+* Add Tiraboschi 2025 amlitelimab ([doi:10.1002/psp4.70121](https://doi.org/10.1002/psp4.70121)) — adults with moderate-to-severe atopic dermatitis.
 * Add Budha 2023 tislelizumab ([doi:10.1002/psp4.12880](https://doi.org/10.1002/psp4.12880)) — patients with advanced tumors.
 * Add Masters 2022 avelumab ([doi:10.1002/psp4.12771](https://doi.org/10.1002/psp4.12771)) — patients with advanced solid tumors.
 * Add Xu 2019 sarilumab ([doi:10.1007/s40262-019-00765-1](https://doi.org/10.1007/s40262-019-00765-1)) — adults with rheumatoid arthritis.
@@ -13,6 +20,7 @@
 * `addEta()`, `addResErr()`, `addDepot()`, `removeDepot()`, `addTransit()`, and `removeTransit()` now accept `model` as a deprecated alias for `ui` (issue #84). Passing `model = ...` emits a deprecation warning; passing both `ui` and `model` is an error.
 * `addDepot()` and `addTransit()` now work correctly when `d/dt(central)` or `d/dt(depot)` appears at the beginning or end of the model block, or when transit-compartment ODEs and residual-error (`~`) specs are interleaved with assignment lines. The newly introduced helper and ODE lines are inserted immediately adjacent to the modified ODE so that the relative order of every pre-existing model line is preserved (#77, #78).
 * Markov modeling creation functions including `createMarkovModel()` were added
+* Add Kotani 2022 astegolimab ([doi:10.1002/jcph.2021](https://doi.org/10.1002/jcph.2021)) — adults with severe asthma.
 * Add Fasanmade 2009 infliximab ([doi:10.1007/s00228-009-0718-4](https://doi.org/10.1007/s00228-009-0718-4)) — adults with moderately-to-severely active ulcerative colitis.
 * Add Fiedler-Kelly 2019 fremanezumab ([doi:10.1111/bcp.14096](https://doi.org/10.1111/bcp.14096)) — adults with chronic or episodic migraine.
 * Add Hu 2026 clesrovimab ([doi:10.1002/cpt.70199](https://doi.org/10.1002/cpt.70199)) — preterm and full-term infants.

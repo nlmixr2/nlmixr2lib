@@ -294,29 +294,42 @@ test_that("iterating with no argument returns stacked data.frame with model colu
 
 test_that("canonical covariates are parsed from inst/references/covariate-columns.md", {
   canon <- nlmixr2lib:::.loadCanonicalCovariates()
-  expect_true(length(canon) > 20)
+  expect_true(length(canon) > 30)
   expect_true(all(c("WT", "SEXF", "ADA_POS", "RACE_BLACK",
-                    "RACE_BLACK_OTH", "CREAT", "ALB", "CRP", "CRCL") %in%
+                    "RACE_BLACK_OTH", "CREAT", "ALB", "CRP", "CRCL",
+                    "EOS", "PRIOR_GAST", "ADA_TITER") %in%
                     names(canon)))
   expect_true("SEXM" %in% canon$SEXF$aliases)
   expect_true("ADA" %in% canon$ADA_POS$aliases)
   expect_true("BLACK_OTH" %in% canon$RACE_BLACK_OTH$aliases)
   # ALB has no source aliases in the register ("none; ALB is the universal...")
   expect_equal(length(canon$ALB$aliases), 0)
-  # hsCRP and BLCRP were merged into CRP on 2026-04-20; eGFR and CRCL_BSA into CRCL.
+  # 2026-04-20 mergers: hsCRP + BLCRP + standard-CRP -> CRP; eGFR + CRCL_BSA -> CRCL;
+  # ADA_TITRE + ADA_TITER -> ADA_TITER. BEOS renamed to EOS; GAST renamed to PRIOR_GAST.
   expect_false("hsCRP" %in% names(canon))
   expect_false("BLCRP" %in% names(canon))
   expect_false("eGFR" %in% names(canon))
   expect_false("CRCL_BSA" %in% names(canon))
+  expect_false("BEOS" %in% names(canon))
+  expect_false("GAST" %in% names(canon))
+  expect_false("ADA_TITRE" %in% names(canon))
   expect_true(all(c("hsCRP", "CRPHS", "BLCRP") %in% canon$CRP$aliases))
   expect_true(all(c("eGFR", "CRCL_BSA") %in% canon$CRCL$aliases))
+  expect_true("BEOS" %in% canon$EOS$aliases)
+  expect_true("GAST" %in% canon$PRIOR_GAST$aliases)
+  expect_true(all(c("ADA_TITRE", "ADAT") %in% canon$ADA_TITER$aliases))
   # Scope field is populated for every registered entry.
   expect_equal(canon$WT$scope, "general")
   expect_equal(canon$CRP$scope, "general")
   expect_equal(canon$CRCL$scope, "general")
+  expect_equal(canon$EOS$scope, "general")
+  expect_equal(canon$PRIOR_GAST$scope, "general")
+  expect_equal(canon$ADA_TITER$scope, "general")
   expect_equal(canon$FORM_DP2$scope, "specific")
   expect_equal(canon$TUMTP_CHL$scope, "specific")
   expect_equal(canon$ooc1$scope, "specific")
+  expect_equal(canon$COMB_EOX$scope, "specific")
+  expect_equal(canon$DOSE_70MG$scope, "specific")
   expect_true("Xu_2019_sarilumab" %in% canon$FORM_DP2$example_models)
   expect_true("Cirincione_2017_exenatide" %in% canon$STUDY1$example_models)
 })
