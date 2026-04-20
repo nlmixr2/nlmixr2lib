@@ -187,6 +187,37 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
 - **Description:** 1 = race category "Other," 0 = not.
 - **Example models:** `Zhu_2017_lebrikizumab.R`.
 
+## Oncology
+
+### TUMSZ (**canonical for baseline tumor size**)
+- **Description:** Baseline tumor size. For solid tumors, the sum of diameters of target lesions per RECIST; for classical Hodgkin lymphoma, the sum of products of perpendicular diameters (SPPD).
+- **Units:** mm
+- **Type:** continuous
+- **Reference category:** n/a — used with power scaling `(TUMSZ / ref)^exponent`. Reference values observed: 63 mm (Budha 2023).
+- **Source aliases:** none.
+- **Example models:** `Budha_2023_tislelizumab.R` (reference 63 mm).
+- **Notes:** The SPPD convention for cHL and the sum-of-diameters convention for solid tumors are pooled onto a single column by convention; document the per-model mixture where relevant.
+
+### TUMTP_CHL (**canonical for classical Hodgkin lymphoma tumor-type indicator**)
+- **Description:** 1 = classical Hodgkin lymphoma (cHL), 0 = other tumor types.
+- **Units:** (binary)
+- **Type:** binary
+- **Reference category:** 0 = all other tumor types (e.g., NSCLC, EC, HCC, UC, GC, CRC, NPC, OC, "Other" solid tumors in the Budha 2023 cohort).
+- **Source aliases:**
+  - `TUMTP` (categorical column with levels like `cHL`, `GC`, ...) — decompose into `TUMTP_CHL = as.integer(TUMTP == "cHL")`.
+- **Example models:** `Budha_2023_tislelizumab.R`.
+- **Notes:** Paired with `TUMTP_GC` in Budha 2023; a patient can have at most one of the indicators set to 1 (the remaining tumor types collapse into the reference 0 group).
+
+### TUMTP_GC (**canonical for gastric-cancer tumor-type indicator**)
+- **Description:** 1 = gastric cancer (GC), 0 = other tumor types.
+- **Units:** (binary)
+- **Type:** binary
+- **Reference category:** 0 = all other tumor types (same reference group as `TUMTP_CHL`).
+- **Source aliases:**
+  - `TUMTP` (categorical column) — decompose into `TUMTP_GC = as.integer(TUMTP == "GC")`.
+- **Example models:** `Budha_2023_tislelizumab.R`.
+- **Notes:** Follows the `RACE_<GROUP>` indicator-decomposition pattern. New oncology tumor types should be added as additional `TUMTP_<GROUP>` entries so the reference set stays explicit.
+
 ## Laboratory / disease-activity
 
 ### ALBR
@@ -325,11 +356,17 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
   `CRE`/`SCR`; `hsCRP` preserves lowercase `hs` prefix per the `eGFR`
   precedent. See `tracking/decision_log.md` in the mab_human_consensus
   project for the deliberation.
+- **2026-04-20** — Added `TUMSZ`, `TUMTP_CHL`, `TUMTP_GC` canonical entries
+  with the Budha 2023 tislelizumab extraction. `TUMSZ` centralizes the
+  baseline-tumor-size continuous covariate; `TUMTP_<GROUP>` mirrors the
+  `RACE_<GROUP>` decomposition so categorical tumor-type effects are
+  stored as indicator columns with an explicit "all other tumor types"
+  reference.
 - Subsequent additions: append new canonical entries as new papers are processed. When adding, bump the audit-completed count in the summary below.
 - **Xu 2019 sarilumab**: Added canonical entries `ALBR` (albumin / ULN ratio), `CRCL_BSA` (BSA-normalized creatinine clearance), `BLCRP` (baseline C-reactive protein), and `FORM_DP2` (sarilumab drug product 2 indicator). Extended the `ADA_POS` alias list to include the time-varying `ADA` column used in Xu 2019.
 
 ## Summary
 
 - Files audited: 61 R files under `inst/modeldb/` (12 of which reference covariates).
-- Canonical entries: 30.
-- Aliases mapped: 12 (including SEXM→SEXF, ADA→ADA_POS, BLACK→RACE_BLACK, ASIAN→RACE_ASIAN, MULTIRACIAL→RACE_MULTI, BLACK_OTH→RACE_BLACK_OTH, ASIAN_AMIND_MULTI→RACE_ASIAN_AMIND_MULTI, DVID→STUDY1/STUDY5, CRE→CREAT, CRPHS→hsCRP, 1.73*CrCl/BSA→CRCL_BSA, DP2→FORM_DP2).
+- Canonical entries: 33.
+- Aliases mapped: 13 (including SEXM→SEXF, ADA→ADA_POS, BLACK→RACE_BLACK, ASIAN→RACE_ASIAN, MULTIRACIAL→RACE_MULTI, BLACK_OTH→RACE_BLACK_OTH, ASIAN_AMIND_MULTI→RACE_ASIAN_AMIND_MULTI, DVID→STUDY1/STUDY5, CRE→CREAT, CRPHS→hsCRP, 1.73*CrCl/BSA→CRCL_BSA, DP2→FORM_DP2, TUMTP→TUMTP_CHL/TUMTP_GC).
