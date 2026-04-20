@@ -36,12 +36,12 @@ Thakre_2022_risankizumab <- function() {
       notes              = "Power effect on CL; normalized as CREAT/70.73 per Thakre 2022 Eq. 2 (reference: 70.73 umol/L, equivalent to 0.8 mg/dL). Source column 'CRE' renamed to canonical CREAT.",
       source_name        = "CRE"
     ),
-    hsCRP = list(
-      description        = "Baseline high-sensitivity C-reactive protein",
+    CRP = list(
+      description        = "Baseline high-sensitivity C-reactive protein (hs-CRP assay; baseline, time-fixed per subject)",
       units              = "mg/L",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on CL; normalized as hsCRP/5.21 per Thakre 2022 Eq. 2 (reference: 5.21 mg/L). Source column 'CRPHS' renamed to hsCRP.",
+      notes              = "Power effect on CL; normalized as CRP/5.21 per Thakre 2022 Eq. 2 (reference: 5.21 mg/L). Source column 'CRPHS' (high-sensitivity CRP) maps to the canonical general-scope CRP covariate; the assay type (hs-CRP) is documented here in the covariateData entry rather than via a separate hsCRP canonical.",
       source_name        = "CRPHS"
     )
   )
@@ -56,13 +56,13 @@ Thakre_2022_risankizumab <- function() {
     disease_state  = "Active psoriatic arthritis (PsA), pooled across one phase 1 healthy-participant study, one phase 2 dose-ranging study with open-label extension, and two pivotal phase 3 studies (KEEPsAKE 1 [NCT03675308] and KEEPsAKE 2 [NCT03671148]).",
     dose_range     = "Risankizumab 18-300 mg SC and 0.01-5 mg/kg IV single-dose (phase 1), plus 150 mg SC at weeks 0 and 4 and every 12 weeks thereafter (phase 2/3 clinical regimen).",
     regions        = "Global (multi-regional).",
-    notes          = "Data set: 3631 concentration measurements from 1527 individuals (study 1: n=67, studies 2/3: n=177, study 4: n=391, study 5: n=892). ADA titers on CL and WT on V2 were evaluated but did not meet retention criteria and are not in the final model. Reference covariate values (used as the normalizers in the covariate power terms): WT = 70 kg, AGE = 52 years, ALB = 45 g/L, CREAT = 70.73 umol/L, hsCRP = 5.21 mg/L."
+    notes          = "Data set: 3631 concentration measurements from 1527 individuals (study 1: n=67, studies 2/3: n=177, study 4: n=391, study 5: n=892). ADA titers on CL and WT on V2 were evaluated but did not meet retention criteria and are not in the final model. Reference covariate values (used as the normalizers in the covariate power terms): WT = 70 kg, AGE = 52 years, ALB = 45 g/L, CREAT = 70.73 umol/L, CRP = 5.21 mg/L (hs-CRP assay)."
   )
 
   ini({
     # Structural parameters from Thakre 2022 Table 1 (final PsA population PK model).
     # Typical values are for the reference subject (70 kg, age 52, ALB 45 g/L,
-    # CREAT 70.73 umol/L, hsCRP 5.21 mg/L).
+    # CREAT 70.73 umol/L, CRP 5.21 mg/L [hs-CRP]).
     lcl     <- log(0.248); label("Clearance (CL, L/day)")                         # Thakre 2022 Table 1
     lvc     <- log(4.71);  label("Central volume of distribution (Vc / V1, L)")   # Thakre 2022 Table 1
     lq      <- log(0.839); label("Intercompartmental clearance (Q, L/day)")       # Thakre 2022 Table 1
@@ -75,7 +75,7 @@ Thakre_2022_risankizumab <- function() {
     e_wt_cl    <-  0.869;  label("Power exponent of body weight on CL (unitless)")        # Thakre 2022 Table 1
     e_alb_cl   <- -0.703;  label("Power exponent of serum albumin on CL (unitless)")      # Thakre 2022 Table 1
     e_creat_cl <- -0.201;  label("Power exponent of serum creatinine on CL (unitless)")   # Thakre 2022 Table 1
-    e_hscrp_cl <-  0.0471; label("Power exponent of hsCRP on CL (unitless)")              # Thakre 2022 Table 1
+    e_crp_cl   <-  0.0471; label("Power exponent of CRP on CL (unitless)")                # Thakre 2022 Table 1
     e_age_cl   <- -0.138;  label("Power exponent of age on CL (unitless)")                # Thakre 2022 Table 1
     e_wt_vc    <-  1.46;   label("Power exponent of body weight on Vc (unitless)")        # Thakre 2022 Table 1
 
@@ -92,14 +92,14 @@ Thakre_2022_risankizumab <- function() {
   })
   model({
     # Individual PK parameters. Reference subject: 70 kg, age 52 years,
-    # ALB 45 g/L, CREAT 70.73 umol/L, hsCRP 5.21 mg/L. Covariate forms per
+    # ALB 45 g/L, CREAT 70.73 umol/L, CRP 5.21 mg/L [hs-CRP]. Covariate forms per
     # Thakre 2022 Eq. 2 (CL) and Eq. 3 (V1) are power models normalized to
     # each covariate's reference value.
     cl <- exp(lcl + etalcl) *
       (WT    / 70)^e_wt_cl *
       (ALB   / 45)^e_alb_cl *
       (CREAT / 70.73)^e_creat_cl *
-      (hsCRP / 5.21)^e_hscrp_cl *
+      (CRP   / 5.21)^e_crp_cl *
       (AGE   / 52)^e_age_cl
 
     vc <- exp(lvc + etalvc) * (WT / 70)^e_wt_vc

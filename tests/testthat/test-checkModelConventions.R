@@ -296,13 +296,29 @@ test_that("canonical covariates are parsed from inst/references/covariate-column
   canon <- nlmixr2lib:::.loadCanonicalCovariates()
   expect_true(length(canon) > 20)
   expect_true(all(c("WT", "SEXF", "ADA_POS", "RACE_BLACK",
-                    "RACE_BLACK_OTH", "CREAT", "ALB", "hsCRP") %in%
+                    "RACE_BLACK_OTH", "CREAT", "ALB", "CRP", "CRCL") %in%
                     names(canon)))
   expect_true("SEXM" %in% canon$SEXF$aliases)
   expect_true("ADA" %in% canon$ADA_POS$aliases)
   expect_true("BLACK_OTH" %in% canon$RACE_BLACK_OTH$aliases)
   # ALB has no source aliases in the register ("none; ALB is the universal...")
   expect_equal(length(canon$ALB$aliases), 0)
+  # hsCRP and BLCRP were merged into CRP on 2026-04-20; eGFR and CRCL_BSA into CRCL.
+  expect_false("hsCRP" %in% names(canon))
+  expect_false("BLCRP" %in% names(canon))
+  expect_false("eGFR" %in% names(canon))
+  expect_false("CRCL_BSA" %in% names(canon))
+  expect_true(all(c("hsCRP", "CRPHS", "BLCRP") %in% canon$CRP$aliases))
+  expect_true(all(c("eGFR", "CRCL_BSA") %in% canon$CRCL$aliases))
+  # Scope field is populated for every registered entry.
+  expect_equal(canon$WT$scope, "general")
+  expect_equal(canon$CRP$scope, "general")
+  expect_equal(canon$CRCL$scope, "general")
+  expect_equal(canon$FORM_DP2$scope, "specific")
+  expect_equal(canon$TUMTP_CHL$scope, "specific")
+  expect_equal(canon$ooc1$scope, "specific")
+  expect_true("Xu_2019_sarilumab" %in% canon$FORM_DP2$example_models)
+  expect_true("Cirincione_2017_exenatide" %in% canon$STUDY1$example_models)
 })
 
 test_that("covariate alias map resolves document-order last-writes-win", {
@@ -310,6 +326,78 @@ test_that("covariate alias map resolves document-order last-writes-win", {
   expect_equal(map[["BLACK_OTH"]], "RACE_BLACK_OTH")
   expect_equal(map[["SEXM"]], "SEXF")
   expect_equal(map[["ADA"]], "ADA_POS")
+})
+
+test_that("a scope-general canonical covariate produces no scope warning in any model", {
+  good <- function() {
+    description <- "A"
+    reference <- "R"
+    units <- list(time = "day", dosing = "mg", concentration = "mg/L")
+    covariateData <- list(
+      CRP = list(description = "C-reactive protein", units = "mg/L",
+                 type = "continuous")
+    )
+    ini({
+      lcl <- 1; label("a")
+      lvc <- 1; label("b")
+      e_crp_cl <- 0.05; label("c")
+      propSd <- 0.1; label("d")
+    })
+    model({
+      cl <- exp(lcl) * (CRP / 5)^e_crp_cl
+      vc <- exp(lvc)
+      kel <- cl / vc
+      d/dt(central) <- -kel * central
+      Cc <- central / vc
+      Cc ~ prop(propSd)
+    })
+  }
+  res <- suppressWarnings(checkModelConventions(good, verbose = FALSE))
+  scoped <- res[res$category == "covariates" &
+                  grepl("scoped 'specific'", res$message), ]
+  expect_equal(nrow(scoped), 0)
+})
+
+test_that("a scope-specific canonical covariate in an unapproved model raises a warning", {
+  bad <- function() {
+    description <- "A"
+    reference <- "R"
+    units <- list(time = "day", dosing = "mg", concentration = "mg/L")
+    covariateData <- list(
+      FORM_DP2 = list(description = "Drug-product 2 indicator",
+                      units = "(binary)", type = "binary")
+    )
+    ini({
+      lcl <- 1; label("a")
+      lvc <- 1; label("b")
+      e_dp2_cl <- 1.3; label("c")
+      propSd <- 0.1; label("d")
+    })
+    model({
+      cl <- exp(lcl) * e_dp2_cl^FORM_DP2
+      vc <- exp(lvc)
+      kel <- cl / vc
+      d/dt(central) <- -kel * central
+      Cc <- central / vc
+      Cc ~ prop(propSd)
+    })
+  }
+  res <- suppressWarnings(checkModelConventions(bad, verbose = FALSE))
+  scoped <- res[res$category == "covariates" & res$name == "FORM_DP2" &
+                  grepl("scoped 'specific'", res$message), ]
+  expect_equal(nrow(scoped), 1)
+  expect_equal(scoped$severity, "warning")
+  expect_match(scoped$message, "Xu_2019_sarilumab")
+})
+
+test_that("a scope-specific canonical covariate in its listed model produces no scope warning", {
+  # Xu_2019_sarilumab is in FORM_DP2's example_models list and uses FORM_DP2.
+  res <- suppressWarnings(
+    checkModelConventions("Xu_2019_sarilumab", verbose = FALSE)
+  )
+  scoped <- res[res$category == "covariates" & res$name == "FORM_DP2" &
+                  grepl("scoped 'specific'", res$message), ]
+  expect_equal(nrow(scoped), 0)
 })
 
 test_that("an rxUi object is accepted directly", {

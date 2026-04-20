@@ -12,12 +12,12 @@ Cirincione_2017_exenatide <- function() {
       notes              = "Allometric-like effect on central volume; reference weight 84.8 kg (population median).",
       source_name        = "WT"
     ),
-    eGFR = list(
-      description        = "Modification of Diet in Renal Disease (MDRD) estimated glomerular filtration rate",
+    CRCL = list(
+      description        = "Modification of Diet in Renal Disease (MDRD) estimated glomerular filtration rate (creatinine-based, BSA-normalized)",
       units              = "mL/min/1.73 m^2",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on linear clearance; reference eGFR 80 mL/min/1.73 m^2.",
+      notes              = "Power effect on linear clearance; reference CRCL 80 mL/min/1.73 m^2. Source column 'eGFR' (MDRD eGFR) maps to the canonical general-scope CRCL covariate (which also accepts measured CrCl BSA-normalized in the same units); the MDRD estimation method is documented here in the description.",
       source_name        = "eGFR"
     ),
     STUDY1 = list(
@@ -58,9 +58,9 @@ Cirincione_2017_exenatide <- function() {
   )
 
   ini({
-    # Structural parameters — Cirincione 2017 Table 2 (reference eGFR = 80 mL/min/1.73 m^2, reference WT = 84.8 kg)
-    lcl      <- log(4.58);   label("Linear clearance at reference eGFR (L/hr)")                     # Table 2: Cl_int = 4.58 L/hr
-    e_cl_gfr <- 0.838;       label("Power effect of eGFR on linear clearance (unitless)")           # Table 2: Cl_eGFR = 0.838
+    # Structural parameters — Cirincione 2017 Table 2 (reference CRCL = 80 mL/min/1.73 m^2, reference WT = 84.8 kg)
+    lcl       <- log(4.58);  label("Linear clearance at reference CRCL (L/hr)")                      # Table 2: Cl_int = 4.58 L/hr
+    e_cl_crcl <- 0.838;      label("Power effect of CRCL (MDRD eGFR) on linear clearance (unitless)") # Table 2: Cl_eGFR = 0.838
     lq       <- log(3.72);   label("Intercompartmental clearance (L/hr)")                           # Table 2: Cld = 3.72 L/hr
     lvc      <- log(7.03);   label("Central volume at reference body weight (L)")                   # Table 2: Vc_int = 7.03 L
     e_vc_wt  <- 2.67;        label("Power effect of body weight on central volume (unitless)")       # Table 2: Vc_wtkg = 2.67
@@ -86,7 +86,7 @@ Cirincione_2017_exenatide <- function() {
 
   model({
     # Individual PK parameters
-    cl    <- exp(lcl + etalcl) * (eGFR / 80)^e_cl_gfr
+    cl    <- exp(lcl + etalcl) * (CRCL / 80)^e_cl_crcl
     q     <- exp(lq)
     vc    <- exp(lvc + etalvc) * (WT / 84.8)^e_vc_wt
     vp    <- exp(lvp)

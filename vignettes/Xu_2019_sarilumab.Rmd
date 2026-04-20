@@ -64,8 +64,8 @@ mL/min/1.73 m^2, and baseline CRP of 14.2 mg/L.
 | `e_wt_cl` (WT/71 exponent on CLO/F) | `0.885`          | Table 3, theta10 / WT effect on CLO/F |
 | `e_wt_vm` (WT/71 exponent on Vm)    | `0.516`          | Table 3, theta9 / WT effect on Vm |
 | `e_albr_vm` (ALBR/0.78 exponent on Vm) | `-0.844`       | Table 3, theta11 / ALBR effect on Vm |
-| `e_crcl_vm` (CRCL_BSA/100 exponent on Vm) | `0.212`     | Table 3, theta13 / CrCl effect on Vm |
-| `e_blcrp_vm` (BLCRP/14.2 exponent on Vm) | `0.0299`      | Table 3, theta12 / BLCRP effect on Vm |
+| `e_crcl_vm` (CRCL/100 exponent on Vm) | `0.212`     | Table 3, theta13 / CrCl effect on Vm |
+| `e_crp_vm` (CRP/14.2 exponent on Vm) | `0.0299`      | Table 3, theta12 / CRP effect on Vm |
 | `e_dp2_ka` (DP2 multiplier on Ka)   | `0.663`          | Table 3, theta15 / DP2 effect on Ka |
 | `e_ada_cl` (ADA multiplier on CLO/F) | `1.43`          | Table 3, theta14 / ADA effect on CLO/F |
 | `e_dp2_cl` (DP2 multiplier on CLO/F) | `1.30`          | Table 3, theta16 / DP2 effect on CLO/F |
@@ -102,9 +102,9 @@ mL/min/1.73 m^2, and baseline CRP of 14.2 mg/L.
   was operator-confirmed during model extraction (see the `SEXF` entry in
   `covariateData`). The canonical `SEXF` column in nlmixr2lib uses 1 = female,
   so the effect is applied as `e_sexf_cl^SEXF`.
-- **CRCL_BSA canonical column.** Xu 2019 defines the Vm covariate term as
+- **CRCL canonical column.** Xu 2019 defines the Vm covariate term as
   `(1.73 * CrCl / BSA / 100)^theta13` where `CrCl` is in mL/min and `BSA` in
-  m^2. The canonical `CRCL_BSA` column carries the precomputed
+  m^2. The canonical `CRCL` column carries the precomputed
   `1.73 * CrCl / BSA` value (units mL/min/1.73 m^2) with reference value 100.
 
 # Virtual cohort
@@ -124,8 +124,8 @@ cohort <- tibble::tibble(
   ADA_POS  = rbinom(n_subj, 1, 0.18),
   FORM_DP2 = 0L,                          # commercial DP3 formulation for labelled regimen
   ALBR     = pmin(pmax(rnorm(n_subj, mean = 0.78, sd = 0.08), 0.50, 1.05)),
-  CRCL_BSA = pmin(pmax(rnorm(n_subj, mean = 100,  sd = 25),   40,  200)),
-  BLCRP    = pmax(rlnorm(n_subj, log(14.2) - 0.5 * 0.9^2, 0.9), 0.5)
+  CRCL = pmin(pmax(rnorm(n_subj, mean = 100,  sd = 25),   40,  200)),
+  CRP    = pmax(rlnorm(n_subj, log(14.2) - 0.5 * 0.9^2, 0.9), 0.5)
 )
 ```
 
@@ -158,7 +158,7 @@ build_events <- function(cohort, dose_amt, treatment) {
   dplyr::bind_rows(ev_dose, ev_obs) |>
     dplyr::arrange(id, time, dplyr::desc(evid)) |>
     dplyr::select(id, time, amt, cmt, evid, treatment,
-                  WT, SEXF, ADA_POS, FORM_DP2, ALBR, CRCL_BSA, BLCRP)
+                  WT, SEXF, ADA_POS, FORM_DP2, ALBR, CRCL, CRP)
 }
 
 events_200 <- build_events(cohort, 200, "200mg_Q2W")
@@ -171,7 +171,7 @@ events <- dplyr::bind_rows(events_200, events_150)
 ```{r simulate}
 mod <- rxode2::rxode2(readModelDb("Xu_2019_sarilumab"))
 keep_cols <- c("WT", "SEXF", "ADA_POS", "FORM_DP2",
-               "ALBR", "CRCL_BSA", "BLCRP", "treatment")
+               "ALBR", "CRCL", "CRP", "treatment")
 
 sim <- lapply(split(events, events$treatment), function(ev) {
   out <- rxode2::rxSolve(mod, events = ev, keep = keep_cols)
@@ -281,15 +281,15 @@ summary(nca_res)
 
 To compare against the published Table 4 mean exposures the block below
 simulates the typical patient (IIV zeroed, reference covariate values: 71 kg
-female, ADA-negative, DP3 formulation, ALBR = 0.78, CRCL_BSA = 100,
-BLCRP = 14.2) and extracts Cmax, Ctrough, and AUC0-14d at steady state.
+female, ADA-negative, DP3 formulation, ALBR = 0.78, CRCL = 100,
+CRP = 14.2) and extracts Cmax, Ctrough, and AUC0-14d at steady state.
 
 ```{r typical}
 mod_typical <- mod |> rxode2::zeroRe()
 
 typical_cov <- tibble::tibble(
   id = 1L, WT = 71, SEXF = 1L, ADA_POS = 0L, FORM_DP2 = 0L,
-  ALBR = 0.78, CRCL_BSA = 100, BLCRP = 14.2
+  ALBR = 0.78, CRCL = 100, CRP = 14.2
 )
 
 ev_typ <- function(dose) {
@@ -306,7 +306,7 @@ ev_typ <- function(dose) {
   dplyr::bind_rows(ev_dose, ev_obs) |>
     dplyr::arrange(id, time, dplyr::desc(evid)) |>
     dplyr::select(id, time, amt, cmt, evid,
-                  WT, SEXF, ADA_POS, FORM_DP2, ALBR, CRCL_BSA, BLCRP)
+                  WT, SEXF, ADA_POS, FORM_DP2, ALBR, CRCL, CRP)
 }
 
 sim_typ_200 <- as.data.frame(rxode2::rxSolve(mod_typical, events = ev_typ(200)))
@@ -367,8 +367,8 @@ knitr::kable(comparison, digits = 2,
   text (Tables 2-4 and the covariate-model equations on p. 1458-1459). If
   the supplement exposes different digits of precision, an update may be
   warranted.
-- **CRCL_BSA pre-computation.** Xu 2019 writes the renal covariate term as
-  `(1.73 * CrCl / BSA / 100)^theta13`. The canonical `CRCL_BSA` column in
+- **CRCL pre-computation.** Xu 2019 writes the renal covariate term as
+  `(1.73 * CrCl / BSA / 100)^theta13`. The canonical `CRCL` column in
   nlmixr2lib carries the pre-computed `1.73 * CrCl / BSA` value in
   mL/min/1.73 m^2, with reference 100.
 - **ALBR reference.** The typical-patient reference `ALBR = 0.78`
@@ -378,7 +378,7 @@ knitr::kable(comparison, digits = 2,
   reference ULN should supply `ALBR = observed albumin / ULN` directly.
 - **Virtual-cohort covariate distributions.** Body weight is drawn from
   `N(71, 17)` kg truncated to [40, 165]; albumin ratio from
-  `N(0.78, 0.08)` truncated to [0.50, 1.05]; CRCL_BSA from `N(100, 25)`
+  `N(0.78, 0.08)` truncated to [0.50, 1.05]; CRCL from `N(100, 25)`
   truncated to [40, 200]; baseline CRP from a log-normal with median
   14.2 mg/L and geometric SD `exp(0.9) ~ 2.5x`. These ranges approximate
   Xu 2019 Table 2 but are not drawn from observed subject-level data, which
