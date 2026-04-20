@@ -198,6 +198,27 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
   - `ADA` (semantically "ever positive") — used in `Zhu_2017_lebrikizumab.R`. When translating from a paper that uses `ADA` as "ever positive," verify the time-frame matches ADA_POS semantics before renaming.
 - **Example models:** `Clegg_2024_nirsevimab.R`, `Hu_2026_clesrovimab.R`.
 
+## Lifestyle / medical history
+
+### SMOKE
+- **Description:** 1 = current smoker at baseline, 0 = non-smoker.
+- **Units:** (binary)
+- **Type:** binary
+- **Reference category:** 0 (non-smoker).
+- **Source aliases:**
+  - `Smoking` (case-insensitive) — used in `Ma_2020_sarilumab_anc.R`.
+- **Example models:** `Ma_2020_sarilumab_anc.R` (power-form on baseline ANC: `BASE * 1.15^SMOKE`).
+- **Notes:** Baseline-only indicator; does not track within-study smoking-cessation changes.
+
+### PRICORT
+- **Description:** 1 = prior systemic corticosteroid treatment at baseline, 0 = none.
+- **Units:** (binary)
+- **Type:** binary
+- **Reference category:** 0 (no prior corticosteroid).
+- **Source aliases:** none known.
+- **Example models:** `Ma_2020_sarilumab_anc.R` (power-form on Emax: `Emax * 0.819^PRICORT`).
+- **Notes:** Captures documented history of systemic corticosteroid exposure; baseline-only.
+
 ## Formulation / assay / study
 
 ### FED
@@ -284,6 +305,11 @@ Covariate column names should be ALL CAPS unless the source paper uses a specifi
   `CRE`/`SCR`; `hsCRP` preserves lowercase `hs` prefix per the `eGFR`
   precedent. See `tracking/decision_log.md` in the mab_human_consensus
   project for the deliberation.
+- **2026-04-20** — Added `SMOKE` and `PRICORT` canonical entries from the
+  Ma 2020 sarilumab ANC PopPK/PD extraction. Both are binary baseline-only
+  indicators used as power-form covariates (`BASE * 1.15^SMOKE` on baseline
+  ANC; `Emax * 0.819^PRICORT` on drug-induced stimulation of ANC
+  elimination).
 - Subsequent additions: append new canonical entries as new papers are processed. When adding, bump the audit-completed count in the summary below.
 
 ## Summary

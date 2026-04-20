@@ -2,6 +2,24 @@
 
 # development version
 
+* Add Ma 2020 sarilumab PopPK/PD model for absolute neutrophil count (ANC) in
+  patients with rheumatoid arthritis (`Ma_2020_sarilumab_anc`). Indirect-
+  response PD model where sarilumab concentrations stimulate the
+  first-order ANC elimination rate (margination of functional neutrophils
+  out of circulation), coupled to the Xu 2019 two-compartment PK backbone
+  with parallel linear + Michaelis–Menten elimination. Covariates:
+  body-weight allometry on Kout (reference 71 kg), smoking power-form
+  multiplier on baseline ANC (`BASE * 1.15^SMOKE`), and prior
+  corticosteroid power-form multiplier on Emax (`Emax * 0.819^PRICORT`).
+  **Kout decimal-point typo corrected:** Ma 2020 Table 4 prints the
+  bootstrap median for Kout as "211 (1.67–2.88)", which is physiologically
+  implausible (a neutrophil turnover rate of 211/day corresponds to a
+  ~5 min half-life) and inconsistent with the accompanying 95% CI that
+  brackets 2.11 but not 211. This model implements `Kout = 2.11`; the
+  rationale is documented inline above the `lkout` entry and at length in
+  the vignette's "Assumptions and deviations" section. New canonical
+  covariate columns registered: `SMOKE` (current smoker at baseline) and
+  `PRICORT` (prior corticosteroid treatment at baseline).
 * `checkModelConventions()` — new function that reports deviations from the package's parameter-naming, covariate, compartment, and metadata conventions for a single model or the entire `modeldb`. Called automatically during `buildModelDb()` so convention drift surfaces at package-build time (existing grandfathered deviations continue to build). Canonical standards (PK parameter prefixes, `eta`-prefixed IIV, `propSd`/`addSd` residual error, canonical covariate column register with aliases, canonical compartment vocabulary) are codified in an internal `.nlmixr2libConventions` list that mirrors the `extract-literature-model` skill references. Addresses issue #39.
 * Added canonical TMDD archetype models under `inst/modeldb/pharmacokinetics/`: `PK_1cmt_tmdd_full` (Mager & Jusko 2001), `PK_1cmt_tmdd_qss`, `PK_1cmt_tmdd_mm`, `PK_2cmt_tmdd_qss`, and `PK_2cmt_tmdd_mm` (Gibiansky et al. 2008 QSS and MM approximations). Built to the `extract-literature-model` skill conventions with `reference` / `units` / `population` metadata, per-parameter source-trace comments, and CL/V parameterization with `kel` derived inside `model()` so later transforms can re-parameterize. Replaces the 38 draft models from PR #60 (#60).
 * Registered `target`, `complex`, and `total_target` as canonical TMDD compartment names in the `extract-literature-model` skill naming conventions (per @iamstein's proposal on PR #60).
