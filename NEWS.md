@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Lu 2014 trastuzumab emtansine ([doi:10.1007/s00280-014-2500-2](https://doi.org/10.1007/s00280-014-2500-2)) — adults with HER2-positive locally advanced or metastatic breast cancer.
 * Add Mould 2007 alemtuzumab ([doi:10.1111/j.1365-2125.2007.02914.x](https://doi.org/10.1111/j.1365-2125.2007.02914.x)) — adults with B-cell chronic lymphocytic leukaemia.
 * Add Farrell 2012 farletuzumab ([doi:10.1007/s00280-012-1959-y](https://doi.org/10.1007/s00280-012-1959-y)) — women with advanced epithelial ovarian cancer.
 * Add Xu 2011 sirukumab ([doi:10.1111/j.1365-2125.2011.03964.x](https://doi.org/10.1111/j.1365-2125.2011.03964.x)) — healthy adult volunteers in a first-in-human study.
