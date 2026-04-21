@@ -152,6 +152,7 @@ this way.
 - [Clegg_2024_nirsevimab](https://nlmixr2.github.io/nlmixr2lib/articles/Clegg_2024_nirsevimab.md):
 - [Creating a model
   library](https://nlmixr2.github.io/nlmixr2lib/articles/create-model-library.md):
+- [Farrell_2012_farletuzumab](https://nlmixr2.github.io/nlmixr2lib/articles/Farrell_2012_farletuzumab.md):
 - [Fasanmade_2009_infliximab](https://nlmixr2.github.io/nlmixr2lib/articles/Fasanmade_2009_infliximab.md):
 - [Fiedler-Kelly_2019_fremanezumab](https://nlmixr2.github.io/nlmixr2lib/articles/Fiedler-Kelly_2019_fremanezumab.md):
 - [Trontinemab and gantenerumab PK in plasma and brain (Grimm
@@ -169,6 +170,7 @@ this way.
   modeling](https://nlmixr2.github.io/nlmixr2lib/articles/markov.md):
 - [Masters_2022_avelumab](https://nlmixr2.github.io/nlmixr2lib/articles/Masters_2022_avelumab.md):
 - [Moein_2022_etrolizumab](https://nlmixr2.github.io/nlmixr2lib/articles/Moein_2022_etrolizumab.md):
+- [Mould_2007_alemtuzumab](https://nlmixr2.github.io/nlmixr2lib/articles/Mould_2007_alemtuzumab.md):
 - [Ogasawara_2020_durvalumab](https://nlmixr2.github.io/nlmixr2lib/articles/Ogasawara_2020_durvalumab.md):
 - [PK_2cmt_mAb_Davda_2014](https://nlmixr2.github.io/nlmixr2lib/articles/PK_2cmt_mAb_Davda_2014.md):
 - [Soehoel_2022_tralokinumab](https://nlmixr2.github.io/nlmixr2lib/articles/Soehoel_2022_tralokinumab.md):

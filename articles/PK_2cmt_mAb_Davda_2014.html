@@ -39,6 +39,7 @@
     <li><a class="dropdown-item" href="../articles/Cirincione_2017_exenatide.html">Cirincione_2017_exenatide</a></li>
     <li><a class="dropdown-item" href="../articles/Clegg_2024_nirsevimab.html">Clegg_2024_nirsevimab</a></li>
     <li><a class="dropdown-item" href="../articles/create-model-library.html">Creating a model library</a></li>
+    <li><a class="dropdown-item" href="../articles/Farrell_2012_farletuzumab.html">Farrell_2012_farletuzumab</a></li>
     <li><a class="dropdown-item" href="../articles/Fasanmade_2009_infliximab.html">Fasanmade_2009_infliximab</a></li>
     <li><a class="dropdown-item" href="../articles/Fiedler-Kelly_2019_fremanezumab.html">Fiedler-Kelly_2019_fremanezumab</a></li>
     <li><a class="dropdown-item" href="../articles/Grimm_2023.html">Trontinemab and gantenerumab PK in plasma and brain (Grimm 2023)</a></li>
@@ -53,6 +54,7 @@
     <li><a class="dropdown-item" href="../articles/markov.html">Markov modeling</a></li>
     <li><a class="dropdown-item" href="../articles/Masters_2022_avelumab.html">Masters_2022_avelumab</a></li>
     <li><a class="dropdown-item" href="../articles/Moein_2022_etrolizumab.html">Moein_2022_etrolizumab</a></li>
+    <li><a class="dropdown-item" href="../articles/Mould_2007_alemtuzumab.html">Mould_2007_alemtuzumab</a></li>
     <li><a class="dropdown-item" href="../articles/Ogasawara_2020_durvalumab.html">Ogasawara_2020_durvalumab</a></li>
     <li><a class="dropdown-item" href="../articles/PK_2cmt_mAb_Davda_2014.html">PK_2cmt_mAb_Davda_2014</a></li>
     <li><a class="dropdown-item" href="../articles/Soehoel_2022_tralokinumab.html">Soehoel_2022_tralokinumab</a></li>
@@ -461,18 +463,16 @@ grouping variable).</p>
 <span><span class="va">nca_res</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span></span>
 <span>  <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_obj</span>, <span class="va">dose_obj</span>, intervals <span class="op">=</span> <span class="va">intervals</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■                             </span>   8% |  ETA: 41s</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■                           </span>  14% |  ETA: 37s</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■                         </span>  22% |  ETA: 34s</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■                      </span>  28% |  ETA: 31s</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■                    </span>  36% |  ETA: 28s</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■                  </span>  42% |  ETA: 25s</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■                </span>  50% |  ETA: 22s</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■             </span>  59% |  ETA: 17s</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■           </span>  68% |  ETA: 13s</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■        </span>  78% |  ETA:  8s</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■     </span>  88% |  ETA:  4s</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  </span>  98% |  ETA:  1s</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■                            </span>  10% |  ETA: 34s</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■                          </span>  18% |  ETA: 30s</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■                       </span>  26% |  ETA: 27s</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■                     </span>  34% |  ETA: 24s</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■                  </span>  42% |  ETA: 21s</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■                </span>  50% |  ETA: 18s</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■             </span>  61% |  ETA: 14s</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■         </span>  72% |  ETA:  9s</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■      </span>  84% |  ETA:  5s</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  </span>  96% |  ETA:  1s</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">nca_res</span><span class="op">)</span></span>
 <span><span class="co">#&gt;  start end treatment   N        cmax                 tmax   half.life</span></span>

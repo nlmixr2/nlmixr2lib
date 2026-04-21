@@ -8,6 +8,7 @@ articles:
   articles/Cirincione_2017_exenatide: Cirincione_2017_exenatide.html
   articles/Clegg_2024_nirsevimab: Clegg_2024_nirsevimab.html
   create-model-library: create-model-library.html
+  articles/Farrell_2012_farletuzumab: Farrell_2012_farletuzumab.html
   articles/Fasanmade_2009_infliximab: Fasanmade_2009_infliximab.html
   articles/Fiedler-Kelly_2019_fremanezumab: Fiedler-Kelly_2019_fremanezumab.html
   articles/Grimm_2023: Grimm_2023.html
@@ -22,6 +23,7 @@ articles:
   markov: markov.html
   articles/Masters_2022_avelumab: Masters_2022_avelumab.html
   articles/Moein_2022_etrolizumab: Moein_2022_etrolizumab.html
+  articles/Mould_2007_alemtuzumab: Mould_2007_alemtuzumab.html
   articles/Ogasawara_2020_durvalumab: Ogasawara_2020_durvalumab.html
   PK_2cmt_mAb_Davda_2014: PK_2cmt_mAb_Davda_2014.html
   articles/Soehoel_2022_tralokinumab: Soehoel_2022_tralokinumab.html
@@ -34,7 +36,7 @@ articles:
   articles/Xu_2019_sarilumab: Xu_2019_sarilumab.html
   articles/Yamada_2025_zolbetuximab: Yamada_2025_zolbetuximab.html
   articles/Zhu_2017_lebrikizumab: Zhu_2017_lebrikizumab.html
-last_built: 2026-04-21T09:46Z
+last_built: 2026-04-21T10:25Z
 urls:
   reference: https://nlmixr2.github.io/nlmixr2lib/reference
   article: https://nlmixr2.github.io/nlmixr2lib/articles
