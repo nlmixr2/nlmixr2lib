@@ -2,38 +2,38 @@ pandoc: 3.1.11
 pkgdown: 2.2.0
 pkgdown_sha: ~
 articles:
-  Budha_2023_tislelizumab: Budha_2023_tislelizumab.html
-  CarlssonPetri_2021_liraglutide: CarlssonPetri_2021_liraglutide.html
-  Chua_2025_mirikizumab: Chua_2025_mirikizumab.html
-  Cirincione_2017_exenatide: Cirincione_2017_exenatide.html
-  Clegg_2024_nirsevimab: Clegg_2024_nirsevimab.html
+  articles/Budha_2023_tislelizumab: Budha_2023_tislelizumab.html
+  articles/CarlssonPetri_2021_liraglutide: CarlssonPetri_2021_liraglutide.html
+  articles/Chua_2025_mirikizumab: Chua_2025_mirikizumab.html
+  articles/Cirincione_2017_exenatide: Cirincione_2017_exenatide.html
+  articles/Clegg_2024_nirsevimab: Clegg_2024_nirsevimab.html
   create-model-library: create-model-library.html
-  Fasanmade_2009_infliximab: Fasanmade_2009_infliximab.html
-  Fiedler-Kelly_2019_fremanezumab: Fiedler-Kelly_2019_fremanezumab.html
-  Grimm_2023: Grimm_2023.html
-  Hu_2026_clesrovimab: Hu_2026_clesrovimab.html
-  Jackson_2022_ixekizumab: Jackson_2022_ixekizumab.html
-  Kotani_2022_astegolimab: Kotani_2022_astegolimab.html
-  Kovalenko_2020_dupilumab: Kovalenko_2020_dupilumab.html
-  Kyhl_2016_nalmefene: Kyhl_2016_nalmefene.html
+  articles/Fasanmade_2009_infliximab: Fasanmade_2009_infliximab.html
+  articles/Fiedler-Kelly_2019_fremanezumab: Fiedler-Kelly_2019_fremanezumab.html
+  articles/Grimm_2023: Grimm_2023.html
+  articles/Hu_2026_clesrovimab: Hu_2026_clesrovimab.html
+  articles/Jackson_2022_ixekizumab: Jackson_2022_ixekizumab.html
+  articles/Kotani_2022_astegolimab: Kotani_2022_astegolimab.html
+  articles/Kovalenko_2020_dupilumab: Kovalenko_2020_dupilumab.html
+  articles/Kyhl_2016_nalmefene: Kyhl_2016_nalmefene.html
   list-of-models: list-of-models.html
-  Ma_2020_sarilumab_anc: Ma_2020_sarilumab_anc.html
-  Ma_2020_sarilumab_das28crp: Ma_2020_sarilumab_das28crp.html
+  articles/Ma_2020_sarilumab_anc: Ma_2020_sarilumab_anc.html
+  articles/Ma_2020_sarilumab_das28crp: Ma_2020_sarilumab_das28crp.html
   markov: markov.html
-  Masters_2022_avelumab: Masters_2022_avelumab.html
-  Moein_2022_etrolizumab: Moein_2022_etrolizumab.html
-  Ogasawara_2020_durvalumab: Ogasawara_2020_durvalumab.html
+  articles/Masters_2022_avelumab: Masters_2022_avelumab.html
+  articles/Moein_2022_etrolizumab: Moein_2022_etrolizumab.html
+  articles/Ogasawara_2020_durvalumab: Ogasawara_2020_durvalumab.html
   PK_2cmt_mAb_Davda_2014: PK_2cmt_mAb_Davda_2014.html
-  Soehoel_2022_tralokinumab: Soehoel_2022_tralokinumab.html
-  Thakre_2022_risankizumab: Thakre_2022_risankizumab.html
-  Tiraboschi_2025_amlitelimab: Tiraboschi_2025_amlitelimab.html
+  articles/Soehoel_2022_tralokinumab: Soehoel_2022_tralokinumab.html
+  articles/Thakre_2022_risankizumab: Thakre_2022_risankizumab.html
+  articles/Tiraboschi_2025_amlitelimab: Tiraboschi_2025_amlitelimab.html
   tmdd_archetypes: tmdd_archetypes.html
-  Wang_2017_benralizumab: Wang_2017_benralizumab.html
-  Xie_2019_agomelatine: Xie_2019_agomelatine.html
-  Xu_2019_sarilumab: Xu_2019_sarilumab.html
-  Yamada_2025_zolbetuximab: Yamada_2025_zolbetuximab.html
-  Zhu_2017_lebrikizumab: Zhu_2017_lebrikizumab.html
-last_built: 2026-04-20T21:08Z
+  articles/Wang_2017_benralizumab: Wang_2017_benralizumab.html
+  articles/Xie_2019_agomelatine: Xie_2019_agomelatine.html
+  articles/Xu_2019_sarilumab: Xu_2019_sarilumab.html
+  articles/Yamada_2025_zolbetuximab: Yamada_2025_zolbetuximab.html
+  articles/Zhu_2017_lebrikizumab: Zhu_2017_lebrikizumab.html
+last_built: 2026-04-20T23:45Z
 urls:
   reference: https://nlmixr2.github.io/nlmixr2lib/reference
   article: https://nlmixr2.github.io/nlmixr2lib/articles

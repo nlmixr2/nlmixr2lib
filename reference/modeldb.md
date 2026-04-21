@@ -11,7 +11,7 @@ modeldb
 
 ## Format
 
-A data frame with 82 rows and 9 columns
+A data frame with 82 rows and 10 columns
 
 - name:
 
@@ -49,6 +49,11 @@ A data frame with 82 rows and 9 columns
 - depends:
 
   A comma separated string of objects the model depends on
+
+- vignette:
+
+  Basename of the vignette associated with this model (without path or
+  extension); NA if none
 
 - filename:
 
