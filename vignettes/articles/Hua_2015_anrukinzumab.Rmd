@@ -177,7 +177,8 @@ d_sc <- bind_rows(dose_sc, obs_sc) %>%
 
 ```{r simulate-sc}
 mod <- readModelDb("Hua_2015_anrukinzumab")
-sim_sc <- rxSolve(mod, d_sc, returnType = "data.frame")
+sim_sc <- rxSolve(mod, d_sc, returnType = "data.frame") %>%
+  left_join(pop_sc %>% distinct(ID, disease), by = c("id" = "ID"))
 ```
 
 ## Replicates Figure 4 (SC single-dose shape)

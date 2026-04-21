@@ -50,7 +50,7 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Scope:** general
 - **Reference category:** n/a — used with allometric scaling `(WT / ref_wt)^exponent`. Reference weights observed: 70 kg (adults), 75 kg, 84.8 kg, 5 kg (infants).
 - **Source aliases:** none known.
-- **Example models:** `Clegg_2024_nirsevimab.R`, `Hu_2026_clesrovimab.R`, `Zhu_2017_lebrikizumab.R`, `Kovalenko_2020_dupilumab.R`, `CarlssonPetri_2021_liraglutide.R`, `Cirincione_2017_exenatide.R`, `Grimm_2023_gantenerumab.R`, `Grimm_2023_trontinemab.R`, `Kyhl_2016_nalmefene.R`, `Soehoel_2022_tralokinumab.R`, `Xie_2019_agomelatine.R`, `PK_2cmt_mAb_Davda_2014.R`, `phenylalanine_charbonneau_2021.R`, `Chua_2025_mirikizumab.R`, `Jackson_2022_ixekizumab.R`, `Kotani_2022_astegolimab.R`, `Ma_2020_sarilumab_anc.R`, `Ma_2020_sarilumab_das28crp.R`, `Moein_2022_etrolizumab.R`, `Tiraboschi_2025_amlitelimab.R`.
+- **Example models:** `Clegg_2024_nirsevimab.R`, `Hu_2026_clesrovimab.R`, `Zhu_2017_lebrikizumab.R`, `Kovalenko_2020_dupilumab.R`, `CarlssonPetri_2021_liraglutide.R`, `Cirincione_2017_exenatide.R`, `Grimm_2023_gantenerumab.R`, `Grimm_2023_trontinemab.R`, `Kyhl_2016_nalmefene.R`, `Soehoel_2022_tralokinumab.R`, `Xie_2019_agomelatine.R`, `PK_2cmt_mAb_Davda_2014.R`, `phenylalanine_charbonneau_2021.R`, `Chua_2025_mirikizumab.R`, `Jackson_2022_ixekizumab.R`, `Kotani_2022_astegolimab.R`, `Ma_2020_sarilumab_anc.R`, `Ma_2020_sarilumab_das28crp.R`, `Moein_2022_etrolizumab.R`, `Tiraboschi_2025_amlitelimab.R`, `Robbie_2012_palivizumab.R`.
 - **Notes:** Universal. Verify time-varying vs. baseline-only against the source paper.
 
 ### AGE
@@ -129,7 +129,7 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Units:** months
 - **Type:** continuous
 - **Scope:** general
-- **Example models:** `Clegg_2024_nirsevimab.R`.
+- **Example models:** `Clegg_2024_nirsevimab.R`, `Robbie_2012_palivizumab.R`.
 
 ### PNA
 - **Description:** Postnatal age (chronological since birth). Time-varying.
@@ -266,8 +266,8 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Scope:** general
 - **Reference category:** 0 (document the actual reference groups used).
 - **Source aliases:**
-  - `BLACK` — used in `Hu_2026_clesrovimab.R`.
-- **Example models:** `Zhu_2017_lebrikizumab.R` (canonical form).
+  - `BLACK` — used in `Hu_2026_clesrovimab.R`, `Robbie_2012_palivizumab.R`.
+- **Example models:** `Zhu_2017_lebrikizumab.R` (canonical form), `Robbie_2012_palivizumab.R`.
 
 ### RACE_BLACK_OTH (**canonical for composite Black/Other group**)
 - **Description:** 1 = Black/African American or Other race, 0 = other groups.
@@ -284,8 +284,8 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** general
-- **Source aliases:** `ASIAN` — used in `Hu_2026_clesrovimab.R`.
-- **Example models:** `Zhu_2017_lebrikizumab.R` (canonical form).
+- **Source aliases:** `ASIAN` — used in `Hu_2026_clesrovimab.R`, `Robbie_2012_palivizumab.R`.
+- **Example models:** `Zhu_2017_lebrikizumab.R` (canonical form), `Robbie_2012_palivizumab.R`.
 
 ### RACE_ASIAN_AMIND_MULTI (**canonical for composite group**)
 - **Description:** 1 = Asian, American Indian / Alaskan Native, or Multiple races, 0 = other.
@@ -321,7 +321,34 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** general
-- **Example models:** `Zhu_2017_lebrikizumab.R`.
+- **Source aliases:**
+  - `OTHER` — used in `Robbie_2012_palivizumab.R`.
+- **Example models:** `Zhu_2017_lebrikizumab.R`, `Robbie_2012_palivizumab.R`.
+
+### RACE_HISPANIC
+- **Description:** 1 = Hispanic / Latino, 0 = non-Hispanic. Used by papers that report Hispanic as a separate category alongside Black, Asian, and Other rather than as a distinct ethnicity dimension.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (non-Hispanic; document the paper-specific reference race composition per-model).
+- **Source aliases:**
+  - `HISPANIC` — used in `Robbie_2012_palivizumab.R`.
+- **Example models:** `Robbie_2012_palivizumab.R` (fractional effect on CL; additional effect on Vc).
+- **Notes:** In the US Office-of-Management-and-Budget (OMB) classification Hispanic is an ethnicity rather than a race, but clinical PK analyses frequently treat it as one of the race indicators. When a paper treats Hispanic as a race, use this column; otherwise encode ethnicity separately. Register-wise, this follows the `RACE_<GROUP>` indicator-decomposition pattern.
+
+## Pediatric comorbidities
+
+### CLD_PREM (**canonical for chronic lung disease of prematurity**)
+- **Description:** 1 = chronic lung disease of prematurity (bronchopulmonary dysplasia, BPD), 0 = no CLD. Time-fixed per subject (diagnosis at study entry).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no CLD of prematurity).
+- **Source aliases:**
+  - `CLD` — used in `Robbie_2012_palivizumab.R`.
+  - `BPD` — bronchopulmonary-dysplasia shorthand.
+- **Example models:** `Robbie_2012_palivizumab.R` (fractional +20% effect on CL).
+- **Notes:** Standard pediatric / neonatology comorbidity flag; ties to palivizumab's label population (high-risk preterm infants) and may re-appear in future pediatric mAb PK analyses (RSV, parenteral nutrition, etc.).
 
 ## Surgical history / disease state
 
@@ -463,7 +490,7 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   - `ADA_TITRE` — British spelling (reciprocal-dilution convention; `1` for negative).
   - `ADA titre` — British spelling long form.
   - `ADAT` — used in `Moein_2022_etrolizumab.R` (American linear-titer convention; `0` for negative).
-- **Example models:** `Jackson_2022_ixekizumab.R` (reciprocal-dilution reference convention with `ADA_TITER = 1` for negatives and `(1 + coef * log_e(ADA_TITER))` on CL), `Moein_2022_etrolizumab.R` (linear-titer convention with `ADA_TITER = 0` for negatives and `exp(theta * ADA_TITER)` on CL, per-unit-titer theta = 0.0365).
+- **Example models:** `Jackson_2022_ixekizumab.R` (reciprocal-dilution reference convention with `ADA_TITER = 1` for negatives and `(1 + coef * log_e(ADA_TITER))` on CL), `Moein_2022_etrolizumab.R` (linear-titer convention with `ADA_TITER = 0` for negatives and `exp(theta * ADA_TITER)` on CL, per-unit-titer theta = 0.0365), `Robbie_2012_palivizumab.R` (reciprocal-dilution values 0/10/20/40/≥80 with category-specific multiplicative effects per titer bin; 0 = ADA negative reference).
 - **Notes:** The prior separate `ADA_TITRE` (British, `1` = negative) and `ADA_TITER` (American, `0` = negative) canonicals were merged on 2026-04-20 into a single general-scope `ADA_TITER`. The zero-encoding convention is the load-bearing semantic and must be documented per-model. Distinct from `ADA_POS` (binary presence/absence); when the paper reports both, the final model usually keeps only one. Imputation rules (LOCF / NOCB / baseline-as-negative) should be documented per-model.
 
 ## Disease / treatment history
@@ -655,6 +682,7 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 
 ## Change log
 
+- **2026-04-21** — Added `RACE_HISPANIC` (general) and `CLD_PREM` (general) canonical entries while extracting `Robbie_2012_palivizumab.R`. Extended `ADA_TITER` example_models with the Robbie 2012 category-by-titer-bin usage, and added `Robbie_2012_palivizumab.R` to the `WT`, `PAGE`, `RACE_BLACK`, `RACE_ASIAN`, and `RACE_OTHER` example lists. `HISPANIC`, `CLD`, and `BPD` recorded as source aliases.
 - **Initial seed**: Every covariate observed in `inst/modeldb/` as of the audit. Canonical names established: `SEXF`, `ADA_POS`, `RACE_<GROUP>` prefix. Aliases documented but existing model files not modified.
 - **2026-04-19** — Added `CREAT`, `hsCRP`, `ALB` canonical entries after the
   Phase 6 pilot extracted Fasanmade 2009 infliximab and Thakre 2022
