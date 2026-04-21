@@ -336,6 +336,30 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Yamada_2025_zolbetuximab.R` (fractional effects on CLss, CLT, V1).
 - **Notes:** Renamed from `GAST` on 2026-04-20 to follow the `PRIOR_TNF` / `PRICORT` naming pattern for prior-treatment and surgical-history indicators. Applicable to any PK model where gastrointestinal anatomy affects absorption, first-pass, or protein turnover; not inherently oncology-specific. No distinction between partial vs total gastrectomy unless the source paper separates them.
 
+## Disease state (cross-population indicators)
+
+### DIS_UC (**canonical for ulcerative colitis disease-state indicator**)
+- **Description:** 1 = ulcerative colitis patient, 0 = non-UC (e.g., healthy volunteer or non-IBD indication). Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-UC subject; the complement group is defined per-model — typically healthy volunteers and/or patients with another indication such as asthma).
+- **Source aliases:**
+  - `UC` — used in `Hua_2015_anrukinzumab.R`.
+- **Example models:** `Hua_2015_anrukinzumab.R` (multiplicative fractional increase in CL, +72.8%, on top of weight and albumin effects).
+- **Notes:** Used when a population PK model pools UC patients with a non-UC reference population (e.g., Hua 2015: healthy volunteers + asthma patients + UC patients) and UC disease status is tested as a PK covariate. Distinct from `DISEXT_EP` / `DISEXT_OTHER`, which operate *within* a UC-only cohort (disease extension). Start as scope: specific; promote to general if a second paper pools UC with a non-UC reference.
+
+### DIS_SASTHMA (**canonical for moderate-to-severe asthma disease-state indicator**)
+- **Description:** 1 = moderate-to-severe asthma patient, 0 = not (e.g., healthy volunteer, mild-to-moderate asthma, or other indication). Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-moderate-to-severe-asthma subject; the complement group is defined per-model).
+- **Source aliases:**
+  - `sAsthma` — used in `Hua_2015_anrukinzumab.R`.
+- **Example models:** `Hua_2015_anrukinzumab.R` (multiplicative fractional change in SC bioavailability, -30.9%).
+- **Notes:** The moderate-to-severe vs. mild-to-moderate asthma cutoff is protocol-defined; Hua 2015 uses FEV1 55-80% and ACQ-5 >= 2 for "moderate to severe" (study 4) versus FEV1 > 70% and ACQ-5 <= 1 for "mild to moderate" (study 1). Scope: specific because the severity threshold is tied to a particular analysis plan; future asthma-severity indicators with different thresholds should register as separate canonicals.
+
 ## Oncology
 
 ### TUMSZ (**canonical for baseline tumor size**)
@@ -670,6 +694,13 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   out as a distinct category from the broader `RACE_ASIAN` indicator
   (both non-overlapping sub-indicators point to different per-population
   reference groups).
+- **2026-04-21** — Added `DIS_UC` (ulcerative colitis disease-state
+  indicator) and `DIS_SASTHMA` (moderate-to-severe asthma disease-state
+  indicator) canonical entries under a new `Disease state
+  (cross-population indicators)` section while extracting
+  `Hua_2015_anrukinzumab.R`. Both scope: specific, decomposed from a
+  four-level disease-state categorical (healthy volunteer, mild-to-moderate
+  asthma, moderate-to-severe asthma, UC).
 - Subsequent additions: append new canonical entries as new papers are processed. When adding, bump the audit-completed count in the summary below.
 
 ## Summary
