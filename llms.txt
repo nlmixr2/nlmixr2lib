@@ -178,6 +178,7 @@ this way.
   approximations](https://nlmixr2.github.io/nlmixr2lib/articles/tmdd_archetypes.md):
 - [Wang_2017_benralizumab](https://nlmixr2.github.io/nlmixr2lib/articles/Wang_2017_benralizumab.md):
 - [Xie_2019_agomelatine](https://nlmixr2.github.io/nlmixr2lib/articles/Xie_2019_agomelatine.md):
+- [Xu_2011_sirukumab](https://nlmixr2.github.io/nlmixr2lib/articles/Xu_2011_sirukumab.md):
 - [Xu_2019_sarilumab](https://nlmixr2.github.io/nlmixr2lib/articles/Xu_2019_sarilumab.md):
 - [Yamada_2025_zolbetuximab](https://nlmixr2.github.io/nlmixr2lib/articles/Yamada_2025_zolbetuximab.md):
 - [Zhu_2017_lebrikizumab](https://nlmixr2.github.io/nlmixr2lib/articles/Zhu_2017_lebrikizumab.md):
