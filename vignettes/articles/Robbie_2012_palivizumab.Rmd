@@ -234,10 +234,8 @@ ev_3 <- make_cohort(n_f3, ga_range = c(26, 41), pna0_range = c(0, 6),
 
 sim_f3 <- bind_rows(ev_5, ev_3)
 
-out_f3 <- rxode2::rxSolve(mod, events = sim_f3) |>
-  as.data.frame() |>
-  left_join(sim_f3 |> select(ID, regimen) |> distinct(),
-            by = c("id" = "ID"))
+out_f3 <- rxode2::rxSolve(mod, events = sim_f3, keep = "regimen") |>
+  as.data.frame()
 
 d_f3 <- out_f3 |>
   group_by(regimen, time) |>
