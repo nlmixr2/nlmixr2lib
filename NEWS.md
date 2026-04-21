@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Wade 2015 certolizumab ([doi:10.1002/jcph.491](https://doi.org/10.1002/jcph.491)) — adults with Crohn's disease.
+* Add Rosario 2015 vedolizumab ([doi:10.1111/apt.13243](https://doi.org/10.1111/apt.13243)) — adults with moderately-to-severely active ulcerative colitis or Crohn's disease.
 * Add Mould 2007 alemtuzumab ([doi:10.1111/j.1365-2125.2007.02914.x](https://doi.org/10.1111/j.1365-2125.2007.02914.x)) — adults with B-cell chronic lymphocytic leukaemia.
 * Add Farrell 2012 farletuzumab ([doi:10.1007/s00280-012-1959-y](https://doi.org/10.1007/s00280-012-1959-y)) — women with advanced epithelial ovarian cancer.
 * Add Xu 2011 sirukumab ([doi:10.1111/j.1365-2125.2011.03964.x](https://doi.org/10.1111/j.1365-2125.2011.03964.x)) — healthy adult volunteers in a first-in-human study.
