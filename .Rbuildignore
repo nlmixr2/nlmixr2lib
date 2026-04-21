@@ -7,3 +7,6 @@
 ^cran-comments\.md$
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^data-raw$
+^\.lintr$
+^vignettes/articles$

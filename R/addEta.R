@@ -28,6 +28,8 @@
 #' @param etaCombineType the option for the how to combine the eta
 #'   with the parameter name.  Can be: "default", "snake", "camel",
 #'   "dot", "blank"
+#' @param model Deprecated alias for \code{ui}. Supplying \code{model}
+#'   instead of \code{ui} still works but emits a deprecation warning.
 #' @return The model with eta added to the requested parameters
 #' @author Bill Denney, Richard Hooijmaijers & Matthew L. Fidler
 #' @export
@@ -35,15 +37,19 @@
 #' library(rxode2)
 #' readModelDb("PK_1cmt") |> addEta("ka")
 #' @export
-addEta <- function(ui, eta, priorName=getOption("nlmixr2lib.priorEta", TRUE),
-                   etaCombineType=c("default", "snake", "camel", "dot", "blank")) {
+addEta <- function(ui, eta, priorName = getOption("nlmixr2lib.priorEta", TRUE),
+                   etaCombineType = c("default", "snake", "camel", "dot", "blank"),
+                   model) {
+  .useModelAsUi()
   if (missing(etaCombineType)) {
     etaCombineType <- .getCombineTypeFromRoption("nlmixr2lib.etaCombineType")
   }
   if (etaCombineType != "default") {
     .combineEnv$old <- .combineEnv$default
     .combineEnv$default <- etaCombineType
-    on.exit({.combineEnv$default <- .combineEnv$old})
+    on.exit({
+      .combineEnv$default <- .combineEnv$old
+    })
   }
   checkmate::assertLogical(priorName, any.missing = FALSE)
   mod <- ui # save to apply everything later
@@ -89,7 +95,7 @@ addEta <- function(ui, eta, priorName=getOption("nlmixr2lib.priorEta", TRUE),
       )
   }
   etaIni <- lapply(X = paste0(etaMap[names(eta)],
-                              "~", eta), FUN = base::str2lang)
+    "~", eta), FUN = base::str2lang)
   iniArgs <-
     append(
       list(ui), etaIni

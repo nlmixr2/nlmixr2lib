@@ -19,7 +19,7 @@ test_that("addEta named parameter", {
 
   if (requireNamespace("withr", quietly = TRUE)) {
 
-    withr::with_options(list(nlmixr2lib.etaCombineType="snake"), {
+    withr::with_options(list(nlmixr2lib.etaCombineType = "snake"), {
       suppressMessages(modelUpdate <- addEta(model, eta = "lka"))
       expect_equal(
         functionBody(
@@ -34,7 +34,7 @@ test_that("addEta named parameter", {
         str2lang("ka <- exp(lka + eta_lka)"))
     })
 
-    withr::with_options(list(nlmixr2lib.etaCombineType="dot"), {
+    withr::with_options(list(nlmixr2lib.etaCombineType = "dot"), {
       suppressMessages(modelUpdate <- addEta(model, eta = "lka"))
       expect_equal(
         functionBody(
@@ -50,7 +50,7 @@ test_that("addEta named parameter", {
     })
 
 
-    withr::with_options(list(nlmixr2lib.etaCombineType="blank"), {
+    withr::with_options(list(nlmixr2lib.etaCombineType = "blank"), {
       suppressMessages(modelUpdate <- addEta(model, eta = "lka"))
       expect_equal(
         functionBody(
@@ -65,7 +65,7 @@ test_that("addEta named parameter", {
         str2lang("ka <- exp(lka + etalka)"))
     })
 
-    withr::with_options(list(nlmixr2lib.etaCombineType="camel"), {
+    withr::with_options(list(nlmixr2lib.etaCombineType = "camel"), {
       suppressMessages(modelUpdate <- addEta(model, eta = "lka"))
       expect_equal(
         functionBody(
@@ -80,7 +80,7 @@ test_that("addEta named parameter", {
         str2lang("ka <- exp(lka + etaLka)"))
     })
 
-    withr::with_options(list(nlmixr2lib.etaCombineType=4), {
+    withr::with_options(list(nlmixr2lib.etaCombineType = 4), {
       expect_equal(
         functionBody(
           modelUpdate
@@ -202,11 +202,11 @@ test_that("addEta() correctly adds IIV when there is a covariate (#27)", {
   }
   # Update the model detecting the correct parameter for cl
   suppressMessages(
-    newEtaRemap <- addEta(model, "cl", priorName=FALSE)
+    newEtaRemap <- addEta(model, "cl", priorName = FALSE)
   )
   # Update the model where the correct parameter cor cl is given
   suppressMessages(
-    newEta <- addEta(model, "lcl", priorName=FALSE)
+    newEta <- addEta(model, "lcl", priorName = FALSE)
   )
   expect_equal(newEtaRemap, newEta, ignore_function_env = TRUE)
 

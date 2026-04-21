@@ -135,3 +135,70 @@ test_that("addResErr bad error type", {
     regexp = "Must have names"
   ))
 })
+
+test_that("addResErr with zero endpoints", {
+  model <- function() {
+    ini({
+      a <- 1
+      b <- 1
+    })
+    model({
+      e <- exp(a)
+      f <- exp(b)
+    })
+  }
+  expect_error(
+    addResErr(model, reserr = "addSd"),
+    regexp = "there must be at least one prediction in the model({}) block",
+    fixed = TRUE
+  )
+})
+
+test_that("addResErr with multiple endpoints", {
+  model <- function() {
+    ini({
+      a <- 1
+      b <- 1
+      c <- 1
+      d <- 1
+    })
+    model({
+      e <- exp(a)
+      f <- exp(b)
+      e ~ add(c)
+      f ~ add(d)
+    })
+  }
+  expect_error(
+    addResErr(model, reserr = "addSd"),
+    regexp = "multiple endpoints detected, choose one: e, f",
+    fixed = TRUE
+  )
+  expect_error(
+    addResErr(model, reserr = "addSd", endpoint = "g"),
+    regexp = "requested to add/change residual error for 'g' but not defined as a modeled endpoint",
+    fixed = TRUE
+  )
+  expect_error(
+    addResErr(model, reserr = c("addSd" = factor("A")), endpoint = "f"),
+    regexp = "reserr must be a character string or a named numeric vector",
+    fixed = TRUE
+  )
+  addSdE <-
+    suppressMessages(
+      addResErr(model, reserr = "addSd", endpoint = "e")
+    )
+  expect_equal(
+    functionBody(as.function(addSdE))[[2]][[2]][[5]],
+    str2lang("eAddSd <- c(0, 1)")
+  )
+  expect_equal(
+    functionBody(as.function(addSdE))[[3]][[2]][[4]],
+    str2lang("e ~ add(eAddSd)")
+  )
+  # The other endpoint is untouched
+  expect_equal(
+    functionBody(as.function(addSdE))[[3]][[2]][[5]],
+    str2lang("f ~ add(d)")
+  )
+})

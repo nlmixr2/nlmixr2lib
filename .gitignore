@@ -10,3 +10,6 @@ inst/doc
 docs
 *-nonmem
 .Rproj.user
+.claude/settings.local.json
+.claude/worktrees/
+data-raw/modeldb-cache.rds

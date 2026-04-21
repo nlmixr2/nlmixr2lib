@@ -1,0 +1,17 @@
+linters: linters_with_defaults(
+    object_name_linter   = NULL,
+    object_length_linter = NULL,
+    object_usage_linter  = NULL,
+    line_length_linter   = line_length_linter(120L),
+    indentation_linter   = NULL,
+    pipe_consistency_linter = NULL
+  )
+exclusions: list(
+    "inst/modeldb",
+    "data-raw",
+    "data",
+    "docs",
+    "src",
+    "vignettes"
+  )
+encoding: "UTF-8"

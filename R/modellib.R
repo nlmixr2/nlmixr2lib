@@ -36,5 +36,5 @@ modellib <- function(name = NULL, eta = NULL, reserr = NULL) {
   # to file: writeLines(modr,paste0(model,".r"))
   # directly evaluated: eval(parse(text=modr))
   # to Rstudio's current script: rstudioapi::insertText(paste(modr,"\n"))
-  return(modr)
+  modr
 }

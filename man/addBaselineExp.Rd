@@ -24,7 +24,7 @@ model with baseline constant
 Add baseline that decays exponential with time
 }
 \examples{
- readModelDb("PK_2cmt_no_depot") |>
+readModelDb("PK_2cmt_no_depot") |>
   addDirectLin() |>
   convertQuad() |>
   addBaselineExp()

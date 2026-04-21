@@ -30,7 +30,20 @@ buildModelDb <- function() {
     }
   }
   message("Building the modeldb from ", packageDirectory)
-  modeldb <- addDirToModelDb(file.path(packageDirectory, "inst/modeldb"))
+  cachePath <- file.path(packageDirectory, "data-raw/modeldb-cache.rds")
+  cache <- .modeldbCacheRead(cachePath)
+  sig <- .modeldbGlobalSig(packageDirectory)
+  if (is.null(cache) || !identical(cache$globalSig, sig)) {
+    if (!is.null(cache)) {
+      message("modeldb cache invalidated (global signature changed)")
+    }
+    cache <- list(globalSig = sig, entries = list())
+  }
+  result <- .addDirToModelDbCached(
+    dir = file.path(packageDirectory, "inst/modeldb"),
+    entries = cache$entries
+  )
+  modeldb <- result$modeldb
   # Drop the base package directory name so that will be installation-agnostic
   modeldb$filename <-
     gsub(
@@ -41,20 +54,28 @@ buildModelDb <- function() {
   savefile <- file.path(packageDirectory, "data/modeldb.rda")
   message("Saving the modeldb to ", savefile)
   save(modeldb, file = savefile, compress = "bzip2", version = 2, ascii = FALSE)
-  qs::qsave(modeldb, file=file.path(packageDirectory, "inst/modeldb.qs"))
+  qs2::qs_save(modeldb, file = file.path(packageDirectory, "inst/modeldb.qs2"))
+  .modeldbCacheWrite(cachePath, list(globalSig = sig, entries = result$entries))
   message("Done saving the modeldb to ", savefile)
 
   colDesc <-
     list(
       name = "Model name that can be used to extract the model from the model library",
       description = "Model description in free from text; in model itself",
-      parameters  = "A comma separated string listing either the parameter in the model defined by population/individual effects or a population effect parameter",
-      DV          = "The definition of the dependent variable(s)",
-      linCmt      = "Logical flag indicating if solved models are used (TRUE) or not (FALSE)",
-      algebraic   = "Logical flag indicating if the model is purely algebraic: TRUE no linCmt() and no ODEs; FALSE otherwise",
-      dosing      = "A comma separated string of identified dosing compartments",
-      depends     = "A comma separated string of objects the model depends on",
-      filename    = "Filename of the model.  By default these are installed in the model library and read on demand"
+      parameters = paste(
+        "A comma separated string listing either the parameter in the model",
+        "defined by population/individual effects or a population effect parameter"
+      ),
+      DV = "The definition of the dependent variable(s)",
+      linCmt = "Logical flag indicating if solved models are used (TRUE) or not (FALSE)",
+      algebraic = paste(
+        "Logical flag indicating if the model is purely algebraic:",
+        "TRUE no linCmt() and no ODEs; FALSE otherwise"
+      ),
+      dosing = "A comma separated string of identified dosing compartments",
+      depends = "A comma separated string of objects the model depends on",
+      vignette = "Basename of the vignette associated with this model (without path or extension); NA if none",
+      filename = "Filename of the model.  By default these are installed in the model library and read on demand"
     )
   # The names must exactly match
   stopifnot(all(names(modeldb) %in% names(colDesc)))
@@ -114,26 +135,48 @@ addFileToModelDb <- function(dir, file, modeldb) {
   # Parse the model to get the fixed effects and DV parameters
   mod <- nlmixr2est::nlmixr(eval(parsedFile))
 
+  # Convention check. Reports deviations but does not halt the build so that
+  # grandfathered models continue to regenerate while their issues surface.
+  issues <- tryCatch(
+    suppressWarnings(checkModelConventions(mod, verbose = FALSE)),
+    error = function(e) NULL
+  )
+  if (!is.null(issues) && nrow(issues) > 0) {
+    n_err <- sum(issues$severity == "error")
+    n_warn <- sum(issues$severity == "warning")
+    if (n_err + n_warn > 0) {
+      message(sprintf(
+        "  %s: %d convention error(s), %d warning(s) - run checkModelConventions(\"%s\") for details",
+        modelName, n_err, n_warn, modelName
+      ))
+    }
+  }
+
   description <- mod$meta$description
   if (is.null(description)) {
     message("No description for model in ", fileName)
     description <- NA_character_
   }
 
+  vignette <- mod$meta$vignette
+  if (is.null(vignette)) {
+    vignette <- NA_character_
+  }
+
   # Finding dosing
   dosing <- NULL
   dosing_meta <- mod$meta$dosing
-  if(!is.null(dosing_meta)){
-    dosing <- paste(dosing_meta, collapse=",")
-  }else {
-    if("depot" %in% mod$props$cmt) {
+  if (!is.null(dosing_meta)) {
+    dosing <- paste(dosing_meta, collapse = ",")
+  } else {
+    if ("depot" %in% mod$props$cmt) {
       dosing <- c(dosing, "depot")
     }
-    if("central" %in% mod$props$cmt) {
+    if ("central" %in% mod$props$cmt) {
       dosing <- c(dosing, "central")
     }
-    if(!is.null(dosing)) {
-      dosing <- paste(dosing, collapse=",")
+    if (!is.null(dosing)) {
+      dosing <- paste(dosing, collapse = ",")
     } else {
       dosing <- NA_character_
     }
@@ -142,11 +185,11 @@ addFileToModelDb <- function(dir, file, modeldb) {
   # Finding depends
   depends <- NULL
   depends_meta <- mod$meta$depends
-  if(!is.null(depends_meta)){
-    depends = paste(depends_meta, collapse=",")
+  if (!is.null(depends_meta)) {
+    depends <- paste(depends_meta, collapse = ",")
   }
-  if(is.null(depends)){
-    depends = NA_character_
+  if (is.null(depends)) {
+    depends <- NA_character_
   }
 
   # Extract the parameter names
@@ -171,10 +214,10 @@ addFileToModelDb <- function(dir, file, modeldb) {
   }
 
 
-  if(!mod$props$linCmt && (length(mod$props$cmt)  == 0)){
-    algebraic = TRUE
+  if (!mod$props$linCmt && (length(mod$props$cmt) == 0)) {
+    algebraic <- TRUE
   } else {
-    algebraic = FALSE
+    algebraic <- FALSE
   }
 
 
@@ -188,6 +231,7 @@ addFileToModelDb <- function(dir, file, modeldb) {
       algebraic   = algebraic,
       dosing      = dosing,
       depends     = depends,
+      vignette    = vignette,
       filename    = fileName
     )
   modeldb <- rbind(modeldb, ret)
@@ -197,3 +241,93 @@ addFileToModelDb <- function(dir, file, modeldb) {
   modeldb
 }
 ## nocov end
+
+# Walk a modeldb directory and return rows + updated cache entries. Reuses a
+# cached row when the file's md5 matches the cached hash; otherwise re-parses
+# via addFileToModelDb(). Files not present on disk are dropped from entries
+# by virtue of iterating only over live files.
+.addDirToModelDbCached <- function(dir, entries) {
+  filesToLoad <-
+    list.files(
+      path = dir,
+      pattern = "\\.R$",
+      ignore.case = TRUE,
+      recursive = TRUE
+    )
+  modeldb <- data.frame()
+  newEntries <- list()
+  for (currentFile in filesToLoad) {
+    fullPath <- file.path(dir, currentFile)
+    fileHash <- unname(tools::md5sum(fullPath))
+    cached <- entries[[currentFile]]
+    if (!is.null(cached) && identical(cached$hash, fileHash)) {
+      message("modeldb cache hit: ", currentFile)
+      row <- cached$row
+      row$filename <- fullPath
+      modeldb <- rbind(modeldb, row)
+      newEntries[[currentFile]] <- cached
+    } else {
+      message("modeldb cache miss: ", currentFile)
+      before <- nrow(modeldb)
+      modeldb <- addFileToModelDb(dir = dir, file = currentFile, modeldb = modeldb)
+      newRow <- modeldb[before + 1L, , drop = FALSE]
+      rownames(newRow) <- NULL
+      newEntries[[currentFile]] <- list(hash = fileHash, row = newRow)
+    }
+  }
+  list(modeldb = modeldb, entries = newEntries)
+}
+
+# Build the global signature used to invalidate all entries at once. Changes to
+# the extraction code (R/modeldb.R) or to any upstream parser version force a
+# full rebuild. Silent upstream breakage without a version bump is not covered
+# here; the escape hatch is `unlink("data-raw/modeldb-cache.rds")`.
+.modeldbGlobalSig <- function(packageDirectory) {
+  safeVersion <- function(pkg) {
+    tryCatch(
+      as.character(utils::packageVersion(pkg)),
+      error = function(e) NA_character_
+    )
+  }
+  list(
+    cacheVersion = 2L,
+    rVersion     = R.version.string,
+    nlmixr2      = safeVersion("nlmixr2"),
+    nlmixr2est   = safeVersion("nlmixr2est"),
+    rxode2       = safeVersion("rxode2"),
+    modeldbRhash = unname(tools::md5sum(file.path(packageDirectory, "R/modeldb.R")))
+  )
+}
+
+.modeldbCacheRead <- function(path) {
+  if (!file.exists(path)) {
+    return(NULL)
+  }
+  tryCatch(
+    {
+      cache <- readRDS(path)
+      if (!is.list(cache) || !all(c("globalSig", "entries") %in% names(cache))) {
+        return(NULL)
+      }
+      cache
+    },
+    error = function(e) NULL
+  )
+}
+
+.modeldbCacheWrite <- function(path, cache) {
+  reportFailure <- function(c) {
+    warning("Could not write modeldb cache to ", path, ": ", conditionMessage(c))
+  }
+  tryCatch(
+    {
+      dir.create(dirname(path), showWarnings = FALSE, recursive = TRUE)
+      tmp <- paste0(path, ".tmp")
+      saveRDS(cache, file = tmp)
+      file.rename(tmp, path)
+    },
+    warning = reportFailure,
+    error = reportFailure
+  )
+  invisible(NULL)
+}

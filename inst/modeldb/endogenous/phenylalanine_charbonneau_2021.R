@@ -14,7 +14,7 @@ phenylalanine_charbonneau_2021 <- function() {
     bl_gut <- 0; label("Baseline Phe in the gut (mg)")
 
     ka_gut <- 0.25; label("Absorption rate from gut to plasma")
-    v_npd <- 0.015; label("Rate of net protein breakdown ((mmol/L)/hr)")
+    v_npd <- 0.012; label("Rate of net protein breakdown ((mmol/L)/hr)")
 
     vmax_pah <- 0.9; label("Maximum rate of Phe breakdown by PAH in a healthy subject ((mmol/L)/hr)")
     f_pah <- 0; label("Fraction of healthy PAH activity (PKU patient = 0 to 0.02)")
@@ -32,7 +32,7 @@ phenylalanine_charbonneau_2021 <- function() {
     # Molecular weight of Phe (g/mol)
     mw_phe <- 165.19
     # Unit conversion adjustment from Gut to Plasma concentrations (mmol/L)/mg
-    f_gut_plasma <- 1/(mw_phe * vd_phe * WT)
+    f_gut_plasma <- 1/(mw_phe * vd * WT)
 
     v_pah <- vmax_pah*f_pah / (1 + km_pah/phe + km_pah*kact_pah/(phe^2)) # units: (mmol/L)/hr
     v_trans <- vmax_trans / (1 + km_trans/phe) # units: (mmol/L)/hr
@@ -47,6 +47,6 @@ phenylalanine_charbonneau_2021 <- function() {
     # The following is an augmentation of the model reported in the paper.  It
     # indicates the approximate daily Phe intake (in mg) to achieve
     # steady-state.
-    daily_phe_intake <- 24 * vd * (v_pah + v_trans + v_renal - v_npd) / f_gut_plasma
+    daily_phe_intake <- 24 * (v_pah + v_trans + v_renal - v_npd) / f_gut_plasma
   })
 }
