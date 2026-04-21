@@ -241,6 +241,16 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Kotani_2022_astegolimab.R` (reference 180 cells/µL, baseline).
 - **Notes:** Used as a surrogate of inflammatory burden that correlates with protein turnover and therefore mAb clearance. Canonical name drops the `B` prefix to match the `EASI` / `AGE` / `WT` / `ALB` pattern; baseline-vs-time-varying status is documented in `covariateData[[EOS]]$notes`.
 
+### BGENE21 (**canonical for 21-gene type I interferon signature score**)
+- **Description:** Baseline 21-gene type I interferon signature score — a composite transcriptomic score summarising the expression of 21 interferon-regulated genes in whole blood relative to a healthy-donor reference, used as a biomarker of type I IFN pathway activation in SLE and related autoimmune conditions.
+- **Units:** unitless fold-change score (relative to healthy-donor reference).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a — used with power scaling `(BGENE21 / ref)^exponent`. Reference value observed: 12.04 in `Zheng_2016_sifalimumab.R` (median of the SLE phase IIb cohort, range 0.32-38.59).
+- **Source aliases:** none.
+- **Example models:** `Zheng_2016_sifalimumab.R` (power effect on CL with exponent 0.09).
+- **Notes:** Specific to drugs whose mechanism targets the type I IFN pathway (e.g., anti-IFN-alpha antibodies like sifalimumab, anifrolumab). Higher BGENE21 indicates stronger target engagement / disease activity and is associated with increased drug clearance via target-mediated mechanisms. Scope: specific because the 21-gene panel composition is tied to the MedImmune/AstraZeneca SLE development programme; a different IFN gene signature (e.g., a 4-gene or 5-gene panel) should be registered under its own canonical name to avoid conflating panel definitions.
+
 ### CRP (**canonical for C-reactive protein**)
 - **Description:** C-reactive protein concentration. Covers both standard and high-sensitivity (hs-CRP) assays and both baseline and time-varying usages. Each model's `covariateData[[CRP]]$description` and `notes` must state the assay type (standard vs hs-CRP) and whether the column carries a baseline-only or time-varying value, including the paper-specific reference value used for power scaling.
 - **Units:** mg/L (document per-model via `covariateData[[CRP]]$units`).
@@ -405,6 +415,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Ma_2020_sarilumab_das28crp.R` (multiplicative on DAS28-CRP Kout: `Kout * theta^PRICORT`); `Ma_2020_sarilumab_anc.R` (power-form on Emax: `Emax * 0.819^PRICORT`).
 - **Notes:** Ma 2020 applies it as a multiplicative effect of the form `param * theta^PRICORT` in both DAS28-CRP and ANC PD models. Generally applicable clinical-history indicator.
 
+### STEROID_BL (**canonical for baseline/concomitant systemic steroid use**)
+- **Description:** 1 = patient is on systemic corticosteroid treatment at study entry (baseline concomitant use), 0 = not on steroids at baseline. Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (not on steroids at baseline).
+- **Source aliases:**
+  - `BSTEROID` — used in `Zheng_2016_sifalimumab.R`.
+- **Example models:** `Zheng_2016_sifalimumab.R` (multiplicative effects on CL `(1 + 0.11 * STEROID_BL)` and on V1 `(1 - 0.09 * STEROID_BL)` in the SLE phase IIb cohort, which was ~85% steroid-treated at baseline).
+- **Notes:** Distinct from `PRICORT`, which captures systemic corticosteroid use *prior* to study entry as a one-time clinical-history indicator. `STEROID_BL` captures ongoing/concomitant steroid therapy at baseline in diseases where background steroid use is standard of care (SLE, severe asthma, etc.). In some studies the prior-vs-baseline distinction is immaterial (patients on steroids at baseline have also taken them prior) but the semantic difference is preserved here so that future models can use the appropriate indicator.
+
 ## Immunogenicity
 
 ### ADA_POS (**canonical**)
@@ -564,6 +585,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Clegg_2024_nirsevimab.R`.
 - **Notes:** Study-specific but semantically general (second-exposure indicator). Promote to general if a second RSV-season model adopts the same semantics.
 
+### DOSE (**canonical for per-subject assigned dose level**)
+- **Description:** Continuous covariate carrying each subject's assigned fixed dose level (in mg) across the study. Used as a power-style covariate when the population PK model detects a dose-dependent shift in a PK parameter (central volume, clearance, etc.).
+- **Units:** mg (document per-model in `covariateData[[DOSE]]$units` if a different dose unit is used).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a — used with power scaling `(DOSE / ref)^exponent`. Reference values observed: 600 mg in `Zheng_2016_sifalimumab.R` (middle of the 200/600/1200 mg phase IIb dose range).
+- **Source aliases:**
+  - `Dose` — used in `Zheng_2016_sifalimumab.R`.
+- **Example models:** `Zheng_2016_sifalimumab.R` (power effect on V1 with exponent 0.06).
+- **Notes:** Distinct from `DOSE_70MG` (binary indicator for a specific dose group in a trinary-dose design). Use `DOSE` when the source paper treats dose as a continuous covariate acting on a PK parameter. Scope: specific because the semantics (units, reference dose, whether the covariate applies to CL or V) are study-specific; future models using continuous dose as a covariate should either extend this entry's example-models list or register a more specific variant.
+
 ### DOSE_70MG
 - **Description:** 1 = subject is on the 70 mg SC Q4W dose regimen, 0 = subject is on the 210 or 490 mg SC Q4W regimen.
 - **Units:** (binary)
@@ -654,6 +686,11 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   count) under `Hematology` while extracting `Mould_2007_alemtuzumab.R`.
   Scope: general; reference 10 × 10⁹/L used for the Vmax power covariate
   effect in CLL.
+- **2026-04-21** — Added `STEROID_BL` (general-scope baseline/concomitant
+  steroid-use indicator; distinct from prior-only `PRICORT`), `BGENE21`
+  (specific-scope 21-gene type I interferon signature score), and `DOSE`
+  (specific-scope per-subject assigned dose level in mg) canonical entries
+  while extracting `Zheng_2016_sifalimumab.R`.
 - Subsequent additions: append new canonical entries as new papers are processed. When adding, bump the audit-completed count in the summary below.
 
 ## Summary
