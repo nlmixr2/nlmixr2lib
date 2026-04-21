@@ -297,6 +297,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Clegg_2024_nirsevimab.R`.
 - **Notes:** Clegg 2024 applies this covariate to both CL and V2 with different coefficients.
 
+### RACE_JAPANESE (**canonical**)
+- **Description:** 1 = Japanese ethnicity, 0 = other.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (document the actual reference groups used).
+- **Source aliases:**
+  - `RACE` level `8` (integer-coded, `IF(RACE.EQ.8) VRACE = ...`) — used in `Wade_2015_certolizumab.R` (derive `RACE_JAPANESE = as.integer(RACE == 8)`).
+- **Example models:** `Wade_2015_certolizumab.R` (fractional effect on V, -25% vs. the pooled reference of White, Indian Asian, Hispanic, Other).
+- **Notes:** Follows the `RACE_BLACK` / `RACE_ASIAN` indicator-decomposition pattern. Useful when a paper breaks out Japanese as a distinct category from a broader "Asian" group (common in multinational trials with dedicated Japanese cohorts). When paired with `RACE_ASIAN`, the `RACE_ASIAN` column must encode "Asian excluding Japanese" — document the exclusion in the per-model `covariateData[[RACE_ASIAN]]$notes`.
+
 ### RACE_MULTI
 - **Description:** 1 = multiracial, 0 = other.
 - **Units:** (binary)
@@ -682,6 +693,11 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   count) under `Hematology` while extracting `Mould_2007_alemtuzumab.R`.
   Scope: general; reference 10 × 10⁹/L used for the Vmax power covariate
   effect in CLL.
+- **2026-04-21** — Added `RACE_JAPANESE` canonical entry (scope: general)
+  while extracting `Wade_2015_certolizumab.R`, where Japanese is broken
+  out as a distinct category from the broader `RACE_ASIAN` indicator
+  (both non-overlapping sub-indicators point to different per-population
+  reference groups).
 - Subsequent additions: append new canonical entries as new papers are processed. When adding, bump the audit-completed count in the summary below.
 
 ## Summary

@@ -164,7 +164,11 @@ make_cohort <- function(n, ga_range, pna0_range, max_day,
                         obs_days = seq(0, max_day, by = 7),
                         race_probs = c(White = 0.54, Black = 0.20,
                                        Hispanic = 0.18, Asian = 0.02, Other = 0.06),
-                        n_doses = 5, dose_mg_per_kg = 15) {
+                        n_doses = 5, dose_mg_per_kg = 15,
+                        id_offset = 0L) {
+  # id_offset lets callers stack multiple cohorts with non-overlapping IDs.
+  # rxSolve treats ID as the subject key, so two rows with ID=1 and
+  # different parameters would be merged into a single (wrong) subject.
   GA <- runif(n, ga_range[1], ga_range[2])
   PNA_0 <- runif(n, pna0_range[1], pna0_range[2])
   wt_z <- pmax(-2, pmin(2, rnorm(n, 0, 1)))
@@ -174,7 +178,7 @@ make_cohort <- function(n, ga_range, pna0_range, max_day,
   race <- sample(names(race_probs), n, replace = TRUE, prob = race_probs)
 
   pop <- data.frame(
-    ID = seq_len(n), GA, PNA_0, wt_z, WT_0,
+    ID = seq_len(n) + id_offset, GA, PNA_0, wt_z, WT_0,
     RACE_BLACK    = as.integer(race == "Black"),
     RACE_HISPANIC = as.integer(race == "Hispanic"),
     RACE_ASIAN    = as.integer(race == "Asian"),
@@ -225,11 +229,13 @@ obs_days_f3 <- seq(0, 240, by = 2)
 
 ev_5 <- make_cohort(n_f3, ga_range = c(26, 41), pna0_range = c(0, 6),
                     max_day = 240, cld_prob = 0.2,
-                    obs_days = obs_days_f3, n_doses = 5) |>
+                    obs_days = obs_days_f3, n_doses = 5,
+                    id_offset = 0L) |>
   mutate(regimen = "5 monthly doses (label)")
 ev_3 <- make_cohort(n_f3, ga_range = c(26, 41), pna0_range = c(0, 6),
                     max_day = 240, cld_prob = 0.2,
-                    obs_days = obs_days_f3, n_doses = 3) |>
+                    obs_days = obs_days_f3, n_doses = 3,
+                    id_offset = n_f3) |>
   mutate(regimen = "3 monthly doses (abbreviated)")
 
 sim_f3 <- bind_rows(ev_5, ev_3)
@@ -290,18 +296,25 @@ cohorts <- list(
 )
 
 obs_days_f5 <- seq(0, 180, by = 2)
+n_per_cohort <- 200
 
-sim_f5 <- bind_rows(lapply(cohorts, function(co) {
-  make_cohort(200, ga_range = c(26, 41), pna0_range = co$pna,
+sim_f5 <- bind_rows(lapply(seq_along(cohorts), function(i) {
+  co <- cohorts[[i]]
+  # Each cohort's IDs are offset by (i-1)*n_per_cohort so bind_rows does
+  # not produce multiple rows with the same ID (which would collapse
+  # distinct subjects into one inside rxSolve).
+  make_cohort(n_per_cohort, ga_range = c(26, 41), pna0_range = co$pna,
               max_day = 180, cld_prob = 0.2,
-              obs_days = obs_days_f5, n_doses = 5) |>
+              obs_days = obs_days_f5, n_doses = 5,
+              id_offset = (i - 1L) * n_per_cohort) |>
     mutate(cohort = co$label)
 }))
 
-out_f5 <- rxode2::rxSolve(mod, events = sim_f5) |>
-  as.data.frame() |>
-  left_join(sim_f5 |> select(ID, cohort) |> distinct(),
-            by = c("id" = "ID"))
+# `keep = "cohort"` carries the source-table `cohort` column through
+# rxSolve's output without needing a post-hoc left_join — avoids the
+# duplicate-ID merge trap altogether.
+out_f5 <- rxode2::rxSolve(mod, events = sim_f5, keep = "cohort") |>
+  as.data.frame()
 
 d_f5 <- out_f5 |>
   group_by(cohort, time) |>
