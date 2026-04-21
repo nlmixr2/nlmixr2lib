@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Mould 2007 alemtuzumab ([doi:10.1111/j.1365-2125.2007.02914.x](https://doi.org/10.1111/j.1365-2125.2007.02914.x)) — adults with B-cell chronic lymphocytic leukaemia.
 * Add Yamada 2025 zolbetuximab ([doi:10.1111/cts.70280](https://doi.org/10.1111/cts.70280)) — patients with locally advanced unresectable or metastatic gastric/gastroesophageal junction adenocarcinoma.
 * Add Jackson 2022 ixekizumab ([doi:10.1111/bcp.15034](https://doi.org/10.1111/bcp.15034)) — paediatric patients with moderate-to-severe plaque psoriasis.
 * Add Moein 2022 etrolizumab ([doi:10.1002/psp4.12846](https://doi.org/10.1002/psp4.12846)) — patients with moderately-to-severely active ulcerative colitis.
