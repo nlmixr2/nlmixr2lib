@@ -177,8 +177,7 @@ d_sc <- bind_rows(dose_sc, obs_sc) %>%
 
 ```{r simulate-sc}
 mod <- readModelDb("Hua_2015_anrukinzumab")
-sim_sc <- rxSolve(mod, d_sc, returnType = "data.frame") %>%
-  left_join(pop_sc %>% distinct(ID, disease), by = c("id" = "ID"))
+sim_sc <- rxSolve(mod, d_sc, keep = "disease", returnType = "data.frame")
 ```
 
 ## Replicates Figure 4 (SC single-dose shape)
@@ -263,9 +262,7 @@ d_iv <- bind_rows(dose_iv, obs_iv) %>%
 ```
 
 ```{r simulate-iv}
-sim_iv <- rxSolve(mod, d_iv, returnType = "data.frame")
-sim_iv <- sim_iv %>%
-  left_join(pop_uc %>% distinct(ID, group), by = c("id" = "ID"))
+sim_iv <- rxSolve(mod, d_iv, keep = "group", returnType = "data.frame")
 ```
 
 ## Replicates Figure 5 (200 mg IV, UC vs non-UC)
