@@ -168,10 +168,10 @@ Table 3).</p>
 term below is taken from Ma 2020 Table 3 (final-model column,
 DAS28-CRP). The PK backbone is reproduced from Xu 2019 Table 3 evaluated
 at its typical reference-covariate values (adult female, 71 kg,
-ADA-negative, commercial drug product, ALBR = 0.78, CRCL_BSA = 100
-mL/min/1.73 m^2, BLCRP = 14.2 mg/L); the reference covariate values for
+ADA-negative, commercial drug product, ALBR = 0.78, CRCL = 100
+mL/min/1.73 m^2, CRP = 14.2 mg/L); the reference covariate values for
 the <em>DAS28-CRP</em> model, by contrast, are set from the
-DAS28-CRP-dataset medians per the Ma 2020 narrative (BLCRP 15.7 mg/L,
+DAS28-CRP-dataset medians per the Ma 2020 narrative (CRP 15.7 mg/L,
 BLPHYVAS 66, BLHAQ 1.75, WT 72.8 kg).</p>
 <table class="table">
 <colgroup>
@@ -274,9 +274,9 @@ concentration)</td>
 <td>Ma 2020 Table 3, gamma row (fixed to 1)</td>
 </tr>
 <tr class="even">
-<td><code>e_blcrp_base</code></td>
+<td><code>e_crp_base</code></td>
 <td><code>0.0564</code></td>
-<td>Ma 2020 Table 3, BLCRP on BASE</td>
+<td>Ma 2020 Table 3, CRP on BASE</td>
 </tr>
 <tr class="odd">
 <td><code>e_blphyvas_base</code></td>
@@ -294,9 +294,9 @@ concentration)</td>
 <td>Ma 2020 Table 3, Weight on BASE</td>
 </tr>
 <tr class="even">
-<td><code>e_blcrp_lemax</code></td>
+<td><code>e_crp_lemax</code></td>
 <td><code>0.333</code></td>
-<td>Ma 2020 Table 3, BLCRP on Log(Emax)</td>
+<td>Ma 2020 Table 3, CRP on Log(Emax)</td>
 </tr>
 <tr class="odd">
 <td>
@@ -397,7 +397,7 @@ DAS28-CRP. The transform consistent with both is the <em>logit</em>:
 <code>1 / (1 + exp(-0.237)) =   0.559</code> (i.e., 55.9%). The
 covariate effect of baseline CRP on <code>Log(Emax)</code> is therefore
 additive on the logit scale:
-<code>lEmax_i = lEmax + etalEmax + theta * log(BLCRP / 15.7)</code>.</li>
+<code>lEmax_i = lEmax + etalEmax + theta * log(CRP / 15.7)</code>.</li>
 <li>
 <strong>Indirect response with placebo term.</strong> The inhibitory
 effect uses the <em>sum</em> of sarilumab concentration and the
@@ -411,9 +411,9 @@ placebo-arm DAS28-CRP decrease reported in Ma 2020 Table 3 narrative
 (~25% at week 24).</li>
 <li>
 <strong>Baseline carries four continuous covariates.</strong> The
-paper’s Table 3 lists BLCRP, BLPHYVAS, BLHAQ, and WT as covariates on
-BASE with power-form exponents 0.0564, 0.105, 0.0779, and 0.0522
-respectively. Reference values are the DAS28-CRP-dataset medians (BLCRP
+paper’s Table 3 lists CRP, BLPHYVAS, BLHAQ, and WT as covariates on BASE
+with power-form exponents 0.0564, 0.105, 0.0779, and 0.0522
+respectively. Reference values are the DAS28-CRP-dataset medians (CRP
 15.7 mg/L, BLPHYVAS 66, BLHAQ 1.75, WT 72.8 kg) per the narrative.</li>
 <li>
 <strong>PRICORT is a Kout multiplier.</strong> Table 3’s
@@ -458,7 +458,7 @@ released with the paper.</p>
 <span><span class="va">cohort</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
 <span>  id       <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n_subj</span><span class="op">)</span>,</span>
 <span>  WT       <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n_subj</span>, mean <span class="op">=</span> <span class="fl">74.6</span>, sd <span class="op">=</span> <span class="fl">18.8</span><span class="op">)</span>, <span class="fl">40</span>, <span class="fl">170</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  BLCRP    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Lognormal.html" class="external-link">rlnorm</a></span><span class="op">(</span><span class="va">n_subj</span>, <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">15.7</span><span class="op">)</span> <span class="op">-</span> <span class="fl">0.5</span> <span class="op">*</span> <span class="fl">1.0</span><span class="op">^</span><span class="fl">2</span>, <span class="fl">1.0</span><span class="op">)</span>, <span class="fl">0.5</span><span class="op">)</span>,</span>
+<span>  CRP    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Lognormal.html" class="external-link">rlnorm</a></span><span class="op">(</span><span class="va">n_subj</span>, <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">15.7</span><span class="op">)</span> <span class="op">-</span> <span class="fl">0.5</span> <span class="op">*</span> <span class="fl">1.0</span><span class="op">^</span><span class="fl">2</span>, <span class="fl">1.0</span><span class="op">)</span>, <span class="fl">0.5</span><span class="op">)</span>,</span>
 <span>  BLPHYVAS <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n_subj</span>, mean <span class="op">=</span> <span class="fl">64.6</span>, sd <span class="op">=</span> <span class="fl">16.8</span><span class="op">)</span>, <span class="fl">10</span>, <span class="fl">100</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  BLHAQ    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n_subj</span>, mean <span class="op">=</span> <span class="fl">1.68</span>, sd <span class="op">=</span> <span class="fl">0.640</span><span class="op">)</span>, <span class="fl">0</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  PRICORT  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="va">n_subj</span>, <span class="fl">1</span>, <span class="fl">0.646</span><span class="op">)</span></span>
@@ -509,7 +509,7 @@ computational cost for this small (N = 60) validation cohort.</p>
 <span>  <span class="va">events</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">ev_dose</span>, <span class="va">ev_cc</span>, <span class="va">ev_das</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">evid</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">amt</span>, <span class="va">cmt</span>, <span class="va">evid</span>,</span>
-<span>                  <span class="va">WT</span>, <span class="va">BLCRP</span>, <span class="va">BLPHYVAS</span>, <span class="va">BLHAQ</span>, <span class="va">PRICORT</span><span class="op">)</span></span>
+<span>                  <span class="va">WT</span>, <span class="va">CRP</span>, <span class="va">BLPHYVAS</span>, <span class="va">BLHAQ</span>, <span class="va">PRICORT</span><span class="op">)</span></span>
 <span>  <span class="va">out</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod</span>, events <span class="op">=</span> <span class="va">events</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="va">out</span><span class="op">$</span><span class="va">id</span>        <span class="op">&lt;-</span> <span class="va">subj_row</span><span class="op">$</span><span class="va">id</span></span>
 <span>  <span class="va">out</span><span class="op">$</span><span class="va">treatment</span> <span class="op">&lt;-</span> <span class="va">treatment</span></span>
@@ -529,13 +529,13 @@ computational cost for this small (N = 60) validation cohort.</p>
 <span><span class="op">)</span></span></code></pre></div>
 <p>For the deterministic typical-patient comparison against the paper’s
 week-24 statistics, we zero the random effects and use reference
-covariate values (BLCRP 15.7 mg/L, BLPHYVAS 66, BLHAQ 1.75, WT 72.8 kg,
+covariate values (CRP 15.7 mg/L, BLPHYVAS 66, BLHAQ 1.75, WT 72.8 kg,
 PRICORT = 0):</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod_typical</span> <span class="op">&lt;-</span> <span class="va">mod</span> <span class="op">|&gt;</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/zeroRe.html" class="external-link">zeroRe</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">typical_cov</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
-<span>  id <span class="op">=</span> <span class="fl">1L</span>, WT <span class="op">=</span> <span class="fl">72.8</span>, BLCRP <span class="op">=</span> <span class="fl">15.7</span>, BLPHYVAS <span class="op">=</span> <span class="fl">66</span>, BLHAQ <span class="op">=</span> <span class="fl">1.75</span>, PRICORT <span class="op">=</span> <span class="fl">0L</span></span>
+<span>  id <span class="op">=</span> <span class="fl">1L</span>, WT <span class="op">=</span> <span class="fl">72.8</span>, CRP <span class="op">=</span> <span class="fl">15.7</span>, BLPHYVAS <span class="op">=</span> <span class="fl">66</span>, BLHAQ <span class="op">=</span> <span class="fl">1.75</span>, PRICORT <span class="op">=</span> <span class="fl">0L</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">ev_typ</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">dose</span><span class="op">)</span> <span class="op">{</span></span>
@@ -551,7 +551,7 @@ PRICORT = 0):</p>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">ev_dose</span>, <span class="va">ev_cc</span>, <span class="va">ev_das</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">evid</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">amt</span>, <span class="va">cmt</span>, <span class="va">evid</span>,</span>
-<span>                  <span class="va">WT</span>, <span class="va">BLCRP</span>, <span class="va">BLPHYVAS</span>, <span class="va">BLHAQ</span>, <span class="va">PRICORT</span><span class="op">)</span></span>
+<span>                  <span class="va">WT</span>, <span class="va">CRP</span>, <span class="va">BLPHYVAS</span>, <span class="va">BLHAQ</span>, <span class="va">PRICORT</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="va">sim_typ</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span></span>
@@ -756,7 +756,7 @@ reported values. All active-arm differences within ~3%.</caption>
 <div class="section level3">
 <h3 id="baseline-reproduction-check">Baseline reproduction check<a class="anchor" aria-label="anchor" href="#baseline-reproduction-check"></a>
 </h3>
-<p>With reference covariates (BLCRP 15.7, BLPHYVAS 66, BLHAQ 1.75, WT
+<p>With reference covariates (CRP 15.7, BLPHYVAS 66, BLHAQ 1.75, WT
 72.8, PRICORT = 0) the model’s typical <code>BASE</code> must equal
 <code>exp(log(6.06)) = 6.06</code>. The DAS28-CRP state is initialized
 to <code>Base</code>, so the <code>t = 0</code> value of the DAS28-CRP
@@ -842,20 +842,20 @@ values.</strong> Ma 2020 used sequential individual-PK-Bayes estimates
 from Xu 2019 as fixed input to the PD fit. To keep this library model
 self-contained in a single file, we embed the Xu 2019 typical PK
 parameters and retain only the Xu 2019 PK IIV (Vm/CLO/F block, Vc/F,
-Ka). PK covariate effects (ADA, drug product, sex, ALBR, CRCL_BSA,
-WT-on-PK, BLCRP-on-Vm) are omitted. The <code>Xu_2019_sarilumab</code>
-model in this library is the full-covariate PK alternative (approach
-(b)); users who need covariate-aware PK in a PK/PD simulation should
-compose the two or simulate in two steps, using Xu 2019 to generate
-individual sarilumab concentrations and feeding them as an input
-variable to a simplified indirect-response PD block.</li>
+Ka). PK covariate effects (ADA, drug product, sex, ALBR, CRCL, WT-on-PK,
+CRP-on-Vm) are omitted. The <code>Xu_2019_sarilumab</code> model in this
+library is the full-covariate PK alternative (approach (b)); users who
+need covariate-aware PK in a PK/PD simulation should compose the two or
+simulate in two steps, using Xu 2019 to generate individual sarilumab
+concentrations and feeding them as an input variable to a simplified
+indirect-response PD block.</li>
 <li>
 <strong>Reference-covariate values for the embedded PK.</strong> Xu
 2019 typical reference values are 71 kg female, ADA-negative, commercial
-(non-DP2) formulation, ALBR 0.78, CRCL_BSA 100 mL/min/1.73 m^2, BLCRP
-14.2 mg/L. These are <em>internal</em> to the model and not exposed as
+(non-DP2) formulation, ALBR 0.78, CRCL 100 mL/min/1.73 m^2, CRP 14.2
+mg/L. These are <em>internal</em> to the model and not exposed as
 user-facing covariates on the PK side. The DAS28-CRP-model reference
-covariates are distinct (BLCRP 15.7, BLPHYVAS 66, BLHAQ 1.75, WT 72.8,
+covariates are distinct (CRP 15.7, BLPHYVAS 66, BLHAQ 1.75, WT 72.8,
 PRICORT = 0) per the Ma 2020 narrative.</li>
 <li>
 <strong>Emax reported as Log(Emax) = 0.237 is a logit
@@ -892,7 +892,7 @@ half-life and with the bootstrap CI). The companion ANC model
 DAS28-CRP model here is unaffected.</li>
 <li>
 <strong>Virtual-cohort covariate distributions.</strong> Weight
-drawn from <code>N(74.6, 18.8)</code> kg truncated to [40, 170]; BLCRP
+drawn from <code>N(74.6, 18.8)</code> kg truncated to [40, 170]; CRP
 from a log-normal with median 15.7 mg/L and GSD
 <code>exp(1.0) ~ 2.7x</code>; BLPHYVAS from <code>N(64.6, 16.8)</code>
 truncated to [10, 100]; BLHAQ from <code>N(1.68, 0.640)</code> truncated

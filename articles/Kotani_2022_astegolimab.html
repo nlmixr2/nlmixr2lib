@@ -128,10 +128,11 @@ patients.</p>
 <p>Structurally, the model estimates apparent clearance (CL/F), central
 volume (Vc/F), peripheral volume (Vp/F), intercompartmental clearance
 (Q/F), and absorption rate (ka). Shared allometric exponents on body
-weight are fit to {CL, Q} and {Vc, Vp}. Baseline eGFR and baseline blood
-eosinophil count enter CL as power covariates, and a binary indicator
-for the 70 mg dose arm scales relative bioavailability (Frel) by −15.3%
-with Box-Cox transformed IIV per Petersson et al. (2009).</p>
+weight are fit to {CL, Q} and {Vc, Vp}. Baseline CRCL (MDRD eGFR) and
+baseline blood eosinophil count enter CL as power covariates, and a
+binary indicator for the 70 mg dose arm scales relative bioavailability
+(Frel) by −15.3% with Box-Cox transformed IIV per Petersson et
+al. (2009).</p>
 <ul>
 <li>Citation: Kotani N, Dolton M, Svensson RJ, et al. Population
 Pharmacokinetics and Exposure-Response Relationships of Astegolimab in
@@ -148,7 +149,7 @@ Patients With Severe Asthma. J Clin Pharmacol. 2022;62(7):905-917. <a href="doi:
 medium- or high-dose inhaled corticosteroids plus at least one
 additional controller and at least one exacerbation in the prior 12
 months. Median baseline characteristics (Table 1): age 53 years (18–75),
-body weight 79 kg (43–130), eGFR 87.9 mL/min/1.73 m² (MDRD), blood
+body weight 79 kg (43–130), CRCL 87.9 mL/min/1.73 m² (MDRD eGFR), blood
 eosinophil count 180 cells/µL. 66.8% were female; 84.0% White, 5.4%
 Black, 4.6% Asian, 4.6% Native American, 1.4% multiple races.
 Treatment-emergent anti-drug antibodies were observed in 7.3% of
@@ -220,13 +221,13 @@ collects them.</p>
 </tr>
 <tr class="even">
 <td>
-<code>e_egfr_cl</code> (BEGFR → CL)</td>
+<code>e_crcl_cl</code> (BEGFR / CRCL → CL)</td>
 <td>0.431</td>
 <td>Table 2</td>
 </tr>
 <tr class="odd">
 <td>
-<code>e_eos_cl</code> (BEOS → CL)</td>
+<code>e_eos_cl</code> (EOS → CL)</td>
 <td>0.0905</td>
 <td>Table 2</td>
 </tr>
@@ -320,10 +321,10 @@ Table 1.</p>
 <span>  dose_mg   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">doses</span>, each <span class="op">=</span> <span class="va">n_per_dose</span><span class="op">)</span>,</span>
 <span>  <span class="co"># Body weight ~ lognormal matching median 79 kg and range 43-130 kg</span></span>
 <span>  WT        <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fl">130</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fl">43</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Lognormal.html" class="external-link">rlnorm</a></span><span class="op">(</span><span class="va">n_subj</span>, <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">79</span><span class="op">)</span>, <span class="fl">0.22</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  <span class="co"># eGFR ~ normal matching median 87.9; clip to observed physiological range</span></span>
-<span>  eGFR      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fl">160</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fl">30</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n_subj</span>, <span class="fl">87.9</span>, <span class="fl">20</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  <span class="co"># CRCL (MDRD eGFR) ~ normal matching median 87.9; clip to observed physiological range</span></span>
+<span>  CRCL      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fl">160</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fl">30</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n_subj</span>, <span class="fl">87.9</span>, <span class="fl">20</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  <span class="co"># Blood eosinophils: right-skewed, median 180 cells/uL</span></span>
-<span>  BEOS      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fl">2000</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Lognormal.html" class="external-link">rlnorm</a></span><span class="op">(</span><span class="va">n_subj</span>, <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">180</span><span class="op">)</span>, <span class="fl">0.9</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  EOS      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fl">2000</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Lognormal.html" class="external-link">rlnorm</a></span><span class="op">(</span><span class="va">n_subj</span>, <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">180</span><span class="op">)</span>, <span class="fl">0.9</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  DOSE_70MG <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">dose_mg</span> <span class="op">==</span> <span class="fl">70</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">pop</span><span class="op">$</span><span class="va">treatment</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span></span>
@@ -353,7 +354,7 @@ Table 1.</p>
 <span><span class="va">events</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">d_dose</span>, <span class="va">d_obs</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">ID</span>, <span class="va">TIME</span>, <span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">EVID</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">ID</span>, <span class="va">TIME</span>, <span class="va">AMT</span>, <span class="va">EVID</span>, <span class="va">CMT</span>, <span class="va">DV</span>,</span>
-<span>         <span class="va">WT</span>, <span class="va">eGFR</span>, <span class="va">BEOS</span>, <span class="va">DOSE_70MG</span>, <span class="va">treatment</span>, <span class="va">dose_mg</span><span class="op">)</span></span></code></pre></div>
+<span>         <span class="va">WT</span>, <span class="va">CRCL</span>, <span class="va">EOS</span>, <span class="va">DOSE_70MG</span>, <span class="va">treatment</span>, <span class="va">dose_mg</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -430,7 +431,7 @@ the dose group as the treatment grouping variable.</p>
 <span></span>
 <span><span class="va">nca_data</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_obj</span>, <span class="va">dose_obj</span>, intervals <span class="op">=</span> <span class="va">intervals</span><span class="op">)</span></span>
 <span><span class="va">nca_res</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span><span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="va">nca_data</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■           </span>  67% |  ETA:  1s</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■            </span>  64% |  ETA:  1s</span></span>
 <span><span class="va">nca_summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">nca_res</span><span class="op">)</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
 <span>  <span class="va">nca_summary</span>,</span>
@@ -554,7 +555,7 @@ troughs are therefore reached several months into repeat Q4W dosing.</p>
 <li>
 <strong>Covariate distributions.</strong> Approximated from Table 1
 aggregate statistics: weight ~ lognormal centered on the 79 kg median;
-eGFR ~ normal centered on 87.9 mL/min/1.73 m²; blood eosinophils ~
+CRCL ~ normal centered on 87.9 mL/min/1.73 m²; blood eosinophils ~
 lognormal centered on 180 cells/µL. The original subject-level joint
 distribution is not public.</li>
 <li>
@@ -564,7 +565,7 @@ so active per-arm N ≈ 100 each; the balanced synthetic cohort is chosen
 for VPC readability only.</li>
 <li>
 <strong>Baseline-only covariates.</strong> Kotani 2022 uses baseline
-WT / eGFR / blood eosinophils (time-fixed per subject). The same
+WT / CRCL / blood eosinophils (time-fixed per subject). The same
 convention is applied in the event table.</li>
 <li>
 <strong>ADA status.</strong> ADA was reported in 7.3% of patients

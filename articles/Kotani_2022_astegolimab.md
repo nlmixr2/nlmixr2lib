@@ -35,10 +35,11 @@ patients.
 Structurally, the model estimates apparent clearance (CL/F), central
 volume (Vc/F), peripheral volume (Vp/F), intercompartmental clearance
 (Q/F), and absorption rate (ka). Shared allometric exponents on body
-weight are fit to {CL, Q} and {Vc, Vp}. Baseline eGFR and baseline blood
-eosinophil count enter CL as power covariates, and a binary indicator
-for the 70 mg dose arm scales relative bioavailability (Frel) by −15.3%
-with Box-Cox transformed IIV per Petersson et al. (2009).
+weight are fit to {CL, Q} and {Vc, Vp}. Baseline CRCL (MDRD eGFR) and
+baseline blood eosinophil count enter CL as power covariates, and a
+binary indicator for the 70 mg dose arm scales relative bioavailability
+(Frel) by −15.3% with Box-Cox transformed IIV per Petersson et
+al. (2009).
 
 - Citation: Kotani N, Dolton M, Svensson RJ, et al. Population
   Pharmacokinetics and Exposure-Response Relationships of Astegolimab in
@@ -52,7 +53,7 @@ The PK analysis data set comprises 368 adults with severe asthma on
 medium- or high-dose inhaled corticosteroids plus at least one
 additional controller and at least one exacerbation in the prior 12
 months. Median baseline characteristics (Table 1): age 53 years (18–75),
-body weight 79 kg (43–130), eGFR 87.9 mL/min/1.73 m² (MDRD), blood
+body weight 79 kg (43–130), CRCL 87.9 mL/min/1.73 m² (MDRD eGFR), blood
 eosinophil count 180 cells/µL. 66.8% were female; 84.0% White, 5.4%
 Black, 4.6% Asian, 4.6% Native American, 1.4% multiple races.
 Treatment-emergent anti-drug antibodies were observed in 7.3% of
@@ -78,8 +79,8 @@ record the row-level source; the table below collects them.
 | `lq` (Q/F)                               | 0.171 L/day  | Table 2                     |
 | `allo_clq` (BWT → CL, Q)                 | 0.986        | Table 2, footnote b         |
 | `allo_v` (BWT → Vc, Vp)                  | 1.02         | Table 2, footnote b         |
-| `e_egfr_cl` (BEGFR → CL)                 | 0.431        | Table 2                     |
-| `e_eos_cl` (BEOS → CL)                   | 0.0905       | Table 2                     |
+| `e_crcl_cl` (BEGFR / CRCL → CL)          | 0.431        | Table 2                     |
+| `e_eos_cl` (EOS → CL)                    | 0.0905       | Table 2                     |
 | `e_dose70_frel` (Dose70mg → F)           | −0.153       | Table 2                     |
 | `boxcox_frel` (BoxCox shape on Frel IIV) | −2.81        | Table 2                     |
 | `etalka` (IIV Ka)                        | CV 47.7%     | Table 2                     |
@@ -110,10 +111,10 @@ pop <- tibble(
   dose_mg   = rep(doses, each = n_per_dose),
   # Body weight ~ lognormal matching median 79 kg and range 43-130 kg
   WT        = pmin(130, pmax(43, rlnorm(n_subj, log(79), 0.22))),
-  # eGFR ~ normal matching median 87.9; clip to observed physiological range
-  eGFR      = pmin(160, pmax(30, rnorm(n_subj, 87.9, 20))),
+  # CRCL (MDRD eGFR) ~ normal matching median 87.9; clip to observed physiological range
+  CRCL      = pmin(160, pmax(30, rnorm(n_subj, 87.9, 20))),
   # Blood eosinophils: right-skewed, median 180 cells/uL
-  BEOS      = pmin(2000, pmax(5, rlnorm(n_subj, log(180), 0.9))),
+  EOS      = pmin(2000, pmax(5, rlnorm(n_subj, log(180), 0.9))),
   DOSE_70MG = as.integer(dose_mg == 70)
 )
 pop$treatment <- factor(
@@ -144,7 +145,7 @@ d_obs <- pop |>
 events <- bind_rows(d_dose, d_obs) |>
   arrange(ID, TIME, desc(EVID)) |>
   select(ID, TIME, AMT, EVID, CMT, DV,
-         WT, eGFR, BEOS, DOSE_70MG, treatment, dose_mg)
+         WT, CRCL, EOS, DOSE_70MG, treatment, dose_mg)
 ```
 
 ## Simulation
@@ -223,7 +224,7 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- suppressWarnings(PKNCA::pk.nca(nca_data))
-#>  ■■■■■■■■■■■■■■■■■■■■■             67% |  ETA:  1s
+#>  ■■■■■■■■■■■■■■■■■■■■              64% |  ETA:  1s
 nca_summary <- summary(nca_res)
 knitr::kable(
   nca_summary,
@@ -279,7 +280,7 @@ are therefore reached several months into repeat Q4W dosing.
 ## Assumptions and deviations
 
 - **Covariate distributions.** Approximated from Table 1 aggregate
-  statistics: weight ~ lognormal centered on the 79 kg median; eGFR ~
+  statistics: weight ~ lognormal centered on the 79 kg median; CRCL ~
   normal centered on 87.9 mL/min/1.73 m²; blood eosinophils ~ lognormal
   centered on 180 cells/µL. The original subject-level joint
   distribution is not public.
@@ -287,7 +288,7 @@ are therefore reached several months into repeat Q4W dosing.
   balanced. Zenyatta randomized 2:1:1:1 placebo:70:210:490, so active
   per-arm N ≈ 100 each; the balanced synthetic cohort is chosen for VPC
   readability only.
-- **Baseline-only covariates.** Kotani 2022 uses baseline WT / eGFR /
+- **Baseline-only covariates.** Kotani 2022 uses baseline WT / CRCL /
   blood eosinophils (time-fixed per subject). The same convention is
   applied in the event table.
 - **ADA status.** ADA was reported in 7.3% of patients but was not a

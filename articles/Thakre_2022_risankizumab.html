@@ -129,11 +129,11 @@ phase 3 PsA studies, KEEPsAKE 1 and KEEPsAKE 2) — 3631 concentrations
 from 1527 individuals.</p>
 <p>The model is a two-compartment model with first-order subcutaneous
 absorption and first-order elimination. The final covariate set is body
-weight, age, serum albumin, serum creatinine, and high-sensitivity
-C-reactive protein (hsCRP) on clearance, plus body weight on central
-volume of distribution. ADA titers on CL and body weight on V2 were
-evaluated but did not meet retention criteria and are not in the final
-model.</p>
+weight, age, serum albumin, serum creatinine, and baseline
+high-sensitivity C-reactive protein (CRP) on clearance, plus body weight
+on central volume of distribution. ADA titers on CL and body weight on
+V2 were evaluated but did not meet retention criteria and are not in the
+final model.</p>
 <div class="section level3">
 <h3 id="source-trace">Source trace<a class="anchor" aria-label="anchor" href="#source-trace"></a>
 </h3>
@@ -170,7 +170,7 @@ model.</p>
 <td>Power: (CRE/70.73)^-0.201</td>
 </tr>
 <tr class="odd">
-<td>hsCRP on CL</td>
+<td>CRP (hs-CRP) on CL</td>
 <td>Thakre 2022 Eq. 2 / Table 1</td>
 <td>Power: (CRPHS/5.21)^0.0471</td>
 </tr>
@@ -211,6 +211,10 @@ model.</p>
 <h3 id="covariate-column-naming">Covariate column naming<a class="anchor" aria-label="anchor" href="#covariate-column-naming"></a>
 </h3>
 <table class="table">
+<colgroup>
+<col width="50%">
+<col width="50%">
+</colgroup>
 <thead><tr class="header">
 <th>Source column</th>
 <th>Canonical column used here</th>
@@ -241,7 +245,8 @@ model.</p>
 <td>
 <code>CRPHS</code> (mg/L)</td>
 <td>
-<code>hsCRP</code> (mg/L; canonical name)</td>
+<code>CRP</code> (mg/L; canonical general-scope name; hs-CRP assay
+documented in <code>covariateData[[CRP]]</code>)</td>
 </tr>
 </tbody>
 </table>
@@ -263,7 +268,7 @@ individual parameters bracket the paper’s reference covariates.</p>
 <span>  AGE   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n_subj</span>, <span class="fl">51</span>, <span class="fl">12</span><span class="op">)</span>, <span class="fl">18</span><span class="op">)</span>, <span class="fl">80</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  ALB   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n_subj</span>, <span class="fl">43</span>, <span class="fl">3.5</span><span class="op">)</span>, <span class="fl">30</span><span class="op">)</span>, <span class="fl">52</span><span class="op">)</span>,     <span class="co"># units g/L</span></span>
 <span>  CREAT <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n_subj</span>, <span class="fl">72</span>, <span class="fl">16</span><span class="op">)</span>, <span class="fl">40</span><span class="op">)</span>, <span class="fl">140</span><span class="op">)</span>,     <span class="co"># units umol/L</span></span>
-<span>  hsCRP <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Lognormal.html" class="external-link">rlnorm</a></span><span class="op">(</span><span class="va">n_subj</span>, <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">6</span><span class="op">)</span>, <span class="fl">1.1</span><span class="op">)</span>                     <span class="co"># mg/L, skewed right</span></span>
+<span>  CRP   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Lognormal.html" class="external-link">rlnorm</a></span><span class="op">(</span><span class="va">n_subj</span>, <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">6</span><span class="op">)</span>, <span class="fl">1.1</span><span class="op">)</span>                     <span class="co"># mg/L, skewed right (hs-CRP)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
@@ -483,7 +488,7 @@ maintenance), which is the one reported as
 <span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■                            </span>  10% |  ETA: 17s</span></span>
 <span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■                       </span>  28% |  ETA: 13s</span></span>
 <span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■                 </span>  45% |  ETA: 10s</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■            </span>  63% |  ETA:  7s</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■            </span>  63% |  ETA:  6s</span></span>
 <span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■       </span>  80% |  ETA:  3s</span></span>
 <span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  </span>  97% |  ETA:  0s</span></span>
 <span><span class="va">nca_summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">nca_results</span><span class="op">)</span></span>
@@ -551,8 +556,8 @@ clipped to 30-52 g/L (reference 45 g/L).</li>
 <strong>Serum creatinine:</strong> normal around 72 umol/L, SD 16,
 clipped to 40-140 umol/L (reference 70.73 umol/L).</li>
 <li>
-<strong>hsCRP:</strong> log-normal around a median of 6 mg/L
-(reference 5.21 mg/L). hsCRP is highly skewed in PsA.</li>
+<strong>CRP (hs-CRP assay):</strong> log-normal around a median of 6
+mg/L (reference 5.21 mg/L). hs-CRP is highly skewed in PsA.</li>
 <li>
 <strong>No correlation</strong> between continuous covariates is
 imposed; the paper does not report joint distributions.</li>

@@ -120,43 +120,6 @@ for that model.</p>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="left">PK_1cmt</td>
-<td align="left">One compartment PK model with linear clearance</td>
-</tr>
-<tr class="even">
-<td align="left">PK_1cmt_des</td>
-<td align="left">One compartment PK model with linear clearance using
-differential equations</td>
-</tr>
-<tr class="odd">
-<td align="left">PK_2cmt</td>
-<td align="left">Two compartment PK model with linear clearance</td>
-</tr>
-<tr class="even">
-<td align="left">PK_2cmt_des</td>
-<td align="left">Two compartment PK model with linear clearance using
-differential equations</td>
-</tr>
-<tr class="odd">
-<td align="left">PK_2cmt_no_depot</td>
-<td align="left">Two compartment PK model with linear clearance using
-differential equations</td>
-</tr>
-<tr class="even">
-<td align="left">PK_2cmt_tdcl_des</td>
-<td align="left">Two compartment PK model with time-dependent clearance
-using differential equations (structured like nivolumab PK model)</td>
-</tr>
-<tr class="odd">
-<td align="left">PK_3cmt</td>
-<td align="left">Three compartment PK model with linear clearance</td>
-</tr>
-<tr class="even">
-<td align="left">PK_3cmt_des</td>
-<td align="left">Three compartment PK model with linear clearance using
-differential equations</td>
-</tr>
-<tr class="odd">
 <td align="left">igg_kim_2006</td>
 <td align="left">Immunoglobulin G (IgG) model for nonlinear metabolism
 in healthy subjects</td>
@@ -172,19 +135,29 @@ healthy subjects and patients with PKU</td>
 clearance using differential equations</td>
 </tr>
 <tr class="even">
+<td align="left">indirect_1cpt_inhi_kin_CLV</td>
+<td align="left">One compartment indirect response model with inhibition
+of kin.</td>
+</tr>
+<tr class="odd">
+<td align="left">indirect_1cpt_inhi_kin_r0rmaxcrmax</td>
+<td align="left">One compartment indirect response model with inhibition
+of kin.</td>
+</tr>
+<tr class="even">
 <td align="left">indirect_1cpt_inhi_kin</td>
 <td align="left">One compartment indirect response model with inhibition
 of kin.</td>
 </tr>
 <tr class="odd">
-<td align="left">indirect_1cpt_inhi_kin_CLV</td>
+<td align="left">indirect_1cpt_inhi_kout_CLV</td>
 <td align="left">One compartment indirect response model with inhibition
-of kin.</td>
+of kout.</td>
 </tr>
 <tr class="even">
-<td align="left">indirect_1cpt_inhi_kin_r0rmaxcrmax</td>
+<td align="left">indirect_1cpt_inhi_kout_r0rmaxcrmax</td>
 <td align="left">One compartment indirect response model with inhibition
-of kin.</td>
+of kout.</td>
 </tr>
 <tr class="odd">
 <td align="left">indirect_1cpt_inhi_kout</td>
@@ -192,14 +165,14 @@ of kin.</td>
 of kout.</td>
 </tr>
 <tr class="even">
-<td align="left">indirect_1cpt_inhi_kout_CLV</td>
-<td align="left">One compartment indirect response model with inhibition
-of kout.</td>
+<td align="left">indirect_1cpt_stim_kin_CLV</td>
+<td align="left">One compartment indirect response model with
+stimulation of kin.</td>
 </tr>
 <tr class="odd">
-<td align="left">indirect_1cpt_inhi_kout_r0rmaxcrmax</td>
-<td align="left">One compartment indirect response model with inhibition
-of kout.</td>
+<td align="left">indirect_1cpt_stim_kin_r0rmaxcrmax</td>
+<td align="left">One compartment indirect response model with
+stimulation of kin.</td>
 </tr>
 <tr class="even">
 <td align="left">indirect_1cpt_stim_kin</td>
@@ -207,29 +180,19 @@ of kout.</td>
 stimulation of kin.Parameterized using rate cosntants</td>
 </tr>
 <tr class="odd">
-<td align="left">indirect_1cpt_stim_kin_CLV</td>
+<td align="left">indirect_1cpt_stim_kout_CLV</td>
 <td align="left">One compartment indirect response model with
-stimulation of kin.</td>
+stimulation of kout.</td>
 </tr>
 <tr class="even">
-<td align="left">indirect_1cpt_stim_kin_r0rmaxcrmax</td>
+<td align="left">indirect_1cpt_stim_kout_r0rmaxcrmax</td>
 <td align="left">One compartment indirect response model with
-stimulation of kin.</td>
+stimulation of kout.</td>
 </tr>
 <tr class="odd">
 <td align="left">indirect_1cpt_stim_kout</td>
 <td align="left">One compartment indirect response model with
 stimulation of kout.Parameterized using rate cosntants</td>
-</tr>
-<tr class="even">
-<td align="left">indirect_1cpt_stim_kout_CLV</td>
-<td align="left">One compartment indirect response model with
-stimulation of kout.</td>
-</tr>
-<tr class="odd">
-<td align="left">indirect_1cpt_stim_kout_r0rmaxcrmax</td>
-<td align="left">One compartment indirect response model with
-stimulation of kout.</td>
 </tr>
 <tr class="even">
 <td align="left">indirect_circ_1cpt_inhi_kin_kin_t</td>
@@ -342,6 +305,43 @@ order and zero order absorptions</td>
 <td align="left">PK_double_sim_11</td>
 <td align="left">PK double absorption model with simultaneous first
 order absorptions</td>
+</tr>
+<tr class="odd">
+<td align="left">PK_1cmt_des</td>
+<td align="left">One compartment PK model with linear clearance using
+differential equations</td>
+</tr>
+<tr class="even">
+<td align="left">PK_1cmt</td>
+<td align="left">One compartment PK model with linear clearance</td>
+</tr>
+<tr class="odd">
+<td align="left">PK_2cmt_des</td>
+<td align="left">Two compartment PK model with linear clearance using
+differential equations</td>
+</tr>
+<tr class="even">
+<td align="left">PK_2cmt_no_depot</td>
+<td align="left">Two compartment PK model with linear clearance using
+differential equations</td>
+</tr>
+<tr class="odd">
+<td align="left">PK_2cmt_tdcl_des</td>
+<td align="left">Two compartment PK model with time-dependent clearance
+using differential equations (structured like nivolumab PK model)</td>
+</tr>
+<tr class="even">
+<td align="left">PK_2cmt</td>
+<td align="left">Two compartment PK model with linear clearance</td>
+</tr>
+<tr class="odd">
+<td align="left">PK_3cmt_des</td>
+<td align="left">Three compartment PK model with linear clearance using
+differential equations</td>
+</tr>
+<tr class="even">
+<td align="left">PK_3cmt</td>
+<td align="left">Three compartment PK model with linear clearance</td>
 </tr>
 <tr class="odd">
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Budha_2023_tislelizumab.html">Budha_2023_tislelizumab</a></td>
@@ -524,13 +524,13 @@ effects on cancer cell growth</td>
 <td align="left">Oncology tumor growth model in xenograft models</td>
 </tr>
 <tr class="even">
-<td align="left">tgi_no_sat_Koch</td>
-<td align="left">One compartment TGI model with with exponential tumor
+<td align="left">tgi_no_sat_expo</td>
+<td align="left">One-compartment TGI model with exponential tumor
 growth, without saturation.</td>
 </tr>
 <tr class="odd">
-<td align="left">tgi_no_sat_expo</td>
-<td align="left">One-compartment TGI model with exponential tumor
+<td align="left">tgi_no_sat_Koch</td>
+<td align="left">One compartment TGI model with with exponential tumor
 growth, without saturation.</td>
 </tr>
 <tr class="even">
@@ -544,17 +544,6 @@ growth, without saturation.</td>
 growth, without saturation.</td>
 </tr>
 <tr class="even">
-<td align="left">tgi_sat_Gompertz</td>
-<td align="left">One compartment TGI model with tumor growth
-proportional to tumor size through a generalized logistic function, with
-saturation.</td>
-</tr>
-<tr class="odd">
-<td align="left">tgi_sat_VonBertalanffy</td>
-<td align="left">One compartment TGI model where tumor growth is limited
-by a loss term, with saturation.</td>
-</tr>
-<tr class="even">
 <td align="left">tgi_sat_genLogistic</td>
 <td align="left">One compartment TGI model with tumor growth
 proportional to tumor size through a generalized logistic function, with
@@ -566,9 +555,20 @@ saturation.</td>
 by a loss term, with saturation.</td>
 </tr>
 <tr class="even">
+<td align="left">tgi_sat_Gompertz</td>
+<td align="left">One compartment TGI model with tumor growth
+proportional to tumor size through a generalized logistic function, with
+saturation.</td>
+</tr>
+<tr class="odd">
 <td align="left">tgi_sat_logistic</td>
 <td align="left">One compartment TGI model with with exponential tumor
 growth that decelerates linearly, with saturation.</td>
+</tr>
+<tr class="even">
+<td align="left">tgi_sat_VonBertalanffy</td>
+<td align="left">One compartment TGI model where tumor growth is limited
+by a loss term, with saturation.</td>
 </tr>
 </tbody>
 </table></main>

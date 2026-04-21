@@ -66,7 +66,7 @@ collects the mapping in one place for reviewer audit.
 | ALB on Kdecay                                  | Yamada 2025 Table 1                                                            | Power: `(ALB/39.1)^1.48`                                                                                |
 | HGB on V1                                      | Yamada 2025 Table 1                                                            | Power: `(HGB/118)^-0.374`                                                                               |
 | TBILI on V1                                    | Yamada 2025 Table 1                                                            | Power: `(TBILI/0.38)^0.0347`                                                                            |
-| GAST on CLss, CLT, V1                          | Yamada 2025 Table 1                                                            | Dummy: `1 + theta·GAST` with theta = -0.182, -0.495, +0.103                                             |
+| PRIOR_GAST on CLss, CLT, V1                    | Yamada 2025 Table 1                                                            | Dummy: `1 + theta·PRIOR_GAST` with theta = -0.182, -0.495, +0.103                                       |
 | SEX on CLss, V1                                | Yamada 2025 Table 1                                                            | Dummy: `1 + theta·SEXF` with theta = -0.195, -0.108                                                     |
 | COMB on V1 (if EOX)                            | Yamada 2025 Table 1                                                            | Dummy: `1 + 0.466·COMB_EOX`                                                                             |
 | Reference subject                              | Yamada 2025 Figure 1 caption                                                   | BSA 1.70 m^2, ALB 39.1 g/L, HGB 118 g/L, TBILI 0.38 mg/dL, male, no prior gastrectomy, non-EOX backbone |
@@ -83,7 +83,7 @@ collects the mapping in one place for reviewer audit.
 | `ALB`                  | `ALB` (g/L)                | Time-fixed baseline; SI units in this paper.                                                                           |
 | `HGB`                  | `HGB` (g/L)                | Time-fixed baseline; SI units in this paper.                                                                           |
 | `TBILI`                | `TBILI` (mg/dL)            | Time-fixed baseline; US units in this paper.                                                                           |
-| `GAST`                 | `GAST` (binary)            | 1 = prior gastrectomy; 0 = none.                                                                                       |
+| `PRIOR_GAST`           | `PRIOR_GAST` (binary)      | 1 = prior gastrectomy; 0 = none.                                                                                       |
 | `SEX` (1 = female)     | `SEXF`                     | Encoding matches canonical SEXF; column renamed.                                                                       |
 | `COMB` (EOX vs others) | `COMB_EOX`                 | 1 = EOX backbone; 0 = mFOLFOX6 / CAPOX / single agent. Column renamed to preserve the semantic meaning of the 1-level. |
 
@@ -105,7 +105,7 @@ pop <- data.frame(
   HGB      = pmin(pmax(rnorm(n_subj, 118,  16),  70), 170),  # g/L
   TBILI    = pmin(pmax(rlnorm(n_subj, log(0.45), 0.45), 0.10), 2.00), # mg/dL
   SEXF     = rbinom(n_subj, 1, 0.34),          # ~34% female in phase 3 SPOTLIGHT/GLOW
-  GAST     = rbinom(n_subj, 1, 0.30),          # ~30% prior gastrectomy
+  PRIOR_GAST     = rbinom(n_subj, 1, 0.30),          # ~30% prior gastrectomy
   COMB_EOX = rbinom(n_subj, 1, 0.04)           # EOX used in a small subset
 )
 ```
@@ -274,8 +274,9 @@ data_obj <- PKNCAdata(
 )
 
 nca_results <- pk.nca(data_obj)
-#>  ■■■■■■■■■■■■■■■■                  49% |  ETA:  4s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■       88% |  ETA:  1s
+#>  ■■■■■                             14% |  ETA:  7s
+#>  ■■■■■■■■■■■■■■■■                  51% |  ETA:  4s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      91% |  ETA:  1s
 nca_summary <- summary(nca_results)
 knitr::kable(
   nca_summary,
@@ -367,8 +368,8 @@ reference population rather than reproducing it:
   in oncology.
 - **SEXF** ~ Bernoulli(0.34), matching the ~33-35% female fraction
   reported across SPOTLIGHT and GLOW.
-- **GAST** ~ Bernoulli(0.30). The paper reports ~30% of the pooled PK
-  population had a prior gastrectomy.
+- **PRIOR_GAST** ~ Bernoulli(0.30). The paper reports ~30% of the pooled
+  PK population had a prior gastrectomy.
 - **COMB_EOX** ~ Bernoulli(0.04). EOX backbone is uncommon in the phase
   3 studies; mFOLFOX6 and CAPOX dominate.
 - **Residual error interpretation**: Table 1 reports “Proportional error

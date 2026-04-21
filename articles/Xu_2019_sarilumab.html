@@ -221,15 +221,15 @@ mg/L.</p>
 </tr>
 <tr class="odd">
 <td>
-<code>e_crcl_vm</code> (CRCL_BSA/100 exponent on Vm)</td>
+<code>e_crcl_vm</code> (CRCL/100 exponent on Vm)</td>
 <td><code>0.212</code></td>
 <td>Table 3, theta13 / CrCl effect on Vm</td>
 </tr>
 <tr class="even">
 <td>
-<code>e_blcrp_vm</code> (BLCRP/14.2 exponent on Vm)</td>
+<code>e_crp_vm</code> (CRP/14.2 exponent on Vm)</td>
 <td><code>0.0299</code></td>
-<td>Table 3, theta12 / BLCRP effect on Vm</td>
+<td>Table 3, theta12 / CRP effect on Vm</td>
 </tr>
 <tr class="odd">
 <td>
@@ -331,10 +331,10 @@ during model extraction (see the <code>SEXF</code> entry in
 nlmixr2lib uses 1 = female, so the effect is applied as
 <code>e_sexf_cl^SEXF</code>.</li>
 <li>
-<strong>CRCL_BSA canonical column.</strong> Xu 2019 defines the Vm
+<strong>CRCL canonical column.</strong> Xu 2019 defines the Vm
 covariate term as <code>(1.73 * CrCl / BSA / 100)^theta13</code> where
 <code>CrCl</code> is in mL/min and <code>BSA</code> in m^2. The
-canonical <code>CRCL_BSA</code> column carries the precomputed
+canonical <code>CRCL</code> column carries the precomputed
 <code>1.73 * CrCl / BSA</code> value (units mL/min/1.73 m^2) with
 reference value 100.</li>
 </ul>
@@ -357,8 +357,8 @@ subject-level observed data were released with the paper.</p>
 <span>  ADA_POS  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="va">n_subj</span>, <span class="fl">1</span>, <span class="fl">0.18</span><span class="op">)</span>,</span>
 <span>  FORM_DP2 <span class="op">=</span> <span class="fl">0L</span>,                          <span class="co"># commercial DP3 formulation for labelled regimen</span></span>
 <span>  ALBR     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n_subj</span>, mean <span class="op">=</span> <span class="fl">0.78</span>, sd <span class="op">=</span> <span class="fl">0.08</span><span class="op">)</span>, <span class="fl">0.50</span>, <span class="fl">1.05</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  CRCL_BSA <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n_subj</span>, mean <span class="op">=</span> <span class="fl">100</span>,  sd <span class="op">=</span> <span class="fl">25</span><span class="op">)</span>,   <span class="fl">40</span>,  <span class="fl">200</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  BLCRP    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Lognormal.html" class="external-link">rlnorm</a></span><span class="op">(</span><span class="va">n_subj</span>, <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">14.2</span><span class="op">)</span> <span class="op">-</span> <span class="fl">0.5</span> <span class="op">*</span> <span class="fl">0.9</span><span class="op">^</span><span class="fl">2</span>, <span class="fl">0.9</span><span class="op">)</span>, <span class="fl">0.5</span><span class="op">)</span></span>
+<span>  CRCL <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n_subj</span>, mean <span class="op">=</span> <span class="fl">100</span>,  sd <span class="op">=</span> <span class="fl">25</span><span class="op">)</span>,   <span class="fl">40</span>,  <span class="fl">200</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  CRP    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Lognormal.html" class="external-link">rlnorm</a></span><span class="op">(</span><span class="va">n_subj</span>, <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">14.2</span><span class="op">)</span> <span class="op">-</span> <span class="fl">0.5</span> <span class="op">*</span> <span class="fl">0.9</span><span class="op">^</span><span class="fl">2</span>, <span class="fl">0.9</span><span class="op">)</span>, <span class="fl">0.5</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>Two regimens are simulated in parallel: the labelled 200 mg SC Q2W
 adult RA dose and the dose-reduced 150 mg SC Q2W option. The dosing
@@ -388,7 +388,7 @@ linear range) to ensure the final Q2W cycle is at steady state.</p>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">ev_dose</span>, <span class="va">ev_obs</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">evid</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">amt</span>, <span class="va">cmt</span>, <span class="va">evid</span>, <span class="va">treatment</span>,</span>
-<span>                  <span class="va">WT</span>, <span class="va">SEXF</span>, <span class="va">ADA_POS</span>, <span class="va">FORM_DP2</span>, <span class="va">ALBR</span>, <span class="va">CRCL_BSA</span>, <span class="va">BLCRP</span><span class="op">)</span></span>
+<span>                  <span class="va">WT</span>, <span class="va">SEXF</span>, <span class="va">ADA_POS</span>, <span class="va">FORM_DP2</span>, <span class="va">ALBR</span>, <span class="va">CRCL</span>, <span class="va">CRP</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="va">events_200</span> <span class="op">&lt;-</span> <span class="fu">build_events</span><span class="op">(</span><span class="va">cohort</span>, <span class="fl">200</span>, <span class="st">"200mg_Q2W"</span><span class="op">)</span></span>
@@ -402,7 +402,7 @@ linear range) to ensure the final Q2W cycle is at steady state.</p>
 <code class="sourceCode R"><span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxode2.html" class="external-link">rxode2</a></span><span class="op">(</span><span class="fu"><a href="../reference/readModelDb.html">readModelDb</a></span><span class="op">(</span><span class="st">"Xu_2019_sarilumab"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> parameter labels from comments will be replaced by 'label()'</span></span>
 <span><span class="va">keep_cols</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"WT"</span>, <span class="st">"SEXF"</span>, <span class="st">"ADA_POS"</span>, <span class="st">"FORM_DP2"</span>,</span>
-<span>               <span class="st">"ALBR"</span>, <span class="st">"CRCL_BSA"</span>, <span class="st">"BLCRP"</span>, <span class="st">"treatment"</span><span class="op">)</span></span>
+<span>               <span class="st">"ALBR"</span>, <span class="st">"CRCL"</span>, <span class="st">"CRP"</span>, <span class="st">"treatment"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/split.html" class="external-link">split</a></span><span class="op">(</span><span class="va">events</span>, <span class="va">events</span><span class="op">$</span><span class="va">treatment</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">ev</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">out</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod</span>, events <span class="op">=</span> <span class="va">ev</span>, keep <span class="op">=</span> <span class="va">keep_cols</span><span class="op">)</span></span>
@@ -507,8 +507,7 @@ subject and treatment.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">nca_res</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_obj</span>, <span class="va">dose_obj</span>, intervals <span class="op">=</span> <span class="va">intervals</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■                      </span>  31% |  ETA:  4s</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■       </span>  80% |  ETA:  1s</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■              </span>  56% |  ETA:  3s</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">nca_res</span><span class="op">)</span></span>
 <span><span class="co">#&gt;  start end treatment   N     auclast        cmax         cmin              tmax</span></span>
 <span><span class="co">#&gt;      0  14 150mg_Q2W 400 62.0 [50.6] 9.00 [43.2] 0.594 [99.5] 3.00 [1.00, 5.00]</span></span>
@@ -523,15 +522,15 @@ subject and treatment.</p>
 </h3>
 <p>To compare against the published Table 4 mean exposures the block
 below simulates the typical patient (IIV zeroed, reference covariate
-values: 71 kg female, ADA-negative, DP3 formulation, ALBR = 0.78,
-CRCL_BSA = 100, BLCRP = 14.2) and extracts Cmax, Ctrough, and AUC0-14d
-at steady state.</p>
+values: 71 kg female, ADA-negative, DP3 formulation, ALBR = 0.78, CRCL =
+100, CRP = 14.2) and extracts Cmax, Ctrough, and AUC0-14d at steady
+state.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod_typical</span> <span class="op">&lt;-</span> <span class="va">mod</span> <span class="op">|&gt;</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/zeroRe.html" class="external-link">zeroRe</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">typical_cov</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
 <span>  id <span class="op">=</span> <span class="fl">1L</span>, WT <span class="op">=</span> <span class="fl">71</span>, SEXF <span class="op">=</span> <span class="fl">1L</span>, ADA_POS <span class="op">=</span> <span class="fl">0L</span>, FORM_DP2 <span class="op">=</span> <span class="fl">0L</span>,</span>
-<span>  ALBR <span class="op">=</span> <span class="fl">0.78</span>, CRCL_BSA <span class="op">=</span> <span class="fl">100</span>, BLCRP <span class="op">=</span> <span class="fl">14.2</span></span>
+<span>  ALBR <span class="op">=</span> <span class="fl">0.78</span>, CRCL <span class="op">=</span> <span class="fl">100</span>, CRP <span class="op">=</span> <span class="fl">14.2</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">ev_typ</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">dose</span><span class="op">)</span> <span class="op">{</span></span>
@@ -548,7 +547,7 @@ at steady state.</p>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">ev_dose</span>, <span class="va">ev_obs</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">evid</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">amt</span>, <span class="va">cmt</span>, <span class="va">evid</span>,</span>
-<span>                  <span class="va">WT</span>, <span class="va">SEXF</span>, <span class="va">ADA_POS</span>, <span class="va">FORM_DP2</span>, <span class="va">ALBR</span>, <span class="va">CRCL_BSA</span>, <span class="va">BLCRP</span><span class="op">)</span></span>
+<span>                  <span class="va">WT</span>, <span class="va">SEXF</span>, <span class="va">ADA_POS</span>, <span class="va">FORM_DP2</span>, <span class="va">ALBR</span>, <span class="va">CRCL</span>, <span class="va">CRP</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="va">sim_typ_200</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_typical</span>, events <span class="op">=</span> <span class="fu">ev_typ</span><span class="op">(</span><span class="fl">200</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
@@ -671,9 +670,9 @@ sourced from the published main text (Tables 2-4 and the covariate-model
 equations on p. 1458-1459). If the supplement exposes different digits
 of precision, an update may be warranted.</li>
 <li>
-<strong>CRCL_BSA pre-computation.</strong> Xu 2019 writes the renal
+<strong>CRCL pre-computation.</strong> Xu 2019 writes the renal
 covariate term as <code>(1.73 * CrCl / BSA / 100)^theta13</code>. The
-canonical <code>CRCL_BSA</code> column in nlmixr2lib carries the
+canonical <code>CRCL</code> column in nlmixr2lib carries the
 pre-computed <code>1.73 * CrCl / BSA</code> value in mL/min/1.73 m^2,
 with reference 100.</li>
 <li>
@@ -686,9 +685,9 @@ different reference ULN should supply
 <li>
 <strong>Virtual-cohort covariate distributions.</strong> Body weight
 is drawn from <code>N(71, 17)</code> kg truncated to [40, 165]; albumin
-ratio from <code>N(0.78, 0.08)</code> truncated to [0.50, 1.05];
-CRCL_BSA from <code>N(100, 25)</code> truncated to [40, 200]; baseline
-CRP from a log-normal with median 14.2 mg/L and geometric SD
+ratio from <code>N(0.78, 0.08)</code> truncated to [0.50, 1.05]; CRCL
+from <code>N(100, 25)</code> truncated to [40, 200]; baseline CRP from a
+log-normal with median 14.2 mg/L and geometric SD
 <code>exp(0.9) ~ 2.5x</code>. These ranges approximate Xu 2019 Table 2
 but are not drawn from observed subject-level data, which are not
 publicly released.</li>

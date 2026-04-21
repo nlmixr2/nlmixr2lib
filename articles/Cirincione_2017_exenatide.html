@@ -155,7 +155,7 @@ table below collects them for review.</p>
 </tr>
 <tr class="even">
 <td>
-<code>e_cl_gfr</code> (Cl_eGFR)</td>
+<code>e_cl_crcl</code> (Cl_eGFR, Cirincione notation)</td>
 <td><code>0.838</code></td>
 <td>Table 2</td>
 </tr>
@@ -282,7 +282,7 @@ first-order SC absorption</td>
 </h2>
 <p>Original observed data are not publicly available. The cohort below
 approximates the Table 1 demographics: body weight from a truncated
-normal centered on 86 kg (SD 16.2), eGFR from a distribution matching
+normal centered on 86 kg (SD 16.2), CRCL from a distribution matching
 the reported renal-function bands. Only the non-Study-1 / non-Study-5
 (pooled “other”) residual group is simulated so that the NCA comparison
 uses the largest share of the original cohort. A fixed 10 ug single SC
@@ -308,7 +308,7 @@ dose is used to match the paper’s Figure 5 reference dose.</p>
 <span><span class="va">cohort</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
 <span>  id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n_subj</span><span class="op">)</span>,</span>
 <span>  WT <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n_subj</span>, mean <span class="op">=</span> <span class="fl">86</span>, sd <span class="op">=</span> <span class="fl">16.2</span><span class="op">)</span>, <span class="fl">52.6</span><span class="op">)</span>, <span class="fl">162</span><span class="op">)</span>,</span>
-<span>  eGFR <span class="op">=</span> <span class="va">egfr_draws</span>,</span>
+<span>  CRCL <span class="op">=</span> <span class="va">egfr_draws</span>,</span>
 <span>  STUDY1 <span class="op">=</span> <span class="fl">0L</span>,</span>
 <span>  STUDY5 <span class="op">=</span> <span class="fl">0L</span>,</span>
 <span>  treatment <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">sample_band</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"normal"</span>, <span class="st">"mild"</span>, <span class="st">"moderate"</span>, <span class="st">"severe"</span>, <span class="st">"ESRD"</span><span class="op">)</span><span class="op">)</span></span>
@@ -316,12 +316,12 @@ dose is used to match the paper’s Figure 5 reference dose.</p>
 <span></span>
 <span><span class="va">events</span> <span class="op">&lt;-</span> <span class="va">cohort</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>amt <span class="op">=</span> <span class="fl">10</span>, cmt <span class="op">=</span> <span class="st">"depot"</span>, evid <span class="op">=</span> <span class="fl">1L</span>, time <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">amt</span>, <span class="va">cmt</span>, <span class="va">evid</span>, <span class="va">WT</span>, <span class="va">eGFR</span>, <span class="va">STUDY1</span>, <span class="va">STUDY5</span>, <span class="va">treatment</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">amt</span>, <span class="va">cmt</span>, <span class="va">evid</span>, <span class="va">WT</span>, <span class="va">CRCL</span>, <span class="va">STUDY1</span>, <span class="va">STUDY5</span>, <span class="va">treatment</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span></span>
 <span>    <span class="va">cohort</span> <span class="op">|&gt;</span></span>
 <span>      <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/expand.html" class="external-link">crossing</a></span><span class="op">(</span>time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">4</span>, <span class="fl">0.1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">4.2</span>, <span class="fl">12</span>, <span class="fl">0.2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>      <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>amt <span class="op">=</span> <span class="fl">0</span>, cmt <span class="op">=</span> <span class="cn">NA_character_</span>, evid <span class="op">=</span> <span class="fl">0L</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>      <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">amt</span>, <span class="va">cmt</span>, <span class="va">evid</span>, <span class="va">WT</span>, <span class="va">eGFR</span>, <span class="va">STUDY1</span>, <span class="va">STUDY5</span>, <span class="va">treatment</span><span class="op">)</span></span>
+<span>      <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">amt</span>, <span class="va">cmt</span>, <span class="va">evid</span>, <span class="va">WT</span>, <span class="va">CRCL</span>, <span class="va">STUDY1</span>, <span class="va">STUDY5</span>, <span class="va">treatment</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">evid</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -331,7 +331,7 @@ dose is used to match the paper’s Figure 5 reference dose.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxode2.html" class="external-link">rxode2</a></span><span class="op">(</span><span class="fu"><a href="../reference/readModelDb.html">readModelDb</a></span><span class="op">(</span><span class="st">"Cirincione_2017_exenatide"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> parameter labels from comments will be replaced by 'label()'</span></span>
-<span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod</span>, events <span class="op">=</span> <span class="va">events</span>, keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"WT"</span>, <span class="st">"eGFR"</span>, <span class="st">"treatment"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod</span>, events <span class="op">=</span> <span class="va">events</span>, keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"WT"</span>, <span class="st">"CRCL"</span>, <span class="st">"treatment"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>For deterministic replication (typical-value predictions without
 between-subject variability, matching the paper’s Figure 5):</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
@@ -340,10 +340,10 @@ between-subject variability, matching the paper’s Figure 5):</p>
 <span></span>
 <span><span class="va">typical_scenarios</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
 <span>  id <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">6</span>,</span>
-<span>  scenario <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"75 kg, eGFR 90"</span>, <span class="st">"100 kg, eGFR 90"</span>, <span class="st">"125 kg, eGFR 90"</span>,</span>
-<span>    <span class="st">"75 kg, eGFR 75"</span>, <span class="st">"75 kg, eGFR 45"</span>, <span class="st">"median (84.8 kg, eGFR 80)"</span><span class="op">)</span>,</span>
+<span>  scenario <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"75 kg, CRCL 90"</span>, <span class="st">"100 kg, CRCL 90"</span>, <span class="st">"125 kg, CRCL 90"</span>,</span>
+<span>    <span class="st">"75 kg, CRCL 75"</span>, <span class="st">"75 kg, CRCL 45"</span>, <span class="st">"median (84.8 kg, CRCL 80)"</span><span class="op">)</span>,</span>
 <span>  WT <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">75</span>, <span class="fl">100</span>, <span class="fl">125</span>, <span class="fl">75</span>, <span class="fl">75</span>, <span class="fl">84.8</span><span class="op">)</span>,</span>
-<span>  eGFR <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">90</span>, <span class="fl">90</span>, <span class="fl">90</span>, <span class="fl">75</span>, <span class="fl">45</span>, <span class="fl">80</span><span class="op">)</span>,</span>
+<span>  CRCL <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">90</span>, <span class="fl">90</span>, <span class="fl">90</span>, <span class="fl">75</span>, <span class="fl">45</span>, <span class="fl">80</span><span class="op">)</span>,</span>
 <span>  STUDY1 <span class="op">=</span> <span class="fl">0L</span>,</span>
 <span>  STUDY5 <span class="op">=</span> <span class="fl">0L</span></span>
 <span><span class="op">)</span></span>
@@ -358,7 +358,7 @@ between-subject variability, matching the paper’s Figure 5):</p>
 <span></span>
 <span><span class="va">sim_typical</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span></span>
 <span>  <span class="va">mod_typical</span>, events <span class="op">=</span> <span class="va">ev_typical</span>,</span>
-<span>  params <span class="op">=</span> <span class="va">typical_scenarios</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span>, <span class="st">"WT"</span>, <span class="st">"eGFR"</span>, <span class="st">"STUDY1"</span>, <span class="st">"STUDY5"</span><span class="op">)</span><span class="op">]</span>,</span>
+<span>  params <span class="op">=</span> <span class="va">typical_scenarios</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span>, <span class="st">"WT"</span>, <span class="st">"CRCL"</span>, <span class="st">"STUDY1"</span>, <span class="st">"STUDY5"</span><span class="op">)</span><span class="op">]</span>,</span>
 <span>  returnType <span class="op">=</span> <span class="st">"tibble"</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">typical_scenarios</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span>, <span class="st">"scenario"</span><span class="op">)</span><span class="op">]</span>, by <span class="op">=</span> <span class="st">"id"</span><span class="op">)</span></span>
@@ -369,11 +369,11 @@ between-subject variability, matching the paper’s Figure 5):</p>
 <h2 id="replicate-published-figures">Replicate published figures<a class="anchor" aria-label="anchor" href="#replicate-published-figures"></a>
 </h2>
 <div class="section level3">
-<h3 id="figure-5-typical-concentration-by-body-weight-and-egfr">Figure 5 — typical concentration by body weight and eGFR<a class="anchor" aria-label="anchor" href="#figure-5-typical-concentration-by-body-weight-and-egfr"></a>
+<h3 id="figure-5-typical-concentration-by-body-weight-and-crcl">Figure 5 — typical concentration by body weight and CRCL<a class="anchor" aria-label="anchor" href="#figure-5-typical-concentration-by-body-weight-and-crcl"></a>
 </h3>
 <p>Cirincione 2017 Figure 5 shows simulated typical concentration-time
-profiles after a 10 ug SC dose across body weight and eGFR scenarios.
-Lower body weight and lower eGFR both increase exposure (lower central
+profiles after a 10 ug SC dose across body weight and CRCL scenarios.
+Lower body weight and lower CRCL both increase exposure (lower central
 volume and lower linear clearance, respectively).</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim_typical</span> <span class="op">|&gt;</span></span>
@@ -467,11 +467,8 @@ values.</p>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
 <span><span class="co">#&gt;  <span style="color: #00BB00;">■■                              </span>   2% |  ETA:  1m</span></span>
 <span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
@@ -645,7 +642,6 @@ values.</p>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
 <span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■                         </span>  20% |  ETA: 42s</span></span>
 <span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
@@ -707,7 +703,124 @@ values.</p>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■                       </span>  26% |  ETA: 38s</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■                       </span>  26% |  ETA: 39s</span></span>
+<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■                      </span>  31% |  ETA: 36s</span></span>
+<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■                    </span>  37% |  ETA: 33s</span></span>
 <span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
@@ -768,66 +881,7 @@ values.</p>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■                     </span>  32% |  ETA: 35s</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■                    </span>  38% |  ETA: 32s</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■                  </span>  43% |  ETA: 29s</span></span>
 <span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
@@ -891,61 +945,8 @@ values.</p>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■                  </span>  44% |  ETA: 28s</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■                </span>  49% |  ETA: 26s</span></span>
 <span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
@@ -974,7 +975,263 @@ values.</p>
 <span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
 <span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
 <span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■               </span>  52% |  ETA: 23s</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■        </span>  78% |  ETA:  8s</span></span>
 <span><span class="co">#&gt; Warning: Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
 <span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
 <span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
@@ -1036,263 +1293,6 @@ values.</p>
 <span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
 <span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
 <span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■      </span>  84% |  ETA:  5s</span></span>
-<span><span class="co">#&gt; Warning: Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
 <span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
 <span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
 <span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
@@ -1468,7 +1468,7 @@ values.</p>
 <h3 id="comparison-against-published-figure-5-values">Comparison against published Figure 5 values<a class="anchor" aria-label="anchor" href="#comparison-against-published-figure-5-values"></a>
 </h3>
 <p>The paper reports typical Cmax at 75 kg of approximately 287, 273,
-and 321 pg/mL for eGFR of 90, 75, and 45 mL/min/1.73 m^2, respectively
+and 321 pg/mL for CRCL of 90, 75, and 45 mL/min/1.73 m^2, respectively
 (Figure 5), and typical terminal half-life of ~2.4 h. A deterministic
 (“typical”) check against the simulated cohort:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
@@ -1497,12 +1497,12 @@ and 321 pg/mL for eGFR of 90, 75, and 45 mL/min/1.73 m^2, respectively
 <span></span>
 <span><span class="va">published</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html" class="external-link">tribble</a></span><span class="op">(</span></span>
 <span>  <span class="op">~</span><span class="va">treatment</span>, <span class="op">~</span><span class="va">cmax_pub</span>, <span class="op">~</span><span class="va">thalf_pub</span>,</span>
-<span>  <span class="st">"75 kg, eGFR 90"</span>, <span class="fl">287</span>, <span class="fl">2.4</span>,</span>
-<span>  <span class="st">"100 kg, eGFR 90"</span>, <span class="fl">237</span>, <span class="fl">2.4</span>,</span>
-<span>  <span class="st">"125 kg, eGFR 90"</span>, <span class="fl">189</span>, <span class="fl">2.4</span>,</span>
-<span>  <span class="st">"75 kg, eGFR 75"</span>, <span class="fl">273</span>, <span class="fl">2.4</span>,</span>
-<span>  <span class="st">"75 kg, eGFR 45"</span>, <span class="fl">321</span>, <span class="fl">2.4</span>,</span>
-<span>  <span class="st">"median (84.8 kg, eGFR 80)"</span>, <span class="cn">NA</span>, <span class="fl">2.4</span></span>
+<span>  <span class="st">"75 kg, CRCL 90"</span>, <span class="fl">287</span>, <span class="fl">2.4</span>,</span>
+<span>  <span class="st">"100 kg, CRCL 90"</span>, <span class="fl">237</span>, <span class="fl">2.4</span>,</span>
+<span>  <span class="st">"125 kg, CRCL 90"</span>, <span class="fl">189</span>, <span class="fl">2.4</span>,</span>
+<span>  <span class="st">"75 kg, CRCL 75"</span>, <span class="fl">273</span>, <span class="fl">2.4</span>,</span>
+<span>  <span class="st">"75 kg, CRCL 45"</span>, <span class="fl">321</span>, <span class="fl">2.4</span>,</span>
+<span>  <span class="st">"median (84.8 kg, CRCL 80)"</span>, <span class="cn">NA</span>, <span class="fl">2.4</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">published</span>, <span class="va">nca_typical_tbl</span>, by <span class="op">=</span> <span class="st">"treatment"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -1529,7 +1529,7 @@ and 321 pg/mL for eGFR of 90, 75, and 45 mL/min/1.73 m^2, respectively
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="left">75 kg, eGFR 90</td>
+<td align="left">75 kg, CRCL 90</td>
 <td align="right">287</td>
 <td align="right">2.4</td>
 <td align="right">263.28</td>
@@ -1537,7 +1537,7 @@ and 321 pg/mL for eGFR of 90, 75, and 45 mL/min/1.73 m^2, respectively
 <td align="right">2.22</td>
 </tr>
 <tr class="even">
-<td align="left">100 kg, eGFR 90</td>
+<td align="left">100 kg, CRCL 90</td>
 <td align="right">237</td>
 <td align="right">2.4</td>
 <td align="right">204.10</td>
@@ -1545,7 +1545,7 @@ and 321 pg/mL for eGFR of 90, 75, and 45 mL/min/1.73 m^2, respectively
 <td align="right">2.50</td>
 </tr>
 <tr class="odd">
-<td align="left">125 kg, eGFR 90</td>
+<td align="left">125 kg, CRCL 90</td>
 <td align="right">189</td>
 <td align="right">2.4</td>
 <td align="right">163.65</td>
@@ -1553,7 +1553,7 @@ and 321 pg/mL for eGFR of 90, 75, and 45 mL/min/1.73 m^2, respectively
 <td align="right">3.11</td>
 </tr>
 <tr class="even">
-<td align="left">75 kg, eGFR 75</td>
+<td align="left">75 kg, CRCL 75</td>
 <td align="right">273</td>
 <td align="right">2.4</td>
 <td align="right">279.47</td>
@@ -1561,7 +1561,7 @@ and 321 pg/mL for eGFR of 90, 75, and 45 mL/min/1.73 m^2, respectively
 <td align="right">2.32</td>
 </tr>
 <tr class="odd">
-<td align="left">75 kg, eGFR 45</td>
+<td align="left">75 kg, CRCL 45</td>
 <td align="right">321</td>
 <td align="right">2.4</td>
 <td align="right">319.54</td>
@@ -1569,7 +1569,7 @@ and 321 pg/mL for eGFR of 90, 75, and 45 mL/min/1.73 m^2, respectively
 <td align="right">2.60</td>
 </tr>
 <tr class="even">
-<td align="left">median (84.8 kg, eGFR 80)</td>
+<td align="left">median (84.8 kg, CRCL 80)</td>
 <td align="right">NA</td>
 <td align="right">2.4</td>
 <td align="right">245.61</td>
@@ -1598,7 +1598,7 @@ it is encoded in ng/mL (0.567) to remain unit-consistent with
 subsequently multiplied by 1000 to report in pg/mL.</li>
 <li>The virtual cohort approximates Table 1 demographics. Race
 distribution is not used by the model and therefore is not reproduced.
-eGFR was sampled uniformly within each renal-function band using the
+CRCL was sampled uniformly within each renal-function band using the
 paper’s per-band counts.</li>
 <li>The IIV variance is encoded as <code>log(1 + CV^2)</code>
 (log-normal variance from CV) rather than the shorthand
@@ -1606,7 +1606,7 @@ paper’s per-band counts.</li>
 matches the standard NONMEM → nlmixr2 interpretation when the paper
 reports CV% on log-normal random effects.</li>
 <li>Typical-value Cmax agrees with Figure 5 within ~10% across the
-weight and eGFR scenarios; the simulated terminal half-life of ~2.4 h
+weight and CRCL scenarios; the simulated terminal half-life of ~2.4 h
 matches the published value. Differences were not corrected by tuning
 parameters.</li>
 </ul>

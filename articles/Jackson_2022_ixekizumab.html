@@ -303,9 +303,9 @@ concentrations</td>
 <code>ADA titre</code> (continuous reciprocal dilution; 1:10, 1:20,
 …, 1:2560)</td>
 <td>
-<code>ADA_TITRE</code> (per
+<code>ADA_TITER</code> (per
 <code>inst/references/covariate-columns.md</code>). ADA-negative samples
-encoded as <code>ADA_TITRE = 1</code> so that <code>log_e(1) = 0</code>
+encoded as <code>ADA_TITER = 1</code> so that <code>log_e(1) = 0</code>
 cancels the covariate effect (85.8% of the dataset).</td>
 </tr>
 </tbody>
@@ -344,7 +344,7 @@ the ADA incidence reported in Results section 3.1.</p>
 <span><span class="op">}</span></span>
 <span><span class="va">WT</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="va">weight_group</span>, <span class="va">simulate_weight</span>, <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># ADA titre: 85.8% ADA-negative (ADA_TITRE = 1); 14.2% TE-ADA-positive with</span></span>
+<span><span class="co"># ADA titre: 85.8% ADA-negative (ADA_TITER = 1); 14.2% TE-ADA-positive with</span></span>
 <span><span class="co"># titres in three bands per Results section 3.1:</span></span>
 <span><span class="co">#   - Low    (&lt;1:160)        : 52.6% of ADA+ samples</span></span>
 <span><span class="co">#   - Moderate (&gt;=1:160, &lt;1:1280): 38.5%</span></span>
@@ -372,7 +372,7 @@ the ADA incidence reported in Results section 3.1.</p>
 <span>  ID           <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n_subj</span><span class="op">)</span>,</span>
 <span>  weight_group <span class="op">=</span> <span class="va">weight_group</span>,</span>
 <span>  WT           <span class="op">=</span> <span class="va">WT</span>,</span>
-<span>  ADA_TITRE    <span class="op">=</span> <span class="va">ada_titre</span></span>
+<span>  ADA_TITER    <span class="op">=</span> <span class="va">ada_titre</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">summary_tbl</span> <span class="op">&lt;-</span> <span class="va">cohort</span> <span class="op">|&gt;</span></span>
@@ -381,7 +381,7 @@ the ADA incidence reported in Results section 3.1.</p>
 <span>    n           <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>    mean_WT     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">WT</span><span class="op">)</span>,</span>
 <span>    median_WT   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">WT</span><span class="op">)</span>,</span>
-<span>    pct_ada_pos <span class="op">=</span> <span class="fl">100</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">ADA_TITRE</span> <span class="op">&gt;</span> <span class="fl">1</span><span class="op">)</span>,</span>
+<span>    pct_ada_pos <span class="op">=</span> <span class="fl">100</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">ADA_TITER</span> <span class="op">&gt;</span> <span class="fl">1</span><span class="op">)</span>,</span>
 <span>    .groups     <span class="op">=</span> <span class="st">"drop"</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">summary_tbl</span>, digits <span class="op">=</span> <span class="fl">2</span>,</span>
@@ -839,7 +839,7 @@ TE-ADA positive per Results section 3.1; the per-band split (52.6% low /
 38.5% moderate / 9.0% high titre) applies the paper’s band-level
 percentages uniformly at the patient level, whereas the paper reports
 them at the sample level. ADA-negative patients (85.8%) carry
-<code>ADA_TITRE = 1</code> so the log-linear effect is zero.</li>
+<code>ADA_TITER = 1</code> so the log-linear effect is zero.</li>
 <li>
 <strong>Time-varying ADA not modelled.</strong> The paper uses
 time-matched ADA titre but does not publish per-subject longitudinal

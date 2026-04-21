@@ -552,9 +552,9 @@ Steady-state NCA (day 154-168) for sarilumab by regimen.
   though the resulting ANC trajectory will not match Ma 2020 Figure 5.
 - **PK backbone from Xu 2019, typical-value only.** The sarilumab PK leg
   uses Xu 2019’s two-compartment + linear + Michaelis–Menten model at
-  its reference (71 kg female, albumin 38 g/L, CrCl 100 mL/min, BLCRP
-  14.2 mg/L, ADA-negative, DP1/DP3). Xu 2019 covariate effects on PK
-  parameters (body weight, albumin, CrCl, BLCRP, ADA, DP2, sex) are
+  its reference (71 kg female, albumin 38 g/L, CrCl 100 mL/min, CRP 14.2
+  mg/L, ADA-negative, DP1/DP3). Xu 2019 covariate effects on PK
+  parameters (body weight, albumin, CrCl, CRP, ADA, DP2, sex) are
   **not** reproduced in this file; they live in the companion
   `Xu_2019_sarilumab.R` model. The sibling DAS28-CRP PD model
   (`Ma_2020_sarilumab_das28crp.R`) makes the same choice for
