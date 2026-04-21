@@ -205,6 +205,16 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Yamada_2025_zolbetuximab.R` (g/L, reference 118; exponent -0.374 on V1).
 - **Notes:** Unit varies by paper (SI g/L, US g/dL; 1 g/dL = 10 g/L). The per-model `covariateData[[HGB]]$units` field is load-bearing.
 
+### WBC (**canonical for white blood cell count**)
+- **Description:** Total white blood cell count (baseline or time-varying). In chronic lymphocytic leukaemia (CLL) populations the value is elevated because circulating leukaemic B-cells make up the majority of the count, so WBC can serve as a biomarker of target-cell burden rather than general hematology.
+- **Units:** 10^9 cells/L (equivalent to 10^3 cells/µL). Document per-model via `covariateData[[WBC]]$units`.
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a — used with power scaling `(WBC / ref)^exponent`. Reference values observed: 10 × 10^9/L (Mould 2007, typical CLL Vmax normalization).
+- **Source aliases:** none known (`WBC` is the universal clinical-PK abbreviation).
+- **Example models:** `Mould_2007_alemtuzumab.R` (reference 10 × 10^9/L; exponent 0.194 on Vmax).
+- **Notes:** Time-varying in treatment studies where the drug depletes the leukaemic clone (e.g., alemtuzumab in CLL): WBC must be supplied at every observation time in the event dataset. In diseases where WBC is not therapeutically targeted the column can be treated as a baseline-only covariate; record the per-model convention in `covariateData[[WBC]]$notes`.
+
 ## Disease severity scores
 
 ### EASI (**canonical for Eczema Area and Severity Index**)
@@ -640,6 +650,10 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Ma 2020 sarilumab DAS28-CRP**: Added canonical entries `BLPHYVAS`, `BLHAQ`, and `PRICORT`. Extended the `BLCRP` entry to record Ma 2020 as a second example model.
 - **2026-04-21** — Added `PHASE2` canonical entry (specific scope) for the Farrell 2012 farletuzumab per-study residual-error switch, analogous to `STUDY1`/`STUDY5` in Cirincione 2017.
 - **2026-04-20 (scope + mergers)** — Introduced the `Scope:` field (general vs specific) on every entry; `checkModelConventions()` now warns when a scope-specific covariate appears in a model that is not in its `Example models` list. Merged `hsCRP` + `BLCRP` + the previously separate standard-assay `CRP` into a single general-scope `CRP` canonical (assay and baseline-vs-time-varying nuances now live in per-model `covariateData[[CRP]]$description` / `notes`). Merged `eGFR` + `CRCL_BSA` into a single general-scope `CRCL` canonical (MDRD-estimated vs measured-CrCl-BSA-normalized nuances now live per-model). Merged `ADA_TITRE` + `ADA_TITER` into a single general-scope `ADA_TITER` canonical (British-reciprocal-dilution vs American-linear-titer zero-encoding conventions now live per-model). Renamed `BEOS` → `EOS` and `GAST` → `PRIOR_GAST` to follow the `EASI` / `AGE` / `ALB` (baseline status in notes, not column name) and `PRIOR_TNF` / `PRICORT` (prior-treatment / surgical-history) naming patterns. Promoted `TUMSZ` from Budha-specific to general oncology.
+- **2026-04-21** — Added `WBC` canonical entry (total white blood cell
+  count) under `Hematology` while extracting `Mould_2007_alemtuzumab.R`.
+  Scope: general; reference 10 × 10⁹/L used for the Vmax power covariate
+  effect in CLL.
 - Subsequent additions: append new canonical entries as new papers are processed. When adding, bump the audit-completed count in the summary below.
 
 ## Summary
