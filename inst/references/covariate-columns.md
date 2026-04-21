@@ -228,6 +228,16 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Tiraboschi_2025_amlitelimab.R`.
 - **Notes:** When used as a time-invariant baseline covariate (`BEASI`), document in `covariateData[[EASI]]$notes`. Canonical name is `EASI` without the `B` prefix to match the `AGE` / `WT` / `ALB` pattern where baseline vs time-varying status is recorded in notes rather than the column name.
 
+### MGADL (**canonical for Myasthenia Gravis Activities of Daily Living score**)
+- **Description:** Myasthenia Gravis Activities of Daily Living score — eight-item patient-reported outcome measure (each item 0-3), total 0-24, higher values = greater symptom severity and functional limitation.
+- **Units:** (score)
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a — healthy participants (no gMG) have `MGADL = 0` by definition. Effect enters as a baseline covariate on MG-ADL response parameters in gMG cohorts.
+- **Source aliases:** none known.
+- **Example models:** `Valenzuela_2025_nipocalimab.R` (reference 7 points; power-form effect on `IDecplacebo` and on the slope between MG-ADL change and IgG reduction).
+- **Notes:** Baseline-only in Valenzuela 2025 (the observation is the absolute change from baseline MG-ADL). When used time-varying (e.g., in pure PD models driven by disease-progression dynamics), document in `covariateData[[MGADL]]$notes`. Canonical name is `MGADL` without a `BL` prefix to match the `EASI` / `AGE` / `WT` / `ALB` pattern.
+
 ## Inflammation markers
 
 ### EOS (**canonical for blood eosinophil count**)
@@ -606,6 +616,36 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Farrell_2012_farletuzumab.R`.
 - **Notes:** Farrell 2012 Table 3 reports separate residual-error estimates for the two studies — Phase I uses a proportional-only model (σ = 20.5%); Phase II uses a combined additive + proportional model (σ_prop = 34.9%, σ_add = 7.94 µg/mL). The `PHASE2` indicator selects between them.
 
+### PHASE1
+- **Description:** 1 = subject enrolled in a Phase 1 study of the Valenzuela 2025 pooled analysis (MOM-M281-001, MOM-M281-007, MOM-M281-010, EDI1001, EDI1002 — healthy participants); 0 = Phase 2 study (MOM-M281-004 / Vivacity-MG — participants with gMG). Used to switch the proportional PK residual-error magnitude per study phase.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (Phase 2).
+- **Source aliases:** derived per subject from the trial identifier (Phase 1 protocols → 1, `NCT03772587` Vivacity-MG → 0).
+- **Example models:** `Valenzuela_2025_nipocalimab.R`.
+- **Notes:** Valenzuela 2025 Table 3 reports proportional PK residual 0.0834 (Phase 1) vs 0.367 (Phase 2). Distinct from Farrell 2012 `PHASE2` — the reference category is inverted (Valenzuela 2025 picks Phase 1 as the 1-level).
+
+### ELISA
+- **Description:** 1 = serum nipocalimab concentration measured by ELISA assay (LLOQ 0.150 µg/mL; studies MOM-M281-001, MOM-M281-007, MOM-M281-010); 0 = measured by ECLIA assay (LLOQ 0.010 µg/mL; studies EDI1001, EDI1002, MOM-M281-004). Used to switch the additive PK residual-error magnitude per assay.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (ECLIA).
+- **Source aliases:** derived per study from the bioanalytical method (Text S2 of Valenzuela 2025).
+- **Example models:** `Valenzuela_2025_nipocalimab.R`.
+- **Notes:** Valenzuela 2025 Table 3 reports additive PK residual 0.445 nmol/L (ELISA) vs 0.0342 nmol/L (ECLIA). Assay choice is study-fixed; include as a per-observation indicator so the correct assay residual is applied even when observations from different studies are pooled.
+
+### STUDY_M281_004
+- **Description:** 1 = subject enrolled in study MOM-M281-004 (Vivacity-MG; NCT03772587; phase 2 in generalized myasthenia gravis); 0 = any other study in the Valenzuela 2025 pooled analysis. Used to switch the IgG-baseline scaling factor.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-Vivacity-MG studies).
+- **Source aliases:** derived per subject from the trial identifier (`NCT03772587` → 1, else → 0).
+- **Example models:** `Valenzuela_2025_nipocalimab.R`.
+- **Notes:** Valenzuela 2025 estimated a slightly lower IgG baseline in MOM-M281-004 participants (baseline scaled by `FRIgG0_M281_004 = 0.777` vs. 1 in other studies). Distinct from the disease-state indicator implied by `gMG` — it is specifically the Vivacity-MG study flag because the IgG baseline factor was only estimated for that study.
+
 ## Occasion / period (IOV)
 
 ### ooc1, ooc2, ooc3, ooc4
@@ -654,6 +694,11 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   count) under `Hematology` while extracting `Mould_2007_alemtuzumab.R`.
   Scope: general; reference 10 × 10⁹/L used for the Vmax power covariate
   effect in CLL.
+- **2026-04-21** — Added `MGADL` (Myasthenia Gravis Activities of Daily
+  Living score; general scope; baseline-only in Valenzuela 2025),
+  `ELISA` / `PHASE1` / `STUDY_M281_004` (all specific scope; assay and
+  study flags for Valenzuela 2025 nipocalimab) while extracting
+  `Valenzuela_2025_nipocalimab.R`.
 - Subsequent additions: append new canonical entries as new papers are processed. When adding, bump the audit-completed count in the summary below.
 
 ## Summary

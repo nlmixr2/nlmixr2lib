@@ -1,83 +1,236 @@
 Valenzuela_2025_nipocalimab <- function() {
-  description <- "Nipocalimab PK and PK/PD models in myasthenia gravis (Valenzuela 2025)"
-  reference <- "Valenzuela B, Neyens M, Zhu Y, et al. Nipocalimab Dose Selection in Generalized Myasthenia Gravis. CPT: Pharmacometrics & Systems Pharmacology. n/a(n/a). doi:10.1002/psp4.70109"
-  units <- list(time="hr", dosing="mg")
-  covariates <-
-    list(
-      ELISA = "1 for ELISA PK assay; 0 for ECLIA assay",
-      PHASE1 = "1 for Phase 1 study; 0 for Phase 2 study"
+  description <- "Integrated PK/RO/IgG/MG-ADL QSS TMDD model for nipocalimab in healthy adults and generalized myasthenia gravis (Valenzuela 2025)"
+  reference <- "Valenzuela B, Neyens M, Zhu Y, Ramchandren S, Dosne AG, Leu JH, Faelens R, Ling LE, Perez-Ruixo JJ. Nipocalimab Dose Selection in Generalized Myasthenia Gravis. CPT Pharmacometrics Syst Pharmacol. 2025;14(12):2074-2085. doi:10.1002/psp4.70109"
+  vignette <- "Valenzuela_2025_nipocalimab"
+  units <- list(time = "day", dosing = "mg", concentration = "nmol/L")
+
+  covariateData <- list(
+    WT = list(
+      description        = "Body weight",
+      units              = "kg",
+      type               = "continuous",
+      reference_category = NULL,
+      notes              = "Time-fixed (baseline); allometric scaling (WT/75)^exponent on CL, Q, Vc, Vp with exponents fixed at 0.75 (CL, Q) and 1 (Vc, Vp).",
+      source_name        = "WT"
+    ),
+    ELISA = list(
+      description        = "Bioanalytical assay indicator: 1 = ELISA (LLOQ 0.150 ug/mL), 0 = ECLIA (LLOQ 0.010 ug/mL)",
+      units              = "(binary)",
+      type               = "binary",
+      reference_category = "0 (ECLIA)",
+      notes              = "Switches the additive PK residual magnitude. Assay is study-fixed: ELISA for studies MOM-M281-001, MOM-M281-007, MOM-M281-010; ECLIA for studies EDI1001, EDI1002, and MOM-M281-004 (Vivacity-MG).",
+      source_name        = "ELISA"
+    ),
+    PHASE1 = list(
+      description        = "Study-phase indicator: 1 = Phase 1 study (healthy participants), 0 = Phase 2 Vivacity-MG study in gMG",
+      units              = "(binary)",
+      type               = "binary",
+      reference_category = "0 (Phase 2 MOM-M281-004 / Vivacity-MG)",
+      notes              = "Switches the proportional PK residual magnitude (0.0834 for Phase 1 vs 0.367 for Phase 2).",
+      source_name        = "PHASE1"
+    ),
+    STUDY_M281_004 = list(
+      description        = "Vivacity-MG study indicator: 1 = subject enrolled in MOM-M281-004 (NCT03772587), 0 = other study",
+      units              = "(binary)",
+      type               = "binary",
+      reference_category = "0 (non-Vivacity-MG studies)",
+      notes              = "Scales IgG baseline by FRIgG0_M281_004 = 0.777 for MOM-M281-004 participants; IgG baseline is equal to IgG0 (typical 11.4 g/L) for other studies.",
+      source_name        = "M281_004"
+    ),
+    MGADL = list(
+      description        = "Baseline Myasthenia Gravis Activities of Daily Living score (0-24; higher = more severe)",
+      units              = "(score)",
+      type               = "continuous",
+      reference_category = NULL,
+      notes              = "Time-fixed (baseline); power-form effect (MGADL/7)^E_IgG on SIgG and (MGADL/7)^E_ADL on IDec_placebo. Set MGADL = 0 for healthy participants so that MG-ADL response predictions collapse to 0. Vivacity-MG participants ranged 6-24 points (mean 9.8).",
+      source_name        = "MGADL"
     )
+  )
 
-  # All parameters are from Table 3
+  population <- list(
+    n_subjects     = 228L,
+    n_studies      = 6L,
+    age_range      = "18-83 years",
+    age_median     = "41.3 years (mean; SD 16.2)",
+    weight_range   = "45-188 kg",
+    weight_median  = "75.9 kg (mean; SD 19.2)",
+    sex_female_pct = 52.6,
+    race_ethnicity = c(White = 68.0, Black = 3.51, Asian = 25.0, Other = 3.51),
+    disease_state  = "Pooled healthy adult participants (160) and adult participants with generalized myasthenia gravis (68, from Vivacity-MG / MOM-M281-004)",
+    dose_range     = "0.3-60 mg/kg single IV dose; 5-60 mg/kg IV Q4W or Q2W (gMG cohort)",
+    regions        = "Pooled phase 1 (healthy) and phase 2 (gMG) studies; populations include Japanese (study MOM-M281-010) and Chinese (study EDI1002) healthy participants",
+    n_subjects_healthy = 160L,
+    n_subjects_gmg     = 68L,
+    mgadl_range_gmg    = "6-24 points (mean 9.8; Vivacity-MG baseline)",
+    notes              = "Demographics from Valenzuela 2025 Table 2. Trials: NCT02828046 (MOM-M281-001), sequential-dose phase 1 (MOM-M281-007), dose-ranging Japanese phase 1 (MOM-M281-010), NCT04848558 (EDI1001), NCT05151692 (EDI1002), NCT03772587 (MOM-M281-004 / Vivacity-MG)."
+  )
+
   ini({
-    # PK model
-    lcl <- log(0.655); label("Linear serum clearance (L/d)")
-    bsv_cl ~ cvToBsv(24.1)
-    allo_cl <- fixed(0.75); label("Allometric exponent for clearance (unitless)")
-    lvc <- log(3.23); label("Volume of the central compartment (L)")
-    bsv_vc ~ cvToBsv(15.0)
-    allo_v <- fixed(1); label("Allometric exponent for volume (unitless)")
-    lq <- log(0.250); label("Intercompartmental clearance (L/d)")
-    lvp <- log(0.622); label("Volume of the peripheral compartment (L)")
-    lFcRn0 <- log(143); label("Total (free) FcRn at baseline (nmol/L)")
-    bsv_FcRn0 ~ cvToBsv(25.0)
-    FRmax <- 0.947; label("Maximal fraction of FcRn bound to nipocalimab (fraction)")
-    lKss <- log(6.05); label("Quasi-steady-state dissociation equilibrium constant (ug/mL)")
-    lkint <- log(62.4); label("Internalization rate constant for FcRn-nipocalimab complex (1/d)")
-    lkdeg <- log(1.3); label("Degradation rate constant of the free FcRn (1/d)")
-    addSdPKELISA <- 0.445; label("additive RUV for PK model, ELISA assay (nmol/L)")
-    addSdPKECLIA <- 0.0342; label("additive RUV for PK model, ECLIA assay (nmol/L)")
-    propSdPKPhase1 <- 0.0834; label("proportional RUV for Phase 1 studies (fraction)")
-    propSdPKPhase2 <- 0.367; label("proportional RUV for Phase 2 studies (fraction)")
+    # ---- PK disposition (Table 3; reference body weight 75 kg) ----
+    lcl     <- log(0.655);  label("Linear serum clearance for a 75 kg adult (L/day)")                     # Table 3: CL = 0.655 L/d
+    lvc     <- log(3.23);   label("Central volume of distribution for a 75 kg adult (L)")                 # Table 3: Vc = 3.23 L
+    lq      <- log(0.250);  label("Intercompartmental clearance for a 75 kg adult (L/day)")               # Table 3: Q = 0.250 L/d
+    lvp     <- log(0.622);  label("Peripheral volume of distribution for a 75 kg adult (L)")              # Table 3: Vp = 0.622 L
+    allo_cl <- fixed(0.75); label("Allometric exponent on CL and Q (unitless)")                           # Eq. 3; fixed per paper footnote
+    allo_v  <- fixed(1);    label("Allometric exponent on Vc and Vp (unitless)")                          # Eq. 3; fixed per paper footnote
 
-    # PK-IgG Model
-    lIgG0 <- log(11.4); label("IgG at baseline (g/L)")
-    bsv_IgG0 ~ cvToBsv(21.9)
-    FRIgG0_M281_004 <- 0.777; label("Fraction of IgG at baseline for study MOM-M281-004 (fraction)")
-    lkdeg_IgG <- log(0.217); label("IgG degradation rate constant (without FcRn recycling) (1/d)")
-    bsv_kdeg_IgG ~ cvToBsv(16.9)
-    IgK <- 5.08; label("FcRn recycling (unitless)")
-    bsv_IgK ~ cvToBsv(26.3)
-    # lKtotal <- log(0.036); label("IgG degradation rate constant (with full FcRn recycling) (1/d)")
-    # IgGmaxRed <- 83.6; label("Maximum IgG reduction (at full inhibition of FcRn recycling) (%)")
-    propSdIgG <- 0.0858; label("Proportional RUV for IgG (fraction)")
+    # ---- FcRn target turnover (Table 3) ----
+    lFcRn0  <- log(143);    label("Total FcRn concentration at baseline (nmol/L)")                         # Table 3: FcRn0 = 143 nmol/L
+    FRmax   <- 0.947;       label("Maximal fraction of FcRn available for nipocalimab binding (fraction)") # Table 3: FRmax = 0.947
+    lkss    <- log(6.05);   label("Quasi-steady-state dissociation constant (ug/mL; converted to nmol/L inside model)") # Table 3: Kss = 6.05 ug/mL (= 42.6 nmol/L via MW 142 kDa)
+    lkint   <- log(62.4);   label("Internalization rate of nipocalimab-FcRn complex (1/day)")             # Table 3: kint = 62.4 1/d
+    lkdeg   <- log(1.3);    label("Degradation rate of free FcRn (1/day)")                                # Table 3: kdeg = 1.3 1/d (fixed per paper)
 
-    addSdRO <- 2.98; label("Additive RUV for RO (%)")
-    propSdRO <- 0.227; label("Proportional RUV for RO (fraction)")
+    # ---- IgG indirect-response (Table 3) ----
+    lIgG0          <- log(11.4);   label("IgG baseline concentration in non-Vivacity-MG studies (g/L)")    # Table 3: IgG0 = 11.4 g/L
+    FRIgG0_M281_004 <- 0.777;      label("Fractional scaling of IgG baseline for study MOM-M281-004 (fraction)") # Table 3: FR_IgG0,M281-004 = 0.777
+    lkdeg_IgG      <- log(0.217);  label("IgG degradation rate in absence of FcRn recycling (1/day)")     # Table 3: kdeg,IgG = 0.217 1/d
+    lIgK           <- log(5.08);   label("FcRn-mediated IgG recycling parameter IgK (unitless)")          # Table 3: IgK = 5.08 (treated on log scale for exponential IIV)
 
-    # IgG/MG-ADL Model
-    lke0 <- log(0.414); label("IgG effect compartment rate constant (1/d)")
-    SIgG <- -0.216; label("Slope between MG-ADL and IgG reduction (points/10% IgG reduction)")
-    EIgG <- 0.871; label("Exponent of MG-ADL baseline effect on SIgG (unitless)")
-    IDecplacebo <- -1.08; label("Initial placebo decrease in MGADL after start of treatment (points)")
-    bsv_SIgG + bsv_IDecplacebo ~ c(cvToBsv(3.76), -0.733, cvToBsv(1.89))
-    EADL <- 1.23; label("Exponent of MG-ADL baseline effect on IDecplacebo (unitless)")
-    Splacebo <- -0.0594; label("Slope between MG-ADL and time (placebo effect) (points/week)")
-    bsv_Splacebo ~ cvToBsv(0.125)
-    addSdMGADL <- 1.50; label("Additive RUV for MG-ADL (points)")
+    # ---- MG-ADL PD (Table 3) ----
+    lke0        <- log(0.414); label("IgG effect-compartment rate constant for MG-ADL (1/day)")           # Table 3: ke0 = 0.414 1/d
+    SIgG        <- -0.216;     label("Slope between MG-ADL change and IgG reduction (points per 10% IgG reduction)") # Table 3: S_IgG = -0.216 pts/10%reduction; note the 10x unit conversion in model()
+    EIgG        <- 0.871;      label("Exponent of MG-ADL baseline effect on S_IgG (unitless)")            # Table 3: E_IgG = 0.871
+    IDecplacebo <- -1.08;      label("Typical initial placebo decrease in MG-ADL after treatment start (points)") # Table 3: IDec_placebo = -1.08 pts
+    EADL        <- 1.23;       label("Exponent of MG-ADL baseline effect on IDec_placebo (unitless)")      # Table 3: E_ADL = 1.23
+    Splacebo    <- -0.0594;    label("Slope of placebo effect over time on MG-ADL (points/week)")          # Table 3: S_placebo = -0.0594 pts/week
+
+    # ---- IIV (exponential on PK / FcRn / IgG params; additive on MG-ADL params) ----
+    # omega^2 = log(CV^2 + 1) for log-normal parameters:
+    #   CV 24.1% -> 0.05644   (CL)
+    #   CV 15.0% -> 0.02225   (Vc)
+    #   CV 25.0% -> 0.06062   (FcRn0)
+    #   CV 21.9% -> 0.04686   (IgG0)
+    #   CV 16.9% -> 0.02816   (kdeg_IgG)
+    #   CV 26.3% -> 0.06690   (IgK)
+    etalcl       ~ 0.05644    # Table 3 IIV CV 24.1%
+    etalvc       ~ 0.02225    # Table 3 IIV CV 15.0%
+    etalFcRn0    ~ 0.06062    # Table 3 IIV CV 25.0%
+    etalIgG0     ~ 0.04686    # Table 3 IIV CV 21.9%
+    etalkdeg_IgG ~ 0.02816    # Table 3 IIV CV 16.9%
+    etalIgK      ~ 0.06690    # Table 3 IIV CV 26.3%
+
+    # MG-ADL additive IIV values reported in Table 3 (1.89 and 3.76 under "IIV, CV%" column
+    # but MG-ADL model uses additive IIV per paper Methods; values are interpreted as NONMEM
+    # OMEGA variances in squared parameter units). Correlation between etaIDecplacebo and
+    # etaSIgG is -0.733; covariance = -0.733 * sqrt(1.89) * sqrt(3.76) = -1.954.
+    etaIDecplacebo + etaSIgG ~ c(1.89,
+                                 -1.954, 3.76)
+    etaSplacebo ~ 0.125     # Table 3 IIV (additive; variance in (pts/week)^2)
+
+    # ---- Residual error (Table 3; PK/IgG RUV applied to nmol/L or g/L observations) ----
+    CcaddSdELISA   <- 0.445;  label("Additive PK residual SD for ELISA-assay observations (nmol/L)")      # Table 3
+    CcaddSdECLIA   <- 0.0342; label("Additive PK residual SD for ECLIA-assay observations (nmol/L)")      # Table 3
+    CcpropSdPhase1 <- 0.0834; label("Proportional PK residual for Phase 1 observations (fraction)")        # Table 3
+    CcpropSdPhase2 <- 0.367;  label("Proportional PK residual for Phase 2 observations (fraction)")        # Table 3
+
+    pctUnoccupiedFcRnaddSd  <- 2.98;  label("Additive residual SD for % unoccupied FcRn (percent)")        # Table 3
+    pctUnoccupiedFcRnpropSd <- 0.227; label("Proportional residual for % unoccupied FcRn (fraction)")       # Table 3
+
+    IgGpropSd   <- 0.0858; label("Proportional residual for total serum IgG (fraction)")                    # Table 3
+    dMGADLaddSd <- 1.50;   label("Additive residual SD for MG-ADL change from baseline (points)")            # Table 3
   })
+
   model({
-    # From supplement S4
+    # ---- Physical constants ----
+    # Nipocalimab MW derived from paper: 15 mg/kg x 75 kg = 1125 mg; paper states this delivers 7.92 umol.
+    # MW = 1125 mg / 7.92e-3 mmol = 142045 g/mol; rounded to 142000 g/mol (~142 kDa).
+    MW <- 142000             # Nipocalimab molecular weight, g/mol (derived from paper results section)
 
-    # PK model
-    cl <- exp(lcl + bsv_cl) * (WT/75)^allo_cl
-    vc <- exp(lvc + bsv_vc) * (WT/75)^allo_vc
-    q <- exp(lq) * (WT/75)^allo_cl
-    vp <- exp(lvp) * (WT/75)^allo_vc
+    # ---- Individual PK parameters with allometric weight scaling (reference 75 kg) ----
+    cl <- exp(lcl + etalcl) * (WT / 75)^allo_cl
+    vc <- exp(lvc + etalvc) * (WT / 75)^allo_v
+    q  <- exp(lq)           * (WT / 75)^allo_cl
+    vp <- exp(lvp)          * (WT / 75)^allo_v
 
-    FcRn0 <- exp(lFcRn0 + bsv_FcRn0)
-    Kss <- exp(lKss)
-    kint <- exp(lkint)
-    kdeg <- exp(lkdeg)
+    # ---- Individual FcRn target parameters ----
+    FcRn0 <- exp(lFcRn0 + etalFcRn0)                   # nmol/L (total FcRn at baseline)
+    kint  <- exp(lkint)                                # 1/day
+    kdeg  <- exp(lkdeg)                                # 1/day
+    # Convert Kss from ug/mL (paper reporting unit) to nmol/L (model working unit) using nipocalimab MW.
+    # 6.05 ug/mL * 1e6 / MW[g/mol] = 6.05 * 1e6 / 142000 = 42.6 nmol/L (matches paper discussion).
+    kss <- exp(lkss) * 1e6 / MW
 
-    addSdPK = addSdPKELISA*ELISA + addSdPKECLIA*(1 - ELISA)
-    propSdPK = propSdPKPhase1*PHASE1 + propSdPKPhase2*(1 - PHASE1)
+    # Ksyn from steady-state constraint on the accessible FcRn pool:
+    #   dtotal_target/dt|t=0 = 0 -> Ksyn = kdeg * total_target(0) = kdeg * FcRn0 * FRmax
+    ksyn <- kdeg * FcRn0 * FRmax
 
-    d/dt(central) <- CL*Cfree - kint * vc * (Rtotal*Cfree)/(Kss + Cfree) - Q*Cfree + Q/vp*periph1
-    d/dt(Rtotal) <- Ksyn - kdeg*Rtotal - (kint - kdeg)*(Rtotal*Cfree)/(Kss + Cfree)
-    d/dt(periph1) <- Q*Cfree - Q/vp*periph1
+    # ---- Individual IgG parameters ----
+    # IgG baseline: IgG0 for non-Vivacity-MG subjects; IgG0 * FRIgG0_M281_004 for MOM-M281-004 subjects.
+    IgG_BL <- exp(lIgG0 + etalIgG0) * (1 - (1 - FRIgG0_M281_004) * STUDY_M281_004)
+    kdeg_IgG <- exp(lkdeg_IgG + etalkdeg_IgG)                 # 1/day
+    IgK_i <- exp(lIgK + etalIgK)                              # unitless
+    # FcRn-mediated IgG recycling rate (Eq. 5): krec = kdeg * IgK / (1 + IgK).
+    krec_IgG <- kdeg_IgG * IgK_i / (1 + IgK_i)
+    # Steady-state IgG synthesis (Eq. 4): ksyn_IgG = (kdeg_IgG - krec_IgG) * IgG_baseline.
+    ksyn_IgG <- (kdeg_IgG - krec_IgG) * IgG_BL
 
-    # PK/PD model
-    IgG0 <- exp(lIgG0 + bsv_IgG0)
+    # ---- Individual MG-ADL parameters ----
+    ke0         <- exp(lke0)
+    IDec_i      <- (IDecplacebo + etaIDecplacebo) * (MGADL / 7)^EADL
+    SIgG_i      <- (SIgG + etaSIgG)
+    Splacebo_i  <- (Splacebo + etaSplacebo)
+
+    # ---- Dose unit conversion (mg -> nmol) so internal concentrations are in nmol/L ----
+    # User supplies dose in mg (rxode2 convention); we scale into the central compartment so that
+    # the state carries the amount in nmol and Cc = central/vc is in nmol/L.
+    f(central) <- 1e6 / MW
+
+    # ---- Initial conditions for endogenous states ----
+    # Accessible FcRn pool at baseline (Eq. 2: Rtotal(time 0) = Rtotal,0 * FRmax):
+    total_target(0) <- FcRn0 * FRmax
+    # Total IgG at baseline:
+    total_IgG(0) <- IgG_BL
+    # effect (IgG effect compartment for MG-ADL) starts at 0 (no IgG reduction yet).
+    effect(0) <- 0
+
+    # ---- QSS TMDD relations in the central compartment ----
+    # Ctotal = central / vc (nmol/L; total drug concentration, free + FcRn-bound).
+    ctot  <- central / vc
+    disc  <- ctot - total_target - kss
+    cfree <- 0.5 * (disc + sqrt(disc * disc + 4 * kss * ctot))
+    complex <- total_target * cfree / (kss + cfree)
+
+    # ---- Drug, FcRn, and IgG ODEs (Supplement Equations 1, 4) ----
+    # Central total drug (nmol): elimination via linear CL on Cfree, TMDD internalization on complex,
+    # and distribution to peripheral (Q on Cfree; return as Q/Vp on peripheral1).
+    d/dt(central)      <- -cl * cfree - kint * vc * complex - q * cfree + (q / vp) * peripheral1
+    d/dt(peripheral1)  <-  q * cfree - (q / vp) * peripheral1
+    # Accessible FcRn pool (nmol/L). Eq. 1 rewritten with complex = total_target*cfree/(kss+cfree).
+    d/dt(total_target) <-  ksyn - kdeg * total_target - (kint - kdeg) * complex
+    # Total serum IgG (g/L). Eq. 4; F_free is the fraction of accessible FcRn still free vs baseline.
+    f_free <- (total_target - complex) / (FcRn0 * FRmax)
+    d/dt(total_IgG)    <-  ksyn_IgG - (kdeg_IgG - krec_IgG * f_free) * total_IgG
+    # IgG effect compartment (dimensionless fraction, 0 -> 1 at full blockade). Supplement Eq. 6.
+    d/dt(effect)       <-  ke0 * ((1 - total_IgG / IgG_BL) - effect)
+
+    # ---- Observation variables ----
+    # Total nipocalimab concentration (nmol/L) -- ELISA/ECLIA assays measure total drug.
+    Cc <- ctot
+
+    # Percent unoccupied FcRn (Eq. 2). Includes the inaccessible (1-FRmax) fraction in the
+    # numerator so the observation matches the paper's "% unoccupied FcRn" scale (100% at baseline,
+    # near 0% at full RO).
+    Rfree <- total_target - complex + FcRn0 * (1 - FRmax)
+    pctUnoccupiedFcRn <- Rfree / FcRn0 * 100
+
+    # Total serum IgG (g/L).
+    IgG_obs <- total_IgG
+
+    # MG-ADL absolute change from baseline (points). Placebo effect turns on after first dose
+    # (t > 0 gate). IgG-driven effect: S_IgG is reported per 10% IgG reduction; multiply by 10
+    # to convert the fractional effect-compartment output to "number of 10% reductions".
+    placebo_cfb <- (t > 0) * (IDec_i + Splacebo_i * t / 7)
+    igg_cfb     <- 10 * SIgG_i * effect * (MGADL / 7)^EIgG
+    dMGADL      <- placebo_cfb + igg_cfb
+
+    # ---- Residual-error models (per-assay / per-phase switches on PK; single form on others) ----
+    CcaddSd   <- CcaddSdELISA   * ELISA  + CcaddSdECLIA   * (1 - ELISA)
+    CcpropSd  <- CcpropSdPhase1 * PHASE1 + CcpropSdPhase2 * (1 - PHASE1)
+
+    Cc                ~ add(CcaddSd) + prop(CcpropSd)
+    pctUnoccupiedFcRn ~ add(pctUnoccupiedFcRnaddSd) + prop(pctUnoccupiedFcRnpropSd)
+    IgG_obs           ~ prop(IgGpropSd)
+    dMGADL            ~ add(dMGADLaddSd)
   })
 }
