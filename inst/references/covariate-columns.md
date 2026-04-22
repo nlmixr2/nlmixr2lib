@@ -193,6 +193,16 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Yamada_2025_zolbetuximab.R` (mg/dL, reference 0.38; small positive exponent 0.0347 on V1).
 - **Notes:** Hepatic-function marker. Unit varies by paper (US convention mg/dL, SI convention umol/L; 1 mg/dL ~= 17.1 umol/L). The per-model `covariateData[[TBILI]]$units` field is load-bearing.
 
+### AST (**canonical for aspartate aminotransferase**)
+- **Description:** Serum aspartate aminotransferase activity (baseline or time-varying).
+- **Units:** U/L (IU/L; the two labels are used interchangeably in the clinical-PK literature). Document per-model via `covariateData[[AST]]$units`.
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a — used with power scaling `(AST / ref)^exponent`.
+- **Source aliases:** none; `AST` is the universal clinical-PK abbreviation.
+- **Example models:** `Lu_2014_trastuzumabemtansine.R` (U/L, reference 27; small positive exponent 0.071 on CL).
+- **Notes:** Hepatic-function marker. Commonly reported alongside `ALT` and `TBILI`; register a separate `ALT` canonical if a future paper requires it.
+
 ## Hematology
 
 ### HGB (**canonical for hemoglobin**)
@@ -238,6 +248,18 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Valenzuela_2025_nipocalimab.R` (reference 7 points; power-form effect on `IDecplacebo` and on the slope between MG-ADL change and IgG reduction).
 - **Notes:** Baseline-only in Valenzuela 2025 (the observation is the absolute change from baseline MG-ADL). When used time-varying (e.g., in pure PD models driven by disease-progression dynamics), document in `covariateData[[MGADL]]$notes`. Canonical name is `MGADL` without a `BL` prefix to match the `EASI` / `AGE` / `WT` / `ALB` pattern.
 
+## Interferon / biomarker panels
+
+### BGENE21
+- **Description:** Baseline type I interferon gene signature computed from the expression of 21 IFN-alpha / type-I-IFN-inducible transcripts in peripheral blood mononuclear cells. Used as a continuous biomarker of type I IFN pathway activation in SLE (and mechanistically-related indications).
+- **Units:** (gene-signature score, unitless)
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a — used with power scaling `(BGENE21 / ref)^exponent`. Reference value observed: 32 in Narwal 2013 (study-population median was 33).
+- **Source aliases:** none.
+- **Example models:** `Narwal_2013_sifalimumab.R` (reference 32, exponent 0.0558 on CL).
+- **Notes:** Specific to studies that report a 21-gene IFN signature (subset / expansion of the "BGENE4" 4-gene signature). If another paper uses the 4-gene signature or a differently-constructed IFN score, register a distinct canonical (`BGENE4`, `IFN_SIG`, ...).
+
 ## Inflammation markers
 
 ### EOS (**canonical for blood eosinophil count**)
@@ -250,6 +272,16 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   - `BEOS` (baseline EOS) — used in `Kotani_2022_astegolimab.R`.
 - **Example models:** `Kotani_2022_astegolimab.R` (reference 180 cells/µL, baseline).
 - **Notes:** Used as a surrogate of inflammatory burden that correlates with protein turnover and therefore mAb clearance. Canonical name drops the `B` prefix to match the `EASI` / `AGE` / `WT` / `ALB` pattern; baseline-vs-time-varying status is documented in `covariateData[[EOS]]$notes`.
+
+### BGENE21 (**canonical for 21-gene type I interferon signature score**)
+- **Description:** Baseline 21-gene type I interferon signature score — a composite transcriptomic score summarising the expression of 21 interferon-regulated genes in whole blood relative to a healthy-donor reference, used as a biomarker of type I IFN pathway activation in SLE and related autoimmune conditions.
+- **Units:** unitless fold-change score (relative to healthy-donor reference).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a — used with power scaling `(BGENE21 / ref)^exponent`. Reference value observed: 12.04 in `Zheng_2016_sifalimumab.R` (median of the SLE phase IIb cohort, range 0.32-38.59).
+- **Source aliases:** none.
+- **Example models:** `Zheng_2016_sifalimumab.R` (power effect on CL with exponent 0.09).
+- **Notes:** Specific to drugs whose mechanism targets the type I IFN pathway (e.g., anti-IFN-alpha antibodies like sifalimumab, anifrolumab). Higher BGENE21 indicates stronger target engagement / disease activity and is associated with increased drug clearance via target-mediated mechanisms. Scope: specific because the 21-gene panel composition is tied to the MedImmune/AstraZeneca SLE development programme; a different IFN gene signature (e.g., a 4-gene or 5-gene panel) should be registered under its own canonical name to avoid conflating panel definitions.
 
 ### CRP (**canonical for C-reactive protein**)
 - **Description:** C-reactive protein concentration. Covers both standard and high-sensitivity (hs-CRP) assays and both baseline and time-varying usages. Each model's `covariateData[[CRP]]$description` and `notes` must state the assay type (standard vs hs-CRP) and whether the column carries a baseline-only or time-varying value, including the paper-specific reference value used for power scaling.
@@ -307,17 +339,6 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Clegg_2024_nirsevimab.R`.
 - **Notes:** Clegg 2024 applies this covariate to both CL and V2 with different coefficients.
 
-### RACE_JAPANESE (**canonical**)
-- **Description:** 1 = Japanese ethnicity, 0 = other.
-- **Units:** (binary)
-- **Type:** binary
-- **Scope:** general
-- **Reference category:** 0 (document the actual reference groups used).
-- **Source aliases:**
-  - `RACE` level `8` (integer-coded, `IF(RACE.EQ.8) VRACE = ...`) — used in `Wade_2015_certolizumab.R` (derive `RACE_JAPANESE = as.integer(RACE == 8)`).
-- **Example models:** `Wade_2015_certolizumab.R` (fractional effect on V, -25% vs. the pooled reference of White, Indian Asian, Hispanic, Other).
-- **Notes:** Follows the `RACE_BLACK` / `RACE_ASIAN` indicator-decomposition pattern. Useful when a paper breaks out Japanese as a distinct category from a broader "Asian" group (common in multinational trials with dedicated Japanese cohorts). When paired with `RACE_ASIAN`, the `RACE_ASIAN` column must encode "Asian excluding Japanese" — document the exclusion in the per-model `covariateData[[RACE_ASIAN]]$notes`.
-
 ### RACE_MULTI
 - **Description:** 1 = multiracial, 0 = other.
 - **Units:** (binary)
@@ -373,6 +394,30 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Yamada_2025_zolbetuximab.R` (fractional effects on CLss, CLT, V1).
 - **Notes:** Renamed from `GAST` on 2026-04-20 to follow the `PRIOR_TNF` / `PRICORT` naming pattern for prior-treatment and surgical-history indicators. Applicable to any PK model where gastrointestinal anatomy affects absorption, first-pass, or protein turnover; not inherently oncology-specific. No distinction between partial vs total gastrectomy unless the source paper separates them.
 
+## Disease state (cross-population indicators)
+
+### DIS_UC (**canonical for ulcerative colitis disease-state indicator**)
+- **Description:** 1 = ulcerative colitis patient, 0 = non-UC (e.g., healthy volunteer or non-IBD indication). Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-UC subject; the complement group is defined per-model — typically healthy volunteers and/or patients with another indication such as asthma).
+- **Source aliases:**
+  - `UC` — used in `Hua_2015_anrukinzumab.R`.
+- **Example models:** `Hua_2015_anrukinzumab.R` (multiplicative fractional increase in CL, +72.8%, on top of weight and albumin effects).
+- **Notes:** Used when a population PK model pools UC patients with a non-UC reference population (e.g., Hua 2015: healthy volunteers + asthma patients + UC patients) and UC disease status is tested as a PK covariate. Distinct from `DISEXT_EP` / `DISEXT_OTHER`, which operate *within* a UC-only cohort (disease extension). Start as scope: specific; promote to general if a second paper pools UC with a non-UC reference.
+
+### DIS_SASTHMA (**canonical for moderate-to-severe asthma disease-state indicator**)
+- **Description:** 1 = moderate-to-severe asthma patient, 0 = not (e.g., healthy volunteer, mild-to-moderate asthma, or other indication). Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-moderate-to-severe-asthma subject; the complement group is defined per-model).
+- **Source aliases:**
+  - `sAsthma` — used in `Hua_2015_anrukinzumab.R`.
+- **Example models:** `Hua_2015_anrukinzumab.R` (multiplicative fractional change in SC bioavailability, -30.9%).
+- **Notes:** The moderate-to-severe vs. mild-to-moderate asthma cutoff is protocol-defined; Hua 2015 uses FEV1 55-80% and ACQ-5 >= 2 for "moderate to severe" (study 4) versus FEV1 > 70% and ACQ-5 <= 1 for "mild to moderate" (study 1). Scope: specific because the severity threshold is tied to a particular analysis plan; future asthma-severity indicators with different thresholds should register as separate canonicals.
+
 ## Oncology
 
 ### TUMSZ (**canonical for baseline tumor size**)
@@ -380,10 +425,11 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Units:** mm
 - **Type:** continuous
 - **Scope:** general
-- **Reference category:** n/a — used with power scaling `(TUMSZ / ref)^exponent`. Reference values observed: 63 mm (Budha 2023).
-- **Source aliases:** none.
-- **Example models:** `Budha_2023_tislelizumab.R` (reference 63 mm).
-- **Notes:** Promoted to scope: general on 2026-04-20 as a conventional oncology baseline-tumor-size measure (RECIST for solid tumors, SPPD for cHL). The SPPD vs sum-of-diameters convention is pooled onto a single column; document the per-model mixture where relevant.
+- **Reference category:** n/a — used with power scaling `(TUMSZ / ref)^exponent`. Reference values observed: 63 mm (Budha 2023); 90 mm (Lu 2014, source reference 9 cm converted to mm).
+- **Source aliases:**
+  - `TMBD` (originally in cm; `TUMSZ_mm = TMBD_cm * 10`) — used in `Lu_2014_trastuzumabemtansine.R`.
+- **Example models:** `Budha_2023_tislelizumab.R` (reference 63 mm), `Lu_2014_trastuzumabemtansine.R` (reference 90 mm; source column TMBD in cm, values converted to mm on ingestion).
+- **Notes:** Promoted to scope: general on 2026-04-20 as a conventional oncology baseline-tumor-size measure (RECIST for solid tumors, SPPD for cHL). The SPPD vs sum-of-diameters convention is pooled onto a single column; document the per-model mixture where relevant. When the source paper reports tumor size in cm, convert to mm (the canonical unit) on data ingestion and scale the per-model reference accordingly so `(TUMSZ / ref)^exp` is numerically invariant.
 
 ### TUMTP_CHL (**canonical for classical Hodgkin lymphoma tumor-type indicator**)
 - **Description:** 1 = classical Hodgkin lymphoma (cHL), 0 = other tumor types.
@@ -395,6 +441,28 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   - `TUMTP` (categorical column with levels like `cHL`, `GC`, ...) — decompose into `TUMTP_CHL = as.integer(TUMTP == "cHL")`.
 - **Example models:** `Budha_2023_tislelizumab.R`.
 - **Notes:** Paired with `TUMTP_GC` in Budha 2023; a patient can have at most one of the indicators set to 1 (the remaining tumor types collapse into the reference 0 group).
+
+### HER2_ECD (**canonical for HER2 shed extracellular domain concentration**)
+- **Description:** Baseline serum concentration of the shed extracellular domain of human epidermal growth factor receptor 2 (HER2). Serves as a soluble-antigen biomarker of HER2-mediated target-mediated drug disposition for HER2-directed mAbs / ADCs.
+- **Units:** ng/mL
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a — used with power scaling `(HER2_ECD / ref)^exponent`. Reference 25 ng/mL used in Lu 2014.
+- **Source aliases:**
+  - `ECD` — used in `Lu_2014_trastuzumabemtansine.R`.
+- **Example models:** `Lu_2014_trastuzumabemtansine.R` (reference 25 ng/mL; exponent 0.035 on CL).
+- **Notes:** Scoped specific because the covariate is meaningful only for HER2-targeted agents; if a non-HER2 paper uses a shed-antigen analog for a different target, register a target-specific canonical (e.g., `EGFR_ECD`) rather than reusing this one. Disambiguated from the covariate-columns register by the explicit `HER2_` prefix.
+
+### TRAST_BL (**canonical for baseline trastuzumab concentration from prior therapy**)
+- **Description:** Baseline serum concentration of residual unconjugated trastuzumab remaining from prior trastuzumab-containing therapy, measured at the start of a subsequent anti-HER2 treatment (e.g., trastuzumab emtansine). Encodes the magnitude of residual HER2-site competition from a previous trastuzumab exposure.
+- **Units:** ug/mL
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a — used as a linear covariate on log(CL) via `exp(coef * TRAST_BL)`. TRAST_BL = 0 corresponds to no detectable residual trastuzumab (reference condition used in Lu 2014).
+- **Source aliases:**
+  - `TBL` — used in `Lu_2014_trastuzumabemtansine.R`.
+- **Example models:** `Lu_2014_trastuzumabemtansine.R` (linear-on-log coefficient -0.002 per ug/mL on CL).
+- **Notes:** Scoped specific because the covariate is meaningful only for drugs that compete with trastuzumab at the HER2 binding site. Expect values clustered at 0 for trastuzumab-naive patients; Lu 2014 observed 0 at the 5th percentile and 54 ug/mL at the 95th percentile.
 
 ### TUMTP_GC (**canonical for gastric-cancer tumor-type indicator**)
 - **Description:** 1 = gastric cancer (GC), 0 = other tumor types.
@@ -418,6 +486,93 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Source aliases:** none.
 - **Example models:** `Xu_2019_sarilumab.R`.
 - **Notes:** Xu 2019 normalizes to each site's ULN so that values across multiple labs with different reference ranges can be pooled. Scoped specific because the ULN-normalization convention is tied to the Xu 2019 analysis plan; future papers using the same ratio should either add themselves to the example_models list or promote this entry to general.
+
+## Inflammatory-bowel-disease disease-activity covariates
+
+### CALPRO (**canonical for fecal calprotectin**)
+- **Description:** Fecal calprotectin, a gut-inflammation biomarker (baseline or time-fixed per subject unless a paper explicitly uses a time-varying value).
+- **Units:** mg/kg stool (equivalent to µg/g). Document per-model via `covariateData[[CALPRO]]$units`.
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a — used with power scaling `(CALPRO / ref)^exponent`. Reference 700 mg/kg used in Rosario 2015 (overall population median).
+- **Source aliases:** none.
+- **Example models:** `Rosario_2015_vedolizumab.R` (reference 700 mg/kg; exponent +0.0310 on linear clearance CLL).
+- **Notes:** Common IBD severity biomarker (inflammation of the gut epithelium). Assays typically report in µg/g stool; 1 µg/g = 1 mg/kg. Document per-model whether baseline-only or time-varying in `covariateData[[CALPRO]]$notes`.
+
+### CDAI (**canonical for Crohn's Disease Activity Index**)
+- **Description:** Crohn's Disease Activity Index composite score. Higher values indicate more active disease; <150 remission, 150–219 mild, 220–450 moderate, >450 severe. Defined only for patients with a CD diagnosis; set to the reference value (or gate via the indicator) for UC patients.
+- **Units:** (score, 0–600)
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a — used with power scaling `(CDAI / ref)^exponent`. Reference 300 used in Rosario 2015 (typical moderate-CD score).
+- **Source aliases:** none.
+- **Example models:** `Rosario_2015_vedolizumab.R` (reference 300; exponent −0.0515 on CLL gated by `IBD_CD` so the effect applies only to CD patients).
+- **Notes:** Mutually exclusive with `PMAYO` in pooled UC+CD populations: each patient has exactly one disease-activity score (CDAI for CD, partial Mayo for UC). Gate via the `IBD_CD` indicator when pooling.
+
+### PMAYO (**canonical for partial Mayo score**)
+- **Description:** Partial Mayo score for ulcerative colitis (sum of stool-frequency, rectal-bleeding, and physician-global subscores, range 0–9). Higher values indicate more active disease. Defined only for patients with a UC diagnosis; gate via the `IBD_CD` indicator when pooling UC+CD.
+- **Units:** (score, 0–9)
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a — used with power scaling `(PMAYO / ref)^exponent`. Reference 6 used in Rosario 2015 (typical moderate-UC score).
+- **Source aliases:** none.
+- **Example models:** `Rosario_2015_vedolizumab.R` (reference 6; exponent +0.0408 on CLL gated by `(1 - IBD_CD)` so the effect applies only to UC patients).
+- **Notes:** The partial Mayo score excludes the endoscopy subscore (the full Mayo score is 0–12). Mutually exclusive with `CDAI` in pooled UC+CD populations.
+
+## Inflammatory-bowel-disease diagnosis
+
+### IBD_CD (**canonical for Crohn's disease indicator**)
+- **Description:** 1 = Crohn's disease (CD) diagnosis, 0 = ulcerative colitis (UC) diagnosis. Used to gate pooled UC+CD population models where some parameters or covariate effects differ by diagnosis.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (ulcerative colitis).
+- **Source aliases:**
+  - `DIAGNOSIS`, `DX` (categorical `"UC"`/`"CD"`) — derive `IBD_CD = as.integer(DX == "CD")`.
+- **Example models:** `Rosario_2015_vedolizumab.R` (two typical-CLL switch between UC and CD; gates `PMAYO` and `CDAI` effects; multiplicative +1% effect on Vc).
+- **Notes:** Rosario 2015 models separate typical CLL for UC vs CD and gates the partial-Mayo (UC-only) and CDAI (CD-only) disease-activity covariates via this indicator.
+
+## Concomitant IBD medications
+
+### CONMED_AZA (**canonical for concomitant azathioprine**)
+- **Description:** 1 = on concomitant azathioprine at the PK observation, 0 = not on azathioprine.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no concomitant azathioprine).
+- **Source aliases:** `AZA` — used in `Rosario_2015_vedolizumab.R`.
+- **Example models:** `Rosario_2015_vedolizumab.R` (power-form on CLL: `CLL * 0.998^CONMED_AZA`; effect ≈ null).
+- **Notes:** Thiopurine immunomodulator used as maintenance therapy in IBD. Standard convention is baseline-use-only, but time-varying use is permitted; document per-model.
+
+### CONMED_MP (**canonical for concomitant 6-mercaptopurine**)
+- **Description:** 1 = on concomitant 6-mercaptopurine (6-MP), 0 = not.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no concomitant 6-MP).
+- **Source aliases:** `MP` — used in `Rosario_2015_vedolizumab.R`.
+- **Example models:** `Rosario_2015_vedolizumab.R` (power-form on CLL: `CLL * 1.04^CONMED_MP`).
+- **Notes:** Second thiopurine immunomodulator used in IBD maintenance; typically mutually exclusive with `CONMED_AZA` for a given subject.
+
+### CONMED_MTX (**canonical for concomitant methotrexate**)
+- **Description:** 1 = on concomitant methotrexate, 0 = not.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no concomitant methotrexate).
+- **Source aliases:** `MTX` — used in `Rosario_2015_vedolizumab.R`.
+- **Example models:** `Rosario_2015_vedolizumab.R` (power-form on CLL: `CLL * 0.983^CONMED_MTX`).
+- **Notes:** Immunomodulator used especially in CD maintenance. Generic concomitant-MTX indicator that may also appear in non-IBD models; start as scope: general.
+
+### CONMED_AMINO (**canonical for concomitant aminosalicylate therapy**)
+- **Description:** 1 = on concomitant aminosalicylate (5-aminosalicylic acid / mesalamine / mesalazine / olsalazine / sulfasalazine etc.) therapy at the PK observation, 0 = not.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no concomitant aminosalicylate).
+- **Source aliases:** `AMINO` — used in `Rosario_2015_vedolizumab.R`.
+- **Example models:** `Rosario_2015_vedolizumab.R` (power-form on CLL: `CLL * 1.02^CONMED_AMINO`).
+- **Notes:** Covers the full aminosalicylate class (5-ASA is the single active moiety shared by most agents); use `CONMED_AMINO` rather than `CONMED_5ASA` unless the source paper explicitly restricts the indicator to 5-ASA monotherapy.
 
 ## Rheumatoid-arthritis disease-activity covariates
 
@@ -452,6 +607,27 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Source aliases:** none.
 - **Example models:** `Ma_2020_sarilumab_das28crp.R` (multiplicative on DAS28-CRP Kout: `Kout * theta^PRICORT`); `Ma_2020_sarilumab_anc.R` (power-form on Emax: `Emax * 0.819^PRICORT`).
 - **Notes:** Ma 2020 applies it as a multiplicative effect of the form `param * theta^PRICORT` in both DAS28-CRP and ANC PD models. Generally applicable clinical-history indicator.
+
+### STEROID
+- **Description:** 1 = patient on systemic corticosteroid therapy at baseline (typically continued as concomitant medication during the study), 0 = no baseline corticosteroid use.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no baseline corticosteroid use).
+- **Source aliases:**
+  - `BSTEROID` — used in `Narwal_2013_sifalimumab.R`.
+- **Example models:** `Narwal_2013_sifalimumab.R` (multiplicative on CL: `CL * (1 + 0.195 * STEROID)`).
+- **Notes:** Distinct from `PRICORT`, which is strictly a prior (pre-study) indicator. `STEROID` captures concurrent corticosteroid use at / from study baseline. When a future paper needs the two jointly, both can coexist on the same subject.
+### STEROID_BL (**canonical for baseline/concomitant systemic steroid use**)
+- **Description:** 1 = patient is on systemic corticosteroid treatment at study entry (baseline concomitant use), 0 = not on steroids at baseline. Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (not on steroids at baseline).
+- **Source aliases:**
+  - `BSTEROID` — used in `Zheng_2016_sifalimumab.R`.
+- **Example models:** `Zheng_2016_sifalimumab.R` (multiplicative effects on CL `(1 + 0.11 * STEROID_BL)` and on V1 `(1 - 0.09 * STEROID_BL)` in the SLE phase IIb cohort, which was ~85% steroid-treated at baseline).
+- **Notes:** Distinct from `PRICORT`, which captures systemic corticosteroid use *prior* to study entry as a one-time clinical-history indicator. `STEROID_BL` captures ongoing/concomitant steroid therapy at baseline in diseases where background steroid use is standard of care (SLE, severe asthma, etc.). In some studies the prior-vs-baseline distinction is immaterial (patients on steroids at baseline have also taken them prior) but the semantic difference is preserved here so that future models can use the appropriate indicator.
 
 ## Immunogenicity
 
@@ -612,6 +788,27 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Clegg_2024_nirsevimab.R`.
 - **Notes:** Study-specific but semantically general (second-exposure indicator). Promote to general if a second RSV-season model adopts the same semantics.
 
+### COHDOSE
+- **Description:** Randomized dose cohort expressed in mg/kg. Subject-level (time-fixed) covariate carrying the per-subject cohort dose in a study where each subject remained on a single escalating-cohort dose for the full dosing period.
+- **Units:** mg/kg
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a — used with power scaling `(COHDOSE / ref)^exponent`. Reference value observed: 1 mg/kg in Narwal 2013.
+- **Source aliases:**
+  - `DOSE` — used in `Narwal_2013_sifalimumab.R` (the paper's Eq. 3 variable name; renamed to `COHDOSE` here to avoid colliding with the rxode2/nlmixr2 event-column convention where `DOSE` or `AMT` carries the administered dose).
+- **Example models:** `Narwal_2013_sifalimumab.R` (reference 1 mg/kg, exponent 0.0542 on CL).
+- **Notes:** Scope: specific because the interpretation depends on a study design where each subject stays on a single dose cohort. For fixed-dose simulations, set `COHDOSE = nominal_dose_mg / WT` per subject. When the subject receives a weight-based dose, `COHDOSE` is the mg/kg label (0.3, 1, 3, or 10 mg/kg for the MI-CP152 cohorts).
+### DOSE (**canonical for per-subject assigned dose level**)
+- **Description:** Continuous covariate carrying each subject's assigned fixed dose level (in mg) across the study. Used as a power-style covariate when the population PK model detects a dose-dependent shift in a PK parameter (central volume, clearance, etc.).
+- **Units:** mg (document per-model in `covariateData[[DOSE]]$units` if a different dose unit is used).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a — used with power scaling `(DOSE / ref)^exponent`. Reference values observed: 600 mg in `Zheng_2016_sifalimumab.R` (middle of the 200/600/1200 mg phase IIb dose range).
+- **Source aliases:**
+  - `Dose` — used in `Zheng_2016_sifalimumab.R`.
+- **Example models:** `Zheng_2016_sifalimumab.R` (power effect on V1 with exponent 0.06).
+- **Notes:** Distinct from `DOSE_70MG` (binary indicator for a specific dose group in a trinary-dose design). Use `DOSE` when the source paper treats dose as a continuous covariate acting on a PK parameter. Scope: specific because the semantics (units, reference dose, whether the covariate applies to CL or V) are study-specific; future models using continuous dose as a covariate should either extend this entry's example-models list or register a more specific variant.
+
 ### DOSE_70MG
 - **Description:** 1 = subject is on the 70 mg SC Q4W dose regimen, 0 = subject is on the 210 or 490 mg SC Q4W regimen.
 - **Units:** (binary)
@@ -743,11 +940,40 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   out as a distinct category from the broader `RACE_ASIAN` indicator
   (both non-overlapping sub-indicators point to different per-population
   reference groups).
+- **2026-04-21** — Added `STEROID` (general-scope; baseline systemic corticosteroid use, distinct from the existing `PRICORT` which captures prior corticosteroid use), `BGENE21` (specific-scope; baseline 21-gene type I interferon signature under a new `Interferon / biomarker panels` section), and `COHDOSE` (specific-scope; randomized dose cohort in mg/kg) canonical entries while extracting Narwal 2013 sifalimumab. Source aliases mapped: `BSTEROID`→`STEROID`, `DOSE`→`COHDOSE`.
+- **2026-04-21** — Added `AST` (general, hepatic enzyme), `HER2_ECD`
+  (specific, HER2 shed ECD biomarker), and `TRAST_BL` (specific,
+  baseline trastuzumab concentration from prior therapy) canonical
+  entries while extracting `Lu_2014_trastuzumabemtansine.R`.
+- **2026-04-21** — Added `DIS_UC` (ulcerative colitis disease-state
+  indicator) and `DIS_SASTHMA` (moderate-to-severe asthma disease-state
+  indicator) canonical entries under a new `Disease state
+  (cross-population indicators)` section while extracting
+  `Hua_2015_anrukinzumab.R`. Both scope: specific, decomposed from a
+  four-level disease-state categorical (healthy volunteer, mild-to-moderate
+  asthma, moderate-to-severe asthma, UC).
+- **2026-04-21** — Added IBD canonical entries for Rosario 2015 vedolizumab
+  extraction: `CALPRO` (fecal calprotectin, general), `CDAI` (Crohn's
+  Disease Activity Index, general), `PMAYO` (partial Mayo score, general),
+  `IBD_CD` (Crohn's-disease-vs-UC indicator, general), and four
+  concomitant-medication indicators `CONMED_AZA`, `CONMED_MP`,
+  `CONMED_MTX`, `CONMED_AMINO` (all general scope). New H2 sections
+  `Inflammatory-bowel-disease disease-activity covariates`,
+  `Inflammatory-bowel-disease diagnosis`, and `Concomitant IBD
+  medications`.
+- **2026-04-21** — Added `STEROID_BL` (general-scope baseline/concomitant
+  steroid-use indicator; distinct from prior-only `PRICORT`), `BGENE21`
+  (specific-scope 21-gene type I interferon signature score), and `DOSE`
+  (specific-scope per-subject assigned dose level in mg) canonical entries
+  while extracting `Zheng_2016_sifalimumab.R`.
 - Subsequent additions: append new canonical entries as new papers are processed. When adding, bump the audit-completed count in the summary below.
 
 ## Summary
 
 - Files audited: 69 R files under `inst/modeldb/` (20 of which reference covariates).
+- Canonical H3 entries: 58 (61 parsed entries when counting each `ooc<n>` individually; was ~57 before the 2026-04-20 mergers of `hsCRP`+`BLCRP`+standard-`CRP` → `CRP`, `eGFR`+`CRCL_BSA` → `CRCL`, and `ADA_TITRE`+`ADA_TITER` → `ADA_TITER`; +1 `PHASE2` and +1 `WBC` on 2026-04-21 from Farrell 2012 / Mould 2007; +3 on 2026-04-21 for `STEROID`, `BGENE21`, `COHDOSE` from Narwal 2013).
+- Scope: general: 35. Scope: specific: 26 (counting each `ooc<n>` individually, or 23 counting the `### ooc1, ooc2, ooc3, ooc4` heading as one entry).
+- Aliases mapped (selected): SEXM→SEXF, ADA→ADA_POS, ADA_TITRE/ADAT→ADA_TITER, BLACK→RACE_BLACK, ASIAN→RACE_ASIAN, MULTIRACIAL→RACE_MULTI, BLACK_OTH→RACE_BLACK_OTH, ASIAN_AMIND_MULTI→RACE_ASIAN_AMIND_MULTI, DVID→STUDY1/STUDY5, CRE→CREAT, hsCRP/HSCRP/CRPHS/BLCRP→CRP, eGFR/EGFR/CRCL_BSA/1.73*CrCl/BSA→CRCL, DP2→FORM_DP2, DISEXT→DISEXT_EP/DISEXT_OTHER, BEASI→EASI, BEOS→EOS, GAST→PRIOR_GAST, COMB→COMB_EOX, TUMTP→TUMTP_CHL/TUMTP_GC, BSTEROID→STEROID, DOSE→COHDOSE.
 - Canonical H3 entries: 53 (56 parsed entries when counting each `ooc<n>` individually; was ~57 before the 2026-04-20 mergers of `hsCRP`+`BLCRP`+standard-`CRP` → `CRP`, `eGFR`+`CRCL_BSA` → `CRCL`, and `ADA_TITRE`+`ADA_TITER` → `ADA_TITER`).
 - Scope: general: 33. Scope: specific: 23 (counting each `ooc<n>` individually, or 20 counting the `### ooc1, ooc2, ooc3, ooc4` heading as one entry).
-- Aliases mapped (selected): SEXM→SEXF, ADA→ADA_POS, ADA_TITRE/ADAT→ADA_TITER, BLACK→RACE_BLACK, ASIAN→RACE_ASIAN, MULTIRACIAL→RACE_MULTI, BLACK_OTH→RACE_BLACK_OTH, ASIAN_AMIND_MULTI→RACE_ASIAN_AMIND_MULTI, DVID→STUDY1/STUDY5, CRE→CREAT, hsCRP/HSCRP/CRPHS/BLCRP→CRP, eGFR/EGFR/CRCL_BSA/1.73*CrCl/BSA→CRCL, DP2→FORM_DP2, DISEXT→DISEXT_EP/DISEXT_OTHER, BEASI→EASI, BEOS→EOS, GAST→PRIOR_GAST, COMB→COMB_EOX, TUMTP→TUMTP_CHL/TUMTP_GC.
+- Aliases mapped (selected): SEXM→SEXF, ADA→ADA_POS, ADA_TITRE/ADAT→ADA_TITER, BLACK→RACE_BLACK, ASIAN→RACE_ASIAN, MULTIRACIAL→RACE_MULTI, BLACK_OTH→RACE_BLACK_OTH, ASIAN_AMIND_MULTI→RACE_ASIAN_AMIND_MULTI, DVID→STUDY1/STUDY5, CRE→CREAT, hsCRP/HSCRP/CRPHS/BLCRP→CRP, eGFR/EGFR/CRCL_BSA/1.73*CrCl/BSA→CRCL, DP2→FORM_DP2, DISEXT→DISEXT_EP/DISEXT_OTHER, BEASI→EASI, BEOS→EOS, GAST→PRIOR_GAST, COMB→COMB_EOX, TUMTP→TUMTP_CHL/TUMTP_GC, DX→IBD_CD, AZA→CONMED_AZA, MP→CONMED_MP, MTX→CONMED_MTX, AMINO→CONMED_AMINO.

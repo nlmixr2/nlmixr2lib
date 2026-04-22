@@ -3,25 +3,30 @@
 \name{cvToBsv}
 \alias{cvToBsv}
 \alias{bsvToCv}
-\title{Convert coefficient of variation (percent) to standard deviation}
+\title{Convert coefficient of variation (percent) to between-subject variance}
 \usage{
 cvToBsv(cv)
 
 bsvToCv(bsv)
 }
 \arguments{
-\item{cv}{The coefficient of variation (%)}
+\item{cv}{The coefficient of variation, expressed as a percent.}
+
+\item{bsv}{The between-subject variability on the variance (omega^2) scale.}
 }
 \value{
-The between-subject variabilty on the standard deviation scale
+The between-subject variability on the variance (omega^2) scale.
 
-The coefficient of variation on the percent scale
+The coefficient of variation on the percent scale.
 }
 \description{
-Convert coefficient of variation (percent) to standard deviation
+`cvToBsv()` converts a log-normal coefficient of variation (expressed as a
+percent) to the variance on the log scale, `omega^2 = log((CV/100)^2 + 1)`.
+`bsvToCv()` is the inverse transform.
 }
 \section{Functions}{
 \itemize{
-\item \code{bsvToCv()}: Convert standard deviation of between-subject variability to coefficient of variation
+\item \code{bsvToCv()}: Convert log-scale between-subject variance back to a
+percent coefficient of variation.
 
 }}

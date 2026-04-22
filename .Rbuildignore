@@ -1,3 +1,5 @@
+^\.claude$
+^CLAUDE\.md$
 ^\.github$
 ^codecov\.yml$
 ^_pkgdown\.yml$
