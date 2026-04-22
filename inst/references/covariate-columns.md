@@ -329,17 +329,6 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Clegg_2024_nirsevimab.R`.
 - **Notes:** Clegg 2024 applies this covariate to both CL and V2 with different coefficients.
 
-### RACE_JAPANESE (**canonical**)
-- **Description:** 1 = Japanese ethnicity, 0 = other.
-- **Units:** (binary)
-- **Type:** binary
-- **Scope:** general
-- **Reference category:** 0 (document the actual reference groups used).
-- **Source aliases:**
-  - `RACE` level `8` (integer-coded, `IF(RACE.EQ.8) VRACE = ...`) — used in `Wade_2015_certolizumab.R` (derive `RACE_JAPANESE = as.integer(RACE == 8)`).
-- **Example models:** `Wade_2015_certolizumab.R` (fractional effect on V, -25% vs. the pooled reference of White, Indian Asian, Hispanic, Other).
-- **Notes:** Follows the `RACE_BLACK` / `RACE_ASIAN` indicator-decomposition pattern. Useful when a paper breaks out Japanese as a distinct category from a broader "Asian" group (common in multinational trials with dedicated Japanese cohorts). When paired with `RACE_ASIAN`, the `RACE_ASIAN` column must encode "Asian excluding Japanese" — document the exclusion in the per-model `covariateData[[RACE_ASIAN]]$notes`.
-
 ### RACE_MULTI
 - **Description:** 1 = multiracial, 0 = other.
 - **Units:** (binary)
@@ -487,6 +476,93 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Source aliases:** none.
 - **Example models:** `Xu_2019_sarilumab.R`.
 - **Notes:** Xu 2019 normalizes to each site's ULN so that values across multiple labs with different reference ranges can be pooled. Scoped specific because the ULN-normalization convention is tied to the Xu 2019 analysis plan; future papers using the same ratio should either add themselves to the example_models list or promote this entry to general.
+
+## Inflammatory-bowel-disease disease-activity covariates
+
+### CALPRO (**canonical for fecal calprotectin**)
+- **Description:** Fecal calprotectin, a gut-inflammation biomarker (baseline or time-fixed per subject unless a paper explicitly uses a time-varying value).
+- **Units:** mg/kg stool (equivalent to µg/g). Document per-model via `covariateData[[CALPRO]]$units`.
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a — used with power scaling `(CALPRO / ref)^exponent`. Reference 700 mg/kg used in Rosario 2015 (overall population median).
+- **Source aliases:** none.
+- **Example models:** `Rosario_2015_vedolizumab.R` (reference 700 mg/kg; exponent +0.0310 on linear clearance CLL).
+- **Notes:** Common IBD severity biomarker (inflammation of the gut epithelium). Assays typically report in µg/g stool; 1 µg/g = 1 mg/kg. Document per-model whether baseline-only or time-varying in `covariateData[[CALPRO]]$notes`.
+
+### CDAI (**canonical for Crohn's Disease Activity Index**)
+- **Description:** Crohn's Disease Activity Index composite score. Higher values indicate more active disease; <150 remission, 150–219 mild, 220–450 moderate, >450 severe. Defined only for patients with a CD diagnosis; set to the reference value (or gate via the indicator) for UC patients.
+- **Units:** (score, 0–600)
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a — used with power scaling `(CDAI / ref)^exponent`. Reference 300 used in Rosario 2015 (typical moderate-CD score).
+- **Source aliases:** none.
+- **Example models:** `Rosario_2015_vedolizumab.R` (reference 300; exponent −0.0515 on CLL gated by `IBD_CD` so the effect applies only to CD patients).
+- **Notes:** Mutually exclusive with `PMAYO` in pooled UC+CD populations: each patient has exactly one disease-activity score (CDAI for CD, partial Mayo for UC). Gate via the `IBD_CD` indicator when pooling.
+
+### PMAYO (**canonical for partial Mayo score**)
+- **Description:** Partial Mayo score for ulcerative colitis (sum of stool-frequency, rectal-bleeding, and physician-global subscores, range 0–9). Higher values indicate more active disease. Defined only for patients with a UC diagnosis; gate via the `IBD_CD` indicator when pooling UC+CD.
+- **Units:** (score, 0–9)
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a — used with power scaling `(PMAYO / ref)^exponent`. Reference 6 used in Rosario 2015 (typical moderate-UC score).
+- **Source aliases:** none.
+- **Example models:** `Rosario_2015_vedolizumab.R` (reference 6; exponent +0.0408 on CLL gated by `(1 - IBD_CD)` so the effect applies only to UC patients).
+- **Notes:** The partial Mayo score excludes the endoscopy subscore (the full Mayo score is 0–12). Mutually exclusive with `CDAI` in pooled UC+CD populations.
+
+## Inflammatory-bowel-disease diagnosis
+
+### IBD_CD (**canonical for Crohn's disease indicator**)
+- **Description:** 1 = Crohn's disease (CD) diagnosis, 0 = ulcerative colitis (UC) diagnosis. Used to gate pooled UC+CD population models where some parameters or covariate effects differ by diagnosis.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (ulcerative colitis).
+- **Source aliases:**
+  - `DIAGNOSIS`, `DX` (categorical `"UC"`/`"CD"`) — derive `IBD_CD = as.integer(DX == "CD")`.
+- **Example models:** `Rosario_2015_vedolizumab.R` (two typical-CLL switch between UC and CD; gates `PMAYO` and `CDAI` effects; multiplicative +1% effect on Vc).
+- **Notes:** Rosario 2015 models separate typical CLL for UC vs CD and gates the partial-Mayo (UC-only) and CDAI (CD-only) disease-activity covariates via this indicator.
+
+## Concomitant IBD medications
+
+### CONMED_AZA (**canonical for concomitant azathioprine**)
+- **Description:** 1 = on concomitant azathioprine at the PK observation, 0 = not on azathioprine.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no concomitant azathioprine).
+- **Source aliases:** `AZA` — used in `Rosario_2015_vedolizumab.R`.
+- **Example models:** `Rosario_2015_vedolizumab.R` (power-form on CLL: `CLL * 0.998^CONMED_AZA`; effect ≈ null).
+- **Notes:** Thiopurine immunomodulator used as maintenance therapy in IBD. Standard convention is baseline-use-only, but time-varying use is permitted; document per-model.
+
+### CONMED_MP (**canonical for concomitant 6-mercaptopurine**)
+- **Description:** 1 = on concomitant 6-mercaptopurine (6-MP), 0 = not.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no concomitant 6-MP).
+- **Source aliases:** `MP` — used in `Rosario_2015_vedolizumab.R`.
+- **Example models:** `Rosario_2015_vedolizumab.R` (power-form on CLL: `CLL * 1.04^CONMED_MP`).
+- **Notes:** Second thiopurine immunomodulator used in IBD maintenance; typically mutually exclusive with `CONMED_AZA` for a given subject.
+
+### CONMED_MTX (**canonical for concomitant methotrexate**)
+- **Description:** 1 = on concomitant methotrexate, 0 = not.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no concomitant methotrexate).
+- **Source aliases:** `MTX` — used in `Rosario_2015_vedolizumab.R`.
+- **Example models:** `Rosario_2015_vedolizumab.R` (power-form on CLL: `CLL * 0.983^CONMED_MTX`).
+- **Notes:** Immunomodulator used especially in CD maintenance. Generic concomitant-MTX indicator that may also appear in non-IBD models; start as scope: general.
+
+### CONMED_AMINO (**canonical for concomitant aminosalicylate therapy**)
+- **Description:** 1 = on concomitant aminosalicylate (5-aminosalicylic acid / mesalamine / mesalazine / olsalazine / sulfasalazine etc.) therapy at the PK observation, 0 = not.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no concomitant aminosalicylate).
+- **Source aliases:** `AMINO` — used in `Rosario_2015_vedolizumab.R`.
+- **Example models:** `Rosario_2015_vedolizumab.R` (power-form on CLL: `CLL * 1.02^CONMED_AMINO`).
+- **Notes:** Covers the full aminosalicylate class (5-ASA is the single active moiety shared by most agents); use `CONMED_AMINO` rather than `CONMED_5ASA` unless the source paper explicitly restricts the indicator to 5-ASA monotherapy.
 
 ## Rheumatoid-arthritis disease-activity covariates
 
@@ -846,6 +922,15 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   `Hua_2015_anrukinzumab.R`. Both scope: specific, decomposed from a
   four-level disease-state categorical (healthy volunteer, mild-to-moderate
   asthma, moderate-to-severe asthma, UC).
+- **2026-04-21** — Added IBD canonical entries for Rosario 2015 vedolizumab
+  extraction: `CALPRO` (fecal calprotectin, general), `CDAI` (Crohn's
+  Disease Activity Index, general), `PMAYO` (partial Mayo score, general),
+  `IBD_CD` (Crohn's-disease-vs-UC indicator, general), and four
+  concomitant-medication indicators `CONMED_AZA`, `CONMED_MP`,
+  `CONMED_MTX`, `CONMED_AMINO` (all general scope). New H2 sections
+  `Inflammatory-bowel-disease disease-activity covariates`,
+  `Inflammatory-bowel-disease diagnosis`, and `Concomitant IBD
+  medications`.
 - Subsequent additions: append new canonical entries as new papers are processed. When adding, bump the audit-completed count in the summary below.
 
 ## Summary
@@ -854,3 +939,6 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - Canonical H3 entries: 58 (61 parsed entries when counting each `ooc<n>` individually; was ~57 before the 2026-04-20 mergers of `hsCRP`+`BLCRP`+standard-`CRP` → `CRP`, `eGFR`+`CRCL_BSA` → `CRCL`, and `ADA_TITRE`+`ADA_TITER` → `ADA_TITER`; +1 `PHASE2` and +1 `WBC` on 2026-04-21 from Farrell 2012 / Mould 2007; +3 on 2026-04-21 for `STEROID`, `BGENE21`, `COHDOSE` from Narwal 2013).
 - Scope: general: 35. Scope: specific: 26 (counting each `ooc<n>` individually, or 23 counting the `### ooc1, ooc2, ooc3, ooc4` heading as one entry).
 - Aliases mapped (selected): SEXM→SEXF, ADA→ADA_POS, ADA_TITRE/ADAT→ADA_TITER, BLACK→RACE_BLACK, ASIAN→RACE_ASIAN, MULTIRACIAL→RACE_MULTI, BLACK_OTH→RACE_BLACK_OTH, ASIAN_AMIND_MULTI→RACE_ASIAN_AMIND_MULTI, DVID→STUDY1/STUDY5, CRE→CREAT, hsCRP/HSCRP/CRPHS/BLCRP→CRP, eGFR/EGFR/CRCL_BSA/1.73*CrCl/BSA→CRCL, DP2→FORM_DP2, DISEXT→DISEXT_EP/DISEXT_OTHER, BEASI→EASI, BEOS→EOS, GAST→PRIOR_GAST, COMB→COMB_EOX, TUMTP→TUMTP_CHL/TUMTP_GC, BSTEROID→STEROID, DOSE→COHDOSE.
+- Canonical H3 entries: 53 (56 parsed entries when counting each `ooc<n>` individually; was ~57 before the 2026-04-20 mergers of `hsCRP`+`BLCRP`+standard-`CRP` → `CRP`, `eGFR`+`CRCL_BSA` → `CRCL`, and `ADA_TITRE`+`ADA_TITER` → `ADA_TITER`).
+- Scope: general: 33. Scope: specific: 23 (counting each `ooc<n>` individually, or 20 counting the `### ooc1, ooc2, ooc3, ooc4` heading as one entry).
+- Aliases mapped (selected): SEXM→SEXF, ADA→ADA_POS, ADA_TITRE/ADAT→ADA_TITER, BLACK→RACE_BLACK, ASIAN→RACE_ASIAN, MULTIRACIAL→RACE_MULTI, BLACK_OTH→RACE_BLACK_OTH, ASIAN_AMIND_MULTI→RACE_ASIAN_AMIND_MULTI, DVID→STUDY1/STUDY5, CRE→CREAT, hsCRP/HSCRP/CRPHS/BLCRP→CRP, eGFR/EGFR/CRCL_BSA/1.73*CrCl/BSA→CRCL, DP2→FORM_DP2, DISEXT→DISEXT_EP/DISEXT_OTHER, BEASI→EASI, BEOS→EOS, GAST→PRIOR_GAST, COMB→COMB_EOX, TUMTP→TUMTP_CHL/TUMTP_GC, DX→IBD_CD, AZA→CONMED_AZA, MP→CONMED_MP, MTX→CONMED_MTX, AMINO→CONMED_AMINO.
