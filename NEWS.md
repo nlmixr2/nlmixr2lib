@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Valenzuela 2025 nipocalimab ([doi:10.1002/psp4.70109](https://doi.org/10.1002/psp4.70109)) — healthy adults and adults with generalized myasthenia gravis.
 * Add Robbie 2012 palivizumab ([doi:10.1128/AAC.06446-11](https://doi.org/10.1128/AAC.06446-11)) — adults and pediatric patients at high risk of RSV lower respiratory tract disease.
 * Add Wade 2015 certolizumab ([doi:10.1002/jcph.491](https://doi.org/10.1002/jcph.491)) — adults with Crohn's disease.
 * Add Mould 2007 alemtuzumab ([doi:10.1111/j.1365-2125.2007.02914.x](https://doi.org/10.1111/j.1365-2125.2007.02914.x)) — adults with B-cell chronic lymphocytic leukaemia.
