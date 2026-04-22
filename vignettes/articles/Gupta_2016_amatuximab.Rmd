@@ -293,7 +293,6 @@ end_ss   <- start_ss + tau_h
 
 sim_nca <- sim_full |>
   filter(!is.na(Cc), time >= start_ss - 1, time <= end_ss + 1) |>
-  left_join(pop |> select(ID, ADA_POS) |> rename(id = ID), by = "id") |>
   transmute(
     id        = id,
     time      = time,
@@ -303,7 +302,6 @@ sim_nca <- sim_full |>
 
 dose_nca <- d_sim |>
   filter(EVID == 1) |>
-  left_join(pop |> select(ID, ADA_POS), by = "ID") |>
   transmute(
     id        = ID,
     time      = TIME,
@@ -343,7 +341,6 @@ nca_summary
 ```{r compare}
 sim_cmin_ss <- sim_full |>
   filter(time == start_ss) |>
-  left_join(pop |> select(ID, ADA_POS) |> rename(id = ID), by = "id") |>
   group_by(ADA_POS) |>
   summarise(median_cmin = stats::median(Cc, na.rm = TRUE), .groups = "drop")
 
