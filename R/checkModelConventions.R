@@ -88,17 +88,38 @@ checkModelConventions <- function(model, verbose = TRUE) {
   }
   if (inherits(model, "rxUi")) {
     nm <- tryCatch(model$modelName, error = function(e) NA_character_)
-    if (is.null(nm) || is.na(nm)) nm <- "<rxUi>"
+    nm <- .pickModelName(nm, fallback = "<rxUi>")
     return(list(ui = model, name = nm))
   }
   if (is.function(model)) {
     ui <- nlmixr2est::nlmixr(model)
-    nm <- tryCatch(ui$modelName, error = function(e) NA_character_)
-    if (is.null(nm) || is.na(nm)) nm <- "<function>"
+    # rxode2 sets modelName to the formal parameter name (e.g. "model") when a
+    # bare function is passed in, which is uninformative. Prefer the name
+    # stashed in the function's closure by readModelDb(); fall back to the
+    # explicit `<function>` placeholder so downstream scope checks can
+    # recognize that the true identity is unknown rather than trusting the
+    # misleading formal-parameter string.
+    closure_nm <- tryCatch(get0("name", envir = environment(model),
+                                inherits = FALSE),
+                           error = function(e) NULL)
+    nm <- .pickModelName(closure_nm, fallback = "<function>")
     return(list(ui = ui, name = nm))
   }
   stop("`model` must be a character name, function, rxUi, or missing.",
        call. = FALSE)
+}
+
+# rxode2 may populate `ui$modelName` with the full call chain that produced the
+# UI (e.g., `c("readModelDb", "Valenzuela_2025_nipocalimab")` when a model was
+# loaded via `rxode2(readModelDb("..."))`). Collapse to a single character so
+# downstream `is.null(nm) || is.na(nm)` guards don't blow up on length > 1.
+.pickModelName <- function(nm, fallback) {
+  if (is.null(nm)) return(fallback)
+  nm <- nm[!is.na(nm) & nzchar(nm)]
+  if (length(nm) == 0) return(fallback)
+  # Prefer the last (innermost) call-chain entry -- that's the actual model
+  # function name, not the wrapper that returned it.
+  nm[[length(nm)]]
 }
 
 .emptyIssues <- function() {
@@ -428,6 +449,9 @@ checkModelConventions <- function(model, verbose = TRUE) {
     # permitted in the models listed under its `Example models` field.
     # This catches authors who unknowingly reuse a study-specific name
     # (e.g., STUDY1, FORM_DP2, TUMTP_CHL) for a different purpose.
+    # When model_name is a placeholder (pre-registration), the warning is an
+    # informative todo: once the author registers under a real name they can
+    # add it to the `Example models` list for covariates that are legitimate.
     if (!is.na(canon_name)) {
       entry <- conv$canonicalCovariates[[canon_name]]
       if (identical(entry$scope, "specific") &&
