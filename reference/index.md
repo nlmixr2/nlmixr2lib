@@ -68,6 +68,9 @@
 - [`createMarkovTransitionMatrix()`](https://nlmixr2.github.io/nlmixr2lib/reference/createMarkovTransitionMatrix.md)
   : Create a Markov transition matrix with probabilities of
   transitioning between every state
+- [`cvToBsv()`](https://nlmixr2.github.io/nlmixr2lib/reference/cvToBsv.md)
+  [`bsvToCv()`](https://nlmixr2.github.io/nlmixr2lib/reference/cvToBsv.md)
+  : Convert coefficient of variation (percent) to standard deviation
 - [`defaultCombine()`](https://nlmixr2.github.io/nlmixr2lib/reference/defaultCombine.md)
   [`snakeCombine()`](https://nlmixr2.github.io/nlmixr2lib/reference/defaultCombine.md)
   [`camelCombine()`](https://nlmixr2.github.io/nlmixr2lib/reference/defaultCombine.md)

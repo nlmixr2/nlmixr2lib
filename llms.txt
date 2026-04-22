@@ -107,6 +107,9 @@ this way.
 - [`createMarkovTransitionMatrix()`](https://nlmixr2.github.io/nlmixr2lib/reference/createMarkovTransitionMatrix.md)
   : Create a Markov transition matrix with probabilities of
   transitioning between every state
+- [`cvToBsv()`](https://nlmixr2.github.io/nlmixr2lib/reference/cvToBsv.md)
+  [`bsvToCv()`](https://nlmixr2.github.io/nlmixr2lib/reference/cvToBsv.md)
+  : Convert coefficient of variation (percent) to standard deviation
 - [`defaultCombine()`](https://nlmixr2.github.io/nlmixr2lib/reference/defaultCombine.md)
   [`snakeCombine()`](https://nlmixr2.github.io/nlmixr2lib/reference/defaultCombine.md)
   [`camelCombine()`](https://nlmixr2.github.io/nlmixr2lib/reference/defaultCombine.md)
@@ -179,6 +182,7 @@ this way.
 - [Tiraboschi_2025_amlitelimab](https://nlmixr2.github.io/nlmixr2lib/articles/Tiraboschi_2025_amlitelimab.md):
 - [TMDD archetypes: full, QSS, and Michaelis-Menten
   approximations](https://nlmixr2.github.io/nlmixr2lib/articles/tmdd_archetypes.md):
+- [Valenzuela_2025_nipocalimab](https://nlmixr2.github.io/nlmixr2lib/articles/Valenzuela_2025_nipocalimab.md):
 - [Wade_2015_certolizumab](https://nlmixr2.github.io/nlmixr2lib/articles/Wade_2015_certolizumab.md):
 - [Wang_2017_benralizumab](https://nlmixr2.github.io/nlmixr2lib/articles/Wang_2017_benralizumab.md):
 - [Xie_2019_agomelatine](https://nlmixr2.github.io/nlmixr2lib/articles/Xie_2019_agomelatine.md):

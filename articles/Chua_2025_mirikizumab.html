@@ -62,6 +62,7 @@
     <li><a class="dropdown-item" href="../articles/Thakre_2022_risankizumab.html">Thakre_2022_risankizumab</a></li>
     <li><a class="dropdown-item" href="../articles/Tiraboschi_2025_amlitelimab.html">Tiraboschi_2025_amlitelimab</a></li>
     <li><a class="dropdown-item" href="../articles/tmdd_archetypes.html">TMDD archetypes: full, QSS, and Michaelis-Menten approximations</a></li>
+    <li><a class="dropdown-item" href="../articles/Valenzuela_2025_nipocalimab.html">Valenzuela_2025_nipocalimab</a></li>
     <li><a class="dropdown-item" href="../articles/Wade_2015_certolizumab.html">Wade_2015_certolizumab</a></li>
     <li><a class="dropdown-item" href="../articles/Wang_2017_benralizumab.html">Wang_2017_benralizumab</a></li>
     <li><a class="dropdown-item" href="../articles/Xie_2019_agomelatine.html">Xie_2019_agomelatine</a></li>
@@ -490,8 +491,7 @@ to week 52).</p>
 <span></span>
 <span><span class="va">nca_data</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_obj</span>, <span class="va">dose_obj</span>, intervals <span class="op">=</span> <span class="va">intervals</span><span class="op">)</span></span>
 <span><span class="va">nca_res</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span><span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="va">nca_data</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■                      </span>  30% |  ETA:  3s</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■     </span>  86% |  ETA:  1s</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■                 </span>  46% |  ETA:  3s</span></span>
 <span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">nca_res</span><span class="op">)</span>,</span>

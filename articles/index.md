@@ -36,6 +36,7 @@
 - [Tiraboschi_2025_amlitelimab](https://nlmixr2.github.io/nlmixr2lib/articles/Tiraboschi_2025_amlitelimab.md):
 - [TMDD archetypes: full, QSS, and Michaelis-Menten
   approximations](https://nlmixr2.github.io/nlmixr2lib/articles/tmdd_archetypes.md):
+- [Valenzuela_2025_nipocalimab](https://nlmixr2.github.io/nlmixr2lib/articles/Valenzuela_2025_nipocalimab.md):
 - [Wade_2015_certolizumab](https://nlmixr2.github.io/nlmixr2lib/articles/Wade_2015_certolizumab.md):
 - [Wang_2017_benralizumab](https://nlmixr2.github.io/nlmixr2lib/articles/Wang_2017_benralizumab.md):
 - [Xie_2019_agomelatine](https://nlmixr2.github.io/nlmixr2lib/articles/Xie_2019_agomelatine.md):
