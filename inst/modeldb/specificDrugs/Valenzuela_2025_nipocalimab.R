@@ -2,7 +2,7 @@ Valenzuela_2025_nipocalimab <- function() {
   description <- "Integrated PK/RO/IgG/MG-ADL QSS TMDD model for nipocalimab in healthy adults and generalized myasthenia gravis (Valenzuela 2025)"
   reference <- "Valenzuela B, Neyens M, Zhu Y, Ramchandren S, Dosne AG, Leu JH, Faelens R, Ling LE, Perez-Ruixo JJ. Nipocalimab Dose Selection in Generalized Myasthenia Gravis. CPT Pharmacometrics Syst Pharmacol. 2025;14(12):2074-2085. doi:10.1002/psp4.70109"
   vignette <- "Valenzuela_2025_nipocalimab"
-  units <- list(time = "day", dosing = "mg", concentration = "nmol/L")
+  units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 
   covariateData <- list(
     WT = list(
@@ -75,9 +75,12 @@ Valenzuela_2025_nipocalimab <- function() {
     allo_v  <- fixed(1);    label("Allometric exponent on Vc and Vp (unitless)")                          # Eq. 3; fixed per paper footnote
 
     # ---- FcRn target turnover (Table 3) ----
-    lFcRn0  <- log(143);    label("Total FcRn concentration at baseline (nmol/L)")                         # Table 3: FcRn0 = 143 nmol/L
+    # FcRn0 reported in nmol/L by the paper; converted to ug/mL inside model()
+    # using nipocalimab MW 142 kDa so all drug-FcRn QSS arithmetic is carried
+    # out in a single ug/mL scale consistent with dosing in mg and volumes in L.
+    lFcRn0  <- log(143);    label("Total FcRn concentration at baseline (nmol/L; converted to ug/mL inside model)") # Table 3: FcRn0 = 143 nmol/L (= 20.3 ug/mL)
     FRmax   <- 0.947;       label("Maximal fraction of FcRn available for nipocalimab binding (fraction)") # Table 3: FRmax = 0.947
-    lkss    <- log(6.05);   label("Quasi-steady-state dissociation constant (ug/mL; converted to nmol/L inside model)") # Table 3: Kss = 6.05 ug/mL (= 42.6 nmol/L via MW 142 kDa)
+    lkss    <- log(6.05);   label("Quasi-steady-state dissociation constant (ug/mL)")                      # Table 3: Kss = 6.05 ug/mL
     lkint   <- log(62.4);   label("Internalization rate of nipocalimab-FcRn complex (1/day)")             # Table 3: kint = 62.4 1/d
     lkdeg   <- log(1.3);    label("Degradation rate of free FcRn (1/day)")                                # Table 3: kdeg = 1.3 1/d (fixed per paper)
 
@@ -118,17 +121,19 @@ Valenzuela_2025_nipocalimab <- function() {
                                  -1.954, 3.76)
     etaSplacebo ~ 0.125     # Table 3 IIV (additive; variance in (pts/week)^2)
 
-    # ---- Residual error (Table 3; PK/IgG RUV applied to nmol/L or g/L observations) ----
-    CcaddSdELISA   <- 0.445;  label("Additive PK residual SD for ELISA-assay observations (nmol/L)")      # Table 3
-    CcaddSdECLIA   <- 0.0342; label("Additive PK residual SD for ECLIA-assay observations (nmol/L)")      # Table 3
+    # ---- Residual error (Table 3) ----
+    # Paper reports PK additive RUVs in nmol/L; converted to ug/mL here using
+    # nipocalimab MW 142 kDa so the residual applies directly to Cc (ug/mL).
+    CcaddSdELISA   <- 0.0632; label("Additive PK residual SD for ELISA-assay observations (ug/mL)")        # Table 3: 0.445 nmol/L x 142/1000 = 0.0632 ug/mL
+    CcaddSdECLIA   <- 0.00486; label("Additive PK residual SD for ECLIA-assay observations (ug/mL)")       # Table 3: 0.0342 nmol/L x 142/1000 = 0.00486 ug/mL
     CcpropSdPhase1 <- 0.0834; label("Proportional PK residual for Phase 1 observations (fraction)")        # Table 3
     CcpropSdPhase2 <- 0.367;  label("Proportional PK residual for Phase 2 observations (fraction)")        # Table 3
 
     pctUnoccupiedFcRnaddSd  <- 2.98;  label("Additive residual SD for % unoccupied FcRn (percent)")        # Table 3
     pctUnoccupiedFcRnpropSd <- 0.227; label("Proportional residual for % unoccupied FcRn (fraction)")       # Table 3
 
-    IgGpropSd   <- 0.0858; label("Proportional residual for total serum IgG (fraction)")                    # Table 3
-    dMGADLaddSd <- 1.50;   label("Additive residual SD for MG-ADL change from baseline (points)")            # Table 3
+    IgG_obspropSd <- 0.0858; label("Proportional residual for total serum IgG (fraction)")                  # Table 3
+    dMGADLaddSd   <- 1.50;   label("Additive residual SD for MG-ADL change from baseline (points)")          # Table 3
   })
 
   model({
@@ -144,12 +149,14 @@ Valenzuela_2025_nipocalimab <- function() {
     vp <- exp(lvp)          * (WT / 75)^allo_v
 
     # ---- Individual FcRn target parameters ----
-    FcRn0 <- exp(lFcRn0 + etalFcRn0)                   # nmol/L (total FcRn at baseline)
+    # FcRn0 stored in nmol/L (paper reporting unit); converted to ug/mL here so
+    # all drug-FcRn QSS arithmetic runs on one consistent mass-concentration
+    # scale (drug Cc is in ug/mL with dosing in mg and volumes in L).
+    # 143 nmol/L * MW[g/mol] / 1e6 = 143 * 142000 / 1e6 = 20.3 ug/mL.
+    FcRn0 <- exp(lFcRn0 + etalFcRn0) * MW / 1e6        # ug/mL (total FcRn at baseline)
     kint  <- exp(lkint)                                # 1/day
     kdeg  <- exp(lkdeg)                                # 1/day
-    # Convert Kss from ug/mL (paper reporting unit) to nmol/L (model working unit) using nipocalimab MW.
-    # 6.05 ug/mL * 1e6 / MW[g/mol] = 6.05 * 1e6 / 142000 = 42.6 nmol/L (matches paper discussion).
-    kss <- exp(lkss) * 1e6 / MW
+    kss   <- exp(lkss)                                 # ug/mL (paper reports Kss in ug/mL directly)
 
     # Ksyn from steady-state constraint on the accessible FcRn pool:
     #   dtotal_target/dt|t=0 = 0 -> Ksyn = kdeg * total_target(0) = kdeg * FcRn0 * FRmax
@@ -171,10 +178,8 @@ Valenzuela_2025_nipocalimab <- function() {
     SIgG_i      <- (SIgG + etaSIgG)
     Splacebo_i  <- (Splacebo + etaSplacebo)
 
-    # ---- Dose unit conversion (mg -> nmol) so internal concentrations are in nmol/L ----
-    # User supplies dose in mg (rxode2 convention); we scale into the central compartment so that
-    # the state carries the amount in nmol and Cc = central/vc is in nmol/L.
-    f(central) <- 1e6 / MW
+    # Dose in mg (rxode2 convention) goes directly into the central compartment
+    # as an amount in mg; with vc in L, Cc = central/vc is in mg/L = ug/mL.
 
     # ---- Initial conditions for endogenous states ----
     # Accessible FcRn pool at baseline (Eq. 2: Rtotal(time 0) = Rtotal,0 * FRmax):
@@ -185,18 +190,18 @@ Valenzuela_2025_nipocalimab <- function() {
     effect(0) <- 0
 
     # ---- QSS TMDD relations in the central compartment ----
-    # Ctotal = central / vc (nmol/L; total drug concentration, free + FcRn-bound).
+    # Ctotal = central / vc (ug/mL; total drug concentration, free + FcRn-bound).
     ctot  <- central / vc
     disc  <- ctot - total_target - kss
     cfree <- 0.5 * (disc + sqrt(disc * disc + 4 * kss * ctot))
     complex <- total_target * cfree / (kss + cfree)
 
     # ---- Drug, FcRn, and IgG ODEs (Supplement Equations 1, 4) ----
-    # Central total drug (nmol): elimination via linear CL on Cfree, TMDD internalization on complex,
+    # Central total drug (mg): elimination via linear CL on Cfree, TMDD internalization on complex,
     # and distribution to peripheral (Q on Cfree; return as Q/Vp on peripheral1).
     d/dt(central)      <- -cl * cfree - kint * vc * complex - q * cfree + (q / vp) * peripheral1
     d/dt(peripheral1)  <-  q * cfree - (q / vp) * peripheral1
-    # Accessible FcRn pool (nmol/L). Eq. 1 rewritten with complex = total_target*cfree/(kss+cfree).
+    # Accessible FcRn pool (ug/mL). Eq. 1 rewritten with complex = total_target*cfree/(kss+cfree).
     d/dt(total_target) <-  ksyn - kdeg * total_target - (kint - kdeg) * complex
     # Total serum IgG (g/L). Eq. 4; F_free is the fraction of accessible FcRn still free vs baseline.
     f_free <- (total_target - complex) / (FcRn0 * FRmax)
@@ -205,12 +210,12 @@ Valenzuela_2025_nipocalimab <- function() {
     d/dt(effect)       <-  ke0 * ((1 - total_IgG / IgG_BL) - effect)
 
     # ---- Observation variables ----
-    # Total nipocalimab concentration (nmol/L) -- ELISA/ECLIA assays measure total drug.
+    # Total nipocalimab concentration (ug/mL) -- ELISA/ECLIA assays measure total drug.
     Cc <- ctot
 
     # Percent unoccupied FcRn (Eq. 2). Includes the inaccessible (1-FRmax) fraction in the
     # numerator so the observation matches the paper's "% unoccupied FcRn" scale (100% at baseline,
-    # near 0% at full RO).
+    # near 0% at full RO). Unit-agnostic ratio, so ug/mL vs nmol/L makes no difference here.
     Rfree <- total_target - complex + FcRn0 * (1 - FRmax)
     pctUnoccupiedFcRn <- Rfree / FcRn0 * 100
 
@@ -230,7 +235,7 @@ Valenzuela_2025_nipocalimab <- function() {
 
     Cc                ~ add(CcaddSd) + prop(CcpropSd)
     pctUnoccupiedFcRn ~ add(pctUnoccupiedFcRnaddSd) + prop(pctUnoccupiedFcRnpropSd)
-    IgG_obs           ~ prop(IgGpropSd)
+    IgG_obs           ~ prop(IgG_obspropSd)
     dMGADL            ~ add(dMGADLaddSd)
   })
 }
