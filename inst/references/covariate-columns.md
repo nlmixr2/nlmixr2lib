@@ -193,6 +193,16 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Yamada_2025_zolbetuximab.R` (mg/dL, reference 0.38; small positive exponent 0.0347 on V1).
 - **Notes:** Hepatic-function marker. Unit varies by paper (US convention mg/dL, SI convention umol/L; 1 mg/dL ~= 17.1 umol/L). The per-model `covariateData[[TBILI]]$units` field is load-bearing.
 
+### AST (**canonical for aspartate aminotransferase**)
+- **Description:** Serum aspartate aminotransferase activity (baseline or time-varying).
+- **Units:** U/L (IU/L; the two labels are used interchangeably in the clinical-PK literature). Document per-model via `covariateData[[AST]]$units`.
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a — used with power scaling `(AST / ref)^exponent`.
+- **Source aliases:** none; `AST` is the universal clinical-PK abbreviation.
+- **Example models:** `Lu_2014_trastuzumabemtansine.R` (U/L, reference 27; small positive exponent 0.071 on CL).
+- **Notes:** Hepatic-function marker. Commonly reported alongside `ALT` and `TBILI`; register a separate `ALT` canonical if a future paper requires it.
+
 ## Hematology
 
 ### HGB (**canonical for hemoglobin**)
@@ -392,10 +402,11 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Units:** mm
 - **Type:** continuous
 - **Scope:** general
-- **Reference category:** n/a — used with power scaling `(TUMSZ / ref)^exponent`. Reference values observed: 63 mm (Budha 2023).
-- **Source aliases:** none.
-- **Example models:** `Budha_2023_tislelizumab.R` (reference 63 mm).
-- **Notes:** Promoted to scope: general on 2026-04-20 as a conventional oncology baseline-tumor-size measure (RECIST for solid tumors, SPPD for cHL). The SPPD vs sum-of-diameters convention is pooled onto a single column; document the per-model mixture where relevant.
+- **Reference category:** n/a — used with power scaling `(TUMSZ / ref)^exponent`. Reference values observed: 63 mm (Budha 2023); 90 mm (Lu 2014, source reference 9 cm converted to mm).
+- **Source aliases:**
+  - `TMBD` (originally in cm; `TUMSZ_mm = TMBD_cm * 10`) — used in `Lu_2014_trastuzumabemtansine.R`.
+- **Example models:** `Budha_2023_tislelizumab.R` (reference 63 mm), `Lu_2014_trastuzumabemtansine.R` (reference 90 mm; source column TMBD in cm, values converted to mm on ingestion).
+- **Notes:** Promoted to scope: general on 2026-04-20 as a conventional oncology baseline-tumor-size measure (RECIST for solid tumors, SPPD for cHL). The SPPD vs sum-of-diameters convention is pooled onto a single column; document the per-model mixture where relevant. When the source paper reports tumor size in cm, convert to mm (the canonical unit) on data ingestion and scale the per-model reference accordingly so `(TUMSZ / ref)^exp` is numerically invariant.
 
 ### TUMTP_CHL (**canonical for classical Hodgkin lymphoma tumor-type indicator**)
 - **Description:** 1 = classical Hodgkin lymphoma (cHL), 0 = other tumor types.
@@ -407,6 +418,28 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   - `TUMTP` (categorical column with levels like `cHL`, `GC`, ...) — decompose into `TUMTP_CHL = as.integer(TUMTP == "cHL")`.
 - **Example models:** `Budha_2023_tislelizumab.R`.
 - **Notes:** Paired with `TUMTP_GC` in Budha 2023; a patient can have at most one of the indicators set to 1 (the remaining tumor types collapse into the reference 0 group).
+
+### HER2_ECD (**canonical for HER2 shed extracellular domain concentration**)
+- **Description:** Baseline serum concentration of the shed extracellular domain of human epidermal growth factor receptor 2 (HER2). Serves as a soluble-antigen biomarker of HER2-mediated target-mediated drug disposition for HER2-directed mAbs / ADCs.
+- **Units:** ng/mL
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a — used with power scaling `(HER2_ECD / ref)^exponent`. Reference 25 ng/mL used in Lu 2014.
+- **Source aliases:**
+  - `ECD` — used in `Lu_2014_trastuzumabemtansine.R`.
+- **Example models:** `Lu_2014_trastuzumabemtansine.R` (reference 25 ng/mL; exponent 0.035 on CL).
+- **Notes:** Scoped specific because the covariate is meaningful only for HER2-targeted agents; if a non-HER2 paper uses a shed-antigen analog for a different target, register a target-specific canonical (e.g., `EGFR_ECD`) rather than reusing this one. Disambiguated from the covariate-columns register by the explicit `HER2_` prefix.
+
+### TRAST_BL (**canonical for baseline trastuzumab concentration from prior therapy**)
+- **Description:** Baseline serum concentration of residual unconjugated trastuzumab remaining from prior trastuzumab-containing therapy, measured at the start of a subsequent anti-HER2 treatment (e.g., trastuzumab emtansine). Encodes the magnitude of residual HER2-site competition from a previous trastuzumab exposure.
+- **Units:** ug/mL
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a — used as a linear covariate on log(CL) via `exp(coef * TRAST_BL)`. TRAST_BL = 0 corresponds to no detectable residual trastuzumab (reference condition used in Lu 2014).
+- **Source aliases:**
+  - `TBL` — used in `Lu_2014_trastuzumabemtansine.R`.
+- **Example models:** `Lu_2014_trastuzumabemtansine.R` (linear-on-log coefficient -0.002 per ug/mL on CL).
+- **Notes:** Scoped specific because the covariate is meaningful only for drugs that compete with trastuzumab at the HER2 binding site. Expect values clustered at 0 for trastuzumab-naive patients; Lu 2014 observed 0 at the 5th percentile and 54 ug/mL at the 95th percentile.
 
 ### TUMTP_GC (**canonical for gastric-cancer tumor-type indicator**)
 - **Description:** 1 = gastric cancer (GC), 0 = other tumor types.
@@ -778,6 +811,10 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   (both non-overlapping sub-indicators point to different per-population
   reference groups).
 - **2026-04-21** — Added `STEROID` (general-scope; baseline systemic corticosteroid use, distinct from the existing `PRICORT` which captures prior corticosteroid use), `BGENE21` (specific-scope; baseline 21-gene type I interferon signature under a new `Interferon / biomarker panels` section), and `COHDOSE` (specific-scope; randomized dose cohort in mg/kg) canonical entries while extracting Narwal 2013 sifalimumab. Source aliases mapped: `BSTEROID`→`STEROID`, `DOSE`→`COHDOSE`.
+- **2026-04-21** — Added `AST` (general, hepatic enzyme), `HER2_ECD`
+  (specific, HER2 shed ECD biomarker), and `TRAST_BL` (specific,
+  baseline trastuzumab concentration from prior therapy) canonical
+  entries while extracting `Lu_2014_trastuzumabemtansine.R`.
 - Subsequent additions: append new canonical entries as new papers are processed. When adding, bump the audit-completed count in the summary below.
 
 ## Summary
