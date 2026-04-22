@@ -8,6 +8,7 @@
 * Add Robbie 2012 palivizumab ([doi:10.1128/AAC.06446-11](https://doi.org/10.1128/AAC.06446-11)) — adults and pediatric patients at high risk of RSV lower respiratory tract disease.
 * Add Bender 2014 trastuzumab emtansine (T-DM1, ADC) ([doi:10.1208/s12248-014-9618-3](https://doi.org/10.1208/s12248-014-9618-3)) — preclinical: rats + cynomolgus monkeys; two model variants (reduced + mechanistic DAR chain).
 * Add Rosario 2015 vedolizumab ([doi:10.1111/apt.13243](https://doi.org/10.1111/apt.13243)) — adults with moderately-to-severely active ulcerative colitis or Crohn's disease.
+* Add Long 2017 necitumumab ([doi:10.1007/s40262-016-0452-x](https://doi.org/10.1007/s40262-016-0452-x)) — cancer patients with advanced solid tumors.
 * Add Wade 2015 certolizumab ([doi:10.1002/jcph.491](https://doi.org/10.1002/jcph.491)) — adults with Crohn's disease.
 * Add Lon 2013 abatacept ([doi:10.1007/s10928-013-9341-1](https://doi.org/10.1007/s10928-013-9341-1)) — male Lewis rats with collagen-induced arthritis (preclinical).
 * Add Lu 2014 trastuzumab emtansine ([doi:10.1007/s00280-014-2500-2](https://doi.org/10.1007/s00280-014-2500-2)) — adults with HER2-positive locally advanced or metastatic breast cancer.
