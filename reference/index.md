@@ -70,7 +70,8 @@
   transitioning between every state
 - [`cvToBsv()`](https://nlmixr2.github.io/nlmixr2lib/reference/cvToBsv.md)
   [`bsvToCv()`](https://nlmixr2.github.io/nlmixr2lib/reference/cvToBsv.md)
-  : Convert coefficient of variation (percent) to standard deviation
+  : Convert coefficient of variation (percent) to between-subject
+  variance
 - [`defaultCombine()`](https://nlmixr2.github.io/nlmixr2lib/reference/defaultCombine.md)
   [`snakeCombine()`](https://nlmixr2.github.io/nlmixr2lib/reference/defaultCombine.md)
   [`camelCombine()`](https://nlmixr2.github.io/nlmixr2lib/reference/defaultCombine.md)

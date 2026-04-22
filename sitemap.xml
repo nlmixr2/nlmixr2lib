@@ -1,6 +1,8 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/404.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/CLAUDE.html</loc></url>
+<url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Bender_2014_trastuzumabEmtansine_mechanistic.html</loc></url>
+<url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Bender_2014_trastuzumabEmtansine_reduced.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Budha_2023_tislelizumab.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/CarlssonPetri_2021_liraglutide.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Chua_2025_mirikizumab.html</loc></url>
@@ -10,19 +12,26 @@
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Fasanmade_2009_infliximab.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Fiedler-Kelly_2019_fremanezumab.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Grimm_2023.html</loc></url>
+<url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Gupta_2016_amatuximab.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Hu_2026_clesrovimab.html</loc></url>
+<url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Hua_2015_anrukinzumab.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Jackson_2022_ixekizumab.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Kotani_2022_astegolimab.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Kovalenko_2020_dupilumab.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Kyhl_2016_nalmefene.html</loc></url>
+<url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Lon_2013_abatacept.html</loc></url>
+<url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Long_2017_necitumumab.html</loc></url>
+<url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Lu_2014_trastuzumabemtansine.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Ma_2020_sarilumab_anc.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Ma_2020_sarilumab_das28crp.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Masters_2022_avelumab.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Moein_2022_etrolizumab.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Mould_2007_alemtuzumab.html</loc></url>
+<url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Narwal_2013_sifalimumab.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Ogasawara_2020_durvalumab.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/PK_2cmt_mAb_Davda_2014.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Robbie_2012_palivizumab.html</loc></url>
+<url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Rosario_2015_vedolizumab.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Soehoel_2022_tralokinumab.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Thakre_2022_risankizumab.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Tiraboschi_2025_amlitelimab.html</loc></url>
@@ -33,6 +42,7 @@
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Xu_2011_sirukumab.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Xu_2019_sarilumab.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Yamada_2025_zolbetuximab.html</loc></url>
+<url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Zheng_2016_sifalimumab.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Zhu_2017_lebrikizumab.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/create-model-library.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/index.html</loc></url>

@@ -1,4 +1,8 @@
-# Convert coefficient of variation (percent) to standard deviation
+# Convert coefficient of variation (percent) to between-subject variance
+
+\`cvToBsv()\` converts a log-normal coefficient of variation (expressed
+as a percent) to the variance on the log scale, \`omega^2 =
+log((CV/100)^2 + 1)\`. \`bsvToCv()\` is the inverse transform.
 
 ## Usage
 
@@ -12,11 +16,19 @@ bsvToCv(bsv)
 
 - cv:
 
-  The coefficient of variation (
+  The coefficient of variation, expressed as a percent.
 
-The between-subject variabilty on the standard deviation scaleThe
-coefficient of variation on the percent scale Convert coefficient of
-variation (percent) to standard deviation Functions
+- bsv:
 
-- `bsvToCv()`: Convert standard deviation of between-subject variability
-  to coefficient of variation
+  The between-subject variability on the variance (omega^2) scale.
+
+## Value
+
+The between-subject variability on the variance (omega^2) scale.
+
+The coefficient of variation on the percent scale.
+
+## Functions
+
+- `bsvToCv()`: Convert log-scale between-subject variance back to a
+  percent coefficient of variation.
