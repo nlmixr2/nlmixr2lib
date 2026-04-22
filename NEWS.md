@@ -5,6 +5,7 @@
 * Add Narwal 2013 sifalimumab ([doi:10.1007/s40262-013-0085-2](https://doi.org/10.1007/s40262-013-0085-2)) — adults with moderately active systemic lupus erythematosus.
 * Add Valenzuela 2025 nipocalimab ([doi:10.1002/psp4.70109](https://doi.org/10.1002/psp4.70109)) — healthy adults and adults with generalized myasthenia gravis.
 * Add Robbie 2012 palivizumab ([doi:10.1128/AAC.06446-11](https://doi.org/10.1128/AAC.06446-11)) — adults and pediatric patients at high risk of RSV lower respiratory tract disease.
+* Add Bender 2014 trastuzumab emtansine (T-DM1, ADC) ([doi:10.1208/s12248-014-9618-3](https://doi.org/10.1208/s12248-014-9618-3)) — preclinical: rats + cynomolgus monkeys; two model variants (reduced + mechanistic DAR chain).
 * Add Wade 2015 certolizumab ([doi:10.1002/jcph.491](https://doi.org/10.1002/jcph.491)) — adults with Crohn's disease.
 * Add Lon 2013 abatacept ([doi:10.1007/s10928-013-9341-1](https://doi.org/10.1007/s10928-013-9341-1)) — male Lewis rats with collagen-induced arthritis (preclinical).
 * Add Mould 2007 alemtuzumab ([doi:10.1111/j.1365-2125.2007.02914.x](https://doi.org/10.1111/j.1365-2125.2007.02914.x)) — adults with B-cell chronic lymphocytic leukaemia.

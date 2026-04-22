@@ -5,7 +5,7 @@
 \alias{modeldb}
 \title{Model library for nlmixr2}
 \format{
-A data frame with 83 rows and 10 columns
+A data frame with 88 rows and 10 columns
 \describe{
   \item{name}{Model name that can be used to extract the model from the model library}
   \item{description}{Model description in free from text; in model itself}
