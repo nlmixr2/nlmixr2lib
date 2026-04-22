@@ -238,6 +238,18 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Valenzuela_2025_nipocalimab.R` (reference 7 points; power-form effect on `IDecplacebo` and on the slope between MG-ADL change and IgG reduction).
 - **Notes:** Baseline-only in Valenzuela 2025 (the observation is the absolute change from baseline MG-ADL). When used time-varying (e.g., in pure PD models driven by disease-progression dynamics), document in `covariateData[[MGADL]]$notes`. Canonical name is `MGADL` without a `BL` prefix to match the `EASI` / `AGE` / `WT` / `ALB` pattern.
 
+## Interferon / biomarker panels
+
+### BGENE21
+- **Description:** Baseline type I interferon gene signature computed from the expression of 21 IFN-alpha / type-I-IFN-inducible transcripts in peripheral blood mononuclear cells. Used as a continuous biomarker of type I IFN pathway activation in SLE (and mechanistically-related indications).
+- **Units:** (gene-signature score, unitless)
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a — used with power scaling `(BGENE21 / ref)^exponent`. Reference value observed: 32 in Narwal 2013 (study-population median was 33).
+- **Source aliases:** none.
+- **Example models:** `Narwal_2013_sifalimumab.R` (reference 32, exponent 0.0558 on CL).
+- **Notes:** Specific to studies that report a 21-gene IFN signature (subset / expansion of the "BGENE4" 4-gene signature). If another paper uses the 4-gene signature or a differently-constructed IFN score, register a distinct canonical (`BGENE4`, `IFN_SIG`, ...).
+
 ## Inflammation markers
 
 ### EOS (**canonical for blood eosinophil count**)
@@ -453,6 +465,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Ma_2020_sarilumab_das28crp.R` (multiplicative on DAS28-CRP Kout: `Kout * theta^PRICORT`); `Ma_2020_sarilumab_anc.R` (power-form on Emax: `Emax * 0.819^PRICORT`).
 - **Notes:** Ma 2020 applies it as a multiplicative effect of the form `param * theta^PRICORT` in both DAS28-CRP and ANC PD models. Generally applicable clinical-history indicator.
 
+### STEROID
+- **Description:** 1 = patient on systemic corticosteroid therapy at baseline (typically continued as concomitant medication during the study), 0 = no baseline corticosteroid use.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no baseline corticosteroid use).
+- **Source aliases:**
+  - `BSTEROID` — used in `Narwal_2013_sifalimumab.R`.
+- **Example models:** `Narwal_2013_sifalimumab.R` (multiplicative on CL: `CL * (1 + 0.195 * STEROID)`).
+- **Notes:** Distinct from `PRICORT`, which is strictly a prior (pre-study) indicator. `STEROID` captures concurrent corticosteroid use at / from study baseline. When a future paper needs the two jointly, both can coexist on the same subject.
+
 ## Immunogenicity
 
 ### ADA_POS (**canonical**)
@@ -612,6 +635,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Clegg_2024_nirsevimab.R`.
 - **Notes:** Study-specific but semantically general (second-exposure indicator). Promote to general if a second RSV-season model adopts the same semantics.
 
+### COHDOSE
+- **Description:** Randomized dose cohort expressed in mg/kg. Subject-level (time-fixed) covariate carrying the per-subject cohort dose in a study where each subject remained on a single escalating-cohort dose for the full dosing period.
+- **Units:** mg/kg
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a — used with power scaling `(COHDOSE / ref)^exponent`. Reference value observed: 1 mg/kg in Narwal 2013.
+- **Source aliases:**
+  - `DOSE` — used in `Narwal_2013_sifalimumab.R` (the paper's Eq. 3 variable name; renamed to `COHDOSE` here to avoid colliding with the rxode2/nlmixr2 event-column convention where `DOSE` or `AMT` carries the administered dose).
+- **Example models:** `Narwal_2013_sifalimumab.R` (reference 1 mg/kg, exponent 0.0542 on CL).
+- **Notes:** Scope: specific because the interpretation depends on a study design where each subject stays on a single dose cohort. For fixed-dose simulations, set `COHDOSE = nominal_dose_mg / WT` per subject. When the subject receives a weight-based dose, `COHDOSE` is the mg/kg label (0.3, 1, 3, or 10 mg/kg for the MI-CP152 cohorts).
+
 ### DOSE_70MG
 - **Description:** 1 = subject is on the 70 mg SC Q4W dose regimen, 0 = subject is on the 210 or 490 mg SC Q4W regimen.
 - **Units:** (binary)
@@ -743,11 +777,12 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   out as a distinct category from the broader `RACE_ASIAN` indicator
   (both non-overlapping sub-indicators point to different per-population
   reference groups).
+- **2026-04-21** — Added `STEROID` (general-scope; baseline systemic corticosteroid use, distinct from the existing `PRICORT` which captures prior corticosteroid use), `BGENE21` (specific-scope; baseline 21-gene type I interferon signature under a new `Interferon / biomarker panels` section), and `COHDOSE` (specific-scope; randomized dose cohort in mg/kg) canonical entries while extracting Narwal 2013 sifalimumab. Source aliases mapped: `BSTEROID`→`STEROID`, `DOSE`→`COHDOSE`.
 - Subsequent additions: append new canonical entries as new papers are processed. When adding, bump the audit-completed count in the summary below.
 
 ## Summary
 
 - Files audited: 69 R files under `inst/modeldb/` (20 of which reference covariates).
-- Canonical H3 entries: 53 (56 parsed entries when counting each `ooc<n>` individually; was ~57 before the 2026-04-20 mergers of `hsCRP`+`BLCRP`+standard-`CRP` → `CRP`, `eGFR`+`CRCL_BSA` → `CRCL`, and `ADA_TITRE`+`ADA_TITER` → `ADA_TITER`).
-- Scope: general: 33. Scope: specific: 23 (counting each `ooc<n>` individually, or 20 counting the `### ooc1, ooc2, ooc3, ooc4` heading as one entry).
-- Aliases mapped (selected): SEXM→SEXF, ADA→ADA_POS, ADA_TITRE/ADAT→ADA_TITER, BLACK→RACE_BLACK, ASIAN→RACE_ASIAN, MULTIRACIAL→RACE_MULTI, BLACK_OTH→RACE_BLACK_OTH, ASIAN_AMIND_MULTI→RACE_ASIAN_AMIND_MULTI, DVID→STUDY1/STUDY5, CRE→CREAT, hsCRP/HSCRP/CRPHS/BLCRP→CRP, eGFR/EGFR/CRCL_BSA/1.73*CrCl/BSA→CRCL, DP2→FORM_DP2, DISEXT→DISEXT_EP/DISEXT_OTHER, BEASI→EASI, BEOS→EOS, GAST→PRIOR_GAST, COMB→COMB_EOX, TUMTP→TUMTP_CHL/TUMTP_GC.
+- Canonical H3 entries: 58 (61 parsed entries when counting each `ooc<n>` individually; was ~57 before the 2026-04-20 mergers of `hsCRP`+`BLCRP`+standard-`CRP` → `CRP`, `eGFR`+`CRCL_BSA` → `CRCL`, and `ADA_TITRE`+`ADA_TITER` → `ADA_TITER`; +1 `PHASE2` and +1 `WBC` on 2026-04-21 from Farrell 2012 / Mould 2007; +3 on 2026-04-21 for `STEROID`, `BGENE21`, `COHDOSE` from Narwal 2013).
+- Scope: general: 35. Scope: specific: 26 (counting each `ooc<n>` individually, or 23 counting the `### ooc1, ooc2, ooc3, ooc4` heading as one entry).
+- Aliases mapped (selected): SEXM→SEXF, ADA→ADA_POS, ADA_TITRE/ADAT→ADA_TITER, BLACK→RACE_BLACK, ASIAN→RACE_ASIAN, MULTIRACIAL→RACE_MULTI, BLACK_OTH→RACE_BLACK_OTH, ASIAN_AMIND_MULTI→RACE_ASIAN_AMIND_MULTI, DVID→STUDY1/STUDY5, CRE→CREAT, hsCRP/HSCRP/CRPHS/BLCRP→CRP, eGFR/EGFR/CRCL_BSA/1.73*CrCl/BSA→CRCL, DP2→FORM_DP2, DISEXT→DISEXT_EP/DISEXT_OTHER, BEASI→EASI, BEOS→EOS, GAST→PRIOR_GAST, COMB→COMB_EOX, TUMTP→TUMTP_CHL/TUMTP_GC, BSTEROID→STEROID, DOSE→COHDOSE.

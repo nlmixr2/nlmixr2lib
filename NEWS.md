@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Narwal 2013 sifalimumab ([doi:10.1007/s40262-013-0085-2](https://doi.org/10.1007/s40262-013-0085-2)) — adults with moderately active systemic lupus erythematosus.
 * Add Valenzuela 2025 nipocalimab ([doi:10.1002/psp4.70109](https://doi.org/10.1002/psp4.70109)) — healthy adults and adults with generalized myasthenia gravis.
 * Add Robbie 2012 palivizumab ([doi:10.1128/AAC.06446-11](https://doi.org/10.1128/AAC.06446-11)) — adults and pediatric patients at high risk of RSV lower respiratory tract disease.
 * Add Wade 2015 certolizumab ([doi:10.1002/jcph.491](https://doi.org/10.1002/jcph.491)) — adults with Crohn's disease.
