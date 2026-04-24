@@ -737,6 +737,42 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Moein_2022_etrolizumab.R` (multiplicative effect on CL, +18% vs. left-sided colitis; large uncertainty due to 2% prevalence).
 - **Notes:** Paired with `DISEXT_EP`; together they encode the three-level disease-extension categorical.
 
+## Concomitant lipid-lowering medication
+
+### STATIN_MONO
+- **Description:** 1 = patient is on a statin and no other lipid-lowering comedication (statin monotherapy), 0 = not on statin monotherapy (either on no lipid-lowering therapy or on a multi-drug lipid-lowering combination such as statin + ezetimibe).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (not on statin monotherapy).
+- **Source aliases:**
+  - Derived from a statin-identifier column in the source (any of atorvastatin, rosuvastatin, simvastatin, lovastatin, pravastatin, pitavastatin, fluvastatin) with an AND over "no other lipid-lowering comedication".
+- **Example models:** `Kuchimanchi_2018_evolocumab.R` (multiplicative effect 1.13 on Vmax: `Vmax * 1.13^STATIN_MONO`).
+- **Notes:** Scope: specific because Kuchimanchi 2018 narrowly defines the statin covariate as monotherapy only ("patients on a statin only and no other comedication"). Mutually compatible with `EZE`: a subject on statin+ezetimibe has `STATIN_MONO = 0` and `EZE = 1`; a subject on statin alone has `STATIN_MONO = 1` and `EZE = 0`; a subject on no lipid-lowering therapy has both 0. Future popPK/PD models that adopt a broader "any statin" definition should register a separate `STATIN` or `CONMED_STATIN` canonical rather than reusing this name.
+
+### EZE
+- **Description:** 1 = patient is taking ezetimibe (with or without other lipid-lowering comedication), 0 = not on ezetimibe.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (not on ezetimibe).
+- **Source aliases:**
+  - Derived from an ezetimibe-identifier column in the source.
+- **Example models:** `Kuchimanchi_2018_evolocumab.R` (multiplicative effect 1.20 on Vmax: `Vmax * 1.20^EZE`; labeled "Statin + ezetimibe exponent" in Kuchimanchi 2018 Table 3 because ~99% of ezetimibe users in the dataset were also on a statin, so the effect effectively captures combination therapy).
+- **Notes:** Scope: specific because Kuchimanchi 2018 interprets the ezetimibe indicator as a combination-therapy marker rather than a pure ezetimibe effect. Future popPK/PD models with cleaner ezetimibe separation should add themselves here or register a more specific canonical.
+
+## Hypercholesterolemia biomarkers
+
+### PCSK9
+- **Description:** Baseline unbound serum proprotein convertase subtilisin/kexin type 9 (PCSK9) concentration.
+- **Units:** ng/mL (document per-model in `covariateData[[PCSK9]]$units` if a different unit — typically nM — is used in a given model; conversion uses a PCSK9 molecular weight of ~72 kDa, so 1 nM ≈ 72 ng/mL).
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a — used with power scaling `(PCSK9 / ref)^exponent`. Reference values observed: 425 ng/mL (= 5.9 nM) in `Kuchimanchi_2018_evolocumab.R` (population median).
+- **Source aliases:** none known.
+- **Example models:** `Kuchimanchi_2018_evolocumab.R` (power exponent 0.194 on Vmax: `Vmax * (PCSK9/425)^0.194`).
+- **Notes:** PCSK9 is the pharmacological target of anti-PCSK9 monoclonal antibodies (evolocumab, alirocumab, etc.); baseline PCSK9 drives the magnitude of target-mediated elimination and is a recurring covariate in anti-PCSK9 popPK models. Baseline (time-fixed) covariate; patients with missing baseline PCSK9 are typically excluded from analyses that include PCSK9 as a covariate.
+
 ## Lifestyle / medical history
 
 ### SMOKE
@@ -1038,6 +1074,7 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   `Mulyukov_2018_ranibizumab.R`. Source alias `BVA` mapped. Reference value
   55 letters (study-population mean baseline BCVA).
 - **2026-04-24** — Added `ECOG_GE1` (general-scope Eastern Cooperative Oncology Group performance-status indicator; 1 if ECOG >= 1, reference 0) canonical entry under `Oncology` while extracting `Bajaj_2017_nivolumab.R`. Source alias `PS` / `BPS` mapped to `ECOG_GE1`; Bajaj 2017's ECOG derivation (KPS-to-ECOG crosswalk for one study per Oken 1982) documented in the model's `covariateData` notes, not in the register. Added `Bajaj_2017_nivolumab.R` to the `WT`, `SEXF`, `RACE_ASIAN`, and `CRCL` example-model lists.
+- **2026-04-24** — Added `STATIN_MONO` and `EZE` (both scope: specific; new "Concomitant lipid-lowering medication" section) and `PCSK9` (scope: general; new "Hypercholesterolemia biomarkers" section) canonical entries while extracting `Kuchimanchi_2018_evolocumab.R`. `STATIN_MONO` carries Kuchimanchi-specific "statin monotherapy only" semantics; `EZE` captures ezetimibe use (in the Kuchimanchi 2018 dataset overwhelmingly statin+ezetimibe combination therapy).
 - Subsequent additions: append new canonical entries as new papers are processed. When adding, bump the audit-completed count in the summary below.
 
 ## Summary
