@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Mo 2018 olaratumab ([doi:10.1007/s40262-017-0562-0](https://doi.org/10.1007/s40262-017-0562-0)) — patients with advanced or metastatic cancer (soft tissue sarcoma, NSCLC, GIST, glioblastoma multiforme).
 * Add Narwal 2013 sifalimumab ([doi:10.1007/s40262-013-0085-2](https://doi.org/10.1007/s40262-013-0085-2)) — adults with moderately active systemic lupus erythematosus.
 * Add Valenzuela 2025 nipocalimab ([doi:10.1002/psp4.70109](https://doi.org/10.1002/psp4.70109)) — healthy adults and adults with generalized myasthenia gravis.
 * Add Hua 2015 anrukinzumab ([doi:10.1111/bcp.12589](https://doi.org/10.1111/bcp.12589)) — healthy volunteers, asthma, and ulcerative colitis patients.
