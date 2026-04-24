@@ -173,6 +173,7 @@ this way.
 - [Kotani_2022_astegolimab](https://nlmixr2.github.io/nlmixr2lib/articles/Kotani_2022_astegolimab.md):
 - [Kovalenko_2020_dupilumab](https://nlmixr2.github.io/nlmixr2lib/articles/Kovalenko_2020_dupilumab.md):
 - [Kyhl_2016_nalmefene](https://nlmixr2.github.io/nlmixr2lib/articles/Kyhl_2016_nalmefene.md):
+- [Li_2019_abatacept](https://nlmixr2.github.io/nlmixr2lib/articles/Li_2019_abatacept.md):
 - [List of
   models](https://nlmixr2.github.io/nlmixr2lib/articles/list-of-models.md):
 - [Lon_2013_abatacept](https://nlmixr2.github.io/nlmixr2lib/articles/Lon_2013_abatacept.md):

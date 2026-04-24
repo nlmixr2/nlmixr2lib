@@ -21,6 +21,7 @@ articles:
   articles/Kotani_2022_astegolimab: Kotani_2022_astegolimab.html
   articles/Kovalenko_2020_dupilumab: Kovalenko_2020_dupilumab.html
   articles/Kyhl_2016_nalmefene: Kyhl_2016_nalmefene.html
+  articles/Li_2019_abatacept: Li_2019_abatacept.html
   list-of-models: list-of-models.html
   articles/Lon_2013_abatacept: Lon_2013_abatacept.html
   articles/Long_2017_necitumumab: Long_2017_necitumumab.html
@@ -49,7 +50,7 @@ articles:
   articles/Yamada_2025_zolbetuximab: Yamada_2025_zolbetuximab.html
   articles/Zheng_2016_sifalimumab: Zheng_2016_sifalimumab.html
   articles/Zhu_2017_lebrikizumab: Zhu_2017_lebrikizumab.html
-last_built: 2026-04-24T10:07Z
+last_built: 2026-04-24T13:19Z
 urls:
   reference: https://nlmixr2.github.io/nlmixr2lib/reference
   article: https://nlmixr2.github.io/nlmixr2lib/articles
