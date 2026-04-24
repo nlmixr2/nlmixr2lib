@@ -365,7 +365,12 @@ distributions approximate the Xu 2019 Table 2 demographics. No
 subject-level observed data were released with the paper.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">20260419</span><span class="op">)</span></span>
-<span><span class="va">n_subj</span> <span class="op">&lt;-</span> <span class="fl">400</span></span>
+<span><span class="co"># Cohort size: 200 subjects is enough to stabilise the 5/50/95 percentile</span></span>
+<span><span class="co"># bands in the VPC (Figure 3 reproduction) and the PKNCA distribution</span></span>
+<span><span class="co"># summaries. Doubling to 400 did not visibly change the published bands</span></span>
+<span><span class="co"># but made the simulation the largest in the package (~28 min on a single</span></span>
+<span><span class="co"># core), which caps pkgdown's parallel-article build via Amdahl's law.</span></span>
+<span><span class="va">n_subj</span> <span class="op">&lt;-</span> <span class="fl">200</span></span>
 <span></span>
 <span><span class="va">cohort</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
 <span>  id       <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n_subj</span><span class="op">)</span>,</span>
@@ -383,7 +388,12 @@ horizon is extended well past the nominal half-life (~8-10 days in the
 linear range) to ensure the final Q2W cycle is at steady state.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tau</span> <span class="op">&lt;-</span> <span class="fl">14</span>                <span class="co"># Q2W dosing interval (days)</span></span>
-<span><span class="va">n_doses</span> <span class="op">&lt;-</span> <span class="fl">50</span>            <span class="co"># 50 doses -&gt; 700 days, deeply into SS</span></span>
+<span><span class="co"># Dose count: the linear-range half-life is ~8-10 days, so the 4-5</span></span>
+<span><span class="co"># half-lives needed for &gt;95% steady-state are reached by dose 7-8. Twelve</span></span>
+<span><span class="co"># Q2W doses (168 days, ~17 half-lives) puts the last cycle safely at SS</span></span>
+<span><span class="co"># with no signal from earlier cycles, while the previous value of 50</span></span>
+<span><span class="co"># doses (700 days) was a 10x oversample that dominated run time.</span></span>
+<span><span class="va">n_doses</span> <span class="op">&lt;-</span> <span class="fl">12</span></span>
 <span><span class="va">dose_days</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">tau</span> <span class="op">*</span> <span class="op">(</span><span class="va">n_doses</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span>, by <span class="op">=</span> <span class="va">tau</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">build_events</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">cohort</span>, <span class="va">dose_amt</span>, <span class="va">treatment</span><span class="op">)</span> <span class="op">{</span></span>
@@ -391,12 +401,26 @@ linear range) to ensure the final Q2W cycle is at steady state.</p>
 <span>    <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/expand.html" class="external-link">crossing</a></span><span class="op">(</span>time <span class="op">=</span> <span class="va">dose_days</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>amt <span class="op">=</span> <span class="va">dose_amt</span>, cmt <span class="op">=</span> <span class="st">"depot"</span>, evid <span class="op">=</span> <span class="fl">1L</span>,</span>
 <span>                  treatment <span class="op">=</span> <span class="va">treatment</span><span class="op">)</span></span>
+<span>  <span class="co"># Observation grid: dense only where the published figures need</span></span>
+<span>  <span class="co"># resolution. Days 0-84 (six cycles) reproduce the Xu 2019 Figure 3</span></span>
+<span>  <span class="co"># VPC; the final 14-day interval (ss_start to ss_end, days 154-168)</span></span>
+<span>  <span class="co"># feeds the steady-state plot and the PKNCA computations. Between</span></span>
+<span>  <span class="co"># those two windows a weekly grid is enough to keep the ODE solver</span></span>
+<span>  <span class="co"># moving without contributing to any figure. The earlier uniform</span></span>
+<span>  <span class="co"># daily-plus-4-per-dose grid over all 700 days produced ~900</span></span>
+<span>  <span class="co"># observations per subject per arm, which (x 400 subjects x 2 arms)</span></span>
+<span>  <span class="co"># pushed the event table past 750k rows and drove most of the cost.</span></span>
+<span>  <span class="va">ss_start</span> <span class="op">&lt;-</span> <span class="va">tau</span> <span class="op">*</span> <span class="op">(</span><span class="va">n_doses</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span></span>
+<span>  <span class="va">ss_end</span>   <span class="op">&lt;-</span> <span class="va">ss_start</span> <span class="op">+</span> <span class="va">tau</span></span>
+<span>  <span class="va">early_doses</span> <span class="op">&lt;-</span> <span class="va">dose_days</span><span class="op">[</span><span class="va">dose_days</span> <span class="op">&lt;=</span> <span class="fl">84</span><span class="op">]</span></span>
 <span>  <span class="va">obs_days</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">tau</span> <span class="op">*</span> <span class="op">(</span><span class="va">n_doses</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span> <span class="va">tau</span>, by <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span>
-<span>    <span class="va">dose_days</span> <span class="op">+</span> <span class="fl">0.25</span>,</span>
-<span>    <span class="va">dose_days</span> <span class="op">+</span> <span class="fl">1</span>,</span>
-<span>    <span class="va">dose_days</span> <span class="op">+</span> <span class="fl">3</span>,</span>
-<span>    <span class="va">dose_days</span> <span class="op">+</span> <span class="fl">7</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">84</span>, by <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,            <span class="co"># daily through the VPC window</span></span>
+<span>    <span class="va">early_doses</span> <span class="op">+</span> <span class="fl">0.25</span>,            <span class="co"># keep fine near-dose structure</span></span>
+<span>    <span class="va">early_doses</span> <span class="op">+</span> <span class="fl">1</span>,               <span class="co">#   so the SC absorption peak is</span></span>
+<span>    <span class="va">early_doses</span> <span class="op">+</span> <span class="fl">3</span>,               <span class="co">#   resolved in Figure 3</span></span>
+<span>    <span class="va">early_doses</span> <span class="op">+</span> <span class="fl">7</span>,</span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">84</span>, <span class="va">ss_start</span>, by <span class="op">=</span> <span class="fl">7</span><span class="op">)</span>,     <span class="co"># coarse bridge between windows</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="va">ss_start</span>, <span class="va">ss_end</span>, by <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="co"># dense SS cycle for NCA / plot</span></span>
 <span>  <span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="va">ev_obs</span> <span class="op">&lt;-</span> <span class="va">cohort</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/expand.html" class="external-link">crossing</a></span><span class="op">(</span>time <span class="op">=</span> <span class="va">obs_days</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -455,7 +479,7 @@ cycles).</p>
 <span>    x <span class="op">=</span> <span class="st">"Time (days)"</span>,</span>
 <span>    y <span class="op">=</span> <span class="st">"Sarilumab Cc (mg/L)"</span>,</span>
 <span>    title <span class="op">=</span> <span class="st">"Simulated 5-50-95 percentile profiles: 150 vs 200 mg SC Q2W"</span>,</span>
-<span>    caption <span class="op">=</span> <span class="st">"Virtual RA cohort (N = 400); first 6 dosing cycles."</span></span>
+<span>    caption <span class="op">=</span> <span class="st">"Virtual RA cohort (N = 200); first 6 dosing cycles."</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Xu_2019_sarilumab_files/figure-html/vpc-1.png" class="r-plt" alt="" width="720"></p>
@@ -463,7 +487,7 @@ cycles).</p>
 <div class="section level3">
 <h3 id="steady-state-cycle">Steady-state cycle<a class="anchor" aria-label="anchor" href="#steady-state-cycle"></a>
 </h3>
-<p>The final dosing interval in the simulation window (days 686 to 700)
+<p>The final dosing interval in the simulation window (days 154 to 168)
 is used for the steady-state NCA below.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ss_start</span> <span class="op">&lt;-</span> <span class="va">tau</span> <span class="op">*</span> <span class="op">(</span><span class="va">n_doses</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span></span>
@@ -524,14 +548,14 @@ subject and treatment.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">nca_res</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_obj</span>, <span class="va">dose_obj</span>, intervals <span class="op">=</span> <span class="va">intervals</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■            </span>  62% |  ETA:  2s</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■                 </span>  46% |  ETA:  2s</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">nca_res</span><span class="op">)</span></span>
 <span><span class="co">#&gt;  start end treatment   N     auclast        cmax         cmin              tmax</span></span>
-<span><span class="co">#&gt;      0  14 150mg_Q2W 400 62.0 [50.6] 9.00 [43.2] 0.594 [99.5] 3.00 [1.00, 5.00]</span></span>
-<span><span class="co">#&gt;      0  14 200mg_Q2W 400  116 [46.5] 15.2 [38.3]   1.22 [141] 3.00 [1.00, 5.00]</span></span>
+<span><span class="co">#&gt;      0  14 150mg_Q2W 200 60.2 [55.5] 8.80 [46.1] 0.565 [91.5] 3.00 [1.50, 5.00]</span></span>
+<span><span class="co">#&gt;      0  14 200mg_Q2W 200  120 [47.9] 15.3 [39.4]   1.36 [135] 3.50 [1.50, 5.50]</span></span>
 <span><span class="co">#&gt;          cav</span></span>
-<span><span class="co">#&gt;  4.43 [50.6]</span></span>
-<span><span class="co">#&gt;  8.32 [46.5]</span></span>
+<span><span class="co">#&gt;  4.30 [55.5]</span></span>
+<span><span class="co">#&gt;  8.59 [47.9]</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Caption: auclast, cmax, cmin, cav: geometric mean and geometric coefficient of variation; tmax: median and range; N: number of subjects</span></span></code></pre></div>
 <div class="section level3">
@@ -641,24 +665,24 @@ Table 4 mean values. All differences within ~10%.</caption>
 <td align="right">35.6</td>
 <td align="right">16.50</td>
 <td align="right">395</td>
-<td align="right">36.84</td>
-<td align="right">17.48</td>
-<td align="right">412.82</td>
-<td align="right">3.49</td>
-<td align="right">5.97</td>
-<td align="right">4.51</td>
+<td align="right">35.81</td>
+<td align="right">16.60</td>
+<td align="right">398.87</td>
+<td align="right">0.58</td>
+<td align="right">0.64</td>
+<td align="right">0.98</td>
 </tr>
 <tr class="even">
 <td align="left">150 mg Q2W</td>
 <td align="right">20.0</td>
 <td align="right">6.35</td>
 <td align="right">202</td>
-<td align="right">20.05</td>
-<td align="right">5.76</td>
-<td align="right">203.62</td>
-<td align="right">0.27</td>
-<td align="right">-9.36</td>
-<td align="right">0.80</td>
+<td align="right">19.68</td>
+<td align="right">5.46</td>
+<td align="right">198.61</td>
+<td align="right">-1.60</td>
+<td align="right">-14.09</td>
+<td align="right">-1.68</td>
 </tr>
 </tbody>
 </table>

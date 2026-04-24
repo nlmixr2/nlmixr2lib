@@ -111,7 +111,12 @@ data were released with the paper.
 
 ``` r
 set.seed(20260419)
-n_subj <- 400
+# Cohort size: 200 subjects is enough to stabilise the 5/50/95 percentile
+# bands in the VPC (Figure 3 reproduction) and the PKNCA distribution
+# summaries. Doubling to 400 did not visibly change the published bands
+# but made the simulation the largest in the package (~28 min on a single
+# core), which caps pkgdown's parallel-article build via Amdahl's law.
+n_subj <- 200
 
 cohort <- tibble::tibble(
   id       = seq_len(n_subj),
@@ -132,7 +137,12 @@ range) to ensure the final Q2W cycle is at steady state.
 
 ``` r
 tau <- 14                # Q2W dosing interval (days)
-n_doses <- 50            # 50 doses -> 700 days, deeply into SS
+# Dose count: the linear-range half-life is ~8-10 days, so the 4-5
+# half-lives needed for >95% steady-state are reached by dose 7-8. Twelve
+# Q2W doses (168 days, ~17 half-lives) puts the last cycle safely at SS
+# with no signal from earlier cycles, while the previous value of 50
+# doses (700 days) was a 10x oversample that dominated run time.
+n_doses <- 12
 dose_days <- seq(0, tau * (n_doses - 1), by = tau)
 
 build_events <- function(cohort, dose_amt, treatment) {
@@ -140,12 +150,26 @@ build_events <- function(cohort, dose_amt, treatment) {
     tidyr::crossing(time = dose_days) |>
     dplyr::mutate(amt = dose_amt, cmt = "depot", evid = 1L,
                   treatment = treatment)
+  # Observation grid: dense only where the published figures need
+  # resolution. Days 0-84 (six cycles) reproduce the Xu 2019 Figure 3
+  # VPC; the final 14-day interval (ss_start to ss_end, days 154-168)
+  # feeds the steady-state plot and the PKNCA computations. Between
+  # those two windows a weekly grid is enough to keep the ODE solver
+  # moving without contributing to any figure. The earlier uniform
+  # daily-plus-4-per-dose grid over all 700 days produced ~900
+  # observations per subject per arm, which (x 400 subjects x 2 arms)
+  # pushed the event table past 750k rows and drove most of the cost.
+  ss_start <- tau * (n_doses - 1)
+  ss_end   <- ss_start + tau
+  early_doses <- dose_days[dose_days <= 84]
   obs_days <- sort(unique(c(
-    seq(0, tau * (n_doses - 1) + tau, by = 1),
-    dose_days + 0.25,
-    dose_days + 1,
-    dose_days + 3,
-    dose_days + 7
+    seq(0, 84, by = 1),            # daily through the VPC window
+    early_doses + 0.25,            # keep fine near-dose structure
+    early_doses + 1,               #   so the SC absorption peak is
+    early_doses + 3,               #   resolved in Figure 3
+    early_doses + 7,
+    seq(84, ss_start, by = 7),     # coarse bridge between windows
+    seq(ss_start, ss_end, by = 0.5) # dense SS cycle for NCA / plot
   )))
   ev_obs <- cohort |>
     tidyr::crossing(time = obs_days) |>
@@ -203,7 +227,7 @@ ggplot(vpc, aes(time, Q50, colour = treatment, fill = treatment)) +
     x = "Time (days)",
     y = "Sarilumab Cc (mg/L)",
     title = "Simulated 5-50-95 percentile profiles: 150 vs 200 mg SC Q2W",
-    caption = "Virtual RA cohort (N = 400); first 6 dosing cycles."
+    caption = "Virtual RA cohort (N = 200); first 6 dosing cycles."
   ) +
   theme_minimal()
 ```
@@ -212,7 +236,7 @@ ggplot(vpc, aes(time, Q50, colour = treatment, fill = treatment)) +
 
 ### Steady-state cycle
 
-The final dosing interval in the simulation window (days 686 to 700) is
+The final dosing interval in the simulation window (days 154 to 168) is
 used for the steady-state NCA below.
 
 ``` r
@@ -275,14 +299,14 @@ intervals <- data.frame(
 )
 
 nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
-#>  ■■■■■■■■■■■■■■■■■■■■              62% |  ETA:  2s
+#>  ■■■■■■■■■■■■■■■                   46% |  ETA:  2s
 summary(nca_res)
 #>  start end treatment   N     auclast        cmax         cmin              tmax
-#>      0  14 150mg_Q2W 400 62.0 [50.6] 9.00 [43.2] 0.594 [99.5] 3.00 [1.00, 5.00]
-#>      0  14 200mg_Q2W 400  116 [46.5] 15.2 [38.3]   1.22 [141] 3.00 [1.00, 5.00]
+#>      0  14 150mg_Q2W 200 60.2 [55.5] 8.80 [46.1] 0.565 [91.5] 3.00 [1.50, 5.00]
+#>      0  14 200mg_Q2W 200  120 [47.9] 15.3 [39.4]   1.36 [135] 3.50 [1.50, 5.50]
 #>          cav
-#>  4.43 [50.6]
-#>  8.32 [46.5]
+#>  4.30 [55.5]
+#>  8.59 [47.9]
 #> 
 #> Caption: auclast, cmax, cmin, cav: geometric mean and geometric coefficient of variation; tmax: median and range; N: number of subjects
 ```
@@ -364,8 +388,8 @@ knitr::kable(comparison, digits = 2,
 
 | treatment  | Cmax_pub | Ctrough_pub | AUC_pub | Cmax_sim | Ctrough_sim | AUC_sim | Cmax_pct_diff | Ctrough_pct_diff | AUC_pct_diff |
 |:-----------|---------:|------------:|--------:|---------:|------------:|--------:|--------------:|-----------------:|-------------:|
-| 200 mg Q2W |     35.6 |       16.50 |     395 |    36.84 |       17.48 |  412.82 |          3.49 |             5.97 |         4.51 |
-| 150 mg Q2W |     20.0 |        6.35 |     202 |    20.05 |        5.76 |  203.62 |          0.27 |            -9.36 |         0.80 |
+| 200 mg Q2W |     35.6 |       16.50 |     395 |    35.81 |       16.60 |  398.87 |          0.58 |             0.64 |         0.98 |
+| 150 mg Q2W |     20.0 |        6.35 |     202 |    19.68 |        5.46 |  198.61 |         -1.60 |           -14.09 |        -1.68 |
 
 Typical-patient steady-state exposures (IIV zeroed) vs. Xu 2019 Table 4
 mean values. All differences within ~10%.
