@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Quartino 2019 trastuzumab ([doi:10.1007/s00280-018-3728-z](https://doi.org/10.1007/s00280-018-3728-z)) — adults with metastatic breast cancer, early breast cancer, advanced gastric cancer, or other solid tumors.
 * Add Narwal 2013 sifalimumab ([doi:10.1007/s40262-013-0085-2](https://doi.org/10.1007/s40262-013-0085-2)) — adults with moderately active systemic lupus erythematosus.
 * Add Valenzuela 2025 nipocalimab ([doi:10.1002/psp4.70109](https://doi.org/10.1002/psp4.70109)) — healthy adults and adults with generalized myasthenia gravis.
 * Add Hua 2015 anrukinzumab ([doi:10.1111/bcp.12589](https://doi.org/10.1111/bcp.12589)) — healthy volunteers, asthma, and ulcerative colitis patients.

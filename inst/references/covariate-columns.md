@@ -50,7 +50,7 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Scope:** general
 - **Reference category:** n/a — used with allometric scaling `(WT / ref_wt)^exponent`. Reference weights observed: 70 kg (adults), 75 kg, 84.8 kg, 5 kg (infants).
 - **Source aliases:** none known.
-- **Example models:** `Clegg_2024_nirsevimab.R`, `Hu_2026_clesrovimab.R`, `Zhu_2017_lebrikizumab.R`, `Kovalenko_2020_dupilumab.R`, `CarlssonPetri_2021_liraglutide.R`, `Cirincione_2017_exenatide.R`, `Grimm_2023_gantenerumab.R`, `Grimm_2023_trontinemab.R`, `Kyhl_2016_nalmefene.R`, `Soehoel_2022_tralokinumab.R`, `Xie_2019_agomelatine.R`, `PK_2cmt_mAb_Davda_2014.R`, `phenylalanine_charbonneau_2021.R`, `Chua_2025_mirikizumab.R`, `Jackson_2022_ixekizumab.R`, `Kotani_2022_astegolimab.R`, `Ma_2020_sarilumab_anc.R`, `Ma_2020_sarilumab_das28crp.R`, `Moein_2022_etrolizumab.R`, `Tiraboschi_2025_amlitelimab.R`, `Robbie_2012_palivizumab.R`.
+- **Example models:** `Clegg_2024_nirsevimab.R`, `Hu_2026_clesrovimab.R`, `Zhu_2017_lebrikizumab.R`, `Kovalenko_2020_dupilumab.R`, `CarlssonPetri_2021_liraglutide.R`, `Cirincione_2017_exenatide.R`, `Grimm_2023_gantenerumab.R`, `Grimm_2023_trontinemab.R`, `Kyhl_2016_nalmefene.R`, `Soehoel_2022_tralokinumab.R`, `Xie_2019_agomelatine.R`, `PK_2cmt_mAb_Davda_2014.R`, `phenylalanine_charbonneau_2021.R`, `Chua_2025_mirikizumab.R`, `Jackson_2022_ixekizumab.R`, `Kotani_2022_astegolimab.R`, `Ma_2020_sarilumab_anc.R`, `Ma_2020_sarilumab_das28crp.R`, `Moein_2022_etrolizumab.R`, `Tiraboschi_2025_amlitelimab.R`, `Robbie_2012_palivizumab.R`, `Quartino_2019_trastuzumab.R`.
 - **Notes:** Universal. Verify time-varying vs. baseline-only against the source paper.
 
 ### AGE
@@ -180,7 +180,7 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Scope:** general
 - **Reference category:** n/a — used with power scaling `(ALB / ref)^exponent`.
 - **Source aliases:** none; `ALB` is the universal abbreviation.
-- **Example models:** `Fasanmade_2009_infliximab.R` (g/dL, reference 4.1), `Thakre_2022_risankizumab.R` (g/L, reference 45), `Chua_2025_mirikizumab.R`, `Moein_2022_etrolizumab.R`, `Tiraboschi_2025_amlitelimab.R`, `Yamada_2025_zolbetuximab.R`.
+- **Example models:** `Fasanmade_2009_infliximab.R` (g/dL, reference 4.1), `Thakre_2022_risankizumab.R` (g/L, reference 45), `Chua_2025_mirikizumab.R`, `Moein_2022_etrolizumab.R`, `Tiraboschi_2025_amlitelimab.R`, `Yamada_2025_zolbetuximab.R`, `Quartino_2019_trastuzumab.R` (g/dL, reference 4; source column `ALBU`; negative exponent -0.998 on linear CL).
 - **Notes:** Ratified canonically on 2026-04-19 after cross-model review. Unit varies by paper (g/dL in US-convention papers, g/L in SI-convention papers); the per-model `covariateData[[ALB]]$units` field is load-bearing. Effect-coefficient magnitude is meaningless without the unit.
 
 ### TBILI (**canonical for total bilirubin**)
@@ -199,9 +199,10 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Type:** continuous
 - **Scope:** general
 - **Reference category:** n/a — used with power scaling `(AST / ref)^exponent`.
-- **Source aliases:** none; `AST` is the universal clinical-PK abbreviation.
-- **Example models:** `Lu_2014_trastuzumabemtansine.R` (U/L, reference 27; small positive exponent 0.071 on CL).
-- **Notes:** Hepatic-function marker. Commonly reported alongside `ALT` and `TBILI`; register a separate `ALT` canonical if a future paper requires it.
+- **Source aliases:**
+  - `SGOT` (serum glutamic-oxaloacetic transaminase; the legacy clinical-chemistry name for AST) — used in `Quartino_2019_trastuzumab.R`.
+- **Example models:** `Lu_2014_trastuzumabemtansine.R` (U/L, reference 27; small positive exponent 0.071 on CL), `Quartino_2019_trastuzumab.R` (IU/L, reference 24; source column `SGOT`; positive exponent 0.205 on linear CL).
+- **Notes:** Hepatic-function marker. Commonly reported alongside `ALT` and `TBILI`; register a separate `ALT` canonical if a future paper requires it. `SGOT` is the older lab-reporting name; values and units are identical to `AST`.
 
 ## Hematology
 
@@ -472,8 +473,30 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Reference category:** 0 = all other tumor types (same reference group as `TUMTP_CHL`).
 - **Source aliases:**
   - `TUMTP` (categorical column) — decompose into `TUMTP_GC = as.integer(TUMTP == "GC")`.
-- **Example models:** `Budha_2023_tislelizumab.R`.
-- **Notes:** Follows the `RACE_<GROUP>` indicator-decomposition pattern. New oncology tumor types should be added as additional `TUMTP_<GROUP>` entries so the reference set stays explicit.
+  - `TTYPE` (Quartino 2019; categorical column with levels `MBC`, `EBC`, `HV`, `AGC`, `Others`) — decompose into `TUMTP_GC = as.integer(TTYPE == "AGC")`.
+- **Example models:** `Budha_2023_tislelizumab.R`, `Quartino_2019_trastuzumab.R` (advanced gastric cancer; per-group typical-value switch on linear CL and Vc rather than an exponential multiplier).
+- **Notes:** Follows the `RACE_<GROUP>` indicator-decomposition pattern. New oncology tumor types should be added as additional `TUMTP_<GROUP>` entries so the reference set stays explicit. "Advanced gastric cancer" (AGC) and "gastric cancer" (GC) are pooled onto a single `TUMTP_GC` indicator; document the per-paper stage-of-disease detail in `covariateData[[TUMTP_GC]]$notes`.
+
+### TUMTP_OTH (**canonical for 'other tumor types' residual indicator**)
+- **Description:** 1 = heterogeneous "other" tumor-type pool (typically NSCLC plus miscellaneous solid tumors such as prostate, ovarian, and colorectal), 0 = one of the named tumor-type groups in the same analysis.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 = named tumor-type groups defined per-paper (e.g., MBC, EBC, HV, AGC in Quartino 2019). The complement of all `TUMTP_<GROUP>` indicators defined in the same model.
+- **Source aliases:**
+  - `TTYPE` (Quartino 2019) — decompose into `TUMTP_OTH = as.integer(TTYPE == "Others")`.
+- **Example models:** `Quartino_2019_trastuzumab.R` (per-group typical-value switch on linear CL; NSCLC plus a small residual group of prostate, ovarian, and other histologies).
+- **Notes:** Scope: specific because the set of histologies collapsed into "Others" is defined by the analysis plan of the source paper; two papers' `TUMTP_OTH` columns are not interchangeable. Document the exact per-paper composition (e.g., "NSCLC + prostate + ovarian + other, n = 107 in Quartino 2019") in `covariateData[[TUMTP_OTH]]$notes`. A given subject can have at most one of the `TUMTP_<GROUP>` indicators (including `TUMTP_OTH`) set to 1; all-zero means the reference group.
+
+### LMET (**canonical for baseline presence of liver metastases**)
+- **Description:** Binary indicator of radiologically documented liver metastases at baseline, 1 = liver metastases present, 0 = no liver metastases.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no liver metastases at baseline).
+- **Source aliases:** none; `LMET` is the common NONMEM / clinical-PK abbreviation used directly by the source papers.
+- **Example models:** `Quartino_2019_trastuzumab.R` (exponential effect on linear CL; +16.4% typical CL when LMET = 1, per Quartino 2019 Table 1 theta12 = 0.152).
+- **Notes:** Liver metastases are associated with hepatic protein-synthesis impairment and altered IgG catabolism, making `LMET` a commonly tested covariate in oncology mAb population PK analyses. Scope: general so future oncology papers can reuse the canonical column. Time-fixed baseline indicator; if a source paper treats it as time-varying (progression during treatment), document in `covariateData[[LMET]]$notes`.
 
 ## Laboratory / disease-activity
 
@@ -966,6 +989,7 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   (specific-scope 21-gene type I interferon signature score), and `DOSE`
   (specific-scope per-subject assigned dose level in mg) canonical entries
   while extracting `Zheng_2016_sifalimumab.R`.
+- **2026-04-24** — Added `LMET` (general-scope binary indicator for baseline liver metastases) and `TUMTP_OTH` (specific-scope residual "other tumor types" indicator, complement of the named `TUMTP_<GROUP>` indicators in the same model) canonical entries while extracting `Quartino_2019_trastuzumab.R`. Extended `TUMTP_GC` with the Quartino 2019 source alias `TTYPE == "AGC"` and `AST` with the legacy clinical-chemistry alias `SGOT`.
 - Subsequent additions: append new canonical entries as new papers are processed. When adding, bump the audit-completed count in the summary below.
 
 ## Summary
