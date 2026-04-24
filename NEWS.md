@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Li 2017 brentuximab vedotin ([doi:10.1002/jcph.920](https://doi.org/10.1002/jcph.920)) — adults with relapsed/refractory CD30-expressing hematologic malignancies (Hodgkin lymphoma and systemic anaplastic large cell lymphoma).
 * Add Narwal 2013 sifalimumab ([doi:10.1007/s40262-013-0085-2](https://doi.org/10.1007/s40262-013-0085-2)) — adults with moderately active systemic lupus erythematosus.
 * Add Valenzuela 2025 nipocalimab ([doi:10.1002/psp4.70109](https://doi.org/10.1002/psp4.70109)) — healthy adults and adults with generalized myasthenia gravis.
 * Add Hua 2015 anrukinzumab ([doi:10.1111/bcp.12589](https://doi.org/10.1111/bcp.12589)) — healthy volunteers, asthma, and ulcerative colitis patients.

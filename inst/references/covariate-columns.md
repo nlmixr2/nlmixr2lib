@@ -891,6 +891,16 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Xie_2019_agomelatine.R`.
 - **Notes:** Lower case preserved from source file. Future models should standardize on `OCC` as a categorical column with integer values (`OCC = 1`, `2`, …) and use `IOV` on the appropriate parameters.
 
+### CYCLE
+- **Description:** Treatment cycle number (1 = first dosing cycle, 2 = second, ...). Integer count, time-varying across a multi-cycle treatment course, incremented at each new dosing cycle.
+- **Units:** (count)
+- **Type:** count
+- **Scope:** specific
+- **Reference category:** n/a — used with a power-covariate form `CYCLE^Fm` (Fm typically negative) to capture cycle-over-cycle decline in a derived quantity such as ADC-to-payload conversion fraction.
+- **Source aliases:** `CYCLE` — used in `Li_2017_brentuximab.R` with the same canonical name.
+- **Example models:** `Li_2017_brentuximab.R` (exponent on the fraction of ADC that converts to MMAE by proteolytic degradation, Fm = -0.261, to reflect tumor-burden reduction across successive treatment cycles).
+- **Notes:** Must be >= 1 throughout (`CYCLE^Fm` is undefined at 0). Distinct from `ooc<n>` binary-occasion indicators: `CYCLE` is an integer count, not a mutually-exclusive set of indicator columns. Data-assembly helper: set `CYCLE = floor((TIME - TIME_FIRST_DOSE) / cycle_length_days) + 1` for a fixed-interval dosing regimen.
+
 ---
 
 ## Change log
@@ -966,6 +976,7 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   (specific-scope 21-gene type I interferon signature score), and `DOSE`
   (specific-scope per-subject assigned dose level in mg) canonical entries
   while extracting `Zheng_2016_sifalimumab.R`.
+- **2026-04-24** — Added `CYCLE` canonical entry (scope: specific; integer count; power-covariate effect `CYCLE^Fm` on the ADC-to-MMAE proteolytic conversion fraction) while extracting `Li_2017_brentuximab.R`. New entry placed under `Occasion / period (IOV)` since it is conceptually an IOV-like index, but distinct from the binary `ooc<n>` pattern.
 - Subsequent additions: append new canonical entries as new papers are processed. When adding, bump the audit-completed count in the summary below.
 
 ## Summary
