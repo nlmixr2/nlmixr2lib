@@ -248,6 +248,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Valenzuela_2025_nipocalimab.R` (reference 7 points; power-form effect on `IDecplacebo` and on the slope between MG-ADL change and IgG reduction).
 - **Notes:** Baseline-only in Valenzuela 2025 (the observation is the absolute change from baseline MG-ADL). When used time-varying (e.g., in pure PD models driven by disease-progression dynamics), document in `covariateData[[MGADL]]$notes`. Canonical name is `MGADL` without a `BL` prefix to match the `EASI` / `AGE` / `WT` / `ALB` pattern.
 
+### BCVA (**canonical for best-corrected visual acuity**)
+- **Description:** Best-corrected visual acuity score measured on the Early Treatment Diabetic Retinopathy Study (ETDRS) chart, expressed as the number of letters read correctly (0-100; higher values = better vision). Used as a baseline severity covariate in ophthalmology PK/PD models of anti-VEGF treatment.
+- **Units:** ETDRS letters (0-100)
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a — used as a baseline input to set the initial condition of an indirect-response BCVA state or as a power-form effect on response parameters. Reference value observed: 55 letters (Mulyukov 2018 narrative: mean study-population baseline BCVA).
+- **Source aliases:**
+  - `BVA` (baseline visual acuity) — used in `Mulyukov_2018_ranibizumab.R`.
+- **Example models:** `Mulyukov_2018_ranibizumab.R` (baseline BCVA used as the center for the initial-condition draw `g0 = BCVA + eta_g0`).
+- **Notes:** Ophthalmology-specific. Baseline-only in Mulyukov 2018 (carried once per subject and used only as the starting BCVA for the indirect-response model). Canonical name drops the `B` prefix to match the `EASI` / `AGE` / `WT` / `ALB` pattern (baseline-vs-time-varying status recorded in `covariateData[[BCVA]]$notes`). Scope is `specific` until a second ophthalmology model ratifies the name; at that point promote to `general`.
+
 ## Interferon / biomarker panels
 
 ### BGENE21
@@ -966,6 +977,11 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   (specific-scope 21-gene type I interferon signature score), and `DOSE`
   (specific-scope per-subject assigned dose level in mg) canonical entries
   while extracting `Zheng_2016_sifalimumab.R`.
+- **2026-04-24** — Added `BCVA` canonical entry (best-corrected visual acuity
+  score in ETDRS letters; scope: specific; ophthalmology-specific baseline
+  input to indirect-response BCVA PD models) while extracting
+  `Mulyukov_2018_ranibizumab.R`. Source alias `BVA` mapped. Reference value
+  55 letters (study-population mean baseline BCVA).
 - Subsequent additions: append new canonical entries as new papers are processed. When adding, bump the audit-completed count in the summary below.
 
 ## Summary
