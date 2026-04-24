@@ -16,6 +16,7 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(nlmixr2lib)
+library(PKNCA)
 library(dplyr)
 library(tidyr)
 library(ggplot2)
@@ -124,6 +125,7 @@ make_cohort <- function(n, ga_range, pna0_range, max_day,
 
 ```{r load-model}
 mod <- readModelDb("Clegg_2024_nirsevimab")
+conc_unit <- rxode2::rxode(mod)$units[["concentration"]]
 ```
 
 ---
@@ -191,7 +193,7 @@ ggplot(d_f4, aes(x = time, y = Q50)) +
   scale_x_continuous(breaks = seq(0, 500, by = 100)) +
   labs(
     x = "Time after dose (days)",
-    y = "Nirsevimab serum concentration (\u03bcg/mL)\nPrediction corrected",
+    y = paste0("Nirsevimab serum concentration (", conc_unit, ")\nPrediction corrected"),
     title = "Figure 4 \u2014 Prediction-corrected VPC by trial and season",
     caption = paste0(
       "Simulated median (line) and 90% prediction interval (shaded).\n",
@@ -242,7 +244,7 @@ ggplot(d_f5_plot, aes(x = time, y = Q50)) +
   scale_x_continuous(breaks = seq(0, 360, by = 30)) +
   labs(
     x = "Time after dose (days)",
-    y = "Nirsevimab serum concentration (\u03bcg/mL)\nPrediction corrected",
+    y = paste0("Nirsevimab serum concentration (", conc_unit, ")\nPrediction corrected"),
     title = "Figure 5 \u2014 Prediction-corrected VPC: MELODY safety cohort",
     caption = paste0(
       "Simulated 10th/50th/90th percentiles (N = 500 virtual infants, \u226535 wGA).\n",
@@ -310,20 +312,33 @@ sim_f6_list <- lapply(ga_groups, function(g) {
   out <- rxode2::rxSolve(mod, events = d_events) |>
     as.data.frame()
 
-  # NCA by individual
-  nca <- out |>
+  # NCA by individual: AUC0_365 and Cmax via PKNCA; C_day151 as direct lookup
+  out_nca <- out |> filter(time >= 0, !is.na(Cc))
+
+  # Build PKNCA dose data from the per-subject dose amounts
+  dose_df <- pop |>
+    mutate(time = 0, ga_group = g$label) |>
+    select(id = ID, time, amt = AMT, ga_group)
+
+  conc_obj <- PKNCAconc(out_nca, Cc ~ time | ga_group + id)
+  dose_obj <- PKNCAdose(dose_df, amt ~ time | ga_group + id)
+  nca_res  <- pk.nca(PKNCAdata(conc_obj, dose_obj,
+    intervals = data.frame(start = 0, end = 365,
+                           auclast = TRUE, cmax = TRUE)))
+
+  nca_pknca <- as.data.frame(nca_res$result) |>
+    filter(PPTESTCD %in% c("auclast", "cmax")) |>
+    select(id, PPTESTCD, PPORRES) |>
+    tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
+    rename(AUC0_365 = auclast, Cmax = cmax)
+
+  # Day-151 concentration: direct lookup (not a standard NCA parameter)
+  c_day151 <- out |>
     group_by(id) |>
-    summarise(
-      AUC0_365 = {
-        t <- time
-        c <- Cc
-        sum(diff(t) * (c[-length(c)] + c[-1]) / 2) # trapezoid
-      },
-      Cmax = max(Cc),
-      C_day151 = Cc[which.min(abs(time - 151))],
-      WT_base = WT_0[1],
-      .groups = "drop"
-    ) |>
+    summarise(C_day151 = Cc[which.min(abs(time - 151))],
+              WT_base  = WT_0[1], .groups = "drop")
+
+  nca <- left_join(nca_pknca, c_day151, by = "id") |>
     mutate(ga_group = g$label)
 })
 
@@ -419,7 +434,7 @@ ggplot(d_f6_pi, aes(x = wt_mid)) +
 - **Weight trajectories**: WHO weight-for-age LMS growth standards (combined sex, 0–24 months), with each infant's growth percentile (z-score) held constant.
 - **IIV**: Simulated using published omega² values: CL (26% CV), V2 (43% CV), Ka (44% CV; high shrinkage 83%), with correlation r = 0.785 between CL and V2. Q and V3 have no IIV in the final model.
 - **Residual error**: Proportional 21%.
-- **Figure 6 NCA**: AUC₀₋₃₆₅ computed by the trapezoidal rule on daily simulated concentrations; C_max and Day-151 concentration derived from the same densely sampled time course.
+- **Figure 6 NCA**: AUC₀₋₃₆₅ and C_max computed via PKNCA on daily simulated concentrations; Day-151 concentration derived by direct lookup from the same densely sampled time course.
 
 ## Reference
 

@@ -2,7 +2,7 @@ Wang_2017_benralizumab <- function() {
   description <- "Two compartment PK model of benralizumab (anti-IL-5Ralpha) in healthy volunteers and patients with asthma (Wang 2017)"
   reference <- "Wang B, Lau YY, Liang M, et al. Population Pharmacokinetics and Pharmacodynamics of Benralizumab in Healthy Volunteers and Patients With Asthma. CPT Pharmacometrics Syst Pharmacol. 2017;6(4):249-257. doi:10.1002/psp4.12160"
   vignette <- "Wang_2017_benralizumab"
-  units <- list(time = "day", dosing = "mg")
+  units <- list(time = "day", dosing = "mg", concentration = "mg/L")
   covariateData <- list(
     WT = "Body weight in kg",
     ADA = "Anti-drug antibody status, high-titer (0 = negative/low-titer, 1 = high-titer with titer >= 400; called ADAs in the original publication; time-varying: assessed at each predesignated sampling visit; exp(1.52) = ~4.6-fold increase in CL)",
