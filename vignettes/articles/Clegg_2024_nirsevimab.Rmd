@@ -313,7 +313,7 @@ sim_f6_list <- lapply(ga_groups, function(g) {
     as.data.frame()
 
   # NCA by individual: AUC0_365 and Cmax via PKNCA; C_day151 as direct lookup
-  out_nca <- out |> filter(time >= 0, !is.na(Cc))
+  out_nca <- out |> filter(time >= 0, !is.na(Cc)) |> mutate(ga_group = g$label)
 
   # Build PKNCA dose data from the per-subject dose amounts
   dose_df <- pop |>
