@@ -20,6 +20,12 @@ library(dplyr)
 library(ggplot2)
 ```
 
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Kyhl_2016_nalmefene"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Kyhl_2016_nalmefene"))$description`
+* Article: <https://doi.org/10.1111/bcp.12805>
+
 # Nalmefene replication
 
 Replicate figures 5 in the publication with a single 20 mg dose in the fed

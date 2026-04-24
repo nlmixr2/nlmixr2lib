@@ -23,6 +23,12 @@ library(ggplot2)
 library(PKNCA)
 ```
 
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Lon_2013_abatacept"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Lon_2013_abatacept"))$description`
+* Article: [J Pharmacokinet Pharmacodyn 40(6):701-712](https://doi.org/10.1007/s10928-013-9341-1)
+
 # Abatacept population PK simulation (Lon 2013)
 
 Simulate abatacept plasma concentration-time profiles in collagen-induced
@@ -33,8 +39,6 @@ characterized abatacept PK in a rat CIA model using IV and SC single-dose
 and SC multiple-dose regimens, fitting all three arms simultaneously with
 a two-compartment linear-elimination model and a short-term zero-order SC
 absorption pattern (Eq. 3 of the paper).
-
-Article: [J Pharmacokinet Pharmacodyn 40(6):701-712](https://doi.org/10.1007/s10928-013-9341-1)
 
 ## Population
 

@@ -23,6 +23,12 @@ library(ggplot2)
 library(PKNCA)
 ```
 
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Wang_2017_benralizumab"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Wang_2017_benralizumab"))$description`
+* Article: <https://doi.org/10.1002/psp4.12160>
+
 # Benralizumab population PK simulation
 
 Simulate benralizumab concentration-time profiles using the final population

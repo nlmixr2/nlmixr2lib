@@ -23,6 +23,12 @@ library(ggplot2)
 library(PKNCA)
 ```
 
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Ogasawara_2020_durvalumab"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Ogasawara_2020_durvalumab"))$description`
+* Article: <https://doi.org/10.1007/s40262-019-00804-x>
+
 # Durvalumab population PK simulation
 
 Simulate durvalumab concentration-time profiles using the final population

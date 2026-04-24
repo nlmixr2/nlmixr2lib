@@ -20,6 +20,13 @@ library(dplyr)
 library(ggplot2)
 ```
 
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Grimm_2023_trontinemab"))$reference`
+* Description (trontinemab): `r rxode2::rxode(readModelDb("Grimm_2023_trontinemab"))$description`
+* Description (gantenerumab): `r rxode2::rxode(readModelDb("Grimm_2023_gantenerumab"))$description`
+* Article: <https://doi.org/10.1080/19420862.2023.2261509>
+
 # Trontinemab replication
 
 ## Simulate trontinemab PK in plasma and brain

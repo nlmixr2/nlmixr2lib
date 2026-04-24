@@ -23,6 +23,12 @@ library(ggplot2)
 library(PKNCA)
 ```
 
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Xu_2011_sirukumab"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Xu_2011_sirukumab"))$description`
+* Article: [Br J Clin Pharmacol 72(2):270-281](https://doi.org/10.1111/j.1365-2125.2011.03964.x)
+
 # Sirukumab population PK simulation
 
 Simulate sirukumab concentration-time profiles using the final population
@@ -33,8 +39,6 @@ single-dose first-in-human (FIH) trial in healthy adult volunteers
 (study C0524T01). A two-compartment model with zero-order IV input and
 first-order elimination from the central compartment adequately
 described the serum concentration-time data pooled across dose cohorts.
-
-Article: [Br J Clin Pharmacol 72(2):270-281](https://doi.org/10.1111/j.1365-2125.2011.03964.x)
 
 ## Population
 

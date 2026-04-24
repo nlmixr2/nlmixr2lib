@@ -22,6 +22,12 @@ library(dplyr)
 library(ggplot2)
 ```
 
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Xie_2019_agomelatine"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Xie_2019_agomelatine"))$description`
+* Article: <https://doi.org/10.1111/bcp.13902>
+
 # Recreate figure 4 from the original paper
 
 The dose was a single 25 mg dose based on the methods section of the reference.
@@ -146,4 +152,4 @@ ggplot(d_plot, aes(x = time, y = prob_blq_c7dm)) +
 
 # Reference
 
-* `r Xie_2019_agomelatine$reference`
+* `r rxode2::rxode(readModelDb("Xie_2019_agomelatine"))$reference`
