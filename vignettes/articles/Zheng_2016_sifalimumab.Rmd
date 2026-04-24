@@ -23,6 +23,12 @@ library(ggplot2)
 library(PKNCA)
 ```
 
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Zheng_2016_sifalimumab"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Zheng_2016_sifalimumab"))$description`
+* Article: [Br J Clin Pharmacol 81(5):918-928](https://doi.org/10.1111/bcp.12864)
+
 # Sifalimumab population PK simulation
 
 Simulate sifalimumab serum concentration-time profiles using the final
@@ -39,8 +45,6 @@ cohorts. Body weight, baseline 21-gene type I interferon signature
 score, dose, and baseline steroid use were identified as
 statistically significant covariates on CL and V1 but accounted for
 < 10% of PK variability.
-
-Article: [Br J Clin Pharmacol 81(5):918-928](https://doi.org/10.1111/bcp.12864)
 
 ## Population
 

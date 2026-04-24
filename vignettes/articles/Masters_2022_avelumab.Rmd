@@ -19,15 +19,9 @@ library(ggplot2)
 
 # Model and source
 
-* Citation: Masters JC, Khandelwal A, di Pietro A, Dai H, Brar S.
-  Model-informed drug development supporting the approval of the avelumab
-  flat-dose regimen in patients with advanced renal cell carcinoma.
-  *CPT Pharmacometrics Syst Pharmacol.* 2022;11(4):458-468.
-  doi:[10.1002/psp4.12771](https://doi.org/10.1002/psp4.12771)
-* Description: Two-compartment population PK model for avelumab
-  (anti-PD-L1 IgG1) with time-dependent clearance in patients with
-  advanced solid tumors.
-* Modality: Therapeutic monoclonal antibody (IgG1), IV infusion.
+* Citation: `r rxode2::rxode(readModelDb("Masters_2022_avelumab"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Masters_2022_avelumab"))$description`
+* Article: <https://doi.org/10.1002/psp4.12771>
 
 Avelumab is a fully human anti-PD-L1 IgG1 monoclonal antibody. The
 Masters 2022 paper supported approval of the **800 mg Q2W flat-dose**
