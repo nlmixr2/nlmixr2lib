@@ -5,12 +5,12 @@
 - Citation: Masters JC, Khandelwal A, di Pietro A, Dai H, Brar S.
   Model-informed drug development supporting the approval of the
   avelumab flat-dose regimen in patients with advanced renal cell
-  carcinoma. *CPT Pharmacometrics Syst Pharmacol.* 2022;11(4):458-468.
-  <doi:%5B10.1002/psp4.12771>\](<https://doi.org/10.1002/psp4.12771>)
+  carcinoma. CPT Pharmacometrics Syst Pharmacol. 2022;11(4):458-468.
+  <doi:10.1002/psp4.12771>
 - Description: Two-compartment population PK model for avelumab
   (anti-PD-L1 IgG1) with time-dependent clearance in patients with
-  advanced solid tumors.
-- Modality: Therapeutic monoclonal antibody (IgG1), IV infusion.
+  advanced solid tumors (Masters 2022)
+- Article: <https://doi.org/10.1002/psp4.12771>
 
 Avelumab is a fully human anti-PD-L1 IgG1 monoclonal antibody. The
 Masters 2022 paper supported approval of the **800 mg Q2W flat-dose**
@@ -254,9 +254,8 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
-#>  ■■■■                              12% |  ETA:  8s
-#>  ■■■■■■■■■■■■■■■■■                 54% |  ETA:  3s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    96% |  ETA:  0s
+#>  ■■■■■■                            18% |  ETA:  6s
+#>  ■■■■■■■■■■■■■■■■■■■■              62% |  ETA:  3s
 knitr::kable(summary(nca_res),
              caption = "Simulated NCA parameters (3rd dosing interval, days 28-42)")
 ```

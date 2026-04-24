@@ -24,6 +24,17 @@ library(dplyr)
 library(ggplot2)
 ```
 
+## Model and source
+
+- Citation: Xie F, Vermeulen A, Colin P, Cheng Z. A semiphysiological
+  population pharmacokinetic model of agomelatine and its metabolites in
+  Chinese healthy volunteers. Br J Clin Pharmacol. 2019
+  May;85(5):1003-1014. doi: 10.1111/bcp.13902. Epub 2019 Mar 21. PMID:
+  30761579; PMCID: PMC6475681.
+- Description: A semiphysiological population pharmacokinetic model of
+  agomelatine and its metabolites in Chinese healthy volunteers
+- Article: <https://doi.org/10.1111/bcp.13902>
+
 ## Recreate figure 4 from the original paper
 
 The dose was a single 25 mg dose based on the methods section of the

@@ -14,6 +14,19 @@ library(dplyr)
 library(ggplot2)
 ```
 
+## Model and source
+
+- Citation: Kyhl LE, Li S, Faerch KU, Soegaard B, Larsen F, Areberg J.
+  Population pharmacokinetics of nalmefene in healthy subjects and its
+  relation to μ-opioid receptor occupancy. Br J Clin Pharmacol. 2016
+  Feb;81(2):290-300. doi: 10.1111/bcp.12805. Epub 2016 Jan 27. PMID:
+  26483076; PMCID: PMC4833148.
+- Description: Population PK model for nalmefene in healthy volunteers
+  (Kyhl 2016): two-compartment model with first-order absorption after
+  oral dosing, separate absorption rates for tablet and solution
+  formulations, and a link to mu-opioid receptor occupancy.
+- Article: <https://doi.org/10.1111/bcp.12805>
+
 ## Nalmefene replication
 
 Replicate figures 5 in the publication with a single 20 mg dose in the

@@ -24,6 +24,19 @@ library(PKNCA)
 #>     filter
 ```
 
+## Model and source
+
+- Citation: Zheng B, Yu X-Q, Greth W, Robbie GJ. Population
+  pharmacokinetic analysis of sifalimumab from a clinical phase IIb
+  trial in systemic lupus erythematosus patients. Br J Clin Pharmacol.
+  2016;81(5):918-928. <doi:10.1111/bcp.12864>
+- Description: Two-compartment population PK model for sifalimumab
+  (anti-IFN-alpha human IgG1 monoclonal antibody) in adults with
+  systemic lupus erythematosus following repeat fixed intravenous doses
+  (Zheng 2016).
+- Article: [Br J Clin Pharmacol
+  81(5):918-928](https://doi.org/10.1111/bcp.12864)
+
 ## Sifalimumab population PK simulation
 
 Simulate sifalimumab serum concentration-time profiles using the final
@@ -39,9 +52,6 @@ data pooled across dose cohorts. Body weight, baseline 21-gene type I
 interferon signature score, dose, and baseline steroid use were
 identified as statistically significant covariates on CL and V1 but
 accounted for \< 10% of PK variability.
-
-Article: [Br J Clin Pharmacol
-81(5):918-928](https://doi.org/10.1111/bcp.12864)
 
 ### Population
 

@@ -24,6 +24,17 @@ library(PKNCA)
 #>     filter
 ```
 
+## Model and source
+
+- Citation: Wang B, Lau YY, Liang M, et al. Population Pharmacokinetics
+  and Pharmacodynamics of Benralizumab in Healthy Volunteers and
+  Patients With Asthma. CPT Pharmacometrics Syst Pharmacol.
+  2017;6(4):249-257. <doi:10.1002/psp4.12160>
+- Description: Two compartment PK model of benralizumab
+  (anti-IL-5Ralpha) in healthy volunteers and patients with asthma (Wang
+  2017)
+- Article: <https://doi.org/10.1002/psp4.12160>
+
 ## Benralizumab population PK simulation
 
 Simulate benralizumab concentration-time profiles using the final
@@ -147,8 +158,8 @@ data_obj <- PKNCAdata(conc_obj, dose_obj,
                                               cmax = TRUE, tmax = TRUE,
                                               auclast = TRUE, half.life = TRUE))
 nca_results <- pk.nca(data_obj)
-#>  ■■■■■■■■■                         26% |  ETA:  5s
-#>  ■■■■■■■■■■■■■■■■■■■■■             68% |  ETA:  2s
+#>  ■■■■■■■■■■■■■■                    44% |  ETA:  4s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     93% |  ETA:  0s
 nca_summary <- summary(nca_results)
 knitr::kable(nca_summary, digits = 2,
              caption = "NCA summary (2nd dosing interval, weeks 4-8)")

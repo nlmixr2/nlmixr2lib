@@ -118,14 +118,15 @@
 <li>Citation: Narwal R, Roskos LK, Robbie GJ. Population
 pharmacokinetics of sifalimumab, an investigational
 anti-interferon-alpha monoclonal antibody, in systemic lupus
-erythematosus. <em>Clin Pharmacokinet.</em> 2013;52(11):1017-1027. <a href="doi:%5B10.1007/s40262-013-0085-2" class="uri">doi:[10.1007/s40262-013-0085-2</a>](<a href="https://doi.org/10.1007/s40262-013-0085-2" class="external-link uri">https://doi.org/10.1007/s40262-013-0085-2</a>)</li>
+erythematosus. Clin Pharmacokinet. 2013;52(11):1017-1027. <a href="doi:10.1007/s40262-013-0085-2" class="uri">doi:10.1007/s40262-013-0085-2</a>
+</li>
+<li>Description: Two-compartment population PK model for sifalimumab
+(anti-IFN-alpha IgG1) in adult patients with systemic lupus
+erythematosus (Narwal 2013)</li>
+<li>Article: <a href="https://doi.org/10.1007/s40262-013-0085-2" class="external-link uri">https://doi.org/10.1007/s40262-013-0085-2</a>
+</li>
 <li>Article (open access): <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3824374/" class="external-link uri">https://pmc.ncbi.nlm.nih.gov/articles/PMC3824374/</a>
 </li>
-<li>Description: Two-compartment linear population PK model for
-sifalimumab (anti-IFN-alpha IgG1 monoclonal antibody) in adult patients
-with systemic lupus erythematosus (SLE).</li>
-<li>Modality: Fully human IgG1-kappa therapeutic monoclonal antibody,
-intravenous infusion over 30-60 minutes.</li>
 </ul>
 <p>Sifalimumab is a fully human IgG1-kappa mAb that neutralises a
 majority of the subtypes of human interferon-alpha. Narwal 2013
@@ -615,8 +616,7 @@ decline.</p>
 <span></span>
 <span><span class="va">nca_data</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_obj</span>, <span class="va">dose_obj</span>, intervals <span class="op">=</span> <span class="va">intervals</span><span class="op">)</span></span>
 <span><span class="va">nca_res</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span><span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="va">nca_data</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■                  </span>  44% |  ETA:  4s</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■    </span>  90% |  ETA:  1s</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■               </span>  52% |  ETA:  3s</span></span>
 <span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">nca_res</span><span class="op">)</span>,</span>
 <span>             caption <span class="op">=</span> <span class="st">"Simulated single-dose NCA across the MI-CP152 cohorts (first 14 days)."</span><span class="op">)</span></span></code></pre></div>

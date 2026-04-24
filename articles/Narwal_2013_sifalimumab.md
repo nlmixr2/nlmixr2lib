@@ -4,16 +4,14 @@
 
 - Citation: Narwal R, Roskos LK, Robbie GJ. Population pharmacokinetics
   of sifalimumab, an investigational anti-interferon-alpha monoclonal
-  antibody, in systemic lupus erythematosus. *Clin Pharmacokinet.*
-  2013;52(11):1017-1027.
-  <doi:%5B10.1007/s40262-013-0085-2>\](<https://doi.org/10.1007/s40262-013-0085-2>)
+  antibody, in systemic lupus erythematosus. Clin Pharmacokinet.
+  2013;52(11):1017-1027. <doi:10.1007/s40262-013-0085-2>
+- Description: Two-compartment population PK model for sifalimumab
+  (anti-IFN-alpha IgG1) in adult patients with systemic lupus
+  erythematosus (Narwal 2013)
+- Article: <https://doi.org/10.1007/s40262-013-0085-2>
 - Article (open access):
   <https://pmc.ncbi.nlm.nih.gov/articles/PMC3824374/>
-- Description: Two-compartment linear population PK model for
-  sifalimumab (anti-IFN-alpha IgG1 monoclonal antibody) in adult
-  patients with systemic lupus erythematosus (SLE).
-- Modality: Fully human IgG1-kappa therapeutic monoclonal antibody,
-  intravenous infusion over 30-60 minutes.
 
 Sifalimumab is a fully human IgG1-kappa mAb that neutralises a majority
 of the subtypes of human interferon-alpha. Narwal 2013 developed the
@@ -355,8 +353,7 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- suppressWarnings(PKNCA::pk.nca(nca_data))
-#>  ■■■■■■■■■■■■■■                    44% |  ETA:  4s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      90% |  ETA:  1s
+#>  ■■■■■■■■■■■■■■■■■                 52% |  ETA:  3s
 
 knitr::kable(summary(nca_res),
              caption = "Simulated single-dose NCA across the MI-CP152 cohorts (first 14 days).")

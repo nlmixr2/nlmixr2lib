@@ -117,12 +117,14 @@
 <ul>
 <li>Citation: Masters JC, Khandelwal A, di Pietro A, Dai H, Brar S.
 Model-informed drug development supporting the approval of the avelumab
-flat-dose regimen in patients with advanced renal cell carcinoma.
-<em>CPT Pharmacometrics Syst Pharmacol.</em> 2022;11(4):458-468. <a href="doi:%5B10.1002/psp4.12771" class="uri">doi:[10.1002/psp4.12771</a>](<a href="https://doi.org/10.1002/psp4.12771" class="external-link uri">https://doi.org/10.1002/psp4.12771</a>)</li>
+flat-dose regimen in patients with advanced renal cell carcinoma. CPT
+Pharmacometrics Syst Pharmacol. 2022;11(4):458-468. <a href="doi:10.1002/psp4.12771" class="uri">doi:10.1002/psp4.12771</a>
+</li>
 <li>Description: Two-compartment population PK model for avelumab
 (anti-PD-L1 IgG1) with time-dependent clearance in patients with
-advanced solid tumors.</li>
-<li>Modality: Therapeutic monoclonal antibody (IgG1), IV infusion.</li>
+advanced solid tumors (Masters 2022)</li>
+<li>Article: <a href="https://doi.org/10.1002/psp4.12771" class="external-link uri">https://doi.org/10.1002/psp4.12771</a>
+</li>
 </ul>
 <p>Avelumab is a fully human anti-PD-L1 IgG1 monoclonal antibody. The
 Masters 2022 paper supported approval of the <strong>800 mg Q2W
@@ -453,9 +455,8 @@ approximation for a mAb with a ~7 day half-life):</p>
 <span></span>
 <span><span class="va">nca_data</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_obj</span>, <span class="va">dose_obj</span>, intervals <span class="op">=</span> <span class="va">intervals</span><span class="op">)</span></span>
 <span><span class="va">nca_res</span>  <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="va">nca_data</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■                            </span>  12% |  ETA:  8s</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■               </span>  54% |  ETA:  3s</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  </span>  96% |  ETA:  0s</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■                          </span>  18% |  ETA:  6s</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■            </span>  62% |  ETA:  3s</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">nca_res</span><span class="op">)</span>,</span>
 <span>             caption <span class="op">=</span> <span class="st">"Simulated NCA parameters (3rd dosing interval, days 28-42)"</span><span class="op">)</span></span></code></pre></div>
 <table class="table">

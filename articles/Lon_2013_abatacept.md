@@ -24,6 +24,20 @@ library(PKNCA)
 #>     filter
 ```
 
+## Model and source
+
+- Citation: Lon HK, Liu D, DuBois DC, Almon RR, Jusko WJ. Modeling
+  pharmacokinetics/pharmacodynamics of abatacept and disease progression
+  in collagen-induced arthritic rats: a population approach. J
+  Pharmacokinet Pharmacodyn. 2013;40(6):701-712.
+  <doi:10.1007/s10928-013-9341-1>
+- Description: Two-compartment population PK model with linear
+  elimination and short-term zero-order SC absorption for abatacept
+  (CTLA-4Ig Fc-fusion) in male Lewis rats with collagen-induced
+  arthritis (Lon 2013).
+- Article: [J Pharmacokinet Pharmacodyn
+  40(6):701-712](https://doi.org/10.1007/s10928-013-9341-1)
+
 ## Abatacept population PK simulation (Lon 2013)
 
 Simulate abatacept plasma concentration-time profiles in
@@ -34,9 +48,6 @@ activation. Lon 2013 characterized abatacept PK in a rat CIA model using
 IV and SC single-dose and SC multiple-dose regimens, fitting all three
 arms simultaneously with a two-compartment linear-elimination model and
 a short-term zero-order SC absorption pattern (Eq. 3 of the paper).
-
-Article: [J Pharmacokinet Pharmacodyn
-40(6):701-712](https://doi.org/10.1007/s10928-013-9341-1)
 
 ### Population
 

@@ -24,6 +24,21 @@ library(PKNCA)
 #>     filter
 ```
 
+## Model and source
+
+- Citation: Xu Z, Bouman-Thio E, Comisar C, Frederick B, Van
+  Hartingsveldt B, Marini JC, Davis HM, Zhou H. Pharmacokinetics,
+  pharmacodynamics and safety of a human anti-IL-6 monoclonal antibody
+  (sirukumab) in healthy subjects in a first-in-human study. Br J Clin
+  Pharmacol. 2011;72(2):270-281. <doi:10.1111/j.1365-2125.2011.03964.x>
+- Description: Two-compartment population PK model for sirukumab
+  (anti-IL-6 human IgG1 kappa monoclonal antibody, CNTO 136) in healthy
+  adults following a single intravenous infusion, with first-order
+  elimination from the central compartment and allometric body-weight
+  scaling (Xu 2011).
+- Article: [Br J Clin Pharmacol
+  72(2):270-281](https://doi.org/10.1111/j.1365-2125.2011.03964.x)
+
 ## Sirukumab population PK simulation
 
 Simulate sirukumab concentration-time profiles using the final
@@ -35,9 +50,6 @@ volunteers (study C0524T01). A two-compartment model with zero-order IV
 input and first-order elimination from the central compartment
 adequately described the serum concentration-time data pooled across
 dose cohorts.
-
-Article: [Br J Clin Pharmacol
-72(2):270-281](https://doi.org/10.1111/j.1365-2125.2011.03964.x)
 
 ### Population
 

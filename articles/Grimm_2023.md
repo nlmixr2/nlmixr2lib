@@ -14,6 +14,22 @@ library(dplyr)
 library(ggplot2)
 ```
 
+## Model and source
+
+- Citation: Grimm HP, Schumacher V, Schafer M, et al. Delivery of the
+  Brainshuttle amyloid-beta antibody fusion trontinemab to non-human
+  primate brain and projected efficacious dose regimens in humans. mAbs.
+  2023;15(1):2261509. <doi:10.1080/19420862.2023.2261509>
+- Description (trontinemab): Trontinemab PK model in non-human primates
+  (Grimm 2023): two-compartment plasma PK with Michaelis-Menten
+  elimination and brain-region effect-compartment distribution
+  (cerebellum, hippocampus, striatum, cortex, choroid plexus, CSF).
+- Description (gantenerumab): Gantenerumab PK model in cynomolgus
+  monkeys (Grimm 2023): two-compartment plasma PK with brain
+  extracellular distribution across six brain regions (cerebellum,
+  hippocampus, striatum, cortex, choroid plexus, CSF).
+- Article: <https://doi.org/10.1080/19420862.2023.2261509>
+
 ## Trontinemab replication
 
 ### Simulate trontinemab PK in plasma and brain

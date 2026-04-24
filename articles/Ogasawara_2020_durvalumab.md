@@ -24,6 +24,16 @@ library(PKNCA)
 #>     filter
 ```
 
+## Model and source
+
+- Citation: Ogasawara K, Newhall K, Maxwell SE, et al. Population
+  Pharmacokinetics of an Anti-PD-L1 Antibody, Durvalumab in Patients
+  with Hematologic Malignancies. Clin Pharmacokinet. 2020;59(2):217-227.
+  <doi:10.1007/s40262-019-00804-x>
+- Description: Two compartment PK model of durvalumab (anti-PD-L1) in
+  patients with hematologic malignancies (Ogasawara 2020)
+- Article: <https://doi.org/10.1007/s40262-019-00804-x>
+
 ## Durvalumab population PK simulation
 
 Simulate durvalumab concentration-time profiles using the final
@@ -183,10 +193,10 @@ data_obj <- PKNCAdata(conc_obj, dose_obj,
                                               cmax = TRUE, tmax = TRUE,
                                               auclast = TRUE, half.life = TRUE))
 nca_results <- pk.nca(data_obj)
-#>  ■■■■■■■■                          25% |  ETA: 10s
-#>  ■■■■■■■■■■■■■■■                   47% |  ETA:  7s
+#>  ■■■■■■■                           19% |  ETA: 10s
+#>  ■■■■■■■■■■■■■■                    44% |  ETA:  7s
 #>  ■■■■■■■■■■■■■■■■■■■■■■            69% |  ETA:  4s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     92% |  ETA:  1s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     94% |  ETA:  1s
 nca_summary <- summary(nca_results)
 knitr::kable(nca_summary, digits = 2,
              caption = "NCA summary (3rd dosing interval, weeks 8-12)")
