@@ -25,13 +25,33 @@ Read these on demand; don't load them up front.
 ## Phase 1 — Source acquisition and scoping
 
 1. Confirm the source type (journal article, supplement, poster, regulatory document).
-2. **Always search for supplementary information.** Supplements frequently contain the NONMEM control stream and parameter tables that disambiguate model structure. If the user provided only a main article, ask whether a supplement exists and request it.
-3. **Always search for errata, corrigenda, or author corrections.** Check the journal's landing page for the article, the publisher's "corrections" / "notices" feed, and a search like `"<first author> <year> <drug>" erratum` on PubMed and Google Scholar. Ask the user whether they are aware of any corrections if the source is paywalled or the search is inconclusive. **When an erratum revises a value used in the model (parameter estimate, covariate effect, equation, units), the erratum value takes precedence over the main publication.** If multiple errata exist, the most recent supersedes earlier ones. Record the erratum citation in the model file's `reference` metadata alongside the main paper, and in every in-file source-trace comment whose value comes from the erratum, point to the erratum (not the original table).
-4. **Verify parameters are final estimates, not initial estimates.** Supplement control streams usually list initial values in `$THETA` / `$OMEGA`; final values come from the paper's results table or `$TABLE` output. If only a control stream is available, confirm values against any published point estimates before treating them as final.
-5. **Multiple-model handling.**
+2. **Check the study population species.** Skim the Methods / Subjects section. If every PK dataset contributing to the final model is non-human (rat, mouse, cyno, dog, etc.), stop and sidecar-ask the operator before drafting anything:
+
+   > This paper reports a preclinical-only (<species>) population PK model. nlmixr2lib is a library of human population-PK models. Should I (A) extract it anyway with clear preclinical metadata, (B) extract only a human-scaled projection if the paper includes one, or (C) skip this paper?
+
+   If the paper has both preclinical and human cohorts and the final model is fit to pooled or human-only data, proceed normally — this trigger is specifically for animal-only final models. Record the operator's decision in the PR body.
+
+3. **Prefer trimmed markdown when available.** The preprocessor at `mab_human_consensus/tracking/preprocess_papers.py` writes a `<stem>_trimmed.md` next to each source file (PMC XML, PDF, DOCX, XLSX) containing only the sections the extraction actually needs: Title + Abstract + Methods + Results + Tables + Figure captions. The Introduction, Discussion, Conclusions, References, Acknowledgments, and publisher boilerplate are stripped. If `PMID_<pmid>_pmc_trimmed.md` (or `PMID_<pmid>_trimmed.md` for a PDF, or `<stem>_trimmed.md` for a supplement) exists, read it **instead of** the raw `.xml` / `.pdf` / `.docx` — it's typically 40-95% smaller with no loss of extractable content. Full-text sanity check on the trimmed file: ~15 KB+ (full-text trim) vs < 3 KB (abstract-only trim). Fall back to the raw source only if the `_trimmed.md` doesn't exist, the trim appears to have lost a specific piece of information you need (rare — only when the paper is structurally unusual), or you explicitly need the discarded sections (e.g., to quote a Discussion claim in the vignette narrative).
+
+4. **Verify the source contains full text, not just the abstract.** Wiley / BJCP and some other publishers serve PMC XML containing only front matter + abstract. Before reading for model structure, run a quick sanity check (against the trimmed file if present, otherwise the raw source):
+
+   - Trimmed `.md` file size ≥ ~15 KB, or raw PMC XML ≥ ~40 KB (full-text XML is typically 100 KB+; abstract-only is usually < 20 KB).
+   - The file contains a materially-present Methods section (not just a "Methods" heading followed by one abstract paragraph).
+   - If only a PDF is on disk, confirm it runs past the abstract (multi-page, Methods / Results / Tables present).
+
+   If only the abstract is available, sidecar-ask:
+
+   > The source on disk for <paper> contains only the abstract and front matter; full text appears to be blocked by the publisher. Options: (A) pause this task until full text is provided, (B) proceed only if a supplement / regulatory review on disk contains the model equations and parameter tables, (C) skip this paper. Which applies?
+
+   Never attempt extraction from an abstract alone — population-PK parameter values, covariate effects, and equations are not in an abstract.
+
+5. **Always search for supplementary information.** Supplements frequently contain the NONMEM control stream and parameter tables that disambiguate model structure. If the user provided only a main article, ask whether a supplement exists and request it.
+6. **Always search for errata, corrigenda, or author corrections.** Check the journal's landing page for the article, the publisher's "corrections" / "notices" feed, and a search like `"<first author> <year> <drug>" erratum` on PubMed and Google Scholar. Ask the user whether they are aware of any corrections if the source is paywalled or the search is inconclusive. **When an erratum revises a value used in the model (parameter estimate, covariate effect, equation, units), the erratum value takes precedence over the main publication.** If multiple errata exist, the most recent supersedes earlier ones. Record the erratum citation in the model file's `reference` metadata alongside the main paper, and in every in-file source-trace comment whose value comes from the erratum, point to the erratum (not the original table).
+7. **Verify parameters are final estimates, not initial estimates.** Supplement control streams usually list initial values in `$THETA` / `$OMEGA`; final values come from the paper's results table or `$TABLE` output. If only a control stream is available, confirm values against any published point estimates before treating them as final.
+8. **Multiple-model handling.**
    - Base model + final model → extract only the final.
    - Any other "multiple model" case (per-subpopulation, per-endpoint, sensitivity analyses) → list the candidates to the user and ask which to extract. Offer "one," "all," or "a subset."
-6. Confirm the target subdirectory under `inst/modeldb/` (usually `specificDrugs/`; endogenous, therapeuticArea, pharmacokinetics, and pharmacodynamics are also valid).
+9. Confirm the target subdirectory under `inst/modeldb/` (usually `specificDrugs/`; endogenous, therapeuticArea, pharmacokinetics, and pharmacodynamics are also valid).
 
 ## Phase 2 — Sync with origin/main and branch
 
@@ -103,7 +123,7 @@ Never silently resolve ambiguity. Never tune parameter values to match a validat
 
 ## Phase 5 — Validation vignette
 
-File path: `vignettes/articles/<FirstAuthor>_<Year>_<drug>.Rmd`, with matching `VignetteIndexEntry`. Drug-specific vignettes live under `vignettes/articles/` so pkgdown builds them for the site but CRAN does not — `.Rbuildignore` excludes that directory. The basename (without `.Rmd`) must match the `vignette <- "..."` field in the model file.
+File path: `vignettes/articles/<FirstAuthor>_<Year>_<drug>.Rmd`, with matching `VignetteIndexEntry`. Drug-specific vignettes live under `vignettes/articles/` so pkgdown builds them for the site but CRAN does not — `.Rbuildignore` excludes that directory. The basename (without `.Rmd`) must match the `vignette <- "..."` field in the model file. Only the legacy `PK_2cmt_mAb_Davda_2014.Rmd` remains at top-level `vignettes/`.
 
 Use `references/vignette-template.md`. Required sections, in order:
 
@@ -135,8 +155,11 @@ Naming conventions for mechanistic parameters are documented in `references/nami
 
 1. Re-confirm the branch is on top of fresh `origin/main` (`git fetch origin && git rebase origin/main` if needed).
 2. Run `nlmixr2lib::buildModelDb()` to regenerate `data/modeldb.rda` and `inst/modeldb.qs2`. Confirm the new model appears in `modellib()`. **When verifying in R, do `devtools::load_all(".")` first so `modellib()` reads the worktree's in-development package, not the stale system install** — see `references/verification-checklist.md` § "Verifying against the worktree's nlmixr2lib" for why a bare `library(nlmixr2lib)` can return a misleading `FALSE`.
-3. Run `devtools::check()`. Vignettes must build cleanly.
-4. Add a short, single-line `NEWS.md` entry under the current development
+3. Run `nlmixr2lib::checkModelConventions(model = "<FirstAuthor>_<Year>_<drug>")` and review the output. Any deviations from the canonical parameter / IIV / residual-error / covariate / compartment conventions (see `references/naming-conventions.md` and `inst/references/covariate-columns.md`) that the function flags should be either fixed in the model file before committing, or explicitly justified in the vignette's Assumptions and deviations section. `buildModelDb()` runs `checkModelConventions()` implicitly at package-build time, but running it explicitly on your new model makes drift visible before commit, not after CI. Paste the key lines of the output into the PR body so a reviewer can see what was checked.
+4. Run `devtools::check()`. Vignettes must build cleanly.
+
+   A C-level segfault (`*** caught segfault ***`) during `check()` or vignette rendering is a red flag — it indicates a broken R / rxode2 / nlmixr2 install in the environment, not a model-file problem. Stop, sidecar-ask the operator to investigate and fix the environment, and do not work around it with `--no-build-vignettes` or similar flags.
+5. Add a short, single-line `NEWS.md` entry under the current development
    version. The goal is a scannable changelog — the model file and vignette
    already contain the full detail, so NEWS should only mention:
    - the drug,
@@ -158,8 +181,8 @@ Naming conventions for mechanistic parameters are documented in `references/nami
    residual-error form, data origin, study counts, PKNCA sentence, or
    anything else that lives in the model file's metadata or vignette. A
    reviewer who wants those details clicks through to the model file.
-5. Commit the model file, the vignette under `vignettes/articles/`, the regenerated `modeldb.rda` / `modeldb.qs2`, the `NEWS.md` entry, and any updates to `inst/references/covariate-columns.md` (if a new covariate was registered) together on the feature branch.
-6. Push the branch and open a PR against `main`. Use `gh pr create` with a title like `Add <Author> <Year> <drug> model`.
+6. Commit the model file, the vignette under `vignettes/articles/`, the regenerated `modeldb.rda` / `modeldb.qs2`, the `NEWS.md` entry, and any updates to `inst/references/covariate-columns.md` (if a new covariate was registered) together on the feature branch.
+7. Push the branch and open a PR against `main`. Use `gh pr create` with a title like `Add <Author> <Year> <drug> model`.
 
 ## Stop-and-ask triggers (consolidated)
 
@@ -174,6 +197,9 @@ Don't guess — ask the user when:
 - PKNCA output disagrees with a published NCA table by more than ~20% after careful review.
 - The source is paywalled and the user hasn't supplied the text.
 - An erratum search is inconclusive (e.g., paywalled journal, ambiguous correction notice) — ask the user to confirm whether any corrections apply.
+- The paper's final model was fit to animal-only data (see Phase 1 species-check step).
+- The PMC XML / PDF on disk contains only the paper's abstract (see Phase 1 full-text-check step).
+- `devtools::check()` or vignette rendering produces a C-level segfault — the environment is broken; do not paper over with `--no-build-vignettes` or similar.
 
 Use this fixed format for ambiguities:
 

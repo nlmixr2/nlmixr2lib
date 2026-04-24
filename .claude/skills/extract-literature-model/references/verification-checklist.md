@@ -51,6 +51,7 @@ Do not silently resolve ambiguity. Do not tune parameters to make a validation o
 - [ ] Validation vignette lives at `vignettes/articles/<FirstAuthor>_<Year>_<drug>.Rmd`, and the model file's `vignette <- "..."` value matches that basename (no path, no extension). Confirm `readModelDb("<model>")$meta$vignette` returns the basename after `devtools::load_all()`.
 - [ ] `population` uses the extensible schema documented in `naming-conventions.md`; any paper-specific keys are allowed.
 - [ ] No stray `#!` instruction comments from the template remain.
+- [ ] Vignette path is `vignettes/articles/<...>.Rmd` (not top-level `vignettes/`), matching the pkgdown "articles" convention used by every non-legacy vignette in the package.
 
 ## F. Sanity simulations
 
@@ -58,6 +59,7 @@ Do not silently resolve ambiguity. Do not tune parameters to make a validation o
 - [ ] `rxode2::rxSolve(mod, events)` produces non-NaN, non-negative concentrations across the relevant time window.
 - [ ] Simulated Cmax, AUC, and half-life are within ~20% of published values for a typical dose in a typical subject. Larger discrepancies: investigate, don't tune.
 - [ ] A simulated VPC visually resembles the paper's VPC (dose-proportional scaling, right terminal slope, reasonable spread).
+- [ ] If the event table was built from multiple cohorts via `bind_rows()`, ID ranges are disjoint (`anyDuplicated(events[, c("id","time","evid")]) == 0`). See `vignette-template.md`'s `make_cohort(..., id_offset = )` snippet for the pattern.
 
 ### F.1 Endogenous / mechanistic models
 
@@ -74,7 +76,8 @@ See `references/endogenous-validation.md` for full recipes.
 
 - [ ] `nlmixr2lib::buildModelDb()` runs to completion.
 - [ ] The new model appears in `modellib()`.
-- [ ] `devtools::check()` passes (warnings OK to discuss; errors are blocking).
+- [ ] `nlmixr2lib::checkModelConventions(model = "<...>")` returns clean (or all deviations are justified in the vignette's Assumptions and deviations section and noted in the PR body).
+- [ ] `devtools::check()` passes (warnings OK to discuss; errors are blocking). A C-level segfault during `check()` or vignette rendering is a red flag — stop, sidecar-ask the operator to investigate the environment, and do **not** work around with `--no-build-vignettes` or similar flags. See SKILL.md Phase 6 step 4.
 - [ ] Vignette builds cleanly.
 - [ ] `NEWS.md` entry added.
 

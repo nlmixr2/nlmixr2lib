@@ -1,6 +1,6 @@
 # Validation vignette template
 
-File path: `vignettes/articles/<FirstAuthor>_<Year>_<drug>.Rmd`. Drug-specific vignettes live under `vignettes/articles/` so pkgdown builds them for the site but CRAN skips them (`.Rbuildignore` excludes the directory). The basename must match the `vignette <- "..."` field in the model file.
+File path: `vignettes/articles/<FirstAuthor>_<Year>_<drug>.Rmd` — the pkgdown "articles" directory, not top-level `vignettes/`. Drug-specific vignettes live under `vignettes/articles/` so pkgdown builds them for the site but CRAN skips them (`.Rbuildignore` excludes the directory). The top-level `vignettes/` directory is reserved for the one legacy vignette (`PK_2cmt_mAb_Davda_2014.Rmd`). The basename must match the `vignette <- "..."` field in the model file.
 
 A validation vignette has two jobs:
 
@@ -79,27 +79,43 @@ demographics.
 
 ```{r cohort}
 set.seed(<seed>)
-n_subj <- <integer>
 
-# Build a cohort whose covariate distributions match the `population` metadata.
-# Use helper functions (WHO weight curves, allometric-scaled baselines, etc.) where relevant.
-# Include: ID, TIME, AMT, EVID, CMT, DV, and every covariate the model consumes.
-cohort <- tibble(
-  id    = seq_len(n_subj),
-  # ... covariate columns by canonical name (see references/covariate-columns.md)
-)
+# Helper: build one cohort as a self-contained event table. `id_offset`
+# shifts subject IDs so multiple cohorts can be bind_rows()-ed without
+# colliding. rxSolve treats ID as the subject key; duplicate IDs across
+# cohorts silently collapse into single (wrong) subjects, so offsetting
+# is mandatory, not decorative, for any multi-cohort simulation.
+make_cohort <- function(n, ..., id_offset = 0L) {
+  tibble(
+    id = id_offset + seq_len(n),
+    # ... covariate columns by canonical name (see inst/references/covariate-columns.md)
+    # ... cohort/treatment/regimen label as a column so it can ride through rxSolve via `keep = `
+  ) |>
+    # expand into dosing + observation rows (evid, amt, cmt, time, ...)
+    ...
+}
 
-# Build an event table: doses + sampling times.
-events <- cohort |>
-  # expand into dosing and observation rows
-  ...
+# Single-cohort case:
+events <- make_cohort(n = <integer>, ...)
+
+# Multi-cohort case — pass distinct id_offset per call so IDs are disjoint:
+# events <- dplyr::bind_rows(
+#   make_cohort(200, ..., id_offset =   0L) |> mutate(cohort = "A"),
+#   make_cohort(200, ..., id_offset = 200L) |> mutate(cohort = "B"),
+#   make_cohort(200, ..., id_offset = 400L) |> mutate(cohort = "C")
+# )
+# stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
 ```
 
 # Simulation
 
 ```{r simulate}
 mod <- readModelDb("<FirstAuthor>_<Year>_<drug>")
-sim <- rxode2::rxSolve(mod, events = events)
+# Prefer `keep = c("col1", "col2")` to carry source columns (cohort,
+# treatment, dose group, regimen) through to the simulation output.
+# This is cleaner than a post-hoc left_join back from `events`, and
+# avoids row-alignment surprises when rxSolve drops or expands rows.
+sim <- rxode2::rxSolve(mod, events = events, keep = c("cohort"))
 ```
 
 For deterministic replication (reproducing Figure N without between-subject
@@ -212,3 +228,19 @@ match.>
 - `rxode2::zeroRe()` is helpful when the published figure is a typical-value
   prediction rather than a VPC. Simulating with between-subject variability
   always, then plotting percentiles, matches VPC-style figures.
+- **Multi-cohort simulations.** If you build the event table by
+  `bind_rows()`-ing several cohorts (dose groups, regimens, age strata, etc.),
+  each cohort's `id` column must span a disjoint integer range. The
+  `make_cohort(..., id_offset = )` helper in the cohort chunk above shows the
+  pattern. Duplicate IDs across cohorts are silently merged by `rxSolve` into
+  a single subject and are a recurring bug — the `Robbie_2012_palivizumab`
+  vignette has a worked example. Add the assertion
+  `stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))`
+  after the bind_rows as a cheap regression guard.
+- **Prefer `rxSolve(..., keep = c("col1", "col2"))`** over a post-hoc
+  `left_join` from `events` back into the simulation output. `keep` attaches
+  source columns directly in the rxode2 output, aligned per row. Use it for
+  `cohort`, `treatment`, dose-group labels, and any grouping column the plots
+  or PKNCA formulas need. The column-name is up to you (`"cohort"`,
+  `"treatment"`, `"regimen"` — whatever the paper's figure legends use); the
+  skill does not mandate one.
