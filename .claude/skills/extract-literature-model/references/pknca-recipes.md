@@ -28,8 +28,16 @@ dose_df <- events |>
   dplyr::filter(evid == 1) |>
   dplyr::select(id, time, amt, treatment)
 
-conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id)
-dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id)
+# Always declare units: `concu` + `timeu` on PKNCAconc, `doseu` on PKNCAdose.
+# PKNCA uses these to do automatic unit-consistent AUC / clearance calculations;
+# without them the summary tables carry only numbers and downstream consumers
+# can't tell ng/mL from ug/mL. Use the same units that appear in the model
+# file's `units` metadata and the paper's Table footnotes.
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id,
+                             concu = "<conc unit, e.g. ug/mL>",
+                             timeu = "<time unit, e.g. day>")
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id,
+                             doseu = "<dose unit, e.g. mg>")
 
 intervals <- data.frame(
   start      = 0,
@@ -154,6 +162,14 @@ Flag any differences > 20% in the narrative; do not tune parameters to match.
   treatment, PKNCA aggregates across dose groups and the Cmax / AUC results
   are uninterpretable. Always include the treatment grouping, and put it
   **before** `id` (`Cc ~ time | treatment + id`).
+- **Missing unit declarations** — pass `concu` + `timeu` to `PKNCAconc()` and
+  `doseu` to `PKNCAdose()`. Without them, PKNCA's output is unit-blind: AUC
+  values are just numbers, clearance is not derivable, and the summary
+  tables cannot be cross-checked against the paper's own NCA values (which
+  always report units). Match the units to the model file's `units`
+  metadata (`time = "day"`, `dosing = "mg"`, `concentration = "ug/mL"` —
+  whatever the paper uses). Note that the units are strings, not R
+  objects — e.g. `concu = "ug/mL"`, not `concu = units::as_units("ug/mL")`.
 - **Renaming `Cc` to `conc`** — keep the column named `Cc` (same as the
   observation variable in the nlmixr2 model) rather than renaming it to
   `conc`. Same for dose: keep `amt`, not `dose`.
@@ -169,3 +185,18 @@ Flag any differences > 20% in the narrative; do not tune parameters to match.
   BLQ rule (e.g., M3 method), that's outside the NCA step.
 - **Time-zero records** — PKNCA expects a pre-dose record for IV or a `time = 0`
   observation for extravascular. Ensure the simulation grid includes `time = 0`.
+- **Duplicate IDs across cohorts** — when `events` is assembled from multiple
+  `make_cohort()` calls and `bind_rows`-ed together, confirm
+  `anyDuplicated(sim[, c("id", "time")]) == 0` before handing `sim` to PKNCA.
+  `rxSolve` silently collapses duplicated-ID rows into a single subject;
+  PKNCA then aggregates a single (wrong) subject as if it were the whole
+  group. Use the `id_offset` pattern in the `make_cohort` snippet in
+  `references/vignette-template.md` to keep ID ranges disjoint.
+- **Carry grouping via `rxSolve(..., keep = ...)`, not a post-hoc
+  `left_join`.** `rxSolve` accepts a `keep = c("col1", "col2")` argument
+  that attaches source columns (cohort, treatment, dose group, regimen)
+  directly to the simulation output. This is aligned per row and far
+  cleaner than joining back from `events` — a post-hoc `left_join` will
+  produce multiplied rows if any IDs collide or if rxSolve expanded
+  observation times. Round-trip `treatment` / `cohort` through `keep` and
+  PKNCA's grouping formula picks it up automatically.
