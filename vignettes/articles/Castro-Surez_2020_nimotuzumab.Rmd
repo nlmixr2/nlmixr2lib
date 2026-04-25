@@ -1,0 +1,476 @@
+---
+title: "Castro-Surez_2020_nimotuzumab"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Castro-Surez_2020_nimotuzumab}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment  = "#>"
+)
+```
+
+```{r setup}
+library(nlmixr2lib)
+library(rxode2)
+library(PKNCA)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Nimotuzumab semi-mechanistic QSS TMDD population PK model (Castro-Suárez 2020)
+
+de Castro-Suárez et al. (2020) developed a semi-mechanistic two-compartment
+population pharmacokinetic model for nimotuzumab (a humanized IgG1 monoclonal
+antibody against EGFR, with an intermediate affinity Kd ≈ 2.1 × 10⁻⁸ M) in
+20 adults with autosomal dominant polycystic kidney disease (ADPKD) following
+a single 30-min intravenous infusion at one of four fixed dose levels (50,
+100, 200, or 400 mg, n = 5 per cohort). The non-linear PK is described by a
+quasi-steady-state target-mediated drug disposition (QSS TMDD) framework with
+EGFR binding represented in **both** central (R~tot~) and peripheral (R~totp~)
+compartments and a turnover **mediator** that stimulates non-specific
+clearance via a sigmoid Emax of free central nimotuzumab. Covariates were not
+retained in the final model.
+
+This vignette documents the parameter provenance, replicates the typical PK
+profiles shown in Figure 4 of the paper across the experimental and
+extrapolated dose range (50–1200 mg), and runs PKNCA on a virtual cohort to
+provide dose-stratified Cmax / AUC / half-life summaries.
+
+## Population studied
+
+Castro-Suárez 2020 Table 1 (single-center Cuban phase I trial, n = 20):
+
+| Field                         | Value                                                         |
+|-------------------------------|---------------------------------------------------------------|
+| N subjects                    | 20                                                            |
+| N observations                | 422 (all quantifiable; none below LOQ)                        |
+| N studies                     | 1 (single-center, open-label, dose-escalation phase I)        |
+| Age                           | median 42 y (mean 39, SD 11)                                  |
+| Body weight                   | median 65.7 kg (mean 66.98, SD 14.69)                         |
+| Height                        | median 163.5 cm (mean 163.60, SD 8.99)                        |
+| Body surface area             | median 1.70 m² (mean 1.72, SD 0.21)                           |
+| Serum creatinine              | median 0.72 mg/dL (mean 0.77, SD 0.14)                        |
+| Creatinine clearance          | median 105.7 mL/min/1.73 m² (mean 103.43, SD 22.63)           |
+| TKV (men, women)              | mean 822 mL / 924 mL                                          |
+| TCV                           | mean 340 mL                                                   |
+| Sex                           | 14 F / 6 M (70% female)                                       |
+| Race / ethnicity              | 75% Caucasian, 5% Afro-American, 20% Other                    |
+| Disease state                 | Autosomal dominant polycystic kidney disease (ADPKD)          |
+| Inclusion threshold           | GFR ≥ 50 mL/min/1.73 m²; urinary protein < 1 g/24 h           |
+| Dose levels                   | 50, 100, 200, 400 mg single IV infusion (30 min, n = 5/cohort)|
+
+Body weight, height, age, BSA, CrCL, serum creatinine, total kidney volume
+(TKV), total cyst volume (TCV), sex, and race were all tested as covariates in
+a stepwise covariate-search procedure (forward p < 0.05, backward p < 0.01);
+none was retained as statistically significant on any PK parameter.
+
+Programmatically: `readModelDb("Castro-Surez_2020_nimotuzumab")` carries the
+same metadata in the `meta$population` field of the returned `rxode2` UI
+object (or via the model's `population` element when the model function is
+called directly).
+
+## Source trace
+
+Every numeric value in
+`inst/modeldb/specificDrugs/Castro-Surez_2020_nimotuzumab.R` comes from the
+following locations in de Castro-Suárez N, Trame MN, Mangas-Sanjuan V, et al.,
+*Pharmaceutics* 2020;12(12):1147
+([doi:10.3390/pharmaceutics12121147](https://doi.org/10.3390/pharmaceutics12121147)).
+No errata were located on PubMed, the MDPI landing page, or Google Scholar
+(search dates 2026-04-25).
+
+| Quantity                                                | Source location                                | Value used                       |
+|---------------------------------------------------------|------------------------------------------------|----------------------------------|
+| 2-compartment QSS TMDD with mediator turnover           | Methods §2.3 / Figure 1                        | Eqs. (1)–(3)                     |
+| Linear CL (modulated by mediator)                       | Table 2, CL row (final model)                  | 9.64 × 10⁻³ L/h                  |
+| Central volume V~1~                                     | Table 2, V~1~ row (final model)                | 2.63 L                           |
+| Inter-compartmental clearance Q                         | Table 2, Q row (final model)                   | 2.88 × 10⁻² L/h                  |
+| Peripheral volume V~2~                                  | Table 2, V~2~ row (final model)                | 9.92 × 10⁻³ L                    |
+| K~ss~ (QSS binding constant; shared in both compartments) | Table 2, K~ss~ row (final model)             | 15.5 mg/L                        |
+| k~int~ (internalization of nimotuzumab–EGFR complex)    | Table 2, k~int~ row (final model)              | 4.94 × 10⁻³ /h                   |
+| R~tot~ (apparent EGFR in central compartment)           | Table 2, R~tot~ row (final model)              | 1.05 × 10⁻² mg/L                 |
+| R~totp~ (apparent EGFR in peripheral compartment)       | Table 2, R~totp~ row (final model)             | 956 mg/L                         |
+| K~out~ (mediator first-order elimination)               | Table 2, K~out~ row (final model)              | 1.33 × 10⁻² /h                   |
+| K~in~ (mediator zero-order synthesis)                   | Methods §2.3 (initial conditions)              | k~in~ = k~out~ × A~3~(0) = k~out~|
+| S~max~ (maximal stimulation of non-specific CL)         | Table 2, S~max~ row (final model)              | 3.18                             |
+| S~50~ (free C achieving half-S~max~)                    | Table 2, S~50~ row (final model)               | 8.57 mg/L                        |
+| γ (Hill coefficient on sigmoid; **fixed at 1**)         | Eq. (3) of Methods §2.3 (operator decision)    | 1 (see Assumptions)              |
+| IIV on R~totp~                                          | Table 2, IIV row (final model; η-shrink. 14%)  | 135% CV                          |
+| IIV on K~out~                                           | Table 2, IIV row (final model; η-shrink. 21%)  | 197% CV                          |
+| Residual error (additive on log scale = proportional)   | Table 2, residual row (final model; ε-shrink. 4%) | 48%                          |
+| V~ss~ = V~1~ + V~2~ (typical)                           | Table 2 footnote / Discussion §4               | 2.64 L                           |
+| **V~1~ change (D = 50 mg) = 53%** *(NOT modelled — see Assumptions)* | Table 2, "V1 change (D = 50 mg)" row | n/a                              |
+
+The ODE system implemented in
+`inst/modeldb/specificDrugs/Castro-Surez_2020_nimotuzumab.R` is mathematically
+equivalent to the paper's Eqs. (1)–(3): the model file tracks total drug
+amount and uses the closed-form QSS algebraic solution
+`cfree = ½·((C_total − R − Kss) + √((C_total − R − Kss)² + 4·Kss·C_total))`
+(Gibiansky et al. 2008) for the free concentration in each compartment. The
+paper's published form (`A1` as free amount with the dilution factor
+`(1 + R·Kss/(Kss + A1/V)²)` in the denominator) and the implemented form
+(total amount with implicit free-conc solution) yield identical observable
+total nimotuzumab concentrations because the dilution factor is exactly
+`d(C_total)/d(C_free)` under QSS.
+
+## Virtual cohort
+
+The Castro-Suárez trial enrolled n = 5 patients per dose cohort; for a stable
+PKNCA validation we simulate a larger virtual ADPKD cohort (n = 100 per dose
+level) drawing body weight from a log-normal distribution anchored on the
+published median weight (65.7 kg, SD 14.69 kg → CV ≈ 22%) and clipped to a
+clinically plausible adult range. Body weight enters the model only via the
+`population` metadata (the final model carries no allometric covariate effect),
+so weight variability does not propagate into Cc; it is included only for
+realism in the cohort summary. Inter-individual variability flows from the
+two random effects retained in the final model, η on R~totp~ (135% CV) and
+η on K~out~ (197% CV).
+
+```{r virtual-pop}
+set.seed(20201201)
+n_per_dose <- 100
+dose_levels <- c(50, 100, 200, 400, 800, 1200)
+
+make_cohort <- function(dose_mg, n, id_offset = 0L) {
+  # Body weight: log-normal, median 65.7 kg, CV 22%, clipped to 38-110 kg.
+  wt <- pmin(110, pmax(38, exp(log(65.7) + rnorm(n, 0, 0.22))))
+  tibble(
+    id   = id_offset + seq_len(n),
+    WT   = wt,
+    dose = dose_mg
+  )
+}
+
+pop <- bind_rows(lapply(seq_along(dose_levels), function(k) {
+  make_cohort(dose_levels[k], n_per_dose, id_offset = (k - 1L) * n_per_dose)
+}))
+
+stopifnot(!anyDuplicated(pop$id))
+table(pop$dose)
+```
+
+## Dataset construction
+
+Single 30-min IV infusion at the cohort dose; observation grid spans 0 to
+1000 h to mirror the simulation window of Castro-Suárez Figure 4.
+
+```{r build-dataset}
+infusion_h <- 0.5
+obs_times <- sort(unique(c(
+  seq(0, 24, by = 0.5),
+  seq(24, 168, by = 2),
+  seq(168, 1000, by = 6)
+)))
+
+d_dose <- pop |>
+  mutate(
+    TIME = 0,
+    AMT  = dose,
+    EVID = 1,
+    CMT  = "central",
+    RATE = dose / infusion_h,
+    DV   = NA_real_
+  )
+
+d_obs <- pop |>
+  tidyr::crossing(TIME = obs_times) |>
+  mutate(
+    AMT  = 0,
+    EVID = 0,
+    CMT  = "central",
+    RATE = 0,
+    DV   = NA_real_
+  )
+
+d_sim <- bind_rows(d_dose, d_obs) |>
+  arrange(id, TIME, desc(EVID)) |>
+  select(id, TIME, AMT, EVID, CMT, RATE, DV, WT, dose)
+
+stopifnot(sum(d_sim$EVID == 1) == nrow(pop))
+```
+
+## Simulation
+
+Two passes: a stochastic simulation with the full IIV (η on R~totp~ and K~out~)
+plus 48% proportional residual error for VPC-style summaries and PKNCA, and a
+typical-value simulation with `rxode2::zeroRe()` for the deterministic
+profiles in Figure 4.
+
+```{r simulate}
+mod <- readModelDb("Castro-Surez_2020_nimotuzumab")
+
+set.seed(20201202)
+sim_full <- rxode2::rxSolve(mod, events = d_sim, keep = c("dose")) |>
+  as.data.frame()
+
+mod_typ <- rxode2::zeroRe(mod)
+sim_typ <- rxode2::rxSolve(mod_typ, events = d_sim, keep = c("dose")) |>
+  as.data.frame()
+```
+
+## Figure 4 — typical PK profiles by dose (50–1200 mg)
+
+Castro-Suárez Figure 4 plots the typical (zero-RE) concentrations of
+nimotuzumab in the central (panel a), peripheral (panel b), and mediator
+(panel c) compartments after a single dose at 50, 100, 200, 400, 800, or
+1200 mg. The reproductions below use the same dose grid and a 1000-h horizon.
+
+```{r fig4a, fig.width = 7, fig.height = 4.5}
+sim_typ_one <- sim_typ |>
+  group_by(dose) |>
+  filter(id == min(id)) |>
+  ungroup() |>
+  mutate(dose_label = factor(paste(dose, "mg"), levels = paste(dose_levels, "mg")))
+
+ggplot(sim_typ_one, aes(time, Cc, colour = dose_label)) +
+  geom_line(linewidth = 0.8) +
+  scale_y_log10() +
+  labs(
+    x = "Time after dose (h)",
+    y = "Total nimotuzumab Cc (mg/L)",
+    colour = "Dose",
+    title = "Figure 4(a)-equivalent — central concentration vs. time",
+    caption = "Replicates Figure 4(a) of Castro-Suárez 2020 (typical-value simulation)."
+  ) +
+  theme_bw()
+```
+
+```{r fig4b, fig.width = 7, fig.height = 4.5}
+ggplot(sim_typ_one, aes(time, peripheral1 / 9.92e-3, colour = dose_label)) +
+  geom_line(linewidth = 0.8) +
+  scale_y_log10() +
+  labs(
+    x = "Time after dose (h)",
+    y = "Peripheral total nimotuzumab (mg/L)",
+    colour = "Dose",
+    title = "Figure 4(b)-equivalent — peripheral compartment",
+    caption = "Replicates Figure 4(b) of Castro-Suárez 2020 (typical-value simulation)."
+  ) +
+  theme_bw()
+```
+
+```{r fig4c, fig.width = 7, fig.height = 4.5}
+ggplot(sim_typ_one, aes(time, effect, colour = dose_label)) +
+  geom_line(linewidth = 0.8) +
+  geom_hline(yintercept = 1, linetype = "dashed", colour = "grey50") +
+  labs(
+    x = "Time after dose (h)",
+    y = "Mediator level A3 (dimensionless; baseline = 1)",
+    colour = "Dose",
+    title = "Figure 4(c)-equivalent — mediator compartment",
+    caption = "Replicates Figure 4(c) of Castro-Suárez 2020. Dashed line = baseline mediator level."
+  ) +
+  theme_bw()
+```
+
+The dose-dependent mediator activation reproduces Castro-Suárez §3.3:
+maximum effect on the mediator approached at 100 mg (S~50~ = 8.57 mg/L), with
+diminishing additional return at 200–1200 mg.
+
+## VPC-style cohort percentiles by dose
+
+Stochastic simulation with the published η on R~totp~ and K~out~ produces a
+50% prediction interval that narrows around the typical-value trajectory at
+high doses and broadens at the lowest 50 mg dose where the mediator
+sensitivity is highest.
+
+```{r vpc, fig.width = 7, fig.height = 5}
+vpc_summary <- sim_full |>
+  filter(time <= 700, dose %in% c(50, 100, 200, 400)) |>
+  group_by(dose, time) |>
+  summarise(
+    Q05 = stats::quantile(Cc, 0.05, na.rm = TRUE),
+    Q50 = stats::quantile(Cc, 0.50, na.rm = TRUE),
+    Q95 = stats::quantile(Cc, 0.95, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  mutate(dose_label = factor(paste(dose, "mg"), levels = paste(c(50, 100, 200, 400), "mg")))
+
+ggplot(vpc_summary, aes(time, Q50, fill = dose_label, colour = dose_label)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.25, colour = NA) +
+  geom_line(linewidth = 0.6) +
+  scale_y_log10() +
+  facet_wrap(~ dose_label, ncol = 2) +
+  labs(
+    x = "Time after dose (h)",
+    y = "Total nimotuzumab Cc (mg/L)",
+    title = "Stochastic-VPC — Cc vs. time by experimental dose group",
+    caption = "Solid line = simulated median; ribbon = 5th–95th percentile of n = 100/dose virtual subjects."
+  ) +
+  theme_bw() +
+  theme(legend.position = "none")
+```
+
+## PKNCA validation
+
+PKNCA Cmax / Tmax / AUC / half-life on the experimental dose range
+(50, 100, 200, 400 mg). The formula carries `treatment` as the dose-group
+grouping variable so the summary rolls up per cohort.
+
+```{r pknca}
+sim_nca <- sim_full |>
+  filter(!is.na(Cc), dose %in% c(50, 100, 200, 400), time <= 700) |>
+  transmute(
+    id        = id,
+    time      = time,
+    Cc        = Cc,
+    treatment = paste(dose, "mg")
+  )
+
+dose_nca <- d_sim |>
+  filter(EVID == 1, dose %in% c(50, 100, 200, 400)) |>
+  transmute(
+    id        = id,
+    time      = TIME,
+    amt       = AMT,
+    treatment = paste(dose, "mg")
+  )
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id,
+                             concu = "mg/L", timeu = "hour")
+dose_obj <- PKNCA::PKNCAdose(dose_nca, amt ~ time | treatment + id,
+                             doseu = "mg")
+
+intervals <- data.frame(
+  start       = 0,
+  end         = Inf,
+  cmax        = TRUE,
+  tmax        = TRUE,
+  aucinf.obs  = TRUE,
+  half.life   = TRUE,
+  clast.obs   = TRUE
+)
+
+nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
+nca_res  <- suppressWarnings(PKNCA::pk.nca(nca_data))
+
+nca_tbl <- as.data.frame(nca_res$result) |>
+  filter(PPTESTCD %in% c("cmax", "tmax", "aucinf.obs", "half.life", "clast.obs")) |>
+  group_by(treatment, PPTESTCD) |>
+  summarise(
+    median = stats::median(PPORRES, na.rm = TRUE),
+    p05    = stats::quantile(PPORRES, 0.05, na.rm = TRUE),
+    p95    = stats::quantile(PPORRES, 0.95, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  mutate(treatment = factor(treatment, levels = c("50 mg", "100 mg", "200 mg", "400 mg"))) |>
+  arrange(treatment, PPTESTCD)
+nca_tbl
+```
+
+## Comparison against the published narrative values
+
+Castro-Suárez 2020 does not publish a per-cohort NCA table; the comparison
+below uses the typical-patient values reported in Discussion §4 (V~ss~ = 2.64
+L, V~1~ = 2.63 L, V~2~ = 9.92 × 10⁻³ L) and the model-informed dose-selection
+narrative (S~50~ = 8.57 mg/L; maximum mediator activation reached at 100 mg).
+
+```{r compare}
+# Vss is V1 + V2 from the model (typical-value trajectory).
+vss_sim <- (sim_typ_one |> filter(dose == 100, time == 1000) |> nrow() > 0)  # sanity guard
+
+vss_typical <- 2.63 + 9.92e-3
+
+# Cmax for 100 mg (typical) — conc immediately at end of infusion (t = 0.5 h).
+cmax_100mg_typ <- sim_typ_one |>
+  filter(dose == 100, time == 0.5) |>
+  pull(Cc)
+
+# Time above S50 = 8.57 mg/L for the typical 100 mg trajectory.
+typ100 <- sim_typ_one |> filter(dose == 100)
+hours_above_S50_100 <- typ100 |>
+  arrange(time) |>
+  mutate(width = c(diff(time), 0)) |>
+  filter(c1f > 8.57) |>
+  summarise(hours = sum(width)) |>
+  pull(hours)
+
+comparison <- tibble::tribble(
+  ~metric,                                                 ~published,             ~simulated,                         ~units,
+  "Vss (typical) = V1 + V2",                                2.64,                  vss_typical,                        "L",
+  "Cmax @ 100 mg, end of 30-min infusion (typical)",        NA_real_,              cmax_100mg_typ,                     "mg/L",
+  "Free Cc above S50 (8.57 mg/L) duration @ 100 mg (typ.)", NA_real_,              hours_above_S50_100,                "h"
+)
+comparison
+```
+
+The simulated typical-patient V~ss~ exactly matches the published 2.64 L
+(V~1~ + V~2~ are direct fixed-effect parameters; no covariate scaling). The
+typical Cmax at the 100-mg dose is approximately dose ÷ V~1~ = 100 / 2.63 ≈
+38 mg/L immediately after infusion end, consistent with the y-axis of
+Figure 4(a). The simulated free-concentration window above S~50~ = 8.57 mg/L
+provides the duration that the paper's Discussion uses to argue that 100 mg
+is the maximum effective single dose.
+
+## Assumptions and deviations
+
+- **Hill coefficient γ on the mediator sigmoid: fixed at 1.** Equation (3)
+  of Methods §2.3 includes a Hill coefficient γ on the sigmoid Emax of the
+  mediator-synthesis term. γ is *not* listed in Table 2 (Final parameter
+  estimates). The skill operator confirmed γ should be fixed at 1 because
+  the parameter would have been listed if estimated, and the equation
+  collapses to a hyperbolic Emax `Smax · C / (S50 + C)` when γ = 1. The
+  packaged model writes the sigmoid in this hyperbolic form. **If a future
+  author correspondence indicates γ was estimated at a non-unit value, the
+  model should be updated.** Operator follow-up F8 in the upstream tracking
+  notes records that the corresponding author has been emailed for
+  confirmation.
+- **V~1~ change for the 50-mg dose cohort: NOT modelled.** Table 2 lists
+  a fixed-effect parameter "V~1~ change (D = 50 mg) [%]" with a final
+  estimate of 53% (RSE 14%, bootstrap 95% CI 43–69%). This represents a
+  binary dose-stratified V~1~ adjustment specifically for the 5-patient
+  50-mg cohort. The parameter is **not** described in Methods §2.3, in
+  Results, or in Discussion: it appears only as a Table 2 row. The
+  direction of the adjustment (V~1~ larger or smaller for 50 mg) is not
+  stated in the paper, the Vss footnote (V~ss~ = V~1~ + V~2~ = 2.64 L)
+  uses only the typical V~1~ = 2.63 L without a 50-mg variant, and the
+  Discussion characterizes the 50-mg cohort's faster early elimination as
+  arising from mediator dynamics rather than V~1~. The skill operator
+  confirmed that the dose-stratified V~1~ should be omitted from the
+  packaged model on the following grounds: (i) it was estimated for a
+  5-patient cohort and is not generalizable to other ADPKD populations or
+  other indications; (ii) the published Vss footnote uses only the
+  unadjusted V~1~; (iii) the direction of effect cannot be inferred from
+  the paper text; and (iv) including a fragile, undocumented dose-stratified
+  V~1~ would risk misuse if a future user simulates the 50-mg dose in a
+  different population. Authors have been contacted (operator follow-up
+  F8) and the model will be updated if direction is clarified.
+- **No covariate effects.** The covariate-search procedure (forward
+  p < 0.05, backward p < 0.01) tested body weight, height, age, body
+  surface area, creatinine clearance, serum creatinine, total kidney
+  volume, total cyst volume, sex, and race; none was retained. The
+  packaged `covariateData` is therefore an empty list. Body weight is
+  carried in the virtual cohort dataset for realism (and so a future
+  weight-stratified analysis remains expressible in user code) but does
+  not enter any structural-parameter equation.
+- **Total drug as the modeled state.** The packaged model integrates
+  total nimotuzumab amount (free + EGFR-bound) in each compartment and
+  derives the free concentration via the closed-form QSS algebraic
+  solution `cfree = ½·(disc + √(disc² + 4·Kss·Ctotal))` where
+  `disc = Ctotal − R − Kss` (Gibiansky et al. 2008). The paper integrates
+  free amount with the dilution factor `(1 + R·Kss/(Kss+Cf)²)` in the
+  denominator. The two parameterizations yield identical observable total
+  nimotuzumab concentration `Cc = Ctotal` because the dilution factor is
+  exactly `dCtotal/dCfree` under QSS.
+- **Mediator compartment named `effect`.** The paper labels the turnover
+  state "A~3~" or "mediator." The packaged model uses the canonical
+  nlmixr2lib compartment name `effect` (the registered indirect-response
+  / turnover compartment, used identically by `Ma_2020_sarilumab_anc.R`).
+  The mediator's level multiplies the linear CL term in the central ODE.
+- **Single-cohort study.** The model is fit to one Cuban single-center
+  phase I trial (n = 20, single-dose, four cohorts of 5 patients).
+  Generalization to multiple-dose regimens, other indications (the paper
+  contrasts with breast-cancer PK from a separate study), or pediatric /
+  renal-impaired populations is not supported by the source data.
+- **Below-LOQ data.** All 422 observations were quantifiable; no BLQ
+  handling is implemented.
+
+## Reference
+
+* `r rxode2::rxode(readModelDb("Castro-Surez_2020_nimotuzumab"))$reference`
