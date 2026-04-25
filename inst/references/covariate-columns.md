@@ -979,6 +979,44 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Kuchimanchi_2018_evolocumab.R` (power exponent 0.194 on Vmax: `Vmax * (PCSK9/425)^0.194`).
 - **Notes:** PCSK9 is the pharmacological target of anti-PCSK9 monoclonal antibodies (evolocumab, alirocumab, etc.); baseline PCSK9 drives the magnitude of target-mediated elimination and is a recurring covariate in anti-PCSK9 popPK models. Baseline (time-fixed) covariate; patients with missing baseline PCSK9 are typically excluded from analyses that include PCSK9 as a covariate.
 
+## Pharmacogenomic SNPs
+
+**Canonical pattern: `SNP_<GENE>_<RSID>`.** Use one binary indicator per SNP genotype that the source paper tests as a model covariate. The `SNP_` prefix makes the category unambiguous; the gene symbol disambiguates rsIDs grouped by gene; the rsID provides a globally unique identifier. Encoding follows the most common pharmacogenomic convention (also used by Papachristos 2020): `1` = mutant allele present (heterozygous or homozygous mutant); `0` = homozygous wild-type. When a paper uses a different encoding (e.g., per-allele dosage `0/1/2`, dominant model with mutant homozygotes only, or recessive model), document the encoding explicitly in `covariateData[[<COL>]]$notes` and consider registering a separate canonical name. SNP indicators default to scope: specific because the parameter on which they act and the encoded reference category are tied to the source paper's analysis plan; promote to general when a second paper ratifies identical semantics.
+
+### SNP_ICAM1_RS1799969 (**canonical for ICAM-1 rs1799969 mutant indicator**)
+- **Description:** Binary genotype indicator for the *ICAM1* rs1799969 single-nucleotide polymorphism (G > A; Gly241Arg / K469E in some references). 1 = at least one mutant (A) allele present (heterozygous or homozygous mutant); 0 = homozygous wild-type (GG).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (homozygous wild-type).
+- **Source aliases:**
+  - `cat` — Papachristos 2020 (the paper writes the indicator as `cat` in the CL covariate equation; no formal column name is given in the published narrative).
+- **Example models:** `Papachristos_2020_bevacizumab_pk.R`, `Papachristos_2020_bevacizumab_qss.R`, `Papachristos_2020_bevacizumab_pkpd.R` (multiplicative effect on bevacizumab CL: `CL * exp(-0.423 * SNP_ICAM1_RS1799969)` in the PK and PK/PD models; `CL * exp(-0.33 * SNP_ICAM1_RS1799969)` in the binding QSS model — mutant carriers have lower CL and higher trough levels).
+- **Notes:** Time-fixed per subject. Mutant carrier rate in the Papachristos 2020 mCRC cohort: 20% (`Notes` Table 1 of the paper). The biological mechanism by which the *ICAM1* mutant slows bevacizumab clearance is unknown; the association is empirical and may be specific to mCRC.
+
+### SNP_VEGFA_RS1570360 (**canonical for VEGF-A rs1570360 mutant indicator**)
+- **Description:** Binary genotype indicator for the *VEGFA* rs1570360 single-nucleotide polymorphism (-1154 G > A; promoter region). 1 = at least one mutant (A) allele present; 0 = homozygous wild-type (GG).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (homozygous wild-type).
+- **Source aliases:**
+  - `cat1` — Papachristos 2020 (used as the first categorical indicator in the inter-compartmental clearance equation of the PK model; no formal column name in the narrative).
+- **Example models:** `Papachristos_2020_bevacizumab_pk.R` (multiplicative effect on bevacizumab Q: `Q * exp(0.378 * SNP_VEGFA_RS1570360)` — mutant carriers have higher inter-compartmental clearance).
+- **Notes:** Time-fixed per subject. Mutant carrier rate in the Papachristos 2020 mCRC cohort: 33%. The covariate is significant in the standalone PK model but does not appear in the binding QSS or PK/PD models because in those models the inter-compartmental clearance covariate effects are absorbed into the rs699947 effect on Q (PK/PD) or into the K_ss / BM0 effects (QSS).
+
+### SNP_VEGFA_RS699947 (**canonical for VEGF-A rs699947 mutant indicator**)
+- **Description:** Binary genotype indicator for the *VEGFA* rs699947 single-nucleotide polymorphism (-2578 C > A; promoter region). 1 = at least one mutant (A) allele present; 0 = homozygous wild-type (CC).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (homozygous wild-type).
+- **Source aliases:**
+  - `cat2` — Papachristos 2020 PK model (second categorical indicator on Q).
+  - `cat` — Papachristos 2020 binding QSS model (effect on K_ss and BM0) and PK/PD model (effect on Q).
+- **Example models:** `Papachristos_2020_bevacizumab_pk.R` (effect on Q: -0.429), `Papachristos_2020_bevacizumab_qss.R` (effect on K_ss: +1.22, on BM0: -0.851), `Papachristos_2020_bevacizumab_pkpd.R` (effect on Q: -0.414).
+- **Notes:** Time-fixed per subject. Mutant carrier rate in the Papachristos 2020 mCRC cohort: 52%. The mutant allele is associated with lower baseline free VEGF-A levels and a higher in-vivo affinity (higher K_ss), consistent with reports that rs699947 mutants have prolonged overall survival on bevacizumab-based therapy.
+
 ## Lifestyle / medical history
 
 ### SMOKE
@@ -1304,6 +1342,7 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   indicator on the time-varying CL Emax) canonical entries while
   extracting `Sanghavi_2020_ipilimumab.R`.
 - **2026-04-25** — Added `ECOG_PS_GT0` (general-scope binary indicator for ECOG performance status > 0; Oncology section), `COADMIN_IPI_3Q3W`, `COADMIN_IPI_1Q6W`, `COADMIN_CHEMO`, and `COADMIN_IPI_ANY` (specific-scope coadministration-regimen indicators; Concomitant / prior medication section) canonical entries while extracting `Zhang_2019_nivolumab.R`. Source aliases mapped: `PS`→`ECOG_PS_GT0`, `IPI3Q3W`→`COADMIN_IPI_3Q3W`, `IPI1Q6W`→`COADMIN_IPI_1Q6W`, `CHEMO`→`COADMIN_CHEMO`, `IPICO`→`COADMIN_IPI_ANY`.
+- **2026-04-25** — Added new top-level section `Pharmacogenomic SNPs` introducing the canonical pattern `SNP_<GENE>_<RSID>` for binary mutant-allele-presence genotype indicators. Three new entries: `SNP_ICAM1_RS1799969`, `SNP_VEGFA_RS1570360`, `SNP_VEGFA_RS699947` (all scope: specific) — the first pharmacogenomic-genotype covariates in the register, introduced while extracting the three Papachristos 2020 bevacizumab models (PK / binding QSS / PK/PD). Encoding: 1 = at least one mutant allele present; 0 = homozygous wild-type. Source-paper indicator names `cat`, `cat1`, `cat2` (which are positional within each model's covariate equation rather than formal column names) are recorded as aliases.
 - Subsequent additions: append new canonical entries as new papers are processed. When adding, bump the audit-completed count in the summary below.
 
 ## Summary
