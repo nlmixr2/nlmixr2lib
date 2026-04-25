@@ -302,8 +302,8 @@ test_that("canonical covariates are parsed from inst/references/covariate-column
   expect_true("SEXM" %in% canon$SEXF$aliases)
   expect_true("ADA" %in% canon$ADA_POS$aliases)
   expect_true("BLACK_OTH" %in% canon$RACE_BLACK_OTH$aliases)
-  # ALB has no source aliases in the register ("none; ALB is the universal...")
-  expect_equal(length(canon$ALB$aliases), 0)
+  # ALB picked up the BALB (baseline-albumin) alias via Zhou 2021 belimumab.
+  expect_true("BALB" %in% canon$ALB$aliases)
   # 2026-04-20 mergers: hsCRP + BLCRP + standard-CRP -> CRP; eGFR + CRCL_BSA -> CRCL;
   # ADA_TITRE + ADA_TITER -> ADA_TITER. BEOS renamed to EOS; GAST renamed to PRIOR_GAST.
   expect_false("hsCRP" %in% names(canon))
