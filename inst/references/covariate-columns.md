@@ -72,6 +72,16 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Source aliases:** none.
 - **Example models:** `Kyhl_2016_nalmefene.R` (reference 56.28 kg, exponent 0.626 on CL).
 
+### FFM (**canonical for fat-free mass**)
+- **Description:** Fat-free mass derived from body weight, height, and sex via the Janmahasatian et al. formula (Clin Pharmacokinet 2005;44:1051-1065).
+- **Units:** kg
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a — used with power scaling `(FFM / ref)^exponent`. Reference values observed: 40.69 kg (Zhou 2021 belimumab pooled adult+pediatric SLE).
+- **Source aliases:** none; `FFM` is the universal abbreviation.
+- **Example models:** `Zhou_2021_belimumab.R` (reference 40.69 kg; exponents 0.673 on CL and 0.891 on V1).
+- **Notes:** Distinct from `LBM` (lean body mass) which is sometimes computed by the Boer or Hume formulae. When the source paper reports the body-composition formula it used (e.g., Janmahasatian for FFM), record it in `covariateData[[FFM]]$notes`.
+
 ### BSA
 - **Description:** Body surface area (typically computed by DuBois, Mosteller, or Haycock from height and weight).
 - **Units:** m^2
@@ -182,9 +192,21 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Type:** continuous
 - **Scope:** general
 - **Reference category:** n/a — used with power scaling `(ALB / ref)^exponent`.
-- **Source aliases:** none; `ALB` is the universal abbreviation.
-- **Example models:** `Fasanmade_2009_infliximab.R` (g/dL, reference 4.1), `Thakre_2022_risankizumab.R` (g/L, reference 45), `Chua_2025_mirikizumab.R`, `Moein_2022_etrolizumab.R`, `Tiraboschi_2025_amlitelimab.R`, `Yamada_2025_zolbetuximab.R`, `Li_2019_abatacept.R` (g/dL, reference 4.0; the Li 2019 Methods states 'mg/dL' which is a publication typo — see the model's `covariateData[[ALB]]$notes`).
+- **Source aliases:**
+  - `BALB` (baseline albumin) — used in `Zhou_2021_belimumab.R`. Maps directly to `ALB`; baseline-vs-time-varying status documented in per-model notes.
+- **Example models:** `Fasanmade_2009_infliximab.R` (g/dL, reference 4.1), `Thakre_2022_risankizumab.R` (g/L, reference 45), `Chua_2025_mirikizumab.R`, `Moein_2022_etrolizumab.R`, `Tiraboschi_2025_amlitelimab.R`, `Yamada_2025_zolbetuximab.R`, `Li_2019_abatacept.R` (g/dL, reference 4.0; the Li 2019 Methods states 'mg/dL' which is a publication typo — see the model's `covariateData[[ALB]]$notes`), `Zhou_2021_belimumab.R` (g/L, reference 40; baseline-only, source column `BALB`).
 - **Notes:** Ratified canonically on 2026-04-19 after cross-model review. Unit varies by paper (g/dL in US-convention papers, g/L in SI-convention papers); the per-model `covariateData[[ALB]]$units` field is load-bearing. Effect-coefficient magnitude is meaningless without the unit.
+
+### IGG (**canonical for serum immunoglobulin G**)
+- **Description:** Serum total immunoglobulin G concentration (baseline or time-varying).
+- **Units:** g/L (typical in SI-convention papers); also reported as mg/dL in US-convention papers — document the unit used in each model via `covariateData[[IGG]]$units`.
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a — used with power scaling `(IGG / ref)^exponent`.
+- **Source aliases:**
+  - `BIGG` (baseline IgG) — used in `Zhou_2021_belimumab.R`.
+- **Example models:** `Zhou_2021_belimumab.R` (g/L, reference 14.8; baseline-only; exponent 0.293 on CL — endogenous IgG competes with the therapeutic mAb for FcRn recycling).
+- **Notes:** Mechanistically meaningful for monoclonal-antibody PK because endogenous IgG competes with the therapeutic mAb for FcRn-mediated recycling. The per-model `covariateData[[IGG]]$units` field is load-bearing (1 g/L ≈ 100 mg/dL). Baseline-vs-time-varying status documented in `covariateData[[IGG]]$notes`.
 
 ### TBILI (**canonical for total bilirubin**)
 - **Description:** Total serum bilirubin concentration.
@@ -352,6 +374,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Source aliases:** `ASIAN_AMIND_MULTI` — used in `Clegg_2024_nirsevimab.R`.
 - **Example models:** `Clegg_2024_nirsevimab.R`.
 - **Notes:** Clegg 2024 applies this covariate to both CL and V2 with different coefficients.
+
+### RACE_NEAS (**canonical for North East Asian composite race indicator**)
+- **Description:** 1 = North East Asian heritage (worldwide Chinese, Japanese, or Korean), 0 = non-North East Asian. Composite indicator analogous to `RACE_ASIAN` but specifically restricted to the East Asian subgroup most-relevant to ICH E5 ethnic-sensitivity / Asian-region bridging analyses.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (any non-North East Asian race, including South / Southeast Asian, White, Black, etc.).
+- **Source aliases:**
+  - `RAC4` — used in `Zhou_2021_belimumab.R` (Zhou 2021 Table 2 footnote d).
+- **Example models:** `Zhou_2021_belimumab.R` (multiplicative factor 1.07 on V1).
+- **Notes:** Distinct from the broader `RACE_ASIAN` (which can include South / Southeast Asian populations) because Zhou 2021 specifically tested whether Chinese/Japanese/Korean patients had different PK from the rest of the dataset; the analysis explicitly compared `RAC4` (North East Asian) against alternative race definitions and chose `RAC4` by AIC.
 
 ### RACE_MULTI
 - **Description:** 1 = multiracial, 0 = other.
@@ -955,6 +988,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Valenzuela_2025_nipocalimab.R`.
 - **Notes:** Valenzuela 2025 Table 3 reports proportional PK residual 0.0834 (Phase 1) vs 0.367 (Phase 2). Distinct from Farrell 2012 `PHASE2` — the reference category is inverted (Valenzuela 2025 picks Phase 1 as the 1-level).
 
+### STDY_LBSL (**canonical for early-phase belimumab LBSL01 / LBSL02 study indicator**)
+- **Description:** 1 = subject enrolled in study LBSL01 (NCT00657007) or LBSL02 (NCT00071487) — the two early-phase belimumab studies that used a different ELISA-based bioanalytical assay; 0 = any other belimumab study in the Zhou 2021 pooled analysis. Used to switch CL and V1 magnitudes per study group (effectively an assay / early-development PK adjustment).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (later-phase studies using the electrochemiluminescence assay).
+- **Source aliases:**
+  - `INDR` — used in `Zhou_2021_belimumab.R` (Zhou 2021 Table 2 footnote: study indicator).
+- **Example models:** `Zhou_2021_belimumab.R` (multiplicative factors 1.63 on CL and 1.26 on V1 when STDY_LBSL = 1).
+- **Notes:** Conceptually similar to `STUDY1` / `PHASE2` / `ELISA` / `PHASE1` (per-study switches) but specific to the belimumab program. Subject-level (time-fixed); set from the trial identifier on each subject record.
+
 ### ELISA
 - **Description:** 1 = serum nipocalimab concentration measured by ELISA assay (LLOQ 0.150 µg/mL; studies MOM-M281-001, MOM-M281-007, MOM-M281-010); 0 = measured by ECLIA assay (LLOQ 0.010 µg/mL; studies EDI1001, EDI1002, MOM-M281-004). Used to switch the additive PK residual-error magnitude per assay.
 - **Units:** (binary)
@@ -1075,6 +1119,7 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   55 letters (study-population mean baseline BCVA).
 - **2026-04-24** — Added `ECOG_GE1` (general-scope Eastern Cooperative Oncology Group performance-status indicator; 1 if ECOG >= 1, reference 0) canonical entry under `Oncology` while extracting `Bajaj_2017_nivolumab.R`. Source alias `PS` / `BPS` mapped to `ECOG_GE1`; Bajaj 2017's ECOG derivation (KPS-to-ECOG crosswalk for one study per Oken 1982) documented in the model's `covariateData` notes, not in the register. Added `Bajaj_2017_nivolumab.R` to the `WT`, `SEXF`, `RACE_ASIAN`, and `CRCL` example-model lists.
 - **2026-04-24** — Added `STATIN_MONO` and `EZE` (both scope: specific; new "Concomitant lipid-lowering medication" section) and `PCSK9` (scope: general; new "Hypercholesterolemia biomarkers" section) canonical entries while extracting `Kuchimanchi_2018_evolocumab.R`. `STATIN_MONO` carries Kuchimanchi-specific "statin monotherapy only" semantics; `EZE` captures ezetimibe use (in the Kuchimanchi 2018 dataset overwhelmingly statin+ezetimibe combination therapy).
+- **2026-04-25** — Added `FFM` (general-scope, fat-free mass, Janmahasatian formula), `IGG` (general-scope, serum immunoglobulin G), `RACE_NEAS` (specific-scope, North East Asian composite race indicator), and `STDY_LBSL` (specific-scope, early-phase belimumab LBSL01/02 study indicator) canonical entries while extracting `Zhou_2021_belimumab.R`. Source aliases mapped: `BALB`→`ALB`, `BIGG`→`IGG`, `RAC4`→`RACE_NEAS`, `INDR`→`STDY_LBSL`.
 - Subsequent additions: append new canonical entries as new papers are processed. When adding, bump the audit-completed count in the summary below.
 
 ## Summary
