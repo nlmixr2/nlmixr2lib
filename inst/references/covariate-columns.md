@@ -228,6 +228,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Sanghavi_2020_ipilimumab.R` (linear-on-log form on CL with reference 217 U/L; coefficient 0.703).
 - **Notes:** Universal lab marker. Sanghavi 2020 log-transforms LDH because the distribution is heavily right-skewed (range 74-6,245 U/L over a median of 217); other papers may use a simple `(LDH/ref)^exponent` form. Document the functional form in `covariateData[[LDH]]$notes`.
 
+### IGG (**canonical for endogenous serum immunoglobulin G concentration**)
+- **Description:** Endogenous (host-produced) serum immunoglobulin G concentration. Used in oncology / mAb PK analyses as a competition-for-FcRn-recycling covariate on therapeutic-mAb clearance — high endogenous IgG is hypothesized to displace the therapeutic mAb from FcRn salvage and increase its catabolic clearance.
+- **Units:** g/L. Document per-model via `covariateData[[IGG]]$units`.
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a — used with power scaling `(IGG / ref)^exponent`. Reference values observed: 9.65 g/L (Yang 2021).
+- **Source aliases:**
+  - `IGGBL` (baseline IgG) — used in `Yang_2021_cemiplimab.R`.
+- **Example models:** `Yang_2021_cemiplimab.R` (g/L, reference 9.65; small positive exponent 0.184 on shared CL/Q).
+- **Notes:** Distinct from `lIgG0` / IgG-as-a-state in mechanistic FcRn-competition TMDD models (e.g., `Valenzuela_2025_nipocalimab.R`), where IgG is a dynamic state, not a baseline covariate. Use `IGG` only when the source paper treats IgG as a static (baseline) covariate column. Ratified canonically on 2026-04-25.
+
 ## Hematology
 
 ### HGB (**canonical for hemoglobin**)
@@ -1304,6 +1315,7 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   indicator on the time-varying CL Emax) canonical entries while
   extracting `Sanghavi_2020_ipilimumab.R`.
 - **2026-04-25** — Added `ECOG_PS_GT0` (general-scope binary indicator for ECOG performance status > 0; Oncology section), `COADMIN_IPI_3Q3W`, `COADMIN_IPI_1Q6W`, `COADMIN_CHEMO`, and `COADMIN_IPI_ANY` (specific-scope coadministration-regimen indicators; Concomitant / prior medication section) canonical entries while extracting `Zhang_2019_nivolumab.R`. Source aliases mapped: `PS`→`ECOG_PS_GT0`, `IPI3Q3W`→`COADMIN_IPI_3Q3W`, `IPI1Q6W`→`COADMIN_IPI_1Q6W`, `CHEMO`→`COADMIN_CHEMO`, `IPICO`→`COADMIN_IPI_ANY`.
+- **2026-04-25** — Added `IGG` (general-scope endogenous serum immunoglobulin G concentration; placed under `Renal / hepatic function` near `LDH` since the cemiplimab paper uses it as a baseline lab covariate alongside ALB, ALT, BMI, and WT) canonical entry while extracting `Yang_2021_cemiplimab.R`. Source alias `IGGBL`→`IGG` mapped. Reference value 9.65 g/L.
 - Subsequent additions: append new canonical entries as new papers are processed. When adding, bump the audit-completed count in the summary below.
 
 ## Summary
