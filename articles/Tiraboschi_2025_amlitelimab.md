@@ -2,6 +2,12 @@
 
 ``` r
 library(nlmixr2lib)
+library(PKNCA)
+#> 
+#> Attaching package: 'PKNCA'
+#> The following object is masked from 'package:stats':
+#> 
+#>     filter
 library(dplyr)
 #> 
 #> Attaching package: 'dplyr'
@@ -232,35 +238,49 @@ typ_ev <- bind_rows(typ_dose, typ_obs) |>
 typ_sim <- rxode2::rxSolve(mod, events = typ_ev, omega = NA, sigma = NA)
 #> ℹ parameter labels from comments will be replaced by 'label()'
 
-trapz_auc <- function(time, conc) {
-  sum(diff(time) * (head(conc, -1) + tail(conc, -1)) / 2)
-}
+ss_start <- 20 * 28   # day 560
+tau      <- 28        # dosing interval in days
 
-typ_auc <- as.data.frame(typ_sim) |>
-  filter(time >= 20 * 28) |>
-  group_by(id) |>
-  summarise(
-    WT  = WT[1],
-    AUC = trapz_auc(time, Cc),
-    .groups = "drop"
+typ_nca_conc <- as.data.frame(typ_sim) |>
+  dplyr::filter(time >= ss_start, time <= ss_start + tau, !is.na(Cc)) |>
+  dplyr::mutate(time_rel = time - ss_start, WT_group = paste0(WT, " kg")) |>
+  dplyr::select(id, time = time_rel, Cc, WT, WT_group)
+
+typ_nca_dose <- typ_nca_conc |>
+  dplyr::group_by(id) |> dplyr::slice(1) |> dplyr::ungroup() |>
+  dplyr::mutate(time = 0, amt = 62.5) |>
+  dplyr::select(id, time, amt, WT_group)
+
+conc_ss <- PKNCA::PKNCAconc(typ_nca_conc, Cc ~ time | WT_group + id)
+dose_ss <- PKNCA::PKNCAdose(typ_nca_dose, amt ~ time | WT_group + id)
+nca_ss  <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_ss, dose_ss,
+  intervals = data.frame(start = 0, end = tau, auclast = TRUE)))
+
+typ_auc <- as.data.frame(nca_ss$result) |>
+  dplyr::filter(PPTESTCD == "auclast") |>
+  dplyr::rename(AUC = PPORRES) |>
+  dplyr::left_join(
+    typ_nca_conc |> dplyr::group_by(id) |> dplyr::slice(1) |>
+      dplyr::select(id, WT),
+    by = "id"
   )
 
 ref_auc <- typ_auc$AUC[typ_auc$WT == 75]
 typ_auc$pct_change <- 100 * (typ_auc$AUC - ref_auc) / ref_auc
 knitr::kable(
-  typ_auc,
+  typ_auc[, c("id", "WT", "AUC", "pct_change")],
   digits  = c(0, 0, 2, 1),
   caption = "Simulated AUC4W at steady state (62.5 mg Q4W) vs body weight"
 )
 ```
 
-|  id |  WT |     AUC | pct_change |
-|----:|----:|--------:|-----------:|
-|   1 |  40 | 1338.03 |       83.5 |
-|   2 |  50 | 1098.52 |       50.6 |
-|   3 |  75 |  729.27 |        0.0 |
-|   4 | 100 |  527.41 |      -27.7 |
-|   5 | 150 |  322.57 |      -55.8 |
+|  id |  WT |    AUC | pct_change |
+|----:|----:|-------:|-----------:|
+|   4 | 100 | 282.40 |      -24.6 |
+|   5 | 150 | 184.89 |      -50.6 |
+|   1 |  40 | 643.90 |       72.0 |
+|   2 |  50 | 538.26 |       43.8 |
+|   3 |  75 | 374.40 |        0.0 |
 
 Simulated AUC4W at steady state (62.5 mg Q4W) vs body weight
 

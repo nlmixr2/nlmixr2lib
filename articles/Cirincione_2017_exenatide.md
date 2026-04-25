@@ -110,6 +110,7 @@ events <- cohort |>
 ``` r
 mod <- rxode2::rxode2(readModelDb("Cirincione_2017_exenatide"))
 #> ℹ parameter labels from comments will be replaced by 'label()'
+conc_unit <- mod$units[["concentration"]]
 sim <- rxode2::rxSolve(mod, events = events, keep = c("WT", "CRCL", "treatment"))
 ```
 
@@ -161,7 +162,7 @@ volume and lower linear clearance, respectively).
 sim_typical |>
   ggplot(aes(time, Cc, colour = scenario)) +
   geom_line(linewidth = 0.8) +
-  labs(x = "Time (h)", y = "Exenatide concentration (pg/mL)",
+  labs(x = "Time (h)", y = paste0("Exenatide concentration (", conc_unit, ")"),
     colour = NULL,
     title = "Typical concentration profiles (replicates Figure 5)",
     caption = "Replicates Figure 5 of Cirincione 2017: 10 ug SC, typical values.") +
@@ -190,7 +191,7 @@ sim |>
   geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.2) +
   geom_line() +
   facet_wrap(~treatment) +
-  labs(x = "Time (h)", y = "Exenatide concentration (pg/mL)",
+  labs(x = "Time (h)", y = paste0("Exenatide concentration (", conc_unit, ")"),
     title = "Simulated 5-50-95 percentiles by renal-function band",
     caption = "10 ug SC; cohort covariate distributions approximate Table 1.")
 #> `geom_line()`: Each group consists of only one observation.
@@ -273,7 +274,338 @@ nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = interv
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#>  ■■                                 4% |  ETA: 45s
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#>  ■■■                                7% |  ETA:  1m
+#> Warning: Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#>  ■■■■■                             13% |  ETA: 45s
+#> Warning: Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#>  ■■■■■■■                           19% |  ETA: 42s
+#> Warning: Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#>  ■■■■■■■■■                         25% |  ETA: 38s
+#> Warning: Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#>  ■■■■■■■■■■                        31% |  ETA: 35s
+#> Warning: Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#>  ■■■■■■■■■■■■                      37% |  ETA: 32s
 #> Warning: Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
@@ -337,68 +669,7 @@ nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = interv
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#>  ■■■■                              11% |  ETA: 42s
-#> Warning: Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#>  ■■■■■■                            17% |  ETA: 40s
+#>  ■■■■■■■■■■■■■■                    43% |  ETA: 29s
 #> Warning: Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
@@ -465,276 +736,9 @@ nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = interv
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#>  ■■■■■■■■                          24% |  ETA: 36s
-#> Warning: Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#>  ■■■■■■■■■■                        30% |  ETA: 33s
-#> Warning: Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#>  ■■■■■■■■■■■■                      37% |  ETA: 29s
-#> Warning: Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#>  ■■■■■■■■■■■■■■                    44% |  ETA: 26s
-#> Warning: Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#>  ■■■■■■■■■■■■■■■■                  50% |  ETA: 25s
+#> Warning: Too few points for half-life calculation (min.hl.points=3 with only 0
+#> points)
 #> Warning: Too few points for half-life calculation (min.hl.points=3 with only 0 points)
 #> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
 #> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
@@ -773,7 +777,280 @@ nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = interv
 #> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
 #> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
 #> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#>  ■■■■■■■■■■■■■■■■■                 54% |  ETA: 20s
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■         81% |  ETA:  6s
 #> Warning: Too few points for half-life calculation (min.hl.points=3 with only 0 points)
 #> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
 #> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
@@ -826,281 +1103,6 @@ nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = interv
 #> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
 #> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
 #> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■       86% |  ETA:  4s
-#> Warning: Too few points for half-life calculation (min.hl.points=3 with only 0 points)
 #> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
 #> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
 #> Too few points for half-life calculation (min.hl.points=3 with only 0 points)

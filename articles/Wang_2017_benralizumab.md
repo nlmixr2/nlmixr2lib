@@ -95,6 +95,8 @@ d_sim <- bind_rows(d_dose, d_obs) %>%
 
 ``` r
 mod <- readModelDb("Wang_2017_benralizumab")
+conc_unit <- rxode2::rxode(mod)$units[["concentration"]]
+#> ℹ parameter labels from comments will be replaced by 'label()'
 sim <- rxSolve(mod, d_sim, returnType = "data.frame")
 #> ℹ parameter labels from comments will be replaced by 'label()'
 ```
@@ -117,7 +119,7 @@ ggplot(sim_summary, aes(x = time / 7)) +
   geom_line(aes(y = median), color = "darkorange", linewidth = 1) +
   labs(
     x = "Time (weeks)",
-    y = "Benralizumab concentration (mg/L)",
+    y = paste0("Benralizumab concentration (", conc_unit, ")"),
     title = "Simulated benralizumab PK (30 mg SC, q4w x3 then q8w)",
     subtitle = "Median and 90% prediction interval (N = 500 virtual asthma patients)",
     caption = "Model: Wang et al. (2017) CPT Pharmacometrics Syst Pharmacol"
@@ -141,33 +143,38 @@ if (all(c("sim.id", "id") %in% names(sim_df))) {
 } else {
   sim_df$subject <- sim_df$sim.id
 }
+sim_df$treatment <- ifelse(sim_df$ADA == 1, "High-titer ADA", "Negative/Low-titer ADA")
 nca_data <- data.frame(
-  subject  = sim_df$subject,
-  time_rel = sim_df$time - 28,
-  Cc       = sim_df$Cc
+  subject   = sim_df$subject,
+  treatment = sim_df$treatment,
+  time_rel  = sim_df$time - 28,
+  Cc        = sim_df$Cc
 )
 nca_data <- nca_data[nca_data$time_rel >= 0 & nca_data$time_rel <= 28 & nca_data$Cc > 0, ]
 
-conc_obj <- PKNCAconc(nca_data, Cc ~ time_rel | subject)
+conc_obj <- PKNCAconc(nca_data, Cc ~ time_rel | treatment + subject)
 dose_obj <- PKNCAdose(
-  data.frame(subject = unique(nca_data$subject), time_rel = 0, AMT = 30),
-  AMT ~ time_rel | subject
+  data.frame(subject = unique(nca_data$subject),
+             treatment = nca_data$treatment[match(unique(nca_data$subject), nca_data$subject)],
+             time_rel = 0, AMT = 30),
+  AMT ~ time_rel | treatment + subject
 )
 data_obj <- PKNCAdata(conc_obj, dose_obj,
                        intervals = data.frame(start = 0, end = 28,
                                               cmax = TRUE, tmax = TRUE,
                                               auclast = TRUE, half.life = TRUE))
 nca_results <- pk.nca(data_obj)
-#>  ■■■■■■■■■■■■                      38% |  ETA:  4s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■       85% |  ETA:  1s
+#>  ■■■■■■■                           19% |  ETA:  6s
+#>  ■■■■■■■■■■■■■■■■■■■               60% |  ETA:  3s
 nca_summary <- summary(nca_results)
 knitr::kable(nca_summary, digits = 2,
              caption = "NCA summary (2nd dosing interval, weeks 4-8)")
 ```
 
-| start | end | N   | auclast       | cmax          | tmax                | half.life     |
-|------:|----:|:----|:--------------|:--------------|:--------------------|:--------------|
-|     0 |  28 | 500 | 40.1 \[56.9\] | 2.20 \[47.2\] | 3.50 \[3.50, 14.0\] | 15.7 \[6.09\] |
+| start | end | treatment              | N   | auclast       | cmax           | tmax                | half.life     |
+|------:|----:|:-----------------------|:----|:--------------|:---------------|:--------------------|:--------------|
+|     0 |  28 | High-titer ADA         | 21  | 8.55 \[47.7\] | 0.933 \[40.0\] | 3.50 \[3.50, 3.50\] | 5.00 \[1.06\] |
+|     0 |  28 | Negative/Low-titer ADA | 479 | 42.9 \[43.7\] | 2.28 \[43.0\]  | 3.50 \[3.50, 14.0\] | 16.2 \[5.78\] |
 
 NCA summary (2nd dosing interval, weeks 4-8)
 

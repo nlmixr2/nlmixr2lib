@@ -2,6 +2,12 @@
 
 ``` r
 library(nlmixr2lib)
+library(PKNCA)
+#> 
+#> Attaching package: 'PKNCA'
+#> The following object is masked from 'package:stats':
+#> 
+#>     filter
 library(dplyr)
 #> 
 #> Attaching package: 'dplyr'
@@ -152,6 +158,8 @@ d_sim <- bind_rows(d_dose, d_obs) |>
 
 ``` r
 mod <- readModelDb("Hu_2026_clesrovimab")
+conc_unit <- rxode2::rxode(mod)$units[["concentration"]]
+#> ℹ parameter labels from comments will be replaced by 'label()'
 
 # Simulate: rxSolve uses the N=500 subjects' IIV from the model ini() block.
 # Setting seed for reproducibility.
@@ -209,7 +217,7 @@ ggplot(d_overall, aes(x = time, y = Q50)) +
   scale_x_continuous(breaks = seq(0, 150, by = 30)) +
   labs(
     x = "Time after dose (days)",
-    y = "Clesrovimab concentration (\u03bcg/mL)",
+    y = paste0("Clesrovimab concentration (", conc_unit, ")"),
     title = "Overall population\nMedian and 90% prediction interval"
   ) +
   theme_bw()
@@ -230,7 +238,7 @@ ggplot(d_strat, aes(x = time, y = Q50)) +
   scale_x_continuous(breaks = seq(0, 150, by = 60)) +
   labs(
     x = "Time after dose (days)",
-    y = "Clesrovimab concentration (\u03bcg/mL)",
+    y = paste0("Clesrovimab concentration (", conc_unit, ")"),
     title = "By baseline body weight category\nMedian and 90% prediction interval"
   ) +
   theme_bw()
@@ -253,6 +261,53 @@ ggplot(d_strat, aes(x = time, y = Q50)) +
   µg/mL).
 - The prediction intervals reflect both inter-individual variability and
   residual error from the final population PK model.
+
+### NCA analysis
+
+Non-compartmental analysis of simulated clesrovimab PK (single 105 mg IM
+dose, N = 500 virtual infants stratified by baseline weight group).
+
+``` r
+# Build NCA data: use days 0-150, group by baseline weight category
+# (use sim_out to include time 0 for the dose anchor)
+sim_nca <- sim_out |>
+  as.data.frame() |>
+  filter(!is.na(Cc)) |>
+  left_join(
+    pop |> select(ID, wt_group),
+    by = c("id" = "ID")
+  )
+
+dose_nca <- sim_nca |>
+  group_by(id) |>
+  slice(1) |>
+  ungroup() |>
+  mutate(time = 0, AMT = 105) |>
+  select(id, wt_group, time, AMT)
+
+conc_obj <- PKNCAconc(sim_nca, Cc ~ time | wt_group + id)
+dose_obj <- PKNCAdose(dose_nca, AMT ~ time | wt_group + id)
+data_obj <- PKNCAdata(conc_obj, dose_obj,
+  intervals = data.frame(start = 0, end = 150,
+                         cmax = TRUE, tmax = TRUE,
+                         auclast = TRUE, half.life = TRUE))
+nca_results <- pk.nca(data_obj)
+#>  ■■■■                              11% |  ETA: 11s
+#>  ■■■■■■■■■■■■                      35% |  ETA:  8s
+#>  ■■■■■■■■■■■■■■■■■■■               59% |  ETA:  5s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■       86% |  ETA:  2s
+nca_summary <- summary(nca_results)
+knitr::kable(nca_summary, digits = 2,
+             caption = "NCA summary by baseline weight group (single 105 mg IM dose)")
+```
+
+| start | end | wt_group | N   | auclast       | cmax          | tmax                | half.life     |
+|------:|----:|:---------|:----|:--------------|:--------------|:--------------------|:--------------|
+|     0 | 150 | \< 4 kg  | 113 | 7270 \[11.9\] | 147 \[10.2\]  | 7.00 \[7.00, 14.0\] | 43.8 \[6.20\] |
+|     0 | 150 | 4–6 kg   | 277 | 6310 \[10.9\] | 120 \[10.2\]  | 7.00 \[7.00, 14.0\] | 45.1 \[6.22\] |
+|     0 | 150 | ≥ 6 kg   | 110 | 5590 \[11.0\] | 99.6 \[8.71\] | 7.00 \[7.00, 7.00\] | 47.4 \[6.56\] |
+
+NCA summary by baseline weight group (single 105 mg IM dose)
 
 ### Reference
 

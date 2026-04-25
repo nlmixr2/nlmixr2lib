@@ -33,7 +33,8 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/Bender_2014_trastuzumabEmtansine_mechanistic.html">Trastuzumab emtansine (T-DM1) preclinical mechanistic DAR PK model (Bender 2014)</a></li>
+<li><a class="dropdown-item" href="../articles/Bajaj_2017_nivolumab.html">Bajaj_2017_nivolumab</a></li>
+    <li><a class="dropdown-item" href="../articles/Bender_2014_trastuzumabEmtansine_mechanistic.html">Trastuzumab emtansine (T-DM1) preclinical mechanistic DAR PK model (Bender 2014)</a></li>
     <li><a class="dropdown-item" href="../articles/Bender_2014_trastuzumabEmtansine_reduced.html">Trastuzumab emtansine (T-DM1) preclinical reduced PK model (Bender 2014)</a></li>
     <li><a class="dropdown-item" href="../articles/Budha_2023_tislelizumab.html">Budha_2023_tislelizumab</a></li>
     <li><a class="dropdown-item" href="../articles/CarlssonPetri_2021_liraglutide.html">CarlssonPetri_2021_liraglutide</a></li>
@@ -49,8 +50,11 @@
     <li><a class="dropdown-item" href="../articles/Hu_2026_clesrovimab.html">Hu_2026_clesrovimab</a></li>
     <li><a class="dropdown-item" href="../articles/Hua_2015_anrukinzumab.html">Hua_2015_anrukinzumab</a></li>
     <li><a class="dropdown-item" href="../articles/Jackson_2022_ixekizumab.html">Jackson_2022_ixekizumab</a></li>
+    <li><a class="dropdown-item" href="../articles/Kielbasa_2020_galcanezumab.html">Kielbasa_2020_galcanezumab</a></li>
     <li><a class="dropdown-item" href="../articles/Kotani_2022_astegolimab.html">Kotani_2022_astegolimab</a></li>
+    <li><a class="dropdown-item" href="../articles/Kovalenko_2016_dupilumab.html">Kovalenko_2016_dupilumab</a></li>
     <li><a class="dropdown-item" href="../articles/Kovalenko_2020_dupilumab.html">Kovalenko_2020_dupilumab</a></li>
+    <li><a class="dropdown-item" href="../articles/Kuchimanchi_2018_evolocumab.html">Kuchimanchi_2018_evolocumab</a></li>
     <li><a class="dropdown-item" href="../articles/Kyhl_2016_nalmefene.html">Kyhl_2016_nalmefene</a></li>
     <li><a class="dropdown-item" href="../articles/Li_2019_abatacept.html">Li_2019_abatacept</a></li>
     <li><a class="dropdown-item" href="../articles/list-of-models.html">List of models</a></li>
@@ -61,15 +65,19 @@
     <li><a class="dropdown-item" href="../articles/Ma_2020_sarilumab_das28crp.html">Ma_2020_sarilumab_das28crp</a></li>
     <li><a class="dropdown-item" href="../articles/markov.html">Markov modeling</a></li>
     <li><a class="dropdown-item" href="../articles/Masters_2022_avelumab.html">Masters_2022_avelumab</a></li>
+    <li><a class="dropdown-item" href="../articles/Mo_2018_olaratumab.html">Mo_2018_olaratumab</a></li>
     <li><a class="dropdown-item" href="../articles/Moein_2022_etrolizumab.html">Moein_2022_etrolizumab</a></li>
     <li><a class="dropdown-item" href="../articles/Mould_2007_alemtuzumab.html">Mould_2007_alemtuzumab</a></li>
+    <li><a class="dropdown-item" href="../articles/Mulyukov_2018_ranibizumab.html">Mulyukov_2018_ranibizumab</a></li>
     <li><a class="dropdown-item" href="../articles/Narwal_2013_sifalimumab.html">Narwal_2013_sifalimumab</a></li>
     <li><a class="dropdown-item" href="../articles/Ogasawara_2020_durvalumab.html">Ogasawara_2020_durvalumab</a></li>
+    <li><a class="dropdown-item" href="../articles/Othman_2014_daclizumab.html">Othman_2014_daclizumab</a></li>
     <li><a class="dropdown-item" href="../articles/PK_2cmt_mAb_Davda_2014.html">PK_2cmt_mAb_Davda_2014</a></li>
     <li><a class="dropdown-item" href="../articles/Robbie_2012_palivizumab.html">Robbie_2012_palivizumab</a></li>
     <li><a class="dropdown-item" href="../articles/Rosario_2015_vedolizumab.html">Rosario_2015_vedolizumab</a></li>
     <li><a class="dropdown-item" href="../articles/Soehoel_2022_tralokinumab.html">Soehoel_2022_tralokinumab</a></li>
     <li><a class="dropdown-item" href="../articles/Thakre_2022_risankizumab.html">Thakre_2022_risankizumab</a></li>
+    <li><a class="dropdown-item" href="../articles/Timmermann_2019_brodalumab.html">Timmermann_2019_brodalumab</a></li>
     <li><a class="dropdown-item" href="../articles/Tiraboschi_2025_amlitelimab.html">Tiraboschi_2025_amlitelimab</a></li>
     <li><a class="dropdown-item" href="../articles/tmdd_archetypes.html">TMDD archetypes: full, QSS, and Michaelis-Menten approximations</a></li>
     <li><a class="dropdown-item" href="../articles/Valenzuela_2025_nipocalimab.html">Valenzuela_2025_nipocalimab</a></li>
@@ -527,9 +535,8 @@ group by regimen and by subject.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">nca_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="va">data_obj</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■                          </span>  16% |  ETA:  6s</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■              </span>  56% |  ETA:  3s</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ </span>  99% |  ETA:  0s</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■                        </span>  25% |  ETA:  6s</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■            </span>  63% |  ETA:  3s</span></span>
 <span><span class="va">nca_summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">nca_results</span><span class="op">)</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
 <span>  <span class="va">nca_summary</span>,</span>

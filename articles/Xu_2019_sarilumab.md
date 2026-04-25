@@ -191,6 +191,7 @@ events <- dplyr::bind_rows(events_200, events_150)
 ``` r
 mod <- rxode2::rxode2(readModelDb("Xu_2019_sarilumab"))
 #> ℹ parameter labels from comments will be replaced by 'label()'
+conc_unit <- mod$units[["concentration"]]
 keep_cols <- c("WT", "SEXF", "ADA_POS", "FORM_DP2",
                "ALBR", "CRCL", "CRP", "treatment")
 
@@ -225,7 +226,7 @@ ggplot(vpc, aes(time, Q50, colour = treatment, fill = treatment)) +
   geom_line(linewidth = 0.8) +
   labs(
     x = "Time (days)",
-    y = "Sarilumab Cc (mg/L)",
+    y = paste0("Sarilumab Cc (", conc_unit, ")"),
     title = "Simulated 5-50-95 percentile profiles: 150 vs 200 mg SC Q2W",
     caption = "Virtual RA cohort (N = 200); first 6 dosing cycles."
   ) +
@@ -258,7 +259,7 @@ ggplot(ss_summary, aes(time - ss_start, Q50, colour = treatment, fill = treatmen
   geom_line(linewidth = 0.8) +
   labs(
     x = "Time within dosing interval (days)",
-    y = "Sarilumab Cc (mg/L)",
+    y = paste0("Sarilumab Cc (", conc_unit, ")"),
     title = "Steady-state Q2W cycle",
     caption = "Median and 90% prediction interval over the final 14-day interval."
   ) +
@@ -299,7 +300,7 @@ intervals <- data.frame(
 )
 
 nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
-#>  ■■■■■■■■■■■■■■■                   46% |  ETA:  2s
+#>  ■■■■■■■■■■■                       33% |  ETA:  2s
 summary(nca_res)
 #>  start end treatment   N     auclast        cmax         cmin              tmax
 #>      0  14 150mg_Q2W 200 60.2 [55.5] 8.80 [46.1] 0.565 [91.5] 3.00 [1.50, 5.00]

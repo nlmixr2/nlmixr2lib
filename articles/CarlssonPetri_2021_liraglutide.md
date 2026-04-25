@@ -122,6 +122,7 @@ events <- dplyr::bind_rows(dose_rows, obs_rows) |>
 ``` r
 mod <- rxode2::rxode2(readModelDb("CarlssonPetri_2021_liraglutide"))
 #> ℹ parameter labels from comments will be replaced by 'label()'
+conc_unit <- mod$units[["concentration"]]
 sim <- rxode2::rxSolve(
   mod, events = events,
   keep = c("SEXF", "WT", "CHILD", "ADOLESCENT", "treatment")
@@ -169,7 +170,7 @@ sim_typical |>
   dplyr::filter(!is.na(Cc)) |>
   ggplot(aes(time / 24, Cc)) +
   geom_line(linewidth = 0.8) +
-  labs(x = "Time (days)", y = "Liraglutide concentration (nmol/L)",
+  labs(x = "Time (days)", y = paste0("Liraglutide concentration (", conc_unit, ")"),
     title = "Typical adolescent: 3 mg QD SC, 100 kg female",
     caption = "Deterministic typical-value prediction.") +
   theme_minimal()
@@ -197,7 +198,7 @@ sim |>
   ggplot(aes(time / 24, Q50)) +
   geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.25) +
   geom_line() +
-  labs(x = "Time (days)", y = "Liraglutide concentration (nmol/L)",
+  labs(x = "Time (days)", y = paste0("Liraglutide concentration (", conc_unit, ")"),
     title = "Simulated 5-50-95 percentiles across adolescent cohort (3 mg QD SC)",
     caption = "Cohort covariates approximate Carlsson Petri 2021 Table 1 (trial NN2211-4180).")
 ```
@@ -226,7 +227,7 @@ cavg_by_id <- sim |>
 ggplot(cavg_by_id, aes(WT, Cavg_nmol_L, colour = Sex)) +
   geom_point(alpha = 0.6) +
   geom_smooth(method = "loess", se = FALSE) +
-  labs(x = "Body weight (kg)", y = "C_avg,ss (nmol/L)",
+  labs(x = "Body weight (kg)", y = paste0("C_avg,ss (", conc_unit, ")"),
     title = "Steady-state Cavg vs. body weight",
     caption = "Replicates the shape of Carlsson Petri 2021 Figure 3A (adolescents, 3 mg QD).") +
   theme_minimal()

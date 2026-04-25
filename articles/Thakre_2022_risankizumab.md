@@ -126,6 +126,8 @@ d_sim <- bind_rows(d_dose, d_obs) %>%
 
 ``` r
 mod <- readModelDb("Thakre_2022_risankizumab")
+conc_unit <- rxode2::rxode(mod)$units[["concentration"]]
+#> ℹ parameter labels from comments will be replaced by 'label()'
 sim <- rxSolve(mod, d_sim, returnType = "data.frame")
 #> ℹ parameter labels from comments will be replaced by 'label()'
 ```
@@ -149,7 +151,7 @@ ggplot(sim_summary, aes(x = time / 7)) +
   scale_y_log10() +
   labs(
     x = "Time (weeks)",
-    y = "Risankizumab concentration (ug/mL)",
+    y = paste0("Risankizumab concentration (", conc_unit, ")"),
     title = "Simulated risankizumab PK (150 mg SC, weeks 0, 4, 16, 28)",
     subtitle = "Median and 90% prediction interval (N = 500 virtual PsA patients)",
     caption = "Model: Thakre et al. (2022) Rheumatol Ther"
@@ -264,11 +266,12 @@ data_obj <- PKNCAdata(
   )
 )
 nca_results <- pk.nca(data_obj)
-#>  ■■■■■                             13% |  ETA: 15s
-#>  ■■■■■■■■■■■                       32% |  ETA: 11s
-#>  ■■■■■■■■■■■■■■■■                  52% |  ETA:  8s
-#>  ■■■■■■■■■■■■■■■■■■■■■■            71% |  ETA:  5s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      91% |  ETA:  1s
+#>  ■■■■                              10% |  ETA: 18s
+#>  ■■■■■■■■■                         27% |  ETA: 13s
+#>  ■■■■■■■■■■■■■■                    45% |  ETA: 10s
+#>  ■■■■■■■■■■■■■■■■■■■■              62% |  ETA:  7s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■         79% |  ETA:  4s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    96% |  ETA:  1s
 nca_summary <- summary(nca_results)
 knitr::kable(
   nca_summary,

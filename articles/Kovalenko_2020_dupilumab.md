@@ -146,6 +146,7 @@ events <- dplyr::bind_rows(ev_dose, ev_obs) |>
 ``` r
 mod <- rxode2::rxode2(readModelDb("Kovalenko_2020_dupilumab"))
 #> ℹ parameter labels from comments will be replaced by 'label()'
+conc_unit <- mod$units[["concentration"]]
 sim <- rxode2::rxSolve(mod, events = events, keep = "WT")
 ```
 
@@ -175,7 +176,7 @@ ggplot(vpc, aes(time, Q50)) +
   scale_y_continuous(limits = c(0, NA)) +
   labs(
     x = "Time (days)",
-    y = "Dupilumab Cc (mg/L)",
+    y = paste0("Dupilumab Cc (", conc_unit, ")"),
     title = "Simulated 5-50-95 percentile profile; 600 mg SC load then 300 mg SC Q2W",
     caption = "Virtual AD cohort (N = 400); WT ~N(75, 18) kg, truncated 40-165 kg."
   ) +
@@ -208,7 +209,7 @@ ggplot(ss_summary, aes(time - ss_start, Q50)) +
   geom_line(colour = "#b4464b", linewidth = 0.8) +
   labs(
     x = "Time after final dose (days)",
-    y = "Dupilumab Cc (mg/L)",
+    y = paste0("Dupilumab Cc (", conc_unit, ")"),
     title = "Steady-state Q2W cycle (dose 13 of 13)",
     caption = "Median and 90% prediction interval over one 14-day dosing interval."
   ) +
@@ -247,6 +248,7 @@ intervals <- data.frame(
 )
 
 nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+#>  ■■■■■■■■■■■■■■                    42% |  ETA:  2s
 summary(nca_res)
 #>  start end    treatment   N     auclast        cmax        cmin         cav
 #>      0  14 300mg_Q2W_SS 400 1190 [43.9] 95.0 [41.9] 70.4 [49.2] 85.1 [43.9]

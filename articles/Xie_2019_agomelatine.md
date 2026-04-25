@@ -44,6 +44,9 @@ reference.
 Xie_2019_agomelatine <- nlmixr(readModelDb("Xie_2019_agomelatine"))
 #> Warning: some etas defaulted to non-mu referenced, possible parsing error: e.IOV1, eta17, eta18, eta19, e.IOV2, eta21, eta22, eta23, e.IOV3, eta25, eta26, eta27, e.IOV4, eta29, eta30, eta31, e.IOV5, eta33, eta34, eta35
 #> as a work-around try putting the mu-referenced expression on a simple line
+conc_unit <- rxode2::rxode(readModelDb("Xie_2019_agomelatine"))$units[["concentration"]]
+#> Warning: some etas defaulted to non-mu referenced, possible parsing error: e.IOV1, eta17, eta18, eta19, e.IOV2, eta21, eta22, eta23, e.IOV3, eta25, eta26, eta27, e.IOV4, eta29, eta30, eta31, e.IOV5, eta33, eta34, eta35
+#> as a work-around try putting the mu-referenced expression on a simple line
 
 d_sim_dosing <-
   data.frame(
@@ -105,7 +108,7 @@ ggplot(d_plot, aes(x = time, y = Q50_calmt, ymin = Q05_calmt, ymax = Q95_calmt))
   scale_y_log10(sec.axis = sec_axis(transform = identity, breaks = 0.046, labels = "LLOQ")) +
   labs(
     x = "Time after dose (hours)",
-    y = "Plasma agomelatine concentration (ng/mL)\nMedian and 90% prediction intervals"
+    y = paste0("Plasma agomelatine concentration (", conc_unit, ")\nMedian and 90% prediction intervals")
   )
 #> Warning in scale_y_log10(sec.axis = sec_axis(transform = identity, breaks = 0.046, : log-10 transformation introduced infinite values.
 #> log-10 transformation introduced infinite values.
@@ -136,7 +139,7 @@ ggplot(d_plot, aes(x = time, y = Q50_c3oh, ymin = Q05_c3oh, ymax = Q95_c3oh)) +
   scale_y_log10(sec.axis = sec_axis(transform = identity, breaks = 0.460, labels = "LLOQ")) +
   labs(
     x = "Time after dose (hours)",
-    y = "Plasma 3-hydroxy-agomelatine concentration (ng/mL)\nMedian and 90% prediction intervals"
+    y = paste0("Plasma 3-hydroxy-agomelatine concentration (", conc_unit, ")\nMedian and 90% prediction intervals")
   )
 #> Warning in scale_y_log10(sec.axis = sec_axis(transform = identity, breaks = 0.46, : log-10 transformation introduced infinite values.
 #> log-10 transformation introduced infinite values.
@@ -170,7 +173,7 @@ ggplot(d_plot, aes(x = time, y = Q50_c7dm, ymin = Q05_c7dm, ymax = Q95_c7dm)) +
   scale_y_log10(sec.axis = sec_axis(transform = identity, breaks = 0.137, labels = "LLOQ")) +
   labs(
     x = "Time after dose (hours)",
-    y = "Plasma 7-desmethyl-agomelatine concentration (ng/mL)\nMedian and 90% prediction intervals"
+    y = paste0("Plasma 7-desmethyl-agomelatine concentration (", conc_unit, ")\nMedian and 90% prediction intervals")
   )
 #> Warning in scale_y_log10(sec.axis = sec_axis(transform = identity, breaks = 0.137, : log-10 transformation introduced infinite values.
 #> log-10 transformation introduced infinite values.

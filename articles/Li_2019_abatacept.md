@@ -357,7 +357,7 @@ intervals_sc <- data.frame(start = 0, end = tau_sc,
                            cmax = TRUE, cmin = TRUE, tmax = TRUE,
                            auclast = TRUE, cav = TRUE)
 nca_sc <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj_sc, dose_obj_sc, intervals = intervals_sc))
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■         81% |  ETA:  1s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■          76% |  ETA:  1s
 summary(nca_sc)
 #>  start end treatment   N    auclast        cmax        cmin              tmax
 #>      0   7 SC_125_QW 400 123 [38.1] 19.4 [35.7] 14.9 [44.0] 2.00 [1.00, 3.00]
@@ -384,7 +384,7 @@ intervals_iv <- data.frame(start = 0, end = tau_iv,
                            cmax = TRUE, cmin = TRUE, tmax = TRUE,
                            auclast = TRUE, cav = TRUE)
 nca_iv <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj_iv, dose_obj_iv, intervals = intervals_iv))
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■          76% |  ETA:  1s
+#>  ■■■■■■■■■■■■■■■■■■■■              64% |  ETA:  1s
 summary(nca_iv)
 #>  start end            treatment   N     auclast       cmax        cmin
 #>      0  28 IV_weight_tiered_Q4W 400 1340 [32.3] 224 [25.7] 14.2 [56.8]

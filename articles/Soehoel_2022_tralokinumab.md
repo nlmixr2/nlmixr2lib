@@ -132,6 +132,7 @@ events <- dplyr::bind_rows(ev_dose, ev_obs) |>
 
 ``` r
 mod <- rxode2::rxode2(readModelDb("Soehoel_2022_tralokinumab"))
+conc_unit <- mod$units[["concentration"]]
 sim <- rxode2::rxSolve(
   mod, events = events,
   keep = c("WT", "SEXF", "nonECZTRA", "dilution")
@@ -165,7 +166,7 @@ ggplot(vpc, aes(time, Q50)) +
   scale_y_continuous(limits = c(0, NA)) +
   labs(
     x = "Time (days)",
-    y = expression("Tralokinumab Cc (" * mu * "g/mL)"),
+    y = paste0("Tralokinumab Cc (", conc_unit, ")"),
     title = "Simulated 5-50-95 percentile VPC; 600 mg SC load then 300 mg SC Q2W",
     caption = "Virtual AD cohort (N = 400); WT median 74.5 kg; nonECZTRA = 0, dilution = 0."
   ) +
@@ -198,7 +199,7 @@ ggplot(ss_summary, aes(time - ss_start, Q50)) +
   geom_line(colour = "#b4464b", linewidth = 0.8) +
   labs(
     x = "Time after final dose (days)",
-    y = expression("Tralokinumab Cc (" * mu * "g/mL)"),
+    y = paste0("Tralokinumab Cc (", conc_unit, ")"),
     title = "Steady-state Q2W cycle (dose 13 of 13)",
     caption = "Median and 90% prediction interval over one 14-day dosing interval."
   ) +
@@ -238,6 +239,7 @@ intervals <- data.frame(
 )
 
 nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+#>  ■■■■■■■■■■■■■■                    44% |  ETA:  2s
 summary(nca_res)
 #>  start end    treatment   N     auclast       cmax       cmin        cav
 #>      0  14 300mg_Q2W_SS 400 2110 [41.5] 163 [40.7] 130 [43.4] 151 [41.5]

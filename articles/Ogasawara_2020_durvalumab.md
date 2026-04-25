@@ -104,6 +104,8 @@ d_sim <- bind_rows(d_dose, d_obs) %>%
 
 ``` r
 mod <- readModelDb("Ogasawara_2020_durvalumab")
+conc_unit <- rxode2::rxode(mod)$units[["concentration"]]
+#> ℹ parameter labels from comments will be replaced by 'label()'
 sim <- rxSolve(mod, d_sim, returnType = "data.frame")
 #> ℹ parameter labels from comments will be replaced by 'label()'
 ```
@@ -126,7 +128,7 @@ ggplot(sim_summary, aes(x = time / (24 * 7))) +
   geom_line(aes(y = median), color = "purple4", linewidth = 1) +
   labs(
     x = "Time (weeks)",
-    y = "Durvalumab concentration (mg/L)",
+    y = paste0("Durvalumab concentration (", conc_unit, ")"),
     title = "Simulated durvalumab PK (1500 mg IV q4w)",
     subtitle = "Median and 90% PI (N = 500 virtual hematologic malignancy patients)",
     caption = "Model: Ogasawara et al. (2020) Clin Pharmacokinet"
@@ -153,7 +155,7 @@ ggplot(sim_disease_summary, aes(x = time / (24 * 7), y = median, color = Disease
   scale_color_manual(values = c("MDS/AML" = "firebrick", "Other" = "navy")) +
   labs(
     x = "Time (weeks)",
-    y = "Durvalumab concentration (mg/L)",
+    y = paste0("Durvalumab concentration (", conc_unit, ")"),
     title = "Durvalumab median concentrations by disease type",
     subtitle = "MDS/AML patients have 26% higher CL and lower exposures",
     caption = "Model: Ogasawara et al. (2020)"
@@ -176,35 +178,40 @@ if (all(c("sim.id", "id") %in% names(sim_df))) {
 } else {
   sim_df$subject <- sim_df$sim.id
 }
+sim_df$Disease <- ifelse(sim_df$MDSAML == 1, "MDS/AML", "Other")
 nca_data <- data.frame(
   subject  = sim_df$subject,
+  Disease  = sim_df$Disease,
   time_rel = (sim_df$time - 1344) / 24,  # Convert to days relative to dose 3
   Cc       = sim_df$Cc
 )
 nca_data <- nca_data[nca_data$time_rel >= 0 & nca_data$time_rel <= 28 & nca_data$Cc > 0, ]
 
-conc_obj <- PKNCAconc(nca_data, Cc ~ time_rel | subject)
+conc_obj <- PKNCAconc(nca_data, Cc ~ time_rel | Disease + subject)
 dose_obj <- PKNCAdose(
-  data.frame(subject = unique(nca_data$subject), time_rel = 0, AMT = 1500),
-  AMT ~ time_rel | subject
+  data.frame(subject = unique(nca_data$subject),
+             Disease = nca_data$Disease[match(unique(nca_data$subject), nca_data$subject)],
+             time_rel = 0, AMT = 1500),
+  AMT ~ time_rel | Disease + subject
 )
 data_obj <- PKNCAdata(conc_obj, dose_obj,
                        intervals = data.frame(start = 0, end = 28,
                                               cmax = TRUE, tmax = TRUE,
                                               auclast = TRUE, half.life = TRUE))
 nca_results <- pk.nca(data_obj)
-#>  ■■■                                8% |  ETA: 12s
-#>  ■■■■■■■■■■■                       32% |  ETA:  9s
-#>  ■■■■■■■■■■■■■■■■■■                56% |  ETA:  5s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■         81% |  ETA:  2s
+#>  ■■■■■■                            17% |  ETA: 11s
+#>  ■■■■■■■■■■■■■                     39% |  ETA:  8s
+#>  ■■■■■■■■■■■■■■■■■■■               61% |  ETA:  5s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■        82% |  ETA:  2s
 nca_summary <- summary(nca_results)
 knitr::kable(nca_summary, digits = 2,
              caption = "NCA summary (3rd dosing interval, weeks 8-12)")
 ```
 
-| start | end | N   | auclast       | cmax         | tmax                | half.life     |
-|------:|----:|:----|:--------------|:-------------|:--------------------|:--------------|
-|     0 |  28 | 500 | 5180 \[39.5\] | 387 \[27.9\] | 1.00 \[1.00, 1.00\] | 19.7 \[7.57\] |
+| start | end | Disease | N   | auclast       | cmax         | tmax                | half.life     |
+|------:|----:|:--------|:----|:--------------|:-------------|:--------------------|:--------------|
+|     0 |  28 | MDS/AML | 201 | 4490 \[37.6\] | 349 \[26.1\] | 1.00 \[1.00, 1.00\] | 17.9 \[7.24\] |
+|     0 |  28 | Other   | 299 | 5700 \[37.5\] | 415 \[26.8\] | 1.00 \[1.00, 1.00\] | 20.9 \[7.56\] |
 
 NCA summary (3rd dosing interval, weeks 8-12)
 

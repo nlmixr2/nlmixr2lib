@@ -111,6 +111,8 @@ d_sim <- bind_rows(d_dose, d_obs) %>%
 
 ``` r
 mod <- readModelDb("Fasanmade_2009_infliximab")
+conc_unit <- rxode2::rxode(mod)$units[["concentration"]]
+#> ℹ parameter labels from comments will be replaced by 'label()'
 sim <- rxSolve(mod, d_sim, returnType = "data.frame")
 #> ℹ parameter labels from comments will be replaced by 'label()'
 ```
@@ -134,7 +136,7 @@ ggplot(sim_summary, aes(x = time / 7)) +
   scale_y_log10() +
   labs(
     x = "Time (weeks)",
-    y = "Infliximab concentration (ug/mL)",
+    y = paste0("Infliximab concentration (", conc_unit, ")"),
     title = "Simulated infliximab PK (5 mg/kg IV, induction + q8w maintenance)",
     subtitle = "Median and 90% prediction interval (N = 500 virtual UC patients)",
     caption = "Model: Fasanmade et al. (2009) Eur J Clin Pharmacol"
@@ -162,7 +164,7 @@ ggplot(sim_ada, aes(x = time / 7, y = median, color = ADA_label)) +
   scale_color_manual(values = c("ADA-negative" = "steelblue", "ADA-positive" = "tomato")) +
   labs(
     x = "Time (weeks)",
-    y = "Infliximab concentration (ug/mL)",
+    y = paste0("Infliximab concentration (", conc_unit, ")"),
     title = "Infliximab median concentrations by ADA status",
     subtitle = "ADA-positive patients have 47% higher clearance",
     color = "Immunogenicity",
@@ -212,9 +214,9 @@ data_obj <- PKNCAdata(
   )
 )
 nca_results <- pk.nca(data_obj)
-#>  ■■■■■■■                           20% |  ETA:  8s
-#>  ■■■■■■■■■■■■■■■■■                 54% |  ETA:  4s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      88% |  ETA:  1s
+#>  ■■■■■■■■                          24% |  ETA:  8s
+#>  ■■■■■■■■■■■■■■■■■                 53% |  ETA:  5s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■        82% |  ETA:  2s
 nca_summary <- summary(nca_results)
 knitr::kable(
   nca_summary,

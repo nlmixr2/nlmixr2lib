@@ -2,6 +2,12 @@
 
 ``` r
 library(nlmixr2lib)
+library(PKNCA)
+#> 
+#> Attaching package: 'PKNCA'
+#> The following object is masked from 'package:stats':
+#> 
+#>     filter
 library(dplyr)
 #> 
 #> Attaching package: 'dplyr'
@@ -64,6 +70,7 @@ dSimPrep <-
     TABLET = 1
   )
 Kyhl2016Nalmefene <- readModelDb("Kyhl_2016_nalmefene")
+conc_unit <- rxode2::rxode(Kyhl2016Nalmefene)$units[["concentration"]]
 # Set BSV to zero for simulation to get a reproducible result
 dSimNalmefene <- rxode2::rxSolve(Kyhl2016Nalmefene, events = dSimPrep, nStud = 500)
 dSimNalmefene$Analyte <- "Nalmefene"
@@ -91,7 +98,7 @@ ggplot(dSimNalmefenePlot, aes(x = time, y = Q50_pk, ymin = Q025_pk, ymax = Q975_
   geom_line() +
   labs(
     x = "Time (h)",
-    y = "Estimated plasma concentration (ng mL^-1)"
+    y = paste0("Estimated plasma concentration (", conc_unit, ")")
   ) +
   geom_ribbon(fill = "gray") +
   geom_line() +
@@ -115,3 +122,64 @@ ggplot(dSimNalmefenePlot, aes(x = time, y = Q50_occ, ymin = Q025_occ, ymax = Q97
 ```
 
 ![](Kyhl_2016_nalmefene_files/figure-html/plot-plasma-2.png)
+
+### NCA analysis
+
+Non-compartmental analysis of simulated nalmefene plasma PK (single 20
+mg oral tablet in the fed state, 500 virtual subjects via IIV sampling).
+
+``` r
+# Each replicate (sim.id) is treated as an independent subject
+sim_nca <- dSimNalmefene |>
+  as.data.frame() |>
+  mutate(treatment = "20 mg PO (fed, tablet)")
+
+dose_nca <- sim_nca |>
+  group_by(sim.id) |>
+  slice(1) |>
+  ungroup() |>
+  mutate(time = 0, AMT = 20) |>
+  select(sim.id, treatment, time, AMT)
+
+conc_obj <- PKNCAconc(sim_nca, Cc ~ time | treatment + sim.id)
+dose_obj <- PKNCAdose(dose_nca, AMT ~ time | treatment + sim.id)
+data_obj <- PKNCAdata(conc_obj, dose_obj,
+  intervals = data.frame(start = 0, end = 24,
+                         cmax = TRUE, tmax = TRUE,
+                         auclast = TRUE, half.life = TRUE))
+nca_results <- pk.nca(data_obj)
+#>  ■■■                                5% |  ETA:  1m
+#>  ■■■■                               9% |  ETA:  1m
+#>  ■■■■■                             13% |  ETA:  1m
+#>  ■■■■■■                            17% |  ETA:  1m
+#>  ■■■■■■■                           21% |  ETA:  1m
+#>  ■■■■■■■■                          25% |  ETA:  1m
+#>  ■■■■■■■■■■                        29% |  ETA:  1m
+#>  ■■■■■■■■■■■                       33% |  ETA:  1m
+#>  ■■■■■■■■■■■■                      36% |  ETA: 49s
+#>  ■■■■■■■■■■■■■                     40% |  ETA: 46s
+#>  ■■■■■■■■■■■■■■                    44% |  ETA: 43s
+#>  ■■■■■■■■■■■■■■■                   48% |  ETA: 40s
+#>  ■■■■■■■■■■■■■■■■■                 52% |  ETA: 37s
+#>  ■■■■■■■■■■■■■■■■■■                56% |  ETA: 34s
+#>  ■■■■■■■■■■■■■■■■■■■               60% |  ETA: 31s
+#>  ■■■■■■■■■■■■■■■■■■■■              64% |  ETA: 28s
+#>  ■■■■■■■■■■■■■■■■■■■■■             68% |  ETA: 25s
+#>  ■■■■■■■■■■■■■■■■■■■■■■            72% |  ETA: 22s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■          75% |  ETA: 19s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■         79% |  ETA: 16s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■        83% |  ETA: 13s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■       87% |  ETA: 10s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      91% |  ETA:  7s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     95% |  ETA:  4s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■   99% |  ETA:  1s
+nca_summary <- summary(nca_results)
+knitr::kable(nca_summary, digits = 2,
+             caption = "NCA summary (single 20 mg oral tablet, fed state)")
+```
+
+| start | end | treatment              | N   | auclast      | cmax          | tmax                 | half.life     |
+|------:|----:|:-----------------------|:----|:-------------|:--------------|:---------------------|:--------------|
+|     0 |  24 | 20 mg PO (fed, tablet) | 500 | 122 \[60.9\] | 14.1 \[82.6\] | 1.60 \[0.200, 11.1\] | 15.5 \[11.6\] |
+
+NCA summary (single 20 mg oral tablet, fed state)

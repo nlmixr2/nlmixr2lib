@@ -2,6 +2,7 @@ pandoc: 3.1.11
 pkgdown: 2.2.0
 pkgdown_sha: ~
 articles:
+  articles/Bajaj_2017_nivolumab: Bajaj_2017_nivolumab.html
   articles/Bender_2014_trastuzumabEmtansine_mechanistic: Bender_2014_trastuzumabEmtansine_mechanistic.html
   articles/Bender_2014_trastuzumabEmtansine_reduced: Bender_2014_trastuzumabEmtansine_reduced.html
   articles/Budha_2023_tislelizumab: Budha_2023_tislelizumab.html
@@ -18,8 +19,11 @@ articles:
   articles/Hu_2026_clesrovimab: Hu_2026_clesrovimab.html
   articles/Hua_2015_anrukinzumab: Hua_2015_anrukinzumab.html
   articles/Jackson_2022_ixekizumab: Jackson_2022_ixekizumab.html
+  articles/Kielbasa_2020_galcanezumab: Kielbasa_2020_galcanezumab.html
   articles/Kotani_2022_astegolimab: Kotani_2022_astegolimab.html
+  articles/Kovalenko_2016_dupilumab: Kovalenko_2016_dupilumab.html
   articles/Kovalenko_2020_dupilumab: Kovalenko_2020_dupilumab.html
+  articles/Kuchimanchi_2018_evolocumab: Kuchimanchi_2018_evolocumab.html
   articles/Kyhl_2016_nalmefene: Kyhl_2016_nalmefene.html
   articles/Li_2019_abatacept: Li_2019_abatacept.html
   list-of-models: list-of-models.html
@@ -30,15 +34,19 @@ articles:
   articles/Ma_2020_sarilumab_das28crp: Ma_2020_sarilumab_das28crp.html
   markov: markov.html
   articles/Masters_2022_avelumab: Masters_2022_avelumab.html
+  articles/Mo_2018_olaratumab: Mo_2018_olaratumab.html
   articles/Moein_2022_etrolizumab: Moein_2022_etrolizumab.html
   articles/Mould_2007_alemtuzumab: Mould_2007_alemtuzumab.html
+  articles/Mulyukov_2018_ranibizumab: Mulyukov_2018_ranibizumab.html
   articles/Narwal_2013_sifalimumab: Narwal_2013_sifalimumab.html
   articles/Ogasawara_2020_durvalumab: Ogasawara_2020_durvalumab.html
+  articles/Othman_2014_daclizumab: Othman_2014_daclizumab.html
   PK_2cmt_mAb_Davda_2014: PK_2cmt_mAb_Davda_2014.html
   articles/Robbie_2012_palivizumab: Robbie_2012_palivizumab.html
   articles/Rosario_2015_vedolizumab: Rosario_2015_vedolizumab.html
   articles/Soehoel_2022_tralokinumab: Soehoel_2022_tralokinumab.html
   articles/Thakre_2022_risankizumab: Thakre_2022_risankizumab.html
+  articles/Timmermann_2019_brodalumab: Timmermann_2019_brodalumab.html
   articles/Tiraboschi_2025_amlitelimab: Tiraboschi_2025_amlitelimab.html
   tmdd_archetypes: tmdd_archetypes.html
   articles/Valenzuela_2025_nipocalimab: Valenzuela_2025_nipocalimab.html
@@ -50,7 +58,7 @@ articles:
   articles/Yamada_2025_zolbetuximab: Yamada_2025_zolbetuximab.html
   articles/Zheng_2016_sifalimumab: Zheng_2016_sifalimumab.html
   articles/Zhu_2017_lebrikizumab: Zhu_2017_lebrikizumab.html
-last_built: 2026-04-24T20:04Z
+last_built: 2026-04-25T11:44Z
 urls:
   reference: https://nlmixr2.github.io/nlmixr2lib/reference
   article: https://nlmixr2.github.io/nlmixr2lib/articles

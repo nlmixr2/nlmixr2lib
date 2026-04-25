@@ -33,7 +33,8 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/Bender_2014_trastuzumabEmtansine_mechanistic.html">Trastuzumab emtansine (T-DM1) preclinical mechanistic DAR PK model (Bender 2014)</a></li>
+<li><a class="dropdown-item" href="../articles/Bajaj_2017_nivolumab.html">Bajaj_2017_nivolumab</a></li>
+    <li><a class="dropdown-item" href="../articles/Bender_2014_trastuzumabEmtansine_mechanistic.html">Trastuzumab emtansine (T-DM1) preclinical mechanistic DAR PK model (Bender 2014)</a></li>
     <li><a class="dropdown-item" href="../articles/Bender_2014_trastuzumabEmtansine_reduced.html">Trastuzumab emtansine (T-DM1) preclinical reduced PK model (Bender 2014)</a></li>
     <li><a class="dropdown-item" href="../articles/Budha_2023_tislelizumab.html">Budha_2023_tislelizumab</a></li>
     <li><a class="dropdown-item" href="../articles/CarlssonPetri_2021_liraglutide.html">CarlssonPetri_2021_liraglutide</a></li>
@@ -49,8 +50,11 @@
     <li><a class="dropdown-item" href="../articles/Hu_2026_clesrovimab.html">Hu_2026_clesrovimab</a></li>
     <li><a class="dropdown-item" href="../articles/Hua_2015_anrukinzumab.html">Hua_2015_anrukinzumab</a></li>
     <li><a class="dropdown-item" href="../articles/Jackson_2022_ixekizumab.html">Jackson_2022_ixekizumab</a></li>
+    <li><a class="dropdown-item" href="../articles/Kielbasa_2020_galcanezumab.html">Kielbasa_2020_galcanezumab</a></li>
     <li><a class="dropdown-item" href="../articles/Kotani_2022_astegolimab.html">Kotani_2022_astegolimab</a></li>
+    <li><a class="dropdown-item" href="../articles/Kovalenko_2016_dupilumab.html">Kovalenko_2016_dupilumab</a></li>
     <li><a class="dropdown-item" href="../articles/Kovalenko_2020_dupilumab.html">Kovalenko_2020_dupilumab</a></li>
+    <li><a class="dropdown-item" href="../articles/Kuchimanchi_2018_evolocumab.html">Kuchimanchi_2018_evolocumab</a></li>
     <li><a class="dropdown-item" href="../articles/Kyhl_2016_nalmefene.html">Kyhl_2016_nalmefene</a></li>
     <li><a class="dropdown-item" href="../articles/Li_2019_abatacept.html">Li_2019_abatacept</a></li>
     <li><a class="dropdown-item" href="../articles/list-of-models.html">List of models</a></li>
@@ -61,15 +65,19 @@
     <li><a class="dropdown-item" href="../articles/Ma_2020_sarilumab_das28crp.html">Ma_2020_sarilumab_das28crp</a></li>
     <li><a class="dropdown-item" href="../articles/markov.html">Markov modeling</a></li>
     <li><a class="dropdown-item" href="../articles/Masters_2022_avelumab.html">Masters_2022_avelumab</a></li>
+    <li><a class="dropdown-item" href="../articles/Mo_2018_olaratumab.html">Mo_2018_olaratumab</a></li>
     <li><a class="dropdown-item" href="../articles/Moein_2022_etrolizumab.html">Moein_2022_etrolizumab</a></li>
     <li><a class="dropdown-item" href="../articles/Mould_2007_alemtuzumab.html">Mould_2007_alemtuzumab</a></li>
+    <li><a class="dropdown-item" href="../articles/Mulyukov_2018_ranibizumab.html">Mulyukov_2018_ranibizumab</a></li>
     <li><a class="dropdown-item" href="../articles/Narwal_2013_sifalimumab.html">Narwal_2013_sifalimumab</a></li>
     <li><a class="dropdown-item" href="../articles/Ogasawara_2020_durvalumab.html">Ogasawara_2020_durvalumab</a></li>
+    <li><a class="dropdown-item" href="../articles/Othman_2014_daclizumab.html">Othman_2014_daclizumab</a></li>
     <li><a class="dropdown-item" href="../articles/PK_2cmt_mAb_Davda_2014.html">PK_2cmt_mAb_Davda_2014</a></li>
     <li><a class="dropdown-item" href="../articles/Robbie_2012_palivizumab.html">Robbie_2012_palivizumab</a></li>
     <li><a class="dropdown-item" href="../articles/Rosario_2015_vedolizumab.html">Rosario_2015_vedolizumab</a></li>
     <li><a class="dropdown-item" href="../articles/Soehoel_2022_tralokinumab.html">Soehoel_2022_tralokinumab</a></li>
     <li><a class="dropdown-item" href="../articles/Thakre_2022_risankizumab.html">Thakre_2022_risankizumab</a></li>
+    <li><a class="dropdown-item" href="../articles/Timmermann_2019_brodalumab.html">Timmermann_2019_brodalumab</a></li>
     <li><a class="dropdown-item" href="../articles/Tiraboschi_2025_amlitelimab.html">Tiraboschi_2025_amlitelimab</a></li>
     <li><a class="dropdown-item" href="../articles/tmdd_archetypes.html">TMDD archetypes: full, QSS, and Michaelis-Menten approximations</a></li>
     <li><a class="dropdown-item" href="../articles/Valenzuela_2025_nipocalimab.html">Valenzuela_2025_nipocalimab</a></li>
@@ -353,6 +361,7 @@ enter the Soehoel 2022 model.</p>
 </h2>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxode2.html" class="external-link">rxode2</a></span><span class="op">(</span><span class="fu"><a href="../reference/readModelDb.html">readModelDb</a></span><span class="op">(</span><span class="st">"Soehoel_2022_tralokinumab"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">conc_unit</span> <span class="op">&lt;-</span> <span class="va">mod</span><span class="op">$</span><span class="va">units</span><span class="op">[[</span><span class="st">"concentration"</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span></span>
 <span>  <span class="va">mod</span>, events <span class="op">=</span> <span class="va">events</span>,</span>
 <span>  keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"WT"</span>, <span class="st">"SEXF"</span>, <span class="st">"nonECZTRA"</span>, <span class="st">"dilution"</span><span class="op">)</span></span>
@@ -385,7 +394,7 @@ dosing cycles (steady-state reached by cycle 8-10).</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_continuous</a></span><span class="op">(</span>limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="cn">NA</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
 <span>    x <span class="op">=</span> <span class="st">"Time (days)"</span>,</span>
-<span>    y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/expression.html" class="external-link">expression</a></span><span class="op">(</span><span class="st">"Tralokinumab Cc ("</span> <span class="op">*</span> <span class="va">mu</span> <span class="op">*</span> <span class="st">"g/mL)"</span><span class="op">)</span>,</span>
+<span>    y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Tralokinumab Cc ("</span>, <span class="va">conc_unit</span>, <span class="st">")"</span><span class="op">)</span>,</span>
 <span>    title <span class="op">=</span> <span class="st">"Simulated 5-50-95 percentile VPC; 600 mg SC load then 300 mg SC Q2W"</span>,</span>
 <span>    caption <span class="op">=</span> <span class="st">"Virtual AD cohort (N = 400); WT median 74.5 kg; nonECZTRA = 0, dilution = 0."</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
@@ -415,7 +424,7 @@ steady-state peak, trough, and AUC_tau used by the NCA below.</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>colour <span class="op">=</span> <span class="st">"#b4464b"</span>, linewidth <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
 <span>    x <span class="op">=</span> <span class="st">"Time after final dose (days)"</span>,</span>
-<span>    y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/expression.html" class="external-link">expression</a></span><span class="op">(</span><span class="st">"Tralokinumab Cc ("</span> <span class="op">*</span> <span class="va">mu</span> <span class="op">*</span> <span class="st">"g/mL)"</span><span class="op">)</span>,</span>
+<span>    y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Tralokinumab Cc ("</span>, <span class="va">conc_unit</span>, <span class="st">")"</span><span class="op">)</span>,</span>
 <span>    title <span class="op">=</span> <span class="st">"Steady-state Q2W cycle (dose 13 of 13)"</span>,</span>
 <span>    caption <span class="op">=</span> <span class="st">"Median and 90% prediction interval over one 14-day dosing interval."</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
@@ -454,6 +463,7 @@ cohort.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">nca_res</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_obj</span>, <span class="va">dose_obj</span>, intervals <span class="op">=</span> <span class="va">intervals</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■                  </span>  44% |  ETA:  2s</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">nca_res</span><span class="op">)</span></span>
 <span><span class="co">#&gt;  start end    treatment   N     auclast       cmax       cmin        cav</span></span>
 <span><span class="co">#&gt;      0  14 300mg_Q2W_SS 400 2110 [41.5] 163 [40.7] 130 [43.4] 151 [41.5]</span></span>

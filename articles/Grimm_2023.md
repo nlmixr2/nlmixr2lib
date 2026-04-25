@@ -58,6 +58,8 @@ dSimObs <-
   )
 dSimPrep <- dplyr::bind_rows(dSimDose, dSimObs)
 Grimm2023Tront <- readModelDb("Grimm_2023_trontinemab")
+conc_unit <- rxode2::rxode(Grimm2023Tront)$units[["concentration"]]
+#> ℹ parameter labels from comments will be replaced by 'label()'
 # Set BSV to zero for simulation to get a reproducible result
 dSimTront <- rxode2::rxSolve(Grimm2023Tront |> rxode2::zeroRe(), events = dSimPrep)
 #> ℹ parameter labels from comments will be replaced by 'label()'
@@ -109,7 +111,7 @@ ggplot(dSim, aes(x = time, y = sim)) +
   geom_line() +
   labs(
     x = "Time (h)",
-    y = "Concentration (ng/mL)"
+    y = paste0("Concentration (", conc_unit, ")")
   ) +
   scale_y_log10() +
   scale_x_continuous(breaks = seq(0, 336, by = 48)) +

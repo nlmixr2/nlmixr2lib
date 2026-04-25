@@ -33,7 +33,8 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/Bender_2014_trastuzumabEmtansine_mechanistic.html">Trastuzumab emtansine (T-DM1) preclinical mechanistic DAR PK model (Bender 2014)</a></li>
+<li><a class="dropdown-item" href="../articles/Bajaj_2017_nivolumab.html">Bajaj_2017_nivolumab</a></li>
+    <li><a class="dropdown-item" href="../articles/Bender_2014_trastuzumabEmtansine_mechanistic.html">Trastuzumab emtansine (T-DM1) preclinical mechanistic DAR PK model (Bender 2014)</a></li>
     <li><a class="dropdown-item" href="../articles/Bender_2014_trastuzumabEmtansine_reduced.html">Trastuzumab emtansine (T-DM1) preclinical reduced PK model (Bender 2014)</a></li>
     <li><a class="dropdown-item" href="../articles/Budha_2023_tislelizumab.html">Budha_2023_tislelizumab</a></li>
     <li><a class="dropdown-item" href="../articles/CarlssonPetri_2021_liraglutide.html">CarlssonPetri_2021_liraglutide</a></li>
@@ -49,8 +50,11 @@
     <li><a class="dropdown-item" href="../articles/Hu_2026_clesrovimab.html">Hu_2026_clesrovimab</a></li>
     <li><a class="dropdown-item" href="../articles/Hua_2015_anrukinzumab.html">Hua_2015_anrukinzumab</a></li>
     <li><a class="dropdown-item" href="../articles/Jackson_2022_ixekizumab.html">Jackson_2022_ixekizumab</a></li>
+    <li><a class="dropdown-item" href="../articles/Kielbasa_2020_galcanezumab.html">Kielbasa_2020_galcanezumab</a></li>
     <li><a class="dropdown-item" href="../articles/Kotani_2022_astegolimab.html">Kotani_2022_astegolimab</a></li>
+    <li><a class="dropdown-item" href="../articles/Kovalenko_2016_dupilumab.html">Kovalenko_2016_dupilumab</a></li>
     <li><a class="dropdown-item" href="../articles/Kovalenko_2020_dupilumab.html">Kovalenko_2020_dupilumab</a></li>
+    <li><a class="dropdown-item" href="../articles/Kuchimanchi_2018_evolocumab.html">Kuchimanchi_2018_evolocumab</a></li>
     <li><a class="dropdown-item" href="../articles/Kyhl_2016_nalmefene.html">Kyhl_2016_nalmefene</a></li>
     <li><a class="dropdown-item" href="../articles/Li_2019_abatacept.html">Li_2019_abatacept</a></li>
     <li><a class="dropdown-item" href="../articles/list-of-models.html">List of models</a></li>
@@ -61,15 +65,19 @@
     <li><a class="dropdown-item" href="../articles/Ma_2020_sarilumab_das28crp.html">Ma_2020_sarilumab_das28crp</a></li>
     <li><a class="dropdown-item" href="../articles/markov.html">Markov modeling</a></li>
     <li><a class="dropdown-item" href="../articles/Masters_2022_avelumab.html">Masters_2022_avelumab</a></li>
+    <li><a class="dropdown-item" href="../articles/Mo_2018_olaratumab.html">Mo_2018_olaratumab</a></li>
     <li><a class="dropdown-item" href="../articles/Moein_2022_etrolizumab.html">Moein_2022_etrolizumab</a></li>
     <li><a class="dropdown-item" href="../articles/Mould_2007_alemtuzumab.html">Mould_2007_alemtuzumab</a></li>
+    <li><a class="dropdown-item" href="../articles/Mulyukov_2018_ranibizumab.html">Mulyukov_2018_ranibizumab</a></li>
     <li><a class="dropdown-item" href="../articles/Narwal_2013_sifalimumab.html">Narwal_2013_sifalimumab</a></li>
     <li><a class="dropdown-item" href="../articles/Ogasawara_2020_durvalumab.html">Ogasawara_2020_durvalumab</a></li>
+    <li><a class="dropdown-item" href="../articles/Othman_2014_daclizumab.html">Othman_2014_daclizumab</a></li>
     <li><a class="dropdown-item" href="../articles/PK_2cmt_mAb_Davda_2014.html">PK_2cmt_mAb_Davda_2014</a></li>
     <li><a class="dropdown-item" href="../articles/Robbie_2012_palivizumab.html">Robbie_2012_palivizumab</a></li>
     <li><a class="dropdown-item" href="../articles/Rosario_2015_vedolizumab.html">Rosario_2015_vedolizumab</a></li>
     <li><a class="dropdown-item" href="../articles/Soehoel_2022_tralokinumab.html">Soehoel_2022_tralokinumab</a></li>
     <li><a class="dropdown-item" href="../articles/Thakre_2022_risankizumab.html">Thakre_2022_risankizumab</a></li>
+    <li><a class="dropdown-item" href="../articles/Timmermann_2019_brodalumab.html">Timmermann_2019_brodalumab</a></li>
     <li><a class="dropdown-item" href="../articles/Tiraboschi_2025_amlitelimab.html">Tiraboschi_2025_amlitelimab</a></li>
     <li><a class="dropdown-item" href="../articles/tmdd_archetypes.html">TMDD archetypes: full, QSS, and Michaelis-Menten approximations</a></li>
     <li><a class="dropdown-item" href="../articles/Valenzuela_2025_nipocalimab.html">Valenzuela_2025_nipocalimab</a></li>
@@ -348,6 +356,7 @@ dose is used to match the paper’s Figure 5 reference dose.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxode2.html" class="external-link">rxode2</a></span><span class="op">(</span><span class="fu"><a href="../reference/readModelDb.html">readModelDb</a></span><span class="op">(</span><span class="st">"Cirincione_2017_exenatide"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> parameter labels from comments will be replaced by 'label()'</span></span>
+<span><span class="va">conc_unit</span> <span class="op">&lt;-</span> <span class="va">mod</span><span class="op">$</span><span class="va">units</span><span class="op">[[</span><span class="st">"concentration"</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod</span>, events <span class="op">=</span> <span class="va">events</span>, keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"WT"</span>, <span class="st">"CRCL"</span>, <span class="st">"treatment"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>For deterministic replication (typical-value predictions without
 between-subject variability, matching the paper’s Figure 5):</p>
@@ -396,7 +405,7 @@ volume and lower linear clearance, respectively).</p>
 <code class="sourceCode R"><span><span class="va">sim_typical</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">Cc</span>, colour <span class="op">=</span> <span class="va">scenario</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time (h)"</span>, y <span class="op">=</span> <span class="st">"Exenatide concentration (pg/mL)"</span>,</span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time (h)"</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Exenatide concentration ("</span>, <span class="va">conc_unit</span>, <span class="st">")"</span><span class="op">)</span>,</span>
 <span>    colour <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>    title <span class="op">=</span> <span class="st">"Typical concentration profiles (replicates Figure 5)"</span>,</span>
 <span>    caption <span class="op">=</span> <span class="st">"Replicates Figure 5 of Cirincione 2017: 10 ug SC, typical values."</span><span class="op">)</span> <span class="op">+</span></span>
@@ -423,7 +432,7 @@ renal-function band.</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_ribbon.html" class="external-link">geom_ribbon</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>ymin <span class="op">=</span> <span class="va">Q05</span>, ymax <span class="op">=</span> <span class="va">Q95</span><span class="op">)</span>, alpha <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">treatment</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time (h)"</span>, y <span class="op">=</span> <span class="st">"Exenatide concentration (pg/mL)"</span>,</span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time (h)"</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Exenatide concentration ("</span>, <span class="va">conc_unit</span>, <span class="st">")"</span><span class="op">)</span>,</span>
 <span>    title <span class="op">=</span> <span class="st">"Simulated 5-50-95 percentiles by renal-function band"</span>,</span>
 <span>    caption <span class="op">=</span> <span class="st">"10 ug SC; cohort covariate distributions approximate Table 1."</span><span class="op">)</span></span>
 <span><span class="co">#&gt; `geom_line()`: Each group consists of only one observation.</span></span>
@@ -506,7 +515,338 @@ values.</p>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■                              </span>   4% |  ETA: 45s</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■                             </span>   7% |  ETA:  1m</span></span>
+<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■                           </span>  13% |  ETA: 45s</span></span>
+<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■                         </span>  19% |  ETA: 42s</span></span>
+<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■                       </span>  25% |  ETA: 38s</span></span>
+<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■                      </span>  31% |  ETA: 35s</span></span>
+<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■                    </span>  37% |  ETA: 32s</span></span>
 <span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
@@ -570,68 +910,7 @@ values.</p>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■                            </span>  11% |  ETA: 42s</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■                          </span>  17% |  ETA: 40s</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■                  </span>  43% |  ETA: 29s</span></span>
 <span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
@@ -698,276 +977,9 @@ values.</p>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■                        </span>  24% |  ETA: 36s</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■                      </span>  30% |  ETA: 33s</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■                    </span>  37% |  ETA: 29s</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■                  </span>  44% |  ETA: 26s</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■                </span>  50% |  ETA: 25s</span></span>
+<span><span class="co">#&gt; Warning: Too few points for half-life calculation (min.hl.points=3 with only 0</span></span>
+<span><span class="co">#&gt; points)</span></span>
 <span><span class="co">#&gt; Warning: Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
 <span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
 <span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
@@ -1006,7 +1018,280 @@ values.</p>
 <span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
 <span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
 <span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■               </span>  54% |  ETA: 20s</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■       </span>  81% |  ETA:  6s</span></span>
 <span><span class="co">#&gt; Warning: Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
 <span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
 <span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
@@ -1059,281 +1344,6 @@ values.</p>
 <span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
 <span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
 <span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■     </span>  86% |  ETA:  4s</span></span>
-<span><span class="co">#&gt; Warning: Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
 <span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
 <span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
 <span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
