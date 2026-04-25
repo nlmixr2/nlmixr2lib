@@ -16,6 +16,7 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(nlmixr2lib)
+library(PKNCA)
 library(dplyr)
 library(ggplot2)
 ```
@@ -62,6 +63,7 @@ dSimPrep <-
     TABLET = 1
   )
 Kyhl2016Nalmefene <- readModelDb("Kyhl_2016_nalmefene")
+conc_unit <- rxode2::rxode(Kyhl2016Nalmefene)$units[["concentration"]]
 # Set BSV to zero for simulation to get a reproducible result
 dSimNalmefene <- rxode2::rxSolve(Kyhl2016Nalmefene, events = dSimPrep, nStud = 500)
 dSimNalmefene$Analyte <- "Nalmefene"
@@ -89,7 +91,7 @@ ggplot(dSimNalmefenePlot, aes(x = time, y = Q50_pk, ymin = Q025_pk, ymax = Q975_
   geom_line() +
   labs(
     x = "Time (h)",
-    y = "Estimated plasma concentration (ng mL^-1)"
+    y = paste0("Estimated plasma concentration (", conc_unit, ")")
   ) +
   geom_ribbon(fill = "gray") +
   geom_line() +
@@ -105,5 +107,35 @@ ggplot(dSimNalmefenePlot, aes(x = time, y = Q50_occ, ymin = Q025_occ, ymax = Q97
   geom_line() +
   geom_hline(yintercept = c(60, 90)) +
   scale_x_continuous(breaks = seq(0, 24, by = 5))
+```
+
+## NCA analysis
+
+Non-compartmental analysis of simulated nalmefene plasma PK (single 20 mg
+oral tablet in the fed state, 500 virtual subjects via IIV sampling).
+
+```{r nca}
+# Each replicate (sim.id) is treated as an independent subject
+sim_nca <- dSimNalmefene |>
+  as.data.frame() |>
+  mutate(treatment = "20 mg PO (fed, tablet)")
+
+dose_nca <- sim_nca |>
+  group_by(sim.id) |>
+  slice(1) |>
+  ungroup() |>
+  mutate(time = 0, AMT = 20) |>
+  select(sim.id, treatment, time, AMT)
+
+conc_obj <- PKNCAconc(sim_nca, Cc ~ time | treatment + sim.id)
+dose_obj <- PKNCAdose(dose_nca, AMT ~ time | treatment + sim.id)
+data_obj <- PKNCAdata(conc_obj, dose_obj,
+  intervals = data.frame(start = 0, end = 24,
+                         cmax = TRUE, tmax = TRUE,
+                         auclast = TRUE, half.life = TRUE))
+nca_results <- pk.nca(data_obj)
+nca_summary <- summary(nca_results)
+knitr::kable(nca_summary, digits = 2,
+             caption = "NCA summary (single 20 mg oral tablet, fed state)")
 ```
 

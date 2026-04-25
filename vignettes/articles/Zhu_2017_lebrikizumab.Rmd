@@ -148,6 +148,7 @@ events <- dplyr::bind_rows(ev_dose, ev_obs) |>
 
 ```{r simulate}
 mod <- rxode2::rxode2(readModelDb("Zhu_2017_lebrikizumab"))
+conc_unit <- mod$units[["concentration"]]
 sim <- rxode2::rxSolve(mod, events = events,
   keep = c("WT", "AGE", "SEXF",
     "RACE_BLACK", "RACE_ASIAN", "RACE_OTHER",
@@ -180,7 +181,7 @@ ggplot(vpc, aes(time, Q50)) +
   scale_y_continuous(limits = c(0, NA)) +
   labs(
     x = "Time (days)",
-    y = expression("Lebrikizumab Cc (" * mu * "g/mL)"),
+    y = paste0("Lebrikizumab Cc (", conc_unit, ")"),
     title = "Simulated 5-50-95 percentile VPC, 125 mg Q4W SC (6 doses)",
     caption = "Virtual cohort (N = 400); covariate distributions synthesized to approximate Zhu 2017 Table 1."
   ) +
@@ -210,7 +211,7 @@ ggplot(ss_summary, aes(time - 140, Q50)) +
   geom_line(colour = "#b4464b", linewidth = 0.8) +
   labs(
     x = "Time after dose 6 (days)",
-    y = expression("Lebrikizumab Cc (" * mu * "g/mL)"),
+    y = paste0("Lebrikizumab Cc (", conc_unit, ")"),
     title = "Steady-state dose cycle: 125 mg SC Q4W",
     caption = "Median and 90% prediction interval over the 6th Q4W cycle."
   ) +

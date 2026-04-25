@@ -2,7 +2,18 @@
 
 # development version
 
+* Fix vignettes: derive concentration units in `labs()` from model `$units` metadata; replace inline trapezoidal NCA with PKNCA; add PKNCA sections to nalmefene and clesrovimab vignettes; add PKNCA treatment grouping to benralizumab and durvalumab vignettes.
+* Add `concentration` field to `units` metadata for `Wang_2017_benralizumab` and `Ogasawara_2020_durvalumab` models.
+
 * Add Li 2019 abatacept ([doi:10.1002/jcph.1308](https://doi.org/10.1002/jcph.1308)) — adults with rheumatoid arthritis.
+* Add Mulyukov 2018 ranibizumab ([doi:10.1002/psp4.12322](https://doi.org/10.1002/psp4.12322)) — anti-VEGF-naive adults with neovascular age-related macular degeneration.
+* Add Bajaj 2017 nivolumab ([doi:10.1002/psp4.12143](https://doi.org/10.1002/psp4.12143)) — patients with advanced solid tumors (melanoma, NSCLC, RCC, other).
+* Add Kielbasa 2020 galcanezumab ([doi:10.1002/jcph.1511](https://doi.org/10.1002/jcph.1511)) — healthy adults and adults with episodic or chronic migraine.
+* Add Othman 2014 daclizumab ([doi:10.1007/s40262-014-0159-9](https://doi.org/10.1007/s40262-014-0159-9)) — healthy adult volunteers.
+* Add Timmermann 2019 brodalumab ([doi:10.1111/bcpt.13202](https://doi.org/10.1111/bcpt.13202)) — adults with moderate-to-severe plaque psoriasis.
+* Add Kuchimanchi 2018 evolocumab ([doi:10.1007/s10928-018-9592-y](https://doi.org/10.1007/s10928-018-9592-y)) — healthy adults and patients with hypercholesterolemia (including heterozygous familial hypercholesterolemia and statin-intolerant cohorts).
+* Add Mo 2018 olaratumab ([doi:10.1007/s40262-017-0562-0](https://doi.org/10.1007/s40262-017-0562-0)) — patients with advanced or metastatic cancer (soft tissue sarcoma, NSCLC, GIST, glioblastoma multiforme).
+* Add Kovalenko 2016 dupilumab ([doi:10.1002/psp4.12136](https://doi.org/10.1002/psp4.12136)) — healthy volunteers and adults with moderate-to-severe atopic dermatitis.
 * Add Narwal 2013 sifalimumab ([doi:10.1007/s40262-013-0085-2](https://doi.org/10.1007/s40262-013-0085-2)) — adults with moderately active systemic lupus erythematosus.
 * Add Valenzuela 2025 nipocalimab ([doi:10.1002/psp4.70109](https://doi.org/10.1002/psp4.70109)) — healthy adults and adults with generalized myasthenia gravis.
 * Add Hua 2015 anrukinzumab ([doi:10.1111/bcp.12589](https://doi.org/10.1111/bcp.12589)) — healthy volunteers, asthma, and ulcerative colitis patients.

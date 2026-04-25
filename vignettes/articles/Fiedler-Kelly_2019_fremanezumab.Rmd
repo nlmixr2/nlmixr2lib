@@ -140,6 +140,7 @@ events_all <- bind_rows(events_monthly, events_quarterly)
 
 ```{r simulate}
 mod <- readModelDb("Fiedler-Kelly_2019_fremanezumab")
+conc_unit <- rxode2::rxode(mod)$units[["concentration"]]
 
 sim <- events_all %>%
   group_by(treatment) %>%
@@ -172,7 +173,7 @@ ggplot(fig7, aes(x = time / 7)) +
   facet_wrap(~treatment, scales = "free_y") +
   labs(
     x       = "Time since first dose (weeks)",
-    y       = "Fremanezumab concentration (ug/mL)",
+    y       = paste0("Fremanezumab concentration (", conc_unit, ")"),
     title   = "Figure 7 replication - simulated fremanezumab exposure",
     caption = "Replicates Figure 7 of Fiedler-Kelly et al. 2019. Median and 90% prediction interval (N = 500)."
   ) +
@@ -213,7 +214,7 @@ ggplot(cav_bind, aes(x = wt_quartile, y = Cav)) +
   facet_wrap(~interval, scales = "free_y") +
   labs(
     x       = "Body-weight quartile",
-    y       = "Average steady-state concentration (ug/mL)",
+    y       = paste0("Average steady-state concentration (", conc_unit, ")"),
     title   = "Figure 8 replication - steady-state exposure by body-weight quartile",
     caption = "Replicates qualitative trend shown in Figure 8 of Fiedler-Kelly et al. 2019."
   ) +

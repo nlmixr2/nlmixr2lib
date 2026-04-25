@@ -116,6 +116,7 @@ events <- cohort |>
 
 ```{r simulate}
 mod <- rxode2::rxode2(readModelDb("Cirincione_2017_exenatide"))
+conc_unit <- mod$units[["concentration"]]
 sim <- rxode2::rxSolve(mod, events = events, keep = c("WT", "CRCL", "treatment"))
 ```
 
@@ -164,7 +165,7 @@ clearance, respectively).
 sim_typical |>
   ggplot(aes(time, Cc, colour = scenario)) +
   geom_line(linewidth = 0.8) +
-  labs(x = "Time (h)", y = "Exenatide concentration (pg/mL)",
+  labs(x = "Time (h)", y = paste0("Exenatide concentration (", conc_unit, ")"),
     colour = NULL,
     title = "Typical concentration profiles (replicates Figure 5)",
     caption = "Replicates Figure 5 of Cirincione 2017: 10 ug SC, typical values.") +
@@ -190,7 +191,7 @@ sim |>
   geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.2) +
   geom_line() +
   facet_wrap(~treatment) +
-  labs(x = "Time (h)", y = "Exenatide concentration (pg/mL)",
+  labs(x = "Time (h)", y = paste0("Exenatide concentration (", conc_unit, ")"),
     title = "Simulated 5-50-95 percentiles by renal-function band",
     caption = "10 ug SC; cohort covariate distributions approximate Table 1.")
 ```
