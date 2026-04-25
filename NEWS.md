@@ -10,6 +10,7 @@
 * Add Quartino 2019 trastuzumab ([doi:10.1007/s00280-018-3728-z](https://doi.org/10.1007/s00280-018-3728-z)) — adults with metastatic breast cancer, early breast cancer, advanced gastric cancer, or other solid tumors.
 * Add Suleiman 2019 risankizumab ([doi:10.1007/s40262-019-00759-z](https://doi.org/10.1007/s40262-019-00759-z)) — healthy volunteers and adults with moderate-to-severe plaque psoriasis.
 * Add Berends 2019 infliximab ([doi:10.1007/s10928-019-09652-5](https://doi.org/10.1007/s10928-019-09652-5)) — adults with moderate-to-severe ulcerative colitis.
+* Add Nikanjam 2019 siltuximab ([doi:10.1007/s00280-019-03939-7](https://doi.org/10.1007/s00280-019-03939-7)) — adults pooled across healthy volunteers and oncology cohorts including Castleman's disease and smoldering multiple myeloma.
 * Add Li 2019 abatacept ([doi:10.1002/jcph.1308](https://doi.org/10.1002/jcph.1308)) — adults with rheumatoid arthritis.
 * Add Mulyukov 2018 ranibizumab ([doi:10.1002/psp4.12322](https://doi.org/10.1002/psp4.12322)) — anti-VEGF-naive adults with neovascular age-related macular degeneration.
 * Add Bajaj 2017 nivolumab ([doi:10.1002/psp4.12143](https://doi.org/10.1002/psp4.12143)) — patients with advanced solid tumors (melanoma, NSCLC, RCC, other).
