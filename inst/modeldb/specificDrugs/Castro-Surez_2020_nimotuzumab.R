@@ -4,7 +4,16 @@
   vignette <- "Castro-Surez_2020_nimotuzumab"
   units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
 
-  covariateData <- list()
+  covariateData <- list(
+    DOSE = list(
+      description        = "Subject's assigned single IV infusion dose level (50, 100, 200, or 400 mg in the original trial; vignette also extrapolates to 800 and 1200 mg)",
+      units              = "mg",
+      type               = "continuous",
+      reference_category = NULL,
+      notes              = "Used as a binary indicator for the 50 mg cohort only: V1 = exp(lvc + etalvc) * (1 - 0.53 * (DOSE == 50)) reproduces Castro-Suarez 2020 Table 2 row 'V1 change (D = 50 mg) [%] = 53'. Direction (decrease vs increase) is not stated in the paper text and is taken as a 53% DECREASE in V1 for the 50 mg cohort based on visual inspection of Figure 4A; see vignette Errata. Constant per subject across all observations.",
+      source_name        = "Dose"
+    )
+  )
 
   population <- list(
     n_subjects     = 20L,
@@ -31,7 +40,7 @@
   ini({
     # Structural PK parameters - Castro-Suarez 2020 Table 2 (final model). Reference body weight 65 kg.
     lcl    <- log(9.64e-3); label("Linear (non-target-mediated) clearance CL (L/h) at typical mediator A3 = 1") # Castro-Suarez 2020 Table 2: CL = 9.64e-3 L/h
-    lvc    <- log(2.63);    label("Apparent central volume of distribution V1 (L)")                               # Castro-Suarez 2020 Table 2: V1 = 2.63 L
+    lvc    <- log(2.63);    label("Apparent central volume of distribution V1 (L)")                               # Castro-Suarez 2020 Table 2: V1 = 2.63 L; dose-dependent shift for 50 mg cohort applied in model() as V1 * (1 - 0.53 * (DOSE == 50)) (see vignette Errata for V1 x 0.47-for-DOSE==50 rationale)
     lq     <- log(2.88e-2); label("Inter-compartmental clearance Q (L/h)")                                       # Castro-Suarez 2020 Table 2: Q = 2.88e-2 L/h
     lvp    <- log(9.92e-3); label("Apparent peripheral volume of distribution V2 (L)")                            # Castro-Suarez 2020 Table 2: V2 = 9.92e-3 L
 
@@ -64,7 +73,10 @@
   model({
     # Individual PK parameters. Only Rtotp and Kout carry IIV per the published final model.
     cl    <- exp(lcl)
-    vc    <- exp(lvc)
+    # Dose-dependent V1 shift for the 50 mg cohort - Castro-Suarez 2020 Table 2 row
+    # "V1 change (D = 50 mg) [%] = 53". Direction (decrease) is the operator's
+    # interpretation of Figure 4A (faster early decline at 50 mg); see vignette Errata.
+    vc    <- exp(lvc) * (1 - 0.53 * (DOSE == 50))
     q     <- exp(lq)
     vp    <- exp(lvp)
     kss   <- exp(lkss)

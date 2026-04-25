@@ -105,7 +105,7 @@ No errata were located on PubMed, the MDPI landing page, or Google Scholar
 | IIV on K~out~                                           | Table 2, IIV row (final model; η-shrink. 21%)  | 197% CV                          |
 | Residual error (additive on log scale = proportional)   | Table 2, residual row (final model; ε-shrink. 4%) | 48%                          |
 | V~ss~ = V~1~ + V~2~ (typical)                           | Table 2 footnote / Discussion §4               | 2.64 L                           |
-| **V~1~ change (D = 50 mg) = 53%** *(NOT modelled — see Assumptions)* | Table 2, "V1 change (D = 50 mg)" row | n/a                              |
+| **V~1~ change (D = 50 mg) [%] = 53** *(applied as 53 % decrease in V~1~ for 50 mg cohort — see Errata)* | Table 2, "V1 change (D = 50 mg)" row | `V1 * (1 − 0.53 * (DOSE == 50))` |
 
 The ODE system implemented in
 `inst/modeldb/specificDrugs/Castro-Surez_2020_nimotuzumab.R` is mathematically
@@ -143,7 +143,7 @@ make_cohort <- function(dose_mg, n, id_offset = 0L) {
   tibble(
     id   = id_offset + seq_len(n),
     WT   = wt,
-    dose = dose_mg
+    DOSE = dose_mg
   )
 }
 
@@ -152,7 +152,7 @@ pop <- bind_rows(lapply(seq_along(dose_levels), function(k) {
 }))
 
 stopifnot(!anyDuplicated(pop$id))
-table(pop$dose)
+table(pop$DOSE)
 ```
 
 ## Dataset construction
@@ -171,10 +171,10 @@ obs_times <- sort(unique(c(
 d_dose <- pop |>
   mutate(
     TIME = 0,
-    AMT  = dose,
+    AMT  = DOSE,
     EVID = 1,
     CMT  = "central",
-    RATE = dose / infusion_h,
+    RATE = DOSE / infusion_h,
     DV   = NA_real_
   )
 
@@ -190,7 +190,7 @@ d_obs <- pop |>
 
 d_sim <- bind_rows(d_dose, d_obs) |>
   arrange(id, TIME, desc(EVID)) |>
-  select(id, TIME, AMT, EVID, CMT, RATE, DV, WT, dose)
+  select(id, TIME, AMT, EVID, CMT, RATE, DV, WT, DOSE)
 
 stopifnot(sum(d_sim$EVID == 1) == nrow(pop))
 ```
@@ -206,11 +206,11 @@ profiles in Figure 4.
 mod <- readModelDb("Castro-Surez_2020_nimotuzumab")
 
 set.seed(20201202)
-sim_full <- rxode2::rxSolve(mod, events = d_sim, keep = c("dose")) |>
+sim_full <- rxode2::rxSolve(mod, events = d_sim) |>
   as.data.frame()
 
 mod_typ <- rxode2::zeroRe(mod)
-sim_typ <- rxode2::rxSolve(mod_typ, events = d_sim, keep = c("dose")) |>
+sim_typ <- rxode2::rxSolve(mod_typ, events = d_sim) |>
   as.data.frame()
 ```
 
@@ -223,10 +223,10 @@ nimotuzumab in the central (panel a), peripheral (panel b), and mediator
 
 ```{r fig4a, fig.width = 7, fig.height = 4.5}
 sim_typ_one <- sim_typ |>
-  group_by(dose) |>
+  group_by(DOSE) |>
   filter(id == min(id)) |>
   ungroup() |>
-  mutate(dose_label = factor(paste(dose, "mg"), levels = paste(dose_levels, "mg")))
+  mutate(dose_label = factor(paste(DOSE, "mg"), levels = paste(dose_levels, "mg")))
 
 ggplot(sim_typ_one, aes(time, Cc, colour = dose_label)) +
   geom_line(linewidth = 0.8) +
@@ -236,10 +236,15 @@ ggplot(sim_typ_one, aes(time, Cc, colour = dose_label)) +
     y = "Total nimotuzumab Cc (mg/L)",
     colour = "Dose",
     title = "Figure 4(a)-equivalent — central concentration vs. time",
-    caption = "Replicates Figure 4(a) of Castro-Suárez 2020 (typical-value simulation)."
+    caption = "Replicates Figure 4A of Castro-Suárez 2020 — central compartment concentration following a single IV infusion of 50, 100, 200, 400, 800, or 1200 mg nimotuzumab in an ADPKD patient."
   ) +
   theme_bw()
 ```
+
+The simulated 50 mg curve shows the faster early decline visible in the
+published Figure 4A, providing visual support for the V~1~ × (1 − 0.53)
+interpretation of the Table 2 row "V~1~ change (D = 50 mg) [%] = 53"
+(see Errata section below for the rationale and remaining ambiguity).
 
 ```{r fig4b, fig.width = 7, fig.height = 4.5}
 ggplot(sim_typ_one, aes(time, peripheral1 / 9.92e-3, colour = dose_label)) +
@@ -282,15 +287,15 @@ sensitivity is highest.
 
 ```{r vpc, fig.width = 7, fig.height = 5}
 vpc_summary <- sim_full |>
-  filter(time <= 700, dose %in% c(50, 100, 200, 400)) |>
-  group_by(dose, time) |>
+  filter(time <= 700, DOSE %in% c(50, 100, 200, 400)) |>
+  group_by(DOSE, time) |>
   summarise(
     Q05 = stats::quantile(Cc, 0.05, na.rm = TRUE),
     Q50 = stats::quantile(Cc, 0.50, na.rm = TRUE),
     Q95 = stats::quantile(Cc, 0.95, na.rm = TRUE),
     .groups = "drop"
   ) |>
-  mutate(dose_label = factor(paste(dose, "mg"), levels = paste(c(50, 100, 200, 400), "mg")))
+  mutate(dose_label = factor(paste(DOSE, "mg"), levels = paste(c(50, 100, 200, 400), "mg")))
 
 ggplot(vpc_summary, aes(time, Q50, fill = dose_label, colour = dose_label)) +
   geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.25, colour = NA) +
@@ -315,21 +320,21 @@ grouping variable so the summary rolls up per cohort.
 
 ```{r pknca}
 sim_nca <- sim_full |>
-  filter(!is.na(Cc), dose %in% c(50, 100, 200, 400), time <= 700) |>
+  filter(!is.na(Cc), DOSE %in% c(50, 100, 200, 400), time <= 700) |>
   transmute(
     id        = id,
     time      = time,
     Cc        = Cc,
-    treatment = paste(dose, "mg")
+    treatment = paste(DOSE, "mg")
   )
 
 dose_nca <- d_sim |>
-  filter(EVID == 1, dose %in% c(50, 100, 200, 400)) |>
+  filter(EVID == 1, DOSE %in% c(50, 100, 200, 400)) |>
   transmute(
     id        = id,
     time      = TIME,
     amt       = AMT,
-    treatment = paste(dose, "mg")
+    treatment = paste(DOSE, "mg")
   )
 
 conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id,
@@ -373,17 +378,25 @@ narrative (S~50~ = 8.57 mg/L; maximum mediator activation reached at 100 mg).
 
 ```{r compare}
 # Vss is V1 + V2 from the model (typical-value trajectory).
-vss_sim <- (sim_typ_one |> filter(dose == 100, time == 1000) |> nrow() > 0)  # sanity guard
+vss_sim <- (sim_typ_one |> filter(DOSE == 100, time == 1000) |> nrow() > 0)  # sanity guard
 
 vss_typical <- 2.63 + 9.92e-3
 
 # Cmax for 100 mg (typical) — conc immediately at end of infusion (t = 0.5 h).
 cmax_100mg_typ <- sim_typ_one |>
-  filter(dose == 100, time == 0.5) |>
+  filter(DOSE == 100, time == 0.5) |>
   pull(Cc)
 
+# Cmax for 50 mg (typical) — sanity check on the V1 x (1 - 0.53) reduction for the
+# 50 mg cohort (see Errata). With V1 = 2.63 * 0.47 = 1.2361 L, Cmax_typical ~=
+# 50 / 1.2361 ~= 40.5 mg/L; without the reduction it would be 50 / 2.63 ~= 19 mg/L.
+cmax_50mg_typ <- sim_typ_one |>
+  filter(DOSE == 50, time == 0.5) |>
+  pull(Cc)
+cmax_50mg_no_v1shift <- 50 / 2.63
+
 # Time above S50 = 8.57 mg/L for the typical 100 mg trajectory.
-typ100 <- sim_typ_one |> filter(dose == 100)
+typ100 <- sim_typ_one |> filter(DOSE == 100)
 hours_above_S50_100 <- typ100 |>
   arrange(time) |>
   mutate(width = c(diff(time), 0)) |>
@@ -395,18 +408,26 @@ comparison <- tibble::tribble(
   ~metric,                                                 ~published,             ~simulated,                         ~units,
   "Vss (typical) = V1 + V2",                                2.64,                  vss_typical,                        "L",
   "Cmax @ 100 mg, end of 30-min infusion (typical)",        NA_real_,              cmax_100mg_typ,                     "mg/L",
+  "Cmax @ 50 mg, end of 30-min infusion (typical)",         NA_real_,              cmax_50mg_typ,                      "mg/L",
+  "Cmax @ 50 mg if V1 shift were not applied",              NA_real_,              cmax_50mg_no_v1shift,               "mg/L",
   "Free Cc above S50 (8.57 mg/L) duration @ 100 mg (typ.)", NA_real_,              hours_above_S50_100,                "h"
 )
 comparison
 ```
 
 The simulated typical-patient V~ss~ exactly matches the published 2.64 L
-(V~1~ + V~2~ are direct fixed-effect parameters; no covariate scaling). The
-typical Cmax at the 100-mg dose is approximately dose ÷ V~1~ = 100 / 2.63 ≈
-38 mg/L immediately after infusion end, consistent with the y-axis of
-Figure 4(a). The simulated free-concentration window above S~50~ = 8.57 mg/L
-provides the duration that the paper's Discussion uses to argue that 100 mg
-is the maximum effective single dose.
+(V~1~ + V~2~ are direct fixed-effect parameters; for doses other than 50 mg
+no covariate scaling applies). The typical Cmax at the 100-mg dose is
+approximately dose ÷ V~1~ = 100 / 2.63 ≈ 38 mg/L immediately after infusion
+end, consistent with the y-axis of Figure 4(a). The typical Cmax at the
+50-mg dose is approximately dose ÷ (V~1~ × 0.47) = 50 / 1.236 ≈ 40 mg/L —
+i.e. **higher** than the un-adjusted 50 / 2.63 ≈ 19 mg/L value would be —
+which is what produces the faster early decline of the 50 mg curve in
+Figure 4A (smaller central volume → higher initial concentration and
+higher free-drug exposure that drives accelerated TMDD/mediator
+clearance). The simulated free-concentration window above S~50~ = 8.57
+mg/L provides the duration that the paper's Discussion uses to argue
+that 100 mg is the maximum effective single dose.
 
 ## Assumptions and deviations
 
@@ -421,26 +442,6 @@ is the maximum effective single dose.
   model should be updated.** Operator follow-up F8 in the upstream tracking
   notes records that the corresponding author has been emailed for
   confirmation.
-- **V~1~ change for the 50-mg dose cohort: NOT modelled.** Table 2 lists
-  a fixed-effect parameter "V~1~ change (D = 50 mg) [%]" with a final
-  estimate of 53% (RSE 14%, bootstrap 95% CI 43–69%). This represents a
-  binary dose-stratified V~1~ adjustment specifically for the 5-patient
-  50-mg cohort. The parameter is **not** described in Methods §2.3, in
-  Results, or in Discussion: it appears only as a Table 2 row. The
-  direction of the adjustment (V~1~ larger or smaller for 50 mg) is not
-  stated in the paper, the Vss footnote (V~ss~ = V~1~ + V~2~ = 2.64 L)
-  uses only the typical V~1~ = 2.63 L without a 50-mg variant, and the
-  Discussion characterizes the 50-mg cohort's faster early elimination as
-  arising from mediator dynamics rather than V~1~. The skill operator
-  confirmed that the dose-stratified V~1~ should be omitted from the
-  packaged model on the following grounds: (i) it was estimated for a
-  5-patient cohort and is not generalizable to other ADPKD populations or
-  other indications; (ii) the published Vss footnote uses only the
-  unadjusted V~1~; (iii) the direction of effect cannot be inferred from
-  the paper text; and (iv) including a fragile, undocumented dose-stratified
-  V~1~ would risk misuse if a future user simulates the 50-mg dose in a
-  different population. Authors have been contacted (operator follow-up
-  F8) and the model will be updated if direction is clarified.
 - **No covariate effects.** The covariate-search procedure (forward
   p < 0.05, backward p < 0.01) tested body weight, height, age, body
   surface area, creatinine clearance, serum creatinine, total kidney
@@ -470,6 +471,34 @@ is the maximum effective single dose.
   renal-impaired populations is not supported by the source data.
 - **Below-LOQ data.** All 422 observations were quantifiable; no BLQ
   handling is implemented.
+
+## Errata
+
+- **V~1~ change for the 50-mg dose cohort — direction inferred from
+  Figure 4A, not stated in the paper text.** Table 2 of Castro-Suárez
+  2020 lists a fixed-effect parameter `V1 change (D = 50 mg) [%]` with
+  a final estimate of 53 %, bootstrap median 56, RSE 14 %, and bootstrap
+  95 % CI 43–69 %. The parameter is reported only as a Table 2 row: it
+  is **not** described in Methods §2.3, in Results §3.2, in the
+  Discussion, or in the V~ss~ footnote — all of which use the unmodified
+  V~1~ = 2.63 L. The **direction** of the adjustment (V~1~ larger or
+  smaller for the 50 mg cohort) is therefore not explicitly stated in
+  the paper. This packaged model interprets the parameter as a 53 %
+  **decrease** in V~1~ for the 50 mg cohort
+  (`vc <- exp(lvc) * (1 - 0.53 * (DOSE == 50))`; the published final
+  model carries no IIV on V~1~) on the basis
+  of visual inspection of Figure 4A: the published 50 mg simulated
+  central-compartment trajectory shows a faster early decline than the
+  100, 200, 400, 800, or 1200 mg trajectories, behavior consistent with
+  a smaller central volume at 50 mg. This is documented as an
+  Erratum-style ambiguity rather than a published correction; no
+  erratum was located on PubMed, the MDPI landing page, or Google
+  Scholar (search dates 2026-04-25). The corresponding author
+  Víctor Mangas-Sanjuán (Universitat de València,
+  `victor.mangas@uv.es`) has been contacted for confirmation of
+  direction (operator follow-up F8 in the upstream tracking notes); if
+  the author reply differs from the Figure-4A-based interpretation,
+  this entry and the model file will be updated.
 
 ## Reference
 
