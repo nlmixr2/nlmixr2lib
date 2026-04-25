@@ -77,10 +77,10 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Units:** kg
 - **Type:** continuous
 - **Scope:** general
-- **Reference category:** n/a — used with power scaling `(FFM / ref)^exponent`. Reference values observed: 40.69 kg (Zhou 2021 belimumab pooled adult+pediatric SLE).
+- **Reference category:** n/a — used with power scaling `(FFM / ref)^exponent`. Reference values observed: 40.69 kg (Zhou 2021 belimumab pooled adult+pediatric SLE), 45 kg (Aguiar 2021, Crohn's disease cohort median).
 - **Source aliases:** none; `FFM` is the universal abbreviation.
-- **Example models:** `Zhou_2021_belimumab.R` (reference 40.69 kg; exponents 0.673 on CL and 0.891 on V1).
-- **Notes:** Distinct from `LBM` (lean body mass) which is sometimes computed by the Boer or Hume formulae. When the source paper reports the body-composition formula it used (e.g., Janmahasatian for FFM), record it in `covariateData[[FFM]]$notes`.
+- **Example models:** `Zhou_2021_belimumab.R` (reference 40.69 kg; exponents 0.673 on CL and 0.891 on V1), `Aguiar_2021_ustekinumab.R` (reference 45 kg; power exponents 0.598 on CL, 0.590 on Vc, 0.586 on Vp).
+- **Notes:** Distinct from `LBM` (lean body mass) which is sometimes computed by the Boer or Hume formulae. When the source paper reports the body-composition formula it used (e.g., Janmahasatian for FFM), record it in `covariateData[[FFM]]$notes`. FFM is preferred over total body weight when scaling monoclonal-antibody PK because mAb distribution is largely confined to extracellular fluid; muscle / lean tissue tracks extracellular volume better than total weight in heavier patients.
 
 ### BSA
 - **Description:** Body surface area (typically computed by DuBois, Mosteller, or Haycock from height and weight).
@@ -730,6 +730,16 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Rosario_2015_vedolizumab.R` (reference 6; exponent +0.0408 on CLL gated by `(1 - IBD_CD)` so the effect applies only to UC patients).
 - **Notes:** The partial Mayo score excludes the endoscopy subscore (the full Mayo score is 0–12). Mutually exclusive with `CDAI` in pooled UC+CD populations.
 
+### ENDO_ULCER (**canonical for endoscopically active luminal disease at baseline**)
+- **Description:** 1 = mucosal ulcerations confirmed at baseline ileocolonoscopy / endoscopy (endoscopically active luminal disease), 0 = no mucosal ulcerations at baseline. Time-fixed (assessed at study entry).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no mucosal ulcerations at baseline).
+- **Source aliases:** none known.
+- **Example models:** `Aguiar_2021_ustekinumab.R` (Aguiar 2021 Table 3; covariate on baseline fecal calprotectin FC0: 213 mg/kg with ulcers vs 102 mg/kg without).
+- **Notes:** IBD-specific structural-disease-activity indicator, distinct from the symptom-driven CDAI / PMAYO and the biomarker-driven CALPRO / CRP. Useful as a covariate on baseline biomarkers (FC, CRP) and as a stratifier for simulations of biochemical remission.
+
 ## Inflammatory-bowel-disease diagnosis
 
 ### IBD_CD (**canonical for Crohn's disease indicator**)
@@ -916,6 +926,20 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Martinez_2019_alirocumab.R` (additive effect on linear clearance CLL: `CLL = TVCLL + COV1*(WT-82.9) + COV2*STATIN`; +0.00644 L/h when statin is coadministered).
 - **Notes:** Per-model `covariateData[[STATIN]]$notes` must document which statins and dose thresholds are included in the "STATIN = 1" category, since inclusion criteria vary by study. Martinez 2019 codes STATIN = 1 for coadministration of rosuvastatin (< 20 mg/day), atorvastatin (< 40 mg/day), or simvastatin (any dose); other statin regimens are coded as 0.
 
+## Pharmacogenetics
+
+### FCGR3A_VV (**canonical for FCGR3A 158 V/V homozygote indicator**)
+- **Description:** 1 = subject is homozygous for valine at amino-acid position 158 of the FcγRIIIa receptor (V/V), encoded by the rs396991 polymorphism in the FCGR3A gene; 0 = otherwise (heterozygote V/F or homozygote F/F pooled). The dominant V/V vs (V/F + F/F) grouping is the encoding used in the Aguiar 2021 source paper after testing dominant and recessive groupings during covariate model building.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 = V/F heterozygote or F/F homozygote (combined).
+- **Source aliases:**
+  - `FCGR3A` (genotype string, e.g., `"V/V"` / `"V/F"` / `"F/F"`): derive `FCGR3A_VV = as.integer(FCGR3A == "V/V")`.
+  - `rs396991` (raw allele coding, often `"AA"` / `"AC"` / `"CC"` or `"GG"` / `"GT"` / `"TT"` depending on assay strand): map V allele -> 1, F allele -> 0 with the assay-specific allele convention; derive `FCGR3A_VV = as.integer(genotype is V-homozygous)`.
+- **Example models:** `Aguiar_2021_ustekinumab.R` (Aguiar 2021 Table 2 footnote; logit-scale effect on subcutaneous bioavailability F: 88.8% in V/V vs 71.0% in V/F + F/F).
+- **Notes:** rs396991 (FCGR3A 158V>F) is a well-studied pharmacogenetic polymorphism affecting FcγRIIIa-IgG affinity and has been associated with response to several IgG monoclonal antibodies (rituximab, infliximab, ustekinumab). The V allele is the higher-affinity variant. Document the assay-strand allele convention used in the source paper in `covariateData[[FCGR3A_VV]]$notes`. Future models that use a recessive (F/F vs V/* combined) or codominant (additive 0/1/2) coding should register a separate canonical (e.g., `FCGR3A_FF`, `FCGR3A_VCT` for V-allele count) rather than overloading `FCGR3A_VV`.
+
 ## Immunogenicity
 
 ### ADA_POS (**canonical**)
@@ -954,6 +978,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   - `PRIORTNF` (all caps, no underscore) — acceptable alternative spelling.
 - **Example models:** `Moein_2022_etrolizumab.R` (multiplicative fractional effect on CL, +4.9%).
 - **Notes:** Use when the source paper reports a binary "prior anti-TNF inhibitor" covariate on any PK parameter. Generally applicable across RA/PsA/IBD/axSpA biologic PK models.
+
+### PRIOR_BIO (**canonical for prior biologic exposure**)
+- **Description:** 1 = subject previously treated with any biologic (broader than `PRIOR_TNF`: includes anti-TNF agents plus anti-integrin, anti-IL-12/23, anti-IL-17, anti-IL-23, anti-IL-6, etc.), 0 = biologic-naive.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (biologic-naive).
+- **Source aliases:**
+  - `bio-naive` (Aguiar 2021 source-paper variable, with the indicator inverted: paper's `bio-naive = 1 - PRIOR_BIO`). Effect coefficients in the source paper apply to `bio-naive`; in `model()` derive `bio_naive <- 1 - PRIOR_BIO` to preserve the paper's reported coefficient.
+- **Example models:** `Aguiar_2021_ustekinumab.R` (Aguiar 2021 Table 2 footnote a; multiplicative effect on CL: factor `(1 - 0.227 * (1 - PRIOR_BIO))`, so bio-naive patients have ~23% lower CL than previously-exposed patients).
+- **Notes:** Distinct from `PRIOR_TNF` (a strict subset). Use `PRIOR_BIO` when the source paper's covariate counts any biologic as prior exposure (anti-TNF, anti-integrin, anti-IL-12/23, anti-IL-17, anti-IL-23, anti-IL-6, etc.); use `PRIOR_TNF` when the source paper specifically tested anti-TNF exposure. When the source paper uses the inverted "bio-naive" indicator (1 = naive), document the inversion in `covariateData[[PRIOR_BIO]]$notes` and apply `1 - PRIOR_BIO` in `model()` so the canonical column stores 1 = previously exposed.
 
 ### DISEXT_EP (**canonical for extensive colitis / pancolitis indicator**)
 - **Description:** 1 = extensive colitis or pancolitis disease extension, 0 = not.
