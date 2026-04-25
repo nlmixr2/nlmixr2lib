@@ -50,7 +50,7 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Scope:** general
 - **Reference category:** n/a — used with allometric scaling `(WT / ref_wt)^exponent`. Reference weights observed: 70 kg (adults), 75 kg, 84.8 kg, 5 kg (infants).
 - **Source aliases:** none known.
-- **Example models:** `Clegg_2024_nirsevimab.R`, `Hu_2026_clesrovimab.R`, `Zhu_2017_lebrikizumab.R`, `Kovalenko_2020_dupilumab.R`, `CarlssonPetri_2021_liraglutide.R`, `Cirincione_2017_exenatide.R`, `Grimm_2023_gantenerumab.R`, `Grimm_2023_trontinemab.R`, `Kyhl_2016_nalmefene.R`, `Soehoel_2022_tralokinumab.R`, `Xie_2019_agomelatine.R`, `PK_2cmt_mAb_Davda_2014.R`, `phenylalanine_charbonneau_2021.R`, `Chua_2025_mirikizumab.R`, `Jackson_2022_ixekizumab.R`, `Kotani_2022_astegolimab.R`, `Ma_2020_sarilumab_anc.R`, `Ma_2020_sarilumab_das28crp.R`, `Moein_2022_etrolizumab.R`, `Tiraboschi_2025_amlitelimab.R`, `Robbie_2012_palivizumab.R`, `Bajaj_2017_nivolumab.R`.
+- **Example models:** `Clegg_2024_nirsevimab.R`, `Hu_2026_clesrovimab.R`, `Zhu_2017_lebrikizumab.R`, `Kovalenko_2020_dupilumab.R`, `CarlssonPetri_2021_liraglutide.R`, `Cirincione_2017_exenatide.R`, `Grimm_2023_gantenerumab.R`, `Grimm_2023_trontinemab.R`, `Kyhl_2016_nalmefene.R`, `Soehoel_2022_tralokinumab.R`, `Xie_2019_agomelatine.R`, `PK_2cmt_mAb_Davda_2014.R`, `phenylalanine_charbonneau_2021.R`, `Chua_2025_mirikizumab.R`, `Jackson_2022_ixekizumab.R`, `Kotani_2022_astegolimab.R`, `Ma_2020_sarilumab_anc.R`, `Ma_2020_sarilumab_das28crp.R`, `Moein_2022_etrolizumab.R`, `Tiraboschi_2025_amlitelimab.R`, `Robbie_2012_palivizumab.R`, `Bajaj_2017_nivolumab.R`, `Quartino_2019_trastuzumab.R`, `Wang_2020_ontamalimab.R`.
 - **Notes:** Universal. Verify time-varying vs. baseline-only against the source paper.
 
 ### AGE
@@ -183,7 +183,7 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Scope:** general
 - **Reference category:** n/a — used with power scaling `(ALB / ref)^exponent`.
 - **Source aliases:** none; `ALB` is the universal abbreviation.
-- **Example models:** `Fasanmade_2009_infliximab.R` (g/dL, reference 4.1), `Thakre_2022_risankizumab.R` (g/L, reference 45), `Chua_2025_mirikizumab.R`, `Moein_2022_etrolizumab.R`, `Tiraboschi_2025_amlitelimab.R`, `Yamada_2025_zolbetuximab.R`, `Li_2019_abatacept.R` (g/dL, reference 4.0; the Li 2019 Methods states 'mg/dL' which is a publication typo — see the model's `covariateData[[ALB]]$notes`).
+- **Example models:** `Fasanmade_2009_infliximab.R` (g/dL, reference 4.1), `Thakre_2022_risankizumab.R` (g/L, reference 45), `Chua_2025_mirikizumab.R`, `Moein_2022_etrolizumab.R`, `Tiraboschi_2025_amlitelimab.R`, `Yamada_2025_zolbetuximab.R`, `Li_2019_abatacept.R` (g/dL, reference 4.0; the Li 2019 Methods states 'mg/dL' which is a publication typo — see the model's `covariateData[[ALB]]$notes`), `Quartino_2019_trastuzumab.R` (g/dL, reference 4; source column `ALBU`; negative exponent -0.998 on linear CL), `Wang_2020_ontamalimab.R` (g/L, reference 39).
 - **Notes:** Ratified canonically on 2026-04-19 after cross-model review. Unit varies by paper (g/dL in US-convention papers, g/L in SI-convention papers); the per-model `covariateData[[ALB]]$units` field is load-bearing. Effect-coefficient magnitude is meaningless without the unit.
 
 ### TBILI (**canonical for total bilirubin**)
@@ -202,9 +202,31 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Type:** continuous
 - **Scope:** general
 - **Reference category:** n/a — used with power scaling `(AST / ref)^exponent`.
-- **Source aliases:** none; `AST` is the universal clinical-PK abbreviation.
-- **Example models:** `Lu_2014_trastuzumabemtansine.R` (U/L, reference 27; small positive exponent 0.071 on CL).
-- **Notes:** Hepatic-function marker. Commonly reported alongside `ALT` and `TBILI`; register a separate `ALT` canonical if a future paper requires it.
+- **Source aliases:**
+  - `SGOT` (serum glutamic-oxaloacetic transaminase; the legacy clinical-chemistry name for AST) — used in `Quartino_2019_trastuzumab.R`.
+- **Example models:** `Lu_2014_trastuzumabemtansine.R` (U/L, reference 27; small positive exponent 0.071 on CL), `Quartino_2019_trastuzumab.R` (IU/L, reference 24; source column `SGOT`; positive exponent 0.205 on linear CL).
+- **Notes:** Hepatic-function marker. Commonly reported alongside `ALT` and `TBILI`; register a separate `ALT` canonical if a future paper requires it. `SGOT` is the older lab-reporting name; values and units are identical to `AST`.
+
+### ALT (**canonical for alanine aminotransferase**)
+- **Description:** Serum alanine aminotransferase activity (baseline or time-varying).
+- **Units:** U/L (IU/L; the two labels are used interchangeably in the clinical-PK literature). Document per-model via `covariateData[[ALT]]$units`.
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a — used with power scaling `(ALT / ref)^exponent`.
+- **Source aliases:** none; `ALT` is the universal clinical-PK abbreviation.
+- **Example models:** `Nikanjam_2019_siltuximab.R` (U/L, reference 19; small negative exponent -0.096 on CL).
+- **Notes:** Hepatic-function marker. Commonly reported alongside `AST` and `TBILI`. Ratified canonically on 2026-04-24.
+
+### LDH (**canonical for serum lactate dehydrogenase**)
+- **Description:** Serum lactate dehydrogenase activity (baseline or time-varying). General-purpose marker of tissue / cellular turnover; in oncology PK analyses it is interpreted as a disease-burden / cell-turnover proxy.
+- **Units:** U/L (IU/L; interchangeable). Document per-model via `covariateData[[LDH]]$units`.
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a — used with power scaling `(LDH / ref)^exponent` or with an additive linear-on-log form `exp(coef * (log(LDH) - log(ref)))` (algebraically equivalent to `(log(LDH) / log(ref))^coef`). Reference values observed: 217 U/L (Sanghavi 2020).
+- **Source aliases:**
+  - `BLDH` (baseline LDH) — used in `Sanghavi_2020_ipilimumab.R`.
+- **Example models:** `Sanghavi_2020_ipilimumab.R` (linear-on-log form on CL with reference 217 U/L; coefficient 0.703).
+- **Notes:** Universal lab marker. Sanghavi 2020 log-transforms LDH because the distribution is heavily right-skewed (range 74-6,245 U/L over a median of 217); other papers may use a simple `(LDH/ref)^exponent` form. Document the functional form in `covariateData[[LDH]]$notes`.
 
 ## Hematology
 
@@ -302,14 +324,26 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Units:** mg/L (document per-model via `covariateData[[CRP]]$units`).
 - **Type:** continuous
 - **Scope:** general
-- **Reference category:** n/a — used with power scaling `(CRP / ref)^exponent` or exponential effects `exp(coef * (CRP - ref))`. Reference values observed: 4.23 mg/L (Moein 2022, IBD standard assay), 4.31 mg/L (Moein 2022 Table 3 median), 5.21 mg/L (Thakre 2022, baseline hs-CRP), 7.41 mg/L (Chua 2025, baseline standard assay), 14.2 mg/L (Xu 2019, baseline standard assay), 15.7 mg/L (Ma 2020, baseline standard assay).
+- **Reference category:** n/a — used with power scaling `(CRP / ref)^exponent` or exponential effects `exp(coef * (CRP - ref))`. Reference values observed: 4.23 mg/L (Moein 2022, IBD standard assay), 4.31 mg/L (Moein 2022 Table 3 median), 5.21 mg/L (Thakre 2022, baseline hs-CRP), 7.41 mg/L (Chua 2025, baseline standard assay), 14.2 mg/L (Xu 2019, baseline standard assay), 15.7 mg/L (Ma 2020, baseline standard assay), 0.837 mg/dL = 8.37 mg/L (Wang 2020, IBD standard assay; the model carries the source unit mg/dL).
 - **Source aliases:**
   - `hsCRP` — high-sensitivity CRP (mixed-case preserved from earlier register drafts).
   - `HSCRP` — all-caps variant.
   - `CRPHS` — used in `Thakre_2022_risankizumab.R` (baseline, high-sensitivity assay).
   - `BLCRP` — baseline CRP; used in `Xu_2019_sarilumab.R` and `Ma_2020_sarilumab_das28crp.R`.
-- **Example models:** `Thakre_2022_risankizumab.R`, `Xu_2019_sarilumab.R`, `Chua_2025_mirikizumab.R`, `Moein_2022_etrolizumab.R`, `Ma_2020_sarilumab_das28crp.R`.
+- **Example models:** `Thakre_2022_risankizumab.R`, `Xu_2019_sarilumab.R`, `Chua_2025_mirikizumab.R`, `Moein_2022_etrolizumab.R`, `Ma_2020_sarilumab_das28crp.R`, `Wang_2020_ontamalimab.R` (mg/dL, reference 0.837).
 - **Notes:** The prior separate `hsCRP`, `BLCRP`, and standard-assay `CRP` canonicals were merged on 2026-04-20 to a single general-scope `CRP` canonical. Assay type (standard vs hs-CRP), baseline-vs-time-varying status, and the paper-specific reference value all live in each model's `covariateData[[CRP]]$description` / `notes`. Only aggregate values from hs-validated assays as CRP when the downstream analysis relies on low-range sensitivity; for most inflammatory-disease cohorts (IBD, RA/PsA), baseline CRP is well above the hs-sensitivity range and the distinction is moot.
+
+## Cardiometabolic / target biomarkers
+
+### FPCSK9 (**canonical for free (unbound) proprotein convertase subtilisin/kexin type 9 concentration**)
+- **Description:** Free (unbound, non-drug-bound) serum proprotein convertase subtilisin/kexin type 9 (PCSK9) concentration. For anti-PCSK9 monoclonal antibodies (alirocumab, evolocumab, bococizumab) the free-PCSK9 pool is the pharmacologically active target fraction; drug–target binding reduces FPCSK9 relative to total PCSK9.
+- **Units:** ng/mL (document per-model if a paper reports a different unit).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a — used with linear-deviation forms `TVPARAM + theta * (FPCSK9 / ref)` or power-form `(FPCSK9 / ref)^theta`. Reference values observed: 72.9 ng/mL (Martinez 2019 time-varying median).
+- **Source aliases:** none known.
+- **Example models:** `Martinez_2019_alirocumab.R` (time-varying; additive-linear effect on `Km` with slope −0.541 per (FPCSK9/72.9), reference 72.9 ng/mL).
+- **Notes:** Specific scope because the column is meaningful only for drugs whose mechanism is PCSK9 inhibition; reusing the name for a different anti-PCSK9 agent is acceptable (add to Example models). For non-PCSK9 drugs that use a similar target-concentration biomarker, register a new canonical (e.g., `FIL6R`, `FTNF`) rather than overloading `FPCSK9`. Per-model `covariateData[[FPCSK9]]$notes` should state whether the value is baseline-only or time-varying and how missing values were imputed (Martinez 2019 used LOCF).
 
 ## Race / ethnicity
 
@@ -432,6 +466,36 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Hua_2015_anrukinzumab.R` (multiplicative fractional change in SC bioavailability, -30.9%).
 - **Notes:** The moderate-to-severe vs. mild-to-moderate asthma cutoff is protocol-defined; Hua 2015 uses FEV1 55-80% and ACQ-5 >= 2 for "moderate to severe" (study 4) versus FEV1 > 70% and ACQ-5 <= 1 for "mild to moderate" (study 1). Scope: specific because the severity threshold is tied to a particular analysis plan; future asthma-severity indicators with different thresholds should register as separate canonicals.
 
+### DIS_HV (**canonical for healthy-volunteer cohort indicator**)
+- **Description:** 1 = healthy volunteer (no diagnosis), 0 = patient (any diagnosis represented in the pooled cohort). Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (patient subject; the complement group is the union of disease cohorts pooled in the source analysis).
+- **Source aliases:** none known; healthy-volunteer indicators in source NONMEM control streams typically use ad-hoc names (e.g., `HV`, `HEALTHY`).
+- **Example models:** `Nikanjam_2019_siltuximab.R` (multiplicative effects: 0.77 on CL, 0.83 on Vss; reference category is the pooled non-HV oncology cohort).
+- **Notes:** Used when a population PK model pools healthy volunteers with patients across heterogeneous indications and the HV-vs-patient contrast is retained as a covariate. Scope: specific because the complement reference category is paper-defined (Nikanjam 2019 reference is "all non-HV, non-Castleman, non-SMM tumor types"). Ratified canonically on 2026-04-24.
+
+### DIS_CASTLEMAN (**canonical for Castleman's disease indicator**)
+- **Description:** 1 = Castleman's disease (multicentric or unicentric), 0 = not Castleman's disease. Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-Castleman subject; the complement group is the union of healthy volunteers and other indications pooled in the source analysis).
+- **Source aliases:** none known; source NONMEM control streams typically use ad-hoc names (e.g., `CD`, `CASTLEMAN`).
+- **Example models:** `Nikanjam_2019_siltuximab.R` (multiplicative +24% effect on CL; no Vss effect).
+- **Notes:** Castleman's disease is a lymphoproliferative disorder strongly associated with elevated IL-6 levels; it is the only FDA-approved indication for siltuximab. Scope: specific because the disease-pooling reference category is paper-defined. Ratified canonically on 2026-04-24.
+
+### DIS_SMM (**canonical for smoldering multiple myeloma indicator**)
+- **Description:** 1 = smoldering (asymptomatic) multiple myeloma, 0 = not smoldering MM. Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-SMM subject; the complement group is the union of healthy volunteers and other indications pooled in the source analysis).
+- **Source aliases:** none known; source NONMEM control streams typically use ad-hoc names (e.g., `SMM`, `SMOLDMM`).
+- **Example models:** `Nikanjam_2019_siltuximab.R` (multiplicative -23% effect on Vss; no CL effect).
+- **Notes:** Smoldering multiple myeloma is an asymptomatic plasma-cell disorder distinct from active multiple myeloma; pooled with the Nikanjam 2019 cohort that also included MGUS, multiple myeloma, RCC, ovarian, and other tumor types. Scope: specific because the disease-pooling reference category is paper-defined. Ratified canonically on 2026-04-24.
+
 ## Oncology
 
 ### TUMSZ (**canonical for baseline tumor size**)
@@ -486,8 +550,30 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Reference category:** 0 = all other tumor types (same reference group as `TUMTP_CHL`).
 - **Source aliases:**
   - `TUMTP` (categorical column) — decompose into `TUMTP_GC = as.integer(TUMTP == "GC")`.
-- **Example models:** `Budha_2023_tislelizumab.R`.
-- **Notes:** Follows the `RACE_<GROUP>` indicator-decomposition pattern. New oncology tumor types should be added as additional `TUMTP_<GROUP>` entries so the reference set stays explicit.
+  - `TTYPE` (Quartino 2019; categorical column with levels `MBC`, `EBC`, `HV`, `AGC`, `Others`) — decompose into `TUMTP_GC = as.integer(TTYPE == "AGC")`.
+- **Example models:** `Budha_2023_tislelizumab.R`, `Quartino_2019_trastuzumab.R` (advanced gastric cancer; per-group typical-value switch on linear CL and Vc rather than an exponential multiplier).
+- **Notes:** Follows the `RACE_<GROUP>` indicator-decomposition pattern. New oncology tumor types should be added as additional `TUMTP_<GROUP>` entries so the reference set stays explicit. "Advanced gastric cancer" (AGC) and "gastric cancer" (GC) are pooled onto a single `TUMTP_GC` indicator; document the per-paper stage-of-disease detail in `covariateData[[TUMTP_GC]]$notes`.
+
+### TUMTP_OTH (**canonical for 'other tumor types' residual indicator**)
+- **Description:** 1 = heterogeneous "other" tumor-type pool (typically NSCLC plus miscellaneous solid tumors such as prostate, ovarian, and colorectal), 0 = one of the named tumor-type groups in the same analysis.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 = named tumor-type groups defined per-paper (e.g., MBC, EBC, HV, AGC in Quartino 2019). The complement of all `TUMTP_<GROUP>` indicators defined in the same model.
+- **Source aliases:**
+  - `TTYPE` (Quartino 2019) — decompose into `TUMTP_OTH = as.integer(TTYPE == "Others")`.
+- **Example models:** `Quartino_2019_trastuzumab.R` (per-group typical-value switch on linear CL; NSCLC plus a small residual group of prostate, ovarian, and other histologies).
+- **Notes:** Scope: specific because the set of histologies collapsed into "Others" is defined by the analysis plan of the source paper; two papers' `TUMTP_OTH` columns are not interchangeable. Document the exact per-paper composition (e.g., "NSCLC + prostate + ovarian + other, n = 107 in Quartino 2019") in `covariateData[[TUMTP_OTH]]$notes`. A given subject can have at most one of the `TUMTP_<GROUP>` indicators (including `TUMTP_OTH`) set to 1; all-zero means the reference group.
+
+### LMET (**canonical for baseline presence of liver metastases**)
+- **Description:** Binary indicator of radiologically documented liver metastases at baseline, 1 = liver metastases present, 0 = no liver metastases.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no liver metastases at baseline).
+- **Source aliases:** none; `LMET` is the common NONMEM / clinical-PK abbreviation used directly by the source papers.
+- **Example models:** `Quartino_2019_trastuzumab.R` (exponential effect on linear CL; +16.4% typical CL when LMET = 1, per Quartino 2019 Table 1 theta12 = 0.152).
+- **Notes:** Liver metastases are associated with hepatic protein-synthesis impairment and altered IgG catabolism, making `LMET` a commonly tested covariate in oncology mAb population PK analyses. Scope: general so future oncology papers can reuse the canonical column. Time-fixed baseline indicator; if a source paper treats it as time-varying (progression during treatment), document in `covariateData[[LMET]]$notes`.
 
 ### ECOG_GE1 (**canonical for Eastern Cooperative Oncology Group performance-status indicator, >= 1**)
 - **Description:** 1 if baseline Eastern Cooperative Oncology Group (ECOG) performance status is greater than or equal to 1, 0 if ECOG = 0.
@@ -500,6 +586,72 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   - `ECOG_1` — alternative explicit form; equivalent to `ECOG_GE1` when ECOG only takes values 0, 1, 2 in the analysis dataset (which is the typical oncology case).
 - **Example models:** `Bajaj_2017_nivolumab.R` (exponential effect on CL with coefficient 0.172, reference 0).
 - **Notes:** Oncology papers conventionally report ECOG as an integer (0-5) but binarize at >= 1 because ECOG >= 2 is rare in trial cohorts. When a source paper provides the ordinal ECOG score separately, derive `ECOG_GE1 = as.integer(ECOG >= 1)`. If a future paper needs finer resolution (e.g., separate effects for ECOG 1 vs ECOG 2), add a parallel `ECOG_GE2` canonical rather than overloading this one.
+
+### TUMTP_SCLC (**canonical for small-cell-lung-cancer tumor-type indicator**)
+- **Description:** 1 = small cell lung cancer (SCLC), 0 = other tumor types.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 = all other tumor types (e.g., melanoma, NSCLC, RCC, HCC, CRC in the Sanghavi 2020 cohort; reference category is melanoma).
+- **Source aliases:**
+  - `TUMTP` (categorical column with levels including `melanoma`, `NSCLC`, `SCLC`, `CRC`, `HCC`, `RCC`) — decompose into `TUMTP_SCLC = as.integer(TUMTP == "SCLC")`.
+- **Example models:** `Sanghavi_2020_ipilimumab.R` (exponential coefficient -0.124 on CL).
+- **Notes:** Follows the `TUMTP_CHL` / `TUMTP_GC` decomposition pattern. SCLC is the only retained tumor-type indicator in the Sanghavi 2020 final model after backward elimination; the other tumor types collapse into the reference (melanoma) group.
+
+### LINE_1L (**canonical for first-line-therapy indicator**)
+- **Description:** 1 = first-line therapy (1L), 0 = second-line or greater (2L+).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (2L+, second-line or greater).
+- **Source aliases:**
+  - `LINE` (categorical column with levels `1L`, `2L`, `3L+`, ...) — decompose into `LINE_1L = as.integer(LINE == "1L")`.
+- **Example models:** `Sanghavi_2020_ipilimumab.R` (exponential coefficient -0.0949 on CL).
+- **Notes:** Common oncology PK covariate; scope: specific because the 2L+ reference grouping (versus separate 2L vs 3L+ indicators) is tied to a particular study's design. Promote to general if a second model legitimately ratifies the same 1L vs 2L+ binarization.
+
+### NIVO_1Q3W (**canonical for nivolumab 1 mg/kg every 3 weeks co-administration indicator**)
+- **Description:** 1 = ipilimumab co-administered with nivolumab 1 mg/kg every 3 weeks; 0 = otherwise (monotherapy or any other nivolumab regimen).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no nivolumab or any non-1Q3W nivolumab regimen).
+- **Source aliases:**
+  - `NIVO_REGIMEN` (categorical column with levels `none`, `0.3 mg/kg Q3W`, `1 mg/kg Q2W`, `1 mg/kg Q3W`, `3 mg/kg Q2W`, `3 mg/kg Q3W`) — decompose into `NIVO_1Q3W = as.integer(NIVO_REGIMEN == "1 mg/kg Q3W")`.
+- **Example models:** `Sanghavi_2020_ipilimumab.R` (exponential coefficient 0.0950 on ipilimumab CL).
+- **Notes:** Paired with `NIVO_3Q2W` in the Sanghavi 2020 final model; both decomposed indicators are 0 for ipilimumab monotherapy. Other nivolumab regimens (0.3 mg/kg Q3W, 1 mg/kg Q2W, 3 mg/kg Q3W) were tested but not retained in the final model and collapse into the reference 0 group.
+
+### NIVO_3Q2W (**canonical for nivolumab 3 mg/kg every 2 weeks co-administration indicator**)
+- **Description:** 1 = ipilimumab co-administered with nivolumab 3 mg/kg every 2 weeks; 0 = otherwise (monotherapy or any other nivolumab regimen).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no nivolumab or any non-3Q2W nivolumab regimen).
+- **Source aliases:**
+  - `NIVO_REGIMEN` (categorical column) — decompose into `NIVO_3Q2W = as.integer(NIVO_REGIMEN == "3 mg/kg Q2W")`.
+- **Example models:** `Sanghavi_2020_ipilimumab.R` (exponential coefficient 0.191 on ipilimumab CL).
+- **Notes:** Paired with `NIVO_1Q3W`; same reference grouping convention.
+
+### COMBO_NIVO (**canonical for any-regimen nivolumab combination-therapy indicator**)
+- **Description:** 1 = ipilimumab co-administered with any nivolumab regimen, 0 = ipilimumab monotherapy.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (ipilimumab monotherapy).
+- **Source aliases:**
+  - `COMBO` — used in `Sanghavi_2020_ipilimumab.R`. Equivalently derivable from `NIVO_REGIMEN` as `COMBO_NIVO = as.integer(NIVO_REGIMEN != "none")`.
+- **Example models:** `Sanghavi_2020_ipilimumab.R` (additive effect -0.202 on the Emax parameter of the time-varying CL function).
+- **Notes:** Distinct from the per-regimen `NIVO_1Q3W` / `NIVO_3Q2W` indicators on baseline CL: `COMBO_NIVO` aggregates across all nivolumab regimens and acts on the time-varying-CL Emax parameter, whereas the per-regimen indicators act on baseline (time-zero) CL.
+
+### ECOG_PS_GT0 (**canonical for ECOG performance status > 0 indicator**)
+- **Description:** 1 = ECOG (Eastern Cooperative Oncology Group) performance status greater than 0 at baseline (i.e., PS 1, 2, 3, or 4); 0 = ECOG PS 0 (fully active). Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (ECOG PS 0; fully active).
+- **Source aliases:**
+  - `PS` — used in `Zhang_2019_nivolumab.R` (paper's binary collapse of the four-level ECOG scale into PS=0 vs. PS>0).
+- **Example models:** `Zhang_2019_nivolumab.R` (multiplicative effect on baseline CL, additive effect on Emax of time-varying CL).
+- **Notes:** Many oncology PopPK papers report a binary-collapsed performance-status indicator rather than the full ECOG scale. The "GT0" suffix preserves the dichotomization explicitly. If a future paper uses a different cut-point (e.g., PS<=1 vs. PS>=2), register it as `ECOG_PS_GT1` rather than reusing this column.
 
 ## Laboratory / disease-activity
 
@@ -666,6 +818,50 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   - `BSTEROID` — used in `Narwal_2013_sifalimumab.R`.
 - **Example models:** `Narwal_2013_sifalimumab.R` (multiplicative on CL: `CL * (1 + 0.195 * STEROID)`).
 - **Notes:** Distinct from `PRICORT`, which is strictly a prior (pre-study) indicator. `STEROID` captures concurrent corticosteroid use at / from study baseline. When a future paper needs the two jointly, both can coexist on the same subject.
+### COADMIN_IPI_3Q3W (**canonical for nivolumab + ipilimumab 3 mg/kg q3w combination indicator**)
+- **Description:** 1 = subject is receiving nivolumab in combination with ipilimumab 3 mg/kg every 3 weeks (4-dose induction); 0 = otherwise. Encodes the high-intensity ipilimumab combination regimen as a study-design covariate on nivolumab CL.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (any non-3Q3W regimen — monotherapy, chemotherapy combination, or another ipilimumab schedule).
+- **Source aliases:**
+  - `IPI3Q3W` — used in `Zhang_2019_nivolumab.R`.
+- **Example models:** `Zhang_2019_nivolumab.R` (exponential effect on baseline CL: `exp(0.227)` ≈ 1.25 fold increase relative to monotherapy).
+- **Notes:** Paired with `COADMIN_IPI_1Q6W`; both indicators can coexist in one population, but a single subject has at most one set to 1 in the Zhang 2019 cohort. The remaining ipilimumab schedules (1 mg/kg q3w x 4 induction, 1 mg/kg q12w) had no statistically significant effect on nivolumab CL and were therefore folded into the reference (0) group along with monotherapy, leaving only IPI3Q3W and IPI1Q6W as named non-reference indicators.
+
+### COADMIN_IPI_1Q6W (**canonical for nivolumab + ipilimumab 1 mg/kg q6w combination indicator**)
+- **Description:** 1 = subject is receiving nivolumab in combination with ipilimumab 1 mg/kg every 6 weeks (continuous maintenance); 0 = otherwise.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (any non-1Q6W regimen — monotherapy, chemotherapy combination, or another ipilimumab schedule).
+- **Source aliases:**
+  - `IPI1Q6W` — used in `Zhang_2019_nivolumab.R`.
+- **Example models:** `Zhang_2019_nivolumab.R` (exponential effect on baseline CL: `exp(0.159)` ≈ 1.17 fold increase relative to monotherapy).
+- **Notes:** Paired with `COADMIN_IPI_3Q3W`. See the COADMIN_IPI_3Q3W note for how the other ipilimumab schedules collapse into the reference group.
+
+### COADMIN_CHEMO (**canonical for nivolumab + chemotherapy combination indicator**)
+- **Description:** 1 = subject is receiving nivolumab in combination with platinum-based chemotherapy (gemcitabine + cisplatin, pemetrexed + cisplatin, paclitaxel + carboplatin, or platinum-doublet); 0 = otherwise. Encodes any chemotherapy coadministration as a study-design covariate on nivolumab CL.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no chemotherapy coadministration — monotherapy or any ipilimumab combination).
+- **Source aliases:**
+  - `CHEMO` — used in `Zhang_2019_nivolumab.R`.
+- **Example models:** `Zhang_2019_nivolumab.R` (exponential effect on baseline CL: `exp(-0.104)` ≈ 0.90 fold, i.e. ~9.7% lower CL relative to monotherapy).
+- **Notes:** Pooled across the four chemotherapy backbones contributing to the Zhang 2019 cohort. Promote to general scope only after a second paper reports a chemotherapy-coadministration effect with a comparable pooling convention.
+
+### COADMIN_IPI_ANY (**canonical for any-ipilimumab-coadministration indicator**)
+- **Description:** 1 = subject is receiving nivolumab in combination with any ipilimumab regimen (regardless of dose or schedule); 0 = nivolumab monotherapy or nivolumab + chemotherapy. Encodes the "is there ipilimumab in the regimen" question as a single binary covariate, distinct from the regimen-specific COADMIN_IPI_3Q3W and COADMIN_IPI_1Q6W indicators above.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no ipilimumab coadministration).
+- **Source aliases:**
+  - `IPICO` — used in `Zhang_2019_nivolumab.R`.
+- **Example models:** `Zhang_2019_nivolumab.R` (additive effect on the time-varying-CL Emax parameter: Emax += -0.0668 when COADMIN_IPI_ANY = 1).
+- **Notes:** Logically the union of the regimen-specific indicators (COADMIN_IPI_3Q3W, COADMIN_IPI_1Q6W, plus the unmodeled 1 mg/kg q3wx4 and 1 mg/kg q12w schedules). Zhang 2019 uses it on the *time-varying* Emax (a different structural parameter from baseline CL), which is why it coexists with the regimen-specific indicators on baseline CL rather than substituting for them.
+
 ### STEROID_BL (**canonical for baseline/concomitant systemic steroid use**)
 - **Description:** 1 = patient is on systemic corticosteroid treatment at study entry (baseline concomitant use), 0 = not on steroids at baseline. Time-fixed per subject.
 - **Units:** (binary)
@@ -676,6 +872,16 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   - `BSTEROID` — used in `Zheng_2016_sifalimumab.R`.
 - **Example models:** `Zheng_2016_sifalimumab.R` (multiplicative effects on CL `(1 + 0.11 * STEROID_BL)` and on V1 `(1 - 0.09 * STEROID_BL)` in the SLE phase IIb cohort, which was ~85% steroid-treated at baseline).
 - **Notes:** Distinct from `PRICORT`, which captures systemic corticosteroid use *prior* to study entry as a one-time clinical-history indicator. `STEROID_BL` captures ongoing/concomitant steroid therapy at baseline in diseases where background steroid use is standard of care (SLE, severe asthma, etc.). In some studies the prior-vs-baseline distinction is immaterial (patients on steroids at baseline have also taken them prior) but the semantic difference is preserved here so that future models can use the appropriate indicator.
+
+### STATIN (**canonical for concomitant statin (HMG-CoA reductase inhibitor) therapy**)
+- **Description:** 1 = patient coadministered a statin (HMG-CoA reductase inhibitor) during the study, 0 = no statin coadministration.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no statin coadministration).
+- **Source aliases:** none known.
+- **Example models:** `Martinez_2019_alirocumab.R` (additive effect on linear clearance CLL: `CLL = TVCLL + COV1*(WT-82.9) + COV2*STATIN`; +0.00644 L/h when statin is coadministered).
+- **Notes:** Per-model `covariateData[[STATIN]]$notes` must document which statins and dose thresholds are included in the "STATIN = 1" category, since inclusion criteria vary by study. Martinez 2019 codes STATIN = 1 for coadministration of rosuvastatin (< 20 mg/day), atorvastatin (< 40 mg/day), or simvastatin (any dose); other statin regimens are coded as 0.
 
 ## Immunogenicity
 
@@ -985,6 +1191,16 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Xie_2019_agomelatine.R`.
 - **Notes:** Lower case preserved from source file. Future models should standardize on `OCC` as a categorical column with integer values (`OCC = 1`, `2`, …) and use `IOV` on the appropriate parameters.
 
+### CYCLE
+- **Description:** Treatment cycle number (1 = first dosing cycle, 2 = second, ...). Integer count, time-varying across a multi-cycle treatment course, incremented at each new dosing cycle.
+- **Units:** (count)
+- **Type:** count
+- **Scope:** specific
+- **Reference category:** n/a — used with a power-covariate form `CYCLE^Fm` (Fm typically negative) to capture cycle-over-cycle decline in a derived quantity such as ADC-to-payload conversion fraction.
+- **Source aliases:** `CYCLE` — used in `Li_2017_brentuximab.R` with the same canonical name.
+- **Example models:** `Li_2017_brentuximab.R` (exponent on the fraction of ADC that converts to MMAE by proteolytic degradation, Fm = -0.261, to reflect tumor-burden reduction across successive treatment cycles).
+- **Notes:** Must be >= 1 throughout (`CYCLE^Fm` is undefined at 0). Distinct from `ooc<n>` binary-occasion indicators: `CYCLE` is an integer count, not a mutually-exclusive set of indicator columns. Data-assembly helper: set `CYCLE = floor((TIME - TIME_FIRST_DOSE) / cycle_length_days) + 1` for a fixed-interval dosing regimen.
+
 ---
 
 ## Change log
@@ -1075,6 +1291,19 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   55 letters (study-population mean baseline BCVA).
 - **2026-04-24** — Added `ECOG_GE1` (general-scope Eastern Cooperative Oncology Group performance-status indicator; 1 if ECOG >= 1, reference 0) canonical entry under `Oncology` while extracting `Bajaj_2017_nivolumab.R`. Source alias `PS` / `BPS` mapped to `ECOG_GE1`; Bajaj 2017's ECOG derivation (KPS-to-ECOG crosswalk for one study per Oken 1982) documented in the model's `covariateData` notes, not in the register. Added `Bajaj_2017_nivolumab.R` to the `WT`, `SEXF`, `RACE_ASIAN`, and `CRCL` example-model lists.
 - **2026-04-24** — Added `STATIN_MONO` and `EZE` (both scope: specific; new "Concomitant lipid-lowering medication" section) and `PCSK9` (scope: general; new "Hypercholesterolemia biomarkers" section) canonical entries while extracting `Kuchimanchi_2018_evolocumab.R`. `STATIN_MONO` carries Kuchimanchi-specific "statin monotherapy only" semantics; `EZE` captures ezetimibe use (in the Kuchimanchi 2018 dataset overwhelmingly statin+ezetimibe combination therapy).
+- **2026-04-24** — Added `STATIN` (general-scope concomitant statin indicator) under `Concomitant / prior medication` and `FPCSK9` (specific-scope free PCSK9 concentration) under a new `Cardiometabolic / target biomarkers` section while extracting `Martinez_2019_alirocumab.R`.
+- **2026-04-24** — Added `CYCLE` canonical entry (scope: specific; integer count; power-covariate effect `CYCLE^Fm` on the ADC-to-MMAE proteolytic conversion fraction) while extracting `Li_2017_brentuximab.R`. New entry placed under `Occasion / period (IOV)` since it is conceptually an IOV-like index, but distinct from the binary `ooc<n>` pattern.
+- **2026-04-24** — Added `LMET` (general-scope binary indicator for baseline liver metastases) and `TUMTP_OTH` (specific-scope residual "other tumor types" indicator, complement of the named `TUMTP_<GROUP>` indicators in the same model) canonical entries while extracting `Quartino_2019_trastuzumab.R`. Extended `TUMTP_GC` with the Quartino 2019 source alias `TTYPE == "AGC"` and `AST` with the legacy clinical-chemistry alias `SGOT`.
+- **2026-04-24** — Added `LDH` (general-scope serum lactate dehydrogenase),
+  `TUMTP_SCLC` (specific-scope small-cell-lung-cancer tumor-type
+  indicator extending the `TUMTP_*` decomposition pattern), `LINE_1L`
+  (specific-scope first-line vs second-line-or-greater therapy
+  indicator), `NIVO_1Q3W` and `NIVO_3Q2W` (specific-scope per-regimen
+  nivolumab co-administration indicators on baseline CL), and
+  `COMBO_NIVO` (specific-scope any-regimen nivolumab combination-therapy
+  indicator on the time-varying CL Emax) canonical entries while
+  extracting `Sanghavi_2020_ipilimumab.R`.
+- **2026-04-25** — Added `ECOG_PS_GT0` (general-scope binary indicator for ECOG performance status > 0; Oncology section), `COADMIN_IPI_3Q3W`, `COADMIN_IPI_1Q6W`, `COADMIN_CHEMO`, and `COADMIN_IPI_ANY` (specific-scope coadministration-regimen indicators; Concomitant / prior medication section) canonical entries while extracting `Zhang_2019_nivolumab.R`. Source aliases mapped: `PS`→`ECOG_PS_GT0`, `IPI3Q3W`→`COADMIN_IPI_3Q3W`, `IPI1Q6W`→`COADMIN_IPI_1Q6W`, `CHEMO`→`COADMIN_CHEMO`, `IPICO`→`COADMIN_IPI_ANY`.
 - Subsequent additions: append new canonical entries as new papers are processed. When adding, bump the audit-completed count in the summary below.
 
 ## Summary

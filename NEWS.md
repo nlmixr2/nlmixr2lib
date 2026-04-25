@@ -4,7 +4,17 @@
 
 * Fix vignettes: derive concentration units in `labs()` from model `$units` metadata; replace inline trapezoidal NCA with PKNCA; add PKNCA sections to nalmefene and clesrovimab vignettes; add PKNCA treatment grouping to benralizumab and durvalumab vignettes.
 * Add `concentration` field to `units` metadata for `Wang_2017_benralizumab` and `Ogasawara_2020_durvalumab` models.
-
+* Add Chen 2020 luspatercept ([doi:10.1002/psp4.12515](https://doi.org/10.1002/psp4.12515)) — adults with anemia due to lower-risk myelodysplastic syndromes.
+* Add Martinez 2019 alirocumab ([doi:10.1007/s40262-018-0669-y](https://doi.org/10.1007/s40262-018-0669-y)) — healthy volunteers and adults with hypercholesterolemia.
+* Add Li 2017 brentuximab vedotin ([doi:10.1002/jcph.920](https://doi.org/10.1002/jcph.920)) — adults with relapsed/refractory CD30-expressing hematologic malignancies (Hodgkin lymphoma and systemic anaplastic large cell lymphoma).
+* Add Quartino 2019 trastuzumab ([doi:10.1007/s00280-018-3728-z](https://doi.org/10.1007/s00280-018-3728-z)) — adults with metastatic breast cancer, early breast cancer, advanced gastric cancer, or other solid tumors.
+* Add Suleiman 2019 risankizumab ([doi:10.1007/s40262-019-00759-z](https://doi.org/10.1007/s40262-019-00759-z)) — healthy volunteers and adults with moderate-to-severe plaque psoriasis.
+* Add Berends 2019 infliximab ([doi:10.1007/s10928-019-09652-5](https://doi.org/10.1007/s10928-019-09652-5)) — adults with moderate-to-severe ulcerative colitis.
+* Add Nikanjam 2019 siltuximab ([doi:10.1007/s00280-019-03939-7](https://doi.org/10.1007/s00280-019-03939-7)) — adults pooled across healthy volunteers and oncology cohorts including Castleman's disease and smoldering multiple myeloma.
+* Add Sanghavi 2020 ipilimumab ([doi:10.1002/psp4.12477](https://doi.org/10.1002/psp4.12477)) — adults with advanced solid tumors receiving ipilimumab alone or in combination with nivolumab.
+* Add Zhang 2019 nivolumab ([doi:10.1002/psp4.12476](https://doi.org/10.1002/psp4.12476)) — adults with advanced solid tumors, alone or in combination with ipilimumab or chemotherapy.
+* Add Wang 2020 ontamalimab ([doi:10.1002/jcph.1590](https://doi.org/10.1002/jcph.1590)) — adults with moderate-to-severe ulcerative colitis or Crohn's disease.
+* Add Hanzel 2021 infliximab CT-P13 ([doi:10.1111/apt.16609](https://doi.org/10.1111/apt.16609)) — adults with Crohn's disease or ulcerative colitis.
 * Add Li 2019 abatacept ([doi:10.1002/jcph.1308](https://doi.org/10.1002/jcph.1308)) — adults with rheumatoid arthritis.
 * Add Mulyukov 2018 ranibizumab ([doi:10.1002/psp4.12322](https://doi.org/10.1002/psp4.12322)) — anti-VEGF-naive adults with neovascular age-related macular degeneration.
 * Add Bajaj 2017 nivolumab ([doi:10.1002/psp4.12143](https://doi.org/10.1002/psp4.12143)) — patients with advanced solid tumors (melanoma, NSCLC, RCC, other).
