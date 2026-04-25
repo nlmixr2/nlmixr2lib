@@ -476,6 +476,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Budha_2023_tislelizumab.R`.
 - **Notes:** Follows the `RACE_<GROUP>` indicator-decomposition pattern. New oncology tumor types should be added as additional `TUMTP_<GROUP>` entries so the reference set stays explicit.
 
+### ECOG_PS_GT0 (**canonical for ECOG performance status > 0 indicator**)
+- **Description:** 1 = ECOG (Eastern Cooperative Oncology Group) performance status greater than 0 at baseline (i.e., PS 1, 2, 3, or 4); 0 = ECOG PS 0 (fully active). Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (ECOG PS 0; fully active).
+- **Source aliases:**
+  - `PS` — used in `Zhang_2019_nivolumab.R` (paper's binary collapse of the four-level ECOG scale into PS=0 vs. PS>0).
+- **Example models:** `Zhang_2019_nivolumab.R` (multiplicative effect on baseline CL, additive effect on Emax of time-varying CL).
+- **Notes:** Many oncology PopPK papers report a binary-collapsed performance-status indicator rather than the full ECOG scale. The "GT0" suffix preserves the dichotomization explicitly. If a future paper uses a different cut-point (e.g., PS<=1 vs. PS>=2), register it as `ECOG_PS_GT1` rather than reusing this column.
+
 ## Laboratory / disease-activity
 
 ### ALBR
@@ -641,6 +652,50 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   - `BSTEROID` — used in `Narwal_2013_sifalimumab.R`.
 - **Example models:** `Narwal_2013_sifalimumab.R` (multiplicative on CL: `CL * (1 + 0.195 * STEROID)`).
 - **Notes:** Distinct from `PRICORT`, which is strictly a prior (pre-study) indicator. `STEROID` captures concurrent corticosteroid use at / from study baseline. When a future paper needs the two jointly, both can coexist on the same subject.
+### COADMIN_IPI_3Q3W (**canonical for nivolumab + ipilimumab 3 mg/kg q3w combination indicator**)
+- **Description:** 1 = subject is receiving nivolumab in combination with ipilimumab 3 mg/kg every 3 weeks (4-dose induction); 0 = otherwise. Encodes the high-intensity ipilimumab combination regimen as a study-design covariate on nivolumab CL.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (any non-3Q3W regimen — monotherapy, chemotherapy combination, or another ipilimumab schedule).
+- **Source aliases:**
+  - `IPI3Q3W` — used in `Zhang_2019_nivolumab.R`.
+- **Example models:** `Zhang_2019_nivolumab.R` (exponential effect on baseline CL: `exp(0.227)` ≈ 1.25 fold increase relative to monotherapy).
+- **Notes:** Paired with `COADMIN_IPI_1Q6W`; both indicators can coexist in one population, but a single subject has at most one set to 1 in the Zhang 2019 cohort. The remaining ipilimumab schedules (1 mg/kg q3w x 4 induction, 1 mg/kg q12w) had no statistically significant effect on nivolumab CL and were therefore folded into the reference (0) group along with monotherapy, leaving only IPI3Q3W and IPI1Q6W as named non-reference indicators.
+
+### COADMIN_IPI_1Q6W (**canonical for nivolumab + ipilimumab 1 mg/kg q6w combination indicator**)
+- **Description:** 1 = subject is receiving nivolumab in combination with ipilimumab 1 mg/kg every 6 weeks (continuous maintenance); 0 = otherwise.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (any non-1Q6W regimen — monotherapy, chemotherapy combination, or another ipilimumab schedule).
+- **Source aliases:**
+  - `IPI1Q6W` — used in `Zhang_2019_nivolumab.R`.
+- **Example models:** `Zhang_2019_nivolumab.R` (exponential effect on baseline CL: `exp(0.159)` ≈ 1.17 fold increase relative to monotherapy).
+- **Notes:** Paired with `COADMIN_IPI_3Q3W`. See the COADMIN_IPI_3Q3W note for how the other ipilimumab schedules collapse into the reference group.
+
+### COADMIN_CHEMO (**canonical for nivolumab + chemotherapy combination indicator**)
+- **Description:** 1 = subject is receiving nivolumab in combination with platinum-based chemotherapy (gemcitabine + cisplatin, pemetrexed + cisplatin, paclitaxel + carboplatin, or platinum-doublet); 0 = otherwise. Encodes any chemotherapy coadministration as a study-design covariate on nivolumab CL.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no chemotherapy coadministration — monotherapy or any ipilimumab combination).
+- **Source aliases:**
+  - `CHEMO` — used in `Zhang_2019_nivolumab.R`.
+- **Example models:** `Zhang_2019_nivolumab.R` (exponential effect on baseline CL: `exp(-0.104)` ≈ 0.90 fold, i.e. ~9.7% lower CL relative to monotherapy).
+- **Notes:** Pooled across the four chemotherapy backbones contributing to the Zhang 2019 cohort. Promote to general scope only after a second paper reports a chemotherapy-coadministration effect with a comparable pooling convention.
+
+### COADMIN_IPI_ANY (**canonical for any-ipilimumab-coadministration indicator**)
+- **Description:** 1 = subject is receiving nivolumab in combination with any ipilimumab regimen (regardless of dose or schedule); 0 = nivolumab monotherapy or nivolumab + chemotherapy. Encodes the "is there ipilimumab in the regimen" question as a single binary covariate, distinct from the regimen-specific COADMIN_IPI_3Q3W and COADMIN_IPI_1Q6W indicators above.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no ipilimumab coadministration).
+- **Source aliases:**
+  - `IPICO` — used in `Zhang_2019_nivolumab.R`.
+- **Example models:** `Zhang_2019_nivolumab.R` (additive effect on the time-varying-CL Emax parameter: Emax += -0.0668 when COADMIN_IPI_ANY = 1).
+- **Notes:** Logically the union of the regimen-specific indicators (COADMIN_IPI_3Q3W, COADMIN_IPI_1Q6W, plus the unmodeled 1 mg/kg q3wx4 and 1 mg/kg q12w schedules). Zhang 2019 uses it on the *time-varying* Emax (a different structural parameter from baseline CL), which is why it coexists with the regimen-specific indicators on baseline CL rather than substituting for them.
+
 ### STEROID_BL (**canonical for baseline/concomitant systemic steroid use**)
 - **Description:** 1 = patient is on systemic corticosteroid treatment at study entry (baseline concomitant use), 0 = not on steroids at baseline. Time-fixed per subject.
 - **Units:** (binary)
@@ -997,6 +1052,7 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   (`FORM_ABA_PHASE2`) was kept model-specific per the nlmixr2lib
   global policy that `FORM_*` covariates are not promoted to canonical
   unless they clearly generalize across multiple drugs.
+- **2026-04-25** — Added `ECOG_PS_GT0` (general-scope binary indicator for ECOG performance status > 0; Oncology section), `COADMIN_IPI_3Q3W`, `COADMIN_IPI_1Q6W`, `COADMIN_CHEMO`, and `COADMIN_IPI_ANY` (specific-scope coadministration-regimen indicators; Concomitant / prior medication section) canonical entries while extracting `Zhang_2019_nivolumab.R`. Source aliases mapped: `PS`→`ECOG_PS_GT0`, `IPI3Q3W`→`COADMIN_IPI_3Q3W`, `IPI1Q6W`→`COADMIN_IPI_1Q6W`, `CHEMO`→`COADMIN_CHEMO`, `IPICO`→`COADMIN_IPI_ANY`.
 - Subsequent additions: append new canonical entries as new papers are processed. When adding, bump the audit-completed count in the summary below.
 
 ## Summary
