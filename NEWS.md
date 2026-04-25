@@ -14,6 +14,7 @@
 * Add Sanghavi 2020 ipilimumab ([doi:10.1002/psp4.12477](https://doi.org/10.1002/psp4.12477)) — adults with advanced solid tumors receiving ipilimumab alone or in combination with nivolumab.
 * Add Zhang 2019 nivolumab ([doi:10.1002/psp4.12476](https://doi.org/10.1002/psp4.12476)) — adults with advanced solid tumors, alone or in combination with ipilimumab or chemotherapy.
 * Add Wang 2020 ontamalimab ([doi:10.1002/jcph.1590](https://doi.org/10.1002/jcph.1590)) — adults with moderate-to-severe ulcerative colitis or Crohn's disease.
+* Add Hanzel 2021 infliximab CT-P13 ([doi:10.1111/apt.16609](https://doi.org/10.1111/apt.16609)) — adults with Crohn's disease or ulcerative colitis.
 * Add Li 2019 abatacept ([doi:10.1002/jcph.1308](https://doi.org/10.1002/jcph.1308)) — adults with rheumatoid arthritis.
 * Add Mulyukov 2018 ranibizumab ([doi:10.1002/psp4.12322](https://doi.org/10.1002/psp4.12322)) — anti-VEGF-naive adults with neovascular age-related macular degeneration.
 * Add Bajaj 2017 nivolumab ([doi:10.1002/psp4.12143](https://doi.org/10.1002/psp4.12143)) — patients with advanced solid tumors (melanoma, NSCLC, RCC, other).
