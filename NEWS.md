@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Nikanjam 2019 siltuximab ([doi:10.1007/s00280-019-03939-7](https://doi.org/10.1007/s00280-019-03939-7)) — adults pooled across healthy volunteers and oncology cohorts including Castleman's disease and smoldering multiple myeloma.
 * Add Narwal 2013 sifalimumab ([doi:10.1007/s40262-013-0085-2](https://doi.org/10.1007/s40262-013-0085-2)) — adults with moderately active systemic lupus erythematosus.
 * Add Valenzuela 2025 nipocalimab ([doi:10.1002/psp4.70109](https://doi.org/10.1002/psp4.70109)) — healthy adults and adults with generalized myasthenia gravis.
 * Add Hua 2015 anrukinzumab ([doi:10.1111/bcp.12589](https://doi.org/10.1111/bcp.12589)) — healthy volunteers, asthma, and ulcerative colitis patients.
