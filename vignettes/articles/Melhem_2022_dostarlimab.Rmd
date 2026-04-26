@@ -256,7 +256,8 @@ sim_nca <- sim |>
   dplyr::filter(!is.na(Cc),
                 time >= interval_start,
                 time <= interval_end) |>
-  dplyr::mutate(time_rel = time - interval_start) |>
+  dplyr::mutate(time_rel  = time - interval_start,
+                treatment = "RTD 500 mg Q3W x4 -> 1000 mg Q6W") |>
   dplyr::select(id, treatment, time_rel, Cc)
 
 conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time_rel | treatment + id)
