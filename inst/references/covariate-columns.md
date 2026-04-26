@@ -554,6 +554,16 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Nikanjam_2019_siltuximab.R` (multiplicative +24% effect on CL; no Vss effect).
 - **Notes:** Castleman's disease is a lymphoproliferative disorder strongly associated with elevated IL-6 levels; it is the only FDA-approved indication for siltuximab. Scope: specific because the disease-pooling reference category is paper-defined. Ratified canonically on 2026-04-24.
 
+### DIS_DMD (**canonical for Duchenne muscular dystrophy patient indicator**)
+- **Description:** 1 = patient with Duchenne muscular dystrophy (DMD), 0 = non-DMD subject (healthy volunteer or other reference cohort). Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-DMD subject; the complement group is the reference cohort the source analysis pools alongside the DMD population — typically healthy adult volunteers).
+- **Source aliases:** `SPOP` (Wojciechowski 2022 study-population indicator with the same orientation: 1 = DMD pediatric patient, 0 = healthy adult volunteer).
+- **Example models:** `Wojciechowski_2022_domagrozumab.R` (additive `1 + theta` shift on baseline myostatin and on the joint kdeg/kint axis; theta_BASE = -0.641, theta_kdegkint = -0.900).
+- **Notes:** Used when a population PK/PD model pools DMD patients with a non-DMD reference population and DMD disease status is retained as a covariate. Scope: specific because the reference category is paper-defined. Ratified canonically on 2026-04-26.
+
 ### DIS_SMM (**canonical for smoldering multiple myeloma indicator**)
 - **Description:** 1 = smoldering (asymptomatic) multiple myeloma, 0 = not smoldering MM. Time-fixed per subject.
 - **Units:** (binary)
@@ -1357,6 +1367,7 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 
 ## Change log
 
+- **2026-04-26** — Added `DIS_DMD` (specific scope) canonical entry while extracting `Wojciechowski_2022_domagrozumab.R`. Source alias `SPOP`; orientation matches the source (1 = DMD pediatric patient, 0 = healthy adult volunteer reference). The covariate enters as a `(1 + theta * DIS_DMD)` multiplicative shift (additive on the linear scale, not exponentiated) rather than the typical `theta^DIS_DMD` form, matching Eqs. 7-8 of the paper.
 - **2026-04-21** — Added `RACE_HISPANIC` (general) and `CLD_PREM` (general) canonical entries while extracting `Robbie_2012_palivizumab.R`. Extended `ADA_TITER` example_models with the Robbie 2012 category-by-titer-bin usage, and added `Robbie_2012_palivizumab.R` to the `WT`, `PAGE`, `RACE_BLACK`, `RACE_ASIAN`, and `RACE_OTHER` example lists. `HISPANIC`, `CLD`, and `BPD` recorded as source aliases.
 - **Initial seed**: Every covariate observed in `inst/modeldb/` as of the audit. Canonical names established: `SEXF`, `ADA_POS`, `RACE_<GROUP>` prefix. Aliases documented but existing model files not modified.
 - **2026-04-19** — Added `CREAT`, `hsCRP`, `ALB` canonical entries after the

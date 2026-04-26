@@ -8,6 +8,7 @@
 * Add Yang 2021 cemiplimab ([doi:10.1007/s10928-021-09739-y](https://doi.org/10.1007/s10928-021-09739-y)) — adults with advanced solid tumors including cutaneous squamous cell carcinoma.
 * Add Papachristos 2020 bevacizumab ([doi:10.3390/ijms21113753](https://doi.org/10.3390/ijms21113753)) — adults with metastatic colorectal cancer (three co-equal final models: descriptive PK, binding QSS TMDD, and PK/PD Imax inhibition of free VEGF-A).
 * Add Ngo 2020 HL2351 ([doi:10.1002/psp4.12552](https://doi.org/10.1002/psp4.12552)) — healthy adult Korean men.
+* Add Wojciechowski 2022 domagrozumab ([doi:10.1111/cts.13418](https://doi.org/10.1111/cts.13418)) — healthy adult volunteers and pediatric patients with Duchenne muscular dystrophy.
 * Fix vignettes: derive concentration units in `labs()` from model `$units` metadata; replace inline trapezoidal NCA with PKNCA; add PKNCA sections to nalmefene and clesrovimab vignettes; add PKNCA treatment grouping to benralizumab and durvalumab vignettes.
 * Add Chen 2022 guselkumab ([doi:10.1111/cts.13197](https://doi.org/10.1111/cts.13197)) — adults with active psoriatic arthritis (DISCOVER-1 and DISCOVER-2 phase 3 trials).
 * Add `concentration` field to `units` metadata for `Wang_2017_benralizumab` and `Ogasawara_2020_durvalumab` models.
