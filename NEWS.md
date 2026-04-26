@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Yu 2022 ofatumumab ([doi:10.1007/s40263-021-00895-w](https://doi.org/10.1007/s40263-021-00895-w)) — adults with relapsing multiple sclerosis.
 * Fix vignettes: derive concentration units in `labs()` from model `$units` metadata; replace inline trapezoidal NCA with PKNCA; add PKNCA sections to nalmefene and clesrovimab vignettes; add PKNCA treatment grouping to benralizumab and durvalumab vignettes.
 * Add `concentration` field to `units` metadata for `Wang_2017_benralizumab` and `Ogasawara_2020_durvalumab` models.
 * Add Chen 2020 luspatercept ([doi:10.1002/psp4.12515](https://doi.org/10.1002/psp4.12515)) — adults with anemia due to lower-risk myelodysplastic syndromes.
