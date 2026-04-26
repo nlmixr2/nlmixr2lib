@@ -2,16 +2,16 @@ indirect_0cpt_transitEx <- function() {
   description <- "Two compartment PK model with Michealis-Menten clearance using differential equations"
   ini({
     lka <- 0.45 ; label("Absorption rate (Ka)")
-    lktr1 <- c(0, 0.05)
-    lktr2 <- c(0, 0.05)
-    lktr3 <- c(0, 0.05)
-    lktr4 <- c(0, 0.05)
-    lktr5 <- c(0, 0.05)
-    lktr6 <- c(0, 0.05)
-    lktr7 <- c(0, 0.05)
-    lktr8 <- c(0, 0.05)
-    lktr9 <- c(0, 0.05)
-    lktr10 <- c(0, 0.05)
+    lktr1 <- c(0, 0.05);  label("Transit rate constant 1 (log-scale)")
+    lktr2 <- c(0, 0.05);  label("Transit rate constant 2 (log-scale)")
+    lktr3 <- c(0, 0.05);  label("Transit rate constant 3 (log-scale)")
+    lktr4 <- c(0, 0.05);  label("Transit rate constant 4 (log-scale)")
+    lktr5 <- c(0, 0.05);  label("Transit rate constant 5 (log-scale)")
+    lktr6 <- c(0, 0.05);  label("Transit rate constant 6 (log-scale)")
+    lktr7 <- c(0, 0.05);  label("Transit rate constant 7 (log-scale)")
+    lktr8 <- c(0, 0.05);  label("Transit rate constant 8 (log-scale)")
+    lktr9 <- c(0, 0.05);  label("Transit rate constant 9 (log-scale)")
+    lktr10 <- c(0, 0.05); label("Transit rate constant 10 (log-scale)")
     lvm <- 0.04
     label("maximum target-mediated rate of elimination (mg/L/d)")
     lkm <- 0.01
