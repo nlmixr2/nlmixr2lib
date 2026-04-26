@@ -1,5 +1,7 @@
 PK_double_sim_10 <- function() {
   description <-  "PK double absorption model with simultaneous first order and zero order absorptions"
+  reference <- "nlmixr2lib template"
+  units <- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")
   ini({
     lka1 <- 0.45 ; label("First order Absorption rate (Ka)")
     tk02 <- 0.4 ; label("Zero order absorption rate from second site (K02)")

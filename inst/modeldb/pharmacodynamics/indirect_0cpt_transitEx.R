@@ -1,5 +1,7 @@
 indirect_0cpt_transitEx <- function() {
   description <- "Two compartment PK model with Michealis-Menten clearance using differential equations"
+  reference <- "nlmixr2lib template"
+  units <- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")
   ini({
     lka <- 0.45 ; label("Absorption rate (Ka)")
     lktr1 <- c(0, 0.05);  label("Transit rate constant 1 (log-scale)")

@@ -2,7 +2,7 @@ Wojciechowski_2022_domagrozumab <- function() {
   description <- "Quasi-steady-state TMDD population PK/PD model for domagrozumab (anti-myostatin IgG1) in healthy adult volunteers and pediatric patients with Duchenne muscular dystrophy (Wojciechowski 2022): two-compartment IV/SC drug disposition with parallel linear and Michaelis-Menten elimination, a synthesis-degradation total-myostatin compartment with drug-mediated internalization, and a study-population covariate (DIS_DMD) shifting myostatin baseline and turnover."
   reference <- "Wojciechowski J, Purohit VS, Nawarskas R, Marshall S, Charnas L, Bhattacharya I. Population pharmacokinetic-pharmacodynamic analysis of domagrozumab in pediatric patients with Duchenne muscular dystrophy. Clin Transl Sci. 2022;15(12):2939-2952. doi:10.1111/cts.13418"
   vignette <- "Wojciechowski_2022_domagrozumab"
-  units <- list(time = "hour", dosing = "mg", concentration = "nM")
+  units <- list(time = "hour", dosing = "mg", concentration = "nmol/L")
 
   covariateData <- list(
     WT = list(

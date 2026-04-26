@@ -1,5 +1,7 @@
 PK_1cmt_des <- function() {
   description <- "One compartment PK model with linear clearance using differential equations"
+  reference <- "nlmixr2lib template"
+  units <- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")
   dosing<-c("central", "depot")
   ini({
     lka <- 0.45 ; label("Absorption rate (Ka)")

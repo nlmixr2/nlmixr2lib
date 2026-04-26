@@ -1,5 +1,7 @@
 indirect_prec_1cpt_stim_CLV  <- function() {
   description <- "One compartment precursor-dependent indirect response model with inhibition of drug response (effect). Parameterized with clearance and volume"
+  reference <- "nlmixr2lib template"
+  units <- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")
   ini({
     lka  <- 0.45 ; label("Absorption rate (Ka)")
     lvc <- 3.45  ; label("Central volume of distribution (Vc)")
