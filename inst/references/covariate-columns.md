@@ -251,6 +251,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Sanghavi_2020_ipilimumab.R` (linear-on-log form on CL with reference 217 U/L; coefficient 0.703).
 - **Notes:** Universal lab marker. Sanghavi 2020 log-transforms LDH because the distribution is heavily right-skewed (range 74-6,245 U/L over a median of 217); other papers may use a simple `(LDH/ref)^exponent` form. Document the functional form in `covariateData[[LDH]]$notes`.
 
+### HEPIMP_MILD (**canonical for mild hepatic impairment indicator**)
+- **Description:** 1 = mild hepatic impairment per the National Cancer Institute Organ Dysfunction Working Group (NCI ODWG) criteria, 0 = normal hepatic function or non-mild category. NCI ODWG mild = total bilirubin ≤ ULN with AST > ULN, OR total bilirubin > 1.0×ULN to ≤ 1.5×ULN with any AST.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (normal hepatic function; the moderate / severe categories are typically pooled into the reference for population PK analyses where mild impairment is the only category with non-trivial sample size).
+- **Source aliases:**
+  - `HEPIMP` (with values `1 = mild / 0 = others`) — used in `Lin_2024_casirivimab.R`.
+- **Example models:** `Lin_2024_casirivimab.R` (multiplicative fractional change on CL).
+- **Notes:** Use this column when a model dichotomizes hepatic-impairment status as "mild vs. others" (i.e., normal + the rare moderate/severe cases pooled into the reference). For models that test moderate or severe as separate categories, register additional canonicals `HEPIMP_MOD` / `HEPIMP_SEV` rather than overloading this entry.
+
 ## Hematology
 
 ### HGB (**canonical for hemoglobin**)
@@ -272,6 +283,16 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Source aliases:** none known (`WBC` is the universal clinical-PK abbreviation).
 - **Example models:** `Mould_2007_alemtuzumab.R` (reference 10 × 10^9/L; exponent 0.194 on Vmax).
 - **Notes:** Time-varying in treatment studies where the drug depletes the leukaemic clone (e.g., alemtuzumab in CLL): WBC must be supplied at every observation time in the event dataset. In diseases where WBC is not therapeutically targeted the column can be treated as a baseline-only covariate; record the per-model convention in `covariateData[[WBC]]$notes`.
+
+### NLR (**canonical for neutrophil-to-lymphocyte ratio**)
+- **Description:** Ratio of absolute neutrophil count to absolute lymphocyte count from a complete blood count with differential. Used as a peripheral inflammation marker. May be reported as baseline only or as a time-varying covariate.
+- **Units:** ratio (unitless)
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a — used with power scaling `(NLR / ref)^exponent` or exponential effects. Reference values observed: 2.11 (Lin 2024, median in pooled COVID-19 + non-infected cohort).
+- **Source aliases:** none; `NLR` is the universal abbreviation in clinical-PK and inflammation-biomarker literature.
+- **Example models:** `Lin_2024_casirivimab.R` (time-varying; reference 2.11; small positive exponent +0.029 on CL).
+- **Notes:** Document baseline-vs-time-varying status in `covariateData[[NLR]]$notes`. Although it derives from `WBC` differential counts, register it as its own canonical because the ratio (not the absolute counts) is what the model uses.
 
 ## Disease severity scores
 
@@ -381,6 +402,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Source aliases:**
   - `BLACK` — used in `Hu_2026_clesrovimab.R`, `Robbie_2012_palivizumab.R`.
 - **Example models:** `Zhu_2017_lebrikizumab.R` (canonical form), `Robbie_2012_palivizumab.R`.
+
+### RACE_WHITE (**canonical**)
+- **Description:** 1 = White, 0 = non-White.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (non-White; complement composition depends on the source paper, typically pooling Black/African American, Asian, American Indian/Alaska Native, Native Hawaiian/Pacific Islander, Other, Not reported, Unknown).
+- **Source aliases:**
+  - `RACE` (with values `1 = White / 0 = non-White`) — used in `Lin_2024_casirivimab.R`. Source column name `RACE` is generic; the canonical name is intentionally explicit because some other models use `RACE` for a different dichotomy.
+- **Example models:** `Lin_2024_casirivimab.R` (multiplicative fractional change on CL relative to non-White reference).
+- **Notes:** Used by papers that dichotomize race as White vs. non-White rather than decomposing into separate group indicators. Sign and reference-category interpretation are inverted relative to `RACE_BLACK` / `RACE_ASIAN` / etc.; do NOT combine `RACE_WHITE` with the decomposed indicators in the same model.
 
 ### RACE_BLACK_OTH (**canonical for composite Black/Other group**)
 - **Description:** 1 = Black/African American or Other race, 0 = other groups.
@@ -563,6 +595,52 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Source aliases:** none known; source NONMEM control streams typically use ad-hoc names (e.g., `SMM`, `SMOLDMM`).
 - **Example models:** `Nikanjam_2019_siltuximab.R` (multiplicative -23% effect on Vss; no CL effect).
 - **Notes:** Smoldering multiple myeloma is an asymptomatic plasma-cell disorder distinct from active multiple myeloma; pooled with the Nikanjam 2019 cohort that also included MGUS, multiple myeloma, RCC, ovarian, and other tumor types. Scope: specific because the disease-pooling reference category is paper-defined. Ratified canonically on 2026-04-24.
+
+## Infectious disease (SARS-CoV-2 / COVID-19)
+
+### SARS_VLOAD (**canonical for SARS-CoV-2 baseline viral load**)
+- **Description:** Baseline (pre-treatment) SARS-CoV-2 viral load measured from nasopharyngeal swab by RT-qPCR, reported as log10 RNA copies/mL.
+- **Units:** log10 copies/mL
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a — used with power scaling `(SARS_VLOAD / ref)^exponent`. Reference values observed: 6.4 log10 copies/mL (Lin 2024, median in pooled COVID-19 cohort).
+- **Source aliases:**
+  - `VIRAL` — used in `Lin_2024_casirivimab.R`.
+- **Example models:** `Lin_2024_casirivimab.R` (small negative exponent -0.0075 on CL).
+- **Notes:** SARS-CoV-2-specific. For non-infected subjects, the value is encoded as 0 in the source dataset (below assay detection); the population-PK exponent is small enough that this 0 is absorbed by the reference shift. Register a parallel canonical for any future paper that uses a different infection (e.g., RSV, influenza).
+
+### SARS_SEROPOS (**canonical for SARS-CoV-2 baseline serostatus positive**)
+- **Description:** 1 = SARS-CoV-2 spike or nucleocapsid antibody positive at baseline (prior infection or prior vaccination), 0 = seronegative or other / unknown.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (seronegative; "Other" / unknown serostatus is typically pooled into the reference per the source paper's analysis plan).
+- **Source aliases:**
+  - `SERPOS` — used in `Lin_2024_casirivimab.R`.
+- **Example models:** `Lin_2024_casirivimab.R` (multiplicative fractional change on CL).
+- **Notes:** SARS-CoV-2-specific. The exact assay (anti-spike vs anti-nucleocapsid; vendor) varies by study; document per-model in `covariateData[[SARS_SEROPOS]]$notes`.
+
+### OXYSUP_LOW (**canonical for low-flow supplemental oxygen indicator**)
+- **Description:** 1 = subject is receiving low-flow supplemental oxygen at baseline (e.g., nasal cannula, simple face mask), 0 = no supplemental oxygen at baseline.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no supplemental oxygen at baseline; the high-flow / mechanical-ventilation categories are encoded by the parallel `OXYSUP_HIGH` indicator).
+- **Source aliases:**
+  - `OXYSTAT1` — used in `Lin_2024_casirivimab.R`.
+- **Example models:** `Lin_2024_casirivimab.R` (multiplicative fractional change on CL; +10.6%).
+- **Notes:** Decomposed indicator from a 4-level ordered categorical (no oxygen / low-flow / high-flow / mechanical ventilation). Use with the parallel `OXYSUP_HIGH` indicator. Register a separate `OXYSUP_VENT` canonical if a future analysis splits mechanical ventilation from high-flow oxygen.
+
+### OXYSUP_HIGH (**canonical for high-flow supplemental oxygen indicator**)
+- **Description:** 1 = subject is receiving high-flow supplemental oxygen at baseline (high-flow nasal cannula, non-rebreather mask, non-invasive positive-pressure ventilation, OR mechanical ventilation pooled into the high-flow category), 0 = otherwise (no supplemental oxygen or low-flow).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no supplemental oxygen at baseline; document whether the source paper pooled mechanical ventilation into this indicator or treated it separately).
+- **Source aliases:**
+  - `OXYSTAT2` — used in `Lin_2024_casirivimab.R`.
+- **Example models:** `Lin_2024_casirivimab.R` (multiplicative fractional change on CL; +38.0%).
+- **Notes:** Companion indicator to `OXYSUP_LOW`. In Lin 2024 the rare mechanical-ventilation cases were pooled into the high-flow indicator (n = 24 across the 7598-subject dataset).
 
 ## Oncology
 
@@ -1484,6 +1562,7 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **2026-04-25** — Added `DIS_PJIA` (polyarticular juvenile idiopathic arthritis disease-state indicator; scope: specific) under the existing `Disease state (cross-population indicators)` section while extracting `Gandhi_2021_abatacept.R`, where Gandhi 2021 pools adult RA with pJIA patients and tests pJIA-vs-RA on bioavailability (additive on logit-F: +3.08). Source alias `JIA` mapped. Reused the existing `SWOL_28JOINT` canonical for Gandhi 2021's swollen-joint-count covariate per operator decision: Gandhi 2021's reported reference SJC = 15 is consistent with the 28-joint scale, the same author group used the 28-joint count in Li 2019 (RA-only), and the paper text does not explicitly identify the joint-count scale.
 - **2026-04-25** — Added new top-level section `Pharmacogenomic SNPs` introducing the canonical pattern `SNP_<GENE>_<RSID>` for binary mutant-allele-presence genotype indicators. Three new entries: `SNP_ICAM1_RS1799969`, `SNP_VEGFA_RS1570360`, `SNP_VEGFA_RS699947` (all scope: specific) — the first pharmacogenomic-genotype covariates in the register, introduced while extracting the three Papachristos 2020 bevacizumab models (PK / binding QSS / PK/PD). Encoding: 1 = at least one mutant allele present; 0 = homozygous wild-type. Source-paper indicator names `cat`, `cat1`, `cat2` (which are positional within each model's covariate equation rather than formal column names) are recorded as aliases.
 - **2026-04-25** — Added `DIAB` (general-scope binary diabetes-mellitus comorbidity indicator) canonical entry under a new `Comorbidities` H2 section while extracting `Chen_2022_guselkumab.R`. Distinct from a primary-disease indicator (`DIS_*`); used in non-diabetes-primary indications where diabetes is tested as a covariate. Source alias `DIAB` mapped.
+- **2026-04-26** — Added `RACE_WHITE` (general; White vs non-White dichotomy), `HEPIMP_MILD` (general; mild hepatic impairment per NCI ODWG criteria), `NLR` (general; neutrophil-to-lymphocyte ratio, hematology), `SARS_VLOAD` (specific; SARS-CoV-2 baseline viral load), `SARS_SEROPOS` (specific; SARS-CoV-2 baseline serostatus), `OXYSUP_LOW` and `OXYSUP_HIGH` (both specific; decomposed from a 4-level supplemental-oxygen categorical) canonical entries while extracting `Lin_2024_casirivimab.R`. New H2 section `Infectious disease (SARS-CoV-2 / COVID-19)` introduced for the SARS_* and OXYSUP_* entries. Source aliases mapped: `RACE`→`RACE_WHITE` (Lin 2024 binary form), `HEPIMP`→`HEPIMP_MILD`, `VIRAL`→`SARS_VLOAD`, `SERPOS`→`SARS_SEROPOS`, `OXYSTAT1`→`OXYSUP_LOW`, `OXYSTAT2`→`OXYSUP_HIGH`.
 - Subsequent additions: append new canonical entries as new papers are processed. When adding, bump the audit-completed count in the summary below.
 
 ## Summary
