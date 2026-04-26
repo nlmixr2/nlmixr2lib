@@ -85,7 +85,7 @@
 
   aliasRegex <- "^\\s*-\\s*`([^`]+)`"
   identRegex <- "^[A-Za-z_][A-Za-z0-9_]*$"
-  modelFileRegex <- "^[A-Za-z_][A-Za-z0-9_]*\\.R$"
+  modelFileRegex <- "^[A-Za-z_][A-Za-z0-9_-]*\\.R$"
 
   extractBacktickedModels <- function(text) {
     toks <- regmatches(text, gregexpr("`([^`]+)`", text))[[1]]
