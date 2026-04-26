@@ -352,6 +352,16 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Zheng_2016_sifalimumab.R` (power effect on CL with exponent 0.09).
 - **Notes:** Specific to drugs whose mechanism targets the type I IFN pathway (e.g., anti-IFN-alpha antibodies like sifalimumab, anifrolumab). Higher BGENE21 indicates stronger target engagement / disease activity and is associated with increased drug clearance via target-mediated mechanisms. Scope: specific because the 21-gene panel composition is tied to the MedImmune/AstraZeneca SLE development programme; a different IFN gene signature (e.g., a 4-gene or 5-gene panel) should be registered under its own canonical name to avoid conflating panel definitions.
 
+### BLBCELL (**canonical for baseline CD19+ B cell count**)
+- **Description:** Baseline CD19+ B cell count (cells/µL) measured by fluorescence-activated cell sorting (FACS) prior to first dose. Used as a covariate / scaling biomarker for B-cell-targeted antibody PK-PD models (e.g., anti-CD20 mAbs in multiple sclerosis or B cell malignancies).
+- **Units:** cells/µL
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a — used with power scaling `(BLBCELL / ref)^exponent`. Reference value observed: 200 cells/µL (Yu 2022, median of the pooled five-study cohort).
+- **Source aliases:** `Bcell0` — used in `Yu_2022_ofatumumab.R`.
+- **Example models:** `Yu_2022_ofatumumab.R` (power effect on the maximum B-cell-lysis stimulatory effect Emax, exponent 0.275, reference 200 cells/µL).
+- **Notes:** Distinct from a *time-varying* B cell count, which is the PD response variable rather than a covariate. Scope: specific because the clinically relevant baseline depends on the surface marker (CD19, CD20, CD22) and whether the panel reports total B cells or memory/naive subsets — register a new canonical name if a future paper uses a different marker.
+
 ### CRP (**canonical for C-reactive protein**)
 - **Description:** C-reactive protein concentration. Covers both standard and high-sensitivity (hs-CRP) assays and both baseline and time-varying usages. Each model's `covariateData[[CRP]]$description` and `notes` must state the assay type (standard vs hs-CRP) and whether the column carries a baseline-only or time-varying value, including the paper-specific reference value used for power scaling.
 - **Units:** mg/L (document per-model via `covariateData[[CRP]]$units`).
@@ -1145,6 +1155,46 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 
 ## Formulation / assay / study
 
+### ROUTE_IV
+- **Description:** 1 = subject received intravenous (IV) administration, 0 = subcutaneous (SC) administration. Per-subject (study-fixed) covariate flagging the dosing route when a population analysis pools cohorts that differ by route, with covariate effects on PK parameters that capture route-specific disposition behaviour.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (SC).
+- **Source aliases:** "Admin route = IV" (categorical effect column in Yu 2022 covariate equations).
+- **Example models:** `Yu_2022_ofatumumab.R` (exponential effect on R0, CL, Q, ksyn∞).
+- **Notes:** This is the per-subject covariate-equation indicator, distinct from the dosing-event `cmt` column that names the target compartment. When simulating, set `ROUTE_IV = 1` for IV cohorts and dose into the central compartment; set `ROUTE_IV = 0` for SC cohorts and dose into the depot. Scope: specific because the set of parameters that differ by route is paper-specific.
+
+### DEVICE_AI
+- **Description:** 1 = subject's SC dose delivered via autoinjector (AI), 0 = prefilled syringe (PFS). Per-subject (study-fixed) covariate flagging the SC delivery device when a model carries device-specific PK effects.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (PFS).
+- **Source aliases:** "Formulation = AI" (categorical effect column in Yu 2022 covariate equations).
+- **Example models:** `Yu_2022_ofatumumab.R` (exponential effect on k_e(P) and R0).
+- **Notes:** Set to 0 (PFS reference) for IV subjects, since the device is undefined for IV; the IV-specific effects are captured by `ROUTE_IV` instead. Scope: specific because the AI/PFS contrast and which parameters it affects depend on the study's device-comparison design.
+
+### STUDY_APLIOS
+- **Description:** 1 = subject enrolled in the APLIOS bioequivalence study (NCT03560739; phase 2; ofatumumab AI vs PFS in RMS), 0 = other study in the Yu 2022 pooled analysis.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-APLIOS studies: OMS115102, MIRROR, ASCLEPIOS I, ASCLEPIOS II).
+- **Source aliases:** "Study = APLIOS" (categorical effect column in Yu 2022 covariate equations).
+- **Example models:** `Yu_2022_ofatumumab.R` (exponential effect on Emax of B cell lysis).
+- **Notes:** Captures a between-study shift in the maximum B-cell lysis stimulatory effect not explained by the other covariates in the final model.
+
+### STUDY_MIRROR
+- **Description:** 1 = subject enrolled in the MIRROR dose-finding study (NCT01457924; phase 2; SC ofatumumab dose-ranging in RRMS), 0 = other study in the Yu 2022 pooled analysis.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-MIRROR studies: OMS115102, APLIOS, ASCLEPIOS I, ASCLEPIOS II).
+- **Source aliases:** "Study = MIRROR" (categorical effect column in Yu 2022 covariate equations).
+- **Example models:** `Yu_2022_ofatumumab.R` (exponential effect on B cell elimination rate kout).
+- **Notes:** Captures a between-study shift in the B cell elimination rate not explained by the other covariates in the final model.
+
 ### FED
 - **Description:** 1 = fed state at dosing, 0 = fasted.
 - **Units:** (binary)
@@ -1466,6 +1516,7 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   `COMBO_NIVO` (specific-scope any-regimen nivolumab combination-therapy
   indicator on the time-varying CL Emax) canonical entries while
   extracting `Sanghavi_2020_ipilimumab.R`.
+- **2026-04-26** — Added `BLBCELL` (specific-scope baseline CD19+ B cell count under `Inflammation markers`), `ROUTE_IV`, `DEVICE_AI`, `STUDY_APLIOS`, and `STUDY_MIRROR` (all specific-scope under `Formulation / assay / study`) canonical entries while extracting `Yu_2022_ofatumumab.R`. Source aliases mapped: `Bcell0`→`BLBCELL`, "Admin route = IV"→`ROUTE_IV`, "Formulation = AI"→`DEVICE_AI`, "Study = APLIOS"→`STUDY_APLIOS`, "Study = MIRROR"→`STUDY_MIRROR`.
 - **2026-04-25** — Added `ECOG_PS_GT0` (general-scope binary indicator for ECOG performance status > 0; Oncology section), `COADMIN_IPI_3Q3W`, `COADMIN_IPI_1Q6W`, `COADMIN_CHEMO`, and `COADMIN_IPI_ANY` (specific-scope coadministration-regimen indicators; Concomitant / prior medication section) canonical entries while extracting `Zhang_2019_nivolumab.R`. Source aliases mapped: `PS`→`ECOG_PS_GT0`, `IPI3Q3W`→`COADMIN_IPI_3Q3W`, `IPI1Q6W`→`COADMIN_IPI_1Q6W`, `CHEMO`→`COADMIN_CHEMO`, `IPICO`→`COADMIN_IPI_ANY`.
 - **2026-04-25** — Added `FFM` (general-scope, fat-free mass, Janmahasatian formula), `IGG` (general-scope, serum immunoglobulin G), `RACE_NEAS` (specific-scope, North East Asian composite race indicator), and `STDY_LBSL` (specific-scope, early-phase belimumab LBSL01/02 study indicator) canonical entries while extracting `Zhou_2021_belimumab.R`. Source aliases mapped: `BALB`→`ALB`, `BIGG`→`IGG`, `RAC4`→`RACE_NEAS`, `INDR`→`STDY_LBSL`.
 - **2026-04-25** — Added `IGG` (general-scope endogenous serum immunoglobulin G concentration; placed under `Renal / hepatic function` near `LDH` since the cemiplimab paper uses it as a baseline lab covariate alongside ALB, ALT, BMI, and WT) canonical entry while extracting `Yang_2021_cemiplimab.R`. Source alias `IGGBL`→`IGG` mapped. Reference value 9.65 g/L.
