@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Wu 2024 inotuzumab ozogamicin ([doi:10.1007/s40262-024-01386-z](https://doi.org/10.1007/s40262-024-01386-z)) — pediatric and adult patients with relapsed/refractory B-cell precursor acute lymphoblastic leukemia and adults with B-cell non-Hodgkin's lymphoma.
 * Fix vignettes: derive concentration units in `labs()` from model `$units` metadata; replace inline trapezoidal NCA with PKNCA; add PKNCA sections to nalmefene and clesrovimab vignettes; add PKNCA treatment grouping to benralizumab and durvalumab vignettes.
 * Add `concentration` field to `units` metadata for `Wang_2017_benralizumab` and `Ogasawara_2020_durvalumab` models.
 * Add Chen 2020 luspatercept ([doi:10.1002/psp4.12515](https://doi.org/10.1002/psp4.12515)) — adults with anemia due to lower-risk myelodysplastic syndromes.

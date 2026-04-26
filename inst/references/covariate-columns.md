@@ -496,6 +496,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Nikanjam_2019_siltuximab.R` (multiplicative -23% effect on Vss; no CL effect).
 - **Notes:** Smoldering multiple myeloma is an asymptomatic plasma-cell disorder distinct from active multiple myeloma; pooled with the Nikanjam 2019 cohort that also included MGUS, multiple myeloma, RCC, ovarian, and other tumor types. Scope: specific because the disease-pooling reference category is paper-defined. Ratified canonically on 2026-04-24.
 
+### DIS_BCPALL (**canonical for B-cell precursor acute lymphoblastic leukemia disease-state indicator**)
+- **Description:** 1 = B-cell precursor acute lymphoblastic leukemia (BCP-ALL), 0 = B-cell non-Hodgkin's lymphoma (NHL) or other non-BCP-ALL indication pooled in the source analysis. Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-BCP-ALL; in the Wu 2024 cohort this is the adult B-cell NHL stratum).
+- **Source aliases:**
+  - `ALL` — used in `Wu_2024_inotuzumab.R` (Wu 2024 calls it the "ALL effect" and notes it bundles disease type with the corresponding bioanalytical assay difference).
+- **Example models:** `Wu_2024_inotuzumab.R` (additive fractional-change effects on CL1 (-0.767) and CL2 (-0.362), and gates the BLSTABL and AGE effects on kdes; for kdes itself a -0.924 fractional change for BCP-ALL).
+- **Notes:** Used when a population PK model pools BCP-ALL patients with a non-BCP-ALL reference (e.g., Wu 2024: pooled adult B-cell NHL + adult BCP-ALL + pediatric BCP-ALL). Scope: specific because the complement reference category is paper-defined (Wu 2024 reference is pooled adult B-cell NHL). The "ALL effect" theta in Wu 2024 conflates two physiologically distinct sources of variation — B-cell tumor type (NHL vs ALL surface CD22 burden) and bioanalytical method (ELISA for adult NHL vs HPLC-MS for ALL) — and cannot be split with the available data; document this confounding when comparing across populations. Ratified canonically on 2026-04-26.
+
 ## Oncology
 
 ### TUMSZ (**canonical for baseline tumor size**)
@@ -653,6 +664,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Zhang_2019_nivolumab.R` (multiplicative effect on baseline CL, additive effect on Emax of time-varying CL).
 - **Notes:** Many oncology PopPK papers report a binary-collapsed performance-status indicator rather than the full ECOG scale. The "GT0" suffix preserves the dichotomization explicitly. If a future paper uses a different cut-point (e.g., PS<=1 vs. PS>=2), register it as `ECOG_PS_GT1` rather than reusing this column.
 
+### BLSTABL (**canonical for baseline absolute blast counts in peripheral blood**)
+- **Description:** Baseline absolute count of blasts (immature lymphoid/myeloid precursor cells) circulating in peripheral blood. Time-fixed baseline value.
+- **Units:** 10^9 counts/L (equivalently 10^9 counts; reported as "x 10^9 counts" in Wu 2024 Table 2).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a — used with power scaling `(BLSTABL / <ref>)^exponent`. Reference value observed: 0.352 x 10^9 counts (Wu 2024 Table 3, BCP-ALL median).
+- **Source aliases:**
+  - `BLSTABL` — used in `Wu_2024_inotuzumab.R`.
+- **Example models:** `Wu_2024_inotuzumab.R` (power exponent -0.0484 on kdes for BCP-ALL patients only; the effect is gated off for B-cell NHL by multiplying the exponent by `DIS_BCPALL`).
+- **Notes:** Distinct from blasts in bone marrow (different specimen) and from `BLSTPB` (percentage of blasts in peripheral blood, used by the predecessor Garrett 2019 adult model). Not applicable for B-cell NHL patients in pooled BCP-ALL + NHL analyses (Wu 2024 retains the effect only in BCP-ALL patients via the DIS_BCPALL gate). When supplying BLSTABL for an NHL subject, set the value to the BCP-ALL reference (0.352) so the gated power term evaluates to 1 numerically. Scope: specific because the covariate is most meaningful in B-cell-leukemia population PK analyses; promote to general if a second paper retains it.
+
 ## Laboratory / disease-activity
 
 ### ALBR
@@ -762,6 +784,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   - `NSAID` — used in `Li_2019_abatacept.R`.
 - **Example models:** `Li_2019_abatacept.R` (exponential effect on CL: `CL * exp(0.0640 * CONMED_NSAID)`; ~6.6% higher CL, not clinically relevant per Li 2019).
 - **Notes:** Baseline-use-only in Li 2019; time-varying use is permitted, document per-model. Follows the `CONMED_*` concomitant-medication pattern established for IBD models (AZA / MP / MTX / AMINO).
+
+### CONMED_RITUX (**canonical for concomitant rituximab combination therapy**)
+- **Description:** 1 = on concomitant rituximab combination therapy (with or without backbone chemotherapy), 0 = not on rituximab.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no concomitant rituximab; single-agent or non-rituximab combination).
+- **Source aliases:**
+  - `RITUX` — used in `Wu_2024_inotuzumab.R`.
+- **Example models:** `Wu_2024_inotuzumab.R` (additive fractional change on CL1: `CL1 * (1 + (-0.132) * CONMED_RITUX)` ≈ 13% lower CL1 with concomitant rituximab).
+- **Notes:** Wu 2024 Table 3 footnote b explicitly flips the reference category vs. the predecessor Garrett 2019 adult model: in Garrett 2019 the reference was "with rituximab" (RITUX = 0 meant on-rituximab), whereas in Wu 2024 the reference is "without rituximab" (RITUX = 0 means no concomitant rituximab). Future models that pool an analogous rituximab-combination cohort with a single-agent reference should use this canonical with the Wu 2024 sign convention; if a paper retains the Garrett 2019 reverse-coded convention, document the value transformation in `covariateData[[CONMED_RITUX]]$notes` (`CONMED_RITUX = 1 - source$RITUX`) rather than registering a second canonical. Ratified canonically on 2026-04-26.
 
 ## Rheumatoid-arthritis disease-activity covariates
 
