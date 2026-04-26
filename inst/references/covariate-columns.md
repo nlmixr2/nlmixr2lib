@@ -198,15 +198,16 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Notes:** Ratified canonically on 2026-04-19 after cross-model review. Unit varies by paper (g/dL in US-convention papers, g/L in SI-convention papers); the per-model `covariateData[[ALB]]$units` field is load-bearing. Effect-coefficient magnitude is meaningless without the unit.
 
 ### IGG (**canonical for serum immunoglobulin G**)
-- **Description:** Serum total immunoglobulin G concentration (baseline or time-varying).
+- **Description:** Serum total immunoglobulin G concentration (baseline or time-varying). Used in mAb PK analyses as a competition-for-FcRn-recycling covariate on therapeutic-mAb clearance — high endogenous IgG is hypothesized to displace the therapeutic mAb from FcRn salvage and increase its catabolic clearance.
 - **Units:** g/L (typical in SI-convention papers); also reported as mg/dL in US-convention papers — document the unit used in each model via `covariateData[[IGG]]$units`.
 - **Type:** continuous
 - **Scope:** general
-- **Reference category:** n/a — used with power scaling `(IGG / ref)^exponent`.
+- **Reference category:** n/a — used with power scaling `(IGG / ref)^exponent`. Reference values observed: 14.8 g/L (Zhou 2021), 9.65 g/L (Yang 2021).
 - **Source aliases:**
   - `BIGG` (baseline IgG) — used in `Zhou_2021_belimumab.R`.
-- **Example models:** `Zhou_2021_belimumab.R` (g/L, reference 14.8; baseline-only; exponent 0.293 on CL — endogenous IgG competes with the therapeutic mAb for FcRn recycling).
-- **Notes:** Mechanistically meaningful for monoclonal-antibody PK because endogenous IgG competes with the therapeutic mAb for FcRn-mediated recycling. The per-model `covariateData[[IGG]]$units` field is load-bearing (1 g/L ≈ 100 mg/dL). Baseline-vs-time-varying status documented in `covariateData[[IGG]]$notes`.
+  - `IGGBL` (baseline IgG) — used in `Yang_2021_cemiplimab.R`.
+- **Example models:** `Zhou_2021_belimumab.R` (g/L, reference 14.8; baseline-only; exponent 0.293 on CL), `Yang_2021_cemiplimab.R` (g/L, reference 9.65; small positive exponent 0.184 on shared CL/Q).
+- **Notes:** Mechanistically meaningful for monoclonal-antibody PK because endogenous IgG competes with the therapeutic mAb for FcRn-mediated recycling. The per-model `covariateData[[IGG]]$units` field is load-bearing (1 g/L ≈ 100 mg/dL). Baseline-vs-time-varying status documented in `covariateData[[IGG]]$notes`. Distinct from `lIgG0` / IgG-as-a-state in mechanistic FcRn-competition TMDD models (e.g., `Valenzuela_2025_nipocalimab.R`), where IgG is a dynamic state, not a baseline covariate; use `IGG` only when the source paper treats IgG as a static (baseline) covariate column.
 
 ### TBILI (**canonical for total bilirubin**)
 - **Description:** Total serum bilirubin concentration.
@@ -249,17 +250,6 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   - `BLDH` (baseline LDH) — used in `Sanghavi_2020_ipilimumab.R`.
 - **Example models:** `Sanghavi_2020_ipilimumab.R` (linear-on-log form on CL with reference 217 U/L; coefficient 0.703).
 - **Notes:** Universal lab marker. Sanghavi 2020 log-transforms LDH because the distribution is heavily right-skewed (range 74-6,245 U/L over a median of 217); other papers may use a simple `(LDH/ref)^exponent` form. Document the functional form in `covariateData[[LDH]]$notes`.
-
-### IGG (**canonical for endogenous serum immunoglobulin G concentration**)
-- **Description:** Endogenous (host-produced) serum immunoglobulin G concentration. Used in oncology / mAb PK analyses as a competition-for-FcRn-recycling covariate on therapeutic-mAb clearance — high endogenous IgG is hypothesized to displace the therapeutic mAb from FcRn salvage and increase its catabolic clearance.
-- **Units:** g/L. Document per-model via `covariateData[[IGG]]$units`.
-- **Type:** continuous
-- **Scope:** general
-- **Reference category:** n/a — used with power scaling `(IGG / ref)^exponent`. Reference values observed: 9.65 g/L (Yang 2021).
-- **Source aliases:**
-  - `IGGBL` (baseline IgG) — used in `Yang_2021_cemiplimab.R`.
-- **Example models:** `Yang_2021_cemiplimab.R` (g/L, reference 9.65; small positive exponent 0.184 on shared CL/Q).
-- **Notes:** Distinct from `lIgG0` / IgG-as-a-state in mechanistic FcRn-competition TMDD models (e.g., `Valenzuela_2025_nipocalimab.R`), where IgG is a dynamic state, not a baseline covariate. Use `IGG` only when the source paper treats IgG as a static (baseline) covariate column. Ratified canonically on 2026-04-25.
 
 ## Hematology
 
@@ -319,15 +309,15 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 
 ## Interferon / biomarker panels
 
-### BGENE21
-- **Description:** Baseline type I interferon gene signature computed from the expression of 21 IFN-alpha / type-I-IFN-inducible transcripts in peripheral blood mononuclear cells. Used as a continuous biomarker of type I IFN pathway activation in SLE (and mechanistically-related indications).
-- **Units:** (gene-signature score, unitless)
+### BGENE21 (**canonical for 21-gene type I interferon signature score**)
+- **Description:** Baseline 21-gene type I interferon signature score — a composite transcriptomic score summarising the expression of 21 interferon-regulated genes in whole blood relative to a healthy-donor reference, used as a biomarker of type I IFN pathway activation in SLE and related autoimmune conditions.
+- **Units:** unitless fold-change score (relative to healthy-donor reference).
 - **Type:** continuous
 - **Scope:** specific
-- **Reference category:** n/a — used with power scaling `(BGENE21 / ref)^exponent`. Reference value observed: 32 in Narwal 2013 (study-population median was 33).
+- **Reference category:** n/a — used with power scaling `(BGENE21 / ref)^exponent`. Reference values observed: 32 in Narwal 2013 (study-population median was 33), 12.04 in Zheng 2016 (median of the SLE phase IIb cohort, range 0.32-38.59).
 - **Source aliases:** none.
-- **Example models:** `Narwal_2013_sifalimumab.R` (reference 32, exponent 0.0558 on CL).
-- **Notes:** Specific to studies that report a 21-gene IFN signature (subset / expansion of the "BGENE4" 4-gene signature). If another paper uses the 4-gene signature or a differently-constructed IFN score, register a distinct canonical (`BGENE4`, `IFN_SIG`, ...).
+- **Example models:** `Narwal_2013_sifalimumab.R` (reference 32, exponent 0.0558 on CL), `Zheng_2016_sifalimumab.R` (reference 12.04, power effect on CL with exponent 0.09).
+- **Notes:** Specific to drugs whose mechanism targets the type I IFN pathway (e.g., anti-IFN-alpha antibodies like sifalimumab, anifrolumab). Higher BGENE21 indicates stronger target engagement / disease activity and is associated with increased drug clearance via target-mediated mechanisms. The 21-gene panel composition is tied to the MedImmune/AstraZeneca SLE development programme; a different IFN gene signature (e.g., a 4-gene or 5-gene panel) should be registered under its own canonical name (`BGENE4`, `IFN_SIG`, ...) to avoid conflating panel definitions.
 
 ## Inflammation markers
 
@@ -341,16 +331,6 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   - `BEOS` (baseline EOS) — used in `Kotani_2022_astegolimab.R`.
 - **Example models:** `Kotani_2022_astegolimab.R` (reference 180 cells/µL, baseline).
 - **Notes:** Used as a surrogate of inflammatory burden that correlates with protein turnover and therefore mAb clearance. Canonical name drops the `B` prefix to match the `EASI` / `AGE` / `WT` / `ALB` pattern; baseline-vs-time-varying status is documented in `covariateData[[EOS]]$notes`.
-
-### BGENE21 (**canonical for 21-gene type I interferon signature score**)
-- **Description:** Baseline 21-gene type I interferon signature score — a composite transcriptomic score summarising the expression of 21 interferon-regulated genes in whole blood relative to a healthy-donor reference, used as a biomarker of type I IFN pathway activation in SLE and related autoimmune conditions.
-- **Units:** unitless fold-change score (relative to healthy-donor reference).
-- **Type:** continuous
-- **Scope:** specific
-- **Reference category:** n/a — used with power scaling `(BGENE21 / ref)^exponent`. Reference value observed: 12.04 in `Zheng_2016_sifalimumab.R` (median of the SLE phase IIb cohort, range 0.32-38.59).
-- **Source aliases:** none.
-- **Example models:** `Zheng_2016_sifalimumab.R` (power effect on CL with exponent 0.09).
-- **Notes:** Specific to drugs whose mechanism targets the type I IFN pathway (e.g., anti-IFN-alpha antibodies like sifalimumab, anifrolumab). Higher BGENE21 indicates stronger target engagement / disease activity and is associated with increased drug clearance via target-mediated mechanisms. Scope: specific because the 21-gene panel composition is tied to the MedImmune/AstraZeneca SLE development programme; a different IFN gene signature (e.g., a 4-gene or 5-gene panel) should be registered under its own canonical name to avoid conflating panel definitions.
 
 ### BLBCELL (**canonical for baseline CD19+ B cell count**)
 - **Description:** Baseline CD19+ B cell count (cells/µL) measured by fluorescence-activated cell sorting (FACS) prior to first dose. Used as a covariate / scaling biomarker for B-cell-targeted antibody PK-PD models (e.g., anti-CD20 mAbs in multiple sclerosis or B cell malignancies).
@@ -664,16 +644,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Notes:** Liver metastases are associated with hepatic protein-synthesis impairment and altered IgG catabolism, making `LMET` a commonly tested covariate in oncology mAb population PK analyses. Scope: general so future oncology papers can reuse the canonical column. Time-fixed baseline indicator; if a source paper treats it as time-varying (progression during treatment), document in `covariateData[[LMET]]$notes`.
 
 ### ECOG_GE1 (**canonical for Eastern Cooperative Oncology Group performance-status indicator, >= 1**)
-- **Description:** 1 if baseline Eastern Cooperative Oncology Group (ECOG) performance status is greater than or equal to 1, 0 if ECOG = 0.
+- **Description:** 1 if baseline Eastern Cooperative Oncology Group (ECOG) performance status is greater than or equal to 1, 0 if ECOG = 0. Time-fixed per subject.
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** general
 - **Reference category:** 0 (ECOG performance status = 0, i.e., fully active / asymptomatic).
 - **Source aliases:**
-  - `PS` / `BPS` — the Bajaj 2017 nivolumab analysis reports "baseline performance status" (BPS) as a binary ECOG-derived indicator. In Bajaj 2017 the one study using Karnofsky Performance Status (KPS) values was mapped to the ECOG scale per Oken 1982 before thresholding.
-  - `ECOG_1` — alternative explicit form; equivalent to `ECOG_GE1` when ECOG only takes values 0, 1, 2 in the analysis dataset (which is the typical oncology case).
-- **Example models:** `Bajaj_2017_nivolumab.R` (exponential effect on CL with coefficient 0.172, reference 0).
-- **Notes:** Oncology papers conventionally report ECOG as an integer (0-5) but binarize at >= 1 because ECOG >= 2 is rare in trial cohorts. When a source paper provides the ordinal ECOG score separately, derive `ECOG_GE1 = as.integer(ECOG >= 1)`. If a future paper needs finer resolution (e.g., separate effects for ECOG 1 vs ECOG 2), add a parallel `ECOG_GE2` canonical rather than overloading this one.
+  - `PS` / `BPS` — used in `Bajaj_2017_nivolumab.R` (BPS = "baseline performance status"; the one study using Karnofsky Performance Status was mapped to ECOG via Oken 1982 before binarization) and `Zhang_2019_nivolumab.R` (paper's binary collapse PS=0 vs. PS>0).
+  - `ECOG_1` — alternative explicit form; equivalent to `ECOG_GE1` when ECOG only takes values 0, 1, 2 in the analysis dataset (the typical oncology case).
+  - `ECOG_PS_GT0` — retired name used in earlier register drafts; semantically identical (`>= 1` equals `> 0` for integer ECOG scores).
+- **Example models:** `Bajaj_2017_nivolumab.R` (exponential effect on CL with coefficient 0.172), `Zhang_2019_nivolumab.R` (exponential effect exp(0.181) on baseline CL; additive effect -0.138 on the time-varying-CL Emax parameter).
+- **Notes:** Oncology papers conventionally report ECOG as an integer (0-5) but binarize at >= 1 because ECOG >= 2 is rare in trial cohorts. When a source paper provides the ordinal ECOG score separately, derive `ECOG_GE1 = as.integer(ECOG >= 1)`. Zhang 2019 uses `ECOG_GE1` on both baseline CL and the time-varying Emax parameter (unlike Bajaj 2017, which uses it on CL only); document the structural role in each model's `covariateData[[ECOG_GE1]]$notes`. If a future paper needs finer resolution (e.g., separate effects for ECOG 1 vs ECOG 2), add a parallel `ECOG_GE2` canonical rather than overloading this one.
 
 ### TUMTP_SCLC (**canonical for small-cell-lung-cancer tumor-type indicator**)
 - **Description:** 1 = small cell lung cancer (SCLC), 0 = other tumor types.
@@ -729,17 +710,6 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   - `COMBO` — used in `Sanghavi_2020_ipilimumab.R`. Equivalently derivable from `NIVO_REGIMEN` as `COMBO_NIVO = as.integer(NIVO_REGIMEN != "none")`.
 - **Example models:** `Sanghavi_2020_ipilimumab.R` (additive effect -0.202 on the Emax parameter of the time-varying CL function).
 - **Notes:** Distinct from the per-regimen `NIVO_1Q3W` / `NIVO_3Q2W` indicators on baseline CL: `COMBO_NIVO` aggregates across all nivolumab regimens and acts on the time-varying-CL Emax parameter, whereas the per-regimen indicators act on baseline (time-zero) CL.
-
-### ECOG_PS_GT0 (**canonical for ECOG performance status > 0 indicator**)
-- **Description:** 1 = ECOG (Eastern Cooperative Oncology Group) performance status greater than 0 at baseline (i.e., PS 1, 2, 3, or 4); 0 = ECOG PS 0 (fully active). Time-fixed per subject.
-- **Units:** (binary)
-- **Type:** binary
-- **Scope:** general
-- **Reference category:** 0 (ECOG PS 0; fully active).
-- **Source aliases:**
-  - `PS` — used in `Zhang_2019_nivolumab.R` (paper's binary collapse of the four-level ECOG scale into PS=0 vs. PS>0).
-- **Example models:** `Zhang_2019_nivolumab.R` (multiplicative effect on baseline CL, additive effect on Emax of time-varying CL).
-- **Notes:** Many oncology PopPK papers report a binary-collapsed performance-status indicator rather than the full ECOG scale. The "GT0" suffix preserves the dichotomization explicitly. If a future paper uses a different cut-point (e.g., PS<=1 vs. PS>=2), register it as `ECOG_PS_GT1` rather than reusing this column.
 
 ## Laboratory / disease-activity
 
@@ -906,16 +876,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Ma_2020_sarilumab_das28crp.R` (multiplicative on DAS28-CRP Kout: `Kout * theta^PRICORT`); `Ma_2020_sarilumab_anc.R` (power-form on Emax: `Emax * 0.819^PRICORT`).
 - **Notes:** Ma 2020 applies it as a multiplicative effect of the form `param * theta^PRICORT` in both DAS28-CRP and ANC PD models. Generally applicable clinical-history indicator.
 
-### STEROID
-- **Description:** 1 = patient on systemic corticosteroid therapy at baseline (typically continued as concomitant medication during the study), 0 = no baseline corticosteroid use.
+### STEROID (**canonical for baseline/concomitant systemic corticosteroid use**)
+- **Description:** 1 = patient on systemic corticosteroid therapy at baseline (typically continued as concomitant medication during the study), 0 = no baseline corticosteroid use. Time-fixed per subject.
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** general
 - **Reference category:** 0 (no baseline corticosteroid use).
 - **Source aliases:**
-  - `BSTEROID` — used in `Narwal_2013_sifalimumab.R`.
-- **Example models:** `Narwal_2013_sifalimumab.R` (multiplicative on CL: `CL * (1 + 0.195 * STEROID)`).
-- **Notes:** Distinct from `PRICORT`, which is strictly a prior (pre-study) indicator. `STEROID` captures concurrent corticosteroid use at / from study baseline. When a future paper needs the two jointly, both can coexist on the same subject.
+  - `BSTEROID` — used in `Narwal_2013_sifalimumab.R` and `Zheng_2016_sifalimumab.R`.
+- **Example models:** `Narwal_2013_sifalimumab.R` (multiplicative on CL: `CL * (1 + 0.195 * STEROID)`), `Zheng_2016_sifalimumab.R` (multiplicative on CL `(1 + 0.11 * STEROID)` and on V1 `(1 - 0.09 * STEROID)` in the SLE phase IIb cohort, which was ~85% steroid-treated at baseline).
+- **Notes:** Distinct from `PRICORT`, which is strictly a prior (pre-study) indicator. `STEROID` captures concurrent corticosteroid use at / from study baseline in diseases where background steroid use is standard of care (SLE, severe asthma, etc.). When a future paper needs the two jointly, both can coexist on the same subject. The name `STEROID_BL` was used as an alias in earlier register drafts and is retired; use `STEROID` for all future models.
+
 ### COADMIN_IPI_3Q3W (**canonical for nivolumab + ipilimumab 3 mg/kg q3w combination indicator**)
 - **Description:** 1 = subject is receiving nivolumab in combination with ipilimumab 3 mg/kg every 3 weeks (4-dose induction); 0 = otherwise. Encodes the high-intensity ipilimumab combination regimen as a study-design covariate on nivolumab CL.
 - **Units:** (binary)
@@ -959,17 +930,6 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   - `IPICO` — used in `Zhang_2019_nivolumab.R`.
 - **Example models:** `Zhang_2019_nivolumab.R` (additive effect on the time-varying-CL Emax parameter: Emax += -0.0668 when COADMIN_IPI_ANY = 1).
 - **Notes:** Logically the union of the regimen-specific indicators (COADMIN_IPI_3Q3W, COADMIN_IPI_1Q6W, plus the unmodeled 1 mg/kg q3wx4 and 1 mg/kg q12w schedules). Zhang 2019 uses it on the *time-varying* Emax (a different structural parameter from baseline CL), which is why it coexists with the regimen-specific indicators on baseline CL rather than substituting for them.
-
-### STEROID_BL (**canonical for baseline/concomitant systemic steroid use**)
-- **Description:** 1 = patient is on systemic corticosteroid treatment at study entry (baseline concomitant use), 0 = not on steroids at baseline. Time-fixed per subject.
-- **Units:** (binary)
-- **Type:** binary
-- **Scope:** general
-- **Reference category:** 0 (not on steroids at baseline).
-- **Source aliases:**
-  - `BSTEROID` — used in `Zheng_2016_sifalimumab.R`.
-- **Example models:** `Zheng_2016_sifalimumab.R` (multiplicative effects on CL `(1 + 0.11 * STEROID_BL)` and on V1 `(1 - 0.09 * STEROID_BL)` in the SLE phase IIb cohort, which was ~85% steroid-treated at baseline).
-- **Notes:** Distinct from `PRICORT`, which captures systemic corticosteroid use *prior* to study entry as a one-time clinical-history indicator. `STEROID_BL` captures ongoing/concomitant steroid therapy at baseline in diseases where background steroid use is standard of care (SLE, severe asthma, etc.). In some studies the prior-vs-baseline distinction is immaterial (patients on steroids at baseline have also taken them prior) but the semantic difference is preserved here so that future models can use the appropriate indicator.
 
 ### STATIN (**canonical for concomitant statin (HMG-CoA reductase inhibitor) therapy**)
 - **Description:** 1 = patient coadministered a statin (HMG-CoA reductase inhibitor) during the study, 0 = no statin coadministration.
@@ -1417,6 +1377,7 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 
 ## Change log
 
+- **2026-04-26** — Deduplicated four covariate entries that were registered twice during sequential model-PR merges: (1) merged second `IGG` entry (Yang 2021 cemiplimab) into the first (Zhou 2021 belimumab) — both papers use the same canonical `IGG` column, so the entry now lists both source aliases (`BIGG`, `IGGBL`) and both reference values (14.8 g/L, 9.65 g/L); (2) merged second `BGENE21` entry (Zheng 2016 sifalimumab, misfiled under Inflammation markers) into the first (Narwal 2013 sifalimumab, under Interferon / biomarker panels); (3) merged `STEROID_BL` (Zheng 2016 sifalimumab) into `STEROID` (Narwal 2013 sifalimumab) — both encode the same baseline/concomitant corticosteroid indicator, `STEROID` is the preferred shorter name, `STEROID_BL` retired; `Zheng_2016_sifalimumab.R` updated accordingly; (4) merged `ECOG_PS_GT0` (Zhang 2019 nivolumab) into `ECOG_GE1` (Bajaj 2017 nivolumab) — `>= 1` equals `> 0` for integer ECOG scores, `ECOG_GE1` is the preferred name (consistent with a potential future `ECOG_GE2`), `ECOG_PS_GT0` retired; `Zhang_2019_nivolumab.R` updated accordingly.
 - **2026-04-26** — Added `DIS_DMD` (specific scope) canonical entry while extracting `Wojciechowski_2022_domagrozumab.R`. Source alias `SPOP`; orientation matches the source (1 = DMD pediatric patient, 0 = healthy adult volunteer reference). The covariate enters as a `(1 + theta * DIS_DMD)` multiplicative shift (additive on the linear scale, not exponentiated) rather than the typical `theta^DIS_DMD` form, matching Eqs. 7-8 of the paper.
 - **2026-04-21** — Added `RACE_HISPANIC` (general) and `CLD_PREM` (general) canonical entries while extracting `Robbie_2012_palivizumab.R`. Extended `ADA_TITER` example_models with the Robbie 2012 category-by-titer-bin usage, and added `Robbie_2012_palivizumab.R` to the `WT`, `PAGE`, `RACE_BLACK`, `RACE_ASIAN`, and `RACE_OTHER` example lists. `HISPANIC`, `CLD`, and `BPD` recorded as source aliases.
 - **Initial seed**: Every covariate observed in `inst/modeldb/` as of the audit. Canonical names established: `SEXF`, `ADA_POS`, `RACE_<GROUP>` prefix. Aliases documented but existing model files not modified.

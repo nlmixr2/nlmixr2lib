@@ -74,18 +74,18 @@ body holds the `population` list literal).
 | Q                                              | Zheng 2016 Table 2, theta4                    | 0.34 L/day                                                |
 | WT exponent on CL                              | Zheng 2016 Table 2, theta5                    | 0.45 (reference 64.3 kg)                                  |
 | BGENE21 exponent on CL                         | Zheng 2016 Table 2, theta6                    | 0.09 (reference 12.04)                                    |
-| STEROID_BL fractional effect on CL             | Zheng 2016 Table 2, theta7                    | +0.11 (so CL x (1 + 0.11 * STEROID_BL))                   |
+| STEROID fractional effect on CL             | Zheng 2016 Table 2, theta7                    | +0.11 (so CL x (1 + 0.11 * STEROID))                   |
 | WT exponent on V1                              | Zheng 2016 Table 2, theta8                    | 0.36 (reference 64.3 kg)                                  |
 | DOSE exponent on V1                            | Zheng 2016 Table 2, theta9                    | 0.06 (reference 600 mg)                                   |
-| STEROID_BL fractional effect on V1             | Zheng 2016 Table 2, theta10                   | -0.09 (so V1 x (1 - 0.09 * STEROID_BL))                   |
+| STEROID fractional effect on V1             | Zheng 2016 Table 2, theta10                   | -0.09 (so V1 x (1 - 0.09 * STEROID))                   |
 | BSV on CL (log-normal)                         | Zheng 2016 Table 2, BSV (CV %)                | 24% CV (omega^2 = log(CV^2 + 1) = 0.056016)               |
 | BSV on V1 (log-normal)                         | Zheng 2016 Table 2, BSV (CV %)                | 16% CV (omega^2 = 0.025278)                               |
 | IOV on V1 (per-occasion)                       | Zheng 2016 Table 2 / IOV paragraph            | 26% CV, seven infusions; **not implemented** (see below)  |
 | BSV correlations                               | Zheng 2016 Results                            | None significant; IIV treated as diagonal                 |
 | Proportional residual error                    | Zheng 2016 Table 2                            | 7.01% -> propSd = 0.0701 (fraction)                       |
 | Additive residual error                        | Zheng 2016 Table 2                            | 1.14 ug/mL                                                |
-| Covariate equation CL                          | Zheng 2016 Equations (Results)                | CL = theta1 * (WT/64.3)^0.45 * (BGENE21/12.04)^0.09 * (1 + 0.11 * STEROID_BL) |
-| Covariate equation V1                          | Zheng 2016 Equations (Results)                | V1 = theta2 * (WT/64.3)^0.36 * (DOSE/600)^0.06 * (1 - 0.09 * STEROID_BL)       |
+| Covariate equation CL                          | Zheng 2016 Equations (Results)                | CL = theta1 * (WT/64.3)^0.45 * (BGENE21/12.04)^0.09 * (1 + 0.11 * STEROID) |
+| Covariate equation V1                          | Zheng 2016 Equations (Results)                | V1 = theta2 * (WT/64.3)^0.36 * (DOSE/600)^0.06 * (1 - 0.09 * STEROID)       |
 | Dose regimens                                  | Zheng 2016 Table 1 and Methods                | 200, 600, or 1200 mg IV q4w for 52 weeks; loading dose day 15 |
 
 ## Virtual cohort
@@ -119,10 +119,10 @@ pop <- cohorts %>%
                            39), 131.3),
     BGENE21    = pmin(pmax(rlnorm(dplyr::n(), meanlog = log(12.04), sdlog = 0.8),
                            0.32), 38.59),
-    STEROID_BL = as.integer(runif(dplyr::n()) < 0.85),
+    STEROID = as.integer(runif(dplyr::n()) < 0.85),
     DOSE       = dose_mg
   ) %>%
-  select(ID, treatment, dose_mg, WT, BGENE21, STEROID_BL, DOSE)
+  select(ID, treatment, dose_mg, WT, BGENE21, STEROID, DOSE)
 
 pop
 ```
@@ -156,7 +156,7 @@ obs_times <- sort(unique(c(peri_dose, terminal)))
 dose_rows <- pop %>%
   tidyr::crossing(time = dose_days) %>%
   transmute(
-    ID, treatment, WT, BGENE21, STEROID_BL, DOSE,
+    ID, treatment, WT, BGENE21, STEROID, DOSE,
     time,
     amt  = dose_mg,
     evid = 1L,
@@ -166,7 +166,7 @@ dose_rows <- pop %>%
   )
 
 obs_rows <- pop %>%
-  select(ID, treatment, WT, BGENE21, STEROID_BL, DOSE) %>%
+  select(ID, treatment, WT, BGENE21, STEROID, DOSE) %>%
   tidyr::crossing(time = obs_times) %>%
   mutate(
     amt  = NA_real_,
@@ -371,12 +371,12 @@ accounts for < 10% of PK variability.
   first-order elimination from `central`, no explicit depot or
   absorption compartment.
 * **IIV:** diagonal matrix on CL and V1; no BSV on Q or V2.
-* **Covariates:** WT, BGENE21, STEROID_BL on CL; WT, DOSE,
-  STEROID_BL on V1. Collectively these accounted for < 10% of PK
+* **Covariates:** WT, BGENE21, STEROID on CL; WT, DOSE,
+  STEROID on V1. Collectively these accounted for < 10% of PK
   variability in the published final model.
 * **Typical terminal half-life** predicted from the structural
   parameters for a typical 64.3 kg patient with BGENE21 = 12.04,
-  DOSE = 600 mg, STEROID_BL = 0 is approximately 24 days
+  DOSE = 600 mg, STEROID = 0 is approximately 24 days
   (dominated by the central-compartment elimination rate
   CL/V1 = 0.184/2.82 = 0.0652 day^-1 plus the small peripheral
   redistribution term), consistent with the Results narrative.

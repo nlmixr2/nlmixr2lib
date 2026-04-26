@@ -123,7 +123,7 @@ Equation forms:
 - Q: `Q = Q_REF * (WT/80)^e_wt_cl` (CL exponent reused per Methods).
 - Vp: `Vp = VP_REF * (WT/80)^e_wt_vc` (Vc exponent reused per Methods).
 - Time-varying CL: `CL(t) = CL0 * exp(Emax_i * t^HILL / (T50^HILL + t^HILL))`.
-- Emax_i: additive linear-scale form `Emax_REF + e_ecog_emax * ECOG_PS_GT0 + e_ipico_emax * COADMIN_IPI_ANY + etaEmax`.
+- Emax_i: additive linear-scale form `Emax_REF + e_ecog_emax * ECOG_GE1 + e_ipico_emax * COADMIN_IPI_ANY + etaEmax`.
 
 # Covariate column naming
 
@@ -132,7 +132,7 @@ Equation forms:
 | `BBWT` (kg) | `WT` |
 | `eGFR` (mL/min/1.73 m^2) | `CRCL` |
 | `SEX` (1 = female / 0 = male) | `SEXF` (canonical for sex) |
-| `PS` (binary collapse: PS>0 vs PS=0) | `ECOG_PS_GT0` |
+| `PS` (binary collapse: PS>0 vs PS=0) | `ECOG_GE1` |
 | `RAAA` (1 = African American) | `RACE_BLACK` |
 | `RAAS` (1 = Asian) | `RACE_ASIAN` |
 | `IPI3Q3W` | `COADMIN_IPI_3Q3W` |
@@ -173,7 +173,7 @@ CRCL <- pmin(pmax(rnorm(n_subj, mean = 90, sd = 22), 30), 180)
 SEXF <- rbinom(n_subj, 1, 0.40)
 
 # ECOG PS > 0: Table 1 reports PS 0 in 47.02%, so PS > 0 in ~52.98%.
-ECOG_PS_GT0 <- rbinom(n_subj, 1, 0.5298)
+ECOG_GE1 <- rbinom(n_subj, 1, 0.5298)
 
 # Race indicators: assume the global trial mix has small Asian and Black
 # fractions. Zhang 2019 does not publish per-category percentages in the
@@ -186,7 +186,7 @@ RACE_ASIAN <- pmin(RACE_ASIAN, 1L - RACE_BLACK)
 pop <- data.frame(
   ID = seq_len(n_subj),
   WT, CRCL,
-  SEXF, ECOG_PS_GT0, RACE_BLACK, RACE_ASIAN
+  SEXF, ECOG_GE1, RACE_BLACK, RACE_ASIAN
 )
 ```
 
