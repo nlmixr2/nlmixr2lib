@@ -29,7 +29,7 @@ Zhang_2019_nivolumab <- function() {
       notes              = "Exponential effect on CL and on Vc; female reference value lower for both parameters. Source paper denotes the column SEX (1 = female, 0 = male per the Figure 1 caption naming the male reference patient).",
       source_name        = "SEX"
     ),
-    ECOG_PS_GT0 = list(
+    ECOG_GE1 = list(
       description        = "ECOG performance status > 0 indicator (binary collapse of the four-level scale)",
       units              = "(binary)",
       type               = "binary",
@@ -168,13 +168,13 @@ Zhang_2019_nivolumab <- function() {
     # Individual baseline CL (CL at t=0). All categorical effects are exponential
     # of the form exp(theta * indicator); continuous effects are power form
     # (cov / ref)^exponent. Reference covariates: WT 80 kg, eGFR 90 mL/min/1.73 m^2,
-    # male (SEXF=0), PS 0 (ECOG_PS_GT0=0), white/other race (RACE_BLACK=0 and
+    # male (SEXF=0), PS 0 (ECOG_GE1=0), white/other race (RACE_BLACK=0 and
     # RACE_ASIAN=0), monotherapy (all COADMIN_*=0).
     cl0 <- exp(lcl + etalcl) *
       (WT   / 80)^e_wt_cl *
       (CRCL / 90)^e_egfr_cl *
       exp(e_sexf_cl    * SEXF) *
-      exp(e_ecog_cl    * ECOG_PS_GT0) *
+      exp(e_ecog_cl    * ECOG_GE1) *
       exp(e_black_cl   * RACE_BLACK) *
       exp(e_asian_cl   * RACE_ASIAN) *
       exp(e_ipi3q3w_cl * COADMIN_IPI_3Q3W) *
@@ -194,7 +194,7 @@ Zhang_2019_nivolumab <- function() {
     # Time-varying CL: Hill-Emax function of time since first dose.
     t50  <- exp(lt50)
     hill <- exp(lhill)
-    Emax_i <- Emax + e_ecog_emax * ECOG_PS_GT0 + e_ipico_emax * COADMIN_IPI_ANY + etaEmax
+    Emax_i <- Emax + e_ecog_emax * ECOG_GE1 + e_ipico_emax * COADMIN_IPI_ANY + etaEmax
     cl <- cl0 * exp(Emax_i * t^hill / (t50^hill + t^hill))
 
     # Two-compartment micro-constants.

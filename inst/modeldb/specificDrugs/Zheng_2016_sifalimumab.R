@@ -21,12 +21,12 @@ Zheng_2016_sifalimumab <- function() {
       notes              = "Used for power-form scaling of CL with reference value 12.04 (median of the SLE cohort; range 0.32-38.59). The 21-gene panel is the AstraZeneca/MedImmune SLE development programme signature; effect exponent 0.09 on CL (Zheng 2016 Table 2).",
       source_name        = "BGENE21"
     ),
-    STEROID_BL = list(
+    STEROID = list(
       description        = "Baseline (concomitant) systemic corticosteroid use at study entry",
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (not on steroids at baseline)",
-      notes              = "85% of the phase IIb cohort were on baseline steroids. Applied as a multiplicative fractional effect on CL `(1 + 0.11 * STEROID_BL)` and on V1 `(1 - 0.09 * STEROID_BL)` (Zheng 2016 Table 2).",
+      notes              = "85% of the phase IIb cohort were on baseline steroids. Applied as a multiplicative fractional effect on CL `(1 + 0.11 * STEROID)` and on V1 `(1 - 0.09 * STEROID)` (Zheng 2016 Table 2).",
       source_name        = "BSTEROID"
     ),
     DOSE = list(
@@ -61,20 +61,20 @@ Zheng_2016_sifalimumab <- function() {
   ini({
     # Structural parameters - Zheng 2016 Table 2 final-model estimates for a typical patient
     # representing median WT = 64.3 kg, median BGENE21 = 12.04, 600 mg dose (for V1), and
-    # not on baseline steroids (STEROID_BL = 0).
+    # not on baseline steroids (STEROID = 0).
     lcl <- log(0.184); label("Clearance CL for typical patient (L/day)")                     # Zheng 2016 Table 2, theta1
     lvc <- log(2.82);  label("Central volume of distribution V1 for typical patient (L)")    # Zheng 2016 Table 2, theta2
     lvp <- log(1.88);  label("Peripheral volume of distribution V2 (L)")                     # Zheng 2016 Table 2, theta3
     lq  <- log(0.34);  label("Inter-compartmental clearance Q (L/day)")                      # Zheng 2016 Table 2, theta4
 
-    # Covariate effects on CL - power-form on WT and BGENE21, fractional on STEROID_BL.
-    # CL = theta1 * (WT/64.3)^theta5 * (BGENE21/12.04)^theta6 * (1 + theta7 * STEROID_BL)
+    # Covariate effects on CL - power-form on WT and BGENE21, fractional on STEROID.
+    # CL = theta1 * (WT/64.3)^theta5 * (BGENE21/12.04)^theta6 * (1 + theta7 * STEROID)
     e_wt_cl       <- 0.45; label("Power exponent of WT on CL (unitless, reference 64.3 kg)") # Zheng 2016 Table 2, theta5
     e_bgene21_cl  <- 0.09; label("Power exponent of BGENE21 on CL (unitless, reference 12.04)") # Zheng 2016 Table 2, theta6
     e_steroid_cl  <- 0.11; label("Fractional increase in CL for baseline steroid users")      # Zheng 2016 Table 2, theta7
 
-    # Covariate effects on V1 - power-form on WT and DOSE, fractional on STEROID_BL.
-    # V1 = theta2 * (WT/64.3)^theta8 * (DOSE/600)^theta9 * (1 - theta10 * STEROID_BL)
+    # Covariate effects on V1 - power-form on WT and DOSE, fractional on STEROID.
+    # V1 = theta2 * (WT/64.3)^theta8 * (DOSE/600)^theta9 * (1 - theta10 * STEROID)
     e_wt_vc       <- 0.36; label("Power exponent of WT on V1 (unitless, reference 64.3 kg)") # Zheng 2016 Table 2, theta8
     e_dose_vc     <- 0.06; label("Power exponent of DOSE on V1 (unitless, reference 600 mg)") # Zheng 2016 Table 2, theta9
     e_steroid_vc  <- 0.09; label("Fractional decrease in V1 for baseline steroid users")      # Zheng 2016 Table 2, theta10
@@ -97,8 +97,8 @@ Zheng_2016_sifalimumab <- function() {
 
   model({
     # Covariate effects on CL and V1 per Zheng 2016 Equations (final model).
-    cov_cl <- (WT / 64.3)^e_wt_cl * (BGENE21 / 12.04)^e_bgene21_cl * (1 + e_steroid_cl * STEROID_BL)
-    cov_vc <- (WT / 64.3)^e_wt_vc * (DOSE / 600)^e_dose_vc         * (1 - e_steroid_vc * STEROID_BL)
+    cov_cl <- (WT / 64.3)^e_wt_cl * (BGENE21 / 12.04)^e_bgene21_cl * (1 + e_steroid_cl * STEROID)
+    cov_vc <- (WT / 64.3)^e_wt_vc * (DOSE / 600)^e_dose_vc         * (1 - e_steroid_vc * STEROID)
 
     # Individual PK parameters.
     cl <- exp(lcl + etalcl) * cov_cl
