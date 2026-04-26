@@ -268,9 +268,9 @@ function’s body holds the <code>population</code> list literal).</p>
 <td>0.09 (reference 12.04)</td>
 </tr>
 <tr class="even">
-<td>STEROID_BL fractional effect on CL</td>
+<td>STEROID fractional effect on CL</td>
 <td>Zheng 2016 Table 2, theta7</td>
-<td>+0.11 (so CL x (1 + 0.11 * STEROID_BL))</td>
+<td>+0.11 (so CL x (1 + 0.11 * STEROID))</td>
 </tr>
 <tr class="odd">
 <td>WT exponent on V1</td>
@@ -283,9 +283,9 @@ function’s body holds the <code>population</code> list literal).</p>
 <td>0.06 (reference 600 mg)</td>
 </tr>
 <tr class="odd">
-<td>STEROID_BL fractional effect on V1</td>
+<td>STEROID fractional effect on V1</td>
 <td>Zheng 2016 Table 2, theta10</td>
-<td>-0.09 (so V1 x (1 - 0.09 * STEROID_BL))</td>
+<td>-0.09 (so V1 x (1 - 0.09 * STEROID))</td>
 </tr>
 <tr class="even">
 <td>BSV on CL (log-normal)</td>
@@ -322,13 +322,13 @@ below)</td>
 <td>Covariate equation CL</td>
 <td>Zheng 2016 Equations (Results)</td>
 <td>CL = theta1 * (WT/64.3)^0.45 * (BGENE21/12.04)^0.09 * (1 + 0.11 *
-STEROID_BL)</td>
+STEROID)</td>
 </tr>
 <tr class="odd">
 <td>Covariate equation V1</td>
 <td>Zheng 2016 Equations (Results)</td>
 <td>V1 = theta2 * (WT/64.3)^0.36 * (DOSE/600)^0.06 * (1 - 0.09 *
-STEROID_BL)</td>
+STEROID)</td>
 </tr>
 <tr class="even">
 <td>Dose regimens</td>
@@ -369,25 +369,25 @@ with p = 0.85 to match the published 85% prevalence.</p>
 <span>                           <span class="fl">39</span><span class="op">)</span>, <span class="fl">131.3</span><span class="op">)</span>,</span>
 <span>    BGENE21    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Lognormal.html" class="external-link">rlnorm</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span>, meanlog <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">12.04</span><span class="op">)</span>, sdlog <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span>,</span>
 <span>                           <span class="fl">0.32</span><span class="op">)</span>, <span class="fl">38.59</span><span class="op">)</span>,</span>
-<span>    STEROID_BL <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">0.85</span><span class="op">)</span>,</span>
+<span>    STEROID <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">0.85</span><span class="op">)</span>,</span>
 <span>    DOSE       <span class="op">=</span> <span class="va">dose_mg</span></span>
 <span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">ID</span>, <span class="va">treatment</span>, <span class="va">dose_mg</span>, <span class="va">WT</span>, <span class="va">BGENE21</span>, <span class="va">STEROID_BL</span>, <span class="va">DOSE</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">ID</span>, <span class="va">treatment</span>, <span class="va">dose_mg</span>, <span class="va">WT</span>, <span class="va">BGENE21</span>, <span class="va">STEROID</span>, <span class="va">DOSE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">pop</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 298 × 7</span></span></span>
-<span><span class="co">#&gt;       ID treatment dose_mg    WT BGENE21 STEROID_BL  DOSE</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>     1 200 mg        200  52.6    5.19          1   200</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>     2 200 mg        200  80.1    5.96          1   200</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>     3 200 mg        200  63.5   15.9           1   200</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>     4 200 mg        200  68.6   15.9           1   200</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>     5 200 mg        200  39     18.9           0   200</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>     6 200 mg        200  60.4   35.5           1   200</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>     7 200 mg        200  54.4    8.85          0   200</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>     8 200 mg        200  55.3   10.2           1   200</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>     9 200 mg        200  69.7   37.3           1   200</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>    10 200 mg        200  66.9    4.27          1   200</span></span>
+<span><span class="co">#&gt;       ID treatment dose_mg    WT BGENE21 STEROID  DOSE</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>     1 200 mg        200  52.6    5.19       1   200</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>     2 200 mg        200  80.1    5.96       1   200</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>     3 200 mg        200  63.5   15.9        1   200</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>     4 200 mg        200  68.6   15.9        1   200</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>     5 200 mg        200  39     18.9        0   200</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>     6 200 mg        200  60.4   35.5        1   200</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>     7 200 mg        200  54.4    8.85       0   200</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>     8 200 mg        200  55.3   10.2        1   200</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>     9 200 mg        200  69.7   37.3        1   200</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>    10 200 mg        200  66.9    4.27       1   200</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 288 more rows</span></span></span></code></pre></div>
 </div>
 <div class="section level3">
@@ -419,7 +419,7 @@ elimination.</p>
 <span><span class="va">dose_rows</span> <span class="op">&lt;-</span> <span class="va">pop</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/expand.html" class="external-link">crossing</a></span><span class="op">(</span>time <span class="op">=</span> <span class="va">dose_days</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/transmute.html" class="external-link">transmute</a></span><span class="op">(</span></span>
-<span>    <span class="va">ID</span>, <span class="va">treatment</span>, <span class="va">WT</span>, <span class="va">BGENE21</span>, <span class="va">STEROID_BL</span>, <span class="va">DOSE</span>,</span>
+<span>    <span class="va">ID</span>, <span class="va">treatment</span>, <span class="va">WT</span>, <span class="va">BGENE21</span>, <span class="va">STEROID</span>, <span class="va">DOSE</span>,</span>
 <span>    <span class="va">time</span>,</span>
 <span>    amt  <span class="op">=</span> <span class="va">dose_mg</span>,</span>
 <span>    evid <span class="op">=</span> <span class="fl">1L</span>,</span>
@@ -429,7 +429,7 @@ elimination.</p>
 <span>  <span class="op">)</span></span>
 <span></span>
 <span><span class="va">obs_rows</span> <span class="op">&lt;-</span> <span class="va">pop</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">ID</span>, <span class="va">treatment</span>, <span class="va">WT</span>, <span class="va">BGENE21</span>, <span class="va">STEROID_BL</span>, <span class="va">DOSE</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">ID</span>, <span class="va">treatment</span>, <span class="va">WT</span>, <span class="va">BGENE21</span>, <span class="va">STEROID</span>, <span class="va">DOSE</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/expand.html" class="external-link">crossing</a></span><span class="op">(</span>time <span class="op">=</span> <span class="va">obs_times</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
 <span>    amt  <span class="op">=</span> <span class="cn">NA_real_</span>,</span>
@@ -781,14 +781,14 @@ no explicit depot or absorption compartment.</li>
 <strong>IIV:</strong> diagonal matrix on CL and V1; no BSV on Q or
 V2.</li>
 <li>
-<strong>Covariates:</strong> WT, BGENE21, STEROID_BL on CL; WT,
-DOSE, STEROID_BL on V1. Collectively these accounted for &lt; 10% of PK
+<strong>Covariates:</strong> WT, BGENE21, STEROID on CL; WT, DOSE,
+STEROID on V1. Collectively these accounted for &lt; 10% of PK
 variability in the published final model.</li>
 <li>
 <strong>Typical terminal half-life</strong> predicted from the
 structural parameters for a typical 64.3 kg patient with BGENE21 =
-12.04, DOSE = 600 mg, STEROID_BL = 0 is approximately 24 days (dominated
-by the central-compartment elimination rate CL/V1 = 0.184/2.82 = 0.0652
+12.04, DOSE = 600 mg, STEROID = 0 is approximately 24 days (dominated by
+the central-compartment elimination rate CL/V1 = 0.184/2.82 = 0.0652
 day^-1 plus the small peripheral redistribution term), consistent with
 the Results narrative.</li>
 </ul>

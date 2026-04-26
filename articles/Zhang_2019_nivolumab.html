@@ -425,7 +425,7 @@ per Methods).</li>
 <li>Time-varying CL:
 <code>CL(t) = CL0 * exp(Emax_i * t^HILL / (T50^HILL + t^HILL))</code>.</li>
 <li>Emax_i: additive linear-scale form
-<code>Emax_REF + e_ecog_emax * ECOG_PS_GT0 + e_ipico_emax * COADMIN_IPI_ANY + etaEmax</code>.</li>
+<code>Emax_REF + e_ecog_emax * ECOG_GE1 + e_ipico_emax * COADMIN_IPI_ANY + etaEmax</code>.</li>
 </ul>
 </div>
 <div class="section level2">
@@ -456,7 +456,7 @@ per Methods).</li>
 <tr class="even">
 <td>
 <code>PS</code> (binary collapse: PS&gt;0 vs PS=0)</td>
-<td><code>ECOG_PS_GT0</code></td>
+<td><code>ECOG_GE1</code></td>
 </tr>
 <tr class="odd">
 <td>
@@ -520,7 +520,7 @@ covariates or covariate correlations).</p>
 <span><span class="va">SEXF</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="va">n_subj</span>, <span class="fl">1</span>, <span class="fl">0.40</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># ECOG PS &gt; 0: Table 1 reports PS 0 in 47.02%, so PS &gt; 0 in ~52.98%.</span></span>
-<span><span class="va">ECOG_PS_GT0</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="va">n_subj</span>, <span class="fl">1</span>, <span class="fl">0.5298</span><span class="op">)</span></span>
+<span><span class="va">ECOG_GE1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="va">n_subj</span>, <span class="fl">1</span>, <span class="fl">0.5298</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Race indicators: assume the global trial mix has small Asian and Black</span></span>
 <span><span class="co"># fractions. Zhang 2019 does not publish per-category percentages in the</span></span>
@@ -533,7 +533,7 @@ covariates or covariate correlations).</p>
 <span><span class="va">pop</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  ID <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n_subj</span><span class="op">)</span>,</span>
 <span>  <span class="va">WT</span>, <span class="va">CRCL</span>,</span>
-<span>  <span class="va">SEXF</span>, <span class="va">ECOG_PS_GT0</span>, <span class="va">RACE_BLACK</span>, <span class="va">RACE_ASIAN</span></span>
+<span>  <span class="va">SEXF</span>, <span class="va">ECOG_GE1</span>, <span class="va">RACE_BLACK</span>, <span class="va">RACE_ASIAN</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
