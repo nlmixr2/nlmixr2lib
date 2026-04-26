@@ -266,7 +266,8 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- suppressWarnings(PKNCA::pk.nca(nca_data))
-#>  ■■■■■■■■■■■■■■■■■■■               61% |  ETA:  1s
+#>  ■■■■■■■■■■■                       33% |  ETA:  3s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    98% |  ETA:  0s
 
 knitr::kable(
   summary(nca_res),

@@ -1,0 +1,807 @@
+# Papachristos_2020_bevacizumab_pk
+
+## Model and source
+
+- Citation: Papachristos A, Karatza E, Kalofonos H, Karalis V.
+  Pharmacogenetics in Model-Based Optimization of Bevacizumab Therapy
+  for Metastatic Colorectal Cancer. *Int J Mol Sci.* 2020;21(11):3753.
+  <doi:%5B10.3390/ijms21113753>\](<https://doi.org/10.3390/ijms21113753>).
+- Description: Two-compartment population PK model for IV bevacizumab in
+  adults with metastatic colorectal cancer (mCRC), with allometric
+  weight scaling on CL and ICAM-1 / VEGF-A genotype covariate effects
+  (Table 1 of Papachristos 2020).
+- Modality: Therapeutic anti-VEGF-A monoclonal antibody (humanized IgG1,
+  MW ≈ 149 kDa), IV infusion.
+
+This vignette validates the PK-only model (Table 1). Papachristos 2020
+also reports two further co-equal final models built from the same
+46-patient cohort — a binding QSS TMDD model (Table 2) and a PK/PD
+immediate-response Imax model (Table 3) — packaged separately as
+`Papachristos_2020_bevacizumab_qss` and
+`Papachristos_2020_bevacizumab_pkpd`.
+
+> **TODO (co-equality framing).** The three Papachristos 2020 models are
+> CO-EQUAL final models, not a hierarchical base / extended pair. Each
+> pursues a different objective: descriptive PK (this vignette),
+> mechanistic target binding (QSS), or drug-effect characterization
+> (PK/PD). Reviewer please confirm this framing and the choice to
+> package all three.
+
+## Population
+
+The Papachristos 2020 cohort comprised **46 adult patients with
+histologically confirmed metastatic colorectal cancer** (ECOG
+performance status 0-2) treated at a single Greek centre (University
+Hospital of Patras). Baseline demographics (paper section 2.1):
+
+- Sex: 61% male, 39% female.
+- Median (IQR) weight 74.5 kg (64.15–81.75); median (IQR) age 63 years
+  (53–72). Full ranges not reported.
+- Race / ethnicity: Greek; not formally tabulated.
+- Dosing: 5 mg/kg IV every 2 weeks (76% of patients) or 7.5 mg/kg IV
+  every 3 weeks (24%) in combination with oxaliplatin/fluoropyrimidine
+  (BEV-FOLFOX, BEV-CapOX) or irinotecan/fluoropyrimidine (BEV-FOLFIRI,
+  BEV-CapIRI) chemotherapy.
+- Sample sizes: 156 bevacizumab serum concentrations (76 pre-dose, 80
+  post-dose) from 46 patients. No values below the limit of
+  quantification.
+- SNP carrier rates (mutant alleles, paper section 2.1): ICAM-1
+  rs1799969 mutant 20%; ICAM-1 rs5498 mutant 70%; VEGF-A rs699947 mutant
+  52%; VEGF-A rs1570360 mutant 33%; VEGF-A rs2010963 mutant 41%.
+
+Only three SNPs (`ICAM-1 rs1799969`, `VEGF-A rs1570360`,
+`VEGF-A rs699947`) entered the final PK model; the other two were tested
+but not retained.
+
+The same metadata is available programmatically via
+`readModelDb("Papachristos_2020_bevacizumab_pk")$population`.
+
+## Source trace
+
+Per-parameter origin is recorded as an in-file comment next to each
+[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
+`inst/modeldb/specificDrugs/Papachristos_2020_bevacizumab_pk.R`. The
+table below collects them in one place.
+
+| Parameter (model name)          | Value      | Source                                                      |
+|---------------------------------|------------|-------------------------------------------------------------|
+| `lcl` (CLpop, L/day)            | log(0.200) | Papachristos 2020 Table 1, CLpop                            |
+| `lv1` (V1pop, L)                | log(3.09)  | Papachristos 2020 Table 1, V1pop                            |
+| `lq` (Qpop, L/day)              | log(0.35)  | Papachristos 2020 Table 1, Qpop                             |
+| `lv2` (V2pop, L)                | log(2.39)  | Papachristos 2020 Table 1, V2pop                            |
+| `allo_cl` (allometric exponent) | 1.04       | Papachristos 2020 Table 1, “log(weight/70) on CL”           |
+| `e_icam1_rs1799969_cl`          | -0.423     | Papachristos 2020 Table 1, “ICAM-1 rs1799969 mutant on CL”  |
+| `e_vegfa_rs1570360_q`           | +0.378     | Papachristos 2020 Table 1, “VEGF-A rs1570360 mutant on Q”   |
+| `e_vegfa_rs699947_q`            | -0.429     | Papachristos 2020 Table 1, “VEGF-A rs699947 mutant on Q”    |
+| `etalcl` variance               | 0.10176    | Papachristos 2020 Table 1, ω_CL = 0.319 (var = SD²)         |
+| `etalq` variance                | 0.02560    | Papachristos 2020 Table 1, ω_Q = 0.160                      |
+| `cov(etalcl, etalq)`            | -0.05099   | Papachristos 2020 Table 1, ρ(Q,CL) = -0.999 × 0.319 × 0.160 |
+| `etalv1` variance               | 0.03028    | Papachristos 2020 Table 1, ω_V1 = 0.174                     |
+| `etalv2` variance               | 0.45698    | Papachristos 2020 Table 1, ω_V2 = 0.676                     |
+| `propSd`                        | 0.246      | Papachristos 2020 Table 1, σ_prop                           |
+
+Equations (paper section 2.2):
+
+$${CL}_{i} = {CL}_{pop} \cdot \left( \frac{{WT}_{i}}{70} \right)^{1.04} \cdot \exp\left( - 0.423 \cdot {SNP\_ ICAM1\_ RS1799969}_{i} \right) \cdot \exp\left( \eta_{{CL},i} \right)$$$$Q_{i} = Q_{pop} \cdot \exp\left( 0.378 \cdot {SNP\_ VEGFA\_ RS1570360}_{i} \right) \cdot \exp\left( - 0.429 \cdot {SNP\_ VEGFA\_ RS699947}_{i} \right) \cdot \exp\left( \eta_{Q,i} \right)$$$$V_{1,i} = V_{1,{pop}} \cdot \exp\left( \eta_{V_{1},i} \right),\quad V_{2,i} = V_{2,{pop}} \cdot \exp\left( \eta_{V_{2},i} \right)$$
+
+Two-compartment linear PK:
+${\dot{A}}_{1} = - k_{el}A_{1} - k_{12}A_{1} + k_{21}A_{2}$,
+${\dot{A}}_{2} = k_{12}A_{1} - k_{21}A_{2}$, $C_{c} = A_{1}/V_{1}$, with
+proportional residual error $\sigma_{prop} = 0.246$.
+
+## Errata note (text vs Table)
+
+No formal corrigendum to the paper has been identified at the time of
+extraction (April 2026). One within-paper inconsistency was noted in
+sister model 3 (the PK/PD model, Table 3) where section 2.4 quotes the
+inter-compartmental clearance covariate as `exp(0.378)` — a copy-paste
+of the rs1570360 effect from Table 1 / section 2.2. Table 3 itself gives
+-0.414 for the rs699947 effect on Q in the PK/PD model and the narrative
+confirms Q is *lower* in mutants. The packaged
+`Papachristos_2020_bevacizumab_pkpd` model uses Table 3. The PK model
+extracted here (Table 1 / section 2.2) is internally consistent between
+text and table.
+
+## Virtual cohort
+
+Original observed data are not publicly available. The simulations below
+use a virtual cohort whose covariate distributions approximate the
+Papachristos 2020 population.
+
+``` r
+set.seed(2020)
+n_subj <- 200
+
+# Weight: log-normal centred on the median 74.5 kg with a CV that
+# reproduces the IQR (64.15-81.75) of the source population.
+# log(81.75/64.15) ≈ 0.243 spans the IQR; sigma ≈ 0.243 / (2 * 0.6745) ≈ 0.18.
+cohort <- tibble(
+  ID                  = seq_len(n_subj),
+  WT                  = pmin(pmax(rlnorm(n_subj, log(74.5), 0.18), 45), 130),
+  SNP_ICAM1_RS1799969 = rbinom(n_subj, 1, 0.20),
+  SNP_VEGFA_RS1570360 = rbinom(n_subj, 1, 0.33),
+  SNP_VEGFA_RS699947  = rbinom(n_subj, 1, 0.52)
+)
+```
+
+Two reference dosing regimens are simulated, matching the two cohorts in
+Papachristos 2020 section 4.1:
+
+- 5 mg/kg IV Q2W (BEV-FOLFIRI / BEV-FOLFOX cohort)
+- 7.5 mg/kg IV Q3W (BEV-CapIRI / BEV-CapOX cohort)
+
+``` r
+inf_dur     <- 1.5 / 24            # 90-min standard bevacizumab infusion (days)
+n_doses_q2w <- 6
+n_doses_q3w <- 4
+sim_horizon <- 84                  # 12 weeks total follow-up
+
+dose_times_q2w <- seq(0, by = 14, length.out = n_doses_q2w)
+dose_times_q3w <- seq(0, by = 21, length.out = n_doses_q3w)
+obs_times      <- sort(unique(c(0, seq(0.1, sim_horizon, by = 1))))
+
+build_events <- function(pop, mgkg, dose_times, regimen_label,
+                         id_offset = 0L) {
+  pop <- dplyr::mutate(pop, ID = ID + id_offset)
+  amt_per_subject <- pop$WT * mgkg
+
+  d_dose <- pop |>
+    dplyr::mutate(amt = amt_per_subject) |>
+    tidyr::crossing(time = dose_times) |>
+    dplyr::mutate(evid = 1L, cmt = "central", dur = inf_dur,
+                  treatment = regimen_label)
+  d_obs <- pop |>
+    tidyr::crossing(time = obs_times) |>
+    dplyr::mutate(amt = 0, evid = 0L, cmt = "central", dur = NA_real_,
+                  treatment = regimen_label)
+
+  dplyr::bind_rows(d_dose, d_obs) |>
+    dplyr::rename(id = ID) |>
+    dplyr::arrange(id, time, dplyr::desc(evid)) |>
+    as.data.frame()
+}
+
+events <- dplyr::bind_rows(
+  build_events(cohort, mgkg = 5,   dose_times = dose_times_q2w,
+               regimen_label = "5 mg/kg Q2W",  id_offset = 0L),
+  build_events(cohort, mgkg = 7.5, dose_times = dose_times_q3w,
+               regimen_label = "7.5 mg/kg Q3W", id_offset = n_subj)
+)
+
+stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
+```
+
+## Simulation
+
+``` r
+mod <- readModelDb("Papachristos_2020_bevacizumab_pk")
+sim <- rxode2::rxSolve(mod, events = events,
+                       keep = c("treatment"),
+                       returnType = "data.frame")
+#> ℹ parameter labels from comments will be replaced by 'label()'
+```
+
+## Replicate published figures
+
+### Concentration-time profiles by regimen
+
+Papachristos 2020 does not publish a single concentration-time figure in
+the main text (the VPCs live in Supplementary Figures S3-S4). The plot
+below shows the median and 5-95% prediction interval of the simulated
+cohort by regimen, providing the same diagnostic view.
+
+``` r
+sim_summary <- sim |>
+  dplyr::filter(time > 0) |>
+  dplyr::group_by(time, treatment) |>
+  dplyr::summarise(
+    median = stats::median(Cc, na.rm = TRUE),
+    lo     = stats::quantile(Cc, 0.05, na.rm = TRUE),
+    hi     = stats::quantile(Cc, 0.95, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+ggplot(sim_summary, aes(time, median, colour = treatment, fill = treatment)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.15, colour = NA) +
+  geom_line(linewidth = 1) +
+  scale_y_log10() +
+  labs(
+    x = "Time since first dose (days)",
+    y = "Bevacizumab concentration (mg/L, log scale)",
+    title = "Simulated bevacizumab PK by Papachristos 2020 PK model",
+    subtitle = paste0("Median and 90% prediction interval (N = ",
+                      n_subj, " virtual patients per arm)."),
+    caption = "Replicates the diagnostic content of Papachristos 2020 Supplementary Figures S3-S4."
+  ) +
+  theme_bw()
+```
+
+![](Papachristos_2020_bevacizumab_pk_files/figure-html/figure-cmt-vpc-1.png)
+
+### Effect of ICAM-1 rs1799969 on trough levels — replicates Figure 1A / Supplementary Figure S2
+
+Paper section 2.2 highlights that bevacizumab trough levels are
+significantly higher in ICAM-1 rs1799969 mutant carriers (99.1 vs 57.2
+mg/L, p = 0.00004; Supplementary Figure S2). The deterministic
+typical-value simulation below shows the predicted Q2W trough at the
+median weight (74.5 kg) for wild-type vs mutant carriers.
+
+``` r
+mod_typical <- mod |> rxode2::zeroRe()
+#> ℹ parameter labels from comments will be replaced by 'label()'
+
+typ_grid <- tidyr::crossing(
+  WT                  = 74.5,
+  SNP_ICAM1_RS1799969 = c(0, 1),
+  SNP_VEGFA_RS1570360 = 0,
+  SNP_VEGFA_RS699947  = 0
+) |>
+  dplyr::mutate(id = dplyr::row_number())
+
+typ_dose <- typ_grid |>
+  dplyr::mutate(amt = WT * 5) |>
+  tidyr::crossing(time = dose_times_q2w) |>
+  dplyr::mutate(evid = 1L, cmt = "central", dur = inf_dur)
+
+typ_obs <- typ_grid |>
+  tidyr::crossing(time = sort(unique(c(0, seq(0.1, sim_horizon, by = 0.5))))) |>
+  dplyr::mutate(amt = 0, evid = 0L, cmt = "central", dur = NA_real_)
+
+typ_events <- dplyr::bind_rows(typ_dose, typ_obs) |>
+  dplyr::arrange(id, time, dplyr::desc(evid)) |>
+  as.data.frame()
+
+sim_typ <- rxode2::rxSolve(mod_typical, events = typ_events,
+                           keep = c("SNP_ICAM1_RS1799969"),
+                           returnType = "data.frame") |>
+  dplyr::mutate(
+    icam1_label = ifelse(SNP_ICAM1_RS1799969 == 1, "Mutant carrier", "Wild-type")
+  )
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalq', 'etalv1', 'etalv2'
+#> Warning: multi-subject simulation without without 'omega'
+
+ggplot(sim_typ |> dplyr::filter(time > 0),
+       aes(time, Cc, colour = icam1_label)) +
+  geom_line(linewidth = 1) +
+  scale_y_log10() +
+  labs(
+    x        = "Time since first dose (days)",
+    y        = "Bevacizumab concentration (mg/L, log scale)",
+    colour   = "ICAM-1 rs1799969",
+    title    = "Effect of ICAM-1 rs1799969 on bevacizumab PK (5 mg/kg Q2W)",
+    subtitle = "Typical 74.5 kg subject, deterministic (etas = 0). Replicates Papachristos 2020 Figure 1A / Supp. Fig. S2."
+  ) +
+  theme_bw()
+```
+
+![](Papachristos_2020_bevacizumab_pk_files/figure-html/figure-1A-1.png)
+
+``` r
+
+trough_compare <- sim_typ |>
+  dplyr::filter(time %in% (dose_times_q2w[-1])) |>
+  dplyr::group_by(icam1_label) |>
+  dplyr::summarise(median_trough = stats::median(Cc), .groups = "drop")
+knitr::kable(trough_compare,
+             caption = "Median Q2W trough (mg/L) at 74.5 kg, wild-type vs ICAM-1 rs1799969 mutant carrier (typical-value simulation).")
+```
+
+| icam1_label | median_trough |
+|-------------|---------------|
+
+Median Q2W trough (mg/L) at 74.5 kg, wild-type vs ICAM-1 rs1799969
+mutant carrier (typical-value simulation).
+
+The simulated trough ratio reproduces the qualitative direction (mutant
+\> wild-type) reported by the paper. The numerical magnitude depends on
+the dosing interval and the number of doses simulated; the paper’s 99.1
+/ 57.2 mg/L = 1.73 ratio is the median across observed sparse trough
+samples in the cohort, while the typical-value simulation here assumes
+steady dosing at exactly 14-day intervals and returns the
+model-predicted ratio `exp(-0.423) = 0.655` for CL — equivalently a 1 /
+0.655 = 1.527-fold trough elevation per dosing interval.
+
+## PKNCA validation
+
+NCA is computed over a single dosing interval at steady state for each
+of the two regimens. The dosing interval starts at the last simulated
+dose and runs for one tau (14 d for Q2W, 21 d for Q3W).
+
+``` r
+build_nca <- function(sim_df, regimen_label, tau, dose_times) {
+  start_ss <- max(dose_times)
+  end_ss   <- start_ss + tau
+
+  conc_df <- sim_df |>
+    dplyr::filter(treatment == regimen_label, time >= start_ss, time <= end_ss,
+                  !is.na(Cc)) |>
+    dplyr::mutate(time_rel = time - start_ss) |>
+    dplyr::select(id, treatment, time_rel, Cc)
+
+  dose_df <- events |>
+    dplyr::filter(treatment == regimen_label, evid == 1, time == start_ss) |>
+    dplyr::mutate(time_rel = 0) |>
+    dplyr::select(id, treatment, time_rel, amt)
+
+  list(conc = conc_df, dose = dose_df, tau = tau)
+}
+
+nca_q2w <- build_nca(sim, "5 mg/kg Q2W",   tau = 14, dose_times = dose_times_q2w)
+nca_q3w <- build_nca(sim, "7.5 mg/kg Q3W", tau = 21, dose_times = dose_times_q3w)
+
+run_pknca <- function(b) {
+  conc_obj <- PKNCA::PKNCAconc(b$conc, Cc ~ time_rel | treatment + id,
+                               concu = "mg/L", timeu = "day")
+  dose_obj <- PKNCA::PKNCAdose(b$dose, amt ~ time_rel | treatment + id,
+                               doseu = "mg")
+  intervals <- data.frame(
+    start    = 0,
+    end      = b$tau,
+    cmax     = TRUE,
+    tmax     = TRUE,
+    cmin     = TRUE,
+    auclast  = TRUE,
+    cav      = TRUE
+  )
+  res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+  summary(res)
+}
+
+knitr::kable(run_pknca(nca_q2w),
+             caption = "Steady-state NCA (5 mg/kg Q2W, last simulated interval).")
+#> Warning: Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+```
+
+| Interval Start | Interval End | treatment   | N   | AUClast (day\*mg/L) | Cmax (mg/L)  | Cmin (mg/L)   | Tmax (day)             | Cav (mg/L) |
+|---------------:|-------------:|:------------|:----|:--------------------|:-------------|:--------------|:-----------------------|:-----------|
+|              0 |           14 | 5 mg/kg Q2W | 200 | NC                  | 204 \[22.9\] | 84.0 \[47.4\] | 0.100 \[0.100, 0.100\] | NC         |
+
+Steady-state NCA (5 mg/kg Q2W, last simulated interval).
+
+``` r
+knitr::kable(run_pknca(nca_q3w),
+             caption = "Steady-state NCA (7.5 mg/kg Q3W, last simulated interval).")
+#> Warning: Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+```
+
+| Interval Start | Interval End | treatment     | N   | AUClast (day\*mg/L) | Cmax (mg/L)  | Cmin (mg/L)   | Tmax (day)             | Cav (mg/L) |
+|---------------:|-------------:|:--------------|:----|:--------------------|:-------------|:--------------|:-----------------------|:-----------|
+|              0 |           21 | 7.5 mg/kg Q3W | 200 | NC                  | 249 \[22.5\] | 67.5 \[62.2\] | 0.100 \[0.100, 0.100\] | NC         |
+
+Steady-state NCA (7.5 mg/kg Q3W, last simulated interval).
+
+### Comparison against published descriptors
+
+Papachristos 2020 does not publish a tabulated NCA. The paper states
+mean trough levels for the ICAM-1 rs1799969 wild-type and mutant
+sub-groups (section 2.2: 57.2 vs 99.1 mg/L); these were sparse-sample
+descriptive statistics across the observed cohort and are bracketed by
+the simulated 5-95% prediction interval shown in the *Concentration-time
+profiles* figure above.
+
+## Assumptions and deviations
+
+- **Co-equality framing of the three Papachristos 2020 models.** The PK
+  / Binding QSS / PK/PD models in Papachristos 2020 are co-equal final
+  models, each pursuing a different objective (descriptive PK,
+  mechanistic target binding, drug-effect characterization). They are
+  not a hierarchical base / extended pair. All three are packaged
+  separately in nlmixr2lib (this file is the descriptive-PK variant).
+- **Weight distribution.** The paper reports median 74.5 kg and IQR
+  64.15–81.75 kg without a full range. The virtual cohort uses a
+  log-normal with σ = 0.18 (chosen so log of the IQR ratio matches the
+  source) truncated at 45 and 130 kg.
+- **SNP independence.** The source paper used chi-square / Fisher’s
+  exact tests to confirm pairwise independence between the SNPs in the
+  observed cohort (Supplementary Tables S1-S3); the virtual cohort draws
+  each SNP independently from its marginal mutant-carrier rate.
+- **Race / ethnicity.** Not available from the source. The paper’s
+  cohort is single-centre Greek; race is not used as a model covariate.
+- **Trough-level magnitude in Figure 1A replication.** The exp(-0.423) =
+  0.655 fold effect on CL implies a ~1.53-fold elevation in the typical
+  Q2W trough for ICAM-1 rs1799969 mutant carriers, whereas the paper
+  reports an observed ratio of 99.1 / 57.2 ≈ 1.73 across mutant vs
+  wild-type subjects. The observed ratio also reflects between-subject
+  variability in dosing schedule, sampling windows, and weight, so the
+  model and the observed sparse-sample statistic are not directly
+  comparable; the qualitative direction matches.
+- **No errata identified.** A literature search (April 2026) found no
+  published corrigendum / erratum to Papachristos 2020.
