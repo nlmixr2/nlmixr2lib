@@ -11,26 +11,26 @@ test_that("addResErr with each expected residual distribution and combinations",
   expect_equal(
     functionBody(
       modelUpdateAdd
-    )[[4]][[2]][[6]],
+    )[[6]][[2]][[6]],
     str2lang("Cc ~ add(CcAddSd)")
   )
 
   expect_equal(
     functionBody(
       modelUpdateProp
-    )[[4]][[2]][[6]],
+    )[[6]][[2]][[6]],
     str2lang("Cc ~ prop(CcPropSd)")
   )
   expect_equal(
     functionBody(
       modelUpdateLnorm
-    )[[4]][[2]][[6]],
+    )[[6]][[2]][[6]],
     str2lang("Cc ~ lnorm(CcLnormSd)")
   )
   expect_equal(
     functionBody(
       modelUpdateAll
-    )[[4]][[2]][[6]],
+    )[[6]][[2]][[6]],
     str2lang("Cc ~ add(CcAddSd) + prop(CcPropSd) + lnorm(CcLnormSd)")
   )
   # Check that initial conditions were set correctly
@@ -68,14 +68,14 @@ test_that("addResErr with des model, changing to additive error", {
   expect_equal(
     functionBody(
       modelUpdate
-    )[[4]][[2]][[8]],
+    )[[6]][[2]][[8]],
     str2lang("CcAddSd <- c(0, 1)")
   )
   # residual error model is added
   expect_equal(
     functionBody(
       modelUpdate
-    )[[5]][[2]][[9]],
+    )[[7]][[2]][[9]],
     str2lang("Cc ~ add(CcAddSd)")
   )
 })
@@ -87,14 +87,14 @@ test_that("addResErr with linCmt model, changing to additive error", {
   expect_equal(
     functionBody(
       modelUpdate
-    )[[3]][[2]][[8]],
+    )[[5]][[2]][[8]],
     str2lang("CcAddSd <- c(0, 1)")
   )
   # residual error model is added
   expect_equal(
     functionBody(
       modelUpdate
-    )[[4]][[2]][[6]],
+    )[[6]][[2]][[6]],
     str2lang("Cc ~ add(CcAddSd)")
   )
 })
@@ -106,20 +106,20 @@ test_that("addResErr with des model, changing to additive and proportional error
   expect_equal(
     functionBody(
       modelUpdate
-    )[[4]][[2]][[8]],
+    )[[6]][[2]][[8]],
     str2lang("CcAddSd <- c(0, 1)")
   )
   expect_equal(
     functionBody(
       modelUpdate
-    )[[4]][[2]][[9]],
+    )[[6]][[2]][[9]],
     str2lang("CcPropSd <- c(0, 0.5)")
   )
   # eta is added
   expect_equal(
     functionBody(
       modelUpdate
-    )[[5]][[2]][[9]],
+    )[[7]][[2]][[9]],
     str2lang("Cc ~ add(CcAddSd) + prop(CcPropSd)")
   )
 })

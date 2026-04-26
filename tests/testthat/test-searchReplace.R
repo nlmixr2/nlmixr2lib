@@ -3,7 +3,7 @@ test_that("searchReplace", {
   expect_equal(
     functionBody(
       searchReplace(model, find = "lka", replace = "lka + etalka")
-    )[[4]][[2]][[2]],
+    )[[6]][[2]][[2]],
     str2lang("ka <- exp(lka + etalka)")
   )
 })

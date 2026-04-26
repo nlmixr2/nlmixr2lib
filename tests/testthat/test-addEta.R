@@ -7,14 +7,14 @@ test_that("addEta named parameter", {
   expect_equal(
     functionBody(
       modelUpdate
-    )[[3]][[2]][[10]],
+    )[[5]][[2]][[10]],
     str2lang("etaLka ~ 0.1"))
 
   # eta is added
   expect_equal(
     functionBody(
       modelUpdate
-    )[[4]][[2]][[2]],
+    )[[6]][[2]][[2]],
     str2lang("ka <- exp(lka + etaLka)"))
 
   if (requireNamespace("withr", quietly = TRUE)) {
@@ -24,13 +24,13 @@ test_that("addEta named parameter", {
       expect_equal(
         functionBody(
           modelUpdate
-        )[[3]][[2]][[10]],
+        )[[5]][[2]][[10]],
         str2lang("eta_lka ~ 0.1"))
       # eta is added
       expect_equal(
         functionBody(
           modelUpdate
-        )[[4]][[2]][[2]],
+        )[[6]][[2]][[2]],
         str2lang("ka <- exp(lka + eta_lka)"))
     })
 
@@ -39,13 +39,13 @@ test_that("addEta named parameter", {
       expect_equal(
         functionBody(
           modelUpdate
-        )[[3]][[2]][[10]],
+        )[[5]][[2]][[10]],
         str2lang("eta.lka ~ 0.1"))
       # eta is added
       expect_equal(
         functionBody(
           modelUpdate
-        )[[4]][[2]][[2]],
+        )[[6]][[2]][[2]],
         str2lang("ka <- exp(lka + eta.lka)"))
     })
 
@@ -55,13 +55,13 @@ test_that("addEta named parameter", {
       expect_equal(
         functionBody(
           modelUpdate
-        )[[3]][[2]][[10]],
+        )[[5]][[2]][[10]],
         str2lang("etalka ~ 0.1"))
       # eta is added
       expect_equal(
         functionBody(
           modelUpdate
-        )[[4]][[2]][[2]],
+        )[[6]][[2]][[2]],
         str2lang("ka <- exp(lka + etalka)"))
     })
 
@@ -70,13 +70,13 @@ test_that("addEta named parameter", {
       expect_equal(
         functionBody(
           modelUpdate
-        )[[3]][[2]][[10]],
+        )[[5]][[2]][[10]],
         str2lang("etaLka ~ 0.1"))
       # eta is added
       expect_equal(
         functionBody(
           modelUpdate
-        )[[4]][[2]][[2]],
+        )[[6]][[2]][[2]],
         str2lang("ka <- exp(lka + etaLka)"))
     })
 
@@ -84,13 +84,13 @@ test_that("addEta named parameter", {
       expect_equal(
         functionBody(
           modelUpdate
-        )[[3]][[2]][[10]],
+        )[[5]][[2]][[10]],
         str2lang("etaLka ~ 0.1"))
       # eta is added
       expect_equal(
         functionBody(
           modelUpdate
-        )[[4]][[2]][[2]],
+        )[[6]][[2]][[2]],
         str2lang("ka <- exp(lka + etaLka)"))
     })
   }
@@ -104,14 +104,14 @@ test_that("addEta mu-ref parameter", {
   expect_equal(
     functionBody(
       modelUpdate
-    )[[3]][[2]][[10]],
+    )[[5]][[2]][[10]],
     str2lang("etaKa ~ 0.1")
   )
   # eta is added
   expect_equal(
     functionBody(
       modelUpdate
-    )[[4]][[2]][[2]],
+    )[[6]][[2]][[2]],
     str2lang("ka <- exp(lka + etaKa)")
   )
 })
@@ -123,26 +123,26 @@ test_that("addEta multiple parameter, mu-ref and not", {
   expect_equal(
     functionBody(
       modelUpdate
-    )[[3]][[2]][[10]],
+    )[[5]][[2]][[10]],
     str2lang("etaLvc ~ 0.1")
   )
   expect_equal(
     functionBody(
       modelUpdate
-    )[[3]][[2]][[11]],
+    )[[5]][[2]][[11]],
     str2lang("etaKa ~ 0.1")
   )
   # eta is added
   expect_equal(
     functionBody(
       modelUpdate
-    )[[4]][[2]][[2]],
+    )[[6]][[2]][[2]],
     str2lang("ka <- exp(lka + etaKa)")
   )
   expect_equal(
     functionBody(
       modelUpdate
-    )[[4]][[2]][[4]],
+    )[[6]][[2]][[4]],
     str2lang("vc <- exp(lvc + etaLvc)")
   )
 })
@@ -154,14 +154,14 @@ test_that("addEta named parameter", {
   expect_equal(
     functionBody(
       modelUpdate
-    )[[3]][[2]][[10]],
+    )[[5]][[2]][[10]],
     str2lang("etaLka ~ 0.1")
   )
   # eta is added
   expect_equal(
     functionBody(
       modelUpdate
-    )[[4]][[2]][[2]],
+    )[[6]][[2]][[2]],
     str2lang("ka <- exp(lka + etaLka)")
   )
 })
