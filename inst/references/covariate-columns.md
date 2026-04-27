@@ -449,6 +449,18 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Robbie_2012_palivizumab.R` (fractional effect on CL; additional effect on Vc).
 - **Notes:** In the US Office-of-Management-and-Budget (OMB) classification Hispanic is an ethnicity rather than a race, but clinical PK analyses frequently treat it as one of the race indicators. When a paper treats Hispanic as a race, use this column; otherwise encode ethnicity separately. Register-wise, this follows the `RACE_<GROUP>` indicator-decomposition pattern.
 
+## Geographic / enrollment-country indicators
+
+### COUNTRY_JPN (**canonical for Japan enrollment-country indicator**)
+- **Description:** 1 = patient enrolled in a Japanese study site / country = Japan, 0 = enrolled outside Japan.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-Japan country).
+- **Source aliases:** none.
+- **Example models:** `Yin_2021_trastuzumabDeruxtecan.R` (multiplicative effect 0.903 on CL_intact and 0.738 on V2_intact when COUNTRY_JPN = 1).
+- **Notes:** Distinct from `RACE_NEAS` and `RACE_ASIAN`: encodes the enrollment country rather than self-reported race. In Yin 2021 country and race were highly confounded (correlation -0.81); the authors retained country (more significant on all PK parameters) and dropped race. Follows a `COUNTRY_<ISO3>` indicator-decomposition pattern; new countries should be added as additional `COUNTRY_<ISO3>` entries.
+
 ## Pediatric comorbidities
 
 ### CLD_PREM (**canonical for chronic lung disease of prematurity**)
