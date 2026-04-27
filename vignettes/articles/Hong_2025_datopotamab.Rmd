@@ -367,14 +367,14 @@ intervals_q3w <- data.frame(
 
 adc_nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(
   PKNCA::PKNCAconc(typ_nca_input, Cc ~ time | treatment + id/cycle),
-  PKNCA::PKNCAdose(dose_typ,      amt ~ time | treatment + id/cycle),
+  PKNCA::PKNCAdose(dose_typ,      amt ~ time | treatment + id + cycle),
   intervals = intervals_q3w
 ))
 adc_nca_summary <- summary(adc_nca)
 
 dxd_nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(
   PKNCA::PKNCAconc(typ_nca_input, Cdxd ~ time | treatment + id/cycle),
-  PKNCA::PKNCAdose(dose_typ,       amt ~ time | treatment + id/cycle),
+  PKNCA::PKNCAdose(dose_typ,       amt ~ time | treatment + id + cycle),
   intervals = intervals_q3w
 ))
 dxd_nca_summary <- summary(dxd_nca)
