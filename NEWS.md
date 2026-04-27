@@ -14,6 +14,7 @@
 * Add Lin 2024 pozelimab ([doi:10.1007/s10928-024-09941-8](https://doi.org/10.1007/s10928-024-09941-8)) — healthy adult volunteers, adults with paroxysmal nocturnal hemoglobinuria, and pediatric and adult patients with CHAPLE disease.
 * Add Yin 2021 trastuzumab deruxtecan ([doi:10.1002/cpt.2096](https://doi.org/10.1002/cpt.2096)) — adults with HER2-positive breast cancer or other HER2-expressing solid tumors.
 * Add Hwang 2022 tremelimumab ([doi:10.1111/bcp.15622](https://doi.org/10.1111/bcp.15622)) — adults with advanced solid tumours.
+* Add Papathanasiou 2025 belantamab mafodotin ([doi:10.1007/s40262-025-01508-1](https://doi.org/10.1007/s40262-025-01508-1)) — adults with relapsed/refractory multiple myeloma (ADC moiety only).
 * Add Hood 2021 MEDI7836 ([doi:10.3390/pharmaceutics13050613](https://doi.org/10.3390/pharmaceutics13050613)) — healthy adult males in a first-in-human single-ascending-dose trial.
 * Amend Castro-Suarez 2020 nimotuzumab: V1 decreased 53% for 50 mg cohort per Figure 4 visual inspection (direction not stated in paper text; corresponding author contacted).
 * Add Castro-Suárez 2020 nimotuzumab ([doi:10.3390/pharmaceutics12121147](https://doi.org/10.3390/pharmaceutics12121147)) — adults with autosomal dominant polycystic kidney disease.

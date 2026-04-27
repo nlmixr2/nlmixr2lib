@@ -411,6 +411,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Martinez_2019_alirocumab.R` (time-varying; additive-linear effect on `Km` with slope −0.541 per (FPCSK9/72.9), reference 72.9 ng/mL).
 - **Notes:** Specific scope because the column is meaningful only for drugs whose mechanism is PCSK9 inhibition; reusing the name for a different anti-PCSK9 agent is acceptable (add to Example models). For non-PCSK9 drugs that use a similar target-concentration biomarker, register a new canonical (e.g., `FIL6R`, `FTNF`) rather than overloading `FPCSK9`. Per-model `covariateData[[FPCSK9]]$notes` should state whether the value is baseline-only or time-varying and how missing values were imputed (Martinez 2019 used LOCF).
 
+### SBCMA (**canonical for soluble B-cell maturation antigen concentration**)
+- **Description:** Baseline serum (or plasma) concentration of soluble B-cell maturation antigen (sBCMA), the shed extracellular domain of the BCMA receptor (TNFRSF17). Serves as a soluble-target biomarker for BCMA-directed therapeutics (anti-BCMA antibody-drug conjugates such as belantamab mafodotin, BCMA-targeted bispecifics, and BCMA CAR-T) — sBCMA is elevated in multiple-myeloma and reflects tumour burden, and contributes to target-mediated drug disposition by sequestering circulating drug.
+- **Units:** ng/mL (equivalent to μg/L; 1 ng/mL = 1 μg/L). Document per-model via `covariateData[[SBCMA]]$units`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a — used with power scaling `(SBCMA / ref)^exponent`. Reference value observed: 50 ng/mL (Papathanasiou 2025 typical-patient definition).
+- **Source aliases:**
+  - `SBCMABL` (baseline soluble BCMA) — used in `Papathanasiou_2025_belantamab.R`.
+- **Example models:** `Papathanasiou_2025_belantamab.R` (ng/mL, reference 50; power exponents on initial CL +0.113, on ADC Vc +0.0401, on Imax +0.160).
+- **Notes:** Specific scope because the column is meaningful only for drugs whose mechanism involves the BCMA receptor (and thus a circulating soluble-target pool). Reusing the name for another anti-BCMA agent is acceptable (extend the example-models list). For other oncology TMDD targets register a new canonical (e.g., `HER2_ECD` already exists for HER2; an analogous `SCD20`, `SCD38` would follow the same pattern). Multiple myeloma populations show sBCMA spanning roughly 2 to 2,000 ng/mL, so the (SBCMA/50)^exponent form should be evaluated with care over the full clinical range.
+
 ## Race / ethnicity
 
 **Canonical pattern: `RACE_<GROUP>`.** Use one indicator per race/ethnicity group the source models. Reference category is the implicit 0 = all other groups; document explicitly which groups are in the reference. When the source uses composite groups (e.g., "Black or Other"), name them accordingly (`RACE_BLACK_OTHER`) and list the components in `notes`. The base `RACE_<GROUP>` indicators are scope: general; composite groupings are scope: specific because the grouping is tied to the study's analysis plan.
@@ -961,6 +972,16 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   - `COMB` — used in `Hwang_2022_tremelimumab.R` ($INPUT NM-TRAN data item; control-stream switch `IF(COMB.EQ.0)` selects monotherapy parameters and `IF(COMB.EQ.1)` selects combination-therapy parameters).
 - **Example models:** `Hwang_2022_tremelimumab.R` (selects between monotherapy and combination-with-durvalumab values of the time-varying-CL Tmax and lambda parameters).
 - **Notes:** Parallels `COMBO_NIVO` but for durvalumab rather than nivolumab co-administration. Acts on the time-varying-CL component (Tmax and lambda); baseline CL is shared between monotherapy and combination groups in Hwang 2022.
+### COMBO_BELAMAF (**canonical for any-combination belantamab mafodotin therapy indicator**)
+- **Description:** 1 = belantamab mafodotin administered as part of a combination regimen (with bortezomib + dexamethasone, lenalidomide + dexamethasone, or pomalidomide + dexamethasone) in the relapsed/refractory multiple myeloma setting; 0 = belantamab mafodotin monotherapy.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (belantamab mafodotin monotherapy).
+- **Source aliases:**
+  - `COMBO` (when the source dataset uses a generic combination flag for belantamab mafodotin pooled regimens) — used in `Papathanasiou_2025_belantamab.R`.
+- **Example models:** `Papathanasiou_2025_belantamab.R` (multiplicative factor θ = 1.44 on the Imax parameter of the time-varying CL function — combination therapy increases the steady-state CL reduction from 33.2 % to 44.0 %).
+- **Notes:** Pools the three combination backbones tested in DREAMM-6 / DREAMM-7 / DREAMM-8 (Bor-Dex, Len-Dex, Pom-Dex) into a single binary because Papathanasiou 2025 reports no meaningful per-backbone difference in cycle-1 ADC exposure. If a future paper tests per-backbone combination effects, register dedicated indicators (`COMBO_BELAMAF_BORDEX`, etc.) rather than overloading this aggregate.
 
 ## Laboratory / disease-activity
 
@@ -1843,6 +1864,7 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **2026-04-26** — Added `RACE_WHITE` (general; White vs non-White dichotomy), `HEPIMP_MILD` (general; mild hepatic impairment per NCI ODWG criteria), `NLR` (general; neutrophil-to-lymphocyte ratio, hematology), `SARS_VLOAD` (specific; SARS-CoV-2 baseline viral load), `SARS_SEROPOS` (specific; SARS-CoV-2 baseline serostatus), `OXYSUP_LOW` and `OXYSUP_HIGH` (both specific; decomposed from a 4-level supplemental-oxygen categorical) canonical entries while extracting `Lin_2024_casirivimab.R`. New H2 section `Infectious disease (SARS-CoV-2 / COVID-19)` introduced for the SARS_* and OXYSUP_* entries. Source aliases mapped: `RACE`→`RACE_WHITE` (Lin 2024 binary form), `HEPIMP`→`HEPIMP_MILD`, `VIRAL`→`SARS_VLOAD`, `SERPOS`→`SARS_SEROPOS`, `OXYSTAT1`→`OXYSUP_LOW`, `OXYSTAT2`→`OXYSUP_HIGH`.
 - **2026-04-27** — Added `MAYO_E` (general-scope baseline Mayo endoscopic subscore, integer 0-3) canonical entry under `Inflammatory-bowel-disease disease-activity covariates` while extracting `Faelens_2021_infliximab.R`. Source alias `MPRE` mapped (Faelens 2021 NONMEM column for "Mayo endoscopic score pre-induction"; the dataset's `MPRE = -99` missing sentinel is documented as out-of-domain in the per-model `notes`). Distinct from the full Mayo score (0-12) and partial Mayo `PMAYO` (0-9). Also promoted `DISEXT_EP` from scope: specific to scope: general (the binary "extensive colitis vs not" semantics generalize across UC popPK papers regardless of whether the source dataset also distinguishes an "other" disease-extension category) and added Faelens 2021 source alias `EXTCOL` and example-model entry.
 - **2026-04-26** — Added `HEP_IMP` (general-scope binary indicator for NCI ODWG hepatic impairment, mild or worse vs. normal) under `Renal / hepatic function` and `COMBO_RG` (specific-scope binary indicator for anti-CD20 (rituximab or obinutuzumab) combination therapy) under `Oncology` while extracting `Lu_2019_polatuzumab.R`. Source aliases mapped: `BHPTGRPN` (categorical NCI ODWG group with 9999 missing-value sentinel)→`HEP_IMP`; `COMBO` (Lu 2019 categorical 0/1/2)→`COMBO_RG`.
+- **2026-04-27** — Added `SBCMA` (specific-scope, baseline soluble B-cell maturation antigen, in `Cardiometabolic / target biomarkers`; reference 50 ng/mL) and `COMBO_BELAMAF` (specific-scope, any-combination belantamab mafodotin therapy indicator on Imax of the time-varying CL function, in `Concomitant / prior medication`) canonical entries while extracting `Papathanasiou_2025_belantamab.R`. Source aliases mapped: `SBCMABL`→`SBCMA`, `COMBO`→`COMBO_BELAMAF`.
 - Subsequent additions: append new canonical entries as new papers are processed. When adding, bump the audit-completed count in the summary below.
 
 ## Summary
