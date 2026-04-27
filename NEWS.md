@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Takahashi 2023 abatacept ([doi:10.1182/blood.2023020035](https://doi.org/10.1182/blood.2023020035)) — pooled adult/pediatric rheumatoid-arthritis / pJIA patients and adult/pediatric hematopoietic-cell-transplant recipients in the ABA2 trial.
 * Add Hood 2021 MEDI7836 ([doi:10.3390/pharmaceutics13050613](https://doi.org/10.3390/pharmaceutics13050613)) — healthy adult males in a first-in-human single-ascending-dose trial.
 * Amend Castro-Suarez 2020 nimotuzumab: V1 decreased 53% for 50 mg cohort per Figure 4 visual inspection (direction not stated in paper text; corresponding author contacted).
 * Add Castro-Suárez 2020 nimotuzumab ([doi:10.3390/pharmaceutics12121147](https://doi.org/10.3390/pharmaceutics12121147)) — adults with autosomal dominant polycystic kidney disease.
