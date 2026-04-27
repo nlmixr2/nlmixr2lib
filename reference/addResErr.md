@@ -65,6 +65,8 @@ readModelDb("PK_1cmt") |> addResErr("addSd")
 #>  ── Model (Normalized Syntax): ── 
 #> function() {
 #>     description <- "One compartment PK model with linear clearance"
+#>     reference <- "nlmixr2lib template"
+#>     units <- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")
 #>     ini({
 #>         lka <- 0.45
 #>         label("Absorption rate (Ka)")
@@ -103,6 +105,8 @@ readModelDb("PK_1cmt") |> addResErr("lnormSd")
 #>  ── Model (Normalized Syntax): ── 
 #> function() {
 #>     description <- "One compartment PK model with linear clearance"
+#>     reference <- "nlmixr2lib template"
+#>     units <- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")
 #>     ini({
 #>         lka <- 0.45
 #>         label("Absorption rate (Ka)")
@@ -143,6 +147,8 @@ readModelDb("PK_1cmt") |> addResErr(c("addSd", "propSd"))
 #>  ── Model (Normalized Syntax): ── 
 #> function() {
 #>     description <- "One compartment PK model with linear clearance"
+#>     reference <- "nlmixr2lib template"
+#>     units <- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")
 #>     ini({
 #>         lka <- 0.45
 #>         label("Absorption rate (Ka)")

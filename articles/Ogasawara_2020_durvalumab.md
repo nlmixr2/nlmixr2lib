@@ -64,7 +64,7 @@ pop <- data.frame(
   IGG    = rlnorm(n_subj, log(7.6), 0.35),   # Median 7.6 g/L (Table 2)
   SPDL1  = rlnorm(n_subj, log(173.8), 0.8),  # Median 173.8 pg/mL (Table 2)
   LDH    = rlnorm(n_subj, log(216), 0.4),    # Median 216 U/L (Table 2)
-  SEX    = rbinom(n_subj, 1, 0.352),          # 35.2% female (Table 2)
+  SEXF   = rbinom(n_subj, 1, 0.352),          # 35.2% female (Table 2)
   MDSAML = rbinom(n_subj, 1, 0.37),           # 37% MDS/AML (Table 2)
   MM     = 0
 )
@@ -199,10 +199,9 @@ data_obj <- PKNCAdata(conc_obj, dose_obj,
                                               cmax = TRUE, tmax = TRUE,
                                               auclast = TRUE, half.life = TRUE))
 nca_results <- pk.nca(data_obj)
-#>  ■■■■■■■■                          23% |  ETA: 10s
-#>  ■■■■■■■■■■■■■■■                   46% |  ETA:  7s
-#>  ■■■■■■■■■■■■■■■■■■■■■■            68% |  ETA:  4s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      90% |  ETA:  1s
+#>  ■■■■■■■■■                         28% |  ETA:  9s
+#>  ■■■■■■■■■■■■■■■■■                 53% |  ETA:  6s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■          78% |  ETA:  3s
 nca_summary <- summary(nca_results)
 knitr::kable(nca_summary, digits = 2,
              caption = "NCA summary (3rd dosing interval, weeks 8-12)")

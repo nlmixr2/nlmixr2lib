@@ -74,6 +74,8 @@ readModelDb("PK_2cmt_no_depot") |>
 #> 
 #>  ── Model (Normalized Syntax): ── 
 #> function() {
+#>     reference <- "nlmixr2lib template"
+#>     units <- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")
 #>     ini({
 #>         lcl <- 1
 #>         label("Clearance (CL)")
@@ -143,6 +145,8 @@ readModelDb("PK_2cmt_no_depot") |>
 #> 
 #>  ── Model (Normalized Syntax): ── 
 #> function() {
+#>     reference <- "nlmixr2lib template"
+#>     units <- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")
 #>     ini({
 #>         lcl <- 1
 #>         label("Clearance (CL)")
@@ -207,6 +211,8 @@ readModelDb("PK_2cmt_no_depot") |>
 #> 
 #>  ── Model (Normalized Syntax): ── 
 #> function() {
+#>     reference <- "nlmixr2lib template"
+#>     units <- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")
 #>     ini({
 #>         lcl <- 1
 #>         label("Clearance (CL)")

@@ -95,6 +95,8 @@ readModelDb("PK_1cmt_des") |> addTransit(3)
 #>  ── Model (Normalized Syntax): ── 
 #> function() {
 #>     dosing <- c("central", "depot")
+#>     reference <- "nlmixr2lib template"
+#>     units <- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")
 #>     ini({
 #>         lka <- 0.45
 #>         label("Absorption rate (Ka)")

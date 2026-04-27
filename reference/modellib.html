@@ -161,6 +161,8 @@ accepted)</p></dd>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">modellib</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"PK_1cmt"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> function() {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   description &lt;- "One compartment PK model with linear clearance"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   reference &lt;- "nlmixr2lib template"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   units &lt;- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ini({</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     lka &lt;- 0.45 ; label("Absorption rate (Ka)")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     lcl &lt;- 1 ; label("Clearance (CL)")</span>
@@ -176,7 +178,7 @@ accepted)</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     Cc ~ prop(propSd)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   })</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x5580fa030478&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x55fc65a2da90&gt;</span>
 <span class="r-in"><span><span class="fu">modellib</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"PK_1cmt"</span>, eta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ka"</span>, <span class="st">"vc"</span><span class="op">)</span>, reserr <span class="op">=</span> <span class="st">"addSd"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>  </span>
@@ -232,6 +234,8 @@ accepted)</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ── <span style="font-weight: bold;">Model (Normalized Syntax):</span> ── </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> function() {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     description &lt;- "One compartment PK model with linear clearance"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     reference &lt;- "nlmixr2lib template"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     units &lt;- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     ini({</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         lka &lt;- 0.45</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         label("Absorption rate (Ka)")</span>
@@ -272,6 +276,8 @@ accepted)</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ── <span style="font-weight: bold;">Model (Normalized Syntax):</span> ── </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> function() {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     description &lt;- "One compartment PK model with linear clearance"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     reference &lt;- "nlmixr2lib template"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     units &lt;- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     ini({</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         lka &lt;- 0.45</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         label("Absorption rate (Ka)")</span>

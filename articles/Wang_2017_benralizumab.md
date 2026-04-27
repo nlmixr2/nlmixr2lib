@@ -60,8 +60,8 @@ n_subj <- 500
 pop <- data.frame(
   ID          = seq_len(n_subj),
   WT          = rlnorm(n_subj, log(77), 0.24),  # Mean ~77 kg (Table 2)
-  ADA         = rbinom(n_subj, 1, 0.05),         # ~5% high-titer ADA
-  JAPANESE_HV = 0                                 # Non-Japanese patient population
+  ADA_POS      = rbinom(n_subj, 1, 0.05),         # ~5% high-titer ADA (titer >= 400)
+  RACE_JAPANESE = 0                               # Non-Japanese patient population
 )
 ```
 
@@ -143,7 +143,7 @@ if (all(c("sim.id", "id") %in% names(sim_df))) {
 } else {
   sim_df$subject <- sim_df$sim.id
 }
-sim_df$treatment <- ifelse(sim_df$ADA == 1, "High-titer ADA", "Negative/Low-titer ADA")
+sim_df$treatment <- ifelse(sim_df$ADA_POS == 1, "High-titer ADA", "Negative/Low-titer ADA")
 nca_data <- data.frame(
   subject   = sim_df$subject,
   treatment = sim_df$treatment,
@@ -164,8 +164,8 @@ data_obj <- PKNCAdata(conc_obj, dose_obj,
                                               cmax = TRUE, tmax = TRUE,
                                               auclast = TRUE, half.life = TRUE))
 nca_results <- pk.nca(data_obj)
-#>  ■■■■■■■■                          22% |  ETA:  6s
-#>  ■■■■■■■■■■■■■■■■■■■■              63% |  ETA:  3s
+#>  ■■■■■■■■■■■■                      37% |  ETA:  4s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■       85% |  ETA:  1s
 nca_summary <- summary(nca_results)
 knitr::kable(nca_summary, digits = 2,
              caption = "NCA summary (2nd dosing interval, weeks 4-8)")

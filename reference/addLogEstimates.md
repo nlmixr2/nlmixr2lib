@@ -66,6 +66,8 @@ readModelDb("PK_3cmt_des") |>
 #> 4                  4      peripheral2
 #>  ── Model (Normalized Syntax): ── 
 #> function() {
+#>     reference <- "nlmixr2lib template"
+#>     units <- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")
 #>     ini({
 #>         lka <- 0.45
 #>         label("Absorption rate (Ka)")
@@ -123,6 +125,8 @@ readModelDb("PK_3cmt_des") |>
 #> 4                  4      peripheral2
 #>  ── Model (Normalized Syntax): ── 
 #> function() {
+#>     reference <- "nlmixr2lib template"
+#>     units <- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")
 #>     ini({
 #>         lka <- 0.45
 #>         label("Absorption rate (Ka)")

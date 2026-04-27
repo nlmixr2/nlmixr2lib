@@ -72,6 +72,8 @@ readModelDb("PK_1cmt") |> addEta("ka")
 #> function () 
 #> {
 #>     description <- "One compartment PK model with linear clearance"
+#>     reference <- "nlmixr2lib template"
+#>     units <- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")
 #>     ini({
 #>         lka <- 0.45
 #>         label("Absorption rate (Ka)")
@@ -91,5 +93,5 @@ readModelDb("PK_1cmt") |> addEta("ka")
 #>         Cc ~ prop(propSd)
 #>     })
 #> }
-#> <environment: 0x5580f9bd9e48>
+#> <environment: 0x55fc64bcc5a0>
 ```

@@ -40,6 +40,8 @@ This is a very first draft just to look at the proof of concept
 modellib(name = "PK_1cmt")
 #> function() {
 #>   description <- "One compartment PK model with linear clearance"
+#>   reference <- "nlmixr2lib template"
+#>   units <- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")
 #>   ini({
 #>     lka <- 0.45 ; label("Absorption rate (Ka)")
 #>     lcl <- 1 ; label("Clearance (CL)")
@@ -55,7 +57,7 @@ modellib(name = "PK_1cmt")
 #>     Cc ~ prop(propSd)
 #>   })
 #> }
-#> <environment: 0x5580fa030478>
+#> <environment: 0x55fc65a2da90>
 modellib(name = "PK_1cmt", eta = c("ka", "vc"), reserr = "addSd")
 #>  
 #>  
@@ -111,6 +113,8 @@ modellib(name = "PK_1cmt", eta = c("ka", "vc"), reserr = "addSd")
 #>  ── Model (Normalized Syntax): ── 
 #> function() {
 #>     description <- "One compartment PK model with linear clearance"
+#>     reference <- "nlmixr2lib template"
+#>     units <- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")
 #>     ini({
 #>         lka <- 0.45
 #>         label("Absorption rate (Ka)")
@@ -151,6 +155,8 @@ modellib(name = "PK_1cmt", reserr = "addSd")
 #>  ── Model (Normalized Syntax): ── 
 #> function() {
 #>     description <- "One compartment PK model with linear clearance"
+#>     reference <- "nlmixr2lib template"
+#>     units <- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")
 #>     ini({
 #>         lka <- 0.45
 #>         label("Absorption rate (Ka)")

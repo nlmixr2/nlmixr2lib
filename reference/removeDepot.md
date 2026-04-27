@@ -54,6 +54,8 @@ readModelDb("PK_1cmt_des") |> removeDepot()
 #>  ── Model (Normalized Syntax): ── 
 #> function() {
 #>     dosing <- c("central", "depot")
+#>     reference <- "nlmixr2lib template"
+#>     units <- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")
 #>     ini({
 #>         lcl <- 1
 #>         label("Clearance (CL)")
