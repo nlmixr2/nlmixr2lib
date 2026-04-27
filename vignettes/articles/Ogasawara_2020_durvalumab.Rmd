@@ -59,7 +59,7 @@ pop <- data.frame(
   IGG    = rlnorm(n_subj, log(7.6), 0.35),   # Median 7.6 g/L (Table 2)
   SPDL1  = rlnorm(n_subj, log(173.8), 0.8),  # Median 173.8 pg/mL (Table 2)
   LDH    = rlnorm(n_subj, log(216), 0.4),    # Median 216 U/L (Table 2)
-  SEX    = rbinom(n_subj, 1, 0.352),          # 35.2% female (Table 2)
+  SEXF   = rbinom(n_subj, 1, 0.352),          # 35.2% female (Table 2)
   MDSAML = rbinom(n_subj, 1, 0.37),           # 37% MDS/AML (Table 2)
   MM     = 0
 )
