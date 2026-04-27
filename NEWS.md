@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Zhou 2025 brentuximab vedotin ([doi:10.1002/cpt.3629](https://doi.org/10.1002/cpt.3629)) — pediatric patients (5-18 years) with newly diagnosed Hodgkin lymphoma or relapsed/refractory systemic anaplastic large-cell lymphoma.
 * Add Hood 2021 MEDI7836 ([doi:10.3390/pharmaceutics13050613](https://doi.org/10.3390/pharmaceutics13050613)) — healthy adult males in a first-in-human single-ascending-dose trial.
 * Amend Castro-Suarez 2020 nimotuzumab: V1 decreased 53% for 50 mg cohort per Figure 4 visual inspection (direction not stated in paper text; corresponding author contacted).
 * Add Castro-Suárez 2020 nimotuzumab ([doi:10.3390/pharmaceutics12121147](https://doi.org/10.3390/pharmaceutics12121147)) — adults with autosomal dominant polycystic kidney disease.
