@@ -37,12 +37,12 @@ Yin_2021_trastuzumabDeruxtecan <- function() {
       notes              = "Yin 2021 final model encodes sex as a male-indicator (1 = male, 0 = female) with female as the reference category (Results: 'CL_intact = ... x (1.174, if male)' and 'V1,intact = ... x (1.197, if male)'). To store under the canonical SEXF (1 = female, 0 = male), the effect is applied in model() as (1 + e_male_cl * (1 - SEXF)) and (1 + e_male_v1 * (1 - SEXF)) so SEXF = 1 yields factor 1 (paper female reference) and SEXF = 0 yields the paper's male multiplier (1.174 on CL, 1.197 on V1).",
       source_name        = "Sex"
     ),
-    COUNTRY_JPN = list(
+    REGION_JAPAN = list(
       description        = "Japan enrollment-country indicator",
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (non-Japan country)",
-      notes              = "Yin 2021 retained Country (Japan vs non-Japan) over Race because the two were highly confounded (correlation -0.81) and Country was more significant on all PK parameters. Multiplicative fractional effect of 0.903 on CL_intact and 0.738 on V2_intact for COUNTRY_JPN = 1, applied as (1 + e_japan_cl * COUNTRY_JPN) and (1 + e_japan_v2 * COUNTRY_JPN).",
+      notes              = "Yin 2021 retained Country (Japan vs non-Japan) over Race because the two were highly confounded (correlation -0.81) and Country was more significant on all PK parameters. Multiplicative fractional effect of 0.903 on CL_intact and 0.738 on V2_intact for REGION_JAPAN = 1, applied as (1 + e_japan_cl * REGION_JAPAN) and (1 + e_japan_v2 * REGION_JAPAN).",
       source_name        = "Country"
     )
   )
@@ -84,11 +84,11 @@ Yin_2021_trastuzumabDeruxtecan <- function() {
     e_wt_cl     <-  0.370;   label("Power exponent of WT on CL_intact (unitless)")                                       # Yin 2021 Table 1: Body weight on CL_intact = 0.370
     e_alb_cl    <- -0.533;   label("Power exponent of ALB on CL_intact (unitless)")                                      # Yin 2021 Table 1: Albumin on CL_intact = -0.533
     e_tumsz_cl  <-  0.0710;  label("Power exponent of TUMSZ on CL_intact (unitless)")                                    # Yin 2021 Table 1: Tumor size on CL_intact = 0.0710
-    e_japan_cl  <- -0.0970;  label("Fractional multiplicative effect of COUNTRY_JPN on CL_intact (unitless)")            # Yin 2021 Table 1: Country (Japan) on CL_intact = -0.0970 -> multiplier 0.903
+    e_japan_cl  <- -0.0970;  label("Fractional multiplicative effect of REGION_JAPAN on CL_intact (unitless)")            # Yin 2021 Table 1: Country (Japan) on CL_intact = -0.0970 -> multiplier 0.903
     e_male_cl   <-  0.174;   label("Fractional multiplicative effect of male sex on CL_intact (unitless; on (1 - SEXF))") # Yin 2021 Table 1: Sex (male) on CL_intact = 0.174 -> multiplier 1.174
     e_wt_v1     <-  0.489;   label("Power exponent of WT on V1_intact (unitless)")                                       # Yin 2021 Table 1: Body weight on V1_intact = 0.489
     e_male_v1   <-  0.197;   label("Fractional multiplicative effect of male sex on V1_intact (unitless; on (1 - SEXF))") # Yin 2021 Table 1: Sex (male) on V1_intact = 0.197 -> multiplier 1.197
-    e_japan_v2  <- -0.262;   label("Fractional multiplicative effect of COUNTRY_JPN on V2_intact (unitless)")            # Yin 2021 Table 1: Country (Japan) on V2_intact = -0.262 -> multiplier 0.738
+    e_japan_v2  <- -0.262;   label("Fractional multiplicative effect of REGION_JAPAN on V2_intact (unitless)")            # Yin 2021 Table 1: Country (Japan) on V2_intact = -0.262 -> multiplier 0.738
 
     # Inter-individual variability. Yin 2021 Table 1 'Between-patient
     # variability' block reports variances directly: Var(CL_intact) = 0.0630,
@@ -118,13 +118,13 @@ Yin_2021_trastuzumabDeruxtecan <- function() {
     # Individual PK parameters with covariate adjustments
     # (Yin 2021 final-model equations, Results section). Reference values:
     # WT 57.8 kg, ALB 40 g/L, TUMSZ 57 mm, female (SEXF = 1), non-Japan
-    # (COUNTRY_JPN = 0). Continuous covariates use power-of-ratio scaling;
+    # (REGION_JAPAN = 0). Continuous covariates use power-of-ratio scaling;
     # categorical covariates use fractional multipliers (1 + theta * indicator).
     cl <- exp(lcl + etalcl) *
       (WT    / 57.8)^e_wt_cl *
       (ALB   / 40  )^e_alb_cl *
       (TUMSZ / 57  )^e_tumsz_cl *
-      (1 + e_japan_cl * COUNTRY_JPN) *
+      (1 + e_japan_cl * REGION_JAPAN) *
       (1 + e_male_cl  * sex_male)
 
     vc <- exp(lvc + etalvc) *
@@ -133,7 +133,7 @@ Yin_2021_trastuzumabDeruxtecan <- function() {
 
     q  <- exp(lq + etalq)
     vp <- exp(lvp + etalvp) *
-      (1 + e_japan_v2 * COUNTRY_JPN)
+      (1 + e_japan_v2 * REGION_JAPAN)
 
     kel <- cl / vc
     k12 <- q  / vc

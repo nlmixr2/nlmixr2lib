@@ -73,12 +73,12 @@ Lu_2019_polatuzumab <- function() {
       notes              = "Time-fixed. Lu 2019 NONMEM defines ECOG0 = 1 if BECOG == 0; the canonical ECOG_GE1 reverses the value coding (ECOG_GE1 = 1 - source_ECOG0) and the effect-coefficient ratio therefore inverts (paper reports FRAC_NS_ECOG=0 / FRAC_NS_ECOG>=1 = 0.905, stored as e_ecog_ge1_frac = 1/0.905 = 1.1050 applied as e_ecog_ge1_frac^ECOG_GE1). Effect on FRAC_NS only.",
       source_name        = "BECOG"
     ),
-    HEP_IMP = list(
+    HEPIMP = list(
       description        = "Baseline hepatic-impairment indicator per the National Cancer Institute Organ Dysfunction Working Group (NCI ODWG) classification, 1 = mild or worse hepatic impairment (NCI ODWG group >= mild), 0 = normal hepatic function",
       units              = "(binary)",
       type               = "binary",
       reference_category = 0,
-      notes              = "Time-fixed. Lu 2019 NONMEM defines HEPA = 1 if BHPTGRPN > 1.5 (i.e., NCI ODWG group >= 2 = mild or worse) AND BHPTGRPN != 9999 (the missing-value sentinel). Multiplicative effect on FRAC_NS only (e_hepimp_frac = 1.19 applied as e_hepimp_frac^HEP_IMP). NCI ODWG group 1 = normal (reference); group 2 = mild; group 3 = moderate; group 4 = severe (Ramalingam et al., J Clin Oncol 2010;28:4507).",
+      notes              = "Time-fixed. Lu 2019 NONMEM defines HEPA = 1 if BHPTGRPN > 1.5 (i.e., NCI ODWG group >= 2 = mild or worse) AND BHPTGRPN != 9999 (the missing-value sentinel). Multiplicative effect on FRAC_NS only (e_hepimp_frac = 1.19 applied as e_hepimp_frac^HEPIMP). NCI ODWG group 1 = normal (reference); group 2 = mild; group 3 = moderate; group 4 = severe (Ramalingam et al., J Clin Oncol 2010;28:4507).",
       source_name        = "BHPTGRPN"
     ),
     COMBO_RG = list(
@@ -232,7 +232,7 @@ Lu_2019_polatuzumab <- function() {
                 e_sexf_frac^SEXF *
                 e_line1l_frac^LINE_1L *
                 e_combo_rg_frac^COMBO_RG *
-                e_hepimp_frac^HEP_IMP *
+                e_hepimp_frac^HEPIMP *
                 e_ecog_ge1_frac^ECOG_GE1 *
                 (ALB / 35)^e_alb_frac
 

@@ -271,16 +271,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Source aliases:** none; `B2M` is the universal abbreviation.
 - **Example models:** `Fau_2020_isatuximab.R` (mg/L, reference 3.90; exponent 0.343 on the steady-state linear clearance CLinf).
 - **Notes:** In multiple myeloma B2M is part of the International Staging System (ISS); in routine PK analyses it is interpreted simultaneously as a renal-function and disease-burden marker. Document the interpretation per-model via `covariateData[[B2M]]$notes`.
-### HEP_IMP (**canonical for hepatic-impairment indicator (NCI ODWG classification)**)
+### HEPIMP (**canonical for hepatic-impairment indicator (NCI ODWG classification)**)
 - **Description:** Baseline hepatic-impairment indicator per the National Cancer Institute Organ Dysfunction Working Group (NCI ODWG) classification: 1 = mild or worse hepatic impairment (group >= 2 = mild, moderate, or severe), 0 = normal hepatic function (group 1).
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** general
 - **Reference category:** 0 (normal hepatic function, NCI ODWG group 1).
 - **Source aliases:**
-  - `BHPTGRPN` (categorical: 1 = normal, 2 = mild, 3 = moderate, 4 = severe; 9999 = missing) — used in `Lu_2019_polatuzumab.R`. Decompose: `HEP_IMP = as.integer(BHPTGRPN > 1.5 & BHPTGRPN != 9999)`.
-- **Example models:** `Lu_2019_polatuzumab.R` (multiplicative effect on FRAC_NS = 1.19, applied as `1.19^HEP_IMP`).
-- **Notes:** NCI ODWG classification (Ramalingam SS et al., J Clin Oncol 2010;28:4507) groups subjects by total bilirubin and AST: group 1 = normal, group 2 = mild (TBILI <= ULN and AST > ULN, or TBILI > 1-1.5 x ULN), group 3 = moderate (TBILI > 1.5-3 x ULN), group 4 = severe (TBILI > 3 x ULN). Source papers typically pool groups 2-4 versus group 1 for a binary indicator because the impaired-liver subgroups are individually small. If a future model needs finer resolution (separate effects for mild vs moderate-or-worse), add a parallel `HEP_IMP_MOD` canonical rather than overloading this one.
+  - `BHPTGRPN` (categorical: 1 = normal, 2 = mild, 3 = moderate, 4 = severe; 9999 = missing) — used in `Lu_2019_polatuzumab.R`. Decompose: `HEPIMP = as.integer(BHPTGRPN > 1.5 & BHPTGRPN != 9999)`.
+  - `HEP_IMP` — retired canonical name; replaced by `HEPIMP` for consistency with the `HEPIMP_MILD` family.
+- **Example models:** `Lu_2019_polatuzumab.R` (multiplicative effect on FRAC_NS = 1.19, applied as `1.19^HEPIMP`).
+- **Notes:** NCI ODWG classification (Ramalingam SS et al., J Clin Oncol 2010;28:4507) groups subjects by total bilirubin and AST: group 1 = normal, group 2 = mild (TBILI <= ULN and AST > ULN, or TBILI > 1-1.5 x ULN), group 3 = moderate (TBILI > 1.5-3 x ULN), group 4 = severe (TBILI > 3 x ULN). Source papers typically pool groups 2-4 versus group 1 for a binary indicator because the impaired-liver subgroups are individually small. If a future model needs finer resolution (separate effects for mild vs moderate-or-worse), add a parallel `HEPIMP_MOD` canonical rather than overloading this one.
 
 ## Hematology
 
@@ -526,16 +527,6 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Notes:** Distinct from `RACE_NEAS` (North East Asian composite, includes Chinese, Japanese, and Korean) and from `RACE_ASIAN`. Use `RACE_JAPANESE` only when the source paper breaks out Japanese heritage as its own indicator; do not aggregate with other Asian groups when the paper keeps them separate. Ratified canonically on 2026-04-26.
 ## Geographic / enrollment-country indicators
 
-### COUNTRY_JPN (**canonical for Japan enrollment-country indicator**)
-- **Description:** 1 = patient enrolled in a Japanese study site / country = Japan, 0 = enrolled outside Japan.
-- **Units:** (binary)
-- **Type:** binary
-- **Scope:** specific
-- **Reference category:** 0 (non-Japan country).
-- **Source aliases:** none.
-- **Example models:** `Yin_2021_trastuzumabDeruxtecan.R` (multiplicative effect 0.903 on CL_intact and 0.738 on V2_intact when COUNTRY_JPN = 1).
-- **Notes:** Distinct from `RACE_NEAS` and `RACE_ASIAN`: encodes the enrollment country rather than self-reported race. In Yin 2021 country and race were highly confounded (correlation -0.81); the authors retained country (more significant on all PK parameters) and dropped race. Follows a `COUNTRY_<ISO3>` indicator-decomposition pattern; new countries should be added as additional `COUNTRY_<ISO3>` entries.
-
 ## Pediatric comorbidities
 
 ### CLD_PREM (**canonical for chronic lung disease of prematurity**)
@@ -662,29 +653,6 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Source aliases:** none known; source NONMEM control streams typically use ad-hoc names (e.g., `PNH`, `DPNH`).
 - **Example models:** `Lin_2024_pozelimab.R` (additive-fractional +34.07% effect on Vc; no CL or Vp effect; reference category pools healthy volunteers and CHAPLE patients).
 - **Notes:** Paroxysmal nocturnal hemoglobinuria is a rare hematological disease characterized by uncontrolled complement activation on red blood cells; treated with C5-targeted complement inhibitors (eculizumab, ravulizumab, pozelimab). Scope: specific because the disease-pooling reference category is paper-defined. Ratified canonically on 2026-04-27.
-
-## Oncology
-
-### TUMSZ (**canonical for baseline tumor size**)
-- **Description:** Baseline tumor size. For solid tumors, the sum of diameters of target lesions per RECIST; for classical Hodgkin lymphoma, the sum of products of perpendicular diameters (SPPD).
-- **Units:** mm
-- **Type:** continuous
-- **Scope:** general
-- **Reference category:** n/a — used with power scaling `(TUMSZ / ref)^exponent`. Reference values observed: 63 mm (Budha 2023); 90 mm (Lu 2014, source reference 9 cm converted to mm).
-- **Source aliases:**
-  - `TMBD` (originally in cm; `TUMSZ_mm = TMBD_cm * 10`) — used in `Lu_2014_trastuzumabemtansine.R`.
-- **Example models:** `Budha_2023_tislelizumab.R` (reference 63 mm), `Lu_2014_trastuzumabemtansine.R` (reference 90 mm; source column TMBD in cm, values converted to mm on ingestion).
-- **Notes:** Promoted to scope: general on 2026-04-20 as a conventional oncology baseline-tumor-size measure (RECIST for solid tumors, SPPD for cHL). The SPPD vs sum-of-diameters convention is pooled onto a single column; document the per-model mixture where relevant. When the source paper reports tumor size in cm, convert to mm (the canonical unit) on data ingestion and scale the per-model reference accordingly so `(TUMSZ / ref)^exp` is numerically invariant.
-
-### TUMTP_CHL (**canonical for classical Hodgkin lymphoma tumor-type indicator**)
-- **Description:** 1 = classical Hodgkin lymphoma (cHL), 0 = other tumor types.
-- **Units:** (binary)
-- **Type:** binary
-- **Scope:** specific
-- **Reference category:** 0 (non-MM subjects; the complement group is defined per-model — see per-model `covariateData[[MM]]$notes`).
-- **Source aliases:** none; `MM` is the common abbreviation used directly in source analyses.
-- **Example models:** `Ogasawara_2020_durvalumab.R` (multiplicative factor 0.820 on Vc; reference group is the union of MDS, AML, and NHL subjects).
-- **Notes:** Distinct from `DIS_SMM` (smoldering / asymptomatic MM). Use `MM` when the source paper pools active MM patients with other hematologic malignancies and retains an MM indicator in the final model. Scope: specific because the reference category is paper-defined. Ratified canonically on 2026-04-26.
 
 ### MDSAML (**canonical for MDS or AML disease-type indicator**)
 - **Description:** 1 = patient with myelodysplastic syndrome (MDS) or acute myeloid leukemia (AML), 0 = other hematologic malignancy or reference group. Time-fixed per subject.
@@ -930,17 +898,6 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   - `COMBO` — used in `Sanghavi_2020_ipilimumab.R`. Equivalently derivable from `NIVO_REGIMEN` as `COMBO_NIVO = as.integer(NIVO_REGIMEN != "none")`.
 - **Example models:** `Sanghavi_2020_ipilimumab.R` (additive effect -0.202 on the Emax parameter of the time-varying CL function).
 - **Notes:** Distinct from the per-regimen `NIVO_1Q3W` / `NIVO_3Q2W` indicators on baseline CL: `COMBO_NIVO` aggregates across all nivolumab regimens and acts on the time-varying-CL Emax parameter, whereas the per-regimen indicators act on baseline (time-zero) CL.
-
-### ECOG_PS_GT0 (**canonical for ECOG performance status > 0 indicator**)
-- **Description:** 1 = ECOG (Eastern Cooperative Oncology Group) performance status greater than 0 at baseline (i.e., PS 1, 2, 3, or 4); 0 = ECOG PS 0 (fully active). Time-fixed per subject.
-- **Units:** (binary)
-- **Type:** binary
-- **Scope:** general
-- **Reference category:** 0 (ECOG PS 0; fully active).
-- **Source aliases:**
-  - `PS` — used in `Zhang_2019_nivolumab.R` (paper's binary collapse of the four-level ECOG scale into PS=0 vs. PS>0).
-- **Example models:** `Zhang_2019_nivolumab.R` (multiplicative effect on baseline CL, additive effect on Emax of time-varying CL).
-- **Notes:** Many oncology PopPK papers report a binary-collapsed performance-status indicator rather than the full ECOG scale. The "GT0" suffix preserves the dichotomization explicitly. If a future paper uses a different cut-point (e.g., PS<=1 vs. PS>=2), register it as `ECOG_PS_GT1` rather than reusing this column.
 
 ### BLSTABL (**canonical for baseline absolute blast counts in peripheral blood**)
 - **Description:** Baseline absolute count of blasts (immature lymphoid/myeloid precursor cells) circulating in peripheral blood. Time-fixed baseline value.
@@ -1694,15 +1651,16 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 
 Geographical study-site region indicators. Distinct from race / ethnicity (`RACE_*`), which describe subject ancestry; these describe the geographical location of the clinical trial site that enrolled the subject. Used in multi-regional studies (typically those including bridging analyses for Japan or East Asia) to capture region-specific clinical-practice or unmeasured-environment effects on PK that remain after accounting for body weight, race, and laboratory covariates. Encoded as a set of mutually exclusive binary indicators with US as the implicit reference category (all indicators = 0). When a paper groups some non-US regions with US (e.g., Hong 2025 groups US and Japan as the DXd CL reference), the model code uses only the indicators that distinguish the non-reference groups; the data column for the grouped region (e.g., `REGION_JAPAN`) is still recorded so the same dataset can serve other parameters that do separate that group.
 
-### REGION_JAPAN (**canonical for Japan study-site indicator**)
-- **Description:** 1 = study site in Japan, 0 = study site outside Japan. Geographical study-site region.
+### REGION_JAPAN (**canonical for Japan study-site / enrollment-country indicator**)
+- **Description:** 1 = study site in Japan (or patient enrolled in Japan, depending on source paper's reporting), 0 = study site / enrollment country outside Japan. Geographical Japan indicator.
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** specific
-- **Reference category:** 0 (non-Japan study sites; specific reference set varies per model -- e.g., Hong 2025 Dato-DXd CL uses "any non-Japan region", whereas Hong 2025 DXd CL groups Japan with US into the reference).
-- **Source aliases:** none yet; canonical name preferred.
-- **Example models:** `Hong_2025_datopotamab.R` (multiplicative effect 1 + (-0.219) = 0.781 on Dato-DXd linear clearance).
-- **Notes:** Distinct from `RACE_JAPANESE` (subject ancestry). A subject of Japanese ancestry enrolled at a US site has `RACE_JAPANESE = 1` but `REGION_JAPAN = 0`.
+- **Reference category:** 0 (non-Japan sites / enrollment; specific reference set varies per model — e.g., Hong 2025 Dato-DXd CL uses "any non-Japan region", whereas Hong 2025 DXd CL groups Japan with US into the reference).
+- **Source aliases:**
+  - `COUNTRY_JPN` — retired canonical; used in `Yin_2021_trastuzumabDeruxtecan.R` as an enrollment-country (not study-site-region) indicator. Some papers report country-of-enrollment rather than site region; both map to `REGION_JAPAN` when the binary contrast is Japan vs. non-Japan.
+- **Example models:** `Hong_2025_datopotamab.R` (multiplicative effect 1 + (−0.219) = 0.781 on Dato-DXd linear clearance), `Yin_2021_trastuzumabDeruxtecan.R` (multiplicative effect 0.903 on CL_intact and 0.738 on V2_intact when REGION_JAPAN = 1; Yin 2021 retained Japan enrollment-country over Japanese race because the two were highly confounded, correlation −0.81).
+- **Notes:** Distinct from `RACE_JAPANESE` (subject ancestry). A subject of Japanese ancestry enrolled at a US site has `RACE_JAPANESE = 1` but `REGION_JAPAN = 0`. Some papers (e.g., Yin 2021) report enrollment country rather than study-site region; both are encoded as `REGION_JAPAN` when the binary contrast is Japan vs. non-Japan. Paired with `REGION_EUROPE` and `REGION_ROW` in multi-regional studies (e.g., Hong 2025); `REGION_JAPAN = 0` for a US-only cohort.
 
 ### REGION_EUROPE (**canonical for Europe study-site indicator**)
 - **Description:** 1 = study site in Europe, 0 = study site outside Europe. Geographical study-site region.
