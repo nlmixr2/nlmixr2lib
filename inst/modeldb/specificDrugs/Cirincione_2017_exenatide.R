@@ -71,7 +71,7 @@ Cirincione_2017_exenatide <- function() {
     lkamax   <- log(12.8);   label("Maximum first-order absorption rate (1/hr)")                     # Table 2: ka_max = 12.8 /hr (RSE 42.5%)
     lkmka    <- log(16.9);   label("Michaelis-Menten constant for saturable absorption (ug)")        # Table 2: Km_ka = 16.9 ug
     ttau     <- fixed(1.35); label("Duration of zero-order absorption (hr)")                         # Results p. 520: tau fixed at 1.35 hr
-    fdepot   <- fixed(1);    label("Bioavailability fraction (fixed)")                               # Results p. 520: F fixed to 1 (absolute F not identifiable)
+    lfdepot  <- fixed(0);    label("Log absolute SC bioavailability (fixed to 0 = exp(0) = 1, i.e., no loss at injection site)")                               # Results p. 520: F fixed to 1 (absolute F not identifiable)
     logitfr  <- logit(0.628); label("Fraction of dose entering first-order absorption (fraction)")   # Table 2: fr = 0.628
 
     # IIV — Table 2 reports CV% (Cl_int = 33.9%, Vc_int = 80.5%, Km = 95.7%); log-normal variance = log(1 + CV^2)
@@ -117,6 +117,7 @@ Cirincione_2017_exenatide <- function() {
     d/dt(central)     <-  ka * depot + kzero - kel * central - k12 * central + k21 * peripheral1
     d/dt(peripheral1) <-                                       k12 * central - k21 * peripheral1
 
+    fdepot <- exp(lfdepot)
     f(depot) <- fdepot
 
     # central is in ug, vc is in L, so central/vc is in ug/L = ng/mL. Multiply by 1000 to report Cc in pg/mL

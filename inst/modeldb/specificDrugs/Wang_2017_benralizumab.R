@@ -4,9 +4,30 @@ Wang_2017_benralizumab <- function() {
   vignette <- "Wang_2017_benralizumab"
   units <- list(time = "day", dosing = "mg", concentration = "mg/L")
   covariateData <- list(
-    WT = "Body weight in kg",
-    ADA = "Anti-drug antibody status, high-titer (0 = negative/low-titer, 1 = high-titer with titer >= 400; called ADAs in the original publication; time-varying: assessed at each predesignated sampling visit; exp(1.52) = ~4.6-fold increase in CL)",
-    JAPANESE_HV = "Japanese healthy volunteer (0 = no, 1 = yes)"
+    WT = list(
+      description        = "Body weight",
+      units              = "kg",
+      type               = "continuous",
+      reference_category = NULL,
+      notes              = "Allometric scaling on CL (exponent fixed at 0.75), Vc (estimated exponent allovc), and Vp (estimated exponent allovp), normalized to study-population mean 77 kg (Table 2; median not published).",
+      source_name        = "WT"
+    ),
+    ADA_POS = list(
+      description        = "Anti-drug antibody status, high-titer",
+      units              = "(binary)",
+      type               = "binary",
+      reference_category = "0 (negative or low-titer, i.e., titer < 400)",
+      notes              = "1 = high-titer ADA with titer >= 400; time-varying (assessed at each predesignated sampling visit). Called 'ADAs' in the original publication. exp(1.52) = ~4.6-fold increase in CL. Source column name 'ADA'.",
+      source_name        = "ADA"
+    ),
+    RACE_JAPANESE = list(
+      description        = "Japanese heritage indicator",
+      units              = "(binary)",
+      type               = "binary",
+      reference_category = "0 (non-Japanese)",
+      notes              = "Multiplicative factor on Vc (e_jpn_vc = 1.34). Wang 2017 enrolled a dedicated Japanese healthy-volunteer cohort alongside non-Japanese subjects; the indicator captures both the racial and cohort effect. Source column name 'JAPANESE_HV'.",
+      source_name        = "JAPANESE_HV"
+    )
   )
   dosing <- c("depot", "central")
   ini({
@@ -31,17 +52,17 @@ Wang_2017_benralizumab <- function() {
     e_jpn_vc   <- 1.34   ; label("Multiplicative factor on Vc for Japanese healthy volunteers (unitless)")
 
     # Inter-individual variability (diagonal)
-    etacl ~ 0.0608   # 24.9% CV
-    etavc ~ 0.0524   # 23.1% CV
-    etaq  ~ 0.0791   # 28.5% CV
-    etavp ~ 0.1029   # 32.7% CV
-    etaka ~ 0.2444   # 52.7% CV (omega^2 = log(1 + 0.527^2))
-    etaf  ~ 0.1013   # 32.4% CV
+    etalcl ~ 0.0608   # 24.9% CV
+    etalvc ~ 0.0524   # 23.1% CV
+    etalq  ~ 0.0791   # 28.5% CV
+    etalvp ~ 0.1029   # 32.7% CV
+    etalka ~ 0.2444   # 52.7% CV (omega^2 = log(1 + 0.527^2))
+    etalfdepot ~ 0.1013   # 32.4% CV
 
     # Residual error (combined, separate for SC and IV routes)
     # Using SC route residual error as the default
-    prop.err <- 0.142    ; label("Proportional residual error, SC (fraction)")
-    add.err  <- 0.0356   ; label("Additive residual error, SC (mg/L)")
+    propSd <- 0.142    ; label("Proportional residual error, SC (fraction)")
+    addSd  <- 0.0356   ; label("Additive residual error, SC (mg/L)")
   })
   model({
     # Covariate-adjusted PK parameters
@@ -50,26 +71,26 @@ Wang_2017_benralizumab <- function() {
     # Table 2 reports only mean 77.0 ± 19.0 kg. Using 77 kg as a best-available
     # proxy for the unpublished median. If the median is later recovered from
     # a supplement or regulatory review, update this reference value.
-    cl <- exp(lcl + etacl) * (WT / 77)^0.75 * exp(e_ada_cl * ADA)
-    vc <- exp(lvc + etavc) * (WT / 77)^allovc * e_jpn_vc^JAPANESE_HV
-    q  <- exp(lq + etaq)
-    vp <- exp(lvp + etavp) * (WT / 77)^allovp
-    ka <- exp(lka + etaka)
-    fdepot <- exp(lfdepot + etaf)
+    cl <- exp(lcl + etalcl) * (WT / 77)^0.75 * exp(e_ada_cl * ADA_POS)
+    vc <- exp(lvc + etalvc) * (WT / 77)^allovc * e_jpn_vc^RACE_JAPANESE
+    q  <- exp(lq + etalq)
+    vp <- exp(lvp + etalvp) * (WT / 77)^allovp
+    ka <- exp(lka + etalka)
+    fdepot <- exp(lfdepot + etalfdepot)
 
     # Two-compartment model with first-order absorption (SC) or IV
     kel <- cl / vc
     k12 <- q / vc
     k21 <- q / vp
 
-    d/dt(depot)      <- -ka * depot
-    d/dt(central)    <-  ka * depot - kel * central - k12 * central + k21 * peripheral
-    d/dt(peripheral) <-                               k12 * central - k21 * peripheral
+    d/dt(depot)       <- -ka * depot
+    d/dt(central)     <-  ka * depot - kel * central - k12 * central + k21 * peripheral1
+    d/dt(peripheral1) <-                               k12 * central - k21 * peripheral1
 
     f(depot) <- fdepot
 
     Cc <- central / vc    # mg/L (= ug/mL)
 
-    Cc ~ add(add.err) + prop(prop.err)
+    Cc ~ add(addSd) + prop(propSd)
   })
 }

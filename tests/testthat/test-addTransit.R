@@ -132,36 +132,39 @@ test_that("removeTransit removes lktr in ini block", {
 
 test_that("remove some but not all compartments", {
   modelTest <- readModelDb("PK_1cmt_des") |> addTransit(2)
-  expect_equal(
-    functionBody(as.function(removeTransit(modelTest, ntransit = 1))),
-    functionBody(function() {
-      dosing <- c("central", "depot")
-      ini({
-        lka <- 0.45
-        label("Absorption rate (Ka)")
-        lcl <- 1
-        label("Clearance (CL)")
-        lvc <- 3.45
-        label("Central volume of distribution (V)")
-        propSd <- c(0, 0.5)
-        label("Proportional residual error (fraction)")
-        lktr <- 0.1
-        label("First order transition rate (ktr)")
-      })
-      model({
-        ka <- exp(lka)
-        cl <- exp(lcl)
-        vc <- exp(lvc)
-        kel <- cl / vc
-        ktr <- exp(lktr)
-        d / dt(depot) <- -ktr * depot
-        d / dt(transit1) <- ktr * depot - ka * transit1
-        d / dt(central) <- ka * transit1 - kel * central
-        Cc <- central / vc
-        Cc ~ prop(propSd)
-      })
+
+  # Expected blocks only — avoids comparing the metadata preamble
+  # (description, reference, units, dosing) which is not what this test checks.
+  expected <- function() {
+    ini({
+      lka <- 0.45
+      label("Absorption rate (Ka)")
+      lcl <- 1
+      label("Clearance (CL)")
+      lvc <- 3.45
+      label("Central volume of distribution (V)")
+      propSd <- c(0, 0.5)
+      label("Proportional residual error (fraction)")
+      lktr <- 0.1
+      label("First order transition rate (ktr)")
     })
-  )
+    model({
+      ka <- exp(lka)
+      cl <- exp(lcl)
+      vc <- exp(lvc)
+      kel <- cl / vc
+      ktr <- exp(lktr)
+      d / dt(depot) <- -ktr * depot
+      d / dt(transit1) <- ktr * depot - ka * transit1
+      d / dt(central) <- ka * transit1 - kel * central
+      Cc <- central / vc
+      Cc ~ prop(propSd)
+    })
+  }
+
+  f <- as.function(removeTransit(modelTest, ntransit = 1))
+  expect_equal(findBlock(f, "ini"),   findBlock(expected, "ini"))
+  expect_equal(findBlock(f, "model"), findBlock(expected, "model"))
   expect_warning(
     removeTransit(modelTest, ntransit = 4),
     regexp = "reset ntransit to 2"

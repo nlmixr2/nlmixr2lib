@@ -1,5 +1,7 @@
 tgi_no_sat_Koch <- function() {
   description <- "One compartment TGI model with with exponential tumor growth, without saturation."
+  reference <- "nlmixr2lib template"
+  units <- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")
   ini({
     lts0 <- 0.8; label("Initial tumor size (TS0)")
     lka <- 0.45 ; label("Absorption rate (Ka)")

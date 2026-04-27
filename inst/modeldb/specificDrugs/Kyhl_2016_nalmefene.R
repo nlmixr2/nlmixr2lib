@@ -10,7 +10,7 @@ Kyhl_2016_nalmefene <- function() {
       units              = "kg",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Used (with sex and height) to derive LBM; not directly entered in the final PK model equations.",
+      notes              = "Required for external derivation of LBM (lean body mass) before model fitting; not referenced directly in model() equations. LBM is computed from WT, height, and sex using the Janmahasatian formula (or equivalent); the result is supplied to model() as the LBM covariate column.",
       source_name        = "WT"
     ),
     AGE = list(
@@ -82,7 +82,7 @@ Kyhl_2016_nalmefene <- function() {
   ini({
     lka_tablet <- log(0.751); label("Absorption rate for oral tablet")
     etalka_tablet ~ sqrt(log((69.9/100)^2 + 1))
-    lka_solution <- log(1.4)
+    lka_solution <- log(1.4); label("Absorption rate constant for oral solution formulation (1/hr)")
 
     lcl <- log(60.4); label("Clearance (L/h)")
     etalcl ~ sqrt(log((18.7/100)^2 + 1))
@@ -97,7 +97,7 @@ Kyhl_2016_nalmefene <- function() {
 
     lf_oral <- log(0.406); label("Absolute oral bioavailability")
     etalf_oral ~ sqrt(log((20.1/100)^2 + 1))
-    e_fed_f_oral <- 0.294
+    e_fed_f_oral <- 0.294; label("Multiplicative effect of fed state on oral bioavailability (unitless)")
 
     propSd <- 0.094; label("Proportional residual error (fraction)")
     addSd_ria <- 0.0255; label("Additive residual error for radioimmunoassay (RIA)")

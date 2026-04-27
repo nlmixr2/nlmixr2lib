@@ -53,8 +53,8 @@ n_subj <- 500
 pop <- data.frame(
   ID          = seq_len(n_subj),
   WT          = rlnorm(n_subj, log(77), 0.24),  # Mean ~77 kg (Table 2)
-  ADA         = rbinom(n_subj, 1, 0.05),         # ~5% high-titer ADA
-  JAPANESE_HV = 0                                 # Non-Japanese patient population
+  ADA_POS      = rbinom(n_subj, 1, 0.05),         # ~5% high-titer ADA (titer >= 400)
+  RACE_JAPANESE = 0                               # Non-Japanese patient population
 )
 ```
 
@@ -132,7 +132,7 @@ if (all(c("sim.id", "id") %in% names(sim_df))) {
 } else {
   sim_df$subject <- sim_df$sim.id
 }
-sim_df$treatment <- ifelse(sim_df$ADA == 1, "High-titer ADA", "Negative/Low-titer ADA")
+sim_df$treatment <- ifelse(sim_df$ADA_POS == 1, "High-titer ADA", "Negative/Low-titer ADA")
 nca_data <- data.frame(
   subject   = sim_df$subject,
   treatment = sim_df$treatment,

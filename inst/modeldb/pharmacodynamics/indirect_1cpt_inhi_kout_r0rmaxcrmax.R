@@ -1,5 +1,7 @@
 indirect_1cpt_inhi_kout_r0rmaxcrmax <- function() {
   description <- "One compartment indirect response model with inhibition of kout."
+  reference <- "nlmixr2lib template"
+  units <- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")
   ini({
     lka     <- 0.45 ; label("Absorption rate (Ka)")
     lvc     <- 3.45 ; label("Central volume of distribution (Vc)")

@@ -1,5 +1,7 @@
 tgi_sat_logistic <- function() {
   description <- "One compartment TGI model with with exponential tumor growth that decelerates linearly, with saturation."
+  reference <- "nlmixr2lib template"
+  units <- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")
   ini({
     lts0 <- 0.3; label("Initial tumor size (TS0)") 
     ltsmax <- 0.9; label("Maximum tumor size at saturation (TSmax)")

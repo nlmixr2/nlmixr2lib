@@ -1,5 +1,7 @@
 indirect_circ_1cpt_inhi_kout_kout_t  <- function() {
   description <- "One compartment indirect response model with inhibition of kout and circadian kin_t."
+  reference <- "nlmixr2lib template"
+  units <- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")
   ini({
     lka  <- 0.45 ; label("Absorption rate (Ka)")
     lkel <- 0.534; label("elimination rate (1/d)")
