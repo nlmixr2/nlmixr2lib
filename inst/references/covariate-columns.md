@@ -564,6 +564,16 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Nikanjam_2019_siltuximab.R` (multiplicative -23% effect on Vss; no CL effect).
 - **Notes:** Smoldering multiple myeloma is an asymptomatic plasma-cell disorder distinct from active multiple myeloma; pooled with the Nikanjam 2019 cohort that also included MGUS, multiple myeloma, RCC, ovarian, and other tumor types. Scope: specific because the disease-pooling reference category is paper-defined. Ratified canonically on 2026-04-24.
 
+### DIS_PNH (**canonical for paroxysmal nocturnal hemoglobinuria indicator**)
+- **Description:** 1 = paroxysmal nocturnal hemoglobinuria (PNH) patient, 0 = non-PNH subject (healthy volunteer or another indication pooled in the source analysis). Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-PNH subject; the complement group is paper-defined — for Lin 2024 it pools healthy adult volunteers and CHAPLE disease patients).
+- **Source aliases:** none known; source NONMEM control streams typically use ad-hoc names (e.g., `PNH`, `DPNH`).
+- **Example models:** `Lin_2024_pozelimab.R` (additive-fractional +34.07% effect on Vc; no CL or Vp effect; reference category pools healthy volunteers and CHAPLE patients).
+- **Notes:** Paroxysmal nocturnal hemoglobinuria is a rare hematological disease characterized by uncontrolled complement activation on red blood cells; treated with C5-targeted complement inhibitors (eculizumab, ravulizumab, pozelimab). Scope: specific because the disease-pooling reference category is paper-defined. Ratified canonically on 2026-04-27.
+
 ## Oncology
 
 ### TUMSZ (**canonical for baseline tumor size**)

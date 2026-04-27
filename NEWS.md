@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Lin 2024 pozelimab ([doi:10.1007/s10928-024-09941-8](https://doi.org/10.1007/s10928-024-09941-8)) — healthy adult volunteers, adults with paroxysmal nocturnal hemoglobinuria, and pediatric and adult patients with CHAPLE disease.
 * Add Hood 2021 MEDI7836 ([doi:10.3390/pharmaceutics13050613](https://doi.org/10.3390/pharmaceutics13050613)) — healthy adult males in a first-in-human single-ascending-dose trial.
 * Amend Castro-Suarez 2020 nimotuzumab: V1 decreased 53% for 50 mg cohort per Figure 4 visual inspection (direction not stated in paper text; corresponding author contacted).
 * Add Castro-Suárez 2020 nimotuzumab ([doi:10.3390/pharmaceutics12121147](https://doi.org/10.3390/pharmaceutics12121147)) — adults with autosomal dominant polycystic kidney disease.
