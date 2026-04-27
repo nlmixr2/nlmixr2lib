@@ -2,7 +2,7 @@ test_that("searchReplace", {
   model <- readModelDb("PK_1cmt")
   result <- searchReplace(model, find = "lka", replace = "lka + etalka")
   expect_equal(
-    find_block(result, "model")[[2]],
+    findBlock(result, "model")[[2]],
     str2lang("ka <- exp(lka + etalka)")
   )
 })

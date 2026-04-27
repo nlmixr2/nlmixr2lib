@@ -1,8 +1,8 @@
 # Navigate to a named block (ini or model) within an nlmixr2 model function.
 #
 # Returns the block's {…} expression, so:
-#   find_block(f, "ini")[[2]]   is the first statement inside ini()
-#   find_block(f, "model")[[3]] is the second statement inside model()
+#   findBlock(f, "ini")[[2]]   is the first statement inside ini()
+#   findBlock(f, "model")[[3]] is the second statement inside model()
 #
 # Why this helper instead of raw positional indexing?
 #
@@ -13,7 +13,7 @@
 # block.  The inner indices (e.g. [[10]] for the 10th statement inside the
 # block) are still positional, but they only change when the block's own
 # content changes — which is exactly what the test is verifying.
-find_block <- function(f, block_name) {
+findBlock <- function(f, block_name) {
   b <- functionBody(f)
   for (i in seq_along(b)) {
     node <- b[[i]]
