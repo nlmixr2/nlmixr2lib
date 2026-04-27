@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Kuchimanchi 2024 dostarlimab ([doi:10.1111/bcp.16325](https://doi.org/10.1111/bcp.16325)) — adults with primary advanced or recurrent endometrial cancer (RUBY Part 1) and advanced solid tumours (GARNET).
 * Add Hood 2021 MEDI7836 ([doi:10.3390/pharmaceutics13050613](https://doi.org/10.3390/pharmaceutics13050613)) — healthy adult males in a first-in-human single-ascending-dose trial.
 * Amend Castro-Suarez 2020 nimotuzumab: V1 decreased 53% for 50 mg cohort per Figure 4 visual inspection (direction not stated in paper text; corresponding author contacted).
 * Add Castro-Suárez 2020 nimotuzumab ([doi:10.3390/pharmaceutics12121147](https://doi.org/10.3390/pharmaceutics12121147)) — adults with autosomal dominant polycystic kidney disease.
