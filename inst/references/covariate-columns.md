@@ -513,6 +513,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   - `JAPANESE_HV` — used in `Wang_2017_benralizumab.R` (Japanese healthy-volunteer cohort indicator; the healthy-volunteer vs. asthma-patient distinction is captured separately, not in this covariate).
 - **Example models:** `Wade_2015_certolizumab.R` (multiplicative fractional effect on V/F; Wade 2015 breaks Japanese [RACE.EQ.8] out separately from RACE_ASIAN), `Wang_2017_benralizumab.R` (multiplicative factor 1.34 on Vc).
 - **Notes:** Distinct from `RACE_NEAS` (North East Asian composite, includes Chinese, Japanese, and Korean) and from `RACE_ASIAN`. Use `RACE_JAPANESE` only when the source paper breaks out Japanese heritage as its own indicator; do not aggregate with other Asian groups when the paper keeps them separate. Ratified canonically on 2026-04-26.
+## Geographic / enrollment-country indicators
+
+### COUNTRY_JPN (**canonical for Japan enrollment-country indicator**)
+- **Description:** 1 = patient enrolled in a Japanese study site / country = Japan, 0 = enrolled outside Japan.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-Japan country).
+- **Source aliases:** none.
+- **Example models:** `Yin_2021_trastuzumabDeruxtecan.R` (multiplicative effect 0.903 on CL_intact and 0.738 on V2_intact when COUNTRY_JPN = 1).
+- **Notes:** Distinct from `RACE_NEAS` and `RACE_ASIAN`: encodes the enrollment country rather than self-reported race. In Yin 2021 country and race were highly confounded (correlation -0.81); the authors retained country (more significant on all PK parameters) and dropped race. Follows a `COUNTRY_<ISO3>` indicator-decomposition pattern; new countries should be added as additional `COUNTRY_<ISO3>` entries.
 
 ## Pediatric comorbidities
 
