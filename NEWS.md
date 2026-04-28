@@ -2,6 +2,23 @@
 
 # development version
 
+* Add Lin 2024 casirivimab ([doi:10.1007/s11095-024-03764-5](https://doi.org/10.1007/s11095-024-03764-5)) — pediatric and adult subjects, non-infected or with SARS-CoV-2 infection or household contacts.
+* Add Faelens 2021 infliximab ([doi:10.3390/pharmaceutics13101623](https://doi.org/10.3390/pharmaceutics13101623)) — adults with moderate-to-severe ulcerative colitis.
+* Add Sathe 2024 sacituzumab govitecan ([doi:10.1007/s40262-024-01366-3](https://doi.org/10.1007/s40262-024-01366-3)) — adults with metastatic triple-negative breast cancer and other solid tumors.
+* Add Takahashi 2023 abatacept ([doi:10.1182/blood.2023020035](https://doi.org/10.1182/blood.2023020035)) — pooled adult/pediatric rheumatoid-arthritis / pJIA patients and adult/pediatric hematopoietic-cell-transplant recipients in the ABA2 trial.
+* Add Hong 2025 datopotamab deruxtecan ([doi:10.1002/psp4.70118](https://doi.org/10.1002/psp4.70118)) — adults with advanced or metastatic NSCLC and breast cancer.
+* Add Fau 2020 isatuximab ([doi:10.1002/psp4.12561](https://doi.org/10.1002/psp4.12561)) — adults with relapsed/refractory multiple myeloma.
+* Add Lu 2019 polatuzumab vedotin ([doi:10.1002/psp4.12482](https://doi.org/10.1002/psp4.12482)) — adults with relapsed/refractory or previously untreated B-cell non-Hodgkin lymphoma.
+* Add Okada 2025 rocatinlimab ([doi:10.1002/psp4.70069](https://doi.org/10.1002/psp4.70069)) — adults with moderate-to-severe atopic dermatitis (pooled with plaque psoriasis, ulcerative colitis, and healthy volunteers).
+* Add Zhou 2025 brentuximab vedotin ([doi:10.1002/cpt.3629](https://doi.org/10.1002/cpt.3629)) — pediatric patients (5-18 years) with newly diagnosed Hodgkin lymphoma or relapsed/refractory systemic anaplastic large-cell lymphoma.
+* Add Lin 2024 pozelimab ([doi:10.1007/s10928-024-09941-8](https://doi.org/10.1007/s10928-024-09941-8)) — healthy adult volunteers, adults with paroxysmal nocturnal hemoglobinuria, and pediatric and adult patients with CHAPLE disease.
+* Add Yin 2021 trastuzumab deruxtecan ([doi:10.1002/cpt.2096](https://doi.org/10.1002/cpt.2096)) — adults with HER2-positive breast cancer or other HER2-expressing solid tumors.
+* Add Hwang 2022 tremelimumab ([doi:10.1111/bcp.15622](https://doi.org/10.1111/bcp.15622)) — adults with advanced solid tumours.
+* Add Papathanasiou 2025 belantamab mafodotin ([doi:10.1007/s40262-025-01508-1](https://doi.org/10.1007/s40262-025-01508-1)) — adults with relapsed/refractory multiple myeloma (ADC moiety only).
+* Add Kuchimanchi 2024 dostarlimab ([doi:10.1111/bcp.16325](https://doi.org/10.1111/bcp.16325)) — adults with primary advanced or recurrent endometrial cancer (RUBY Part 1) and advanced solid tumours (GARNET).
+* Add Diao 2016 daclizumab CD25 occupancy ([doi:10.1111/bcp.13051](https://doi.org/10.1111/bcp.13051)) — adults with relapsing-remitting multiple sclerosis (PD model with Othman 2014 PK backbone).
+* Add Diao 2016 daclizumab CD56 bright NK expansion ([doi:10.1111/bcp.13051](https://doi.org/10.1111/bcp.13051)) — adults with relapsing-remitting multiple sclerosis (PD model with Othman 2014 PK backbone).
+* Add Diao 2016 daclizumab Treg reduction ([doi:10.1111/bcp.13051](https://doi.org/10.1111/bcp.13051)) — adults with relapsing-remitting multiple sclerosis (PD model with Othman 2014 PK backbone).
 * Add Hood 2021 MEDI7836 ([doi:10.3390/pharmaceutics13050613](https://doi.org/10.3390/pharmaceutics13050613)) — healthy adult males in a first-in-human single-ascending-dose trial.
 * Amend Castro-Suarez 2020 nimotuzumab: V1 decreased 53% for 50 mg cohort per Figure 4 visual inspection (direction not stated in paper text; corresponding author contacted).
 * Add Castro-Suárez 2020 nimotuzumab ([doi:10.3390/pharmaceutics12121147](https://doi.org/10.3390/pharmaceutics12121147)) — adults with autosomal dominant polycystic kidney disease.
@@ -11,6 +28,8 @@
 * Add Wojciechowski 2022 domagrozumab ([doi:10.1111/cts.13418](https://doi.org/10.1111/cts.13418)) — healthy adult volunteers and pediatric patients with Duchenne muscular dystrophy.
 * Add Yu 2022 ofatumumab ([doi:10.1007/s40263-021-00895-w](https://doi.org/10.1007/s40263-021-00895-w)) — adults with relapsing multiple sclerosis.
 * Add Melhem 2022 dostarlimab ([doi:10.1111/bcp.15339](https://doi.org/10.1111/bcp.15339)) — adults with advanced solid tumours.
+* Add Brillac 2025 isatuximab ([doi:10.1007/s00280-025-04832-2](https://doi.org/10.1007/s00280-025-04832-2)) — pediatric and adult patients with relapsed/refractory acute leukemias.
+* Add Wu 2024 inotuzumab ozogamicin ([doi:10.1007/s40262-024-01386-z](https://doi.org/10.1007/s40262-024-01386-z)) — pediatric and adult patients with relapsed/refractory B-cell precursor acute lymphoblastic leukemia and adults with B-cell non-Hodgkin's lymphoma.
 * Fix vignettes: derive concentration units in `labs()` from model `$units` metadata; replace inline trapezoidal NCA with PKNCA; add PKNCA sections to nalmefene and clesrovimab vignettes; add PKNCA treatment grouping to benralizumab and durvalumab vignettes.
 * Add Chen 2022 guselkumab ([doi:10.1111/cts.13197](https://doi.org/10.1111/cts.13197)) — adults with active psoriatic arthritis (DISCOVER-1 and DISCOVER-2 phase 3 trials).
 * Add `concentration` field to `units` metadata for `Wang_2017_benralizumab` and `Ogasawara_2020_durvalumab` models.

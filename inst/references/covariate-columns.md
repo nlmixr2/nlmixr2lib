@@ -50,7 +50,8 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Scope:** general
 - **Reference category:** n/a — used with allometric scaling `(WT / ref_wt)^exponent`. Reference weights observed: 70 kg (adults), 75 kg, 84.8 kg, 5 kg (infants).
 - **Source aliases:** none known.
-- **Example models:** `Clegg_2024_nirsevimab.R`, `Hu_2026_clesrovimab.R`, `Zhu_2017_lebrikizumab.R`, `Kovalenko_2020_dupilumab.R`, `CarlssonPetri_2021_liraglutide.R`, `Cirincione_2017_exenatide.R`, `Grimm_2023_gantenerumab.R`, `Grimm_2023_trontinemab.R`, `Kyhl_2016_nalmefene.R`, `Soehoel_2022_tralokinumab.R`, `Xie_2019_agomelatine.R`, `PK_2cmt_mAb_Davda_2014.R`, `phenylalanine_charbonneau_2021.R`, `Chua_2025_mirikizumab.R`, `Jackson_2022_ixekizumab.R`, `Kotani_2022_astegolimab.R`, `Ma_2020_sarilumab_anc.R`, `Ma_2020_sarilumab_das28crp.R`, `Moein_2022_etrolizumab.R`, `Tiraboschi_2025_amlitelimab.R`, `Robbie_2012_palivizumab.R`, `Bajaj_2017_nivolumab.R`, `Quartino_2019_trastuzumab.R`, `Wang_2020_ontamalimab.R`.
+- **Example models:** `Clegg_2024_nirsevimab.R`, `Hu_2026_clesrovimab.R`, `Zhu_2017_lebrikizumab.R`, `Kovalenko_2020_dupilumab.R`, `CarlssonPetri_2021_liraglutide.R`, `Cirincione_2017_exenatide.R`, `Grimm_2023_gantenerumab.R`, `Grimm_2023_trontinemab.R`, `Kyhl_2016_nalmefene.R`, `Soehoel_2022_tralokinumab.R`, `Xie_2019_agomelatine.R`, `PK_2cmt_mAb_Davda_2014.R`, `phenylalanine_charbonneau_2021.R`, `Chua_2025_mirikizumab.R`, `Jackson_2022_ixekizumab.R`, `Kotani_2022_astegolimab.R`, `Ma_2020_sarilumab_anc.R`, `Ma_2020_sarilumab_das28crp.R`, `Moein_2022_etrolizumab.R`, `Tiraboschi_2025_amlitelimab.R`, `Robbie_2012_palivizumab.R`, `Bajaj_2017_nivolumab.R`, `Quartino_2019_trastuzumab.R`, `Wang_2020_ontamalimab.R`, `Fau_2020_isatuximab.R`.
+- **Example models:** `Clegg_2024_nirsevimab.R`, `Hu_2026_clesrovimab.R`, `Zhu_2017_lebrikizumab.R`, `Kovalenko_2020_dupilumab.R`, `CarlssonPetri_2021_liraglutide.R`, `Cirincione_2017_exenatide.R`, `Grimm_2023_gantenerumab.R`, `Grimm_2023_trontinemab.R`, `Kyhl_2016_nalmefene.R`, `Soehoel_2022_tralokinumab.R`, `Xie_2019_agomelatine.R`, `PK_2cmt_mAb_Davda_2014.R`, `phenylalanine_charbonneau_2021.R`, `Chua_2025_mirikizumab.R`, `Jackson_2022_ixekizumab.R`, `Kotani_2022_astegolimab.R`, `Ma_2020_sarilumab_anc.R`, `Ma_2020_sarilumab_das28crp.R`, `Moein_2022_etrolizumab.R`, `Tiraboschi_2025_amlitelimab.R`, `Robbie_2012_palivizumab.R`, `Bajaj_2017_nivolumab.R`, `Quartino_2019_trastuzumab.R`, `Wang_2020_ontamalimab.R`, `Okada_2025_rocatinlimab.R`.
 - **Notes:** Universal. Verify time-varying vs. baseline-only against the source paper.
 
 ### AGE
@@ -111,7 +112,7 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Source aliases:**
   - `SEXM` (values inverted: `SEXF = 1 - SEXM`; effect coefficient sign and reference category both invert) — used in `CarlssonPetri_2021_liraglutide.R`.
   - `SEX` with `"M"`/`"F"` strings — derive `SEXF = as.integer(SEX == "F")`.
-- **Example models:** `Zhu_2017_lebrikizumab.R` (canonical), `CarlssonPetri_2021_liraglutide.R` (alias `SEXM`), `Bajaj_2017_nivolumab.R` (male-indicator source; effect applied as `exp(coef * (1 - SEXF))` to preserve the paper's female-reference CL_REF / VC_REF).
+- **Example models:** `Zhu_2017_lebrikizumab.R` (canonical), `CarlssonPetri_2021_liraglutide.R` (alias `SEXM`), `Bajaj_2017_nivolumab.R` (male-indicator source; effect applied as `exp(coef * (1 - SEXF))` to preserve the paper's female-reference CL_REF / VC_REF), `Fau_2020_isatuximab.R` (exponential effect on Vc; reference category 0 = male).
 - **Notes:** When translating a model that used `SEXM`, flag the sign/reference-category inversion to the user.
 
 ### CHILD
@@ -194,7 +195,7 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Reference category:** n/a — used with power scaling `(ALB / ref)^exponent`.
 - **Source aliases:**
   - `BALB` (baseline albumin) — used in `Zhou_2021_belimumab.R`. Maps directly to `ALB`; baseline-vs-time-varying status documented in per-model notes.
-- **Example models:** `Fasanmade_2009_infliximab.R` (g/dL, reference 4.1), `Thakre_2022_risankizumab.R` (g/L, reference 45), `Chua_2025_mirikizumab.R`, `Moein_2022_etrolizumab.R`, `Tiraboschi_2025_amlitelimab.R`, `Yamada_2025_zolbetuximab.R`, `Li_2019_abatacept.R` (g/dL, reference 4.0; the Li 2019 Methods states 'mg/dL' which is a publication typo — see the model's `covariateData[[ALB]]$notes`), `Quartino_2019_trastuzumab.R` (g/dL, reference 4; source column `ALBU`; negative exponent -0.998 on linear CL), `Wang_2020_ontamalimab.R` (g/L, reference 39), `Zhou_2021_belimumab.R` (g/L, reference 40; baseline-only, source column `BALB`).
+- **Example models:** `Fasanmade_2009_infliximab.R` (g/dL, reference 4.1), `Thakre_2022_risankizumab.R` (g/L, reference 45), `Chua_2025_mirikizumab.R`, `Moein_2022_etrolizumab.R`, `Tiraboschi_2025_amlitelimab.R`, `Yamada_2025_zolbetuximab.R`, `Li_2019_abatacept.R` (g/dL, reference 4.0; the Li 2019 Methods states 'mg/dL' which is a publication typo — see the model's `covariateData[[ALB]]$notes`), `Quartino_2019_trastuzumab.R` (g/dL, reference 4; source column `ALBU`; negative exponent -0.998 on linear CL), `Wang_2020_ontamalimab.R` (g/L, reference 39), `Zhou_2021_belimumab.R` (g/L, reference 40; baseline-only, source column `BALB`), `Okada_2025_rocatinlimab.R` (g/L, reference 44; source column `ALBU`; power exponent -1.30 on linear CL).
 - **Notes:** Ratified canonically on 2026-04-19 after cross-model review. Unit varies by paper (g/dL in US-convention papers, g/L in SI-convention papers); the per-model `covariateData[[ALB]]$units` field is load-bearing. Effect-coefficient magnitude is meaningless without the unit.
 
 ### IGG (**canonical for serum immunoglobulin G**)
@@ -251,6 +252,37 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Sanghavi_2020_ipilimumab.R` (linear-on-log form on CL with reference 217 U/L; coefficient 0.703).
 - **Notes:** Universal lab marker. Sanghavi 2020 log-transforms LDH because the distribution is heavily right-skewed (range 74-6,245 U/L over a median of 217); other papers may use a simple `(LDH/ref)^exponent` form. Document the functional form in `covariateData[[LDH]]$notes`.
 
+### HEPIMP_MILD (**canonical for mild hepatic impairment indicator**)
+- **Description:** 1 = mild hepatic impairment per the National Cancer Institute Organ Dysfunction Working Group (NCI ODWG) criteria, 0 = normal hepatic function or non-mild category. NCI ODWG mild = total bilirubin ≤ ULN with AST > ULN, OR total bilirubin > 1.0×ULN to ≤ 1.5×ULN with any AST.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (normal hepatic function; the moderate / severe categories are typically pooled into the reference for population PK analyses where mild impairment is the only category with non-trivial sample size).
+- **Source aliases:**
+  - `HEPIMP` (with values `1 = mild / 0 = others`) — used in `Lin_2024_casirivimab.R`.
+- **Example models:** `Lin_2024_casirivimab.R` (multiplicative fractional change on CL).
+- **Notes:** Use this column when a model dichotomizes hepatic-impairment status as "mild vs. others" (i.e., normal + the rare moderate/severe cases pooled into the reference). For models that test moderate or severe as separate categories, register additional canonicals `HEPIMP_MOD` / `HEPIMP_SEV` rather than overloading this entry.
+### B2M (**canonical for serum beta-2-microglobulin**)
+- **Description:** Serum beta-2-microglobulin concentration. Low-molecular-weight (~12 kDa) protein freely filtered at the glomerulus and reabsorbed in the proximal tubule; serum levels rise with renal impairment, with increased plasma-cell turnover in multiple myeloma, and with broader lymphoid-cell turnover. Used in oncology PK analyses both as a renal-function proxy and as a tumor-burden / disease-severity covariate.
+- **Units:** mg/L
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a — used with power scaling `(B2M / ref)^exponent`. Reference values observed: 3.90 mg/L (Fau 2020 multiple-myeloma cohort median).
+- **Source aliases:** none; `B2M` is the universal abbreviation.
+- **Example models:** `Fau_2020_isatuximab.R` (mg/L, reference 3.90; exponent 0.343 on the steady-state linear clearance CLinf).
+- **Notes:** In multiple myeloma B2M is part of the International Staging System (ISS); in routine PK analyses it is interpreted simultaneously as a renal-function and disease-burden marker. Document the interpretation per-model via `covariateData[[B2M]]$notes`.
+### HEPIMP (**canonical for hepatic-impairment indicator (NCI ODWG classification)**)
+- **Description:** Baseline hepatic-impairment indicator per the National Cancer Institute Organ Dysfunction Working Group (NCI ODWG) classification: 1 = mild or worse hepatic impairment (group >= 2 = mild, moderate, or severe), 0 = normal hepatic function (group 1).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (normal hepatic function, NCI ODWG group 1).
+- **Source aliases:**
+  - `BHPTGRPN` (categorical: 1 = normal, 2 = mild, 3 = moderate, 4 = severe; 9999 = missing) — used in `Lu_2019_polatuzumab.R`. Decompose: `HEPIMP = as.integer(BHPTGRPN > 1.5 & BHPTGRPN != 9999)`.
+  - `HEP_IMP` — retired canonical name; replaced by `HEPIMP` for consistency with the `HEPIMP_MILD` family.
+- **Example models:** `Lu_2019_polatuzumab.R` (multiplicative effect on FRAC_NS = 1.19, applied as `1.19^HEPIMP`).
+- **Notes:** NCI ODWG classification (Ramalingam SS et al., J Clin Oncol 2010;28:4507) groups subjects by total bilirubin and AST: group 1 = normal, group 2 = mild (TBILI <= ULN and AST > ULN, or TBILI > 1-1.5 x ULN), group 3 = moderate (TBILI > 1.5-3 x ULN), group 4 = severe (TBILI > 3 x ULN). Source papers typically pool groups 2-4 versus group 1 for a binary indicator because the impaired-liver subgroups are individually small. If a future model needs finer resolution (separate effects for mild vs moderate-or-worse), add a parallel `HEPIMP_MOD` canonical rather than overloading this one.
+
 ## Hematology
 
 ### HGB (**canonical for hemoglobin**)
@@ -272,6 +304,16 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Source aliases:** none known (`WBC` is the universal clinical-PK abbreviation).
 - **Example models:** `Mould_2007_alemtuzumab.R` (reference 10 × 10^9/L; exponent 0.194 on Vmax).
 - **Notes:** Time-varying in treatment studies where the drug depletes the leukaemic clone (e.g., alemtuzumab in CLL): WBC must be supplied at every observation time in the event dataset. In diseases where WBC is not therapeutically targeted the column can be treated as a baseline-only covariate; record the per-model convention in `covariateData[[WBC]]$notes`.
+
+### NLR (**canonical for neutrophil-to-lymphocyte ratio**)
+- **Description:** Ratio of absolute neutrophil count to absolute lymphocyte count from a complete blood count with differential. Used as a peripheral inflammation marker. May be reported as baseline only or as a time-varying covariate.
+- **Units:** ratio (unitless)
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a — used with power scaling `(NLR / ref)^exponent` or exponential effects. Reference values observed: 2.11 (Lin 2024, median in pooled COVID-19 + non-infected cohort).
+- **Source aliases:** none; `NLR` is the universal abbreviation in clinical-PK and inflammation-biomarker literature.
+- **Example models:** `Lin_2024_casirivimab.R` (time-varying; reference 2.11; small positive exponent +0.029 on CL).
+- **Notes:** Document baseline-vs-time-varying status in `covariateData[[NLR]]$notes`. Although it derives from `WBC` differential counts, register it as its own canonical because the ratio (not the absolute counts) is what the model uses.
 
 ## Disease severity scores
 
@@ -338,9 +380,11 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Type:** continuous
 - **Scope:** specific
 - **Reference category:** n/a — used with power scaling `(BLBCELL / ref)^exponent`. Reference value observed: 200 cells/µL (Yu 2022, median of the pooled five-study cohort).
-- **Source aliases:** `Bcell0` — used in `Yu_2022_ofatumumab.R`.
-- **Example models:** `Yu_2022_ofatumumab.R` (power effect on the maximum B-cell-lysis stimulatory effect Emax, exponent 0.275, reference 200 cells/µL).
-- **Notes:** Distinct from a *time-varying* B cell count, which is the PD response variable rather than a covariate. Scope: specific because the clinically relevant baseline depends on the surface marker (CD19, CD20, CD22) and whether the panel reports total B cells or memory/naive subsets — register a new canonical name if a future paper uses a different marker.
+- **Source aliases:**
+  - `Bcell0` — used in `Yu_2022_ofatumumab.R`.
+  - `BBCC` (NHL Phase I/Ib/II convention; values in 10^6 cells/L = cells/uL) — used in `Lu_2019_polatuzumab.R`.
+- **Example models:** `Yu_2022_ofatumumab.R` (power effect on the maximum B-cell-lysis stimulatory effect Emax, exponent 0.275, reference 200 cells/µL), `Lu_2019_polatuzumab.R` (two distinct effects: power on CL_INF with input floored at 1 cell/uL, and a thresholded power on CL_T with the BLBCELL/121-cells/uL ratio floored at 1).
+- **Notes:** Distinct from a *time-varying* B cell count, which is the PD response variable rather than a covariate. Scope: specific because the clinically relevant baseline depends on the surface marker (CD19, CD20, CD22) and whether the panel reports total B cells or memory/naive subsets — register a new canonical name if a future paper uses a different marker. Both Yu 2022 (anti-CD20 ofatumumab) and Lu 2019 (anti-CD79b polatuzumab vedotin) use CD19+ counts, so the canonical is reused; subtype-specific differences are documented in each model's `covariateData[[BLBCELL]]$notes`.
 
 ### CRP (**canonical for C-reactive protein**)
 - **Description:** C-reactive protein concentration. Covers both standard and high-sensitivity (hs-CRP) assays and both baseline and time-varying usages. Each model's `covariateData[[CRP]]$description` and `notes` must state the assay type (standard vs hs-CRP) and whether the column carries a baseline-only or time-varying value, including the paper-specific reference value used for power scaling.
@@ -368,6 +412,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Martinez_2019_alirocumab.R` (time-varying; additive-linear effect on `Km` with slope −0.541 per (FPCSK9/72.9), reference 72.9 ng/mL).
 - **Notes:** Specific scope because the column is meaningful only for drugs whose mechanism is PCSK9 inhibition; reusing the name for a different anti-PCSK9 agent is acceptable (add to Example models). For non-PCSK9 drugs that use a similar target-concentration biomarker, register a new canonical (e.g., `FIL6R`, `FTNF`) rather than overloading `FPCSK9`. Per-model `covariateData[[FPCSK9]]$notes` should state whether the value is baseline-only or time-varying and how missing values were imputed (Martinez 2019 used LOCF).
 
+### SBCMA (**canonical for soluble B-cell maturation antigen concentration**)
+- **Description:** Baseline serum (or plasma) concentration of soluble B-cell maturation antigen (sBCMA), the shed extracellular domain of the BCMA receptor (TNFRSF17). Serves as a soluble-target biomarker for BCMA-directed therapeutics (anti-BCMA antibody-drug conjugates such as belantamab mafodotin, BCMA-targeted bispecifics, and BCMA CAR-T) — sBCMA is elevated in multiple-myeloma and reflects tumour burden, and contributes to target-mediated drug disposition by sequestering circulating drug.
+- **Units:** ng/mL (equivalent to μg/L; 1 ng/mL = 1 μg/L). Document per-model via `covariateData[[SBCMA]]$units`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a — used with power scaling `(SBCMA / ref)^exponent`. Reference value observed: 50 ng/mL (Papathanasiou 2025 typical-patient definition).
+- **Source aliases:**
+  - `SBCMABL` (baseline soluble BCMA) — used in `Papathanasiou_2025_belantamab.R`.
+- **Example models:** `Papathanasiou_2025_belantamab.R` (ng/mL, reference 50; power exponents on initial CL +0.113, on ADC Vc +0.0401, on Imax +0.160).
+- **Notes:** Specific scope because the column is meaningful only for drugs whose mechanism involves the BCMA receptor (and thus a circulating soluble-target pool). Reusing the name for another anti-BCMA agent is acceptable (extend the example-models list). For other oncology TMDD targets register a new canonical (e.g., `HER2_ECD` already exists for HER2; an analogous `SCD20`, `SCD38` would follow the same pattern). Multiple myeloma populations show sBCMA spanning roughly 2 to 2,000 ng/mL, so the (SBCMA/50)^exponent form should be evaluated with care over the full clinical range.
+
 ## Race / ethnicity
 
 **Canonical pattern: `RACE_<GROUP>`.** Use one indicator per race/ethnicity group the source models. Reference category is the implicit 0 = all other groups; document explicitly which groups are in the reference. When the source uses composite groups (e.g., "Black or Other"), name them accordingly (`RACE_BLACK_OTHER`) and list the components in `notes`. The base `RACE_<GROUP>` indicators are scope: general; composite groupings are scope: specific because the grouping is tied to the study's analysis plan.
@@ -381,6 +436,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Source aliases:**
   - `BLACK` — used in `Hu_2026_clesrovimab.R`, `Robbie_2012_palivizumab.R`.
 - **Example models:** `Zhu_2017_lebrikizumab.R` (canonical form), `Robbie_2012_palivizumab.R`.
+
+### RACE_WHITE (**canonical**)
+- **Description:** 1 = White, 0 = non-White.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (non-White; complement composition depends on the source paper, typically pooling Black/African American, Asian, American Indian/Alaska Native, Native Hawaiian/Pacific Islander, Other, Not reported, Unknown).
+- **Source aliases:**
+  - `RACE` (with values `1 = White / 0 = non-White`) — used in `Lin_2024_casirivimab.R`. Source column name `RACE` is generic; the canonical name is intentionally explicit because some other models use `RACE` for a different dichotomy.
+- **Example models:** `Lin_2024_casirivimab.R` (multiplicative fractional change on CL relative to non-White reference).
+- **Notes:** Used by papers that dichotomize race as White vs. non-White rather than decomposing into separate group indicators. Sign and reference-category interpretation are inverted relative to `RACE_BLACK` / `RACE_ASIAN` / etc.; do NOT combine `RACE_WHITE` with the decomposed indicators in the same model.
 
 ### RACE_BLACK_OTH (**canonical for composite Black/Other group**)
 - **Description:** 1 = Black/African American or Other race, 0 = other groups.
@@ -397,8 +463,8 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** general
-- **Source aliases:** `ASIAN` — used in `Hu_2026_clesrovimab.R`, `Robbie_2012_palivizumab.R`. `RAAS` (race-Asian-vs-other indicator as named in Bajaj 2017 Table 1) — used in `Bajaj_2017_nivolumab.R`.
-- **Example models:** `Zhu_2017_lebrikizumab.R` (canonical form), `Robbie_2012_palivizumab.R`, `Bajaj_2017_nivolumab.R`.
+- **Source aliases:** `ASIAN` — used in `Hu_2026_clesrovimab.R`, `Robbie_2012_palivizumab.R`, `Fau_2020_isatuximab.R`. `RAAS` (race-Asian-vs-other indicator as named in Bajaj 2017 Table 1) — used in `Bajaj_2017_nivolumab.R`.
+- **Example models:** `Zhu_2017_lebrikizumab.R` (canonical form), `Robbie_2012_palivizumab.R`, `Bajaj_2017_nivolumab.R`, `Fau_2020_isatuximab.R`.
 
 ### RACE_ASIAN_AMIND_MULTI (**canonical for composite group**)
 - **Description:** 1 = Asian, American Indian / Alaskan Native, or Multiple races, 0 = other.
@@ -459,6 +525,7 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   - `JAPANESE_HV` — used in `Wang_2017_benralizumab.R` (Japanese healthy-volunteer cohort indicator; the healthy-volunteer vs. asthma-patient distinction is captured separately, not in this covariate).
 - **Example models:** `Wade_2015_certolizumab.R` (multiplicative fractional effect on V/F; Wade 2015 breaks Japanese [RACE.EQ.8] out separately from RACE_ASIAN), `Wang_2017_benralizumab.R` (multiplicative factor 1.34 on Vc).
 - **Notes:** Distinct from `RACE_NEAS` (North East Asian composite, includes Chinese, Japanese, and Korean) and from `RACE_ASIAN`. Use `RACE_JAPANESE` only when the source paper breaks out Japanese heritage as its own indicator; do not aggregate with other Asian groups when the paper keeps them separate. Ratified canonically on 2026-04-26.
+## Geographic / enrollment-country indicators
 
 ## Pediatric comorbidities
 
@@ -542,8 +609,8 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Scope:** specific
 - **Reference category:** 0 (patient subject; the complement group is the union of disease cohorts pooled in the source analysis).
 - **Source aliases:** none known; healthy-volunteer indicators in source NONMEM control streams typically use ad-hoc names (e.g., `HV`, `HEALTHY`).
-- **Example models:** `Nikanjam_2019_siltuximab.R` (multiplicative effects: 0.77 on CL, 0.83 on Vss; reference category is the pooled non-HV oncology cohort).
-- **Notes:** Used when a population PK model pools healthy volunteers with patients across heterogeneous indications and the HV-vs-patient contrast is retained as a covariate. Scope: specific because the complement reference category is paper-defined (Nikanjam 2019 reference is "all non-HV, non-Castleman, non-SMM tumor types"). Ratified canonically on 2026-04-24.
+- **Example models:** `Nikanjam_2019_siltuximab.R` (multiplicative effects: 0.77 on CL, 0.83 on Vss; reference category is the pooled non-HV oncology cohort), `Okada_2025_rocatinlimab.R` (multiplicative shift `1 - 0.532` on Vmax when 1; reference complement is the pooled atopic-dermatitis + ulcerative-colitis + plaque-psoriasis patient cohort).
+- **Notes:** Used when a population PK model pools healthy volunteers with patients across heterogeneous indications and the HV-vs-patient contrast is retained as a covariate. Scope: specific because the complement reference category is paper-defined (Nikanjam 2019 reference is "all non-HV, non-Castleman, non-SMM tumor types"; Okada 2025 reference is the pooled AD+UC+psoriasis patient cohort). Ratified canonically on 2026-04-24.
 
 ### DIS_CASTLEMAN (**canonical for Castleman's disease indicator**)
 - **Description:** 1 = Castleman's disease (multicentric or unicentric), 0 = not Castleman's disease. Time-fixed per subject.
@@ -577,13 +644,15 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 
 ### MM (**canonical for active multiple myeloma disease indicator**)
 - **Description:** 1 = active (non-smoldering) multiple myeloma, 0 = other hematologic malignancy or reference group. Time-fixed per subject.
+### DIS_PNH (**canonical for paroxysmal nocturnal hemoglobinuria indicator**)
+- **Description:** 1 = paroxysmal nocturnal hemoglobinuria (PNH) patient, 0 = non-PNH subject (healthy volunteer or another indication pooled in the source analysis). Time-fixed per subject.
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** specific
-- **Reference category:** 0 (non-MM subjects; the complement group is defined per-model — see per-model `covariateData[[MM]]$notes`).
-- **Source aliases:** none; `MM` is the common abbreviation used directly in source analyses.
-- **Example models:** `Ogasawara_2020_durvalumab.R` (multiplicative factor 0.820 on Vc; reference group is the union of MDS, AML, and NHL subjects).
-- **Notes:** Distinct from `DIS_SMM` (smoldering / asymptomatic MM). Use `MM` when the source paper pools active MM patients with other hematologic malignancies and retains an MM indicator in the final model. Scope: specific because the reference category is paper-defined. Ratified canonically on 2026-04-26.
+- **Reference category:** 0 (non-PNH subject; the complement group is paper-defined — for Lin 2024 it pools healthy adult volunteers and CHAPLE disease patients).
+- **Source aliases:** none known; source NONMEM control streams typically use ad-hoc names (e.g., `PNH`, `DPNH`).
+- **Example models:** `Lin_2024_pozelimab.R` (additive-fractional +34.07% effect on Vc; no CL or Vp effect; reference category pools healthy volunteers and CHAPLE patients).
+- **Notes:** Paroxysmal nocturnal hemoglobinuria is a rare hematological disease characterized by uncontrolled complement activation on red blood cells; treated with C5-targeted complement inhibitors (eculizumab, ravulizumab, pozelimab). Scope: specific because the disease-pooling reference category is paper-defined. Ratified canonically on 2026-04-27.
 
 ### MDSAML (**canonical for MDS or AML disease-type indicator**)
 - **Description:** 1 = patient with myelodysplastic syndrome (MDS) or acute myeloid leukemia (AML), 0 = other hematologic malignancy or reference group. Time-fixed per subject.
@@ -594,30 +663,106 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Source aliases:** none; `MDSAML` is the combined indicator used directly in source analyses.
 - **Example models:** `Ogasawara_2020_durvalumab.R` (multiplicative factor 1.26 on CL; reference group is the union of MM and NHL subjects).
 - **Notes:** Use `MDSAML` as a combined MDS+AML indicator when the source paper collapses the two diagnoses into one covariate. If a future paper separates MDS and AML as distinct indicators, register `DIS_MDS` and `DIS_AML` separately. Scope: specific because the reference category is paper-defined. Ratified canonically on 2026-04-26.
+### DIS_BCPALL (**canonical for B-cell precursor acute lymphoblastic leukemia disease-state indicator**)
+- **Description:** 1 = B-cell precursor acute lymphoblastic leukemia (BCP-ALL), 0 = B-cell non-Hodgkin's lymphoma (NHL) or other non-BCP-ALL indication pooled in the source analysis. Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-BCP-ALL; in the Wu 2024 cohort this is the adult B-cell NHL stratum).
+- **Source aliases:**
+  - `ALL` — used in `Wu_2024_inotuzumab.R` (Wu 2024 calls it the "ALL effect" and notes it bundles disease type with the corresponding bioanalytical assay difference).
+- **Example models:** `Wu_2024_inotuzumab.R` (additive fractional-change effects on CL1 (-0.767) and CL2 (-0.362), and gates the BLSTABL and AGE effects on kdes; for kdes itself a -0.924 fractional change for BCP-ALL).
+- **Notes:** Used when a population PK model pools BCP-ALL patients with a non-BCP-ALL reference (e.g., Wu 2024: pooled adult B-cell NHL + adult BCP-ALL + pediatric BCP-ALL). Scope: specific because the complement reference category is paper-defined (Wu 2024 reference is pooled adult B-cell NHL). The "ALL effect" theta in Wu 2024 conflates two physiologically distinct sources of variation — B-cell tumor type (NHL vs ALL surface CD22 burden) and bioanalytical method (ELISA for adult NHL vs HPLC-MS for ALL) — and cannot be split with the available data; document this confounding when comparing across populations. Ratified canonically on 2026-04-26.
+## Infectious disease (SARS-CoV-2 / COVID-19)
+
+### SARS_VLOAD (**canonical for SARS-CoV-2 baseline viral load**)
+- **Description:** Baseline (pre-treatment) SARS-CoV-2 viral load measured from nasopharyngeal swab by RT-qPCR, reported as log10 RNA copies/mL.
+- **Units:** log10 copies/mL
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a — used with power scaling `(SARS_VLOAD / ref)^exponent`. Reference values observed: 6.4 log10 copies/mL (Lin 2024, median in pooled COVID-19 cohort).
+- **Source aliases:**
+  - `VIRAL` — used in `Lin_2024_casirivimab.R`.
+- **Example models:** `Lin_2024_casirivimab.R` (small negative exponent -0.0075 on CL).
+- **Notes:** SARS-CoV-2-specific. For non-infected subjects, the value is encoded as 0 in the source dataset (below assay detection); the population-PK exponent is small enough that this 0 is absorbed by the reference shift. Register a parallel canonical for any future paper that uses a different infection (e.g., RSV, influenza).
+
+### SARS_SEROPOS (**canonical for SARS-CoV-2 baseline serostatus positive**)
+- **Description:** 1 = SARS-CoV-2 spike or nucleocapsid antibody positive at baseline (prior infection or prior vaccination), 0 = seronegative or other / unknown.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (seronegative; "Other" / unknown serostatus is typically pooled into the reference per the source paper's analysis plan).
+- **Source aliases:**
+  - `SERPOS` — used in `Lin_2024_casirivimab.R`.
+- **Example models:** `Lin_2024_casirivimab.R` (multiplicative fractional change on CL).
+- **Notes:** SARS-CoV-2-specific. The exact assay (anti-spike vs anti-nucleocapsid; vendor) varies by study; document per-model in `covariateData[[SARS_SEROPOS]]$notes`.
+
+### OXYSUP_LOW (**canonical for low-flow supplemental oxygen indicator**)
+- **Description:** 1 = subject is receiving low-flow supplemental oxygen at baseline (e.g., nasal cannula, simple face mask), 0 = no supplemental oxygen at baseline.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no supplemental oxygen at baseline; the high-flow / mechanical-ventilation categories are encoded by the parallel `OXYSUP_HIGH` indicator).
+- **Source aliases:**
+  - `OXYSTAT1` — used in `Lin_2024_casirivimab.R`.
+- **Example models:** `Lin_2024_casirivimab.R` (multiplicative fractional change on CL; +10.6%).
+- **Notes:** Decomposed indicator from a 4-level ordered categorical (no oxygen / low-flow / high-flow / mechanical ventilation). Use with the parallel `OXYSUP_HIGH` indicator. Register a separate `OXYSUP_VENT` canonical if a future analysis splits mechanical ventilation from high-flow oxygen.
+
+### OXYSUP_HIGH (**canonical for high-flow supplemental oxygen indicator**)
+- **Description:** 1 = subject is receiving high-flow supplemental oxygen at baseline (high-flow nasal cannula, non-rebreather mask, non-invasive positive-pressure ventilation, OR mechanical ventilation pooled into the high-flow category), 0 = otherwise (no supplemental oxygen or low-flow).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no supplemental oxygen at baseline; document whether the source paper pooled mechanical ventilation into this indicator or treated it separately).
+- **Source aliases:**
+  - `OXYSTAT2` — used in `Lin_2024_casirivimab.R`.
+- **Example models:** `Lin_2024_casirivimab.R` (multiplicative fractional change on CL; +38.0%).
+- **Notes:** Companion indicator to `OXYSUP_LOW`. In Lin 2024 the rare mechanical-ventilation cases were pooled into the high-flow indicator (n = 24 across the 7598-subject dataset).
+### MM_NIGG (**canonical for non-IgG multiple myeloma immunoglobulin-type indicator**)
+- **Description:** 1 = patient with non-IgG-secreting multiple myeloma (e.g., IgA, IgD, IgE, IgM, light-chain-only / Bence Jones, or non-secretory MM), 0 = patient with IgG-secreting multiple myeloma.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (IgG MM).
+- **Source aliases:**
+  - `Ig_type` — used in `Fau_2020_isatuximab.R`. Values 0 / 1 with the same orientation as the canonical (1 = non-IgG MM).
+- **Example models:** `Fau_2020_isatuximab.R` (exponential effect on the steady-state linear CL CLinf with coefficient -0.751, and on the time-varying-CL half-time KCL with coefficient -0.931).
+- **Notes:** Within-disease (multiple-myeloma) immunoglobulin-subtype stratifier. The mechanistic rationale (Fau 2020) is that endogenous IgG monoclonal protein in IgG-MM patients competes with the therapeutic IgG mAb for FcRn-mediated salvage, raising the therapeutic mAb's catabolic clearance; non-IgG-MM patients lack that competition and exhibit lower therapeutic-mAb clearance. Distinct from the disease-state indicators (`DIS_SMM` = smoldering MM); applies only after a multiple-myeloma diagnosis is established. Scope: specific because the comparison is a within-MM stratifier rather than a cross-population indicator.
+### DIS_PSORIASIS (**canonical for plaque psoriasis disease-state indicator**)
+- **Description:** 1 = plaque psoriasis patient, 0 = non-psoriasis subject (e.g., atopic dermatitis, ulcerative colitis, or healthy volunteer). Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-psoriasis subject; the complement group is paper-defined — the union of other disease cohorts pooled in the source analysis).
+- **Source aliases:** none known; source NONMEM control streams typically use a categorical `DIS` indicator (e.g., Okada 2025: `DIS=1` for psoriasis, `DIS=0` for healthy, `DIS=2` for UC, `DIS=3` for AD), decomposed into a binary `DIS_PSORIASIS` indicator at ingestion.
+- **Example models:** `Okada_2025_rocatinlimab.R` (multiplicative shift `1 - 0.372` on linear CL when 1; reference complement is the pooled atopic dermatitis + ulcerative colitis + healthy-volunteer cohort).
+- **Notes:** Used when a population PK model pools plaque-psoriasis patients with a non-psoriasis reference population and psoriasis disease status is retained as a covariate. Scope: specific because the disease-pooling reference category is paper-defined. Ratified canonically on 2026-04-27.
 
 ## Oncology
 
 ### TUMSZ (**canonical for baseline tumor size**)
-- **Description:** Baseline tumor size. For solid tumors, the sum of diameters of target lesions per RECIST; for classical Hodgkin lymphoma, the sum of products of perpendicular diameters (SPPD).
+- **Description:** Baseline tumor size. For solid tumors, the sum of diameters of target lesions per RECIST; for classical Hodgkin lymphoma and lymphoma generally, the sum of products of perpendicular diameters (SPPD) or the sum of linear diameters of target lesions, depending on the source paper.
 - **Units:** mm
 - **Type:** continuous
 - **Scope:** general
-- **Reference category:** n/a — used with power scaling `(TUMSZ / ref)^exponent`. Reference values observed: 63 mm (Budha 2023); 90 mm (Lu 2014, source reference 9 cm converted to mm).
+- **Reference category:** n/a — used with power scaling `(TUMSZ / ref)^exponent`. Reference values observed: 41 mm (Zhou 2025); 63 mm (Budha 2023); 90 mm (Lu 2014, source reference 9 cm converted to mm).
 - **Source aliases:**
+  - `LDIAM` (Zhou 2025; pediatric lymphoma "linear diameter" of target lesions in mm).
   - `TMBD` (originally in cm; `TUMSZ_mm = TMBD_cm * 10`) — used in `Lu_2014_trastuzumabemtansine.R`.
-- **Example models:** `Budha_2023_tislelizumab.R` (reference 63 mm), `Lu_2014_trastuzumabemtansine.R` (reference 90 mm; source column TMBD in cm, values converted to mm on ingestion).
-- **Notes:** Promoted to scope: general on 2026-04-20 as a conventional oncology baseline-tumor-size measure (RECIST for solid tumors, SPPD for cHL). The SPPD vs sum-of-diameters convention is pooled onto a single column; document the per-model mixture where relevant. When the source paper reports tumor size in cm, convert to mm (the canonical unit) on data ingestion and scale the per-model reference accordingly so `(TUMSZ / ref)^exp` is numerically invariant.
+- **Example models:** `Budha_2023_tislelizumab.R` (reference 63 mm), `Lu_2014_trastuzumabemtansine.R` (reference 90 mm; source column TMBD in cm, values converted to mm on ingestion), `Zhou_2025_brentuximab.R` (reference 41 mm; source column LDIAM is the sum of linear diameters of target lesions; effect on ADC clearance only).
+- **Notes:** Promoted to scope: general on 2026-04-20 as a conventional oncology baseline-tumor-size measure (RECIST for solid tumors, SPPD or sum-of-linear-diameters for lymphomas). The SPPD vs sum-of-diameters vs sum-of-linear-diameters convention is pooled onto a single column; document the per-model mixture where relevant. When the source paper reports tumor size in cm, convert to mm (the canonical unit) on data ingestion and scale the per-model reference accordingly so `(TUMSZ / ref)^exp` is numerically invariant.
 
 ### TUMTP_CHL (**canonical for classical Hodgkin lymphoma tumor-type indicator**)
-- **Description:** 1 = classical Hodgkin lymphoma (cHL), 0 = other tumor types.
+- **Description:** 1 = classical Hodgkin lymphoma (cHL) or Hodgkin lymphoma generally, 0 = other tumor types.
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** specific
-- **Reference category:** 0 = all other tumor types (e.g., NSCLC, EC, HCC, UC, GC, CRC, NPC, OC, "Other" solid tumors in the Budha 2023 cohort).
+- **Reference category:** 0 = all other tumor types (e.g., NSCLC, EC, HCC, UC, GC, CRC, NPC, OC, "Other" solid tumors in the Budha 2023 cohort; systemic anaplastic large-cell lymphoma in the Zhou 2025 pediatric cohort).
 - **Source aliases:**
   - `TUMTP` (categorical column with levels like `cHL`, `GC`, ...) — decompose into `TUMTP_CHL = as.integer(TUMTP == "cHL")`.
-- **Example models:** `Budha_2023_tislelizumab.R`.
-- **Notes:** Paired with `TUMTP_GC` in Budha 2023; a patient can have at most one of the indicators set to 1 (the remaining tumor types collapse into the reference 0 group).
+  - `DIS` (Zhou 2025; integer code with `DIS == 1` flagging HL) — decompose into `TUMTP_CHL = as.integer(DIS == 1)`. Zhou 2025 calls the complement "non-HL"; in the Zhou 2025 cohort the non-HL group is exclusively sALCL.
+- **Example models:** `Budha_2023_tislelizumab.R`, `Zhou_2025_brentuximab.R` (effects on ADC Q2, MMAE central volume VM, and the ADC->MMAE conversion-decay rate ALFM; the Zhou 2025 paper anchors typical-value parameters to HL patients so the model uses `(1 - TUMTP_CHL)` as the on-effect indicator with reference category 1 = HL).
+- **Notes:** Paired with `TUMTP_GC` in Budha 2023; a patient can have at most one of the indicators set to 1 (the remaining tumor types collapse into the reference 0 group). The reference category is the off-encoded value (0) by definition; when a source paper anchors typical-value parameters to the HL group rather than the non-HL group (as Zhou 2025 does), encode the effect as `coef^(1 - TUMTP_CHL)` so the canonical column meaning (1 = cHL/HL) is preserved while the paper's reference (HL) still receives multiplier 1.
 
 ### HER2_ECD (**canonical for HER2 shed extracellular domain concentration**)
 - **Description:** Baseline serum concentration of the shed extracellular domain of human epidermal growth factor receptor 2 (HER2). Serves as a soluble-antigen biomarker of HER2-mediated target-mediated drug disposition for HER2-directed mAbs / ADCs.
@@ -661,8 +806,9 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Reference category:** 0 = named tumor-type groups defined per-paper (e.g., MBC, EBC, HV, AGC in Quartino 2019). The complement of all `TUMTP_<GROUP>` indicators defined in the same model.
 - **Source aliases:**
   - `TTYPE` (Quartino 2019) — decompose into `TUMTP_OTH = as.integer(TTYPE == "Others")`.
-- **Example models:** `Quartino_2019_trastuzumab.R` (per-group typical-value switch on linear CL; NSCLC plus a small residual group of prostate, ovarian, and other histologies).
-- **Notes:** Scope: specific because the set of histologies collapsed into "Others" is defined by the analysis plan of the source paper; two papers' `TUMTP_OTH` columns are not interchangeable. Document the exact per-paper composition (e.g., "NSCLC + prostate + ovarian + other, n = 107 in Quartino 2019") in `covariateData[[TUMTP_OTH]]$notes`. A given subject can have at most one of the `TUMTP_<GROUP>` indicators (including `TUMTP_OTH`) set to 1; all-zero means the reference group.
+  - `PAT2` (Sathe 2024) — integer-coded tumor type column with levels 1 (mTNBC), 2 (mUC or HR+/HER2- mBC), 4 (Other epithelial); the source NONMEM control stream collapses PAT2 = 1 and PAT2 = 2 into the reference (no effect) and applies the deviation only when PAT2 = 4. Decompose into `TUMTP_OTH = as.integer(PAT2 == 4)`.
+- **Example models:** `Quartino_2019_trastuzumab.R` (per-group typical-value switch on linear CL; NSCLC plus a small residual group of prostate, ovarian, and other histologies), `Sathe_2024_sacituzumab.R` (multiplicative effect on tAB CL: -13.4% when TUMTP_OTH = 1; "Other" pool = small-cell and non-small-cell lung cancer, colorectal cancer, esophageal cancer, pancreatic ductal adenocarcinoma, etc., n = 184; reference = pooled mTNBC + mUC + HR+/HER2- mBC, n = 345).
+- **Notes:** Scope: specific because the set of histologies collapsed into "Others" is defined by the analysis plan of the source paper; two papers' `TUMTP_OTH` columns are not interchangeable. Document the exact per-paper composition (e.g., "NSCLC + prostate + ovarian + other, n = 107 in Quartino 2019"; "small-cell + non-small-cell lung + CRC + esophageal + pancreatic ductal adenocarcinoma, n = 184 in Sathe 2024") in `covariateData[[TUMTP_OTH]]$notes`. A given subject can have at most one of the `TUMTP_<GROUP>` indicators (including `TUMTP_OTH`) set to 1; all-zero means the reference group.
 
 ### SPDL1 (**canonical for soluble PD-L1 concentration**)
 - **Description:** Baseline (or time-varying) serum concentration of soluble programmed death-ligand 1 (sPD-L1). Serves as a circulating biomarker of target burden and immune activation for anti-PD-1/PD-L1 antibodies.
@@ -709,15 +855,16 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Notes:** Follows the `TUMTP_CHL` / `TUMTP_GC` decomposition pattern. SCLC is the only retained tumor-type indicator in the Sanghavi 2020 final model after backward elimination; the other tumor types collapse into the reference (melanoma) group.
 
 ### LINE_1L (**canonical for first-line-therapy indicator**)
-- **Description:** 1 = first-line therapy (1L), 0 = second-line or greater (2L+).
+- **Description:** 1 = first-line therapy (1L) / treatment-naive, 0 = second-line or greater (2L+) / relapsed-or-refractory.
 - **Units:** (binary)
 - **Type:** binary
-- **Scope:** specific
-- **Reference category:** 0 (2L+, second-line or greater).
+- **Scope:** general
+- **Reference category:** 0 (2L+, second-line or greater / relapsed-refractory).
 - **Source aliases:**
   - `LINE` (categorical column with levels `1L`, `2L`, `3L+`, ...) — decompose into `LINE_1L = as.integer(LINE == "1L")`.
-- **Example models:** `Sanghavi_2020_ipilimumab.R` (exponential coefficient -0.0949 on CL).
-- **Notes:** Common oncology PK covariate; scope: specific because the 2L+ reference grouping (versus separate 2L vs 3L+ indicators) is tied to a particular study's design. Promote to general if a second model legitimately ratifies the same 1L vs 2L+ binarization.
+  - `RRFN` (relapsed/refractory flag; treatment-naive corresponds to RRFN == 0) — used in `Lu_2019_polatuzumab.R`. Decompose: `LINE_1L = as.integer(RRFN == 0)`.
+- **Example models:** `Sanghavi_2020_ipilimumab.R` (exponential coefficient -0.0949 on CL), `Lu_2019_polatuzumab.R` (multiplicative effects on V1 = 1.20, kdes = 3.38, CL_T = 3.53, FRAC_NS = 0.756; the same pooled-trial NHL cohort mixes 415 R/R and 45 first-line patients).
+- **Notes:** Promoted to scope: general on 2026-04-26 after Lu 2019 polatuzumab vedotin ratified the same 1L vs 2L+ binarization that Sanghavi 2020 ipilimumab introduced. The two papers use different indicator semantics (Sanghavi reports the effect as `exp(-0.0949 * LINE_1L)` and Lu reports `theta^LINE_1L` with theta < or > 1 depending on the parameter); both reduce to the same canonical 0/1 column. If a future paper requires finer resolution (separate effects for 2L vs 3L+), add a parallel `LINE_2L` canonical rather than overloading this one.
 
 ### NIVO_1Q3W (**canonical for nivolumab 1 mg/kg every 3 weeks co-administration indicator**)
 - **Description:** 1 = ipilimumab co-administered with nivolumab 1 mg/kg every 3 weeks; 0 = otherwise (monotherapy or any other nivolumab regimen).
@@ -751,6 +898,47 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   - `COMBO` — used in `Sanghavi_2020_ipilimumab.R`. Equivalently derivable from `NIVO_REGIMEN` as `COMBO_NIVO = as.integer(NIVO_REGIMEN != "none")`.
 - **Example models:** `Sanghavi_2020_ipilimumab.R` (additive effect -0.202 on the Emax parameter of the time-varying CL function).
 - **Notes:** Distinct from the per-regimen `NIVO_1Q3W` / `NIVO_3Q2W` indicators on baseline CL: `COMBO_NIVO` aggregates across all nivolumab regimens and acts on the time-varying-CL Emax parameter, whereas the per-regimen indicators act on baseline (time-zero) CL.
+
+### BLSTABL (**canonical for baseline absolute blast counts in peripheral blood**)
+- **Description:** Baseline absolute count of blasts (immature lymphoid/myeloid precursor cells) circulating in peripheral blood. Time-fixed baseline value.
+- **Units:** 10^9 counts/L (equivalently 10^9 counts; reported as "x 10^9 counts" in Wu 2024 Table 2).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a — used with power scaling `(BLSTABL / <ref>)^exponent`. Reference value observed: 0.352 x 10^9 counts (Wu 2024 Table 3, BCP-ALL median).
+- **Source aliases:**
+  - `BLSTABL` — used in `Wu_2024_inotuzumab.R`.
+- **Example models:** `Wu_2024_inotuzumab.R` (power exponent -0.0484 on kdes for BCP-ALL patients only; the effect is gated off for B-cell NHL by multiplying the exponent by `DIS_BCPALL`).
+- **Notes:** Distinct from blasts in bone marrow (different specimen) and from `BLSTPB` (percentage of blasts in peripheral blood, used by the predecessor Garrett 2019 adult model). Not applicable for B-cell NHL patients in pooled BCP-ALL + NHL analyses (Wu 2024 retains the effect only in BCP-ALL patients via the DIS_BCPALL gate). When supplying BLSTABL for an NHL subject, set the value to the BCP-ALL reference (0.352) so the gated power term evaluates to 1 numerically. Scope: specific because the covariate is most meaningful in B-cell-leukemia population PK analyses; promote to general if a second paper retains it.
+### COMBO_RG (**canonical for anti-CD20 (rituximab or obinutuzumab) combination-therapy indicator**)
+- **Description:** 1 = polatuzumab vedotin co-administered with rituximab OR obinutuzumab, 0 = single-agent polatuzumab vedotin (or any other regimen lacking an anti-CD20 partner). Time-fixed per subject in the source paper's analysis cohort.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (single-agent polatuzumab vedotin or no anti-CD20 partner).
+- **Source aliases:**
+  - `COMBO` (categorical: 0 = single agent, 1 = + rituximab, 2 = + obinutuzumab) — used in `Lu_2019_polatuzumab.R`. Decompose: `COMBO_RG = as.integer(COMBO == 1 | COMBO == 2)`. The Lu 2019 NONMEM separately defines `RTX = as.integer(COMBO == 1)` and `GA101 = as.integer(COMBO == 2)` and applies effects as `theta^(RTX + GA101)`; because RTX and GA101 are mutually exclusive, RTX + GA101 takes values {0, 1} and the effect collapses to `theta^COMBO_RG`.
+- **Example models:** `Lu_2019_polatuzumab.R` (multiplicative effects on CL_INF = 0.844, kdes = 0.932, FRAC_NS = 0.709).
+- **Notes:** Rituximab and obinutuzumab both bind CD20 on B cells (rituximab is a Type I anti-CD20 mAb, obinutuzumab a glycoengineered Type II), so co-administration is hypothesized to alter polatuzumab vedotin disposition through depletion of CD79b+ target B cells. The Lu 2019 final model fits a single combined effect rather than separate rituximab- and obinutuzumab-specific effects. Scope: specific because the relevant combination partners (CD20-directed mAbs) are tied to NHL pathway; if a future paper distinguishes rituximab from obinutuzumab combinations, register `COMBO_R` and `COMBO_G` separately rather than overloading this canonical.
+### COMBO_DURVA (**canonical for durvalumab combination-therapy indicator**)
+- **Description:** 1 = the analyzed therapeutic mAb is co-administered with durvalumab (anti-PD-L1 IgG1), 0 = monotherapy.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (monotherapy).
+- **Source aliases:**
+  - `COMB` — used in `Hwang_2022_tremelimumab.R` ($INPUT NM-TRAN data item; control-stream switch `IF(COMB.EQ.0)` selects monotherapy parameters and `IF(COMB.EQ.1)` selects combination-therapy parameters).
+- **Example models:** `Hwang_2022_tremelimumab.R` (selects between monotherapy and combination-with-durvalumab values of the time-varying-CL Tmax and lambda parameters).
+- **Notes:** Parallels `COMBO_NIVO` but for durvalumab rather than nivolumab co-administration. Acts on the time-varying-CL component (Tmax and lambda); baseline CL is shared between monotherapy and combination groups in Hwang 2022.
+### COMBO_BELAMAF (**canonical for any-combination belantamab mafodotin therapy indicator**)
+- **Description:** 1 = belantamab mafodotin administered as part of a combination regimen (with bortezomib + dexamethasone, lenalidomide + dexamethasone, or pomalidomide + dexamethasone) in the relapsed/refractory multiple myeloma setting; 0 = belantamab mafodotin monotherapy.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (belantamab mafodotin monotherapy).
+- **Source aliases:**
+  - `COMBO` (when the source dataset uses a generic combination flag for belantamab mafodotin pooled regimens) — used in `Papathanasiou_2025_belantamab.R`.
+- **Example models:** `Papathanasiou_2025_belantamab.R` (multiplicative factor θ = 1.44 on the Imax parameter of the time-varying CL function — combination therapy increases the steady-state CL reduction from 33.2 % to 44.0 %).
+- **Notes:** Pools the three combination backbones tested in DREAMM-6 / DREAMM-7 / DREAMM-8 (Bor-Dex, Len-Dex, Pom-Dex) into a single binary because Papathanasiou 2025 reports no meaningful per-backbone difference in cycle-1 ADC exposure. If a future paper tests per-backbone combination effects, register dedicated indicators (`COMBO_BELAMAF_BORDEX`, etc.) rather than overloading this aggregate.
 
 ## Laboratory / disease-activity
 
@@ -795,6 +983,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Source aliases:** none.
 - **Example models:** `Rosario_2015_vedolizumab.R` (reference 6; exponent +0.0408 on CLL gated by `(1 - IBD_CD)` so the effect applies only to UC patients).
 - **Notes:** The partial Mayo score excludes the endoscopy subscore (the full Mayo score is 0–12). Mutually exclusive with `CDAI` in pooled UC+CD populations.
+
+### MAYO_E (**canonical for baseline Mayo endoscopic subscore**)
+- **Description:** Mayo endoscopic subscore at baseline for ulcerative colitis, integer 0-3 (0 = normal / inactive disease, 1 = mild, 2 = moderate, 3 = severe). The endoscopic subscore is one of the four components of the full Mayo score (0-12); the partial Mayo score (`PMAYO`) excludes it. Time-fixed per subject.
+- **Units:** (score, 0-3)
+- **Type:** categorical
+- **Scope:** general
+- **Reference category:** depends on per-model encoding — papers that include the full 0-3 range typically reference Mayo 0 or 1 (mild), while papers restricted to moderate-to-severe UC (the typical biologic-induction-therapy population) reference Mayo 2 or 3. Document the per-model reference category in `covariateData[[MAYO_E]]$reference_category`.
+- **Source aliases:**
+  - `MPRE` — used in `Faelens_2021_infliximab.R` (NONMEM column for "Mayo endoscopic score pre-induction"). The Faelens 2021 dataset additionally codes a "missing" sentinel `MPRE = -99`; treat this as out-of-domain when applying the model and document per-model.
+- **Example models:** `Faelens_2021_infliximab.R` (categorical effect on KE: separate typical KE for Mayo 1 / Mayo 2 / Mayo 3; reference category Mayo 2).
+- **Notes:** Distinct from the full Mayo score (0-12) and the partial Mayo score (`PMAYO`, 0-9). The endoscopic subscore alone is the core inclusion criterion in many UC induction-therapy popPK datasets (typically Mayo 2 or 3 = moderate-to-severe disease). Mutually compatible with `PMAYO` in datasets that report both.
 
 ### ENDO_ULCER (**canonical for endoscopically active luminal disease at baseline**)
 - **Description:** 1 = mucosal ulcerations confirmed at baseline ileocolonoscopy / endoscopy (endoscopically active luminal disease), 0 = no mucosal ulcerations at baseline. Time-fixed (assessed at study entry).
@@ -871,6 +1070,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   - `NSAID` — used in `Li_2019_abatacept.R`.
 - **Example models:** `Li_2019_abatacept.R` (exponential effect on CL: `CL * exp(0.0640 * CONMED_NSAID)`; ~6.6% higher CL, not clinically relevant per Li 2019).
 - **Notes:** Baseline-use-only in Li 2019; time-varying use is permitted, document per-model. Follows the `CONMED_*` concomitant-medication pattern established for IBD models (AZA / MP / MTX / AMINO).
+
+### CONMED_RITUX (**canonical for concomitant rituximab combination therapy**)
+- **Description:** 1 = on concomitant rituximab combination therapy (with or without backbone chemotherapy), 0 = not on rituximab.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no concomitant rituximab; single-agent or non-rituximab combination).
+- **Source aliases:**
+  - `RITUX` — used in `Wu_2024_inotuzumab.R`.
+- **Example models:** `Wu_2024_inotuzumab.R` (additive fractional change on CL1: `CL1 * (1 + (-0.132) * CONMED_RITUX)` ≈ 13% lower CL1 with concomitant rituximab).
+- **Notes:** Wu 2024 Table 3 footnote b explicitly flips the reference category vs. the predecessor Garrett 2019 adult model: in Garrett 2019 the reference was "with rituximab" (RITUX = 0 meant on-rituximab), whereas in Wu 2024 the reference is "without rituximab" (RITUX = 0 means no concomitant rituximab). Future models that pool an analogous rituximab-combination cohort with a single-agent reference should use this canonical with the Wu 2024 sign convention; if a paper retains the Garrett 2019 reverse-coded convention, document the value transformation in `covariateData[[CONMED_RITUX]]$notes` (`CONMED_RITUX = 1 - source$RITUX`) rather than registering a second canonical. Ratified canonically on 2026-04-26.
 
 ## Rheumatoid-arthritis disease-activity covariates
 
@@ -950,16 +1160,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Zhang_2019_nivolumab.R` (exponential effect on baseline CL: `exp(0.159)` ≈ 1.17 fold increase relative to monotherapy).
 - **Notes:** Paired with `COADMIN_IPI_3Q3W`. See the COADMIN_IPI_3Q3W note for how the other ipilimumab schedules collapse into the reference group.
 
-### COADMIN_CHEMO (**canonical for nivolumab + chemotherapy combination indicator**)
-- **Description:** 1 = subject is receiving nivolumab in combination with platinum-based chemotherapy (gemcitabine + cisplatin, pemetrexed + cisplatin, paclitaxel + carboplatin, or platinum-doublet); 0 = otherwise. Encodes any chemotherapy coadministration as a study-design covariate on nivolumab CL.
+### COADMIN_CHEMO (**canonical for anti-PD-(L)1 mAb + chemotherapy combination indicator**)
+- **Description:** 1 = subject is receiving an anti-PD-(L)1 monoclonal antibody in combination with platinum-based chemotherapy (gemcitabine + cisplatin, pemetrexed + cisplatin, paclitaxel + carboplatin, or platinum-doublet); 0 = otherwise. Encodes chemotherapy coadministration as a study-design covariate on the antibody's CL.
 - **Units:** (binary)
 - **Type:** binary
-- **Scope:** specific
-- **Reference category:** 0 (no chemotherapy coadministration — monotherapy or any ipilimumab combination).
+- **Scope:** general
+- **Reference category:** 0 (no chemotherapy coadministration — monotherapy or, where applicable, a non-chemotherapy combination such as anti-PD-1 + anti-CTLA-4).
 - **Source aliases:**
   - `CHEMO` — used in `Zhang_2019_nivolumab.R`.
-- **Example models:** `Zhang_2019_nivolumab.R` (exponential effect on baseline CL: `exp(-0.104)` ≈ 0.90 fold, i.e. ~9.7% lower CL relative to monotherapy).
-- **Notes:** Pooled across the four chemotherapy backbones contributing to the Zhang 2019 cohort. Promote to general scope only after a second paper reports a chemotherapy-coadministration effect with a comparable pooling convention.
+  - `MONOTR` — used in `Kuchimanchi_2024_dostarlimab.R` (the paper's structural-equation indicator for monotherapy; the canonical column carries the inverse value, i.e. `COADMIN_CHEMO = 1 - MONOTR`, so the canonical column is 1 when the patient is on combo-chemotherapy).
+- **Example models:** `Zhang_2019_nivolumab.R` (exponential effect on baseline CL: `exp(-0.104)` ≈ 0.90 fold, i.e. ~9.7% lower CL relative to monotherapy), `Kuchimanchi_2024_dostarlimab.R` (multiplicative effect on baseline CL: `1 - 0.0779` = 0.922, i.e. 7.79% lower CL on dostarlimab + carboplatin/paclitaxel relative to dostarlimab monotherapy).
+- **Notes:** Promoted from specific to general scope on 2026-04-27 after the Kuchimanchi 2024 dostarlimab + carboplatin/paclitaxel analysis ratified the same pooling convention (any chemotherapy backbone collapsed into a single binary indicator). The two papers use different functional forms for the effect on CL — Zhang 2019 uses `exp(theta * COADMIN_CHEMO)` (exponential) and Kuchimanchi 2024 uses `(1 + theta * COADMIN_CHEMO)` (multiplicative); these are different parameterisations of the same underlying study-design indicator and the canonical column meaning is unchanged. Document the per-model functional form in `covariateData[[COADMIN_CHEMO]]$notes`.
 
 ### COADMIN_IPI_ANY (**canonical for any-ipilimumab-coadministration indicator**)
 - **Description:** 1 = subject is receiving nivolumab in combination with any ipilimumab regimen (regardless of dose or schedule); 0 = nivolumab monotherapy or nivolumab + chemotherapy. Encodes the "is there ipilimumab in the regimen" question as a single binary covariate, distinct from the regimen-specific COADMIN_IPI_3Q3W and COADMIN_IPI_1Q6W indicators above.
@@ -971,6 +1182,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   - `IPICO` — used in `Zhang_2019_nivolumab.R`.
 - **Example models:** `Zhang_2019_nivolumab.R` (additive effect on the time-varying-CL Emax parameter: Emax += -0.0668 when COADMIN_IPI_ANY = 1).
 - **Notes:** Logically the union of the regimen-specific indicators (COADMIN_IPI_3Q3W, COADMIN_IPI_1Q6W, plus the unmodeled 1 mg/kg q3wx4 and 1 mg/kg q12w schedules). Zhang 2019 uses it on the *time-varying* Emax (a different structural parameter from baseline CL), which is why it coexists with the regimen-specific indicators on baseline CL rather than substituting for them.
+
+### COADMIN_AVD (**canonical for brentuximab vedotin + AVD (adriamycin/doxorubicin, vinblastine, dacarbazine) combination indicator**)
+- **Description:** 1 = subject is receiving brentuximab vedotin in combination with the AVD chemotherapy backbone (adriamycin a.k.a. doxorubicin, vinblastine, dacarbazine) for newly diagnosed advanced-stage Hodgkin lymphoma; 0 = otherwise (single-agent brentuximab vedotin). Encodes the A+AVD frontline regimen as a study-design covariate on ADC clearance.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (single-agent brentuximab vedotin — no AVD coadministration).
+- **Source aliases:**
+  - `DOX` — used in `Zhou_2025_brentuximab.R` (the NONMEM dataset uses the doxorubicin-administration flag as the AVD-coadministration indicator because doxorubicin is given on the same days as the other AVD agents in this regimen).
+- **Example models:** `Zhou_2025_brentuximab.R` (power-form effect on ADC clearance: `CL * 2.12^COADMIN_AVD` — ADC clearance is ~2.1-fold higher under A+AVD vs single-agent BV).
+- **Notes:** Distinct from `COADMIN_CHEMO` (which is nivolumab + platinum-based chemotherapy). The A+AVD regimen is the standard chemotherapy backbone for frontline classical Hodgkin lymphoma; promote to general scope if a second BV paper reports the same A+AVD covariate effect with a comparable encoding.
 
 ### STATIN (**canonical for concomitant statin (HMG-CoA reductase inhibitor) therapy**)
 - **Description:** 1 = patient coadministered a statin (HMG-CoA reductase inhibitor) during the study, 0 = no statin coadministration.
@@ -1047,15 +1269,16 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Notes:** Distinct from `PRIOR_TNF` (a strict subset). Use `PRIOR_BIO` when the source paper's covariate counts any biologic as prior exposure (anti-TNF, anti-integrin, anti-IL-12/23, anti-IL-17, anti-IL-23, anti-IL-6, etc.); use `PRIOR_TNF` when the source paper specifically tested anti-TNF exposure. When the source paper uses the inverted "bio-naive" indicator (1 = naive), document the inversion in `covariateData[[PRIOR_BIO]]$notes` and apply `1 - PRIOR_BIO` in `model()` so the canonical column stores 1 = previously exposed.
 
 ### DISEXT_EP (**canonical for extensive colitis / pancolitis indicator**)
-- **Description:** 1 = extensive colitis or pancolitis disease extension, 0 = not.
+- **Description:** 1 = extensive colitis or pancolitis disease extension, 0 = otherwise (any non-extensive disease extension, e.g. left-sided colitis or proctitis).
 - **Units:** (binary)
 - **Type:** binary
-- **Scope:** specific
-- **Reference category:** 0 (left-sided colitis, when paired with `DISEXT_OTHER = 0`).
+- **Scope:** general
+- **Reference category:** 0. In papers that decompose the disease-extension categorical into both `DISEXT_EP` and `DISEXT_OTHER`, `DISEXT_EP = 0 AND DISEXT_OTHER = 0` corresponds to the left-sided-colitis reference group; in papers that use a single binary indicator for extensive colitis, the reference is pooled non-extensive (left-sided + any other extension).
 - **Source aliases:**
+  - `EXTCOL` — used in `Faelens_2021_infliximab.R` (binary 0/1 for extensive colitis at baseline; no separate "other" category).
   - Derived from a multi-level `DISEXT` column in the source (levels: left-sided colitis, extensive/pancolitis, other): `DISEXT_EP = as.integer(DISEXT == "extensive/pancolitis")`.
-- **Example models:** `Moein_2022_etrolizumab.R` (multiplicative effect on CL, +8.2% vs. left-sided colitis).
-- **Notes:** Paired with `DISEXT_OTHER`. `DISEXT_EP = DISEXT_OTHER = 0` corresponds to the left-sided colitis reference group. UC-specific covariate; analogous indicators could be registered for other inflammatory-bowel-disease models by promoting this entry or adding new `DISEXT_<CATEGORY>` canonicals.
+- **Example models:** `Moein_2022_etrolizumab.R` (paired with `DISEXT_OTHER`; multiplicative effect on CL, +8.2% vs. left-sided colitis); `Faelens_2021_infliximab.R` (single-binary encoding; multiplicative fold-change on V of 1.25 when DISEXT_EP = 1).
+- **Notes:** Optionally paired with `DISEXT_OTHER` when the source paper decomposes a three-level disease-extension categorical (left-sided / extensive-pancolitis / other) into two indicators; the pairing is paper-specific and not required. Promoted from scope: specific to scope: general on 2026-04-27 because the binary "extensive colitis vs not" semantics generalize across UC popPK papers regardless of whether the original dataset additionally distinguished an "other" disease-extension category.
 
 ### DISEXT_OTHER (**canonical for 'other disease extension' indicator**)
 - **Description:** 1 = disease extension other than left-sided colitis or extensive/pancolitis, 0 = not.
@@ -1245,6 +1468,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Yamada_2025_zolbetuximab.R` (fractional effect on V1).
 - **Notes:** Disease-backbone indicator. If a future model needs more backbone categories, encode each as its own indicator (`COMB_CAPOX`, `COMB_FOLFOX`, …) with a single reference group.
 
+### FORM_P2F2
+- **Description:** 1 = isatuximab P2F2 drug material (intended commercial / phase III material, used in the EFC14335 / ICARIA-MM study), 0 = P1F1 drug material (early-phase material used in TED10893 / TED14154 / TCD14079).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (P1F1).
+- **Source aliases:**
+  - `Drug_mat` — used in `Fau_2020_isatuximab.R`. Values 0 / 1 with the same orientation as the canonical (1 = P2F2 / commercial-bound material).
+- **Example models:** `Fau_2020_isatuximab.R` (exponential effect on Vc with coefficient -0.137; P2F2 patients had ~13% lower Vc than P1F1).
+- **Notes:** Phase III / commercial-bound formulation indicator for isatuximab; the FORM_* family stays scope-specific per nlmixr2lib policy that drug-product-version indicators are kept model-specific unless they generalize across multiple drugs. Set to 1 to simulate the marketed material.
+
 ### FORM_DP2
 - **Description:** 1 = sarilumab drug product 2 formulation (used in some phase I studies and the dose-ranging phase II study), 0 = other drug product (DP1 or DP3; DP3 is the commercial formulation).
 - **Units:** (binary)
@@ -1318,8 +1552,8 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Scope:** specific
 - **Reference category:** 0 (100-300 mg SC or any IV dose).
 - **Source aliases:** derived per dose record from the administered amount (`AMT`).
-- **Example models:** `Othman_2014_daclizumab.R`.
-- **Notes:** Othman 2014 estimated two separate absolute bioavailabilities because of non-linear dose-normalized exposure at the 50 mg SC dose — F = 0.84 for the therapeutic 100-300 mg SC range and F = 0.57 for the 50 mg SC cohort. Encoded here as a record-level indicator so the covariate effect `e_dose_50mg_f = 0.57/0.84 - 1 = -0.321` scales bioavailability only on 50 mg SC doses. For clinical-range simulation (150 mg SC Q4W Phase III regimen) leave `DOSE_50MG = 0`.
+- **Example models:** `Othman_2014_daclizumab.R`, `Diao_2016_daclizumab_cd25.R`, `Diao_2016_daclizumab_cd56bright.R`, `Diao_2016_daclizumab_treg.R`.
+- **Notes:** Othman 2014 estimated two separate absolute bioavailabilities because of non-linear dose-normalized exposure at the 50 mg SC dose — F = 0.84 for the therapeutic 100-300 mg SC range and F = 0.57 for the 50 mg SC cohort. Encoded here as a record-level indicator so the covariate effect `e_dose_50mg_f = 0.57/0.84 - 1 = -0.321` scales bioavailability only on 50 mg SC doses. For clinical-range simulation (150 mg SC Q4W Phase III regimen) leave `DOSE_50MG = 0`. The Diao 2016 PK/PD models inherit the Othman 2014 PK backbone verbatim; they carry `DOSE_50MG` even though the Diao 2016 RRMS regimens are 150 / 300 mg SC only.
 
 ### STUDY1
 - **Description:** 1 = subject enrolled in Study 1 of the Cirincione 2017 pooled analysis, 0 = other. Used to switch the residual-error magnitude per study.
@@ -1394,6 +1628,60 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Valenzuela_2025_nipocalimab.R`.
 - **Notes:** Valenzuela 2025 estimated a slightly lower IgG baseline in MOM-M281-004 participants (baseline scaled by `FRIgG0_M281_004 = 0.777` vs. 1 in other studies). Distinct from the disease-state indicator implied by `gMG` — it is specifically the Vivacity-MG study flag because the IgG baseline factor was only estimated for that study.
 
+### STUDY_ABA2_HLA78
+- **Description:** 1 = subject enrolled in the ABA2 hematopoietic-cell-transplant trial (IM101311; NCT01743131) HLA 7/8 (one-allele-mismatched donor) cohort, 0 = any other study in the Takahashi 2023 pooled abatacept population PK analysis (RA/JIA reference and ABA2 8/8 cohort).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-ABA2-7/8 — pooled adult RA / pediatric JIA cohort, plus ABA2 HLA 8/8 cohort which is flagged separately by `STUDY_ABA2_HLA88`).
+- **Source aliases:** derived per subject from the trial-cohort identifier (`Cohort = ABA2 7/8` → 1, else → 0). Takahashi 2023 Supplemental Table 4 names the corresponding theta `θCohort_CL` / `θCohort_Vc`.
+- **Example models:** `Takahashi_2023_abatacept.R` (multiplicative `Ratio` factors on CL = 0.70 and on Vc = 0.99 vs the RA/JIA reference; values from Takahashi 2023 Supplemental Table 4).
+- **Notes:** Pairs with `STUDY_ABA2_HLA88` to reproduce the three-level cohort categorical (RA/JIA, ABA2 7/8, ABA2 8/8) the paper reports as the only retained categorical PK covariate. At most one of `STUDY_ABA2_HLA78` and `STUDY_ABA2_HLA88` is 1 per subject; both 0 reproduces the RA/JIA reference. Scope: specific because the contrast is tied to the ABA2-vs-RA/JIA pooling design.
+
+### STUDY_ABA2_HLA88
+- **Description:** 1 = subject enrolled in the ABA2 hematopoietic-cell-transplant trial (IM101311; NCT01743131) HLA 8/8 (allele-matched donor) cohort, 0 = any other study in the Takahashi 2023 pooled abatacept population PK analysis (RA/JIA reference and ABA2 7/8 cohort).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-ABA2-8/8 — pooled adult RA / pediatric JIA cohort, plus ABA2 HLA 7/8 cohort which is flagged separately by `STUDY_ABA2_HLA78`).
+- **Source aliases:** derived per subject from the trial-cohort identifier (`Cohort = ABA2 8/8` → 1, else → 0). Takahashi 2023 Supplemental Table 4 names the corresponding theta `θCohort_CL` / `θCohort_Vc`.
+- **Example models:** `Takahashi_2023_abatacept.R` (multiplicative `Ratio` factors on CL = 0.91 and on Vc = 1.32 vs the RA/JIA reference; values from Takahashi 2023 Supplemental Table 4).
+- **Notes:** Pairs with `STUDY_ABA2_HLA78`. At most one of the two indicators is 1 per subject; both 0 reproduces the RA/JIA reference. Scope: specific.
+## Study-site region
+
+Geographical study-site region indicators. Distinct from race / ethnicity (`RACE_*`), which describe subject ancestry; these describe the geographical location of the clinical trial site that enrolled the subject. Used in multi-regional studies (typically those including bridging analyses for Japan or East Asia) to capture region-specific clinical-practice or unmeasured-environment effects on PK that remain after accounting for body weight, race, and laboratory covariates. Encoded as a set of mutually exclusive binary indicators with US as the implicit reference category (all indicators = 0). When a paper groups some non-US regions with US (e.g., Hong 2025 groups US and Japan as the DXd CL reference), the model code uses only the indicators that distinguish the non-reference groups; the data column for the grouped region (e.g., `REGION_JAPAN`) is still recorded so the same dataset can serve other parameters that do separate that group.
+
+### REGION_JAPAN (**canonical for Japan study-site / enrollment-country indicator**)
+- **Description:** 1 = study site in Japan (or patient enrolled in Japan, depending on source paper's reporting), 0 = study site / enrollment country outside Japan. Geographical Japan indicator.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-Japan sites / enrollment; specific reference set varies per model — e.g., Hong 2025 Dato-DXd CL uses "any non-Japan region", whereas Hong 2025 DXd CL groups Japan with US into the reference).
+- **Source aliases:**
+  - `COUNTRY_JPN` — retired canonical; used in `Yin_2021_trastuzumabDeruxtecan.R` as an enrollment-country (not study-site-region) indicator. Some papers report country-of-enrollment rather than site region; both map to `REGION_JAPAN` when the binary contrast is Japan vs. non-Japan.
+- **Example models:** `Hong_2025_datopotamab.R` (multiplicative effect 1 + (−0.219) = 0.781 on Dato-DXd linear clearance), `Yin_2021_trastuzumabDeruxtecan.R` (multiplicative effect 0.903 on CL_intact and 0.738 on V2_intact when REGION_JAPAN = 1; Yin 2021 retained Japan enrollment-country over Japanese race because the two were highly confounded, correlation −0.81).
+- **Notes:** Distinct from `RACE_JAPANESE` (subject ancestry). A subject of Japanese ancestry enrolled at a US site has `RACE_JAPANESE = 1` but `REGION_JAPAN = 0`. Some papers (e.g., Yin 2021) report enrollment country rather than study-site region; both are encoded as `REGION_JAPAN` when the binary contrast is Japan vs. non-Japan. Paired with `REGION_EUROPE` and `REGION_ROW` in multi-regional studies (e.g., Hong 2025); `REGION_JAPAN = 0` for a US-only cohort.
+
+### REGION_EUROPE (**canonical for Europe study-site indicator**)
+- **Description:** 1 = study site in Europe, 0 = study site outside Europe. Geographical study-site region.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-Europe study sites; specific reference set varies per model).
+- **Source aliases:** none yet; canonical name preferred.
+- **Example models:** `Hong_2025_datopotamab.R` (multiplicative effect 1 + 0.240 = 1.240 on DXd clearance versus US/Japan reference).
+- **Notes:** Pair with `REGION_JAPAN` and `REGION_ROW` to encode multi-regional study membership; subjects with all three indicators = 0 are in the "US" reference group.
+
+### REGION_ROW (**canonical for Rest-of-World study-site indicator**)
+- **Description:** 1 = study site in Rest of World (i.e., not US, Japan, or Europe), 0 = study site in US / Japan / Europe. Residual-region indicator for multi-regional studies.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (US / Japan / Europe study sites; specific reference set varies per model).
+- **Source aliases:** none yet; canonical name preferred.
+- **Example models:** `Hong_2025_datopotamab.R` (multiplicative effect 1 + 0.196 = 1.196 on DXd clearance versus US/Japan reference).
+- **Notes:** "Rest of the World" composition is paper-specific (e.g., Hong 2025 = study sites outside US, Japan, and Europe). Document the subject set in `covariateData[[REGION_ROW]]$notes` per model.
+
 ## Occasion / period (IOV)
 
 ### ooc1, ooc2, ooc3, ooc4
@@ -1409,15 +1697,21 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Units:** (count)
 - **Type:** count
 - **Scope:** specific
-- **Reference category:** n/a — used with a power-covariate form `CYCLE^Fm` (Fm typically negative) to capture cycle-over-cycle decline in a derived quantity such as ADC-to-payload conversion fraction.
-- **Source aliases:** `CYCLE` — used in `Li_2017_brentuximab.R` with the same canonical name.
-- **Example models:** `Li_2017_brentuximab.R` (exponent on the fraction of ADC that converts to MMAE by proteolytic degradation, Fm = -0.261, to reflect tumor-burden reduction across successive treatment cycles).
-- **Notes:** Must be >= 1 throughout (`CYCLE^Fm` is undefined at 0). Distinct from `ooc<n>` binary-occasion indicators: `CYCLE` is an integer count, not a mutually-exclusive set of indicator columns. Data-assembly helper: set `CYCLE = floor((TIME - TIME_FIRST_DOSE) / cycle_length_days) + 1` for a fixed-interval dosing regimen.
+- **Reference category:** n/a — used either with a power-covariate form `CYCLE^Fm` (Fm typically negative) to capture cycle-over-cycle decline in a derived quantity such as ADC-to-payload conversion fraction (Li 2017 brentuximab vedotin), or with a piecewise indicator `CYCLE == 1 vs CYCLE >= 2` to capture a step change in DAR scaling between cycle 1 and later cycles (Hong 2025 datopotamab deruxtecan).
+- **Source aliases:** `CYCLE` — used in `Li_2017_brentuximab.R` and `Hong_2025_datopotamab.R` with the same canonical name.
+- **Example models:**
+  - `Li_2017_brentuximab.R` (exponent on the fraction of ADC that converts to MMAE by proteolytic degradation, Fm = -0.261, to reflect tumor-burden reduction across successive treatment cycles).
+  - `Hong_2025_datopotamab.R` (cycle-1 vs cycle-2+ piecewise scaling Factor1 = 0.696 on the DAR equation that drives DXd formation rate from total Dato-DXd elimination).
+- **Notes:** Must be >= 1 throughout (`CYCLE^Fm` is undefined at 0; the piecewise form requires `CYCLE` to be a positive integer at every observation row). Distinct from `ooc<n>` binary-occasion indicators: `CYCLE` is an integer count, not a mutually-exclusive set of indicator columns. Data-assembly helper: set `CYCLE = floor((TIME - TIME_FIRST_DOSE) / cycle_length_days) + 1` for a fixed-interval dosing regimen.
 
 ---
 
 ## Change log
 
+- **2026-04-27** — Added `STUDY_ABA2_HLA78` and `STUDY_ABA2_HLA88` (both specific scope) canonical entries while extracting `Takahashi_2023_abatacept.R`. The two binary indicators jointly reproduce the three-level RA/JIA-vs-ABA2-7/8-vs-ABA2-8/8 cohort categorical that Takahashi 2023 Supplemental Table 4 retains as the only categorical PK covariate (multiplicative `Ratio` thetas on CL and on Vc; RA/JIA = both indicators 0 = ratio 1 fixed).
+- **2026-04-27** — Added a new `## Study-site region` section with `REGION_JAPAN`, `REGION_EUROPE`, `REGION_ROW` canonical entries (all scope: specific, binary indicators) while extracting `Hong_2025_datopotamab.R`. US is the implicit reference category (all three indicators = 0). The new entries are distinct from the existing `RACE_*` family because they encode trial-site geography rather than subject ancestry; a Japanese-ancestry subject enrolled at a US site has `RACE_JAPANESE = 1` and `REGION_JAPAN = 0`.
+- **2026-04-26** — Added `B2M` (general-scope serum beta-2-microglobulin under `Renal / hepatic function`; reference 3.90 mg/L from the multiple-myeloma cohort median), `MM_NIGG` (specific-scope non-IgG-MM-vs-IgG-MM within-disease immunoglobulin-type indicator under `Oncology`), and `FORM_P2F2` (specific-scope isatuximab phase III / commercial-bound drug-material indicator, placed alongside the existing `FORM_*` entries) canonical entries while extracting `Fau_2020_isatuximab.R`. Source aliases mapped: `Ig_type`→`MM_NIGG`, `Drug_mat`→`FORM_P2F2`. `Fau_2020_isatuximab.R` added to the `WT`, `SEXF`, and `RACE_ASIAN` example-model lists.
+- **2026-04-27** — Promoted `COADMIN_CHEMO` from specific to general scope after the Kuchimanchi 2024 dostarlimab + carboplatin/paclitaxel population-PK analysis ratified the same pooling convention (any chemotherapy backbone collapsed into a single binary indicator) on a second mAb. The two example models use different functional forms — Zhang 2019 uses `exp(theta * COADMIN_CHEMO)` and Kuchimanchi 2024 uses `(1 + theta * COADMIN_CHEMO)` — but the canonical column meaning is unchanged; the per-model functional form is documented in the model files' `notes`. Source-alias list updated: `MONOTR` (Kuchimanchi 2024) added with the inverse-value relation `COADMIN_CHEMO = 1 - MONOTR`. Description and example list extended to include `Kuchimanchi_2024_dostarlimab.R`.
 - **2026-04-26** — Deduplicated four covariate entries that were registered twice during sequential model-PR merges: (1) merged second `IGG` entry (Yang 2021 cemiplimab) into the first (Zhou 2021 belimumab) — both papers use the same canonical `IGG` column, so the entry now lists both source aliases (`BIGG`, `IGGBL`) and both reference values (14.8 g/L, 9.65 g/L); (2) merged second `BGENE21` entry (Zheng 2016 sifalimumab, misfiled under Inflammation markers) into the first (Narwal 2013 sifalimumab, under Interferon / biomarker panels); (3) merged `STEROID_BL` (Zheng 2016 sifalimumab) into `STEROID` (Narwal 2013 sifalimumab) — both encode the same baseline/concomitant corticosteroid indicator, `STEROID` is the preferred shorter name, `STEROID_BL` retired; `Zheng_2016_sifalimumab.R` updated accordingly; (4) merged `ECOG_PS_GT0` (Zhang 2019 nivolumab) into `ECOG_GE1` (Bajaj 2017 nivolumab) — `>= 1` equals `> 0` for integer ECOG scores, `ECOG_GE1` is the preferred name (consistent with a potential future `ECOG_GE2`), `ECOG_PS_GT0` retired; `Zhang_2019_nivolumab.R` updated accordingly.
 - **2026-04-26** — Added `RACE_JAPANESE` (general scope) canonical entry to formalize the entry that was noted in the changelog but lacked a proper H3 section. Source alias `JAPANESE_HV` from `Wang_2017_benralizumab.R` mapped; `Wade_2015_certolizumab.R` uses `RACE_JAPANESE` directly. Added `MM` (active multiple myeloma, specific scope), `MDSAML` (MDS or AML combined indicator, specific scope), and `SPDL1` (soluble PD-L1, specific scope) canonical entries while fixing convention issues in `Ogasawara_2020_durvalumab.R`.
 - **2026-04-26** — Added `DIS_DMD` (specific scope) canonical entry while extracting `Wojciechowski_2022_domagrozumab.R`. Source alias `SPOP`; orientation matches the source (1 = DMD pediatric patient, 0 = healthy adult volunteer reference). The covariate enters as a `(1 + theta * DIS_DMD)` multiplicative shift (additive on the linear scale, not exponentiated) rather than the typical `theta^DIS_DMD` form, matching Eqs. 7-8 of the paper.
@@ -1509,6 +1803,7 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **2026-04-24** — Added `STATIN_MONO` and `EZE` (both scope: specific; new "Concomitant lipid-lowering medication" section) and `PCSK9` (scope: general; new "Hypercholesterolemia biomarkers" section) canonical entries while extracting `Kuchimanchi_2018_evolocumab.R`. `STATIN_MONO` carries Kuchimanchi-specific "statin monotherapy only" semantics; `EZE` captures ezetimibe use (in the Kuchimanchi 2018 dataset overwhelmingly statin+ezetimibe combination therapy).
 - **2026-04-24** — Added `STATIN` (general-scope concomitant statin indicator) under `Concomitant / prior medication` and `FPCSK9` (specific-scope free PCSK9 concentration) under a new `Cardiometabolic / target biomarkers` section while extracting `Martinez_2019_alirocumab.R`.
 - **2026-04-24** — Added `CYCLE` canonical entry (scope: specific; integer count; power-covariate effect `CYCLE^Fm` on the ADC-to-MMAE proteolytic conversion fraction) while extracting `Li_2017_brentuximab.R`. New entry placed under `Occasion / period (IOV)` since it is conceptually an IOV-like index, but distinct from the binary `ooc<n>` pattern.
+- **2026-04-27** — Added `COMBO_DURVA` (specific scope) canonical entry while extracting `Hwang_2022_tremelimumab.R`. Parallels `COMBO_NIVO` (Sanghavi 2020) but for durvalumab co-administration; selects between monotherapy and combination-with-durvalumab values of the time-varying-CL Tmax and lambda parameters. Source alias `COMB` (NM-TRAN $INPUT data item) mapped.
 - **2026-04-24** — Added `LMET` (general-scope binary indicator for baseline liver metastases) and `TUMTP_OTH` (specific-scope residual "other tumor types" indicator, complement of the named `TUMTP_<GROUP>` indicators in the same model) canonical entries while extracting `Quartino_2019_trastuzumab.R`. Extended `TUMTP_GC` with the Quartino 2019 source alias `TTYPE == "AGC"` and `AST` with the legacy clinical-chemistry alias `SGOT`.
 - **2026-04-24** — Added `LDH` (general-scope serum lactate dehydrogenase),
   `TUMTP_SCLC` (specific-scope small-cell-lung-cancer tumor-type
@@ -1526,6 +1821,10 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **2026-04-25** — Added `DIS_PJIA` (polyarticular juvenile idiopathic arthritis disease-state indicator; scope: specific) under the existing `Disease state (cross-population indicators)` section while extracting `Gandhi_2021_abatacept.R`, where Gandhi 2021 pools adult RA with pJIA patients and tests pJIA-vs-RA on bioavailability (additive on logit-F: +3.08). Source alias `JIA` mapped. Reused the existing `SWOL_28JOINT` canonical for Gandhi 2021's swollen-joint-count covariate per operator decision: Gandhi 2021's reported reference SJC = 15 is consistent with the 28-joint scale, the same author group used the 28-joint count in Li 2019 (RA-only), and the paper text does not explicitly identify the joint-count scale.
 - **2026-04-25** — Added new top-level section `Pharmacogenomic SNPs` introducing the canonical pattern `SNP_<GENE>_<RSID>` for binary mutant-allele-presence genotype indicators. Three new entries: `SNP_ICAM1_RS1799969`, `SNP_VEGFA_RS1570360`, `SNP_VEGFA_RS699947` (all scope: specific) — the first pharmacogenomic-genotype covariates in the register, introduced while extracting the three Papachristos 2020 bevacizumab models (PK / binding QSS / PK/PD). Encoding: 1 = at least one mutant allele present; 0 = homozygous wild-type. Source-paper indicator names `cat`, `cat1`, `cat2` (which are positional within each model's covariate equation rather than formal column names) are recorded as aliases.
 - **2026-04-25** — Added `DIAB` (general-scope binary diabetes-mellitus comorbidity indicator) canonical entry under a new `Comorbidities` H2 section while extracting `Chen_2022_guselkumab.R`. Distinct from a primary-disease indicator (`DIS_*`); used in non-diabetes-primary indications where diabetes is tested as a covariate. Source alias `DIAB` mapped.
+- **2026-04-26** — Added `RACE_WHITE` (general; White vs non-White dichotomy), `HEPIMP_MILD` (general; mild hepatic impairment per NCI ODWG criteria), `NLR` (general; neutrophil-to-lymphocyte ratio, hematology), `SARS_VLOAD` (specific; SARS-CoV-2 baseline viral load), `SARS_SEROPOS` (specific; SARS-CoV-2 baseline serostatus), `OXYSUP_LOW` and `OXYSUP_HIGH` (both specific; decomposed from a 4-level supplemental-oxygen categorical) canonical entries while extracting `Lin_2024_casirivimab.R`. New H2 section `Infectious disease (SARS-CoV-2 / COVID-19)` introduced for the SARS_* and OXYSUP_* entries. Source aliases mapped: `RACE`→`RACE_WHITE` (Lin 2024 binary form), `HEPIMP`→`HEPIMP_MILD`, `VIRAL`→`SARS_VLOAD`, `SERPOS`→`SARS_SEROPOS`, `OXYSTAT1`→`OXYSUP_LOW`, `OXYSTAT2`→`OXYSUP_HIGH`.
+- **2026-04-27** — Added `MAYO_E` (general-scope baseline Mayo endoscopic subscore, integer 0-3) canonical entry under `Inflammatory-bowel-disease disease-activity covariates` while extracting `Faelens_2021_infliximab.R`. Source alias `MPRE` mapped (Faelens 2021 NONMEM column for "Mayo endoscopic score pre-induction"; the dataset's `MPRE = -99` missing sentinel is documented as out-of-domain in the per-model `notes`). Distinct from the full Mayo score (0-12) and partial Mayo `PMAYO` (0-9). Also promoted `DISEXT_EP` from scope: specific to scope: general (the binary "extensive colitis vs not" semantics generalize across UC popPK papers regardless of whether the source dataset also distinguishes an "other" disease-extension category) and added Faelens 2021 source alias `EXTCOL` and example-model entry.
+- **2026-04-26** — Added `HEP_IMP` (general-scope binary indicator for NCI ODWG hepatic impairment, mild or worse vs. normal) under `Renal / hepatic function` and `COMBO_RG` (specific-scope binary indicator for anti-CD20 (rituximab or obinutuzumab) combination therapy) under `Oncology` while extracting `Lu_2019_polatuzumab.R`. Source aliases mapped: `BHPTGRPN` (categorical NCI ODWG group with 9999 missing-value sentinel)→`HEP_IMP`; `COMBO` (Lu 2019 categorical 0/1/2)→`COMBO_RG`.
+- **2026-04-27** — Added `SBCMA` (specific-scope, baseline soluble B-cell maturation antigen, in `Cardiometabolic / target biomarkers`; reference 50 ng/mL) and `COMBO_BELAMAF` (specific-scope, any-combination belantamab mafodotin therapy indicator on Imax of the time-varying CL function, in `Concomitant / prior medication`) canonical entries while extracting `Papathanasiou_2025_belantamab.R`. Source aliases mapped: `SBCMABL`→`SBCMA`, `COMBO`→`COMBO_BELAMAF`.
 - Subsequent additions: append new canonical entries as new papers are processed. When adding, bump the audit-completed count in the summary below.
 
 ## Summary
