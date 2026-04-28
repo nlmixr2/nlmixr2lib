@@ -282,6 +282,16 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   - `HEP_IMP` — retired canonical name; replaced by `HEPIMP` for consistency with the `HEPIMP_MILD` family.
 - **Example models:** `Lu_2019_polatuzumab.R` (multiplicative effect on FRAC_NS = 1.19, applied as `1.19^HEPIMP`).
 - **Notes:** NCI ODWG classification (Ramalingam SS et al., J Clin Oncol 2010;28:4507) groups subjects by total bilirubin and AST: group 1 = normal, group 2 = mild (TBILI <= ULN and AST > ULN, or TBILI > 1-1.5 x ULN), group 3 = moderate (TBILI > 1.5-3 x ULN), group 4 = severe (TBILI > 3 x ULN). Source papers typically pool groups 2-4 versus group 1 for a binary indicator because the impaired-liver subgroups are individually small. If a future model needs finer resolution (separate effects for mild vs moderate-or-worse), add a parallel `HEPIMP_MOD` canonical rather than overloading this one.
+### CPK (**canonical for serum creatine phosphokinase / creatine kinase**)
+- **Description:** Serum creatine phosphokinase (also called creatine kinase, CK) activity (baseline or time-varying). Skeletal-muscle / cardiac-muscle injury and turnover marker; in macrophage-targeted PK/PD analyses (axatilimab, anti-CSF-1R) it is interpreted as a Kupffer-cell / tissue-macrophage clearance surrogate because Kupffer cells participate in the elimination of circulating muscle-derived enzymes.
+- **Units:** U/L (IU/L; interchangeable). Document per-model via `covariateData[[CPK]]$units`.
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a — used with power scaling `(CPK / ref)^exponent`. Reference values observed: 63 U/L (Yang 2024 axatilimab; pooled-cohort median).
+- **Source aliases:**
+  - `BLCPK` (baseline CPK) — informal usage in Yang 2024.
+- **Example models:** `Yang_2024_axatilimab.R` (baseline-only covariate on baseline NCMC concentration `BL_NCMC` with power exponent 0.376; reference 63 U/L).
+- **Notes:** Muscle-origin enzyme distinct from `AST` / `ALT` (hepatic) and `LDH` (general tissue turnover). Yang 2024 uses CPK alongside `AST` and `LDH` as tracked safety biomarkers. Per-model `covariateData[[CPK]]$notes` should document baseline-vs-time-varying status and the clinical interpretation in the source population (skeletal-muscle injury, macrophage-clearance surrogate, or both). Distinct from any model state variable representing CPK time-course dynamics — covariate column is the pre-dose laboratory observation.
 
 ## Hematology
 
@@ -349,6 +359,16 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Mulyukov_2018_ranibizumab.R` (baseline BCVA used as the center for the initial-condition draw `g0 = BCVA + eta_g0`).
 - **Notes:** Ophthalmology-specific. Baseline-only in Mulyukov 2018 (carried once per subject and used only as the starting BCVA for the indirect-response model). Canonical name drops the `B` prefix to match the `EASI` / `AGE` / `WT` / `ALB` pattern (baseline-vs-time-varying status recorded in `covariateData[[BCVA]]$notes`). Scope is `specific` until a second ophthalmology model ratifies the name; at that point promote to `general`.
 
+### ACUTE_MED_DAYS (**canonical for baseline number of days/month of acute migraine medication use**)
+- **Description:** Baseline number of days per month on which acute migraine medication (triptans or ergot compounds) was used during the 28-day run-in period prior to first dose. Enters as a piecewise-linear shift on baseline migraine or moderate-to-severe headache days in migraine exposure-response models.
+- **Units:** days/month
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a — piecewise-linear shift with breakpoint at 5 d/mo: contributes 0 below 5 and `slope * (ACUTE_MED_DAYS - 5)` above 5 (Fiedler-Kelly 2020). The 5-day breakpoint reflects the clinical guideline for medication-overuse headache.
+- **Source aliases:** "Baseline days/month of acute medications" — used in `FiedlerKelly_2020_fremanezumab_em.R` and `FiedlerKelly_2020_fremanezumab_cm.R`.
+- **Example models:** `FiedlerKelly_2020_fremanezumab_em.R` (slope 0.438 d/d, episodic migraine), `FiedlerKelly_2020_fremanezumab_cm.R` (slope 0.460 d/d, chronic migraine).
+- **Notes:** Specific scope because the variable is migraine-domain-bound. Time-fixed per subject (baseline-only). When future migraine E-R models register additional aliases or alternative breakpoints, document them per-model and consider promoting to `general`.
+
 ## Interferon / biomarker panels
 
 ### BGENE21 (**canonical for 21-gene type I interferon signature score**)
@@ -386,6 +406,16 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Yu_2022_ofatumumab.R` (power effect on the maximum B-cell-lysis stimulatory effect Emax, exponent 0.275, reference 200 cells/µL), `Lu_2019_polatuzumab.R` (two distinct effects: power on CL_INF with input floored at 1 cell/uL, and a thresholded power on CL_T with the BLBCELL/121-cells/uL ratio floored at 1).
 - **Notes:** Distinct from a *time-varying* B cell count, which is the PD response variable rather than a covariate. Scope: specific because the clinically relevant baseline depends on the surface marker (CD19, CD20, CD22) and whether the panel reports total B cells or memory/naive subsets — register a new canonical name if a future paper uses a different marker. Both Yu 2022 (anti-CD20 ofatumumab) and Lu 2019 (anti-CD79b polatuzumab vedotin) use CD19+ counts, so the canonical is reused; subtype-specific differences are documented in each model's `covariateData[[BLBCELL]]$notes`.
 
+### CSF1 (**canonical for colony-stimulating factor 1 / macrophage-colony-stimulating factor concentration**)
+- **Description:** Plasma colony-stimulating factor 1 (CSF-1, also known as macrophage colony-stimulating factor, M-CSF) concentration (baseline or time-varying). The hematopoietic cytokine that signals through CSF-1R to drive monocyte / macrophage differentiation and survival; used as both a target-engagement biomarker (anti-CSF-1R mAbs increase circulating free CSF-1) and a baseline covariate on PK / PD parameters in CSF-1R-pathway PopPK/PD models.
+- **Units:** pg/mL (= ng/L; the two labels are numerically equivalent). Document per-model via `covariateData[[CSF1]]$units`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a — used with power scaling `(CSF1 / ref)^exponent`. Reference values observed: 549 pg/mL (Yang 2024 axatilimab; pooled-cohort median).
+- **Source aliases:** none formally; informal aliases include `BLCSF1` (baseline CSF-1) and `BL_CSF1` (model-parameter notation in Monolix / NONMEM control streams).
+- **Example models:** `Yang_2024_axatilimab.R` (baseline-only covariate on linear clearance `CL` with power exponent 0.912 and on the model parameter `BL_CSF1` with power exponent 0.656; reference 549 pg/mL).
+- **Notes:** Specific scope because the column is meaningful only for CSF-1R-pathway-targeting drugs (axatilimab and future anti-CSF-1R molecules). Distinct from any CSF-1 model state representing time-course dynamics — covariate column is the pre-dose laboratory observation, typically measured by an ELISA assay (Yang 2024 used the R&D Systems Quantikine ELISA). Per-model `covariateData[[CSF1]]$notes` should document the assay used and any LOQ-related imputation for samples below the assay's limit of detection.
+
 ### CRP (**canonical for C-reactive protein**)
 - **Description:** C-reactive protein concentration. Covers both standard and high-sensitivity (hs-CRP) assays and both baseline and time-varying usages. Each model's `covariateData[[CRP]]$description` and `notes` must state the assay type (standard vs hs-CRP) and whether the column carries a baseline-only or time-varying value, including the paper-specific reference value used for power scaling.
 - **Units:** mg/L (document per-model via `covariateData[[CRP]]$units`).
@@ -422,6 +452,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   - `SBCMABL` (baseline soluble BCMA) — used in `Papathanasiou_2025_belantamab.R`.
 - **Example models:** `Papathanasiou_2025_belantamab.R` (ng/mL, reference 50; power exponents on initial CL +0.113, on ADC Vc +0.0401, on Imax +0.160).
 - **Notes:** Specific scope because the column is meaningful only for drugs whose mechanism involves the BCMA receptor (and thus a circulating soluble-target pool). Reusing the name for another anti-BCMA agent is acceptable (extend the example-models list). For other oncology TMDD targets register a new canonical (e.g., `HER2_ECD` already exists for HER2; an analogous `SCD20`, `SCD38` would follow the same pattern). Multiple myeloma populations show sBCMA spanning roughly 2 to 2,000 ng/mL, so the (SBCMA/50)^exponent form should be evaluated with care over the full clinical range.
+## Drug exposure metrics
+
+### CAV (**canonical for average drug plasma concentration over a dosing interval**)
+- **Description:** Average plasma concentration of the modelled drug over a dosing interval (Cav = AUC_tau / tau). Used as the time-varying or per-period exposure metric in exposure-response models that feed individual empirical-Bayes PK predictions from a previously published population PK model into a downstream PD model.
+- **Units:** ug/mL (document per-model via `covariateData[[CAV]]$units`).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a — used in Emax/EC50 (e.g., `Emax * CAV / (EC50 + CAV)`) or power (e.g., `(CAV / CavMedian)^exponent`) drug-effect terms. Set to 0 for placebo periods.
+- **Source aliases:** `CAV`, `Cav`, `CAVG`.
+- **Example models:** `FiedlerKelly_2020_fremanezumab_em.R`, `FiedlerKelly_2020_fremanezumab_cm.R`.
+- **Notes:** Specific scope because the value is intrinsically tied to the modelled drug — there is no shared meaning across drugs or studies. Each model's `covariateData[[CAV]]$notes` should state how the Cav values are derived (e.g., empirical-Bayes from a referenced population PK model) and that the column is set to 0 for placebo periods.
 
 ## Race / ethnicity
 
@@ -602,6 +643,16 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Gandhi_2021_abatacept.R` (additive coefficient on logit-F: pJIA patients have markedly higher SC bioavailability than RA reference).
 - **Notes:** Used when a population PK model pools pJIA patients with a non-pJIA reference population (e.g., Gandhi 2021: pooled adult RA + pediatric pJIA) and pJIA disease/age status is tested as a PK covariate (in Gandhi 2021, on bioavailability rather than CL — disease-vs-CL was not clinically relevant). Distinct from `CHILD` and `ADOLESCENT`, which are pure age-band indicators independent of indication. Scope: specific; promote to general if a second paper pools pJIA with a non-pJIA reference.
 
+### DIS_CANCER (**canonical for advanced-solid-tumor / oncology cohort indicator**)
+- **Description:** 1 = patient with an advanced or metastatic solid tumor (the oncology cohort in a pooled multi-indication PK/PD analysis), 0 = non-oncology subject (healthy volunteer or non-oncology disease cohort pooled in the source analysis). Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-oncology subject; the complement group is paper-defined — typically the union of healthy volunteers and a non-oncology disease cohort such as cGVHD pooled in the source analysis).
+- **Source aliases:** none; source NONMEM / Monolix control streams typically derive the indicator from a `POP` or `STUDY` categorical alongside `DIS_HV`.
+- **Example models:** `Yang_2024_axatilimab.R` (multiplicative effect on baseline NCMC: `BL_NCMC × exp(1.22 × DIS_CANCER + 0.618 × DIS_HV)`; reference category cGVHD when both indicators are 0).
+- **Notes:** Used together with `DIS_HV` to decompose a three-level "participant population" categorical (cGVHD reference, advanced solid tumor, healthy volunteer) into two orthogonal binary indicators. Scope: specific because the disease-pooling reference category is paper-defined (Yang 2024 reference is patients with cGVHD). Ratified canonically on 2026-04-28.
+
 ### DIS_HV (**canonical for healthy-volunteer cohort indicator**)
 - **Description:** 1 = healthy volunteer (no diagnosis), 0 = patient (any diagnosis represented in the pooled cohort). Time-fixed per subject.
 - **Units:** (binary)
@@ -611,6 +662,8 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Source aliases:** none known; healthy-volunteer indicators in source NONMEM control streams typically use ad-hoc names (e.g., `HV`, `HEALTHY`).
 - **Example models:** `Nikanjam_2019_siltuximab.R` (multiplicative effects: 0.77 on CL, 0.83 on Vss; reference category is the pooled non-HV oncology cohort), `Okada_2025_rocatinlimab.R` (multiplicative shift `1 - 0.532` on Vmax when 1; reference complement is the pooled atopic-dermatitis + ulcerative-colitis + plaque-psoriasis patient cohort).
 - **Notes:** Used when a population PK model pools healthy volunteers with patients across heterogeneous indications and the HV-vs-patient contrast is retained as a covariate. Scope: specific because the complement reference category is paper-defined (Nikanjam 2019 reference is "all non-HV, non-Castleman, non-SMM tumor types"; Okada 2025 reference is the pooled AD+UC+psoriasis patient cohort). Ratified canonically on 2026-04-24.
+- **Example models:** `Nikanjam_2019_siltuximab.R` (multiplicative effects: 0.77 on CL, 0.83 on Vss; reference category is the pooled non-HV oncology cohort), `Yang_2024_axatilimab.R` (multiplicative effect on baseline NCMC: `BL_NCMC × exp(1.22 × DIS_CANCER + 0.618 × DIS_HV)`; reference category cGVHD).
+- **Notes:** Used when a population PK model pools healthy volunteers with patients across heterogeneous indications and the HV-vs-patient contrast is retained as a covariate. Scope: specific because the complement reference category is paper-defined (Nikanjam 2019 reference is "all non-HV, non-Castleman, non-SMM tumor types"; Yang 2024 reference is patients with cGVHD). Ratified canonically on 2026-04-24.
 
 ### DIS_CASTLEMAN (**canonical for Castleman's disease indicator**)
 - **Description:** 1 = Castleman's disease (multicentric or unicentric), 0 = not Castleman's disease. Time-fixed per subject.
@@ -787,7 +840,7 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Notes:** Scoped specific because the covariate is meaningful only for drugs that compete with trastuzumab at the HER2 binding site. Expect values clustered at 0 for trastuzumab-naive patients; Lu 2014 observed 0 at the 5th percentile and 54 ug/mL at the 95th percentile.
 
 ### TUMTP_GC (**canonical for gastric-cancer tumor-type indicator**)
-- **Description:** 1 = gastric cancer (GC), 0 = other tumor types.
+- **Description:** 1 = gastric cancer (GC) or adenocarcinoma of the gastroesophageal junction (GEJ), 0 = other tumor types.
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** specific
@@ -795,8 +848,9 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Source aliases:**
   - `TUMTP` (categorical column) — decompose into `TUMTP_GC = as.integer(TUMTP == "GC")`.
   - `TTYPE` (Quartino 2019; categorical column with levels `MBC`, `EBC`, `HV`, `AGC`, `Others`) — decompose into `TUMTP_GC = as.integer(TTYPE == "AGC")`.
-- **Example models:** `Budha_2023_tislelizumab.R`, `Quartino_2019_trastuzumab.R` (advanced gastric cancer; per-group typical-value switch on linear CL and Vc rather than an exponential multiplier).
-- **Notes:** Follows the `RACE_<GROUP>` indicator-decomposition pattern. New oncology tumor types should be added as additional `TUMTP_<GROUP>` entries so the reference set stays explicit. "Advanced gastric cancer" (AGC) and "gastric cancer" (GC) are pooled onto a single `TUMTP_GC` indicator; document the per-paper stage-of-disease detail in `covariateData[[TUMTP_GC]]$notes`.
+  - `TTYPE4` (Wang 2024; level 4 of a five-level tumor-type factor labelled "GCGEJ" in the source) — decompose into `TUMTP_GC = as.integer(TTYPE4 == 1)`.
+- **Example models:** `Budha_2023_tislelizumab.R`, `Quartino_2019_trastuzumab.R` (advanced gastric cancer; per-group typical-value switch on linear CL and Vc rather than an exponential multiplier), `Wang_2024_sugemalimab.R` (gastric + GEJ adenocarcinoma pooled; exponential coefficient log(1.13) on CL and log(1.14) on Vc).
+- **Notes:** Follows the `RACE_<GROUP>` indicator-decomposition pattern. New oncology tumor types should be added as additional `TUMTP_<GROUP>` entries so the reference set stays explicit. "Advanced gastric cancer" (AGC), "gastric cancer" (GC), and "GC or adenocarcinoma of the gastroesophageal junction" (GCGEJ) are pooled onto a single `TUMTP_GC` indicator; document the per-paper stage-of-disease and GEJ-inclusion detail in `covariateData[[TUMTP_GC]]$notes`. ESCC (squamous histology) is captured by the separate `TUMTP_ESCC` indicator and is not pooled here.
 
 ### TUMTP_OTH (**canonical for 'other tumor types' residual indicator**)
 - **Description:** 1 = heterogeneous "other" tumor-type pool (typically NSCLC plus miscellaneous solid tumors such as prostate, ovarian, and colorectal), 0 = one of the named tumor-type groups in the same analysis.
@@ -819,6 +873,9 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Source aliases:** none; `SPDL1` is the standard abbreviation used directly in source analyses.
 - **Example models:** `Ogasawara_2020_durvalumab.R` (power effect on CL, exponent 0.0617, reference 173.8 pg/mL; time-varying; values below LOD imputed as LOD/2 = 33.55 pg/mL).
 - **Notes:** Scope: specific because sPD-L1 is meaningful only for drugs targeting the PD-1/PD-L1 pathway. For other checkpoint biomarkers (e.g., soluble CTLA-4, soluble LAG-3) register new dedicated canonicals rather than reusing this one. Ratified canonically on 2026-04-26.
+  - `TTYPE3` (Wang 2024; level 3 of a five-level tumor-type factor labelled "Other" in the source) — decompose into `TUMTP_OTH = as.integer(TTYPE3 == 1)`.
+- **Example models:** `Quartino_2019_trastuzumab.R` (per-group typical-value switch on linear CL; NSCLC plus a small residual group of prostate, ovarian, and other histologies), `Wang_2024_sugemalimab.R` (heterogeneous solid-tumor residual group of n = 174; exponential coefficient log(0.885) on CL and log(0.926) on Vc; NSCLC is the reference group, not part of `TUMTP_OTH`).
+- **Notes:** Scope: specific because the set of histologies collapsed into "Others" is defined by the analysis plan of the source paper; two papers' `TUMTP_OTH` columns are not interchangeable. Document the exact per-paper composition (e.g., "NSCLC + prostate + ovarian + other, n = 107 in Quartino 2019"; "miscellaneous solid tumors excluding NSCLC, lymphoma, GCGEJ, and ESCC, n = 174 in Wang 2024") in `covariateData[[TUMTP_OTH]]$notes`. A given subject can have at most one of the `TUMTP_<GROUP>` indicators (including `TUMTP_OTH`) set to 1; all-zero means the reference group.
 
 ### LMET (**canonical for baseline presence of liver metastases**)
 - **Description:** Binary indicator of radiologically documented liver metastases at baseline, 1 = liver metastases present, 0 = no liver metastases.
@@ -853,6 +910,28 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   - `TUMTP` (categorical column with levels including `melanoma`, `NSCLC`, `SCLC`, `CRC`, `HCC`, `RCC`) — decompose into `TUMTP_SCLC = as.integer(TUMTP == "SCLC")`.
 - **Example models:** `Sanghavi_2020_ipilimumab.R` (exponential coefficient -0.124 on CL).
 - **Notes:** Follows the `TUMTP_CHL` / `TUMTP_GC` decomposition pattern. SCLC is the only retained tumor-type indicator in the Sanghavi 2020 final model after backward elimination; the other tumor types collapse into the reference (melanoma) group.
+
+### TUMTP_LYMPH (**canonical for lymphoma (pooled) tumor-type indicator**)
+- **Description:** 1 = lymphoma (heterogeneous lymphoma pool spanning multiple lymphoma histologies — e.g., classical Hodgkin lymphoma combined with extranodal NK/T-cell lymphoma), 0 = solid tumor or other tumor type.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 = non-lymphoma tumor type (per source paper; e.g., NSCLC, GC/GEJ, ESCC, "Other" solid tumors in the Wang 2024 cohort, with NSCLC as the implicit reference when paired with the other Wang 2024 `TUMTP_*` indicators).
+- **Source aliases:**
+  - `TTYPE1` (Wang 2024) — decompose into `TUMTP_LYMPH = as.integer(TTYPE1 == 1)`. The Wang 2024 source paper uses a multi-level `TTYPE` factor with levels 1 = lymphoma, 2 = lung cancer (reference), 3 = other, 4 = GCGEJ, 5 = ESCC.
+- **Example models:** `Wang_2024_sugemalimab.R` (exponential coefficient log(0.877) on baseline CL and log(0.879) on Vc).
+- **Notes:** Distinct from `TUMTP_CHL` (which is specifically classical Hodgkin lymphoma). Wang 2024 pools two lymphoma histologies (extranodal NK/T-cell lymphoma from CS1001-201 / NCT03595657 and classical Hodgkin lymphoma from CS1001-202 / NCT03505996) into a single lymphoma indicator; the indicator therefore captures a generic "hematologic-vs-solid-tumor" contrast rather than a histology-specific effect. When a future paper studies a single lymphoma histology distinct from cHL, register a more specific canonical (e.g., `TUMTP_ENKTL`, `TUMTP_NHL`) rather than overloading this one. Document the per-paper histology composition in `covariateData[[TUMTP_LYMPH]]$notes`.
+
+### TUMTP_ESCC (**canonical for oesophageal-squamous-cell-carcinoma tumor-type indicator**)
+- **Description:** 1 = oesophageal squamous cell carcinoma (ESCC), 0 = other tumor types.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 = all other tumor types (per source paper; in Wang 2024, the implicit reference is NSCLC when all the other `TUMTP_*` indicators are also 0).
+- **Source aliases:**
+  - `TTYPE5` (Wang 2024) — decompose into `TUMTP_ESCC = as.integer(TTYPE5 == 1)`.
+- **Example models:** `Wang_2024_sugemalimab.R` (exponential coefficient log(0.99) on baseline CL and log(1.08) on Vc).
+- **Notes:** Follows the `TUMTP_CHL` / `TUMTP_GC` / `TUMTP_SCLC` decomposition pattern. Distinct from gastroesophageal-junction adenocarcinoma (which is captured by the broader `TUMTP_GC` indicator that pools GC and GEJ adenocarcinomas) — ESCC is a squamous-cell histology, not adenocarcinoma. Document the per-paper histology composition in `covariateData[[TUMTP_ESCC]]$notes`.
 
 ### LINE_1L (**canonical for first-line-therapy indicator**)
 - **Description:** 1 = first-line therapy (1L) / treatment-naive, 0 = second-line or greater (2L+) / relapsed-or-refractory.
@@ -1712,6 +1791,7 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **2026-04-27** — Added a new `## Study-site region` section with `REGION_JAPAN`, `REGION_EUROPE`, `REGION_ROW` canonical entries (all scope: specific, binary indicators) while extracting `Hong_2025_datopotamab.R`. US is the implicit reference category (all three indicators = 0). The new entries are distinct from the existing `RACE_*` family because they encode trial-site geography rather than subject ancestry; a Japanese-ancestry subject enrolled at a US site has `RACE_JAPANESE = 1` and `REGION_JAPAN = 0`.
 - **2026-04-26** — Added `B2M` (general-scope serum beta-2-microglobulin under `Renal / hepatic function`; reference 3.90 mg/L from the multiple-myeloma cohort median), `MM_NIGG` (specific-scope non-IgG-MM-vs-IgG-MM within-disease immunoglobulin-type indicator under `Oncology`), and `FORM_P2F2` (specific-scope isatuximab phase III / commercial-bound drug-material indicator, placed alongside the existing `FORM_*` entries) canonical entries while extracting `Fau_2020_isatuximab.R`. Source aliases mapped: `Ig_type`→`MM_NIGG`, `Drug_mat`→`FORM_P2F2`. `Fau_2020_isatuximab.R` added to the `WT`, `SEXF`, and `RACE_ASIAN` example-model lists.
 - **2026-04-27** — Promoted `COADMIN_CHEMO` from specific to general scope after the Kuchimanchi 2024 dostarlimab + carboplatin/paclitaxel population-PK analysis ratified the same pooling convention (any chemotherapy backbone collapsed into a single binary indicator) on a second mAb. The two example models use different functional forms — Zhang 2019 uses `exp(theta * COADMIN_CHEMO)` and Kuchimanchi 2024 uses `(1 + theta * COADMIN_CHEMO)` — but the canonical column meaning is unchanged; the per-model functional form is documented in the model files' `notes`. Source-alias list updated: `MONOTR` (Kuchimanchi 2024) added with the inverse-value relation `COADMIN_CHEMO = 1 - MONOTR`. Description and example list extended to include `Kuchimanchi_2024_dostarlimab.R`.
+- **2026-04-27** — Added `ACUTE_MED_DAYS` (specific scope under `Disease severity scores`; baseline number of days/month of acute migraine medication use, piecewise-linear with breakpoint at 5 d/mo per medication-overuse-headache convention) and `CAV` (specific scope under a new `Drug exposure metrics` H2 section; average modelled-drug plasma concentration over a dosing interval, used as the exposure covariate in PD exposure-response models that consume empirical-Bayes Cav from a previously-published popPK model) canonical entries while extracting the two Fiedler-Kelly 2020 fremanezumab exposure-response models (`FiedlerKelly_2020_fremanezumab_em.R`, `FiedlerKelly_2020_fremanezumab_cm.R`).
 - **2026-04-26** — Deduplicated four covariate entries that were registered twice during sequential model-PR merges: (1) merged second `IGG` entry (Yang 2021 cemiplimab) into the first (Zhou 2021 belimumab) — both papers use the same canonical `IGG` column, so the entry now lists both source aliases (`BIGG`, `IGGBL`) and both reference values (14.8 g/L, 9.65 g/L); (2) merged second `BGENE21` entry (Zheng 2016 sifalimumab, misfiled under Inflammation markers) into the first (Narwal 2013 sifalimumab, under Interferon / biomarker panels); (3) merged `STEROID_BL` (Zheng 2016 sifalimumab) into `STEROID` (Narwal 2013 sifalimumab) — both encode the same baseline/concomitant corticosteroid indicator, `STEROID` is the preferred shorter name, `STEROID_BL` retired; `Zheng_2016_sifalimumab.R` updated accordingly; (4) merged `ECOG_PS_GT0` (Zhang 2019 nivolumab) into `ECOG_GE1` (Bajaj 2017 nivolumab) — `>= 1` equals `> 0` for integer ECOG scores, `ECOG_GE1` is the preferred name (consistent with a potential future `ECOG_GE2`), `ECOG_PS_GT0` retired; `Zhang_2019_nivolumab.R` updated accordingly.
 - **2026-04-26** — Added `RACE_JAPANESE` (general scope) canonical entry to formalize the entry that was noted in the changelog but lacked a proper H3 section. Source alias `JAPANESE_HV` from `Wang_2017_benralizumab.R` mapped; `Wade_2015_certolizumab.R` uses `RACE_JAPANESE` directly. Added `MM` (active multiple myeloma, specific scope), `MDSAML` (MDS or AML combined indicator, specific scope), and `SPDL1` (soluble PD-L1, specific scope) canonical entries while fixing convention issues in `Ogasawara_2020_durvalumab.R`.
 - **2026-04-26** — Added `DIS_DMD` (specific scope) canonical entry while extracting `Wojciechowski_2022_domagrozumab.R`. Source alias `SPOP`; orientation matches the source (1 = DMD pediatric patient, 0 = healthy adult volunteer reference). The covariate enters as a `(1 + theta * DIS_DMD)` multiplicative shift (additive on the linear scale, not exponentiated) rather than the typical `theta^DIS_DMD` form, matching Eqs. 7-8 of the paper.
@@ -1825,6 +1905,7 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **2026-04-27** — Added `MAYO_E` (general-scope baseline Mayo endoscopic subscore, integer 0-3) canonical entry under `Inflammatory-bowel-disease disease-activity covariates` while extracting `Faelens_2021_infliximab.R`. Source alias `MPRE` mapped (Faelens 2021 NONMEM column for "Mayo endoscopic score pre-induction"; the dataset's `MPRE = -99` missing sentinel is documented as out-of-domain in the per-model `notes`). Distinct from the full Mayo score (0-12) and partial Mayo `PMAYO` (0-9). Also promoted `DISEXT_EP` from scope: specific to scope: general (the binary "extensive colitis vs not" semantics generalize across UC popPK papers regardless of whether the source dataset also distinguishes an "other" disease-extension category) and added Faelens 2021 source alias `EXTCOL` and example-model entry.
 - **2026-04-26** — Added `HEP_IMP` (general-scope binary indicator for NCI ODWG hepatic impairment, mild or worse vs. normal) under `Renal / hepatic function` and `COMBO_RG` (specific-scope binary indicator for anti-CD20 (rituximab or obinutuzumab) combination therapy) under `Oncology` while extracting `Lu_2019_polatuzumab.R`. Source aliases mapped: `BHPTGRPN` (categorical NCI ODWG group with 9999 missing-value sentinel)→`HEP_IMP`; `COMBO` (Lu 2019 categorical 0/1/2)→`COMBO_RG`.
 - **2026-04-27** — Added `SBCMA` (specific-scope, baseline soluble B-cell maturation antigen, in `Cardiometabolic / target biomarkers`; reference 50 ng/mL) and `COMBO_BELAMAF` (specific-scope, any-combination belantamab mafodotin therapy indicator on Imax of the time-varying CL function, in `Concomitant / prior medication`) canonical entries while extracting `Papathanasiou_2025_belantamab.R`. Source aliases mapped: `SBCMABL`→`SBCMA`, `COMBO`→`COMBO_BELAMAF`.
+- **2026-04-28** — Added `CSF1` (specific-scope plasma colony-stimulating factor 1 / M-CSF concentration; placed under `Inflammation markers`), `CPK` (general-scope serum creatine phosphokinase / creatine kinase; placed under `Renal / hepatic function` next to AST/ALT/LDH although mechanistically a muscle-origin enzyme), and `DIS_CANCER` (specific-scope advanced-solid-tumor cohort indicator; placed under `Disease state (cross-population indicators)`) canonical entries while extracting `Yang_2024_axatilimab.R`. Extended `DIS_HV` example_models with Yang 2024 as the second user (cGVHD-reference complement to Nikanjam 2019's non-HV-oncology reference). Source aliases mapped: `BLCSF1` / `BL_CSF1` (Monolix model-parameter name) → `CSF1`; `BLCPK` → `CPK`. Reference values: 549 pg/mL (CSF1), 63 U/L (CPK), pooled-cohort medians from Yang 2024 Table S3.
 - Subsequent additions: append new canonical entries as new papers are processed. When adding, bump the audit-completed count in the summary below.
 
 ## Summary
