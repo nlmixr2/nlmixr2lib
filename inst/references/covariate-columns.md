@@ -198,6 +198,18 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Fasanmade_2009_infliximab.R` (g/dL, reference 4.1), `Thakre_2022_risankizumab.R` (g/L, reference 45), `Chua_2025_mirikizumab.R`, `Moein_2022_etrolizumab.R`, `Tiraboschi_2025_amlitelimab.R`, `Yamada_2025_zolbetuximab.R`, `Li_2019_abatacept.R` (g/dL, reference 4.0; the Li 2019 Methods states 'mg/dL' which is a publication typo — see the model's `covariateData[[ALB]]$notes`), `Quartino_2019_trastuzumab.R` (g/dL, reference 4; source column `ALBU`; negative exponent -0.998 on linear CL), `Wang_2020_ontamalimab.R` (g/L, reference 39), `Zhou_2021_belimumab.R` (g/L, reference 40; baseline-only, source column `BALB`), `Okada_2025_rocatinlimab.R` (g/L, reference 44; source column `ALBU`; power exponent -1.30 on linear CL).
 - **Notes:** Ratified canonically on 2026-04-19 after cross-model review. Unit varies by paper (g/dL in US-convention papers, g/L in SI-convention papers); the per-model `covariateData[[ALB]]$units` field is load-bearing. Effect-coefficient magnitude is meaningless without the unit.
 
+### TPRO (**canonical for total serum protein**)
+- **Description:** Total serum protein concentration (sum of albumin + globulins; baseline or time-varying).
+- **Units:** g/L or g/dL — document the unit used in each model via `covariateData[[TPRO]]$units` (1 g/dL = 10 g/L).
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a — used with power scaling `(TPRO / ref)^exponent`. Reference value observed: 74 g/L (Frey 2010 pooled-cohort median).
+- **Source aliases:**
+  - `PROT` — Frey 2010 abbreviation in the final-model equation.
+  - `TP` — common clinical-chemistry abbreviation.
+- **Example models:** `Frey_2010_tocilizumab.R` (g/L, reference 74; exponent -1.1 on V1).
+- **Notes:** Distinct from `ALB` (serum albumin, the largest single component of total protein). Frey 2010 retains both `TPRO` and `ALB` on V1 as separate covariates with opposite signs (TPRO negative, ALB positive) and notes there is no clear mechanistic explanation; the joint effect may reflect serum-volume modifications. `TPRO` ratified canonically on 2026-04-28 alongside the Frey 2010 extraction.
+
 ### IGG (**canonical for serum immunoglobulin G**)
 - **Description:** Serum total immunoglobulin G concentration (baseline or time-varying). Used in mAb PK analyses as a competition-for-FcRn-recycling covariate on therapeutic-mAb clearance — high endogenous IgG is hypothesized to displace the therapeutic mAb from FcRn salvage and increase its catabolic clearance.
 - **Units:** g/L (typical in SI-convention papers); also reported as mg/dL in US-convention papers — document the unit used in each model via `covariateData[[IGG]]$units`.
@@ -431,6 +443,18 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Notes:** The prior separate `hsCRP`, `BLCRP`, and standard-assay `CRP` canonicals were merged on 2026-04-20 to a single general-scope `CRP` canonical. Assay type (standard vs hs-CRP), baseline-vs-time-varying status, and the paper-specific reference value all live in each model's `covariateData[[CRP]]$description` / `notes`. Only aggregate values from hs-validated assays as CRP when the downstream analysis relies on low-range sensitivity; for most inflammatory-disease cohorts (IBD, RA/PsA), baseline CRP is well above the hs-sensitivity range and the distinction is moot.
 
 ## Cardiometabolic / target biomarkers
+
+### HDLC (**canonical for high-density lipoprotein cholesterol**)
+- **Description:** Serum high-density lipoprotein cholesterol concentration (baseline or time-varying).
+- **Units:** mg/dL or mmol/L — document the unit used in each model via `covariateData[[HDLC]]$units` (1 mmol/L ≈ 38.67 mg/dL for cholesterol).
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a — used with power scaling `(HDLC / ref)^exponent`. Reference value observed: 54 mg/dL (Frey 2010 pooled-cohort median).
+- **Source aliases:**
+  - `HDL-C` — Frey 2010 spelling with hyphen.
+  - `HDL_C` — common alternative spelling.
+- **Example models:** `Frey_2010_tocilizumab.R` (mg/dL, reference 54; small negative exponent -0.2 on linear CL; the paper interprets the effect as a body-size surrogate rather than a mechanism).
+- **Notes:** Cardiometabolic lipid-panel covariate. In Frey 2010 it correlates with body size (HDL-C is lower in larger patients) and the small CL effect (-14% to +15% across the observed 23-135 mg/dL range) was retained but not interpreted as mechanistic.
 
 ### FPCSK9 (**canonical for free (unbound) proprotein convertase subtilisin/kexin type 9 concentration**)
 - **Description:** Free (unbound, non-drug-bound) serum proprotein convertase subtilisin/kexin type 9 (PCSK9) concentration. For anti-PCSK9 monoclonal antibodies (alirocumab, evolocumab, bococizumab) the free-PCSK9 pool is the pharmacologically active target fraction; drug–target binding reduces FPCSK9 relative to total PCSK9.
@@ -1162,6 +1186,18 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Notes:** Wu 2024 Table 3 footnote b explicitly flips the reference category vs. the predecessor Garrett 2019 adult model: in Garrett 2019 the reference was "with rituximab" (RITUX = 0 meant on-rituximab), whereas in Wu 2024 the reference is "without rituximab" (RITUX = 0 means no concomitant rituximab). Future models that pool an analogous rituximab-combination cohort with a single-agent reference should use this canonical with the Wu 2024 sign convention; if a paper retains the Garrett 2019 reverse-coded convention, document the value transformation in `covariateData[[CONMED_RITUX]]$notes` (`CONMED_RITUX = 1 - source$RITUX`) rather than registering a second canonical. Ratified canonically on 2026-04-26.
 
 ## Rheumatoid-arthritis disease-activity covariates
+
+### RHEUMATOID_FACTOR (**canonical for serum rheumatoid factor concentration**)
+- **Description:** Serum rheumatoid factor (an autoantibody, predominantly IgM, directed against the Fc portion of IgG) concentration. Baseline value typical; document time-varying use in per-model `notes`.
+- **Units:** U/mL or IU/mL (interchangeable in the clinical-PK literature). Document per-model via `covariateData[[RHEUMATOID_FACTOR]]$units`.
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a — used with power scaling on a log-transformed value: `(log(RHEUMATOID_FACTOR) / log(ref))^exponent` (or, equivalently, the source-paper form `(LRF / log(ref))^exponent` where `LRF = log(RHEUMATOID_FACTOR)`). Reference value observed: 110 U/mL (Frey 2010, corresponding to LRF = 4.7 in the paper's final-model equation).
+- **Source aliases:**
+  - `LRF` — log-transformed RF (natural log of the value in U/mL); Frey 2010 fits the covariate on the log scale and reports the reference as `LRF = 4.7` (i.e., `log(110) ≈ 4.7`). The canonical column carries the raw RF concentration in U/mL; the log transform is applied inside `model()`.
+  - `RF` — universal NONMEM/clinical-PK abbreviation; rejected as the canonical name on 2026-04-28 because the bare two-letter abbreviation is uncommon in published popPK papers and could be confused with other shortenings.
+- **Example models:** `Frey_2010_tocilizumab.R` (U/mL, reference 110 U/mL ≡ LRF = 4.7; small positive exponent +0.1 on linear CL applied to `log(RHEUMATOID_FACTOR)`).
+- **Notes:** RF concentrations span several orders of magnitude across the rheumatoid-arthritis population (Frey 2010 observed range 15-11,800 U/mL across the four phase-III studies; reference paper: Frey 2010 Table I), motivating the log transform before power scaling. The mechanistic rationale (Frey 2010 Discussion, p764) is that RF — being an anti-IgG autoantibody — could in principle bind the Fc region of the therapeutic IgG monoclonal antibody and accelerate clearance, but the observed CL effect was small (-4.9% to +6.5% across the observed RF range) and the paper acknowledges that high RF concentrations may also reduce the assay's ability to detect the drug, leading to an apparent CL increase. Ratified canonically on 2026-04-28 alongside the Frey 2010 extraction.
 
 ### BLPHYVAS
 - **Description:** Baseline Physician's Global Assessment of Disease Activity, 100-mm visual analogue scale (0 = no disease activity, 100 = maximum). Time-fixed per subject.
@@ -1906,6 +1942,7 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **2026-04-26** — Added `HEP_IMP` (general-scope binary indicator for NCI ODWG hepatic impairment, mild or worse vs. normal) under `Renal / hepatic function` and `COMBO_RG` (specific-scope binary indicator for anti-CD20 (rituximab or obinutuzumab) combination therapy) under `Oncology` while extracting `Lu_2019_polatuzumab.R`. Source aliases mapped: `BHPTGRPN` (categorical NCI ODWG group with 9999 missing-value sentinel)→`HEP_IMP`; `COMBO` (Lu 2019 categorical 0/1/2)→`COMBO_RG`.
 - **2026-04-27** — Added `SBCMA` (specific-scope, baseline soluble B-cell maturation antigen, in `Cardiometabolic / target biomarkers`; reference 50 ng/mL) and `COMBO_BELAMAF` (specific-scope, any-combination belantamab mafodotin therapy indicator on Imax of the time-varying CL function, in `Concomitant / prior medication`) canonical entries while extracting `Papathanasiou_2025_belantamab.R`. Source aliases mapped: `SBCMABL`→`SBCMA`, `COMBO`→`COMBO_BELAMAF`.
 - **2026-04-28** — Added `CSF1` (specific-scope plasma colony-stimulating factor 1 / M-CSF concentration; placed under `Inflammation markers`), `CPK` (general-scope serum creatine phosphokinase / creatine kinase; placed under `Renal / hepatic function` next to AST/ALT/LDH although mechanistically a muscle-origin enzyme), and `DIS_CANCER` (specific-scope advanced-solid-tumor cohort indicator; placed under `Disease state (cross-population indicators)`) canonical entries while extracting `Yang_2024_axatilimab.R`. Extended `DIS_HV` example_models with Yang 2024 as the second user (cGVHD-reference complement to Nikanjam 2019's non-HV-oncology reference). Source aliases mapped: `BLCSF1` / `BL_CSF1` (Monolix model-parameter name) → `CSF1`; `BLCPK` → `CPK`. Reference values: 549 pg/mL (CSF1), 63 U/L (CPK), pooled-cohort medians from Yang 2024 Table S3.
+- **2026-04-28** — Added `HDLC` (general-scope serum HDL cholesterol; placed under `Cardiometabolic / target biomarkers`), `TPRO` (general-scope total serum protein; placed under `Renal / hepatic function` next to `ALB`), and `RHEUMATOID_FACTOR` (general-scope serum rheumatoid factor concentration with log-transform-then-power scaling; placed under `Rheumatoid-arthritis disease-activity covariates`) canonical entries while extracting `Frey_2010_tocilizumab.R`. Source aliases mapped: `HDL-C` / `HDL_C` → `HDLC`; `PROT` / `TP` → `TPRO`; `LRF` (Frey 2010 final-equation log-RF variable) and `RF` (universal NONMEM/clinical-PK abbreviation, but explicitly rejected on 2026-04-28 as the canonical name in favour of the unambiguous `RHEUMATOID_FACTOR`) → `RHEUMATOID_FACTOR`. Reference values: 54 mg/dL (HDLC), 74 g/L (TPRO), 110 U/mL ≡ LRF = 4.7 (RHEUMATOID_FACTOR), all from the Frey 2010 pooled-cohort medians.
 - Subsequent additions: append new canonical entries as new papers are processed. When adding, bump the audit-completed count in the summary below.
 
 ## Summary
