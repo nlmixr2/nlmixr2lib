@@ -56,6 +56,8 @@
     <li><a class="dropdown-item" href="../articles/Fasanmade_2009_infliximab.html">Fasanmade_2009_infliximab</a></li>
     <li><a class="dropdown-item" href="../articles/Fau_2020_isatuximab.html">Fau_2020_isatuximab</a></li>
     <li><a class="dropdown-item" href="../articles/Fiedler-Kelly_2019_fremanezumab.html">Fiedler-Kelly_2019_fremanezumab</a></li>
+    <li><a class="dropdown-item" href="../articles/FiedlerKelly_2020_fremanezumab_cm.html">FiedlerKelly_2020_fremanezumab_cm</a></li>
+    <li><a class="dropdown-item" href="../articles/FiedlerKelly_2020_fremanezumab_em.html">FiedlerKelly_2020_fremanezumab_em</a></li>
     <li><a class="dropdown-item" href="../articles/Gandhi_2021_abatacept.html">Gandhi_2021_abatacept</a></li>
     <li><a class="dropdown-item" href="../articles/Grimm_2023.html">Trontinemab and gantenerumab PK in plasma and brain (Grimm 2023)</a></li>
     <li><a class="dropdown-item" href="../articles/Gupta_2016_amatuximab.html">Gupta_2016_amatuximab</a></li>
@@ -67,12 +69,14 @@
     <li><a class="dropdown-item" href="../articles/Hwang_2022_tremelimumab.html">Hwang_2022_tremelimumab</a></li>
     <li><a class="dropdown-item" href="../articles/Jackson_2022_ixekizumab.html">Jackson_2022_ixekizumab</a></li>
     <li><a class="dropdown-item" href="../articles/Kielbasa_2020_galcanezumab.html">Kielbasa_2020_galcanezumab</a></li>
+    <li><a class="dropdown-item" href="../articles/Koopman_2023_factorix.html">Koopman_2023_factorix</a></li>
     <li><a class="dropdown-item" href="../articles/Kotani_2022_astegolimab.html">Kotani_2022_astegolimab</a></li>
     <li><a class="dropdown-item" href="../articles/Kovalenko_2016_dupilumab.html">Kovalenko_2016_dupilumab</a></li>
     <li><a class="dropdown-item" href="../articles/Kovalenko_2020_dupilumab.html">Kovalenko_2020_dupilumab</a></li>
     <li><a class="dropdown-item" href="../articles/Kuchimanchi_2018_evolocumab.html">Kuchimanchi_2018_evolocumab</a></li>
     <li><a class="dropdown-item" href="../articles/Kuchimanchi_2024_dostarlimab.html">Kuchimanchi_2024_dostarlimab</a></li>
     <li><a class="dropdown-item" href="../articles/Kyhl_2016_nalmefene.html">Kyhl_2016_nalmefene</a></li>
+    <li><a class="dropdown-item" href="../articles/LeTilly_2021_trastuzumab.html">Intrathecal trastuzumab in HER2+ breast cancer LMC (Le Tilly 2021)</a></li>
     <li><a class="dropdown-item" href="../articles/Li_2017_brentuximab.html">Brentuximab vedotin ADC + MMAE coupled population PK model (Li 2017)</a></li>
     <li><a class="dropdown-item" href="../articles/Li_2019_abatacept.html">Li_2019_abatacept</a></li>
     <li><a class="dropdown-item" href="../articles/Lin_2024_casirivimab.html">Lin_2024_casirivimab</a></li>
@@ -119,6 +123,7 @@
     <li><a class="dropdown-item" href="../articles/Wade_2015_certolizumab.html">Wade_2015_certolizumab</a></li>
     <li><a class="dropdown-item" href="../articles/Wang_2017_benralizumab.html">Wang_2017_benralizumab</a></li>
     <li><a class="dropdown-item" href="../articles/Wang_2020_ontamalimab.html">Wang_2020_ontamalimab</a></li>
+    <li><a class="dropdown-item" href="../articles/Wang_2024_sugemalimab.html">Wang_2024_sugemalimab</a></li>
     <li><a class="dropdown-item" href="../articles/Wojciechowski_2022_domagrozumab.html">Wojciechowski_2022_domagrozumab</a></li>
     <li><a class="dropdown-item" href="../articles/Wu_2024_inotuzumab.html">Wu_2024_inotuzumab</a></li>
     <li><a class="dropdown-item" href="../articles/Xie_2019_agomelatine.html">Xie_2019_agomelatine</a></li>
@@ -126,6 +131,7 @@
     <li><a class="dropdown-item" href="../articles/Xu_2019_sarilumab.html">Xu_2019_sarilumab</a></li>
     <li><a class="dropdown-item" href="../articles/Yamada_2025_zolbetuximab.html">Yamada_2025_zolbetuximab</a></li>
     <li><a class="dropdown-item" href="../articles/Yang_2021_cemiplimab.html">Yang_2021_cemiplimab</a></li>
+    <li><a class="dropdown-item" href="../articles/Yang_2024_axatilimab.html">Axatilimab semimechanistic PK/PD model (Yang 2024)</a></li>
     <li><a class="dropdown-item" href="../articles/Yin_2021_trastuzumabDeruxtecan.html">Yin_2021_trastuzumabDeruxtecan</a></li>
     <li><a class="dropdown-item" href="../articles/Yu_2022_ofatumumab.html">Yu_2022_ofatumumab</a></li>
     <li><a class="dropdown-item" href="../articles/Zhang_2019_nivolumab.html">Zhang_2019_nivolumab</a></li>
@@ -582,9 +588,8 @@ kg subject (Results section, page 752).</p>
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">nca_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="va">data_obj</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■                            </span>  10% |  ETA: 10s</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■                   </span>  42% |  ETA:  6s</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■         </span>  75% |  ETA:  2s</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■                   </span>  40% |  ETA:  6s</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■         </span>  74% |  ETA:  2s</span></span>
 <span><span class="va">nca_summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">nca_results</span><span class="op">)</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
 <span>  <span class="va">nca_summary</span>,</span>

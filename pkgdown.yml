@@ -25,6 +25,8 @@ articles:
   articles/Fasanmade_2009_infliximab: Fasanmade_2009_infliximab.html
   articles/Fau_2020_isatuximab: Fau_2020_isatuximab.html
   articles/Fiedler-Kelly_2019_fremanezumab: Fiedler-Kelly_2019_fremanezumab.html
+  articles/FiedlerKelly_2020_fremanezumab_cm: FiedlerKelly_2020_fremanezumab_cm.html
+  articles/FiedlerKelly_2020_fremanezumab_em: FiedlerKelly_2020_fremanezumab_em.html
   articles/Gandhi_2021_abatacept: Gandhi_2021_abatacept.html
   articles/Grimm_2023: Grimm_2023.html
   articles/Gupta_2016_amatuximab: Gupta_2016_amatuximab.html
@@ -36,12 +38,14 @@ articles:
   articles/Hwang_2022_tremelimumab: Hwang_2022_tremelimumab.html
   articles/Jackson_2022_ixekizumab: Jackson_2022_ixekizumab.html
   articles/Kielbasa_2020_galcanezumab: Kielbasa_2020_galcanezumab.html
+  articles/Koopman_2023_factorix: Koopman_2023_factorix.html
   articles/Kotani_2022_astegolimab: Kotani_2022_astegolimab.html
   articles/Kovalenko_2016_dupilumab: Kovalenko_2016_dupilumab.html
   articles/Kovalenko_2020_dupilumab: Kovalenko_2020_dupilumab.html
   articles/Kuchimanchi_2018_evolocumab: Kuchimanchi_2018_evolocumab.html
   articles/Kuchimanchi_2024_dostarlimab: Kuchimanchi_2024_dostarlimab.html
   articles/Kyhl_2016_nalmefene: Kyhl_2016_nalmefene.html
+  articles/LeTilly_2021_trastuzumab: LeTilly_2021_trastuzumab.html
   articles/Li_2017_brentuximab: Li_2017_brentuximab.html
   articles/Li_2019_abatacept: Li_2019_abatacept.html
   articles/Lin_2024_casirivimab: Lin_2024_casirivimab.html
@@ -88,6 +92,7 @@ articles:
   articles/Wade_2015_certolizumab: Wade_2015_certolizumab.html
   articles/Wang_2017_benralizumab: Wang_2017_benralizumab.html
   articles/Wang_2020_ontamalimab: Wang_2020_ontamalimab.html
+  articles/Wang_2024_sugemalimab: Wang_2024_sugemalimab.html
   articles/Wojciechowski_2022_domagrozumab: Wojciechowski_2022_domagrozumab.html
   articles/Wu_2024_inotuzumab: Wu_2024_inotuzumab.html
   articles/Xie_2019_agomelatine: Xie_2019_agomelatine.html
@@ -95,6 +100,7 @@ articles:
   articles/Xu_2019_sarilumab: Xu_2019_sarilumab.html
   articles/Yamada_2025_zolbetuximab: Yamada_2025_zolbetuximab.html
   articles/Yang_2021_cemiplimab: Yang_2021_cemiplimab.html
+  articles/Yang_2024_axatilimab: Yang_2024_axatilimab.html
   articles/Yin_2021_trastuzumabDeruxtecan: Yin_2021_trastuzumabDeruxtecan.html
   articles/Yu_2022_ofatumumab: Yu_2022_ofatumumab.html
   articles/Zhang_2019_nivolumab: Zhang_2019_nivolumab.html
@@ -102,7 +108,7 @@ articles:
   articles/Zhou_2021_belimumab: Zhou_2021_belimumab.html
   articles/Zhou_2025_brentuximab: Zhou_2025_brentuximab.html
   articles/Zhu_2017_lebrikizumab: Zhu_2017_lebrikizumab.html
-last_built: 2026-04-28T09:25Z
+last_built: 2026-04-28T12:38Z
 urls:
   reference: https://nlmixr2.github.io/nlmixr2lib/reference
   article: https://nlmixr2.github.io/nlmixr2lib/articles
