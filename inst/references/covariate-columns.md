@@ -315,6 +315,28 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Lin_2024_casirivimab.R` (time-varying; reference 2.11; small positive exponent +0.029 on CL).
 - **Notes:** Document baseline-vs-time-varying status in `covariateData[[NLR]]$notes`. Although it derives from `WBC` differential counts, register it as its own canonical because the ratio (not the absolute counts) is what the model uses.
 
+### HCT (**canonical for hematocrit**)
+- **Description:** Hematocrit — packed red blood cell volume fraction (baseline or time-varying).
+- **Units:** % (volume fraction times 100). Document per-model via `covariateData[[HCT]]$units`.
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a — used with power scaling `(HCT / ref)^exponent`. Reference values observed: 45 % (Nestorov 2014, study-population median for severe hemophilia A adults).
+- **Source aliases:** none; `HCT` is the universal NONMEM / clinical-PK abbreviation.
+- **Example models:** `Nestorov_2014_factorviii.R` (reference 45 %, exponent -0.419 on V1).
+- **Notes:** Higher HCT (more red-cell volume) leaves a smaller plasma fraction within total body volume; for plasma-restricted distribution (e.g., factor VIII activity, which circulates in plasma) the central volume of distribution decreases as HCT rises, so the exponent is negative. Document baseline-vs-time-varying status in `covariateData[[HCT]]$notes`. Distinct from `HGB` (mass concentration of hemoglobin); the two correlate but enter different mechanistic relationships.
+
+## Coagulation / hemostasis biomarkers
+
+### VWF (**canonical for von Willebrand factor concentration**)
+- **Description:** Plasma concentration (or activity) of von Willebrand factor (VWF) — the multimeric carrier protein that binds and protects circulating factor VIII (FVIII) from proteolytic degradation and rapid clearance. Used as a covariate on FVIII (and FVIII-Fc) clearance because the vast majority (>95%) of circulating FVIII is in complex with VWF.
+- **Units:** IU/dL (equivalent to % of pooled normal plasma); document per-model via `covariateData[[VWF]]$units`. Some sources report `VWF:Ag` (antigen) versus `VWF:RCo` (ristocetin cofactor activity); record which assay was used in `covariateData[[VWF]]$notes`.
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a — used with power scaling `(VWF / ref)^exponent`. Reference values observed: 118 IU/dL (Nestorov 2014, study-population median).
+- **Source aliases:** none; `VWF` is the universal abbreviation. Source papers may write `vWF` (lowercase v) or specify the assay (`VWF:Ag`).
+- **Example models:** `Nestorov_2014_factorviii.R` (reference 118 IU/dL, exponent -0.343 on CL; VWF antigen).
+- **Notes:** Higher VWF protects FVIII from clearance, so the exponent on CL is negative. VWF is time-varying within an individual (acute-phase response, age, blood group, etc.), but most published population PK models use baseline-only VWF when the within-subject dynamics are not characterized; document the per-model convention in `covariateData[[VWF]]$notes`.
+
 ## Disease severity scores
 
 ### EASI (**canonical for Eczema Area and Severity Index**)
