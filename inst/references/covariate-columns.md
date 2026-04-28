@@ -210,6 +210,16 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Zhou_2021_belimumab.R` (g/L, reference 14.8; baseline-only; exponent 0.293 on CL), `Yang_2021_cemiplimab.R` (g/L, reference 9.65; small positive exponent 0.184 on shared CL/Q).
 - **Notes:** Mechanistically meaningful for monoclonal-antibody PK because endogenous IgG competes with the therapeutic mAb for FcRn-mediated recycling. The per-model `covariateData[[IGG]]$units` field is load-bearing (1 g/L ≈ 100 mg/dL). Baseline-vs-time-varying status documented in `covariateData[[IGG]]$notes`. Distinct from `lIgG0` / IgG-as-a-state in mechanistic FcRn-competition TMDD models (e.g., `Valenzuela_2025_nipocalimab.R`), where IgG is a dynamic state, not a baseline covariate; use `IGG` only when the source paper treats IgG as a static (baseline) covariate column.
 
+### IGM (**canonical for serum immunoglobulin M**)
+- **Description:** Serum total immunoglobulin M (IgM) concentration (baseline). Used in IgRT population-PK analyses as a proxy for B-cell antibody-producing capacity / humoral function — IgM is the first antibody produced after B-cell activation, so circulating IgM reflects ongoing B-cell activity prior to class-switching to IgG.
+- **Units:** g/L (typical SI-convention reporting); also reported as mg/dL in US-convention papers — document the unit used in each model via `covariateData[[IGM]]$units`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a — used with power scaling `(IGM / ref)^exponent`. Reference values observed: 0.21 g/L (Cheng 2026, pooled PID + SAD pediatric cohort median).
+- **Source aliases:** none known.
+- **Example models:** `Cheng_2026_immunoglobulin.R` (g/L, reference 0.21; baseline-only; power exponent 0.11 on baseline IgG (CBAS) — IgM enters as a humoral-capacity proxy that informs the endogenous-IgG baseline rather than directly modifying clearance).
+- **Notes:** IgM is the immune-globulin class produced by activated B cells before class-switching, so it remains detectable in patients with hypogammaglobulinaemia who still have residual B-cell function. Scope: specific because the relevance of IgM as a covariate depends on the paper's mechanistic interpretation (in Cheng 2026 it acts on the endogenous-IgG baseline; future use cases may differ). Promote to general if a second paper retains IgM with consistent semantics. Ratified canonically on 2026-04-28.
+
 ### TBILI (**canonical for total bilirubin**)
 - **Description:** Total serum bilirubin concentration.
 - **Units:** mg/dL or umol/L — document the unit used in each model via `covariateData[[TBILI]]$units`.
@@ -726,6 +736,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   - `ALL` — used in `Wu_2024_inotuzumab.R` (Wu 2024 calls it the "ALL effect" and notes it bundles disease type with the corresponding bioanalytical assay difference).
 - **Example models:** `Wu_2024_inotuzumab.R` (additive fractional-change effects on CL1 (-0.767) and CL2 (-0.362), and gates the BLSTABL and AGE effects on kdes; for kdes itself a -0.924 fractional change for BCP-ALL).
 - **Notes:** Used when a population PK model pools BCP-ALL patients with a non-BCP-ALL reference (e.g., Wu 2024: pooled adult B-cell NHL + adult BCP-ALL + pediatric BCP-ALL). Scope: specific because the complement reference category is paper-defined (Wu 2024 reference is pooled adult B-cell NHL). The "ALL effect" theta in Wu 2024 conflates two physiologically distinct sources of variation — B-cell tumor type (NHL vs ALL surface CD22 burden) and bioanalytical method (ELISA for adult NHL vs HPLC-MS for ALL) — and cannot be split with the available data; document this confounding when comparing across populations. Ratified canonically on 2026-04-26.
+
+### DIS_SAD (**canonical for secondary antibody deficiency indicator**)
+- **Description:** 1 = secondary antibody deficiency (SAD) patient (hypogammaglobulinaemia from external causes such as B-cell-depleting therapy, haematological malignancy, or other immunosuppression), 0 = primary immunodeficiency (PID) patient. Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (PID patient; the complement category is the genetic / inborn-error-of-immunity primary immunodeficiency cohort pooled with SAD in the source analysis).
+- **Source aliases:** none known; source NONMEM control streams typically use ad-hoc names (e.g., `SAD`, `IMD`, `DIS`).
+- **Example models:** `Cheng_2026_immunoglobulin.R` (multiplicative `theta^DIS_SAD` factors on CL (0.542) and on baseline IgG (CBAS, 0.541); reference category PID).
+- **Notes:** Used when a population PK model pools PID and SAD pediatric or adult patients receiving immunoglobulin replacement therapy (IgRT) and tests SAD-vs-PID as a covariate. Distinct from the disease-state indicators that pool oncology / autoimmune indications: `DIS_SAD` specifically partitions hypogammaglobulinaemia by its underlying mechanism (genetic vs. acquired). Scope: specific because the SAD cohort composition is paper-defined (in Cheng 2026, 75% post-rituximab and 25% post-CAR-T cell therapy). Ratified canonically on 2026-04-28.
+
 ## Infectious disease (SARS-CoV-2 / COVID-19)
 
 ### SARS_VLOAD (**canonical for SARS-CoV-2 baseline viral load**)
@@ -1906,6 +1927,7 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **2026-04-26** — Added `HEP_IMP` (general-scope binary indicator for NCI ODWG hepatic impairment, mild or worse vs. normal) under `Renal / hepatic function` and `COMBO_RG` (specific-scope binary indicator for anti-CD20 (rituximab or obinutuzumab) combination therapy) under `Oncology` while extracting `Lu_2019_polatuzumab.R`. Source aliases mapped: `BHPTGRPN` (categorical NCI ODWG group with 9999 missing-value sentinel)→`HEP_IMP`; `COMBO` (Lu 2019 categorical 0/1/2)→`COMBO_RG`.
 - **2026-04-27** — Added `SBCMA` (specific-scope, baseline soluble B-cell maturation antigen, in `Cardiometabolic / target biomarkers`; reference 50 ng/mL) and `COMBO_BELAMAF` (specific-scope, any-combination belantamab mafodotin therapy indicator on Imax of the time-varying CL function, in `Concomitant / prior medication`) canonical entries while extracting `Papathanasiou_2025_belantamab.R`. Source aliases mapped: `SBCMABL`→`SBCMA`, `COMBO`→`COMBO_BELAMAF`.
 - **2026-04-28** — Added `CSF1` (specific-scope plasma colony-stimulating factor 1 / M-CSF concentration; placed under `Inflammation markers`), `CPK` (general-scope serum creatine phosphokinase / creatine kinase; placed under `Renal / hepatic function` next to AST/ALT/LDH although mechanistically a muscle-origin enzyme), and `DIS_CANCER` (specific-scope advanced-solid-tumor cohort indicator; placed under `Disease state (cross-population indicators)`) canonical entries while extracting `Yang_2024_axatilimab.R`. Extended `DIS_HV` example_models with Yang 2024 as the second user (cGVHD-reference complement to Nikanjam 2019's non-HV-oncology reference). Source aliases mapped: `BLCSF1` / `BL_CSF1` (Monolix model-parameter name) → `CSF1`; `BLCPK` → `CPK`. Reference values: 549 pg/mL (CSF1), 63 U/L (CPK), pooled-cohort medians from Yang 2024 Table S3.
+- **2026-04-28** — Added `DIS_SAD` (specific-scope binary indicator partitioning hypogammaglobulinaemia patients by mechanism: 1 = secondary antibody deficiency, 0 = primary immunodeficiency; placed under `Disease state (cross-population indicators)`) and `IGM` (specific-scope serum immunoglobulin M concentration as a B-cell humoral-capacity proxy; placed under `Renal / hepatic function` next to `IGG`) canonical entries while extracting `Cheng_2026_immunoglobulin.R`. Source aliases mapped: none (the source paper uses bare prose names "type of immunodeficiency" and "IgM level"). Reference values: 0.21 g/L (IGM), Cheng 2026 pooled-cohort median.
 - Subsequent additions: append new canonical entries as new papers are processed. When adding, bump the audit-completed count in the summary below.
 
 ## Summary
