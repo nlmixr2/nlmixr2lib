@@ -247,7 +247,7 @@ make_subject <- function(id, wt_kg, sexf_ind, naive_ind, asian_ind,
   ev$LINE_1L    <- naive_ind
   ev$RACE_ASIAN <- asian_ind
   ev$COMBO_RG   <- combo_ind
-  ev$HEP_IMP    <- hepimp_ind
+  ev$HEPIMP    <- hepimp_ind
   ev$ECOG_GE1   <- ecog1_ind
   ev$ALB        <- alb_val
   ev$BLBCELL    <- bcell_val
@@ -289,7 +289,7 @@ typ_events$SEXF       <- 0
 typ_events$LINE_1L    <- 0
 typ_events$RACE_ASIAN <- 0
 typ_events$COMBO_RG   <- 0
-typ_events$HEP_IMP    <- 0
+typ_events$HEPIMP    <- 0
 typ_events$ECOG_GE1   <- 1
 typ_events$ALB        <- 35
 typ_events$BLBCELL    <- 1
@@ -369,7 +369,7 @@ proportional residual error from the model file.
 pop_sim <- rxode2::rxSolve(
   mod, events,
   keep = c("WT", "SEXF", "LINE_1L", "RACE_ASIAN", "COMBO_RG",
-           "HEP_IMP", "ECOG_GE1", "ALB", "BLBCELL", "TUMSZ",
+           "HEPIMP", "ECOG_GE1", "ALB", "BLBCELL", "TUMSZ",
            "pola_dose_mg", "mmae_eq_ug"),
   returnType = "data.frame"
 )
@@ -600,11 +600,11 @@ expected to be reproduced.
   ECOG_GE1 = 1 (i.e., ECOG >= 1) -- consistent with the package's
   ECOG_GE1 canonical (reference 0 = "ECOG = 0").
 
-- **Hepatic-impairment indicator HEP_IMP.** A new general-scope canonical
+- **Hepatic-impairment indicator HEPIMP.** A new general-scope canonical
   was registered for the binary NCI ODWG hepatic-impairment indicator
-  (`HEP_IMP = 1` for groups >= 2 = mild or worse; reference 0 = normal).
+  (`HEPIMP = 1` for groups >= 2 = mild or worse; reference 0 = normal).
   Source column `BHPTGRPN` (categorical 1-4 with 9999 missing sentinel)
-  decomposes to `HEP_IMP = as.integer(BHPTGRPN > 1.5 & BHPTGRPN != 9999)`.
+  decomposes to `HEPIMP = as.integer(BHPTGRPN > 1.5 & BHPTGRPN != 9999)`.
 
 - **Anti-CD20 combination indicator COMBO_RG.** A new specific-scope
   canonical was registered for the binary "polatuzumab + rituximab OR
@@ -653,7 +653,7 @@ expected to be reproduced.
 - **Reference subject.** All covariate-effect ratios collapse to 1 when
   WT = 75 kg, ALB = 35 g/L, TUMSZ = 5,000 mm^2, BLBCELL = 1 cell/uL,
   SEXF = 0 (male), LINE_1L = 0 (R/R), RACE_ASIAN = 0, COMBO_RG = 0
-  (single agent), HEP_IMP = 0 (normal), ECOG_GE1 = 1 (ECOG >= 1), so
+  (single agent), HEPIMP = 0 (normal), ECOG_GE1 = 1 (ECOG >= 1), so
   the typical-value parameters in Table 1 directly apply.
 
 - **Race distribution.** Lu 2019 reports only the Asian indicator as

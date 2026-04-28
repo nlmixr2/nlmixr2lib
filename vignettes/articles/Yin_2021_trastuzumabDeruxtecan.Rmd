@@ -118,11 +118,11 @@ table below collects them in one place for review.
 | `e_wt_cl`     (power, WT on CL)    | 0.370      | Yin 2021 Table 1, Body weight on CL_intact            |
 | `e_alb_cl`    (power, ALB on CL)   | -0.533     | Yin 2021 Table 1, Albumin on CL_intact                |
 | `e_tumsz_cl`  (power, TUMSZ on CL) | 0.0710     | Yin 2021 Table 1, Tumor size on CL_intact             |
-| `e_japan_cl`  (frac., COUNTRY_JPN) | -0.0970    | Yin 2021 Table 1, Country (Japan) on CL_intact        |
+| `e_japan_cl`  (frac., REGION_JAPAN) | -0.0970    | Yin 2021 Table 1, Country (Japan) on CL_intact        |
 | `e_male_cl`   (frac., (1 - SEXF))  | 0.174      | Yin 2021 Table 1, Sex (male) on CL_intact             |
 | `e_wt_v1`     (power, WT on V1)    | 0.489      | Yin 2021 Table 1, Body weight on V1_intact            |
 | `e_male_v1`   (frac., (1 - SEXF))  | 0.197      | Yin 2021 Table 1, Sex (male) on V1_intact             |
-| `e_japan_v2`  (frac., COUNTRY_JPN) | -0.262     | Yin 2021 Table 1, Country (Japan) on V2_intact        |
+| `e_japan_v2`  (frac., REGION_JAPAN) | -0.262     | Yin 2021 Table 1, Country (Japan) on V2_intact        |
 | IIV block `etalcl + etalvc`        | c(0.0630, 0.0210, 0.0250) | Yin 2021 Table 1, Var(CL), Cov(CL,V1), Var(V1) |
 | `etalq`                            | 0.0900     | Yin 2021 Table 1, Var(Q_intact) = 0.0900              |
 | `etalvp`                           | 0.430      | Yin 2021 Table 1, Var(V2_intact) = 0.430              |
@@ -156,7 +156,7 @@ cohort <- tibble::tibble(
   ALB         = pmin(pmax(rnorm(n_subj, 40,    3.5), 28), 50),
   TUMSZ       = pmin(pmax(rlnorm(n_subj, log(57),  0.50),  5), 250),
   SEXF        = rbinom(n_subj, 1, 0.94),  # ~94% female (breast-cancer dominated)
-  COUNTRY_JPN = rbinom(n_subj, 1, 0.30)   # roughly Japanese-phase-I share of total
+  REGION_JAPAN = rbinom(n_subj, 1, 0.30)   # roughly Japanese-phase-I share of total
 )
 ```
 
@@ -249,12 +249,12 @@ covariate to its 5th and 95th percentile to visualize the
 single-covariate effect on steady-state CL_intact:
 
 ```{r forest, fig.width = 6.5, fig.height = 4}
-ref <- list(WT = 57.8, ALB = 40, TUMSZ = 57, SEXF = 1, COUNTRY_JPN = 0)
+ref <- list(WT = 57.8, ALB = 40, TUMSZ = 57, SEXF = 1, REGION_JAPAN = 0)
 
 # Yin 2021 Figure 4 covariate ranges (5th and 95th percentile values
 # of the analysis dataset, as cited by the paper text).
 cov_grid <- tibble::tribble(
-  ~covariate,    ~level,        ~WT,   ~ALB, ~TUMSZ, ~SEXF, ~COUNTRY_JPN,
+  ~covariate,    ~level,        ~WT,   ~ALB, ~TUMSZ, ~SEXF, ~REGION_JAPAN,
   "Reference",   "Reference",   57.8,  40,   57,     1,     0,
   "WT 5th",      "39 kg",       39,    40,   57,     1,     0,
   "WT 95th",     "86 kg",       86,    40,   57,     1,     0,
@@ -272,7 +272,7 @@ cov_grid$cl_typical <- with(cov_grid,
     (WT    / 57.8)^0.370 *
     (ALB   / 40  )^-0.533 *
     (TUMSZ / 57  )^0.0710 *
-    (1 + (-0.0970) * COUNTRY_JPN) *
+    (1 + (-0.0970) * REGION_JAPAN) *
     (1 + 0.174 * (1 - SEXF))
 )
 
@@ -411,7 +411,7 @@ consistent with the paper.
   CL_intact and V1_intact.
 - **Country encoding.** Yin 2021's Country column is a Japan-indicator
   (1 if Japanese-country enrollment, 0 if non-Japan). Stored under the
-  newly-registered canonical `COUNTRY_JPN` column. Race and country
+  canonical `REGION_JAPAN` column (formerly `COUNTRY_JPN`). Race and country
   were highly confounded in the analysis dataset (correlation -0.81)
   and the paper retained country, dropping race; this packaged model
   follows the paper.
@@ -436,14 +436,14 @@ consistent with the paper.
 - **Out-of-scope covariates.** Yin 2021's full-model exploration also
   examined LDH, HER2 status, tumor type, age, formulation, race, and
   T-DXd dose; only the covariates retained in the final model
-  (WT, ALB, TUMSZ, SEXF, COUNTRY_JPN) are implemented here.
+  (WT, ALB, TUMSZ, SEXF, REGION_JAPAN) are implemented here.
 - **Virtual cohort.** Demographics were simulated to match the
   paper's reference subject and to span the reported 5th-95th
   percentile ranges for body weight and albumin. Sex distribution is
   set to ~94% female to match the breast-cancer-dominated cohort;
   country = Japan is set to ~30% to reflect the Japanese phase I
   study contribution. Joint covariate structure (e.g., correlation
-  between WT and SEXF, or between COUNTRY_JPN and ALB) is not
+  between WT and SEXF, or between REGION_JAPAN and ALB) is not
   simulated.
 - **Infusion duration.** All simulations use a 30-minute IV infusion
   (DUR = 30 / 60 / 24 day), the standard administration schedule for
