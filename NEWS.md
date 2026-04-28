@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Pouzin 2022 tusamitamab ravtansine ([doi:10.1007/s10928-021-09799-0](https://doi.org/10.1007/s10928-021-09799-0)) — adults with advanced solid tumors expressing CEACAM5 (multi-analyte ADC + NAB + DM4 + MeDM4 model).
 * Add Lin 2024 casirivimab ([doi:10.1007/s11095-024-03764-5](https://doi.org/10.1007/s11095-024-03764-5)) — pediatric and adult subjects, non-infected or with SARS-CoV-2 infection or household contacts.
 * Add Faelens 2021 infliximab ([doi:10.3390/pharmaceutics13101623](https://doi.org/10.3390/pharmaceutics13101623)) — adults with moderate-to-severe ulcerative colitis.
 * Add Sathe 2024 sacituzumab govitecan ([doi:10.1007/s40262-024-01366-3](https://doi.org/10.1007/s40262-024-01366-3)) — adults with metastatic triple-negative breast cancer and other solid tumors.
