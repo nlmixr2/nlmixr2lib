@@ -41,5 +41,5 @@ readModelDb("PK_1cmt")
 #>     Cc ~ prop(propSd)
 #>   })
 #> }
-#> <environment: 0x55de85c09e28>
+#> <environment: 0x559ddd36bbc8>
 ```

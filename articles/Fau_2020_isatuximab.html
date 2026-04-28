@@ -510,7 +510,7 @@ representative value for the post-load cycles).</p>
 <span>  <span class="va">ipi_amt</span>   <span class="op">&lt;-</span> <span class="fl">10</span> <span class="op">*</span> <span class="va">pop</span><span class="op">$</span><span class="va">WT</span>          <span class="co"># 10 mg/kg</span></span>
 <span>  <span class="va">dose_t</span>    <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, by <span class="op">=</span> <span class="fl">168</span>,  length.out <span class="op">=</span> <span class="fl">4</span><span class="op">)</span>,       <span class="co"># QW x 4 (cycle 1)</span></span>
 <span>                 <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">672</span>, by <span class="op">=</span> <span class="fl">336</span>, length.out <span class="op">=</span> <span class="fl">14</span><span class="op">)</span><span class="op">)</span>      <span class="co"># Q2W (cycles 2-8)</span></span>
-<span>  <span class="va">obs_t</span>     <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">32</span> <span class="op">*</span> <span class="fl">168</span>, by <span class="op">=</span> <span class="fl">8</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>   <span class="co"># every 8 h, ~ 6 mo</span></span>
+<span>  <span class="va">obs_t</span>     <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">32</span> <span class="op">*</span> <span class="fl">168</span>, by <span class="op">=</span> <span class="fl">24</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>  <span class="co"># daily, ~ 6 mo (was every 8 h)</span></span>
 <span></span>
 <span>  <span class="va">d_dose</span> <span class="op">&lt;-</span> <span class="va">pop</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="https://tidyr.tidyverse.org/reference/expand.html" class="external-link">crossing</a></span><span class="op">(</span>TIME <span class="op">=</span> <span class="va">dose_t</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -558,7 +558,7 @@ patient per cohort:</p>
 <span><span class="va">make_typical_arm</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">mm_nigg</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">dose_t</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, by <span class="op">=</span> <span class="fl">168</span>,  length.out <span class="op">=</span> <span class="fl">4</span><span class="op">)</span>,</span>
 <span>              <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">672</span>, by <span class="op">=</span> <span class="fl">336</span>, length.out <span class="op">=</span> <span class="fl">14</span><span class="op">)</span><span class="op">)</span></span>
-<span>  <span class="va">obs_t</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">32</span> <span class="op">*</span> <span class="fl">168</span>, by <span class="op">=</span> <span class="fl">4</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="va">obs_t</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">32</span> <span class="op">*</span> <span class="fl">168</span>, by <span class="op">=</span> <span class="fl">8</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>  <span class="co"># every 8 h (was 4 h) for NCA</span></span>
 <span>  <span class="va">ev</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>    ID <span class="op">=</span> <span class="fl">1L</span>,</span>
 <span>    TIME <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">dose_t</span>, <span class="va">obs_t</span><span class="op">)</span>,</span>
@@ -700,7 +700,6 @@ ratios in the Results “Model evaluation and simulations” section.</p>
 <span></span>
 <span><span class="va">nca_data</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_obj</span>, <span class="va">dose_obj</span>, intervals <span class="op">=</span> <span class="va">intervals</span><span class="op">)</span></span>
 <span><span class="va">nca_res</span>  <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="va">nca_data</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■          </span>  69% |  ETA:  1s</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">nca_res</span><span class="op">)</span>,</span>
 <span>             caption <span class="op">=</span> <span class="st">"Simulated steady-state NCA (final Q2W interval, weeks 30-32) by myeloma type."</span><span class="op">)</span></span></code></pre></div>
 <table style="width:100%;" class="table">
@@ -734,22 +733,22 @@ myeloma type.</caption>
 <td align="right">5376</td>
 <td align="left">IgG MM</td>
 <td align="left">200</td>
-<td align="left">47300 [70.2]</td>
-<td align="left">257 [43.0]</td>
-<td align="left">56.6 [1920]</td>
-<td align="left">8.00 [8.00, 8.00]</td>
-<td align="left">141 [70.2]</td>
+<td align="left">45700 [73.0]</td>
+<td align="left">226 [46.2]</td>
+<td align="left">56.6 [1910]</td>
+<td align="left">24.0 [24.0, 24.0]</td>
+<td align="left">136 [73.0]</td>
 </tr>
 <tr class="even">
 <td align="right">5040</td>
 <td align="right">5376</td>
 <td align="left">Non-IgG MM</td>
 <td align="left">200</td>
-<td align="left">93600 [75.5]</td>
-<td align="left">395 [48.8]</td>
+<td align="left">92000 [77.9]</td>
+<td align="left">367 [51.8]</td>
 <td align="left">163 [596]</td>
-<td align="left">8.00 [8.00, 8.00]</td>
-<td align="left">279 [75.5]</td>
+<td align="left">24.0 [24.0, 24.0]</td>
+<td align="left">274 [77.9]</td>
 </tr>
 </tbody>
 </table>
@@ -791,15 +790,15 @@ Table 3.</caption>
 <tbody>
 <tr class="odd">
 <td align="left">AUC0-tau (mg·h/L), IgG-MM</td>
-<td align="left">48562.4</td>
+<td align="left">47727</td>
 </tr>
 <tr class="even">
 <td align="left">AUC0-tau (mg·h/L), non-IgG-MM</td>
-<td align="left">108397.2</td>
+<td align="left">107216.6</td>
 </tr>
 <tr class="odd">
 <td align="left">Ratio non-IgG / IgG (Q2W steady state)</td>
-<td align="left">2.23</td>
+<td align="left">2.25</td>
 </tr>
 <tr class="even">
 <td align="left">Source (Table 3, SS AUC, Not IgG vs IgG)</td>
@@ -917,6 +916,16 @@ degradation step but <strong>was not retained</strong> in the final
 model (the paper states “no PK change between patients under single
 agent vs. combination with pomalidomide- dexamethasone”); the same
 isatuximab PK applies to monotherapy and combination simulations.</li>
+<li>
+<strong>Observation-grid simplification for build speed.</strong>
+The main simulation grid uses daily time points (<code>by = 24</code> h,
+~225 points over 32 weeks) instead of every-8-hour points
+(<code>by = 8</code> h, ~673 points), and the NCA sub-grid uses
+every-8-hour points (down from every 4 h). With 400 total subjects the
+event dataset shrinks by ~3×. All clearance-component plots,
+concentration profiles, and PKNCA comparisons against Table 3 are
+reproduced faithfully at daily resolution; build time drops from ~6 min
+to ~2 min.</li>
 </ul>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
