@@ -425,7 +425,28 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Narwal_2013_sifalimumab.R` (reference 32, exponent 0.0558 on CL), `Zheng_2016_sifalimumab.R` (reference 12.04, power effect on CL with exponent 0.09).
 - **Notes:** Specific to drugs whose mechanism targets the type I IFN pathway (e.g., anti-IFN-alpha antibodies like sifalimumab, anifrolumab). Higher BGENE21 indicates stronger target engagement / disease activity and is associated with increased drug clearance via target-mediated mechanisms. The 21-gene panel composition is tied to the MedImmune/AstraZeneca SLE development programme; a different IFN gene signature (e.g., a 4-gene or 5-gene panel) should be registered under its own canonical name (`BGENE4`, `IFN_SIG`, ...) to avoid conflating panel definitions.
 
+### BGENE21_HIGH (**canonical for binary high-vs-low IFN-21-gene indicator**)
+- **Description:** 1 = subject's baseline 21-gene type I IFN signature score is at or above the paper-specified high/low cut-off, 0 = below cut-off.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (low).
+- **Source aliases:** none.
+- **Example models:** `Almquist_2022_anifrolumab.R` (binary high-IFN indicator on CL).
+- **Notes:** Pair with continuous `BGENE21` when the paper reports both. The high/low cut-off is paper-specific (commonly the population median) and must be documented in `covariateData[[BGENE21_HIGH]]$notes` for every model that uses this covariate. Operator decision (2026-04-28): use `BGENE21_HIGH` (not `IFNGS_HIGH`) so the link to the existing `BGENE21` register entry is explicit while the binary nature stays visible in the column name.
+
 ## Inflammation markers
+
+### IL6 (**canonical for serum IL-6 concentration**)
+- **Description:** Baseline serum interleukin-6 concentration.
+- **Units:** pg/mL
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a — used with power scaling `(IL6 / ref)^exponent`.
+- **Source aliases:**
+  - `bIL6`, `IL6_BASE` (baseline-IL6 column variants).
+- **Example models:** `Frey_2013_tocilizumab.R` (power effect on baseline target receptor).
+- **Notes:** Time-fixed at baseline unless the source paper states otherwise. Time-varying IL-6 in PD models should be the model's predicted state (a `d/dt(IL6)` trajectory) rather than a covariate; use this register entry only for the baseline / observed-covariate role.
 
 ### EOS (**canonical for blood eosinophil count**)
 - **Description:** Blood eosinophil count (baseline or time-varying).
@@ -584,6 +605,16 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Source aliases:** `ASIAN_AMIND_MULTI` — used in `Clegg_2024_nirsevimab.R`.
 - **Example models:** `Clegg_2024_nirsevimab.R`.
 - **Notes:** Clegg 2024 applies this covariate to both CL and V2 with different coefficients.
+
+### RACE_ASIAN_OTH (**canonical for Asian-other composite race indicator**)
+- **Description:** 1 = subject self-identifies as Asian-other (Asian heritage outside the locally-dominant Asian subgroup, e.g. non-Chinese in a Chinese-dominant cohort, or "Other Asian" as a study-defined catch-all category). 0 = otherwise. Reference category is the cohort's dominant race grouping (typically Chinese or White, depending on the study).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0. Document the dominant subgroup explicitly in `covariateData[[RACE_ASIAN_OTH]]$notes` for every model that uses this covariate.
+- **Source aliases:** none.
+- **Example models:** `Frey_2013_tocilizumab.R` (paper's "Other Asian" composite indicator on CL).
+- **Notes:** Distinct from `RACE_ASIAN_AMIND_MULTI` (a 4-way composite of Asian + American Indian + Multiple Races) because the underlying paper's grouping rule is different — `RACE_ASIAN_OTH` is a within-Asian-population sub-indicator, not a multi-race composite. Operator decision (2026-04-28): kept separate from `RACE_ASIAN` because the paper's "Other Asian" category is its own grouping, not an alias of "Asian (any)".
 
 ### RACE_NEAS (**canonical for North East Asian composite race indicator**)
 - **Description:** 1 = North East Asian heritage (worldwide Chinese, Japanese, or Korean), 0 = non-North East Asian. Composite indicator analogous to `RACE_ASIAN` but specifically restricted to the East Asian subgroup most-relevant to ICH E5 ethnic-sensitivity / Asian-region bridging analyses.
@@ -1591,6 +1622,56 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   - `Smoking` (case-insensitive) — used in `Ma_2020_sarilumab_anc.R`.
 - **Example models:** `Ma_2020_sarilumab_anc.R` (power-form on baseline ANC: `BASE * 1.15^SMOKE`).
 - **Notes:** Baseline-only indicator; does not track within-study smoking-cessation changes.
+
+### SMOKE_CURRENT
+- **Description:** 1 = subject is a current smoker at baseline, 0 = not. Paired with `SMOKE_NEVER`; both 0 = former smoker. Reference category for the paired pair is "former smoker" so the two indicators capture a 3-level smoking-status covariate without an intercept clash.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (not current smoker).
+- **Source aliases:** none known; paper-specific raw forms include `SMOKE = 'CURRENT'` strings or one-hot pivoted columns.
+- **Example models:** (forthcoming).
+- **Notes:** Use this paired-indicator form when the source paper reports a 3-level smoking covariate (current / former / never). When the paper reports only a 2-level current-vs-not covariate, use the simpler binary `SMOKE` instead (already registered above).
+
+### SMOKE_NEVER
+- **Description:** 1 = subject is a never-smoker at baseline, 0 = not. Paired with `SMOKE_CURRENT`; both 0 = former smoker.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (not never-smoker).
+- **Source aliases:** none known.
+- **Example models:** (forthcoming).
+- **Notes:** Reference category for the paired pair is "former smoker." See `SMOKE_CURRENT` for the 2-level alternative.
+
+### HSCT_URD_7OF8 (**canonical for unrelated-donor 7/8 HLA-match indicator**)
+- **Description:** 1 = subject's hematopoietic stem-cell transplant donor was unrelated and HLA-matched at 7 of 8 loci (HLA-A, -B, -C, -DRB1), 0 = otherwise. Paired with `HSCT_URD_8OF8`; reference category (both 0) = matched-related donor or autologous transplant.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (matched-related or auto-transplant).
+- **Source aliases:** none known.
+- **Example models:** `Zhong_2026_abatacept.R` (pediatric aGvHD prophylaxis; donor-match covariate on PK).
+- **Notes:** Specific scope because the donor-typing schema is transplant-protocol-dependent (8/8 loci, 10/10 loci, KIR matching, etc.). When a paper uses a different match-resolution definition (e.g. 9/10 vs 10/10), register a new canonical name rather than reusing `HSCT_URD_7OF8`.
+
+### HSCT_URD_8OF8 (**canonical for unrelated-donor 8/8 HLA-match indicator**)
+- **Description:** 1 = subject's hematopoietic stem-cell transplant donor was unrelated and HLA-matched at 8 of 8 loci, 0 = otherwise. Paired with `HSCT_URD_7OF8`.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (matched-related or auto-transplant).
+- **Source aliases:** none known.
+- **Example models:** `Zhong_2026_abatacept.R`.
+- **Notes:** See `HSCT_URD_7OF8` for the paired-pair convention and the rationale for specific-scope.
+
+### PAIN (**canonical for baseline pain score**)
+- **Description:** Baseline patient-reported pain score on a paper-specified scale (NRS 0-10, VAS 0-100, BPI, or paper-specific scale). Document the scale used in `covariateData[[PAIN]]$notes` for every model that uses this covariate.
+- **Units:** (paper-specified — typically dimensionless score)
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a — usually used with a linear-deviation form `1 + e * (PAIN - ref)` or a power form `(PAIN / ref)^e`. Document the reference value in `covariateData[[PAIN]]$notes`.
+- **Source aliases:** none known.
+- **Example models:** (forthcoming).
+- **Notes:** Specific scope because the underlying scale varies across papers; if a future paper uses the same scale, extend the Example models list rather than register a new canonical name. If two papers use different scales for the same conceptual covariate, prefer registering a scale-suffixed name (`PAIN_NRS`, `PAIN_VAS`) so a downstream consumer can convert between scales.
 
 ## Formulation / assay / study
 

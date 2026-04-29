@@ -25,15 +25,21 @@ Read these on demand; don't load them up front.
 ## Phase 1 — Source acquisition and scoping
 
 1. Confirm the source type (journal article, supplement, poster, regulatory document).
-2. **Check the study population species.** Skim the Methods / Subjects section. If every PK dataset contributing to the final model is non-human (rat, mouse, cyno, dog, etc.), stop and sidecar-ask the operator before drafting anything:
+2. **Verify the on-disk file is the paper the task names.** Open the source file (or its trimmed `.md` companion) and read the title + first-author line + journal + year. Compare against the task's `Paper metadata` block. If any of {first-author, year, journal, drug} disagrees, stop and sidecar-ask:
+
+   > The on-disk file `<filename>` reports `<actual-author> <actual-year>, <actual-journal>: "<actual-title>"` but the task names `<expected-author> <expected-year>, ... <expected-drug>`. Options: (A) the task metadata is wrong and the file is the right paper — please correct the task metadata, (B) the file is mislabelled — please drop the correct PDF, (C) skip this task. Which applies?
+
+   This catches both "wrong-PMID-in-filename" (e.g. Frey 2010 saved as `PMID_23436260.pdf`) and "wrong-drug-guessed" task-generator errors. Do not proceed with extraction until the mismatch is resolved.
+
+3. **Check the study population species.** Skim the Methods / Subjects section. If every PK dataset contributing to the final model is non-human (rat, mouse, cyno, dog, etc.), stop and sidecar-ask the operator before drafting anything:
 
    > This paper reports a preclinical-only (<species>) population PK model. nlmixr2lib is a library of human population-PK models. Should I (A) extract it anyway with clear preclinical metadata, (B) extract only a human-scaled projection if the paper includes one, or (C) skip this paper?
 
    If the paper has both preclinical and human cohorts and the final model is fit to pooled or human-only data, proceed normally — this trigger is specifically for animal-only final models. Record the operator's decision in the PR body.
 
-3. **Prefer trimmed markdown when available.** The preprocessor at `mab_human_consensus/tracking/preprocess_papers.py` writes a `<stem>_trimmed.md` next to each source file (PMC XML, PDF, DOCX, XLSX) containing only the sections the extraction actually needs: Title + Abstract + Methods + Results + Tables + Figure captions. The Introduction, Discussion, Conclusions, References, Acknowledgments, and publisher boilerplate are stripped. If `PMID_<pmid>_pmc_trimmed.md` (or `PMID_<pmid>_trimmed.md` for a PDF, or `<stem>_trimmed.md` for a supplement) exists, read it **instead of** the raw `.xml` / `.pdf` / `.docx` — it's typically 40-95% smaller with no loss of extractable content. Full-text sanity check on the trimmed file: ~15 KB+ (full-text trim) vs < 3 KB (abstract-only trim). Fall back to the raw source only if the `_trimmed.md` doesn't exist, the trim appears to have lost a specific piece of information you need (rare — only when the paper is structurally unusual), or you explicitly need the discarded sections (e.g., to quote a Discussion claim in the vignette narrative).
+4. **Prefer trimmed markdown when available.** The preprocessor at `mab_human_consensus/tracking/preprocess_papers.py` writes a `<stem>_trimmed.md` next to each source file (PMC XML, PDF, DOCX, XLSX) containing only the sections the extraction actually needs: Title + Abstract + Methods + Results + Tables + Figure captions. The Introduction, Discussion, Conclusions, References, Acknowledgments, and publisher boilerplate are stripped. If `PMID_<pmid>_pmc_trimmed.md` (or `PMID_<pmid>_trimmed.md` for a PDF, or `<stem>_trimmed.md` for a supplement) exists, read it **instead of** the raw `.xml` / `.pdf` / `.docx` — it's typically 40-95% smaller with no loss of extractable content. Full-text sanity check on the trimmed file: ~15 KB+ (full-text trim) vs < 3 KB (abstract-only trim). Fall back to the raw source only if the `_trimmed.md` doesn't exist, the trim appears to have lost a specific piece of information you need (rare — only when the paper is structurally unusual), or you explicitly need the discarded sections (e.g., to quote a Discussion claim in the vignette narrative).
 
-4. **Verify the source contains full text, not just the abstract.** Wiley / BJCP and some other publishers serve PMC XML containing only front matter + abstract. Before reading for model structure, run a quick sanity check (against the trimmed file if present, otherwise the raw source):
+5. **Verify the source contains full text, not just the abstract.** Wiley / BJCP and some other publishers serve PMC XML containing only front matter + abstract. Before reading for model structure, run a quick sanity check (against the trimmed file if present, otherwise the raw source):
 
    - Trimmed `.md` file size ≥ ~15 KB, or raw PMC XML ≥ ~40 KB (full-text XML is typically 100 KB+; abstract-only is usually < 20 KB).
    - The file contains a materially-present Methods section (not just a "Methods" heading followed by one abstract paragraph).
@@ -45,13 +51,21 @@ Read these on demand; don't load them up front.
 
    Never attempt extraction from an abstract alone — population-PK parameter values, covariate effects, and equations are not in an abstract.
 
-5. **Always search for supplementary information.** Supplements frequently contain the NONMEM control stream and parameter tables that disambiguate model structure. If the user provided only a main article, ask whether a supplement exists and request it.
-6. **Always search for errata, corrigenda, or author corrections.** Check the journal's landing page for the article, the publisher's "corrections" / "notices" feed, and a search like `"<first author> <year> <drug>" erratum` on PubMed and Google Scholar. Ask the user whether they are aware of any corrections if the source is paywalled or the search is inconclusive. **When an erratum revises a value used in the model (parameter estimate, covariate effect, equation, units), the erratum value takes precedence over the main publication.** If multiple errata exist, the most recent supersedes earlier ones. Record the erratum citation in the model file's `reference` metadata alongside the main paper, and in every in-file source-trace comment whose value comes from the erratum, point to the erratum (not the original table).
-7. **Verify parameters are final estimates, not initial estimates.** Supplement control streams usually list initial values in `$THETA` / `$OMEGA`; final values come from the paper's results table or `$TABLE` output. If only a control stream is available, confirm values against any published point estimates before treating them as final.
-8. **Multiple-model handling.**
-   - Base model + final model → extract only the final.
-   - Any other "multiple model" case (per-subpopulation, per-endpoint, sensitivity analyses) → list the candidates to the user and ask which to extract. Offer "one," "all," or "a subset."
-9. Confirm the target subdirectory under `inst/modeldb/` (usually `specificDrugs/`; endogenous, therapeuticArea, pharmacokinetics, and pharmacodynamics are also valid).
+6. **Detect upstream-popPK dependencies.** Skim Methods for phrases like "PK was described using the popPK model previously developed from <study/phase>", "the structural PK model was fixed from <reference>", "covariate effects were carried over from <author> et al.", or "the PK model from <prior publication> was used as a backbone." If the current paper's PD model fixes its PK parameters from a separate publication that is not on disk:
+
+   1. Try to identify the upstream paper from the references list (PMID, DOI, or full citation).
+   2. If identifiable: sidecar-ask whether the operator wants this task to acquire `depends_on: [<upstream-task>]` and pause until the upstream task completes — versus extracting only the PD layer with the upstream PK parameters reproduced inline.
+   3. If unidentifiable (e.g. "the popPK model from internal Phase 1/2 studies" with no specific citation): sidecar-ask whether to (A) skip the task, (B) proceed with parameters fixed inline as reported in the current paper, with a clear "upstream PK source not located" note in the vignette Errata, or (C) defer pending operator investigation.
+
+   Never silently fabricate upstream PK parameters from training data.
+
+7. **Always search for supplementary information.** Supplements frequently contain the NONMEM control stream and parameter tables that disambiguate model structure. If the user provided only a main article, ask whether a supplement exists and request it.
+8. **Always search for errata, corrigenda, or author corrections.** Check the journal's landing page for the article, the publisher's "corrections" / "notices" feed, and a search like `"<first author> <year> <drug>" erratum` on PubMed and Google Scholar. Ask the user whether they are aware of any corrections if the source is paywalled or the search is inconclusive. **When an erratum revises a value used in the model (parameter estimate, covariate effect, equation, units), the erratum value takes precedence over the main publication.** If multiple errata exist, the most recent supersedes earlier ones. Record the erratum citation in the model file's `reference` metadata alongside the main paper, and in every in-file source-trace comment whose value comes from the erratum, point to the erratum (not the original table).
+9. **Verify parameters are final estimates, not initial estimates.** Supplement control streams usually list initial values in `$THETA` / `$OMEGA`; final values come from the paper's results table or `$TABLE` output. If only a control stream is available, confirm values against any published point estimates before treating them as final.
+10. **Multiple-model handling.**
+    - Base model + final model → extract only the final.
+    - Any other "multiple model" case (per-subpopulation, per-endpoint, sensitivity analyses) → list the candidates to the user and ask which to extract. Offer "one," "all," or "a subset."
+11. Confirm the target subdirectory under `inst/modeldb/` (usually `specificDrugs/`; endogenous, therapeuticArea, pharmacokinetics, and pharmacodynamics are also valid).
 
 ## Phase 2 — Sync with origin/main and branch
 
@@ -69,6 +83,17 @@ will note that a fresh worktree has already been set up — verify with
 `git branch --show-current` and skip the `git fetch` / `git checkout -b`
 in that case. The runner provides the authoritative instructions for its
 own environment.)
+
+**Worktree resumption — handle pre-existing WIP.** Before drafting anything, run `git status -s` in the worktree. If the working tree is **not clean** (uncommitted modifications or untracked files), this worktree is a resumption of a prior task instance that crashed or was interrupted:
+
+1. Read every modified / untracked file under `inst/modeldb/specificDrugs/`, `inst/modeldb/<other-categories>/`, `vignettes/articles/`, `data/`, `inst/`, and `NEWS.md`.
+2. Decide whether the prior WIP is salvageable (sound enough to continue from where it stopped) or unsalvageable (revert to clean state via `git restore .` and `git clean -fd`, then start over).
+3. If salvageable: continue from where the prior run left off and note the resumption in the PR body so the reviewer is aware.
+4. If unsalvageable: clean and restart. No operator approval is required for the cleanup itself; the reset is automatic for an unsalvageable WIP.
+
+If the worktree's branch was **already committed and pushed in a prior run** (i.e. `git log origin/<branch>..HEAD` shows no new commits and the branch exists on origin with task content), that is a different case — the task was already completed previously. Sidecar-ask:
+
+> Worktree branch `<branch>` is already pushed with prior task content. Options: (A) verify the pushed branch and exit cleanly without re-extracting, (B) tear down and re-extract from scratch (operator may have new source files / new skill version). Which applies?
 
 ## Phase 3 — Model file
 
@@ -120,6 +145,30 @@ When any uncertainty remains, ask the user using this format:
 > Ambiguity at [source location]. Two plausible interpretations: (A) …, (B) …. Which applies?
 
 Never silently resolve ambiguity. Never tune parameter values to match a validation target.
+
+**Missing-parameter / author-correspondence pathway.** If a parameter you need to populate the model is **not present anywhere on disk** (not in the main paper, not in any supplement, not in any associated regulatory review), do not substitute a training-data value or a "typical" textbook value. Sidecar-ask:
+
+> Parameter `<name>` (e.g. `kdeg`, `V_DXd`) is required for the <full-TMDD / payload-PK / structural> model but is not reported in any source on disk for <paper>. Options: (A) draft an author-correspondence email and pause this task pending reply (operator handles the email), (B) approximate with <QSS / steady-state / fixed-from-class> and document the approximation in vignette Errata, (C) skip this paper. Which applies?
+
+Operator-followup tracking: unresolved-parameter cases are recorded in `tracking/operator_followups.md` (the `F1`, `F2`, ... numbered register) so the operator can batch-send author emails. When a reply arrives with a numeric value, the operator records it in the followups file; this skill does NOT email authors.
+
+**Non-paper provenance — annotate inline.** When a parameter value did not come from the paper's text or tables — e.g. the operator read it off a graphical figure, an author supplied it via email correspondence, or it was carried from an upstream-task model file — record the provenance as an inline comment on the parameter line so the source-trace is unambiguous:
+
+```r
+ini({
+  # paper-derived (Table 4)
+  lcl <- log(0.225) ; label("Clearance (L/day)")
+
+  # author correspondence (J. Almquist email 2026-04-29);
+  # see tracking/operator_followups.md F12
+  lkdeg <- log(0.0231) ; label("Receptor degradation rate (1/day)")
+
+  # operator-extracted from Figure 2 (digitised); ±10% uncertainty
+  lvdxd <- log(0.038) ; label("DXd payload volume (L/kg) — figure-derived")
+})
+```
+
+This is mandatory for any parameter not from the paper text/tables. The vignette's Assumptions and deviations / Errata section must also list the non-paper provenance (see `references/vignette-template.md`).
 
 ## Phase 5 — Validation vignette
 
@@ -218,6 +267,10 @@ Don't guess — ask the user when:
 - An erratum search is inconclusive (e.g., paywalled journal, ambiguous correction notice) — ask the user to confirm whether any corrections apply.
 - The paper's final model was fit to animal-only data (see Phase 1 species-check step).
 - The PMC XML / PDF on disk contains only the paper's abstract (see Phase 1 full-text-check step).
+- The on-disk file's title / first-author / journal / year / drug disagrees with the task's `Paper metadata` block (see Phase 1 paper-identity-check step).
+- The paper depends on an upstream popPK model that is not on disk — either the upstream paper is identifiable (queue dependency) or unidentifiable (operator decision needed). See Phase 1 upstream-popPK detection step.
+- A required structural-model parameter is absent from every on-disk source (paper + supplements + regulatory review). Use the Phase 4 missing-parameter sidecar template; do not fall back to training data.
+- The worktree at dispatch has a pre-existing pushed branch for this task ID (prior completed run). See Phase 2 worktree-resumption step.
 - `devtools::check()` or vignette rendering produces a C-level segfault — the environment is broken; do not paper over with `--no-build-vignettes` or similar.
 - The `timeout 300 rmarkdown::render()` gate exits 124 — the vignette exceeds 5 minutes; reduce simulation size before committing.
 
@@ -229,6 +282,14 @@ When running interactively, use `AskUserQuestion`. When running under
 `claude_runner`, follow the runner's injected preamble instructions for
 the sidecar stop-and-ask protocol (the runner provides the file paths and
 schema).
+
+## Refusal handling
+
+If at any phase you find yourself producing a content-policy refusal in response to legitimate clinical-trial content (drug + dose + indication + adverse-event language is normal in pharmacometric papers and is not a safety concern), do not silently degrade the extraction. Sidecar-ask:
+
+> Phase <N> step <M> hit a content-policy refusal while reading <paper section / table>. The content is standard published clinical pharmacology (drug + dose + indication + AE language). Options: (A) rephrase the extraction prompt and continue, (B) skip the affected section and document the gap in vignette Errata, (C) defer the task pending operator review.
+
+A refusal is operator-actionable signal, not a fatal error. Treat it the same as any other stop-and-ask trigger.
 
 ## Constraints
 
