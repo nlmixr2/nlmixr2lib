@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Suri 2018 brentuximab vedotin ([doi:10.1002/cpt.1037](https://doi.org/10.1002/cpt.1037)) — adults with CD30-positive Hodgkin lymphoma, systemic anaplastic large-cell lymphoma, mycosis fungoides, or primary cutaneous ALCL pooled across six clinical studies (including the phase III ALCANZA trial in CTCL).
 * Add Lin 2024 casirivimab ([doi:10.1007/s11095-024-03764-5](https://doi.org/10.1007/s11095-024-03764-5)) — pediatric and adult subjects, non-infected or with SARS-CoV-2 infection or household contacts.
 * Add Faelens 2021 infliximab ([doi:10.3390/pharmaceutics13101623](https://doi.org/10.3390/pharmaceutics13101623)) — adults with moderate-to-severe ulcerative colitis.
 * Add Sathe 2024 sacituzumab govitecan ([doi:10.1007/s40262-024-01366-3](https://doi.org/10.1007/s40262-024-01366-3)) — adults with metastatic triple-negative breast cancer and other solid tumors.
