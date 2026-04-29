@@ -202,7 +202,7 @@ make_cohort <- function(n, dose_mg_per_kg, regimen, wt, bsa, alb, tbili, creat,
     TBILI        = tbili,
     CREAT        = creat,
     TUMTP_PCALCL = as.integer(tumtp_pcalcl),
-    ADA_POSNEW   = as.integer(ada_posnew),
+    ADA_POS   = as.integer(ada_posnew),
     ADA_POSOLD   = as.integer(ada_posold),
     ADA_MISSING  = as.integer(ada_missing)
   )
@@ -487,11 +487,12 @@ in the source documentation that needed re-derivation.
   effect into three mutually exclusive indicators (ADA-positive in a newer-
   assay study, ADA-positive in an older-assay study, ADA-missing) because
   the older and newer assays differed substantially in sensitivity and drug
-  tolerance. The packaged model registers three new specific-scope
-  covariates `ADA_POSNEW`, `ADA_POSOLD`, `ADA_MISSING` rather than reusing
-  the general-scope binary `ADA_POS` register entry; ADA-negative is the
-  reference (all three indicators 0). Future BV models that use a single
-  binary ADA effect should keep using the canonical `ADA_POS`.
+  tolerance. The packaged model uses three mutually exclusive indicators:
+  `ADA_POS` (positive in the modern/newer assay — the same general-scope
+  canonical used by all other models), `ADA_POSOLD` (positive in the older
+  assay), and `ADA_MISSING` (no ADA result recorded). ADA-negative is the
+  reference (all three indicators 0). Future BV models that run a single
+  assay generation will just use the standard `ADA_POS`.
 * **MMAE submodel coupled, not sequential.** Suri 2018 Methods page 993
   notes that "the PK model for MMAE included a link to ADC elimination using
   individual parameter estimates from the ADC model to predict ADC

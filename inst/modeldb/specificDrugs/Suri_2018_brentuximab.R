@@ -49,12 +49,12 @@ Suri_2018_brentuximab <- function() {
       notes              = "Time-fixed. Categorical effect on ADC clearance only: cl_adc *= e_pcalcl_adc_cl^TUMTP_PCALCL with e_pcalcl_adc_cl = 0.728 (pcALCL patients have ~27% lower typical-value ADC CL than non-pcALCL patients). Reference category is 0 = non-pcALCL (the four other tumor types in the pooled cohort: Hodgkin lymphoma, systemic ALCL, mycosis fungoides, other CD30+ hematologic malignancies). 16 of 380 patients in the pooled cohort were pcALCL (4.2%).",
       source_name        = "PCALCL"
     ),
-    ADA_POSNEW = list(
+    ADA_POS = list(
       description        = "Anti-drug antibody positive in a 'newer-assay' study (1 = ever ADA-positive in NCT01990534 [Walewski 2016] or NCT01578499 [ALCANZA], 0 = otherwise)",
       units              = "(binary)",
       type               = "binary",
       reference_category = 0,
-      notes              = "Time-varying once positive (Suri 2018 Methods: 'patients were treated as being positive at all times following the first time when ADA positivity was detected'). Multiplicative additive effect on ADC clearance: cl_adc *= (1 + e_adapn_adc_cl * ADA_POSNEW) with e_adapn_adc_cl = 0.125 (12.5% higher CL when positive in a newer study). Mutually exclusive with ADA_POSOLD and ADA_MISSING. Reference category 0 = ADA-negative or not in a newer-assay study. The newer assay (sensitivity 23.573 ng/mL, drug tolerance 25 ug/mL) was used in NCT01990534 and the ALCANZA phase III trial.",
+      notes              = "Time-varying once positive (Suri 2018 Methods: 'patients were treated as being positive at all times following the first time when ADA positivity was detected'). Multiplicative additive effect on ADC clearance: cl_adc *= (1 + e_adapos_adc_cl * ADA_POS) with e_adapos_adc_cl = 0.125 (12.5% higher CL when positive in a newer study). Mutually exclusive with ADA_POSOLD and ADA_MISSING. Reference category 0 = ADA-negative or not in a newer-assay study. The newer assay (sensitivity 23.573 ng/mL, drug tolerance 25 ug/mL) was used in NCT01990534 and the ALCANZA phase III trial.",
       source_name        = "ATAPOSNEW"
     ),
     ADA_POSOLD = list(
@@ -62,7 +62,7 @@ Suri_2018_brentuximab <- function() {
       units              = "(binary)",
       type               = "binary",
       reference_category = 0,
-      notes              = "Time-varying once positive. Multiplicative additive effect on ADC clearance: cl_adc *= (1 + e_adapo_adc_cl * ADA_POSOLD) with e_adapo_adc_cl = 0.177 (17.7% higher CL when positive in an older study). Mutually exclusive with ADA_POSNEW and ADA_MISSING. Reference category 0 = ADA-negative or not in an older-assay study. The older assay (sensitivity 4 ng/mL, drug tolerance 3,125 ng/mL) was used in NCT00430846, NCT00649584, NCT00848926, and NCT00866047. The 'older' vs 'newer' split is retained as a covariate because differing assay sensitivity / drug tolerance led to differing apparent ADA-on-CL effect sizes.",
+      notes              = "Time-varying once positive. Multiplicative additive effect on ADC clearance: cl_adc *= (1 + e_adapo_adc_cl * ADA_POSOLD) with e_adapo_adc_cl = 0.177 (17.7% higher CL when positive in an older study). Mutually exclusive with ADA_POS and ADA_MISSING. Reference category 0 = ADA-negative or not in an older-assay study. The older assay (sensitivity 4 ng/mL, drug tolerance 3,125 ng/mL) was used in NCT00430846, NCT00649584, NCT00848926, and NCT00866047. The 'older' vs 'newer' split is retained as a covariate because differing assay sensitivity / drug tolerance led to differing apparent ADA-on-CL effect sizes.",
       source_name        = "ATAPOSOLD"
     ),
     ADA_MISSING = list(
@@ -70,7 +70,7 @@ Suri_2018_brentuximab <- function() {
       units              = "(binary)",
       type               = "binary",
       reference_category = 0,
-      notes              = "Time-fixed. Multiplicative additive effect on ADC clearance: cl_adc *= (1 + e_adam_adc_cl * ADA_MISSING) with e_adam_adc_cl = 0.192 (19.2% higher typical-value CL when ADA result is missing). Mutually exclusive with ADA_POSNEW and ADA_POSOLD. Reference category 0 = ADA result reported (positive or negative). 205 of 380 patients in the pooled cohort had missing ADA values (Suri 2018 Table S2).",
+      notes              = "Time-fixed. Multiplicative additive effect on ADC clearance: cl_adc *= (1 + e_adam_adc_cl * ADA_MISSING) with e_adam_adc_cl = 0.192 (19.2% higher typical-value CL when ADA result is missing). Mutually exclusive with ADA_POS and ADA_POSOLD. Reference category 0 = ADA result reported (positive or negative). 205 of 380 patients in the pooled cohort had missing ADA values (Suri 2018 Table S2).",
       source_name        = "ATAMISSING"
     )
   )
@@ -91,7 +91,7 @@ Suri_2018_brentuximab <- function() {
     regions        = "Multinational (US, Europe, Asia).",
     study_phase    = "Phase I (NCT00430846 Younes 2010, NCT00649584 Fanale 2012); phase II (NCT00848926 Younes 2012 HL, NCT00866047 Pro 2012 sALCL, NCT01990534 Walewski 2016 HL); phase III (NCT01578499 ALCANZA Prince 2017 CTCL).",
     n_observations = "9,541 ADC + 9,669 MMAE concentration records (excluding ~3% BLOQ records) across 380 subjects; 22,660 total NONMEM records.",
-    reference_subject = "BSA 1.865 m^2, ALB 36.81 g/L, TBILI 7.78 umol/L, CREAT 72.4 umol/L, TUMTP_PCALCL 0, ADA_POSNEW 0, ADA_POSOLD 0, ADA_MISSING 0 (Suri 2018 Table 1 overall-population means; ADA-negative reference).",
+    reference_subject = "BSA 1.865 m^2, ALB 36.81 g/L, TBILI 7.78 umol/L, CREAT 72.4 umol/L, TUMTP_PCALCL 0, ADA_POS 0, ADA_POSOLD 0, ADA_MISSING 0 (Suri 2018 Table 1 overall-population means; ADA-negative reference).",
     notes          = "Baseline characteristics from Suri 2018 Table 1 (overall column, n = 380). Suri 2018 supplement 1 (Methods) states continuous covariates were modeled as TVP = P_pop * (cov / cov_mean)^theta, normalized for the population mean — so the reference values used here are the Table 1 reported means rather than round numbers. The ALCANZA subgroup (n = 66 CTCL patients with MF or pcALCL) was older (median age 61 vs 37 overall), had higher albumin (mean 42.4 vs 36.8 g/L), and lower creatinine clearance (mean 105 vs 139 mL/min) than the overall population."
   )
 
@@ -112,7 +112,7 @@ Suri_2018_brentuximab <- function() {
     e_bsa_adc_cl      <- 0.457;  label("Power exponent of (BSA / 1.865) on ADC CL (unitless)")              # Suri 2018 Table S1: 0.457 (16.8% RSE)
     e_alb_adc_cl      <- -0.496; label("Power exponent of (ALB / 36.81) on ADC CL (unitless)")              # Suri 2018 Table S1: -0.496 (3.6% RSE)
     e_pcalcl_adc_cl   <- 0.728;  label("Power-form multiplier of pcALCL on ADC CL: cl *= e_pcalcl_adc_cl^TUMTP_PCALCL") # Suri 2018 Table S1: 0.728 (8.9% RSE)
-    e_adapn_adc_cl    <- 0.125;  label("Multiplicative additive effect of ADA-positive (newer-assay study) on ADC CL: cl *= (1 + e_adapn_adc_cl * ADA_POSNEW)") # Suri 2018 Table S1: 0.125 (10.1% RSE)
+    e_adapos_adc_cl    <- 0.125;  label("Multiplicative additive effect of ADA-positive (newer-assay study) on ADC CL: cl *= (1 + e_adapos_adc_cl * ADA_POS)") # Suri 2018 Table S1: 0.125 (10.1% RSE)
     e_adapo_adc_cl    <- 0.177;  label("Multiplicative additive effect of ADA-positive (older-assay study) on ADC CL: cl *= (1 + e_adapo_adc_cl * ADA_POSOLD)") # Suri 2018 Table S1: 0.177 (6.0% RSE)
     e_adam_adc_cl     <- 0.192;  label("Multiplicative additive effect of ADA-missing on ADC CL: cl *= (1 + e_adam_adc_cl * ADA_MISSING)") # Suri 2018 Table S1: 0.192 (9.4% RSE)
 
@@ -167,7 +167,7 @@ Suri_2018_brentuximab <- function() {
               nbsa^e_bsa_adc_cl *
               nalb^e_alb_adc_cl *
               e_pcalcl_adc_cl^TUMTP_PCALCL *
-              (1 + e_adapn_adc_cl * ADA_POSNEW) *
+              (1 + e_adapos_adc_cl * ADA_POS) *
               (1 + e_adapo_adc_cl * ADA_POSOLD) *
               (1 + e_adam_adc_cl  * ADA_MISSING)
     v1_adc <- exp(lvc + etalvc) * nbsa^e_bsa_adc_vc
