@@ -18,6 +18,7 @@
 * Add Takeuchi 2023 ozoralizumab ([doi:10.1002/jcph.2380](https://doi.org/10.1002/jcph.2380)) — Japanese adults with rheumatoid arthritis.
 * Add Toukam 2025 BIIB107 ([doi:10.1002/jcph.70109](https://doi.org/10.1002/jcph.70109)) — healthy adult volunteers (first-in-human study supporting MS dose optimization).
 * Add Yao 2018 guselkumab ([doi:10.1002/jcph.1063](https://doi.org/10.1002/jcph.1063)) — adults with moderate-to-severe plaque psoriasis.
+* Add Frey 2013 tocilizumab DAS28 exposure-response ([doi:10.1177/0091270012437585](https://doi.org/10.1177/0091270012437585)) — adults with moderate-to-severe rheumatoid arthritis (OPTION + TOWARD phase III pool).
 * Add Lin 2024 casirivimab ([doi:10.1007/s11095-024-03764-5](https://doi.org/10.1007/s11095-024-03764-5)) — pediatric and adult subjects, non-infected or with SARS-CoV-2 infection or household contacts.
 * Add Faelens 2021 infliximab ([doi:10.3390/pharmaceutics13101623](https://doi.org/10.3390/pharmaceutics13101623)) — adults with moderate-to-severe ulcerative colitis.
 * Add Sathe 2024 sacituzumab govitecan ([doi:10.1007/s40262-024-01366-3](https://doi.org/10.1007/s40262-024-01366-3)) — adults with metastatic triple-negative breast cancer and other solid tumors.

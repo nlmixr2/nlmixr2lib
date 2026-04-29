@@ -495,6 +495,18 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Thakre_2022_risankizumab.R`, `Xu_2019_sarilumab.R`, `Chua_2025_mirikizumab.R`, `Moein_2022_etrolizumab.R`, `Ma_2020_sarilumab_das28crp.R`, `Wang_2020_ontamalimab.R` (mg/dL, reference 0.837).
 - **Notes:** The prior separate `hsCRP`, `BLCRP`, and standard-assay `CRP` canonicals were merged on 2026-04-20 to a single general-scope `CRP` canonical. Assay type (standard vs hs-CRP), baseline-vs-time-varying status, and the paper-specific reference value all live in each model's `covariateData[[CRP]]$description` / `notes`. Only aggregate values from hs-validated assays as CRP when the downstream analysis relies on low-range sensitivity; for most inflammatory-disease cohorts (IBD, RA/PsA), baseline CRP is well above the hs-sensitivity range and the distinction is moot.
 
+### IL6 (**canonical for serum interleukin-6 concentration**)
+- **Description:** Serum (or plasma) interleukin-6 (IL-6) concentration. Pro-inflammatory cytokine; elevated in rheumatoid arthritis, Castleman's disease, sepsis, COVID-19, and other inflammatory conditions. Both baseline and time-varying usages are covered; document per-model in `covariateData[[IL6]]$notes` whether the column is baseline-only or time-varying.
+- **Units:** pg/mL (= ng/L; the two labels are numerically equivalent).
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a — used with power scaling `(IL6 / ref)^exponent` or with the log-transformed form `(log(IL6 * 1000) / log(ref * 1000))^exponent` that some legacy NONMEM analyses adopt. Reference values observed: 20 pg/mL (Frey 2013 baseline; the formula `(log(IL-6 * 1000)/9.9)^exponent` is the algebraic equivalent of `(log(IL-6) / log(20))^exponent` after the constant-factor rescaling that ties the reference log to 9.9 = log(20000)).
+- **Source aliases:**
+  - `BLIL6` — baseline IL-6 (used in some NONMEM control streams; canonical drops the `BL` prefix per the `EOS` / `EASI` / `AGE` convention with baseline-vs-time-varying status documented in per-model notes).
+  - `IL-6`, `IL_6` — punctuation variants seen in publication tables and figures.
+- **Example models:** `Frey_2013_tocilizumab.R` (baseline IL-6, reference 20 pg/mL; log-transformed power effects on EC50, BASE, and the DMARD background-effect parameter).
+- **Notes:** Anti-IL-6 / anti-IL-6R drugs (tocilizumab, sarilumab, siltuximab) often see large transient increases in measured IL-6 after dosing — when the column is time-varying for these drugs, the assay typically detects total (free + drug-bound) IL-6 because the antibody complex slows clearance of IL-6. Document the assay type (free vs. total IL-6) and whether the value is pre-dose (baseline-only) or post-dose / time-varying in each model's `covariateData[[IL6]]$notes`. Frey 2013's formula relies on the relative log-IL-6 ratio rather than the linear concentration, so the column units must be pg/mL exactly (not ng/mL) for the published exponents to apply unchanged.
+
 ## Cardiometabolic / target biomarkers
 
 ### HDLC (**canonical for high-density lipoprotein cholesterol**)
@@ -595,6 +607,16 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Scope:** general
 - **Source aliases:** `ASIAN` — used in `Hu_2026_clesrovimab.R`, `Robbie_2012_palivizumab.R`, `Fau_2020_isatuximab.R`. `RAAS` (race-Asian-vs-other indicator as named in Bajaj 2017 Table 1) — used in `Bajaj_2017_nivolumab.R`.
 - **Example models:** `Zhu_2017_lebrikizumab.R` (canonical form), `Robbie_2012_palivizumab.R`, `Bajaj_2017_nivolumab.R`, `Fau_2020_isatuximab.R`.
+
+### RACE_ASIAN_OTH (**canonical for composite Asian / American Indian / Other group**)
+- **Description:** 1 = Asian, American Indian / Alaska Native, or Other race; 0 = White or Black. Composite indicator that pools the smaller-N race groups in a population dominated by White and Black subjects, with White + Black serving as the reference category. Distinct from `RACE_ASIAN_AMIND_MULTI` (Clegg 2024 grouping that includes Multiracial; pooled against a different reference) and from `RACE_BLACK_OTH` (different composite).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 = White or Black (the larger-N pooled group used as the reference in the source paper).
+- **Source aliases:** none formally; Frey 2013's NONMEM control stream uses the inline race classification rather than a separate named column.
+- **Example models:** `Frey_2013_tocilizumab.R` (multiplicative fractional effect on the DAS28 first-order loss rate Kout: `Kout * (1 - 0.25 * RACE_ASIAN_OTH)` — Kout is 25% lower in the Asian/AmInd/Other composite group relative to the White+Black reference).
+- **Notes:** Specific scope because the composite grouping is defined by the source paper's analysis plan rather than by a uniform external standard. Do not combine with the decomposed `RACE_ASIAN`, `RACE_OTHER`, etc. indicators in the same model; the composite indicator is mutually exclusive with the decomposition. Ratified canonically on 2026-04-29 in support of the Frey 2013 tocilizumab DAS28 PKPD model.
 
 ### RACE_ASIAN_AMIND_MULTI (**canonical for composite group**)
 - **Description:** 1 = Asian, American Indian / Alaskan Native, or Multiple races, 0 = other.
@@ -1349,6 +1371,16 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Ma_2020_sarilumab_das28crp.R`.
 - **Notes:** Patient-reported disability score frequently used as a baseline covariate in rheumatoid-arthritis PK/PD analyses.
 
+### PAIN (**canonical for patient-reported global pain visual analogue score**)
+- **Description:** Patient-reported global pain on a 100-mm visual analogue scale (PAIN; 0 = no pain, 100 = worst imaginable pain). Distinct from `BLPHYVAS` (the *physician*'s global assessment of disease activity). Both baseline and time-varying usages are covered; document per-model in `covariateData[[PAIN]]$notes` whether the column is baseline-only.
+- **Units:** mm (0-100 VAS).
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a — used with power scaling `(PAIN / ref)^exponent`. Reference value observed: 60 in Frey 2013 (approximate dataset median across OPTION/TOWARD).
+- **Source aliases:** none known (the PAIN column name is used directly in the Frey 2013 NONMEM control stream).
+- **Example models:** `Frey_2013_tocilizumab.R` (baseline; power effect on the indirect-response BASE parameter with reference 60 and exponent 0.062).
+- **Notes:** PAIN can take the value 0 in real cohorts (a patient who reports no pain at the assessment), which makes the bare power form `(PAIN/60)^exp` return 0. Frey 2013 documents an explicit 0.010 floor on PAIN in its Table 2 covariate range; the model file applies the same floor inside `model()` so simulation under PAIN = 0 returns a finite BASE rather than collapsing to zero. Canonical name follows the `EOS` / `EASI` convention (no `BL` prefix); baseline-vs-time-varying status is per-model.
+
 ### SWOL_28JOINT (**canonical for 28-joint swollen joint count**)
 - **Description:** Swollen joint count on the 28-joint (DAS28) scale (integer 0-28; component of the DAS28 composite). Baseline value is typical; document time-varying use in per-model `notes`.
 - **Units:** count (0-28)
@@ -2005,6 +2037,7 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 ## Change log
 
 - **2026-04-28** — Extended `RACE_WHITE` (general scope) example-models list and source aliases to record `Hu_2014_bapineuzumab.R` (Caucasian-vs-non-Caucasian dichotomy with the Caucasian subgroup as the typical-value reference). The canonical column encoding (1 = White / 0 = non-White) is unchanged; the model implements the 15% non-Caucasian effect on `(1 - RACE_WHITE)`. The change log notes that the typical-value reference category may legitimately differ between papers using `RACE_WHITE`.
+- **2026-04-29** — Added `IL6` (general-scope serum interleukin-6 cytokine biomarker, pg/mL, under `Inflammation markers`), `PAIN` (general-scope patient-reported global pain VAS 0-100, under `Rheumatoid-arthritis disease-activity covariates`), and `RACE_ASIAN_OTH` (specific-scope composite race indicator pooling Asian / American Indian / Other against a White + Black reference, under `Race / ethnicity`) canonical entries while extracting `Frey_2013_tocilizumab.R` (PMID 23436260). Source aliases mapped: `BLIL6` -> `IL6`. Frey 2013 uses log-transformed `(log(IL-6 * 1000) / 9.9)^exp` with reference IL-6 ~= 20 pg/mL; the canonical column carries the raw IL-6 in pg/mL and the log transformation is applied inside `model()`.
 - **2026-04-27** — Added `STUDY_ABA2_HLA78` and `STUDY_ABA2_HLA88` (both specific scope) canonical entries while extracting `Takahashi_2023_abatacept.R`. The two binary indicators jointly reproduce the three-level RA/JIA-vs-ABA2-7/8-vs-ABA2-8/8 cohort categorical that Takahashi 2023 Supplemental Table 4 retains as the only categorical PK covariate (multiplicative `Ratio` thetas on CL and on Vc; RA/JIA = both indicators 0 = ratio 1 fixed).
 - **2026-04-27** — Added a new `## Study-site region` section with `REGION_JAPAN`, `REGION_EUROPE`, `REGION_ROW` canonical entries (all scope: specific, binary indicators) while extracting `Hong_2025_datopotamab.R`. US is the implicit reference category (all three indicators = 0). The new entries are distinct from the existing `RACE_*` family because they encode trial-site geography rather than subject ancestry; a Japanese-ancestry subject enrolled at a US site has `RACE_JAPANESE = 1` and `REGION_JAPAN = 0`.
 - **2026-04-26** — Added `B2M` (general-scope serum beta-2-microglobulin under `Renal / hepatic function`; reference 3.90 mg/L from the multiple-myeloma cohort median), `MM_NIGG` (specific-scope non-IgG-MM-vs-IgG-MM within-disease immunoglobulin-type indicator under `Oncology`), and `FORM_P2F2` (specific-scope isatuximab phase III / commercial-bound drug-material indicator, placed alongside the existing `FORM_*` entries) canonical entries while extracting `Fau_2020_isatuximab.R`. Source aliases mapped: `Ig_type`→`MM_NIGG`, `Drug_mat`→`FORM_P2F2`. `Fau_2020_isatuximab.R` added to the `WT`, `SEXF`, and `RACE_ASIAN` example-model lists.
