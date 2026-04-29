@@ -4,6 +4,7 @@
 
 * Add Cheng 2026 immunoglobulin ([doi:10.1002/bcp.70420](https://doi.org/10.1002/bcp.70420)) — children with primary immunodeficiency or secondary antibody deficiency receiving intravenous immunoglobulin replacement therapy.
 * Add Frey 2010 tocilizumab ([doi:10.1177/0091270009350623](https://doi.org/10.1177/0091270009350623)) — adults with moderate-to-severe rheumatoid arthritis.
+* Add Hayashi 2007 omalizumab ([doi:10.1111/j.1365-2125.2006.02803.x](https://doi.org/10.1111/j.1365-2125.2006.02803.x)) — Japanese adults with atopic asthma or seasonal allergic rhinitis.
 * Add Lin 2024 casirivimab ([doi:10.1007/s11095-024-03764-5](https://doi.org/10.1007/s11095-024-03764-5)) — pediatric and adult subjects, non-infected or with SARS-CoV-2 infection or household contacts.
 * Add Faelens 2021 infliximab ([doi:10.3390/pharmaceutics13101623](https://doi.org/10.3390/pharmaceutics13101623)) — adults with moderate-to-severe ulcerative colitis.
 * Add Sathe 2024 sacituzumab govitecan ([doi:10.1007/s40262-024-01366-3](https://doi.org/10.1007/s40262-024-01366-3)) — adults with metastatic triple-negative breast cancer and other solid tumors.
