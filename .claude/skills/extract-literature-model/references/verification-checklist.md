@@ -6,9 +6,15 @@ After the first-pass model file is written, re-read the source independently and
 
 Do not silently resolve ambiguity. Do not tune parameters to make a validation output match a target — if the validation disagrees with the paper, investigate the source, not the parameters.
 
+## H. Source identity
+
+- [ ] On-disk PDF / XML title, first author, journal, and year match the task's `Paper metadata` block. Filename PMID matches the actual PMID in the source (catches mislabelled drops like `PMID_23436260.pdf` actually being Frey 2010 / PMID 20097931).
+- [ ] Drug named in the task metadata matches the molecule the paper actually models.
+
 ## A. Parameter values
 
 - [ ] **Errata / corrigenda checked.** Confirmed search for published corrections to the source; any erratum value supersedes the main publication for conflicting values, with the most recent erratum winning when multiple exist. Erratum citation recorded in the model file's `reference` field, and each affected `ini()` comment points to the erratum.
+- [ ] Every parameter line in `ini()` has a clear provenance comment if it did not come from the paper's text/tables (author correspondence, figure-digitisation, upstream-task model file). The comment cites the followup-register entry (`tracking/operator_followups.md F<n>`) when applicable.
 - [ ] Every parameter in `ini()` has an in-file trailing comment pointing to the source location (table, equation, page, or figure). Re-check each comment matches what the source actually says.
 - [ ] Values are **final estimates**, not initial estimates. Supplement NONMEM control streams often list initial values in `$THETA` and `$OMEGA`; the final values come from the `$TABLE` output or the main paper. If the only source is a control stream, confirm the values match any published point estimates.
 - [ ] **Log-vs-linear reporting.** NONMEM often reports THETAs on the estimation scale (already log), but tables in the paper usually show the back-transformed value. A `log()` wrapper in `ini()` must match what the paper reports: `lcl <- log(0.0388)` is correct when the paper says "CL = 0.0388 L/day."
@@ -52,6 +58,7 @@ Do not silently resolve ambiguity. Do not tune parameters to make a validation o
 - [ ] `population` uses the extensible schema documented in `naming-conventions.md`; any paper-specific keys are allowed.
 - [ ] No stray `#!` instruction comments from the template remain.
 - [ ] Vignette path is `vignettes/articles/<...>.Rmd` (not top-level `vignettes/`), matching the pkgdown "articles" convention used by every non-legacy vignette in the package.
+- [ ] If this task `depends_on` an upstream-PK task, the model file's `reference` field cites the upstream model (e.g., `"... PK structure adapted from <Author> <Year>; see modellib('<Upstream>')"`). See `references/model-file-template.md` for the lineage snippet.
 
 ## F. Sanity simulations
 

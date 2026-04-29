@@ -205,6 +205,18 @@ match.>
 - <Any simplification, e.g., "Time-varying weight held constant at the baseline
   z-score over the follow-up window."
 - <Any parameter the paper did not publish, and what was used instead.>
+- **Non-paper-derived parameter values** — call out any value that came from a
+  source other than the paper's text or tables. Cite the followup-register
+  entry (`tracking/operator_followups.md F<n>`) when applicable. Examples:
+  - "`kdeg = 0.0231 1/day` was supplied by the corresponding author
+    (J. Almquist, email 2026-04-29; see `tracking/operator_followups.md F12`);
+    the paper's Wiley supplement holds the value but is subscription-blocked."
+  - "`V_DXd = 0.038 L/kg` was extracted by the operator from Figure 2 of
+    <Author Year> via on-screen digitisation; ±10% uncertainty estimated from
+    the figure's gridline resolution."
+  - "PK structural parameters (`CL`, `Vc`, `Q`, `Vp`) were carried from the
+    upstream model `<Upstream_Year_drug>` (this paper fixes its PK from that
+    publication and reports only PD parameters)."
 ````
 
 ## Notes

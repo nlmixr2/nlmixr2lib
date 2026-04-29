@@ -147,3 +147,48 @@ Related references:
 - Helper functions (e.g., to derive one-hot race indicators from a raw race column) live in `R/` and are exported with roxygen. Name them `<modelname>_<action>()`, e.g., `Clegg_2024_nirsevimab_derive_race_indicators()`. Only add if the covariate encoding is non-trivial.
 
 - Before committing: delete every `#!` instruction comment. Leave the source-location `# <source>` comments — they are the audit trail.
+
+## Documenting non-paper-derived parameter values
+
+When a parameter value did not come from the paper's text or tables — e.g. the
+operator read it off a graphical figure, an author supplied it via email
+correspondence, or it was carried from an upstream-task model file — record the
+provenance inline on the parameter line so the source-trace is unambiguous:
+
+```r
+ini({
+  # paper-derived (Table 4)
+  lcl <- log(0.225) ; label("Clearance (L/day)")
+
+  # author correspondence (J. Almquist email 2026-04-29);
+  # see tracking/operator_followups.md F12
+  lkdeg <- log(0.0231) ; label("Receptor degradation rate (1/day)")
+
+  # operator-extracted from Figure 2 (digitised); ±10% uncertainty
+  lvdxd <- log(0.038) ; label("DXd payload volume (L/kg) — figure-derived")
+})
+```
+
+Mirror the call-out in the vignette's Assumptions and deviations section (see
+`vignette-template.md`).
+
+## `depends_on` lineage in the `reference` field
+
+When a model's PK structure is fixed from another paper already in nlmixr2lib
+(typically a `depends_on` task), record both citations so the dependency is
+visible in `?modellib`, `checkModelConventions()` output, and `readModelDb()`
+metadata — not only in the task YAML:
+
+```r
+reference <- paste(
+  "Iwaki et al. (2021) J Clin Pharmacol 61(11):1488-1499.",
+  "doi:10.1002/jcph.1953.",
+  "PK structure adapted from Yao et al. (2018)",
+  "J Clin Pharmacol 58(11):1488-1497; see",
+  "modellib('Yao_2018_guselkumab').",
+  sep = " "
+)
+```
+
+Use this whenever the task YAML carries a `depends_on:` key referencing an
+upstream nlmixr2lib model.
