@@ -2,6 +2,7 @@
 
 # development version
 
+* Add de Vries Schultink 2020 zenocutuzumab (MCLA-128) ([doi:10.1007/s40262-020-00858-2](https://doi.org/10.1007/s40262-020-00858-2)) — adults with advanced solid tumors (first bispecific antibody in nlmixr2lib).
 * Fix Clegg 2024 nirsevimab vignette Figure 4: pass disjoint `id_offset` per cohort and carry `trial` via `rxSolve(keep = )` so the four panels no longer collapse into a single Frankenstein-subject simulation (predictions had been ~3× too high).
 * Add Cheng 2026 immunoglobulin ([doi:10.1002/bcp.70420](https://doi.org/10.1002/bcp.70420)) — children with primary immunodeficiency or secondary antibody deficiency receiving intravenous immunoglobulin replacement therapy.
 * Add Frey 2010 tocilizumab ([doi:10.1177/0091270009350623](https://doi.org/10.1177/0091270009350623)) — adults with moderate-to-severe rheumatoid arthritis.
