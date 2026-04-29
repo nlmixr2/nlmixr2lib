@@ -257,23 +257,25 @@ months).</p>
 <td>Adults</td>
 <td>116</td>
 <td>age 19.3-58.9 y (mean 32.8); weight 48.9-104.3 kg (mean 72.5); 65.5%
-female</td>
+female (76/116)</td>
 <td>1,661</td>
 </tr>
 <tr class="even">
 <td>Pediatric</td>
-<td>1,767</td>
+<td>1,684</td>
 <td>PAGE 6.89-34.7 mo (median 12.6); weight 0.92-16.3 kg (median 5.64);
 gestational age 22-41 wk (median 30; 62% preterm); 36% CLD of
-prematurity; 54% White, 20% Black, 18% Hispanic, 2% Asian, 6% Other</td>
+prematurity; 932 boys + 752 girls (44.7% female); 54% White, 20% Black,
+18% Hispanic, 2% Asian, 6% Other</td>
 <td>4,095</td>
 </tr>
 </tbody>
 </table>
-<p>The pooled dataset spans 22 clinical studies (9 adult: 7
-healthy-volunteer + 2 transplant; 13 pediatric). Adult cohort was dosed
-IV or IM across studies; pediatric cohort was dosed IM. Dose range 3-30
-mg/kg; label regimen is 5 monthly doses of 15 mg/kg IM.</p>
+<p>PK-analysis dataset totals 1,800 subjects across 22 clinical studies
+(9 adult: 7 healthy-volunteer + 2 transplant; 13 pediatric); Table 1
+reports 1,883 enrolled. Adult cohort was dosed IV or IM across studies;
+pediatric cohort was dosed IM. Dose range 3-30 mg/kg; label regimen is 5
+monthly doses of 15 mg/kg IM.</p>
 </div>
 <div class="section level3">
 <h3 id="source-trace">Source trace<a class="anchor" aria-label="anchor" href="#source-trace"></a>
@@ -352,10 +354,6 @@ panel.</td>
 <td>Figure 5 (corrected per erratum): profiles stratified by postnatal
 age cohort</td>
 <td>Robbie 2012, Figure 5 (PDF page 9); erratum updates legend.</td>
-</tr>
-<tr class="odd">
-<td>Equation 10 on page 4931, left column: 16,900</td>
-<td>Robbie 2012 erratum; corrects original “6,900” value.</td>
 </tr>
 </tbody>
 </table>
@@ -776,6 +774,21 @@ target cited in the paper’s discussion.</p>
 </h3>
 <ul>
 <li>
+<strong>Erratum eq. 10 numerical correction (6,900 -&gt;
+16,900).</strong> The 2012 erratum corrects “6,900” to “16,900” in
+equation 10. Equation 10 is the NONMEM <code>$PRIOR</code> matrix from
+the adult fit used to inform the pediatric fit (THETA prior means and
+the diagonal of the OMEGA prior covariance); 16,900 is the prior
+variance for adult Vp (consistent with the adult fit’s reported %RSE of
+5.39% on Vp = 2,410 mL: SE = 130 mL, SE^2 = 16,900). The model file uses
+the post-fit final parameter estimates from Table 2, not the priors from
+equation 10, so the erratum’s numerical correction does not propagate to
+any <code><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini()</a></code> value. The other erratum corrections (renaming
+equation 4 to “1a”, adding Anderson/Allegaert/Holford 2006 as reference
+1a, the Figure 3 replacement, the Figure 5 legend rewording) are all
+reflected in the model file’s <code>reference</code> field and the
+source trace above.</li>
+<li>
 <strong>Maturation parameterization.</strong> The paper’s eq. 4 / 1a
 reads <code>TVCL = theta_CL * (1 - beta * exp(...))</code> but the
 reported beta = 0.411 and TCL = 62.3 months only reproduce the pediatric
@@ -808,6 +821,16 @@ estimate.</li>
 distribution matches Robbie 2012 Table 1 pediatric proportions
 (54/20/18/2/6 White/Black/ Hispanic/Asian/Other); weight uses WHO
 combined-sex LMS with each infant’s z-score held constant.</li>
+<li>
+<strong>Population metadata corrected at revisit.</strong> The
+original extraction ran from a PMC abstract stub that did not contain
+the Methods text. The pediatric <code>n_pediatric</code> count of 1,767
+(derived as Table 1 enrolled total 1,883 minus 116 adults) was replaced
+with the paper’s PK-analysis dataset count of 1,684 (“932 boys and 752
+girls”); <code>n_subjects</code> was realigned from 1,883 enrolled to
+1,800 in the PK dataset; and <code>sex_female_pct</code> denominator was
+corrected from 1,660 to 1,684 (giving 44.7% rather than 45.3%
+female).</li>
 <li>
 <strong>Original observed data not available.</strong> All figures
 show simulated prediction intervals only.</li>

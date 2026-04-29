@@ -350,7 +350,7 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
-#>  ■■■■■■■■■■■■■                     40% |  ETA:  2s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     93% |  ETA:  0s
 knitr::kable(
   summary(nca_res),
   caption = "Simulated cycle-1 NCA parameters at 2.5 mg/kg q3w (monotherapy vs combination)."
