@@ -198,6 +198,18 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Fasanmade_2009_infliximab.R` (g/dL, reference 4.1), `Thakre_2022_risankizumab.R` (g/L, reference 45), `Chua_2025_mirikizumab.R`, `Moein_2022_etrolizumab.R`, `Tiraboschi_2025_amlitelimab.R`, `Yamada_2025_zolbetuximab.R`, `Li_2019_abatacept.R` (g/dL, reference 4.0; the Li 2019 Methods states 'mg/dL' which is a publication typo — see the model's `covariateData[[ALB]]$notes`), `Quartino_2019_trastuzumab.R` (g/dL, reference 4; source column `ALBU`; negative exponent -0.998 on linear CL), `Wang_2020_ontamalimab.R` (g/L, reference 39), `Zhou_2021_belimumab.R` (g/L, reference 40; baseline-only, source column `BALB`), `Okada_2025_rocatinlimab.R` (g/L, reference 44; source column `ALBU`; power exponent -1.30 on linear CL).
 - **Notes:** Ratified canonically on 2026-04-19 after cross-model review. Unit varies by paper (g/dL in US-convention papers, g/L in SI-convention papers); the per-model `covariateData[[ALB]]$units` field is load-bearing. Effect-coefficient magnitude is meaningless without the unit.
 
+### TPRO (**canonical for total serum protein**)
+- **Description:** Total serum protein concentration (sum of albumin + globulins; baseline or time-varying).
+- **Units:** g/L or g/dL — document the unit used in each model via `covariateData[[TPRO]]$units` (1 g/dL = 10 g/L).
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a — used with power scaling `(TPRO / ref)^exponent`. Reference value observed: 74 g/L (Frey 2010 pooled-cohort median).
+- **Source aliases:**
+  - `PROT` — Frey 2010 abbreviation in the final-model equation.
+  - `TP` — common clinical-chemistry abbreviation.
+- **Example models:** `Frey_2010_tocilizumab.R` (g/L, reference 74; exponent -1.1 on V1).
+- **Notes:** Distinct from `ALB` (serum albumin, the largest single component of total protein). Frey 2010 retains both `TPRO` and `ALB` on V1 as separate covariates with opposite signs (TPRO negative, ALB positive) and notes there is no clear mechanistic explanation; the joint effect may reflect serum-volume modifications. `TPRO` ratified canonically on 2026-04-28 alongside the Frey 2010 extraction.
+
 ### IGG (**canonical for serum immunoglobulin G**)
 - **Description:** Serum total immunoglobulin G concentration (baseline or time-varying). Used in mAb PK analyses as a competition-for-FcRn-recycling covariate on therapeutic-mAb clearance — high endogenous IgG is hypothesized to displace the therapeutic mAb from FcRn salvage and increase its catabolic clearance.
 - **Units:** g/L (typical in SI-convention papers); also reported as mg/dL in US-convention papers — document the unit used in each model via `covariateData[[IGG]]$units`.
@@ -209,6 +221,16 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   - `IGGBL` (baseline IgG) — used in `Yang_2021_cemiplimab.R`.
 - **Example models:** `Zhou_2021_belimumab.R` (g/L, reference 14.8; baseline-only; exponent 0.293 on CL), `Yang_2021_cemiplimab.R` (g/L, reference 9.65; small positive exponent 0.184 on shared CL/Q).
 - **Notes:** Mechanistically meaningful for monoclonal-antibody PK because endogenous IgG competes with the therapeutic mAb for FcRn-mediated recycling. The per-model `covariateData[[IGG]]$units` field is load-bearing (1 g/L ≈ 100 mg/dL). Baseline-vs-time-varying status documented in `covariateData[[IGG]]$notes`. Distinct from `lIgG0` / IgG-as-a-state in mechanistic FcRn-competition TMDD models (e.g., `Valenzuela_2025_nipocalimab.R`), where IgG is a dynamic state, not a baseline covariate; use `IGG` only when the source paper treats IgG as a static (baseline) covariate column.
+
+### IGM (**canonical for serum immunoglobulin M**)
+- **Description:** Serum total immunoglobulin M (IgM) concentration (baseline). Used in IgRT population-PK analyses as a proxy for B-cell antibody-producing capacity / humoral function — IgM is the first antibody produced after B-cell activation, so circulating IgM reflects ongoing B-cell activity prior to class-switching to IgG.
+- **Units:** g/L (typical SI-convention reporting); also reported as mg/dL in US-convention papers — document the unit used in each model via `covariateData[[IGM]]$units`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a — used with power scaling `(IGM / ref)^exponent`. Reference values observed: 0.21 g/L (Cheng 2026, pooled PID + SAD pediatric cohort median).
+- **Source aliases:** none known.
+- **Example models:** `Cheng_2026_immunoglobulin.R` (g/L, reference 0.21; baseline-only; power exponent 0.11 on baseline IgG (CBAS) — IgM enters as a humoral-capacity proxy that informs the endogenous-IgG baseline rather than directly modifying clearance).
+- **Notes:** IgM is the immune-globulin class produced by activated B cells before class-switching, so it remains detectable in patients with hypogammaglobulinaemia who still have residual B-cell function. Scope: specific because the relevance of IgM as a covariate depends on the paper's mechanistic interpretation (in Cheng 2026 it acts on the endogenous-IgG baseline; future use cases may differ). Promote to general if a second paper retains IgM with consistent semantics. Ratified canonically on 2026-04-28.
 
 ### TBILI (**canonical for total bilirubin**)
 - **Description:** Total serum bilirubin concentration.
@@ -325,6 +347,28 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Lin_2024_casirivimab.R` (time-varying; reference 2.11; small positive exponent +0.029 on CL).
 - **Notes:** Document baseline-vs-time-varying status in `covariateData[[NLR]]$notes`. Although it derives from `WBC` differential counts, register it as its own canonical because the ratio (not the absolute counts) is what the model uses.
 
+### HCT (**canonical for hematocrit**)
+- **Description:** Hematocrit — packed red blood cell volume fraction (baseline or time-varying).
+- **Units:** % (volume fraction times 100). Document per-model via `covariateData[[HCT]]$units`.
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a — used with power scaling `(HCT / ref)^exponent`. Reference values observed: 45 % (Nestorov 2014, study-population median for severe hemophilia A adults).
+- **Source aliases:** none; `HCT` is the universal NONMEM / clinical-PK abbreviation.
+- **Example models:** `Nestorov_2014_factorviii.R` (reference 45 %, exponent -0.419 on V1).
+- **Notes:** Higher HCT (more red-cell volume) leaves a smaller plasma fraction within total body volume; for plasma-restricted distribution (e.g., factor VIII activity, which circulates in plasma) the central volume of distribution decreases as HCT rises, so the exponent is negative. Document baseline-vs-time-varying status in `covariateData[[HCT]]$notes`. Distinct from `HGB` (mass concentration of hemoglobin); the two correlate but enter different mechanistic relationships.
+
+## Coagulation / hemostasis biomarkers
+
+### VWF (**canonical for von Willebrand factor concentration**)
+- **Description:** Plasma concentration (or activity) of von Willebrand factor (VWF) — the multimeric carrier protein that binds and protects circulating factor VIII (FVIII) from proteolytic degradation and rapid clearance. Used as a covariate on FVIII (and FVIII-Fc) clearance because the vast majority (>95%) of circulating FVIII is in complex with VWF.
+- **Units:** IU/dL (equivalent to % of pooled normal plasma); document per-model via `covariateData[[VWF]]$units`. Some sources report `VWF:Ag` (antigen) versus `VWF:RCo` (ristocetin cofactor activity); record which assay was used in `covariateData[[VWF]]$notes`.
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a — used with power scaling `(VWF / ref)^exponent`. Reference values observed: 118 IU/dL (Nestorov 2014, study-population median).
+- **Source aliases:** none; `VWF` is the universal abbreviation. Source papers may write `vWF` (lowercase v) or specify the assay (`VWF:Ag`).
+- **Example models:** `Nestorov_2014_factorviii.R` (reference 118 IU/dL, exponent -0.343 on CL; VWF antigen).
+- **Notes:** Higher VWF protects FVIII from clearance, so the exponent on CL is negative. VWF is time-varying within an individual (acute-phase response, age, blood group, etc.), but most published population PK models use baseline-only VWF when the within-subject dynamics are not characterized; document the per-model convention in `covariateData[[VWF]]$notes`.
+
 ## Disease severity scores
 
 ### EASI (**canonical for Eczema Area and Severity Index**)
@@ -432,6 +476,18 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 
 ## Cardiometabolic / target biomarkers
 
+### HDLC (**canonical for high-density lipoprotein cholesterol**)
+- **Description:** Serum high-density lipoprotein cholesterol concentration (baseline or time-varying).
+- **Units:** mg/dL or mmol/L — document the unit used in each model via `covariateData[[HDLC]]$units` (1 mmol/L ≈ 38.67 mg/dL for cholesterol).
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a — used with power scaling `(HDLC / ref)^exponent`. Reference value observed: 54 mg/dL (Frey 2010 pooled-cohort median).
+- **Source aliases:**
+  - `HDL-C` — Frey 2010 spelling with hyphen.
+  - `HDL_C` — common alternative spelling.
+- **Example models:** `Frey_2010_tocilizumab.R` (mg/dL, reference 54; small negative exponent -0.2 on linear CL; the paper interprets the effect as a body-size surrogate rather than a mechanism).
+- **Notes:** Cardiometabolic lipid-panel covariate. In Frey 2010 it correlates with body size (HDL-C is lower in larger patients) and the small CL effect (-14% to +15% across the observed 23-135 mg/dL range) was retained but not interpreted as mechanistic.
+
 ### FPCSK9 (**canonical for free (unbound) proprotein convertase subtilisin/kexin type 9 concentration**)
 - **Description:** Free (unbound, non-drug-bound) serum proprotein convertase subtilisin/kexin type 9 (PCSK9) concentration. For anti-PCSK9 monoclonal antibodies (alirocumab, evolocumab, bococizumab) the free-PCSK9 pool is the pharmacologically active target fraction; drug–target binding reduces FPCSK9 relative to total PCSK9.
 - **Units:** ng/mL (document per-model if a paper reports a different unit).
@@ -464,6 +520,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `FiedlerKelly_2020_fremanezumab_em.R`, `FiedlerKelly_2020_fremanezumab_cm.R`.
 - **Notes:** Specific scope because the value is intrinsically tied to the modelled drug — there is no shared meaning across drugs or studies. Each model's `covariateData[[CAV]]$notes` should state how the Cav values are derived (e.g., empirical-Bayes from a referenced population PK model) and that the column is set to 0 for placebo periods.
 
+### IGE (**canonical for serum total immunoglobulin E concentration**)
+- **Description:** Baseline serum total immunoglobulin E concentration (free IgE plus, in patients on anti-IgE therapy, omalizumab–IgE complex). For anti-IgE monoclonal antibodies (omalizumab, ligelizumab) IgE is the pharmacologic target; baseline IgE sets the magnitude of the target sink and modifies free-IgE clearance and the rate of IgE production in mechanism-based binding/turnover models.
+- **Units:** ng/mL (typical clinical-PK convention). Pretreatment values reported in `IU/mL` are converted via `1 IU/mL = 2.42 ng/mL` (Hayashi 2007 Methods). Document per-model via `covariateData[[IGE]]$units`.
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a — used with power scaling `(IGE / ref)^exponent`. Reference value observed: 482.4 ng/mL (Hayashi 2007 Japanese atopic-asthma cohort).
+- **Source aliases:**
+  - `IgE0` (baseline IgE concentration) — used in `Hayashi_2007_omalizumab.R`.
+- **Example models:** `Hayashi_2007_omalizumab.R` (ng/mL, reference 482.4; power exponents −0.281 on apparent CL of free IgE and +0.657 on apparent IgE production rate; also used as the initial value for the total-IgE state at t = 0).
+- **Notes:** General scope because baseline serum total IgE is a routine clinical-laboratory measurement, not a target tied to one drug. In mechanism-based anti-IgE binding/turnover models the in-model IgE state is a separate dynamic variable (`X_TE`, in nmol or nmol/L) — `IGE` is the per-subject baseline column used for covariate scaling and (when applicable) state initialization, not the dynamic state itself. For models that use the alternative reporting unit `IU/mL`, multiply by 2.42 before applying the canonical-units (ng/mL) reference value, or document the per-model unit choice in `covariateData[[IGE]]$units` so downstream tooling can interpret the values correctly.
+
 ## Race / ethnicity
 
 **Canonical pattern: `RACE_<GROUP>`.** Use one indicator per race/ethnicity group the source models. Reference category is the implicit 0 = all other groups; document explicitly which groups are in the reference. When the source uses composite groups (e.g., "Black or Other"), name them accordingly (`RACE_BLACK_OTHER`) and list the components in `notes`. The base `RACE_<GROUP>` indicators are scope: general; composite groupings are scope: specific because the grouping is tied to the study's analysis plan.
@@ -483,11 +550,12 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** general
-- **Reference category:** 0 (non-White; complement composition depends on the source paper, typically pooling Black/African American, Asian, American Indian/Alaska Native, Native Hawaiian/Pacific Islander, Other, Not reported, Unknown).
+- **Reference category:** 0 (non-White; complement composition depends on the source paper, typically pooling Black/African American, Asian, American Indian/Alaska Native, Native Hawaiian/Pacific Islander, Other, Not reported, Unknown). Some papers (e.g., Hu 2014) instead use the Caucasian (RACE_WHITE = 1) subgroup as the typical-value reference; the column encoding is unchanged but the model implements the effect on `(1 - RACE_WHITE)`.
 - **Source aliases:**
   - `RACE` (with values `1 = White / 0 = non-White`) — used in `Lin_2024_casirivimab.R`. Source column name `RACE` is generic; the canonical name is intentionally explicit because some other models use `RACE` for a different dichotomy.
-- **Example models:** `Lin_2024_casirivimab.R` (multiplicative fractional change on CL relative to non-White reference).
-- **Notes:** Used by papers that dichotomize race as White vs. non-White rather than decomposing into separate group indicators. Sign and reference-category interpretation are inverted relative to `RACE_BLACK` / `RACE_ASIAN` / etc.; do NOT combine `RACE_WHITE` with the decomposed indicators in the same model.
+  - `RACE` (Caucasian-vs-non-Caucasian dichotomy as named in Hu 2014 Table 2) — used in `Hu_2014_bapineuzumab.R`. Same canonical column name and 1 = White / 0 = non-White encoding; the typical-value reference is the Caucasian subgroup, so the model implements the 15% non-Caucasian effect on `(1 - RACE_WHITE)`.
+- **Example models:** `Lin_2024_casirivimab.R` (multiplicative fractional change on CL relative to non-White reference), `Hu_2014_bapineuzumab.R` (multiplicative 15% increase in CL for non-Caucasian relative to Caucasian reference).
+- **Notes:** Used by papers that dichotomize race as White vs. non-White rather than decomposing into separate group indicators. Sign and reference-category interpretation are inverted relative to `RACE_BLACK` / `RACE_ASIAN` / etc.; do NOT combine `RACE_WHITE` with the decomposed indicators in the same model. The model's typical-value reference category (which subgroup gets the unmodified `lcl` / `lvc`) varies between papers — Lin 2024 uses non-White as the reference, Hu 2014 uses Caucasian (White) as the reference; both share the same canonical column encoding.
 
 ### RACE_BLACK_OTH (**canonical for composite Black/Other group**)
 - **Description:** 1 = Black/African American or Other race, 0 = other groups.
@@ -726,6 +794,26 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   - `ALL` — used in `Wu_2024_inotuzumab.R` (Wu 2024 calls it the "ALL effect" and notes it bundles disease type with the corresponding bioanalytical assay difference).
 - **Example models:** `Wu_2024_inotuzumab.R` (additive fractional-change effects on CL1 (-0.767) and CL2 (-0.362), and gates the BLSTABL and AGE effects on kdes; for kdes itself a -0.924 fractional change for BCP-ALL).
 - **Notes:** Used when a population PK model pools BCP-ALL patients with a non-BCP-ALL reference (e.g., Wu 2024: pooled adult B-cell NHL + adult BCP-ALL + pediatric BCP-ALL). Scope: specific because the complement reference category is paper-defined (Wu 2024 reference is pooled adult B-cell NHL). The "ALL effect" theta in Wu 2024 conflates two physiologically distinct sources of variation — B-cell tumor type (NHL vs ALL surface CD22 burden) and bioanalytical method (ELISA for adult NHL vs HPLC-MS for ALL) — and cannot be split with the available data; document this confounding when comparing across populations. Ratified canonically on 2026-04-26.
+
+### DIS_SAD (**canonical for secondary antibody deficiency indicator**)
+- **Description:** 1 = secondary antibody deficiency (SAD) patient (hypogammaglobulinaemia from external causes such as B-cell-depleting therapy, haematological malignancy, or other immunosuppression), 0 = primary immunodeficiency (PID) patient. Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (PID patient; the complement category is the genetic / inborn-error-of-immunity primary immunodeficiency cohort pooled with SAD in the source analysis).
+- **Source aliases:** none known; source NONMEM control streams typically use ad-hoc names (e.g., `SAD`, `IMD`, `DIS`).
+- **Example models:** `Cheng_2026_immunoglobulin.R` (multiplicative `theta^DIS_SAD` factors on CL (0.542) and on baseline IgG (CBAS, 0.541); reference category PID).
+- **Notes:** Used when a population PK model pools PID and SAD pediatric or adult patients receiving immunoglobulin replacement therapy (IgRT) and tests SAD-vs-PID as a covariate. Distinct from the disease-state indicators that pool oncology / autoimmune indications: `DIS_SAD` specifically partitions hypogammaglobulinaemia by its underlying mechanism (genetic vs. acquired). Scope: specific because the SAD cohort composition is paper-defined (in Cheng 2026, 75% post-rituximab and 25% post-CAR-T cell therapy). Ratified canonically on 2026-04-28.
+### DIS_AD (**canonical for Alzheimer's disease patient indicator**)
+- **Description:** 1 = participant with Alzheimer's disease (clinical AD diagnosis), 0 = non-AD subject (typically healthy volunteer pooled in the source analysis). Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-AD subject; the complement group is paper-defined — for Pérez-Ruixo 2025 the reference is the pooled healthy-volunteer cohort).
+- **Source aliases:** none known; source NONMEM control streams typically use ad-hoc names (e.g., `AD`, `STATUS`, `DISGRP`).
+- **Example models:** `PerezRuixo_2025_posdinemab.R` (acts on baseline free p217+tau in CSF, R0; healthy R0 = 0.793 pmol/L vs AD R0 = 5.995 pmol/L, a 656% relative increase, no PK-parameter effects).
+- **Notes:** Used when a population PK/PD model pools healthy volunteers with Alzheimer's disease patients and the AD-vs-HV contrast is retained as a covariate on a target-related parameter (e.g., baseline p-tau, baseline p217+tau). Scope: specific because the complement reference category is paper-defined. Ratified canonically on 2026-04-28.
+
 ## Infectious disease (SARS-CoV-2 / COVID-19)
 
 ### SARS_VLOAD (**canonical for SARS-CoV-2 baseline viral load**)
@@ -877,6 +965,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Quartino_2019_trastuzumab.R` (per-group typical-value switch on linear CL; NSCLC plus a small residual group of prostate, ovarian, and other histologies), `Wang_2024_sugemalimab.R` (heterogeneous solid-tumor residual group of n = 174; exponential coefficient log(0.885) on CL and log(0.926) on Vc; NSCLC is the reference group, not part of `TUMTP_OTH`).
 - **Notes:** Scope: specific because the set of histologies collapsed into "Others" is defined by the analysis plan of the source paper; two papers' `TUMTP_OTH` columns are not interchangeable. Document the exact per-paper composition (e.g., "NSCLC + prostate + ovarian + other, n = 107 in Quartino 2019"; "miscellaneous solid tumors excluding NSCLC, lymphoma, GCGEJ, and ESCC, n = 174 in Wang 2024") in `covariateData[[TUMTP_OTH]]$notes`. A given subject can have at most one of the `TUMTP_<GROUP>` indicators (including `TUMTP_OTH`) set to 1; all-zero means the reference group.
 
+### MCPROT (**canonical for serum monoclonal (M) protein concentration**)
+- **Description:** Serum monoclonal (M) protein concentration. Multiple-myeloma plasma-cell-burden marker secreted by the tumor clone; elevated MCPROT reflects higher tumor burden and (for IgG-secreting MM) competes with therapeutic IgG mAbs for FcRn-mediated salvage and target-mediated elimination. Typically time-varying — measured at multiple visits over the treatment course and supplied at every PK observation time via linear interpolation between measurements.
+- **Units:** g/dL (US-convention; equivalent to 10 g/L SI). Document the unit used in each model via `covariateData[[MCPROT]]$units`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a — used as a continuous, log-linear effect on the Vmax of target-mediated elimination via `exp(theta * MCPROT)` (i.e., MCPROT enters un-log-transformed). Reference values observed: 0 g/dL (Ide 2020 Vmax,REF reference) and 2.0 g/dL (Ide 2020 figure-1 reference patient).
+- **Source aliases:**
+  - `TMCPROT` (time-varying serum M-protein concentration) — used in `Ide_2020_elotuzumab.R`. NONMEM column with imputation sentinel `-99` for missing observations, replaced by population median 2.1 g/dL via `IF(TMCPROT.EQ.-99) TMCPROT = 2.1`.
+- **Example models:** `Ide_2020_elotuzumab.R` (g/dL, time-varying; entered un-log-transformed as `exp(0.277 * MCPROT)` on Vmax of the Michaelis-Menten target-mediated elimination from the central compartment).
+- **Notes:** Specific scope because the column is mechanistically meaningful only for plasma-cell-targeting therapies in multiple myeloma (e.g., elotuzumab anti-SLAMF7, daratumumab anti-CD38, isatuximab anti-CD38, belantamab anti-BCMA, and BCMA-bispecifics / CAR-T). MCPROT decreases with treatment response; the time-varying form is the only correct way to capture the diminishing target-mediated-elimination component as the tumor regresses. In NONMEM datasets MCPROT is supplied at each event-row time, with linear interpolation between observations and last-observation-carried-forward beyond the last sample (Ide 2020 Methods). Distinct from `MM_NIGG` (which is the immunoglobulin subtype, an MM-disease stratifier that is time-fixed), `SBCMA` (soluble BCMA, a different MM tumor-burden biomarker for BCMA-targeting drugs), and `B2M` (beta-2-microglobulin, a renal-function-and-MM-disease-burden marker). The 1 g/dL = 10 g/L conversion lets future SI-convention papers register the same canonical with their own unit string.
+
 ### LMET (**canonical for baseline presence of liver metastases**)
 - **Description:** Binary indicator of radiologically documented liver metastases at baseline, 1 = liver metastases present, 0 = no liver metastases.
 - **Units:** (binary)
@@ -897,8 +996,20 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   - `PS` / `BPS` — used in `Bajaj_2017_nivolumab.R` (BPS = "baseline performance status"; the one study using Karnofsky Performance Status was mapped to ECOG via Oken 1982 before binarization) and `Zhang_2019_nivolumab.R` (paper's binary collapse PS=0 vs. PS>0).
   - `ECOG_1` — alternative explicit form; equivalent to `ECOG_GE1` when ECOG only takes values 0, 1, 2 in the analysis dataset (the typical oncology case).
   - `ECOG_PS_GT0` — retired name used in earlier register drafts; semantically identical (`>= 1` equals `> 0` for integer ECOG scores).
-- **Example models:** `Bajaj_2017_nivolumab.R` (exponential effect on CL with coefficient 0.172), `Zhang_2019_nivolumab.R` (exponential effect exp(0.181) on baseline CL; additive effect -0.138 on the time-varying-CL Emax parameter).
-- **Notes:** Oncology papers conventionally report ECOG as an integer (0-5) but binarize at >= 1 because ECOG >= 2 is rare in trial cohorts. When a source paper provides the ordinal ECOG score separately, derive `ECOG_GE1 = as.integer(ECOG >= 1)`. Zhang 2019 uses `ECOG_GE1` on both baseline CL and the time-varying Emax parameter (unlike Bajaj 2017, which uses it on CL only); document the structural role in each model's `covariateData[[ECOG_GE1]]$notes`. If a future paper needs finer resolution (e.g., separate effects for ECOG 1 vs ECOG 2), add a parallel `ECOG_GE2` canonical rather than overloading this one.
+  - `ECOG101` (categorical 0/1/2 score with thresholding `IF(ECOG101.GT.0.5)`) — used in `Ide_2020_elotuzumab.R`. Decompose: `ECOG_GE1 = as.integer(ECOG101 >= 1)`.
+- **Example models:** `Bajaj_2017_nivolumab.R` (exponential effect on CL with coefficient 0.172), `Zhang_2019_nivolumab.R` (exponential effect exp(0.181) on baseline CL; additive effect -0.138 on the time-varying-CL Emax parameter), `Ide_2020_elotuzumab.R` (multiplicative effect on CL = 1.03; paired with `ECOG_GE2` for separate ECOG=1 vs ECOG>=2 effects).
+- **Notes:** Oncology papers conventionally report ECOG as an integer (0-5) but binarize at >= 1 because ECOG >= 2 is rare in trial cohorts. When a source paper provides the ordinal ECOG score separately, derive `ECOG_GE1 = as.integer(ECOG >= 1)`. Zhang 2019 uses `ECOG_GE1` on both baseline CL and the time-varying Emax parameter (unlike Bajaj 2017, which uses it on CL only); document the structural role in each model's `covariateData[[ECOG_GE1]]$notes`. When a paper retains separate effects for ECOG = 1 vs ECOG >= 2 (Ide 2020), pair this column with `ECOG_GE2` and supply both indicators in the event dataset.
+
+### ECOG_GE2 (**canonical for Eastern Cooperative Oncology Group performance-status indicator, >= 2**)
+- **Description:** 1 if baseline Eastern Cooperative Oncology Group (ECOG) performance status is greater than or equal to 2, 0 if ECOG <= 1. Time-fixed per subject. Used in models that retain separate effects for ECOG = 1 vs ECOG >= 2 by pairing this column with `ECOG_GE1`.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (ECOG performance status <= 1; in models that pair `ECOG_GE1` and `ECOG_GE2`, both indicators = 0 corresponds to ECOG = 0 and (`ECOG_GE1` = 1, `ECOG_GE2` = 0) corresponds to ECOG = 1).
+- **Source aliases:**
+  - `ECOG101` (categorical 0/1/2 score with thresholding `IF(ECOG101.GT.1.5)`) — used in `Ide_2020_elotuzumab.R`. Decompose: `ECOG_GE2 = as.integer(ECOG101 >= 2)`.
+- **Example models:** `Ide_2020_elotuzumab.R` (multiplicative effect on CL = 1.15; paired with `ECOG_GE1` to retain separate ECOG = 1 vs ECOG >= 2 effects).
+- **Notes:** Parallels `ECOG_GE1`. Use only when the source paper reports a separate effect for ECOG >= 2 in addition to ECOG_GE1; otherwise `ECOG_GE1` alone is sufficient. The paired (`ECOG_GE1`, `ECOG_GE2`) decomposition reproduces a three-level (`ECOG = 0`, `ECOG = 1`, `ECOG >= 2`) ordinal effect with two binaries.
 
 ### TUMTP_SCLC (**canonical for small-cell-lung-cancer tumor-type indicator**)
 - **Description:** 1 = small cell lung cancer (SCLC), 0 = other tumor types.
@@ -1008,6 +1119,18 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   - `COMB` — used in `Hwang_2022_tremelimumab.R` ($INPUT NM-TRAN data item; control-stream switch `IF(COMB.EQ.0)` selects monotherapy parameters and `IF(COMB.EQ.1)` selects combination-therapy parameters).
 - **Example models:** `Hwang_2022_tremelimumab.R` (selects between monotherapy and combination-with-durvalumab values of the time-varying-CL Tmax and lambda parameters).
 - **Notes:** Parallels `COMBO_NIVO` but for durvalumab rather than nivolumab co-administration. Acts on the time-varying-CL component (Tmax and lambda); baseline CL is shared between monotherapy and combination groups in Hwang 2022.
+### COMBO_LEN_DEX (**canonical for lenalidomide plus dexamethasone combination-therapy indicator**)
+- **Description:** 1 = the analyzed therapeutic mAb (or other agent under PK study) is co-administered with the lenalidomide + low-dose-dexamethasone (Ld) backbone, 0 = monotherapy or any non-Ld regimen. Lenalidomide is an immunomodulatory imide (IMiD) that activates natural killer cells; dexamethasone is an immunosuppressant glucocorticoid. The Ld backbone is a standard combination partner in multiple-myeloma and other hematologic-malignancy regimens.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (monotherapy or any non-Ld regimen). When a paper reports the reference patient as "with Ld coadministration" (as Ide 2020 does), the model still stores the canonical 0/1 column and applies the effect as `exp(theta * (COMBO_LEN_DEX - 1))` so that COMBO_LEN_DEX = 1 yields factor 1 (paper's reference) and COMBO_LEN_DEX = 0 activates the effect.
+- **Source aliases:**
+  - `LENDEX` (1 = with Ld, 0 = without Ld; in Ide 2020 derived from `STUDY != 204011` because study 204011 was the Ld-free elotuzumab-monotherapy cohort) — used in `Ide_2020_elotuzumab.R`.
+  - `COMBO_LD` (**retired** canonical name; renamed to `COMBO_LEN_DEX` on 2026-04-27 for clarity).
+- **Example models:** `Ide_2020_elotuzumab.R` (multiplicative effects: CLLd = 0.74 on nonspecific CL, encoded as `exp(log(0.74) * (COMBO_LEN_DEX - 1))`; KINTLd = 10.1 on the second-order target-mediated elimination rate from the peripheral compartment, encoded as `exp(log(10.1) * (COMBO_LEN_DEX - 1))`).
+- **Notes:** Specific scope because the canonical's mechanistic relevance is hematologic-malignancy-domain-bound (multiple myeloma and related plasma-cell or B-cell disorders). Distinct from `COMBO_BELAMAF` (which pools Ld with bortezomib-dex and pomalidomide-dex into a single broader "any-combination" belantamab indicator); `COMBO_LEN_DEX` is the per-backbone Ld-only flag. If a future paper distinguishes "Ld-only" from a broader "any-IMiD-plus-dex" backbone with separate effects, register a parallel canonical (e.g., `COMBO_PD` for pomalidomide-dex, `COMBO_VD` for bortezomib-dex). Sign of the exponential coefficient is paper-dependent: Ide 2020 reports `CLLd = 0.74` so the Ld-coadministration arm has 26% lower nonspecific CL than the Ld-free arm, but `KINTLd = 10.1` so the Ld arm has 10x higher second-order target-mediated elimination — both are mechanistically interpretable (dexamethasone suppresses non-specific catabolic clearance; lenalidomide-activated NK cells increase target-cell-binding-mediated elimination).
+
 ### COMBO_BELAMAF (**canonical for any-combination belantamab mafodotin therapy indicator**)
 - **Description:** 1 = belantamab mafodotin administered as part of a combination regimen (with bortezomib + dexamethasone, lenalidomide + dexamethasone, or pomalidomide + dexamethasone) in the relapsed/refractory multiple myeloma setting; 0 = belantamab mafodotin monotherapy.
 - **Units:** (binary)
@@ -1163,6 +1286,18 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 
 ## Rheumatoid-arthritis disease-activity covariates
 
+### RHEUMATOID_FACTOR (**canonical for serum rheumatoid factor concentration**)
+- **Description:** Serum rheumatoid factor (an autoantibody, predominantly IgM, directed against the Fc portion of IgG) concentration. Baseline value typical; document time-varying use in per-model `notes`.
+- **Units:** U/mL or IU/mL (interchangeable in the clinical-PK literature). Document per-model via `covariateData[[RHEUMATOID_FACTOR]]$units`.
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a — used with power scaling on a log-transformed value: `(log(RHEUMATOID_FACTOR) / log(ref))^exponent` (or, equivalently, the source-paper form `(LRF / log(ref))^exponent` where `LRF = log(RHEUMATOID_FACTOR)`). Reference value observed: 110 U/mL (Frey 2010, corresponding to LRF = 4.7 in the paper's final-model equation).
+- **Source aliases:**
+  - `LRF` — log-transformed RF (natural log of the value in U/mL); Frey 2010 fits the covariate on the log scale and reports the reference as `LRF = 4.7` (i.e., `log(110) ≈ 4.7`). The canonical column carries the raw RF concentration in U/mL; the log transform is applied inside `model()`.
+  - `RF` — universal NONMEM/clinical-PK abbreviation; rejected as the canonical name on 2026-04-28 because the bare two-letter abbreviation is uncommon in published popPK papers and could be confused with other shortenings.
+- **Example models:** `Frey_2010_tocilizumab.R` (U/mL, reference 110 U/mL ≡ LRF = 4.7; small positive exponent +0.1 on linear CL applied to `log(RHEUMATOID_FACTOR)`).
+- **Notes:** RF concentrations span several orders of magnitude across the rheumatoid-arthritis population (Frey 2010 observed range 15-11,800 U/mL across the four phase-III studies; reference paper: Frey 2010 Table I), motivating the log transform before power scaling. The mechanistic rationale (Frey 2010 Discussion, p764) is that RF — being an anti-IgG autoantibody — could in principle bind the Fc region of the therapeutic IgG monoclonal antibody and accelerate clearance, but the observed CL effect was small (-4.9% to +6.5% across the observed RF range) and the paper acknowledges that high RF concentrations may also reduce the assay's ability to detect the drug, leading to an apparent CL increase. Ratified canonically on 2026-04-28 alongside the Frey 2010 extraction.
+
 ### BLPHYVAS
 - **Description:** Baseline Physician's Global Assessment of Disease Activity, 100-mm visual analogue scale (0 = no disease activity, 100 = maximum). Time-fixed per subject.
 - **Units:** mm (0-100 VAS)
@@ -1308,7 +1443,8 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Source aliases:**
   - `ADA` (semantically "ever positive") — used in `Zhu_2017_lebrikizumab.R`. When translating from a paper that uses `ADA` as "ever positive," verify the time-frame matches ADA_POS semantics before renaming.
   - `ADA` (time-varying positivity, primary covariate in Xu 2019) — used in `Xu_2019_sarilumab.R`.
-- **Example models:** `Clegg_2024_nirsevimab.R`, `Hu_2026_clesrovimab.R`, `Xu_2019_sarilumab.R`.
+  - `NAB` (neutralizing antibody positive — used in `Petrov_2024_romiplostim.R`). Strictly a subset of total ADA-positive (ADA antibodies that neutralize the drug's biological effect). Document per-model when the source assay measured NAB only and the canonical column thus excludes binding-only ADA.
+- **Example models:** `Clegg_2024_nirsevimab.R`, `Hu_2026_clesrovimab.R`, `Petrov_2024_romiplostim.R`, `Xu_2019_sarilumab.R`.
 
 ### ADA_TITER (**canonical for continuous antidrug-antibody titer/titre**)
 - **Description:** Continuous antidrug-antibody titer/titre (time-varying; matched in time to the PK sample). Covers both the British-spelling reciprocal-dilution convention (`ADA_TITRE`, with `ADA_TITRE = 1` for ADA-negative so `log_e(1) = 0` cancels a log-linear effect) and the American-spelling linear-titer convention (`ADA_TITER`, with `ADA_TITER = 0` for ADA-negative). The per-model `covariateData[[ADA_TITER]]$description` and `notes` must state which zero-encoding convention is in force so the covariate column cannot be misinterpreted.
@@ -1787,6 +1923,7 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 
 ## Change log
 
+- **2026-04-28** — Extended `RACE_WHITE` (general scope) example-models list and source aliases to record `Hu_2014_bapineuzumab.R` (Caucasian-vs-non-Caucasian dichotomy with the Caucasian subgroup as the typical-value reference). The canonical column encoding (1 = White / 0 = non-White) is unchanged; the model implements the 15% non-Caucasian effect on `(1 - RACE_WHITE)`. The change log notes that the typical-value reference category may legitimately differ between papers using `RACE_WHITE`.
 - **2026-04-27** — Added `STUDY_ABA2_HLA78` and `STUDY_ABA2_HLA88` (both specific scope) canonical entries while extracting `Takahashi_2023_abatacept.R`. The two binary indicators jointly reproduce the three-level RA/JIA-vs-ABA2-7/8-vs-ABA2-8/8 cohort categorical that Takahashi 2023 Supplemental Table 4 retains as the only categorical PK covariate (multiplicative `Ratio` thetas on CL and on Vc; RA/JIA = both indicators 0 = ratio 1 fixed).
 - **2026-04-27** — Added a new `## Study-site region` section with `REGION_JAPAN`, `REGION_EUROPE`, `REGION_ROW` canonical entries (all scope: specific, binary indicators) while extracting `Hong_2025_datopotamab.R`. US is the implicit reference category (all three indicators = 0). The new entries are distinct from the existing `RACE_*` family because they encode trial-site geography rather than subject ancestry; a Japanese-ancestry subject enrolled at a US site has `RACE_JAPANESE = 1` and `REGION_JAPAN = 0`.
 - **2026-04-26** — Added `B2M` (general-scope serum beta-2-microglobulin under `Renal / hepatic function`; reference 3.90 mg/L from the multiple-myeloma cohort median), `MM_NIGG` (specific-scope non-IgG-MM-vs-IgG-MM within-disease immunoglobulin-type indicator under `Oncology`), and `FORM_P2F2` (specific-scope isatuximab phase III / commercial-bound drug-material indicator, placed alongside the existing `FORM_*` entries) canonical entries while extracting `Fau_2020_isatuximab.R`. Source aliases mapped: `Ig_type`→`MM_NIGG`, `Drug_mat`→`FORM_P2F2`. `Fau_2020_isatuximab.R` added to the `WT`, `SEXF`, and `RACE_ASIAN` example-model lists.
@@ -1906,6 +2043,12 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **2026-04-26** — Added `HEP_IMP` (general-scope binary indicator for NCI ODWG hepatic impairment, mild or worse vs. normal) under `Renal / hepatic function` and `COMBO_RG` (specific-scope binary indicator for anti-CD20 (rituximab or obinutuzumab) combination therapy) under `Oncology` while extracting `Lu_2019_polatuzumab.R`. Source aliases mapped: `BHPTGRPN` (categorical NCI ODWG group with 9999 missing-value sentinel)→`HEP_IMP`; `COMBO` (Lu 2019 categorical 0/1/2)→`COMBO_RG`.
 - **2026-04-27** — Added `SBCMA` (specific-scope, baseline soluble B-cell maturation antigen, in `Cardiometabolic / target biomarkers`; reference 50 ng/mL) and `COMBO_BELAMAF` (specific-scope, any-combination belantamab mafodotin therapy indicator on Imax of the time-varying CL function, in `Concomitant / prior medication`) canonical entries while extracting `Papathanasiou_2025_belantamab.R`. Source aliases mapped: `SBCMABL`→`SBCMA`, `COMBO`→`COMBO_BELAMAF`.
 - **2026-04-28** — Added `CSF1` (specific-scope plasma colony-stimulating factor 1 / M-CSF concentration; placed under `Inflammation markers`), `CPK` (general-scope serum creatine phosphokinase / creatine kinase; placed under `Renal / hepatic function` next to AST/ALT/LDH although mechanistically a muscle-origin enzyme), and `DIS_CANCER` (specific-scope advanced-solid-tumor cohort indicator; placed under `Disease state (cross-population indicators)`) canonical entries while extracting `Yang_2024_axatilimab.R`. Extended `DIS_HV` example_models with Yang 2024 as the second user (cGVHD-reference complement to Nikanjam 2019's non-HV-oncology reference). Source aliases mapped: `BLCSF1` / `BL_CSF1` (Monolix model-parameter name) → `CSF1`; `BLCPK` → `CPK`. Reference values: 549 pg/mL (CSF1), 63 U/L (CPK), pooled-cohort medians from Yang 2024 Table S3.
+- **2026-04-28** — Added `DIS_SAD` (specific-scope binary indicator partitioning hypogammaglobulinaemia patients by mechanism: 1 = secondary antibody deficiency, 0 = primary immunodeficiency; placed under `Disease state (cross-population indicators)`) and `IGM` (specific-scope serum immunoglobulin M concentration as a B-cell humoral-capacity proxy; placed under `Renal / hepatic function` next to `IGG`) canonical entries while extracting `Cheng_2026_immunoglobulin.R`. Source aliases mapped: none (the source paper uses bare prose names "type of immunodeficiency" and "IgM level"). Reference values: 0.21 g/L (IGM), Cheng 2026 pooled-cohort median.
+- **2026-04-28** — Added `HDLC` (general-scope serum HDL cholesterol; placed under `Cardiometabolic / target biomarkers`), `TPRO` (general-scope total serum protein; placed under `Renal / hepatic function` next to `ALB`), and `RHEUMATOID_FACTOR` (general-scope serum rheumatoid factor concentration with log-transform-then-power scaling; placed under `Rheumatoid-arthritis disease-activity covariates`) canonical entries while extracting `Frey_2010_tocilizumab.R`. Source aliases mapped: `HDL-C` / `HDL_C` → `HDLC`; `PROT` / `TP` → `TPRO`; `LRF` (Frey 2010 final-equation log-RF variable) and `RF` (universal NONMEM/clinical-PK abbreviation, but explicitly rejected on 2026-04-28 as the canonical name in favour of the unambiguous `RHEUMATOID_FACTOR`) → `RHEUMATOID_FACTOR`. Reference values: 54 mg/dL (HDLC), 74 g/L (TPRO), 110 U/mL ≡ LRF = 4.7 (RHEUMATOID_FACTOR), all from the Frey 2010 pooled-cohort medians.
+- **2026-04-28** — Added `IGE` (general-scope, baseline serum total immunoglobulin E concentration, in `Cardiometabolic / target biomarkers`; reference 482.4 ng/mL with optional `IU/mL` reporting via `1 IU/mL = 2.42 ng/mL` documented per-model) canonical entry while extracting `Hayashi_2007_omalizumab.R`. Source alias mapped: `IgE0`→`IGE`. Distinguished in the H3 notes from the in-model dynamic `X_TE` IgE state used by mechanism-based binding/turnover anti-IgE models.
+- **2026-04-28** — Added `ECOG_GE2` (general-scope ECOG performance-status >= 2 indicator; pairs with `ECOG_GE1` to retain three-level ECOG = 0 / 1 / >=2 ordinal effects in models that test separate >=1 and >=2 thresholds; placed under `Oncology` directly after `ECOG_GE1`), `MCPROT` (specific-scope serum monoclonal protein concentration; tumor-burden marker for plasma-cell-targeting therapies in multiple myeloma; placed under `Oncology` near other tumor-burden markers; reference values 0 g/dL paper-Vmax-reference / 2.0 g/dL paper-figure-reference; time-varying), and `COMBO_LEN_DEX` (specific-scope lenalidomide + dexamethasone combination-therapy indicator on hematologic-malignancy backbone; placed under `Concomitant / prior medication`; distinct from `COMBO_BELAMAF` which pools Ld with bortezomib-dex and pomalidomide-dex) canonical entries while extracting `Ide_2020_elotuzumab.R`. Source aliases mapped: `ECOG101` (with thresholding `IF(.GT.0.5)` for `ECOG_GE1` and `IF(.GT.1.5)` for `ECOG_GE2`)→both `ECOG_GE1` and `ECOG_GE2`; `TMCPROT`→`MCPROT`; `LENDEX`→`COMBO_LEN_DEX`. Extended `ECOG_GE1` example-models list with `Ide_2020_elotuzumab.R`. The Ide 2020 model also extends the example-model lists for `WT`, `AGE`, `SEXF`, `RACE_ASIAN`, `CRCL` (eGFR), `LDH`, `ALB`, `B2M`, `HEPIMP`, and `LINE_1L`.
+- **2026-04-28** — Added `DIS_AD` (specific-scope, Alzheimer's disease patient indicator) under `Disease state (cross-population indicators)` while extracting `PerezRuixo_2025_posdinemab.R`. Source acts on baseline free p217+tau (R0) in CSF only; PK parameters were unaffected by AD status. Reference category is the pooled healthy-volunteer cohort.
+- **2026-04-27** — Renamed `COMBO_LD` → `COMBO_LEN_DEX` for clarity (lenalidomide+dexamethasone spelled out to avoid ambiguity with other Ld-like abbreviations). `COMBO_LD` recorded as a retired source alias. All references in `Ide_2020_elotuzumab.R` and its validation vignette updated.
 - Subsequent additions: append new canonical entries as new papers are processed. When adding, bump the audit-completed count in the summary below.
 
 ## Summary
