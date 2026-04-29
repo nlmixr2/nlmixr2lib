@@ -1119,6 +1119,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Wang_2024_sugemalimab.R` (exponential coefficient log(0.99) on baseline CL and log(1.08) on Vc).
 - **Notes:** Follows the `TUMTP_CHL` / `TUMTP_GC` / `TUMTP_SCLC` decomposition pattern. Distinct from gastroesophageal-junction adenocarcinoma (which is captured by the broader `TUMTP_GC` indicator that pools GC and GEJ adenocarcinomas) — ESCC is a squamous-cell histology, not adenocarcinoma. Document the per-paper histology composition in `covariateData[[TUMTP_ESCC]]$notes`.
 
+### TUMTP_PCALCL (**canonical for primary cutaneous anaplastic large-cell lymphoma indicator**)
+- **Description:** 1 = primary cutaneous anaplastic large-cell lymphoma (pcALCL), 0 = other tumor types.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 = all other tumor types (in Suri 2018, the non-pcALCL reference comprises Hodgkin lymphoma, systemic ALCL, mycosis fungoides, and other CD30+ hematologic malignancies pooled together).
+- **Source aliases:**
+  - `PCALCL` — used in `Suri_2018_brentuximab.R`. Suri 2018 reports the effect as a power-form multiplier `cl_adc *= 0.728^TUMTP_PCALCL` (pcALCL CL ~27% lower than non-pcALCL).
+- **Example models:** `Suri_2018_brentuximab.R` (effect on ADC clearance only).
+- **Notes:** Follows the `TUMTP_CHL` / `TUMTP_GC` / `TUMTP_SCLC` decomposition pattern. Distinct from `TUMTP_LYMPH` (heterogeneous lymphoma pool) and `TUMTP_CHL` (classical Hodgkin lymphoma). pcALCL is one of two histologies pooled into the broader CTCL category in Suri 2018 (alongside mycosis fungoides); the model singles out pcALCL because Suri 2018 backward elimination retained pcALCL as a separate effect on ADC clearance after exploring the broader CTCL contrast. Ratified canonically on 2026-04-28.
+
 ### LINE_1L (**canonical for first-line-therapy indicator**)
 - **Description:** 1 = first-line therapy (1L) / treatment-naive, 0 = second-line or greater (2L+) / relapsed-or-refractory.
 - **Units:** (binary)
@@ -1530,6 +1541,39 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   - `ADA` (time-varying positivity, primary covariate in Xu 2019) — used in `Xu_2019_sarilumab.R`.
   - `NAB` (neutralizing antibody positive — used in `Petrov_2024_romiplostim.R`). Strictly a subset of total ADA-positive (ADA antibodies that neutralize the drug's biological effect). Document per-model when the source assay measured NAB only and the canonical column thus excludes binding-only ADA.
 - **Example models:** `Clegg_2024_nirsevimab.R`, `Hu_2026_clesrovimab.R`, `Petrov_2024_romiplostim.R`, `Xu_2019_sarilumab.R`.
+
+### ADA_POSNEW (**canonical for ADA-positive in newer-assay study indicator**)
+- **Description:** 1 = subject is anti-drug-antibody-positive in a study that used an updated higher-sensitivity, higher-drug-tolerance ADA assay; 0 = otherwise (ADA-negative, ADA-missing, or ADA-positive in an older-assay study).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (ADA-negative or not in a newer-assay study). Mutually exclusive with `ADA_POSOLD` and `ADA_MISSING`; together they decompose the four-level ADA-status × assay-era factor with ADA-negative as the reference.
+- **Source aliases:**
+  - `ATAPOSNEW` — used in `Suri_2018_brentuximab.R`.
+- **Example models:** `Suri_2018_brentuximab.R` (multiplicative additive effect on ADC clearance: `cl *= (1 + 0.125 * ADA_POSNEW)`).
+- **Notes:** Used when a population PK model pools studies that ran ADA assays with different sensitivity / drug-tolerance characteristics, and the sponsor splits the ADA-positive effect by assay era because the apparent ADA-on-CL effect size differs between the older and newer assays. Distinct from `ADA_POS` (which collapses positivity across assays). The "newer" vs "older" assay split is paper-specific (Suri 2018 newer assay: sensitivity 23.573 ng/mL, drug tolerance 25 ug/mL; older assay: sensitivity 4 ng/mL, drug tolerance 3,125 ng/mL). Time-varying once positive (Suri 2018 Methods: "patients were treated as being positive at all times following the first time when ADA positivity was detected"). Ratified canonically on 2026-04-28.
+
+### ADA_POSOLD (**canonical for ADA-positive in older-assay study indicator**)
+- **Description:** 1 = subject is anti-drug-antibody-positive in a study that used the older lower-sensitivity, lower-drug-tolerance ADA assay; 0 = otherwise.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (ADA-negative or not in an older-assay study). Mutually exclusive with `ADA_POSNEW` and `ADA_MISSING`.
+- **Source aliases:**
+  - `ATAPOSOLD` — used in `Suri_2018_brentuximab.R`.
+- **Example models:** `Suri_2018_brentuximab.R` (multiplicative additive effect on ADC clearance: `cl *= (1 + 0.177 * ADA_POSOLD)`).
+- **Notes:** Companion to `ADA_POSNEW`; see that entry's Notes for the decomposition rationale. Time-varying once positive. Ratified canonically on 2026-04-28.
+
+### ADA_MISSING (**canonical for ADA-result-missing indicator**)
+- **Description:** 1 = ADA value is missing (subject did not have a measured ADA result, distinct from a measured negative); 0 = ADA result is reported (positive or negative).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (ADA result reported). Mutually exclusive with `ADA_POSNEW` and `ADA_POSOLD`.
+- **Source aliases:**
+  - `ATAMISSING` — used in `Suri_2018_brentuximab.R`.
+- **Example models:** `Suri_2018_brentuximab.R` (multiplicative additive effect on ADC clearance: `cl *= (1 + 0.192 * ADA_MISSING)`).
+- **Notes:** Used when a substantial fraction of the pooled cohort has no ADA measurement (Suri 2018: 205 of 380 patients) and the modeler retains ADA-missing as a separate level rather than collapsing missingness onto the ADA-negative reference. The non-zero positive estimate of `e_adam_adc_cl` indicates ADA-missing patients are not exchangeable with the ADA-negative reference — interpret with caution given the missingness mechanism is not random. Ratified canonically on 2026-04-28.
 
 ### ADA_TITER (**canonical for continuous antidrug-antibody titer/titre**)
 - **Description:** Continuous antidrug-antibody titer/titre (time-varying; matched in time to the PK sample). Covers both the British-spelling reciprocal-dilution convention (`ADA_TITRE`, with `ADA_TITRE = 1` for ADA-negative so `log_e(1) = 0` cancels a log-linear effect) and the American-spelling linear-titer convention (`ADA_TITER`, with `ADA_TITER = 0` for ADA-negative). The per-model `covariateData[[ADA_TITER]]$description` and `notes` must state which zero-encoding convention is in force so the covariate column cannot be misinterpreted.
@@ -2083,6 +2127,7 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 
 - **2026-04-28** — Extended `RACE_WHITE` (general scope) example-models list and source aliases to record `Hu_2014_bapineuzumab.R` (Caucasian-vs-non-Caucasian dichotomy with the Caucasian subgroup as the typical-value reference). The canonical column encoding (1 = White / 0 = non-White) is unchanged; the model implements the 15% non-Caucasian effect on `(1 - RACE_WHITE)`. The change log notes that the typical-value reference category may legitimately differ between papers using `RACE_WHITE`.
 - **2026-04-29** — Added `IL6` (general-scope serum interleukin-6 cytokine biomarker, pg/mL, under `Inflammation markers`), `PAIN` (general-scope patient-reported global pain VAS 0-100, under `Rheumatoid-arthritis disease-activity covariates`), and `RACE_ASIAN_OTH` (specific-scope composite race indicator pooling Asian / American Indian / Other against a White + Black reference, under `Race / ethnicity`) canonical entries while extracting `Frey_2013_tocilizumab.R` (PMID 23436260). Source aliases mapped: `BLIL6` -> `IL6`. Frey 2013 uses log-transformed `(log(IL-6 * 1000) / 9.9)^exp` with reference IL-6 ~= 20 pg/mL; the canonical column carries the raw IL-6 in pg/mL and the log transformation is applied inside `model()`.
+- **2026-04-28** — Added `TUMTP_PCALCL` (specific scope under `Oncology`; primary cutaneous anaplastic large-cell lymphoma indicator following the `TUMTP_<GROUP>` decomposition pattern) and three specific-scope ADA-status × assay-era indicators (`ADA_POSNEW`, `ADA_POSOLD`, `ADA_MISSING` under `Immunogenicity`) while extracting `Suri_2018_brentuximab.R`. The three ADA indicators are mutually exclusive and decompose Suri 2018's four-level ADA-status × assay-era factor with ADA-negative as the reference; the multiplicative additive form `cl *= (1 + theta * ind)` from supplement 1's ATA-status equation is documented per model.
 - **2026-04-27** — Added `STUDY_ABA2_HLA78` and `STUDY_ABA2_HLA88` (both specific scope) canonical entries while extracting `Takahashi_2023_abatacept.R`. The two binary indicators jointly reproduce the three-level RA/JIA-vs-ABA2-7/8-vs-ABA2-8/8 cohort categorical that Takahashi 2023 Supplemental Table 4 retains as the only categorical PK covariate (multiplicative `Ratio` thetas on CL and on Vc; RA/JIA = both indicators 0 = ratio 1 fixed).
 - **2026-04-27** — Added a new `## Study-site region` section with `REGION_JAPAN`, `REGION_EUROPE`, `REGION_ROW` canonical entries (all scope: specific, binary indicators) while extracting `Hong_2025_datopotamab.R`. US is the implicit reference category (all three indicators = 0). The new entries are distinct from the existing `RACE_*` family because they encode trial-site geography rather than subject ancestry; a Japanese-ancestry subject enrolled at a US site has `RACE_JAPANESE = 1` and `REGION_JAPAN = 0`.
 - **2026-04-26** — Added `B2M` (general-scope serum beta-2-microglobulin under `Renal / hepatic function`; reference 3.90 mg/L from the multiple-myeloma cohort median), `MM_NIGG` (specific-scope non-IgG-MM-vs-IgG-MM within-disease immunoglobulin-type indicator under `Oncology`), and `FORM_P2F2` (specific-scope isatuximab phase III / commercial-bound drug-material indicator, placed alongside the existing `FORM_*` entries) canonical entries while extracting `Fau_2020_isatuximab.R`. Source aliases mapped: `Ig_type`→`MM_NIGG`, `Drug_mat`→`FORM_P2F2`. `Fau_2020_isatuximab.R` added to the `WT`, `SEXF`, and `RACE_ASIAN` example-model lists.
