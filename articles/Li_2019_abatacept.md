@@ -383,6 +383,7 @@ intervals_iv <- data.frame(start = 0, end = tau_iv,
                            cmax = TRUE, cmin = TRUE, tmax = TRUE,
                            auclast = TRUE, cav = TRUE)
 nca_iv <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj_iv, dose_obj_iv, intervals = intervals_iv))
+#>  ■■■■■■■■■■■■■■■■                  49% |  ETA:  2s
 summary(nca_iv)
 #>  start end            treatment   N     auclast       cmax        cmin
 #>      0  28 IV_weight_tiered_Q4W 400 1340 [32.3] 224 [25.7] 14.2 [56.8]

@@ -284,11 +284,11 @@ intervals <- data.frame(
 )
 
 nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
-#>  ■■■■                              10% |  ETA: 15s
-#>  ■■■■■■■■■■                        30% |  ETA: 10s
-#>  ■■■■■■■■■■■■■■■■                  51% |  ETA:  7s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■           72% |  ETA:  4s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      92% |  ETA:  1s
+#>  ■■■■■■■                           20% |  ETA: 15s
+#>  ■■■■■■■■■■■■                      37% |  ETA: 11s
+#>  ■■■■■■■■■■■■■■■■■                 54% |  ETA:  8s
+#>  ■■■■■■■■■■■■■■■■■■■■■■            71% |  ETA:  5s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■       88% |  ETA:  2s
 summary(nca_res)
 #>  start end      treatment   N    auclast        cmax              tmax
 #>      0  21  1.0 mg/kg q3w 500 149 [40.3] 9.48 [29.9] 4.00 [3.00, 5.00]
