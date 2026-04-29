@@ -2,6 +2,7 @@
 
 # development version
 
+* Fix Robbie 2012 palivizumab population metadata after revisit against the full-text PDF: pediatric `n` corrected from 1,767 (derived) to 1,684 (paper PK dataset), `sex_female_pct` denominator from 1,660 to 1,684, and added a vignette note clarifying that the 2012 erratum's equation 10 correction (6,900 → 16,900) is a NONMEM `$PRIOR` variance for adult Vp, not a final-model parameter. All `ini()` parameter values continue to match Table 2 exactly.
 * Fix Clegg 2024 nirsevimab vignette Figure 4: pass disjoint `id_offset` per cohort and carry `trial` via `rxSolve(keep = )` so the four panels no longer collapse into a single Frankenstein-subject simulation (predictions had been ~3× too high).
 * Add Cheng 2026 immunoglobulin ([doi:10.1002/bcp.70420](https://doi.org/10.1002/bcp.70420)) — children with primary immunodeficiency or secondary antibody deficiency receiving intravenous immunoglobulin replacement therapy.
 * Add Frey 2010 tocilizumab ([doi:10.1177/0091270009350623](https://doi.org/10.1177/0091270009350623)) — adults with moderate-to-severe rheumatoid arthritis.
