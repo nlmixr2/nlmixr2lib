@@ -109,11 +109,11 @@ Ide_2020_elotuzumab <- function() {
       notes              = "Time-varying multiple-myeloma tumor-burden marker. Enters the model un-log-transformed via exp(0.277 * MCPROT) on Vmax of the Michaelis-Menten target-mediated elimination from the central compartment. The supplement S2 reference for VMAX,REF = 12.2 ug/mL/day is MCPROT = 0 g/dL (the value at which the exp(*MCPROT) term is unity); the figure-1 covariate-effect plot uses MCPROT = 2.0 g/dL as the reference patient. Time-varying values must be supplied at every PK observation time; Ide 2020 Methods specify linear interpolation between observed M-protein measurements with last-observation-carried-forward beyond the last sample. The source NONMEM column TMCPROT_Z (with imputation sentinel -99 replaced by population median 2.1 g/dL) is the time-varying counterpart of the baseline-only MCPROT_Z column carried for descriptive statistics.",
       source_name        = "TMCPROT"
     ),
-    COMBO_LD = list(
+    COMBO_LEN_DEX = list(
       description        = "Lenalidomide + dexamethasone combination-therapy indicator",
       units              = "(binary)",
       type               = "binary",
-      reference_category = "0 (no Ld coadministration) — note: this differs from the Ide 2020 reference patient, which has Ld coadministration (supplement S2: 'with lenalidomide/dexamethasone co-administration'). The model encodes the effects so that COMBO_LD = 1 yields factor 1 (paper's reference) and COMBO_LD = 0 activates the (LENDEX-1)-shifted exponential coefficients exp(theta * (COMBO_LD - 1)) for both CL and KINT.",
+      reference_category = "0 (no Ld coadministration) — note: this differs from the Ide 2020 reference patient, which has Ld coadministration (supplement S2: 'with lenalidomide/dexamethasone co-administration'). The model encodes the effects so that COMBO_LEN_DEX = 1 yields factor 1 (paper's reference) and COMBO_LEN_DEX = 0 activates the (LENDEX-1)-shifted exponential coefficients exp(theta * (COMBO_LEN_DEX - 1)) for both CL and KINT.",
       notes              = "Multiplicative effects: CLLd = 0.74 on nonspecific CL (CL is 35% higher in the Ld-free arm relative to the Ld arm) and KINTLd = 10.1 on the second-order target-mediated elimination rate from the peripheral compartment (KINT is ~10x lower in the Ld-free arm; lenalidomide-activated NK cells are hypothesized to drive the elevated target-binding-mediated elimination in the Ld arm). Decomposed from the source NONMEM column LENDEX, derived in the control stream as `LENDEX = as.integer(STUDY != 204011)` because study 204011 was the Ld-free elotuzumab-monotherapy cohort.",
       source_name        = "LENDEX"
     )
@@ -173,7 +173,7 @@ Ide_2020_elotuzumab <- function() {
     # on categorical / binary covariates (multiplicative as exp(theta * X) =
     # factor^X where Table 2 reports factor = exp(theta) directly).
     e_wt_cl         <-  1.33;          label("Power exponent of WT on CL (unitless)")                                  # Ide 2020 Table 2: CLWT = 1.33
-    e_combo_ld_cl   <-  log(0.74);     label("Exponential coefficient of (COMBO_LD - 1) on CL (unitless)")             # Ide 2020 Table 2: CLLd = 0.74; encoded as exp(log(0.74) * (COMBO_LD - 1)) so COMBO_LD = 1 (Ld+) gives factor 1 and COMBO_LD = 0 (Ld-) gives factor 1.35 (paper Discussion: 35% higher CL in Ld-free arm)
+    e_combo_len_dex_cl   <-  log(0.74);     label("Exponential coefficient of (COMBO_LEN_DEX - 1) on CL (unitless)")             # Ide 2020 Table 2: CLLd = 0.74; encoded as exp(log(0.74) * (COMBO_LEN_DEX - 1)) so COMBO_LEN_DEX = 1 (Ld+) gives factor 1 and COMBO_LEN_DEX = 0 (Ld-) gives factor 1.35 (paper Discussion: 35% higher CL in Ld-free arm)
     e_sexf_cl       <-  log(1.06);     label("Exponential coefficient of SEXF on CL (unitless)")                       # Ide 2020 Table 2: CLSEX = 1.06
     e_race_asian_cl <-  log(0.897);    label("Exponential coefficient of RACE_ASIAN on CL (unitless)")                 # Ide 2020 Table 2: CLRACE = 0.897
     e_age_cl        <-  0.179;         label("Power exponent of AGE on CL (unitless)")                                 # Ide 2020 Table 2: CLAGE = 0.179
@@ -204,7 +204,7 @@ Ide_2020_elotuzumab <- function() {
     # un-log-transformed (i.e., exp(theta * MCPROT) directly, NOT (MCPROT/ref)^theta).
     e_mcprot_vmax   <-  0.277;         label("Exponential coefficient of MCPROT on VMAX (1/(g/dL))")                   # Ide 2020 Table 2: VMAXMCPROT = 0.277
     e_line_1l_vmax  <-  log(1.01);     label("Exponential coefficient of LINE_1L on VMAX (unitless)")                  # Ide 2020 Table 2: VMAXLINE=0 = 1.01
-    e_combo_ld_kint <-  log(10.1);     label("Exponential coefficient of (COMBO_LD - 1) on KINT (unitless)")           # Ide 2020 Table 2: KINTLd = 10.1; encoded as exp(log(10.1) * (COMBO_LD - 1)) so COMBO_LD = 1 (Ld+) gives factor 1 and COMBO_LD = 0 (Ld-) gives factor 1/10.1 (paper Discussion: ~10-fold lower KINT in Ld-free arm)
+    e_combo_len_dex_kint <-  log(10.1);     label("Exponential coefficient of (COMBO_LEN_DEX - 1) on KINT (unitless)")           # Ide 2020 Table 2: KINTLd = 10.1; encoded as exp(log(10.1) * (COMBO_LEN_DEX - 1)) so COMBO_LEN_DEX = 1 (Ld+) gives factor 1 and COMBO_LEN_DEX = 0 (Ld-) gives factor 1/10.1 (paper Discussion: ~10-fold lower KINT in Ld-free arm)
 
     # Inter-individual variability (Ide 2020 Table 2 omega^2 values).
     # All etas are independent log-normal in the source NONMEM control stream
@@ -254,7 +254,7 @@ Ide_2020_elotuzumab <- function() {
       (CRCL / 100)^e_crcl_cl *
       (LDH  / 200)^e_ldh_cl *
       (ALB  / 3.5)^e_alb_cl *
-      exp(e_combo_ld_cl   * (COMBO_LD - 1)) *
+      exp(e_combo_len_dex_cl   * (COMBO_LEN_DEX - 1)) *
       exp(e_sexf_cl       * SEXF) *
       exp(e_race_asian_cl * RACE_ASIAN) *
       exp(e_hepimp_cl     * HEPIMP) *
@@ -283,10 +283,10 @@ Ide_2020_elotuzumab <- function() {
     km   <- exp(lkm   + etalkm)
     rmax <- exp(lrmax + etalrmax)
 
-    # KINT: reference is COMBO_LD = 1 (paper's "with Ld coadministration"
-    # reference). Encoded as exp(log(10.1) * (COMBO_LD - 1)) so COMBO_LD = 1
-    # gives factor 1 and COMBO_LD = 0 gives factor 1/10.1.
-    kint <- exp(lkint + etalkint) * exp(e_combo_ld_kint * (COMBO_LD - 1))
+    # KINT: reference is COMBO_LEN_DEX = 1 (paper's "with Ld coadministration"
+    # reference). Encoded as exp(log(10.1) * (COMBO_LEN_DEX - 1)) so COMBO_LEN_DEX = 1
+    # gives factor 1 and COMBO_LEN_DEX = 0 gives factor 1/10.1.
+    kint <- exp(lkint + etalkint) * exp(e_combo_len_dex_kint * (COMBO_LEN_DEX - 1))
 
     # ---- Micro-constants for the linear two-compartment skeleton ----------
     kel <- cl / vc

@@ -102,7 +102,7 @@ with multiple myeloma** (Ide 2020 Table 1) pooled from five clinical studies
   cycles 2-3 → Q2W from cycle 4).
 * **NCT01441973** (phase 2; elotuzumab monotherapy: Cohort 1 20 mg/kg Q4W
   from cycle 2, Cohort 2 10 mg/kg weekly cycles 1-2 → Q2W from cycle 3).
-  This is the **only Ld-free arm** (`COMBO_LD = 0`); it provides the data
+  This is the **only Ld-free arm** (`COMBO_LEN_DEX = 0`); it provides the data
   identifying the 35 % CL-elevation and 10-fold-KINT-reduction effects of
   no-Ld co-administration.
 
@@ -140,8 +140,8 @@ supplement 7 NONMEM control stream
 | `lkint` (KINT_REF, /day/(μg/mL))     | log(0.207e-3)               | Table 2, "KINT, 10⁻³/day/μg/mL = 0.207"; reference includes Ld coadministration |
 | `e_wt_cl`, `e_wt_vc`, `e_wt_q`, `e_wt_vp` | 1.33, 0.348, 0.75 (FIXED), 0.623 | Table 2, CLWT / VCWT / QWT / VPWT |
 | `e_age_cl`, `e_crcl_cl`, `e_ldh_cl`, `e_alb_cl` | 0.179, 0.121, 0.0816, -0.346 | Table 2, CLAGE / CLeGFR / CLLDH / CLALB |
-| `e_combo_ld_cl`                      | log(0.74)                   | Table 2, CLLd = 0.74; encoded as exp(*(COMBO_LD - 1)) so the paper's reference (Ld+) yields factor 1 |
-| `e_combo_ld_kint`                    | log(10.1)                   | Table 2, KINTLd = 10.1; encoded as exp(*(COMBO_LD - 1)) |
+| `e_combo_len_dex_cl`                      | log(0.74)                   | Table 2, CLLd = 0.74; encoded as exp(*(COMBO_LEN_DEX - 1)) so the paper's reference (Ld+) yields factor 1 |
+| `e_combo_len_dex_kint`                    | log(10.1)                   | Table 2, KINTLd = 10.1; encoded as exp(*(COMBO_LEN_DEX - 1)) |
 | `e_sexf_cl`, `e_sexf_vc`             | log(1.06), log(0.808)       | Table 2, CLSEX / VCSEX |
 | `e_race_asian_cl`, `e_race_asian_vc` | log(0.897), log(0.853)      | Table 2, CLRACE / VCRACE |
 | `e_hepimp_cl`                        | log(0.91)                   | Table 2, CLHEP |
@@ -182,7 +182,7 @@ ref_pt <- list(
   ECOG_GE1    = 0,    # ECOG = 0
   ECOG_GE2    = 0,
   LINE_1L     = 0,    # >= 1 prior line of therapy
-  COMBO_LD    = 1,    # with Ld coadministration
+  COMBO_LEN_DEX    = 1,    # with Ld coadministration
   MCPROT      = 2.0   # 2.0 g/dL — Figure 1 reference (note: Vmax scaling reference is MCPROT = 0)
 )
 ```
@@ -214,7 +214,7 @@ cohort <- tibble::tibble(
                       prob = c(0.517, 0.410, 0.074)),
   LINE_1L    = rbinom(n_sub, 1, 0.164),
   # Most patients (92.6%) have Ld coadministration
-  COMBO_LD   = rbinom(n_sub, 1, 0.926)
+  COMBO_LEN_DEX   = rbinom(n_sub, 1, 0.926)
 ) |>
   dplyr::mutate(
     ECOG_GE1 = as.integer(ECOG_score >= 1),
@@ -339,7 +339,7 @@ cohort_events <- lapply(seq_len(nrow(cohort)), function(i) {
 }) |> dplyr::bind_rows()
 
 sim_cohort <- rxode2::rxSolve(mod_typical, events = cohort_events,
-                              keep = c("RACE_ASIAN", "COMBO_LD",
+                              keep = c("RACE_ASIAN", "COMBO_LEN_DEX",
                                        "LINE_1L", "WT")) |>
   as.data.frame()
 ```
@@ -499,12 +499,12 @@ re-introduce the deviation when fitting:
   data and rely on rxode2's last-value-carried-forward semantics for between
   event rows.
 
-* **Reference-patient inversions for COMBO_LD.** The paper's Ld-related
-  reference (CL and KINT) is `LENDEX = 1` (with Ld). The canonical `COMBO_LD`
+* **Reference-patient inversions for COMBO_LEN_DEX.** The paper's Ld-related
+  reference (CL and KINT) is `LENDEX = 1` (with Ld). The canonical `COMBO_LEN_DEX`
   uses `0` as the reference category (no-Ld), so the model encodes effects as
-  `exp(theta · (COMBO_LD - 1))` to preserve the paper's reference. A subject
-  with `COMBO_LD = 1` (Ld coadministration) correctly receives factor 1; a
-  subject with `COMBO_LD = 0` activates the published 35 %-CL-elevation and
+  `exp(theta · (COMBO_LEN_DEX - 1))` to preserve the paper's reference. A subject
+  with `COMBO_LEN_DEX = 1` (Ld coadministration) correctly receives factor 1; a
+  subject with `COMBO_LEN_DEX = 0` activates the published 35 %-CL-elevation and
   10-fold-KINT-reduction effects.
 
 * **Supplied covariate columns must include both `ECOG_GE1` and `ECOG_GE2`.**
