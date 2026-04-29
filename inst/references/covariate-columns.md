@@ -1454,7 +1454,29 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Source aliases:**
   - `Smoking` (case-insensitive) — used in `Ma_2020_sarilumab_anc.R`.
 - **Example models:** `Ma_2020_sarilumab_anc.R` (power-form on baseline ANC: `BASE * 1.15^SMOKE`).
-- **Notes:** Baseline-only indicator; does not track within-study smoking-cessation changes.
+- **Notes:** Baseline-only indicator; does not track within-study smoking-cessation changes. Use this two-level (current vs non-smoker) encoding when the source paper does not split former and never smokers. When the source uses a 3-level smoking-status categorical (never / former / current), use the paired `SMOKE_CURRENT` + `SMOKE_NEVER` indicators below instead — the 3-level encoding cannot be reduced to a single `SMOKE` column without losing information.
+
+### SMOKE_CURRENT
+- **Description:** 1 = current smoker at baseline, 0 otherwise (former or never smoker). Paired with `SMOKE_NEVER` to encode a 3-level smoking-status categorical with former smoker as the implicit reference (both indicators = 0).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (former smoker, when paired with `SMOKE_NEVER` = 0). The pairing follows the `RACE_<GROUP>` convention for paired indicators.
+- **Source aliases:**
+  - `Smoking status = Current` / `SMOK = 2` (case-insensitive) — derived from a 3-level smoking-status column.
+- **Example models:** `Hwang_2023_monalizumab.R` (proportional-shift effect on V1: `(1 + 0.0484)^SMOKE_CURRENT`; reference category former smoker).
+- **Notes:** Baseline-only indicator. See also `SMOKE_NEVER` (paired indicator) and `SMOKE` (binary current-vs-non-smoker encoding when the source paper does not split former vs never).
+
+### SMOKE_NEVER
+- **Description:** 1 = never smoker at baseline, 0 otherwise (former or current smoker). Paired with `SMOKE_CURRENT` to encode a 3-level smoking-status categorical with former smoker as the implicit reference (both indicators = 0).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (former smoker, when paired with `SMOKE_CURRENT` = 0). The pairing follows the `RACE_<GROUP>` convention for paired indicators.
+- **Source aliases:**
+  - `Smoking status = Never` / `SMOK = 0` (case-insensitive) — derived from a 3-level smoking-status column.
+- **Example models:** `Hwang_2023_monalizumab.R` (proportional-shift effect on V1: `(1 - 0.141)^SMOKE_NEVER`; reference category former smoker).
+- **Notes:** Baseline-only indicator. See also `SMOKE_CURRENT` (paired indicator) and `SMOKE` (binary current-vs-non-smoker encoding when the source paper does not split former vs never).
 
 ## Formulation / assay / study
 
@@ -1906,6 +1928,7 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **2026-04-26** — Added `HEP_IMP` (general-scope binary indicator for NCI ODWG hepatic impairment, mild or worse vs. normal) under `Renal / hepatic function` and `COMBO_RG` (specific-scope binary indicator for anti-CD20 (rituximab or obinutuzumab) combination therapy) under `Oncology` while extracting `Lu_2019_polatuzumab.R`. Source aliases mapped: `BHPTGRPN` (categorical NCI ODWG group with 9999 missing-value sentinel)→`HEP_IMP`; `COMBO` (Lu 2019 categorical 0/1/2)→`COMBO_RG`.
 - **2026-04-27** — Added `SBCMA` (specific-scope, baseline soluble B-cell maturation antigen, in `Cardiometabolic / target biomarkers`; reference 50 ng/mL) and `COMBO_BELAMAF` (specific-scope, any-combination belantamab mafodotin therapy indicator on Imax of the time-varying CL function, in `Concomitant / prior medication`) canonical entries while extracting `Papathanasiou_2025_belantamab.R`. Source aliases mapped: `SBCMABL`→`SBCMA`, `COMBO`→`COMBO_BELAMAF`.
 - **2026-04-28** — Added `CSF1` (specific-scope plasma colony-stimulating factor 1 / M-CSF concentration; placed under `Inflammation markers`), `CPK` (general-scope serum creatine phosphokinase / creatine kinase; placed under `Renal / hepatic function` next to AST/ALT/LDH although mechanistically a muscle-origin enzyme), and `DIS_CANCER` (specific-scope advanced-solid-tumor cohort indicator; placed under `Disease state (cross-population indicators)`) canonical entries while extracting `Yang_2024_axatilimab.R`. Extended `DIS_HV` example_models with Yang 2024 as the second user (cGVHD-reference complement to Nikanjam 2019's non-HV-oncology reference). Source aliases mapped: `BLCSF1` / `BL_CSF1` (Monolix model-parameter name) → `CSF1`; `BLCPK` → `CPK`. Reference values: 549 pg/mL (CSF1), 63 U/L (CPK), pooled-cohort medians from Yang 2024 Table S3.
+- **2026-04-28** — Added `SMOKE_CURRENT` and `SMOKE_NEVER` (both general-scope, paired binary indicators for a 3-level smoking-status categorical with former smoker as the implicit reference) canonical entries under `Lifestyle / medical history`, alongside the existing 2-level `SMOKE`. Pattern follows the `RACE_<GROUP>` convention for paired indicators. Introduced while extracting `Hwang_2023_monalizumab.R`, where Table 2 reports separate proportional-shift coefficients on V1 for current smoker (+0.0484) and never smoker (-0.141) with former smoker (n=319/507) as the most-common reference category. The existing `SMOKE` entry remains in use for 2-level (current vs non-smoker) encodings; the per-model documentation cross-references the alternative encoding.
 - Subsequent additions: append new canonical entries as new papers are processed. When adding, bump the audit-completed count in the summary below.
 
 ## Summary
