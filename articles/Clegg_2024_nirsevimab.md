@@ -79,11 +79,18 @@ Builds dose + observation records for a virtual cohort of `n` infants.
 `ga_range`: gestational age range in weeks. `pna0_range`: postnatal age
 at dosing range in months. `max_day`: follow-up duration in days.
 `season2`: TRUE for Season 2 (200 mg flat dose, Season 2 CL effect
-applied). `obs_days`: observation time points in days.
+applied). `obs_days`: observation time points in days. `id_offset`:
+integer added to `seq_len(n)` so multiple cohorts can be
+[`bind_rows()`](https://dplyr.tidyverse.org/reference/bind_rows.html)-ed
+without colliding on `ID`. `rxSolve` treats `ID` as the subject key;
+duplicate IDs across cohorts silently collapse into a single
+“Frankenstein” subject that receives the summed dose, so a non-zero
+offset is mandatory for any multi-cohort simulation (see Figure 4).
 
 ``` r
 make_cohort <- function(n, ga_range, pna0_range, max_day,
-                        season2 = FALSE, obs_days = seq(0, max_day, by = 7)) {
+                        season2 = FALSE, obs_days = seq(0, max_day, by = 7),
+                        id_offset = 0L) {
   GA <- runif(n, ga_range[1], ga_range[2]) # weeks
   PNA_0 <- runif(n, pna0_range[1], pna0_range[2]) # months at dosing
   wt_z <- pmax(-2, pmin(2, rnorm(n, 0, 1)))
@@ -91,7 +98,7 @@ make_cohort <- function(n, ga_range, pna0_range, max_day,
   AMT <- if (season2) rep(200, n) else ifelse(WT_0 < 5, 50, 100)
 
   pop <- data.frame(
-    ID = seq_len(n), GA, PNA_0, wt_z, WT_0, AMT,
+    ID = id_offset + seq_len(n), GA, PNA_0, wt_z, WT_0, AMT,
     SEASON2 = as.integer(season2),
     ADA_POS = 0L,
     # All White/Nat.Haw reference race for simplicity
@@ -151,26 +158,31 @@ data; original data are not publicly available).
 ``` r
 set.seed(8897) # MEDI8897 = nirsevimab development code
 
-d_p2b <- make_cohort(200, c(29, 35), c(0, 3), 400) |> mutate(trial = "Phase 2b\n(healthy infants, 29 to <35 wGA)")
-d_melody <- make_cohort(200, c(35, 42), c(0, 3), 500) |> mutate(trial = "MELODY\n(healthy infants, \u226535 wGA)")
-d_med_s1 <- make_cohort(200, c(24, 35), c(0, 3), 400) |>
+# `id_offset` per cohort is mandatory: rxSolve uses ID as the subject key,
+# so duplicate IDs across cohorts silently merge into a single subject that
+# receives the summed dose. Without offsets, Figure 4's predictions came out
+# ~3-fold too high because IDs 1..100 appeared in all four cohorts and were
+# collapsed into Frankenstein subjects with ~400 mg in depot at TIME = 0.
+d_p2b <- make_cohort(200, c(29, 35), c(0, 3), 400, id_offset =   0L) |>
+  mutate(trial = "Phase 2b\n(healthy infants, 29 to <35 wGA)")
+d_melody <- make_cohort(200, c(35, 42), c(0, 3), 500, id_offset = 200L) |>
+  mutate(trial = "MELODY\n(healthy infants, \u226535 wGA)")
+d_med_s1 <- make_cohort(200, c(24, 35), c(0, 3), 400, id_offset = 400L) |>
   mutate(trial = "MEDLEY Season 1\n(infants \u226435 wGA, CHD/CLD)")
 d_med_s2 <- make_cohort(100, c(35, 42), c(12, 24), 400,
-  season2 = TRUE) |> mutate(trial = "MEDLEY Season 2\n(children with CHD/CLD)")
+  season2 = TRUE, id_offset = 600L) |>
+  mutate(trial = "MEDLEY Season 2\n(children with CHD/CLD)")
 
 sim_f4 <- bind_rows(d_p2b, d_melody, d_med_s1, d_med_s2)
+# Cheap regression guard: every (ID, TIME, EVID) triple must be unique.
+stopifnot(!anyDuplicated(unique(sim_f4[, c("ID", "TIME", "EVID")])))
 
-out_f4 <- rxode2::rxSolve(mod, events = sim_f4) |>
-  as.data.frame() |>
-  left_join(
-    sim_f4 |> select(ID, trial) |> distinct(),
-    by = c("id" = "ID")
-  )
-#> Warning in left_join(as.data.frame(rxode2::rxSolve(mod, events = sim_f4)), : Detected an unexpected many-to-many relationship between `x` and `y`.
-#> ℹ Row 1 of `x` matches multiple rows in `y`.
-#> ℹ Row 1 of `y` matches multiple rows in `x`.
-#> ℹ If a many-to-many relationship is expected, set `relationship =
-#>   "many-to-many"` to silence this warning.
+# Carry `trial` through rxSolve via `keep =` rather than a post-hoc left_join.
+# A `left_join(distinct(ID, trial))` fans out every row when an ID happens to
+# repeat across trials, silently re-pooling cohorts; `keep = "trial"` aligns
+# the trial label per output row.
+out_f4 <- rxode2::rxSolve(mod, events = sim_f4, keep = "trial") |>
+  as.data.frame()
 ```
 
 ``` r
