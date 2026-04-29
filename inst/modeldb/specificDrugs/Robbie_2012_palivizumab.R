@@ -72,21 +72,21 @@ Robbie_2012_palivizumab <- function() {
   )
 
   population <- list(
-    n_subjects     = 1883,
+    n_subjects     = 1800,
     n_studies      = 22,
     n_adults       = 116,
-    n_pediatric    = 1767,
+    n_pediatric    = 1684,
     age_range      = "Pediatric PAGE 6.89 to 34.7 months; adult 19.3 to 58.9 years.",
     age_median     = "Pediatric PAGE median 12.6 months; adult mean 32.8 years.",
     weight_range   = "Pediatric 0.92 to 16.3 kg; adult 48.9 to 104.3 kg.",
     weight_median  = "Pediatric median 5.64 kg; adult mean 72.5 kg.",
     ga_range       = "Pediatric gestational age 22 to 41 weeks (median 30 weeks); 62% preterm, 38% term.",
-    sex_female_pct = "Pediatric 45.3% female (752 girls / 1660 reported); adult 65.5% female (76/116).",
+    sex_female_pct = "Pediatric 44.7% female (752 girls / 1,684); adult 65.5% female (76 / 116).",
     race_ethnicity = "Pediatric 54% White, 20% Black / African American, 18% Hispanic / Latino, 2% Asian, 6% Other.",
     disease_state  = "Pediatric cohort at high risk of RSV lower respiratory tract disease (preterm, bronchopulmonary dysplasia / chronic lung disease of prematurity, congenital heart disease); 36% had chronic lung disease of prematurity. Adult cohort: 7 healthy-volunteer studies and 2 hematopoietic / solid-organ transplant studies.",
     dose_range     = "3 to 30 mg/kg; label regimen 15 mg/kg IM monthly (up to 5 doses per RSV season).",
     regions        = "North America and Europe (22 pooled MedImmune studies).",
-    notes          = "Baseline demographics taken from Robbie 2012 Table 1. Adult cohort dosed by a mix of IM and IV routes across 9 studies; pediatric cohort dosed exclusively IM. 1,661 adult PK samples and 4,095 pediatric PK samples."
+    notes          = "Counts are PK-analysis dataset (subjects with palivizumab serum concentrations); Table 1 reports 1,883 enrolled across the 22 studies. Adult cohort dosed by a mix of IM and IV routes across 9 studies (7 healthy-volunteer + 2 transplant); pediatric cohort dosed exclusively IM across 13 studies. 1,661 adult PK samples and 4,095 pediatric PK samples."
   )
 
   ini({
