@@ -134,7 +134,7 @@ infusion_dur <- 15 / (60 * 24)          # 15 min in days
 
 dose_rows <- pop %>%
   transmute(
-    ID, treatment, WT,
+    ID, treatment, dose_mgkg, WT,
     time = 0,
     amt,
     evid = 1L,
@@ -144,7 +144,7 @@ dose_rows <- pop %>%
   )
 
 obs_rows <- pop %>%
-  select(ID, treatment, WT) %>%
+  select(ID, treatment, dose_mgkg, WT) %>%
   tidyr::crossing(time = obs_times) %>%
   mutate(
     amt  = NA_real_,
@@ -167,9 +167,12 @@ virtual cohort matches the paper's individual variability.
 mod <- readModelDb("Xu_2011_sirukumab")
 
 events_sim <- events %>% rename(id = ID)
-sim <- rxSolve(object = mod, events = events_sim, returnType = "data.frame") %>%
-  as_tibble() %>%
-  left_join(pop %>% select(ID, treatment, dose_mgkg), by = c("id" = "ID"))
+# `treatment` and `dose_mgkg` are already on every row of `events_sim`.
+# Carry them through rxSolve via `keep = ...` rather than a fragile
+# post-hoc left_join from `pop`.
+sim <- rxSolve(object = mod, events = events_sim, returnType = "data.frame",
+               keep = c("treatment", "dose_mgkg")) %>%
+  as_tibble()
 ```
 
 ## Replicate Figure 3: concentration-time profiles by dose

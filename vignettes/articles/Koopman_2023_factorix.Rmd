@@ -281,8 +281,7 @@ sim_nca <- sim |>
 
 dose_df <- events |>
   filter(EVID == 1) |>
-  transmute(id = ID, time = TIME, amt = AMT) |>
-  left_join(cohort |> select(id = ID, age_group), by = "id")
+  transmute(id = ID, time = TIME, amt = AMT, age_group)
 
 conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | age_group + id,
                              concu = "IU/dL",

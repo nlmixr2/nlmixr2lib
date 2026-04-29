@@ -240,19 +240,61 @@ match.>
 - `rxode2::zeroRe()` is helpful when the published figure is a typical-value
   prediction rather than a VPC. Simulating with between-subject variability
   always, then plotting percentiles, matches VPC-style figures.
-- **Multi-cohort simulations.** If you build the event table by
-  `bind_rows()`-ing several cohorts (dose groups, regimens, age strata, etc.),
-  each cohort's `id` column must span a disjoint integer range. The
-  `make_cohort(..., id_offset = )` helper in the cohort chunk above shows the
-  pattern. Duplicate IDs across cohorts are silently merged by `rxSolve` into
-  a single subject and are a recurring bug — the `Robbie_2012_palivizumab`
-  vignette has a worked example. Add the assertion
-  `stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))`
-  after the bind_rows as a cheap regression guard.
-- **Prefer `rxSolve(..., keep = c("col1", "col2"))`** over a post-hoc
-  `left_join` from `events` back into the simulation output. `keep` attaches
-  source columns directly in the rxode2 output, aligned per row. Use it for
-  `cohort`, `treatment`, dose-group labels, and any grouping column the plots
-  or PKNCA formulas need. The column-name is up to you (`"cohort"`,
-  `"treatment"`, `"regimen"` — whatever the paper's figure legends use); the
-  skill does not mandate one.
+- **Multi-cohort simulations — disjoint IDs are mandatory.** If you build
+  the event table by `bind_rows()`-ing several cohorts (dose groups,
+  regimens, age strata, GA strata, trial panels, etc.), each cohort's `id`
+  column must span a **disjoint integer range**. `rxSolve` treats `id` as
+  the subject key; duplicate IDs across cohorts are silently merged into a
+  single "Frankenstein" subject that receives the *summed* dose, producing
+  predictions that can be 2-4× too high (the bug is silent — no warning).
+  The `make_cohort(..., id_offset = )` helper in the cohort chunk above
+  shows the pattern. Worked examples: `Robbie_2012_palivizumab.Rmd`,
+  `Clegg_2024_nirsevimab.Rmd` (Figure 4), `Lin_2024_casirivimab.Rmd`,
+  `Kuchimanchi_2018_evolocumab.Rmd`. Always add the assertion
+
+  ```r
+  stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
+  ```
+
+  immediately after the `bind_rows()` as a cheap regression guard.
+
+- **Always carry grouping labels through `rxSolve(..., keep = ...)` —
+  never with a post-hoc `left_join`.** `keep` attaches source columns
+  directly in the rxode2 output aligned per row. The post-hoc pattern
+
+  ```r
+  # AVOID — fans out rows when an id has multiple labels (multi-cohort
+  # bug surface), and even when ids are unique it's a footgun that
+  # silently breaks if a future refactor introduces collisions.
+  sim <- rxode2::rxSolve(mod, events = events) |>
+    dplyr::left_join(events |> dplyr::select(id, treatment) |>
+                       dplyr::distinct(), by = "id")
+  ```
+
+  collapses to wrong group totals the moment any `id` is repeated across
+  cohort labels (e.g. the Clegg 2024 nirsevimab Figure 4 bug, where the
+  `distinct()` step produced four trial-rows per subject and inflated
+  every panel's median ~3-fold). Use `keep` instead:
+
+  ```r
+  # PREFER
+  sim <- rxode2::rxSolve(mod, events = events,
+                         keep = c("treatment", "cohort", "WT")) |>
+    as.data.frame()
+  ```
+
+  Use `keep` for `cohort`, `treatment`, `regimen`, `trial`, dose-group
+  labels, any per-subject covariate the plots or PKNCA formulas need
+  downstream. The column-name is up to you (`"cohort"`, `"treatment"`,
+  `"regimen"`, `"trial"`, etc. — whatever the paper's figure legends use);
+  the skill does not mandate one. Character columns are preserved — they
+  may come back as factor or character but the value is intact.
+
+  The only legitimate post-rxSolve `left_join` use cases are:
+  - joining NCA output (e.g. PKNCA results, one row per id) onto a
+    per-subject summary table — that's not a per-time-point fan-out;
+  - attaching reference values (published Cmax / AUC) by a label that
+    was already carried through `keep`.
+
+  When you see a `left_join(events |> select(id, X) |> distinct())` in
+  any vignette, that's a bug surface to remove, not a pattern to copy.

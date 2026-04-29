@@ -189,10 +189,14 @@ virtual cohort matches the paper's reported variability.
 mod <- readModelDb("Zheng_2016_sifalimumab")
 
 events_sim <- events %>% rename(id = ID)
-sim <- rxSolve(object = mod, events = events_sim, returnType = "data.frame") %>%
-  as_tibble() %>%
-  left_join(pop %>% select(ID, treatment, dose_mg),
-            by = c("id" = "ID"))
+# `treatment` is already on every row of `events_sim` (carried from `pop`
+# via the dose_rows / obs_rows construction above). Carry it through
+# rxSolve via `keep = ...` rather than a fragile post-hoc left_join
+# from `pop`. `dose_mg` is taken from `pop` directly when building the
+# PKNCA dose table below, so it does not need to ride through `sim`.
+sim <- rxSolve(object = mod, events = events_sim, returnType = "data.frame",
+               keep = "treatment") %>%
+  as_tibble()
 ```
 
 ## Replicate Figure 2: representative concentration-time profiles

@@ -217,7 +217,12 @@ d_sim <- bind_rows(d_dose, d_obs) |>
 ```{r simulate}
 mod <- readModelDb("Jackson_2022_ixekizumab")
 set.seed(42)
-sim <- rxode2::rxSolve(mod, events = d_sim, returnType = "data.frame")
+# `weight_group` and `WT` are per-subject columns already on every row of
+# `d_sim` (built from `cohort |> tidyr::crossing(...)`). Carrying them
+# through `rxSolve(keep = ...)` removes the need for post-rxSolve
+# left_joins from `cohort` in every downstream chunk.
+sim <- rxode2::rxSolve(mod, events = d_sim, returnType = "data.frame",
+                       keep = c("weight_group", "WT"))
 ```
 
 # Replicate published figures
@@ -232,7 +237,6 @@ concentrations over the same window, stratified by baseline weight group.
 ```{r figure-1, fig.width = 7, fig.height = 4}
 sim_plot <- sim |>
   as.data.frame() |>
-  left_join(cohort |> select(ID, weight_group), by = c("id" = "ID")) |>
   filter(time > 0, time <= 12 * hours_per_week, !is.na(Cc)) |>
   mutate(week = time / hours_per_week)
 
@@ -266,8 +270,7 @@ ggplot(fig1, aes(x = week, y = mean_Cc, colour = weight_group, fill = weight_gro
 wk12_time <- 12 * hours_per_week
 sim_wk12 <- sim |>
   as.data.frame() |>
-  filter(abs(time - wk12_time) < 1e-6) |>
-  left_join(cohort |> select(ID, weight_group, WT), by = c("id" = "ID"))
+  filter(abs(time - wk12_time) < 1e-6)
 
 ggplot(sim_wk12, aes(x = WT, y = Cc, colour = weight_group)) +
   geom_point(alpha = 0.5) +
@@ -295,7 +298,6 @@ trough_times <- trough_weeks * hours_per_week
 trough_tbl <- sim |>
   as.data.frame() |>
   filter(time %in% trough_times) |>
-  left_join(cohort |> select(ID, weight_group), by = c("id" = "ID")) |>
   group_by(weight_group, week = time / hours_per_week) |>
   summarise(
     mean_trough  = mean(Cc, na.rm = TRUE),
@@ -326,7 +328,6 @@ ss_end   <- 12 * hours_per_week
 nca_conc <- sim |>
   as.data.frame() |>
   filter(time >= ss_start, time <= ss_end, Cc > 0) |>
-  left_join(cohort |> select(ID, weight_group), by = c("id" = "ID")) |>
   mutate(time_rel = time - ss_start,
          treatment = paste0("IXE_Q4W_", weight_group)) |>
   rename(ID = id) |>
