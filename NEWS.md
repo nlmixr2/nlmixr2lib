@@ -8,6 +8,7 @@
 * Add Hu 2014 bapineuzumab ([doi:10.1002/jcph.393](https://doi.org/10.1002/jcph.393)) — adults with mild-to-moderate Alzheimer's disease.
 * Add Huang 2017 VRC01 ([doi:10.1080/19420862.2017.1311435](https://doi.org/10.1080/19420862.2017.1311435)) — HIV-uninfected healthy adults receiving IV or SC HIV-1 broadly neutralizing monoclonal antibody.
 * Add Ide 2020 elotuzumab ([doi:10.1002/jcph.1698](https://doi.org/10.1002/jcph.1698)) — Japanese and non-Japanese adults with multiple myeloma.
+* Add Marquez-Megias 2023 adalimumab ([doi:10.3390/biomedicines11102822](https://doi.org/10.3390/biomedicines11102822)) — adults with inflammatory bowel disease.
 * Add Lin 2024 casirivimab ([doi:10.1007/s11095-024-03764-5](https://doi.org/10.1007/s11095-024-03764-5)) — pediatric and adult subjects, non-infected or with SARS-CoV-2 infection or household contacts.
 * Add Faelens 2021 infliximab ([doi:10.3390/pharmaceutics13101623](https://doi.org/10.3390/pharmaceutics13101623)) — adults with moderate-to-severe ulcerative colitis.
 * Add Sathe 2024 sacituzumab govitecan ([doi:10.1007/s40262-024-01366-3](https://doi.org/10.1007/s40262-024-01366-3)) — adults with metastatic triple-negative breast cancer and other solid tumors.
