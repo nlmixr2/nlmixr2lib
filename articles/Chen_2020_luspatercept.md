@@ -49,25 +49,25 @@ Per-parameter origin is recorded as an in-file comment next to each
 `inst/modeldb/specificDrugs/Chen_2020_luspatercept.R`. The table below
 collects them for review.
 
-| Equation / parameter         | Value                                                | Source location                                                         |
-|------------------------------|------------------------------------------------------|-------------------------------------------------------------------------|
-| Structural model             | 1-compartment, first-order absorption + elimination  | Results “Luspatercept population PK model”                              |
-| `lcl` (CL/F)                 | `log(0.469)` L/day                                   | Table 2, “CL/F, L/day”                                                  |
-| `lvc` (V1/F)                 | `log(9.22)` L                                        | Table 2, “V1/F, L”                                                      |
-| `lka` (Ka)                   | `log(0.456)` 1/day                                   | Table 2, “Ka, 1/day”                                                    |
-| `e_wt_cl`                    | `0.769`                                              | Table 2, “Weight, kg, on CL/F”                                          |
-| `e_age_cl`                   | `-0.534`                                             | Table 2, “Age, years, on CL/F”                                          |
-| `e_alb_cl`                   | `-1.17`                                              | Table 2, “Albumin, g/L, on CL/F”                                        |
-| `e_wt_vc`                    | `0.877`                                              | Table 2, “Weight, kg, on V1/F”                                          |
-| `e_alb_vc`                   | `-0.610`                                             | Table 2, “Albumin, g/L, on V1/F”                                        |
-| Final CL/F equation          | `0.469*(WT/70)^0.769*(AGE/72)^-0.534*(ALB/44)^-1.17` | Results, “The final covariate model for CL/F”                           |
-| Final V1/F equation          | `9.22*(WT/70)^0.877*(ALB/44)^-0.610`                 | Results, “The final covariate model for V1/F”                           |
-| `etalcl` (IIV CL/F)          | variance `0.1325` (sqrt = 36.4%)                     | Table 2, “Interindividual variability of CL/F”                          |
-| `etalvc` (IIV V1/F)          | variance `0.0506` (sqrt = 22.5%)                     | Table 2, “Interindividual variability of V1/F”                          |
-| `propSd` (residual)          | `0.224`                                              | Table 2, “Residual variability” (log-additive in NONMEM, 22.4%)         |
-| Mean t1/2                    | ~13 days                                             | Results, “The mean elimination half-life of luspatercept was ~ 13 days” |
-| Mean AUC_ss (1.0-1.75 mg/kg) | 151-264 day\*ug/mL                                   | Results, end of “Exposure-response of efficacy” paragraph 2             |
-| AUC_ss IIV                   | 38.0%                                                | Results, “The IIV for AUC ss was 38.0%”                                 |
+| Equation / parameter | Value | Source location |
+|----|----|----|
+| Structural model | 1-compartment, first-order absorption + elimination | Results “Luspatercept population PK model” |
+| `lcl` (CL/F) | `log(0.469)` L/day | Table 2, “CL/F, L/day” |
+| `lvc` (V1/F) | `log(9.22)` L | Table 2, “V1/F, L” |
+| `lka` (Ka) | `log(0.456)` 1/day | Table 2, “Ka, 1/day” |
+| `e_wt_cl` | `0.769` | Table 2, “Weight, kg, on CL/F” |
+| `e_age_cl` | `-0.534` | Table 2, “Age, years, on CL/F” |
+| `e_alb_cl` | `-1.17` | Table 2, “Albumin, g/L, on CL/F” |
+| `e_wt_vc` | `0.877` | Table 2, “Weight, kg, on V1/F” |
+| `e_alb_vc` | `-0.610` | Table 2, “Albumin, g/L, on V1/F” |
+| Final CL/F equation | `0.469*(WT/70)^0.769*(AGE/72)^-0.534*(ALB/44)^-1.17` | Results, “The final covariate model for CL/F” |
+| Final V1/F equation | `9.22*(WT/70)^0.877*(ALB/44)^-0.610` | Results, “The final covariate model for V1/F” |
+| `etalcl` (IIV CL/F) | variance `0.1325` (sqrt = 36.4%) | Table 2, “Interindividual variability of CL/F” |
+| `etalvc` (IIV V1/F) | variance `0.0506` (sqrt = 22.5%) | Table 2, “Interindividual variability of V1/F” |
+| `propSd` (residual) | `0.224` | Table 2, “Residual variability” (log-additive in NONMEM, 22.4%) |
+| Mean t1/2 | ~13 days | Results, “The mean elimination half-life of luspatercept was ~ 13 days” |
+| Mean AUC_ss (1.0-1.75 mg/kg) | 151-264 day\*ug/mL | Results, end of “Exposure-response of efficacy” paragraph 2 |
+| AUC_ss IIV | 38.0% | Results, “The IIV for AUC ss was 38.0%” |
 
 ## Virtual cohort
 
@@ -78,6 +78,7 @@ the published medians and ranges, sex sampled at the published 38.8%
 female prevalence.
 
 ``` r
+
 set.seed(20260425)
 n_subj <- 500
 
@@ -129,6 +130,7 @@ stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
 ## Simulation
 
 ``` r
+
 mod <- rxode2::rxode2(readModelDb("Chen_2020_luspatercept"))
 sim <- rxode2::rxSolve(mod, events = events,
                        keep = c("WT", "AGE", "ALB", "SEXF", "treatment"))
@@ -138,6 +140,7 @@ For deterministic replication of typical-subject behaviour (no
 between-subject variability), zero out the random effects:
 
 ``` r
+
 mod_typical <- mod |> rxode2::zeroRe()
 
 # Reference subject from Chen 2020: 70 kg, 72 yr, 44 g/L albumin.
@@ -178,6 +181,7 @@ treatment window evaluated in the paper for the primary efficacy
 endpoint, weeks 1-24).
 
 ``` r
+
 sim |>
   dplyr::filter(!is.na(Cc), time > 0) |>
   dplyr::group_by(time, treatment) |>
@@ -211,6 +215,7 @@ AUC_ss across covariate extremes (weight 46-124 kg, age 27-95 years,
 albumin 31-53 g/L).
 
 ``` r
+
 cov_grid <- tibble::tibble(
   scenario = c("WT low (46 kg)", "WT high (124 kg)",
                "AGE low (27 yr)", "AGE high (95 yr)",
@@ -235,18 +240,19 @@ cov_grid |>
     caption = "Predicted AUC_ss across covariate extremes vs. the reference subject (replicates the structure of Chen 2020 Figure 1b for AUC_ss only).")
 ```
 
-| scenario                           |    WT | AGE | ALB | SEXF |  id | dose_mg | cl_pred | aucss_pred | pct_diff |
-|:-----------------------------------|------:|----:|----:|-----:|----:|--------:|--------:|-----------:|---------:|
-| WT low (46 kg)                     |  46.0 |  72 |  44 |    0 |   1 |    46.0 |    0.34 |     135.46 |   -11.03 |
-| WT high (124 kg)                   | 124.0 |  72 |  44 |    0 |   2 |   124.0 |    0.73 |     170.33 |    11.87 |
-| AGE low (27 yr)                    |  76.3 |  27 |  44 |    0 |   3 |    76.3 |    0.85 |      90.18 |   -40.77 |
-| AGE high (95 yr)                   |  76.3 |  95 |  44 |    0 |   4 |    76.3 |    0.43 |     176.55 |    15.95 |
-| ALB low (31 g/L)                   |  76.3 |  72 |  31 |    0 |   5 |    76.3 |    0.75 |     101.07 |   -33.62 |
-| ALB high (53 g/L)                  |  76.3 |  72 |  53 |    0 |   6 |    76.3 |    0.40 |     189.29 |    24.33 |
-| Reference (76.3 kg, 72 yr, 44 g/L) |  76.3 |  72 |  44 |    0 |   7 |    76.3 |    0.50 |     152.25 |     0.00 |
+| scenario | WT | AGE | ALB | SEXF | id | dose_mg | cl_pred | aucss_pred | pct_diff |
+|:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| WT low (46 kg) | 46.0 | 72 | 44 | 0 | 1 | 46.0 | 0.34 | 135.46 | -11.03 |
+| WT high (124 kg) | 124.0 | 72 | 44 | 0 | 2 | 124.0 | 0.73 | 170.33 | 11.87 |
+| AGE low (27 yr) | 76.3 | 27 | 44 | 0 | 3 | 76.3 | 0.85 | 90.18 | -40.77 |
+| AGE high (95 yr) | 76.3 | 95 | 44 | 0 | 4 | 76.3 | 0.43 | 176.55 | 15.95 |
+| ALB low (31 g/L) | 76.3 | 72 | 31 | 0 | 5 | 76.3 | 0.75 | 101.07 | -33.62 |
+| ALB high (53 g/L) | 76.3 | 72 | 53 | 0 | 6 | 76.3 | 0.40 | 189.29 | 24.33 |
+| Reference (76.3 kg, 72 yr, 44 g/L) | 76.3 | 72 | 44 | 0 | 7 | 76.3 | 0.50 | 152.25 | 0.00 |
 
 Predicted AUC_ss across covariate extremes vs. the reference subject
 (replicates the structure of Chen 2020 Figure 1b for AUC_ss only).
+{.table}
 
 ## PKNCA validation
 
@@ -256,6 +262,7 @@ can be compared against the paper’s reported AUC_ss range and ~13-day
 half-life.
 
 ``` r
+
 # Restrict to the last (10th) dosing interval as the steady-state interval.
 ss_start <- 9 * 21    # day 189
 ss_end   <- 10 * 21   # day 210
@@ -284,13 +291,12 @@ intervals <- data.frame(
 )
 
 nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
-#>  ■■■■■■                            16% |  ETA: 19s
-#>  ■■■■■■■■■■                        29% |  ETA: 16s
-#>  ■■■■■■■■■■■■■■                    43% |  ETA: 13s
-#>  ■■■■■■■■■■■■■■■■■■                57% |  ETA:  9s
-#>  ■■■■■■■■■■■■■■■■■■■■■■            71% |  ETA:  6s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■        84% |  ETA:  3s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■   98% |  ETA:  0s
+#>  ■■■■■■■                           18% |  ETA: 17s
+#>  ■■■■■■■■■■■                       33% |  ETA: 14s
+#>  ■■■■■■■■■■■■■■■                   48% |  ETA: 11s
+#>  ■■■■■■■■■■■■■■■■■■■■              62% |  ETA:  8s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■          76% |  ETA:  5s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      91% |  ETA:  2s
 summary(nca_res)
 #>  start end      treatment   N    auclast        cmax              tmax
 #>      0  21  1.0 mg/kg q3w 500 149 [40.3] 9.48 [29.9] 4.00 [3.00, 5.00]
@@ -310,6 +316,7 @@ AUC_ss values of 151-264 day\*ug/mL for the 1.0-1.75 mg/kg dose range
 efficacy”). The IIV of AUC_ss was 38.0%.
 
 ``` r
+
 nca_tbl <- as.data.frame(nca_res$result) |>
   dplyr::filter(PPTESTCD %in% c("auclast", "half.life")) |>
   dplyr::group_by(treatment, PPTESTCD) |>
@@ -331,12 +338,13 @@ dplyr::left_join(published, nca_tbl, by = "treatment") |>
     caption = "Simulated steady-state AUC and terminal t1/2 vs. Chen 2020 Results.")
 ```
 
-| treatment      | published_aucss       | published_thalf | published_cv_aucss | median_auclast | median_half.life | cv_pct_auclast | cv_pct_half.life |
-|:---------------|:----------------------|:----------------|:-------------------|---------------:|-----------------:|---------------:|-----------------:|
-| 1.0 mg/kg q3w  | 151 day\*ug/mL (mean) | ~13 days        | 38.0%              |         150.33 |            13.59 |          38.62 |            44.68 |
-| 1.75 mg/kg q3w | 264 day\*ug/mL (mean) | ~13 days        | 38.0%              |         257.36 |            13.30 |          40.99 |            47.79 |
+| treatment | published_aucss | published_thalf | published_cv_aucss | median_auclast | median_half.life | cv_pct_auclast | cv_pct_half.life |
+|:---|:---|:---|:---|---:|---:|---:|---:|
+| 1.0 mg/kg q3w | 151 day\*ug/mL (mean) | ~13 days | 38.0% | 150.33 | 13.59 | 38.62 | 44.68 |
+| 1.75 mg/kg q3w | 264 day\*ug/mL (mean) | ~13 days | 38.0% | 257.36 | 13.30 | 40.99 | 47.79 |
 
 Simulated steady-state AUC and terminal t1/2 vs. Chen 2020 Results.
+{.table style="width:100%;"}
 
 ## Assumptions and deviations
 

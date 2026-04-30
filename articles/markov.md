@@ -1,6 +1,7 @@
 # Markov modeling
 
 ``` r
+
 library(nlmixr2lib)
 library(ggplot2)
 ```
@@ -13,6 +14,7 @@ event profile switching between “none”, “mild”, and “moderate”
 severities.
 
 ``` r
+
 dMarkov <-
   rbind(
     data.frame(
@@ -42,6 +44,7 @@ done, then they will be sorted alphabetically in the modeling which may
 not make sense (e.g. “none” coming after “moderate”).
 
 ``` r
+
 stateLevels <- c("none", "mild", "moderate")
 dMarkov$previous <- factor(dMarkov$previous, levels = stateLevels)
 dMarkov$current <- factor(dMarkov$current, levels = stateLevels)
@@ -52,6 +55,7 @@ dataset. That more simply means we need columns set to 1 for when a
 Markov state applies and 0 when it does not.
 
 ``` r
+
 dMarkov <- createMarkovModelDataset(dMarkov, colPrev = "previous", colCur = "current")
 knitr::knit_print(dMarkov)
 #>    ID TIME previous  current prevnone curnone prevmild curmild prevmoderate
@@ -92,6 +96,7 @@ A DV column is required for `nlmixr2` to work, but it will be ignored
 for this model.
 
 ``` r
+
 dMarkov$DV <- 0
 ```
 
@@ -103,6 +108,7 @@ the
 function:
 
 ``` r
+
 mod <- createMarkovModel(colPrev = dMarkov$previous, colCur = dMarkov$current)
 cat(mod)
 #> function() {
@@ -167,6 +173,7 @@ At this point, the model is a character string. Use advanced R methods
 (with standard R functions) to convert that to a function for `nlmixr2`.
 
 ``` r
+
 modFun <- eval(str2lang(mod))
 ```
 
@@ -176,6 +183,7 @@ model, for example to add drug effects, etc.
 ## Fit the model
 
 ``` r
+
 fit <- nlmixr2est::nlmixr(modFun, data = dMarkov, est = "focei", control = list(print = 0))
 #> ℹ parameter labels from comments are typically ignored in non-interactive mode
 #> ℹ Need to run with the source intact to parse comments
@@ -203,8 +211,8 @@ fit
 #> 
 #> ── Time (sec fit$time): ──
 #> 
-#>            setup optimize covariance table compress    other
-#> elapsed 0.016733 0.002753   0.002755 0.029    0.001 2.393759
+#>            setup optimize covariance table compress   other
+#> elapsed 0.017647 0.002666   0.002667  0.03    0.001 2.37902
 #> 
 #> ── (fit$parFixed or fit$parFixedDf): ──
 #> 
@@ -268,6 +276,7 @@ simulation from the model to get probabilities of each state. Then,
 post-process the simulation results to get the states.
 
 ``` r
+
 dSimRaw <- nlmixr2est::nlmixr(fit, est = "rxSolve", control = list(nStud = 5))
 #> ℹ use `data` from prior/supplied fit
 #> ℹ using population uncertainty from fitted model (`thetaMat`)
@@ -283,6 +292,7 @@ dSim <- simMarkov(dSimRaw, states = fit$markovStates, initialState = "none", col
 Simulations can be plotted,
 
 ``` r
+
 ggplot(dSim, aes(x = time, y = current)) +
   geom_line(
     aes(colour = paste(sim.id, id), group = paste(sim.id, id)),
@@ -296,6 +306,7 @@ ggplot(dSim, aes(x = time, y = current)) +
 tabulated,
 
 ``` r
+
 createMarkovTransitionMatrix(colPrev = dMarkov$previous, colCur = dMarkov$current)
 #>               none      mild  moderate
 #> none     0.5000000 0.3333333 0.1666667

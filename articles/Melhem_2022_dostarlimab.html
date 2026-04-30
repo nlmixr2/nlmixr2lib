@@ -60,6 +60,7 @@
     <li><a class="dropdown-item" href="../articles/FiedlerKelly_2020_fremanezumab_cm.html">FiedlerKelly_2020_fremanezumab_cm</a></li>
     <li><a class="dropdown-item" href="../articles/FiedlerKelly_2020_fremanezumab_em.html">FiedlerKelly_2020_fremanezumab_em</a></li>
     <li><a class="dropdown-item" href="../articles/Frey_2010_tocilizumab.html">Frey_2010_tocilizumab</a></li>
+    <li><a class="dropdown-item" href="../articles/Frey_2013_tocilizumab.html">Frey_2013_tocilizumab</a></li>
     <li><a class="dropdown-item" href="../articles/Gandhi_2021_abatacept.html">Gandhi_2021_abatacept</a></li>
     <li><a class="dropdown-item" href="../articles/Grimm_2023.html">Trontinemab and gantenerumab PK in plasma and brain (Grimm 2023)</a></li>
     <li><a class="dropdown-item" href="../articles/Gupta_2016_amatuximab.html">Gupta_2016_amatuximab</a></li>
@@ -72,6 +73,7 @@
     <li><a class="dropdown-item" href="../articles/Hua_2015_anrukinzumab.html">Hua_2015_anrukinzumab</a></li>
     <li><a class="dropdown-item" href="../articles/Huang_2017_vrc01.html">Huang_2017_vrc01</a></li>
     <li><a class="dropdown-item" href="../articles/Hwang_2022_tremelimumab.html">Hwang_2022_tremelimumab</a></li>
+    <li><a class="dropdown-item" href="../articles/Hwang_2023_monalizumab.html">Hwang_2023_monalizumab</a></li>
     <li><a class="dropdown-item" href="../articles/Ide_2020_elotuzumab.html">Ide_2020_elotuzumab</a></li>
     <li><a class="dropdown-item" href="../articles/Jackson_2022_ixekizumab.html">Jackson_2022_ixekizumab</a></li>
     <li><a class="dropdown-item" href="../articles/Kielbasa_2020_galcanezumab.html">Kielbasa_2020_galcanezumab</a></li>
@@ -92,6 +94,7 @@
     <li><a class="dropdown-item" href="../articles/Long_2017_necitumumab.html">Long_2017_necitumumab</a></li>
     <li><a class="dropdown-item" href="../articles/Lu_2014_trastuzumabemtansine.html">Lu_2014_trastuzumabemtansine</a></li>
     <li><a class="dropdown-item" href="../articles/Lu_2019_polatuzumab.html">Polatuzumab vedotin acMMAE + MMAE integrated population PK model (Lu 2019)</a></li>
+    <li><a class="dropdown-item" href="../articles/Lu_2022_patritumab.html">Patritumab deruxtecan (HER3-DXd) ADC + DXd coupled population PK model (Lu 2022)</a></li>
     <li><a class="dropdown-item" href="../articles/Ma_2020_sarilumab_anc.html">Ma_2020_sarilumab_anc</a></li>
     <li><a class="dropdown-item" href="../articles/Ma_2020_sarilumab_das28crp.html">Ma_2020_sarilumab_das28crp</a></li>
     <li><a class="dropdown-item" href="../articles/markov.html">Markov modeling</a></li>
@@ -125,6 +128,7 @@
     <li><a class="dropdown-item" href="../articles/Sathe_2024_sacituzumab.html">Sathe_2024_sacituzumab</a></li>
     <li><a class="dropdown-item" href="../articles/Soehoel_2022_tralokinumab.html">Soehoel_2022_tralokinumab</a></li>
     <li><a class="dropdown-item" href="../articles/Suleiman_2019_risankizumab.html">Suleiman_2019_risankizumab</a></li>
+    <li><a class="dropdown-item" href="../articles/Suri_2018_brentuximab.html">Suri_2018_brentuximab</a></li>
     <li><a class="dropdown-item" href="../articles/Takahashi_2023_abatacept.html">Takahashi_2023_abatacept</a></li>
     <li><a class="dropdown-item" href="../articles/Takeuchi_2023_ozoralizumab.html">Takeuchi_2023_ozoralizumab</a></li>
     <li><a class="dropdown-item" href="../articles/Thakre_2022_risankizumab.html">Thakre_2022_risankizumab</a></li>
@@ -150,6 +154,7 @@
     <li><a class="dropdown-item" href="../articles/Yu_2022_ofatumumab.html">Yu_2022_ofatumumab</a></li>
     <li><a class="dropdown-item" href="../articles/Zhang_2019_nivolumab.html">Zhang_2019_nivolumab</a></li>
     <li><a class="dropdown-item" href="../articles/Zheng_2016_sifalimumab.html">Zheng_2016_sifalimumab</a></li>
+    <li><a class="dropdown-item" href="../articles/Zhong_2026_abatacept.html">Zhong_2026_abatacept</a></li>
     <li><a class="dropdown-item" href="../articles/Zhou_2021_belimumab.html">Zhou_2021_belimumab</a></li>
     <li><a class="dropdown-item" href="../articles/Zhou_2025_brentuximab.html">Zhou_2025_brentuximab</a></li>
     <li><a class="dropdown-item" href="../articles/Zhu_2017_lebrikizumab.html">Zhu_2017_lebrikizumab</a></li>
@@ -207,16 +212,16 @@ Q6W</strong>.</p>
 <p>Structure: linear two-compartment IV model with
 <strong>time-dependent clearance</strong> via a sigmoid I_max function
 of time since first dose:</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">C</mi><mi mathvariant="normal">L</mi></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msub><mrow><mi mathvariant="normal">C</mi><mi mathvariant="normal">L</mi></mrow><mtext mathvariant="normal">base</mtext></msub><mo>⋅</mo><mo>exp</mo><mspace width="-0.167em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>I</mi><mo>max</mo></msub><mo>⋅</mo><mfrac displaystyle="true"><msup><mi>t</mi><mrow><mi mathvariant="normal">H</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">l</mi></mrow></msup><mrow><msubsup><mi>T</mi><mn>50</mn><mrow><mi mathvariant="normal">H</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">l</mi></mrow></msubsup><mo>+</mo><msup><mi>t</mi><mrow><mi mathvariant="normal">H</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">l</mi></mrow></msup></mrow></mfrac><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">C</mi><mi mathvariant="normal">L</mi></mrow><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><msub><mrow><mi mathvariant="normal">C</mi><mi mathvariant="normal">L</mi></mrow><mtext mathvariant="normal">base</mtext></msub><mo>⋅</mo><mrow><mi mathvariant="normal">exp</mi><mo>⁡</mo></mrow><mspace width="-0.167em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>I</mi><mi mathvariant="normal">max</mi></msub><mo>⋅</mo><mstyle displaystyle="true"><mfrac><msup><mi>t</mi><mrow><mi mathvariant="normal">H</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">l</mi></mrow></msup><mrow><msubsup><mi>T</mi><mn>50</mn><mrow><mi mathvariant="normal">H</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">l</mi></mrow></msubsup><mo>+</mo><msup><mi>t</mi><mrow><mi mathvariant="normal">H</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">l</mi></mrow></msup></mrow></mfrac></mstyle><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">
   \mathrm{CL}(t) = \mathrm{CL}_{\text{base}} \cdot
   \exp\!\left(I_{\max}\cdot \dfrac{t^{\mathrm{Hill}}}
   {T_{50}^{\mathrm{Hill}} + t^{\mathrm{Hill}}}\right)
 </annotation></semantics></math></p>
 <p>with
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>I</mi><mo>max</mo></msub><mo>=</mo><mo>−</mo><mn>0.161</mn></mrow><annotation encoding="application/x-tex">I_{\max} = -0.161</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>I</mi><mi mathvariant="normal">max</mi></msub><mo>=</mo><mi>−</mi><mn>0.161</mn></mrow><annotation encoding="application/x-tex">I_{\max} = -0.161</annotation></semantics></math>
 (a fractional decrease in log-CL at
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>≫</mo><msub><mi>T</mi><mn>50</mn></msub></mrow><annotation encoding="application/x-tex">t \gg T_{50}</annotation></semantics></math>;
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>−</mo><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>I</mi><mo>max</mo></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>0.149</mn></mrow><annotation encoding="application/x-tex">1 - \exp(I_{\max}) = 0.149</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>−</mo><mrow><mi mathvariant="normal">exp</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>I</mi><mi mathvariant="normal">max</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mn>0.149</mn></mrow><annotation encoding="application/x-tex">1 - \exp(I_{\max}) = 0.149</annotation></semantics></math>,
 matching the paper’s “maximum reduction of 14.9%”),
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mn>50</mn></msub><mo>=</mo><mn>108</mn></mrow><annotation encoding="application/x-tex">T_{50} = 108</annotation></semantics></math>
 days, and
@@ -554,7 +559,8 @@ cohort:</p>
 <span></span>
 <span><span class="va">nca_data</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_obj</span>, <span class="va">dose_obj</span>, intervals <span class="op">=</span> <span class="va">intervals</span><span class="op">)</span></span>
 <span><span class="va">nca_res</span>  <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="va">nca_data</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■                     </span>  35% |  ETA:  3s</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■                        </span>  24% |  ETA:  4s</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■    </span>  88% |  ETA:  1s</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">nca_res</span><span class="op">)</span>,</span>
 <span>             caption <span class="op">=</span> <span class="st">"Simulated NCA parameters (3rd dosing interval, days 21-42 after first dose)"</span><span class="op">)</span></span></code></pre></div>
 <table class="table">

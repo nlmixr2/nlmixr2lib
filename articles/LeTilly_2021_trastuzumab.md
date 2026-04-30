@@ -50,6 +50,7 @@ every patient.
 The full population metadata is available programmatically:
 
 ``` r
+
 str(rxode2::rxode2(readModelDb("LeTilly_2021_trastuzumab"))$meta$population)
 #> ℹ parameter labels from comments will be replaced by 'label()'
 #> List of 14
@@ -77,30 +78,30 @@ from Le Tilly 2021 Table 2 (final model). The structural ODEs are
 equations (1) and (3)–(8) of the same paper. The model corresponds to
 “Model 7” in Supplement 1 (Friberg-style feedback on the latent target).
 
-| Parameter / equation                     |                 Value | Source location                                                                                                                  |
-|------------------------------------------|----------------------:|----------------------------------------------------------------------------------------------------------------------------------|
-| `V1` (apparent serum volume)             |                3.25 L | Le Tilly 2021 Table 2                                                                                                            |
-| `CL` (linear serum clearance)            |           0.139 L/day | Le Tilly 2021 Table 2                                                                                                            |
-| `V2` (apparent CSF volume)               |               0.644 L | Le Tilly 2021 Table 2                                                                                                            |
-| `k21` (CSF -\> serum, first-order)       |          0.311 day^-1 | Le Tilly 2021 Table 2                                                                                                            |
-| `k12` (serum -\> CSF, zero-order)        |          0.264 mg/day | Le Tilly 2021 Table 2                                                                                                            |
-| `kin` (latent HER2 production)           |        11.88 nmol/day | Le Tilly 2021 Table 2                                                                                                            |
-| `ktr` (transit constant; ktr = kout)     |          0.325 day^-1 | Le Tilly 2021 Table 2                                                                                                            |
-| `kdeg` (binding-driven elimination)      | 0.0116 nmol^-1 day^-1 | Le Tilly 2021 Table 2                                                                                                            |
-| `omega_V1`                               |                 0.685 | Le Tilly 2021 Table 2                                                                                                            |
-| `omega_CL`                               |                 0.339 | Le Tilly 2021 Table 2                                                                                                            |
-| `omega_k21`                              |                 0.816 | Le Tilly 2021 Table 2                                                                                                            |
-| `omega_kin`                              |                 0.788 | Le Tilly 2021 Table 2                                                                                                            |
-| `omega_ktr`                              |                 1.081 | Le Tilly 2021 Table 2                                                                                                            |
-| sigma_prop, serum                        |                20.94% | Le Tilly 2021 Table 2                                                                                                            |
-| sigma_prop, CSF                          |                54.09% | Le Tilly 2021 Table 2                                                                                                            |
-| dS/dt = -k12 + k21 F - k10 S             |                   n/a | Le Tilly 2021 Eq. (1)                                                                                                            |
-| dF/dt = k12 - k21 F - kdeg F L           |                   n/a | Le Tilly 2021 Eq. (3)                                                                                                            |
-| dL0/dt = Kin - ktr L0                    |                   n/a | Le Tilly 2021 Eq. (5)                                                                                                            |
-| dLn/dt = ktr L\_{n-1} - kout Ln          |                   n/a | Le Tilly 2021 Eq. (6)                                                                                                            |
-| dL/dt = ktr L\_{n-1} - kout L - kdeg L F |                   n/a | Le Tilly 2021 Eq. (7)                                                                                                            |
-| Kin(t) = kin (L0/L)^gamma, gamma = 1     |                   n/a | Le Tilly 2021 Eq. (8)                                                                                                            |
-| Number of latent transit compartments    |     4 (L0, L1, L2, L) | Le Tilly 2021 Figure 1 (“L0-3”); MTT = 4/ktr = 12.3 days matches the reported “Mean transit time of latent target was 12.3 days” |
+| Parameter / equation | Value | Source location |
+|----|---:|----|
+| `V1` (apparent serum volume) | 3.25 L | Le Tilly 2021 Table 2 |
+| `CL` (linear serum clearance) | 0.139 L/day | Le Tilly 2021 Table 2 |
+| `V2` (apparent CSF volume) | 0.644 L | Le Tilly 2021 Table 2 |
+| `k21` (CSF -\> serum, first-order) | 0.311 day^-1 | Le Tilly 2021 Table 2 |
+| `k12` (serum -\> CSF, zero-order) | 0.264 mg/day | Le Tilly 2021 Table 2 |
+| `kin` (latent HER2 production) | 11.88 nmol/day | Le Tilly 2021 Table 2 |
+| `ktr` (transit constant; ktr = kout) | 0.325 day^-1 | Le Tilly 2021 Table 2 |
+| `kdeg` (binding-driven elimination) | 0.0116 nmol^-1 day^-1 | Le Tilly 2021 Table 2 |
+| `omega_V1` | 0.685 | Le Tilly 2021 Table 2 |
+| `omega_CL` | 0.339 | Le Tilly 2021 Table 2 |
+| `omega_k21` | 0.816 | Le Tilly 2021 Table 2 |
+| `omega_kin` | 0.788 | Le Tilly 2021 Table 2 |
+| `omega_ktr` | 1.081 | Le Tilly 2021 Table 2 |
+| sigma_prop, serum | 20.94% | Le Tilly 2021 Table 2 |
+| sigma_prop, CSF | 54.09% | Le Tilly 2021 Table 2 |
+| dS/dt = -k12 + k21 F - k10 S | n/a | Le Tilly 2021 Eq. (1) |
+| dF/dt = k12 - k21 F - kdeg F L | n/a | Le Tilly 2021 Eq. (3) |
+| dL0/dt = Kin - ktr L0 | n/a | Le Tilly 2021 Eq. (5) |
+| dLn/dt = ktr L\_{n-1} - kout Ln | n/a | Le Tilly 2021 Eq. (6) |
+| dL/dt = ktr L\_{n-1} - kout L - kdeg L F | n/a | Le Tilly 2021 Eq. (7) |
+| Kin(t) = kin (L0/L)^gamma, gamma = 1 | n/a | Le Tilly 2021 Eq. (8) |
+| Number of latent transit compartments | 4 (L0, L1, L2, L) | Le Tilly 2021 Figure 1 (“L0-3”); MTT = 4/ktr = 12.3 days matches the reported “Mean transit time of latent target was 12.3 days” |
 
 ## Virtual cohort
 
@@ -111,6 +112,7 @@ virtual VPC with the published omega matrix. Original observed data are
 not publicly available.
 
 ``` r
+
 set.seed(42)
 
 mod <- readModelDb("LeTilly_2021_trastuzumab")
@@ -141,6 +143,7 @@ Simulate typical profiles for the four IT dose levels used in the trial
 plus the 120 mg q-7-days IV reference regimen.
 
 ``` r
+
 dose_levels_it <- c(30, 60, 100, 150)
 
 sim_it <- lapply(dose_levels_it, function(d) {
@@ -172,6 +175,7 @@ panels) and serum (lower panels) using typical PK parameters for IT
 over 56 days.
 
 ``` r
+
 sim_long <- sim_typ |>
   select(time, dose_label, route, Cc, Ccsf) |>
   pivot_longer(c(Cc, Ccsf), names_to = "matrix", values_to = "conc") |>
@@ -220,6 +224,7 @@ interpreted within each dosing interval, not over the full 56-day
 window.
 
 ``` r
+
 nca_input <- sim_long |>
   filter(matrix == "Serum (Cc)" | matrix == "CSF (Ccsf)",
          route == "IT", time > 0) |>
@@ -278,9 +283,10 @@ knitr::kable(
 | 30 mg IT   |      NA | 12.36864 | 51.39596 |
 | 60 mg IT   |      NA | 27.21959 | 51.48558 |
 
-Serum NCA over 0-56 d (typical individual, weekly IT).
+Serum NCA over 0-56 d (typical individual, weekly IT). {.table}
 
 ``` r
+
 
 knitr::kable(
   as.data.frame(nca_csf$result) |>
@@ -297,7 +303,7 @@ knitr::kable(
 | 30 mg IT   |      NA |  47.51900 | 7.002275 |
 | 60 mg IT   |      NA |  94.82524 | 7.002275 |
 
-CSF NCA over 0-56 d (typical individual, weekly IT).
+CSF NCA over 0-56 d (typical individual, weekly IT). {.table}
 
 ### Comparison against published exposure metrics
 
@@ -307,6 +313,7 @@ of “Pharmacokinetics”) and the **120 mg weekly IV** reference (same
 paragraph):
 
 ``` r
+
 auc_it_serum_150 <- as.data.frame(nca_serum$result) |>
   filter(dose_label == "150 mg IT", PPTESTCD == "auclast") |>
   pull(PPORRES)
@@ -320,12 +327,12 @@ auc_iv_csf   <- sum(diff(sim_iv$time) *
 ratio_it_iv_csf <- auc_it_csf_150 / auc_iv_csf
 ```
 
-| Regimen          | Compartment | Reported AUC (0-56 d, mg.day/L) | This package (typical, mg.day/L) |
-|------------------|-------------|--------------------------------:|---------------------------------:|
-| 150 mg weekly IT | Serum       |                            4007 |                               NA |
-| 150 mg weekly IT | CSF         |                            4399 |                               NA |
-| 120 mg weekly IV | Serum       |                            4613 |                             4619 |
-| 120 mg weekly IV | CSF         |                              31 |                               31 |
+| Regimen | Compartment | Reported AUC (0-56 d, mg.day/L) | This package (typical, mg.day/L) |
+|----|----|---:|---:|
+| 150 mg weekly IT | Serum | 4007 | NA |
+| 150 mg weekly IT | CSF | 4399 | NA |
+| 120 mg weekly IV | Serum | 4613 | 4619 |
+| 120 mg weekly IV | CSF | 31 | 31 |
 
 The IV-only values (where the latent-target binding is operating only at
 the very low CSF concentrations driven by the constant `k_s2f` flux)
@@ -342,6 +349,7 @@ For completeness, a 200-subject simulation with full random effects
 illustrates the population spread for the 150 mg weekly IT regimen.
 
 ``` r
+
 n_sub <- 200
 ev_vpc <- rxode2::et(amt = 150, cmt = "csf", ii = 7, addl = 7) |>
   rxode2::et(seq(0.5, 56, by = 0.5), cmt = "Cc") |>

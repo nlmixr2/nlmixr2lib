@@ -23,6 +23,7 @@ trial (Kuter 2008, reference 13).
   Drug Dev](https://doi.org/10.1002/cpdd.1367) (PMID 38168134).
 
 ``` r
+
 mod <- readModelDb("Petrov_2024_romiplostim")
 ui  <- rxode2::rxode(mod)
 cat(ui$reference, sep = "\n")
@@ -52,6 +53,7 @@ ITP mechanism 1** (increased platelet degradation only) subpopulation.
 See “Other subpopulations” below for the three remaining variants.
 
 ``` r
+
 str(ui$population)
 #> List of 11
 #>  $ n_subjects    : int 83
@@ -74,44 +76,44 @@ next to its
 [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) line in
 `inst/modeldb/specificDrugs/Petrov_2024_romiplostim.R`.
 
-| Equation / parameter                                                                       | Value                                                                                    | Source                                                                                   |
-|--------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------|
-| Structural model (1-cmt SC PK + Friberg 4-transit precursor chain + circulating platelets) | n/a                                                                                      | Petrov 2024 Fig. S2 (model diagram, reproduced from Makarenko 2024 Fig. 1)               |
-| ka — first-order SC absorption rate                                                        | 0.02 1/h                                                                                 | Petrov 2024 supplement Table S1 (footnote ‘a’: identical to healthy subjects)            |
-| V/F — apparent central volume of distribution                                              | 2565 L (at WT = 77 kg)                                                                   | Petrov 2024 supplement Table S1                                                          |
-| kel — first-order apparent elimination rate                                                | 0.03 1/h (NAB-negative)                                                                  | Petrov 2024 supplement Table S1                                                          |
-| EC50 — half-maximal effective concentration                                                | 42 pg/mL = 0.042 ng/mL                                                                   | Petrov 2024 supplement Table S1                                                          |
-| Emax — maximum stimulatory effect                                                          | 9 (unitless)                                                                             | Petrov 2024 supplement Table S1                                                          |
-| ktr — platelet precursor transit rate                                                      | 0.02 1/h                                                                                 | Petrov 2024 supplement Table S1                                                          |
-| kin — platelet precursor production rate (default subpop)                                  | 4.3 ×10^9 cells/L/h                                                                      | Petrov 2024 supplement Table S1 (non-splen, mechanism 1)                                 |
-| kdeg — platelet first-order degradation (default subpop)                                   | 0.20 1/h                                                                                 | Petrov 2024 supplement Table S1 (non-splen, mechanism 1)                                 |
-| Allometric exponent on V (WT/77)                                                           | 1.04                                                                                     | Petrov 2024 supplement Table S1                                                          |
-| NAB+ effect on kel (log-additive)                                                          | exp(0.25) = 1.28×                                                                        | Petrov 2024 supplement Table S1                                                          |
-| IIV V/F (CV%)                                                                              | 30                                                                                       | Petrov 2024 supplement Table S1                                                          |
-| IIV kel (CV%)                                                                              | 35                                                                                       | Petrov 2024 supplement Table S1                                                          |
-| IIV EC50 (CV%)                                                                             | 73                                                                                       | Petrov 2024 supplement Table S1                                                          |
-| IIV Emax (CV%)                                                                             | 15                                                                                       | Petrov 2024 supplement Table S1                                                          |
-| IIV ktr (CV%)                                                                              | 11                                                                                       | Petrov 2024 supplement Table S1                                                          |
-| IIV kin (CV%)                                                                              | 14                                                                                       | Petrov 2024 supplement Table S1                                                          |
-| IIV kdeg (CV%) (default subpop)                                                            | 50                                                                                       | Petrov 2024 supplement Table S1 (non-splen mech 1 / non-splen mech 2)                    |
-| Proportional residual error b                                                              | 0.093                                                                                    | Petrov 2024 supplement Table S1                                                          |
-| ITP-specific kdeg scaling vs healthy                                                       | × 10 (non-splen mech 1), × 4 (non-splen mech 2), × 13 (splen mech 1), × 5 (splen mech 2) | Petrov 2024 Methods + Results (page 119 narrative); back-implied healthy kdeg = 0.02 1/h |
-| ITP-specific kin scaling vs healthy                                                        | × 1 (mechanism 1), × 0.4 (mechanism 2; reduced production 2.5-fold)                      | Petrov 2024 Methods + Results (page 119 narrative)                                       |
+| Equation / parameter | Value | Source |
+|----|----|----|
+| Structural model (1-cmt SC PK + Friberg 4-transit precursor chain + circulating platelets) | n/a | Petrov 2024 Fig. S2 (model diagram, reproduced from Makarenko 2024 Fig. 1) |
+| ka — first-order SC absorption rate | 0.02 1/h | Petrov 2024 supplement Table S1 (footnote ‘a’: identical to healthy subjects) |
+| V/F — apparent central volume of distribution | 2565 L (at WT = 77 kg) | Petrov 2024 supplement Table S1 |
+| kel — first-order apparent elimination rate | 0.03 1/h (NAB-negative) | Petrov 2024 supplement Table S1 |
+| EC50 — half-maximal effective concentration | 42 pg/mL = 0.042 ng/mL | Petrov 2024 supplement Table S1 |
+| Emax — maximum stimulatory effect | 9 (unitless) | Petrov 2024 supplement Table S1 |
+| ktr — platelet precursor transit rate | 0.02 1/h | Petrov 2024 supplement Table S1 |
+| kin — platelet precursor production rate (default subpop) | 4.3 ×10^9 cells/L/h | Petrov 2024 supplement Table S1 (non-splen, mechanism 1) |
+| kdeg — platelet first-order degradation (default subpop) | 0.20 1/h | Petrov 2024 supplement Table S1 (non-splen, mechanism 1) |
+| Allometric exponent on V (WT/77) | 1.04 | Petrov 2024 supplement Table S1 |
+| NAB+ effect on kel (log-additive) | exp(0.25) = 1.28× | Petrov 2024 supplement Table S1 |
+| IIV V/F (CV%) | 30 | Petrov 2024 supplement Table S1 |
+| IIV kel (CV%) | 35 | Petrov 2024 supplement Table S1 |
+| IIV EC50 (CV%) | 73 | Petrov 2024 supplement Table S1 |
+| IIV Emax (CV%) | 15 | Petrov 2024 supplement Table S1 |
+| IIV ktr (CV%) | 11 | Petrov 2024 supplement Table S1 |
+| IIV kin (CV%) | 14 | Petrov 2024 supplement Table S1 |
+| IIV kdeg (CV%) (default subpop) | 50 | Petrov 2024 supplement Table S1 (non-splen mech 1 / non-splen mech 2) |
+| Proportional residual error b | 0.093 | Petrov 2024 supplement Table S1 |
+| ITP-specific kdeg scaling vs healthy | × 10 (non-splen mech 1), × 4 (non-splen mech 2), × 13 (splen mech 1), × 5 (splen mech 2) | Petrov 2024 Methods + Results (page 119 narrative); back-implied healthy kdeg = 0.02 1/h |
+| ITP-specific kin scaling vs healthy | × 1 (mechanism 1), × 0.4 (mechanism 2; reduced production 2.5-fold) | Petrov 2024 Methods + Results (page 119 narrative) |
 
 ## Steady-state and dimensional analysis
 
 Each ODE term has dimensions:
 
-| Term                                                 | Units                                  |
-|------------------------------------------------------|----------------------------------------|
-| `d/dt(depot) = -ka·depot`                            | (1/h)·(ug) = ug/h                      |
-| `d/dt(central) = ka·depot − kel·central`             | ug/h                                   |
-| `Cc = central / vc`                                  | ug / L = ng/mL                         |
-| `stim = Emax·Cc/(EC50+Cc)`                           | unitless                               |
+| Term | Units |
+|----|----|
+| `d/dt(depot) = -ka·depot` | (1/h)·(ug) = ug/h |
+| `d/dt(central) = ka·depot − kel·central` | ug/h |
+| `Cc = central / vc` | ug / L = ng/mL |
+| `stim = Emax·Cc/(EC50+Cc)` | unitless |
 | `d/dt(precursor_i) = kin·(1+stim) − ktr·precursor_i` | (10^9/L/h) − (1/h)·(10^9/L) = 10^9/L/h |
-| `d/dt(circ) = ktr·precursor4 − kdeg·circ`            | (1/h)·(10^9/L) = 10^9/L/h              |
-| `precursor_i(0) = kin/ktr`                           | (10^9/L/h)/(1/h) = 10^9/L              |
-| `circ(0) = kin/kdeg`                                 | (10^9/L/h)/(1/h) = 10^9/L              |
+| `d/dt(circ) = ktr·precursor4 − kdeg·circ` | (1/h)·(10^9/L) = 10^9/L/h |
+| `precursor_i(0) = kin/ktr` | (10^9/L/h)/(1/h) = 10^9/L |
+| `circ(0) = kin/kdeg` | (10^9/L/h)/(1/h) = 10^9/L |
 
 At steady state without drug:
 
@@ -124,6 +126,7 @@ prediction of 21.5 sits within the simulated population’s log-normal
 spread.
 
 ``` r
+
 mod_typ <- rxode2::zeroRe(mod)
 ev_ss <- rxode2::et(amt = 0, time = 0, cmt = "depot") |>
   rxode2::et(seq(0, 24 * 30, by = 24))
@@ -144,6 +147,7 @@ the log-normal target derived from the romiplostim-ref pivotal trial
 model is below.
 
 ``` r
+
 set.seed(20260428)
 n <- 1000
 ev_pop <- data.frame(
@@ -197,6 +201,7 @@ stimulation factor is approximately Emax·Cmax/(EC50+Cmax) ≈ 9·0.18 ≈ 1.6
 in clinical practice) produce stronger and more sustained responses.
 
 ``` r
+
 ev_dose <- rxode2::et(amt = 77, time = 0, cmt = "depot") |>
   rxode2::et(seq(0, 24 * 14, by = 1))
 ev_dose$WT <- 77; ev_dose$ADA_POS <- 0
@@ -225,6 +230,7 @@ beyond the scope of this packaged model and would be implemented in user
 code that calls the model in a loop with a feedback controller.
 
 ``` r
+
 ev_w <- rxode2::et(amt = 3 * 77, ii = 24 * 7, until = 24 * 12 * 7, cmt = "depot") |>
   rxode2::et(seq(0, 24 * 14 * 7, by = 6))
 ev_w$WT <- 77; ev_w$ADA_POS <- 0
@@ -251,14 +257,15 @@ packaged model to one of the alternative subpopulations, override
 `lkin`, `lkdeg`, and the `etalkdeg` variance via
 `rxSolve(..., params = ...)`:
 
-| Subpopulation                                          | kin (10^9/L/h) | kdeg (1/h) | IIV(kdeg) % | Default?           |
-|--------------------------------------------------------|----------------|------------|-------------|--------------------|
-| Non-splenectomized, mechanism 1 (incr deg only)        | 4.3            | 0.20       | 50          | **Yes (packaged)** |
-| Non-splenectomized, mechanism 2 (incr deg + decr prod) | 1.7            | 0.08       | 50          | No                 |
-| Splenectomized, mechanism 1                            | 4.3            | 0.26       | 70          | No                 |
-| Splenectomized, mechanism 2                            | 1.7            | 0.10       | 70          | No                 |
+| Subpopulation | kin (10^9/L/h) | kdeg (1/h) | IIV(kdeg) % | Default? |
+|----|----|----|----|----|
+| Non-splenectomized, mechanism 1 (incr deg only) | 4.3 | 0.20 | 50 | **Yes (packaged)** |
+| Non-splenectomized, mechanism 2 (incr deg + decr prod) | 1.7 | 0.08 | 50 | No |
+| Splenectomized, mechanism 1 | 4.3 | 0.26 | 70 | No |
+| Splenectomized, mechanism 2 | 1.7 | 0.10 | 70 | No |
 
 ``` r
+
 swap_subpop <- function(kin_val, kdeg_val) {
   c(lkin = log(kin_val), lkdeg = log(kdeg_val))
 }
@@ -289,6 +296,7 @@ knitr::kable(baselines, digits = 2,
 | Splen, mech 2               | 1.7 | 0.10 |   17.00 |
 
 Typical-individual baseline platelet (kin/kdeg) for each subpopulation.
+{.table}
 
 ## Errata and ambiguities
 

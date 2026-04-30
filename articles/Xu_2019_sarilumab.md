@@ -44,31 +44,31 @@ covariate values are a 71 kg female, ADA-negative, non-DP2 formulation,
 albumin/ULN ratio of 0.78 (i.e. 38 g/L over a typical ULN of 48.7 g/L),
 1.73 x CrCl / BSA of 100 mL/min/1.73 m^2, and baseline CRP of 14.2 mg/L.
 
-| Equation / parameter                                                    | Value                                      | Source location                                     |
-|-------------------------------------------------------------------------|--------------------------------------------|-----------------------------------------------------|
-| `lka` (Ka)                                                              | `log(0.136)` 1/day                         | Table 3, Ka row                                     |
-| `lcl` (CLO/F)                                                           | `log(0.260)` L/day                         | Table 3, CLO/F row                                  |
-| `lvc` (Vc/F)                                                            | `log(2.08)` L                              | Table 3, Vc/F row                                   |
-| `lvp` (Vp/F)                                                            | `log(5.23)` L                              | Table 3, Vp/F row                                   |
-| `lq` (Q/F)                                                              | `log(0.156)` L/day                         | Table 3, Q/F row                                    |
-| `lvm` (Vm)                                                              | `log(8.06)` mg/day                         | Table 3, Vm row                                     |
-| `lkm` (Km)                                                              | `log(0.939)` mg/L                          | Table 3, Km row                                     |
-| `e_wt_cl` (WT/71 exponent on CLO/F)                                     | `0.885`                                    | Table 3, theta10 / WT effect on CLO/F               |
-| `e_wt_vm` (WT/71 exponent on Vm)                                        | `0.516`                                    | Table 3, theta9 / WT effect on Vm                   |
-| `e_albr_vm` (ALBR/0.78 exponent on Vm)                                  | `-0.844`                                   | Table 3, theta11 / ALBR effect on Vm                |
-| `e_crcl_vm` (CRCL/100 exponent on Vm)                                   | `0.212`                                    | Table 3, theta13 / CrCl effect on Vm                |
-| `e_crp_vm` (CRP/14.2 exponent on Vm)                                    | `0.0299`                                   | Table 3, theta12 / CRP effect on Vm                 |
-| `e_dp2_ka` (DP2 multiplier on Ka)                                       | `0.663`                                    | Table 3, theta15 / DP2 effect on Ka                 |
-| `e_ada_cl` (ADA multiplier on CLO/F)                                    | `1.43`                                     | Table 3, theta14 / ADA effect on CLO/F              |
-| `e_dp2_cl` (DP2 multiplier on CLO/F)                                    | `1.30`                                     | Table 3, theta16 / DP2 effect on CLO/F              |
-| `e_sexf_cl` (SEX multiplier on CLO/F)                                   | `0.846`                                    | Table 3, theta17; SEX=1=female (operator-confirmed) |
-| `var(etalvm)`                                                           | `log(0.324^2 + 1) = 0.0998`                | Table 3: Vm IIV 32.4% CV                            |
-| `var(etalcl)`                                                           | `log(0.553^2 + 1) = 0.2669`                | Table 3: CLO/F IIV 55.3% CV                         |
-| `cov(etalvm, etalcl)`                                                   | `-0.566 * sqrt(0.0998 * 0.2669) = -0.0924` | Table 3: Vm-CLO/F correlation -0.566                |
-| `var(etalvc)`                                                           | `log(0.373^2 + 1) = 0.1302`                | Table 3: Vc/F IIV 37.3% CV                          |
-| `var(etalka)`                                                           | `log(0.321^2 + 1) = 0.0981`                | Table 3: Ka IIV 32.1% CV                            |
-| `propSd`                                                                | `sqrt(0.395) = 0.6285`                     | Table 3: log-additive residual sigma^2 = 0.395      |
-| Structure (2-cmt + first-order SC absorption + linear + MM elimination) | n/a                                        | Methods p. 1457, Figure 2 / final-model equations   |
+| Equation / parameter | Value | Source location |
+|----|----|----|
+| `lka` (Ka) | `log(0.136)` 1/day | Table 3, Ka row |
+| `lcl` (CLO/F) | `log(0.260)` L/day | Table 3, CLO/F row |
+| `lvc` (Vc/F) | `log(2.08)` L | Table 3, Vc/F row |
+| `lvp` (Vp/F) | `log(5.23)` L | Table 3, Vp/F row |
+| `lq` (Q/F) | `log(0.156)` L/day | Table 3, Q/F row |
+| `lvm` (Vm) | `log(8.06)` mg/day | Table 3, Vm row |
+| `lkm` (Km) | `log(0.939)` mg/L | Table 3, Km row |
+| `e_wt_cl` (WT/71 exponent on CLO/F) | `0.885` | Table 3, theta10 / WT effect on CLO/F |
+| `e_wt_vm` (WT/71 exponent on Vm) | `0.516` | Table 3, theta9 / WT effect on Vm |
+| `e_albr_vm` (ALBR/0.78 exponent on Vm) | `-0.844` | Table 3, theta11 / ALBR effect on Vm |
+| `e_crcl_vm` (CRCL/100 exponent on Vm) | `0.212` | Table 3, theta13 / CrCl effect on Vm |
+| `e_crp_vm` (CRP/14.2 exponent on Vm) | `0.0299` | Table 3, theta12 / CRP effect on Vm |
+| `e_dp2_ka` (DP2 multiplier on Ka) | `0.663` | Table 3, theta15 / DP2 effect on Ka |
+| `e_ada_cl` (ADA multiplier on CLO/F) | `1.43` | Table 3, theta14 / ADA effect on CLO/F |
+| `e_dp2_cl` (DP2 multiplier on CLO/F) | `1.30` | Table 3, theta16 / DP2 effect on CLO/F |
+| `e_sexf_cl` (SEX multiplier on CLO/F) | `0.846` | Table 3, theta17; SEX=1=female (operator-confirmed) |
+| `var(etalvm)` | `log(0.324^2 + 1) = 0.0998` | Table 3: Vm IIV 32.4% CV |
+| `var(etalcl)` | `log(0.553^2 + 1) = 0.2669` | Table 3: CLO/F IIV 55.3% CV |
+| `cov(etalvm, etalcl)` | `-0.566 * sqrt(0.0998 * 0.2669) = -0.0924` | Table 3: Vm-CLO/F correlation -0.566 |
+| `var(etalvc)` | `log(0.373^2 + 1) = 0.1302` | Table 3: Vc/F IIV 37.3% CV |
+| `var(etalka)` | `log(0.321^2 + 1) = 0.0981` | Table 3: Ka IIV 32.1% CV |
+| `propSd` | `sqrt(0.395) = 0.6285` | Table 3: log-additive residual sigma^2 = 0.395 |
+| Structure (2-cmt + first-order SC absorption + linear + MM elimination) | n/a | Methods p. 1457, Figure 2 / final-model equations |
 
 ### Parameterization notes
 
@@ -110,6 +110,7 @@ approximate the Xu 2019 Table 2 demographics. No subject-level observed
 data were released with the paper.
 
 ``` r
+
 set.seed(20260419)
 # Cohort size: 200 subjects is enough to stabilise the 5/50/95 percentile
 # bands in the VPC (Figure 3 reproduction) and the PKNCA distribution
@@ -136,6 +137,7 @@ extended well past the nominal half-life (~8-10 days in the linear
 range) to ensure the final Q2W cycle is at steady state.
 
 ``` r
+
 tau <- 14                # Q2W dosing interval (days)
 # Dose count: the linear-range half-life is ~8-10 days, so the 4-5
 # half-lives needed for >95% steady-state are reached by dose 7-8. Twelve
@@ -189,6 +191,7 @@ events <- dplyr::bind_rows(events_200, events_150)
 ## Simulation
 
 ``` r
+
 mod <- rxode2::rxode2(readModelDb("Xu_2019_sarilumab"))
 #> ℹ parameter labels from comments will be replaced by 'label()'
 conc_unit <- mod$units[["concentration"]]
@@ -211,6 +214,7 @@ The block below reproduces that comparison using 5th/50th/95th
 percentile bands over the first 84 days (6 dosing cycles).
 
 ``` r
+
 vpc <- sim |>
   dplyr::filter(!is.na(Cc), time > 0, time <= 84) |>
   dplyr::group_by(treatment, time) |>
@@ -241,6 +245,7 @@ The final dosing interval in the simulation window (days 154 to 168) is
 used for the steady-state NCA below.
 
 ``` r
+
 ss_start <- tau * (n_doses - 1)
 ss_end   <- ss_start + tau
 
@@ -275,6 +280,7 @@ interval. Compute Cmax, Cmin/Ctrough, AUC0-tau, and Cavg per simulated
 subject and treatment.
 
 ``` r
+
 nca_conc <- sim |>
   dplyr::filter(time >= ss_start, time <= ss_end, !is.na(Cc)) |>
   dplyr::mutate(time_nom = time - ss_start) |>
@@ -300,6 +306,7 @@ intervals <- data.frame(
 )
 
 nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+#>  ■■■■■■■■■■■■■■■■■■■■■             66% |  ETA:  1s
 summary(nca_res)
 #>  start end treatment   N     auclast        cmax         cmin              tmax
 #>      0  14 150mg_Q2W 200 60.2 [55.5] 8.80 [46.1] 0.565 [91.5] 3.00 [1.50, 5.00]
@@ -319,6 +326,7 @@ simulates the typical patient (IIV zeroed, reference covariate values:
 CRP = 14.2) and extracts Cmax, Ctrough, and AUC0-14d at steady state.
 
 ``` r
+
 mod_typical <- mod |> rxode2::zeroRe()
 
 typical_cov <- tibble::tibble(
@@ -386,13 +394,13 @@ knitr::kable(comparison, digits = 2,
                   "Xu 2019 Table 4 mean values. All differences within ~10%."))
 ```
 
-| treatment  | Cmax_pub | Ctrough_pub | AUC_pub | Cmax_sim | Ctrough_sim | AUC_sim | Cmax_pct_diff | Ctrough_pct_diff | AUC_pct_diff |
-|:-----------|---------:|------------:|--------:|---------:|------------:|--------:|--------------:|-----------------:|-------------:|
-| 200 mg Q2W |     35.6 |       16.50 |     395 |    35.81 |       16.60 |  398.87 |          0.58 |             0.64 |         0.98 |
-| 150 mg Q2W |     20.0 |        6.35 |     202 |    19.68 |        5.46 |  198.61 |         -1.60 |           -14.09 |        -1.68 |
+| treatment | Cmax_pub | Ctrough_pub | AUC_pub | Cmax_sim | Ctrough_sim | AUC_sim | Cmax_pct_diff | Ctrough_pct_diff | AUC_pct_diff |
+|:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 200 mg Q2W | 35.6 | 16.50 | 395 | 35.81 | 16.60 | 398.87 | 0.58 | 0.64 | 0.98 |
+| 150 mg Q2W | 20.0 | 6.35 | 202 | 19.68 | 5.46 | 198.61 | -1.60 | -14.09 | -1.68 |
 
 Typical-patient steady-state exposures (IIV zeroed) vs. Xu 2019 Table 4
-mean values. All differences within ~10%.
+mean values. All differences within ~10%. {.table style="width:100%;"}
 
 ## Assumptions and deviations
 

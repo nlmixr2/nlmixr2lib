@@ -24,6 +24,7 @@ Matthew L. Fidler
 ## Examples
 
 ``` r
+
 # Change to the popular snake_case
 setCombineType("snake")
 defaultCombine("a", "b")

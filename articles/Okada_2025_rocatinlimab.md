@@ -1,6 +1,7 @@
 # Okada_2025_rocatinlimab
 
 ``` r
+
 library(nlmixr2lib)
 library(PKNCA)
 #> 
@@ -87,33 +88,33 @@ Per-parameter origin is recorded as in-file comments next to each
 `inst/modeldb/specificDrugs/Okada_2025_rocatinlimab.R`. The table below
 collects them in one place.
 
-| Equation / parameter       |                               Value | Source location                                  |
-|----------------------------|------------------------------------:|--------------------------------------------------|
-| `lcl` (CL)                 |                         0.230 L/day | Supplement Table S3                              |
-| `lvc` (V1)                 |                              3.30 L | Supplement Table S3 (also main text §3.2)        |
-| `lvp` (V2)                 |                              2.82 L | Supplement Table S3                              |
-| `lq` (Q)                   |                         0.775 L/day | Supplement Table S3                              |
-| `lvmax` (Vmax)             |                        0.968 mg/day | Supplement Table S3                              |
-| `lkm` (Km)                 |                         0.289 µg/mL | Supplement Table S3                              |
-| `lkdes` (Kdes)             |                       0.00439 1/day | Supplement Table S3                              |
-| `lka` (ka)                 |                         0.312 1/day | Supplement Table S3                              |
-| `lfdepot` (F3)             | 0.855 (logit-transformed in NONMEM) | Supplement Table S3                              |
-| `e_wt_cl`                  |                               0.923 | Supplement Table S3, footnote                    |
-| `e_wt_vc`                  |                               0.828 | Supplement Table S3, footnote                    |
-| `e_wt_vmax`                |                               0.494 | Supplement Table S3, footnote                    |
-| `e_alb_cl`                 |                               -1.30 | Supplement Table S3, footnote (reference 44 g/L) |
-| `e_psoriasis_cl`           |                              -0.372 | Supplement Table S3, footnote                    |
-| `e_hv_vmax`                |                              -0.532 | Supplement Table S3, footnote                    |
-| BSV CL (21.7% CV)          |                    omega² = 0.04600 | Supplement Table S3                              |
-| BSV V1 (17.3% CV)          |                    omega² = 0.02949 | Supplement Table S3                              |
-| BSV V2 (29.0% CV)          |                    omega² = 0.08075 | Supplement Table S3                              |
-| BSV Vmax (80.7% CV)        |                    omega² = 0.50151 | Supplement Table S3                              |
-| BSV Kdes (37.8% CV)        |                    omega² = 0.13356 | Supplement Table S3                              |
-| BSV ka (42.1% CV)          |                    omega² = 0.16319 | Supplement Table S3                              |
-| `propSd` (16.4% CV)        |                               0.164 | Supplement Table S3 (ADD ERR2, patients)         |
-| Two-compartment ODEs       |                                 n/a | Supplement §1.3 and S2 NONMEM control stream     |
-| TDVM = Vmax · exp(-Kdes·t) |                                 n/a | Supplement Equation 1                            |
-| Logit-transformed F3       |                                 n/a | Supplement Equations 2-5                         |
+| Equation / parameter | Value | Source location |
+|----|---:|----|
+| `lcl` (CL) | 0.230 L/day | Supplement Table S3 |
+| `lvc` (V1) | 3.30 L | Supplement Table S3 (also main text §3.2) |
+| `lvp` (V2) | 2.82 L | Supplement Table S3 |
+| `lq` (Q) | 0.775 L/day | Supplement Table S3 |
+| `lvmax` (Vmax) | 0.968 mg/day | Supplement Table S3 |
+| `lkm` (Km) | 0.289 µg/mL | Supplement Table S3 |
+| `lkdes` (Kdes) | 0.00439 1/day | Supplement Table S3 |
+| `lka` (ka) | 0.312 1/day | Supplement Table S3 |
+| `lfdepot` (F3) | 0.855 (logit-transformed in NONMEM) | Supplement Table S3 |
+| `e_wt_cl` | 0.923 | Supplement Table S3, footnote |
+| `e_wt_vc` | 0.828 | Supplement Table S3, footnote |
+| `e_wt_vmax` | 0.494 | Supplement Table S3, footnote |
+| `e_alb_cl` | -1.30 | Supplement Table S3, footnote (reference 44 g/L) |
+| `e_psoriasis_cl` | -0.372 | Supplement Table S3, footnote |
+| `e_hv_vmax` | -0.532 | Supplement Table S3, footnote |
+| BSV CL (21.7% CV) | omega² = 0.04600 | Supplement Table S3 |
+| BSV V1 (17.3% CV) | omega² = 0.02949 | Supplement Table S3 |
+| BSV V2 (29.0% CV) | omega² = 0.08075 | Supplement Table S3 |
+| BSV Vmax (80.7% CV) | omega² = 0.50151 | Supplement Table S3 |
+| BSV Kdes (37.8% CV) | omega² = 0.13356 | Supplement Table S3 |
+| BSV ka (42.1% CV) | omega² = 0.16319 | Supplement Table S3 |
+| `propSd` (16.4% CV) | 0.164 | Supplement Table S3 (ADD ERR2, patients) |
+| Two-compartment ODEs | n/a | Supplement §1.3 and S2 NONMEM control stream |
+| TDVM = Vmax · exp(-Kdes·t) | n/a | Supplement Equation 1 |
+| Logit-transformed F3 | n/a | Supplement Equations 2-5 |
 
 ## Virtual cohort
 
@@ -123,6 +124,7 @@ approximate the published trial demographics for Studies 4 and 5
 (supplement Tables S1, S2).
 
 ``` r
+
 set.seed(2025)
 
 n_subj <- 200
@@ -160,6 +162,7 @@ Q2W for 34 weeks. The labelled clinical scenario evaluated for AD is 300
 mg SC Q2W; we replicate it here.
 
 ``` r
+
 # 300 mg SC Q2W for 36 weeks (18 doses), with weekly observations through week 40.
 dose_days <- seq(0, 14 * 17, by = 14)
 obs_days  <- seq(0, 14 * 20, by = 1)
@@ -188,6 +191,7 @@ events <- bind_rows(d_dose, d_obs) |>
 ```
 
 ``` r
+
 mod <- readModelDb("Okada_2025_rocatinlimab")
 
 set.seed(2025)
@@ -198,6 +202,7 @@ sim_out <- rxode2::rxSolve(mod, events = events)
 ### Population concentration-time profile (median and 90% PI)
 
 ``` r
+
 sim_plot <- as.data.frame(sim_out) |> filter(time > 0)
 
 d_overall <- sim_plot |>
@@ -227,6 +232,7 @@ ggplot(d_overall, aes(x = time, y = Q50)) +
 ### Stratification by baseline body weight
 
 ``` r
+
 wt_map <- pop |> select(ID, wt_group)
 
 d_wt <- sim_plot |>
@@ -268,6 +274,7 @@ The PKNCA formula uses `Cc ~ time | regimen + id` so per-regimen results
 are computed and can be compared 1-to-1 to Table 4.
 
 ``` r
+
 mod_typical <- mod |> rxode2::zeroRe()
 #> ℹ parameter labels from comments will be replaced by 'label()'
 
@@ -304,6 +311,7 @@ typ_sim <- rxode2::rxSolve(mod_typical, events = regimens, keep = "regimen") |>
 ```
 
 ``` r
+
 # Last steady-state cycle for each regimen
 ss_window <- typ_sim |>
   group_by(regimen) |>
@@ -355,17 +363,17 @@ knitr::kable(
 )
 ```
 
-| regimen    | Cavg_pub | Cavg_sim | Cavg_pct | Cmax_pub | Cmax_sim | Cmax_pct | Cmin_pub | Cmin_sim | Cmin_pct |
-|:-----------|---------:|---------:|---------:|---------:|---------:|---------:|---------:|---------:|---------:|
-| 150 mg Q2W |    33.49 |    33.45 |     -0.1 |    38.64 |    38.52 |     -0.3 |    26.90 |    26.85 |     -0.2 |
-| 150 mg Q4W |    16.79 |    15.93 |     -5.1 |    24.07 |    22.96 |     -4.6 |    10.05 |     8.90 |    -11.4 |
-| 300 mg Q2W |    72.33 |    68.40 |     -5.4 |    81.80 |    78.57 |     -3.9 |    59.02 |    55.25 |     -6.4 |
-| 300 mg Q4W |    34.26 |    33.39 |     -2.5 |    46.76 |    47.52 |      1.6 |    20.95 |    19.42 |     -7.3 |
-| 600 mg Q2W |   144.38 |   138.31 |     -4.2 |   164.66 |   158.68 |     -3.6 |   117.91 |   112.07 |     -5.0 |
-| 600 mg Q4W |    68.16 |    68.32 |      0.2 |    94.25 |    96.66 |      2.6 |    41.51 |    40.49 |     -2.5 |
+| regimen | Cavg_pub | Cavg_sim | Cavg_pct | Cmax_pub | Cmax_sim | Cmax_pct | Cmin_pub | Cmin_sim | Cmin_pct |
+|:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 150 mg Q2W | 33.49 | 33.45 | -0.1 | 38.64 | 38.52 | -0.3 | 26.90 | 26.85 | -0.2 |
+| 150 mg Q4W | 16.79 | 15.93 | -5.1 | 24.07 | 22.96 | -4.6 | 10.05 | 8.90 | -11.4 |
+| 300 mg Q2W | 72.33 | 68.40 | -5.4 | 81.80 | 78.57 | -3.9 | 59.02 | 55.25 | -6.4 |
+| 300 mg Q4W | 34.26 | 33.39 | -2.5 | 46.76 | 47.52 | 1.6 | 20.95 | 19.42 | -7.3 |
+| 600 mg Q2W | 144.38 | 138.31 | -4.2 | 164.66 | 158.68 | -3.6 | 117.91 | 112.07 | -5.0 |
+| 600 mg Q4W | 68.16 | 68.32 | 0.2 | 94.25 | 96.66 | 2.6 | 41.51 | 40.49 | -2.5 |
 
 Steady-state PK metrics: simulated typical patient (80 kg, ALB 44 g/L)
-vs Okada 2025 Table 4 published medians (μg/mL).
+vs Okada 2025 Table 4 published medians (μg/mL). {.table}
 
 A separate PKNCA call computes Cmax, Tmax, AUClast, and AUCinf on the
 typical first-dose profile of the 300 mg Q2W regimen for completeness;
@@ -373,6 +381,7 @@ the formula uses `Cc ~ time | regimen + id` so per-regimen rows can be
 extracted directly from the result table.
 
 ``` r
+
 first_cycle <- typ_sim |>
   filter(regimen == "300 mg Q2W", time <= 14)
 
@@ -420,7 +429,7 @@ knitr::kable(
 | 300 mg Q2W | half.life           |  15.506 |
 | 300 mg Q2W | span.ratio          |   0.322 |
 
-First-dose NCA on the 300 mg SC Q2W typical-patient profile.
+First-dose NCA on the 300 mg SC Q2W typical-patient profile. {.table}
 
 ## Time-dependent saturable clearance — supplement claim
 
@@ -430,6 +439,7 @@ Kdes = 0.00439/day, and total clearance approaches the linear CL (0.230
 L/day) by ~ 20 weeks. We confirm those qualitative claims:
 
 ``` r
+
 typ_check <- typ_sim |>
   filter(regimen == "300 mg Q2W") |>
   transmute(

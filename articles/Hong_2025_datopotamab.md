@@ -1,6 +1,7 @@
 # Datopotamab deruxtecan ADC + DXd coupled population PK model (Hong 2025)
 
 ``` r
+
 library(nlmixr2lib)
 library(PKNCA)
 #> 
@@ -82,6 +83,7 @@ Pooled analysis dataset (Hong 2025 Methods + Table S1):
   (Datroway) caps the flat dose at 540 mg for body weight \>= 90 kg.
 
 ``` r
+
 mod <- rxode2::rxode(readModelDb("Hong_2025_datopotamab"))
 #> ℹ parameter labels from comments will be replaced by 'label()'
 str(mod$meta$population, max.level = 1)
@@ -118,37 +120,37 @@ entry in `inst/modeldb/specificDrugs/Hong_2025_datopotamab.R` carries an
 in-file comment pointing to Hong 2025 Table 1, Table 2, or Equations
 8-15. The table below collates them.
 
-| Parameter (nlmixr2lib) |         Value | Units    | Source                           |
-|------------------------|--------------:|----------|----------------------------------|
-| `lcl_adc` -\> CL_lin   |         0.386 | L/day    | Table 1, Eq. 8                   |
-| `lvc_adc` -\> Vc       |          3.06 | L        | Table 1, Eq. 9                   |
-| `lq_adc` -\> Q         |         0.422 | L/day    | Table 1                          |
-| `lvp_adc` -\> Vp       |          2.88 | L        | Table 1, Eq. 10                  |
-| `lvmax` -\> Vmax       |          8.41 | mg/day   | Table 1, Eq. 12 (8410 ug/day)    |
-| `lkm` -\> Km           |          4.49 | mg/L     | Table 1, Eq. 11 (4490 ng/mL)     |
-| `e_wt_cl_adc`          |  0.75 (fixed) | \-       | Table 1                          |
-| `e_wt_vc_adc`          |         0.415 | \-       | Table 1                          |
-| `e_wt_vp_adc`          |         0.311 | \-       | Table 1                          |
-| `e_age_cl_adc`         |        -0.306 | \-       | Table 1                          |
-| `e_alb_cl_adc`         |        -0.788 | \-       | Table 1                          |
-| `e_japan_cl_adc`       |        -0.219 | \-       | Table 1                          |
-| `e_sexf_cl_adc`        |        -0.263 | \-       | Table 1                          |
-| `e_sexf_vc_adc`        |        -0.160 | \-       | Table 1                          |
-| `e_tumsz_vmax`         |         0.125 | \-       | Table 1, Eq. 12                  |
-| `lcl_dxd` -\> CL_DXd   |         63.84 | L/day    | Table 2, Eq. 14 (2.66 L/h \* 24) |
-| `lvc_dxd` -\> Vc_DXd   |          25.1 | L        | Table 2, Eq. 15                  |
-| `lfactor1` -\> Factor1 |         0.696 | \-       | Table 2, Eq. 13                  |
-| `lbeta` -\> beta       |         0.259 | 1/day    | Table 2, Eq. 13                  |
-| `e_wt_cl_dxd`          | 0.298 (fixed) | \-       | Table 2                          |
-| `e_wt_vc_dxd`          | 0.530 (fixed) | \-       | Table 2                          |
-| `e_alb_cl_dxd`         |         0.343 | \-       | Table 2                          |
-| `e_ast_cl_dxd`         |        -0.154 | \-       | Table 2                          |
-| `e_tbili_cl_dxd`       |        -0.139 | \-       | Table 2                          |
-| `e_eu_cl_dxd`          |         0.240 | \-       | Table 2                          |
-| `e_row_cl_dxd`         |         0.196 | \-       | Table 2                          |
-| `e_sexf_vc_dxd`        |        -0.185 | \-       | Table 2                          |
-| `CcpropSd`             |         0.121 | fraction | Table 1 (additive RUV log scale) |
-| `CdxdpropSd`           |         0.283 | fraction | Table 2 (additive RUV log scale) |
+| Parameter (nlmixr2lib) | Value | Units | Source |
+|----|---:|----|----|
+| `lcl_adc` -\> CL_lin | 0.386 | L/day | Table 1, Eq. 8 |
+| `lvc_adc` -\> Vc | 3.06 | L | Table 1, Eq. 9 |
+| `lq_adc` -\> Q | 0.422 | L/day | Table 1 |
+| `lvp_adc` -\> Vp | 2.88 | L | Table 1, Eq. 10 |
+| `lvmax` -\> Vmax | 8.41 | mg/day | Table 1, Eq. 12 (8410 ug/day) |
+| `lkm` -\> Km | 4.49 | mg/L | Table 1, Eq. 11 (4490 ng/mL) |
+| `e_wt_cl_adc` | 0.75 (fixed) | \- | Table 1 |
+| `e_wt_vc_adc` | 0.415 | \- | Table 1 |
+| `e_wt_vp_adc` | 0.311 | \- | Table 1 |
+| `e_age_cl_adc` | -0.306 | \- | Table 1 |
+| `e_alb_cl_adc` | -0.788 | \- | Table 1 |
+| `e_japan_cl_adc` | -0.219 | \- | Table 1 |
+| `e_sexf_cl_adc` | -0.263 | \- | Table 1 |
+| `e_sexf_vc_adc` | -0.160 | \- | Table 1 |
+| `e_tumsz_vmax` | 0.125 | \- | Table 1, Eq. 12 |
+| `lcl_dxd` -\> CL_DXd | 63.84 | L/day | Table 2, Eq. 14 (2.66 L/h \* 24) |
+| `lvc_dxd` -\> Vc_DXd | 25.1 | L | Table 2, Eq. 15 |
+| `lfactor1` -\> Factor1 | 0.696 | \- | Table 2, Eq. 13 |
+| `lbeta` -\> beta | 0.259 | 1/day | Table 2, Eq. 13 |
+| `e_wt_cl_dxd` | 0.298 (fixed) | \- | Table 2 |
+| `e_wt_vc_dxd` | 0.530 (fixed) | \- | Table 2 |
+| `e_alb_cl_dxd` | 0.343 | \- | Table 2 |
+| `e_ast_cl_dxd` | -0.154 | \- | Table 2 |
+| `e_tbili_cl_dxd` | -0.139 | \- | Table 2 |
+| `e_eu_cl_dxd` | 0.240 | \- | Table 2 |
+| `e_row_cl_dxd` | 0.196 | \- | Table 2 |
+| `e_sexf_vc_dxd` | -0.185 | \- | Table 2 |
+| `CcpropSd` | 0.121 | fraction | Table 1 (additive RUV log scale) |
+| `CdxdpropSd` | 0.283 | fraction | Table 2 (additive RUV log scale) |
 
 Inter-individual variability (log-normal; omega^2 = log(CV^2 + 1)):
 
@@ -168,6 +170,7 @@ Match the reference-subject covariates and the labeled dosing regimen (6
 mg/kg Q3W, 540 mg flat-dose cap for body weight \>= 90 kg):
 
 ``` r
+
 set.seed(20260427L)
 
 n_subj   <- 200L
@@ -226,6 +229,7 @@ U/L, total bilirubin 0.4 mg/dL, tumor 66 mm, region US, 6 mg/kg Q3W, 5
 cycles) with all between-subject and residual variability turned off:
 
 ``` r
+
 typ <- readModelDb("Hong_2025_datopotamab") |> rxode2::zeroRe()
 #> ℹ parameter labels from comments will be replaced by 'label()'
 
@@ -255,6 +259,7 @@ typ_sim <- rxode2::rxSolve(typ, typ_events, returnType = "data.frame") |>
 ```
 
 ``` r
+
 typ_sim |>
   tidyr::pivot_longer(c(Cc_ug_mL, Cdxd_ng_mL),
                       names_to = "analyte", values_to = "conc") |>
@@ -281,6 +286,7 @@ concentration-time profiles for a 66 kg male reference patient receiving
 Figure 2 (upper / lower panels).
 
 ``` r
+
 typ_sim |>
   ggplot(aes(time, dar)) +
   geom_line(colour = "darkred", linewidth = 0.7) +
@@ -307,6 +313,7 @@ Dato-DXd plasma concentration. We replicate that plot from the
 typical-value parameters:
 
 ``` r
+
 cl_grid <- tibble(
   C_ug_mL    = exp(seq(log(0.1), log(500), length.out = 200)),
   CL_lin     = 0.386,
@@ -347,6 +354,7 @@ Full population simulation with all between-subject variability and
 residual error preserved.
 
 ``` r
+
 mod <- readModelDb("Hong_2025_datopotamab")
 pop_sim <- rxode2::rxSolve(mod, events,
                            keep = c("WT", "SEXF", "CYCLE", "dose_mg"),
@@ -359,6 +367,7 @@ pop_sim <- rxode2::rxSolve(mod, events,
 ```
 
 ``` r
+
 pop_sim |>
   group_by(time) |>
   summarise(
@@ -388,6 +397,7 @@ mg flat-dose cap \>= 90 kg) for 5 cycles. Reproduces the Dato-DXd panel
 of Hong 2025 Figure 2.
 
 ``` r
+
 pop_sim |>
   group_by(time) |>
   summarise(
@@ -424,6 +434,7 @@ absolute single-cycle Cmax / AUC values, so the validation target is the
 cycle-1 to cycle-3 *ratio* and the qualitative ordering between cycles.
 
 ``` r
+
 typ_nca_input <- typ_sim |>
   filter(time > 0) |>
   mutate(
@@ -508,6 +519,7 @@ dxd_nca_summary
 ### Cycle 1 to cycle 3 accumulation comparison
 
 ``` r
+
 adc_pp <- as.data.frame(adc_nca$result) |>
   filter(PPTESTCD %in% c("auclast", "cmax")) |>
   mutate(analyte = "Dato-DXd")
@@ -539,7 +551,7 @@ knitr::kable(
 Cycle-1 vs cycle-3 NCA metrics for the typical subject. Hong 2025
 Results report R_ac (AUC) \< 1.2 and R_ac (Cmax) ~ 1 at 6 mg/kg Q3W.
 Differences \> 20% would indicate a structural problem with the model
-and would be investigated rather than tuned away.
+and would be investigated rather than tuned away. {.table}
 
 ## Body-weight-based dose-cap simulation
 
@@ -549,6 +561,7 @@ simulating WT subgroups \[37,46), \[46,60), \[60,80), \[80,90),
 (using the typical covariate vector, no IIV):
 
 ``` r
+
 wt_groups <- tibble(
   group    = factor(c("[37,46)", "[46,60)", "[60,80)", "[80,90)", "[90,156]"),
                     levels = c("[37,46)", "[46,60)", "[60,80)", "[80,90)",

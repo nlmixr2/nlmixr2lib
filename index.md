@@ -4,6 +4,7 @@ This is a model library for `nlmixr2`. The package allows a few ways to
 interact with the model library:
 
 ``` r
+
 # See all available models
 modellib()
 # Load the "PK_1cmt" model

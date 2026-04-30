@@ -39,37 +39,37 @@ Every structural parameter, covariate effect, IIV element, and
 residual-error term below is taken directly from Zhu 2017 Table 3.
 Reference values are WT = 70 kg and AGE = 40 years (Table 3 footnote).
 
-| Equation / parameter             | Value                  | Source location                                                     |
-|----------------------------------|------------------------|---------------------------------------------------------------------|
-| `lcl` (CL)                       | `log(0.156)` L/day     | Table 3                                                             |
-| `lvc` (Vc)                       | `log(4.10)` L          | Table 3                                                             |
-| `lvp` (Vp)                       | `log(1.45)` L          | Table 3                                                             |
-| `lq` (Q)                         | `log(0.284)` L/day     | Table 3                                                             |
-| `lka` (ka)                       | `log(0.239)` 1/day     | Table 3                                                             |
-| `lfdepot` (F_SC)                 | `log(0.856)`           | Table 3                                                             |
-| `e_cl_wt` (WT on CL, exponent)   | `1.00`                 | Table 3 (flagged: paper reports 1.00; fixed-vs-estimated ambiguous) |
-| `e_vc_wt` (WT on Vc, exponent)   | `0.814`                | Table 3                                                             |
-| `e_vp_wt` (WT on Vp, exponent)   | `0.692`                | Table 3                                                             |
-| `e_q_wt` (WT on Q, exponent)     | `0.479`                | Table 3                                                             |
-| `e_cl_age` (AGE on CL, exponent) | `0.0241`               | Table 3 (encoded as `(AGE/40)^0.0241`)                              |
-| `e_cl_sexf` (SEXF on CL)         | `1.06`                 | Table 3                                                             |
-| `e_cl_race_black`                | `1.07`                 | Table 3                                                             |
-| `e_cl_race_asian`                | `1.09`                 | Table 3                                                             |
-| `e_cl_race_other`                | `1.11`                 | Table 3                                                             |
-| `e_cl_ada_positive`              | `1.04`                 | Table 3                                                             |
-| `e_ka_form_nso`                  | `0.981`                | Table 3                                                             |
-| `e_ka_form_cho_phase2`           | `0.989`                | Table 3                                                             |
-| `e_f_form_nso`                   | `1.00`                 | Table 3                                                             |
-| `e_f_form_cho_phase2`            | `0.973`                | Table 3                                                             |
-| `var(etalcl)`                    | `0.105`                | Table 3 (omega^2)                                                   |
-| `cov(etalcl, etalvc)`            | `0.0832`               | Table 3                                                             |
-| `var(etalvc)`                    | `0.124`                | Table 3                                                             |
-| `cov(etalcl, etalka)`            | `0.00203`              | Table 3                                                             |
-| `cov(etalvc, etalka)`            | `0.00439`              | Table 3                                                             |
-| `var(etalka)`                    | `0.154`                | Table 3                                                             |
-| `CcpropSd` (proportional RUV)    | `0.0490` (4.9%)        | Table 3                                                             |
-| `CcaddSd` (additive RUV, ug/mL)  | `0.00154` (1.54 ng/mL) | Table 3                                                             |
-| Structure                        | 2-cmt, 1st-order SC    | p. 90 Methods; confirmed by Table 3 parameterization                |
+| Equation / parameter | Value | Source location |
+|----|----|----|
+| `lcl` (CL) | `log(0.156)` L/day | Table 3 |
+| `lvc` (Vc) | `log(4.10)` L | Table 3 |
+| `lvp` (Vp) | `log(1.45)` L | Table 3 |
+| `lq` (Q) | `log(0.284)` L/day | Table 3 |
+| `lka` (ka) | `log(0.239)` 1/day | Table 3 |
+| `lfdepot` (F_SC) | `log(0.856)` | Table 3 |
+| `e_cl_wt` (WT on CL, exponent) | `1.00` | Table 3 (flagged: paper reports 1.00; fixed-vs-estimated ambiguous) |
+| `e_vc_wt` (WT on Vc, exponent) | `0.814` | Table 3 |
+| `e_vp_wt` (WT on Vp, exponent) | `0.692` | Table 3 |
+| `e_q_wt` (WT on Q, exponent) | `0.479` | Table 3 |
+| `e_cl_age` (AGE on CL, exponent) | `0.0241` | Table 3 (encoded as `(AGE/40)^0.0241`) |
+| `e_cl_sexf` (SEXF on CL) | `1.06` | Table 3 |
+| `e_cl_race_black` | `1.07` | Table 3 |
+| `e_cl_race_asian` | `1.09` | Table 3 |
+| `e_cl_race_other` | `1.11` | Table 3 |
+| `e_cl_ada_positive` | `1.04` | Table 3 |
+| `e_ka_form_nso` | `0.981` | Table 3 |
+| `e_ka_form_cho_phase2` | `0.989` | Table 3 |
+| `e_f_form_nso` | `1.00` | Table 3 |
+| `e_f_form_cho_phase2` | `0.973` | Table 3 |
+| `var(etalcl)` | `0.105` | Table 3 (omega^2) |
+| `cov(etalcl, etalvc)` | `0.0832` | Table 3 |
+| `var(etalvc)` | `0.124` | Table 3 |
+| `cov(etalcl, etalka)` | `0.00203` | Table 3 |
+| `cov(etalvc, etalka)` | `0.00439` | Table 3 |
+| `var(etalka)` | `0.154` | Table 3 |
+| `CcpropSd` (proportional RUV) | `0.0490` (4.9%) | Table 3 |
+| `CcaddSd` (additive RUV, ug/mL) | `0.00154` (1.54 ng/mL) | Table 3 |
+| Structure | 2-cmt, 1st-order SC | p. 90 Methods; confirmed by Table 3 parameterization |
 
 A previous release of the model file stored the six IIV entries as
 `sqrt(variance)` rather than as variances/covariances; the current
@@ -89,6 +89,7 @@ ADA-negative and reference CHO formulation (FORM_NS0 = FORM_CHO_PHASE2 =
 regimen studied in the MILLY program and the typical clinical dose.
 
 ``` r
+
 set.seed(20260418)
 n_subj <- 400
 
@@ -140,6 +141,7 @@ events <- dplyr::bind_rows(ev_dose, ev_obs) |>
 ## Simulation
 
 ``` r
+
 mod <- rxode2::rxode2(readModelDb("Zhu_2017_lebrikizumab"))
 conc_unit <- mod$units[["concentration"]]
 sim <- rxode2::rxSolve(mod, events = events,
@@ -158,6 +160,7 @@ state given the terminal half-life implied by the typical parameters (~3
 weeks).
 
 ``` r
+
 vpc <- sim |>
   dplyr::filter(!is.na(Cc), time > 0) |>
   dplyr::group_by(time) |>
@@ -190,6 +193,7 @@ A zoomed-in view of the final dose cycle (days 140-168) to isolate the
 steady-state peak, trough, and AUC_tau used below.
 
 ``` r
+
 ss_window <- sim |>
   dplyr::filter(time >= 140, time <= 168, !is.na(Cc))
 
@@ -223,6 +227,7 @@ dose 6). Compute Cmax, Ctrough (C at end of tau), and AUC_tau per
 simulated subject, then summarize across the cohort.
 
 ``` r
+
 nca_conc <- sim |>
   dplyr::filter(time >= 140, time <= 168, !is.na(Cc)) |>
   dplyr::mutate(time_nom = time - 140,
@@ -245,7 +250,6 @@ intervals <- data.frame(
 )
 
 nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
-#>  ■■■■■■■■■■■■■                     39% |  ETA:  2s
 nca_tbl <- as.data.frame(nca_res$result)
 summary(nca_res)
 #>  start end    treatment   N    auclast        cmax        cmin
@@ -263,6 +267,7 @@ typical-value prediction can be computed with IIV zeroed out and
 compared against the population medians above.
 
 ``` r
+
 mod_typ <- rxode2::zeroRe(mod)
 typ_cohort <- tibble::tibble(
   id = 1L, WT = 70, AGE = 40, SEXF = 0L,
@@ -305,7 +310,7 @@ knitr::kable(
 |  34.427 |     20.434 | 791.966 |
 
 Typical-subject steady-state exposure: 125 mg SC Q4W (reference CHO,
-white, male, 70 kg, age 40, ADA-negative).
+white, male, 70 kg, age 40, ADA-negative). {.table}
 
 Zhu 2017 reports that the 125 mg Q4W SC regimen delivers typical
 steady-state Cc in the low-ug/mL range (broadly consistent with the

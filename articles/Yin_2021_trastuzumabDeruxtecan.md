@@ -30,7 +30,30 @@ not implemented here (see *Assumptions and deviations*).
 Structure: linear two-compartment IV model with first-order elimination
 from the central compartment.
 
-$${CL}_{i,\text{intact}} = 0.421 \cdot \left( {WT}/57.8 \right)^{0.370} \cdot \left( {ALB}/40 \right)^{- 0.533} \cdot \left( {TUMSZ}/57 \right)^{0.0710} \cdot \left( 1 - 0.0970 \cdot {COUNTRY\_ JPN} \right) \cdot \left( 1 + 0.174 \cdot \left( 1 - {SEXF} \right) \right) \cdot e^{\eta_{CL}}$$$$V_{1,i,\text{intact}} = 2.77 \cdot \left( {WT}/57.8 \right)^{0.489} \cdot \left( 1 + 0.197 \cdot \left( 1 - {SEXF} \right) \right) \cdot e^{\eta_{V_{1}}}$$$$V_{2,i,\text{intact}} = 5.16 \cdot \left( 1 - 0.262 \cdot {COUNTRY\_ JPN} \right) \cdot e^{\eta_{V_{2}}},\qquad Q_{i,\text{intact}} = 0.199 \cdot e^{\eta_{Q}}$$
+``` math
+\mathrm{CL}_{i,\text{intact}} =
+  0.421
+  \cdot (\mathrm{WT}    / 57.8)^{0.370}
+  \cdot (\mathrm{ALB}   / 40)^{-0.533}
+  \cdot (\mathrm{TUMSZ} / 57)^{0.0710}
+  \cdot (1 - 0.0970 \cdot \mathrm{COUNTRY\_JPN})
+  \cdot (1 + 0.174   \cdot (1 - \mathrm{SEXF}))
+  \cdot e^{\eta_{\mathrm{CL}}}
+```
+``` math
+\mathrm{V}_{1,i,\text{intact}} =
+  2.77
+  \cdot (\mathrm{WT} / 57.8)^{0.489}
+  \cdot (1 + 0.197 \cdot (1 - \mathrm{SEXF}))
+  \cdot e^{\eta_{V_1}}
+```
+``` math
+\mathrm{V}_{2,i,\text{intact}} =
+  5.16
+  \cdot (1 - 0.262 \cdot \mathrm{COUNTRY\_JPN})
+  \cdot e^{\eta_{V_2}}, \qquad
+\mathrm{Q}_{i,\text{intact}} = 0.199 \cdot e^{\eta_Q}
+```
 
 ## Population
 
@@ -69,25 +92,25 @@ The per-parameter origin is recorded as an in-file comment next to each
 `inst/modeldb/specificDrugs/Yin_2021_trastuzumabDeruxtecan.R`. The table
 below collects them in one place for review.
 
-| Parameter (model name)             | Value                     | Source                                                     |
-|------------------------------------|---------------------------|------------------------------------------------------------|
-| `lcl` (CL_intact, L/day)           | log(0.421)                | Yin 2021 Table 1, CL_intact = 0.421 L/day                  |
-| `lvc` (V1_intact, L)               | log(2.77)                 | Yin 2021 Table 1, V1_intact = 2.77 L                       |
-| `lq` (Q_intact, L/day)             | log(0.199)                | Yin 2021 Table 1, Q_intact = 0.199 L/day                   |
-| `lvp` (V2_intact, L)               | log(5.16)                 | Yin 2021 Table 1, V2_intact = 5.16 L                       |
-| `e_wt_cl` (power, WT on CL)        | 0.370                     | Yin 2021 Table 1, Body weight on CL_intact                 |
-| `e_alb_cl` (power, ALB on CL)      | -0.533                    | Yin 2021 Table 1, Albumin on CL_intact                     |
-| `e_tumsz_cl` (power, TUMSZ on CL)  | 0.0710                    | Yin 2021 Table 1, Tumor size on CL_intact                  |
-| `e_japan_cl` (frac., REGION_JAPAN) | -0.0970                   | Yin 2021 Table 1, Country (Japan) on CL_intact             |
-| `e_male_cl` (frac., (1 - SEXF))    | 0.174                     | Yin 2021 Table 1, Sex (male) on CL_intact                  |
-| `e_wt_v1` (power, WT on V1)        | 0.489                     | Yin 2021 Table 1, Body weight on V1_intact                 |
-| `e_male_v1` (frac., (1 - SEXF))    | 0.197                     | Yin 2021 Table 1, Sex (male) on V1_intact                  |
-| `e_japan_v2` (frac., REGION_JAPAN) | -0.262                    | Yin 2021 Table 1, Country (Japan) on V2_intact             |
-| IIV block `etalcl + etalvc`        | c(0.0630, 0.0210, 0.0250) | Yin 2021 Table 1, Var(CL), Cov(CL,V1), Var(V1)             |
-| `etalq`                            | 0.0900                    | Yin 2021 Table 1, Var(Q_intact) = 0.0900                   |
-| `etalvp`                           | 0.430                     | Yin 2021 Table 1, Var(V2_intact) = 0.430                   |
-| `propSd`                           | 0.163                     | Yin 2021 Table 1, proportional residual error SD           |
-| `addSd`                            | 1.181 ug/mL               | Yin 2021 Table 1, additive residual error SD = 1,181 ng/mL |
+| Parameter (model name) | Value | Source |
+|----|----|----|
+| `lcl` (CL_intact, L/day) | log(0.421) | Yin 2021 Table 1, CL_intact = 0.421 L/day |
+| `lvc` (V1_intact, L) | log(2.77) | Yin 2021 Table 1, V1_intact = 2.77 L |
+| `lq` (Q_intact, L/day) | log(0.199) | Yin 2021 Table 1, Q_intact = 0.199 L/day |
+| `lvp` (V2_intact, L) | log(5.16) | Yin 2021 Table 1, V2_intact = 5.16 L |
+| `e_wt_cl` (power, WT on CL) | 0.370 | Yin 2021 Table 1, Body weight on CL_intact |
+| `e_alb_cl` (power, ALB on CL) | -0.533 | Yin 2021 Table 1, Albumin on CL_intact |
+| `e_tumsz_cl` (power, TUMSZ on CL) | 0.0710 | Yin 2021 Table 1, Tumor size on CL_intact |
+| `e_japan_cl` (frac., REGION_JAPAN) | -0.0970 | Yin 2021 Table 1, Country (Japan) on CL_intact |
+| `e_male_cl` (frac., (1 - SEXF)) | 0.174 | Yin 2021 Table 1, Sex (male) on CL_intact |
+| `e_wt_v1` (power, WT on V1) | 0.489 | Yin 2021 Table 1, Body weight on V1_intact |
+| `e_male_v1` (frac., (1 - SEXF)) | 0.197 | Yin 2021 Table 1, Sex (male) on V1_intact |
+| `e_japan_v2` (frac., REGION_JAPAN) | -0.262 | Yin 2021 Table 1, Country (Japan) on V2_intact |
+| IIV block `etalcl + etalvc` | c(0.0630, 0.0210, 0.0250) | Yin 2021 Table 1, Var(CL), Cov(CL,V1), Var(V1) |
+| `etalq` | 0.0900 | Yin 2021 Table 1, Var(Q_intact) = 0.0900 |
+| `etalvp` | 0.430 | Yin 2021 Table 1, Var(V2_intact) = 0.430 |
+| `propSd` | 0.163 | Yin 2021 Table 1, proportional residual error SD |
+| `addSd` | 1.181 ug/mL | Yin 2021 Table 1, additive residual error SD = 1,181 ng/mL |
 
 Equations: structural two-compartment micro-constant form with linear
 elimination from the central compartment. Continuous covariates enter as
@@ -107,6 +130,7 @@ approximate marginal proportions implied by the DESTINY-Breast01 +
 Japanese phase I cohort mix.
 
 ``` r
+
 set.seed(2021)
 n_subj <- 200
 
@@ -126,6 +150,7 @@ exposure comparisons. The label tag rides through `rxSolve` via `keep =`
 so PKNCA can stratify by treatment.
 
 ``` r
+
 dose_interval_d <- 21
 n_doses         <- 10
 dose_times_d    <- seq(0, by = dose_interval_d, length.out = n_doses)
@@ -157,6 +182,7 @@ events <- build_events(cohort, 5.4)
 ## Simulation
 
 ``` r
+
 mod <- readModelDb("Yin_2021_trastuzumabDeruxtecan")
 sim <- rxode2::rxSolve(mod, events = events,
                        keep = c("treatment"),
@@ -173,6 +199,7 @@ simulated **median and 5-95% prediction interval** for the 5.4 mg/kg q3w
 arm over 10 dosing cycles.
 
 ``` r
+
 sim_summary <- sim |>
   dplyr::filter(time > 0) |>
   dplyr::group_by(time, treatment) |>
@@ -212,6 +239,7 @@ percentile to visualize the single-covariate effect on steady-state
 CL_intact:
 
 ``` r
+
 ref <- list(WT = 57.8, ALB = 40, TUMSZ = 57, SEXF = 1, REGION_JAPAN = 0)
 
 # Yin 2021 Figure 4 covariate ranges (5th and 95th percentile values
@@ -279,6 +307,7 @@ per-cohort NCA table). The PKNCA summary below is a within-simulation
 consistency check.
 
 ``` r
+
 interval_start <- dose_times_d[n_doses]
 interval_end   <- interval_start + dose_interval_d
 
@@ -321,12 +350,12 @@ knitr::kable(
 )
 ```
 
-| Interval Start | Interval End | treatment     | N   | AUClast (day\*ug/mL) | Cmax (ug/mL)  | Cmin (ug/mL)  | Tmax (day)          | Cav (ug/mL)   |
-|---------------:|-------------:|:--------------|:----|:---------------------|:--------------|:--------------|:--------------------|:--------------|
-|              0 |           21 | 5.4 mg/kg q3w | 200 | 656 \[32.1\]         | 97.7 \[19.7\] | 10.3 \[59.4\] | 1.00 \[1.00, 1.00\] | 31.2 \[32.1\] |
+| Interval Start | Interval End | treatment | N | AUClast (day\*ug/mL) | Cmax (ug/mL) | Cmin (ug/mL) | Tmax (day) | Cav (ug/mL) |
+|---:|---:|:---|:---|:---|:---|:---|:---|:---|
+| 0 | 21 | 5.4 mg/kg q3w | 200 | 656 \[32.1\] | 97.7 \[19.7\] | 10.3 \[59.4\] | 1.00 \[1.00, 1.00\] | 31.2 \[32.1\] |
 
 Simulated NCA parameters at steady state (10th dosing interval, days
-189-210, 5.4 mg/kg q3w).
+189-210, 5.4 mg/kg q3w). {.table style="width:100%;"}
 
 ### Comparison against published reference-subject exposure
 
@@ -335,11 +364,11 @@ its forest plots (Figures 4 and 5) and the steady-state simulations
 performed at 5.4 mg/kg q3w. The reference-patient exposure read from
 Figure 4 is an approximate target rather than a published numeric.
 
-| Quantity               | Yin 2021 (Fig. 4 reference, ~) | This model (median across virtual cohort) |
-|------------------------|--------------------------------|-------------------------------------------|
-| AUC_tau,ss (ug.day/mL) | ~735                           | See `auclast` row of the kable above      |
-| Cmax,ss (ug/mL)        | ~122                           | See `cmax` row of the kable above         |
-| Cmin,ss (ug/mL)        | ~9.7                           | See `cmin` row of the kable above         |
+| Quantity | Yin 2021 (Fig. 4 reference, ~) | This model (median across virtual cohort) |
+|----|----|----|
+| AUC_tau,ss (ug.day/mL) | ~735 | See `auclast` row of the kable above |
+| Cmax,ss (ug/mL) | ~122 | See `cmax` row of the kable above |
+| Cmin,ss (ug/mL) | ~9.7 | See `cmin` row of the kable above |
 
 The virtual cohort spans the paper’s reported covariate ranges, so
 expect a wider distribution of simulated values than the typical-

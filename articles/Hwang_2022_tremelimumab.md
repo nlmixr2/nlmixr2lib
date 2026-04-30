@@ -28,15 +28,35 @@ weight is also retained on central volume.
 
 The structural model is:
 
-$${CL}_{i}(t)\; = \; 0.276\;{L/day} \cdot \exp\!\left( \frac{\left( T_{\max,r} + \eta_{T_{\max},i} \right)\, t^{\lambda_{r}}}{{TC}_{50}^{\lambda_{r}} + t^{\lambda_{r}}} \right) \cdot \left( \frac{{ALB}_{i}}{39} \right)^{- 0.996} \cdot \left( \frac{{WT}_{i}}{71} \right)^{0.638} \cdot \exp\left( \eta_{{CL},i} \right)$$
+``` math
+\mathrm{CL}_{i}(t) \;=\; 0.276\;\mathrm{L/day} \cdot
+  \exp\!\left( \dfrac{(T_{\max,r} + \eta_{T_{\max},i})\, t^{\lambda_{r}}}
+                     {\mathrm{TC}_{50}^{\lambda_{r}} + t^{\lambda_{r}}} \right)
+  \cdot
+  \left(\dfrac{\mathrm{ALB}_{i}}{39}\right)^{-0.996}
+  \cdot
+  \left(\dfrac{\mathrm{WT}_{i}}{71}\right)^{0.638}
+  \cdot
+  \exp(\eta_{\mathrm{CL},i})
+```
 
-$$V_{c,i}\; = \; 3.64\; L \cdot \left( \frac{{WT}_{i}}{71} \right)^{0.606} \cdot \exp\left( \eta_{V_{c},i} \right),\qquad Q = 0.357\;{L/day},\qquad V_{p} = 2.40\; L$$
+``` math
+V_{c,i} \;=\; 3.64\;\mathrm{L} \cdot
+  \left(\dfrac{\mathrm{WT}_{i}}{71}\right)^{0.606}
+  \cdot
+  \exp(\eta_{V_{c},i}),
+\qquad
+Q = 0.357\;\mathrm{L/day},
+\qquad
+V_{p} = 2.40\;\mathrm{L}
+```
 
 with regimen-specific
-$\left( T_{\max,\,{mono}},\lambda_{mono} \right) = (0.151,14.5)$ and
-$\left( T_{\max,\,{combo}},\lambda_{combo} \right) = ( - 0.187,3.20)$
-and a common ${TC}_{50} = 95.1\;{days}$ (Hwang 2022 Table 3 and the
-final-model equations on page 1609).
+$`(T_{\max,\,\mathrm{mono}}, \lambda_{\mathrm{mono}}) = (0.151, 14.5)`$
+and
+$`(T_{\max,\,\mathrm{combo}}, \lambda_{\mathrm{combo}}) = (-0.187, 3.20)`$
+and a common $`\mathrm{TC}_{50} = 95.1\;\mathrm{days}`$ (Hwang 2022
+Table 3 and the final-model equations on page 1609).
 
 ## Population
 
@@ -85,25 +105,25 @@ The per-parameter origin is recorded as an in-file comment next to each
 `inst/modeldb/specificDrugs/Hwang_2022_tremelimumab.R`. The table below
 collects them in one place for review.
 
-| Parameter (model name)           | Value             | Source                                                     |
-|----------------------------------|-------------------|------------------------------------------------------------|
-| `lcl` (CL_BASE, L/day)           | log(0.276)        | Hwang 2022 Table 3, CL = 0.276 L/day                       |
-| `lvc` (Vc, L)                    | log(3.64)         | Hwang 2022 Table 3, Vc = 3.64 L                            |
-| `lq` (Q, L/day)                  | log(0.357)        | Hwang 2022 Table 3, Q = 0.357 L/day                        |
-| `lvp` (Vp, L)                    | log(2.40)         | Hwang 2022 Table 3, Vp = 2.40 L                            |
-| `e_alb_cl` (power, ALB on CL)    | -0.996            | Hwang 2022 Table 3, covariate 1 ALB on CL                  |
-| `e_wt_vc` (power, WT on Vc)      | 0.606             | Hwang 2022 Table 3, covariate 2 WT on Vc                   |
-| `e_wt_cl` (power, WT on CL)      | 0.638             | Hwang 2022 Table 3, covariate 3 WT on CL                   |
-| `cl_tmax_mono` (Tmax mono)       | 0.151             | Hwang 2022 Table 3, covariate 4 Tmax (monotherapy)         |
-| `cl_tc50` (TC50, days)           | 95.1              | Hwang 2022 Table 3, covariate 5 TC50 (common)              |
-| `cl_lambda_mono` (lambda mono)   | 14.5              | Hwang 2022 Table 3, covariate 6 Lambda (monotherapy)       |
-| `cl_tmax_combo` (Tmax combo)     | -0.187            | Hwang 2022 Table 3, covariate 7 Tmax (combination therapy) |
-| `cl_lambda_combo` (lambda combo) | 3.20              | Hwang 2022 Table 3, covariate 8 Lambda (combination)       |
-| `etalcl` (omega^2 on lcl)        | 0.113 (33.6% CV)  | Hwang 2022 Table 3, IIV on CL                              |
-| `etalvc` (omega^2 on lvc)        | 0.0536 (23.2% CV) | Hwang 2022 Table 3, IIV on Vc                              |
-| `etacl_tmax` (omega^2 on Tmax)   | 0.151 (38.9% CV)  | Hwang 2022 Table 3, IIV on Tmax                            |
-| `propSd`                         | 0.306             | Hwang 2022 Table 3, proportional residual error            |
-| `addSd`                          | 0.119 ug/mL       | Hwang 2022 Table 3, additive residual error                |
+| Parameter (model name) | Value | Source |
+|----|----|----|
+| `lcl` (CL_BASE, L/day) | log(0.276) | Hwang 2022 Table 3, CL = 0.276 L/day |
+| `lvc` (Vc, L) | log(3.64) | Hwang 2022 Table 3, Vc = 3.64 L |
+| `lq` (Q, L/day) | log(0.357) | Hwang 2022 Table 3, Q = 0.357 L/day |
+| `lvp` (Vp, L) | log(2.40) | Hwang 2022 Table 3, Vp = 2.40 L |
+| `e_alb_cl` (power, ALB on CL) | -0.996 | Hwang 2022 Table 3, covariate 1 ALB on CL |
+| `e_wt_vc` (power, WT on Vc) | 0.606 | Hwang 2022 Table 3, covariate 2 WT on Vc |
+| `e_wt_cl` (power, WT on CL) | 0.638 | Hwang 2022 Table 3, covariate 3 WT on CL |
+| `cl_tmax_mono` (Tmax mono) | 0.151 | Hwang 2022 Table 3, covariate 4 Tmax (monotherapy) |
+| `cl_tc50` (TC50, days) | 95.1 | Hwang 2022 Table 3, covariate 5 TC50 (common) |
+| `cl_lambda_mono` (lambda mono) | 14.5 | Hwang 2022 Table 3, covariate 6 Lambda (monotherapy) |
+| `cl_tmax_combo` (Tmax combo) | -0.187 | Hwang 2022 Table 3, covariate 7 Tmax (combination therapy) |
+| `cl_lambda_combo` (lambda combo) | 3.20 | Hwang 2022 Table 3, covariate 8 Lambda (combination) |
+| `etalcl` (omega^2 on lcl) | 0.113 (33.6% CV) | Hwang 2022 Table 3, IIV on CL |
+| `etalvc` (omega^2 on lvc) | 0.0536 (23.2% CV) | Hwang 2022 Table 3, IIV on Vc |
+| `etacl_tmax` (omega^2 on Tmax) | 0.151 (38.9% CV) | Hwang 2022 Table 3, IIV on Tmax |
+| `propSd` | 0.306 | Hwang 2022 Table 3, proportional residual error |
+| `addSd` | 0.119 ug/mL | Hwang 2022 Table 3, additive residual error |
 
 Equations: structural two-compartment micro-constant form (NM-TRAN
 `ADVAN6`); the full final-model equations for CL_i and Vc_i are
@@ -136,6 +156,7 @@ and range; binary / categorical covariates match the reported marginal
 distributions.
 
 ``` r
+
 set.seed(2022)
 n_subj <- 200
 
@@ -165,6 +186,7 @@ Two reference dosing regimens (the predominant regimens in the Hwang
   used in DETERMINE, ARCTIC, and CONDOR).
 
 ``` r
+
 make_events <- function(pop, regimen) {
   if (regimen == "1 mg/kg + durva") {
     pop$COMBO_DURVA <- 1L
@@ -199,6 +221,7 @@ events_mono  <- make_events(cohort, "10 mg/kg mono")
 ## Simulation
 
 ``` r
+
 mod <- readModelDb("Hwang_2022_tremelimumab")
 
 sim_combo <- rxode2::rxSolve(mod, events = events_combo,
@@ -223,6 +246,7 @@ reproduces the median and 5-95% prediction interval from the packaged
 model.
 
 ``` r
+
 sim_summary <- sim |>
   dplyr::filter(time > 0) |>
   dplyr::group_by(time, treatment) |>
@@ -261,6 +285,7 @@ typical-value CL(t) / CL(0) curves below reproduce these trends at a
 reference subject (WT = 71 kg, ALB = 39 g/L, etas = 0).
 
 ``` r
+
 typ_grid <- seq(0, 365, by = 5)
 
 build_typ_events <- function(combo) {
@@ -324,6 +349,7 @@ the simulated values below should overlap with those medians once
 dose-normalized to 75 mg.
 
 ``` r
+
 nca_window <- 28  # days; one Q4W cycle
 
 # Concentrations: Cycle-1 only (TIME within [0, 28])
@@ -357,7 +383,7 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
-#>  ■■■■■■■■■■                        30% |  ETA:  3s
+#>  ■■■■■■■■■                         28% |  ETA:  3s
 
 knitr::kable(
   summary(nca_res),
@@ -365,12 +391,12 @@ knitr::kable(
 )
 ```
 
-| Interval Start | Interval End | treatment       | N   | AUClast (day\*ug/mL) | Cmax (ug/mL)  | Cmin (ug/mL) | Tmax (day)          |
-|---------------:|-------------:|:----------------|:----|:---------------------|:--------------|:-------------|:--------------------|
-|              0 |           28 | 1 mg/kg + durva | 200 | 147 \[28.9\]         | 11.9 \[20.3\] | NC           | 3.00 \[3.00, 3.00\] |
-|              0 |           28 | 10 mg/kg mono   | 200 | 1460 \[29.0\]        | 119 \[20.0\]  | NC           | 3.00 \[3.00, 3.00\] |
+| Interval Start | Interval End | treatment | N | AUClast (day\*ug/mL) | Cmax (ug/mL) | Cmin (ug/mL) | Tmax (day) |
+|---:|---:|:---|:---|:---|:---|:---|:---|
+| 0 | 28 | 1 mg/kg + durva | 200 | 147 \[28.9\] | 11.9 \[20.3\] | NC | 3.00 \[3.00, 3.00\] |
+| 0 | 28 | 10 mg/kg mono | 200 | 1460 \[29.0\] | 119 \[20.0\] | NC | 3.00 \[3.00, 3.00\] |
 
-Simulated Cycle-1 NCA parameters by regimen (Hwang 2022)
+Simulated Cycle-1 NCA parameters by regimen (Hwang 2022) {.table}
 
 ### Comparison against published values
 
@@ -381,6 +407,7 @@ Cmax_75 = Cmax_observed \* 75 / dose_observed) and places them next to
 the paper’s reported medians.
 
 ``` r
+
 nca_tbl <- as.data.frame(nca_res$result)
 
 med_by <- nca_tbl |>
@@ -418,10 +445,10 @@ comparison <- dplyr::left_join(med_by, published, by = "treatment") |>
 knitr::kable(comparison)
 ```
 
-| treatment       | Median Cmax (75 mg-eq, ug/mL) - simulated | Median Cmax (75 mg-eq, ug/mL) - Hwang 2022 Fig 1B | Median Cmin (75 mg-eq, ug/mL) - simulated | Median Cmin (75 mg-eq, ug/mL) - Hwang 2022 Fig 1A |
-|:----------------|------------------------------------------:|--------------------------------------------------:|------------------------------------------:|--------------------------------------------------:|
-| 1 mg/kg + durva |                                     12.59 |                                              21.8 |                                         0 |                                               3.3 |
-| 10 mg/kg mono   |                                     12.60 |                                              21.8 |                                         0 |                                               3.3 |
+| treatment | Median Cmax (75 mg-eq, ug/mL) - simulated | Median Cmax (75 mg-eq, ug/mL) - Hwang 2022 Fig 1B | Median Cmin (75 mg-eq, ug/mL) - simulated | Median Cmin (75 mg-eq, ug/mL) - Hwang 2022 Fig 1A |
+|:---|---:|---:|---:|---:|
+| 1 mg/kg + durva | 12.59 | 21.8 | 0 | 3.3 |
+| 10 mg/kg mono | 12.60 | 21.8 | 0 | 3.3 |
 
 Hwang 2022 also reports a typical-value half-life of approximately **18
 days** (page 1609 narrative, derived from baseline CL = 0.276 L/day and
@@ -429,6 +456,7 @@ total V_ss = Vc + Vp = 6.04 L). The packaged-model implied half-life at
 the typical reference subject is:
 
 ``` r
+
 vss <- 3.64 + 2.40   # Vc + Vp at WT = 71 kg reference
 cl0 <- 0.276
 t_half <- log(2) * vss / cl0

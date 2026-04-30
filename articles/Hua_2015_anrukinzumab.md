@@ -1,6 +1,7 @@
 # Hua_2015_anrukinzumab
 
 ``` r
+
 library(nlmixr2lib)
 library(rxode2)
 #> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
@@ -59,13 +60,13 @@ Hua 2015 Table 2 summarises the pooled cohort of 255 subjects across all
 
 Per-study design (Hua 2015 Table 1):
 
-| \#  | Population                      | n   | Dosing                                  |
-|-----|---------------------------------|-----|-----------------------------------------|
-| 1   | Mild-to-moderate asthma         | 37  | 3 mg/kg IV + 0.3-4 mg/kg SC single dose |
-| 2   | Healthy Japanese and non-Asian  | 44  | 0.3-4 mg/kg SC single dose              |
-| 3   | Allergen challenge, mild asthma | 14  | 2 mg/kg SC x 2 doses, 1 week apart      |
-| 4   | Moderate-to-severe asthma       | 97  | 0.2, 0.6, 2 mg/kg SC or 200 mg SC Q2-4W |
-| 5   | Ulcerative colitis              | 63  | 200, 400, 600 mg IV Q2-4W x 5 doses     |
+| \# | Population | n | Dosing |
+|----|----|----|----|
+| 1 | Mild-to-moderate asthma | 37 | 3 mg/kg IV + 0.3-4 mg/kg SC single dose |
+| 2 | Healthy Japanese and non-Asian | 44 | 0.3-4 mg/kg SC single dose |
+| 3 | Allergen challenge, mild asthma | 14 | 2 mg/kg SC x 2 doses, 1 week apart |
+| 4 | Moderate-to-severe asthma | 97 | 0.2, 0.6, 2 mg/kg SC or 200 mg SC Q2-4W |
+| 5 | Ulcerative colitis | 63 | 200, 400, 600 mg IV Q2-4W x 5 doses |
 
 The same information is available programmatically via
 `readModelDb("Hua_2015_anrukinzumab")$population`.
@@ -77,33 +78,33 @@ The per-parameter origin is recorded next to each
 `inst/modeldb/specificDrugs/Hua_2015_anrukinzumab.R`. The table below
 collects them in one place for review.
 
-| Element                        | Source                         | Value / form                                                       |
-|--------------------------------|--------------------------------|--------------------------------------------------------------------|
-| CL                             | Hua 2015 Table 3 (Final model) | 0.00732 L/h (75-kg non-UC, ALB 4.3 g/dL)                           |
-| Vc                             | Table 3                        | 3.81 L                                                             |
-| Vp                             | Table 3                        | 2.17 L                                                             |
-| Q                              | Table 3                        | 0.0224 L/h                                                         |
-| Ka                             | Table 3                        | 0.0119 /h                                                          |
-| F                              | Table 3                        | 0.973 (non-moderate-to-severe-asthma)                              |
-| WT on CL                       | Table 3                        | Allometric power, exponent fixed at 0.75: `(WT/75)^0.75`           |
-| WT on Vc, Vp                   | Table 3                        | Allometric power, estimated shared exponent 0.688: `(WT/75)^0.688` |
-| ALB on CL                      | Table 3                        | Power form, `(ALB/4.3)^(-1.07)`                                    |
-| UC on CL                       | Table 3                        | Multiplicative fractional, `(1 + 0.728 * DIS_UC)`                  |
-| Moderate-to-severe asthma on F | Table 3                        | Multiplicative fractional, `(1 + (-0.309) * DIS_SASTHMA)`          |
-| IIV CL                         | Table 3                        | CV 31.6% (omega^2 = log(1 + 0.316^2) = 0.0952)                     |
-| IIV Vc, Vp (shared eta)        | Table 3                        | CV 26.5% (omega^2 = 0.0679)                                        |
-| IIV Ka                         | Table 3                        | CV 54.0% (omega^2 = 0.2560)                                        |
-| Corr(CL, V)                    | Table 3                        | 0.727                                                              |
-| Residual                       | Table 3                        | 23.5% proportional (additive on log-transformed data)              |
+| Element | Source | Value / form |
+|----|----|----|
+| CL | Hua 2015 Table 3 (Final model) | 0.00732 L/h (75-kg non-UC, ALB 4.3 g/dL) |
+| Vc | Table 3 | 3.81 L |
+| Vp | Table 3 | 2.17 L |
+| Q | Table 3 | 0.0224 L/h |
+| Ka | Table 3 | 0.0119 /h |
+| F | Table 3 | 0.973 (non-moderate-to-severe-asthma) |
+| WT on CL | Table 3 | Allometric power, exponent fixed at 0.75: `(WT/75)^0.75` |
+| WT on Vc, Vp | Table 3 | Allometric power, estimated shared exponent 0.688: `(WT/75)^0.688` |
+| ALB on CL | Table 3 | Power form, `(ALB/4.3)^(-1.07)` |
+| UC on CL | Table 3 | Multiplicative fractional, `(1 + 0.728 * DIS_UC)` |
+| Moderate-to-severe asthma on F | Table 3 | Multiplicative fractional, `(1 + (-0.309) * DIS_SASTHMA)` |
+| IIV CL | Table 3 | CV 31.6% (omega^2 = log(1 + 0.316^2) = 0.0952) |
+| IIV Vc, Vp (shared eta) | Table 3 | CV 26.5% (omega^2 = 0.0679) |
+| IIV Ka | Table 3 | CV 54.0% (omega^2 = 0.2560) |
+| Corr(CL, V) | Table 3 | 0.727 |
+| Residual | Table 3 | 23.5% proportional (additive on log-transformed data) |
 
 ## Covariate column naming
 
-| Source column                                          | Canonical column used here |
-|--------------------------------------------------------|----------------------------|
-| `WT`                                                   | `WT`                       |
-| `ALB` (g/dL, per Figure 1 axis)                        | `ALB`                      |
-| `UC` (binary UC indicator)                             | `DIS_UC`                   |
-| `sAsthma` (binary moderate-to-severe asthma indicator) | `DIS_SASTHMA`              |
+| Source column | Canonical column used here |
+|----|----|
+| `WT` | `WT` |
+| `ALB` (g/dL, per Figure 1 axis) | `ALB` |
+| `UC` (binary UC indicator) | `DIS_UC` |
+| `sAsthma` (binary moderate-to-severe asthma indicator) | `DIS_SASTHMA` |
 
 `DIS_UC` and `DIS_SASTHMA` were newly ratified in
 `inst/references/covariate-columns.md` (2026-04-21) as scope-specific
@@ -118,6 +119,7 @@ population below approximates the pooled Table 2 demographics and the
 Table 1 disease-state mixture.
 
 ``` r
+
 set.seed(2015)
 n_subj <- 400
 
@@ -145,6 +147,7 @@ healthy volunteers and mild-to-moderate asthma) and Figure 4D (single
 0.6 mg/kg SC in moderate-to-severe asthma).
 
 ``` r
+
 pop_sc <- pop %>% filter(disease != "UC")
 
 dose_sc <- pop_sc %>%
@@ -178,6 +181,7 @@ d_sc <- bind_rows(dose_sc, obs_sc) %>%
 ```
 
 ``` r
+
 mod <- readModelDb("Hua_2015_anrukinzumab")
 sim_sc <- rxSolve(mod, d_sc, keep = "disease", returnType = "data.frame")
 #> ℹ parameter labels from comments will be replaced by 'label()'
@@ -186,6 +190,7 @@ sim_sc <- rxSolve(mod, d_sc, keep = "disease", returnType = "data.frame")
 ### Replicates Figure 4 (SC single-dose shape)
 
 ``` r
+
 sim_sc %>%
   filter(time > 0) %>%
   mutate(week = time / (24 * 7)) %>%
@@ -220,6 +225,7 @@ subjects. The paper holds WT and ALB distributions matched so that the
 only difference is UC disease status; we do the same here.
 
 ``` r
+
 n_iv <- 100
 
 pop_uc <- tibble(
@@ -267,6 +273,7 @@ d_iv <- bind_rows(dose_iv, obs_iv) %>%
 ```
 
 ``` r
+
 sim_iv <- rxSolve(mod, d_iv, keep = "group", returnType = "data.frame")
 #> ℹ parameter labels from comments will be replaced by 'label()'
 ```
@@ -274,6 +281,7 @@ sim_iv <- rxSolve(mod, d_iv, keep = "group", returnType = "data.frame")
 ### Replicates Figure 5 (200 mg IV, UC vs non-UC)
 
 ``` r
+
 sim_iv %>%
   filter(time > 0) %>%
   mutate(week = time / (24 * 7)) %>%
@@ -310,6 +318,7 @@ the `group` treatment variable so Cmax, AUClast, and half-life are
 computed per-group.
 
 ``` r
+
 single_dose_obs <- sim_iv %>%
   filter(time >= 0, time <= 28 * 24, Cc > 0) %>%
   transmute(
@@ -547,13 +556,13 @@ knitr::kable(
 )
 ```
 
-| start | end | treatment | N   | auclast         | cmax           | tmax             | half.life |
-|------:|----:|:----------|:----|:----------------|:---------------|:-----------------|:----------|
-|     0 | 672 | non-UC    | 100 | 2.69e7 \[28.1\] | 88900 \[29.6\] | 672 \[672, 672\] | NC        |
-|     0 | 672 | UC        | 100 | 2.12e7 \[31.5\] | 74000 \[32.6\] | 672 \[672, 672\] | NC        |
+| start | end | treatment | N | auclast | cmax | tmax | half.life |
+|---:|---:|:---|:---|:---|:---|:---|:---|
+| 0 | 672 | non-UC | 100 | 2.69e7 \[28.1\] | 88900 \[29.6\] | 672 \[672, 672\] | NC |
+| 0 | 672 | UC | 100 | 2.12e7 \[31.5\] | 74000 \[32.6\] | 672 \[672, 672\] | NC |
 
 PKNCA summary after a single 200 mg IV dose (first 28 days), stratified
-by UC vs non-UC.
+by UC vs non-UC. {.table}
 
 ### Comparison against published values
 
@@ -563,6 +572,7 @@ Figure 5 caption). These are computed from the model’s terminal-phase
 parameters `CL` and `Vss = Vc + Vp`, so at matched WT and ALB:
 
 ``` r
+
 vss_nonuc <- 3.81 + 2.17
 t_half_nonuc <- log(2) * vss_nonuc / 0.00732
 t_half_uc    <- log(2) * vss_nonuc / (0.00732 * (1 + 0.728))
@@ -584,7 +594,7 @@ tibble(
 | UC     |      328 |     328 |
 
 Analytic terminal-phase half-life from the model’s typical-value
-parameters vs Hua 2015 reported medians.
+parameters vs Hua 2015 reported medians. {.table}
 
 The analytic values differ from the sparse-sampling NCA output above
 because NCA estimates the half-life from whatever time window the

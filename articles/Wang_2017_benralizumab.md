@@ -1,6 +1,7 @@
 # Wang_2017_benralizumab
 
 ``` r
+
 library(nlmixr2lib)
 library(rxode2)
 #> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
@@ -54,6 +55,7 @@ against PMC5397562.
 ### Virtual population
 
 ``` r
+
 set.seed(2017)
 n_subj <- 500
 
@@ -71,6 +73,7 @@ Approved asthma regimen: 30 mg SC every 4 weeks for first 3 doses, then
 every 8 weeks. Simulate through 30 weeks.
 
 ``` r
+
 dose_times <- c(0, 28, 56, 112, 168)  # days (weeks 0, 4, 8, 16, 24)
 
 obs_times <- sort(unique(c(
@@ -94,6 +97,7 @@ d_sim <- bind_rows(d_dose, d_obs) %>%
 ### Simulate
 
 ``` r
+
 mod <- readModelDb("Wang_2017_benralizumab")
 conc_unit <- rxode2::rxode(mod)$units[["concentration"]]
 #> ℹ parameter labels from comments will be replaced by 'label()'
@@ -104,6 +108,7 @@ sim <- rxSolve(mod, d_sim, returnType = "data.frame")
 ### Concentration-time profiles
 
 ``` r
+
 sim_summary <- sim %>%
   filter(time > 0) %>%
   group_by(time) %>%
@@ -132,6 +137,7 @@ ggplot(sim_summary, aes(x = time / 7)) +
 ### NCA analysis
 
 ``` r
+
 # Use 2nd dosing interval (weeks 4-8)
 sim_df <- as.data.frame(sim)
 # Build a unique subject key: use sim.id (replicate) and id (original subject)
@@ -164,20 +170,20 @@ data_obj <- PKNCAdata(conc_obj, dose_obj,
                                               cmax = TRUE, tmax = TRUE,
                                               auclast = TRUE, half.life = TRUE))
 nca_results <- pk.nca(data_obj)
-#>  ■■■■■                             14% |  ETA:  6s
-#>  ■■■■■■■■■■■■■■■■■                 52% |  ETA:  4s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    95% |  ETA:  0s
+#>  ■■■■■■                            16% |  ETA:  6s
+#>  ■■■■■■■■■■■■■■■■■■                55% |  ETA:  3s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■   98% |  ETA:  0s
 nca_summary <- summary(nca_results)
 knitr::kable(nca_summary, digits = 2,
              caption = "NCA summary (2nd dosing interval, weeks 4-8)")
 ```
 
-| start | end | treatment              | N   | auclast       | cmax           | tmax                | half.life     |
-|------:|----:|:-----------------------|:----|:--------------|:---------------|:--------------------|:--------------|
-|     0 |  28 | High-titer ADA         | 21  | 8.55 \[47.7\] | 0.933 \[40.0\] | 3.50 \[3.50, 3.50\] | 5.00 \[1.06\] |
-|     0 |  28 | Negative/Low-titer ADA | 479 | 42.9 \[43.7\] | 2.28 \[43.0\]  | 3.50 \[3.50, 14.0\] | 16.2 \[5.78\] |
+| start | end | treatment | N | auclast | cmax | tmax | half.life |
+|---:|---:|:---|:---|:---|:---|:---|:---|
+| 0 | 28 | High-titer ADA | 21 | 8.55 \[47.7\] | 0.933 \[40.0\] | 3.50 \[3.50, 3.50\] | 5.00 \[1.06\] |
+| 0 | 28 | Negative/Low-titer ADA | 479 | 42.9 \[43.7\] | 2.28 \[43.0\] | 3.50 \[3.50, 14.0\] | 16.2 \[5.78\] |
 
-NCA summary (2nd dosing interval, weeks 4-8)
+NCA summary (2nd dosing interval, weeks 4-8) {.table}
 
 ### Notes
 

@@ -76,42 +76,42 @@ the *DAS28-CRP* model, by contrast, are set from the DAS28-CRP-dataset
 medians per the Ma 2020 narrative (CRP 15.7 mg/L, BLPHYVAS 66, BLHAQ
 1.75, WT 72.8 kg).
 
-| Equation / parameter                                                         | Value                                      | Source location                                                                                              |
-|------------------------------------------------------------------------------|--------------------------------------------|--------------------------------------------------------------------------------------------------------------|
-| `lka` (Ka)                                                                   | `log(0.136)` 1/day                         | Xu 2019 Table 3, Ka row                                                                                      |
-| `lcl` (CLO/F)                                                                | `log(0.260)` L/day                         | Xu 2019 Table 3, CLO/F row                                                                                   |
-| `lvc` (Vc/F)                                                                 | `log(2.08)` L                              | Xu 2019 Table 3, Vc/F row                                                                                    |
-| `lvp` (Vp/F)                                                                 | `log(5.23)` L                              | Xu 2019 Table 3, Vp/F row                                                                                    |
-| `lq` (Q/F)                                                                   | `log(0.156)` L/day                         | Xu 2019 Table 3, Q/F row                                                                                     |
-| `lvm` (Vm)                                                                   | `log(8.06)` mg/day                         | Xu 2019 Table 3, Vm row                                                                                      |
-| `lkm` (Km)                                                                   | `log(0.939)` mg/L                          | Xu 2019 Table 3, Km row                                                                                      |
-| `lBase` (typical DAS28-CRP baseline)                                         | `log(6.06)`                                | Ma 2020 Table 3, BASE row (6.06)                                                                             |
-| `lEmax` (logit of Emax)                                                      | `0.237`                                    | Ma 2020 Table 3, Log(Emax) row; Emax = logit^-1(0.237) = 0.559 matches paper’s stated 55.9% maximum decrease |
-| `lIC50`                                                                      | `log(2.32)` mg/L                           | Ma 2020 Table 3, IC50 row                                                                                    |
-| `lKout`                                                                      | `log(0.0264)` 1/day                        | Ma 2020 Table 3, Kout row                                                                                    |
-| `lPLB` (placebo/background DMARD equiv. concentration)                       | `log(0.991)` mg/L                          | Ma 2020 Table 3, PLB row                                                                                     |
-| `gamma` (Hill coefficient)                                                   | `fixed(1)`                                 | Ma 2020 Table 3, gamma row (fixed to 1)                                                                      |
-| `e_crp_base`                                                                 | `0.0564`                                   | Ma 2020 Table 3, CRP on BASE                                                                                 |
-| `e_blphyvas_base`                                                            | `0.105`                                    | Ma 2020 Table 3, BLPHYVAS on BASE                                                                            |
-| `e_blhaq_base`                                                               | `0.0779`                                   | Ma 2020 Table 3, BLHAQ on BASE                                                                               |
-| `e_wt_base`                                                                  | `0.0522`                                   | Ma 2020 Table 3, Weight on BASE                                                                              |
-| `e_crp_lemax`                                                                | `0.333`                                    | Ma 2020 Table 3, CRP on Log(Emax)                                                                            |
-| `e_pricort_kout` (Kout multiplier for PRICORT = 1)                           | `1.26`                                     | Ma 2020 Table 3, PRICORT on Kout; 0.0264 \* 1.26 = 0.0333 matches paper narrative                            |
-| `var(etalvm)`                                                                | `log(0.324^2 + 1) = 0.0998`                | Xu 2019 Table 3: Vm IIV 32.4% CV                                                                             |
-| `var(etalcl)`                                                                | `log(0.553^2 + 1) = 0.2669`                | Xu 2019 Table 3: CLO/F IIV 55.3% CV                                                                          |
-| `cov(etalvm, etalcl)`                                                        | `-0.566 * sqrt(0.0998 * 0.2669) = -0.0924` | Xu 2019 Table 3: Vm-CLO/F correlation -0.566                                                                 |
-| `var(etalvc)`                                                                | `log(0.373^2 + 1) = 0.1302`                | Xu 2019 Table 3: Vc/F IIV 37.3% CV                                                                           |
-| `var(etalka)`                                                                | `log(0.321^2 + 1) = 0.0981`                | Xu 2019 Table 3: Ka IIV 32.1% CV                                                                             |
-| `var(etalBase)`                                                              | `log(0.0805^2 + 1) = 0.00646`              | Ma 2020 Table 3: BASE IIV 8.05% CV                                                                           |
-| `var(etalEmax)`                                                              | `log(0.712^2 + 1) = 0.4105`                | Ma 2020 Table 3: Log(Emax) IIV 71.2% CV                                                                      |
-| `var(etalIC50)`                                                              | `log(1.58^2 + 1) = 1.252`                  | Ma 2020 Table 3: IC50 IIV 158% CV                                                                            |
-| `var(etalKout)`                                                              | `log(0.842^2 + 1) = 0.5360`                | Ma 2020 Table 3: Kout IIV 84.2% CV                                                                           |
-| `var(etalPLB)`                                                               | `log(1.05^2 + 1) = 0.7431`                 | Ma 2020 Table 3: PLB IIV 105% CV                                                                             |
-| `CcpropSd` (sarilumab proportional RE)                                       | `sqrt(0.395) = 0.6285`                     | Xu 2019 Table 3: log-additive residual sigma^2 = 0.395                                                       |
-| `das28addSd` (DAS28-CRP additive RE)                                         | `0.647`                                    | Ma 2020 Table 3, additive residual row                                                                       |
-| Structure — PK (2-cmt + first-order SC absorption + linear + MM elimination) | n/a                                        | Xu 2019 Methods / Figure 2 / Eq.                                                                             |
-| Structure — PD (indirect response with inhibition of kin)                    | n/a                                        | Ma 2020 Figure 1 caption and Eq.                                                                             |
-| `Eff = Emax*(C+PLB)^g / (IC50^g + (C+PLB)^g)`                                | n/a                                        | Ma 2020 Figure 1 caption equation                                                                            |
+| Equation / parameter | Value | Source location |
+|----|----|----|
+| `lka` (Ka) | `log(0.136)` 1/day | Xu 2019 Table 3, Ka row |
+| `lcl` (CLO/F) | `log(0.260)` L/day | Xu 2019 Table 3, CLO/F row |
+| `lvc` (Vc/F) | `log(2.08)` L | Xu 2019 Table 3, Vc/F row |
+| `lvp` (Vp/F) | `log(5.23)` L | Xu 2019 Table 3, Vp/F row |
+| `lq` (Q/F) | `log(0.156)` L/day | Xu 2019 Table 3, Q/F row |
+| `lvm` (Vm) | `log(8.06)` mg/day | Xu 2019 Table 3, Vm row |
+| `lkm` (Km) | `log(0.939)` mg/L | Xu 2019 Table 3, Km row |
+| `lBase` (typical DAS28-CRP baseline) | `log(6.06)` | Ma 2020 Table 3, BASE row (6.06) |
+| `lEmax` (logit of Emax) | `0.237` | Ma 2020 Table 3, Log(Emax) row; Emax = logit^-1(0.237) = 0.559 matches paper’s stated 55.9% maximum decrease |
+| `lIC50` | `log(2.32)` mg/L | Ma 2020 Table 3, IC50 row |
+| `lKout` | `log(0.0264)` 1/day | Ma 2020 Table 3, Kout row |
+| `lPLB` (placebo/background DMARD equiv. concentration) | `log(0.991)` mg/L | Ma 2020 Table 3, PLB row |
+| `gamma` (Hill coefficient) | `fixed(1)` | Ma 2020 Table 3, gamma row (fixed to 1) |
+| `e_crp_base` | `0.0564` | Ma 2020 Table 3, CRP on BASE |
+| `e_blphyvas_base` | `0.105` | Ma 2020 Table 3, BLPHYVAS on BASE |
+| `e_blhaq_base` | `0.0779` | Ma 2020 Table 3, BLHAQ on BASE |
+| `e_wt_base` | `0.0522` | Ma 2020 Table 3, Weight on BASE |
+| `e_crp_lemax` | `0.333` | Ma 2020 Table 3, CRP on Log(Emax) |
+| `e_pricort_kout` (Kout multiplier for PRICORT = 1) | `1.26` | Ma 2020 Table 3, PRICORT on Kout; 0.0264 \* 1.26 = 0.0333 matches paper narrative |
+| `var(etalvm)` | `log(0.324^2 + 1) = 0.0998` | Xu 2019 Table 3: Vm IIV 32.4% CV |
+| `var(etalcl)` | `log(0.553^2 + 1) = 0.2669` | Xu 2019 Table 3: CLO/F IIV 55.3% CV |
+| `cov(etalvm, etalcl)` | `-0.566 * sqrt(0.0998 * 0.2669) = -0.0924` | Xu 2019 Table 3: Vm-CLO/F correlation -0.566 |
+| `var(etalvc)` | `log(0.373^2 + 1) = 0.1302` | Xu 2019 Table 3: Vc/F IIV 37.3% CV |
+| `var(etalka)` | `log(0.321^2 + 1) = 0.0981` | Xu 2019 Table 3: Ka IIV 32.1% CV |
+| `var(etalBase)` | `log(0.0805^2 + 1) = 0.00646` | Ma 2020 Table 3: BASE IIV 8.05% CV |
+| `var(etalEmax)` | `log(0.712^2 + 1) = 0.4105` | Ma 2020 Table 3: Log(Emax) IIV 71.2% CV |
+| `var(etalIC50)` | `log(1.58^2 + 1) = 1.252` | Ma 2020 Table 3: IC50 IIV 158% CV |
+| `var(etalKout)` | `log(0.842^2 + 1) = 0.5360` | Ma 2020 Table 3: Kout IIV 84.2% CV |
+| `var(etalPLB)` | `log(1.05^2 + 1) = 0.7431` | Ma 2020 Table 3: PLB IIV 105% CV |
+| `CcpropSd` (sarilumab proportional RE) | `sqrt(0.395) = 0.6285` | Xu 2019 Table 3: log-additive residual sigma^2 = 0.395 |
+| `das28addSd` (DAS28-CRP additive RE) | `0.647` | Ma 2020 Table 3, additive residual row |
+| Structure — PK (2-cmt + first-order SC absorption + linear + MM elimination) | n/a | Xu 2019 Methods / Figure 2 / Eq. |
+| Structure — PD (indirect response with inhibition of kin) | n/a | Ma 2020 Figure 1 caption and Eq. |
+| `Eff = Emax*(C+PLB)^g / (IC50^g + (C+PLB)^g)` | n/a | Ma 2020 Figure 1 caption equation |
 
 ### Parameterization notes
 
@@ -164,6 +164,7 @@ dataset (n = 2082). Subject-level observed data were not released with
 the paper.
 
 ``` r
+
 set.seed(20260419)
 n_subj <- 60
 
@@ -184,6 +185,7 @@ follow-up reported for DAS28-CRP in Ma 2020 Table 2 and the endpoint for
 the paper’s week-24 reduction statistics.
 
 ``` r
+
 tau      <- 14                           # Q2W dosing interval (days)
 week24   <- 24 * 7                       # day 168
 n_doses  <- ceiling(week24 / tau)
@@ -210,6 +212,7 @@ correctness at a modest computational cost for this small (N = 60)
 validation cohort.
 
 ``` r
+
 mod <- rxode2::rxode2(readModelDb("Ma_2020_sarilumab_das28crp"))
 #> ℹ parameter labels from comments will be replaced by 'label()'
 
@@ -252,6 +255,7 @@ covariate values (CRP 15.7 mg/L, BLPHYVAS 66, BLHAQ 1.75, WT 72.8 kg,
 PRICORT = 0):
 
 ``` r
+
 mod_typical <- mod |> rxode2::zeroRe()
 
 typical_cov <- tibble::tibble(
@@ -297,6 +301,7 @@ reproduces that figure using the typical-patient deterministic
 simulation.
 
 ``` r
+
 sim_typ |>
   dplyr::filter(!is.na(das28)) |>
   ggplot(aes(time / 7, das28, colour = treatment)) +
@@ -323,6 +328,7 @@ for the DAS28-CRP dataset. The block below reproduces that figure using
 the virtual cohort simulation (sarilumab 200 mg Q2W SC, N = 60).
 
 ``` r
+
 vpc_200 <- sim |>
   dplyr::filter(treatment == "200mg_Q2W", !is.na(das28)) |>
   dplyr::group_by(time) |>
@@ -359,6 +365,7 @@ the typical-patient sarilumab profile over the 24-week horizon for
 comparison to Xu 2019 Figure 3.
 
 ``` r
+
 sim_typ |>
   dplyr::filter(!is.na(Cc), treatment != "Placebo") |>
   ggplot(aes(time, Cc, colour = treatment)) +
@@ -384,6 +391,7 @@ The block below extracts the typical-patient simulated week-24 values
 and compares them with the paper.
 
 ``` r
+
 week24_vals <- sim_typ |>
   dplyr::filter(!is.na(das28), abs(time - week24) < 1e-6) |>
   dplyr::select(treatment, das28_sim = das28) |>
@@ -418,7 +426,7 @@ knitr::kable(comparison, digits = 2,
 | 200mg_Q2W |      3.01 |           50.3 |      3.02 |          50.14 |     0.38 |
 
 Typical-patient week-24 DAS28-CRP (IIV zeroed) vs. Ma 2020 reported
-values. All active-arm differences within ~3%.
+values. All active-arm differences within ~3%. {.table}
 
 ### Baseline reproduction check
 
@@ -429,6 +437,7 @@ so the `t = 0` value of the DAS28-CRP compartment should be 6.06
 regardless of regimen.
 
 ``` r
+
 baseline_check <- sim_typ |>
   dplyr::filter(!is.na(das28), time == 0) |>
   dplyr::distinct(treatment, baseline = das28)
@@ -443,6 +452,7 @@ knitr::kable(baseline_check, digits = 3,
 | 200mg_Q2W |     6.06 |
 
 Typical-patient DAS28-CRP at t = 0 (all arms; should equal 6.06).
+{.table}
 
 ### Placebo-arm check
 
@@ -453,6 +463,7 @@ simulated typical-patient placebo week-24 DAS28-CRP and compares to the
 paper narrative.
 
 ``` r
+
 placebo_check <- sim_typ |>
   dplyr::filter(treatment == "Placebo", !is.na(das28),
                 abs(time - week24) < 1e-6) |>
@@ -470,7 +481,7 @@ knitr::kable(placebo_check, digits = 2,
 |         5.06 |          16.53 |             25 |
 |         5.06 |          16.53 |             25 |
 
-Typical-patient placebo-arm week-24 DAS28-CRP reduction.
+Typical-patient placebo-arm week-24 DAS28-CRP reduction. {.table}
 
 ## Assumptions and deviations
 

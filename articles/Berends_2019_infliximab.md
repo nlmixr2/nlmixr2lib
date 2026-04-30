@@ -1,6 +1,7 @@
 # Berends_2019_infliximab
 
 ``` r
+
 library(nlmixr2lib)
 library(PKNCA)
 #> 
@@ -65,6 +66,7 @@ antibodies-to-infliximab were detected in 7/20 patients during follow-up
 The full population descriptor is available programmatically:
 
 ``` r
+
 str(rxode2::rxode2(readModelDb("Berends_2019_infliximab"))$meta$population)
 #> ℹ parameter labels from comments will be replaced by 'label()'
 #> List of 14
@@ -91,32 +93,32 @@ The per-parameter origin is recorded as an in-file comment next to each
 `inst/modeldb/specificDrugs/Berends_2019_infliximab.R`. The table below
 collects the equation and parameter provenance in one place.
 
-| Element                             | Value (paper unit)               | Stored value (ug/mL)       | Source location                                                                                   |
-|-------------------------------------|----------------------------------|----------------------------|---------------------------------------------------------------------------------------------------|
-| `CL` (population clearance)         | 0.404 L/day                      | \-                         | Table 2                                                                                           |
-| `Vc` (central volume)               | 3.18 L                           | \-                         | Table 2                                                                                           |
-| `Vp` (peripheral volume)            | 1.64 L                           | \-                         | Table 2                                                                                           |
-| `Q` (intercompartmental clearance)  | 0.344 L/day                      | \-                         | Table 2                                                                                           |
-| `e_ada_cl` (ADA factor on CL)       | 2.15                             | \-                         | Table 2 (ADA-CL)                                                                                  |
-| `e_alb_cl` (ALB power on CL)        | -1.13                            | \-                         | Table 2 (Alb-CL)                                                                                  |
-| Reference albumin (denominator)     | 38 g/L                           | \-                         | Table 1 (cohort median)                                                                           |
-| `Bmax` (baseline TNF)               | 0.38 pM (= 19.8 pg/mL)           | 5.662e-5 ug/mL (IFX-equiv) | Table 2                                                                                           |
-| `Kss` (QSS dissociation constant)   | 13.6 nM                          | 2.0264 ug/mL (IFX-equiv)   | Results “Final model” + Abstract; Table 2 displays integer-rounded “14”; bootstrap median 13.7 nM |
-| `kint` (= `ke(P)`, internalization) | 0.984 /day                       | 0.984 /day                 | Table 2 (ke(P))                                                                                   |
-| `kdeg` (TNF degradation, fixed)     | 5.12 /day                        | 5.12 /day                  | Table 2 / Suppl. Table 1                                                                          |
-| IIV CL (29.2 % CV)                  | omega^2 = 0.08185                | \-                         | Table 2                                                                                           |
-| IIV Vc (22.7 % CV)                  | omega^2 = 0.05022                | \-                         | Table 2                                                                                           |
-| IIV Vp (74.2 % CV)                  | omega^2 = 0.43847                | \-                         | Table 2                                                                                           |
-| IIV Bmax (39.2 % CV)                | omega^2 = 0.14302                | \-                         | Table 2                                                                                           |
-| Cov(eta_CL, eta_Vc)                 | 0.007884 (rho = 0.123)           | \-                         | Table 2 (Cov. CL-Vc 12.3 %)                                                                       |
-| IFX residual (proportional)         | 0.210                            | \-                         | Table 2                                                                                           |
-| TNF residual (proportional)         | 0.406                            | \-                         | Table 2                                                                                           |
-| QSS quadratic for Cfree             | (Eq. 10)                         | \-                         | Methods                                                                                           |
-| Drug central ODE                    | (Eq. 11)                         | \-                         | Methods                                                                                           |
-| Drug peripheral ODE                 | (Eq. 12)                         | \-                         | Methods                                                                                           |
-| Total TNF ODE                       | (Eq. 13)                         | \-                         | Methods                                                                                           |
-| Categorical-covariate equation      | `P = P_TV * theta^COV`           | \-                         | Methods                                                                                           |
-| Continuous-covariate equation       | `P = P_TV * (COV/COV_med)^theta` | \-                         | Methods                                                                                           |
+| Element | Value (paper unit) | Stored value (ug/mL) | Source location |
+|----|----|----|----|
+| `CL` (population clearance) | 0.404 L/day | \- | Table 2 |
+| `Vc` (central volume) | 3.18 L | \- | Table 2 |
+| `Vp` (peripheral volume) | 1.64 L | \- | Table 2 |
+| `Q` (intercompartmental clearance) | 0.344 L/day | \- | Table 2 |
+| `e_ada_cl` (ADA factor on CL) | 2.15 | \- | Table 2 (ADA-CL) |
+| `e_alb_cl` (ALB power on CL) | -1.13 | \- | Table 2 (Alb-CL) |
+| Reference albumin (denominator) | 38 g/L | \- | Table 1 (cohort median) |
+| `Bmax` (baseline TNF) | 0.38 pM (= 19.8 pg/mL) | 5.662e-5 ug/mL (IFX-equiv) | Table 2 |
+| `Kss` (QSS dissociation constant) | 13.6 nM | 2.0264 ug/mL (IFX-equiv) | Results “Final model” + Abstract; Table 2 displays integer-rounded “14”; bootstrap median 13.7 nM |
+| `kint` (= `ke(P)`, internalization) | 0.984 /day | 0.984 /day | Table 2 (ke(P)) |
+| `kdeg` (TNF degradation, fixed) | 5.12 /day | 5.12 /day | Table 2 / Suppl. Table 1 |
+| IIV CL (29.2 % CV) | omega^2 = 0.08185 | \- | Table 2 |
+| IIV Vc (22.7 % CV) | omega^2 = 0.05022 | \- | Table 2 |
+| IIV Vp (74.2 % CV) | omega^2 = 0.43847 | \- | Table 2 |
+| IIV Bmax (39.2 % CV) | omega^2 = 0.14302 | \- | Table 2 |
+| Cov(eta_CL, eta_Vc) | 0.007884 (rho = 0.123) | \- | Table 2 (Cov. CL-Vc 12.3 %) |
+| IFX residual (proportional) | 0.210 | \- | Table 2 |
+| TNF residual (proportional) | 0.406 | \- | Table 2 |
+| QSS quadratic for Cfree | (Eq. 10) | \- | Methods |
+| Drug central ODE | (Eq. 11) | \- | Methods |
+| Drug peripheral ODE | (Eq. 12) | \- | Methods |
+| Total TNF ODE | (Eq. 13) | \- | Methods |
+| Categorical-covariate equation | `P = P_TV * theta^COV` | \- | Methods |
+| Continuous-covariate equation | `P = P_TV * (COV/COV_med)^theta` | \- | Methods |
 
 The `Kss` value of 13.6 nM is taken from the Results “Final model”
 paragraph (“Population steady state dissociation constant (Kss) was 13.6
@@ -126,10 +128,10 @@ integer-rounded “14” is treated as a display rounding.
 
 ## Covariate column naming
 
-| Source column                | Canonical column used here                                    |
-|------------------------------|---------------------------------------------------------------|
+| Source column | Canonical column used here |
+|----|----|
 | `ALB` (serum albumin in g/L) | `ALB` (canonical, per `inst/references/covariate-columns.md`) |
-| `ADA` (anti-IFX positivity)  | `ADA_POS` (canonical 0/1; binary)                             |
+| `ADA` (anti-IFX positivity) | `ADA_POS` (canonical 0/1; binary) |
 
 ## Virtual cohort
 
@@ -142,6 +144,7 @@ variability via
 [`rxode2::zeroRe()`](https://nlmixr2.github.io/rxode2/reference/zeroRe.html).
 
 ``` r
+
 MW_IFX_kDa <- 149     # paper Methods
 MW_TNF_kDa <- 52      # paper Methods
 mg_per_kg  <- 5
@@ -156,6 +159,7 @@ induction_days <- c(0, 14, 42)   # week 0, 2, 6
 ## Simulation
 
 ``` r
+
 mod <- readModelDb("Berends_2019_infliximab")
 mod_typical <- rxode2::zeroRe(mod)
 #> ℹ parameter labels from comments will be replaced by 'label()'
@@ -204,6 +208,7 @@ than free-TNF degradation `kdeg` = 5.12/day) and subsequently declining
 once IFX clears below `Kss`.
 
 ``` r
+
 tnf_df <- bind_rows(
   sim_neg_med |> transmute(time, Rtot_pgml,
                             scenario = "ADA-, ALB 38 g/L (typical)"),
@@ -238,6 +243,7 @@ reproduce the equivalent comparison: trough at week 6 (day 42,
 immediately before the third induction dose).
 
 ``` r
+
 trough_t <- 42 - 0.001  # immediately pre-dose at week 6
 
 trough_at <- function(s, scenario_label) {
@@ -266,6 +272,7 @@ knitr::kable(trough_df, digits = 2,
 |   74.46 | 499.70 | ADA+, ALB 38 g/L |
 
 Predicted week-6 trough IFX concentration under each covariate scenario.
+{.table}
 
 The clearance ratios implied by Table 2 are:
 
@@ -284,6 +291,7 @@ Below we reproduce the equivalent typical-value lines for a 70 kg / 38
 g/L albumin / ADA-negative subject.
 
 ``` r
+
 plot_df <- sim_neg_med |>
   pivot_longer(c(Cc, Rtot_pgml, free_TNF_pgml),
                names_to = "panel", values_to = "value") |>
@@ -315,6 +323,7 @@ target is saturated for the duration of measurable IFX). Dosing formula
 is grouped by `treatment` per the skill’s PKNCA recipe.
 
 ``` r
+
 sd_obs_t <- sort(unique(c(0, 0.04, 0.083, 0.25, 0.5, 1, 2, 3, 4, 5, 7,
                           seq(10, 56, by = 2))))
 
@@ -351,29 +360,30 @@ knitr::kable(as.data.frame(nca_res), digits = 3,
              caption = "PKNCA summary for a single 5 mg/kg IV bolus (ADA-negative typical-value simulation; IFX in ug/mL).")
 ```
 
-| treatment                   |  id | start | end | PPTESTCD            | PPORRES | exclude                                                                                 |
-|:----------------------------|----:|------:|----:|:--------------------|--------:|:----------------------------------------------------------------------------------------|
-| 5 mg/kg IV SD, ADA-, ALB 38 |   1 |     0 | Inf | cmax                | 109.034 | NA                                                                                      |
-| 5 mg/kg IV SD, ADA-, ALB 38 |   1 |     0 | Inf | tmax                |   0.040 | NA                                                                                      |
-| 5 mg/kg IV SD, ADA-, ALB 38 |   1 |     0 | Inf | tlast               |  56.000 | NA                                                                                      |
-| 5 mg/kg IV SD, ADA-, ALB 38 |   1 |     0 | Inf | clast.obs           |   0.928 | NA                                                                                      |
-| 5 mg/kg IV SD, ADA-, ALB 38 |   1 |     0 | Inf | lambda.z            |   0.072 | NA                                                                                      |
-| 5 mg/kg IV SD, ADA-, ALB 38 |   1 |     0 | Inf | r.squared           |   1.000 | NA                                                                                      |
-| 5 mg/kg IV SD, ADA-, ALB 38 |   1 |     0 | Inf | adj.r.squared       |   1.000 | NA                                                                                      |
-| 5 mg/kg IV SD, ADA-, ALB 38 |   1 |     0 | Inf | lambda.z.time.first |  12.000 | NA                                                                                      |
-| 5 mg/kg IV SD, ADA-, ALB 38 |   1 |     0 | Inf | lambda.z.time.last  |  56.000 | NA                                                                                      |
-| 5 mg/kg IV SD, ADA-, ALB 38 |   1 |     0 | Inf | lambda.z.n.points   |  23.000 | NA                                                                                      |
-| 5 mg/kg IV SD, ADA-, ALB 38 |   1 |     0 | Inf | clast.pred          |   0.924 | NA                                                                                      |
-| 5 mg/kg IV SD, ADA-, ALB 38 |   1 |     0 | Inf | half.life           |   9.673 | NA                                                                                      |
-| 5 mg/kg IV SD, ADA-, ALB 38 |   1 |     0 | Inf | span.ratio          |   4.549 | NA                                                                                      |
-| 5 mg/kg IV SD, ADA-, ALB 38 |   1 |     0 | Inf | aucinf.obs          |      NA | Requesting an AUC range starting (0) before the first measurement (0.04) is not allowed |
+| treatment | id | start | end | PPTESTCD | PPORRES | exclude |
+|:---|---:|---:|---:|:---|---:|:---|
+| 5 mg/kg IV SD, ADA-, ALB 38 | 1 | 0 | Inf | cmax | 109.034 | NA |
+| 5 mg/kg IV SD, ADA-, ALB 38 | 1 | 0 | Inf | tmax | 0.040 | NA |
+| 5 mg/kg IV SD, ADA-, ALB 38 | 1 | 0 | Inf | tlast | 56.000 | NA |
+| 5 mg/kg IV SD, ADA-, ALB 38 | 1 | 0 | Inf | clast.obs | 0.928 | NA |
+| 5 mg/kg IV SD, ADA-, ALB 38 | 1 | 0 | Inf | lambda.z | 0.072 | NA |
+| 5 mg/kg IV SD, ADA-, ALB 38 | 1 | 0 | Inf | r.squared | 1.000 | NA |
+| 5 mg/kg IV SD, ADA-, ALB 38 | 1 | 0 | Inf | adj.r.squared | 1.000 | NA |
+| 5 mg/kg IV SD, ADA-, ALB 38 | 1 | 0 | Inf | lambda.z.time.first | 12.000 | NA |
+| 5 mg/kg IV SD, ADA-, ALB 38 | 1 | 0 | Inf | lambda.z.time.last | 56.000 | NA |
+| 5 mg/kg IV SD, ADA-, ALB 38 | 1 | 0 | Inf | lambda.z.n.points | 23.000 | NA |
+| 5 mg/kg IV SD, ADA-, ALB 38 | 1 | 0 | Inf | clast.pred | 0.924 | NA |
+| 5 mg/kg IV SD, ADA-, ALB 38 | 1 | 0 | Inf | half.life | 9.673 | NA |
+| 5 mg/kg IV SD, ADA-, ALB 38 | 1 | 0 | Inf | span.ratio | 4.549 | NA |
+| 5 mg/kg IV SD, ADA-, ALB 38 | 1 | 0 | Inf | aucinf.obs | NA | Requesting an AUC range starting (0) before the first measurement (0.04) is not allowed |
 
 PKNCA summary for a single 5 mg/kg IV bolus (ADA-negative typical-value
-simulation; IFX in ug/mL).
+simulation; IFX in ug/mL). {.table}
 
 ### Consistency checks
 
 ``` r
+
 # Hand-checked Cmax: dose / Vc gives mg/L = ug/mL directly.
 expected_cmax_ugml <- dose_mg / 3.18
 cat(sprintf("Expected Cmax: %.2f ug/mL (= %.1f nM)\n",
@@ -393,13 +403,13 @@ cat(sprintf("Bmax check: %.4e ug/mL x 52/149 x 1e6 = %.2f pg/mL (paper 19.8)\n",
 #> Bmax check: 5.6620e-05 ug/mL x 52/149 x 1e6 = 19.76 pg/mL (paper 19.8)
 ```
 
-| Quantity                         | Berends 2019                   | Simulated (this vignette)                  |
-|----------------------------------|--------------------------------|--------------------------------------------|
-| Cmax, 5 mg/kg IV SD, 70 kg       | ~110 ug/mL (visual, Fig 4)     | 110 ug/mL (PKNCA Cmax)                     |
-| Linear t1/2 (`ln(2) * Vc / CL`)  | 5.46 days (hand calc)          | 5.46 days                                  |
-| Free TNF post-induction infusion | 0.27-2.1 pg/mL (Results)       | ~0.4 pg/mL (Figure 4 panel above)          |
-| Free TNF before week-6 dose      | 3.5-31 pg/mL (Results)         | ~1 pg/mL post-dose-3, rising as IFX clears |
-| Bmax check                       | 0.38 pM = 19.8 pg/mL (Table 2) | 19.76 pg/mL (within rounding)              |
+| Quantity | Berends 2019 | Simulated (this vignette) |
+|----|----|----|
+| Cmax, 5 mg/kg IV SD, 70 kg | ~110 ug/mL (visual, Fig 4) | 110 ug/mL (PKNCA Cmax) |
+| Linear t1/2 (`ln(2) * Vc / CL`) | 5.46 days (hand calc) | 5.46 days |
+| Free TNF post-induction infusion | 0.27-2.1 pg/mL (Results) | ~0.4 pg/mL (Figure 4 panel above) |
+| Free TNF before week-6 dose | 3.5-31 pg/mL (Results) | ~1 pg/mL post-dose-3, rising as IFX clears |
+| Bmax check | 0.38 pM = 19.8 pg/mL (Table 2) | 19.76 pg/mL (within rounding) |
 
 ## Assumptions and deviations
 

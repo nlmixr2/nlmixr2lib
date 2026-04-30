@@ -39,26 +39,26 @@ residual-error term below is taken directly from Soehoel 2022 Table 2.
 The reference weight is 75 kg; `nonECZTRA = 0` and `dilution = 0` define
 the ECZTRA / undiluted reference.
 
-| Equation / parameter                | Value               | Source location                                            |
-|-------------------------------------|---------------------|------------------------------------------------------------|
-| `lka` (ka)                          | `log(0.184)` 1/day  | Table 2                                                    |
-| `lvc` (V2, central volume)          | `log(2.71)` L       | Table 2                                                    |
-| `lcl` (CL)                          | `log(0.149)` L/day  | Table 2                                                    |
-| `lvp` (V3, peripheral volume)       | `log(1.44)` L       | Table 2                                                    |
-| `lq` (Q, intercompartmental CL)     | `log(0.159)` L/day  | Table 2                                                    |
-| `lfdepot` (F, SC bioavailability)   | `log(0.761)`        | Table 2                                                    |
-| `e_wt_vcvp` (WT on V2 and V3)       | `0.783`             | Table 2 (allometric)                                       |
-| `e_wt_clq` (WT on CL and Q)         | `0.873`             | Table 2 (allometric)                                       |
-| `e_nonECZTRA_cl` (non-ECZTRA on CL) | `0.344`             | Table 2                                                    |
-| `e_nonECZTRA_vc` (non-ECZTRA on V2) | `0.258`             | Table 2                                                    |
-| `e_f_dilution` (dilution on F)      | `0.354`             | Table 2                                                    |
-| `e_ka_dilution` (dilution on ka)    | `-0.519`            | Table 2                                                    |
-| `var(etalvc)`                       | `0.148971`          | Table 2: CV_V2 = 40.1%, `omega^2 = log(1 + 0.401^2)`       |
-| `var(etalcl)`                       | `0.093459`          | Table 2: CV_CL = 31.3%, `omega^2 = log(1 + 0.313^2)`       |
-| `cov(etalvc, etalcl)`               | `0.071977`          | Table 2: `rho = 0.61`, cov = `rho * sqrt(var_V2 * var_CL)` |
-| `CcaddSd` (additive sigma, ug/mL)   | `0.238`             | Table 2                                                    |
-| `CcpropSd` (proportional sigma)     | `0.216`             | Table 2                                                    |
-| Structure                           | 2-cmt, 1st-order SC | p. 912 Methods; confirmed by Table 2                       |
+| Equation / parameter | Value | Source location |
+|----|----|----|
+| `lka` (ka) | `log(0.184)` 1/day | Table 2 |
+| `lvc` (V2, central volume) | `log(2.71)` L | Table 2 |
+| `lcl` (CL) | `log(0.149)` L/day | Table 2 |
+| `lvp` (V3, peripheral volume) | `log(1.44)` L | Table 2 |
+| `lq` (Q, intercompartmental CL) | `log(0.159)` L/day | Table 2 |
+| `lfdepot` (F, SC bioavailability) | `log(0.761)` | Table 2 |
+| `e_wt_vcvp` (WT on V2 and V3) | `0.783` | Table 2 (allometric) |
+| `e_wt_clq` (WT on CL and Q) | `0.873` | Table 2 (allometric) |
+| `e_nonECZTRA_cl` (non-ECZTRA on CL) | `0.344` | Table 2 |
+| `e_nonECZTRA_vc` (non-ECZTRA on V2) | `0.258` | Table 2 |
+| `e_f_dilution` (dilution on F) | `0.354` | Table 2 |
+| `e_ka_dilution` (dilution on ka) | `-0.519` | Table 2 |
+| `var(etalvc)` | `0.148971` | Table 2: CV_V2 = 40.1%, `omega^2 = log(1 + 0.401^2)` |
+| `var(etalcl)` | `0.093459` | Table 2: CV_CL = 31.3%, `omega^2 = log(1 + 0.313^2)` |
+| `cov(etalvc, etalcl)` | `0.071977` | Table 2: `rho = 0.61`, cov = `rho * sqrt(var_V2 * var_CL)` |
+| `CcaddSd` (additive sigma, ug/mL) | `0.238` | Table 2 |
+| `CcpropSd` (proportional sigma) | `0.216` | Table 2 |
+| Structure | 2-cmt, 1st-order SC | p. 912 Methods; confirmed by Table 2 |
 
 Table 2 footnote (d) of Soehoel 2022 states that IIV is reported as
 `sqrt(exp(omega^2) - 1)`, i.e., the log-normal CV convention. The
@@ -82,6 +82,7 @@ reference) for the labelled regimen. Sex and race columns are retained
 for documentation but do not enter the Soehoel 2022 model.
 
 ``` r
+
 set.seed(20260418)
 n_subj <- 400
 
@@ -131,6 +132,7 @@ events <- dplyr::bind_rows(ev_dose, ev_obs) |>
 ## Simulation
 
 ``` r
+
 mod <- rxode2::rxode2(readModelDb("Soehoel_2022_tralokinumab"))
 conc_unit <- mod$units[["concentration"]]
 sim <- rxode2::rxSolve(
@@ -149,6 +151,7 @@ percentile bands from the virtual AD cohort under the labelled
 cycles (steady-state reached by cycle 8-10).
 
 ``` r
+
 vpc <- sim |>
   dplyr::filter(!is.na(Cc), time > 0) |>
   dplyr::group_by(time) |>
@@ -181,6 +184,7 @@ Zoomed-in view of the final Q2W cycle (days 168-182) to isolate the
 steady-state peak, trough, and AUC_tau used by the NCA below.
 
 ``` r
+
 ss_start <- tau * n_maint # day 168 (time of dose 13)
 ss_end <- ss_start + tau # day 182
 
@@ -216,6 +220,7 @@ average concentration per simulated subject, then summarise across the
 cohort.
 
 ``` r
+
 nca_conc <- sim |>
   dplyr::filter(time >= ss_start, time <= ss_end, !is.na(Cc)) |>
   dplyr::mutate(time_nom = time - ss_start,
@@ -239,6 +244,7 @@ intervals <- data.frame(
 )
 
 nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■       88% |  ETA:  0s
 summary(nca_res)
 #>  start end    treatment   N     auclast       cmax       cmin        cav
 #>      0  14 300mg_Q2W_SS 400 2110 [41.5] 163 [40.7] 130 [43.4] 151 [41.5]
@@ -258,6 +264,7 @@ for a 75-kg adult on 600-mg-load + 300-mg-Q2W SC. The typical-value
 comparison:
 
 ``` r
+
 mod_typical <- mod |> rxode2::zeroRe()
 
 typical_cohort <- tibble::tibble(
@@ -306,7 +313,7 @@ knitr::kable(typical_summary, digits = 2,
 | AUC_tau (day\*ug/mL) |       2009.01 |
 
 Typical-subject steady-state exposure (WT = 75 kg, nonECZTRA = 0,
-dilution = 0; IIV zeroed).
+dilution = 0; IIV zeroed). {.table}
 
 ## Assumptions and deviations
 

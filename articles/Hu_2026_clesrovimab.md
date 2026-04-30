@@ -1,6 +1,7 @@
 # Hu_2026_clesrovimab
 
 ``` r
+
 library(nlmixr2lib)
 library(PKNCA)
 #> 
@@ -43,6 +44,7 @@ Multicentre Growth Reference Study Group, 2006). The LMS formula is:
 weight = M × (1 + L × S × z)^(1/L)
 
 ``` r
+
 who_lms <- data.frame(
   age_mo = 0:10,
   L = c(0.3487, 0.2297, 0.1970, 0.1738, 0.1553, 0.1395,
@@ -70,6 +72,7 @@ Sample N = 500 virtual infants with covariate distributions
 approximating the study population.
 
 ``` r
+
 set.seed(1654) # clesrovimab MK-1654
 n_subj <- 500
 
@@ -117,6 +120,7 @@ Observation times every 7 days from 0 to 150 days, plus the dose event
 at time 0.
 
 ``` r
+
 obs_times_day <- seq(0, 150, by = 7)
 
 # Dose records (one per subject at time 0)
@@ -157,6 +161,7 @@ d_sim <- bind_rows(d_dose, d_obs) |>
 ### Load model and simulate
 
 ``` r
+
 mod <- readModelDb("Hu_2026_clesrovimab")
 conc_unit <- rxode2::rxode(mod)$units[["concentration"]]
 #> ℹ parameter labels from comments will be replaced by 'label()'
@@ -171,6 +176,7 @@ sim_out <- rxode2::rxSolve(mod, events = d_sim)
 ### Summarise simulation results
 
 ``` r
+
 # Attach baseline weight group to simulation output
 wt_grp_map <- d_sim |>
   filter(EVID == 0, TIME == 0) |>
@@ -208,6 +214,7 @@ d_strat <- sim_plot |>
 ### Figure 2 — Overall population VPC
 
 ``` r
+
 ggplot(d_overall, aes(x = time, y = Q50)) +
   geom_ribbon(aes(ymin = Q05, ymax = Q95), fill = "steelblue", alpha = 0.25) +
   geom_line(linewidth = 0.8) +
@@ -228,6 +235,7 @@ ggplot(d_overall, aes(x = time, y = Q50)) +
 ### Figure 2 — Stratified by baseline body weight
 
 ``` r
+
 ggplot(d_strat, aes(x = time, y = Q50)) +
   geom_ribbon(aes(ymin = Q05, ymax = Q95), fill = "steelblue", alpha = 0.25) +
   geom_line(linewidth = 0.8) +
@@ -268,6 +276,7 @@ Non-compartmental analysis of simulated clesrovimab PK (single 105 mg IM
 dose, N = 500 virtual infants stratified by baseline weight group).
 
 ``` r
+
 # Build NCA data: use days 0-150, group by baseline weight category
 # (use sim_out to include time 0 for the dose anchor)
 sim_nca <- sim_out |>
@@ -292,21 +301,22 @@ data_obj <- PKNCAdata(conc_obj, dose_obj,
                          cmax = TRUE, tmax = TRUE,
                          auclast = TRUE, half.life = TRUE))
 nca_results <- pk.nca(data_obj)
-#>  ■■■■■■■■■                         25% |  ETA:  9s
-#>  ■■■■■■■■■■■■■■■■                  49% |  ETA:  6s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■           75% |  ETA:  3s
+#>  ■■■■■■■■                          23% |  ETA: 10s
+#>  ■■■■■■■■■■■■■■■                   45% |  ETA:  7s
+#>  ■■■■■■■■■■■■■■■■■■■■■■            71% |  ETA:  4s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    97% |  ETA:  0s
 nca_summary <- summary(nca_results)
 knitr::kable(nca_summary, digits = 2,
              caption = "NCA summary by baseline weight group (single 105 mg IM dose)")
 ```
 
-| start | end | wt_group | N   | auclast       | cmax          | tmax                | half.life     |
-|------:|----:|:---------|:----|:--------------|:--------------|:--------------------|:--------------|
-|     0 | 150 | \< 4 kg  | 113 | 7270 \[11.9\] | 147 \[10.2\]  | 7.00 \[7.00, 14.0\] | 43.8 \[6.20\] |
-|     0 | 150 | 4–6 kg   | 277 | 6310 \[10.9\] | 120 \[10.2\]  | 7.00 \[7.00, 14.0\] | 45.1 \[6.22\] |
-|     0 | 150 | ≥ 6 kg   | 110 | 5590 \[11.0\] | 99.6 \[8.71\] | 7.00 \[7.00, 7.00\] | 47.4 \[6.56\] |
+| start | end | wt_group | N | auclast | cmax | tmax | half.life |
+|---:|---:|:---|:---|:---|:---|:---|:---|
+| 0 | 150 | \< 4 kg | 113 | 7270 \[11.9\] | 147 \[10.2\] | 7.00 \[7.00, 14.0\] | 43.8 \[6.20\] |
+| 0 | 150 | 4–6 kg | 277 | 6310 \[10.9\] | 120 \[10.2\] | 7.00 \[7.00, 14.0\] | 45.1 \[6.22\] |
+| 0 | 150 | ≥ 6 kg | 110 | 5590 \[11.0\] | 99.6 \[8.71\] | 7.00 \[7.00, 7.00\] | 47.4 \[6.56\] |
 
-NCA summary by baseline weight group (single 105 mg IM dose)
+NCA summary by baseline weight group (single 105 mg IM dose) {.table}
 
 ### Reference
 

@@ -51,34 +51,34 @@ as the reference”; the reference patient’s female designation in Figure
 1 is the visualization baseline used for the covariate-effect forest
 plot.
 
-| Equation / parameter                                                                                                      | Value                         | Source location                                                                  |
-|---------------------------------------------------------------------------------------------------------------------------|-------------------------------|----------------------------------------------------------------------------------|
-| `lcl` (CL)                                                                                                                | `log(0.0179 * 24)` L/day      | Table 2: CL = 0.0179 L/h                                                         |
-| `lvc` (VC)                                                                                                                | `log(3.29)` L                 | Table 2: VC = 3.29 L                                                             |
-| `lq` (Q)                                                                                                                  | `log(0.0231 * 24)` L/day      | Table 2: Q = 0.0231 L/h                                                          |
-| `lvp` (VP)                                                                                                                | `log(3.67)` L                 | Table 2: VP = 3.67 L                                                             |
-| `lka` (KA_(TV), relative absorption)                                                                                      | `log(0.00521 * 24)` 1/day     | Table 2: KA = 0.00521 1/h (paper “L/h” is a units typo)                          |
-| `logitfdepot` (logit F_(TV,ref))                                                                                          | `1.20831`                     | Table 2: F = 0.770; logit(0.770) = 1.20831                                       |
-| `e_wt_cl` ((WT/68)^(exp) on CL)                                                                                           | `0.706`                       | Table 2: Power of body weight on CL                                              |
-| `e_wt_vc` ((WT/68)^(exp) on VC)                                                                                           | `0.603`                       | Table 2: Power of body weight on VC                                              |
-| `e_wt_vp` ((WT/68)^(exp) on VP)                                                                                           | `0.575`                       | Table 2: Power of body weight on VP                                              |
-| `e_wt_f` (slope of log(WT/68) on logit-F)                                                                                 | `-0.506`                      | Table 2: Power of body weight on bioavailability                                 |
-| `e_age_vc` ((AGE/49)^(exp) on VC)                                                                                         | `0.114`                       | Table 2: Power of age on VC                                                      |
-| `e_age_f` (slope of log(AGE/49) on logit-F)                                                                               | `0.487`                       | Table 2: Power of age on bioavailability                                         |
-| `e_alb_cl` ((ALB/4.1)^(exp) on CL)                                                                                        | `-0.722`                      | Table 2: Power of albumin on CL                                                  |
-| `e_crcl_cl` ((CRCL/99.18)^(exp) on CL)                                                                                    | `0.259`                       | Table 2: Power of GFR on CL                                                      |
-| `e_swol_cl` (((SWOL+1)/16)^(exp) on CL)                                                                                   | `0.0742`                      | Table 2: Power of SJC on CL                                                      |
-| `e_sexf_cl` (exp(SEXF·coef) on CL)                                                                                        | `0.0674`                      | Table 2: Exponent of male sex on CL                                              |
-| `e_nsaid_cl` (exp(CONMED_NSAID·coef) on CL)                                                                               | `0.102`                       | Table 2: Exponent of NSAID on CL                                                 |
-| `e_jia_f` (additive on logit-F for DIS_PJIA=1)                                                                            | `3.08`                        | Table 2: Exponent of JIA on bioavailability                                      |
-| `var(etalka)`                                                                                                             | `1.11`                        | Table 2 IIV/residual column, KA row                                              |
-| `var(etalvc)`                                                                                                             | `0.0464`                      | Table 2 IIV/residual column, VC row                                              |
-| `var(etalcl)`                                                                                                             | `0.0637`                      | Table 2 IIV/residual column, CL row                                              |
-| `var(etalvp)`                                                                                                             | `0.154`                       | Table 2 IIV/residual column, VP row                                              |
-| `var(etalogitfdepot)`                                                                                                     | `0.516`                       | Table 2 IIV/residual column, F row                                               |
-| `propSd` (= sqrt(SIGMA_(PROP)))                                                                                           | `sqrt(0.0615)` ≈ 0.248        | Table 2 IIV/residual column: Proportional residual error = 0.0615 (variance)     |
-| `addSd` (= sqrt(SIGMA_(ADD)))                                                                                             | `sqrt(0.00134)` ≈ 0.0366 mg/L | Table 2 IIV/residual column: Additive residual error = 0.00134 (mg²/L² variance) |
-| Structure (2-cmt + first-order SC / instantaneous IV input + logit-F + KA \> k_(el) constraint + combined residual error) | n/a                           | Methods, Population PK Analysis section, paragraphs on equations S1 and S2       |
+| Equation / parameter | Value | Source location |
+|----|----|----|
+| `lcl` (CL) | `log(0.0179 * 24)` L/day | Table 2: CL = 0.0179 L/h |
+| `lvc` (VC) | `log(3.29)` L | Table 2: VC = 3.29 L |
+| `lq` (Q) | `log(0.0231 * 24)` L/day | Table 2: Q = 0.0231 L/h |
+| `lvp` (VP) | `log(3.67)` L | Table 2: VP = 3.67 L |
+| `lka` (KA_(TV), relative absorption) | `log(0.00521 * 24)` 1/day | Table 2: KA = 0.00521 1/h (paper “L/h” is a units typo) |
+| `logitfdepot` (logit F_(TV,ref)) | `1.20831` | Table 2: F = 0.770; logit(0.770) = 1.20831 |
+| `e_wt_cl` ((WT/68)^(exp) on CL) | `0.706` | Table 2: Power of body weight on CL |
+| `e_wt_vc` ((WT/68)^(exp) on VC) | `0.603` | Table 2: Power of body weight on VC |
+| `e_wt_vp` ((WT/68)^(exp) on VP) | `0.575` | Table 2: Power of body weight on VP |
+| `e_wt_f` (slope of log(WT/68) on logit-F) | `-0.506` | Table 2: Power of body weight on bioavailability |
+| `e_age_vc` ((AGE/49)^(exp) on VC) | `0.114` | Table 2: Power of age on VC |
+| `e_age_f` (slope of log(AGE/49) on logit-F) | `0.487` | Table 2: Power of age on bioavailability |
+| `e_alb_cl` ((ALB/4.1)^(exp) on CL) | `-0.722` | Table 2: Power of albumin on CL |
+| `e_crcl_cl` ((CRCL/99.18)^(exp) on CL) | `0.259` | Table 2: Power of GFR on CL |
+| `e_swol_cl` (((SWOL+1)/16)^(exp) on CL) | `0.0742` | Table 2: Power of SJC on CL |
+| `e_sexf_cl` (exp(SEXF·coef) on CL) | `0.0674` | Table 2: Exponent of male sex on CL |
+| `e_nsaid_cl` (exp(CONMED_NSAID·coef) on CL) | `0.102` | Table 2: Exponent of NSAID on CL |
+| `e_jia_f` (additive on logit-F for DIS_PJIA=1) | `3.08` | Table 2: Exponent of JIA on bioavailability |
+| `var(etalka)` | `1.11` | Table 2 IIV/residual column, KA row |
+| `var(etalvc)` | `0.0464` | Table 2 IIV/residual column, VC row |
+| `var(etalcl)` | `0.0637` | Table 2 IIV/residual column, CL row |
+| `var(etalvp)` | `0.154` | Table 2 IIV/residual column, VP row |
+| `var(etalogitfdepot)` | `0.516` | Table 2 IIV/residual column, F row |
+| `propSd` (= sqrt(SIGMA_(PROP))) | `sqrt(0.0615)` ≈ 0.248 | Table 2 IIV/residual column: Proportional residual error = 0.0615 (variance) |
+| `addSd` (= sqrt(SIGMA_(ADD))) | `sqrt(0.00134)` ≈ 0.0366 mg/L | Table 2 IIV/residual column: Additive residual error = 0.00134 (mg²/L² variance) |
+| Structure (2-cmt + first-order SC / instantaneous IV input + logit-F + KA \> k_(el) constraint + combined residual error) | n/a | Methods, Population PK Analysis section, paragraphs on equations S1 and S2 |
 
 ### Parameterization notes
 
@@ -123,6 +123,7 @@ phase 2/3 contributing studies is not embedded in the PMC full text).
 Subject-level observed data were not released with the paper.
 
 ``` r
+
 set.seed(20260425)
 
 # Adult RA cohort
@@ -176,6 +177,7 @@ Three regimens are simulated:
   recommendation).
 
 ``` r
+
 tau_sc <- 7    # SC QW
 tau_iv <- 28   # IV Q4W
 n_sc   <- 26   # 26 weekly doses -> 182 days, deeply into SS
@@ -233,6 +235,7 @@ events_ra_iv   <- build_iv_events(ra_iv, dose_days_iv, "RA_IV_weight_tiered_Q4W"
 ## Simulation
 
 ``` r
+
 mod <- rxode2::rxode2(readModelDb("Gandhi_2021_abatacept"))
 keep_cols <- c("WT", "AGE", "ALB", "CRCL", "SWOL_28JOINT",
                "SEXF", "CONMED_NSAID", "DIS_PJIA", "cohort", "treatment")
@@ -257,6 +260,7 @@ an SC absorption half-life of ≈ 2.7 days and a single-dose Tmax near 5
 days — consistent with the abatacept SC label.
 
 ``` r
+
 mod_typ <- mod |> rxode2::zeroRe()
 typ_cov <- tibble::tibble(
   id = 1L, WT = 68, AGE = 49, ALB = 4.1, CRCL = 99.18,
@@ -300,6 +304,7 @@ than the IV C_(minss), and the C_(minss) exceeds the 10 µg/mL
 near-maximal efficacy target.
 
 ``` r
+
 ss_start_sc <- tau_sc * (n_sc - 1)
 ss_end_sc   <- ss_start_sc + tau_sc
 
@@ -328,6 +333,7 @@ ggplot(trough_pjia, aes(age_grp, Cc)) +
 ### SC vs IV concentration-time profiles in adult RA
 
 ``` r
+
 vpc_ra <- dplyr::bind_rows(
   sim_ra_sc |> dplyr::mutate(regimen = "SC 125 mg QW"),
   sim_ra_iv |> dplyr::mutate(regimen = "IV weight-tiered Q4W")
@@ -363,6 +369,7 @@ AUC_(tau). Two PKNCA blocks are run (one per regimen-cohort grouping) so
 that each formula carries `id/treatment` per the skill’s PKNCA recipe.
 
 ``` r
+
 nca_conc_pjia <- sim_pjia_sc |>
   dplyr::filter(time >= ss_start_sc, time <= ss_end_sc, !is.na(Cc)) |>
   dplyr::mutate(time_nom = time - ss_start_sc) |>
@@ -390,6 +397,7 @@ summary(nca_pjia)
 ```
 
 ``` r
+
 nca_conc_ra <- sim_ra_sc |>
   dplyr::filter(time >= ss_start_sc, time <= ss_end_sc, !is.na(Cc)) |>
   dplyr::mutate(time_nom = time - ss_start_sc) |>
@@ -422,6 +430,7 @@ cohort-fraction check below is a direct numerical replicate of that
 claim against the virtual pJIA cohort.
 
 ``` r
+
 pct_above_pjia <- trough_pjia |>
   dplyr::group_by(age_grp) |>
   dplyr::summarise(
@@ -443,8 +452,10 @@ knitr::kable(pct_above_pjia, digits = 1,
 
 Fraction of virtual pJIA subjects achieving steady-state Cmin \>= 10
 mg/L on the weight-tiered SC regimen (Gandhi 2021: 130/131 = 99.2%).
+{.table}
 
 ``` r
+
 
 trough_ra <- sim_ra_sc |>
   dplyr::filter(time == ss_start_sc + tau_sc) |>
@@ -470,6 +481,7 @@ knitr::kable(pct_above_ra, digits = 1,
 
 Fraction of virtual adult RA subjects achieving steady-state Cmin \>= 10
 mg/L on 125 mg SC QW (Gandhi 2021: comparable to IV ~10 mg/kg Q4W).
+{.table}
 
 ## Assumptions and deviations
 

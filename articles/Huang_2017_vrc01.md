@@ -1,6 +1,7 @@
 # Huang_2017_vrc01
 
 ``` r
+
 library(nlmixr2lib)
 library(PKNCA)
 library(rxode2)
@@ -52,31 +53,31 @@ The population metadata is also available programmatically via
 
 ## Source trace
 
-| Equation / parameter            | Value                               | Source location                    |
-|---------------------------------|-------------------------------------|------------------------------------|
-| Two-compartment ODE structure   | depot -\> central \<-\> peripheral1 | Huang 2017 Methods, Figure S2      |
-| `lka` (SC absorption rate)      | 0.26 / day                          | Table 2, Final model (IV+SC)       |
-| `lcl` (CL at WT = 74.5 kg)      | 0.40 L/day                          | Table 2, Final model (IV+SC)       |
-| `lvc` (Vc at WT = 74.5 kg)      | 1.94 L                              | Table 2, Final model (IV+SC)       |
-| `lq` (Q at WT = 74.5 kg)        | 0.84 L/day                          | Table 2, Final model (IV+SC)       |
-| `lvp` (Vp at WT = 74.5 kg)      | 4.90 L                              | Table 2, Final model (IV+SC)       |
-| `lfdepot` (SC bioavailability)  | 0.74                                | Table 2, Final model (IV+SC)       |
-| `e_wt_cl` (WT effect on CL)     | 0.012 fold/kg, exponential form     | Table 2, footnote 2                |
-| `e_wt_vc` (WT effect on Vc)     | 0.010 fold/kg, exponential form     | Table 2, footnote 2                |
-| `e_wt_q` (WT exponent on Q)     | 0.69, power form                    | Table 2, footnote 2                |
-| `e_wt_vp` (WT exponent on Vp)   | 0.82, power form                    | Table 2, footnote 2                |
-| Omega^2 CL                      | 0.067                               | Table 2                            |
-| Omega^2 Vc                      | 0.028                               | Table 2                            |
-| Omega^2 Q                       | 0.063                               | Table 2                            |
-| Omega^2 Vp                      | 0.120                               | Table 2                            |
-| Cov(CL, Q)                      | 0.034 (R = 0.52)                    | Table 2                            |
-| Cov(CL, Vp)                     | 0.050 (R = 0.56)                    | Table 2                            |
-| Cov(Q, Vp)                      | 0.082 (R = 0.95)                    | Table 2                            |
-| Sigma^2 proportional            | 0.042                               | Table 2                            |
-| Sigma^2 additive                | 0.456 (ug/mL)^2                     | Table 2                            |
-| Body-weight reference           | 74.5 kg                             | Table 2 footnote 4 / Methods       |
-| Combination residual error form | C_obs = C_pred \* (1 + e1) + e2     | Methods, “Variability popPK model” |
-| F1 / ka IIV fixed at 0          | \-                                  | Table 2 footnote 3                 |
+| Equation / parameter | Value | Source location |
+|----|----|----|
+| Two-compartment ODE structure | depot -\> central \<-\> peripheral1 | Huang 2017 Methods, Figure S2 |
+| `lka` (SC absorption rate) | 0.26 / day | Table 2, Final model (IV+SC) |
+| `lcl` (CL at WT = 74.5 kg) | 0.40 L/day | Table 2, Final model (IV+SC) |
+| `lvc` (Vc at WT = 74.5 kg) | 1.94 L | Table 2, Final model (IV+SC) |
+| `lq` (Q at WT = 74.5 kg) | 0.84 L/day | Table 2, Final model (IV+SC) |
+| `lvp` (Vp at WT = 74.5 kg) | 4.90 L | Table 2, Final model (IV+SC) |
+| `lfdepot` (SC bioavailability) | 0.74 | Table 2, Final model (IV+SC) |
+| `e_wt_cl` (WT effect on CL) | 0.012 fold/kg, exponential form | Table 2, footnote 2 |
+| `e_wt_vc` (WT effect on Vc) | 0.010 fold/kg, exponential form | Table 2, footnote 2 |
+| `e_wt_q` (WT exponent on Q) | 0.69, power form | Table 2, footnote 2 |
+| `e_wt_vp` (WT exponent on Vp) | 0.82, power form | Table 2, footnote 2 |
+| Omega^2 CL | 0.067 | Table 2 |
+| Omega^2 Vc | 0.028 | Table 2 |
+| Omega^2 Q | 0.063 | Table 2 |
+| Omega^2 Vp | 0.120 | Table 2 |
+| Cov(CL, Q) | 0.034 (R = 0.52) | Table 2 |
+| Cov(CL, Vp) | 0.050 (R = 0.56) | Table 2 |
+| Cov(Q, Vp) | 0.082 (R = 0.95) | Table 2 |
+| Sigma^2 proportional | 0.042 | Table 2 |
+| Sigma^2 additive | 0.456 (ug/mL)^2 | Table 2 |
+| Body-weight reference | 74.5 kg | Table 2 footnote 4 / Methods |
+| Combination residual error form | C_obs = C_pred \* (1 + e1) + e2 | Methods, “Variability popPK model” |
+| F1 / ka IIV fixed at 0 | \- | Table 2 footnote 3 |
 
 ## Errata
 
@@ -108,6 +109,7 @@ median IV-group weight used as the model’s covariate-centering reference
 and the value Huang 2017 used for the Figure 5 simulations).
 
 ``` r
+
 make_regimen <- function(id_offset, regimen_label, wt_kg = 74.5,
                          iv_doses = numeric(0), iv_times = numeric(0),
                          sc_doses = numeric(0), sc_times = numeric(0),
@@ -163,6 +165,7 @@ expand_regimen <- function(template, n, id_offset = 0L) {
 ```
 
 ``` r
+
 set.seed(20170401)  # arbitrary; 2017-04 = Huang 2017 publication month
 
 n_per_arm <- 200L            # virtual subjects per regimen
@@ -227,6 +230,7 @@ stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
 ## Simulation
 
 ``` r
+
 mod <- readModelDb("Huang_2017_vrc01")
 
 sim <- rxode2::rxSolve(
@@ -246,6 +250,7 @@ the four regimens above; lines are medians and shaded areas span the
 2.5th-97.5th percentiles for 1000 simulated trials.
 
 ``` r
+
 fig5_summary <- sim |>
   filter(time > 0) |>
   group_by(regimen, time) |>
@@ -284,6 +289,7 @@ IV regimens (A, B) and on the final 2-week dosing interval for the SC
 regimens (C, D).
 
 ``` r
+
 sim_nca <- sim |>
   dplyr::filter(!is.na(Cc), time > 0) |>
   dplyr::select(id, time, Cc, regimen)
@@ -304,6 +310,7 @@ dose_obj <- PKNCA::PKNCAdose(
 ```
 
 ``` r
+
 last_dose_per_id <- dose_df |>
   group_by(regimen, id) |>
   summarise(t_last = max(time), .groups = "drop")
@@ -356,6 +363,7 @@ nca_tbl  <- as.data.frame(nca_res$result)
 ```
 
 ``` r
+
 nca_summary <- nca_tbl |>
   filter(PPTESTCD %in% c("cmax", "cmin", "auclast", "cav")) |>
   group_by(regimen, PPTESTCD) |>
@@ -398,7 +406,7 @@ knitr::kable(
 
 Steady-state NCA on the last dosing interval. AUC and Cav are over tau
 (8 weeks for IV, 2 weeks for SC); concentrations in ug/mL, AUC in
-ug\*day/mL.
+ug\*day/mL. {.table style="width:100%;"}
 
 ### Comparison against published trough values
 
@@ -414,6 +422,7 @@ used above. We compare them against the simulated `cmin` from the
 steady-state NCA.
 
 ``` r
+
 published <- tibble::tribble(
   ~regimen,                                       ~median_pub, ~lo_pub, ~hi_pub,
   "A: 10 mg/kg IV q8w",                                   5.54,    1.69,   14.50,
@@ -444,17 +453,17 @@ knitr::kable(
 )
 ```
 
-| regimen                              | median_pub | lo_pub | hi_pub | median_sim | lo_sim | hi_sim | pct_diff_median |
-|:-------------------------------------|-----------:|-------:|-------:|-----------:|-------:|-------:|----------------:|
-| A: 10 mg/kg IV q8w                   |       5.54 |   1.69 |  14.50 |       5.15 |   1.54 |  14.80 |           -7.03 |
-| B: 30 mg/kg IV q8w                   |      15.90 |   5.29 |  46.63 |      16.21 |   4.62 |  43.99 |            1.94 |
-| C: 10 mg/kg IV load + 5 mg/kg SC q2w |      34.10 |  18.27 |  65.34 |      34.19 |  17.93 |  54.87 |            0.27 |
-| D: 30 mg/kg IV load + 5 mg/kg SC q2w |      34.10 |  18.27 |  65.34 |      32.87 |  18.22 |  55.82 |           -3.61 |
+| regimen | median_pub | lo_pub | hi_pub | median_sim | lo_sim | hi_sim | pct_diff_median |
+|:---|---:|---:|---:|---:|---:|---:|---:|
+| A: 10 mg/kg IV q8w | 5.54 | 1.69 | 14.50 | 5.15 | 1.54 | 14.80 | -7.03 |
+| B: 30 mg/kg IV q8w | 15.90 | 5.29 | 46.63 | 16.21 | 4.62 | 43.99 | 1.94 |
+| C: 10 mg/kg IV load + 5 mg/kg SC q2w | 34.10 | 18.27 | 65.34 | 34.19 | 17.93 | 54.87 | 0.27 |
+| D: 30 mg/kg IV load + 5 mg/kg SC q2w | 34.10 | 18.27 | 65.34 | 32.87 | 18.22 | 55.82 | -3.61 |
 
 Steady-state trough (Cmin over the last tau). Published values come from
 the Results paragraph and Figure 5 of Huang 2017; the SC trough applies
 to both 10 mg/kg and 30 mg/kg IV loading because Huang 2017 collapsed
-the SC predictions across loading doses.
+the SC predictions across loading doses. {.table style="width:100%;"}
 
 The IV-only regimens (A, B) reproduce the published median trough within
 ~5% (well below the 20% flag threshold). The SC regimens (C, D) reach a
@@ -470,6 +479,7 @@ this from a single 30 mg/kg IV simulation in a typical 74.5 kg subject
 with random effects zeroed (typical-value half-life).
 
 ``` r
+
 mod_typ <- rxode2::zeroRe(mod)
 #> ℹ parameter labels from comments will be replaced by 'label()'
 

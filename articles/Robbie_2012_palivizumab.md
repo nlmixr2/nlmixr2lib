@@ -1,6 +1,7 @@
 # Robbie_2012_palivizumab
 
 ``` r
+
 library(nlmixr2lib)
 library(dplyr)
 #> 
@@ -51,10 +52,10 @@ months).
 
 Baseline demographics reproduced from Robbie 2012 Table 1:
 
-| Cohort    | N     | Key covariates                                                                                                                                                                                                                             | PK samples |
-|-----------|-------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------|
-| Adults    | 116   | age 19.3-58.9 y (mean 32.8); weight 48.9-104.3 kg (mean 72.5); 65.5% female (76/116)                                                                                                                                                       | 1,661      |
-| Pediatric | 1,684 | PAGE 6.89-34.7 mo (median 12.6); weight 0.92-16.3 kg (median 5.64); gestational age 22-41 wk (median 30; 62% preterm); 36% CLD of prematurity; 932 boys + 752 girls (44.7% female); 54% White, 20% Black, 18% Hispanic, 2% Asian, 6% Other | 4,095      |
+| Cohort | N | Key covariates | PK samples |
+|----|----|----|----|
+| Adults | 116 | age 19.3-58.9 y (mean 32.8); weight 48.9-104.3 kg (mean 72.5); 65.5% female (76/116) | 1,661 |
+| Pediatric | 1,684 | PAGE 6.89-34.7 mo (median 12.6); weight 0.92-16.3 kg (median 5.64); gestational age 22-41 wk (median 30; 62% preterm); 36% CLD of prematurity; 932 boys + 752 girls (44.7% female); 54% White, 20% Black, 18% Hispanic, 2% Asian, 6% Other | 4,095 |
 
 PK-analysis dataset totals 1,800 subjects across 22 clinical studies (9
 adult: 7 healthy-volunteer + 2 transplant; 13 pediatric); Table 1
@@ -64,22 +65,22 @@ monthly doses of 15 mg/kg IM.
 
 ### Source trace
 
-| Element                                                                       | Source location                                                                                                                                         |
-|-------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------|
-| 2-compartment structural model with first-order IM absorption                 | Robbie 2012, Methods, “Population pharmacokinetic model” subsection (ADVAN4 TRANS4).                                                                    |
-| Allometric weight scaling (CL/Q exp 0.75; Vc/Vp exp 1.0; 70 kg reference)     | Robbie 2012, eq. (3) and Table 2 footnote.                                                                                                              |
-| PAGE definition PAGE = AGE(months) + GA(weeks)/4.35                           | Robbie 2012, eq. (1).                                                                                                                                   |
-| Maturation on CL (asymptotic exponential centered at 40-week PAGE)            | Robbie 2012, eq. (1a) / eq. (4); Anderson/Allegaert/Holford 2006 parameterization added as reference 1a by the 2012 erratum (AAC 56:5431 / PMC3457364). |
-| CL, Vc, Vp, Q, ka, F1 final estimates (adult reference, 70 kg)                | Robbie 2012, Table 2.                                                                                                                                   |
-| beta, TCL maturation parameters                                               | Robbie 2012, Table 2 (“maturation parameters”).                                                                                                         |
-| Race effects on CL (Black, Hispanic, Asian, Other) and on Vc (Hispanic)       | Robbie 2012, Table 2.                                                                                                                                   |
-| Chronic lung disease of prematurity effect on CL (+20%)                       | Robbie 2012, Table 2 (“theta_CLD” row).                                                                                                                 |
-| ADA titer step-function effect on CL (4 bins: 10, 20, 40, \>=80)              | Robbie 2012, Table 2 (“theta_titer” rows).                                                                                                              |
-| IIV: CL CV 48.7%, Vc CV 61.7%, correlation rho = 0.62                         | Robbie 2012, Table 2.                                                                                                                                   |
-| Residual proportional error, sigma^2 = 0.0639                                 | Robbie 2012, Table 2.                                                                                                                                   |
-| Pediatric reference scaling (4.5 kg, 12.3-month PAGE)                         | Robbie 2012, Table 3.                                                                                                                                   |
-| Figure 3 (corrected per erratum): 3- vs 5-dose profiles                       | Robbie 2012, Figure 3 (PDF page 7); erratum replaces the original panel.                                                                                |
-| Figure 5 (corrected per erratum): profiles stratified by postnatal age cohort | Robbie 2012, Figure 5 (PDF page 9); erratum updates legend.                                                                                             |
+| Element | Source location |
+|----|----|
+| 2-compartment structural model with first-order IM absorption | Robbie 2012, Methods, “Population pharmacokinetic model” subsection (ADVAN4 TRANS4). |
+| Allometric weight scaling (CL/Q exp 0.75; Vc/Vp exp 1.0; 70 kg reference) | Robbie 2012, eq. (3) and Table 2 footnote. |
+| PAGE definition PAGE = AGE(months) + GA(weeks)/4.35 | Robbie 2012, eq. (1). |
+| Maturation on CL (asymptotic exponential centered at 40-week PAGE) | Robbie 2012, eq. (1a) / eq. (4); Anderson/Allegaert/Holford 2006 parameterization added as reference 1a by the 2012 erratum (AAC 56:5431 / PMC3457364). |
+| CL, Vc, Vp, Q, ka, F1 final estimates (adult reference, 70 kg) | Robbie 2012, Table 2. |
+| beta, TCL maturation parameters | Robbie 2012, Table 2 (“maturation parameters”). |
+| Race effects on CL (Black, Hispanic, Asian, Other) and on Vc (Hispanic) | Robbie 2012, Table 2. |
+| Chronic lung disease of prematurity effect on CL (+20%) | Robbie 2012, Table 2 (“theta_CLD” row). |
+| ADA titer step-function effect on CL (4 bins: 10, 20, 40, \>=80) | Robbie 2012, Table 2 (“theta_titer” rows). |
+| IIV: CL CV 48.7%, Vc CV 61.7%, correlation rho = 0.62 | Robbie 2012, Table 2. |
+| Residual proportional error, sigma^2 = 0.0639 | Robbie 2012, Table 2. |
+| Pediatric reference scaling (4.5 kg, 12.3-month PAGE) | Robbie 2012, Table 3. |
+| Figure 3 (corrected per erratum): 3- vs 5-dose profiles | Robbie 2012, Figure 3 (PDF page 7); erratum replaces the original panel. |
+| Figure 5 (corrected per erratum): profiles stratified by postnatal age cohort | Robbie 2012, Figure 5 (PDF page 9); erratum updates legend. |
 
 ### WHO weight-for-age growth curve helper
 
@@ -88,6 +89,7 @@ Multicentre Growth Reference Study Group, 2006). Formula: weight (kg) =
 M \* (1 + L \* S \* z)^(1/L).
 
 ``` r
+
 who_lms <- data.frame(
   age_mo = 0:24,
   L = c(0.3487, 0.2297, 0.1970, 0.1738, 0.1553, 0.1395, 0.1257,
@@ -115,6 +117,7 @@ who_weight <- function(pna_mo, z) {
 ### Load model and confirm reference parameter values
 
 ``` r
+
 mod <- readModelDb("Robbie_2012_palivizumab")
 ```
 
@@ -123,6 +126,7 @@ single typical subject (no between-subject variability, no dose) should
 yield the published per-subject CL, Vc, Vp, Q at each reference.
 
 ``` r
+
 mod0 <- rxode2::zeroRe(mod)
 #> ℹ parameter labels from comments will be replaced by 'label()'
 
@@ -165,6 +169,7 @@ knitr::kable(ref_table,
 | Q (mL/day)  |         879 |       879.0 |             112 |           112.2 |
 
 Reference parameter reproduction against Robbie 2012 Tables 2 and 3.
+{.table}
 
 Small deviations at the adult reference (~1%) arise because the adult
 reference in Table 2 is reported without the maturation multiplier; the
@@ -174,6 +179,7 @@ PAGE.
 ### Helper: build a virtual pediatric cohort
 
 ``` r
+
 make_cohort <- function(n, ga_range, pna0_range, max_day,
                         cld_prob = 0, ada_titer_fn = function(n) rep(0, n),
                         obs_days = seq(0, max_day, by = 7),
@@ -238,6 +244,7 @@ profiles from the abbreviated 3 monthly 15 mg/kg IM dose regimen
 compared with the label 5 monthly doses, in a typical pediatric cohort.
 
 ``` r
+
 set.seed(22802243) # PMID seed
 n_f3 <- 300
 obs_days_f3 <- seq(0, 240, by = 2)
@@ -270,6 +277,7 @@ d_f3 <- out_f3 |>
 ```
 
 ``` r
+
 ggplot(d_f3, aes(x = time, y = Q50, colour = regimen, fill = regimen)) +
   geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.2, colour = NA) +
   geom_line(linewidth = 0.8) +
@@ -306,6 +314,7 @@ postnatal age cohorts, 0 to 6 months (A), 7 to 12 months (B), and 13 to
 at first dose.
 
 ``` r
+
 set.seed(4927) # first journal page
 cohorts <- list(
   list(label = "A. Postnatal 0 to 6 mo",   pna = c(0,  6)),
@@ -346,6 +355,7 @@ d_f5 <- out_f5 |>
 ```
 
 ``` r
+
 ggplot(d_f5, aes(x = time, y = Q50, colour = cohort, fill = cohort)) +
   geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.2, colour = NA) +
   geom_line(linewidth = 0.8) +
@@ -376,6 +386,7 @@ future multi-group comparisons; here we carry a single `treatment`
 level.
 
 ``` r
+
 tau <- 30
 last_dose_time <- 4 * tau
 
@@ -404,9 +415,11 @@ intervals <- data.frame(
 )
 
 res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+#>  ■■■■■■■■■■■■■■■                   47% |  ETA:  1s
 ```
 
 ``` r
+
 nca_df <- as.data.frame(res$result)
 
 nca_summary <- nca_df |>
@@ -430,7 +443,7 @@ knitr::kable(nca_summary,
 | tmax     |    2.00 |    2.00 |    2.00 |
 
 Steady-state NCA (final dosing interval) of the 5-monthly 15 mg/kg IM
-regimen in virtual pediatric infants.
+regimen in virtual pediatric infants. {.table}
 
 The paper does not tabulate individual pediatric NCA results, so this
 table serves as a forward-prediction of steady-state exposure under the

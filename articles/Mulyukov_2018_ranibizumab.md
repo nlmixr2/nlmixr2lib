@@ -1,6 +1,7 @@
 # Mulyukov_2018_ranibizumab
 
 ``` r
+
 library(nlmixr2lib)
 library(PKNCA)
 #> 
@@ -49,16 +50,20 @@ model of best-corrected visual acuity (BCVA; ETDRS letters) under
 ranibizumab treatment in anti-VEGF-naive neovascular age-related macular
 degeneration (nAMD). The dynamics are governed by
 
-$$\frac{dg_{i}(t)}{dt} = k_{\text{in},i}\left\lbrack 1 + E_{\max,i}(t)\,\frac{C_{i}(t)}{EC_{50} + C_{i}(t)} \right\rbrack - k_{\text{out},i}\, g_{i}(t)$$
+``` math
+\frac{dg_i(t)}{dt} = k_{\text{in},i}\left[1 + E_{\max,i}(t)\,\frac{C_i(t)}{EC_{50} + C_i(t)}\right] - k_{\text{out},i}\,g_i(t)
+```
 
-with $g_{i}(0) = g_{i,0}$ and a time-dependent maximum effect
+with $`g_i(0) = g_{i,0}`$ and a time-dependent maximum effect
 
-$$E_{\max,i}(t) = E_{\max,i}^{ss} + \Delta E_{\max,i}^{0}\, e^{- k_{E_{\max}}t}.$$
+``` math
+E_{\max,i}(t) = E_{\max,i}^{ss} + \Delta E_{\max,i}^0\,e^{-k_{E_{\max}} t}.
+```
 
 The vitreous PK is not estimated in this paper. It is borrowed from a
 previous population PK analysis (paper reference 20) and fixed at a
-first-order elimination process with $k_{\text{elim}} = 0.077$/day
-($t_{1/2} = 9$ days) and a 4 mL vitreous volume. No IIV is carried on
+first-order elimination process with $`k_{\text{elim}} = 0.077`$/day
+($`t_{1/2} = 9`$ days) and a 4 mL vitreous volume. No IIV is carried on
 the PK parameters because vitreous PK samples were not collected in the
 four development studies.
 
@@ -84,6 +89,7 @@ The same information is available programmatically via the model’s
 `population` metadata:
 
 ``` r
+
 str(rxode2::rxode2(readModelDb("Mulyukov_2018_ranibizumab"))$meta$population)
 #> ℹ parameter labels from comments will be replaced by 'label()'
 #> List of 14
@@ -111,36 +117,37 @@ The per-parameter origin is recorded as an in-file comment next to each
 below collects the equations and parameters in one place for reviewer
 audit.
 
-| Equation / parameter                                            | Value                                  | Source location                                                                                |
-|-----------------------------------------------------------------|----------------------------------------|------------------------------------------------------------------------------------------------|
-| PK ODE `d/dt(central) = -kel·central`                           | n/a                                    | Methods — Model development, paragraph above Eq. 1 (first-order vitreous elimination, ref. 20) |
-| PD ODE `d/dt(bcva) = kin·(1 + Emax_t·Cc/(EC50+Cc)) - kout·bcva` | n/a                                    | Eq. 1                                                                                          |
-| Time-dependent Emax `Emax_t = Emax_ss + dEmax_0·exp(-kEmax·t)`  | n/a                                    | Eq. 2                                                                                          |
-| Covariate form `theta · (AGE/77)^beta_AGE · exp(eta)`           | n/a                                    | Eq. 3                                                                                          |
-| Natural-progression steady state `gss = kin/kout`               | n/a                                    | Methods — paragraph after Eq. 1                                                                |
-| `kel`                                                           | 0.077/day (fixed; t½ = 9 d)            | Table 2 (borrowed from ref. 20)                                                                |
-| `V_vitreous`                                                    | 4 mL (fixed)                           | Methods — paragraph after Eq. 1                                                                |
-| `gss`                                                           | 11 ETDRS letters                       | Table 2                                                                                        |
-| `kout`                                                          | 0.19/year (t½ = 3.6 y)                 | Table 2                                                                                        |
-| `Emax_ss`                                                       | 6.1                                    | Table 2                                                                                        |
-| `dEmax_0`                                                       | 41                                     | Table 2                                                                                        |
-| `kEmax`                                                         | 0.046/day (fixed; t½ = 15 d)           | Table 2                                                                                        |
-| `EC50`                                                          | 2.1 µg/mL                              | Table 2                                                                                        |
-| `β_Emax_ss,AGE`                                                 | −1.4                                   | Table 2                                                                                        |
-| IIV `g0`                                                        | SD 4.1 letters (additive)              | Table 2                                                                                        |
-| IIV `kout`                                                      | CV 730 %                               | Table 2                                                                                        |
-| IIV `Emax_ss`                                                   | CV 110 %                               | Table 2                                                                                        |
-| IIV `dEmax_0`                                                   | CV 1100 %                              | Table 2                                                                                        |
-| σ treatment                                                     | 5 letters (additive)                   | Table 2                                                                                        |
-| σ sham                                                          | 7 letters (additive, not exposed here) | Table 2 (see Assumptions and deviations)                                                       |
+| Equation / parameter | Value | Source location |
+|----|----|----|
+| PK ODE `d/dt(central) = -kel·central` | n/a | Methods — Model development, paragraph above Eq. 1 (first-order vitreous elimination, ref. 20) |
+| PD ODE `d/dt(bcva) = kin·(1 + Emax_t·Cc/(EC50+Cc)) - kout·bcva` | n/a | Eq. 1 |
+| Time-dependent Emax `Emax_t = Emax_ss + dEmax_0·exp(-kEmax·t)` | n/a | Eq. 2 |
+| Covariate form `theta · (AGE/77)^beta_AGE · exp(eta)` | n/a | Eq. 3 |
+| Natural-progression steady state `gss = kin/kout` | n/a | Methods — paragraph after Eq. 1 |
+| `kel` | 0.077/day (fixed; t½ = 9 d) | Table 2 (borrowed from ref. 20) |
+| `V_vitreous` | 4 mL (fixed) | Methods — paragraph after Eq. 1 |
+| `gss` | 11 ETDRS letters | Table 2 |
+| `kout` | 0.19/year (t½ = 3.6 y) | Table 2 |
+| `Emax_ss` | 6.1 | Table 2 |
+| `dEmax_0` | 41 | Table 2 |
+| `kEmax` | 0.046/day (fixed; t½ = 15 d) | Table 2 |
+| `EC50` | 2.1 µg/mL | Table 2 |
+| `β_Emax_ss,AGE` | −1.4 | Table 2 |
+| IIV `g0` | SD 4.1 letters (additive) | Table 2 |
+| IIV `kout` | CV 730 % | Table 2 |
+| IIV `Emax_ss` | CV 110 % | Table 2 |
+| IIV `dEmax_0` | CV 1100 % | Table 2 |
+| σ treatment | 5 letters (additive) | Table 2 |
+| σ sham | 7 letters (additive, not exposed here) | Table 2 (see Assumptions and deviations) |
 
 Unit check at the reference dose: 0.5 mg delivered into 4 mL vitreous
 gives peak concentration 0.5 / 0.004 = 125 mg/L ≡ 125 µg/mL. After 30
-days, $125 \cdot e^{- 0.077 \cdot 30} = 12.4$ µg/mL (paper Methods text:
-“12.5 µg/mL one month after an injection”); after 90 days,
-$125 \cdot e^{- 0.077 \cdot 90} = 0.12$ µg/mL (paper: “0.12 µg/mL three
-months after an injection”). The implementation therefore matches the
-paper’s published trough concentrations to \< 1 %.
+days, $`125 \cdot e^{-0.077 \cdot 30} = 12.4`$ µg/mL (paper Methods
+text: “12.5 µg/mL one month after an injection”); after 90 days,
+$`125 \cdot e^{-0.077 \cdot 90}
+= 0.12`$ µg/mL (paper: “0.12 µg/mL three months after an injection”).
+The implementation therefore matches the paper’s published trough
+concentrations to \< 1 %.
 
 ## Virtual cohort
 
@@ -154,6 +161,7 @@ run **both** a typical-value (zero-IIV) trajectory and a stochastic
 cohort of 1,000 subjects and average.
 
 ``` r
+
 set.seed(20260424)
 
 n_cohort <- 1000L
@@ -209,6 +217,7 @@ stopifnot(!anyDuplicated(unique(
 ## Simulation
 
 ``` r
+
 mod         <- readModelDb("Mulyukov_2018_ranibizumab")
 mod_typical <- rxode2::zeroRe(mod)
 #> ℹ parameter labels from comments will be replaced by 'label()'
@@ -250,11 +259,12 @@ sim_pooled <- rxode2::rxSolve(
 ### PK unit check — vitreous concentration after a single 0.5 mg injection
 
 Mulyukov 2018 Methods cites two concrete PK landmarks from the borrowed
-PK model: $C_{vitreous}\left( 30{\mspace{6mu}\text{d}} \right) = 12.5$
-µg/mL and $C_{vitreous}\left( 90{\mspace{6mu}\text{d}} \right) = 0.12$
-µg/mL after a single 0.5 mg intravitreal injection.
+PK model: $`C_{vitreous}(30\text{ d}) = 12.5`$ µg/mL and
+$`C_{vitreous}(90\text{ d}) = 0.12`$ µg/mL after a single 0.5 mg
+intravitreal injection.
 
 ``` r
+
 ev_single <- data.frame(
   id = 1L,
   time = c(0, 0.001, 30, 90),
@@ -283,11 +293,12 @@ knitr::kable(pk_check,
 |   90 |   0.1222494 |           0.12 |  1.8744630 |
 
 Vitreous concentration after a single 0.5 mg intravitreal injection,
-simulated vs. paper Methods.
+simulated vs. paper Methods. {.table}
 
 ### Figure 2 analogue — typical-value BCVA trajectory under 0.5 mg q4w (HARBOR covariates)
 
 ``` r
+
 sim_pooled_summary <- sim_pooled |>
   group_by(time, cohort) |>
   summarise(
@@ -319,6 +330,7 @@ mg and 2.0 mg q4w arms, with model-predicted +8.5 and +9.2 letters
 respectively.
 
 ``` r
+
 cfb_12mo <- bind_rows(
   sim_harbor_05 |>
     group_by(id, cohort) |>
@@ -349,14 +361,14 @@ knitr::kable(cfb_summary, digits = 2,
   caption = "Simulated vs. published BCVA change from baseline at 12 months (ranibizumab HARBOR arms). Paper values from Results — Model evaluation and simulations and Table 1.")
 ```
 
-| cohort            | mean_delta | median_delta | SD_delta |    n | paper_observed_letters | paper_predicted_letters |
-|:------------------|-----------:|-------------:|---------:|-----:|-----------------------:|------------------------:|
-| HARBOR 0.5 mg q4w |      40.66 |         6.70 |   122.42 | 1000 |                   10.1 |                     8.5 |
-| HARBOR 2.0 mg q4w |      88.61 |         9.91 |   900.20 | 1000 |                    9.2 |                     9.2 |
+| cohort | mean_delta | median_delta | SD_delta | n | paper_observed_letters | paper_predicted_letters |
+|:---|---:|---:|---:|---:|---:|---:|
+| HARBOR 0.5 mg q4w | 40.66 | 6.70 | 122.42 | 1000 | 10.1 | 8.5 |
+| HARBOR 2.0 mg q4w | 88.61 | 9.91 | 900.20 | 1000 | 9.2 | 9.2 |
 
 Simulated vs. published BCVA change from baseline at 12 months
 (ranibizumab HARBOR arms). Paper values from Results — Model evaluation
-and simulations and Table 1.
+and simulations and Table 1. {.table}
 
 ### Figure 4a analogue — dependence of 12-month BCVA change on baseline BCVA
 
@@ -365,6 +377,7 @@ decreases linearly with baseline BCVA (“for every 10 letters of lower
 baseline BCVA there are 3 letter gains in BCVA improvement”).
 
 ``` r
+
 cfb_baseline <- sim_pooled |>
   group_by(id) |>
   summarise(bcva_0 = first(bcva), bcva_12 = bcva[which.min(abs(time - 336))],
@@ -400,6 +413,7 @@ gains (≈ 4-letter reduction from age 65 to 85 at the reference baseline
 BCVA).
 
 ``` r
+
 age_bins <- cfb_baseline |>
   mutate(age_bin = cut(AGE, breaks = seq(50, 100, by = 5), include.lowest = TRUE)) |>
   group_by(age_bin) |>
@@ -426,11 +440,12 @@ ggplot(cfb_baseline, aes(AGE, delta_bcva_12)) +
 
 No-dose simulation confirms the Methods-stated behaviour: BCVA decays
 from the observed baseline toward the steady-state value
-$g_{ss} \approx 11$ ETDRS letters at rate $k_{out} = 0.19$/year
-($t_{1/2}$ ≈ 3.6 y). With no treatment, g(1 year) should lose ~20 % of
+$`g_{ss} \approx 11`$ ETDRS letters at rate $`k_{out} = 0.19`$/year
+($`t_{1/2}`$ ≈ 3.6 y). With no treatment, g(1 year) should lose ~20 % of
 (baseline − gss).
 
 ``` r
+
 ev_natural <- data.frame(
   id = 1L, time = seq(0, 365*4, length.out = 100),
   evid = 0L, amt = 0, cmt = "bcva",
@@ -451,6 +466,7 @@ sim_natural |>
 |    4 |          31.59 |                   0.532 |
 
 Untreated BCVA trajectory from baseline 55 toward gss = 11 letters.
+{.table}
 
 ## PKNCA validation
 
@@ -461,6 +477,7 @@ Per the skill’s guidance, the formula includes a treatment grouping
 variable (`dose_group`) so the result rolls up one row per regimen.
 
 ``` r
+
 ev_nca <- bind_rows(
   data.frame(
     id = 1L, time = c(0, seq(0.01, 120, length.out = 200)),
@@ -530,10 +547,10 @@ nca_summary
 The paper does not publish a full NCA table. Two PK landmarks are
 verifiable against the simulation:
 
-- $C_{vitreous}\left( 1{\mspace{6mu}\text{month}} \right)$: paper 12.5
-  µg/mL vs. simulated 12.26 µg/mL.
-- $C_{vitreous}\left( 3{\mspace{6mu}\text{months}} \right)$: paper 0.12
-  µg/mL vs. simulated 0.124 µg/mL.
+- $`C_{vitreous}(1\text{ month})`$: paper 12.5 µg/mL vs. simulated 12.26
+  µg/mL.
+- $`C_{vitreous}(3\text{ months})`$: paper 0.12 µg/mL vs. simulated
+  0.124 µg/mL.
 - Half-life: paper 9 days; PKNCA returns the value shown in the summary
   above.
 
@@ -543,16 +560,16 @@ All three match the paper to \< 1 %.
 
 - **Single residual-error SD is exposed.** The paper reports two
   additive residual-error SDs on BCVA in Table 2 —
-  $\sigma_{treatment} = 5$ letters for treated arms and
-  $\sigma_{sham} = 7$ letters for untreated arms. This library model
-  exposes only $\sigma_{treatment} = 5$ letters (the primary use case
+  $`\sigma_{treatment} = 5`$ letters for treated arms and
+  $`\sigma_{sham} = 7`$ letters for untreated arms. This library model
+  exposes only $`\sigma_{treatment} = 5`$ letters (the primary use case
   for ranibizumab simulation is the treated-arm trajectory). If a user
   needs to simulate a sham/untreated arm with the paper’s residual
   error, override `bcvaaddSd` to `7` after loading the model. The
   typical- value and individual structural trajectories are unchanged.
 - **Baseline BCVA treated as a covariate.** The paper writes
-  $g_{i,0} = BVA_{i} + \eta_{1,i}$ where $BVA_{i}$ is the observed
-  baseline VA for subject $i$. We expose $BVA_{i}$ as the canonical
+  $`g_{i,0} = BVA_i + \eta_{1,i}`$ where $`BVA_i`$ is the observed
+  baseline VA for subject $`i`$. We expose $`BVA_i`$ as the canonical
   covariate column `BCVA` and pair it with an additive typical-value
   theta `g0res = fixed(0)` so the eta pairing satisfies the
   `eta<x>`-pairs-with- `<x>` library convention. Users must supply
@@ -560,13 +577,12 @@ All three match the paper to \< 1 %.
 - **`kEmax` taken from Table 2 (0.046/day; t½ = 15 days), not from the
   Methods text (log(2)/14 = 0.0495/day; t½ = 14 days).** Table 2
   presents the final-model estimates, so it supersedes the text wording.
-  The paper states the model is insensitive to any $k_{Emax}$
+  The paper states the model is insensitive to any $`k_{Emax}`$
   corresponding to a 1-to-3-week Emax half-life, so the discrepancy
   between the two published values is not operationally meaningful.
 - **Log-normal mean ≠ typical value.** The paper reports extremely large
-  CVs on the PD parameters (CV% 730 for $k_{out}$, 1100 for
-  $\Delta E_{\max}^{0}$). Because
-  $E\left\lbrack \exp(\eta) \right\rbrack = \exp\left( \omega^{2}/2 \right)$,
+  CVs on the PD parameters (CV% 730 for $`k_{out}`$, 1100 for
+  $`\Delta E_{\max}^0`$). Because $`E[\exp(\eta)] = \exp(\omega^2/2)`$,
   the population mean of a simulation with full IIV is materially larger
   than the typical-value trajectory. The mean BCVA-change curve in a
   1,000-subject simulation of the HARBOR 0.5 mg arm is what the paper’s

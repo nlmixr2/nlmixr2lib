@@ -27,13 +27,23 @@ ADC model is a linear two-compartment disposition model with
 time-varying clearance described by a sigmoid function of time since
 first dose:
 
-$${CL}_{i}(t)\; = \;{CL}_{{base},i} \cdot \exp\!\left( \frac{{Imax}_{i}\, t^{\gamma}}{{TI50}_{i}^{\gamma} + t^{\gamma}} \right),\qquad{Imax}_{i}\; = \;\theta_{IMAX} \cdot \theta_{IMAX,COMBO}^{COMBO} \cdot \left( {IGG}/15 \right)^{\theta_{IMAX,IGG}} \cdot \left( {SBCMA}/50 \right)^{\theta_{IMAX,SBCMA}} + \eta_{{IMAX},i}$$
+``` math
+\mathrm{CL}_{i}(t) \;=\; \mathrm{CL}_{\mathrm{base},i} \cdot
+  \exp\!\left( \dfrac{\mathrm{Imax}_{i}\, t^{\gamma}}
+                     {\mathrm{TI50}_{i}^{\gamma} + t^{\gamma}} \right),
+\qquad
+\mathrm{Imax}_{i} \;=\; \theta_{\mathrm{IMAX}}
+  \cdot \theta_{\mathrm{IMAX,COMBO}}^{\mathrm{COMBO}}
+  \cdot (\mathrm{IGG}/15)^{\theta_{\mathrm{IMAX,IGG}}}
+  \cdot (\mathrm{SBCMA}/50)^{\theta_{\mathrm{IMAX,SBCMA}}}
+  + \eta_{\mathrm{IMAX},i}
+```
 
 with typical Imax = -0.403 (a fractional CL decrease of
-$1 - e^{- 0.403} \approx 33.2\%$ at $t \gg {TI50}$, monotherapy
-reference), TI50 = 66.4 days, Gamma = 2.87, and a combination-therapy
-multiplier of 1.44 on Imax (giving $1 - e^{- 0.580} \approx 44.0\%$
-reduction for combination regimens).
+$`1 - e^{-0.403} \approx 33.2\%`$ at $`t \gg \mathrm{TI50}`$,
+monotherapy reference), TI50 = 66.4 days, Gamma = 2.87, and a
+combination-therapy multiplier of 1.44 on Imax (giving
+$`1 - e^{-0.580} \approx 44.0\%`$ reduction for combination regimens).
 
 This vignette implements **only the ADC moiety** of the Papathanasiou
 2025 analysis. The companion cys-mcMMAF (payload) sub-model is not
@@ -81,35 +91,35 @@ The per-parameter origin is recorded as an in-file comment next to each
 `inst/modeldb/specificDrugs/Papathanasiou_2025_belantamab.R`. The table
 below collects them in one place for review.
 
-| Parameter (model name)         | Value                       | Source location (Papathanasiou 2025)                              |
-|--------------------------------|-----------------------------|-------------------------------------------------------------------|
-| `lcl` (initial CL, L/day)      | log(0.926)                  | Table 2, row CL                                                   |
-| `lvc` (Vc, L)                  | log(4.21)                   | Table 2, row ADC Vc                                               |
-| `lq` (Q, L/day)                | log(0.711)                  | Table 2, row Q                                                    |
-| `lvp` (Vp, L)                  | log(6.63)                   | Table 2, row ADC Vp                                               |
-| `imax` (Imax, unitless)        | -0.403                      | Table 2, row Imax                                                 |
-| `lti50` (log days)             | log(66.4)                   | Table 2, row TI50                                                 |
-| `gamma` (Hill, unitless)       | 2.87                        | Table 2, row Gamma                                                |
-| `e_wt_v` (WT power on Vc, Vp)  | 0.929                       | Table 2, theta_V_WTBL                                             |
-| `e_wt_cl` (WT power on CL, Q)  | 0.542                       | Table 2, theta_CL_WTBL                                            |
-| `e_alb_cl` (ALB power on CL)   | -0.698                      | Table 2, theta_CL_ALBBL                                           |
-| `e_alb_vc` (ALB power on Vc)   | -0.302                      | Table 2, theta_ADC_Vc_ALBBL                                       |
-| `e_alb_vp` (ALB power on Vp)   | 0.567                       | Table 2, theta_ADC_Vp_ALBBL                                       |
-| `e_sbcma_cl` (SBCMA on CL)     | 0.113                       | Table 2, theta_CL_SBCMABL                                         |
-| `e_sbcma_vc` (SBCMA on Vc)     | 0.0401                      | Table 2, theta_ADC_Vc_SBCMABL                                     |
-| `e_igg_cl` (IGG power on CL)   | 0.170                       | Table 2, theta_CL_IGGBL                                           |
-| `e_bmi_vc` (BMI power on Vc)   | -0.459                      | Table 2, theta_ADC_Vc_IBMIBL                                      |
-| `e_race_asian_cl` (multiplier) | 0.913                       | Table 2, theta_CL_RACEA                                           |
-| `e_race_black_cl` (multiplier) | 0.861                       | Table 2, theta_CL_RACEB                                           |
-| `e_combo_imax` (multiplier)    | 1.44                        | Table 2, theta_IMAX_COMBO                                         |
-| `e_igg_imax` (IGG on Imax)     | 0.192                       | Table 2, theta_IMAX_IGGBL                                         |
-| `e_sbcma_imax` (SBCMA on Imax) | 0.160                       | Table 2, theta_IMAX_SBCMABL                                       |
-| IIV block `etalcl + etalvc`    | c(0.06593, 0.0328, 0.03922) | Table 2, CL CV 26.1%, Vc CV 20.0%, cov 0.0328                     |
-| `etalq`                        | 0.03546                     | Table 2, Q CV 19.0%                                               |
-| `etalvp`                       | 0.08945                     | Table 2, Vp CV 30.6%                                              |
-| `etaimax` (additive)           | 0.01366                     | Table 2, Imax CV 29.0% (normal-distribution form, theta = -0.403) |
-| `etalti50`                     | 0.39236                     | Table 2, TI50 CV 69.3%                                            |
-| `propSd`                       | 0.2516                      | Table 2, additive-on-log-scale variance 0.0633 (sqrt)             |
+| Parameter (model name) | Value | Source location (Papathanasiou 2025) |
+|----|----|----|
+| `lcl` (initial CL, L/day) | log(0.926) | Table 2, row CL |
+| `lvc` (Vc, L) | log(4.21) | Table 2, row ADC Vc |
+| `lq` (Q, L/day) | log(0.711) | Table 2, row Q |
+| `lvp` (Vp, L) | log(6.63) | Table 2, row ADC Vp |
+| `imax` (Imax, unitless) | -0.403 | Table 2, row Imax |
+| `lti50` (log days) | log(66.4) | Table 2, row TI50 |
+| `gamma` (Hill, unitless) | 2.87 | Table 2, row Gamma |
+| `e_wt_v` (WT power on Vc, Vp) | 0.929 | Table 2, theta_V_WTBL |
+| `e_wt_cl` (WT power on CL, Q) | 0.542 | Table 2, theta_CL_WTBL |
+| `e_alb_cl` (ALB power on CL) | -0.698 | Table 2, theta_CL_ALBBL |
+| `e_alb_vc` (ALB power on Vc) | -0.302 | Table 2, theta_ADC_Vc_ALBBL |
+| `e_alb_vp` (ALB power on Vp) | 0.567 | Table 2, theta_ADC_Vp_ALBBL |
+| `e_sbcma_cl` (SBCMA on CL) | 0.113 | Table 2, theta_CL_SBCMABL |
+| `e_sbcma_vc` (SBCMA on Vc) | 0.0401 | Table 2, theta_ADC_Vc_SBCMABL |
+| `e_igg_cl` (IGG power on CL) | 0.170 | Table 2, theta_CL_IGGBL |
+| `e_bmi_vc` (BMI power on Vc) | -0.459 | Table 2, theta_ADC_Vc_IBMIBL |
+| `e_race_asian_cl` (multiplier) | 0.913 | Table 2, theta_CL_RACEA |
+| `e_race_black_cl` (multiplier) | 0.861 | Table 2, theta_CL_RACEB |
+| `e_combo_imax` (multiplier) | 1.44 | Table 2, theta_IMAX_COMBO |
+| `e_igg_imax` (IGG on Imax) | 0.192 | Table 2, theta_IMAX_IGGBL |
+| `e_sbcma_imax` (SBCMA on Imax) | 0.160 | Table 2, theta_IMAX_SBCMABL |
+| IIV block `etalcl + etalvc` | c(0.06593, 0.0328, 0.03922) | Table 2, CL CV 26.1%, Vc CV 20.0%, cov 0.0328 |
+| `etalq` | 0.03546 | Table 2, Q CV 19.0% |
+| `etalvp` | 0.08945 | Table 2, Vp CV 30.6% |
+| `etaimax` (additive) | 0.01366 | Table 2, Imax CV 29.0% (normal-distribution form, theta = -0.403) |
+| `etalti50` | 0.39236 | Table 2, TI50 CV 69.3% |
+| `propSd` | 0.2516 | Table 2, additive-on-log-scale variance 0.0633 (sqrt) |
 
 Equations: structural two-compartment micro-constant form with
 time-varying CL; the per-parameter covariate equations and the sigmoidal
@@ -132,6 +142,7 @@ marginal proportions. Joint covariate correlations (e.g. WT with BMI,
 IgG with sBCMA) are not modeled.
 
 ``` r
+
 set.seed(2025)
 n_subj <- 200
 
@@ -164,6 +175,7 @@ two regimens of the same dose:
   Bor-Dex / Len-Dex / Pom-Dex backbones tested in DREAMM-6/-7/-8.
 
 ``` r
+
 dose_interval_d <- 21
 n_doses         <- 12   # ~36 weeks of follow-up to capture time-varying CL
 dose_times_d    <- seq(0, by = dose_interval_d, length.out = n_doses)
@@ -205,6 +217,7 @@ events_combo <- build_events(cohort, 2.5, 1)
 ## Simulation
 
 ``` r
+
 mod <- readModelDb("Papathanasiou_2025_belantamab")
 sim_mono  <- rxode2::rxSolve(mod, events = events_mono,  returnType = "data.frame")
 #> ℹ parameter labels from comments will be replaced by 'label()'
@@ -225,6 +238,7 @@ dosing interval (cycle 1), where the time-varying clearance has not yet
 appreciably reduced CL.
 
 ``` r
+
 sim_summary <- sim |>
   dplyr::filter(time > 0, time <= dose_interval_d) |>
   dplyr::group_by(time, treatment) |>
@@ -255,14 +269,15 @@ ggplot(sim_summary, aes(time, median, colour = treatment, fill = treatment)) +
 ## Time-varying clearance
 
 Papathanasiou 2025 reports a sigmoid decrease in CL from baseline to
-${CL}_{base} \cdot e^{- 0.403} \approx 0.668$ of baseline (33.2%
-reduction) at $t \gg {TI50}$ for monotherapy, and to
-$e^{- 0.580} \approx 0.560$ of baseline (44.0% reduction) for
+$`\mathrm{CL}_\mathrm{base} \cdot e^{-0.403} \approx 0.668`$ of baseline
+(33.2% reduction) at $`t \gg \mathrm{TI50}`$ for monotherapy, and to
+$`e^{-0.580} \approx 0.560`$ of baseline (44.0% reduction) for
 combination therapy. The typical-value CL(t) / CL(0) profile below
 reproduces the time course at the reference subject (deterministic, all
 etas = 0).
 
 ``` r
+
 t_grid <- seq(0, 365, by = 5)
 build_cl_events <- function(combo_flag) {
   data.frame(
@@ -317,6 +332,7 @@ exposure values for a 2.5 mg/kg dose: ADC C_max 44.2 ug/mL, ADC C_avg
 agree to within ~20%.
 
 ``` r
+
 sim_nca <- sim |>
   dplyr::filter(!is.na(Cc),
                 time >= 0,
@@ -350,20 +366,19 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     93% |  ETA:  0s
 knitr::kable(
   summary(nca_res),
   caption = "Simulated cycle-1 NCA parameters at 2.5 mg/kg q3w (monotherapy vs combination)."
 )
 ```
 
-| start | end | treatment           | N   | auclast      | cmax          | cmin | tmax                   | cav           |
-|------:|----:|:--------------------|:----|:-------------|:--------------|:-----|:-----------------------|:--------------|
-|     0 |  21 | 2.5 mg/kg q3w combo | 200 | 150 \[26.8\] | 35.0 \[21.6\] | NC   | 0.500 \[0.500, 0.500\] | 7.14 \[26.8\] |
-|     0 |  21 | 2.5 mg/kg q3w mono  | 200 | 154 \[27.8\] | 36.0 \[21.8\] | NC   | 0.500 \[0.500, 0.500\] | 7.31 \[27.8\] |
+| start | end | treatment | N | auclast | cmax | cmin | tmax | cav |
+|---:|---:|:---|:---|:---|:---|:---|:---|:---|
+| 0 | 21 | 2.5 mg/kg q3w combo | 200 | 150 \[26.8\] | 35.0 \[21.6\] | NC | 0.500 \[0.500, 0.500\] | 7.14 \[26.8\] |
+| 0 | 21 | 2.5 mg/kg q3w mono | 200 | 154 \[27.8\] | 36.0 \[21.8\] | NC | 0.500 \[0.500, 0.500\] | 7.31 \[27.8\] |
 
 Simulated cycle-1 NCA parameters at 2.5 mg/kg q3w (monotherapy vs
-combination).
+combination). {.table}
 
 ## Comparison against published exposure values
 
@@ -371,21 +386,22 @@ Papathanasiou 2025 Table 4 reports the typical-patient cycle-1 exposure
 estimates for a 2.5 mg/kg dose. Cycle 1 is the cleanest comparison
 because the time-varying CL has not yet meaningfully changed (TI50 =
 66.4 days; at t = 21 days the CL multiplier is approximately
-$e^{- 0.403 \cdot 21^{2.87}/{(66.4^{2.87} + 21^{2.87})}} \approx e^{- 0.403 \cdot 0.039} \approx 0.984$,
-so ~1.6% deviation from the initial CL).
+$`e^{-0.403 \cdot 21^{2.87}/(66.4^{2.87} + 21^{2.87})} \approx
+e^{-0.403 \cdot 0.039} \approx 0.984`$, so ~1.6% deviation from the
+initial CL).
 
-| Quantity                 | Papathanasiou 2025 typical | Packaged model (cycle 1, monotherapy reference subject)  |
-|--------------------------|----------------------------|----------------------------------------------------------|
-| ADC C_max (ug/mL)        | 44.2                       | ~44.5 (Dose / Vc = 187.5 mg / 4.21 L)                    |
-| ADC C_avg21 (ug/mL)      | 7.86                       | ~7.82 (AUC0-21 / 21 days; close-form of two-compartment) |
-| ADC C_tau21 (ug/mL)      | 2.05                       | ~2.06 (concentration at t = 21 days)                     |
-| Initial CL (L/day)       | 0.926                      | 0.926 (`exp(lcl)`)                                       |
-| SS CL mono (L/day)       | 0.619                      | 0.619 (`0.926 · exp(-0.403)`)                            |
-| SS CL combo (L/day)      | 0.518                      | 0.519 (`0.926 · exp(-0.403 · 1.44)`)                     |
-| Initial t\_{1/2} (days)  | 13.0                       | 13.0 (eigen-decomposition of 2-cmt micro-constants)      |
-| SS t\_{1/2} mono (days)  | 16.8                       | 16.8                                                     |
-| SS t\_{1/2} combo (days) | 19.1                       | ~19.0                                                    |
-| Vss (L)                  | 10.8                       | 10.84 (= Vc + Vp)                                        |
+| Quantity | Papathanasiou 2025 typical | Packaged model (cycle 1, monotherapy reference subject) |
+|----|----|----|
+| ADC C_max (ug/mL) | 44.2 | ~44.5 (Dose / Vc = 187.5 mg / 4.21 L) |
+| ADC C_avg21 (ug/mL) | 7.86 | ~7.82 (AUC0-21 / 21 days; close-form of two-compartment) |
+| ADC C_tau21 (ug/mL) | 2.05 | ~2.06 (concentration at t = 21 days) |
+| Initial CL (L/day) | 0.926 | 0.926 (`exp(lcl)`) |
+| SS CL mono (L/day) | 0.619 | 0.619 (`0.926 · exp(-0.403)`) |
+| SS CL combo (L/day) | 0.518 | 0.519 (`0.926 · exp(-0.403 · 1.44)`) |
+| Initial t\_{1/2} (days) | 13.0 | 13.0 (eigen-decomposition of 2-cmt micro-constants) |
+| SS t\_{1/2} mono (days) | 16.8 | 16.8 |
+| SS t\_{1/2} combo (days) | 19.1 | ~19.0 |
+| Vss (L) | 10.8 | 10.84 (= Vc + Vp) |
 
 Differences within ~20% are expected for a virtual cohort that
 approximates but does not exactly reproduce the source-paper marginal
@@ -410,18 +426,21 @@ parameter values are faithful to Table 2.
   cannot be predicted by this file.
 - **Omitted IgG-on-TI50 covariate effect.** The Papathanasiou 2025 Table
   2 PK estimation block lists the equation
-  ${TI50}_{i} = \theta_{TI50} \cdot \left( {IGG}/15 \right)^{\theta_{TI50,IGG}} \cdot \exp\left( \eta_{TI50} \right)$,
-  and Table 4 lists IgG → ADC TI50 as one of the covariate effects on
-  cycle-1 exposure. However, **no value appears in Table 2 for
-  $\theta_{TI50,IGG}$** (every other theta in the equation block has a
-  numeric estimate). The packaged model therefore omits the
-  $\left( {IGG}/15 \right)^{\theta_{TI50,IGG}}$ factor. The IgG effect
-  is preserved through the explicit IgG-on-CL exponent (0.170) and the
-  IgG-on-Imax exponent (0.192). The net effect on cycle-1 ADC exposure
-  of varying IgG across the 5th-95th percentile range is dominated by
-  the CL and Imax pathways already implemented; quantitative agreement
-  with the paper’s IgG-effect row in Table 4 should be checked when
-  stochastic-virtual-cohort exposures are reproduced.
+  $`\mathrm{TI50}_{i} = \theta_{\mathrm{TI50}} \cdot
+  (\mathrm{IGG}/15)^{\theta_{\mathrm{TI50,IGG}}} \cdot
+  \exp(\eta_{\mathrm{TI50}})`$, and Table 4 lists IgG → ADC TI50 as one
+  of the covariate effects on cycle-1 exposure. However, **no value
+  appears in Table 2 for $`\theta_{\mathrm{TI50,IGG}}`$** (every other
+  theta in the equation block has a numeric estimate). The packaged
+  model therefore omits the
+  $`(\mathrm{IGG}/15)^{\theta_{\mathrm{TI50,IGG}}}`$ factor. The IgG
+  effect is preserved through the explicit IgG-on-CL exponent (0.170)
+  and the IgG-on-Imax exponent (0.192). The net effect on cycle-1 ADC
+  exposure of varying IgG across the 5th-95th percentile range is
+  dominated by the CL and Imax pathways already implemented;
+  quantitative agreement with the paper’s IgG-effect row in Table 4
+  should be checked when stochastic-virtual-cohort exposures are
+  reproduced.
 - **Time origin and time-varying CL.** The source uses “Time” since
   first dose in the sigmoidal CL function. The packaged model uses
   rxode2’s `t` (simulation time, starting at the first event), which is

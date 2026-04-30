@@ -1,6 +1,7 @@
 # Jackson_2022_ixekizumab
 
 ``` r
+
 library(nlmixr2lib)
 library(rxode2)
 #> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
@@ -64,34 +65,34 @@ Programmatic access:
 
 ## Source trace
 
-| Equation / parameter                                                     | Value                                              | Source location                                                                       |
-|--------------------------------------------------------------------------|----------------------------------------------------|---------------------------------------------------------------------------------------|
-| Two-compartment linear model with first-order SC absorption              | structural                                         | Jackson 2022 Methods section 2.5 and Table 2 header                                   |
-| Ka                                                                       | 0.00801 h⁻¹                                        | Table 2 (Rate of absorption)                                                          |
-| CL (reference 58.6 kg, ADA-negative)                                     | 0.0120 L/h                                         | Table 2 (Clearance)                                                                   |
-| Q (reference 58.6 kg)                                                    | 0.0119 L/h                                         | Table 2 (Clearance)                                                                   |
-| V2 (reference 58.6 kg)                                                   | 2.72 L                                             | Table 2 (Volume of distribution)                                                      |
-| V3 (reference 58.6 kg)                                                   | 2.11 L                                             | Table 2 (Volume of distribution)                                                      |
-| F1                                                                       | 0.72 (FIXED)                                       | Table 2 + footnote c (fixed to adult model value)                                     |
-| Allometric exponent on CL and Q                                          | 0.989                                              | Table 2 (Covariate weight on CL and Q)                                                |
-| Allometric exponent on V2 and V3                                         | 0.998                                              | Table 2 (Covariate weight on V2 and V3)                                               |
-| ADA-titre coefficient on CL                                              | 0.0292                                             | Table 2 (Covariate ADA titre on CL)                                                   |
-| CL covariate equation                                                    | `CL*(WT/58.6)^0.989*(1 + 0.0292*log_e[ADA titre])` | Table 2 footnote (CL_individual equation)                                             |
-| Q covariate equation                                                     | `Q*(WT/58.6)^0.989`                                | Table 2 footnote (Q_individual equation)                                              |
-| V2 covariate equation                                                    | `V2*(WT/58.6)^0.998`                               | Table 2 footnote (V2,individual equation)                                             |
-| V3 covariate equation                                                    | `V3*(WT/58.6)^0.998`                               | Table 2 footnote (V3,individual equation)                                             |
-| IIV on CL                                                                | 28.4% (ω² = log(1 + 0.284²) = 0.0776)              | Table 2 (Interindividual variability column) + footnote b (%IIV = 100·√(e^OMEGA − 1)) |
-| Residual error (proportional)                                            | 27.7%                                              | Table 2 (Residual error (proportional))                                               |
-| Approved Q4W weight-based dosing (20/40/80 mg with loading 40/80/160 mg) | regimen                                            | Introduction, page 1075, and Methods section 2.1                                      |
-| Reported steady-state (Week 8 and Week 12) mean trough concentrations    | 3.20–3.33 µg/mL (25–50 and \>50 kg groups)         | Results section 3.1, first paragraph                                                  |
-| Reported normalized 70-kg CL / Vss                                       | 0.0144 L/h / 5.77 L                                | Discussion, page 1083                                                                 |
-| Reported mean terminal half-life                                         | ~12 days                                           | Discussion, page 1083                                                                 |
+| Equation / parameter | Value | Source location |
+|----|----|----|
+| Two-compartment linear model with first-order SC absorption | structural | Jackson 2022 Methods section 2.5 and Table 2 header |
+| Ka | 0.00801 h⁻¹ | Table 2 (Rate of absorption) |
+| CL (reference 58.6 kg, ADA-negative) | 0.0120 L/h | Table 2 (Clearance) |
+| Q (reference 58.6 kg) | 0.0119 L/h | Table 2 (Clearance) |
+| V2 (reference 58.6 kg) | 2.72 L | Table 2 (Volume of distribution) |
+| V3 (reference 58.6 kg) | 2.11 L | Table 2 (Volume of distribution) |
+| F1 | 0.72 (FIXED) | Table 2 + footnote c (fixed to adult model value) |
+| Allometric exponent on CL and Q | 0.989 | Table 2 (Covariate weight on CL and Q) |
+| Allometric exponent on V2 and V3 | 0.998 | Table 2 (Covariate weight on V2 and V3) |
+| ADA-titre coefficient on CL | 0.0292 | Table 2 (Covariate ADA titre on CL) |
+| CL covariate equation | `CL*(WT/58.6)^0.989*(1 + 0.0292*log_e[ADA titre])` | Table 2 footnote (CL_individual equation) |
+| Q covariate equation | `Q*(WT/58.6)^0.989` | Table 2 footnote (Q_individual equation) |
+| V2 covariate equation | `V2*(WT/58.6)^0.998` | Table 2 footnote (V2,individual equation) |
+| V3 covariate equation | `V3*(WT/58.6)^0.998` | Table 2 footnote (V3,individual equation) |
+| IIV on CL | 28.4% (ω² = log(1 + 0.284²) = 0.0776) | Table 2 (Interindividual variability column) + footnote b (%IIV = 100·√(e^OMEGA − 1)) |
+| Residual error (proportional) | 27.7% | Table 2 (Residual error (proportional)) |
+| Approved Q4W weight-based dosing (20/40/80 mg with loading 40/80/160 mg) | regimen | Introduction, page 1075, and Methods section 2.1 |
+| Reported steady-state (Week 8 and Week 12) mean trough concentrations | 3.20–3.33 µg/mL (25–50 and \>50 kg groups) | Results section 3.1, first paragraph |
+| Reported normalized 70-kg CL / Vss | 0.0144 L/h / 5.77 L | Discussion, page 1083 |
+| Reported mean terminal half-life | ~12 days | Discussion, page 1083 |
 
 ### Covariate column naming
 
-| Source column                                                       | Canonical column used here                                                                                                                                                            |
-|---------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `WT` (baseline body weight, kg)                                     | `WT`                                                                                                                                                                                  |
+| Source column | Canonical column used here |
+|----|----|
+| `WT` (baseline body weight, kg) | `WT` |
 | `ADA titre` (continuous reciprocal dilution; 1:10, 1:20, …, 1:2560) | `ADA_TITER` (per `inst/references/covariate-columns.md`). ADA-negative samples encoded as `ADA_TITER = 1` so that `log_e(1) = 0` cancels the covariate effect (85.8% of the dataset). |
 
 ## Virtual cohort
@@ -102,6 +103,7 @@ weight-group, and ADA distributions approximate Jackson 2022 Table 1 and
 the ADA incidence reported in Results section 3.1.
 
 ``` r
+
 set.seed(20220301) # IXORA-PEDS paper month
 n_subj <- 184 # match dataset size
 
@@ -177,7 +179,7 @@ knitr::kable(summary_tbl, digits = 2,
 | \>50 kg      | 132 |   74.64 |     73.96 |       12.12 |
 
 Simulated cohort summary (compare with Jackson 2022 Table 1 weight-group
-means and Results 3.1 ADA incidence).
+means and Results 3.1 ADA incidence). {.table}
 
 ## Dosing dataset
 
@@ -188,6 +190,7 @@ at Week 12 (the co-primary endpoint timepoint) reflects steady state.
 Times are in hours (model unit).
 
 ``` r
+
 # Weeks -> hours conversion
 hours_per_week <- 7 * 24
 
@@ -233,9 +236,15 @@ d_sim <- bind_rows(d_dose, d_obs) |>
 ## Simulation
 
 ``` r
+
 mod <- readModelDb("Jackson_2022_ixekizumab")
 set.seed(42)
-sim <- rxode2::rxSolve(mod, events = d_sim, returnType = "data.frame")
+# `weight_group` and `WT` are per-subject columns already on every row of
+# `d_sim` (built from `cohort |> tidyr::crossing(...)`). Carrying them
+# through `rxSolve(keep = ...)` removes the need for post-rxSolve
+# left_joins from `cohort` in every downstream chunk.
+sim <- rxode2::rxSolve(mod, events = d_sim, returnType = "data.frame",
+                       keep = c("weight_group", "WT"))
 #> ℹ parameter labels from comments will be replaced by 'label()'
 ```
 
@@ -250,9 +259,9 @@ simulated ixekizumab concentrations over the same window, stratified by
 baseline weight group.
 
 ``` r
+
 sim_plot <- sim |>
   as.data.frame() |>
-  left_join(cohort |> select(ID, weight_group), by = c("id" = "ID")) |>
   filter(time > 0, time <= 12 * hours_per_week, !is.na(Cc)) |>
   mutate(week = time / hours_per_week)
 
@@ -285,11 +294,11 @@ ggplot(fig1, aes(x = week, y = mean_Cc, colour = weight_group, fill = weight_gro
 ### Figure 3A — Week 12 trough concentration vs body weight
 
 ``` r
+
 wk12_time <- 12 * hours_per_week
 sim_wk12 <- sim |>
   as.data.frame() |>
-  filter(abs(time - wk12_time) < 1e-6) |>
-  left_join(cohort |> select(ID, weight_group, WT), by = c("id" = "ID"))
+  filter(abs(time - wk12_time) < 1e-6)
 
 ggplot(sim_wk12, aes(x = WT, y = Cc, colour = weight_group)) +
   geom_point(alpha = 0.5) +
@@ -313,13 +322,13 @@ groups in the range 3.20–3.33 µg/mL. Insufficient PK data were available
 to summarise the \<25 kg group.
 
 ``` r
+
 trough_weeks <- c(8, 12)
 trough_times <- trough_weeks * hours_per_week
 
 trough_tbl <- sim |>
   as.data.frame() |>
   filter(time %in% trough_times) |>
-  left_join(cohort |> select(ID, weight_group), by = c("id" = "ID")) |>
   group_by(weight_group, week = time / hours_per_week) |>
   summarise(
     mean_trough  = mean(Cc, na.rm = TRUE),
@@ -347,7 +356,7 @@ knitr::kable(trough_tbl, digits = 2,
 
 Simulated mean trough concentrations at Weeks 8 and 12. Compare with
 Jackson 2022 Results 3.1: reported means 3.20–3.33 μg/mL in the 25–50 kg
-and \>50 kg groups; insufficient data in the \<25 kg group.
+and \>50 kg groups; insufficient data in the \<25 kg group. {.table}
 
 ## PKNCA validation
 
@@ -357,13 +366,13 @@ window). This is the interval over which Jackson 2022 reports
 steady-state trough concentrations.
 
 ``` r
+
 ss_start <- 8  * hours_per_week
 ss_end   <- 12 * hours_per_week
 
 nca_conc <- sim |>
   as.data.frame() |>
   filter(time >= ss_start, time <= ss_end, Cc > 0) |>
-  left_join(cohort |> select(ID, weight_group), by = c("id" = "ID")) |>
   mutate(time_rel = time - ss_start,
          treatment = paste0("IXE_Q4W_", weight_group)) |>
   rename(ID = id) |>
@@ -405,19 +414,20 @@ knitr::kable(
 )
 ```
 
-| start | end | treatment        | N   | auclast       | cmax          | cmin          | tmax              | cav           |
-|------:|----:|:-----------------|:----|:--------------|:--------------|:--------------|:------------------|:--------------|
-|     0 | 672 | IXE_Q4W\_\<25 kg | 9   | 3620 \[23.1\] | 7.77 \[16.3\] | 2.88 \[37.8\] | 168 \[84.0, 168\] | 5.39 \[23.1\] |
-|     0 | 672 | IXE_Q4W\_\>50 kg | 132 | 3740 \[37.0\] | 8.43 \[30.6\] | 2.69 \[53.2\] | 168 \[84.0, 168\] | 5.57 \[37.0\] |
-|     0 | 672 | IXE_Q4W_25-50 kg | 43  | 3600 \[31.9\] | 8.08 \[25.3\] | 2.61 \[49.2\] | 168 \[84.0, 168\] | 5.35 \[31.9\] |
+| start | end | treatment | N | auclast | cmax | cmin | tmax | cav |
+|---:|---:|:---|:---|:---|:---|:---|:---|:---|
+| 0 | 672 | IXE_Q4W\_\<25 kg | 9 | 3620 \[23.1\] | 7.77 \[16.3\] | 2.88 \[37.8\] | 168 \[84.0, 168\] | 5.39 \[23.1\] |
+| 0 | 672 | IXE_Q4W\_\>50 kg | 132 | 3740 \[37.0\] | 8.43 \[30.6\] | 2.69 \[53.2\] | 168 \[84.0, 168\] | 5.57 \[37.0\] |
+| 0 | 672 | IXE_Q4W_25-50 kg | 43 | 3600 \[31.9\] | 8.08 \[25.3\] | 2.61 \[49.2\] | 168 \[84.0, 168\] | 5.35 \[31.9\] |
 
 Simulated steady-state (Week 8–Week 12) NCA by weight group. Cmin is the
 trough at Week 12; compare with Jackson 2022 Results 3.1: reported mean
-trough 3.20–3.33 μg/mL in the 25–50 and \>50 kg groups.
+trough 3.20–3.33 μg/mL in the 25–50 and \>50 kg groups. {.table}
 
 ### Comparison against published troughs
 
 ``` r
+
 pub <- tibble(
   weight_group = c("<25 kg", "25-50 kg", ">50 kg"),
   published_mean_trough = c(
@@ -443,13 +453,14 @@ knitr::kable(comparison, digits = 2,
              caption = "Week 12 mean trough: simulated vs Jackson 2022 Results 3.1.")
 ```
 
-| weight_group | published_mean_trough | published_range   | simulated_mean_trough | pct_diff |
-|:-------------|----------------------:|:------------------|----------------------:|---------:|
-| \<25 kg      |                    NA | Insufficient data |                  3.04 |       NA |
-| 25-50 kg     |                  3.27 | 3.20-3.33         |                  2.88 |   -11.79 |
-| \>50 kg      |                  3.27 | 3.20-3.33         |                  3.03 |    -7.09 |
+| weight_group | published_mean_trough | published_range | simulated_mean_trough | pct_diff |
+|:---|---:|:---|---:|---:|
+| \<25 kg | NA | Insufficient data | 3.04 | NA |
+| 25-50 kg | 3.27 | 3.20-3.33 | 2.88 | -11.79 |
+| \>50 kg | 3.27 | 3.20-3.33 | 3.03 | -7.09 |
 
-Week 12 mean trough: simulated vs Jackson 2022 Results 3.1.
+Week 12 mean trough: simulated vs Jackson 2022 Results 3.1. {.table
+style="width:100%;"}
 
 Simulated Week 12 mean troughs track the published 3.20–3.33 µg/mL range
 within a reasonable margin; any residual difference is driven by

@@ -1,6 +1,7 @@
 # Xie_2019_agomelatine
 
 ``` r
+
 library(nlmixr2lib)
 library(nlmixr2est)
 #> Loading required package: nlmixr2data
@@ -41,6 +42,7 @@ The dose was a single 25 mg dose based on the methods section of the
 reference.
 
 ``` r
+
 Xie_2019_agomelatine <- nlmixr(readModelDb("Xie_2019_agomelatine"))
 #> Warning: some etas defaulted to non-mu referenced, possible parsing error: e.IOV1, eta17, eta18, eta19, e.IOV2, eta21, eta22, eta23, e.IOV3, eta25, eta26, eta27, e.IOV4, eta29, eta30, eta31, e.IOV5, eta33, eta34, eta35
 #> as a work-around try putting the mu-referenced expression on a simple line
@@ -78,6 +80,7 @@ d_sim_pop <- nlmixr2(Xie_2019_agomelatine, data = d_sim_prep, est = "rxSolve", c
 ```
 
 ``` r
+
 d_plot <-
   d_sim_pop |>
   group_by(time) |>
@@ -101,6 +104,7 @@ d_plot <-
 ```
 
 ``` r
+
 ggplot(d_plot, aes(x = time, y = Q50_calmt, ymin = Q05_calmt, ymax = Q95_calmt)) +
   geom_ribbon(colour = NA, linetype = "63", fill = "gray", alpha = 0.5) +
   geom_line() +
@@ -121,6 +125,7 @@ ggplot(d_plot, aes(x = time, y = Q50_calmt, ymin = Q05_calmt, ymax = Q95_calmt))
 ![](Xie_2019_agomelatine_files/figure-html/fig4a-1.png)
 
 ``` r
+
 ggplot(d_plot, aes(x = time, y = prob_blq_calmt)) +
   geom_line() +
   labs(
@@ -132,6 +137,7 @@ ggplot(d_plot, aes(x = time, y = prob_blq_calmt)) +
 ![](Xie_2019_agomelatine_files/figure-html/fig4d-1.png)
 
 ``` r
+
 ggplot(d_plot, aes(x = time, y = Q50_c3oh, ymin = Q05_c3oh, ymax = Q95_c3oh)) +
   geom_ribbon(colour = NA, linetype = "63", fill = "gray", alpha = 0.5) +
   geom_line() +
@@ -155,6 +161,7 @@ A figure for BQL 3-hydroxy-agomelatine is not in the original paper. It
 is added here for completeness.
 
 ``` r
+
 ggplot(d_plot, aes(x = time, y = prob_blq_c3oh)) +
   geom_line() +
   labs(
@@ -166,6 +173,7 @@ ggplot(d_plot, aes(x = time, y = prob_blq_c3oh)) +
 ![](Xie_2019_agomelatine_files/figure-html/unnamed-chunk-2-1.png)
 
 ``` r
+
 ggplot(d_plot, aes(x = time, y = Q50_c7dm, ymin = Q05_c7dm, ymax = Q95_c7dm)) +
   geom_ribbon(colour = NA, linetype = "63", fill = "gray", alpha = 0.5) +
   geom_line() +
@@ -186,6 +194,7 @@ ggplot(d_plot, aes(x = time, y = Q50_c7dm, ymin = Q05_c7dm, ymax = Q95_c7dm)) +
 ![](Xie_2019_agomelatine_files/figure-html/fig4c-1.png)
 
 ``` r
+
 ggplot(d_plot, aes(x = time, y = prob_blq_c7dm)) +
   geom_line() +
   labs(

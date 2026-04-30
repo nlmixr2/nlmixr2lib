@@ -23,10 +23,13 @@ central compartment, and FVIII activity (`Cc = central / V1`) is
 observed in the plasma. Covariate effects enter as power-law multipliers
 (Nestorov 2014 Eq. 2):
 
-$${CL}\; = \;{TVCL}\,({VWF}/118)^{Q_{10}},\qquad V_{1}\; = \;{TVV}_{1}\,({WT}/73)^{Q_{8}}({HCT}/45)^{Q_{9}}$$
+``` math
+\mathrm{CL} \;=\; \mathrm{TVCL}\,\bigl(\mathrm{VWF}/118\bigr)^{Q_{10}}, \qquad
+V_1 \;=\; \mathrm{TVV}_1\,\bigl(\mathrm{WT}/73\bigr)^{Q_8}\bigl(\mathrm{HCT}/45\bigr)^{Q_9}
+```
 
-with the published exponents $Q_{10} = - 0.343$, $Q_{8} = 0.382$, and
-$Q_{9} = - 0.419$.
+with the published exponents $`Q_{10} = -0.343`$, $`Q_{8} = 0.382`$, and
+$`Q_{9} = -0.419`$.
 
 ## Population
 
@@ -64,22 +67,22 @@ The per-parameter origin is recorded as an in-file comment next to each
 `inst/modeldb/specificDrugs/Nestorov_2014_factorviii.R`. The table below
 collects them in one place.
 
-| Parameter (model name)        | Value                     | Source                                                                      |
-|-------------------------------|---------------------------|-----------------------------------------------------------------------------|
-| `lcl` (TVCL, dL/h)            | log(1.65)                 | Nestorov 2014 Table 1, Final Model rFVIIIFc, “Without BLQ values” column    |
-| `lvc` (TVV1, dL)              | log(37.5)                 | Nestorov 2014 Table 1                                                       |
-| `lq` (Q, dL/h)                | log(0.0746)               | Nestorov 2014 Table 1                                                       |
-| `lvp` (V2, dL)                | log(6.92)                 | Nestorov 2014 Table 1                                                       |
-| `e_vwf_cl` (power, VWF on CL) | -0.343                    | Nestorov 2014 Table 1, “Exponent on VWF”                                    |
-| `e_wt_vc` (power, WT on V1)   | 0.382                     | Nestorov 2014 Table 1, “Allometric exponent on V1”                          |
-| `e_hct_vc` (power, HCT on V1) | -0.419                    | Nestorov 2014 Table 1, “Exponent on HCT”                                    |
-| IIV block `etalcl + etalvc`   | c(0.0590, 0.0179, 0.0180) | Nestorov 2014 Table 1, IIV CL (24.3% CV), v12 covariance, IIV V1 (13.4% CV) |
-| `propSd` (proportional)       | 0.136                     | Nestorov 2014 Table 1, proportional error 13.6%                             |
-| `addSd` (additive, IU/dL)     | 0.208                     | Nestorov 2014 Table 1, phase 3 additive error                               |
-| ODE structure (2-compartment) | n/a                       | Nestorov 2014 Results “Final Model for rFVIIIFc” and Eq. 2                  |
-| Reference WT                  | 73 kg                     | Nestorov 2014 Eq. 2                                                         |
-| Reference VWF                 | 118 IU/dL                 | Nestorov 2014 Eq. 2                                                         |
-| Reference HCT                 | 45 %                      | Nestorov 2014 Eq. 2                                                         |
+| Parameter (model name) | Value | Source |
+|----|----|----|
+| `lcl` (TVCL, dL/h) | log(1.65) | Nestorov 2014 Table 1, Final Model rFVIIIFc, “Without BLQ values” column |
+| `lvc` (TVV1, dL) | log(37.5) | Nestorov 2014 Table 1 |
+| `lq` (Q, dL/h) | log(0.0746) | Nestorov 2014 Table 1 |
+| `lvp` (V2, dL) | log(6.92) | Nestorov 2014 Table 1 |
+| `e_vwf_cl` (power, VWF on CL) | -0.343 | Nestorov 2014 Table 1, “Exponent on VWF” |
+| `e_wt_vc` (power, WT on V1) | 0.382 | Nestorov 2014 Table 1, “Allometric exponent on V1” |
+| `e_hct_vc` (power, HCT on V1) | -0.419 | Nestorov 2014 Table 1, “Exponent on HCT” |
+| IIV block `etalcl + etalvc` | c(0.0590, 0.0179, 0.0180) | Nestorov 2014 Table 1, IIV CL (24.3% CV), v12 covariance, IIV V1 (13.4% CV) |
+| `propSd` (proportional) | 0.136 | Nestorov 2014 Table 1, proportional error 13.6% |
+| `addSd` (additive, IU/dL) | 0.208 | Nestorov 2014 Table 1, phase 3 additive error |
+| ODE structure (2-compartment) | n/a | Nestorov 2014 Results “Final Model for rFVIIIFc” and Eq. 2 |
+| Reference WT | 73 kg | Nestorov 2014 Eq. 2 |
+| Reference VWF | 118 IU/dL | Nestorov 2014 Eq. 2 |
+| Reference HCT | 45 % | Nestorov 2014 Eq. 2 |
 
 The IIV variance entries map the paper’s NONMEM `%CV` to log-scale
 variance via `omega^2 = (CV%/100)^2` (i.e., the convention used by
@@ -120,6 +123,7 @@ use a virtual cohort whose covariate distributions approximate the
 modeling population.
 
 ``` r
+
 set.seed(2014)
 n_subj <- 100
 
@@ -143,6 +147,7 @@ assessment in the phase 1/2a and phase 3 studies (Table S1 of the
 supplement).
 
 ``` r
+
 obs_grid <- sort(unique(c(
   seq(0,    24,  by = 1),     # dense early sampling for Cmax / alpha phase
   seq(30,  120,  by = 6),     # daily-ish out to 5 days
@@ -173,6 +178,7 @@ events_65 <- build_events(cohort, 65)
 ## Simulation
 
 ``` r
+
 mod <- readModelDb("Nestorov_2014_factorviii")
 
 sim_25 <- rxSolve(mod, events = events_25, returnType = "data.frame",
@@ -197,6 +203,7 @@ interval** by dose group, analogous to the shaded bands of the paper’s
 VPCs.
 
 ``` r
+
 sim_summary <- sim |>
   filter(time > 0) |>
   group_by(time, treatment) |>
@@ -232,6 +239,7 @@ The formula includes the `treatment` grouping so per-dose summaries can
 be compared with the paper’s reported peak / trough / time-to-1% values.
 
 ``` r
+
 sim_nca <- sim |>
   filter(!is.na(Cc), time > 0) |>
   select(id, treatment, time, Cc)
@@ -302,14 +310,7 @@ nca_res  <- PKNCA::pk.nca(nca_data)
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#>  ■■■■■■                            15% |  ETA: 11s
+#>  ■■■■■                             13% |  ETA: 12s
 #> Warning: Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
@@ -370,88 +371,7 @@ nca_res  <- PKNCA::pk.nca(nca_data)
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#>  ■■■■■■■■■■■■                      37% |  ETA:  8s
-#> Warning: Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#>  ■■■■■■■■■■■■■■■■■■■■              62% |  ETA:  5s
+#>  ■■■■■■■■■■■                       33% |  ETA: 10s
 #> Warning: Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
@@ -523,11 +443,99 @@ nca_res  <- PKNCA::pk.nca(nca_data)
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■       87% |  ETA:  2s
+#>  ■■■■■■■■■■■■■■■■■■                57% |  ETA:  6s
 #> Warning: Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■         81% |  ETA:  3s
+#> Warning: Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
@@ -573,13 +581,14 @@ knitr::kable(
 )
 ```
 
-| Interval Start | Interval End | treatment            | N   | Cmax (IU/dL)  | Tmax (h)            | Clast (IU/dL)   | Half-life (h) | AUCinf,obs (h\*IU/dL) |
-|---------------:|-------------:|:---------------------|:----|:--------------|:--------------------|:----------------|:--------------|:----------------------|
-|              0 |          Inf | 25 IU/kg single dose | 100 | 46.7 \[18.2\] | 1.00 \[1.00, 1.00\] | 0.0687 \[70.5\] | 63.2 \[3.63\] | NC                    |
-|              0 |          Inf | 50 IU/kg single dose | 100 | 92.7 \[17.8\] | 1.00 \[1.00, 1.00\] | 0.147 \[86.4\]  | 62.6 \[4.07\] | NC                    |
-|              0 |          Inf | 65 IU/kg single dose | 100 | 122 \[19.6\]  | 1.00 \[1.00, 1.00\] | 0.193 \[96.2\]  | 62.9 \[3.51\] | NC                    |
+| Interval Start | Interval End | treatment | N | Cmax (IU/dL) | Tmax (h) | Clast (IU/dL) | Half-life (h) | AUCinf,obs (h\*IU/dL) |
+|---:|---:|:---|:---|:---|:---|:---|:---|:---|
+| 0 | Inf | 25 IU/kg single dose | 100 | 46.7 \[18.2\] | 1.00 \[1.00, 1.00\] | 0.0687 \[70.5\] | 63.2 \[3.63\] | NC |
+| 0 | Inf | 50 IU/kg single dose | 100 | 92.7 \[17.8\] | 1.00 \[1.00, 1.00\] | 0.147 \[86.4\] | 62.6 \[4.07\] | NC |
+| 0 | Inf | 65 IU/kg single dose | 100 | 122 \[19.6\] | 1.00 \[1.00, 1.00\] | 0.193 \[96.2\] | 62.9 \[3.51\] | NC |
 
 Simulated single-dose NCA parameters, Nestorov 2014 final model.
+{.table}
 
 ## Comparison against published values
 
@@ -588,15 +597,16 @@ rather than a tabulated NCA table from the observed data. The
 qualitative anchors that can be cross-checked against the simulated NCA
 results above are:
 
-| Quantity                                              | Nestorov 2014                             | This model (typical-value expectations)                                                       |
-|-------------------------------------------------------|-------------------------------------------|-----------------------------------------------------------------------------------------------|
-| Initial Cmax after 50 IU/kg single dose at WT = 73 kg | ~100 IU/dL (= dose / V1 = 73 x 50 / 37.5) | 73 x 50 / 37.5 = 97.3 IU/dL by construction                                                   |
-| Median time-to-1% after 50 IU/kg (Figure 3C)          | ~120-150 h (~5-6 days)                    | NCA-derived time at which simulated `Cc` falls below 1 IU/dL is in this range; see plot below |
-| Population CL                                         | 1.65 dL/h                                 | `exp(lcl)` = 1.65 dL/h by construction                                                        |
-| Population V1                                         | 37.5 dL                                   | `exp(lvc)` = 37.5 dL by construction                                                          |
-| Population V2                                         | 6.92 dL (~5x smaller than V1)             | `exp(lvp)` = 6.92 dL                                                                          |
+| Quantity | Nestorov 2014 | This model (typical-value expectations) |
+|----|----|----|
+| Initial Cmax after 50 IU/kg single dose at WT = 73 kg | ~100 IU/dL (= dose / V1 = 73 x 50 / 37.5) | 73 x 50 / 37.5 = 97.3 IU/dL by construction |
+| Median time-to-1% after 50 IU/kg (Figure 3C) | ~120-150 h (~5-6 days) | NCA-derived time at which simulated `Cc` falls below 1 IU/dL is in this range; see plot below |
+| Population CL | 1.65 dL/h | `exp(lcl)` = 1.65 dL/h by construction |
+| Population V1 | 37.5 dL | `exp(lvc)` = 37.5 dL by construction |
+| Population V2 | 6.92 dL (~5x smaller than V1) | `exp(lvp)` = 6.92 dL |
 
 ``` r
+
 time_to_1 <- sim |>
   filter(time > 0, !is.na(Cc)) |>
   group_by(treatment, id) |>

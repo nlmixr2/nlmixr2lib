@@ -47,6 +47,7 @@ Section 3.1 and Table S2).
 The full population metadata is available programmatically:
 
 ``` r
+
 mod_meta <- rxode2::rxode(readModelDb("Sathe_2024_sacituzumab"))
 #> ℹ parameter labels from comments will be replaced by 'label()'
 str(mod_meta$population, max.level = 1)
@@ -72,43 +73,43 @@ str(mod_meta$population, max.level = 1)
 
 ## Source trace
 
-| Equation / parameter                                               | Value                 | Source location                                        |
-|--------------------------------------------------------------------|-----------------------|--------------------------------------------------------|
-| `lclSG` (SG CL)                                                    | log(0.13333) L/h      | Sathe 2024 Table 1; supplement Section 6.b TH(1) FIX   |
-| `lvcSG` (SG V1)                                                    | log(2.77011) L        | Sathe 2024 Table 1; supplement Section 6.b TH(2) FIX   |
-| `lqSG` (SG Q)                                                      | log(0.0055141) L/h    | Sathe 2024 Table 1; supplement Section 6.b TH(3) FIX   |
-| `lvpSG` (SG V2)                                                    | log(0.907787) L       | Sathe 2024 Table 1; supplement Section 6.b TH(4) FIX   |
-| `allo_clSG` (Body-wt exponent on SG CL/Q)                          | 0.507571              | Sathe 2024 Table 1; supplement Section 6.b TH(6) FIX   |
-| `allo_vSG` (Body-wt exponent on SG V1/V2)                          | 0.532396              | Sathe 2024 Table 1; supplement Section 6.b TH(7) FIX   |
-| `e_alb_clSG` (Baseline-albumin exponent on SG CL)                  | -0.355253             | Sathe 2024 Table 1; supplement Section 6.b TH(8) FIX   |
-| `lkrel` (log SG-to-SN-38 release rate)                             | -2.34 (= 0.0961 1/h)  | Sathe 2024 Table 2                                     |
-| `lclSN38` (log apparent SN-38 CL)                                  | 6.02 (= 409 L/h)      | Sathe 2024 Table 2                                     |
-| `lqSN38` (log apparent SN-38 Q)                                    | 5.51 (= 247 L/h)      | Sathe 2024 Table 2                                     |
-| `lvcSN38` (apparent SN-38 V1, FIXED)                               | log(49) L             | Sathe 2024 Table 2; literature ref \[19\] (Klein 2002) |
-| `lvpSN38` (apparent SN-38 V2, FIXED)                               | log(2177) L           | Sathe 2024 Table 2; literature ref \[19\] (Klein 2002) |
-| `allo_clSN38` (Body-wt exponent on SN-38 CL/Q)                     | 0.500                 | Sathe 2024 Table 2                                     |
-| `lclTAB` (tAB CL, baseline at t=0)                                 | log(0.016) L/h        | Sathe 2024 Table 3                                     |
-| `lvcTAB` (tAB V1)                                                  | log(3.06) L           | Sathe 2024 Table 3                                     |
-| `lqTAB` (tAB Q)                                                    | log(0.010) L/h        | Sathe 2024 Table 3                                     |
-| `lvpTAB` (tAB V2)                                                  | log(1.20) L           | Sathe 2024 Table 3                                     |
-| `allo_clTAB` (Body-wt exponent on tAB CL/Q)                        | 0.372                 | Sathe 2024 Table 3                                     |
-| `allo_vTAB` (Body-wt exponent on tAB V1/V2)                        | 0.446                 | Sathe 2024 Table 3                                     |
-| `e_alb_clTAB` (Baseline-albumin exponent on tAB CL)                | -0.735                | Sathe 2024 Table 3                                     |
-| `e_tumor_clTAB` (Tumor-Other multiplicative on tAB CL)             | -0.134                | Sathe 2024 Table 3                                     |
-| `e_sex_vTAB` (Male multiplicative on tAB V1)                       | +0.121                | Sathe 2024 Table 3                                     |
-| `maxRedTAB` (Max relative reduction of tAB CL)                     | 16.7%                 | Sathe 2024 Table 3                                     |
-| `keffTAB` (tAB CL time-decline rate constant)                      | 6.08e-4 1/h           | Sathe 2024 Table 3                                     |
-| IIV variance on lclSG                                              | 0.011                 | Sathe 2024 Table 1                                     |
-| IIV BLOCK(2) on lkrel + lclSN38                                    | (0.332, 0.269, 0.411) | Sathe 2024 Table 2                                     |
-| IIV BLOCK(2) on lclTAB + lvcTAB                                    | (0.100, 0.045, 0.046) | Sathe 2024 Table 3                                     |
-| Residual SD on log SG                                              | 0.204                 | Sathe 2024 Table 1                                     |
-| Residual SD on log SN-38                                           | 0.357 (= exp(-1.03))  | Sathe 2024 Table 2                                     |
-| tAB additive residual SD                                           | 27.3 ug/mL            | Sathe 2024 Table 3                                     |
-| tAB proportional residual SD                                       | 0.207                 | Sathe 2024 Table 3                                     |
-| Equation: SG ODE (2-cmt linear)                                    | n/a                   | Sathe 2024 Section 3.2; supplement Section 6.b \$DES   |
-| Equation: free SN-38 ODE (sequential generation from SG via KREL)  | n/a                   | Sathe 2024 Section 3.3; supplement Section 6.b \$DES   |
-| Equation: tAB ODE (2-cmt linear with time-dependent CL)            | n/a                   | Sathe 2024 Section 3.4; supplement Section 6.c         |
-| Equation: time-dependent tAB CL `1 - max/100 * (1 - exp(-keff*t))` | n/a                   | Sathe 2024 Table 3; supplement Section 6.c \$PK        |
+| Equation / parameter | Value | Source location |
+|----|----|----|
+| `lclSG` (SG CL) | log(0.13333) L/h | Sathe 2024 Table 1; supplement Section 6.b TH(1) FIX |
+| `lvcSG` (SG V1) | log(2.77011) L | Sathe 2024 Table 1; supplement Section 6.b TH(2) FIX |
+| `lqSG` (SG Q) | log(0.0055141) L/h | Sathe 2024 Table 1; supplement Section 6.b TH(3) FIX |
+| `lvpSG` (SG V2) | log(0.907787) L | Sathe 2024 Table 1; supplement Section 6.b TH(4) FIX |
+| `allo_clSG` (Body-wt exponent on SG CL/Q) | 0.507571 | Sathe 2024 Table 1; supplement Section 6.b TH(6) FIX |
+| `allo_vSG` (Body-wt exponent on SG V1/V2) | 0.532396 | Sathe 2024 Table 1; supplement Section 6.b TH(7) FIX |
+| `e_alb_clSG` (Baseline-albumin exponent on SG CL) | -0.355253 | Sathe 2024 Table 1; supplement Section 6.b TH(8) FIX |
+| `lkrel` (log SG-to-SN-38 release rate) | -2.34 (= 0.0961 1/h) | Sathe 2024 Table 2 |
+| `lclSN38` (log apparent SN-38 CL) | 6.02 (= 409 L/h) | Sathe 2024 Table 2 |
+| `lqSN38` (log apparent SN-38 Q) | 5.51 (= 247 L/h) | Sathe 2024 Table 2 |
+| `lvcSN38` (apparent SN-38 V1, FIXED) | log(49) L | Sathe 2024 Table 2; literature ref \[19\] (Klein 2002) |
+| `lvpSN38` (apparent SN-38 V2, FIXED) | log(2177) L | Sathe 2024 Table 2; literature ref \[19\] (Klein 2002) |
+| `allo_clSN38` (Body-wt exponent on SN-38 CL/Q) | 0.500 | Sathe 2024 Table 2 |
+| `lclTAB` (tAB CL, baseline at t=0) | log(0.016) L/h | Sathe 2024 Table 3 |
+| `lvcTAB` (tAB V1) | log(3.06) L | Sathe 2024 Table 3 |
+| `lqTAB` (tAB Q) | log(0.010) L/h | Sathe 2024 Table 3 |
+| `lvpTAB` (tAB V2) | log(1.20) L | Sathe 2024 Table 3 |
+| `allo_clTAB` (Body-wt exponent on tAB CL/Q) | 0.372 | Sathe 2024 Table 3 |
+| `allo_vTAB` (Body-wt exponent on tAB V1/V2) | 0.446 | Sathe 2024 Table 3 |
+| `e_alb_clTAB` (Baseline-albumin exponent on tAB CL) | -0.735 | Sathe 2024 Table 3 |
+| `e_tumor_clTAB` (Tumor-Other multiplicative on tAB CL) | -0.134 | Sathe 2024 Table 3 |
+| `e_sex_vTAB` (Male multiplicative on tAB V1) | +0.121 | Sathe 2024 Table 3 |
+| `maxRedTAB` (Max relative reduction of tAB CL) | 16.7% | Sathe 2024 Table 3 |
+| `keffTAB` (tAB CL time-decline rate constant) | 6.08e-4 1/h | Sathe 2024 Table 3 |
+| IIV variance on lclSG | 0.011 | Sathe 2024 Table 1 |
+| IIV BLOCK(2) on lkrel + lclSN38 | (0.332, 0.269, 0.411) | Sathe 2024 Table 2 |
+| IIV BLOCK(2) on lclTAB + lvcTAB | (0.100, 0.045, 0.046) | Sathe 2024 Table 3 |
+| Residual SD on log SG | 0.204 | Sathe 2024 Table 1 |
+| Residual SD on log SN-38 | 0.357 (= exp(-1.03)) | Sathe 2024 Table 2 |
+| tAB additive residual SD | 27.3 ug/mL | Sathe 2024 Table 3 |
+| tAB proportional residual SD | 0.207 | Sathe 2024 Table 3 |
+| Equation: SG ODE (2-cmt linear) | n/a | Sathe 2024 Section 3.2; supplement Section 6.b \$DES |
+| Equation: free SN-38 ODE (sequential generation from SG via KREL) | n/a | Sathe 2024 Section 3.3; supplement Section 6.b \$DES |
+| Equation: tAB ODE (2-cmt linear with time-dependent CL) | n/a | Sathe 2024 Section 3.4; supplement Section 6.c |
+| Equation: time-dependent tAB CL `1 - max/100 * (1 - exp(-keff*t))` | n/a | Sathe 2024 Table 3; supplement Section 6.c \$PK |
 
 ## Virtual cohort
 
@@ -120,6 +121,7 @@ matching the pooled analysis (52% mTNBC, 7% mUC, 6% HR+/HER2- mBC, 35%
 other solid tumors).
 
 ``` r
+
 set.seed(20240405)
 
 n_subj <- 200
@@ -183,6 +185,7 @@ events <- cov_df |>
 ## Simulation
 
 ``` r
+
 mod <- rxode2::rxode(readModelDb("Sathe_2024_sacituzumab"))
 #> ℹ parameter labels from comments will be replaced by 'label()'
 sim <- rxode2::rxSolve(mod, events = events, keep = c("cohort", "WT"))
@@ -192,6 +195,7 @@ Typical-value simulation (no IIV / RUV) for replicating the paper’s
 per-figure medians:
 
 ``` r
+
 mod_typical <- mod |> rxode2::zeroRe()
 
 typical_cov <- data.frame(
@@ -230,6 +234,7 @@ percentiles versus time. Multiplying the model output (`Cc`, in ug/mL)
 by 1000 converts to the paper’s reporting unit ng/mL.
 
 ``` r
+
 sim_sg <- sim |>
   filter(time > 0) |>
   mutate(SG_ng_per_mL = Cc * 1000)
@@ -257,6 +262,7 @@ ggplot(sim_sg_summary, aes(time, Q50)) +
 ### Figure 2b — Free SN-38 concentrations versus time
 
 ``` r
+
 sim_sn38 <- sim |>
   filter(time > 0) |>
   mutate(SN38_ng_per_mL = Csn38 * 1000)
@@ -284,6 +290,7 @@ ggplot(sim_sn38_summary, aes(time, Q50)) +
 ### Figure 2c — Total antibody concentrations versus time
 
 ``` r
+
 sim_tab <- sim |>
   filter(time > 0)
 
@@ -315,6 +322,7 @@ Sathe 2024 Figure 3a/b show that body weights at the 5th (49 kg) and
 constant 10 mg/kg mg/kg dosing. Reproduce with the typical-value model:
 
 ``` r
+
 bw_grid <- c(49, 70, 110)
 out_bw <- lapply(bw_grid, function(wt) {
   ev <- expand.grid(time = dose_times_h, cmt = c("sgCentral", "tabCentral"),
@@ -365,7 +373,7 @@ knitr::kable(auc_relative, digits = 3,
 | 110 |          13138.178 |            90665.72 |      1.249 |       1.312 |
 
 Body-weight effect on first-cycle AUC relative to a 70 kg typical
-patient.
+patient. {.table}
 
 The simulated SG AUC ratios at 49 kg and 110 kg should bracket roughly
 0.84 and 1.25 respectively (Sathe 2024 Figure 3a). Total antibody AUC
@@ -379,6 +387,7 @@ compared across body-weight strata. Run PKNCA separately for each
 analyte; carry the weight-band stratification through `keep`.
 
 ``` r
+
 sim_first_cycle <- sim |>
   filter(time > 0, time <= 21 * 24) |>
   mutate(
@@ -402,6 +411,7 @@ dose_first_cycle <- events |>
 ### SG NCA
 
 ``` r
+
 sim_sg_nca <- sim_first_cycle |>
   filter(!is.na(Cc)) |>
   select(id, time, Cc, weight_band)
@@ -641,11 +651,12 @@ knitr::kable(sg_summary, digits = 2,
 | Mid (60-90 kg) | cmax     | 256.50 | 232.79 | 277.30 |
 
 Simulated first-cycle SG Cmax (ug/mL) and AUClast (ug\*h/mL) by
-body-weight band.
+body-weight band. {.table}
 
 ### Free SN-38 NCA
 
 ``` r
+
 sim_sn38_nca <- sim_first_cycle |>
   filter(!is.na(Csn38)) |>
   select(id, time, Csn38, weight_band)
@@ -876,11 +887,12 @@ knitr::kable(sn38_summary, digits = 4,
 | Mid (60-90 kg) | cmax     | 0.1043 | 0.0605 | 0.2003 |
 
 Simulated first-cycle free SN-38 Cmax (ug/mL) and AUClast (ug\*h/mL) by
-body-weight band.
+body-weight band. {.table}
 
 ### Total antibody NCA
 
 ``` r
+
 sim_tab_nca <- sim_first_cycle |>
   filter(!is.na(Ctab)) |>
   select(id, time, Ctab, weight_band)
@@ -1111,7 +1123,7 @@ knitr::kable(tab_summary, digits = 2,
 | Mid (60-90 kg) | cmax     | 298.85 | 210.74 | 435.16 |
 
 Simulated first-cycle total antibody Cmax (ug/mL) and AUClast (ug\*h/mL)
-by body-weight band.
+by body-weight band. {.table}
 
 ### Comparison with published abstract values
 
@@ -1121,6 +1133,7 @@ allometric scaling to 70 kg, infinite-time AUC after a single 700 mg
 dose simplifies to dose / CL.
 
 ``` r
+
 auc_inf_predicted <- data.frame(
   analyte = c("SG", "tAB"),
   CL_pop_L_per_h = c(0.133, 0.0164),
@@ -1137,7 +1150,7 @@ knitr::kable(auc_inf_predicted, digits = 1,
 | tAB     |            0.0 |     700 |                      42682.9 |
 
 Predicted single-dose AUCinf at 70 kg / 38 g/L typical covariate values:
-dose / CL.
+dose / CL. {.table}
 
 ## Time-dependent CL of total antibody
 
@@ -1146,6 +1159,7 @@ with a half-time of approximately 48 days (rate constant 6.08e-4 1/h).
 Reproduce this trajectory:
 
 ``` r
+
 maxRed <- 16.7
 keff   <- 6.08e-4
 t_grid <- seq(0, 21 * 6 * 24, length.out = 200)  # 6 cycles = ~126 days

@@ -59,23 +59,23 @@ The per-parameter origin is recorded as an in-file comment next to each
 `inst/modeldb/specificDrugs/Koopman_2023_factorix.R`. The table below
 collects them in one place for review.
 
-| Parameter (model name)             | Value                        | Source                                                                   |
-|------------------------------------|------------------------------|--------------------------------------------------------------------------|
-| `lcl` (typical CL, dL/h)           | log(1.41)                    | Koopman 2023 Table 2 (New): CL = 1.41 dL/h                               |
-| `lvc` (typical V1, dL)             | log(73.1)                    | Koopman 2023 Table 2 (New): V1 = 73.1 dL                                 |
-| `lq` (typical Q2, dL/h)            | log(2.77)                    | Koopman 2023 Table 2 (New): Q2 = 2.77 dL/h                               |
-| `lvp` (typical V2, dL)             | log(80.1)                    | Koopman 2023 Table 2 (New): V2 = 80.1 dL                                 |
-| Allometric exponent on CL, Q       | 0.75 (fixed)                 | Koopman 2023 Table 2 (New): bodyweight exponent on CL and Q2 = 0.75      |
-| Allometric exponent on V1, V2      | 1.00 (fixed)                 | Koopman 2023 Table 2 (New): bodyweight exponent on V1 and V2 = 1.00      |
-| `e_age_cl` (linear age slope, 1/y) | 0.0047                       | Koopman 2023 Table 2 (New): age exponent on CL = 0.0047                  |
-| Reference body weight              | 73 kg                        | Koopman 2023 Table 2 footnote                                            |
-| Reference age                      | 15.8 years                   | Koopman 2023 equations on p. 226: `(AGE - 15.8)`                         |
-| IIV block `etalcl + etalvc`        | c(0.05570, 0.03281, 0.09986) | Koopman 2023 Table 2: IIV CL = 23.6%, IIV V1 = 31.6%, corr CL:V1 = 44.0% |
-| `etalvp`                           | 0.16974                      | Koopman 2023 Table 2: IIV V2 = 41.2%                                     |
-| `propSd`                           | 0.163                        | Koopman 2023 Table 2: proportional error = 16.3%                         |
-| `addSd`                            | 1.04 IU/dL                   | Koopman 2023 Table 2: additive error = 1.04 IU/dL                        |
-| Equation: `d/dt(central)`          | n/a                          | Koopman 2023 p. 226 (new model equations): two-compartment IV            |
-| Equation: `d/dt(peripheral1)`      | n/a                          | Koopman 2023 p. 226 (new model equations)                                |
+| Parameter (model name) | Value | Source |
+|----|----|----|
+| `lcl` (typical CL, dL/h) | log(1.41) | Koopman 2023 Table 2 (New): CL = 1.41 dL/h |
+| `lvc` (typical V1, dL) | log(73.1) | Koopman 2023 Table 2 (New): V1 = 73.1 dL |
+| `lq` (typical Q2, dL/h) | log(2.77) | Koopman 2023 Table 2 (New): Q2 = 2.77 dL/h |
+| `lvp` (typical V2, dL) | log(80.1) | Koopman 2023 Table 2 (New): V2 = 80.1 dL |
+| Allometric exponent on CL, Q | 0.75 (fixed) | Koopman 2023 Table 2 (New): bodyweight exponent on CL and Q2 = 0.75 |
+| Allometric exponent on V1, V2 | 1.00 (fixed) | Koopman 2023 Table 2 (New): bodyweight exponent on V1 and V2 = 1.00 |
+| `e_age_cl` (linear age slope, 1/y) | 0.0047 | Koopman 2023 Table 2 (New): age exponent on CL = 0.0047 |
+| Reference body weight | 73 kg | Koopman 2023 Table 2 footnote |
+| Reference age | 15.8 years | Koopman 2023 equations on p. 226: `(AGE - 15.8)` |
+| IIV block `etalcl + etalvc` | c(0.05570, 0.03281, 0.09986) | Koopman 2023 Table 2: IIV CL = 23.6%, IIV V1 = 31.6%, corr CL:V1 = 44.0% |
+| `etalvp` | 0.16974 | Koopman 2023 Table 2: IIV V2 = 41.2% |
+| `propSd` | 0.163 | Koopman 2023 Table 2: proportional error = 16.3% |
+| `addSd` | 1.04 IU/dL | Koopman 2023 Table 2: additive error = 1.04 IU/dL |
+| Equation: `d/dt(central)` | n/a | Koopman 2023 p. 226 (new model equations): two-compartment IV |
+| Equation: `d/dt(peripheral1)` | n/a | Koopman 2023 p. 226 (new model equations) |
 
 The footnote of Koopman 2023 Table 2 states “IIV and IOV coefficient of
 variation calculated as: sqrt(variance)\*100%”, i.e., the reported CV%
@@ -99,6 +99,7 @@ a typical weight-for-age within each band, capped at the observed range
 from Koopman 2023 Table 1.
 
 ``` r
+
 set.seed(2023)
 
 make_cohort <- function(n, age_min, age_max, wt_log_mean, wt_log_sd,
@@ -142,6 +143,7 @@ FIX activity is observed over a 14-day window (a typical clinical
 follow-up between Q1W prophylaxis doses).
 
 ``` r
+
 obs_grid <- c(0, 0.25, 0.5, 1, 2, 4, 8, 12, 24,
               seq(48, 336, by = 12))
 
@@ -169,6 +171,7 @@ CL, V1, V2 included) and a typical-value simulation with the etas zeroed
 for direct parameter back-checks.
 
 ``` r
+
 mod <- readModelDb("Koopman_2023_factorix")
 
 sim <- rxode2::rxSolve(mod, events = events,
@@ -204,6 +207,7 @@ activity is lower and terminal half-life is shorter in younger / smaller
 patients.
 
 ``` r
+
 sim_summary <- sim |>
   filter(time > 0) |>
   group_by(time, age_group) |>
@@ -242,6 +246,7 @@ those numbers from the typical-value simulation is the simplest possible
 self-consistency check.
 
 ``` r
+
 mod_typ <- rxode2::zeroRe(mod)
 #> ℹ parameter labels from comments will be replaced by 'label()'
 ev_ref <- rxode2::et(amt = 50 * 73, time = 0, cmt = "central") |>
@@ -270,7 +275,7 @@ knitr::kable(
 | 1.41 | 73.1 | 2.77 | 80.1 | 153.2 |
 
 Typical-value PK parameters for the reference 73 kg, 15.8-year-old
-patient
+patient {.table}
 
 The model returns CL = 1.41 dL/h, V1 = 73.1 dL, Q2 = 2.77 dL/h, V2 =
 80.1 dL, and Vss = V1 + V2 = 153.2 dL — matching the values reported in
@@ -284,14 +289,14 @@ and compare the simulated half-lives against Koopman 2023 Supplementary
 Table 3.
 
 ``` r
+
 sim_nca <- sim |>
   filter(!is.na(Cc), Cc > 0) |>
   select(id, time, Cc, age_group)
 
 dose_df <- events |>
   filter(EVID == 1) |>
-  transmute(id = ID, time = TIME, amt = AMT) |>
-  left_join(cohort |> select(id = ID, age_group), by = "id")
+  transmute(id = ID, time = TIME, amt = AMT, age_group)
 
 conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | age_group + id,
                              concu = "IU/dL",
@@ -312,9 +317,9 @@ intervals <- data.frame(
 
 nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj,
                                           intervals = intervals))
-#>  ■■■■■                             14% |  ETA:  9s
-#>  ■■■■■■■■■■■■■■                    45% |  ETA:  6s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■          76% |  ETA:  2s
+#>  ■■■■■                             13% |  ETA: 10s
+#>  ■■■■■■■■■■■■■■                    44% |  ETA:  6s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■          75% |  ETA:  2s
 nca_tbl <- as.data.frame(nca_res$result)
 
 half_life_summary <- nca_tbl |>
@@ -342,7 +347,7 @@ knitr::kable(
 | Children \<12 y       | 100 |     60.8 | 40.4 | 135.1 |
 
 Simulated rFIX-Fc terminal half-life (h) by age group, single 50 IU/kg
-IV dose.
+IV dose. {.table}
 
 ### Comparison against Koopman 2023 Supplementary Table 3
 
@@ -352,6 +357,7 @@ should fall within the reported observed ranges; differences \> 20% of
 the reported median would indicate a coding problem.
 
 ``` r
+
 published <- tibble::tribble(
   ~age_group,                 ~published_median_h, ~published_range,
   "Children <12 y",           70,                  "51-103",
@@ -377,13 +383,14 @@ knitr::kable(
 )
 ```
 
-| age_group             | published_median_h | published_range | simulated_median_h | pct_diff |
-|:----------------------|-------------------:|:----------------|-------------------:|---------:|
-| Children \<12 y       |                 70 | 51-103          |               60.8 |    -13.1 |
-| Adolescents 12-\<18 y |                 76 | 66-82           |               85.0 |     11.9 |
-| Adults \>=18 y        |                 88 | 67-166          |              101.7 |     15.5 |
+| age_group | published_median_h | published_range | simulated_median_h | pct_diff |
+|:---|---:|:---|---:|---:|
+| Children \<12 y | 70 | 51-103 | 60.8 | -13.1 |
+| Adolescents 12-\<18 y | 76 | 66-82 | 85.0 | 11.9 |
+| Adults \>=18 y | 88 | 67-166 | 101.7 | 15.5 |
 
 Simulated vs. Koopman 2023 Supplementary Table 3 terminal half-lives.
+{.table style="width:100%;"}
 
 A typical Cmax check: the typical-value simulation gives the same Cmax
 in every age group (`50 * WT / (73.1 * WT / 73)` = 49.93 IU/dL), as

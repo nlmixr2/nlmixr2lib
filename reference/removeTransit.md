@@ -65,6 +65,7 @@ Other absorption:
 ## Examples
 
 ``` r
+
 # In this example the transit is added and then a few are removed
 
 readModelDb("PK_1cmt_des") |> addTransit(4) |> removeTransit(3)

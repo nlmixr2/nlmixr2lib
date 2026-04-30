@@ -1,6 +1,7 @@
 # Kyhl_2016_nalmefene
 
 ``` r
+
 library(nlmixr2lib)
 library(PKNCA)
 #> 
@@ -43,6 +44,7 @@ limits were provided for LBM in the simulation settings, these
 simulation settings were not used.
 
 ``` r
+
 dSimDose <-
   data.frame(
     ID = 1,
@@ -82,6 +84,7 @@ Replicate figure 5 from the paper. Assuming that the “confidence bounds”
 are actually 95% prediction intervals.
 
 ``` r
+
 dSimNalmefenePlot <-
   dSimNalmefene |>
   group_by(time) |>
@@ -109,6 +112,7 @@ ggplot(dSimNalmefenePlot, aes(x = time, y = Q50_pk, ymin = Q025_pk, ymax = Q975_
 
 ``` r
 
+
 ggplot(dSimNalmefenePlot, aes(x = time, y = Q50_occ, ymin = Q025_occ, ymax = Q975_occ)) +
   geom_line() +
   labs(
@@ -129,6 +133,7 @@ Non-compartmental analysis of simulated nalmefene plasma PK (single 20
 mg oral tablet in the fed state, 500 virtual subjects via IIV sampling).
 
 ``` r
+
 # Each replicate (sim.id) is treated as an independent subject
 sim_nca <- dSimNalmefene |>
   as.data.frame() |>
@@ -154,32 +159,32 @@ nca_results <- pk.nca(data_obj)
 #>  ■■■■■■                            17% |  ETA:  1m
 #>  ■■■■■■■                           20% |  ETA:  1m
 #>  ■■■■■■■■                          24% |  ETA:  1m
-#>  ■■■■■■■■■                         28% |  ETA:  1m
+#>  ■■■■■■■■■■                        28% |  ETA:  1m
 #>  ■■■■■■■■■■■                       32% |  ETA:  1m
-#>  ■■■■■■■■■■■■                      36% |  ETA:  1m
-#>  ■■■■■■■■■■■■■                     39% |  ETA: 47s
-#>  ■■■■■■■■■■■■■■                    43% |  ETA: 45s
-#>  ■■■■■■■■■■■■■■■                   47% |  ETA: 41s
-#>  ■■■■■■■■■■■■■■■■                  51% |  ETA: 39s
-#>  ■■■■■■■■■■■■■■■■■                 55% |  ETA: 36s
-#>  ■■■■■■■■■■■■■■■■■■■               59% |  ETA: 32s
-#>  ■■■■■■■■■■■■■■■■■■■■              63% |  ETA: 29s
-#>  ■■■■■■■■■■■■■■■■■■■■■             66% |  ETA: 26s
-#>  ■■■■■■■■■■■■■■■■■■■■■■            70% |  ETA: 23s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■           74% |  ETA: 20s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■          78% |  ETA: 17s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■        82% |  ETA: 14s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■       86% |  ETA: 11s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      90% |  ETA:  8s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     94% |  ETA:  5s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    98% |  ETA:  2s
+#>  ■■■■■■■■■■■■                      36% |  ETA: 49s
+#>  ■■■■■■■■■■■■■                     40% |  ETA: 46s
+#>  ■■■■■■■■■■■■■■                    44% |  ETA: 43s
+#>  ■■■■■■■■■■■■■■■                   48% |  ETA: 40s
+#>  ■■■■■■■■■■■■■■■■                  52% |  ETA: 37s
+#>  ■■■■■■■■■■■■■■■■■■                55% |  ETA: 34s
+#>  ■■■■■■■■■■■■■■■■■■■               59% |  ETA: 31s
+#>  ■■■■■■■■■■■■■■■■■■■■              63% |  ETA: 28s
+#>  ■■■■■■■■■■■■■■■■■■■■■             67% |  ETA: 25s
+#>  ■■■■■■■■■■■■■■■■■■■■■■            71% |  ETA: 23s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■           75% |  ETA: 19s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■         79% |  ETA: 16s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■        83% |  ETA: 13s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■       87% |  ETA: 10s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      91% |  ETA:  7s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     94% |  ETA:  4s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■   98% |  ETA:  1s
 nca_summary <- summary(nca_results)
 knitr::kable(nca_summary, digits = 2,
              caption = "NCA summary (single 20 mg oral tablet, fed state)")
 ```
 
-| start | end | treatment              | N   | auclast      | cmax          | tmax                 | half.life     |
-|------:|----:|:-----------------------|:----|:-------------|:--------------|:---------------------|:--------------|
-|     0 |  24 | 20 mg PO (fed, tablet) | 500 | 122 \[60.9\] | 14.1 \[82.6\] | 1.60 \[0.200, 11.1\] | 15.5 \[11.6\] |
+| start | end | treatment | N | auclast | cmax | tmax | half.life |
+|---:|---:|:---|:---|:---|:---|:---|:---|
+| 0 | 24 | 20 mg PO (fed, tablet) | 500 | 122 \[60.9\] | 14.1 \[82.6\] | 1.60 \[0.200, 11.1\] | 15.5 \[11.6\] |
 
-NCA summary (single 20 mg oral tablet, fed state)
+NCA summary (single 20 mg oral tablet, fed state) {.table}

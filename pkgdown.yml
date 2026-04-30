@@ -1,4 +1,4 @@
-pandoc: 3.1.11
+pandoc: 3.8.3
 pkgdown: 2.2.0
 pkgdown_sha: ~
 articles:
@@ -29,6 +29,7 @@ articles:
   articles/FiedlerKelly_2020_fremanezumab_cm: FiedlerKelly_2020_fremanezumab_cm.html
   articles/FiedlerKelly_2020_fremanezumab_em: FiedlerKelly_2020_fremanezumab_em.html
   articles/Frey_2010_tocilizumab: Frey_2010_tocilizumab.html
+  articles/Frey_2013_tocilizumab: Frey_2013_tocilizumab.html
   articles/Gandhi_2021_abatacept: Gandhi_2021_abatacept.html
   articles/Grimm_2023: Grimm_2023.html
   articles/Gupta_2016_amatuximab: Gupta_2016_amatuximab.html
@@ -41,6 +42,7 @@ articles:
   articles/Hua_2015_anrukinzumab: Hua_2015_anrukinzumab.html
   articles/Huang_2017_vrc01: Huang_2017_vrc01.html
   articles/Hwang_2022_tremelimumab: Hwang_2022_tremelimumab.html
+  articles/Hwang_2023_monalizumab: Hwang_2023_monalizumab.html
   articles/Ide_2020_elotuzumab: Ide_2020_elotuzumab.html
   articles/Jackson_2022_ixekizumab: Jackson_2022_ixekizumab.html
   articles/Kielbasa_2020_galcanezumab: Kielbasa_2020_galcanezumab.html
@@ -61,6 +63,7 @@ articles:
   articles/Long_2017_necitumumab: Long_2017_necitumumab.html
   articles/Lu_2014_trastuzumabemtansine: Lu_2014_trastuzumabemtansine.html
   articles/Lu_2019_polatuzumab: Lu_2019_polatuzumab.html
+  articles/Lu_2022_patritumab: Lu_2022_patritumab.html
   articles/Ma_2020_sarilumab_anc: Ma_2020_sarilumab_anc.html
   articles/Ma_2020_sarilumab_das28crp: Ma_2020_sarilumab_das28crp.html
   markov: markov.html
@@ -94,6 +97,7 @@ articles:
   articles/Sathe_2024_sacituzumab: Sathe_2024_sacituzumab.html
   articles/Soehoel_2022_tralokinumab: Soehoel_2022_tralokinumab.html
   articles/Suleiman_2019_risankizumab: Suleiman_2019_risankizumab.html
+  articles/Suri_2018_brentuximab: Suri_2018_brentuximab.html
   articles/Takahashi_2023_abatacept: Takahashi_2023_abatacept.html
   articles/Takeuchi_2023_ozoralizumab: Takeuchi_2023_ozoralizumab.html
   articles/Thakre_2022_risankizumab: Thakre_2022_risankizumab.html
@@ -119,10 +123,11 @@ articles:
   articles/Yu_2022_ofatumumab: Yu_2022_ofatumumab.html
   articles/Zhang_2019_nivolumab: Zhang_2019_nivolumab.html
   articles/Zheng_2016_sifalimumab: Zheng_2016_sifalimumab.html
+  articles/Zhong_2026_abatacept: Zhong_2026_abatacept.html
   articles/Zhou_2021_belimumab: Zhou_2021_belimumab.html
   articles/Zhou_2025_brentuximab: Zhou_2025_brentuximab.html
   articles/Zhu_2017_lebrikizumab: Zhu_2017_lebrikizumab.html
-last_built: 2026-04-29T20:32Z
+last_built: 2026-04-30T20:50Z
 urls:
   reference: https://nlmixr2.github.io/nlmixr2lib/reference
   article: https://nlmixr2.github.io/nlmixr2lib/articles

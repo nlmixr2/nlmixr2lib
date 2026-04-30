@@ -1,6 +1,7 @@
 # Mould_2007_alemtuzumab
 
 ``` r
+
 library(nlmixr2lib)
 library(rxode2)
 #> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
@@ -47,17 +48,17 @@ summaries.
 
 Mould 2007 Table 1:
 
-| Field           | Value                                                             |
-|-----------------|-------------------------------------------------------------------|
-| N subjects      | 67                                                                |
-| N studies       | 4 (CAM002, CAM005, CAM211, CAM213)                                |
-| Age             | 41–75 years (median 59)                                           |
-| Weight          | 45–167 kg (median 72)                                             |
-| Sex             | 49 M / 18 F (26.9% female)                                        |
-| Disease state   | B-cell chronic lymphocytic leukaemia (mostly relapsed/refractory) |
-| Baseline WBC    | 1.3–522 × 10⁹/L (median 37.8)                                     |
-| Dose range      | 3–240 mg alemtuzumab as 2-hour IV infusion                        |
-| Typical regimen | Escalation 3 → 10 → 30 mg then 30 mg IV three times weekly        |
+| Field | Value |
+|----|----|
+| N subjects | 67 |
+| N studies | 4 (CAM002, CAM005, CAM211, CAM213) |
+| Age | 41–75 years (median 59) |
+| Weight | 45–167 kg (median 72) |
+| Sex | 49 M / 18 F (26.9% female) |
+| Disease state | B-cell chronic lymphocytic leukaemia (mostly relapsed/refractory) |
+| Baseline WBC | 1.3–522 × 10⁹/L (median 37.8) |
+| Dose range | 3–240 mg alemtuzumab as 2-hour IV infusion |
+| Typical regimen | Escalation 3 → 10 → 30 mg then 30 mg IV three times weekly |
 
 Race was not reported in the published analysis and is therefore not
 simulated in this vignette. Weight was tested but not retained as a
@@ -73,23 +74,23 @@ following locations in Mould DR et al., *British Journal of Clinical
 Pharmacology* 2007;64(3):278–291
 ([doi:10.1111/j.1365-2125.2007.02914.x](https://doi.org/10.1111/j.1365-2125.2007.02914.x)).
 
-| Quantity                            | Source location              | Value used                             |
-|-------------------------------------|------------------------------|----------------------------------------|
-| Two-compartment MM PK structure     | Methods, Results § PK model  | two-cmt with MM elimination            |
-| V_(max) typical (reference WBC)     | Table 2 final estimates      | 1020 µg h⁻¹                            |
-| K_(m)                               | Table 2 final estimates      | 338 µg L⁻¹                             |
-| V₁                                  | Table 2 final estimates      | 11.3 L                                 |
-| Q                                   | Table 2 final estimates      | 1.05 L h⁻¹                             |
-| V₂                                  | Table 2 final estimates      | 41.5 L                                 |
-| WBC covariate form                  | Table 2 / Results equation   | V_(max) = TVV_(max) × (WBC/10)^(0.194) |
-| Reference WBC                       | Results, equation annotation | 10 × 10⁹ /L                            |
-| Exponent 0.194                      | Table 2 final estimates      | 0.194                                  |
-| IIV (ISV) on V_(max), K_(m), V₁, V₂ | Table 2                      | 32%, 145%, 84%, 179% CV                |
-| Residual error (proportional CCV)   | Table 2                      | 37.2%                                  |
-| Residual error (additive)           | Table 2                      | 64.73 µg L⁻¹ (= 0.06473 µg mL⁻¹)       |
-| Response threshold (trough)         | Abstract / Results           | 13.2 µg mL⁻¹                           |
-| Response threshold (AUC_(0–τ))      | Abstract / Results           | 484 µg h mL⁻¹                          |
-| Baseline WBC distribution           | Table 1                      | median 37.8 × 10⁹/L, range 1.3–522     |
+| Quantity | Source location | Value used |
+|----|----|----|
+| Two-compartment MM PK structure | Methods, Results § PK model | two-cmt with MM elimination |
+| V_(max) typical (reference WBC) | Table 2 final estimates | 1020 µg h⁻¹ |
+| K_(m) | Table 2 final estimates | 338 µg L⁻¹ |
+| V₁ | Table 2 final estimates | 11.3 L |
+| Q | Table 2 final estimates | 1.05 L h⁻¹ |
+| V₂ | Table 2 final estimates | 41.5 L |
+| WBC covariate form | Table 2 / Results equation | V_(max) = TVV_(max) × (WBC/10)^(0.194) |
+| Reference WBC | Results, equation annotation | 10 × 10⁹ /L |
+| Exponent 0.194 | Table 2 final estimates | 0.194 |
+| IIV (ISV) on V_(max), K_(m), V₁, V₂ | Table 2 | 32%, 145%, 84%, 179% CV |
+| Residual error (proportional CCV) | Table 2 | 37.2% |
+| Residual error (additive) | Table 2 | 64.73 µg L⁻¹ (= 0.06473 µg mL⁻¹) |
+| Response threshold (trough) | Abstract / Results | 13.2 µg mL⁻¹ |
+| Response threshold (AUC_(0–τ)) | Abstract / Results | 484 µg h mL⁻¹ |
+| Baseline WBC distribution | Table 1 | median 37.8 × 10⁹/L, range 1.3–522 |
 
 ### Virtual cohort
 
@@ -110,6 +111,7 @@ The deviation is documented in the “Assumptions and deviations” section
 below.
 
 ``` r
+
 set.seed(2007)
 n_subj <- 200
 
@@ -140,6 +142,7 @@ trough, end-of-infusion, 6 h and 24 h post-dose, and on a dense early
 grid over the first 72 h.
 
 ``` r
+
 week_h <- 7 * 24
 dose_times <- sort(as.vector(outer(
   c(0, 2 * 24, 4 * 24),
@@ -190,6 +193,7 @@ simulation with
 for the reference profile.
 
 ``` r
+
 mod <- readModelDb("Mould_2007_alemtuzumab")
 
 set.seed(20070916)
@@ -215,6 +219,7 @@ first-dose profile (0–72 h) for the virtual cohort overlaid with the
 typical-value trajectory.
 
 ``` r
+
 first_dose <- sim_full |> filter(time <= 72)
 first_typ  <- sim_typ  |> filter(time <= 72, id == 1)
 
@@ -247,6 +252,7 @@ over the 12-week course with the 13.2 µg mL⁻¹ reference threshold
 marked.
 
 ``` r
+
 trough <- sim_full |>
   filter(time %in% dose_times)
 
@@ -289,6 +295,7 @@ regimen’s NCA results are rolled up independently, per the library’s
 PKNCA-recipe convention.
 
 ``` r
+
 tau_h <- 48
 start_ss <- max(dose_times)
 end_ss   <- start_ss + tau_h
@@ -548,6 +555,7 @@ nca_summary
 ### Comparison against the published exposure thresholds
 
 ``` r
+
 sim_trough_last <- sim_full |>
   filter(time == start_ss) |>
   summarise(value = stats::median(Cc, na.rm = TRUE)) |>

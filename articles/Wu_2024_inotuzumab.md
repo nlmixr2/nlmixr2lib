@@ -1,6 +1,7 @@
 # Wu_2024_inotuzumab
 
 ``` r
+
 library(nlmixr2lib)
 library(rxode2)
 #> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
@@ -38,7 +39,9 @@ two-compartment disposition with IV input and a total clearance that
 sums a linear component (CL1) and a time-decaying target-mediated
 component (CLt = CL2 \* exp(-kdes \* time)).
 
-$$CL_{\text{total}}(t) = CL_{1} + CL_{2}\, e^{- k_{\text{des}}\, t}$$
+``` math
+  CL_{\text{total}}(t) = CL_1 + CL_2 \, e^{-k_{\text{des}}\, t}
+```
 
 - Article: <https://doi.org/10.1007/s40262-024-01386-z>
 - PubMed (PMID 38907948): <https://pubmed.ncbi.nlm.nih.gov/38907948/>
@@ -69,36 +72,36 @@ The per-parameter origin is recorded as an in-file comment next to each
 `inst/modeldb/specificDrugs/Wu_2024_inotuzumab.R`. The table below
 collects the mapping in one place for reviewer audit.
 
-| Element                                     | Source location                                    | Value / form                                                                                                                                                                                                   |
-|---------------------------------------------|----------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Two-compartment IV model                    | Wu 2024 Methods Section 2.3 + Figure 1 (schematic) | `d/dt(central) = -kel*central - k12*central + k21*peripheral1`; `d/dt(peripheral1) = k12*central - k21*peripheral1`                                                                                            |
-| Total clearance                             | Wu 2024 Methods Section 2.3                        | `CL_total = CL1 + CL2 * exp(-kdes * time)`                                                                                                                                                                     |
-| CL1, V1, CL2, kdes, Q, V2 typical values    | Wu 2024 Table 3                                    | 0.130 L/h, 6.49 L, 0.569 L/h, 0.0577 1/h, 0.0437 L/h, 4.74 L (for an NHL adult at LBM 52.7 kg, AGE 60 y, BLSTABL 0.352, RITUX 0)                                                                               |
-| LBM on CL1                                  | Wu 2024 Table 3                                    | Power: `(LBM/52.7)^1.05`                                                                                                                                                                                       |
-| LBM on V1                                   | Wu 2024 Table 3                                    | Power: `(LBM/52.7)^0.977`                                                                                                                                                                                      |
-| LBM on CL2                                  | Wu 2024 Table 3                                    | Power: `(LBM/52.7)^0.687`                                                                                                                                                                                      |
-| ALL effect (DIS_BCPALL) on CL1              | Wu 2024 Table 3                                    | Dummy: `1 + (-0.767)*DIS_BCPALL`                                                                                                                                                                               |
-| ALL effect on CL2                           | Wu 2024 Table 3                                    | Dummy: `1 + (-0.362)*DIS_BCPALL`                                                                                                                                                                               |
-| ALL effect on kdes                          | Wu 2024 Table 3                                    | Dummy: `1 + (-0.924)*DIS_BCPALL`                                                                                                                                                                               |
-| BLSTABL on kdes (BCP-ALL only)              | Wu 2024 Table 3                                    | Power, gated: `(BLSTABL/0.352)^(-0.0484*DIS_BCPALL)`                                                                                                                                                           |
-| AGE on kdes (BCP-ALL only)                  | Wu 2024 Table 3                                    | Power, gated: `(AGE/60)^(-0.296*DIS_BCPALL)`                                                                                                                                                                   |
-| Concomitant rituximab (CONMED_RITUX) on CL1 | Wu 2024 Table 3                                    | Dummy: `1 + (-0.132)*CONMED_RITUX`                                                                                                                                                                             |
-| Reference subject                           | Wu 2024 Table 3 / Methods                          | LBM 52.7 kg (population median), AGE 60 y, BLSTABL 0.352 x 10^9, NHL adult (DIS_BCPALL = 0), no concomitant rituximab                                                                                          |
-| IIV (omega^2 = CV^2)                        | Wu 2024 Table 3                                    | CV%: CL1 40.0, V1 40.1, CL2 73.7, kdes 59.7. CL1+V1+CL2 form a 3x3 correlated block (covariances 0.136 / 0.194 / 0.204; correlations 84.7% / 65.8% / 69.0%); kdes is independent.                              |
-| Residual error (log-scale SD)               | Wu 2024 Table 3, footnote d                        | Adult NHL 0.444; adult BCP-ALL 0.612; pediatric BCP-ALL 0.452 (`Cc ~ lnorm(expSd)`; the packaged [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) defaults to the pediatric BCP-ALL value 0.452) |
-| Pediatric RP2D regimen                      | Wu 2024 Methods Section 2.1 / 2.6                  | 1.8 mg/m^2/cycle in cycle 1 (fractions 0.8 + 0.5 + 0.5 mg/m^2 on days 1, 8, 15) then 1.5 mg/m^2/cycle for up to five cycles of 28 days (fractions 0.5 + 0.5 + 0.5 mg/m^2). Each dose is a 60-min IV infusion.  |
-| Adult dosing regimen                        | Wu 2024 Methods Section 2.1 / Introduction         | Same RP2D regimen (1.8 then 1.5 mg/m^2/cycle, IV).                                                                                                                                                             |
-| Pediatric terminal half-life                | Wu 2024 Section 3.5                                | 423 h (~17.6 d) for pediatric BCP-ALL; 285 h (~11.9 d) for adult BCP-ALL                                                                                                                                       |
+| Element | Source location | Value / form |
+|----|----|----|
+| Two-compartment IV model | Wu 2024 Methods Section 2.3 + Figure 1 (schematic) | `d/dt(central) = -kel*central - k12*central + k21*peripheral1`; `d/dt(peripheral1) = k12*central - k21*peripheral1` |
+| Total clearance | Wu 2024 Methods Section 2.3 | `CL_total = CL1 + CL2 * exp(-kdes * time)` |
+| CL1, V1, CL2, kdes, Q, V2 typical values | Wu 2024 Table 3 | 0.130 L/h, 6.49 L, 0.569 L/h, 0.0577 1/h, 0.0437 L/h, 4.74 L (for an NHL adult at LBM 52.7 kg, AGE 60 y, BLSTABL 0.352, RITUX 0) |
+| LBM on CL1 | Wu 2024 Table 3 | Power: `(LBM/52.7)^1.05` |
+| LBM on V1 | Wu 2024 Table 3 | Power: `(LBM/52.7)^0.977` |
+| LBM on CL2 | Wu 2024 Table 3 | Power: `(LBM/52.7)^0.687` |
+| ALL effect (DIS_BCPALL) on CL1 | Wu 2024 Table 3 | Dummy: `1 + (-0.767)*DIS_BCPALL` |
+| ALL effect on CL2 | Wu 2024 Table 3 | Dummy: `1 + (-0.362)*DIS_BCPALL` |
+| ALL effect on kdes | Wu 2024 Table 3 | Dummy: `1 + (-0.924)*DIS_BCPALL` |
+| BLSTABL on kdes (BCP-ALL only) | Wu 2024 Table 3 | Power, gated: `(BLSTABL/0.352)^(-0.0484*DIS_BCPALL)` |
+| AGE on kdes (BCP-ALL only) | Wu 2024 Table 3 | Power, gated: `(AGE/60)^(-0.296*DIS_BCPALL)` |
+| Concomitant rituximab (CONMED_RITUX) on CL1 | Wu 2024 Table 3 | Dummy: `1 + (-0.132)*CONMED_RITUX` |
+| Reference subject | Wu 2024 Table 3 / Methods | LBM 52.7 kg (population median), AGE 60 y, BLSTABL 0.352 x 10^9, NHL adult (DIS_BCPALL = 0), no concomitant rituximab |
+| IIV (omega^2 = CV^2) | Wu 2024 Table 3 | CV%: CL1 40.0, V1 40.1, CL2 73.7, kdes 59.7. CL1+V1+CL2 form a 3x3 correlated block (covariances 0.136 / 0.194 / 0.204; correlations 84.7% / 65.8% / 69.0%); kdes is independent. |
+| Residual error (log-scale SD) | Wu 2024 Table 3, footnote d | Adult NHL 0.444; adult BCP-ALL 0.612; pediatric BCP-ALL 0.452 (`Cc ~ lnorm(expSd)`; the packaged [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) defaults to the pediatric BCP-ALL value 0.452) |
+| Pediatric RP2D regimen | Wu 2024 Methods Section 2.1 / 2.6 | 1.8 mg/m^2/cycle in cycle 1 (fractions 0.8 + 0.5 + 0.5 mg/m^2 on days 1, 8, 15) then 1.5 mg/m^2/cycle for up to five cycles of 28 days (fractions 0.5 + 0.5 + 0.5 mg/m^2). Each dose is a 60-min IV infusion. |
+| Adult dosing regimen | Wu 2024 Methods Section 2.1 / Introduction | Same RP2D regimen (1.8 then 1.5 mg/m^2/cycle, IV). |
+| Pediatric terminal half-life | Wu 2024 Section 3.5 | 423 h (~17.6 d) for pediatric BCP-ALL; 285 h (~11.9 d) for adult BCP-ALL |
 
 ### Covariate column naming
 
-| Source column | Canonical column used here | Notes                                                                                                                                                                                                                                                                 |
-|---------------|----------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `LBM`         | `LBM` (kg)                 | Time-fixed baseline. Boer’s equation for adults; Peters et al. for children.                                                                                                                                                                                          |
-| `AGE`         | `AGE` (years)              | Time-fixed baseline.                                                                                                                                                                                                                                                  |
-| `ALL`         | `DIS_BCPALL` (binary)      | 1 = BCP-ALL, 0 = NHL. New canonical entry registered in `inst/references/covariate-columns.md`. Wu 2024 calls this the “ALL effect” because it bundles disease type and the corresponding bioanalytical assay difference.                                             |
-| `RITUX`       | `CONMED_RITUX` (binary)    | 1 = on concomitant rituximab combination therapy, 0 = without rituximab (reference). Wu 2024 Table 3 footnote b explicitly flips the reference category vs. the predecessor Garrett 2019 adult model (which used “with rituximab” as reference). New canonical entry. |
-| `BLSTABL`     | `BLSTABL` (10^9 counts)    | Baseline absolute blast counts in peripheral blood. Not applicable for NHL patients; supply 0.352 (the BCP-ALL median) for NHL subjects so the gated power term evaluates to 1. New canonical entry.                                                                  |
+| Source column | Canonical column used here | Notes |
+|----|----|----|
+| `LBM` | `LBM` (kg) | Time-fixed baseline. Boer’s equation for adults; Peters et al. for children. |
+| `AGE` | `AGE` (years) | Time-fixed baseline. |
+| `ALL` | `DIS_BCPALL` (binary) | 1 = BCP-ALL, 0 = NHL. New canonical entry registered in `inst/references/covariate-columns.md`. Wu 2024 calls this the “ALL effect” because it bundles disease type and the corresponding bioanalytical assay difference. |
+| `RITUX` | `CONMED_RITUX` (binary) | 1 = on concomitant rituximab combination therapy, 0 = without rituximab (reference). Wu 2024 Table 3 footnote b explicitly flips the reference category vs. the predecessor Garrett 2019 adult model (which used “with rituximab” as reference). New canonical entry. |
+| `BLSTABL` | `BLSTABL` (10^9 counts) | Baseline absolute blast counts in peripheral blood. Not applicable for NHL patients; supply 0.352 (the BCP-ALL median) for NHL subjects so the gated power term evaluates to 1. New canonical entry. |
 
 ### Virtual population
 
@@ -107,6 +110,7 @@ below approximates the ITCC-059 pediatric BCP-ALL population centered on
 the medians reported in Wu 2024 Table 2.
 
 ``` r
+
 set.seed(2024)
 n_subj <- 200
 
@@ -141,6 +145,7 @@ Cycle 1 (21 days): 0.8 + 0.5 + 0.5 mg/m^2 on days 1, 8, 15. Cycles 2–6
 21 days + 2 cycles of 28 days = 77 days = 1848 h).
 
 ``` r
+
 infusion_dur_h <- 1   # 60-minute IV infusion (Wu 2024 Methods 2.1)
 
 # Cycle / fraction schedule (mg/m^2 per fractioned dose).
@@ -195,6 +200,7 @@ stopifnot(!anyDuplicated(unique(events[, c("ID", "TIME", "EVID")])))
 ### Simulate the pediatric RP2D regimen
 
 ``` r
+
 mod <- nlmixr2lib::readModelDb("Wu_2024_inotuzumab")
 sim <- rxode2::rxSolve(mod, events, returnType = "data.frame")
 #> ℹ parameter labels from comments will be replaced by 'label()'
@@ -203,6 +209,7 @@ sim <- rxode2::rxSolve(mod, events, returnType = "data.frame")
 #### Pediatric concentration-time profile (replicates Figure 8 of Wu 2024 — pediatric panel)
 
 ``` r
+
 sim_summary <- sim %>%
   filter(time > 0, !is.na(Cc), Cc > 0) %>%
   group_by(time) %>%
@@ -236,6 +243,7 @@ the adult approved regimen) but draw covariates from the adult BCP-ALL
 population (Wu 2024 Table 2): median LBM 54.4 kg, median age 46 y.
 
 ``` r
+
 set.seed(2024)
 pop_adult <- data.frame(
   ID           = seq_len(n_subj) + n_subj,                # disjoint IDs
@@ -274,6 +282,7 @@ sim_adult <- rxode2::rxSolve(mod, events_adult, returnType = "data.frame")
 ```
 
 ``` r
+
 both <- bind_rows(
   sim       %>% mutate(cohort = "Pediatric BCP-ALL"),
   sim_adult %>% mutate(cohort = "Adult BCP-ALL")
@@ -315,6 +324,7 @@ responders). The PKNCA window is the full 21-day cycle 1 (time 0 to 504
 h) for both cohorts.
 
 ``` r
+
 nca_conc <- bind_rows(
   sim       %>% filter(time <= 504, Cc > 0) %>%
     transmute(ID = id, time, Cc, treatment = "Pediatric BCP-ALL"),
@@ -502,8 +512,7 @@ nca_res  <- PKNCA::pk.nca(data_obj)
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#>  ■■■■■■■■■■■■■                     40% |  ETA:  2s
-#> Warning: Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
@@ -756,11 +765,12 @@ knitr::kable(
 |     0 | 504 | Pediatric BCP-ALL | 200 | NC      | 243 \[42.5\] | 1.00 \[1.00, 1.00\] |
 
 Simulated NCA over cycle 1 (0-504 h) for pediatric and adult BCP-ALL
-cohorts.
+cohorts. {.table}
 
 #### Comparison against Wu 2024 Table 4 / Table 5
 
 ``` r
+
 # Cumulative AUC at end of cycle 1 from Wu 2024 (Tables 4 and 5):
 #   - Table 4 (pediatric trial-data-driven, model-based AUC): responders 26.1
 #     [18.9-35.0], non-responders 10.1 [9.19-16.1]; combined median 19.7
@@ -816,15 +826,15 @@ knitr::kable(
 )
 ```
 
-| Cohort            | Source                    | Median AUC0-504 (10^3 ng\*h/mL) | IQR (10^3 ng\*h/mL) |
-|:------------------|:--------------------------|--------------------------------:|:--------------------|
-| Adult BCP-ALL     | This vignette (simulated) |                            17.5 | 11.0-26.4           |
-| Adult BCP-ALL     | Wu 2024 Table 5           |                            19.7 | 12.1-30.3           |
-| Pediatric BCP-ALL | This vignette (simulated) |                            24.0 | 15.6-33.2           |
-| Pediatric BCP-ALL | Wu 2024 Table 5           |                            26.6 | 17.9-37.0           |
+| Cohort | Source | Median AUC0-504 (10^3 ng\*h/mL) | IQR (10^3 ng\*h/mL) |
+|:---|:---|---:|:---|
+| Adult BCP-ALL | This vignette (simulated) | 17.5 | 11.0-26.4 |
+| Adult BCP-ALL | Wu 2024 Table 5 | 19.7 | 12.1-30.3 |
+| Pediatric BCP-ALL | This vignette (simulated) | 24.0 | 15.6-33.2 |
+| Pediatric BCP-ALL | Wu 2024 Table 5 | 26.6 | 17.9-37.0 |
 
 Cycle-1 cumulative AUC0-504h: simulated vs. published Wu 2024 Table 5
-model-based simulation values.
+model-based simulation values. {.table}
 
 The simulated medians are expected to track the published Wu 2024 Table
 5 values to within ~10–20%. Residual differences come from the
@@ -840,6 +850,7 @@ BLSTABL or AGE effect on kdes; supply BLSTABL = 0.352 (the BCP-ALL
 reference) so the gated power term evaluates to 1.
 
 ``` r
+
 set.seed(2024)
 pop_nhl <- data.frame(
   ID           = seq_len(n_subj) + 2L * n_subj,

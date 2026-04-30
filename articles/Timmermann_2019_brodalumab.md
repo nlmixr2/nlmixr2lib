@@ -45,29 +45,29 @@ residual-error term below is taken from Timmermann 2019 Table 3. The
 reference patient is a 90 kg adult with plaque psoriasis; all
 body-weight normalizations use `WT / 90`.
 
-| Equation / parameter                                                             | Value                                      | Source location                                     |
-|----------------------------------------------------------------------------------|--------------------------------------------|-----------------------------------------------------|
-| `lka` (Ka)                                                                       | `log(0.300)` 1/day                         | Table 3, Ka row                                     |
-| `lvc` (V1)                                                                       | `log(4.68)` L                              | Table 3, V1 row                                     |
-| `lcl` (CL)                                                                       | `log(0.155)` L/day                         | Table 3, CL row                                     |
-| `lvm` (Vmax)                                                                     | `log(6.07)` mg/day                         | Table 3, Vmax row                                   |
-| `lq` (Q)                                                                         | `log(0.328)` L/day                         | Table 3, Q row                                      |
-| `lvp` (V2)                                                                       | `log(2.41)` L                              | Table 3, V2 row                                     |
-| `km` (Km, fixed)                                                                 | `0.02` ug/mL                               | Table 3, Km row (fixed)                             |
-| `lfdepot` (F, fixed)                                                             | `log(0.548)`                               | Table 3, F row (fixed at 54.8%)                     |
-| `e_wt_cl` (WT/90 exponent on CL)                                                 | `0.767`                                    | Table 3: Power of weight on CL                      |
-| `e_wt_vc` (WT/90 exponent on V1)                                                 | `0.938`                                    | Table 3: Power of weight on V1                      |
-| `e_wt_vm` (WT/90 exponent on Vmax)                                               | `0.769`                                    | Table 3: Power of weight on Vmax                    |
-| `var(etalka)`                                                                    | `log(0.626^2 + 1) = 0.33065`               | Table 3: Ka IIV 62.6% CV                            |
-| `var(etalcl)`                                                                    | `log(0.575^2 + 1) = 0.28565`               | Table 3: CL IIV 57.5% CV                            |
-| `var(etalvc)`                                                                    | `log(0.255^2 + 1) = 0.06300`               | Table 3: V1 IIV 25.5% CV                            |
-| `cov(etalcl, etalvc)`                                                            | `0.75 * sqrt(0.28565 * 0.06300) = 0.10061` | Table 3: CL-V1 correlation 0.75                     |
-| `var(etalvm)`                                                                    | `log(0.247^2 + 1) = 0.05922`               | Table 3: Vmax IIV 24.7% CV                          |
-| `var(etalq)`                                                                     | `log(0.910^2 + 1) = 0.60328`               | Table 3: Q IIV 91% CV                               |
-| `var(etalvp)`                                                                    | `log(1.890^2 + 1) = 1.51997`               | Table 3: V2 IIV 189% CV                             |
-| `CcpropSd`                                                                       | `0.355` (fraction)                         | Table 3: Proportional residual error 35.5% CV       |
-| `CcaddSd`                                                                        | `3.00` ug/mL                               | Table 3: Additive residual error (SD, per footnote) |
-| Structure (2-cmt + first-order SC absorption + parallel linear + MM elimination) | n/a                                        | Section 2.3 Methods and ODE description             |
+| Equation / parameter | Value | Source location |
+|----|----|----|
+| `lka` (Ka) | `log(0.300)` 1/day | Table 3, Ka row |
+| `lvc` (V1) | `log(4.68)` L | Table 3, V1 row |
+| `lcl` (CL) | `log(0.155)` L/day | Table 3, CL row |
+| `lvm` (Vmax) | `log(6.07)` mg/day | Table 3, Vmax row |
+| `lq` (Q) | `log(0.328)` L/day | Table 3, Q row |
+| `lvp` (V2) | `log(2.41)` L | Table 3, V2 row |
+| `km` (Km, fixed) | `0.02` ug/mL | Table 3, Km row (fixed) |
+| `lfdepot` (F, fixed) | `log(0.548)` | Table 3, F row (fixed at 54.8%) |
+| `e_wt_cl` (WT/90 exponent on CL) | `0.767` | Table 3: Power of weight on CL |
+| `e_wt_vc` (WT/90 exponent on V1) | `0.938` | Table 3: Power of weight on V1 |
+| `e_wt_vm` (WT/90 exponent on Vmax) | `0.769` | Table 3: Power of weight on Vmax |
+| `var(etalka)` | `log(0.626^2 + 1) = 0.33065` | Table 3: Ka IIV 62.6% CV |
+| `var(etalcl)` | `log(0.575^2 + 1) = 0.28565` | Table 3: CL IIV 57.5% CV |
+| `var(etalvc)` | `log(0.255^2 + 1) = 0.06300` | Table 3: V1 IIV 25.5% CV |
+| `cov(etalcl, etalvc)` | `0.75 * sqrt(0.28565 * 0.06300) = 0.10061` | Table 3: CL-V1 correlation 0.75 |
+| `var(etalvm)` | `log(0.247^2 + 1) = 0.05922` | Table 3: Vmax IIV 24.7% CV |
+| `var(etalq)` | `log(0.910^2 + 1) = 0.60328` | Table 3: Q IIV 91% CV |
+| `var(etalvp)` | `log(1.890^2 + 1) = 1.51997` | Table 3: V2 IIV 189% CV |
+| `CcpropSd` | `0.355` (fraction) | Table 3: Proportional residual error 35.5% CV |
+| `CcaddSd` | `3.00` ug/mL | Table 3: Additive residual error (SD, per footnote) |
+| Structure (2-cmt + first-order SC absorption + parallel linear + MM elimination) | n/a | Section 2.3 Methods and ODE description |
 
 ### Parameterization notes
 
@@ -110,6 +110,7 @@ distribution approximates Timmermann 2019 Table 2. No subject-level
 observed data were released with the paper.
 
 ``` r
+
 set.seed(20260424)
 n_subj <- 400
 
@@ -126,6 +127,7 @@ reference 90 kg patient) to ensure the final Q2W cycle used for NCA is
 at steady state.
 
 ``` r
+
 tau <- 14L                          # Q2W interval (days) after the loading phase
 loading_days <- c(0, 7, 14)         # 210 mg at weeks 0, 1, 2
 maint_days   <- seq(28, 28 + tau * 40, by = tau)
@@ -157,6 +159,7 @@ events <- build_events(cohort, 210)
 ## Simulation
 
 ``` r
+
 mod <- rxode2::rxode2(readModelDb("Timmermann_2019_brodalumab"))
 #> ℹ parameter labels from comments will be replaced by 'label()'
 sim <- as.data.frame(rxode2::rxSolve(mod, events = events, keep = "WT"))
@@ -173,6 +176,7 @@ block below reproduces the typical-patient profile with all random
 effects zeroed.
 
 ``` r
+
 mod_typical <- mod |> rxode2::zeroRe()
 
 typ_events <- build_events(tibble::tibble(id = 1L, WT = 90), 210)
@@ -199,6 +203,7 @@ The simulated 5th, 50th, and 95th percentiles across the virtual cohort
 mg Q2W+1 dosing.
 
 ``` r
+
 vpc <- sim |>
   dplyr::filter(!is.na(Cc), time > 0, time <= 168) |>
   dplyr::group_by(time) |>
@@ -232,6 +237,7 @@ using 200 subjects at each fixed weight and computing AUC over the final
 Q2W dosing interval.
 
 ``` r
+
 ss_start <- max(maint_days)
 ss_end   <- ss_start + tau
 wt_levels <- c(60, 80, 90, 100, 120)
@@ -293,6 +299,7 @@ interval of the 210 mg regimen. Cmax, Tmax, Cmin/Ctrough, AUC0-tau, and
 Cavg are computed per simulated subject.
 
 ``` r
+
 nca_conc <- sim |>
   dplyr::filter(time >= ss_start, time <= ss_end, !is.na(Cc)) |>
   dplyr::mutate(time_nom = time - ss_start, treatment = "210mg_Q2W") |>
@@ -317,7 +324,7 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
-#>  ■■■■■■■■■■■                       35% |  ETA:  3s
+#>  ■■■■■■■■■■■■■■                    42% |  ETA:  3s
 summary(nca_res)
 #>  start end treatment   N    auclast        cmax           cmin
 #>      0  14 210mg_Q2W 400 19.2 [137] 3.23 [99.8] 0.00288 [2610]
@@ -336,6 +343,7 @@ corresponding distributional statistics and compares mean, median, and
 CV% against the published values.
 
 ``` r
+
 set.seed(20260424)
 ref_cohort <- tibble::tibble(id = seq_len(500), WT = 90)
 ref_events <- build_events(ref_cohort, 210)
@@ -392,16 +400,17 @@ knitr::kable(comparison, digits = 2,
   caption = "Simulated vs. published (Timmermann 2019 Table 4) secondary PK parameters for a reference 90 kg patient on 210 mg Q2W+1. Differences > 20% are investigated in the text below, not tuned away.")
 ```
 
-| Parameter           | Mean_pub | Median_pub | CV_pub | Mean_sim | Median_sim | CV_sim | Mean_pct_diff | Median_pct_diff |
-|:--------------------|---------:|-----------:|-------:|---------:|-----------:|-------:|--------------:|----------------:|
-| Cmax week 1 (ug/mL) |     9.95 |       9.57 |   50.7 |     9.42 |       8.92 |  71.15 |         -5.36 |           -6.83 |
-| Cmax SS (ug/mL)     |    20.20 |      16.10 |   76.8 |    18.91 |      16.05 |  71.29 |         -6.36 |           -0.34 |
-| tmax SS (d)         |       NA |       4.00 |     NA |     4.01 |       4.00 |     NA |            NA |            0.00 |
-| AUCss (ug\*d/mL)    |   225.00 |     160.00 |   92.8 |   207.95 |     163.53 |  95.90 |         -7.58 |            2.20 |
+| Parameter | Mean_pub | Median_pub | CV_pub | Mean_sim | Median_sim | CV_sim | Mean_pct_diff | Median_pct_diff |
+|:---|---:|---:|---:|---:|---:|---:|---:|---:|
+| Cmax week 1 (ug/mL) | 9.95 | 9.57 | 50.7 | 9.42 | 8.92 | 71.15 | -5.36 | -6.83 |
+| Cmax SS (ug/mL) | 20.20 | 16.10 | 76.8 | 18.91 | 16.05 | 71.29 | -6.36 | -0.34 |
+| tmax SS (d) | NA | 4.00 | NA | 4.01 | 4.00 | NA | NA | 0.00 |
+| AUCss (ug\*d/mL) | 225.00 | 160.00 | 92.8 | 207.95 | 163.53 | 95.90 | -7.58 | 2.20 |
 
 Simulated vs. published (Timmermann 2019 Table 4) secondary PK
 parameters for a reference 90 kg patient on 210 mg Q2W+1. Differences \>
-20% are investigated in the text below, not tuned away.
+20% are investigated in the text below, not tuned away. {.table
+style="width:100%;"}
 
 ## Assumptions and deviations
 

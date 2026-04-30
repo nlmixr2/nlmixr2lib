@@ -37,22 +37,22 @@ Per-parameter origin is recorded as an in-file comment next to each
 `inst/modeldb/specificDrugs/CarlssonPetri_2021_liraglutide.R`. The table
 below collects them for review.
 
-| Equation / parameter   | Value                    | Source location                                                                                    |
-|------------------------|--------------------------|----------------------------------------------------------------------------------------------------|
-| `lka` (KA)             | `fixed(log(0.0813))` 1/h | Table 3 (fixed)                                                                                    |
-| `lcl` (CL/F)           | `log(1.01)` L/h          | Table 3 (95% CI 0.922-1.09)                                                                        |
-| `e_wt_cl` (WT on CL)   | `0.762`                  | Table 3 (95% CI 0.565-0.958); reference WT = 100 kg                                                |
-| `e_sex_cl` (sex on CL) | `1.12`                   | Table 3 (95% CI 0.993-1.24); applied as `e_sex_cl^(1 - SEXF)` so males have 1.12x CL               |
-| `e_age_child_cl`       | `1.11`                   | Table 3 (90% CI 0.89-1.34); applied as `1.11^CHILD`                                                |
-| `e_age_adolescent_cl`  | `1.06`                   | Table 3 (90% CI 0.931-1.19); applied as `1.06^ADOLESCENT`                                          |
-| `lvc` (V/F)            | `fixed(log(13.8))` L     | Table 3 (fixed)                                                                                    |
-| `e_wt_vc` (WT on V)    | `0.587`                  | Table 3 (95% CI 0.475-0.700); reference WT = 100 kg                                                |
-| `etalcl` IIV           | `log(1 + 0.312^2)`       | Table 3: CV 31.2% on CL/F (log-normal, CV% = sqrt(exp(omega^2) - 1) \* 100)                        |
-| `etalvc` IIV           | `log(1 + 0.317^2)`       | Table 3: CV 31.7% on V/F                                                                           |
-| `propSd` (prop. RUV)   | `0.433`                  | Table 3: proportional residual error 43.3%                                                         |
-| Structure              | n/a                      | One-compartment first-order absorption with covariate effects on CL and V (Equation 1 and Table 3) |
-| Concentration units    | nmol/L                   | Methods (LLOQ 0.03 nmol/L)                                                                         |
-| Reference subject      | Female, 100 kg, adult    | Table 3 footnote                                                                                   |
+| Equation / parameter | Value | Source location |
+|----|----|----|
+| `lka` (KA) | `fixed(log(0.0813))` 1/h | Table 3 (fixed) |
+| `lcl` (CL/F) | `log(1.01)` L/h | Table 3 (95% CI 0.922-1.09) |
+| `e_wt_cl` (WT on CL) | `0.762` | Table 3 (95% CI 0.565-0.958); reference WT = 100 kg |
+| `e_sex_cl` (sex on CL) | `1.12` | Table 3 (95% CI 0.993-1.24); applied as `e_sex_cl^(1 - SEXF)` so males have 1.12x CL |
+| `e_age_child_cl` | `1.11` | Table 3 (90% CI 0.89-1.34); applied as `1.11^CHILD` |
+| `e_age_adolescent_cl` | `1.06` | Table 3 (90% CI 0.931-1.19); applied as `1.06^ADOLESCENT` |
+| `lvc` (V/F) | `fixed(log(13.8))` L | Table 3 (fixed) |
+| `e_wt_vc` (WT on V) | `0.587` | Table 3 (95% CI 0.475-0.700); reference WT = 100 kg |
+| `etalcl` IIV | `log(1 + 0.312^2)` | Table 3: CV 31.2% on CL/F (log-normal, CV% = sqrt(exp(omega^2) - 1) \* 100) |
+| `etalvc` IIV | `log(1 + 0.317^2)` | Table 3: CV 31.7% on V/F |
+| `propSd` (prop. RUV) | `0.433` | Table 3: proportional residual error 43.3% |
+| Structure | n/a | One-compartment first-order absorption with covariate effects on CL and V (Equation 1 and Table 3) |
+| Concentration units | nmol/L | Methods (LLOQ 0.03 nmol/L) |
+| Reference subject | Female, 100 kg, adult | Table 3 footnote |
 
 ## Virtual cohort
 
@@ -68,6 +68,7 @@ entered in nmol so that simulated `Cc = central / Vc` is directly in
 nmol/L (matching the paper’s reported concentration units).
 
 ``` r
+
 set.seed(20210609) # publication date reference
 n_subj <- 400
 
@@ -91,6 +92,7 @@ hour during the last dosing interval to capture steady-state shape) is
 constructed below.
 
 ``` r
+
 sim_days <- 28
 tau <- 24 # dosing interval (h)
 n_doses <- sim_days # one dose per day
@@ -120,6 +122,7 @@ events <- dplyr::bind_rows(dose_rows, obs_rows) |>
 ## Simulation
 
 ``` r
+
 mod <- rxode2::rxode2(readModelDb("CarlssonPetri_2021_liraglutide"))
 #> ℹ parameter labels from comments will be replaced by 'label()'
 conc_unit <- mod$units[["concentration"]]
@@ -140,6 +143,7 @@ Carlsson Petri 2021 does not publish a concentration-time figure for the
 trajectory of a reference 100 kg female adolescent is visible.
 
 ``` r
+
 mod_typical <- mod |> rxode2::zeroRe()
 
 typical_cohort <- tibble(
@@ -186,6 +190,7 @@ shown in the paper’s Figure 3 (exposure metrics vs. body weight / age
 group).
 
 ``` r
+
 sim |>
   dplyr::filter(!is.na(Cc), time > 0) |>
   dplyr::group_by(time, treatment) |>
@@ -214,6 +219,7 @@ on CL). We replicate the relationship by computing each simulated
 subject’s Cavg over the final dosing interval.
 
 ``` r
+
 cavg_by_id <- sim |>
   dplyr::filter(time >= final_dose_time, time <= final_dose_time + tau,
     !is.na(Cc)) |>
@@ -244,6 +250,7 @@ variable (`treatment`) is placed before `id` in the formula per the
 project convention.
 
 ``` r
+
 sim_nca <- sim |>
   dplyr::filter(!is.na(Cc), time >= final_dose_time, time <= final_dose_time + tau) |>
   dplyr::mutate(time_rel = time - final_dose_time) |>
@@ -269,17 +276,17 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res <- PKNCA::pk.nca(nca_data)
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    96% |  ETA:  0s
+#>  ■■■■■■■■■■■■■■■■■■■■■■            70% |  ETA:  1s
 knitr::kable(summary(nca_res),
   caption = "Steady-state NCA at the final 24-h dosing interval (3 mg QD SC adolescent cohort).")
 ```
 
-| start | end | treatment            | N   | auclast      | cmax          | cmin          | tmax                | cav           |
-|------:|----:|:---------------------|:----|:-------------|:--------------|:--------------|:--------------------|:--------------|
-|     0 |  24 | 3 mg QD (adolescent) | 400 | 742 \[39.0\] | 36.1 \[34.6\] | 22.4 \[51.4\] | 8.00 \[6.00, 8.00\] | 30.9 \[39.0\] |
+| start | end | treatment | N | auclast | cmax | cmin | tmax | cav |
+|---:|---:|:---|:---|:---|:---|:---|:---|:---|
+| 0 | 24 | 3 mg QD (adolescent) | 400 | 742 \[39.0\] | 36.1 \[34.6\] | 22.4 \[51.4\] | 8.00 \[6.00, 8.00\] | 30.9 \[39.0\] |
 
 Steady-state NCA at the final 24-h dosing interval (3 mg QD SC
-adolescent cohort).
+adolescent cohort). {.table style="width:100%;"}
 
 ### Comparison against published exposure
 
@@ -297,6 +304,7 @@ factor on CL (adolescent/adult), so typical CL = 1.01 \* (100/100)^0.762
 `3 / (1.0706 * 24) * 1e6 / 3751.2 = 31.1 nmol/L`.
 
 ``` r
+
 typical_cl <- 1.01 * (100 / 100)^0.762 * 1.12^(1 - 1) * 1.06^1 # female (SEXF=1), 100 kg, ADOLESCENT
 typical_cavg_mg_L <- dose_mg / (typical_cl * 24)
 typical_cavg_nmol_L <- typical_cavg_mg_L * 1e6 / lira_mw
@@ -326,7 +334,7 @@ knitr::kable(compare_tbl,
 | Simulated cohort (median)    | 28.9        |
 | Simulated cohort (90% range) | 16.1 - 56.8 |
 
-Predicted steady-state Cavg for the 3 mg QD adolescent cohort.
+Predicted steady-state Cavg for the 3 mg QD adolescent cohort. {.table}
 
 ## Assumptions and deviations
 

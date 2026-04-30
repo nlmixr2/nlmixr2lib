@@ -60,6 +60,7 @@
     <li><a class="dropdown-item" href="../articles/FiedlerKelly_2020_fremanezumab_cm.html">FiedlerKelly_2020_fremanezumab_cm</a></li>
     <li><a class="dropdown-item" href="../articles/FiedlerKelly_2020_fremanezumab_em.html">FiedlerKelly_2020_fremanezumab_em</a></li>
     <li><a class="dropdown-item" href="../articles/Frey_2010_tocilizumab.html">Frey_2010_tocilizumab</a></li>
+    <li><a class="dropdown-item" href="../articles/Frey_2013_tocilizumab.html">Frey_2013_tocilizumab</a></li>
     <li><a class="dropdown-item" href="../articles/Gandhi_2021_abatacept.html">Gandhi_2021_abatacept</a></li>
     <li><a class="dropdown-item" href="../articles/Grimm_2023.html">Trontinemab and gantenerumab PK in plasma and brain (Grimm 2023)</a></li>
     <li><a class="dropdown-item" href="../articles/Gupta_2016_amatuximab.html">Gupta_2016_amatuximab</a></li>
@@ -72,6 +73,7 @@
     <li><a class="dropdown-item" href="../articles/Hua_2015_anrukinzumab.html">Hua_2015_anrukinzumab</a></li>
     <li><a class="dropdown-item" href="../articles/Huang_2017_vrc01.html">Huang_2017_vrc01</a></li>
     <li><a class="dropdown-item" href="../articles/Hwang_2022_tremelimumab.html">Hwang_2022_tremelimumab</a></li>
+    <li><a class="dropdown-item" href="../articles/Hwang_2023_monalizumab.html">Hwang_2023_monalizumab</a></li>
     <li><a class="dropdown-item" href="../articles/Ide_2020_elotuzumab.html">Ide_2020_elotuzumab</a></li>
     <li><a class="dropdown-item" href="../articles/Jackson_2022_ixekizumab.html">Jackson_2022_ixekizumab</a></li>
     <li><a class="dropdown-item" href="../articles/Kielbasa_2020_galcanezumab.html">Kielbasa_2020_galcanezumab</a></li>
@@ -92,6 +94,7 @@
     <li><a class="dropdown-item" href="../articles/Long_2017_necitumumab.html">Long_2017_necitumumab</a></li>
     <li><a class="dropdown-item" href="../articles/Lu_2014_trastuzumabemtansine.html">Lu_2014_trastuzumabemtansine</a></li>
     <li><a class="dropdown-item" href="../articles/Lu_2019_polatuzumab.html">Polatuzumab vedotin acMMAE + MMAE integrated population PK model (Lu 2019)</a></li>
+    <li><a class="dropdown-item" href="../articles/Lu_2022_patritumab.html">Patritumab deruxtecan (HER3-DXd) ADC + DXd coupled population PK model (Lu 2022)</a></li>
     <li><a class="dropdown-item" href="../articles/Ma_2020_sarilumab_anc.html">Ma_2020_sarilumab_anc</a></li>
     <li><a class="dropdown-item" href="../articles/Ma_2020_sarilumab_das28crp.html">Ma_2020_sarilumab_das28crp</a></li>
     <li><a class="dropdown-item" href="../articles/markov.html">Markov modeling</a></li>
@@ -125,6 +128,7 @@
     <li><a class="dropdown-item" href="../articles/Sathe_2024_sacituzumab.html">Sathe_2024_sacituzumab</a></li>
     <li><a class="dropdown-item" href="../articles/Soehoel_2022_tralokinumab.html">Soehoel_2022_tralokinumab</a></li>
     <li><a class="dropdown-item" href="../articles/Suleiman_2019_risankizumab.html">Suleiman_2019_risankizumab</a></li>
+    <li><a class="dropdown-item" href="../articles/Suri_2018_brentuximab.html">Suri_2018_brentuximab</a></li>
     <li><a class="dropdown-item" href="../articles/Takahashi_2023_abatacept.html">Takahashi_2023_abatacept</a></li>
     <li><a class="dropdown-item" href="../articles/Takeuchi_2023_ozoralizumab.html">Takeuchi_2023_ozoralizumab</a></li>
     <li><a class="dropdown-item" href="../articles/Thakre_2022_risankizumab.html">Thakre_2022_risankizumab</a></li>
@@ -150,6 +154,7 @@
     <li><a class="dropdown-item" href="../articles/Yu_2022_ofatumumab.html">Yu_2022_ofatumumab</a></li>
     <li><a class="dropdown-item" href="../articles/Zhang_2019_nivolumab.html">Zhang_2019_nivolumab</a></li>
     <li><a class="dropdown-item" href="../articles/Zheng_2016_sifalimumab.html">Zheng_2016_sifalimumab</a></li>
+    <li><a class="dropdown-item" href="../articles/Zhong_2026_abatacept.html">Zhong_2026_abatacept</a></li>
     <li><a class="dropdown-item" href="../articles/Zhou_2021_belimumab.html">Zhou_2021_belimumab</a></li>
     <li><a class="dropdown-item" href="../articles/Zhou_2025_brentuximab.html">Zhou_2025_brentuximab</a></li>
     <li><a class="dropdown-item" href="../articles/Zhu_2017_lebrikizumab.html">Zhu_2017_lebrikizumab</a></li>
@@ -207,15 +212,15 @@ administered intravenously (bolus / short infusion) directly into the
 central compartment, and FVIII activity (<code>Cc = central / V1</code>)
 is observed in the plasma. Covariate effects enter as power-law
 multipliers (Nestorov 2014 Eq. 2):</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">C</mi><mi mathvariant="normal">L</mi></mrow><mspace width="0.278em"></mspace><mo>=</mo><mspace width="0.278em"></mspace><mrow><mi mathvariant="normal">T</mi><mi mathvariant="normal">V</mi><mi mathvariant="normal">C</mi><mi mathvariant="normal">L</mi></mrow><mspace width="0.167em"></mspace><mo minsize="1.2" maxsize="1.2" stretchy="false" form="prefix">(</mo><mrow><mi mathvariant="normal">V</mi><mi mathvariant="normal">W</mi><mi mathvariant="normal">F</mi></mrow><mi>/</mi><mn>118</mn><msup><mo minsize="1.2" maxsize="1.2" stretchy="false" form="postfix">)</mo><msub><mi>Q</mi><mn>10</mn></msub></msup><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>V</mi><mn>1</mn></msub><mspace width="0.278em"></mspace><mo>=</mo><mspace width="0.278em"></mspace><msub><mrow><mi mathvariant="normal">T</mi><mi mathvariant="normal">V</mi><mi mathvariant="normal">V</mi></mrow><mn>1</mn></msub><mspace width="0.167em"></mspace><mo minsize="1.2" maxsize="1.2" stretchy="false" form="prefix">(</mo><mrow><mi mathvariant="normal">W</mi><mi mathvariant="normal">T</mi></mrow><mi>/</mi><mn>73</mn><msup><mo minsize="1.2" maxsize="1.2" stretchy="false" form="postfix">)</mo><msub><mi>Q</mi><mn>8</mn></msub></msup><mo minsize="1.2" maxsize="1.2" stretchy="false" form="prefix">(</mo><mrow><mi mathvariant="normal">H</mi><mi mathvariant="normal">C</mi><mi mathvariant="normal">T</mi></mrow><mi>/</mi><mn>45</mn><msup><mo minsize="1.2" maxsize="1.2" stretchy="false" form="postfix">)</mo><msub><mi>Q</mi><mn>9</mn></msub></msup></mrow><annotation encoding="application/x-tex">
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">C</mi><mi mathvariant="normal">L</mi></mrow><mspace width="0.278em"></mspace><mo>=</mo><mspace width="0.278em"></mspace><mrow><mi mathvariant="normal">T</mi><mi mathvariant="normal">V</mi><mi mathvariant="normal">C</mi><mi mathvariant="normal">L</mi></mrow><mspace width="0.167em"></mspace><mo minsize="120%" maxsize="120%" stretchy="true" form="prefix">(</mo><mrow><mi mathvariant="normal">V</mi><mi mathvariant="normal">W</mi><mi mathvariant="normal">F</mi></mrow><mi>/</mi><mn>118</mn><msup><mo minsize="120%" maxsize="120%" stretchy="true" form="postfix">)</mo><msub><mi>Q</mi><mn>10</mn></msub></msup><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>V</mi><mn>1</mn></msub><mspace width="0.278em"></mspace><mo>=</mo><mspace width="0.278em"></mspace><msub><mrow><mi mathvariant="normal">T</mi><mi mathvariant="normal">V</mi><mi mathvariant="normal">V</mi></mrow><mn>1</mn></msub><mspace width="0.167em"></mspace><mo minsize="120%" maxsize="120%" stretchy="true" form="prefix">(</mo><mrow><mi mathvariant="normal">W</mi><mi mathvariant="normal">T</mi></mrow><mi>/</mi><mn>73</mn><msup><mo minsize="120%" maxsize="120%" stretchy="true" form="postfix">)</mo><msub><mi>Q</mi><mn>8</mn></msub></msup><mo minsize="120%" maxsize="120%" stretchy="true" form="prefix">(</mo><mrow><mi mathvariant="normal">H</mi><mi mathvariant="normal">C</mi><mi mathvariant="normal">T</mi></mrow><mi>/</mi><mn>45</mn><msup><mo minsize="120%" maxsize="120%" stretchy="true" form="postfix">)</mo><msub><mi>Q</mi><mn>9</mn></msub></msup></mrow><annotation encoding="application/x-tex">
 \mathrm{CL} \;=\; \mathrm{TVCL}\,\bigl(\mathrm{VWF}/118\bigr)^{Q_{10}}, \qquad
 V_1 \;=\; \mathrm{TVV}_1\,\bigl(\mathrm{WT}/73\bigr)^{Q_8}\bigl(\mathrm{HCT}/45\bigr)^{Q_9}
 </annotation></semantics></math></p>
 <p>with the published exponents
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Q</mi><mn>10</mn></msub><mo>=</mo><mo>−</mo><mn>0.343</mn></mrow><annotation encoding="application/x-tex">Q_{10} = -0.343</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Q</mi><mn>10</mn></msub><mo>=</mo><mi>−</mi><mn>0.343</mn></mrow><annotation encoding="application/x-tex">Q_{10} = -0.343</annotation></semantics></math>,
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Q</mi><mn>8</mn></msub><mo>=</mo><mn>0.382</mn></mrow><annotation encoding="application/x-tex">Q_{8} = 0.382</annotation></semantics></math>,
 and
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Q</mi><mn>9</mn></msub><mo>=</mo><mo>−</mo><mn>0.419</mn></mrow><annotation encoding="application/x-tex">Q_{9} = -0.419</annotation></semantics></math>.</p>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Q</mi><mn>9</mn></msub><mo>=</mo><mi>−</mi><mn>0.419</mn></mrow><annotation encoding="application/x-tex">Q_{9} = -0.419</annotation></semantics></math>.</p>
 </div>
 <div class="section level2">
 <h2 id="population">Population<a class="anchor" aria-label="anchor" href="#population"></a>
@@ -570,14 +575,7 @@ peak / trough / time-to-1% values.</p>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■                          </span>  15% |  ETA: 11s</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■                           </span>  13% |  ETA: 12s</span></span>
 <span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
@@ -638,88 +636,7 @@ peak / trough / time-to-1% values.</p>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■                    </span>  37% |  ETA:  8s</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■            </span>  62% |  ETA:  5s</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■                     </span>  33% |  ETA: 10s</span></span>
 <span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
@@ -791,11 +708,99 @@ peak / trough / time-to-1% values.</p>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■     </span>  87% |  ETA:  2s</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■              </span>  57% |  ETA:  6s</span></span>
 <span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■       </span>  81% |  ETA:  3s</span></span>
+<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>

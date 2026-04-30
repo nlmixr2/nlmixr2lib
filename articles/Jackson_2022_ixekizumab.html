@@ -60,6 +60,7 @@
     <li><a class="dropdown-item" href="../articles/FiedlerKelly_2020_fremanezumab_cm.html">FiedlerKelly_2020_fremanezumab_cm</a></li>
     <li><a class="dropdown-item" href="../articles/FiedlerKelly_2020_fremanezumab_em.html">FiedlerKelly_2020_fremanezumab_em</a></li>
     <li><a class="dropdown-item" href="../articles/Frey_2010_tocilizumab.html">Frey_2010_tocilizumab</a></li>
+    <li><a class="dropdown-item" href="../articles/Frey_2013_tocilizumab.html">Frey_2013_tocilizumab</a></li>
     <li><a class="dropdown-item" href="../articles/Gandhi_2021_abatacept.html">Gandhi_2021_abatacept</a></li>
     <li><a class="dropdown-item" href="../articles/Grimm_2023.html">Trontinemab and gantenerumab PK in plasma and brain (Grimm 2023)</a></li>
     <li><a class="dropdown-item" href="../articles/Gupta_2016_amatuximab.html">Gupta_2016_amatuximab</a></li>
@@ -72,6 +73,7 @@
     <li><a class="dropdown-item" href="../articles/Hua_2015_anrukinzumab.html">Hua_2015_anrukinzumab</a></li>
     <li><a class="dropdown-item" href="../articles/Huang_2017_vrc01.html">Huang_2017_vrc01</a></li>
     <li><a class="dropdown-item" href="../articles/Hwang_2022_tremelimumab.html">Hwang_2022_tremelimumab</a></li>
+    <li><a class="dropdown-item" href="../articles/Hwang_2023_monalizumab.html">Hwang_2023_monalizumab</a></li>
     <li><a class="dropdown-item" href="../articles/Ide_2020_elotuzumab.html">Ide_2020_elotuzumab</a></li>
     <li><a class="dropdown-item" href="../articles/Jackson_2022_ixekizumab.html">Jackson_2022_ixekizumab</a></li>
     <li><a class="dropdown-item" href="../articles/Kielbasa_2020_galcanezumab.html">Kielbasa_2020_galcanezumab</a></li>
@@ -92,6 +94,7 @@
     <li><a class="dropdown-item" href="../articles/Long_2017_necitumumab.html">Long_2017_necitumumab</a></li>
     <li><a class="dropdown-item" href="../articles/Lu_2014_trastuzumabemtansine.html">Lu_2014_trastuzumabemtansine</a></li>
     <li><a class="dropdown-item" href="../articles/Lu_2019_polatuzumab.html">Polatuzumab vedotin acMMAE + MMAE integrated population PK model (Lu 2019)</a></li>
+    <li><a class="dropdown-item" href="../articles/Lu_2022_patritumab.html">Patritumab deruxtecan (HER3-DXd) ADC + DXd coupled population PK model (Lu 2022)</a></li>
     <li><a class="dropdown-item" href="../articles/Ma_2020_sarilumab_anc.html">Ma_2020_sarilumab_anc</a></li>
     <li><a class="dropdown-item" href="../articles/Ma_2020_sarilumab_das28crp.html">Ma_2020_sarilumab_das28crp</a></li>
     <li><a class="dropdown-item" href="../articles/markov.html">Markov modeling</a></li>
@@ -125,6 +128,7 @@
     <li><a class="dropdown-item" href="../articles/Sathe_2024_sacituzumab.html">Sathe_2024_sacituzumab</a></li>
     <li><a class="dropdown-item" href="../articles/Soehoel_2022_tralokinumab.html">Soehoel_2022_tralokinumab</a></li>
     <li><a class="dropdown-item" href="../articles/Suleiman_2019_risankizumab.html">Suleiman_2019_risankizumab</a></li>
+    <li><a class="dropdown-item" href="../articles/Suri_2018_brentuximab.html">Suri_2018_brentuximab</a></li>
     <li><a class="dropdown-item" href="../articles/Takahashi_2023_abatacept.html">Takahashi_2023_abatacept</a></li>
     <li><a class="dropdown-item" href="../articles/Takeuchi_2023_ozoralizumab.html">Takeuchi_2023_ozoralizumab</a></li>
     <li><a class="dropdown-item" href="../articles/Thakre_2022_risankizumab.html">Thakre_2022_risankizumab</a></li>
@@ -150,6 +154,7 @@
     <li><a class="dropdown-item" href="../articles/Yu_2022_ofatumumab.html">Yu_2022_ofatumumab</a></li>
     <li><a class="dropdown-item" href="../articles/Zhang_2019_nivolumab.html">Zhang_2019_nivolumab</a></li>
     <li><a class="dropdown-item" href="../articles/Zheng_2016_sifalimumab.html">Zheng_2016_sifalimumab</a></li>
+    <li><a class="dropdown-item" href="../articles/Zhong_2026_abatacept.html">Zhong_2026_abatacept</a></li>
     <li><a class="dropdown-item" href="../articles/Zhou_2021_belimumab.html">Zhou_2021_belimumab</a></li>
     <li><a class="dropdown-item" href="../articles/Zhou_2025_brentuximab.html">Zhou_2025_brentuximab</a></li>
     <li><a class="dropdown-item" href="../articles/Zhu_2017_lebrikizumab.html">Zhu_2017_lebrikizumab</a></li>
@@ -566,7 +571,12 @@ steady state. Times are in hours (model unit).</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/readModelDb.html">readModelDb</a></span><span class="op">(</span><span class="st">"Jackson_2022_ixekizumab"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span></span>
-<span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod</span>, events <span class="op">=</span> <span class="va">d_sim</span>, returnType <span class="op">=</span> <span class="st">"data.frame"</span><span class="op">)</span></span>
+<span><span class="co"># `weight_group` and `WT` are per-subject columns already on every row of</span></span>
+<span><span class="co"># `d_sim` (built from `cohort |&gt; tidyr::crossing(...)`). Carrying them</span></span>
+<span><span class="co"># through `rxSolve(keep = ...)` removes the need for post-rxSolve</span></span>
+<span><span class="co"># left_joins from `cohort` in every downstream chunk.</span></span>
+<span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod</span>, events <span class="op">=</span> <span class="va">d_sim</span>, returnType <span class="op">=</span> <span class="st">"data.frame"</span>,</span>
+<span>                       keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"weight_group"</span>, <span class="st">"WT"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> parameter labels from comments will be replaced by 'label()'</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -584,7 +594,6 @@ baseline weight group.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim_plot</span> <span class="op">&lt;-</span> <span class="va">sim</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">cohort</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">ID</span>, <span class="va">weight_group</span><span class="op">)</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span> <span class="op">=</span> <span class="st">"ID"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&gt;</span> <span class="fl">0</span>, <span class="va">time</span> <span class="op">&lt;=</span> <span class="fl">12</span> <span class="op">*</span> <span class="va">hours_per_week</span>, <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>week <span class="op">=</span> <span class="va">time</span> <span class="op">/</span> <span class="va">hours_per_week</span><span class="op">)</span></span>
 <span></span>
@@ -619,8 +628,7 @@ baseline weight group.</p>
 <code class="sourceCode R"><span><span class="va">wk12_time</span> <span class="op">&lt;-</span> <span class="fl">12</span> <span class="op">*</span> <span class="va">hours_per_week</span></span>
 <span><span class="va">sim_wk12</span> <span class="op">&lt;-</span> <span class="va">sim</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">time</span> <span class="op">-</span> <span class="va">wk12_time</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">1e-6</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">cohort</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">ID</span>, <span class="va">weight_group</span>, <span class="va">WT</span><span class="op">)</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span> <span class="op">=</span> <span class="st">"ID"</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">time</span> <span class="op">-</span> <span class="va">wk12_time</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">1e-6</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">sim_wk12</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">WT</span>, y <span class="op">=</span> <span class="va">Cc</span>, colour <span class="op">=</span> <span class="va">weight_group</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
@@ -648,7 +656,6 @@ to summarise the &lt;25 kg group.</p>
 <span><span class="va">trough_tbl</span> <span class="op">&lt;-</span> <span class="va">sim</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">trough_times</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">cohort</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">ID</span>, <span class="va">weight_group</span><span class="op">)</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span> <span class="op">=</span> <span class="st">"ID"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">weight_group</span>, week <span class="op">=</span> <span class="va">time</span> <span class="op">/</span> <span class="va">hours_per_week</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span></span>
 <span>    mean_trough  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">Cc</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
@@ -736,7 +743,6 @@ steady-state trough concentrations.</p>
 <span><span class="va">nca_conc</span> <span class="op">&lt;-</span> <span class="va">sim</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&gt;=</span> <span class="va">ss_start</span>, <span class="va">time</span> <span class="op">&lt;=</span> <span class="va">ss_end</span>, <span class="va">Cc</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">cohort</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">ID</span>, <span class="va">weight_group</span><span class="op">)</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span> <span class="op">=</span> <span class="st">"ID"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>time_rel <span class="op">=</span> <span class="va">time</span> <span class="op">-</span> <span class="va">ss_start</span>,</span>
 <span>         treatment <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"IXE_Q4W_"</span>, <span class="va">weight_group</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>ID <span class="op">=</span> <span class="va">id</span><span class="op">)</span> <span class="op">|&gt;</span></span>

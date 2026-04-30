@@ -41,22 +41,22 @@ The same metadata is available programmatically via
 
 ## Source trace
 
-| Equation / parameter  | Value                                              | Source location                                             |
-|-----------------------|----------------------------------------------------|-------------------------------------------------------------|
-| `lka` (= log ka)      | log(0.00625 1/h), fixed                            | Section 3.2 (paragraph 1); Table 3 (Reference Model column) |
-| `lcl` (= log CL/F)    | log(0.0312 L/h)                                    | Table 3, Final Model                                        |
-| `lvc` (= log V/F)     | log(7.76 L)                                        | Table 3, Final Model                                        |
-| `e_ada_cl` (AAA mult) | 4.5, fixed                                         | Section 3.2; Equation (3); Reference Model value            |
-| `e_alb_cl` (ALB exp)  | -2.33                                              | Table 3, Final Model                                        |
-| `etalcl ~ omega^2`    | 0.667^2 = 0.4449                                   | Table 3, Final Model (interpreted as omega on log scale)    |
-| `etalvc ~ omega^2`    | 0.477^2 = 0.2275                                   | Table 3, Final Model (interpreted as omega on log scale)    |
-| `propSd`              | 0.547                                              | Table 3, Final Model                                        |
-| ALB reference (mALB)  | 3.77 g/dL                                          | Equation (3) explanatory text                               |
-| Equation: CL/F        | CL/F = CL_pop \* (1 + AAA*4.5)* (ALB/3.77)^(-2.33) | Equation (3); Figure S1 (Monolix code)                      |
-| ODE: depot            | d/dt(depot) = -ka \* depot                         | Figure S1 `pkmodel(ka, V, Cl)`                              |
-| ODE: central          | d/dt(central) = ka \* depot - (CL/V) \* central    | Figure S1 `pkmodel(ka, V, Cl)`                              |
-| Observation           | Cc = central / V                                   | Figure S1 `output = Cc`                                     |
-| Residual error        | proportional only                                  | Section 3.2 (paragraph 2)                                   |
+| Equation / parameter | Value | Source location |
+|----|----|----|
+| `lka` (= log ka) | log(0.00625 1/h), fixed | Section 3.2 (paragraph 1); Table 3 (Reference Model column) |
+| `lcl` (= log CL/F) | log(0.0312 L/h) | Table 3, Final Model |
+| `lvc` (= log V/F) | log(7.76 L) | Table 3, Final Model |
+| `e_ada_cl` (AAA mult) | 4.5, fixed | Section 3.2; Equation (3); Reference Model value |
+| `e_alb_cl` (ALB exp) | -2.33 | Table 3, Final Model |
+| `etalcl ~ omega^2` | 0.667^2 = 0.4449 | Table 3, Final Model (interpreted as omega on log scale) |
+| `etalvc ~ omega^2` | 0.477^2 = 0.2275 | Table 3, Final Model (interpreted as omega on log scale) |
+| `propSd` | 0.547 | Table 3, Final Model |
+| ALB reference (mALB) | 3.77 g/dL | Equation (3) explanatory text |
+| Equation: CL/F | CL/F = CL_pop \* (1 + AAA*4.5)* (ALB/3.77)^(-2.33) | Equation (3); Figure S1 (Monolix code) |
+| ODE: depot | d/dt(depot) = -ka \* depot | Figure S1 `pkmodel(ka, V, Cl)` |
+| ODE: central | d/dt(central) = ka \* depot - (CL/V) \* central | Figure S1 `pkmodel(ka, V, Cl)` |
+| Observation | Cc = central / V | Figure S1 `output = Cc` |
+| Residual error | proportional only | Section 3.2 (paragraph 2) |
 
 ## Errata
 
@@ -68,6 +68,7 @@ CL/F”) and with the model’s own `e_alb_cl = -2.33` exponent. With the
 negative exponent the model predicts CL/F *decreases* as albumin rises:
 
 ``` r
+
 e_alb_cl <- -2.33
 ratio_low_to_high <- (1.97 / 4.96)^e_alb_cl
 ratio_low_to_high  # ~8.6 — model-predicted CL/F ratio at low vs high albumin
@@ -85,6 +86,7 @@ We simulate a 200-subject cohort whose covariates approximate the Final
 Model column of Marquez-Megias 2023 Table 1.
 
 ``` r
+
 set.seed(20231018)  # paper publication date
 
 n_sub <- 200L
@@ -113,6 +115,7 @@ mean(cohort$ADA_POS)
 ```
 
 ``` r
+
 # Time unit is hours (matching ka = 0.00625 1/h). Build a regimen consistent
 # with the paper: induction 160/80 mg at weeks 0/2, then 40 mg every 2 weeks
 # through 48 weeks (~ 12 maintenance doses).
@@ -163,6 +166,7 @@ stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
 ## Simulation
 
 ``` r
+
 mod <- readModelDb("Marquez-Megias_2023_adalimumab")
 
 sim <- rxode2::rxSolve(
@@ -182,6 +186,7 @@ trough at the end of each maintenance interval in the simulation and
 report the resulting distribution.
 
 ``` r
+
 # Population concentration vs time (median + 5-95% interval)
 sim |>
   filter(time > 0) |>
@@ -206,6 +211,7 @@ sim |>
 ![](Marquez-Megias_2023_adalimumab_files/figure-html/profile-1.png)
 
 ``` r
+
 # Compute the simulated trough (concentration just before each maintenance
 # dose, after steady state). Steady-state range chosen as weeks 16-48
 # (after at least 6 maintenance doses).
@@ -247,9 +253,10 @@ knitr::kable(
 | \>12 mg/L |           5.1 |          15.6 |
 
 Distribution of simulated steady-state troughs vs published TSC
-distribution (Marquez-Megias 2023, Section 3.1).
+distribution (Marquez-Megias 2023, Section 3.1). {.table}
 
 ``` r
+
 
 knitr::kable(
   data.frame(
@@ -271,7 +278,7 @@ knitr::kable(
 | 95% | 95th percentile (mg/L) |     12.35 |        NA |
 
 Simulated steady-state trough summary vs published median TSC
-(Marquez-Megias 2023, Table 1).
+(Marquez-Megias 2023, Table 1). {.table}
 
 ## PKNCA validation
 
@@ -281,6 +288,7 @@ steady-state dosing interval. We extract one full maintenance interval
 state.
 
 ``` r
+
 ss_start <- 36 * hours_per_week
 ss_end   <- 38 * hours_per_week
 tau      <- 2 * hours_per_week  # 336 h
@@ -345,7 +353,7 @@ knitr::kable(
 | tmax     |  120.00 |  48.00 |  144.00 |
 
 Simulated steady-state NCA over a 14-day maintenance interval (PKNCA, n
-= 200 virtual subjects).
+= 200 virtual subjects). {.table}
 
 ### Comparison against published values
 

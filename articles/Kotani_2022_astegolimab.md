@@ -1,6 +1,7 @@
 # Kotani_2022_astegolimab
 
 ``` r
+
 library(nlmixr2lib)
 library(rxode2)
 #> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
@@ -70,29 +71,29 @@ J Clin Pharmacol 62(7):905-917. In-file comments next to each
 [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry
 record the row-level source; the table below collects them.
 
-| Equation / parameter                     | Value        | Source                      |
-|------------------------------------------|--------------|-----------------------------|
-| `lka` (ka)                               | 0.0437 1/day | Table 2                     |
-| `lcl` (CL/F)                             | 0.244 L/day  | Table 2                     |
-| `lvc` (Vc/F)                             | 0.614 L      | Table 2                     |
-| `lvp` (Vp/F)                             | 2.74 L       | Table 2                     |
-| `lq` (Q/F)                               | 0.171 L/day  | Table 2                     |
-| `allo_clq` (BWT → CL, Q)                 | 0.986        | Table 2, footnote b         |
-| `allo_v` (BWT → Vc, Vp)                  | 1.02         | Table 2, footnote b         |
-| `e_crcl_cl` (BEGFR / CRCL → CL)          | 0.431        | Table 2                     |
-| `e_eos_cl` (EOS → CL)                    | 0.0905       | Table 2                     |
-| `e_dose70_frel` (Dose70mg → F)           | −0.153       | Table 2                     |
-| `boxcox_frel` (BoxCox shape on Frel IIV) | −2.81        | Table 2                     |
-| `etalka` (IIV Ka)                        | CV 47.7%     | Table 2                     |
-| `etalcl` (IIV CL)                        | CV 22.4%     | Table 2                     |
-| `etafrel` (IIV Frel, pre-Box-Cox SD)     | 0.243        | Table 2                     |
-| `propSd` (RUV, prop)                     | 0.198        | Table 2                     |
-| `addSd` (RUV, add)                       | 0.603 µg/mL  | Table 2                     |
-| 2-cmt ODE with first-order SC absorption | n/a          | Equations 1–5               |
-| Box-Cox IIV `((exp(η))^λ − 1)/λ`         | n/a          | Equation 2 (Petersson 2009) |
-| Covariate model `(COV/ref)^exp`          | n/a          | Equation 3                  |
-| Bioavailability shift `(1 + θ·I)`        | n/a          | Equation 4                  |
-| Terminal t½ (derived check)              | 19.6 days    | Abstract & Results          |
+| Equation / parameter | Value | Source |
+|----|----|----|
+| `lka` (ka) | 0.0437 1/day | Table 2 |
+| `lcl` (CL/F) | 0.244 L/day | Table 2 |
+| `lvc` (Vc/F) | 0.614 L | Table 2 |
+| `lvp` (Vp/F) | 2.74 L | Table 2 |
+| `lq` (Q/F) | 0.171 L/day | Table 2 |
+| `allo_clq` (BWT → CL, Q) | 0.986 | Table 2, footnote b |
+| `allo_v` (BWT → Vc, Vp) | 1.02 | Table 2, footnote b |
+| `e_crcl_cl` (BEGFR / CRCL → CL) | 0.431 | Table 2 |
+| `e_eos_cl` (EOS → CL) | 0.0905 | Table 2 |
+| `e_dose70_frel` (Dose70mg → F) | −0.153 | Table 2 |
+| `boxcox_frel` (BoxCox shape on Frel IIV) | −2.81 | Table 2 |
+| `etalka` (IIV Ka) | CV 47.7% | Table 2 |
+| `etalcl` (IIV CL) | CV 22.4% | Table 2 |
+| `etafrel` (IIV Frel, pre-Box-Cox SD) | 0.243 | Table 2 |
+| `propSd` (RUV, prop) | 0.198 | Table 2 |
+| `addSd` (RUV, add) | 0.603 µg/mL | Table 2 |
+| 2-cmt ODE with first-order SC absorption | n/a | Equations 1–5 |
+| Box-Cox IIV `((exp(η))^λ − 1)/λ` | n/a | Equation 2 (Petersson 2009) |
+| Covariate model `(COV/ref)^exp` | n/a | Equation 3 |
+| Bioavailability shift `(1 + θ·I)` | n/a | Equation 4 |
+| Terminal t½ (derived check) | 19.6 days | Abstract & Results |
 
 ## Virtual cohort
 
@@ -101,6 +102,7 @@ patients (150 per dose arm) whose covariate distributions approximate
 Table 1.
 
 ``` r
+
 set.seed(2022)
 n_per_dose <- 150
 doses <- c(70, 210, 490)
@@ -128,6 +130,7 @@ pop$treatment <- factor(
 Q4W dosing for 52 weeks (14 doses). Weekly sampling through week 60.
 
 ``` r
+
 dose_times <- seq(0, by = 28, length.out = 14)      # days
 obs_times  <- sort(unique(c(
   seq(0, 28, by = 3.5),
@@ -151,6 +154,7 @@ events <- bind_rows(d_dose, d_obs) |>
 ## Simulation
 
 ``` r
+
 mod <- readModelDb("Kotani_2022_astegolimab")
 sim <- rxode2::rxSolve(mod, events = events)
 #> ℹ parameter labels from comments will be replaced by 'label()'
@@ -163,6 +167,7 @@ astegolimab concentrations over time at 70, 210, and 490 mg SC Q4W. The
 plot below is the analogous VPC from the packaged model.
 
 ``` r
+
 treatment_map <- pop |> select(ID, treatment)
 
 sim_plot <- sim |>
@@ -201,6 +206,7 @@ Compute NCA on the first dosing interval (days 0–28) using PKNCA with
 the dose group as the treatment grouping variable.
 
 ``` r
+
 sim_nca <- sim |>
   as.data.frame() |>
   filter(!is.na(Cc), time >= 0, time <= 28) |>
@@ -224,7 +230,6 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- suppressWarnings(PKNCA::pk.nca(nca_data))
-#>  ■■■■■■■■■■■■■■■■■■■■■             67% |  ETA:  1s
 nca_summary <- summary(nca_res)
 knitr::kable(
   nca_summary,
@@ -238,7 +243,7 @@ knitr::kable(
 |     0 |  28 | 210 mg Q4W | 150 | 394 \[53.3\]  | 18.0 \[57.1\] | 7.00 \[3.50, 21.0\] |
 |     0 |  28 | 490 mg Q4W | 150 | 831 \[45.7\]  | 38.2 \[53.2\] | 7.00 \[3.50, 28.0\] |
 
-Simulated NCA (0–28 day dosing interval) by Zenyatta dose arm.
+Simulated NCA (0–28 day dosing interval) by Zenyatta dose arm. {.table}
 
 ### Terminal half-life check
 
@@ -248,6 +253,7 @@ micro-constants (kel, k12, k21) as the smaller root of the
 characteristic equation.
 
 ``` r
+
 CL <- 0.244; Vc <- 0.614; Q <- 0.171; Vp <- 2.74
 kel <- CL / Vc; k12 <- Q / Vc; k21 <- Q / Vp
 s   <- kel + k12 + k21
@@ -266,11 +272,11 @@ mg Frel offset. The simulated median Cmax and AUClast after the first
 dose scale with dose × Frel (Frel = 0.847 for the 70 mg arm, 1.00 for
 the 210 and 490 mg arms).
 
-| Metric                          | Source (Kotani 2022) | Simulated                                  |
-|---------------------------------|----------------------|--------------------------------------------|
-| Terminal t½                     | 19.6 days            | ~19.6 days (analytical λz)                 |
-| Dose proportionality 210→490 mg | Linear (ratio 2.33)  | Linear (ratio 2.33, Frel = 1 in both arms) |
-| 70 mg vs 210 mg Frel ratio      | 0.847                | 0.847 (by construction)                    |
+| Metric | Source (Kotani 2022) | Simulated |
+|----|----|----|
+| Terminal t½ | 19.6 days | ~19.6 days (analytical λz) |
+| Dose proportionality 210→490 mg | Linear (ratio 2.33) | Linear (ratio 2.33, Frel = 1 in both arms) |
+| 70 mg vs 210 mg Frel ratio | 0.847 | 0.847 (by construction) |
 
 The simulated absorption-phase half-life (≈16 days for ka = 0.0437/day)
 dominates the observed terminal slope after a single SC dose because

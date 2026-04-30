@@ -47,36 +47,36 @@ mg/dL, log(RF) = 4.7 (equivalently RF ~110 U/mL), total protein = 74
 g/L, albumin = 38 g/L, creatinine clearance = 106 mL/min, and
 non-smoker.
 
-| Equation / parameter                                              | Value                      | Source location                                          |
-|-------------------------------------------------------------------|----------------------------|----------------------------------------------------------|
-| `lcl` (CL)                                                        | `log(0.3)` L/day           | Table II, “CL, L/d” row                                  |
-| `lvc` (V1)                                                        | `log(3.5)` L               | Table II, “V1, L” row                                    |
-| `lq` (Q)                                                          | `log(0.2)` L/day           | Table II, “Q, L/d” row                                   |
-| `lvp` (V2)                                                        | `log(2.9)` L               | Table II, “V2, L” row                                    |
-| `lvm` (Vm)                                                        | `log(7.5)` mg/day          | Table II, “VM, mg/d” row                                 |
-| `lkm` (Km)                                                        | `log(2.7)` ug/mL           | Table II, “KM, ug/mL” row                                |
-| `e_bsa_cl` (BSA/1.8 exponent on CL)                               | `0.7`                      | Table II “BSA on CL” / Table III equation                |
-| `e_sexf_cl` (female fractional change on CL)                      | `-0.16`                    | Table II “Sex (female, %) on CL” = -16%                  |
-| `e_hdlc_cl` (HDLC/54 exponent on CL)                              | `-0.2`                     | Table II “HDL-C on CL” / Table III equation              |
-| `e_lrf_cl` (log(RF)/log(110) exponent on CL)                      | `0.1`                      | Table II “Logarithm of RF on CL” / Table III             |
-| `e_tpro_v1` (TPRO/74 exponent on V1)                              | `-1.1`                     | Table II “Total protein on V1” / Table III               |
-| `e_alb_v1` (ALB/38 exponent on V1)                                | `0.7`                      | Table II “Albumin on V1” / Table III                     |
-| `e_alb_vm` (ALB/38 exponent on Vm)                                | `-0.4`                     | Table II “Albumin on VM” / Table III                     |
-| `e_crcl_vm` (CRCL/106 exponent on Vm)                             | `0.2`                      | Table II “Creatinine CL on VM” / Table III               |
-| `e_smk_vm` (smoker fractional change on Vm)                       | `0.11`                     | Table II “Smoking on VM” = +11%                          |
-| `var(etalcl)`                                                     | `log(1 + 0.39^2) = 0.1416` | Table II IIV section: CL CV 39%                          |
-| `var(etalvc)`                                                     | `log(1 + 0.37^2) = 0.1284` | Table II: V1 CV 37%                                      |
-| `var(etalvp)`                                                     | `log(1 + 0.66^2) = 0.3614` | Table II: V2 CV 66%                                      |
-| `var(etalvm)`                                                     | `log(1 + 0.54^2) = 0.2562` | Table II: Vm CV 54%                                      |
-| `cor(etalcl, etalvc)`                                             | `0.6`                      | Table II “COV(eta_CL : eta_V1), r”                       |
-| `cor(etalcl, etalvp)`                                             | `-0.1`                     | Table II “COV(eta_CL : eta_V2), r”                       |
-| `cor(etalcl, etalvm)`                                             | `-0.5`                     | Table II “COV(eta_CL : eta_VM), r”                       |
-| `cor(etalvc, etalvp)`                                             | `0.5`                      | Table II “COV(eta_V1 : eta_V2), r”                       |
-| `cor(etalvc, etalvm)`                                             | `0.2`                      | Table II “COV(eta_V1 : eta_VM), r”                       |
-| `cor(etalvp, etalvm)`                                             | `0.2`                      | Table II “COV(eta_V2 : eta_VM), r”                       |
-| `propSd`                                                          | `0.22`                     | Table II “Proportional” residual row, 22% (see Errata)   |
-| `addSd`                                                           | `2.4` ug/mL                | Table II “Additive” residual row, 2.4 ug/mL (see Errata) |
-| Structure (2-cmt + parallel linear + MM elimination from central) | n/a                        | Methods p756-757; Results p757-759; Figure 5             |
+| Equation / parameter | Value | Source location |
+|----|----|----|
+| `lcl` (CL) | `log(0.3)` L/day | Table II, “CL, L/d” row |
+| `lvc` (V1) | `log(3.5)` L | Table II, “V1, L” row |
+| `lq` (Q) | `log(0.2)` L/day | Table II, “Q, L/d” row |
+| `lvp` (V2) | `log(2.9)` L | Table II, “V2, L” row |
+| `lvm` (Vm) | `log(7.5)` mg/day | Table II, “VM, mg/d” row |
+| `lkm` (Km) | `log(2.7)` ug/mL | Table II, “KM, ug/mL” row |
+| `e_bsa_cl` (BSA/1.8 exponent on CL) | `0.7` | Table II “BSA on CL” / Table III equation |
+| `e_sexf_cl` (female fractional change on CL) | `-0.16` | Table II “Sex (female, %) on CL” = -16% |
+| `e_hdlc_cl` (HDLC/54 exponent on CL) | `-0.2` | Table II “HDL-C on CL” / Table III equation |
+| `e_lrf_cl` (log(RF)/log(110) exponent on CL) | `0.1` | Table II “Logarithm of RF on CL” / Table III |
+| `e_tpro_v1` (TPRO/74 exponent on V1) | `-1.1` | Table II “Total protein on V1” / Table III |
+| `e_alb_v1` (ALB/38 exponent on V1) | `0.7` | Table II “Albumin on V1” / Table III |
+| `e_alb_vm` (ALB/38 exponent on Vm) | `-0.4` | Table II “Albumin on VM” / Table III |
+| `e_crcl_vm` (CRCL/106 exponent on Vm) | `0.2` | Table II “Creatinine CL on VM” / Table III |
+| `e_smk_vm` (smoker fractional change on Vm) | `0.11` | Table II “Smoking on VM” = +11% |
+| `var(etalcl)` | `log(1 + 0.39^2) = 0.1416` | Table II IIV section: CL CV 39% |
+| `var(etalvc)` | `log(1 + 0.37^2) = 0.1284` | Table II: V1 CV 37% |
+| `var(etalvp)` | `log(1 + 0.66^2) = 0.3614` | Table II: V2 CV 66% |
+| `var(etalvm)` | `log(1 + 0.54^2) = 0.2562` | Table II: Vm CV 54% |
+| `cor(etalcl, etalvc)` | `0.6` | Table II “COV(eta_CL : eta_V1), r” |
+| `cor(etalcl, etalvp)` | `-0.1` | Table II “COV(eta_CL : eta_V2), r” |
+| `cor(etalcl, etalvm)` | `-0.5` | Table II “COV(eta_CL : eta_VM), r” |
+| `cor(etalvc, etalvp)` | `0.5` | Table II “COV(eta_V1 : eta_V2), r” |
+| `cor(etalvc, etalvm)` | `0.2` | Table II “COV(eta_V1 : eta_VM), r” |
+| `cor(etalvp, etalvm)` | `0.2` | Table II “COV(eta_V2 : eta_VM), r” |
+| `propSd` | `0.22` | Table II “Proportional” residual row, 22% (see Errata) |
+| `addSd` | `2.4` ug/mL | Table II “Additive” residual row, 2.4 ug/mL (see Errata) |
+| Structure (2-cmt + parallel linear + MM elimination from central) | n/a | Methods p756-757; Results p757-759; Figure 5 |
 
 ### Parameterization notes
 
@@ -139,6 +139,7 @@ approximate the Frey 2010 Table I demographics. No subject-level
 observed data were released with the paper.
 
 ``` r
+
 set.seed(20260428)
 
 # Cohort size: 200 subjects per dose arm gives stable 5/50/95 percentile
@@ -168,6 +169,7 @@ half-lives in the linear range; reference t1/2 ~21 days per Frey 2010
 Discussion p762) place the final cycle safely at steady state.
 
 ``` r
+
 tau     <- 28              # Q4W dosing interval (days)
 inf_dur <- 1 / 24          # 1-hour IV infusion duration (days)
 n_doses <- 6
@@ -211,6 +213,7 @@ stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
 ## Simulation
 
 ``` r
+
 mod <- rxode2::rxode2(readModelDb("Frey_2010_tocilizumab"))
 conc_unit <- mod$units[["concentration"]]
 keep_cols <- c("WT", "BSA", "SEXF", "HDLC", "RHEUMATOID_FACTOR",
@@ -233,6 +236,7 @@ panels A/B use a linear y-axis and C/D a log y-axis. The block below
 replicates the linear-scale panels A and B.
 
 ``` r
+
 vpc <- sim |>
   dplyr::filter(!is.na(Cc), time > 0, time <= tau * n_doses) |>
   dplyr::group_by(treatment, time) |>
@@ -264,6 +268,7 @@ well below the 8 mg/kg trough because the nonlinear (Vm/Km) clearance
 pathway saturates less completely at the lower dose.
 
 ``` r
+
 ggplot(vpc, aes(time, Q50, colour = treatment, fill = treatment)) +
   geom_ribbon(aes(ymin = pmax(Q05, 0.1), ymax = Q95),
               alpha = 0.2, colour = NA) +
@@ -288,6 +293,7 @@ and dose group. The per-subject results are then summarised as a mean
 +/- SD, which is the format reported in Frey 2010 Table IV.
 
 ``` r
+
 ss_start <- tau * (n_doses - 1)
 ss_end   <- ss_start + tau
 
@@ -316,7 +322,7 @@ intervals <- data.frame(
 )
 
 nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
-#>  ■■■■■■■■■■■■■■                    42% |  ETA:  2s
+#>  ■■■■■■■■■■■■■                     41% |  ETA:  2s
 summary(nca_res)
 #>  start end   treatment   N     auclast        cmax        cmin
 #>      0  28 4 mg/kg Q4W 200  477 [55.7] 82.2 [53.0] 0.672 [180]
@@ -339,6 +345,7 @@ comparison is dominated by the within-cycle PK rather than residual
 accumulation.
 
 ``` r
+
 nca_long <- as.data.frame(nca_res$result)
 
 per_subj <- nca_long |>
@@ -389,15 +396,15 @@ knitr::kable(comparison, digits = 2,
                   "Cmin 9.7 (11)."))
 ```
 
-| treatment   | AUC_pub_mean | AUC_sim_mean | AUC_pct_diff | Cmax_pub_mean | Cmax_sim_mean | Cmax_pct_diff | Cmin_pub_mean | Cmin_sim_mean | Cmin_pct_diff |
-|:------------|-------------:|-------------:|-------------:|--------------:|--------------:|--------------:|--------------:|--------------:|--------------:|
-| 4 mg/kg Q4W |           13 |        12.98 |        -0.12 |            88 |         92.60 |          5.22 |           1.5 |          1.35 |         -9.70 |
-| 8 mg/kg Q4W |           35 |        33.01 |        -5.68 |           183 |        182.59 |         -0.23 |           9.7 |          8.30 |        -14.41 |
+| treatment | AUC_pub_mean | AUC_sim_mean | AUC_pct_diff | Cmax_pub_mean | Cmax_sim_mean | Cmax_pct_diff | Cmin_pub_mean | Cmin_sim_mean | Cmin_pct_diff |
+|:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 4 mg/kg Q4W | 13 | 12.98 | -0.12 | 88 | 92.60 | 5.22 | 1.5 | 1.35 | -9.70 |
+| 8 mg/kg Q4W | 35 | 33.01 | -5.68 | 183 | 182.59 | -0.23 | 9.7 | 8.30 | -14.41 |
 
 Simulated vs. Frey 2010 Table IV mean steady-state AUC (10^3 h\*ug/mL),
 Cmax (ug/mL), and Cmin (ug/mL). Published values: 4 mg/kg AUC 13 (5.8),
 Cmax 88 (41), Cmin 1.5 (2.1); 8 mg/kg AUC 35 (16), Cmax 183 (86), Cmin
-9.7 (11).
+9.7 (11). {.table}
 
 ## Assumptions and deviations
 

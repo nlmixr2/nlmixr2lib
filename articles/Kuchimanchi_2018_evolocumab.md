@@ -1,6 +1,7 @@
 # Kuchimanchi_2018_evolocumab
 
 ``` r
+
 library(nlmixr2lib)
 library(rxode2)
 #> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
@@ -65,24 +66,24 @@ C_(max) values.
 
 Kuchimanchi 2018 Table 2 (phase 1, 2, and 3 pooled column; N = 3414):
 
-| Field             | Value                                                          |
-|-------------------|----------------------------------------------------------------|
-| N subjects        | 3414 (receiving evolocumab; pooled from 5474 across all arms)  |
-| N observations    | 16 179 evolocumab concentrations                               |
-| N studies         | 11 (1 phase 1a, 1 phase 1b, 4 phase 2, 5 phase 3)              |
-| Age               | 18–80 years (mean 57)                                          |
-| Weight            | 41–175 kg (mean 84.2)                                          |
-| Sex               | 50% female / 50% male                                          |
-| Race / ethnicity  | 87% White, 7% Black, 4% Asian, 2% other                        |
-| Disease state     | Healthy volunteers (phase 1a) + hypercholesterolemia patients  |
-| Baseline PCSK9    | Mean 402 ng/mL (range 15.5–1233)                               |
-| Baseline albumin  | Mean 4.3 g/dL (range 2.6–5.6)                                  |
-| HeFH (%)          | 9%                                                             |
-| Diabetes (%)      | 11%                                                            |
-| Statin (any) (%)  | ~72%                                                           |
-| Ezetimibe (%)     | 12%                                                            |
-| Dose range        | 7–420 mg IV or SC across single- and multiple-dose regimens    |
-| Phase 3 regimens  | 140 mg SC Q2W and 420 mg SC QM                                 |
+| Field | Value |
+|----|----|
+| N subjects | 3414 (receiving evolocumab; pooled from 5474 across all arms) |
+| N observations | 16 179 evolocumab concentrations |
+| N studies | 11 (1 phase 1a, 1 phase 1b, 4 phase 2, 5 phase 3) |
+| Age | 18–80 years (mean 57) |
+| Weight | 41–175 kg (mean 84.2) |
+| Sex | 50% female / 50% male |
+| Race / ethnicity | 87% White, 7% Black, 4% Asian, 2% other |
+| Disease state | Healthy volunteers (phase 1a) + hypercholesterolemia patients |
+| Baseline PCSK9 | Mean 402 ng/mL (range 15.5–1233) |
+| Baseline albumin | Mean 4.3 g/dL (range 2.6–5.6) |
+| HeFH (%) | 9% |
+| Diabetes (%) | 11% |
+| Statin (any) (%) | ~72% |
+| Ezetimibe (%) | 12% |
+| Dose range | 7–420 mg IV or SC across single- and multiple-dose regimens |
+| Phase 3 regimens | 140 mg SC Q2W and 420 mg SC QM |
 | Reference patient | 84 kg male, no lipid-lowering meds, baseline PCSK9 = 425 ng/mL |
 
 The population metadata is also available programmatically via
@@ -97,34 +98,34 @@ population PK model** column in Table 3; V_(max) and k_(m) were fixed in
 that column from the phase 1+2 run because phase 3 used only two dose
 regimens.
 
-| Quantity                                 | Source location                       | Value used                                  |
-|------------------------------------------|---------------------------------------|---------------------------------------------|
-| Structural model (1-cmt, linear + MM)    | Methods § PopPK analysis / Figure 1a  | Depot → central, CL + V·V_(max)·C/(k_(m)+C) |
-| F (SC bioavailability)                   | Table 3                               | 0.72 (FIXED)                                |
-| k_(a)                                    | Table 3                               | 0.319 day⁻¹ (FIXED)                         |
-| CL                                       | Table 3                               | 0.105 L/day                                 |
-| V                                        | Table 3                               | 5.18 L                                      |
-| V_(max)                                  | Table 3                               | 9.85 nM/day (FIXED)                         |
-| k_(m)                                    | Table 3                               | 27.3 nM (FIXED)                             |
-| Reference body weight                    | Methods, reference-patient definition | 84 kg (male)                                |
-| WT exponent on CL                        | Table 3                               | 0.276                                       |
-| WT exponent on V                         | Table 3                               | 1.04                                        |
-| Female exponent on V                     | Table 3                               | 1.11                                        |
-| WT exponent on V_(max)                   | Table 3                               | 0.145                                       |
-| Statin (monotherapy) exponent on V_(max) | Table 3                               | 1.13                                        |
-| Statin + ezetimibe exponent on V_(max)   | Table 3                               | 1.20                                        |
-| Baseline PCSK9 exponent on V_(max)       | Table 3                               | 0.194                                       |
-| Reference PCSK9                          | Methods, reference-patient definition | 425 ng/mL (= 5.9 nM)                        |
-| IIV on CL                                | Table 3                               | 54.3% CV                                    |
-| IIV on V                                 | Table 3                               | 28.3% CV                                    |
-| IIV on V_(max)                           | Table 3                               | 31.1% CV                                    |
-| IIV on k_(a)                             | Table 3                               | 74.6% CV (FIXED)                            |
-| IIV on k_(m)                             | Table 3                               | 0% (FIXED)                                  |
-| Full-block CL/V/V_(max) omega structure  | Table 3 note; Table 4 referenced but  | Correlations not published — diagonal used  |
-|                                          | actually E-R parameters               | (see Assumptions and deviations)            |
-| Proportional residual error              | Table 3                               | 0.282 (28.2% CV)                            |
-| Additive residual error                  | Table 3                               | 5.41 nM (= 0.767 µg/mL at MW 141.8 kDa)     |
-| Evolocumab molecular weight              | FDA-approved Repatha label            | 141 800 g/mol                               |
+| Quantity | Source location | Value used |
+|----|----|----|
+| Structural model (1-cmt, linear + MM) | Methods § PopPK analysis / Figure 1a | Depot → central, CL + V·V_(max)·C/(k_(m)+C) |
+| F (SC bioavailability) | Table 3 | 0.72 (FIXED) |
+| k_(a) | Table 3 | 0.319 day⁻¹ (FIXED) |
+| CL | Table 3 | 0.105 L/day |
+| V | Table 3 | 5.18 L |
+| V_(max) | Table 3 | 9.85 nM/day (FIXED) |
+| k_(m) | Table 3 | 27.3 nM (FIXED) |
+| Reference body weight | Methods, reference-patient definition | 84 kg (male) |
+| WT exponent on CL | Table 3 | 0.276 |
+| WT exponent on V | Table 3 | 1.04 |
+| Female exponent on V | Table 3 | 1.11 |
+| WT exponent on V_(max) | Table 3 | 0.145 |
+| Statin (monotherapy) exponent on V_(max) | Table 3 | 1.13 |
+| Statin + ezetimibe exponent on V_(max) | Table 3 | 1.20 |
+| Baseline PCSK9 exponent on V_(max) | Table 3 | 0.194 |
+| Reference PCSK9 | Methods, reference-patient definition | 425 ng/mL (= 5.9 nM) |
+| IIV on CL | Table 3 | 54.3% CV |
+| IIV on V | Table 3 | 28.3% CV |
+| IIV on V_(max) | Table 3 | 31.1% CV |
+| IIV on k_(a) | Table 3 | 74.6% CV (FIXED) |
+| IIV on k_(m) | Table 3 | 0% (FIXED) |
+| Full-block CL/V/V_(max) omega structure | Table 3 note; Table 4 referenced but | Correlations not published — diagonal used |
+|  | actually E-R parameters | (see Assumptions and deviations) |
+| Proportional residual error | Table 3 | 0.282 (28.2% CV) |
+| Additive residual error | Table 3 | 5.41 nM (= 0.767 µg/mL at MW 141.8 kDa) |
+| Evolocumab molecular weight | FDA-approved Repatha label | 141 800 g/mol |
 
 PCSK9 MW (~72 kDa), used only to cross-check the paper’s nM↔︎ng/mL
 conversion (5.9 nM ≈ 425 ng/mL), is not a model parameter.
@@ -141,6 +142,7 @@ reference definition (84 kg male, no lipid-lowering medication, baseline
 PCSK9 = 425 ng/mL).
 
 ``` r
+
 set.seed(20260424)
 
 reference_covariates <- tibble::tibble(
@@ -176,6 +178,7 @@ stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
 ## Simulation
 
 ``` r
+
 mod <- readModelDb("Kuchimanchi_2018_evolocumab")
 ui  <- rxode2::rxode(mod)
 #> ℹ parameter labels from comments will be replaced by 'label()'
@@ -190,6 +193,7 @@ sim <- rxode2::rxSolve(mod_typical, events = events, keep = c("regimen"))
 ## Replicate published figures
 
 ``` r
+
 ggplot(sim, aes(time, Cc, colour = regimen)) +
   geom_line(linewidth = 0.7) +
   labs(x = "Time (day)", y = "Serum evolocumab (µg/mL)",
@@ -209,6 +213,7 @@ and 420 mg SC QM (reference patient). Replicates the shape and range of
 Figure 4a/4c of Kuchimanchi 2018.
 
 ``` r
+
 ggplot(sim, aes(time, Cc, colour = regimen)) +
   geom_line(linewidth = 0.7) +
   scale_y_log10() +
@@ -235,6 +240,7 @@ and the end of simulation, one per regimen, so NCA runs on the
 steady-state window.
 
 ``` r
+
 tau_by_regimen <- c("140 mg SC Q2W" = 14, "420 mg SC QM" = 28)
 
 sim_nca <- sim |>
@@ -293,12 +299,13 @@ knitr::kable(nca_tbl,
              caption = "Steady-state NCA parameters from the simulated reference patient.")
 ```
 
-| regimen       | auclast             | cmax               | cmin               | tmax      | cav                |
-|:--------------|:--------------------|:-------------------|:-------------------|:----------|:-------------------|
-| 140 mg SC Q2W | 202.8204, NA        | 17.73123, 17.73123 | 9.112862, 9.112862 | 4.5, 18.5 | 14.48717, NA       |
-| 420 mg SC QM  | 438.6985, 1119.6855 | 44.65999, 55.49947 | 19.12768, 18.82097 | 0.0, 6.5  | 31.33561, 39.98877 |
+| regimen | auclast | cmax | cmin | tmax | cav |
+|:---|:---|:---|:---|:---|:---|
+| 140 mg SC Q2W | 202.8204, NA | 17.73123, 17.73123 | 9.112862, 9.112862 | 4.5, 18.5 | 14.48717, NA |
+| 420 mg SC QM | 438.6985, 1119.6855 | 44.65999, 55.49947 | 19.12768, 18.82097 | 0.0, 6.5 | 31.33561, 39.98877 |
 
 Steady-state NCA parameters from the simulated reference patient.
+{.table}
 
 ### Comparison against published C_(max)
 
@@ -314,6 +321,7 @@ as a typical value in the paper; the simulated T_(max) is driven by the
 fixed k_(a) = 0.319 day⁻¹ and the regimen-specific dose accumulation.
 
 ``` r
+
 cmax_obs <- tibble::tibble(
   regimen = c("140 mg SC Q2W", "420 mg SC QM"),
   cmax_paper_ugmL = c(18.6, 59)
@@ -336,7 +344,7 @@ knitr::kable(cmax_cmp,
 | 420 mg SC QM  |            59.0 |      55.49947 |     -5.9 |
 
 Simulated (typical-value) steady-state C_(max) vs published mean
-observed C_(max).
+observed C_(max). {.table}
 
 ## Assumptions and deviations
 

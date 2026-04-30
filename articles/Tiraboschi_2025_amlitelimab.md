@@ -1,6 +1,7 @@
 # Tiraboschi_2025_amlitelimab
 
 ``` r
+
 library(nlmixr2lib)
 library(PKNCA)
 #> 
@@ -50,6 +51,7 @@ verifies three qualitative claims from the paper:
 ### Virtual population
 
 ``` r
+
 set.seed(2025)
 n_subj <- 300
 
@@ -88,6 +90,7 @@ STREAM-AD labelled regimen: 500 mg SC loading dose at day 0, followed by
 250 mg SC Q4W through week 24, with weekly observations through week 30.
 
 ``` r
+
 dose_days <- c(0, seq(28, 168, by = 28))           # loading + Q4W for 24 weeks
 dose_amt  <- c(500, rep(250, length(dose_days) - 1))
 
@@ -119,6 +122,7 @@ d_sim <- bind_rows(d_dose, d_obs) |>
 ### Load model and simulate
 
 ``` r
+
 mod <- readModelDb("Tiraboschi_2025_amlitelimab")
 
 set.seed(2025)
@@ -129,6 +133,7 @@ sim_out <- rxode2::rxSolve(mod, events = d_sim)
 ### Figure — population concentration-time profile (median and 90% PI)
 
 ``` r
+
 sim_plot <- sim_out |>
   as.data.frame() |>
   filter(time > 0)
@@ -160,6 +165,7 @@ ggplot(d_overall, aes(x = time, y = Q50)) +
 ### Figure — stratification by baseline body weight
 
 ``` r
+
 wt_map <- d_sim |>
   filter(EVID == 0, TIME == 0) |>
   select(ID, wt_group) |>
@@ -201,6 +207,7 @@ albumin 47 g/L) receiving 62.5 mg Q4W. Table S3 reports AUC4W changes of
 respectively.
 
 ``` r
+
 ref <- data.frame(ID = 1, WT = 75, EASI = 27.5, ALB = 47)
 
 typ_pop <- rbind(
@@ -282,7 +289,7 @@ knitr::kable(
 |   2 |  50 | 538.26 |       43.8 |
 |   3 |  75 | 374.40 |        0.0 |
 
-Simulated AUC4W at steady state (62.5 mg Q4W) vs body weight
+Simulated AUC4W at steady state (62.5 mg Q4W) vs body weight {.table}
 
 ### Clearance breakdown — Figure 3 replication
 
@@ -291,6 +298,7 @@ concentrations, decomposed into linear and TMDD (Michaelis-Menten)
 components, reproducing Figure 3.
 
 ``` r
+
 cc_grid    <- 10^seq(log10(0.01), log10(100), length.out = 200)
 tvcll      <- 0.115            # unit: L/day (TVCLL at 75 kg ref)
 e_easi_cl  <- 0.00111          # unit: L/day per EASI unit
@@ -327,6 +335,7 @@ ggplot(df_cl, aes(x = Cc_ugmL, y = clearance, colour = component, linetype = com
 
 ``` r
 
+
 cl_at_lloq <- tvcll + 0.00111 * 27.5 + vmax_mgday / (km_ugmL + 0.0469)
 tmdd_frac_at_lloq <- (vmax_mgday / (km_ugmL + 0.0469)) / cl_at_lloq
 cat(sprintf("TMDD fraction of total CL at LLOQ (0.0469 ug/mL): %.1f%%\n",
@@ -344,6 +353,7 @@ range, with an individual range of 24-43 days. Compute the typical-value
 terminal half-life from the model’s eigenvalues at the population mean.
 
 ``` r
+
 tvv1   <- 3.46
 tvv2   <- 2.48
 tvq    <- 0.569

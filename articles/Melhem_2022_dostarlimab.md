@@ -22,13 +22,17 @@ developed a population PK model from the Phase 1 GARNET trial
 Structure: linear two-compartment IV model with **time-dependent
 clearance** via a sigmoid I_max function of time since first dose:
 
-$${CL}(t) = {CL}_{\text{base}} \cdot \exp\!\left( I_{\max} \cdot \frac{t^{Hill}}{T_{50}^{Hill} + t^{Hill}} \right)$$
+``` math
+  \mathrm{CL}(t) = \mathrm{CL}_{\text{base}} \cdot
+  \exp\!\left(I_{\max}\cdot \dfrac{t^{\mathrm{Hill}}}
+  {T_{50}^{\mathrm{Hill}} + t^{\mathrm{Hill}}}\right)
+```
 
-with $I_{\max} = - 0.161$ (a fractional decrease in log-CL at
-$t \gg T_{50}$; $1 - \exp\left( I_{\max} \right) = 0.149$, matching the
-paper’s “maximum reduction of 14.9%”), $T_{50} = 108$ days, and
-${Hill} = 5.29$. Allometric weight scaling uses reference weight 70 kg
-(exponent 0.470 on CL, 0.419 on Vc and Vp).
+with $`I_{\max} = -0.161`$ (a fractional decrease in log-CL at
+$`t \gg T_{50}`$; $`1 - \exp(I_{\max}) = 0.149`$, matching the paper’s
+“maximum reduction of 14.9%”), $`T_{50} = 108`$ days, and
+$`\mathrm{Hill} = 5.29`$. Allometric weight scaling uses reference
+weight 70 kg (exponent 0.470 on CL, 0.419 on Vc and Vp).
 
 ## Population
 
@@ -64,27 +68,27 @@ The per-parameter origin is recorded as an in-file comment next to each
 `inst/modeldb/specificDrugs/Melhem_2022_dostarlimab.R`. The table below
 collects them in one place for review.
 
-| Parameter (model name)      | Value                     | Source                                         |
-|-----------------------------|---------------------------|------------------------------------------------|
-| `lcl` (CL_base, L/day)      | log(0.179)                | Melhem 2022 Table 3, CL                        |
-| `lvc` (Vc_base, L)          | log(2.98)                 | Melhem 2022 Table 3, Vc                        |
-| `lq` (Q, L/day)             | log(0.547)                | Melhem 2022 Table 3, Q                         |
-| `lvp` (Vp, L)               | log(2.10)                 | Melhem 2022 Table 3, Vp                        |
-| `lImax` (log\|I_max\|)      | log(0.161)                | Melhem 2022 Table 3, I_max = -0.161            |
-| `lt50` (T50, days)          | log(108)                  | Melhem 2022 Table 3, T50                       |
-| `lhill` (Hill)              | log(5.29)                 | Melhem 2022 Table 3, Hill                      |
-| `e_wt_cl`                   | 0.470                     | Melhem 2022 Table 3, Effect of WT on CL        |
-| `e_wt_v`                    | 0.419                     | Melhem 2022 Table 3, Effect of WT on Vc and Vp |
-| `e_age_cl`                  | -0.227                    | Melhem 2022 Table 3, Effect of age on CL       |
-| `e_alb_cl`                  | -1.01                     | Melhem 2022 Table 3, Effect of ALB on CL       |
-| `e_alt_cl`                  | -0.0585                   | Melhem 2022 Table 3, Effect of ALT on CL       |
-| `e_alb_vc`                  | -0.153                    | Melhem 2022 Table 3, Effect of ALB on Vc       |
-| `e_sex_cl`                  | 0.165                     | Melhem 2022 Table 3, Effect of male on CL      |
-| `e_sex_vc`                  | 0.162                     | Melhem 2022 Table 3, Effect of male on Vc      |
-| IIV block `etalcl + etalvc` | c(0.0551, 0.0210, 0.0258) | Melhem 2022 Table 3 (omega^2 and covariance)   |
-| `etalImax`                  | 0.537                     | Melhem 2022 Table 3, omega^2 I_max             |
-| `propSd`                    | 0.133                     | Melhem 2022 Table 3, proportional residual     |
-| `addSd` (mg/L)              | 2.79                      | Melhem 2022 Table 3, additive residual         |
+| Parameter (model name) | Value | Source |
+|----|----|----|
+| `lcl` (CL_base, L/day) | log(0.179) | Melhem 2022 Table 3, CL |
+| `lvc` (Vc_base, L) | log(2.98) | Melhem 2022 Table 3, Vc |
+| `lq` (Q, L/day) | log(0.547) | Melhem 2022 Table 3, Q |
+| `lvp` (Vp, L) | log(2.10) | Melhem 2022 Table 3, Vp |
+| `lImax` (log\|I_max\|) | log(0.161) | Melhem 2022 Table 3, I_max = -0.161 |
+| `lt50` (T50, days) | log(108) | Melhem 2022 Table 3, T50 |
+| `lhill` (Hill) | log(5.29) | Melhem 2022 Table 3, Hill |
+| `e_wt_cl` | 0.470 | Melhem 2022 Table 3, Effect of WT on CL |
+| `e_wt_v` | 0.419 | Melhem 2022 Table 3, Effect of WT on Vc and Vp |
+| `e_age_cl` | -0.227 | Melhem 2022 Table 3, Effect of age on CL |
+| `e_alb_cl` | -1.01 | Melhem 2022 Table 3, Effect of ALB on CL |
+| `e_alt_cl` | -0.0585 | Melhem 2022 Table 3, Effect of ALT on CL |
+| `e_alb_vc` | -0.153 | Melhem 2022 Table 3, Effect of ALB on Vc |
+| `e_sex_cl` | 0.165 | Melhem 2022 Table 3, Effect of male on CL |
+| `e_sex_vc` | 0.162 | Melhem 2022 Table 3, Effect of male on Vc |
+| IIV block `etalcl + etalvc` | c(0.0551, 0.0210, 0.0258) | Melhem 2022 Table 3 (omega^2 and covariance) |
+| `etalImax` | 0.537 | Melhem 2022 Table 3, omega^2 I_max |
+| `propSd` | 0.133 | Melhem 2022 Table 3, proportional residual |
+| `addSd` (mg/L) | 2.79 | Melhem 2022 Table 3, additive residual |
 
 Equations:
 
@@ -103,6 +107,7 @@ use a virtual cohort whose covariate distributions approximate the
 published trial demographics (Melhem 2022 Table 2).
 
 ``` r
+
 set.seed(2022)
 n_subj <- 200
 
@@ -121,6 +126,7 @@ cycles followed by 1000 mg IV Q6W**. The simulation runs for one year of
 dosing.
 
 ``` r
+
 # RTD schedule (days from first dose).
 loading_doses_d <- seq(0, by = 21, length.out = 4)              # 500 mg Q3W x 4
 maint_start_d   <- max(loading_doses_d) + 21                    # first 1000 mg dose 21 d after the 4th 500 mg
@@ -152,6 +158,7 @@ events <- build_events(cohort)
 ## Simulation
 
 ``` r
+
 mod <- readModelDb("Melhem_2022_dostarlimab")
 sim <- rxSolve(mod, events = events, returnType = "data.frame")
 ```
@@ -162,6 +169,7 @@ Median and 5-95th percentile envelope across the virtual cohort under
 the recommended therapeutic dose:
 
 ``` r
+
 sim_summary <- sim |>
   dplyr::filter(time > 0) |>
   dplyr::group_by(time) |>
@@ -196,6 +204,7 @@ reproduces the time course at the reference patient (deterministic, etas
 = 0):
 
 ``` r
+
 t_grid <- seq(0, 365, by = 5)
 events_cl <- data.frame(
   ID   = 1, WT = 70, AGE = 64, ALB = 39, ALT = 18, SEXF = 1,
@@ -235,6 +244,7 @@ NCA computed over the third 21-day dosing interval (2nd-3rd 500 mg dose
 window, days 21-42 after first dose) for the simulated reference cohort:
 
 ``` r
+
 interval_start <- 21
 interval_end   <- 42
 
@@ -267,17 +277,18 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
-#>  ■■■■■■■■■■■                       35% |  ETA:  3s
+#>  ■■■■■■■■                          24% |  ETA:  4s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      88% |  ETA:  1s
 knitr::kable(summary(nca_res),
              caption = "Simulated NCA parameters (3rd dosing interval, days 21-42 after first dose)")
 ```
 
-| start | end | treatment                         | N   | auclast       | cmax         | tmax                | half.life     |
-|------:|----:|:----------------------------------|:----|:--------------|:-------------|:--------------------|:--------------|
-|     0 |  21 | RTD 500 mg Q3W x4 -\> 1000 mg Q6W | 200 | 2340 \[20.7\] | 188 \[18.9\] | 1.00 \[1.00, 1.00\] | 25.9 \[4.86\] |
+| start | end | treatment | N | auclast | cmax | tmax | half.life |
+|---:|---:|:---|:---|:---|:---|:---|:---|
+| 0 | 21 | RTD 500 mg Q3W x4 -\> 1000 mg Q6W | 200 | 2340 \[20.7\] | 188 \[18.9\] | 1.00 \[1.00, 1.00\] | 25.9 \[4.86\] |
 
 Simulated NCA parameters (3rd dosing interval, days 21-42 after first
-dose)
+dose) {.table}
 
 ### Comparison against published NCA
 
@@ -285,10 +296,10 @@ Melhem 2022 Table 4 reports per-patient cycle-1 (Day 21) exposure
 summary statistics for the efficacy ER subset (N = 362, all from the RTD
 Part 2B arm):
 
-| Metric        | Published (Table 4)                        | Notes                  |
-|---------------|--------------------------------------------|------------------------|
-| Cmin (mg/L)   | mean 41.3 (SD 10.5), range 13.7-70.2       | Cycle 1 trough, RTD    |
-| Cmax (mg/L)   | mean 177 (SD 32.8), range 103-284          | Cycle 1 peak, RTD      |
+| Metric | Published (Table 4) | Notes |
+|----|----|----|
+| Cmin (mg/L) | mean 41.3 (SD 10.5), range 13.7-70.2 | Cycle 1 trough, RTD |
+| Cmax (mg/L) | mean 177 (SD 32.8), range 103-284 | Cycle 1 peak, RTD |
 | AUC (mg\*h/L) | mean 34 400 (SD 6090), range 19 100-51 000 | Cycle 1 over 21 d, RTD |
 
 Note the published AUC is reported in **mg*h/L **but is computed over

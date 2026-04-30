@@ -41,26 +41,26 @@ residual-error term below is taken from Kovalenko 2020 Table 1 (Model 1
 column) or Supplementary Table S2 (IIV SDs and residual errors). A
 paper-to-implementation cross-walk:
 
-| Equation / parameter                | Value                                              | Source location                                                    |
-|-------------------------------------|----------------------------------------------------|--------------------------------------------------------------------|
-| `lvc` (Vc, central volume)          | `log(2.48)` L                                      | Table 1, Model 1                                                   |
-| `lke` (ke, linear elimination rate) | `log(0.0534)` 1/day                                | Table 1, Model 1                                                   |
-| `lkcp` (kcp)                        | `log(0.213)` 1/day                                 | Table 1, Model 1                                                   |
-| `Mpc` (kcp/kpc)                     | `0.686`                                            | Table 1, Model 1 (kpc derived: 0.213 / 0.686 = 0.310 1/day)        |
-| `lka` (ka, absorption rate)         | `log(0.256)` 1/day                                 | Table 1, Model 1                                                   |
-| `lmtt` (MTT)                        | `log(0.105)` day                                   | Table 1, Model 1                                                   |
-| `lvm` (Vmax)                        | `log(1.07)` mg/L/day                               | Table 1, Model 1                                                   |
-| `Km`                                | `fixed(0.01)` mg/L                                 | Table 1, Model 1 (fixed, carried over from Kovalenko 2016)         |
-| `lfdepot` (F)                       | `log(0.643)`                                       | Table 1, Model 1                                                   |
-| `e_wt_vc` (WT exponent on Vc)       | `0.711`                                            | Table 1, Model 1 (“Vc ~ weight”)                                   |
-| `var(etalvc)`                       | `0.192^2 = 0.036864`                               | Supp. Table S2: omega_Vc (SD) = 0.192                              |
-| `var(etalke)`                       | `0.285^2 = 0.081225`                               | Supp. Table S2: omega_ke (SD) = 0.285                              |
-| `var(etalka)`                       | `0.474^2 = 0.224676`                               | Supp. Table S2: omega_ka (SD) = 0.474                              |
-| `var(etalvm)`                       | `0.236^2 = 0.055696`                               | Supp. Table S2: omega_Vm (SD) = 0.236                              |
-| `var(etalmtt)`                      | `0.525^2 = 0.275625`                               | Supp. Table S2: omega_MTT (SD) = 0.525, applied on `log(MTT)` here |
-| `CcpropSd` (proportional sigma)     | `0.15`                                             | Supp. Table S2                                                     |
-| `CcaddSd` (additive sigma)          | `fixed(0.03)` mg/L                                 | Supp. Table S2 (fixed, carried over from Kovalenko 2016)           |
-| Structure                           | 2-cmt + 3 transit + parallel linear/MM elimination | p. 758 Methods, Figure 1                                           |
+| Equation / parameter | Value | Source location |
+|----|----|----|
+| `lvc` (Vc, central volume) | `log(2.48)` L | Table 1, Model 1 |
+| `lke` (ke, linear elimination rate) | `log(0.0534)` 1/day | Table 1, Model 1 |
+| `lkcp` (kcp) | `log(0.213)` 1/day | Table 1, Model 1 |
+| `Mpc` (kcp/kpc) | `0.686` | Table 1, Model 1 (kpc derived: 0.213 / 0.686 = 0.310 1/day) |
+| `lka` (ka, absorption rate) | `log(0.256)` 1/day | Table 1, Model 1 |
+| `lmtt` (MTT) | `log(0.105)` day | Table 1, Model 1 |
+| `lvm` (Vmax) | `log(1.07)` mg/L/day | Table 1, Model 1 |
+| `Km` | `fixed(0.01)` mg/L | Table 1, Model 1 (fixed, carried over from Kovalenko 2016) |
+| `lfdepot` (F) | `log(0.643)` | Table 1, Model 1 |
+| `e_wt_vc` (WT exponent on Vc) | `0.711` | Table 1, Model 1 (“Vc ~ weight”) |
+| `var(etalvc)` | `0.192^2 = 0.036864` | Supp. Table S2: omega_Vc (SD) = 0.192 |
+| `var(etalke)` | `0.285^2 = 0.081225` | Supp. Table S2: omega_ke (SD) = 0.285 |
+| `var(etalka)` | `0.474^2 = 0.224676` | Supp. Table S2: omega_ka (SD) = 0.474 |
+| `var(etalvm)` | `0.236^2 = 0.055696` | Supp. Table S2: omega_Vm (SD) = 0.236 |
+| `var(etalmtt)` | `0.525^2 = 0.275625` | Supp. Table S2: omega_MTT (SD) = 0.525, applied on `log(MTT)` here |
+| `CcpropSd` (proportional sigma) | `0.15` | Supp. Table S2 |
+| `CcaddSd` (additive sigma) | `fixed(0.03)` mg/L | Supp. Table S2 (fixed, carried over from Kovalenko 2016) |
+| Structure | 2-cmt + 3 transit + parallel linear/MM elimination | p. 758 Methods, Figure 1 |
 
 The paper’s Methods section explicitly defines omega as *“omega (omega,
 standard deviation \[SD\] of between-subject variability)”* and sigma as
@@ -100,6 +100,7 @@ demographics reported in the Simpson 2016 SOLO / Blauvelt 2017 CHRONOS
 publications.
 
 ``` r
+
 set.seed(20260418)
 n_subj <- 400
 
@@ -144,6 +145,7 @@ events <- dplyr::bind_rows(ev_dose, ev_obs) |>
 ## Simulation
 
 ``` r
+
 mod <- rxode2::rxode2(readModelDb("Kovalenko_2020_dupilumab"))
 #> ℹ parameter labels from comments will be replaced by 'label()'
 conc_unit <- mod$units[["concentration"]]
@@ -159,6 +161,7 @@ regimen (600 mg SC loading + 300 mg SC Q2W) as 5th/50th/95th percentile
 bands across the virtual cohort, spanning ~13 dosing cycles.
 
 ``` r
+
 vpc <- sim |>
   dplyr::filter(!is.na(Cc), time > 0) |>
   dplyr::group_by(time) |>
@@ -191,6 +194,7 @@ Zoomed-in view of the final Q2W cycle (days 168-182) to isolate the
 steady-state peak, trough, and AUC_tau used by the NCA below.
 
 ``` r
+
 ss_start <- tau * n_maint # day 168 (time of dose 13)
 ss_end <- ss_start + tau # day 182
 
@@ -225,6 +229,7 @@ Non-compartmental analysis of the steady-state Q2W interval (days
 average concentration per simulated subject.
 
 ``` r
+
 nca_conc <- sim |>
   dplyr::filter(time >= ss_start, time <= ss_end, !is.na(Cc)) |>
   dplyr::mutate(time_nom = time - ss_start,
@@ -248,7 +253,7 @@ intervals <- data.frame(
 )
 
 nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
-#>  ■■■■■■■■■■■■■■                    44% |  ETA:  2s
+#>  ■■■■■■■■■■■                       34% |  ETA:  2s
 summary(nca_res)
 #>  start end    treatment   N     auclast        cmax        cmin         cav
 #>      0  14 300mg_Q2W_SS 400 1190 [43.9] 95.0 [41.9] 70.4 [49.2] 85.1 [43.9]
@@ -267,6 +272,7 @@ typical-value (“population typical”) prediction with IIV zeroed out
 provides a direct self-consistency check:
 
 ``` r
+
 mod_typical <- mod |> rxode2::zeroRe()
 
 ev_typical <- events |>
@@ -305,7 +311,7 @@ knitr::kable(typical_summary, digits = 2,
 | Cavg (mg/L)         |         82.26 |
 | AUC_tau (day\*mg/L) |       1173.27 |
 
-Typical-subject steady-state exposure (WT = 75 kg; IIV zeroed).
+Typical-subject steady-state exposure (WT = 75 kg; IIV zeroed). {.table}
 
 ## Assumptions and deviations
 

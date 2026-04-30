@@ -1,6 +1,7 @@
 # Suleiman_2019_risankizumab
 
 ``` r
+
 library(nlmixr2lib)
 library(rxode2)
 #> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
@@ -55,40 +56,40 @@ effect on CL (+43% once titer ≥ 128).
 Per-parameter origins are recorded as in-file comments in the model
 file; the table below collects them in one place.
 
-| Equation / parameter                                                  | Value                               | Source location                                        |
-|-----------------------------------------------------------------------|-------------------------------------|--------------------------------------------------------|
-| Two-compartment ODE structure (ka → central ↔︎ peripheral1, linear CL) | n/a                                 | Sect. 3.2 and Eq. 6 (NONMEM ADVAN4 TRANS4)             |
-| CL (typical, 70 kg ref)                                               | 0.243 L/day                         | Table 3                                                |
-| Vc (typical, 70 kg ref)                                               | 4.86 L                              | Table 3                                                |
-| ka (typical)                                                          | 0.229 /day                          | Table 3                                                |
-| Q (typical)                                                           | 0.656 L/day                         | Table 3                                                |
-| Vp (typical, 70 kg ref)                                               | 4.25 L                              | Table 3                                                |
-| F, logit parameterisation, phase III drug supply                      | logit = 2.09 → F = 0.890            | Table 3 footnote d; Eq. 2                              |
-| F, phase I-II drug supply (not default)                               | logit = 0.896 → F = 0.710           | Table 3 footnote c                                     |
-| WT on CL                                                              | (WT/70)^0.933                       | Table 3; Sect. 2.3 (70 kg reference explicitly stated) |
-| WT on Vc                                                              | (WT/70)^1.17                        | Table 3                                                |
-| WT on Vp                                                              | (WT/70)^0.377                       | Table 3                                                |
-| ALB on CL                                                             | (ALB/44)^-0.715                     | Table 3; ref = all-subject median, Table 2             |
-| CREAT on CL                                                           | (CREAT/76)^-0.253                   | Table 3; ref = all-subject median, Table 2             |
-| CRP (hs-CRP) on CL                                                    | (CRP/2.8)^0.044                     | Table 3; ref = all-subject median, Table 2             |
-| ADA threshold effect on CL                                            | 1 + 0.428 × (ADA_TITER ≥ 128)       | Eq. 8 and Sect. 3.2 (Titer_threshold = 128)            |
-| IIV CL                                                                | 24% CV → ω² = log(1+0.24²) = 0.0560 | Table 3 (footnote e conversion)                        |
-| IIV Vc                                                                | 34% CV → ω² = log(1+0.34²) = 0.1094 | Table 3                                                |
-| IIV ka                                                                | 63% CV → ω² = log(1+0.63²) = 0.3342 | Table 3                                                |
-| IIV–IIV correlation CL:Vc                                             | 39% → cov = 0.03053                 | Table 3                                                |
-| IIV F (additive on logit)                                             | variance 0.492                      | Table 3 footnote f                                     |
-| Residual error                                                        | proportional, 19% CV (σ² = 0.036)   | Table 3                                                |
-| Dosing regimen (clinical)                                             | 150 mg SC weeks 0, 4, then q12w     | Sect. 2.3.1 and Fig. 2 caption                         |
+| Equation / parameter | Value | Source location |
+|----|----|----|
+| Two-compartment ODE structure (ka → central ↔︎ peripheral1, linear CL) | n/a | Sect. 3.2 and Eq. 6 (NONMEM ADVAN4 TRANS4) |
+| CL (typical, 70 kg ref) | 0.243 L/day | Table 3 |
+| Vc (typical, 70 kg ref) | 4.86 L | Table 3 |
+| ka (typical) | 0.229 /day | Table 3 |
+| Q (typical) | 0.656 L/day | Table 3 |
+| Vp (typical, 70 kg ref) | 4.25 L | Table 3 |
+| F, logit parameterisation, phase III drug supply | logit = 2.09 → F = 0.890 | Table 3 footnote d; Eq. 2 |
+| F, phase I-II drug supply (not default) | logit = 0.896 → F = 0.710 | Table 3 footnote c |
+| WT on CL | (WT/70)^0.933 | Table 3; Sect. 2.3 (70 kg reference explicitly stated) |
+| WT on Vc | (WT/70)^1.17 | Table 3 |
+| WT on Vp | (WT/70)^0.377 | Table 3 |
+| ALB on CL | (ALB/44)^-0.715 | Table 3; ref = all-subject median, Table 2 |
+| CREAT on CL | (CREAT/76)^-0.253 | Table 3; ref = all-subject median, Table 2 |
+| CRP (hs-CRP) on CL | (CRP/2.8)^0.044 | Table 3; ref = all-subject median, Table 2 |
+| ADA threshold effect on CL | 1 + 0.428 × (ADA_TITER ≥ 128) | Eq. 8 and Sect. 3.2 (Titer_threshold = 128) |
+| IIV CL | 24% CV → ω² = log(1+0.24²) = 0.0560 | Table 3 (footnote e conversion) |
+| IIV Vc | 34% CV → ω² = log(1+0.34²) = 0.1094 | Table 3 |
+| IIV ka | 63% CV → ω² = log(1+0.63²) = 0.3342 | Table 3 |
+| IIV–IIV correlation CL:Vc | 39% → cov = 0.03053 | Table 3 |
+| IIV F (additive on logit) | variance 0.492 | Table 3 footnote f |
+| Residual error | proportional, 19% CV (σ² = 0.036) | Table 3 |
+| Dosing regimen (clinical) | 150 mg SC weeks 0, 4, then q12w | Sect. 2.3.1 and Fig. 2 caption |
 
 ### Covariate column naming
 
-| Source column    | Canonical column used here                                                               |
-|------------------|------------------------------------------------------------------------------------------|
-| `WT` (kg)        | `WT` (kg; per `covariate-columns.md`)                                                    |
-| `ALB` (g/L)      | `ALB` (g/L)                                                                              |
-| `CREAT` (umol/L) | `CREAT` (umol/L; canonical)                                                              |
-| `hs-CRP` (mg/L)  | `CRP` (mg/L; canonical general-scope; hs-CRP assay documented in `covariateData[[CRP]]`) |
-| `ADA titer`      | `ADA_TITER` (reciprocal-dilution; 0 = negative)                                          |
+| Source column | Canonical column used here |
+|----|----|
+| `WT` (kg) | `WT` (kg; per `covariate-columns.md`) |
+| `ALB` (g/L) | `ALB` (g/L) |
+| `CREAT` (umol/L) | `CREAT` (umol/L; canonical) |
+| `hs-CRP` (mg/L) | `CRP` (mg/L; canonical general-scope; hs-CRP assay documented in `covariateData[[CRP]]`) |
+| `ADA titer` | `ADA_TITER` (reciprocal-dilution; 0 = negative) |
 
 ### Virtual population
 
@@ -100,6 +101,7 @@ albumin 44 g/L, median baseline serum creatinine 76 umol/L, median
 baseline hs-CRP 2.8 mg/L).
 
 ``` r
+
 set.seed(2019)
 n_subj <- 500
 
@@ -120,6 +122,7 @@ weeks (q12w) thereafter. Simulate through week 52 to match the
 study-design window of UltIMMa-1 / UltIMMa-2 in Fig. 2 of the paper.
 
 ``` r
+
 dose_weeks <- c(0, 4, 16, 28, 40)
 dose_times <- dose_weeks * 7
 
@@ -149,6 +152,7 @@ d_sim <- bind_rows(d_dose, d_obs) %>%
 ### Simulate
 
 ``` r
+
 mod <- readModelDb("Suleiman_2019_risankizumab")
 sim <- rxSolve(mod, d_sim, returnType = "data.frame")
 #> ℹ parameter labels from comments will be replaced by 'label()'
@@ -162,6 +166,7 @@ concentration-time profile for the 150 mg SC q12w regimen through week
 combined, phase III clinical regimen).
 
 ``` r
+
 sim_summary <- sim %>%
   filter(time > 0) %>%
   group_by(time) %>%
@@ -197,6 +202,7 @@ steady-state plasma exposures are approached by week 16 of dosing
 reflect the steady-state.
 
 ``` r
+
 intervals <- tribble(
   ~label,       ~start_wk, ~end_wk,
   "2 (4-16)",    4,  16,
@@ -241,7 +247,7 @@ knitr::kable(
 | 4 (28-40) |       11.87 |           1.67 |        448.77 |
 
 Simulated per-interval exposures (Cmax/Ctrough in ug/mL; AUCtau in
-ug\*day/mL).
+ug\*day/mL). {.table}
 
 ### PKNCA validation
 
@@ -250,6 +256,7 @@ phase III 150 mg SC q12w regimen). The expected terminal elimination
 half-life is ~28 days for a typical 90 kg psoriasis patient (Abstract).
 
 ``` r
+
 nca_conc <- sim %>%
   filter(time >= 16 * 7, time <= 28 * 7, Cc > 0) %>%
   mutate(
@@ -282,12 +289,11 @@ data_obj <- PKNCAdata(
   )
 )
 nca_results <- pk.nca(data_obj)
-#>  ■■■                                6% |  ETA: 17s
 #>  ■■■■■■■■                          22% |  ETA: 14s
 #>  ■■■■■■■■■■■■■                     39% |  ETA: 11s
-#>  ■■■■■■■■■■■■■■■■■■                55% |  ETA:  8s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■           72% |  ETA:  5s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■       88% |  ETA:  2s
+#>  ■■■■■■■■■■■■■■■■■■                56% |  ETA:  8s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■           73% |  ETA:  5s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      89% |  ETA:  2s
 nca_summary <- summary(nca_results)
 knitr::kable(
   nca_summary,
@@ -300,13 +306,13 @@ knitr::kable(
 )
 ```
 
-| start | end | treatment               | N   | auclast      | cmax          | tmax                | half.life     |
-|------:|----:|:------------------------|:----|:-------------|:--------------|:--------------------|:--------------|
-|     0 |  84 | risankizumab_150mg_q12w | 500 | 466 \[35.7\] | 12.2 \[35.6\] | 6.00 \[2.00, 20.0\] | 29.2 \[7.46\] |
+| start | end | treatment | N | auclast | cmax | tmax | half.life |
+|---:|---:|:---|:---|:---|:---|:---|:---|
+| 0 | 84 | risankizumab_150mg_q12w | 500 | 466 \[35.7\] | 12.2 \[35.6\] | 6.00 \[2.00, 20.0\] | 29.2 \[7.46\] |
 
 PKNCA summary for the steady-state maintenance interval (weeks 16-28).
 Expected terminal half-life ~28 days for a typical 90 kg psoriasis
-subject (Suleiman 2019, Abstract).
+subject (Suleiman 2019, Abstract). {.table style="width:100%;"}
 
 ### Typical-subject comparison against the published abstract
 
@@ -316,6 +322,7 @@ covariates. Reproduce these using the packaged model with between-
 subject variability zeroed out:
 
 ``` r
+
 mod_typ <- rxode2::zeroRe(mod)
 #> ℹ parameter labels from comments will be replaced by 'label()'
 
@@ -401,6 +408,7 @@ the 150 mg SC q12w regimen (Sect. 3.3). Simulate a typical ADA-positive
 subject and compare AUC at steady state.
 
 ``` r
+
 typ_pop_ada <- typ_pop %>% mutate(ADA_TITER = 256)  # above threshold 128
 
 typ_events_ada <- bind_rows(

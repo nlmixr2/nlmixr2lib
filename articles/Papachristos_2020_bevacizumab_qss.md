@@ -50,43 +50,60 @@ The same metadata is available programmatically via
 
 ## Source trace
 
-| Parameter (model name)          | Value       | Source                                                       |
-|---------------------------------|-------------|--------------------------------------------------------------|
-| `lcl` (CL, L/day)               | log(0.344)  | Papachristos 2020 Table 2, CL                                |
-| `lv1` (V1pop, L)                | log(5.83)   | Papachristos 2020 Table 2, V1pop                             |
-| `lq` (Qpop, L/day)              | log(0.136)  | Papachristos 2020 Table 2, Qpop                              |
-| `lv2` (V2pop, L)                | log(3.17)   | Papachristos 2020 Table 2, V2pop                             |
-| `lkout` (kout, 1/day)           | log(0.116)  | Papachristos 2020 Table 2, Koutpop                           |
-| `lbm0` (BM0, nM)                | log(0.0137) | Papachristos 2020 Table 2, BM0pop = 0.0137 nM (= 616.5 ng/L) |
-| `lkss` (Kss, nM)                | log(135)    | Papachristos 2020 Table 2, KSSpop                            |
-| `allo_cl` (allometric exponent) | 1.01        | Papachristos 2020 Table 2, “log(weight/70) on CL”            |
-| `e_icam1_rs1799969_cl`          | -0.33       | Papachristos 2020 Table 2, “ICAM-1 rs1799969 mutant on CL”   |
-| `e_vegfa_rs699947_kss`          | +1.22       | Papachristos 2020 Table 2, “VEGF-A rs699947 mutant on KSS”   |
-| `e_vegfa_rs699947_bm0`          | -0.851      | Papachristos 2020 Table 2, “VEGF-A rs699947 mutant on BM0”   |
-| `etalcl` variance               | 0.09548     | Papachristos 2020 Table 2, ω_CL = 0.309 (var = SD²)          |
-| `etalq` variance                | 0.04040     | Papachristos 2020 Table 2, ω_Q = 0.201                       |
-| `cov(etalcl, etalq)`            | -0.06205    | Papachristos 2020 Table 2, ρ(Q,CL) = -0.999 × 0.309 × 0.201  |
-| `etalv1` variance               | 0.02856     | Papachristos 2020 Table 2, ω_V1 = 0.169                      |
-| `etalv2` variance               | 0.30803     | Papachristos 2020 Table 2, ω_V2 = 0.555                      |
-| `etalbm0` variance              | 0.05760     | Papachristos 2020 Table 2, ω_BM0 = 0.24                      |
-| `CcpropSd`                      | 0.253       | Papachristos 2020 Table 2, σ_BEVA                            |
-| `CvpropSd`                      | 0.290       | Papachristos 2020 Table 2, σ_VEGF                            |
+| Parameter (model name) | Value | Source |
+|----|----|----|
+| `lcl` (CL, L/day) | log(0.344) | Papachristos 2020 Table 2, CL |
+| `lv1` (V1pop, L) | log(5.83) | Papachristos 2020 Table 2, V1pop |
+| `lq` (Qpop, L/day) | log(0.136) | Papachristos 2020 Table 2, Qpop |
+| `lv2` (V2pop, L) | log(3.17) | Papachristos 2020 Table 2, V2pop |
+| `lkout` (kout, 1/day) | log(0.116) | Papachristos 2020 Table 2, Koutpop |
+| `lbm0` (BM0, nM) | log(0.0137) | Papachristos 2020 Table 2, BM0pop = 0.0137 nM (= 616.5 ng/L) |
+| `lkss` (Kss, nM) | log(135) | Papachristos 2020 Table 2, KSSpop |
+| `allo_cl` (allometric exponent) | 1.01 | Papachristos 2020 Table 2, “log(weight/70) on CL” |
+| `e_icam1_rs1799969_cl` | -0.33 | Papachristos 2020 Table 2, “ICAM-1 rs1799969 mutant on CL” |
+| `e_vegfa_rs699947_kss` | +1.22 | Papachristos 2020 Table 2, “VEGF-A rs699947 mutant on KSS” |
+| `e_vegfa_rs699947_bm0` | -0.851 | Papachristos 2020 Table 2, “VEGF-A rs699947 mutant on BM0” |
+| `etalcl` variance | 0.09548 | Papachristos 2020 Table 2, ω_CL = 0.309 (var = SD²) |
+| `etalq` variance | 0.04040 | Papachristos 2020 Table 2, ω_Q = 0.201 |
+| `cov(etalcl, etalq)` | -0.06205 | Papachristos 2020 Table 2, ρ(Q,CL) = -0.999 × 0.309 × 0.201 |
+| `etalv1` variance | 0.02856 | Papachristos 2020 Table 2, ω_V1 = 0.169 |
+| `etalv2` variance | 0.30803 | Papachristos 2020 Table 2, ω_V2 = 0.555 |
+| `etalbm0` variance | 0.05760 | Papachristos 2020 Table 2, ω_BM0 = 0.24 |
+| `CcpropSd` | 0.253 | Papachristos 2020 Table 2, σ_BEVA |
+| `CvpropSd` | 0.290 | Papachristos 2020 Table 2, σ_VEGF |
 
 Equations (paper section 2.3 + Gibiansky et al. 2008 QSS-TMDD form):
 
-$${\dot{A}}_{1} = - {CL}\, C_{free} - Q\, C_{free} + Q\,\left( A_{2}/V_{2} \right) - k_{int}\, R_{c}\, V_{1}$$$${\dot{A}}_{2} = Q\, C_{free} - Q\,\left( A_{2}/V_{2} \right)$$$${\dot{T}}_{tot} = k_{in} - k_{out}\, T_{free} - k_{int}\, R_{c}$$
+``` math
+\dot A_1 = -\mathrm{CL}\,C_\mathrm{free} - Q\,C_\mathrm{free}
+            + Q\,(A_2/V_2) - k_\mathrm{int}\,R_c\,V_1
+```
+``` math
+\dot A_2 = Q\,C_\mathrm{free} - Q\,(A_2/V_2)
+```
+``` math
+\dot{T}_\mathrm{tot} = k_\mathrm{in}
+            - k_\mathrm{out}\,T_\mathrm{free}
+            - k_\mathrm{int}\,R_c
+```
 
 with the QSS algebraic relation
 
-$$R_{c} = \frac{1}{2}\!\left( C_{tot} + T_{tot} + K_{ss} - \sqrt{\left( C_{tot} - T_{tot} \right)^{2} + 2\, K_{ss}\left( C_{tot} + T_{tot} \right) + K_{ss}^{2}} \right)$$
+``` math
+R_c = \tfrac{1}{2}\!\left(C_\mathrm{tot} + T_\mathrm{tot} + K_{ss}
+   - \sqrt{(C_\mathrm{tot} - T_\mathrm{tot})^2
+            + 2\,K_{ss}(C_\mathrm{tot} + T_\mathrm{tot}) + K_{ss}^2}\right)
+```
 
-$C_{free} = C_{tot} - R_{c}$, $T_{free} = T_{tot} - R_{c}$,
-$C_{tot} = A_{1}/V_{1}$, $k_{in} = k_{out}\,{BM_{0}}$,
-$k_{int} = {CL}/V_{1}$ (paper section 2.3).
+$`C_\mathrm{free} = C_\mathrm{tot} - R_c`$,
+$`T_\mathrm{free} = T_\mathrm{tot} - R_c`$,
+$`C_\mathrm{tot} = A_1/V_1`$,
+$`k_\mathrm{in} = k_\mathrm{out}\,\mathrm{BM_0}`$,
+$`k_\mathrm{int} = \mathrm{CL}/V_1`$ (paper section 2.3).
 
 The bevacizumab observation is total (free + complex) drug in mg/L; the
-free-VEGF-A observation is $T_{free}$ in ng/L. Both residual error
-models are proportional.
+free-VEGF-A observation is $`T_\mathrm{free}`$ in ng/L. Both residual
+error models are proportional.
 
 ## Errata note (text vs Table)
 
@@ -99,6 +116,7 @@ binding QSS model presented here.
 ## Virtual cohort
 
 ``` r
+
 set.seed(2020)
 n_subj <- 100
 
@@ -111,6 +129,7 @@ cohort <- tibble(
 ```
 
 ``` r
+
 inf_dur     <- 1.5 / 24            # 90-min infusion (days)
 n_doses_q2w <- 6
 sim_horizon <- 84                  # 12 weeks total follow-up
@@ -145,6 +164,7 @@ events <- build_events(cohort, mgkg = 5, dose_times = dose_times,
 ## Simulation
 
 ``` r
+
 mod <- rxode2::rxode2(readModelDb("Papachristos_2020_bevacizumab_qss"))
 #> ℹ parameter labels from comments will be replaced by 'label()'
 sim <- rxode2::rxSolve(mod, events = events,
@@ -161,6 +181,7 @@ sim_cv <- sim |> dplyr::filter(CMT == 5)
 ### Bevacizumab concentration-time profile (replicates Supplementary Figure S5A diagnostic)
 
 ``` r
+
 sim_cc_summary <- sim_cc |>
   dplyr::filter(time > 0) |>
   dplyr::group_by(time) |>
@@ -190,6 +211,7 @@ ggplot(sim_cc_summary, aes(time, median)) +
 ### Free VEGF-A profile and rebound (replicates Supplementary Figure S5B diagnostic)
 
 ``` r
+
 sim_cv_summary <- sim_cv |>
   dplyr::group_by(time) |>
   dplyr::summarise(
@@ -224,6 +246,7 @@ genotype contrast at a fixed 74.5 kg / wild-type-ICAM1 reference
 subject.
 
 ``` r
+
 mod_typical <- rxode2::rxode2(readModelDb("Papachristos_2020_bevacizumab_qss")) |>
   rxode2::zeroRe()
 #> ℹ parameter labels from comments will be replaced by 'label()'
@@ -278,6 +301,7 @@ ggplot(sim_typ |> dplyr::filter(CMT == 5),
 
 ``` r
 
+
 baseline_compare <- sim_typ |>
   dplyr::filter(CMT == 5, time == 0) |>
   dplyr::select(geno, Cv)
@@ -291,7 +315,7 @@ knitr::kable(baseline_compare,
 | rs699947 mutant    | 263.2379 |
 
 Pre-dose baseline free VEGF-A by rs699947 genotype (typical-value
-simulation, ng/L).
+simulation, ng/L). {.table}
 
 ## Steady-state and mass-balance checks
 
@@ -305,6 +329,7 @@ verify model correctness:
     264 ng/L for a mutant carrier.
 
 ``` r
+
 expected_bm0 <- c(
   `rs699947 wild-type` = 0.0137 * 45000,
   `rs699947 mutant`    = 0.0137 * 45000 * exp(-0.851)
@@ -323,6 +348,7 @@ knitr::kable(predose,
 | rs699947 mutant    |         263.2379 |     263.2379 |
 
 Pre-dose free VEGF-A: simulated vs algebraic expectation (ng/L).
+{.table}
 
 2.  **Long-term recovery to baseline.** With dosing stopped after the
     last simulated infusion, free VEGF-A should rebound to its
@@ -330,6 +356,7 @@ Pre-dose free VEGF-A: simulated vs algebraic expectation (ng/L).
     (1/k_out ≈ 8.6 days).
 
 ``` r
+
 last_obs_predose <- sim_typ |>
   dplyr::filter(CMT == 5, time >= 84) |>
   dplyr::group_by(geno) |>
@@ -345,6 +372,7 @@ knitr::kable(last_obs_predose,
 
 End-of-simulation free VEGF-A vs genotype-specific BM0 (ng/L). Last dose
 at day 70; observed at day 84 (~14 d ≈ 1.6 × 1/k_out post-dose).
+{.table}
 
 ## Bevacizumab PKNCA validation
 
@@ -355,6 +383,7 @@ table; the dose-mass conservation differs slightly from the descriptive
 PK model because total drug here includes the bound complex.
 
 ``` r
+
 suppressPackageStartupMessages(library(PKNCA))
 
 start_ss <- max(dose_times)
@@ -491,12 +520,12 @@ knitr::kable(summary(nca_res),
              caption = "Steady-state NCA for bevacizumab (5 mg/kg Q2W, last simulated interval, binding QSS model).")
 ```
 
-| Interval Start | Interval End | treatment   | N   | AUClast (day\*mg/L) | Cmax (mg/L)  | Cmin (mg/L)   | Tmax (day)             | Cav (mg/L) |
-|---------------:|-------------:|:------------|:----|:--------------------|:-------------|:--------------|:-----------------------|:-----------|
-|              0 |           14 | 5 mg/kg Q2W | 100 | NC                  | 110 \[18.9\] | 46.7 \[46.8\] | 0.550 \[0.550, 0.550\] | NC         |
+| Interval Start | Interval End | treatment | N | AUClast (day\*mg/L) | Cmax (mg/L) | Cmin (mg/L) | Tmax (day) | Cav (mg/L) |
+|---:|---:|:---|:---|:---|:---|:---|:---|:---|
+| 0 | 14 | 5 mg/kg Q2W | 100 | NC | 110 \[18.9\] | 46.7 \[46.8\] | 0.550 \[0.550, 0.550\] | NC |
 
 Steady-state NCA for bevacizumab (5 mg/kg Q2W, last simulated interval,
-binding QSS model).
+binding QSS model). {.table}
 
 ## Assumptions and deviations
 

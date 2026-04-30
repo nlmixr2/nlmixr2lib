@@ -1,6 +1,7 @@
 # Xu_2011_sirukumab
 
 ``` r
+
 library(nlmixr2lib)
 library(rxode2)
 #> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
@@ -69,24 +70,24 @@ the `population` list literal).
 
 ### Source trace
 
-| Element                     | Source location                                       | Value / form                                       |
-|-----------------------------|-------------------------------------------------------|----------------------------------------------------|
-| Structural model            | Xu 2011 Results, “Population PK analysis”             | 2-compartment, zero-order IV input, first-order CL |
-| CL (70 kg subject)          | Xu 2011 Table 4, theta1                               | 0.364 L/day                                        |
-| V1 (70 kg subject)          | Xu 2011 Table 4, theta2                               | 3.28 L                                             |
-| Q (70 kg subject)           | Xu 2011 Table 4, theta3                               | 0.588 L/day                                        |
-| V2 (70 kg subject)          | Xu 2011 Table 4, theta4                               | 4.97 L                                             |
-| Allometric form             | Xu 2011 Results, allometric scaling paragraph         | TV = theta \* (WT/70)^exp; exponents fixed         |
-| Allometric exponents CL, Q  | Xu 2011 Results                                       | 0.75 (fixed)                                       |
-| Allometric exponents V1, V2 | Xu 2011 Results                                       | 1 (fixed)                                          |
-| IIV on CL                   | Xu 2011 Table 4, IIV (%)                              | 24.3% CV (omega^2 = log(CV^2 + 1) = 0.057371)      |
-| IIV on V1                   | Xu 2011 Table 4, IIV (%)                              | 19.3% CV (omega^2 = 0.036572)                      |
-| IIV on Q                    | Xu 2011 Table 4, IIV (%)                              | 53.4% CV (omega^2 = 0.250880)                      |
-| IIV on V2                   | Xu 2011 Table 4, IIV (%)                              | 28.3% CV (omega^2 = 0.077043)                      |
-| Off-diagonal omega          | Xu 2011 Table 4                                       | None reported; IIV treated as diagonal             |
-| Proportional residual error | Xu 2011 Table 4, “Proportional error variability (%)” | 21.7 -\> propSd = 0.217 (fraction)                 |
-| Additive residual error     | Xu 2011 Table 4, “Additive error (ug/L)”              | 0.0228 ug/L = 2.28e-5 ug/mL                        |
-| Dose regimens               | Xu 2011 Table 1 and Methods                           | 0.3, 1, 3, 6, 10 mg/kg IV over 10-15 min           |
+| Element | Source location | Value / form |
+|----|----|----|
+| Structural model | Xu 2011 Results, “Population PK analysis” | 2-compartment, zero-order IV input, first-order CL |
+| CL (70 kg subject) | Xu 2011 Table 4, theta1 | 0.364 L/day |
+| V1 (70 kg subject) | Xu 2011 Table 4, theta2 | 3.28 L |
+| Q (70 kg subject) | Xu 2011 Table 4, theta3 | 0.588 L/day |
+| V2 (70 kg subject) | Xu 2011 Table 4, theta4 | 4.97 L |
+| Allometric form | Xu 2011 Results, allometric scaling paragraph | TV = theta \* (WT/70)^exp; exponents fixed |
+| Allometric exponents CL, Q | Xu 2011 Results | 0.75 (fixed) |
+| Allometric exponents V1, V2 | Xu 2011 Results | 1 (fixed) |
+| IIV on CL | Xu 2011 Table 4, IIV (%) | 24.3% CV (omega^2 = log(CV^2 + 1) = 0.057371) |
+| IIV on V1 | Xu 2011 Table 4, IIV (%) | 19.3% CV (omega^2 = 0.036572) |
+| IIV on Q | Xu 2011 Table 4, IIV (%) | 53.4% CV (omega^2 = 0.250880) |
+| IIV on V2 | Xu 2011 Table 4, IIV (%) | 28.3% CV (omega^2 = 0.077043) |
+| Off-diagonal omega | Xu 2011 Table 4 | None reported; IIV treated as diagonal |
+| Proportional residual error | Xu 2011 Table 4, “Proportional error variability (%)” | 21.7 -\> propSd = 0.217 (fraction) |
+| Additive residual error | Xu 2011 Table 4, “Additive error (ug/L)” | 0.0228 ug/L = 2.28e-5 ug/mL |
+| Dose regimens | Xu 2011 Table 1 and Methods | 0.3, 1, 3, 6, 10 mg/kg IV over 10-15 min |
 
 ### Virtual cohort
 
@@ -97,6 +98,7 @@ distribution bounded to the published 49-99 kg range with median 71.3
 kg.
 
 ``` r
+
 set.seed(2011)
 
 cohorts <- tribble(
@@ -148,6 +150,7 @@ design: dense sampling over the first 48 h, then out through 140 days
 (20 weeks) of follow-up.
 
 ``` r
+
 obs_times <- sort(unique(c(
   seq(0,   1,   by = 1/24),           # hourly on day 1
   seq(1,   7,   by = 0.5),            # twice daily through day 7
@@ -159,7 +162,7 @@ infusion_dur <- 15 / (60 * 24)          # 15 min in days
 
 dose_rows <- pop %>%
   transmute(
-    ID, treatment, WT,
+    ID, treatment, dose_mgkg, WT,
     time = 0,
     amt,
     evid = 1L,
@@ -169,7 +172,7 @@ dose_rows <- pop %>%
   )
 
 obs_rows <- pop %>%
-  select(ID, treatment, WT) %>%
+  select(ID, treatment, dose_mgkg, WT) %>%
   tidyr::crossing(time = obs_times) %>%
   mutate(
     amt  = NA_real_,
@@ -189,12 +192,16 @@ Simulate with between-subject variability so the spread across the
 virtual cohort matches the paper’s individual variability.
 
 ``` r
+
 mod <- readModelDb("Xu_2011_sirukumab")
 
 events_sim <- events %>% rename(id = ID)
-sim <- rxSolve(object = mod, events = events_sim, returnType = "data.frame") %>%
-  as_tibble() %>%
-  left_join(pop %>% select(ID, treatment, dose_mgkg), by = c("id" = "ID"))
+# `treatment` and `dose_mgkg` are already on every row of `events_sim`.
+# Carry them through rxSolve via `keep = ...` rather than a fragile
+# post-hoc left_join from `pop`.
+sim <- rxSolve(object = mod, events = events_sim, returnType = "data.frame",
+               keep = c("treatment", "dose_mgkg")) %>%
+  as_tibble()
 #> ℹ parameter labels from comments will be replaced by 'label()'
 ```
 
@@ -204,6 +211,7 @@ Figure 3 of Xu 2011 shows mean (SD) sirukumab serum concentrations vs.
 time by dose cohort on a log-linear scale following a single IV dose.
 
 ``` r
+
 fig3 <- sim %>%
   filter(time > 0, !is.na(Cc), Cc > 0) %>%
   group_by(treatment, time) %>%
@@ -236,6 +244,7 @@ Table 3). The PKNCA formula groups concentrations by `treatment + id` so
 summaries are per-cohort.
 
 ``` r
+
 # Keep t = 0 (Cc = 0 before infusion starts) so PKNCA can integrate AUC from the
 # dose time; filter only true NA values.
 nca_conc <- sim %>%
@@ -247,6 +256,7 @@ nca_dose <- pop %>%
 ```
 
 ``` r
+
 conc_obj <- PKNCAconc(nca_conc, Cc ~ time | treatment + id)
 dose_obj <- PKNCAdose(nca_dose, amt ~ time | treatment + id)
 
@@ -302,6 +312,7 @@ Table 3 of Xu 2011 reports (mean +/- SD for Cmax and AUC(0,inf); median
 \[range\] for terminal half-life):
 
 ``` r
+
 published <- tribble(
   ~treatment,          ~cmax_pub_mean, ~cmax_pub_sd, ~auc_pub_mean, ~auc_pub_sd, ~thalf_pub_median,
   "0.3 mg/kg",           7.9,            1.4,          82.1,          20.4,        20.9,
@@ -333,17 +344,17 @@ knitr::kable(compare,
              caption = "Simulated NCA vs. Xu 2011 Table 3: Cmax (ug/mL), AUC(0,inf) (ug*day/mL), terminal t1/2 (days).")
 ```
 
-| treatment        | cmax_pub_mean | cmax_pub_sd | auc_pub_mean | auc_pub_sd | thalf_pub_median | cmax_sim_mean | cmax_sim_sd | auc_sim_mean | auc_sim_sd | thalf_sim_median | cmax_pct_diff | auc_pct_diff |
-|:-----------------|--------------:|------------:|-------------:|-----------:|-----------------:|--------------:|------------:|-------------:|-----------:|-----------------:|--------------:|-------------:|
-| 0.3 mg/kg        |           7.9 |         1.4 |         82.1 |       20.4 |             20.9 |          5.85 |        0.52 |        49.36 |       5.85 |            19.17 |        -25.92 |       -39.88 |
-| 1 mg/kg          |          19.2 |         1.8 |        167.3 |       23.6 |             19.9 |         24.88 |        5.64 |       201.04 |      39.69 |            22.14 |         29.57 |        20.17 |
-| 3 mg/kg          |          60.1 |        14.0 |        540.2 |      175.2 |             18.5 |         57.51 |        7.67 |       640.86 |     308.79 |            21.96 |         -4.31 |        18.63 |
-| 6 mg/kg (male)   |         116.3 |        11.6 |       1225.0 |      378.2 |             29.6 |        128.90 |       24.83 |      1300.23 |     318.24 |            18.73 |         10.83 |         6.14 |
-| 6 mg/kg (female) |         118.6 |        19.2 |       1262.0 |      307.0 |             25.0 |        119.25 |       19.33 |      1331.75 |     315.12 |            22.28 |          0.55 |         5.53 |
-| 10 mg/kg         |         248.8 |        61.7 |       2164.7 |      658.5 |             21.0 |        212.33 |       34.72 |      2330.49 |     746.07 |            21.17 |        -14.66 |         7.66 |
+| treatment | cmax_pub_mean | cmax_pub_sd | auc_pub_mean | auc_pub_sd | thalf_pub_median | cmax_sim_mean | cmax_sim_sd | auc_sim_mean | auc_sim_sd | thalf_sim_median | cmax_pct_diff | auc_pct_diff |
+|:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 0.3 mg/kg | 7.9 | 1.4 | 82.1 | 20.4 | 20.9 | 5.85 | 0.52 | 49.36 | 5.85 | 19.17 | -25.92 | -39.88 |
+| 1 mg/kg | 19.2 | 1.8 | 167.3 | 23.6 | 19.9 | 24.88 | 5.64 | 201.04 | 39.69 | 22.14 | 29.57 | 20.17 |
+| 3 mg/kg | 60.1 | 14.0 | 540.2 | 175.2 | 18.5 | 57.51 | 7.67 | 640.86 | 308.79 | 21.96 | -4.31 | 18.63 |
+| 6 mg/kg (male) | 116.3 | 11.6 | 1225.0 | 378.2 | 29.6 | 128.90 | 24.83 | 1300.23 | 318.24 | 18.73 | 10.83 | 6.14 |
+| 6 mg/kg (female) | 118.6 | 19.2 | 1262.0 | 307.0 | 25.0 | 119.25 | 19.33 | 1331.75 | 315.12 | 22.28 | 0.55 | 5.53 |
+| 10 mg/kg | 248.8 | 61.7 | 2164.7 | 658.5 | 21.0 | 212.33 | 34.72 | 2330.49 | 746.07 | 21.17 | -14.66 | 7.66 |
 
 Simulated NCA vs. Xu 2011 Table 3: Cmax (ug/mL), AUC(0,inf)
-(ug\*day/mL), terminal t1/2 (days).
+(ug\*day/mL), terminal t1/2 (days). {.table style="width:100%;"}
 
 Dose-proportionality holds exactly by construction in the packaged model
 (linear clearance, no absorption nonlinearity), so mean Cmax and mean

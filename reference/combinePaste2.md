@@ -48,6 +48,7 @@ Matthew L. Fidler
 ## Examples
 
 ``` r
+
 combinePaste2("f", "depot")
 #> [1] "fDepot"
 

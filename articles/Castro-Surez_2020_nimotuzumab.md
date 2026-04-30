@@ -1,6 +1,7 @@
 # Castro-Surez_2020_nimotuzumab
 
 ``` r
+
 library(nlmixr2lib)
 library(rxode2)
 #> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
@@ -48,24 +49,24 @@ to provide dose-stratified Cmax / AUC / half-life summaries.
 
 Castro-Suárez 2020 Table 1 (single-center Cuban phase I trial, n = 20):
 
-| Field                | Value                                                          |
-|----------------------|----------------------------------------------------------------|
-| N subjects           | 20                                                             |
-| N observations       | 422 (all quantifiable; none below LOQ)                         |
-| N studies            | 1 (single-center, open-label, dose-escalation phase I)         |
-| Age                  | median 42 y (mean 39, SD 11)                                   |
-| Body weight          | median 65.7 kg (mean 66.98, SD 14.69)                          |
-| Height               | median 163.5 cm (mean 163.60, SD 8.99)                         |
-| Body surface area    | median 1.70 m² (mean 1.72, SD 0.21)                            |
-| Serum creatinine     | median 0.72 mg/dL (mean 0.77, SD 0.14)                         |
-| Creatinine clearance | median 105.7 mL/min/1.73 m² (mean 103.43, SD 22.63)            |
-| TKV (men, women)     | mean 822 mL / 924 mL                                           |
-| TCV                  | mean 340 mL                                                    |
-| Sex                  | 14 F / 6 M (70% female)                                        |
-| Race / ethnicity     | 75% Caucasian, 5% Afro-American, 20% Other                     |
-| Disease state        | Autosomal dominant polycystic kidney disease (ADPKD)           |
-| Inclusion threshold  | GFR ≥ 50 mL/min/1.73 m²; urinary protein \< 1 g/24 h           |
-| Dose levels          | 50, 100, 200, 400 mg single IV infusion (30 min, n = 5/cohort) |
+| Field | Value |
+|----|----|
+| N subjects | 20 |
+| N observations | 422 (all quantifiable; none below LOQ) |
+| N studies | 1 (single-center, open-label, dose-escalation phase I) |
+| Age | median 42 y (mean 39, SD 11) |
+| Body weight | median 65.7 kg (mean 66.98, SD 14.69) |
+| Height | median 163.5 cm (mean 163.60, SD 8.99) |
+| Body surface area | median 1.70 m² (mean 1.72, SD 0.21) |
+| Serum creatinine | median 0.72 mg/dL (mean 0.77, SD 0.14) |
+| Creatinine clearance | median 105.7 mL/min/1.73 m² (mean 103.43, SD 22.63) |
+| TKV (men, women) | mean 822 mL / 924 mL |
+| TCV | mean 340 mL |
+| Sex | 14 F / 6 M (70% female) |
+| Race / ethnicity | 75% Caucasian, 5% Afro-American, 20% Other |
+| Disease state | Autosomal dominant polycystic kidney disease (ADPKD) |
+| Inclusion threshold | GFR ≥ 50 mL/min/1.73 m²; urinary protein \< 1 g/24 h |
+| Dose levels | 50, 100, 200, 400 mg single IV infusion (30 min, n = 5/cohort) |
 
 Body weight, height, age, BSA, CrCL, serum creatinine, total kidney
 volume (TKV), total cyst volume (TCV), sex, and race were all tested as
@@ -88,27 +89,27 @@ V, et al., *Pharmaceutics* 2020;12(12):1147
 No errata were located on PubMed, the MDPI landing page, or Google
 Scholar (search dates 2026-04-25).
 
-| Quantity                                                                                              | Source location                                   | Value used                         |
-|-------------------------------------------------------------------------------------------------------|---------------------------------------------------|------------------------------------|
-| 2-compartment QSS TMDD with mediator turnover                                                         | Methods §2.3 / Figure 1                           | Eqs. (1)–(3)                       |
-| Linear CL (modulated by mediator)                                                                     | Table 2, CL row (final model)                     | 9.64 × 10⁻³ L/h                    |
-| Central volume V₁                                                                                     | Table 2, V₁ row (final model)                     | 2.63 L                             |
-| Inter-compartmental clearance Q                                                                       | Table 2, Q row (final model)                      | 2.88 × 10⁻² L/h                    |
-| Peripheral volume V₂                                                                                  | Table 2, V₂ row (final model)                     | 9.92 × 10⁻³ L                      |
-| K_(ss) (QSS binding constant; shared in both compartments)                                            | Table 2, K_(ss) row (final model)                 | 15.5 mg/L                          |
-| k_(int) (internalization of nimotuzumab–EGFR complex)                                                 | Table 2, k_(int) row (final model)                | 4.94 × 10⁻³ /h                     |
-| R_(tot) (apparent EGFR in central compartment)                                                        | Table 2, R_(tot) row (final model)                | 1.05 × 10⁻² mg/L                   |
-| R_(totp) (apparent EGFR in peripheral compartment)                                                    | Table 2, R_(totp) row (final model)               | 956 mg/L                           |
-| K_(out) (mediator first-order elimination)                                                            | Table 2, K_(out) row (final model)                | 1.33 × 10⁻² /h                     |
-| K_(in) (mediator zero-order synthesis)                                                                | Methods §2.3 (initial conditions)                 | k_(in) = k_(out) × A₃(0) = k_(out) |
-| S_(max) (maximal stimulation of non-specific CL)                                                      | Table 2, S_(max) row (final model)                | 3.18                               |
-| S₅₀ (free C achieving half-S_(max))                                                                   | Table 2, S₅₀ row (final model)                    | 8.57 mg/L                          |
-| γ (Hill coefficient on sigmoid; **fixed at 1**)                                                       | Eq. (3) of Methods §2.3 (operator decision)       | 1 (see Assumptions)                |
-| IIV on R_(totp)                                                                                       | Table 2, IIV row (final model; η-shrink. 14%)     | 135% CV                            |
-| IIV on K_(out)                                                                                        | Table 2, IIV row (final model; η-shrink. 21%)     | 197% CV                            |
-| Residual error (additive on log scale = proportional)                                                 | Table 2, residual row (final model; ε-shrink. 4%) | 48%                                |
-| V_(ss) = V₁ + V₂ (typical)                                                                            | Table 2 footnote / Discussion §4                  | 2.64 L                             |
-| **V₁ change (D = 50 mg) \[%\] = 53** *(applied as 53 % decrease in V₁ for 50 mg cohort — see Errata)* | Table 2, “V1 change (D = 50 mg)” row              | `V1 * (1 − 0.53 * (DOSE == 50))`   |
+| Quantity | Source location | Value used |
+|----|----|----|
+| 2-compartment QSS TMDD with mediator turnover | Methods §2.3 / Figure 1 | Eqs. (1)–(3) |
+| Linear CL (modulated by mediator) | Table 2, CL row (final model) | 9.64 × 10⁻³ L/h |
+| Central volume V₁ | Table 2, V₁ row (final model) | 2.63 L |
+| Inter-compartmental clearance Q | Table 2, Q row (final model) | 2.88 × 10⁻² L/h |
+| Peripheral volume V₂ | Table 2, V₂ row (final model) | 9.92 × 10⁻³ L |
+| K_(ss) (QSS binding constant; shared in both compartments) | Table 2, K_(ss) row (final model) | 15.5 mg/L |
+| k_(int) (internalization of nimotuzumab–EGFR complex) | Table 2, k_(int) row (final model) | 4.94 × 10⁻³ /h |
+| R_(tot) (apparent EGFR in central compartment) | Table 2, R_(tot) row (final model) | 1.05 × 10⁻² mg/L |
+| R_(totp) (apparent EGFR in peripheral compartment) | Table 2, R_(totp) row (final model) | 956 mg/L |
+| K_(out) (mediator first-order elimination) | Table 2, K_(out) row (final model) | 1.33 × 10⁻² /h |
+| K_(in) (mediator zero-order synthesis) | Methods §2.3 (initial conditions) | k_(in) = k_(out) × A₃(0) = k_(out) |
+| S_(max) (maximal stimulation of non-specific CL) | Table 2, S_(max) row (final model) | 3.18 |
+| S₅₀ (free C achieving half-S_(max)) | Table 2, S₅₀ row (final model) | 8.57 mg/L |
+| γ (Hill coefficient on sigmoid; **fixed at 1**) | Eq. (3) of Methods §2.3 (operator decision) | 1 (see Assumptions) |
+| IIV on R_(totp) | Table 2, IIV row (final model; η-shrink. 14%) | 135% CV |
+| IIV on K_(out) | Table 2, IIV row (final model; η-shrink. 21%) | 197% CV |
+| Residual error (additive on log scale = proportional) | Table 2, residual row (final model; ε-shrink. 4%) | 48% |
+| V_(ss) = V₁ + V₂ (typical) | Table 2 footnote / Discussion §4 | 2.64 L |
+| **V₁ change (D = 50 mg) \[%\] = 53** *(applied as 53 % decrease in V₁ for 50 mg cohort — see Errata)* | Table 2, “V1 change (D = 50 mg)” row | `V1 * (1 − 0.53 * (DOSE == 50))` |
 
 The ODE system implemented in
 `inst/modeldb/specificDrugs/Castro-Surez_2020_nimotuzumab.R` is
@@ -137,6 +138,7 @@ retained in the final model, η on R_(totp) (135% CV) and η on K_(out)
 (197% CV).
 
 ``` r
+
 set.seed(20201201)
 n_per_dose <- 100
 dose_levels <- c(50, 100, 200, 400, 800, 1200)
@@ -168,6 +170,7 @@ Single 30-min IV infusion at the cohort dose; observation grid spans 0
 to 1000 h to mirror the simulation window of Castro-Suárez Figure 4.
 
 ``` r
+
 infusion_h <- 0.5
 obs_times <- sort(unique(c(
   seq(0, 24, by = 0.5),
@@ -211,6 +214,7 @@ and PKNCA, and a typical-value simulation with
 for the deterministic profiles in Figure 4.
 
 ``` r
+
 mod <- readModelDb("Castro-Surez_2020_nimotuzumab")
 
 set.seed(20201202)
@@ -235,6 +239,7 @@ nimotuzumab in the central (panel a), peripheral (panel b), and mediator
 horizon.
 
 ``` r
+
 sim_typ_one <- sim_typ |>
   group_by(DOSE) |>
   filter(id == min(id)) |>
@@ -264,6 +269,7 @@ interpretation of the Table 2 row “V₁ change (D = 50 mg) \[%\] = 53”
 (see Errata section below for the rationale and remaining ambiguity).
 
 ``` r
+
 ggplot(sim_typ_one, aes(time, peripheral1 / 9.92e-3, colour = dose_label)) +
   geom_line(linewidth = 0.8) +
   scale_y_log10() +
@@ -282,6 +288,7 @@ ggplot(sim_typ_one, aes(time, peripheral1 / 9.92e-3, colour = dose_label)) +
 ![](Castro-Surez_2020_nimotuzumab_files/figure-html/fig4b-1.png)
 
 ``` r
+
 ggplot(sim_typ_one, aes(time, effect, colour = dose_label)) +
   geom_line(linewidth = 0.8) +
   geom_hline(yintercept = 1, linetype = "dashed", colour = "grey50") +
@@ -309,6 +316,7 @@ trajectory at high doses and broadens at the lowest 50 mg dose where the
 mediator sensitivity is highest.
 
 ``` r
+
 vpc_summary <- sim_full |>
   filter(time <= 700, DOSE %in% c(50, 100, 200, 400)) |>
   group_by(DOSE, time) |>
@@ -348,6 +356,7 @@ PKNCA Cmax / Tmax / AUC / half-life on the experimental dose range (50,
 grouping variable so the summary rolls up per cohort.
 
 ``` r
+
 sim_nca <- sim_full |>
   filter(!is.na(Cc), DOSE %in% c(50, 100, 200, 400), time <= 700) |>
   transmute(
@@ -383,26 +392,25 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- suppressWarnings(PKNCA::pk.nca(nca_data))
-#>  ■■                                 4% |  ETA:  1m
-#>  ■■■■                               9% |  ETA:  1m
-#>  ■■■■■                             14% |  ETA:  1m
-#>  ■■■■■■                            18% |  ETA:  1m
-#>  ■■■■■■■■                          23% |  ETA: 48s
-#>  ■■■■■■■■■                         28% |  ETA: 45s
-#>  ■■■■■■■■■■■                       32% |  ETA: 42s
-#>  ■■■■■■■■■■■■                      37% |  ETA: 40s
-#>  ■■■■■■■■■■■■■■                    42% |  ETA: 36s
-#>  ■■■■■■■■■■■■■■■                   47% |  ETA: 33s
-#>  ■■■■■■■■■■■■■■■■■                 52% |  ETA: 30s
-#>  ■■■■■■■■■■■■■■■■■■                57% |  ETA: 27s
-#>  ■■■■■■■■■■■■■■■■■■■■              62% |  ETA: 24s
-#>  ■■■■■■■■■■■■■■■■■■■■■             67% |  ETA: 21s
+#>  ■■■                                5% |  ETA:  1m
+#>  ■■■■                              10% |  ETA:  1m
+#>  ■■■■■■                            15% |  ETA: 50s
+#>  ■■■■■■■                           20% |  ETA: 47s
+#>  ■■■■■■■■■                         26% |  ETA: 44s
+#>  ■■■■■■■■■■                        30% |  ETA: 41s
+#>  ■■■■■■■■■■■■                      36% |  ETA: 38s
+#>  ■■■■■■■■■■■■■                     40% |  ETA: 35s
+#>  ■■■■■■■■■■■■■■■                   46% |  ETA: 32s
+#>  ■■■■■■■■■■■■■■■■                  51% |  ETA: 29s
+#>  ■■■■■■■■■■■■■■■■■■                56% |  ETA: 26s
+#>  ■■■■■■■■■■■■■■■■■■■               62% |  ETA: 23s
+#>  ■■■■■■■■■■■■■■■■■■■■■             66% |  ETA: 20s
 #>  ■■■■■■■■■■■■■■■■■■■■■■■           72% |  ETA: 17s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■          76% |  ETA: 15s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■         82% |  ETA: 11s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■       86% |  ETA:  8s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      91% |  ETA:  5s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    96% |  ETA:  2s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■          76% |  ETA: 14s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■        82% |  ETA: 11s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■       87% |  ETA:  8s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     92% |  ETA:  5s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    98% |  ETA:  1s
 
 nca_tbl <- as.data.frame(nca_res$result) |>
   filter(PPTESTCD %in% c("cmax", "tmax", "aucinf.obs", "half.life", "clast.obs")) |>
@@ -450,6 +458,7 @@ model-informed dose-selection narrative (S₅₀ = 8.57 mg/L; maximum
 mediator activation reached at 100 mg).
 
 ``` r
+
 # Vss is V1 + V2 from the model (typical-value trajectory).
 vss_sim <- (sim_typ_one |> filter(DOSE == 100, time == 1000) |> nrow() > 0)  # sanity guard
 

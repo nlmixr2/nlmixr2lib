@@ -60,6 +60,7 @@
     <li><a class="dropdown-item" href="../articles/FiedlerKelly_2020_fremanezumab_cm.html">FiedlerKelly_2020_fremanezumab_cm</a></li>
     <li><a class="dropdown-item" href="../articles/FiedlerKelly_2020_fremanezumab_em.html">FiedlerKelly_2020_fremanezumab_em</a></li>
     <li><a class="dropdown-item" href="../articles/Frey_2010_tocilizumab.html">Frey_2010_tocilizumab</a></li>
+    <li><a class="dropdown-item" href="../articles/Frey_2013_tocilizumab.html">Frey_2013_tocilizumab</a></li>
     <li><a class="dropdown-item" href="../articles/Gandhi_2021_abatacept.html">Gandhi_2021_abatacept</a></li>
     <li><a class="dropdown-item" href="../articles/Grimm_2023.html">Trontinemab and gantenerumab PK in plasma and brain (Grimm 2023)</a></li>
     <li><a class="dropdown-item" href="../articles/Gupta_2016_amatuximab.html">Gupta_2016_amatuximab</a></li>
@@ -72,6 +73,7 @@
     <li><a class="dropdown-item" href="../articles/Hua_2015_anrukinzumab.html">Hua_2015_anrukinzumab</a></li>
     <li><a class="dropdown-item" href="../articles/Huang_2017_vrc01.html">Huang_2017_vrc01</a></li>
     <li><a class="dropdown-item" href="../articles/Hwang_2022_tremelimumab.html">Hwang_2022_tremelimumab</a></li>
+    <li><a class="dropdown-item" href="../articles/Hwang_2023_monalizumab.html">Hwang_2023_monalizumab</a></li>
     <li><a class="dropdown-item" href="../articles/Ide_2020_elotuzumab.html">Ide_2020_elotuzumab</a></li>
     <li><a class="dropdown-item" href="../articles/Jackson_2022_ixekizumab.html">Jackson_2022_ixekizumab</a></li>
     <li><a class="dropdown-item" href="../articles/Kielbasa_2020_galcanezumab.html">Kielbasa_2020_galcanezumab</a></li>
@@ -92,6 +94,7 @@
     <li><a class="dropdown-item" href="../articles/Long_2017_necitumumab.html">Long_2017_necitumumab</a></li>
     <li><a class="dropdown-item" href="../articles/Lu_2014_trastuzumabemtansine.html">Lu_2014_trastuzumabemtansine</a></li>
     <li><a class="dropdown-item" href="../articles/Lu_2019_polatuzumab.html">Polatuzumab vedotin acMMAE + MMAE integrated population PK model (Lu 2019)</a></li>
+    <li><a class="dropdown-item" href="../articles/Lu_2022_patritumab.html">Patritumab deruxtecan (HER3-DXd) ADC + DXd coupled population PK model (Lu 2022)</a></li>
     <li><a class="dropdown-item" href="../articles/Ma_2020_sarilumab_anc.html">Ma_2020_sarilumab_anc</a></li>
     <li><a class="dropdown-item" href="../articles/Ma_2020_sarilumab_das28crp.html">Ma_2020_sarilumab_das28crp</a></li>
     <li><a class="dropdown-item" href="../articles/markov.html">Markov modeling</a></li>
@@ -125,6 +128,7 @@
     <li><a class="dropdown-item" href="../articles/Sathe_2024_sacituzumab.html">Sathe_2024_sacituzumab</a></li>
     <li><a class="dropdown-item" href="../articles/Soehoel_2022_tralokinumab.html">Soehoel_2022_tralokinumab</a></li>
     <li><a class="dropdown-item" href="../articles/Suleiman_2019_risankizumab.html">Suleiman_2019_risankizumab</a></li>
+    <li><a class="dropdown-item" href="../articles/Suri_2018_brentuximab.html">Suri_2018_brentuximab</a></li>
     <li><a class="dropdown-item" href="../articles/Takahashi_2023_abatacept.html">Takahashi_2023_abatacept</a></li>
     <li><a class="dropdown-item" href="../articles/Takeuchi_2023_ozoralizumab.html">Takeuchi_2023_ozoralizumab</a></li>
     <li><a class="dropdown-item" href="../articles/Thakre_2022_risankizumab.html">Thakre_2022_risankizumab</a></li>
@@ -150,6 +154,7 @@
     <li><a class="dropdown-item" href="../articles/Yu_2022_ofatumumab.html">Yu_2022_ofatumumab</a></li>
     <li><a class="dropdown-item" href="../articles/Zhang_2019_nivolumab.html">Zhang_2019_nivolumab</a></li>
     <li><a class="dropdown-item" href="../articles/Zheng_2016_sifalimumab.html">Zheng_2016_sifalimumab</a></li>
+    <li><a class="dropdown-item" href="../articles/Zhong_2026_abatacept.html">Zhong_2026_abatacept</a></li>
     <li><a class="dropdown-item" href="../articles/Zhou_2021_belimumab.html">Zhou_2021_belimumab</a></li>
     <li><a class="dropdown-item" href="../articles/Zhou_2025_brentuximab.html">Zhou_2025_brentuximab</a></li>
     <li><a class="dropdown-item" href="../articles/Zhu_2017_lebrikizumab.html">Zhu_2017_lebrikizumab</a></li>
@@ -205,7 +210,7 @@ added a <strong>time-varying clearance</strong> term motivated by an
 FDA-identified temporal trend in nivolumab CL.</p>
 <p>Structure: linear two-compartment IV model with time-varying CL via a
 sigmoid-Emax function of time since first dose:</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mrow><mi mathvariant="normal">C</mi><mi mathvariant="normal">L</mi></mrow><mrow><mi>t</mi><mo>,</mo><mi>i</mi></mrow></msub><mspace width="0.278em"></mspace><mo>=</mo><mspace width="0.278em"></mspace><msub><mrow><mi mathvariant="normal">C</mi><mi mathvariant="normal">L</mi></mrow><mi>i</mi></msub><mo>⋅</mo><mo>exp</mo><mspace width="-0.167em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><mfrac displaystyle="true"><mrow><msub><mi>E</mi><mrow><mo>max</mo><mo>,</mo><mi>i</mi></mrow></msub><mspace width="0.167em"></mspace><msup><mi>t</mi><mi>γ</mi></msup></mrow><mrow><msubsup><mi>T</mi><mn>50</mn><mi>γ</mi></msubsup><mo>+</mo><msup><mi>t</mi><mi>γ</mi></msup></mrow></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>E</mi><mrow><mo>max</mo><mo>,</mo><mi>i</mi></mrow></msub><mo>=</mo><msub><mi>E</mi><mrow><mo>max</mo><mo>,</mo><mrow><mi mathvariant="normal">T</mi><mi mathvariant="normal">V</mi></mrow></mrow></msub><mo>+</mo><msub><mi>η</mi><mrow><msub><mi>E</mi><mo>max</mo></msub><mo>,</mo><mi>i</mi></mrow></msub></mrow><annotation encoding="application/x-tex">
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mrow><mi mathvariant="normal">C</mi><mi mathvariant="normal">L</mi></mrow><mrow><mi>t</mi><mo>,</mo><mi>i</mi></mrow></msub><mspace width="0.278em"></mspace><mo>=</mo><mspace width="0.278em"></mspace><msub><mrow><mi mathvariant="normal">C</mi><mi mathvariant="normal">L</mi></mrow><mi>i</mi></msub><mo>⋅</mo><mrow><mi mathvariant="normal">exp</mi><mo>⁡</mo></mrow><mspace width="-0.167em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><mstyle displaystyle="true"><mfrac><mrow><msub><mi>E</mi><mrow><mrow><mi mathvariant="normal">max</mi><mo>⁡</mo></mrow><mo>,</mo><mi>i</mi></mrow></msub><mspace width="0.167em"></mspace><msup><mi>t</mi><mi>γ</mi></msup></mrow><mrow><msubsup><mi>T</mi><mn>50</mn><mi>γ</mi></msubsup><mo>+</mo><msup><mi>t</mi><mi>γ</mi></msup></mrow></mfrac></mstyle><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>E</mi><mrow><mrow><mi mathvariant="normal">max</mi><mo>⁡</mo></mrow><mo>,</mo><mi>i</mi></mrow></msub><mo>=</mo><msub><mi>E</mi><mrow><mrow><mi mathvariant="normal">max</mi><mo>⁡</mo></mrow><mo>,</mo><mrow><mi mathvariant="normal">T</mi><mi mathvariant="normal">V</mi></mrow></mrow></msub><mo>+</mo><msub><mi>η</mi><mrow><msub><mi>E</mi><mi mathvariant="normal">max</mi></msub><mo>,</mo><mi>i</mi></mrow></msub></mrow><annotation encoding="application/x-tex">
 \mathrm{CL}_{t,i} \;=\; \mathrm{CL}_i \cdot
   \exp\!\left( \dfrac{E_{\max,i}\, t^{\gamma}}
                      {T_{50}^{\gamma} + t^{\gamma}} \right),
@@ -213,7 +218,7 @@ sigmoid-Emax function of time since first dose:</p>
 E_{\max,i} = E_{\max,\mathrm{TV}} + \eta_{E_{\max},i}
 </annotation></semantics></math></p>
 <p>with
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>E</mi><mo>max</mo></msub><mo>=</mo><mo>−</mo><mn>0.295</mn></mrow><annotation encoding="application/x-tex">E_{\max} = -0.295</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>E</mi><mi mathvariant="normal">max</mi></msub><mo>=</mo><mi>−</mi><mn>0.295</mn></mrow><annotation encoding="application/x-tex">E_{\max} = -0.295</annotation></semantics></math>
 (a fractional decrease in CL at
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>≫</mo><msub><mi>T</mi><mn>50</mn></msub></mrow><annotation encoding="application/x-tex">t \gg T_{50}</annotation></semantics></math>)
 and
@@ -485,7 +490,7 @@ shaded bands of the paper’s VPC.</p>
 <h2 id="time-varying-clearance">Time-varying clearance<a class="anchor" aria-label="anchor" href="#time-varying-clearance"></a>
 </h2>
 <p>Bajaj 2017 reports a sigmoid decrease in CL from baseline to about
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mrow><mi mathvariant="normal">C</mi><mi mathvariant="normal">L</mi></mrow><mrow><mi mathvariant="normal">b</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">s</mi><mi mathvariant="normal">e</mi></mrow></msub><mo>⋅</mo><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><mo>−</mo><mn>0.295</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mathrm{CL}_\mathrm{base} \cdot \exp(-0.295)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mrow><mi mathvariant="normal">C</mi><mi mathvariant="normal">L</mi></mrow><mrow><mi mathvariant="normal">b</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">s</mi><mi mathvariant="normal">e</mi></mrow></msub><mo>⋅</mo><mrow><mi mathvariant="normal">exp</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><mi>−</mi><mn>0.295</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\mathrm{CL}_\mathrm{base} \cdot \exp(-0.295)</annotation></semantics></math>
 = 74.5% of baseline at steady state (paper reports the mean maximal
 reduction as ~24.5%). The typical-value CL(t) / CL(0) profile below
 reproduces the time course at a white female, 80 kg, eGFR 90, ECOG 0,
@@ -579,8 +584,9 @@ state is in the range Bajaj 2017 reports for t_{1/2}(β) (geometric mean
 <span></span>
 <span><span class="va">nca_data</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_obj</span>, <span class="va">dose_obj</span>, intervals <span class="op">=</span> <span class="va">intervals</span><span class="op">)</span></span>
 <span><span class="va">nca_res</span>  <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="va">nca_data</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■                  </span>  43% |  ETA:  5s</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■       </span>  79% |  ETA:  2s</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■                        </span>  22% |  ETA:  6s</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■              </span>  58% |  ETA:  4s</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  </span>  98% |  ETA:  0s</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">nca_res</span><span class="op">)</span>,</span>
 <span>  caption <span class="op">=</span> <span class="st">"Simulated NCA parameters at steady state (12th dosing interval, days 154-168)"</span></span>
@@ -698,7 +704,7 @@ combined with the log-normal CL variability.</p>
 <li>
 <strong>Time-varying clearance parameterization.</strong> Bajaj 2017
 Eq. 8 expresses CL(t) as
-<code>CL_base * exp(Emax_i * t^gamma /   (T50^gamma + t^gamma))</code>,
+<code>CL_base * exp(Emax_i * t^gamma / (T50^gamma + t^gamma))</code>,
 with additive IIV on Emax (<code>Emax_i = Emax_TV + eta_Emax</code>,
 Bajaj 2017 Eq. 3). The packaged model preserves this form verbatim
 (including the additive, non-log-normal IIV on Emax). At a stochastic

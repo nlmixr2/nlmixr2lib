@@ -1,6 +1,7 @@
 # Trastuzumab emtansine (T-DM1) preclinical mechanistic DAR PK model (Bender 2014)
 
 ``` r
+
 library(nlmixr2lib)
 library(rxode2)
 #> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
@@ -44,6 +45,7 @@ The rat parameter set is documented in the model’s
 `population$species_parameters` metadata and in the model-file comments.
 
 ``` r
+
 mod <- rxode2::rxode(readModelDb("Bender_2014_trastuzumabEmtansine_mechanistic"))
 #> ℹ parameter labels from comments will be replaced by 'label()'
 str(mod$meta$population$species_parameters, max.level = 2)
@@ -130,6 +132,7 @@ compartment with the DAR-3.1 dose-product fraction multiplied by the
 total dose amount.
 
 ``` r
+
 dose_mg <- 120  # 30 mg/kg * 4 kg body weight
 dar_fracs <- list(
   dar7_central = 0.02, dar6_central = 0.05,
@@ -151,6 +154,7 @@ sim <- rxode2::rxSolve(mod |> rxode2::zeroRe(), events = events)
 ```
 
 ``` r
+
 sim_long <- as.data.frame(sim) |>
   pivot_longer(c(Cc, Ctt), names_to = "analyte", values_to = "conc") |>
   mutate(analyte = recode(analyte,
@@ -174,6 +178,7 @@ ggplot(sim_long, aes(time, conc, colour = analyte)) +
 ![](Bender_2014_trastuzumabEmtansine_mechanistic_files/figure-html/cyno-composite-1.png)
 
 ``` r
+
 dar_cols <- paste0("Cdar", 0:7)
 sim_dar <- as.data.frame(sim) |>
   select(time, all_of(dar_cols)) |>

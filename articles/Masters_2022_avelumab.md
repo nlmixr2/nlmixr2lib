@@ -23,10 +23,13 @@ combination-arm population.
 Structure: linear two-compartment IV model with **time-dependent
 clearance** via a Hill-type function of time since first dose:
 
-$${CL}(t) = {CL}_{\text{base}} \cdot \left( 1 + I_{\max} \cdot \frac{t^{\gamma}}{T_{50}^{\gamma} + t^{\gamma}} \right)$$
+``` math
+ \mathrm{CL}(t) = \mathrm{CL}_{\text{base}} \cdot
+  \left( 1 + I_{\max}\cdot \dfrac{t^\gamma}{T_{50}^{\gamma} + t^\gamma} \right) 
+```
 
-with $I_{\max} = - 0.08533$ (a fractional **decrease** at
-$t \gg T_{50}$) and allometric weight scaling with reference weight 80
+with $`I_{\max} = -0.08533`$ (a fractional **decrease** at
+$`t \gg T_{50}`$) and allometric weight scaling with reference weight 80
 kg.
 
 ## Population
@@ -57,23 +60,23 @@ The per-parameter origin is recorded as an in-file comment next to each
 `inst/modeldb/specificDrugs/Masters_2022_avelumab.R`. The table below
 collects them in one place for review.
 
-| Parameter (model name)               | Value                                                           | Source                                        |
-|--------------------------------------|-----------------------------------------------------------------|-----------------------------------------------|
-| `lcl` (CL, L/day)                    | log(0.0269 × 24)                                                | Masters 2022 Table 1, θ_CL = 0.0269 L/h       |
-| `lvc` (V1, L)                        | log(3.196)                                                      | Masters 2022 Table 1, θ_V1                    |
-| `lvp` (V2, L)                        | log(0.7278)                                                     | Masters 2022 Table 1, θ_V2                    |
-| `lq` (Q, L/day)                      | log(0.03352 × 24)                                               | Masters 2022 Table 1, θ_Q (see *Assumptions*) |
-| `lImax` (log\|Imax\|)                | log(0.08533)                                                    | Masters 2022 Table 1, θ_Imax = −0.08533       |
-| `lt50` (T50, days)                   | log(99.24)                                                      | Masters 2022 Table 1, θ_T50                   |
-| `lgamma` (Hill shape)                | log(2.086)                                                      | Masters 2022 Table 1, θ_γ                     |
-| `e_wt_cl` (allometric on CL)         | 0.4714                                                          | Masters 2022 Table 1, θ_weight_on_CL          |
-| `e_wt_v1` (allometric on V1)         | 0.4694                                                          | Masters 2022 Table 1, θ_weight_on_V1          |
-| `e_wt_v2` (allometric on V2)         | 0.5826                                                          | Masters 2022 Table 1, θ_weight_on_V2          |
-| `e_wt_q` (allometric on Q)           | 1 (fixed)                                                       | Masters 2022 Methods, *Study overview*        |
-| IIV block `etalcl + etalvc + etalvp` | lower-tri c(0.09339, 0.03048, 0.03776, 0.08418, 0.01799, 1.204) | Masters 2022 Table 1, ω² and covariance rows  |
-| `etalImax`                           | 0.1052                                                          | Masters 2022 Table 1, ω²_Imax                 |
-| `propSd`                             | 0.1742                                                          | Masters 2022 Table 1, σ_proportional          |
-| `addSd` (µg/mL)                      | 2.168                                                           | Masters 2022 Table 1, σ_additive              |
+| Parameter (model name) | Value | Source |
+|----|----|----|
+| `lcl` (CL, L/day) | log(0.0269 × 24) | Masters 2022 Table 1, θ_CL = 0.0269 L/h |
+| `lvc` (V1, L) | log(3.196) | Masters 2022 Table 1, θ_V1 |
+| `lvp` (V2, L) | log(0.7278) | Masters 2022 Table 1, θ_V2 |
+| `lq` (Q, L/day) | log(0.03352 × 24) | Masters 2022 Table 1, θ_Q (see *Assumptions*) |
+| `lImax` (log\|Imax\|) | log(0.08533) | Masters 2022 Table 1, θ_Imax = −0.08533 |
+| `lt50` (T50, days) | log(99.24) | Masters 2022 Table 1, θ_T50 |
+| `lgamma` (Hill shape) | log(2.086) | Masters 2022 Table 1, θ_γ |
+| `e_wt_cl` (allometric on CL) | 0.4714 | Masters 2022 Table 1, θ_weight_on_CL |
+| `e_wt_v1` (allometric on V1) | 0.4694 | Masters 2022 Table 1, θ_weight_on_V1 |
+| `e_wt_v2` (allometric on V2) | 0.5826 | Masters 2022 Table 1, θ_weight_on_V2 |
+| `e_wt_q` (allometric on Q) | 1 (fixed) | Masters 2022 Methods, *Study overview* |
+| IIV block `etalcl + etalvc + etalvp` | lower-tri c(0.09339, 0.03048, 0.03776, 0.08418, 0.01799, 1.204) | Masters 2022 Table 1, ω² and covariance rows |
+| `etalImax` | 0.1052 | Masters 2022 Table 1, ω²_Imax |
+| `propSd` | 0.1742 | Masters 2022 Table 1, σ_proportional |
+| `addSd` (µg/mL) | 2.168 | Masters 2022 Table 1, σ_additive |
 
 Equations:
 
@@ -90,6 +93,7 @@ sub-population reported in Masters 2022 (range 44.2–143.0 kg, median
 81.5 kg).
 
 ``` r
+
 set.seed(2022)
 n_subj <- 200
 
@@ -104,6 +108,7 @@ the approved flat **800 mg Q2W**, each given for 13 cycles over 180
 days.
 
 ``` r
+
 dose_interval_d <- 14
 n_doses         <- 13
 dose_times_d    <- seq(0, by = dose_interval_d, length.out = n_doses)
@@ -132,6 +137,7 @@ events_wtbased <- build_events(cohort, "10 mg/kg Q2W")
 ## Simulation
 
 ``` r
+
 mod <- readModelDb("Masters_2022_avelumab")
 sim_flat    <- rxSolve(mod, events = events_flat,    returnType = "data.frame")
 #> ℹ parameter labels from comments will be replaced by 'label()'
@@ -150,6 +156,7 @@ the flat-dose and weight-based regimens. The figure below reproduces
 that comparison (median with 5–95% prediction interval per regimen):
 
 ``` r
+
 sim_summary <- sim |>
   dplyr::filter(time > 0) |>
   dplyr::group_by(time, treatment) |>
@@ -179,11 +186,12 @@ ggplot(sim_summary, aes(time, median, colour = treatment, fill = treatment)) +
 ## Time-dependent clearance
 
 Masters 2022 reports a fractional decrease in CL with time
-($I_{\max} = - 0.08533$, $T_{50} = 99.24$ days, $\gamma = 2.086$). The
-typical-value CL profile below reproduces the Hill-type time course at a
-reference 80 kg subject (deterministic, etas = 0):
+($`I_{\max} = -0.08533`$, $`T_{50} = 99.24`$ days, $`\gamma = 2.086`$).
+The typical-value CL profile below reproduces the Hill-type time course
+at a reference 80 kg subject (deterministic, etas = 0):
 
 ``` r
+
 t_grid <- seq(0, 365, by = 5)
 events_cl <- data.frame(
   ID = 1, WT = 80,
@@ -223,6 +231,7 @@ Compute NCA parameters over the third dosing interval (steady-state
 approximation for a mAb with a ~7 day half-life):
 
 ``` r
+
 interval_start <- dose_times_d[3]
 interval_end   <- dose_times_d[4]
 
@@ -255,22 +264,22 @@ intervals <- data.frame(
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
 #>  ■■■■■■■■■■■■■■                    45% |  ETA:  5s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■       85% |  ETA:  1s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■       86% |  ETA:  1s
 knitr::kable(summary(nca_res),
              caption = "Simulated NCA parameters (3rd dosing interval, days 28-42)")
 ```
 
-| start | end | treatment    | N   | auclast       | cmax         | tmax                | half.life     |
-|------:|----:|:-------------|:----|:--------------|:-------------|:--------------------|:--------------|
-|     0 |  14 | 10 mg/kg Q2W | 200 | 1120 \[37.1\] | 202 \[24.1\] | 1.00 \[1.00, 1.00\] | 5.47 \[2.57\] |
-|     0 |  14 | 800 mg Q2W   | 200 | 1150 \[34.7\] | 201 \[23.9\] | 1.00 \[1.00, 1.00\] | 5.24 \[1.96\] |
+| start | end | treatment | N | auclast | cmax | tmax | half.life |
+|---:|---:|:---|:---|:---|:---|:---|:---|
+| 0 | 14 | 10 mg/kg Q2W | 200 | 1120 \[37.1\] | 202 \[24.1\] | 1.00 \[1.00, 1.00\] | 5.47 \[2.57\] |
+| 0 | 14 | 800 mg Q2W | 200 | 1150 \[34.7\] | 201 \[23.9\] | 1.00 \[1.00, 1.00\] | 5.24 \[1.96\] |
 
-Simulated NCA parameters (3rd dosing interval, days 28-42)
+Simulated NCA parameters (3rd dosing interval, days 28-42) {.table}
 
 ## Assumptions and deviations
 
 - **Table 1 θ_Q typo (0.3352 → 0.03352 L/h):** The paper’s Table 1
-  prints the point estimate for $\theta_{Q}$ as 0.3352 L/h, but its
+  prints the point estimate for $`\theta_Q`$ as 0.3352 L/h, but its
   listed RSE (12.24%) and 95% CI (0.02548–0.04157 L/h) are only
   internally consistent with **θ_Q = 0.03352 L/h** (a missing leading
   zero in the printed point estimate). 0.03352 L/h is also the value
@@ -284,10 +293,10 @@ Simulated NCA parameters (3rd dosing interval, days 28-42)
   flat-dose rationale is built around an approximate 80 kg median body
   weight, so 80 kg is used here as the allometric reference for CL, V1,
   V2, and Q.
-- **Imax parameterization:** $I_{\max}$ is always negative in the source
-  ($- 0.08533$). To keep every individual $I_{\max,i}$ strictly negative
-  under log-normal IIV, the model stores $\log\left| I_{\max} \right|$
-  and applies the negative sign in the
+- **Imax parameterization:** $`I_{\max}`$ is always negative in the
+  source ($`-0.08533`$). To keep every individual $`I_{\max,i}`$
+  strictly negative under log-normal IIV, the model stores
+  $`\log|I_{\max}|`$ and applies the negative sign in the
   [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html)
   block: `Imax_i <- -exp(lImax + etalImax)`. This is equivalent to a
   log-normal distribution on the magnitude of the decrease.

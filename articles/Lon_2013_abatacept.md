@@ -1,6 +1,7 @@
 # Lon_2013_abatacept
 
 ``` r
+
 library(nlmixr2lib)
 library(rxode2)
 #> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
@@ -78,24 +79,24 @@ The per-parameter origin is recorded as an in-file comment next to each
 `inst/modeldb/specificDrugs/Lon_2013_abatacept.R`. The table below
 collects them in one place for review.
 
-| Element                     | Source location                                                                                                | Value / form                                                     |
-|-----------------------------|----------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------|
-| Structural model            | Lon 2013 Figure 1 and Results, “Pharmacokinetics”                                                              | 2-compartment linear elimination; short-term zero-order SC input |
-| SC absorption (Eq. 3)       | Lon 2013 Methods, “Pharmacokinetic Model”                                                                      | `dAsc/dt = -kzero`; `kzero = F*Dose/tau` for `t < tau`, else 0   |
-| CL (per kg)                 | Lon 2013 Table 1                                                                                               | 21.8 mL/day/kg                                                   |
-| CLD (per kg)                | Lon 2013 Table 1                                                                                               | 27.5 mL/day/kg                                                   |
-| V1 (per kg)                 | Lon 2013 Table 1                                                                                               | 69.5 mL/kg                                                       |
-| V2 (per kg)                 | Lon 2013 Table 1                                                                                               | 61.9 mL/kg                                                       |
-| F (SC bioavailability)      | Lon 2013 Table 1                                                                                               | 59.2% (0.592)                                                    |
-| tau (SC input duration)     | Lon 2013 Table 1                                                                                               | 2.67 day                                                         |
-| IIV on CL                   | Lon 2013 Table 1                                                                                               | 9.67% CV (omega^2 = log(CV^2 + 1) = 0.009307)                    |
-| IIV on V1                   | Lon 2013 Table 1                                                                                               | 56.2% CV (omega^2 = 0.274478)                                    |
-| Off-diagonal omega          | Lon 2013 Table 1                                                                                               | None reported; IIV treated as diagonal                           |
-| Proportional residual error | Lon 2013 Table 1, epsilon_1                                                                                    | 16.1% -\> propSd = 0.161 (fraction)                              |
-| Additive residual error     | Lon 2013 Table 1, epsilon_2                                                                                    | 0.0365 umol/L (matches concentration units)                      |
-| Dose regimens               | Lon 2013 Experimental Design                                                                                   | IV 10 mg/kg; SC 20 mg/kg single; SC 20 + 10x4 mg/kg              |
-| Body-weight scaling         | Lon 2013 (per-kg PK parameters)                                                                                | CL/CLD (mL/day) = per-kg \* WT; V1/V2 (mL) = per-kg \* WT        |
-| Molecular weight            | Lon 2013 Discussion: “IC50 0.731 umol/L, circa 67.3 ug/mL” implies ~92 kDa; matches Orencia label (~92,300 Da) | 92,000 g/mol (fixed, used only for mg/mL -\> umol/L conversion)  |
+| Element | Source location | Value / form |
+|----|----|----|
+| Structural model | Lon 2013 Figure 1 and Results, “Pharmacokinetics” | 2-compartment linear elimination; short-term zero-order SC input |
+| SC absorption (Eq. 3) | Lon 2013 Methods, “Pharmacokinetic Model” | `dAsc/dt = -kzero`; `kzero = F*Dose/tau` for `t < tau`, else 0 |
+| CL (per kg) | Lon 2013 Table 1 | 21.8 mL/day/kg |
+| CLD (per kg) | Lon 2013 Table 1 | 27.5 mL/day/kg |
+| V1 (per kg) | Lon 2013 Table 1 | 69.5 mL/kg |
+| V2 (per kg) | Lon 2013 Table 1 | 61.9 mL/kg |
+| F (SC bioavailability) | Lon 2013 Table 1 | 59.2% (0.592) |
+| tau (SC input duration) | Lon 2013 Table 1 | 2.67 day |
+| IIV on CL | Lon 2013 Table 1 | 9.67% CV (omega^2 = log(CV^2 + 1) = 0.009307) |
+| IIV on V1 | Lon 2013 Table 1 | 56.2% CV (omega^2 = 0.274478) |
+| Off-diagonal omega | Lon 2013 Table 1 | None reported; IIV treated as diagonal |
+| Proportional residual error | Lon 2013 Table 1, epsilon_1 | 16.1% -\> propSd = 0.161 (fraction) |
+| Additive residual error | Lon 2013 Table 1, epsilon_2 | 0.0365 umol/L (matches concentration units) |
+| Dose regimens | Lon 2013 Experimental Design | IV 10 mg/kg; SC 20 mg/kg single; SC 20 + 10x4 mg/kg |
+| Body-weight scaling | Lon 2013 (per-kg PK parameters) | CL/CLD (mL/day) = per-kg \* WT; V1/V2 (mL) = per-kg \* WT |
+| Molecular weight | Lon 2013 Discussion: “IC50 0.731 umol/L, circa 67.3 ug/mL” implies ~92 kDa; matches Orencia label (~92,300 Da) | 92,000 g/mol (fixed, used only for mg/mL -\> umol/L conversion) |
 
 ### Virtual cohort
 
@@ -106,6 +107,7 @@ distribution across the published 150-175 g range at arrival (no weight
 gain is modeled over the short post-dosing observation window).
 
 ``` r
+
 set.seed(2013)
 
 cohorts <- tribble(
@@ -155,6 +157,7 @@ zero-order release of `F * Dose / tau` into `central` for the first
 `tau = 2.67` days after each SC dose; IV doses bypass this mechanism.
 
 ``` r
+
 obs_times <- sort(unique(c(
   seq(0,   1,   by = 1/12),           # every 2 h on day 1
   seq(1,   3,   by = 1/4),            # every 6 h through day 3
@@ -223,12 +226,17 @@ Simulate with between-subject variability on CL and V1 so the spread
 across the virtual cohort matches the paper’s individual variability.
 
 ``` r
+
 mod <- readModelDb("Lon_2013_abatacept")
 
 events_sim <- events |> rename(id = ID)
-sim <- rxSolve(object = mod, events = events_sim, returnType = "data.frame") |>
-  as_tibble() |>
-  left_join(pop |> select(ID, treatment), by = c("id" = "ID"))
+# `treatment` is already on every row of `events_sim` (each per-arm dose
+# builder carries it through, and the obs rows pull it from `pop`). Carry
+# it through rxSolve via `keep = ` rather than a fragile post-hoc
+# left_join from pop.
+sim <- rxSolve(object = mod, events = events_sim, returnType = "data.frame",
+               keep = "treatment") |>
+  as_tibble()
 #> ℹ parameter labels from comments will be replaced by 'label()'
 ```
 
@@ -239,6 +247,7 @@ time following IV 10 mg/kg, SC 20 mg/kg single, and SC multiple-dose
 regimens, with 90% prediction intervals from the population model.
 
 ``` r
+
 fig2 <- sim |>
   filter(time > 0, !is.na(Cc), Cc > 0) |>
   group_by(treatment, time) |>
@@ -277,6 +286,7 @@ single-dose arm we also derive bioavailability F by comparing dose-
 normalized AUC(0,inf) against the IV arm.
 
 ``` r
+
 nca_conc <- sim |>
   filter(time >= 0, !is.na(Cc), Cc > 0) |>
   select(id, time, Cc, treatment)
@@ -286,6 +296,7 @@ nca_dose <- dose_rows |>
 ```
 
 ``` r
+
 conc_obj <- PKNCAconc(nca_conc, Cc ~ time | treatment + id)
 dose_obj <- PKNCAdose(nca_dose, amt ~ time | treatment + id)
 
@@ -332,7 +343,7 @@ knitr::kable(sim_nca, digits = 3, caption = "Simulated NCA summaries by treatmen
 | SC multiple        | half.life  | 5.303 | 1.256 |
 | SC multiple        | tmax       | 8.667 | 3.266 |
 
-Simulated NCA summaries by treatment arm.
+Simulated NCA summaries by treatment arm. {.table}
 
 ### Comparison against Lon 2013 NCA values
 
@@ -349,6 +360,7 @@ the PKNCA output to per-kg clearance (using each rat’s WT) and derives F
 from dose-normalized AUC(0,inf).
 
 ``` r
+
 # Per-kg CL for the IV arm
 iv_cl <- as.data.frame(nca_res$result) |>
   filter(treatment == "IV 10 mg/kg", PPTESTCD == "cl.obs") |>
@@ -408,7 +420,7 @@ knitr::kable(comparison, digits = 3,
 | F (fraction), model theta   | Lon 2013 Table 1 |   0.592 |
 | Vss (mL/kg), NCA            | Lon 2013         | 146.000 |
 
-Simulated NCA vs. Lon 2013 NCA / model values.
+Simulated NCA vs. Lon 2013 NCA / model values. {.table}
 
 The simulated IV CL and SC F track the published NCA values within the
 ~20% tolerance described in the verification checklist (differences are

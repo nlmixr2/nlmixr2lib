@@ -1,6 +1,7 @@
 # Polatuzumab vedotin acMMAE + MMAE integrated population PK model (Lu 2019)
 
 ``` r
+
 library(nlmixr2lib)
 library(PKNCA)
 #> 
@@ -105,6 +106,7 @@ g/L, baseline B-cell count of 1 cell/uL, and SPD tumor burden of 5,000
 mm^2.
 
 ``` r
+
 mod_meta <- rxode2::rxode(readModelDb("Lu_2019_polatuzumab"))
 #> ℹ parameter labels from comments will be replaced by 'label()'
 str(mod_meta$meta$population, max.level = 1)
@@ -131,55 +133,55 @@ entry in `inst/modeldb/specificDrugs/Lu_2019_polatuzumab.R` carries an
 in-file comment pointing to Lu 2019 Table 1, Table 2, or Table S3. The
 table below collates them.
 
-| Parameter (nlmixr2lib) | Source quantity                     | Value           | Source location              |
-|------------------------|-------------------------------------|-----------------|------------------------------|
-| `lkdes`                | kdes                                | 0.0046 1/hour   | Table 1, theta1              |
-| `lclt0`                | CL_T (initial)                      | 0.00623 L/hour  | Table 1, theta2              |
-| `lclinf`               | CL_INF                              | 0.0344 L/hour   | Table 1, theta3              |
-| `lvc`                  | V1                                  | 3.15 L          | Table 1, theta4              |
-| `lvp`                  | V2                                  | 3.98 L          | Table 1, theta5              |
-| `lq`                   | Q                                   | 0.0145 L/hour   | Table 1, theta6              |
-| `lvmax_ac`             | Vmax (acMMAE)                       | 0.0203 ng/mL/hr | Table 1, theta7              |
-| `lkm_ac`               | KM (acMMAE)                         | 0.604 ng/mL     | Table 1, theta8              |
-| `clinf_emax`           | CL_INF,EMAX                         | 0.223           | Table 1, theta9              |
-| `lt50_mo`              | T50 (months)                        | 3.53 months     | Table 1, theta10             |
-| `gamma_ns`             | gamma                               | 2.27            | Table 1, theta11             |
-| `lvc_mmae`             | V_MMAE (apparent)                   | 82.2 L          | Table 1, theta12             |
-| `lcl_mmae`             | CL_MMAE (apparent)                  | 1.89 L/hour     | Table 1, theta13             |
-| `lq_mmae`              | Q_MMAE (apparent)                   | 36.3 L/hour     | Table 1, theta14             |
-| `lvp_mmae`             | V2_MMAE (apparent)                  | 200 L           | Table 1, theta15             |
-| `lvmax_mmae`           | Vmax (MMAE)                         | 0.0307 ng/mL/hr | Table 1, theta16             |
-| `lkss_mmae`            | KSS (MMAE)                          | 0.581 ng/mL     | Table 1, theta17             |
-| `lfrac_clt`            | FRAC_CLT                            | 3.70            | Table 1, theta18             |
-| `lfrac_mm`             | FRAC_MM                             | 2.72            | Table 1, theta19             |
-| `lalph_mo`             | alpha (1/month)                     | 0.167 1/month   | Table 1, theta20             |
-| `frac_t`               | FRAC_T                              | 0.139           | Table 1, theta21             |
-| `e_wt_clinf`           | WT on CL_INF                        | 0.73            | Table 2, theta22             |
-| `e_wt_v`               | WT on V1, V2, Q (shared)            | 0.50            | Table 2, theta23             |
-| `e_sexf_v1`            | sex on V1 (1/1.20)                  | 0.8333          | Table 2, theta24 (inverted)  |
-| `e_asian_v1`           | Asian on V1                         | 0.929           | Table 2, theta25             |
-| `e_line1l_v1`          | Treatment-naive on V1               | 1.20            | Table 2, theta26             |
-| `e_sexf_clinf`         | sex on CL_INF (1/1.10)              | 0.9091          | Table 2, theta27 (inverted)  |
-| `e_alb_clinf`          | ALB on CL_INF (power)               | -0.247          | Table 2, theta28             |
-| `e_combo_rg_clinf`     | R/G combo on CL_INF                 | 0.844           | Table 2, theta29             |
-| `e_blbcell_clinf`      | B-cell on CL_INF (power)            | 0.0212          | Table 2, theta30             |
-| `e_tumsz_clinf`        | TUMSZ on CL_INF (linear)            | 0.0521          | Table 2, theta31             |
-| `e_line1l_kdes`        | Treatment-naive on kdes             | 3.38            | Table 2, theta32             |
-| `e_combo_rg_kdes`      | R/G combo on kdes                   | 0.932           | Table 2, theta33             |
-| `e_line1l_clt`         | Treatment-naive on CL_T             | 3.53            | Table 2, theta34             |
-| `tmbd50_clt`           | TUMSZ50 on CL_T                     | 1150 mm^2       | Table 2, theta35             |
-| `bcell_thr_clt`        | B-cell threshold on CL_T            | 121 cells/uL    | Table 2, theta36             |
-| `e_blbcell_clt`        | B-cell power on CL_T                | 0.578           | Table 2, theta37             |
-| `e_wt_frac`            | WT on FRAC_NS (power)               | -0.467          | Table 2, theta38             |
-| `e_sexf_frac`          | sex on FRAC_NS (1/0.911)            | 1.0977          | Table 2, theta39 (inverted)  |
-| `e_line1l_frac`        | Treatment-naive on FRAC_NS          | 0.756           | Table 2, theta40             |
-| `e_combo_rg_frac`      | R/G combo on FRAC_NS                | 0.709           | Table 2, theta41             |
-| `e_hepimp_frac`        | NCI ODWG hep. impairment on FRAC_NS | 1.19            | Table 2, theta42             |
-| `e_ecog_ge1_frac`      | ECOG_GE1 on FRAC_NS (1/0.905)       | 1.1050          | Table 2, theta43 (inverted)  |
-| `e_alb_frac`           | ALB on FRAC_NS (power)              | -0.613          | Table 2, theta44             |
-| `CcpropSd`             | sqrt(sigma1^2)                      | 0.1594          | Table S3, Sigma11 = 0.0254   |
-| `CmmaepropSd`          | sqrt(sigma2^2)                      | 0.2694          | Table S3, Sigma22 = 0.0726   |
-| ODE system (4 states)  | Lu 2019 Eq. 1 + supplement          |                 | Supplement \$DES + Equations |
+| Parameter (nlmixr2lib) | Source quantity | Value | Source location |
+|----|----|----|----|
+| `lkdes` | kdes | 0.0046 1/hour | Table 1, theta1 |
+| `lclt0` | CL_T (initial) | 0.00623 L/hour | Table 1, theta2 |
+| `lclinf` | CL_INF | 0.0344 L/hour | Table 1, theta3 |
+| `lvc` | V1 | 3.15 L | Table 1, theta4 |
+| `lvp` | V2 | 3.98 L | Table 1, theta5 |
+| `lq` | Q | 0.0145 L/hour | Table 1, theta6 |
+| `lvmax_ac` | Vmax (acMMAE) | 0.0203 ng/mL/hr | Table 1, theta7 |
+| `lkm_ac` | KM (acMMAE) | 0.604 ng/mL | Table 1, theta8 |
+| `clinf_emax` | CL_INF,EMAX | 0.223 | Table 1, theta9 |
+| `lt50_mo` | T50 (months) | 3.53 months | Table 1, theta10 |
+| `gamma_ns` | gamma | 2.27 | Table 1, theta11 |
+| `lvc_mmae` | V_MMAE (apparent) | 82.2 L | Table 1, theta12 |
+| `lcl_mmae` | CL_MMAE (apparent) | 1.89 L/hour | Table 1, theta13 |
+| `lq_mmae` | Q_MMAE (apparent) | 36.3 L/hour | Table 1, theta14 |
+| `lvp_mmae` | V2_MMAE (apparent) | 200 L | Table 1, theta15 |
+| `lvmax_mmae` | Vmax (MMAE) | 0.0307 ng/mL/hr | Table 1, theta16 |
+| `lkss_mmae` | KSS (MMAE) | 0.581 ng/mL | Table 1, theta17 |
+| `lfrac_clt` | FRAC_CLT | 3.70 | Table 1, theta18 |
+| `lfrac_mm` | FRAC_MM | 2.72 | Table 1, theta19 |
+| `lalph_mo` | alpha (1/month) | 0.167 1/month | Table 1, theta20 |
+| `frac_t` | FRAC_T | 0.139 | Table 1, theta21 |
+| `e_wt_clinf` | WT on CL_INF | 0.73 | Table 2, theta22 |
+| `e_wt_v` | WT on V1, V2, Q (shared) | 0.50 | Table 2, theta23 |
+| `e_sexf_v1` | sex on V1 (1/1.20) | 0.8333 | Table 2, theta24 (inverted) |
+| `e_asian_v1` | Asian on V1 | 0.929 | Table 2, theta25 |
+| `e_line1l_v1` | Treatment-naive on V1 | 1.20 | Table 2, theta26 |
+| `e_sexf_clinf` | sex on CL_INF (1/1.10) | 0.9091 | Table 2, theta27 (inverted) |
+| `e_alb_clinf` | ALB on CL_INF (power) | -0.247 | Table 2, theta28 |
+| `e_combo_rg_clinf` | R/G combo on CL_INF | 0.844 | Table 2, theta29 |
+| `e_blbcell_clinf` | B-cell on CL_INF (power) | 0.0212 | Table 2, theta30 |
+| `e_tumsz_clinf` | TUMSZ on CL_INF (linear) | 0.0521 | Table 2, theta31 |
+| `e_line1l_kdes` | Treatment-naive on kdes | 3.38 | Table 2, theta32 |
+| `e_combo_rg_kdes` | R/G combo on kdes | 0.932 | Table 2, theta33 |
+| `e_line1l_clt` | Treatment-naive on CL_T | 3.53 | Table 2, theta34 |
+| `tmbd50_clt` | TUMSZ50 on CL_T | 1150 mm^2 | Table 2, theta35 |
+| `bcell_thr_clt` | B-cell threshold on CL_T | 121 cells/uL | Table 2, theta36 |
+| `e_blbcell_clt` | B-cell power on CL_T | 0.578 | Table 2, theta37 |
+| `e_wt_frac` | WT on FRAC_NS (power) | -0.467 | Table 2, theta38 |
+| `e_sexf_frac` | sex on FRAC_NS (1/0.911) | 1.0977 | Table 2, theta39 (inverted) |
+| `e_line1l_frac` | Treatment-naive on FRAC_NS | 0.756 | Table 2, theta40 |
+| `e_combo_rg_frac` | R/G combo on FRAC_NS | 0.709 | Table 2, theta41 |
+| `e_hepimp_frac` | NCI ODWG hep. impairment on FRAC_NS | 1.19 | Table 2, theta42 |
+| `e_ecog_ge1_frac` | ECOG_GE1 on FRAC_NS (1/0.905) | 1.1050 | Table 2, theta43 (inverted) |
+| `e_alb_frac` | ALB on FRAC_NS (power) | -0.613 | Table 2, theta44 |
+| `CcpropSd` | sqrt(sigma1^2) | 0.1594 | Table S3, Sigma11 = 0.0254 |
+| `CmmaepropSd` | sqrt(sigma2^2) | 0.2694 | Table S3, Sigma22 = 0.0726 |
+| ODE system (4 states) | Lu 2019 Eq. 1 + supplement |  | Supplement \$DES + Equations |
 
 Inter-individual variability (omega^2 stored as variances on the
 log-normal scale; %CV = 100 \* sqrt(exp(omega^2) - 1)):
@@ -220,6 +222,7 @@ We simulate a 200-subject virtual cohort approximating the Lu 2019 study
 population:
 
 ``` r
+
 set.seed(20260426L)
 
 n_subj   <- 200L
@@ -298,6 +301,7 @@ deterministic typical-value path uses
 [`rxode2::zeroRe()`](https://nlmixr2.github.io/rxode2/reference/zeroRe.html).
 
 ``` r
+
 mod <- rxode2::rxode(readModelDb("Lu_2019_polatuzumab"))
 #> ℹ parameter labels from comments will be replaced by 'label()'
 typ <- mod |> rxode2::zeroRe()
@@ -326,6 +330,7 @@ typ_sim <- rxode2::rxSolve(typ, typ_events, returnType = "data.frame")
 ```
 
 ``` r
+
 typ_sim |>
   mutate(
     cl_mm = vmax_ac / (km_ac + acmmae_central / v1),  # CL_MM in L/hour
@@ -364,6 +369,7 @@ arrow positions mark the dosing times at 0, 504, 1008, 1512, 2016, and
 2520 hours.
 
 ``` r
+
 typ_sim |>
   mutate(
     cl_mm = vmax_ac / (km_ac + acmmae_central / v1),
@@ -403,6 +409,7 @@ the cumulative input rate per cycle is most pronounced from cycle 1 to
 cycle 2, driven by the CL_t pathway.
 
 ``` r
+
 typ_sim |>
   select(time, Cc, Cmmae) |>
   pivot_longer(c(Cc, Cmmae), names_to = "analyte", values_to = "conc") |>
@@ -437,6 +444,7 @@ residual error preserved. Dropping
 enables both etas and proportional residual error from the model file.
 
 ``` r
+
 pop_sim <- rxode2::rxSolve(
   mod, events,
   keep = c("WT", "SEXF", "LINE_1L", "RACE_ASIAN", "COMBO_RG",
@@ -447,6 +455,7 @@ pop_sim <- rxode2::rxSolve(
 ```
 
 ``` r
+
 pop_sim |>
   filter(!is.na(Cc)) |>
   group_by(time) |>
@@ -474,6 +483,7 @@ cycles. Replicates the structural shape of Lu 2019 Figure S1 (acMMAE
 pcVPC).
 
 ``` r
+
 pop_sim |>
   filter(!is.na(Cmmae)) |>
   group_by(time) |>
@@ -512,6 +522,7 @@ simulated population using PKNCA, with each observation assigned to its
 cycle interval `[(c - 1) * 504, c * 504)` hours.
 
 ``` r
+
 add_cycle <- function(df) {
   df |>
     mutate(cycle_n       = pmin(n_cycles,
@@ -545,6 +556,7 @@ dose_df <- events |>
 ```
 
 ``` r
+
 ac_conc <- PKNCA::PKNCAconc(acmmae_nca, Cc ~ time | cycle + id,
                             concu = "ng/mL", timeu = "hour")
 ac_dose <- PKNCA::PKNCAdose(dose_df, amt ~ time | cycle + id,
@@ -854,7 +866,8 @@ ac_nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(ac_conc, ac_dose,
 #> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
+#>  ■■■■■■■■■■■■■■■■                  49% |  ETA:  3s
+#> Warning: Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
@@ -1035,8 +1048,7 @@ ac_nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(ac_conc, ac_dose,
 #> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■         79% |  ETA:  1s
-#> Warning: Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
@@ -1166,6 +1178,7 @@ ac_nca_long <- as.data.frame(ac_nca_res$result)
 ```
 
 ``` r
+
 mmae_conc <- PKNCA::PKNCAconc(mmae_nca, Cmmae ~ time | cycle + id,
                               concu = "ng/mL", timeu = "hour")
 mmae_dose <- PKNCA::PKNCAdose(dose_df, amt ~ time | cycle + id,
@@ -1424,8 +1437,7 @@ mmae_nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(mmae_conc, mmae_dose,
 #> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
-#>  ■■■■■■■■■■■■■■                    42% |  ETA:  3s
-#> Warning: Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
@@ -1643,7 +1655,8 @@ mmae_nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(mmae_conc, mmae_dose,
 #> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■         78% |  ETA:  1s
+#> Warning: Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
@@ -1779,6 +1792,7 @@ mmae_nca_long <- as.data.frame(mmae_nca_res$result)
 ### acMMAE: simulated vs. published
 
 ``` r
+
 # Reduce per-subject NCA results to mean +/- SD by cycle, in the same units
 # as Lu 2019 Table 3: AUC in ng*day/mL (= AUC_ng_h_mL / 24), Cmax in ng/mL,
 # Ctrough in ng/mL.
@@ -1825,17 +1839,18 @@ knitr::kable(
 ```
 
 | Cycle | AUC (ng\*day/mL) sim | Cmax (ng/mL) sim | Ctrough (ng/mL) sim | AUC (ng\*day/mL) published | Cmax (ng/mL) published | Ctrough (ng/mL) published |
-|:------|:---------------------|:-----------------|:--------------------|:---------------------------|:-----------------------|:--------------------------|
-| 1     | NaN +/- NA           | 846 +/- 160      | NaN +/- NA          | 2,020 +/- 571              | 690 +/- 116            | 13.1 +/- 6.58             |
-| 3     | NaN +/- NA           | 869 +/- 162      | NaN +/- NA          | 2,640 +/- 522              | 713 +/- 117            | 23.7 +/- 10.1             |
-| 6     | NaN +/- NA           | 670 +/- 107      | 25.8 +/- 13.8       | 2,900 +/- 577              | 721 +/- 118            | 29.3 +/- 12.3             |
+|:---|:---|:---|:---|:---|:---|:---|
+| 1 | NaN +/- NA | 846 +/- 160 | NaN +/- NA | 2,020 +/- 571 | 690 +/- 116 | 13.1 +/- 6.58 |
+| 3 | NaN +/- NA | 869 +/- 162 | NaN +/- NA | 2,640 +/- 522 | 713 +/- 117 | 23.7 +/- 10.1 |
+| 6 | NaN +/- NA | 670 +/- 107 | 25.8 +/- 13.8 | 2,900 +/- 577 | 721 +/- 118 | 29.3 +/- 12.3 |
 
 acMMAE NCA – simulated (200 virtual subjects, mixed covariates) vs. Lu
-2019 Table 3 (n = 460, 1.8 mg/kg q3w EBE-based).
+2019 Table 3 (n = 460, 1.8 mg/kg q3w EBE-based). {.table}
 
 ### Unconjugated MMAE: simulated vs. published
 
 ``` r
+
 mmae_summary <- summarize_cycle(mmae_nca_long)
 mmae_summary_pretty <- mmae_summary |>
   transmute(
@@ -1865,13 +1880,14 @@ knitr::kable(
 ```
 
 | Cycle | AUC (ng\*day/mL) sim | Cmax (ng/mL) sim | Ctrough (ng/mL) sim | AUC (ng\*day/mL) published | Cmax (ng/mL) published | Ctrough (ng/mL) published |
-|:------|:---------------------|:-----------------|:--------------------|:---------------------------|:-----------------------|:--------------------------|
-| 1     | NaN +/- NA           | 6.14 +/- 4.12    | NaN +/- NA          | 36.5 +/- 33.9              | 4.08 +/- 3.99          | 0.269 +/- 0.820           |
-| 3     | NaN +/- NA           | 3.62 +/- 1.86    | NaN +/- NA          | 26.4 +/- 24.5              | 2.45 +/- 1.83          | 0.302 +/- 0.707           |
-| 6     | NaN +/- NA           | 3.40 +/- 1.76    | 0.409 +/- 0.395     | 25.1 +/- 19.6              | 2.27 +/- 1.57          | 0.308 +/- 0.527           |
+|:---|:---|:---|:---|:---|:---|:---|
+| 1 | NaN +/- NA | 6.14 +/- 4.12 | NaN +/- NA | 36.5 +/- 33.9 | 4.08 +/- 3.99 | 0.269 +/- 0.820 |
+| 3 | NaN +/- NA | 3.62 +/- 1.86 | NaN +/- NA | 26.4 +/- 24.5 | 2.45 +/- 1.83 | 0.302 +/- 0.707 |
+| 6 | NaN +/- NA | 3.40 +/- 1.76 | 0.409 +/- 0.395 | 25.1 +/- 19.6 | 2.27 +/- 1.57 | 0.308 +/- 0.527 |
 
 Unconjugated MMAE NCA – simulated (200 virtual subjects, mixed
 covariates) vs. Lu 2019 Table 3 (n = 460, 1.8 mg/kg q3w EBE-based).
+{.table}
 
 The simulated NCA values are not expected to match published values
 exactly because:
@@ -1984,6 +2000,7 @@ expected to be reproduced.
 ## Programmatic access
 
 ``` r
+
 mod_meta <- rxode2::rxode(readModelDb("Lu_2019_polatuzumab"))
 #> ℹ parameter labels from comments will be replaced by 'label()'
 str(mod_meta$meta$population, max.level = 1)

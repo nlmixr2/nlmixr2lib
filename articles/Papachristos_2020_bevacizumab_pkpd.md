@@ -69,34 +69,54 @@ The same metadata is available programmatically via
 
 ## Source trace
 
-| Parameter (model name)          | Value      | Source                                                                                                     |
-|---------------------------------|------------|------------------------------------------------------------------------------------------------------------|
-| `lcl` (CLpop, L/day)            | log(0.388) | Papachristos 2020 Table 3, CLpop                                                                           |
-| `lv1` (V1pop, L)                | log(5.48)  | Papachristos 2020 Table 3, V1pop                                                                           |
-| `lq` (Qpop, L/day)              | log(0.315) | Papachristos 2020 Table 3, Qpop                                                                            |
-| `lv2` (V2, L)                   | log(8.81)  | Papachristos 2020 Table 3, V2(L)                                                                           |
-| `le0` (E0, ng/L)                | log(684)   | Papachristos 2020 Table 3, E0pop                                                                           |
-| `imaxv` (Imax, fraction)        | 0.951      | Papachristos 2020 Table 3, Imaxpop                                                                         |
-| `lic50` (IC50, mg/L)            | log(29.1)  | Papachristos 2020 Table 3, IC50pop                                                                         |
-| `allo_cl` (allometric exponent) | 0.78       | Papachristos 2020 Table 3, “log(weight/70) on CL”                                                          |
-| `e_icam1_rs1799969_cl`          | -0.423     | Papachristos 2020 Table 3, “ICAM-1 rs1799969 mutant on CL”                                                 |
-| `e_vegfa_rs699947_q`            | -0.414     | Papachristos 2020 Table 3, “VEGF-A rs699947 mutant on Q” — supersedes the text typo “0.378” in section 2.4 |
-| `etalcl` variance               | 0.11424    | Papachristos 2020 Table 3, ω_CL = 0.338 (var = SD²)                                                        |
-| `etalq` variance                | 0.36120    | Papachristos 2020 Table 3, ω_Q = 0.601                                                                     |
-| `cov(etalcl, etalq)`            | -0.19891   | Papachristos 2020 Table 3, ρ(Q,CL) = -0.979 × 0.338 × 0.601                                                |
-| `etalv1` variance               | 0.03098    | Papachristos 2020 Table 3, ω_V1 = 0.176                                                                    |
-| `etalv2` variance               | 0.33524    | Papachristos 2020 Table 3, ω_V2 = 0.579                                                                    |
-| `etale0` variance               | 0.02789    | Papachristos 2020 Table 3, ω_E0 = 0.167                                                                    |
-| `CcpropSd`                      | 0.238      | Papachristos 2020 Table 3, σ_BEVA                                                                          |
-| `EpropSd`                       | 0.264      | Papachristos 2020 Table 3, σ_VEGF                                                                          |
+| Parameter (model name) | Value | Source |
+|----|----|----|
+| `lcl` (CLpop, L/day) | log(0.388) | Papachristos 2020 Table 3, CLpop |
+| `lv1` (V1pop, L) | log(5.48) | Papachristos 2020 Table 3, V1pop |
+| `lq` (Qpop, L/day) | log(0.315) | Papachristos 2020 Table 3, Qpop |
+| `lv2` (V2, L) | log(8.81) | Papachristos 2020 Table 3, V2(L) |
+| `le0` (E0, ng/L) | log(684) | Papachristos 2020 Table 3, E0pop |
+| `imaxv` (Imax, fraction) | 0.951 | Papachristos 2020 Table 3, Imaxpop |
+| `lic50` (IC50, mg/L) | log(29.1) | Papachristos 2020 Table 3, IC50pop |
+| `allo_cl` (allometric exponent) | 0.78 | Papachristos 2020 Table 3, “log(weight/70) on CL” |
+| `e_icam1_rs1799969_cl` | -0.423 | Papachristos 2020 Table 3, “ICAM-1 rs1799969 mutant on CL” |
+| `e_vegfa_rs699947_q` | -0.414 | Papachristos 2020 Table 3, “VEGF-A rs699947 mutant on Q” — supersedes the text typo “0.378” in section 2.4 |
+| `etalcl` variance | 0.11424 | Papachristos 2020 Table 3, ω_CL = 0.338 (var = SD²) |
+| `etalq` variance | 0.36120 | Papachristos 2020 Table 3, ω_Q = 0.601 |
+| `cov(etalcl, etalq)` | -0.19891 | Papachristos 2020 Table 3, ρ(Q,CL) = -0.979 × 0.338 × 0.601 |
+| `etalv1` variance | 0.03098 | Papachristos 2020 Table 3, ω_V1 = 0.176 |
+| `etalv2` variance | 0.33524 | Papachristos 2020 Table 3, ω_V2 = 0.579 |
+| `etale0` variance | 0.02789 | Papachristos 2020 Table 3, ω_E0 = 0.167 |
+| `CcpropSd` | 0.238 | Papachristos 2020 Table 3, σ_BEVA |
+| `EpropSd` | 0.264 | Papachristos 2020 Table 3, σ_VEGF |
 
 Equations (paper section 2.4):
 
-$${CL}_{i} = {CL}_{pop} \cdot \left( {WT}_{i}/70 \right)^{0.78} \cdot \exp\left( - 0.423\,{SNP\_ ICAM1\_ RS1799969}_{i} \right) \cdot \exp\left( \eta_{{CL},i} \right)$$$$Q_{i} = Q_{pop} \cdot \exp\left( - 0.414\,{SNP\_ VEGFA\_ RS699947}_{i} \right) \cdot \exp\left( \eta_{Q,i} \right)$$$${\dot{A}}_{1} = - k_{el}A_{1} - k_{12}A_{1} + k_{21}A_{2},\qquad{\dot{A}}_{2} = k_{12}A_{1} - k_{21}A_{2},\qquad C_{c} = A_{1}/V_{1}$$$$E = E_{0} \cdot \left( 1 - \frac{I_{max} \cdot C_{c}}{IC_{50} + C_{c}} \right)$$
+``` math
+\mathrm{CL}_i = \mathrm{CL}_\mathrm{pop} \cdot
+  (\mathrm{WT}_i / 70)^{0.78}
+  \cdot \exp(-0.423\,\mathrm{SNP\_ICAM1\_RS1799969}_i)
+  \cdot \exp(\eta_{\mathrm{CL},i})
+```
+``` math
+\mathrm{Q}_i = \mathrm{Q}_\mathrm{pop}
+  \cdot \exp(-0.414\,\mathrm{SNP\_VEGFA\_RS699947}_i)
+  \cdot \exp(\eta_{\mathrm{Q},i})
+```
+``` math
+\dot A_1 = -k_{el} A_1 - k_{12} A_1 + k_{21} A_2,\qquad
+\dot A_2 = k_{12} A_1 - k_{21} A_2,\qquad
+C_c = A_1 / V_1
+```
+``` math
+E = E_0 \cdot \left(1 - \frac{I_\mathrm{max} \cdot C_c}
+                                {IC_{50} + C_c}\right)
+```
 
 ## Virtual cohort
 
 ``` r
+
 set.seed(2020)
 n_subj <- 100
 
@@ -109,6 +129,7 @@ cohort <- tibble(
 ```
 
 ``` r
+
 inf_dur     <- 1.5 / 24            # 90-min infusion (days)
 n_doses_q2w <- 6
 sim_horizon <- 84                  # 12 weeks total follow-up
@@ -143,6 +164,7 @@ events <- build_events(cohort, mgkg = 5, dose_times = dose_times,
 ## Simulation
 
 ``` r
+
 mod <- rxode2::rxode2(readModelDb("Papachristos_2020_bevacizumab_pkpd"))
 #> ℹ parameter labels from comments will be replaced by 'label()'
 sim <- rxode2::rxSolve(mod, events = events,
@@ -159,6 +181,7 @@ sim_e  <- sim |> dplyr::filter(CMT == 4)
 ### Bevacizumab concentration-time profile (replicates Supplementary Figure S8A diagnostic)
 
 ``` r
+
 sim_cc_summary <- sim_cc |>
   dplyr::filter(time > 0) |>
   dplyr::group_by(time) |>
@@ -188,6 +211,7 @@ ggplot(sim_cc_summary, aes(time, median)) +
 ### Free VEGF-A inhibition profile (replicates Supplementary Figure S8B diagnostic)
 
 ``` r
+
 sim_e_summary <- sim_e |>
   dplyr::group_by(time) |>
   dplyr::summarise(
@@ -221,6 +245,7 @@ relationship `E / E0 = 1 - Imax * Cc / (IC50 + Cc)` using the Table 3
 typical values.
 
 ``` r
+
 imax  <- 0.951
 ic50  <- 29.1
 cc_grid <- 10^seq(-1, 3, length.out = 200)
@@ -245,6 +270,7 @@ ggplot(data.frame(Cc = cc_grid, ratio = ratio), aes(Cc, ratio)) +
 ## PKNCA validation (bevacizumab)
 
 ``` r
+
 start_ss <- max(dose_times)
 end_ss   <- start_ss + 14
 
@@ -379,12 +405,12 @@ knitr::kable(summary(nca_res),
              caption = "Steady-state NCA for bevacizumab (5 mg/kg Q2W, last simulated interval, PK/PD model).")
 ```
 
-| Interval Start | Interval End | treatment   | N   | AUClast (day\*mg/L) | Cmax (mg/L)  | Cmin (mg/L)   | Tmax (day)             | Cav (mg/L) |
-|---------------:|-------------:|:------------|:----|:--------------------|:-------------|:--------------|:-----------------------|:-----------|
-|              0 |           14 | 5 mg/kg Q2W | 100 | NC                  | 102 \[20.3\] | 35.7 \[53.3\] | 0.550 \[0.550, 0.550\] | NC         |
+| Interval Start | Interval End | treatment | N | AUClast (day\*mg/L) | Cmax (mg/L) | Cmin (mg/L) | Tmax (day) | Cav (mg/L) |
+|---:|---:|:---|:---|:---|:---|:---|:---|:---|
+| 0 | 14 | 5 mg/kg Q2W | 100 | NC | 102 \[20.3\] | 35.7 \[53.3\] | 0.550 \[0.550, 0.550\] | NC |
 
 Steady-state NCA for bevacizumab (5 mg/kg Q2W, last simulated interval,
-PK/PD model).
+PK/PD model). {.table}
 
 ## Comparison of PK parameters across the three models
 

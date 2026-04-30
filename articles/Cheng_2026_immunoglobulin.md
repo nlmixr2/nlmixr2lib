@@ -39,28 +39,28 @@ loaded.
 
 ## Source trace
 
-| Equation / parameter                                       |       Value | Source location                                                                                                                                                        |
-|------------------------------------------------------------|------------:|------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `lcl` (CL for 70 kg PID)                                   | 0.308 L/day | Cheng 2026 Table 4 (page 7)                                                                                                                                            |
-| `lvc` (V1 for 70 kg)                                       |      3.59 L | Cheng 2026 Table 4                                                                                                                                                     |
-| `lq` (Q for 70 kg)                                         |  1.08 L/day | Cheng 2026 Table 4                                                                                                                                                     |
-| `lvp` (V2 for 70 kg)                                       |      7.37 L | Cheng 2026 Table 4                                                                                                                                                     |
-| `lcbas` (baseline IgG, PID, IGM = 0.21)                    |    5.67 g/L | Cheng 2026 Table 4                                                                                                                                                     |
-| `allo_cl` (allometric exponent on CL, Q; fixed)            |        0.75 | Cheng 2026 Methods, page 7 (theory-based, fixed in final model)                                                                                                        |
-| `allo_v` (allometric exponent on V1, V2; fixed)            |         1.0 | Cheng 2026 Methods, page 7 (theory-based, fixed)                                                                                                                       |
-| `e_sad_cl` (SAD/PID multiplicative ratio on CL)            |       0.542 | Cheng 2026 Table 4                                                                                                                                                     |
-| `e_sad_cbas` (SAD/PID multiplicative ratio on CBAS)        |       0.541 | Cheng 2026 Table 4                                                                                                                                                     |
-| `e_igm_cbas` (power exponent for IgM on CBAS)              |        0.11 | Cheng 2026 Table 4                                                                                                                                                     |
-| IIV CL (CV%)                                               |       42.7% | Cheng 2026 Table 4                                                                                                                                                     |
-| IIV V2 (CV%)                                               |      138.6% | Cheng 2026 Table 4                                                                                                                                                     |
-| IIV CBAS (CV%)                                             |       49.3% | Cheng 2026 Table 4                                                                                                                                                     |
-| `addSd` (additive residual error)                          |   0.812 g/L | Cheng 2026 Table 4                                                                                                                                                     |
-| `propSd` (proportional residual error)                     |       0.117 | Cheng 2026 Table 4                                                                                                                                                     |
-| Two-compartment ODE structure with first-order elimination |         n/a | Cheng 2026 Methods (page 5); confirmed in Results (page 6)                                                                                                             |
-| Allometric scaling form (`(WT/70)^exp`)                    |         n/a | Cheng 2026 eq. 1 (page 5)                                                                                                                                              |
-| Categorical covariate form (`theta^DT`)                    |         n/a | Cheng 2026 eq. 2 (page 5)                                                                                                                                              |
-| Continuous covariate power form (`(IGM/0.21)^theta`)       |         n/a | Cheng 2026 eq. 3 (page 5)                                                                                                                                              |
-| Total observed IgG = exogenous + CBAS                      |         n/a | Cheng 2026 Methods (page 5): “measured IgG was assumed to be the sum of endogenous IgG, the baseline IgG (CBAS) level prior to treatment and exogenous therapeutic Ig” |
+| Equation / parameter | Value | Source location |
+|----|---:|----|
+| `lcl` (CL for 70 kg PID) | 0.308 L/day | Cheng 2026 Table 4 (page 7) |
+| `lvc` (V1 for 70 kg) | 3.59 L | Cheng 2026 Table 4 |
+| `lq` (Q for 70 kg) | 1.08 L/day | Cheng 2026 Table 4 |
+| `lvp` (V2 for 70 kg) | 7.37 L | Cheng 2026 Table 4 |
+| `lcbas` (baseline IgG, PID, IGM = 0.21) | 5.67 g/L | Cheng 2026 Table 4 |
+| `allo_cl` (allometric exponent on CL, Q; fixed) | 0.75 | Cheng 2026 Methods, page 7 (theory-based, fixed in final model) |
+| `allo_v` (allometric exponent on V1, V2; fixed) | 1.0 | Cheng 2026 Methods, page 7 (theory-based, fixed) |
+| `e_sad_cl` (SAD/PID multiplicative ratio on CL) | 0.542 | Cheng 2026 Table 4 |
+| `e_sad_cbas` (SAD/PID multiplicative ratio on CBAS) | 0.541 | Cheng 2026 Table 4 |
+| `e_igm_cbas` (power exponent for IgM on CBAS) | 0.11 | Cheng 2026 Table 4 |
+| IIV CL (CV%) | 42.7% | Cheng 2026 Table 4 |
+| IIV V2 (CV%) | 138.6% | Cheng 2026 Table 4 |
+| IIV CBAS (CV%) | 49.3% | Cheng 2026 Table 4 |
+| `addSd` (additive residual error) | 0.812 g/L | Cheng 2026 Table 4 |
+| `propSd` (proportional residual error) | 0.117 | Cheng 2026 Table 4 |
+| Two-compartment ODE structure with first-order elimination | n/a | Cheng 2026 Methods (page 5); confirmed in Results (page 6) |
+| Allometric scaling form (`(WT/70)^exp`) | n/a | Cheng 2026 eq. 1 (page 5) |
+| Categorical covariate form (`theta^DT`) | n/a | Cheng 2026 eq. 2 (page 5) |
+| Continuous covariate power form (`(IGM/0.21)^theta`) | n/a | Cheng 2026 eq. 3 (page 5) |
+| Total observed IgG = exogenous + CBAS | n/a | Cheng 2026 Methods (page 5): “measured IgG was assumed to be the sum of endogenous IgG, the baseline IgG (CBAS) level prior to treatment and exogenous therapeutic Ig” |
 
 ## Errata
 
@@ -92,6 +92,7 @@ published Table 2 medians and ranges, disease type drawn from the 44 PID
 / 20 SAD split, and IgM drawn from the published distribution.
 
 ``` r
+
 set.seed(20260428)
 
 n_subj <- 200
@@ -138,6 +139,7 @@ relevant covariates (weight 18.6 kg, IGM 0.21 g/L, DIS_SAD = 0 for PID).
 We replicate the same scenario at the cohort-median typical patient.
 
 ``` r
+
 mod <- readModelDb("Cheng_2026_immunoglobulin")
 
 # Typical median PID patient
@@ -202,6 +204,7 @@ sim <- rxode2::rxSolve(mod, events = events, keep = c("dose_gkg"))
 ```
 
 ``` r
+
 sim |>
   filter(time > 0) |>
   group_by(time, dose_gkg) |>
@@ -238,6 +241,7 @@ cycles, with and without the loading dose, in the same typical PID
 patient.
 
 ``` r
+
 n_per <- 200
 duration_days <- 56  # two 28-day cycles
 obs_grid_2 <- seq(0, duration_days, by = 1)
@@ -285,6 +289,7 @@ sim2 <- rxode2::rxSolve(mod, events = regimens, keep = c("regimen"))
 ```
 
 ``` r
+
 sim2 |>
   filter(time > 0) |>
   group_by(time, regimen) |>
@@ -313,6 +318,7 @@ sim2 |>
 ![](Cheng_2026_immunoglobulin_files/figure-html/fig2-1.png)
 
 ``` r
+
 # Probability of target attainment (PTA) above 6 and 8 g/L per regimen
 pta <- sim2 |>
   filter(time > 0, time <= duration_days) |>
@@ -336,7 +342,7 @@ knitr::kable(
 | 1 g/kg load + 0.5 g/kg q28d |       0.821 |       0.576 |
 
 Simulated proportion of post-dose time with total IgG \> 6 g/L and \> 8
-g/L.
+g/L. {.table}
 
 ## PKNCA validation — replicate Cheng 2026 AUC values
 
@@ -348,6 +354,7 @@ endogenous CBAS baseline), so the NCA-derived AUC includes the baseline
 contribution and is directly comparable to the published AUC values.
 
 ``` r
+
 sim_nca <- sim |>
   as.data.frame() |>
   filter(!is.na(Cc), time >= 0, time <= 28) |>
@@ -376,26 +383,27 @@ intervals <- data.frame(
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- suppressWarnings(PKNCA::pk.nca(nca_data))
 #>  ■■■■■■■■■■■■■                     40% |  ETA:  4s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■       88% |  ETA:  1s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      89% |  ETA:  1s
 
 nca_summary <- summary(nca_res)
 knitr::kable(nca_summary,
              caption = "Simulated NCA over the 28-day dosing interval (total IgG, including endogenous baseline).")
 ```
 
-| Interval Start | Interval End | treatment | N   | AUClast (day\*g/L) | Cmax (g/L)    | Cmin (g/L)    | Tmax (day)             |
-|---------------:|-------------:|:----------|:----|:-------------------|:--------------|:--------------|:-----------------------|
-|              0 |           28 | 0.3 g/kg  | 200 | 192 \[38.3\]       | 11.7 \[21.9\] | 6.13 \[43.0\] | 0.000 \[0.000, 0.000\] |
-|              0 |           28 | 0.4 g/kg  | 200 | 204 \[38.5\]       | 13.8 \[19.3\] | 6.40 \[42.7\] | 0.000 \[0.000, 0.000\] |
-|              0 |           28 | 0.5 g/kg  | 200 | 205 \[34.7\]       | 15.4 \[16.2\] | 6.19 \[40.7\] | 0.000 \[0.000, 0.000\] |
-|              0 |           28 | 0.6 g/kg  | 200 | 236 \[35.7\]       | 18.1 \[15.6\] | 7.04 \[43.0\] | 0.000 \[0.000, 0.000\] |
+| Interval Start | Interval End | treatment | N | AUClast (day\*g/L) | Cmax (g/L) | Cmin (g/L) | Tmax (day) |
+|---:|---:|:---|:---|:---|:---|:---|:---|
+| 0 | 28 | 0.3 g/kg | 200 | 192 \[38.3\] | 11.7 \[21.9\] | 6.13 \[43.0\] | 0.000 \[0.000, 0.000\] |
+| 0 | 28 | 0.4 g/kg | 200 | 204 \[38.5\] | 13.8 \[19.3\] | 6.40 \[42.7\] | 0.000 \[0.000, 0.000\] |
+| 0 | 28 | 0.5 g/kg | 200 | 205 \[34.7\] | 15.4 \[16.2\] | 6.19 \[40.7\] | 0.000 \[0.000, 0.000\] |
+| 0 | 28 | 0.6 g/kg | 200 | 236 \[35.7\] | 18.1 \[15.6\] | 7.04 \[43.0\] | 0.000 \[0.000, 0.000\] |
 
 Simulated NCA over the 28-day dosing interval (total IgG, including
-endogenous baseline).
+endogenous baseline). {.table}
 
 ### Comparison against Cheng 2026
 
 ``` r
+
 nca_tbl <- as.data.frame(nca_res$result)
 
 simulated_aucs <- nca_tbl |>
@@ -427,16 +435,16 @@ knitr::kable(
 ```
 
 | treatment | AUC_pub_median | AUC_pub_lo | AUC_pub_hi | AUC_sim_median | AUC_sim_q025 | AUC_sim_q975 | pct_diff |
-|:----------|---------------:|-----------:|-----------:|---------------:|-------------:|-------------:|---------:|
-| 0.4 g/kg  |          200.2 |      194.4 |      206.2 |          207.4 |        100.4 |        434.3 |      3.6 |
-| 0.5 g/kg  |          211.5 |      205.6 |      217.5 |          204.5 |        111.7 |        387.7 |     -3.3 |
-| 0.6 g/kg  |          222.4 |      216.6 |      228.5 |          235.8 |        123.9 |        444.2 |      6.0 |
+|:---|---:|---:|---:|---:|---:|---:|---:|
+| 0.4 g/kg | 200.2 | 194.4 | 206.2 | 207.4 | 100.4 | 434.3 | 3.6 |
+| 0.5 g/kg | 211.5 | 205.6 | 217.5 | 204.5 | 111.7 | 387.7 | -3.3 |
+| 0.6 g/kg | 222.4 | 216.6 | 228.5 | 235.8 | 123.9 | 444.2 | 6.0 |
 
 Simulated vs. published 28-day AUC of total plasma IgG (g/L·day) for the
 typical median PID patient. The published 95% CIs reflect parameter
 uncertainty across 1000 NONMEM simulation replicates; the simulated CIs
 reflect between-subject and residual variability across n = 200 virtual
-patients per dose level.
+patients per dose level. {.table style="width:100%;"}
 
 ## Assumptions and deviations
 

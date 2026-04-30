@@ -1,6 +1,7 @@
 # Othman_2014_daclizumab
 
 ``` r
+
 library(nlmixr2lib)
 library(rxode2)
 #> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
@@ -57,13 +58,13 @@ measurable daclizumab HYP serum concentrations across three Phase I
 studies run at CMAX (Adelaide, Australia). Baseline demographics (Othman
 2014 Table 1, combined N = 71):
 
-| Characteristic                | Value                                            |
-|-------------------------------|--------------------------------------------------|
-| Sex                           | 49.3% male / 50.7% female                        |
-| Race                          | 88.7% Caucasian/Hispanic, 9.9% Asian, 1.4% Other |
-| Age (mean, SD, range)         | 35.9 y, 15.4, 18–66                              |
-| Body weight (mean, SD, range) | 77.7 kg, 16.1, 55.7–127                          |
-| BMI (mean, SD, range)         | 26.7 kg/m², 5.3, 18.1–44.2                       |
+| Characteristic | Value |
+|----|----|
+| Sex | 49.3% male / 50.7% female |
+| Race | 88.7% Caucasian/Hispanic, 9.9% Asian, 1.4% Other |
+| Age (mean, SD, range) | 35.9 y, 15.4, 18–66 |
+| Body weight (mean, SD, range) | 77.7 kg, 16.1, 55.7–127 |
+| BMI (mean, SD, range) | 26.7 kg/m², 5.3, 18.1–44.2 |
 
 Study 1: single SC doses of 50 (n = 7), 150 (n = 8), or 300 mg (n = 8)
 with 126 days of follow-up. Study 2: multiple SC dosing at 100 or 200 mg
@@ -82,29 +83,29 @@ All parameter values and functional forms come from Othman et al. (2014)
 [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry
 point to the source row; the table below collects them.
 
-| Equation / parameter                                                   | Value                    | Source                                      |
-|------------------------------------------------------------------------|--------------------------|---------------------------------------------|
-| `lka` (ka, SC)                                                         | 0.009 /h (0.216 /day)    | Table 2                                     |
-| `lcl` (CL at 70 kg)                                                    | 0.010 L/h (0.240 L/day)  | Table 2                                     |
-| `lvc` (Vc at 70 kg)                                                    | 3.89 L                   | Table 2                                     |
-| `lvp` (Vp at 70 kg)                                                    | 2.52 L                   | Table 2                                     |
-| `lq` (Q at 70 kg)                                                      | 0.044 L/h (1.056 L/day)  | Table 2                                     |
-| `lfdepot` (F, 100–300 mg SC)                                           | 0.84                     | Table 2                                     |
-| `lalag` (Tlag, SC)                                                     | 2.0 h (0.0833 day)       | Table 2                                     |
-| `allo_cl` (BWT → CL, Q)                                                | 0.54                     | Table 2                                     |
-| `allo_v` (BWT → Vc, Vp)                                                | 0.64                     | Table 2                                     |
-| `e_dose_50mg_f` (F shift on 50 mg SC)                                  | −0.32143 (0.57/0.84 − 1) | Table 2 (F_50mg = 0.57, F_100-300mg = 0.84) |
-| IIV `etalka` (ka, SC)                                                  | CV 58% → ω² = 0.29003    | Table 2                                     |
-| IIV `etalcl` (CL, SC)                                                  | CV 27% → ω² = 0.07038    | Table 2                                     |
-| Correlation `etalka`–`etalcl`                                          | −0.72 → cov = −0.10290   | Table 2                                     |
-| IIV `etalvc` (Vc, SC)                                                  | CV 31% → ω² = 0.09175    | Table 2                                     |
-| `propSd` (RUV, proportional)                                           | 0.22                     | Table 2 (r_prop = 0.22)                     |
-| `addSd` (RUV, additive)                                                | 0.33 µg/mL               | Table 2 (r_add = 0.33)                      |
-| 2-cmt model with first-order SC absorption                             | n/a                      | Methods §2.5.1, ADVAN4 TRANS4               |
-| Exponential IIV `P = TVP · exp(η)`                                     | n/a                      | Methods Equation 1                          |
-| Combined log-normal proportional + additive RUV `C = Ĉ · exp(ε₁) + ε₂` | n/a                      | Methods Equation 2                          |
-| Power covariate model `TVP = P_ref · (Cov/NF)^SFP`                     | n/a                      | Methods Equation 3                          |
-| Reference weight 70 kg                                                 | 70 kg                    | Methods §2.5.1                              |
+| Equation / parameter | Value | Source |
+|----|----|----|
+| `lka` (ka, SC) | 0.009 /h (0.216 /day) | Table 2 |
+| `lcl` (CL at 70 kg) | 0.010 L/h (0.240 L/day) | Table 2 |
+| `lvc` (Vc at 70 kg) | 3.89 L | Table 2 |
+| `lvp` (Vp at 70 kg) | 2.52 L | Table 2 |
+| `lq` (Q at 70 kg) | 0.044 L/h (1.056 L/day) | Table 2 |
+| `lfdepot` (F, 100–300 mg SC) | 0.84 | Table 2 |
+| `lalag` (Tlag, SC) | 2.0 h (0.0833 day) | Table 2 |
+| `allo_cl` (BWT → CL, Q) | 0.54 | Table 2 |
+| `allo_v` (BWT → Vc, Vp) | 0.64 | Table 2 |
+| `e_dose_50mg_f` (F shift on 50 mg SC) | −0.32143 (0.57/0.84 − 1) | Table 2 (F_50mg = 0.57, F_100-300mg = 0.84) |
+| IIV `etalka` (ka, SC) | CV 58% → ω² = 0.29003 | Table 2 |
+| IIV `etalcl` (CL, SC) | CV 27% → ω² = 0.07038 | Table 2 |
+| Correlation `etalka`–`etalcl` | −0.72 → cov = −0.10290 | Table 2 |
+| IIV `etalvc` (Vc, SC) | CV 31% → ω² = 0.09175 | Table 2 |
+| `propSd` (RUV, proportional) | 0.22 | Table 2 (r_prop = 0.22) |
+| `addSd` (RUV, additive) | 0.33 µg/mL | Table 2 (r_add = 0.33) |
+| 2-cmt model with first-order SC absorption | n/a | Methods §2.5.1, ADVAN4 TRANS4 |
+| Exponential IIV `P = TVP · exp(η)` | n/a | Methods Equation 1 |
+| Combined log-normal proportional + additive RUV `C = Ĉ · exp(ε₁) + ε₂` | n/a | Methods Equation 2 |
+| Power covariate model `TVP = P_ref · (Cov/NF)^SFP` | n/a | Methods Equation 3 |
+| Reference weight 70 kg | 70 kg | Methods §2.5.1 |
 
 ## Virtual cohorts
 
@@ -118,6 +119,7 @@ Individual-level data are not public. Two cohorts are simulated:
     per the SELECT Phase IIb population).
 
 ``` r
+
 set.seed(2014)
 n_per_arm <- 60
 arms <- tibble(
@@ -153,6 +155,7 @@ Each subject receives a single dose at time 0 with sampling through day
 uses the 50 mg SC dose.
 
 ``` r
+
 sc_obs  <- sort(unique(c(0, 4/24, 1, 3, 7, 10, 14, 28, 42, 56, 70, 84, 126)))
 iv_obs  <- sort(unique(c(0, 1/24, 1, 3, 7, 14, 28, 56, 70, 84, 126, 150)))
 
@@ -184,6 +187,7 @@ stopifnot(!anyDuplicated(unique(events_nca[, c("ID", "TIME", "EVID")])))
 ```
 
 ``` r
+
 set.seed(2015)
 n_ph3 <- 200
 pop_ph3 <- tibble(
@@ -218,6 +222,7 @@ stopifnot(!anyDuplicated(unique(events_ph3[, c("ID", "TIME", "EVID")])))
 ## Simulation
 
 ``` r
+
 mod <- readModelDb("Othman_2014_daclizumab")
 sim_nca <- rxode2::rxSolve(mod, events = events_nca,
                            keep = c("treatment", "route", "dose_mg"))
@@ -235,6 +240,7 @@ Study 3 (single-dose IV). The panels below show the analogous VPC from
 the packaged model.
 
 ``` r
+
 vpc_nca <- as.data.frame(sim_nca) |>
   filter(time > 0, Cc > 0) |>
   group_by(time, treatment) |>
@@ -271,6 +277,7 @@ subjects drawn from the SELECT weight distribution (mean 69 kg, SD 15
 kg).
 
 ``` r
+
 vpc_ph3 <- as.data.frame(sim_ph3) |>
   filter(time > 0, Cc > 0) |>
   group_by(time) |>
@@ -305,6 +312,7 @@ grouping ensures that summary rows roll up per arm so they can be
 compared to Othman 2014 Table text in §3.2.
 
 ``` r
+
 sim_conc <- as.data.frame(sim_nca) |>
   filter(!is.na(Cc)) |>
   transmute(id = id, time = time, Cc = Cc, treatment = treatment)
@@ -327,19 +335,19 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- suppressWarnings(PKNCA::pk.nca(nca_data))
-#>  ■■■■■■■■■■■■■■■■■■■■■■■           75% |  ETA:  1s
+#>  ■■■■■■■■■■■■■■■■■■■■■             67% |  ETA:  1s
 knitr::kable(summary(nca_res),
              caption = "Simulated NCA for Study 1 SC and Study 3 IV arms.")
 ```
 
-| start | end | treatment        | N   | cmax          | tmax                   | half.life     | aucinf.obs    |
-|------:|----:|:-----------------|:----|:--------------|:-----------------------|:--------------|:--------------|
-|     0 | Inf | SC 150 mg single | 60  | 12.2 \[27.8\] | 7.00 \[3.00, 14.0\]    | 19.9 \[5.68\] | 472 \[26.6\]  |
-|     0 | Inf | SC 300 mg single | 60  | 24.5 \[35.1\] | 7.00 \[3.00, 14.0\]    | 20.0 \[5.90\] | 958 \[33.5\]  |
-|     0 | Inf | IV 200 mg single | 60  | 46.8 \[32.1\] | 0.000 \[0.000, 0.000\] | 21.1 \[6.53\] | 798 \[31.5\]  |
-|     0 | Inf | IV 400 mg single | 60  | 95.1 \[36.4\] | 0.000 \[0.000, 0.000\] | 20.9 \[6.24\] | 1610 \[26.1\] |
+| start | end | treatment | N | cmax | tmax | half.life | aucinf.obs |
+|---:|---:|:---|:---|:---|:---|:---|:---|
+| 0 | Inf | SC 150 mg single | 60 | 12.2 \[27.8\] | 7.00 \[3.00, 14.0\] | 19.9 \[5.68\] | 472 \[26.6\] |
+| 0 | Inf | SC 300 mg single | 60 | 24.5 \[35.1\] | 7.00 \[3.00, 14.0\] | 20.0 \[5.90\] | 958 \[33.5\] |
+| 0 | Inf | IV 200 mg single | 60 | 46.8 \[32.1\] | 0.000 \[0.000, 0.000\] | 21.1 \[6.53\] | 798 \[31.5\] |
+| 0 | Inf | IV 400 mg single | 60 | 95.1 \[36.4\] | 0.000 \[0.000, 0.000\] | 20.9 \[6.24\] | 1610 \[26.1\] |
 
-Simulated NCA for Study 1 SC and Study 3 IV arms.
+Simulated NCA for Study 1 SC and Study 3 IV arms. {.table}
 
 ### Comparison against published NCA
 
@@ -349,6 +357,7 @@ match the simulation output units. “Published” columns are the means
 reported in Othman 2014 §3.2.
 
 ``` r
+
 sim_summary <- as.data.frame(sim_nca) |>
   filter(time > 0) |>
   group_by(treatment, id) |>
@@ -394,15 +403,15 @@ knitr::kable(
 )
 ```
 
-| treatment        | Cmax_sim_mean | Cmax_pub | pct_Cmax | tmax_sim_med | tmax_pub | AUC_sim_mean | AUC_pub_ugdaymL | pct_AUC |
-|:-----------------|--------------:|---------:|---------:|-------------:|---------:|-------------:|----------------:|--------:|
-| SC 150 mg single |         12.66 |     15.3 |    -17.2 |            7 |        7 |        486.1 |           675.0 |   -28.0 |
-| SC 300 mg single |         25.78 |     27.2 |     -5.2 |            7 |        7 |       1001.3 |          1225.0 |   -18.3 |
-| IV 200 mg single |         48.39 |     50.7 |     -4.5 |            0 |       NA |        848.6 |           837.5 |     1.3 |
-| IV 400 mg single |         99.48 |    112.0 |    -11.2 |            0 |       NA |       1690.4 |          1745.8 |    -3.2 |
+| treatment | Cmax_sim_mean | Cmax_pub | pct_Cmax | tmax_sim_med | tmax_pub | AUC_sim_mean | AUC_pub_ugdaymL | pct_AUC |
+|:---|---:|---:|---:|---:|---:|---:|---:|---:|
+| SC 150 mg single | 12.66 | 15.3 | -17.2 | 7 | 7 | 486.1 | 675.0 | -28.0 |
+| SC 300 mg single | 25.78 | 27.2 | -5.2 | 7 | 7 | 1001.3 | 1225.0 | -18.3 |
+| IV 200 mg single | 48.39 | 50.7 | -4.5 | 0 | NA | 848.6 | 837.5 | 1.3 |
+| IV 400 mg single | 99.48 | 112.0 | -11.2 | 0 | NA | 1690.4 | 1745.8 | -3.2 |
 
 Simulated vs published (Othman 2014 §3.2) NCA. AUC published in mg·h/mL
-converted to µg·day/mL (×1000/24).
+converted to µg·day/mL (×1000/24). {.table}
 
 Differences are within ~15% for every arm. Mean Cmax for the SC single
 dose is a few percent below published because the typical-value
@@ -419,6 +428,7 @@ reproduces those metrics from the packaged model. Steady-state is taken
 from dose 6 (days 140–168); first-dose metrics from days 0–28.
 
 ``` r
+
 # First-dose window (days 0-28)
 first_dose <- as.data.frame(sim_ph3) |>
   filter(time > 0, time <= 28) |>
@@ -484,7 +494,7 @@ knitr::kable(
 
 Phase III 150 mg SC Q4W: published (Othman 2014 §3.7) vs simulated
 median (5th-95th percentile). Published AUC converted from mg·h/mL to
-µg·day/mL (×1000/24).
+µg·day/mL (×1000/24). {.table}
 
 The effective half-life is reported in the paper as 21–25 days
 (depending on whether it is derived from the steady-state Cmax:Ctrough
@@ -492,6 +502,7 @@ ratio or the AUC accumulation ratio). The analytical terminal β-phase
 half-life from the model parameters:
 
 ``` r
+
 cl_ref <- 0.010 * 24; vc_ref <- 3.89; q_ref <- 0.044 * 24; vp_ref <- 2.52  # L/day, L
 kel    <- cl_ref / vc_ref
 k12    <- q_ref / vc_ref

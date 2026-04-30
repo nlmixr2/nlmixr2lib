@@ -1,6 +1,7 @@
 # Fasanmade_2009_infliximab
 
 ``` r
+
 library(nlmixr2lib)
 library(rxode2)
 #> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
@@ -39,28 +40,29 @@ CL.
 
 ### Source trace
 
-| Element        | Source location        | Value / form                                 |
-|----------------|------------------------|----------------------------------------------|
-| CL, Vc, Vp, Q  | Fasanmade 2009 Table 3 | 0.407 L/day, 3.29 L, 4.13 L, 7.14 L/day      |
-| ALB on CL      | Fasanmade 2009 Table 3 | Power: (ALB/4.1)^-1.54                       |
-| ADA on CL      | Fasanmade 2009 Table 3 | Multiplicative: 1 + 0.471 \* ADA_POS         |
-| SEX on CL      | Fasanmade 2009 Table 3 | Multiplicative: 1 + (-0.236) \* SEXF         |
-| WT on Vc       | Fasanmade 2009 Table 3 | Power: (WT/77)^0.538                         |
-| SEX on Vc      | Fasanmade 2009 Table 3 | Multiplicative: 1 + (-0.137) \* SEXF         |
-| IIV CL, Vc     | Fasanmade 2009 Table 3 | omega^2 = 0.131 (37.7% CV), 0.048 (22.1% CV) |
-| Residual error | Fasanmade 2009 Table 3 | Proportional 0.403, additive 0.0413 ug/mL    |
-| Dosing regimen | Fasanmade 2009 Methods | 5 mg/kg IV at weeks 0, 2, 6, then q8w        |
+| Element | Source location | Value / form |
+|----|----|----|
+| CL, Vc, Vp, Q | Fasanmade 2009 Table 3 | 0.407 L/day, 3.29 L, 4.13 L, 7.14 L/day |
+| ALB on CL | Fasanmade 2009 Table 3 | Power: (ALB/4.1)^-1.54 |
+| ADA on CL | Fasanmade 2009 Table 3 | Multiplicative: 1 + 0.471 \* ADA_POS |
+| SEX on CL | Fasanmade 2009 Table 3 | Multiplicative: 1 + (-0.236) \* SEXF |
+| WT on Vc | Fasanmade 2009 Table 3 | Power: (WT/77)^0.538 |
+| SEX on Vc | Fasanmade 2009 Table 3 | Multiplicative: 1 + (-0.137) \* SEXF |
+| IIV CL, Vc | Fasanmade 2009 Table 3 | omega^2 = 0.131 (37.7% CV), 0.048 (22.1% CV) |
+| Residual error | Fasanmade 2009 Table 3 | Proportional 0.403, additive 0.0413 ug/mL |
+| Dosing regimen | Fasanmade 2009 Methods | 5 mg/kg IV at weeks 0, 2, 6, then q8w |
 
 ### Covariate column naming
 
-| Source column                    | Canonical column used here                                                                |
-|----------------------------------|-------------------------------------------------------------------------------------------|
+| Source column | Canonical column used here |
+|----|----|
 | `ATI` (antibodies to infliximab) | `ADA_POS` (per `.claude/skills/extract-literature-model/references/covariate-columns.md`) |
-| `SEX` (1 = female, 0 = male)     | `SEXF` (same 0/1 encoding, canonical name)                                                |
+| `SEX` (1 = female, 0 = male) | `SEXF` (same 0/1 encoding, canonical name) |
 
 ### Virtual population
 
 ``` r
+
 set.seed(2009)
 n_subj <- 500
 
@@ -80,6 +82,7 @@ Standard UC induction: 5 mg/kg IV at weeks 0, 2, and 6, then maintenance
 every 8 weeks through week 46 (8 doses total). Infusion over 2 hours.
 
 ``` r
+
 dose_weeks <- c(0, 2, 6, 14, 22, 30, 38, 46)
 dose_times <- dose_weeks * 7  # convert to days
 
@@ -110,6 +113,7 @@ d_sim <- bind_rows(d_dose, d_obs) %>%
 ### Simulate
 
 ``` r
+
 mod <- readModelDb("Fasanmade_2009_infliximab")
 conc_unit <- rxode2::rxode(mod)$units[["concentration"]]
 #> ℹ parameter labels from comments will be replaced by 'label()'
@@ -120,6 +124,7 @@ sim <- rxSolve(mod, d_sim, returnType = "data.frame")
 ### Concentration-time profiles
 
 ``` r
+
 sim_summary <- sim %>%
   filter(time > 0) %>%
   group_by(time) %>%
@@ -149,6 +154,7 @@ ggplot(sim_summary, aes(x = time / 7)) +
 ### Effect of anti-drug antibodies on PK
 
 ``` r
+
 sim_ada <- sim %>%
   filter(time > 0) %>%
   mutate(ADA_label = ifelse(ADA_POS == 1, "ADA-positive", "ADA-negative")) %>%
@@ -182,6 +188,7 @@ Run PKNCA on the maintenance dosing interval (after the 5th dose, weeks
 summary, as required by the skill’s PKNCA recipe.
 
 ``` r
+
 nca_conc <- sim %>%
   filter(time >= 154, time <= 210, Cc > 0) %>%
   mutate(
@@ -214,10 +221,9 @@ data_obj <- PKNCAdata(
   )
 )
 nca_results <- pk.nca(data_obj)
-#>  ■■■■■                             12% |  ETA:  9s
-#>  ■■■■■■■■■■■■■                     40% |  ETA:  6s
-#>  ■■■■■■■■■■■■■■■■■■■■■             67% |  ETA:  4s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    97% |  ETA:  0s
+#>  ■■■■■■■                           21% |  ETA:  8s
+#>  ■■■■■■■■■■■■■■■■                  49% |  ETA:  5s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■         79% |  ETA:  2s
 nca_summary <- summary(nca_results)
 knitr::kable(
   nca_summary,
@@ -226,13 +232,13 @@ knitr::kable(
 )
 ```
 
-| start | end | treatment    | N   | auclast      | cmax          | tmax                | half.life     |
-|------:|----:|:-------------|:----|:-------------|:--------------|:--------------------|:--------------|
-|     0 |  56 | ADA-negative | 465 | 887 \[58.6\] | 45.2 \[28.8\] | 3.50 \[3.50, 3.50\] | 14.7 \[6.11\] |
-|     0 |  56 | ADA-positive | 35  | 556 \[62.7\] | 38.3 \[28.0\] | 3.50 \[3.50, 3.50\] | 10.1 \[5.10\] |
+| start | end | treatment | N | auclast | cmax | tmax | half.life |
+|---:|---:|:---|:---|:---|:---|:---|:---|
+| 0 | 56 | ADA-negative | 465 | 887 \[58.6\] | 45.2 \[28.8\] | 3.50 \[3.50, 3.50\] | 14.7 \[6.11\] |
+| 0 | 56 | ADA-positive | 35 | 556 \[62.7\] | 38.3 \[28.0\] | 3.50 \[3.50, 3.50\] | 10.1 \[5.10\] |
 
 NCA summary (maintenance interval, weeks 22-30), stratified by ADA
-status
+status {.table}
 
 ### Assumptions and deviations
 

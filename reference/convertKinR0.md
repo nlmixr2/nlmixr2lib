@@ -48,6 +48,7 @@ Matthew L. Fidler
 ## Examples
 
 ``` r
+
 addIndirect(stim = "in") |> convertKinR0()
 #>  
 #>  

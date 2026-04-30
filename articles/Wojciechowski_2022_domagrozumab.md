@@ -1,6 +1,7 @@
 # Wojciechowski_2022_domagrozumab
 
 ``` r
+
 library(nlmixr2lib)
 library(PKNCA)
 #> 
@@ -77,6 +78,7 @@ The same information is available programmatically via the model’s
 `population` metadata:
 
 ``` r
+
 str(rxode2::rxode2(readModelDb("Wojciechowski_2022_domagrozumab"))$meta$population)
 #> List of 14
 #>  $ n_subjects              : int 193
@@ -103,33 +105,33 @@ The per-parameter origin is recorded as an in-file comment next to each
 `inst/modeldb/specificDrugs/Wojciechowski_2022_domagrozumab.R`. The
 table below collects them in one place for review.
 
-| Equation / parameter                                                  | Value                       | Source location                                          |
-|-----------------------------------------------------------------------|-----------------------------|----------------------------------------------------------|
-| `CL` (linear clearance, per kg)                                       | 0.0000982 L/hour/kg         | Table 2, “Final model estimate” column                   |
-| `V1` (central volume, per kg)                                         | 0.0415 L/kg                 | Table 2                                                  |
-| `Q` (intercompartmental clearance, per kg)                            | 0.000306 L/hour/kg          | Table 2                                                  |
-| `V2` (peripheral volume, per kg)                                      | 0.0416 L/kg                 | Table 2                                                  |
-| `ka` (SC absorption rate)                                             | 0.00769 1/hour              | Table 2                                                  |
-| `F` (SC bioavailability)                                              | 0.858                       | Table 2                                                  |
-| `Vmax` (saturable elimination, per kg)                                | 0.00251 nM/hour/kg          | Table 2                                                  |
-| `km` (Michaelis-Menten constant)                                      | 12.2 nM                     | Table 2                                                  |
-| `BASE` (baseline total myostatin, HV)                                 | 0.156 nM                    | Table 2                                                  |
-| `kdeg` (myostatin degradation, HV)                                    | 0.0381 1/hour               | Table 2                                                  |
-| `kint` (drug-myostatin internalization, HV)                           | 0.00716 1/hour              | Table 2                                                  |
-| `kSS` (QSS binding constant)                                          | 7.76 nM                     | Table 2                                                  |
-| theta_SPOP_BASE (DMD effect on BASE; `(1 + theta) * typical`)         | -0.641                      | Table 2                                                  |
-| theta_SPOP\_(kdeg,kint) (DMD effect on kdeg and kint, joint)          | -0.900                      | Table 2                                                  |
-| Ratio of SD for eta_kint relative to eta_kdeg                         | -0.295                      | Table 2                                                  |
-| omega_CL, omega_V1, omega_Vmax, omega_BASE, omega\_(kdeg,kint) (% CV) | 24.3, 23.4, 104, 31.8, 23.3 | Table 2 (“Population parameter variability” rows)        |
-| OMEGA off-diagonals (rho_CL-V1 etc.)                                  | see Table 2                 | Table 2 (“Covariance” rows; covariances in log-space)    |
-| sigma_add (free domagrozumab, log-additive in NONMEM)                 | 0.142                       | Table 2 (“Random unexplained variability”)               |
-| sigma_pro (total myostatin, % CV)                                     | 20.6                        | Table 2 (“Random unexplained variability”)               |
-| Drug PK ODEs (depot, central, peripheral1)                            | n/a                         | Equations 1-3                                            |
-| Total-myostatin ODE                                                   | n/a                         | Equation 4                                               |
-| Concentration / micro-constant relations (`CONC=CENT/V1`, `ke=CL/V1`) | n/a                         | Equation 5                                               |
-| Initial conditions (`Myo(0) = BASE`)                                  | n/a                         | Equation 6                                               |
-| Categorical-covariate form (`COVSPOP = 1 + theta * DIS_DMD`)          | n/a                         | Equations 7-8                                            |
-| Myostatin coverage formula                                            | n/a                         | Equation 10 (used in this vignette to validate Figure 5) |
+| Equation / parameter | Value | Source location |
+|----|----|----|
+| `CL` (linear clearance, per kg) | 0.0000982 L/hour/kg | Table 2, “Final model estimate” column |
+| `V1` (central volume, per kg) | 0.0415 L/kg | Table 2 |
+| `Q` (intercompartmental clearance, per kg) | 0.000306 L/hour/kg | Table 2 |
+| `V2` (peripheral volume, per kg) | 0.0416 L/kg | Table 2 |
+| `ka` (SC absorption rate) | 0.00769 1/hour | Table 2 |
+| `F` (SC bioavailability) | 0.858 | Table 2 |
+| `Vmax` (saturable elimination, per kg) | 0.00251 nM/hour/kg | Table 2 |
+| `km` (Michaelis-Menten constant) | 12.2 nM | Table 2 |
+| `BASE` (baseline total myostatin, HV) | 0.156 nM | Table 2 |
+| `kdeg` (myostatin degradation, HV) | 0.0381 1/hour | Table 2 |
+| `kint` (drug-myostatin internalization, HV) | 0.00716 1/hour | Table 2 |
+| `kSS` (QSS binding constant) | 7.76 nM | Table 2 |
+| theta_SPOP_BASE (DMD effect on BASE; `(1 + theta) * typical`) | -0.641 | Table 2 |
+| theta_SPOP\_(kdeg,kint) (DMD effect on kdeg and kint, joint) | -0.900 | Table 2 |
+| Ratio of SD for eta_kint relative to eta_kdeg | -0.295 | Table 2 |
+| omega_CL, omega_V1, omega_Vmax, omega_BASE, omega\_(kdeg,kint) (% CV) | 24.3, 23.4, 104, 31.8, 23.3 | Table 2 (“Population parameter variability” rows) |
+| OMEGA off-diagonals (rho_CL-V1 etc.) | see Table 2 | Table 2 (“Covariance” rows; covariances in log-space) |
+| sigma_add (free domagrozumab, log-additive in NONMEM) | 0.142 | Table 2 (“Random unexplained variability”) |
+| sigma_pro (total myostatin, % CV) | 20.6 | Table 2 (“Random unexplained variability”) |
+| Drug PK ODEs (depot, central, peripheral1) | n/a | Equations 1-3 |
+| Total-myostatin ODE | n/a | Equation 4 |
+| Concentration / micro-constant relations (`CONC=CENT/V1`, `ke=CL/V1`) | n/a | Equation 5 |
+| Initial conditions (`Myo(0) = BASE`) | n/a | Equation 6 |
+| Categorical-covariate form (`COVSPOP = 1 + theta * DIS_DMD`) | n/a | Equations 7-8 |
+| Myostatin coverage formula | n/a | Equation 10 (used in this vignette to validate Figure 5) |
 
 A representative IgG1 molecular weight of **145,000 g/mol** is used
 inside the model file to convert between mg-based dosing (rxode2 amount
@@ -150,6 +152,7 @@ the mean and SD reported in Table 1 (28.9 kg median, 11.1 SD), truncated
 to the Phase 2 weight range.
 
 ``` r
+
 set.seed(20260426)
 
 n_dmd <- 500
@@ -180,6 +183,7 @@ predicted myostatin coverage at predose, 2 hours postdose, and 6 hours
 postdose, matching the paper’s evaluation schedule.
 
 ``` r
+
 mod <- readModelDb("Wojciechowski_2022_domagrozumab")
 
 # Simulation horizon: 16 weeks of Q4W dosing (4 doses)
@@ -248,6 +252,7 @@ patients across the three Phase 2 dose levels combined. Below we
 reproduce the typical-value-and-percentile envelope from the simulation.
 
 ``` r
+
 sim_all |>
   group_by(regimen, time) |>
   summarise(
@@ -280,6 +285,7 @@ slower than free myostatin (`kint << kdeg`) — total myostatin (free +
 bound) accumulates as the drug binds and protects it from degradation.
 
 ``` r
+
 sim_all |>
   group_by(regimen, time) |>
   summarise(
@@ -314,6 +320,7 @@ MyoCoverage(t) = 1 - Myo(t) * kSS / (kSS + Cc(t)) / BMyo
 ```
 
 ``` r
+
 sim_all |>
   filter(time > 0) |>
   group_by(regimen, time) |>
@@ -346,6 +353,7 @@ statistics from the simulated cohort across all post-dose sampling
 times.
 
 ``` r
+
 sim_summary <- sim_all |>
   filter(time > 0) |>
   group_by(regimen) |>
@@ -377,7 +385,7 @@ knitr::kable(comparison,
 | 40 mg/kg Q4W | 98.3 (96.8, 99.1)          | 99.2 (97.9, 99.9)          |
 
 Myostatin coverage in DMD pediatric patients: simulated
-vs. Wojciechowski 2022 Results.
+vs. Wojciechowski 2022 Results. {.table}
 
 Differences \> 20 % between simulated and published values would
 indicate a translation error and be flagged here for investigation. The
@@ -396,6 +404,7 @@ with a 2-compartment mAb cleared at 0.0000982 L/hour/kg in the early
 linear range before TMDD becomes saturating.
 
 ``` r
+
 mod_typical <- rxode2::zeroRe(mod)
 
 nca_times <- sort(unique(c(
@@ -440,25 +449,25 @@ knitr::kable(as.data.frame(nca_res), digits = 3,
                              "(typical-value DMD pediatric, 28.9 kg)."))
 ```
 
-| treatment                    |  id | start | end | PPTESTCD            |    PPORRES | exclude |
-|:-----------------------------|----:|------:|----:|:--------------------|-----------:|:--------|
-| 5 mg/kg IV SD, DMD pediatric |   1 |     0 | Inf | cmax                |    830.910 | NA      |
-| 5 mg/kg IV SD, DMD pediatric |   1 |     0 | Inf | tmax                |      0.000 | NA      |
-| 5 mg/kg IV SD, DMD pediatric |   1 |     0 | Inf | tlast               |    672.000 | NA      |
-| 5 mg/kg IV SD, DMD pediatric |   1 |     0 | Inf | clast.obs           |    151.893 | NA      |
-| 5 mg/kg IV SD, DMD pediatric |   1 |     0 | Inf | lambda.z            |      0.001 | NA      |
-| 5 mg/kg IV SD, DMD pediatric |   1 |     0 | Inf | r.squared           |      1.000 | NA      |
-| 5 mg/kg IV SD, DMD pediatric |   1 |     0 | Inf | adj.r.squared       |      1.000 | NA      |
-| 5 mg/kg IV SD, DMD pediatric |   1 |     0 | Inf | lambda.z.time.first |    312.000 | NA      |
-| 5 mg/kg IV SD, DMD pediatric |   1 |     0 | Inf | lambda.z.time.last  |    672.000 | NA      |
-| 5 mg/kg IV SD, DMD pediatric |   1 |     0 | Inf | lambda.z.n.points   |     16.000 | NA      |
-| 5 mg/kg IV SD, DMD pediatric |   1 |     0 | Inf | clast.pred          |    151.826 | NA      |
-| 5 mg/kg IV SD, DMD pediatric |   1 |     0 | Inf | half.life           |    541.272 | NA      |
-| 5 mg/kg IV SD, DMD pediatric |   1 |     0 | Inf | span.ratio          |      0.665 | NA      |
-| 5 mg/kg IV SD, DMD pediatric |   1 |     0 | Inf | aucinf.obs          | 308521.312 | NA      |
+| treatment | id | start | end | PPTESTCD | PPORRES | exclude |
+|:---|---:|---:|---:|:---|---:|:---|
+| 5 mg/kg IV SD, DMD pediatric | 1 | 0 | Inf | cmax | 830.910 | NA |
+| 5 mg/kg IV SD, DMD pediatric | 1 | 0 | Inf | tmax | 0.000 | NA |
+| 5 mg/kg IV SD, DMD pediatric | 1 | 0 | Inf | tlast | 672.000 | NA |
+| 5 mg/kg IV SD, DMD pediatric | 1 | 0 | Inf | clast.obs | 151.893 | NA |
+| 5 mg/kg IV SD, DMD pediatric | 1 | 0 | Inf | lambda.z | 0.001 | NA |
+| 5 mg/kg IV SD, DMD pediatric | 1 | 0 | Inf | r.squared | 1.000 | NA |
+| 5 mg/kg IV SD, DMD pediatric | 1 | 0 | Inf | adj.r.squared | 1.000 | NA |
+| 5 mg/kg IV SD, DMD pediatric | 1 | 0 | Inf | lambda.z.time.first | 312.000 | NA |
+| 5 mg/kg IV SD, DMD pediatric | 1 | 0 | Inf | lambda.z.time.last | 672.000 | NA |
+| 5 mg/kg IV SD, DMD pediatric | 1 | 0 | Inf | lambda.z.n.points | 16.000 | NA |
+| 5 mg/kg IV SD, DMD pediatric | 1 | 0 | Inf | clast.pred | 151.826 | NA |
+| 5 mg/kg IV SD, DMD pediatric | 1 | 0 | Inf | half.life | 541.272 | NA |
+| 5 mg/kg IV SD, DMD pediatric | 1 | 0 | Inf | span.ratio | 0.665 | NA |
+| 5 mg/kg IV SD, DMD pediatric | 1 | 0 | Inf | aucinf.obs | 308521.312 | NA |
 
 PKNCA summary for a single 5 mg/kg IV dose (typical-value DMD pediatric,
-28.9 kg).
+28.9 kg). {.table}
 
 The implied terminal half-life from the linear PK micro-constants is
 `log(2) * V1 / CL = log(2) * 0.0415 / 0.0000982` = 293 hours = 12.2

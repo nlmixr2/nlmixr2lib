@@ -1,6 +1,7 @@
 # Diao_2016_daclizumab_cd25
 
 ``` r
+
 library(nlmixr2lib)
 library(rxode2)
 #> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
@@ -55,11 +56,11 @@ The pooled PK/PD analysis included 1459 RRMS subjects with 7622 CD25
 occupancy records from four daclizumab HYP clinical studies (Diao 2016
 Table 2):
 
-| Study                                                          | Subjects | CD25 records | Notes                                                                                                     |
-|----------------------------------------------------------------|----------|--------------|-----------------------------------------------------------------------------------------------------------|
-| 205MS201 / SELECT (Phase 2) and 205MS202 / SELECTION extension | 580      | 5123         | 150 or 300 mg SC every 4 weeks; SELECTION includes a 24-week washout cohort                               |
-| 205MS302 / OBSERVE                                             | 113      | 974          | 150 mg SC every 4 weeks; 25 subjects in the intensive PK/PD substudy with 8 h, 24 h, 72 h, 120 h sampling |
-| 205MS301 / DECIDE (Phase 3 vs IFN-beta-1a)                     | 766      | 1525         | 150 mg SC every 4 weeks for 96 to 144 weeks                                                               |
+| Study | Subjects | CD25 records | Notes |
+|----|----|----|----|
+| 205MS201 / SELECT (Phase 2) and 205MS202 / SELECTION extension | 580 | 5123 | 150 or 300 mg SC every 4 weeks; SELECTION includes a 24-week washout cohort |
+| 205MS302 / OBSERVE | 113 | 974 | 150 mg SC every 4 weeks; 25 subjects in the intensive PK/PD substudy with 8 h, 24 h, 72 h, 120 h sampling |
+| 205MS301 / DECIDE (Phase 3 vs IFN-beta-1a) | 766 | 1525 | 150 mg SC every 4 weeks for 96 to 144 weeks |
 
 Subject-level demographics for the SELECT, SELECTION, OBSERVE and DECIDE
 PK/PD subgroups are reported in the companion population PK analysis
@@ -74,27 +75,27 @@ The per-parameter origin is recorded as in-file comments next to each
 `inst/modeldb/specificDrugs/Diao_2016_daclizumab_cd25.R`. The table
 collects them for review.
 
-| Equation / parameter                                               | Value                                   | Source                                     |
-|--------------------------------------------------------------------|-----------------------------------------|--------------------------------------------|
-| `lka` (Ka SC)                                                      | 0.009 /h (= 0.216 /day)                 | Othman 2014 Table 2                        |
-| `lcl` (CL at 70 kg)                                                | 0.010 L/h (= 0.240 L/day)               | Othman 2014 Table 2                        |
-| `lvc` (Vc at 70 kg)                                                | 3.89 L                                  | Othman 2014 Table 2                        |
-| `lvp` (Vp at 70 kg)                                                | 2.52 L                                  | Othman 2014 Table 2                        |
-| `lq` (Q at 70 kg)                                                  | 0.044 L/h (= 1.056 L/day)               | Othman 2014 Table 2                        |
-| `lfdepot` (F SC 100 to 300 mg)                                     | 0.84                                    | Othman 2014 Table 2                        |
-| `lalag` (Tlag SC)                                                  | 2.0 h (= 0.0833 day)                    | Othman 2014 Table 2                        |
-| `allo_cl`, `allo_v`                                                | 0.54 / 0.64                             | Othman 2014 Table 2                        |
-| `e_dose_50mg_f`                                                    | -0.32143 (= 0.57/0.84 - 1)              | Othman 2014 Table 2                        |
-| PK IIV `etalka`, `etalcl` (block, corr -0.72)                      | omega^2 0.29003 / 0.07038, cov -0.10290 | Othman 2014 Table 2                        |
-| PK IIV `etalvc`                                                    | omega^2 0.09175 (CV 31%)                | Othman 2014 Table 2                        |
-| `CcpropSd`, `CcaddSd`                                              | 0.22 / 0.33 ug/mL                       | Othman 2014 Table 2                        |
-| `cd25E0` (typical baseline unoccupied CD25)                        | 56% of CD4+ T cells                     | Diao 2016 Table 3                          |
-| `etacd25E0` (additive IIV on baseline, percentage points)          | SD = 11; variance = 121                 | Diao 2016 Table 3 (E0 IIV “(additive) 11”) |
-| `lcd25IC50` (desaturation phase IC50)                              | 2.07 mg/L                               | Diao 2016 Table 3                          |
-| `etalcd25IC50` (desaturation IC50 IIV)                             | omega^2 0.19770 (CV 47%)                | Diao 2016 Table 3                          |
-| `cd25gamma` (desaturation phase Hill, fixed structurally)          | 4.44                                    | Diao 2016 Table 3                          |
-| `cd25addSd` (additive residual error)                              | 4.02 percentage points                  | Diao 2016 Table 3                          |
-| Equation 1: `CD25 = E0 * (1 - Cc^gamma / (Cc^gamma + IC50^gamma))` | n/a                                     | Diao 2016 Equation (1)                     |
+| Equation / parameter | Value | Source |
+|----|----|----|
+| `lka` (Ka SC) | 0.009 /h (= 0.216 /day) | Othman 2014 Table 2 |
+| `lcl` (CL at 70 kg) | 0.010 L/h (= 0.240 L/day) | Othman 2014 Table 2 |
+| `lvc` (Vc at 70 kg) | 3.89 L | Othman 2014 Table 2 |
+| `lvp` (Vp at 70 kg) | 2.52 L | Othman 2014 Table 2 |
+| `lq` (Q at 70 kg) | 0.044 L/h (= 1.056 L/day) | Othman 2014 Table 2 |
+| `lfdepot` (F SC 100 to 300 mg) | 0.84 | Othman 2014 Table 2 |
+| `lalag` (Tlag SC) | 2.0 h (= 0.0833 day) | Othman 2014 Table 2 |
+| `allo_cl`, `allo_v` | 0.54 / 0.64 | Othman 2014 Table 2 |
+| `e_dose_50mg_f` | -0.32143 (= 0.57/0.84 - 1) | Othman 2014 Table 2 |
+| PK IIV `etalka`, `etalcl` (block, corr -0.72) | omega^2 0.29003 / 0.07038, cov -0.10290 | Othman 2014 Table 2 |
+| PK IIV `etalvc` | omega^2 0.09175 (CV 31%) | Othman 2014 Table 2 |
+| `CcpropSd`, `CcaddSd` | 0.22 / 0.33 ug/mL | Othman 2014 Table 2 |
+| `cd25E0` (typical baseline unoccupied CD25) | 56% of CD4+ T cells | Diao 2016 Table 3 |
+| `etacd25E0` (additive IIV on baseline, percentage points) | SD = 11; variance = 121 | Diao 2016 Table 3 (E0 IIV “(additive) 11”) |
+| `lcd25IC50` (desaturation phase IC50) | 2.07 mg/L | Diao 2016 Table 3 |
+| `etalcd25IC50` (desaturation IC50 IIV) | omega^2 0.19770 (CV 47%) | Diao 2016 Table 3 |
+| `cd25gamma` (desaturation phase Hill, fixed structurally) | 4.44 | Diao 2016 Table 3 |
+| `cd25addSd` (additive residual error) | 4.02 percentage points | Diao 2016 Table 3 |
+| Equation 1: `CD25 = E0 * (1 - Cc^gamma / (Cc^gamma + IC50^gamma))` | n/a | Diao 2016 Equation (1) |
 
 ## Virtual cohort
 
@@ -105,6 +106,7 @@ saturation phase (intensive substudy in OBSERVE) and the desaturation
 phase (washout cohort).
 
 ``` r
+
 set.seed(2016)
 n_per_arm <- 50
 cohort <- bind_rows(
@@ -121,6 +123,7 @@ over the first dose (8 h, 24 h, 72 h, 120 h, 7 d, 14 d to capture
 saturation kinetics) and weekly during the chronic / washout phases.
 
 ``` r
+
 dose_times <- seq(0, 140, by = 28)               # 6 doses Q4W
 obs_times  <- sort(unique(c(0, 8/24, 1, 3, 5, 7, 14, 21,
                             seq(28, 350, by = 7))))
@@ -151,17 +154,21 @@ Two parallel simulations: a stochastic VPC (full IIV) and a
 deterministic typical-value run for figure replication.
 
 ``` r
+
 mod <- readModelDb("Diao_2016_daclizumab_cd25")
 
+# `regimen` is already on every row of `events` (per-id from the cohort
+# left_join above) — carry it through `rxSolve(keep = ...)` so we don't
+# need a fragile post-hoc `left_join` on the simulation output.
 set.seed(2016)
-sim_pop <- rxode2::rxSolve(mod, events, returnType = "data.frame") |>
-  dplyr::left_join(dplyr::select(cohort, id, regimen), by = "id")
+sim_pop <- rxode2::rxSolve(mod, events, returnType = "data.frame",
+                           keep = "regimen")
 #> ℹ parameter labels from comments will be replaced by 'label()'
 
 mod_typ <- rxode2::zeroRe(mod)
 #> ℹ parameter labels from comments will be replaced by 'label()'
-sim_typ <- rxode2::rxSolve(mod_typ, events, returnType = "data.frame") |>
-  dplyr::left_join(dplyr::select(cohort, id, regimen), by = "id")
+sim_typ <- rxode2::rxSolve(mod_typ, events, returnType = "data.frame",
+                           keep = "regimen")
 #> ℹ omega/sigma items treated as zero: 'etalka', 'etalcl', 'etalvc', 'etacd25E0', 'etalcd25IC50'
 #> Warning: multi-subject simulation without without 'omega'
 ```
@@ -175,6 +182,7 @@ hours after a 150 mg SC dose. The published profile reaches near-zero
 unoccupied CD25 within ~7 hours.
 
 ``` r
+
 fig1a <- sim_typ |>
   dplyr::filter(regimen == "150 mg SC Q4W", time <= 1, time >= 0)
 
@@ -200,6 +208,7 @@ of 2.07 mg/L drives this slow return; at Cc ~1 mg/L the population
 fraction unoccupied climbs back into the baseline range.
 
 ``` r
+
 last_dose_t <- 140
 fig1b <- sim_typ |>
   dplyr::filter(regimen == "150 mg SC Q4W", time >= last_dose_t) |>
@@ -224,6 +233,7 @@ ggplot(fig1b, aes(weeks_after_last, cd25)) +
 A stochastic visual predictive check (VPC) for both regimens.
 
 ``` r
+
 vpc <- sim_pop |>
   dplyr::filter(time >= 0, time <= 350, !is.na(cd25)) |>
   dplyr::group_by(time, regimen) |>
@@ -258,6 +268,7 @@ inherited PK output to confirm steady-state Cmax / Cmin / AUC for the
 150 mg and 300 mg SC Q4W regimens (one dosing-interval at steady state).
 
 ``` r
+
 sim_conc <- sim_pop |>
   dplyr::filter(!is.na(Cc), time >= 112, time <= 140) |>
   dplyr::distinct(id, time, .keep_all = TRUE) |>
@@ -288,12 +299,12 @@ knitr::kable(summary(nca, drop.group = "id"),
 #> generated.
 ```
 
-| start | end | regimen       | N   | auclast       | cmax          | cmin          | tmax                |
-|------:|----:|:--------------|:----|:--------------|:--------------|:--------------|:--------------------|
-|     0 |  28 | 150 mg SC Q4W | 50  | 502 \[27.5\]  | 22.9 \[27.5\] | 12.6 \[31.3\] | 7.00 \[7.00, 7.00\] |
-|     0 |  28 | 300 mg SC Q4W | 50  | 1020 \[29.1\] | 46.7 \[28.6\] | 25.7 \[34.7\] | 7.00 \[7.00, 7.00\] |
+| start | end | regimen | N | auclast | cmax | cmin | tmax |
+|---:|---:|:---|:---|:---|:---|:---|:---|
+| 0 | 28 | 150 mg SC Q4W | 50 | 502 \[27.5\] | 22.9 \[27.5\] | 12.6 \[31.3\] | 7.00 \[7.00, 7.00\] |
+| 0 | 28 | 300 mg SC Q4W | 50 | 1020 \[29.1\] | 46.7 \[28.6\] | 25.7 \[34.7\] | 7.00 \[7.00, 7.00\] |
 
-Steady-state (dose 5) NCA by regimen.
+Steady-state (dose 5) NCA by regimen. {.table style="width:100%;"}
 
 ### Comparison against published behaviour
 
@@ -303,6 +314,7 @@ checkpoints are listed below; see the figures above for the full
 profiles.
 
 ``` r
+
 last_dose_t <- 140
 
 # At Cc >= 5 mg/L during dosing, occupancy is fully maintained (Diao 2016 Discussion).
@@ -324,12 +336,12 @@ cmp <- tibble(
 knitr::kable(cmp, caption = "CD25 saturation / desaturation checkpoints.")
 ```
 
-| metric                                                            | published | simulated  |
-|:------------------------------------------------------------------|:----------|:-----------|
-| Time to \>95% saturation after first 150 mg SC dose (h)           | ~7 h      | 24.0 h     |
+| metric | published | simulated |
+|:---|:---|:---|
+| Time to \>95% saturation after first 150 mg SC dose (h) | ~7 h | 24.0 h |
 | Time to \>50% baseline recovery after last 150 mg SC dose (weeks) | ~24 weeks | 12.0 weeks |
 
-CD25 saturation / desaturation checkpoints.
+CD25 saturation / desaturation checkpoints. {.table}
 
 ## Errata
 

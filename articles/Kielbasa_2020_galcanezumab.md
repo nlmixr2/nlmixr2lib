@@ -1,6 +1,7 @@
 # Kielbasa_2020_galcanezumab
 
 ``` r
+
 library(nlmixr2lib)
 library(rxode2)
 #> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
@@ -69,26 +70,26 @@ The same information is available programmatically via
 
 ### Source trace
 
-| Element                                  | Source location                             | Value / form                                           |
-|------------------------------------------|---------------------------------------------|--------------------------------------------------------|
-| Structural model                         | Kielbasa 2020 Results, PK Model Development | 1-compartment, first-order SC absorption, linear elim. |
-| ka                                       | Kielbasa 2020 Table 3                       | 0.0199 /h (= 0.4776 /day)                              |
-| CL/F (73.6 kg reference)                 | Kielbasa 2020 Table 3                       | 0.00785 L/h (= 0.1884 L/day)                           |
-| V/F                                      | Kielbasa 2020 Table 3                       | 7.33 L                                                 |
-| Body-weight effect on CL/F               | Kielbasa 2020 Table 3, equation 2           | Power model; exponent 0.601; MED = 73.6 kg             |
-| IIV on ka                                | Kielbasa 2020 Table 3                       | 92% CV (omega^2 = log(CV^2 + 1) = 0.61309)             |
-| IIV on CL/F                              | Kielbasa 2020 Table 3                       | 34% CV (omega^2 = 0.10942)                             |
-| IIV on V/F                               | Kielbasa 2020 Table 3                       | 34% CV (omega^2 = 0.10942)                             |
-| Covariance (ka, CL/F)                    | Kielbasa 2020 Table 3                       | 0.0694 (omega scale)                                   |
-| Covariance (CL/F, V/F)                   | Kielbasa 2020 Table 3                       | 0.0716 (omega scale)                                   |
-| Covariance (ka, V/F)                     | Kielbasa 2020 Table 3                       | Not estimated; treated as 0 in packaged OMEGA block    |
-| Residual error (proportional)            | Kielbasa 2020 Table 3                       | 22% CV                                                 |
-| Published half-life                      | Kielbasa 2020 Results, PK Model Application | 27 days (apparent terminal elimination)                |
-| Published median Tmax                    | Kielbasa 2020 Results, PK Model Application | 5 days                                                 |
-| Published Cmin after 240 mg LD           | Kielbasa 2020 Results, PK Model Application | 15,900 ng/mL                                           |
-| Published Cmin,ss after 120 mg QM (+ LD) | Kielbasa 2020 Results, PK Model Application | 15,400 ng/mL                                           |
-| Weight 5th / 50th / 95th percentile      | Kielbasa 2020 Figure 4 caption              | 52 / 73 / 105 kg                                       |
-| Dose regimens                            | Kielbasa 2020 Table 1                       | 5-300 mg SC SD; 120 mg QM + 240 mg LD; 240 mg QM       |
+| Element | Source location | Value / form |
+|----|----|----|
+| Structural model | Kielbasa 2020 Results, PK Model Development | 1-compartment, first-order SC absorption, linear elim. |
+| ka | Kielbasa 2020 Table 3 | 0.0199 /h (= 0.4776 /day) |
+| CL/F (73.6 kg reference) | Kielbasa 2020 Table 3 | 0.00785 L/h (= 0.1884 L/day) |
+| V/F | Kielbasa 2020 Table 3 | 7.33 L |
+| Body-weight effect on CL/F | Kielbasa 2020 Table 3, equation 2 | Power model; exponent 0.601; MED = 73.6 kg |
+| IIV on ka | Kielbasa 2020 Table 3 | 92% CV (omega^2 = log(CV^2 + 1) = 0.61309) |
+| IIV on CL/F | Kielbasa 2020 Table 3 | 34% CV (omega^2 = 0.10942) |
+| IIV on V/F | Kielbasa 2020 Table 3 | 34% CV (omega^2 = 0.10942) |
+| Covariance (ka, CL/F) | Kielbasa 2020 Table 3 | 0.0694 (omega scale) |
+| Covariance (CL/F, V/F) | Kielbasa 2020 Table 3 | 0.0716 (omega scale) |
+| Covariance (ka, V/F) | Kielbasa 2020 Table 3 | Not estimated; treated as 0 in packaged OMEGA block |
+| Residual error (proportional) | Kielbasa 2020 Table 3 | 22% CV |
+| Published half-life | Kielbasa 2020 Results, PK Model Application | 27 days (apparent terminal elimination) |
+| Published median Tmax | Kielbasa 2020 Results, PK Model Application | 5 days |
+| Published Cmin after 240 mg LD | Kielbasa 2020 Results, PK Model Application | 15,900 ng/mL |
+| Published Cmin,ss after 120 mg QM (+ LD) | Kielbasa 2020 Results, PK Model Application | 15,400 ng/mL |
+| Weight 5th / 50th / 95th percentile | Kielbasa 2020 Figure 4 caption | 52 / 73 / 105 kg |
+| Dose regimens | Kielbasa 2020 Table 1 | 5-300 mg SC SD; 120 mg QM + 240 mg LD; 240 mg QM |
 
 ### Virtual cohort
 
@@ -100,6 +101,7 @@ distribution around the reported mean and SD, clipped to the reported
 range.
 
 ``` r
+
 set.seed(2020)
 n_subj <- 500
 
@@ -117,6 +119,7 @@ dose at month 0, and 240 mg SC monthly. Simulate for 12 months with
 daily sampling for the first cycle and weekly sampling thereafter.
 
 ``` r
+
 obs_times <- sort(unique(c(
   seq(0, 28, by = 1),
   seq(28, 364, by = 7)
@@ -160,6 +163,7 @@ events_all <- bind_rows(events_ld120, events_240qm)
 ### Simulation
 
 ``` r
+
 mod <- readModelDb("Kielbasa_2020_galcanezumab")
 
 sim <- events_all %>%
@@ -181,6 +185,7 @@ compared to 120 mg QM without a loading dose, and that 120 mg QM alone
 takes 4-5 months to reach steady state.
 
 ``` r
+
 fig3 <- sim %>%
   filter(time > 0) %>%
   group_by(treatment, time) %>%
@@ -216,6 +221,7 @@ heaviest patients but substantial overlap in the 90% prediction
 interval.
 
 ``` r
+
 pop_bw_extremes <- tibble(
   ID = seq_len(1000),
   WT = c(rep(52, 500), rep(105, 500)),
@@ -279,6 +285,7 @@ interval of the 240 mg LD + 120 mg QM regimen. PKNCA is grouped by
 `treatment + id`.
 
 ``` r
+
 nca_conc <- sim %>%
   filter(treatment == "240 mg LD + 120 mg QM",
          time <= 28,
@@ -291,6 +298,7 @@ nca_dose <- nca_conc %>%
 ```
 
 ``` r
+
 conc_obj <- PKNCAconc(nca_conc, Cc ~ time | treatment + id,
                       concu = "ug/mL", timeu = "day")
 dose_obj <- PKNCAdose(nca_dose, amt ~ time | treatment + id,
@@ -326,9 +334,10 @@ knitr::kable(nca_tbl,
 | tmax     |  7.000 |
 
 Simulated NCA on the first dosing interval of 240 mg LD + 120 mg QM (N =
-500).
+500). {.table}
 
 ``` r
+
 # Typical-value terminal half-life from the packaged structural parameters
 # (CL/F = 0.1884 L/day, V/F = 7.33 L at the 73.6 kg reference).
 typ_cl   <- 0.1884
@@ -356,9 +365,10 @@ data.frame(
 | published half-life (day) | 27.0000 |
 
 Typical-value terminal half-life derived from the structural parameters
-vs. Kielbasa 2020 reported value.
+vs. Kielbasa 2020 reported value. {.table}
 
 ``` r
+
 cmin_sim <- sim %>%
   filter(treatment == "240 mg LD + 120 mg QM") %>%
   mutate(month = floor(time / 28)) %>%
@@ -383,12 +393,13 @@ knitr::kable(cmin_table,
              caption = "Cmin comparison: simulated medians vs. Kielbasa 2020 reported values.")
 ```
 
-| metric                                     | published_ngmL | simulated_ugmL | simulated_ngmL | ratio_sim_pub |
-|:-------------------------------------------|---------------:|---------------:|---------------:|--------------:|
-| Cmin after 240 mg LD (end of month 1)      |          15900 |          16.92 |       16917.84 |          1.06 |
-| Cmin,ss during 120 mg QM (end of month 11) |          15400 |          16.87 |       16871.52 |          1.10 |
+| metric | published_ngmL | simulated_ugmL | simulated_ngmL | ratio_sim_pub |
+|:---|---:|---:|---:|---:|
+| Cmin after 240 mg LD (end of month 1) | 15900 | 16.92 | 16917.84 | 1.06 |
+| Cmin,ss during 120 mg QM (end of month 11) | 15400 | 16.87 | 16871.52 | 1.10 |
 
 Cmin comparison: simulated medians vs. Kielbasa 2020 reported values.
+{.table}
 
 The simulated Cmin values and terminal half-life should be within
 approximately 20% of the published values. Larger deviations would

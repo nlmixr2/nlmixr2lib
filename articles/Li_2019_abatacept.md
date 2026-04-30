@@ -48,39 +48,39 @@ for Table 1B’s caption issue). Reference covariate values are:
 count 16, not on concomitant NSAIDs, treated with the phase-3
 (commercial) SC formulation.
 
-| Equation / parameter                                                                                                   | Value                     | Source location                                                                   |
-|------------------------------------------------------------------------------------------------------------------------|---------------------------|-----------------------------------------------------------------------------------|
-| `lcl` (CL)                                                                                                             | `log(0.0204 * 24)` L/day  | Table 1A, CL_(TV,ref) = 0.0204 L/h                                                |
-| `lvc` (VC)                                                                                                             | `log(3.27)` L             | Table 1A, VC_(TV,ref) = 3.27 L                                                    |
-| `lq` (Q)                                                                                                               | `log(0.0265 * 24)` L/day  | Table 1A, Q_(TV,ref) = 0.0265 L/h                                                 |
-| `lvp` (VP)                                                                                                             | `log(4.26)` L             | Table 1A, VP_(TV,ref) = 4.26 L                                                    |
-| `lka` (KA_(TV))                                                                                                        | `log(0.00305 * 24)` 1/day | Table 1A, KA_(TV) = 0.00305 1/h                                                   |
-| `logitfdepot` (logit F_(TV,ref))                                                                                       | `1.42`                    | Table 1A, SC F_(TV,ref) = 1.42 (logit scale)                                      |
-| `e_wt_cl` ((WT/70)^(exp) on CL)                                                                                        | `0.651`                   | Table 1B, CL_(BWT) = 0.651                                                        |
-| `e_wt_vc` ((WT/70)^(exp) on VC)                                                                                        | `0.452`                   | Table 1B, VC_(BWT) = 0.452                                                        |
-| `e_wt_vp` ((WT/70)^(exp) on VP)                                                                                        | `0.457`                   | Table 1B, VP_(BWT) = 0.457                                                        |
-| `e_age_cl` ((AGE/50)^(exp) on CL)                                                                                      | `-0.186`                  | Table 1B, CL_(AGE) = -0.186                                                       |
-| `e_alb_cl` ((ALB/4.0)^(exp) on CL)                                                                                     | `-0.687`                  | Table 1B, CL_(ALB) = -0.687                                                       |
-| `e_crcl_cl` ((CRCL/90)^(exp) on CL)                                                                                    | `0.162`                   | Table 1B, CL_(cGFR) = 0.162                                                       |
-| `e_swol_cl` (((SWOL+1)/17)^(exp) on CL)                                                                                | `0.0965`                  | Table 1B, CL_(SWOL) = 0.0965                                                      |
-| `e_sexf_cl` (exp(SEXF·coef) on CL)                                                                                     | `-0.0722`                 | Table 1B, CL_(SEX) = -0.0722                                                      |
-| `e_nsaid_cl` (exp(CONMED_NSAID·coef) on CL)                                                                            | `0.0640`                  | Table 1B, CL_(NSAID) = 0.0640                                                     |
-| `e_form_f` (+coef·FORM on logit-F)                                                                                     | `-1.16`                   | Table 1B, F_(FORM) = -1.16                                                        |
-| `var(etalcl)`                                                                                                          | `0.0991`                  | Table 1A, var(ZCL)                                                                |
-| `var(etalvc)`                                                                                                          | `0.0632`                  | Table 1A, var(ZVC)                                                                |
-| `var(etalq)`                                                                                                           | `0.429`                   | Table 1A, var(ZQ)                                                                 |
-| `var(etalvp)`                                                                                                          | `0.377`                   | Table 1A, var(ZVP)                                                                |
-| `var(etalka)`                                                                                                          | `1.63`                    | Table 1A, var(ZKA)                                                                |
-| `var(etalogitfdepot)`                                                                                                  | `0.710`                   | Table 1A, var(ZF) (logit scale)                                                   |
-| `cov(etalcl, etalvc)`                                                                                                  | `0.0412`                  | Table 1A, ZCL:ZVC                                                                 |
-| `cov(etalcl, etalq)`                                                                                                   | `0.0952`                  | Table 1A, ZCL:ZQ                                                                  |
-| `cov(etalcl, etalvp)`                                                                                                  | `0.0910`                  | Table 1A, ZCL:ZVP                                                                 |
-| `cov(etalvc, etalq)`                                                                                                   | `0.0407`                  | Table 1A, ZVC:ZQ                                                                  |
-| `cov(etalvc, etalvp)`                                                                                                  | `0.0675`                  | Table 1A, ZVC:ZVP                                                                 |
-| `cov(etalq, etalvp)`                                                                                                   | `0.280`                   | Table 1A, ZQ:ZVP                                                                  |
-| `propSd`                                                                                                               | `0.215`                   | Table 1A, θ_(PROP) = 0.215                                                        |
-| `addSd`                                                                                                                | `0.341` mg/L              | Table 1A, θ_(ADD) = 0.341 μg/mL                                                   |
-| Structure (2-cmt + first-order SC / zero-order IV input + logit-F + KA \> k_(el) constraint + combined residual error) | n/a                       | Methods p. 247 (PopPK Analysis); Results p. 249 (final-model covariate equations) |
+| Equation / parameter | Value | Source location |
+|----|----|----|
+| `lcl` (CL) | `log(0.0204 * 24)` L/day | Table 1A, CL_(TV,ref) = 0.0204 L/h |
+| `lvc` (VC) | `log(3.27)` L | Table 1A, VC_(TV,ref) = 3.27 L |
+| `lq` (Q) | `log(0.0265 * 24)` L/day | Table 1A, Q_(TV,ref) = 0.0265 L/h |
+| `lvp` (VP) | `log(4.26)` L | Table 1A, VP_(TV,ref) = 4.26 L |
+| `lka` (KA_(TV)) | `log(0.00305 * 24)` 1/day | Table 1A, KA_(TV) = 0.00305 1/h |
+| `logitfdepot` (logit F_(TV,ref)) | `1.42` | Table 1A, SC F_(TV,ref) = 1.42 (logit scale) |
+| `e_wt_cl` ((WT/70)^(exp) on CL) | `0.651` | Table 1B, CL_(BWT) = 0.651 |
+| `e_wt_vc` ((WT/70)^(exp) on VC) | `0.452` | Table 1B, VC_(BWT) = 0.452 |
+| `e_wt_vp` ((WT/70)^(exp) on VP) | `0.457` | Table 1B, VP_(BWT) = 0.457 |
+| `e_age_cl` ((AGE/50)^(exp) on CL) | `-0.186` | Table 1B, CL_(AGE) = -0.186 |
+| `e_alb_cl` ((ALB/4.0)^(exp) on CL) | `-0.687` | Table 1B, CL_(ALB) = -0.687 |
+| `e_crcl_cl` ((CRCL/90)^(exp) on CL) | `0.162` | Table 1B, CL_(cGFR) = 0.162 |
+| `e_swol_cl` (((SWOL+1)/17)^(exp) on CL) | `0.0965` | Table 1B, CL_(SWOL) = 0.0965 |
+| `e_sexf_cl` (exp(SEXF·coef) on CL) | `-0.0722` | Table 1B, CL_(SEX) = -0.0722 |
+| `e_nsaid_cl` (exp(CONMED_NSAID·coef) on CL) | `0.0640` | Table 1B, CL_(NSAID) = 0.0640 |
+| `e_form_f` (+coef·FORM on logit-F) | `-1.16` | Table 1B, F_(FORM) = -1.16 |
+| `var(etalcl)` | `0.0991` | Table 1A, var(ZCL) |
+| `var(etalvc)` | `0.0632` | Table 1A, var(ZVC) |
+| `var(etalq)` | `0.429` | Table 1A, var(ZQ) |
+| `var(etalvp)` | `0.377` | Table 1A, var(ZVP) |
+| `var(etalka)` | `1.63` | Table 1A, var(ZKA) |
+| `var(etalogitfdepot)` | `0.710` | Table 1A, var(ZF) (logit scale) |
+| `cov(etalcl, etalvc)` | `0.0412` | Table 1A, ZCL:ZVC |
+| `cov(etalcl, etalq)` | `0.0952` | Table 1A, ZCL:ZQ |
+| `cov(etalcl, etalvp)` | `0.0910` | Table 1A, ZCL:ZVP |
+| `cov(etalvc, etalq)` | `0.0407` | Table 1A, ZVC:ZQ |
+| `cov(etalvc, etalvp)` | `0.0675` | Table 1A, ZVC:ZVP |
+| `cov(etalq, etalvp)` | `0.280` | Table 1A, ZQ:ZVP |
+| `propSd` | `0.215` | Table 1A, θ_(PROP) = 0.215 |
+| `addSd` | `0.341` mg/L | Table 1A, θ_(ADD) = 0.341 μg/mL |
+| Structure (2-cmt + first-order SC / zero-order IV input + logit-F + KA \> k_(el) constraint + combined residual error) | n/a | Methods p. 247 (PopPK Analysis); Results p. 249 (final-model covariate equations) |
 
 ### Parameterization notes
 
@@ -132,6 +132,7 @@ S3 is not accessible in the PMC full text). Subject-level observed data
 were not released with the paper.
 
 ``` r
+
 set.seed(20260424)
 n_subj <- 400
 
@@ -153,6 +154,7 @@ weight-tiered IV Q4W (500 mg if \<60 kg, 750 mg if 60-100 kg, 1000 mg if
 \>100 kg); and a single-dose 125 mg SC for the Tmax / Cmax check.
 
 ``` r
+
 tau_sc <- 7         # SC QW
 tau_iv <- 28        # IV Q4W
 n_sc   <- 26        # 26 weekly doses -> ~182 days, deeply into SS
@@ -208,6 +210,7 @@ events_iv     <- build_iv_events(cohort_iv, dose_days_iv, "IV_weight_tiered_Q4W"
 ## Simulation
 
 ``` r
+
 mod <- rxode2::rxode2(readModelDb("Li_2019_abatacept"))
 keep_cols <- c("WT", "AGE", "ALB", "CRCL", "SWOL_28JOINT",
                "SEXF", "CONMED_NSAID", "FORM_ABA_PHASE2", "treatment")
@@ -228,6 +231,7 @@ Tmax by simulating a single 125 mg SC dose at typical covariate values
 and plotting the concentration-time profile over 28 days.
 
 ``` r
+
 mod_typ <- mod |> rxode2::zeroRe()
 typ_cov <- tibble::tibble(
   id = 1L, WT = 70, AGE = 50, ALB = 4.0, CRCL = 90,
@@ -266,6 +270,7 @@ The two approved regimens are overlaid on the same axes over the first
 12 weeks. Percentile bands reflect cohort-level IIV.
 
 ``` r
+
 vpc <- sim |>
   dplyr::filter(!is.na(Cc), time > 0, time <= 84) |>
   dplyr::group_by(treatment, time) |>
@@ -301,6 +306,7 @@ replicates that body-weight-group summary using the steady-state cycle
 of the virtual cohort.
 
 ``` r
+
 ss_start_sc <- tau_sc * (n_sc - 1)
 ss_end_sc   <- ss_start_sc + tau_sc
 ss_start_iv <- tau_iv * (n_iv - 1)
@@ -341,6 +347,7 @@ intervals. Computes C_(max), C_(min), C_(avg), and AUC per simulated
 subject and regimen.
 
 ``` r
+
 nca_conc_sc <- sim_sc |>
   dplyr::filter(time >= ss_start_sc, time <= ss_end_sc, !is.na(Cc)) |>
   dplyr::mutate(time_nom = time - ss_start_sc) |>
@@ -357,6 +364,7 @@ intervals_sc <- data.frame(start = 0, end = tau_sc,
                            cmax = TRUE, cmin = TRUE, tmax = TRUE,
                            auclast = TRUE, cav = TRUE)
 nca_sc <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj_sc, dose_obj_sc, intervals = intervals_sc))
+#>  ■■■■■■■■■■■■                      36% |  ETA:  2s
 summary(nca_sc)
 #>  start end treatment   N    auclast        cmax        cmin              tmax
 #>      0   7 SC_125_QW 400 123 [38.1] 19.4 [35.7] 14.9 [44.0] 2.00 [1.00, 3.00]
@@ -367,6 +375,7 @@ summary(nca_sc)
 ```
 
 ``` r
+
 nca_conc_iv <- sim_iv |>
   dplyr::filter(time >= ss_start_iv, time <= ss_end_iv, !is.na(Cc)) |>
   dplyr::mutate(time_nom = time - ss_start_iv) |>
@@ -383,7 +392,6 @@ intervals_iv <- data.frame(start = 0, end = tau_iv,
                            cmax = TRUE, cmin = TRUE, tmax = TRUE,
                            auclast = TRUE, cav = TRUE)
 nca_iv <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj_iv, dose_obj_iv, intervals = intervals_iv))
-#>  ■■■■■■■■■■■■■■■■                  49% |  ETA:  2s
 summary(nca_iv)
 #>  start end            treatment   N     auclast       cmax        cmin
 #>      0  28 IV_weight_tiered_Q4W 400 1340 [32.3] 224 [25.7] 14.2 [56.8]
@@ -401,6 +409,7 @@ cohort-fraction check below is a direct numerical replicate of that
 claim.
 
 ``` r
+
 pct_above <- trough_by_wtgrp |>
   dplyr::group_by(regimen, wt_group) |>
   dplyr::summarise(
@@ -420,7 +429,7 @@ knitr::kable(pct_above, digits = 1,
 | SC 125 mg QW         | \>100 kg | 400 |          84.5 |        15.4 |
 
 Fraction of virtual subjects with steady-state trough Cc \>= 10 mg/L by
-regimen and weight group (Li 2019: ~90% across all groups).
+regimen and weight group (Li 2019: ~90% across all groups). {.table}
 
 ## Assumptions and deviations
 

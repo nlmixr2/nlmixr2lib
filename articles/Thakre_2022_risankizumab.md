@@ -1,6 +1,7 @@
 # Thakre_2022_risankizumab
 
 ``` r
+
 library(nlmixr2lib)
 library(rxode2)
 #> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
@@ -44,28 +45,28 @@ final model.
 
 ### Source trace
 
-| Element                   | Source location                   | Value / form                                                 |
-|---------------------------|-----------------------------------|--------------------------------------------------------------|
-| CL, Vc, Vp, Q, ka, F      | Thakre 2022 Table 1               | 0.248 L/day, 4.71 L, 4.26 L, 0.839 L/day, 0.218 /day, 0.835  |
-| WT on CL                  | Thakre 2022 Eq. 2 / Table 1       | Power: (WTKG/70)^0.869                                       |
-| ALB on CL                 | Thakre 2022 Eq. 2 / Table 1       | Power: (ALB/45)^-0.703                                       |
-| CREAT on CL               | Thakre 2022 Eq. 2 / Table 1       | Power: (CRE/70.73)^-0.201                                    |
-| CRP (hs-CRP) on CL        | Thakre 2022 Eq. 2 / Table 1       | Power: (CRPHS/5.21)^0.0471                                   |
-| AGE on CL                 | Thakre 2022 Eq. 2 / Table 1       | Power: (AGE/52)^-0.138                                       |
-| WT on Vc                  | Thakre 2022 Eq. 3 / Table 1       | Power: (WTKG/70)^1.46                                        |
-| IIV CL / V1 (correlated)  | Thakre 2022 Table 1               | var(CL)=0.0943, var(V1)=0.171, cov=0.0836 (correlation ~66%) |
-| IIV ka                    | Thakre 2022 Table 1               | var=0.164                                                    |
-| Residual error            | Thakre 2022 Table 1               | Proportional, variance = 0.0382 (~19.5% CV)                  |
-| Dosing regimen (clinical) | Thakre 2022 Abstract / Discussion | 150 mg SC at weeks 0 and 4, then every 12 weeks              |
+| Element | Source location | Value / form |
+|----|----|----|
+| CL, Vc, Vp, Q, ka, F | Thakre 2022 Table 1 | 0.248 L/day, 4.71 L, 4.26 L, 0.839 L/day, 0.218 /day, 0.835 |
+| WT on CL | Thakre 2022 Eq. 2 / Table 1 | Power: (WTKG/70)^0.869 |
+| ALB on CL | Thakre 2022 Eq. 2 / Table 1 | Power: (ALB/45)^-0.703 |
+| CREAT on CL | Thakre 2022 Eq. 2 / Table 1 | Power: (CRE/70.73)^-0.201 |
+| CRP (hs-CRP) on CL | Thakre 2022 Eq. 2 / Table 1 | Power: (CRPHS/5.21)^0.0471 |
+| AGE on CL | Thakre 2022 Eq. 2 / Table 1 | Power: (AGE/52)^-0.138 |
+| WT on Vc | Thakre 2022 Eq. 3 / Table 1 | Power: (WTKG/70)^1.46 |
+| IIV CL / V1 (correlated) | Thakre 2022 Table 1 | var(CL)=0.0943, var(V1)=0.171, cov=0.0836 (correlation ~66%) |
+| IIV ka | Thakre 2022 Table 1 | var=0.164 |
+| Residual error | Thakre 2022 Table 1 | Proportional, variance = 0.0382 (~19.5% CV) |
+| Dosing regimen (clinical) | Thakre 2022 Abstract / Discussion | 150 mg SC at weeks 0 and 4, then every 12 weeks |
 
 ### Covariate column naming
 
-| Source column  | Canonical column used here                                                                    |
-|----------------|-----------------------------------------------------------------------------------------------|
-| `WTKG`         | `WT` (per `covariate-columns.md`)                                                             |
-| `AGE`          | `AGE`                                                                                         |
-| `ALB` (g/L)    | `ALB` (g/L)                                                                                   |
-| `CRE` (umol/L) | `CREAT` (umol/L; canonical name)                                                              |
+| Source column | Canonical column used here |
+|----|----|
+| `WTKG` | `WT` (per `covariate-columns.md`) |
+| `AGE` | `AGE` |
+| `ALB` (g/L) | `ALB` (g/L) |
+| `CRE` (umol/L) | `CREAT` (umol/L; canonical name) |
 | `CRPHS` (mg/L) | `CRP` (mg/L; canonical general-scope name; hs-CRP assay documented in `covariateData[[CRP]]`) |
 
 ### Virtual population
@@ -76,6 +77,7 @@ typical PsA populations and are centered so that simulated individual
 parameters bracket the paper’s reference covariates.
 
 ``` r
+
 set.seed(2022)
 n_subj <- 500
 
@@ -96,6 +98,7 @@ weeks (q12w) thereafter. Simulate the first three full dosing intervals
 (weeks 0-28), matching Thakre 2022 Table 2.
 
 ``` r
+
 dose_weeks <- c(0, 4, 16, 28)    # 4 SC doses through week 28
 dose_times <- dose_weeks * 7     # convert to days
 
@@ -125,6 +128,7 @@ d_sim <- bind_rows(d_dose, d_obs) %>%
 ### Simulate
 
 ``` r
+
 mod <- readModelDb("Thakre_2022_risankizumab")
 conc_unit <- rxode2::rxode(mod)$units[["concentration"]]
 #> ℹ parameter labels from comments will be replaced by 'label()'
@@ -135,6 +139,7 @@ sim <- rxSolve(mod, d_sim, returnType = "data.frame")
 ### Concentration-time profile
 
 ``` r
+
 sim_summary <- sim %>%
   filter(time > 0) %>%
   group_by(time) %>%
@@ -168,6 +173,7 @@ intervals (weeks 0-4, 4-16, 16-28) and compare against Thakre 2022 Table
 2.
 
 ``` r
+
 intervals <- tribble(
   ~label,    ~start_wk, ~end_wk,
   "1 (0-4)",   0,   4,
@@ -215,17 +221,17 @@ knitr::kable(
 )
 ```
 
-| interval  | Cmax_median | Cmax_mean | Ctrough_median | Ctrough_mean | AUCtau_median | AUCtau_mean |
-|:----------|------------:|----------:|---------------:|-------------:|--------------:|------------:|
-| 1 (0-4)   |        9.24 |      9.77 |           5.45 |         5.66 |        200.86 |      207.22 |
-| 2 (4-16)  |       13.72 |     14.49 |           1.79 |         2.04 |        537.79 |      569.53 |
-| 3 (16-28) |       10.69 |     11.42 |           1.41 |         1.63 |        418.53 |      447.36 |
+| interval | Cmax_median | Cmax_mean | Ctrough_median | Ctrough_mean | AUCtau_median | AUCtau_mean |
+|:---|---:|---:|---:|---:|---:|---:|
+| 1 (0-4) | 9.24 | 9.77 | 5.45 | 5.66 | 200.86 | 207.22 |
+| 2 (4-16) | 13.72 | 14.49 | 1.79 | 2.04 | 537.79 | 569.53 |
+| 3 (16-28) | 10.69 | 11.42 | 1.41 | 1.63 | 418.53 | 447.36 |
 
 Simulated per-interval exposures (compare with Thakre 2022 Table 2:
 interval-1 Cmax median 9.40, interval-2 Cmax median 14.1, interval-3
 Cmax median 11.0 ug/mL; interval-1 Ctrough median 5.68, interval-2
 Ctrough median 1.93, interval-3 Ctrough median 1.52 ug/mL; interval AUC
-medians 207, 565, 439 ug\*day/mL).
+medians 207, 565, 439 ug\*day/mL). {.table}
 
 ### PKNCA validation
 
@@ -234,6 +240,7 @@ maintenance), which is the one reported as `Third dosing interval` in
 Thakre 2022 Table 2.
 
 ``` r
+
 nca_conc <- sim %>%
   filter(time >= 16 * 7, time <= 28 * 7, Cc > 0) %>%
   mutate(
@@ -266,12 +273,12 @@ data_obj <- PKNCAdata(
   )
 )
 nca_results <- pk.nca(data_obj)
-#>  ■■■■                               9% |  ETA: 19s
-#>  ■■■■■■■■■                         26% |  ETA: 14s
-#>  ■■■■■■■■■■■■■■                    42% |  ETA: 11s
-#>  ■■■■■■■■■■■■■■■■■■■               59% |  ETA:  7s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■          76% |  ETA:  4s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     93% |  ETA:  1s
+#>  ■■■■                               9% |  ETA: 18s
+#>  ■■■■■■■■■                         26% |  ETA: 13s
+#>  ■■■■■■■■■■■■■■                    44% |  ETA: 10s
+#>  ■■■■■■■■■■■■■■■■■■■               61% |  ETA:  7s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■          78% |  ETA:  4s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     95% |  ETA:  1s
 nca_summary <- summary(nca_results)
 knitr::kable(
   nca_summary,
@@ -283,12 +290,13 @@ knitr::kable(
 )
 ```
 
-| start | end | treatment               | N   | auclast      | cmax          | tmax                | half.life     |
-|------:|----:|:------------------------|:----|:-------------|:--------------|:--------------------|:--------------|
-|     0 |  84 | risankizumab_150mg_q12w | 500 | 417 \[38.5\] | 10.7 \[38.1\] | 6.00 \[2.00, 16.0\] | 26.4 \[5.79\] |
+| start | end | treatment | N | auclast | cmax | tmax | half.life |
+|---:|---:|:---|:---|:---|:---|:---|:---|
+| 0 | 84 | risankizumab_150mg_q12w | 500 | 417 \[38.5\] | 10.7 \[38.1\] | 6.00 \[2.00, 16.0\] | 26.4 \[5.79\] |
 
 PKNCA summary for the third dosing interval (weeks 16-28). Compare Cmax
-/ AUClast against Thakre 2022 Table 2 interval 3.
+/ AUClast against Thakre 2022 Table 2 interval 3. {.table
+style="width:100%;"}
 
 ### Assumptions and deviations
 

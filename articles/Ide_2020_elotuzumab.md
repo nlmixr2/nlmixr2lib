@@ -45,14 +45,29 @@ treatment time, consistent with declining M-protein and tumor burden.
 Mathematically (state variables: `central` \[mg\], `peripheral1` \[mg\],
 and `target` \[μg/mL\] for the peripheral target concentration):
 
-$$\frac{d\,{central}}{dt} = - \, k_{el}\,{central} - \, k_{12}\,{central} + \, k_{21}\,{peripheral1} - \frac{V_{\max}\,{central}}{C_{c} + K_{M}}$$
+``` math
+\frac{\mathrm{d}\,\mathrm{central}}{\mathrm{d}t}
+  = -\,k_{el}\,\mathrm{central}
+    -\,k_{12}\,\mathrm{central}
+    +\,k_{21}\,\mathrm{peripheral1}
+    -\frac{V_{\max}\,\mathrm{central}}{C_c + K_M}
+```
 
-$$\frac{d\,{peripheral1}}{dt} = k_{12}\,{central} - \, k_{21}\,{peripheral1} - \, k_{int}\,{peripheral1} \cdot {target}$$
+``` math
+\frac{\mathrm{d}\,\mathrm{peripheral1}}{\mathrm{d}t}
+  =  k_{12}\,\mathrm{central}
+    -\,k_{21}\,\mathrm{peripheral1}
+    -\,k_{\mathrm{int}}\,\mathrm{peripheral1}\cdot\mathrm{target}
+```
 
-$$\frac{d\,{target}}{dt} = - \, k_{int}\,\frac{peripheral1}{V_{P}}\,{target},\qquad{target}(0) = R_{\max}$$
+``` math
+\frac{\mathrm{d}\,\mathrm{target}}{\mathrm{d}t}
+  = -\,k_{\mathrm{int}}\,\frac{\mathrm{peripheral1}}{V_P}\,\mathrm{target},
+\qquad \mathrm{target}(0) = R_{\max}
+```
 
-where $C_{c} = {central}/V_{C}$, $k_{el} = CL/V_{C}$,
-$k_{12} = Q/V_{C}$, $k_{21} = Q/V_{P}$. The mixed-units convention (drug
+where $`C_c = \mathrm{central}/V_C`$, $`k_{el} = CL/V_C`$,
+$`k_{12} = Q/V_C`$, $`k_{21} = Q/V_P`$. The mixed-units convention (drug
 as amount, target as concentration) is the one the source paper
 specifies (supplement S2: “Division by V_P is required as A_2 is amount
 while A_3 is concentration”); the rxode2 implementation preserves it.
@@ -108,36 +123,36 @@ supplement S2 (`PMID_32656777_supplement_6_trimmed.md`); ODE structure
 is from Ide 2020 supplement 7 NONMEM control stream
 (`PMID_32656777_supplement_7_trimmed.md`).
 
-| Component                                       | Value                                                 | Source location                                                                                                                                        |
-|-------------------------------------------------|-------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `lcl` (CL_REF, L/day)                           | log(0.0806)                                           | Table 2, “CLREF, L/day = 0.0806”                                                                                                                       |
-| `lvc` (VC_REF, L)                               | log(3.94)                                             | Table 2, “VCREF, L = 3.94”                                                                                                                             |
-| `lq` (Q_REF, L/day)                             | log(0.515)                                            | Table 2, “QREF, L/day = 0.515”                                                                                                                         |
-| `lvp` (VP_REF, L)                               | log(2.01)                                             | Table 2, “VPREF, L = 2.01”                                                                                                                             |
-| `lvmax` (VMAX_REF, μg/mL/day)                   | log(12.2)                                             | Table 2, “Vmax,REF, μg/mL/day = 12.2”; reference includes MCPROT = 0 g/dL (supplement S2 abbreviation list)                                            |
-| `lkm` (KM, μg/mL)                               | log(298)                                              | Table 2, “KM, μg/mL = 298”                                                                                                                             |
-| `lrmax` (RMAX, μg/mL)                           | log(832)                                              | Table 2, “RMAX, μg/mL = 832”                                                                                                                           |
-| `lkint` (KINT_REF, /day/(μg/mL))                | log(0.207e-3)                                         | Table 2, “KINT, 10⁻³/day/μg/mL = 0.207”; reference includes Ld coadministration                                                                        |
-| `e_wt_cl`, `e_wt_vc`, `e_wt_q`, `e_wt_vp`       | 1.33, 0.348, 0.75 (FIXED), 0.623                      | Table 2, CLWT / VCWT / QWT / VPWT                                                                                                                      |
-| `e_age_cl`, `e_crcl_cl`, `e_ldh_cl`, `e_alb_cl` | 0.179, 0.121, 0.0816, -0.346                          | Table 2, CLAGE / CLeGFR / CLLDH / CLALB                                                                                                                |
-| `e_combo_len_dex_cl`                            | log(0.74)                                             | Table 2, CLLd = 0.74; encoded as exp(\*(COMBO_LEN_DEX - 1)) so the paper’s reference (Ld+) yields factor 1                                             |
-| `e_combo_len_dex_kint`                          | log(10.1)                                             | Table 2, KINTLd = 10.1; encoded as exp(\*(COMBO_LEN_DEX - 1))                                                                                          |
-| `e_sexf_cl`, `e_sexf_vc`                        | log(1.06), log(0.808)                                 | Table 2, CLSEX / VCSEX                                                                                                                                 |
-| `e_race_asian_cl`, `e_race_asian_vc`            | log(0.897), log(0.853)                                | Table 2, CLRACE / VCRACE                                                                                                                               |
-| `e_hepimp_cl`                                   | log(0.91)                                             | Table 2, CLHEP                                                                                                                                         |
-| `e_ecog_ge1_cl`, `e_ecog_ge2_cl`                | log(1.03), log(1.15)                                  | Table 2, CLECOG\>0 / CLECOG\>1                                                                                                                         |
-| `e_b2m_ge2_cl`, `e_b2m_ge35_cl`                 | log(1.11), log(1.01)                                  | Table 2, CLB2MICG≥0.20 / CLB2MICG≥0.35 (mg/dL thresholds; mg/L equivalents 2.0 / 3.5)                                                                  |
-| `e_b2m_ge2_vc`, `e_b2m_ge35_vc`                 | log(1.05), log(1.07)                                  | Table 2, VCB2MICG≥0.20 / VCB2MICG≥0.35                                                                                                                 |
-| `e_line_1l_cl`, `e_line_1l_vmax`                | log(0.921), log(1.01)                                 | Table 2, CLLINE=0 / VMAXLINE=0                                                                                                                         |
-| `e_mcprot_vmax`                                 | 0.277                                                 | Table 2, VMAXMCPROT = 0.277 (un-log-transformed; coefficient of MCPROT in g/dL inside exp(·))                                                          |
-| ω² CL / VC / Q / VP / Rmax / KINT / KM          | 0.156 / 0.0355 / 0.427 / 0.137 / 0.193 / 1.84 / 0.392 | Table 2, Interindividual variability                                                                                                                   |
-| ω² VMAX                                         | 1e-4 (FIXED)                                          | Table 2, footnote d                                                                                                                                    |
-| `sdL`, `sdH`, `sd50` (residual SD)              | 2.78, 0.0984, 5.56                                    | Table 2, Intraindividual variability                                                                                                                   |
-| `d/dt(central)` ODE                             | -kel·c - k12·c + k21·p - Vmax·c/(Cc+Km)               | Supplement 7 `$DES`: `DADT(1) = -K12*A(1) + K21*A(2) - K10*A(1) - VMAX*A(1)/(CONC1+KM)`                                                                |
-| `d/dt(peripheral1)` ODE                         | k12·c - k21·p - kint·p·target                         | Supplement 7 `$DES`: `DADT(2) = K12*A(1) - K21*A(2) - KINT*A(2)*A(3)`                                                                                  |
-| `d/dt(target)` ODE                              | -kint · Cp · target                                   | Supplement 7 `$DES`: `DADT(3) = -KINT*A(2)/VP*A(3)`; supplement S2 footnote on units                                                                   |
-| `target(0) = rmax`                              | initial condition                                     | Supplement 7 `$PK`: `A_0(3) = RMAX`                                                                                                                    |
-| Saturable residual W                            | sdL - (sdL - sdH)·Cc/(sd50+Cc)                        | Supplement 7 `$ERROR`: `W = (SDL - (SDL-SDH)*TY/(SD50+TY)) * THETA(16)^STOTHER * EXP(ETA(9))` (study multiplier and IIV-on-W omitted; see Assumptions) |
+| Component | Value | Source location |
+|----|----|----|
+| `lcl` (CL_REF, L/day) | log(0.0806) | Table 2, “CLREF, L/day = 0.0806” |
+| `lvc` (VC_REF, L) | log(3.94) | Table 2, “VCREF, L = 3.94” |
+| `lq` (Q_REF, L/day) | log(0.515) | Table 2, “QREF, L/day = 0.515” |
+| `lvp` (VP_REF, L) | log(2.01) | Table 2, “VPREF, L = 2.01” |
+| `lvmax` (VMAX_REF, μg/mL/day) | log(12.2) | Table 2, “Vmax,REF, μg/mL/day = 12.2”; reference includes MCPROT = 0 g/dL (supplement S2 abbreviation list) |
+| `lkm` (KM, μg/mL) | log(298) | Table 2, “KM, μg/mL = 298” |
+| `lrmax` (RMAX, μg/mL) | log(832) | Table 2, “RMAX, μg/mL = 832” |
+| `lkint` (KINT_REF, /day/(μg/mL)) | log(0.207e-3) | Table 2, “KINT, 10⁻³/day/μg/mL = 0.207”; reference includes Ld coadministration |
+| `e_wt_cl`, `e_wt_vc`, `e_wt_q`, `e_wt_vp` | 1.33, 0.348, 0.75 (FIXED), 0.623 | Table 2, CLWT / VCWT / QWT / VPWT |
+| `e_age_cl`, `e_crcl_cl`, `e_ldh_cl`, `e_alb_cl` | 0.179, 0.121, 0.0816, -0.346 | Table 2, CLAGE / CLeGFR / CLLDH / CLALB |
+| `e_combo_len_dex_cl` | log(0.74) | Table 2, CLLd = 0.74; encoded as exp(\*(COMBO_LEN_DEX - 1)) so the paper’s reference (Ld+) yields factor 1 |
+| `e_combo_len_dex_kint` | log(10.1) | Table 2, KINTLd = 10.1; encoded as exp(\*(COMBO_LEN_DEX - 1)) |
+| `e_sexf_cl`, `e_sexf_vc` | log(1.06), log(0.808) | Table 2, CLSEX / VCSEX |
+| `e_race_asian_cl`, `e_race_asian_vc` | log(0.897), log(0.853) | Table 2, CLRACE / VCRACE |
+| `e_hepimp_cl` | log(0.91) | Table 2, CLHEP |
+| `e_ecog_ge1_cl`, `e_ecog_ge2_cl` | log(1.03), log(1.15) | Table 2, CLECOG\>0 / CLECOG\>1 |
+| `e_b2m_ge2_cl`, `e_b2m_ge35_cl` | log(1.11), log(1.01) | Table 2, CLB2MICG≥0.20 / CLB2MICG≥0.35 (mg/dL thresholds; mg/L equivalents 2.0 / 3.5) |
+| `e_b2m_ge2_vc`, `e_b2m_ge35_vc` | log(1.05), log(1.07) | Table 2, VCB2MICG≥0.20 / VCB2MICG≥0.35 |
+| `e_line_1l_cl`, `e_line_1l_vmax` | log(0.921), log(1.01) | Table 2, CLLINE=0 / VMAXLINE=0 |
+| `e_mcprot_vmax` | 0.277 | Table 2, VMAXMCPROT = 0.277 (un-log-transformed; coefficient of MCPROT in g/dL inside exp(·)) |
+| ω² CL / VC / Q / VP / Rmax / KINT / KM | 0.156 / 0.0355 / 0.427 / 0.137 / 0.193 / 1.84 / 0.392 | Table 2, Interindividual variability |
+| ω² VMAX | 1e-4 (FIXED) | Table 2, footnote d |
+| `sdL`, `sdH`, `sd50` (residual SD) | 2.78, 0.0984, 5.56 | Table 2, Intraindividual variability |
+| `d/dt(central)` ODE | -kel·c - k12·c + k21·p - Vmax·c/(Cc+Km) | Supplement 7 `$DES`: `DADT(1) = -K12*A(1) + K21*A(2) - K10*A(1) - VMAX*A(1)/(CONC1+KM)` |
+| `d/dt(peripheral1)` ODE | k12·c - k21·p - kint·p·target | Supplement 7 `$DES`: `DADT(2) = K12*A(1) - K21*A(2) - KINT*A(2)*A(3)` |
+| `d/dt(target)` ODE | -kint · Cp · target | Supplement 7 `$DES`: `DADT(3) = -KINT*A(2)/VP*A(3)`; supplement S2 footnote on units |
+| `target(0) = rmax` | initial condition | Supplement 7 `$PK`: `A_0(3) = RMAX` |
+| Saturable residual W | sdL - (sdL - sdH)·Cc/(sd50+Cc) | Supplement 7 `$ERROR`: `W = (SDL - (SDL-SDH)*TY/(SD50+TY)) * THETA(16)^STOTHER * EXP(ETA(9))` (study multiplier and IIV-on-W omitted; see Assumptions) |
 
 ## Virtual cohort
 
@@ -146,6 +161,7 @@ use a virtual reference patient and a virtual cohort whose covariate
 distributions approximate Ide 2020 Table 1.
 
 ``` r
+
 # Reference patient = supplement S2 reference covariate values (the values at
 # which the paper's typical CL_REF / VC_REF / etc. apply). Identical to the
 # Figure 1 reference-patient covariate panel.
@@ -168,6 +184,7 @@ ref_pt <- list(
 ```
 
 ``` r
+
 set.seed(20260428L)
 
 # Virtual cohort: 200 subjects with Table-1 baseline distributions.
@@ -206,6 +223,7 @@ cohort <- tibble::tibble(
 ## Simulation
 
 ``` r
+
 mod         <- readModelDb("Ide_2020_elotuzumab")
 mod_typical <- mod |> rxode2::zeroRe()
 #> ℹ parameter labels from comments will be replaced by 'label()'
@@ -253,6 +271,7 @@ accumulation across weekly doses (cycles 1-2) followed by a Q2W
 maintenance phase (cycle 3+).
 
 ``` r
+
 ggplot(sim_ref, aes(time / 7, Cc)) +
   geom_line(color = "navy") +
   geom_vline(xintercept = 8, linetype = "dashed", color = "grey40") +
@@ -288,6 +307,7 @@ reference), 2 g/dL (figure-1 reference patient ~ population median), and
 Table 1).
 
 ``` r
+
 mcprot_levels <- c(0, 2, 5)
 sim_mcprot <- lapply(mcprot_levels, function(mp) {
   ev2 <- events_ref
@@ -332,6 +352,7 @@ non-Asian patients once body weight differences are accounted for) is
 reproduced when each subject is dosed at their own weight.
 
 ``` r
+
 # Build dosing for the cohort: weight-based dose for each subject.
 cohort_events <- lapply(seq_len(nrow(cohort)), function(i) {
   cov_i <- as.list(cohort[i, ])
@@ -355,6 +376,7 @@ sim_cohort <- rxode2::rxSolve(mod_typical, events = cohort_events,
 ```
 
 ``` r
+
 ss_window_lo <- (24L - 2L) * 7  # cycle 12 dosing interval ~ weeks 22-24
 ss_window_hi <- 24L * 7
 
@@ -399,6 +421,7 @@ standard maintenance interval — `tau` = 14 days for Q2W; the reported
 2020 Figure 3 panel A pattern.
 
 ``` r
+
 sim_nca <- sim_cohort |>
   dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, RACE_ASIAN) |>
@@ -456,6 +479,7 @@ knitr::kable(nca_tbl, digits = 2,
 | non-Asian | tmax     |   0.00 |   0.00 |   0.00 |
 
 Simulated steady-state NCA over the cycle-12 Q2W interval, by race.
+{.table}
 
 ### Comparison against published values
 

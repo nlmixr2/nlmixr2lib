@@ -1,6 +1,7 @@
 # FiedlerKelly_2020_fremanezumab_em
 
 ``` r
+
 library(nlmixr2lib)
 library(rxode2)
 #> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
@@ -46,12 +47,16 @@ this library).
 The EM model relates monthly migraine days to fremanezumab Cav and
 time-on-treatment via three additive components:
 
-$$\text{migraineDays}\left( t,C_{av} \right) = \text{BL}_{i} - e^{\theta_{P,i}\, t} - \text{BL}_{i} \cdot E_{\max,i}\,\frac{C_{av}}{EC_{50} + C_{av}}$$
+``` math
+\text{migraineDays}(t, C_{av}) = \text{BL}_i - e^{\theta_{P,i}\,t} - \text{BL}_i \cdot E_{\max,i}\,\frac{C_{av}}{EC_{50} + C_{av}}
+```
 
 with the individual baseline a piecewise-linear function of baseline
 acute-medication days,
 
-$$\text{BL}_{i} = \theta_{BL} + \theta_{S}\,\max\left( 0,\,\text{ACUTE\_MED\_DAYS} - 5 \right) + \eta_{\text{BL},i}$$
+``` math
+\text{BL}_i = \theta_{BL} + \theta_{S}\,\max(0,\,\text{ACUTE\_MED\_DAYS} - 5) + \eta_{\text{BL},i}
+```
 
 (breakpoint at 5 d/mo per the medication-overuse-headache convention).
 `t` is in months (28-day periods). The placebo time-course follows the
@@ -81,6 +86,7 @@ The same demographic summary is exposed programmatically via the model
 metadata:
 
 ``` r
+
 str(rxode2::rxode2(readModelDb("FiedlerKelly_2020_fremanezumab_em"))$meta$population)
 #> ℹ parameter labels from comments will be replaced by 'label()'
 #> Warning: some etas defaulted to non-mu referenced, possible parsing error: etalogitEmax
@@ -111,24 +117,25 @@ Per-parameter origin is recorded as an in-file comment next to each
 table below collects the equations and parameters in one place for
 review.
 
-| Equation / parameter                                                                                      | Value                                    | Source location                                     |
-|-----------------------------------------------------------------------------------------------------------|------------------------------------------|-----------------------------------------------------|
-| Composite endpoint equation `migraineDays = BL - exp(exp_PLC * t) - BL * Emax * Cav/(EC50+Cav)`           | n/a                                      | Figure 2A; Methods — E-R Analysis Methodology       |
-| Piecewise-linear baseline `BL = bl_em + slope_AM * max(0, ACUTE_MED_DAYS - 5)`                            | n/a                                      | Results — Monthly Migraine Days in Patients With EM |
-| `bl_em` (typical baseline at AM ≤ 5 d/mo)                                                                 | 8.35 d/mo                                | Table S3                                            |
-| `slope_AM` (slope on AM days \> 5)                                                                        | 0.438 d/d                                | Table S3                                            |
-| `exp_PLC` (placebo time-course exponent, FIXED)                                                           | 0.360 / month                            | Table S3                                            |
-| `Emax_drug` typical (logit-transformed in [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html)) | 0.252 (fractional)                       | Table S3                                            |
-| `EC50_drug`                                                                                               | 3.60 µg/mL                               | Table S3 (NE for IIV)                               |
-| IIV `bl_em` / `slope_AM` (shared additive eta)                                                            | SD 1.61 (variance 2.59)                  | Table S3                                            |
-| IIV `exp_PLC` (additive eta on exponent)                                                                  | SD 2.92 (variance 8.53)                  | Table S3                                            |
-| IIV `Emax_drug` (logit-normal eta)                                                                        | omega² = 0.335 (43.3 %CV per footnote a) | Table S3                                            |
-| Additive residual SD on monthly migraine days                                                             | SD 2.35 (variance 5.52)                  | Table S3                                            |
+| Equation / parameter | Value | Source location |
+|----|----|----|
+| Composite endpoint equation `migraineDays = BL - exp(exp_PLC * t) - BL * Emax * Cav/(EC50+Cav)` | n/a | Figure 2A; Methods — E-R Analysis Methodology |
+| Piecewise-linear baseline `BL = bl_em + slope_AM * max(0, ACUTE_MED_DAYS - 5)` | n/a | Results — Monthly Migraine Days in Patients With EM |
+| `bl_em` (typical baseline at AM ≤ 5 d/mo) | 8.35 d/mo | Table S3 |
+| `slope_AM` (slope on AM days \> 5) | 0.438 d/d | Table S3 |
+| `exp_PLC` (placebo time-course exponent, FIXED) | 0.360 / month | Table S3 |
+| `Emax_drug` typical (logit-transformed in [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html)) | 0.252 (fractional) | Table S3 |
+| `EC50_drug` | 3.60 µg/mL | Table S3 (NE for IIV) |
+| IIV `bl_em` / `slope_AM` (shared additive eta) | SD 1.61 (variance 2.59) | Table S3 |
+| IIV `exp_PLC` (additive eta on exponent) | SD 2.92 (variance 8.53) | Table S3 |
+| IIV `Emax_drug` (logit-normal eta) | omega² = 0.335 (43.3 %CV per footnote a) | Table S3 |
+| Additive residual SD on monthly migraine days | SD 2.35 (variance 5.52) | Table S3 |
 
 Sanity check at the reference (typical-value) baseline with AM = 0 d/mo
 and Cav = 0 (placebo):
 
 ``` r
+
 mod <- readModelDb("FiedlerKelly_2020_fremanezumab_em")
 ev_check <- data.frame(
   id   = 1L,
@@ -166,6 +173,7 @@ supplied as a per-period covariate column (set to 0 for placebo
 periods).
 
 ``` r
+
 set.seed(20260427)
 
 n_per_arm <- 250L
@@ -214,6 +222,7 @@ to reproduce the figure-style mean lines, and (b) a stochastic cohort
 with full IIV for percentile envelopes.
 
 ``` r
+
 mod <- readModelDb("FiedlerKelly_2020_fremanezumab_em")
 
 sim_typ <- rxode2::rxSolve(
@@ -247,6 +256,7 @@ Figures 3a-b and 4a of Fiedler-Kelly 2020 plot the mean (± 1 SD) monthly
 migraine days and percent of responders over the three-month follow-up.
 
 ``` r
+
 # Replicates Figure 3A of Fiedler-Kelly 2020: mean monthly migraine days by regimen.
 sim_iiv |>
   group_by(regimen, time) |>
@@ -271,6 +281,7 @@ sim_iiv |>
 ![](FiedlerKelly_2020_fremanezumab_em_files/figure-html/figure-3a-1.png)
 
 ``` r
+
 # Replicates Figure 4A of Fiedler-Kelly 2020: percent responders (>= 50%
 # reduction from baseline migraine days) by month and regimen.
 baseline_per_id <- events |>
@@ -306,6 +317,7 @@ Fiedler-Kelly 2020 Results — EM section reports specific narrative
 numbers that should reproduce in the typical-value simulation:
 
 ``` r
+
 narrative_compare <- sim_typ |>
   filter(time == 3) |>
   group_by(regimen) |>
@@ -329,7 +341,7 @@ knitr::kable(
 | q3m_675         |              3.88 |              4.47 |
 
 Typical-value month-3 migraine days and reduction from baseline by
-regimen.
+regimen. {.table}
 
 The placebo arm produces a 2.42-day month-3 reduction (paper:
 “approximately 3 days”). The 225 mg q1m + 675 mg LD arm achieves a

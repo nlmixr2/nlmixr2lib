@@ -1,6 +1,7 @@
 # Ogasawara_2020_durvalumab
 
 ``` r
+
 library(nlmixr2lib)
 library(rxode2)
 #> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
@@ -54,6 +55,7 @@ equations verified against PMC7007418 (Table 3 footnotes b and c).
 ### Virtual population
 
 ``` r
+
 set.seed(2020)
 n_subj <- 500
 
@@ -79,6 +81,7 @@ Simulate durvalumab 1500 mg IV every 4 weeks (q4w) for 24 weeks.
 Infusion over 1 hour.
 
 ``` r
+
 dose_weeks <- seq(0, 20, by = 4)
 dose_times_h <- dose_weeks * 7 * 24  # weeks to hours
 
@@ -103,6 +106,7 @@ d_sim <- bind_rows(d_dose, d_obs) %>%
 ### Simulate
 
 ``` r
+
 mod <- readModelDb("Ogasawara_2020_durvalumab")
 conc_unit <- rxode2::rxode(mod)$units[["concentration"]]
 #> ℹ parameter labels from comments will be replaced by 'label()'
@@ -113,6 +117,7 @@ sim <- rxSolve(mod, d_sim, returnType = "data.frame")
 ### Concentration-time profiles
 
 ``` r
+
 sim_summary <- sim %>%
   filter(time > 0) %>%
   group_by(time) %>%
@@ -141,6 +146,7 @@ ggplot(sim_summary, aes(x = time / (24 * 7))) +
 ### PK by disease type
 
 ``` r
+
 # The rxSolve output carries covariates through, so MDSAML is already in sim
 sim_df_disease <- as.data.frame(sim)
 sim_df_disease <- sim_df_disease[sim_df_disease$time > 0, ]
@@ -168,6 +174,7 @@ ggplot(sim_disease_summary, aes(x = time / (24 * 7), y = median, color = Disease
 ### NCA analysis
 
 ``` r
+
 # Use 3rd dosing interval (weeks 8-12 = hours 1344-2016)
 sim_df <- as.data.frame(sim)
 # Build unique subject key from sim.id and id
@@ -199,21 +206,21 @@ data_obj <- PKNCAdata(conc_obj, dose_obj,
                                               cmax = TRUE, tmax = TRUE,
                                               auclast = TRUE, half.life = TRUE))
 nca_results <- pk.nca(data_obj)
-#>  ■■■■                              11% |  ETA: 13s
-#>  ■■■■■■■■■■■                       33% |  ETA:  9s
-#>  ■■■■■■■■■■■■■■■■■■                56% |  ETA:  6s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■         78% |  ETA:  3s
+#>  ■■■■■■■■■                         26% |  ETA: 10s
+#>  ■■■■■■■■■■■■■■■                   48% |  ETA:  7s
+#>  ■■■■■■■■■■■■■■■■■■■■■■            69% |  ETA:  4s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      90% |  ETA:  1s
 nca_summary <- summary(nca_results)
 knitr::kable(nca_summary, digits = 2,
              caption = "NCA summary (3rd dosing interval, weeks 8-12)")
 ```
 
-| start | end | Disease | N   | auclast       | cmax         | tmax                | half.life     |
-|------:|----:|:--------|:----|:--------------|:-------------|:--------------------|:--------------|
-|     0 |  28 | MDS/AML | 201 | 4490 \[37.6\] | 349 \[26.1\] | 1.00 \[1.00, 1.00\] | 17.9 \[7.24\] |
-|     0 |  28 | Other   | 299 | 5700 \[37.5\] | 415 \[26.8\] | 1.00 \[1.00, 1.00\] | 20.9 \[7.56\] |
+| start | end | Disease | N | auclast | cmax | tmax | half.life |
+|---:|---:|:---|:---|:---|:---|:---|:---|
+| 0 | 28 | MDS/AML | 201 | 4490 \[37.6\] | 349 \[26.1\] | 1.00 \[1.00, 1.00\] | 17.9 \[7.24\] |
+| 0 | 28 | Other | 299 | 5700 \[37.5\] | 415 \[26.8\] | 1.00 \[1.00, 1.00\] | 20.9 \[7.56\] |
 
-NCA summary (3rd dosing interval, weeks 8-12)
+NCA summary (3rd dosing interval, weeks 8-12) {.table}
 
 ### Notes
 

@@ -1,6 +1,7 @@
 # Fiedler-Kelly_2019_fremanezumab
 
 ``` r
+
 library(nlmixr2lib)
 library(rxode2)
 #> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
@@ -64,25 +65,25 @@ attribute of the function body rather than a live list).
 
 ### Source trace
 
-| Element                           | Source location                           | Value / form                                     |
-|-----------------------------------|-------------------------------------------|--------------------------------------------------|
-| Structural model                  | Fiedler-Kelly 2019 Section 3.2            | 2-compartment, first-order SC absorption + lag   |
-| CL (71 kg subject)                | Fiedler-Kelly 2019 Table 2                | 0.0902 L/day                                     |
-| Allometric exponent on CL         | Fiedler-Kelly 2019 Table 2, footnote c    | 1.05; TVCL = 0.0902 \* (WT/71)^1.05              |
-| Vc (SC, 71 kg subject)            | Fiedler-Kelly 2019 Table 2                | 1.88 L                                           |
-| Allometric exponent on Vc         | Fiedler-Kelly 2019 Table 2, footnotes d,e | 1.53; TVVc = 1.88 \* (WT/71)^1.53                |
-| ka                                | Fiedler-Kelly 2019 Table 2                | 0.180 /day                                       |
-| Q (FIXED)                         | Fiedler-Kelly 2019 Table 2                | 0.262 L/day                                      |
-| Vp (FIXED)                        | Fiedler-Kelly 2019 Table 2                | 1.72 L                                           |
-| F (SC, FIXED)                     | Fiedler-Kelly 2019 Table 2                | 0.658                                            |
-| Tlag (SC, FIXED)                  | Fiedler-Kelly 2019 Table 2                | 0.0803 day                                       |
-| IIV on CL                         | Fiedler-Kelly 2019 Table 2                | 23.4% CV (omega^2 = log(CV^2 + 1) = 0.0534)      |
-| IIV on Vc                         | Fiedler-Kelly 2019 Table 2                | 35.1% CV (omega^2 = 0.1162)                      |
-| IIV on ka                         | Fiedler-Kelly 2019 Table 2                | 59.0% CV (omega^2 = 0.2986)                      |
-| Off-diagonal omega                | Fiedler-Kelly 2019 Section 3.2            | None estimated (diagonal matrix)                 |
-| SC residual error                 | Fiedler-Kelly 2019 Table 2, footnote g    | Proportional var 0.0531 + additive var 0.204     |
-| IV residual error (not used here) | Fiedler-Kelly 2019 Table 2                | Proportional var 0.0467                          |
-| Dose regimens                     | Fiedler-Kelly 2019 Table 1                | 225 mg SC Q4W, 675 mg SC Q12W, loading 675 mg SC |
+| Element | Source location | Value / form |
+|----|----|----|
+| Structural model | Fiedler-Kelly 2019 Section 3.2 | 2-compartment, first-order SC absorption + lag |
+| CL (71 kg subject) | Fiedler-Kelly 2019 Table 2 | 0.0902 L/day |
+| Allometric exponent on CL | Fiedler-Kelly 2019 Table 2, footnote c | 1.05; TVCL = 0.0902 \* (WT/71)^1.05 |
+| Vc (SC, 71 kg subject) | Fiedler-Kelly 2019 Table 2 | 1.88 L |
+| Allometric exponent on Vc | Fiedler-Kelly 2019 Table 2, footnotes d,e | 1.53; TVVc = 1.88 \* (WT/71)^1.53 |
+| ka | Fiedler-Kelly 2019 Table 2 | 0.180 /day |
+| Q (FIXED) | Fiedler-Kelly 2019 Table 2 | 0.262 L/day |
+| Vp (FIXED) | Fiedler-Kelly 2019 Table 2 | 1.72 L |
+| F (SC, FIXED) | Fiedler-Kelly 2019 Table 2 | 0.658 |
+| Tlag (SC, FIXED) | Fiedler-Kelly 2019 Table 2 | 0.0803 day |
+| IIV on CL | Fiedler-Kelly 2019 Table 2 | 23.4% CV (omega^2 = log(CV^2 + 1) = 0.0534) |
+| IIV on Vc | Fiedler-Kelly 2019 Table 2 | 35.1% CV (omega^2 = 0.1162) |
+| IIV on ka | Fiedler-Kelly 2019 Table 2 | 59.0% CV (omega^2 = 0.2986) |
+| Off-diagonal omega | Fiedler-Kelly 2019 Section 3.2 | None estimated (diagonal matrix) |
+| SC residual error | Fiedler-Kelly 2019 Table 2, footnote g | Proportional var 0.0531 + additive var 0.204 |
+| IV residual error (not used here) | Fiedler-Kelly 2019 Table 2 | Proportional var 0.0467 |
+| Dose regimens | Fiedler-Kelly 2019 Table 1 | 225 mg SC Q4W, 675 mg SC Q12W, loading 675 mg SC |
 
 ### Virtual cohort
 
@@ -92,6 +93,7 @@ The paper did not publish an individual-level weight distribution, so we
 use a log-normal approximation bounded to the reported range.
 
 ``` r
+
 set.seed(2019)
 n_subj <- 500
 
@@ -109,6 +111,7 @@ once quarterly for 4 doses. Simulate over 12 months with daily sampling
 through the first cycle and weekly samples thereafter.
 
 ``` r
+
 obs_times <- sort(unique(c(
   seq(0, 28, by = 1),
   seq(28, 364, by = 7)
@@ -142,6 +145,7 @@ events_all <- bind_rows(events_monthly, events_quarterly)
 ### Simulation
 
 ``` r
+
 mod <- readModelDb("Fiedler-Kelly_2019_fremanezumab")
 conc_unit <- rxode2::rxode(mod)$units[["concentration"]]
 #> ℹ parameter labels from comments will be replaced by 'label()'
@@ -164,6 +168,7 @@ for fremanezumab concentration-time profiles under the two phase 3
 regimens.
 
 ``` r
+
 fig7 <- sim %>%
   filter(time > 0) %>%
   group_by(treatment, time) %>%
@@ -196,6 +201,7 @@ Figure 8 of Fiedler-Kelly 2019 shows a monotonic decrease in
 steady-state exposure across quartiles of body weight for both regimens.
 
 ``` r
+
 cav_monthly <- sim %>%
   filter(treatment == "225 mg SC Q4W",
          time >= 11 * 28, time <= 12 * 28) %>%
@@ -250,6 +256,7 @@ and on the last dosing interval, then compare their ratio to the
 published accumulation ratios. PKNCA is grouped by `treatment + id`.
 
 ``` r
+
 nca_window <- function(sim, treat_label, dose_amt, start, end) {
   sim %>%
     filter(treatment == treat_label, time >= start, time <= end) %>%
@@ -280,6 +287,7 @@ nca_dose <- nca_conc %>%
 ```
 
 ``` r
+
 conc_obj <- PKNCAconc(nca_conc, Cc ~ time_rel | treatment + id)
 dose_obj <- PKNCAdose(nca_dose, amt ~ time_rel | treatment + id)
 
@@ -300,17 +308,18 @@ knitr::kable(nca_summary,
              caption = "PKNCA summary by treatment / interval (auclast in ug*day/mL, Cmax in ug/mL).")
 ```
 
-| start | end | treatment                | N   | auclast       | cmax          | tmax                |
-|------:|----:|:-------------------------|:----|:--------------|:--------------|:--------------------|
-|     0 |  84 | 225 mg SC Q4W dose 1     | 500 | NC            | 33.4 \[36.6\] | 8.00 \[2.00, 28.0\] |
-|     0 |  84 | 225 mg SC Q4W last dose  | 500 | 1610 \[33.9\] | 71.2 \[30.6\] | 7.00 \[7.00, 14.0\] |
-|     0 |  84 | 675 mg SC Q12W dose 1    | 500 | NC            | 99.8 \[37.4\] | 8.00 \[2.00, 35.0\] |
-|     0 |  84 | 675 mg SC Q12W last dose | 500 | 4740 \[33.0\] | 115 \[31.8\]  | 7.00 \[7.00, 21.0\] |
+| start | end | treatment | N | auclast | cmax | tmax |
+|---:|---:|:---|:---|:---|:---|:---|
+| 0 | 84 | 225 mg SC Q4W dose 1 | 500 | NC | 33.4 \[36.6\] | 8.00 \[2.00, 28.0\] |
+| 0 | 84 | 225 mg SC Q4W last dose | 500 | 1610 \[33.9\] | 71.2 \[30.6\] | 7.00 \[7.00, 14.0\] |
+| 0 | 84 | 675 mg SC Q12W dose 1 | 500 | NC | 99.8 \[37.4\] | 8.00 \[2.00, 35.0\] |
+| 0 | 84 | 675 mg SC Q12W last dose | 500 | 4740 \[33.0\] | 115 \[31.8\] | 7.00 \[7.00, 21.0\] |
 
 PKNCA summary by treatment / interval (auclast in ug\*day/mL, Cmax in
-ug/mL).
+ug/mL). {.table style="width:100%;"}
 
 ``` r
+
 nca_tbl <- as.data.frame(nca_res$result) %>%
   filter(PPTESTCD %in% c("auclast", "cmax")) %>%
   group_by(treatment, PPTESTCD) %>%
@@ -340,12 +349,13 @@ knitr::kable(acc_table,
              caption = "Accumulation ratios: simulated medians vs. Fiedler-Kelly 2019 Table 3.")
 ```
 
-| regimen        | AR_AUC simulated | AR_AUC published (median) | AR_Cmax simulated | AR_Cmax published (median) |
-|:---------------|-----------------:|--------------------------:|------------------:|---------------------------:|
-| 225 mg SC Q4W  |               NA |                      2.43 |              2.13 |                       2.38 |
-| 675 mg SC Q12W |               NA |                      1.21 |              1.14 |                       1.22 |
+| regimen | AR_AUC simulated | AR_AUC published (median) | AR_Cmax simulated | AR_Cmax published (median) |
+|:---|---:|---:|---:|---:|
+| 225 mg SC Q4W | NA | 2.43 | 2.13 | 2.38 |
+| 675 mg SC Q12W | NA | 1.21 | 1.14 | 1.22 |
 
 Accumulation ratios: simulated medians vs. Fiedler-Kelly 2019 Table 3.
+{.table}
 
 The simulated accumulation ratios should be within approximately 20% of
 the published medians; larger deviations would motivate re-examination

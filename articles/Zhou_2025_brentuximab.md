@@ -54,10 +54,10 @@ are to Zhou 2025 Supplementary Tables; the NONMEM control streams that
 fix the structural ODE form are reproduced in Zhou 2025 Supplementary
 Methods.
 
-| Equation / parameter                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | Value | Source location                                                   |
-|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------|-------------------------------------------------------------------|
-| ADC structural model (3-comp linear, ADVAN11 TRANS4)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | n/a   | Zhou 2025 Supplementary Methods, NONMEM control stream “ADC_BASE” |
-| MMAE structural model (2-comp + Target + Lag, ADVAN13 custom \$DES) \| n/a \| Zhou 2025 Supplementary Methods, NONMEM control stream "311CS" \| \| ADC CL (theta1) \| 0.0208 L/hr \| Table S1 \| \| ADC V1 (theta2) \| 2.54 L \| Table S1 \| \| ADC Q2 (theta3) \| 0.0192 L/hr \| Table S1 \| \| ADC V2 (theta4) \| 97.1 L \| Table S1 \| \| ADC Q3 (theta5) \| 0.0865 L/hr \| Table S1 \| \| ADC V3 (theta6) \| 3.39 L \| Table S1 \| \| ADC residual CV \| 32.1% \| Table S1 \| \| BSA on ADC CL (power exp) \| 1.38 \| Table S1 \| \| Albumin on ADC CL (power exp) \| -0.776 \| Table S1 \| \| Tumor LDIAM on ADC CL (power exp) \| 0.12 \| Table S1 \| \| Non-HL on ADC Q2 (multiplicative) \| 0.509 \| Table S1 \| \| BSA on ADC V3 (power exp) \| 1.96 \| Table S1 \| \| ADA+ on ADC CL (multiplicative) \| 2.6 \| Table S1 \| \| A+AVD on ADC CL (multiplicative) \| 2.12 \| Table S1 (supplement label "theta13" for this row is a typo; control stream \`THETA(14)\*\*DOX\` confirms it is the A+AVD effect) \| \| ADC IIV CL / Q2 / V3 (CV%) \| 48.4 / 65.0 / 60.3 % \| Table S1 \| \| MMAE CL (theta1) \| 0.794 L/hr \| Table S2 \| \| MMAE V1 = VM (theta2) \| 20.1 L \| Table S2 \| \| MMAE Kd (theta3) \| 0.0186 1/hr \| Table S2 \| \| MMAE FM \| 1 (FIX) \| Table S2 \| \| MMAE ALFM (theta5) \| 0.00462 1/hr \| Table S2 \| \| MMAE Klag = K64 (theta6) \| 60.8 1/hr \| Table S2 \| \| MMAE Q2 = QM (theta7) \| 0.628 L/hr \| Table S2 \| \| MMAE V2 = VMP (theta8) \| 2.74 L \| Table S2 \| \| MMAE residual CV \| 37.5% \| Table S2 \| \| Creatinine on MMAE CL (power exp) \| -0.0952 \| Table S2 \| \| Albumin on MMAE CL (power exp) \| -0.0805 \| Table S2 \| \| BSA on MMAE CL (power exp) \| 0.772 \| Table S2 \| \| ADA+ on MMAE CL (multiplicative) \| 0.696 \| Table S2 \| \| Non-HL on MMAE V1 (multiplicative) \| 0.296 \| Table S2 \| \| BSA on MMAE V1 (power exp) \| 0.546 \| Table S2 \| \| Non-HL on ALFM (multiplicative) \| 0.884 \| Table S2 \| \| Albumin on Kd (power exp) \| -4.11 \| Table S2 \| \| MMAE IIV CL / VM / Kd / ALFM (CV%) \| 50.6 / 79.9 / 147 / 88.8 % \| Table S2 \| \| Reference values: BSA 1.8 m^2^ / ALB 40 g/L / CREAT 45.689 umol/L / LDIAM 41 mm \| n/a \| Zhou 2025 Supplementary Methods, NONMEM \`\$PK`block (`NBSA = BSA / 1.8`,`NALB = ALB / 40`,`NCREAT = CREAT / 45.689`,`NLDIAM = LDIAM / 41\`) |       |                                                                   |
+| Equation / parameter | Value | Source location |
+|----|----|----|
+| ADC structural model (3-comp linear, ADVAN11 TRANS4) | n/a | Zhou 2025 Supplementary Methods, NONMEM control stream “ADC_BASE” |
+| MMAE structural model (2-comp + Target + Lag, ADVAN13 custom \$DES) \| n/a \| Zhou 2025 Supplementary Methods, NONMEM control stream "311CS" \| \| ADC CL (theta1) \| 0.0208 L/hr \| Table S1 \| \| ADC V1 (theta2) \| 2.54 L \| Table S1 \| \| ADC Q2 (theta3) \| 0.0192 L/hr \| Table S1 \| \| ADC V2 (theta4) \| 97.1 L \| Table S1 \| \| ADC Q3 (theta5) \| 0.0865 L/hr \| Table S1 \| \| ADC V3 (theta6) \| 3.39 L \| Table S1 \| \| ADC residual CV \| 32.1% \| Table S1 \| \| BSA on ADC CL (power exp) \| 1.38 \| Table S1 \| \| Albumin on ADC CL (power exp) \| -0.776 \| Table S1 \| \| Tumor LDIAM on ADC CL (power exp) \| 0.12 \| Table S1 \| \| Non-HL on ADC Q2 (multiplicative) \| 0.509 \| Table S1 \| \| BSA on ADC V3 (power exp) \| 1.96 \| Table S1 \| \| ADA+ on ADC CL (multiplicative) \| 2.6 \| Table S1 \| \| A+AVD on ADC CL (multiplicative) \| 2.12 \| Table S1 (supplement label "theta13" for this row is a typo; control stream \`THETA(14)\*\*DOX\` confirms it is the A+AVD effect) \| \| ADC IIV CL / Q2 / V3 (CV%) \| 48.4 / 65.0 / 60.3 % \| Table S1 \| \| MMAE CL (theta1) \| 0.794 L/hr \| Table S2 \| \| MMAE V1 = VM (theta2) \| 20.1 L \| Table S2 \| \| MMAE Kd (theta3) \| 0.0186 1/hr \| Table S2 \| \| MMAE FM \| 1 (FIX) \| Table S2 \| \| MMAE ALFM (theta5) \| 0.00462 1/hr \| Table S2 \| \| MMAE Klag = K64 (theta6) \| 60.8 1/hr \| Table S2 \| \| MMAE Q2 = QM (theta7) \| 0.628 L/hr \| Table S2 \| \| MMAE V2 = VMP (theta8) \| 2.74 L \| Table S2 \| \| MMAE residual CV \| 37.5% \| Table S2 \| \| Creatinine on MMAE CL (power exp) \| -0.0952 \| Table S2 \| \| Albumin on MMAE CL (power exp) \| -0.0805 \| Table S2 \| \| BSA on MMAE CL (power exp) \| 0.772 \| Table S2 \| \| ADA+ on MMAE CL (multiplicative) \| 0.696 \| Table S2 \| \| Non-HL on MMAE V1 (multiplicative) \| 0.296 \| Table S2 \| \| BSA on MMAE V1 (power exp) \| 0.546 \| Table S2 \| \| Non-HL on ALFM (multiplicative) \| 0.884 \| Table S2 \| \| Albumin on Kd (power exp) \| -4.11 \| Table S2 \| \| MMAE IIV CL / VM / Kd / ALFM (CV%) \| 50.6 / 79.9 / 147 / 88.8 % \| Table S2 \| \| Reference values: BSA 1.8 m^2^ / ALB 40 g/L / CREAT 45.689 umol/L / LDIAM 41 mm \| n/a \| Zhou 2025 Supplementary Methods, NONMEM \`\$PK`block (`NBSA = BSA / 1.8`,`NALB = ALB / 40`,`NCREAT = CREAT / 45.689`,`NLDIAM = LDIAM / 41\`) |  |  |
 
 ## Virtual cohort
 
@@ -67,6 +67,7 @@ distributions approximate the published trial demographics (Zhou 2025
 Table 1, pooled across studies).
 
 ``` r
+
 set.seed(40095373L)
 
 # Brentuximab vedotin and MMAE molecular weights (used to convert mg
@@ -176,6 +177,7 @@ stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
 ## Simulation
 
 ``` r
+
 mod <- readModelDb("Zhou_2025_brentuximab")
 sim <- rxode2::rxSolve(mod, events = events, keep = "regimen")
 #> ℹ parameter labels from comments will be replaced by 'label()'
@@ -199,6 +201,7 @@ reproduce the same dosing regimens; the per-time medians and 5th / 95th
 percentiles are the analogues of the pcVPC.
 
 ``` r
+
 sim_df |>
   dplyr::group_by(regimen, day) |>
   dplyr::summarise(
@@ -224,6 +227,7 @@ sim_df |>
 ![](Zhou_2025_brentuximab_files/figure-html/figure-s1-adc-1.png)
 
 ``` r
+
 sim_df |>
   dplyr::group_by(regimen, day) |>
   dplyr::summarise(
@@ -254,6 +258,7 @@ PKNCA formula carries the `regimen` grouping so per-cohort summaries can
 be compared against the paper’s per-study cycle-4 exposure summaries.
 
 ``` r
+
 # Pull cycle-4 (3rd repeated dose interval starting after dose 4) by
 # regimen-specific cycle length. Use ADC observations only.
 cycle4_window <- function(cycle_h) c(start = 3 * cycle_h, end = 4 * cycle_h)
@@ -533,16 +538,17 @@ knitr::kable(summary(nca_res_adc),
              caption = "Simulated cycle-4 ADC NCA parameters by regimen.")
 ```
 
-| start | end | regimen                         | N   | auclast | cmax          | tmax                | cl.last |
-|------:|----:|:--------------------------------|:----|:--------|:--------------|:--------------------|:--------|
-|     0 | 504 | Study 1: BV 1.6 mg/kg Q3W       | 60  | NC      | 24.7 \[28.7\] | 7.60 \[7.60, 7.60\] | NC      |
-|     0 | 336 | Study 1: BV 1.6 mg/kg Q3W       | 60  | NC      | 24.7 \[28.7\] | 7.60 \[7.60, 7.60\] | NC      |
-|     0 | 504 | Study 2: BV 48 mg/m^2 + AVD Q2W | 60  | NC      | 22.3 \[17.0\] | 5.07 \[5.07, 5.07\] | NC      |
-|     0 | 336 | Study 2: BV 48 mg/m^2 + AVD Q2W | 60  | NC      | 22.3 \[17.0\] | 5.07 \[5.07, 5.07\] | NC      |
+| start | end | regimen | N | auclast | cmax | tmax | cl.last |
+|---:|---:|:---|:---|:---|:---|:---|:---|
+| 0 | 504 | Study 1: BV 1.6 mg/kg Q3W | 60 | NC | 24.7 \[28.7\] | 7.60 \[7.60, 7.60\] | NC |
+| 0 | 336 | Study 1: BV 1.6 mg/kg Q3W | 60 | NC | 24.7 \[28.7\] | 7.60 \[7.60, 7.60\] | NC |
+| 0 | 504 | Study 2: BV 48 mg/m^2 + AVD Q2W | 60 | NC | 22.3 \[17.0\] | 5.07 \[5.07, 5.07\] | NC |
+| 0 | 336 | Study 2: BV 48 mg/m^2 + AVD Q2W | 60 | NC | 22.3 \[17.0\] | 5.07 \[5.07, 5.07\] | NC |
 
-Simulated cycle-4 ADC NCA parameters by regimen.
+Simulated cycle-4 ADC NCA parameters by regimen. {.table}
 
 ``` r
+
 sim_mmae <- sim_df |>
   dplyr::mutate(
     cycle_h  = ifelse(regimen == "Study 1: BV 1.6 mg/kg Q3W", cycle_h_q3w, cycle_h_q2w),
@@ -810,14 +816,14 @@ knitr::kable(summary(nca_res_mmae),
              caption = "Simulated cycle-4 MMAE NCA parameters by regimen.")
 ```
 
-| start | end | regimen                         | N   | auclast | cmax          | tmax                |
-|------:|----:|:--------------------------------|:----|:--------|:--------------|:--------------------|
-|     0 | 504 | Study 1: BV 1.6 mg/kg Q3W       | 60  | NC      | 1.48 \[67.6\] | 27.9 \[7.60, 88.6\] |
-|     0 | 336 | Study 1: BV 1.6 mg/kg Q3W       | 60  | NC      | 1.48 \[67.6\] | 27.9 \[7.60, 88.6\] |
-|     0 | 504 | Study 2: BV 48 mg/m^2 + AVD Q2W | 60  | NC      | 2.60 \[70.0\] | 32.1 \[5.07, 72.6\] |
-|     0 | 336 | Study 2: BV 48 mg/m^2 + AVD Q2W | 60  | NC      | 2.60 \[70.0\] | 32.1 \[5.07, 72.6\] |
+| start | end | regimen | N | auclast | cmax | tmax |
+|---:|---:|:---|:---|:---|:---|:---|
+| 0 | 504 | Study 1: BV 1.6 mg/kg Q3W | 60 | NC | 1.48 \[67.6\] | 27.9 \[7.60, 88.6\] |
+| 0 | 336 | Study 1: BV 1.6 mg/kg Q3W | 60 | NC | 1.48 \[67.6\] | 27.9 \[7.60, 88.6\] |
+| 0 | 504 | Study 2: BV 48 mg/m^2 + AVD Q2W | 60 | NC | 2.60 \[70.0\] | 32.1 \[5.07, 72.6\] |
+| 0 | 336 | Study 2: BV 48 mg/m^2 + AVD Q2W | 60 | NC | 2.60 \[70.0\] | 32.1 \[5.07, 72.6\] |
 
-Simulated cycle-4 MMAE NCA parameters by regimen.
+Simulated cycle-4 MMAE NCA parameters by regimen. {.table}
 
 ### Comparison against published exposures
 

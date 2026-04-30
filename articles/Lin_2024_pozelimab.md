@@ -1,6 +1,7 @@
 # Lin_2024_pozelimab
 
 ``` r
+
 library(nlmixr2lib)
 library(PKNCA)
 #> 
@@ -92,6 +93,7 @@ method.
 The full population descriptor is available programmatically:
 
 ``` r
+
 str(rxode2::rxode2(readModelDb("Lin_2024_pozelimab"))$meta$population)
 #> ℹ parameter labels from comments will be replaced by 'label()'
 #> List of 13
@@ -117,44 +119,43 @@ The per-parameter origin is recorded as an in-file comment next to each
 `inst/modeldb/specificDrugs/Lin_2024_pozelimab.R`. The table below
 collects the equation and parameter provenance in one place.
 
-| Element                                               | Value (paper unit)                | Source location                                       |
-|-------------------------------------------------------|-----------------------------------|-------------------------------------------------------|
-| `CL` (linear clearance)                               | 0.1506 L/day                      | Table 2                                               |
-| `Vc` (central volume)                                 | 2.476 L                           | Table 2                                               |
-| `Q` (intercompartmental clearance)                    | 0.3931 L/day                      | Table 2                                               |
-| `Vp` (peripheral volume)                              | 9.901 L                           | Table 2                                               |
-| `F1` (SC bioavailability)                             | 0.6864                            | Table 2                                               |
-| `ka` (first-order SC absorption)                      | 0.1726 1/day                      | Table 2                                               |
-| `kD` (equilibrium dissociation constant, FIXED)       | 0.000189 µM (= 0.03591 mg/L)      | Table 2 + footnote (a)                                |
-| `ksyn` (free C5 synthesis rate)                       | 0.04922 µM/day (= 9.352 mg/L/day) | Table 2 + footnote (a)                                |
-| `kdeg` (free C5 degradation rate)                     | 0.1105 1/day                      | Table 2                                               |
-| `kint1` (pozelimab-C5 internalization)                | 0.08086 1/day                     | Table 2                                               |
-| `kint2` (pozelimab-C5-C5 internalization)             | 0.1149 1/day                      | Table 2                                               |
-| `theta_R0` (baseline-C5 correction)                   | -0.04824 µM (= -9.166 mg/L)       | Table 2 + footnote (a) and Results “Base PopPK model” |
-| `e_wt_cl` (WT power on CL; ref 70 kg)                 | 0.9989                            | Table 2 (“Weight on CL”)                              |
-| `e_wt_v` (WT power on Vc and Vp; ref 70 kg)           | 0.7560                            | Table 2 (“Weight on Vc and Vp”)                       |
-| `e_pnh_vc` (PNH additive-fractional effect on Vc)     | 0.3407                            | Table 2 (“Patients with PNH on Vc”)                   |
-| IIV CL (31.90 % CV → ω² = 0.09732)                    | 31.90 %CV                         | Table 2                                               |
-| IIV Vc (16.10 % CV → ω² = 0.02568)                    | 16.10 %CV                         | Table 2                                               |
-| IIV Vp (80.37 % CV → ω² = 0.48107)                    | 80.37 %CV                         | Table 2                                               |
-| IIV ksyn (16.48 % CV → ω² = 0.02683)                  | 16.48 %CV                         | Table 2                                               |
-| IIV kint1 (21.10 % CV → ω² = 0.04362)                 | 21.10 %CV                         | Table 2                                               |
-| Residual variability — pozelimab (adults)             | 37.22 %CV (proportional)          | Table 2                                               |
-| Residual variability — total C5 (adults)              | 10.72 %CV (proportional)          | Table 2                                               |
-| Drug depot ODE `dA_d/dt = -ka·A_d`                    | (Eq. S1)                          | Supplemental Text 1                                   |
-| Drug central ODE `dC_tot/dt`                          | (Eq. S2)                          | Supplemental Text 1                                   |
-| Drug peripheral ODE `dA_3/dt`                         | (Eq. S3)                          | Supplemental Text 1                                   |
-| Total C5 ODE `dR_tot/dt`                              | (Eq. S4)                          | Supplemental Text 1                                   |
-| QE algebraic relations (`Cu`, `RC`, `R2C`, `R`, `R0`) | (Eq. S5-S9)                       | Supplemental Text 1                                   |
+| Element | Value (paper unit) | Source location |
+|----|----|----|
+| `CL` (linear clearance) | 0.1506 L/day | Table 2 |
+| `Vc` (central volume) | 2.476 L | Table 2 |
+| `Q` (intercompartmental clearance) | 0.3931 L/day | Table 2 |
+| `Vp` (peripheral volume) | 9.901 L | Table 2 |
+| `F1` (SC bioavailability) | 0.6864 | Table 2 |
+| `ka` (first-order SC absorption) | 0.1726 1/day | Table 2 |
+| `kD` (equilibrium dissociation constant, FIXED) | 0.000189 µM (= 0.03591 mg/L) | Table 2 + footnote (a) |
+| `ksyn` (free C5 synthesis rate) | 0.04922 µM/day (= 9.352 mg/L/day) | Table 2 + footnote (a) |
+| `kdeg` (free C5 degradation rate) | 0.1105 1/day | Table 2 |
+| `kint1` (pozelimab-C5 internalization) | 0.08086 1/day | Table 2 |
+| `kint2` (pozelimab-C5-C5 internalization) | 0.1149 1/day | Table 2 |
+| `theta_R0` (baseline-C5 correction) | -0.04824 µM (= -9.166 mg/L) | Table 2 + footnote (a) and Results “Base PopPK model” |
+| `e_wt_cl` (WT power on CL; ref 70 kg) | 0.9989 | Table 2 (“Weight on CL”) |
+| `e_wt_v` (WT power on Vc and Vp; ref 70 kg) | 0.7560 | Table 2 (“Weight on Vc and Vp”) |
+| `e_pnh_vc` (PNH additive-fractional effect on Vc) | 0.3407 | Table 2 (“Patients with PNH on Vc”) |
+| IIV CL (31.90 % CV → ω² = 0.09732) | 31.90 %CV | Table 2 |
+| IIV Vc (16.10 % CV → ω² = 0.02568) | 16.10 %CV | Table 2 |
+| IIV Vp (80.37 % CV → ω² = 0.48107) | 80.37 %CV | Table 2 |
+| IIV ksyn (16.48 % CV → ω² = 0.02683) | 16.48 %CV | Table 2 |
+| IIV kint1 (21.10 % CV → ω² = 0.04362) | 21.10 %CV | Table 2 |
+| Residual variability — pozelimab (adults) | 37.22 %CV (proportional) | Table 2 |
+| Residual variability — total C5 (adults) | 10.72 %CV (proportional) | Table 2 |
+| Drug depot ODE `dA_d/dt = -ka·A_d` | (Eq. S1) | Supplemental Text 1 |
+| Drug central ODE `dC_tot/dt` | (Eq. S2) | Supplemental Text 1 |
+| Drug peripheral ODE `dA_3/dt` | (Eq. S3) | Supplemental Text 1 |
+| Total C5 ODE `dR_tot/dt` | (Eq. S4) | Supplemental Text 1 |
+| QE algebraic relations (`Cu`, `RC`, `R2C`, `R`, `R0`) | (Eq. S5-S9) | Supplemental Text 1 |
 
 The QE quadratic for free C5,
-$R = \frac{1}{2}\lbrack - \left( 2\, C_{tot} + k_{D} - R_{tot} \right) + \sqrt{\left( 2\, C_{tot} + k_{D} - R_{tot} \right)^{2} + 4\, k_{D}\, R_{tot}}\rbrack$,
-follows from the conservation identity $R_{tot} = R + RC + 2\, R2C$
+$`R = \tfrac{1}{2}\bigl[-(2\,C_{tot}+k_D-R_{tot}) + \sqrt{(2\,C_{tot}+k_D-R_{tot})^2 + 4\,k_D\,R_{tot}}\bigr]`$,
+follows from the conservation identity $`R_{tot} = R + RC + 2\,R2C`$
 together with the QE binding distribution
-$RC = C_{tot} \cdot 2k_{D}R/\left( k_{D} + R \right)^{2}$ and
-$R2C = C_{tot} \cdot R^{2}/\left( k_{D} + R \right)^{2}$. See Gibiansky
-and Gibiansky 2017 for the symmetric two-binding-site TMDD-QE
-derivation.
+$`RC = C_{tot}\cdot 2 k_D R / (k_D+R)^2`$ and $`R2C = C_{tot}\cdot R^2 /
+(k_D+R)^2`$. See Gibiansky and Gibiansky 2017 for the symmetric
+two-binding-site TMDD-QE derivation.
 
 The model file works in molar (µM) units internally to match
 Supplemental Text 1’s equations; observation outputs `Cc` (total
@@ -165,9 +166,9 @@ kDa C5 MW reproduces the paper’s own footnote conversions ksyn = 0.04922
 
 ## Covariate column naming
 
-| Source column                                       | Canonical column used here                                                |
-|-----------------------------------------------------|---------------------------------------------------------------------------|
-| `WT` (baseline body weight, kg)                     | `WT` (canonical, per `inst/references/covariate-columns.md`)              |
+| Source column | Canonical column used here |
+|----|----|
+| `WT` (baseline body weight, kg) | `WT` (canonical, per `inst/references/covariate-columns.md`) |
 | `PNH` (disease state, PNH versus healthy volunteer) | `DIS_PNH` (1 = PNH patient, 0 = non-PNH; new entry registered in this PR) |
 
 ## Virtual cohort
@@ -190,6 +191,7 @@ the PKNCA section runs the same regimens deterministically to get
 representative steady-state exposures.
 
 ``` r
+
 mod         <- readModelDb("Lin_2024_pozelimab")
 mod_typical <- rxode2::zeroRe(mod)
 #> ℹ parameter labels from comments will be replaced by 'label()'
@@ -244,6 +246,7 @@ while free pozelimab is markedly nonlinear at low concentrations as TMDD
 takes over.
 
 ``` r
+
 fig4_doses <- c(1, 3, 10, 30)
 
 fig4_one <- function(mg_per_kg) {
@@ -307,6 +310,7 @@ CHAPLE child) over 24 weeks of QW SC maintenance after the 30 mg/kg IV
 loading dose.
 
 ``` r
+
 hv_pnh_chaple <- bind_rows(
   sim_hv     |> transmute(time, Cc, Rtot, scenario = "HV adult, 800 mg SC QW"),
   sim_pnh    |> transmute(time, Cc, Rtot, scenario = "PNH adult, 800 mg SC QW"),
@@ -334,6 +338,7 @@ ggplot(hv_pnh_chaple, aes(time, Cc, colour = scenario)) +
 
 ``` r
 
+
 ggplot(hv_pnh_chaple, aes(time, Rtot, colour = scenario)) +
   geom_line(linewidth = 0.7) +
   labs(
@@ -359,6 +364,7 @@ conclusion is that for patients \> 20 kg, the two regimens give
 comparable exposures.
 
 ``` r
+
 chaple_tiers <- tibble::tribble(
   ~tier_label,             ~wt_kg, ~tiered_mg,
   "<10 kg (8 kg)",         8,      125,
@@ -416,19 +422,20 @@ knitr::kable(fig5, digits = 1,
              caption = "Simulated steady-state Cmin,ss (mg/L) and AUCtau,ss (mg/L*day) for CHAPLE patients under the weight-tiered vs 10 mg/kg weight-based SC QW maintenance regimens (typical-value, after 25 weekly doses).")
 ```
 
-| tier_label         | wt_kg | tiered_mg | weight_based_mg | Cmin_tiered | Cmin_wbased | AUC_tiered | AUC_wbased |
-|:-------------------|------:|----------:|----------------:|------------:|------------:|-----------:|-----------:|
-| \<10 kg (8 kg)     |     8 |       125 |              80 |       455.9 |       282.9 |     2356.6 |     1462.1 |
-| 10-\<20 kg (15 kg) |    15 |       200 |             150 |       422.0 |       312.5 |     2197.8 |     1626.8 |
-| 20-\<40 kg (30 kg) |    30 |       350 |             300 |       399.8 |       341.7 |     2098.0 |     1792.5 |
-| 40-\<60 kg (50 kg) |    50 |       500 |             500 |       360.3 |       360.3 |     1899.7 |     1899.7 |
-| \>=60 kg (70 kg)   |    70 |       800 |             700 |       423.2 |       370.8 |     2240.2 |     1962.2 |
+| tier_label | wt_kg | tiered_mg | weight_based_mg | Cmin_tiered | Cmin_wbased | AUC_tiered | AUC_wbased |
+|:---|---:|---:|---:|---:|---:|---:|---:|
+| \<10 kg (8 kg) | 8 | 125 | 80 | 455.9 | 282.9 | 2356.6 | 1462.1 |
+| 10-\<20 kg (15 kg) | 15 | 200 | 150 | 422.0 | 312.5 | 2197.8 | 1626.8 |
+| 20-\<40 kg (30 kg) | 30 | 350 | 300 | 399.8 | 341.7 | 2098.0 | 1792.5 |
+| 40-\<60 kg (50 kg) | 50 | 500 | 500 | 360.3 | 360.3 | 1899.7 | 1899.7 |
+| \>=60 kg (70 kg) | 70 | 800 | 700 | 423.2 | 370.8 | 2240.2 | 1962.2 |
 
 Simulated steady-state Cmin,ss (mg/L) and AUCtau,ss (mg/L\*day) for
 CHAPLE patients under the weight-tiered vs 10 mg/kg weight-based SC QW
-maintenance regimens (typical-value, after 25 weekly doses).
+maintenance regimens (typical-value, after 25 weekly doses). {.table}
 
 ``` r
+
 
 fig5_long <- fig5 |>
   pivot_longer(c(Cmin_tiered, Cmin_wbased), names_to = "regimen",
@@ -461,6 +468,7 @@ does not yield a true terminal phase within the dosing interval, we use
 `auclast` and `ctau` rather than `aucinf.obs` / `half.life`.
 
 ``` r
+
 pk_scenarios <- bind_rows(
   sim_hv     |> mutate(scenario = "HV adult, 800 mg SC QW"),
   sim_pnh    |> mutate(scenario = "PNH adult, 800 mg SC QW"),
@@ -524,7 +532,7 @@ knitr::kable(nca_tbl, digits = 2,
 | PNH adult, 800 mg SC QW            | 2047.00 | 415.34 | 390.36 | 292.43 |      NA |
 
 PKNCA-derived steady-state pozelimab exposure metrics over the last
-weekly SC dosing interval.
+weekly SC dosing interval. {.table}
 
 ### Comparison against published exposures
 

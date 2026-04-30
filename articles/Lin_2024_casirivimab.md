@@ -51,37 +51,37 @@ parameters: 45-year-old non-White male, 81.6 kg, ALB 43 g/L, baseline
 SARS-CoV-2 viral load 6.4 log10 copies/mL, CRP 5.48 mg/L, NLR 2.11,
 baseline seronegative, no supplemental oxygen at baseline.
 
-| Equation / parameter                    | Value              | Source location                                                                                                                                                                                                                                                                                         |
-|-----------------------------------------|--------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `lcl` (CL, L/day)                       | 0.1926             | Lin 2024 Table 2 (θ1)                                                                                                                                                                                                                                                                                   |
-| `lvc` (Vc, L)                           | 3.917              | Lin 2024 Table 2 (θ2)                                                                                                                                                                                                                                                                                   |
-| `lq` (Q, L/day)                         | 0.4131             | Lin 2024 Table 2                                                                                                                                                                                                                                                                                        |
-| `lvp` (Vp, L)                           | 3.065              | Lin 2024 Table 2                                                                                                                                                                                                                                                                                        |
-| `lka` (Ka, 1/day)                       | 0.2183             | Lin 2024 Table 2                                                                                                                                                                                                                                                                                        |
-| `lfdepot` (F, adult / peds ≥ 6 yr)      | 0.7200             | Lin 2024 Table 2                                                                                                                                                                                                                                                                                        |
-| `lfdepot_ped` (F, peds \< 6 yr)         | 0.8788             | Lin 2024 Table 2 (Bioavailability in pediatrics)                                                                                                                                                                                                                                                        |
-| `e_wt_cl` (weight on CL, adults)        | 0.7959             | Lin 2024 Table 2 (θ13)                                                                                                                                                                                                                                                                                  |
-| `e_wt_vc` (weight on Vc, adults)        | 0.5392             | Lin 2024 Table 2 (θ14)                                                                                                                                                                                                                                                                                  |
-| Weight on CL / Vc, peds \< 6 yr         | 0.75 / 1.0 (fixed) | Lin 2024 page 1939 (final-model paragraph: “fixed exponents… (0.75 for CL and 1 for Vc) for children \< 6 years of age”)                                                                                                                                                                                |
-| `e_age_cl` (age on CL)                  | 0.07037            | Lin 2024 Table 2 (θ15)                                                                                                                                                                                                                                                                                  |
-| `e_sexf_cl` (sex on CL, casirivimab)    | -0.08051           | Lin 2024 Table 2 (θ16)                                                                                                                                                                                                                                                                                  |
-| `e_white_cl` (race on CL)               | -0.09478           | Lin 2024 Table 2 (θ17)                                                                                                                                                                                                                                                                                  |
-| `e_alb_cl` (albumin on CL, casirivimab) | -1.078             | Lin 2024 Table 2 (θ18)                                                                                                                                                                                                                                                                                  |
-| `e_hepimp_cl` (hep. imp. on CL)         | 0.06602            | Lin 2024 Table 2 (θ19)                                                                                                                                                                                                                                                                                  |
-| `e_vload_cl` (viral load on CL)         | -0.00754           | Lin 2024 Table 2 (θ20)                                                                                                                                                                                                                                                                                  |
-| `e_seropos_cl` (serostatus on CL)       | 0.07315            | Lin 2024 Table 2 (θ21)                                                                                                                                                                                                                                                                                  |
-| `e_crp_cl` (CRP on CL)                  | 0.02252            | Lin 2024 Table 2 (θ22)                                                                                                                                                                                                                                                                                  |
-| `e_nlr_cl` (NLR on CL)                  | 0.02883            | Lin 2024 Table 2 (θ24)                                                                                                                                                                                                                                                                                  |
-| `e_oxylow_cl` (low-flow O2 on CL)       | 0.1064             | Lin 2024 Table 2 (θ25)                                                                                                                                                                                                                                                                                  |
-| `e_oxyhigh_cl` (high-flow O2 on CL)     | 0.3802             | Lin 2024 Table 2 (θ26)                                                                                                                                                                                                                                                                                  |
-| `e_sexf_vc` (sex on Vc, casirivimab)    | -0.1092            | Lin 2024 Table 2 (θ28)                                                                                                                                                                                                                                                                                  |
-| `e_alb_vc` (albumin on Vc)              | -0.4167            | Lin 2024 Table 2 (θ30)                                                                                                                                                                                                                                                                                  |
-| Equation 1 (CL covariate function)      | n/a                | Lin 2024 page 1939                                                                                                                                                                                                                                                                                      |
-| Equation 3 (Vc covariate function)      | n/a                | Lin 2024 page 1939                                                                                                                                                                                                                                                                                      |
-| `etalcl` (IIV CL, % CV)                 | 30.04 → ω² 0.08642 | Lin 2024 Table 2 (IIV in CL)                                                                                                                                                                                                                                                                            |
-| `etalvc` (IIV Vc, % CV)                 | 34.58 → ω² 0.11297 | Lin 2024 Table 2 (IIV in Vc)                                                                                                                                                                                                                                                                            |
-| `etalka` (IIV KA, % CV)                 | 78.28 → ω² 0.47791 | Lin 2024 Table 2 (95% CI midpoint) + Results narrative (“Estimates of IIV…for…KA…were…78.3%”). The Table 2 point-estimate cell prints “72.28”, which lies outside its own 95% CI (78.05, 78.51); we treat it as a typesetting typo and use 78.28 (see *Errata / paper-internal inconsistencies* below). |
-| Residual variability (`propSd`)         | 0.2352             | Lin 2024 Table 2 (residual variability 23.52, additive on log-transformed data; equivalent to proportional in linear space)                                                                                                                                                                             |
+| Equation / parameter | Value | Source location |
+|----|----|----|
+| `lcl` (CL, L/day) | 0.1926 | Lin 2024 Table 2 (θ1) |
+| `lvc` (Vc, L) | 3.917 | Lin 2024 Table 2 (θ2) |
+| `lq` (Q, L/day) | 0.4131 | Lin 2024 Table 2 |
+| `lvp` (Vp, L) | 3.065 | Lin 2024 Table 2 |
+| `lka` (Ka, 1/day) | 0.2183 | Lin 2024 Table 2 |
+| `lfdepot` (F, adult / peds ≥ 6 yr) | 0.7200 | Lin 2024 Table 2 |
+| `lfdepot_ped` (F, peds \< 6 yr) | 0.8788 | Lin 2024 Table 2 (Bioavailability in pediatrics) |
+| `e_wt_cl` (weight on CL, adults) | 0.7959 | Lin 2024 Table 2 (θ13) |
+| `e_wt_vc` (weight on Vc, adults) | 0.5392 | Lin 2024 Table 2 (θ14) |
+| Weight on CL / Vc, peds \< 6 yr | 0.75 / 1.0 (fixed) | Lin 2024 page 1939 (final-model paragraph: “fixed exponents… (0.75 for CL and 1 for Vc) for children \< 6 years of age”) |
+| `e_age_cl` (age on CL) | 0.07037 | Lin 2024 Table 2 (θ15) |
+| `e_sexf_cl` (sex on CL, casirivimab) | -0.08051 | Lin 2024 Table 2 (θ16) |
+| `e_white_cl` (race on CL) | -0.09478 | Lin 2024 Table 2 (θ17) |
+| `e_alb_cl` (albumin on CL, casirivimab) | -1.078 | Lin 2024 Table 2 (θ18) |
+| `e_hepimp_cl` (hep. imp. on CL) | 0.06602 | Lin 2024 Table 2 (θ19) |
+| `e_vload_cl` (viral load on CL) | -0.00754 | Lin 2024 Table 2 (θ20) |
+| `e_seropos_cl` (serostatus on CL) | 0.07315 | Lin 2024 Table 2 (θ21) |
+| `e_crp_cl` (CRP on CL) | 0.02252 | Lin 2024 Table 2 (θ22) |
+| `e_nlr_cl` (NLR on CL) | 0.02883 | Lin 2024 Table 2 (θ24) |
+| `e_oxylow_cl` (low-flow O2 on CL) | 0.1064 | Lin 2024 Table 2 (θ25) |
+| `e_oxyhigh_cl` (high-flow O2 on CL) | 0.3802 | Lin 2024 Table 2 (θ26) |
+| `e_sexf_vc` (sex on Vc, casirivimab) | -0.1092 | Lin 2024 Table 2 (θ28) |
+| `e_alb_vc` (albumin on Vc) | -0.4167 | Lin 2024 Table 2 (θ30) |
+| Equation 1 (CL covariate function) | n/a | Lin 2024 page 1939 |
+| Equation 3 (Vc covariate function) | n/a | Lin 2024 page 1939 |
+| `etalcl` (IIV CL, % CV) | 30.04 → ω² 0.08642 | Lin 2024 Table 2 (IIV in CL) |
+| `etalvc` (IIV Vc, % CV) | 34.58 → ω² 0.11297 | Lin 2024 Table 2 (IIV in Vc) |
+| `etalka` (IIV KA, % CV) | 78.28 → ω² 0.47791 | Lin 2024 Table 2 (95% CI midpoint) + Results narrative (“Estimates of IIV…for…KA…were…78.3%”). The Table 2 point-estimate cell prints “72.28”, which lies outside its own 95% CI (78.05, 78.51); we treat it as a typesetting typo and use 78.28 (see *Errata / paper-internal inconsistencies* below). |
+| Residual variability (`propSd`) | 0.2352 | Lin 2024 Table 2 (residual variability 23.52, additive on log-transformed data; equivalent to proportional in linear space) |
 
 ## Errata / paper-internal inconsistencies
 
@@ -112,6 +112,7 @@ convention for non-infected subjects whose viral-load column is zero in
 the source dataset.
 
 ``` r
+
 set.seed(2024)
 n_subj <- 500
 
@@ -159,6 +160,7 @@ stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
 ## Simulation
 
 ``` r
+
 mod <- readModelDb("Lin_2024_casirivimab")
 sim <- rxode2::rxSolve(mod, events = events, keep = "treatment")
 #> ℹ parameter labels from comments will be replaced by 'label()'
@@ -171,6 +173,7 @@ casirivimab (and imdevimab) by route of administration. We approximate
 this with a simulation-quantile envelope of the casirivimab arm.
 
 ``` r
+
 sim_q <- sim |>
   as.data.frame() |>
   filter(time > 0) |>
@@ -210,6 +213,7 @@ compute that ratio analytically from the model parameters for the
 covariate values reported in the figure caption.
 
 ``` r
+
 ini_vals <- as.data.frame(rxode2::rxode(mod)$ini)
 #> ℹ parameter labels from comments will be replaced by 'label()'
 get_val <- function(nm) {
@@ -277,24 +281,24 @@ knitr::kable(
 )
 ```
 
-| covariate                         | 5th-pct value | 95th-pct value | AUC ratio @ 5th | AUC ratio @ 95th |
-|:----------------------------------|--------------:|---------------:|----------------:|-----------------:|
-| Weight (kg)                       |         54.40 |         126.00 |            1.38 |             0.71 |
-| Albumin (g/L)                     |         30.00 |          48.20 |            0.68 |             1.13 |
-| Age (y)                           |         20.00 |          75.00 |            1.06 |             0.96 |
-| Viral load (log10 copies/mL)      |          0.10 |           9.00 |            0.97 |             1.00 |
-| C-reactive protein (mg/L)         |          0.54 |         126.00 |            1.05 |             0.93 |
-| Neutrophil-lymphocyte ratio       |          0.89 |           9.17 |            1.03 |             0.96 |
-| Race (non-White, White)           |          0.00 |           1.00 |            1.00 |             1.10 |
-| Sex (male, female)                |          0.00 |           1.00 |            1.00 |             1.09 |
-| Hepatic impairment (mild, others) |          1.00 |           0.00 |            0.94 |             1.00 |
-| Serostatus (positive, negative)   |          1.00 |           0.00 |            0.93 |             1.00 |
-| Low oxygen supplement (yes, no)   |          1.00 |           0.00 |            0.90 |             1.00 |
-| High oxygen supplement (yes, no)  |          1.00 |           0.00 |            0.72 |             1.00 |
+| covariate | 5th-pct value | 95th-pct value | AUC ratio @ 5th | AUC ratio @ 95th |
+|:---|---:|---:|---:|---:|
+| Weight (kg) | 54.40 | 126.00 | 1.38 | 0.71 |
+| Albumin (g/L) | 30.00 | 48.20 | 0.68 | 1.13 |
+| Age (y) | 20.00 | 75.00 | 1.06 | 0.96 |
+| Viral load (log10 copies/mL) | 0.10 | 9.00 | 0.97 | 1.00 |
+| C-reactive protein (mg/L) | 0.54 | 126.00 | 1.05 | 0.93 |
+| Neutrophil-lymphocyte ratio | 0.89 | 9.17 | 1.03 | 0.96 |
+| Race (non-White, White) | 0.00 | 1.00 | 1.00 | 1.10 |
+| Sex (male, female) | 0.00 | 1.00 | 1.00 | 1.09 |
+| Hepatic impairment (mild, others) | 1.00 | 0.00 | 0.94 | 1.00 |
+| Serostatus (positive, negative) | 1.00 | 0.00 | 0.93 | 1.00 |
+| Low oxygen supplement (yes, no) | 1.00 | 0.00 | 0.90 | 1.00 |
+| High oxygen supplement (yes, no) | 1.00 | 0.00 | 0.72 | 1.00 |
 
 Casirivimab AUC_day28 ratios from analytical evaluation of Eq. 1 of Lin
 2024 at the 5th- and 95th-percentile covariate values reported in Figure
-2a.
+2a. {.table}
 
 The two largest covariates by AUC_day28 ratio (weight at the 5th
 percentile ≈ 1.21 and albumin at the 5th percentile ≈ 1.31) match the
@@ -308,6 +312,7 @@ and AUC_inf against the values quoted in Lin 2024 (page 1941: half-life
 = 27.6 days for casirivimab).
 
 ``` r
+
 sim_nca <- sim |>
   as.data.frame() |>
   filter(!is.na(Cc), time > 0) |>
@@ -331,31 +336,33 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- suppressWarnings(PKNCA::pk.nca(nca_data))
-#>  ■■■■                              10% |  ETA: 17s
-#>  ■■■■■■■■■                         26% |  ETA: 14s
-#>  ■■■■■■■■■■■■■                     42% |  ETA: 11s
-#>  ■■■■■■■■■■■■■■■■■■■               58% |  ETA:  8s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■          77% |  ETA:  4s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     94% |  ETA:  1s
+#>  ■■■■                               9% |  ETA: 18s
+#>  ■■■■■■■■                          24% |  ETA: 15s
+#>  ■■■■■■■■■■■■■                     40% |  ETA: 12s
+#>  ■■■■■■■■■■■■■■■■■■                56% |  ETA:  8s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■           74% |  ETA:  5s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      91% |  ETA:  2s
 
 nca_summary <- summary(nca_res)
 knitr::kable(nca_summary,
              caption = "Simulated NCA parameters by route (single 1200 mg dose).")
 ```
 
-| start | end | treatment  | N   | cmax         | tmax                | half.life     | aucinf.obs |
-|------:|----:|:-----------|:----|:-------------|:--------------------|:--------------|:-----------|
-|     0 | Inf | 1200 mg IV | 500 | 285 \[32.0\] | 1.00 \[1.00, 1.00\] | 32.8 \[11.7\] | NC         |
-|     0 | Inf | 1200 mg SC | 500 | 108 \[35.4\] | 7.00 \[1.00, 42.0\] | 33.5 \[12.8\] | NC         |
+| start | end | treatment | N | cmax | tmax | half.life | aucinf.obs |
+|---:|---:|:---|:---|:---|:---|:---|:---|
+| 0 | Inf | 1200 mg IV | 500 | 285 \[32.0\] | 1.00 \[1.00, 1.00\] | 32.8 \[11.7\] | NC |
+| 0 | Inf | 1200 mg SC | 500 | 108 \[35.4\] | 7.00 \[1.00, 42.0\] | 33.5 \[12.8\] | NC |
 
-Simulated NCA parameters by route (single 1200 mg dose).
+Simulated NCA parameters by route (single 1200 mg dose). {.table}
 
 ### Comparison against published values
 
 Lin 2024 reports a casirivimab half-life of **27.6 days** (page 1941,
 narrative). Adult-typical analytical AUC_inf is computed as
 
-$${AUC}_{inf,SC} = \frac{1200 \times 0.72}{0.1926} \approx 4486\ \text{mg·day/L},\qquad{AUC}_{inf,IV} = \frac{1200}{0.1926} \approx 6231\ \text{mg·day/L}.$$
+``` math
+\mathrm{AUC}_{\mathrm{inf,SC}} = \frac{1200 \times 0.72}{0.1926} \approx 4486\ \text{mg·day/L}, \qquad \mathrm{AUC}_{\mathrm{inf,IV}} = \frac{1200}{0.1926} \approx 6231\ \text{mg·day/L}.
+```
 
 The simulated medians from the NCA above are within ~10% of these
 analytical expectations, well below the 20% deviation threshold flagged

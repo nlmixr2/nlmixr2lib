@@ -1,6 +1,7 @@
 # FiedlerKelly_2020_fremanezumab_cm
 
 ``` r
+
 library(nlmixr2lib)
 library(rxode2)
 #> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
@@ -45,12 +46,16 @@ The CM model relates monthly moderate-to-severe (M/S) headache days to
 fremanezumab Cav and time-on-treatment via a Hill-in-time placebo and a
 power-of-Cav drug effect, both centered on individual baseline:
 
-$$\text{msHeadacheDays}\left( t,C_{av} \right) = \text{BL}_{i} + \text{Max}_{P,i}\,\frac{t^{H_{i}}}{T_{50}^{H_{i}} + t^{H_{i}}} - \text{BL}_{i} \cdot \theta_{D,i}\,\left( \frac{C_{av}}{\text{Cav}_{\text{med}}} \right)^{\theta_{E,i}}$$
+``` math
+\text{msHeadacheDays}(t, C_{av}) = \text{BL}_i + \text{Max}_{P,i}\,\frac{t^{H_i}}{T_{50}^{H_i} + t^{H_i}} - \text{BL}_i \cdot \theta_{D,i}\,\left(\frac{C_{av}}{\text{Cav}_{\text{med}}}\right)^{\theta_{E,i}}
+```
 
 with the individual baseline a piecewise-linear function of baseline
 acute-medication days,
 
-$$\text{BL}_{i} = \theta_{BL} + \theta_{S}\,\max\left( 0,\,\text{ACUTE\_MED\_DAYS} - 5 \right) + \eta_{\text{BL},i}$$
+``` math
+\text{BL}_i = \theta_{BL} + \theta_{S}\,\max(0,\,\text{ACUTE\_MED\_DAYS} - 5) + \eta_{\text{BL},i}
+```
 
 (breakpoint at 5 d/mo). `t` is in months (28-day periods). The placebo
 Hill function and power-of-Cav drug effect were operator-confirmed from
@@ -74,6 +79,7 @@ with a 675 mg starting dose, 675 mg quarterly, 900 mg monthly (phase 2b
 only), or placebo SC for 3 months; observation unit is one 28-day month.
 
 ``` r
+
 str(rxode2::rxode2(readModelDb("FiedlerKelly_2020_fremanezumab_cm"))$meta$population)
 #> ℹ parameter labels from comments will be replaced by 'label()'
 #> Warning: some etas defaulted to non-mu referenced, possible parsing error: etalogitDrugInt
@@ -104,29 +110,30 @@ Per-parameter origin is recorded as an in-file comment next to each
 table below collects the equations and parameters in one place for
 review.
 
-| Equation / parameter                                                                                                | Value                                      | Source location                                                                                            |
-|---------------------------------------------------------------------------------------------------------------------|--------------------------------------------|------------------------------------------------------------------------------------------------------------|
-| Composite endpoint equation `msHeadacheDays = BL + maxPLC*t^H/(T50^H+t^H) - BL * drugInt * (Cav/CavMedian)^drugExp` | n/a                                        | Figure 2B; Methods — E-R Analysis Methodology                                                              |
-| Piecewise-linear baseline `BL = bl_cm + slope_AM * max(0, ACUTE_MED_DAYS - 5)`                                      | n/a                                        | Results — Monthly Headache Days of at Least Moderate Severity in Patients With CM                          |
-| `bl_cm` (typical baseline at AM ≤ 5 d/mo)                                                                           | 10.2 d/mo                                  | Table S4                                                                                                   |
-| `slope_AM` (slope on AM days \> 5)                                                                                  | 0.460 d/d                                  | Table S4                                                                                                   |
-| `maxPLC_cm` (max placebo response, FIXED)                                                                           | -6.24 d                                    | Table S4                                                                                                   |
-| `T50_PLC` (FIXED, no IIV)                                                                                           | 1.76 months                                | Table S4                                                                                                   |
-| `lhill_PLC` (Hill, FIXED, log-transformed in [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html))        | 0.486 (unitless)                           | Table S4                                                                                                   |
-| `drugInt` typical (logit-transformed in [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html))             | 0.157 (fractional reduction at median Cav) | Table S4                                                                                                   |
-| `ldrugExp` (Cav exponent, log-transformed in [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html))        | 0.328 (unitless)                           | Table S4                                                                                                   |
-| `CavMedian` (centering value used inside [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html))        | 69 µg/mL                                   | Visually inferred from Figure 2B (operator); not numerically listed in S4. See Assumptions and deviations. |
-| IIV `bl_cm` / `slope_AM` (shared additive eta)                                                                      | SD 4.69 (variance 21.99)                   | Table S4                                                                                                   |
-| IIV `maxPLC_cm` (additive eta)                                                                                      | SD 6.66 (variance 44.36)                   | Table S4                                                                                                   |
-| IIV `lhill_PLC` (log-normal eta)                                                                                    | omega² = 1.69 (130 %CV per footnote a)     | Table S4                                                                                                   |
-| IIV `logitDrugInt` (logit-normal eta)                                                                               | omega² = 1.21 (92.6 %CV per footnote b)    | Table S4                                                                                                   |
-| IIV `ldrugExp` (log-normal eta)                                                                                     | omega² = 0.945 (97.2 %CV per footnote a)   | Table S4                                                                                                   |
-| Additive residual SD on monthly M/S headache days                                                                   | SD 2.66 (variance 7.09)                    | Table S4                                                                                                   |
+| Equation / parameter | Value | Source location |
+|----|----|----|
+| Composite endpoint equation `msHeadacheDays = BL + maxPLC*t^H/(T50^H+t^H) - BL * drugInt * (Cav/CavMedian)^drugExp` | n/a | Figure 2B; Methods — E-R Analysis Methodology |
+| Piecewise-linear baseline `BL = bl_cm + slope_AM * max(0, ACUTE_MED_DAYS - 5)` | n/a | Results — Monthly Headache Days of at Least Moderate Severity in Patients With CM |
+| `bl_cm` (typical baseline at AM ≤ 5 d/mo) | 10.2 d/mo | Table S4 |
+| `slope_AM` (slope on AM days \> 5) | 0.460 d/d | Table S4 |
+| `maxPLC_cm` (max placebo response, FIXED) | -6.24 d | Table S4 |
+| `T50_PLC` (FIXED, no IIV) | 1.76 months | Table S4 |
+| `lhill_PLC` (Hill, FIXED, log-transformed in [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html)) | 0.486 (unitless) | Table S4 |
+| `drugInt` typical (logit-transformed in [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html)) | 0.157 (fractional reduction at median Cav) | Table S4 |
+| `ldrugExp` (Cav exponent, log-transformed in [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html)) | 0.328 (unitless) | Table S4 |
+| `CavMedian` (centering value used inside [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html)) | 69 µg/mL | Visually inferred from Figure 2B (operator); not numerically listed in S4. See Assumptions and deviations. |
+| IIV `bl_cm` / `slope_AM` (shared additive eta) | SD 4.69 (variance 21.99) | Table S4 |
+| IIV `maxPLC_cm` (additive eta) | SD 6.66 (variance 44.36) | Table S4 |
+| IIV `lhill_PLC` (log-normal eta) | omega² = 1.69 (130 %CV per footnote a) | Table S4 |
+| IIV `logitDrugInt` (logit-normal eta) | omega² = 1.21 (92.6 %CV per footnote b) | Table S4 |
+| IIV `ldrugExp` (log-normal eta) | omega² = 0.945 (97.2 %CV per footnote a) | Table S4 |
+| Additive residual SD on monthly M/S headache days | SD 2.66 (variance 7.09) | Table S4 |
 
 Sanity check at typical-value baseline with AM = 0 d/mo and Cav = 0
 (placebo), at months 0, 1, 2, 3:
 
 ``` r
+
 mod <- readModelDb("FiedlerKelly_2020_fremanezumab_cm")
 ev_check <- data.frame(
   id   = 1L,
@@ -164,6 +171,7 @@ Phase 3 regimens (placebo; 225 mg q1m + 675 mg starting dose; 675 mg
 quarterly) using a fixed schedule of period-mean Cav values.
 
 ``` r
+
 set.seed(20260427)
 
 n_per_arm <- 250L
@@ -202,6 +210,7 @@ stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
 ## Simulation
 
 ``` r
+
 mod <- readModelDb("FiedlerKelly_2020_fremanezumab_cm")
 
 sim_typ <- rxode2::rxSolve(
@@ -235,6 +244,7 @@ Figures 3c-d and 4b-5b of Fiedler-Kelly 2020 plot the simulated mean
 monthly M/S headache days and percent of CM responders.
 
 ``` r
+
 # Replicates Figure 3C of Fiedler-Kelly 2020: mean monthly M/S headache days by regimen.
 sim_iiv |>
   group_by(regimen, time) |>
@@ -259,6 +269,7 @@ sim_iiv |>
 ![](FiedlerKelly_2020_fremanezumab_cm_files/figure-html/figure-3c-1.png)
 
 ``` r
+
 # Replicates Figure 4B: percent responders (>= 50% reduction in M/S headache days).
 baseline_per_id <- events |>
   group_by(id, regimen) |>
@@ -293,6 +304,7 @@ Fiedler-Kelly 2020 Results — CM section reports specific quantitative
 checks that should reproduce in the typical-value simulation:
 
 ``` r
+
 narrative_compare <- sim_typ |>
   filter(time == 3) |>
   group_by(regimen) |>
@@ -315,7 +327,7 @@ knitr::kable(
 | q3m_675         |              6.79 |              3.41 |
 
 Typical-value month-3 M/S headache days and reduction from baseline by
-regimen.
+regimen. {.table}
 
 The placebo arm produces a 1.9-day month-3 reduction (paper:
 “approximately 3.5 days with placebo”). At a typical Cav of 70 µg/mL

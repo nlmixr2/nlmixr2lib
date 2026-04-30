@@ -39,25 +39,25 @@ residual-error term below comes from Kovalenko 2016 Table 2, column
 *“BLQ data included”* (the primary model; the *“BLQ data excluded”*
 column is an explicitly-labelled sensitivity analysis).
 
-| Equation / parameter                        | Value                                    | Source location                                                                           |
-|---------------------------------------------|------------------------------------------|-------------------------------------------------------------------------------------------|
-| `lvc` (V2, central volume at 75 kg)         | `log(2.74)` L                            | Table 2 row “V2 (L)”                                                                      |
-| `lke` (ke, linear elimination rate)         | `log(0.0459)` 1/day                      | Table 2 row “ke (1/d)”                                                                    |
-| `lk23` (k23, central-to-peripheral rate)    | `log(0.0652)` 1/day                      | Table 2 row “k23 (1/d)”                                                                   |
-| `lk32` (k32, peripheral-to-central rate)    | `log(0.129)` 1/day                       | Table 2 row “k32 (1/d)”                                                                   |
-| `lka` (ka, first-order absorption rate)     | `log(0.254)` 1/day                       | Table 2 row “ka (1/d)”                                                                    |
-| `lvm` (Vm, maximum MM elimination rate)     | `log(0.968)` mg/L/day                    | Table 2 row “Vm (mg/L/d)”                                                                 |
-| `Km` (Michaelis-Menten constant)            | `fixed(0.01)` mg/L                       | Table 2 row “Km (mg/L)”; fixed because OFV insensitive below ~0.01 mg/L                   |
-| `lfdepot` (F, SC bioavailability)           | `log(0.607)`                             | Table 2 row “F (unitless)”                                                                |
-| `e_wt_vc` (weight exponent on V2)           | `0.705`                                  | Table 2 row “V2 ~ weight”; Eq. 1 gives the form V2 = theta1 \* (WT/75)^theta2             |
-| `var(etalvc)`                               | `0.0225`                                 | Table 2 row “omega^2 (V2)”                                                                |
-| `var(etalke)`                               | `0.131`                                  | Table 2 row “omega^2 (ke)”                                                                |
-| `var(etalka)`                               | `0.251`                                  | Table 2 row “omega^2 (ka)”                                                                |
-| `var(etalvm)`                               | `0.0428`                                 | Table 2 row “omega^2 (Vm)”                                                                |
-| `CcpropSd` (proportional SD)                | `0.242` (= 24.2 %CV on the linear scale) | Table 2 row “sigma^2 proportional (CV%)”                                                  |
-| `CcaddSd` (additive SD)                     | `fixed(0.03)` mg/L                       | Table 2 row “sigma^2 additive (mg/L)”; fixed when BLQ data included                       |
-| Structure: 2-cmt + parallel linear/MM elim. | n/a                                      | Figure 1 schematic; Methods p. 619 (“two-compartment model with parallel linear and MM…”) |
-| BLQ treatment                               | Beal M3                                  | Methods p. 619 (“BLQ … utilized … applying the M3 method”)                                |
+| Equation / parameter | Value | Source location |
+|----|----|----|
+| `lvc` (V2, central volume at 75 kg) | `log(2.74)` L | Table 2 row “V2 (L)” |
+| `lke` (ke, linear elimination rate) | `log(0.0459)` 1/day | Table 2 row “ke (1/d)” |
+| `lk23` (k23, central-to-peripheral rate) | `log(0.0652)` 1/day | Table 2 row “k23 (1/d)” |
+| `lk32` (k32, peripheral-to-central rate) | `log(0.129)` 1/day | Table 2 row “k32 (1/d)” |
+| `lka` (ka, first-order absorption rate) | `log(0.254)` 1/day | Table 2 row “ka (1/d)” |
+| `lvm` (Vm, maximum MM elimination rate) | `log(0.968)` mg/L/day | Table 2 row “Vm (mg/L/d)” |
+| `Km` (Michaelis-Menten constant) | `fixed(0.01)` mg/L | Table 2 row “Km (mg/L)”; fixed because OFV insensitive below ~0.01 mg/L |
+| `lfdepot` (F, SC bioavailability) | `log(0.607)` | Table 2 row “F (unitless)” |
+| `e_wt_vc` (weight exponent on V2) | `0.705` | Table 2 row “V2 ~ weight”; Eq. 1 gives the form V2 = theta1 \* (WT/75)^theta2 |
+| `var(etalvc)` | `0.0225` | Table 2 row “omega^2 (V2)” |
+| `var(etalke)` | `0.131` | Table 2 row “omega^2 (ke)” |
+| `var(etalka)` | `0.251` | Table 2 row “omega^2 (ka)” |
+| `var(etalvm)` | `0.0428` | Table 2 row “omega^2 (Vm)” |
+| `CcpropSd` (proportional SD) | `0.242` (= 24.2 %CV on the linear scale) | Table 2 row “sigma^2 proportional (CV%)” |
+| `CcaddSd` (additive SD) | `fixed(0.03)` mg/L | Table 2 row “sigma^2 additive (mg/L)”; fixed when BLQ data included |
+| Structure: 2-cmt + parallel linear/MM elim. | n/a | Figure 1 schematic; Methods p. 619 (“two-compartment model with parallel linear and MM…”) |
+| BLQ treatment | Beal M3 | Methods p. 619 (“BLQ … utilized … applying the M3 method”) |
 
 The column header “omega^2” in Table 2 indicates that the tabulated
 values are variances of the log-scale random effects, which matches what
@@ -101,6 +101,7 @@ rich-sampling cohort), 300 mg single SC injection (healthy-volunteer FIH
 normal centred on the paper’s 75 kg reference weight.
 
 ``` r
+
 set.seed(20260424)
 n_subj <- 100
 
@@ -159,6 +160,7 @@ stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
 ## Simulation
 
 ``` r
+
 mod <- rxode2::rxode2(readModelDb("Kovalenko_2016_dupilumab"))
 #> ℹ parameter labels from comments will be replaced by 'label()'
 sim <- rxode2::rxSolve(mod, events = events, keep = c("WT", "cohort"))
@@ -173,6 +175,7 @@ the LLOQ (0.078 mg/L). The plot below reproduces the 5-50-95 percentile
 envelopes for the three virtual cohorts above.
 
 ``` r
+
 vpc <- sim |>
   dplyr::filter(!is.na(Cc), time > 0) |>
   dplyr::group_by(cohort, time) |>
@@ -209,6 +212,7 @@ NCA on the 300 mg single SC cohort. This is the cohort most comparable
 to the single-dose FIH SC arm (NCT01015027) in Table 1 of the paper.
 
 ``` r
+
 nca_conc <- sim |>
   dplyr::filter(cohort == "300 mg SC single", !is.na(Cc), time > 0) |>
   dplyr::mutate(treatment = cohort) |>
@@ -252,12 +256,7 @@ nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = interv
 #> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
-#>  ■■■■■■■■■                         26% |  ETA:  6s
+#>  ■■■■■■■                           21% |  ETA:  7s
 #> Warning: Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
@@ -304,8 +303,13 @@ nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = interv
 #> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
-#>  ■■■■■■■■■■■■■■■■■■■■■■■           72% |  ETA:  2s
+#>  ■■■■■■■■■■■■■■■■■■■■■             67% |  ETA:  2s
 #> Warning: Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
@@ -336,11 +340,11 @@ nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = interv
 knitr::kable(summary(nca_res), caption = "Simulated NCA (300 mg SC single dose).")
 ```
 
-| start | end | treatment        | N   | auclast | cmax          | tmax                | half.life      |
-|------:|----:|:-----------------|:----|:--------|:--------------|:--------------------|:---------------|
-|     0 |  85 | 300 mg SC single | 100 | NC      | 30.5 \[31.5\] | 6.00 \[2.50, 12.5\] | 5.33 \[0.279\] |
+| start | end | treatment | N | auclast | cmax | tmax | half.life |
+|---:|---:|:---|:---|:---|:---|:---|:---|
+| 0 | 85 | 300 mg SC single | 100 | NC | 30.5 \[31.5\] | 6.00 \[2.50, 12.5\] | 5.33 \[0.279\] |
 
-Simulated NCA (300 mg SC single dose).
+Simulated NCA (300 mg SC single dose). {.table}
 
 ### Comparison against published observations
 
@@ -353,6 +357,7 @@ as a self-consistency check against the published derived quantities (CL
 target- mediated phase):
 
 ``` r
+
 mod_typical <- mod |> rxode2::zeroRe()
 
 ev_typical_sc <- tibble::tibble(
@@ -400,6 +405,7 @@ knitr::kable(typical_summary, digits = 3,
 | Cc at day 57 (mg/L) |         0.000 |
 
 Typical-subject single 300 mg SC profile (WT = 75 kg; IIV zeroed).
+{.table}
 
 ## Assumptions and deviations
 

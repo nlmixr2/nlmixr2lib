@@ -1,6 +1,7 @@
 # Aguiar_2021_ustekinumab
 
 ``` r
+
 library(nlmixr2lib)
 library(rxode2)
 #> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
@@ -60,8 +61,8 @@ genotype distribution: V/V 8.8% (5/57), V/F 54.4% (31/57), F/F 36.8%
 (21/57).
 
 Standard ustekinumab dosing (which the simulations below use) is
-weight-tiered IV induction (260 mg if WT $\leq$ 55 kg, 390 mg if 55 \<
-WT $\leq$ 85 kg, 520 mg if WT \> 85 kg) at week 0, followed by 90 mg
+weight-tiered IV induction (260 mg if WT $`\le`$ 55 kg, 390 mg if 55 \<
+WT $`\le`$ 85 kg, 520 mg if WT \> 85 kg) at week 0, followed by 90 mg
 subcutaneous maintenance every 8 weeks.
 
 The same demographics are available programmatically via the model’s
@@ -76,55 +77,55 @@ collects them in one place. Concentrations are in nmol/L; the source
 paper converted ustekinumab concentrations to nmol/L using a molecular
 weight of 149 kDa (Aguiar 2021 Methods section 2.3).
 
-| Parameter / equation                 | Value                                                          | Source                              |
-|--------------------------------------|----------------------------------------------------------------|-------------------------------------|
-| `ka`                                 | 0.381 /day                                                     | Table 2 final-model Ka              |
-| `CL` (typical, reference covariates) | 0.277 L/day                                                    | Table 2 final-model CL              |
-| `Vc` (reference FFM = 45 kg)         | 3.57 L                                                         | Table 2 final-model Vc              |
-| `Vp` (reference FFM = 45 kg)         | 3.30 L                                                         | Table 2 final-model Vp              |
-| `Q`                                  | 1.89 L/day                                                     | Table 2 final-model Q               |
-| `F` (V/F or F/F)                     | 0.710 (logit 0.8954)                                           | Table 2 final-model F (V/F, F/F)    |
-| `F` (V/V)                            | 0.888 (logit 2.0705)                                           | Table 2 final-model F (V/V)         |
-| FFM effect on CL                     | power exponent 0.598, reference 45 kg                          | Table 2 footnote a                  |
-| FFM effect on Vc, Vp                 | power exponents 0.590 (Vc), 0.586 (Vp), reference 45 kg        | Table 2 footnotes b, c              |
-| ALB linear effect on CL              | (1 - 0.0165 \* (ALB - 43))                                     | Table 2 footnote a                  |
-| Bio-naive effect on CL               | (1 - 0.227 \* bio_naive); bio_naive = 1 - PRIOR_BIO            | Table 2 footnote a                  |
-| FCGR3A V/V effect on F               | logit shift 1.1751                                             | Table 2 final-model                 |
-| `Ksyn` (typical, reference CRP)      | 9.86e-9 nmol/L/day                                             | Table 2 final-model Ksyn            |
-| `Kdeg`                               | 9.26e-10 /day                                                  | Table 2 final-model Kdeg            |
-| CRP linear effect on Ksyn            | (1 + 0.0846 \* (CRP - 3))                                      | Table 2 footnote d                  |
-| `Vc-target`                          | 2.44 L                                                         | Table 2 final-model Vc-target       |
-| `Qtarget`                            | 0.493 L/day                                                    | Table 2 final-model Qtarget         |
-| `Vp-target`                          | 11.0 L                                                         | Table 2 final-model Vp-target       |
-| `Kint`                               | 2.83e-6 /day                                                   | Table 2 final-model Kint            |
-| `Kd`                                 | 0.168 nmol/L                                                   | Table 2 final-model Kd              |
-| `Kout`                               | 0.0581 /day                                                    | Table 3 final-model Kout            |
-| `FC0` (no ulcers)                    | 102 mg/kg                                                      | Table 3 final-model FC0             |
-| `FC0` (ulcers)                       | 213 mg/kg                                                      | Table 3 final-model FC0 with ulcers |
-| `Emax` (FC stim)                     | 2.19 (= 219%)                                                  | Table 3 final-model Emax            |
-| `C50` (FC stim)                      | 2.46 nmol/L                                                    | Table 3 final-model C50             |
-| Drug ODEs                            | n/a, see model file                                            | Figure 1 + Table 2 footnotes        |
-| Target ODEs                          | n/a, see model file                                            | Figure 1                            |
-| Indirect-response PD                 | dFC/dt = (FC0 \* Kout / stim_baseline) \* stim_fc - Kout \* FC | Table 3 footnote a                  |
-| IIV CL                               | omega^2 = log(0.18^2 + 1) = 0.03188                            | Table 2 (18.0% CV)                  |
-| IIV Vc                               | omega^2 = log(0.0979^2 + 1) = 0.00954                          | Table 2 (9.79% CV)                  |
-| IIV Vp                               | omega^2 = log(0.241^2 + 1) = 0.05645                           | Table 2 (24.1% CV)                  |
-| IIV logit(F)                         | omega^2 = 0.173^2 = 0.02993                                    | Table 2 (SD = 0.173 on logit scale) |
-| IIV Ksyn                             | omega^2 = log(0.992^2 + 1) = 0.68522                           | Table 2 (99.2% CV)                  |
-| IIV FC0                              | omega^2 = log(0.99^2 + 1) = 0.68309                            | Table 3 (99.0% CV)                  |
-| Residual on Cc                       | additive 4.55 nmol/L + proportional 7.77%                      | Table 2                             |
-| Residual on FC                       | proportional 57.3%                                             | Table 3                             |
+| Parameter / equation | Value | Source |
+|----|----|----|
+| `ka` | 0.381 /day | Table 2 final-model Ka |
+| `CL` (typical, reference covariates) | 0.277 L/day | Table 2 final-model CL |
+| `Vc` (reference FFM = 45 kg) | 3.57 L | Table 2 final-model Vc |
+| `Vp` (reference FFM = 45 kg) | 3.30 L | Table 2 final-model Vp |
+| `Q` | 1.89 L/day | Table 2 final-model Q |
+| `F` (V/F or F/F) | 0.710 (logit 0.8954) | Table 2 final-model F (V/F, F/F) |
+| `F` (V/V) | 0.888 (logit 2.0705) | Table 2 final-model F (V/V) |
+| FFM effect on CL | power exponent 0.598, reference 45 kg | Table 2 footnote a |
+| FFM effect on Vc, Vp | power exponents 0.590 (Vc), 0.586 (Vp), reference 45 kg | Table 2 footnotes b, c |
+| ALB linear effect on CL | (1 - 0.0165 \* (ALB - 43)) | Table 2 footnote a |
+| Bio-naive effect on CL | (1 - 0.227 \* bio_naive); bio_naive = 1 - PRIOR_BIO | Table 2 footnote a |
+| FCGR3A V/V effect on F | logit shift 1.1751 | Table 2 final-model |
+| `Ksyn` (typical, reference CRP) | 9.86e-9 nmol/L/day | Table 2 final-model Ksyn |
+| `Kdeg` | 9.26e-10 /day | Table 2 final-model Kdeg |
+| CRP linear effect on Ksyn | (1 + 0.0846 \* (CRP - 3)) | Table 2 footnote d |
+| `Vc-target` | 2.44 L | Table 2 final-model Vc-target |
+| `Qtarget` | 0.493 L/day | Table 2 final-model Qtarget |
+| `Vp-target` | 11.0 L | Table 2 final-model Vp-target |
+| `Kint` | 2.83e-6 /day | Table 2 final-model Kint |
+| `Kd` | 0.168 nmol/L | Table 2 final-model Kd |
+| `Kout` | 0.0581 /day | Table 3 final-model Kout |
+| `FC0` (no ulcers) | 102 mg/kg | Table 3 final-model FC0 |
+| `FC0` (ulcers) | 213 mg/kg | Table 3 final-model FC0 with ulcers |
+| `Emax` (FC stim) | 2.19 (= 219%) | Table 3 final-model Emax |
+| `C50` (FC stim) | 2.46 nmol/L | Table 3 final-model C50 |
+| Drug ODEs | n/a, see model file | Figure 1 + Table 2 footnotes |
+| Target ODEs | n/a, see model file | Figure 1 |
+| Indirect-response PD | dFC/dt = (FC0 \* Kout / stim_baseline) \* stim_fc - Kout \* FC | Table 3 footnote a |
+| IIV CL | omega^2 = log(0.18^2 + 1) = 0.03188 | Table 2 (18.0% CV) |
+| IIV Vc | omega^2 = log(0.0979^2 + 1) = 0.00954 | Table 2 (9.79% CV) |
+| IIV Vp | omega^2 = log(0.241^2 + 1) = 0.05645 | Table 2 (24.1% CV) |
+| IIV logit(F) | omega^2 = 0.173^2 = 0.02993 | Table 2 (SD = 0.173 on logit scale) |
+| IIV Ksyn | omega^2 = log(0.992^2 + 1) = 0.68522 | Table 2 (99.2% CV) |
+| IIV FC0 | omega^2 = log(0.99^2 + 1) = 0.68309 | Table 3 (99.0% CV) |
+| Residual on Cc | additive 4.55 nmol/L + proportional 7.77% | Table 2 |
+| Residual on FC | proportional 57.3% | Table 3 |
 
 ## Covariate column naming
 
-| Source column                             | Canonical column used here           | Notes                                                                                     |
-|-------------------------------------------|--------------------------------------|-------------------------------------------------------------------------------------------|
-| FFM (kg)                                  | `FFM`                                | Reference 45 kg (cohort median); derived per subject via Janmahasatian 2005.              |
-| Serum albumin                             | `ALB` (g/L)                          | Reference 43 g/L (cohort median).                                                         |
-| C-reactive protein                        | `CRP` (mg/L)                         | Standard CRP assay; reference 3 mg/L (cohort median).                                     |
-| bio-naive (1 = no prior biologic)         | `PRIOR_BIO` (1 = previously exposed) | Inverted: model derives `bio_naive <- 1 - PRIOR_BIO` to preserve the paper’s coefficient. |
-| FCGR3A-158 V/V                            | `FCGR3A_VV`                          | 1 = V/V, 0 = V/F or F/F.                                                                  |
-| Endoscopically active disease at baseline | `ENDO_ULCER`                         | 1 = mucosal ulcers at baseline ileocolonoscopy, 0 otherwise.                              |
+| Source column | Canonical column used here | Notes |
+|----|----|----|
+| FFM (kg) | `FFM` | Reference 45 kg (cohort median); derived per subject via Janmahasatian 2005. |
+| Serum albumin | `ALB` (g/L) | Reference 43 g/L (cohort median). |
+| C-reactive protein | `CRP` (mg/L) | Standard CRP assay; reference 3 mg/L (cohort median). |
+| bio-naive (1 = no prior biologic) | `PRIOR_BIO` (1 = previously exposed) | Inverted: model derives `bio_naive <- 1 - PRIOR_BIO` to preserve the paper’s coefficient. |
+| FCGR3A-158 V/V | `FCGR3A_VV` | 1 = V/V, 0 = V/F or F/F. |
+| Endoscopically active disease at baseline | `ENDO_ULCER` | 1 = mucosal ulcers at baseline ileocolonoscopy, 0 otherwise. |
 
 `FFM`, `PRIOR_BIO`, `FCGR3A_VV`, and `ENDO_ULCER` are added to the
 canonical register in `inst/references/covariate-columns.md` alongside
@@ -139,6 +140,7 @@ does not publish joint distributions); FCGR3A genotype frequencies match
 the cohort’s Hardy-Weinberg distribution (V/V 8.8%, V/F + F/F 91.2%).
 
 ``` r
+
 set.seed(20260425)
 
 n_subj <- 200
@@ -175,13 +177,14 @@ cohort <- tibble(
 ## Standard ustekinumab dosing regimen
 
 Aguiar 2021 simulated the licensed regimen: weight-tiered IV induction
-at week 0 (260 mg if WT $\leq$ 55 kg, 390 mg if 55 \< WT $\leq$ 85 kg,
+at week 0 (260 mg if WT $`\le`$ 55 kg, 390 mg if 55 \< WT $`\le`$ 85 kg,
 520 mg if WT \> 85 kg) followed by 90 mg subcutaneous every 8 weeks
 (Methods section 2.4 scenario a). The dosing dataset is in nmol because
 the model is parameterized in nmol / nmol/L; the helper `mg_to_nmol`
 converts.
 
 ``` r
+
 week  <- 7  # days
 ind_t <- 0
 sc_times <- c(8, 16, 24) * week  # SC maintenance at 8, 16, 24 weeks
@@ -256,6 +259,7 @@ can be compared head-to-head with Aguiar 2021’s reported point
 estimates.
 
 ``` r
+
 mod <- readModelDb("Aguiar_2021_ustekinumab")
 sim <- rxode2::rxSolve(mod, events = events, returnType = "data.frame")
 #> ℹ parameter labels from comments will be replaced by 'label()'
@@ -264,6 +268,7 @@ sim <- rxode2::rxSolve(mod, events = events, returnType = "data.frame")
 ### Concentration-time profile (free ustekinumab)
 
 ``` r
+
 sim_cc <- sim |> filter(CMT == 7L)  # CMT 7 = Cc observations
 
 sim_summary <- sim_cc |>
@@ -305,6 +310,7 @@ calprotectin, mg/kg) are emitted by the model alongside `Cc` and can be
 read directly from the simulation output.
 
 ``` r
+
 sim_fc <- sim |> filter(CMT == 6L)  # CMT 6 = fc observations
 
 sim_pd <- sim_fc |>
@@ -359,6 +365,7 @@ the first SC maintenance dose at week 8 closes the interval). Aguiar
 dose (Section 3.3).
 
 ``` r
+
 ind_window_start <- 0
 ind_window_end   <- 8 * week
 
@@ -393,6 +400,7 @@ nca_dose <- bind_rows(iv_doses, sc_ss_dose)
 ```
 
 ``` r
+
 conc_obj <- PKNCA::PKNCAconc(nca_conc, Cc ~ time_rel | treatment + ID)
 dose_obj <- PKNCA::PKNCAdose(nca_dose, AMT ~ time_rel | treatment + ID)
 
@@ -408,9 +416,9 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- suppressWarnings(PKNCA::pk.nca(nca_data))
-#>  ■■■■■■■                           20% |  ETA:  8s
-#>  ■■■■■■■■■■■■■■■■                  51% |  ETA:  5s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■       88% |  ETA:  1s
+#>  ■■■■■■■■                          22% |  ETA:  8s
+#>  ■■■■■■■■■■■■■■■■■                 55% |  ETA:  4s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     92% |  ETA:  1s
 
 knitr::kable(
   summary(nca_res),
@@ -419,13 +427,13 @@ knitr::kable(
 )
 ```
 
-| start | end | treatment      | N   | auclast       | cmax          | cmin          | tmax                   | half.life     |
-|------:|----:|:---------------|:----|:--------------|:--------------|:--------------|:-----------------------|:--------------|
-|     0 |  56 | IV_induction   | 200 | 8370 \[24.2\] | 747 \[16.5\]  | 36.4 \[72.4\] | 0.000 \[0.000, 0.000\] | 22.9 \[51.7\] |
-|     0 |  56 | SC_90mg_Q8W_ss | 200 | 1730 \[29.5\] | 60.6 \[19.7\] | 10.7 \[54.7\] | 3.50 \[3.50, 7.00\]    | 22.7 \[7.21\] |
+| start | end | treatment | N | auclast | cmax | cmin | tmax | half.life |
+|---:|---:|:---|:---|:---|:---|:---|:---|:---|
+| 0 | 56 | IV_induction | 200 | 8370 \[24.2\] | 747 \[16.5\] | 36.4 \[72.4\] | 0.000 \[0.000, 0.000\] | 22.9 \[51.7\] |
+| 0 | 56 | SC_90mg_Q8W_ss | 200 | 1730 \[29.5\] | 60.6 \[19.7\] | 10.7 \[54.7\] | 3.50 \[3.50, 7.00\] | 22.7 \[7.21\] |
 
 Simulated NCA: IV induction (0-8 weeks) and SC steady-state interval
-(weeks 24-32).
+(weeks 24-32). {.table}
 
 ### Comparison against published values
 
@@ -441,6 +449,7 @@ on a single subject with reference covariates so the result is
 deterministic.
 
 ``` r
+
 ref_subj <- tibble::tibble(
   ID = 1L,
   FFM = 45, ALB = 43, CRP = 3,
@@ -501,7 +510,7 @@ knitr::kable(
 | SC SS trough free ustekinumab (ug/mL)        |       1.5 |      1.29 |
 
 Typical-value simulation vs published values (Aguiar 2021 Section 3.3
-and Discussion comparison with Wang et al.).
+and Discussion comparison with Wang et al.). {.table}
 
 The simulated terminal half-life and SC steady-state trough should agree
 with the published values within ~20%. Differences greater than 20%

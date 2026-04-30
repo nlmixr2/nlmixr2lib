@@ -37,26 +37,26 @@ Per-parameter origin is recorded as an in-file comment next to each
 `inst/modeldb/pharmacokinetics/PK_2cmt_mAb_Davda_2014.R`. The table
 below collects them for review.
 
-| Equation / parameter                    | Value                | Source location                                                                            |
-|-----------------------------------------|----------------------|--------------------------------------------------------------------------------------------|
-| `lfdepot` (F1)                          | `log(0.744)`         | Davda 2014 Table 3                                                                         |
-| `lka` (Ka)                              | `log(0.282)` 1/day   | Davda 2014 Table 3                                                                         |
-| `lcl` (CL)                              | `log(0.200)` L/day   | Davda 2014 Table 3                                                                         |
-| `lvc` (V1 / Vc)                         | `log(3.61)` L        | Davda 2014 Table 3                                                                         |
-| `lvp` (V2 / Vp)                         | `log(2.75)` L        | Davda 2014 Table 3                                                                         |
-| `lq` (Q)                                | `log(0.747)` L/day   | Davda 2014 Table 3                                                                         |
-| `allocl` (allometric exponent on CL, Q) | `0.865`              | Davda 2014 Table 3                                                                         |
-| `allov` (allometric exponent on Vc, Vp) | `0.957`              | Davda 2014 Table 3                                                                         |
-| `etalka` IIV                            | `0.416` (= 0.645^2)  | Davda 2014 Table 3 (CV = 64.5%; omega^2 = CV^2)                                            |
-| `etalcl` IIV                            | `0.0987` (= 0.314^2) | Davda 2014 Table 3 (CV = 31.4%)                                                            |
-| `etalvc` IIV                            | `0.116` (= 0.341^2)  | Davda 2014 Table 3 (CV = 34.1%)                                                            |
-| `etalvp` IIV                            | `0.0789` (= 0.281^2) | Davda 2014 Table 3 (CV = 28.1%)                                                            |
-| `etalq` IIV                             | `0.699` (= 0.836^2)  | Davda 2014 Table 3 (CV = 83.6%)                                                            |
-| COV(CL, Vc)                             | `0.0786`             | Davda 2014 Table 3                                                                         |
-| COV(Vc, Vp)                             | `0.0619`             | Davda 2014 Table 3                                                                         |
-| COV(CL, Vp)                             | `0.0377`             | Davda 2014 Table 3                                                                         |
-| `propSd` (residual proportional SD)     | `0.144`              | Davda 2014 Table 3 (sigma = 14.4%, sigma^2 = 0.0208)                                       |
-| Structure                               | n/a                  | Davda 2014 Methods / Table 3: two-compartment linear CL, first-order SC absorption with F1 |
+| Equation / parameter | Value | Source location |
+|----|----|----|
+| `lfdepot` (F1) | `log(0.744)` | Davda 2014 Table 3 |
+| `lka` (Ka) | `log(0.282)` 1/day | Davda 2014 Table 3 |
+| `lcl` (CL) | `log(0.200)` L/day | Davda 2014 Table 3 |
+| `lvc` (V1 / Vc) | `log(3.61)` L | Davda 2014 Table 3 |
+| `lvp` (V2 / Vp) | `log(2.75)` L | Davda 2014 Table 3 |
+| `lq` (Q) | `log(0.747)` L/day | Davda 2014 Table 3 |
+| `allocl` (allometric exponent on CL, Q) | `0.865` | Davda 2014 Table 3 |
+| `allov` (allometric exponent on Vc, Vp) | `0.957` | Davda 2014 Table 3 |
+| `etalka` IIV | `0.416` (= 0.645^2) | Davda 2014 Table 3 (CV = 64.5%; omega^2 = CV^2) |
+| `etalcl` IIV | `0.0987` (= 0.314^2) | Davda 2014 Table 3 (CV = 31.4%) |
+| `etalvc` IIV | `0.116` (= 0.341^2) | Davda 2014 Table 3 (CV = 34.1%) |
+| `etalvp` IIV | `0.0789` (= 0.281^2) | Davda 2014 Table 3 (CV = 28.1%) |
+| `etalq` IIV | `0.699` (= 0.836^2) | Davda 2014 Table 3 (CV = 83.6%) |
+| COV(CL, Vc) | `0.0786` | Davda 2014 Table 3 |
+| COV(Vc, Vp) | `0.0619` | Davda 2014 Table 3 |
+| COV(CL, Vp) | `0.0377` | Davda 2014 Table 3 |
+| `propSd` (residual proportional SD) | `0.144` | Davda 2014 Table 3 (sigma = 14.4%, sigma^2 = 0.0208) |
+| Structure | n/a | Davda 2014 Methods / Table 3: two-compartment linear CL, first-order SC absorption with F1 |
 
 Davda 2014 uses the convention that reported “%CV” is `omega × 100`
 where `omega` is the standard deviation of the log-normally distributed
@@ -80,6 +80,7 @@ Both follow one subject for 84 days to capture the terminal phase of an
 average mAb (apparent half-life ~20 days).
 
 ``` r
+
 set.seed(20260418)
 n_subj <- 200
 
@@ -124,6 +125,7 @@ events_sc <- make_events(cohort, "SC")
 ## Simulation
 
 ``` r
+
 mod <- rxode2::rxode2(readModelDb("PK_2cmt_mAb_Davda_2014"))
 
 sim_iv <- rxode2::rxSolve(mod, events = events_iv, keep = c("WT", "treatment"))
@@ -141,6 +143,7 @@ For a deterministic typical-subject (70 kg, no between-subject
 variability) comparison of IV vs SC, zero out random effects:
 
 ``` r
+
 mod_typical <- mod |> rxode2::zeroRe()
 
 typical_cohort <- tibble(id = 1:2, WT = 70,
@@ -176,6 +179,7 @@ VPC of the final model. Below is the typical-subject analogue: a 70 kg
 adult receiving a 2 mg/kg (140 mg) IV or SC dose.
 
 ``` r
+
 sim_typical |>
   dplyr::filter(!is.na(Cc), Cc > 0) |>
   ggplot(aes(time, Cc, colour = treatment)) +
@@ -198,6 +202,7 @@ Analogous to Davda 2014 Figure 3 (VPC), though the underlying
 individuals differ from the paper’s observed dataset.
 
 ``` r
+
 sim |>
   dplyr::filter(!is.na(Cc), Cc > 0) |>
   dplyr::group_by(time, treatment) |>
@@ -227,6 +232,7 @@ Cmax, Tmax, AUC0-inf, and terminal half-life computed with `PKNCA`,
 stratified by route (the `treatment` grouping variable).
 
 ``` r
+
 sim_nca <- sim |>
   dplyr::filter(!is.na(Cc), Cc > 0) |>
   dplyr::select(id, time, Cc, treatment)
@@ -255,17 +261,18 @@ intervals <- data.frame(
 nca_res <- PKNCA::pk.nca(
   PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 )
-#>  ■■■                                8% |  ETA: 41s
-#>  ■■■■■                             15% |  ETA: 37s
-#>  ■■■■■■■■                          22% |  ETA: 33s
-#>  ■■■■■■■■■■                        29% |  ETA: 30s
-#>  ■■■■■■■■■■■■                      36% |  ETA: 27s
-#>  ■■■■■■■■■■■■■■                    44% |  ETA: 24s
-#>  ■■■■■■■■■■■■■■■■                  51% |  ETA: 21s
-#>  ■■■■■■■■■■■■■■■■■■■               60% |  ETA: 16s
-#>  ■■■■■■■■■■■■■■■■■■■■■■            71% |  ETA: 11s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■         81% |  ETA:  7s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      91% |  ETA:  3s
+#>  ■■■                                7% |  ETA: 41s
+#>  ■■■■■                             14% |  ETA: 37s
+#>  ■■■■■■■                           22% |  ETA: 34s
+#>  ■■■■■■■■■■                        28% |  ETA: 31s
+#>  ■■■■■■■■■■■■                      36% |  ETA: 28s
+#>  ■■■■■■■■■■■■■■                    42% |  ETA: 25s
+#>  ■■■■■■■■■■■■■■■■                  50% |  ETA: 22s
+#>  ■■■■■■■■■■■■■■■■■■■               59% |  ETA: 17s
+#>  ■■■■■■■■■■■■■■■■■■■■■■            69% |  ETA: 12s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■         79% |  ETA:  8s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      88% |  ETA:  4s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■   98% |  ETA:  1s
 
 summary(nca_res)
 #>  start end treatment   N        cmax                 tmax   half.life
@@ -288,6 +295,7 @@ inspect the emergent exposure properties of the consensus model. A
 typical-subject sanity check at 70 kg, 2 mg/kg IV / SC:
 
 ``` r
+
 typical_nca_conc <- sim_typical |>
   dplyr::filter(!is.na(Cc), Cc > 0) |>
   dplyr::mutate(id = paste(treatment, id, sep = "_")) |>
@@ -331,7 +339,7 @@ knitr::kable(
 
 Typical-subject (70 kg, 2 mg/kg) NCA for the Davda 2014 consensus model.
 The paper does not publish NCA for comparison; values shown for reader
-inspection.
+inspection. {.table}
 
 Qualitative expectations from the Davda 2014 consensus parameters at 70
 kg, 2 mg/kg:

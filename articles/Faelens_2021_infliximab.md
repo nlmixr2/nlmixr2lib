@@ -51,21 +51,21 @@ comments next to each
 [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry.
 The table below collects them in one place.
 
-| Equation / parameter                       |       Value | Source location                                          |
-|--------------------------------------------|------------:|----------------------------------------------------------|
-| Typical KE, baseline Mayo 1                | 0.0422 /day | Faelens 2021 supplement Table S1, “Adapted Model” column |
-| Typical KE, baseline Mayo 2 (reference)    | 0.0463 /day | Faelens 2021 supplement Table S1                         |
-| Typical KE, baseline Mayo 3                | 0.0570 /day | Faelens 2021 supplement Table S1                         |
-| Typical V (FFM 52 kg, no CS, no DISEXT_EP) |      6.97 L | Faelens 2021 supplement Table S1; THETA(6)               |
-| STEROID fold-change on V                   |        1.30 | Faelens 2021 supplement Table S1; THETA(5)               |
-| FFM exponent on V (ref 52 kg)              |       0.517 | Faelens 2021 supplement Table S1; THETA(7)               |
-| DISEXT_EP fold-change on V                 |        1.25 | Faelens 2021 supplement Table S1; THETA(8)               |
-| IIV on KE (CV%)                            |        33.4 | Faelens 2021 supplement Table S1, “Adapted Model”        |
-| IIV on V (CV%)                             |        23.6 | Faelens 2021 supplement Table S1, “Adapted Model”        |
-| Proportional residual error (CV%)          |        32.9 | Faelens 2021 supplement Table S1, “Adapted Model”        |
-| Additive residual error (mg/L)             | 0.300 (FIX) | Faelens 2021 supplement Table S1, “Adapted Model”        |
-| `d/dt(central) = -kel * central`           |         n/a | Faelens 2021 supplement NONMEM `$DES` block              |
-| `Y = IPRED * (1 + ERR(1)) + ERR(2)`        |         n/a | Faelens 2021 supplement NONMEM `$ERROR` block            |
+| Equation / parameter | Value | Source location |
+|----|---:|----|
+| Typical KE, baseline Mayo 1 | 0.0422 /day | Faelens 2021 supplement Table S1, “Adapted Model” column |
+| Typical KE, baseline Mayo 2 (reference) | 0.0463 /day | Faelens 2021 supplement Table S1 |
+| Typical KE, baseline Mayo 3 | 0.0570 /day | Faelens 2021 supplement Table S1 |
+| Typical V (FFM 52 kg, no CS, no DISEXT_EP) | 6.97 L | Faelens 2021 supplement Table S1; THETA(6) |
+| STEROID fold-change on V | 1.30 | Faelens 2021 supplement Table S1; THETA(5) |
+| FFM exponent on V (ref 52 kg) | 0.517 | Faelens 2021 supplement Table S1; THETA(7) |
+| DISEXT_EP fold-change on V | 1.25 | Faelens 2021 supplement Table S1; THETA(8) |
+| IIV on KE (CV%) | 33.4 | Faelens 2021 supplement Table S1, “Adapted Model” |
+| IIV on V (CV%) | 23.6 | Faelens 2021 supplement Table S1, “Adapted Model” |
+| Proportional residual error (CV%) | 32.9 | Faelens 2021 supplement Table S1, “Adapted Model” |
+| Additive residual error (mg/L) | 0.300 (FIX) | Faelens 2021 supplement Table S1, “Adapted Model” |
+| `d/dt(central) = -kel * central` | n/a | Faelens 2021 supplement NONMEM `$DES` block |
+| `Y = IPRED * (1 + ERR(1)) + ERR(2)` | n/a | Faelens 2021 supplement NONMEM `$ERROR` block |
 
 The model is reparameterised from the source’s (KE, V) parameterisation
 to nlmixr2lib’s standard (CL, Vc) parameterisation via `CL = KE * V`.
@@ -90,6 +90,7 @@ endoscopic subscore fixed by group. Section “Assumptions and deviations”
 lists each assumption.
 
 ``` r
+
 set.seed(2021)
 
 janmahasatian_ffm <- function(wt_kg, ht_m, sexf) {
@@ -156,6 +157,7 @@ stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
 ## Simulation
 
 ``` r
+
 mod <- readModelDb("Faelens_2021_infliximab")
 sim <- rxode2::rxSolve(
   mod,
@@ -168,6 +170,7 @@ sim <- rxode2::rxSolve(
 ## Replicate published figures
 
 ``` r
+
 auc_d84 <- sim %>%
   filter(time <= 84) %>%
   group_by(id, treatment, MAYO_E) %>%
@@ -193,6 +196,7 @@ ggplot(auc_d84, aes(x = AUCd84, fill = treatment)) +
 ![](Faelens_2021_infliximab_files/figure-html/figure-2-aucd84-1.png)
 
 ``` r
+
 conc_summary <- sim %>%
   filter(time > 0) %>%
   group_by(time, treatment) %>%
@@ -227,6 +231,7 @@ than classical single-dose AUCinf. Compute it via PKNCA on the \[0,
 84\]-day interval, stratified by treatment and baseline Mayo subscore.
 
 ``` r
+
 sim_nca <- sim %>%
   filter(!is.na(Cc), time <= 84) %>%
   mutate(treatment_mayo = paste0(treatment, ", Mayo ", MAYO_E)) %>%
@@ -257,22 +262,21 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
-#>  ■■■■■■                            18% |  ETA:  6s
-#>  ■■■■■■■■■■■■■■■■■                 54% |  ETA:  4s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     93% |  ETA:  1s
+#>  ■■■■■■■■■■■■■■■                   47% |  ETA:  4s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■       86% |  ETA:  1s
 nca_summary <- summary(nca_res)
 knitr::kable(nca_summary, caption = "PKNCA summary on the [0, 84]-day induction window, by treatment and baseline Mayo subscore.")
 ```
 
-| Interval Start | Interval End | treatment_mayo   | N   | AUClast (day\*mg/L) | Cmax (mg/L)   | Cmin (mg/L)   | Tmax (day)          |
-|---------------:|-------------:|:-----------------|:----|:--------------------|:--------------|:--------------|:--------------------|
-|              0 |           84 | 10 mg/kg, Mayo 2 | 245 | 5150 \[42.8\]       | 129 \[35.5\]  | 16.1 \[98.3\] | 14.0 \[14.0, 42.0\] |
-|              0 |           84 | 10 mg/kg, Mayo 3 | 255 | 4240 \[45.5\]       | 118 \[36.3\]  | 9.27 \[136\]  | 14.0 \[14.0, 42.0\] |
-|              0 |           84 | 5 mg/kg, Mayo 2  | 245 | 2410 \[45.6\]       | 61.8 \[36.2\] | 6.93 \[116\]  | 14.0 \[14.0, 42.0\] |
-|              0 |           84 | 5 mg/kg, Mayo 3  | 255 | 2090 \[42.5\]       | 58.7 \[32.5\] | 4.45 \[126\]  | 14.0 \[14.0, 42.0\] |
+| Interval Start | Interval End | treatment_mayo | N | AUClast (day\*mg/L) | Cmax (mg/L) | Cmin (mg/L) | Tmax (day) |
+|---:|---:|:---|:---|:---|:---|:---|:---|
+| 0 | 84 | 10 mg/kg, Mayo 2 | 245 | 5150 \[42.8\] | 129 \[35.5\] | 16.1 \[98.3\] | 14.0 \[14.0, 42.0\] |
+| 0 | 84 | 10 mg/kg, Mayo 3 | 255 | 4240 \[45.5\] | 118 \[36.3\] | 9.27 \[136\] | 14.0 \[14.0, 42.0\] |
+| 0 | 84 | 5 mg/kg, Mayo 2 | 245 | 2410 \[45.6\] | 61.8 \[36.2\] | 6.93 \[116\] | 14.0 \[14.0, 42.0\] |
+| 0 | 84 | 5 mg/kg, Mayo 3 | 255 | 2090 \[42.5\] | 58.7 \[32.5\] | 4.45 \[126\] | 14.0 \[14.0, 42.0\] |
 
 PKNCA summary on the \[0, 84\]-day induction window, by treatment and
-baseline Mayo subscore.
+baseline Mayo subscore. {.table}
 
 ### Comparison against published Table 1
 
@@ -285,6 +289,7 @@ expected when our covariate distributions differ materially from the
 source dataset.
 
 ``` r
+
 auc_simulated <- auc_d84 %>%
   group_by(treatment, MAYO_E) %>%
   summarise(
@@ -316,14 +321,15 @@ knitr::kable(
 ```
 
 | treatment | MAYO_E | median_pub | q05_pub | q95_pub | median_sim | q05_sim | q95_sim | pct_diff_median |
-|:----------|-------:|-----------:|--------:|--------:|-----------:|--------:|--------:|----------------:|
-| 5 mg/kg   |      2 |       2455 |    1215 |    4805 |       2426 |    1149 |    4689 |              -1 |
-| 5 mg/kg   |      3 |       1979 |     953 |    3990 |       2097 |    1077 |    3991 |               6 |
-| 10 mg/kg  |      2 |       4910 |    2431 |    9609 |       4968 |    2633 |   10219 |               1 |
-| 10 mg/kg  |      3 |       3958 |    1906 |    7981 |       4285 |    2188 |    8650 |               8 |
+|:---|---:|---:|---:|---:|---:|---:|---:|---:|
+| 5 mg/kg | 2 | 2455 | 1215 | 4805 | 2426 | 1149 | 4689 | -1 |
+| 5 mg/kg | 3 | 1979 | 953 | 3990 | 2097 | 1077 | 3991 | 6 |
+| 10 mg/kg | 2 | 4910 | 2431 | 9609 | 4968 | 2633 | 10219 | 1 |
+| 10 mg/kg | 3 | 3958 | 1906 | 7981 | 4285 | 2188 | 8650 | 8 |
 
 Simulated vs. published AUCd84 (mg\*day/L), by dose and baseline Mayo
 subscore (Faelens 2021 Table 1, ‘pub’ = published median + 90% PI).
+{.table}
 
 ## Assumptions and deviations
 

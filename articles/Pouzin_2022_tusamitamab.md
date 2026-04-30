@@ -46,27 +46,27 @@ Every [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html)
 parameter carries an in-file comment pointing back to the source. The
 table below collects those pointers in one place.
 
-| Equation / parameter                                             | Value                                        | Source location                                                                             |
-|------------------------------------------------------------------|----------------------------------------------|---------------------------------------------------------------------------------------------|
-| Vc (central volume)                                              | 3.37 L                                       | Pouzin 2022 Table 4                                                                         |
-| Vp (peripheral volume)                                           | 2.54 L                                       | Pouzin 2022 Table 4                                                                         |
-| Q (inter-compartmental CL)                                       | 0.543 L/day                                  | Pouzin 2022 Table 4                                                                         |
-| CL_ADC (proteolytic CL of DAR≥1)                                 | 0.392 L/day                                  | Pouzin 2022 Table 4                                                                         |
-| CL_NAB                                                           | 0.408 L/day                                  | Pouzin 2022 Table 4                                                                         |
-| CL_DM4 (apparent; V_DM4=1 L)                                     | 240 L/day                                    | Pouzin 2022 Table 4 + Methods § “DM4 and MeDM4”                                             |
-| CL_MeDM4 (apparent; V_MeDM4=1 L)                                 | 0.256 L/day                                  | Pouzin 2022 Table 4 + Methods § “DM4 and MeDM4”                                             |
-| V_DM4, V_MeDM4 (fixed)                                           | 1 L each (FIX)                               | Pouzin 2022 Methods § “DM4 and MeDM4”                                                       |
-| FR_MeDM4                                                         | 0.0107                                       | Pouzin 2022 Table 4                                                                         |
-| kdec1 (DAR1→NAB)                                                 | 0.0565 /day                                  | Pouzin 2022 Table 4                                                                         |
-| kdec2                                                            | 0.181 /day                                   | Pouzin 2022 Table 4                                                                         |
-| kdec3                                                            | 0.340 /day                                   | Pouzin 2022 Table 4                                                                         |
-| kdec4                                                            | 0.525 /day                                   | Pouzin 2022 Table 4                                                                         |
-| kdec5                                                            | 0.751 /day                                   | Pouzin 2022 Table 4                                                                         |
-| kdec6, kdec7, kdec8                                              | 0.938 /day each                              | Pouzin 2022 Table 4 + Methods (DAR7/DAR8 not separately identifiable)                       |
-| F_DAR1..F_DAR8 (administered fractions)                          | 0.9–21.8 % (Table 4)                         | Pouzin 2022 Tables 3 & 4 (fixed at batch median)                                            |
-| F_NAB                                                            | 7.1% (estimated)                             | Pouzin 2022 Table 4                                                                         |
-| Residual SDs (a_ADC, b_ADC, b_NAB, b_DM4, b_MeDM4, a_DARavg)     | 1.03 µg/mL, 8.9%, 26.0%, 33.5%, 50.0%, 0.219 | Pouzin 2022 Table 4                                                                         |
-| ODE structure (DAR0–DAR8 chains, 1:1 deconjugation, DM4 ⇄ MeDM4) | n/a                                          | Pouzin 2022 Online Resource 1 (Monolix `.mlxtran`); main-text Methods § “Model development” |
+| Equation / parameter | Value | Source location |
+|----|----|----|
+| Vc (central volume) | 3.37 L | Pouzin 2022 Table 4 |
+| Vp (peripheral volume) | 2.54 L | Pouzin 2022 Table 4 |
+| Q (inter-compartmental CL) | 0.543 L/day | Pouzin 2022 Table 4 |
+| CL_ADC (proteolytic CL of DAR≥1) | 0.392 L/day | Pouzin 2022 Table 4 |
+| CL_NAB | 0.408 L/day | Pouzin 2022 Table 4 |
+| CL_DM4 (apparent; V_DM4=1 L) | 240 L/day | Pouzin 2022 Table 4 + Methods § “DM4 and MeDM4” |
+| CL_MeDM4 (apparent; V_MeDM4=1 L) | 0.256 L/day | Pouzin 2022 Table 4 + Methods § “DM4 and MeDM4” |
+| V_DM4, V_MeDM4 (fixed) | 1 L each (FIX) | Pouzin 2022 Methods § “DM4 and MeDM4” |
+| FR_MeDM4 | 0.0107 | Pouzin 2022 Table 4 |
+| kdec1 (DAR1→NAB) | 0.0565 /day | Pouzin 2022 Table 4 |
+| kdec2 | 0.181 /day | Pouzin 2022 Table 4 |
+| kdec3 | 0.340 /day | Pouzin 2022 Table 4 |
+| kdec4 | 0.525 /day | Pouzin 2022 Table 4 |
+| kdec5 | 0.751 /day | Pouzin 2022 Table 4 |
+| kdec6, kdec7, kdec8 | 0.938 /day each | Pouzin 2022 Table 4 + Methods (DAR7/DAR8 not separately identifiable) |
+| F_DAR1..F_DAR8 (administered fractions) | 0.9–21.8 % (Table 4) | Pouzin 2022 Tables 3 & 4 (fixed at batch median) |
+| F_NAB | 7.1% (estimated) | Pouzin 2022 Table 4 |
+| Residual SDs (a_ADC, b_ADC, b_NAB, b_DM4, b_MeDM4, a_DARavg) | 1.03 µg/mL, 8.9%, 26.0%, 33.5%, 50.0%, 0.219 | Pouzin 2022 Table 4 |
+| ODE structure (DAR0–DAR8 chains, 1:1 deconjugation, DM4 ⇄ MeDM4) | n/a | Pouzin 2022 Online Resource 1 (Monolix `.mlxtran`); main-text Methods § “Model development” |
 
 The published additive ADC residual SD of **1.03 µg/mL** is converted to
 µM in [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) by
@@ -88,6 +88,7 @@ reported in the companion covariate paper. We use BSA = 1.79 m²
 throughout this vignette.
 
 ``` r
+
 # 100 mg/m^2 Q2W, BSA assumed = 1.79 m^2 (typical adult)
 bsa_m2     <- 1.79
 dose_mg_m2 <- 100
@@ -99,6 +100,7 @@ sprintf("dose = %.1f mg of ADC = %.4f µmol total antibody", dose_mg, dose_umol)
 ```
 
 ``` r
+
 # Build a 9-row IV dose event for one administration: each chain receives
 # the *total* antibody dose, and the model multiplies by f<chain>
 # (= F_DARi / SUM) inside model() to deposit only that chain's fraction.
@@ -136,6 +138,7 @@ Pouzin 2022 Figure 3 shows the typical concentration-time profile of all
 four analytes after 100 mg/m² Q2W dosing.
 
 ``` r
+
 sim_long <- df |>
   select(time, Cc, Cnab, Cdm4, Cmedm4) |>
   pivot_longer(c(Cc, Cnab, Cdm4, Cmedm4), names_to = "analyte", values_to = "C_uM") |>
@@ -170,6 +173,7 @@ across cycles and decreases slightly across repeat doses (3.3 → 2.8) as
 DAR0 and DAR1 accumulate.
 
 ``` r
+
 ggplot(df, aes(time, DARavg)) +
   geom_line(linewidth = 0.8, colour = "#1f78b4") +
   scale_x_continuous(breaks = seq(0, 84, by = 14)) +
@@ -194,6 +198,7 @@ of the four analytes. We use PKNCA on the cycle-1 single-dose simulation
 published values.
 
 ``` r
+
 ev_cycle1 <- build_q2w_dosing(dose_umol, n_cycles = 1) |>
   rxode2::et(c(0.001, 0.01, 0.05, 0.1, 0.25, 0.5, 0.75, seq(1, 14, by = 0.25)),
              cmt = "Cc")
@@ -258,10 +263,12 @@ knitr::kable(nca_tbl, digits = 5,
 | MeDM4               | 0.00607 |      NA |   6.12001 |
 
 PKNCA cycle-1 NCA on the typical-value simulation (BSA = 1.79 m²).
+{.table}
 
 ### Comparison against Pouzin 2022 Table 7
 
 ``` r
+
 # Pouzin 2022 Table 7: Cmax in µM (free-species molar concentration);
 # AUC values are reported in the same column header (lM.day) but their
 # magnitude only reconciles with the model when interpreted as
@@ -293,16 +300,16 @@ knitr::kable(cmp, digits = 4,
              caption = "Side-by-side: simulated vs. published Pouzin 2022 Table 7. AUC % difference is calculated against the µg·d/mL interpretation of the published value (see Errata).")
 ```
 
-| analyte             | sim_cmax_uM | pub_cmax_uM | cmax_pct_diff | sim_auc_uM_d | sim_auc_ug_d_per_mL | pub_auc_per_table7 | auc_pct_diff_against_ug |
-|:--------------------|------------:|------------:|--------------:|-------------:|--------------------:|-------------------:|------------------------:|
-| SAR408701 (DAR\>=1) |      0.3288 |      0.3260 |        0.8651 |           NA |                  NA |             250.00 |                      NA |
-| NAB (DAR0)          |      0.0252 |      0.0249 |        1.1503 |           NA |                  NA |              32.50 |                      NA |
-| DM4                 |      0.0021 |      0.0021 |       -0.7287 |           NA |                  NA |               1.00 |                      NA |
-| MeDM4               |      0.0061 |      0.0061 |       -0.5235 |           NA |                  NA |               8.69 |                      NA |
+| analyte | sim_cmax_uM | pub_cmax_uM | cmax_pct_diff | sim_auc_uM_d | sim_auc_ug_d_per_mL | pub_auc_per_table7 | auc_pct_diff_against_ug |
+|:---|---:|---:|---:|---:|---:|---:|---:|
+| SAR408701 (DAR\>=1) | 0.3288 | 0.3260 | 0.8651 | NA | NA | 250.00 | NA |
+| NAB (DAR0) | 0.0252 | 0.0249 | 1.1503 | NA | NA | 32.50 | NA |
+| DM4 | 0.0021 | 0.0021 | -0.7287 | NA | NA | 1.00 | NA |
+| MeDM4 | 0.0061 | 0.0061 | -0.5235 | NA | NA | 8.69 | NA |
 
 Side-by-side: simulated vs. published Pouzin 2022 Table 7. AUC %
 difference is calculated against the µg·d/mL interpretation of the
-published value (see Errata).
+published value (see Errata). {.table}
 
 All four Cmax values agree with Table 7 to within ≈ 1 %, and all four
 AUC values agree to within ≈ 1 % when the published AUC unit is

@@ -1,6 +1,7 @@
 # Moein_2022_etrolizumab
 
 ``` r
+
 library(nlmixr2lib)
 library(PKNCA)
 #> 
@@ -66,34 +67,34 @@ The per-parameter origin is recorded as an in-file comment next to each
 `inst/modeldb/specificDrugs/Moein_2022_etrolizumab.R`. The table below
 collects them in one place.
 
-| Equation / parameter | Value                        | Source location (Moein 2022)                                                  |
-|----------------------|------------------------------|-------------------------------------------------------------------------------|
-| `lka`                | `log(0.193)`                 | Table 4: ka = 0.193 /day                                                      |
-| `lcl`                | `log(0.260)`                 | Table 4: CL (at TSFD = 0) = 0.260 L/day                                       |
-| `lvc`                | `log(2.61)`                  | Table 4: Vc = 2.61 L                                                          |
-| `lvp`                | `log(1.77)`                  | Table 4: Vp = 1.77 L                                                          |
-| `lq`                 | `log(0.449)`                 | Table 4: Q = 0.449 L/day                                                      |
-| `logitfdepot`        | `logit(0.712)`               | Table 4: F = 0.712                                                            |
-| `logitmaxred`        | `logit(0.263)`               | Table 4: Maxred = 0.263                                                       |
-| `lonset`             | `log(4.81)`                  | Table 4: Onset = 4.81 weeks                                                   |
-| `allo_cl`            | `0.872`                      | Table 4 note a: WT exponent on CL and Q                                       |
-| `allo_v`             | `0.788`                      | Table 4 note b: WT exponent on Vc and Vp                                      |
-| `e_alb_cl`           | `-0.0314`                    | Table 4: Albumin on CL                                                        |
-| `e_crp_cl`           | `0.00458`                    | Table 4: CRP on CL                                                            |
-| `e_adat_cl`          | `0.0365`                     | Table 4: ADAT on CL                                                           |
-| `e_priortnf_cl`      | `0.0490`                     | Table 4: Prior TNF on CL                                                      |
-| `e_extpan_cl`        | `0.0816`                     | Table 4: Extensive/pancolitis on CL                                           |
-| `e_othext_cl`        | `0.181`                      | Table 4: Other disease extension on CL                                        |
-| IIV CL (`etalcl`)    | `log(1+0.243^2)`             | Table 4: IIV CL CV = 0.243                                                    |
-| IIV Vc (`etalvc`)    | `log(1+0.252^2)`             | Table 4: IIV Vc CV = 0.252                                                    |
-| IIV Vp (`etalvp`)    | `log(1+0.262^2)`             | Table 4: IIV Vp CV = 0.262                                                    |
-| IIV F                | `0.733^2`                    | Table 4: IIV F logit-SD = 0.733                                               |
-| IIV Maxred           | `0.597^2`                    | Table 4: IIV Maxred logit-SD = 0.597                                          |
-| `propSd`             | `0.196`                      | Table 4: Proportional residual CV = 0.196                                     |
-| `addSd`              | `0.427`                      | Table 4: Additive residual SD = 0.427 ug/mL                                   |
-| CL time-decay        | Equation 1                   | Eq. 1: CL = CL0 \* (1 - Maxred \* (1 - exp(-log(2)/(Onset*7)* (TSFD - TAD)))) |
-| Covariate form       | `exp(theta*(Cov - Cov_ref))` | Table 4 note d (continuous)                                                   |
-| Covariate form       | `1 + theta * indicator`      | Table 4 note g (categorical)                                                  |
+| Equation / parameter | Value | Source location (Moein 2022) |
+|----|----|----|
+| `lka` | `log(0.193)` | Table 4: ka = 0.193 /day |
+| `lcl` | `log(0.260)` | Table 4: CL (at TSFD = 0) = 0.260 L/day |
+| `lvc` | `log(2.61)` | Table 4: Vc = 2.61 L |
+| `lvp` | `log(1.77)` | Table 4: Vp = 1.77 L |
+| `lq` | `log(0.449)` | Table 4: Q = 0.449 L/day |
+| `logitfdepot` | `logit(0.712)` | Table 4: F = 0.712 |
+| `logitmaxred` | `logit(0.263)` | Table 4: Maxred = 0.263 |
+| `lonset` | `log(4.81)` | Table 4: Onset = 4.81 weeks |
+| `allo_cl` | `0.872` | Table 4 note a: WT exponent on CL and Q |
+| `allo_v` | `0.788` | Table 4 note b: WT exponent on Vc and Vp |
+| `e_alb_cl` | `-0.0314` | Table 4: Albumin on CL |
+| `e_crp_cl` | `0.00458` | Table 4: CRP on CL |
+| `e_adat_cl` | `0.0365` | Table 4: ADAT on CL |
+| `e_priortnf_cl` | `0.0490` | Table 4: Prior TNF on CL |
+| `e_extpan_cl` | `0.0816` | Table 4: Extensive/pancolitis on CL |
+| `e_othext_cl` | `0.181` | Table 4: Other disease extension on CL |
+| IIV CL (`etalcl`) | `log(1+0.243^2)` | Table 4: IIV CL CV = 0.243 |
+| IIV Vc (`etalvc`) | `log(1+0.252^2)` | Table 4: IIV Vc CV = 0.252 |
+| IIV Vp (`etalvp`) | `log(1+0.262^2)` | Table 4: IIV Vp CV = 0.262 |
+| IIV F | `0.733^2` | Table 4: IIV F logit-SD = 0.733 |
+| IIV Maxred | `0.597^2` | Table 4: IIV Maxred logit-SD = 0.597 |
+| `propSd` | `0.196` | Table 4: Proportional residual CV = 0.196 |
+| `addSd` | `0.427` | Table 4: Additive residual SD = 0.427 ug/mL |
+| CL time-decay | Equation 1 | Eq. 1: CL = CL0 \* (1 - Maxred \* (1 - exp(-log(2)/(Onset*7)* (TSFD - TAD)))) |
+| Covariate form | `exp(theta*(Cov - Cov_ref))` | Table 4 note d (continuous) |
+| Covariate form | `1 + theta * indicator` | Table 4 note g (categorical) |
 
 Reference covariate values for the reference patient (Figure 1 caption):
 72 kg WT, 41 g/L albumin, 4.23 mg/L CRP, phase III, no prior anti-TNF,
@@ -106,6 +107,7 @@ use virtual populations whose covariate distributions approximate the
 published phase III demographics.
 
 ``` r
+
 make_cohort <- function(n, n_doses = 6, dosing_interval_days = 28,
                         obs_days_per_dose = seq(0, 28, by = 2),
                         amt_mg = 105,
@@ -164,6 +166,7 @@ make_cohort <- function(n, n_doses = 6, dosing_interval_days = 28,
 ```
 
 ``` r
+
 mod <- rxode2::rxode(readModelDb("Moein_2022_etrolizumab"))
 #> ℹ parameter labels from comments will be replaced by 'label()'
 ```
@@ -174,6 +177,7 @@ Phase III dosing: 105 mg Q4W SC x 6 doses, with observations every 2
 days over the 24-week treatment period.
 
 ``` r
+
 events_vpc <- make_cohort(n = 300)
 sim_vpc <- rxode2::rxSolve(mod, events = events_vpc) |> as.data.frame()
 ```
@@ -183,6 +187,7 @@ sim_vpc <- rxode2::rxSolve(mod, events = events_vpc) |> as.data.frame()
 ### Figure 2 analogue: concentration-time VPC (phase III dose)
 
 ``` r
+
 d_vpc <- sim_vpc |>
   group_by(time) |>
   summarise(
@@ -220,6 +225,7 @@ Time-dependent CL per Equation 1 reaches its asymptote over the first
 4-8 weeks, stepping down after each dose.
 
 ``` r
+
 # Population-typical CL trajectory for the reference patient (72 kg, 41 g/L
 # ALB, 4.23 mg/L CRP, no prior TNF, left-sided colitis, ADA-negative).
 # zeroRe() removes IIV to get typical values.
@@ -274,6 +280,7 @@ with one dense post-final-dose sampling interval.
 ### Single-dose NCA
 
 ``` r
+
 # Single 105 mg SC dose, dense sampling out to 84 days (3 half-lives past
 # the expected 13-day t1/2).
 events_single <- make_cohort(
@@ -333,11 +340,12 @@ knitr::kable(as.data.frame(nca_single$result),
 | single_105mg |   1 |     0 | Inf | span.ratio          |   4.8556943 | NA      |
 | single_105mg |   1 |     0 | Inf | aucinf.obs          | 279.3925233 | NA      |
 
-Single-dose NCA on the typical-patient profile.
+Single-dose NCA on the typical-patient profile. {.table}
 
 ### Steady-state NCA
 
 ``` r
+
 # Six 105 mg SC doses Q4W, with dense post-peak sampling in the final
 # interval for terminal-phase characterization.
 events_ss <- make_cohort(
@@ -407,11 +415,12 @@ knitr::kable(as.data.frame(nca_ss$result),
 | ss_105mg_Q4W |   1 |     0 | Inf | half.life           | 16.8584402 | NA      |
 | ss_105mg_Q4W |   1 |     0 | Inf | span.ratio          |  4.1522228 | NA      |
 
-Steady-state NCA on the final dosing interval.
+Steady-state NCA on the final dosing interval. {.table}
 
 ### Comparison against published values
 
 ``` r
+
 get_param <- function(res, ppname) {
   tbl <- as.data.frame(res$result)
   val <- tbl$PPORRES[tbl$PPTESTCD == ppname]
@@ -433,12 +442,12 @@ knitr::kable(comparison,
              caption = "Simulated vs. published terminal half-lives.")
 ```
 
-| Quantity                                    | Published               | Simulated |
-|:--------------------------------------------|:------------------------|----------:|
-| Terminal half-life after single dose (days) | 13.0 (95% CI 12.2-13.9) |     12.97 |
-| Terminal half-life at steady state (days)   | 17.1 (95% CI 16.1-18.3) |     16.86 |
+| Quantity | Published | Simulated |
+|:---|:---|---:|
+| Terminal half-life after single dose (days) | 13.0 (95% CI 12.2-13.9) | 12.97 |
+| Terminal half-life at steady state (days) | 17.1 (95% CI 16.1-18.3) | 16.86 |
 
-Simulated vs. published terminal half-lives.
+Simulated vs. published terminal half-lives. {.table}
 
 The simulated terminal half-lives should fall within about 20% of the
 published central estimates. The single-dose value is shorter than the

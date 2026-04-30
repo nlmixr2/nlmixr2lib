@@ -60,6 +60,7 @@
     <li><a class="dropdown-item" href="../articles/FiedlerKelly_2020_fremanezumab_cm.html">FiedlerKelly_2020_fremanezumab_cm</a></li>
     <li><a class="dropdown-item" href="../articles/FiedlerKelly_2020_fremanezumab_em.html">FiedlerKelly_2020_fremanezumab_em</a></li>
     <li><a class="dropdown-item" href="../articles/Frey_2010_tocilizumab.html">Frey_2010_tocilizumab</a></li>
+    <li><a class="dropdown-item" href="../articles/Frey_2013_tocilizumab.html">Frey_2013_tocilizumab</a></li>
     <li><a class="dropdown-item" href="../articles/Gandhi_2021_abatacept.html">Gandhi_2021_abatacept</a></li>
     <li><a class="dropdown-item" href="../articles/Grimm_2023.html">Trontinemab and gantenerumab PK in plasma and brain (Grimm 2023)</a></li>
     <li><a class="dropdown-item" href="../articles/Gupta_2016_amatuximab.html">Gupta_2016_amatuximab</a></li>
@@ -72,6 +73,7 @@
     <li><a class="dropdown-item" href="../articles/Hua_2015_anrukinzumab.html">Hua_2015_anrukinzumab</a></li>
     <li><a class="dropdown-item" href="../articles/Huang_2017_vrc01.html">Huang_2017_vrc01</a></li>
     <li><a class="dropdown-item" href="../articles/Hwang_2022_tremelimumab.html">Hwang_2022_tremelimumab</a></li>
+    <li><a class="dropdown-item" href="../articles/Hwang_2023_monalizumab.html">Hwang_2023_monalizumab</a></li>
     <li><a class="dropdown-item" href="../articles/Ide_2020_elotuzumab.html">Ide_2020_elotuzumab</a></li>
     <li><a class="dropdown-item" href="../articles/Jackson_2022_ixekizumab.html">Jackson_2022_ixekizumab</a></li>
     <li><a class="dropdown-item" href="../articles/Kielbasa_2020_galcanezumab.html">Kielbasa_2020_galcanezumab</a></li>
@@ -92,6 +94,7 @@
     <li><a class="dropdown-item" href="../articles/Long_2017_necitumumab.html">Long_2017_necitumumab</a></li>
     <li><a class="dropdown-item" href="../articles/Lu_2014_trastuzumabemtansine.html">Lu_2014_trastuzumabemtansine</a></li>
     <li><a class="dropdown-item" href="../articles/Lu_2019_polatuzumab.html">Polatuzumab vedotin acMMAE + MMAE integrated population PK model (Lu 2019)</a></li>
+    <li><a class="dropdown-item" href="../articles/Lu_2022_patritumab.html">Patritumab deruxtecan (HER3-DXd) ADC + DXd coupled population PK model (Lu 2022)</a></li>
     <li><a class="dropdown-item" href="../articles/Ma_2020_sarilumab_anc.html">Ma_2020_sarilumab_anc</a></li>
     <li><a class="dropdown-item" href="../articles/Ma_2020_sarilumab_das28crp.html">Ma_2020_sarilumab_das28crp</a></li>
     <li><a class="dropdown-item" href="../articles/markov.html">Markov modeling</a></li>
@@ -125,6 +128,7 @@
     <li><a class="dropdown-item" href="../articles/Sathe_2024_sacituzumab.html">Sathe_2024_sacituzumab</a></li>
     <li><a class="dropdown-item" href="../articles/Soehoel_2022_tralokinumab.html">Soehoel_2022_tralokinumab</a></li>
     <li><a class="dropdown-item" href="../articles/Suleiman_2019_risankizumab.html">Suleiman_2019_risankizumab</a></li>
+    <li><a class="dropdown-item" href="../articles/Suri_2018_brentuximab.html">Suri_2018_brentuximab</a></li>
     <li><a class="dropdown-item" href="../articles/Takahashi_2023_abatacept.html">Takahashi_2023_abatacept</a></li>
     <li><a class="dropdown-item" href="../articles/Takeuchi_2023_ozoralizumab.html">Takeuchi_2023_ozoralizumab</a></li>
     <li><a class="dropdown-item" href="../articles/Thakre_2022_risankizumab.html">Thakre_2022_risankizumab</a></li>
@@ -150,6 +154,7 @@
     <li><a class="dropdown-item" href="../articles/Yu_2022_ofatumumab.html">Yu_2022_ofatumumab</a></li>
     <li><a class="dropdown-item" href="../articles/Zhang_2019_nivolumab.html">Zhang_2019_nivolumab</a></li>
     <li><a class="dropdown-item" href="../articles/Zheng_2016_sifalimumab.html">Zheng_2016_sifalimumab</a></li>
+    <li><a class="dropdown-item" href="../articles/Zhong_2026_abatacept.html">Zhong_2026_abatacept</a></li>
     <li><a class="dropdown-item" href="../articles/Zhou_2021_belimumab.html">Zhou_2021_belimumab</a></li>
     <li><a class="dropdown-item" href="../articles/Zhou_2025_brentuximab.html">Zhou_2025_brentuximab</a></li>
     <li><a class="dropdown-item" href="../articles/Zhu_2017_lebrikizumab.html">Zhu_2017_lebrikizumab</a></li>
@@ -428,19 +433,19 @@ these values is multiplied by 24 inside <code>log(...)</code> in
 <strong>Logit-F parameterisation.</strong> Gandhi 2021 constrains
 absolute bioavailability to (0, 1) via an inverse-logit link (Methods
 Eq. S1): <code>F_abs = 1 / (1 + exp(-F_TV))</code> with
-<code>F_TV = logitfdepot +   etalogitfdepot + DIS_PJIA * e_jia_f + e_wt_f * log(WT/68) + e_age_f *   log(AGE/49)</code>.
+<code>F_TV = logitfdepot + etalogitfdepot + DIS_PJIA * e_jia_f + e_wt_f * log(WT/68) + e_age_f * log(AGE/49)</code>.
 The reference value <code>logitfdepot = 1.20831</code> gives
-<code>F_abs   ≈ 0.770</code> for the adult RA reference patient (68 kg,
-49 yr). For a typical pJIA patient the +3.08 disease shift drives
-logit-F to ≈ 4.288, i.e. <code>F_abs ≈ 0.987</code>.</li>
+<code>F_abs ≈ 0.770</code> for the adult RA reference patient (68 kg, 49
+yr). For a typical pJIA patient the +3.08 disease shift drives logit-F
+to ≈ 4.288, i.e. <code>F_abs ≈ 0.987</code>.</li>
 <li>
 <strong>KA &gt; k<sub>el</sub> constraint.</strong> Gandhi 2021
 Methods Eq. S2 reparameterises absorption as
 <code>KA_i = KA_TV * exp(etaKA) + k_el,i</code> with
-<code>k_el,i =   CL_i / VC_i</code>, to prevent flip-flop of parameter
+<code>k_el,i = CL_i / VC_i</code>, to prevent flip-flop of parameter
 estimates during fitting. The model file implements this verbatim. With
 typical-value parameters (<code>KA_TV * 24 = 0.12504 1/day</code>,
-<code>k_el = 0.4296 / 3.29 ≈   0.131 1/day</code>), the effective
+<code>k_el = 0.4296 / 3.29 ≈ 0.131 1/day</code>), the effective
 absorption rate constant is ≈ 0.256 1/day (half-life ≈ 2.7 days), giving
 an SC <code>Tmax</code> near 5 days that matches abatacept SC label
 values.</li>
@@ -456,7 +461,7 @@ as the IIV variances (see Errata below for the rationale). The
 proportional and additive variances are converted to standard deviations
 by <code><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt()</a></code> for nlmixr2’s <code>add()</code> /
 <code>prop()</code> conventions:
-<code>propSd = sqrt(0.0615) ≈   0.248</code> and
+<code>propSd = sqrt(0.0615) ≈ 0.248</code> and
 <code>addSd = sqrt(0.00134) ≈ 0.0366 mg/L</code>.</li>
 </ul>
 </div>
@@ -930,7 +935,7 @@ of:</p>
 reports the proportional and additive residual errors (0.0615 and
 0.00134) in the same “Estimate” column that carries the IIV variances
 for each ETA. The IIV column entries are unambiguously variances
-(<code>var(etalka) =   1.11</code> is too large to be a SD), so by
+(<code>var(etalka) = 1.11</code> is too large to be a SD), so by
 symmetry the residual-error entries are likely SIGMA (variance) values
 too. Per operator decision, this model treats the residual errors as
 variances and converts to SDs via <code><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt()</a></code>:

@@ -25,13 +25,18 @@ estimated when freed.
 
 The structural ODE system reproduced from the paper’s Methods is:
 
-$$\frac{dA_{1}}{dt}\; = \; K \cdot {Dose}\; + \; k_{21}A_{2}\; - \;\left( \frac{CL}{V_{1}} + k_{12} \right)A_{1}\qquad\frac{dA_{2}}{dt}\; = \; k_{12}A_{1}\; - \; k_{21}A_{2}$$
+``` math
+\frac{dA_1}{dt} \;=\; K \cdot \mathrm{Dose} \;+\; k_{21} A_2 \;-\; \left(\frac{\mathrm{CL}}{V_1} + k_{12}\right) A_1
+\qquad
+\frac{dA_2}{dt} \;=\; k_{12} A_1 \;-\; k_{21} A_2
+```
 
-with $A_{1}$, $A_{2}$ the central- and peripheral-compartment amounts,
-CL the linear clearance, $V_{1}$ the central volume, $k_{12}$, $k_{21}$
-the inter-compartment rate constants, and $K$ the infusion rate
-constant. The packaged model carries the infusion via the event-table
-`RATE` (or `DUR`) column on the central-compartment dose row.
+with $`A_1`$, $`A_2`$ the central- and peripheral-compartment amounts,
+CL the linear clearance, $`V_1`$ the central volume, $`k_{12}`$,
+$`k_{21}`$ the inter-compartment rate constants, and $`K`$ the infusion
+rate constant. The packaged model carries the infusion via the
+event-table `RATE` (or `DUR`) column on the central-compartment dose
+row.
 
 ## Population
 
@@ -70,24 +75,24 @@ The per-parameter origin is recorded as an in-file comment next to each
 `inst/modeldb/specificDrugs/Brillac_2025_isatuximab.R`. The table below
 collects them in one place for review.
 
-| Parameter (model name)              | Value             | Source                                                            |
-|-------------------------------------|-------------------|-------------------------------------------------------------------|
-| `lcl` (CL at 38 kg, L/day)          | log(0.00556 × 24) | Brillac 2025 Table 1, CL = 0.00556 L/h (= 0.133 L/day in Results) |
-| `lvc` (V1 at 38 kg, L)              | log(1.98)         | Brillac 2025 Table 1, V1 = 1.98 L                                 |
-| `lq` (Q at 38 kg, L/day)            | log(0.0358 × 24)  | Brillac 2025 Table 1, Q = 0.0358 L/h (= 0.859 L/day in Results)   |
-| `lvp` (V2 at 38 kg, L)              | log(2.20)         | Brillac 2025 Table 1, V2 = 2.20 L                                 |
-| `allo_cl` (WT exponent on CL)       | 0.833             | Brillac 2025 Table 1, β_CL_log(WT/MedWT) = 0.833                  |
-| `allo_v1` (WT exponent on V1)       | 0.821             | Brillac 2025 Table 1, β_V1_log(WT/MedWT) = 0.821                  |
-| `allo_q` (WT exponent on Q, fixed)  | 0.85              | Brillac 2025 Table 1, β_Q_log(WT/MedWT) = 0.85 (fixed)            |
-| `allo_v2` (WT exponent on V2)       | 0.72              | Brillac 2025 Table 1, β_V2_log(WT/MedWT) = 0.72                   |
-| `etalcl` (omega² for CL)            | 0.388 (= 0.623²)  | Brillac 2025 Table 1, ω(CL) = 62.3%                               |
-| `etalvc` (omega² for V1)            | 0.163 (= 0.404²)  | Brillac 2025 Table 1, ω(V1) = 40.4%                               |
-| `etalq` (omega² for Q)              | 0.257 (= 0.507²)  | Brillac 2025 Table 1, ω(Q) = 50.7%                                |
-| `etalvp` (omega² for V2)            | 0.243 (= 0.493²)  | Brillac 2025 Table 1, ω(V2) = 49.3%                               |
-| `propSd` (proportional residual SD) | 0.257             | Brillac 2025 Table 1, residual error proportional = 25.7%         |
-| Equation `d/dt(central)`            | n/a               | Brillac 2025 Methods / PopPK model development (ODE system)       |
-| Equation `d/dt(peripheral1)`        | n/a               | Brillac 2025 Methods / PopPK model development (ODE system)       |
-| Covariate model CL/V1/Q/V2          | `(WT/38)^β`       | Brillac 2025 Methods (continuous-covariate equation) and Table 1  |
+| Parameter (model name) | Value | Source |
+|----|----|----|
+| `lcl` (CL at 38 kg, L/day) | log(0.00556 × 24) | Brillac 2025 Table 1, CL = 0.00556 L/h (= 0.133 L/day in Results) |
+| `lvc` (V1 at 38 kg, L) | log(1.98) | Brillac 2025 Table 1, V1 = 1.98 L |
+| `lq` (Q at 38 kg, L/day) | log(0.0358 × 24) | Brillac 2025 Table 1, Q = 0.0358 L/h (= 0.859 L/day in Results) |
+| `lvp` (V2 at 38 kg, L) | log(2.20) | Brillac 2025 Table 1, V2 = 2.20 L |
+| `allo_cl` (WT exponent on CL) | 0.833 | Brillac 2025 Table 1, β_CL_log(WT/MedWT) = 0.833 |
+| `allo_v1` (WT exponent on V1) | 0.821 | Brillac 2025 Table 1, β_V1_log(WT/MedWT) = 0.821 |
+| `allo_q` (WT exponent on Q, fixed) | 0.85 | Brillac 2025 Table 1, β_Q_log(WT/MedWT) = 0.85 (fixed) |
+| `allo_v2` (WT exponent on V2) | 0.72 | Brillac 2025 Table 1, β_V2_log(WT/MedWT) = 0.72 |
+| `etalcl` (omega² for CL) | 0.388 (= 0.623²) | Brillac 2025 Table 1, ω(CL) = 62.3% |
+| `etalvc` (omega² for V1) | 0.163 (= 0.404²) | Brillac 2025 Table 1, ω(V1) = 40.4% |
+| `etalq` (omega² for Q) | 0.257 (= 0.507²) | Brillac 2025 Table 1, ω(Q) = 50.7% |
+| `etalvp` (omega² for V2) | 0.243 (= 0.493²) | Brillac 2025 Table 1, ω(V2) = 49.3% |
+| `propSd` (proportional residual SD) | 0.257 | Brillac 2025 Table 1, residual error proportional = 25.7% |
+| Equation `d/dt(central)` | n/a | Brillac 2025 Methods / PopPK model development (ODE system) |
+| Equation `d/dt(peripheral1)` | n/a | Brillac 2025 Methods / PopPK model development (ODE system) |
+| Covariate model CL/V1/Q/V2 | `(WT/38)^β` | Brillac 2025 Methods (continuous-covariate equation) and Table 1 |
 
 Reference covariates: body weight 38 kg (the population median in the
 pooled adult+pediatric dataset; Brillac 2025 Table 1 footnote and
@@ -103,6 +108,7 @@ cohort’s weight band; this is a covariate- distribution approximation,
 not a literal reproduction of any individual study patient.
 
 ``` r
+
 set.seed(2025)
 n_per_group <- 100
 
@@ -128,6 +134,7 @@ induction, then on D43 and D57 of consolidation. Observation grid is
 daily through day 70.
 
 ``` r
+
 infusion_d  <- 1 / 24
 dose_times_d <- c(0, 7, 14, 21, 28, 42, 56)
 obs_times_d  <- sort(unique(c(dose_times_d, seq(0, 70, by = 1))))
@@ -160,6 +167,7 @@ stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
 ## Simulation
 
 ``` r
+
 mod <- readModelDb("Brillac_2025_isatuximab")
 sim <- rxode2::rxSolve(mod, events = events, keep = c("cohort"),
                        returnType = "data.frame")
@@ -170,6 +178,7 @@ Deterministic typical-value (etas zeroed) profiles are useful for
 reproducing model-implied summary curves:
 
 ``` r
+
 mod_typ <- rxode2::zeroRe(mod)
 #> ℹ parameter labels from comments will be replaced by 'label()'
 sim_typ <- rxode2::rxSolve(mod_typ, events = events, keep = c("cohort"),
@@ -188,6 +197,7 @@ heaviest cohort (51-100 kg) sits at the lowest weight- normalized
 exposure and the lightest (9-12 kg) at the highest.
 
 ``` r
+
 sim_summary <- sim |>
   dplyr::filter(time > 0, !is.na(Cc)) |>
   dplyr::group_by(time, cohort) |>
@@ -232,6 +242,7 @@ WT-power model, with the lightest band sitting ~30% below the heaviest
 band on the linear scale.
 
 ``` r
+
 auc_window_d <- 70
 
 auc_by_subject <- sim |>
@@ -289,6 +300,7 @@ is included so the per-group summary can be compared against Brillac
 group).
 
 ``` r
+
 sim_nca <- sim |>
   dplyr::filter(!is.na(Cc), time >= 0, time <= 7) |>
   dplyr::select(id, cohort, time, Cc)
@@ -312,7 +324,7 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
-#>  ■■■■■■■■■■■■■■■■■■                56% |  ETA:  3s
+#>  ■■■■■■■■■■■■■■■■■■■■              64% |  ETA:  2s
 
 knitr::kable(
   summary(nca_res),
@@ -320,14 +332,14 @@ knitr::kable(
 )
 ```
 
-| start | end | cohort    | N   | auclast       | cmax         | tmax                | half.life     |
-|------:|----:|:----------|:----|:--------------|:-------------|:--------------------|:--------------|
-|     0 |   7 | 13-18 kg  | 100 | 888 \[27.3\]  | 208 \[29.2\] | 1.00 \[1.00, 1.00\] | 17.4 \[11.1\] |
-|     0 |   7 | 19-50 kg  | 100 | 1030 \[22.2\] | 235 \[24.2\] | 1.00 \[1.00, 1.00\] | 18.9 \[13.4\] |
-|     0 |   7 | 51-100 kg | 100 | 1260 \[27.1\] | 280 \[28.2\] | 1.00 \[1.00, 1.00\] | 18.4 \[19.7\] |
-|     0 |   7 | 9-12 kg   | 100 | 853 \[26.5\]  | 198 \[29.2\] | 1.00 \[1.00, 1.00\] | 18.3 \[10.9\] |
+| start | end | cohort | N | auclast | cmax | tmax | half.life |
+|---:|---:|:---|:---|:---|:---|:---|:---|
+| 0 | 7 | 13-18 kg | 100 | 888 \[27.3\] | 208 \[29.2\] | 1.00 \[1.00, 1.00\] | 17.4 \[11.1\] |
+| 0 | 7 | 19-50 kg | 100 | 1030 \[22.2\] | 235 \[24.2\] | 1.00 \[1.00, 1.00\] | 18.9 \[13.4\] |
+| 0 | 7 | 51-100 kg | 100 | 1260 \[27.1\] | 280 \[28.2\] | 1.00 \[1.00, 1.00\] | 18.4 \[19.7\] |
+| 0 | 7 | 9-12 kg | 100 | 853 \[26.5\] | 198 \[29.2\] | 1.00 \[1.00, 1.00\] | 18.3 \[10.9\] |
 
-Simulated single-dose NCA parameters by weight group (days 0-7)
+Simulated single-dose NCA parameters by weight group (days 0-7) {.table}
 
 ## Comparison against published values
 
@@ -335,16 +347,16 @@ Brillac 2025 does not tabulate a per-cohort NCA summary, but the paper
 does provide several model-derived population statistics that can be
 cross-checked against the packaged model.
 
-| Quantity                                       | Brillac 2025                       | This model                                                                                                                                                      |
-|------------------------------------------------|------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Typical CL at 38 kg                            | 0.00556 L/h = 0.133 L/day          | `exp(lcl) = 0.133 L/day` (see [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html))                                                                   |
-| Typical V1 at 38 kg                            | 1.98 L                             | `exp(lvc) = 1.98 L`                                                                                                                                             |
-| Typical Q at 38 kg                             | 0.0358 L/h = 0.859 L/day           | `exp(lq) = 0.859 L/day`                                                                                                                                         |
-| Typical V2 at 38 kg                            | 2.20 L                             | `exp(lvp) = 2.20 L`                                                                                                                                             |
-| Median exposure decrease, 9-12 kg vs 51-100 kg | ~30% lower (Figure 4 / Discussion) | Reproduced qualitatively above (see Figure-4 chunk caption)                                                                                                     |
-| Terminal half-life (pediatric individual EBE)  | 23-28 days                         | Typical 38 kg t\_{1/2,β} ~22-23 days; individuals span this band given log-normal IIV                                                                           |
-| Terminal half-life (adult individual EBE)      | 18 days                            | Allometry alone narrows the population t\_{1/2,β} band; the lower adult value is dominated by individual variability captured via the IIV terms (ω(CL) = 62.3%) |
-| Mean adult CL (ISLAY individual EBE)           | 0.01521 L/h ≈ 0.365 L/day          | Typical 70 kg CL = 0.133 × (70/38)^0.833 ≈ 0.224 L/day; observed mean reflects IIV                                                                              |
+| Quantity | Brillac 2025 | This model |
+|----|----|----|
+| Typical CL at 38 kg | 0.00556 L/h = 0.133 L/day | `exp(lcl) = 0.133 L/day` (see [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html)) |
+| Typical V1 at 38 kg | 1.98 L | `exp(lvc) = 1.98 L` |
+| Typical Q at 38 kg | 0.0358 L/h = 0.859 L/day | `exp(lq) = 0.859 L/day` |
+| Typical V2 at 38 kg | 2.20 L | `exp(lvp) = 2.20 L` |
+| Median exposure decrease, 9-12 kg vs 51-100 kg | ~30% lower (Figure 4 / Discussion) | Reproduced qualitatively above (see Figure-4 chunk caption) |
+| Terminal half-life (pediatric individual EBE) | 23-28 days | Typical 38 kg t\_{1/2,β} ~22-23 days; individuals span this band given log-normal IIV |
+| Terminal half-life (adult individual EBE) | 18 days | Allometry alone narrows the population t\_{1/2,β} band; the lower adult value is dominated by individual variability captured via the IIV terms (ω(CL) = 62.3%) |
+| Mean adult CL (ISLAY individual EBE) | 0.01521 L/h ≈ 0.365 L/day | Typical 70 kg CL = 0.133 × (70/38)^0.833 ≈ 0.224 L/day; observed mean reflects IIV |
 
 The pediatric individual-EBE half-life of 23-28 days reported by the
 paper agrees with the typical-value calculation from the packaged

@@ -59,38 +59,50 @@ The per-parameter origin is recorded as an in-file comment next to each
 `inst/modeldb/specificDrugs/Narwal_2013_sifalimumab.R`. The table below
 collects them in one place for review.
 
-| Parameter (model name)                | Value                                                            | Source                                                              |
-|---------------------------------------|------------------------------------------------------------------|---------------------------------------------------------------------|
-| `lcl` (CL, L/day)                     | log(0.176)                                                       | Table 2, theta1 = 0.176 L/day (reported as 176 mL/day)              |
-| `lvc` (V1, L)                         | log(2.90)                                                        | Table 2, theta2 = 2.90 L                                            |
-| `lvp` (V2, L)                         | log(2.12)                                                        | Table 2, theta3 = 2.12 L                                            |
-| `lq` (Q, L/day)                       | log(0.171)                                                       | Table 2, theta4 = 0.171 L/day                                       |
-| `e_wt_cl`                             | 0.481                                                            | Table 2, theta5 (Eq. 3)                                             |
-| `e_bgene21_cl`                        | 0.0558                                                           | Table 2, theta6 (Eq. 3)                                             |
-| `e_cohdose_cl`                        | 0.0542                                                           | Table 2, theta7 (Eq. 3)                                             |
-| `e_steroid_cl`                        | 0.195                                                            | Table 2, theta8 (Eq. 3)                                             |
-| `e_wt_v1`                             | 0.489                                                            | Table 2, theta9 (Eq. 4)                                             |
-| `e_wt_v2`                             | 0.646                                                            | Table 2, theta10 (Eq. 5)                                            |
-| IIV block `etalcl/etalvc/etalvp`      | lower-tri c(0.075478, 0.046354, 0.091758, 0, 0.021369, 0.289979) | Table 2 %CVs (28/31/58) and correlations (CL-V1 0.557, V1-V2 0.131) |
-| `etalq`                               | 0.408195                                                         | Table 2, Q %CV = 71%                                                |
-| `propSd`                              | 0.275                                                            | Table 2, residual error CV 27.5%                                    |
-| `d/dt(central)` + `d/dt(peripheral1)` | two-compartment IV                                               | Section 2.3 (NONMEM ADVAN3 TRANS4)                                  |
+| Parameter (model name) | Value | Source |
+|----|----|----|
+| `lcl` (CL, L/day) | log(0.176) | Table 2, theta1 = 0.176 L/day (reported as 176 mL/day) |
+| `lvc` (V1, L) | log(2.90) | Table 2, theta2 = 2.90 L |
+| `lvp` (V2, L) | log(2.12) | Table 2, theta3 = 2.12 L |
+| `lq` (Q, L/day) | log(0.171) | Table 2, theta4 = 0.171 L/day |
+| `e_wt_cl` | 0.481 | Table 2, theta5 (Eq. 3) |
+| `e_bgene21_cl` | 0.0558 | Table 2, theta6 (Eq. 3) |
+| `e_cohdose_cl` | 0.0542 | Table 2, theta7 (Eq. 3) |
+| `e_steroid_cl` | 0.195 | Table 2, theta8 (Eq. 3) |
+| `e_wt_v1` | 0.489 | Table 2, theta9 (Eq. 4) |
+| `e_wt_v2` | 0.646 | Table 2, theta10 (Eq. 5) |
+| IIV block `etalcl/etalvc/etalvp` | lower-tri c(0.075478, 0.046354, 0.091758, 0, 0.021369, 0.289979) | Table 2 %CVs (28/31/58) and correlations (CL-V1 0.557, V1-V2 0.131) |
+| `etalq` | 0.408195 | Table 2, Q %CV = 71% |
+| `propSd` | 0.275 | Table 2, residual error CV 27.5% |
+| `d/dt(central)` + `d/dt(peripheral1)` | two-compartment IV | Section 2.3 (NONMEM ADVAN3 TRANS4) |
 
 Narwal 2013 final-model equations (paper’s numbering):
 
-$$\text{CL} = \theta_{1} \cdot \left( \text{WT}/75 \right)^{\theta_{5}} \cdot \left( \text{BGENE21}/32 \right)^{\theta_{6}} \cdot \left( \text{Dose}/1 \right)^{\theta_{7}} \cdot \left( 1 + \theta_{8} \cdot \text{BSTEROID} \right)\quad\left( \text{Eq. 3} \right)$$
+``` math
+\text{CL} = \theta_1 \cdot (\text{WT}/75)^{\theta_5}
+            \cdot (\text{BGENE21}/32)^{\theta_6}
+            \cdot (\text{Dose}/1)^{\theta_7}
+            \cdot (1 + \theta_8 \cdot \text{BSTEROID})
+\quad (\text{Eq. 3})
+```
 
-$$V_{1} = \theta_{2} \cdot \left( \text{WT}/75 \right)^{\theta_{9}}\quad\left( \text{Eq. 4} \right)$$
+``` math
+ V_1 = \theta_2 \cdot (\text{WT}/75)^{\theta_9} \quad (\text{Eq. 4}) 
+```
 
-$$V_{2} = \theta_{3} \cdot \left( \text{WT}/75 \right)^{\theta_{10}}\quad\left( \text{Eq. 5} \right)$$
+``` math
+ V_2 = \theta_3 \cdot (\text{WT}/75)^{\theta_{10}} \quad (\text{Eq. 5}) 
+```
 
-$$Q = \theta_{4}\quad\left( \text{Eq. 6} \right)$$
+``` math
+ Q = \theta_4 \quad (\text{Eq. 6}) 
+```
 
-The %CV-to-variance conversion uses
-$\omega^{2} = \log\left( 1 + CV^{2} \right)$ and covariances use
-$\operatorname{cov} = r \cdot \sqrt{\omega_{i}^{2} \cdot \omega_{j}^{2}}$.
-The CL-V2 correlation is not reported in Table 2 and is therefore taken
-as zero in the 3x3 OMEGA block.
+The %CV-to-variance conversion uses $`\omega^2 = \log(1 + CV^2)`$ and
+covariances use
+$`\operatorname{cov} = r \cdot \sqrt{\omega^2_i \cdot \omega^2_j}`$. The
+CL-V2 correlation is not reported in Table 2 and is therefore taken as
+zero in the 3x3 OMEGA block.
 
 ## Virtual cohort
 
@@ -102,6 +114,7 @@ baseline steroid use), and stratified into the four dose cohorts that
 matched the phase Ib design.
 
 ``` r
+
 set.seed(2013)
 n_per_cohort <- 50
 cohorts <- c(0.3, 1, 3, 10)
@@ -122,6 +135,7 @@ Concentration observations are dense in the first dose interval (every 2
 hours) and daily thereafter to capture terminal decline through Day 350.
 
 ``` r
+
 infusion_dur_d <- 45 / 60 / 24  # 45-minute infusion, in days
 dose_times_d   <- seq(0, by = 14, length.out = 14)
 obs_times_d    <- sort(unique(c(
@@ -152,6 +166,7 @@ events <- build_events(cohort)
 ## Simulation
 
 ``` r
+
 mod <- readModelDb("Narwal_2013_sifalimumab")
 sim <- rxode2::rxSolve(mod, events = events, returnType = "data.frame")
 #> ℹ parameter labels from comments will be replaced by 'label()'
@@ -162,6 +177,7 @@ For deterministic typical-value profiles (Narwal 2013 Fig. 2 median
 line), the random effects are zeroed out:
 
 ``` r
+
 mod_typical <- rxode2::zeroRe(mod)
 #> ℹ parameter labels from comments will be replaced by 'label()'
 sim_typical <- rxode2::rxSolve(mod_typical, events = events,
@@ -180,6 +196,7 @@ prediction intervals. The chunk below reproduces the simulation side of
 the VPC.
 
 ``` r
+
 sim_vpc <- sim |>
   dplyr::filter(time > 0, !is.na(Cc)) |>
   dplyr::group_by(treatment, time) |>
@@ -227,6 +244,7 @@ subject (`zeroRe`) and monthly dosing (every 28 days) with an additional
 loading dose on Day 14, sampled densely within the last dosing interval.
 
 ``` r
+
 # Doses: Day 0, loading dose at Day 14, then monthly (every 28 days).
 # Simulate through Day 406 so the interval between the last two monthly
 # doses (378 -> 406) is an accumulation-stabilized steady-state window.
@@ -253,6 +271,7 @@ build_ss_events <- function(dose_mg) {
 ```
 
 ``` r
+
 ss_dose_mg <- c(200, 600, 1200)
 mod_ref <- rxode2::zeroRe(mod)
 #> ℹ parameter labels from comments will be replaced by 'label()'
@@ -300,15 +319,15 @@ knitr::kable(comparison,
              digits = c(0, 0, 0, 0, 1, 1, 1, 1, 1, 1))
 ```
 
-| regimen         | Cmax_pub | Ctrough_pub | AUC_pub | Cmax_ss | Ctrough_ss | AUC_ss | Cmax_pct_diff | Ctrough_pct_diff | AUC_pct_diff |
-|:----------------|---------:|------------:|--------:|--------:|-----------:|-------:|--------------:|-----------------:|-------------:|
-| 200 mg monthly  |       89 |          18 |    1110 |    86.0 |       19.1 | 1068.2 |          -3.4 |              6.2 |         -3.8 |
-| 600 mg monthly  |      268 |          53 |    3329 |   252.2 |       51.8 | 3018.0 |          -5.9 |             -2.2 |         -9.3 |
-| 1200 mg monthly |      536 |         106 |    6659 |   497.7 |       97.1 | 5811.7 |          -7.1 |             -8.4 |        -12.7 |
+| regimen | Cmax_pub | Ctrough_pub | AUC_pub | Cmax_ss | Ctrough_ss | AUC_ss | Cmax_pct_diff | Ctrough_pct_diff | AUC_pct_diff |
+|:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 200 mg monthly | 89 | 18 | 1110 | 86.0 | 19.1 | 1068.2 | -3.4 | 6.2 | -3.8 |
+| 600 mg monthly | 268 | 53 | 3329 | 252.2 | 51.8 | 3018.0 | -5.9 | -2.2 | -9.3 |
+| 1200 mg monthly | 536 | 106 | 6659 | 497.7 | 97.1 | 5811.7 | -7.1 | -8.4 | -12.7 |
 
 Simulated vs published steady-state parameters (Narwal 2013 Table 3).
 Percent differences within ~20% are consistent with the typical-value
-fit.
+fit. {.table}
 
 ## PKNCA validation — single-dose NCA across the 4 cohorts
 
@@ -319,6 +338,7 @@ simulated profiles reproduce dose-proportional exposure with the
 expected mAb-like half-life (~2-4 weeks) on log-linear terminal decline.
 
 ``` r
+
 first_interval_end <- 14
 
 sim_nca <- sim |>
@@ -353,21 +373,22 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- suppressWarnings(PKNCA::pk.nca(nca_data))
-#>  ■■■■■■■■■■■■■                     42% |  ETA:  4s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■       86% |  ETA:  1s
+#>  ■■■■■■■■■■■■                      36% |  ETA:  5s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■         79% |  ETA:  2s
 
 knitr::kable(summary(nca_res),
              caption = "Simulated single-dose NCA across the MI-CP152 cohorts (first 14 days).")
 ```
 
-| start | end | treatment      | N   | auclast       | cmax          | tmax                      | half.life     |
-|------:|----:|:---------------|:----|:--------------|:--------------|:--------------------------|:--------------|
-|     0 |  14 | 0.3 mg/kg Q14D | 50  | 58.5 \[28.6\] | 7.81 \[36.6\] | 0.0833 \[0.0833, 0.0833\] | 12.9 \[3.78\] |
-|     0 |  14 | 1 mg/kg Q14D   | 50  | 178 \[24.1\]  | 23.8 \[31.8\] | 0.0833 \[0.0833, 0.0833\] | 13.3 \[4.03\] |
-|     0 |  14 | 10 mg/kg Q14D  | 50  | 1880 \[28.6\] | 264 \[31.2\]  | 0.0833 \[0.0833, 0.0833\] | 11.2 \[3.60\] |
-|     0 |  14 | 3 mg/kg Q14D   | 50  | 543 \[35.3\]  | 74.5 \[44.0\] | 0.0833 \[0.0833, 0.0833\] | 12.9 \[4.26\] |
+| start | end | treatment | N | auclast | cmax | tmax | half.life |
+|---:|---:|:---|:---|:---|:---|:---|:---|
+| 0 | 14 | 0.3 mg/kg Q14D | 50 | 58.5 \[28.6\] | 7.81 \[36.6\] | 0.0833 \[0.0833, 0.0833\] | 12.9 \[3.78\] |
+| 0 | 14 | 1 mg/kg Q14D | 50 | 178 \[24.1\] | 23.8 \[31.8\] | 0.0833 \[0.0833, 0.0833\] | 13.3 \[4.03\] |
+| 0 | 14 | 10 mg/kg Q14D | 50 | 1880 \[28.6\] | 264 \[31.2\] | 0.0833 \[0.0833, 0.0833\] | 11.2 \[3.60\] |
+| 0 | 14 | 3 mg/kg Q14D | 50 | 543 \[35.3\] | 74.5 \[44.0\] | 0.0833 \[0.0833, 0.0833\] | 12.9 \[4.26\] |
 
 Simulated single-dose NCA across the MI-CP152 cohorts (first 14 days).
+{.table style="width:100%;"}
 
 ## Assumptions and deviations
 

@@ -1,6 +1,7 @@
 # Zheng_2016_sifalimumab
 
 ``` r
+
 library(nlmixr2lib)
 library(rxode2)
 #> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
@@ -71,28 +72,28 @@ holds the `population` list literal).
 
 ### Source trace
 
-| Element                         | Source location                            | Value / form                                                                   |
-|---------------------------------|--------------------------------------------|--------------------------------------------------------------------------------|
-| Structural model                | Zheng 2016 Results, “Base and final model” | 2-compartment IV, first-order elimination                                      |
-| CL (typical patient)            | Zheng 2016 Table 2, theta1                 | 0.184 L/day                                                                    |
-| V1 (typical patient)            | Zheng 2016 Table 2, theta2                 | 2.82 L                                                                         |
-| V2                              | Zheng 2016 Table 2, theta3                 | 1.88 L                                                                         |
-| Q                               | Zheng 2016 Table 2, theta4                 | 0.34 L/day                                                                     |
-| WT exponent on CL               | Zheng 2016 Table 2, theta5                 | 0.45 (reference 64.3 kg)                                                       |
-| BGENE21 exponent on CL          | Zheng 2016 Table 2, theta6                 | 0.09 (reference 12.04)                                                         |
-| STEROID fractional effect on CL | Zheng 2016 Table 2, theta7                 | +0.11 (so CL x (1 + 0.11 \* STEROID))                                          |
-| WT exponent on V1               | Zheng 2016 Table 2, theta8                 | 0.36 (reference 64.3 kg)                                                       |
-| DOSE exponent on V1             | Zheng 2016 Table 2, theta9                 | 0.06 (reference 600 mg)                                                        |
-| STEROID fractional effect on V1 | Zheng 2016 Table 2, theta10                | -0.09 (so V1 x (1 - 0.09 \* STEROID))                                          |
-| BSV on CL (log-normal)          | Zheng 2016 Table 2, BSV (CV %)             | 24% CV (omega^2 = log(CV^2 + 1) = 0.056016)                                    |
-| BSV on V1 (log-normal)          | Zheng 2016 Table 2, BSV (CV %)             | 16% CV (omega^2 = 0.025278)                                                    |
-| IOV on V1 (per-occasion)        | Zheng 2016 Table 2 / IOV paragraph         | 26% CV, seven infusions; **not implemented** (see below)                       |
-| BSV correlations                | Zheng 2016 Results                         | None significant; IIV treated as diagonal                                      |
-| Proportional residual error     | Zheng 2016 Table 2                         | 7.01% -\> propSd = 0.0701 (fraction)                                           |
-| Additive residual error         | Zheng 2016 Table 2                         | 1.14 ug/mL                                                                     |
-| Covariate equation CL           | Zheng 2016 Equations (Results)             | CL = theta1 \* (WT/64.3)^0.45 \* (BGENE21/12.04)^0.09 \* (1 + 0.11 \* STEROID) |
-| Covariate equation V1           | Zheng 2016 Equations (Results)             | V1 = theta2 \* (WT/64.3)^0.36 \* (DOSE/600)^0.06 \* (1 - 0.09 \* STEROID)      |
-| Dose regimens                   | Zheng 2016 Table 1 and Methods             | 200, 600, or 1200 mg IV q4w for 52 weeks; loading dose day 15                  |
+| Element | Source location | Value / form |
+|----|----|----|
+| Structural model | Zheng 2016 Results, “Base and final model” | 2-compartment IV, first-order elimination |
+| CL (typical patient) | Zheng 2016 Table 2, theta1 | 0.184 L/day |
+| V1 (typical patient) | Zheng 2016 Table 2, theta2 | 2.82 L |
+| V2 | Zheng 2016 Table 2, theta3 | 1.88 L |
+| Q | Zheng 2016 Table 2, theta4 | 0.34 L/day |
+| WT exponent on CL | Zheng 2016 Table 2, theta5 | 0.45 (reference 64.3 kg) |
+| BGENE21 exponent on CL | Zheng 2016 Table 2, theta6 | 0.09 (reference 12.04) |
+| STEROID fractional effect on CL | Zheng 2016 Table 2, theta7 | +0.11 (so CL x (1 + 0.11 \* STEROID)) |
+| WT exponent on V1 | Zheng 2016 Table 2, theta8 | 0.36 (reference 64.3 kg) |
+| DOSE exponent on V1 | Zheng 2016 Table 2, theta9 | 0.06 (reference 600 mg) |
+| STEROID fractional effect on V1 | Zheng 2016 Table 2, theta10 | -0.09 (so V1 x (1 - 0.09 \* STEROID)) |
+| BSV on CL (log-normal) | Zheng 2016 Table 2, BSV (CV %) | 24% CV (omega^2 = log(CV^2 + 1) = 0.056016) |
+| BSV on V1 (log-normal) | Zheng 2016 Table 2, BSV (CV %) | 16% CV (omega^2 = 0.025278) |
+| IOV on V1 (per-occasion) | Zheng 2016 Table 2 / IOV paragraph | 26% CV, seven infusions; **not implemented** (see below) |
+| BSV correlations | Zheng 2016 Results | None significant; IIV treated as diagonal |
+| Proportional residual error | Zheng 2016 Table 2 | 7.01% -\> propSd = 0.0701 (fraction) |
+| Additive residual error | Zheng 2016 Table 2 | 1.14 ug/mL |
+| Covariate equation CL | Zheng 2016 Equations (Results) | CL = theta1 \* (WT/64.3)^0.45 \* (BGENE21/12.04)^0.09 \* (1 + 0.11 \* STEROID) |
+| Covariate equation V1 | Zheng 2016 Equations (Results) | V1 = theta2 \* (WT/64.3)^0.36 \* (DOSE/600)^0.06 \* (1 - 0.09 \* STEROID) |
+| Dose regimens | Zheng 2016 Table 1 and Methods | 200, 600, or 1200 mg IV q4w for 52 weeks; loading dose day 15 |
 
 ### Virtual cohort
 
@@ -105,6 +106,7 @@ respectively). Baseline steroid use is drawn as a Bernoulli variable
 with p = 0.85 to match the published 85% prevalence.
 
 ``` r
+
 set.seed(2016)
 
 cohorts <- tribble(
@@ -158,6 +160,7 @@ trough values at each dosing visit, a full profile after the final
 (14th) dose, and follow-up to day 450 to capture terminal elimination.
 
 ``` r
+
 dose_days <- c(1, 15, 29, 57, 85, 113, 141, 169, 197, 225,
                253, 281, 309, 337) - 1  # model time starts at 0 on day 1
 infusion_dur <- 30 / (60 * 24)  # 30 min in days
@@ -205,13 +208,18 @@ Simulate with between-subject variability so the spread across the
 virtual cohort matches the paper’s reported variability.
 
 ``` r
+
 mod <- readModelDb("Zheng_2016_sifalimumab")
 
 events_sim <- events %>% rename(id = ID)
-sim <- rxSolve(object = mod, events = events_sim, returnType = "data.frame") %>%
-  as_tibble() %>%
-  left_join(pop %>% select(ID, treatment, dose_mg),
-            by = c("id" = "ID"))
+# `treatment` is already on every row of `events_sim` (carried from `pop`
+# via the dose_rows / obs_rows construction above). Carry it through
+# rxSolve via `keep = ...` rather than a fragile post-hoc left_join
+# from `pop`. `dose_mg` is taken from `pop` directly when building the
+# PKNCA dose table below, so it does not need to ride through `sim`.
+sim <- rxSolve(object = mod, events = events_sim, returnType = "data.frame",
+               keep = "treatment") %>%
+  as_tibble()
 #> ℹ parameter labels from comments will be replaced by 'label()'
 ```
 
@@ -225,6 +233,7 @@ simulated median (and 5th-95th percentile) concentrations by dose
 cohort.
 
 ``` r
+
 profile <- sim %>%
   filter(time > 0, !is.na(Cc), Cc > 0) %>%
   group_by(treatment, time) %>%
@@ -263,6 +272,7 @@ published exposure summary. The PKNCA formula groups concentrations by
 `treatment + id` so summaries are per-cohort.
 
 ``` r
+
 # Steady-state interval: between the last two doses
 ss_start <- dose_days[length(dose_days) - 1]  # day of 13th dose
 ss_end   <- dose_days[length(dose_days)]      # day of 14th dose (last)
@@ -277,6 +287,7 @@ nca_dose <- pop %>%
 ```
 
 ``` r
+
 conc_obj <- PKNCAconc(nca_conc, Cc ~ time | treatment + id)
 dose_obj <- PKNCAdose(nca_dose, amt ~ time | treatment + id)
 
@@ -327,7 +338,7 @@ knitr::kable(sim_nca,
 
 Steady-state NCA summary (between 13th and 14th doses) from the
 simulated 298-subject virtual cohort: Cmax and Cmin in ug/mL, AUC(tau=28
-d) in ug\*day/mL.
+d) in ug\*day/mL. {.table}
 
 ### Comparison against Zheng 2016 exposure summary
 
@@ -347,6 +358,7 @@ span this 117-562 ug/mL envelope and scale approximately linearly across
 the three dose cohorts.
 
 ``` r
+
 cmax_range <- sim_nca %>%
   filter(PPTESTCD == "cmax") %>%
   transmute(treatment,
@@ -368,7 +380,7 @@ knitr::kable(cmax_range,
 | 1200 mg   |     557.5 |    547.7 |    343.2 |    907.8 |
 
 Simulated Cmax,ss by cohort (ug/mL). Overall min-max across cohorts
-should bracket the Zheng 2016 reported 117-562 ug/mL envelope.
+should bracket the Zheng 2016 reported 117-562 ug/mL envelope. {.table}
 
 Dose-proportionality holds exactly by construction in the packaged model
 (linear elimination, no non-linear saturation terms); the small

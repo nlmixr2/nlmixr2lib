@@ -42,26 +42,26 @@ Every structural parameter, covariate effect, IIV element, and
 residual-error term is taken from Takeuchi 2023 Table 3 (p. 421) and the
 final-model equations on p. 422.
 
-| Equation / parameter                                               | Value                   | Source location                        |
-|--------------------------------------------------------------------|-------------------------|----------------------------------------|
-| `lka` (Ka)                                                         | `log(0.0343)` 1/h       | Table 3, Ka row                        |
-| `lcl` (CL/F, L/h)                                                  | `log(9.20 / 1000)` L/h  | Table 3, CL/F row (paper reports mL/h) |
-| `lvc` (Vd/F)                                                       | `log(4.91)` L           | Table 3, Vd/F row                      |
-| `e_wt_cl`                                                          | `0.847`                 | Table 3, “WT on CL/F”                  |
-| `e_egfr_cl`                                                        | `0.191`                 | Table 3, “eGFR on CL/F”                |
-| `e_nomtx_cl`                                                       | `0.126`                 | Table 3, “MTX on CL/F”                 |
-| `e_male_cl`                                                        | `0.117`                 | Table 3, “Sex on CL/F”                 |
-| `e_ada_cl`                                                         | `0.0967`                | Table 3, “ADA on CL/F”                 |
-| `e_wt_vc`                                                          | `0.469`                 | Table 3, “WT on Vd/F”                  |
-| `e_male_vc`                                                        | `0.134`                 | Table 3, “Sex on Vd/F”                 |
-| `var(etalcl)`                                                      | `0.0423`                | Table 3, omega^2_CL/F                  |
-| `cov(etalcl, etalvc)`                                              | `0.00806`               | Table 3, omega_CL/F-Vd/F               |
-| `var(etalvc)`                                                      | `0.0230`                | Table 3, omega^2_Vd/F                  |
-| `var(etalka)`                                                      | 0 (fixed; not modelled) | Table 3, omega^2_Ka fixed              |
-| `propSd`                                                           | `sqrt(0.0347)`          | Table 3, sigma^2 = 0.0347              |
-| Structure (1-cmt + first-order SC absorption + linear elimination) | n/a                     | Methods p. 420 / Equations p. 422      |
-| WT reference (population median)                                   | 56.65 kg                | Final-model equation, p. 422           |
-| eGFR reference (population median)                                 | 85.95 mL/min/1.73 m^2   | Final-model equation, p. 422           |
+| Equation / parameter | Value | Source location |
+|----|----|----|
+| `lka` (Ka) | `log(0.0343)` 1/h | Table 3, Ka row |
+| `lcl` (CL/F, L/h) | `log(9.20 / 1000)` L/h | Table 3, CL/F row (paper reports mL/h) |
+| `lvc` (Vd/F) | `log(4.91)` L | Table 3, Vd/F row |
+| `e_wt_cl` | `0.847` | Table 3, “WT on CL/F” |
+| `e_egfr_cl` | `0.191` | Table 3, “eGFR on CL/F” |
+| `e_nomtx_cl` | `0.126` | Table 3, “MTX on CL/F” |
+| `e_male_cl` | `0.117` | Table 3, “Sex on CL/F” |
+| `e_ada_cl` | `0.0967` | Table 3, “ADA on CL/F” |
+| `e_wt_vc` | `0.469` | Table 3, “WT on Vd/F” |
+| `e_male_vc` | `0.134` | Table 3, “Sex on Vd/F” |
+| `var(etalcl)` | `0.0423` | Table 3, omega^2_CL/F |
+| `cov(etalcl, etalvc)` | `0.00806` | Table 3, omega_CL/F-Vd/F |
+| `var(etalvc)` | `0.0230` | Table 3, omega^2_Vd/F |
+| `var(etalka)` | 0 (fixed; not modelled) | Table 3, omega^2_Ka fixed |
+| `propSd` | `sqrt(0.0347)` | Table 3, sigma^2 = 0.0347 |
+| Structure (1-cmt + first-order SC absorption + linear elimination) | n/a | Methods p. 420 / Equations p. 422 |
+| WT reference (population median) | 56.65 kg | Final-model equation, p. 422 |
+| eGFR reference (population median) | 85.95 mL/min/1.73 m^2 | Final-model equation, p. 422 |
 
 ### Parameterization notes
 
@@ -99,6 +99,7 @@ approximate the Takeuchi 2023 Table 2 demographics. Subject-level
 observed data are not publicly released.
 
 ``` r
+
 set.seed(20260428)
 n_subj <- 150
 
@@ -113,6 +114,7 @@ cohort <- tibble::tibble(
 ```
 
 ``` r
+
 tau     <- 4 * 7 * 24       # q4w dosing interval, in hours (672 h)
 n_doses <- 6                # 6 monthly doses ~= 5 half-lives, last cycle at SS
 dose_h  <- seq(0, tau * (n_doses - 1), by = tau)
@@ -146,6 +148,7 @@ events <- dplyr::bind_rows(ev_dose, ev_obs) |>
 ## Simulation
 
 ``` r
+
 mod <- rxode2::rxode2(readModelDb("Takeuchi_2023_ozoralizumab"))
 #> ℹ parameter labels from comments will be replaced by 'label()'
 keep_cols <- c("WT", "SEXF", "CRCL", "CONMED_MTX", "ADA_POS")
@@ -163,6 +166,7 @@ shows the simulated 5/50/95th percentile profile over the 6-cycle dosing
 horizon at the labelled 30 mg q4w regimen, summarised on a per-day grid.
 
 ``` r
+
 profile <- sim |>
   dplyr::filter(!is.na(Cc), time > 0) |>
   dplyr::group_by(time) |>
@@ -192,6 +196,7 @@ ggplot(profile, aes(time / 24, Q50)) +
 ### Steady-state cycle
 
 ``` r
+
 ss_summary <- sim |>
   dplyr::filter(time >= ss_start, time <= ss_end, !is.na(Cc)) |>
   dplyr::group_by(time) |>
@@ -222,6 +227,7 @@ NCA on the steady-state q4w cycle (cycle 6). Time within the cycle is
 re-zeroed so PKNCA computes per-interval Cmax, Cmin, AUC, and Cavg.
 
 ``` r
+
 nca_conc <- sim |>
   dplyr::filter(time >= ss_start, time <= ss_end, !is.na(Cc)) |>
   dplyr::mutate(time_nom = time - ss_start, treatment = "30mg_Q4W") |>
@@ -271,6 +277,7 @@ dosing interval. This is a deterministic typical-patient check; it does
 stochastic block above.
 
 ``` r
+
 mod_typical <- mod |> rxode2::zeroRe()
 
 ev_typ <- function(cov_row, dose_amt = 30) {
@@ -358,20 +365,20 @@ knitr::kable(
 )
 ```
 
-| scenario                 | Cmax_pub | Cmax_sim | Cmax_pct_diff | AUCtau_pub | AUCtau_sim | AUCtau_pct_diff | Ctrough_pub | Ctrough_sim | Ctrough_pct_diff |
-|:-------------------------|---------:|---------:|--------------:|-----------:|-----------:|----------------:|------------:|------------:|-----------------:|
-| Typical patient          |     7.28 |     7.34 |           0.9 |       3230 |       3256 |             0.8 |        2.51 |        2.56 |              1.9 |
-| WT 42.5 kg               |     8.93 |     9.01 |           0.9 |       4110 |       4153 |             1.1 |        3.45 |        3.51 |              1.6 |
-| WT 83.2 kg               |     5.59 |     5.62 |           0.6 |       2320 |       2354 |             1.4 |        1.60 |        1.66 |              3.5 |
-| Male                     |     6.55 |     6.54 |          -0.2 |       2930 |       2914 |            -0.5 |        2.31 |        2.31 |              0.2 |
-| eGFR 58 mL/min/1.73 m^2  |     7.60 |     7.70 |           1.3 |       3430 |       3509 |             2.3 |        2.80 |        2.90 |              3.6 |
-| eGFR 121 mL/min/1.73 m^2 |     7.02 |     7.06 |           0.5 |       3010 |       3051 |             1.4 |        2.24 |        2.29 |              2.0 |
-| Without MTX              |     6.84 |     6.83 |          -0.1 |       2880 |       2892 |             0.4 |        2.06 |        2.08 |              0.9 |
-| ADA-positive             |     6.95 |     6.94 |          -0.1 |       2980 |       2969 |            -0.4 |        2.23 |        2.18 |             -2.3 |
+| scenario | Cmax_pub | Cmax_sim | Cmax_pct_diff | AUCtau_pub | AUCtau_sim | AUCtau_pct_diff | Ctrough_pub | Ctrough_sim | Ctrough_pct_diff |
+|:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| Typical patient | 7.28 | 7.34 | 0.9 | 3230 | 3256 | 0.8 | 2.51 | 2.56 | 1.9 |
+| WT 42.5 kg | 8.93 | 9.01 | 0.9 | 4110 | 4153 | 1.1 | 3.45 | 3.51 | 1.6 |
+| WT 83.2 kg | 5.59 | 5.62 | 0.6 | 2320 | 2354 | 1.4 | 1.60 | 1.66 | 3.5 |
+| Male | 6.55 | 6.54 | -0.2 | 2930 | 2914 | -0.5 | 2.31 | 2.31 | 0.2 |
+| eGFR 58 mL/min/1.73 m^2 | 7.60 | 7.70 | 1.3 | 3430 | 3509 | 2.3 | 2.80 | 2.90 | 3.6 |
+| eGFR 121 mL/min/1.73 m^2 | 7.02 | 7.06 | 0.5 | 3010 | 3051 | 1.4 | 2.24 | 2.29 | 2.0 |
+| Without MTX | 6.84 | 6.83 | -0.1 | 2880 | 2892 | 0.4 | 2.06 | 2.08 | 0.9 |
+| ADA-positive | 6.95 | 6.94 | -0.1 | 2980 | 2969 | -0.4 | 2.23 | 2.18 | -2.3 |
 
 Typical-patient (IIV zeroed) steady-state exposures vs. Takeuchi 2023
 Supplemental Tables S1 / S2 medians (1000 stochastic simulations). All
-scenarios at 30 mg SC q4w.
+scenarios at 30 mg SC q4w. {.table}
 
 The published values are medians from 1000 stochastic simulations with
 IIV and RUV; the simulated values here are deterministic
@@ -389,6 +396,7 @@ without the stochastic 90% prediction interval that the source plot
 overlays.
 
 ``` r
+
 forest <- comparison |>
   dplyr::filter(scenario != "Typical patient") |>
   dplyr::mutate(

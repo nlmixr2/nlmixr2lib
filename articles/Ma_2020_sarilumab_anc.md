@@ -1,6 +1,7 @@
 # Ma_2020_sarilumab_anc
 
 ``` r
+
 library(nlmixr2lib)
 library(rxode2)
 #> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
@@ -43,6 +44,7 @@ sponsor).
   31055792).
 
 ``` r
+
 mod <- readModelDb("Ma_2020_sarilumab_anc")
 cat(rxode2::rxode(mod)$reference, sep = "\n")
 #> ℹ parameter labels from comments will be replaced by 'label()'
@@ -67,29 +69,29 @@ The per-parameter origin is recorded as an in-file comment next to each
 `inst/modeldb/specificDrugs/Ma_2020_sarilumab_anc.R`. The table below
 collects them in one place for review.
 
-| Equation / parameter                                   | Value                                                                          | Source location                                                 |
-|--------------------------------------------------------|--------------------------------------------------------------------------------|-----------------------------------------------------------------|
-| PK structure (2-cmt SC, linear + MM)                   | n/a                                                                            | Xu 2019 Fig. 1 (base model scheme)                              |
-| Vm (mg/day)                                            | 8.06                                                                           | Xu 2019 Table 3                                                 |
-| Km (mg/L)                                              | 0.939                                                                          | Xu 2019 Table 3                                                 |
-| Vc/F (L)                                               | 2.08                                                                           | Xu 2019 Table 3                                                 |
-| CLO/F (L/day)                                          | 0.260                                                                          | Xu 2019 Table 3                                                 |
-| Ka (1/day)                                             | 0.136                                                                          | Xu 2019 Table 3                                                 |
-| Q/F (L/day)                                            | 0.156                                                                          | Xu 2019 Table 3                                                 |
-| Vp/F (L)                                               | 5.23                                                                           | Xu 2019 Table 3                                                 |
-| PK IIV (CV% on Vm, CLO, Vc, Ka; block Vm/CLO r=-0.566) | 32.4 / 55.3 / 37.3 / 32.1                                                      | Xu 2019 Table 3                                                 |
-| PK residual error (log-scale variance → proportional)  | σ² = 0.395 → propSd ≈ 0.629                                                    | Xu 2019 Table 3                                                 |
-| PD structure (indirect response, stim on Kout)         | Eff = Emax·C^(γ/(EC50)γ+C^γ); dANC/dt = Kin − Kout·(1+Eff)·ANC                 | Ma 2020 Fig. 1 + methods text                                   |
-| Baseline ANC BASE (10⁹/L)                              | 5.38                                                                           | Ma 2020 Table 4                                                 |
-| Emax (unitless)                                        | 1.50                                                                           | Ma 2020 Table 4                                                 |
-| EC50 (mg/L)                                            | 10.3                                                                           | Ma 2020 Table 4                                                 |
-| **Kout (1/day)**                                       | **2.11 (corrected from published typo “211”; see Assumptions and deviations)** | **Ma 2020 Table 4 (bootstrap median; published estimate 2.17)** |
-| γ Hill coefficient                                     | 0.862                                                                          | Ma 2020 Table 4                                                 |
-| Smoking on BASE (power)                                | 1.15                                                                           | Ma 2020 Table 4                                                 |
-| Weight on Kout (power, ref 71 kg)                      | 0.875                                                                          | Ma 2020 Table 4 (footnote b)                                    |
-| PRICORT on Emax (power)                                | 0.819                                                                          | Ma 2020 Table 4                                                 |
-| PD IIV (CV% on BASE, Emax, EC50, Kout, γ)              | 32.1 / 61.9 / 36.9 / 227 / 80.4                                                | Ma 2020 Table 4                                                 |
-| PD residual error (proportional, CV%)                  | 28.2                                                                           | Ma 2020 Table 4                                                 |
+| Equation / parameter | Value | Source location |
+|----|----|----|
+| PK structure (2-cmt SC, linear + MM) | n/a | Xu 2019 Fig. 1 (base model scheme) |
+| Vm (mg/day) | 8.06 | Xu 2019 Table 3 |
+| Km (mg/L) | 0.939 | Xu 2019 Table 3 |
+| Vc/F (L) | 2.08 | Xu 2019 Table 3 |
+| CLO/F (L/day) | 0.260 | Xu 2019 Table 3 |
+| Ka (1/day) | 0.136 | Xu 2019 Table 3 |
+| Q/F (L/day) | 0.156 | Xu 2019 Table 3 |
+| Vp/F (L) | 5.23 | Xu 2019 Table 3 |
+| PK IIV (CV% on Vm, CLO, Vc, Ka; block Vm/CLO r=-0.566) | 32.4 / 55.3 / 37.3 / 32.1 | Xu 2019 Table 3 |
+| PK residual error (log-scale variance → proportional) | σ² = 0.395 → propSd ≈ 0.629 | Xu 2019 Table 3 |
+| PD structure (indirect response, stim on Kout) | Eff = Emax·C^(γ/(EC50)γ+C^γ); dANC/dt = Kin − Kout·(1+Eff)·ANC | Ma 2020 Fig. 1 + methods text |
+| Baseline ANC BASE (10⁹/L) | 5.38 | Ma 2020 Table 4 |
+| Emax (unitless) | 1.50 | Ma 2020 Table 4 |
+| EC50 (mg/L) | 10.3 | Ma 2020 Table 4 |
+| **Kout (1/day)** | **2.11 (corrected from published typo “211”; see Assumptions and deviations)** | **Ma 2020 Table 4 (bootstrap median; published estimate 2.17)** |
+| γ Hill coefficient | 0.862 | Ma 2020 Table 4 |
+| Smoking on BASE (power) | 1.15 | Ma 2020 Table 4 |
+| Weight on Kout (power, ref 71 kg) | 0.875 | Ma 2020 Table 4 (footnote b) |
+| PRICORT on Emax (power) | 0.819 | Ma 2020 Table 4 |
+| PD IIV (CV% on BASE, Emax, EC50, Kout, γ) | 32.1 / 61.9 / 36.9 / 227 / 80.4 | Ma 2020 Table 4 |
+| PD residual error (proportional, CV%) | 28.2 | Ma 2020 Table 4 |
 
 ### Covariate column naming
 
@@ -106,6 +108,7 @@ subjects whose covariate distributions approximate the Ma 2020 ANC
 dataset (Table 2).
 
 ``` r
+
 set.seed(2020)
 n_subj <- 100
 regimens <- c("150 q2w", "200 q2w")
@@ -143,6 +146,7 @@ IIV etas from the model’s omega specification, so the pooled result is
 equivalent to the typical “sample N subjects” workflow.
 
 ``` r
+
 mod <- readModelDb("Ma_2020_sarilumab_anc")
 
 sim_one <- function(sub, seed_offset = 0L) {
@@ -154,8 +158,14 @@ sim_one <- function(sub, seed_offset = 0L) {
   ev_df$WT      <- sub$WT
   ev_df$SMOKE   <- sub$SMOKE
   ev_df$PRICORT <- sub$PRICORT
+  # Carry per-subject grouping labels into the events table so that
+  # rxSolve(keep = ...) can attach them to the simulation output, avoiding
+  # a fragile post-rxSolve left_join from `pop`.
+  ev_df$regimen <- sub$regimen
+  ev_df$dose_mg <- sub$dose_mg
   set.seed(2020L + sub$id + seed_offset)
-  out <- rxode2::rxSolve(mod, ev_df, returnType = "data.frame")
+  out <- rxode2::rxSolve(mod, ev_df, returnType = "data.frame",
+                         keep = c("regimen", "dose_mg"))
   out$id <- sub$id
   out
 }
@@ -163,8 +173,7 @@ sim_one <- function(sub, seed_offset = 0L) {
 sim <- pop |>
   dplyr::group_split(id) |>
   lapply(sim_one) |>
-  dplyr::bind_rows() |>
-  dplyr::left_join(dplyr::select(pop, id, regimen, dose_mg), by = "id")
+  dplyr::bind_rows()
 #> ℹ parameter labels from comments will be replaced by 'label()'
 #> ℹ parameter labels from comments will be replaced by 'label()'
 #> ℹ parameter labels from comments will be replaced by 'label()'
@@ -266,7 +275,8 @@ sim <- pop |>
 #> ℹ parameter labels from comments will be replaced by 'label()'
 #> ℹ parameter labels from comments will be replaced by 'label()'
 
-# Build a single-id event table for later PKNCA dose-mapping.
+# Build a single-id event table for later PKNCA dose-mapping. `regimen` is
+# attached at construction time so it propagates without a post-hoc join.
 events <- pop |>
   dplyr::group_split(id) |>
   lapply(function(sub) {
@@ -278,10 +288,10 @@ events <- pop |>
     ev_df$WT      <- sub$WT
     ev_df$SMOKE   <- sub$SMOKE
     ev_df$PRICORT <- sub$PRICORT
+    ev_df$regimen <- sub$regimen
     ev_df
   }) |>
-  dplyr::bind_rows() |>
-  dplyr::left_join(dplyr::select(pop, id, regimen), by = "id")
+  dplyr::bind_rows()
 
 dim(sim)
 #> [1] 5000   33
@@ -307,13 +317,13 @@ head(sim)
 #> 4 212.6578 0.7606297 3.502497 3.5024973 3.6049971  63.1175 10.755340
 #> 5 212.6578 0.1881626 5.191435 0.5364942 0.8983226 176.5588  0.941029
 #> 6 212.6578 0.1881626 5.191435 5.1914355 7.0364791 176.5588  0.941029
-#>   peripheral1   effect CMT   WT SMOKE PRICORT id regimen dose_mg
-#> 1    0.000000 6.171290   5 81.1     0       1  1 150 q2w     150
-#> 2    0.000000 6.171290   6 81.1     0       1  1 150 q2w     150
-#> 3    7.324760 3.502497   5 81.1     0       1  1 150 q2w     150
-#> 4    7.324760 3.502497   6 81.1     0       1  1 150 q2w     150
-#> 5    8.112369 5.191435   5 81.1     0       1  1 150 q2w     150
-#> 6    8.112369 5.191435   6 81.1     0       1  1 150 q2w     150
+#>   peripheral1   effect CMT   WT SMOKE PRICORT dose_mg regimen id
+#> 1    0.000000 6.171290   5 81.1     0       1     150 150 q2w  1
+#> 2    0.000000 6.171290   6 81.1     0       1     150 150 q2w  1
+#> 3    7.324760 3.502497   5 81.1     0       1     150 150 q2w  1
+#> 4    7.324760 3.502497   6 81.1     0       1     150 150 q2w  1
+#> 5    8.112369 5.191435   5 81.1     0       1     150 150 q2w  1
+#> 6    8.112369 5.191435   6 81.1     0       1     150 150 q2w  1
 ```
 
 For deterministic typical-value traces (no between-subject variability),
@@ -323,6 +333,7 @@ Two typical subjects (one per regimen) fit inside the working subset of
 the multi-endpoint solver.
 
 ``` r
+
 mod_typ <- rxode2::zeroRe(mod)
 #> ℹ parameter labels from comments will be replaced by 'label()'
 
@@ -356,6 +367,7 @@ sim_typ <- rxode2::rxSolve(mod_typ, typ_events, returnType = "data.frame") |>
 ### Figure 5 — ANC time profiles (200 mg vs 150 mg q2w)
 
 ``` r
+
 # Replicates Figure 5 of Ma 2020 (ANC time profiles, observed vs predicted,
 # 200 mg q2w and 150 mg q2w). Black line: typical-value. Ribbon: simulated
 # 5th/95th percentiles across the virtual cohort.
@@ -388,6 +400,7 @@ ggplot() +
 ### Sarilumab concentration — typical-value companion
 
 ``` r
+
 typ_pk <- sim_typ |> dplyr::filter(!is.na(Cc))
 ggplot(typ_pk, aes(time, Cc, color = regimen)) +
   geom_line(linewidth = 0.8) +
@@ -416,6 +429,7 @@ validated with PKNCA below.
 With no sarilumab dose, ANC must sit at `BASE` for all time. Confirm:
 
 ``` r
+
 ev_placebo <- rxode2::et(seq(0, 56, by = 1), cmt = "ANC")
 ev_placebo$WT <- 71; ev_placebo$SMOKE <- 0; ev_placebo$PRICORT <- 0
 baseline_sim <- rxode2::rxSolve(mod_typ, ev_placebo, returnType = "data.frame")
@@ -431,6 +445,7 @@ reduction from baseline is **39%** (i.e. nadir ANC ≈ 0.61 × 5.38 ≈ 3.28
 × 10⁹/L). For 150 mg q2w: **31%** (nadir ≈ 3.71).
 
 ``` r
+
 ss_ranges <- typ_anc |>
   dplyr::filter(time >= 84, time <= 168) |>  # steady state window: weeks 12-24
   dplyr::group_by(regimen) |>
@@ -448,12 +463,12 @@ knitr::kable(ss_ranges, caption = "Simulated ANC nadir and percent reduction vs.
 ```
 
 | regimen | nadir_anc | trough_anc | mean_anc | pct_reduction_from_base | paper_reported_pct |
-|:--------|----------:|-----------:|---------:|------------------------:|-------------------:|
-| 150 q2w |  2.795953 |   3.605023 | 3.052717 |                    48.0 |                 31 |
-| 200 q2w |  2.577045 |   2.928607 | 2.701609 |                    52.1 |                 39 |
+|:---|---:|---:|---:|---:|---:|
+| 150 q2w | 2.795953 | 3.605023 | 3.052717 | 48.0 | 31 |
+| 200 q2w | 2.577045 | 2.928607 | 2.701609 | 52.1 | 39 |
 
 Simulated ANC nadir and percent reduction vs. Ma 2020 reported
-predictions.
+predictions. {.table}
 
 ### Recovery after drug withdrawal
 
@@ -461,6 +476,7 @@ Ma 2020 reports that ANC returns to baseline approximately 2 weeks after
 a single 200 mg subcutaneous dose. Confirm:
 
 ``` r
+
 ev_single <- rxode2::et(amt = 200, cmt = "depot") |>
   rxode2::et(seq(0, 56, by = 1), cmt = "ANC")
 ev_single$WT <- 71; ev_single$SMOKE <- 0; ev_single$PRICORT <- 0
@@ -489,6 +505,7 @@ escalating from 150 to 200 mg q2w (abstract of Xu 2019), consistent with
 saturation of the non-linear Michaelis–Menten pathway.
 
 ``` r
+
 # rxSolve emits one row per observation record, so with both Cc and ANC
 # endpoints requested at the same time point we get duplicated (id, time)
 # rows with identical Cc values. Collapse before handing to PKNCA.
@@ -522,12 +539,13 @@ knitr::kable(nca_summary,
              caption = "Steady-state NCA (day 154-168) for sarilumab by regimen.")
 ```
 
-| start | end | regimen | N   | auclast      | cmax          | cmin         | tmax                |
-|------:|----:|:--------|:----|:-------------|:--------------|:-------------|:--------------------|
-|   154 | 168 | 150 q2w | 50  | 108 \[75.1\] | 13.6 \[56.7\] | 2.62 \[188\] | 7.00 \[7.00, 7.00\] |
-|   154 | 168 | 200 q2w | 50  | 230 \[57.2\] | 25.2 \[42.6\] | 8.22 \[115\] | 7.00 \[7.00, 7.00\] |
+| start | end | regimen | N | auclast | cmax | cmin | tmax |
+|---:|---:|:---|:---|:---|:---|:---|:---|
+| 154 | 168 | 150 q2w | 50 | 108 \[75.1\] | 13.6 \[56.7\] | 2.62 \[188\] | 7.00 \[7.00, 7.00\] |
+| 154 | 168 | 200 q2w | 50 | 230 \[57.2\] | 25.2 \[42.6\] | 8.22 \[115\] | 7.00 \[7.00, 7.00\] |
 
-Steady-state NCA (day 154-168) for sarilumab by regimen.
+Steady-state NCA (day 154-168) for sarilumab by regimen. {.table
+style="width:100%;"}
 
 ## Assumptions and deviations
 

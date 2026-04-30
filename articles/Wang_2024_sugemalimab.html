@@ -60,6 +60,7 @@
     <li><a class="dropdown-item" href="../articles/FiedlerKelly_2020_fremanezumab_cm.html">FiedlerKelly_2020_fremanezumab_cm</a></li>
     <li><a class="dropdown-item" href="../articles/FiedlerKelly_2020_fremanezumab_em.html">FiedlerKelly_2020_fremanezumab_em</a></li>
     <li><a class="dropdown-item" href="../articles/Frey_2010_tocilizumab.html">Frey_2010_tocilizumab</a></li>
+    <li><a class="dropdown-item" href="../articles/Frey_2013_tocilizumab.html">Frey_2013_tocilizumab</a></li>
     <li><a class="dropdown-item" href="../articles/Gandhi_2021_abatacept.html">Gandhi_2021_abatacept</a></li>
     <li><a class="dropdown-item" href="../articles/Grimm_2023.html">Trontinemab and gantenerumab PK in plasma and brain (Grimm 2023)</a></li>
     <li><a class="dropdown-item" href="../articles/Gupta_2016_amatuximab.html">Gupta_2016_amatuximab</a></li>
@@ -72,6 +73,7 @@
     <li><a class="dropdown-item" href="../articles/Hua_2015_anrukinzumab.html">Hua_2015_anrukinzumab</a></li>
     <li><a class="dropdown-item" href="../articles/Huang_2017_vrc01.html">Huang_2017_vrc01</a></li>
     <li><a class="dropdown-item" href="../articles/Hwang_2022_tremelimumab.html">Hwang_2022_tremelimumab</a></li>
+    <li><a class="dropdown-item" href="../articles/Hwang_2023_monalizumab.html">Hwang_2023_monalizumab</a></li>
     <li><a class="dropdown-item" href="../articles/Ide_2020_elotuzumab.html">Ide_2020_elotuzumab</a></li>
     <li><a class="dropdown-item" href="../articles/Jackson_2022_ixekizumab.html">Jackson_2022_ixekizumab</a></li>
     <li><a class="dropdown-item" href="../articles/Kielbasa_2020_galcanezumab.html">Kielbasa_2020_galcanezumab</a></li>
@@ -92,6 +94,7 @@
     <li><a class="dropdown-item" href="../articles/Long_2017_necitumumab.html">Long_2017_necitumumab</a></li>
     <li><a class="dropdown-item" href="../articles/Lu_2014_trastuzumabemtansine.html">Lu_2014_trastuzumabemtansine</a></li>
     <li><a class="dropdown-item" href="../articles/Lu_2019_polatuzumab.html">Polatuzumab vedotin acMMAE + MMAE integrated population PK model (Lu 2019)</a></li>
+    <li><a class="dropdown-item" href="../articles/Lu_2022_patritumab.html">Patritumab deruxtecan (HER3-DXd) ADC + DXd coupled population PK model (Lu 2022)</a></li>
     <li><a class="dropdown-item" href="../articles/Ma_2020_sarilumab_anc.html">Ma_2020_sarilumab_anc</a></li>
     <li><a class="dropdown-item" href="../articles/Ma_2020_sarilumab_das28crp.html">Ma_2020_sarilumab_das28crp</a></li>
     <li><a class="dropdown-item" href="../articles/markov.html">Markov modeling</a></li>
@@ -125,6 +128,7 @@
     <li><a class="dropdown-item" href="../articles/Sathe_2024_sacituzumab.html">Sathe_2024_sacituzumab</a></li>
     <li><a class="dropdown-item" href="../articles/Soehoel_2022_tralokinumab.html">Soehoel_2022_tralokinumab</a></li>
     <li><a class="dropdown-item" href="../articles/Suleiman_2019_risankizumab.html">Suleiman_2019_risankizumab</a></li>
+    <li><a class="dropdown-item" href="../articles/Suri_2018_brentuximab.html">Suri_2018_brentuximab</a></li>
     <li><a class="dropdown-item" href="../articles/Takahashi_2023_abatacept.html">Takahashi_2023_abatacept</a></li>
     <li><a class="dropdown-item" href="../articles/Takeuchi_2023_ozoralizumab.html">Takeuchi_2023_ozoralizumab</a></li>
     <li><a class="dropdown-item" href="../articles/Thakre_2022_risankizumab.html">Thakre_2022_risankizumab</a></li>
@@ -150,6 +154,7 @@
     <li><a class="dropdown-item" href="../articles/Yu_2022_ofatumumab.html">Yu_2022_ofatumumab</a></li>
     <li><a class="dropdown-item" href="../articles/Zhang_2019_nivolumab.html">Zhang_2019_nivolumab</a></li>
     <li><a class="dropdown-item" href="../articles/Zheng_2016_sifalimumab.html">Zheng_2016_sifalimumab</a></li>
+    <li><a class="dropdown-item" href="../articles/Zhong_2026_abatacept.html">Zhong_2026_abatacept</a></li>
     <li><a class="dropdown-item" href="../articles/Zhou_2021_belimumab.html">Zhou_2021_belimumab</a></li>
     <li><a class="dropdown-item" href="../articles/Zhou_2025_brentuximab.html">Zhou_2025_brentuximab</a></li>
     <li><a class="dropdown-item" href="../articles/Zhu_2017_lebrikizumab.html">Zhu_2017_lebrikizumab</a></li>
@@ -231,18 +236,18 @@ subjects; 11,040 PK observations).</p>
 <p>The structural model is a two-compartment IV model with
 <strong>time-dependent clearance</strong> parameterized as a
 sigmoidal-Emax function of time since the first dose:</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mrow><mi mathvariant="normal">C</mi><mi mathvariant="normal">L</mi></mrow><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mo>exp</mo><mspace width="-0.167em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><msub><mrow><mi mathvariant="normal">C</mi><mi mathvariant="normal">L</mi></mrow><mrow><mn>0</mn><mo>,</mo><mi>i</mi></mrow></msub><mo>+</mo><msub><mi>E</mi><mrow><mo>max</mo><mo>,</mo><mi>i</mi></mrow></msub><mo>⋅</mo><mfrac><msup><mi>t</mi><mi>λ</mi></msup><mrow><msubsup><mi>T</mi><mn>50</mn><mi>λ</mi></msubsup><mo>+</mo><msup><mi>t</mi><mi>λ</mi></msup></mrow></mfrac><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mrow><mi mathvariant="normal">C</mi><mi mathvariant="normal">L</mi></mrow><mi>i</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mrow><mi mathvariant="normal">exp</mi><mo>⁡</mo></mrow><mspace width="-0.167em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><msub><mrow><mi mathvariant="normal">C</mi><mi mathvariant="normal">L</mi></mrow><mrow><mn>0</mn><mo>,</mo><mi>i</mi></mrow></msub><mo>+</mo><msub><mi>E</mi><mrow><mrow><mi mathvariant="normal">max</mi><mo>⁡</mo></mrow><mo>,</mo><mi>i</mi></mrow></msub><mo>⋅</mo><mfrac><msup><mi>t</mi><mi>λ</mi></msup><mrow><msubsup><mi>T</mi><mn>50</mn><mi>λ</mi></msubsup><mo>+</mo><msup><mi>t</mi><mi>λ</mi></msup></mrow></mfrac><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">
 \mathrm{CL}_i(t) = \exp\!\left(
    \mathrm{CL}_{0,i} + E_{\max,i} \cdot
    \frac{t^{\lambda}}{T_{50}^{\lambda} + t^{\lambda}}
  \right)
 </annotation></semantics></math></p>
 <p>with reference
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>E</mi><mo>max</mo></msub><mo>=</mo><mo>−</mo><mn>0.528</mn></mrow><annotation encoding="application/x-tex">E_{\max} = -0.528</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>E</mi><mi mathvariant="normal">max</mi></msub><mo>=</mo><mi>−</mi><mn>0.528</mn></mrow><annotation encoding="application/x-tex">E_{\max} = -0.528</annotation></semantics></math>
 (a fractional <strong>decrease</strong> at
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>≫</mo><msub><mi>T</mi><mn>50</mn></msub></mrow><annotation encoding="application/x-tex">t \gg T_{50}</annotation></semantics></math>;
 asymptotic CL falls to
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><mo>−</mo><mn>0.528</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>0.590</mn></mrow><annotation encoding="application/x-tex">\exp(-0.528) = 0.590</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">exp</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><mi>−</mi><mn>0.528</mn><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mn>0.590</mn></mrow><annotation encoding="application/x-tex">\exp(-0.528) = 0.590</annotation></semantics></math>
 of baseline, i.e., a 41.0 % reduction at full saturation),
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mn>50</mn></msub><mo>=</mo><mn>53.6</mn></mrow><annotation encoding="application/x-tex">T_{50} = 53.6</annotation></semantics></math>
 days, and Hill coefficient
@@ -699,7 +704,7 @@ parameterization. At a male, 61 kg, ALB 41.5 g/L, TUMSZ 47 mm, NSCLC,
 ADA-negative reference patient, CL drops from 0.259 L/day at
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">t = 0</annotation></semantics></math>
 to
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.259</mn><mo>×</mo><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><mo>−</mo><mn>0.528</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>0.153</mn></mrow><annotation encoding="application/x-tex">0.259 \times \exp(-0.528) = 0.153</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.259</mn><mo>×</mo><mrow><mi mathvariant="normal">exp</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><mi>−</mi><mn>0.528</mn><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mn>0.153</mn></mrow><annotation encoding="application/x-tex">0.259 \times \exp(-0.528) = 0.153</annotation></semantics></math>
 L/day at full Emax saturation
 (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>1.5</mn><mo>×</mo><msub><mi>T</mi><mn>50</mn></msub></mrow><annotation encoding="application/x-tex">\sim 1.5 \times T_{50}</annotation></semantics></math>,
 or about 80 days). This 41 % reduction matches the value reported in the
@@ -1104,7 +1109,7 @@ cycle-8 dosing interval. With
 days and
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo>=</mo><mn>2.60</mn></mrow><annotation encoding="application/x-tex">\lambda = 2.60</annotation></semantics></math>,
 the CL trajectory has reached ~92 % of
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>E</mi><mo>max</mo></msub><annotation encoding="application/x-tex">E_{\max}</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>E</mi><mi mathvariant="normal">max</mi></msub><annotation encoding="application/x-tex">E_{\max}</annotation></semantics></math>
 by day 105 (start of cycle 6) and ~96 % by day 147 (start of cycle 8);
 the cycle-8 metrics are therefore slightly larger than cycle-6 in the
 source paper. The comparison table flags any differences &gt; 20 %.</li>
@@ -1125,23 +1130,23 @@ parameterizes the Emax random effect as additive on the linear scale
 (Table 3 footnote: <code>Emax_i = theta5 + eta_Emax,i</code>). With
 variance ~0.00955 (SD ~0.098) and a typical Emax of -0.528, this allows
 individual Emax values to range over roughly
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>−</mo><mn>0.72</mn></mrow><annotation encoding="application/x-tex">-0.72</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>−</mi><mn>0.72</mn></mrow><annotation encoding="application/x-tex">-0.72</annotation></semantics></math>
 to
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>−</mo><mn>0.34</mn></mrow><annotation encoding="application/x-tex">-0.34</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>−</mi><mn>0.34</mn></mrow><annotation encoding="application/x-tex">-0.34</annotation></semantics></math>
 at the 95 % level (so the asymptotic CL ratio ranges over
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>0.49</mn></mrow><annotation encoding="application/x-tex">\sim 0.49</annotation></semantics></math>
 to
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>0.71</mn></mrow><annotation encoding="application/x-tex">\sim 0.71</annotation></semantics></math>
 of baseline). No subject in this parameterization is expected to exhibit
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>E</mi><mo>max</mo></msub><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">E_{\max} &gt; 0</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>E</mi><mi mathvariant="normal">max</mi></msub><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">E_{\max} &gt; 0</annotation></semantics></math>
 (CL increase), unlike the Zhang 2019 nivolumab parameterization where
 the IIV is broader.</li>
 <li>
 <strong>PKNCA reporting unit</strong>: AUC is computed as
 <code>auclast</code> over the 21-day dosing interval and is reported in
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>μ</mi><annotation encoding="application/x-tex">\mu</annotation></semantics></math>g<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>⋅</mo><annotation encoding="application/x-tex">\cdot</annotation></semantics></math>day/mL
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>μ</mi><annotation encoding="application/x-tex">\mu</annotation></semantics></math>g<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>⋅</mi><annotation encoding="application/x-tex">\cdot</annotation></semantics></math>day/mL
 (matching Wang 2024 Table S1’s units of
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>μ</mi><annotation encoding="application/x-tex">\mu</annotation></semantics></math>g<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>⋅</mo><annotation encoding="application/x-tex">\cdot</annotation></semantics></math>day/mL).</li>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>μ</mi><annotation encoding="application/x-tex">\mu</annotation></semantics></math>g<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>⋅</mi><annotation encoding="application/x-tex">\cdot</annotation></semantics></math>day/mL).</li>
 </ul>
 </div>
 <div class="section level2">

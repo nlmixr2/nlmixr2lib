@@ -1,6 +1,7 @@
 # Wang_2024_sugemalimab
 
 ``` r
+
 library(nlmixr2lib)
 library(rxode2)
 #> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
@@ -48,18 +49,23 @@ The structural model is a two-compartment IV model with **time-dependent
 clearance** parameterized as a sigmoidal-Emax function of time since the
 first dose:
 
-$${CL}_{i}(t) = \exp\!\left( {CL}_{0,i} + E_{\max,i} \cdot \frac{t^{\lambda}}{T_{50}^{\lambda} + t^{\lambda}} \right)$$
+``` math
+\mathrm{CL}_i(t) = \exp\!\left(
+   \mathrm{CL}_{0,i} + E_{\max,i} \cdot
+   \frac{t^{\lambda}}{T_{50}^{\lambda} + t^{\lambda}}
+ \right)
+```
 
-with reference $E_{\max} = - 0.528$ (a fractional **decrease** at
-$t \gg T_{50}$; asymptotic CL falls to $\exp( - 0.528) = 0.590$ of
-baseline, i.e., a 41.0 % reduction at full saturation), $T_{50} = 53.6$
-days, and Hill coefficient $\lambda = 2.60$. Covariates on baseline CL:
-body weight (power), albumin (power), tumour burden (power), sex, ADA
-status, and four tumour-type indicators (lymphoma, GCGEJ, ESCC, “other”;
-lung cancer is the implicit reference). Covariates on Vc: body weight,
-albumin, sex, and the four tumour-type indicators (no ADA or
-tumour-burden effect on Vc retained). Q has no covariates and no IIV; Vp
-has no covariates but an IIV term.
+with reference $`E_{\max} = -0.528`$ (a fractional **decrease** at
+$`t \gg T_{50}`$; asymptotic CL falls to $`\exp(-0.528) = 0.590`$ of
+baseline, i.e., a 41.0 % reduction at full saturation),
+$`T_{50} = 53.6`$ days, and Hill coefficient $`\lambda = 2.60`$.
+Covariates on baseline CL: body weight (power), albumin (power), tumour
+burden (power), sex, ADA status, and four tumour-type indicators
+(lymphoma, GCGEJ, ESCC, “other”; lung cancer is the implicit reference).
+Covariates on Vc: body weight, albumin, sex, and the four tumour-type
+indicators (no ADA or tumour-burden effect on Vc retained). Q has no
+covariates and no IIV; Vp has no covariates but an IIV term.
 
 ## Population
 
@@ -86,39 +92,39 @@ The per-parameter origin is recorded as an in-file comment next to each
 `inst/modeldb/specificDrugs/Wang_2024_sugemalimab.R`. The table below
 collects them in one place for review.
 
-| Parameter (model name)             | Value                                                                                                 | Source                                                                                               |
-|------------------------------------|-------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------|
-| `lcl` (CL0, L/day)                 | log(0.259)                                                                                            | Wang 2024 Table 3: exp(theta1) = 0.259 L/day                                                         |
-| `lvc` (Vc, L)                      | log(3.42)                                                                                             | Wang 2024 Table 3: exp(theta2) = 3.42 L                                                              |
-| `lq` (Q, L/day)                    | log(0.489)                                                                                            | Wang 2024 Table 3: exp(theta3) = 0.489 L/day                                                         |
-| `lvp` (Vp, L)                      | log(1.57)                                                                                             | Wang 2024 Table 3: exp(theta4) = 1.57 L                                                              |
-| `Emax` (unitless; theta5)          | -0.528                                                                                                | Wang 2024 Table 3: theta5 = -0.528                                                                   |
-| `lt50` (T50, log days)             | log(53.6)                                                                                             | Wang 2024 Table 3: theta6 = 53.6 day                                                                 |
-| `llambda` (lambda, log unitless)   | log(2.60)                                                                                             | Wang 2024 Table 3: theta7 = 2.60                                                                     |
-| `e_wt_cl`                          | 0.585                                                                                                 | Wang 2024 Table 3: theta8 = 0.585                                                                    |
-| `e_wt_vc`                          | 0.471                                                                                                 | Wang 2024 Table 3: theta9 = 0.471                                                                    |
-| `e_alb_cl`                         | -0.836                                                                                                | Wang 2024 Table 3: theta10 = -0.836                                                                  |
-| `e_alb_vc`                         | -0.364                                                                                                | Wang 2024 Table 3: theta11 = -0.364                                                                  |
-| `e_sexf_cl`                        | log(0.865) = -0.1450                                                                                  | Wang 2024 Table 3: exp(theta12) = 0.865                                                              |
-| `e_sexf_vc`                        | log(0.866) = -0.1438                                                                                  | Wang 2024 Table 3: exp(theta13) = 0.866                                                              |
-| `e_ada_cl`                         | log(1.11) = 0.1044                                                                                    | Wang 2024 Table 3: exp(theta14) = 1.11                                                               |
-| `e_lymph_cl` (TUMTP_LYMPH on CL)   | log(0.877) = -0.1313                                                                                  | Wang 2024 Table 3: exp(theta15) = 0.877                                                              |
-| `e_oth_cl` (TUMTP_OTH on CL)       | log(0.885) = -0.1222                                                                                  | Wang 2024 Table 3: exp(theta16) = 0.885                                                              |
-| `e_gc_cl` (TUMTP_GC on CL)         | log(1.13) = 0.1222                                                                                    | Wang 2024 Table 3: exp(theta17) = 1.13                                                               |
-| `e_escc_cl` (TUMTP_ESCC on CL)     | log(0.99) = -0.01005                                                                                  | Wang 2024 Table 3: exp(theta18) = 0.99                                                               |
-| `e_lymph_vc` (TUMTP_LYMPH on Vc)   | log(0.879) = -0.1290                                                                                  | Wang 2024 Table 3: exp(theta19) = 0.879                                                              |
-| `e_oth_vc` (TUMTP_OTH on Vc)       | log(0.926) = -0.0769                                                                                  | Wang 2024 Table 3: exp(theta20) = 0.926                                                              |
-| `e_gc_vc` (TUMTP_GC on Vc)         | log(1.14) = 0.1310                                                                                    | Wang 2024 Table 3: exp(theta21) = 1.14                                                               |
-| `e_escc_vc` (TUMTP_ESCC on Vc)     | log(1.08) = 0.0770                                                                                    | Wang 2024 Table 3: exp(theta22) = 1.08                                                               |
-| `e_tumsz_cl` (tumour-burden on CL) | 0.0421                                                                                                | Wang 2024 Table 3: theta23 = 0.0421                                                                  |
-| IIV CL (`etalcl`)                  | omega^2 = log(1 + 0.195^2) = 0.0373                                                                   | Wang 2024 Table 3: IIV CL 19.5 % CV                                                                  |
-| IIV Vc (`etalvc`)                  | omega^2 = log(1 + 0.155^2) = 0.0237                                                                   | Wang 2024 Table 3: IIV Vc 15.5 % CV                                                                  |
-| Cov(CL, Vc)                        | 0.0161                                                                                                | Wang 2024 Table 3: Cov CL_Vc = 0.0161                                                                |
-| IIV Vp (`etalvp`)                  | omega^2 = log(1 + 0.685^2) = 0.3847                                                                   | Wang 2024 Table 3: IIV Vp 68.5 % CV                                                                  |
-| IIV Emax (`etaEmax`)               | (0.185 \* 0.528)^2 = 0.00955                                                                          | Wang 2024 Table 3: IIV Emax 18.5 % CV (additive on linear scale; ‘approximate CV%’ = SD / abs(Emax)) |
-| IIV T50 (`etalt50`)                | omega^2 = log(1 + 0.642^2) = 0.3451                                                                   | Wang 2024 Table 3: IIV T50 64.2 % CV                                                                 |
-| Residual error                     | propSd = 0.179                                                                                        | Wang 2024 Table 3: residual error 17.9 % (log-additive sigma; equivalent to nlmixr2 prop())          |
-| Reference covariates               | WT 61 kg, ALB 41.5 g/L, TUMSZ 47 mm, male (SEXF=0), ADA-negative (ADA_POS=0), all TUMTP\_\*=0 (NSCLC) | Wang 2024 Table 3 footnote (typical lung cancer male patient)                                        |
+| Parameter (model name) | Value | Source |
+|----|----|----|
+| `lcl` (CL0, L/day) | log(0.259) | Wang 2024 Table 3: exp(theta1) = 0.259 L/day |
+| `lvc` (Vc, L) | log(3.42) | Wang 2024 Table 3: exp(theta2) = 3.42 L |
+| `lq` (Q, L/day) | log(0.489) | Wang 2024 Table 3: exp(theta3) = 0.489 L/day |
+| `lvp` (Vp, L) | log(1.57) | Wang 2024 Table 3: exp(theta4) = 1.57 L |
+| `Emax` (unitless; theta5) | -0.528 | Wang 2024 Table 3: theta5 = -0.528 |
+| `lt50` (T50, log days) | log(53.6) | Wang 2024 Table 3: theta6 = 53.6 day |
+| `llambda` (lambda, log unitless) | log(2.60) | Wang 2024 Table 3: theta7 = 2.60 |
+| `e_wt_cl` | 0.585 | Wang 2024 Table 3: theta8 = 0.585 |
+| `e_wt_vc` | 0.471 | Wang 2024 Table 3: theta9 = 0.471 |
+| `e_alb_cl` | -0.836 | Wang 2024 Table 3: theta10 = -0.836 |
+| `e_alb_vc` | -0.364 | Wang 2024 Table 3: theta11 = -0.364 |
+| `e_sexf_cl` | log(0.865) = -0.1450 | Wang 2024 Table 3: exp(theta12) = 0.865 |
+| `e_sexf_vc` | log(0.866) = -0.1438 | Wang 2024 Table 3: exp(theta13) = 0.866 |
+| `e_ada_cl` | log(1.11) = 0.1044 | Wang 2024 Table 3: exp(theta14) = 1.11 |
+| `e_lymph_cl` (TUMTP_LYMPH on CL) | log(0.877) = -0.1313 | Wang 2024 Table 3: exp(theta15) = 0.877 |
+| `e_oth_cl` (TUMTP_OTH on CL) | log(0.885) = -0.1222 | Wang 2024 Table 3: exp(theta16) = 0.885 |
+| `e_gc_cl` (TUMTP_GC on CL) | log(1.13) = 0.1222 | Wang 2024 Table 3: exp(theta17) = 1.13 |
+| `e_escc_cl` (TUMTP_ESCC on CL) | log(0.99) = -0.01005 | Wang 2024 Table 3: exp(theta18) = 0.99 |
+| `e_lymph_vc` (TUMTP_LYMPH on Vc) | log(0.879) = -0.1290 | Wang 2024 Table 3: exp(theta19) = 0.879 |
+| `e_oth_vc` (TUMTP_OTH on Vc) | log(0.926) = -0.0769 | Wang 2024 Table 3: exp(theta20) = 0.926 |
+| `e_gc_vc` (TUMTP_GC on Vc) | log(1.14) = 0.1310 | Wang 2024 Table 3: exp(theta21) = 1.14 |
+| `e_escc_vc` (TUMTP_ESCC on Vc) | log(1.08) = 0.0770 | Wang 2024 Table 3: exp(theta22) = 1.08 |
+| `e_tumsz_cl` (tumour-burden on CL) | 0.0421 | Wang 2024 Table 3: theta23 = 0.0421 |
+| IIV CL (`etalcl`) | omega^2 = log(1 + 0.195^2) = 0.0373 | Wang 2024 Table 3: IIV CL 19.5 % CV |
+| IIV Vc (`etalvc`) | omega^2 = log(1 + 0.155^2) = 0.0237 | Wang 2024 Table 3: IIV Vc 15.5 % CV |
+| Cov(CL, Vc) | 0.0161 | Wang 2024 Table 3: Cov CL_Vc = 0.0161 |
+| IIV Vp (`etalvp`) | omega^2 = log(1 + 0.685^2) = 0.3847 | Wang 2024 Table 3: IIV Vp 68.5 % CV |
+| IIV Emax (`etaEmax`) | (0.185 \* 0.528)^2 = 0.00955 | Wang 2024 Table 3: IIV Emax 18.5 % CV (additive on linear scale; ‘approximate CV%’ = SD / abs(Emax)) |
+| IIV T50 (`etalt50`) | omega^2 = log(1 + 0.642^2) = 0.3451 | Wang 2024 Table 3: IIV T50 64.2 % CV |
+| Residual error | propSd = 0.179 | Wang 2024 Table 3: residual error 17.9 % (log-additive sigma; equivalent to nlmixr2 prop()) |
+| Reference covariates | WT 61 kg, ALB 41.5 g/L, TUMSZ 47 mm, male (SEXF=0), ADA-negative (ADA_POS=0), all TUMTP\_\*=0 (NSCLC) | Wang 2024 Table 3 footnote (typical lung cancer male patient) |
 
 Equation forms (Wang 2024 Table 3 footnote):
 
@@ -133,17 +139,17 @@ Equation forms (Wang 2024 Table 3 footnote):
 
 ## Covariate column naming
 
-| Source column                       | Canonical column used here                                   |
-|-------------------------------------|--------------------------------------------------------------|
-| `WT` (kg)                           | `WT`                                                         |
-| `ALB` (g/L)                         | `ALB`                                                        |
-| `TUMORB` (mm)                       | `TUMSZ`                                                      |
-| `SEX` (1 = female / 0 = male)       | `SEXF`                                                       |
-| `ADA` (1 = positive / 0 = negative) | `ADA_POS`                                                    |
-| `TTYPE1` (1 = lymphoma)             | `TUMTP_LYMPH` (new canonical, registered with this model)    |
-| `TTYPE3` (1 = “other” tumour type)  | `TUMTP_OTH`                                                  |
+| Source column | Canonical column used here |
+|----|----|
+| `WT` (kg) | `WT` |
+| `ALB` (g/L) | `ALB` |
+| `TUMORB` (mm) | `TUMSZ` |
+| `SEX` (1 = female / 0 = male) | `SEXF` |
+| `ADA` (1 = positive / 0 = negative) | `ADA_POS` |
+| `TTYPE1` (1 = lymphoma) | `TUMTP_LYMPH` (new canonical, registered with this model) |
+| `TTYPE3` (1 = “other” tumour type) | `TUMTP_OTH` |
 | `TTYPE4` (1 = GCGEJ adenocarcinoma) | `TUMTP_GC` (Wang 2024 GEJ inclusion documented in canonical) |
-| `TTYPE5` (1 = ESCC)                 | `TUMTP_ESCC` (new canonical, registered with this model)     |
+| `TTYPE5` (1 = ESCC) | `TUMTP_ESCC` (new canonical, registered with this model) |
 
 The canonical names follow the `TUMTP_<GROUP>` indicator-decomposition
 pattern documented in `inst/references/covariate-columns.md`. Lung
@@ -158,6 +164,7 @@ use a virtual cohort whose covariate distributions approximate the Wang
 and ranges; individual covariate correlations are not published).
 
 ``` r
+
 set.seed(2024)
 n_subj <- 100
 
@@ -211,6 +218,7 @@ continues observation through approximately one year to capture the
 time-varying-CL profile.
 
 ``` r
+
 n_cycles    <- 8L                       # eight Q3W cycles = ~24 weeks
 cycle_days  <- 21
 dose_amt_mg <- 1200
@@ -253,6 +261,7 @@ stopifnot(!anyDuplicated(unique(events[, c("ID", "TIME", "EVID")])))
 ## Simulate
 
 ``` r
+
 mod <- readModelDb("Wang_2024_sugemalimab")
 set.seed(20240915)
 sim <- rxSolve(mod, events, returnType = "data.frame", keep = "ttype")
@@ -262,6 +271,7 @@ sim <- rxSolve(mod, events, returnType = "data.frame", keep = "ttype")
 ## Concentration-time profile
 
 ``` r
+
 sim_summary <- sim |>
   dplyr::filter(time > 0) |>
   dplyr::group_by(time) |>
@@ -294,14 +304,15 @@ ggplot(sim_summary, aes(x = time / 7)) +
 The typical-subject CL trajectory across the first year reproduces the
 sigmoidal Emax decline that motivates the time-varying-CL
 parameterization. At a male, 61 kg, ALB 41.5 g/L, TUMSZ 47 mm, NSCLC,
-ADA-negative reference patient, CL drops from 0.259 L/day at $t = 0$ to
-$0.259 \times \exp( - 0.528) = 0.153$ L/day at full Emax saturation
-($\sim 1.5 \times T_{50}$, or about 80 days). This 41 % reduction
+ADA-negative reference patient, CL drops from 0.259 L/day at $`t = 0`$
+to $`0.259 \times \exp(-0.528) = 0.153`$ L/day at full Emax saturation
+($`\sim 1.5 \times T_{50}`$, or about 80 days). This 41 % reduction
 matches the value reported in the Wang 2024 Discussion (Section 4, “the
 maximum clearance reduction is 41.0 %, and the time to reach half of the
 maximum change in CL is 53.6 days”).
 
 ``` r
+
 t_grid <- seq(0, 365, by = 5)
 
 cl0_typical <- 0.259                # L/day at reference covariates
@@ -335,6 +346,7 @@ eighth Q3W dose) confirms that the simulated steady-state Cmax / Cmin /
 AUC match published expectations.
 
 ``` r
+
 conc1 <- sim |>
   dplyr::filter(time > 0, time <= cycle_days, Cc > 0) |>
   dplyr::transmute(ID = id, time, Cc, treatment = "1200 mg Q3W")
@@ -465,13 +477,15 @@ knitr::kable(
 )
 ```
 
-| Interval Start | Interval End | treatment   | N   | AUClast (day\*ug/mL) | Cmax (ug/mL) | Cmin (ug/mL)  | Tmax (day)          |
-|---------------:|-------------:|:------------|:----|:---------------------|:-------------|:--------------|:--------------------|
-|              0 |           21 | 1200 mg Q3W | 100 | NC                   | 295 \[16.3\] | 78.5 \[28.4\] | 1.00 \[1.00, 1.00\] |
+| Interval Start | Interval End | treatment | N | AUClast (day\*ug/mL) | Cmax (ug/mL) | Cmin (ug/mL) | Tmax (day) |
+|---:|---:|:---|:---|:---|:---|:---|:---|
+| 0 | 21 | 1200 mg Q3W | 100 | NC | 295 \[16.3\] | 78.5 \[28.4\] | 1.00 \[1.00, 1.00\] |
 
-Cycle 1 NCA summary (days 0-21, 1200 mg Q3W).
+Cycle 1 NCA summary (days 0-21, 1200 mg Q3W). {.table
+style="width:100%;"}
 
 ``` r
+
 ss_start <- (n_cycles - 1L) * cycle_days     # time of the last simulated dose
 ss_end   <- ss_start + cycle_days
 
@@ -508,12 +522,12 @@ knitr::kable(
 )
 ```
 
-| Interval Start | Interval End | treatment   | N   | AUClast (day\*ug/mL) | Cmax (ug/mL) | Cmin (ug/mL) |
-|---------------:|-------------:|:------------|:----|:---------------------|:-------------|:-------------|
-|              0 |           21 | 1200 mg Q3W | 100 | 6410 \[30.3\]        | 378 \[26.6\] | 235 \[36.0\] |
+| Interval Start | Interval End | treatment | N | AUClast (day\*ug/mL) | Cmax (ug/mL) | Cmin (ug/mL) |
+|---:|---:|:---|:---|:---|:---|:---|
+| 0 | 21 | 1200 mg Q3W | 100 | 6410 \[30.3\] | 378 \[26.6\] | 235 \[36.0\] |
 
 Cycle 8 NCA summary (days 147-168, 1200 mg Q3W) - approaching steady
-state.
+state. {.table style="width:100%;"}
 
 ### Comparison against the literature
 
@@ -525,11 +539,11 @@ overall-population row of Wang 2024 Table S1 (the row labelled
 `Age <= 65 (n = 1165)` is essentially the typical population because the
 \>65 row differs by only ~1 %):
 
-| Metric                 | Wang 2024 Table S1 (Age \<= 65, n = 1165, 1200 mg Q3W) | Simulated cycle-8 (1200 mg Q3W, n = 100)                                             |
-|------------------------|--------------------------------------------------------|--------------------------------------------------------------------------------------|
-| AUCss (μg \* day / mL) | 6,951 (geometric mean; %CV 19.6)                       | (see NCA table above; AUC over a single 21-day interval — multiply x 1 for AUC0-tau) |
-| Cmax,ss (μg/mL)        | 571 (geometric mean; %CV 16.6)                         | (see NCA table above)                                                                |
-| Cmin,ss (μg/mL)        | 221 (geometric mean; %CV 26.2)                         | (see NCA table above)                                                                |
+| Metric | Wang 2024 Table S1 (Age \<= 65, n = 1165, 1200 mg Q3W) | Simulated cycle-8 (1200 mg Q3W, n = 100) |
+|----|----|----|
+| AUCss (μg \* day / mL) | 6,951 (geometric mean; %CV 19.6) | (see NCA table above; AUC over a single 21-day interval — multiply x 1 for AUC0-tau) |
+| Cmax,ss (μg/mL) | 571 (geometric mean; %CV 16.6) | (see NCA table above) |
+| Cmin,ss (μg/mL) | 221 (geometric mean; %CV 26.2) | (see NCA table above) |
 
 If the simulated cycle-8 metrics differ from Wang 2024 Table S1 by more
 than ~20 %, the model file should be re-checked against Wang 2024 Table
@@ -538,6 +552,7 @@ than ~20 %, the model file should be re-checked against Wang 2024 Table
 A side-by-side numerical comparison is computed below.
 
 ``` r
+
 nca_df <- as.data.frame(nca_ss$result)
 
 simulated_summary <- nca_df |>
@@ -573,7 +588,7 @@ knitr::kable(
 | cmin     | Cmin,ss (μg/mL)    |          221 |   234.7 |      6.2 |
 
 Cycle-8 simulated geometric-mean NCA vs. Wang 2024 Table S1 (Age \<= 65
-subgroup, 1200 mg Q3W).
+subgroup, 1200 mg Q3W). {.table}
 
 ## Assumptions and deviations
 
@@ -595,11 +610,11 @@ distributions.
   exposure metrics after the **sixth** 1200 mg Q3W dose (Methods section
   2.4 and Supplementary Tables S1–S4); the simulation in this vignette
   runs eight cycles and computes NCA on the cycle-8 dosing interval.
-  With $T_{50} = 53.6$ days and $\lambda = 2.60$, the CL trajectory has
-  reached ~92 % of $E_{\max}$ by day 105 (start of cycle 6) and ~96 % by
-  day 147 (start of cycle 8); the cycle-8 metrics are therefore slightly
-  larger than cycle-6 in the source paper. The comparison table flags
-  any differences \> 20 %.
+  With $`T_{50} = 53.6`$ days and $`\lambda = 2.60`$, the CL trajectory
+  has reached ~92 % of $`E_{\max}`$ by day 105 (start of cycle 6) and
+  ~96 % by day 147 (start of cycle 8); the cycle-8 metrics are therefore
+  slightly larger than cycle-6 in the source paper. The comparison table
+  flags any differences \> 20 %.
 - **Albumin SD**: Wang 2024 does not publish the SD of baseline albumin.
   3.5 g/L is used here, consistent with typical oncology cohorts.
 - **Race / ECOG**: not included in the final Wang 2024 model, so they
@@ -611,14 +626,14 @@ distributions.
   Emax random effect as additive on the linear scale (Table 3 footnote:
   `Emax_i = theta5 + eta_Emax,i`). With variance ~0.00955 (SD ~0.098)
   and a typical Emax of -0.528, this allows individual Emax values to
-  range over roughly $- 0.72$ to $- 0.34$ at the 95 % level (so the
-  asymptotic CL ratio ranges over $\sim 0.49$ to $\sim 0.71$ of
+  range over roughly $`-0.72`$ to $`-0.34`$ at the 95 % level (so the
+  asymptotic CL ratio ranges over $`\sim 0.49`$ to $`\sim 0.71`$ of
   baseline). No subject in this parameterization is expected to exhibit
-  $E_{\max} > 0$ (CL increase), unlike the Zhang 2019 nivolumab
+  $`E_{\max} > 0`$ (CL increase), unlike the Zhang 2019 nivolumab
   parameterization where the IIV is broader.
 - **PKNCA reporting unit**: AUC is computed as `auclast` over the 21-day
-  dosing interval and is reported in $\mu$g$\cdot$day/mL (matching Wang
-  2024 Table S1’s units of $\mu$g$\cdot$day/mL).
+  dosing interval and is reported in $`\mu`$g$`\cdot`$day/mL (matching
+  Wang 2024 Table S1’s units of $`\mu`$g$`\cdot`$day/mL).
 
 ## Errata
 

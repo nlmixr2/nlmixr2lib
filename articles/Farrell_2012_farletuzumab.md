@@ -39,25 +39,25 @@ Per-parameter origin is recorded as an in-file comment next to each
 `inst/modeldb/specificDrugs/Farrell_2012_farletuzumab.R`. The table
 below collects them for review.
 
-| Equation / parameter                                                                 | Value                     | Source location                                                                                                                                          |
-|--------------------------------------------------------------------------------------|---------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Structure: two-compartment, first-order (linear) elimination, IV infusion            | n/a                       | p. 729 Results, “Combined data from both studies were best described by a two-compartment model with first-order (linear, dose-independent) elimination” |
-| Covariate form (power): `TVP = θ1 × (COV / COV_ST)^θ2`, `COV_ST` = population median | n/a                       | p. 729 Methods, Eq. `TVP_i = θ1 × (COV_i / COV_ST)^θ2`                                                                                                   |
-| Exclusion of 169 observations at 12.5 and 25 mg/m² doses for final model             | n/a                       | p. 730 Results, first paragraph of “Population pharmacokinetic model”                                                                                    |
-| `lcl` — CL                                                                           | `log(0.00784)` L/h        | Table 3: CL = 0.00784 L/h (5.79% RSE)                                                                                                                    |
-| `lvc` — Vc                                                                           | `log(3.00)` L             | Table 3: Vc = 3.00 L (5.20% RSE)                                                                                                                         |
-| `lq` — Q                                                                             | `log(0.0203)` L/h         | Table 3: Q = 0.0203 L/h (4.46% RSE)                                                                                                                      |
-| `lvp` — Vp                                                                           | `log(7.50)` L             | Table 3: Vp = 7.50 L (20.30% RSE)                                                                                                                        |
-| `e_wt_cl` — WT power on CL                                                           | `0.715`                   | Table 3: CL ~ WT = 0.715 (35.2% RSE)                                                                                                                     |
-| `e_wt_vc` — WT power on Vc                                                           | `0.629`                   | Table 3: Vc ~ WT = 0.629 (30.2% RSE)                                                                                                                     |
-| Reference weight                                                                     | `66.2 kg`                 | Table 1 overall median body weight                                                                                                                       |
-| `etalcl` ω²(CL)                                                                      | `0.0616`                  | Table 3: ω² CL = 0.0616, % CV 24.8                                                                                                                       |
-| `etalvc` ω²(Vc)                                                                      | `0.0470`                  | Table 3: ω² Vc = 0.0470, % CV 21.7                                                                                                                       |
-| `etalvp` ω²(Vp)                                                                      | `1.180`                   | Table 3: ω² Vp = 1.180, % CV 109                                                                                                                         |
-| `propSdPh1` — Phase I proportional SD                                                | `sqrt(0.0420) = 0.205`    | Table 3 Phase I: σ² proportional = 0.0420 (20.5% CV)                                                                                                     |
-| `propSdPh2` — Phase II proportional SD                                               | `sqrt(0.122) = 0.349`     | Table 3 Phase II: σ² proportional = 0.122 (34.9% CV)                                                                                                     |
-| `addSdPh2` — Phase II additive SD                                                    | `sqrt(63.0) = 7.94 µg/mL` | Table 3 Phase II: σ² additive = 63.0 (SD column = 7.94 µg/mL)                                                                                            |
-| Phase I additive SD fixed to 0                                                       | `0`                       | Table 3 Phase I: σ² additive = 0 (fixed)                                                                                                                 |
+| Equation / parameter | Value | Source location |
+|----|----|----|
+| Structure: two-compartment, first-order (linear) elimination, IV infusion | n/a | p. 729 Results, “Combined data from both studies were best described by a two-compartment model with first-order (linear, dose-independent) elimination” |
+| Covariate form (power): `TVP = θ1 × (COV / COV_ST)^θ2`, `COV_ST` = population median | n/a | p. 729 Methods, Eq. `TVP_i = θ1 × (COV_i / COV_ST)^θ2` |
+| Exclusion of 169 observations at 12.5 and 25 mg/m² doses for final model | n/a | p. 730 Results, first paragraph of “Population pharmacokinetic model” |
+| `lcl` — CL | `log(0.00784)` L/h | Table 3: CL = 0.00784 L/h (5.79% RSE) |
+| `lvc` — Vc | `log(3.00)` L | Table 3: Vc = 3.00 L (5.20% RSE) |
+| `lq` — Q | `log(0.0203)` L/h | Table 3: Q = 0.0203 L/h (4.46% RSE) |
+| `lvp` — Vp | `log(7.50)` L | Table 3: Vp = 7.50 L (20.30% RSE) |
+| `e_wt_cl` — WT power on CL | `0.715` | Table 3: CL ~ WT = 0.715 (35.2% RSE) |
+| `e_wt_vc` — WT power on Vc | `0.629` | Table 3: Vc ~ WT = 0.629 (30.2% RSE) |
+| Reference weight | `66.2 kg` | Table 1 overall median body weight |
+| `etalcl` ω²(CL) | `0.0616` | Table 3: ω² CL = 0.0616, % CV 24.8 |
+| `etalvc` ω²(Vc) | `0.0470` | Table 3: ω² Vc = 0.0470, % CV 21.7 |
+| `etalvp` ω²(Vp) | `1.180` | Table 3: ω² Vp = 1.180, % CV 109 |
+| `propSdPh1` — Phase I proportional SD | `sqrt(0.0420) = 0.205` | Table 3 Phase I: σ² proportional = 0.0420 (20.5% CV) |
+| `propSdPh2` — Phase II proportional SD | `sqrt(0.122) = 0.349` | Table 3 Phase II: σ² proportional = 0.122 (34.9% CV) |
+| `addSdPh2` — Phase II additive SD | `sqrt(63.0) = 7.94 µg/mL` | Table 3 Phase II: σ² additive = 63.0 (SD column = 7.94 µg/mL) |
+| Phase I additive SD fixed to 0 | `0` | Table 3 Phase I: σ² additive = 0 (fixed) |
 
 ## Virtual cohort
 
@@ -70,6 +70,7 @@ proportional error). Dosing is 100 mg/m² weekly IV infusion over 1 hour
 for 8 weeks, matching the primary Phase II dosing schedule.
 
 ``` r
+
 set.seed(20260421)
 n_subj <- 100
 
@@ -92,6 +93,7 @@ cohort$treatment <- "100 mg/m2 weekly"
 ```
 
 ``` r
+
 # Build event table: 8 weekly 1-hour IV infusions + dense sampling for NCA.
 tau <- 24 * 7  # one week in hours
 n_doses <- 8
@@ -128,6 +130,7 @@ events <- dplyr::bind_rows(doses, obs) |>
 ## Simulation
 
 ``` r
+
 mod <- rxode2::rxode2(readModelDb("Farrell_2012_farletuzumab"))
 #> ℹ parameter labels from comments will be replaced by 'label()'
 
@@ -143,6 +146,7 @@ useful for a “central” prediction curve that does not carry the wide Vp
 IIV:
 
 ``` r
+
 mod_typical <- mod |> rxode2::zeroRe()
 #> Warning: No sigma parameters in the model
 
@@ -180,6 +184,7 @@ post-last-dose terminal phase captures the same structural features
 (peak near end of infusion, slow biexponential decline).
 
 ``` r
+
 sim |>
   dplyr::filter(!is.na(Cc), time > 0) |>
   dplyr::mutate(day = time / 24) |>
@@ -212,6 +217,7 @@ maintained. The block below reproduces that comparison using
 typical-value predictions.
 
 ``` r
+
 wt_ref <- 66.2
 bsa_ref <- 0.007184 * wt_ref^0.425 * 163^0.725  # ~1.70 m^2
 
@@ -274,6 +280,7 @@ estimated from the 60-day post-last-dose tail, where the β-phase
 dominates.
 
 ``` r
+
 sim_nca <- sim |>
   dplyr::filter(!is.na(Cc), time > 0) |>
   dplyr::select(id, time, Cc, treatment)
@@ -387,10 +394,10 @@ nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = interv
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#>  ■■■■■■■■■■■■■■                    44% |  ETA:  4s
+#>  ■■■■■■■■■■■■■■                    43% |  ETA:  4s
 #> Warning: Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
@@ -508,13 +515,14 @@ knitr::kable(nca_summary,
   caption = "Simulated NCA summaries for the 100 mg/m² weekly Phase II cohort.")
 ```
 
-| start |  end | treatment        | N   | auclast | cmax          | cmin          | tmax                | ctrough | half.life     |
-|------:|-----:|:-----------------|:----|:--------|:--------------|:--------------|:--------------------|:--------|:--------------|
-|     0 |  168 | 100 mg/m2 weekly | 100 | NC      | 58.7 \[22.6\] | .             | 1.00 \[1.00, 1.00\] | NC      | .             |
-|  1177 | 1344 | 100 mg/m2 weekly | 100 | NC      | 112 \[22.5\]  | 55.4 \[43.6\] | 1.00 \[1.00, 1.00\] | NC      | .             |
-|  1177 | 2616 | 100 mg/m2 weekly | 100 | .       | .             | .             | .                   | .       | 1930 \[2350\] |
+| start | end | treatment | N | auclast | cmax | cmin | tmax | ctrough | half.life |
+|---:|---:|:---|:---|:---|:---|:---|:---|:---|:---|
+| 0 | 168 | 100 mg/m2 weekly | 100 | NC | 58.7 \[22.6\] | . | 1.00 \[1.00, 1.00\] | NC | . |
+| 1177 | 1344 | 100 mg/m2 weekly | 100 | NC | 112 \[22.5\] | 55.4 \[43.6\] | 1.00 \[1.00, 1.00\] | NC | . |
+| 1177 | 2616 | 100 mg/m2 weekly | 100 | . | . | . | . | . | 1930 \[2350\] |
 
 Simulated NCA summaries for the 100 mg/m² weekly Phase II cohort.
+{.table}
 
 ### Comparison against the analytical terminal half-life
 
@@ -523,6 +531,7 @@ biexponential rate constant (β) can be computed analytically from Table
 3 parameters and is the most direct numerical check.
 
 ``` r
+
 CL <- 0.00784; Vc <- 3.00; Q <- 0.0203; Vp <- 7.50
 k10 <- CL / Vc
 k12 <- Q  / Vc
@@ -549,6 +558,7 @@ tibble::tibble(
 | Terminal half-life (β-phase)     |  1124.0 |       46.8 |
 
 Analytical two-compartment half-lives from Table 3 point estimates.
+{.table}
 
 The terminal β half-life computed from Table 3 is consistent with
 published IgG-class monoclonal antibody half-lives (multi-week).

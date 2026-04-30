@@ -33,6 +33,7 @@
 - [FiedlerKelly_2020_fremanezumab_cm](https://nlmixr2.github.io/nlmixr2lib/articles/FiedlerKelly_2020_fremanezumab_cm.md):
 - [FiedlerKelly_2020_fremanezumab_em](https://nlmixr2.github.io/nlmixr2lib/articles/FiedlerKelly_2020_fremanezumab_em.md):
 - [Frey_2010_tocilizumab](https://nlmixr2.github.io/nlmixr2lib/articles/Frey_2010_tocilizumab.md):
+- [Frey_2013_tocilizumab](https://nlmixr2.github.io/nlmixr2lib/articles/Frey_2013_tocilizumab.md):
 - [Gandhi_2021_abatacept](https://nlmixr2.github.io/nlmixr2lib/articles/Gandhi_2021_abatacept.md):
 - [Trontinemab and gantenerumab PK in plasma and brain (Grimm
   2023)](https://nlmixr2.github.io/nlmixr2lib/articles/Grimm_2023.md):
@@ -47,6 +48,7 @@
 - [Hua_2015_anrukinzumab](https://nlmixr2.github.io/nlmixr2lib/articles/Hua_2015_anrukinzumab.md):
 - [Huang_2017_vrc01](https://nlmixr2.github.io/nlmixr2lib/articles/Huang_2017_vrc01.md):
 - [Hwang_2022_tremelimumab](https://nlmixr2.github.io/nlmixr2lib/articles/Hwang_2022_tremelimumab.md):
+- [Hwang_2023_monalizumab](https://nlmixr2.github.io/nlmixr2lib/articles/Hwang_2023_monalizumab.md):
 - [Ide_2020_elotuzumab](https://nlmixr2.github.io/nlmixr2lib/articles/Ide_2020_elotuzumab.md):
 - [Jackson_2022_ixekizumab](https://nlmixr2.github.io/nlmixr2lib/articles/Jackson_2022_ixekizumab.md):
 - [Kielbasa_2020_galcanezumab](https://nlmixr2.github.io/nlmixr2lib/articles/Kielbasa_2020_galcanezumab.md):
@@ -71,6 +73,9 @@
 - [Lu_2014_trastuzumabemtansine](https://nlmixr2.github.io/nlmixr2lib/articles/Lu_2014_trastuzumabemtansine.md):
 - [Polatuzumab vedotin acMMAE + MMAE integrated population PK model (Lu
   2019)](https://nlmixr2.github.io/nlmixr2lib/articles/Lu_2019_polatuzumab.md):
+- [Patritumab deruxtecan (HER3-DXd) ADC + DXd coupled population PK
+  model (Lu
+  2022)](https://nlmixr2.github.io/nlmixr2lib/articles/Lu_2022_patritumab.md):
 - [Ma_2020_sarilumab_anc](https://nlmixr2.github.io/nlmixr2lib/articles/Ma_2020_sarilumab_anc.md):
 - [Ma_2020_sarilumab_das28crp](https://nlmixr2.github.io/nlmixr2lib/articles/Ma_2020_sarilumab_das28crp.md):
 - [Markov
@@ -105,6 +110,7 @@
 - [Sathe_2024_sacituzumab](https://nlmixr2.github.io/nlmixr2lib/articles/Sathe_2024_sacituzumab.md):
 - [Soehoel_2022_tralokinumab](https://nlmixr2.github.io/nlmixr2lib/articles/Soehoel_2022_tralokinumab.md):
 - [Suleiman_2019_risankizumab](https://nlmixr2.github.io/nlmixr2lib/articles/Suleiman_2019_risankizumab.md):
+- [Suri_2018_brentuximab](https://nlmixr2.github.io/nlmixr2lib/articles/Suri_2018_brentuximab.md):
 - [Takahashi_2023_abatacept](https://nlmixr2.github.io/nlmixr2lib/articles/Takahashi_2023_abatacept.md):
 - [Takeuchi_2023_ozoralizumab](https://nlmixr2.github.io/nlmixr2lib/articles/Takeuchi_2023_ozoralizumab.md):
 - [Thakre_2022_risankizumab](https://nlmixr2.github.io/nlmixr2lib/articles/Thakre_2022_risankizumab.md):
@@ -132,6 +138,7 @@
 - [Yu_2022_ofatumumab](https://nlmixr2.github.io/nlmixr2lib/articles/Yu_2022_ofatumumab.md):
 - [Zhang_2019_nivolumab](https://nlmixr2.github.io/nlmixr2lib/articles/Zhang_2019_nivolumab.md):
 - [Zheng_2016_sifalimumab](https://nlmixr2.github.io/nlmixr2lib/articles/Zheng_2016_sifalimumab.md):
+- [Zhong_2026_abatacept](https://nlmixr2.github.io/nlmixr2lib/articles/Zhong_2026_abatacept.md):
 - [Zhou_2021_belimumab](https://nlmixr2.github.io/nlmixr2lib/articles/Zhou_2021_belimumab.md):
 - [Zhou_2025_brentuximab](https://nlmixr2.github.io/nlmixr2lib/articles/Zhou_2025_brentuximab.md):
 - [Zhu_2017_lebrikizumab](https://nlmixr2.github.io/nlmixr2lib/articles/Zhu_2017_lebrikizumab.md):

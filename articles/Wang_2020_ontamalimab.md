@@ -47,29 +47,29 @@ residual-error term below is taken from Wang 2020 Table 2. The reference
 covariate values (Table 2 footnote) are a 70 kg patient with UC or CD,
 baseline albumin 39 g/L, and baseline CRP 0.837 mg/dL.
 
-| Equation / parameter                                               | Value (paper unit)          | Value (model unit, time = day, conc = mg/L) | Source location                              |
-|--------------------------------------------------------------------|-----------------------------|---------------------------------------------|----------------------------------------------|
-| `lka` (Ka)                                                         | 0.0187 1/h                  | `log(0.0187 * 24)` 1/day                    | Table 2, Ka row                              |
-| `ltlag` (Lag)                                                      | 2.61 h                      | `log(2.61 / 24)` day                        | Table 2, Lag row                             |
-| `lcl` (CL/F)                                                       | 0.0127 L/h                  | `log(0.0127 * 24)` L/day                    | Table 2, CL/F row                            |
-| `lvc` (Vc/F)                                                       | 6.53 L                      | `log(6.53)` L                               | Table 2, Vc/F row                            |
-| `lcld` (CLd/F)                                                     | 0.000345 L/h                | `log(0.000345 * 24)` L/day                  | Table 2, CLd/F row                           |
-| `lvp` (Vp/F)                                                       | 0.0216 L                    | `log(0.0216)` L                             | Table 2, Vp/F row                            |
-| `lvmax` (Vmax/F)                                                   | 5.87 µg/h                   | `log(5.87 * 24 / 1000)` mg/day              | Table 2, Vmax/F row                          |
-| `lkm` (Km)                                                         | 19.0 ng/mL                  | `log(19.0 / 1000)` mg/L                     | Table 2, Km row                              |
-| `e_wt_cl` (WT/70 exponent on CL/F)                                 | 0.0034                      | 0.0034                                      | Table 2, CL/F covariate equation             |
-| `e_wt_vc` (WT/70 exponent on Vc/F)                                 | 0.635                       | 0.635                                       | Table 2, Vc/F covariate equation             |
-| `e_wt_cld` (WT/70 exponent on CLd/F)                               | 0.0034                      | 0.0034                                      | Table 2, CLd/F covariate equation            |
-| `e_wt_vp` (WT/70 exponent on Vp/F)                                 | 0.635                       | 0.635                                       | Table 2, Vp/F covariate equation             |
-| `e_wt_vmax` (WT/70 exponent on Vmax/F)                             | 1.89                        | 1.89                                        | Table 2, Vmax/F covariate equation           |
-| `e_alb_cl` (ALB/39 exponent on CL/F)                               | -0.889                      | -0.889                                      | Table 2, CL/F covariate equation             |
-| `e_crp_cl` (CRP/0.837 exponent on CL/F)                            | 0.147                       | 0.147                                       | Table 2, CL/F covariate equation             |
-| `var(etalka)`                                                      | `log(0.618^2 + 1) = 0.3232` | same                                        | Table 2: Ka BSV 61.8% CV                     |
-| `var(etalcl)`                                                      | `log(0.546^2 + 1) = 0.2611` | same                                        | Table 2: CL/F BSV 54.6% CV                   |
-| `var(etalvc)`                                                      | `log(0.410^2 + 1) = 0.1554` | same                                        | Table 2: Vc/F BSV 41.0% CV                   |
-| `addSd`                                                            | 166 ng/mL                   | 0.166 mg/L                                  | Table 2: additive residual                   |
-| `propSd`                                                           | 19.6%                       | 0.196                                       | Table 2: proportional residual               |
-| Structure (2-cmt + first-order SC + lag + linear + MM elimination) | n/a                         | n/a                                         | Methods “Population PK Analysis” and Table 2 |
+| Equation / parameter | Value (paper unit) | Value (model unit, time = day, conc = mg/L) | Source location |
+|----|----|----|----|
+| `lka` (Ka) | 0.0187 1/h | `log(0.0187 * 24)` 1/day | Table 2, Ka row |
+| `ltlag` (Lag) | 2.61 h | `log(2.61 / 24)` day | Table 2, Lag row |
+| `lcl` (CL/F) | 0.0127 L/h | `log(0.0127 * 24)` L/day | Table 2, CL/F row |
+| `lvc` (Vc/F) | 6.53 L | `log(6.53)` L | Table 2, Vc/F row |
+| `lcld` (CLd/F) | 0.000345 L/h | `log(0.000345 * 24)` L/day | Table 2, CLd/F row |
+| `lvp` (Vp/F) | 0.0216 L | `log(0.0216)` L | Table 2, Vp/F row |
+| `lvmax` (Vmax/F) | 5.87 µg/h | `log(5.87 * 24 / 1000)` mg/day | Table 2, Vmax/F row |
+| `lkm` (Km) | 19.0 ng/mL | `log(19.0 / 1000)` mg/L | Table 2, Km row |
+| `e_wt_cl` (WT/70 exponent on CL/F) | 0.0034 | 0.0034 | Table 2, CL/F covariate equation |
+| `e_wt_vc` (WT/70 exponent on Vc/F) | 0.635 | 0.635 | Table 2, Vc/F covariate equation |
+| `e_wt_cld` (WT/70 exponent on CLd/F) | 0.0034 | 0.0034 | Table 2, CLd/F covariate equation |
+| `e_wt_vp` (WT/70 exponent on Vp/F) | 0.635 | 0.635 | Table 2, Vp/F covariate equation |
+| `e_wt_vmax` (WT/70 exponent on Vmax/F) | 1.89 | 1.89 | Table 2, Vmax/F covariate equation |
+| `e_alb_cl` (ALB/39 exponent on CL/F) | -0.889 | -0.889 | Table 2, CL/F covariate equation |
+| `e_crp_cl` (CRP/0.837 exponent on CL/F) | 0.147 | 0.147 | Table 2, CL/F covariate equation |
+| `var(etalka)` | `log(0.618^2 + 1) = 0.3232` | same | Table 2: Ka BSV 61.8% CV |
+| `var(etalcl)` | `log(0.546^2 + 1) = 0.2611` | same | Table 2: CL/F BSV 54.6% CV |
+| `var(etalvc)` | `log(0.410^2 + 1) = 0.1554` | same | Table 2: Vc/F BSV 41.0% CV |
+| `addSd` | 166 ng/mL | 0.166 mg/L | Table 2: additive residual |
+| `propSd` | 19.6% | 0.196 | Table 2: proportional residual |
+| Structure (2-cmt + first-order SC + lag + linear + MM elimination) | n/a | n/a | Methods “Population PK Analysis” and Table 2 |
 
 ### Parameterization notes
 
@@ -120,6 +120,7 @@ approximate the Wang 2020 Table 1 demographics. No subject-level
 observed data were released with the paper.
 
 ``` r
+
 set.seed(20260425)
 n_subj <- 200
 
@@ -142,6 +143,7 @@ week 12 (day 84). Five dose arms (7.5, 22.5, 75, 150, 225 mg Q4W) are
 simulated to match Table 3 of the paper.
 
 ``` r
+
 tau    <- 28L                       # Q4W dosing interval (days)
 n_dose <- 3L                        # day 1, day 29, day 57 in 1-indexed; here day 0, 28, 56
 dose_days <- seq(0, tau * (n_dose - 1), by = tau)
@@ -181,6 +183,7 @@ events <- dplyr::bind_rows(
 ## Simulation
 
 ``` r
+
 mod <- rxode2::rxode2(readModelDb("Wang_2020_ontamalimab"))
 keep_cols <- c("WT", "ALB", "CRP", "treatment")
 
@@ -200,6 +203,7 @@ period. The block below reproduces the dose-dependent shape with
 simulated 5th/50th/95th percentile bands across all five dose arms.
 
 ``` r
+
 vpc <- sim |>
   dplyr::filter(!is.na(Cc), time > 0, time <= end_day) |>
   dplyr::group_by(treatment, time) |>
@@ -237,6 +241,7 @@ reports the geometric-mean Cave, Cmax, and Cmin “at week 12”.
 Concentrations are expressed in ng/mL to match the published table.
 
 ``` r
+
 ss_start <- tau * (n_dose - 1)    # day 56
 ss_end   <- ss_start + tau        # day 84
 
@@ -267,7 +272,7 @@ intervals <- data.frame(
 
 nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
 #>  ■■■■■■■■■■■■                      37% |  ETA:  5s
-#>  ■■■■■■■■■■■■■■■■■■■■■■            72% |  ETA:  2s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■           72% |  ETA:  2s
 summary(nca_res)
 #>  start end  treatment   N       auclast         cmax           cmin
 #>      0  28  150mg_Q4W 200 283000 [47.4] 14900 [34.2]    3160 [1010]
@@ -294,6 +299,7 @@ in the virtual cohort and lays it side-by-side with the published
 values.
 
 ``` r
+
 gmean <- function(x) exp(mean(log(pmax(x, .Machine$double.eps))))
 
 per_subject <- nca_conc |>
@@ -344,18 +350,19 @@ knitr::kable(comparison, digits = c(0, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1),
                   "distributions; see Assumptions and deviations."))
 ```
 
-| treatment  |  Dose | Cave_pub | Cave_sim | Cave_pct_diff | Cmax_pub | Cmax_sim | Cmax_pct_diff | Cmin_pub | Cmin_sim | Cmin_pct_diff |
-|:-----------|------:|---------:|---------:|--------------:|---------:|---------:|--------------:|---------:|---------:|--------------:|
-| 7p5mg_Q4W  |   7.5 |      461 |       77 |         -83.3 |      986 |      308 |         -68.8 |      2.1 |      0.0 |         -99.7 |
-| 22p5mg_Q4W |  22.5 |     1930 |      637 |         -67.0 |     3300 |     1342 |         -59.3 |    304.0 |      0.7 |         -99.8 |
-| 75mg_Q4W   |  75.0 |     8160 |     4809 |         -41.1 |    12000 |     7154 |         -40.4 |   3670.0 |   1498.0 |         -59.2 |
-| 150mg_Q4W  | 150.0 |    11500 |    10099 |         -12.2 |    17400 |    14888 |         -14.4 |   5190.0 |   3490.4 |         -32.7 |
-| 225mg_Q4W  | 225.0 |    27700 |    16631 |         -40.0 |    38100 |    23758 |         -37.6 |  14600.0 |   7781.0 |         -46.7 |
+| treatment | Dose | Cave_pub | Cave_sim | Cave_pct_diff | Cmax_pub | Cmax_sim | Cmax_pct_diff | Cmin_pub | Cmin_sim | Cmin_pct_diff |
+|:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 7p5mg_Q4W | 7.5 | 461 | 77 | -83.3 | 986 | 308 | -68.8 | 2.1 | 0.0 | -99.7 |
+| 22p5mg_Q4W | 22.5 | 1930 | 637 | -67.0 | 3300 | 1342 | -59.3 | 304.0 | 0.7 | -99.8 |
+| 75mg_Q4W | 75.0 | 8160 | 4809 | -41.1 | 12000 | 7154 | -40.4 | 3670.0 | 1498.0 | -59.2 |
+| 150mg_Q4W | 150.0 | 11500 | 10099 | -12.2 | 17400 | 14888 | -14.4 | 5190.0 | 3490.4 | -32.7 |
+| 225mg_Q4W | 225.0 | 27700 | 16631 | -40.0 | 38100 | 23758 | -37.6 | 14600.0 | 7781.0 | -46.7 |
 
 Geometric-mean exposures at week 12 (dose-3 cycle, ng/mL) vs. Wang 2020
 Table 3. Differences \> ~20% are expected for the 7.5 and 22.5 mg arms,
 where MM elimination dominates and Cmin is highly sensitive to
 virtual-cohort covariate distributions; see Assumptions and deviations.
+{.table}
 
 ## Assumptions and deviations
 

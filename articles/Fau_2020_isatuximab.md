@@ -37,11 +37,24 @@ Structural form: linear two-compartment IV-input model with parallel
 linear and Michaelis–Menten elimination from the central compartment,
 plus a multiplicative time-on-CL term:
 
-$$\frac{dL}{dt} = - \frac{{CLlin}(t)}{V_{c}}\, L - \frac{V_{m}}{K_{m} + L}\, L + k_{21}\frac{A}{V_{c}} - k_{12}\, L + \frac{{In}(t)}{V_{c}}$$
+``` math
+\frac{\mathrm{d}L}{\mathrm{d}t} =
+  -\frac{\mathrm{CLlin}(t)}{V_c}\,L
+  -\frac{V_m}{K_m + L}\,L
+  + k_{21}\frac{A}{V_c}
+  - k_{12}\,L
+  + \frac{\mathrm{In}(t)}{V_c}
+```
 
-$$\frac{dA}{dt} = k_{12}\, L\, V_{c} - k_{21}\, A$$
+``` math
+\frac{\mathrm{d}A}{\mathrm{d}t} = k_{12}\,L\,V_c - k_{21}\,A
+```
 
-$${CLlin}(t) = {CLinf} \cdot \exp\!\left( {CLm} \cdot \left( 1 - \frac{t^{\gamma}}{{KCL}^{\gamma} + t^{\gamma}} \right) \right)$$
+``` math
+\mathrm{CLlin}(t) = \mathrm{CLinf}\cdot
+  \exp\!\left(\mathrm{CLm}\cdot
+              \left(1 - \frac{t^{\gamma}}{\mathrm{KCL}^{\gamma} + t^{\gamma}}\right)\right)
+```
 
 For a typical IgG-MM patient (`CLm = 0.664`),
 `CLlin(0) = CLinf · exp(0.664) ≈ 1.94·CLinf`, i.e., a ~48 % decrease in
@@ -93,38 +106,38 @@ The per-parameter origin is recorded as an in-file comment next to each
 `inst/modeldb/specificDrugs/Fau_2020_isatuximab.R`. The table below
 collects the final-model values from Fau 2020 Table S3 in one place.
 
-| Parameter (model name)           | Value (this package) | Source location                                         |
-|----------------------------------|----------------------|---------------------------------------------------------|
-| `lclinf` (CLinf, L/h)            | log(0.00955)         | Table S3: CLinf                                         |
-| `lvc` (Vc, L)                    | log(5.13)            | Table S3: Vc                                            |
-| `lq` (Q, L/h)                    | log(0.0432)          | Table S3: Q                                             |
-| `lvp` (Vp, L)                    | log(3.62)            | Table S3: Vp                                            |
-| `lvm` (Vm, mg/(L·h))             | log(0.136)           | Table S3: Vm                                            |
-| `lkm` (Km, mg/L)                 | log(0.300)           | Table S3: Km                                            |
-| `clm`                            | 0.664                | Table S3: CLm                                           |
-| `lkcl` (KCL, h)                  | log(1055)            | Table S3: KCL                                           |
-| `lgam` (γ, unitless)             | log(3.91)            | Table S3: γ                                             |
-| `e_wt_clinf`                     | 0.621                | Table S3: CLinf ~ Wght                                  |
-| `e_b2m_clinf`                    | 0.343                | Table S3: CLinf ~ B2M                                   |
-| `e_nigg_clinf`                   | -0.751               | Table S3: CLinf ~ Ig=Not_IgG                            |
-| `e_nigg_kcl`                     | -0.931               | Table S3: KCL ~ Ig=Not_IgG (main text rounds to -0.930) |
-| `e_wt_vc`                        | 0.472                | Table S3: Vc ~ Wght                                     |
-| `e_p2f2_vc`                      | -0.137               | Table S3: Vc ~ Form=P2F2                                |
-| `e_asian_vc`                     | -0.275               | Table S3: Vc ~ Race=Asian                               |
-| `e_sexf_vc`                      | -0.126               | Table S3: Vc ~ Sex=Female                               |
-| `e_wt_vp`                        | 0.719                | Table S3: Vp ~ Wght                                     |
-| `e_wt_q`                         | 0.477                | Table S3: Q ~ Wght (RSE 57.5 %)                         |
-| IIV `etalclinf` ω = 47.5 %       | 0.2035               | log(0.475² + 1)                                         |
-| IIV `etaclm` ω = 97.2 % (normal) | 0.4164               | (0.664 × 0.972)²                                        |
-| IIV `etalkcl` ω = 115 %          | 0.8427               | log(1.15² + 1)                                          |
-| IIV `etalgam` ω = 118 %          | 0.8723               | log(1.18² + 1)                                          |
-| IIV `etalvc` ω = 25.7 %          | 0.0640               | log(0.257² + 1)                                         |
-| IIV `etalq` ω = 85.8 %           | 0.5519               | log(0.858² + 1)                                         |
-| IIV `etalvp` ω = 45.6 %          | 0.1889               | log(0.456² + 1)                                         |
-| IIV `etalvm` ω = 61.5 %          | 0.3206               | log(0.615² + 1)                                         |
-| IIV `etalkm` ω = 88.9 %          | 0.5823               | log(0.889² + 1)                                         |
-| `propSd`                         | 0.225                | Table S3: σprop 22.5 %                                  |
-| `addSd` (mg/L)                   | 0.00196              | Table S3: σadd                                          |
+| Parameter (model name) | Value (this package) | Source location |
+|----|----|----|
+| `lclinf` (CLinf, L/h) | log(0.00955) | Table S3: CLinf |
+| `lvc` (Vc, L) | log(5.13) | Table S3: Vc |
+| `lq` (Q, L/h) | log(0.0432) | Table S3: Q |
+| `lvp` (Vp, L) | log(3.62) | Table S3: Vp |
+| `lvm` (Vm, mg/(L·h)) | log(0.136) | Table S3: Vm |
+| `lkm` (Km, mg/L) | log(0.300) | Table S3: Km |
+| `clm` | 0.664 | Table S3: CLm |
+| `lkcl` (KCL, h) | log(1055) | Table S3: KCL |
+| `lgam` (γ, unitless) | log(3.91) | Table S3: γ |
+| `e_wt_clinf` | 0.621 | Table S3: CLinf ~ Wght |
+| `e_b2m_clinf` | 0.343 | Table S3: CLinf ~ B2M |
+| `e_nigg_clinf` | -0.751 | Table S3: CLinf ~ Ig=Not_IgG |
+| `e_nigg_kcl` | -0.931 | Table S3: KCL ~ Ig=Not_IgG (main text rounds to -0.930) |
+| `e_wt_vc` | 0.472 | Table S3: Vc ~ Wght |
+| `e_p2f2_vc` | -0.137 | Table S3: Vc ~ Form=P2F2 |
+| `e_asian_vc` | -0.275 | Table S3: Vc ~ Race=Asian |
+| `e_sexf_vc` | -0.126 | Table S3: Vc ~ Sex=Female |
+| `e_wt_vp` | 0.719 | Table S3: Vp ~ Wght |
+| `e_wt_q` | 0.477 | Table S3: Q ~ Wght (RSE 57.5 %) |
+| IIV `etalclinf` ω = 47.5 % | 0.2035 | log(0.475² + 1) |
+| IIV `etaclm` ω = 97.2 % (normal) | 0.4164 | (0.664 × 0.972)² |
+| IIV `etalkcl` ω = 115 % | 0.8427 | log(1.15² + 1) |
+| IIV `etalgam` ω = 118 % | 0.8723 | log(1.18² + 1) |
+| IIV `etalvc` ω = 25.7 % | 0.0640 | log(0.257² + 1) |
+| IIV `etalq` ω = 85.8 % | 0.5519 | log(0.858² + 1) |
+| IIV `etalvp` ω = 45.6 % | 0.1889 | log(0.456² + 1) |
+| IIV `etalvm` ω = 61.5 % | 0.3206 | log(0.615² + 1) |
+| IIV `etalkm` ω = 88.9 % | 0.5823 | log(0.889² + 1) |
+| `propSd` | 0.225 | Table S3: σprop 22.5 % |
+| `addSd` (mg/L) | 0.00196 | Table S3: σadd |
 
 Equations (from Fau 2020 Results “Structural model and time-dependency”
 and “Covariates PopPK model”):
@@ -151,6 +164,7 @@ reference covariates are used as the deterministic baseline; only the
 multiple-myeloma immunoglobulin type is varied between cohorts.
 
 ``` r
+
 set.seed(2020)
 n_subj <- 200
 
@@ -180,6 +194,7 @@ depending on cycle and tolerance; 1 h is a standard representative value
 for the post-load cycles).
 
 ``` r
+
 make_arm <- function(pop, regimen_name, id_offset = 0L) {
   ipi_amt   <- 10 * pop$WT          # 10 mg/kg
   dose_t    <- c(seq(0, by = 168,  length.out = 4),       # QW x 4 (cycle 1)
@@ -213,6 +228,7 @@ stopifnot(!anyDuplicated(unique(events[, c("ID", "TIME", "EVID")])))
 ## Simulation
 
 ``` r
+
 mod <- readModelDb("Fau_2020_isatuximab")
 
 sim <- rxode2::rxSolve(
@@ -229,6 +245,7 @@ profiles, zero out the random effects and run a single representative
 patient per cohort:
 
 ``` r
+
 mod_typical <- mod |> rxode2::zeroRe()
 #> ℹ parameter labels from comments will be replaced by 'label()'
 
@@ -268,6 +285,7 @@ the nonlinear contribution can be reconstructed as
 `CLnonlin(t) = Vc · Vm / (Km + Cc(t))`.
 
 ``` r
+
 fig1 <- typical |>
   filter(treatment == "IgG MM (reference)", time > 0) |>
   mutate(
@@ -301,6 +319,7 @@ QWx4 then Q2W for IgG-MM versus non-IgG-MM patients. Reproducing the
 typical-patient profile:
 
 ``` r
+
 ggplot(typical |> filter(time > 0),
        aes(time / 24, Cc, colour = treatment)) +
   geom_line(linewidth = 0.9) +
@@ -321,6 +340,7 @@ concentrations than IgG-MM patients, consistent with the paper’s “Cycle
 ### Population profile (with between-subject variability)
 
 ``` r
+
 sim_summary <- sim |>
   filter(time > 0) |>
   group_by(time, treatment) |>
@@ -353,6 +373,7 @@ and compare to the population accumulation ratios in the Results “Model
 evaluation and simulations” section.
 
 ``` r
+
 last_dose <- 30 * 168     # 30th week, last full Q2W dose for the SS interval
 end_ss    <- 32 * 168     # one Q2W interval = 336 h after last_dose
 
@@ -381,18 +402,18 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
-#>  ■■■■■■■■■■■■■■■■■■■■■             68% |  ETA:  1s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■       86% |  ETA:  0s
 knitr::kable(summary(nca_res),
              caption = "Simulated steady-state NCA (final Q2W interval, weeks 30-32) by myeloma type.")
 ```
 
-| Interval Start | Interval End | treatment  | N   | AUClast (h\*mg/L) | Cmax (mg/L)  | Cmin (mg/L)   | Tmax (h)            | Cav (mg/L)   |
-|---------------:|-------------:|:-----------|:----|:------------------|:-------------|:--------------|:--------------------|:-------------|
-|           5040 |         5376 | IgG MM     | 200 | 45700 \[73.0\]    | 226 \[46.2\] | 56.6 \[1910\] | 24.0 \[24.0, 24.0\] | 136 \[73.0\] |
-|           5040 |         5376 | Non-IgG MM | 200 | 92000 \[77.9\]    | 367 \[51.8\] | 163 \[596\]   | 24.0 \[24.0, 24.0\] | 274 \[77.9\] |
+| Interval Start | Interval End | treatment | N | AUClast (h\*mg/L) | Cmax (mg/L) | Cmin (mg/L) | Tmax (h) | Cav (mg/L) |
+|---:|---:|:---|:---|:---|:---|:---|:---|:---|
+| 5040 | 5376 | IgG MM | 200 | 45700 \[73.0\] | 226 \[46.2\] | 56.6 \[1910\] | 24.0 \[24.0, 24.0\] | 136 \[73.0\] |
+| 5040 | 5376 | Non-IgG MM | 200 | 92000 \[77.9\] | 367 \[51.8\] | 163 \[596\] | 24.0 \[24.0, 24.0\] | 274 \[77.9\] |
 
 Simulated steady-state NCA (final Q2W interval, weeks 30-32) by myeloma
-type.
+type. {.table style="width:100%;"}
 
 ### Comparison against published exposure ratios (Fau 2020 Table 3)
 
@@ -401,6 +422,7 @@ as **× 2.12**. The simulation’s per-subject AUC distribution gives a
 median ratio of:
 
 ``` r
+
 auc_table <- as.data.frame(nca_res$result) |>
   filter(PPTESTCD == "auclast") |>
   group_by(treatment) |>
@@ -432,6 +454,7 @@ knitr::kable(
 | Source (Table 3, SS AUC, Not IgG vs IgG) | × 2.12   |
 
 Simulated steady-state AUC ratio by myeloma type vs Fau 2020 Table 3.
+{.table}
 
 The simulated ratio is within ~10 % of the paper’s reported × 2.12
 SS-AUC ratio for non-IgG-MM vs IgG-MM. The paper’s value is a typical-
@@ -446,6 +469,7 @@ from the linear CL only) of **28 days for IgG-MM** and **57 days for
 non-IgG-MM** patients. From the typical-value model:
 
 ``` r
+
 hl_table <- typical |>
   filter(time == max(time)) |>
   mutate(t_half_d = log(2) * vc / cllin / 24) |>
@@ -470,7 +494,7 @@ knitr::kable(
 | Source (Fau 2020 Results, SS half-life) |       NA |        NA |       NA |
 
 Steady-state typical-patient half-life from linear CL: simulated vs Fau
-2020 Results.
+2020 Results. {.table}
 
 The simulated typical-patient half-lives agree with the paper to within
 ~5 %.

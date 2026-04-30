@@ -1,6 +1,7 @@
 # Diao_2016_daclizumab_cd56bright
 
 ``` r
+
 library(nlmixr2lib)
 library(rxode2)
 #> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
@@ -66,17 +67,17 @@ fitting the model to data can override `cd56baseline` in
 
 ## Source trace
 
-| Equation / parameter                                                                                                         | Value                           | Source                                    |
-|------------------------------------------------------------------------------------------------------------------------------|---------------------------------|-------------------------------------------|
-| PK backbone (`lka`, `lcl`, `lvc`, `lvp`, `lq`, `lfdepot`, `lalag`, `allo_*`, `e_dose_50mg_f`, PK IIV, `CcpropSd`, `CcaddSd`) | Othman 2014 Table 2 values      | inherited from `Othman_2014_daclizumab.R` |
-| `lcd56Kin` (Kin)                                                                                                             | 4.12e-04 %/h (= 0.009888 %/day) | Diao 2016 Table 4                         |
-| `etalcd56Kin` (Kin IIV)                                                                                                      | omega^2 0.66022 (CV 97%)        | Diao 2016 Table 4                         |
-| `lcd56Smax` (Smax)                                                                                                           | 7.89 (unitless)                 | Diao 2016 Table 4                         |
-| `etalcd56Smax` (Smax IIV)                                                                                                    | omega^2 0.36398 (CV 67%)        | Diao 2016 Table 4                         |
-| `lcd56EC50` (EC50)                                                                                                           | 18.0 mg/L                       | Diao 2016 Table 4                         |
-| `cd56baseline` (median NK pct, fixed)                                                                                        | 0.6 % of total lymphocytes      | Diao 2016 Results (NK section)            |
-| `cd56brightpropSd` (proportional residual error)                                                                             | 0.291 (CV 29.1%)                | Diao 2016 Table 4                         |
-| Equation 2: `dNK/dt = Kin * (1 + Smax * Cc / (EC50 + Cc)) - Kout * NK`, `Kout = Kin / baseline`                              | n/a                             | Diao 2016 Equation (2) and Methods        |
+| Equation / parameter | Value | Source |
+|----|----|----|
+| PK backbone (`lka`, `lcl`, `lvc`, `lvp`, `lq`, `lfdepot`, `lalag`, `allo_*`, `e_dose_50mg_f`, PK IIV, `CcpropSd`, `CcaddSd`) | Othman 2014 Table 2 values | inherited from `Othman_2014_daclizumab.R` |
+| `lcd56Kin` (Kin) | 4.12e-04 %/h (= 0.009888 %/day) | Diao 2016 Table 4 |
+| `etalcd56Kin` (Kin IIV) | omega^2 0.66022 (CV 97%) | Diao 2016 Table 4 |
+| `lcd56Smax` (Smax) | 7.89 (unitless) | Diao 2016 Table 4 |
+| `etalcd56Smax` (Smax IIV) | omega^2 0.36398 (CV 67%) | Diao 2016 Table 4 |
+| `lcd56EC50` (EC50) | 18.0 mg/L | Diao 2016 Table 4 |
+| `cd56baseline` (median NK pct, fixed) | 0.6 % of total lymphocytes | Diao 2016 Results (NK section) |
+| `cd56brightpropSd` (proportional residual error) | 0.291 (CV 29.1%) | Diao 2016 Table 4 |
+| Equation 2: `dNK/dt = Kin * (1 + Smax * Cc / (EC50 + Cc)) - Kout * NK`, `Kout = Kin / baseline` | n/a | Diao 2016 Equation (2) and Methods |
 
 ## Virtual cohort
 
@@ -87,6 +88,7 @@ washout / re-initiation design used to characterize the slow expansion
 plateau and reversibility).
 
 ``` r
+
 set.seed(2016)
 n_subjects <- 100
 cohort <- tibble(
@@ -97,6 +99,7 @@ cohort <- tibble(
 ```
 
 ``` r
+
 # Year 1: 13 doses Q4W from t = 0 to t = 336.
 # Washout: 24 weeks (no doses) from t = 336 to t = 504.
 # Year 2: 13 doses Q4W from t = 504 to t = 840.
@@ -125,6 +128,7 @@ stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid", "cmt")])))
 ## Simulation
 
 ``` r
+
 mod     <- readModelDb("Diao_2016_daclizumab_cd56bright")
 mod_typ <- rxode2::zeroRe(mod)
 #> ℹ parameter labels from comments will be replaced by 'label()'
@@ -148,6 +152,7 @@ another 48 weeks. The published profile reaches an expansion plateau at
 percentage gradually declines to baseline within ~24 weeks.
 
 ``` r
+
 fig2 <- sim_typ |>
   dplyr::filter(!is.na(cd56bright), time <= 1008) |>
   dplyr::distinct(id, time, .keep_all = TRUE) |>
@@ -181,6 +186,7 @@ ggplot(fig2, aes(weeks, expansion_ratio, group = id)) +
 ### Stochastic VPC
 
 ``` r
+
 vpc <- sim_pop |>
   dplyr::filter(!is.na(cd56bright)) |>
   dplyr::distinct(id, time, .keep_all = TRUE) |>
@@ -214,6 +220,7 @@ on the inherited PK output to confirm the steady-state PK profile in
 this cohort.
 
 ``` r
+
 sim_conc <- sim_pop |>
   dplyr::filter(!is.na(Cc), time >= 308, time <= 336) |>
   dplyr::distinct(id, time, .keep_all = TRUE) |>
@@ -246,11 +253,11 @@ knitr::kable(summary(nca, drop.group = "id"),
 #> generated.
 ```
 
-| start | end | regimen       | N   | auclast      | cmax          | cmin          | tmax                |
-|------:|----:|:--------------|:----|:-------------|:--------------|:--------------|:--------------------|
-|     0 |  28 | 150 mg SC Q4W | 100 | 516 \[29.8\] | 23.6 \[29.1\] | 13.2 \[36.0\] | 7.00 \[7.00, 7.00\] |
+| start | end | regimen | N | auclast | cmax | cmin | tmax |
+|---:|---:|:---|:---|:---|:---|:---|:---|
+| 0 | 28 | 150 mg SC Q4W | 100 | 516 \[29.8\] | 23.6 \[29.1\] | 13.2 \[36.0\] | 7.00 \[7.00, 7.00\] |
 
-Steady-state (dose 12) NCA, 150 mg SC Q4W.
+Steady-state (dose 12) NCA, 150 mg SC Q4W. {.table style="width:100%;"}
 
 ### Comparison against published behaviour
 
@@ -259,6 +266,7 @@ expansion model rather than tabulated PD metrics; the relevant
 checkpoints are summarised below.
 
 ``` r
+
 typ <- sim_typ |>
   dplyr::filter(!is.na(cd56bright)) |>
   dplyr::distinct(id, time, .keep_all = TRUE) |>
@@ -283,12 +291,12 @@ cmp <- tibble(
 knitr::kable(cmp, caption = "CD56 bright NK expansion / recovery checkpoints.")
 ```
 
-| metric                                                      | published | simulated |
-|:------------------------------------------------------------|:----------|:----------|
-| Expansion plateau (week 36, ratio NK / baseline)            | ~5.2      | 5.45      |
-| Time to return within 20% of baseline after washout (weeks) | ~24       | NA        |
+| metric | published | simulated |
+|:---|:---|:---|
+| Expansion plateau (week 36, ratio NK / baseline) | ~5.2 | 5.45 |
+| Time to return within 20% of baseline after washout (weeks) | ~24 | NA |
 
-CD56 bright NK expansion / recovery checkpoints.
+CD56 bright NK expansion / recovery checkpoints. {.table}
 
 ## Errata
 

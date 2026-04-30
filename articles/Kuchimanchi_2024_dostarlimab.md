@@ -27,12 +27,16 @@ analysis is **500 mg IV Q3W for 6 cycles followed by 1000 mg IV Q6W**.
 
 Structural model (Kuchimanchi 2024 Results, equation block):
 
-$${CL}(t) = {CL}_{\text{base}} \cdot \exp\!\left( I_{\max} \cdot \frac{t^{Hill}}{T_{50}^{Hill} + t^{Hill}} \right)$$
+``` math
+  \mathrm{CL}(t) = \mathrm{CL}_{\text{base}} \cdot
+  \exp\!\left(I_{\max}\cdot \dfrac{t^{\mathrm{Hill}}}
+  {T_{50}^{\mathrm{Hill}} + t^{\mathrm{Hill}}}\right)
+```
 
-with $I_{\max} = - 0.113$ (max log-CL reduction;
-$1 - \exp\left( I_{\max} \right) = 0.107$, matching the paper’s “maximum
-decrease in CL over time was estimated to be 10.7%”), $T_{50} = 145$
-days, and ${Hill} = 7.05$. Allometric weight scaling uses reference
+with $`I_{\max} = -0.113`$ (max log-CL reduction;
+$`1 - \exp(I_{\max}) = 0.107`$, matching the paper’s “maximum decrease
+in CL over time was estimated to be 10.7%”), $`T_{50} = 145`$ days, and
+$`\mathrm{Hill} = 7.05`$. Allometric weight scaling uses reference
 weight 70 kg (exponent 0.523 on CL, 0.48 on Vc and Vp).
 
 The covariates carried in the final model are body weight, age, time-
@@ -82,28 +86,28 @@ The per-parameter origin is recorded as an in-file comment next to each
 `inst/modeldb/specificDrugs/Kuchimanchi_2024_dostarlimab.R`. The table
 below collects them in one place for review.
 
-| Parameter (model name)      | Value                     | Source                                                        |
-|-----------------------------|---------------------------|---------------------------------------------------------------|
-| `lcl` (CL_base, L/day)      | log(0.00732\*24)          | Kuchimanchi 2024 Table 2, CL = 0.00732 L/h                    |
-| `lvc` (Vc_base, L)          | log(3.09)                 | Kuchimanchi 2024 Table 2, Vc                                  |
-| `lq` (Q, L/day)             | log(0.0191\*24)           | Kuchimanchi 2024 Table 2, Q = 0.0191 L/h                      |
-| `lvp` (Vp, L)               | log(2.48)                 | Kuchimanchi 2024 Table 2, Vp                                  |
-| `lImax` (log\|I_max\|)      | log(0.113)                | Kuchimanchi 2024 Table 2, I_max = -0.113                      |
-| `lt50` (T50, days)          | log(145)                  | Kuchimanchi 2024 Table 2, T50 = 145 days                      |
-| `lhill` (Hill)              | log(7.05)                 | Kuchimanchi 2024 Table 2, Hill                                |
-| `e_wt_cl`                   | 0.523                     | Kuchimanchi 2024 Table 2, Effect of WT on CL                  |
-| `e_wt_v`                    | 0.48                      | Kuchimanchi 2024 Table 2, Effect of WT on Vc and Vp           |
-| `e_age_cl`                  | -0.238                    | Kuchimanchi 2024 Table 2, Effect of age on CL                 |
-| `e_alb_cl`                  | -0.922                    | Kuchimanchi 2024 Table 2, Effect of ALB on CL                 |
-| `e_alt_cl`                  | -0.0623                   | Kuchimanchi 2024 Table 2, Effect of ALT on CL                 |
-| `e_alb_vc`                  | -0.132                    | Kuchimanchi 2024 Table 2, Effect of ALB on Vc                 |
-| `e_sex_cl`                  | 0.15                      | Kuchimanchi 2024 Table 2, Effect of male on CL                |
-| `e_sex_vc`                  | 0.137                     | Kuchimanchi 2024 Table 2, Effect of male on Vc                |
-| `e_combo_cl`                | -0.0779                   | Kuchimanchi 2024 Table 2, Effect of combination therapy on CL |
+| Parameter (model name) | Value | Source |
+|----|----|----|
+| `lcl` (CL_base, L/day) | log(0.00732\*24) | Kuchimanchi 2024 Table 2, CL = 0.00732 L/h |
+| `lvc` (Vc_base, L) | log(3.09) | Kuchimanchi 2024 Table 2, Vc |
+| `lq` (Q, L/day) | log(0.0191\*24) | Kuchimanchi 2024 Table 2, Q = 0.0191 L/h |
+| `lvp` (Vp, L) | log(2.48) | Kuchimanchi 2024 Table 2, Vp |
+| `lImax` (log\|I_max\|) | log(0.113) | Kuchimanchi 2024 Table 2, I_max = -0.113 |
+| `lt50` (T50, days) | log(145) | Kuchimanchi 2024 Table 2, T50 = 145 days |
+| `lhill` (Hill) | log(7.05) | Kuchimanchi 2024 Table 2, Hill |
+| `e_wt_cl` | 0.523 | Kuchimanchi 2024 Table 2, Effect of WT on CL |
+| `e_wt_v` | 0.48 | Kuchimanchi 2024 Table 2, Effect of WT on Vc and Vp |
+| `e_age_cl` | -0.238 | Kuchimanchi 2024 Table 2, Effect of age on CL |
+| `e_alb_cl` | -0.922 | Kuchimanchi 2024 Table 2, Effect of ALB on CL |
+| `e_alt_cl` | -0.0623 | Kuchimanchi 2024 Table 2, Effect of ALT on CL |
+| `e_alb_vc` | -0.132 | Kuchimanchi 2024 Table 2, Effect of ALB on Vc |
+| `e_sex_cl` | 0.15 | Kuchimanchi 2024 Table 2, Effect of male on CL |
+| `e_sex_vc` | 0.137 | Kuchimanchi 2024 Table 2, Effect of male on Vc |
+| `e_combo_cl` | -0.0779 | Kuchimanchi 2024 Table 2, Effect of combination therapy on CL |
 | IIV block `etalcl + etalvc` | c(0.0563, 0.0193, 0.0278) | Kuchimanchi 2024 Table 2 (omega^2 CL, cov(CL,Vc), omega^2 Vc) |
-| `etalImax`                  | 0.903                     | Kuchimanchi 2024 Table 2, omega^2 I_max                       |
-| `propSd`                    | 0.16                      | Kuchimanchi 2024 Table 2, proportional residual GARNET        |
-| `addSd` (mg/L)              | 4.22                      | Kuchimanchi 2024 Table 2, additive residual                   |
+| `etalImax` | 0.903 | Kuchimanchi 2024 Table 2, omega^2 I_max |
+| `propSd` | 0.16 | Kuchimanchi 2024 Table 2, proportional residual GARNET |
+| `addSd` (mg/L) | 4.22 | Kuchimanchi 2024 Table 2, additive residual |
 
 Equations:
 
@@ -125,6 +129,7 @@ use a virtual cohort whose covariate distributions approximate the
 published analysis-set demographics (Kuchimanchi 2024 Table 1).
 
 ``` r
+
 set.seed(2024)
 n_subj <- 200
 
@@ -157,6 +162,7 @@ mid-simulation simply removes the 7.79% CL reduction once the patient
 transitions to monotherapy maintenance.
 
 ``` r
+
 # RUBY Part 1 RTD schedule (days from first dose).
 loading_doses_d <- seq(0, by = 21, length.out = 6)              # 500 mg Q3W x 6 (cycles 1-6 with CP)
 maint_start_d   <- max(loading_doses_d) + 21                    # first 1000 mg dose 21 d after the 6th 500 mg
@@ -192,6 +198,7 @@ events <- build_events(cohort)
 ## Simulation
 
 ``` r
+
 mod <- readModelDb("Kuchimanchi_2024_dostarlimab")
 sim <- rxSolve(mod, events = events, returnType = "data.frame")
 ```
@@ -202,6 +209,7 @@ Median and 5-95th percentile envelope across the virtual cohort under
 the RUBY Part 1 recommended therapeutic dose:
 
 ``` r
+
 sim_summary <- sim |>
   dplyr::filter(time > 0) |>
   dplyr::group_by(time) |>
@@ -240,6 +248,7 @@ reproduces the time course at the reference patient (deterministic, etas
 = 0):
 
 ``` r
+
 t_grid <- seq(0, 365, by = 5)
 events_cl <- data.frame(
   ID            = 1, WT = 70, AGE = 64, ALB = 39, ALT = 18, SEXF = 1,
@@ -289,6 +298,7 @@ cohort. The dose used as the per-cycle reference for AUC normalisation
 is 500 mg.
 
 ``` r
+
 interval_start <- 21
 interval_end   <- 42
 
@@ -321,16 +331,16 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
-#>  ■■■■■■■■■■■■■■■■■■■■■■■           72% |  ETA:  1s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■          78% |  ETA:  1s
 knitr::kable(summary(nca_res),
              caption = "Simulated NCA parameters (cycle-2 dosing interval, days 21-42)")
 ```
 
-| start | end | treatment                       | N   | auclast       | cmax         | tmax                | half.life     |
-|------:|----:|:--------------------------------|:----|:--------------|:-------------|:--------------------|:--------------|
-|     0 |  21 | RUBY RTD 500 mg Q3W combo phase | 200 | 2440 \[19.3\] | 188 \[19.4\] | 1.00 \[1.00, 1.00\] | 36.3 \[7.82\] |
+| start | end | treatment | N | auclast | cmax | tmax | half.life |
+|---:|---:|:---|:---|:---|:---|:---|:---|
+| 0 | 21 | RUBY RTD 500 mg Q3W combo phase | 200 | 2440 \[19.3\] | 188 \[19.4\] | 1.00 \[1.00, 1.00\] | 36.3 \[7.82\] |
 
-Simulated NCA parameters (cycle-2 dosing interval, days 21-42)
+Simulated NCA parameters (cycle-2 dosing interval, days 21-42) {.table}
 
 ### Comparison against published cycle 1 exposure
 

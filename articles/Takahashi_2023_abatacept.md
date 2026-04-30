@@ -1,6 +1,7 @@
 # Takahashi_2023_abatacept
 
 ``` r
+
 library(nlmixr2lib)
 library(rxode2)
 #> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
@@ -76,34 +77,34 @@ The per-parameter origin is recorded as an in-file comment next to each
 `inst/modeldb/specificDrugs/Takahashi_2023_abatacept.R`. The table below
 collects them in one place for review.
 
-| Element                                 | Source location                                 | Value / form                                                                                                                           |
-|-----------------------------------------|-------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------|
-| Structural model                        | Supplemental Table 3 ‘Final’ row; abstract      | Two-compartment linear (model 5 selected as base; cohort retained as the only categorical covariate after backward elimination)        |
-| Equations (footnote)                    | Supplemental Table 4 footnote                   | `CLpop = CL70kg * theta_Cohort_CL * (WT/70)^theta_WT_CL`; analogous for Vc, Vp, Q                                                      |
-| `lcl` (CL70kg)                          | Supplemental Table 4                            | 0.023 L/h = 0.552 L/day                                                                                                                |
-| `lvc` (Vc70kg)                          | Supplemental Table 4                            | 3.06 L                                                                                                                                 |
-| `lvp` (Vp70kg)                          | Supplemental Table 4                            | 5.34 L                                                                                                                                 |
-| `lq` (Q70kg)                            | Supplemental Table 4                            | 0.031 L/h = 0.744 L/day                                                                                                                |
-| `e_wt_cl` (theta_WT_CL)                 | Supplemental Table 4                            | 0.65                                                                                                                                   |
-| `e_wt_vc` (theta_WT_Vc)                 | Supplemental Table 4                            | 0.70                                                                                                                                   |
-| `e_wt_vp` (theta_WT_Vp)                 | Supplemental Table 4                            | 1.02                                                                                                                                   |
-| `e_wt_q` (theta_WT_Q)                   | Supplemental Table 4                            | 0.63                                                                                                                                   |
-| `r_hct78_cl` (theta_Cohort_CL, HLA 7/8) | Supplemental Table 4                            | Ratio 0.70                                                                                                                             |
-| `r_hct88_cl` (theta_Cohort_CL, HLA 8/8) | Supplemental Table 4                            | Ratio 0.91                                                                                                                             |
-| `r_hct78_vc` (theta_Cohort_Vc, HLA 7/8) | Supplemental Table 4                            | Ratio 0.99                                                                                                                             |
-| `r_hct88_vc` (theta_Cohort_Vc, HLA 8/8) | Supplemental Table 4                            | Ratio 1.32                                                                                                                             |
-| RA/JIA reference                        | Supplemental Table 4 ‘Effect of RA status’ rows | Ratio 1 (fixed) on both CL and Vc                                                                                                      |
-| `etalcl` IIV on CL                      | Supplemental Table 4                            | 26.5% CV; `omega^2 = log(0.265^2 + 1) = 0.067858`                                                                                      |
-| `etalvc` IIV on Vc                      | Supplemental Table 4                            | 19.4% CV; `omega^2 = log(0.194^2 + 1) = 0.036946`                                                                                      |
-| `etalvp` IIV on Vp                      | Supplemental Table 4                            | 42.7% CV; `omega^2 = log(0.427^2 + 1) = 0.167530`                                                                                      |
-| IIV on Q                                | Supplemental Table 4                            | not reported (Q has no IIV in the final model)                                                                                         |
-| Off-diagonal omega                      | Supplemental Table 4                            | not reported; IIV treated as diagonal                                                                                                  |
-| `addSd` additive residual               | Supplemental Table 4                            | 0.049 ug/mL (linear-space SD)                                                                                                          |
-| `propSd` proportional residual          | Supplemental Table 4                            | 25.0% CV (linear-space SD = 0.250)                                                                                                     |
-| Estimation method                       | Supplemental Methods, “Population PK modeling”  | NONMEM 7.5, FOCE-I                                                                                                                     |
-| Parameter uncertainty                   | Supplemental Methods, “Population PK modeling”  | sampling-importance-resampling                                                                                                         |
-| BLQ handling                            | Supplemental Methods, “Population PK modeling”  | 4.9% retained at reported values (Byon 2008 method to reduce model misspecification)                                                   |
-| Covariate selection                     | Supplemental Table 3 and Supplemental Methods   | Stepwise SCM (forward p \< 0.01, backward p \< 0.001) followed by removal of clinically-not-meaningful covariates (sex, eGFR, albumin) |
+| Element | Source location | Value / form |
+|----|----|----|
+| Structural model | Supplemental Table 3 ‘Final’ row; abstract | Two-compartment linear (model 5 selected as base; cohort retained as the only categorical covariate after backward elimination) |
+| Equations (footnote) | Supplemental Table 4 footnote | `CLpop = CL70kg * theta_Cohort_CL * (WT/70)^theta_WT_CL`; analogous for Vc, Vp, Q |
+| `lcl` (CL70kg) | Supplemental Table 4 | 0.023 L/h = 0.552 L/day |
+| `lvc` (Vc70kg) | Supplemental Table 4 | 3.06 L |
+| `lvp` (Vp70kg) | Supplemental Table 4 | 5.34 L |
+| `lq` (Q70kg) | Supplemental Table 4 | 0.031 L/h = 0.744 L/day |
+| `e_wt_cl` (theta_WT_CL) | Supplemental Table 4 | 0.65 |
+| `e_wt_vc` (theta_WT_Vc) | Supplemental Table 4 | 0.70 |
+| `e_wt_vp` (theta_WT_Vp) | Supplemental Table 4 | 1.02 |
+| `e_wt_q` (theta_WT_Q) | Supplemental Table 4 | 0.63 |
+| `r_hct78_cl` (theta_Cohort_CL, HLA 7/8) | Supplemental Table 4 | Ratio 0.70 |
+| `r_hct88_cl` (theta_Cohort_CL, HLA 8/8) | Supplemental Table 4 | Ratio 0.91 |
+| `r_hct78_vc` (theta_Cohort_Vc, HLA 7/8) | Supplemental Table 4 | Ratio 0.99 |
+| `r_hct88_vc` (theta_Cohort_Vc, HLA 8/8) | Supplemental Table 4 | Ratio 1.32 |
+| RA/JIA reference | Supplemental Table 4 ‘Effect of RA status’ rows | Ratio 1 (fixed) on both CL and Vc |
+| `etalcl` IIV on CL | Supplemental Table 4 | 26.5% CV; `omega^2 = log(0.265^2 + 1) = 0.067858` |
+| `etalvc` IIV on Vc | Supplemental Table 4 | 19.4% CV; `omega^2 = log(0.194^2 + 1) = 0.036946` |
+| `etalvp` IIV on Vp | Supplemental Table 4 | 42.7% CV; `omega^2 = log(0.427^2 + 1) = 0.167530` |
+| IIV on Q | Supplemental Table 4 | not reported (Q has no IIV in the final model) |
+| Off-diagonal omega | Supplemental Table 4 | not reported; IIV treated as diagonal |
+| `addSd` additive residual | Supplemental Table 4 | 0.049 ug/mL (linear-space SD) |
+| `propSd` proportional residual | Supplemental Table 4 | 25.0% CV (linear-space SD = 0.250) |
+| Estimation method | Supplemental Methods, “Population PK modeling” | NONMEM 7.5, FOCE-I |
+| Parameter uncertainty | Supplemental Methods, “Population PK modeling” | sampling-importance-resampling |
+| BLQ handling | Supplemental Methods, “Population PK modeling” | 4.9% retained at reported values (Byon 2008 method to reduce model misspecification) |
+| Covariate selection | Supplemental Table 3 and Supplemental Methods | Stepwise SCM (forward p \< 0.01, backward p \< 0.001) followed by removal of clinically-not-meaningful covariates (sex, eGFR, albumin) |
 
 ## Virtual cohort
 
@@ -120,6 +121,7 @@ the RA/JIA reference cohort (see Assumptions section for the
 adult-RA-only single-dose simplification).
 
 ``` r
+
 set.seed(2023)
 
 n_per_cohort <- c("RA/JIA" = 100L,
@@ -169,7 +171,7 @@ knitr::kable(
 | ABA2 HLA 8/8 |  50 |      76.2 |   38.2 |  120.0 |
 | RA/JIA       | 100 |      66.8 |   30.7 |  117.1 |
 
-Virtual cohort weight distribution by study group.
+Virtual cohort weight distribution by study group. {.table}
 
 ## Dosing and event table
 
@@ -186,6 +188,7 @@ maintenance dose at `time = 0` to characterize the post-first-dose
 profile in the same window.
 
 ``` r
+
 # Weight-tier dosing approximating 10 mg/kg with vial-rounding (per
 # Supplemental Table 2 footnote): 500 mg if WT < 60, 750 mg if 60 <= WT
 # <= 100, 1000 mg if WT > 100. ABA2 caps at 1000 mg by protocol.
@@ -199,6 +202,7 @@ abatacept_dose_mg <- function(wt_kg) {
 ```
 
 ``` r
+
 infusion_h <- 1            # hours
 infusion_d <- infusion_h / 24
 
@@ -257,6 +261,7 @@ stopifnot(!anyDuplicated(events |> select(id, time, evid) |> distinct()))
 ## Simulation
 
 ``` r
+
 mod <- readModelDb("Takahashi_2023_abatacept")
 
 sim <- rxode2::rxSolve(
@@ -280,6 +285,7 @@ We extract the simulated trough at the time-point immediately pre-dose 2
 (the Ctrough_1 definition) for the two ABA2 cohorts.
 
 ``` r
+
 sim_ctrough1 <- sim |>
   filter(cohort %in% c("ABA2 HLA 7/8", "ABA2 HLA 8/8"),
          time > 5.99, time < 6) |>
@@ -311,9 +317,10 @@ knitr::kable(
 | ABA2 HLA 8/8 |  50 |           45.3 | 40.1 | 52.0 |        80 |
 
 Simulated Ctrough_1 distribution by ABA2 cohort (median, Q1, Q3, % \>=
-39 ug/mL threshold).
+39 ug/mL threshold). {.table}
 
 ``` r
+
 
 ggplot(sim_ctrough1, aes(x = ctrough1, fill = cohort)) +
   geom_histogram(bins = 25, alpha = 0.6, position = "identity") +
@@ -342,6 +349,7 @@ lower CL than RA/JIA reference, while HLA 8/8 has only 9% lower CL but
 ## Concentration-time profiles
 
 ``` r
+
 profile <- sim |>
   filter(time >= 0, time <= 30, !is.na(Cc), Cc > 0) |>
   group_by(cohort, time) |>
@@ -381,6 +389,7 @@ ABA2) for the AUC1 / Cmax_1 / Ctrough_1 set the paper analyzed in the
 exposure-response analysis (Supplemental Figure 14).
 
 ``` r
+
 nca_conc <- sim |>
   filter(time >= 0, time <= 6, !is.na(Cc), Cc > 0) |>
   select(id, time, Cc, cohort)
@@ -391,6 +400,7 @@ nca_dose <- bind_rows(dose_rows_aba2, dose_rows_raj) |>
 ```
 
 ``` r
+
 conc_obj <- PKNCAconc(nca_conc, Cc ~ time | cohort + id)
 dose_obj <- PKNCAdose(nca_dose, amt ~ time | cohort + id)
 
@@ -435,6 +445,7 @@ knitr::kable(sim_nca, digits = 3,
 | RA/JIA       | tmax      |   0.042 |  0.000 |
 
 Simulated NCA summaries (post-first-dose 0-6 day window) by cohort.
+{.table}
 
 ### Comparison against published exposure values
 
@@ -447,6 +458,7 @@ ug/mL, which are the only published exposure-distribution numbers we can
 verify.
 
 ``` r
+
 published_ctrough1_quartiles <- tibble::tribble(
   ~quartile, ~lower, ~upper,
   "Q1",      20,     32,
@@ -473,9 +485,10 @@ knitr::kable(published_ctrough1_quartiles,
 | Q4       |    56 |    95 |
 
 Published Ctrough_1 quartile bins (developmental cohort, Takahashi 2023
-Supplemental Figure 8).
+Supplemental Figure 8). {.table}
 
 ``` r
+
 
 knitr::kable(
   tibble(
@@ -494,7 +507,7 @@ knitr::kable(
 | Median               |               49.0 |
 | Q3 (75th percentile) |               58.5 |
 
-Simulated Ctrough_1 quartiles across both ABA2 cohorts pooled.
+Simulated Ctrough_1 quartiles across both ABA2 cohorts pooled. {.table}
 
 The simulated 25th, 50th, and 75th percentiles of Ctrough_1 should fall
 within the published quartile-bin ranges (Q1 lower edge = 20 to Q3 upper

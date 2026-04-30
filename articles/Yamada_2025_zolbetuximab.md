@@ -1,6 +1,7 @@
 # Yamada_2025_zolbetuximab
 
 ``` r
+
 library(nlmixr2lib)
 library(rxode2)
 #> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
@@ -38,10 +39,12 @@ Zolbetuximab is an IgG1 monoclonal antibody against claudin 18.2
 (CLDN18.2). The model is a two-compartment structure with zero-order IV
 input and a time-dependent total clearance
 
-$$CL(t) = CL_{ss} + CL_{T}\,\exp\left( - K_{\text{decay}}\, t \right),$$
+``` math
+  CL(t) = CL_{ss} + CL_{T}\,\exp(-K_{\text{decay}}\,t),
+```
 
-where $t$ is time from the first dose. Covariate effects enter as power
-models on continuous covariates and additive fractional-change
+where $`t`$ is time from the first dose. Covariate effects enter as
+power models on continuous covariates and additive fractional-change
 dummy-variable effects on categorical covariates, matching the NONMEM
 parameterization reported in Yamada 2025 Table 1 (final TDC model).
 
@@ -55,37 +58,37 @@ The per-parameter origin is recorded as an in-file comment next to each
 `inst/modeldb/specificDrugs/Yamada_2025_zolbetuximab.R`. The table below
 collects the mapping in one place for reviewer audit.
 
-| Element                                        | Source location                                                                | Value / form                                                                                            |
-|------------------------------------------------|--------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------|
-| Two-compartment model with zero-order IV input | Yamada 2025, Methods “Pharmacokinetic modeling” + Figure 1 (schematic in text) | `d/dt(central) = -kel·central - k12·central + k21·peripheral1`                                          |
-| Time-dependent clearance                       | Yamada 2025 Equation 1                                                         | `CL(t) = CLss + CLT·exp(-Kdecay·t)`                                                                     |
-| CLss, CLT, V1, Q, V2, Kdecay                   | Yamada 2025 Table 1 (TDC model column, footnote a)                             | 0.0117 L/h, 0.0159 L/h, 3.04 L, 0.0235 L/h, 2.49 L, 0.0209 /day                                         |
-| BSA on CLss, CLT, Q                            | Yamada 2025 Table 1                                                            | Power: `(BSA/1.70)^1.06`                                                                                |
-| BSA on V1, V2                                  | Yamada 2025 Table 1                                                            | Power: `(BSA/1.70)^0.968`                                                                               |
-| ALB on CLss                                    | Yamada 2025 Table 1                                                            | Power: `(ALB/39.1)^-0.535`                                                                              |
-| ALB on Kdecay                                  | Yamada 2025 Table 1                                                            | Power: `(ALB/39.1)^1.48`                                                                                |
-| HGB on V1                                      | Yamada 2025 Table 1                                                            | Power: `(HGB/118)^-0.374`                                                                               |
-| TBILI on V1                                    | Yamada 2025 Table 1                                                            | Power: `(TBILI/0.38)^0.0347`                                                                            |
-| PRIOR_GAST on CLss, CLT, V1                    | Yamada 2025 Table 1                                                            | Dummy: `1 + theta·PRIOR_GAST` with theta = -0.182, -0.495, +0.103                                       |
-| SEX on CLss, V1                                | Yamada 2025 Table 1                                                            | Dummy: `1 + theta·SEXF` with theta = -0.195, -0.108                                                     |
-| COMB on V1 (if EOX)                            | Yamada 2025 Table 1                                                            | Dummy: `1 + 0.466·COMB_EOX`                                                                             |
-| Reference subject                              | Yamada 2025 Figure 1 caption                                                   | BSA 1.70 m^2, ALB 39.1 g/L, HGB 118 g/L, TBILI 0.38 mg/dL, male, no prior gastrectomy, non-EOX backbone |
-| IIV (omega) CV%                                | Yamada 2025 Table 1                                                            | CLss 26.3%, CLT 76.1%, Kdecay 77.3%, V1 20.1%, Q 63.9%, V2 27.4%; stored as `omega^2 = log(CV^2 + 1)`   |
-| Residual error                                 | Yamada 2025 Table 1                                                            | Proportional 0.169 (stored as SD = sqrt(0.169) ~ 0.411), additive 4.03 ug/mL                            |
-| Clinical regimen (Q3W)                         | Yamada 2025 Abstract / Figure 3                                                | 800 mg/m^2 loading then 600 mg/m^2 every 3 weeks IV (2-h infusion)                                      |
-| Alternative regimen (Q2W)                      | Yamada 2025 Table 2                                                            | 800 mg/m^2 loading then 400 mg/m^2 every 2 weeks IV                                                     |
+| Element | Source location | Value / form |
+|----|----|----|
+| Two-compartment model with zero-order IV input | Yamada 2025, Methods “Pharmacokinetic modeling” + Figure 1 (schematic in text) | `d/dt(central) = -kel·central - k12·central + k21·peripheral1` |
+| Time-dependent clearance | Yamada 2025 Equation 1 | `CL(t) = CLss + CLT·exp(-Kdecay·t)` |
+| CLss, CLT, V1, Q, V2, Kdecay | Yamada 2025 Table 1 (TDC model column, footnote a) | 0.0117 L/h, 0.0159 L/h, 3.04 L, 0.0235 L/h, 2.49 L, 0.0209 /day |
+| BSA on CLss, CLT, Q | Yamada 2025 Table 1 | Power: `(BSA/1.70)^1.06` |
+| BSA on V1, V2 | Yamada 2025 Table 1 | Power: `(BSA/1.70)^0.968` |
+| ALB on CLss | Yamada 2025 Table 1 | Power: `(ALB/39.1)^-0.535` |
+| ALB on Kdecay | Yamada 2025 Table 1 | Power: `(ALB/39.1)^1.48` |
+| HGB on V1 | Yamada 2025 Table 1 | Power: `(HGB/118)^-0.374` |
+| TBILI on V1 | Yamada 2025 Table 1 | Power: `(TBILI/0.38)^0.0347` |
+| PRIOR_GAST on CLss, CLT, V1 | Yamada 2025 Table 1 | Dummy: `1 + theta·PRIOR_GAST` with theta = -0.182, -0.495, +0.103 |
+| SEX on CLss, V1 | Yamada 2025 Table 1 | Dummy: `1 + theta·SEXF` with theta = -0.195, -0.108 |
+| COMB on V1 (if EOX) | Yamada 2025 Table 1 | Dummy: `1 + 0.466·COMB_EOX` |
+| Reference subject | Yamada 2025 Figure 1 caption | BSA 1.70 m^2, ALB 39.1 g/L, HGB 118 g/L, TBILI 0.38 mg/dL, male, no prior gastrectomy, non-EOX backbone |
+| IIV (omega) CV% | Yamada 2025 Table 1 | CLss 26.3%, CLT 76.1%, Kdecay 77.3%, V1 20.1%, Q 63.9%, V2 27.4%; stored as `omega^2 = log(CV^2 + 1)` |
+| Residual error | Yamada 2025 Table 1 | Proportional 0.169 (stored as SD = sqrt(0.169) ~ 0.411), additive 4.03 ug/mL |
+| Clinical regimen (Q3W) | Yamada 2025 Abstract / Figure 3 | 800 mg/m^2 loading then 600 mg/m^2 every 3 weeks IV (2-h infusion) |
+| Alternative regimen (Q2W) | Yamada 2025 Table 2 | 800 mg/m^2 loading then 400 mg/m^2 every 2 weeks IV |
 
 ### Covariate column naming
 
-| Source column          | Canonical column used here | Notes                                                                                                                  |
-|------------------------|----------------------------|------------------------------------------------------------------------------------------------------------------------|
-| `BSA`                  | `BSA` (m^2)                | Time-fixed baseline.                                                                                                   |
-| `ALB`                  | `ALB` (g/L)                | Time-fixed baseline; SI units in this paper.                                                                           |
-| `HGB`                  | `HGB` (g/L)                | Time-fixed baseline; SI units in this paper.                                                                           |
-| `TBILI`                | `TBILI` (mg/dL)            | Time-fixed baseline; US units in this paper.                                                                           |
-| `PRIOR_GAST`           | `PRIOR_GAST` (binary)      | 1 = prior gastrectomy; 0 = none.                                                                                       |
-| `SEX` (1 = female)     | `SEXF`                     | Encoding matches canonical SEXF; column renamed.                                                                       |
-| `COMB` (EOX vs others) | `COMB_EOX`                 | 1 = EOX backbone; 0 = mFOLFOX6 / CAPOX / single agent. Column renamed to preserve the semantic meaning of the 1-level. |
+| Source column | Canonical column used here | Notes |
+|----|----|----|
+| `BSA` | `BSA` (m^2) | Time-fixed baseline. |
+| `ALB` | `ALB` (g/L) | Time-fixed baseline; SI units in this paper. |
+| `HGB` | `HGB` (g/L) | Time-fixed baseline; SI units in this paper. |
+| `TBILI` | `TBILI` (mg/dL) | Time-fixed baseline; US units in this paper. |
+| `PRIOR_GAST` | `PRIOR_GAST` (binary) | 1 = prior gastrectomy; 0 = none. |
+| `SEX` (1 = female) | `SEXF` | Encoding matches canonical SEXF; column renamed. |
+| `COMB` (EOX vs others) | `COMB_EOX` | 1 = EOX backbone; 0 = mFOLFOX6 / CAPOX / single agent. Column renamed to preserve the semantic meaning of the 1-level. |
 
 ### Virtual population
 
@@ -95,6 +98,7 @@ typical G/GEJ adenocarcinoma phase 3 population and is centered so that
 simulated parameters bracket the Yamada 2025 Figure 1 reference subject.
 
 ``` r
+
 set.seed(2025)
 n_subj <- 500
 
@@ -117,6 +121,7 @@ IV every 3 weeks. Infusion duration is typically 2 hours. Simulate eight
 3-week cycles (168 days of follow-up).
 
 ``` r
+
 infusion_dur_hr <- 2
 infusion_dur_day <- infusion_dur_hr / 24
 
@@ -151,6 +156,7 @@ d_sim_q3w <- bind_rows(d_load, d_maint, d_obs) %>%
 ### Simulate the Q3W regimen
 
 ``` r
+
 mod <- readModelDb("Yamada_2025_zolbetuximab")
 sim_q3w <- rxSolve(mod, d_sim_q3w, returnType = "data.frame")
 #> ℹ parameter labels from comments will be replaced by 'label()'
@@ -164,6 +170,7 @@ follow-up for the 800/600 mg/m^2 Q3W regimen. The panel below is the
 analogous plot from this virtual population.
 
 ``` r
+
 sim_summary <- sim_q3w %>%
   filter(time > 0) %>%
   group_by(time) %>%
@@ -196,6 +203,7 @@ Simulate the 800/400 mg/m^2 Q2W regimen — same loading dose, 400 mg/m^2
 every 14 days — for comparison against the Table 2 GMRs.
 
 ``` r
+
 d_load_q2w <- d_load   # identical loading
 d_maint_q2w <- tidyr::crossing(pop, TIME = seq(14, 14 * 12, by = 14)) %>%
   mutate(
@@ -228,6 +236,7 @@ the Q2W regimen it covers three cycles of 14 days (days 112-154). We
 group by regimen and by subject.
 
 ``` r
+
 ss_q3w <- sim_q3w %>%
   filter(time >= 105, time <= 147, Cc > 0) %>%
   mutate(time_rel  = time - 105, treatment = "Q3W_800_600") %>%
@@ -274,9 +283,8 @@ data_obj <- PKNCAdata(
 )
 
 nca_results <- pk.nca(data_obj)
-#>  ■■■■■■                            16% |  ETA:  6s
-#>  ■■■■■■■■■■■■■■■■■■                55% |  ETA:  3s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    97% |  ETA:  0s
+#>  ■■■■■■■■■■■■■                     40% |  ETA:  5s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■         81% |  ETA:  1s
 nca_summary <- summary(nca_results)
 knitr::kable(
   nca_summary,
@@ -289,18 +297,19 @@ knitr::kable(
 )
 ```
 
-| start | end | treatment   | N   | auclast       | cmax         | cmin          | tmax                |
-|------:|----:|:------------|:----|:--------------|:-------------|:--------------|:--------------------|
-|     0 |  42 | Q2W_800_400 | 500 | 6570 \[35.2\] | 294 \[21.8\] | 87.4 \[58.1\] | 28.5 \[28.5, 28.5\] |
-|     0 |  42 | Q3W_800_600 | 500 | 6380 \[38.6\] | 369 \[20.5\] | 64.4 \[79.6\] | 21.5 \[21.5, 21.5\] |
+| start | end | treatment | N | auclast | cmax | cmin | tmax |
+|---:|---:|:---|:---|:---|:---|:---|:---|
+| 0 | 42 | Q2W_800_400 | 500 | 6570 \[35.2\] | 294 \[21.8\] | 87.4 \[58.1\] | 28.5 \[28.5, 28.5\] |
+| 0 | 42 | Q3W_800_600 | 500 | 6380 \[38.6\] | 369 \[20.5\] | 64.4 \[79.6\] | 21.5 \[21.5, 21.5\] |
 
 PKNCA summary for the steady-state 42-day window. Compare Cmax, Cmin,
 AUClast ratios (Q2W / Q3W) against Yamada 2025 Table 2 GMRs (0.792,
-1.192, 1.000).
+1.192, 1.000). {.table}
 
 #### GMR comparison against Yamada 2025 Table 2
 
 ``` r
+
 per_id <- sim_q3w %>%
   filter(time >= 105, time <= 147) %>%
   group_by(id) %>%
@@ -344,7 +353,7 @@ knitr::kable(comparison, digits = 3,
 | AUC42d         |     1.030 |                     1.000 |
 
 Simulated vs. published GMRs (Q2W relative to Q3W, steady-state 42-day
-interval).
+interval). {.table}
 
 The simulated GMRs are expected to track the published values within
 ~10-15%. The paper’s Table 2 values come from a much larger virtual

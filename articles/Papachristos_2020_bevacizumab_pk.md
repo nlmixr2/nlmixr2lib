@@ -63,31 +63,47 @@ Per-parameter origin is recorded as an in-file comment next to each
 `inst/modeldb/specificDrugs/Papachristos_2020_bevacizumab_pk.R`. The
 table below collects them in one place.
 
-| Parameter (model name)          | Value      | Source                                                      |
-|---------------------------------|------------|-------------------------------------------------------------|
-| `lcl` (CLpop, L/day)            | log(0.200) | Papachristos 2020 Table 1, CLpop                            |
-| `lv1` (V1pop, L)                | log(3.09)  | Papachristos 2020 Table 1, V1pop                            |
-| `lq` (Qpop, L/day)              | log(0.35)  | Papachristos 2020 Table 1, Qpop                             |
-| `lv2` (V2pop, L)                | log(2.39)  | Papachristos 2020 Table 1, V2pop                            |
-| `allo_cl` (allometric exponent) | 1.04       | Papachristos 2020 Table 1, “log(weight/70) on CL”           |
-| `e_icam1_rs1799969_cl`          | -0.423     | Papachristos 2020 Table 1, “ICAM-1 rs1799969 mutant on CL”  |
-| `e_vegfa_rs1570360_q`           | +0.378     | Papachristos 2020 Table 1, “VEGF-A rs1570360 mutant on Q”   |
-| `e_vegfa_rs699947_q`            | -0.429     | Papachristos 2020 Table 1, “VEGF-A rs699947 mutant on Q”    |
-| `etalcl` variance               | 0.10176    | Papachristos 2020 Table 1, ω_CL = 0.319 (var = SD²)         |
-| `etalq` variance                | 0.02560    | Papachristos 2020 Table 1, ω_Q = 0.160                      |
-| `cov(etalcl, etalq)`            | -0.05099   | Papachristos 2020 Table 1, ρ(Q,CL) = -0.999 × 0.319 × 0.160 |
-| `etalv1` variance               | 0.03028    | Papachristos 2020 Table 1, ω_V1 = 0.174                     |
-| `etalv2` variance               | 0.45698    | Papachristos 2020 Table 1, ω_V2 = 0.676                     |
-| `propSd`                        | 0.246      | Papachristos 2020 Table 1, σ_prop                           |
+| Parameter (model name) | Value | Source |
+|----|----|----|
+| `lcl` (CLpop, L/day) | log(0.200) | Papachristos 2020 Table 1, CLpop |
+| `lv1` (V1pop, L) | log(3.09) | Papachristos 2020 Table 1, V1pop |
+| `lq` (Qpop, L/day) | log(0.35) | Papachristos 2020 Table 1, Qpop |
+| `lv2` (V2pop, L) | log(2.39) | Papachristos 2020 Table 1, V2pop |
+| `allo_cl` (allometric exponent) | 1.04 | Papachristos 2020 Table 1, “log(weight/70) on CL” |
+| `e_icam1_rs1799969_cl` | -0.423 | Papachristos 2020 Table 1, “ICAM-1 rs1799969 mutant on CL” |
+| `e_vegfa_rs1570360_q` | +0.378 | Papachristos 2020 Table 1, “VEGF-A rs1570360 mutant on Q” |
+| `e_vegfa_rs699947_q` | -0.429 | Papachristos 2020 Table 1, “VEGF-A rs699947 mutant on Q” |
+| `etalcl` variance | 0.10176 | Papachristos 2020 Table 1, ω_CL = 0.319 (var = SD²) |
+| `etalq` variance | 0.02560 | Papachristos 2020 Table 1, ω_Q = 0.160 |
+| `cov(etalcl, etalq)` | -0.05099 | Papachristos 2020 Table 1, ρ(Q,CL) = -0.999 × 0.319 × 0.160 |
+| `etalv1` variance | 0.03028 | Papachristos 2020 Table 1, ω_V1 = 0.174 |
+| `etalv2` variance | 0.45698 | Papachristos 2020 Table 1, ω_V2 = 0.676 |
+| `propSd` | 0.246 | Papachristos 2020 Table 1, σ_prop |
 
 Equations (paper section 2.2):
 
-$${CL}_{i} = {CL}_{pop} \cdot \left( \frac{{WT}_{i}}{70} \right)^{1.04} \cdot \exp\left( - 0.423 \cdot {SNP\_ ICAM1\_ RS1799969}_{i} \right) \cdot \exp\left( \eta_{{CL},i} \right)$$$$Q_{i} = Q_{pop} \cdot \exp\left( 0.378 \cdot {SNP\_ VEGFA\_ RS1570360}_{i} \right) \cdot \exp\left( - 0.429 \cdot {SNP\_ VEGFA\_ RS699947}_{i} \right) \cdot \exp\left( \eta_{Q,i} \right)$$$$V_{1,i} = V_{1,{pop}} \cdot \exp\left( \eta_{V_{1},i} \right),\quad V_{2,i} = V_{2,{pop}} \cdot \exp\left( \eta_{V_{2},i} \right)$$
+``` math
+\mathrm{CL}_i = \mathrm{CL}_\mathrm{pop} \cdot
+  \left(\frac{\mathrm{WT}_i}{70}\right)^{1.04}
+  \cdot \exp(-0.423 \cdot \mathrm{SNP\_ICAM1\_RS1799969}_i)
+  \cdot \exp(\eta_{\mathrm{CL},i})
+```
+``` math
+\mathrm{Q}_i = \mathrm{Q}_\mathrm{pop}
+  \cdot \exp(0.378 \cdot \mathrm{SNP\_VEGFA\_RS1570360}_i)
+  \cdot \exp(-0.429 \cdot \mathrm{SNP\_VEGFA\_RS699947}_i)
+  \cdot \exp(\eta_{\mathrm{Q},i})
+```
+``` math
+\mathrm{V}_{1,i} = \mathrm{V}_{1,\mathrm{pop}} \cdot \exp(\eta_{V_1,i}),
+\quad
+\mathrm{V}_{2,i} = \mathrm{V}_{2,\mathrm{pop}} \cdot \exp(\eta_{V_2,i})
+```
 
 Two-compartment linear PK:
-${\dot{A}}_{1} = - k_{el}A_{1} - k_{12}A_{1} + k_{21}A_{2}$,
-${\dot{A}}_{2} = k_{12}A_{1} - k_{21}A_{2}$, $C_{c} = A_{1}/V_{1}$, with
-proportional residual error $\sigma_{prop} = 0.246$.
+$`\dot A_1 = -k_{el} A_1 - k_{12} A_1 + k_{21} A_2`$,
+$`\dot A_2 = k_{12} A_1 - k_{21} A_2`$, $`C_c = A_1 / V_1`$, with
+proportional residual error $`\sigma_\mathrm{prop} = 0.246`$.
 
 ## Errata note (text vs Table)
 
@@ -109,6 +125,7 @@ use a virtual cohort whose covariate distributions approximate the
 Papachristos 2020 population.
 
 ``` r
+
 set.seed(2020)
 n_subj <- 200
 
@@ -131,6 +148,7 @@ Papachristos 2020 section 4.1:
 - 7.5 mg/kg IV Q3W (BEV-CapIRI / BEV-CapOX cohort)
 
 ``` r
+
 inf_dur     <- 1.5 / 24            # 90-min standard bevacizumab infusion (days)
 n_doses_q2w <- 6
 n_doses_q3w <- 4
@@ -174,6 +192,7 @@ stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
 ## Simulation
 
 ``` r
+
 mod <- readModelDb("Papachristos_2020_bevacizumab_pk")
 sim <- rxode2::rxSolve(mod, events = events,
                        keep = c("treatment"),
@@ -191,6 +210,7 @@ below shows the median and 5-95% prediction interval of the simulated
 cohort by regimen, providing the same diagnostic view.
 
 ``` r
+
 sim_summary <- sim |>
   dplyr::filter(time > 0) |>
   dplyr::group_by(time, treatment) |>
@@ -227,6 +247,7 @@ typical-value simulation below shows the predicted Q2W trough at the
 median weight (74.5 kg) for wild-type vs mutant carriers.
 
 ``` r
+
 mod_typical <- mod |> rxode2::zeroRe()
 #> ℹ parameter labels from comments will be replaced by 'label()'
 
@@ -278,6 +299,7 @@ ggplot(sim_typ |> dplyr::filter(time > 0),
 
 ``` r
 
+
 trough_compare <- sim_typ |>
   dplyr::filter(time %in% (dose_times_q2w[-1])) |>
   dplyr::group_by(icam1_label) |>
@@ -290,7 +312,7 @@ knitr::kable(trough_compare,
 |-------------|---------------|
 
 Median Q2W trough (mg/L) at 74.5 kg, wild-type vs ICAM-1 rs1799969
-mutant carrier (typical-value simulation).
+mutant carrier (typical-value simulation). {.table}
 
 The simulated trough ratio reproduces the qualitative direction (mutant
 \> wild-type) reported by the paper. The numerical magnitude depends on
@@ -308,6 +330,7 @@ of the two regimens. The dosing interval starts at the last simulated
 dose and runs for one tau (14 d for Q2W, 21 d for Q3W).
 
 ``` r
+
 build_nca <- function(sim_df, regimen_label, tau, dose_times) {
   start_ss <- max(dose_times)
   end_ss   <- start_ss + tau
@@ -551,13 +574,14 @@ knitr::kable(run_pknca(nca_q2w),
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
 ```
 
-| Interval Start | Interval End | treatment   | N   | AUClast (day\*mg/L) | Cmax (mg/L)  | Cmin (mg/L)   | Tmax (day)             | Cav (mg/L) |
-|---------------:|-------------:|:------------|:----|:--------------------|:-------------|:--------------|:-----------------------|:-----------|
-|              0 |           14 | 5 mg/kg Q2W | 200 | NC                  | 204 \[22.9\] | 84.0 \[47.4\] | 0.100 \[0.100, 0.100\] | NC         |
+| Interval Start | Interval End | treatment | N | AUClast (day\*mg/L) | Cmax (mg/L) | Cmin (mg/L) | Tmax (day) | Cav (mg/L) |
+|---:|---:|:---|:---|:---|:---|:---|:---|:---|
+| 0 | 14 | 5 mg/kg Q2W | 200 | NC | 204 \[22.9\] | 84.0 \[47.4\] | 0.100 \[0.100, 0.100\] | NC |
 
-Steady-state NCA (5 mg/kg Q2W, last simulated interval).
+Steady-state NCA (5 mg/kg Q2W, last simulated interval). {.table}
 
 ``` r
+
 knitr::kable(run_pknca(nca_q3w),
              caption = "Steady-state NCA (7.5 mg/kg Q3W, last simulated interval).")
 #> Warning: Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
@@ -762,11 +786,11 @@ knitr::kable(run_pknca(nca_q3w),
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
 ```
 
-| Interval Start | Interval End | treatment     | N   | AUClast (day\*mg/L) | Cmax (mg/L)  | Cmin (mg/L)   | Tmax (day)             | Cav (mg/L) |
-|---------------:|-------------:|:--------------|:----|:--------------------|:-------------|:--------------|:-----------------------|:-----------|
-|              0 |           21 | 7.5 mg/kg Q3W | 200 | NC                  | 249 \[22.5\] | 67.5 \[62.2\] | 0.100 \[0.100, 0.100\] | NC         |
+| Interval Start | Interval End | treatment | N | AUClast (day\*mg/L) | Cmax (mg/L) | Cmin (mg/L) | Tmax (day) | Cav (mg/L) |
+|---:|---:|:---|:---|:---|:---|:---|:---|:---|
+| 0 | 21 | 7.5 mg/kg Q3W | 200 | NC | 249 \[22.5\] | 67.5 \[62.2\] | 0.100 \[0.100, 0.100\] | NC |
 
-Steady-state NCA (7.5 mg/kg Q3W, last simulated interval).
+Steady-state NCA (7.5 mg/kg Q3W, last simulated interval). {.table}
 
 ### Comparison against published descriptors
 

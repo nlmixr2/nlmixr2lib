@@ -1,6 +1,7 @@
 # Wade_2015_certolizumab
 
 ``` r
+
 library(nlmixr2lib)
 library(PKNCA)
 #> 
@@ -67,32 +68,32 @@ The per-parameter origin is recorded as an in-file comment next to each
 `inst/modeldb/specificDrugs/Wade_2015_certolizumab.R`. The table below
 collects them in one place for review.
 
-| Equation / parameter          | Value                                                                                    | Source location (Wade 2015)                                                     |
-|-------------------------------|------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------|
-| `lka`                         | `log(0.200)`                                                                             | Table 3 (theta1): KA = 0.200 /day                                               |
-| `lcl`                         | `log(0.685)`                                                                             | Table 3 (theta2): CL/F, ATB-ve = 0.685 L/day                                    |
-| `lvc`                         | `log(7.61)`                                                                              | Table 3 (theta3): V/F = 7.61 L                                                  |
-| `lbaseline`                   | `log(1.23)`                                                                              | Table 3 (theta4): Baseline = 1.23 ug/mL                                         |
-| `e_ada_cl`                    | `2.74/0.685 - 1`                                                                         | Table 3 (theta5 = 2.74 L/day vs theta2 = 0.685 L/day; ~3.0 fractional increase) |
-| `e_alb_lo_cl`                 | `-0.0598`                                                                                | Table 3 (theta7): ALB on CL, ALB \<= 41 g/L                                     |
-| `e_alb_hi_cl`                 | `-0.0177`                                                                                | Table 3 (theta8): ALB on CL, ALB \> 41 g/L                                      |
-| `e_crp_lo_cl`                 | `0.0205`                                                                                 | Table 3 (theta10): CRP on CL, CRP \<= 8 mg/L                                    |
-| `e_crp_hi_cl`                 | `0.000561`                                                                               | Table 3 (theta11): CRP on CL, CRP \> 8 mg/L                                     |
-| `e_bsa_cl`                    | `0.715`                                                                                  | Table 3 (theta9): BSA on CL, per m^2 centered at 1.76                           |
-| `e_bsa_vc`                    | `0.656`                                                                                  | Table 3 (theta12): BSA on V, per m^2 centered at 1.76                           |
-| `e_japanese_vc`               | `-0.250`                                                                                 | Table 3 (theta13): RACE(J) on V (Japanese)                                      |
-| `e_black_vc`                  | `0.265`                                                                                  | Table 3 (theta14): RACE(B) on V (Black)                                         |
-| `e_asian_vc`                  | `0.415`                                                                                  | Table 3 (theta15): RACE(A) on V (Asian)                                         |
-| IIV KA (`etalka`)             | `log(1+0.501^2)`                                                                         | Table 3: IIV KA CV = 50.1%                                                      |
-| IIV CL/F (`etalcl`)           | `log(1+0.275^2)`                                                                         | Table 3: IIV CL/F (ADA-) CV = 27.5% (ADA+ CV = 83.6%)                           |
-| IIV V/F (`etalvc`)            | `log(1+0.167^2)`                                                                         | Table 3: IIV V/F CV = 16.7%                                                     |
-| IIV baseline (`etalbaseline`) | `log(1+0.951^2)`                                                                         | Table 3: IIV baseline (ADA-) CV = 95.1% (ADA+ CV = 72.3%)                       |
-| `propSd`                      | `0.346`                                                                                  | Table 3 (theta6): proportional residual = 34.6% (additive on Ln scale)          |
-| CL/F composite                | `((1-ATB)*theta2 + ATB*theta5) * CL_ALB * CL_CRP * (1 + theta9*(BSA-1.76))`              | Table 3 footnote                                                                |
-| V/F composite                 | `theta3 * VRACE * (1 + theta12*(BSA-1.76))`                                              | Table 3 footnote                                                                |
-| CL_ALB                        | `(1 + theta7*(ALB-41))` for ALB \<= 41; `(1 + theta8*(ALB-41))` otherwise                | Table 3 footnote                                                                |
-| CL_CRP                        | `(1 + theta10*(CRP-8))` for CRP \<= 8; `(1 + theta11*(CRP-8))` otherwise                 | Table 3 footnote                                                                |
-| VRACE                         | `1 + theta13*JPN + theta14*BLK + theta15*ASI` (pooled ref = White/Indian/Hispanic/Other) | Table 3 footnote                                                                |
+| Equation / parameter | Value | Source location (Wade 2015) |
+|----|----|----|
+| `lka` | `log(0.200)` | Table 3 (theta1): KA = 0.200 /day |
+| `lcl` | `log(0.685)` | Table 3 (theta2): CL/F, ATB-ve = 0.685 L/day |
+| `lvc` | `log(7.61)` | Table 3 (theta3): V/F = 7.61 L |
+| `lbaseline` | `log(1.23)` | Table 3 (theta4): Baseline = 1.23 ug/mL |
+| `e_ada_cl` | `2.74/0.685 - 1` | Table 3 (theta5 = 2.74 L/day vs theta2 = 0.685 L/day; ~3.0 fractional increase) |
+| `e_alb_lo_cl` | `-0.0598` | Table 3 (theta7): ALB on CL, ALB \<= 41 g/L |
+| `e_alb_hi_cl` | `-0.0177` | Table 3 (theta8): ALB on CL, ALB \> 41 g/L |
+| `e_crp_lo_cl` | `0.0205` | Table 3 (theta10): CRP on CL, CRP \<= 8 mg/L |
+| `e_crp_hi_cl` | `0.000561` | Table 3 (theta11): CRP on CL, CRP \> 8 mg/L |
+| `e_bsa_cl` | `0.715` | Table 3 (theta9): BSA on CL, per m^2 centered at 1.76 |
+| `e_bsa_vc` | `0.656` | Table 3 (theta12): BSA on V, per m^2 centered at 1.76 |
+| `e_japanese_vc` | `-0.250` | Table 3 (theta13): RACE(J) on V (Japanese) |
+| `e_black_vc` | `0.265` | Table 3 (theta14): RACE(B) on V (Black) |
+| `e_asian_vc` | `0.415` | Table 3 (theta15): RACE(A) on V (Asian) |
+| IIV KA (`etalka`) | `log(1+0.501^2)` | Table 3: IIV KA CV = 50.1% |
+| IIV CL/F (`etalcl`) | `log(1+0.275^2)` | Table 3: IIV CL/F (ADA-) CV = 27.5% (ADA+ CV = 83.6%) |
+| IIV V/F (`etalvc`) | `log(1+0.167^2)` | Table 3: IIV V/F CV = 16.7% |
+| IIV baseline (`etalbaseline`) | `log(1+0.951^2)` | Table 3: IIV baseline (ADA-) CV = 95.1% (ADA+ CV = 72.3%) |
+| `propSd` | `0.346` | Table 3 (theta6): proportional residual = 34.6% (additive on Ln scale) |
+| CL/F composite | `((1-ATB)*theta2 + ATB*theta5) * CL_ALB * CL_CRP * (1 + theta9*(BSA-1.76))` | Table 3 footnote |
+| V/F composite | `theta3 * VRACE * (1 + theta12*(BSA-1.76))` | Table 3 footnote |
+| CL_ALB | `(1 + theta7*(ALB-41))` for ALB \<= 41; `(1 + theta8*(ALB-41))` otherwise | Table 3 footnote |
+| CL_CRP | `(1 + theta10*(CRP-8))` for CRP \<= 8; `(1 + theta11*(CRP-8))` otherwise | Table 3 footnote |
+| VRACE | `1 + theta13*JPN + theta14*BLK + theta15*ASI` (pooled ref = White/Indian/Hispanic/Other) | Table 3 footnote |
 
 Reference covariate values for typical-subject predictions: BSA = 1.76
 m^2, ALB = 41 g/L, CRP = 8 mg/L, ADA-negative, race = reference (White /
@@ -115,6 +116,7 @@ virtual cohort whose covariate distributions approximate Wade 2015 Table
 2.
 
 ``` r
+
 make_cohort <- function(n,
                         n_doses = 6,
                         dosing_interval_days = 28,
@@ -187,6 +189,7 @@ make_cohort <- function(n,
 ```
 
 ``` r
+
 mod <- rxode2::rxode(readModelDb("Wade_2015_certolizumab"))
 #> ℹ parameter labels from comments will be replaced by 'label()'
 ```
@@ -198,6 +201,7 @@ CZP: 400 mg SC Q4W for 6 doses (~24 weeks), with dense sampling in each
 dosing interval. ADA-negative patients are the reference population.
 
 ``` r
+
 events_vpc <- make_cohort(n = 300)
 sim_vpc <- rxode2::rxSolve(mod, events = events_vpc) |> as.data.frame()
 ```
@@ -210,6 +214,7 @@ Wade 2015 Figure 1 shows CZP concentration versus time after dose across
 all studies (linear scale). We reproduce the shape for 400 mg SC Q4W.
 
 ``` r
+
 d_vpc <- sim_vpc |>
   dplyr::group_by(time) |>
   dplyr::summarise(
@@ -249,6 +254,7 @@ theta estimates. We reproduce those relationships using the exact
 covariate forms in the model file.
 
 ``` r
+
 # Apply the same piecewise-linear form the model uses, at the ADA-negative
 # reference subject (BSA = 1.76, so CL is the baseline CL/F = 0.685 L/day).
 cl_ref  <- 0.685
@@ -308,6 +314,7 @@ ADA-positive (right) subjects. We reproduce the typical ADA-negative vs
 ADA-positive trajectories for a 400 mg SC Q4W regimen.
 
 ``` r
+
 mod_typical <- mod |> rxode2::zeroRe()
 
 # Reference subject dosing 400 mg Q4W for 6 doses, sampled every day.
@@ -356,6 +363,7 @@ BSA values in ADA-negative subjects. We reproduce the typical-subject
 profiles.
 
 ``` r
+
 mk_bsa <- function(bsa_value) {
   make_cohort(n = 1, obs_days_per_dose = seq(0, 28, by = 1)) |>
     dplyr::mutate(BSA = bsa_value, ALB = 41, CRP = 8,
@@ -405,6 +413,7 @@ which Wade 2015 reports in the Results text:
 - Elimination half-life, ADA-positive: ~2 days.
 
 ``` r
+
 # Single 400 mg SC dose, dense sampling out to ~56 days (7 ADA-negative
 # half-lives) for a clean terminal-phase characterization.
 ev_single_neg <- make_cohort(
@@ -466,9 +475,10 @@ knitr::kable(as.data.frame(nca_neg$result),
 | single_400mg_ADAneg |   1 |     0 | Inf | span.ratio          |   4.0764241 | NA      |
 | single_400mg_ADAneg |   1 |     0 | Inf | aucinf.obs          | 672.3471000 | NA      |
 
-Single-dose NCA on the typical ADA-negative patient.
+Single-dose NCA on the typical ADA-negative patient. {.table}
 
 ``` r
+
 # Same single 400 mg SC dose, but ADA-positive at every observation. Dense
 # early sampling because the ADA-positive half-life is ~2 days.
 ev_single_pos <- make_cohort(
@@ -520,11 +530,12 @@ knitr::kable(as.data.frame(nca_pos$result),
 | single_400mg_ADApos |   1 |     0 | Inf | span.ratio          |   3.4694473 | NA      |
 | single_400mg_ADApos |   1 |     0 | Inf | aucinf.obs          | 192.8994029 | NA      |
 
-Single-dose NCA on the typical ADA-positive patient.
+Single-dose NCA on the typical ADA-positive patient. {.table}
 
 ### Comparison against published half-lives
 
 ``` r
+
 get_param <- function(res, ppname) {
   tbl <- as.data.frame(res$result)
   val <- tbl$PPORRES[tbl$PPTESTCD == ppname]
@@ -565,14 +576,14 @@ knitr::kable(
 )
 ```
 
-| Quantity                                   | Published | Analytical | NCA_simulated          |
-|:-------------------------------------------|:----------|-----------:|:-----------------------|
-| Absorption half-life (days)                | ~3.5      |       3.47 | n/a (absorption phase) |
-| Elimination half-life, ADA-negative (days) | ~8        |       7.70 | 11.28                  |
-| Elimination half-life, ADA-positive (days) | ~2        |       1.93 | 6.63                   |
+| Quantity | Published | Analytical | NCA_simulated |
+|:---|:---|---:|:---|
+| Absorption half-life (days) | ~3.5 | 3.47 | n/a (absorption phase) |
+| Elimination half-life, ADA-negative (days) | ~8 | 7.70 | 11.28 |
+| Elimination half-life, ADA-positive (days) | ~2 | 1.93 | 6.63 |
 
 Half-lives from the packaged model vs. the values reported in Wade 2015
-Results.
+Results. {.table}
 
 The analytical half-lives derived from the packaged theta estimates
 match the values reported in the Results text of Wade 2015 to within one

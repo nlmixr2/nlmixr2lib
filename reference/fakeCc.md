@@ -35,6 +35,7 @@ Matthew L. Fidler
 ## Examples
 
 ``` r
+
 fakeCc(addDirectLin) |> convertEmaxHill()
 #>  
 #>  

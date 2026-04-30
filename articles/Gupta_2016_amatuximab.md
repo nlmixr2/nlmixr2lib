@@ -1,6 +1,7 @@
 # Gupta_2016_amatuximab
 
 ``` r
+
 library(nlmixr2lib)
 library(rxode2)
 #> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
@@ -54,18 +55,18 @@ the observed Study 003 median Cmin and the published PK characteristics.
 
 Gupta 2016 Table 1 (pharmacokinetic-analysis database, N = 199):
 
-| Field                   | Value                                                                   |
-|-------------------------|-------------------------------------------------------------------------|
-| N subjects              | 199                                                                     |
-| N studies               | 4 (US Phase I, Japanese Phase I, Phase II pancreatic, Phase II MPM)     |
-| Age                     | 33-90 years (mean 64.5, median 65, SD 9.55)                             |
-| Body weight             | 35-134 kg (mean 75.1, median 74, SD 16.4)                               |
-| Baseline serum albumin  | 2.38-5.46 g/dL (mean 3.80, SD 0.53)                                     |
-| Sex                     | 128 M / 71 F (35.7% female)                                             |
-| Race                    | Caucasian 81.4%; Japanese 8.54%; Other 8.04%; missing 2.01%             |
-| ECOG performance status | 0 (59.8%); 1 (39.2%); 2 (1%)                                            |
-| Typical regimen (MPM)   | 5 mg/kg IV on Days 1 and 8 of each 21-day cycle + pemetrexed/cisplatin  |
-| Phase I doses           | 12.5-400 mg/m² (US); 50-200 mg/m² (Japan), weekly in 4-of-6-week cycles |
+| Field | Value |
+|----|----|
+| N subjects | 199 |
+| N studies | 4 (US Phase I, Japanese Phase I, Phase II pancreatic, Phase II MPM) |
+| Age | 33-90 years (mean 64.5, median 65, SD 9.55) |
+| Body weight | 35-134 kg (mean 75.1, median 74, SD 16.4) |
+| Baseline serum albumin | 2.38-5.46 g/dL (mean 3.80, SD 0.53) |
+| Sex | 128 M / 71 F (35.7% female) |
+| Race | Caucasian 81.4%; Japanese 8.54%; Other 8.04%; missing 2.01% |
+| ECOG performance status | 0 (59.8%); 1 (39.2%); 2 (1%) |
+| Typical regimen (MPM) | 5 mg/kg IV on Days 1 and 8 of each 21-day cycle + pemetrexed/cisplatin |
+| Phase I doses | 12.5-400 mg/m² (US); 50-200 mg/m² (Japan), weekly in 4-of-6-week cycles |
 
 The same information is available programmatically via
 `readModelDb("Gupta_2016_amatuximab")$population`.
@@ -77,32 +78,32 @@ Every numeric value in the model file
 et al. *Cancer Chemother Pharmacol* 2016;77(4):733-743
 ([doi:10.1007/s00280-016-2984-z](https://doi.org/10.1007/s00280-016-2984-z)).
 
-| Quantity                                                              | Source location                             | Value used                                             |
-|-----------------------------------------------------------------------|---------------------------------------------|--------------------------------------------------------|
-| Two-compartment PK with parallel linear + MM elimination              | Results “Final PK model”, Table 2 structure | see ODE block                                          |
-| $\theta_{CL}$ linear clearance (ADA-negative, 70 kg)                  | Table 2                                     | 0.0299 L/h                                             |
-| $\theta_{V_{c}}$ central volume (70 kg reference)                     | Table 2                                     | 3.89 L                                                 |
-| $\theta_{Q}$ intercompartmental clearance                             | Table 2                                     | 0.0147 L/h                                             |
-| $\theta_{V_{p}}$ peripheral volume                                    | Table 2                                     | 2.62 L                                                 |
-| $\theta_{V_{\max}}$ Michaelis-Menten maximum rate                     | Table 2                                     | 0.173 mg/h                                             |
-| $\theta_{K_{m}}$ Michaelis-Menten constant                            | Table 2                                     | 790 ng/mL (= 0.79 µg/mL)                               |
-| Body-weight effect form on $V_{c}$                                    | Table 2 equation header                     | $V_{c} = \theta_{V_{c}} \cdot (WGT/70)^{\theta_{WGT}}$ |
-| $\theta_{WGT}$ weight exponent on $V_{c}$                             | Table 2                                     | 0.597                                                  |
-| ADA effect form on CL                                                 | Table 2 equation header                     | $CL = \theta_{CL} \cdot \theta_{ADA}^{ADA}$            |
-| $\theta_{ADA}$ CL multiplier when ADA titer \> 64                     | Table 2                                     | 1.49                                                   |
-| ADA-threshold selection (\>64)                                        | Results p. 738                              | retained after testing \>1, \>4, \>64, \>160           |
-| Manly-transformation shape factor for $\omega_{V_{\max}}^{2}$         | Table 2                                     | -0.181 (95% CI -0.450 to 0.0875)                       |
-| Inter-individual variability $\omega_{CL}^{2}$ / $\omega_{V_{c}}^{2}$ | Table 2 (CV %)                              | CV = 24.1 / 24.1%                                      |
-| IIV correlation CL-$V_{c}$                                            | Table 2                                     | 41.1%                                                  |
-| IIV $\omega_{V_{\max}}^{2}$                                           | Table 2 (CV %)                              | 124%                                                   |
-| Proportional residual error                                           | Table 2                                     | CV = 33.9%                                             |
-| Additive residual error                                               | Table 2                                     | 24.5 ng/mL FIXED (= 1/4 LLOQ = 98/4 ng/mL)             |
-| Baseline demographics distribution                                    | Table 1                                     | see Population section                                 |
+| Quantity | Source location | Value used |
+|----|----|----|
+| Two-compartment PK with parallel linear + MM elimination | Results “Final PK model”, Table 2 structure | see ODE block |
+| $`\theta_{CL}`$ linear clearance (ADA-negative, 70 kg) | Table 2 | 0.0299 L/h |
+| $`\theta_{V_c}`$ central volume (70 kg reference) | Table 2 | 3.89 L |
+| $`\theta_{Q}`$ intercompartmental clearance | Table 2 | 0.0147 L/h |
+| $`\theta_{V_p}`$ peripheral volume | Table 2 | 2.62 L |
+| $`\theta_{V_{\max}}`$ Michaelis-Menten maximum rate | Table 2 | 0.173 mg/h |
+| $`\theta_{K_m}`$ Michaelis-Menten constant | Table 2 | 790 ng/mL (= 0.79 µg/mL) |
+| Body-weight effect form on $`V_c`$ | Table 2 equation header | $`V_c = \theta_{V_c}\cdot(WGT/70)^{\theta_{WGT}}`$ |
+| $`\theta_{WGT}`$ weight exponent on $`V_c`$ | Table 2 | 0.597 |
+| ADA effect form on CL | Table 2 equation header | $`CL = \theta_{CL}\cdot\theta_{ADA}^{ADA}`$ |
+| $`\theta_{ADA}`$ CL multiplier when ADA titer \> 64 | Table 2 | 1.49 |
+| ADA-threshold selection (\>64) | Results p. 738 | retained after testing \>1, \>4, \>64, \>160 |
+| Manly-transformation shape factor for $`\omega^2_{V_{\max}}`$ | Table 2 | -0.181 (95% CI -0.450 to 0.0875) |
+| Inter-individual variability $`\omega^2_{CL}`$ / $`\omega^2_{V_c}`$ | Table 2 (CV %) | CV = 24.1 / 24.1% |
+| IIV correlation CL-$`V_c`$ | Table 2 | 41.1% |
+| IIV $`\omega^2_{V_{\max}}`$ | Table 2 (CV %) | 124% |
+| Proportional residual error | Table 2 | CV = 33.9% |
+| Additive residual error | Table 2 | 24.5 ng/mL FIXED (= 1/4 LLOQ = 98/4 ng/mL) |
+| Baseline demographics distribution | Table 1 | see Population section |
 
 CV% values are converted to log-normal variances via
-$\omega^{2} = \log\left( CV^{2} + 1 \right)$, and the CL-$V_{c}$
-covariance is
-${cov} = r \cdot \sqrt{\omega_{CL}^{2} \cdot \omega_{V_{c}}^{2}} = 0.411 \cdot 0.056443 = 0.023198$.
+$`\omega^2 = \log(CV^2 + 1)`$, and the CL-$`V_c`$ covariance is
+$`\mathrm{cov} = r \cdot \sqrt{\omega^2_{CL}\cdot\omega^2_{V_c}}
+= 0.411 \cdot 0.056443 = 0.023198`$.
 
 ### Virtual cohort
 
@@ -116,6 +117,7 @@ does not publish the exact ADA-prevalence distribution for the PK
 dataset.
 
 ``` r
+
 set.seed(2016)
 n_subj <- 200
 
@@ -150,6 +152,7 @@ each pre-dose trough, end-of-infusion, 24 h, 72 h, and mid-interval for
 NCA.
 
 ``` r
+
 week_h <- 7 * 24
 n_cycles <- 6
 cycle_h <- 21 * 24
@@ -202,6 +205,7 @@ typical-value reference pass via
 [`rxode2::zeroRe()`](https://nlmixr2.github.io/rxode2/reference/zeroRe.html).
 
 ``` r
+
 mod <- readModelDb("Gupta_2016_amatuximab")
 
 set.seed(20160222)
@@ -227,6 +231,7 @@ profile (0-168 h) for the virtual cohort overlaid with the typical-value
 trajectory.
 
 ``` r
+
 first_dose <- sim_full |> filter(time <= 168, time > 0)
 first_typ  <- sim_typ  |> filter(time <= 168, time > 0, id == 1)
 
@@ -254,11 +259,12 @@ ggplot() +
 
 Gupta 2016 (Results “Simulations and dose evaluation”, p. 739) simulated
 a weekly 5 mg/kg regimen without interruption. The paper reports that
-without ADA, the simulated median steady-state $C_{\min}$ was 83.1
-µg/mL, and approximately 80% of patients achieved $C_{\min}$ above the
+without ADA, the simulated median steady-state $`C_\min`$ was 83.1
+µg/mL, and approximately 80% of patients achieved $`C_\min`$ above the
 exposure-response threshold of 38.2 µg/mL.
 
 ``` r
+
 trough <- sim_full |>
   filter(time %in% dose_times) |>
   mutate(ADA_label = ifelse(ADA_POS == 1, "ADA titer > 64", "ADA-negative"))
@@ -295,14 +301,15 @@ ggplot(trough_summary, aes(time_day, Q50, colour = ADA_label, fill = ADA_label))
 ### PKNCA validation at the final-week steady state
 
 Run NCA on the final 168-h (weekly) dosing interval of the 18-dose
-course and compare the simulated $C_{\max}$, $C_{\min}$,
-$AUC_{0 - \tau}$, and terminal half-life against published values.
+course and compare the simulated $`C_\max`$, $`C_\min`$,
+$`AUC_{0-\tau}`$, and terminal half-life against published values.
 
 The PKNCA formula includes a treatment grouping variable (ADA status) so
 results can be rolled up separately for ADA-negative and ADA titer \> 64
 subjects, per the library’s PKNCA-recipe convention.
 
 ``` r
+
 tau_h   <- week_h
 start_ss <- max(dose_times)
 end_ss   <- start_ss + tau_h
@@ -340,7 +347,7 @@ intervals <- data.frame(
 )
 
 res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■       86% |  ETA:  0s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■           72% |  ETA:  1s
 nca_summary <- as.data.frame(res$result) |>
   filter(PPTESTCD %in% c("cmax", "tmax", "cmin", "auclast", "cav", "half.life")) |>
   group_by(treatment, PPTESTCD) |>
@@ -371,6 +378,7 @@ nca_summary
 ### Comparison against published values
 
 ``` r
+
 sim_cmin_ss <- sim_full |>
   filter(time == start_ss) |>
   group_by(ADA_POS) |>
@@ -397,40 +405,40 @@ comparison
 ```
 
 Interpretation: The model reproduces the directionality and the ADA
-effect magnitude (simulated $C_{\min}$ ratio ADA-positive : ADA-negative
+effect magnitude (simulated $`C_\min`$ ratio ADA-positive : ADA-negative
 closely matches the paper’s reported ratio of ~26.9 / 83.1 = 0.32,
 consistent with the 1/1.49 fold clearance increase). The **absolute**
-simulated $C_{\min}$ values are systematically lower than the paper’s
+simulated $`C_\min`$ values are systematically lower than the paper’s
 published stochastic simulation values — see “Assumptions and
 deviations” for the likely cause (the published Manly eta transformation
-on $V_{\max}$ is not re-implemented here, and the paper’s stochastic
+on $`V_\max`$ is not re-implemented here, and the paper’s stochastic
 median may be influenced by the heavy upper tail of the log-normal
-$V_{\max}$ distribution at $\omega = 1.24$).
+$`V_\max`$ distribution at $`\omega = 1.24`$).
 
 ### Assumptions and deviations
 
-- **Manly transformation on $\eta_{V_{\max}}$.** Gupta 2016 applied a
-  Manly transformation with shape factor $\lambda = - 0.181$ (95% CI
+- **Manly transformation on $`\eta_{V_\max}`$.** Gupta 2016 applied a
+  Manly transformation with shape factor $`\lambda = -0.181`$ (95% CI
   -0.450 to 0.0875, i.e., not statistically distinguishable from zero /
-  log-normal) to the eta on $V_{\max}$. This vignette uses the standard
-  log-normal form in nlmixr2 without Manly reshaping. Since $\lambda$’s
-  CI includes zero, this is a first-order-equivalent approximation; the
-  simulated marginal $V_{\max}$ distribution differs only in the upper
-  tail. The paper’s Table 2 CV of 124% is treated as a log-normal CV and
-  converted via $\omega^{2} = \log\left( CV^{2} + 1 \right)$.
-- **Absolute $C_{\min}$ offset vs paper’s dose-evaluation simulation.**
+  log-normal) to the eta on $`V_\max`$. This vignette uses the standard
+  log-normal form in nlmixr2 without Manly reshaping. Since
+  $`\lambda`$’s CI includes zero, this is a first-order-equivalent
+  approximation; the simulated marginal $`V_\max`$ distribution differs
+  only in the upper tail. The paper’s Table 2 CV of 124% is treated as a
+  log-normal CV and converted via $`\omega^2 = \log(CV^2 + 1)`$.
+- **Absolute $`C_\min`$ offset vs paper’s dose-evaluation simulation.**
   The paper’s dose-evaluation sim reports median weekly-regimen
-  $C_{\min}$ of 83.1 µg/mL (no ADA) and 26.9 µg/mL (ADA \>64). The
+  $`C_\min`$ of 83.1 µg/mL (no ADA) and 26.9 µg/mL (ADA \>64). The
   vignette’s typical-value simulation is lower (around 30 µg/mL no-ADA),
   and stochastic medians from the virtual cohort track the typical value
   closely. Possible contributors: the paper’s Manly transformation
-  (which produces a heavier-tailed $V_{\max}$ distribution than a pure
-  log-normal) can raise the median predicted $C_{\min}$ due to the
-  right-tail mass of low-$V_{\max}$ subjects; and the paper does not
+  (which produces a heavier-tailed $`V_\max`$ distribution than a pure
+  log-normal) can raise the median predicted $`C_\min`$ due to the
+  right-tail mass of low-$`V_\max`$ subjects; and the paper does not
   report the residual baseline demographic distribution (weight, ADA
   prevalence) used inside the 199-patient dose-evaluation stochastic
   cohort, so this vignette supplies plausible defaults. The observed
-  median $C_{\min}$ in the MPM Study 003 (38.2 µg/mL, under intermittent
+  median $`C_\min`$ in the MPM Study 003 (38.2 µg/mL, under intermittent
   D1+D8 of 21-day cycle dosing) is closer in magnitude to the simulation
   here.
 - **ADA prevalence.** The exact ADA-positivity prevalence inside the

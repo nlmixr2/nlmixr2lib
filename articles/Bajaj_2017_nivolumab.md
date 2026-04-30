@@ -22,13 +22,19 @@ temporal trend in nivolumab CL.
 Structure: linear two-compartment IV model with time-varying CL via a
 sigmoid-Emax function of time since first dose:
 
-$${CL}_{t,i}\; = \;{CL}_{i} \cdot \exp\!\left( \frac{E_{\max,i}\, t^{\gamma}}{T_{50}^{\gamma} + t^{\gamma}} \right),\qquad E_{\max,i} = E_{\max,{TV}} + \eta_{E_{\max},i}$$
+``` math
+\mathrm{CL}_{t,i} \;=\; \mathrm{CL}_i \cdot
+  \exp\!\left( \dfrac{E_{\max,i}\, t^{\gamma}}
+                     {T_{50}^{\gamma} + t^{\gamma}} \right),
+\qquad
+E_{\max,i} = E_{\max,\mathrm{TV}} + \eta_{E_{\max},i}
+```
 
-with $E_{\max} = - 0.295$ (a fractional decrease in CL at
-$t \gg T_{50}$) and $T_{50} = 1,410$ h = 58.75 days. Covariate effects:
-body weight (power) and eGFR (CKD-EPI, power) on CL; ECOG performance
-status $\geq 1$, male sex, and Asian race (exponential indicators) on
-CL; body weight (power) and male sex (exponential) on Vc.
+with $`E_{\max} = -0.295`$ (a fractional decrease in CL at
+$`t \gg T_{50}`$) and $`T_{50} = 1{,}410`$ h = 58.75 days. Covariate
+effects: body weight (power) and eGFR (CKD-EPI, power) on CL; ECOG
+performance status $`\geq 1`$, male sex, and Asian race (exponential
+indicators) on CL; body weight (power) and male sex (exponential) on Vc.
 
 ## Population
 
@@ -62,26 +68,26 @@ The per-parameter origin is recorded as an in-file comment next to each
 `inst/modeldb/specificDrugs/Bajaj_2017_nivolumab.R`. The table below
 collects them in one place for review.
 
-| Parameter (model name)                 | Value                   | Source                                                        |
-|----------------------------------------|-------------------------|---------------------------------------------------------------|
-| `lcl` (CL_BASE,REF, L/day)             | log(9.4 × 24/1000)      | Bajaj 2017 Table 1, CL_REF = 9.4 mL/h                         |
-| `lvc` (VC_REF, L)                      | log(3.63)               | Bajaj 2017 Table 1, VC_REF                                    |
-| `lq` (Q_REF, L/day)                    | log(32.1 × 24/1000)     | Bajaj 2017 Table 1, Q_REF = 32.1 mL/h                         |
-| `lvp` (VP_REF, L)                      | log(2.78)               | Bajaj 2017 Table 1, VP_REF                                    |
-| `e_wt_cl` (power, WT on CL)            | 0.566                   | Bajaj 2017 Table 1, CL_BW                                     |
-| `e_crcl_cl` (power, eGFR on CL)        | 0.186                   | Bajaj 2017 Table 1, CL_eGFR                                   |
-| `e_ecog_ge1_cl` (exp, ECOG_GE1 on CL)  | 0.172                   | Bajaj 2017 Table 1, CL_BPS                                    |
-| `e_sex_cl` (exp, male-indicator on CL) | 0.165                   | Bajaj 2017 Table 1, CL_SEX                                    |
-| `e_race_asian_cl` (exp, Asian on CL)   | -0.125                  | Bajaj 2017 Table 1, CL_RAAS                                   |
-| `cl_emax` (Emax, unitless)             | -0.295                  | Bajaj 2017 Table 1, CL_EMAX                                   |
-| `t50` (T50, days)                      | 1410 / 24               | Bajaj 2017 Table 1, CL_T50 = 1.41 × 10^3 h                    |
-| `cl_hill` (Hill, unitless)             | 3.15                    | Bajaj 2017 Table 1, CL_HILL                                   |
-| `e_wt_vc` (power, WT on VC)            | 0.597                   | Bajaj 2017 Table 1, VC_BW                                     |
-| `e_sex_vc` (exp, male-indicator on VC) | 0.152                   | Bajaj 2017 Table 1, VC_SEX                                    |
-| IIV block `etalcl + etalvc`            | c(0.123, 0.0432, 0.123) | Bajaj 2017 Table 1, omega^2_CL, omega_CL:omega_VC, omega^2_VC |
-| `etalvp`                               | 0.258                   | Bajaj 2017 Table 1, omega^2_VP                                |
-| `etacl_emax`                           | 0.0719                  | Bajaj 2017 Table 1, omega^2_EMAX (additive IIV per Eq. 3)     |
-| `propSd`                               | 0.215                   | Bajaj 2017 Table 1, proportional error                        |
+| Parameter (model name) | Value | Source |
+|----|----|----|
+| `lcl` (CL_BASE,REF, L/day) | log(9.4 × 24/1000) | Bajaj 2017 Table 1, CL_REF = 9.4 mL/h |
+| `lvc` (VC_REF, L) | log(3.63) | Bajaj 2017 Table 1, VC_REF |
+| `lq` (Q_REF, L/day) | log(32.1 × 24/1000) | Bajaj 2017 Table 1, Q_REF = 32.1 mL/h |
+| `lvp` (VP_REF, L) | log(2.78) | Bajaj 2017 Table 1, VP_REF |
+| `e_wt_cl` (power, WT on CL) | 0.566 | Bajaj 2017 Table 1, CL_BW |
+| `e_crcl_cl` (power, eGFR on CL) | 0.186 | Bajaj 2017 Table 1, CL_eGFR |
+| `e_ecog_ge1_cl` (exp, ECOG_GE1 on CL) | 0.172 | Bajaj 2017 Table 1, CL_BPS |
+| `e_sex_cl` (exp, male-indicator on CL) | 0.165 | Bajaj 2017 Table 1, CL_SEX |
+| `e_race_asian_cl` (exp, Asian on CL) | -0.125 | Bajaj 2017 Table 1, CL_RAAS |
+| `cl_emax` (Emax, unitless) | -0.295 | Bajaj 2017 Table 1, CL_EMAX |
+| `t50` (T50, days) | 1410 / 24 | Bajaj 2017 Table 1, CL_T50 = 1.41 × 10^3 h |
+| `cl_hill` (Hill, unitless) | 3.15 | Bajaj 2017 Table 1, CL_HILL |
+| `e_wt_vc` (power, WT on VC) | 0.597 | Bajaj 2017 Table 1, VC_BW |
+| `e_sex_vc` (exp, male-indicator on VC) | 0.152 | Bajaj 2017 Table 1, VC_SEX |
+| IIV block `etalcl + etalvc` | c(0.123, 0.0432, 0.123) | Bajaj 2017 Table 1, omega^2_CL, omega_CL:omega_VC, omega^2_VC |
+| `etalvp` | 0.258 | Bajaj 2017 Table 1, omega^2_VP |
+| `etacl_emax` | 0.0719 | Bajaj 2017 Table 1, omega^2_EMAX (additive IIV per Eq. 3) |
+| `propSd` | 0.215 | Bajaj 2017 Table 1, proportional error |
 
 Equations: structural two-compartment micro-constant form; Eqs. 7, 8,
 and 10 of Bajaj 2017 express CL(t) and VC in terms of the reference
@@ -100,6 +106,7 @@ log-normal / normal distributions around the reported means; binary /
 categorical covariates match the reported marginal distributions.
 
 ``` r
+
 set.seed(2017)
 n_subj <- 200
 
@@ -119,6 +126,7 @@ across indications) and **10 mg/kg Q2W** (the highest dose in the PK
 analysis).
 
 ``` r
+
 dose_interval_d <- 14
 n_doses         <- 12
 dose_times_d    <- seq(0, by = dose_interval_d, length.out = n_doses)
@@ -148,6 +156,7 @@ events_10 <- build_events(cohort, 10)
 ## Simulation
 
 ``` r
+
 mod <- readModelDb("Bajaj_2017_nivolumab")
 sim_3  <- rxSolve(mod, events = events_3,  returnType = "data.frame")
 #> ℹ parameter labels from comments will be replaced by 'label()'
@@ -167,6 +176,7 @@ interval** from the packaged model, analogous to the shaded bands of the
 paper’s VPC.
 
 ``` r
+
 sim_summary <- sim |>
   dplyr::filter(time > 0) |>
   dplyr::group_by(time, treatment) |>
@@ -197,13 +207,14 @@ ggplot(sim_summary, aes(time, median, colour = treatment, fill = treatment)) +
 ## Time-varying clearance
 
 Bajaj 2017 reports a sigmoid decrease in CL from baseline to about
-${CL}_{base} \cdot \exp( - 0.295)$ = 74.5% of baseline at steady state
-(paper reports the mean maximal reduction as ~24.5%). The typical-value
-CL(t) / CL(0) profile below reproduces the time course at a white
-female, 80 kg, eGFR 90, ECOG 0, non-Asian reference subject
+$`\mathrm{CL}_\mathrm{base} \cdot \exp(-0.295)`$ = 74.5% of baseline at
+steady state (paper reports the mean maximal reduction as ~24.5%). The
+typical-value CL(t) / CL(0) profile below reproduces the time course at
+a white female, 80 kg, eGFR 90, ECOG 0, non-Asian reference subject
 (deterministic, etas = 0):
 
 ``` r
+
 t_grid <- seq(0, 365, by = 5)
 events_cl <- data.frame(
   ID         = 1,
@@ -253,6 +264,7 @@ half-life at steady state is in the range Bajaj 2017 reports for
 t\_{1/2}(β) (geometric mean 25 days; 77.5% CV).
 
 ``` r
+
 # Use the 12th (last simulated) dosing interval as the steady-state
 # approximation. Time-since-first-dose of 154 to 168 days spans this
 # interval.
@@ -293,21 +305,22 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
-#>  ■■■■■■■■■■■■■■                    43% |  ETA:  5s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■         79% |  ETA:  2s
+#>  ■■■■■■■■                          22% |  ETA:  6s
+#>  ■■■■■■■■■■■■■■■■■■                58% |  ETA:  4s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    98% |  ETA:  0s
 knitr::kable(
   summary(nca_res),
   caption = "Simulated NCA parameters at steady state (12th dosing interval, days 154-168)"
 )
 ```
 
-| start | end | treatment    | N   | auclast       | cmax         | cmin          | tmax                | half.life     |
-|------:|----:|:-------------|:----|:--------------|:-------------|:--------------|:--------------------|:--------------|
-|     0 |  14 | 10 mg/kg Q2W | 200 | 3560 \[44.3\] | 353 \[35.3\] | 195 \[54.5\]  | 1.00 \[1.00, 1.00\] | 28.0 \[13.3\] |
-|     0 |  14 | 3 mg/kg Q2W  | 200 | 1090 \[42.5\] | 108 \[33.7\] | 59.7 \[52.1\] | 1.00 \[1.00, 1.00\] | 28.7 \[15.1\] |
+| start | end | treatment | N | auclast | cmax | cmin | tmax | half.life |
+|---:|---:|:---|:---|:---|:---|:---|:---|:---|
+| 0 | 14 | 10 mg/kg Q2W | 200 | 3560 \[44.3\] | 353 \[35.3\] | 195 \[54.5\] | 1.00 \[1.00, 1.00\] | 28.0 \[13.3\] |
+| 0 | 14 | 3 mg/kg Q2W | 200 | 1090 \[42.5\] | 108 \[33.7\] | 59.7 \[52.1\] | 1.00 \[1.00, 1.00\] | 28.7 \[15.1\] |
 
 Simulated NCA parameters at steady state (12th dosing interval, days
-154-168)
+154-168) {.table}
 
 ## Comparison against published values
 
@@ -315,13 +328,13 @@ Bajaj 2017 does not publish a pooled NCA table. The paper does report
 population-level PK descriptors (Results and Table 1 footnotes) that can
 be cross-checked against the packaged model:
 
-| Quantity                                   | Bajaj 2017                          | This model                                                                                    |
-|--------------------------------------------|-------------------------------------|-----------------------------------------------------------------------------------------------|
-| Baseline CL at reference covariates        | 9.4 mL/h (= 0.226 L/day)            | `exp(lcl) = 0.226 L/day` (see [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html)) |
-| Mean maximal reduction in CL from baseline | ~24.5%                              | `1 - exp(cl_emax) = 1 - exp(-0.295) = 25.5%`                                                  |
-| Geometric mean terminal t\_{1/2}(alpha)    | 32.5 h (CV 24.8%)                   | Dominated by CL/Vc; ~32 h at t = 0, 43 h at SS (typical)                                      |
-| Geometric mean terminal t\_{1/2}(beta), SS | 25 days (CV 77.5%)                  | Consistent with `half.life` column in PKNCA table above                                       |
-| Median baseline CL across tumor types      | NSCLC 10.5, MEL 10.8, RCC 11.5 mL/h | Not reproducible without per-tumor-type covariates (not in final model)                       |
+| Quantity | Bajaj 2017 | This model |
+|----|----|----|
+| Baseline CL at reference covariates | 9.4 mL/h (= 0.226 L/day) | `exp(lcl) = 0.226 L/day` (see [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html)) |
+| Mean maximal reduction in CL from baseline | ~24.5% | `1 - exp(cl_emax) = 1 - exp(-0.295) = 25.5%` |
+| Geometric mean terminal t\_{1/2}(alpha) | 32.5 h (CV 24.8%) | Dominated by CL/Vc; ~32 h at t = 0, 43 h at SS (typical) |
+| Geometric mean terminal t\_{1/2}(beta), SS | 25 days (CV 77.5%) | Consistent with `half.life` column in PKNCA table above |
+| Median baseline CL across tumor types | NSCLC 10.5, MEL 10.8, RCC 11.5 mL/h | Not reproducible without per-tumor-type covariates (not in final model) |
 
 Differences within 20% are expected; anything larger would indicate a
 coding error. The PKNCA table’s `half.life` column should be compared

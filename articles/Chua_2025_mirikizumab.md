@@ -1,6 +1,7 @@
 # Chua_2025_mirikizumab
 
 ``` r
+
 library(nlmixr2lib)
 library(rxode2)
 #> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
@@ -74,33 +75,33 @@ The per-parameter origin is recorded as an in-file comment next to each
 parameters have been converted from h^-1 (as published) to day^-1
 (nlmixr2lib time convention) by multiplying by 24.
 
-| Parameter / equation            | Value (day-units)                       | Source                                        |
-|---------------------------------|-----------------------------------------|-----------------------------------------------|
-| `ka`                            | 0.00693 × 24 = 0.16632 /day             | Table 2 VIVID-1                               |
-| `CL` (reference covariates)     | 0.0197 × 24 = 0.4728 L/day              | Table 2 VIVID-1                               |
-| `Vc` (V2)                       | 2.78 L                                  | Table 2 VIVID-1                               |
-| `Vp` (V3)                       | 1.61 L                                  | Table 2 VIVID-1                               |
-| `Q`                             | 0.00921 × 24 = 0.22104 L/day            | Table 2 VIVID-1                               |
-| `F_pop` (at BMI=24.75)          | 0.388 (38.8%)                           | Table 2 VIVID-1                               |
-| WT effect on CL, Q              | power exponent 0.268, ref 65 kg         | Table 2 footnote c                            |
-| WT effect on Vc, Vp             | power exponent 0.445, ref 65 kg         | Table 2 footnote d                            |
-| ALB linear effect on CL         | 1 + (ALB - 44.57) × (-0.0200)           | Table 2 footnote c                            |
-| CRP power effect on CL          | (CRP / 7.41)^0.0853                     | Table 2 footnote c                            |
-| BMI linear-on-logit effect on F | slope -0.0354, centered at 24.75 kg/m^2 | Table 2 footnote e                            |
-| IIV CL                          | omega^2 = log(0.323^2 + 1) = 0.09927    | Table 2 VIVID-1 (32.3% CV)                    |
-| IIV Vc                          | omega^2 = log(0.171^2 + 1) = 0.02882    | Table 2 VIVID-1 (17.1% CV)                    |
-| IIV Vp                          | omega^2 = log(0.236^2 + 1) = 0.05421    | Table 2 VIVID-1 (23.6% CV)                    |
-| IIV logit(F)                    | OMEGA_F = 0.517^2 = 0.26729             | Table 2 footnote b (51.7% IIV on logit scale) |
-| Residual error                  | propSd = 0.20, addSd = 0.10 ug/mL       | **Assumed** (not published; see Assumptions)  |
+| Parameter / equation | Value (day-units) | Source |
+|----|----|----|
+| `ka` | 0.00693 × 24 = 0.16632 /day | Table 2 VIVID-1 |
+| `CL` (reference covariates) | 0.0197 × 24 = 0.4728 L/day | Table 2 VIVID-1 |
+| `Vc` (V2) | 2.78 L | Table 2 VIVID-1 |
+| `Vp` (V3) | 1.61 L | Table 2 VIVID-1 |
+| `Q` | 0.00921 × 24 = 0.22104 L/day | Table 2 VIVID-1 |
+| `F_pop` (at BMI=24.75) | 0.388 (38.8%) | Table 2 VIVID-1 |
+| WT effect on CL, Q | power exponent 0.268, ref 65 kg | Table 2 footnote c |
+| WT effect on Vc, Vp | power exponent 0.445, ref 65 kg | Table 2 footnote d |
+| ALB linear effect on CL | 1 + (ALB - 44.57) × (-0.0200) | Table 2 footnote c |
+| CRP power effect on CL | (CRP / 7.41)^0.0853 | Table 2 footnote c |
+| BMI linear-on-logit effect on F | slope -0.0354, centered at 24.75 kg/m^2 | Table 2 footnote e |
+| IIV CL | omega^2 = log(0.323^2 + 1) = 0.09927 | Table 2 VIVID-1 (32.3% CV) |
+| IIV Vc | omega^2 = log(0.171^2 + 1) = 0.02882 | Table 2 VIVID-1 (17.1% CV) |
+| IIV Vp | omega^2 = log(0.236^2 + 1) = 0.05421 | Table 2 VIVID-1 (23.6% CV) |
+| IIV logit(F) | OMEGA_F = 0.517^2 = 0.26729 | Table 2 footnote b (51.7% IIV on logit scale) |
+| Residual error | propSd = 0.20, addSd = 0.10 ug/mL | **Assumed** (not published; see Assumptions) |
 
 ## Covariate column naming
 
-| Source column      | Canonical column used here | Notes                                        |
-|--------------------|----------------------------|----------------------------------------------|
-| body weight (BWT)  | `WT` (kg)                  | Baseline; reference 65 kg                    |
-| serum albumin      | `ALB` (g/L)                | Time-varying in source; reference 44.57 g/L  |
-| C-reactive protein | `CRP` (mg/L)               | Standard CRP, not hsCRP; reference 7.41 mg/L |
-| body mass index    | `BMI` (kg/m^2)             | Baseline; reference 24.75 kg/m^2             |
+| Source column | Canonical column used here | Notes |
+|----|----|----|
+| body weight (BWT) | `WT` (kg) | Baseline; reference 65 kg |
+| serum albumin | `ALB` (g/L) | Time-varying in source; reference 44.57 g/L |
+| C-reactive protein | `CRP` (mg/L) | Standard CRP, not hsCRP; reference 7.41 mg/L |
+| body mass index | `BMI` (kg/m^2) | Baseline; reference 24.75 kg/m^2 |
 
 `CRP` and `BMI` are canonical entries in
 `inst/references/covariate-columns.md`. The `hsCRP` column
@@ -117,6 +118,7 @@ centered and scaled to give simulated individual parameters that bracket
 the reference values.
 
 ``` r
+
 set.seed(20250819)
 n_subj <- 300
 
@@ -139,6 +141,7 @@ Approved VIVID-1 regimen: 900 mg IV every 4 weeks for 3 doses (weeks 0,
 4, 8), then 300 mg SC every 4 weeks from week 12 through week 52.
 
 ``` r
+
 week <- 7 # days per week
 iv_days <- c(0, 4, 8) * week          # 0, 28, 56
 sc_days <- seq(12, 48, by = 4) * week # 84, 112, ..., 336
@@ -173,6 +176,7 @@ events <- bind_rows(iv_dose, sc_dose, obs) |>
 ## Simulate
 
 ``` r
+
 mod <- readModelDb("Chua_2025_mirikizumab")
 sim <- rxode2::rxSolve(mod, events = events, returnType = "data.frame")
 #> ℹ parameter labels from comments will be replaced by 'label()'
@@ -181,6 +185,7 @@ sim <- rxode2::rxSolve(mod, events = events, returnType = "data.frame")
 ### Concentration-time profile
 
 ``` r
+
 sim_summary <- sim |>
   filter(time > 0) |>
   group_by(time) |>
@@ -213,17 +218,18 @@ ggplot(sim_summary, aes(x = time / week, y = Q50)) +
 The paper reports steady-state exposures on each phase of the regimen
 (Chua 2025 Section 3.1.1 and Figure S6):
 
-| Metric                 | IV induction (900 mg Q4W) | SC maintenance (300 mg Q4W) |
-|------------------------|---------------------------|-----------------------------|
-| Cmax,ss (ug/mL)        | 332                       | 13.6                        |
-| AUC_tau,ss (ug.day/mL) | 1820                      | 220                         |
-| Terminal t1/2 (days)   | 9.3                       | 9.3                         |
+| Metric | IV induction (900 mg Q4W) | SC maintenance (300 mg Q4W) |
+|----|----|----|
+| Cmax,ss (ug/mL) | 332 | 13.6 |
+| AUC_tau,ss (ug.day/mL) | 1820 | 220 |
+| Terminal t1/2 (days) | 9.3 | 9.3 |
 
 Compute PKNCA NCA parameters over the steady-state IV interval (dose 3:
 week 8 to week 12) and the steady-state SC interval (dose at week 48 to
 week 52).
 
 ``` r
+
 tau <- 4 * week # 28 days
 
 iv_ss_start <- 8 * week
@@ -251,6 +257,7 @@ nca_dose <- bind_rows(
 ```
 
 ``` r
+
 conc_obj <- PKNCA::PKNCAconc(nca_conc, Cc ~ time_rel | treatment + ID)
 dose_obj <- PKNCA::PKNCAdose(nca_dose, AMT ~ time_rel | treatment + ID)
 
@@ -266,8 +273,8 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- suppressWarnings(PKNCA::pk.nca(nca_data))
-#>  ■■■■■■■■■                         27% |  ETA:  4s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■        84% |  ETA:  1s
+#>  ■■■■■■■■■■                        30% |  ETA:  3s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■       88% |  ETA:  1s
 
 knitr::kable(
   summary(nca_res),
@@ -276,16 +283,18 @@ knitr::kable(
 )
 ```
 
-| start | end | treatment       | N   | auclast       | cmax          | cmin          | tmax                   | cav           |
-|------:|----:|:----------------|:----|:--------------|:--------------|:--------------|:-----------------------|:--------------|
-|     0 |  28 | IV_900mg_Q4W_ss | 300 | 1820 \[34.6\] | 339 \[20.0\]  | 10.4 \[96.6\] | 0.000 \[0.000, 0.000\] | 65.0 \[34.6\] |
-|     0 |  28 | SC_300mg_Q4W_ss | 300 | 227 \[51.6\]  | 14.1 \[43.9\] | 2.58 \[81.9\] | 5.00 \[3.00, 6.50\]    | 8.11 \[51.6\] |
+| start | end | treatment | N | auclast | cmax | cmin | tmax | cav |
+|---:|---:|:---|:---|:---|:---|:---|:---|:---|
+| 0 | 28 | IV_900mg_Q4W_ss | 300 | 1820 \[34.6\] | 339 \[20.0\] | 10.4 \[96.6\] | 0.000 \[0.000, 0.000\] | 65.0 \[34.6\] |
+| 0 | 28 | SC_300mg_Q4W_ss | 300 | 227 \[51.6\] | 14.1 \[43.9\] | 2.58 \[81.9\] | 5.00 \[3.00, 6.50\] | 8.11 \[51.6\] |
 
 Simulated steady-state NCA by regimen phase (median across N = 300).
+{.table}
 
 ### Side-by-side comparison with the paper
 
 ``` r
+
 nca_tbl <- as.data.frame(nca_res$result)
 
 simulated_sbs <- nca_tbl |>
@@ -315,12 +324,13 @@ knitr::kable(
 )
 ```
 
-| treatment       | Cmax_pub | AUCtau_pub | AUCtau_sim | Cmax_sim | Cmax_pct_diff | AUCtau_pct_diff |
-|:----------------|---------:|-----------:|-----------:|---------:|--------------:|----------------:|
-| IV_900mg_Q4W_ss |    332.0 |       1820 |     1843.9 |    336.2 |           1.3 |             1.3 |
-| SC_300mg_Q4W_ss |     13.6 |        220 |      228.7 |     13.9 |           2.5 |             4.0 |
+| treatment | Cmax_pub | AUCtau_pub | AUCtau_sim | Cmax_sim | Cmax_pct_diff | AUCtau_pct_diff |
+|:---|---:|---:|---:|---:|---:|---:|
+| IV_900mg_Q4W_ss | 332.0 | 1820 | 1843.9 | 336.2 | 1.3 | 1.3 |
+| SC_300mg_Q4W_ss | 13.6 | 220 | 228.7 | 13.9 | 2.5 | 4.0 |
 
 Simulated vs published steady-state exposures (Chua 2025 Section 3.1.1).
+{.table}
 
 All four metrics are expected to match within 20%. Typical-value checks
 (using

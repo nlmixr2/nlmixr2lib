@@ -1,6 +1,7 @@
 # Hanzel_2021_infliximab
 
 ``` r
+
 library(nlmixr2lib)
 library(rxode2)
 #> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
@@ -89,33 +90,33 @@ The per-parameter origin is recorded next to each
 `inst/modeldb/specificDrugs/Hanzel_2021_infliximab.R`. The table below
 collects them in one place for review.
 
-| Element                      | Source                                     | Value / form                                                                      |
-|------------------------------|--------------------------------------------|-----------------------------------------------------------------------------------|
-| CL                           | Hanzel 2021 Table 3 (Final model)          | 0.355 L/d (70 kg, ALB 44 g/L, ADA-)                                               |
-| Vc                           | Table 3                                    | 3.10 L (70 kg)                                                                    |
-| Vp                           | Table 3                                    | 1.93 L (70 kg)                                                                    |
-| Q                            | Table 3                                    | 0.598 L/d (70 kg)                                                                 |
-| Ka                           | Table 3                                    | 0.273 /d                                                                          |
-| F1                           | Table 3                                    | 0.791 (subcutaneous)                                                              |
-| WT on CL                     | Table 3                                    | Power, `(WT/70)^0.666`                                                            |
-| WT on Vc                     | Table 3                                    | Power, `(WT/70)^0.385`                                                            |
-| WT on Vp                     | Table 3                                    | Power, `(WT/70)^1.08`                                                             |
-| WT on Q                      | Table 3                                    | Power, `(WT/70)^1.26`                                                             |
-| ALB on CL                    | Table 3                                    | Power, `(ALB/44)^(-0.826)`                                                        |
-| ATI on CL                    | Table 3                                    | Power-of-coefficient, `1.39^ADA_POS` (Methods: categorical “on-off” power switch) |
-| IIV CL                       | Table 3                                    | CV 27.7% (omega^2 = log(1 + 0.277^2) = 0.07393)                                   |
-| IIV F1                       | Table 3                                    | CV 16.4% (omega^2 = 0.02654)                                                      |
-| IIV Vc                       | Table 3                                    | CV 21.4% (omega^2 = 0.04478)                                                      |
-| IIV Ka                       | Table 3                                    | CV 48.5% (omega^2 = 0.21125)                                                      |
-| Corr(CL, F1)                 | Table 3                                    | -0.013                                                                            |
-| Corr(CL, Vc)                 | Table 3                                    | 0.028                                                                             |
-| Corr(CL, Ka)                 | Table 3                                    | -0.046                                                                            |
-| Corr(F1, Vc)                 | Table 3                                    | 0.00008                                                                           |
-| Corr(F1, Ka)                 | Table 3                                    | 0.003                                                                             |
-| Corr(Vc, Ka)                 | Table 3                                    | -0.069                                                                            |
-| Residual additive            | Table 3                                    | 1.66 mg/L                                                                         |
-| Residual proportional        | Table 3                                    | 0.102 (10.2%)                                                                     |
-| ODE structure: 2-cmt + depot | Methods, “Population PK model development” | first-order absorption, linear elimination, F applied at depot                    |
+| Element | Source | Value / form |
+|----|----|----|
+| CL | Hanzel 2021 Table 3 (Final model) | 0.355 L/d (70 kg, ALB 44 g/L, ADA-) |
+| Vc | Table 3 | 3.10 L (70 kg) |
+| Vp | Table 3 | 1.93 L (70 kg) |
+| Q | Table 3 | 0.598 L/d (70 kg) |
+| Ka | Table 3 | 0.273 /d |
+| F1 | Table 3 | 0.791 (subcutaneous) |
+| WT on CL | Table 3 | Power, `(WT/70)^0.666` |
+| WT on Vc | Table 3 | Power, `(WT/70)^0.385` |
+| WT on Vp | Table 3 | Power, `(WT/70)^1.08` |
+| WT on Q | Table 3 | Power, `(WT/70)^1.26` |
+| ALB on CL | Table 3 | Power, `(ALB/44)^(-0.826)` |
+| ATI on CL | Table 3 | Power-of-coefficient, `1.39^ADA_POS` (Methods: categorical “on-off” power switch) |
+| IIV CL | Table 3 | CV 27.7% (omega^2 = log(1 + 0.277^2) = 0.07393) |
+| IIV F1 | Table 3 | CV 16.4% (omega^2 = 0.02654) |
+| IIV Vc | Table 3 | CV 21.4% (omega^2 = 0.04478) |
+| IIV Ka | Table 3 | CV 48.5% (omega^2 = 0.21125) |
+| Corr(CL, F1) | Table 3 | -0.013 |
+| Corr(CL, Vc) | Table 3 | 0.028 |
+| Corr(CL, Ka) | Table 3 | -0.046 |
+| Corr(F1, Vc) | Table 3 | 0.00008 |
+| Corr(F1, Ka) | Table 3 | 0.003 |
+| Corr(Vc, Ka) | Table 3 | -0.069 |
+| Residual additive | Table 3 | 1.66 mg/L |
+| Residual proportional | Table 3 | 0.102 (10.2%) |
+| ODE structure: 2-cmt + depot | Methods, “Population PK model development” | first-order absorption, linear elimination, F applied at depot |
 
 ## Covariate column naming
 
@@ -135,6 +136,7 @@ a distribution roughly matching Table 2 (median 44 g/L, IQR 40-46, range
 28-54), and all subjects modelled as ADA-negative.
 
 ``` r
+
 set.seed(2021)
 n_per_stratum <- 200L  # smaller than the paper's 1000 for vignette runtime
 
@@ -162,6 +164,7 @@ subcutaneous 120 mg every 2 weeks starting day 42, for 50, 70, and 120
 kg virtual patients. We reproduce the same regimen.
 
 ``` r
+
 maintenance_days <- seq(42, 42 + 14 * 26, by = 14)   # ~52 weeks of q2w SC dosing
 
 dose_iv <- pop %>%
@@ -207,12 +210,14 @@ stopifnot(!anyDuplicated(events_f3[, c("ID", "TIME", "EVID")]))
 ```
 
 ``` r
+
 mod <- readModelDb("Hanzel_2021_infliximab")
 sim_f3 <- rxSolve(mod, events_f3, keep = "weight_kg", returnType = "data.frame")
 #> ℹ parameter labels from comments will be replaced by 'label()'
 ```
 
 ``` r
+
 sim_f3 %>%
   filter(time > 0) %>%
   group_by(time, weight_kg) %>%
@@ -257,6 +262,7 @@ days 0, 14, 42 (week 6), 98 (week 14), and 154 (week 22), as in the
 part-2 IV arm of the trial.
 
 ``` r
+
 n_vpc <- 300L
 
 set.seed(202101)
@@ -304,6 +310,7 @@ sim_vpc <- rxSolve(mod, events_vpc, returnType = "data.frame")
 ```
 
 ``` r
+
 sim_vpc %>%
   filter(time > 0) %>%
   group_by(time) %>%
@@ -337,6 +344,7 @@ Stratification is by the `weight_kg` treatment grouping so per-weight
 results can be compared.
 
 ``` r
+
 single_dose_window <- 14
 sim_nca <- sim_f3 %>%
   filter(time >= 0, time <= single_dose_window, Cc > 0) %>%
@@ -611,19 +619,7 @@ nca_results <- pk.nca(nca_data)
 #> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
 #> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
 #> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#>  ■■■■■■■■■■■■■■                    44% |  ETA:  4s
+#>  ■■■■■■■■■■■■■■                    42% |  ETA:  4s
 #> Warning: Too few points for half-life calculation (min.hl.points=3 with only 0 points)
 #> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
 #> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
@@ -891,16 +887,28 @@ nca_results <- pk.nca(nca_data)
 #> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
 #> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
 #> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      90% |  ETA:  1s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■       86% |  ETA:  1s
 #> Warning: Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
 #> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
 #> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
 #> Too few points for half-life calculation (min.hl.points=3 with only 0 points)
@@ -970,14 +978,14 @@ knitr::kable(
 )
 ```
 
-| Interval Start | Interval End | treatment | N   | AUClast (day\*mg/L) | Cmax (mg/L)  | Tmax (day)          | Half-life (day) |
-|---------------:|-------------:|:----------|:----|:--------------------|:-------------|:--------------------|:----------------|
-|              0 |           14 | 120 kg    | 200 | 822 \[14.4\]        | 186 \[18.1\] | 14.0 \[14.0, 14.0\] | NC              |
-|              0 |           14 | 50 kg     | 200 | 586 \[16.0\]        | 114 \[18.4\] | 14.0 \[14.0, 14.0\] | NC              |
-|              0 |           14 | 70 kg     | 200 | 684 \[13.5\]        | 138 \[17.1\] | 14.0 \[14.0, 14.0\] | NC              |
+| Interval Start | Interval End | treatment | N | AUClast (day\*mg/L) | Cmax (mg/L) | Tmax (day) | Half-life (day) |
+|---:|---:|:---|:---|:---|:---|:---|:---|
+| 0 | 14 | 120 kg | 200 | 822 \[14.4\] | 186 \[18.1\] | 14.0 \[14.0, 14.0\] | NC |
+| 0 | 14 | 50 kg | 200 | 586 \[16.0\] | 114 \[18.4\] | 14.0 \[14.0, 14.0\] | NC |
+| 0 | 14 | 70 kg | 200 | 684 \[13.5\] | 138 \[17.1\] | 14.0 \[14.0, 14.0\] | NC |
 
 PKNCA summary after 5 mg/kg IV induction (day 0 to day 14), by weight
-stratum.
+stratum. {.table}
 
 ### Comparison against the published typical-value half-life
 
@@ -987,6 +995,7 @@ terminal half-life from the model parameters CL, Vc, Vp, and Q. We
 compute it analytically from the packaged model:
 
 ``` r
+
 pars <- list(CL = 0.355, Vc = 3.10, Vp = 1.93, Q = 0.598)
 k10 <- pars$CL / pars$Vc
 k12 <- pars$Q  / pars$Vc
@@ -1009,7 +1018,7 @@ tibble(
 | Hanzel 2021 Abstract (typical 70 kg, ALB 44 g/L) |       10.80 |
 | Computed from model parameters                   |       10.81 |
 
-Typical-value terminal half-life (days).
+Typical-value terminal half-life (days). {.table}
 
 The analytic value is identical to the paper’s reported 10.8 days,
 confirming the structural-parameter set was transcribed correctly.
@@ -1025,6 +1034,7 @@ the Monte Carlo end-of-interval troughs from the Figure 3 simulation
 near-steady-state behaviour):
 
 ``` r
+
 trough_days <- seq(42 + 14 * 14, max(maintenance_days), by = 14)  # day 238 onward
 troughs <- sim_f3 %>%
   filter(time %in% trough_days) %>%
@@ -1052,14 +1062,14 @@ troughs %>%
   )
 ```
 
-| weight_kg |    n | pct_above_3 | pct_above_5 | pct_above_7 | paper_pct_above_3 | paper_pct_above_5 | paper_pct_above_7 |
-|:----------|-----:|------------:|------------:|------------:|------------------:|------------------:|------------------:|
-| 120 kg    | 2600 |        98.5 |        94.0 |        79.0 |              99.5 |              90.6 |              71.9 |
-| 50 kg     | 2600 |       100.0 |       100.0 |        95.5 |              99.9 |              99.0 |              96.4 |
-| 70 kg     | 2600 |       100.0 |        99.5 |        97.0 |              99.9 |              98.3 |              90.3 |
+| weight_kg | n | pct_above_3 | pct_above_5 | pct_above_7 | paper_pct_above_3 | paper_pct_above_5 | paper_pct_above_7 |
+|:---|---:|---:|---:|---:|---:|---:|---:|
+| 120 kg | 2600 | 98.5 | 94.0 | 79.0 | 99.5 | 90.6 | 71.9 |
+| 50 kg | 2600 | 100.0 | 100.0 | 95.5 | 99.9 | 99.0 | 96.4 |
+| 70 kg | 2600 | 100.0 | 99.5 | 97.0 | 99.9 | 98.3 | 90.3 |
 
 Trough coverage during 120 mg SC q2w maintenance, simulation vs Hanzel
-2021.
+2021. {.table}
 
 Differences from the published values are driven by sample size (the
 vignette uses fewer subjects per stratum than the paper’s 1000) and by

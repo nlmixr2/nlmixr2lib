@@ -60,6 +60,7 @@
     <li><a class="dropdown-item" href="../articles/FiedlerKelly_2020_fremanezumab_cm.html">FiedlerKelly_2020_fremanezumab_cm</a></li>
     <li><a class="dropdown-item" href="../articles/FiedlerKelly_2020_fremanezumab_em.html">FiedlerKelly_2020_fremanezumab_em</a></li>
     <li><a class="dropdown-item" href="../articles/Frey_2010_tocilizumab.html">Frey_2010_tocilizumab</a></li>
+    <li><a class="dropdown-item" href="../articles/Frey_2013_tocilizumab.html">Frey_2013_tocilizumab</a></li>
     <li><a class="dropdown-item" href="../articles/Gandhi_2021_abatacept.html">Gandhi_2021_abatacept</a></li>
     <li><a class="dropdown-item" href="../articles/Grimm_2023.html">Trontinemab and gantenerumab PK in plasma and brain (Grimm 2023)</a></li>
     <li><a class="dropdown-item" href="../articles/Gupta_2016_amatuximab.html">Gupta_2016_amatuximab</a></li>
@@ -72,6 +73,7 @@
     <li><a class="dropdown-item" href="../articles/Hua_2015_anrukinzumab.html">Hua_2015_anrukinzumab</a></li>
     <li><a class="dropdown-item" href="../articles/Huang_2017_vrc01.html">Huang_2017_vrc01</a></li>
     <li><a class="dropdown-item" href="../articles/Hwang_2022_tremelimumab.html">Hwang_2022_tremelimumab</a></li>
+    <li><a class="dropdown-item" href="../articles/Hwang_2023_monalizumab.html">Hwang_2023_monalizumab</a></li>
     <li><a class="dropdown-item" href="../articles/Ide_2020_elotuzumab.html">Ide_2020_elotuzumab</a></li>
     <li><a class="dropdown-item" href="../articles/Jackson_2022_ixekizumab.html">Jackson_2022_ixekizumab</a></li>
     <li><a class="dropdown-item" href="../articles/Kielbasa_2020_galcanezumab.html">Kielbasa_2020_galcanezumab</a></li>
@@ -92,6 +94,7 @@
     <li><a class="dropdown-item" href="../articles/Long_2017_necitumumab.html">Long_2017_necitumumab</a></li>
     <li><a class="dropdown-item" href="../articles/Lu_2014_trastuzumabemtansine.html">Lu_2014_trastuzumabemtansine</a></li>
     <li><a class="dropdown-item" href="../articles/Lu_2019_polatuzumab.html">Polatuzumab vedotin acMMAE + MMAE integrated population PK model (Lu 2019)</a></li>
+    <li><a class="dropdown-item" href="../articles/Lu_2022_patritumab.html">Patritumab deruxtecan (HER3-DXd) ADC + DXd coupled population PK model (Lu 2022)</a></li>
     <li><a class="dropdown-item" href="../articles/Ma_2020_sarilumab_anc.html">Ma_2020_sarilumab_anc</a></li>
     <li><a class="dropdown-item" href="../articles/Ma_2020_sarilumab_das28crp.html">Ma_2020_sarilumab_das28crp</a></li>
     <li><a class="dropdown-item" href="../articles/markov.html">Markov modeling</a></li>
@@ -125,6 +128,7 @@
     <li><a class="dropdown-item" href="../articles/Sathe_2024_sacituzumab.html">Sathe_2024_sacituzumab</a></li>
     <li><a class="dropdown-item" href="../articles/Soehoel_2022_tralokinumab.html">Soehoel_2022_tralokinumab</a></li>
     <li><a class="dropdown-item" href="../articles/Suleiman_2019_risankizumab.html">Suleiman_2019_risankizumab</a></li>
+    <li><a class="dropdown-item" href="../articles/Suri_2018_brentuximab.html">Suri_2018_brentuximab</a></li>
     <li><a class="dropdown-item" href="../articles/Takahashi_2023_abatacept.html">Takahashi_2023_abatacept</a></li>
     <li><a class="dropdown-item" href="../articles/Takeuchi_2023_ozoralizumab.html">Takeuchi_2023_ozoralizumab</a></li>
     <li><a class="dropdown-item" href="../articles/Thakre_2022_risankizumab.html">Thakre_2022_risankizumab</a></li>
@@ -150,6 +154,7 @@
     <li><a class="dropdown-item" href="../articles/Yu_2022_ofatumumab.html">Yu_2022_ofatumumab</a></li>
     <li><a class="dropdown-item" href="../articles/Zhang_2019_nivolumab.html">Zhang_2019_nivolumab</a></li>
     <li><a class="dropdown-item" href="../articles/Zheng_2016_sifalimumab.html">Zheng_2016_sifalimumab</a></li>
+    <li><a class="dropdown-item" href="../articles/Zhong_2026_abatacept.html">Zhong_2026_abatacept</a></li>
     <li><a class="dropdown-item" href="../articles/Zhou_2021_belimumab.html">Zhou_2021_belimumab</a></li>
     <li><a class="dropdown-item" href="../articles/Zhou_2025_brentuximab.html">Zhou_2025_brentuximab</a></li>
     <li><a class="dropdown-item" href="../articles/Zhu_2017_lebrikizumab.html">Zhu_2017_lebrikizumab</a></li>
@@ -640,6 +645,19 @@ parallel first-order linear and Michaelis-Menten elimination from the
 central compartment.</td>
 </tr>
 <tr class="odd">
+<td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Frey_2013_tocilizumab.html">Frey_2013_tocilizumab</a></td>
+<td align="left">Indirect-response PK/PD model of tocilizumab on the
+28-joint Disease Activity Score (DAS28) in adults with rheumatoid
+arthritis (Levi/Grange/Frey 2013, OPTION + TOWARD phase III pool, n =
+1703 patients with 12,618 DAS28 observations). Tocilizumab inhibits the
+DAS28 production rate Kin via a sigmoid Emax function whose driving
+concentration is the sum of circulating tocilizumab and a constant DMARD
+background term expressed in tocilizumab concentration units. The PK
+driver is the two-compartment, parallel linear + Michaelis-Menten model
+of Frey 2010 (PMID 20097931), reused unchanged for the exposure-response
+analysis.</td>
+</tr>
+<tr class="even">
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Gandhi_2021_abatacept.html">Gandhi_2021_abatacept</a></td>
 <td align="left">Two-compartment population PK model for abatacept
 (CTLA4-Ig Fc-fusion) pooled across adults with rheumatoid arthritis and
@@ -649,33 +667,33 @@ infusion support, first-order linear elimination, logit-scale SC
 bioavailability with disease/age/weight covariates, and a KA
 parameterisation that enforces KA &gt; k_el.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Grimm_2023.html">Grimm_2023_gantenerumab</a></td>
 <td align="left">Gantenerumab PK model in cynomolgus monkeys (Grimm
 2023): two-compartment plasma PK with brain extracellular distribution
 across six brain regions (cerebellum, hippocampus, striatum, cortex,
 choroid plexus, CSF).</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Grimm_2023.html">Grimm_2023_trontinemab</a></td>
 <td align="left">Trontinemab PK model in non-human primates (Grimm
 2023): two-compartment plasma PK with Michaelis-Menten elimination and
 brain-region effect-compartment distribution (cerebellum, hippocampus,
 striatum, cortex, choroid plexus, CSF).</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Gupta_2016_amatuximab.html">Gupta_2016_amatuximab</a></td>
 <td align="left">Two-compartment population PK model with parallel
 linear and Michaelis-Menten elimination for amatuximab in patients with
 advanced cancers / malignant pleural mesothelioma (Gupta 2016)</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Hanzel_2021_infliximab.html">Hanzel_2021_infliximab</a></td>
 <td align="left">Two-compartment population PK model of subcutaneous and
 intravenous infliximab CT-P13 (biosimilar) in adults with Crohn’s
 disease and ulcerative colitis (Hanzel 2021)</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Hayashi_2007_omalizumab.html">Hayashi_2007_omalizumab</a></td>
 <td align="left">Mechanism-based binding population PK/PD model for
 omalizumab and IgE in Japanese atopic-asthma patients (Hayashi 2007).
@@ -689,7 +707,7 @@ parameters are reported as apparent (divided by SC bioavailability f).
 Three observed quantities: total omalizumab (ug/mL), total IgE (ng/mL),
 and free IgE (ng/mL).</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Hong_2025_datopotamab.html">Hong_2025_datopotamab</a></td>
 <td align="left">Coupled population PK model for datopotamab deruxtecan
 (Dato-DXd, anti-TROP2 antibody-drug conjugate) and its released payload
@@ -705,7 +723,7 @@ mechanistic covariate with a fixed allometric exponent of 0.75 on
 Dato-DXd linear clearance and estimated exponents on Dato-DXd volumes
 (paper Eq. 8-10) and on DXd CL/Vc (Eq. 14-15).</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Hood_2021_medi7836.html">Hood_2021_medi7836</a></td>
 <td align="left">Population PK-PD binding model for MEDI7836 (anti-IL13
 IgG1 lambda-YTE mAb) in healthy adult males (Hood 2021): two-compartment
@@ -715,18 +733,18 @@ distribution sharing CL/Q/V3 with parent drug, and a serum PD
 observation modelled as the molar sum of free IL13 and a small fraction
 of complex.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Hu_2014_bapineuzumab.html">Hu_2014_bapineuzumab</a></td>
 <td align="left">Two-compartment population PK model for bapineuzumab in
 adults with mild-to-moderate Alzheimer’s disease following IV
 administration (Hu 2014, reduced model)</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Hu_2026_clesrovimab.html">Hu_2026_clesrovimab</a></td>
 <td align="left">Two-compartment population PK model for clesrovimab in
 preterm and full-term infants (Hu 2026)</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Hua_2015_anrukinzumab.html">Hua_2015_anrukinzumab</a></td>
 <td align="left">Two-compartment population PK model for anrukinzumab
 (anti-IL-13 IgG1 monoclonal antibody) with first-order SC absorption and
@@ -734,18 +752,24 @@ linear elimination, pooling healthy volunteers, mild-to-moderate asthma,
 moderate-to-severe asthma, and ulcerative colitis patients (Hua
 2015)</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Huang_2017_vrc01.html">Huang_2017_vrc01</a></td>
 <td align="left">Two-compartment population PK model for VRC01 (HIV-1
 broadly neutralizing IgG1 monoclonal antibody) in healthy adults after
 IV or SC administration (Huang 2017)</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Hwang_2022_tremelimumab.html">Hwang_2022_tremelimumab</a></td>
 <td align="left">Two-compartment population PK model for tremelimumab
 (anti-CTLA-4 IgG2 kappa) with regimen-dependent sigmoidal time-varying
 clearance in adults with advanced solid tumours, dosed as monotherapy or
 in combination with durvalumab (Hwang 2022)</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Hwang_2023_monalizumab.html">Hwang_2023_monalizumab</a></td>
+<td align="left">Two-compartment population PK model for monalizumab
+(anti-CD94/NKG2A IgG4) in patients with advanced solid tumors or
+squamous cell carcinoma of the head and neck (Hwang 2023)</td>
 </tr>
 <tr class="even">
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Ide_2020_elotuzumab.html">Ide_2020_elotuzumab</a></td>
@@ -905,6 +929,20 @@ administered to the acMMAE central compartment), with concentrations in
 ng/mL = ug/L.</td>
 </tr>
 <tr class="odd">
+<td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Lu_2022_patritumab.html">Lu_2022_patritumab</a></td>
+<td align="left">Joint two-analyte population PK model for patritumab
+deruxtecan (HER3-DXd, an anti-HER3 antibody-drug conjugate) in adults
+with HER3-expressing solid tumors (Lu 2022). DXd-conjugated antibody
+(intact ADC) is described by a 2-compartment model with parallel linear
+and Michaelis-Menten clearance. Released unconjugated DXd (MAAA-1181a,
+exatecan-derivative payload) is described by a 1-compartment model with
+linear clearance and a first-order, time-dependent release rate driven
+by the level of DXd-conjugated antibody in the central compartment,
+scaled by the molecular-weight ratio MW_DXd/MW_DXdAb and a
+payload-to-intact-drug ratio PIR modulated by a cycle-1-vs-later
+(factor1) and a within-cycle exponential (factor2) modifier.</td>
+</tr>
+<tr class="even">
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Ma_2020_sarilumab_anc.html">Ma_2020_sarilumab_anc</a></td>
 <td align="left">Indirect-response PopPK/PD model for absolute
 neutrophil count (ANC) following subcutaneous sarilumab in adults with
@@ -912,7 +950,7 @@ rheumatoid arthritis (Ma 2020). Sarilumab concentrations drive
 stimulation of ANC elimination (margination); PK backbone is Xu
 2019.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Ma_2020_sarilumab_das28crp.html">Ma_2020_sarilumab_das28crp</a></td>
 <td align="left">Indirect-response PK/PD model of sarilumab on the
 28-joint disease activity score by C-reactive protein (DAS28-CRP) in
@@ -924,14 +962,14 @@ evaluated at its typical covariate-reference values (adult female, 71
 kg, ADA-negative, commercial drug product, ALBR = 0.78, CrCl = 100
 mL/min/1.73 m^2, baseline CRP = 14.2 mg/L).</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Marquez-Megias_2023_adalimumab.html">Marquez-Megias_2023_adalimumab</a></td>
 <td align="left">One-compartment population PK model with first-order
 subcutaneous absorption and linear elimination for adalimumab in adults
 with inflammatory bowel disease, with albumin and anti-drug-antibody
 covariates on apparent clearance (Marquez-Megias 2023)</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Martinez_2019_alirocumab.html">Martinez_2019_alirocumab</a></td>
 <td align="left">Two-compartment population PK model for alirocumab in
 healthy volunteers and adults with hypercholesterolemia (Martinez 2019,
@@ -939,37 +977,37 @@ Part I), with first-order SC absorption (with lag time), linear plus
 Michaelis-Menten (target-mediated) elimination from the central
 compartment, and logit-transformed bioavailability.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Masters_2022_avelumab.html">Masters_2022_avelumab</a></td>
 <td align="left">Two-compartment population PK model for avelumab
 (anti-PD-L1 IgG1) with time-dependent clearance in patients with
 advanced solid tumors (Masters 2022)</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Melhem_2022_dostarlimab.html">Melhem_2022_dostarlimab</a></td>
 <td align="left">Two-compartment population PK model for dostarlimab
 (anti-PD-1 IgG4) with time-dependent (sigmoid I_max) clearance in adults
 with advanced solid tumours (Melhem 2022)</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Mo_2018_olaratumab.html">Mo_2018_olaratumab</a></td>
 <td align="left">Two-compartment population PK model with linear
 clearance for olaratumab in patients with advanced or metastatic cancer
 (Mo 2018)</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Moein_2022_etrolizumab.html">Moein_2022_etrolizumab</a></td>
 <td align="left">Two-compartment population PK model for etrolizumab
 with first-order SC absorption and time-decreasing clearance in adults
 with moderately-to-severely active ulcerative colitis (Moein 2022)</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Mould_2007_alemtuzumab.html">Mould_2007_alemtuzumab</a></td>
 <td align="left">Two-compartment population PK model with
 Michaelis-Menten elimination for alemtuzumab in B-cell chronic
 lymphocytic leukaemia (Mould 2007)</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Mulyukov_2018_ranibizumab.html">Mulyukov_2018_ranibizumab</a></td>
 <td align="left">Indirect-response PK/PD model of intravitreal
 ranibizumab on best-corrected visual acuity (BCVA, ETDRS letters) in
@@ -983,20 +1021,20 @@ mL, no IIV) borrowed from a previous population PK analysis (reference
 20 of the paper) because vitreous PK data were not collected in the
 development studies.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Narwal_2013_sifalimumab.html">Narwal_2013_sifalimumab</a></td>
 <td align="left">Two-compartment population PK model for sifalimumab
 (anti-IFN-alpha IgG1) in adult patients with systemic lupus
 erythematosus (Narwal 2013)</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Nestorov_2014_factorviii.html">Nestorov_2014_factorviii</a></td>
 <td align="left">Two-compartment population PK model for recombinant
 factor VIII Fc fusion protein (rFVIIIFc, efmoroctocog alfa) in
 previously treated patients with severe hemophilia A (Nestorov 2014;
 final covariate model with VWF on CL and WT and HCT on V1)</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Ngo_2020_HL2351.html">Ngo_2020_HL2351</a></td>
 <td align="left">Population PK model for HL2351 (hIL-1Ra-hyFc, ~97 kDa)
 in healthy adult Korean men: a quasi-steady-state target-mediated drug
@@ -1013,19 +1051,19 @@ Kdeg2. All drug amounts and concentrations are in nmol / nmol/L; convert
 mg dosing using molecular weight 97 kDa (1 mg HL2351 = approximately
 10306 nmol).</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Nikanjam_2019_siltuximab.html">Nikanjam_2019_siltuximab</a></td>
 <td align="left">Two-compartment population PK model for siltuximab
 (anti-IL-6) in adults pooled across healthy volunteers and oncology
 cohorts including Castleman’s disease, smoldering multiple myeloma, and
 other tumor types (Nikanjam 2019)</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Ogasawara_2020_durvalumab.html">Ogasawara_2020_durvalumab</a></td>
 <td align="left">Two compartment PK model of durvalumab (anti-PD-L1) in
 patients with hematologic malignancies (Ogasawara 2020)</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Okada_2025_rocatinlimab.html">Okada_2025_rocatinlimab</a></td>
 <td align="left">Two-compartment population PK model with parallel
 linear and time-dependent saturable (Michaelis-Menten) clearance and
@@ -1033,34 +1071,34 @@ first-order subcutaneous absorption for rocatinlimab (anti-OX40 mAb) in
 adults; covariates body weight, albumin, plaque-psoriasis disease state,
 and healthy-volunteer cohort indicator (Okada 2025)</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Othman_2014_daclizumab.html">Othman_2014_daclizumab</a></td>
 <td align="left">Two-compartment population PK model with first-order
 subcutaneous absorption and lag time for daclizumab high-yield process
 (HYP) in healthy volunteers (Othman 2014)</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Papachristos_2020_bevacizumab_pk.html">Papachristos_2020_bevacizumab_pk</a></td>
 <td align="left">Two-compartment population PK model for IV bevacizumab
 in adults with metastatic colorectal cancer, with allometric weight
 scaling and ICAM-1 / VEGF-A genotype covariates (Papachristos 2020,
 Table 1)</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Papachristos_2020_bevacizumab_pkpd.html">Papachristos_2020_bevacizumab_pkpd</a></td>
 <td align="left">Two-compartment population PK plus immediate-response
 Imax PK/PD model for IV bevacizumab and free VEGF-A in adults with
 metastatic colorectal cancer, with allometric weight scaling and ICAM-1
 / VEGF-A genotype covariates (Papachristos 2020, Table 3)</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Papachristos_2020_bevacizumab_qss.html">Papachristos_2020_bevacizumab_qss</a></td>
 <td align="left">Quasi-steady-state target-mediated drug-disposition
 (TMDD QSS) model for IV bevacizumab and free VEGF-A in adults with
 metastatic colorectal cancer, with allometric weight scaling and ICAM-1
 / VEGF-A genotype covariates (Papachristos 2020, Table 2)</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Papathanasiou_2025_belantamab.html">Papathanasiou_2025_belantamab</a></td>
 <td align="left">Two-compartment population PK model for the
 antibody-drug conjugate (ADC) belantamab mafodotin in patients with
@@ -1070,7 +1108,7 @@ soluble BCMA, serum IgG, race, and combination therapy (Papathanasiou
 2025; ADC moiety only – the cys-mcMMAF payload sub-model is not
 included; see vignette for rationale)</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/PerezRuixo_2025_posdinemab.html">PerezRuixo_2025_posdinemab</a></td>
 <td align="left">Mechanism-based population PK-PD model with full TMDD
 for the anti-tau monoclonal antibody posdinemab in serum, CSF, and ISF
@@ -1081,7 +1119,7 @@ p217+tau in CSF and to tau seeds in ISF, internalization of free target
 and drug-target complex, and Alzheimer’s-disease-vs-healthy effect on
 baseline p217+tau.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Petrov_2024_romiplostim.html">Petrov_2024_romiplostim</a></td>
 <td align="left">Population PK/PD model for romiplostim in adults with
 chronic immune thrombocytopenia (ITP). One-compartment first-order
@@ -1097,7 +1135,7 @@ vignette for the other 3 subpopulation variants (non-splenectomized
 mechanism 2; splenectomized mechanism 1; splenectomized mechanism
 2).</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Pouzin_2022_tusamitamab.html">Pouzin_2022_tusamitamab</a></td>
 <td align="left">Integrated multi-analyte semi-mechanistic population PK
 model of tusamitamab ravtansine (SAR408701, anti-CEACAM5 IgG1-SPDB-DM4
@@ -1107,7 +1145,7 @@ naked-antibody (NAB) chain sharing Vc/Vp/Q, irreversible first-order
 DAR_n -&gt; DAR_(n-1) deconjugation feeding a one-compartment DM4
 catabolite that converts to MeDM4.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Quartino_2019_trastuzumab.html">Quartino_2019_trastuzumab</a></td>
 <td align="left">Two-compartment population PK model with parallel
 linear and Michaelis-Menten nonlinear elimination from the central
@@ -1115,13 +1153,13 @@ compartment for intravenous trastuzumab (Herceptin) in patients with
 metastatic breast cancer, early breast cancer, advanced gastric cancer,
 or other solid tumors (Quartino 2019)</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Robbie_2012_palivizumab.html">Robbie_2012_palivizumab</a></td>
 <td align="left">Two-compartment population PK model for palivizumab
 (anti-RSV humanized IgG1 kappa mAb) with first-order IM absorption in
 adults and children (Robbie 2012)</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Rosario_2015_vedolizumab.html">Rosario_2015_vedolizumab</a></td>
 <td align="left">Two-compartment population PK model for vedolizumab
 (humanised anti-alpha4-beta7 integrin IgG1 monoclonal antibody) with
@@ -1129,14 +1167,14 @@ parallel linear and Michaelis-Menten elimination in adults with
 moderately-to-severely active ulcerative colitis or Crohn’s disease and
 healthy volunteers (Rosario 2015).</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Sanghavi_2020_ipilimumab.html">Sanghavi_2020_ipilimumab</a></td>
 <td align="left">Two-compartment population PK model for intravenous
 ipilimumab (anti-CTLA-4 IgG1) with time-varying clearance via a sigmoid
 Emax function in patients with advanced solid tumors receiving
 ipilimumab alone or in combination with nivolumab (Sanghavi 2020)</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Sathe_2024_sacituzumab.html">Sathe_2024_sacituzumab</a></td>
 <td align="left">Coupled three-analyte population PK model for
 sacituzumab govitecan (SG, the ADC; output Cc), free SN-38 (released
@@ -1152,17 +1190,34 @@ V1, and covariates of baseline albumin (CL), tumor type (CL), and sex
 (V1). Simulation requires dosing two compartments simultaneously
 (sgCentral and tabCentral) for each SG infusion event.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Soehoel_2022_tralokinumab.html">Soehoel_2022_tralokinumab</a></td>
 <td align="left">Two-compartment population PK model for tralokinumab
 (Soehoel 2022) in adults with moderate-to-severe atopic dermatitis, with
 SC first-order absorption and allometric body-weight effects.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Suleiman_2019_risankizumab.html">Suleiman_2019_risankizumab</a></td>
 <td align="left">Two-compartment population PK model of risankizumab
 (anti-IL-23 mAb) with first-order SC absorption in healthy subjects and
 patients with moderate-to-severe plaque psoriasis (Suleiman 2019)</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Suri_2018_brentuximab.html">Suri_2018_brentuximab</a></td>
+<td align="left">Coupled population PK model for brentuximab vedotin
+antibody-drug conjugate (ADC) and its released payload monomethyl
+auristatin E (MMAE) in 380 patients with CD30-positive malignancies
+(Hodgkin lymphoma, systemic anaplastic large-cell lymphoma, mycosis
+fungoides, primary cutaneous ALCL) pooled from six clinical studies
+including the phase III ALCANZA study (Suri 2018). ADC is described by a
+linear 3-compartment model with zero-order input and first-order
+elimination; MMAE by a 2-compartment model with first-order elimination,
+fed from ADC by (a) a saturable target-binding flux Kd<em>Target</em>ADC
+(initial Target = 1, irreversibly depleted) and (b) a proteolytic flux
+FM<em>exp(-ALFM</em>tad)<em>K10</em>ADC whose conversion fraction
+declines as a function of time after the most recent dose. Both fluxes
+accumulate in an intermediate Lag compartment that empties to MMAE
+central with rate Klag (FM is fixed to 1).</td>
 </tr>
 <tr class="even">
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Takahashi_2023_abatacept.html">Takahashi_2023_abatacept</a></td>
@@ -1349,12 +1404,28 @@ lupus erythematosus following repeat fixed intravenous doses (Zheng
 2016).</td>
 </tr>
 <tr class="even">
+<td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Zhong_2026_abatacept.html">Zhong_2026_abatacept</a></td>
+<td align="left">Two-compartment population PK model for abatacept
+(CTLA4-Ig Fc-fusion) pooled across 9 phase 2/3 studies (Zhong 2026):
+adults with rheumatoid arthritis, patients aged 2-17 years with
+polyarticular juvenile idiopathic arthritis, and patients aged 6+ years
+with hematologic malignancies receiving HLA-matched unrelated-donor HSCT
+(the ABA2 trial). Final model has zero-order IV infusion, first-order SC
+absorption, first-order linear elimination, additive plus proportional
+residual error, allometric weight on CL/VC/VP, hepatic (AST) and renal
+(cGFR) markers on CL, sex on CL and VC, two HSCT cohort indicators
+(7-of-8 and 8-of-8 HLA-matched URD) on CL/VC, and a logit-scale SC
+bioavailability sub-model with weight, age, and pJIA-disease covariates
+fixed to a previously developed internal JIA PPK model (values match
+Gandhi 2021).</td>
+</tr>
+<tr class="odd">
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Zhou_2021_belimumab.html">Zhou_2021_belimumab</a></td>
 <td align="left">Linear two-compartment IV population PK model for
 belimumab in Chinese and non-Chinese adult and pediatric patients with
 systemic lupus erythematosus (Zhou 2021)</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Zhou_2025_brentuximab.html">Zhou_2025_brentuximab</a></td>
 <td align="left">Coupled population PK model for brentuximab vedotin
 antibody-drug conjugate (ADC) and its released payload monomethyl
@@ -1373,64 +1444,64 @@ central with rate Klag. Final-model parameter values come from Zhou 2025
 supplementary Tables S1 (ADC) and S2 (MMAE); equations come from the
 NONMEM control streams in Zhou 2025 Supplementary Methods.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Zhu_2017_lebrikizumab.html">Zhu_2017_lebrikizumab</a></td>
 <td align="left">Lebrikizumab population PK model (Zhu 2017):
 two-compartment model with first-order absorption after SC dosing in
 adults with moderate-to-severe asthma.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">oncology_sdm_lobo_2002</td>
 <td align="left">Signal transduction model for delayed concentration
 effects on cancer cell growth</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">oncology_xenograft_simeoni_2004</td>
 <td align="left">Oncology tumor growth model in xenograft models</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">tgi_no_sat_Koch</td>
 <td align="left">One compartment TGI model with with exponential tumor
 growth, without saturation.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">tgi_no_sat_expo</td>
 <td align="left">One-compartment TGI model with exponential tumor
 growth, without saturation.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">tgi_no_sat_linear</td>
 <td align="left">One compartment TGI model with with linear tumor
 growth, without saturation.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">tgi_no_sat_powerLaw</td>
 <td align="left">One compartment TGI model with with exponential tumor
 growth, without saturation.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">tgi_sat_Gompertz</td>
 <td align="left">One compartment TGI model with tumor growth
 proportional to tumor size through a generalized logistic function, with
 saturation.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">tgi_sat_VonBertalanffy</td>
 <td align="left">One compartment TGI model where tumor growth is limited
 by a loss term, with saturation.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">tgi_sat_genLogistic</td>
 <td align="left">One compartment TGI model with tumor growth
 proportional to tumor size through a generalized logistic function, with
 saturation.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">tgi_sat_genVonBertalanffy</td>
 <td align="left">One compartment TGI model where tumor growth is limited
 by a loss term, with saturation.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">tgi_sat_logistic</td>
 <td align="left">One compartment TGI model with with exponential tumor
 growth that decelerates linearly, with saturation.</td>

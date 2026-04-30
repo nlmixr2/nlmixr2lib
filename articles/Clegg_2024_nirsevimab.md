@@ -1,6 +1,7 @@
 # Clegg_2024_nirsevimab
 
 ``` r
+
 library(nlmixr2lib)
 library(PKNCA)
 #> 
@@ -47,6 +48,7 @@ Multicentre Growth Reference Study Group, 2006). Formula: weight (kg) =
 M × (1 + L × S × z)^(1/L)
 
 ``` r
+
 who_lms <- data.frame(
   age_mo = 0:24,
   L = c(0.3487, 0.2297, 0.1970, 0.1738, 0.1553, 0.1395, 0.1257,
@@ -88,6 +90,7 @@ duplicate IDs across cohorts silently collapse into a single
 offset is mandatory for any multi-cohort simulation (see Figure 4).
 
 ``` r
+
 make_cohort <- function(n, ga_range, pna0_range, max_day,
                         season2 = FALSE, obs_days = seq(0, max_day, by = 7),
                         id_offset = 0L) {
@@ -134,6 +137,7 @@ make_cohort <- function(n, ga_range, pna0_range, max_day,
 ### Load model
 
 ``` r
+
 mod <- readModelDb("Clegg_2024_nirsevimab")
 conc_unit <- rxode2::rxode(mod)$units[["concentration"]]
 #> ℹ parameter labels from comments will be replaced by 'label()'
@@ -156,6 +160,7 @@ The vignette shows simulated prediction intervals only (no observed
 data; original data are not publicly available).
 
 ``` r
+
 set.seed(8897) # MEDI8897 = nirsevimab development code
 
 # `id_offset` per cohort is mandatory: rxSolve uses ID as the subject key,
@@ -186,6 +191,7 @@ out_f4 <- rxode2::rxSolve(mod, events = sim_f4, keep = "trial") |>
 ```
 
 ``` r
+
 d_f4 <- out_f4 |>
   group_by(trial, time) |>
   summarise(
@@ -203,6 +209,7 @@ d_f4 <- out_f4 |>
 ```
 
 ``` r
+
 ggplot(d_f4, aes(x = time, y = Q50)) +
   geom_ribbon(aes(ymin = Q05, ymax = Q95), fill = "#4682b4", alpha = 0.25) +
   geom_line(colour = "#4682b4", linewidth = 0.8) +
@@ -240,6 +247,7 @@ for 360 days. The paper uses 10th/50th/90th percentiles (rather than the
 5th/95th used in Figure 4).
 
 ``` r
+
 set.seed(3979) # NCT03979313 = MELODY trial
 d_f5 <- make_cohort(500, c(35, 42), c(0, 3), 360,
   obs_days = seq(0, 360, by = 7))
@@ -248,6 +256,7 @@ out_f5 <- rxode2::rxSolve(mod, events = d_f5) |> as.data.frame()
 ```
 
 ``` r
+
 d_f5_plot <- out_f5 |>
   group_by(time) |>
   summarise(
@@ -259,6 +268,7 @@ d_f5_plot <- out_f5 |>
 ```
 
 ``` r
+
 ggplot(d_f5_plot, aes(x = time, y = Q50)) +
   geom_ribbon(aes(ymin = Q10, ymax = Q90), fill = "#4682b4", alpha = 0.25) +
   geom_line(colour = "#4682b4", linewidth = 0.8) +
@@ -303,6 +313,7 @@ day·mg/mL; C_max = 1140 μg/mL. EC₉₀ (preclinical) = 6.8 μg/mL (for
 Day-151 concentration panel).
 
 ``` r
+
 set.seed(2024)
 n_per_ga <- 200
 obs_daily <- seq(0, 365, by = 1)
@@ -382,6 +393,7 @@ d_f6_nca <- bind_rows(sim_f6_list) |>
 ```
 
 ``` r
+
 # 90% prediction intervals (5th-95th) by baseline weight bin
 wt_bins <- seq(1, 11, by = 0.5)
 
@@ -408,6 +420,7 @@ metric_labels <- c(
 ```
 
 ``` r
+
 # Adult reference values (3000 mg IV)
 adult_refs <- data.frame(
   metric = c("AUC0_365", "Cmax"),

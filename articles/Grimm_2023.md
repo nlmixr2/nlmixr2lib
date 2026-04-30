@@ -1,6 +1,7 @@
 # Trontinemab and gantenerumab PK in plasma and brain (Grimm 2023)
 
 ``` r
+
 library(nlmixr2lib)
 library(dplyr)
 #> 
@@ -38,6 +39,7 @@ Replicate figures 2 and 3 in the publication with a single 10 mg/kg dose
 to a cynomolgus monkey.
 
 ``` r
+
 dSimDose <-
   data.frame(
     ID = 1,
@@ -73,6 +75,7 @@ Replicate figures 2 and 3 in the publication with a single 20 mg/kg dose
 to a cynomolgus monkey.
 
 ``` r
+
 dSimDose <-
   data.frame(
     ID = 1,
@@ -104,6 +107,7 @@ dSimGant$Analyte <- "Gantenerumab"
 Replicate figure 2 from the paper.
 
 ``` r
+
 dSim <- bind_rows(dSimTront, dSimGant)
 dSim$Analyte <- factor(dSim$Analyte, levels = c("Trontinemab", "Gantenerumab"))
 
@@ -126,6 +130,7 @@ ggplot(dSim, aes(x = time, y = sim)) +
 Replicate figure 3 from the paper.
 
 ``` r
+
 d_plot_brain <-
   dSim |>
   select(time, Analyte, starts_with("C", ignore.case = FALSE)) |>

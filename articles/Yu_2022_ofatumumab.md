@@ -1,6 +1,7 @@
 # Yu_2022_ofatumumab
 
 ``` r
+
 library(nlmixr2lib)
 library(PKNCA)
 #> 
@@ -74,6 +75,7 @@ Methods “Data” + Table 1, Table 2, Results “Data”).
 The full population descriptor is available programmatically:
 
 ``` r
+
 str(rxode2::rxode2(readModelDb("Yu_2022_ofatumumab"))$meta$population)
 #> ℹ parameter labels from comments will be replaced by 'label()'
 #> List of 15
@@ -102,69 +104,69 @@ The per-parameter origin is recorded as an in-file comment next to each
 `inst/modeldb/specificDrugs/Yu_2022_ofatumumab.R`. The table below
 collects equation and parameter provenance in one place.
 
-| Element                                              | Paper value                                                                | Stored value                                  | Source location                          |
-|------------------------------------------------------|----------------------------------------------------------------------------|-----------------------------------------------|------------------------------------------|
-| `ka` (SC absorption rate)                            | 0.157 /day                                                                 | 0.157 /day                                    | Table 3                                  |
-| `F` (SC bioavailability)                             | 0.685                                                                      | logit(0.685)                                  | Table 3                                  |
-| `Vc` (central volume)                                | 2.62 L                                                                     | 2.62 L                                        | Table 3                                  |
-| `k_e(P)` (complex internalisation)                   | 1.31 /day                                                                  | 1.31 /day                                     | Table 3                                  |
-| `CL` (linear free-drug clearance)                    | 0.34 L/day                                                                 | 0.34 L/day                                    | Table 3                                  |
-| `Q` (intercompartmental clearance)                   | 0.358 L/day                                                                | 0.358 L/day                                   | Table 3                                  |
-| `Vp` (peripheral volume; FIXED)                      | 2.8 L                                                                      | 2.8 L                                         | Table 3 (fixed; Ryman & Meibohm 2017)    |
-| `R0` (baseline CD20 receptor)                        | 32.5 nmol/L                                                                | 4.8425 mg/L (drug-eq)                         | Table 3                                  |
-| `ksyn0` (CD20 synthesis at t=0)                      | 0.985 nmol/L/day                                                           | 0.146765 mg/L/day                             | Table 3                                  |
-| `ksyn_inf` (synthesis at t=inf)                      | 0.0554 nmol/L/day                                                          | 0.0082546 mg/L/day                            | Table 3                                  |
-| `KD` (binding constant; FIXED)                       | 0.167 nmol/L                                                               | 0.024883 mg/L (drug-eq)                       | Table 3 (fixed; preclinical)             |
-| `k_off` (dissociation; FIXED)                        | 5.53 /day                                                                  | 5.53 /day                                     | Table 3 (fixed; preclinical)             |
-| `kdes` (synthesis-decay rate)                        | 2.58 /year                                                                 | 2.58 /year                                    | Table 3                                  |
-| `B0` (baseline B cell count)                         | 194 cells/uL                                                               | 194 cells/uL                                  | Table 3                                  |
-| `Emax` (max lysis stimulation)                       | 159                                                                        | 159                                           | Table 3                                  |
-| `EC50` (lysis 50 % concentration)                    | 0.0057 mg/L                                                                | 0.0057 mg/L                                   | Table 3                                  |
-| `gamma` (Hill exponent)                              | 2.81                                                                       | 2.81                                          | Table 3                                  |
-| `kout` (B-cell elimination rate)                     | 0.0124 /day                                                                | 0.0124 /day                                   | Table 3                                  |
-| `QB` (B-cell flow; FIXED)                            | 0.78 L/day                                                                 | 0.78 L/day                                    | Table 3 (fixed; no IIV)                  |
-| `Vb` (peripheral B-cell volume)                      | 3.7 L                                                                      | 3.7 L                                         | Table 3                                  |
-| beta(WT, ka)                                         | -0.457                                                                     | -0.457                                        | Table 3                                  |
-| beta(WT, Vc)                                         | 1.2                                                                        | 1.2                                           | Table 3                                  |
-| beta(WT, ksyn0)                                      | -1.52                                                                      | -1.52                                         | Table 3                                  |
-| beta(WT, CL)                                         | 1.52                                                                       | 1.52                                          | Table 3                                  |
-| beta(WT, B0)                                         | 0.271                                                                      | 0.271                                         | Table 3                                  |
-| beta(WT, kout)                                       | -0.624                                                                     | -0.624                                        | Table 3                                  |
-| beta(AGE, B0)                                        | -0.282                                                                     | -0.282                                        | Table 3                                  |
-| beta(BLBCELL, Emax)                                  | 0.275                                                                      | 0.275                                         | Table 3                                  |
-| beta(IV, R0)                                         | 0.987                                                                      | 0.987                                         | Table 3                                  |
-| beta(IV, CL)                                         | -1.07                                                                      | -1.07                                         | Table 3                                  |
-| beta(IV, Q)                                          | -2.31                                                                      | -2.31                                         | Table 3                                  |
-| beta(IV, ksyn_inf)                                   | 2.49                                                                       | 2.49                                          | Table 3                                  |
-| beta(AI, k_e(P))                                     | 0.713                                                                      | 0.713                                         | Table 3                                  |
-| beta(AI, R0)                                         | -0.544                                                                     | -0.544                                        | Table 3                                  |
-| beta(APLIOS, Emax)                                   | 0.503                                                                      | 0.503                                         | Table 3                                  |
-| beta(MIRROR, kout)                                   | -0.554                                                                     | -0.554                                        | Table 3                                  |
-| Block 1 IIV (CL, ka, kdes)                           | rho_ka_cl=-0.294, rho_kdes_cl=0.642, rho_kdes_ka=0.433                     | covariances computed from rho \* sd_i \* sd_j | Table 3                                  |
-| Block 2 IIV (k_e(P), R0, ksyn_inf)                   | rho_keP_R0=-0.551, rho_ksyninf_R0=0.47, rho_ksyninf_keP=-0.464             | covariances computed                          | Table 3                                  |
-| Block 3 IIV (Vb, kout, Emax)                         | rho_Vb_Emax=0.28, rho_kout_Vb=-0.336, rho_kout_Emax=0.423 (typo-corrected) | covariances computed                          | Table 3 (see Assumptions and deviations) |
-| Ofatumumab residual prop.                            | 0.278                                                                      | 0.278                                         | Table 3                                  |
-| Ofatumumab residual add.                             | 0.0316 mg/L                                                                | 0.0316 mg/L                                   | Table 3                                  |
-| B-cell residual prop.                                | 0.381                                                                      | 0.381                                         | Table 3                                  |
-| B-cell residual add.                                 | 0.153 cells/uL                                                             | 0.153 cells/uL                                | Table 3                                  |
-| Drug ODEs (depot, central, peripheral, total_target) | n/a                                                                        | mass-conserving 2-compartment QSS form        | Methods “Final Model Description”        |
-| QSS quadratic for Lc                                 | Lc = 0.5\*(Ltot - Rtot - Ks + sqrt(…))                                     | n/a                                           | Methods “Final Model Description”        |
-| Time-varying ksyn(t)                                 | ksyn_inf + (ksyn0 - ksyn_inf) exp(-kdes t / 365.25)                        | n/a                                           | Methods “Final Model Description”        |
-| B-cell ODEs (B, Bp)                                  | indirect response with peripheral exchange                                 | n/a                                           | Methods “Final Model Description”        |
-| stim(L) function                                     | Emax L^gamma / (EC50^gamma + L^gamma)                                      | n/a                                           | Methods “Final Model Description”        |
-| Initial conditions                                   | B(0) = B0, Bp(0) = B0 \* Vb / Vc, Rtot(0) = R0                             | matched                                       | Methods “Final Model Description”        |
+| Element | Paper value | Stored value | Source location |
+|----|----|----|----|
+| `ka` (SC absorption rate) | 0.157 /day | 0.157 /day | Table 3 |
+| `F` (SC bioavailability) | 0.685 | logit(0.685) | Table 3 |
+| `Vc` (central volume) | 2.62 L | 2.62 L | Table 3 |
+| `k_e(P)` (complex internalisation) | 1.31 /day | 1.31 /day | Table 3 |
+| `CL` (linear free-drug clearance) | 0.34 L/day | 0.34 L/day | Table 3 |
+| `Q` (intercompartmental clearance) | 0.358 L/day | 0.358 L/day | Table 3 |
+| `Vp` (peripheral volume; FIXED) | 2.8 L | 2.8 L | Table 3 (fixed; Ryman & Meibohm 2017) |
+| `R0` (baseline CD20 receptor) | 32.5 nmol/L | 4.8425 mg/L (drug-eq) | Table 3 |
+| `ksyn0` (CD20 synthesis at t=0) | 0.985 nmol/L/day | 0.146765 mg/L/day | Table 3 |
+| `ksyn_inf` (synthesis at t=inf) | 0.0554 nmol/L/day | 0.0082546 mg/L/day | Table 3 |
+| `KD` (binding constant; FIXED) | 0.167 nmol/L | 0.024883 mg/L (drug-eq) | Table 3 (fixed; preclinical) |
+| `k_off` (dissociation; FIXED) | 5.53 /day | 5.53 /day | Table 3 (fixed; preclinical) |
+| `kdes` (synthesis-decay rate) | 2.58 /year | 2.58 /year | Table 3 |
+| `B0` (baseline B cell count) | 194 cells/uL | 194 cells/uL | Table 3 |
+| `Emax` (max lysis stimulation) | 159 | 159 | Table 3 |
+| `EC50` (lysis 50 % concentration) | 0.0057 mg/L | 0.0057 mg/L | Table 3 |
+| `gamma` (Hill exponent) | 2.81 | 2.81 | Table 3 |
+| `kout` (B-cell elimination rate) | 0.0124 /day | 0.0124 /day | Table 3 |
+| `QB` (B-cell flow; FIXED) | 0.78 L/day | 0.78 L/day | Table 3 (fixed; no IIV) |
+| `Vb` (peripheral B-cell volume) | 3.7 L | 3.7 L | Table 3 |
+| beta(WT, ka) | -0.457 | -0.457 | Table 3 |
+| beta(WT, Vc) | 1.2 | 1.2 | Table 3 |
+| beta(WT, ksyn0) | -1.52 | -1.52 | Table 3 |
+| beta(WT, CL) | 1.52 | 1.52 | Table 3 |
+| beta(WT, B0) | 0.271 | 0.271 | Table 3 |
+| beta(WT, kout) | -0.624 | -0.624 | Table 3 |
+| beta(AGE, B0) | -0.282 | -0.282 | Table 3 |
+| beta(BLBCELL, Emax) | 0.275 | 0.275 | Table 3 |
+| beta(IV, R0) | 0.987 | 0.987 | Table 3 |
+| beta(IV, CL) | -1.07 | -1.07 | Table 3 |
+| beta(IV, Q) | -2.31 | -2.31 | Table 3 |
+| beta(IV, ksyn_inf) | 2.49 | 2.49 | Table 3 |
+| beta(AI, k_e(P)) | 0.713 | 0.713 | Table 3 |
+| beta(AI, R0) | -0.544 | -0.544 | Table 3 |
+| beta(APLIOS, Emax) | 0.503 | 0.503 | Table 3 |
+| beta(MIRROR, kout) | -0.554 | -0.554 | Table 3 |
+| Block 1 IIV (CL, ka, kdes) | rho_ka_cl=-0.294, rho_kdes_cl=0.642, rho_kdes_ka=0.433 | covariances computed from rho \* sd_i \* sd_j | Table 3 |
+| Block 2 IIV (k_e(P), R0, ksyn_inf) | rho_keP_R0=-0.551, rho_ksyninf_R0=0.47, rho_ksyninf_keP=-0.464 | covariances computed | Table 3 |
+| Block 3 IIV (Vb, kout, Emax) | rho_Vb_Emax=0.28, rho_kout_Vb=-0.336, rho_kout_Emax=0.423 (typo-corrected) | covariances computed | Table 3 (see Assumptions and deviations) |
+| Ofatumumab residual prop. | 0.278 | 0.278 | Table 3 |
+| Ofatumumab residual add. | 0.0316 mg/L | 0.0316 mg/L | Table 3 |
+| B-cell residual prop. | 0.381 | 0.381 | Table 3 |
+| B-cell residual add. | 0.153 cells/uL | 0.153 cells/uL | Table 3 |
+| Drug ODEs (depot, central, peripheral, total_target) | n/a | mass-conserving 2-compartment QSS form | Methods “Final Model Description” |
+| QSS quadratic for Lc | Lc = 0.5\*(Ltot - Rtot - Ks + sqrt(…)) | n/a | Methods “Final Model Description” |
+| Time-varying ksyn(t) | ksyn_inf + (ksyn0 - ksyn_inf) exp(-kdes t / 365.25) | n/a | Methods “Final Model Description” |
+| B-cell ODEs (B, Bp) | indirect response with peripheral exchange | n/a | Methods “Final Model Description” |
+| stim(L) function | Emax L^gamma / (EC50^gamma + L^gamma) | n/a | Methods “Final Model Description” |
+| Initial conditions | B(0) = B0, Bp(0) = B0 \* Vb / Vc, Rtot(0) = R0 | matched | Methods “Final Model Description” |
 
 ## Covariate column naming
 
-| Source column                                    | Canonical column used here                              |
-|--------------------------------------------------|---------------------------------------------------------|
-| `WT` (body weight, kg)                           | `WT` (canonical)                                        |
-| `Age` (baseline age, years)                      | `AGE` (canonical)                                       |
-| `Bcell0` (baseline CD19+ B cell count, cells/uL) | `BLBCELL` (newly registered specific-scope)             |
-| “Admin route = IV” indicator                     | `ROUTE_IV` (newly registered specific-scope binary)     |
-| “Formulation = AI” indicator                     | `DEVICE_AI` (newly registered specific-scope binary)    |
-| “Study = APLIOS” indicator                       | `STUDY_APLIOS` (newly registered specific-scope binary) |
-| “Study = MIRROR” indicator                       | `STUDY_MIRROR` (newly registered specific-scope binary) |
+| Source column | Canonical column used here |
+|----|----|
+| `WT` (body weight, kg) | `WT` (canonical) |
+| `Age` (baseline age, years) | `AGE` (canonical) |
+| `Bcell0` (baseline CD19+ B cell count, cells/uL) | `BLBCELL` (newly registered specific-scope) |
+| “Admin route = IV” indicator | `ROUTE_IV` (newly registered specific-scope binary) |
+| “Formulation = AI” indicator | `DEVICE_AI` (newly registered specific-scope binary) |
+| “Study = APLIOS” indicator | `STUDY_APLIOS` (newly registered specific-scope binary) |
+| “Study = MIRROR” indicator | `STUDY_MIRROR` (newly registered specific-scope binary) |
 
 ## Virtual cohort
 
@@ -175,6 +177,7 @@ for figure replication, and a covariate-stratified typical-value cohort
 for the dose-response / weight-effect comparisons in Figures 4 and 7.
 
 ``` r
+
 mod         <- readModelDb("Yu_2022_ofatumumab")
 mod_typical <- rxode2::zeroRe(mod)
 #> ℹ parameter labels from comments will be replaced by 'label()'
@@ -195,6 +198,7 @@ end_followup     <- max(all_dose_days) + 365   # one-year post-last-dose follow-
 ## Simulation
 
 ``` r
+
 # Helper: simulate a typical subject under the phase 3 SC PFS regimen with
 # a given dose level and covariate vector, returning Cc and B cell counts.
 sim_one <- function(dose_mg, wt = 70, age = 38, bcell = 200,
@@ -232,6 +236,7 @@ mg. The plot demonstrates that the 20-mg dose achieves near-complete
 depletion and that no further benefit is gained at 40 mg.
 
 ``` r
+
 dose_levels <- c(1, 2, 5, 10, 20, 40)
 sim_doses <- bind_rows(
   lapply(dose_levels, function(d) {
@@ -277,6 +282,7 @@ first year and after the last dose at 2 years for 20 mg SC q4w (with
 three weekly loading doses).
 
 ``` r
+
 sim_20mg <- sim_one(20)
 #> ℹ omega/sigma items treated as zero: 'etalka', 'etalcl', 'etalkdes', 'etalkep', 'etalr0', 'etalksyninf', 'etalvb', 'etalkout', 'etalemax', 'etalogitfdepot', 'etalvc', 'etalksyn0', 'etalq', 'etalb0', 'etalec50', 'etalgamma'
 
@@ -303,6 +309,7 @@ return toward the LLN of 40 cells/uL by ~23 weeks after dosing stops at
 2 years.
 
 ``` r
+
 ggplot(sim_20mg, aes(time, Bcell)) +
   geom_line(colour = "darkred", linewidth = 0.7) +
   geom_hline(yintercept = 8,  linetype = "dashed", colour = "grey40") +
@@ -319,6 +326,7 @@ ggplot(sim_20mg, aes(time, Bcell)) +
 ![](Yu_2022_ofatumumab_files/figure-html/figure-6-bcell-1.png)
 
 ``` r
+
 # Day at which simulated B cell count first drops below 8 cells/uL.
 day_target <- sim_20mg |>
   filter(time > 0, Bcell <= 8) |>
@@ -346,6 +354,7 @@ Yu 2022 Figure 7 / Table 4 reports the inter-dosing AUC at steady state
 % higher at 50 kg, and 52.0 % lower at 110 kg.
 
 ``` r
+
 weight_levels <- c(50, 70, 90, 110)
 auc_window <- c(104 * 7, 108 * 7)   # weeks 104-108 (steady state, 4-week)
 
@@ -386,8 +395,10 @@ knitr::kable(
 | 110 |        18.84 |    -51.09 |
 
 Steady-state AUC (weeks 104-108) by body weight (typical-value).
+{.table}
 
 ``` r
+
 
 cat(sprintf("Paper Table 4 reference: 50 kg +71.8%%, 110 kg -52.0%% relative to 70 kg.\n"))
 #> Paper Table 4 reference: 50 kg +71.8%, 110 kg -52.0% relative to 70 kg.
@@ -413,6 +424,7 @@ gives a shorter apparent t1/2; we restrict the half-life calculation to
 days 14-60 post-last-dose for the paper-comparable window.
 
 ``` r
+
 # Slice 14-60 days post-last-dose to capture the paper-comparable
 # elimination phase. PKNCA's `start` and `end` arguments delimit the AUC
 # / half-life window.
@@ -441,27 +453,28 @@ knitr::kable(
 )
 ```
 
-| treatment                                          |  id | start | end | PPTESTCD            | PPORRES | exclude |
-|:---------------------------------------------------|----:|------:|----:|:--------------------|--------:|:--------|
-| 20 mg SC q4w SS -\> PFS, days 14-60 post-last-dose |   1 |    14 |  60 | cmax                |   1.439 | NA      |
-| 20 mg SC q4w SS -\> PFS, days 14-60 post-last-dose |   1 |    14 |  60 | tmax                |   0.000 | NA      |
-| 20 mg SC q4w SS -\> PFS, days 14-60 post-last-dose |   1 |    14 |  60 | tlast               |  46.000 | NA      |
-| 20 mg SC q4w SS -\> PFS, days 14-60 post-last-dose |   1 |    14 |  60 | clast.obs           |   0.094 | NA      |
-| 20 mg SC q4w SS -\> PFS, days 14-60 post-last-dose |   1 |    14 |  60 | lambda.z            |   0.075 | NA      |
-| 20 mg SC q4w SS -\> PFS, days 14-60 post-last-dose |   1 |    14 |  60 | r.squared           |   1.000 | NA      |
-| 20 mg SC q4w SS -\> PFS, days 14-60 post-last-dose |   1 |    14 |  60 | adj.r.squared       |   1.000 | NA      |
-| 20 mg SC q4w SS -\> PFS, days 14-60 post-last-dose |   1 |    14 |  60 | lambda.z.time.first |  43.000 | NA      |
-| 20 mg SC q4w SS -\> PFS, days 14-60 post-last-dose |   1 |    14 |  60 | lambda.z.time.last  |  46.000 | NA      |
-| 20 mg SC q4w SS -\> PFS, days 14-60 post-last-dose |   1 |    14 |  60 | lambda.z.n.points   |   4.000 | NA      |
-| 20 mg SC q4w SS -\> PFS, days 14-60 post-last-dose |   1 |    14 |  60 | clast.pred          |   0.094 | NA      |
-| 20 mg SC q4w SS -\> PFS, days 14-60 post-last-dose |   1 |    14 |  60 | half.life           |   9.257 | NA      |
-| 20 mg SC q4w SS -\> PFS, days 14-60 post-last-dose |   1 |    14 |  60 | span.ratio          |   0.324 | NA      |
-| 20 mg SC q4w SS -\> PFS, days 14-60 post-last-dose |   1 |    14 |  60 | aucinf.obs          |  25.117 | NA      |
+| treatment | id | start | end | PPTESTCD | PPORRES | exclude |
+|:---|---:|---:|---:|:---|---:|:---|
+| 20 mg SC q4w SS -\> PFS, days 14-60 post-last-dose | 1 | 14 | 60 | cmax | 1.439 | NA |
+| 20 mg SC q4w SS -\> PFS, days 14-60 post-last-dose | 1 | 14 | 60 | tmax | 0.000 | NA |
+| 20 mg SC q4w SS -\> PFS, days 14-60 post-last-dose | 1 | 14 | 60 | tlast | 46.000 | NA |
+| 20 mg SC q4w SS -\> PFS, days 14-60 post-last-dose | 1 | 14 | 60 | clast.obs | 0.094 | NA |
+| 20 mg SC q4w SS -\> PFS, days 14-60 post-last-dose | 1 | 14 | 60 | lambda.z | 0.075 | NA |
+| 20 mg SC q4w SS -\> PFS, days 14-60 post-last-dose | 1 | 14 | 60 | r.squared | 1.000 | NA |
+| 20 mg SC q4w SS -\> PFS, days 14-60 post-last-dose | 1 | 14 | 60 | adj.r.squared | 1.000 | NA |
+| 20 mg SC q4w SS -\> PFS, days 14-60 post-last-dose | 1 | 14 | 60 | lambda.z.time.first | 43.000 | NA |
+| 20 mg SC q4w SS -\> PFS, days 14-60 post-last-dose | 1 | 14 | 60 | lambda.z.time.last | 46.000 | NA |
+| 20 mg SC q4w SS -\> PFS, days 14-60 post-last-dose | 1 | 14 | 60 | lambda.z.n.points | 4.000 | NA |
+| 20 mg SC q4w SS -\> PFS, days 14-60 post-last-dose | 1 | 14 | 60 | clast.pred | 0.094 | NA |
+| 20 mg SC q4w SS -\> PFS, days 14-60 post-last-dose | 1 | 14 | 60 | half.life | 9.257 | NA |
+| 20 mg SC q4w SS -\> PFS, days 14-60 post-last-dose | 1 | 14 | 60 | span.ratio | 0.324 | NA |
+| 20 mg SC q4w SS -\> PFS, days 14-60 post-last-dose | 1 | 14 | 60 | aucinf.obs | 25.117 | NA |
 
 PKNCA summary on the 14-60 day post-last-dose tail of the typical-value
-simulation.
+simulation. {.table}
 
 ``` r
+
 nca_df <- as.data.frame(nca_res)
 hl_row <- nca_df[nca_df$PPTESTCD == "half.life", ]
 if (nrow(hl_row) >= 1) {
@@ -471,13 +484,13 @@ if (nrow(hl_row) >= 1) {
 #> Simulated apparent t1/2 (days 14-60 post-last-dose): 9.26 days (paper: ~11 days)
 ```
 
-| Quantity                                                          | Yu 2022                                                  | Simulated (this vignette) | Discrepancy          |
-|-------------------------------------------------------------------|----------------------------------------------------------|---------------------------|----------------------|
-| Time to median B cell \<= 8 cells/uL (20 mg q4w)                  | 11 days (Results “B Cell Count Simulations”)             | 11.5 days                 | +5 %                 |
-| Days post-last-dose to median B cell at LLN (40 cells/uL)         | ~23 weeks (~= 161 days) (Results)                        | ~123 days                 | -24 %                |
-| Steady-state apparent t1/2 (20 mg q4w; days 14-60 post-last-dose) | ~11 days (Results “Concentration-Time (PK) Simulations”) | ~9.3 days                 | -16 %                |
-| AUC change at 50 kg vs 70 kg (steady state, weeks 104-108)        | +71.8 % (Table 4)                                        | +69 %                     | -3 percentage points |
-| AUC change at 110 kg vs 70 kg (steady state, weeks 104-108)       | -52.0 % (Table 4)                                        | -51 %                     | +1 percentage point  |
+| Quantity | Yu 2022 | Simulated (this vignette) | Discrepancy |
+|----|----|----|----|
+| Time to median B cell \<= 8 cells/uL (20 mg q4w) | 11 days (Results “B Cell Count Simulations”) | 11.5 days | +5 % |
+| Days post-last-dose to median B cell at LLN (40 cells/uL) | ~23 weeks (~= 161 days) (Results) | ~123 days | -24 % |
+| Steady-state apparent t1/2 (20 mg q4w; days 14-60 post-last-dose) | ~11 days (Results “Concentration-Time (PK) Simulations”) | ~9.3 days | -16 % |
+| AUC change at 50 kg vs 70 kg (steady state, weeks 104-108) | +71.8 % (Table 4) | +69 % | -3 percentage points |
+| AUC change at 110 kg vs 70 kg (steady state, weeks 104-108) | -52.0 % (Table 4) | -51 % | +1 percentage point |
 
 ## Assumptions and deviations
 

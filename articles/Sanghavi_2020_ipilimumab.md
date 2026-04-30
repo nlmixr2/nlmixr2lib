@@ -21,14 +21,17 @@ combination-therapy dataset and a sigmoid-Emax description of
 Structural form: linear two-compartment IV model with first-order
 elimination and a multiplicative time-on-CL term:
 
-$${CL}_{i}(t) = {CL}_{0,i} \cdot \exp\!\left( {Emax}_{i} \cdot \frac{t^{\,{HILL}}}{T_{50}^{\,{HILL}} + t^{\,{HILL}}} \right)$$
+``` math
+\mathrm{CL}_i(t) = \mathrm{CL}_{0,i} \cdot
+\exp\!\left(\mathrm{Emax}_i \cdot \frac{t^{\,\mathrm{HILL}}}{T_{50}^{\,\mathrm{HILL}} + t^{\,\mathrm{HILL}}}\right)
+```
 
-where ${Emax}_{i}$ is **negative** for a typical patient on combination
-therapy (CL decreases over time), $T_{50} \approx 106$ days, and
-${HILL} = 7.43$ gives a sharp sigmoid switch between baseline and
-steady-state CL. Baseline body weight (BBWT) scales CL and Q as
-$\left( {BBWT}/80 \right)^{0.694}$ and VC and VP as
-$\left( {BBWT}/80 \right)^{0.600}$.
+where $`\mathrm{Emax}_i`$ is **negative** for a typical patient on
+combination therapy (CL decreases over time), $`T_{50} \approx 106`$
+days, and $`\mathrm{HILL} = 7.43`$ gives a sharp sigmoid switch between
+baseline and steady-state CL. Baseline body weight (BBWT) scales CL and
+Q as $`(\mathrm{BBWT}/80)^{0.694}`$ and VC and VP as
+$`(\mathrm{BBWT}/80)^{0.600}`$.
 
 ## Population
 
@@ -60,27 +63,27 @@ The per-parameter origin is recorded as an in-file comment next to each
 `inst/modeldb/specificDrugs/Sanghavi_2020_ipilimumab.R`. The table below
 collects them in one place for review.
 
-| Parameter (model name)      | Value (this package)         | Source location              |
-|-----------------------------|------------------------------|------------------------------|
-| `lcl` (CL0, L/day)          | log(14.1 × 0.024)            | Table 2: CL0_REF = 14.1 mL/h |
-| `lvc` (VC, L)               | log(3.95)                    | Table 2: VC_REF              |
-| `lq` (Q, L/day)             | log(27.9 × 0.024)            | Table 2: Q_REF = 27.9 mL/h   |
-| `lvp` (VP, L)               | log(3.18)                    | Table 2: VP_REF              |
-| `Emax` (monotherapy)        | -0.0644                      | Table 2: Emax_REF            |
-| `lt50` (T50, days)          | log(2540 / 24) = log(105.83) | Table 2: T50 = 2,540 h       |
-| `lhill` (HILL exponent)     | log(7.43)                    | Table 2: HILL                |
-| `e_wt_cl` (WT on CL/Q)      | 0.694                        | Table 2: CL_BBWT             |
-| `e_wt_v` (WT on VC/VP)      | 0.600                        | Table 2: V_BBWT              |
-| `e_logldh_cl`               | 0.703                        | Table 2: CL_log-BLDH         |
-| `e_sclc_cl`                 | -0.124                       | Table 2: CL_SCLC             |
-| `e_line_cl` (1L vs 2L+)     | -0.0949                      | Table 2: CL_LINE             |
-| `e_n1q3w_cl`                | 0.0950                       | Table 2: CL_N1Q3W            |
-| `e_n3q2w_cl`                | 0.191                        | Table 2: CL_N3Q2W            |
-| `e_combo_emax`              | -0.202                       | Table 2: Emax_COMBO          |
-| IIV `etalcl + etalvc` block | c(0.112, 0.0404, 0.0884)     | Table 2: ω²_CL, cov, ω²_VC   |
-| `etaEmax`                   | 0.0158                       | Table 2: ω²_Emax             |
-| `propSd`                    | 0.223                        | Table 2: Proportional        |
-| `addSd` (μg/mL)             | 0.607                        | Table 2: Additive            |
+| Parameter (model name) | Value (this package) | Source location |
+|----|----|----|
+| `lcl` (CL0, L/day) | log(14.1 × 0.024) | Table 2: CL0_REF = 14.1 mL/h |
+| `lvc` (VC, L) | log(3.95) | Table 2: VC_REF |
+| `lq` (Q, L/day) | log(27.9 × 0.024) | Table 2: Q_REF = 27.9 mL/h |
+| `lvp` (VP, L) | log(3.18) | Table 2: VP_REF |
+| `Emax` (monotherapy) | -0.0644 | Table 2: Emax_REF |
+| `lt50` (T50, days) | log(2540 / 24) = log(105.83) | Table 2: T50 = 2,540 h |
+| `lhill` (HILL exponent) | log(7.43) | Table 2: HILL |
+| `e_wt_cl` (WT on CL/Q) | 0.694 | Table 2: CL_BBWT |
+| `e_wt_v` (WT on VC/VP) | 0.600 | Table 2: V_BBWT |
+| `e_logldh_cl` | 0.703 | Table 2: CL_log-BLDH |
+| `e_sclc_cl` | -0.124 | Table 2: CL_SCLC |
+| `e_line_cl` (1L vs 2L+) | -0.0949 | Table 2: CL_LINE |
+| `e_n1q3w_cl` | 0.0950 | Table 2: CL_N1Q3W |
+| `e_n3q2w_cl` | 0.191 | Table 2: CL_N3Q2W |
+| `e_combo_emax` | -0.202 | Table 2: Emax_COMBO |
+| IIV `etalcl + etalvc` block | c(0.112, 0.0404, 0.0884) | Table 2: ω²_CL, cov, ω²_VC |
+| `etaEmax` | 0.0158 | Table 2: ω²_Emax |
+| `propSd` | 0.223 | Table 2: Proportional |
+| `addSd` (μg/mL) | 0.607 | Table 2: Additive |
 
 Equations (from the paper’s “Final model” subsection in Results):
 
@@ -101,6 +104,7 @@ values (LDH 217 U/L, melanoma, 2L+) so the time-on-CL component is the
 dominant driver of between-cohort differences.
 
 ``` r
+
 set.seed(2020)
 n_subj <- 200
 
@@ -123,6 +127,7 @@ Q3W, four doses. Two arms are compared here:
   `NIVO_1Q3W = 0`).
 
 ``` r
+
 make_arm <- function(pop, regimen, id_offset = 0L) {
   combo  <- as.integer(regimen == "Combination")
   n1q3w  <- combo
@@ -156,6 +161,7 @@ stopifnot(!anyDuplicated(unique(events[, c("ID", "TIME", "EVID")])))
 ## Simulation
 
 ``` r
+
 mod <- readModelDb("Sanghavi_2020_ipilimumab")
 sim <- rxode2::rxSolve(mod, events = events, returnType = "data.frame",
                        keep = c("treatment", "WT"))
@@ -166,6 +172,7 @@ For deterministic typical-value replication the model’s random effects
 can be zeroed:
 
 ``` r
+
 mod_typical <- mod |> rxode2::zeroRe()
 #> ℹ parameter labels from comments will be replaced by 'label()'
 events_ref <- data.frame(
@@ -194,10 +201,12 @@ sim_ref <- rxode2::rxSolve(mod_typical, events = events_ref,
 
 Sanghavi 2020 Figure 3 reports the model-estimated CL trajectories by
 treatment arm. The plot below shows the typical-individual CL ratio
-${CL}(t)/{CL}_{0}$ for the two reference scenarios (80 kg melanoma 2L+
-patient, LDH 217 U/L, no nivolumab regimen indicator on baseline CL):
+$`\mathrm{CL}(t)/\mathrm{CL}_0`$ for the two reference scenarios (80 kg
+melanoma 2L+ patient, LDH 217 U/L, no nivolumab regimen indicator on
+baseline CL):
 
 ``` r
+
 t_grid <- seq(0, 365, by = 5)
 make_typical_arm <- function(combo) {
   ev <- data.frame(
@@ -235,6 +244,7 @@ ggplot(cl_traj, aes(time, cl / cl0, colour = treatment)) +
 ### Combination-arm concentration profile
 
 ``` r
+
 sim_summary <- sim |>
   filter(time > 0) |>
   group_by(time, treatment) |>
@@ -263,6 +273,7 @@ for the combination arm, where Sanghavi 2020 Table 4 reports the
 geometric-mean Day-1 peak (62.6 μg/mL) and Day-21 trough (10.4 μg/mL).
 
 ``` r
+
 sim_combo <- sim |>
   filter(treatment == "Combination", !is.na(Cc),
          time >= 0, time <= 21) |>
@@ -364,12 +375,12 @@ nca_res  <- PKNCA::pk.nca(nca_data)
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#>  ■■■■■■■■■■■■■■                    42% |  ETA:  3s
+#>  ■■■■■■■■■■■■■                     40% |  ETA:  3s
 #> Warning: Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
@@ -489,11 +500,11 @@ knitr::kable(summary(nca_res),
              caption = "Simulated NCA parameters (combination arm, days 0-21).")
 ```
 
-| start | end | treatment   | N   | auclast | cmax          | tmax                | half.life     |
-|------:|----:|:------------|:----|:--------|:--------------|:--------------------|:--------------|
-|     0 |  21 | Combination | 200 | NC      | 47.7 \[47.2\] | 1.00 \[1.00, 1.00\] | 16.3 \[4.59\] |
+| start | end | treatment | N | auclast | cmax | tmax | half.life |
+|---:|---:|:---|:---|:---|:---|:---|:---|
+| 0 | 21 | Combination | 200 | NC | 47.7 \[47.2\] | 1.00 \[1.00, 1.00\] | 16.3 \[4.59\] |
 
-Simulated NCA parameters (combination arm, days 0-21).
+Simulated NCA parameters (combination arm, days 0-21). {.table}
 
 ### Comparison against published Table 4
 
@@ -502,12 +513,12 @@ Sanghavi 2020 Table 4 reports geometric-mean ipilimumab exposures in N =
 mg/kg Q3W induction. The table below compares the typical-individual
 predictions of the packaged model with those geometric means.
 
-| Time-point                                  | Source (geometric mean) | Typical individual (this package) |
-|---------------------------------------------|-------------------------|-----------------------------------|
-| Day 1 — peak after first dose (μg/mL)       | 62.6                    | 53.9                              |
-| Day 21 — trough after first dose (μg/mL)    | 10.4                    | 9.9                               |
-| Day 84 — trough after fourth dose (μg/mL)   | 20.0                    | 15.9                              |
-| Day 105 — six weeks after last dose (μg/mL) | 9.3                     | 6.5                               |
+| Time-point | Source (geometric mean) | Typical individual (this package) |
+|----|----|----|
+| Day 1 — peak after first dose (μg/mL) | 62.6 | 53.9 |
+| Day 21 — trough after first dose (μg/mL) | 10.4 | 9.9 |
+| Day 84 — trough after fourth dose (μg/mL) | 20.0 | 15.9 |
+| Day 105 — six weeks after last dose (μg/mL) | 9.3 | 6.5 |
 
 The Day 1 peak and Day 21 trough match the published geometric means to
 within ~5%. The Day 84 trough is ~20% lower in the typical-value

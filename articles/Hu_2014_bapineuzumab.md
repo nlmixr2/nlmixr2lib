@@ -53,22 +53,22 @@ them in one place for review. Reference subject for typical-value PK
 parameters: Caucasian (`RACE_WHITE = 1`), 70 kg standardized body
 weight.
 
-| Equation / parameter                                    | Value    | Source location                                                                      |
-|---------------------------------------------------------|----------|--------------------------------------------------------------------------------------|
-| `lcl` (CL, L/day)                                       | 0.17     | Hu 2014 Table 2, Reduced model estimate                                              |
-| `lvc` (Vc, L)                                           | 3.13     | Hu 2014 Table 2, Reduced model estimate                                              |
-| `lq` (Q, L/day)                                         | 0.871    | Hu 2014 Table 2, Reduced model estimate                                              |
-| `lvp` (Vp, L)                                           | 3.61     | Hu 2014 Table 2, Reduced model estimate                                              |
-| `e_wt_cl` (weight on CL)                                | 0.64     | Hu 2014 Table 2, Reduced model estimate                                              |
-| `e_wt_vc` (weight on Vc)                                | 0.78     | Hu 2014 Table 2, Reduced model estimate                                              |
-| `e_nonwhite_cl` (non-Caucasian fractional effect on CL) | 0.15     | Hu 2014 Table 2, Race on CL = 1.15                                                   |
-| Equation 1 (continuous-covariate power form)            | n/a      | Hu 2014 Methods, Eq. (1): `θ_i = (X_i / m_X)^β · θ`                                  |
-| Equation 2 (discrete-covariate factor form)             | n/a      | Hu 2014 Methods, Eq. (2): `θ_i = b^{X_i} · θ`, `X_i = 0` for reference               |
-| BSV(CL) = 28.1 → ω²(CL) = (0.281)²                      | 0.078961 | Hu 2014 Table 2 (reduced model) and footnote defining BSV = (variance)^(1/2)·100%    |
-| BSV(Vc) = 33.0 → ω²(Vc) = (0.330)²                      | 0.108900 | Hu 2014 Table 2 (reduced model) and footnote                                         |
-| corr(η_CL, η_Vc)                                        | 0.494    | Hu 2014 Table 2, “Correlation between BSV of Vc and CL” (reduced model)              |
-| Off-diagonal cov(η_CL, η_Vc) = r·√(ω²(CL)·ω²(Vc))       | 0.045809 | derived from BSV values and correlation above                                        |
-| `propSd` (residual error)                               | 0.413    | Hu 2014 Table 2, “Residual error (additive error in the log domain)” (reduced model) |
+| Equation / parameter | Value | Source location |
+|----|----|----|
+| `lcl` (CL, L/day) | 0.17 | Hu 2014 Table 2, Reduced model estimate |
+| `lvc` (Vc, L) | 3.13 | Hu 2014 Table 2, Reduced model estimate |
+| `lq` (Q, L/day) | 0.871 | Hu 2014 Table 2, Reduced model estimate |
+| `lvp` (Vp, L) | 3.61 | Hu 2014 Table 2, Reduced model estimate |
+| `e_wt_cl` (weight on CL) | 0.64 | Hu 2014 Table 2, Reduced model estimate |
+| `e_wt_vc` (weight on Vc) | 0.78 | Hu 2014 Table 2, Reduced model estimate |
+| `e_nonwhite_cl` (non-Caucasian fractional effect on CL) | 0.15 | Hu 2014 Table 2, Race on CL = 1.15 |
+| Equation 1 (continuous-covariate power form) | n/a | Hu 2014 Methods, Eq. (1): `θ_i = (X_i / m_X)^β · θ` |
+| Equation 2 (discrete-covariate factor form) | n/a | Hu 2014 Methods, Eq. (2): `θ_i = b^{X_i} · θ`, `X_i = 0` for reference |
+| BSV(CL) = 28.1 → ω²(CL) = (0.281)² | 0.078961 | Hu 2014 Table 2 (reduced model) and footnote defining BSV = (variance)^(1/2)·100% |
+| BSV(Vc) = 33.0 → ω²(Vc) = (0.330)² | 0.108900 | Hu 2014 Table 2 (reduced model) and footnote |
+| corr(η_CL, η_Vc) | 0.494 | Hu 2014 Table 2, “Correlation between BSV of Vc and CL” (reduced model) |
+| Off-diagonal cov(η_CL, η_Vc) = r·√(ω²(CL)·ω²(Vc)) | 0.045809 | derived from BSV values and correlation above |
+| `propSd` (residual error) | 0.413 | Hu 2014 Table 2, “Residual error (additive error in the log domain)” (reduced model) |
 
 The structural model is a linear two-compartment model with first-order
 elimination from the central compartment (Hu 2014 Methods, *Base Model*
@@ -122,6 +122,7 @@ the two confirmatory dose levels of the source paper (0.5 mg/kg and 1.0
 mg/kg IV every 13 weeks, six infusions).
 
 ``` r
+
 set.seed(2014)
 n_per <- 200
 
@@ -182,6 +183,7 @@ stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
 ## Simulation
 
 ``` r
+
 mod <- readModelDb("Hu_2014_bapineuzumab")
 sim <- rxode2::rxSolve(mod, events = events, keep = c("treatment", "WT", "RACE_WHITE"))
 #> ℹ parameter labels from comments will be replaced by 'label()'
@@ -194,6 +196,7 @@ after dose for the pooled studies. We approximate this with the
 simulated concentration envelope by dose group.
 
 ``` r
+
 sim_q <- sim |>
   as.data.frame() |>
   filter(time > 0) |>
@@ -232,6 +235,7 @@ For weight (`WT`), the published change is **-8.4% to 11.3% on CL** and
 analytically from the model parameters as a regression check.
 
 ``` r
+
 # Hu 2014 Table 1 reports mean +/- SD weight = 72.6 +/- 15.2 kg overall.
 # The 25th and 75th percentiles of a normal(72.6, 15.2) distribution are:
 wt_p25 <- qnorm(0.25, 72.6, 15.2)
@@ -273,7 +277,7 @@ knitr::kable(
 | CL change in non-Caucasian | +15.0%            | +15.0%              |
 
 Reduced-model covariate effects: Hu 2014 Table 2 vs. analytic evaluation
-of the implemented model parameters.
+of the implemented model parameters. {.table}
 
 ## PKNCA validation
 
@@ -283,6 +287,7 @@ half-life “approximately 29 days”, abstract and Reduced Covariate Model
 paragraph).
 
 ``` r
+
 sim_nca <- sim |>
   as.data.frame() |>
   filter(!is.na(Cc), time > 0) |>
@@ -313,8 +318,9 @@ first_interval <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = first_interval)
 nca_res  <- suppressWarnings(PKNCA::pk.nca(nca_data))
-#>  ■■■■■■■■■■■■                      37% |  ETA:  6s
-#>  ■■■■■■■■■■■■■■■■■■■■■■            70% |  ETA:  3s
+#>  ■■■■■■■■■■■                       34% |  ETA:  6s
+#>  ■■■■■■■■■■■■■■■■■■■■■             67% |  ETA:  3s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■   99% |  ETA:  0s
 
 nca_summary <- summary(nca_res)
 knitr::kable(
@@ -323,13 +329,13 @@ knitr::kable(
 )
 ```
 
-| Interval Start | Interval End | treatment | N   | AUClast (day\*ug/mL) | Cmax (ug/mL)  | Tmax (day)              | Half-life (day) |
-|---------------:|-------------:|:----------|:----|:---------------------|:--------------|:------------------------|:----------------|
-|              0 |           91 | 0.5 mg/kg | 200 | NC                   | 11.1 \[31.1\] | 0.100 \[0.0400, 0.100\] | 28.9 \[6.74\]   |
-|              0 |           91 | 1.0 mg/kg | 200 | NC                   | 21.4 \[37.2\] | 0.100 \[0.0400, 0.100\] | 29.2 \[7.16\]   |
+| Interval Start | Interval End | treatment | N | AUClast (day\*ug/mL) | Cmax (ug/mL) | Tmax (day) | Half-life (day) |
+|---:|---:|:---|:---|:---|:---|:---|:---|
+| 0 | 91 | 0.5 mg/kg | 200 | NC | 11.1 \[31.1\] | 0.100 \[0.0400, 0.100\] | 28.9 \[6.74\] |
+| 0 | 91 | 1.0 mg/kg | 200 | NC | 21.4 \[37.2\] | 0.100 \[0.0400, 0.100\] | 29.2 \[7.16\] |
 
 Simulated single-dose NCA parameters by dose level (interval 0-91 days,
-end of first dosing cycle).
+end of first dosing cycle). {.table style="width:100%;"}
 
 ### Comparison against published values
 

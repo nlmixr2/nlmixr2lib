@@ -1,6 +1,7 @@
 # Diao_2016_daclizumab_treg
 
 ``` r
+
 library(nlmixr2lib)
 library(rxode2)
 #> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
@@ -60,19 +61,19 @@ The typical baseline Treg percentage among CD4+ T cells is 12.1% (Diao
 
 ## Source trace
 
-| Equation / parameter                                                                                                         | Value                      | Source                                    |
-|------------------------------------------------------------------------------------------------------------------------------|----------------------------|-------------------------------------------|
+| Equation / parameter | Value | Source |
+|----|----|----|
 | PK backbone (`lka`, `lcl`, `lvc`, `lvp`, `lq`, `lfdepot`, `lalag`, `allo_*`, `e_dose_50mg_f`, PK IIV, `CcpropSd`, `CcaddSd`) | Othman 2014 Table 2 values | inherited from `Othman_2014_daclizumab.R` |
-| `ltregE0` (typical baseline Treg)                                                                                            | 12.1 % of CD4+ T cells     | Diao 2016 Table 5                         |
-| `etaltregE0` (E0 IIV)                                                                                                        | omega^2 0.16127 (CV 42%)   | Diao 2016 Table 5                         |
-| `ltregIC50` (IC50)                                                                                                           | 3.97 mg/L                  | Diao 2016 Table 5                         |
-| `etaltregIC50` (IC50 IIV)                                                                                                    | omega^2 0.34744 (CV 65%)   | Diao 2016 Table 5                         |
-| `treggamma` (Hill coefficient, fixed structurally)                                                                           | 2 (unitless)               | Diao 2016 Table 5 (no SE / CI labelled)   |
-| `ltregEmax` (max fractional reduction)                                                                                       | 0.610                      | Diao 2016 Table 5                         |
-| `etaltregEmax` (Emax IIV)                                                                                                    | omega^2 0.01431 (CV 12%)   | Diao 2016 Table 5                         |
-| `tregpropSd` (proportional residual error)                                                                                   | 0.501 (CV 50.1%)           | Diao 2016 Table 5                         |
-| `tregaddSd` (additive residual error)                                                                                        | 0.416 percentage points    | Diao 2016 Table 5                         |
-| Equation 3: `Treg = E0 * (1 - Emax * Cc^gamma / (Cc^gamma + IC50^gamma))`                                                    | n/a                        | Diao 2016 Equation (3)                    |
+| `ltregE0` (typical baseline Treg) | 12.1 % of CD4+ T cells | Diao 2016 Table 5 |
+| `etaltregE0` (E0 IIV) | omega^2 0.16127 (CV 42%) | Diao 2016 Table 5 |
+| `ltregIC50` (IC50) | 3.97 mg/L | Diao 2016 Table 5 |
+| `etaltregIC50` (IC50 IIV) | omega^2 0.34744 (CV 65%) | Diao 2016 Table 5 |
+| `treggamma` (Hill coefficient, fixed structurally) | 2 (unitless) | Diao 2016 Table 5 (no SE / CI labelled) |
+| `ltregEmax` (max fractional reduction) | 0.610 | Diao 2016 Table 5 |
+| `etaltregEmax` (Emax IIV) | omega^2 0.01431 (CV 12%) | Diao 2016 Table 5 |
+| `tregpropSd` (proportional residual error) | 0.501 (CV 50.1%) | Diao 2016 Table 5 |
+| `tregaddSd` (additive residual error) | 0.416 percentage points | Diao 2016 Table 5 |
+| Equation 3: `Treg = E0 * (1 - Emax * Cc^gamma / (Cc^gamma + IC50^gamma))` | n/a | Diao 2016 Equation (3) |
 
 ## Virtual cohort
 
@@ -82,6 +83,7 @@ Treg reduction (~4 days post-dose) and the ~20-week return to baseline
 after the last dose.
 
 ``` r
+
 set.seed(2016)
 n_subjects <- 100
 cohort <- tibble(
@@ -92,6 +94,7 @@ cohort <- tibble(
 ```
 
 ``` r
+
 dose_times <- seq(0, 140, by = 28)             # 6 doses Q4W
 obs_times  <- sort(unique(c(0, 1, 2, 3, 4, 5, 7, 10, 14, 21,
                             seq(28, 350, by = 7))))
@@ -118,6 +121,7 @@ stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid", "cmt")])))
 ## Simulation
 
 ``` r
+
 mod     <- readModelDb("Diao_2016_daclizumab_treg")
 mod_typ <- rxode2::zeroRe(mod)
 #> ℹ parameter labels from comments will be replaced by 'label()'
@@ -140,6 +144,7 @@ reaches a maximum reduction of ~60% (i.e., Treg falls from ~12.1% to
 ~4.7%) approximately 4 days post-dose.
 
 ``` r
+
 fig3a <- sim_typ |>
   dplyr::filter(!is.na(treg), time <= 14) |>
   dplyr::distinct(id, time, .keep_all = TRUE)
@@ -169,6 +174,7 @@ Diao 2016 Figure 3B shows return of Treg to baseline over ~20 weeks
 after the last steady-state 150 mg SC dose.
 
 ``` r
+
 last_dose_t <- 140
 fig3b <- sim_typ |>
   dplyr::filter(!is.na(treg), time >= last_dose_t) |>
@@ -193,6 +199,7 @@ ggplot(fig3b, aes(weeks_after_last, treg)) +
 ### Stochastic VPC
 
 ``` r
+
 vpc <- sim_pop |>
   dplyr::filter(!is.na(treg)) |>
   dplyr::distinct(id, time, .keep_all = TRUE) |>
@@ -227,6 +234,7 @@ inherited PK output to confirm steady-state (dose 5) Cmax / Cmin / AUC
 across one dosing interval.
 
 ``` r
+
 sim_conc <- sim_pop |>
   dplyr::filter(!is.na(Cc), time >= 112, time <= 140) |>
   dplyr::distinct(id, time, .keep_all = TRUE) |>
@@ -259,11 +267,11 @@ knitr::kable(summary(nca, drop.group = "id"),
 #> generated.
 ```
 
-| start | end | regimen       | N   | auclast      | cmax          | cmin          | tmax                |
-|------:|----:|:--------------|:----|:-------------|:--------------|:--------------|:--------------------|
-|     0 |  28 | 150 mg SC Q4W | 100 | 506 \[28.2\] | 23.1 \[27.9\] | 12.8 \[32.9\] | 7.00 \[7.00, 7.00\] |
+| start | end | regimen | N | auclast | cmax | cmin | tmax |
+|---:|---:|:---|:---|:---|:---|:---|:---|
+| 0 | 28 | 150 mg SC Q4W | 100 | 506 \[28.2\] | 23.1 \[27.9\] | 12.8 \[32.9\] | 7.00 \[7.00, 7.00\] |
 
-Steady-state (dose 5) NCA, 150 mg SC Q4W.
+Steady-state (dose 5) NCA, 150 mg SC Q4W. {.table style="width:100%;"}
 
 ### Comparison against published behaviour
 
@@ -271,6 +279,7 @@ Diao 2016 reports two narrative checkpoints for the Treg reduction
 model:
 
 ``` r
+
 typ <- sim_typ |>
   dplyr::filter(!is.na(treg)) |>
   dplyr::distinct(id, time, .keep_all = TRUE)
@@ -297,13 +306,13 @@ cmp <- tibble(
 knitr::kable(cmp, caption = "Treg reduction / recovery checkpoints.")
 ```
 
-| metric                                                  | published | simulated |
-|:--------------------------------------------------------|:----------|:----------|
-| Time to maximum reduction post 150 mg SC (days)         | ~4 days   | 7.0       |
-| Maximum fractional Treg reduction post 150 mg SC        | ~60%      | 58.1%     |
-| Time to \>95% baseline recovery after last dose (weeks) | ~20 weeks | 14.0      |
+| metric | published | simulated |
+|:---|:---|:---|
+| Time to maximum reduction post 150 mg SC (days) | ~4 days | 7.0 |
+| Maximum fractional Treg reduction post 150 mg SC | ~60% | 58.1% |
+| Time to \>95% baseline recovery after last dose (weeks) | ~20 weeks | 14.0 |
 
-Treg reduction / recovery checkpoints.
+Treg reduction / recovery checkpoints. {.table style="width:100%;"}
 
 ## Errata
 

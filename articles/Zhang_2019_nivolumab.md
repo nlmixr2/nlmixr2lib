@@ -1,6 +1,7 @@
 # Zhang_2019_nivolumab
 
 ``` r
+
 library(nlmixr2lib)
 library(rxode2)
 #> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
@@ -50,13 +51,17 @@ The structural model is a two-compartment IV model with **time-dependent
 clearance** parameterized as a sigmoidal-Emax function of time since
 first dose:
 
-$${CL}(t) = {CL}_{0} \cdot \exp\!\left( E_{\max} \cdot \frac{t^{\gamma}}{T_{50}^{\gamma} + t^{\gamma}} \right)$$
+``` math
+\mathrm{CL}(t) = \mathrm{CL}_0 \cdot \exp\!\left(
+   E_{\max} \cdot \frac{t^{\gamma}}{T_{50}^{\gamma} + t^{\gamma}}
+ \right)
+```
 
-with $E_{\max} = - 0.240$ (a fractional **decrease** at $t \gg T_{50}$),
-$T_{50} = 2,200$ hours = 91.7 days, and Hill coefficient
-$\gamma = 2.77$. Covariates on baseline CL: body weight (allometric),
-estimated GFR, sex, ECOG performance status, race (Asian and African
-American as separate non-reference indicators), and three
+with $`E_{\max} = -0.240`$ (a fractional **decrease** at
+$`t \gg T_{50}`$), $`T_{50} = 2{,}200`$ hours = 91.7 days, and Hill
+coefficient $`\gamma = 2.77`$. Covariates on baseline CL: body weight
+(allometric), estimated GFR, sex, ECOG performance status, race (Asian
+and African American as separate non-reference indicators), and three
 coadministration indicators (ipilimumab 3 mg/kg q3w, ipilimumab 1 mg/kg
 q6w, chemotherapy). Covariates on Vc: body weight and sex. Covariates on
 Emax: ECOG PS and any ipilimumab coadministration (additive effects on
@@ -91,36 +96,36 @@ The per-parameter origin is recorded as an in-file comment next to each
 `inst/modeldb/specificDrugs/Zhang_2019_nivolumab.R`. The table below
 collects them in one place for review.
 
-| Parameter (model name)                  | Value                                                                               | Source                                                                                        |
-|-----------------------------------------|-------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------|
-| `lcl` (CL0, L/day)                      | log(10.8 \* 24 / 1000) = log(0.2592)                                                | Zhang 2019 Table 2: CL0 REF = 10.8 mL/hour                                                    |
-| `lvc` (Vc, L)                           | log(4.27)                                                                           | Zhang 2019 Table 2: VC REF = 4.27 L                                                           |
-| `lq` (Q, L/day)                         | log(34.9 \* 24 / 1000) = log(0.8376)                                                | Zhang 2019 Table 2: Q REF = 34.9 mL/hour                                                      |
-| `lvp` (Vp, L)                           | log(2.70)                                                                           | Zhang 2019 Table 2: VP REF = 2.70 L                                                           |
-| `Emax` (unitless; “Emax REF” in source) | -0.240                                                                              | Zhang 2019 Table 2: Emax REF = -0.240                                                         |
-| `lt50` (T50, log days)                  | log(2200 / 24) = log(91.667)                                                        | Zhang 2019 Table 2: T50 = 2200 hour                                                           |
-| `lhill` (Hill, unitless)                | log(2.77)                                                                           | Zhang 2019 Table 2: HILL = 2.77                                                               |
-| `e_wt_cl`                               | 0.530                                                                               | Zhang 2019 Table 2: CL BBWT = 0.530                                                           |
-| `e_egfr_cl`                             | 0.202                                                                               | Zhang 2019 Table 2: CL eGFR = 0.202                                                           |
-| `e_sexf_cl`                             | -0.181                                                                              | Zhang 2019 Table 2: CL SEX = -0.181                                                           |
-| `e_ecog_cl`                             | 0.181                                                                               | Zhang 2019 Table 2: CL PS = 0.181                                                             |
-| `e_black_cl` (RAAA)                     | 0.0374                                                                              | Zhang 2019 Table 2: CL RAAA = 0.0374 (not statistically significant; 95% CI -0.0308 to 0.111) |
-| `e_asian_cl` (RAAS)                     | -0.0354                                                                             | Zhang 2019 Table 2: CL RAAS = -0.0354                                                         |
-| `e_ipi3q3w_cl`                          | 0.227                                                                               | Zhang 2019 Table 2: CL IPI3Q3W = 0.227                                                        |
-| `e_ipi1q6w_cl`                          | 0.159                                                                               | Zhang 2019 Table 2: CL IPI1Q6W = 0.159                                                        |
-| `e_chemo_cl`                            | -0.104                                                                              | Zhang 2019 Table 2: CL CHEMO = -0.104                                                         |
-| `e_wt_vc`                               | 0.534                                                                               | Zhang 2019 Table 2: VC BBWT = 0.534                                                           |
-| `e_sexf_vc`                             | -0.161                                                                              | Zhang 2019 Table 2: VC SEX = -0.161                                                           |
-| `e_ecog_emax`                           | -0.138                                                                              | Zhang 2019 Table 2: Emax PS = -0.138                                                          |
-| `e_ipico_emax`                          | -0.0668                                                                             | Zhang 2019 Table 2: Emax IPICO = -0.0668                                                      |
-| IIV CL (`etalcl`)                       | omega^2 = 0.157                                                                     | Zhang 2019 Table 2: omega^2_CL                                                                |
-| IIV Vc (`etalvc`)                       | omega^2 = 0.152                                                                     | Zhang 2019 Table 2: omega^2_VC                                                                |
-| Cov(CL, Vc)                             | 0.0596                                                                              | Zhang 2019 Table 2: cov(omega^2_CL, omega^2_VC)                                               |
-| IIV Q (`etalq`)                         | omega^2 = 0.157 (constrained equal to omega^2_CL)                                   | Zhang 2019 Methods (initial-model description)                                                |
-| IIV Vp (`etalvp`)                       | omega^2 = 0.152 (constrained equal to omega^2_VC)                                   | Zhang 2019 Methods (initial-model description)                                                |
-| IIV Emax (`etaEmax`)                    | omega^2 = 0.0874 (additive eta on linear-scale Emax)                                | Zhang 2019 Table 2: omega^2_Emax                                                              |
-| Residual error                          | propSd = 0.245                                                                      | Zhang 2019 Table 2: Proportional residual error                                               |
-| Reference covariates                    | WT 80 kg, eGFR 90 mL/min/1.73 m^2, male, PS 0, white/other race, monotherapy, NSCLC | Zhang 2019 Figure 1 caption (reference patient definition)                                    |
+| Parameter (model name) | Value | Source |
+|----|----|----|
+| `lcl` (CL0, L/day) | log(10.8 \* 24 / 1000) = log(0.2592) | Zhang 2019 Table 2: CL0 REF = 10.8 mL/hour |
+| `lvc` (Vc, L) | log(4.27) | Zhang 2019 Table 2: VC REF = 4.27 L |
+| `lq` (Q, L/day) | log(34.9 \* 24 / 1000) = log(0.8376) | Zhang 2019 Table 2: Q REF = 34.9 mL/hour |
+| `lvp` (Vp, L) | log(2.70) | Zhang 2019 Table 2: VP REF = 2.70 L |
+| `Emax` (unitless; “Emax REF” in source) | -0.240 | Zhang 2019 Table 2: Emax REF = -0.240 |
+| `lt50` (T50, log days) | log(2200 / 24) = log(91.667) | Zhang 2019 Table 2: T50 = 2200 hour |
+| `lhill` (Hill, unitless) | log(2.77) | Zhang 2019 Table 2: HILL = 2.77 |
+| `e_wt_cl` | 0.530 | Zhang 2019 Table 2: CL BBWT = 0.530 |
+| `e_egfr_cl` | 0.202 | Zhang 2019 Table 2: CL eGFR = 0.202 |
+| `e_sexf_cl` | -0.181 | Zhang 2019 Table 2: CL SEX = -0.181 |
+| `e_ecog_cl` | 0.181 | Zhang 2019 Table 2: CL PS = 0.181 |
+| `e_black_cl` (RAAA) | 0.0374 | Zhang 2019 Table 2: CL RAAA = 0.0374 (not statistically significant; 95% CI -0.0308 to 0.111) |
+| `e_asian_cl` (RAAS) | -0.0354 | Zhang 2019 Table 2: CL RAAS = -0.0354 |
+| `e_ipi3q3w_cl` | 0.227 | Zhang 2019 Table 2: CL IPI3Q3W = 0.227 |
+| `e_ipi1q6w_cl` | 0.159 | Zhang 2019 Table 2: CL IPI1Q6W = 0.159 |
+| `e_chemo_cl` | -0.104 | Zhang 2019 Table 2: CL CHEMO = -0.104 |
+| `e_wt_vc` | 0.534 | Zhang 2019 Table 2: VC BBWT = 0.534 |
+| `e_sexf_vc` | -0.161 | Zhang 2019 Table 2: VC SEX = -0.161 |
+| `e_ecog_emax` | -0.138 | Zhang 2019 Table 2: Emax PS = -0.138 |
+| `e_ipico_emax` | -0.0668 | Zhang 2019 Table 2: Emax IPICO = -0.0668 |
+| IIV CL (`etalcl`) | omega^2 = 0.157 | Zhang 2019 Table 2: omega^2_CL |
+| IIV Vc (`etalvc`) | omega^2 = 0.152 | Zhang 2019 Table 2: omega^2_VC |
+| Cov(CL, Vc) | 0.0596 | Zhang 2019 Table 2: cov(omega^2_CL, omega^2_VC) |
+| IIV Q (`etalq`) | omega^2 = 0.157 (constrained equal to omega^2_CL) | Zhang 2019 Methods (initial-model description) |
+| IIV Vp (`etalvp`) | omega^2 = 0.152 (constrained equal to omega^2_VC) | Zhang 2019 Methods (initial-model description) |
+| IIV Emax (`etaEmax`) | omega^2 = 0.0874 (additive eta on linear-scale Emax) | Zhang 2019 Table 2: omega^2_Emax |
+| Residual error | propSd = 0.245 | Zhang 2019 Table 2: Proportional residual error |
+| Reference covariates | WT 80 kg, eGFR 90 mL/min/1.73 m^2, male, PS 0, white/other race, monotherapy, NSCLC | Zhang 2019 Figure 1 caption (reference patient definition) |
 
 Equation forms:
 
@@ -165,6 +170,7 @@ and ranges only — Zhang 2019 does not publish individual covariates or
 covariate correlations).
 
 ``` r
+
 set.seed(2019)
 n_subj <- 200
 
@@ -214,6 +220,7 @@ ipilimumab combination, and 3 mg/kg q3w (induction) ipilimumab
 combination.
 
 ``` r
+
 n_cycles    <- 12
 cycle_days  <- 14   # nivolumab q2w in all simulated regimens
 dose_times  <- seq(0, (n_cycles - 1) * cycle_days, by = cycle_days)
@@ -278,6 +285,7 @@ stopifnot(!anyDuplicated(unique(events[, c("ID", "TIME", "EVID")])))
 ## Simulate
 
 ``` r
+
 mod <- readModelDb("Zhang_2019_nivolumab")
 set.seed(20191112)
 sim <- rxSolve(mod, events, returnType = "data.frame", keep = "treatment")
@@ -293,6 +301,7 @@ simulated regimens, this should differ only via the IPICO Emax effect
 (monotherapy: exp(-0.240); IPI combination: exp(-0.240 - 0.0668)).
 
 ``` r
+
 typical_emax <- tibble::tibble(
   regimen     = c("monotherapy", "any IPI coadmin"),
   emax        = c(-0.240, -0.240 + (-0.0668)),
@@ -309,11 +318,12 @@ knitr::kable(typical_emax,
 | any IPI coadmin | -0.307 |      0.736 |
 
 Typical-subject CLss/CL0 ratio implied by the Emax additive structure
-(PS = 0).
+(PS = 0). {.table}
 
 ## Concentration-time profile by regimen
 
 ``` r
+
 sim_summary <- sim |>
   dplyr::filter(time > 0) |>
   dplyr::group_by(time, treatment) |>
@@ -349,9 +359,10 @@ The typical-subject CL trajectory across the first year reproduces the
 sigmoidal Emax decline that motivates the time-varying-CL
 parameterization. At a male, 80 kg, eGFR 90 patient on monotherapy, CL
 drops from 0.259 L/day at t = 0 to 0.259 \* exp(-0.240) = 0.204 L/day at
-full Emax saturation ($\sim 1.5 \times T_{50}$, or about 5 months).
+full Emax saturation ($`\sim 1.5 \times T_{50}`$, or about 5 months).
 
 ``` r
+
 t_grid <- seq(0, 365, by = 5)
 
 cl0_typical <- 10.8 * 24 / 1000     # L/day at reference covariates
@@ -391,6 +402,7 @@ window is several T50 multiples past time zero, so CL is close to its
 asymptotic value of `CL0 * exp(Emax)`.
 
 ``` r
+
 mono_id_range <- 1:n_subj  # monotherapy arm sits in IDs 1..n_subj
 
 # Cycle 1: day 0 to 14
@@ -625,13 +637,14 @@ knitr::kable(
 )
 ```
 
-| Interval Start | Interval End | treatment                    | N   | AUClast (day\*ug/mL) | Cmax (ug/mL)  | Tmax (day)             |
-|---------------:|-------------:|:-----------------------------|:----|:---------------------|:--------------|:-----------------------|
-|              0 |           14 | nivo 3 mg/kg q2w monotherapy | 200 | NC                   | 53.2 \[41.5\] | 0.250 \[0.250, 0.250\] |
+| Interval Start | Interval End | treatment | N | AUClast (day\*ug/mL) | Cmax (ug/mL) | Tmax (day) |
+|---:|---:|:---|:---|:---|:---|:---|
+| 0 | 14 | nivo 3 mg/kg q2w monotherapy | 200 | NC | 53.2 \[41.5\] | 0.250 \[0.250, 0.250\] |
 
-Cycle 1 NCA summary (days 0-14, monotherapy arm).
+Cycle 1 NCA summary (days 0-14, monotherapy arm). {.table}
 
 ``` r
+
 conc_ss <- sim |>
   dplyr::filter(treatment == "nivo 3 mg/kg q2w monotherapy",
                 time >= 154, time <= 168, Cc > 0) |>
@@ -663,12 +676,12 @@ knitr::kable(
 )
 ```
 
-| Interval Start | Interval End | treatment                    | N   | AUClast (day\*ug/mL) | Cmax (ug/mL)  | Cmin (ug/mL)  |
-|---------------:|-------------:|:-----------------------------|:----|:---------------------|:--------------|:--------------|
-|              0 |           14 | nivo 3 mg/kg q2w monotherapy | 200 | 1010 \[49.6\]        | 93.1 \[41.1\] | 55.9 \[59.7\] |
+| Interval Start | Interval End | treatment | N | AUClast (day\*ug/mL) | Cmax (ug/mL) | Cmin (ug/mL) |
+|---:|---:|:---|:---|:---|:---|:---|
+| 0 | 14 | nivo 3 mg/kg q2w monotherapy | 200 | 1010 \[49.6\] | 93.1 \[41.1\] | 55.9 \[59.7\] |
 
 Cycle-12 NCA summary (days 154-168, monotherapy arm) — pseudo-steady
-state.
+state. {.table}
 
 ### Comparison against the literature
 

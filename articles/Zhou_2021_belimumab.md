@@ -1,6 +1,7 @@
 # Zhou_2021_belimumab
 
 ``` r
+
 library(nlmixr2lib)
 library(PKNCA)
 #> 
@@ -27,6 +28,7 @@ library(ggplot2)
 ## Model and source
 
 ``` r
+
 mod <- readModelDb("Zhou_2021_belimumab")
 mod_meta <- rxode2::rxode(mod)
 ```
@@ -80,31 +82,31 @@ collects them in one place for review. All values are from the
 final-model column (“run613”) of Zhou 2021 Table 2 unless otherwise
 noted.
 
-| Equation / parameter                                              | Source value                                                | Source location                                                                                                               |
-|-------------------------------------------------------------------|-------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------|
-| Linear two-compartment IV structural model (NONMEM ADVAN3 TRANS4) | n/a                                                         | Zhou 2021, Methods § “Software and Estimation Methods” and § “Population Pharmacokinetic Model Development”                   |
-| `lcl` (CL, L/day)                                                 | log(0.238)                                                  | Table 2: θ1 = 238 mL/day                                                                                                      |
-| `lvc` (V1, L)                                                     | log(2.597)                                                  | Table 2: θ2 = 2597 mL                                                                                                         |
-| `lq` (Q, L/day)                                                   | log(0.591)                                                  | Table 2: θ3 = 591 mL/day                                                                                                      |
-| `lvp` (V2, L)                                                     | log(2.318)                                                  | Table 2: θ4 = 2318 mL                                                                                                         |
-| `e_ffm_cl` (FFM exponent on CL)                                   | 0.673                                                       | Table 2: θ7                                                                                                                   |
-| `e_alb_cl` (BALB exponent on CL)                                  | -1.12                                                       | Table 2: θ9                                                                                                                   |
-| `e_igg_cl` (BIGG exponent on CL)                                  | 0.293                                                       | Table 2: θ10                                                                                                                  |
-| `e_stdy_cl` (LBSL01/02 multiplier on CL)                          | 1.63                                                        | Table 2: θ11                                                                                                                  |
-| `e_ffm_vc` (FFM exponent on V1)                                   | 0.891                                                       | Table 2: θ8                                                                                                                   |
-| `e_stdy_vc` (LBSL01/02 multiplier on V1)                          | 1.26                                                        | Table 2: θ12                                                                                                                  |
-| `e_neas_vc` (RACE_NEAS multiplier on V1)                          | 1.07                                                        | Table 2: row “Race (RAC4)” — the printed θ index “θ12” is a labelling typo (it is the next-distinct theta, equivalent to θ13) |
-| `age50_vc` (V1 maturation half-saturation, years)                 | 1.58                                                        | Table 2: row “AGE × AGE/(AGE + θ14)” — formula factor = AGE/(AGE + 1.58)                                                      |
-| `etalcl + etalvp` block (variances and covariance)                | 0.0682, 0.0125, 0.0781                                      | Table 2: η1 var = 0.0682; η4 var = 0.0781; footnote c: Cov(CL, V2) = 0.0125                                                   |
-| `etalvc` (V1 IIV variance)                                        | 0.0079                                                      | Table 2: η2 var = 0.0079                                                                                                      |
-| Q IIV                                                             | none (fixed at 0)                                           | Table 2: η3 = 0 (fixed)                                                                                                       |
-| `propSd` (proportional residual error fraction)                   | 0.247                                                       | Table 2: ε1 = θ5 = 0.247                                                                                                      |
-| `addSd` (additive residual error, mg/L)                           | 0.221                                                       | Table 2: ε2 = θ6 = 0.221                                                                                                      |
-| Reference fat-free mass                                           | 40.69 kg                                                    | Table 2: covariate normalisation `(FFM/40.69)`                                                                                |
-| Reference baseline albumin                                        | 40 g/L                                                      | Table 2: covariate normalisation `(BALB/40)`                                                                                  |
-| Reference baseline IgG                                            | 14.8 g/L                                                    | Table 2: covariate normalisation `(BIGG/14.8)`                                                                                |
-| `STDY_LBSL` semantics                                             | INDR = 1 for LBSL01 and LBSL02 only                         | Table 2 footnote: “INDR=1 for study LBSL01 and LBSL02, INDR=0 for the rest of studies”                                        |
-| `RACE_NEAS` semantics                                             | RAC4 = 1 for North East Asian (Chinese / Japanese / Korean) | Table 2 footnote d: “RAC4 = 1 for North East Asian population and RAC4 = 0 for other populations”                             |
+| Equation / parameter | Source value | Source location |
+|----|----|----|
+| Linear two-compartment IV structural model (NONMEM ADVAN3 TRANS4) | n/a | Zhou 2021, Methods § “Software and Estimation Methods” and § “Population Pharmacokinetic Model Development” |
+| `lcl` (CL, L/day) | log(0.238) | Table 2: θ1 = 238 mL/day |
+| `lvc` (V1, L) | log(2.597) | Table 2: θ2 = 2597 mL |
+| `lq` (Q, L/day) | log(0.591) | Table 2: θ3 = 591 mL/day |
+| `lvp` (V2, L) | log(2.318) | Table 2: θ4 = 2318 mL |
+| `e_ffm_cl` (FFM exponent on CL) | 0.673 | Table 2: θ7 |
+| `e_alb_cl` (BALB exponent on CL) | -1.12 | Table 2: θ9 |
+| `e_igg_cl` (BIGG exponent on CL) | 0.293 | Table 2: θ10 |
+| `e_stdy_cl` (LBSL01/02 multiplier on CL) | 1.63 | Table 2: θ11 |
+| `e_ffm_vc` (FFM exponent on V1) | 0.891 | Table 2: θ8 |
+| `e_stdy_vc` (LBSL01/02 multiplier on V1) | 1.26 | Table 2: θ12 |
+| `e_neas_vc` (RACE_NEAS multiplier on V1) | 1.07 | Table 2: row “Race (RAC4)” — the printed θ index “θ12” is a labelling typo (it is the next-distinct theta, equivalent to θ13) |
+| `age50_vc` (V1 maturation half-saturation, years) | 1.58 | Table 2: row “AGE × AGE/(AGE + θ14)” — formula factor = AGE/(AGE + 1.58) |
+| `etalcl + etalvp` block (variances and covariance) | 0.0682, 0.0125, 0.0781 | Table 2: η1 var = 0.0682; η4 var = 0.0781; footnote c: Cov(CL, V2) = 0.0125 |
+| `etalvc` (V1 IIV variance) | 0.0079 | Table 2: η2 var = 0.0079 |
+| Q IIV | none (fixed at 0) | Table 2: η3 = 0 (fixed) |
+| `propSd` (proportional residual error fraction) | 0.247 | Table 2: ε1 = θ5 = 0.247 |
+| `addSd` (additive residual error, mg/L) | 0.221 | Table 2: ε2 = θ6 = 0.221 |
+| Reference fat-free mass | 40.69 kg | Table 2: covariate normalisation `(FFM/40.69)` |
+| Reference baseline albumin | 40 g/L | Table 2: covariate normalisation `(BALB/40)` |
+| Reference baseline IgG | 14.8 g/L | Table 2: covariate normalisation `(BIGG/14.8)` |
+| `STDY_LBSL` semantics | INDR = 1 for LBSL01 and LBSL02 only | Table 2 footnote: “INDR=1 for study LBSL01 and LBSL02, INDR=0 for the rest of studies” |
+| `RACE_NEAS` semantics | RAC4 = 1 for North East Asian (Chinese / Japanese / Korean) | Table 2 footnote d: “RAC4 = 1 for North East Asian population and RAC4 = 0 for other populations” |
 
 The published abstract reports a typical adult steady-state volume of
 distribution of 4915 mL = 4.915 L, which equals
@@ -120,6 +122,7 @@ regimen of belimumab 10 mg/kg IV every 4 weeks, which can be compared
 against Zhou 2021 Table 3.
 
 ``` r
+
 set.seed(34628605)
 
 # Helper: sample fat-free mass directly from the published Table 1 ranges
@@ -219,6 +222,7 @@ dose is a bolus into `central` because the model has no extravascular
 compartment.
 
 ``` r
+
 make_events <- function(cohort_df, n_doses = 6, tau = 28, max_day = 24 * 7) {
   obs_days <- seq(0, max_day, by = 1)
   dose_days <- seq(0, by = tau, length.out = n_doses)
@@ -259,6 +263,7 @@ patients (Zhou 2021 Figure 4). Below is the simulated equivalent from
 this implementation; only adults and pediatric “All” cohorts are shown.
 
 ``` r
+
 sim_first_cycle <- sim |>
   filter(cohort %in% c("All adult", "All pediatric"),
          time >= 0, time <= 28)
@@ -297,6 +302,7 @@ Replicates the four-panel exposure-comparison figure of Zhou 2021 in
 condensed form: simulated `Cavg,ss` distributions by cohort.
 
 ``` r
+
 # Last dosing interval (week 20-24) is fully at steady state for belimumab
 ss_window <- sim |> filter(time >= 20 * 7, time <= 24 * 7)
 
@@ -332,6 +338,7 @@ final dosing interval (`Cavg,ss = AUC0-tau / tau`). The treatment
 grouping variable is `cohort` per the skill template.
 
 ``` r
+
 sim_nca <- sim |>
   filter(time >= 20 * 7, time <= 24 * 7, !is.na(Cc)) |>
   select(id, time, Cc, cohort)
@@ -357,8 +364,8 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- suppressWarnings(PKNCA::pk.nca(nca_data))
-#>  ■■■■■■■■■■■■■                     40% |  ETA:  6s
-#>  ■■■■■■■■■■■■■■■■■■■■■■            71% |  ETA:  3s
+#>  ■■■■■■■■■■■■■■                    44% |  ETA:  5s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■          77% |  ETA:  2s
 nca_tbl  <- as.data.frame(nca_res$result)
 ```
 
@@ -369,6 +376,7 @@ Zhou 2021 Table 3 reports the first and third quartiles of `Cavg,ss`
 below.
 
 ``` r
+
 sim_q <- nca_tbl |>
   filter(PPTESTCD == "cav") |>
   group_by(cohort) |>
@@ -404,7 +412,7 @@ knitr::kable(
 | All pediatric          |   78.2 |  105.8 |   65.1 |  122.4 |       -16.8 |        15.7 |
 
 Cavg,ss (mg/L) at steady state under 10 mg/kg IV Q4W: simulated vs Zhou
-2021 Table 3.
+2021 Table 3. {.table}
 
 Differences within roughly ±20 % are expected given that the virtual
 covariate distributions are reconstructed from the published medians and

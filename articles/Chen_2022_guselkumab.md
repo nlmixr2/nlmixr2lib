@@ -1,6 +1,7 @@
 # Chen_2022_guselkumab
 
 ``` r
+
 library(nlmixr2lib)
 library(rxode2)
 #> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
@@ -52,31 +53,31 @@ approximately 18.1 days.
 Per-parameter origins are recorded as in-file comments in the model
 file; the table below collects them in one place.
 
-| Equation / parameter                                                                      | Value                                           | Source location                                   |
-|-------------------------------------------------------------------------------------------|-------------------------------------------------|---------------------------------------------------|
-| One-compartment ODE structure (depot -\> central, first-order absorption and elimination) | n/a                                             | Results, Base model section (page 751)            |
-| CL/F (typical, 84 kg, no diabetes)                                                        | 0.596 L/day                                     | Table 1                                           |
-| V/F (typical, 84 kg)                                                                      | 15.5 L                                          | Table 1                                           |
-| Ka (typical)                                                                              | 0.572 1/day                                     | Table 1                                           |
-| BWT on CL/F                                                                               | (BWT/84)^0.926                                  | Table 1 footnote f                                |
-| Diabetes on CL/F                                                                          | 1.15^DIAB                                       | Table 1 footnote f (multiplier 1.15 for DIAB = 1) |
-| BWT on V/F                                                                                | (BWT/84)^0.861                                  | Table 1 footnote g                                |
-| IIV CL/F                                                                                  | 38.9% CV -\> omega^2 = log(1+0.389^2) = 0.14092 | Table 1                                           |
-| IIV V/F                                                                                   | 33.3% CV -\> omega^2 = log(1+0.333^2) = 0.10515 | Table 1                                           |
-| IIV Ka                                                                                    | 93.4% CV -\> omega^2 = log(1+0.934^2) = 0.62725 | Table 1 (shrinkage 61.7%)                         |
-| IIV correlation CL/F:V/F                                                                  | r = 0.101 -\> covariance = 0.012295             | Table 1                                           |
-| Proportional residual error                                                               | 19.1% CV -\> propSd = 0.191                     | Table 1                                           |
-| Additive residual error                                                                   | 0.00289 ug/mL                                   | Table 1                                           |
-| Reference body weight                                                                     | 84 kg (population median)                       | Results, page 752                                 |
-| Estimated typical terminal half-life                                                      | ~18.1 days                                      | Results, page 752                                 |
-| Dosing regimen (q4w)                                                                      | 100 mg SC every 4 weeks                         | Abstract / Methods                                |
-| Dosing regimen (q8w)                                                                      | 100 mg SC weeks 0, 4, then every 8 weeks        | Abstract / Methods (approved clinical regimen)    |
+| Equation / parameter | Value | Source location |
+|----|----|----|
+| One-compartment ODE structure (depot -\> central, first-order absorption and elimination) | n/a | Results, Base model section (page 751) |
+| CL/F (typical, 84 kg, no diabetes) | 0.596 L/day | Table 1 |
+| V/F (typical, 84 kg) | 15.5 L | Table 1 |
+| Ka (typical) | 0.572 1/day | Table 1 |
+| BWT on CL/F | (BWT/84)^0.926 | Table 1 footnote f |
+| Diabetes on CL/F | 1.15^DIAB | Table 1 footnote f (multiplier 1.15 for DIAB = 1) |
+| BWT on V/F | (BWT/84)^0.861 | Table 1 footnote g |
+| IIV CL/F | 38.9% CV -\> omega^2 = log(1+0.389^2) = 0.14092 | Table 1 |
+| IIV V/F | 33.3% CV -\> omega^2 = log(1+0.333^2) = 0.10515 | Table 1 |
+| IIV Ka | 93.4% CV -\> omega^2 = log(1+0.934^2) = 0.62725 | Table 1 (shrinkage 61.7%) |
+| IIV correlation CL/F:V/F | r = 0.101 -\> covariance = 0.012295 | Table 1 |
+| Proportional residual error | 19.1% CV -\> propSd = 0.191 | Table 1 |
+| Additive residual error | 0.00289 ug/mL | Table 1 |
+| Reference body weight | 84 kg (population median) | Results, page 752 |
+| Estimated typical terminal half-life | ~18.1 days | Results, page 752 |
+| Dosing regimen (q4w) | 100 mg SC every 4 weeks | Abstract / Methods |
+| Dosing regimen (q8w) | 100 mg SC weeks 0, 4, then every 8 weeks | Abstract / Methods (approved clinical regimen) |
 
 ### Covariate column naming
 
-| Source column       | Canonical column used here                                                                |
-|---------------------|-------------------------------------------------------------------------------------------|
-| `BWT` (kg)          | `WT` (kg; canonical general)                                                              |
+| Source column | Canonical column used here |
+|----|----|
+| `BWT` (kg) | `WT` (kg; canonical general) |
 | `DIAB` (binary 0/1) | `DIAB` (binary; canonical general; new entry, see `inst/references/covariate-columns.md`) |
 
 ### Population
@@ -96,6 +97,7 @@ the main-text trim.
 The same metadata is available programmatically:
 
 ``` r
+
 readModelDb("Chen_2022_guselkumab")$meta$population
 ```
 
@@ -109,6 +111,7 @@ sampled as a Bernoulli at the reported 9% prevalence. The cohort is
 sized at 500 subjects to make per-time-point quantiles smooth.
 
 ``` r
+
 set.seed(2022)
 n_subj <- 500L
 
@@ -132,6 +135,7 @@ state. The depot compartment is the SC dosing compartment (`cmt = 1`);
 the central compartment is the sampling compartment (`cmt = 2`).
 
 ``` r
+
 weeks_q4w <- seq(0, 52, by = 4)              # 0, 4, 8, ... 52
 weeks_q8w <- c(0, 4, seq(12, 52, by = 8))    # 0, 4, 12, 20, 28, 36, 44, 52
 
@@ -166,6 +170,7 @@ stopifnot(!anyDuplicated(unique(events[, c("ID", "TIME", "EVID")])))
 ### Simulate
 
 ``` r
+
 mod <- readModelDb("Chen_2022_guselkumab")
 sim <- rxSolve(mod, events, returnType = "data.frame", keep = c("regimen", "WT", "DIAB"))
 #> ℹ parameter labels from comments will be replaced by 'label()'
@@ -179,6 +184,7 @@ shape of the population PK simulation in Figure S1 of Chen 2022 and
 underlies the steady-state exposure simulations in Figure S2).
 
 ``` r
+
 sim_summary <- sim %>%
   filter(time > 0) %>%
   group_by(regimen, time) %>%
@@ -213,6 +219,7 @@ last full inter-dose window in each regimen (weeks 44-52 for q8w; weeks
 48-52 for q4w).
 
 ``` r
+
 ss_intervals <- tribble(
   ~regimen, ~start_wk, ~end_wk,
   "q4w",     48,        52,
@@ -260,7 +267,7 @@ knitr::kable(
 | q8w     | weeks 44-52 |       6.050 |          0.981 |       171.799 |
 
 Simulated steady-state per-interval exposures (Cmax / Ctrough in ug/mL;
-AUCtau in ug\*day/mL).
+AUCtau in ug\*day/mL). {.table}
 
 ### PKNCA validation
 
@@ -269,6 +276,7 @@ The expected typical terminal half-life is ~18.1 days for a typical 84
 kg subject (Results section, page 752).
 
 ``` r
+
 nca_conc <- sim %>%
   filter(regimen == "q8w", time >= 44 * 7, time <= 52 * 7, Cc > 0) %>%
   mutate(time_rel = time - 44 * 7) %>%
@@ -299,9 +307,9 @@ data_obj <- PKNCAdata(
   )
 )
 nca_results <- pk.nca(data_obj)
-#>  ■■■■■■■                           20% |  ETA:  9s
-#>  ■■■■■■■■■■■■■■■■                  50% |  ETA:  5s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■        82% |  ETA:  2s
+#>  ■■■■                              11% |  ETA: 10s
+#>  ■■■■■■■■■■■■■                     41% |  ETA:  6s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■           73% |  ETA:  3s
 nca_summary <- summary(nca_results)
 knitr::kable(
   nca_summary,
@@ -310,13 +318,13 @@ knitr::kable(
 )
 ```
 
-| start | end | regimen | N   | auclast      | cmax          | tmax                | half.life     |
-|------:|----:|:--------|:----|:-------------|:--------------|:--------------------|:--------------|
-|     0 |  56 | q8w     | 500 | 166 \[44.9\] | 5.96 \[34.7\] | 3.50 \[3.50, 17.5\] | 20.8 \[9.71\] |
+| start | end | regimen | N | auclast | cmax | tmax | half.life |
+|---:|---:|:---|:---|:---|:---|:---|:---|
+| 0 | 56 | q8w | 500 | 166 \[44.9\] | 5.96 \[34.7\] | 3.50 \[3.50, 17.5\] | 20.8 \[9.71\] |
 
 PKNCA summary for the q8w steady-state maintenance interval (weeks
 44-52). Expected typical terminal half-life ~18.1 days (Chen 2022
-Results, page 752).
+Results, page 752). {.table}
 
 ### Typical-subject comparison against published values
 
@@ -326,6 +334,7 @@ at the median 84 kg with no diabetes comorbidity. Reproduce these using
 the packaged model with between-subject variability zeroed out:
 
 ``` r
+
 mod_typ <- rxode2::zeroRe(mod)
 #> ℹ parameter labels from comments will be replaced by 'label()'
 
@@ -401,6 +410,7 @@ contrast uses 95 kg vs. 80 kg as round-number representatives that
 straddle the 90 kg cutoff used in the paper.
 
 ``` r
+
 typ_eval <- function(WT_val, DIAB_val) {
   pop1   <- tibble(ID = 1L, WT = WT_val, DIAB = as.integer(DIAB_val))
   d_dose <- pop1 %>% crossing(TIME = dose_times_q8w) %>%
@@ -444,15 +454,15 @@ knitr::kable(
 )
 ```
 
-| contrast                       | Ctrough_ref | Ctrough_new | Ctrough_pct_chg | AUCtau_ref | AUCtau_new | AUCtau_pct_chg |
-|:-------------------------------|------------:|------------:|----------------:|-----------:|-----------:|---------------:|
-| WT 95 vs 80 kg, no diabetes    |        0.95 |        0.80 |          -16.01 |     171.87 |     146.55 |         -14.73 |
-| Diabetes vs no diabetes, 80 kg |        0.95 |        0.67 |          -29.31 |     171.87 |     148.97 |         -13.32 |
+| contrast | Ctrough_ref | Ctrough_new | Ctrough_pct_chg | AUCtau_ref | AUCtau_new | AUCtau_pct_chg |
+|:---|---:|---:|---:|---:|---:|---:|
+| WT 95 vs 80 kg, no diabetes | 0.95 | 0.80 | -16.01 | 171.87 | 146.55 | -14.73 |
+| Diabetes vs no diabetes, 80 kg | 0.95 | 0.67 | -29.31 | 171.87 | 148.97 | -13.32 |
 
 Steady-state q8w typical-subject covariate-effect contrasts (Ctrough in
 ug/mL; AUCtau in ug\*day/mL). Compare to Chen 2022 Figure S2 / Results:
 -33.4% Ctrough and -28.8% AUC for heavier subjects; -30.3% Ctrough and
--18.9% AUC for diabetic subjects.
+-18.9% AUC for diabetic subjects. {.table}
 
 The body-weight contrast above is simulated at 95 vs. 80 kg
 (typical-subject anchors straddling the 90 kg cutoff) rather than the

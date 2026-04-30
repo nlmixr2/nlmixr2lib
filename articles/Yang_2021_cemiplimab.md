@@ -21,13 +21,21 @@ across two studies (1423 and 1540).
 Structure: linear two-compartment IV model with time-varying CL via a
 sigmoid-Emax function of time since first dose:
 
-$${CL}_{t,i}\; = \;{CL}_{{base},i} \cdot \exp\!\left( \frac{E_{\max,i}\, t^{\gamma}}{T_{50,i}^{\gamma} + t^{\gamma}} \right),\qquad E_{\max,i} = E_{\max,{REF}} \cdot \exp\left( \eta_{E_{\max},i} \right),\qquad T_{50,i} = T_{50,{REF}} \cdot \exp\left( \eta_{T_{50},i} \right)$$
+``` math
+\mathrm{CL}_{t,i} \;=\; \mathrm{CL}_{\mathrm{base},i} \cdot
+  \exp\!\left( \dfrac{E_{\max,i}\, t^{\gamma}}
+                     {T_{50,i}^{\gamma} + t^{\gamma}} \right),
+\qquad
+E_{\max,i} = E_{\max,\mathrm{REF}} \cdot \exp(\eta_{E_{\max},i}),
+\qquad
+T_{50,i}   = T_{50,\mathrm{REF}}   \cdot \exp(\eta_{T_{50},i})
+```
 
-with $E_{\max} = - 0.410$ (a log-fold maximal decrease, asymptote
-exp($E_{\max}$) $\approx 0.66$ of baseline CL) and $T_{50} = 28.9$ days.
-Covariate effects (all power-form) on the shared CL/Q: baseline body
-weight, albumin, IgG, ALT. On the shared V2/V3: baseline body weight,
-BMI.
+with $`E_{\max} = -0.410`$ (a log-fold maximal decrease, asymptote
+exp($`E_{\max}`$) $`\approx 0.66`$ of baseline CL) and $`T_{50} = 28.9`$
+days. Covariate effects (all power-form) on the shared CL/Q: baseline
+body weight, albumin, IgG, ALT. On the shared V2/V3: baseline body
+weight, BMI.
 
 ## Population
 
@@ -63,26 +71,26 @@ Per-parameter origins are recorded as in-file comments next to each
 `inst/modeldb/specificDrugs/Yang_2021_cemiplimab.R`. The table below
 collects them in one place for review.
 
-| Parameter (model name)            | Value                     | Source                                           |
-|-----------------------------------|---------------------------|--------------------------------------------------|
-| `lcl` (CL_BASE,REF, L/day)        | log(0.290)                | Yang 2021 Table 3, TVCL                          |
-| `lvc` (V2_REF, L)                 | log(3.32)                 | Yang 2021 Table 3, TVV2                          |
-| `lq` (Q_REF, L/day)               | log(0.638)                | Yang 2021 Table 3, TVQ                           |
-| `lvp` (V3_REF, L)                 | log(1.65)                 | Yang 2021 Table 3, TVV3                          |
-| `emax` (EMAX_REF, log-fold)       | -0.410                    | Yang 2021 Table 3, Emax                          |
-| `lt50` (T50_REF, days)            | log(28.9)                 | Yang 2021 Table 3, T50                           |
-| `hill` (HILL, unitless)           | 2.79                      | Yang 2021 Table 3, HILL                          |
-| `e_wt_clq` (power, WT on CL/Q)    | 0.477                     | Yang 2021 Table 3, WGT_ON_CLQ                    |
-| `e_alb_clq` (power, ALB on CL/Q)  | -0.926                    | Yang 2021 Table 3, ALB_ON_CLQ                    |
-| `e_igg_clq` (power, IGG on CL/Q)  | 0.184                     | Yang 2021 Table 3, IGG_ON_CLQ                    |
-| `e_alt_clq` (power, ALT on CL/Q)  | -0.0795                   | Yang 2021 Table 3, ALT_ON_CLQ                    |
-| `e_wt_vss` (power, WT on V2/V3)   | 0.970                     | Yang 2021 Table 3, WGT_ON_VSS                    |
-| `e_bmi_vss` (power, BMI on V2/V3) | -0.560                    | Yang 2021 Table 3, BMI_ON_VSS                    |
-| IIV block `etalcl + etalvc`       | c(0.0870, 0.0422, 0.0432) | Yang 2021 Table 3, IIV_CLQ, IIV_CLQ:VSS, IIV_VSS |
-| `etaemax`                         | 0.228                     | Yang 2021 Table 3, IIV_Emax                      |
-| `etalt50`                         | 0.610                     | Yang 2021 Table 3, IIV_T50                       |
-| `propSd`                          | 0.188                     | Yang 2021 Table 3, RUVCV                         |
-| `addSd` (mg/L)                    | 1.48                      | Yang 2021 Table 3, RUVSD                         |
+| Parameter (model name) | Value | Source |
+|----|----|----|
+| `lcl` (CL_BASE,REF, L/day) | log(0.290) | Yang 2021 Table 3, TVCL |
+| `lvc` (V2_REF, L) | log(3.32) | Yang 2021 Table 3, TVV2 |
+| `lq` (Q_REF, L/day) | log(0.638) | Yang 2021 Table 3, TVQ |
+| `lvp` (V3_REF, L) | log(1.65) | Yang 2021 Table 3, TVV3 |
+| `emax` (EMAX_REF, log-fold) | -0.410 | Yang 2021 Table 3, Emax |
+| `lt50` (T50_REF, days) | log(28.9) | Yang 2021 Table 3, T50 |
+| `hill` (HILL, unitless) | 2.79 | Yang 2021 Table 3, HILL |
+| `e_wt_clq` (power, WT on CL/Q) | 0.477 | Yang 2021 Table 3, WGT_ON_CLQ |
+| `e_alb_clq` (power, ALB on CL/Q) | -0.926 | Yang 2021 Table 3, ALB_ON_CLQ |
+| `e_igg_clq` (power, IGG on CL/Q) | 0.184 | Yang 2021 Table 3, IGG_ON_CLQ |
+| `e_alt_clq` (power, ALT on CL/Q) | -0.0795 | Yang 2021 Table 3, ALT_ON_CLQ |
+| `e_wt_vss` (power, WT on V2/V3) | 0.970 | Yang 2021 Table 3, WGT_ON_VSS |
+| `e_bmi_vss` (power, BMI on V2/V3) | -0.560 | Yang 2021 Table 3, BMI_ON_VSS |
+| IIV block `etalcl + etalvc` | c(0.0870, 0.0422, 0.0432) | Yang 2021 Table 3, IIV_CLQ, IIV_CLQ:VSS, IIV_VSS |
+| `etaemax` | 0.228 | Yang 2021 Table 3, IIV_Emax |
+| `etalt50` | 0.610 | Yang 2021 Table 3, IIV_T50 |
+| `propSd` | 0.188 | Yang 2021 Table 3, RUVCV |
+| `addSd` (mg/L) | 1.48 | Yang 2021 Table 3, RUVSD |
 
 Equations: structural two-compartment micro-constant form. The
 final-model equations for CL_i, Q_i, V2_i, V3_i, T50_i, and Emax_i
@@ -100,6 +108,7 @@ distributions anchored to the reported median and a plausible scale; the
 distributions are clipped to the reported ranges.
 
 ``` r
+
 set.seed(2021)
 n_subj <- 250
 
@@ -118,6 +127,7 @@ weight-based regimen used in 80.3% of the analysis population) and **350
 mg Q3W** (the fixed regimen ultimately recommended).
 
 ``` r
+
 build_events <- function(pop, dose_mode = c("3mgkg_q2w", "350mg_q3w")) {
   dose_mode <- match.arg(dose_mode)
   if (dose_mode == "3mgkg_q2w") {
@@ -154,6 +164,7 @@ events_q3w <- build_events(cohort, "350mg_q3w")
 ## Simulation
 
 ``` r
+
 mod <- readModelDb("Yang_2021_cemiplimab")
 sim_q2w <- rxSolve(mod, events = events_q2w, returnType = "data.frame")
 #> ℹ parameter labels from comments will be replaced by 'label()'
@@ -174,6 +185,7 @@ from the packaged model for the two regimens that informed the
 fixed-dose decision.
 
 ``` r
+
 sim_summary <- sim |>
   dplyr::filter(time > 0) |>
   dplyr::group_by(time, treatment) |>
@@ -204,13 +216,14 @@ ggplot(sim_summary, aes(time, median, colour = treatment, fill = treatment)) +
 
 Yang 2021 reports that cemiplimab CL decreased on average by 35.9% over
 time relative to baseline (from 0.326 to 0.208 L/day within 16 weeks of
-treatment). With $E_{\max} = - 0.410$, the asymptotic CL at
-$t \gg T_{50}$ is ${CL}_{base} \cdot \exp( - 0.410) = 0.664$ of baseline
-(a 33.6% reduction). The typical-value CL(t) profile below reproduces
-the time course at a typical reference subject (median covariates,
-deterministic, etas = 0).
+treatment). With $`E_{\max} = -0.410`$, the asymptotic CL at
+$`t \gg T_{50}`$ is $`\mathrm{CL}_{\mathrm{base}} \cdot \exp(-0.410)
+= 0.664`$ of baseline (a 33.6% reduction). The typical-value CL(t)
+profile below reproduces the time course at a typical reference subject
+(median covariates, deterministic, etas = 0).
 
 ``` r
+
 t_grid <- seq(0, 365, by = 5)
 events_cl <- data.frame(
   ID   = 1,
@@ -259,6 +272,7 @@ over a 6-week steady-state window for the same dose regimens, and the
 results are compared against the published values in the next section.
 
 ``` r
+
 nca_window <- function(sim, dose_interval_d, n_doses, label) {
   ss_start <- dose_interval_d * (n_doses - 3)            # last 3 doses span 6 weeks for both regimens
   ss_end   <- ss_start + 42                              # 6 weeks = 42 days
@@ -286,37 +300,38 @@ nca_window <- function(sim, dose_interval_d, n_doses, label) {
 }
 
 nca_q2w <- nca_window(sim, 14, 12, "3 mg/kg Q2W")
-#>  ■■■■■■■■■■■■■■■■■■■               62% |  ETA:  2s
+#>  ■■■■■■■■■■■■■■■■■■■               60% |  ETA:  2s
 nca_q3w <- nca_window(sim, 21,  8, "350 mg Q3W")
-#>  ■■■■■■■                           19% |  ETA:  5s
+#>  ■■■■■■                            18% |  ETA:  5s
 #>  ■■■■■■■■■■■■■■■■■■■■■■            70% |  ETA:  2s
 
 knitr::kable(summary(nca_q2w),
              caption = "Simulated NCA at steady state (6-week window), 3 mg/kg Q2W")
 ```
 
-| start | end | N   | auclast       | cmax         | cmin          | tmax                | half.life     |
-|------:|----:|:----|:--------------|:-------------|:--------------|:--------------------|:--------------|
-|     0 |  42 | 250 | 3370 \[40.9\] | 115 \[33.7\] | 57.6 \[49.4\] | 29.0 \[29.0, 29.0\] | 19.5 \[7.19\] |
+| start | end | N | auclast | cmax | cmin | tmax | half.life |
+|---:|---:|:---|:---|:---|:---|:---|:---|
+| 0 | 42 | 250 | 3370 \[40.9\] | 115 \[33.7\] | 57.6 \[49.4\] | 29.0 \[29.0, 29.0\] | 19.5 \[7.19\] |
 
-Simulated NCA at steady state (6-week window), 3 mg/kg Q2W
+Simulated NCA at steady state (6-week window), 3 mg/kg Q2W {.table}
 
 ``` r
+
 knitr::kable(summary(nca_q3w),
              caption = "Simulated NCA at steady state (6-week window), 350 mg Q3W")
 ```
 
-| start | end | N   | auclast       | cmax         | cmin          | tmax                | half.life     |
-|------:|----:|:----|:--------------|:-------------|:--------------|:--------------------|:--------------|
-|     0 |  42 | 250 | 3480 \[41.7\] | 140 \[36.3\] | 49.3 \[51.8\] | 22.0 \[22.0, 22.0\] | 19.7 \[8.38\] |
+| start | end | N | auclast | cmax | cmin | tmax | half.life |
+|---:|---:|:---|:---|:---|:---|:---|:---|
+| 0 | 42 | 250 | 3480 \[41.7\] | 140 \[36.3\] | 49.3 \[51.8\] | 22.0 \[22.0, 22.0\] | 19.7 \[8.38\] |
 
-Simulated NCA at steady state (6-week window), 350 mg Q3W
+Simulated NCA at steady state (6-week window), 350 mg Q3W {.table}
 
 ## Comparison against published values
 
 Yang 2021 Table 4 reports the following post-hoc estimates of
-${AUC}_{6{wk,ss}}$ and $C_{trough,ss}$ by body-weight quartile, pooled
-across all weight strata (overall N=548):
+$`\mathrm{AUC}_{6\mathrm{wk,ss}}`$ and $`C_{\mathrm{trough,ss}}`$ by
+body-weight quartile, pooled across all weight strata (overall N=548):
 
 | Regimen     | Mean AUC_6wk,ss (day·mg/L) | Mean C_trough,ss (mg/L) |
 |-------------|---------------------------:|------------------------:|
@@ -344,19 +359,19 @@ population median (76.2 kg).
 ## Assumptions and deviations
 
 - **`BLK_ON_T50` race effect on T50 is not implemented.** Yang 2021’s
-  final-model equation for $T_{50,i}$ is written as
-  $T_{50,{REF}} \cdot \left( {BLK} \right)^{BLK\_ ON\_ T50} \cdot \exp(\eta)$
-  with `BLK_ON_T50 = 1.01` (RSE 29.2%). The formula is internally
-  inconsistent: if `BLK` is a 0/1 indicator (Black = 1, non-Black = 0),
-  then `0^1.01 = 0` would zero out T50 for the 96.4% of non-Black
-  patients in the cohort. The paper does not show the NONMEM control
-  stream and the supplementary DOCX was not available on disk, so the
-  intended encoding could not be verified. The paper itself states all
-  retained covariates had “limited impact (\< 20%) on cemiplimab
-  exposure” and were “not clinically meaningful” given the flat
-  exposure-response relationship. The packaged model therefore uses
-  $T_{50,i} = T_{50,{REF}} \cdot \exp\left( \eta_{T_{50}} \right)$ for
-  all races. Datasets with a `RACE_BLACK` column will be ignored by this
+  final-model equation for $`T_{50,i}`$ is written as
+  $`T_{50,\mathrm{REF}} \cdot (\mathrm{BLK})^{\mathrm{BLK\_ON\_T50}}
+  \cdot \exp(\eta)`$ with `BLK_ON_T50 = 1.01` (RSE 29.2%). The formula
+  is internally inconsistent: if `BLK` is a 0/1 indicator (Black = 1,
+  non-Black = 0), then `0^1.01 = 0` would zero out T50 for the 96.4% of
+  non-Black patients in the cohort. The paper does not show the NONMEM
+  control stream and the supplementary DOCX was not available on disk,
+  so the intended encoding could not be verified. The paper itself
+  states all retained covariates had “limited impact (\< 20%) on
+  cemiplimab exposure” and were “not clinically meaningful” given the
+  flat exposure-response relationship. The packaged model therefore uses
+  $`T_{50,i} = T_{50,\mathrm{REF}} \cdot \exp(\eta_{T_{50}})`$ for all
+  races. Datasets with a `RACE_BLACK` column will be ignored by this
   model; this should be an immaterial omission per the paper’s own
   assessment of clinical impact.
 - **Time-varying covariates kept at baseline.** Yang 2021 mentions that

@@ -1,6 +1,7 @@
 # Valenzuela_2025_nipocalimab
 
 ``` r
+
 library(nlmixr2lib)
 library(PKNCA)
 #> 
@@ -64,6 +65,7 @@ The same information is available programmatically via the model’s
 `population` metadata:
 
 ``` r
+
 str(rxode2::rxode2(readModelDb("Valenzuela_2025_nipocalimab"))$meta$population)
 #> ℹ parameter labels from comments will be replaced by 'label()'
 #> List of 15
@@ -92,35 +94,35 @@ The per-parameter origin is recorded as an in-file comment next to each
 `inst/modeldb/specificDrugs/Valenzuela_2025_nipocalimab.R`. The table
 below collects them in one place for review.
 
-| Equation / parameter                    | Value                           | Source location  |
-|-----------------------------------------|---------------------------------|------------------|
-| `CL` (linear serum clearance)           | 0.655 L/day                     | Table 3          |
-| `Vc` (central volume)                   | 3.23 L                          | Table 3          |
-| `Q` (intercompartmental clearance)      | 0.250 L/day                     | Table 3          |
-| `Vp` (peripheral volume)                | 0.622 L                         | Table 3          |
-| `WTonCL = WTonQ`                        | 0.75 (fixed)                    | Eq. 3            |
-| `WTonVc = WTonVp`                       | 1 (fixed)                       | Eq. 3            |
-| `FcRn0` (baseline total FcRn)           | 143 nmol/L                      | Table 3          |
-| `FRmax` (accessible FcRn fraction)      | 0.947                           | Table 3          |
-| `Kss` (QSS dissociation constant)       | 6.05 µg/mL (= 42.6 nmol/L)      | Table 3 / Eq. 2  |
-| `kint` (complex internalization)        | 62.4 day⁻¹                      | Table 3          |
-| `kdeg` (free FcRn degradation)          | 1.3 day⁻¹ (fixed)               | Table 3          |
-| `IgG0` (IgG baseline, non-Vivacity-MG)  | 11.4 g/L                        | Table 3          |
-| `FRIgG0,M281-004`                       | 0.777                           | Table 3          |
-| `kdeg,IgG`                              | 0.217 day⁻¹                     | Table 3          |
-| `IgK` (FcRn-mediated IgG recycling)     | 5.08                            | Table 3 / Eq. 5  |
-| `ke0` (IgG effect-compartment rate)     | 0.414 day⁻¹                     | Table 3          |
-| `S_IgG`                                 | −0.216 points per 10 % IgG red. | Table 3 / Eq. 6  |
-| `E_IgG`                                 | 0.871                           | Table 3          |
-| `IDec_placebo`                          | −1.08 points                    | Table 3          |
-| `E_ADL`                                 | 1.23                            | Table 3          |
-| `S_placebo`                             | −0.0594 points/week             | Table 3          |
-| PK ODE (dAtotal/dt)                     | n/a                             | Supplement Eq. 1 |
-| Cfree QSS solution                      | n/a                             | Supplement Eq. 2 |
-| WT allometry                            | n/a                             | Supplement Eq. 3 |
-| IgG indirect-response (dIgG/dt)         | n/a                             | Supplement Eq. 4 |
-| `k_rec_IgG = k_deg_IgG × IgK / (1+IgK)` | n/a                             | Supplement Eq. 5 |
-| MG-ADL model                            | n/a                             | Supplement Eq. 6 |
+| Equation / parameter | Value | Source location |
+|----|----|----|
+| `CL` (linear serum clearance) | 0.655 L/day | Table 3 |
+| `Vc` (central volume) | 3.23 L | Table 3 |
+| `Q` (intercompartmental clearance) | 0.250 L/day | Table 3 |
+| `Vp` (peripheral volume) | 0.622 L | Table 3 |
+| `WTonCL = WTonQ` | 0.75 (fixed) | Eq. 3 |
+| `WTonVc = WTonVp` | 1 (fixed) | Eq. 3 |
+| `FcRn0` (baseline total FcRn) | 143 nmol/L | Table 3 |
+| `FRmax` (accessible FcRn fraction) | 0.947 | Table 3 |
+| `Kss` (QSS dissociation constant) | 6.05 µg/mL (= 42.6 nmol/L) | Table 3 / Eq. 2 |
+| `kint` (complex internalization) | 62.4 day⁻¹ | Table 3 |
+| `kdeg` (free FcRn degradation) | 1.3 day⁻¹ (fixed) | Table 3 |
+| `IgG0` (IgG baseline, non-Vivacity-MG) | 11.4 g/L | Table 3 |
+| `FRIgG0,M281-004` | 0.777 | Table 3 |
+| `kdeg,IgG` | 0.217 day⁻¹ | Table 3 |
+| `IgK` (FcRn-mediated IgG recycling) | 5.08 | Table 3 / Eq. 5 |
+| `ke0` (IgG effect-compartment rate) | 0.414 day⁻¹ | Table 3 |
+| `S_IgG` | −0.216 points per 10 % IgG red. | Table 3 / Eq. 6 |
+| `E_IgG` | 0.871 | Table 3 |
+| `IDec_placebo` | −1.08 points | Table 3 |
+| `E_ADL` | 1.23 | Table 3 |
+| `S_placebo` | −0.0594 points/week | Table 3 |
+| PK ODE (dAtotal/dt) | n/a | Supplement Eq. 1 |
+| Cfree QSS solution | n/a | Supplement Eq. 2 |
+| WT allometry | n/a | Supplement Eq. 3 |
+| IgG indirect-response (dIgG/dt) | n/a | Supplement Eq. 4 |
+| `k_rec_IgG = k_deg_IgG × IgK / (1+IgK)` | n/a | Supplement Eq. 5 |
+| MG-ADL model | n/a | Supplement Eq. 6 |
 
 The nipocalimab molecular weight **142 kDa**, derived from the paper’s
 own unit check (a 15 mg/kg dose in a 75 kg participant delivers 1125 mg
@@ -140,6 +142,7 @@ variability via
 [`rxode2::zeroRe()`](https://nlmixr2.github.io/rxode2/reference/zeroRe.html).
 
 ``` r
+
 MW_nipocalimab <- 142000  # g/mol, as used inside the model
 mg_per_kg      <- 15      # maintenance dose level
 wt_kg          <- 75      # reference body weight
@@ -152,6 +155,7 @@ load_mg <- 30 * wt_kg     # 30 mg/kg loading dose
 ## Simulation
 
 ``` r
+
 mod <- readModelDb("Valenzuela_2025_nipocalimab")
 mod_typical <- rxode2::zeroRe(mod)
 #> ℹ parameter labels from comments will be replaced by 'label()'
@@ -206,6 +210,7 @@ Figure 3C (with 30 mg/kg loading) of Valenzuela 2025. The paper reports
 a steady-state mean IgG CFB of approximately −70 % for 15 mg/kg Q2W.
 
 ``` r
+
 baseline_igg_gmg <- 11.4 * 0.777  # IgG0 * FRIgG0_M281_004
 
 igg_df <- bind_rows(
@@ -236,6 +241,7 @@ Replicates Figure 4 panels A–D of Valenzuela 2025 for a typical 75 kg
 gMG participant on 15 mg/kg Q2W (without loading dose).
 
 ``` r
+
 # Cc is already in ug/mL (model concentration unit).
 sim_plot <- sim_q2w |>
   mutate(pctRO        = 100 - pctUnoccupiedFcRn,
@@ -282,6 +288,7 @@ two-compartment linear elimination behavior of nipocalimab within the
 linear-CL range, before the target-mediated component fully engages.
 
 ``` r
+
 # Single-dose healthy adult scenario for NCA
 nca_times <- sort(unique(c(0, 0.04, 0.083, 0.25, 1, 2, 4, 8,
                            seq(0.5, 28, by = 0.5))))
@@ -348,7 +355,7 @@ knitr::kable(as.data.frame(nca_res), digits = 2,
 | 15 mg/kg IV SD, healthy |   1 |     0 | Inf | aucinf.obs          |  769.28 | NA      |
 
 PKNCA summary for a single 15 mg/kg IV dose (healthy; typical-value
-simulation).
+simulation). {.table}
 
 #### Consistency checks
 
@@ -365,6 +372,7 @@ simulation).
   simulation gives:
 
 ``` r
+
 ss_mean_igg_cfb <- sim_q2w |>
   filter(time >= 84, time <= 112) |>
   summarise(mean_cfb_pct = mean(100 * (total_IgG - baseline_igg_gmg) / baseline_igg_gmg))
@@ -375,12 +383,12 @@ ss_mean_igg_cfb
 
 #### Comparison against published numbers
 
-| Quantity                             | Valenzuela 2025                 | Simulated (this vignette)      |
-|--------------------------------------|---------------------------------|--------------------------------|
-| Cmax, 15 mg/kg IV SD, 75 kg          | ~300–400 µg/mL (Fig 2A, Fig 4A) | 348 µg/mL                      |
-| Nonlinear CL max (FcRn0·kint·Vc/Kss) | 677 L/day (page 2082)           | 676 L/day (hand check)         |
-| IgG CFB at SS, 15 mg/kg Q2W          | ~ −70 % (page 2083, Fig 4C)     | see code chunk above (~ −64 %) |
-| MG-ADL pcCFB at SS, MG-ADL0 = 9.8    | −1.94 points (page 2083)        | see Fig 4D above               |
+| Quantity | Valenzuela 2025 | Simulated (this vignette) |
+|----|----|----|
+| Cmax, 15 mg/kg IV SD, 75 kg | ~300–400 µg/mL (Fig 2A, Fig 4A) | 348 µg/mL |
+| Nonlinear CL max (FcRn0·kint·Vc/Kss) | 677 L/day (page 2082) | 676 L/day (hand check) |
+| IgG CFB at SS, 15 mg/kg Q2W | ~ −70 % (page 2083, Fig 4C) | see code chunk above (~ −64 %) |
+| MG-ADL pcCFB at SS, MG-ADL0 = 9.8 | −1.94 points (page 2083) | see Fig 4D above |
 
 Differences below 10 % are expected from the typical-value approximation
 (no between-subject variability averaging) and the way baseline MG-ADL

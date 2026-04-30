@@ -43,6 +43,7 @@ Matthew L. Fidler
 ## Examples
 
 ``` r
+
 # default combine
 
 defaultCombine("f", "depot")

@@ -1,6 +1,7 @@
 # Yao_2018_guselkumab
 
 ``` r
+
 library(nlmixr2lib)
 library(rxode2)
 #> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
@@ -58,20 +59,20 @@ combined additive + proportional residual error structure. They differ
 in the analysis dataset, the reference covariates, and the retained
 covariate set:
 
-| Aspect                          | Yao 2018 (this model)                       | Chen 2022                       |
-|---------------------------------|---------------------------------------------|---------------------------------|
-| Indication                      | Plaque psoriasis                            | Psoriatic arthritis             |
-| Studies                         | X-PLORE, VOYAGE 1, VOYAGE 2 (1454 patients) | DISCOVER-1, DISCOVER-2          |
-| Reference body weight           | 87.1 kg (analysis-dataset median)           | 84 kg (analysis-dataset median) |
-| Typical CL/F                    | 0.516 L/day                                 | 0.596 L/day                     |
-| Typical V/F                     | 13.5 L                                      | 15.5 L                          |
-| Typical Ka                      | 1.11 1/day                                  | 0.572 1/day                     |
-| BWT exponent on CL/F            | 0.998                                       | 0.926                           |
-| BWT exponent on V/F             | 0.829                                       | 0.861                           |
-| Diabetes on CL/F                | 1.12                                        | 1.15                            |
-| Race on CL/F                    | 1.11 (non-White vs White)                   | not retained                    |
-| Typical terminal half-life      | ~18.1 days                                  | ~18.1 days                      |
-| IIV CL/F (% in source notation) | 35.6 (sqrt(variance))                       | 38.9 (CV)                       |
+| Aspect | Yao 2018 (this model) | Chen 2022 |
+|----|----|----|
+| Indication | Plaque psoriasis | Psoriatic arthritis |
+| Studies | X-PLORE, VOYAGE 1, VOYAGE 2 (1454 patients) | DISCOVER-1, DISCOVER-2 |
+| Reference body weight | 87.1 kg (analysis-dataset median) | 84 kg (analysis-dataset median) |
+| Typical CL/F | 0.516 L/day | 0.596 L/day |
+| Typical V/F | 13.5 L | 15.5 L |
+| Typical Ka | 1.11 1/day | 0.572 1/day |
+| BWT exponent on CL/F | 0.998 | 0.926 |
+| BWT exponent on V/F | 0.829 | 0.861 |
+| Diabetes on CL/F | 1.12 | 1.15 |
+| Race on CL/F | 1.11 (non-White vs White) | not retained |
+| Typical terminal half-life | ~18.1 days | ~18.1 days |
+| IIV CL/F (% in source notation) | 35.6 (sqrt(variance)) | 38.9 (CV) |
 
 Despite different patient populations and reference covariates, both
 models converge on essentially the same typical terminal half-life,
@@ -83,25 +84,25 @@ recycling and a comparable demographic mix.
 Per-parameter origins are recorded as in-file comments in the model
 file; the table below collects them in one place.
 
-| Equation / parameter                                                                      | Value                                                                                        | Source location                                 |
-|-------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------|-------------------------------------------------|
-| One-compartment ODE structure (depot -\> central, first-order absorption and elimination) | n/a                                                                                          | Methods, Base model section (page 616)          |
-| CL/F (typical, 87.1 kg, no diabetes, White)                                               | 0.516 L/day                                                                                  | Table 4, Final Reduced Model                    |
-| V/F (typical, 87.1 kg)                                                                    | 13.5 L                                                                                       | Table 4, Final Reduced Model                    |
-| Ka (typical)                                                                              | 1.11 1/day                                                                                   | Table 4, Final Reduced Model                    |
-| BWT on CL/F                                                                               | (BWT/87.1)^0.998                                                                             | Table 4 footnote b                              |
-| BWT on V/F                                                                                | (BWT/87.1)^0.829                                                                             | Table 4 footnote c                              |
-| Diabetes on CL/F                                                                          | 1.12^DIAB                                                                                    | Table 4 footnote b                              |
-| Race on CL/F                                                                              | 1.11^RACE (RACE = 1 for non-White)                                                           | Table 4 footnote b                              |
-| IIV CL/F                                                                                  | 35.6% (sqrt(variance)\*100) -\> omega^2 = 0.356^2 = 0.126736                                 | Table 4, footnote on IIV definition             |
-| IIV V/F                                                                                   | 28.0% -\> omega^2 = 0.280^2 = 0.078400                                                       | Table 4                                         |
-| IIV Ka                                                                                    | 129% -\> omega^2 = 1.290^2 = 1.6641 (shrinkage 74.7%)                                        | Table 4                                         |
-| IIV correlation CL/F:V/F                                                                  | r = 0.834 -\> covariance = 0.083133                                                          | Table 4                                         |
-| Proportional residual error                                                               | 20.0% CV -\> propSd = 0.200                                                                  | Table 4                                         |
-| Additive residual error                                                                   | 0.00289 ug/mL (fixed; uniform-distribution probability characteristic for LLOQ = 0.01 ug/mL) | Table 4; Methods, Base model section (page 620) |
-| Reference body weight                                                                     | 87.1 kg (analysis-dataset median)                                                            | Table 2 (median IQR 74.8-100); Results page 619 |
-| Estimated typical terminal half-life                                                      | ~18.1 days                                                                                   | Results, page 619                               |
-| Phase 3 dosing regimen (q8w)                                                              | 100 mg SC at weeks 0 and 4, then every 8 weeks                                               | Methods, Study Designs (VOYAGE 1, VOYAGE 2)     |
+| Equation / parameter | Value | Source location |
+|----|----|----|
+| One-compartment ODE structure (depot -\> central, first-order absorption and elimination) | n/a | Methods, Base model section (page 616) |
+| CL/F (typical, 87.1 kg, no diabetes, White) | 0.516 L/day | Table 4, Final Reduced Model |
+| V/F (typical, 87.1 kg) | 13.5 L | Table 4, Final Reduced Model |
+| Ka (typical) | 1.11 1/day | Table 4, Final Reduced Model |
+| BWT on CL/F | (BWT/87.1)^0.998 | Table 4 footnote b |
+| BWT on V/F | (BWT/87.1)^0.829 | Table 4 footnote c |
+| Diabetes on CL/F | 1.12^DIAB | Table 4 footnote b |
+| Race on CL/F | 1.11^RACE (RACE = 1 for non-White) | Table 4 footnote b |
+| IIV CL/F | 35.6% (sqrt(variance)\*100) -\> omega^2 = 0.356^2 = 0.126736 | Table 4, footnote on IIV definition |
+| IIV V/F | 28.0% -\> omega^2 = 0.280^2 = 0.078400 | Table 4 |
+| IIV Ka | 129% -\> omega^2 = 1.290^2 = 1.6641 (shrinkage 74.7%) | Table 4 |
+| IIV correlation CL/F:V/F | r = 0.834 -\> covariance = 0.083133 | Table 4 |
+| Proportional residual error | 20.0% CV -\> propSd = 0.200 | Table 4 |
+| Additive residual error | 0.00289 ug/mL (fixed; uniform-distribution probability characteristic for LLOQ = 0.01 ug/mL) | Table 4; Methods, Base model section (page 620) |
+| Reference body weight | 87.1 kg (analysis-dataset median) | Table 2 (median IQR 74.8-100); Results page 619 |
+| Estimated typical terminal half-life | ~18.1 days | Results, page 619 |
+| Phase 3 dosing regimen (q8w) | 100 mg SC at weeks 0 and 4, then every 8 weeks | Methods, Study Designs (VOYAGE 1, VOYAGE 2) |
 
 The footnote on IIV in Yao 2018 Table 4 reads “interindividual
 variability calculated as (variance)^(1/2) x 100%”, i.e., the reported
@@ -113,10 +114,10 @@ papers that report a linear-scale CV (compare with
 
 ### Covariate column naming
 
-| Source column                                                                   | Canonical column used here                                                                                                                                                                                                                                      |
-|---------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `BWT` (kg)                                                                      | `WT` (kg; canonical general)                                                                                                                                                                                                                                    |
-| `DIAB` (binary 0/1)                                                             | `DIAB` (binary; canonical general)                                                                                                                                                                                                                              |
+| Source column | Canonical column used here |
+|----|----|
+| `BWT` (kg) | `WT` (kg; canonical general) |
+| `DIAB` (binary 0/1) | `DIAB` (binary; canonical general) |
 | `RACE` (binary 0/1; 1 = non-White, 0 = White; “Race (nonwhite)” row in Table 4) | `RACE_WHITE` (canonical; 1 = White, 0 = non-White) — values inverted: `RACE_WHITE = 1 - source RACE`. The race covariate effect is encoded as `1.11^(1 - RACE_WHITE)` so the multiplier is applied to non-White subjects, matching Yao 2018 Table 4 footnote b. |
 
 ### Population
@@ -139,6 +140,7 @@ wider dose-ranging regimen (5-200 mg) at varying schedules through week
 The same metadata is available programmatically:
 
 ``` r
+
 readModelDb("Yao_2018_guselkumab")$meta$population
 ```
 
@@ -153,6 +155,7 @@ sized at 500 subjects per regimen / dose group to make per-time-point
 quantiles smooth.
 
 ``` r
+
 set.seed(2018)
 n_subj <- 500L
 
@@ -176,6 +179,7 @@ The depot compartment is the SC dosing compartment (`cmt = 1`); the
 central compartment is the sampling compartment (`cmt = 2`).
 
 ``` r
+
 weeks_q8w     <- c(0, 4, seq(12, 52, by = 8))    # 0, 4, 12, 20, 28, 36, 44, 52
 dose_times_q8w <- weeks_q8w * 7
 
@@ -206,6 +210,7 @@ stopifnot(!anyDuplicated(unique(events[, c("ID", "TIME", "EVID")])))
 ### Simulate
 
 ``` r
+
 mod <- readModelDb("Yao_2018_guselkumab")
 sim <- rxSolve(mod, events, returnType = "data.frame",
                keep = c("regimen", "WT", "DIAB", "RACE_WHITE"))
@@ -219,6 +224,7 @@ concentration time course for the q8w regimen (replicates the shape of
 the population PK simulation in Figure 3 of Yao 2018, top panels).
 
 ``` r
+
 sim_summary <- sim %>%
   filter(time > 0) %>%
   group_by(regimen, time) %>%
@@ -254,6 +260,7 @@ approximately 18.1 days at the median 87.1 kg with no diabetes, White
 packaged model with between-subject variability zeroed out.
 
 ``` r
+
 mod_typ <- rxode2::zeroRe(mod)
 #> ℹ parameter labels from comments will be replaced by 'label()'
 
@@ -321,6 +328,7 @@ The expected typical terminal half-life is ~18.1 days for a typical 87.1
 kg White non-diabetic subject (Yao 2018 Results, page 619).
 
 ``` r
+
 nca_conc <- sim %>%
   filter(regimen == "q8w", time >= 44 * 7, time <= 52 * 7, Cc > 0) %>%
   mutate(time_rel = time - 44 * 7) %>%
@@ -360,9 +368,8 @@ data_obj <- PKNCAdata(
   )
 )
 nca_results <- pk.nca(data_obj)
-#>  ■■■■                              11% |  ETA:  8s
-#>  ■■■■■■■■■■■■■■■■                  51% |  ETA:  4s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      91% |  ETA:  1s
+#>  ■■■■■■■■■■■■■■■                   48% |  ETA:  4s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      88% |  ETA:  1s
 nca_summary <- summary(nca_results)
 knitr::kable(
   nca_summary,
@@ -370,13 +377,13 @@ knitr::kable(
 )
 ```
 
-| Interval Start | Interval End | regimen | N   | AUClast (day\*ug/mL) | Cmax (ug/mL)  | Cmin (ug/mL)   | Tmax (day)          | Half-life (day) |
-|---------------:|-------------:|:--------|:----|:---------------------|:--------------|:---------------|:--------------------|:----------------|
-|              0 |           56 | q8w     | 500 | 169 \[46.8\]         | 6.26 \[40.4\] | 0.958 \[75.2\] | 7.00 \[7.00, 21.0\] | 18.3 \[4.36\]   |
+| Interval Start | Interval End | regimen | N | AUClast (day\*ug/mL) | Cmax (ug/mL) | Cmin (ug/mL) | Tmax (day) | Half-life (day) |
+|---:|---:|:---|:---|:---|:---|:---|:---|:---|
+| 0 | 56 | q8w | 500 | 169 \[46.8\] | 6.26 \[40.4\] | 0.958 \[75.2\] | 7.00 \[7.00, 21.0\] | 18.3 \[4.36\] |
 
 PKNCA summary for the q8w steady-state maintenance interval (weeks
 44-52). Expected typical terminal half-life ~18.1 days (Yao 2018
-Results, page 619).
+Results, page 619). {.table style="width:100%;"}
 
 ### Comparison against published Table 5 (steady-state q8w simulations)
 
@@ -388,6 +395,7 @@ the present 500-subject virtual cohort and compare. Differences are
 expected to be within sampling error of the smaller cohort here.
 
 ``` r
+
 # Per-subject steady-state summary on the q8w maintenance interval (weeks 44-52)
 ss <- sim %>%
   filter(regimen == "q8w", time >= 44 * 7, time <= 52 * 7, Cc > 0) %>%
@@ -445,19 +453,19 @@ knitr::kable(
 )
 ```
 
-| group            |   n | Median_AUC | Median_Ctrough | Published_AUC | Published_Ctrough | Pct_diff_AUC | Pct_diff_Ctrough |
-|:-----------------|----:|-----------:|---------------:|--------------:|------------------:|-------------:|-----------------:|
-| Weight \< 90 kg  | 282 |     191.48 |           1.10 |           225 |              1.21 |       -14.90 |            -8.81 |
-| Weight \>= 90 kg | 218 |     141.45 |           0.79 |           159 |              0.80 |       -11.04 |            -1.09 |
-| No diabetes      | 450 |     168.29 |           1.01 |           196 |              1.04 |       -14.14 |            -3.08 |
-| Diabetes         |  50 |     160.75 |           0.78 |           158 |              0.72 |         1.74 |             7.89 |
-| White            | 424 |     169.72 |           1.01 |           192 |              1.02 |       -11.60 |            -1.37 |
-| Non-White        |  76 |     145.27 |           0.70 |           192 |              0.93 |       -24.34 |           -24.88 |
+| group | n | Median_AUC | Median_Ctrough | Published_AUC | Published_Ctrough | Pct_diff_AUC | Pct_diff_Ctrough |
+|:---|---:|---:|---:|---:|---:|---:|---:|
+| Weight \< 90 kg | 282 | 191.48 | 1.10 | 225 | 1.21 | -14.90 | -8.81 |
+| Weight \>= 90 kg | 218 | 141.45 | 0.79 | 159 | 0.80 | -11.04 | -1.09 |
+| No diabetes | 450 | 168.29 | 1.01 | 196 | 1.04 | -14.14 | -3.08 |
+| Diabetes | 50 | 160.75 | 0.78 | 158 | 0.72 | 1.74 | 7.89 |
+| White | 424 | 169.72 | 1.01 | 192 | 1.02 | -11.60 | -1.37 |
+| Non-White | 76 | 145.27 | 0.70 | 192 | 0.93 | -24.34 | -24.88 |
 
 Comparison of simulated steady-state q8w medians (this cohort, N=500)
 against Yao 2018 Table 5 (published medians from the paper’s
 5000-subject simulation). AUC is over weeks 0-8 at steady state in
-ug\*day/mL; Ctrough is in ug/mL.
+ug\*day/mL; Ctrough is in ug/mL. {.table}
 
 The simulated subgroup medians here use a 500-subject virtual cohort
 sampled with parametric covariate distributions, while Yao 2018 Table 5
@@ -485,6 +493,7 @@ uses 95 kg vs. 80 kg as round-number representatives that straddle the
 90 kg cutoff used in the paper’s subgroup definitions.
 
 ``` r
+
 typ_eval <- function(WT_val, DIAB_val, RW_val) {
   pop1   <- tibble(ID = 1L, WT = WT_val, DIAB = as.integer(DIAB_val),
                    RACE_WHITE = as.integer(RW_val))
@@ -535,16 +544,17 @@ knitr::kable(
 )
 ```
 
-| contrast                               | Ctrough_ref | Ctrough_new | Ctrough_pct_chg | AUCtau_ref | AUCtau_new | AUCtau_pct_chg |
-|:---------------------------------------|------------:|------------:|----------------:|-----------:|-----------:|---------------:|
-| WT 95 vs 80 kg, no diabetes, White     |        1.14 |        0.92 |          -19.09 |     190.82 |     160.26 |         -16.02 |
-| Diabetes vs no diabetes, 80 kg, White  |        1.14 |        0.86 |          -24.37 |     190.82 |     168.28 |         -11.81 |
-| Non-White vs White, 80 kg, no diabetes |        1.14 |        0.88 |          -22.62 |     190.82 |     169.97 |         -10.92 |
+| contrast | Ctrough_ref | Ctrough_new | Ctrough_pct_chg | AUCtau_ref | AUCtau_new | AUCtau_pct_chg |
+|:---|---:|---:|---:|---:|---:|---:|
+| WT 95 vs 80 kg, no diabetes, White | 1.14 | 0.92 | -19.09 | 190.82 | 160.26 | -16.02 |
+| Diabetes vs no diabetes, 80 kg, White | 1.14 | 0.86 | -24.37 | 190.82 | 168.28 | -11.81 |
+| Non-White vs White, 80 kg, no diabetes | 1.14 | 0.88 | -22.62 | 190.82 | 169.97 | -10.92 |
 
 Steady-state q8w typical-subject covariate-effect contrasts (Ctrough in
 ug/mL; AUCtau in ug\*day/mL). Compare to Yao 2018 Table 5 / Results:
 heavier patients have ~34% lower Ctrough and ~29% lower AUC; diabetic
-patients have ~31% lower Ctrough and ~19% lower AUC.
+patients have ~31% lower Ctrough and ~19% lower AUC. {.table
+style="width:100%;"}
 
 The body-weight contrast above is simulated at 95 vs. 80 kg
 (typical-subject anchors straddling the 90 kg cutoff) rather than the

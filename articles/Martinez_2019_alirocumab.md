@@ -55,33 +55,33 @@ model with covariates” column) and its footnotes a-e. Reference
 covariate values: 82.9 kg body weight, 60 years age, no concomitant
 statin (STATIN = 0), and 72.9 ng/mL free PCSK9.
 
-| Equation / parameter                                       | Value (paper / model file)                | Source location                                                                                                                                |
-|------------------------------------------------------------|-------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------|
-| `lka` (Ka)                                                 | `0.00768 /h * 24 = 0.18432 /day`          | Table 2, Ka row                                                                                                                                |
-| `lcl` (CLL)                                                | `0.0124 L/h * 24 = 0.2976 L/day`          | Table 2, CLL row                                                                                                                               |
-| `lvc` (V2)                                                 | `3.19 L`                                  | Table 2, V2 row                                                                                                                                |
-| `lvp` (V3 at AGE = 60 y)                                   | `2.79 L`                                  | Table 2, V3 row                                                                                                                                |
-| `lq` (Q)                                                   | `0.0185 L/h * 24 = 0.444 L/day`           | Table 2, Q row                                                                                                                                 |
-| `lvm` (Vm)                                                 | `0.183 mg/h * 24 = 4.392 mg/day`          | Table 2, Vm row (text says “mg/h”; table footer “mg.h/L” is a typesetting error — dimensional analysis and the paper’s narrative confirm mg/h) |
-| `lkm` (Km at FPCSK9 = 72.9)                                | `7.73 mg/L`                               | Table 2, Km row                                                                                                                                |
-| `llag` (LAG)                                               | `0.641 h / 24 = 0.02671 day`              | Table 2, LAG row                                                                                                                               |
-| `logitfdepot` (logit F_pop)                                | `logit(0.862) = 1.8326`                   | Table 2, F row (typical F = 0.862)                                                                                                             |
-| `e_wt_cl` (WT additive slope)                              | `2.92e-4 L/h/kg * 24 = 7.008e-3 L/day/kg` | Table 2 theta12, Table 2 footnote a                                                                                                            |
-| `e_statin_cl` (STATIN additive)                            | `6.44e-3 L/h * 24 = 0.15456 L/day`        | Table 2 theta13, Table 2 footnote a                                                                                                            |
-| `e_age_vp` (AGE power exponent)                            | `0.310`                                   | Table 2 theta15, Table 2 footnote b                                                                                                            |
-| `e_fpcsk9_km` (FPCSK9 slope)                               | `-0.541 mg/L per (FPCSK9/72.9)`           | Table 2 theta14, Table 2 footnote c                                                                                                            |
-| `var(etalcl)`                                              | `0.232` (CV 48.2%)                        | Table 2, omega^2 CLL row                                                                                                                       |
-| `var(etalvc)`                                              | `0.589` (CV 76.7%)                        | Table 2, omega^2 V2 row                                                                                                                        |
-| `var(etalvp)`                                              | `0.0735` (CV 27.1%)                       | Table 2, omega^2 V3 row                                                                                                                        |
-| `var(etalkm)`                                              | `0.298` (CV 54.6%)                        | Table 2, omega^2 Km row                                                                                                                        |
-| `cov(etalvp, etalkm)`                                      | `-0.793 * sqrt(0.0735*0.298) = -0.11738`  | Table 2 footnote d (r = -0.793)                                                                                                                |
-| `var(etalogitfdepot)`                                      | `1.060` (logit-space, 103%)               | Table 2 omega^2 F row, footnote e                                                                                                              |
-| `propSd`                                                   | `0.259` (25.9%)                           | Table 2, theta8                                                                                                                                |
-| `addSd`                                                    | `0.0465 mg/L`                             | Table 2, theta9                                                                                                                                |
-| Structure (2-cmt + 1st-order SC, linear + MM from central) | n/a                                       | Fig. 1 and Results §3.1                                                                                                                        |
-| CLL equation                                               | `TVCLL + COV1*(WT - 82.9) + COV2*STATIN`  | Table 2 footnote a, Eq in Results §3.1                                                                                                         |
-| Km equation                                                | `TVKM + COV3*(FPCSK9 / 72.9)`             | Table 2 footnote c, Eq in Results §3.1                                                                                                         |
-| V3 equation                                                | `TVV3 * (AGE / 60)^COV4`                  | Table 2 footnote b, Eq in Results §3.1                                                                                                         |
+| Equation / parameter | Value (paper / model file) | Source location |
+|----|----|----|
+| `lka` (Ka) | `0.00768 /h * 24 = 0.18432 /day` | Table 2, Ka row |
+| `lcl` (CLL) | `0.0124 L/h * 24 = 0.2976 L/day` | Table 2, CLL row |
+| `lvc` (V2) | `3.19 L` | Table 2, V2 row |
+| `lvp` (V3 at AGE = 60 y) | `2.79 L` | Table 2, V3 row |
+| `lq` (Q) | `0.0185 L/h * 24 = 0.444 L/day` | Table 2, Q row |
+| `lvm` (Vm) | `0.183 mg/h * 24 = 4.392 mg/day` | Table 2, Vm row (text says “mg/h”; table footer “mg.h/L” is a typesetting error — dimensional analysis and the paper’s narrative confirm mg/h) |
+| `lkm` (Km at FPCSK9 = 72.9) | `7.73 mg/L` | Table 2, Km row |
+| `llag` (LAG) | `0.641 h / 24 = 0.02671 day` | Table 2, LAG row |
+| `logitfdepot` (logit F_pop) | `logit(0.862) = 1.8326` | Table 2, F row (typical F = 0.862) |
+| `e_wt_cl` (WT additive slope) | `2.92e-4 L/h/kg * 24 = 7.008e-3 L/day/kg` | Table 2 theta12, Table 2 footnote a |
+| `e_statin_cl` (STATIN additive) | `6.44e-3 L/h * 24 = 0.15456 L/day` | Table 2 theta13, Table 2 footnote a |
+| `e_age_vp` (AGE power exponent) | `0.310` | Table 2 theta15, Table 2 footnote b |
+| `e_fpcsk9_km` (FPCSK9 slope) | `-0.541 mg/L per (FPCSK9/72.9)` | Table 2 theta14, Table 2 footnote c |
+| `var(etalcl)` | `0.232` (CV 48.2%) | Table 2, omega^2 CLL row |
+| `var(etalvc)` | `0.589` (CV 76.7%) | Table 2, omega^2 V2 row |
+| `var(etalvp)` | `0.0735` (CV 27.1%) | Table 2, omega^2 V3 row |
+| `var(etalkm)` | `0.298` (CV 54.6%) | Table 2, omega^2 Km row |
+| `cov(etalvp, etalkm)` | `-0.793 * sqrt(0.0735*0.298) = -0.11738` | Table 2 footnote d (r = -0.793) |
+| `var(etalogitfdepot)` | `1.060` (logit-space, 103%) | Table 2 omega^2 F row, footnote e |
+| `propSd` | `0.259` (25.9%) | Table 2, theta8 |
+| `addSd` | `0.0465 mg/L` | Table 2, theta9 |
+| Structure (2-cmt + 1st-order SC, linear + MM from central) | n/a | Fig. 1 and Results §3.1 |
+| CLL equation | `TVCLL + COV1*(WT - 82.9) + COV2*STATIN` | Table 2 footnote a, Eq in Results §3.1 |
+| Km equation | `TVKM + COV3*(FPCSK9 / 72.9)` | Table 2 footnote c, Eq in Results §3.1 |
+| V3 equation | `TVV3 * (AGE / 60)^COV4` | Table 2 footnote b, Eq in Results §3.1 |
 
 ### Parameterization notes
 
@@ -129,6 +129,7 @@ approximate the Martinez 2019 study population medians and ranges. No
 subject-level observed data were released with the paper.
 
 ``` r
+
 set.seed(20260424)
 n_subj <- 300
 
@@ -148,6 +149,7 @@ past the alirocumab terminal half-life (~14-21 days in the linear range
 at high concentrations) to reach steady state before the NCA interval.
 
 ``` r
+
 tau_q2w <- 14                 # Q2W dosing interval (days)
 n_doses <- 26                 # 26 Q2W doses -> 350 days (~50 weeks), steady state
 dose_days_q2w <- seq(0, tau_q2w * (n_doses - 1), by = tau_q2w)
@@ -193,6 +195,7 @@ stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
 ## Simulation
 
 ``` r
+
 mod <- rxode2::rxode2(readModelDb("Martinez_2019_alirocumab"))
 #> ℹ parameter labels from comments will be replaced by 'label()'
 keep_cols <- c("WT", "AGE", "STATIN", "FPCSK9", "treatment")
@@ -213,6 +216,7 @@ reproduces a VPC-style plot over the first eight Q2W cycles for the 75
 mg and 150 mg regimens.
 
 ``` r
+
 vpc <- sim |>
   dplyr::filter(!is.na(Cc), time > 0, time <= 112,
                 treatment %in% c("75mg_Q2W", "150mg_Q2W")) |>
@@ -244,6 +248,7 @@ The final Q2W dosing interval in the 350-day simulation window is used
 for the steady-state NCA below (`ss_start` to `ss_end`).
 
 ``` r
+
 ss_start <- tau_q2w * (n_doses - 1)
 ss_end   <- ss_start + tau_q2w
 
@@ -280,6 +285,7 @@ increases by 40% for a 100 kg subject versus a typical 82.9 kg subject
 the additive covariate equation.
 
 ``` r
+
 wt_grid <- tibble::tibble(
   WT_kg = c(50, 60, 70, 82.9, 90, 100, 110)
 )
@@ -305,13 +311,14 @@ knitr::kable(wt_grid, digits = 4,
 | 110.0 |  0.0203 |         63.8161 |
 
 CLL (typical value, STATIN = 0) at selected body weights. Paper: -78% at
-50 kg, +40% at 100 kg.
+50 kg, +40% at 100 kg. {.table}
 
 ### Age impact on V3
 
 Martinez reports V3 = 2.79 L at 60 y, 2.86 L at 65 y, 2.99 L at 75 y.
 
 ``` r
+
 age_grid <- tibble::tibble(
   AGE_y = c(30, 45, 60, 65, 75, 85)
 ) |>
@@ -330,7 +337,7 @@ knitr::kable(age_grid, digits = 3,
 |    85 | 3.108 |
 
 V3 (typical value) at selected ages. Paper: 2.79 L @ 60 y, 2.86 L @ 65
-y, 2.99 L @ 75 y.
+y, 2.99 L @ 75 y. {.table}
 
 ### Free PCSK9 impact on Km
 
@@ -341,6 +348,7 @@ its call-out of “7.73 ng/mL” and “4.82 ng/mL” at Figure 2 is a
 typographical slip — dimensional consistency requires mg/L.
 
 ``` r
+
 fp_grid <- tibble::tibble(
   FPCSK9_ngml = c(0, 72.9, 200, 392)
 ) |>
@@ -357,7 +365,7 @@ knitr::kable(fp_grid, digits = 3,
 |       392.0 |  4.821 |
 
 Km (typical value) at selected free PCSK9 concentrations. Paper: 7.73
-mg/L at 0 ng/mL, 4.82 mg/L at 392 ng/mL.
+mg/L at 0 ng/mL, 4.82 mg/L at 392 ng/mL. {.table}
 
 ## PKNCA validation
 
@@ -366,6 +374,7 @@ interval. Compute Cmax, Ctau, AUC0-tau, and Cav per simulated subject
 and treatment.
 
 ``` r
+
 nca_conc <- sim |>
   dplyr::filter(time >= ss_start, time <= ss_end, !is.na(Cc),
                 treatment %in% c("75mg_Q2W", "150mg_Q2W")) |>
@@ -394,7 +403,7 @@ intervals <- data.frame(
 )
 
 nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
-#>  ■■■■■■■■■■■■■■■■■■■■              65% |  ETA:  2s
+#>  ■■■■■■■■■■■■■■■■■                 55% |  ETA:  2s
 summary(nca_res)
 #>  Interval Start Interval End treatment   N AUClast (day*mg/L) Cmax (mg/L)
 #>               0           14 150mg_Q2W 300        95.9 [52.6] 10.1 [46.0]
@@ -417,6 +426,7 @@ The typical-patient Cmax and Ctrough also have reasonable phase-III
 comparators.
 
 ``` r
+
 mod_typical <- mod |> rxode2::zeroRe()
 
 typical_cov <- function(statin) {
@@ -500,20 +510,21 @@ knitr::kable(typ_tbl, digits = 2,
 | 150 mg Q2W \| + statin  |     17.82 |         8.72 |   4725.50 |
 
 Typical-patient steady-state exposures (IIV zeroed) at 82.9 kg / 60 y /
-FPCSK9 = 72.9 ng/mL with / without concomitant statin.
+FPCSK9 = 72.9 ng/mL with / without concomitant statin. {.table}
 
 ``` r
+
 knitr::kable(published, digits = 1,
   caption = "Comparison vs. Martinez 2019 Results §3.3 reference AUC(0-336h) = 2170 mg*h/L for 75 mg Q2W in 50-100 kg phase III patients (population-weighted 80% statin coadministration).")
 ```
 
-| comparator                                             | AUC_paper_mghpL | AUC_sim_mghpL | pct_diff |
-|:-------------------------------------------------------|----------------:|--------------:|---------:|
-| 75 mg Q2W, 50-100 kg, population-weighted (80% statin) |            2170 |        2114.9 |     -2.5 |
+| comparator | AUC_paper_mghpL | AUC_sim_mghpL | pct_diff |
+|:---|---:|---:|---:|
+| 75 mg Q2W, 50-100 kg, population-weighted (80% statin) | 2170 | 2114.9 | -2.5 |
 
 Comparison vs. Martinez 2019 Results §3.3 reference AUC(0-336h) = 2170
 mg\*h/L for 75 mg Q2W in 50-100 kg phase III patients
-(population-weighted 80% statin coadministration).
+(population-weighted 80% statin coadministration). {.table}
 
 ### Statin impact on AUC
 
@@ -522,6 +533,7 @@ statins are coadministered to a typical patient, at both the 75 mg and
 150 mg dose levels.
 
 ``` r
+
 statin_tbl <- tibble::tibble(
   dose = c("75 mg Q2W", "150 mg Q2W"),
   AUC_no_statin = c(
@@ -547,7 +559,7 @@ knitr::kable(statin_tbl, digits = 1,
 | 150 mg Q2W |        6787.3 |     4725.5 |             30.4 |             28.5 |
 
 Simulated steady-state AUC(0-336h) with/without concomitant statin.
-Paper: ~28-29% decrease at both dose levels.
+Paper: ~28-29% decrease at both dose levels. {.table}
 
 ## Assumptions and deviations
 

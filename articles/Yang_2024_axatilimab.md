@@ -67,6 +67,7 @@ The same information is available programmatically via the model’s
 is loaded).
 
 ``` r
+
 mod_meta <- readModelDb("Yang_2024_axatilimab")()$meta
 str(mod_meta$population, max.level = 1)
 #> List of 14
@@ -94,47 +95,47 @@ value in `inst/modeldb/specificDrugs/Yang_2024_axatilimab.R` cites a
 Yang 2024 Table 1 row in its trailing comment. The table below collects
 the equations and parameter origins for review:
 
-| Symbol / equation                                                                                 | Value                                          | Source location                                                       |
-|---------------------------------------------------------------------------------------------------|------------------------------------------------|-----------------------------------------------------------------------|
-| `Cc = central / vc` (μg/mL)                                                                       | n/a                                            | Yang 2024 Eq. 4                                                       |
-| `d/dt(central) = -CL*(1+kada*ADA)*Cc - Q*(Cc-Cp) - Vmax*C1*vc*MW_PK/1000`                         | n/a                                            | Yang 2024 Eq. 1 (with mg-based unit reformulation; see Errata note 3) |
-| `d/dt(peripheral1) = Q*(Cc-Cp)`                                                                   | n/a                                            | Yang 2024 Eq. 2                                                       |
-| `C1 = (Cc_nM/Kd_PK)^Nh / (1 + (Cc_nM/Kd_PK)^Nh + CSF1/Kd_CSF1)`                                   | n/a                                            | Yang 2024 Eq. 3                                                       |
-| `d/dt(csf1) = ksyn_csf1 - kdeg_csf1*csf1 - Vmax*C2`                                               | n/a                                            | Yang 2024 Eq. 5                                                       |
-| `ksyn_csf1 = kdeg_csf1*BL_CSF1 + Vmax*BL_C2`                                                      | n/a                                            | Yang 2024 Eq. 6                                                       |
-| `C2 = (CSF1/Kd_CSF1) / (1 + (Cc_nM/Kd_PK)^Nh + CSF1/Kd_CSF1)`                                     | n/a                                            | Yang 2024 Eq. 7                                                       |
-| `d/dt(ncmc) = ksyn_ncmc*C2 - kdeg_ncmc*ncmc`                                                      | n/a                                            | Yang 2024 Eq. 8                                                       |
-| `ksyn_ncmc = kdeg_ncmc*BL_NCMC / BL_C2`                                                           | n/a                                            | Yang 2024 Eq. 9                                                       |
-| `d/dt(ast)` and `d/dt(cpk)`                                                                       | n/a                                            | Yang 2024 Eqs. 10-11 (NCMC-driven indirect response)                  |
-| `Vd`                                                                                              | 3.48 L                                         | Table 1                                                               |
-| `CL`                                                                                              | 0.007 L/h                                      | Table 1                                                               |
-| `Q`                                                                                               | 0.015 L/h                                      | Table 1                                                               |
-| `Vp`                                                                                              | 2.64 L                                         | Table 1                                                               |
-| `Vmax`                                                                                            | 0.37 nM/h                                      | Table 1                                                               |
-| `Kd_PK`                                                                                           | 1.11 nM                                        | Table 1                                                               |
-| `Nh` (Hill)                                                                                       | 2.5                                            | Table 1                                                               |
-| `BL_CSF1`                                                                                         | 0.01 nM                                        | Table 1                                                               |
-| `BL_NCMC`                                                                                         | 16 cells/μL                                    | Table 1                                                               |
-| `kdeg_CSF1`                                                                                       | 0.002 1/h                                      | Table 1                                                               |
-| `kdeg_NCMC`                                                                                       | 0.021 1/h                                      | Table 1                                                               |
-| `kada` (ADA effect on CL)                                                                         | 0.489                                          | Table 1 (see Errata)                                                  |
-| `BL_AST`                                                                                          | 35.5 U/L                                       | Table 1                                                               |
-| `Vmax_AST_NCMC`                                                                                   | 0.011 1/h                                      | Table 1                                                               |
-| `kdeg_AST`                                                                                        | 0.002 1/h                                      | Table 1                                                               |
-| `EC50_AST_NCMC`                                                                                   | 11.8 cells/μL                                  | Table 1                                                               |
-| `BL_CPK`                                                                                          | 101 U/L                                        | Table 1                                                               |
-| `Vmax_CPK_NCMC`                                                                                   | 0.02 1/h                                       | Table 1                                                               |
-| `kdeg_CPK`                                                                                        | 0.001 1/h                                      | Table 1                                                               |
-| `EC50_CPK_NCMC`                                                                                   | 19.2 cells/μL                                  | Table 1                                                               |
-| `Kd_CSF1` (fixed)                                                                                 | 0.048 nM                                       | Yang 2024 Methods (Roussel 1988)                                      |
-| Body weight on Vd                                                                                 | β = 0.7, ref 73.6 kg                           | Table 1                                                               |
-| CSF-1 on CL                                                                                       | β = 0.912, ref 549 pg/mL                       | Table 1                                                               |
-| CSF-1 on BL_CSF1                                                                                  | β = 0.656                                      | Table 1                                                               |
-| Cancer cohort on BL_NCMC                                                                          | β = 1.22                                       | Table 1                                                               |
-| Healthy cohort on BL_NCMC                                                                         | β = 0.618                                      | Table 1                                                               |
-| CPK on BL_NCMC                                                                                    | β = 0.376, ref 63 U/L                          | Table 1                                                               |
-| Random effects (omega; squared in [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html)) | 0.235, 1.09, 0.289, 0.187, 0.868, 0.464, 0.755 | Table 1                                                               |
-| Residual error (Cc, CSF1, NCMC add, NCMC prop, AST, CPK)                                          | 0.375, 0.321, 0.977, 0.676, 0.324, 0.462       | Table 1                                                               |
+| Symbol / equation | Value | Source location |
+|----|----|----|
+| `Cc = central / vc` (μg/mL) | n/a | Yang 2024 Eq. 4 |
+| `d/dt(central) = -CL*(1+kada*ADA)*Cc - Q*(Cc-Cp) - Vmax*C1*vc*MW_PK/1000` | n/a | Yang 2024 Eq. 1 (with mg-based unit reformulation; see Errata note 3) |
+| `d/dt(peripheral1) = Q*(Cc-Cp)` | n/a | Yang 2024 Eq. 2 |
+| `C1 = (Cc_nM/Kd_PK)^Nh / (1 + (Cc_nM/Kd_PK)^Nh + CSF1/Kd_CSF1)` | n/a | Yang 2024 Eq. 3 |
+| `d/dt(csf1) = ksyn_csf1 - kdeg_csf1*csf1 - Vmax*C2` | n/a | Yang 2024 Eq. 5 |
+| `ksyn_csf1 = kdeg_csf1*BL_CSF1 + Vmax*BL_C2` | n/a | Yang 2024 Eq. 6 |
+| `C2 = (CSF1/Kd_CSF1) / (1 + (Cc_nM/Kd_PK)^Nh + CSF1/Kd_CSF1)` | n/a | Yang 2024 Eq. 7 |
+| `d/dt(ncmc) = ksyn_ncmc*C2 - kdeg_ncmc*ncmc` | n/a | Yang 2024 Eq. 8 |
+| `ksyn_ncmc = kdeg_ncmc*BL_NCMC / BL_C2` | n/a | Yang 2024 Eq. 9 |
+| `d/dt(ast)` and `d/dt(cpk)` | n/a | Yang 2024 Eqs. 10-11 (NCMC-driven indirect response) |
+| `Vd` | 3.48 L | Table 1 |
+| `CL` | 0.007 L/h | Table 1 |
+| `Q` | 0.015 L/h | Table 1 |
+| `Vp` | 2.64 L | Table 1 |
+| `Vmax` | 0.37 nM/h | Table 1 |
+| `Kd_PK` | 1.11 nM | Table 1 |
+| `Nh` (Hill) | 2.5 | Table 1 |
+| `BL_CSF1` | 0.01 nM | Table 1 |
+| `BL_NCMC` | 16 cells/μL | Table 1 |
+| `kdeg_CSF1` | 0.002 1/h | Table 1 |
+| `kdeg_NCMC` | 0.021 1/h | Table 1 |
+| `kada` (ADA effect on CL) | 0.489 | Table 1 (see Errata) |
+| `BL_AST` | 35.5 U/L | Table 1 |
+| `Vmax_AST_NCMC` | 0.011 1/h | Table 1 |
+| `kdeg_AST` | 0.002 1/h | Table 1 |
+| `EC50_AST_NCMC` | 11.8 cells/μL | Table 1 |
+| `BL_CPK` | 101 U/L | Table 1 |
+| `Vmax_CPK_NCMC` | 0.02 1/h | Table 1 |
+| `kdeg_CPK` | 0.001 1/h | Table 1 |
+| `EC50_CPK_NCMC` | 19.2 cells/μL | Table 1 |
+| `Kd_CSF1` (fixed) | 0.048 nM | Yang 2024 Methods (Roussel 1988) |
+| Body weight on Vd | β = 0.7, ref 73.6 kg | Table 1 |
+| CSF-1 on CL | β = 0.912, ref 549 pg/mL | Table 1 |
+| CSF-1 on BL_CSF1 | β = 0.656 | Table 1 |
+| Cancer cohort on BL_NCMC | β = 1.22 | Table 1 |
+| Healthy cohort on BL_NCMC | β = 0.618 | Table 1 |
+| CPK on BL_NCMC | β = 0.376, ref 63 U/L | Table 1 |
+| Random effects (omega; squared in [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html)) | 0.235, 1.09, 0.289, 0.187, 0.868, 0.464, 0.755 | Table 1 |
+| Residual error (Cc, CSF1, NCMC add, NCMC prop, AST, CPK) | 0.375, 0.321, 0.977, 0.676, 0.324, 0.462 | Table 1 |
 
 ## Errata
 
@@ -190,6 +191,7 @@ values match the population medians or the paper-specific reference
 values.
 
 ``` r
+
 make_typical <- function(dose_mg_kg, regimen, weight_kg = 75,
                          dis_cancer = 0L, dis_hv = 0L, ada_pos = 0L,
                          CSF1_pgmL = 549, CPK_UL = 63,
@@ -225,6 +227,7 @@ The model is loaded once and used in typical-value (no between-subject
 variability) form for all figure replications.
 
 ``` r
+
 mod <- readModelDb("Yang_2024_axatilimab")() |> rxode2::zeroRe()
 ```
 
@@ -237,6 +240,7 @@ carries six dose intervals so the system has approached steady state,
 then reports the final 28-day window.
 
 ``` r
+
 sim_one <- function(events) {
   s <- rxode2::rxSolve(mod, events = events, returnType = "data.frame", keep = "regimen")
   # Drop dose-row duplicates that have no Cc value
@@ -270,6 +274,7 @@ fig4 <- fig4_events |>
 ```
 
 ``` r
+
 ggplot(fig4, aes(time_d, Cc)) +
   geom_line(linewidth = 0.8) +
   scale_y_log10() +
@@ -283,6 +288,7 @@ ggplot(fig4, aes(time_d, Cc)) +
 ![](Yang_2024_axatilimab_files/figure-html/figure-4a-pk-1.png)
 
 ``` r
+
 ggplot(fig4, aes(time_d, ncmc)) +
   geom_line(linewidth = 0.8, colour = "darkred") +
   facet_wrap(~ regimen, nrow = 1) +
@@ -295,6 +301,7 @@ ggplot(fig4, aes(time_d, ncmc)) +
 ![](Yang_2024_axatilimab_files/figure-html/figure-4b-ncmc-1.png)
 
 ``` r
+
 ggplot(fig4, aes(time_d, csf1_ngmL)) +
   geom_line(linewidth = 0.8, colour = "steelblue") +
   facet_wrap(~ regimen, nrow = 1) +
@@ -314,6 +321,7 @@ typical-value baseline NCMC (the `ncmc` state at t=0 with no drug) for
 the three population indicators:
 
 ``` r
+
 baseline_ncmc <- function(dis_cancer, dis_hv) {
   ev <- rxode2::et(seq(0, 168, by = 24), cmt = "Cc")
   ev$WT <- 75; ev$CSF1 <- 549; ev$CPK <- 63
@@ -344,12 +352,13 @@ tibble::tibble(
 | Advanced solid tumor |                        54.20 |              54.2 |
 
 Baseline NCMC by population type (typical patient at median CSF-1 and
-CPK).
+CPK). {.table}
 
 ADA-positive CL effect (paper covariate summary: +50.6% CL when ADA =
 1):
 
 ``` r
+
 typical_cl <- function(ada) {
   # Pull individual CL via a unit-volume dose (1 mg) and reading IPRED at first sample
   ev <- rxode2::et(amt = 1, cmt = "central", evid = 1, time = 0) |>
@@ -377,7 +386,7 @@ tibble::tibble(
 | Positive       |           0.0104 |                     0.489 |
 
 Linear CL by ADA status. Note: the model file’s `cl` variable already
-carries the ADA factor.
+carries the ADA factor. {.table}
 
 ## Steady-state hold check
 
@@ -386,6 +395,7 @@ individual baseline values indefinitely (or to numerical tolerance) —
 this is the standard endogenous-system invariant.
 
 ``` r
+
 ss_ev <- rxode2::et(seq(0, 4000, by = 48), cmt = "Cc")
 ss_ev$WT <- 75; ss_ev$CSF1 <- 549; ss_ev$CPK <- 63
 ss_ev$DIS_CANCER <- 0; ss_ev$DIS_HV <- 0; ss_ev$ADA_POS <- 0
@@ -410,6 +420,7 @@ knitr::kable(ss_summary, digits = 6,
 | cpk (U/L)       | 101.00 | 101.00 | 101.00 |
 
 Biomarker steady-state hold (no axatilimab dose, 4000 h simulation).
+{.table}
 
 ## Replicate Figure 5 — steady-state NCMC dose response (Q2W)
 
@@ -421,6 +432,7 @@ cycles is sufficient for convergence given the NCMC turnover halflife
 `log(2) / 0.021 ≈ 33 h`).
 
 ``` r
+
 dose_sweep <- c(0.15, 0.3, 0.5, 0.75, 1, 1.5, 2, 3)
 
 ncmc_metrics <- function(dose_mg_kg) {
@@ -468,6 +480,7 @@ profile produces dimensionally sensible AUC / Cmax under the 0.3 mg/kg
 single-dose regimen.
 
 ``` r
+
 single_ev <- rxode2::et(amt = 22.5, cmt = "central", evid = 1, time = 0) |>
   rxode2::et(c(0, 0.5, 1, 2, 4, 8, 12, 24, 48, 72, 96, 168, 240, 336),
              cmt = "Cc")
@@ -523,6 +536,7 @@ nca_res$result |>
 |     0 | 336 | span.ratio          |   0.5506 |
 
 Simulated single-dose 0.3 mg/kg axatilimab NCA, typical cGVHD patient.
+{.table}
 
 ## Assumptions and deviations
 

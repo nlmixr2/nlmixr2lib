@@ -1,6 +1,7 @@
 # Trastuzumab emtansine (T-DM1) preclinical reduced PK model (Bender 2014)
 
 ``` r
+
 library(nlmixr2lib)
 library(rxode2)
 #> rxode2 5.0.2 using 2 threads (see ?getRxThreads)
@@ -47,6 +48,7 @@ updating the fixed effects (converting published mL/day values to L/day
 via `/1000`).
 
 ``` r
+
 mod <- rxode2::rxode(readModelDb("Bender_2014_trastuzumabEmtansine_reduced"))
 #> ℹ parameter labels from comments will be replaced by 'label()'
 str(mod$meta$population$species_parameters, max.level = 2)
@@ -106,6 +108,7 @@ T-DM1 concentration–time profiles after a single 30 mg/kg IV T-DM1 DAR
 cynomolgus monkeys is ~4 kg, giving a nominal 120 mg absolute dose.
 
 ``` r
+
 dose_mg <- 120  # 30 mg/kg * 4 kg body weight
 events  <- rxode2::et(amt = dose_mg, cmt = "central", time = 0) |>
   rxode2::et(seq(0.1, 42, length.out = 120), cmt = "Cc")
@@ -115,6 +118,7 @@ sim <- rxode2::rxSolve(mod |> rxode2::zeroRe(), events = events)
 ```
 
 ``` r
+
 sim_long <- as.data.frame(sim) |>
   pivot_longer(c(Cc, Ctt), names_to = "analyte", values_to = "conc") |>
   mutate(analyte = recode(analyte,
@@ -148,6 +152,7 @@ has no `etalvp` term, so we illustrate the typical-value simulation
 only.
 
 ``` r
+
 mod_rat <- mod |>
   ini(
     lcl    = log(0.00237),
@@ -179,6 +184,7 @@ sim_rat <- rxode2::rxSolve(mod_rat |> rxode2::zeroRe(), events = events_rat)
 ```
 
 ``` r
+
 sim_rat_long <- as.data.frame(sim_rat) |>
   pivot_longer(c(Cc, Ctt), names_to = "analyte", values_to = "conc") |>
   mutate(analyte = recode(analyte,
@@ -204,6 +210,7 @@ log-linear terminal phase provides an end-to-end sanity check against
 the published values.
 
 ``` r
+
 late <- as.data.frame(sim) |>
   filter(time >= 25)
 

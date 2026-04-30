@@ -1,6 +1,7 @@
 # Rosario_2015_vedolizumab
 
 ``` r
+
 library(nlmixr2lib)
 library(PKNCA)
 #> 
@@ -70,40 +71,40 @@ The per-parameter origin is recorded as an in-file comment next to each
 `inst/modeldb/specificDrugs/Rosario_2015_vedolizumab.R`. The table below
 collects them in one place.
 
-| Equation / parameter | Value                      | Source location (Rosario 2015)                                                                                   |
-|----------------------|----------------------------|------------------------------------------------------------------------------------------------------------------|
-| `lcl` (UC)           | `log(0.159)`               | Table 2: CLL UC = 0.159 L/day (CI 0.153–0.165)                                                                   |
-| `lcl_cd`             | `log(0.155)`               | Table 2: CLL CD = 0.155 L/day (CI 0.149–0.161)                                                                   |
-| `lvc`                | `log(3.19)`                | Table 2: Vc = 3.19 L                                                                                             |
-| `lvp`                | `log(1.65)`                | Table 2: Vp = 1.65 L                                                                                             |
-| `lq`                 | `log(0.12)`                | Table 2: Q = 0.12 L/day                                                                                          |
-| `lvmax`              | `log(0.265)`               | Table 2: Vmax = 0.265 mg/day                                                                                     |
-| `lkm`                | `log(0.964)`               | Table 2: Km = 0.964 µg/mL                                                                                        |
-| `e_wt_cl`            | `0.362`                    | Table S4: weight on CLL                                                                                          |
-| `e_alb_cl`           | `-1.18`                    | Table S4: albumin on CLL                                                                                         |
-| `e_calpro_cl`        | `0.0310`                   | Table S4: faecal calprotectin on CLL                                                                             |
-| `e_cdai_cl`          | `-0.0515`                  | Table S4: CDAI on CLL (CD-only)                                                                                  |
-| `e_pmayo_cl`         | `0.0408`                   | Table S4: partial Mayo on CLL (UC-only)                                                                          |
-| `e_age_cl`           | `-0.0346`                  | Table S4: age on CLL                                                                                             |
-| `e_wt_vc`            | `0.467`                    | Table S4: weight on Vc                                                                                           |
-| `allo_wt_vp`         | `fixed(1)`                 | Table S4: weight on Vp = 1 Fixed                                                                                 |
-| `allo_wt_vmax`       | `fixed(0.75)`              | Table S4: weight on Vmax = 0.75 Fixed                                                                            |
-| `allo_wt_q`          | `fixed(0.75)`              | Table S4: weight on Q = 0.75 Fixed                                                                               |
-| `e_priortnf_cl`      | `1.04`                     | Table S4: prior TNF-α antagonist on CLL                                                                          |
-| `e_ada_cl`           | `1.12`                     | Table S4: ADA status on CLL                                                                                      |
-| `e_conmed_aza_cl`    | `0.998`                    | Table S4: AZA on CLL                                                                                             |
-| `e_conmed_mp_cl`     | `1.04`                     | Table S4: MP (6-mercaptopurine) on CLL                                                                           |
-| `e_conmed_mtx_cl`    | `0.983`                    | Table S4: MTX on CLL                                                                                             |
-| `e_conmed_amino_cl`  | `1.02`                     | Table S4: AMINO (aminosalicylate) on CLL                                                                         |
-| `e_ibd_cd_vc`        | `1.01`                     | Table S4: IBD diagnosis on Vc                                                                                    |
-| IIV `ω²_CLL`         | `0.346² = 0.1197`          | Table S2/S3: %CV = 34.6 → ω = 0.346                                                                              |
-| IIV `ω²_Vc`          | `0.191² = 0.0365`          | Table S2/S3: %CV = 19.1 → ω = 0.191                                                                              |
-| IIV `ω²_Vmax`        | `1.05² = 1.1025`           | Table S2/S3: %CV = 105 → ω = 1.05                                                                                |
-| `cov(CLL, Vc)`       | `+0.0374`                  | Table S2: corr(CLL, Vc) = +0.566 × 0.346 × 0.191                                                                 |
-| `cov(CLL, Vmax)`     | `-0.0698`                  | Table S2: corr(CLL, Vmax) = -0.192 × 0.346 × 1.05                                                                |
-| `cov(Vc, Vmax)`      | `-0.0535`                  | Table S2: corr(Vc, Vmax) = -0.267 × 0.191 × 1.05                                                                 |
-| `propSd`             | `sqrt(0.0554) = 0.2354`    | Table 2: σ²_prop = 0.0554 (%CV = 23.5)                                                                           |
-| Model structure      | 2-cmt parallel linear + MM | Figure 2: two-compartment model with parallel linear + Michaelis-Menten elimination from the central compartment |
+| Equation / parameter | Value | Source location (Rosario 2015) |
+|----|----|----|
+| `lcl` (UC) | `log(0.159)` | Table 2: CLL UC = 0.159 L/day (CI 0.153–0.165) |
+| `lcl_cd` | `log(0.155)` | Table 2: CLL CD = 0.155 L/day (CI 0.149–0.161) |
+| `lvc` | `log(3.19)` | Table 2: Vc = 3.19 L |
+| `lvp` | `log(1.65)` | Table 2: Vp = 1.65 L |
+| `lq` | `log(0.12)` | Table 2: Q = 0.12 L/day |
+| `lvmax` | `log(0.265)` | Table 2: Vmax = 0.265 mg/day |
+| `lkm` | `log(0.964)` | Table 2: Km = 0.964 µg/mL |
+| `e_wt_cl` | `0.362` | Table S4: weight on CLL |
+| `e_alb_cl` | `-1.18` | Table S4: albumin on CLL |
+| `e_calpro_cl` | `0.0310` | Table S4: faecal calprotectin on CLL |
+| `e_cdai_cl` | `-0.0515` | Table S4: CDAI on CLL (CD-only) |
+| `e_pmayo_cl` | `0.0408` | Table S4: partial Mayo on CLL (UC-only) |
+| `e_age_cl` | `-0.0346` | Table S4: age on CLL |
+| `e_wt_vc` | `0.467` | Table S4: weight on Vc |
+| `allo_wt_vp` | `fixed(1)` | Table S4: weight on Vp = 1 Fixed |
+| `allo_wt_vmax` | `fixed(0.75)` | Table S4: weight on Vmax = 0.75 Fixed |
+| `allo_wt_q` | `fixed(0.75)` | Table S4: weight on Q = 0.75 Fixed |
+| `e_priortnf_cl` | `1.04` | Table S4: prior TNF-α antagonist on CLL |
+| `e_ada_cl` | `1.12` | Table S4: ADA status on CLL |
+| `e_conmed_aza_cl` | `0.998` | Table S4: AZA on CLL |
+| `e_conmed_mp_cl` | `1.04` | Table S4: MP (6-mercaptopurine) on CLL |
+| `e_conmed_mtx_cl` | `0.983` | Table S4: MTX on CLL |
+| `e_conmed_amino_cl` | `1.02` | Table S4: AMINO (aminosalicylate) on CLL |
+| `e_ibd_cd_vc` | `1.01` | Table S4: IBD diagnosis on Vc |
+| IIV `ω²_CLL` | `0.346² = 0.1197` | Table S2/S3: %CV = 34.6 → ω = 0.346 |
+| IIV `ω²_Vc` | `0.191² = 0.0365` | Table S2/S3: %CV = 19.1 → ω = 0.191 |
+| IIV `ω²_Vmax` | `1.05² = 1.1025` | Table S2/S3: %CV = 105 → ω = 1.05 |
+| `cov(CLL, Vc)` | `+0.0374` | Table S2: corr(CLL, Vc) = +0.566 × 0.346 × 0.191 |
+| `cov(CLL, Vmax)` | `-0.0698` | Table S2: corr(CLL, Vmax) = -0.192 × 0.346 × 1.05 |
+| `cov(Vc, Vmax)` | `-0.0535` | Table S2: corr(Vc, Vmax) = -0.267 × 0.191 × 1.05 |
+| `propSd` | `sqrt(0.0554) = 0.2354` | Table 2: σ²_prop = 0.0554 (%CV = 23.5) |
+| Model structure | 2-cmt parallel linear + MM | Figure 2: two-compartment model with parallel linear + Michaelis-Menten elimination from the central compartment |
 
 Reference patient (Rosario 2015 Table 2 footnote / Figure 5 caption): 70
 kg, 40 years old, albumin 4 g/dL, faecal calprotectin 700 mg/kg, CDAI
@@ -118,6 +119,7 @@ published phase 3 demographics (Rosario 2015 Table 1 and Appendix S1
 Table S1).
 
 ``` r
+
 make_cohort <- function(n,
                         n_doses = 8,
                         dosing_interval_days = 56,   # Q8W maintenance
@@ -193,6 +195,7 @@ make_cohort <- function(n,
 ```
 
 ``` r
+
 mod <- rxode2::rxode(readModelDb("Rosario_2015_vedolizumab"))
 #> ℹ parameter labels from comments will be replaced by 'label()'
 ```
@@ -203,6 +206,7 @@ Phase 3 maintenance dosing: 300 mg Q8W IV × 8 doses, with weekly
 sampling over the 56-week treatment period.
 
 ``` r
+
 events_vpc <- make_cohort(n = 300)
 sim_vpc <- rxode2::rxSolve(mod, events = events_vpc) |> as.data.frame()
 ```
@@ -210,6 +214,7 @@ sim_vpc <- rxode2::rxSolve(mod, events = events_vpc) |> as.data.frame()
 ### Figure 4 analogue: concentration–time VPC (phase 3 maintenance, 300 mg Q8W)
 
 ``` r
+
 d_vpc <- sim_vpc |>
   group_by(time) |>
   summarise(
@@ -250,6 +255,7 @@ covariate moves from the reference to the 5th/95th percentile
 ratios from the model’s coefficients.
 
 ``` r
+
 ini <- mod$theta
 get <- function(nm) unname(ini[nm])
 
@@ -323,6 +329,7 @@ Q8W phase 3 maintenance regimen:
   derived from this model).
 
 ``` r
+
 events_single <- make_cohort(
   n = 1, n_doses = 1,
   obs_days_per_dose = c(0.02, 0.1, 0.5, 1, 2, 4, 7, 14, 21, 28,
@@ -371,26 +378,27 @@ knitr::kable(as.data.frame(nca_single$result),
              caption = "Single-dose NCA on the typical reference-patient profile.")
 ```
 
-| treatment    |  id | start | end | PPTESTCD            |     PPORRES | exclude                                                                                 |
-|:-------------|----:|------:|----:|:--------------------|------------:|:----------------------------------------------------------------------------------------|
-| single_300mg |   1 |     0 | Inf | cmax                |  93.3028479 | NA                                                                                      |
-| single_300mg |   1 |     0 | Inf | tmax                |   0.1000000 | NA                                                                                      |
-| single_300mg |   1 |     0 | Inf | tlast               | 168.0000000 | NA                                                                                      |
-| single_300mg |   1 |     0 | Inf | clast.obs           |   0.0443306 | NA                                                                                      |
-| single_300mg |   1 |     0 | Inf | lambda.z            |   0.0521624 | NA                                                                                      |
-| single_300mg |   1 |     0 | Inf | r.squared           |   0.9999931 | NA                                                                                      |
-| single_300mg |   1 |     0 | Inf | adj.r.squared       |   0.9999862 | NA                                                                                      |
-| single_300mg |   1 |     0 | Inf | lambda.z.time.first | 112.0000000 | NA                                                                                      |
-| single_300mg |   1 |     0 | Inf | lambda.z.time.last  | 168.0000000 | NA                                                                                      |
-| single_300mg |   1 |     0 | Inf | lambda.z.n.points   |   3.0000000 | NA                                                                                      |
-| single_300mg |   1 |     0 | Inf | clast.pred          |   0.0444290 | NA                                                                                      |
-| single_300mg |   1 |     0 | Inf | half.life           |  13.2882551 | NA                                                                                      |
-| single_300mg |   1 |     0 | Inf | span.ratio          |   4.2142478 | NA                                                                                      |
-| single_300mg |   1 |     0 | Inf | aucinf.obs          |          NA | Requesting an AUC range starting (0) before the first measurement (0.02) is not allowed |
+| treatment | id | start | end | PPTESTCD | PPORRES | exclude |
+|:---|---:|---:|---:|:---|---:|:---|
+| single_300mg | 1 | 0 | Inf | cmax | 93.3028479 | NA |
+| single_300mg | 1 | 0 | Inf | tmax | 0.1000000 | NA |
+| single_300mg | 1 | 0 | Inf | tlast | 168.0000000 | NA |
+| single_300mg | 1 | 0 | Inf | clast.obs | 0.0443306 | NA |
+| single_300mg | 1 | 0 | Inf | lambda.z | 0.0521624 | NA |
+| single_300mg | 1 | 0 | Inf | r.squared | 0.9999931 | NA |
+| single_300mg | 1 | 0 | Inf | adj.r.squared | 0.9999862 | NA |
+| single_300mg | 1 | 0 | Inf | lambda.z.time.first | 112.0000000 | NA |
+| single_300mg | 1 | 0 | Inf | lambda.z.time.last | 168.0000000 | NA |
+| single_300mg | 1 | 0 | Inf | lambda.z.n.points | 3.0000000 | NA |
+| single_300mg | 1 | 0 | Inf | clast.pred | 0.0444290 | NA |
+| single_300mg | 1 | 0 | Inf | half.life | 13.2882551 | NA |
+| single_300mg | 1 | 0 | Inf | span.ratio | 4.2142478 | NA |
+| single_300mg | 1 | 0 | Inf | aucinf.obs | NA | Requesting an AUC range starting (0) before the first measurement (0.02) is not allowed |
 
-Single-dose NCA on the typical reference-patient profile.
+Single-dose NCA on the typical reference-patient profile. {.table}
 
 ``` r
+
 # Phase 3 maintenance steady state: 300 mg Q8W, extract the final (8th)
 # dosing interval and scale time to 0 at that dose.
 events_ss_base <- make_cohort(
@@ -466,11 +474,12 @@ knitr::kable(as.data.frame(nca_ss$result),
 | ss_300mg_Q8W |   1 |     0 | Inf | half.life           |  13.4458360 | NA      |
 | ss_300mg_Q8W |   1 |     0 | Inf | span.ratio          |   4.1648582 | NA      |
 
-Steady-state NCA on the 8th (final) dosing interval.
+Steady-state NCA on the 8th (final) dosing interval. {.table}
 
 ### Comparison against published values
 
 ``` r
+
 get_param <- function(res, ppname) {
   tbl <- as.data.frame(res$result)
   val <- tbl$PPORRES[tbl$PPTESTCD == ppname]
@@ -500,13 +509,13 @@ knitr::kable(comparison,
              caption = "Simulated vs. published reference-patient exposures.")
 ```
 
-| Quantity                              | Published                                 | Simulated |
-|:--------------------------------------|:------------------------------------------|----------:|
-| Terminal half-life (days)             | ~25 (vedolizumab prescribing information) |      13.4 |
-| Steady-state Cmax (µg/mL)             | ~98 (Rosario 2015 Table 4 / Figure 4)     |     103.0 |
-| Steady-state trough at week 8 (µg/mL) | ~9 (Rosario 2015 Table 4 / Figure 4)      |       9.7 |
+| Quantity | Published | Simulated |
+|:---|:---|---:|
+| Terminal half-life (days) | ~25 (vedolizumab prescribing information) | 13.4 |
+| Steady-state Cmax (µg/mL) | ~98 (Rosario 2015 Table 4 / Figure 4) | 103.0 |
+| Steady-state trough at week 8 (µg/mL) | ~9 (Rosario 2015 Table 4 / Figure 4) | 9.7 |
 
-Simulated vs. published reference-patient exposures.
+Simulated vs. published reference-patient exposures. {.table}
 
 The simulated steady-state trough, Cmax, and terminal half-life should
 all fall within about 20% of the published reference-patient values. The

@@ -50,32 +50,32 @@ The same population information is available programmatically via
 
 ## Source trace
 
-| Quantity                                                                                             | Value                                  | Source location                                                                           |
-|------------------------------------------------------------------------------------------------------|----------------------------------------|-------------------------------------------------------------------------------------------|
-| Two-compartment PK with first-order SC absorption + parallel linear and Michaelis-Menten elimination | structural model                       | Toukam 2025 Results “Base PK Model Development” and “Final PK Model”; Figure 2a schematic |
-| Allometric scaling on CL, V2, V3, Q with reference 70 kg                                             | covariate model                        | Toukam 2025 Methods “Population PK and PKPD Model Development” and Table 3 footnote       |
-| Direct sigmoidal Emax PD: `E = E0 + Emax * Cc^gamma / (EC50^gamma + Cc^gamma)`                       | structural model                       | Toukam 2025 Results “Base PD Model Development” (PK-PD equation)                          |
-| Ka = 0.288 1/day                                                                                     | `lka`                                  | Toukam 2025 Table 3                                                                       |
-| CL = 159 mL/day at 70 kg                                                                             | `lcl` (= `log(0.159 L/day)`)           | Toukam 2025 Table 3                                                                       |
-| V2 = 3010 mL at 70 kg                                                                                | `lvc` (= `log(3.01 L)`)                | Toukam 2025 Table 3                                                                       |
-| V3 = 1180 mL at 70 kg                                                                                | `lvp` (= `log(1.18 L)`)                | Toukam 2025 Table 3                                                                       |
-| Q = 301 mL/day at 70 kg                                                                              | `lq` (= `log(0.301 L/day)`)            | Toukam 2025 Table 3                                                                       |
-| Vmax = 1890 ug/day                                                                                   | `lvmax` (= `log(1.89 mg/day)`)         | Toukam 2025 Table 3                                                                       |
-| Km = 0.00435 ug/mL (FIXED, in vitro Kd)                                                              | `lkm` (FIXED)                          | Toukam 2025 Table 3 and Results “Base PK Model Development”                               |
-| Tlag = 0.0793 day (FIXED)                                                                            | `lalag` (FIXED)                        | Toukam 2025 Table 3 and Results “Base PK Model Development”                               |
-| F = 73.8%                                                                                            | `lfdepot`                              | Toukam 2025 Table 3                                                                       |
-| Allometric exponent on CL = 1.07 (estimated)                                                         | `allo_cl`                              | Toukam 2025 Table 3                                                                       |
-| Allometric exponents on V2, V3, Q (1, 1, 0.75; FIXED)                                                | `allo_vc`, `allo_vp`, `allo_q` (FIXED) | Toukam 2025 Table 3 footnote                                                              |
-| IIV CL 16% CV                                                                                        | `etalcl` (omega^2 = 0.02527)           | Toukam 2025 Table 3                                                                       |
-| IIV V2 35% CV                                                                                        | `etalvc` (omega^2 = 0.11556)           | Toukam 2025 Table 3                                                                       |
-| IIV Ka 41% CV                                                                                        | `etalka` (omega^2 = 0.15536)           | Toukam 2025 Table 3                                                                       |
-| Additive PK residual error 8.67 (SC)                                                                 | `CcaddSd`                              | Toukam 2025 Table 3                                                                       |
-| E0 = 17.7% baseline alpha-4 saturation                                                               | `a4satE0`                              | Toukam 2025 Table 4                                                                       |
-| Emax = 77.5% above baseline                                                                          | `a4satEmax`                            | Toukam 2025 Table 4                                                                       |
-| EC50 = 0.376 ug/mL                                                                                   | `la4satEC50`                           | Toukam 2025 Table 4                                                                       |
-| Hill gamma = 1 (FIXED)                                                                               | `a4satGamma` (FIXED)                   | Toukam 2025 Results “Base PD Model Development”                                           |
-| IIV EC50 10% CV                                                                                      | `etala4satEC50` (omega^2 = 0.00995)    | Toukam 2025 Table 4                                                                       |
-| Additive PD residual error 15.8% (SC)                                                                | `a4sataddSd`                           | Toukam 2025 Table 4                                                                       |
+| Quantity | Value | Source location |
+|----|----|----|
+| Two-compartment PK with first-order SC absorption + parallel linear and Michaelis-Menten elimination | structural model | Toukam 2025 Results “Base PK Model Development” and “Final PK Model”; Figure 2a schematic |
+| Allometric scaling on CL, V2, V3, Q with reference 70 kg | covariate model | Toukam 2025 Methods “Population PK and PKPD Model Development” and Table 3 footnote |
+| Direct sigmoidal Emax PD: `E = E0 + Emax * Cc^gamma / (EC50^gamma + Cc^gamma)` | structural model | Toukam 2025 Results “Base PD Model Development” (PK-PD equation) |
+| Ka = 0.288 1/day | `lka` | Toukam 2025 Table 3 |
+| CL = 159 mL/day at 70 kg | `lcl` (= `log(0.159 L/day)`) | Toukam 2025 Table 3 |
+| V2 = 3010 mL at 70 kg | `lvc` (= `log(3.01 L)`) | Toukam 2025 Table 3 |
+| V3 = 1180 mL at 70 kg | `lvp` (= `log(1.18 L)`) | Toukam 2025 Table 3 |
+| Q = 301 mL/day at 70 kg | `lq` (= `log(0.301 L/day)`) | Toukam 2025 Table 3 |
+| Vmax = 1890 ug/day | `lvmax` (= `log(1.89 mg/day)`) | Toukam 2025 Table 3 |
+| Km = 0.00435 ug/mL (FIXED, in vitro Kd) | `lkm` (FIXED) | Toukam 2025 Table 3 and Results “Base PK Model Development” |
+| Tlag = 0.0793 day (FIXED) | `lalag` (FIXED) | Toukam 2025 Table 3 and Results “Base PK Model Development” |
+| F = 73.8% | `lfdepot` | Toukam 2025 Table 3 |
+| Allometric exponent on CL = 1.07 (estimated) | `allo_cl` | Toukam 2025 Table 3 |
+| Allometric exponents on V2, V3, Q (1, 1, 0.75; FIXED) | `allo_vc`, `allo_vp`, `allo_q` (FIXED) | Toukam 2025 Table 3 footnote |
+| IIV CL 16% CV | `etalcl` (omega^2 = 0.02527) | Toukam 2025 Table 3 |
+| IIV V2 35% CV | `etalvc` (omega^2 = 0.11556) | Toukam 2025 Table 3 |
+| IIV Ka 41% CV | `etalka` (omega^2 = 0.15536) | Toukam 2025 Table 3 |
+| Additive PK residual error 8.67 (SC) | `CcaddSd` | Toukam 2025 Table 3 |
+| E0 = 17.7% baseline alpha-4 saturation | `a4satE0` | Toukam 2025 Table 4 |
+| Emax = 77.5% above baseline | `a4satEmax` | Toukam 2025 Table 4 |
+| EC50 = 0.376 ug/mL | `la4satEC50` | Toukam 2025 Table 4 |
+| Hill gamma = 1 (FIXED) | `a4satGamma` (FIXED) | Toukam 2025 Results “Base PD Model Development” |
+| IIV EC50 10% CV | `etala4satEC50` (omega^2 = 0.00995) | Toukam 2025 Table 4 |
+| Additive PD residual error 15.8% (SC) | `a4sataddSd` | Toukam 2025 Table 4 |
 
 ## Errata
 
@@ -122,6 +122,7 @@ the Q8W dose-optimization simulations described in Toukam 2025 Figures
 3-4.
 
 ``` r
+
 set.seed(20260428)
 
 make_cohort <- function(n, dose_mg, dose_times, route = c("SC", "IV"), regimen, id_offset = 0L) {
@@ -177,6 +178,7 @@ stopifnot(!anyDuplicated(unique(events_q8w[, c("id", "time", "evid", "cmt")])))
 ## Simulation
 
 ``` r
+
 mod <- readModelDb("Toukam_2025_biib107")
 mod_typ <- rxode2::zeroRe(mod)
 #> ℹ parameter labels from comments will be replaced by 'label()'
@@ -202,6 +204,7 @@ saturation profiles for 360, 450, and 600 mg).
 ### Concentration vs time, Q8W cohorts (Figure 3 PK panel)
 
 ``` r
+
 sim_q8w |>
   dplyr::filter(!is.na(Cc), Cc > 0.01) |>
   dplyr::group_by(regimen, time) |>
@@ -227,6 +230,7 @@ sim_q8w |>
 ### Alpha-4 integrin saturation, Q8W cohorts (Figure 3 PD panel)
 
 ``` r
+
 sim_q8w |>
   dplyr::filter(!is.na(a4sat)) |>
   dplyr::group_by(regimen, time) |>
@@ -253,6 +257,7 @@ sim_q8w |>
 ### Maintenance of \>=70% saturation by regimen (Toukam 2025 Table S2)
 
 ``` r
+
 sim_q8w |>
   dplyr::filter(!is.na(a4sat), time >= 56, time <= 112) |>
   dplyr::group_by(regimen, id) |>
@@ -273,18 +278,19 @@ sim_q8w |>
   )
 ```
 
-| regimen       | median_pct_time_ge_70 | pct_subjects_alwaysGE70 | median_trough_sat |
-|:--------------|----------------------:|------------------------:|------------------:|
-| 360 mg SC Q8W |                  87.7 |                    20.0 |              17.9 |
-| 450 mg SC Q8W |                  96.5 |                    44.7 |              50.7 |
-| 600 mg SC Q8W |                 100.0 |                    76.0 |              88.5 |
+| regimen | median_pct_time_ge_70 | pct_subjects_alwaysGE70 | median_trough_sat |
+|:---|---:|---:|---:|
+| 360 mg SC Q8W | 87.7 | 20.0 | 17.9 |
+| 450 mg SC Q8W | 96.5 | 44.7 | 50.7 |
+| 600 mg SC Q8W | 100.0 | 76.0 | 88.5 |
 
 Time spent \>=70% saturated within the Day 56-112 dosing interval, by
-Q8W regimen.
+Q8W regimen. {.table}
 
 ## PKNCA validation (single-dose SAD cohorts)
 
 ``` r
+
 # Multi-output simulation produces two rows per (id, time): one per dvid
 # (Cc and a4sat). Both rows carry the same Cc value, so deduplicate on
 # (id, time, regimen) before handing to PKNCA.
@@ -384,6 +390,7 @@ nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = interv
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 #>  ■■■■■■                            18% |  ETA: 14s
 #> Warning: Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
@@ -392,11 +399,8 @@ nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = interv
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 #>  ■■■■■■■■■■■                       34% |  ETA: 12s
 #> Warning: Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
@@ -506,8 +510,7 @@ nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = interv
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#>  ■■■■■■■■■■■■■■■■■■■■■             68% |  ETA:  6s
+#>  ■■■■■■■■■■■■■■■■■■■■■             67% |  ETA:  6s
 #> Warning: Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
@@ -578,8 +581,11 @@ nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = interv
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■       86% |  ETA:  3s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■        85% |  ETA:  3s
 #> Warning: Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
@@ -720,7 +726,7 @@ knitr::kable(nca_tbl,
 | 72 mg SC SD  | tmax                |        5.000 |   3.000 |    7.000 |
 
 Simulated NCA parameters (median and 5th-95th percentile across the
-virtual cohort).
+virtual cohort). {.table}
 
 ### Comparison against published Tmax / half-life
 
@@ -737,6 +743,7 @@ error. The 19.3-day reference is computed analytically from
 days, which matches the paper’s reported value.
 
 ``` r
+
 nca_tbl |>
   dplyr::filter(PPTESTCD %in% c("tmax", "half.life")) |>
   knitr::kable(caption = "Simulated Tmax and observed terminal half-life by regimen.")
@@ -755,7 +762,7 @@ nca_tbl |>
 | 72 mg SC SD  | half.life |        2.810 | 2.656 |  4.538 |
 | 72 mg SC SD  | tmax      |        5.000 | 3.000 |  7.000 |
 
-Simulated Tmax and observed terminal half-life by regimen.
+Simulated Tmax and observed terminal half-life by regimen. {.table}
 
 ## Assumptions and deviations
 

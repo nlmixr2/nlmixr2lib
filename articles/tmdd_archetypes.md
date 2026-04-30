@@ -7,17 +7,18 @@
 modelling, not drug-specific fits; the initial estimates are plausible
 mAb-scale defaults.
 
-| Model               | Structural form       | Drug compartments             | Target states                  |
-|---------------------|-----------------------|-------------------------------|--------------------------------|
-| `PK_1cmt_tmdd_full` | Mager & Jusko 2001    | depot + central               | free `target` + `complex`      |
-| `PK_1cmt_tmdd_qss`  | Gibiansky et al. 2008 | depot + central               | `total_target` (QSS algebraic) |
-| `PK_1cmt_tmdd_mm`   | Gibiansky et al. 2008 | depot + central               | none (saturable elimination)   |
-| `PK_2cmt_tmdd_qss`  | Gibiansky et al. 2008 | depot + central + peripheral1 | `total_target` (QSS algebraic) |
-| `PK_2cmt_tmdd_mm`   | Gibiansky et al. 2008 | depot + central + peripheral1 | none (saturable elimination)   |
+| Model | Structural form | Drug compartments | Target states |
+|----|----|----|----|
+| `PK_1cmt_tmdd_full` | Mager & Jusko 2001 | depot + central | free `target` + `complex` |
+| `PK_1cmt_tmdd_qss` | Gibiansky et al. 2008 | depot + central | `total_target` (QSS algebraic) |
+| `PK_1cmt_tmdd_mm` | Gibiansky et al. 2008 | depot + central | none (saturable elimination) |
+| `PK_2cmt_tmdd_qss` | Gibiansky et al. 2008 | depot + central + peripheral1 | `total_target` (QSS algebraic) |
+| `PK_2cmt_tmdd_mm` | Gibiansky et al. 2008 | depot + central + peripheral1 | none (saturable elimination) |
 
 Source citations, stored in each model’s `reference` field:
 
 ``` r
+
 vapply(
   c("PK_1cmt_tmdd_full", "PK_1cmt_tmdd_qss", "PK_1cmt_tmdd_mm",
     "PK_2cmt_tmdd_qss", "PK_2cmt_tmdd_mm"),
@@ -63,17 +64,17 @@ Per-parameter origin is recorded as an in-file comment next to each
 the model source under `inst/modeldb/pharmacokinetics/PK_*_tmdd_*.R`.
 The table below collects the equation references.
 
-| Parameter (symbol)          | Mager & Jusko 2001                 | Gibiansky et al. 2008                     |
-|-----------------------------|------------------------------------|-------------------------------------------|
-| CL, Vc (linear disposition) | Eq 1 (k_el \* V, V)                | Eq 8 / Eq 10 (k_el \* V, V)               |
-| Vp, Q (peripheral, 2-cmt)   | n/a                                | two-compartment extension (implicit)      |
-| Ka, F (absorption)          | Eq 1 (input term)                  | Eq 6 (input term)                         |
-| T0 = ksyn / kdeg            | Eq 2 (R0)                          | Eq 9 (Rtot(0))                            |
-| kdeg                        | Eq 2 (k_deg)                       | Eq 9 (k_deg)                              |
-| kint                        | Eq 3 (k_int)                       | Eq 9 / Eq 10 (k_int)                      |
-| kon, koff (full only)       | Eq 1 (k_on, k_off)                 | n/a (eliminated by QSS / MM)              |
-| Kss = (koff + kint)/kon     | n/a (full keeps kon/koff explicit) | Eq 7 (Kss)                                |
-| Vm, Km (MM only)            | n/a                                | Eq 10 (V_m = k_int \* R0, K_m approx Kss) |
+| Parameter (symbol) | Mager & Jusko 2001 | Gibiansky et al. 2008 |
+|----|----|----|
+| CL, Vc (linear disposition) | Eq 1 (k_el \* V, V) | Eq 8 / Eq 10 (k_el \* V, V) |
+| Vp, Q (peripheral, 2-cmt) | n/a | two-compartment extension (implicit) |
+| Ka, F (absorption) | Eq 1 (input term) | Eq 6 (input term) |
+| T0 = ksyn / kdeg | Eq 2 (R0) | Eq 9 (Rtot(0)) |
+| kdeg | Eq 2 (k_deg) | Eq 9 (k_deg) |
+| kint | Eq 3 (k_int) | Eq 9 / Eq 10 (k_int) |
+| kon, koff (full only) | Eq 1 (k_on, k_off) | n/a (eliminated by QSS / MM) |
+| Kss = (koff + kint)/kon | n/a (full keeps kon/koff explicit) | Eq 7 (Kss) |
+| Vm, Km (MM only) | n/a | Eq 10 (V_m = k_int \* R0, K_m approx Kss) |
 
 ## Typical-value simulations
 
@@ -85,6 +86,7 @@ variability zeroed out (typical individual) over 56 days after a single
 SC dose and after repeated SC dosing.
 
 ``` r
+
 solve_typical <- function(model_name, events) {
   ui <- nlmixr2est::nlmixr(readModelDb(model_name))
   ui_typ <- rxode2::zeroRe(ui)
@@ -97,6 +99,7 @@ solve_typical <- function(model_name, events) {
 ### Single-dose profiles (100 mg SC)
 
 ``` r
+
 ev_single <- rxode2::et(amt = 100, cmt = "depot") |>
   rxode2::et(seq(0, 56, by = 0.25))
 
@@ -136,6 +139,7 @@ target into a saturable elimination pathway and does not expose target
 state variables.
 
 ``` r
+
 sim_full <- solve_typical("PK_1cmt_tmdd_full", ev_single)
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalka'
 sim_qss  <- solve_typical("PK_1cmt_tmdd_qss",  ev_single)
@@ -165,6 +169,7 @@ ggplot(target_long, aes(time, value, colour = model)) +
 ### Repeated SC dosing — drug-concentration difference across structures
 
 ``` r
+
 ev_multi <- rxode2::et(amt = 100, cmt = "depot", ii = 14, addl = 5) |>
   rxode2::et(seq(0, 100, by = 0.5))
 

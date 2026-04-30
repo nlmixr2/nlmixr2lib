@@ -1,6 +1,7 @@
 # PerezRuixo_2025_posdinemab
 
 ``` r
+
 library(nlmixr2lib)
 library(PKNCA)
 #> 
@@ -74,6 +75,7 @@ p217+tau observations (free + total combined). Estimation was by FOCE in
 NONMEM 7.3.0.
 
 ``` r
+
 str(rxode2::rxode2(readModelDb("PerezRuixo_2025_posdinemab"))$meta$population)
 #> ℹ parameter labels from comments will be replaced by 'label()'
 #> List of 12
@@ -98,49 +100,49 @@ The per-parameter origin is recorded as an in-file comment next to each
 `inst/modeldb/specificDrugs/PerezRuixo_2025_posdinemab.R`. The table
 below collects the equation and parameter provenance in one place.
 
-| Element                                    | Value (paper unit)                         | Stored value                              | Source location                                                     |
-|--------------------------------------------|--------------------------------------------|-------------------------------------------|---------------------------------------------------------------------|
-| `CL` (serum clearance)                     | 9.21 × 10⁻³ L/h                            | log(9.21e-3)                              | Table 2 (Posdinemab PK_(serum))                                     |
-| `V1` (central volume)                      | 3.14 L                                     | log(3.14)                                 | Table 2                                                             |
-| `Q` (intercompartmental clearance)         | 24.9 × 10⁻³ L/h                            | log(24.9e-3)                              | Table 2                                                             |
-| `V2` (peripheral volume)                   | 2.87 L                                     | log(2.87)                                 | Table 2                                                             |
-| `QCSF` (central\<-\>CSF)                   | 4.02 × 10⁻⁶ L/h                            | log(4.02e-6)                              | Table 2 (Posdinemab PK_(CSF))                                       |
-| `VCSF` (CSF volume)                        | 229 × 10⁻³ L                               | log(0.229)                                | Table 2                                                             |
-| `QISF` (CSF\<-\>ISF; per Methods)          | 1.83 × 10⁻³ L/h                            | log(1.83e-3)                              | Table 2 (description says “central-ISF”; Methods clarifies CSF-ISF) |
-| `VISF` (ISF volume)                        | 43.4 × 10⁻³ L                              | log(0.0434)                               | Table 2                                                             |
-| Allometric exponent on clearances          | 0.75 (fixed)                               | 0.75                                      | Results “Statistical and covariate analyses”                        |
-| Allometric exponent on volumes             | 1.00 (fixed)                               | 1.00                                      | Results “Statistical and covariate analyses”                        |
-| `R0` (baseline p217+tau in CSF, healthy)   | 0.793 pmol/L                               | log(0.793)                                | Table 2 (PK_(p217+tau))                                             |
-| AD-vs-healthy effect on `R0`               | 5.995 / 0.793 = 7.56-fold                  | log(5.995/0.793) = 2.023                  | Table 2 + Results “Statistical and covariate analyses”              |
-| `kc` (free p217+tau elimination)           | 0.040 1/h                                  | log(0.040)                                | Table 2                                                             |
-| `kint` (complex internalization)           | 0.299 1/h                                  | log(0.299)                                | Table 2                                                             |
-| `kon` (CSF binding rate)                   | 264 (nmol·mL⁻¹)⁻¹·h⁻¹                      | log(2.64e-4) (= 264 × 10⁻⁶ in (pmol/L)⁻¹) | Table 2 + Discussion (units typo: see Errata)                       |
-| `koff` (CSF dissociation rate)             | 0.224 1/h                                  | log(0.224)                                | Table 2                                                             |
-| ISF affinity ratio (`kd`_(CSF)/`kd`_(ISF)) | 20 (fixed)                                 | 20                                        | Methods “Mechanism-based popPK-PD model”                            |
-| ISF baseline ratio (`RISF`(0)/`R`(0))      | 10 (fixed)                                 | 10                                        | Methods “Mechanism-based popPK-PD model”; Supplement Eq. 10         |
-| Posdinemab MW                              | 148 kDa                                    | 148000 (Da)                               | Discussion (“13,805 pmol of posdinemab (148 kDa)”)                  |
-| IIV CL (CV %)                              | 23.4 %                                     | ω² = log(1 + 0.234²) = 0.05181            | Table 2 IIV column                                                  |
-| IIV V1 (CV %)                              | 17.5 %                                     | ω² = 0.03012                              | Table 2                                                             |
-| IIV Q (CV %)                               | 44.9 %                                     | ω² = 0.18525                              | Table 2                                                             |
-| IIV V2 (CV %)                              | 22.1 %                                     | ω² = 0.04764                              | Table 2                                                             |
-| IIV QCSF (CV %)                            | 29.4 %                                     | ω² = 0.08300                              | Table 2                                                             |
-| IIV VCSF (CV %)                            | 25.5 %                                     | ω² = 0.06244                              | Table 2                                                             |
-| IIV VISF (CV %)                            | 91.0 %                                     | ω² = 0.60466                              | Table 2                                                             |
-| IIV R0 (CV %)                              | 67.7 %                                     | ω² = 0.37113                              | Table 2                                                             |
-| IIV kc (CV %)                              | 54.7 %                                     | ω² = 0.26156                              | Table 2                                                             |
-| IIV kint (CV %)                            | 38.2 %                                     | ω² = 0.13510                              | Table 2                                                             |
-| Residual error: serum posdinemab           | σ₁ = 8.73                                  | propSd 0.0873                             | Table 2 RUV                                                         |
-| Residual error: CSF posdinemab             | σ₂ = 16.4                                  | propSd 0.164                              | Table 2 RUV                                                         |
-| Residual error: total p217+tau             | σ₃ = 11.2                                  | propSd 0.112                              | Table 2 RUV                                                         |
-| Residual error: free p217+tau              | σ₄ = 13.3                                  | propSd 0.133                              | Table 2 RUV                                                         |
-| Differential equations (1-8)               | 8-state ODE system                         | \-                                        | Supplement S1 (Equations 1-8)                                       |
-| Initial conditions                         | `R(0) = ksyn/kc = R0`; `RISF(0) = 10·R(0)` | \-                                        | Supplement S1 (Equations 9-10)                                      |
+| Element | Value (paper unit) | Stored value | Source location |
+|----|----|----|----|
+| `CL` (serum clearance) | 9.21 × 10⁻³ L/h | log(9.21e-3) | Table 2 (Posdinemab PK_(serum)) |
+| `V1` (central volume) | 3.14 L | log(3.14) | Table 2 |
+| `Q` (intercompartmental clearance) | 24.9 × 10⁻³ L/h | log(24.9e-3) | Table 2 |
+| `V2` (peripheral volume) | 2.87 L | log(2.87) | Table 2 |
+| `QCSF` (central\<-\>CSF) | 4.02 × 10⁻⁶ L/h | log(4.02e-6) | Table 2 (Posdinemab PK_(CSF)) |
+| `VCSF` (CSF volume) | 229 × 10⁻³ L | log(0.229) | Table 2 |
+| `QISF` (CSF\<-\>ISF; per Methods) | 1.83 × 10⁻³ L/h | log(1.83e-3) | Table 2 (description says “central-ISF”; Methods clarifies CSF-ISF) |
+| `VISF` (ISF volume) | 43.4 × 10⁻³ L | log(0.0434) | Table 2 |
+| Allometric exponent on clearances | 0.75 (fixed) | 0.75 | Results “Statistical and covariate analyses” |
+| Allometric exponent on volumes | 1.00 (fixed) | 1.00 | Results “Statistical and covariate analyses” |
+| `R0` (baseline p217+tau in CSF, healthy) | 0.793 pmol/L | log(0.793) | Table 2 (PK_(p217+tau)) |
+| AD-vs-healthy effect on `R0` | 5.995 / 0.793 = 7.56-fold | log(5.995/0.793) = 2.023 | Table 2 + Results “Statistical and covariate analyses” |
+| `kc` (free p217+tau elimination) | 0.040 1/h | log(0.040) | Table 2 |
+| `kint` (complex internalization) | 0.299 1/h | log(0.299) | Table 2 |
+| `kon` (CSF binding rate) | 264 (nmol·mL⁻¹)⁻¹·h⁻¹ | log(2.64e-4) (= 264 × 10⁻⁶ in (pmol/L)⁻¹) | Table 2 + Discussion (units typo: see Errata) |
+| `koff` (CSF dissociation rate) | 0.224 1/h | log(0.224) | Table 2 |
+| ISF affinity ratio (`kd`_(CSF)/`kd`_(ISF)) | 20 (fixed) | 20 | Methods “Mechanism-based popPK-PD model” |
+| ISF baseline ratio (`RISF`(0)/`R`(0)) | 10 (fixed) | 10 | Methods “Mechanism-based popPK-PD model”; Supplement Eq. 10 |
+| Posdinemab MW | 148 kDa | 148000 (Da) | Discussion (“13,805 pmol of posdinemab (148 kDa)”) |
+| IIV CL (CV %) | 23.4 % | ω² = log(1 + 0.234²) = 0.05181 | Table 2 IIV column |
+| IIV V1 (CV %) | 17.5 % | ω² = 0.03012 | Table 2 |
+| IIV Q (CV %) | 44.9 % | ω² = 0.18525 | Table 2 |
+| IIV V2 (CV %) | 22.1 % | ω² = 0.04764 | Table 2 |
+| IIV QCSF (CV %) | 29.4 % | ω² = 0.08300 | Table 2 |
+| IIV VCSF (CV %) | 25.5 % | ω² = 0.06244 | Table 2 |
+| IIV VISF (CV %) | 91.0 % | ω² = 0.60466 | Table 2 |
+| IIV R0 (CV %) | 67.7 % | ω² = 0.37113 | Table 2 |
+| IIV kc (CV %) | 54.7 % | ω² = 0.26156 | Table 2 |
+| IIV kint (CV %) | 38.2 % | ω² = 0.13510 | Table 2 |
+| Residual error: serum posdinemab | σ₁ = 8.73 | propSd 0.0873 | Table 2 RUV |
+| Residual error: CSF posdinemab | σ₂ = 16.4 | propSd 0.164 | Table 2 RUV |
+| Residual error: total p217+tau | σ₃ = 11.2 | propSd 0.112 | Table 2 RUV |
+| Residual error: free p217+tau | σ₄ = 13.3 | propSd 0.133 | Table 2 RUV |
+| Differential equations (1-8) | 8-state ODE system | \- | Supplement S1 (Equations 1-8) |
+| Initial conditions | `R(0) = ksyn/kc = R0`; `RISF(0) = 10·R(0)` | \- | Supplement S1 (Equations 9-10) |
 
 ## Covariate column naming
 
-| Source column                        | Canonical column used here                                                        |
-|--------------------------------------|-----------------------------------------------------------------------------------|
-| `WT` (body weight in kg)             | `WT`                                                                              |
+| Source column | Canonical column used here |
+|----|----|
+| `WT` (body weight in kg) | `WT` |
 | `STATUS` (healthy / AD; encoded 0/1) | `DIS_AD` (newly registered canonical, see `inst/references/covariate-columns.md`) |
 
 ## Virtual cohort
@@ -152,6 +154,7 @@ the paper’s Figure 5 sensitivity analysis) and at both AD and healthy R0
 baselines.
 
 ``` r
+
 mw_da     <- 148000           # posdinemab MW (Discussion)
 ref_wt_kg <- 80               # paper's reference body weight for fixed-dose simulations
 single_dose_mg_per_kg <- 30   # one of the SAD dose levels
@@ -168,6 +171,7 @@ q4w_doses_mg <- c(`12.5_mgkg` = 12.5 * ref_wt_kg,
 ## Simulation
 
 ``` r
+
 modf <- nlmixr2lib::readModelDb("PerezRuixo_2025_posdinemab")
 mod  <- modf()
 mod_typ <- rxode2::zeroRe(mod)
@@ -211,6 +215,7 @@ Below we reproduce the typical-value time courses for the 30 mg/kg
 cohort in a healthy 80 kg subject.
 
 ``` r
+
 sad_long <- sim_hv30 |>
   pivot_longer(c(Cc, Ccsf, FreeTau, TotalTau),
                names_to = "panel", values_to = "value") |>
@@ -246,6 +251,7 @@ time-course of serum posdinemab and the CSF p217+tau target engagement
 for a 25 mg/kg Q4W regimen.
 
 ``` r
+
 q4w_dose_amount_mg <- 25 * ref_wt_kg   # 2000 mg
 q4w_interval_h <- 28 * 24
 n_doses <- 12
@@ -303,6 +309,7 @@ ggplot(mad_long, aes(day, Cc, colour = group)) +
 ![](PerezRuixo_2025_posdinemab_files/figure-html/figure-4-mad-1.png)
 
 ``` r
+
 ggplot(mad_long, aes(day, pct_bound, colour = group)) +
   geom_line(linewidth = 0.7) +
   ylim(0, 100) +
@@ -322,6 +329,7 @@ regimens. Below we reproduce the deterministic typical-value lines for
 1000 mg Q4W across three body weights in AD participants.
 
 ``` r
+
 q4w_fixed_dose_mg <- 1000
 n_doses_fixed <- 12
 
@@ -367,6 +375,7 @@ days (876 hours). We perform a self-consistency NCA on a typical-value
 single-dose simulation.
 
 ``` r
+
 # Use the SAD 30 mg/kg simulation already run above.
 nca_conc <- sim_hv30 |>
   filter(time > 0, Cc > 0) |>
@@ -390,40 +399,40 @@ knitr::kable(as.data.frame(nca_res), digits = 3,
              caption = "PKNCA summary for a single 30 mg/kg IV bolus (typical 80 kg healthy participant; serum posdinemab in pmol/L).")
 ```
 
-| treatment                      |  id | start | end | PPTESTCD            |     PPORRES | exclude                                                                              |
-|:-------------------------------|----:|------:|----:|:--------------------|------------:|:-------------------------------------------------------------------------------------|
-| 30 mg/kg IV SD, healthy, 80 kg |   1 |     0 | Inf | cmax                | 4471760.186 | NA                                                                                   |
-| 30 mg/kg IV SD, healthy, 80 kg |   1 |     0 | Inf | tmax                |       1.000 | NA                                                                                   |
-| 30 mg/kg IV SD, healthy, 80 kg |   1 |     0 | Inf | tlast               |    4320.000 | NA                                                                                   |
-| 30 mg/kg IV SD, healthy, 80 kg |   1 |     0 | Inf | clast.obs           |    5580.971 | NA                                                                                   |
-| 30 mg/kg IV SD, healthy, 80 kg |   1 |     0 | Inf | lambda.z            |       0.001 | NA                                                                                   |
-| 30 mg/kg IV SD, healthy, 80 kg |   1 |     0 | Inf | r.squared           |       1.000 | NA                                                                                   |
-| 30 mg/kg IV SD, healthy, 80 kg |   1 |     0 | Inf | adj.r.squared       |       1.000 | NA                                                                                   |
-| 30 mg/kg IV SD, healthy, 80 kg |   1 |     0 | Inf | lambda.z.time.first |     148.000 | NA                                                                                   |
-| 30 mg/kg IV SD, healthy, 80 kg |   1 |     0 | Inf | lambda.z.time.last  |    4320.000 | NA                                                                                   |
-| 30 mg/kg IV SD, healthy, 80 kg |   1 |     0 | Inf | lambda.z.n.points   |     284.000 | NA                                                                                   |
-| 30 mg/kg IV SD, healthy, 80 kg |   1 |     0 | Inf | clast.pred          |    5534.036 | NA                                                                                   |
-| 30 mg/kg IV SD, healthy, 80 kg |   1 |     0 | Inf | half.life           |     508.748 | NA                                                                                   |
-| 30 mg/kg IV SD, healthy, 80 kg |   1 |     0 | Inf | span.ratio          |       8.201 | NA                                                                                   |
-| 30 mg/kg IV SD, healthy, 80 kg |   1 |     0 | Inf | aucinf.obs          |          NA | Requesting an AUC range starting (0) before the first measurement (1) is not allowed |
+| treatment | id | start | end | PPTESTCD | PPORRES | exclude |
+|:---|---:|---:|---:|:---|---:|:---|
+| 30 mg/kg IV SD, healthy, 80 kg | 1 | 0 | Inf | cmax | 4471760.186 | NA |
+| 30 mg/kg IV SD, healthy, 80 kg | 1 | 0 | Inf | tmax | 1.000 | NA |
+| 30 mg/kg IV SD, healthy, 80 kg | 1 | 0 | Inf | tlast | 4320.000 | NA |
+| 30 mg/kg IV SD, healthy, 80 kg | 1 | 0 | Inf | clast.obs | 5580.971 | NA |
+| 30 mg/kg IV SD, healthy, 80 kg | 1 | 0 | Inf | lambda.z | 0.001 | NA |
+| 30 mg/kg IV SD, healthy, 80 kg | 1 | 0 | Inf | r.squared | 1.000 | NA |
+| 30 mg/kg IV SD, healthy, 80 kg | 1 | 0 | Inf | adj.r.squared | 1.000 | NA |
+| 30 mg/kg IV SD, healthy, 80 kg | 1 | 0 | Inf | lambda.z.time.first | 148.000 | NA |
+| 30 mg/kg IV SD, healthy, 80 kg | 1 | 0 | Inf | lambda.z.time.last | 4320.000 | NA |
+| 30 mg/kg IV SD, healthy, 80 kg | 1 | 0 | Inf | lambda.z.n.points | 284.000 | NA |
+| 30 mg/kg IV SD, healthy, 80 kg | 1 | 0 | Inf | clast.pred | 5534.036 | NA |
+| 30 mg/kg IV SD, healthy, 80 kg | 1 | 0 | Inf | half.life | 508.748 | NA |
+| 30 mg/kg IV SD, healthy, 80 kg | 1 | 0 | Inf | span.ratio | 8.201 | NA |
+| 30 mg/kg IV SD, healthy, 80 kg | 1 | 0 | Inf | aucinf.obs | NA | Requesting an AUC range starting (0) before the first measurement (1) is not allowed |
 
 PKNCA summary for a single 30 mg/kg IV bolus (typical 80 kg healthy
-participant; serum posdinemab in pmol/L).
+participant; serum posdinemab in pmol/L). {.table}
 
 ### Comparison against published derived quantities
 
-| Quantity                                 | Paper value                               | Model-derived value                        | Notes                                                                                                               |
-|------------------------------------------|-------------------------------------------|--------------------------------------------|---------------------------------------------------------------------------------------------------------------------|
-| Serum α-phase half-life                  | 38.2 hours (Discussion)                   | (PKNCA reports terminal slope only)        | α/β decomposition not exposed by [`pk.nca()`](http://humanpred.github.io/pknca/reference/pk.nca.md) half-life calc. |
-| Serum terminal half-life                 | 20.6 days = 494 h (Discussion)            | See PKNCA `half.life` row in pmol/L table  | Should match within typical-value rounding.                                                                         |
-| `kd` (CSF binding affinity)              | 848.5 pmol/L (Discussion: `koff/kon`)     | 0.224 / 2.64e-4 = 848.5 pmol/L             | Direct algebraic check against ini values.                                                                          |
-| `kss` (steady-state binding constant)    | 1981 pmol/L (Discussion: `kd + kint/kon`) | 848.5 + 0.299/2.64e-4 = 1981 pmol/L        | Direct algebraic check.                                                                                             |
-| ksyn (healthy)                           | 0.032 pmol/L/h (Discussion)               | `kc * R0_HV` = 0.040 × 0.793 = 0.0317      | Direct algebraic check.                                                                                             |
-| ksyn (AD)                                | 0.240 pmol/L/h (Discussion)               | `kc * R0_AD` = 0.040 × 5.995 = 0.240       | Direct algebraic check.                                                                                             |
-| Vss (serum)                              | V1 + V2 = 6.01 L (Discussion)             | 3.14 + 2.87 = 6.01 L                       | Matches.                                                                                                            |
-| Vss (brain) = VCSF + VISF                | 272.4 mL (Discussion)                     | 229 + 43.4 = 272.4 mL                      | Matches.                                                                                                            |
-| CSF / serum ratio at Day 14              | 0.26 % (model-based, Discussion)          | ~0.77 % (model-based, this implementation) | Quantitative discrepancy — see “Errata” and “Assumptions”.                                                          |
-| CSF / serum ratio after 12 monthly doses | 0.386 % (Discussion / Figure S2)          | not reproduced exactly                     | See “Errata” / “Assumptions”.                                                                                       |
+| Quantity | Paper value | Model-derived value | Notes |
+|----|----|----|----|
+| Serum α-phase half-life | 38.2 hours (Discussion) | (PKNCA reports terminal slope only) | α/β decomposition not exposed by [`pk.nca()`](http://humanpred.github.io/pknca/reference/pk.nca.md) half-life calc. |
+| Serum terminal half-life | 20.6 days = 494 h (Discussion) | See PKNCA `half.life` row in pmol/L table | Should match within typical-value rounding. |
+| `kd` (CSF binding affinity) | 848.5 pmol/L (Discussion: `koff/kon`) | 0.224 / 2.64e-4 = 848.5 pmol/L | Direct algebraic check against ini values. |
+| `kss` (steady-state binding constant) | 1981 pmol/L (Discussion: `kd + kint/kon`) | 848.5 + 0.299/2.64e-4 = 1981 pmol/L | Direct algebraic check. |
+| ksyn (healthy) | 0.032 pmol/L/h (Discussion) | `kc * R0_HV` = 0.040 × 0.793 = 0.0317 | Direct algebraic check. |
+| ksyn (AD) | 0.240 pmol/L/h (Discussion) | `kc * R0_AD` = 0.040 × 5.995 = 0.240 | Direct algebraic check. |
+| Vss (serum) | V1 + V2 = 6.01 L (Discussion) | 3.14 + 2.87 = 6.01 L | Matches. |
+| Vss (brain) = VCSF + VISF | 272.4 mL (Discussion) | 229 + 43.4 = 272.4 mL | Matches. |
+| CSF / serum ratio at Day 14 | 0.26 % (model-based, Discussion) | ~0.77 % (model-based, this implementation) | Quantitative discrepancy — see “Errata” and “Assumptions”. |
+| CSF / serum ratio after 12 monthly doses | 0.386 % (Discussion / Figure S2) | not reproduced exactly | See “Errata” / “Assumptions”. |
 
 The algebraic-derivation cross-checks (`kd`, `kss`, `ksyn`, `Vss`) all
 match the paper’s Discussion-text values to 3 significant figures. The
