@@ -4,6 +4,7 @@
 
 * Fix Robbie 2012 palivizumab population metadata after revisit against the full-text PDF: pediatric `n` corrected from 1,767 (derived) to 1,684 (paper PK dataset), `sex_female_pct` denominator from 1,660 to 1,684, and added a vignette note clarifying that the 2012 erratum's equation 10 correction (6,900 → 16,900) is a NONMEM `$PRIOR` variance for adult Vp, not a final-model parameter. All `ini()` parameter values continue to match Table 2 exactly.
 * Fix Clegg 2024 nirsevimab vignette Figure 4: pass disjoint `id_offset` per cohort and carry `trial` via `rxSolve(keep = )` so the four panels no longer collapse into a single Frankenstein-subject simulation (predictions had been ~3× too high).
+* Add Lu 2022 patritumab deruxtecan ([doi:10.1002/jcph.2137](https://doi.org/10.1002/jcph.2137)) — adults with HER3-expressing advanced or metastatic solid tumors (NSCLC, breast cancer, colorectal cancer).
 * Add Cheng 2026 immunoglobulin ([doi:10.1002/bcp.70420](https://doi.org/10.1002/bcp.70420)) — children with primary immunodeficiency or secondary antibody deficiency receiving intravenous immunoglobulin replacement therapy.
 * Add Frey 2010 tocilizumab ([doi:10.1177/0091270009350623](https://doi.org/10.1177/0091270009350623)) — adults with moderate-to-severe rheumatoid arthritis.
 * Add Hayashi 2007 omalizumab ([doi:10.1111/j.1365-2125.2006.02803.x](https://doi.org/10.1111/j.1365-2125.2006.02803.x)) — Japanese adults with atopic asthma or seasonal allergic rhinitis.
@@ -18,6 +19,10 @@
 * Add Takeuchi 2023 ozoralizumab ([doi:10.1002/jcph.2380](https://doi.org/10.1002/jcph.2380)) — Japanese adults with rheumatoid arthritis.
 * Add Toukam 2025 BIIB107 ([doi:10.1002/jcph.70109](https://doi.org/10.1002/jcph.70109)) — healthy adult volunteers (first-in-human study supporting MS dose optimization).
 * Add Yao 2018 guselkumab ([doi:10.1002/jcph.1063](https://doi.org/10.1002/jcph.1063)) — adults with moderate-to-severe plaque psoriasis.
+* Add Frey 2013 tocilizumab DAS28 exposure-response ([doi:10.1177/0091270012437585](https://doi.org/10.1177/0091270012437585)) — adults with moderate-to-severe rheumatoid arthritis (OPTION + TOWARD phase III pool).
+* Add Hwang 2023 monalizumab ([doi:10.1002/jcph.2220](https://doi.org/10.1002/jcph.2220)) — adults with advanced solid tumors or squamous cell carcinoma of the head and neck.
+* Add Suri 2018 brentuximab vedotin ([doi:10.1002/cpt.1037](https://doi.org/10.1002/cpt.1037)) — adults with CD30-positive Hodgkin lymphoma, systemic anaplastic large-cell lymphoma, mycosis fungoides, or primary cutaneous ALCL pooled across six clinical studies (including the phase III ALCANZA trial in CTCL).
+* Add Zhong 2026 abatacept ([doi:10.1002/jcph.70156](https://doi.org/10.1002/jcph.70156)) — pooled adults with rheumatoid arthritis, patients aged 2-17 years with polyarticular juvenile idiopathic arthritis, and patients aged 6+ years with hematologic malignancies receiving HLA-matched unrelated-donor HSCT.
 * Add Lin 2024 casirivimab ([doi:10.1007/s11095-024-03764-5](https://doi.org/10.1007/s11095-024-03764-5)) — pediatric and adult subjects, non-infected or with SARS-CoV-2 infection or household contacts.
 * Add Faelens 2021 infliximab ([doi:10.3390/pharmaceutics13101623](https://doi.org/10.3390/pharmaceutics13101623)) — adults with moderate-to-severe ulcerative colitis.
 * Add Sathe 2024 sacituzumab govitecan ([doi:10.1007/s40262-024-01366-3](https://doi.org/10.1007/s40262-024-01366-3)) — adults with metastatic triple-negative breast cancer and other solid tumors.

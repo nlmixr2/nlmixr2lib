@@ -138,8 +138,14 @@ sim_one <- function(sub, seed_offset = 0L) {
   ev_df$WT      <- sub$WT
   ev_df$SMOKE   <- sub$SMOKE
   ev_df$PRICORT <- sub$PRICORT
+  # Carry per-subject grouping labels into the events table so that
+  # rxSolve(keep = ...) can attach them to the simulation output, avoiding
+  # a fragile post-rxSolve left_join from `pop`.
+  ev_df$regimen <- sub$regimen
+  ev_df$dose_mg <- sub$dose_mg
   set.seed(2020L + sub$id + seed_offset)
-  out <- rxode2::rxSolve(mod, ev_df, returnType = "data.frame")
+  out <- rxode2::rxSolve(mod, ev_df, returnType = "data.frame",
+                         keep = c("regimen", "dose_mg"))
   out$id <- sub$id
   out
 }
@@ -147,10 +153,10 @@ sim_one <- function(sub, seed_offset = 0L) {
 sim <- pop |>
   dplyr::group_split(id) |>
   lapply(sim_one) |>
-  dplyr::bind_rows() |>
-  dplyr::left_join(dplyr::select(pop, id, regimen, dose_mg), by = "id")
+  dplyr::bind_rows()
 
-# Build a single-id event table for later PKNCA dose-mapping.
+# Build a single-id event table for later PKNCA dose-mapping. `regimen` is
+# attached at construction time so it propagates without a post-hoc join.
 events <- pop |>
   dplyr::group_split(id) |>
   lapply(function(sub) {
@@ -162,10 +168,10 @@ events <- pop |>
     ev_df$WT      <- sub$WT
     ev_df$SMOKE   <- sub$SMOKE
     ev_df$PRICORT <- sub$PRICORT
+    ev_df$regimen <- sub$regimen
     ev_df
   }) |>
-  dplyr::bind_rows() |>
-  dplyr::left_join(dplyr::select(pop, id, regimen), by = "id")
+  dplyr::bind_rows()
 
 dim(sim)
 head(sim)

@@ -116,7 +116,25 @@ res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 
 PKNCA's `summary()` collapses within the group levels defined by the formula. If
 the source paper reports NCA stratified by an additional covariate (e.g., by
-baseline weight band), join the group metadata after summarizing:
+baseline weight band), the cleanest path is to **carry the stratifier through
+`rxSolve(..., keep = ...)`** so it lands directly in the simulation output and
+in the PKNCA grouping formula — no post-summarise join is needed:
+
+```r
+sim <- rxode2::rxSolve(mod, events = events,
+                       keep = c("treatment", "weight_band"))
+
+conc_obj <- PKNCA::PKNCAconc(
+  data = as.data.frame(sim),
+  formula = Cc ~ time | treatment + weight_band + id,
+  concu = "ug/mL", timeu = "day"
+)
+```
+
+If you cannot route the stratifier through `keep` (e.g. it was derived inside
+the simulation loop and only exists in `cohort`), join it onto the **PKNCA
+result table** (one row per subject per parameter), not onto the per-time-point
+simulation rows — the result table is a 1:1 join by `id` and never fans out:
 
 ```r
 res_tbl <- as.data.frame(res$result)
@@ -187,16 +205,36 @@ Flag any differences > 20% in the narrative; do not tune parameters to match.
   observation for extravascular. Ensure the simulation grid includes `time = 0`.
 - **Duplicate IDs across cohorts** — when `events` is assembled from multiple
   `make_cohort()` calls and `bind_rows`-ed together, confirm
-  `anyDuplicated(sim[, c("id", "time")]) == 0` before handing `sim` to PKNCA.
-  `rxSolve` silently collapses duplicated-ID rows into a single subject;
-  PKNCA then aggregates a single (wrong) subject as if it were the whole
-  group. Use the `id_offset` pattern in the `make_cohort` snippet in
-  `references/vignette-template.md` to keep ID ranges disjoint.
+  `anyDuplicated(events[, c("id", "time", "evid")]) == 0` *before* the
+  `rxSolve` call (and the corresponding check on `sim` after) — by the time
+  you spot wrong NCA values, the silent merge has already happened.
+  `rxSolve` collapses duplicated-ID rows into a single subject that
+  receives the *summed* dose; PKNCA then aggregates one wrong subject as
+  the whole group. Use the `id_offset` pattern in the `make_cohort`
+  snippet in `references/vignette-template.md` to keep ID ranges disjoint.
 - **Carry grouping via `rxSolve(..., keep = ...)`, not a post-hoc
   `left_join`.** `rxSolve` accepts a `keep = c("col1", "col2")` argument
-  that attaches source columns (cohort, treatment, dose group, regimen)
-  directly to the simulation output. This is aligned per row and far
-  cleaner than joining back from `events` — a post-hoc `left_join` will
-  produce multiplied rows if any IDs collide or if rxSolve expanded
-  observation times. Round-trip `treatment` / `cohort` through `keep` and
-  PKNCA's grouping formula picks it up automatically.
+  that attaches source columns (cohort, treatment, dose group, regimen,
+  per-subject covariates) directly to the simulation output, aligned per
+  row. This is the strongly preferred pattern. The post-hoc form
+
+  ```r
+  # AVOID
+  sim <- rxode2::rxSolve(mod, events = events) |>
+    dplyr::left_join(events |> dplyr::select(id, treatment) |>
+                       dplyr::distinct(), by = "id")
+  ```
+
+  fans out every output row across every label an `id` carries. Any
+  refactor that introduces an id collision (e.g. adding a new cohort
+  without `id_offset`) silently re-pools the simulation across panels —
+  this was the root cause of the Clegg 2024 nirsevimab Figure 4 bug, where
+  predictions came out ~3-fold too high. Use `keep = ` instead and the
+  PKNCA formula `Cc ~ time | treatment + id` picks the label up
+  automatically. The footgun-free idiom is:
+
+  ```r
+  sim <- rxode2::rxSolve(mod, events = events,
+                         keep = c("treatment", "cohort", "WT")) |>
+    as.data.frame()
+  ```

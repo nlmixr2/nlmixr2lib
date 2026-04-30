@@ -196,9 +196,13 @@ across the virtual cohort matches the paper's individual variability.
 mod <- readModelDb("Lon_2013_abatacept")
 
 events_sim <- events |> rename(id = ID)
-sim <- rxSolve(object = mod, events = events_sim, returnType = "data.frame") |>
-  as_tibble() |>
-  left_join(pop |> select(ID, treatment), by = c("id" = "ID"))
+# `treatment` is already on every row of `events_sim` (each per-arm dose
+# builder carries it through, and the obs rows pull it from `pop`). Carry
+# it through rxSolve via `keep = ` rather than a fragile post-hoc
+# left_join from pop.
+sim <- rxSolve(object = mod, events = events_sim, returnType = "data.frame",
+               keep = "treatment") |>
+  as_tibble()
 ```
 
 ## Replicate Figure 2: plasma concentration-time profiles by treatment

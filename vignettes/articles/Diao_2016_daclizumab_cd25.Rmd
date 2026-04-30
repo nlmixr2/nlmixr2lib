@@ -149,13 +149,16 @@ deterministic typical-value run for figure replication.
 ```{r simulate}
 mod <- readModelDb("Diao_2016_daclizumab_cd25")
 
+# `regimen` is already on every row of `events` (per-id from the cohort
+# left_join above) — carry it through `rxSolve(keep = ...)` so we don't
+# need a fragile post-hoc `left_join` on the simulation output.
 set.seed(2016)
-sim_pop <- rxode2::rxSolve(mod, events, returnType = "data.frame") |>
-  dplyr::left_join(dplyr::select(cohort, id, regimen), by = "id")
+sim_pop <- rxode2::rxSolve(mod, events, returnType = "data.frame",
+                           keep = "regimen")
 
 mod_typ <- rxode2::zeroRe(mod)
-sim_typ <- rxode2::rxSolve(mod_typ, events, returnType = "data.frame") |>
-  dplyr::left_join(dplyr::select(cohort, id, regimen), by = "id")
+sim_typ <- rxode2::rxSolve(mod_typ, events, returnType = "data.frame",
+                           keep = "regimen")
 ```
 
 # Replicate published figures

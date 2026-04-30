@@ -114,7 +114,9 @@ pop <- data.frame(
   ID        = seq_len(n_subj),
   WT, AGE, ALB, TUMSZ,
   SEXF, ADA_POS,
-  TUMTP, TUMTP_CHL, TUMTP_GC
+  TUMTP, TUMTP_CHL, TUMTP_GC,
+  # Per-subject grouping label carried through to rxSolve via `keep`
+  treatment = ifelse(ADA_POS == 1, "ADA-positive", "ADA-negative")
 )
 ```
 
@@ -164,7 +166,10 @@ d_sim <- dplyr::bind_rows(d_dose, d_obs) |>
 ```{r simulate}
 mod <- readModelDb("Budha_2023_tislelizumab")
 set.seed(20230331)
-sim <- rxSolve(mod, d_sim, returnType = "data.frame")
+# `keep = "treatment"` carries the ADA grouping label through to the
+# simulation output so the NCA blocks below do not need a post-hoc
+# left_join from `pop`.
+sim <- rxSolve(mod, d_sim, returnType = "data.frame", keep = "treatment")
 ```
 
 ## Concentration-time profile
@@ -226,14 +231,13 @@ half-life is expected to approximate the paper's reported ≈ 23.8 days
 (Budha 2023 Methods) in the ADA-negative arm.
 
 ```{r nca}
-# Per-subject treatment grouping for PKNCA
-pop$treatment <- ifelse(pop$ADA_POS == 1, "ADA-positive", "ADA-negative")
+# `treatment` was carried through rxSolve via `keep = "treatment"` above;
+# no left_join needed here.
 
 # Cycle 1 interval
 conc1 <- sim |>
   dplyr::filter(time >= 0, time <= 21, Cc > 0) |>
   dplyr::rename(ID = id) |>
-  dplyr::left_join(dplyr::select(pop, ID, treatment), by = "ID") |>
   dplyr::transmute(ID, time_rel = time, Cc, treatment, interval = "Cycle 1")
 
 dose1 <- pop |>
@@ -262,10 +266,10 @@ knitr::kable(
 
 ```{r nca-ss}
 # Steady-state-ish interval at cycle 10 (day 189-210)
+# `treatment` already on `sim` via rxSolve's `keep` argument.
 conc_ss <- sim |>
   dplyr::filter(time >= 189, time <= 210, Cc > 0) |>
   dplyr::rename(ID = id) |>
-  dplyr::left_join(dplyr::select(pop, ID, treatment), by = "ID") |>
   dplyr::transmute(ID, time_rel = time - 189, Cc, treatment)
 
 dose_ss <- pop |>
