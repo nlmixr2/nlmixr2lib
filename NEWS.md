@@ -3,6 +3,8 @@
 # development version
 
 * Fix Robbie 2012 palivizumab population metadata after revisit against the full-text PDF: pediatric `n` corrected from 1,767 (derived) to 1,684 (paper PK dataset), `sex_female_pct` denominator from 1,660 to 1,684, and added a vignette note clarifying that the 2012 erratum's equation 10 correction (6,900 → 16,900) is a NONMEM `$PRIOR` variance for adult Vp, not a final-model parameter. All `ini()` parameter values continue to match Table 2 exactly.
+* Add de Vries Schultink 2020 zenocutuzumab (MCLA-128) ([doi:10.1007/s40262-020-00858-2](https://doi.org/10.1007/s40262-020-00858-2)) — adults with advanced solid tumors (first bispecific antibody in nlmixr2lib).
+* Add Almquist 2022 anifrolumab ([doi:10.1002/jcph.2055](https://doi.org/10.1002/jcph.2055)) — adults with moderate-to-severe systemic lupus erythematosus and healthy volunteers (QSS-TMDD with dynamic IFNAR1 receptor pool and time-varying linear clearance).
 * Fix Clegg 2024 nirsevimab vignette Figure 4: pass disjoint `id_offset` per cohort and carry `trial` via `rxSolve(keep = )` so the four panels no longer collapse into a single Frankenstein-subject simulation (predictions had been ~3× too high).
 * Add Lu 2022 patritumab deruxtecan ([doi:10.1002/jcph.2137](https://doi.org/10.1002/jcph.2137)) — adults with HER3-expressing advanced or metastatic solid tumors (NSCLC, breast cancer, colorectal cancer).
 * Add Cheng 2026 immunoglobulin ([doi:10.1002/bcp.70420](https://doi.org/10.1002/bcp.70420)) — children with primary immunodeficiency or secondary antibody deficiency receiving intravenous immunoglobulin replacement therapy.
@@ -23,6 +25,7 @@
 * Add Hwang 2023 monalizumab ([doi:10.1002/jcph.2220](https://doi.org/10.1002/jcph.2220)) — adults with advanced solid tumors or squamous cell carcinoma of the head and neck.
 * Add Suri 2018 brentuximab vedotin ([doi:10.1002/cpt.1037](https://doi.org/10.1002/cpt.1037)) — adults with CD30-positive Hodgkin lymphoma, systemic anaplastic large-cell lymphoma, mycosis fungoides, or primary cutaneous ALCL pooled across six clinical studies (including the phase III ALCANZA trial in CTCL).
 * Add Zhong 2026 abatacept ([doi:10.1002/jcph.70156](https://doi.org/10.1002/jcph.70156)) — pooled adults with rheumatoid arthritis, patients aged 2-17 years with polyarticular juvenile idiopathic arthritis, and patients aged 6+ years with hematologic malignancies receiving HLA-matched unrelated-donor HSCT.
+* Add Mukai 2019 mogamulizumab ([doi:10.1002/jcph.1564](https://doi.org/10.1002/jcph.1564)) — adults with cutaneous T-cell lymphoma or adult T-cell lymphoma.
 * Add Lin 2024 casirivimab ([doi:10.1007/s11095-024-03764-5](https://doi.org/10.1007/s11095-024-03764-5)) — pediatric and adult subjects, non-infected or with SARS-CoV-2 infection or household contacts.
 * Add Faelens 2021 infliximab ([doi:10.3390/pharmaceutics13101623](https://doi.org/10.3390/pharmaceutics13101623)) — adults with moderate-to-severe ulcerative colitis.
 * Add Sathe 2024 sacituzumab govitecan ([doi:10.1007/s40262-024-01366-3](https://doi.org/10.1007/s40262-024-01366-3)) — adults with metastatic triple-negative breast cancer and other solid tumors.
