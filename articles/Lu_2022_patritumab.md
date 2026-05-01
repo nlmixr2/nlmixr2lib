@@ -578,8 +578,7 @@ adc_nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj,
 #> Requesting an AUC range starting (0) before the first measurement (7.07767e-16) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (7.07767e-16) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (7.07767e-16) is not allowed
-#>  ■■■■■■■■■■■■■                     39% |  ETA:  3s
-#> Warning: Requesting an AUC range starting (0) before the first measurement (7.07767e-16) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (7.07767e-16) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (7.07767e-16) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (7.07767e-16) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (7.07767e-16) is not allowed
@@ -731,7 +730,8 @@ adc_nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj,
 #> Requesting an AUC range starting (0) before the first measurement (0.286432) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.286432) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.286432) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.286432) is not allowed
+#>  ■■■■■■■■■■■■■■■■■■■■■■            69% |  ETA:  1s
+#> Warning: Requesting an AUC range starting (0) before the first measurement (0.286432) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.286432) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.286432) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.286432) is not allowed
@@ -1020,7 +1020,8 @@ dxd_nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(dconc_obj, ddose_obj,
 #> Requesting an AUC range starting (0) before the first measurement (0.190955) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.190955) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.190955) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.190955) is not allowed
+#>  ■■■■■■■■■■■■■■                    42% |  ETA:  2s
+#> Warning: Requesting an AUC range starting (0) before the first measurement (0.190955) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.190955) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.190955) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.190955) is not allowed
@@ -1261,8 +1262,7 @@ dxd_nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(dconc_obj, ddose_obj,
 #> Requesting an AUC range starting (0) before the first measurement (0.38191) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.38191) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.38191) is not allowed
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      90% |  ETA:  0s
-#> Warning: Requesting an AUC range starting (0) before the first measurement (0.38191) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.38191) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.38191) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.38191) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.38191) is not allowed

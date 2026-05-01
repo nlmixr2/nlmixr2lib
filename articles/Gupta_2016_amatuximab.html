@@ -34,6 +34,7 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/Aguiar_2021_ustekinumab.html">Aguiar_2021_ustekinumab</a></li>
+    <li><a class="dropdown-item" href="../articles/Almquist_2022_anifrolumab.html">Almquist_2022_anifrolumab</a></li>
     <li><a class="dropdown-item" href="../articles/Bajaj_2017_nivolumab.html">Bajaj_2017_nivolumab</a></li>
     <li><a class="dropdown-item" href="../articles/Bender_2014_trastuzumabEmtansine_mechanistic.html">Trastuzumab emtansine (T-DM1) preclinical mechanistic DAR PK model (Bender 2014)</a></li>
     <li><a class="dropdown-item" href="../articles/Bender_2014_trastuzumabEmtansine_reduced.html">Trastuzumab emtansine (T-DM1) preclinical reduced PK model (Bender 2014)</a></li>
@@ -49,6 +50,7 @@
     <li><a class="dropdown-item" href="../articles/Cirincione_2017_exenatide.html">Cirincione_2017_exenatide</a></li>
     <li><a class="dropdown-item" href="../articles/Clegg_2024_nirsevimab.html">Clegg_2024_nirsevimab</a></li>
     <li><a class="dropdown-item" href="../articles/create-model-library.html">Creating a model library</a></li>
+    <li><a class="dropdown-item" href="../articles/deVriesSchultink_2020_zenocutuzumab.html">deVriesSchultink_2020_zenocutuzumab</a></li>
     <li><a class="dropdown-item" href="../articles/Diao_2016_daclizumab_cd25.html">Diao_2016_daclizumab_cd25</a></li>
     <li><a class="dropdown-item" href="../articles/Diao_2016_daclizumab_cd56bright.html">Diao_2016_daclizumab_cd56bright</a></li>
     <li><a class="dropdown-item" href="../articles/Diao_2016_daclizumab_treg.html">Diao_2016_daclizumab_treg</a></li>
@@ -105,6 +107,7 @@
     <li><a class="dropdown-item" href="../articles/Mo_2018_olaratumab.html">Mo_2018_olaratumab</a></li>
     <li><a class="dropdown-item" href="../articles/Moein_2022_etrolizumab.html">Moein_2022_etrolizumab</a></li>
     <li><a class="dropdown-item" href="../articles/Mould_2007_alemtuzumab.html">Mould_2007_alemtuzumab</a></li>
+    <li><a class="dropdown-item" href="../articles/Mukai_2019_mogamulizumab.html">Mukai_2019_mogamulizumab</a></li>
     <li><a class="dropdown-item" href="../articles/Mulyukov_2018_ranibizumab.html">Mulyukov_2018_ranibizumab</a></li>
     <li><a class="dropdown-item" href="../articles/Narwal_2013_sifalimumab.html">Narwal_2013_sifalimumab</a></li>
     <li><a class="dropdown-item" href="../articles/Nestorov_2014_factorviii.html">Nestorov_2014_factorviii</a></li>
@@ -690,7 +693,7 @@ so results can be rolled up separately for ADA-negative and ADA titer
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_obj</span>, <span class="va">dose_obj</span>, intervals <span class="op">=</span> <span class="va">intervals</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■         </span>  72% |  ETA:  1s</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ </span>  99% |  ETA:  0s</span></span>
 <span><span class="va">nca_summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">result</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">PPTESTCD</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cmax"</span>, <span class="st">"tmax"</span>, <span class="st">"cmin"</span>, <span class="st">"auclast"</span>, <span class="st">"cav"</span>, <span class="st">"half.life"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">treatment</span>, <span class="va">PPTESTCD</span><span class="op">)</span> <span class="op">|&gt;</span></span>

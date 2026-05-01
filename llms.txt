@@ -151,6 +151,7 @@ this way.
 ### All vignettes
 
 - [Aguiar_2021_ustekinumab](https://nlmixr2.github.io/nlmixr2lib/articles/Aguiar_2021_ustekinumab.md):
+- [Almquist_2022_anifrolumab](https://nlmixr2.github.io/nlmixr2lib/articles/Almquist_2022_anifrolumab.md):
 - [Bajaj_2017_nivolumab](https://nlmixr2.github.io/nlmixr2lib/articles/Bajaj_2017_nivolumab.md):
 - [Trastuzumab emtansine (T-DM1) preclinical mechanistic DAR PK model
   (Bender
@@ -170,6 +171,7 @@ this way.
 - [Clegg_2024_nirsevimab](https://nlmixr2.github.io/nlmixr2lib/articles/Clegg_2024_nirsevimab.md):
 - [Creating a model
   library](https://nlmixr2.github.io/nlmixr2lib/articles/create-model-library.md):
+- [deVriesSchultink_2020_zenocutuzumab](https://nlmixr2.github.io/nlmixr2lib/articles/deVriesSchultink_2020_zenocutuzumab.md):
 - [Diao_2016_daclizumab_cd25](https://nlmixr2.github.io/nlmixr2lib/articles/Diao_2016_daclizumab_cd25.md):
 - [Diao_2016_daclizumab_cd56bright](https://nlmixr2.github.io/nlmixr2lib/articles/Diao_2016_daclizumab_cd56bright.md):
 - [Diao_2016_daclizumab_treg](https://nlmixr2.github.io/nlmixr2lib/articles/Diao_2016_daclizumab_treg.md):
@@ -235,6 +237,7 @@ this way.
 - [Mo_2018_olaratumab](https://nlmixr2.github.io/nlmixr2lib/articles/Mo_2018_olaratumab.md):
 - [Moein_2022_etrolizumab](https://nlmixr2.github.io/nlmixr2lib/articles/Moein_2022_etrolizumab.md):
 - [Mould_2007_alemtuzumab](https://nlmixr2.github.io/nlmixr2lib/articles/Mould_2007_alemtuzumab.md):
+- [Mukai_2019_mogamulizumab](https://nlmixr2.github.io/nlmixr2lib/articles/Mukai_2019_mogamulizumab.md):
 - [Mulyukov_2018_ranibizumab](https://nlmixr2.github.io/nlmixr2lib/articles/Mulyukov_2018_ranibizumab.md):
 - [Narwal_2013_sifalimumab](https://nlmixr2.github.io/nlmixr2lib/articles/Narwal_2013_sifalimumab.md):
 - [Nestorov_2014_factorviii](https://nlmixr2.github.io/nlmixr2lib/articles/Nestorov_2014_factorviii.md):
