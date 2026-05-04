@@ -85,15 +85,15 @@ Yang_2021_cemiplimab <- function() {
 
     # Covariate effects on shared CL/Q (Yang 2021 Final PopPK model
     # Eqs. for CL_i and Q_i; all power-form). Same exponent on CL and Q.
-    e_wt_clq  <-  0.477;   label("Power exponent of WT on shared CL/Q (unitless)")                          # Yang 2021 Table 3: WGT_ON_CLQ = 0.477
-    e_alb_clq <- -0.926;   label("Power exponent of ALB on shared CL/Q (unitless)")                         # Yang 2021 Table 3: ALB_ON_CLQ = -0.926
-    e_igg_clq <-  0.184;   label("Power exponent of IGG on shared CL/Q (unitless)")                         # Yang 2021 Table 3: IGG_ON_CLQ = 0.184
-    e_alt_clq <- -0.0795;  label("Power exponent of ALT on shared CL/Q (unitless)")                         # Yang 2021 Table 3: ALT_ON_CLQ = -0.0795
+    e_wt_cl_q  <-  0.477;   label("Power exponent of WT on shared CL/Q (unitless)")                          # Yang 2021 Table 3: WGT_ON_CLQ = 0.477
+    e_alb_cl_q <- -0.926;   label("Power exponent of ALB on shared CL/Q (unitless)")                         # Yang 2021 Table 3: ALB_ON_CLQ = -0.926
+    e_igg_cl_q <-  0.184;   label("Power exponent of IGG on shared CL/Q (unitless)")                         # Yang 2021 Table 3: IGG_ON_CLQ = 0.184
+    e_alt_cl_q <- -0.0795;  label("Power exponent of ALT on shared CL/Q (unitless)")                         # Yang 2021 Table 3: ALT_ON_CLQ = -0.0795
 
     # Covariate effects on shared V2/V3 (Yang 2021 Final PopPK model
     # Eqs. for V2_i and V3_i; all power-form). Same exponents on V2 and V3.
-    e_wt_vss  <-  0.970;   label("Power exponent of WT on shared V2/V3 (unitless)")                         # Yang 2021 Table 3: WGT_ON_VSS = 0.970
-    e_bmi_vss <- -0.560;   label("Power exponent of BMI on shared V2/V3 (unitless)")                        # Yang 2021 Table 3: BMI_ON_VSS = -0.560
+    e_wt_vc_vp  <-  0.970;   label("Power exponent of WT on shared V2/V3 (unitless)")                         # Yang 2021 Table 3: WGT_ON_VSS = 0.970
+    e_bmi_vc_vp <- -0.560;   label("Power exponent of BMI on shared V2/V3 (unitless)")                        # Yang 2021 Table 3: BMI_ON_VSS = -0.560
 
     # Inter-individual variability (Yang 2021 Table 3). The paper estimated a
     # SHARED IIV on CL and Q (etalcl, used in the eta of both CL_i and Q_i)
@@ -119,24 +119,24 @@ Yang_2021_cemiplimab <- function() {
     # Table 2 medians: WT 76.2 kg, ALB 38 g/L, IGG 9.65 g/L, ALT 20 IU/L,
     # BMI 26.5 kg/m^2.
     cl_base <- exp(lcl + etalcl) *
-      (WT  / 76.2)^e_wt_clq *
-      (ALB / 38)^e_alb_clq *
-      (IGG / 9.65)^e_igg_clq *
-      (ALT / 20)^e_alt_clq
+      (WT  / 76.2)^e_wt_cl_q *
+      (ALB / 38)^e_alb_cl_q *
+      (IGG / 9.65)^e_igg_cl_q *
+      (ALT / 20)^e_alt_cl_q
 
     q <- exp(lq + etalcl) *
-      (WT  / 76.2)^e_wt_clq *
-      (ALB / 38)^e_alb_clq *
-      (IGG / 9.65)^e_igg_clq *
-      (ALT / 20)^e_alt_clq
+      (WT  / 76.2)^e_wt_cl_q *
+      (ALB / 38)^e_alb_cl_q *
+      (IGG / 9.65)^e_igg_cl_q *
+      (ALT / 20)^e_alt_cl_q
 
     vc <- exp(lvc + etalvc) *
-      (WT  / 76.2)^e_wt_vss *
-      (BMI / 26.5)^e_bmi_vss
+      (WT  / 76.2)^e_wt_vc_vp *
+      (BMI / 26.5)^e_bmi_vc_vp
 
     vp <- exp(lvp + etalvc) *
-      (WT  / 76.2)^e_wt_vss *
-      (BMI / 26.5)^e_bmi_vss
+      (WT  / 76.2)^e_wt_vc_vp *
+      (BMI / 26.5)^e_bmi_vc_vp
 
     # Time-varying clearance (Yang 2021 Final PopPK model Eq. for CL_i).
     # Multiplicative IIV on Emax (Emax_i = EMAX_REF * exp(eta)) and on T50
