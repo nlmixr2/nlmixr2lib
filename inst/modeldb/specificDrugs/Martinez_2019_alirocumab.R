@@ -64,7 +64,7 @@ Martinez_2019_alirocumab <- function() {
     lvc          <- log(3.19);         label("Central (depot-to-central) volume of distribution V2 (L)")        # Martinez 2019 Table 2
     lvp          <- log(2.79);         label("Peripheral volume of distribution V3 at reference age (L)")       # Martinez 2019 Table 2 (age reference 60 y)
     lq           <- log(0.0185 * 24);  label("Intercompartmental clearance Q (L/day)")                          # Martinez 2019 Table 2 (0.0185 L/h)
-    lvm          <- log(0.183 * 24);   label("Maximum Michaelis-Menten elimination rate Vm (mg/day)")           # Martinez 2019 Table 2 (0.183 mg/h; table footer 'mg.h/L' is a typo - text and dimensional analysis confirm mg/h)
+    lvmax        <- log(0.183 * 24);   label("Maximum Michaelis-Menten elimination rate Vmax (mg/day)")         # Martinez 2019 Table 2 (0.183 mg/h; table footer 'mg.h/L' is a typo - text and dimensional analysis confirm mg/h)
     lkm          <- log(7.73);         label("Michaelis-Menten constant Km at reference FPCSK9 (mg/L)")          # Martinez 2019 Table 2 (FPCSK9 reference 72.9 ng/mL)
     llag         <- log(0.641 / 24);   label("SC absorption lag time (day)")                                    # Martinez 2019 Table 2 (0.641 h)
     logitfdepot  <- log(0.862 / (1 - 0.862)); label("Logit of SC bioavailability F (unitless; F_pop = 0.862)")  # Martinez 2019 Table 2 (typical F = 0.862)
@@ -109,7 +109,7 @@ Martinez_2019_alirocumab <- function() {
     # Intercompartmental clearance, absorption rate, and Vm: no IIV per the paper.
     q  <- exp(lq)
     ka <- exp(lka)
-    vm <- exp(lvm)
+    vmax <- exp(lvmax)
 
     # Michaelis-Menten Km: additive linear-deviation effect of free PCSK9 (reference 72.9 ng/mL).
     km_tv <- exp(lkm) + e_fpcsk9_km * (FPCSK9 / 72.9)
@@ -126,11 +126,11 @@ Martinez_2019_alirocumab <- function() {
     Cc <- central / vc
 
     # Two-compartment ODE with parallel linear (CLL) and Michaelis-Menten elimination from the
-    # central compartment. MM term vm * Cc / (km + Cc) yields mg/day when vm is mg/day.
+    # central compartment. MM term vmax * Cc / (km + Cc) yields mg/day when vmax is mg/day.
     d/dt(depot)       <- -ka * depot
     d/dt(central)     <-  ka * depot -
                           (cl / vc) * central -
-                          vm * Cc / (km + Cc) -
+                          vmax * Cc / (km + Cc) -
                           (q / vc) * central +
                           (q / vp) * peripheral1
     d/dt(peripheral1) <-  (q / vc) * central - (q / vp) * peripheral1
