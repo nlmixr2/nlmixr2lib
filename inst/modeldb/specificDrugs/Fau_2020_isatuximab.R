@@ -75,7 +75,7 @@ Fau_2020_isatuximab <- function() {
     # Structural typical-value parameters at the reference patient: 75.6 kg
     # body weight, 3.90 mg/L baseline B2M, IgG MM, P1F1 drug material,
     # non-Asian, male (Fau 2020 Table S3 final-model estimates).
-    lclinf <- log(0.00955); label("Linear CLinf at infinite time at reference covariates (L/hour)") # Fau 2020 Table S3: CLinf
+    lcl_ss <- log(0.00955); label("Steady-state linear CL (CLinf at infinite time) at reference covariates (L/hour)") # Fau 2020 Table S3: CLinf
     lvc    <- log(5.13);    label("Central volume of distribution Vc at reference (L)")             # Fau 2020 Table S3: Vc
     lq     <- log(0.0432);  label("Intercompartmental clearance Q at reference (L/hour)")           # Fau 2020 Table S3: Q
     lvp    <- log(3.62);    label("Peripheral volume of distribution Vp at reference (L)")          # Fau 2020 Table S3: Vp
@@ -84,7 +84,7 @@ Fau_2020_isatuximab <- function() {
     # from the central compartment. Vm has units of mg/(L*h) in the source
     # equation dL/dt = ... - Vm/(Km + L) * L. The amount-form ODE multiplies
     # by Vc, giving a mass-rate term Vc * Vm * Cc / (Km + Cc) in mg/h.
-    lvm <- log(0.136); label("Michaelis-Menten Vm of nonlinear CL (mg/(L*h))") # Fau 2020 Table S3: Vm
+    lvmax <- log(0.136); label("Michaelis-Menten Vmax of nonlinear CL (mg/(L*h))") # Fau 2020 Table S3: Vm
     lkm <- log(0.300); label("Michaelis-Menten Km of nonlinear CL (mg/L)")     # Fau 2020 Table S3: Km
 
     # Time-varying linear CL via a sigmoidal Emax form (Fau 2020):
@@ -100,16 +100,16 @@ Fau_2020_isatuximab <- function() {
     lgam <- log(3.91);  label("Sigmoidal stiffness exponent gamma of the time-on-CLlin function (unitless)")          # Fau 2020 Table S3: gamma
 
     # Allometric body-weight power exponents (reference 75.6 kg).
-    e_wt_clinf <- 0.621; label("Power exponent of WT/75.6 on CLinf (unitless)") # Fau 2020 Table S3: CLinf ~ Wght
+    e_wt_cl_ss <- 0.621; label("Power exponent of WT/75.6 on steady-state CL (unitless)") # Fau 2020 Table S3: CLinf ~ Wght
     e_wt_vc    <- 0.472; label("Power exponent of WT/75.6 on Vc (unitless)")    # Fau 2020 Table S3: Vc ~ Wght
     e_wt_vp    <- 0.719; label("Power exponent of WT/75.6 on Vp (unitless)")    # Fau 2020 Table S3: Vp ~ Wght
     e_wt_q     <- 0.477; label("Power exponent of WT/75.6 on Q (unitless)")     # Fau 2020 Table S3: Q ~ Wght (RSE 57.5%; least-precisely estimated coefficient)
 
     # B2M power covariate on CLinf.
-    e_b2m_clinf <- 0.343; label("Power exponent of B2M/3.90 on CLinf (unitless)") # Fau 2020 Table S3: CLinf ~ B2M
+    e_b2m_cl_ss <- 0.343; label("Power exponent of B2M/3.90 on steady-state CL (unitless)") # Fau 2020 Table S3: CLinf ~ B2M
 
     # Categorical covariate effects, applied as exp(coef * indicator).
-    e_nigg_clinf <- -0.751; label("Exponential coefficient of non-IgG MM (vs IgG MM) on CLinf")     # Fau 2020 Table S3: CLinf ~ IgType=Not_IgG
+    e_nigg_cl_ss <- -0.751; label("Exponential coefficient of non-IgG MM (vs IgG MM) on steady-state CL") # Fau 2020 Table S3: CLinf ~ IgType=Not_IgG
     e_nigg_kcl   <- -0.931; label("Exponential coefficient of non-IgG MM (vs IgG MM) on KCL")       # Fau 2020 Table S3: KCL ~ IgType=Not_IgG (main text rounds to -0.930)
     e_p2f2_vc    <- -0.137; label("Exponential coefficient of P2F2 (vs P1F1) drug material on Vc")  # Fau 2020 Table S3: Vc ~ Formulation=P2F2
     e_asian_vc   <- -0.275; label("Exponential coefficient of Asian race (vs non-Asian) on Vc")     # Fau 2020 Table S3: Vc ~ Race=Asian
@@ -130,14 +130,14 @@ Fau_2020_isatuximab <- function() {
     # Km    88.9% -> log(0.889^2 + 1) = 0.5823
     # CLm   97.2% -> (0.664 * 0.972)^2 = 0.4164
     # IIVs are reported independently (no off-block correlations in the source).
-    etalclinf ~ 0.2035  # Fau 2020 Table S3: ω(CLinf) 47.5%
+    etalcl_ss ~ 0.2035  # Fau 2020 Table S3: ω(CLinf) 47.5%
     etaclm    ~ 0.4164  # Fau 2020 Table S3: ω(CLm) 97.2% (additive normal eta)
     etalkcl   ~ 0.8427  # Fau 2020 Table S3: ω(KCL) 115%
     etalgam   ~ 0.8723  # Fau 2020 Table S3: ω(gamma) 118%
     etalvc    ~ 0.0640  # Fau 2020 Table S3: ω(Vc) 25.7%
     etalq     ~ 0.5519  # Fau 2020 Table S3: ω(Q) 85.8%
     etalvp    ~ 0.1889  # Fau 2020 Table S3: ω(Vp) 45.6%
-    etalvm    ~ 0.3206  # Fau 2020 Table S3: ω(Vm) 61.5%
+    etalvmax  ~ 0.3206  # Fau 2020 Table S3: ω(Vm) 61.5%
     etalkm    ~ 0.5823  # Fau 2020 Table S3: ω(Km) 88.9%
 
     # Combined additive + proportional residual error (Fau 2020 Table S3).
@@ -147,10 +147,10 @@ Fau_2020_isatuximab <- function() {
   model({
     # Individual time-zero structural parameters with covariate effects
     # (Fau 2020 final-model equations for CLinf, KCL, Vc, Vp, Q).
-    clinf <- exp(lclinf + etalclinf) *
-             (WT  / 75.6)^e_wt_clinf *
-             (B2M / 3.90)^e_b2m_clinf *
-             exp(e_nigg_clinf * MM_NIGG)
+    cl_ss <- exp(lcl_ss + etalcl_ss) *
+             (WT  / 75.6)^e_wt_cl_ss *
+             (B2M / 3.90)^e_b2m_cl_ss *
+             exp(e_nigg_cl_ss * MM_NIGG)
 
     kcl <- exp(lkcl + etalkcl) * exp(e_nigg_kcl * MM_NIGG)
 
@@ -168,13 +168,13 @@ Fau_2020_isatuximab <- function() {
     vp <- exp(lvp + etalvp) * (WT / 75.6)^e_wt_vp
     q  <- exp(lq  + etalq)  * (WT / 75.6)^e_wt_q
 
-    vm <- exp(lvm + etalvm)
+    vmax <- exp(lvmax + etalvmax)
     km <- exp(lkm + etalkm)
 
-    # Time-varying linear CL: starts at CLinf*exp(CLm) and decays to CLinf
+    # Time-varying linear CL: starts at cl_ss*exp(CLm) and decays to cl_ss
     # as t -> infinity. KCL is the time at which the sigmoid is half-way
     # through (when gamma is large enough that the inflection is sharp).
-    cllin <- clinf * exp(clm_i * (1 - t^gam / (kcl^gam + t^gam)))
+    cllin <- cl_ss * exp(clm_i * (1 - t^gam / (kcl^gam + t^gam)))
 
     # Two-compartment IV-input PK with parallel time-varying linear and
     # Michaelis-Menten eliminations from the central compartment.
@@ -184,7 +184,7 @@ Fau_2020_isatuximab <- function() {
     Cc <- central / vc
 
     d/dt(central)     <- -(cllin / vc) * central -
-                          vc * vm * Cc / (km + Cc) -
+                          vc * vmax * Cc / (km + Cc) -
                           (q / vc) * central +
                           (q / vp) * peripheral1
     d/dt(peripheral1) <-  (q / vc) * central -
