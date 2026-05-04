@@ -69,8 +69,8 @@ Sathe_2024_sacituzumab <- function() {
     lvc    <- log(2.77011);   label("SG central volume (L)")                          # Sathe 2024 Table 1; supplement Section 6.b $THETA TH(2) FIX
     lq     <- log(0.0055141); label("SG intercompartmental clearance (L/h)")          # Sathe 2024 Table 1; supplement Section 6.b $THETA TH(3) FIX
     lvp    <- log(0.907787);  label("SG peripheral volume (L)")                       # Sathe 2024 Table 1; supplement Section 6.b $THETA TH(4) FIX
-    allo_cl <-  0.507571; label("Body-weight allometric exponent on SG CL and Q (unitless)")  # Sathe 2024 Table 1; supplement Section 6.b $THETA TH(6) FIX
-    allo_v  <-  0.532396; label("Body-weight allometric exponent on SG V1 and V2 (unitless)") # Sathe 2024 Table 1; supplement Section 6.b $THETA TH(7) FIX
+    e_wt_cl_q <-  0.507571; label("Body-weight allometric exponent on SG CL and Q (unitless)")  # Sathe 2024 Table 1; supplement Section 6.b $THETA TH(6) FIX
+    e_wt_vc_vp <-  0.532396; label("Body-weight allometric exponent on SG V1 and V2 (unitless)") # Sathe 2024 Table 1; supplement Section 6.b $THETA TH(7) FIX
     e_alb_cl <- -0.355253; label("Baseline-albumin power exponent on SG CL (unitless)")        # Sathe 2024 Table 1; supplement Section 6.b $THETA TH(8) FIX
 
     # ============================================================
@@ -85,7 +85,7 @@ Sathe_2024_sacituzumab <- function() {
     lq_sn38   <-  5.51; label("Apparent SN-38 intercompartmental clearance (log L/h); QSN38/F = 247 L/h")            # Sathe 2024 Table 2
     lvc_sn38  <- log(49);   label("Apparent SN-38 central volume V1SN38/F (L); FIXED to Klein 2002 literature value")    # Sathe 2024 Table 2; literature ref [19] = Klein et al. Clin Pharmacol Ther 2002;72:638-647
     lvp_sn38  <- log(2177); label("Apparent SN-38 peripheral volume V2SN38/F (L); FIXED to Klein 2002 literature value") # Sathe 2024 Table 2; literature ref [19] = Klein et al. Clin Pharmacol Ther 2002;72:638-647
-    allo_cl_sn38 <- 0.500; label("Body-weight allometric exponent on free-SN-38 CL and Q (unitless)") # Sathe 2024 Table 2
+    e_wt_cl_q_sn38 <- 0.500; label("Body-weight allometric exponent on free-SN-38 CL and Q (unitless)") # Sathe 2024 Table 2
 
     # ============================================================
     # Total antibody (tAB) - Sathe 2024 Table 3
@@ -97,8 +97,8 @@ Sathe_2024_sacituzumab <- function() {
     lvc_tab    <- log(3.06);  label("tAB central volume (L)")                                                           # Sathe 2024 Table 3
     lq_tab     <- log(0.010); label("tAB intercompartmental clearance (L/h)")                                           # Sathe 2024 Table 3
     lvp_tab    <- log(1.20);  label("tAB peripheral volume (L)")                                                        # Sathe 2024 Table 3
-    allo_cl_tab <- 0.372; label("Body-weight allometric exponent on tAB CL and Q (unitless)")                            # Sathe 2024 Table 3
-    allo_v_tab  <- 0.446; label("Body-weight allometric exponent on tAB V1 and V2 (unitless)")                           # Sathe 2024 Table 3
+    e_wt_cl_q_tab <- 0.372; label("Body-weight allometric exponent on tAB CL and Q (unitless)")                            # Sathe 2024 Table 3
+    e_wt_vc_vp_tab <- 0.446; label("Body-weight allometric exponent on tAB V1 and V2 (unitless)")                          # Sathe 2024 Table 3
     e_alb_cl_tab   <- -0.735; label("Baseline-albumin power exponent on tAB CL (unitless)")                              # Sathe 2024 Table 3
     e_tumor_cl_tab <- -0.134; label("Tumor-type 'Other' fractional change on tAB CL (multiplicative; unitless)")          # Sathe 2024 Table 3
     e_sex_vc_tab    <-  0.121; label("Male-sex fractional change on tAB V1 (multiplicative; applied when SEXF = 0; unitless)") # Sathe 2024 Table 3
@@ -131,8 +131,8 @@ Sathe_2024_sacituzumab <- function() {
     # ------------------------------------------------------------
     # SG (sacituzumab govitecan, the ADC)
     # ------------------------------------------------------------
-    bwt_cl_factor <- (WT / 70) ^ allo_cl
-    bwt_v_factor  <- (WT / 70) ^ allo_v
+    bwt_cl_factor <- (WT / 70) ^ e_wt_cl_q
+    bwt_v_factor  <- (WT / 70) ^ e_wt_vc_vp
     alb_cl_factor <- (ALB / 38) ^ e_alb_cl
 
     cl <- exp(lcl + etalcl) * bwt_cl_factor * alb_cl_factor
@@ -147,7 +147,7 @@ Sathe_2024_sacituzumab <- function() {
     # ------------------------------------------------------------
     # Free SN-38 (sequential to SG via first-order release KREL)
     # ------------------------------------------------------------
-    bwt_cl_sn38_factor <- (WT / 70) ^ allo_cl_sn38
+    bwt_cl_sn38_factor <- (WT / 70) ^ e_wt_cl_q_sn38
 
     krel    <- exp(lkrel + etalkrel)
     cl_sn38  <- exp(lcl_sn38 + etalcl_sn38) * bwt_cl_sn38_factor
@@ -164,8 +164,8 @@ Sathe_2024_sacituzumab <- function() {
     # td_factor goes from 1 at t = 0 to (1 - maxRed_tab/100) at
     # t -> infinity with rate constant keff_tab.
     # ------------------------------------------------------------
-    bwt_cl_tab_factor <- (WT / 70) ^ allo_cl_tab
-    bwt_v_tab_factor  <- (WT / 70) ^ allo_v_tab
+    bwt_cl_tab_factor <- (WT / 70) ^ e_wt_cl_q_tab
+    bwt_v_tab_factor  <- (WT / 70) ^ e_wt_vc_vp_tab
     alb_cl_tab_factor <- (ALB / 38) ^ e_alb_cl_tab
     tumor_cl_tab_factor <- 1 + e_tumor_cl_tab * TUMTP_OTH
     sex_vc_tab_factor    <- 1 + e_sex_vc_tab    * (1 - SEXF)

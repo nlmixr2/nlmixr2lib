@@ -58,7 +58,7 @@ The typical baseline Treg percentage among CD4+ T cells is 12.1%
 
 | Equation / parameter | Value | Source |
 |----------------------|-------|--------|
-| PK backbone (`lka`, `lcl`, `lvc`, `lvp`, `lq`, `lfdepot`, `lalag`, `allo_*`, `e_dose_50mg_f`, PK IIV, `propSd`, `addSd`) | Othman 2014 Table 2 values | inherited from `Othman_2014_daclizumab.R` |
+| PK backbone (`lka`, `lcl`, `lvc`, `lvp`, `lq`, `lfdepot`, `lalag`, `e_wt_cl_q`, `e_wt_vc_vp`, `e_dose_50mg_f`, PK IIV, `propSd`, `addSd`) | Othman 2014 Table 2 values | inherited from `Othman_2014_daclizumab.R` |
 | `ltregE0` (typical baseline Treg)               | 12.1 % of CD4+ T cells | Diao 2016 Table 5 |
 | `etaltregE0` (E0 IIV)                            | omega^2 0.16127 (CV 42%) | Diao 2016 Table 5 |
 | `ltregIC50` (IC50)                               | 3.97 mg/L                | Diao 2016 Table 5 |

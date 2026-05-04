@@ -42,8 +42,8 @@ Grimm_2023_trontinemab <- function() {
     lkm <- log(78.6);  label("Michaelis-Menten half-maximal concentration (ng/mL)")      # from supplement
 
     # Allometric exponents — fixed per Grimm 2023 text on page 11
-    allo_cl <- fixed(0.85); label("Allometric exponent for clearance (unitless)")        # page 11
-    allo_v  <- fixed(1);    label("Allometric exponent for volume (unitless)")           # page 11
+    e_wt_cl_q <- fixed(0.85); label("Allometric exponent for CL and Q (unitless)")       # page 11
+    e_wt_vc_vp <- fixed(1);   label("Allometric exponent for Vc and Vp (unitless)")      # page 11
 
     # Brain-region effect-compartment parameters — Grimm 2023 supplementary Table 1
     # Cerebellum
@@ -88,10 +88,10 @@ Grimm_2023_trontinemab <- function() {
 
   model({
     # Individual plasma PK parameters with allometric scaling to 5 kg
-    cl <- exp(lcl + log(WT / 5) * allo_cl)
-    vc <- exp(lvc + log(WT / 5) * allo_v)
-    vp <- exp(lvp + log(WT / 5) * allo_v)
-    q  <- exp(lq  + log(WT / 5) * allo_cl)
+    cl <- exp(lcl + log(WT / 5) * e_wt_cl_q)
+    vc <- exp(lvc + log(WT / 5) * e_wt_vc_vp)
+    vp <- exp(lvp + log(WT / 5) * e_wt_vc_vp)
+    q  <- exp(lq  + log(WT / 5) * e_wt_cl_q)
     vmax <- exp(lvmax)
     km   <- exp(lkm)
 

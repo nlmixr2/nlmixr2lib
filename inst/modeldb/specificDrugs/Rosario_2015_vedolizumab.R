@@ -154,9 +154,9 @@ Rosario_2015_vedolizumab <- function() {
     e_wt_vc     <-  0.467;  label("Weight exponent on Vc (unitless; reference 70 kg)")           # Table S4: weight on Vc = 0.467
 
     # Fixed allometric exponents (Table S4: "1 Fixed", "0.75 Fixed").
-    allo_wt_vp   <- fixed(1);    label("Allometric exponent of WT on Vp (fixed)")                # Table S4: weight on Vp = 1 Fixed
-    allo_wt_vmax <- fixed(0.75); label("Allometric exponent of WT on Vmax (fixed)")              # Table S4: weight on Vmax = 0.75 Fixed
-    allo_wt_q    <- fixed(0.75); label("Allometric exponent of WT on Q (fixed)")                 # Table S4: weight on Q = 0.75 Fixed
+    e_wt_vp   <- fixed(1);    label("Allometric exponent of WT on Vp (fixed)")                # Table S4: weight on Vp = 1 Fixed
+    e_wt_vmax <- fixed(0.75); label("Allometric exponent of WT on Vmax (fixed)")              # Table S4: weight on Vmax = 0.75 Fixed
+    e_wt_q    <- fixed(0.75); label("Allometric exponent of WT on Q (fixed)")                 # Table S4: weight on Q = 0.75 Fixed
 
     # Categorical covariate multipliers (Table S4 "NULL effect = 1").
     e_priortnf_cl   <- 1.04;  label("Prior TNF-alpha antagonist multiplier on CLL (power form: CLL * 1.04^PRIOR_TNF)")   # Table S4
@@ -208,9 +208,9 @@ Rosario_2015_vedolizumab <- function() {
       e_conmed_amino_cl^CONMED_AMINO
 
     vc   <- exp(lvc   + etalvc)   * (WT / 70)^e_wt_vc * e_ibd_cd_vc^IBD_CD
-    vp   <- exp(lvp)              * (WT / 70)^allo_wt_vp
-    q    <- exp(lq)               * (WT / 70)^allo_wt_q
-    vmax <- exp(lvmax + etalvmax) * (WT / 70)^allo_wt_vmax
+    vp   <- exp(lvp)              * (WT / 70)^e_wt_vp
+    q    <- exp(lq)               * (WT / 70)^e_wt_q
+    vmax <- exp(lvmax + etalvmax) * (WT / 70)^e_wt_vmax
     km   <- exp(lkm)
 
     kel <- cl / vc

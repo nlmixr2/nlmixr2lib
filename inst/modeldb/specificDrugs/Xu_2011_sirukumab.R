@@ -44,10 +44,10 @@ Xu_2011_sirukumab <- function() {
     # Allometric exponents fixed in the source: 0.75 for CL and Q, 1 for V1 and V2; reference
     # weight 70 kg. See Xu 2011 Results: "with the exponents for the allometric functions being
     # fixed to 0.75 for CL and Q and to 1 for V1 and V2".
-    allo_cl <- fixed(0.75); label("Allometric exponent on CL (unitless)")                         # Xu 2011 Results, allometric scaling
-    allo_q  <- fixed(0.75); label("Allometric exponent on Q (unitless)")                          # Xu 2011 Results, allometric scaling
-    allo_v1 <- fixed(1);    label("Allometric exponent on V1 (unitless)")                         # Xu 2011 Results, allometric scaling
-    allo_v2 <- fixed(1);    label("Allometric exponent on V2 (unitless)")                         # Xu 2011 Results, allometric scaling
+    e_wt_cl <- fixed(0.75); label("Allometric exponent on CL (unitless)")                         # Xu 2011 Results, allometric scaling
+    e_wt_q  <- fixed(0.75); label("Allometric exponent on Q (unitless)")                          # Xu 2011 Results, allometric scaling
+    e_wt_vc <- fixed(1);    label("Allometric exponent on V1 (unitless)")                         # Xu 2011 Results, allometric scaling
+    e_wt_vp <- fixed(1);    label("Allometric exponent on V2 (unitless)")                         # Xu 2011 Results, allometric scaling
 
     # IIV - Xu 2011 Table 4 reports "IIV (%)" under an exponential (log-normal) model for the
     # PK parameters. Converting CV% to the log-scale variance via omega^2 = log(CV^2 + 1):
@@ -71,10 +71,10 @@ Xu_2011_sirukumab <- function() {
 
   model({
     # Individual PK parameters with Xu 2011 allometric weight scaling (reference 70 kg).
-    cl <- exp(lcl + etalcl) * (WT / 70)^allo_cl
-    vc <- exp(lvc + etalvc) * (WT / 70)^allo_v1
-    q  <- exp(lq  + etalq)  * (WT / 70)^allo_q
-    vp <- exp(lvp + etalvp) * (WT / 70)^allo_v2
+    cl <- exp(lcl + etalcl) * (WT / 70)^e_wt_cl
+    vc <- exp(lvc + etalvc) * (WT / 70)^e_wt_vc
+    q  <- exp(lq  + etalq)  * (WT / 70)^e_wt_q
+    vp <- exp(lvp + etalvp) * (WT / 70)^e_wt_vp
 
     kel <- cl / vc
     k12 <- q  / vc

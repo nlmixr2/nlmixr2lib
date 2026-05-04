@@ -180,9 +180,9 @@ Lin_2024_casirivimab <- function() {
     # 0.75 (CL) / 1.0 (Vc) and the higher SC bioavailability term, per Lin
     # 2024 page 1939 final-model description.
     PED <- (AGE < 6)
-    allo_cl <- e_wt_cl * (1 - PED) + 0.75 * PED
-    allo_vc <- e_wt_vc * (1 - PED) + 1.0  * PED
-    fdepot  <- exp(lfdepot) * (1 - PED) + exp(lfdepot_ped) * PED
+    e_wt_cl_eff <- e_wt_cl * (1 - PED) + 0.75 * PED
+    e_wt_vc_eff <- e_wt_vc * (1 - PED) + 1.0  * PED
+    fdepot      <- exp(lfdepot) * (1 - PED) + exp(lfdepot_ped) * PED
 
     # Multiplicative covariate effects on CL (Lin 2024 Eq. 1 for casirivimab).
     cl_cov <- (AGE / 45)^e_age_cl *
@@ -200,8 +200,8 @@ Lin_2024_casirivimab <- function() {
     # Multiplicative covariate effects on Vc (Lin 2024 Eq. 3 for casirivimab).
     vc_cov <- (1 + e_sexf_vc * SEXF) * (ALB / 43)^e_alb_vc
 
-    cl <- exp(lcl + etalcl) * (WT / 81.6)^allo_cl * cl_cov
-    vc <- exp(lvc + etalvc) * (WT / 81.6)^allo_vc * vc_cov
+    cl <- exp(lcl + etalcl) * (WT / 81.6)^e_wt_cl_eff * cl_cov
+    vc <- exp(lvc + etalvc) * (WT / 81.6)^e_wt_vc_eff * vc_cov
     q  <- exp(lq)
     vp <- exp(lvp)
     ka <- exp(lka + etalka)

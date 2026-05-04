@@ -79,7 +79,7 @@ collects them for review.
 | `lq`  (Q at 70 kg)            | 0.044 L/h (= 1.056 L/day) | Othman 2014 Table 2 |
 | `lfdepot` (F SC 100 to 300 mg)| 0.84 | Othman 2014 Table 2 |
 | `lalag` (Tlag SC)             | 2.0 h (= 0.0833 day) | Othman 2014 Table 2 |
-| `allo_cl`, `allo_v`           | 0.54 / 0.64 | Othman 2014 Table 2 |
+| `e_wt_cl_q`, `e_wt_vc_vp`     | 0.54 / 0.64 | Othman 2014 Table 2 |
 | `e_dose_50mg_f`               | -0.32143 (= 0.57/0.84 - 1) | Othman 2014 Table 2 |
 | PK IIV `etalka`, `etalcl` (block, corr -0.72) | omega^2 0.29003 / 0.07038, cov -0.10290 | Othman 2014 Table 2 |
 | PK IIV `etalvc`               | omega^2 0.09175 (CV 31%) | Othman 2014 Table 2 |

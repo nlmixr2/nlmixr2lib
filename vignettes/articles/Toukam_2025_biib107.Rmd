@@ -54,8 +54,8 @@ The same population information is available programmatically via `readModelDb("
 | Km = 0.00435 ug/mL (FIXED, in vitro Kd) | `lkm` (FIXED) | Toukam 2025 Table 3 and Results "Base PK Model Development" |
 | Tlag = 0.0793 day (FIXED) | `lalag` (FIXED) | Toukam 2025 Table 3 and Results "Base PK Model Development" |
 | F = 73.8% | `lfdepot` | Toukam 2025 Table 3 |
-| Allometric exponent on CL = 1.07 (estimated) | `allo_cl` | Toukam 2025 Table 3 |
-| Allometric exponents on V2, V3, Q (1, 1, 0.75; FIXED) | `allo_vc`, `allo_vp`, `allo_q` (FIXED) | Toukam 2025 Table 3 footnote |
+| Allometric exponent on CL = 1.07 (estimated) | `e_wt_cl` | Toukam 2025 Table 3 |
+| Allometric exponents on V2, V3, Q (1, 1, 0.75; FIXED) | `e_wt_vc`, `e_wt_vp`, `e_wt_q` (FIXED) | Toukam 2025 Table 3 footnote |
 | IIV CL 16% CV | `etalcl` (omega^2 = 0.02527) | Toukam 2025 Table 3 |
 | IIV V2 35% CV | `etalvc` (omega^2 = 0.11556) | Toukam 2025 Table 3 |
 | IIV Ka 41% CV | `etalka` (omega^2 = 0.15536) | Toukam 2025 Table 3 |

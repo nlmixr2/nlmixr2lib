@@ -59,8 +59,8 @@ Cheng_2026_immunoglobulin <- function() {
     # after a base-model evaluation found the empirically estimated exponents
     # included 0.75 / 1.0 within their 95% CIs but caused parameter collinearity
     # (Cheng 2026 Methods, page 7). Q follows the CL exponent.
-    allo_cl <- fixed(0.75); label("Allometric exponent on CL and Q (unitless)")  # Cheng 2026 Methods, fixed in final model
-    allo_v  <- fixed(1.0);  label("Allometric exponent on V1 and V2 (unitless)") # Cheng 2026 Methods, fixed in final model
+    e_wt_cl_q  <- fixed(0.75); label("Allometric exponent on CL and Q (unitless)")  # Cheng 2026 Methods, fixed in final model
+    e_wt_vc_vp <- fixed(1.0);  label("Allometric exponent on V1 and V2 (unitless)") # Cheng 2026 Methods, fixed in final model
 
     # Covariate effects — multiplicative theta^DIS_SAD form for the binary
     # disease-type covariate (PID = 0, SAD = 1) and a power form (IGM/0.21)^e
@@ -96,10 +96,10 @@ Cheng_2026_immunoglobulin <- function() {
     # weight scaling (reference 70 kg). IIV is on CL, V2 (peripheral volume),
     # and CBAS only — V1 (vc) and Q have typical-only values per Cheng 2026
     # Table 4.
-    cl   <- exp(lcl   + etalcl)   * (WT / 70)^allo_cl * cl_dis
-    vc   <- exp(lvc)              * (WT / 70)^allo_v
-    q    <- exp(lq)               * (WT / 70)^allo_cl
-    vp   <- exp(lvp   + etalvp)   * (WT / 70)^allo_v
+    cl   <- exp(lcl   + etalcl)   * (WT / 70)^e_wt_cl_q * cl_dis
+    vc   <- exp(lvc)              * (WT / 70)^e_wt_vc_vp
+    q    <- exp(lq)               * (WT / 70)^e_wt_cl_q
+    vp   <- exp(lvp   + etalvp)   * (WT / 70)^e_wt_vc_vp
     cbas <- exp(lcbas + etalcbas) * cbas_dis * cbas_igm
 
     kel <- cl / vc

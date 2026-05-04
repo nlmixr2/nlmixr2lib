@@ -59,8 +59,8 @@ Othman_2014_daclizumab <- function() {
     # Allometric exponents — estimated, not fixed (Othman 2014 reported that
     # fixing to the classical 0.75 / 1.0 was statistically less favorable than
     # the estimated values).
-    allo_cl <- 0.54; label("Allometric exponent on CL and Q (SFCL, unitless)")    # Table 2 (SFCL = 0.54)
-    allo_v  <- 0.64; label("Allometric exponent on Vc and Vp (SFV, unitless)")    # Table 2 (SFV = 0.64)
+    e_wt_cl_q <- 0.54; label("Allometric exponent on CL and Q (SFCL, unitless)")    # Table 2 (SFCL = 0.54)
+    e_wt_vc_vp <- 0.64; label("Allometric exponent on Vc and Vp (SFV, unitless)")   # Table 2 (SFV = 0.64)
 
     # Relative bioavailability effect for the 50 mg SC cohort (multiplicative
     # fractional change on F). Derived as F_50mg / F_100-300mg - 1 = 0.57/0.84 - 1.
@@ -94,10 +94,10 @@ Othman_2014_daclizumab <- function() {
   model({
     # Individual PK parameters with allometric weight scaling (reference 70 kg)
     ka  <- exp(lka + etalka)
-    cl  <- exp(lcl + etalcl) * (WT / 70)^allo_cl
-    vc  <- exp(lvc + etalvc) * (WT / 70)^allo_v
-    vp  <- exp(lvp)          * (WT / 70)^allo_v
-    q   <- exp(lq)           * (WT / 70)^allo_cl
+    cl  <- exp(lcl + etalcl) * (WT / 70)^e_wt_cl_q
+    vc  <- exp(lvc + etalvc) * (WT / 70)^e_wt_vc_vp
+    vp  <- exp(lvp)          * (WT / 70)^e_wt_vc_vp
+    q   <- exp(lq)           * (WT / 70)^e_wt_cl_q
 
     kel <- cl / vc
     k12 <- q  / vc

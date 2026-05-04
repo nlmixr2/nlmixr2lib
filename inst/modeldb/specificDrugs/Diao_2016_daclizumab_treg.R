@@ -58,8 +58,8 @@ Diao_2016_daclizumab_treg <- function() {
     lfdepot  <- log(0.84);       label("SC bioavailability for 100-300 mg doses (F, fraction)") # Othman 2014 Table 2
     lalag    <- log(2 / 24);     label("Absorption lag time for SC doses (Tlag, day; 2 h)")     # Othman 2014 Table 2
 
-    allo_cl <- 0.54; label("Allometric exponent on CL and Q (unitless)") # Othman 2014 Table 2
-    allo_v  <- 0.64; label("Allometric exponent on Vc and Vp (unitless)") # Othman 2014 Table 2
+    e_wt_cl_q <- 0.54; label("Allometric exponent on CL and Q (unitless)") # Othman 2014 Table 2
+    e_wt_vc_vp <- 0.64; label("Allometric exponent on Vc and Vp (unitless)") # Othman 2014 Table 2
 
     e_dose_50mg_f <- -0.32143; label("Relative change in F for 50 mg SC vs 100-300 mg SC (fraction)") # Othman 2014 Table 2
 
@@ -102,10 +102,10 @@ Diao_2016_daclizumab_treg <- function() {
     # 1. Individual PK parameters (Othman 2014 PK backbone).
     # ------------------------------------------------------------------
     ka <- exp(lka + etalka)
-    cl <- exp(lcl + etalcl) * (WT / 70)^allo_cl
-    vc <- exp(lvc + etalvc) * (WT / 70)^allo_v
-    vp <- exp(lvp)          * (WT / 70)^allo_v
-    q  <- exp(lq)           * (WT / 70)^allo_cl
+    cl <- exp(lcl + etalcl) * (WT / 70)^e_wt_cl_q
+    vc <- exp(lvc + etalvc) * (WT / 70)^e_wt_vc_vp
+    vp <- exp(lvp)          * (WT / 70)^e_wt_vc_vp
+    q  <- exp(lq)           * (WT / 70)^e_wt_cl_q
 
     kel <- cl / vc
     k12 <- q  / vc

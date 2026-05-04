@@ -101,8 +101,8 @@ Robbie_2012_palivizumab <- function() {
     lfdepot  <- log(0.694);    label("Intramuscular bioavailability (F, fraction)")        # Robbie 2012 Table 2
 
     # Allometric exponents (Robbie 2012 eq. 3 and Table 2)
-    allo_cl <- 0.75; label("Allometric exponent on CL and Q (unitless)")
-    allo_v  <- 1.0;  label("Allometric exponent on Vc and Vp (unitless)")
+    e_wt_cl_q <- 0.75; label("Allometric exponent on CL and Q (unitless)")
+    e_wt_vc_vp <- 1.0; label("Allometric exponent on Vc and Vp (unitless)")
 
     # Maturation parameters for CL (Robbie 2012 eq. 1a; asymptotic-exponential form centered on
     # 40-week PAGE = 9.195 months). beta is CL at term as fraction of the allometrically scaled
@@ -177,10 +177,10 @@ Robbie_2012_palivizumab <- function() {
 
     # PK parameters with allometric weight scaling (reference 70 kg)
     ka <- exp(lka)
-    cl <- exp(lcl + etalcl) * (WT / 70)^allo_cl * maturation_cl * race_cl * cld_cl * ada_cl
-    vc <- exp(lvc + etalvc) * (WT / 70)^allo_v  * race_vc
-    vp <- exp(lvp)          * (WT / 70)^allo_v
-    q  <- exp(lq)           * (WT / 70)^allo_cl
+    cl <- exp(lcl + etalcl) * (WT / 70)^e_wt_cl_q * maturation_cl * race_cl * cld_cl * ada_cl
+    vc <- exp(lvc + etalvc) * (WT / 70)^e_wt_vc_vp * race_vc
+    vp <- exp(lvp)          * (WT / 70)^e_wt_vc_vp
+    q  <- exp(lq)           * (WT / 70)^e_wt_cl_q
 
     kel <- cl / vc
     k12 <- q  / vc

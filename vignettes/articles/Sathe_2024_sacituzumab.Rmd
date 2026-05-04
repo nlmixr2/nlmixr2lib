@@ -70,21 +70,21 @@ str(mod_meta$population, max.level = 1)
 | `lvc` (SG V1)                                       | log(2.77011) L      | Sathe 2024 Table 1; supplement Section 6.b TH(2) FIX |
 | `lq` (SG Q)                                         | log(0.0055141) L/h  | Sathe 2024 Table 1; supplement Section 6.b TH(3) FIX |
 | `lvp` (SG V2)                                       | log(0.907787) L     | Sathe 2024 Table 1; supplement Section 6.b TH(4) FIX |
-| `allo_cl` (Body-wt exponent on SG CL/Q)             | 0.507571            | Sathe 2024 Table 1; supplement Section 6.b TH(6) FIX |
-| `allo_v` (Body-wt exponent on SG V1/V2)             | 0.532396            | Sathe 2024 Table 1; supplement Section 6.b TH(7) FIX |
+| `e_wt_cl_q` (Body-wt exponent on SG CL/Q)           | 0.507571            | Sathe 2024 Table 1; supplement Section 6.b TH(6) FIX |
+| `e_wt_vc_vp` (Body-wt exponent on SG V1/V2)         | 0.532396            | Sathe 2024 Table 1; supplement Section 6.b TH(7) FIX |
 | `e_alb_cl` (Baseline-albumin exponent on SG CL)     | -0.355253           | Sathe 2024 Table 1; supplement Section 6.b TH(8) FIX |
 | `lkrel` (log SG-to-SN-38 release rate)              | -2.34 (= 0.0961 1/h)| Sathe 2024 Table 2 |
 | `lcl_sn38` (log apparent SN-38 CL)                  | 6.02 (= 409 L/h)    | Sathe 2024 Table 2 |
 | `lq_sn38` (log apparent SN-38 Q)                    | 5.51 (= 247 L/h)    | Sathe 2024 Table 2 |
 | `lvc_sn38` (apparent SN-38 V1, FIXED)               | log(49) L           | Sathe 2024 Table 2; literature ref [19] (Klein 2002) |
 | `lvp_sn38` (apparent SN-38 V2, FIXED)               | log(2177) L         | Sathe 2024 Table 2; literature ref [19] (Klein 2002) |
-| `allo_cl_sn38` (Body-wt exponent on SN-38 CL/Q)     | 0.500               | Sathe 2024 Table 2 |
+| `e_wt_cl_q_sn38` (Body-wt exponent on SN-38 CL/Q)   | 0.500               | Sathe 2024 Table 2 |
 | `lcl_tab` (tAB CL, baseline at t=0)                 | log(0.016) L/h      | Sathe 2024 Table 3 |
 | `lvc_tab` (tAB V1)                                  | log(3.06) L         | Sathe 2024 Table 3 |
 | `lq_tab` (tAB Q)                                    | log(0.010) L/h      | Sathe 2024 Table 3 |
 | `lvp_tab` (tAB V2)                                  | log(1.20) L         | Sathe 2024 Table 3 |
-| `allo_cl_tab` (Body-wt exponent on tAB CL/Q)        | 0.372               | Sathe 2024 Table 3 |
-| `allo_v_tab` (Body-wt exponent on tAB V1/V2)        | 0.446               | Sathe 2024 Table 3 |
+| `e_wt_cl_q_tab` (Body-wt exponent on tAB CL/Q)      | 0.372               | Sathe 2024 Table 3 |
+| `e_wt_vc_vp_tab` (Body-wt exponent on tAB V1/V2)    | 0.446               | Sathe 2024 Table 3 |
 | `e_alb_cl_tab` (Baseline-albumin exponent on tAB CL) | -0.735             | Sathe 2024 Table 3 |
 | `e_tumor_cl_tab` (Tumor-Other multiplicative on tAB CL) | -0.134          | Sathe 2024 Table 3 |
 | `e_sex_vc_tab` (Male multiplicative on tAB V1)      | +0.121              | Sathe 2024 Table 3 |

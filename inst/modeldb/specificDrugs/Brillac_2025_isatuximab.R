@@ -47,10 +47,10 @@ Brillac_2025_isatuximab <- function() {
     # (WT/38)^0.821; Q = 0.0358 * (WT/38)^0.85 (fixed); V2 = 2.20 *
     # (WT/38)^0.72"). The exponent on Q was held fixed because it was
     # poorly estimated (RSE 136% on the free fit).
-    allo_cl <- 0.833;        label("Allometric exponent of WT on CL (unitless)")              # Brillac 2025 Table 1: beta_CL_log(WT/MedWT) = 0.833
-    allo_v1 <- 0.821;        label("Allometric exponent of WT on V1 (unitless)")              # Brillac 2025 Table 1: beta_V1_log(WT/MedWT) = 0.821
-    allo_q  <- fixed(0.85);  label("Allometric exponent of WT on Q (fixed; unitless)")        # Brillac 2025 Table 1: beta_Q_log(WT/MedWT)  = 0.85 (fixed)
-    allo_v2 <- 0.72;         label("Allometric exponent of WT on V2 (unitless)")              # Brillac 2025 Table 1: beta_V2_log(WT/MedWT) = 0.72
+    e_wt_cl <- 0.833;        label("Allometric exponent of WT on CL (unitless)")              # Brillac 2025 Table 1: beta_CL_log(WT/MedWT) = 0.833
+    e_wt_vc <- 0.821;        label("Allometric exponent of WT on V1 (unitless)")              # Brillac 2025 Table 1: beta_V1_log(WT/MedWT) = 0.821
+    e_wt_q  <- fixed(0.85);  label("Allometric exponent of WT on Q (fixed; unitless)")        # Brillac 2025 Table 1: beta_Q_log(WT/MedWT)  = 0.85 (fixed)
+    e_wt_vp <- 0.72;         label("Allometric exponent of WT on V2 (unitless)")              # Brillac 2025 Table 1: beta_V2_log(WT/MedWT) = 0.72
 
     # Inter-individual variability (Monolix exponential model:
     # parameter_i = TV * exp(eta_i), eta_i ~ N(0, omega^2)).
@@ -72,10 +72,10 @@ Brillac_2025_isatuximab <- function() {
   model({
     # Individual PK parameters with body-weight allometric scaling
     # to the population median weight of 38 kg.
-    cl <- exp(lcl + etalcl) * (WT / 38)^allo_cl
-    vc <- exp(lvc + etalvc) * (WT / 38)^allo_v1
-    q  <- exp(lq  + etalq)  * (WT / 38)^allo_q
-    vp <- exp(lvp + etalvp) * (WT / 38)^allo_v2
+    cl <- exp(lcl + etalcl) * (WT / 38)^e_wt_cl
+    vc <- exp(lvc + etalvc) * (WT / 38)^e_wt_vc
+    q  <- exp(lq  + etalq)  * (WT / 38)^e_wt_q
+    vp <- exp(lvp + etalvp) * (WT / 38)^e_wt_vp
 
     kel <- cl / vc
     k12 <- q  / vc

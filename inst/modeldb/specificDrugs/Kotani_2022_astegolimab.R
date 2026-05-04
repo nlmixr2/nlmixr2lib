@@ -73,8 +73,8 @@ Kotani_2022_astegolimab <- function() {
 
     # Shared body-weight allometric exponents (Kotani 2022 constrained one coefficient
     # on both CL and Q, and another on both Vc and Vp; Table 2 footnote b).
-    allo_clq <- 0.986; label("Allometric exponent on CL and Q (unitless)")  # Table 2 (BWT on CL and Q = 0.986)
-    allo_v   <- 1.02;  label("Allometric exponent on Vc and Vp (unitless)") # Table 2 (BWT on Vtot = 1.02)
+    e_wt_cl_q  <- 0.986; label("Allometric exponent on CL and Q (unitless)")  # Table 2 (BWT on CL and Q = 0.986)
+    e_wt_vc_vp <- 1.02;  label("Allometric exponent on Vc and Vp (unitless)") # Table 2 (BWT on Vtot = 1.02)
 
     # Power effects on CL
     e_crcl_cl <- 0.431;  label("Power exponent for baseline CRCL (MDRD eGFR) on CL (unitless)")        # Table 2 (BEGFR on CL = 0.431)
@@ -102,9 +102,9 @@ Kotani_2022_astegolimab <- function() {
     # Covariate-adjusted multipliers on apparent clearance and volume parameters.
     # Reference values (medians, Table 1): WT = 79 kg, CRCL = 87.9 mL/min/1.73 m^2 (MDRD eGFR),
     # EOS = 180 cells/uL (baseline).
-    cl_cov <- (WT / 79)^allo_clq * (CRCL / 87.9)^e_crcl_cl * (EOS / 180)^e_eos_cl
-    q_cov  <- (WT / 79)^allo_clq
-    v_cov  <- (WT / 79)^allo_v
+    cl_cov <- (WT / 79)^e_wt_cl_q * (CRCL / 87.9)^e_crcl_cl * (EOS / 180)^e_eos_cl
+    q_cov  <- (WT / 79)^e_wt_cl_q
+    v_cov  <- (WT / 79)^e_wt_vc_vp
 
     # Box-Cox-distributed IIV on Frel (Eq. 2 in Kotani 2022): the normal eta is
     # transformed before being exponentiated. Reference Frel is 1; the 70 mg

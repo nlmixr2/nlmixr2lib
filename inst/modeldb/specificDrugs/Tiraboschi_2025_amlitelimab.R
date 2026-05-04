@@ -59,9 +59,9 @@ Tiraboschi_2025_amlitelimab <- function() {
     logitf1  <- log(0.888 / (1 - 0.888));        label("Typical subcutaneous bioavailability on the logit scale (linear F = 0.888 at population-median albumin 47 g/L)")  # Table S2 TVFsc = 0.888 on linear scale
 
     # Allometric exponents on body weight (reference 75 kg)
-    allo_cl <- 1.20;  label("Allometric exponent on linear clearance (unitless)")   # Table S2 BWT effect on CL
-    allo_v1 <- 0.901; label("Allometric exponent on central volume (unitless)")     # Table S2 BWT effect on V1
-    allo_v2 <- 0.350; label("Allometric exponent on peripheral volume (unitless)")  # Table S2 BWT effect on V2
+    e_wt_cl <- 1.20;  label("Allometric exponent on linear clearance (unitless)")   # Table S2 BWT effect on CL
+    e_wt_vc <- 0.901; label("Allometric exponent on central volume (unitless)")     # Table S2 BWT effect on V1
+    e_wt_vp <- 0.350; label("Allometric exponent on peripheral volume (unitless)")  # Table S2 BWT effect on V2
 
     # Covariate effects — both additive on the linear scale per the source NONMEM control stream
     e_easi_cl <- 0.00111; label("Additive EASI effect on linear CL (L/day per EASI unit)")                                                  # Table S2 BEASI effect on CL
@@ -82,9 +82,9 @@ Tiraboschi_2025_amlitelimab <- function() {
     # Individual PK parameters
     ka   <- exp(lka + etalka)
     # Linear CL: allometric on the structural term + additive EASI effect (Tiraboschi 2025 Table S2 footnote e)
-    cl   <- exp(lcl + etalcl) * (WT / 75)^allo_cl + e_easi_cl * EASI
-    vc   <- exp(lvc + etalvc) * (WT / 75)^allo_v1
-    vp   <- exp(lvp + etalvp) * (WT / 75)^allo_v2
+    cl   <- exp(lcl + etalcl) * (WT / 75)^e_wt_cl + e_easi_cl * EASI
+    vc   <- exp(lvc + etalvc) * (WT / 75)^e_wt_vc
+    vp   <- exp(lvp + etalvp) * (WT / 75)^e_wt_vp
     q    <- exp(lq)
     vmax <- exp(lvmax)
     km   <- exp(lkm)

@@ -47,7 +47,7 @@ Kielbasa_2020_galcanezumab <- function() {
     # Model form (equation 2 of Kielbasa 2020): CL/F = theta1 * (WT/MED)^theta2
     # with MED = 73.6 kg (population median). Body weight was tested on V/F as well
     # but did not decrease V/F IIV by > 5% and was not retained in the final model.
-    allo_cl_wt <- 0.601; label("Allometric exponent on CL/F for body weight (unitless)")    # Kielbasa 2020 Table 3
+    e_wt_cl <- 0.601; label("Allometric exponent on CL/F for body weight (unitless)")    # Kielbasa 2020 Table 3
 
     # Inter-individual variability - full 3x3 omega block on ka, CL/F, V/F.
     # The source paper reports two covariances (ka/CL/F and CL/F/V/F); the ka-V/F
@@ -67,7 +67,7 @@ Kielbasa_2020_galcanezumab <- function() {
   model({
     # Individual PK parameters with allometric body-weight scaling on CL/F only.
     ka <- exp(lka + etalka)
-    cl <- exp(lcl + etalcl) * (WT / 73.6)^allo_cl_wt
+    cl <- exp(lcl + etalcl) * (WT / 73.6)^e_wt_cl
     vc <- exp(lvc + etalvc)
 
     kel <- cl / vc

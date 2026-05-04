@@ -71,8 +71,8 @@ Valenzuela_2025_nipocalimab <- function() {
     lvc     <- log(3.23);   label("Central volume of distribution for a 75 kg adult (L)")                 # Table 3: Vc = 3.23 L
     lq      <- log(0.250);  label("Intercompartmental clearance for a 75 kg adult (L/day)")               # Table 3: Q = 0.250 L/d
     lvp     <- log(0.622);  label("Peripheral volume of distribution for a 75 kg adult (L)")              # Table 3: Vp = 0.622 L
-    allo_cl <- fixed(0.75); label("Allometric exponent on CL and Q (unitless)")                           # Eq. 3; fixed per paper footnote
-    allo_v  <- fixed(1);    label("Allometric exponent on Vc and Vp (unitless)")                          # Eq. 3; fixed per paper footnote
+    e_wt_cl_q <- fixed(0.75); label("Allometric exponent on CL and Q (unitless)")                         # Eq. 3; fixed per paper footnote
+    e_wt_vc_vp <- fixed(1);   label("Allometric exponent on Vc and Vp (unitless)")                        # Eq. 3; fixed per paper footnote
 
     # ---- FcRn target turnover (Table 3) ----
     # FcRn0 reported in nmol/L by the paper; converted to ug/mL inside model()
@@ -143,10 +143,10 @@ Valenzuela_2025_nipocalimab <- function() {
     MW <- 142000             # Nipocalimab molecular weight, g/mol (derived from paper results section)
 
     # ---- Individual PK parameters with allometric weight scaling (reference 75 kg) ----
-    cl <- exp(lcl + etalcl) * (WT / 75)^allo_cl
-    vc <- exp(lvc + etalvc) * (WT / 75)^allo_v
-    q  <- exp(lq)           * (WT / 75)^allo_cl
-    vp <- exp(lvp)          * (WT / 75)^allo_v
+    cl <- exp(lcl + etalcl) * (WT / 75)^e_wt_cl_q
+    vc <- exp(lvc + etalvc) * (WT / 75)^e_wt_vc_vp
+    q  <- exp(lq)           * (WT / 75)^e_wt_cl_q
+    vp <- exp(lvp)          * (WT / 75)^e_wt_vc_vp
 
     # ---- Individual FcRn target parameters ----
     # FcRn0 stored in nmol/L (paper reporting unit); converted to ug/mL here so

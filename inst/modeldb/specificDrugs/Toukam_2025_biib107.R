@@ -54,10 +54,10 @@ Toukam_2025_biib107 <- function() {
     # Allometric exponents on body weight (reference 70 kg). Toukam 2025
     # Table 3: exponent on CL was estimated at 1.07 (RSE 39.7%); exponents
     # on V2, V3, and Q were fixed at 1, 1, and 0.75 respectively.
-    allo_cl <- 1.07;          label("Allometric exponent on CL (estimated, unitless)")  # Toukam 2025 Table 3 (Exponent on CL 1.07 estimated)
-    allo_vc <- fixed(1);      label("Allometric exponent on V2 (FIXED, unitless)")      # Toukam 2025 Table 3 (Exponent on V2 1 FIXED)
-    allo_vp <- fixed(1);      label("Allometric exponent on V3 (FIXED, unitless)")      # Toukam 2025 Table 3 (Exponent on V3 1 FIXED)
-    allo_q  <- fixed(0.75);   label("Allometric exponent on Q (FIXED, unitless)")       # Toukam 2025 Table 3 (Exponent on Q 0.75 FIXED)
+    e_wt_cl <- 1.07;          label("Allometric exponent on CL (estimated, unitless)")  # Toukam 2025 Table 3 (Exponent on CL 1.07 estimated)
+    e_wt_vc <- fixed(1);      label("Allometric exponent on V2 (FIXED, unitless)")      # Toukam 2025 Table 3 (Exponent on V2 1 FIXED)
+    e_wt_vp <- fixed(1);      label("Allometric exponent on V3 (FIXED, unitless)")      # Toukam 2025 Table 3 (Exponent on V3 1 FIXED)
+    e_wt_q  <- fixed(0.75);   label("Allometric exponent on Q (FIXED, unitless)")       # Toukam 2025 Table 3 (Exponent on Q 0.75 FIXED)
 
     # Inter-individual variability on log-transformed parameters. Paper
     # reports CV%; converted via omega^2 = log(CV^2 + 1). IIV was retained
@@ -107,10 +107,10 @@ Toukam_2025_biib107 <- function() {
     # and Q only).
     # ------------------------------------------------------------------
     ka   <- exp(lka + etalka)
-    cl   <- exp(lcl + etalcl) * (WT / 70)^allo_cl
-    vc   <- exp(lvc + etalvc) * (WT / 70)^allo_vc
-    vp   <- exp(lvp)          * (WT / 70)^allo_vp
-    q    <- exp(lq)           * (WT / 70)^allo_q
+    cl   <- exp(lcl + etalcl) * (WT / 70)^e_wt_cl
+    vc   <- exp(lvc + etalvc) * (WT / 70)^e_wt_vc
+    vp   <- exp(lvp)          * (WT / 70)^e_wt_vp
+    q    <- exp(lq)           * (WT / 70)^e_wt_q
     vmax <- exp(lvmax)
     km   <- exp(lkm)
 
