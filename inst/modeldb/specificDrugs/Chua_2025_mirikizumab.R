@@ -70,8 +70,8 @@ Chua_2025_mirikizumab <- function() {
     # Allometric-style body-weight exponents (Chua 2025 VIVID-1 Table 2
     # footnote c/d). Shared across CL and Q for clearance and across Vc
     # and Vp for volume.
-    e_wt_cl <- 0.268; label("Power exponent of body weight on CL and Q (unitless)")  # Chua 2025 Table 2 VIVID-1
-    e_wt_v  <- 0.445; label("Power exponent of body weight on Vc and Vp (unitless)") # Chua 2025 Table 2 VIVID-1
+    e_wt_cl_q  <- 0.268; label("Shared power exponent of body weight on CL and Q (unitless)")  # Chua 2025 Table 2 VIVID-1
+    e_wt_vc_vp <- 0.445; label("Shared power exponent of body weight on Vc and Vp (unitless)") # Chua 2025 Table 2 VIVID-1
 
     # Covariate effects on CL (Table 2 footnote c, VIVID-1):
     #   CL_i = CL * (WT/65)^0.268 * (1 + (ALB-44.57) * -0.02) * (CRP/7.41)^0.0853
@@ -110,16 +110,16 @@ Chua_2025_mirikizumab <- function() {
     # ALB_ref = 44.57 g/L, CRP_ref = 7.41 mg/L, BMI_ref = 24.75 kg/m^2.
 
     # Covariate multipliers
-    wt_cl <- (WT / 65)^e_wt_cl
-    wt_v  <- (WT / 65)^e_wt_v
+    wt_cl_q  <- (WT / 65)^e_wt_cl_q
+    wt_vc_vp <- (WT / 65)^e_wt_vc_vp
     alb_cl <- 1 + (ALB - 44.57) * e_alb_cl
     crp_cl <- (CRP / 7.41)^e_crp_cl
 
     ka <- exp(lka)
-    cl <- exp(lcl + etalcl) * wt_cl * alb_cl * crp_cl
-    vc <- exp(lvc + etalvc) * wt_v
-    vp <- exp(lvp + etalvp) * wt_v
-    q  <- exp(lq)           * wt_cl
+    cl <- exp(lcl + etalcl) * wt_cl_q  * alb_cl * crp_cl
+    vc <- exp(lvc + etalvc) * wt_vc_vp
+    vp <- exp(lvp + etalvp) * wt_vc_vp
+    q  <- exp(lq)           * wt_cl_q
 
     # Bioavailability on logit scale with linear BMI effect.
     logit_f <- logitfdepot + etalogitfdepot + e_bmi_fdepot * (BMI - 24.75)
