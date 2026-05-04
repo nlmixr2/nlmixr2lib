@@ -66,12 +66,52 @@ PK models should use the following parameter naming conventions:
   compartments)
 * `vc`: central volume of distribution
 * `vp`, `vp2`: first and second peripheral compartment volumes
+* `vmax`: Michaelis-Menten Vmax (when nonlinear / saturable elimination is
+  needed). Never `vm`.
+
+Volume parameters always use `vc`, `vp`, `vp2`. Never use generic numbered
+volumes like `v`, `v1`, `v2`, `vc1`, `vc2`, etc., even when the source paper
+or NONMEM `linCmt()` macro uses that style; the NONMEM mapping `v1`→`vc`,
+`v2`→`vp`, `v3`→`vp2` should be applied during model extraction.
 
 When micro-constants are used, they should use the following naming conventions:
 
 * `kel` elimination rate (`cl/vc`)
 * `k12`, `k21`, `k13`, `k31`: intercompartmental transit rates (`q/vc`, `q/vp`,
   `q2/vc`, and  `q2/vp2`, respectively)
+
+### Multi-component clearance
+
+For models that report multiple CL terms (e.g., a steady-state arm plus a
+time-varying decay arm), use the registered CL component suffixes:
+
+* `cl_ss`, `lcl_ss`: steady-state CL component
+* `cl_time`, `lcl_time`: time-varying decay arm of CL
+
+### Parent drug + metabolite parameters
+
+For models that track a parent drug AND one or more metabolites
+(antibody-drug conjugates with payload, mAbs that release a small
+molecule, etc.), the parent uses the canonical parameter names without
+any suffix; the metabolite carries a lowercase paper-name suffix at the
+end:
+
+```r
+# Parent ADC
+lcl, lvc, lq, lvp                 # canonical, unsuffixed
+# MMAE metabolite
+lcl_mmae, lvc_mmae, lq_mmae       # _mmae suffix
+```
+
+Registered metabolite suffixes (defined in `R/conventions.R::registeredMetabolites`):
+`mmae`, `dxd`, `sn38`, `dm4`, `medm4`, `mcmmaf`, `complex`, `ige`, `tab`,
+`nab`, `dar0`–`dar8`. Add a new metabolite by editing
+`R/conventions.R::registeredMetabolites`.
+
+Compartment names follow the same rule: parent uses `central`,
+`peripheral1`, `peripheral2`; metabolite uses `central_<metab>`,
+`peripheral1_<metab>`. Multi-output observation variables: parent stays
+`Cc`; metabolite outputs become `Cc_<metab>` (e.g., `Cc_mmae`).
 
 ## Parameter transforms
 
@@ -102,6 +142,35 @@ variability.)
 Random effect parameters should prefix the (transformed) parameter name with
 `eta`.  For example, a random effect on log-transformed clearance would be named
 `etalcl`.
+
+## Covariate effects
+
+Covariate-effect parameters use the canonical form `e_<cov>_<param>`,
+with the covariate token first and the parameter token second:
+
+```r
+e_wt_cl       # WT effect on CL
+e_alb_vc      # ALB effect on Vc
+e_ada_cl      # ADA effect on CL
+```
+
+Never reverse the order (`e_cl_wt` is wrong).
+
+When a covariate effect is tied to a metabolite, a paired parameter
+(shared exponent), or a multi-component CL arm, append the appropriate
+token:
+
+* Metabolite-suffixed: `e_<cov>_<param>_<metab>`
+  (e.g., `e_wt_cl_mmae`, `e_alb_cl_dxd`).
+* Shared exponent (one estimated value applied to two parameters):
+  `e_<cov>_<param1>_<param2>` (e.g., `e_wt_cl_q`, `e_wt_vc_vp`).
+  Source-paper terms `clq`/`vss`/`vcvp` map to `cl_q`/`vc_vp`/`vc_vp`
+  respectively (Vss = Vc + Vp, so `e_<cov>_vss` becomes `e_<cov>_vc_vp`).
+* Multi-component CL: `e_<cov>_cl_ss` or `e_<cov>_cl_time`.
+
+Categorical / binary covariates each get their own parameter — do not
+omit the parameter token. `e_asian_cl`, `e_black_cl`, `e_multiracial_cl`
+are correct; `e_asian` (no parameter token) is not.
 
 ## Drug effects
 

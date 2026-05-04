@@ -13,28 +13,74 @@
 #' @noRd
 .nlmixr2libConventionsStatic <- list(
   pkParams = c(
-    "lka", "lcl", "lvc", "lvp", "lvp2", "lq", "lq2", "lfdepot"
+    "lka", "lcl", "lvc", "lvp", "lvp2", "lq", "lq2", "lfdepot",
+    "lvmax", "lcl_ss", "lcl_time"
   ),
   pkBareParams = c(
     "ka", "cl", "vc", "vp", "vp2", "q", "q2", "kel",
-    "k12", "k21", "k13", "k31", "fdepot"
+    "k12", "k21", "k13", "k31", "fdepot",
+    "vmax", "cl_ss", "cl_time"
   ),
   compartments = c(
     "depot", "central", "peripheral1", "peripheral2", "effect",
     "target", "complex", "total_target"
   ),
-  compartmentRegex = "^(transit|effect)[0-9]+$",
+  # Bare numbered chains (transit / effect / precursor / lat / dar) and
+  # metabolite-suffixed compartments are validated separately via
+  # .matchesCompartment() so that the registered metabolite list can be
+  # honored at runtime; this static regex covers only the numbered-chain
+  # patterns.
+  compartmentRegex = "^(transit|effect|precursor|lat)[0-9]+$",
+  darCompartmentRegex = "^dar[0-9]+_(central|peripheral[0-9]?)$",
   observationVar = "Cc",
   residualError = c("propSd", "addSd"),
   transformPrefixes = c("l", "logit", "probit"),
-  covEffectPattern = "^e_[A-Za-z0-9]+_[A-Za-z0-9]+$",
+  # Covariate-effect names match e_<cov>(_<continuation>)+_<param>
+  # (canonical) or have an additional trailing token for metabolite /
+  # shared / CL-component (e_<cov>_<param>_<suffix>). The pattern
+  # accepts up to 6 underscore-separated tokens after the leading "e_"
+  # to accommodate compound covariates (RACE_BLACK, ADA_POSITIVE,
+  # FORM_CHO_PHASE2). Semantic interpretation of the trailing tokens
+  # is handled by .classifyCovEffect().
+  covEffectPattern = "^e_[A-Za-z0-9]+(_[A-Za-z0-9]+){1,5}$",
+  # Lowercase paper / payload names allowed as a third-token suffix on
+  # parameters and compartments for a non-parent species. The set is
+  # extended whenever a new ADC payload, target binding partner, or
+  # secondary-analyte appears in a model. Keep mutually disjoint from
+  # pkBareParams and clComponents to preserve covariate-effect
+  # disambiguation.
+  registeredMetabolites = c(
+    "mmae", "dxd", "sn38", "dm4", "medm4", "mcmmaf",
+    "complex", "ige", "tab", "nab",
+    "dar0", "dar1", "dar2", "dar3", "dar4", "dar5", "dar6", "dar7", "dar8"
+  ),
+  # Suffixes allowed for multi-component CL parameters. `_ss` denotes
+  # the steady-state arm; `_time` denotes the time-varying decay arm.
+  clComponents = c("ss", "time"),
+  # Paper-named mechanistic parameters that don't fit any canonical PK
+  # naming pattern but recur across published models. Treated as
+  # acceptable bare names (with the usual `l<name>` convention if
+  # log-transformed). Add to this list rather than introducing a new
+  # ad-hoc pattern.
+  paperNamedParams = c(
+    "kd", "kd0", "kdes", "kdecay", "krel", "kss", "kint",
+    "frac", "alfm", "ksyn", "p", "vd", "kcat", "kpro", "krmr"
+  ),
   requiredUnits = c("time", "dosing", "concentration"),
   requiredMetadata = c("description", "reference", "units"),
   deprecatedResidualError = c(
     "prop.err", "add.err", "propErr", "addErr",
     "err.prop", "err.add"
   ),
-  deprecatedIivPrefixes = c("iiv_", "IIV_", "bsv_", "BSV_")
+  deprecatedIivPrefixes = c("iiv_", "IIV_", "bsv_", "BSV_"),
+  # Bare volume names that should be replaced with vc / vp / vp2.
+  deprecatedVolumeNames = c("v", "v1", "v2", "v3", "lv", "lv1", "lv2", "lv3"),
+  # Deprecated Michaelis-Menten Vmax names.
+  deprecatedVmaxNames = c("vm", "lvm"),
+  # Deprecated parent-suffix marker. A model that names a parent-side
+  # parameter `<base>_adc` should drop the `_adc` suffix; the parent
+  # uses the canonical name unsuffixed.
+  deprecatedParentSuffix = "_adc"
 )
 
 .covariateRegisterCache <- new.env(parent = emptyenv())
@@ -218,4 +264,98 @@
     }
   }
   out
+}
+
+# Return TRUE when `name` is a canonical log-transformed PK parameter or
+# a metabolite-suffixed PK parameter (`l<base>_<metab>`).
+.isPkParam <- function(name, conv) {
+  if (name %in% conv$pkParams) return(TRUE)
+  for (metab in conv$registeredMetabolites) {
+    suf <- paste0("_", metab)
+    if (endsWith(name, suf)) {
+      base <- substr(name, 1, nchar(name) - nchar(suf))
+      if (base %in% conv$pkParams) return(TRUE)
+    }
+  }
+  FALSE
+}
+
+# Return TRUE when `name` is a canonical bare PK parameter or a
+# metabolite-suffixed bare PK parameter (`<base>_<metab>`).
+.isPkBareParam <- function(name, conv) {
+  if (name %in% conv$pkBareParams) return(TRUE)
+  for (metab in conv$registeredMetabolites) {
+    suf <- paste0("_", metab)
+    if (endsWith(name, suf)) {
+      base <- substr(name, 1, nchar(name) - nchar(suf))
+      if (base %in% conv$pkBareParams) return(TRUE)
+    }
+  }
+  FALSE
+}
+
+# Compartment name validator. Recognizes:
+#   - canonical names from conv$compartments
+#   - numbered chains via conv$compartmentRegex (transit/effect/precursor/lat)
+#   - DAR-numbered ADC isoforms via conv$darCompartmentRegex
+#   - metabolite-suffixed compartments: <canonical>_<metab>
+.matchesCompartment <- function(name, conv) {
+  if (name %in% conv$compartments) return(TRUE)
+  if (grepl(conv$compartmentRegex, name)) return(TRUE)
+  if (grepl(conv$darCompartmentRegex, name)) return(TRUE)
+  for (metab in conv$registeredMetabolites) {
+    suf <- paste0("_", metab)
+    if (endsWith(name, suf)) {
+      base <- substr(name, 1, nchar(name) - nchar(suf))
+      if (base %in% conv$compartments) return(TRUE)
+    }
+  }
+  FALSE
+}
+
+# TRUE when `name` ends with `_<metab>` for any registered metabolite.
+.endsWithMetabolite <- function(name, conv) {
+  for (metab in conv$registeredMetabolites) {
+    if (endsWith(name, paste0("_", metab))) return(TRUE)
+  }
+  FALSE
+}
+
+# TRUE when `name` ends with `_<component>` for any registered CL component.
+.endsWithClComponent <- function(name, conv) {
+  for (comp in conv$clComponents) {
+    if (endsWith(name, paste0("_", comp))) return(TRUE)
+  }
+  FALSE
+}
+
+# TRUE when `name` ends with `_<param>` for any bare PK parameter.
+# Used to detect shared-exponent covariate effects like e_wt_cl_q.
+.endsWithBarePkParam <- function(name, conv) {
+  for (p in conv$pkBareParams) {
+    if (endsWith(name, paste0("_", p))) return(TRUE)
+  }
+  FALSE
+}
+
+# Classify a covariate-effect name by its trailing suffix. Returns one of:
+#   "two_token"  - matches e_<cov>_<param> with no third-token suffix
+#   "metabolite" - matches e_<cov>_<param>_<metab>
+#   "shared"     - matches e_<cov>_<param>_<param2> (shared exponent)
+#   "component"  - matches e_<cov>_<param>_<component> (multi-CL arm)
+#   "unknown"    - has a third-token suffix that doesn't match any
+#                  registered category
+.classifyCovEffect <- function(name, conv) {
+  if (!startsWith(name, "e_")) return(NA_character_)
+  if (!grepl(conv$covEffectPattern, name)) return(NA_character_)
+  if (.endsWithMetabolite(name, conv)) return("metabolite")
+  if (.endsWithClComponent(name, conv)) return("component")
+  if (.endsWithBarePkParam(name, conv)) return("shared")
+  # Strip the leading `e_` and check whether the rest is a single
+  # `<cov>_<param>` pair (no third-token suffix). If yes, two_token;
+  # otherwise the name has an unrecognized trailing suffix.
+  rest <- substr(name, 3, nchar(name))
+  parts <- strsplit(rest, "_", fixed = TRUE)[[1]]
+  if (length(parts) == 2) return("two_token")
+  "unknown"
 }

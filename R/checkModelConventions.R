@@ -238,12 +238,14 @@ checkModelConventions <- function(model, verbose = TRUE) {
 }
 
 .classifyParam <- function(name, conv) {
-  if (name %in% conv$pkParams) return("canonical_pk")
-  if (grepl(conv$covEffectPattern, name)) return("cov_effect")
+  if (.isPkParam(name, conv)) return("canonical_pk")
+  if (grepl(conv$covEffectPattern, name) && startsWith(name, "e_")) {
+    return("cov_effect")
+  }
   if (grepl("^l[A-Za-z]", name)) return("log_transformed")
   if (grepl("^logit[A-Za-z0-9]", name)) return("logit_transformed")
   if (grepl("^probit[A-Za-z0-9]", name)) return("probit_transformed")
-  if (name %in% conv$pkBareParams) return("bare_pk")
+  if (.isPkBareParam(name, conv)) return("bare_pk")
   "other"
 }
 
@@ -523,15 +525,24 @@ checkModelConventions <- function(model, verbose = TRUE) {
 .checkCompartments <- function(ui, conv) {
   issues <- .emptyIssues()
   cmts <- ui$props$cmt %||% character()
-  allowed <- conv$compartments
   for (cm in cmts) {
-    if (cm %in% allowed) next
-    if (grepl(conv$compartmentRegex, cm)) next
+    if (.matchesCompartment(cm, conv)) next
     issues <- rbind(issues, .issue(
       "compartments", "warning", cm,
       sprintf("Compartment '%s' is not a canonical name.", cm),
-      sprintf("Use one of: %s (or transit<n>). For new therapeutic-area compartments, open a GitHub issue first.",
-              paste(allowed, collapse = ", "))
+      sprintf(
+        paste0(
+          "Use one of: %s; numbered chains (transit<n>, effect<n>, ",
+          "precursor<n>, lat<n>); DAR-numbered (dar<n>_central, ",
+          "dar<n>_peripheral<m>); or metabolite-suffixed ",
+          "(<canonical>_<metab>, e.g. central_mmae). Registered ",
+          "metabolites: %s. For new payloads or therapeutic-area ",
+          "compartments, register the new metabolite/compartment in ",
+          "R/conventions.R first."
+        ),
+        paste(conv$compartments, collapse = ", "),
+        paste(conv$registeredMetabolites, collapse = ", ")
+      )
     ))
   }
   issues
@@ -550,6 +561,30 @@ checkModelConventions <- function(model, verbose = TRUE) {
       sprintf("Rename observation and its residual-error assignment to '%s'.",
               conv$observationVar)
     ))
+    return(issues)
+  }
+  # Multi-output: flag deprecated `C<metab>` style (e.g. Cmmae, Cdxd, Cdar0)
+  # and suggest the canonical `Cc_<metab>` form for PK metabolite outputs.
+  for (v in obs_vars) {
+    if (is.na(v) || v == conv$observationVar) next
+    if (startsWith(v, "Cc_")) next  # already canonical metabolite output
+    if (!startsWith(v, "C")) next   # non-PK output (tumorSize, freeIgE, ...)
+    rest <- substr(v, 2, nchar(v))
+    rest_lc <- tolower(rest)
+    if (rest_lc %in% conv$registeredMetabolites) {
+      issues <- rbind(issues, .issue(
+        "observation", "warning", v,
+        sprintf(
+          paste0(
+            "Multi-output observation '%s' uses the deprecated 'C<metab>' ",
+            "form for a PK metabolite output."
+          ),
+          v
+        ),
+        sprintf("Rename to 'Cc_%s' to match the canonical metabolite-suffix convention.",
+                rest_lc)
+      ))
+    }
   }
   issues
 }
@@ -661,6 +696,153 @@ checkModelConventions <- function(model, verbose = TRUE) {
         break
       }
     }
+    issues <- rbind(issues, .checkDeprecatedVolumeOrVmaxName(nm, conv))
+    issues <- rbind(issues, .checkDeprecatedAdcSuffix(nm, conv))
+    issues <- rbind(issues, .checkDeprecatedCovEffectSuffix(nm, conv))
+  }
+  issues
+}
+
+# Flag bare-volume and Vmax names that have canonical replacements:
+#   v / v1 / lv / lv1 -> vc / lvc
+#   v2 / lv2 / v3 / lv3 -> ambiguous (vp / vp2); ask the source paper
+#   vm / lvm -> vmax / lvmax
+.checkDeprecatedVolumeOrVmaxName <- function(nm, conv) {
+  issues <- .emptyIssues()
+  if (nm %in% c("v", "v1", "lv", "lv1")) {
+    canonical <- if (startsWith(nm, "l")) "lvc" else "vc"
+    issues <- rbind(issues, .issue(
+      "deprecated_names", "warning", nm,
+      sprintf("'%s' is a deprecated central-volume name.", nm),
+      sprintf("Rename to '%s' (canonical central volume).", canonical)
+    ))
+  } else if (nm %in% c("v2", "lv2")) {
+    canonical <- if (startsWith(nm, "l")) "lvp (likely) or lvc if v1 is depot" else "vp (likely) or vc"
+    issues <- rbind(issues, .issue(
+      "deprecated_names", "warning", nm,
+      sprintf("'%s' is a deprecated numbered-volume name.", nm),
+      sprintf("Verify against the source paper and rename to %s.", canonical)
+    ))
+  } else if (nm %in% c("v3", "lv3")) {
+    canonical <- if (startsWith(nm, "l")) "lvp2" else "vp2"
+    issues <- rbind(issues, .issue(
+      "deprecated_names", "warning", nm,
+      sprintf("'%s' is a deprecated numbered-volume name.", nm),
+      sprintf("Rename to '%s' (second peripheral volume).", canonical)
+    ))
+  } else if (nm %in% c("vm", "lvm")) {
+    canonical <- if (startsWith(nm, "l")) "lvmax" else "vmax"
+    issues <- rbind(issues, .issue(
+      "deprecated_names", "warning", nm,
+      sprintf("'%s' is a deprecated Michaelis-Menten Vmax name.", nm),
+      sprintf("Rename to '%s'.", canonical)
+    ))
+  }
+  issues
+}
+
+# Flag the parent `_adc` suffix: a parent-side ADC parameter should drop
+# the `_adc` since the parent uses canonical names. Detect both
+# parameter names (lcl_adc) and covariate-effect names (e_wt_cl_adc).
+.checkDeprecatedAdcSuffix <- function(nm, conv) {
+  issues <- .emptyIssues()
+  if (endsWith(nm, "_adc")) {
+    suggested <- substr(nm, 1, nchar(nm) - 4)
+    issues <- rbind(issues, .issue(
+      "deprecated_names", "warning", nm,
+      sprintf(
+        paste0(
+          "'%s' uses the deprecated parent-ADC suffix '_adc'. ",
+          "Parent-drug parameters should use the canonical name ",
+          "without a suffix; metabolite parameters carry the suffix."
+        ),
+        nm
+      ),
+      sprintf("Drop the '_adc' suffix and rename to '%s'.", suggested)
+    ))
+  }
+  issues
+}
+
+# Flag covariate-effect names whose parameter token is a deprecated
+# numbered/synthesized form. Examples:
+#   e_wt_v / _v1 -> e_wt_vc;  _v2 -> e_wt_vp (verify)
+#   e_wt_clq -> e_wt_cl_q;  e_wt_vcvp -> e_wt_vc_vp
+#   e_wt_clinf -> e_wt_cl_ss;  e_wt_clt -> e_wt_cl_time
+#   e_wt_vss -> e_wt_vc_vp;  e_wt_clss -> e_wt_cl_ss
+.checkDeprecatedCovEffectSuffix <- function(nm, conv) {
+  issues <- .emptyIssues()
+  if (!startsWith(nm, "e_")) return(issues)
+  if (!grepl(conv$covEffectPattern, nm)) return(issues)
+  # Reverse-order: e_<param>_<cov>(_<extra>)*. Detect when the FIRST
+  # token is a bare PK parameter (cl, vc, vp, q, ka, ...) and the SECOND
+  # token (or the joined remainder for compound covariates) maps to a
+  # known canonical covariate. The canonical order is e_<cov>_<param>.
+  rest <- substr(nm, 3, nchar(nm))
+  parts <- strsplit(rest, "_", fixed = TRUE)[[1]]
+  if (length(parts) >= 2) {
+    first <- parts[1]
+    canonical_covs <- names(conv$canonicalCovariates %||% list())
+    canonical_covs_lc <- tolower(canonical_covs)
+    alias_map <- .nlmixr2libCovariateAliasMap()
+    canonical_aliases_lc <- tolower(names(alias_map))
+    is_known_cov <- function(tok) {
+      tolower(tok) %in% c(canonical_covs_lc, canonical_aliases_lc)
+    }
+    # Try the second token, then second+third, then second+third+fourth
+    # — covers compound covariates like RACE_BLACK, ADA_POSITIVE,
+    # FORM_CHO_PHASE2.
+    second_or_more <- character()
+    for (j in 2:length(parts)) {
+      second_or_more <- c(
+        second_or_more,
+        paste(parts[2:j], collapse = "_")
+      )
+    }
+    if (first %in% conv$pkBareParams &&
+        any(vapply(second_or_more, is_known_cov, logical(1)))) {
+      issues <- rbind(issues, .issue(
+        "deprecated_names", "warning", nm,
+        sprintf(
+          paste0(
+            "'%s' looks like a reversed-order covariate effect ",
+            "(e_<param>_<cov>); the canonical order is e_<cov>_<param>."
+          ),
+          nm
+        ),
+        sprintf("Rename to e_<cov>_<param>; verify the covariate identity in the source.")
+      ))
+      return(issues)
+    }
+  }
+  # Trailing token deprecations (parameter token that's a deprecated form).
+  trailing_token <- parts[length(parts)]
+  trailing_map <- list(
+    v   = "vc",
+    v1  = "vc",
+    v2  = "vp (verify against source)",
+    v3  = "vp2",
+    vm  = "vmax",
+    clq = "cl_q (split shared exponent)",
+    vcvp = "vc_vp (split shared exponent)",
+    vss = "vc_vp (Vss = Vc + Vp; split shared exponent)",
+    clinf = "cl_ss",
+    clss  = "cl_ss",
+    clt   = "cl_time"
+  )
+  if (trailing_token %in% names(trailing_map)) {
+    canonical <- trailing_map[[trailing_token]]
+    issues <- rbind(issues, .issue(
+      "deprecated_names", "warning", nm,
+      sprintf(
+        paste0(
+          "'%s' uses a deprecated parameter-token '%s' in a ",
+          "covariate-effect name."
+        ),
+        nm, trailing_token
+      ),
+      sprintf("Rename the parameter portion to '%s'.", canonical)
+    ))
   }
   issues
 }
