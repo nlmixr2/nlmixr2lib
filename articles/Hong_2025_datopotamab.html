@@ -253,7 +253,7 @@ cycle.</p>
 <p>Concentrations are in <code>mg/L</code> (= <code>ug/mL</code>) for
 both analytes inside the model; DXd is conventionally reported in
 <code>ng/mL</code> and is rescaled outside the model
-(<code>Cdxd_ng_mL = Cdxd * 1000</code>).</p>
+(<code>Cc_dxd_ng_mL = Cc_dxd * 1000</code>).</p>
 </div>
 <div class="section level2">
 <h2 id="population">Population<a class="anchor" aria-label="anchor" href="#population"></a>
@@ -338,28 +338,28 @@ an in-file comment pointing to Hong 2025 Table 1, Table 2, or Equations
 <tbody>
 <tr class="odd">
 <td>
-<code>lcl_adc</code> -&gt; CL_lin</td>
+<code>lcl</code> -&gt; CL_lin</td>
 <td align="right">0.386</td>
 <td>L/day</td>
 <td>Table 1, Eq. 8</td>
 </tr>
 <tr class="even">
 <td>
-<code>lvc_adc</code> -&gt; Vc</td>
+<code>lvc</code> -&gt; Vc</td>
 <td align="right">3.06</td>
 <td>L</td>
 <td>Table 1, Eq. 9</td>
 </tr>
 <tr class="odd">
 <td>
-<code>lq_adc</code> -&gt; Q</td>
+<code>lq</code> -&gt; Q</td>
 <td align="right">0.422</td>
 <td>L/day</td>
 <td>Table 1</td>
 </tr>
 <tr class="even">
 <td>
-<code>lvp_adc</code> -&gt; Vp</td>
+<code>lvp</code> -&gt; Vp</td>
 <td align="right">2.88</td>
 <td>L</td>
 <td>Table 1, Eq. 10</td>
@@ -379,49 +379,49 @@ an in-file comment pointing to Hong 2025 Table 1, Table 2, or Equations
 <td>Table 1, Eq. 11 (4490 ng/mL)</td>
 </tr>
 <tr class="odd">
-<td><code>e_wt_cl_adc</code></td>
+<td><code>e_wt_cl</code></td>
 <td align="right">0.75 (fixed)</td>
 <td>-</td>
 <td>Table 1</td>
 </tr>
 <tr class="even">
-<td><code>e_wt_vc_adc</code></td>
+<td><code>e_wt_vc</code></td>
 <td align="right">0.415</td>
 <td>-</td>
 <td>Table 1</td>
 </tr>
 <tr class="odd">
-<td><code>e_wt_vp_adc</code></td>
+<td><code>e_wt_vp</code></td>
 <td align="right">0.311</td>
 <td>-</td>
 <td>Table 1</td>
 </tr>
 <tr class="even">
-<td><code>e_age_cl_adc</code></td>
+<td><code>e_age_cl</code></td>
 <td align="right">-0.306</td>
 <td>-</td>
 <td>Table 1</td>
 </tr>
 <tr class="odd">
-<td><code>e_alb_cl_adc</code></td>
+<td><code>e_alb_cl</code></td>
 <td align="right">-0.788</td>
 <td>-</td>
 <td>Table 1</td>
 </tr>
 <tr class="even">
-<td><code>e_japan_cl_adc</code></td>
+<td><code>e_japan_cl</code></td>
 <td align="right">-0.219</td>
 <td>-</td>
 <td>Table 1</td>
 </tr>
 <tr class="odd">
-<td><code>e_sexf_cl_adc</code></td>
+<td><code>e_sexf_cl</code></td>
 <td align="right">-0.263</td>
 <td>-</td>
 <td>Table 1</td>
 </tr>
 <tr class="even">
-<td><code>e_sexf_vc_adc</code></td>
+<td><code>e_sexf_vc</code></td>
 <td align="right">-0.160</td>
 <td>-</td>
 <td>Table 1</td>
@@ -509,13 +509,13 @@ an in-file comment pointing to Hong 2025 Table 1, Table 2, or Equations
 <td>Table 2</td>
 </tr>
 <tr class="even">
-<td><code>CcpropSd</code></td>
+<td><code>propSd</code></td>
 <td align="right">0.121</td>
 <td>fraction</td>
 <td>Table 1 (additive RUV log scale)</td>
 </tr>
 <tr class="odd">
-<td><code>CdxdpropSd</code></td>
+<td><code>propSd_dxd</code></td>
 <td align="right">0.283</td>
 <td>fraction</td>
 <td>Table 2 (additive RUV log scale)</td>
@@ -605,7 +605,7 @@ an in-file comment pointing to Hong 2025 Table 1, Table 2, or Equations
 <span>  <span class="va">dose_mg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="fl">6</span> <span class="op">*</span> <span class="va">wt_kg</span>, <span class="fl">540</span><span class="op">)</span>   <span class="co"># 6 mg/kg Q3W with 540 mg flat-dose cap</span></span>
 <span></span>
 <span>  <span class="va">doses</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/et.html" class="external-link">et</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/et.html" class="external-link">et</a></span><span class="op">(</span>amt <span class="op">=</span> <span class="va">dose_mg</span>, cmt <span class="op">=</span> <span class="st">"adc_central"</span>, ii <span class="op">=</span> <span class="va">cycle_dy</span>,</span>
+<span>    <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/et.html" class="external-link">et</a></span><span class="op">(</span>amt <span class="op">=</span> <span class="va">dose_mg</span>, cmt <span class="op">=</span> <span class="st">"central"</span>, ii <span class="op">=</span> <span class="va">cycle_dy</span>,</span>
 <span>               addl <span class="op">=</span> <span class="va">n_cycles</span> <span class="op">-</span> <span class="fl">1L</span>, time <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
 <span>  <span class="va">obs</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/et.html" class="external-link">et</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0.05</span>, <span class="va">n_cycles</span> <span class="op">*</span> <span class="va">cycle_dy</span>, length.out <span class="op">=</span> <span class="fl">420</span><span class="op">)</span>,</span>
 <span>                    cmt <span class="op">=</span> <span class="st">"Cc"</span><span class="op">)</span></span>
@@ -645,7 +645,7 @@ off:</p>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> parameter labels from comments will be replaced by 'label()'</span></span>
 <span></span>
 <span><span class="va">typ_events</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/et.html" class="external-link">et</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/et.html" class="external-link">et</a></span><span class="op">(</span>amt <span class="op">=</span> <span class="fl">6</span> <span class="op">*</span> <span class="fl">66</span>, cmt <span class="op">=</span> <span class="st">"adc_central"</span>, ii <span class="op">=</span> <span class="va">cycle_dy</span>,</span>
+<span>  <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/et.html" class="external-link">et</a></span><span class="op">(</span>amt <span class="op">=</span> <span class="fl">6</span> <span class="op">*</span> <span class="fl">66</span>, cmt <span class="op">=</span> <span class="st">"central"</span>, ii <span class="op">=</span> <span class="va">cycle_dy</span>,</span>
 <span>             addl <span class="op">=</span> <span class="va">n_cycles</span> <span class="op">-</span> <span class="fl">1L</span>, time <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/et.html" class="external-link">et</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0.05</span>, <span class="va">n_cycles</span> <span class="op">*</span> <span class="va">cycle_dy</span>, length.out <span class="op">=</span> <span class="fl">1500</span><span class="op">)</span>, cmt <span class="op">=</span> <span class="st">"Cc"</span><span class="op">)</span></span>
 <span></span>
@@ -663,17 +663,17 @@ off:</p>
 <span></span>
 <span><span class="va">typ_sim</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">typ</span>, <span class="va">typ_events</span>, returnType <span class="op">=</span> <span class="st">"data.frame"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
-<span>    Cc_ug_mL    <span class="op">=</span> <span class="va">Cc</span>,                <span class="co"># mg/L = ug/mL already</span></span>
-<span>    Cdxd_ng_mL  <span class="op">=</span> <span class="va">Cdxd</span> <span class="op">*</span> <span class="fl">1000</span>        <span class="co"># mg/L -&gt; ng/mL</span></span>
+<span>    Cc_ug_mL      <span class="op">=</span> <span class="va">Cc</span>,                <span class="co"># mg/L = ug/mL already</span></span>
+<span>    Cc_dxd_ng_mL  <span class="op">=</span> <span class="va">Cc_dxd</span> <span class="op">*</span> <span class="fl">1000</span>      <span class="co"># mg/L -&gt; ng/mL</span></span>
 <span>  <span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl_adc', 'etalvc_adc', 'etalq_adc', 'etalvp_adc', 'etalvmax', 'etalcl_dxd', 'etalvc_dxd'</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp', 'etalvmax', 'etalcl_dxd', 'etalvc_dxd'</span></span></code></pre></div>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">typ_sim</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">Cc_ug_mL</span>, <span class="va">Cdxd_ng_mL</span><span class="op">)</span>,</span>
+<span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">Cc_ug_mL</span>, <span class="va">Cc_dxd_ng_mL</span><span class="op">)</span>,</span>
 <span>                      names_to <span class="op">=</span> <span class="st">"analyte"</span>, values_to <span class="op">=</span> <span class="st">"conc"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>analyte <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/recode.html" class="external-link">recode</a></span><span class="op">(</span><span class="va">analyte</span>,</span>
-<span>                          Cc_ug_mL   <span class="op">=</span> <span class="st">"Dato-DXd (ug/mL)"</span>,</span>
-<span>                          Cdxd_ng_mL <span class="op">=</span> <span class="st">"DXd (ng/mL)"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>                          Cc_ug_mL     <span class="op">=</span> <span class="st">"Dato-DXd (ug/mL)"</span>,</span>
+<span>                          Cc_dxd_ng_mL <span class="op">=</span> <span class="st">"DXd (ng/mL)"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">conc</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>colour <span class="op">=</span> <span class="st">"steelblue"</span>, linewidth <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span> <span class="va">analyte</span>, ncol <span class="op">=</span> <span class="fl">1</span>, scales <span class="op">=</span> <span class="st">"free_y"</span><span class="op">)</span> <span class="op">+</span></span>
@@ -751,8 +751,8 @@ residual error preserved.</p>
 <span>                           keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"WT"</span>, <span class="st">"SEXF"</span>, <span class="st">"CYCLE"</span>, <span class="st">"dose_mg"</span><span class="op">)</span>,</span>
 <span>                           returnType <span class="op">=</span> <span class="st">"data.frame"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
-<span>    Cc_ug_mL   <span class="op">=</span> <span class="va">Cc</span>,</span>
-<span>    Cdxd_ng_mL <span class="op">=</span> <span class="va">Cdxd</span> <span class="op">*</span> <span class="fl">1000</span></span>
+<span>    Cc_ug_mL     <span class="op">=</span> <span class="va">Cc</span>,</span>
+<span>    Cc_dxd_ng_mL <span class="op">=</span> <span class="va">Cc_dxd</span> <span class="op">*</span> <span class="fl">1000</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> parameter labels from comments will be replaced by 'label()'</span></span></code></pre></div>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
@@ -783,9 +783,9 @@ panel of Hong 2025 Figure 2.
 <code class="sourceCode R"><span><span class="va">pop_sim</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">time</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span></span>
-<span>    p05 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">Cdxd_ng_mL</span>, <span class="fl">0.05</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span>    p50 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">Cdxd_ng_mL</span>, <span class="fl">0.50</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span>    p95 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">Cdxd_ng_mL</span>, <span class="fl">0.95</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>    p05 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">Cc_dxd_ng_mL</span>, <span class="fl">0.05</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>    p50 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">Cc_dxd_ng_mL</span>, <span class="fl">0.50</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>    p95 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">Cc_dxd_ng_mL</span>, <span class="fl">0.95</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>    .groups <span class="op">=</span> <span class="st">"drop"</span></span>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">p50</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -822,7 +822,7 @@ cycles.</p>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">cycle</span> <span class="op">&lt;=</span> <span class="va">n_cycles</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>treatment <span class="op">=</span> <span class="st">"Dato-DXd 6 mg/kg Q3W"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/transmute.html" class="external-link">transmute</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fl">1L</span>, <span class="va">treatment</span>, cycle <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">cycle</span><span class="op">)</span>,</span>
-<span>            time <span class="op">=</span> <span class="va">time_in_cycle</span>, Cc <span class="op">=</span> <span class="va">Cc_ug_mL</span>, Cdxd <span class="op">=</span> <span class="va">Cdxd_ng_mL</span><span class="op">)</span></span>
+<span>            time <span class="op">=</span> <span class="va">time_in_cycle</span>, Cc <span class="op">=</span> <span class="va">Cc_ug_mL</span>, Cc_dxd <span class="op">=</span> <span class="va">Cc_dxd_ng_mL</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">dose_typ</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
 <span>  id        <span class="op">=</span> <span class="fl">1L</span>,</span>
@@ -858,8 +858,8 @@ cycles.</p>
 <span><span class="va">adc_nca_summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">adc_nca</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">dxd_nca</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span></span>
-<span>  <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAconc.html" class="external-link">PKNCAconc</a></span><span class="op">(</span><span class="va">typ_nca_input</span>, <span class="va">Cdxd</span> <span class="op">~</span> <span class="va">time</span> <span class="op">|</span> <span class="va">treatment</span> <span class="op">+</span> <span class="va">id</span><span class="op">/</span><span class="va">cycle</span><span class="op">)</span>,</span>
-<span>  <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdose.html" class="external-link">PKNCAdose</a></span><span class="op">(</span><span class="va">dose_typ</span>,       <span class="va">amt</span> <span class="op">~</span> <span class="va">time</span> <span class="op">|</span> <span class="va">treatment</span> <span class="op">+</span> <span class="va">id</span> <span class="op">+</span> <span class="va">cycle</span><span class="op">)</span>,</span>
+<span>  <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAconc.html" class="external-link">PKNCAconc</a></span><span class="op">(</span><span class="va">typ_nca_input</span>, <span class="va">Cc_dxd</span> <span class="op">~</span> <span class="va">time</span> <span class="op">|</span> <span class="va">treatment</span> <span class="op">+</span> <span class="va">id</span><span class="op">/</span><span class="va">cycle</span><span class="op">)</span>,</span>
+<span>  <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdose.html" class="external-link">PKNCAdose</a></span><span class="op">(</span><span class="va">dose_typ</span>,         <span class="va">amt</span> <span class="op">~</span> <span class="va">time</span> <span class="op">|</span> <span class="va">treatment</span> <span class="op">+</span> <span class="va">id</span> <span class="op">+</span> <span class="va">cycle</span><span class="op">)</span>,</span>
 <span>  intervals <span class="op">=</span> <span class="va">intervals_q3w</span></span>
 <span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
@@ -1003,7 +1003,7 @@ covariate vector, no IIV):</p>
 <span><span class="va">simulate_typ_wt</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">wt_kg</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">dose_mg</span> <span class="op">&lt;-</span> <span class="kw">if</span> <span class="op">(</span><span class="va">wt_kg</span> <span class="op">&gt;=</span> <span class="fl">90</span><span class="op">)</span> <span class="fl">540</span> <span class="kw">else</span> <span class="fl">6</span> <span class="op">*</span> <span class="va">wt_kg</span></span>
 <span>  <span class="va">ev</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/et.html" class="external-link">et</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/et.html" class="external-link">et</a></span><span class="op">(</span>amt <span class="op">=</span> <span class="va">dose_mg</span>, cmt <span class="op">=</span> <span class="st">"adc_central"</span>, ii <span class="op">=</span> <span class="va">cycle_dy</span>,</span>
+<span>    <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/et.html" class="external-link">et</a></span><span class="op">(</span>amt <span class="op">=</span> <span class="va">dose_mg</span>, cmt <span class="op">=</span> <span class="st">"central"</span>, ii <span class="op">=</span> <span class="va">cycle_dy</span>,</span>
 <span>               addl <span class="op">=</span> <span class="fl">2L</span>, time <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span>            <span class="co"># 3 cycles total</span></span>
 <span>    <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/et.html" class="external-link">et</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0.05</span>, <span class="fl">3</span> <span class="op">*</span> <span class="va">cycle_dy</span>, length.out <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span>, cmt <span class="op">=</span> <span class="st">"Cc"</span><span class="op">)</span></span>
 <span>  <span class="va">ev</span><span class="op">$</span><span class="va">WT</span>            <span class="op">&lt;-</span> <span class="va">wt_kg</span></span>
@@ -1030,11 +1030,11 @@ covariate vector, no IIV):</p>
 <span></span>
 <span><span class="va">wt_sim</span> <span class="op">&lt;-</span> <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map_dfr.html" class="external-link">map_dfr</a></span><span class="op">(</span><span class="va">wt_groups</span><span class="op">$</span><span class="va">wt_med</span>, <span class="va">simulate_typ_wt</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">wt_groups</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"wt_kg"</span> <span class="op">=</span> <span class="st">"wt_med"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl_adc', 'etalvc_adc', 'etalq_adc', 'etalvp_adc', 'etalvmax', 'etalcl_dxd', 'etalvc_dxd'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl_adc', 'etalvc_adc', 'etalq_adc', 'etalvp_adc', 'etalvmax', 'etalcl_dxd', 'etalvc_dxd'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl_adc', 'etalvc_adc', 'etalq_adc', 'etalvp_adc', 'etalvmax', 'etalcl_dxd', 'etalvc_dxd'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl_adc', 'etalvc_adc', 'etalq_adc', 'etalvp_adc', 'etalvmax', 'etalcl_dxd', 'etalvc_dxd'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl_adc', 'etalvc_adc', 'etalq_adc', 'etalvp_adc', 'etalvmax', 'etalcl_dxd', 'etalvc_dxd'</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp', 'etalvmax', 'etalcl_dxd', 'etalvc_dxd'</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp', 'etalvmax', 'etalcl_dxd', 'etalvc_dxd'</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp', 'etalvmax', 'etalcl_dxd', 'etalvc_dxd'</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp', 'etalvmax', 'etalcl_dxd', 'etalvc_dxd'</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp', 'etalvmax', 'etalcl_dxd', 'etalvc_dxd'</span></span>
 <span></span>
 <span><span class="va">wt_sim</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">auc3</span>, <span class="va">cmax3</span><span class="op">)</span>, names_to <span class="op">=</span> <span class="st">"metric"</span>, values_to <span class="op">=</span> <span class="st">"value"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -1131,8 +1131,8 @@ and reverts to 4 (cycle 1) or 4 * 0.696 = 2.78 (cycles 2+) at each new
 dose.</li>
 <li>
 <strong>No bioavailability term.</strong> Dato-DXd is administered
-IV; doses are written directly into <code>adc_central</code> and there
-is no <code>depot</code> compartment.</li>
+IV; doses are written directly into <code>central</code> and there is no
+<code>depot</code> compartment.</li>
 <li>
 <strong>Population metadata.</strong> Median age, median weight, sex
 distribution, and per-region patient counts are not enumerated in the

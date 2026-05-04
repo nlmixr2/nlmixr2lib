@@ -287,8 +287,9 @@ records from four daclizumab HYP clinical studies (Diao 2016 Table
 <tr class="odd">
 <td>PK backbone (<code>lka</code>, <code>lcl</code>, <code>lvc</code>,
 <code>lvp</code>, <code>lq</code>, <code>lfdepot</code>,
-<code>lalag</code>, <code>allo_*</code>, <code>e_dose_50mg_f</code>, PK
-IIV, <code>CcpropSd</code>, <code>CcaddSd</code>)</td>
+<code>lalag</code>, <code>e_wt_cl_q</code>, <code>e_wt_vc_vp</code>,
+<code>e_dose_50mg_f</code>, PK IIV, <code>propSd</code>,
+<code>addSd</code>)</td>
 <td>Othman 2014 Table 2 values</td>
 <td>inherited from <code>Othman_2014_daclizumab.R</code>
 </td>
@@ -337,13 +338,13 @@ IIV, <code>CcpropSd</code>, <code>CcaddSd</code>)</td>
 </tr>
 <tr class="odd">
 <td>
-<code>tregpropSd</code> (proportional residual error)</td>
+<code>propSd_treg</code> (proportional residual error)</td>
 <td>0.501 (CV 50.1%)</td>
 <td>Diao 2016 Table 5</td>
 </tr>
 <tr class="even">
 <td>
-<code>tregaddSd</code> (additive residual error)</td>
+<code>addSd_treg</code> (additive residual error)</td>
 <td>0.416 percentage points</td>
 <td>Diao 2016 Table 5</td>
 </tr>
@@ -654,7 +655,7 @@ reports “Residual error (additive): 0.416” with no explicit unit string.
 The Treg measurement scale is “% of CD4+ T cells” (per Table 5 baseline
 row), so the additive residual error is interpreted here as 0.416
 percentage points; the proportional component (50.1%) is taken as a CV
-on the same scale (<code>tregpropSd &lt;- 0.501</code>).</li>
+on the same scale (<code>propSd_treg &lt;- 0.501</code>).</li>
 </ul>
 </div>
 <div class="section level2">

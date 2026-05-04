@@ -36,11 +36,12 @@ lymphoma (NHL), 234 adult B-cell precursor acute lymphoblastic leukemia
 (BCP-ALL), and 53 pediatric BCP-ALL participants from ITCC-059) and
 adding pediatric-specific covariate effects. The structural model is a
 two-compartment disposition with IV input and a total clearance that
-sums a linear component (CL1) and a time-decaying target-mediated
-component (CLt = CL2 \* exp(-kdes \* time)).
+sums a linear (steady-state) component (CL_SS, the paper’s CL1) and a
+time-decaying target-mediated component (CL_t = CL_TIME \* exp(-kdes \*
+time), the paper’s CL2 arm).
 
 ``` math
-  CL_{\text{total}}(t) = CL_1 + CL_2 \, e^{-k_{\text{des}}\, t}
+  CL_{\text{total}}(t) = CL_{\text{SS}} + CL_{\text{TIME}} \, e^{-k_{\text{des}}\, t}
 ```
 
 - Article: <https://doi.org/10.1007/s40262-024-01386-z>
@@ -75,19 +76,19 @@ collects the mapping in one place for reviewer audit.
 | Element | Source location | Value / form |
 |----|----|----|
 | Two-compartment IV model | Wu 2024 Methods Section 2.3 + Figure 1 (schematic) | `d/dt(central) = -kel*central - k12*central + k21*peripheral1`; `d/dt(peripheral1) = k12*central - k21*peripheral1` |
-| Total clearance | Wu 2024 Methods Section 2.3 | `CL_total = CL1 + CL2 * exp(-kdes * time)` |
-| CL1, V1, CL2, kdes, Q, V2 typical values | Wu 2024 Table 3 | 0.130 L/h, 6.49 L, 0.569 L/h, 0.0577 1/h, 0.0437 L/h, 4.74 L (for an NHL adult at LBM 52.7 kg, AGE 60 y, BLSTABL 0.352, RITUX 0) |
-| LBM on CL1 | Wu 2024 Table 3 | Power: `(LBM/52.7)^1.05` |
-| LBM on V1 | Wu 2024 Table 3 | Power: `(LBM/52.7)^0.977` |
-| LBM on CL2 | Wu 2024 Table 3 | Power: `(LBM/52.7)^0.687` |
-| ALL effect (DIS_BCPALL) on CL1 | Wu 2024 Table 3 | Dummy: `1 + (-0.767)*DIS_BCPALL` |
-| ALL effect on CL2 | Wu 2024 Table 3 | Dummy: `1 + (-0.362)*DIS_BCPALL` |
+| Total clearance | Wu 2024 Methods Section 2.3 | `CL_total = CL_SS + CL_TIME * exp(-kdes * time)` (paper notation: CL1 + CL2*exp(-kdes*time)) |
+| CL_SS, Vc, CL_TIME, kdes, Q, Vp typical values | Wu 2024 Table 3 | 0.130 L/h, 6.49 L, 0.569 L/h, 0.0577 1/h, 0.0437 L/h, 4.74 L (for an NHL adult at LBM 52.7 kg, AGE 60 y, BLSTABL 0.352, RITUX 0) |
+| LBM on CL_SS | Wu 2024 Table 3 | Power: `(LBM/52.7)^1.05` |
+| LBM on Vc | Wu 2024 Table 3 | Power: `(LBM/52.7)^0.977` |
+| LBM on CL_TIME | Wu 2024 Table 3 | Power: `(LBM/52.7)^0.687` |
+| ALL effect (DIS_BCPALL) on CL_SS | Wu 2024 Table 3 | Dummy: `1 + (-0.767)*DIS_BCPALL` |
+| ALL effect on CL_TIME | Wu 2024 Table 3 | Dummy: `1 + (-0.362)*DIS_BCPALL` |
 | ALL effect on kdes | Wu 2024 Table 3 | Dummy: `1 + (-0.924)*DIS_BCPALL` |
 | BLSTABL on kdes (BCP-ALL only) | Wu 2024 Table 3 | Power, gated: `(BLSTABL/0.352)^(-0.0484*DIS_BCPALL)` |
 | AGE on kdes (BCP-ALL only) | Wu 2024 Table 3 | Power, gated: `(AGE/60)^(-0.296*DIS_BCPALL)` |
-| Concomitant rituximab (CONMED_RITUX) on CL1 | Wu 2024 Table 3 | Dummy: `1 + (-0.132)*CONMED_RITUX` |
+| Concomitant rituximab (CONMED_RITUX) on CL_SS | Wu 2024 Table 3 | Dummy: `1 + (-0.132)*CONMED_RITUX` |
 | Reference subject | Wu 2024 Table 3 / Methods | LBM 52.7 kg (population median), AGE 60 y, BLSTABL 0.352 x 10^9, NHL adult (DIS_BCPALL = 0), no concomitant rituximab |
-| IIV (omega^2 = CV^2) | Wu 2024 Table 3 | CV%: CL1 40.0, V1 40.1, CL2 73.7, kdes 59.7. CL1+V1+CL2 form a 3x3 correlated block (covariances 0.136 / 0.194 / 0.204; correlations 84.7% / 65.8% / 69.0%); kdes is independent. |
+| IIV (omega^2 = CV^2) | Wu 2024 Table 3 | CV%: CL_SS 40.0, Vc 40.1, CL_TIME 73.7, kdes 59.7. CL_SS+Vc+CL_TIME form a 3x3 correlated block (covariances 0.136 / 0.194 / 0.204; correlations 84.7% / 65.8% / 69.0%); kdes is independent. |
 | Residual error (log-scale SD) | Wu 2024 Table 3, footnote d | Adult NHL 0.444; adult BCP-ALL 0.612; pediatric BCP-ALL 0.452 (`Cc ~ lnorm(expSd)`; the packaged [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) defaults to the pediatric BCP-ALL value 0.452) |
 | Pediatric RP2D regimen | Wu 2024 Methods Section 2.1 / 2.6 | 1.8 mg/m^2/cycle in cycle 1 (fractions 0.8 + 0.5 + 0.5 mg/m^2 on days 1, 8, 15) then 1.5 mg/m^2/cycle for up to five cycles of 28 days (fractions 0.5 + 0.5 + 0.5 mg/m^2). Each dose is a 60-min IV infusion. |
 | Adult dosing regimen | Wu 2024 Methods Section 2.1 / Introduction | Same RP2D regimen (1.8 then 1.5 mg/m^2/cycle, IV). |
@@ -515,13 +516,13 @@ nca_res  <- PKNCA::pk.nca(data_obj)
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#>  ■■■■■■■■■■■■■■                    42% |  ETA:  2s
+#>  ■■■■■■■■■■■■■                     41% |  ETA:  1s
 #> Warning: Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
@@ -938,8 +939,8 @@ populations approximate the paper’s reported medians and ranges:
   L/h). Half-life and AUC values reported in the paper are quoted in h /
   h\*ng/mL or in days; convert as needed.
 - **Time-dependent CL `time` semantics**: `time` in
-  `cl2 * exp(-kdes * time)` is the integration time from the start of
-  the simulation (= time from the first dose for event datasets that
+  `cl_time * exp(-kdes * time)` is the integration time from the start
+  of the simulation (= time from the first dose for event datasets that
   begin at t = 0). For patients whose first observation is partway
   through a treatment course (e.g., cycle-2 only), build the event table
   relative to the first dose so the time-decay term is on the correct
@@ -947,19 +948,19 @@ populations approximate the paper’s reported medians and ranges:
 
 ### Model summary
 
-- **Structure**: 2-compartment IV PK with linear (CL1) plus
-  time-decaying target-mediated (CLt = CL2 \* exp(-kdes \* time))
-  clearance components. No depot.
+- **Structure**: 2-compartment IV PK with linear / steady-state (CL_SS,
+  paper’s CL1) plus time-decaying target-mediated (CL_t = CL_TIME \*
+  exp(-kdes \* time), paper’s CL2 arm) clearance components. No depot.
 - **Population**: pooled adult B-cell NHL + adult BCP-ALL + pediatric
   BCP-ALL (n = 818 across 12 studies; 8924 InO concentrations).
 - **Reference subject** (NHL adult, LBM 52.7 kg, AGE 60 y, BLSTABL
-  0.352, no rituximab): CL1 0.130 L/h, V1 6.49 L, CL2 0.569 L/h, kdes
-  0.0577 1/h, Q 0.0437 L/h, V2 4.74 L. Terminal half-life ≈ 285 h
+  0.352, no rituximab): CL_SS 0.130 L/h, Vc 6.49 L, CL_TIME 0.569 L/h,
+  kdes 0.0577 1/h, Q 0.0437 L/h, Vp 4.74 L. Terminal half-life ≈ 285 h
   (~11.9 d) for adult BCP-ALL, ≈ 423 h (~17.6 d) for pediatric BCP-ALL
   (Wu 2024 Section 3.5).
-- **Strongest covariates**: LBM on CL1 (1.05), V1 (0.977), CL2 (0.687);
-  ALL effect (DIS_BCPALL) on CL1 (-0.767), CL2 (-0.362), kdes (-0.924);
-  AGE on kdes (-0.296, BCP-ALL only).
+- **Strongest covariates**: LBM on CL_SS (1.05), Vc (0.977), CL_TIME
+  (0.687); ALL effect (DIS_BCPALL) on CL_SS (-0.767), CL_TIME (-0.362),
+  kdes (-0.924); AGE on kdes (-0.296, BCP-ALL only).
 
 ### Reference
 

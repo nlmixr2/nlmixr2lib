@@ -368,12 +368,12 @@ collates them:</p>
 <td>Table 3</td>
 </tr>
 <tr class="odd">
-<td><code>e_wt_adc_cl</code></td>
+<td><code>e_wt_cl</code></td>
 <td align="right">0.698</td>
 <td>Table 3 (Θ_BW,CL,Q2,Q3)</td>
 </tr>
 <tr class="even">
-<td><code>e_wt_adc_vc</code></td>
+<td><code>e_wt_vc</code></td>
 <td align="right">0.503</td>
 <td>Table 3 (Θ_BW,V1,V2,V3)</td>
 </tr>
@@ -383,36 +383,36 @@ collates them:</p>
 <td>Table 3 (Θ_SEX,V1)</td>
 </tr>
 <tr class="even">
-<td><code>CcaddSd</code></td>
+<td><code>addSd</code></td>
 <td align="right">0.0817 pmol/mL (= 0.0125 µg/mL)</td>
 <td>Table 3 σ1 fixed</td>
 </tr>
 <tr class="odd">
-<td><code>CcpropSd</code></td>
+<td><code>propSd</code></td>
 <td align="right">0.329</td>
 <td>Table 3 σ2 (32.9% CV)</td>
 </tr>
 <tr class="even">
 <td>
-<code>lclm</code> → CLM</td>
+<code>lcl_mmae</code> → CLM</td>
 <td align="right">55.7 L/d</td>
 <td>Table 4</td>
 </tr>
 <tr class="odd">
 <td>
-<code>lvcm</code> → V4</td>
+<code>lvc_mmae</code> → V4</td>
 <td align="right">79.8 L</td>
 <td>Table 4</td>
 </tr>
 <tr class="even">
 <td>
-<code>lqm</code> → Q5</td>
+<code>lq_mmae</code> → Q5</td>
 <td align="right">65.0 L/d</td>
 <td>Table 4</td>
 </tr>
 <tr class="odd">
 <td>
-<code>lvpm</code> → V5</td>
+<code>lvp_mmae</code> → V5</td>
 <td align="right">28.1 L</td>
 <td>Table 4</td>
 </tr>
@@ -429,22 +429,22 @@ collates them:</p>
 <td>Table 4 (Fm by cycle)</td>
 </tr>
 <tr class="even">
-<td><code>e_wt_mmae_cl</code></td>
+<td><code>e_wt_cl_mmae</code></td>
 <td align="right">0.75 (fixed)</td>
 <td>Table 4</td>
 </tr>
 <tr class="odd">
-<td><code>e_wt_mmae_vc</code></td>
+<td><code>e_wt_vc_mmae</code></td>
 <td align="right">1.0 (fixed)</td>
 <td>Table 4</td>
 </tr>
 <tr class="even">
-<td><code>CmmaeaddSd</code></td>
+<td><code>addSd_mmae</code></td>
 <td align="right">0.01658 pmol/mL (= 0.0119 ng/mL)</td>
 <td>Table 4 σ1</td>
 </tr>
 <tr class="odd">
-<td><code>CmmaepropSd</code></td>
+<td><code>propSd_mmae</code></td>
 <td align="right">0.368</td>
 <td>Table 4 σ2 (36.8% CV)</td>
 </tr>
@@ -573,7 +573,7 @@ cycles with the 180-mg cap applied.</p>
 <span>  <span class="va">dose_nmol</span> <span class="op">&lt;-</span> <span class="va">dose_mg</span> <span class="op">*</span> <span class="fl">1000</span> <span class="op">/</span> <span class="va">MW_ADC_kDa</span>   <span class="co"># mg -&gt; nmol via 1 mg / MW(kDa) * 1000</span></span>
 <span></span>
 <span>  <span class="va">doses</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/et.html" class="external-link">et</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/et.html" class="external-link">et</a></span><span class="op">(</span>amt <span class="op">=</span> <span class="va">dose_nmol</span>, cmt <span class="op">=</span> <span class="st">"adc_central"</span>, ii <span class="op">=</span> <span class="va">cycle_dy</span>,</span>
+<span>    <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/et.html" class="external-link">et</a></span><span class="op">(</span>amt <span class="op">=</span> <span class="va">dose_nmol</span>, cmt <span class="op">=</span> <span class="st">"central"</span>, ii <span class="op">=</span> <span class="va">cycle_dy</span>,</span>
 <span>               addl <span class="op">=</span> <span class="va">n_cycles</span> <span class="op">-</span> <span class="fl">1L</span>, time <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
 <span>  <span class="va">obs</span>   <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/et.html" class="external-link">et</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0.05</span>, <span class="va">n_cycles</span> <span class="op">*</span> <span class="va">cycle_dy</span>, length.out <span class="op">=</span> <span class="fl">420</span><span class="op">)</span>,</span>
 <span>                      cmt <span class="op">=</span> <span class="st">"Cc"</span><span class="op">)</span></span>
@@ -605,7 +605,7 @@ MMAE.</p>
 <span></span>
 <span><span class="va">typ_events</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/et.html" class="external-link">et</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/et.html" class="external-link">et</a></span><span class="op">(</span>amt <span class="op">=</span> <span class="op">(</span><span class="fl">1.8</span> <span class="op">*</span> <span class="fl">75</span><span class="op">)</span> <span class="op">*</span> <span class="fl">1000</span> <span class="op">/</span> <span class="va">MW_ADC_kDa</span>,</span>
-<span>             cmt <span class="op">=</span> <span class="st">"adc_central"</span>, ii <span class="op">=</span> <span class="va">cycle_dy</span>, addl <span class="op">=</span> <span class="va">n_cycles</span> <span class="op">-</span> <span class="fl">1L</span>,</span>
+<span>             cmt <span class="op">=</span> <span class="st">"central"</span>, ii <span class="op">=</span> <span class="va">cycle_dy</span>, addl <span class="op">=</span> <span class="va">n_cycles</span> <span class="op">-</span> <span class="fl">1L</span>,</span>
 <span>             time <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/et.html" class="external-link">et</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0.05</span>, <span class="va">n_cycles</span> <span class="op">*</span> <span class="va">cycle_dy</span>, length.out <span class="op">=</span> <span class="fl">1500</span><span class="op">)</span>, cmt <span class="op">=</span> <span class="st">"Cc"</span><span class="op">)</span></span>
 <span><span class="va">typ_events</span><span class="op">$</span><span class="va">WT</span>    <span class="op">&lt;-</span> <span class="fl">75</span></span>
@@ -615,9 +615,9 @@ MMAE.</p>
 <span><span class="va">typ_sim</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">typ</span>, <span class="va">typ_events</span>, returnType <span class="op">=</span> <span class="st">"data.frame"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
 <span>    Cc_ug_mL   <span class="op">=</span> <span class="va">Cc</span>    <span class="op">*</span> <span class="va">MW_ADC_kDa</span> <span class="op">/</span> <span class="fl">1000</span>,  <span class="co"># pmol/mL -&gt; ug/mL (MW_kDa / 1000)</span></span>
-<span>    Cmmae_ng_mL <span class="op">=</span> <span class="va">Cmmae</span> <span class="op">*</span> <span class="va">MW_MMAE_Da</span> <span class="op">/</span> <span class="fl">1000</span>  <span class="co"># pmol/mL -&gt; ng/mL</span></span>
+<span>    Cmmae_ng_mL <span class="op">=</span> <span class="va">Cc_mmae</span> <span class="op">*</span> <span class="va">MW_MMAE_Da</span> <span class="op">/</span> <span class="fl">1000</span>  <span class="co"># pmol/mL -&gt; ng/mL</span></span>
 <span>  <span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp', 'etalq2', 'etalvp2', 'etalclm', 'etalvcm', 'etalbeta', 'etalfm'</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp', 'etalq2', 'etalvp2', 'etalcl_mmae', 'etalvc_mmae', 'etalbeta', 'etalfm'</span></span></code></pre></div>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">typ_sim</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">Cc_ug_mL</span>, <span class="va">Cmmae_ng_mL</span><span class="op">)</span>,</span>
@@ -711,7 +711,7 @@ residual error preserved.</p>
 <span>                           returnType <span class="op">=</span> <span class="st">"data.frame"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
 <span>    Cc_ug_mL    <span class="op">=</span> <span class="va">Cc</span>    <span class="op">*</span> <span class="va">MW_ADC_kDa</span> <span class="op">/</span> <span class="fl">1000</span>,</span>
-<span>    Cmmae_ng_mL <span class="op">=</span> <span class="va">Cmmae</span> <span class="op">*</span> <span class="va">MW_MMAE_Da</span> <span class="op">/</span> <span class="fl">1000</span></span>
+<span>    Cmmae_ng_mL <span class="op">=</span> <span class="va">Cc_mmae</span> <span class="op">*</span> <span class="va">MW_MMAE_Da</span> <span class="op">/</span> <span class="fl">1000</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> parameter labels from comments will be replaced by 'label()'</span></span></code></pre></div>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
@@ -1358,59 +1358,59 @@ ordering</em> of the NCA output, not a point-for-point reference.</p>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■              </span>  58% |  ETA:  3s</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■               </span>  53% |  ETA:  3s</span></span>
 <span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.130191) is not allowed</span></span>
@@ -1815,7 +1815,8 @@ ordering</em> of the NCA output, not a point-for-point reference.</p>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.210382) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.210382) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.210382) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.210382) is not allowed</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ </span>  99% |  ETA:  0s</span></span>
+<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.210382) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.210382) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.210382) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.210382) is not allowed</span></span>
@@ -1845,9 +1846,9 @@ ordering</em> of the NCA output, not a point-for-point reference.</p>
 <span>         time_in_cycle <span class="op">=</span> <span class="va">time</span> <span class="op">-</span> <span class="op">(</span><span class="va">cycle</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op">*</span> <span class="va">cycle_dy</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">cycle</span> <span class="op">&lt;=</span> <span class="va">n_cycles</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/transmute.html" class="external-link">transmute</a></span><span class="op">(</span>id <span class="op">=</span> <span class="va">id</span>, cycle <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">cycle</span><span class="op">)</span>,</span>
-<span>            time <span class="op">=</span> <span class="va">time_in_cycle</span>, Cmmae <span class="op">=</span> <span class="va">Cmmae_ng_mL</span><span class="op">)</span></span>
+<span>            time <span class="op">=</span> <span class="va">time_in_cycle</span>, Cc_mmae <span class="op">=</span> <span class="va">Cmmae_ng_mL</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">mconc_obj</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAconc.html" class="external-link">PKNCAconc</a></span><span class="op">(</span><span class="va">mmae_nca</span>, <span class="va">Cmmae</span> <span class="op">~</span> <span class="va">time</span> <span class="op">|</span> <span class="va">cycle</span> <span class="op">+</span> <span class="va">id</span><span class="op">)</span></span>
+<span><span class="va">mconc_obj</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAconc.html" class="external-link">PKNCAconc</a></span><span class="op">(</span><span class="va">mmae_nca</span>, <span class="va">Cc_mmae</span> <span class="op">~</span> <span class="va">time</span> <span class="op">|</span> <span class="va">cycle</span> <span class="op">+</span> <span class="va">id</span><span class="op">)</span></span>
 <span><span class="va">mdose_obj</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdose.html" class="external-link">PKNCAdose</a></span><span class="op">(</span><span class="va">adc_dose</span>, <span class="va">amt</span> <span class="op">~</span> <span class="va">time</span> <span class="op">|</span> <span class="va">cycle</span> <span class="op">+</span> <span class="va">id</span><span class="op">)</span>   <span class="co"># dose is the ADC dose</span></span>
 <span><span class="va">mmae_nca_res</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">mconc_obj</span>, <span class="va">mdose_obj</span>,</span>
 <span>                                               intervals <span class="op">=</span> <span class="va">intervals</span><span class="op">)</span><span class="op">)</span></span>
@@ -2175,36 +2176,36 @@ ordering</em> of the NCA output, not a point-for-point reference.</p>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0900955) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0900955) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0900955) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0900955) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0900955) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0900955) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0900955) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0900955) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0900955) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0900955) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0900955) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0900955) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0900955) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0900955) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0900955) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0900955) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0900955) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0900955) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0900955) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0900955) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0900955) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0900955) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0900955) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0900955) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0900955) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0900955) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0900955) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0900955) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0900955) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0900955) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0900955) is not allowed</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■                    </span>  35% |  ETA:  4s</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■                     </span>  32% |  ETA:  4s</span></span>
 <span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.0900955) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0900955) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0900955) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0900955) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0900955) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0900955) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0900955) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0900955) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0900955) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0900955) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0900955) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0900955) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0900955) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0900955) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0900955) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0900955) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0900955) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0900955) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0900955) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0900955) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0900955) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0900955) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0900955) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0900955) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0900955) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0900955) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0900955) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0900955) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0900955) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0900955) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0900955) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0900955) is not allowed</span></span>
@@ -2650,7 +2651,8 @@ ordering</em> of the NCA output, not a point-for-point reference.</p>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.170286) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.170286) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.170286) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.170286) is not allowed</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■       </span>  80% |  ETA:  1s</span></span>
+<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.170286) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.170286) is not allowed</span></span>
 <span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.210382) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.210382) is not allowed</span></span>
@@ -2661,8 +2663,7 @@ ordering</em> of the NCA output, not a point-for-point reference.</p>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.210382) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.210382) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.210382) is not allowed</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■       </span>  81% |  ETA:  1s</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.210382) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.210382) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.210382) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.210382) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.210382) is not allowed</span></span>
@@ -2936,18 +2937,17 @@ shared molar unit is the only way to keep the mass balance
 <code>1 ADC -&gt; DAR molecules of MMAE</code> exact inside the
 ODE.</li>
 <li>
-<strong>Non-canonical compartment names.</strong> The seven ODE
-states are <code>adc_central</code>, <code>adc_peripheral1</code>,
-<code>adc_peripheral2</code>, <code>mmae_central</code>,
-<code>mmae_peripheral</code>, <code>pathway_proteolytic</code>, and
-<code>pathway_deconjugation</code>. <code><a href="../reference/checkModelConventions.html">checkModelConventions()</a></code>
-warns about each because the canonical list is
-<code>depot / central / peripheral1 / peripheral2 / effect / target / complex / total_target</code>.
-Distinct prefixes (<code>adc_</code>, <code>mmae_</code>,
-<code>pathway_</code>) are required here to disambiguate two species
-(ADC and MMAE) plus two bookkeeping integrators within a single model;
-this matches the Bender 2014 mechanistic ADC model precedent
-(<code>dar0_central ... dar7_central</code>).</li>
+<strong>Compartment naming.</strong> The seven ODE states are
+<code>central</code>, <code>peripheral1</code>,
+<code>peripheral2</code>, <code>central_mmae</code>,
+<code>peripheral1_mmae</code>, <code>pathway_proteolytic</code>, and
+<code>pathway_deconjugation</code>. Parent (ADC) compartments use the
+canonical names; MMAE compartments use the canonical metabolite-suffix
+convention (<code>central_mmae</code>, <code>peripheral1_mmae</code>).
+The two <code>pathway_*</code> integrators are bookkeeping compartments
+retained for the supplement’s “~13% deconjugation at steady state”
+derivation; <code><a href="../reference/checkModelConventions.html">checkModelConventions()</a></code> flags those because
+they are not in the canonical compartment list.</li>
 <li>
 <strong>Body-weight reference 75 kg.</strong> The paper’s Table 2
 pooled median is 74.8 kg but the abstract and covariate-equation
@@ -3032,7 +3032,7 @@ writes the MMAE formation term as
 <code>DAR0 * alpha = 1</code> is the asymptotic floor of
 <code>DAR(t)</code>, the expression <code>(DAR - 1)</code> is
 non-negative for all tad ≥ 0 and the deconjugation flux into
-<code>mmae_central</code> is always into the compartment (never out).
+<code>central_mmae</code> is always into the compartment (never out).
 The ODE is faithful to the supplement; this note is only to flag the
 easy-to-misread sign when reading the equation in prose.</li>
 <li>

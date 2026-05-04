@@ -324,37 +324,37 @@ table below collects them in one place for review.</p>
 </tr>
 <tr class="even">
 <td>
-<code>e_wt_clq</code> (power, WT on CL/Q)</td>
+<code>e_wt_cl_q</code> (power, WT on CL/Q)</td>
 <td>0.477</td>
 <td>Yang 2021 Table 3, WGT_ON_CLQ</td>
 </tr>
 <tr class="odd">
 <td>
-<code>e_alb_clq</code> (power, ALB on CL/Q)</td>
+<code>e_alb_cl_q</code> (power, ALB on CL/Q)</td>
 <td>-0.926</td>
 <td>Yang 2021 Table 3, ALB_ON_CLQ</td>
 </tr>
 <tr class="even">
 <td>
-<code>e_igg_clq</code> (power, IGG on CL/Q)</td>
+<code>e_igg_cl_q</code> (power, IGG on CL/Q)</td>
 <td>0.184</td>
 <td>Yang 2021 Table 3, IGG_ON_CLQ</td>
 </tr>
 <tr class="odd">
 <td>
-<code>e_alt_clq</code> (power, ALT on CL/Q)</td>
+<code>e_alt_cl_q</code> (power, ALT on CL/Q)</td>
 <td>-0.0795</td>
 <td>Yang 2021 Table 3, ALT_ON_CLQ</td>
 </tr>
 <tr class="even">
 <td>
-<code>e_wt_vss</code> (power, WT on V2/V3)</td>
+<code>e_wt_vc_vp</code> (power, WT on V2/V3)</td>
 <td>0.970</td>
 <td>Yang 2021 Table 3, WGT_ON_VSS</td>
 </tr>
 <tr class="odd">
 <td>
-<code>e_bmi_vss</code> (power, BMI on V2/V3)</td>
+<code>e_bmi_vc_vp</code> (power, BMI on V2/V3)</td>
 <td>-0.560</td>
 <td>Yang 2021 Table 3, BMI_ON_VSS</td>
 </tr>
@@ -588,10 +588,10 @@ section.</p>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="va">nca_q2w</span> <span class="op">&lt;-</span> <span class="fu">nca_window</span><span class="op">(</span><span class="va">sim</span>, <span class="fl">14</span>, <span class="fl">12</span>, <span class="st">"3 mg/kg Q2W"</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■           </span>  67% |  ETA:  2s</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■          </span>  70% |  ETA:  1s</span></span>
 <span><span class="va">nca_q3w</span> <span class="op">&lt;-</span> <span class="fu">nca_window</span><span class="op">(</span><span class="va">sim</span>, <span class="fl">21</span>,  <span class="fl">8</span>, <span class="st">"350 mg Q3W"</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■                        </span>  24% |  ETA:  4s</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■        </span>  77% |  ETA:  1s</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■                     </span>  33% |  ETA:  3s</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■   </span>  92% |  ETA:  0s</span></span>
 <span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">nca_q2w</span><span class="op">)</span>,</span>
 <span>             caption <span class="op">=</span> <span class="st">"Simulated NCA at steady state (6-week window), 3 mg/kg Q2W"</span><span class="op">)</span></span></code></pre></div>

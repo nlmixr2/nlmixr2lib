@@ -418,7 +418,7 @@ ev_sd$WT      <- 28.9
 ev_sd$DIS_DMD <- 1L
 
 sim_sd <- rxode2::rxSolve(mod_typical, ev_sd, returnType = "data.frame")
-#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvmax', 'etalbase', 'etalkdegkint'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvmax', 'etalbase', 'etalkdeg_kint'
 
 sim_nca <- sim_sd |>
   filter(!is.na(Cc), time >= 0) |>
@@ -501,13 +501,12 @@ concentrations can lengthen the apparent terminal slope.
   would give a different magnitude (`exp(-0.900) = 0.407`, a 59 %
   reduction) — preserving the paper’s form is therefore load-bearing for
   reproducing Figures 3-5.
-- **A single `eta_kdegkint` random effect drives both `kdeg` and
+- **A single `etalkdeg_kint` random effect drives both `kdeg` and
   `kint`**, with `kint` scaled by the structural ratio
   `e_ratio_kdegkint = -0.295`. This matches Wojciechowski 2022 Table 2
-  (“Ratio of SD for eta_kint relative to eta_kdeg” row); the convention
-  check warning that `etalkdegkint` has no matching `lkdegkint`
-  fixed-effect parameter is expected and intentional — the eta is shared
-  between two structural parameters by design.
+  (“Ratio of SD for eta_kint relative to eta_kdeg” row); the IIV name
+  follows the shared-eta convention `etal<param1>_<param2>` analogous to
+  the shared-exponent covariate-effect form `e_<cov>_<param1>_<param2>`.
 - **Concentration units are nM**, matching the paper, rather than the
   more common `ug/mL` (mass-per-volume) unit used by most nlmixr2lib mAb
   models. The total-myostatin observation is naturally in nM, and the

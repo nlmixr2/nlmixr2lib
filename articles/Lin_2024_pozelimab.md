@@ -134,7 +134,7 @@ collects the equation and parameter provenance in one place.
 | `kint2` (pozelimab-C5-C5 internalization) | 0.1149 1/day | Table 2 |
 | `theta_R0` (baseline-C5 correction) | -0.04824 µM (= -9.166 mg/L) | Table 2 + footnote (a) and Results “Base PopPK model” |
 | `e_wt_cl` (WT power on CL; ref 70 kg) | 0.9989 | Table 2 (“Weight on CL”) |
-| `e_wt_v` (WT power on Vc and Vp; ref 70 kg) | 0.7560 | Table 2 (“Weight on Vc and Vp”) |
+| `e_wt_vc_vp` (shared WT power on Vc and Vp; ref 70 kg) | 0.7560 | Table 2 (“Weight on Vc and Vp”) |
 | `e_pnh_vc` (PNH additive-fractional effect on Vc) | 0.3407 | Table 2 (“Patients with PNH on Vc”) |
 | IIV CL (31.90 % CV → ω² = 0.09732) | 31.90 %CV | Table 2 |
 | IIV Vc (16.10 % CV → ω² = 0.02568) | 16.10 %CV | Table 2 |

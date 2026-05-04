@@ -62,7 +62,7 @@ statin (STATIN = 0), and 72.9 ng/mL free PCSK9.
 | `lvc` (V2) | `3.19 L` | Table 2, V2 row |
 | `lvp` (V3 at AGE = 60 y) | `2.79 L` | Table 2, V3 row |
 | `lq` (Q) | `0.0185 L/h * 24 = 0.444 L/day` | Table 2, Q row |
-| `lvm` (Vm) | `0.183 mg/h * 24 = 4.392 mg/day` | Table 2, Vm row (text says “mg/h”; table footer “mg.h/L” is a typesetting error — dimensional analysis and the paper’s narrative confirm mg/h) |
+| `lvmax` (Vmax) | `0.183 mg/h * 24 = 4.392 mg/day` | Table 2, Vm row (text says “mg/h”; table footer “mg.h/L” is a typesetting error — dimensional analysis and the paper’s narrative confirm mg/h) |
 | `lkm` (Km at FPCSK9 = 72.9) | `7.73 mg/L` | Table 2, Km row |
 | `llag` (LAG) | `0.641 h / 24 = 0.02671 day` | Table 2, LAG row |
 | `logitfdepot` (logit F_pop) | `logit(0.862) = 1.8326` | Table 2, F row (typical F = 0.862) |
@@ -114,8 +114,8 @@ statin (STATIN = 0), and 72.9 ng/mL free PCSK9.
   term could be estimated for these four parameters; the model file
   omits them from the random-effects block, matching the paper.
 - **Michaelis-Menten form.** The elimination ODE term is
-  `- vm * Cc / (km + Cc)` (rate of amount elimination with Vm in mg/day,
-  Km in mg/L, and Cc = central / V2 in mg/L), matching the popPK
+  `- vmax * Cc / (km + Cc)` (rate of amount elimination with Vmax in
+  mg/day, Km in mg/L, and Cc = central / V2 in mg/L), matching the popPK
   convention used in Xu 2019 sarilumab and the in-file parameter units.
 - **SC vs IV.** The bioavailability factor and lag time are applied to
   the depot compartment. IV doses (the 0.3-12 mg/kg single-dose phase I
@@ -403,8 +403,8 @@ intervals <- data.frame(
 )
 
 nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
-#>  ■■■■■■■■■■                        30% |  ETA:  3s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      90% |  ETA:  0s
+#>  ■■■■■■■■■                         27% |  ETA:  3s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    97% |  ETA:  0s
 summary(nca_res)
 #>  Interval Start Interval End treatment   N AUClast (day*mg/L) Cmax (mg/L)
 #>               0           14 150mg_Q2W 300        95.9 [52.6] 10.1 [46.0]
@@ -569,7 +569,7 @@ Paper: ~28-29% decrease at both dose levels. {.table}
   comparison against the reported steady-state AUC support the main-text
   interpretation (Vm as a rate of mass elimination in mg/h). The table
   header is treated as a typesetting error. This is recorded in the
-  in-file source-trace comment for `lvm` and documented in the
+  in-file source-trace comment for `lvmax` and documented in the
   comparison table above.
 - **Km units in Figure 2 commentary.** Section 3.2 states Km = 7.73
   ng/mL at FPCSK9 = 0 and Km = 4.82 ng/mL at FPCSK9 = 392 ng/mL. These

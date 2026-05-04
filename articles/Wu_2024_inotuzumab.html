@@ -227,10 +227,11 @@ lymphoma (NHL), 234 adult B-cell precursor acute lymphoblastic leukemia
 (BCP-ALL), and 53 pediatric BCP-ALL participants from ITCC-059) and
 adding pediatric-specific covariate effects. The structural model is a
 two-compartment disposition with IV input and a total clearance that
-sums a linear component (CL1) and a time-decaying target-mediated
-component (CLt = CL2 * exp(-kdes * time)).</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>C</mi><msub><mi>L</mi><mtext mathvariant="normal">total</mtext></msub><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mi>C</mi><msub><mi>L</mi><mn>1</mn></msub><mo>+</mo><mi>C</mi><msub><mi>L</mi><mn>2</mn></msub><mspace width="0.167em"></mspace><msup><mi>e</mi><mrow><mi>−</mi><msub><mi>k</mi><mtext mathvariant="normal">des</mtext></msub><mspace width="0.167em"></mspace><mi>t</mi></mrow></msup></mrow><annotation encoding="application/x-tex">
-  CL_{\text{total}}(t) = CL_1 + CL_2 \, e^{-k_{\text{des}}\, t}
+sums a linear (steady-state) component (CL_SS, the paper’s CL1) and a
+time-decaying target-mediated component (CL_t = CL_TIME * exp(-kdes *
+time), the paper’s CL2 arm).</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>C</mi><msub><mi>L</mi><mtext mathvariant="normal">total</mtext></msub><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mi>C</mi><msub><mi>L</mi><mtext mathvariant="normal">SS</mtext></msub><mo>+</mo><mi>C</mi><msub><mi>L</mi><mtext mathvariant="normal">TIME</mtext></msub><mspace width="0.167em"></mspace><msup><mi>e</mi><mrow><mi>−</mi><msub><mi>k</mi><mtext mathvariant="normal">des</mtext></msub><mspace width="0.167em"></mspace><mi>t</mi></mrow></msup></mrow><annotation encoding="application/x-tex">
+  CL_{\text{total}}(t) = CL_{\text{SS}} + CL_{\text{TIME}} \, e^{-k_{\text{des}}\, t}
 </annotation></semantics></math></p>
 <ul>
 <li>Article: <a href="https://doi.org/10.1007/s40262-024-01386-z" class="external-link uri">https://doi.org/10.1007/s40262-024-01386-z</a>
@@ -297,40 +298,42 @@ below collects the mapping in one place for reviewer audit.</p>
 <tr class="even">
 <td>Total clearance</td>
 <td>Wu 2024 Methods Section 2.3</td>
-<td><code>CL_total = CL1 + CL2 * exp(-kdes * time)</code></td>
+<td>
+<code>CL_total = CL_SS + CL_TIME * exp(-kdes * time)</code> (paper
+notation: CL1 + CL2<em>exp(-kdes</em>time))</td>
 </tr>
 <tr class="odd">
-<td>CL1, V1, CL2, kdes, Q, V2 typical values</td>
+<td>CL_SS, Vc, CL_TIME, kdes, Q, Vp typical values</td>
 <td>Wu 2024 Table 3</td>
 <td>0.130 L/h, 6.49 L, 0.569 L/h, 0.0577 1/h, 0.0437 L/h, 4.74 L (for an
 NHL adult at LBM 52.7 kg, AGE 60 y, BLSTABL 0.352, RITUX 0)</td>
 </tr>
 <tr class="even">
-<td>LBM on CL1</td>
+<td>LBM on CL_SS</td>
 <td>Wu 2024 Table 3</td>
 <td>Power: <code>(LBM/52.7)^1.05</code>
 </td>
 </tr>
 <tr class="odd">
-<td>LBM on V1</td>
+<td>LBM on Vc</td>
 <td>Wu 2024 Table 3</td>
 <td>Power: <code>(LBM/52.7)^0.977</code>
 </td>
 </tr>
 <tr class="even">
-<td>LBM on CL2</td>
+<td>LBM on CL_TIME</td>
 <td>Wu 2024 Table 3</td>
 <td>Power: <code>(LBM/52.7)^0.687</code>
 </td>
 </tr>
 <tr class="odd">
-<td>ALL effect (DIS_BCPALL) on CL1</td>
+<td>ALL effect (DIS_BCPALL) on CL_SS</td>
 <td>Wu 2024 Table 3</td>
 <td>Dummy: <code>1 + (-0.767)*DIS_BCPALL</code>
 </td>
 </tr>
 <tr class="even">
-<td>ALL effect on CL2</td>
+<td>ALL effect on CL_TIME</td>
 <td>Wu 2024 Table 3</td>
 <td>Dummy: <code>1 + (-0.362)*DIS_BCPALL</code>
 </td>
@@ -354,7 +357,7 @@ NHL adult at LBM 52.7 kg, AGE 60 y, BLSTABL 0.352, RITUX 0)</td>
 </td>
 </tr>
 <tr class="even">
-<td>Concomitant rituximab (CONMED_RITUX) on CL1</td>
+<td>Concomitant rituximab (CONMED_RITUX) on CL_SS</td>
 <td>Wu 2024 Table 3</td>
 <td>Dummy: <code>1 + (-0.132)*CONMED_RITUX</code>
 </td>
@@ -368,9 +371,9 @@ adult (DIS_BCPALL = 0), no concomitant rituximab</td>
 <tr class="even">
 <td>IIV (omega^2 = CV^2)</td>
 <td>Wu 2024 Table 3</td>
-<td>CV%: CL1 40.0, V1 40.1, CL2 73.7, kdes 59.7. CL1+V1+CL2 form a 3x3
-correlated block (covariances 0.136 / 0.194 / 0.204; correlations 84.7%
-/ 65.8% / 69.0%); kdes is independent.</td>
+<td>CV%: CL_SS 40.0, Vc 40.1, CL_TIME 73.7, kdes 59.7. CL_SS+Vc+CL_TIME
+form a 3x3 correlated block (covariances 0.136 / 0.194 / 0.204;
+correlations 84.7% / 65.8% / 69.0%); kdes is independent.</td>
 </tr>
 <tr class="odd">
 <td>Residual error (log-scale SD)</td>
@@ -859,13 +862,13 @@ h) for both cohorts.</p>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■                  </span>  42% |  ETA:  2s</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■                   </span>  41% |  ETA:  1s</span></span>
 <span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (1) is not allowed</span></span>
@@ -1357,7 +1360,7 @@ applied in the model code.</li>
 quoted in h / h*ng/mL or in days; convert as needed.</li>
 <li>
 <strong>Time-dependent CL <code>time</code> semantics</strong>:
-<code>time</code> in <code>cl2 * exp(-kdes * time)</code> is the
+<code>time</code> in <code>cl_time * exp(-kdes * time)</code> is the
 integration time from the start of the simulation (= time from the first
 dose for event datasets that begin at t = 0). For patients whose first
 observation is partway through a treatment course (e.g., cycle-2 only),
@@ -1370,23 +1373,25 @@ is on the correct clock.</li>
 </h3>
 <ul>
 <li>
-<strong>Structure</strong>: 2-compartment IV PK with linear (CL1)
-plus time-decaying target-mediated (CLt = CL2 * exp(-kdes * time))
-clearance components. No depot.</li>
+<strong>Structure</strong>: 2-compartment IV PK with linear /
+steady-state (CL_SS, paper’s CL1) plus time-decaying target-mediated
+(CL_t = CL_TIME * exp(-kdes * time), paper’s CL2 arm) clearance
+components. No depot.</li>
 <li>
 <strong>Population</strong>: pooled adult B-cell NHL + adult BCP-ALL
 + pediatric BCP-ALL (n = 818 across 12 studies; 8924 InO
 concentrations).</li>
 <li>
 <strong>Reference subject</strong> (NHL adult, LBM 52.7 kg, AGE 60
-y, BLSTABL 0.352, no rituximab): CL1 0.130 L/h, V1 6.49 L, CL2 0.569
-L/h, kdes 0.0577 1/h, Q 0.0437 L/h, V2 4.74 L. Terminal half-life ≈ 285
-h (~11.9 d) for adult BCP-ALL, ≈ 423 h (~17.6 d) for pediatric BCP-ALL
-(Wu 2024 Section 3.5).</li>
+y, BLSTABL 0.352, no rituximab): CL_SS 0.130 L/h, Vc 6.49 L, CL_TIME
+0.569 L/h, kdes 0.0577 1/h, Q 0.0437 L/h, Vp 4.74 L. Terminal half-life
+≈ 285 h (~11.9 d) for adult BCP-ALL, ≈ 423 h (~17.6 d) for pediatric
+BCP-ALL (Wu 2024 Section 3.5).</li>
 <li>
-<strong>Strongest covariates</strong>: LBM on CL1 (1.05), V1
-(0.977), CL2 (0.687); ALL effect (DIS_BCPALL) on CL1 (-0.767), CL2
-(-0.362), kdes (-0.924); AGE on kdes (-0.296, BCP-ALL only).</li>
+<strong>Strongest covariates</strong>: LBM on CL_SS (1.05), Vc
+(0.977), CL_TIME (0.687); ALL effect (DIS_BCPALL) on CL_SS (-0.767),
+CL_TIME (-0.362), kdes (-0.924); AGE on kdes (-0.296, BCP-ALL
+only).</li>
 </ul>
 </div>
 <div class="section level3">

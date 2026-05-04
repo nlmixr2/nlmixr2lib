@@ -266,7 +266,18 @@ compartments)</li>
 <li>
 <code>vp</code>, <code>vp2</code>: first and second peripheral
 compartment volumes</li>
+<li>
+<code>vmax</code>: Michaelis-Menten Vmax (when nonlinear / saturable
+elimination is needed). Never <code>vm</code>.</li>
 </ul>
+<p>Volume parameters always use <code>vc</code>, <code>vp</code>,
+<code>vp2</code>. Never use generic numbered volumes like
+<code>v</code>, <code>v1</code>, <code>v2</code>, <code>vc1</code>,
+<code>vc2</code>, etc., even when the source paper or NONMEM
+<code>linCmt()</code> macro uses that style; the NONMEM mapping
+<code>v1</code>→<code>vc</code>, <code>v2</code>→<code>vp</code>,
+<code>v3</code>→<code>vp2</code> should be applied during model
+extraction.</p>
 <p>When micro-constants are used, they should use the following naming
 conventions:</p>
 <ul>
@@ -278,6 +289,48 @@ conventions:</p>
 <code>q/vp</code>, <code>q2/vc</code>, and <code>q2/vp2</code>,
 respectively)</li>
 </ul>
+<div class="section level4">
+<h4 id="multi-component-clearance">Multi-component clearance<a class="anchor" aria-label="anchor" href="#multi-component-clearance"></a>
+</h4>
+<p>For models that report multiple CL terms (e.g., a steady-state arm
+plus a time-varying decay arm), use the registered CL component
+suffixes:</p>
+<ul>
+<li>
+<code>cl_ss</code>, <code>lcl_ss</code>: steady-state CL
+component</li>
+<li>
+<code>cl_time</code>, <code>lcl_time</code>: time-varying decay arm
+of CL</li>
+</ul>
+</div>
+<div class="section level4">
+<h4 id="parent-drug-metabolite-parameters">Parent drug + metabolite parameters<a class="anchor" aria-label="anchor" href="#parent-drug-metabolite-parameters"></a>
+</h4>
+<p>For models that track a parent drug AND one or more metabolites
+(antibody-drug conjugates with payload, mAbs that release a small
+molecule, etc.), the parent uses the canonical parameter names without
+any suffix; the metabolite carries a lowercase paper-name suffix at the
+end:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co"># Parent ADC</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>lcl, lvc, lq, lvp                 <span class="co"># canonical, unsuffixed</span></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="co"># MMAE metabolite</span></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>lcl_mmae, lvc_mmae, lq_mmae       <span class="co"># _mmae suffix</span></span></code></pre></div>
+<p>Registered metabolite suffixes (defined in
+<code>R/conventions.R::registeredMetabolites</code>): <code>mmae</code>,
+<code>dxd</code>, <code>sn38</code>, <code>dm4</code>,
+<code>medm4</code>, <code>mcmmaf</code>, <code>complex</code>,
+<code>ige</code>, <code>tab</code>, <code>nab</code>,
+<code>dar0</code>–<code>dar8</code>. Add a new metabolite by editing
+<code>R/conventions.R::registeredMetabolites</code>.</p>
+<p>Compartment names follow the same rule: parent uses
+<code>central</code>, <code>peripheral1</code>,
+<code>peripheral2</code>; metabolite uses
+<code>central_&lt;metab&gt;</code>,
+<code>peripheral1_&lt;metab&gt;</code>. Multi-output observation
+variables: parent stays <code>Cc</code>; metabolite outputs become
+<code>Cc_&lt;metab&gt;</code> (e.g., <code>Cc_mmae</code>).</p>
+</div>
 </div>
 <div class="section level3">
 <h3 id="parameter-transforms">Parameter transforms<a class="anchor" aria-label="anchor" href="#parameter-transforms"></a>
@@ -313,6 +366,39 @@ as inter-individual variability.)</p>
 <p>Random effect parameters should prefix the (transformed) parameter
 name with <code>eta</code>. For example, a random effect on
 log-transformed clearance would be named <code>etalcl</code>.</p>
+</div>
+<div class="section level3">
+<h3 id="covariate-effects">Covariate effects<a class="anchor" aria-label="anchor" href="#covariate-effects"></a>
+</h3>
+<p>Covariate-effect parameters use the canonical form
+<code>e_&lt;cov&gt;_&lt;param&gt;</code>, with the covariate token first
+and the parameter token second:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">e_wt_cl</span>       <span class="co"># WT effect on CL</span></span>
+<span><span class="va">e_alb_vc</span>      <span class="co"># ALB effect on Vc</span></span>
+<span><span class="va">e_ada_cl</span>      <span class="co"># ADA effect on CL</span></span></code></pre></div>
+<p>Never reverse the order (<code>e_cl_wt</code> is wrong).</p>
+<p>When a covariate effect is tied to a metabolite, a paired parameter
+(shared exponent), or a multi-component CL arm, append the appropriate
+token:</p>
+<ul>
+<li>Metabolite-suffixed:
+<code>e_&lt;cov&gt;_&lt;param&gt;_&lt;metab&gt;</code> (e.g.,
+<code>e_wt_cl_mmae</code>, <code>e_alb_cl_dxd</code>).</li>
+<li>Shared exponent (one estimated value applied to two parameters):
+<code>e_&lt;cov&gt;_&lt;param1&gt;_&lt;param2&gt;</code> (e.g.,
+<code>e_wt_cl_q</code>, <code>e_wt_vc_vp</code>). Source-paper terms
+<code>clq</code>/<code>vss</code>/<code>vcvp</code> map to
+<code>cl_q</code>/<code>vc_vp</code>/<code>vc_vp</code> respectively
+(Vss = Vc + Vp, so <code>e_&lt;cov&gt;_vss</code> becomes
+<code>e_&lt;cov&gt;_vc_vp</code>).</li>
+<li>Multi-component CL: <code>e_&lt;cov&gt;_cl_ss</code> or
+<code>e_&lt;cov&gt;_cl_time</code>.</li>
+</ul>
+<p>Categorical / binary covariates each get their own parameter — do not
+omit the parameter token. <code>e_asian_cl</code>,
+<code>e_black_cl</code>, <code>e_multiracial_cl</code> are correct;
+<code>e_asian</code> (no parameter token) is not.</p>
 </div>
 <div class="section level3">
 <h3 id="drug-effects">Drug effects<a class="anchor" aria-label="anchor" href="#drug-effects"></a>

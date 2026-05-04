@@ -220,12 +220,12 @@ Two-compartment PK with body-weight allometric scaling and a
 baseline-albumin power covariate on CL.</li>
 <li>
 <strong>Free SN-38 (the released payload)</strong> — output
-<code>Csn38</code>. Two-compartment PK generated sequentially from SG
+<code>Cc_sn38</code>. Two-compartment PK generated sequentially from SG
 via a first-order release rate <code>KREL</code>. Apparent central and
 peripheral volumes are fixed to literature values (Klein et al. Clin
 Pharmacol Ther 2002;72:638-647).</li>
 <li>
-<strong>Total antibody (tAB)</strong> — output <code>Ctab</code>.
+<strong>Total antibody (tAB)</strong> — output <code>Cc_tab</code>.
 Two-compartment PK with time-dependent CL, IIV on CL and V1 with
 covariance, and covariates of baseline albumin (CL), tumor type (CL),
 and sex (V1).</li>
@@ -285,43 +285,43 @@ Section 3.1 and Table S2).</p>
 <tbody>
 <tr class="odd">
 <td>
-<code>lclSG</code> (SG CL)</td>
+<code>lcl</code> (SG CL)</td>
 <td>log(0.13333) L/h</td>
 <td>Sathe 2024 Table 1; supplement Section 6.b TH(1) FIX</td>
 </tr>
 <tr class="even">
 <td>
-<code>lvcSG</code> (SG V1)</td>
+<code>lvc</code> (SG V1)</td>
 <td>log(2.77011) L</td>
 <td>Sathe 2024 Table 1; supplement Section 6.b TH(2) FIX</td>
 </tr>
 <tr class="odd">
 <td>
-<code>lqSG</code> (SG Q)</td>
+<code>lq</code> (SG Q)</td>
 <td>log(0.0055141) L/h</td>
 <td>Sathe 2024 Table 1; supplement Section 6.b TH(3) FIX</td>
 </tr>
 <tr class="even">
 <td>
-<code>lvpSG</code> (SG V2)</td>
+<code>lvp</code> (SG V2)</td>
 <td>log(0.907787) L</td>
 <td>Sathe 2024 Table 1; supplement Section 6.b TH(4) FIX</td>
 </tr>
 <tr class="odd">
 <td>
-<code>allo_clSG</code> (Body-wt exponent on SG CL/Q)</td>
+<code>e_wt_cl_q</code> (Body-wt exponent on SG CL/Q)</td>
 <td>0.507571</td>
 <td>Sathe 2024 Table 1; supplement Section 6.b TH(6) FIX</td>
 </tr>
 <tr class="even">
 <td>
-<code>allo_vSG</code> (Body-wt exponent on SG V1/V2)</td>
+<code>e_wt_vc_vp</code> (Body-wt exponent on SG V1/V2)</td>
 <td>0.532396</td>
 <td>Sathe 2024 Table 1; supplement Section 6.b TH(7) FIX</td>
 </tr>
 <tr class="odd">
 <td>
-<code>e_alb_clSG</code> (Baseline-albumin exponent on SG CL)</td>
+<code>e_alb_cl</code> (Baseline-albumin exponent on SG CL)</td>
 <td>-0.355253</td>
 <td>Sathe 2024 Table 1; supplement Section 6.b TH(8) FIX</td>
 </tr>
@@ -333,113 +333,113 @@ Section 3.1 and Table S2).</p>
 </tr>
 <tr class="odd">
 <td>
-<code>lclSN38</code> (log apparent SN-38 CL)</td>
+<code>lcl_sn38</code> (log apparent SN-38 CL)</td>
 <td>6.02 (= 409 L/h)</td>
 <td>Sathe 2024 Table 2</td>
 </tr>
 <tr class="even">
 <td>
-<code>lqSN38</code> (log apparent SN-38 Q)</td>
+<code>lq_sn38</code> (log apparent SN-38 Q)</td>
 <td>5.51 (= 247 L/h)</td>
 <td>Sathe 2024 Table 2</td>
 </tr>
 <tr class="odd">
 <td>
-<code>lvcSN38</code> (apparent SN-38 V1, FIXED)</td>
+<code>lvc_sn38</code> (apparent SN-38 V1, FIXED)</td>
 <td>log(49) L</td>
 <td>Sathe 2024 Table 2; literature ref [19] (Klein 2002)</td>
 </tr>
 <tr class="even">
 <td>
-<code>lvpSN38</code> (apparent SN-38 V2, FIXED)</td>
+<code>lvp_sn38</code> (apparent SN-38 V2, FIXED)</td>
 <td>log(2177) L</td>
 <td>Sathe 2024 Table 2; literature ref [19] (Klein 2002)</td>
 </tr>
 <tr class="odd">
 <td>
-<code>allo_clSN38</code> (Body-wt exponent on SN-38 CL/Q)</td>
+<code>e_wt_cl_q_sn38</code> (Body-wt exponent on SN-38 CL/Q)</td>
 <td>0.500</td>
 <td>Sathe 2024 Table 2</td>
 </tr>
 <tr class="even">
 <td>
-<code>lclTAB</code> (tAB CL, baseline at t=0)</td>
+<code>lcl_tab</code> (tAB CL, baseline at t=0)</td>
 <td>log(0.016) L/h</td>
 <td>Sathe 2024 Table 3</td>
 </tr>
 <tr class="odd">
 <td>
-<code>lvcTAB</code> (tAB V1)</td>
+<code>lvc_tab</code> (tAB V1)</td>
 <td>log(3.06) L</td>
 <td>Sathe 2024 Table 3</td>
 </tr>
 <tr class="even">
 <td>
-<code>lqTAB</code> (tAB Q)</td>
+<code>lq_tab</code> (tAB Q)</td>
 <td>log(0.010) L/h</td>
 <td>Sathe 2024 Table 3</td>
 </tr>
 <tr class="odd">
 <td>
-<code>lvpTAB</code> (tAB V2)</td>
+<code>lvp_tab</code> (tAB V2)</td>
 <td>log(1.20) L</td>
 <td>Sathe 2024 Table 3</td>
 </tr>
 <tr class="even">
 <td>
-<code>allo_clTAB</code> (Body-wt exponent on tAB CL/Q)</td>
+<code>e_wt_cl_q_tab</code> (Body-wt exponent on tAB CL/Q)</td>
 <td>0.372</td>
 <td>Sathe 2024 Table 3</td>
 </tr>
 <tr class="odd">
 <td>
-<code>allo_vTAB</code> (Body-wt exponent on tAB V1/V2)</td>
+<code>e_wt_vc_vp_tab</code> (Body-wt exponent on tAB V1/V2)</td>
 <td>0.446</td>
 <td>Sathe 2024 Table 3</td>
 </tr>
 <tr class="even">
 <td>
-<code>e_alb_clTAB</code> (Baseline-albumin exponent on tAB CL)</td>
+<code>e_alb_cl_tab</code> (Baseline-albumin exponent on tAB CL)</td>
 <td>-0.735</td>
 <td>Sathe 2024 Table 3</td>
 </tr>
 <tr class="odd">
 <td>
-<code>e_tumor_clTAB</code> (Tumor-Other multiplicative on tAB
+<code>e_tumor_cl_tab</code> (Tumor-Other multiplicative on tAB
 CL)</td>
 <td>-0.134</td>
 <td>Sathe 2024 Table 3</td>
 </tr>
 <tr class="even">
 <td>
-<code>e_sex_vTAB</code> (Male multiplicative on tAB V1)</td>
+<code>e_sex_vc_tab</code> (Male multiplicative on tAB V1)</td>
 <td>+0.121</td>
 <td>Sathe 2024 Table 3</td>
 </tr>
 <tr class="odd">
 <td>
-<code>maxRedTAB</code> (Max relative reduction of tAB CL)</td>
+<code>maxRed_tab</code> (Max relative reduction of tAB CL)</td>
 <td>16.7%</td>
 <td>Sathe 2024 Table 3</td>
 </tr>
 <tr class="even">
 <td>
-<code>keffTAB</code> (tAB CL time-decline rate constant)</td>
+<code>keff_tab</code> (tAB CL time-decline rate constant)</td>
 <td>6.08e-4 1/h</td>
 <td>Sathe 2024 Table 3</td>
 </tr>
 <tr class="odd">
-<td>IIV variance on lclSG</td>
+<td>IIV variance on lcl</td>
 <td>0.011</td>
 <td>Sathe 2024 Table 1</td>
 </tr>
 <tr class="even">
-<td>IIV BLOCK(2) on lkrel + lclSN38</td>
+<td>IIV BLOCK(2) on lkrel + lcl_sn38</td>
 <td>(0.332, 0.269, 0.411)</td>
 <td>Sathe 2024 Table 2</td>
 </tr>
 <tr class="odd">
-<td>IIV BLOCK(2) on lclTAB + lvcTAB</td>
+<td>IIV BLOCK(2) on lcl_tab + lvc_tab</td>
 <td>(0.100, 0.045, 0.046)</td>
 <td>Sathe 2024 Table 3</td>
 </tr>
@@ -525,7 +525,7 @@ HR+/HER2- mBC, 35% other solid tumors).</p>
 <span></span>
 <span><span class="co"># Build the event table: 10 mg/kg as a 30-min IV infusion on days 1 and 8 of a</span></span>
 <span><span class="co"># 21-day cycle, two cycles. Each SG infusion needs TWO simultaneous dose events</span></span>
-<span><span class="co"># (cmt = sgCentral and cmt = tabCentral) so that both compartments receive the</span></span>
+<span><span class="co"># (cmt = central and cmt = central_tab) so that both compartments receive the</span></span>
 <span><span class="co"># same input mass at the same time (model file's documented dosing convention).</span></span>
 <span><span class="va">infusion_dur</span> <span class="op">&lt;-</span> <span class="fl">0.5</span>  <span class="co"># hours</span></span>
 <span><span class="va">dose_times_h</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">7</span> <span class="op">*</span> <span class="fl">24</span>, <span class="fl">21</span> <span class="op">*</span> <span class="fl">24</span>, <span class="fl">21</span> <span class="op">*</span> <span class="fl">24</span> <span class="op">+</span> <span class="fl">7</span> <span class="op">*</span> <span class="fl">24</span><span class="op">)</span>  <span class="co"># days 1, 8, 22, 29</span></span>
@@ -536,7 +536,7 @@ HR+/HER2- mBC, 35% other solid tumors).</p>
 <span>    <span class="va">rows</span> <span class="op">&lt;-</span> <span class="va">.</span></span>
 <span>    <span class="va">amt_dose</span> <span class="op">&lt;-</span> <span class="fl">10</span> <span class="op">*</span> <span class="va">rows</span><span class="op">$</span><span class="va">WT</span>  <span class="co"># mg per dose at 10 mg/kg</span></span>
 <span>    <span class="va">rate_dose</span> <span class="op">&lt;-</span> <span class="va">amt_dose</span> <span class="op">/</span> <span class="va">infusion_dur</span></span>
-<span>    <span class="va">dose_rows</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/expand.grid.html" class="external-link">expand.grid</a></span><span class="op">(</span>time <span class="op">=</span> <span class="va">dose_times_h</span>, cmt <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"sgCentral"</span>, <span class="st">"tabCentral"</span><span class="op">)</span>,</span>
+<span>    <span class="va">dose_rows</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/expand.grid.html" class="external-link">expand.grid</a></span><span class="op">(</span>time <span class="op">=</span> <span class="va">dose_times_h</span>, cmt <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"central"</span>, <span class="st">"central_tab"</span><span class="op">)</span>,</span>
 <span>                             stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span>    <span class="va">dose_rows</span><span class="op">$</span><span class="va">id</span>   <span class="op">&lt;-</span> <span class="va">rows</span><span class="op">$</span><span class="va">id</span></span>
 <span>    <span class="va">dose_rows</span><span class="op">$</span><span class="va">amt</span>  <span class="op">&lt;-</span> <span class="va">amt_dose</span></span>
@@ -574,7 +574,7 @@ per-figure medians:</p>
 <span>  id <span class="op">=</span> <span class="fl">1</span>, WT <span class="op">=</span> <span class="fl">70</span>, ALB <span class="op">=</span> <span class="fl">38</span>, SEXF <span class="op">=</span> <span class="fl">1</span>, TUMTP_OTH <span class="op">=</span> <span class="fl">0</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">typical_events</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/expand.grid.html" class="external-link">expand.grid</a></span><span class="op">(</span></span>
-<span>  time <span class="op">=</span> <span class="va">dose_times_h</span>, cmt <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"sgCentral"</span>, <span class="st">"tabCentral"</span><span class="op">)</span>,</span>
+<span>  time <span class="op">=</span> <span class="va">dose_times_h</span>, cmt <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"central"</span>, <span class="st">"central_tab"</span><span class="op">)</span>,</span>
 <span>  stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">typical_events</span><span class="op">$</span><span class="va">id</span>  <span class="op">&lt;-</span> <span class="fl">1</span></span>
@@ -593,7 +593,7 @@ per-figure medians:</p>
 <span><span class="va">typical_events</span><span class="op">$</span><span class="va">TUMTP_OTH</span> <span class="op">&lt;-</span> <span class="fl">0</span></span>
 <span></span>
 <span><span class="va">sim_typical</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_typical</span>, events <span class="op">=</span> <span class="va">typical_events</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalclSG', 'etalkrel', 'etalclSN38', 'etalclTAB', 'etalvcTAB'</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl', 'etalkrel', 'etalcl_sn38', 'etalcl_tab', 'etalvc_tab'</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="replicate-published-figures">Replicate published figures<a class="anchor" aria-label="anchor" href="#replicate-published-figures"></a>
@@ -635,7 +635,7 @@ unit ng/mL.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim_sn38</span> <span class="op">&lt;-</span> <span class="va">sim</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>SN38_ng_per_mL <span class="op">=</span> <span class="va">Csn38</span> <span class="op">*</span> <span class="fl">1000</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>SN38_ng_per_mL <span class="op">=</span> <span class="va">Cc_sn38</span> <span class="op">*</span> <span class="fl">1000</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">sim_sn38_summary</span> <span class="op">&lt;-</span> <span class="va">sim_sn38</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">time</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -665,9 +665,9 @@ unit ng/mL.</p>
 <span><span class="va">sim_tab_summary</span> <span class="op">&lt;-</span> <span class="va">sim_tab</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">time</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span></span>
-<span>    Q05 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">Ctab</span>, <span class="fl">0.05</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span>    Q50 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">Ctab</span>, <span class="fl">0.50</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span>    Q95 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">Ctab</span>, <span class="fl">0.95</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>    Q05 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">Cc_tab</span>, <span class="fl">0.05</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>    Q50 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">Cc_tab</span>, <span class="fl">0.50</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>    Q95 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">Cc_tab</span>, <span class="fl">0.95</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>    .groups <span class="op">=</span> <span class="st">"drop"</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
@@ -691,7 +691,7 @@ model:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">bw_grid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">49</span>, <span class="fl">70</span>, <span class="fl">110</span><span class="op">)</span></span>
 <span><span class="va">out_bw</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">bw_grid</span>, <span class="kw">function</span><span class="op">(</span><span class="va">wt</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="va">ev</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/expand.grid.html" class="external-link">expand.grid</a></span><span class="op">(</span>time <span class="op">=</span> <span class="va">dose_times_h</span>, cmt <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"sgCentral"</span>, <span class="st">"tabCentral"</span><span class="op">)</span>,</span>
+<span>  <span class="va">ev</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/expand.grid.html" class="external-link">expand.grid</a></span><span class="op">(</span>time <span class="op">=</span> <span class="va">dose_times_h</span>, cmt <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"central"</span>, <span class="st">"central_tab"</span><span class="op">)</span>,</span>
 <span>                    stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span>  <span class="va">ev</span><span class="op">$</span><span class="va">id</span>  <span class="op">&lt;-</span> <span class="fl">1</span></span>
 <span>  <span class="va">ev</span><span class="op">$</span><span class="va">amt</span> <span class="op">&lt;-</span> <span class="fl">10</span> <span class="op">*</span> <span class="va">wt</span></span>
@@ -702,11 +702,11 @@ model:</p>
 <span>  <span class="va">ev</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">ev</span>, <span class="va">obs</span><span class="op">)</span></span>
 <span>  <span class="va">ev</span><span class="op">$</span><span class="va">WT</span> <span class="op">&lt;-</span> <span class="va">wt</span>; <span class="va">ev</span><span class="op">$</span><span class="va">ALB</span> <span class="op">&lt;-</span> <span class="fl">38</span>; <span class="va">ev</span><span class="op">$</span><span class="va">SEXF</span> <span class="op">&lt;-</span> <span class="fl">1</span>; <span class="va">ev</span><span class="op">$</span><span class="va">TUMTP_OTH</span> <span class="op">&lt;-</span> <span class="fl">0</span></span>
 <span>  <span class="va">s</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_typical</span>, events <span class="op">=</span> <span class="va">ev</span><span class="op">)</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>WT <span class="op">=</span> <span class="va">wt</span>, time <span class="op">=</span> <span class="va">s</span><span class="op">$</span><span class="va">time</span>, Cc <span class="op">=</span> <span class="va">s</span><span class="op">$</span><span class="va">Cc</span>, Ctab <span class="op">=</span> <span class="va">s</span><span class="op">$</span><span class="va">Ctab</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>WT <span class="op">=</span> <span class="va">wt</span>, time <span class="op">=</span> <span class="va">s</span><span class="op">$</span><span class="va">time</span>, Cc <span class="op">=</span> <span class="va">s</span><span class="op">$</span><span class="va">Cc</span>, Cc_tab <span class="op">=</span> <span class="va">s</span><span class="op">$</span><span class="va">Cc_tab</span><span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalclSG', 'etalkrel', 'etalclSN38', 'etalclTAB', 'etalvcTAB'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalclSG', 'etalkrel', 'etalclSN38', 'etalclTAB', 'etalvcTAB'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalclSG', 'etalkrel', 'etalclSN38', 'etalclTAB', 'etalvcTAB'</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl', 'etalkrel', 'etalcl_sn38', 'etalcl_tab', 'etalvc_tab'</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl', 'etalkrel', 'etalcl_sn38', 'etalcl_tab', 'etalvc_tab'</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl', 'etalkrel', 'etalcl_sn38', 'etalcl_tab', 'etalvc_tab'</span></span>
 <span><span class="va">out_bw</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">out_bw</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># AUC over the first 21-day treatment cycle via trapezoidal rule</span></span>
@@ -717,7 +717,7 @@ model:</p>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">WT</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span></span>
 <span>    AUC_SG_ug_h_per_mL  <span class="op">=</span> <span class="fu">trapz</span><span class="op">(</span><span class="va">time</span>, <span class="va">Cc</span><span class="op">)</span>,</span>
-<span>    AUC_TAB_ug_h_per_mL <span class="op">=</span> <span class="fu">trapz</span><span class="op">(</span><span class="va">time</span>, <span class="va">Ctab</span><span class="op">)</span>,</span>
+<span>    AUC_TAB_ug_h_per_mL <span class="op">=</span> <span class="fu">trapz</span><span class="op">(</span><span class="va">time</span>, <span class="va">Cc_tab</span><span class="op">)</span>,</span>
 <span>    .groups <span class="op">=</span> <span class="st">"drop"</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
@@ -790,7 +790,7 @@ analyte; carry the weight-band stratification through
 <span>  <span class="op">)</span></span>
 <span></span>
 <span><span class="va">dose_first_cycle</span> <span class="op">&lt;-</span> <span class="va">events</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">evid</span> <span class="op">==</span> <span class="fl">1</span>, <span class="va">cmt</span> <span class="op">==</span> <span class="st">"sgCentral"</span>, <span class="va">time</span> <span class="op">&lt;</span> <span class="fl">21</span> <span class="op">*</span> <span class="fl">24</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">evid</span> <span class="op">==</span> <span class="fl">1</span>, <span class="va">cmt</span> <span class="op">==</span> <span class="st">"central"</span>, <span class="va">time</span> <span class="op">&lt;</span> <span class="fl">21</span> <span class="op">*</span> <span class="fl">24</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>weight_band <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/case-and-replace-when.html" class="external-link">case_when</a></span><span class="op">(</span></span>
 <span>    <span class="va">WT</span> <span class="op">&lt;</span> <span class="fl">60</span>  <span class="op">~</span> <span class="st">"Low (&lt;60 kg)"</span>,</span>
 <span>    <span class="va">WT</span> <span class="op">&gt;</span> <span class="fl">90</span>  <span class="op">~</span> <span class="st">"High (&gt;90 kg)"</span>,</span>
@@ -1089,9 +1089,9 @@ body-weight band.</caption>
 </h3>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim_sn38_nca</span> <span class="op">&lt;-</span> <span class="va">sim_first_cycle</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Csn38</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">Csn38</span>, <span class="va">weight_band</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">sim_sn38_nca</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">sim_sn38_nca</span><span class="op">)</span> <span class="op">==</span> <span class="st">"Csn38"</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"Cc"</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc_sn38</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">Cc_sn38</span>, <span class="va">weight_band</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">sim_sn38_nca</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">sim_sn38_nca</span><span class="op">)</span> <span class="op">==</span> <span class="st">"Cc_sn38"</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"Cc"</span></span>
 <span></span>
 <span><span class="va">conc_sn38</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAconc.html" class="external-link">PKNCAconc</a></span><span class="op">(</span><span class="va">sim_sn38_nca</span>, <span class="va">Cc</span> <span class="op">~</span> <span class="va">time</span> <span class="op">|</span> <span class="va">weight_band</span> <span class="op">+</span> <span class="va">id</span>,</span>
 <span>                              concu <span class="op">=</span> <span class="st">"ug/mL"</span>, timeu <span class="op">=</span> <span class="st">"h"</span><span class="op">)</span></span>
@@ -1367,9 +1367,9 @@ body-weight band.</caption>
 </h3>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim_tab_nca</span> <span class="op">&lt;-</span> <span class="va">sim_first_cycle</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Ctab</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">Ctab</span>, <span class="va">weight_band</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">sim_tab_nca</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">sim_tab_nca</span><span class="op">)</span> <span class="op">==</span> <span class="st">"Ctab"</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"Cc"</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc_tab</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">Cc_tab</span>, <span class="va">weight_band</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">sim_tab_nca</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">sim_tab_nca</span><span class="op">)</span> <span class="op">==</span> <span class="st">"Cc_tab"</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"Cc"</span></span>
 <span></span>
 <span><span class="va">conc_tab</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAconc.html" class="external-link">PKNCAconc</a></span><span class="op">(</span><span class="va">sim_tab_nca</span>, <span class="va">Cc</span> <span class="op">~</span> <span class="va">time</span> <span class="op">|</span> <span class="va">weight_band</span> <span class="op">+</span> <span class="va">id</span>,</span>
 <span>                             concu <span class="op">=</span> <span class="st">"ug/mL"</span>, timeu <span class="op">=</span> <span class="st">"h"</span><span class="op">)</span></span>
@@ -1718,11 +1718,10 @@ CL with a half-time of approximately 48 days (rate constant 6.08e-4
 <li>
 <strong>Dosing convention.</strong> Each SG infusion event is
 represented in the event table as TWO simultaneous dose rows (one with
-<code>cmt = "sgCentral"</code>, one with
-<code>cmt = "tabCentral"</code>) so that the SG and tAB compartments
-receive the same input mass at the same time. This matches the source
-paper’s setup, in which the SG and tAB models were fit independently
-using the SG dose directly.</li>
+<code>cmt = "central"</code>, one with <code>cmt = "central_tab"</code>)
+so that the SG and tAB compartments receive the same input mass at the
+same time. This matches the source paper’s setup, in which the SG and
+tAB models were fit independently using the SG dose directly.</li>
 <li>
 <strong>tAB CL / V “true” vs. model values.</strong> Sathe 2024
 Methods 2.3 reports that the “true” tAB CL and volume parameters are the
@@ -1733,10 +1732,9 @@ Multiply by 0.92 when comparing against per-mass-of-antibody PK
 estimates from other sources.</li>
 <li>
 <strong>Compartment names.</strong> Multi-output ADC simulation
-requires named compartments (<code>sgCentral</code>,
-<code>sgPeripheral1</code>, <code>sn38Central</code>,
-<code>sn38Peripheral1</code>, <code>tabCentral</code>,
-<code>tabPeripheral1</code>) outside the canonical
+requires named compartments (<code>central_sn38</code>,
+<code>peripheral1_sn38</code>, <code>central_tab</code>,
+<code>peripheral1_tab</code>) outside the canonical
 <code>central</code>/<code>peripheral1</code> set defined in
 <code>naming-conventions.md</code>.
 <code><a href="../reference/checkModelConventions.html">nlmixr2lib::checkModelConventions</a></code> flags these compartments
@@ -1775,10 +1773,10 @@ cohort are reconstructed from Sathe 2024 Table S2 summary statistics
 distribution is not published.</li>
 <li>
 <strong>Time reference for the time-dependent CL.</strong> The
-expression <code>1 - maxRedTAB/100 * (1 - exp(-keffTAB * t))</code> uses
-the rxode2 simulation time variable <code>t</code>, which is referenced
-to the first dose at <code>t = 0</code>. Match the simulation start to
-the start of treatment when reproducing the time- decline
+expression <code>1 - maxRed_tab/100 * (1 - exp(-keff_tab * t))</code>
+uses the rxode2 simulation time variable <code>t</code>, which is
+referenced to the first dose at <code>t = 0</code>. Match the simulation
+start to the start of treatment when reproducing the time- decline
 trajectory.</li>
 </ul>
 </div>

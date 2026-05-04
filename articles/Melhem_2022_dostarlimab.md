@@ -78,7 +78,7 @@ collects them in one place for review.
 | `lt50` (T50, days) | log(108) | Melhem 2022 Table 3, T50 |
 | `lhill` (Hill) | log(5.29) | Melhem 2022 Table 3, Hill |
 | `e_wt_cl` | 0.470 | Melhem 2022 Table 3, Effect of WT on CL |
-| `e_wt_v` | 0.419 | Melhem 2022 Table 3, Effect of WT on Vc and Vp |
+| `e_wt_vc_vp` | 0.419 | Melhem 2022 Table 3, Effect of WT on Vc and Vp |
 | `e_age_cl` | -0.227 | Melhem 2022 Table 3, Effect of age on CL |
 | `e_alb_cl` | -1.01 | Melhem 2022 Table 3, Effect of ALB on CL |
 | `e_alt_cl` | -0.0585 | Melhem 2022 Table 3, Effect of ALT on CL |
@@ -277,7 +277,7 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
-#>  ■■■■■■■■■■■■■■■■■■■■■■■           74% |  ETA:  1s
+#>  ■■■■■■■■■■■■■■■■                  50% |  ETA:  2s
 knitr::kable(summary(nca_res),
              caption = "Simulated NCA parameters (3rd dosing interval, days 21-42 after first dose)")
 ```

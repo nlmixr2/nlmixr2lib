@@ -108,18 +108,18 @@ collects the final-model values from Fau 2020 Table S3 in one place.
 
 | Parameter (model name) | Value (this package) | Source location |
 |----|----|----|
-| `lclinf` (CLinf, L/h) | log(0.00955) | Table S3: CLinf |
+| `lcl` (steady-state CL = CLinf, L/h) | log(0.00955) | Table S3: CLinf |
 | `lvc` (Vc, L) | log(5.13) | Table S3: Vc |
 | `lq` (Q, L/h) | log(0.0432) | Table S3: Q |
 | `lvp` (Vp, L) | log(3.62) | Table S3: Vp |
-| `lvm` (Vm, mg/(L·h)) | log(0.136) | Table S3: Vm |
+| `lvmax` (Vmax, mg/(L·h)) | log(0.136) | Table S3: Vm |
 | `lkm` (Km, mg/L) | log(0.300) | Table S3: Km |
 | `clm` | 0.664 | Table S3: CLm |
 | `lkcl` (KCL, h) | log(1055) | Table S3: KCL |
 | `lgam` (γ, unitless) | log(3.91) | Table S3: γ |
-| `e_wt_clinf` | 0.621 | Table S3: CLinf ~ Wght |
-| `e_b2m_clinf` | 0.343 | Table S3: CLinf ~ B2M |
-| `e_nigg_clinf` | -0.751 | Table S3: CLinf ~ Ig=Not_IgG |
+| `e_wt_cl` | 0.621 | Table S3: CLinf ~ Wght |
+| `e_b2m_cl` | 0.343 | Table S3: CLinf ~ B2M |
+| `e_nigg_cl` | -0.751 | Table S3: CLinf ~ Ig=Not_IgG |
 | `e_nigg_kcl` | -0.931 | Table S3: KCL ~ Ig=Not_IgG (main text rounds to -0.930) |
 | `e_wt_vc` | 0.472 | Table S3: Vc ~ Wght |
 | `e_p2f2_vc` | -0.137 | Table S3: Vc ~ Form=P2F2 |
@@ -127,14 +127,14 @@ collects the final-model values from Fau 2020 Table S3 in one place.
 | `e_sexf_vc` | -0.126 | Table S3: Vc ~ Sex=Female |
 | `e_wt_vp` | 0.719 | Table S3: Vp ~ Wght |
 | `e_wt_q` | 0.477 | Table S3: Q ~ Wght (RSE 57.5 %) |
-| IIV `etalclinf` ω = 47.5 % | 0.2035 | log(0.475² + 1) |
+| IIV `etalcl` ω = 47.5 % | 0.2035 | log(0.475² + 1) |
 | IIV `etaclm` ω = 97.2 % (normal) | 0.4164 | (0.664 × 0.972)² |
 | IIV `etalkcl` ω = 115 % | 0.8427 | log(1.15² + 1) |
 | IIV `etalgam` ω = 118 % | 0.8723 | log(1.18² + 1) |
 | IIV `etalvc` ω = 25.7 % | 0.0640 | log(0.257² + 1) |
 | IIV `etalq` ω = 85.8 % | 0.5519 | log(0.858² + 1) |
 | IIV `etalvp` ω = 45.6 % | 0.1889 | log(0.456² + 1) |
-| IIV `etalvm` ω = 61.5 % | 0.3206 | log(0.615² + 1) |
+| IIV `etalvmax` ω = 61.5 % | 0.3206 | log(0.615² + 1) |
 | IIV `etalkm` ω = 88.9 % | 0.5823 | log(0.889² + 1) |
 | `propSd` | 0.225 | Table S3: σprop 22.5 % |
 | `addSd` (mg/L) | 0.00196 | Table S3: σadd |
@@ -270,8 +270,8 @@ make_typical_arm <- function(mm_nigg) {
 }
 
 typical <- bind_rows(make_typical_arm(0L), make_typical_arm(1L))
-#> ℹ omega/sigma items treated as zero: 'etalclinf', 'etaclm', 'etalkcl', 'etalgam', 'etalvc', 'etalq', 'etalvp', 'etalvm', 'etalkm'
-#> ℹ omega/sigma items treated as zero: 'etalclinf', 'etaclm', 'etalkcl', 'etalgam', 'etalvc', 'etalq', 'etalvp', 'etalvm', 'etalkm'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etaclm', 'etalkcl', 'etalgam', 'etalvc', 'etalq', 'etalvp', 'etalvmax', 'etalkm'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etaclm', 'etalkcl', 'etalgam', 'etalvc', 'etalq', 'etalvp', 'etalvmax', 'etalkm'
 ```
 
 ## Replicate published figures
@@ -280,16 +280,16 @@ typical <- bind_rows(make_typical_arm(0L), make_typical_arm(1L))
 
 Fau 2020 Figure 1 shows the linear, nonlinear, and total clearance
 trajectories for a typical IgG-MM patient. The model’s output exposes
-`cllin` (time-varying linear CL) and the parameters `vm`, `vc`, `km`, so
-the nonlinear contribution can be reconstructed as
-`CLnonlin(t) = Vc · Vm / (Km + Cc(t))`.
+`cllin` (time-varying linear CL) and the parameters `vmax`, `vc`, `km`,
+so the nonlinear contribution can be reconstructed as
+`CLnonlin(t) = Vc · Vmax / (Km + Cc(t))`.
 
 ``` r
 
 fig1 <- typical |>
   filter(treatment == "IgG MM (reference)", time > 0) |>
   mutate(
-    CLnonlin = vc * vm / (km + Cc),
+    CLnonlin = vc * vmax / (km + Cc),
     CLtotal  = cllin + CLnonlin
   ) |>
   select(time, CLlin = cllin, CLnonlin, CLtotal) |>
@@ -402,7 +402,6 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  100% |  ETA:  0s
 knitr::kable(summary(nca_res),
              caption = "Simulated steady-state NCA (final Q2W interval, weeks 30-32) by myeloma type.")
 ```

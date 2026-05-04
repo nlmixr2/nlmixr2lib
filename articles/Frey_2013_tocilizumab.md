@@ -55,7 +55,7 @@ covariate-aware tocilizumab popPK, use the standalone
 | `lvc` (V1) | `log(3.5)` L | Frey 2010 Table II, V1 |
 | `lq` (Q) | `log(0.2)` L/day | Frey 2010 Table II, Q |
 | `lvp` (V2) | `log(2.9)` L | Frey 2010 Table II, V2 |
-| `lvm` (Vm) | `log(7.5)` mg/day | Frey 2010 Table II, VM |
+| `lvmax` (Vmax) | `log(7.5)` mg/day | Frey 2010 Table II, VM |
 | `lkm` (Km) | `log(2.7)` ug/mL | Frey 2010 Table II, KM |
 | `lEC50` | `log(3.7)` ug/mL | Frey 2013 Table 1, EC50 |
 | `lEmax` | `log(0.73)` | Frey 2013 Table 1, Emax |

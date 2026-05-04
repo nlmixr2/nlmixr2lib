@@ -312,12 +312,12 @@ table below collects them in one place for review.</p>
 <td>Table 2, theta8 (Eq. 3)</td>
 </tr>
 <tr class="odd">
-<td><code>e_wt_v1</code></td>
+<td><code>e_wt_vc</code></td>
 <td>0.489</td>
 <td>Table 2, theta9 (Eq. 4)</td>
 </tr>
 <tr class="even">
-<td><code>e_wt_v2</code></td>
+<td><code>e_wt_vp</code></td>
 <td>0.646</td>
 <td>Table 2, theta10 (Eq. 5)</td>
 </tr>
@@ -697,8 +697,8 @@ decline.</p>
 <span></span>
 <span><span class="va">nca_data</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_obj</span>, <span class="va">dose_obj</span>, intervals <span class="op">=</span> <span class="va">intervals</span><span class="op">)</span></span>
 <span><span class="va">nca_res</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span><span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="va">nca_data</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■                    </span>  38% |  ETA:  5s</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■      </span>  83% |  ETA:  1s</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■                  </span>  44% |  ETA:  4s</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  </span>  96% |  ETA:  0s</span></span>
 <span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">nca_res</span><span class="op">)</span>,</span>
 <span>             caption <span class="op">=</span> <span class="st">"Simulated single-dose NCA across the MI-CP152 cohorts (first 14 days)."</span><span class="op">)</span></span></code></pre></div>

@@ -225,9 +225,9 @@ effect and transit rate (as used in the model block)</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">rxode2-based free-form 6-cmt ODE model</span> <span style="color: #00BBBB;">──────────────────────────────────────</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  ── <span style="font-weight: bold;">Initalization:</span> ──  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Fixed Effects</span> (<span style="color: #0000BB; font-weight: bold;">$theta</span>): </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  ldamageTransit      ldrugSlope ltumorExpGrowth ltumorLinGrowth  tumorVolpropSd </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ldamageTransit      ldrugSlope ltumorExpGrowth ltumorLinGrowth propSd_tumorVol </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     -0.03252319     -7.37137930     -1.29828348     -0.20579491      0.20000000 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   tumorVoladdSd </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  addSd_tumorVol </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     30.00000000 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">States</span> (<span style="color: #0000BB; font-weight: bold;">$state</span> or <span style="color: #0000BB; font-weight: bold;">$stateDf</span>): </span>
@@ -257,9 +257,9 @@ effect and transit rate (as used in the model block)</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         ltumorLinGrowth &lt;- c(-4.60517018598809, -0.205794912979597, </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             1.6094379124341)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         label("Tumor linear growth rate (tumor volume/day)")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         tumorVolpropSd &lt;- c(0, 0.2)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         propSd_tumorVol &lt;- c(0, 0.2)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         label("Proportional residual error (fraction)")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         tumorVoladdSd &lt;- c(0, 30)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         addSd_tumorVol &lt;- c(0, 30)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         label("Additive residual error (tumor volume)")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     })</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     model({</span>
@@ -275,7 +275,7 @@ effect and transit rate (as used in the model block)</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         d/dt(cyclingCells) &lt;- tumorExpGrowth * cyclingCells/(1 + </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             (tumorExpGrowth/tumorLinGrowth * tumorVol)^psi)^(1/psi) - </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             drugEffectCyclingCells * cyclingCells</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         tumorVol ~ prop(tumorVolpropSd) + add(tumorVoladdSd)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         tumorVol ~ prop(propSd_tumorVol) + add(addSd_tumorVol)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         d/dt(damagedCells1) &lt;- drugEffectCyclingCells * cyclingCells - </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             damageTransit * damagedCells1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         d/dt(damagedCells2) &lt;- damageTransit * (damagedCells1 - </span>

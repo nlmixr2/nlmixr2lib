@@ -175,7 +175,7 @@ make_cohort <- function(n, dose_mg_per_kg, regimen, wt, bsa, alb, tbili, creat,
     id   = ids,
     time = 0,
     amt  = amt_umol,
-    cmt  = "adc_central",
+    cmt  = "central",
     evid = 1L,
     ii   = cycle_h_q3w,
     addl = n_cycles - 1L,
@@ -267,7 +267,7 @@ sim_df <- as.data.frame(sim)
 sim_df <- sim_df |>
   dplyr::mutate(
     Cc_ugmL    = Cc    * MW_BV_kDa,
-    Cmmae_ngmL = Cmmae * MW_MMAE_Da,
+    Cmmae_ngmL = Cc_mmae * MW_MMAE_Da,
     day        = time / 24
   )
 ```
@@ -769,8 +769,8 @@ reference value, and the dose-cap rule rather than tuning the model.
 The simulated MMAE AUC will *not* match the published 600 ng*h/mL value.
 The underlying unit convention used by the original NONMEM run for the
 MMAE submodel — specifically how the bilinear term
-`Kd * Target * adc_central` and the proteolytic flux
-`FM * exp(-ALFM * tad) * K10 * adc_central` are scaled to ADC-to-MMAE
+`Kd * Target * central` and the proteolytic flux
+`FM * exp(-ALFM * tad) * K10 * central` are scaled to ADC-to-MMAE
 stoichiometry — is not stated in the supplement, and the published Kd /
 ALFM / Klag / V_M parameters do not by themselves uniquely determine the
 absolute MMAE concentration scale. With molar-amount dosing (1.8 mg/kg =
@@ -815,12 +815,12 @@ quirks in the source documentation that needed re-derivation.
   downstream simulation needs the rounded references, override them in a
   wrapper rather than editing the model file.
 - **Compartment naming.** The model names the seven ODE states
-  `adc_central`, `adc_peripheral1`, `adc_peripheral2`, `mmae_central`,
-  `mmae_peripheral`, `target`, and `lag` rather than the canonical
-  `central` / `peripheral1` / `peripheral2` / `effect` set, because two
-  parallel PK systems (ADC and MMAE) coexist in one model and the
-  canonical names cannot disambiguate them. The same precedent applies
-  to `Li_2017_brentuximab`, `Lu_2014_trastuzumabemtansine`, and
+  `central`, `peripheral1`, `peripheral2`, `central_mmae`,
+  `peripheral1_mmae`, `target`, and `lag`. The parent (ADC) compartments
+  use the canonical `central` / `peripheral1` / `peripheral2` set; MMAE
+  compartments use the canonical metabolite-suffix convention
+  (`central_mmae`, `peripheral1_mmae`). The same precedent applies to
+  `Li_2017_brentuximab`, `Lu_2014_trastuzumabemtansine`, and
   `Zhou_2025_brentuximab`. The canonical `target` compartment from
   `naming-conventions.md` is reused here for the irreversibly-depletable
   hypothetical-target binding pool described in the paper page 994.
@@ -849,8 +849,8 @@ quirks in the source documentation that needed re-derivation.
   estimation). This is an estimation convenience and does not change the
   simulation: in the packaged model both ADC and MMAE compartments are
   integrated together in a single ODE system, with each subject’s ADC
-  etas (`etalcl`, `etalvc`) and MMAE etas (`etalclm`, `etalvcm`) sampled
-  independently.
+  etas (`etalcl`, `etalvc`) and MMAE etas (`etalcl_mmae`, `etalvc_mmae`)
+  sampled independently.
 - **Dose-capping at 180 mg.** The licensed regimen caps the per-dose
   mass at 180 mg for patients weighing \>100 kg (Suri 2018 Methods,
   “Tables of descriptive statistics… using brentuximab vedotin 1.8 mg/kg
@@ -858,9 +858,9 @@ quirks in the source documentation that needed re-derivation.
   this via `pmin(dose_mg_per_kg * wt, 180)` in `make_cohort()`.
 - **Doses converted to umol.** The Mould-lab framework — also used by
   `Zhou_2025_brentuximab` — uses molar amounts (`AMT IN UM` -\> umol;
-  `DV IN UM` -\> umol/L). The binding term `kd * target * adc_central`
-  in the ADC -\> MMAE conversion equation is sensitive to the amount
-  unit and switching to mg without rescaling `kd` would corrupt the
+  `DV IN UM` -\> umol/L). The binding term `kd * target * central` in
+  the ADC -\> MMAE conversion equation is sensitive to the amount unit
+  and switching to mg without rescaling `kd` would corrupt the
   conversion-flux magnitude. mg-based doses are converted in the
   vignette via `amt_umol = dose_mg / MW_BV_kDa` (MW_BV approx 153.4
   kDa).
@@ -869,7 +869,7 @@ quirks in the source documentation that needed re-derivation.
   2018’s parameter values and the Mould-lab framework ODE structure
   faithfully, but the absolute simulated MMAE concentration scale does
   not match the paper’s reported 600 ng*h/mL cycle-3 AUC. The underlying
-  ambiguity is whether the paper’s `Kd * Target * adc_central` term is
+  ambiguity is whether the paper’s `Kd * Target * central` term is
   intended to operate on amount (umol of ADC) or mass (mg of ADC), and
   whether a DAR-sized stoichiometric factor is implicit. Neither unit
   convention reproduces the absolute MMAE exposure. The ADC submodel and
@@ -883,8 +883,8 @@ quirks in the source documentation that needed re-derivation.
   OMEGA matrix. If possible, off diagonal elements describing
   correlation were added as well.” The packaged model uses a fully
   diagonal IIV block on the four estimated etas (`etalcl`, `etalvc`,
-  `etalclm`, `etalvcm`); add the block correlations only if the source
-  NONMEM control stream is later obtained.
+  `etalcl_mmae`, `etalvc_mmae`); add the block correlations only if the
+  source NONMEM control stream is later obtained.
 - **Cycle-4 NCA for steady-state comparison.** The paper presents
   steady-state AUC simulations after 3 dosing cycles (Methods, “Tables
   of descriptive statistics of AUC by cycle, for three cycles, were

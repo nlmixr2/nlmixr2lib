@@ -106,7 +106,7 @@ sprintf("dose = %.1f mg of ADC = %.4f µmol total antibody", dose_mg, dose_umol)
 # (= F_DARi / SUM) inside model() to deposit only that chain's fraction.
 ChainsCentral <- c("dar1_central", "dar2_central", "dar3_central",
                    "dar4_central", "dar5_central", "dar6_central",
-                   "dar7_central", "dar8_central", "nab_central")
+                   "dar7_central", "dar8_central", "central_nab")
 
 build_q2w_dosing <- function(dose_umol, n_cycles, chains = ChainsCentral) {
   ev <- rxode2::et()
@@ -140,13 +140,13 @@ four analytes after 100 mg/m² Q2W dosing.
 ``` r
 
 sim_long <- df |>
-  select(time, Cc, Cnab, Cdm4, Cmedm4) |>
-  pivot_longer(c(Cc, Cnab, Cdm4, Cmedm4), names_to = "analyte", values_to = "C_uM") |>
+  select(time, Cc, Cc_nab, Cc_dm4, Cc_medm4) |>
+  pivot_longer(c(Cc, Cc_nab, Cc_dm4, Cc_medm4), names_to = "analyte", values_to = "C_uM") |>
   mutate(analyte = recode(analyte,
-                          Cc      = "SAR408701 (DAR>=1)",
-                          Cnab    = "NAB (DAR0)",
-                          Cdm4    = "DM4",
-                          Cmedm4  = "MeDM4"),
+                          Cc       = "SAR408701 (DAR>=1)",
+                          Cc_nab   = "NAB (DAR0)",
+                          Cc_dm4   = "DM4",
+                          Cc_medm4 = "MeDM4"),
          analyte = factor(analyte,
                           levels = c("SAR408701 (DAR>=1)", "NAB (DAR0)", "DM4", "MeDM4")))
 
@@ -238,9 +238,9 @@ run_nca <- function(label, conc) {
 
 nca_rows <- list(
   run_nca("SAR408701 (DAR>=1)", sim_c1$Cc),
-  run_nca("NAB (DAR0)",         sim_c1$Cnab),
-  run_nca("DM4",                sim_c1$Cdm4),
-  run_nca("MeDM4",              sim_c1$Cmedm4)
+  run_nca("NAB (DAR0)",         sim_c1$Cc_nab),
+  run_nca("DM4",                sim_c1$Cc_dm4),
+  run_nca("MeDM4",              sim_c1$Cc_medm4)
 )
 #> Warning: Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed
@@ -371,20 +371,21 @@ against Table 7.
   covariate-aware refit.
 - **AUC unit in Table 7** — see the Errata section above.
 - **Outputs included.** The model exposes Cc (SAR408701, sum of
-  DAR1–DAR8), Cnab (DAR0/NAB), Cdm4, Cmedm4 and the derived DARavg. The
-  individual DAR-i proportions (Online Resource 1 `prop_ADCi`,
-  `prop_NAB`) are computable from the per-chain compartment amounts and
-  Vc but are not exported as separate outputs in this packaging — the
-  paper itself excludes the DAR8 proportion from fitting due to BLQ.
+  DAR1–DAR8), Cc_nab (DAR0/NAB), Cc_dm4, Cc_medm4 and the derived
+  DARavg. The individual DAR-i proportions (Online Resource 1
+  `prop_ADCi`, `prop_NAB`) are computable from the per-chain compartment
+  amounts and Vc but are not exported as separate outputs in this
+  packaging — the paper itself excludes the DAR8 proportion from fitting
+  due to BLQ.
 - **[`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
   deviations (justified).** The model uses 20 mechanism-specific
   compartment names — `dar1_central` … `dar8_central`,
-  `dar1_peripheral1` … `dar8_peripheral1`, `nab_central`,
-  `nab_peripheral1`, `dm4`, `medm4` — instead of the canonical `central`
-  / `peripheral1` set. This follows the same precedent as
-  `Bender_2014_trastuzumabEmtansine_mechanistic` and is load-bearing:
-  the explicit per-DAR chain is the structural mechanism the paper
-  proposes. The dosing unit (`umol of antibody`) and concentration unit
-  (`uM`) are reported as dimensionally incompatible by the simple-string
-  parser, but are in fact both molar — the long parenthetical descriptor
-  in `units$dosing` confuses the parser.
+  `dar1_peripheral1` … `dar8_peripheral1`, `central_nab`,
+  `peripheral1_nab`, `central_dm4`, `central_medm4` — instead of the
+  canonical `central` / `peripheral1` set. This follows the same
+  precedent as `Bender_2014_trastuzumabEmtansine_mechanistic` and is
+  load-bearing: the explicit per-DAR chain is the structural mechanism
+  the paper proposes. The dosing unit (`umol of antibody`) and
+  concentration unit (`uM`) are reported as dimensionally incompatible
+  by the simple-string parser, but are in fact both molar — the long
+  parenthetical descriptor in `units$dosing` confuses the parser.

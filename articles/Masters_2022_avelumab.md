@@ -70,8 +70,8 @@ collects them in one place for review.
 | `lt50` (T50, days) | log(99.24) | Masters 2022 Table 1, θ_T50 |
 | `lgamma` (Hill shape) | log(2.086) | Masters 2022 Table 1, θ_γ |
 | `e_wt_cl` (allometric on CL) | 0.4714 | Masters 2022 Table 1, θ_weight_on_CL |
-| `e_wt_v1` (allometric on V1) | 0.4694 | Masters 2022 Table 1, θ_weight_on_V1 |
-| `e_wt_v2` (allometric on V2) | 0.5826 | Masters 2022 Table 1, θ_weight_on_V2 |
+| `e_wt_vc` (allometric on Vc) | 0.4694 | Masters 2022 Table 1, θ_weight_on_V1 |
+| `e_wt_vp` (allometric on Vp) | 0.5826 | Masters 2022 Table 1, θ_weight_on_V2 |
 | `e_wt_q` (allometric on Q) | 1 (fixed) | Masters 2022 Methods, *Study overview* |
 | IIV block `etalcl + etalvc + etalvp` | lower-tri c(0.09339, 0.03048, 0.03776, 0.08418, 0.01799, 1.204) | Masters 2022 Table 1, ω² and covariance rows |
 | `etalImax` | 0.1052 | Masters 2022 Table 1, ω²_Imax |
@@ -263,8 +263,8 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
-#>  ■■■■■■■■■■■■■                     40% |  ETA:  5s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■          76% |  ETA:  2s
+#>  ■■■■■■■■■■■■■■■■                  51% |  ETA:  4s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■   98% |  ETA:  0s
 knitr::kable(summary(nca_res),
              caption = "Simulated NCA parameters (3rd dosing interval, days 28-42)")
 ```

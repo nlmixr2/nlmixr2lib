@@ -1196,17 +1196,17 @@ ipilimumab alone or in combination with nivolumab (Sanghavi 2020)</td>
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Sathe_2024_sacituzumab.html">Sathe_2024_sacituzumab</a></td>
 <td align="left">Coupled three-analyte population PK model for
 sacituzumab govitecan (SG, the ADC; output Cc), free SN-38 (released
-payload; output Csn38), and total antibody (tAB; output Ctab) in adults
-with metastatic triple-negative breast cancer and other solid tumors
-(Sathe 2024). All three analytes are described by two-compartment models
-with body-weight allometric scaling. SG carries IIV on CL and a
+payload; output Cc_sn38), and total antibody (tAB; output Cc_tab) in
+adults with metastatic triple-negative breast cancer and other solid
+tumors (Sathe 2024). All three analytes are described by two-compartment
+models with body-weight allometric scaling. SG carries IIV on CL and a
 baseline-albumin power covariate on CL. Free SN-38 is generated from SG
 by a first-order release rate KREL with apparent volumes fixed to
 literature values (Klein 2002). tAB has time-dependent CL (asymptotic
 onset, max ~17% reduction at t1/2 ~48 days), correlated IIV on CL and
 V1, and covariates of baseline albumin (CL), tumor type (CL), and sex
 (V1). Simulation requires dosing two compartments simultaneously
-(sgCentral and tabCentral) for each SG infusion event.</td>
+(central and central_tab) for each SG infusion event.</td>
 </tr>
 <tr class="odd">
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Soehoel_2022_tralokinumab.html">Soehoel_2022_tralokinumab</a></td>
@@ -1309,7 +1309,7 @@ in adults with Crohn’s disease (Wade 2015)</td>
 adults with moderate-to-severe ulcerative colitis or Crohn’s disease
 (Wang 2020), with first-order SC absorption, absorption lag time,
 parallel linear and Michaelis-Menten elimination from the central
-compartment, and allometric weight scaling on CL, Vc, CLd, Vp, and
+compartment, and allometric weight scaling on CL, Vc, Q, Vp, and
 Vmax.</td>
 </tr>
 <tr class="even">
@@ -1336,8 +1336,8 @@ ozogamicin in pediatric and adult patients with relapsed/refractory
 B-cell precursor acute lymphoblastic leukemia (BCP-ALL) and adult
 patients with B-cell non-Hodgkin’s lymphoma (NHL); linear plus
 time-dependent (target-mediated) clearance with covariate effects on
-CL1, V1, CL2, and kdes (Wu 2024, ITCC-059 pediatric trial pooled with 11
-adult studies).</td>
+CL_SS, Vc, CL_TIME, and kdes (Wu 2024, ITCC-059 pediatric trial pooled
+with 11 adult studies).</td>
 </tr>
 <tr class="odd">
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Xie_2019_agomelatine.html">Xie_2019_agomelatine</a></td>

@@ -77,8 +77,8 @@ collects them in one place.
 | `logitfdepot` | `logit(0.712)` | Table 4: F = 0.712 |
 | `logitmaxred` | `logit(0.263)` | Table 4: Maxred = 0.263 |
 | `lonset` | `log(4.81)` | Table 4: Onset = 4.81 weeks |
-| `allo_cl` | `0.872` | Table 4 note a: WT exponent on CL and Q |
-| `allo_v` | `0.788` | Table 4 note b: WT exponent on Vc and Vp |
+| `e_wt_cl_q` | `0.872` | Table 4 note a: WT exponent on CL and Q |
+| `e_wt_vc_vp` | `0.788` | Table 4 note b: WT exponent on Vc and Vp |
 | `e_alb_cl` | `-0.0314` | Table 4: Albumin on CL |
 | `e_crp_cl` | `0.00458` | Table 4: CRP on CL |
 | `e_adat_cl` | `0.0365` | Table 4: ADAT on CL |

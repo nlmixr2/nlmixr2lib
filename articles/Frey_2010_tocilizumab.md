@@ -53,27 +53,27 @@ non-smoker.
 | `lvc` (V1) | `log(3.5)` L | Table II, “V1, L” row |
 | `lq` (Q) | `log(0.2)` L/day | Table II, “Q, L/d” row |
 | `lvp` (V2) | `log(2.9)` L | Table II, “V2, L” row |
-| `lvm` (Vm) | `log(7.5)` mg/day | Table II, “VM, mg/d” row |
+| `lvmax` (Vmax) | `log(7.5)` mg/day | Table II, “VM, mg/d” row |
 | `lkm` (Km) | `log(2.7)` ug/mL | Table II, “KM, ug/mL” row |
 | `e_bsa_cl` (BSA/1.8 exponent on CL) | `0.7` | Table II “BSA on CL” / Table III equation |
 | `e_sexf_cl` (female fractional change on CL) | `-0.16` | Table II “Sex (female, %) on CL” = -16% |
 | `e_hdlc_cl` (HDLC/54 exponent on CL) | `-0.2` | Table II “HDL-C on CL” / Table III equation |
 | `e_lrf_cl` (log(RF)/log(110) exponent on CL) | `0.1` | Table II “Logarithm of RF on CL” / Table III |
-| `e_tpro_v1` (TPRO/74 exponent on V1) | `-1.1` | Table II “Total protein on V1” / Table III |
-| `e_alb_v1` (ALB/38 exponent on V1) | `0.7` | Table II “Albumin on V1” / Table III |
-| `e_alb_vm` (ALB/38 exponent on Vm) | `-0.4` | Table II “Albumin on VM” / Table III |
-| `e_crcl_vm` (CRCL/106 exponent on Vm) | `0.2` | Table II “Creatinine CL on VM” / Table III |
-| `e_smk_vm` (smoker fractional change on Vm) | `0.11` | Table II “Smoking on VM” = +11% |
+| `e_tpro_vc` (TPRO/74 exponent on Vc) | `-1.1` | Table II “Total protein on V1” / Table III |
+| `e_alb_vc` (ALB/38 exponent on Vc) | `0.7` | Table II “Albumin on V1” / Table III |
+| `e_alb_vmax` (ALB/38 exponent on Vmax) | `-0.4` | Table II “Albumin on VM” / Table III |
+| `e_crcl_vmax` (CRCL/106 exponent on Vmax) | `0.2` | Table II “Creatinine CL on VM” / Table III |
+| `e_smk_vmax` (smoker fractional change on Vmax) | `0.11` | Table II “Smoking on VM” = +11% |
 | `var(etalcl)` | `log(1 + 0.39^2) = 0.1416` | Table II IIV section: CL CV 39% |
 | `var(etalvc)` | `log(1 + 0.37^2) = 0.1284` | Table II: V1 CV 37% |
 | `var(etalvp)` | `log(1 + 0.66^2) = 0.3614` | Table II: V2 CV 66% |
-| `var(etalvm)` | `log(1 + 0.54^2) = 0.2562` | Table II: Vm CV 54% |
+| `var(etalvmax)` | `log(1 + 0.54^2) = 0.2562` | Table II: Vm CV 54% |
 | `cor(etalcl, etalvc)` | `0.6` | Table II “COV(eta_CL : eta_V1), r” |
 | `cor(etalcl, etalvp)` | `-0.1` | Table II “COV(eta_CL : eta_V2), r” |
-| `cor(etalcl, etalvm)` | `-0.5` | Table II “COV(eta_CL : eta_VM), r” |
+| `cor(etalcl, etalvmax)` | `-0.5` | Table II “COV(eta_CL : eta_VM), r” |
 | `cor(etalvc, etalvp)` | `0.5` | Table II “COV(eta_V1 : eta_V2), r” |
-| `cor(etalvc, etalvm)` | `0.2` | Table II “COV(eta_V1 : eta_VM), r” |
-| `cor(etalvp, etalvm)` | `0.2` | Table II “COV(eta_V2 : eta_VM), r” |
+| `cor(etalvc, etalvmax)` | `0.2` | Table II “COV(eta_V1 : eta_VM), r” |
+| `cor(etalvp, etalvmax)` | `0.2` | Table II “COV(eta_V2 : eta_VM), r” |
 | `propSd` | `0.22` | Table II “Proportional” residual row, 22% (see Errata) |
 | `addSd` | `2.4` ug/mL | Table II “Additive” residual row, 2.4 ug/mL (see Errata) |
 | Structure (2-cmt + parallel linear + MM elimination from central) | n/a | Methods p756-757; Results p757-759; Figure 5 |
@@ -322,7 +322,7 @@ intervals <- data.frame(
 )
 
 nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
-#>  ■■■■■■■■■■■                       34% |  ETA:  3s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■        82% |  ETA:  1s
 summary(nca_res)
 #>  start end   treatment   N     auclast        cmax        cmin
 #>      0  28 4 mg/kg Q4W 200  477 [55.7] 82.2 [53.0] 0.672 [180]

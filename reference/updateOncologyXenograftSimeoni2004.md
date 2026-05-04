@@ -58,9 +58,9 @@ readModelDb("oncology_xenograft_simeoni_2004") |>
 #>  ── rxode2-based free-form 6-cmt ODE model ────────────────────────────────────── 
 #>  ── Initalization: ──  
 #> Fixed Effects ($theta): 
-#>  ldamageTransit      ldrugSlope ltumorExpGrowth ltumorLinGrowth  tumorVolpropSd 
+#>  ldamageTransit      ldrugSlope ltumorExpGrowth ltumorLinGrowth propSd_tumorVol 
 #>     -0.03252319     -7.37137930     -1.29828348     -0.20579491      0.20000000 
-#>   tumorVoladdSd 
+#>  addSd_tumorVol 
 #>     30.00000000 
 #> 
 #> States ($state or $stateDf): 
@@ -90,9 +90,9 @@ readModelDb("oncology_xenograft_simeoni_2004") |>
 #>         ltumorLinGrowth <- c(-4.60517018598809, -0.205794912979597, 
 #>             1.6094379124341)
 #>         label("Tumor linear growth rate (tumor volume/day)")
-#>         tumorVolpropSd <- c(0, 0.2)
+#>         propSd_tumorVol <- c(0, 0.2)
 #>         label("Proportional residual error (fraction)")
-#>         tumorVoladdSd <- c(0, 30)
+#>         addSd_tumorVol <- c(0, 30)
 #>         label("Additive residual error (tumor volume)")
 #>     })
 #>     model({
@@ -108,7 +108,7 @@ readModelDb("oncology_xenograft_simeoni_2004") |>
 #>         d/dt(cyclingCells) <- tumorExpGrowth * cyclingCells/(1 + 
 #>             (tumorExpGrowth/tumorLinGrowth * tumorVol)^psi)^(1/psi) - 
 #>             drugEffectCyclingCells * cyclingCells
-#>         tumorVol ~ prop(tumorVolpropSd) + add(tumorVoladdSd)
+#>         tumorVol ~ prop(propSd_tumorVol) + add(addSd_tumorVol)
 #>         d/dt(damagedCells1) <- drugEffectCyclingCells * cyclingCells - 
 #>             damageTransit * damagedCells1
 #>         d/dt(damagedCells2) <- damageTransit * (damagedCells1 - 

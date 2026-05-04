@@ -80,12 +80,12 @@ collects them in one place for review.
 | `emax` (EMAX_REF, log-fold) | -0.410 | Yang 2021 Table 3, Emax |
 | `lt50` (T50_REF, days) | log(28.9) | Yang 2021 Table 3, T50 |
 | `hill` (HILL, unitless) | 2.79 | Yang 2021 Table 3, HILL |
-| `e_wt_clq` (power, WT on CL/Q) | 0.477 | Yang 2021 Table 3, WGT_ON_CLQ |
-| `e_alb_clq` (power, ALB on CL/Q) | -0.926 | Yang 2021 Table 3, ALB_ON_CLQ |
-| `e_igg_clq` (power, IGG on CL/Q) | 0.184 | Yang 2021 Table 3, IGG_ON_CLQ |
-| `e_alt_clq` (power, ALT on CL/Q) | -0.0795 | Yang 2021 Table 3, ALT_ON_CLQ |
-| `e_wt_vss` (power, WT on V2/V3) | 0.970 | Yang 2021 Table 3, WGT_ON_VSS |
-| `e_bmi_vss` (power, BMI on V2/V3) | -0.560 | Yang 2021 Table 3, BMI_ON_VSS |
+| `e_wt_cl_q` (power, WT on CL/Q) | 0.477 | Yang 2021 Table 3, WGT_ON_CLQ |
+| `e_alb_cl_q` (power, ALB on CL/Q) | -0.926 | Yang 2021 Table 3, ALB_ON_CLQ |
+| `e_igg_cl_q` (power, IGG on CL/Q) | 0.184 | Yang 2021 Table 3, IGG_ON_CLQ |
+| `e_alt_cl_q` (power, ALT on CL/Q) | -0.0795 | Yang 2021 Table 3, ALT_ON_CLQ |
+| `e_wt_vc_vp` (power, WT on V2/V3) | 0.970 | Yang 2021 Table 3, WGT_ON_VSS |
+| `e_bmi_vc_vp` (power, BMI on V2/V3) | -0.560 | Yang 2021 Table 3, BMI_ON_VSS |
 | IIV block `etalcl + etalvc` | c(0.0870, 0.0422, 0.0432) | Yang 2021 Table 3, IIV_CLQ, IIV_CLQ:VSS, IIV_VSS |
 | `etaemax` | 0.228 | Yang 2021 Table 3, IIV_Emax |
 | `etalt50` | 0.610 | Yang 2021 Table 3, IIV_T50 |
@@ -300,10 +300,10 @@ nca_window <- function(sim, dose_interval_d, n_doses, label) {
 }
 
 nca_q2w <- nca_window(sim, 14, 12, "3 mg/kg Q2W")
-#>  ■■■■■■■■■■■■■■■■■■■■■             67% |  ETA:  2s
+#>  ■■■■■■■■■■■■■■■■■■■■■■            70% |  ETA:  1s
 nca_q3w <- nca_window(sim, 21,  8, "350 mg Q3W")
-#>  ■■■■■■■■                          24% |  ETA:  4s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■          77% |  ETA:  1s
+#>  ■■■■■■■■■■■                       33% |  ETA:  3s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     92% |  ETA:  0s
 
 knitr::kable(summary(nca_q2w),
              caption = "Simulated NCA at steady state (6-week window), 3 mg/kg Q2W")

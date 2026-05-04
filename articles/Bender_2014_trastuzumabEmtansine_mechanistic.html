@@ -432,7 +432,7 @@ fraction multiplied by the total dose amount.</p>
 <span><span class="co">#&gt; <span style="color: #555555;">generated.</span></span></span></code></pre></div>
 <p><img src="Bender_2014_trastuzumabEmtansine_mechanistic_files/figure-html/cyno-composite-1.png" class="r-plt" alt="" width="624"></p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">dar_cols</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Cdar"</span>, <span class="fl">0</span><span class="op">:</span><span class="fl">7</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">dar_cols</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Cc_dar"</span>, <span class="fl">0</span><span class="op">:</span><span class="fl">7</span><span class="op">)</span></span>
 <span><span class="va">sim_dar</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">time</span>, <span class="fu"><a href="https://tidyselect.r-lib.org/reference/all_of.html" class="external-link">all_of</a></span><span class="op">(</span><span class="va">dar_cols</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span><span class="op">-</span><span class="va">time</span>, names_to <span class="op">=</span> <span class="st">"moiety"</span>, values_to <span class="op">=</span> <span class="st">"conc"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -462,8 +462,8 @@ to absolute mg; the model treats volumes as absolute (mL in the paper, L
 in the <code><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini()</a></code> block).</li>
 <li>Residual error applied to <code>Cc</code> (T-DM1) and
 <code>Ctt</code> (TT) only; per-DAR concentrations are exposed as
-deterministic derived outputs (<code>Cdar0</code> … <code>Cdar7</code>)
-for VPC-style comparison.</li>
+deterministic derived outputs (<code>Cc_dar0</code> …
+<code>Cc_dar7</code>) for VPC-style comparison.</li>
 <li>The model’s <code>k_plasma</code> parameter is retained for future
 in-vitro plasma stability simulations, even though in the in-vivo ODE
 the sum <code>CL_in_vivo/V1 + k_plasma</code> simplifies to

@@ -159,25 +159,25 @@ Table 3 (unconjugated DXd). The table below collates them.
 | Var(CLlin IIV) | 0.215 | Table 2 |
 | Cov(Vc, CLlin) | 0.030 | Table 2 |
 | Var(Vc IIV) | 0.023 | Table 2 |
-| `CcpropSd` | 0.236 | Table 2 (Proportional error) |
-| `CcaddSd` | 0.1 ug/mL fixed (= 100 ng/mL = LLOQ) | Table 2 |
+| `propSd` | 0.236 | Table 2 (Proportional error) |
+| `addSd` | 0.1 ug/mL fixed (= 100 ng/mL = LLOQ) | Table 2 |
 
 ### Unconjugated DXd (Lu 2022 Table 3)
 
 | Parameter (nlmixr2lib) | Value | Source |
 |----|---:|----|
 | `lkrel` -\> Krel | 0.72 1/d (= 0.030 1/h) | Table 3 (converted h -\> d) |
-| `lcldxd` -\> CLDXd | 137.112 L/d (= 5.713 L/h) | Table 3 (converted h -\> d) |
+| `lcl_dxd` -\> CLDXd | 137.112 L/d (= 5.713 L/h) | Table 3 (converted h -\> d) |
 | `ltheta` -\> Factor1 | 0.648 | Table 3 (theta, factor 1 cycles \>= 2) |
 | `lbeta` -\> beta | 4.32 1/d (= 0.180 1/h) | Table 3 (converted h -\> d) |
 | `e_wt_krel` | -0.467 | Table 3 (Weight-Krel) |
-| `e_hepmild_cldxd` | -0.294 (mult. 0.706) | Table 3 (Hepatic mild-CLDXd) |
-| `e_hepmod_cldxd` | -0.468 (mult. 0.532) | Table 3 (Hepatic moderate/data missing-CLDXd) |
+| `e_hepmild_cl_dxd` | -0.294 (mult. 0.706) | Table 3 (Hepatic mild-CLDXd) |
+| `e_hepmod_cl_dxd` | -0.468 (mult. 0.532) | Table 3 (Hepatic moderate/data missing-CLDXd) |
 | Var(Krel IIV) | 0.194 | Table 3 |
 | Cov(Krel, CLDXd) | 0.142 | Table 3 |
 | Var(CLDXd IIV) | 0.360 | Table 3 |
-| `CdxdpropSd` | 0.392 | Table 3 (Proportional error) |
-| `CdxdaddSd` | 0.01 ng/mL fixed (= LLOQ for DXd) | Table 3 |
+| `propSd_dxd` | 0.392 | Table 3 (Proportional error) |
+| `addSd_dxd` | 0.01 ng/mL fixed (= LLOQ for DXd) | Table 3 |
 | PIR0 = 8 (DAR ~ 8) | fixed | Methods after Eq. 3, Discussion |
 | alpha = 0.125 | fixed | Eq. 6 |
 | MW_DXd = 493.5 g/mol | fixed | Methods after Eq. 3 |
@@ -299,17 +299,17 @@ typ_events$CYCLE <- pmax(1L,
                          as.integer(floor(typ_events$time / cycle_dy) + 1L))
 
 typ_sim <- rxode2::rxSolve(typ, typ_events, returnType = "data.frame")
-#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalkrel', 'etalcldxd'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalkrel', 'etalcl_dxd'
 ```
 
 ``` r
 
 typ_sim |>
-  tidyr::pivot_longer(c(Cc, Cdxd),
+  tidyr::pivot_longer(c(Cc, Cc_dxd),
                       names_to = "analyte", values_to = "conc") |>
   mutate(analyte = recode(analyte,
-                          Cc   = "DXd-conjugated antibody (ug/mL)",
-                          Cdxd = "Unconjugated DXd (ng/mL)")) |>
+                          Cc     = "DXd-conjugated antibody (ug/mL)",
+                          Cc_dxd = "Unconjugated DXd (ng/mL)")) |>
   ggplot(aes(time, conc)) +
   geom_line(colour = "steelblue", linewidth = 0.8) +
   facet_wrap(~ analyte, ncol = 1, scales = "free_y") +
@@ -418,9 +418,9 @@ mg/kg IV every 3 weeks. Corresponds to Lu 2022 Figure 2 (a).
 pop_sim |>
   group_by(time) |>
   summarise(
-    p05 = quantile(Cdxd, 0.05, na.rm = TRUE),
-    p50 = quantile(Cdxd, 0.50, na.rm = TRUE),
-    p95 = quantile(Cdxd, 0.95, na.rm = TRUE),
+    p05 = quantile(Cc_dxd, 0.05, na.rm = TRUE),
+    p50 = quantile(Cc_dxd, 0.50, na.rm = TRUE),
+    p95 = quantile(Cc_dxd, 0.95, na.rm = TRUE),
     .groups = "drop"
   ) |>
   ggplot(aes(time, p50)) +
@@ -626,7 +626,8 @@ adc_nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj,
 #> Requesting an AUC range starting (0) before the first measurement (0.190955) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.190955) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.190955) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.190955) is not allowed
+#>  ■■■■■■■■■■■■■■■■                  49% |  ETA:  2s
+#> Warning: Requesting an AUC range starting (0) before the first measurement (0.190955) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.190955) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.190955) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.190955) is not allowed
@@ -730,8 +731,7 @@ adc_nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj,
 #> Requesting an AUC range starting (0) before the first measurement (0.286432) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.286432) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.286432) is not allowed
-#>  ■■■■■■■■■■■■■■■■■■■■■■            69% |  ETA:  1s
-#> Warning: Requesting an AUC range starting (0) before the first measurement (0.286432) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.286432) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.286432) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.286432) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.286432) is not allowed
@@ -899,14 +899,14 @@ adc_summary
 ``` r
 
 dxd_nca <- pop_sim |>
-  filter(!is.na(Cdxd), time > 0) |>
+  filter(!is.na(Cc_dxd), time > 0) |>
   mutate(cycle = pmax(1L, as.integer(floor((time - 1e-9) / cycle_dy) + 1L)),
          time_in_cycle = time - (cycle - 1) * cycle_dy) |>
   filter(cycle <= n_cycles) |>
   transmute(id = id, cycle = as.factor(cycle),
-            time = time_in_cycle, Cdxd = Cdxd)
+            time = time_in_cycle, Cc_dxd = Cc_dxd)
 
-dconc_obj <- PKNCA::PKNCAconc(dxd_nca, Cdxd ~ time | cycle + id)
+dconc_obj <- PKNCA::PKNCAconc(dxd_nca, Cc_dxd ~ time | cycle + id)
 ddose_obj <- PKNCA::PKNCAdose(adc_dose, amt ~ time | cycle + id)
 
 dxd_nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(dconc_obj, ddose_obj,
@@ -1020,8 +1020,7 @@ dxd_nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(dconc_obj, ddose_obj,
 #> Requesting an AUC range starting (0) before the first measurement (0.190955) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.190955) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.190955) is not allowed
-#>  ■■■■■■■■■■■■■■                    42% |  ETA:  2s
-#> Warning: Requesting an AUC range starting (0) before the first measurement (0.190955) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.190955) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.190955) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.190955) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.190955) is not allowed
@@ -1372,9 +1371,9 @@ manual_metrics <- pop_sim |>
     auc_adc = sum(diff(time_in_cycle) *
                   (head(Cc, -1) + tail(Cc, -1)) / 2),
     auc_dxd = sum(diff(time_in_cycle) *
-                  (head(Cdxd, -1) + tail(Cdxd, -1)) / 2),
+                  (head(Cc_dxd, -1) + tail(Cc_dxd, -1)) / 2),
     ctrough_adc = tail(Cc, 1),
-    ctrough_dxd = tail(Cdxd, 1),
+    ctrough_dxd = tail(Cc_dxd, 1),
     .groups = "drop"
   ) |>
   pivot_longer(c(auc_adc, auc_dxd, ctrough_adc, ctrough_dxd),
@@ -1476,7 +1475,7 @@ below for the full V_DXd discussion.
   2 use a per-day basis. The model multiplies the per-hour rates /
   clearances by 24 to bring them onto a single per-day time axis
   matching the antibody submodel; see in-file comments on `lkrel`,
-  `lcldxd`, `lbeta`.
+  `lcl_dxd`, `lbeta`.
 - **Reference body weight 60 kg.** Lu 2022 Table S2 notes the covariate
   reference is the population median; Table S4 reports the weight median
   as 58.6 kg. The Methods (Simulations of Covariate Effects) define the
@@ -1512,16 +1511,15 @@ below for the full V_DXd discussion.
   cycle. The virtual-cohort builder in this vignette assumes Q3W dosing
   starting at `t = 0` and computes `CYCLE = floor(t / 21) + 1`.
 - **Non-canonical compartment name.** The unconjugated-DXd state is
-  `dxd_central`.
+  `central_dxd`.
   [`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
   warns about this because the canonical compartment list is
   `depot / central / peripheral1 / peripheral2 / effect / target / complex / total_target`.
-  A distinct prefix (`dxd_`) is required here to disambiguate the
+  A `_dxd` metabolite suffix is required here to disambiguate the
   released-payload central compartment from the antibody central
   compartment within a single coupled ADC + payload model; this matches
-  the `Bender_2014_trastuzumabEmtansine_*` (`dar0_central`,
-  `dar0_peripheral1`, …) and `Li_2017_brentuximab` (`adc_central`,
-  `mmae_central`, …) precedents.
+  the parent-metabolite naming convention applied across the library
+  (`central_<metab>` for non-parent species).
 - **No covariates on antibody Vmax / Km / Q / Vp.** Lu 2022 retained
   covariates only on `CLlin` (weight, albumin, sex, breast cancer) and
   `Vc` (weight). `Vmax`, `Km`, `Q`, and `Vp` enter the model unmodified.
@@ -1574,13 +1572,13 @@ unconjugated-DXd ODE can be integrated.
     LLOQ.** Lu 2022 Results note that the additive error ‘was fixed to
     the LLOQ of 100 ng/mL, as it could not be estimated reliably (the
     estimate was 606 ng/mL with a standard error \> 3e9)’. The model
-    applies this fixing exactly via `CcaddSd <- fix(0.1)` (in ug/mL).
+    applies this fixing exactly via `addSd <- fix(0.1)` (in ug/mL).
 6.  **Unconjugated-DXd additive residual error fixed at LLOQ.** Lu 2022
     Results note: ‘The additive error in the combined residual error
     model was fixed to 0.01 ng/mL (the LLOQ for DXd), as the estimation
     of the additive error was not reliable and led to the failure of the
     covariance step’. The model applies this fixing exactly via
-    `CdxdaddSd <- fix(0.01)`.
+    `addSd_dxd <- fix(0.01)`.
 7.  **Composite moderate-or-data-missing hepatic-function indicator.**
     Lu 2022 Table 3 row
     `Hepatic impairment moderate/data missing-CLDXd = 0.532` pools the n

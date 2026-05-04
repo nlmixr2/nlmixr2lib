@@ -306,13 +306,13 @@ collects them.</p>
 </tr>
 <tr class="even">
 <td>
-<code>allo_clq</code> (BWT → CL, Q)</td>
+<code>e_wt_cl_q</code> (BWT → CL, Q)</td>
 <td>0.986</td>
 <td>Table 2, footnote b</td>
 </tr>
 <tr class="odd">
 <td>
-<code>allo_v</code> (BWT → Vc, Vp)</td>
+<code>e_wt_vc_vp</code> (BWT → Vc, Vp)</td>
 <td>1.02</td>
 <td>Table 2, footnote b</td>
 </tr>
@@ -528,7 +528,6 @@ the dose group as the treatment grouping variable.</p>
 <span></span>
 <span><span class="va">nca_data</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_obj</span>, <span class="va">dose_obj</span>, intervals <span class="op">=</span> <span class="va">intervals</span><span class="op">)</span></span>
 <span><span class="va">nca_res</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span><span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="va">nca_data</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■           </span>  67% |  ETA:  1s</span></span>
 <span><span class="va">nca_summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">nca_res</span><span class="op">)</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
 <span>  <span class="va">nca_summary</span>,</span>

@@ -46,8 +46,8 @@ loaded.
 | `lq` (Q for 70 kg) | 1.08 L/day | Cheng 2026 Table 4 |
 | `lvp` (V2 for 70 kg) | 7.37 L | Cheng 2026 Table 4 |
 | `lcbas` (baseline IgG, PID, IGM = 0.21) | 5.67 g/L | Cheng 2026 Table 4 |
-| `allo_cl` (allometric exponent on CL, Q; fixed) | 0.75 | Cheng 2026 Methods, page 7 (theory-based, fixed in final model) |
-| `allo_v` (allometric exponent on V1, V2; fixed) | 1.0 | Cheng 2026 Methods, page 7 (theory-based, fixed) |
+| `e_wt_cl_q` (allometric exponent on CL, Q; fixed) | 0.75 | Cheng 2026 Methods, page 7 (theory-based, fixed in final model) |
+| `e_wt_vc_vp` (allometric exponent on V1, V2; fixed) | 1.0 | Cheng 2026 Methods, page 7 (theory-based, fixed) |
 | `e_sad_cl` (SAD/PID multiplicative ratio on CL) | 0.542 | Cheng 2026 Table 4 |
 | `e_sad_cbas` (SAD/PID multiplicative ratio on CBAS) | 0.541 | Cheng 2026 Table 4 |
 | `e_igm_cbas` (power exponent for IgM on CBAS) | 0.11 | Cheng 2026 Table 4 |
@@ -383,7 +383,6 @@ intervals <- data.frame(
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- suppressWarnings(PKNCA::pk.nca(nca_data))
 #>  ■■■■■■■■■■■■■■■                   48% |  ETA:  3s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■   99% |  ETA:  0s
 
 nca_summary <- summary(nca_res)
 knitr::kable(nca_summary,

@@ -94,7 +94,7 @@ make_cohort <- function(n, dose_mg, cycle_h, n_cycles, regimen,
     id   = rep(ids, each = 1L),
     time = 0,
     amt  = amt_umol,
-    cmt  = "adc_central",
+    cmt  = "central",
     evid = 1L,
     ii   = cycle_h,
     addl = n_cycles - 1L,
@@ -102,7 +102,7 @@ make_cohort <- function(n, dose_mg, cycle_h, n_cycles, regimen,
     regimen = regimen
   )
 
-  # One observation row per time point — rxSolve returns Cc and Cmmae as
+  # One observation row per time point — rxSolve returns Cc and Cc_mmae as
   # model variables at every output, so we don't need separate rows per
   # output variable.
   obs <- tidyr::expand_grid(id = ids, time = obs_t) |>
@@ -188,7 +188,7 @@ sim_df <- as.data.frame(sim)
 sim_df <- sim_df |>
   dplyr::mutate(
     Cc_ugmL    = Cc    * MW_BV_kDa,
-    Cmmae_ngmL = Cmmae * MW_MMAE_Da,
+    Cmmae_ngmL = Cc_mmae * MW_MMAE_Da,
     day        = time / 24
   )
 ```
@@ -851,12 +851,12 @@ quirks in the source documentation that needed re-derivation.
   a downstream simulation, replace the diagonal entries with the full
   block from the supplement control stream and document the choice.
 - **Compartment naming.** The model names the seven ODE states
-  `adc_central`, `adc_peripheral1`, `adc_peripheral2`, `mmae_central`,
-  `mmae_peripheral`, `target`, and `lag` rather than the canonical
-  `central` / `peripheral1` / `peripheral2` / `effect` set, because two
-  parallel PK systems (ADC and MMAE) coexist in one model and the
-  canonical names cannot disambiguate them. The same precedent applies
-  to `Li_2017_brentuximab` and `Lu_2014_trastuzumabemtansine`. The
+  `central`, `peripheral1`, `peripheral2`, `central_mmae`,
+  `peripheral1_mmae`, `target`, and `lag`. The parent (ADC) compartments
+  use the canonical `central` / `peripheral1` / `peripheral2` set; MMAE
+  compartments use the canonical metabolite-suffix convention
+  (`central_mmae`, `peripheral1_mmae`). The same precedent applies to
+  `Li_2017_brentuximab` and `Lu_2014_trastuzumabemtansine`. The
   canonical `target` compartment from `naming-conventions.md` is reused
   here for the irreversibly depletable Target binding pool.
 - **Tumor-size convention.** The Zhou 2025 NONMEM dataset uses LDIAM
@@ -879,7 +879,7 @@ quirks in the source documentation that needed re-derivation.
 - **MMAE central-volume reference category.** The Non-HL effect on MMAE
   central volume VM has multiplier 0.296 with reference 1 = HL. The
   canonical `TUMTP_CHL` register entry encodes 1 = HL, so the model
-  applies the effect as `e_nonhl_mmae_vc^(1 - TUMTP_CHL)` to keep the
+  applies the effect as `e_nonhl_vc_mmae^(1 - TUMTP_CHL)` to keep the
   paper’s reference (HL) at multiplier 1 while preserving the canonical
   column meaning.
 - **Cycle-4 NCA.** The PKNCA validation block computes Cmax / Tmax / AUC
@@ -892,7 +892,7 @@ quirks in the source documentation that needed re-derivation.
 - **Doses converted to umol.** Zhou 2025’s NONMEM dataset uses molar
   amounts (`AMT IN UM` -\> umol; `DV IN UM` -\> umol/L). The packaged
   model retains this convention — the binding term
-  `kd * target * adc_central` in the ADC -\> MMAE conversion equation is
+  `kd * target * central` in the ADC -\> MMAE conversion equation is
   sensitive to the amount unit, and switching to mg without rescaling
   `kd` would corrupt the conversion-flux magnitude. mg-based doses are
   converted in the vignette via `amt_umol = dose_mg / MW_BV_kDa` (MW_BV

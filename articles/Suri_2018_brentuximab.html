@@ -559,7 +559,7 @@ for hepatic / severe-renal impairment).</p>
 <span>    id   <span class="op">=</span> <span class="va">ids</span>,</span>
 <span>    time <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>    amt  <span class="op">=</span> <span class="va">amt_umol</span>,</span>
-<span>    cmt  <span class="op">=</span> <span class="st">"adc_central"</span>,</span>
+<span>    cmt  <span class="op">=</span> <span class="st">"central"</span>,</span>
 <span>    evid <span class="op">=</span> <span class="fl">1L</span>,</span>
 <span>    ii   <span class="op">=</span> <span class="va">cycle_h_q3w</span>,</span>
 <span>    addl <span class="op">=</span> <span class="va">n_cycles</span> <span class="op">-</span> <span class="fl">1L</span>,</span>
@@ -650,7 +650,7 @@ for hepatic / severe-renal impairment).</p>
 <span><span class="va">sim_df</span> <span class="op">&lt;-</span> <span class="va">sim_df</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
 <span>    Cc_ugmL    <span class="op">=</span> <span class="va">Cc</span>    <span class="op">*</span> <span class="va">MW_BV_kDa</span>,</span>
-<span>    Cmmae_ngmL <span class="op">=</span> <span class="va">Cmmae</span> <span class="op">*</span> <span class="va">MW_MMAE_Da</span>,</span>
+<span>    Cmmae_ngmL <span class="op">=</span> <span class="va">Cc_mmae</span> <span class="op">*</span> <span class="va">MW_MMAE_Da</span>,</span>
 <span>    day        <span class="op">=</span> <span class="va">time</span> <span class="op">/</span> <span class="fl">24</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
 <p>For deterministic typical-value simulation (reproducing Figure 3
@@ -1236,8 +1236,8 @@ rather than tuning the model.</p>
 <p>The simulated MMAE AUC will <em>not</em> match the published 600
 ng<em>h/mL value. The underlying unit convention used by the original
 NONMEM run for the MMAE submodel — specifically how the bilinear term
-<code>Kd * Target * adc_central</code> and the proteolytic flux
-<code>FM * exp(-ALFM * tad) * K10 * adc_central</code> are scaled to
+<code>Kd * Target * central</code> and the proteolytic flux
+<code>FM * exp(-ALFM * tad) * K10 * central</code> are scaled to
 ADC-to-MMAE stoichiometry — is not stated in the supplement, and the
 published Kd / ALFM / Klag / V_M parameters do not by themselves
 uniquely determine the absolute MMAE concentration scale. With
@@ -1287,14 +1287,15 @@ rounded references, override them in a wrapper rather than editing the
 model file.</li>
 <li>
 <strong>Compartment naming.</strong> The model names the seven ODE
-states <code>adc_central</code>, <code>adc_peripheral1</code>,
-<code>adc_peripheral2</code>, <code>mmae_central</code>,
-<code>mmae_peripheral</code>, <code>target</code>, and <code>lag</code>
-rather than the canonical <code>central</code> /
-<code>peripheral1</code> / <code>peripheral2</code> /
-<code>effect</code> set, because two parallel PK systems (ADC and MMAE)
-coexist in one model and the canonical names cannot disambiguate them.
-The same precedent applies to <code>Li_2017_brentuximab</code>,
+states <code>central</code>, <code>peripheral1</code>,
+<code>peripheral2</code>, <code>central_mmae</code>,
+<code>peripheral1_mmae</code>, <code>target</code>, and
+<code>lag</code>. The parent (ADC) compartments use the canonical
+<code>central</code> / <code>peripheral1</code> /
+<code>peripheral2</code> set; MMAE compartments use the canonical
+metabolite-suffix convention (<code>central_mmae</code>,
+<code>peripheral1_mmae</code>). The same precedent applies to
+<code>Li_2017_brentuximab</code>,
 <code>Lu_2014_trastuzumabemtansine</code>, and
 <code>Zhou_2025_brentuximab</code>. The canonical <code>target</code>
 compartment from <code>naming-conventions.md</code> is reused here for
@@ -1330,7 +1331,8 @@ IPP estimation). This is an estimation convenience and does not change
 the simulation: in the packaged model both ADC and MMAE compartments are
 integrated together in a single ODE system, with each subject’s ADC etas
 (<code>etalcl</code>, <code>etalvc</code>) and MMAE etas
-(<code>etalclm</code>, <code>etalvcm</code>) sampled independently.</li>
+(<code>etalcl_mmae</code>, <code>etalvc_mmae</code>) sampled
+independently.</li>
 <li>
 <strong>Dose-capping at 180 mg.</strong> The licensed regimen caps
 the per-dose mass at 180 mg for patients weighing &gt;100 kg (Suri 2018
@@ -1342,7 +1344,7 @@ vignette honors this via <code>pmin(dose_mg_per_kg * wt, 180)</code> in
 <strong>Doses converted to umol.</strong> The Mould-lab framework —
 also used by <code>Zhou_2025_brentuximab</code> — uses molar amounts
 (<code>AMT IN UM</code> -&gt; umol; <code>DV IN UM</code> -&gt; umol/L).
-The binding term <code>kd * target * adc_central</code> in the ADC -&gt;
+The binding term <code>kd * target * central</code> in the ADC -&gt;
 MMAE conversion equation is sensitive to the amount unit and switching
 to mg without rescaling <code>kd</code> would corrupt the
 conversion-flux magnitude. mg-based doses are converted in the vignette
@@ -1355,8 +1357,8 @@ implements Suri 2018’s parameter values and the Mould-lab framework ODE
 structure faithfully, but the absolute simulated MMAE concentration
 scale does not match the paper’s reported 600 ng<em>h/mL cycle-3 AUC.
 The underlying ambiguity is whether the paper’s
-<code>Kd * Target * adc_central</code> term is intended to operate on
-amount (umol of ADC) or mass (mg of ADC), and whether a DAR-sized
+<code>Kd * Target * central</code> term is intended to operate on amount
+(umol of ADC) or mass (mg of ADC), and whether a DAR-sized
 stoichiometric factor is implicit. Neither unit convention reproduces
 the absolute MMAE exposure. The ADC submodel and the </em>shape* of the
 MMAE profile (Tmax ~1-2 days, slow elimination matching the paper’s
@@ -1370,8 +1372,8 @@ supplement 1 only states “the highest feasible number of variance terms
 was added to the OMEGA matrix. If possible, off diagonal elements
 describing correlation were added as well.” The packaged model uses a
 fully diagonal IIV block on the four estimated etas
-(<code>etalcl</code>, <code>etalvc</code>, <code>etalclm</code>,
-<code>etalvcm</code>); add the block correlations only if the source
+(<code>etalcl</code>, <code>etalvc</code>, <code>etalcl_mmae</code>,
+<code>etalvc_mmae</code>); add the block correlations only if the source
 NONMEM control stream is later obtained.</li>
 <li>
 <strong>Cycle-4 NCA for steady-state comparison.</strong> The paper

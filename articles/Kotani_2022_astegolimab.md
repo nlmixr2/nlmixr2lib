@@ -78,8 +78,8 @@ record the row-level source; the table below collects them.
 | `lvc` (Vc/F) | 0.614 L | Table 2 |
 | `lvp` (Vp/F) | 2.74 L | Table 2 |
 | `lq` (Q/F) | 0.171 L/day | Table 2 |
-| `allo_clq` (BWT → CL, Q) | 0.986 | Table 2, footnote b |
-| `allo_v` (BWT → Vc, Vp) | 1.02 | Table 2, footnote b |
+| `e_wt_cl_q` (BWT → CL, Q) | 0.986 | Table 2, footnote b |
+| `e_wt_vc_vp` (BWT → Vc, Vp) | 1.02 | Table 2, footnote b |
 | `e_crcl_cl` (BEGFR / CRCL → CL) | 0.431 | Table 2 |
 | `e_eos_cl` (EOS → CL) | 0.0905 | Table 2 |
 | `e_dose70_frel` (Dose70mg → F) | −0.153 | Table 2 |
@@ -230,7 +230,6 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- suppressWarnings(PKNCA::pk.nca(nca_data))
-#>  ■■■■■■■■■■■■■■■■■■■■■             67% |  ETA:  1s
 nca_summary <- summary(nca_res)
 knitr::kable(
   nca_summary,

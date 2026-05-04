@@ -315,7 +315,7 @@ place.</p>
 <tbody>
 <tr class="odd">
 <td>
-<code>lclinf</code> (CLinf, L/h)</td>
+<code>lcl</code> (steady-state CL = CLinf, L/h)</td>
 <td>log(0.00955)</td>
 <td>Table S3: CLinf</td>
 </tr>
@@ -339,7 +339,7 @@ place.</p>
 </tr>
 <tr class="odd">
 <td>
-<code>lvm</code> (Vm, mg/(L·h))</td>
+<code>lvmax</code> (Vmax, mg/(L·h))</td>
 <td>log(0.136)</td>
 <td>Table S3: Vm</td>
 </tr>
@@ -367,17 +367,17 @@ place.</p>
 <td>Table S3: γ</td>
 </tr>
 <tr class="even">
-<td><code>e_wt_clinf</code></td>
+<td><code>e_wt_cl</code></td>
 <td>0.621</td>
 <td>Table S3: CLinf ~ Wght</td>
 </tr>
 <tr class="odd">
-<td><code>e_b2m_clinf</code></td>
+<td><code>e_b2m_cl</code></td>
 <td>0.343</td>
 <td>Table S3: CLinf ~ B2M</td>
 </tr>
 <tr class="even">
-<td><code>e_nigg_clinf</code></td>
+<td><code>e_nigg_cl</code></td>
 <td>-0.751</td>
 <td>Table S3: CLinf ~ Ig=Not_IgG</td>
 </tr>
@@ -417,7 +417,7 @@ place.</p>
 <td>Table S3: Q ~ Wght (RSE 57.5 %)</td>
 </tr>
 <tr class="even">
-<td>IIV <code>etalclinf</code> ω = 47.5 %</td>
+<td>IIV <code>etalcl</code> ω = 47.5 %</td>
 <td>0.2035</td>
 <td>log(0.475² + 1)</td>
 </tr>
@@ -452,7 +452,7 @@ place.</p>
 <td>log(0.456² + 1)</td>
 </tr>
 <tr class="odd">
-<td>IIV <code>etalvm</code> ω = 61.5 %</td>
+<td>IIV <code>etalvmax</code> ω = 61.5 %</td>
 <td>0.3206</td>
 <td>log(0.615² + 1)</td>
 </tr>
@@ -598,8 +598,8 @@ patient per cohort:</p>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="va">typical</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="fu">make_typical_arm</span><span class="op">(</span><span class="fl">0L</span><span class="op">)</span>, <span class="fu">make_typical_arm</span><span class="op">(</span><span class="fl">1L</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalclinf', 'etaclm', 'etalkcl', 'etalgam', 'etalvc', 'etalq', 'etalvp', 'etalvm', 'etalkm'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalclinf', 'etaclm', 'etalkcl', 'etalgam', 'etalvc', 'etalq', 'etalvp', 'etalvm', 'etalkm'</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl', 'etaclm', 'etalkcl', 'etalgam', 'etalvc', 'etalq', 'etalvp', 'etalvmax', 'etalkm'</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl', 'etaclm', 'etalkcl', 'etalgam', 'etalvc', 'etalq', 'etalvp', 'etalvmax', 'etalkm'</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="replicate-published-figures">Replicate published figures<a class="anchor" aria-label="anchor" href="#replicate-published-figures"></a>
@@ -611,14 +611,14 @@ mg/kg QWx4 then Q2W)<a class="anchor" aria-label="anchor" href="#figure-1-total-
 <p>Fau 2020 Figure 1 shows the linear, nonlinear, and total clearance
 trajectories for a typical IgG-MM patient. The model’s output exposes
 <code>cllin</code> (time-varying linear CL) and the parameters
-<code>vm</code>, <code>vc</code>, <code>km</code>, so the nonlinear
+<code>vmax</code>, <code>vc</code>, <code>km</code>, so the nonlinear
 contribution can be reconstructed as
-<code>CLnonlin(t) = Vc · Vm / (Km + Cc(t))</code>.</p>
+<code>CLnonlin(t) = Vc · Vmax / (Km + Cc(t))</code>.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fig1</span> <span class="op">&lt;-</span> <span class="va">typical</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">treatment</span> <span class="op">==</span> <span class="st">"IgG MM (reference)"</span>, <span class="va">time</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
-<span>    CLnonlin <span class="op">=</span> <span class="va">vc</span> <span class="op">*</span> <span class="va">vm</span> <span class="op">/</span> <span class="op">(</span><span class="va">km</span> <span class="op">+</span> <span class="va">Cc</span><span class="op">)</span>,</span>
+<span>    CLnonlin <span class="op">=</span> <span class="va">vc</span> <span class="op">*</span> <span class="va">vmax</span> <span class="op">/</span> <span class="op">(</span><span class="va">km</span> <span class="op">+</span> <span class="va">Cc</span><span class="op">)</span>,</span>
 <span>    CLtotal  <span class="op">=</span> <span class="va">cllin</span> <span class="op">+</span> <span class="va">CLnonlin</span></span>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">time</span>, CLlin <span class="op">=</span> <span class="va">cllin</span>, <span class="va">CLnonlin</span>, <span class="va">CLtotal</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -722,7 +722,6 @@ ratios in the Results “Model evaluation and simulations” section.</p>
 <span></span>
 <span><span class="va">nca_data</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_obj</span>, <span class="va">dose_obj</span>, intervals <span class="op">=</span> <span class="va">intervals</span><span class="op">)</span></span>
 <span><span class="va">nca_res</span>  <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="va">nca_data</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ </span> 100% |  ETA:  0s</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">nca_res</span><span class="op">)</span>,</span>
 <span>             caption <span class="op">=</span> <span class="st">"Simulated steady-state NCA (final Q2W interval, weeks 30-32) by myeloma type."</span><span class="op">)</span></span></code></pre></div>
 <table style="width:100%;" class="table">

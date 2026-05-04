@@ -314,25 +314,25 @@ Results)</td>
 </tr>
 <tr class="odd">
 <td>
-<code>allo_cl</code> (WT exponent on CL)</td>
+<code>e_wt_cl</code> (WT exponent on CL)</td>
 <td>0.833</td>
 <td>Brillac 2025 Table 1, β_CL_log(WT/MedWT) = 0.833</td>
 </tr>
 <tr class="even">
 <td>
-<code>allo_v1</code> (WT exponent on V1)</td>
+<code>e_wt_vc</code> (WT exponent on V1)</td>
 <td>0.821</td>
 <td>Brillac 2025 Table 1, β_V1_log(WT/MedWT) = 0.821</td>
 </tr>
 <tr class="odd">
 <td>
-<code>allo_q</code> (WT exponent on Q, fixed)</td>
+<code>e_wt_q</code> (WT exponent on Q, fixed)</td>
 <td>0.85</td>
 <td>Brillac 2025 Table 1, β_Q_log(WT/MedWT) = 0.85 (fixed)</td>
 </tr>
 <tr class="even">
 <td>
-<code>allo_v2</code> (WT exponent on V2)</td>
+<code>e_wt_vp</code> (WT exponent on V2)</td>
 <td>0.72</td>
 <td>Brillac 2025 Table 1, β_V2_log(WT/MedWT) = 0.72</td>
 </tr>
@@ -599,7 +599,7 @@ first-dose Cmax / AUC by weight group).</p>
 <span></span>
 <span><span class="va">nca_data</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_obj</span>, <span class="va">dose_obj</span>, intervals <span class="op">=</span> <span class="va">intervals</span><span class="op">)</span></span>
 <span><span class="va">nca_res</span>  <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="va">nca_data</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■          </span>  69% |  ETA:  2s</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■         </span>  73% |  ETA:  1s</span></span>
 <span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">nca_res</span><span class="op">)</span>,</span>

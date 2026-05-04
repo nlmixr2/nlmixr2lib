@@ -269,7 +269,7 @@ concentrations.</li>
 </tr>
 <tr class="even">
 <td>
-<code>lv1</code> (V1pop, L)</td>
+<code>lvc</code> (V1pop, L)</td>
 <td>log(5.83)</td>
 <td>Papachristos 2020 Table 2, V1pop</td>
 </tr>
@@ -281,7 +281,7 @@ concentrations.</li>
 </tr>
 <tr class="even">
 <td>
-<code>lv2</code> (V2pop, L)</td>
+<code>lvp</code> (V2pop, L)</td>
 <td>log(3.17)</td>
 <td>Papachristos 2020 Table 2, V2pop</td>
 </tr>
@@ -305,7 +305,7 @@ concentrations.</li>
 </tr>
 <tr class="even">
 <td>
-<code>allo_cl</code> (allometric exponent)</td>
+<code>e_wt_cl</code> (allometric exponent)</td>
 <td>1.01</td>
 <td>Papachristos 2020 Table 2, “log(weight/70) on CL”</td>
 </tr>
@@ -343,13 +343,13 @@ concentrations.</li>
 </tr>
 <tr class="odd">
 <td>
-<code>etalv1</code> variance</td>
+<code>etalvc</code> variance</td>
 <td>0.02856</td>
 <td>Papachristos 2020 Table 2, ω_V1 = 0.169</td>
 </tr>
 <tr class="even">
 <td>
-<code>etalv2</code> variance</td>
+<code>etalvp</code> variance</td>
 <td>0.30803</td>
 <td>Papachristos 2020 Table 2, ω_V2 = 0.555</td>
 </tr>
@@ -360,12 +360,12 @@ concentrations.</li>
 <td>Papachristos 2020 Table 2, ω_BM0 = 0.24</td>
 </tr>
 <tr class="even">
-<td><code>CcpropSd</code></td>
+<td><code>propSd</code></td>
 <td>0.253</td>
 <td>Papachristos 2020 Table 2, σ_BEVA</td>
 </tr>
 <tr class="odd">
-<td><code>CvpropSd</code></td>
+<td><code>propSd_Cv</code></td>
 <td>0.290</td>
 <td>Papachristos 2020 Table 2, σ_VEGF</td>
 </tr>
@@ -571,7 +571,7 @@ subject.</p>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
 <span>    geno <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">SNP_VEGFA_RS699947</span> <span class="op">==</span> <span class="fl">1</span>, <span class="st">"rs699947 mutant"</span>, <span class="st">"rs699947 wild-type"</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl', 'etalq', 'etalv1', 'etalv2', 'etalbm0'</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl', 'etalq', 'etalvc', 'etalvp', 'etalbm0'</span></span>
 <span><span class="co">#&gt; Warning: multi-subject simulation without without 'omega'</span></span>
 <span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">sim_typ</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">CMT</span> <span class="op">==</span> <span class="fl">5</span><span class="op">)</span>,</span>

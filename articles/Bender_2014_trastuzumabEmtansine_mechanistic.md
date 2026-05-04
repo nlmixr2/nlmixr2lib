@@ -179,7 +179,7 @@ ggplot(sim_long, aes(time, conc, colour = analyte)) +
 
 ``` r
 
-dar_cols <- paste0("Cdar", 0:7)
+dar_cols <- paste0("Cc_dar", 0:7)
 sim_dar <- as.data.frame(sim) |>
   select(time, all_of(dar_cols)) |>
   pivot_longer(-time, names_to = "moiety", values_to = "conc") |>
@@ -210,8 +210,8 @@ as they are fed by deconjugation from the higher moieties.
   in the [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html)
   block).
 - Residual error applied to `Cc` (T-DM1) and `Ctt` (TT) only; per-DAR
-  concentrations are exposed as deterministic derived outputs (`Cdar0` …
-  `Cdar7`) for VPC-style comparison.
+  concentrations are exposed as deterministic derived outputs (`Cc_dar0`
+  … `Cc_dar7`) for VPC-style comparison.
 - The model’s `k_plasma` parameter is retained for future in-vitro
   plasma stability simulations, even though in the in-vivo ODE the sum
   `CL_in_vivo/V1 + k_plasma` simplifies to `CL_TT/V1`.

@@ -92,8 +92,8 @@ point to the source row; the table below collects them.
 | `lq` (Q at 70 kg) | 0.044 L/h (1.056 L/day) | Table 2 |
 | `lfdepot` (F, 100–300 mg SC) | 0.84 | Table 2 |
 | `lalag` (Tlag, SC) | 2.0 h (0.0833 day) | Table 2 |
-| `allo_cl` (BWT → CL, Q) | 0.54 | Table 2 |
-| `allo_v` (BWT → Vc, Vp) | 0.64 | Table 2 |
+| `e_wt_cl_q` (BWT → CL, Q) | 0.54 | Table 2 |
+| `e_wt_vc_vp` (BWT → Vc, Vp) | 0.64 | Table 2 |
 | `e_dose_50mg_f` (F shift on 50 mg SC) | −0.32143 (0.57/0.84 − 1) | Table 2 (F_50mg = 0.57, F_100-300mg = 0.84) |
 | IIV `etalka` (ka, SC) | CV 58% → ω² = 0.29003 | Table 2 |
 | IIV `etalcl` (CL, SC) | CV 27% → ω² = 0.07038 | Table 2 |
@@ -335,7 +335,7 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- suppressWarnings(PKNCA::pk.nca(nca_data))
-#>  ■■■■■■■■■■■■■■■■■■■■■■■           73% |  ETA:  1s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■          75% |  ETA:  1s
 knitr::kable(summary(nca_res),
              caption = "Simulated NCA for Study 1 SC and Study 3 IV arms.")
 ```

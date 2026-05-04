@@ -84,17 +84,17 @@ collects them for review.
 | `lq` (Q at 70 kg) | 0.044 L/h (= 1.056 L/day) | Othman 2014 Table 2 |
 | `lfdepot` (F SC 100 to 300 mg) | 0.84 | Othman 2014 Table 2 |
 | `lalag` (Tlag SC) | 2.0 h (= 0.0833 day) | Othman 2014 Table 2 |
-| `allo_cl`, `allo_v` | 0.54 / 0.64 | Othman 2014 Table 2 |
+| `e_wt_cl_q`, `e_wt_vc_vp` | 0.54 / 0.64 | Othman 2014 Table 2 |
 | `e_dose_50mg_f` | -0.32143 (= 0.57/0.84 - 1) | Othman 2014 Table 2 |
 | PK IIV `etalka`, `etalcl` (block, corr -0.72) | omega^2 0.29003 / 0.07038, cov -0.10290 | Othman 2014 Table 2 |
 | PK IIV `etalvc` | omega^2 0.09175 (CV 31%) | Othman 2014 Table 2 |
-| `CcpropSd`, `CcaddSd` | 0.22 / 0.33 ug/mL | Othman 2014 Table 2 |
+| `propSd`, `addSd` | 0.22 / 0.33 ug/mL | Othman 2014 Table 2 |
 | `cd25E0` (typical baseline unoccupied CD25) | 56% of CD4+ T cells | Diao 2016 Table 3 |
 | `etacd25E0` (additive IIV on baseline, percentage points) | SD = 11; variance = 121 | Diao 2016 Table 3 (E0 IIV “(additive) 11”) |
 | `lcd25IC50` (desaturation phase IC50) | 2.07 mg/L | Diao 2016 Table 3 |
 | `etalcd25IC50` (desaturation IC50 IIV) | omega^2 0.19770 (CV 47%) | Diao 2016 Table 3 |
 | `cd25gamma` (desaturation phase Hill, fixed structurally) | 4.44 | Diao 2016 Table 3 |
-| `cd25addSd` (additive residual error) | 4.02 percentage points | Diao 2016 Table 3 |
+| `addSd_cd25` (additive residual error) | 4.02 percentage points | Diao 2016 Table 3 |
 | Equation 1: `CD25 = E0 * (1 - Cc^gamma / (Cc^gamma + IC50^gamma))` | n/a | Diao 2016 Equation (1) |
 
 ## Virtual cohort

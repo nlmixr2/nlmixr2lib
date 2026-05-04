@@ -60,7 +60,7 @@ and incremented at each new Q3W dosing cycle.
 
 Concentrations are in `mg/L` (= `ug/mL`) for both analytes inside the
 model; DXd is conventionally reported in `ng/mL` and is rescaled outside
-the model (`Cdxd_ng_mL = Cdxd * 1000`).
+the model (`Cc_dxd_ng_mL = Cc_dxd * 1000`).
 
 ## Population
 
@@ -122,20 +122,20 @@ in-file comment pointing to Hong 2025 Table 1, Table 2, or Equations
 
 | Parameter (nlmixr2lib) | Value | Units | Source |
 |----|---:|----|----|
-| `lcl_adc` -\> CL_lin | 0.386 | L/day | Table 1, Eq. 8 |
-| `lvc_adc` -\> Vc | 3.06 | L | Table 1, Eq. 9 |
-| `lq_adc` -\> Q | 0.422 | L/day | Table 1 |
-| `lvp_adc` -\> Vp | 2.88 | L | Table 1, Eq. 10 |
+| `lcl` -\> CL_lin | 0.386 | L/day | Table 1, Eq. 8 |
+| `lvc` -\> Vc | 3.06 | L | Table 1, Eq. 9 |
+| `lq` -\> Q | 0.422 | L/day | Table 1 |
+| `lvp` -\> Vp | 2.88 | L | Table 1, Eq. 10 |
 | `lvmax` -\> Vmax | 8.41 | mg/day | Table 1, Eq. 12 (8410 ug/day) |
 | `lkm` -\> Km | 4.49 | mg/L | Table 1, Eq. 11 (4490 ng/mL) |
-| `e_wt_cl_adc` | 0.75 (fixed) | \- | Table 1 |
-| `e_wt_vc_adc` | 0.415 | \- | Table 1 |
-| `e_wt_vp_adc` | 0.311 | \- | Table 1 |
-| `e_age_cl_adc` | -0.306 | \- | Table 1 |
-| `e_alb_cl_adc` | -0.788 | \- | Table 1 |
-| `e_japan_cl_adc` | -0.219 | \- | Table 1 |
-| `e_sexf_cl_adc` | -0.263 | \- | Table 1 |
-| `e_sexf_vc_adc` | -0.160 | \- | Table 1 |
+| `e_wt_cl` | 0.75 (fixed) | \- | Table 1 |
+| `e_wt_vc` | 0.415 | \- | Table 1 |
+| `e_wt_vp` | 0.311 | \- | Table 1 |
+| `e_age_cl` | -0.306 | \- | Table 1 |
+| `e_alb_cl` | -0.788 | \- | Table 1 |
+| `e_japan_cl` | -0.219 | \- | Table 1 |
+| `e_sexf_cl` | -0.263 | \- | Table 1 |
+| `e_sexf_vc` | -0.160 | \- | Table 1 |
 | `e_tumsz_vmax` | 0.125 | \- | Table 1, Eq. 12 |
 | `lcl_dxd` -\> CL_DXd | 63.84 | L/day | Table 2, Eq. 14 (2.66 L/h \* 24) |
 | `lvc_dxd` -\> Vc_DXd | 25.1 | L | Table 2, Eq. 15 |
@@ -149,8 +149,8 @@ in-file comment pointing to Hong 2025 Table 1, Table 2, or Equations
 | `e_eu_cl_dxd` | 0.240 | \- | Table 2 |
 | `e_row_cl_dxd` | 0.196 | \- | Table 2 |
 | `e_sexf_vc_dxd` | -0.185 | \- | Table 2 |
-| `CcpropSd` | 0.121 | fraction | Table 1 (additive RUV log scale) |
-| `CdxdpropSd` | 0.283 | fraction | Table 2 (additive RUV log scale) |
+| `propSd` | 0.121 | fraction | Table 1 (additive RUV log scale) |
+| `propSd_dxd` | 0.283 | fraction | Table 2 (additive RUV log scale) |
 
 Inter-individual variability (log-normal; omega^2 = log(CV^2 + 1)):
 
@@ -193,7 +193,7 @@ make_subject <- function(id, wt_kg, sexf_ind, age_y, alb_g_L, ast_U_L,
   dose_mg <- min(6 * wt_kg, 540)   # 6 mg/kg Q3W with 540 mg flat-dose cap
 
   doses <- rxode2::et() |>
-    rxode2::et(amt = dose_mg, cmt = "adc_central", ii = cycle_dy,
+    rxode2::et(amt = dose_mg, cmt = "central", ii = cycle_dy,
                addl = n_cycles - 1L, time = 0)
   obs <- rxode2::et(seq(0.05, n_cycles * cycle_dy, length.out = 420),
                     cmt = "Cc")
@@ -234,7 +234,7 @@ typ <- readModelDb("Hong_2025_datopotamab") |> rxode2::zeroRe()
 #> ℹ parameter labels from comments will be replaced by 'label()'
 
 typ_events <- rxode2::et() |>
-  rxode2::et(amt = 6 * 66, cmt = "adc_central", ii = cycle_dy,
+  rxode2::et(amt = 6 * 66, cmt = "central", ii = cycle_dy,
              addl = n_cycles - 1L, time = 0) |>
   rxode2::et(seq(0.05, n_cycles * cycle_dy, length.out = 1500), cmt = "Cc")
 
@@ -252,20 +252,20 @@ typ_events$CYCLE         <- pmax(1L, as.integer(floor(typ_events$time / cycle_dy
 
 typ_sim <- rxode2::rxSolve(typ, typ_events, returnType = "data.frame") |>
   mutate(
-    Cc_ug_mL    = Cc,                # mg/L = ug/mL already
-    Cdxd_ng_mL  = Cdxd * 1000        # mg/L -> ng/mL
+    Cc_ug_mL      = Cc,                # mg/L = ug/mL already
+    Cc_dxd_ng_mL  = Cc_dxd * 1000      # mg/L -> ng/mL
   )
-#> ℹ omega/sigma items treated as zero: 'etalcl_adc', 'etalvc_adc', 'etalq_adc', 'etalvp_adc', 'etalvmax', 'etalcl_dxd', 'etalvc_dxd'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp', 'etalvmax', 'etalcl_dxd', 'etalvc_dxd'
 ```
 
 ``` r
 
 typ_sim |>
-  tidyr::pivot_longer(c(Cc_ug_mL, Cdxd_ng_mL),
+  tidyr::pivot_longer(c(Cc_ug_mL, Cc_dxd_ng_mL),
                       names_to = "analyte", values_to = "conc") |>
   mutate(analyte = recode(analyte,
-                          Cc_ug_mL   = "Dato-DXd (ug/mL)",
-                          Cdxd_ng_mL = "DXd (ng/mL)")) |>
+                          Cc_ug_mL     = "Dato-DXd (ug/mL)",
+                          Cc_dxd_ng_mL = "DXd (ng/mL)")) |>
   ggplot(aes(time, conc)) +
   geom_line(colour = "steelblue", linewidth = 0.8) +
   facet_wrap(~ analyte, ncol = 1, scales = "free_y") +
@@ -360,8 +360,8 @@ pop_sim <- rxode2::rxSolve(mod, events,
                            keep = c("WT", "SEXF", "CYCLE", "dose_mg"),
                            returnType = "data.frame") |>
   mutate(
-    Cc_ug_mL   = Cc,
-    Cdxd_ng_mL = Cdxd * 1000
+    Cc_ug_mL     = Cc,
+    Cc_dxd_ng_mL = Cc_dxd * 1000
   )
 #> ℹ parameter labels from comments will be replaced by 'label()'
 ```
@@ -401,9 +401,9 @@ of Hong 2025 Figure 2.
 pop_sim |>
   group_by(time) |>
   summarise(
-    p05 = quantile(Cdxd_ng_mL, 0.05, na.rm = TRUE),
-    p50 = quantile(Cdxd_ng_mL, 0.50, na.rm = TRUE),
-    p95 = quantile(Cdxd_ng_mL, 0.95, na.rm = TRUE),
+    p05 = quantile(Cc_dxd_ng_mL, 0.05, na.rm = TRUE),
+    p50 = quantile(Cc_dxd_ng_mL, 0.50, na.rm = TRUE),
+    p95 = quantile(Cc_dxd_ng_mL, 0.95, na.rm = TRUE),
     .groups = "drop"
   ) |>
   ggplot(aes(time, p50)) +
@@ -444,7 +444,7 @@ typ_nca_input <- typ_sim |>
   filter(cycle <= n_cycles) |>
   mutate(treatment = "Dato-DXd 6 mg/kg Q3W") |>
   transmute(id = 1L, treatment, cycle = as.factor(cycle),
-            time = time_in_cycle, Cc = Cc_ug_mL, Cdxd = Cdxd_ng_mL)
+            time = time_in_cycle, Cc = Cc_ug_mL, Cc_dxd = Cc_dxd_ng_mL)
 
 dose_typ <- tibble(
   id        = 1L,
@@ -480,8 +480,8 @@ adc_nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(
 adc_nca_summary <- summary(adc_nca)
 
 dxd_nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(
-  PKNCA::PKNCAconc(typ_nca_input, Cdxd ~ time | treatment + id/cycle),
-  PKNCA::PKNCAdose(dose_typ,       amt ~ time | treatment + id + cycle),
+  PKNCA::PKNCAconc(typ_nca_input, Cc_dxd ~ time | treatment + id/cycle),
+  PKNCA::PKNCAdose(dose_typ,         amt ~ time | treatment + id + cycle),
   intervals = intervals_q3w
 ))
 #> Warning: Requesting an AUC range starting (0) before the first measurement
@@ -572,7 +572,7 @@ wt_groups <- tibble(
 simulate_typ_wt <- function(wt_kg) {
   dose_mg <- if (wt_kg >= 90) 540 else 6 * wt_kg
   ev <- rxode2::et() |>
-    rxode2::et(amt = dose_mg, cmt = "adc_central", ii = cycle_dy,
+    rxode2::et(amt = dose_mg, cmt = "central", ii = cycle_dy,
                addl = 2L, time = 0) |>            # 3 cycles total
     rxode2::et(seq(0.05, 3 * cycle_dy, length.out = 1000), cmt = "Cc")
   ev$WT            <- wt_kg
@@ -599,11 +599,11 @@ simulate_typ_wt <- function(wt_kg) {
 
 wt_sim <- purrr::map_dfr(wt_groups$wt_med, simulate_typ_wt) |>
   left_join(wt_groups, by = c("wt_kg" = "wt_med"))
-#> ℹ omega/sigma items treated as zero: 'etalcl_adc', 'etalvc_adc', 'etalq_adc', 'etalvp_adc', 'etalvmax', 'etalcl_dxd', 'etalvc_dxd'
-#> ℹ omega/sigma items treated as zero: 'etalcl_adc', 'etalvc_adc', 'etalq_adc', 'etalvp_adc', 'etalvmax', 'etalcl_dxd', 'etalvc_dxd'
-#> ℹ omega/sigma items treated as zero: 'etalcl_adc', 'etalvc_adc', 'etalq_adc', 'etalvp_adc', 'etalvmax', 'etalcl_dxd', 'etalvc_dxd'
-#> ℹ omega/sigma items treated as zero: 'etalcl_adc', 'etalvc_adc', 'etalq_adc', 'etalvp_adc', 'etalvmax', 'etalcl_dxd', 'etalvc_dxd'
-#> ℹ omega/sigma items treated as zero: 'etalcl_adc', 'etalvc_adc', 'etalq_adc', 'etalvp_adc', 'etalvmax', 'etalcl_dxd', 'etalvc_dxd'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp', 'etalvmax', 'etalcl_dxd', 'etalvc_dxd'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp', 'etalvmax', 'etalcl_dxd', 'etalvc_dxd'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp', 'etalvmax', 'etalcl_dxd', 'etalvc_dxd'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp', 'etalvmax', 'etalcl_dxd', 'etalvc_dxd'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp', 'etalvmax', 'etalcl_dxd', 'etalvc_dxd'
 
 wt_sim |>
   pivot_longer(c(auc3, cmax3), names_to = "metric", values_to = "value") |>
@@ -687,8 +687,7 @@ cap-vs-mg/kg dosing yields broadly similar exposures across subgroups.
   during each cycle and reverts to 4 (cycle 1) or 4 \* 0.696 = 2.78
   (cycles 2+) at each new dose.
 - **No bioavailability term.** Dato-DXd is administered IV; doses are
-  written directly into `adc_central` and there is no `depot`
-  compartment.
+  written directly into `central` and there is no `depot` compartment.
 - **Population metadata.** Median age, median weight, sex distribution,
   and per-region patient counts are not enumerated in the
   publicly-available trimmed text used during extraction; the

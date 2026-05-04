@@ -96,7 +96,7 @@ below collects them in one place for review.
 | `lt50` (T50, days) | log(145) | Kuchimanchi 2024 Table 2, T50 = 145 days |
 | `lhill` (Hill) | log(7.05) | Kuchimanchi 2024 Table 2, Hill |
 | `e_wt_cl` | 0.523 | Kuchimanchi 2024 Table 2, Effect of WT on CL |
-| `e_wt_v` | 0.48 | Kuchimanchi 2024 Table 2, Effect of WT on Vc and Vp |
+| `e_wt_vc_vp` | 0.48 | Kuchimanchi 2024 Table 2, Effect of WT on Vc and Vp |
 | `e_age_cl` | -0.238 | Kuchimanchi 2024 Table 2, Effect of age on CL |
 | `e_alb_cl` | -0.922 | Kuchimanchi 2024 Table 2, Effect of ALB on CL |
 | `e_alt_cl` | -0.0623 | Kuchimanchi 2024 Table 2, Effect of ALT on CL |
@@ -331,7 +331,7 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
-#>  ■■■■■■■■■■■■                      36% |  ETA:  3s
+#>  ■■■■■■■■■■■                       33% |  ETA:  3s
 knitr::kable(summary(nca_res),
              caption = "Simulated NCA parameters (cycle-2 dosing interval, days 21-42)")
 ```

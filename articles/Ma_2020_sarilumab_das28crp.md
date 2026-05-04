@@ -83,7 +83,7 @@ medians per the Ma 2020 narrative (CRP 15.7 mg/L, BLPHYVAS 66, BLHAQ
 | `lvc` (Vc/F) | `log(2.08)` L | Xu 2019 Table 3, Vc/F row |
 | `lvp` (Vp/F) | `log(5.23)` L | Xu 2019 Table 3, Vp/F row |
 | `lq` (Q/F) | `log(0.156)` L/day | Xu 2019 Table 3, Q/F row |
-| `lvm` (Vm) | `log(8.06)` mg/day | Xu 2019 Table 3, Vm row |
+| `lvmax` (Vmax) | `log(8.06)` mg/day | Xu 2019 Table 3, Vm row |
 | `lkm` (Km) | `log(0.939)` mg/L | Xu 2019 Table 3, Km row |
 | `lBase` (typical DAS28-CRP baseline) | `log(6.06)` | Ma 2020 Table 3, BASE row (6.06) |
 | `lEmax` (logit of Emax) | `0.237` | Ma 2020 Table 3, Log(Emax) row; Emax = logit^-1(0.237) = 0.559 matches paper’s stated 55.9% maximum decrease |
@@ -97,9 +97,9 @@ medians per the Ma 2020 narrative (CRP 15.7 mg/L, BLPHYVAS 66, BLHAQ
 | `e_wt_base` | `0.0522` | Ma 2020 Table 3, Weight on BASE |
 | `e_crp_lemax` | `0.333` | Ma 2020 Table 3, CRP on Log(Emax) |
 | `e_pricort_kout` (Kout multiplier for PRICORT = 1) | `1.26` | Ma 2020 Table 3, PRICORT on Kout; 0.0264 \* 1.26 = 0.0333 matches paper narrative |
-| `var(etalvm)` | `log(0.324^2 + 1) = 0.0998` | Xu 2019 Table 3: Vm IIV 32.4% CV |
+| `var(etalvmax)` | `log(0.324^2 + 1) = 0.0998` | Xu 2019 Table 3: Vm IIV 32.4% CV |
 | `var(etalcl)` | `log(0.553^2 + 1) = 0.2669` | Xu 2019 Table 3: CLO/F IIV 55.3% CV |
-| `cov(etalvm, etalcl)` | `-0.566 * sqrt(0.0998 * 0.2669) = -0.0924` | Xu 2019 Table 3: Vm-CLO/F correlation -0.566 |
+| `cov(etalvmax, etalcl)` | `-0.566 * sqrt(0.0998 * 0.2669) = -0.0924` | Xu 2019 Table 3: Vm-CLO/F correlation -0.566 |
 | `var(etalvc)` | `log(0.373^2 + 1) = 0.1302` | Xu 2019 Table 3: Vc/F IIV 37.3% CV |
 | `var(etalka)` | `log(0.321^2 + 1) = 0.0981` | Xu 2019 Table 3: Ka IIV 32.1% CV |
 | `var(etalBase)` | `log(0.0805^2 + 1) = 0.00646` | Ma 2020 Table 3: BASE IIV 8.05% CV |
@@ -107,8 +107,8 @@ medians per the Ma 2020 narrative (CRP 15.7 mg/L, BLPHYVAS 66, BLHAQ
 | `var(etalIC50)` | `log(1.58^2 + 1) = 1.252` | Ma 2020 Table 3: IC50 IIV 158% CV |
 | `var(etalKout)` | `log(0.842^2 + 1) = 0.5360` | Ma 2020 Table 3: Kout IIV 84.2% CV |
 | `var(etalPLB)` | `log(1.05^2 + 1) = 0.7431` | Ma 2020 Table 3: PLB IIV 105% CV |
-| `CcpropSd` (sarilumab proportional RE) | `sqrt(0.395) = 0.6285` | Xu 2019 Table 3: log-additive residual sigma^2 = 0.395 |
-| `das28addSd` (DAS28-CRP additive RE) | `0.647` | Ma 2020 Table 3, additive residual row |
+| `propSd` (sarilumab proportional RE) | `sqrt(0.395) = 0.6285` | Xu 2019 Table 3: log-additive residual sigma^2 = 0.395 |
+| `addSd_das28` (DAS28-CRP additive RE) | `0.647` | Ma 2020 Table 3, additive residual row |
 | Structure — PK (2-cmt + first-order SC absorption + linear + MM elimination) | n/a | Xu 2019 Methods / Figure 2 / Eq. |
 | Structure — PD (indirect response with inhibition of kin) | n/a | Ma 2020 Figure 1 caption and Eq. |
 | `Eff = Emax*(C+PLB)^g / (IC50^g + (C+PLB)^g)` | n/a | Ma 2020 Figure 1 caption equation |
@@ -286,9 +286,9 @@ sim_typ <- dplyr::bind_rows(
   as.data.frame(rxode2::rxSolve(mod_typical, events = ev_typ(200))) |>
     dplyr::mutate(treatment = "200mg_Q2W")
 )
-#> ℹ omega/sigma items treated as zero: 'etalvm', 'etalcl', 'etalvc', 'etalka', 'etalBase', 'etalEmax', 'etalIC50', 'etalKout', 'etalPLB'
-#> ℹ omega/sigma items treated as zero: 'etalvm', 'etalcl', 'etalvc', 'etalka', 'etalBase', 'etalEmax', 'etalIC50', 'etalKout', 'etalPLB'
-#> ℹ omega/sigma items treated as zero: 'etalvm', 'etalcl', 'etalvc', 'etalka', 'etalBase', 'etalEmax', 'etalIC50', 'etalKout', 'etalPLB'
+#> ℹ omega/sigma items treated as zero: 'etalvmax', 'etalcl', 'etalvc', 'etalka', 'etalBase', 'etalEmax', 'etalIC50', 'etalKout', 'etalPLB'
+#> ℹ omega/sigma items treated as zero: 'etalvmax', 'etalcl', 'etalvc', 'etalka', 'etalBase', 'etalEmax', 'etalIC50', 'etalKout', 'etalPLB'
+#> ℹ omega/sigma items treated as zero: 'etalvmax', 'etalcl', 'etalvc', 'etalka', 'etalBase', 'etalEmax', 'etalIC50', 'etalKout', 'etalPLB'
 ```
 
 ## Replicate published figures
@@ -547,8 +547,8 @@ Typical-patient placebo-arm week-24 DAS28-CRP reduction. {.table}
       percentages (46.5% / 50.3% for 150 / 200 mg Q2W); and (iii)
       baseline and placebo-arm sanity checks.
 - **Dual observation model.** The model declares two observation
-  equations: `Cc ~ prop(CcpropSd)` (sarilumab concentration) and
-  `das28 ~ add(das28addSd)` (DAS28-CRP score). Event tables used with
+  equations: `Cc ~ prop(propSd)` (sarilumab concentration) and
+  `das28 ~ add(addSd_das28)` (DAS28-CRP score). Event tables used with
   [`rxSolve()`](https://nlmixr2.github.io/rxode2/reference/rxSolve.html)
   therefore need an explicit `cmt = "Cc"` or `cmt = "das28"` on
   observation records to disambiguate the two outputs; the simulation

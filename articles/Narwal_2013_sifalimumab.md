@@ -69,8 +69,8 @@ collects them in one place for review.
 | `e_bgene21_cl` | 0.0558 | Table 2, theta6 (Eq. 3) |
 | `e_cohdose_cl` | 0.0542 | Table 2, theta7 (Eq. 3) |
 | `e_steroid_cl` | 0.195 | Table 2, theta8 (Eq. 3) |
-| `e_wt_v1` | 0.489 | Table 2, theta9 (Eq. 4) |
-| `e_wt_v2` | 0.646 | Table 2, theta10 (Eq. 5) |
+| `e_wt_vc` | 0.489 | Table 2, theta9 (Eq. 4) |
+| `e_wt_vp` | 0.646 | Table 2, theta10 (Eq. 5) |
 | IIV block `etalcl/etalvc/etalvp` | lower-tri c(0.075478, 0.046354, 0.091758, 0, 0.021369, 0.289979) | Table 2 %CVs (28/31/58) and correlations (CL-V1 0.557, V1-V2 0.131) |
 | `etalq` | 0.408195 | Table 2, Q %CV = 71% |
 | `propSd` | 0.275 | Table 2, residual error CV 27.5% |
@@ -373,8 +373,8 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- suppressWarnings(PKNCA::pk.nca(nca_data))
-#>  ■■■■■■■■■■■■                      38% |  ETA:  5s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■        83% |  ETA:  1s
+#>  ■■■■■■■■■■■■■■                    44% |  ETA:  4s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    96% |  ETA:  0s
 
 knitr::kable(summary(nca_res),
              caption = "Simulated single-dose NCA across the MI-CP152 cohorts (first 14 days).")

@@ -278,7 +278,7 @@ The table below collects them in one place.</p>
 </tr>
 <tr class="even">
 <td>
-<code>lv1</code> (V1pop, L)</td>
+<code>lvc</code> (V1pop, L)</td>
 <td>log(3.09)</td>
 <td>Papachristos 2020 Table 1, V1pop</td>
 </tr>
@@ -290,13 +290,13 @@ The table below collects them in one place.</p>
 </tr>
 <tr class="even">
 <td>
-<code>lv2</code> (V2pop, L)</td>
+<code>lvp</code> (V2pop, L)</td>
 <td>log(2.39)</td>
 <td>Papachristos 2020 Table 1, V2pop</td>
 </tr>
 <tr class="odd">
 <td>
-<code>allo_cl</code> (allometric exponent)</td>
+<code>e_wt_cl</code> (allometric exponent)</td>
 <td>1.04</td>
 <td>Papachristos 2020 Table 1, “log(weight/70) on CL”</td>
 </tr>
@@ -334,13 +334,13 @@ The table below collects them in one place.</p>
 </tr>
 <tr class="even">
 <td>
-<code>etalv1</code> variance</td>
+<code>etalvc</code> variance</td>
 <td>0.03028</td>
 <td>Papachristos 2020 Table 1, ω_V1 = 0.174</td>
 </tr>
 <tr class="odd">
 <td>
-<code>etalv2</code> variance</td>
+<code>etalvp</code> variance</td>
 <td>0.45698</td>
 <td>Papachristos 2020 Table 1, ω_V2 = 0.676</td>
 </tr>
@@ -540,7 +540,7 @@ median weight (74.5 kg) for wild-type vs mutant carriers.</p>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
 <span>    icam1_label <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">SNP_ICAM1_RS1799969</span> <span class="op">==</span> <span class="fl">1</span>, <span class="st">"Mutant carrier"</span>, <span class="st">"Wild-type"</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl', 'etalq', 'etalv1', 'etalv2'</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl', 'etalq', 'etalvc', 'etalvp'</span></span>
 <span><span class="co">#&gt; Warning: multi-subject simulation without without 'omega'</span></span>
 <span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">sim_typ</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span>,</span>

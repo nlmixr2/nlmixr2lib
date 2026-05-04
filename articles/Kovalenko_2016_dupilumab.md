@@ -46,16 +46,16 @@ column is an explicitly-labelled sensitivity analysis).
 | `lk23` (k23, central-to-peripheral rate) | `log(0.0652)` 1/day | Table 2 row “k23 (1/d)” |
 | `lk32` (k32, peripheral-to-central rate) | `log(0.129)` 1/day | Table 2 row “k32 (1/d)” |
 | `lka` (ka, first-order absorption rate) | `log(0.254)` 1/day | Table 2 row “ka (1/d)” |
-| `lvm` (Vm, maximum MM elimination rate) | `log(0.968)` mg/L/day | Table 2 row “Vm (mg/L/d)” |
+| `lvmax` (Vmax, maximum MM elimination rate) | `log(0.968)` mg/L/day | Table 2 row “Vm (mg/L/d)” |
 | `Km` (Michaelis-Menten constant) | `fixed(0.01)` mg/L | Table 2 row “Km (mg/L)”; fixed because OFV insensitive below ~0.01 mg/L |
 | `lfdepot` (F, SC bioavailability) | `log(0.607)` | Table 2 row “F (unitless)” |
 | `e_wt_vc` (weight exponent on V2) | `0.705` | Table 2 row “V2 ~ weight”; Eq. 1 gives the form V2 = theta1 \* (WT/75)^theta2 |
 | `var(etalvc)` | `0.0225` | Table 2 row “omega^2 (V2)” |
 | `var(etalke)` | `0.131` | Table 2 row “omega^2 (ke)” |
 | `var(etalka)` | `0.251` | Table 2 row “omega^2 (ka)” |
-| `var(etalvm)` | `0.0428` | Table 2 row “omega^2 (Vm)” |
-| `CcpropSd` (proportional SD) | `0.242` (= 24.2 %CV on the linear scale) | Table 2 row “sigma^2 proportional (CV%)” |
-| `CcaddSd` (additive SD) | `fixed(0.03)` mg/L | Table 2 row “sigma^2 additive (mg/L)”; fixed when BLQ data included |
+| `var(etalvmax)` | `0.0428` | Table 2 row “omega^2 (Vm)” |
+| `propSd` (proportional SD) | `0.242` (= 24.2 %CV on the linear scale) | Table 2 row “sigma^2 proportional (CV%)” |
+| `addSd` (additive SD) | `fixed(0.03)` mg/L | Table 2 row “sigma^2 additive (mg/L)”; fixed when BLQ data included |
 | Structure: 2-cmt + parallel linear/MM elim. | n/a | Figure 1 schematic; Methods p. 619 (“two-compartment model with parallel linear and MM…”) |
 | BLQ treatment | Beal M3 | Methods p. 619 (“BLQ … utilized … applying the M3 method”) |
 
@@ -66,7 +66,7 @@ therefore inserted verbatim (no squaring) in
 [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html). The
 “sigma^2 proportional (CV%)” row reports the coefficient of variation of
 the proportional residual, so 24.2 % maps to an SD of 0.242 on the
-linear scale, which is what `CcpropSd` stores.
+linear scale, which is what `propSd` stores.
 
 ### Parameterization notes
 
@@ -84,8 +84,8 @@ footnote:
   `V3 = V2 * k23 / k32 = 2.74 * 0.0652 / 0.129 = 1.385 L` (Table 2:
   1.38).
 
-The MM elimination term `central * Vm / (Km + central/vc)` is the
-mass-rate form consistent with `Vm` reported in mg/L/day (see Methods:
+The MM elimination term `central * vmax / (Km + central/vc)` is the
+mass-rate form consistent with `vmax` reported in mg/L/day (see Methods:
 “the unit of maximum target-mediated elimination rate (Vm) was mg/L/d,
 which can be interpreted as an assumption of a proportional relationship
 between the production rate of the target and the volume of the central
@@ -259,7 +259,11 @@ nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = interv
 #> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
-#>  ■■■■■■■■                          24% |  ETA:  6s
+#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
+#>  ■■■■■■■■■                         28% |  ETA:  5s
 #> Warning: Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
@@ -304,22 +308,18 @@ nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = interv
 #> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
-#>  ■■■■■■■■■■■■■■■■■■■■■             68% |  ETA:  2s
+#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■        82% |  ETA:  1s
 #> Warning: Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
@@ -374,7 +374,7 @@ ev_typical_sc <- tibble::tibble(
 sim_typical <- rxode2::rxSolve(mod_typical, events = ev_typical_sc, keep = "WT") |>
   as.data.frame() |>
   dplyr::filter(!is.na(Cc), time > 0)
-#> ℹ omega/sigma items treated as zero: 'etalvc', 'etalke', 'etalka', 'etalvm'
+#> ℹ omega/sigma items treated as zero: 'etalvc', 'etalke', 'etalka', 'etalvmax'
 
 typical_summary <- tibble::tibble(
   metric = c(
@@ -417,14 +417,14 @@ Typical-subject single 300 mg SC profile (WT = 75 kg; IIV zeroed).
   reference the BLQ-included estimates).
 - The model preserves the paper’s rate-based parameterization (`ke`,
   `k23`, `k32`) rather than reparameterizing to `CL`/`Q`/`Vp`. The
-  `lke`/`lk23`/`lk32`/`lvm` names deviate from the nlmixr2lib canonical
+  `lke`/`lk23`/`lk32` rate names deviate from the nlmixr2lib canonical
   `lcl`/`lq` naming; the sister model `Kovalenko_2020_dupilumab.R`
   adopts the same convention because IIV in the source is defined on the
   rates, not on clearances.
 - `Km` was fixed at 0.01 mg/L in the paper because the OFV was
   insensitive to values below ~0.01 mg/L (Results section, page 620);
-  `CcaddSd` was fixed at 0.03 mg/L for the BLQ-included analysis
-  (Methods section).
+  `addSd` was fixed at 0.03 mg/L for the BLQ-included analysis (Methods
+  section).
 - The virtual cohort uses a single body-weight distribution centred on
   the paper’s reported mean (76 kg). Age, sex, race, and study-site
   effects are not explicitly reproduced - the published model does not

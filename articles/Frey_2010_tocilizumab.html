@@ -285,7 +285,7 @@ non-smoker.</p>
 </tr>
 <tr class="odd">
 <td>
-<code>lvm</code> (Vm)</td>
+<code>lvmax</code> (Vmax)</td>
 <td>
 <code>log(7.5)</code> mg/day</td>
 <td>Table II, “VM, mg/d” row</td>
@@ -323,31 +323,31 @@ non-smoker.</p>
 </tr>
 <tr class="odd">
 <td>
-<code>e_tpro_v1</code> (TPRO/74 exponent on V1)</td>
+<code>e_tpro_vc</code> (TPRO/74 exponent on Vc)</td>
 <td><code>-1.1</code></td>
 <td>Table II “Total protein on V1” / Table III</td>
 </tr>
 <tr class="even">
 <td>
-<code>e_alb_v1</code> (ALB/38 exponent on V1)</td>
+<code>e_alb_vc</code> (ALB/38 exponent on Vc)</td>
 <td><code>0.7</code></td>
 <td>Table II “Albumin on V1” / Table III</td>
 </tr>
 <tr class="odd">
 <td>
-<code>e_alb_vm</code> (ALB/38 exponent on Vm)</td>
+<code>e_alb_vmax</code> (ALB/38 exponent on Vmax)</td>
 <td><code>-0.4</code></td>
 <td>Table II “Albumin on VM” / Table III</td>
 </tr>
 <tr class="even">
 <td>
-<code>e_crcl_vm</code> (CRCL/106 exponent on Vm)</td>
+<code>e_crcl_vmax</code> (CRCL/106 exponent on Vmax)</td>
 <td><code>0.2</code></td>
 <td>Table II “Creatinine CL on VM” / Table III</td>
 </tr>
 <tr class="odd">
 <td>
-<code>e_smk_vm</code> (smoker fractional change on Vm)</td>
+<code>e_smk_vmax</code> (smoker fractional change on Vmax)</td>
 <td><code>0.11</code></td>
 <td>Table II “Smoking on VM” = +11%</td>
 </tr>
@@ -367,7 +367,7 @@ non-smoker.</p>
 <td>Table II: V2 CV 66%</td>
 </tr>
 <tr class="odd">
-<td><code>var(etalvm)</code></td>
+<td><code>var(etalvmax)</code></td>
 <td><code>log(1 + 0.54^2) = 0.2562</code></td>
 <td>Table II: Vm CV 54%</td>
 </tr>
@@ -382,7 +382,7 @@ non-smoker.</p>
 <td>Table II “COV(eta_CL : eta_V2), r”</td>
 </tr>
 <tr class="even">
-<td><code>cor(etalcl, etalvm)</code></td>
+<td><code>cor(etalcl, etalvmax)</code></td>
 <td><code>-0.5</code></td>
 <td>Table II “COV(eta_CL : eta_VM), r”</td>
 </tr>
@@ -392,12 +392,12 @@ non-smoker.</p>
 <td>Table II “COV(eta_V1 : eta_V2), r”</td>
 </tr>
 <tr class="even">
-<td><code>cor(etalvc, etalvm)</code></td>
+<td><code>cor(etalvc, etalvmax)</code></td>
 <td><code>0.2</code></td>
 <td>Table II “COV(eta_V1 : eta_VM), r”</td>
 </tr>
 <tr class="odd">
-<td><code>cor(etalvp, etalvm)</code></td>
+<td><code>cor(etalvp, etalvmax)</code></td>
 <td><code>0.2</code></td>
 <td>Table II “COV(eta_V2 : eta_VM), r”</td>
 </tr>
@@ -678,7 +678,7 @@ and dose group. The per-subject results are then summarised as a mean
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">nca_res</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_obj</span>, <span class="va">dose_obj</span>, intervals <span class="op">=</span> <span class="va">intervals</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■                     </span>  34% |  ETA:  3s</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■      </span>  82% |  ETA:  1s</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">nca_res</span><span class="op">)</span></span>
 <span><span class="co">#&gt;  start end   treatment   N     auclast        cmax        cmin</span></span>
 <span><span class="co">#&gt;      0  28 4 mg/kg Q4W 200  477 [55.7] 82.2 [53.0] 0.672 [180]</span></span>

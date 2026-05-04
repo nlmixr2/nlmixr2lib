@@ -355,7 +355,7 @@ Table 1, pooled across studies).</p>
 <span>    id   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">ids</span>, each <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span>,</span>
 <span>    time <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>    amt  <span class="op">=</span> <span class="va">amt_umol</span>,</span>
-<span>    cmt  <span class="op">=</span> <span class="st">"adc_central"</span>,</span>
+<span>    cmt  <span class="op">=</span> <span class="st">"central"</span>,</span>
 <span>    evid <span class="op">=</span> <span class="fl">1L</span>,</span>
 <span>    ii   <span class="op">=</span> <span class="va">cycle_h</span>,</span>
 <span>    addl <span class="op">=</span> <span class="va">n_cycles</span> <span class="op">-</span> <span class="fl">1L</span>,</span>
@@ -363,7 +363,7 @@ Table 1, pooled across studies).</p>
 <span>    regimen <span class="op">=</span> <span class="va">regimen</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
-<span>  <span class="co"># One observation row per time point — rxSolve returns Cc and Cmmae as</span></span>
+<span>  <span class="co"># One observation row per time point — rxSolve returns Cc and Cc_mmae as</span></span>
 <span>  <span class="co"># model variables at every output, so we don't need separate rows per</span></span>
 <span>  <span class="co"># output variable.</span></span>
 <span>  <span class="va">obs</span> <span class="op">&lt;-</span> <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/expand_grid.html" class="external-link">expand_grid</a></span><span class="op">(</span>id <span class="op">=</span> <span class="va">ids</span>, time <span class="op">=</span> <span class="va">obs_t</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -448,7 +448,7 @@ Table 1, pooled across studies).</p>
 <span><span class="va">sim_df</span> <span class="op">&lt;-</span> <span class="va">sim_df</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
 <span>    Cc_ugmL    <span class="op">=</span> <span class="va">Cc</span>    <span class="op">*</span> <span class="va">MW_BV_kDa</span>,</span>
-<span>    Cmmae_ngmL <span class="op">=</span> <span class="va">Cmmae</span> <span class="op">*</span> <span class="va">MW_MMAE_Da</span>,</span>
+<span>    Cmmae_ngmL <span class="op">=</span> <span class="va">Cc_mmae</span> <span class="op">*</span> <span class="va">MW_MMAE_Da</span>,</span>
 <span>    day        <span class="op">=</span> <span class="va">time</span> <span class="op">/</span> <span class="fl">24</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
 </div>
@@ -1210,14 +1210,15 @@ the full block from the supplement control stream and document the
 choice.</li>
 <li>
 <strong>Compartment naming.</strong> The model names the seven ODE
-states <code>adc_central</code>, <code>adc_peripheral1</code>,
-<code>adc_peripheral2</code>, <code>mmae_central</code>,
-<code>mmae_peripheral</code>, <code>target</code>, and <code>lag</code>
-rather than the canonical <code>central</code> /
-<code>peripheral1</code> / <code>peripheral2</code> /
-<code>effect</code> set, because two parallel PK systems (ADC and MMAE)
-coexist in one model and the canonical names cannot disambiguate them.
-The same precedent applies to <code>Li_2017_brentuximab</code> and
+states <code>central</code>, <code>peripheral1</code>,
+<code>peripheral2</code>, <code>central_mmae</code>,
+<code>peripheral1_mmae</code>, <code>target</code>, and
+<code>lag</code>. The parent (ADC) compartments use the canonical
+<code>central</code> / <code>peripheral1</code> /
+<code>peripheral2</code> set; MMAE compartments use the canonical
+metabolite-suffix convention (<code>central_mmae</code>,
+<code>peripheral1_mmae</code>). The same precedent applies to
+<code>Li_2017_brentuximab</code> and
 <code>Lu_2014_trastuzumabemtansine</code>. The canonical
 <code>target</code> compartment from <code>naming-conventions.md</code>
 is reused here for the irreversibly depletable Target binding pool.</li>
@@ -1249,7 +1250,7 @@ routes the source <code>DOX</code> column through
 effect on MMAE central volume VM has multiplier 0.296 with reference 1 =
 HL. The canonical <code>TUMTP_CHL</code> register entry encodes 1 = HL,
 so the model applies the effect as
-<code>e_nonhl_mmae_vc^(1 - TUMTP_CHL)</code> to keep the paper’s
+<code>e_nonhl_vc_mmae^(1 - TUMTP_CHL)</code> to keep the paper’s
 reference (HL) at multiplier 1 while preserving the canonical column
 meaning.</li>
 <li>
@@ -1264,9 +1265,9 @@ dose interval … using individual post-hoc PK parameter estimates”).</li>
 <strong>Doses converted to umol.</strong> Zhou 2025’s NONMEM dataset
 uses molar amounts (<code>AMT IN UM</code> -&gt; umol;
 <code>DV IN UM</code> -&gt; umol/L). The packaged model retains this
-convention — the binding term <code>kd * target * adc_central</code> in
-the ADC -&gt; MMAE conversion equation is sensitive to the amount unit,
-and switching to mg without rescaling <code>kd</code> would corrupt the
+convention — the binding term <code>kd * target * central</code> in the
+ADC -&gt; MMAE conversion equation is sensitive to the amount unit, and
+switching to mg without rescaling <code>kd</code> would corrupt the
 conversion-flux magnitude. mg-based doses are converted in the vignette
 via <code>amt_umol = dose_mg / MW_BV_kDa</code> (MW_BV ~= 153.4
 kDa).</li>

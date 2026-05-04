@@ -208,7 +208,7 @@ Pharmacol. 2020 Jul;60(7):903-914. <a href="doi:10.1002/jcph.1590" class="uri">d
 adults with moderate-to-severe ulcerative colitis or Crohn’s disease
 (Wang 2020), with first-order SC absorption, absorption lag time,
 parallel linear and Michaelis-Menten elimination from the central
-compartment, and allometric weight scaling on CL, Vc, CLd, Vp, and
+compartment, and allometric weight scaling on CL, Vc, Q, Vp, and
 Vmax.</li>
 <li>Article: <a href="https://doi.org/10.1002/jcph.1590" class="external-link">J Clin
 Pharmacol. 2020;60(7):903-914</a> (open access via <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC7383906/" class="external-link">PMC7383906</a>)</li>
@@ -289,7 +289,7 @@ baseline albumin 39 g/L, and baseline CRP 0.837 mg/dL.</p>
 </tr>
 <tr class="odd">
 <td>
-<code>lcld</code> (CLd/F)</td>
+<code>lq</code> (CLd/F)</td>
 <td>0.000345 L/h</td>
 <td>
 <code>log(0.000345 * 24)</code> L/day</td>
@@ -335,7 +335,7 @@ baseline albumin 39 g/L, and baseline CRP 0.837 mg/dL.</p>
 </tr>
 <tr class="odd">
 <td>
-<code>e_wt_cld</code> (WT/70 exponent on CLd/F)</td>
+<code>e_wt_q</code> (WT/70 exponent on Q/F)</td>
 <td>0.0034</td>
 <td>0.0034</td>
 <td>Table 2, CLd/F covariate equation</td>
@@ -435,8 +435,8 @@ L/h × 24 = L/day, h / 24 = day, µg/h × 24 / 1000 = mg/day, ng/mL / 1000
 = mg/L.</li>
 <li>
 <strong>Allometric weight scaling.</strong> Body weight is applied
-as a power effect to five parameters (CL, Vc, CLd, Vp, Vmax). Note the
-small CL and CLd exponents (~0.003) and the larger Vmax exponent (1.89);
+as a power effect to five parameters (CL, Vc, Q, Vp, Vmax). Note the
+small CL and Q exponents (~0.003) and the larger Vmax exponent (1.89);
 these are the estimated values in Table 2 rather than fixed allometric
 exponents.</li>
 <li>
@@ -611,8 +611,8 @@ Concentrations are expressed in ng/mL to match the published table.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">nca_res</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_obj</span>, <span class="va">dose_obj</span>, intervals <span class="op">=</span> <span class="va">intervals</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■                   </span>  39% |  ETA:  5s</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■         </span>  74% |  ETA:  2s</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■                  </span>  42% |  ETA:  5s</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■        </span>  77% |  ETA:  2s</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">nca_res</span><span class="op">)</span></span>
 <span><span class="co">#&gt;  start end  treatment   N       auclast         cmax           cmin</span></span>
 <span><span class="co">#&gt;      0  28  150mg_Q4W 200 283000 [47.4] 14900 [34.2]    3160 [1010]</span></span>

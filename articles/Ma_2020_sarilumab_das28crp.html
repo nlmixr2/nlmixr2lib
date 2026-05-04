@@ -319,7 +319,7 @@ BLPHYVAS 66, BLHAQ 1.75, WT 72.8 kg).</p>
 </tr>
 <tr class="even">
 <td>
-<code>lvm</code> (Vm)</td>
+<code>lvmax</code> (Vmax)</td>
 <td>
 <code>log(8.06)</code> mg/day</td>
 <td>Xu 2019 Table 3, Vm row</td>
@@ -403,7 +403,7 @@ concentration)</td>
 paper narrative</td>
 </tr>
 <tr class="even">
-<td><code>var(etalvm)</code></td>
+<td><code>var(etalvmax)</code></td>
 <td><code>log(0.324^2 + 1) = 0.0998</code></td>
 <td>Xu 2019 Table 3: Vm IIV 32.4% CV</td>
 </tr>
@@ -413,7 +413,7 @@ paper narrative</td>
 <td>Xu 2019 Table 3: CLO/F IIV 55.3% CV</td>
 </tr>
 <tr class="even">
-<td><code>cov(etalvm, etalcl)</code></td>
+<td><code>cov(etalvmax, etalcl)</code></td>
 <td><code>-0.566 * sqrt(0.0998 * 0.2669) = -0.0924</code></td>
 <td>Xu 2019 Table 3: Vm-CLO/F correlation -0.566</td>
 </tr>
@@ -454,13 +454,13 @@ paper narrative</td>
 </tr>
 <tr class="even">
 <td>
-<code>CcpropSd</code> (sarilumab proportional RE)</td>
+<code>propSd</code> (sarilumab proportional RE)</td>
 <td><code>sqrt(0.395) = 0.6285</code></td>
 <td>Xu 2019 Table 3: log-additive residual sigma^2 = 0.395</td>
 </tr>
 <tr class="odd">
 <td>
-<code>das28addSd</code> (DAS28-CRP additive RE)</td>
+<code>addSd_das28</code> (DAS28-CRP additive RE)</td>
 <td><code>0.647</code></td>
 <td>Ma 2020 Table 3, additive residual row</td>
 </tr>
@@ -659,9 +659,9 @@ PRICORT = 0):</p>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_typical</span>, events <span class="op">=</span> <span class="fu">ev_typ</span><span class="op">(</span><span class="fl">200</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>treatment <span class="op">=</span> <span class="st">"200mg_Q2W"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalvm', 'etalcl', 'etalvc', 'etalka', 'etalBase', 'etalEmax', 'etalIC50', 'etalKout', 'etalPLB'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalvm', 'etalcl', 'etalvc', 'etalka', 'etalBase', 'etalEmax', 'etalIC50', 'etalKout', 'etalPLB'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalvm', 'etalcl', 'etalvc', 'etalka', 'etalBase', 'etalEmax', 'etalIC50', 'etalKout', 'etalPLB'</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalvmax', 'etalcl', 'etalvc', 'etalka', 'etalBase', 'etalEmax', 'etalIC50', 'etalKout', 'etalPLB'</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalvmax', 'etalcl', 'etalvc', 'etalka', 'etalBase', 'etalEmax', 'etalIC50', 'etalKout', 'etalPLB'</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalvmax', 'etalcl', 'etalvc', 'etalka', 'etalBase', 'etalEmax', 'etalIC50', 'etalKout', 'etalPLB'</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="replicate-published-figures">Replicate published figures<a class="anchor" aria-label="anchor" href="#replicate-published-figures"></a>
@@ -1010,8 +1010,8 @@ placebo-arm sanity checks.</li>
 </li>
 <li>
 <strong>Dual observation model.</strong> The model declares two
-observation equations: <code>Cc ~ prop(CcpropSd)</code> (sarilumab
-concentration) and <code>das28 ~ add(das28addSd)</code> (DAS28-CRP
+observation equations: <code>Cc ~ prop(propSd)</code> (sarilumab
+concentration) and <code>das28 ~ add(addSd_das28)</code> (DAS28-CRP
 score). Event tables used with <code><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve()</a></code> therefore need an
 explicit <code>cmt = "Cc"</code> or <code>cmt = "das28"</code> on
 observation records to disambiguate the two outputs; the simulation

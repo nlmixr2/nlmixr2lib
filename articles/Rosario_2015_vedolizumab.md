@@ -87,9 +87,9 @@ collects them in one place.
 | `e_pmayo_cl` | `0.0408` | Table S4: partial Mayo on CLL (UC-only) |
 | `e_age_cl` | `-0.0346` | Table S4: age on CLL |
 | `e_wt_vc` | `0.467` | Table S4: weight on Vc |
-| `allo_wt_vp` | `fixed(1)` | Table S4: weight on Vp = 1 Fixed |
-| `allo_wt_vmax` | `fixed(0.75)` | Table S4: weight on Vmax = 0.75 Fixed |
-| `allo_wt_q` | `fixed(0.75)` | Table S4: weight on Q = 0.75 Fixed |
+| `e_wt_vp` | `fixed(1)` | Table S4: weight on Vp = 1 Fixed |
+| `e_wt_vmax` | `fixed(0.75)` | Table S4: weight on Vmax = 0.75 Fixed |
+| `e_wt_q` | `fixed(0.75)` | Table S4: weight on Q = 0.75 Fixed |
 | `e_priortnf_cl` | `1.04` | Table S4: prior TNF-α antagonist on CLL |
 | `e_ada_cl` | `1.12` | Table S4: ADA status on CLL |
 | `e_conmed_aza_cl` | `0.998` | Table S4: AZA on CLL |

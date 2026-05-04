@@ -117,7 +117,7 @@ str(mod_meta$meta$population, max.level = 1)
 #>  $ age_range        : chr "Adults with NHL (Lu 2019 does not tabulate age in the main paper; the four constituent studies enrolled adult p"| __truncated__
 #>  $ weight_range     : chr "5th-95th percentile 48.7-118 kg per Lu 2019 Figure 3 sensitivity-analysis annotation; reference 75 kg used for "| __truncated__
 #>  $ sex_female_pct   : num NA
-#>  $ race_ethnicity   : chr "Tested as Asian vs non-Asian indicator only in the final model (RACE_ASIAN); a multiplicative effect on V1 (e_a"| __truncated__
+#>  $ race_ethnicity   : chr "Tested as Asian vs non-Asian indicator only in the final model (RACE_ASIAN); a multiplicative effect on Vc (e_a"| __truncated__
 #>  $ disease_state    : chr "Relapsed/refractory or previously untreated B-cell non-Hodgkin lymphoma (NHL): diffuse large B-cell lymphoma (D"| __truncated__
 #>  $ dose_range       : chr "Pola 0.1-2.4 mg/kg IV every 3 weeks (Q3W) as monotherapy or in combination with rituximab, obinutuzumab, bendam"| __truncated__
 #>  $ regions          : chr "Multi-regional (the four constituent studies were global Phase I/Ib/II trials NCT01290549, NCT01691898, NCT0225"| __truncated__
@@ -136,14 +136,14 @@ table below collates them.
 | Parameter (nlmixr2lib) | Source quantity | Value | Source location |
 |----|----|----|----|
 | `lkdes` | kdes | 0.0046 1/hour | Table 1, theta1 |
-| `lclt0` | CL_T (initial) | 0.00623 L/hour | Table 1, theta2 |
-| `lclinf` | CL_INF | 0.0344 L/hour | Table 1, theta3 |
+| `lcl_time` | CL_TIME (initial) | 0.00623 L/hour | Table 1, theta2 |
+| `lcl_ss` | CL_SS | 0.0344 L/hour | Table 1, theta3 |
 | `lvc` | V1 | 3.15 L | Table 1, theta4 |
 | `lvp` | V2 | 3.98 L | Table 1, theta5 |
 | `lq` | Q | 0.0145 L/hour | Table 1, theta6 |
-| `lvmax_ac` | Vmax (acMMAE) | 0.0203 ng/mL/hr | Table 1, theta7 |
+| `lvmax` | Vmax (acMMAE) | 0.0203 ng/mL/hr | Table 1, theta7 |
 | `lkm_ac` | KM (acMMAE) | 0.604 ng/mL | Table 1, theta8 |
-| `clinf_emax` | CL_INF,EMAX | 0.223 | Table 1, theta9 |
+| `clss_emax` | CL_SS,EMAX | 0.223 | Table 1, theta9 |
 | `lt50_mo` | T50 (months) | 3.53 months | Table 1, theta10 |
 | `gamma_ns` | gamma | 2.27 | Table 1, theta11 |
 | `lvc_mmae` | V_MMAE (apparent) | 82.2 L | Table 1, theta12 |
@@ -156,31 +156,31 @@ table below collates them.
 | `lfrac_mm` | FRAC_MM | 2.72 | Table 1, theta19 |
 | `lalph_mo` | alpha (1/month) | 0.167 1/month | Table 1, theta20 |
 | `frac_t` | FRAC_T | 0.139 | Table 1, theta21 |
-| `e_wt_clinf` | WT on CL_INF | 0.73 | Table 2, theta22 |
-| `e_wt_v` | WT on V1, V2, Q (shared) | 0.50 | Table 2, theta23 |
-| `e_sexf_v1` | sex on V1 (1/1.20) | 0.8333 | Table 2, theta24 (inverted) |
-| `e_asian_v1` | Asian on V1 | 0.929 | Table 2, theta25 |
-| `e_line1l_v1` | Treatment-naive on V1 | 1.20 | Table 2, theta26 |
-| `e_sexf_clinf` | sex on CL_INF (1/1.10) | 0.9091 | Table 2, theta27 (inverted) |
-| `e_alb_clinf` | ALB on CL_INF (power) | -0.247 | Table 2, theta28 |
-| `e_combo_rg_clinf` | R/G combo on CL_INF | 0.844 | Table 2, theta29 |
-| `e_blbcell_clinf` | B-cell on CL_INF (power) | 0.0212 | Table 2, theta30 |
-| `e_tumsz_clinf` | TUMSZ on CL_INF (linear) | 0.0521 | Table 2, theta31 |
+| `e_wt_cl_ss` | WT on CL_SS | 0.73 | Table 2, theta22 |
+| `e_wt_vc` | WT on Vc, Vp, Q (shared) | 0.50 | Table 2, theta23 |
+| `e_sexf_vc` | sex on Vc (1/1.20) | 0.8333 | Table 2, theta24 (inverted) |
+| `e_asian_vc` | Asian on Vc | 0.929 | Table 2, theta25 |
+| `e_line1l_vc` | Treatment-naive on Vc | 1.20 | Table 2, theta26 |
+| `e_sexf_cl_ss` | sex on CL_SS (1/1.10) | 0.9091 | Table 2, theta27 (inverted) |
+| `e_alb_cl_ss` | ALB on CL_SS (power) | -0.247 | Table 2, theta28 |
+| `e_combo_rg_cl_ss` | R/G combo on CL_SS | 0.844 | Table 2, theta29 |
+| `e_blbcell_cl_ss` | B-cell on CL_SS (power) | 0.0212 | Table 2, theta30 |
+| `e_tumsz_cl_ss` | TUMSZ on CL_SS (linear) | 0.0521 | Table 2, theta31 |
 | `e_line1l_kdes` | Treatment-naive on kdes | 3.38 | Table 2, theta32 |
 | `e_combo_rg_kdes` | R/G combo on kdes | 0.932 | Table 2, theta33 |
-| `e_line1l_clt` | Treatment-naive on CL_T | 3.53 | Table 2, theta34 |
-| `tmbd50_clt` | TUMSZ50 on CL_T | 1150 mm^2 | Table 2, theta35 |
-| `bcell_thr_clt` | B-cell threshold on CL_T | 121 cells/uL | Table 2, theta36 |
-| `e_blbcell_clt` | B-cell power on CL_T | 0.578 | Table 2, theta37 |
-| `e_wt_frac` | WT on FRAC_NS (power) | -0.467 | Table 2, theta38 |
-| `e_sexf_frac` | sex on FRAC_NS (1/0.911) | 1.0977 | Table 2, theta39 (inverted) |
-| `e_line1l_frac` | Treatment-naive on FRAC_NS | 0.756 | Table 2, theta40 |
-| `e_combo_rg_frac` | R/G combo on FRAC_NS | 0.709 | Table 2, theta41 |
-| `e_hepimp_frac` | NCI ODWG hep. impairment on FRAC_NS | 1.19 | Table 2, theta42 |
-| `e_ecog_ge1_frac` | ECOG_GE1 on FRAC_NS (1/0.905) | 1.1050 | Table 2, theta43 (inverted) |
-| `e_alb_frac` | ALB on FRAC_NS (power) | -0.613 | Table 2, theta44 |
-| `CcpropSd` | sqrt(sigma1^2) | 0.1594 | Table S3, Sigma11 = 0.0254 |
-| `CmmaepropSd` | sqrt(sigma2^2) | 0.2694 | Table S3, Sigma22 = 0.0726 |
+| `e_line1l_cl_time` | Treatment-naive on CL_TIME | 3.53 | Table 2, theta34 |
+| `tmbd50_cl_time` | TUMSZ50 on CL_TIME | 1150 mm^2 | Table 2, theta35 |
+| `bcell_thr_cl_time` | B-cell threshold on CL_TIME | 121 cells/uL | Table 2, theta36 |
+| `e_blbcell_cl_time` | B-cell power on CL_TIME | 0.578 | Table 2, theta37 |
+| `e_wt_frac_mmae` | WT on FRAC_NS (power) | -0.467 | Table 2, theta38 |
+| `e_sexf_frac_mmae` | sex on FRAC_NS (1/0.911) | 1.0977 | Table 2, theta39 (inverted) |
+| `e_line1l_frac_mmae` | Treatment-naive on FRAC_NS | 0.756 | Table 2, theta40 |
+| `e_combo_rg_frac_mmae` | R/G combo on FRAC_NS | 0.709 | Table 2, theta41 |
+| `e_hepimp_frac_mmae` | NCI ODWG hep. impairment on FRAC_NS | 1.19 | Table 2, theta42 |
+| `e_ecog_ge1_frac_mmae` | ECOG_GE1 on FRAC_NS (1/0.905) | 1.1050 | Table 2, theta43 (inverted) |
+| `e_alb_frac_mmae` | ALB on FRAC_NS (power) | -0.613 | Table 2, theta44 |
+| `propSd` | sqrt(sigma1^2) | 0.1594 | Table S3, Sigma11 = 0.0254 |
+| `propSd_mmae` | sqrt(sigma2^2) | 0.2694 | Table S3, Sigma22 = 0.0726 |
 | ODE system (4 states) | Lu 2019 Eq. 1 + supplement |  | Supplement \$DES + Equations |
 
 Inter-individual variability (omega^2 stored as variances on the
@@ -188,10 +188,10 @@ log-normal scale; %CV = 100 \* sqrt(exp(omega^2) - 1)):
 
 | Parameter | omega^2 (Table S3) |  %CV |
 |-----------|-------------------:|-----:|
-| CL_T      |               1.89 |  138 |
-| CL_INF    |             0.0376 | 19.5 |
-| V1        |             0.0151 | 12.3 |
-| V2        |              0.107 | 32.7 |
+| CL_TIME   |               1.89 |  138 |
+| CL_SS     |             0.0376 | 19.5 |
+| Vc        |             0.0151 | 12.3 |
+| Vp        |              0.107 | 32.7 |
 | Q         |             0.0538 | 23.2 |
 | Vmax (ac) |              0.462 | 67.9 |
 | FRAC_NS   |             0.0972 | 31.2 |
@@ -263,7 +263,7 @@ make_subject <- function(id, wt_kg, sexf_ind, naive_ind, asian_ind,
   mmae_eq_ug   <- pola_dose_ug * mmae_dose_factor
 
   ev <- rxode2::et() |>
-    rxode2::et(amt = mmae_eq_ug, cmt = "acmmae_central",
+    rxode2::et(amt = mmae_eq_ug, cmt = "central",
                ii = cycle_hr, addl = n_cycles - 1L, time = 0) |>
     rxode2::et(seq(0.5, n_cycles * cycle_hr, length.out = 100),
                cmt = "Cc") |>
@@ -308,7 +308,7 @@ typ <- mod |> rxode2::zeroRe()
 
 typ_events <- rxode2::et() |>
   rxode2::et(amt = 1.8 * 1000 * 80 * mmae_dose_factor,
-             cmt = "acmmae_central",
+             cmt = "central",
              ii = cycle_hr, addl = n_cycles - 1L, time = 0) |>
   rxode2::et(seq(0.5, n_cycles * cycle_hr, length.out = 1500), cmt = "Cc")
 
@@ -326,14 +326,14 @@ typ_events$BLBCELL    <- 1
 typ_events$TUMSZ      <- 5000
 
 typ_sim <- rxode2::rxSolve(typ, typ_events, returnType = "data.frame")
-#> ℹ omega/sigma items treated as zero: 'etalclt', 'etalclinf', 'etalvc', 'etalvp', 'etalq', 'etalvmax_ac', 'etalfrac_ns', 'etalcl_mmae', 'etalvp_mmae'
+#> ℹ omega/sigma items treated as zero: 'etalcl_time', 'etalcl_ss', 'etalvc', 'etalvp', 'etalq', 'etalvmax', 'etalfrac_mmae', 'etalcl_mmae', 'etalvp_mmae'
 ```
 
 ``` r
 
 typ_sim |>
   mutate(
-    cl_mm = vmax_ac / (km_ac + acmmae_central / v1),  # CL_MM in L/hour
+    cl_mm = vmax / (km_ac + central / vc),  # CL_MM in L/hour
     cl_total = cl_ns + cl_t + cl_mm
   ) |>
   select(time, cl_ns, cl_t, cl_mm, cl_total) |>
@@ -372,10 +372,10 @@ arrow positions mark the dosing times at 0, 504, 1008, 1512, 2016, and
 
 typ_sim |>
   mutate(
-    cl_mm = vmax_ac / (km_ac + acmmae_central / v1),
-    input_clns_ugh = frac_ns * cl_ns * acmmae_central / v1,
-    input_clt_ugh  = frac_ns * frac_clt * cl_t * acmmae_central / v1,
-    input_clmm_ugh = frac_ns * frac_mm * cl_mm * acmmae_central / v1,
+    cl_mm = vmax / (km_ac + central / vc),
+    input_clns_ugh = frac_ns * cl_ns * central / vc,
+    input_clt_ugh  = frac_ns * frac_clt * cl_t * central / vc,
+    input_clmm_ugh = frac_ns * frac_mm * cl_mm * central / vc,
     input_total_ugh = input_clns_ugh + input_clt_ugh + input_clmm_ugh
   ) |>
   select(time, input_clns_ugh, input_clt_ugh, input_clmm_ugh, input_total_ugh) |>
@@ -411,11 +411,11 @@ cycle 2, driven by the CL_t pathway.
 ``` r
 
 typ_sim |>
-  select(time, Cc, Cmmae) |>
-  pivot_longer(c(Cc, Cmmae), names_to = "analyte", values_to = "conc") |>
+  select(time, Cc, Cc_mmae) |>
+  pivot_longer(c(Cc, Cc_mmae), names_to = "analyte", values_to = "conc") |>
   mutate(analyte = recode(analyte,
-                          Cc    = "acMMAE (ng/mL)",
-                          Cmmae = "Unconjugated MMAE (ng/mL)")) |>
+                          Cc      = "acMMAE (ng/mL)",
+                          Cc_mmae = "Unconjugated MMAE (ng/mL)")) |>
   ggplot(aes(time, conc)) +
   geom_line(colour = "steelblue", linewidth = 0.8) +
   facet_wrap(~ analyte, ncol = 1, scales = "free_y") +
@@ -485,12 +485,12 @@ pcVPC).
 ``` r
 
 pop_sim |>
-  filter(!is.na(Cmmae)) |>
+  filter(!is.na(Cc_mmae)) |>
   group_by(time) |>
   summarise(
-    p05 = quantile(Cmmae, 0.05, na.rm = TRUE),
-    p50 = quantile(Cmmae, 0.50, na.rm = TRUE),
-    p95 = quantile(Cmmae, 0.95, na.rm = TRUE),
+    p05 = quantile(Cc_mmae, 0.05, na.rm = TRUE),
+    p50 = quantile(Cc_mmae, 0.50, na.rm = TRUE),
+    p95 = quantile(Cc_mmae, 0.95, na.rm = TRUE),
     .groups = "drop"
   ) |>
   ggplot(aes(time, p50)) +
@@ -539,10 +539,10 @@ acmmae_nca <- pop_sim |>
   transmute(id, cycle, time = time_in_cycle, Cc)
 
 mmae_nca <- pop_sim |>
-  filter(!is.na(Cmmae), time > 0) |>
+  filter(!is.na(Cc_mmae), time > 0) |>
   add_cycle() |>
   filter(cycle_n %in% c(1, 3, 6)) |>
-  transmute(id, cycle, time = time_in_cycle, Cmmae)
+  transmute(id, cycle, time = time_in_cycle, Cc_mmae)
 
 dose_df <- events |>
   filter(evid == 1) |>
@@ -1023,30 +1023,30 @@ ac_nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(ac_conc, ac_dose,
 #> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■         79% |  ETA:  1s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■           75% |  ETA:  1s
 #> Warning: Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
@@ -1179,7 +1179,7 @@ ac_nca_long <- as.data.frame(ac_nca_res$result)
 
 ``` r
 
-mmae_conc <- PKNCA::PKNCAconc(mmae_nca, Cmmae ~ time | cycle + id,
+mmae_conc <- PKNCA::PKNCAconc(mmae_nca, Cc_mmae ~ time | cycle + id,
                               concu = "ng/mL", timeu = "hour")
 mmae_dose <- PKNCA::PKNCAdose(dose_df, amt ~ time | cycle + id,
                               doseu = "ug")
@@ -1441,11 +1441,11 @@ mmae_nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(mmae_conc, mmae_dose,
 #> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
 #>  ■■■■■■■■■■■■■■                    43% |  ETA:  2s
 #> Warning: Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
@@ -1918,16 +1918,16 @@ expected to be reproduced.
   canonical SEXF reverses the value coding (`SEXF = 1 - source_SEX`).
   Multiplicative-ratio effects therefore invert: the paper’s
   `theta24 = 1.20` (V1 male:female) becomes
-  `e_sexf_v1 = 1/1.20 = 0.8333`; `theta27 = 1.10` becomes
-  `e_sexf_clinf = 1/1.10 = 0.9091`; `theta39 = 0.911` becomes
-  `e_sexf_frac = 1/0.911 = 1.0977`. Effect magnitude and reference
+  `e_sexf_vc = 1/1.20 = 0.8333`; `theta27 = 1.10` becomes
+  `e_sexf_cl_ss = 1/1.10 = 0.9091`; `theta39 = 0.911` becomes
+  `e_sexf_frac_mmae = 1/0.911 = 1.0977`. Effect magnitude and reference
   subject (male, SEXF = 0) are preserved.
 
 - **ECOG_GE1 reference flip.** Lu 2019 NONMEM defines
   `ECOG0 = 1 if BECOG == 0`; the canonical ECOG_GE1 is the complement
   (`ECOG_GE1 = 1 - source_ECOG0`). The paper’s `theta43 = 0.905`
   (FRAC_NS_ECOG=0 / FRAC_NS_ECOG\>=1) becomes
-  `e_ecog_ge1_frac = 1/0.905 = 1.1050`. The reference subject is
+  `e_ecog_ge1_frac_mmae = 1/0.905 = 1.1050`. The reference subject is
   ECOG_GE1 = 1 (i.e., ECOG \>= 1) – consistent with the package’s
   ECOG_GE1 canonical (reference 0 = “ECOG = 0”).
 
@@ -1954,10 +1954,10 @@ expected to be reproduced.
   the unit choice load-bearingly; users dosing with a TUMSZ in mm need
   to convert to mm^2 (TUMSZ_mm^2 = sum-of-products) before simulation.
 
-- **B-cell threshold logic.** Lu 2019’s CL_INF and CL_T B-cell effects
+- **B-cell threshold logic.** Lu 2019’s CL_SS and CL_TIME B-cell effects
   use floored-power forms `BLBCELL^0.0212` (with BLBCELL floored at 1)
-  on CL_INF and `(BLBCELL/121)^0.578` (with the ratio floored at 1) on
-  CL_T. Both flooring rules are implemented via `max(1, .)` inside
+  on CL_SS and `(BLBCELL/121)^0.578` (with the ratio floored at 1) on
+  CL_TIME. Both flooring rules are implemented via `max(1, .)` inside
   [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html).
   For B-cell counts at or below the floor, both effects collapse to 1.
 
@@ -1968,7 +1968,7 @@ expected to be reproduced.
   0.0521, 0.038, 0.0427). nlmixr2lib does not natively support
   eta-on-epsilon; the packaged model collapses to a fixed proportional
   residual error per analyte using the Sigma point estimates (Sigma11 =
-  0.0254 -\> CcpropSd = 0.1594; Sigma22 = 0.0726 -\> CmmaepropSd =
+  0.0254 -\> propSd = 0.1594; Sigma22 = 0.0726 -\> propSd_mmae =
   0.2694). This slightly under-estimates residual variability for
   individuals with large positive ETA10/ETA11 and over-estimates for
   those with large negative values, but does not bias the typical-value
@@ -2011,7 +2011,7 @@ str(mod_meta$meta$population, max.level = 1)
 #>  $ age_range        : chr "Adults with NHL (Lu 2019 does not tabulate age in the main paper; the four constituent studies enrolled adult p"| __truncated__
 #>  $ weight_range     : chr "5th-95th percentile 48.7-118 kg per Lu 2019 Figure 3 sensitivity-analysis annotation; reference 75 kg used for "| __truncated__
 #>  $ sex_female_pct   : num NA
-#>  $ race_ethnicity   : chr "Tested as Asian vs non-Asian indicator only in the final model (RACE_ASIAN); a multiplicative effect on V1 (e_a"| __truncated__
+#>  $ race_ethnicity   : chr "Tested as Asian vs non-Asian indicator only in the final model (RACE_ASIAN); a multiplicative effect on Vc (e_a"| __truncated__
 #>  $ disease_state    : chr "Relapsed/refractory or previously untreated B-cell non-Hodgkin lymphoma (NHL): diffuse large B-cell lymphoma (D"| __truncated__
 #>  $ dose_range       : chr "Pola 0.1-2.4 mg/kg IV every 3 weeks (Q3W) as monotherapy or in combination with rituximab, obinutuzumab, bendam"| __truncated__
 #>  $ regions          : chr "Multi-regional (the four constituent studies were global Phase I/Ib/II trials NCT01290549, NCT01691898, NCT0225"| __truncated__

@@ -81,10 +81,10 @@ collects them in one place for review.
 | `lvc` (V1 at 38 kg, L) | log(1.98) | Brillac 2025 Table 1, V1 = 1.98 L |
 | `lq` (Q at 38 kg, L/day) | log(0.0358 × 24) | Brillac 2025 Table 1, Q = 0.0358 L/h (= 0.859 L/day in Results) |
 | `lvp` (V2 at 38 kg, L) | log(2.20) | Brillac 2025 Table 1, V2 = 2.20 L |
-| `allo_cl` (WT exponent on CL) | 0.833 | Brillac 2025 Table 1, β_CL_log(WT/MedWT) = 0.833 |
-| `allo_v1` (WT exponent on V1) | 0.821 | Brillac 2025 Table 1, β_V1_log(WT/MedWT) = 0.821 |
-| `allo_q` (WT exponent on Q, fixed) | 0.85 | Brillac 2025 Table 1, β_Q_log(WT/MedWT) = 0.85 (fixed) |
-| `allo_v2` (WT exponent on V2) | 0.72 | Brillac 2025 Table 1, β_V2_log(WT/MedWT) = 0.72 |
+| `e_wt_cl` (WT exponent on CL) | 0.833 | Brillac 2025 Table 1, β_CL_log(WT/MedWT) = 0.833 |
+| `e_wt_vc` (WT exponent on V1) | 0.821 | Brillac 2025 Table 1, β_V1_log(WT/MedWT) = 0.821 |
+| `e_wt_q` (WT exponent on Q, fixed) | 0.85 | Brillac 2025 Table 1, β_Q_log(WT/MedWT) = 0.85 (fixed) |
+| `e_wt_vp` (WT exponent on V2) | 0.72 | Brillac 2025 Table 1, β_V2_log(WT/MedWT) = 0.72 |
 | `etalcl` (omega² for CL) | 0.388 (= 0.623²) | Brillac 2025 Table 1, ω(CL) = 62.3% |
 | `etalvc` (omega² for V1) | 0.163 (= 0.404²) | Brillac 2025 Table 1, ω(V1) = 40.4% |
 | `etalq` (omega² for Q) | 0.257 (= 0.507²) | Brillac 2025 Table 1, ω(Q) = 50.7% |
@@ -324,7 +324,7 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
-#>  ■■■■■■■■■■■■■■■■■■■■■■            69% |  ETA:  2s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■           73% |  ETA:  1s
 
 knitr::kable(
   summary(nca_res),

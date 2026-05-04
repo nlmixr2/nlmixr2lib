@@ -51,20 +51,20 @@ albumin/ULN ratio of 0.78 (i.e. 38 g/L over a typical ULN of 48.7 g/L),
 | `lvc` (Vc/F) | `log(2.08)` L | Table 3, Vc/F row |
 | `lvp` (Vp/F) | `log(5.23)` L | Table 3, Vp/F row |
 | `lq` (Q/F) | `log(0.156)` L/day | Table 3, Q/F row |
-| `lvm` (Vm) | `log(8.06)` mg/day | Table 3, Vm row |
+| `lvmax` (Vmax) | `log(8.06)` mg/day | Table 3, Vm row |
 | `lkm` (Km) | `log(0.939)` mg/L | Table 3, Km row |
 | `e_wt_cl` (WT/71 exponent on CLO/F) | `0.885` | Table 3, theta10 / WT effect on CLO/F |
-| `e_wt_vm` (WT/71 exponent on Vm) | `0.516` | Table 3, theta9 / WT effect on Vm |
-| `e_albr_vm` (ALBR/0.78 exponent on Vm) | `-0.844` | Table 3, theta11 / ALBR effect on Vm |
-| `e_crcl_vm` (CRCL/100 exponent on Vm) | `0.212` | Table 3, theta13 / CrCl effect on Vm |
-| `e_crp_vm` (CRP/14.2 exponent on Vm) | `0.0299` | Table 3, theta12 / CRP effect on Vm |
+| `e_wt_vmax` (WT/71 exponent on Vmax) | `0.516` | Table 3, theta9 / WT effect on Vm |
+| `e_albr_vmax` (ALBR/0.78 exponent on Vmax) | `-0.844` | Table 3, theta11 / ALBR effect on Vm |
+| `e_crcl_vmax` (CRCL/100 exponent on Vmax) | `0.212` | Table 3, theta13 / CrCl effect on Vm |
+| `e_crp_vmax` (CRP/14.2 exponent on Vmax) | `0.0299` | Table 3, theta12 / CRP effect on Vm |
 | `e_dp2_ka` (DP2 multiplier on Ka) | `0.663` | Table 3, theta15 / DP2 effect on Ka |
 | `e_ada_cl` (ADA multiplier on CLO/F) | `1.43` | Table 3, theta14 / ADA effect on CLO/F |
 | `e_dp2_cl` (DP2 multiplier on CLO/F) | `1.30` | Table 3, theta16 / DP2 effect on CLO/F |
 | `e_sexf_cl` (SEX multiplier on CLO/F) | `0.846` | Table 3, theta17; SEX=1=female (operator-confirmed) |
-| `var(etalvm)` | `log(0.324^2 + 1) = 0.0998` | Table 3: Vm IIV 32.4% CV |
+| `var(etalvmax)` | `log(0.324^2 + 1) = 0.0998` | Table 3: Vm IIV 32.4% CV |
 | `var(etalcl)` | `log(0.553^2 + 1) = 0.2669` | Table 3: CLO/F IIV 55.3% CV |
-| `cov(etalvm, etalcl)` | `-0.566 * sqrt(0.0998 * 0.2669) = -0.0924` | Table 3: Vm-CLO/F correlation -0.566 |
+| `cov(etalvmax, etalcl)` | `-0.566 * sqrt(0.0998 * 0.2669) = -0.0924` | Table 3: Vm-CLO/F correlation -0.566 |
 | `var(etalvc)` | `log(0.373^2 + 1) = 0.1302` | Table 3: Vc/F IIV 37.3% CV |
 | `var(etalka)` | `log(0.321^2 + 1) = 0.0981` | Table 3: Ka IIV 32.1% CV |
 | `propSd` | `sqrt(0.395) = 0.6285` | Table 3: log-additive residual sigma^2 = 0.395 |
@@ -85,7 +85,7 @@ albumin/ULN ratio of 0.78 (i.e. 38 g/L over a typical ULN of 48.7 g/L),
 - **Vm / CLO/F correlation.** Table 3 reports a -0.566 correlation
   between the etas on Vm and CLO/F, which is encoded as a 2x2 block in
   [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) with
-  the off-diagonal computed as *r* times `sqrt(var_vm * var_cl)`.
+  the off-diagonal computed as *r* times `sqrt(var_vmax * var_cl)`.
 - **Log-additive residual error.** Xu 2019 fit log-transformed
   concentrations with an additive residual error on the log scale
   (NONMEM log-EPS, `sigma^2 = 0.395`). On the linear scale this maps to
@@ -306,7 +306,7 @@ intervals <- data.frame(
 )
 
 nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■         79% |  ETA:  1s
+#>  ■■■■■■■■■■■■■■■■■■■■■■            71% |  ETA:  1s
 summary(nca_res)
 #>  start end treatment   N     auclast        cmax         cmin              tmax
 #>      0  14 150mg_Q2W 200 60.2 [55.5] 8.80 [46.1] 0.565 [91.5] 3.00 [1.50, 5.00]
@@ -352,9 +352,9 @@ ev_typ <- function(dose) {
 }
 
 sim_typ_200 <- as.data.frame(rxode2::rxSolve(mod_typical, events = ev_typ(200)))
-#> ℹ omega/sigma items treated as zero: 'etalvm', 'etalcl', 'etalvc', 'etalka'
+#> ℹ omega/sigma items treated as zero: 'etalvmax', 'etalcl', 'etalvc', 'etalka'
 sim_typ_150 <- as.data.frame(rxode2::rxSolve(mod_typical, events = ev_typ(150)))
-#> ℹ omega/sigma items treated as zero: 'etalvm', 'etalcl', 'etalvc', 'etalka'
+#> ℹ omega/sigma items treated as zero: 'etalvmax', 'etalcl', 'etalvc', 'etalka'
 
 ss_metrics <- function(sim_df, label) {
   ss <- sim_df |>

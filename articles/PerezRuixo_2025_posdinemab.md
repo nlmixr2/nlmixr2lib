@@ -200,9 +200,9 @@ run_typ <- function(dose_mg, dis_ad, weight_kg) {
 }
 
 sim_hv30  <- run_typ(dose_mg_30mgkg, dis_ad = 0, weight_kg = ref_wt_kg)
-#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalv1', 'etalq', 'etalv2', 'etalqcsf', 'etalvcsf', 'etalvisf', 'etalr0', 'etalkc', 'etalkint'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp', 'etalqcsf', 'etalvcsf', 'etalvisf', 'etalr0', 'etalkc', 'etalkint'
 sim_ad30  <- run_typ(dose_mg_30mgkg, dis_ad = 1, weight_kg = ref_wt_kg)
-#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalv1', 'etalq', 'etalv2', 'etalqcsf', 'etalvcsf', 'etalvisf', 'etalr0', 'etalkc', 'etalkint'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp', 'etalqcsf', 'etalvcsf', 'etalvisf', 'etalr0', 'etalkc', 'etalkint'
 ```
 
 ## Replicate published figures
@@ -281,11 +281,11 @@ build_mad <- function(dis_ad) {
 }
 
 mad_ad <- build_mad(dis_ad = 1)
-#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalv1', 'etalq', 'etalv2', 'etalqcsf', 'etalvcsf', 'etalvisf', 'etalr0', 'etalkc', 'etalkint'
-#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalv1', 'etalq', 'etalv2', 'etalqcsf', 'etalvcsf', 'etalvisf', 'etalr0', 'etalkc', 'etalkint'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp', 'etalqcsf', 'etalvcsf', 'etalvisf', 'etalr0', 'etalkc', 'etalkint'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp', 'etalqcsf', 'etalvcsf', 'etalvisf', 'etalr0', 'etalkc', 'etalkint'
 mad_hv <- build_mad(dis_ad = 0)
-#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalv1', 'etalq', 'etalv2', 'etalqcsf', 'etalvcsf', 'etalvisf', 'etalr0', 'etalkc', 'etalkint'
-#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalv1', 'etalq', 'etalv2', 'etalqcsf', 'etalvcsf', 'etalvisf', 'etalr0', 'etalkc', 'etalkint'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp', 'etalqcsf', 'etalvcsf', 'etalvisf', 'etalr0', 'etalkc', 'etalkint'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp', 'etalqcsf', 'etalvcsf', 'etalvisf', 'etalr0', 'etalkc', 'etalkint'
 
 # Pct of p217+tau bound to posdinemab in CSF: complex / (free + complex)
 mad_long <- bind_rows(
@@ -351,9 +351,9 @@ build_fixed <- function(weight_kg) {
 }
 
 fixed_df <- bind_rows(build_fixed(40), build_fixed(80), build_fixed(120))
-#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalv1', 'etalq', 'etalv2', 'etalqcsf', 'etalvcsf', 'etalvisf', 'etalr0', 'etalkc', 'etalkint'
-#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalv1', 'etalq', 'etalv2', 'etalqcsf', 'etalvcsf', 'etalvisf', 'etalr0', 'etalkc', 'etalkint'
-#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalv1', 'etalq', 'etalv2', 'etalqcsf', 'etalvcsf', 'etalvisf', 'etalr0', 'etalkc', 'etalkint'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp', 'etalqcsf', 'etalvcsf', 'etalvisf', 'etalr0', 'etalkc', 'etalkint'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp', 'etalqcsf', 'etalvcsf', 'etalvisf', 'etalr0', 'etalkc', 'etalkint'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp', 'etalqcsf', 'etalvcsf', 'etalvisf', 'etalr0', 'etalkc', 'etalkint'
 
 ggplot(fixed_df, aes(day, Cc, colour = factor(weight))) +
   geom_line(linewidth = 0.7) +

@@ -53,24 +53,24 @@ The same metadata is available programmatically via
 | Parameter (model name) | Value | Source |
 |----|----|----|
 | `lcl` (CL, L/day) | log(0.344) | Papachristos 2020 Table 2, CL |
-| `lv1` (V1pop, L) | log(5.83) | Papachristos 2020 Table 2, V1pop |
+| `lvc` (V1pop, L) | log(5.83) | Papachristos 2020 Table 2, V1pop |
 | `lq` (Qpop, L/day) | log(0.136) | Papachristos 2020 Table 2, Qpop |
-| `lv2` (V2pop, L) | log(3.17) | Papachristos 2020 Table 2, V2pop |
+| `lvp` (V2pop, L) | log(3.17) | Papachristos 2020 Table 2, V2pop |
 | `lkout` (kout, 1/day) | log(0.116) | Papachristos 2020 Table 2, Koutpop |
 | `lbm0` (BM0, nM) | log(0.0137) | Papachristos 2020 Table 2, BM0pop = 0.0137 nM (= 616.5 ng/L) |
 | `lkss` (Kss, nM) | log(135) | Papachristos 2020 Table 2, KSSpop |
-| `allo_cl` (allometric exponent) | 1.01 | Papachristos 2020 Table 2, “log(weight/70) on CL” |
+| `e_wt_cl` (allometric exponent) | 1.01 | Papachristos 2020 Table 2, “log(weight/70) on CL” |
 | `e_icam1_rs1799969_cl` | -0.33 | Papachristos 2020 Table 2, “ICAM-1 rs1799969 mutant on CL” |
 | `e_vegfa_rs699947_kss` | +1.22 | Papachristos 2020 Table 2, “VEGF-A rs699947 mutant on KSS” |
 | `e_vegfa_rs699947_bm0` | -0.851 | Papachristos 2020 Table 2, “VEGF-A rs699947 mutant on BM0” |
 | `etalcl` variance | 0.09548 | Papachristos 2020 Table 2, ω_CL = 0.309 (var = SD²) |
 | `etalq` variance | 0.04040 | Papachristos 2020 Table 2, ω_Q = 0.201 |
 | `cov(etalcl, etalq)` | -0.06205 | Papachristos 2020 Table 2, ρ(Q,CL) = -0.999 × 0.309 × 0.201 |
-| `etalv1` variance | 0.02856 | Papachristos 2020 Table 2, ω_V1 = 0.169 |
-| `etalv2` variance | 0.30803 | Papachristos 2020 Table 2, ω_V2 = 0.555 |
+| `etalvc` variance | 0.02856 | Papachristos 2020 Table 2, ω_V1 = 0.169 |
+| `etalvp` variance | 0.30803 | Papachristos 2020 Table 2, ω_V2 = 0.555 |
 | `etalbm0` variance | 0.05760 | Papachristos 2020 Table 2, ω_BM0 = 0.24 |
-| `CcpropSd` | 0.253 | Papachristos 2020 Table 2, σ_BEVA |
-| `CvpropSd` | 0.290 | Papachristos 2020 Table 2, σ_VEGF |
+| `propSd` | 0.253 | Papachristos 2020 Table 2, σ_BEVA |
+| `propSd_Cv` | 0.290 | Papachristos 2020 Table 2, σ_VEGF |
 
 Equations (paper section 2.3 + Gibiansky et al. 2008 QSS-TMDD form):
 
@@ -281,7 +281,7 @@ sim_typ <- rxode2::rxSolve(mod_typical, events = typ_events,
   dplyr::mutate(
     geno = ifelse(SNP_VEGFA_RS699947 == 1, "rs699947 mutant", "rs699947 wild-type")
   )
-#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalq', 'etalv1', 'etalv2', 'etalbm0'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalq', 'etalvc', 'etalvp', 'etalbm0'
 #> Warning: multi-subject simulation without without 'omega'
 
 ggplot(sim_typ |> dplyr::filter(CMT == 5),

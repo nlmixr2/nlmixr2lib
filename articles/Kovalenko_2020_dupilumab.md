@@ -49,17 +49,17 @@ paper-to-implementation cross-walk:
 | `Mpc` (kcp/kpc) | `0.686` | Table 1, Model 1 (kpc derived: 0.213 / 0.686 = 0.310 1/day) |
 | `lka` (ka, absorption rate) | `log(0.256)` 1/day | Table 1, Model 1 |
 | `lmtt` (MTT) | `log(0.105)` day | Table 1, Model 1 |
-| `lvm` (Vmax) | `log(1.07)` mg/L/day | Table 1, Model 1 |
+| `lvmax` (Vmax) | `log(1.07)` mg/L/day | Table 1, Model 1 |
 | `Km` | `fixed(0.01)` mg/L | Table 1, Model 1 (fixed, carried over from Kovalenko 2016) |
 | `lfdepot` (F) | `log(0.643)` | Table 1, Model 1 |
 | `e_wt_vc` (WT exponent on Vc) | `0.711` | Table 1, Model 1 (“Vc ~ weight”) |
 | `var(etalvc)` | `0.192^2 = 0.036864` | Supp. Table S2: omega_Vc (SD) = 0.192 |
 | `var(etalke)` | `0.285^2 = 0.081225` | Supp. Table S2: omega_ke (SD) = 0.285 |
 | `var(etalka)` | `0.474^2 = 0.224676` | Supp. Table S2: omega_ka (SD) = 0.474 |
-| `var(etalvm)` | `0.236^2 = 0.055696` | Supp. Table S2: omega_Vm (SD) = 0.236 |
+| `var(etalvmax)` | `0.236^2 = 0.055696` | Supp. Table S2: omega_Vm (SD) = 0.236 |
 | `var(etalmtt)` | `0.525^2 = 0.275625` | Supp. Table S2: omega_MTT (SD) = 0.525, applied on `log(MTT)` here |
-| `CcpropSd` (proportional sigma) | `0.15` | Supp. Table S2 |
-| `CcaddSd` (additive sigma) | `fixed(0.03)` mg/L | Supp. Table S2 (fixed, carried over from Kovalenko 2016) |
+| `propSd` (proportional sigma) | `0.15` | Supp. Table S2 |
+| `addSd` (additive sigma) | `fixed(0.03)` mg/L | Supp. Table S2 (fixed, carried over from Kovalenko 2016) |
 | Structure | 2-cmt + 3 transit + parallel linear/MM elimination | p. 758 Methods, Figure 1 |
 
 The paper’s Methods section explicitly defines omega as *“omega (omega,
@@ -253,7 +253,7 @@ intervals <- data.frame(
 )
 
 nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
-#>  ■■■■■■■■■■■■■                     39% |  ETA:  2s
+#>  ■■■■■■■■■■■■■■                    45% |  ETA:  1s
 summary(nca_res)
 #>  start end    treatment   N     auclast        cmax        cmin         cav
 #>      0  14 300mg_Q2W_SS 400 1190 [43.9] 95.0 [41.9] 70.4 [49.2] 85.1 [43.9]
@@ -283,7 +283,7 @@ sim_typical <- rxode2::rxSolve(
   mod_typical, events = ev_typical, keep = "WT"
 ) |>
   as.data.frame()
-#> ℹ omega/sigma items treated as zero: 'etalvc', 'etalke', 'etalka', 'etalvm', 'etalmtt'
+#> ℹ omega/sigma items treated as zero: 'etalvc', 'etalke', 'etalka', 'etalvmax', 'etalmtt'
 
 ss_typical <- sim_typical |>
   dplyr::filter(time >= ss_start, time <= ss_end, !is.na(Cc))
@@ -320,7 +320,7 @@ Typical-subject steady-state exposure (WT = 75 kg; IIV zeroed). {.table}
   parameterization verbatim. Typical values can be cross-checked against
   Table 1’s derived `CL = ke * Vc = 0.132 L/day`.
 - `Km` and `F` were reported as fixed in Table 1 Model 1, with values
-  carried over from the earlier Kovalenko 2016 model; `CcaddSd` was
+  carried over from the earlier Kovalenko 2016 model; `addSd` was
   likewise fixed at 0.03 mg/L.
 - The `etalmtt` eta is applied as log-normal on MTT
   (`MTT = exp(lmtt + etalmtt)`), whereas Supplementary Table S2

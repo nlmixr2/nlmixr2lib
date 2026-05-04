@@ -13,8 +13,7 @@
   adults with moderate-to-severe ulcerative colitis or Crohn’s disease
   (Wang 2020), with first-order SC absorption, absorption lag time,
   parallel linear and Michaelis-Menten elimination from the central
-  compartment, and allometric weight scaling on CL, Vc, CLd, Vp, and
-  Vmax.
+  compartment, and allometric weight scaling on CL, Vc, Q, Vp, and Vmax.
 - Article: [J Clin Pharmacol.
   2020;60(7):903-914](https://doi.org/10.1002/jcph.1590) (open access
   via [PMC7383906](https://pmc.ncbi.nlm.nih.gov/articles/PMC7383906/))
@@ -53,13 +52,13 @@ baseline albumin 39 g/L, and baseline CRP 0.837 mg/dL.
 | `ltlag` (Lag) | 2.61 h | `log(2.61 / 24)` day | Table 2, Lag row |
 | `lcl` (CL/F) | 0.0127 L/h | `log(0.0127 * 24)` L/day | Table 2, CL/F row |
 | `lvc` (Vc/F) | 6.53 L | `log(6.53)` L | Table 2, Vc/F row |
-| `lcld` (CLd/F) | 0.000345 L/h | `log(0.000345 * 24)` L/day | Table 2, CLd/F row |
+| `lq` (CLd/F) | 0.000345 L/h | `log(0.000345 * 24)` L/day | Table 2, CLd/F row |
 | `lvp` (Vp/F) | 0.0216 L | `log(0.0216)` L | Table 2, Vp/F row |
 | `lvmax` (Vmax/F) | 5.87 µg/h | `log(5.87 * 24 / 1000)` mg/day | Table 2, Vmax/F row |
 | `lkm` (Km) | 19.0 ng/mL | `log(19.0 / 1000)` mg/L | Table 2, Km row |
 | `e_wt_cl` (WT/70 exponent on CL/F) | 0.0034 | 0.0034 | Table 2, CL/F covariate equation |
 | `e_wt_vc` (WT/70 exponent on Vc/F) | 0.635 | 0.635 | Table 2, Vc/F covariate equation |
-| `e_wt_cld` (WT/70 exponent on CLd/F) | 0.0034 | 0.0034 | Table 2, CLd/F covariate equation |
+| `e_wt_q` (WT/70 exponent on Q/F) | 0.0034 | 0.0034 | Table 2, CLd/F covariate equation |
 | `e_wt_vp` (WT/70 exponent on Vp/F) | 0.635 | 0.635 | Table 2, Vp/F covariate equation |
 | `e_wt_vmax` (WT/70 exponent on Vmax/F) | 1.89 | 1.89 | Table 2, Vmax/F covariate equation |
 | `e_alb_cl` (ALB/39 exponent on CL/F) | -0.889 | -0.889 | Table 2, CL/F covariate equation |
@@ -92,9 +91,9 @@ baseline albumin 39 g/L, and baseline CRP 0.837 mg/dL.
   mg, concentration = mg/L). Conversions: 1/h × 24 = 1/day, L/h × 24 =
   L/day, h / 24 = day, µg/h × 24 / 1000 = mg/day, ng/mL / 1000 = mg/L.
 - **Allometric weight scaling.** Body weight is applied as a power
-  effect to five parameters (CL, Vc, CLd, Vp, Vmax). Note the small CL
-  and CLd exponents (~0.003) and the larger Vmax exponent (1.89); these
-  are the estimated values in Table 2 rather than fixed allometric
+  effect to five parameters (CL, Vc, Q, Vp, Vmax). Note the small CL and
+  Q exponents (~0.003) and the larger Vmax exponent (1.89); these are
+  the estimated values in Table 2 rather than fixed allometric
   exponents.
 - **CRP unit (mg/dL, not the canonical mg/L).** Wang 2020 reports CRP in
   mg/dL with reference 0.837 mg/dL (overall median). The canonical `CRP`
@@ -271,8 +270,8 @@ intervals <- data.frame(
 )
 
 nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
-#>  ■■■■■■■■■■■■■                     39% |  ETA:  5s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■           74% |  ETA:  2s
+#>  ■■■■■■■■■■■■■■                    42% |  ETA:  5s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■          77% |  ETA:  2s
 summary(nca_res)
 #>  start end  treatment   N       auclast         cmax           cmin
 #>      0  28  150mg_Q4W 200 283000 [47.4] 14900 [34.2]    3160 [1010]

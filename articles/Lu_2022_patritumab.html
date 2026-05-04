@@ -431,12 +431,12 @@ Table 3 (unconjugated DXd). The table below collates them.</p>
 <td>Table 2</td>
 </tr>
 <tr class="odd">
-<td><code>CcpropSd</code></td>
+<td><code>propSd</code></td>
 <td align="right">0.236</td>
 <td>Table 2 (Proportional error)</td>
 </tr>
 <tr class="even">
-<td><code>CcaddSd</code></td>
+<td><code>addSd</code></td>
 <td align="right">0.1 ug/mL fixed (= 100 ng/mL = LLOQ)</td>
 <td>Table 2</td>
 </tr>
@@ -466,7 +466,7 @@ Table 3 (unconjugated DXd). The table below collates them.</p>
 </tr>
 <tr class="even">
 <td>
-<code>lcldxd</code> -&gt; CLDXd</td>
+<code>lcl_dxd</code> -&gt; CLDXd</td>
 <td align="right">137.112 L/d (= 5.713 L/h)</td>
 <td>Table 3 (converted h -&gt; d)</td>
 </tr>
@@ -488,12 +488,12 @@ Table 3 (unconjugated DXd). The table below collates them.</p>
 <td>Table 3 (Weight-Krel)</td>
 </tr>
 <tr class="even">
-<td><code>e_hepmild_cldxd</code></td>
+<td><code>e_hepmild_cl_dxd</code></td>
 <td align="right">-0.294 (mult. 0.706)</td>
 <td>Table 3 (Hepatic mild-CLDXd)</td>
 </tr>
 <tr class="odd">
-<td><code>e_hepmod_cldxd</code></td>
+<td><code>e_hepmod_cl_dxd</code></td>
 <td align="right">-0.468 (mult. 0.532)</td>
 <td>Table 3 (Hepatic moderate/data missing-CLDXd)</td>
 </tr>
@@ -513,12 +513,12 @@ Table 3 (unconjugated DXd). The table below collates them.</p>
 <td>Table 3</td>
 </tr>
 <tr class="odd">
-<td><code>CdxdpropSd</code></td>
+<td><code>propSd_dxd</code></td>
 <td align="right">0.392</td>
 <td>Table 3 (Proportional error)</td>
 </tr>
 <tr class="even">
-<td><code>CdxdaddSd</code></td>
+<td><code>addSd_dxd</code></td>
 <td align="right">0.01 ng/mL fixed (= LLOQ for DXd)</td>
 <td>Table 3</td>
 </tr>
@@ -659,14 +659,14 @@ over 5 cycles.</p>
 <span>                         <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">floor</a></span><span class="op">(</span><span class="va">typ_events</span><span class="op">$</span><span class="va">time</span> <span class="op">/</span> <span class="va">cycle_dy</span><span class="op">)</span> <span class="op">+</span> <span class="fl">1L</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">typ_sim</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">typ</span>, <span class="va">typ_events</span>, returnType <span class="op">=</span> <span class="st">"data.frame"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalkrel', 'etalcldxd'</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalkrel', 'etalcl_dxd'</span></span></code></pre></div>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">typ_sim</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">Cc</span>, <span class="va">Cdxd</span><span class="op">)</span>,</span>
+<span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">Cc</span>, <span class="va">Cc_dxd</span><span class="op">)</span>,</span>
 <span>                      names_to <span class="op">=</span> <span class="st">"analyte"</span>, values_to <span class="op">=</span> <span class="st">"conc"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>analyte <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/recode.html" class="external-link">recode</a></span><span class="op">(</span><span class="va">analyte</span>,</span>
-<span>                          Cc   <span class="op">=</span> <span class="st">"DXd-conjugated antibody (ug/mL)"</span>,</span>
-<span>                          Cdxd <span class="op">=</span> <span class="st">"Unconjugated DXd (ng/mL)"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>                          Cc     <span class="op">=</span> <span class="st">"DXd-conjugated antibody (ug/mL)"</span>,</span>
+<span>                          Cc_dxd <span class="op">=</span> <span class="st">"Unconjugated DXd (ng/mL)"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">conc</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>colour <span class="op">=</span> <span class="st">"steelblue"</span>, linewidth <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span> <span class="va">analyte</span>, ncol <span class="op">=</span> <span class="fl">1</span>, scales <span class="op">=</span> <span class="st">"free_y"</span><span class="op">)</span> <span class="op">+</span></span>
@@ -750,9 +750,9 @@ mg/kg IV every 3 weeks. Corresponds to Lu 2022 Figure 2 (a).
 <code class="sourceCode R"><span><span class="va">pop_sim</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">time</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span></span>
-<span>    p05 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">Cdxd</span>, <span class="fl">0.05</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span>    p50 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">Cdxd</span>, <span class="fl">0.50</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span>    p95 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">Cdxd</span>, <span class="fl">0.95</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>    p05 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">Cc_dxd</span>, <span class="fl">0.05</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>    p50 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">Cc_dxd</span>, <span class="fl">0.50</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>    p95 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">Cc_dxd</span>, <span class="fl">0.95</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>    .groups <span class="op">=</span> <span class="st">"drop"</span></span>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">p50</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -953,7 +953,8 @@ gives a single AUC, Cmax, and Ctrough per cycle per subject.</p>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.190955) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.190955) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.190955) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.190955) is not allowed</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■                </span>  49% |  ETA:  2s</span></span>
+<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.190955) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.190955) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.190955) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.190955) is not allowed</span></span>
@@ -1057,8 +1058,7 @@ gives a single AUC, Cmax, and Ctrough per cycle per subject.</p>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.286432) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.286432) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.286432) is not allowed</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■          </span>  69% |  ETA:  1s</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.286432) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.286432) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.286432) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.286432) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.286432) is not allowed</span></span>
@@ -1223,14 +1223,14 @@ gives a single AUC, Cmax, and Ctrough per cycle per subject.</p>
 <span><span class="co">#&gt; Caption: auclast, cmax, ctrough: geometric mean and geometric coefficient of variation; tmax: median and range; N: number of subjects</span></span></code></pre></div>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dxd_nca</span> <span class="op">&lt;-</span> <span class="va">pop_sim</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cdxd</span><span class="op">)</span>, <span class="va">time</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc_dxd</span><span class="op">)</span>, <span class="va">time</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>cycle <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fl">1L</span>, <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">floor</a></span><span class="op">(</span><span class="op">(</span><span class="va">time</span> <span class="op">-</span> <span class="fl">1e-9</span><span class="op">)</span> <span class="op">/</span> <span class="va">cycle_dy</span><span class="op">)</span> <span class="op">+</span> <span class="fl">1L</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>         time_in_cycle <span class="op">=</span> <span class="va">time</span> <span class="op">-</span> <span class="op">(</span><span class="va">cycle</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op">*</span> <span class="va">cycle_dy</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">cycle</span> <span class="op">&lt;=</span> <span class="va">n_cycles</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/transmute.html" class="external-link">transmute</a></span><span class="op">(</span>id <span class="op">=</span> <span class="va">id</span>, cycle <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">cycle</span><span class="op">)</span>,</span>
-<span>            time <span class="op">=</span> <span class="va">time_in_cycle</span>, Cdxd <span class="op">=</span> <span class="va">Cdxd</span><span class="op">)</span></span>
+<span>            time <span class="op">=</span> <span class="va">time_in_cycle</span>, Cc_dxd <span class="op">=</span> <span class="va">Cc_dxd</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">dconc_obj</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAconc.html" class="external-link">PKNCAconc</a></span><span class="op">(</span><span class="va">dxd_nca</span>, <span class="va">Cdxd</span> <span class="op">~</span> <span class="va">time</span> <span class="op">|</span> <span class="va">cycle</span> <span class="op">+</span> <span class="va">id</span><span class="op">)</span></span>
+<span><span class="va">dconc_obj</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAconc.html" class="external-link">PKNCAconc</a></span><span class="op">(</span><span class="va">dxd_nca</span>, <span class="va">Cc_dxd</span> <span class="op">~</span> <span class="va">time</span> <span class="op">|</span> <span class="va">cycle</span> <span class="op">+</span> <span class="va">id</span><span class="op">)</span></span>
 <span><span class="va">ddose_obj</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdose.html" class="external-link">PKNCAdose</a></span><span class="op">(</span><span class="va">adc_dose</span>, <span class="va">amt</span> <span class="op">~</span> <span class="va">time</span> <span class="op">|</span> <span class="va">cycle</span> <span class="op">+</span> <span class="va">id</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">dxd_nca_res</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">dconc_obj</span>, <span class="va">ddose_obj</span>,</span>
@@ -1344,8 +1344,7 @@ gives a single AUC, Cmax, and Ctrough per cycle per subject.</p>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.190955) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.190955) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.190955) is not allowed</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■                  </span>  42% |  ETA:  2s</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.190955) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.190955) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.190955) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.190955) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.190955) is not allowed</span></span>
@@ -1693,9 +1692,9 @@ simulation, so 10-20% Monte-Carlo deviations are expected. Differences
 <span>    auc_adc <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/diff.html" class="external-link">diff</a></span><span class="op">(</span><span class="va">time_in_cycle</span><span class="op">)</span> <span class="op">*</span></span>
 <span>                  <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">Cc</span>, <span class="op">-</span><span class="fl">1</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">tail</a></span><span class="op">(</span><span class="va">Cc</span>, <span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="fl">2</span><span class="op">)</span>,</span>
 <span>    auc_dxd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/diff.html" class="external-link">diff</a></span><span class="op">(</span><span class="va">time_in_cycle</span><span class="op">)</span> <span class="op">*</span></span>
-<span>                  <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">Cdxd</span>, <span class="op">-</span><span class="fl">1</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">tail</a></span><span class="op">(</span><span class="va">Cdxd</span>, <span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="fl">2</span><span class="op">)</span>,</span>
+<span>                  <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">Cc_dxd</span>, <span class="op">-</span><span class="fl">1</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">tail</a></span><span class="op">(</span><span class="va">Cc_dxd</span>, <span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="fl">2</span><span class="op">)</span>,</span>
 <span>    ctrough_adc <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">tail</a></span><span class="op">(</span><span class="va">Cc</span>, <span class="fl">1</span><span class="op">)</span>,</span>
-<span>    ctrough_dxd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">tail</a></span><span class="op">(</span><span class="va">Cdxd</span>, <span class="fl">1</span><span class="op">)</span>,</span>
+<span>    ctrough_dxd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">tail</a></span><span class="op">(</span><span class="va">Cc_dxd</span>, <span class="fl">1</span><span class="op">)</span>,</span>
 <span>    .groups <span class="op">=</span> <span class="st">"drop"</span></span>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">auc_adc</span>, <span class="va">auc_dxd</span>, <span class="va">ctrough_adc</span>, <span class="va">ctrough_dxd</span><span class="op">)</span>,</span>
@@ -1918,7 +1917,7 @@ basis, while the DXd-conjugated antibody parameters in Table 2 use a
 per-day basis. The model multiplies the per-hour rates / clearances by
 24 to bring them onto a single per-day time axis matching the antibody
 submodel; see in-file comments on <code>lkrel</code>,
-<code>lcldxd</code>, <code>lbeta</code>.</li>
+<code>lcl_dxd</code>, <code>lbeta</code>.</li>
 <li>
 <strong>Reference body weight 60 kg.</strong> Lu 2022 Table S2 notes
 the covariate reference is the population median; Table S4 reports the
@@ -1968,17 +1967,15 @@ virtual-cohort builder in this vignette assumes Q3W dosing starting at
 <code>CYCLE = floor(t / 21) + 1</code>.</li>
 <li>
 <strong>Non-canonical compartment name.</strong> The
-unconjugated-DXd state is <code>dxd_central</code>.
+unconjugated-DXd state is <code>central_dxd</code>.
 <code><a href="../reference/checkModelConventions.html">checkModelConventions()</a></code> warns about this because the
 canonical compartment list is
 <code>depot / central / peripheral1 / peripheral2 / effect / target / complex / total_target</code>.
-A distinct prefix (<code>dxd_</code>) is required here to disambiguate
+A <code>_dxd</code> metabolite suffix is required here to disambiguate
 the released-payload central compartment from the antibody central
 compartment within a single coupled ADC + payload model; this matches
-the <code>Bender_2014_trastuzumabEmtansine_*</code>
-(<code>dar0_central</code>, <code>dar0_peripheral1</code>, …) and
-<code>Li_2017_brentuximab</code> (<code>adc_central</code>,
-<code>mmae_central</code>, …) precedents.</li>
+the parent-metabolite naming convention applied across the library
+(<code>central_&lt;metab&gt;</code> for non-parent species).</li>
 <li>
 <strong>No covariates on antibody Vmax / Km / Q / Vp.</strong> Lu
 2022 retained covariates only on <code>CLlin</code> (weight, albumin,
@@ -2045,7 +2042,7 @@ consistency with <code>Vmax</code> (mg/d) and the antibody concentration
 LLOQ.</strong> Lu 2022 Results note that the additive error ‘was fixed
 to the LLOQ of 100 ng/mL, as it could not be estimated reliably (the
 estimate was 606 ng/mL with a standard error &gt; 3e9)’. The model
-applies this fixing exactly via <code>CcaddSd &lt;- fix(0.1)</code> (in
+applies this fixing exactly via <code>addSd &lt;- fix(0.1)</code> (in
 ug/mL).</li>
 <li>
 <strong>Unconjugated-DXd additive residual error fixed at
@@ -2053,7 +2050,7 @@ LLOQ.</strong> Lu 2022 Results note: ‘The additive error in the combined
 residual error model was fixed to 0.01 ng/mL (the LLOQ for DXd), as the
 estimation of the additive error was not reliable and led to the failure
 of the covariance step’. The model applies this fixing exactly via
-<code>CdxdaddSd &lt;- fix(0.01)</code>.</li>
+<code>addSd_dxd &lt;- fix(0.01)</code>.</li>
 <li>
 <strong>Composite moderate-or-data-missing hepatic-function
 indicator.</strong> Lu 2022 Table 3 row

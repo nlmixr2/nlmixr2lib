@@ -100,8 +100,8 @@ below collects them in one place for review.
 | `imax` (Imax, unitless) | -0.403 | Table 2, row Imax |
 | `lti50` (log days) | log(66.4) | Table 2, row TI50 |
 | `gamma` (Hill, unitless) | 2.87 | Table 2, row Gamma |
-| `e_wt_v` (WT power on Vc, Vp) | 0.929 | Table 2, theta_V_WTBL |
-| `e_wt_cl` (WT power on CL, Q) | 0.542 | Table 2, theta_CL_WTBL |
+| `e_wt_vc_vp` (shared WT power on Vc, Vp) | 0.929 | Table 2, theta_V_WTBL |
+| `e_wt_cl_q` (shared WT power on CL, Q) | 0.542 | Table 2, theta_CL_WTBL |
 | `e_alb_cl` (ALB power on CL) | -0.698 | Table 2, theta_CL_ALBBL |
 | `e_alb_vc` (ALB power on Vc) | -0.302 | Table 2, theta_ADC_Vc_ALBBL |
 | `e_alb_vp` (ALB power on Vp) | 0.567 | Table 2, theta_ADC_Vp_ALBBL |
@@ -366,7 +366,7 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     93% |  ETA:  0s
+#>  ■■■■■■■■■■■■■■■■                  49% |  ETA:  2s
 knitr::kable(
   summary(nca_res),
   caption = "Simulated cycle-1 NCA parameters at 2.5 mg/kg q3w (monotherapy vs combination)."

@@ -284,7 +284,7 @@ analysis).</p>
 </tr>
 <tr class="even">
 <td>
-<code>lvm</code> (Vm, maximum MM elimination rate)</td>
+<code>lvmax</code> (Vmax, maximum MM elimination rate)</td>
 <td>
 <code>log(0.968)</code> mg/L/day</td>
 <td>Table 2 row “Vm (mg/L/d)”</td>
@@ -326,20 +326,20 @@ mg/L</td>
 <td>Table 2 row “omega^2 (ka)”</td>
 </tr>
 <tr class="odd">
-<td><code>var(etalvm)</code></td>
+<td><code>var(etalvmax)</code></td>
 <td><code>0.0428</code></td>
 <td>Table 2 row “omega^2 (Vm)”</td>
 </tr>
 <tr class="even">
 <td>
-<code>CcpropSd</code> (proportional SD)</td>
+<code>propSd</code> (proportional SD)</td>
 <td>
 <code>0.242</code> (= 24.2 %CV on the linear scale)</td>
 <td>Table 2 row “sigma^2 proportional (CV%)”</td>
 </tr>
 <tr class="odd">
 <td>
-<code>CcaddSd</code> (additive SD)</td>
+<code>addSd</code> (additive SD)</td>
 <td>
 <code>fixed(0.03)</code> mg/L</td>
 <td>Table 2 row “sigma^2 additive (mg/L)”; fixed when BLQ data
@@ -364,7 +364,7 @@ nlmixr2 stores on the right-hand side of the <code>~</code> operator.
 They are therefore inserted verbatim (no squaring) in
 <code><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini()</a></code>. The “sigma^2 proportional (CV%)” row reports the
 coefficient of variation of the proportional residual, so 24.2 % maps to
-an SD of 0.242 on the linear scale, which is what <code>CcpropSd</code>
+an SD of 0.242 on the linear scale, which is what <code>propSd</code>
 stores.</p>
 <div class="section level3">
 <h3 id="parameterization-notes">Parameterization notes<a class="anchor" aria-label="anchor" href="#parameterization-notes"></a>
@@ -386,12 +386,13 @@ parameterization verbatim. Derived quantities agree with Table 2’s
 <code>V3 = V2 * k23 / k32 = 2.74 * 0.0652 / 0.129 = 1.385 L</code>
 (Table 2: 1.38).</li>
 </ul>
-<p>The MM elimination term <code>central * Vm / (Km + central/vc)</code>
-is the mass-rate form consistent with <code>Vm</code> reported in
-mg/L/day (see Methods: “the unit of maximum target-mediated elimination
-rate (Vm) was mg/L/d, which can be interpreted as an assumption of a
-proportional relationship between the production rate of the target and
-the volume of the central compartment”).</p>
+<p>The MM elimination term
+<code>central * vmax / (Km + central/vc)</code> is the mass-rate form
+consistent with <code>vmax</code> reported in mg/L/day (see Methods:
+“the unit of maximum target-mediated elimination rate (Vm) was mg/L/d,
+which can be interpreted as an assumption of a proportional relationship
+between the production rate of the target and the volume of the central
+compartment”).</p>
 </div>
 </div>
 <div class="section level2">
@@ -556,7 +557,11 @@ paper.</p>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■                        </span>  24% |  ETA:  6s</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■                       </span>  28% |  ETA:  5s</span></span>
 <span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed</span></span>
@@ -601,22 +606,18 @@ paper.</p>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■           </span>  68% |  ETA:  2s</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■      </span>  82% |  ETA:  1s</span></span>
 <span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed</span></span>
@@ -695,7 +696,7 @@ target- mediated phase):</p>
 <span><span class="va">sim_typical</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_typical</span>, events <span class="op">=</span> <span class="va">ev_typical_sc</span>, keep <span class="op">=</span> <span class="st">"WT"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span>, <span class="va">time</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalvc', 'etalke', 'etalka', 'etalvm'</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalvc', 'etalke', 'etalka', 'etalvmax'</span></span>
 <span></span>
 <span><span class="va">typical_summary</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
 <span>  metric <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
@@ -760,17 +761,16 @@ all reference the BLQ-included estimates).</li>
 <li>The model preserves the paper’s rate-based parameterization
 (<code>ke</code>, <code>k23</code>, <code>k32</code>) rather than
 reparameterizing to <code>CL</code>/<code>Q</code>/<code>Vp</code>. The
-<code>lke</code>/<code>lk23</code>/<code>lk32</code>/<code>lvm</code>
-names deviate from the nlmixr2lib canonical
-<code>lcl</code>/<code>lq</code> naming; the sister model
-<code>Kovalenko_2020_dupilumab.R</code> adopts the same convention
-because IIV in the source is defined on the rates, not on
+<code>lke</code>/<code>lk23</code>/<code>lk32</code> rate names deviate
+from the nlmixr2lib canonical <code>lcl</code>/<code>lq</code> naming;
+the sister model <code>Kovalenko_2020_dupilumab.R</code> adopts the same
+convention because IIV in the source is defined on the rates, not on
 clearances.</li>
 <li>
 <code>Km</code> was fixed at 0.01 mg/L in the paper because the OFV
 was insensitive to values below ~0.01 mg/L (Results section, page 620);
-<code>CcaddSd</code> was fixed at 0.03 mg/L for the BLQ-included
-analysis (Methods section).</li>
+<code>addSd</code> was fixed at 0.03 mg/L for the BLQ-included analysis
+(Methods section).</li>
 <li>The virtual cohort uses a single body-weight distribution centred on
 the paper’s reported mean (76 kg). Age, sex, race, and study-site
 effects are not explicitly reproduced - the published model does not use

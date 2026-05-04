@@ -103,9 +103,9 @@ below collects them in one place for review.
 | `e_tumsz_cl` (power, TUMSZ on CL) | 0.0710 | Yin 2021 Table 1, Tumor size on CL_intact |
 | `e_japan_cl` (frac., REGION_JAPAN) | -0.0970 | Yin 2021 Table 1, Country (Japan) on CL_intact |
 | `e_male_cl` (frac., (1 - SEXF)) | 0.174 | Yin 2021 Table 1, Sex (male) on CL_intact |
-| `e_wt_v1` (power, WT on V1) | 0.489 | Yin 2021 Table 1, Body weight on V1_intact |
-| `e_male_v1` (frac., (1 - SEXF)) | 0.197 | Yin 2021 Table 1, Sex (male) on V1_intact |
-| `e_japan_v2` (frac., REGION_JAPAN) | -0.262 | Yin 2021 Table 1, Country (Japan) on V2_intact |
+| `e_wt_vc` (power, WT on Vc) | 0.489 | Yin 2021 Table 1, Body weight on V1_intact |
+| `e_male_vc` (frac., (1 - SEXF)) | 0.197 | Yin 2021 Table 1, Sex (male) on V1_intact |
+| `e_japan_vp` (frac., REGION_JAPAN) | -0.262 | Yin 2021 Table 1, Country (Japan) on V2_intact |
 | IIV block `etalcl + etalvc` | c(0.0630, 0.0210, 0.0250) | Yin 2021 Table 1, Var(CL), Cov(CL,V1), Var(V1) |
 | `etalq` | 0.0900 | Yin 2021 Table 1, Var(Q_intact) = 0.0900 |
 | `etalvp` | 0.430 | Yin 2021 Table 1, Var(V2_intact) = 0.430 |

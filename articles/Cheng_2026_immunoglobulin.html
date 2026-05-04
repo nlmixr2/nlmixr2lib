@@ -281,13 +281,13 @@ the model is loaded.</p>
 </tr>
 <tr class="even">
 <td>
-<code>allo_cl</code> (allometric exponent on CL, Q; fixed)</td>
+<code>e_wt_cl_q</code> (allometric exponent on CL, Q; fixed)</td>
 <td align="right">0.75</td>
 <td>Cheng 2026 Methods, page 7 (theory-based, fixed in final model)</td>
 </tr>
 <tr class="odd">
 <td>
-<code>allo_v</code> (allometric exponent on V1, V2; fixed)</td>
+<code>e_wt_vc_vp</code> (allometric exponent on V1, V2; fixed)</td>
 <td align="right">1.0</td>
 <td>Cheng 2026 Methods, page 7 (theory-based, fixed)</td>
 </tr>
@@ -686,7 +686,6 @@ published AUC values.</p>
 <span><span class="va">nca_data</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_obj</span>, <span class="va">dose_obj</span>, intervals <span class="op">=</span> <span class="va">intervals</span><span class="op">)</span></span>
 <span><span class="va">nca_res</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span><span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="va">nca_data</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■                 </span>  48% |  ETA:  3s</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ </span>  99% |  ETA:  0s</span></span>
 <span></span>
 <span><span class="va">nca_summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">nca_res</span><span class="op">)</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">nca_summary</span>,</span>
