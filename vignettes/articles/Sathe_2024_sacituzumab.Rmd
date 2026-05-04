@@ -35,11 +35,11 @@ This model jointly describes three analyte profiles after SG infusion:
 
 * **SG (the ADC)** — output `Cc` in the model. Two-compartment PK with body-weight
   allometric scaling and a baseline-albumin power covariate on CL.
-* **Free SN-38 (the released payload)** — output `Csn38`. Two-compartment PK
+* **Free SN-38 (the released payload)** — output `Cc_sn38`. Two-compartment PK
   generated sequentially from SG via a first-order release rate `KREL`. Apparent
   central and peripheral volumes are fixed to literature values (Klein et al.
   Clin Pharmacol Ther 2002;72:638-647).
-* **Total antibody (tAB)** — output `Ctab`. Two-compartment PK with time-dependent
+* **Total antibody (tAB)** — output `Cc_tab`. Two-compartment PK with time-dependent
   CL, IIV on CL and V1 with covariance, and covariates of baseline albumin (CL),
   tumor type (CL), and sex (V1).
 
@@ -66,33 +66,33 @@ str(mod_meta$population, max.level = 1)
 
 | Equation / parameter | Value | Source location |
 |----------------------|-------|-----------------|
-| `lclSG` (SG CL)                                     | log(0.13333) L/h    | Sathe 2024 Table 1; supplement Section 6.b TH(1) FIX |
-| `lvcSG` (SG V1)                                     | log(2.77011) L      | Sathe 2024 Table 1; supplement Section 6.b TH(2) FIX |
-| `lqSG` (SG Q)                                       | log(0.0055141) L/h  | Sathe 2024 Table 1; supplement Section 6.b TH(3) FIX |
-| `lvpSG` (SG V2)                                     | log(0.907787) L     | Sathe 2024 Table 1; supplement Section 6.b TH(4) FIX |
-| `allo_clSG` (Body-wt exponent on SG CL/Q)           | 0.507571            | Sathe 2024 Table 1; supplement Section 6.b TH(6) FIX |
-| `allo_vSG` (Body-wt exponent on SG V1/V2)           | 0.532396            | Sathe 2024 Table 1; supplement Section 6.b TH(7) FIX |
-| `e_alb_clSG` (Baseline-albumin exponent on SG CL)   | -0.355253           | Sathe 2024 Table 1; supplement Section 6.b TH(8) FIX |
+| `lcl` (SG CL)                                       | log(0.13333) L/h    | Sathe 2024 Table 1; supplement Section 6.b TH(1) FIX |
+| `lvc` (SG V1)                                       | log(2.77011) L      | Sathe 2024 Table 1; supplement Section 6.b TH(2) FIX |
+| `lq` (SG Q)                                         | log(0.0055141) L/h  | Sathe 2024 Table 1; supplement Section 6.b TH(3) FIX |
+| `lvp` (SG V2)                                       | log(0.907787) L     | Sathe 2024 Table 1; supplement Section 6.b TH(4) FIX |
+| `allo_cl` (Body-wt exponent on SG CL/Q)             | 0.507571            | Sathe 2024 Table 1; supplement Section 6.b TH(6) FIX |
+| `allo_v` (Body-wt exponent on SG V1/V2)             | 0.532396            | Sathe 2024 Table 1; supplement Section 6.b TH(7) FIX |
+| `e_alb_cl` (Baseline-albumin exponent on SG CL)     | -0.355253           | Sathe 2024 Table 1; supplement Section 6.b TH(8) FIX |
 | `lkrel` (log SG-to-SN-38 release rate)              | -2.34 (= 0.0961 1/h)| Sathe 2024 Table 2 |
-| `lclSN38` (log apparent SN-38 CL)                   | 6.02 (= 409 L/h)    | Sathe 2024 Table 2 |
-| `lqSN38` (log apparent SN-38 Q)                     | 5.51 (= 247 L/h)    | Sathe 2024 Table 2 |
-| `lvcSN38` (apparent SN-38 V1, FIXED)                | log(49) L           | Sathe 2024 Table 2; literature ref [19] (Klein 2002) |
-| `lvpSN38` (apparent SN-38 V2, FIXED)                | log(2177) L         | Sathe 2024 Table 2; literature ref [19] (Klein 2002) |
-| `allo_clSN38` (Body-wt exponent on SN-38 CL/Q)      | 0.500               | Sathe 2024 Table 2 |
-| `lclTAB` (tAB CL, baseline at t=0)                  | log(0.016) L/h      | Sathe 2024 Table 3 |
-| `lvcTAB` (tAB V1)                                   | log(3.06) L         | Sathe 2024 Table 3 |
-| `lqTAB` (tAB Q)                                     | log(0.010) L/h      | Sathe 2024 Table 3 |
-| `lvpTAB` (tAB V2)                                   | log(1.20) L         | Sathe 2024 Table 3 |
-| `allo_clTAB` (Body-wt exponent on tAB CL/Q)         | 0.372               | Sathe 2024 Table 3 |
-| `allo_vTAB` (Body-wt exponent on tAB V1/V2)         | 0.446               | Sathe 2024 Table 3 |
-| `e_alb_clTAB` (Baseline-albumin exponent on tAB CL) | -0.735              | Sathe 2024 Table 3 |
-| `e_tumor_clTAB` (Tumor-Other multiplicative on tAB CL) | -0.134           | Sathe 2024 Table 3 |
-| `e_sex_vTAB` (Male multiplicative on tAB V1)        | +0.121              | Sathe 2024 Table 3 |
-| `maxRedTAB` (Max relative reduction of tAB CL)      | 16.7%               | Sathe 2024 Table 3 |
-| `keffTAB` (tAB CL time-decline rate constant)       | 6.08e-4 1/h         | Sathe 2024 Table 3 |
-| IIV variance on lclSG                                | 0.011               | Sathe 2024 Table 1 |
-| IIV BLOCK(2) on lkrel + lclSN38                      | (0.332, 0.269, 0.411) | Sathe 2024 Table 2 |
-| IIV BLOCK(2) on lclTAB + lvcTAB                      | (0.100, 0.045, 0.046) | Sathe 2024 Table 3 |
+| `lcl_sn38` (log apparent SN-38 CL)                  | 6.02 (= 409 L/h)    | Sathe 2024 Table 2 |
+| `lq_sn38` (log apparent SN-38 Q)                    | 5.51 (= 247 L/h)    | Sathe 2024 Table 2 |
+| `lvc_sn38` (apparent SN-38 V1, FIXED)               | log(49) L           | Sathe 2024 Table 2; literature ref [19] (Klein 2002) |
+| `lvp_sn38` (apparent SN-38 V2, FIXED)               | log(2177) L         | Sathe 2024 Table 2; literature ref [19] (Klein 2002) |
+| `allo_cl_sn38` (Body-wt exponent on SN-38 CL/Q)     | 0.500               | Sathe 2024 Table 2 |
+| `lcl_tab` (tAB CL, baseline at t=0)                 | log(0.016) L/h      | Sathe 2024 Table 3 |
+| `lvc_tab` (tAB V1)                                  | log(3.06) L         | Sathe 2024 Table 3 |
+| `lq_tab` (tAB Q)                                    | log(0.010) L/h      | Sathe 2024 Table 3 |
+| `lvp_tab` (tAB V2)                                  | log(1.20) L         | Sathe 2024 Table 3 |
+| `allo_cl_tab` (Body-wt exponent on tAB CL/Q)        | 0.372               | Sathe 2024 Table 3 |
+| `allo_v_tab` (Body-wt exponent on tAB V1/V2)        | 0.446               | Sathe 2024 Table 3 |
+| `e_alb_cl_tab` (Baseline-albumin exponent on tAB CL) | -0.735             | Sathe 2024 Table 3 |
+| `e_tumor_cl_tab` (Tumor-Other multiplicative on tAB CL) | -0.134          | Sathe 2024 Table 3 |
+| `e_sex_vc_tab` (Male multiplicative on tAB V1)      | +0.121              | Sathe 2024 Table 3 |
+| `maxRed_tab` (Max relative reduction of tAB CL)     | 16.7%               | Sathe 2024 Table 3 |
+| `keff_tab` (tAB CL time-decline rate constant)      | 6.08e-4 1/h         | Sathe 2024 Table 3 |
+| IIV variance on lcl                                  | 0.011               | Sathe 2024 Table 1 |
+| IIV BLOCK(2) on lkrel + lcl_sn38                     | (0.332, 0.269, 0.411) | Sathe 2024 Table 2 |
+| IIV BLOCK(2) on lcl_tab + lvc_tab                    | (0.100, 0.045, 0.046) | Sathe 2024 Table 3 |
 | Residual SD on log SG                                | 0.204               | Sathe 2024 Table 1 |
 | Residual SD on log SN-38                             | 0.357 (= exp(-1.03))| Sathe 2024 Table 2 |
 | tAB additive residual SD                             | 27.3 ug/mL          | Sathe 2024 Table 3 |
@@ -137,7 +137,7 @@ cov_df <- make_cohort(n_subj)
 
 # Build the event table: 10 mg/kg as a 30-min IV infusion on days 1 and 8 of a
 # 21-day cycle, two cycles. Each SG infusion needs TWO simultaneous dose events
-# (cmt = sgCentral and cmt = tabCentral) so that both compartments receive the
+# (cmt = central and cmt = central_tab) so that both compartments receive the
 # same input mass at the same time (model file's documented dosing convention).
 infusion_dur <- 0.5  # hours
 dose_times_h <- c(0, 7 * 24, 21 * 24, 21 * 24 + 7 * 24)  # days 1, 8, 22, 29
@@ -148,7 +148,7 @@ events <- cov_df |>
     rows <- .
     amt_dose <- 10 * rows$WT  # mg per dose at 10 mg/kg
     rate_dose <- amt_dose / infusion_dur
-    dose_rows <- expand.grid(time = dose_times_h, cmt = c("sgCentral", "tabCentral"),
+    dose_rows <- expand.grid(time = dose_times_h, cmt = c("central", "central_tab"),
                              stringsAsFactors = FALSE)
     dose_rows$id   <- rows$id
     dose_rows$amt  <- amt_dose
@@ -188,7 +188,7 @@ typical_cov <- data.frame(
   id = 1, WT = 70, ALB = 38, SEXF = 1, TUMTP_OTH = 0
 )
 typical_events <- expand.grid(
-  time = dose_times_h, cmt = c("sgCentral", "tabCentral"),
+  time = dose_times_h, cmt = c("central", "central_tab"),
   stringsAsFactors = FALSE
 )
 typical_events$id  <- 1
@@ -246,7 +246,7 @@ ggplot(sim_sg_summary, aes(time, Q50)) +
 ```{r figure-2b, fig.width = 6.5, fig.height = 4}
 sim_sn38 <- sim |>
   filter(time > 0) |>
-  mutate(SN38_ng_per_mL = Csn38 * 1000)
+  mutate(SN38_ng_per_mL = Cc_sn38 * 1000)
 
 sim_sn38_summary <- sim_sn38 |>
   group_by(time) |>
@@ -275,9 +275,9 @@ sim_tab <- sim |>
 sim_tab_summary <- sim_tab |>
   group_by(time) |>
   summarise(
-    Q05 = quantile(Ctab, 0.05, na.rm = TRUE),
-    Q50 = quantile(Ctab, 0.50, na.rm = TRUE),
-    Q95 = quantile(Ctab, 0.95, na.rm = TRUE),
+    Q05 = quantile(Cc_tab, 0.05, na.rm = TRUE),
+    Q50 = quantile(Cc_tab, 0.50, na.rm = TRUE),
+    Q95 = quantile(Cc_tab, 0.95, na.rm = TRUE),
     .groups = "drop"
   )
 
@@ -300,7 +300,7 @@ mg/kg dosing. Reproduce with the typical-value model:
 ```{r figure-3a-bw}
 bw_grid <- c(49, 70, 110)
 out_bw <- lapply(bw_grid, function(wt) {
-  ev <- expand.grid(time = dose_times_h, cmt = c("sgCentral", "tabCentral"),
+  ev <- expand.grid(time = dose_times_h, cmt = c("central", "central_tab"),
                     stringsAsFactors = FALSE)
   ev$id  <- 1
   ev$amt <- 10 * wt
@@ -311,7 +311,7 @@ out_bw <- lapply(bw_grid, function(wt) {
   ev <- bind_rows(ev, obs)
   ev$WT <- wt; ev$ALB <- 38; ev$SEXF <- 1; ev$TUMTP_OTH <- 0
   s <- rxode2::rxSolve(mod_typical, events = ev)
-  data.frame(WT = wt, time = s$time, Cc = s$Cc, Ctab = s$Ctab)
+  data.frame(WT = wt, time = s$time, Cc = s$Cc, Cc_tab = s$Cc_tab)
 })
 out_bw <- bind_rows(out_bw)
 
@@ -323,7 +323,7 @@ auc_first_cycle <- out_bw |>
   group_by(WT) |>
   summarise(
     AUC_SG_ug_h_per_mL  = trapz(time, Cc),
-    AUC_TAB_ug_h_per_mL = trapz(time, Ctab),
+    AUC_TAB_ug_h_per_mL = trapz(time, Cc_tab),
     .groups = "drop"
   )
 
@@ -361,7 +361,7 @@ sim_first_cycle <- sim |>
   )
 
 dose_first_cycle <- events |>
-  filter(evid == 1, cmt == "sgCentral", time < 21 * 24) |>
+  filter(evid == 1, cmt == "central", time < 21 * 24) |>
   mutate(weight_band = case_when(
     WT < 60  ~ "Low (<60 kg)",
     WT > 90  ~ "High (>90 kg)",
@@ -406,9 +406,9 @@ knitr::kable(sg_summary, digits = 2,
 
 ```{r pknca-sn38}
 sim_sn38_nca <- sim_first_cycle |>
-  filter(!is.na(Csn38)) |>
-  select(id, time, Csn38, weight_band)
-names(sim_sn38_nca)[names(sim_sn38_nca) == "Csn38"] <- "Cc"
+  filter(!is.na(Cc_sn38)) |>
+  select(id, time, Cc_sn38, weight_band)
+names(sim_sn38_nca)[names(sim_sn38_nca) == "Cc_sn38"] <- "Cc"
 
 conc_sn38 <- PKNCA::PKNCAconc(sim_sn38_nca, Cc ~ time | weight_band + id,
                               concu = "ug/mL", timeu = "h")
@@ -429,9 +429,9 @@ knitr::kable(sn38_summary, digits = 4,
 
 ```{r pknca-tab}
 sim_tab_nca <- sim_first_cycle |>
-  filter(!is.na(Ctab)) |>
-  select(id, time, Ctab, weight_band)
-names(sim_tab_nca)[names(sim_tab_nca) == "Ctab"] <- "Cc"
+  filter(!is.na(Cc_tab)) |>
+  select(id, time, Cc_tab, weight_band)
+names(sim_tab_nca)[names(sim_tab_nca) == "Cc_tab"] <- "Cc"
 
 conc_tab <- PKNCA::PKNCAconc(sim_tab_nca, Cc ~ time | weight_band + id,
                              concu = "ug/mL", timeu = "h")
@@ -498,8 +498,8 @@ ggplot(data.frame(time_days = t_grid / 24, cl_factor = cl_factor),
 # Assumptions and deviations
 
 * **Dosing convention.** Each SG infusion event is represented in the event
-  table as TWO simultaneous dose rows (one with `cmt = "sgCentral"`, one with
-  `cmt = "tabCentral"`) so that the SG and tAB compartments receive the same
+  table as TWO simultaneous dose rows (one with `cmt = "central"`, one with
+  `cmt = "central_tab"`) so that the SG and tAB compartments receive the same
   input mass at the same time. This matches the source paper's setup, in which
   the SG and tAB models were fit independently using the SG dose directly.
 * **tAB CL / V "true" vs. model values.** Sathe 2024 Methods 2.3 reports that
@@ -509,8 +509,8 @@ ggplot(data.frame(time_days = t_grid / 24, cl_factor = cl_factor),
   not the 0.92-scaled "true" values. Multiply by 0.92 when comparing against
   per-mass-of-antibody PK estimates from other sources.
 * **Compartment names.** Multi-output ADC simulation requires named
-  compartments (`sgCentral`, `sgPeripheral1`, `sn38Central`, `sn38Peripheral1`,
-  `tabCentral`, `tabPeripheral1`) outside the canonical `central`/`peripheral1`
+  compartments (`central_sn38`, `peripheral1_sn38`, `central_tab`,
+  `peripheral1_tab`) outside the canonical `central`/`peripheral1`
   set defined in `naming-conventions.md`. `nlmixr2lib::checkModelConventions`
   flags these compartments as warnings; this is by design for multi-analyte
   models (see also `Bender_2014_trastuzumabEmtansine_mechanistic`).
@@ -536,7 +536,7 @@ ggplot(data.frame(time_days = t_grid / 24, cl_factor = cl_factor),
   Sathe 2024 Table S2 summary statistics (medians, ranges, percentages). The
   individual-level covariate joint distribution is not published.
 * **Time reference for the time-dependent CL.** The expression
-  `1 - maxRedTAB/100 * (1 - exp(-keffTAB * t))` uses the rxode2 simulation
+  `1 - maxRed_tab/100 * (1 - exp(-keff_tab * t))` uses the rxode2 simulation
   time variable `t`, which is referenced to the first dose at `t = 0`. Match
   the simulation start to the start of treatment when reproducing the time-
   decline trajectory.

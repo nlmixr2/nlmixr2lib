@@ -46,7 +46,7 @@ Lu_2022_patritumab <- function() {
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (normal hepatic function, NCI ODWG group 1; mutually exclusive with HEPIMP_MOD_MISSING).",
-      notes              = "Time-fixed. Multiplicative fractional effect e_hepmild_cldxd on CLDXd of unconjugated DXd applied as (1 + e_hepmild_cldxd * HEPIMP_MILD); HEPIMP_MILD = 1 yields the paper-reported 0.706 multiplier (e_hepmild_cldxd = -0.294). Lu 2022 Table 3 reports 'Hepatic impairment mild-CLDXd = 0.706'. Categorization per the National Cancer Institute Organ Dysfunction Working Group: mild = total bilirubin <= ULN with AST > ULN, OR total bilirubin > 1.0 to 1.5 x ULN with any AST.",
+      notes              = "Time-fixed. Multiplicative fractional effect e_hepmild_cl_dxd on CLDXd of unconjugated DXd applied as (1 + e_hepmild_cl_dxd * HEPIMP_MILD); HEPIMP_MILD = 1 yields the paper-reported 0.706 multiplier (e_hepmild_cl_dxd = -0.294). Lu 2022 Table 3 reports 'Hepatic impairment mild-CLDXd = 0.706'. Categorization per the National Cancer Institute Organ Dysfunction Working Group: mild = total bilirubin <= ULN with AST > ULN, OR total bilirubin > 1.0 to 1.5 x ULN with any AST.",
       source_name        = "Hepatic function (mild impairment)"
     ),
     HEPIMP_MOD_MISSING = list(
@@ -54,7 +54,7 @@ Lu_2022_patritumab <- function() {
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (normal hepatic function or mild impairment; mutually exclusive with HEPIMP_MILD when both indicators are zero, the patient is in the normal-function reference).",
-      notes              = "Time-fixed. Multiplicative fractional effect e_hepmod_cldxd on CLDXd of unconjugated DXd applied as (1 + e_hepmod_cldxd * HEPIMP_MOD_MISSING); HEPIMP_MOD_MISSING = 1 yields the paper-reported 0.532 multiplier (e_hepmod_cldxd = -0.468). Lu 2022 Table 3 reports 'Hepatic impairment moderate/data missing-CLDXd = 0.532' as a single pooled coefficient because the moderate-impairment subgroup (n = 6 per Lu 2022 Table S5) and the missing/unknown subgroup (n = 6 per Table S5) were both individually too small to estimate as separate effects. Lu 2022 Discussion notes that 'the effect of moderate hepatic function was not estimated, as the relevant data were too limited (n = 6) for the evaluation to be reliable using the population PK approach' - the reported 0.532 effect is therefore not a moderate-only estimate but a moderate-plus-missing composite.",
+      notes              = "Time-fixed. Multiplicative fractional effect e_hepmod_cl_dxd on CLDXd of unconjugated DXd applied as (1 + e_hepmod_cl_dxd * HEPIMP_MOD_MISSING); HEPIMP_MOD_MISSING = 1 yields the paper-reported 0.532 multiplier (e_hepmod_cl_dxd = -0.468). Lu 2022 Table 3 reports 'Hepatic impairment moderate/data missing-CLDXd = 0.532' as a single pooled coefficient because the moderate-impairment subgroup (n = 6 per Lu 2022 Table S5) and the missing/unknown subgroup (n = 6 per Table S5) were both individually too small to estimate as separate effects. Lu 2022 Discussion notes that 'the effect of moderate hepatic function was not estimated, as the relevant data were too limited (n = 6) for the evaluation to be reliable using the population PK approach' - the reported 0.532 effect is therefore not a moderate-only estimate but a moderate-plus-missing composite.",
       source_name        = "Hepatic function (moderate impairment OR data missing)"
     ),
     CYCLE = list(
@@ -128,19 +128,19 @@ Lu_2022_patritumab <- function() {
     # 1/h). Converted to per-day for consistency with the antibody
     # parameters (multiply rates / clearances by 24).
     lkrel    <- log(0.030 * 24);   label("First-order DXd release-rate constant Krel from intact ADC (1/day; converted from 0.030 1/h)")  # Lu 2022 Table 3: Krel = 0.030 1/h
-    lcldxd   <- log(5.713 * 24);   label("Linear clearance of unconjugated DXd CLDXd (L/day; converted from 5.713 L/h)")                  # Lu 2022 Table 3: CLDXd = 5.713 L/h
+    lcl_dxd   <- log(5.713 * 24);   label("Linear clearance of unconjugated DXd CLDXd (L/day; converted from 5.713 L/h)")                  # Lu 2022 Table 3: CLDXd = 5.713 L/h
     ltheta   <- log(0.648);        label("Factor 1 multiplier on PIR for cycles >= 2 (unitless)")                                          # Lu 2022 Table 3: theta = 0.648
     lbeta    <- log(0.180 * 24);   label("Exponential decline rate constant beta of factor 2 within each dosing cycle (1/day; converted from 0.180 1/h)") # Lu 2022 Table 3: beta = 0.180 1/h
 
     # Covariate effects on unconjugated DXd (Lu 2022 Table 3).
-    e_wt_krel        <- -0.467;  label("Power exponent of WT on Krel (unitless)")                                                                          # Lu 2022 Table 3: Weight-Krel = -0.467
-    e_hepmild_cldxd  <- -0.294;  label("Fractional multiplicative effect of mild hepatic impairment on CLDXd (unitless)")                                  # Lu 2022 Table 3: Hep mild-CLDXd = 0.706 -> multiplier (1 - 0.294) = 0.706
-    e_hepmod_cldxd   <- -0.468;  label("Fractional multiplicative effect of moderate-or-data-missing hepatic impairment on CLDXd (unitless)")              # Lu 2022 Table 3: Hep moderate/missing-CLDXd = 0.532 -> multiplier (1 - 0.468) = 0.532
+    e_wt_krel         <- -0.467;  label("Power exponent of WT on Krel (unitless)")                                                                          # Lu 2022 Table 3: Weight-Krel = -0.467
+    e_hepmild_cl_dxd  <- -0.294;  label("Fractional multiplicative effect of mild hepatic impairment on CLDXd (unitless)")                                  # Lu 2022 Table 3: Hep mild-CLDXd = 0.706 -> multiplier (1 - 0.294) = 0.706
+    e_hepmod_cl_dxd   <- -0.468;  label("Fractional multiplicative effect of moderate-or-data-missing hepatic impairment on CLDXd (unitless)")              # Lu 2022 Table 3: Hep moderate/missing-CLDXd = 0.532 -> multiplier (1 - 0.468) = 0.532
 
     # IIV on unconjugated DXd. Lu 2022 Table 3 reports omega^2 / cov on
     # the log scale directly (Var(Krel IIV) = 0.194, Var(CLDXd IIV) = 0.360,
     # Cov(Krel, CLDXd) = 0.142).
-    etalkrel + etalcldxd ~ c(0.194,
+    etalkrel + etalcl_dxd ~ c(0.194,
                              0.142, 0.360)   # Lu 2022 Table 3: Var(Krel)=0.194, Cov(Krel,CLDXd)=0.142, Var(CLDXd)=0.360
 
     # Residual error for both analytes. Lu 2022 Table 2 (DXd-conjugated
@@ -151,8 +151,8 @@ Lu_2022_patritumab <- function() {
     # unconjugated-DXd LC-MS assay).
     CcaddSd     <- fix(0.1);   label("Additive residual error on DXd-conjugated antibody Cc (ug/mL; equivalent to 100 ng/mL = LLOQ, fixed)") # Lu 2022 Table 2: Additive error 100 ng/mL Fixed
     CcpropSd    <- 0.236;      label("Proportional residual error on DXd-conjugated antibody Cc (fraction)")                                  # Lu 2022 Table 2: Proportional error 0.236
-    CdxdaddSd   <- fix(0.01);  label("Additive residual error on unconjugated DXd Cdxd (ng/mL; equivalent to LLOQ for DXd, fixed)")           # Lu 2022 Table 3: Additive error 0.01 ng/mL Fixed
-    CdxdpropSd  <- 0.392;      label("Proportional residual error on unconjugated DXd Cdxd (fraction)")                                       # Lu 2022 Table 3: Proportional error 0.392
+    addSd_dxd     <- fix(0.01);  label("Additive residual error on unconjugated DXd Cc_dxd (ng/mL; equivalent to LLOQ for DXd, fixed)")         # Lu 2022 Table 3: Additive error 0.01 ng/mL Fixed
+    propSd_dxd    <- 0.392;      label("Proportional residual error on unconjugated DXd Cc_dxd (fraction)")                                     # Lu 2022 Table 3: Proportional error 0.392
   })
 
   model({
@@ -194,9 +194,9 @@ Lu_2022_patritumab <- function() {
     # Individual PK parameters for unconjugated DXd
     # ============================================================
     krel  <- exp(lkrel  + etalkrel) * (WT / 60)^e_wt_krel
-    cldxd <- exp(lcldxd + etalcldxd) *
-      (1 + e_hepmild_cldxd * HEPIMP_MILD) *
-      (1 + e_hepmod_cldxd  * HEPIMP_MOD_MISSING)
+    cl_dxd <- exp(lcl_dxd + etalcl_dxd) *
+      (1 + e_hepmild_cl_dxd * HEPIMP_MILD) *
+      (1 + e_hepmod_cl_dxd  * HEPIMP_MOD_MISSING)
     theta_factor1 <- exp(ltheta)
     beta_pir      <- exp(lbeta)
 
@@ -247,19 +247,19 @@ Lu_2022_patritumab <- function() {
     # MW_DXd / MW_DXdAb (Lu 2022 Eq. 3); linear clearance via CLDXd from
     # an apparent V_DXd compartment (V_DXd = 1 L; see deviation note above).
     rrelease <- krel * central * pir * (mw_dxd / mw_dxdab)
-    d/dt(dxd_central) <- rrelease - cldxd / vdxd * dxd_central
+    d/dt(central_dxd) <- rrelease - cl_dxd / vdxd * central_dxd
 
     # ============================================================
     # Observations and error model
     # ============================================================
     # DXd-conjugated antibody concentration in ug/mL (= mg/L).
     Cc <- cdxdab
-    # Unconjugated DXd concentration in ng/mL. dxd_central is in mg, vdxd
+    # Unconjugated DXd concentration in ng/mL. central_dxd is in mg, vdxd
     # in L -> mg/L = ug/mL; multiply by 1000 to obtain ng/mL (the unit
     # used by Lu 2022 to report unconjugated-DXd concentrations).
-    Cdxd <- (dxd_central / vdxd) * 1000
+    Cc_dxd <- (central_dxd / vdxd) * 1000
 
-    Cc   ~ add(CcaddSd)   + prop(CcpropSd)
-    Cdxd ~ add(CdxdaddSd) + prop(CdxdpropSd)
+    Cc     ~ add(CcaddSd)     + prop(CcpropSd)
+    Cc_dxd ~ add(addSd_dxd) + prop(propSd_dxd)
   })
 }

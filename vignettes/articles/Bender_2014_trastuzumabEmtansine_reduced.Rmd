@@ -118,8 +118,8 @@ mod_rat <- mod |>
     lqd3   = log(0.0139),
     lvp2   = log(0.0155),
     lcldec = log(0.00224),
-    CcpropSd  = 0.109,
-    CttpropSd = 0.109
+    CcpropSd   = 0.109,
+    propSd_Ctt = 0.109
   )
 
 rat_dose <- 3  # 10 mg/kg * 0.3 kg typical rat BW

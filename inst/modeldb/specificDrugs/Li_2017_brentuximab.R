@@ -68,10 +68,10 @@ Li_2017_brentuximab <- function() {
     # MMAE structural parameters -- reference: 75 kg (Li 2017 Table 4). CLM and
     # V4 are apparent parameters (ADC -> MMAE stoichiometry is already absorbed
     # into the DAR-based formation term in the ODE).
-    lclm  <- log(55.7);   label("MMAE apparent clearance (CLM, L/day)")            # Li 2017 Table 4: CLM 55.7 L/d
-    lvcm  <- log(79.8);   label("MMAE apparent central volume (V4, L)")            # Li 2017 Table 4: V4 79.8 L
-    lqm   <- log(65.0);   label("MMAE apparent intercompartmental clearance (Q5, L/day)") # Li 2017 Table 4: Q5 65.0 L/d
-    lvpm  <- log(28.1);   label("MMAE apparent peripheral volume (V5, L)")         # Li 2017 Table 4: V5 28.1 L
+    lcl_mmae  <- log(55.7);   label("MMAE apparent clearance (CLM, L/day)")            # Li 2017 Table 4: CLM 55.7 L/d
+    lvc_mmae  <- log(79.8);   label("MMAE apparent central volume (V4, L)")            # Li 2017 Table 4: V4 79.8 L
+    lq_mmae   <- log(65.0);   label("MMAE apparent intercompartmental clearance (Q5, L/day)") # Li 2017 Table 4: Q5 65.0 L/d
+    lvp_mmae  <- log(28.1);   label("MMAE apparent peripheral volume (V5, L)")         # Li 2017 Table 4: V5 28.1 L
     lbeta <- log(0.0785); label("Macro rate constant of DAR decline (beta, 1/day)") # Li 2017 Table 4: beta 0.0785 /d
 
     # Fm (exponent on Cycle for the MMAE formation fraction Fmc = Cycle^Fm).
@@ -81,14 +81,14 @@ Li_2017_brentuximab <- function() {
     lfm <- log(0.261);    label("Log magnitude of Fm (Fm = -exp(lfm)); Fm is the exponent in Fmc = CYCLE^Fm") # Li 2017 Table 4: Fm = -0.261
 
     # Covariate effects on ADC -- Li 2017 Table 3.
-    e_wt_adc_cl <- 0.698; label("Power exponent of WT on ADC CL, Q2, Q3 (unitless)") # Li 2017 Table 3: Theta_BW,CL,Q2,Q3 = 0.698
-    e_wt_adc_vc <- 0.503; label("Power exponent of WT on ADC V1, V2, V3 (unitless)") # Li 2017 Table 3: Theta_BW,V1,V2,V3 = 0.503
+    e_wt_cl <- 0.698; label("Power exponent of WT on ADC CL, Q2, Q3 (unitless)") # Li 2017 Table 3: Theta_BW,CL,Q2,Q3 = 0.698
+    e_wt_vc <- 0.503; label("Power exponent of WT on ADC V1, V2, V3 (unitless)") # Li 2017 Table 3: Theta_BW,V1,V2,V3 = 0.503
     e_sexf_vc   <- 0.873; label("Multiplicative effect of female sex on ADC V1 (ratio female:male)") # Li 2017 Table 3: Theta_SEX,V1 = 0.873
 
     # Covariate effects on MMAE -- allometric exponents fixed by the paper
     # (Li 2017 Table 4 footnotes b and c).
-    e_wt_mmae_cl <- fix(0.75); label("Power exponent of WT on MMAE CLM, Q5 (unitless, fixed)") # Li 2017 Table 4 fixed
-    e_wt_mmae_vc <- fix(1.0);  label("Power exponent of WT on MMAE V4, V5 (unitless, fixed)")  # Li 2017 Table 4 fixed
+    e_wt_cl_mmae <- fix(0.75); label("Power exponent of WT on MMAE CLM, Q5 (unitless, fixed)") # Li 2017 Table 4 fixed
+    e_wt_vc_mmae <- fix(1.0);  label("Power exponent of WT on MMAE V4, V5 (unitless, fixed)")  # Li 2017 Table 4 fixed
 
     # IIV (log-normal; omega^2 = log(CV^2 + 1)). CL-V1 block with correlation
     # 0.229 on the log scale per Li 2017 Table 3 (Corr(CL, V1) row).
@@ -106,25 +106,25 @@ Li_2017_brentuximab <- function() {
     # omega_clm^2 = log(0.607^2 + 1) = 0.3137
     # omega_v4^2  = log(0.782^2 + 1) = 0.4773
     # cov         = 0.634 * sqrt(0.3137 * 0.4773) = 0.2454
-    etalclm + etalvcm ~ c(0.3137,
-                          0.2454, 0.4773)     # Li 2017 Table 4: CLM 60.7%, V4 78.2%, Corr 0.634
+    etalcl_mmae + etalvc_mmae ~ c(0.3137,
+                                  0.2454, 0.4773)     # Li 2017 Table 4: CLM 60.7%, V4 78.2%, Corr 0.634
     etalbeta ~ 0.6741                         # Li 2017 Table 4: beta 98.1% CV; omega^2 = log(1.9624) = 0.6741
     etalfm   ~ 0.9895                         # Li 2017 Table 4: Fm 130% CV; omega^2 = log(2.69) = 0.9895
     # Q5 and V5 have BSV fixed to 0 in Li 2017 Table 4 -- no IIV terms.
 
     # Residual error -- converted from the paper's mixed units (ADC sigma1 in
     # ug/mL, MMAE sigma1 in ng/mL) to the native molar unit (pmol/mL) so the
-    # SDs are directly applied to Cc and Cmmae as computed by the model.
+    # SDs are directly applied to Cc and Cc_mmae as computed by the model.
     #   ADC:  0.0125 ug/mL * (1000 / MW_ADC_Da) = 0.0125 * 1000 / 153000
     #                                           = 8.17e-5 ng/pmol... re-derive:
     #         1 ug/mL ADC = 10^-6 g/mL / 153000 g/mol * 10^12 pmol/mol
     #                     * 1 mL = 10^-6 / 153000 * 10^12 = 6.536 pmol/mL.
     #         0.0125 ug/mL = 0.0817 pmol/mL. (Equivalent to LLOQ 12.5 ng/mL.)
     #   MMAE: 0.0119 ng/mL * (1 / MW_MMAE_kDa) = 0.0119 / 0.718 = 0.01658 pmol/mL.
-    CcaddSd      <- fix(0.0817); label("Additive residual error on ADC Cc (pmol/mL; equivalent to 0.0125 ug/mL = LLOQ 12.5 ng/mL, fixed)") # Li 2017 Table 3: sigma1 0.0125 ug/mL fixed
-    CcpropSd     <- 0.329;       label("Proportional residual error on ADC Cc (fraction)") # Li 2017 Table 3: sigma2 32.9% CV
-    CmmaeaddSd   <- 0.01658;     label("Additive residual error on MMAE Cmmae (pmol/mL; equivalent to 0.0119 ng/mL)") # Li 2017 Table 4: sigma1 0.0119 ng/mL
-    CmmaepropSd  <- 0.368;       label("Proportional residual error on MMAE Cmmae (fraction)") # Li 2017 Table 4: sigma2 36.8% CV
+    CcaddSd        <- fix(0.0817); label("Additive residual error on ADC Cc (pmol/mL; equivalent to 0.0125 ug/mL = LLOQ 12.5 ng/mL, fixed)") # Li 2017 Table 3: sigma1 0.0125 ug/mL fixed
+    CcpropSd       <- 0.329;       label("Proportional residual error on ADC Cc (fraction)") # Li 2017 Table 3: sigma2 32.9% CV
+    addSd_mmae     <- 0.01658;     label("Additive residual error on MMAE Cc_mmae (pmol/mL; equivalent to 0.0119 ng/mL)") # Li 2017 Table 4: sigma1 0.0119 ng/mL
+    propSd_mmae    <- 0.368;       label("Proportional residual error on MMAE Cc_mmae (fraction)") # Li 2017 Table 4: sigma2 36.8% CV
   })
 
   model({
@@ -132,17 +132,17 @@ Li_2017_brentuximab <- function() {
     # is 75 kg; SEXF is 0 for males (reference) and 1 for females, so
     # e_sexf_vc^SEXF equals 1 for males and 0.873 for females (Li 2017
     # Table 3 Eq. 2).
-    cl_adc <- exp(lcl  + etalcl)  * (WT / 75)^e_wt_adc_cl
-    v1     <- exp(lvc  + etalvc)  * (WT / 75)^e_wt_adc_vc * e_sexf_vc^SEXF
-    q2     <- exp(lq   + etalq)   * (WT / 75)^e_wt_adc_cl
-    v2     <- exp(lvp  + etalvp)  * (WT / 75)^e_wt_adc_vc
-    q3     <- exp(lq2  + etalq2)  * (WT / 75)^e_wt_adc_cl
-    v3     <- exp(lvp2 + etalvp2) * (WT / 75)^e_wt_adc_vc
+    cl_adc <- exp(lcl  + etalcl)  * (WT / 75)^e_wt_cl
+    v1     <- exp(lvc  + etalvc)  * (WT / 75)^e_wt_vc * e_sexf_vc^SEXF
+    q2     <- exp(lq   + etalq)   * (WT / 75)^e_wt_cl
+    v2     <- exp(lvp  + etalvp)  * (WT / 75)^e_wt_vc
+    q3     <- exp(lq2  + etalq2)  * (WT / 75)^e_wt_cl
+    v3     <- exp(lvp2 + etalvp2) * (WT / 75)^e_wt_vc
 
-    cl_mmae <- exp(lclm + etalclm) * (WT / 75)^e_wt_mmae_cl
-    v4      <- exp(lvcm + etalvcm) * (WT / 75)^e_wt_mmae_vc
-    q5      <- exp(lqm)            * (WT / 75)^e_wt_mmae_cl
-    v5      <- exp(lvpm)           * (WT / 75)^e_wt_mmae_vc
+    cl_mmae <- exp(lcl_mmae + etalcl_mmae) * (WT / 75)^e_wt_cl_mmae
+    v4      <- exp(lvc_mmae + etalvc_mmae) * (WT / 75)^e_wt_vc_mmae
+    q5      <- exp(lq_mmae)                * (WT / 75)^e_wt_cl_mmae
+    v5      <- exp(lvp_mmae)               * (WT / 75)^e_wt_vc_mmae
 
     beta <- exp(lbeta + etalbeta)
     fm   <- -exp(lfm + etalfm)   # Enforce sign negative (paper point estimate Fm = -0.261)
@@ -171,32 +171,32 @@ Li_2017_brentuximab <- function() {
     # ODE system: 5 PK compartments + 2 bookkeeping compartments for the two
     # MMAE-formation pathways (Li 2017 supplement M1). Molar balance: A(1)-A(5)
     # are in nmol; V1/V4 are in L; concentrations are nmol/L = pmol/mL.
-    d/dt(adc_central)     <- -(k10 + k12 + k13) * adc_central + k21 * adc_peripheral1 + k31 * adc_peripheral2
-    d/dt(adc_peripheral1) <-  k12 * adc_central - k21 * adc_peripheral1
-    d/dt(adc_peripheral2) <-  k13 * adc_central - k31 * adc_peripheral2
+    d/dt(central)     <- -(k10 + k12 + k13) * central + k21 * peripheral1 + k31 * peripheral2
+    d/dt(peripheral1) <-  k12 * central - k21 * peripheral1
+    d/dt(peripheral2) <-  k13 * central - k31 * peripheral2
 
     # MMAE central: proteolytic flux (cycle-scaled) + deconjugation flux
     # - clearance - distribution to peripheral + return from peripheral.
     # The deconjugation term uses (DAR - DAR0 * alpha) so that at DAR = 1
     # (long after a dose) the deconjugation flux reaches zero.
-    d/dt(mmae_central)    <-  k10 * adc_central * dar * fmc +
-                               adc_central * (dar - 4 * 0.25) * beta -
-                               (k40 + k45) * mmae_central + k54 * mmae_peripheral
-    d/dt(mmae_peripheral) <-  k45 * mmae_central - k54 * mmae_peripheral
+    d/dt(central_mmae)     <-  k10 * central * dar * fmc +
+                               central * (dar - 4 * 0.25) * beta -
+                               (k40 + k45) * central_mmae + k54 * peripheral1_mmae
+    d/dt(peripheral1_mmae) <-  k45 * central_mmae - k54 * peripheral1_mmae
 
     # Cumulative pathway bookkeeping (Li 2017 supplement M1). These integrate
     # the total MMAE amount released along each pathway and are not used in
     # the observation equations; they enable reproducing the paper's "~13%
     # deconjugation at steady state" derivation by computing
     # deconjugation_pct = pathway_deconjugation / (pathway_proteolytic + pathway_deconjugation) * 100.
-    d/dt(pathway_proteolytic)   <- k10 * adc_central * dar
-    d/dt(pathway_deconjugation) <- adc_central * (dar - 4 * 0.25) * beta
+    d/dt(pathway_proteolytic)   <- k10 * central * dar
+    d/dt(pathway_deconjugation) <- central * (dar - 4 * 0.25) * beta
 
     # Observations -- concentrations in pmol/mL (= nmol/L = nM).
-    Cc    <- adc_central  / v1
-    Cmmae <- mmae_central / v4
+    Cc      <- central      / v1
+    Cc_mmae <- central_mmae / v4
 
-    Cc    ~ add(CcaddSd)    + prop(CcpropSd)
-    Cmmae ~ add(CmmaeaddSd) + prop(CmmaepropSd)
+    Cc      ~ add(CcaddSd)      + prop(CcpropSd)
+    Cc_mmae ~ add(addSd_mmae) + prop(propSd_mmae)
   })
 }

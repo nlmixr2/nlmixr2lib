@@ -328,11 +328,31 @@ checkModelConventions <- function(model, verbose = TRUE) {
 .canonicalResidualErrorNames <- function(obs_vars, conv) {
   out <- conv$residualError
   for (v in obs_vars) {
-    if (!is.na(v) && v != conv$observationVar) {
-      out <- c(out, paste0(v, "propSd"), paste0(v, "addSd"))
-    } else if (!is.na(v) && v == conv$observationVar) {
+    if (is.na(v)) next
+    if (v == conv$observationVar) {
+      # Parent observation Cc: canonical bare propSd / addSd. The legacy
+      # concatenated form CcpropSd / CcaddSd is still accepted while
+      # older models migrate.
       out <- c(out, "CcpropSd", "CcaddSd")
+      next
     }
+    # Every non-parent output uses parameter-name-then-output-suffix:
+    # propSd_<x> / addSd_<x>. For metabolite outputs Cc_<metab> the
+    # suffix is the metabolite name; for non-PK paper-named outputs
+    # (Rtot, freeIgE, totalIgE, das28, tumorSize, ...) the suffix is
+    # the output name itself, preserving its case.
+    suffix <- v
+    if (startsWith(v, "Cc_")) {
+      candidate <- substr(v, 4, nchar(v))
+      if (candidate %in% conv$registeredMetabolites) {
+        suffix <- candidate
+      }
+    }
+    out <- c(
+      out,
+      paste0("propSd_", suffix),
+      paste0("addSd_",  suffix)
+    )
   }
   unique(out)
 }

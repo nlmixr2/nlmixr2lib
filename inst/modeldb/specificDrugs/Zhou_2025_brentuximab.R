@@ -14,7 +14,7 @@ Zhou_2025_brentuximab <- function() {
       units              = "m^2",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline. Power effects on ADC CL (exponent 1.38), ADC V3 (exponent 1.96), MMAE CL (exponent 0.772), and MMAE central volume VM (exponent 0.546). Reference 1.8 m^2 (NONMEM normalization NBSA = BSA / 1.8 from Zhou 2025 supplement control stream). Pediatric study median BSA 1.52 m^2; range 0.79-2.03 m^2.",
+      notes              = "Time-fixed baseline. Power effects on ADC CL (exponent 1.38), ADC V3 = vp2 (exponent 1.96), MMAE CL (exponent 0.772), and MMAE central volume VM (exponent 0.546). Reference 1.8 m^2 (NONMEM normalization NBSA = BSA / 1.8 from Zhou 2025 supplement control stream). Pediatric study median BSA 1.52 m^2; range 0.79-2.03 m^2.",
       source_name        = "BSA"
     ),
     ALB = list(
@@ -99,37 +99,37 @@ Zhou_2025_brentuximab <- function() {
 
     # ADC covariate effects (Zhou 2025 Table S1; reference values from the
     # NONMEM control stream NBSA = BSA/1.8, NALB = ALB/40, NLDIAM = LDIAM/41).
-    e_bsa_adc_cl     <- 1.38;   label("Power exponent of (BSA/1.8) on ADC CL (unitless)")               # Zhou 2025 Table S1: 1.38 (23.2% RSE)
-    e_alb_adc_cl     <- -0.776; label("Power exponent of (ALB/40) on ADC CL (unitless)")                # Zhou 2025 Table S1: -0.776 (12.3% RSE)
-    e_tumsz_adc_cl   <- 0.12;   label("Power exponent of (TUMSZ/41) on ADC CL (unitless)")              # Zhou 2025 Table S1: 0.12 (17.3% RSE)
-    e_nonhl_adc_q2   <- 0.509;  label("Power-form multiplier of non-HL on ADC Q2: q2 *= e_nonhl_adc_q2^(1 - TUMTP_CHL)") # Zhou 2025 Table S1: 0.509 (32.2% RSE)
-    e_bsa_adc_v3     <- 1.96;   label("Power exponent of (BSA/1.8) on ADC V3 (unitless)")               # Zhou 2025 Table S1: 1.96 (20.8% RSE)
-    e_ada_adc_cl     <- 2.6;    label("Power-form multiplier of ADA positivity on ADC CL: cl *= e_ada_adc_cl^ADA_POS") # Zhou 2025 Table S1: 2.6 (6.4% RSE)
-    e_avd_adc_cl     <- 2.12;   label("Power-form multiplier of A+AVD coadministration on ADC CL: cl *= e_avd_adc_cl^COADMIN_AVD") # Zhou 2025 Table S1: 2.12 (18.7% RSE) — supplement table label of 'theta13' for this row is a typo (control stream confirms theta14)
+    e_bsa_cl    <- 1.38;   label("Power exponent of (BSA/1.8) on ADC CL (unitless)")               # Zhou 2025 Table S1: 1.38 (23.2% RSE)
+    e_alb_cl    <- -0.776; label("Power exponent of (ALB/40) on ADC CL (unitless)")                # Zhou 2025 Table S1: -0.776 (12.3% RSE)
+    e_tumsz_cl  <- 0.12;   label("Power exponent of (TUMSZ/41) on ADC CL (unitless)")              # Zhou 2025 Table S1: 0.12 (17.3% RSE)
+    e_nonhl_q2  <- 0.509;  label("Power-form multiplier of non-HL on ADC Q2: q2 *= e_nonhl_q2^(1 - TUMTP_CHL)") # Zhou 2025 Table S1: 0.509 (32.2% RSE)
+    e_bsa_vp2   <- 1.96;   label("Power exponent of (BSA/1.8) on ADC V3 = vp2 (unitless)")         # Zhou 2025 Table S1: 1.96 (20.8% RSE)
+    e_ada_cl    <- 2.6;    label("Power-form multiplier of ADA positivity on ADC CL: cl *= e_ada_cl^ADA_POS") # Zhou 2025 Table S1: 2.6 (6.4% RSE)
+    e_avd_cl    <- 2.12;   label("Power-form multiplier of A+AVD coadministration on ADC CL: cl *= e_avd_cl^COADMIN_AVD") # Zhou 2025 Table S1: 2.12 (18.7% RSE) — supplement table label of 'theta13' for this row is a typo (control stream confirms theta14)
 
     # MMAE structural parameters (Zhou 2025 Table S2; 2-compartment linear with
     # an upstream Target binding pool and Lag compartment fed by ADC, ADVAN13
     # custom ODE in NONMEM).
-    lclm  <- log(0.794);    label("MMAE clearance (CLM, L/hr)")                                    # Zhou 2025 Table S2: 0.794 (2.0% RSE)
-    lvcm  <- log(20.1);     label("MMAE central volume (VM, L)")                                   # Zhou 2025 Table S2: 20.1 (0.7% RSE)
-    lqm   <- log(0.628);    label("MMAE inter-compartmental clearance (QM, L/hr)")                 # Zhou 2025 Table S2: 0.628 (1.2% RSE)
-    lvpm  <- log(2.74);     label("MMAE peripheral volume (VMP, L)")                               # Zhou 2025 Table S2: 2.74 (0.7% RSE)
-    lkd   <- log(0.0186);   label("MMAE binding rate constant (Kd, 1/hr)")                         # Zhou 2025 Table S2: 0.0186 (0.4% RSE)
-    lalfm <- log(0.00462);  label("Decay rate of ADC->MMAE proteolytic-conversion fraction (ALFM, 1/hr)") # Zhou 2025 Table S2: 0.00462 (0.7% RSE)
-    lklag <- log(60.8);     label("Lag-compartment empty rate constant (Klag, 1/hr)")              # Zhou 2025 Table S2: 60.8 (1.3% RSE)
+    lcl_mmae   <- log(0.794);    label("MMAE clearance (CLM, L/hr)")                                    # Zhou 2025 Table S2: 0.794 (2.0% RSE)
+    lvc_mmae   <- log(20.1);     label("MMAE central volume (VM, L)")                                   # Zhou 2025 Table S2: 20.1 (0.7% RSE)
+    lq_mmae    <- log(0.628);    label("MMAE inter-compartmental clearance (QM, L/hr)")                 # Zhou 2025 Table S2: 0.628 (1.2% RSE)
+    lvp_mmae   <- log(2.74);     label("MMAE peripheral volume (VMP, L)")                               # Zhou 2025 Table S2: 2.74 (0.7% RSE)
+    lkd_mmae   <- log(0.0186);   label("MMAE binding rate constant (Kd, 1/hr)")                         # Zhou 2025 Table S2: 0.0186 (0.4% RSE)
+    lalfm_mmae <- log(0.00462);  label("Decay rate of ADC->MMAE proteolytic-conversion fraction (ALFM, 1/hr)") # Zhou 2025 Table S2: 0.00462 (0.7% RSE)
+    lklag_mmae <- log(60.8);     label("Lag-compartment empty rate constant (Klag, 1/hr)")              # Zhou 2025 Table S2: 60.8 (1.3% RSE)
     # FM (fraction metabolized) is fixed to 1 in Zhou 2025 Table S2 — encoded
     # as a literal constant in model() rather than an estimated parameter.
 
     # MMAE covariate effects (Zhou 2025 Table S2; reference values from the
     # NONMEM control stream NCREAT = CREAT/45.689, NALB = ALB/40, NBSA = BSA/1.8).
-    e_creat_mmae_cl  <- -0.0952; label("Power exponent of (CREAT/45.689) on MMAE CL (unitless)")            # Zhou 2025 Table S2: -0.0952 (9.3% RSE)
-    e_alb_mmae_cl    <- -0.0805; label("Power exponent of (ALB/40) on MMAE CL (unitless)")                  # Zhou 2025 Table S2: -0.0805 (27.5% RSE)
-    e_bsa_mmae_cl    <- 0.772;   label("Power exponent of (BSA/1.8) on MMAE CL (unitless)")                 # Zhou 2025 Table S2: 0.772 (8.4% RSE)
-    e_ada_mmae_cl    <- 0.696;   label("Power-form multiplier of ADA positivity on MMAE CL: clm *= e_ada_mmae_cl^ADA_POS") # Zhou 2025 Table S2: 0.696 (5.3% RSE)
-    e_nonhl_mmae_vc  <- 0.296;   label("Power-form multiplier of non-HL on MMAE VM: vcm *= e_nonhl_mmae_vc^(1 - TUMTP_CHL)") # Zhou 2025 Table S2: 0.296 (15.1% RSE)
-    e_bsa_mmae_vc    <- 0.546;   label("Power exponent of (BSA/1.8) on MMAE VM (unitless)")                 # Zhou 2025 Table S2: 0.546 (9.7% RSE)
-    e_nonhl_mmae_alfm <- 0.884;  label("Power-form multiplier of non-HL on ALFM: alfm *= e_nonhl_mmae_alfm^(1 - TUMTP_CHL)") # Zhou 2025 Table S2: 0.884 (17.7% RSE)
-    e_alb_mmae_kd    <- -4.11;   label("Power exponent of (ALB/40) on MMAE Kd (unitless)")                  # Zhou 2025 Table S2: -4.11 (3.3% RSE)
+    e_creat_cl_mmae    <- -0.0952; label("Power exponent of (CREAT/45.689) on MMAE CL (unitless)")          # Zhou 2025 Table S2: -0.0952 (9.3% RSE)
+    e_alb_cl_mmae      <- -0.0805; label("Power exponent of (ALB/40) on MMAE CL (unitless)")                # Zhou 2025 Table S2: -0.0805 (27.5% RSE)
+    e_bsa_cl_mmae      <- 0.772;   label("Power exponent of (BSA/1.8) on MMAE CL (unitless)")               # Zhou 2025 Table S2: 0.772 (8.4% RSE)
+    e_ada_cl_mmae      <- 0.696;   label("Power-form multiplier of ADA positivity on MMAE CL: clm *= e_ada_cl_mmae^ADA_POS") # Zhou 2025 Table S2: 0.696 (5.3% RSE)
+    e_nonhl_vc_mmae    <- 0.296;   label("Power-form multiplier of non-HL on MMAE VM: vcm *= e_nonhl_vc_mmae^(1 - TUMTP_CHL)") # Zhou 2025 Table S2: 0.296 (15.1% RSE)
+    e_bsa_vc_mmae      <- 0.546;   label("Power exponent of (BSA/1.8) on MMAE VM (unitless)")               # Zhou 2025 Table S2: 0.546 (9.7% RSE)
+    e_nonhl_alfm_mmae  <- 0.884;   label("Power-form multiplier of non-HL on ALFM: alfm *= e_nonhl_alfm_mmae^(1 - TUMTP_CHL)") # Zhou 2025 Table S2: 0.884 (17.7% RSE)
+    e_alb_kd_mmae      <- -4.11;   label("Power exponent of (ALB/40) on MMAE Kd (unitless)")                # Zhou 2025 Table S2: -4.11 (3.3% RSE)
 
     # IIV (log-normal). %CV from Zhou 2025 Tables S1 and S2; converted via
     # omega^2 = log(CV^2 + 1). Off-diagonal correlations are not reported in
@@ -141,16 +141,16 @@ Zhou_2025_brentuximab <- function() {
     etalq   ~ 0.353       # Zhou 2025 Table S1: Q2 65.0% CV; omega^2 = log(0.65^2 + 1)  = 0.353
     etalvp2 ~ 0.31        # Zhou 2025 Table S1: V3 60.3% CV; omega^2 = log(0.603^2 + 1) = 0.310
 
-    etalclm  ~ 0.228      # Zhou 2025 Table S2: CLM 50.6% CV; omega^2 = log(0.506^2 + 1) = 0.228
-    etalvcm  ~ 0.494      # Zhou 2025 Table S2: VM 79.9% CV;  omega^2 = log(0.799^2 + 1) = 0.494
-    etalkd   ~ 1.151      # Zhou 2025 Table S2: Kd 147% CV;   omega^2 = log(1.47^2 + 1)  = 1.151
-    etalalfm ~ 0.582      # Zhou 2025 Table S2: ALFM 88.8% CV; omega^2 = log(0.888^2 + 1) = 0.582
+    etalcl_mmae   ~ 0.228      # Zhou 2025 Table S2: CLM 50.6% CV; omega^2 = log(0.506^2 + 1) = 0.228
+    etalvc_mmae   ~ 0.494      # Zhou 2025 Table S2: VM 79.9% CV;  omega^2 = log(0.799^2 + 1) = 0.494
+    etalkd_mmae   ~ 1.151      # Zhou 2025 Table S2: Kd 147% CV;   omega^2 = log(1.47^2 + 1)  = 1.151
+    etalalfm_mmae ~ 0.582      # Zhou 2025 Table S2: ALFM 88.8% CV; omega^2 = log(0.888^2 + 1) = 0.582
 
     # Residual variability (LTBS in NONMEM = proportional in linear space for
     # nlmixr2; %CV from Tables S1 and S2 is the proportional SD on the linear
     # concentration scale).
-    CcpropSd     <- 0.321; label("Proportional residual error on ADC Cc (fraction)")    # Zhou 2025 Table S1: 32.1% CV (0.7% RSE)
-    CmmaepropSd  <- 0.375; label("Proportional residual error on MMAE Cmmae (fraction)") # Zhou 2025 Table S2: 37.5% CV (1.2% RSE)
+    CcpropSd       <- 0.321; label("Proportional residual error on ADC Cc (fraction)")    # Zhou 2025 Table S1: 32.1% CV (0.7% RSE)
+    propSd_mmae    <- 0.375; label("Proportional residual error on MMAE Cc_mmae (fraction)") # Zhou 2025 Table S2: 37.5% CV (1.2% RSE)
   })
 
   model({
@@ -166,29 +166,29 @@ Zhou_2025_brentuximab <- function() {
 
     # 2. Individual ADC parameters
     cl_adc <- exp(lcl + etalcl) *
-              nbsa^e_bsa_adc_cl *
-              nalb^e_alb_adc_cl *
-              ntumsz^e_tumsz_adc_cl *
-              e_ada_adc_cl^ADA_POS *
-              e_avd_adc_cl^COADMIN_AVD
+              nbsa^e_bsa_cl *
+              nalb^e_alb_cl *
+              ntumsz^e_tumsz_cl *
+              e_ada_cl^ADA_POS *
+              e_avd_cl^COADMIN_AVD
     v1_adc <- exp(lvc)
-    q2_adc <- exp(lq + etalq) * e_nonhl_adc_q2^nonhl
+    q2_adc <- exp(lq + etalq) * e_nonhl_q2^nonhl
     v2_adc <- exp(lvp)
     q3_adc <- exp(lq2)
-    v3_adc <- exp(lvp2 + etalvp2) * nbsa^e_bsa_adc_v3
+    v3_adc <- exp(lvp2 + etalvp2) * nbsa^e_bsa_vp2
 
     # 2b. Individual MMAE parameters
-    cl_mmae <- exp(lclm + etalclm) *
-               ncreat^e_creat_mmae_cl *
-               nalb^e_alb_mmae_cl *
-               nbsa^e_bsa_mmae_cl *
-               e_ada_mmae_cl^ADA_POS
-    vc_mmae <- exp(lvcm + etalvcm) * e_nonhl_mmae_vc^nonhl * nbsa^e_bsa_mmae_vc
-    qm      <- exp(lqm)
-    vp_mmae <- exp(lvpm)
-    kd      <- exp(lkd + etalkd) * nalb^e_alb_mmae_kd
-    alfm    <- exp(lalfm + etalalfm) * e_nonhl_mmae_alfm^nonhl
-    klag    <- exp(lklag)
+    cl_mmae <- exp(lcl_mmae + etalcl_mmae) *
+               ncreat^e_creat_cl_mmae *
+               nalb^e_alb_cl_mmae *
+               nbsa^e_bsa_cl_mmae *
+               e_ada_cl_mmae^ADA_POS
+    vc_mmae <- exp(lvc_mmae + etalvc_mmae) * e_nonhl_vc_mmae^nonhl * nbsa^e_bsa_vc_mmae
+    qm      <- exp(lq_mmae)
+    vp_mmae <- exp(lvp_mmae)
+    kd      <- exp(lkd_mmae + etalkd_mmae) * nalb^e_alb_kd_mmae
+    alfm    <- exp(lalfm_mmae + etalalfm_mmae) * e_nonhl_alfm_mmae^nonhl
+    klag    <- exp(lklag_mmae)
 
     # 3. Micro-constants
     k10 <- cl_adc  / v1_adc
@@ -207,31 +207,31 @@ Zhou_2025_brentuximab <- function() {
     fmt <- exp(-alfm * tad())
 
     # 5. ODE system (Zhou 2025 supplement $DES, mapped from NONMEM
-    # compartments to nlmixr2 names: A(1)=adc_central, A(2)=adc_peripheral1,
-    # A(3)=adc_peripheral2, A(4)=mmae_central, A(5)=target, A(6)=lag,
-    # A(7)=mmae_peripheral).
+    # compartments to nlmixr2 names: A(1)=central, A(2)=peripheral1,
+    # A(3)=peripheral2, A(4)=central_mmae, A(5)=target, A(6)=lag,
+    # A(7)=peripheral1_mmae).
     target(0) <- 1
-    d/dt(adc_central)     <- -(k10 + k12 + k13) * adc_central + k21 * adc_peripheral1 + k31 * adc_peripheral2
-    d/dt(adc_peripheral1) <-  k12 * adc_central - k21 * adc_peripheral1
-    d/dt(adc_peripheral2) <-  k13 * adc_central - k31 * adc_peripheral2
-    d/dt(target)          <- -kd * target * adc_central
-    d/dt(lag)             <-  kd * target * adc_central + fmt * k10 * adc_central - klag * lag
-    d/dt(mmae_central)    <-  klag * lag - (k40 + k47) * mmae_central + k74 * mmae_peripheral
-    d/dt(mmae_peripheral) <-  k47 * mmae_central - k74 * mmae_peripheral
+    d/dt(central)          <- -(k10 + k12 + k13) * central + k21 * peripheral1 + k31 * peripheral2
+    d/dt(peripheral1)      <-  k12 * central - k21 * peripheral1
+    d/dt(peripheral2)      <-  k13 * central - k31 * peripheral2
+    d/dt(target)           <- -kd * target * central
+    d/dt(lag)              <-  kd * target * central + fmt * k10 * central - klag * lag
+    d/dt(central_mmae)     <-  klag * lag - (k40 + k47) * central_mmae + k74 * peripheral1_mmae
+    d/dt(peripheral1_mmae) <-  k47 * central_mmae - k74 * peripheral1_mmae
 
     # 6. Observations and residual error. The Zhou 2025 NONMEM dataset uses
     # molar units (AMT in umol, DV in umol/L = uM) — see the supplement
     # control stream comment "AMT IN UM ; DVUM IS DV IN UM". Doses provided
     # in mg must be converted before dosing this model: umol = mg / MW_kDa
     # (MW_BV approx 153.4 kDa for the ADC; MW_MMAE approx 0.718 kDa for the
-    # payload). The binding equation kd * target * adc_central is the only
+    # payload). The binding equation kd * target * central is the only
     # term whose absolute parameter value depends on the amount units, so
     # using mass units here without rescaling kd would corrupt the
     # ADC -> MMAE conversion magnitude.
-    Cc    <- adc_central  / v1_adc
-    Cmmae <- mmae_central / vc_mmae
+    Cc      <- central      / v1_adc
+    Cc_mmae <- central_mmae / vc_mmae
 
-    Cc    ~ prop(CcpropSd)
-    Cmmae ~ prop(CmmaepropSd)
+    Cc      ~ prop(CcpropSd)
+    Cc_mmae ~ prop(propSd_mmae)
   })
 }
