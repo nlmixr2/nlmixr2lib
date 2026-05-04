@@ -59,8 +59,8 @@ reference.
 | `e_wt_cl_q` (WT on CL and Q)          | `0.873`          | Table 2 (allometric) |
 | `e_nonECZTRA_cl` (non-ECZTRA on CL)   | `0.344`          | Table 2 |
 | `e_nonECZTRA_vc` (non-ECZTRA on V2)   | `0.258`          | Table 2 |
-| `e_f_dilution` (dilution on F)        | `0.354`          | Table 2 |
-| `e_ka_dilution` (dilution on ka)      | `-0.519`         | Table 2 |
+| `e_dilution_fdepot` (dilution on F)   | `0.354`          | Table 2 |
+| `e_dilution_ka` (dilution on ka)      | `-0.519`         | Table 2 |
 | `var(etalvc)`                         | `0.148971`       | Table 2: CV_V2 = 40.1%, `omega^2 = log(1 + 0.401^2)` |
 | `var(etalcl)`                         | `0.093459`       | Table 2: CV_CL = 31.3%, `omega^2 = log(1 + 0.313^2)` |
 | `cov(etalvc, etalcl)`                 | `0.071977`       | Table 2: `rho = 0.61`, cov = `rho * sqrt(var_V2 * var_CL)` |

@@ -61,8 +61,8 @@ Soehoel_2022_tralokinumab <- function() {
     e_wt_cl_q <- 0.873; label("Effect of body weight on clearance and intercompartmental clearance (unitless)")
     e_nonECZTRA_cl <- 0.344; label("Effect of non-ECZTRA trials on clearance (unitless)")
     e_nonECZTRA_vc <- 0.258; label("Effect of non-ECZTRA trials on central volume (unitless)")
-    e_f_dilution <- 0.354; label("Effect of dilution on bioavailability (unitless)")
-    e_ka_dilution <- -0.519; label("Effect of dilution trials on absorption rate (unitless)")
+    e_dilution_fdepot <- 0.354; label("Effect of dilution on bioavailability (unitless)")
+    e_dilution_ka <- -0.519; label("Effect of dilution trials on absorption rate (unitless)")
 
     # Variance-covariance matrix for (etalvc, etalcl); Table 2 reports
     # IIV via CV% = sqrt(exp(omega^2) - 1) * 100%, so omega^2 = log(1 + CV^2).
@@ -73,8 +73,8 @@ Soehoel_2022_tralokinumab <- function() {
                         0.071977, 0.093459)
   })
   model({
-    fdepot <- exp(lfdepot)*(1 + e_f_dilution*dilution)
-    ka <- exp(lka)*(1 + e_ka_dilution*dilution)
+    fdepot <- exp(lfdepot)*(1 + e_dilution_fdepot*dilution)
+    ka <- exp(lka)*(1 + e_dilution_ka*dilution)
     cl <- exp(lcl + etalcl)*(WT/75)^e_wt_cl_q * (1 + e_nonECZTRA_cl*nonECZTRA)
     vc <- exp(lvc + etalvc)*(WT/75)^e_wt_vc_vp * (1 + e_nonECZTRA_vc*nonECZTRA)
     q <- exp(lq)*(WT/75)^e_wt_cl_q

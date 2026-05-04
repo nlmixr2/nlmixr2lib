@@ -95,7 +95,7 @@ Wojciechowski_2022_domagrozumab <- function() {
     # matrix (covariances in log-space) using the symbol rho. The implied
     # correlation between eta_CL and eta_V1 is 0.0363 / sqrt(0.05727 * 0.05328)
     # = 0.658, consistent with typical mAb CL-V1 correlations.
-    etalcl + etalvc + etalvmax + etalbase + etalkdegkint ~ c(
+    etalcl + etalvc + etalvmax + etalbase + etalkdeg_kint ~ c(
        0.05727,
        0.0363,    0.05328,
       -0.0122,    0.00352,  0.73304,
@@ -143,8 +143,8 @@ Wojciechowski_2022_domagrozumab <- function() {
     cov_spop_kdegkint <- 1 + e_dmd_kdegkint * DIS_DMD
 
     base <- exp(lbase + etalbase) * cov_spop_base                                # nM
-    kdeg <- exp(lkdeg + etalkdegkint) * cov_spop_kdegkint                        # 1/hour
-    kint <- exp(lkint + e_ratio_kdegkint * etalkdegkint) * cov_spop_kdegkint     # 1/hour
+    kdeg <- exp(lkdeg + etalkdeg_kint) * cov_spop_kdegkint                        # 1/hour
+    kint <- exp(lkint + e_ratio_kdegkint * etalkdeg_kint) * cov_spop_kdegkint     # 1/hour
     ksyn <- base * kdeg                                                          # nM/hour (Eq. 5)
 
     # ---- Drug concentration in nM (paper scale) ----

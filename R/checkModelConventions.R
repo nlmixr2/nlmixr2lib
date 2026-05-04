@@ -237,6 +237,24 @@ checkModelConventions <- function(model, verbose = TRUE) {
   issues
 }
 
+# Recognize a shared-eta suffix of the form `l<p1>_<p2>(_<p3>...)` where
+# every "_"-separated token corresponds to a fixed-effect parameter
+# (matched either as the bare token `<pi>` or with the canonical log
+# prefix `l<pi>`). Used to accept names like `etalkdeg_kint` (a single
+# eta shared between `lkdeg` and `lkint`) without flagging them as
+# missing a structural pair.
+.isSharedEtaSuffix <- function(suffix, fixed_names) {
+  if (!startsWith(suffix, "l")) return(FALSE)
+  body <- substr(suffix, 2, nchar(suffix))
+  if (!grepl("_", body, fixed = TRUE)) return(FALSE)
+  parts <- strsplit(body, "_", fixed = TRUE)[[1]]
+  if (length(parts) < 2) return(FALSE)
+  matches <- vapply(parts, function(p) {
+    p %in% fixed_names || paste0("l", p) %in% fixed_names
+  }, logical(1))
+  all(matches)
+}
+
 .classifyParam <- function(name, conv) {
   if (.isPkParam(name, conv)) return("canonical_pk")
   if (grepl(conv$covEffectPattern, name) && startsWith(name, "e_")) {
@@ -294,6 +312,11 @@ checkModelConventions <- function(model, verbose = TRUE) {
           sprintf("Rename '%s' to 'eta%s' in ini() and model() to match the transformed parameter name.",
                   nm, canonical)
         ))
+      } else if (.isSharedEtaSuffix(suffix, fixed$name)) {
+        # Shared-eta on multiple structural parameters: etal<p1>_<p2>...
+        # is accepted when every "_"-separated token matches an existing
+        # fixed-effect parameter (with an optional leading "l" prefix).
+        # No issue is emitted.
       } else {
         issues <- rbind(issues, .issue(
           "parameter_naming", "warning", nm,

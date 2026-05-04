@@ -6,12 +6,13 @@ igg_kim_2006 <- function() {
     ljmax <- log(147); label("Maximal rate of FcRn-mediated recycling (Jmax); i.e., in vivo recycling capacity (mg/d/kg)")
     lkm <- log(21); label("Plasma concentration at which a half Jmax reached (Km); The Michaelis constant (mg/mL)")
     kint <- 0.18; label("Fractional intrinsic catabolic rate (1/day)")
-    vc <- 42; label("Vascular compartment volume (mL/kg)")
+    lvc <- log(42); label("Vascular compartment volume (Vc, mL/kg)")
     css <- 12.1; label("Steady-state plasma concentration (mg/mL)")
   })
   model({
     jmax <- exp(ljmax)
     km <- exp(lkm)
+    vc <- exp(lvc)
     # Equation 2
     krmr_0 <- jmax/(vc*(km + css))
     jrmr <- krmr_0 * vc * css
