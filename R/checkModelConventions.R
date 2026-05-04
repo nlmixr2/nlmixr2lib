@@ -724,9 +724,9 @@ checkModelConventions <- function(model, verbose = TRUE) {
 }
 
 # Flag bare-volume and Vmax names that have canonical replacements:
-#   v / v1 / lv / lv1 -> vc / lvc
-#   v2 / lv2 / v3 / lv3 -> ambiguous (vp / vp2); ask the source paper
-#   vm / lvm -> vmax / lvmax
+#   Change: v / v1 / lv / lv1 -> vc / lvc
+#   Change: v2 / lv2 / v3 / lv3 -> ambiguous (vp / vp2); ask the source paper
+#   Change: vm / lvm -> vmax / lvmax
 .checkDeprecatedVolumeOrVmaxName <- function(nm, conv) {
   issues <- .emptyIssues()
   if (nm %in% c("v", "v1", "lv", "lv1")) {
@@ -786,10 +786,10 @@ checkModelConventions <- function(model, verbose = TRUE) {
 
 # Flag covariate-effect names whose parameter token is a deprecated
 # numbered/synthesized form. Examples:
-#   e_wt_v / _v1 -> e_wt_vc;  _v2 -> e_wt_vp (verify)
-#   e_wt_clq -> e_wt_cl_q;  e_wt_vcvp -> e_wt_vc_vp
-#   e_wt_clinf -> e_wt_cl_ss;  e_wt_clt -> e_wt_cl_time
-#   e_wt_vss -> e_wt_vc_vp;  e_wt_clss -> e_wt_cl_ss
+#   Change: e_wt_v / _v1 -> e_wt_vc;  _v2 -> e_wt_vp (verify)
+#   Change: e_wt_clq -> e_wt_cl_q;  e_wt_vcvp -> e_wt_vc_vp
+#   Change: e_wt_clinf -> e_wt_cl_ss;  e_wt_clt -> e_wt_cl_time
+#   Change: e_wt_vss -> e_wt_vc_vp;  e_wt_clss -> e_wt_cl_ss
 .checkDeprecatedCovEffectSuffix <- function(nm, conv) {
   issues <- .emptyIssues()
   if (!startsWith(nm, "e_")) return(issues)
