@@ -144,8 +144,8 @@ Aguiar_2021_ustekinumab <- function() {
 
     # ----- Residual error -----
     # Combined additive + proportional on free ustekinumab in central (Cc, nmol/L).
-    CcaddSd  <- 4.55;   label("Additive residual error on Cc (nmol/L)")                                # Aguiar 2021 Table 2 final-model additive RUV
-    CcpropSd <- 0.0777; label("Proportional residual error on Cc (fraction)")                          # Aguiar 2021 Table 2 final-model proportional RUV (7.77%)
+    addSd  <- 4.55;   label("Additive residual error on Cc (nmol/L)")                                # Aguiar 2021 Table 2 final-model additive RUV
+    propSd <- 0.0777; label("Proportional residual error on Cc (fraction)")                          # Aguiar 2021 Table 2 final-model proportional RUV (7.77%)
 
     # Proportional only on FC.
     propSd_fc <- 0.573;  label("Proportional residual error on FC (fraction)")                          # Aguiar 2021 Table 3 final-model proportional RUV (57.3%)
@@ -254,7 +254,7 @@ Aguiar_2021_ustekinumab <- function() {
     # Cc is unbound ustekinumab in central (nmol/L); the source ELISA assay
     # measures unbound drug (Aguiar 2021 Methods section 2.2, ImmunoGuide ELISA).
     Cc <- cfree
-    Cc ~ add(CcaddSd) + prop(CcpropSd)
+    Cc ~ add(addSd) + prop(propSd)
 
     # FC follows a proportional-only error model.
     fc ~ prop(propSd_fc)

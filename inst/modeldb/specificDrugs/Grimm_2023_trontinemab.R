@@ -82,8 +82,8 @@ Grimm_2023_trontinemab <- function() {
     fpla_csf <- fixed(0); label("Residual plasma fraction, cerebrospinal fluid")                  # supp. Table 1: fpla_csf fixed at 0
 
     # Residual error — source paper does not report residual error magnitudes; left at 0 as placeholders
-    CcpropSd <- 0; label("Proportional residual error, plasma Cc (fraction)")
-    CcaddSd  <- 0; label("Additive residual error, plasma Cc (ng/mL)")
+    propSd <- 0; label("Proportional residual error, plasma Cc (fraction)")
+    addSd  <- 0; label("Additive residual error, plasma Cc (ng/mL)")
   })
 
   model({
@@ -135,6 +135,6 @@ Grimm_2023_trontinemab <- function() {
     d/dt(Ccsf)            <- kout_csf            * (kp_csf            * Cc - Ccsf)
     Cbrain_csf            <- fpla_csf            * Cc + Ccsf
 
-    Cc ~ add(CcaddSd) + prop(CcpropSd)
+    Cc ~ add(addSd) + prop(propSd)
   })
 }

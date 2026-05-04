@@ -149,7 +149,7 @@ Suri_2018_brentuximab <- function() {
     # transform both sides) residual model — a homoscedastic additive error
     # on the log scale, which equals proportional error on the linear scale
     # in nlmixr2. %CV from Tables S1 and S3 maps directly to propSd.
-    CcpropSd        <- 0.291; label("Proportional residual error on ADC Cc (fraction)")                       # Suri 2018 Table S1: 29.1% CV (0.3% RSE)
+    propSd        <- 0.291; label("Proportional residual error on ADC Cc (fraction)")                       # Suri 2018 Table S1: 29.1% CV (0.3% RSE)
     propSd_mmae     <- 0.423; label("Proportional residual error on MMAE Cc_mmae (fraction)")                 # Suri 2018 Table S3: 42.3% CV (0.3% RSE)
   })
 
@@ -234,7 +234,7 @@ Suri_2018_brentuximab <- function() {
     Cc      <- central      / v1_adc
     Cc_mmae <- central_mmae / vc_mmae
 
-    Cc      ~ prop(CcpropSd)
+    Cc      ~ prop(propSd)
     Cc_mmae ~ prop(propSd_mmae)
   })
 }

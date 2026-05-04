@@ -95,7 +95,7 @@ Berends_2019_infliximab <- function() {
     # TNF residual applies to total TNF concentration (Rtot, IFX-eq ug/mL).
     # Proportional errors are unit-agnostic so they apply directly across the
     # ug/mL <-> pg/mL <-> nM display conversions.
-    CcpropSd    <- 0.210; label("Proportional residual error for IFX serum concentration (fraction)") # Berends 2019 Table 2
+    propSd    <- 0.210; label("Proportional residual error for IFX serum concentration (fraction)") # Berends 2019 Table 2
     propSd_Rtot <- 0.406; label("Proportional residual error for total TNF concentration (fraction)") # Berends 2019 Table 2
   })
 
@@ -171,7 +171,7 @@ Berends_2019_infliximab <- function() {
     free_TNF_pgml <- (total_target - complex) * MW_TNF_kDa / MW_IFX_kDa * 1e6
 
     # ---- Residual-error models ---------------------------------------------
-    Cc   ~ prop(CcpropSd)
+    Cc   ~ prop(propSd)
     Rtot ~ prop(propSd_Rtot)
   })
 }

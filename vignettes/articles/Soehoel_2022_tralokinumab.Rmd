@@ -64,8 +64,8 @@ reference.
 | `var(etalvc)`                         | `0.148971`       | Table 2: CV_V2 = 40.1%, `omega^2 = log(1 + 0.401^2)` |
 | `var(etalcl)`                         | `0.093459`       | Table 2: CV_CL = 31.3%, `omega^2 = log(1 + 0.313^2)` |
 | `cov(etalvc, etalcl)`                 | `0.071977`       | Table 2: `rho = 0.61`, cov = `rho * sqrt(var_V2 * var_CL)` |
-| `CcaddSd` (additive sigma, ug/mL)     | `0.238`          | Table 2 |
-| `CcpropSd` (proportional sigma)       | `0.216`          | Table 2 |
+| `addSd` (additive sigma, ug/mL)     | `0.238`          | Table 2 |
+| `propSd` (proportional sigma)       | `0.216`          | Table 2 |
 | Structure                             | 2-cmt, 1st-order SC | p. 912 Methods; confirmed by Table 2 |
 
 Table 2 footnote (d) of Soehoel 2022 states that IIV is reported as

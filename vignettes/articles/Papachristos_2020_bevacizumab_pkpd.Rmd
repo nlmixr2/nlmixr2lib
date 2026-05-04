@@ -106,7 +106,7 @@ The same metadata is available programmatically via
 | `etalvc` variance                 | 0.03098    | Papachristos 2020 Table 3, ω_V1 = 0.176                  |
 | `etalvp` variance                 | 0.33524    | Papachristos 2020 Table 3, ω_V2 = 0.579                  |
 | `etale0` variance                 | 0.02789    | Papachristos 2020 Table 3, ω_E0 = 0.167                  |
-| `CcpropSd`                        | 0.238      | Papachristos 2020 Table 3, σ_BEVA                        |
+| `propSd`                        | 0.238      | Papachristos 2020 Table 3, σ_BEVA                        |
 | `propSd_E`                        | 0.264      | Papachristos 2020 Table 3, σ_VEGF                        |
 
 Equations (paper section 2.4):

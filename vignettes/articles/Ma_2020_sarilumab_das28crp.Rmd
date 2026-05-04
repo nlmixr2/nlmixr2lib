@@ -100,7 +100,7 @@ mg/L, BLPHYVAS 66, BLHAQ 1.75, WT 72.8 kg).
 | `var(etalIC50)`                                         | `log(1.58^2 + 1) = 1.252`     | Ma 2020 Table 3: IC50 IIV 158% CV |
 | `var(etalKout)`                                         | `log(0.842^2 + 1) = 0.5360`   | Ma 2020 Table 3: Kout IIV 84.2% CV |
 | `var(etalPLB)`                                          | `log(1.05^2 + 1) = 0.7431`    | Ma 2020 Table 3: PLB IIV 105% CV |
-| `CcpropSd` (sarilumab proportional RE)                  | `sqrt(0.395) = 0.6285` | Xu 2019 Table 3: log-additive residual sigma^2 = 0.395 |
+| `propSd` (sarilumab proportional RE)                  | `sqrt(0.395) = 0.6285` | Xu 2019 Table 3: log-additive residual sigma^2 = 0.395 |
 | `addSd_das28` (DAS28-CRP additive RE)                   | `0.647`             | Ma 2020 Table 3, additive residual row |
 | Structure — PK (2-cmt + first-order SC absorption + linear + MM elimination) | n/a | Xu 2019 Methods / Figure 2 / Eq. |
 | Structure — PD (indirect response with inhibition of kin) | n/a               | Ma 2020 Figure 1 caption and Eq. |
@@ -484,7 +484,7 @@ knitr::kable(placebo_check, digits = 2,
   percentages (46.5% / 50.3% for 150 / 200 mg Q2W); and (iii) baseline
   and placebo-arm sanity checks.
 - **Dual observation model.** The model declares two observation
-  equations: `Cc ~ prop(CcpropSd)` (sarilumab concentration) and
+  equations: `Cc ~ prop(propSd)` (sarilumab concentration) and
   `das28 ~ add(addSd_das28)` (DAS28-CRP score). Event tables used with
   `rxSolve()` therefore need an explicit `cmt = "Cc"` or `cmt = "das28"`
   on observation records to disambiguate the two outputs; the simulation

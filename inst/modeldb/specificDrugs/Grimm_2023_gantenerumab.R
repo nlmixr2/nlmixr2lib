@@ -69,8 +69,8 @@ Grimm_2023_gantenerumab <- function() {
     kout_csf <- 0.0134; label("Brain outflow rate, cerebrospinal fluid (1/h)")                 # Supp. Table 1
     fpla_csf <- fixed(0); label("Residual plasma fraction, cerebrospinal fluid")               # Supp. Table 1
 
-    CcpropSd <- 0; label("Proportional residual error (fraction)")
-    CcaddSd <- 0; label("Additive residual error (ng/mL)")
+    propSd <- 0; label("Proportional residual error (fraction)")
+    addSd <- 0; label("Additive residual error (ng/mL)")
   })
   model({
     cl <- exp(lcl + log(WT/5)*allo_cl)
@@ -115,6 +115,6 @@ Grimm_2023_gantenerumab <- function() {
     d/dt(Ccsf) <- kout_csf*(kp_csf*Cc - Ccsf)
     Cbrain_csf <- fpla_csf*Cc + Ccsf
 
-    Cc ~ add(CcaddSd) + prop(CcpropSd)
+    Cc ~ add(addSd) + prop(propSd)
   })
 }

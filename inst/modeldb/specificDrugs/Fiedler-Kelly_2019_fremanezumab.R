@@ -60,8 +60,8 @@
     # Source reports variance-scale NONMEM $SIGMA entries; nlmixr2 expects SD.
     # Proportional variance 0.0531 -> propSd = sqrt(0.0531) = 0.2304
     # Additive variance 0.204 (ug/mL^2) -> addSd = sqrt(0.204) = 0.4517 ug/mL
-    CcpropSd <- 0.2304; label("Proportional residual error (SC, fraction)")                           # Fiedler-Kelly 2019 Table 2 (variance 0.0531)
-    CcaddSd  <- 0.4517; label("Additive residual error (SC, ug/mL)")                                  # Fiedler-Kelly 2019 Table 2 (variance 0.204)
+    propSd <- 0.2304; label("Proportional residual error (SC, fraction)")                           # Fiedler-Kelly 2019 Table 2 (variance 0.0531)
+    addSd  <- 0.4517; label("Additive residual error (SC, ug/mL)")                                  # Fiedler-Kelly 2019 Table 2 (variance 0.204)
   })
 
   model({
@@ -88,6 +88,6 @@
 
     # Observation: dose in mg, volume in L -> mg/L = ug/mL
     Cc <- central / vc
-    Cc ~ add(CcaddSd) + prop(CcpropSd)
+    Cc ~ add(addSd) + prop(propSd)
   })
 }

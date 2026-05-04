@@ -95,7 +95,7 @@ PerezRuixo_2025_posdinemab <- function() {
     # Paper Methods: "an additive error model after natural logarithmic
     # transformation was used", which is proportional in linear space. Table 2
     # sigma values match the IIV CV% column convention (bare percentages).
-    CcpropSd         <- 0.0873; label("Proportional residual error on serum posdinemab (sigma_1 = 8.73)")        # Table 2: sigma_1 8.73
+    propSd         <- 0.0873; label("Proportional residual error on serum posdinemab (sigma_1 = 8.73)")        # Table 2: sigma_1 8.73
     propSd_Ccsf      <- 0.164;  label("Proportional residual error on CSF posdinemab (sigma_2 = 16.4)")          # Table 2: sigma_2 16.4
     propSd_TotalTau  <- 0.112;  label("Proportional residual error on CSF total p217+tau (sigma_3 = 11.2)")      # Table 2: sigma_3 11.2
     propSd_FreeTau   <- 0.133;  label("Proportional residual error on CSF free p217+tau (sigma_4 = 13.3)")       # Table 2: sigma_4 13.3
@@ -183,7 +183,7 @@ PerezRuixo_2025_posdinemab <- function() {
     TotalTau <- R + RC
     FreeTau  <- R
 
-    Cc       ~ prop(CcpropSd)
+    Cc       ~ prop(propSd)
     Ccsf     ~ prop(propSd_Ccsf)
     TotalTau ~ prop(propSd_TotalTau)
     FreeTau  ~ prop(propSd_FreeTau)

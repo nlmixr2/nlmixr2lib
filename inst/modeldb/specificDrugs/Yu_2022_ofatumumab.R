@@ -204,8 +204,8 @@ Yu_2022_ofatumumab <- function() {
     etalgamma      ~ 1.46^2   # Yu 2022 Table 3
 
     # ---- Residual error (Yu 2022 Table 3 final-model estimates) -------------
-    CcpropSd       <- 0.278;    label("Proportional residual error for ofatumumab plasma concentration (fraction)")  # Yu 2022 Table 3
-    CcaddSd        <- 0.0316;   label("Additive residual error for ofatumumab plasma concentration (mg/L)")          # Yu 2022 Table 3
+    propSd       <- 0.278;    label("Proportional residual error for ofatumumab plasma concentration (fraction)")  # Yu 2022 Table 3
+    addSd        <- 0.0316;   label("Additive residual error for ofatumumab plasma concentration (mg/L)")          # Yu 2022 Table 3
     propSd_Bcell    <- 0.381;    label("Proportional residual error for B cell count (fraction)")                     # Yu 2022 Table 3
     addSd_Bcell     <- 0.153;    label("Additive residual error for B cell count (cells/uL)")                         # Yu 2022 Table 3
   })
@@ -315,7 +315,7 @@ Yu_2022_ofatumumab <- function() {
     # model state Ltot). Bcell is the central-compartment CD19+ B cell count.
     Cc    <- ltot
     Bcell <- bcell
-    Cc    ~ add(CcaddSd)    + prop(CcpropSd)
+    Cc    ~ add(addSd)    + prop(propSd)
     Bcell ~ add(addSd_Bcell) + prop(propSd_Bcell)
   })
 }

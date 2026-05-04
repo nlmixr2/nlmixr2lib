@@ -89,7 +89,7 @@ Hayashi_2007_omalizumab <- function() {
     # Residual error - paper uses Y = F * exp(eps), eps ~ N(0, sigma^2) (Hayashi 2007 page 553).
     # For small sigma this is well approximated by a proportional model
     # Y ~ F + F * propSd * eps with propSd = sigma; encoded as prop() per nlmixr2 convention.
-    CcpropSd        <- 0.167; label("Proportional residual error on total omalizumab (fraction)")        # Hayashi 2007 Table 3 (omalizumab intra-individual CV 16.7%)
+    propSd        <- 0.167; label("Proportional residual error on total omalizumab (fraction)")        # Hayashi 2007 Table 3 (omalizumab intra-individual CV 16.7%)
     propSd_totalIgE <- 0.211; label("Proportional residual error on total IgE (fraction)")               # Hayashi 2007 Table 3 (total IgE intra-individual CV 21.1%)
     propSd_freeIgE  <- 0.218; label("Proportional residual error on free IgE (fraction)")                # Hayashi 2007 Table 3 (free IgE intra-individual CV 21.8%)
   })
@@ -168,7 +168,7 @@ Hayashi_2007_omalizumab <- function() {
     totalIgE <- (C_fE + C_C) * MWE
     freeIgE  <-  C_fE        * MWE
 
-    Cc       ~ prop(CcpropSd)
+    Cc       ~ prop(propSd)
     totalIgE ~ prop(propSd_totalIgE)
     freeIgE  ~ prop(propSd_freeIgE)
   })

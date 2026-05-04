@@ -130,8 +130,8 @@ antibody) or Table 3 (unconjugated DXd). The table below collates them.
 | Var(CLlin IIV)         | 0.215         | Table 2                        |
 | Cov(Vc, CLlin)         | 0.030         | Table 2                        |
 | Var(Vc IIV)            | 0.023         | Table 2                        |
-| `CcpropSd`             | 0.236         | Table 2 (Proportional error)   |
-| `CcaddSd`              | 0.1 ug/mL fixed (= 100 ng/mL = LLOQ) | Table 2  |
+| `propSd`             | 0.236         | Table 2 (Proportional error)   |
+| `addSd`              | 0.1 ug/mL fixed (= 100 ng/mL = LLOQ) | Table 2  |
 
 ## Unconjugated DXd (Lu 2022 Table 3)
 
@@ -624,7 +624,7 @@ unconjugated-DXd ODE can be integrated.
    Lu 2022 Results note that the additive error 'was fixed to the LLOQ of
    100 ng/mL, as it could not be estimated reliably (the estimate was 606
    ng/mL with a standard error > 3e9)'. The model applies this fixing
-   exactly via `CcaddSd <- fix(0.1)` (in ug/mL).
+   exactly via `addSd <- fix(0.1)` (in ug/mL).
 6. **Unconjugated-DXd additive residual error fixed at LLOQ.** Lu 2022
    Results note: 'The additive error in the combined residual error model
    was fixed to 0.01 ng/mL (the LLOQ for DXd), as the estimation of the

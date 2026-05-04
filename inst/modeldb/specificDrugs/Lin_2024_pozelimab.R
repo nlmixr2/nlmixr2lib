@@ -101,7 +101,7 @@ Lin_2024_pozelimab <- function() {
     # C5 14.83 %CV) are documented in the validation vignette under
     # Assumptions and deviations.
     # ---------------------------------------------------------------------------
-    CcpropSd     <- 0.3722; label("Proportional residual error for total pozelimab in adults (fraction)")  # Lin 2024 Table 2 ("RV for pozelimab in adults" = 37.22 %CV)
+    propSd     <- 0.3722; label("Proportional residual error for total pozelimab in adults (fraction)")  # Lin 2024 Table 2 ("RV for pozelimab in adults" = 37.22 %CV)
     propSd_Rtot  <- 0.1072; label("Proportional residual error for total C5 in adults (fraction)")          # Lin 2024 Table 2 ("RV for C5 in adults"        = 10.72 %CV)
   })
 
@@ -187,7 +187,7 @@ Lin_2024_pozelimab <- function() {
     # ---------------------------------------------------------------------------
     # Residual-error models
     # ---------------------------------------------------------------------------
-    Cc   ~ prop(CcpropSd)
+    Cc   ~ prop(propSd)
     Rtot ~ prop(propSd_Rtot)
   })
 }

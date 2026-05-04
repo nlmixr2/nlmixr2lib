@@ -121,8 +121,8 @@ Li_2017_brentuximab <- function() {
     #                     * 1 mL = 10^-6 / 153000 * 10^12 = 6.536 pmol/mL.
     #         0.0125 ug/mL = 0.0817 pmol/mL. (Equivalent to LLOQ 12.5 ng/mL.)
     #   MMAE: 0.0119 ng/mL * (1 / MW_MMAE_kDa) = 0.0119 / 0.718 = 0.01658 pmol/mL.
-    CcaddSd        <- fix(0.0817); label("Additive residual error on ADC Cc (pmol/mL; equivalent to 0.0125 ug/mL = LLOQ 12.5 ng/mL, fixed)") # Li 2017 Table 3: sigma1 0.0125 ug/mL fixed
-    CcpropSd       <- 0.329;       label("Proportional residual error on ADC Cc (fraction)") # Li 2017 Table 3: sigma2 32.9% CV
+    addSd        <- fix(0.0817); label("Additive residual error on ADC Cc (pmol/mL; equivalent to 0.0125 ug/mL = LLOQ 12.5 ng/mL, fixed)") # Li 2017 Table 3: sigma1 0.0125 ug/mL fixed
+    propSd       <- 0.329;       label("Proportional residual error on ADC Cc (fraction)") # Li 2017 Table 3: sigma2 32.9% CV
     addSd_mmae     <- 0.01658;     label("Additive residual error on MMAE Cc_mmae (pmol/mL; equivalent to 0.0119 ng/mL)") # Li 2017 Table 4: sigma1 0.0119 ng/mL
     propSd_mmae    <- 0.368;       label("Proportional residual error on MMAE Cc_mmae (fraction)") # Li 2017 Table 4: sigma2 36.8% CV
   })
@@ -196,7 +196,7 @@ Li_2017_brentuximab <- function() {
     Cc      <- central      / v1
     Cc_mmae <- central_mmae / v4
 
-    Cc      ~ add(CcaddSd)      + prop(CcpropSd)
+    Cc      ~ add(addSd)      + prop(propSd)
     Cc_mmae ~ add(addSd_mmae) + prop(propSd_mmae)
   })
 }

@@ -122,7 +122,7 @@ Equations 8-15. The table below collates them.
 | `e_eu_cl_dxd`           | 0.240          | -        | Table 2                  |
 | `e_row_cl_dxd`          | 0.196          | -        | Table 2                  |
 | `e_sexf_vc_dxd`         | -0.185         | -        | Table 2                  |
-| `CcpropSd`              | 0.121          | fraction | Table 1 (additive RUV log scale) |
+| `propSd`              | 0.121          | fraction | Table 1 (additive RUV log scale) |
 | `propSd_dxd`            | 0.283          | fraction | Table 2 (additive RUV log scale) |
 
 Inter-individual variability (log-normal; omega^2 = log(CV^2 + 1)):

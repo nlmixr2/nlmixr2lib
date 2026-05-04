@@ -11,7 +11,7 @@ tgi_sat_genVonBertalanffy <- function() {
     lkg <- 0.7; label("Birth rate")
     lkd <- 0.7; label ("Death rate")
     lgamma <- 0.95; label("proliferative cells as a fraction of the full tumor volume (gamma)")
-    CcpropSd <- 0.5 ; label("PK proportional residual error (fraction)")
+    propSd <- 0.5 ; label("PK proportional residual error (fraction)")
     propSd_tumorSize <- 0.5 ; label("Tumor size proportional residual error (fraction)")
     addSd_tumorSize <- 30 ; label("Tumor size additive residual error (tumor volume)")
   })
@@ -34,7 +34,7 @@ tgi_sat_genVonBertalanffy <- function() {
     d/dt(tumorSize) <- kg*tumorSize^(gamma)-kd*tumorSize
     
     Cc <- central / vc
-    Cc ~ prop(CcpropSd)
+    Cc ~ prop(propSd)
     tumorSize ~ prop(propSd_tumorSize) + add(addSd_tumorSize)
   })
 }

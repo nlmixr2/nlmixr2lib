@@ -152,7 +152,7 @@ Ma_2020_sarilumab_das28crp <- function() {
     #   the table are ambiguous but the DAS28-CRP score is unitless and the paper's
     #   CWRES/VPC are on DAS28-CRP units. Treated here as additive on DAS28-CRP.
     # --------------------------------------------------------------------------
-    CcpropSd    <- 0.6285; label("Proportional residual error on sarilumab concentration (fraction)") # Xu 2019 Table 3: residual sigma^2 = 0.395 (log-additive)
+    propSd    <- 0.6285; label("Proportional residual error on sarilumab concentration (fraction)") # Xu 2019 Table 3: residual sigma^2 = 0.395 (log-additive)
     addSd_das28  <- 0.647;  label("Additive residual error on DAS28-CRP (score units)")                # Ma 2020 Table 3, additive residual row
   })
   model({
@@ -214,7 +214,7 @@ Ma_2020_sarilumab_das28crp <- function() {
     # ------------------------------------------------------------------
     # 5. Observation and error model.
     # ------------------------------------------------------------------
-    Cc    ~ prop(CcpropSd)
+    Cc    ~ prop(propSd)
     das28 ~ add(addSd_das28)
   })
 }

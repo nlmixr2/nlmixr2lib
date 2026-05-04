@@ -54,8 +54,8 @@ Soehoel_2022_tralokinumab <- function() {
     lvp <- log(1.44); label("Peripheral volume of distribution (L)")
     lq <- log(0.159); label("Intercompartmental clearance (L/day)")
     lfdepot <- log(0.761); label("Subcutaneous bioavailability (fraction)")
-    CcaddSd <- 0.238; label("Additive residual error (ug/mL)")
-    CcpropSd <- 0.216; label("Proportional residual error (fraction)")
+    addSd <- 0.238; label("Additive residual error (ug/mL)")
+    propSd <- 0.216; label("Proportional residual error (fraction)")
 
     e_wt_vc_vp <- 0.783; label("Effect of body weight on central and peripheral volumes (unitless)")
     e_wt_cl_q <- 0.873; label("Effect of body weight on clearance and intercompartmental clearance (unitless)")
@@ -84,7 +84,7 @@ Soehoel_2022_tralokinumab <- function() {
     # volume unit) to ug/mL (measurement unit)
     Cc <- linCmt()
     f(depot) <- fdepot
-    Cc ~ add(CcaddSd) + prop(CcpropSd)
+    Cc ~ add(addSd) + prop(propSd)
   })
 }
 

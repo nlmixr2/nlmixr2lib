@@ -69,8 +69,8 @@ cross-walk:
 | `var(etalka)`                   | `0.474^2 = 0.224676`  | Supp. Table S2: omega_ka (SD) = 0.474 |
 | `var(etalvmax)`                 | `0.236^2 = 0.055696`  | Supp. Table S2: omega_Vm (SD) = 0.236 |
 | `var(etalmtt)`                  | `0.525^2 = 0.275625`  | Supp. Table S2: omega_MTT (SD) = 0.525, applied on `log(MTT)` here |
-| `CcpropSd` (proportional sigma) | `0.15`                | Supp. Table S2 |
-| `CcaddSd` (additive sigma)      | `fixed(0.03)` mg/L    | Supp. Table S2 (fixed, carried over from Kovalenko 2016) |
+| `propSd` (proportional sigma) | `0.15`                | Supp. Table S2 |
+| `addSd` (additive sigma)      | `fixed(0.03)` mg/L    | Supp. Table S2 (fixed, carried over from Kovalenko 2016) |
 | Structure                       | 2-cmt + 3 transit + parallel linear/MM elimination | p. 758 Methods, Figure 1 |
 
 The paper's Methods section explicitly defines omega as
@@ -303,7 +303,7 @@ knitr::kable(typical_summary, digits = 2,
   verbatim. Typical values can be cross-checked against Table 1's derived
   `CL = ke * Vc = 0.132 L/day`.
 - `Km` and `F` were reported as fixed in Table 1 Model 1, with values
-  carried over from the earlier Kovalenko 2016 model; `CcaddSd` was likewise
+  carried over from the earlier Kovalenko 2016 model; `addSd` was likewise
   fixed at 0.03 mg/L.
 - The `etalmtt` eta is applied as log-normal on MTT
   (`MTT = exp(lmtt + etalmtt)`), whereas Supplementary Table S2 implements

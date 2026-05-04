@@ -149,7 +149,7 @@ Zhou_2025_brentuximab <- function() {
     # Residual variability (LTBS in NONMEM = proportional in linear space for
     # nlmixr2; %CV from Tables S1 and S2 is the proportional SD on the linear
     # concentration scale).
-    CcpropSd       <- 0.321; label("Proportional residual error on ADC Cc (fraction)")    # Zhou 2025 Table S1: 32.1% CV (0.7% RSE)
+    propSd       <- 0.321; label("Proportional residual error on ADC Cc (fraction)")    # Zhou 2025 Table S1: 32.1% CV (0.7% RSE)
     propSd_mmae    <- 0.375; label("Proportional residual error on MMAE Cc_mmae (fraction)") # Zhou 2025 Table S2: 37.5% CV (1.2% RSE)
   })
 
@@ -231,7 +231,7 @@ Zhou_2025_brentuximab <- function() {
     Cc      <- central      / v1_adc
     Cc_mmae <- central_mmae / vc_mmae
 
-    Cc      ~ prop(CcpropSd)
+    Cc      ~ prop(propSd)
     Cc_mmae ~ prop(propSd_mmae)
   })
 }

@@ -70,8 +70,8 @@ Diao_2016_daclizumab_cd56bright <- function() {
                         -0.10290, 0.07038)
     etalvc ~ 0.09175  # Othman 2014 Table 2 (Vc 31% CV)
 
-    CcpropSd <- 0.22; label("Proportional residual error on daclizumab HYP serum concentration (fraction)") # Othman 2014 Table 2
-    CcaddSd  <- 0.33; label("Additive residual error on daclizumab HYP serum concentration (ug/mL)")        # Othman 2014 Table 2
+    propSd <- 0.22; label("Proportional residual error on daclizumab HYP serum concentration (fraction)") # Othman 2014 Table 2
+    addSd  <- 0.33; label("Additive residual error on daclizumab HYP serum concentration (ug/mL)")        # Othman 2014 Table 2
 
     # ----------------------------------------------------------------------
     # CD56 bright NK cell PD parameters (Diao 2016 Table 4, indirect-response).
@@ -150,7 +150,7 @@ Diao_2016_daclizumab_cd56bright <- function() {
     # ------------------------------------------------------------------
     # 5. Observation and error model.
     # ------------------------------------------------------------------
-    Cc         ~ add(CcaddSd) + prop(CcpropSd)
+    Cc         ~ add(addSd) + prop(propSd)
     cd56bright ~ prop(propSd_cd56bright)
   })
 }

@@ -108,7 +108,7 @@ Wojciechowski_2022_domagrozumab <- function() {
     # natural-log domain; in nlmixr2 linear-domain notation this is
     # proportional with SD = sigma_add (= 0.142). Total myostatin used a
     # proportional error model in the linear domain; sigma_pro = 20.6% CV.
-    CcpropSd   <- 0.142; label("Proportional residual error on free domagrozumab concentration (fraction)")  # Wojciechowski 2022 Table 2: sigma_add = 0.142 SD log-additive
+    propSd   <- 0.142; label("Proportional residual error on free domagrozumab concentration (fraction)")  # Wojciechowski 2022 Table 2: sigma_add = 0.142 SD log-additive
     propSd_Myo <- 0.206; label("Proportional residual error on total myostatin concentration (fraction)")     # Wojciechowski 2022 Table 2: sigma_pro = 20.6% CV
   })
 
@@ -183,7 +183,7 @@ Wojciechowski_2022_domagrozumab <- function() {
     Cc  <- Cc_nM           # Free domagrozumab concentration (nM)
     Myo <- total_target    # Total myostatin concentration (nM)
 
-    Cc  ~ prop(CcpropSd)
+    Cc  ~ prop(propSd)
     Myo ~ prop(propSd_Myo)
   })
 }

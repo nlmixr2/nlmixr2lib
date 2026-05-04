@@ -75,7 +75,7 @@ Toukam_2025_biib107 <- function() {
     # in the validation vignette's Errata / Assumptions sections; route-
     # specific error coding is intentionally simplified to a single
     # additive term for library use.
-    CcaddSd <- 8.67; label("Additive residual error on BIIB107 serum concentration (ug/mL, SC value)")  # Toukam 2025 Table 3
+    addSd <- 8.67; label("Additive residual error on BIIB107 serum concentration (ug/mL, SC value)")  # Toukam 2025 Table 3
 
     # ------------------------------------------------------------------
     # Sigmoidal Emax PD model of alpha-4 integrin receptor saturation
@@ -147,7 +147,7 @@ Toukam_2025_biib107 <- function() {
     # ------------------------------------------------------------------
     # Observation and residual-error models.
     # ------------------------------------------------------------------
-    Cc    ~ add(CcaddSd)
+    Cc    ~ add(addSd)
     a4sat ~ add(addSd_a4sat)
   })
 }

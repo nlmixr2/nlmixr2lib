@@ -84,7 +84,7 @@ collects them for review.
 | `etalvc` (shared by V_X and V_E)                 | CV 13.0%             | ω² = 0.01679       | Table 3 |
 | `etalvc_complex`                                 | CV 25.0%             | ω² = 0.06062       | Table 3 |
 | `etalcl_ige + etalp_ige` (block; r = 0.968)      | CV 25.3% / 23.1%     | ω² = 0.06205, cov 0.05496, ω² = 0.05197 | Table 3 |
-| `CcpropSd` / `propSd_totalIgE` / `propSd_freeIgE` (Y = F·exp(ε)) | σ ≈ 16.7% / 21.1% / 21.8% | 0.167 / 0.211 / 0.218 | Table 3 |
+| `propSd` / `propSd_totalIgE` / `propSd_freeIgE` (Y = F·exp(ε)) | σ ≈ 16.7% / 21.1% / 21.8% | 0.167 / 0.211 / 0.218 | Table 3 |
 | Eq. dX_SC/dt = −ka·X_SC + f·D·δ(t−tD)            | n/a                  | n/a                | Methods, page 552 |
 | Eq. dX_TX/dt = ka·X_SC − CL_X·C_fX − CL_C·C_C    | n/a                  | n/a                | Methods, page 552 |
 | Eq. dX_TE/dt = P_E − CL_E·C_fE − CL_C·C_C        | n/a                  | n/a                | Methods, page 552 |

@@ -106,8 +106,8 @@ below collates them:
 | `e_wt_cl`              | 0.698        | Table 3 (Θ_BW,CL,Q2,Q3)         |
 | `e_wt_vc`              | 0.503        | Table 3 (Θ_BW,V1,V2,V3)         |
 | `e_sexf_vc`            | 0.873        | Table 3 (Θ_SEX,V1)              |
-| `CcaddSd`              | 0.0817 pmol/mL (= 0.0125 µg/mL) | Table 3 σ1 fixed |
-| `CcpropSd`             | 0.329        | Table 3 σ2 (32.9% CV)           |
+| `addSd`              | 0.0817 pmol/mL (= 0.0125 µg/mL) | Table 3 σ1 fixed |
+| `propSd`             | 0.329        | Table 3 σ2 (32.9% CV)           |
 | `lcl_mmae` → CLM       | 55.7 L/d     | Table 4                         |
 | `lvc_mmae` → V4        | 79.8 L       | Table 4                         |
 | `lq_mmae`  → Q5        | 65.0 L/d     | Table 4                         |

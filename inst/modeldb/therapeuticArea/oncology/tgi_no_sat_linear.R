@@ -8,7 +8,7 @@ tgi_no_sat_linear <- function() {
     lcl <- 1 ; label("Clearance (CL)")
     lvc  <- 3.45 ; label("Central volume of distribution (V)")
     lkgl <- 0.7; label("Zero-order linear growth rate")
-    CcpropSd <- 0.5 ; label("PK proportional residual error (fraction)")
+    propSd <- 0.5 ; label("PK proportional residual error (fraction)")
     propSd_tumorSize <- 0.5 ; label("Tumor size proportional residual error (fraction)")
     addSd_tumorSize <- 30 ; label("Tumor size additive residual error (tumor volume)")
   })
@@ -27,7 +27,7 @@ tgi_no_sat_linear <- function() {
     d/dt(tumorSize) <- kgl
     
     Cc <- central / vc
-    Cc ~ prop(CcpropSd)
+    Cc ~ prop(propSd)
     tumorSize ~ prop(propSd_tumorSize) + add(addSd_tumorSize)
   })
 }

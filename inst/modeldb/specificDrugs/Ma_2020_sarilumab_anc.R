@@ -121,7 +121,7 @@ Ma_2020_sarilumab_anc <- function() {
     # PK: Xu 2019 fitted log-transformed concentrations with an additive error
     # on the log-scale of variance sigma^2 = 0.395; this maps to a
     # proportional error of sqrt(0.395) = 0.6285 in linear space.
-    CcpropSd  <- 0.6285; label("Proportional residual error on sarilumab concentration (fraction)")   # Xu 2019 Table 3
+    propSd  <- 0.6285; label("Proportional residual error on sarilumab concentration (fraction)")   # Xu 2019 Table 3
     # PD: Ma 2020 Table 4 reports a proportional residual error of 28.2%.
     propSd_ANC <- 0.282;  label("Proportional residual error on ANC (fraction)")                      # Ma 2020 Table 4
   })
@@ -172,7 +172,7 @@ Ma_2020_sarilumab_anc <- function() {
 
     ANC <- effect
 
-    Cc  ~ prop(CcpropSd)
+    Cc  ~ prop(propSd)
     ANC ~ prop(propSd_ANC)
   })
 }

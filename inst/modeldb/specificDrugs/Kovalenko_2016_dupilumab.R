@@ -72,8 +72,8 @@ Kovalenko_2016_dupilumab <- function() {
 
     # Residual error - Table 2: proportional CV% = 24.2 (SD = 0.242 on the linear scale);
     # additive SD fixed at 0.03 mg/L with BLQ data included.
-    CcpropSd <- 0.242;       label("proportional residual error SD (fraction)") # Table 2: sigma^2 proportional (CV%) = 24.2
-    CcaddSd  <- fixed(0.03); label("additive residual error SD (mg/L)")         # Table 2: sigma^2 additive = 0.03 (fixed)
+    propSd <- 0.242;       label("proportional residual error SD (fraction)") # Table 2: sigma^2 proportional (CV%) = 24.2
+    addSd  <- fixed(0.03); label("additive residual error SD (mg/L)")         # Table 2: sigma^2 additive = 0.03 (fixed)
   })
   model({
     # Individual PK parameters; weight-adjusted central volume per Eq. 1
@@ -94,6 +94,6 @@ Kovalenko_2016_dupilumab <- function() {
 
     # Observation: dosing amounts in mg / central volume in L give mg/L directly
     Cc <- central / vc
-    Cc ~ add(CcaddSd) + prop(CcpropSd)
+    Cc ~ add(addSd) + prop(propSd)
   })
 }

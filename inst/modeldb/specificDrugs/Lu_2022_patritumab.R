@@ -149,8 +149,8 @@ Lu_2022_patritumab <- function() {
     # ELISA). Lu 2022 Table 3 (unconjugated DXd): proportional error 0.392
     # (fraction), additive error fixed to 0.01 ng/mL (the LLOQ for the
     # unconjugated-DXd LC-MS assay).
-    CcaddSd     <- fix(0.1);   label("Additive residual error on DXd-conjugated antibody Cc (ug/mL; equivalent to 100 ng/mL = LLOQ, fixed)") # Lu 2022 Table 2: Additive error 100 ng/mL Fixed
-    CcpropSd    <- 0.236;      label("Proportional residual error on DXd-conjugated antibody Cc (fraction)")                                  # Lu 2022 Table 2: Proportional error 0.236
+    addSd     <- fix(0.1);   label("Additive residual error on DXd-conjugated antibody Cc (ug/mL; equivalent to 100 ng/mL = LLOQ, fixed)") # Lu 2022 Table 2: Additive error 100 ng/mL Fixed
+    propSd    <- 0.236;      label("Proportional residual error on DXd-conjugated antibody Cc (fraction)")                                  # Lu 2022 Table 2: Proportional error 0.236
     addSd_dxd     <- fix(0.01);  label("Additive residual error on unconjugated DXd Cc_dxd (ng/mL; equivalent to LLOQ for DXd, fixed)")         # Lu 2022 Table 3: Additive error 0.01 ng/mL Fixed
     propSd_dxd    <- 0.392;      label("Proportional residual error on unconjugated DXd Cc_dxd (fraction)")                                     # Lu 2022 Table 3: Proportional error 0.392
   })
@@ -259,7 +259,7 @@ Lu_2022_patritumab <- function() {
     # used by Lu 2022 to report unconjugated-DXd concentrations).
     Cc_dxd <- (central_dxd / vdxd) * 1000
 
-    Cc     ~ add(CcaddSd)     + prop(CcpropSd)
+    Cc     ~ add(addSd)     + prop(propSd)
     Cc_dxd ~ add(addSd_dxd) + prop(propSd_dxd)
   })
 }

@@ -86,7 +86,7 @@ The same metadata is available programmatically via
 | `etalvc` variance                     | 0.02856    | Papachristos 2020 Table 2, ω_V1 = 0.169                  |
 | `etalvp` variance                     | 0.30803    | Papachristos 2020 Table 2, ω_V2 = 0.555                  |
 | `etalbm0` variance                    | 0.05760    | Papachristos 2020 Table 2, ω_BM0 = 0.24                  |
-| `CcpropSd`                            | 0.253      | Papachristos 2020 Table 2, σ_BEVA                        |
+| `propSd`                            | 0.253      | Papachristos 2020 Table 2, σ_BEVA                        |
 | `propSd_Cv`                           | 0.290      | Papachristos 2020 Table 2, σ_VEGF                        |
 
 Equations (paper section 2.3 + Gibiansky et al. 2008 QSS-TMDD form):

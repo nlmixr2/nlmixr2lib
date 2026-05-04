@@ -78,7 +78,7 @@ Papachristos_2020_bevacizumab_qss <- function() {
     etalbm0 ~ 0.05760  # Table 2 omega_BM0 = 0.24
 
     # Residual error (proportional, two outputs)
-    CcpropSd <- 0.253; label("Proportional residual error for bevacizumab (fraction)")  # Table 2 row sigma_BEVA
+    propSd <- 0.253; label("Proportional residual error for bevacizumab (fraction)")  # Table 2 row sigma_BEVA
     propSd_Cv <- 0.290; label("Proportional residual error for free VEGF-A (fraction)")  # Table 2 row sigma_VEGF
   })
   model({
@@ -143,7 +143,7 @@ Papachristos_2020_bevacizumab_qss <- function() {
     # nM -> mg/L conversion: c_nM * MW_BEV (g/mol) * 1e-9 (g/ng/L conversion not needed here)
     #   1 nM = 1e-9 mol/L * MW (g/mol) = MW * 1e-9 g/L = MW / 1e6 mg/L
     Cc <- ctot * mw_bev / 1e6
-    Cc ~ prop(CcpropSd)
+    Cc ~ prop(propSd)
 
     # Free VEGF-A observation: ng/L (paper unit)
     # 1 nM = MW (g/mol) * 1e-9 g/L = MW ng/L

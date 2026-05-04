@@ -330,10 +330,10 @@ checkModelConventions <- function(model, verbose = TRUE) {
   for (v in obs_vars) {
     if (is.na(v)) next
     if (v == conv$observationVar) {
-      # Parent observation Cc: canonical bare propSd / addSd. The legacy
-      # concatenated form CcpropSd / CcaddSd is still accepted while
-      # older models migrate.
-      out <- c(out, "CcpropSd", "CcaddSd")
+      # Parent observation Cc: canonical bare propSd / addSd. The
+      # output-prefixed CcpropSd / CcaddSd form is no longer accepted
+      # because every observation uses propSd_<X> / addSd_<X> with the
+      # parent special-cased to the bare suffix-free form.
       next
     }
     # Every non-parent output uses parameter-name-then-output-suffix:

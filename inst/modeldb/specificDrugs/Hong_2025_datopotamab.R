@@ -179,7 +179,7 @@ Hong_2025_datopotamab <- function() {
     # subject-level scaling of the residual SD that nlmixr2 does not natively
     # support; this implementation uses the typical-subject residual SD only.
     # See vignette Assumptions and deviations.
-    CcpropSd     <- 0.121;  label("Proportional residual error on Dato-DXd Cc (fraction)")  # Hong 2025 Table 1: additive RUV on log scale, CV 0.121
+    propSd     <- 0.121;  label("Proportional residual error on Dato-DXd Cc (fraction)")  # Hong 2025 Table 1: additive RUV on log scale, CV 0.121
     propSd_dxd   <- 0.283;  label("Proportional residual error on DXd Cc_dxd (fraction)")   # Hong 2025 Table 2: additive RUV on log scale, CV 0.283
   })
   model({
@@ -256,7 +256,7 @@ Hong_2025_datopotamab <- function() {
     # obtain ng/mL.
     Cc_dxd <- central_dxd / vc_dxd
 
-    Cc     ~ prop(CcpropSd)
+    Cc     ~ prop(propSd)
     Cc_dxd ~ prop(propSd_dxd)
   })
 }

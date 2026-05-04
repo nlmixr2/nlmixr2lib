@@ -64,8 +64,8 @@ sensitivity analysis).
 | `var(etalke)`                                | `0.131`                    | Table 2 row "omega^2 (ke)"                                                                  |
 | `var(etalka)`                                | `0.251`                    | Table 2 row "omega^2 (ka)"                                                                  |
 | `var(etalvmax)`                              | `0.0428`                   | Table 2 row "omega^2 (Vm)"                                                                  |
-| `CcpropSd` (proportional SD)                 | `0.242` (= 24.2 %CV on the linear scale) | Table 2 row "sigma^2 proportional (CV%)"                                         |
-| `CcaddSd` (additive SD)                      | `fixed(0.03)` mg/L         | Table 2 row "sigma^2 additive (mg/L)"; fixed when BLQ data included                          |
+| `propSd` (proportional SD)                 | `0.242` (= 24.2 %CV on the linear scale) | Table 2 row "sigma^2 proportional (CV%)"                                         |
+| `addSd` (additive SD)                      | `fixed(0.03)` mg/L         | Table 2 row "sigma^2 additive (mg/L)"; fixed when BLQ data included                          |
 | Structure: 2-cmt + parallel linear/MM elim.  | n/a                        | Figure 1 schematic; Methods p. 619 ("two-compartment model with parallel linear and MM...") |
 | BLQ treatment                                | Beal M3                    | Methods p. 619 ("BLQ ... utilized ... applying the M3 method")                              |
 
@@ -74,7 +74,7 @@ variances of the log-scale random effects, which matches what nlmixr2 stores on
 the right-hand side of the `~` operator. They are therefore inserted verbatim
 (no squaring) in `ini()`. The "sigma^2 proportional (CV%)" row reports the
 coefficient of variation of the proportional residual, so 24.2 % maps to an SD
-of 0.242 on the linear scale, which is what `CcpropSd` stores.
+of 0.242 on the linear scale, which is what `propSd` stores.
 
 ## Parameterization notes
 
@@ -295,7 +295,7 @@ knitr::kable(typical_summary, digits = 3,
   same convention because IIV in the source is defined on the rates, not on
   clearances.
 - `Km` was fixed at 0.01 mg/L in the paper because the OFV was insensitive to
-  values below ~0.01 mg/L (Results section, page 620); `CcaddSd` was fixed at
+  values below ~0.01 mg/L (Results section, page 620); `addSd` was fixed at
   0.03 mg/L for the BLQ-included analysis (Methods section).
 - The virtual cohort uses a single body-weight distribution centred on the
   paper's reported mean (76 kg). Age, sex, race, and study-site effects are

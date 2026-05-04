@@ -80,8 +80,8 @@ Diao_2016_daclizumab_cd25 <- function() {
     etalvc ~ 0.09175                                                                              # Othman 2014 Table 2 (Vc CV 31%)
 
     # PK residual error (Othman 2014 Table 2): proportional 22% + additive 0.33 ug/mL.
-    CcpropSd <- 0.22; label("Proportional residual error on daclizumab HYP serum concentration (fraction)") # Othman 2014 Table 2
-    CcaddSd  <- 0.33; label("Additive residual error on daclizumab HYP serum concentration (ug/mL)")        # Othman 2014 Table 2
+    propSd <- 0.22; label("Proportional residual error on daclizumab HYP serum concentration (fraction)") # Othman 2014 Table 2
+    addSd  <- 0.33; label("Additive residual error on daclizumab HYP serum concentration (ug/mL)")        # Othman 2014 Table 2
 
     # ----------------------------------------------------------------------
     # CD25 occupancy PD parameters (Diao 2016 Table 3, sigmoidal Emax model).
@@ -164,7 +164,7 @@ Diao_2016_daclizumab_cd25 <- function() {
     # ------------------------------------------------------------------
     # 5. Observation and error model (PK + PD outputs).
     # ------------------------------------------------------------------
-    Cc   ~ add(CcaddSd) + prop(CcpropSd)
+    Cc   ~ add(addSd) + prop(propSd)
     cd25 ~ add(addSd_cd25)
   })
 }

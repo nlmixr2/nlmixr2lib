@@ -111,7 +111,7 @@ collects the final-model values from Fau 2020 Table S3 in one place.
 
 | Parameter (model name)          | Value (this package)        | Source location               |
 |---------------------------------|-----------------------------|-------------------------------|
-| `lcl_ss` (steady-state CL = CLinf, L/h) | log(0.00955)        | Table S3: CLinf               |
+| `lcl` (steady-state CL = CLinf, L/h) | log(0.00955)           | Table S3: CLinf               |
 | `lvc`    (Vc, L)                | log(5.13)                   | Table S3: Vc                  |
 | `lq`     (Q, L/h)               | log(0.0432)                 | Table S3: Q                   |
 | `lvp`    (Vp, L)                | log(3.62)                   | Table S3: Vp                  |
@@ -120,9 +120,9 @@ collects the final-model values from Fau 2020 Table S3 in one place.
 | `clm`                           |  0.664                      | Table S3: CLm                 |
 | `lkcl`   (KCL, h)               | log(1055)                   | Table S3: KCL                 |
 | `lgam`   (γ, unitless)          | log(3.91)                   | Table S3: γ                   |
-| `e_wt_cl_ss`                    |  0.621                      | Table S3: CLinf ~ Wght        |
-| `e_b2m_cl_ss`                   |  0.343                      | Table S3: CLinf ~ B2M         |
-| `e_nigg_cl_ss`                  | -0.751                      | Table S3: CLinf ~ Ig=Not_IgG  |
+| `e_wt_cl`                       |  0.621                      | Table S3: CLinf ~ Wght        |
+| `e_b2m_cl`                      |  0.343                      | Table S3: CLinf ~ B2M         |
+| `e_nigg_cl`                     | -0.751                      | Table S3: CLinf ~ Ig=Not_IgG  |
 | `e_nigg_kcl`                    | -0.931                      | Table S3: KCL  ~ Ig=Not_IgG (main text rounds to -0.930) |
 | `e_wt_vc`                       |  0.472                      | Table S3: Vc ~ Wght           |
 | `e_p2f2_vc`                     | -0.137                      | Table S3: Vc ~ Form=P2F2      |
@@ -130,7 +130,7 @@ collects the final-model values from Fau 2020 Table S3 in one place.
 | `e_sexf_vc`                     | -0.126                      | Table S3: Vc ~ Sex=Female     |
 | `e_wt_vp`                       |  0.719                      | Table S3: Vp ~ Wght           |
 | `e_wt_q`                        |  0.477                      | Table S3: Q  ~ Wght (RSE 57.5 %) |
-| IIV `etalcl_ss` ω = 47.5 %      | 0.2035                      | log(0.475² + 1)               |
+| IIV `etalcl` ω = 47.5 %         | 0.2035                      | log(0.475² + 1)               |
 | IIV `etaclm`    ω = 97.2 % (normal) | 0.4164                  | (0.664 × 0.972)²              |
 | IIV `etalkcl`   ω = 115 %       | 0.8427                      | log(1.15² + 1)                |
 | IIV `etalgam`   ω = 118 %       | 0.8723                      | log(1.18² + 1)                |

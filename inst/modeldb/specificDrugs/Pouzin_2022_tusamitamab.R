@@ -119,8 +119,8 @@ Pouzin_2022_tusamitamab <- function() {
     # ADC: combined error model. The published additive SD of 1.03 ug/mL is
     # converted to uM (umol/L) by dividing by the SAR408701 MW = 150,000 g/mol
     # and multiplying by 1000 mL/L: 1.03 / 150,000 * 1000 = 0.006867 uM.
-    CcaddSd        <- 0.006867; label("Additive residual error on ADC concentration (uM)")                          # Pouzin 2022 Table 4: a_ADC = 1.03 ug/mL (= 0.006867 uM)
-    CcpropSd       <- 0.089;    label("Proportional residual error on ADC concentration (fraction)")                # Pouzin 2022 Table 4: b_ADC   = 8.9%
+    addSd        <- 0.006867; label("Additive residual error on ADC concentration (uM)")                          # Pouzin 2022 Table 4: a_ADC = 1.03 ug/mL (= 0.006867 uM)
+    propSd       <- 0.089;    label("Proportional residual error on ADC concentration (fraction)")                # Pouzin 2022 Table 4: b_ADC   = 8.9%
     propSd_nab     <- 0.260;    label("Proportional residual error on NAB concentration (fraction)")                # Pouzin 2022 Table 4: b_NAB   = 26.0%
     propSd_dm4     <- 0.335;    label("Proportional residual error on DM4 concentration (fraction)")                # Pouzin 2022 Table 4: b_DM4   = 33.5%
     propSd_medm4   <- 0.500;    label("Proportional residual error on MeDM4 concentration (fraction)")              # Pouzin 2022 Table 4: b_MeDM4 = 50.0%
@@ -275,7 +275,7 @@ Pouzin_2022_tusamitamab <- function() {
                 4 * dar4_central + 5 * dar5_central + 6 * dar6_central +
                 7 * dar7_central + 8 * dar8_central) / vc / Cc_tab
 
-    Cc       ~ add(CcaddSd) + prop(CcpropSd)
+    Cc       ~ add(addSd) + prop(propSd)
     Cc_nab   ~ prop(propSd_nab)
     Cc_dm4   ~ prop(propSd_dm4)
     Cc_medm4 ~ prop(propSd_medm4)

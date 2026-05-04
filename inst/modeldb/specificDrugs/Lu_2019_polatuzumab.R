@@ -201,7 +201,7 @@ Lu_2019_polatuzumab <- function() {
     # does not natively support eta-on-epsilon; we collapse to a fixed
     # proportional residual error per analyte using the Sigma point estimates
     # (sqrt(Sigma)) and document this deviation in the validation vignette.
-    CcpropSd       <- sqrt(0.0254); label("Proportional residual error on acMMAE Cc (fraction)")             # Lu 2019 Table S3, Sigma11 = 0.0254
+    propSd       <- sqrt(0.0254); label("Proportional residual error on acMMAE Cc (fraction)")             # Lu 2019 Table S3, Sigma11 = 0.0254
     propSd_mmae    <- sqrt(0.0726); label("Proportional residual error on unconjugated MMAE Cc_mmae (fraction)") # Lu 2019 Table S3, Sigma22 = 0.0726
   })
 
@@ -327,7 +327,7 @@ Lu_2019_polatuzumab <- function() {
     Cc      <- central / vc
     Cc_mmae <- central_mmae / vc_mmae
 
-    Cc      ~ prop(CcpropSd)
+    Cc      ~ prop(propSd)
     Cc_mmae ~ prop(propSd_mmae)
   })
 }

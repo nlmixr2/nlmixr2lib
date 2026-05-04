@@ -451,7 +451,7 @@ test_that("metabolite-suffixed parameters and compartments are accepted", {
       lcl_mmae <- 1;  label("MMAE CL (L/day)")
       lvc_mmae <- 1;  label("MMAE Vc (L)")
       etalcl ~ 0.09
-      CcpropSd <- 0.1;        label("Parent prop residual (fraction)")
+      propSd <- 0.1;          label("Parent prop residual (fraction)")
       propSd_mmae <- 0.1;     label("MMAE prop residual (fraction)")
     })
     model({
@@ -463,7 +463,7 @@ test_that("metabolite-suffixed parameters and compartments are accepted", {
       d/dt(central_mmae) <- cl / vc * central - cl_mmae / vc_mmae * central_mmae
       Cc <- central / vc
       Cc_mmae <- central_mmae / vc_mmae
-      Cc ~ prop(CcpropSd)
+      Cc ~ prop(propSd)
       Cc_mmae ~ prop(propSd_mmae)
     })
   }

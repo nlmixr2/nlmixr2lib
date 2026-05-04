@@ -71,7 +71,7 @@ Bender_2014_trastuzumabEmtansine_reduced <- function() {
 
     # Residual error - cynomolgus; paper reports a single residual magnitude
     # applied to both T-DM1 and total trastuzumab observations
-    CcpropSd    <- 0.0964; label("Proportional residual error on T-DM1 concentration (fraction)")            # Bender 2014 Table III, cyno: 9.64%
+    propSd    <- 0.0964; label("Proportional residual error on T-DM1 concentration (fraction)")            # Bender 2014 Table III, cyno: 9.64%
     propSd_Ctt  <- 0.0964; label("Proportional residual error on total trastuzumab concentration (fraction)") # Bender 2014 Table III, cyno: 9.64%
   })
 
@@ -105,7 +105,7 @@ Bender_2014_trastuzumabEmtansine_reduced <- function() {
     Cc  <- central / vc
     Ctt <- (central + dar0_central) / vc
 
-    Cc  ~ prop(CcpropSd)
+    Cc  ~ prop(propSd)
     Ctt ~ prop(propSd_Ctt)
   })
 }

@@ -73,8 +73,8 @@ term below is taken from Timmermann 2019 Table 3. The reference patient is a
 | `var(etalvmax)`                          | `log(0.247^2 + 1) = 0.05922`            | Table 3: Vmax IIV 24.7% CV |
 | `var(etalq)`                             | `log(0.910^2 + 1) = 0.60328`            | Table 3: Q IIV 91% CV |
 | `var(etalvp)`                            | `log(1.890^2 + 1) = 1.51997`            | Table 3: V2 IIV 189% CV |
-| `CcpropSd`                               | `0.355` (fraction)                      | Table 3: Proportional residual error 35.5% CV |
-| `CcaddSd`                                | `3.00` ug/mL                            | Table 3: Additive residual error (SD, per footnote) |
+| `propSd`                               | `0.355` (fraction)                      | Table 3: Proportional residual error 35.5% CV |
+| `addSd`                                | `3.00` ug/mL                            | Table 3: Additive residual error (SD, per footnote) |
 | Structure (2-cmt + first-order SC absorption + parallel linear + MM elimination) | n/a | Section 2.3 Methods and ODE description |
 
 ## Parameterization notes
@@ -103,8 +103,8 @@ term below is taken from Timmermann 2019 Table 3. The reference patient is a
   CL and V1, encoded as a 2x2 block in `ini()` with the off-diagonal computed
   as the correlation times `sqrt(var_cl * var_vc)`.
 - **Combined residual error.** Table 3 footnote states "Proportional and
-  additive errors are given as %CV and standard deviation." `CcpropSd = 0.355`
-  (fraction) and `CcaddSd = 3.00` ug/mL are used directly.
+  additive errors are given as %CV and standard deviation." `propSd = 0.355`
+  (fraction) and `addSd = 3.00` ug/mL are used directly.
 
 # Virtual cohort
 

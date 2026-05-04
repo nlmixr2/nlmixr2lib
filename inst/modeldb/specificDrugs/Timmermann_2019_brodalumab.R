@@ -72,8 +72,8 @@ Timmermann_2019_brodalumab <- function() {
     # Combined additive + proportional residual error on the linear concentration
     # scale. Table 3 footnote: "Proportional and additive errors are given as %CV
     # and standard deviation."
-    CcpropSd <- 0.355; label("Proportional residual error (fraction)")   # Timmermann 2019 Table 3: Proportional residual error 35.5% CV
-    CcaddSd  <- 3.00;  label("Additive residual error (ug/mL)")          # Timmermann 2019 Table 3: Additive residual error 3.00 ug/mL (SD)
+    propSd <- 0.355; label("Proportional residual error (fraction)")   # Timmermann 2019 Table 3: Proportional residual error 35.5% CV
+    addSd  <- 3.00;  label("Additive residual error (ug/mL)")          # Timmermann 2019 Table 3: Additive residual error 3.00 ug/mL (SD)
   })
   model({
     # Individual PK parameters with allometric weight scaling on CL, V1, Vmax.
@@ -99,6 +99,6 @@ Timmermann_2019_brodalumab <- function() {
 
     f(depot) <- exp(lfdepot)
 
-    Cc ~ add(CcaddSd) + prop(CcpropSd)
+    Cc ~ add(addSd) + prop(propSd)
   })
 }

@@ -75,8 +75,8 @@ term below is taken directly from Zhu 2017 Table 3. Reference values are WT =
 | `cov(etalcl, etalka)`             | `0.00203`              | Table 3 |
 | `cov(etalvc, etalka)`             | `0.00439`              | Table 3 |
 | `var(etalka)`                     | `0.154`                | Table 3 |
-| `CcpropSd` (proportional RUV)     | `0.0490` (4.9%)        | Table 3 |
-| `CcaddSd` (additive RUV, ug/mL)   | `0.00154` (1.54 ng/mL) | Table 3 |
+| `propSd` (proportional RUV)     | `0.0490` (4.9%)        | Table 3 |
+| `addSd` (additive RUV, ug/mL)   | `0.00154` (1.54 ng/mL) | Table 3 |
 | Structure                         | 2-cmt, 1st-order SC    | p. 90 Methods; confirmed by Table 3 parameterization |
 
 A previous release of the model file stored the six IIV entries as

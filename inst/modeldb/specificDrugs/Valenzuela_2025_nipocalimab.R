@@ -124,10 +124,10 @@ Valenzuela_2025_nipocalimab <- function() {
     # ---- Residual error (Table 3) ----
     # Paper reports PK additive RUVs in nmol/L; converted to ug/mL here using
     # nipocalimab MW 142 kDa so the residual applies directly to Cc (ug/mL).
-    CcaddSdELISA   <- 0.0632; label("Additive PK residual SD for ELISA-assay observations (ug/mL)")        # Table 3: 0.445 nmol/L x 142/1000 = 0.0632 ug/mL
-    CcaddSdECLIA   <- 0.00486; label("Additive PK residual SD for ECLIA-assay observations (ug/mL)")       # Table 3: 0.0342 nmol/L x 142/1000 = 0.00486 ug/mL
-    CcpropSdPhase1 <- 0.0834; label("Proportional PK residual for Phase 1 observations (fraction)")        # Table 3
-    CcpropSdPhase2 <- 0.367;  label("Proportional PK residual for Phase 2 observations (fraction)")        # Table 3
+    addSdELISA   <- 0.0632; label("Additive PK residual SD for ELISA-assay observations (ug/mL)")        # Table 3: 0.445 nmol/L x 142/1000 = 0.0632 ug/mL
+    addSdECLIA   <- 0.00486; label("Additive PK residual SD for ECLIA-assay observations (ug/mL)")       # Table 3: 0.0342 nmol/L x 142/1000 = 0.00486 ug/mL
+    propSdPhase1 <- 0.0834; label("Proportional PK residual for Phase 1 observations (fraction)")        # Table 3
+    propSdPhase2 <- 0.367;  label("Proportional PK residual for Phase 2 observations (fraction)")        # Table 3
 
     addSd_pctUnoccupiedFcRn  <- 2.98;  label("Additive residual SD for % unoccupied FcRn (percent)")        # Table 3
     propSd_pctUnoccupiedFcRn <- 0.227; label("Proportional residual for % unoccupied FcRn (fraction)")       # Table 3
@@ -230,10 +230,10 @@ Valenzuela_2025_nipocalimab <- function() {
     dMGADL      <- placebo_cfb + igg_cfb
 
     # ---- Residual-error models (per-assay / per-phase switches on PK; single form on others) ----
-    CcaddSd   <- CcaddSdELISA   * ELISA  + CcaddSdECLIA   * (1 - ELISA)
-    CcpropSd  <- CcpropSdPhase1 * PHASE1 + CcpropSdPhase2 * (1 - PHASE1)
+    addSd   <- addSdELISA   * ELISA  + addSdECLIA   * (1 - ELISA)
+    propSd  <- propSdPhase1 * PHASE1 + propSdPhase2 * (1 - PHASE1)
 
-    Cc                ~ add(CcaddSd) + prop(CcpropSd)
+    Cc                ~ add(addSd) + prop(propSd)
     pctUnoccupiedFcRn ~ add(addSd_pctUnoccupiedFcRn) + prop(propSd_pctUnoccupiedFcRn)
     IgG_obs           ~ prop(propSd_IgG_obs)
     dMGADL            ~ add(addSd_dMGADL)

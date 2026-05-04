@@ -118,7 +118,7 @@ mod_rat <- mod |>
     lqd3   = log(0.0139),
     lvp2   = log(0.0155),
     lcldec = log(0.00224),
-    CcpropSd   = 0.109,
+    propSd   = 0.109,
     propSd_Ctt = 0.109
   )
 

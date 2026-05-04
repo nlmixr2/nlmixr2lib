@@ -151,7 +151,7 @@ Table S3. The table below collates them.
 | `e_hepimp_frac_mmae`   | NCI ODWG hep. impairment on FRAC_NS | 1.19   | Table 2, theta42 |
 | `e_ecog_ge1_frac_mmae` | ECOG_GE1 on FRAC_NS (1/0.905) | 1.1050       | Table 2, theta43 (inverted) |
 | `e_alb_frac_mmae`      | ALB on FRAC_NS (power)     | -0.613          | Table 2, theta44 |
-| `CcpropSd`             | sqrt(sigma1^2)             | 0.1594          | Table S3, Sigma11 = 0.0254 |
+| `propSd`             | sqrt(sigma1^2)             | 0.1594          | Table S3, Sigma11 = 0.0254 |
 | `propSd_mmae`          | sqrt(sigma2^2)             | 0.2694          | Table S3, Sigma22 = 0.0726 |
 | ODE system (4 states)  | Lu 2019 Eq. 1 + supplement |                 | Supplement $DES + Equations |
 
@@ -636,7 +636,7 @@ expected to be reproduced.
   0.038, 0.0427). nlmixr2lib does not natively support eta-on-epsilon;
   the packaged model collapses to a fixed proportional residual error per
   analyte using the Sigma point estimates (Sigma11 = 0.0254 ->
-  CcpropSd = 0.1594; Sigma22 = 0.0726 -> propSd_mmae = 0.2694). This
+  propSd = 0.1594; Sigma22 = 0.0726 -> propSd_mmae = 0.2694). This
   slightly under-estimates residual variability for individuals with
   large positive ETA10/ETA11 and over-estimates for those with large
   negative values, but does not bias the typical-value parameters or the
