@@ -77,17 +77,17 @@ Hu_2026_clesrovimab <- function() {
     lvp  <- log(0.316);  label("Apparent peripheral volume of distribution at 5 kg reference weight (Vp/F, L)")
     lq   <- log(0.0406); label("Apparent intercompartmental clearance at 5 kg reference weight (Q/F, L/day)")
 
-    allo_cl <- 0.524; label("Allometric exponent on CL/F and Q/F (unitless)")
-    allo_v  <- 0.662; label("Allometric exponent on Vc/F and Vp/F (unitless)")
+    e_wt_cl_q  <- 0.524; label("Allometric (WT) exponent shared across CL/F and Q/F (unitless)")
+    e_wt_vc_vp <- 0.662; label("Allometric (WT) exponent shared across Vc/F and Vp/F (unitless)")
 
     # Maturation parameters for CL (Hill-type function of adjusted postnatal age)
     beta_cl <- 0.579; label("Fractional CL maturation at birth for a full-term infant (unitless)")
     t50_cl  <- 20.3;  label("Maturation half-life for CL/F (months)")
 
     # Race effects on CL/F relative to White/Other reference
-    e_asian       <- -0.0585; label("Race effect on CL/F: Asian vs White/Other (fraction)")
-    e_black       <-  0.132;  label("Race effect on CL/F: Black/African American vs White/Other (fraction)")
-    e_multiracial <-  0.0872; label("Race effect on CL/F: Multiracial vs White/Other (fraction)")
+    e_race_asian_cl <- -0.0585; label("Race effect on CL/F: Asian vs White/Other (fraction)")
+    e_race_black_cl <-  0.132;  label("Race effect on CL/F: Black/African American vs White/Other (fraction)")
+    e_race_multi_cl <-  0.0872; label("Race effect on CL/F: Multiracial vs White/Other (fraction)")
 
     # Inter-individual variability (omega^2 = log(CV^2 + 1))
     etalka ~ 0.05376  # 23.5% CV
@@ -108,13 +108,13 @@ Hu_2026_clesrovimab <- function() {
     maturation_cl <- 1 - (1 - beta_cl) * exp(-AAGEADJ * log(2) / t50_cl)
 
     # Race effect on CL (multiplicative; White/Other is reference = 1)
-    race_cl <- 1 + e_asian * RACE_ASIAN + e_black * RACE_BLACK + e_multiracial * RACE_MULTI
+    race_cl <- 1 + e_race_asian_cl * RACE_ASIAN + e_race_black_cl * RACE_BLACK + e_race_multi_cl * RACE_MULTI
 
     ka  <- exp(lka + etalka)
-    cl  <- exp(lcl + etalcl) * (WT / 5)^allo_cl * maturation_cl * race_cl
-    vc  <- exp(lvc + etalvc) * (WT / 5)^allo_v
-    vp  <- exp(lvp)          * (WT / 5)^allo_v
-    q   <- exp(lq)           * (WT / 5)^allo_cl
+    cl  <- exp(lcl + etalcl) * (WT / 5)^e_wt_cl_q  * maturation_cl * race_cl
+    vc  <- exp(lvc + etalvc) * (WT / 5)^e_wt_vc_vp
+    vp  <- exp(lvp)          * (WT / 5)^e_wt_vc_vp
+    q   <- exp(lq)           * (WT / 5)^e_wt_cl_q
 
     kel <- cl / vc
     k12 <- q  / vc
