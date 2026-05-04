@@ -71,8 +71,8 @@ Valenzuela_2025_nipocalimab <- function() {
     lvc     <- log(3.23);   label("Central volume of distribution for a 75 kg adult (L)")                 # Table 3: Vc = 3.23 L
     lq      <- log(0.250);  label("Intercompartmental clearance for a 75 kg adult (L/day)")               # Table 3: Q = 0.250 L/d
     lvp     <- log(0.622);  label("Peripheral volume of distribution for a 75 kg adult (L)")              # Table 3: Vp = 0.622 L
-    allo_cl <- fixed(0.75); label("Allometric exponent on CL and Q (unitless)")                           # Eq. 3; fixed per paper footnote
-    allo_v  <- fixed(1);    label("Allometric exponent on Vc and Vp (unitless)")                          # Eq. 3; fixed per paper footnote
+    e_wt_cl_q <- fixed(0.75); label("Allometric exponent on CL and Q (unitless)")                         # Eq. 3; fixed per paper footnote
+    e_wt_vc_vp <- fixed(1);   label("Allometric exponent on Vc and Vp (unitless)")                        # Eq. 3; fixed per paper footnote
 
     # ---- FcRn target turnover (Table 3) ----
     # FcRn0 reported in nmol/L by the paper; converted to ug/mL inside model()
@@ -124,16 +124,16 @@ Valenzuela_2025_nipocalimab <- function() {
     # ---- Residual error (Table 3) ----
     # Paper reports PK additive RUVs in nmol/L; converted to ug/mL here using
     # nipocalimab MW 142 kDa so the residual applies directly to Cc (ug/mL).
-    CcaddSdELISA   <- 0.0632; label("Additive PK residual SD for ELISA-assay observations (ug/mL)")        # Table 3: 0.445 nmol/L x 142/1000 = 0.0632 ug/mL
-    CcaddSdECLIA   <- 0.00486; label("Additive PK residual SD for ECLIA-assay observations (ug/mL)")       # Table 3: 0.0342 nmol/L x 142/1000 = 0.00486 ug/mL
-    CcpropSdPhase1 <- 0.0834; label("Proportional PK residual for Phase 1 observations (fraction)")        # Table 3
-    CcpropSdPhase2 <- 0.367;  label("Proportional PK residual for Phase 2 observations (fraction)")        # Table 3
+    addSdELISA   <- 0.0632; label("Additive PK residual SD for ELISA-assay observations (ug/mL)")        # Table 3: 0.445 nmol/L x 142/1000 = 0.0632 ug/mL
+    addSdECLIA   <- 0.00486; label("Additive PK residual SD for ECLIA-assay observations (ug/mL)")       # Table 3: 0.0342 nmol/L x 142/1000 = 0.00486 ug/mL
+    propSdPhase1 <- 0.0834; label("Proportional PK residual for Phase 1 observations (fraction)")        # Table 3
+    propSdPhase2 <- 0.367;  label("Proportional PK residual for Phase 2 observations (fraction)")        # Table 3
 
-    pctUnoccupiedFcRnaddSd  <- 2.98;  label("Additive residual SD for % unoccupied FcRn (percent)")        # Table 3
-    pctUnoccupiedFcRnpropSd <- 0.227; label("Proportional residual for % unoccupied FcRn (fraction)")       # Table 3
+    addSd_pctUnoccupiedFcRn  <- 2.98;  label("Additive residual SD for % unoccupied FcRn (percent)")        # Table 3
+    propSd_pctUnoccupiedFcRn <- 0.227; label("Proportional residual for % unoccupied FcRn (fraction)")       # Table 3
 
-    IgG_obspropSd <- 0.0858; label("Proportional residual for total serum IgG (fraction)")                  # Table 3
-    dMGADLaddSd   <- 1.50;   label("Additive residual SD for MG-ADL change from baseline (points)")          # Table 3
+    propSd_IgG_obs <- 0.0858; label("Proportional residual for total serum IgG (fraction)")                  # Table 3
+    addSd_dMGADL   <- 1.50;   label("Additive residual SD for MG-ADL change from baseline (points)")          # Table 3
   })
 
   model({
@@ -143,10 +143,10 @@ Valenzuela_2025_nipocalimab <- function() {
     MW <- 142000             # Nipocalimab molecular weight, g/mol (derived from paper results section)
 
     # ---- Individual PK parameters with allometric weight scaling (reference 75 kg) ----
-    cl <- exp(lcl + etalcl) * (WT / 75)^allo_cl
-    vc <- exp(lvc + etalvc) * (WT / 75)^allo_v
-    q  <- exp(lq)           * (WT / 75)^allo_cl
-    vp <- exp(lvp)          * (WT / 75)^allo_v
+    cl <- exp(lcl + etalcl) * (WT / 75)^e_wt_cl_q
+    vc <- exp(lvc + etalvc) * (WT / 75)^e_wt_vc_vp
+    q  <- exp(lq)           * (WT / 75)^e_wt_cl_q
+    vp <- exp(lvp)          * (WT / 75)^e_wt_vc_vp
 
     # ---- Individual FcRn target parameters ----
     # FcRn0 stored in nmol/L (paper reporting unit); converted to ug/mL here so
@@ -230,12 +230,12 @@ Valenzuela_2025_nipocalimab <- function() {
     dMGADL      <- placebo_cfb + igg_cfb
 
     # ---- Residual-error models (per-assay / per-phase switches on PK; single form on others) ----
-    CcaddSd   <- CcaddSdELISA   * ELISA  + CcaddSdECLIA   * (1 - ELISA)
-    CcpropSd  <- CcpropSdPhase1 * PHASE1 + CcpropSdPhase2 * (1 - PHASE1)
+    addSd   <- addSdELISA   * ELISA  + addSdECLIA   * (1 - ELISA)
+    propSd  <- propSdPhase1 * PHASE1 + propSdPhase2 * (1 - PHASE1)
 
-    Cc                ~ add(CcaddSd) + prop(CcpropSd)
-    pctUnoccupiedFcRn ~ add(pctUnoccupiedFcRnaddSd) + prop(pctUnoccupiedFcRnpropSd)
-    IgG_obs           ~ prop(IgG_obspropSd)
-    dMGADL            ~ add(dMGADLaddSd)
+    Cc                ~ add(addSd) + prop(propSd)
+    pctUnoccupiedFcRn ~ add(addSd_pctUnoccupiedFcRn) + prop(propSd_pctUnoccupiedFcRn)
+    IgG_obs           ~ prop(propSd_IgG_obs)
+    dMGADL            ~ add(addSd_dMGADL)
   })
 }

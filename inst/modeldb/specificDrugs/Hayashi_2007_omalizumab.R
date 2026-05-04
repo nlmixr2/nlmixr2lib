@@ -53,21 +53,21 @@ Hayashi_2007_omalizumab <- function() {
     # Structural parameters - reference 61.1 kg body weight, 482.4 ng/mL baseline IgE.
     # All CL and V are reported as apparent (divided by SC bioavailability f).
     # Time unit converted from h (paper) to d for nlmixr2lib convention: x_per_day = x_per_h * 24.
-    lka     <- log(0.0200 * 24);  label("Apparent SC absorption rate constant for omalizumab (ka, 1/d; paper: 0.0200 /h)")          # Hayashi 2007 Table 3
-    lclx    <- log(0.00732 * 24); label("Apparent CL of free omalizumab at 61.1 kg (CL_X/f, L/d; paper: 7.32 mL/h)")                # Hayashi 2007 Table 3
-    ldclc   <- log(0.00586 * 24); label("Apparent excess CL of complex over free omalizumab (Delta_CL_C/f, L/d; paper: 5.86 mL/h)") # Hayashi 2007 Table 3
-    lcle    <- log(0.071 * 24);   label("Apparent CL of free IgE at 482.4 ng/mL baseline (CL_E/f, L/d; paper: 71.0 mL/h)")          # Hayashi 2007 Table 3
-    lvx     <- log(5.9);          label("Apparent V_d of omalizumab and IgE at 61.1 kg (V_X/f = V_E/f, L; paper: 5900 mL)")          # Hayashi 2007 Table 3 (V_E/f assumed equal to V_X/f, footnote double-dagger)
-    lvc     <- log(3.63);         label("Apparent V_d of omalizumab-IgE complex (V_C/f, L; paper: 3630 mL)")                          # Hayashi 2007 Table 3
-    lpe     <- log(0.1595 * 24);  label("Apparent rate of IgE production at 482.4 ng/mL baseline (P_E/f, nmol/d; paper: 30.3 ug/h = 0.1595 nmol/h)") # Hayashi 2007 Table 3 footnote dagger (30.3 ug/h corresponds to 0.159 nmol/h)
-    lkd0    <- log(1.07);         label("Equilibrium dissociation constant at central = total_target (Kd0, nM)")                                 # Hayashi 2007 Table 3
+    lka          <- log(0.0200 * 24);  label("Apparent SC absorption rate constant for omalizumab (ka, 1/d; paper: 0.0200 /h)")          # Hayashi 2007 Table 3
+    lcl          <- log(0.00732 * 24); label("Apparent CL of free omalizumab at 61.1 kg (CL_X/f, L/d; paper: 7.32 mL/h)")                # Hayashi 2007 Table 3
+    ldcl_complex <- log(0.00586 * 24); label("Apparent excess CL of complex over free omalizumab (Delta_CL_C/f, L/d; paper: 5.86 mL/h)") # Hayashi 2007 Table 3
+    lcl_ige      <- log(0.071 * 24);   label("Apparent CL of free IgE at 482.4 ng/mL baseline (CL_E/f, L/d; paper: 71.0 mL/h)")          # Hayashi 2007 Table 3
+    lvc          <- log(5.9);          label("Apparent V_d of omalizumab and IgE at 61.1 kg (V_X/f = V_E/f, L; paper: 5900 mL)")          # Hayashi 2007 Table 3 (V_E/f assumed equal to V_X/f, footnote double-dagger)
+    lvc_complex  <- log(3.63);         label("Apparent V_d of omalizumab-IgE complex (V_C/f, L; paper: 3630 mL)")                          # Hayashi 2007 Table 3
+    lp_ige       <- log(0.1595 * 24);  label("Apparent rate of IgE production at 482.4 ng/mL baseline (P_E/f, nmol/d; paper: 30.3 ug/h = 0.1595 nmol/h)") # Hayashi 2007 Table 3 footnote dagger (30.3 ug/h corresponds to 0.159 nmol/h)
+    lkd0         <- log(1.07);         label("Equilibrium dissociation constant at central = total_target (Kd0, nM)")                                 # Hayashi 2007 Table 3
 
     # Covariate effects (power form; Hayashi 2007 page 555 equations).
-    e_wt_clx  <-  0.911;  label("Power exponent of body weight on CL_X/f (unitless)")     # Hayashi 2007 Table 3
-    e_wt_vx   <-  0.658;  label("Power exponent of body weight on V_X/f (unitless)")      # Hayashi 2007 Table 3
-    e_ige_cle <- -0.281;  label("Power exponent of baseline IgE on CL_E/f (unitless)")    # Hayashi 2007 Table 3
-    e_ige_pe  <-  0.657;  label("Power exponent of baseline IgE on P_E/f (unitless)")     # Hayashi 2007 Table 3
-    alpha     <-  0.157;  label("Concentration-dependence exponent on Kd (unitless)")     # Hayashi 2007 Table 3
+    e_wt_cl      <-  0.911;  label("Power exponent of body weight on CL_X/f (unitless)")     # Hayashi 2007 Table 3
+    e_wt_vc      <-  0.658;  label("Power exponent of body weight on V_X/f (unitless)")      # Hayashi 2007 Table 3
+    e_ige_cl_ige <- -0.281;  label("Power exponent of baseline IgE on CL_E/f (unitless)")    # Hayashi 2007 Table 3
+    e_ige_p_ige  <-  0.657;  label("Power exponent of baseline IgE on P_E/f (unitless)")     # Hayashi 2007 Table 3
+    alpha        <-  0.157;  label("Concentration-dependence exponent on Kd (unitless)")     # Hayashi 2007 Table 3
 
     # IIV - log-normal; omega^2 = log(CV^2 + 1) for log-normal parameters.
     # ka     CV 39.9% -> log(1 + 0.399^2) = 0.14773
@@ -78,20 +78,20 @@ Hayashi_2007_omalizumab <- function() {
     # CL_E   CV 25.3% -> log(1 + 0.253^2) = 0.06205
     # P_E    CV 23.1% -> log(1 + 0.231^2) = 0.05197
     # corr(CL_E, P_E) = 0.968 -> cov = 0.968 * sqrt(0.06205 * 0.05197) = 0.05496
-    etalka   ~ 0.14773                                                                                  # Hayashi 2007 Table 3 (ka CV 39.9%)
-    etalclx  ~ 0.04042                                                                                  # Hayashi 2007 Table 3 (CL_X CV 20.3%)
-    etaldclc ~ 0.11488                                                                                  # Hayashi 2007 Table 3 (Delta_CL_C CV 34.9%)
-    etalvx   ~ 0.01679                                                                                  # Hayashi 2007 Table 3 (V_X CV 13.0%; V_E/f = V_X/f shares this eta)
-    etalvc   ~ 0.06062                                                                                  # Hayashi 2007 Table 3 (V_C CV 25.0%)
-    etalcle + etalpe ~ c(0.06205,
+    etalka          ~ 0.14773                                                                            # Hayashi 2007 Table 3 (ka CV 39.9%)
+    etalcl          ~ 0.04042                                                                            # Hayashi 2007 Table 3 (CL_X CV 20.3%)
+    etaldcl_complex ~ 0.11488                                                                            # Hayashi 2007 Table 3 (Delta_CL_C CV 34.9%)
+    etalvc          ~ 0.01679                                                                            # Hayashi 2007 Table 3 (V_X CV 13.0%; V_E/f = V_X/f shares this eta)
+    etalvc_complex  ~ 0.06062                                                                            # Hayashi 2007 Table 3 (V_C CV 25.0%)
+    etalcl_ige + etalp_ige ~ c(0.06205,
                           0.05496, 0.05197)                                                              # Hayashi 2007 Table 3 (CL_E CV 25.3%, P_E CV 23.1%, correlation 0.968)
 
     # Residual error - paper uses Y = F * exp(eps), eps ~ N(0, sigma^2) (Hayashi 2007 page 553).
     # For small sigma this is well approximated by a proportional model
     # Y ~ F + F * propSd * eps with propSd = sigma; encoded as prop() per nlmixr2 convention.
-    CcpropSd       <- 0.167; label("Proportional residual error on total omalizumab (fraction)")        # Hayashi 2007 Table 3 (omalizumab intra-individual CV 16.7%)
-    totalIgEpropSd <- 0.211; label("Proportional residual error on total IgE (fraction)")               # Hayashi 2007 Table 3 (total IgE intra-individual CV 21.1%)
-    freeIgEpropSd  <- 0.218; label("Proportional residual error on free IgE (fraction)")                # Hayashi 2007 Table 3 (free IgE intra-individual CV 21.8%)
+    propSd        <- 0.167; label("Proportional residual error on total omalizumab (fraction)")        # Hayashi 2007 Table 3 (omalizumab intra-individual CV 16.7%)
+    propSd_totalIgE <- 0.211; label("Proportional residual error on total IgE (fraction)")               # Hayashi 2007 Table 3 (total IgE intra-individual CV 21.1%)
+    propSd_freeIgE  <- 0.218; label("Proportional residual error on free IgE (fraction)")                # Hayashi 2007 Table 3 (free IgE intra-individual CV 21.8%)
   })
 
   model({
@@ -107,16 +107,16 @@ Hayashi_2007_omalizumab <- function() {
     # ------------------------------------------------------------------
     # 1. Individual parameters.
     # ------------------------------------------------------------------
-    ka   <- exp(lka   + etalka)
-    clx  <- exp(lclx  + etalclx)  * (WT  / 61.1)^e_wt_clx
-    dclc <- exp(ldclc + etaldclc)
-    clc  <- clx + dclc
-    cle  <- exp(lcle  + etalcle)  * (IGE / 482.4)^e_ige_cle
-    pe   <- exp(lpe   + etalpe)   * (IGE / 482.4)^e_ige_pe
-    vx   <- exp(lvx   + etalvx)   * (WT  / 61.1)^e_wt_vx
-    ve   <- vx                                # V_E/f = V_X/f (Hayashi 2007 Table 3 footnote double-dagger)
-    vc   <- exp(lvc   + etalvc)
-    kd0  <- exp(lkd0)
+    ka          <- exp(lka          + etalka)
+    cl          <- exp(lcl          + etalcl)          * (WT  / 61.1)^e_wt_cl
+    dcl_complex <- exp(ldcl_complex + etaldcl_complex)
+    cl_complex  <- cl + dcl_complex
+    cl_ige      <- exp(lcl_ige      + etalcl_ige)      * (IGE / 482.4)^e_ige_cl_ige
+    p_ige       <- exp(lp_ige       + etalp_ige)       * (IGE / 482.4)^e_ige_p_ige
+    vc          <- exp(lvc          + etalvc)          * (WT  / 61.1)^e_wt_vc
+    v_ige       <- vc                                # V_E/f = V_X/f (Hayashi 2007 Table 3 footnote double-dagger)
+    vc_complex  <- exp(lvc_complex  + etalvc_complex)
+    kd0         <- exp(lkd0)
 
     # ------------------------------------------------------------------
     # 2. Concentration-dependent dissociation constant Kd
@@ -136,27 +136,27 @@ Hayashi_2007_omalizumab <- function() {
     #    with S = central + total_target + Kd * V_X * V_E / V_C. The discriminant is
     #    >= 0 for all physical central, total_target, Kd, V's.
     # ------------------------------------------------------------------
-    S   <- central + total_target + kd * vx * ve / vc
+    S   <- central + total_target + kd * vc * v_ige / vc_complex
     X_C <- 0.5 * (S - sqrt(S * S - 4 * central * total_target))
 
     # Free / complex concentrations (nM = nmol/L).
-    C_fX <- (central - X_C) / vx
-    C_fE <- (total_target - X_C) / ve
-    C_C  <-  X_C       / vc
+    C_fX <- (central - X_C) / vc
+    C_fE <- (total_target - X_C) / v_ige
+    C_C  <-  X_C       / vc_complex
 
     # ------------------------------------------------------------------
     # 4. ODE system (Hayashi 2007 "PK/PD structural model" page 552).
     #    State units: depot (mg), central, total_target, X_C (nmol).
-    #    Rate units: ka * depot (mg/d), pe (nmol/d), cl * C (L/d * nM = nmol/d).
+    #    Rate units: ka * depot (mg/d), p_ige (nmol/d), cl * C (L/d * nM = nmol/d).
     #    The depot-to-central transfer converts mg to nmol via 1000 / MWX.
     # ------------------------------------------------------------------
     d/dt(depot) <- -ka * depot
-    d/dt(central)  <-  ka * depot * (1000 / MWX) - clx * C_fX - clc * C_C
-    d/dt(total_target)  <-  pe                         - cle * C_fE - clc * C_C
+    d/dt(central)  <-  ka * depot * (1000 / MWX) - cl     * C_fX - cl_complex * C_C
+    d/dt(total_target)  <-  p_ige                - cl_ige * C_fE - cl_complex * C_C
 
     # Initial total IgE amount at t = 0 (no drug, so total IgE = free IgE):
     #   total_target(0) = (IGE_ng_per_mL / MWE_kDa) * V_E_L = nM * L = nmol.
-    total_target(0) <- (IGE / MWE) * ve
+    total_target(0) <- (IGE / MWE) * v_ige
 
     # ------------------------------------------------------------------
     # 5. Observation outputs in assay units.
@@ -168,8 +168,8 @@ Hayashi_2007_omalizumab <- function() {
     totalIgE <- (C_fE + C_C) * MWE
     freeIgE  <-  C_fE        * MWE
 
-    Cc       ~ prop(CcpropSd)
-    totalIgE ~ prop(totalIgEpropSd)
-    freeIgE  ~ prop(freeIgEpropSd)
+    Cc       ~ prop(propSd)
+    totalIgE ~ prop(propSd_totalIgE)
+    freeIgE  ~ prop(propSd_freeIgE)
   })
 }

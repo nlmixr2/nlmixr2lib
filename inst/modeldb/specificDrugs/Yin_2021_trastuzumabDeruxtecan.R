@@ -86,9 +86,9 @@ Yin_2021_trastuzumabDeruxtecan <- function() {
     e_tumsz_cl  <-  0.0710;  label("Power exponent of TUMSZ on CL_intact (unitless)")                                    # Yin 2021 Table 1: Tumor size on CL_intact = 0.0710
     e_japan_cl  <- -0.0970;  label("Fractional multiplicative effect of REGION_JAPAN on CL_intact (unitless)")            # Yin 2021 Table 1: Country (Japan) on CL_intact = -0.0970 -> multiplier 0.903
     e_male_cl   <-  0.174;   label("Fractional multiplicative effect of male sex on CL_intact (unitless; on (1 - SEXF))") # Yin 2021 Table 1: Sex (male) on CL_intact = 0.174 -> multiplier 1.174
-    e_wt_v1     <-  0.489;   label("Power exponent of WT on V1_intact (unitless)")                                       # Yin 2021 Table 1: Body weight on V1_intact = 0.489
-    e_male_v1   <-  0.197;   label("Fractional multiplicative effect of male sex on V1_intact (unitless; on (1 - SEXF))") # Yin 2021 Table 1: Sex (male) on V1_intact = 0.197 -> multiplier 1.197
-    e_japan_v2  <- -0.262;   label("Fractional multiplicative effect of REGION_JAPAN on V2_intact (unitless)")            # Yin 2021 Table 1: Country (Japan) on V2_intact = -0.262 -> multiplier 0.738
+    e_wt_vc     <-  0.489;   label("Power exponent of WT on Vc_intact (unitless)")                                       # Yin 2021 Table 1: Body weight on V1_intact = 0.489
+    e_male_vc   <-  0.197;   label("Fractional multiplicative effect of male sex on Vc_intact (unitless; on (1 - SEXF))") # Yin 2021 Table 1: Sex (male) on V1_intact = 0.197 -> multiplier 1.197
+    e_japan_vp  <- -0.262;   label("Fractional multiplicative effect of REGION_JAPAN on Vp_intact (unitless)")            # Yin 2021 Table 1: Country (Japan) on V2_intact = -0.262 -> multiplier 0.738
 
     # Inter-individual variability. Yin 2021 Table 1 'Between-patient
     # variability' block reports variances directly: Var(CL_intact) = 0.0630,
@@ -128,12 +128,12 @@ Yin_2021_trastuzumabDeruxtecan <- function() {
       (1 + e_male_cl  * sex_male)
 
     vc <- exp(lvc + etalvc) *
-      (WT / 57.8)^e_wt_v1 *
-      (1 + e_male_v1 * sex_male)
+      (WT / 57.8)^e_wt_vc *
+      (1 + e_male_vc * sex_male)
 
     q  <- exp(lq + etalq)
     vp <- exp(lvp + etalvp) *
-      (1 + e_japan_v2 * REGION_JAPAN)
+      (1 + e_japan_vp * REGION_JAPAN)
 
     kel <- cl / vc
     k12 <- q  / vc

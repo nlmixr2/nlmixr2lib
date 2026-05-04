@@ -55,28 +55,28 @@ term below is taken directly from Zhu 2017 Table 3. Reference values are WT =
 | `lq` (Q)                          | `log(0.284)` L/day     | Table 3 |
 | `lka` (ka)                        | `log(0.239)` 1/day     | Table 3 |
 | `lfdepot` (F_SC)                  | `log(0.856)`           | Table 3 |
-| `e_cl_wt` (WT on CL, exponent)    | `1.00`                 | Table 3 (flagged: paper reports 1.00; fixed-vs-estimated ambiguous) |
-| `e_vc_wt` (WT on Vc, exponent)    | `0.814`                | Table 3 |
-| `e_vp_wt` (WT on Vp, exponent)    | `0.692`                | Table 3 |
-| `e_q_wt`  (WT on Q, exponent)     | `0.479`                | Table 3 |
-| `e_cl_age` (AGE on CL, exponent)  | `0.0241`               | Table 3 (encoded as `(AGE/40)^0.0241`) |
-| `e_cl_sexf` (SEXF on CL)          | `1.06`                 | Table 3 |
-| `e_cl_race_black`                 | `1.07`                 | Table 3 |
-| `e_cl_race_asian`                 | `1.09`                 | Table 3 |
-| `e_cl_race_other`                 | `1.11`                 | Table 3 |
-| `e_cl_ada_positive`               | `1.04`                 | Table 3 |
-| `e_ka_form_nso`                   | `0.981`                | Table 3 |
-| `e_ka_form_cho_phase2`            | `0.989`                | Table 3 |
-| `e_f_form_nso`                    | `1.00`                 | Table 3 |
-| `e_f_form_cho_phase2`             | `0.973`                | Table 3 |
+| `e_wt_cl` (WT on CL, exponent)    | `1.00`                 | Table 3 (flagged: paper reports 1.00; fixed-vs-estimated ambiguous) |
+| `e_wt_vc` (WT on Vc, exponent)    | `0.814`                | Table 3 |
+| `e_wt_vp` (WT on Vp, exponent)    | `0.692`                | Table 3 |
+| `e_wt_q`  (WT on Q, exponent)     | `0.479`                | Table 3 |
+| `e_age_cl` (AGE on CL, exponent)  | `0.0241`               | Table 3 (encoded as `(AGE/40)^0.0241`) |
+| `e_sexf_cl` (SEXF on CL)          | `1.06`                 | Table 3 |
+| `e_race_black_cl`                 | `1.07`                 | Table 3 |
+| `e_race_asian_cl`                 | `1.09`                 | Table 3 |
+| `e_race_other_cl`                 | `1.11`                 | Table 3 |
+| `e_ada_pos_cl`                    | `1.04`                 | Table 3 |
+| `e_form_ns0_ka`                   | `0.981`                | Table 3 |
+| `e_form_cho_phase2_ka`            | `0.989`                | Table 3 |
+| `e_form_ns0_fdepot`               | `1.00`                 | Table 3 |
+| `e_form_cho_phase2_fdepot`        | `0.973`                | Table 3 |
 | `var(etalcl)`                     | `0.105`                | Table 3 (omega^2) |
 | `cov(etalcl, etalvc)`             | `0.0832`               | Table 3 |
 | `var(etalvc)`                     | `0.124`                | Table 3 |
 | `cov(etalcl, etalka)`             | `0.00203`              | Table 3 |
 | `cov(etalvc, etalka)`             | `0.00439`              | Table 3 |
 | `var(etalka)`                     | `0.154`                | Table 3 |
-| `CcpropSd` (proportional RUV)     | `0.0490` (4.9%)        | Table 3 |
-| `CcaddSd` (additive RUV, ug/mL)   | `0.00154` (1.54 ng/mL) | Table 3 |
+| `propSd` (proportional RUV)     | `0.0490` (4.9%)        | Table 3 |
+| `addSd` (additive RUV, ug/mL)   | `0.00154` (1.54 ng/mL) | Table 3 |
 | Structure                         | 2-cmt, 1st-order SC    | p. 90 Methods; confirmed by Table 3 parameterization |
 
 A previous release of the model file stored the six IIV entries as

@@ -136,12 +136,12 @@ Yang_2024_axatilimab <- function() {
     etalbl_cpk  ~ 0.570025  # Yang 2024 Table 1 omega(BLCPK)  = 0.755 -> 0.755^2 = 0.570025
 
     # === Residual error (Yang 2024 Table 1 'Residual error model' rows) ===
-    CcpropSd        <- 0.375; label("Proportional residual error on axatilimab Cc (fraction)")                                                                   # Yang 2024 Table 1 'bPK' = 0.375
-    csf1obspropSd   <- 0.321; label("Proportional residual error on plasma CSF-1 observation (fraction)")                                                       # Yang 2024 Table 1 'bCSF1' = 0.321
-    ncmcobsaddSd    <- 0.977; label("Additive residual error on NCMC observation (cells/uL)")                                                                   # Yang 2024 Table 1 'aNCMC' = 0.977
-    ncmcobspropSd   <- 0.676; label("Proportional residual error on NCMC observation (fraction)")                                                               # Yang 2024 Table 1 'bNCMC' = 0.676
-    astobspropSd    <- 0.324; label("Proportional residual error on AST observation (fraction)")                                                                # Yang 2024 Table 1 'bAST' = 0.324
-    cpkobspropSd    <- 0.462; label("Proportional residual error on CPK observation (fraction)")                                                                # Yang 2024 Table 1 'bCPK' = 0.462
+    propSd        <- 0.375; label("Proportional residual error on axatilimab Cc (fraction)")                                                                   # Yang 2024 Table 1 'bPK' = 0.375
+    propSd_csf1obs   <- 0.321; label("Proportional residual error on plasma CSF-1 observation (fraction)")                                                      # Yang 2024 Table 1 'bCSF1' = 0.321
+    addSd_ncmcobs    <- 0.977; label("Additive residual error on NCMC observation (cells/uL)")                                                                  # Yang 2024 Table 1 'aNCMC' = 0.977
+    propSd_ncmcobs   <- 0.676; label("Proportional residual error on NCMC observation (fraction)")                                                              # Yang 2024 Table 1 'bNCMC' = 0.676
+    propSd_astobs    <- 0.324; label("Proportional residual error on AST observation (fraction)")                                                               # Yang 2024 Table 1 'bAST' = 0.324
+    propSd_cpkobs    <- 0.462; label("Proportional residual error on CPK observation (fraction)")                                                               # Yang 2024 Table 1 'bCPK' = 0.462
   })
 
   model({
@@ -233,10 +233,10 @@ Yang_2024_axatilimab <- function() {
     astobs  <- ast
     cpkobs  <- cpk
 
-    Cc       ~ prop(CcpropSd)
-    csf1obs  ~ prop(csf1obspropSd)
-    ncmcobs  ~ add(ncmcobsaddSd) + prop(ncmcobspropSd)
-    astobs   ~ prop(astobspropSd)
-    cpkobs   ~ prop(cpkobspropSd)
+    Cc       ~ prop(propSd)
+    csf1obs  ~ prop(propSd_csf1obs)
+    ncmcobs  ~ add(addSd_ncmcobs) + prop(propSd_ncmcobs)
+    astobs   ~ prop(propSd_astobs)
+    cpkobs   ~ prop(propSd_cpkobs)
   })
 }

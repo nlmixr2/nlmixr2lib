@@ -75,9 +75,9 @@ FiedlerKelly_2020_fremanezumab_em <- function() {
     # variance 5.52 (days^2) with SD column 2.35 (sqrt(5.52) = 2.349).
     # nlmixr2 expects SD, so the SD form is used directly here. The
     # output-prefixed name follows the multi-output residual-error
-    # convention (`<output>addSd`).
+    # convention (`addSd_<output>`).
     # ----------------------------------------------------------------------
-    migraineDaysaddSd <- 2.35; label("Additive residual error on monthly migraine days")  # Fiedler-Kelly 2020 Table S3 (SD of variance 5.52)
+    addSd_migraineDays <- 2.35; label("Additive residual error on monthly migraine days")  # Fiedler-Kelly 2020 Table S3 (SD of variance 5.52)
   })
 
   model({
@@ -105,6 +105,6 @@ FiedlerKelly_2020_fremanezumab_em <- function() {
     # Predicted monthly migraine days = baseline minus placebo time effect minus drug effect.
     migraineDays <- BL_i - placebo_red - drug_red
 
-    migraineDays ~ add(migraineDaysaddSd)
+    migraineDays ~ add(addSd_migraineDays)
   })
 }

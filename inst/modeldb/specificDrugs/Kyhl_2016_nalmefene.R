@@ -86,7 +86,7 @@ Kyhl_2016_nalmefene <- function() {
 
     lcl <- log(60.4); label("Clearance (L/h)")
     etalcl ~ sqrt(log((18.7/100)^2 + 1))
-    allo_lbm_cl <- 0.626; label("Lean body mass on CL (power)")
+    e_lbm_cl <- 0.626; label("Lean body mass on CL (power)")
     lvc <- log(266); label("Volume of distribution, central compartment (L)")
     etalvc ~ sqrt(log((66.6/100)^2 + 1))
     e_age_vc <- -2.11; label("Effect of age on central volume of distribution (L/year)")
@@ -110,7 +110,7 @@ Kyhl_2016_nalmefene <- function() {
     ka_tablet <- exp(lka_tablet + etalka_tablet)
     ka_solution <- exp(lka_solution)
     ka <- ka_tablet*TABLET + ka_solution*(1 - TABLET)
-    cl <- exp(lcl + etalcl) * (LBM/56.28)^allo_lbm_cl
+    cl <- exp(lcl + etalcl) * (LBM/56.28)^e_lbm_cl
     vc <- exp(lvc + etalvc) + e_age_vc*(AGE - 28)
     q <- exp(lq + etalq)
     vp <- exp(lvp + etalvp)

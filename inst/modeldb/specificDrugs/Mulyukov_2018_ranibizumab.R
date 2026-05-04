@@ -107,7 +107,7 @@ Mulyukov_2018_ranibizumab <- function() {
     # ranibizumab simulation); the sham-arm value is documented in the
     # vignette's Assumptions and deviations.
     # ------------------------------------------------------------------------
-    bcvaaddSd  <- 5; label("Additive residual error on BCVA for treated subjects (ETDRS letters)")  # Mulyukov 2018 Table 2: sigma_treatment 5 letters (RSE 0.5%)
+    addSd_bcva  <- 5; label("Additive residual error on BCVA for treated subjects (ETDRS letters)")  # Mulyukov 2018 Table 2: sigma_treatment 5 letters (RSE 0.5%)
   })
 
   model({
@@ -164,6 +164,6 @@ Mulyukov_2018_ranibizumab <- function() {
     # ------------------------------------------------------------------
     # Observation and error.
     # ------------------------------------------------------------------
-    bcva ~ add(bcvaaddSd)
+    bcva ~ add(addSd_bcva)
   })
 }

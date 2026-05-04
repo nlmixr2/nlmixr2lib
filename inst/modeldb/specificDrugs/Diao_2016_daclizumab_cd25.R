@@ -66,8 +66,8 @@ Diao_2016_daclizumab_cd25 <- function() {
     lfdepot  <- log(0.84);       label("SC bioavailability for 100-300 mg doses (F, fraction)")       # Othman 2014 Table 2
     lalag    <- log(2 / 24);     label("Absorption lag time for SC doses (Tlag, day; 2 h)")           # Othman 2014 Table 2
 
-    allo_cl <- 0.54; label("Allometric exponent on CL and Q (unitless)")  # Othman 2014 Table 2
-    allo_v  <- 0.64; label("Allometric exponent on Vc and Vp (unitless)") # Othman 2014 Table 2
+    e_wt_cl_q <- 0.54; label("Allometric exponent on CL and Q (unitless)")  # Othman 2014 Table 2
+    e_wt_vc_vp <- 0.64; label("Allometric exponent on Vc and Vp (unitless)") # Othman 2014 Table 2
 
     e_dose_50mg_f <- -0.32143; label("Relative change in F for 50 mg SC vs 100-300 mg SC (fraction)") # Othman 2014 Table 2
 
@@ -80,8 +80,8 @@ Diao_2016_daclizumab_cd25 <- function() {
     etalvc ~ 0.09175                                                                              # Othman 2014 Table 2 (Vc CV 31%)
 
     # PK residual error (Othman 2014 Table 2): proportional 22% + additive 0.33 ug/mL.
-    CcpropSd <- 0.22; label("Proportional residual error on daclizumab HYP serum concentration (fraction)") # Othman 2014 Table 2
-    CcaddSd  <- 0.33; label("Additive residual error on daclizumab HYP serum concentration (ug/mL)")        # Othman 2014 Table 2
+    propSd <- 0.22; label("Proportional residual error on daclizumab HYP serum concentration (fraction)") # Othman 2014 Table 2
+    addSd  <- 0.33; label("Additive residual error on daclizumab HYP serum concentration (ug/mL)")        # Othman 2014 Table 2
 
     # ----------------------------------------------------------------------
     # CD25 occupancy PD parameters (Diao 2016 Table 3, sigmoidal Emax model).
@@ -119,7 +119,7 @@ Diao_2016_daclizumab_cd25 <- function() {
     # Residual error on the CD25 occupancy observation.
     # Diao 2016 Table 3 reports "Residual error (additive) = 4.02" (units:
     # percentage points of CD4+ T cells).
-    cd25addSd <- 4.02; label("Additive residual error on unoccupied CD25 (% of CD4+ T cells)")  # Diao 2016 Table 3
+    addSd_cd25 <- 4.02; label("Additive residual error on unoccupied CD25 (% of CD4+ T cells)")  # Diao 2016 Table 3
   })
 
   model({
@@ -127,10 +127,10 @@ Diao_2016_daclizumab_cd25 <- function() {
     # 1. Individual PK parameters (Othman 2014 PK backbone).
     # ------------------------------------------------------------------
     ka <- exp(lka + etalka)
-    cl <- exp(lcl + etalcl) * (WT / 70)^allo_cl
-    vc <- exp(lvc + etalvc) * (WT / 70)^allo_v
-    vp <- exp(lvp)          * (WT / 70)^allo_v
-    q  <- exp(lq)           * (WT / 70)^allo_cl
+    cl <- exp(lcl + etalcl) * (WT / 70)^e_wt_cl_q
+    vc <- exp(lvc + etalvc) * (WT / 70)^e_wt_vc_vp
+    vp <- exp(lvp)          * (WT / 70)^e_wt_vc_vp
+    q  <- exp(lq)           * (WT / 70)^e_wt_cl_q
 
     kel <- cl / vc
     k12 <- q  / vc
@@ -164,7 +164,7 @@ Diao_2016_daclizumab_cd25 <- function() {
     # ------------------------------------------------------------------
     # 5. Observation and error model (PK + PD outputs).
     # ------------------------------------------------------------------
-    Cc   ~ add(CcaddSd) + prop(CcpropSd)
-    cd25 ~ add(cd25addSd)
+    Cc   ~ add(addSd) + prop(propSd)
+    cd25 ~ add(addSd_cd25)
   })
 }

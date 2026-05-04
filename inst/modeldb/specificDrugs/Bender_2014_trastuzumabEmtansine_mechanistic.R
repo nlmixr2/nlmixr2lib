@@ -89,8 +89,8 @@ Bender_2014_trastuzumabEmtansine_mechanistic <- function() {
 
     # Residual error - cynomolgus; paper reports a single residual magnitude
     # applied to T-DM1 and total trastuzumab observations
-    CcpropSd  <- 0.153; label("Proportional residual error on T-DM1 concentration (fraction)")            # Bender 2014 Table II, cyno: 15.3%
-    CttpropSd <- 0.153; label("Proportional residual error on total trastuzumab concentration (fraction)") # Bender 2014 Table II, cyno: 15.3%
+    propSd    <- 0.153; label("Proportional residual error on T-DM1 concentration (fraction)")            # Bender 2014 Table II, cyno: 15.3%
+    propSd_Ctt  <- 0.153; label("Proportional residual error on total trastuzumab concentration (fraction)") # Bender 2014 Table II, cyno: 15.3%
   })
 
   model({
@@ -172,14 +172,14 @@ Bender_2014_trastuzumabEmtansine_mechanistic <- function() {
     d/dt(dar0_peripheral2) <-  k13 * dar0_central - k31d * dar0_peripheral2
 
     # Derived per-DAR concentrations (ug/mL)
-    Cdar0 <- dar0_central / vc
-    Cdar1 <- dar1_central / vc
-    Cdar2 <- dar2_central / vc
-    Cdar3 <- dar3_central / vc
-    Cdar4 <- dar4_central / vc
-    Cdar5 <- dar5_central / vc
-    Cdar6 <- dar6_central / vc
-    Cdar7 <- dar7_central / vc
+    Cc_dar0 <- dar0_central / vc
+    Cc_dar1 <- dar1_central / vc
+    Cc_dar2 <- dar2_central / vc
+    Cc_dar3 <- dar3_central / vc
+    Cc_dar4 <- dar4_central / vc
+    Cc_dar5 <- dar5_central / vc
+    Cc_dar6 <- dar6_central / vc
+    Cc_dar7 <- dar7_central / vc
 
     # Composite outputs: T-DM1 assay reads the conjugated fraction (DAR1..DAR7);
     # TT (total trastuzumab) assay reads every antibody backbone (DAR0..DAR7).
@@ -188,7 +188,7 @@ Bender_2014_trastuzumabEmtansine_mechanistic <- function() {
     Ctt <- (dar0_central + dar1_central + dar2_central + dar3_central +
             dar4_central + dar5_central + dar6_central + dar7_central) / vc
 
-    Cc  ~ prop(CcpropSd)
-    Ctt ~ prop(CttpropSd)
+    Cc  ~ prop(propSd)
+    Ctt ~ prop(propSd_Ctt)
   })
 }

@@ -34,8 +34,8 @@ Grimm_2023_gantenerumab <- function() {
     lcl <- log(0.537); label("Clearance (mL/h/kg)")                                            # Table 1
     lvp <- log(97.1); label("Peripheral volume of distribution (mL/kg)")                       # Table 1
     lq <- log(2.86); label("Intercompartmental clearance (mL/h/kg)")                           # Table 1
-    allo_cl <- fixed(0.85); label("Allometric exponent for clearance")                         # text on page 11
-    allo_v <- fixed(1); label("Allometric exponent for volume")                                # text on page 11
+    e_wt_cl_q  <- fixed(0.85); label("Allometric exponent for clearance (CL and Q)")           # text on page 11
+    e_wt_vc_vp <- fixed(1); label("Allometric exponent for volume (Vc and Vp)")                # text on page 11
 
     # Brain-region parameters — Supplementary Table 1
     # fpla_* are log-transformed so IIV follows the eta + transformed-name convention:
@@ -69,14 +69,14 @@ Grimm_2023_gantenerumab <- function() {
     kout_csf <- 0.0134; label("Brain outflow rate, cerebrospinal fluid (1/h)")                 # Supp. Table 1
     fpla_csf <- fixed(0); label("Residual plasma fraction, cerebrospinal fluid")               # Supp. Table 1
 
-    CcpropSd <- 0; label("Proportional residual error (fraction)")
-    CcaddSd <- 0; label("Additive residual error (ng/mL)")
+    propSd <- 0; label("Proportional residual error (fraction)")
+    addSd <- 0; label("Additive residual error (ng/mL)")
   })
   model({
-    cl <- exp(lcl + log(WT/5)*allo_cl)
-    vc <- exp(lvc + log(WT/5)*allo_v)
-    vp <- exp(lvp + log(WT/5)*allo_v)
-    q <- exp(lq + log(WT/5)*allo_cl)
+    cl <- exp(lcl + log(WT/5)*e_wt_cl_q)
+    vc <- exp(lvc + log(WT/5)*e_wt_vc_vp)
+    vp <- exp(lvp + log(WT/5)*e_wt_vc_vp)
+    q <- exp(lq + log(WT/5)*e_wt_cl_q)
 
     # Individual residual plasma fractions — exp(lfpla + etalfpla) keeps eta on log-scale
     # and matches the naming convention; equivalent to the original fpla * exp(bsv_fpla).
@@ -115,6 +115,6 @@ Grimm_2023_gantenerumab <- function() {
     d/dt(Ccsf) <- kout_csf*(kp_csf*Cc - Ccsf)
     Cbrain_csf <- fpla_csf*Cc + Ccsf
 
-    Cc ~ add(CcaddSd) + prop(CcpropSd)
+    Cc ~ add(addSd) + prop(propSd)
   })
 }

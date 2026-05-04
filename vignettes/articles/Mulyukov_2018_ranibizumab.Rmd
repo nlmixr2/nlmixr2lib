@@ -455,7 +455,7 @@ All three match the paper to < 1 %.
   library model exposes only $\sigma_{treatment} = 5$ letters (the primary
   use case for ranibizumab simulation is the treated-arm trajectory). If a
   user needs to simulate a sham/untreated arm with the paper's residual
-  error, override `bcvaaddSd` to `7` after loading the model. The typical-
+  error, override `addSd_bcva` to `7` after loading the model. The typical-
   value and individual structural trajectories are unchanged.
 - **Baseline BCVA treated as a covariate.** The paper writes
   $g_{i,0} = BVA_i + \eta_{1,i}$ where $BVA_i$ is the observed baseline VA

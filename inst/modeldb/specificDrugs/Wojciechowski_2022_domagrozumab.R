@@ -95,7 +95,7 @@ Wojciechowski_2022_domagrozumab <- function() {
     # matrix (covariances in log-space) using the symbol rho. The implied
     # correlation between eta_CL and eta_V1 is 0.0363 / sqrt(0.05727 * 0.05328)
     # = 0.658, consistent with typical mAb CL-V1 correlations.
-    etalcl + etalvc + etalvmax + etalbase + etalkdegkint ~ c(
+    etalcl + etalvc + etalvmax + etalbase + etalkdeg_kint ~ c(
        0.05727,
        0.0363,    0.05328,
       -0.0122,    0.00352,  0.73304,
@@ -108,8 +108,8 @@ Wojciechowski_2022_domagrozumab <- function() {
     # natural-log domain; in nlmixr2 linear-domain notation this is
     # proportional with SD = sigma_add (= 0.142). Total myostatin used a
     # proportional error model in the linear domain; sigma_pro = 20.6% CV.
-    CcpropSd  <- 0.142; label("Proportional residual error on free domagrozumab concentration (fraction)")  # Wojciechowski 2022 Table 2: sigma_add = 0.142 SD log-additive
-    MyopropSd <- 0.206; label("Proportional residual error on total myostatin concentration (fraction)")     # Wojciechowski 2022 Table 2: sigma_pro = 20.6% CV
+    propSd   <- 0.142; label("Proportional residual error on free domagrozumab concentration (fraction)")  # Wojciechowski 2022 Table 2: sigma_add = 0.142 SD log-additive
+    propSd_Myo <- 0.206; label("Proportional residual error on total myostatin concentration (fraction)")     # Wojciechowski 2022 Table 2: sigma_pro = 20.6% CV
   })
 
   model({
@@ -143,8 +143,8 @@ Wojciechowski_2022_domagrozumab <- function() {
     cov_spop_kdegkint <- 1 + e_dmd_kdegkint * DIS_DMD
 
     base <- exp(lbase + etalbase) * cov_spop_base                                # nM
-    kdeg <- exp(lkdeg + etalkdegkint) * cov_spop_kdegkint                        # 1/hour
-    kint <- exp(lkint + e_ratio_kdegkint * etalkdegkint) * cov_spop_kdegkint     # 1/hour
+    kdeg <- exp(lkdeg + etalkdeg_kint) * cov_spop_kdegkint                        # 1/hour
+    kint <- exp(lkint + e_ratio_kdegkint * etalkdeg_kint) * cov_spop_kdegkint     # 1/hour
     ksyn <- base * kdeg                                                          # nM/hour (Eq. 5)
 
     # ---- Drug concentration in nM (paper scale) ----
@@ -183,7 +183,7 @@ Wojciechowski_2022_domagrozumab <- function() {
     Cc  <- Cc_nM           # Free domagrozumab concentration (nM)
     Myo <- total_target    # Total myostatin concentration (nM)
 
-    Cc  ~ prop(CcpropSd)
-    Myo ~ prop(MyopropSd)
+    Cc  ~ prop(propSd)
+    Myo ~ prop(propSd_Myo)
   })
 }

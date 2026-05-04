@@ -119,12 +119,12 @@ Pouzin_2022_tusamitamab <- function() {
     # ADC: combined error model. The published additive SD of 1.03 ug/mL is
     # converted to uM (umol/L) by dividing by the SAR408701 MW = 150,000 g/mol
     # and multiplying by 1000 mL/L: 1.03 / 150,000 * 1000 = 0.006867 uM.
-    CcaddSd      <- 0.006867; label("Additive residual error on ADC concentration (uM)")                          # Pouzin 2022 Table 4: a_ADC = 1.03 ug/mL (= 0.006867 uM)
-    CcpropSd     <- 0.089;    label("Proportional residual error on ADC concentration (fraction)")                # Pouzin 2022 Table 4: b_ADC   = 8.9%
-    CnabpropSd   <- 0.260;    label("Proportional residual error on NAB concentration (fraction)")                # Pouzin 2022 Table 4: b_NAB   = 26.0%
-    Cdm4propSd   <- 0.335;    label("Proportional residual error on DM4 concentration (fraction)")                # Pouzin 2022 Table 4: b_DM4   = 33.5%
-    Cmedm4propSd <- 0.500;    label("Proportional residual error on MeDM4 concentration (fraction)")              # Pouzin 2022 Table 4: b_MeDM4 = 50.0%
-    DARavgaddSd  <- 0.219;    label("Additive residual error on average DAR (DAR units)")                         # Pouzin 2022 Table 4: a_DARaverage = 0.219
+    addSd        <- 0.006867; label("Additive residual error on ADC concentration (uM)")                          # Pouzin 2022 Table 4: a_ADC = 1.03 ug/mL (= 0.006867 uM)
+    propSd       <- 0.089;    label("Proportional residual error on ADC concentration (fraction)")                # Pouzin 2022 Table 4: b_ADC   = 8.9%
+    propSd_nab     <- 0.260;    label("Proportional residual error on NAB concentration (fraction)")                # Pouzin 2022 Table 4: b_NAB   = 26.0%
+    propSd_dm4     <- 0.335;    label("Proportional residual error on DM4 concentration (fraction)")                # Pouzin 2022 Table 4: b_DM4   = 33.5%
+    propSd_medm4   <- 0.500;    label("Proportional residual error on MeDM4 concentration (fraction)")              # Pouzin 2022 Table 4: b_MeDM4 = 50.0%
+    addSd_DARavg   <- 0.219;    label("Additive residual error on average DAR (DAR units)")                         # Pouzin 2022 Table 4: a_DARaverage = 0.219
   })
 
   model({
@@ -229,9 +229,9 @@ Pouzin_2022_tusamitamab <- function() {
 
     # NAB (DAR0) chain: receives from DAR1 deconjugation; NAB clearance only,
     # no further deconjugation.
-    d/dt(nab_central)     <-  kdec1 * dar1_central - kelnab * nab_central -
-                              k12 * nab_central + k21 * nab_peripheral1
-    d/dt(nab_peripheral1) <-  k12 * nab_central - k21 * nab_peripheral1
+    d/dt(central_nab)     <-  kdec1 * dar1_central - kelnab * central_nab -
+                              k12 * central_nab + k21 * peripheral1_nab
+    d/dt(peripheral1_nab) <-  k12 * central_nab - k21 * peripheral1_nab
 
     # DM4 catabolite: every DAR>=1 deconjugation event releases exactly one
     # DM4 molecule (1:1 molar). Pouzin 2022 supplement Online Resource 1
@@ -240,11 +240,11 @@ Pouzin_2022_tusamitamab <- function() {
                  kdec3 * dar3_central + kdec4 * dar4_central +
                  kdec5 * dar5_central + kdec6 * dar6_central +
                  kdec7 * dar7_central + kdec8 * dar8_central
-    d/dt(dm4)   <- dm4_input - keldm4 * dm4
+    d/dt(central_dm4)   <- dm4_input - keldm4 * central_dm4
 
     # MeDM4 catabolite: formed sequentially from DM4 elimination, with
     # apparent fraction frmedm4 routed into MeDM4.
-    d/dt(medm4) <- frmedm4 * keldm4 * dm4 - kelmedm4 * medm4
+    d/dt(central_medm4) <- frmedm4 * keldm4 * central_dm4 - kelmedm4 * central_medm4
 
     # ----- Bioavailability: split a single dose across 9 ADC chains -----
     # rxode2 / nlmixr2 do not natively split a single dose row across
@@ -260,25 +260,25 @@ Pouzin_2022_tusamitamab <- function() {
     f(dar6_central) <- fdar6
     f(dar7_central) <- fdar7
     f(dar8_central) <- fdar8
-    f(nab_central)  <- fnab
+    f(central_nab)  <- fnab
 
     # ----- Observed concentrations -----
-    Cc     <- (dar1_central + dar2_central + dar3_central + dar4_central +
-               dar5_central + dar6_central + dar7_central + dar8_central) / vc  # SAR408701 (DAR>=1) by Gyrolab
-    Cnab   <- nab_central / vc                                                  # NAB (DAR0) by depletion immunoassay
-    Cdm4   <- dm4   / vdm4                                                      # Free DM4 by LC-MS/MS
-    Cmedm4 <- medm4 / vmedm4                                                    # Free MeDM4 by LC-MS/MS
+    Cc       <- (dar1_central + dar2_central + dar3_central + dar4_central +
+                 dar5_central + dar6_central + dar7_central + dar8_central) / vc  # SAR408701 (DAR>=1) by Gyrolab
+    Cc_nab   <- central_nab / vc                                                  # NAB (DAR0) by depletion immunoassay
+    Cc_dm4   <- central_dm4   / vdm4                                              # Free DM4 by LC-MS/MS
+    Cc_medm4 <- central_medm4 / vmedm4                                            # Free MeDM4 by LC-MS/MS
 
     # Average DAR: total conjugated DM4 / total antibody (ADC + NAB).
-    Ctab    <- Cc + Cnab
+    Cc_tab  <- Cc + Cc_nab
     DARavg  <- (1 * dar1_central + 2 * dar2_central + 3 * dar3_central +
                 4 * dar4_central + 5 * dar5_central + 6 * dar6_central +
-                7 * dar7_central + 8 * dar8_central) / vc / Ctab
+                7 * dar7_central + 8 * dar8_central) / vc / Cc_tab
 
-    Cc     ~ add(CcaddSd) + prop(CcpropSd)
-    Cnab   ~ prop(CnabpropSd)
-    Cdm4   ~ prop(Cdm4propSd)
-    Cmedm4 ~ prop(Cmedm4propSd)
-    DARavg ~ add(DARavgaddSd)
+    Cc       ~ add(addSd) + prop(propSd)
+    Cc_nab   ~ prop(propSd_nab)
+    Cc_dm4   ~ prop(propSd_dm4)
+    Cc_medm4 ~ prop(propSd_medm4)
+    DARavg   ~ add(addSd_DARavg)
   })
 }

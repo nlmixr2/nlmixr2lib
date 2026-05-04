@@ -44,10 +44,10 @@ below collects them for review.
 | Equation / parameter | Value | Source location |
 |----------------------|-------|-----------------|
 | `lcl` (Cl_int)       | `log(4.58)` L/hr | Table 2 |
-| `e_cl_crcl` (Cl_eGFR, Cirincione notation) | `0.838` | Table 2 |
+| `e_crcl_cl` (Cl_eGFR, Cirincione notation) | `0.838` | Table 2 |
 | `lq` (Cld)           | `log(3.72)` L/hr | Table 2 |
 | `lvc` (Vc_int)       | `log(7.03)` L    | Table 2 |
-| `e_vc_wt` (Vc_wtkg)  | `2.67`           | Table 2 |
+| `e_wt_vc` (Vc_wtkg)  | `2.67`           | Table 2 |
 | `lvp` (Vp)           | `log(7.04)` L    | Table 2 |
 | `lvmax` (Vmax)       | `log(1.55)` ug/hr | Table 2 |
 | `lkm` (Km)           | `log(0.567)` ng/mL | Table 2 (reported 567 pg/mL; expressed in ng/mL for unit-consistency with Cc = central/vc) |

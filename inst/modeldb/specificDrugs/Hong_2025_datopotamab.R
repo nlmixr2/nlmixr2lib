@@ -121,10 +121,10 @@ Hong_2025_datopotamab <- function() {
     # subject (66 kg male, age 62, albumin 38 g/L, tumor 66 mm, non-Japan).
     # Concentrations are in mg/L (= ug/mL) so that dose in mg / V in L gives
     # ug/mL directly, which matches the bioanalytical assay scale.
-    lcl_adc   <- log(0.386);  label("Dato-DXd linear clearance at reference covariates (CL_linDatoDXd, L/day)")  # Hong 2025 Table 1, Eq. 8
-    lvc_adc   <- log(3.06);   label("Dato-DXd central volume at reference (V_cDatoDXd, L)")                       # Hong 2025 Table 1, Eq. 9
-    lq_adc    <- log(0.422);  label("Dato-DXd intercompartmental clearance (Q_DatoDXd, L/day)")                   # Hong 2025 Table 1
-    lvp_adc   <- log(2.88);   label("Dato-DXd peripheral volume at reference (V_pDatoDXd, L)")                    # Hong 2025 Table 1, Eq. 10
+    lcl       <- log(0.386);  label("Dato-DXd linear clearance at reference covariates (CL_linDatoDXd, L/day)")  # Hong 2025 Table 1, Eq. 8
+    lvc       <- log(3.06);   label("Dato-DXd central volume at reference (V_cDatoDXd, L)")                       # Hong 2025 Table 1, Eq. 9
+    lq        <- log(0.422);  label("Dato-DXd intercompartmental clearance (Q_DatoDXd, L/day)")                   # Hong 2025 Table 1
+    lvp       <- log(2.88);   label("Dato-DXd peripheral volume at reference (V_pDatoDXd, L)")                    # Hong 2025 Table 1, Eq. 10
     lvmax     <- log(8.41);   label("Dato-DXd Michaelis-Menten Vmax at reference tumor size (mg/day)")           # Hong 2025 Table 1, Eq. 12: 8410 ug/day = 8.41 mg/day
     lkm       <- log(4.49);   label("Dato-DXd Michaelis-Menten Km (mg/L = ug/mL)")                                # Hong 2025 Table 1, Eq. 11: 4490 ng/mL = 4.49 ug/mL
 
@@ -141,14 +141,14 @@ Hong_2025_datopotamab <- function() {
     # Continuous covariates enter as power models (CovEff = (Cov / Cov_ref)^theta;
     # paper Eq. 4); categorical covariates enter as fractional-difference models
     # (CovEff = 1 + theta for non-reference; paper Eq. 6).
-    e_wt_cl_adc      <- fix(0.75); label("Power exponent of WT on Dato-DXd CL_lin (unitless, fixed)")             # Hong 2025 Table 1: 0.750 fixed (estimated 0.80; Methods)
-    e_wt_vc_adc      <-  0.415;    label("Power exponent of WT on Dato-DXd Vc (unitless)")                        # Hong 2025 Table 1
-    e_wt_vp_adc      <-  0.311;    label("Power exponent of WT on Dato-DXd Vp (unitless)")                        # Hong 2025 Table 1
-    e_age_cl_adc     <- -0.306;    label("Power exponent of AGE on Dato-DXd CL_lin (unitless)")                   # Hong 2025 Table 1
-    e_alb_cl_adc     <- -0.788;    label("Power exponent of ALB on Dato-DXd CL_lin (unitless)")                   # Hong 2025 Table 1
-    e_japan_cl_adc   <- -0.219;    label("Fractional shift of region Japan on Dato-DXd CL_lin (unitless)")        # Hong 2025 Table 1: 1 + (-0.219) for Japan
-    e_sexf_cl_adc    <- -0.263;    label("Fractional shift of female sex on Dato-DXd CL_lin (unitless)")          # Hong 2025 Table 1: 1 + (-0.263) for female
-    e_sexf_vc_adc    <- -0.160;    label("Fractional shift of female sex on Dato-DXd Vc (unitless)")              # Hong 2025 Table 1: 1 + (-0.160) for female
+    e_wt_cl          <- fix(0.75); label("Power exponent of WT on Dato-DXd CL_lin (unitless, fixed)")             # Hong 2025 Table 1: 0.750 fixed (estimated 0.80; Methods)
+    e_wt_vc          <-  0.415;    label("Power exponent of WT on Dato-DXd Vc (unitless)")                        # Hong 2025 Table 1
+    e_wt_vp          <-  0.311;    label("Power exponent of WT on Dato-DXd Vp (unitless)")                        # Hong 2025 Table 1
+    e_age_cl         <- -0.306;    label("Power exponent of AGE on Dato-DXd CL_lin (unitless)")                   # Hong 2025 Table 1
+    e_alb_cl         <- -0.788;    label("Power exponent of ALB on Dato-DXd CL_lin (unitless)")                   # Hong 2025 Table 1
+    e_japan_cl       <- -0.219;    label("Fractional shift of region Japan on Dato-DXd CL_lin (unitless)")        # Hong 2025 Table 1: 1 + (-0.219) for Japan
+    e_sexf_cl        <- -0.263;    label("Fractional shift of female sex on Dato-DXd CL_lin (unitless)")          # Hong 2025 Table 1: 1 + (-0.263) for female
+    e_sexf_vc        <- -0.160;    label("Fractional shift of female sex on Dato-DXd Vc (unitless)")              # Hong 2025 Table 1: 1 + (-0.160) for female
     e_tumsz_vmax     <-  0.125;    label("Power exponent of TUMSZ on Dato-DXd Vmax (unitless)")                   # Hong 2025 Table 1, Eq. 12
 
     # ----- Covariate effects on DXd parameters (Hong 2025 Table 2 / Eq. 14-15).
@@ -163,10 +163,10 @@ Hong_2025_datopotamab <- function() {
 
     # ----- IIV. Paper reports IIV as %CV on log-normal parameters (Eq. 2);
     # convert to omega^2 = log(CV^2 + 1).
-    etalcl_adc  ~ 0.071375  # Dato-DXd CL_lin 27.2% CV; log(0.272^2 + 1) = 0.071375  -- Hong 2025 Table 1
-    etalvc_adc  ~ 0.020807  # Dato-DXd Vc     14.5% CV; log(0.145^2 + 1) = 0.020807  -- Hong 2025 Table 1
-    etalq_adc   ~ 0.092325  # Dato-DXd Q      31.1% CV; log(0.311^2 + 1) = 0.092325  -- Hong 2025 Table 1
-    etalvp_adc  ~ 0.092893  # Dato-DXd Vp     31.2% CV; log(0.312^2 + 1) = 0.092893  -- Hong 2025 Table 1
+    etalcl      ~ 0.071375  # Dato-DXd CL_lin 27.2% CV; log(0.272^2 + 1) = 0.071375  -- Hong 2025 Table 1
+    etalvc      ~ 0.020807  # Dato-DXd Vc     14.5% CV; log(0.145^2 + 1) = 0.020807  -- Hong 2025 Table 1
+    etalq       ~ 0.092325  # Dato-DXd Q      31.1% CV; log(0.311^2 + 1) = 0.092325  -- Hong 2025 Table 1
+    etalvp      ~ 0.092893  # Dato-DXd Vp     31.2% CV; log(0.312^2 + 1) = 0.092893  -- Hong 2025 Table 1
     etalvmax    ~ 0.036201  # Dato-DXd Vmax   19.2% CV; log(0.192^2 + 1) = 0.036201  -- Hong 2025 Table 1
 
     etalcl_dxd  ~ 0.094033  # DXd CL          31.4% CV; log(0.314^2 + 1) = 0.094033  -- Hong 2025 Table 2
@@ -179,26 +179,26 @@ Hong_2025_datopotamab <- function() {
     # subject-level scaling of the residual SD that nlmixr2 does not natively
     # support; this implementation uses the typical-subject residual SD only.
     # See vignette Assumptions and deviations.
-    CcpropSd     <- 0.121;  label("Proportional residual error on Dato-DXd Cc (fraction)")  # Hong 2025 Table 1: additive RUV on log scale, CV 0.121
-    CdxdpropSd   <- 0.283;  label("Proportional residual error on DXd Cdxd (fraction)")     # Hong 2025 Table 2: additive RUV on log scale, CV 0.283
+    propSd     <- 0.121;  label("Proportional residual error on Dato-DXd Cc (fraction)")  # Hong 2025 Table 1: additive RUV on log scale, CV 0.121
+    propSd_dxd   <- 0.283;  label("Proportional residual error on DXd Cc_dxd (fraction)")   # Hong 2025 Table 2: additive RUV on log scale, CV 0.283
   })
   model({
     # ----- Individual Dato-DXd parameters (Hong 2025 Eq. 8-12). Continuous
     # covariates are normalized to the reference values 66 kg / 62 yr / 38 g/L
     # and enter as power terms; categorical covariates (Japan, female) enter
     # multiplicatively as 1 + theta for the non-reference category.
-    cl_adc <- exp(lcl_adc + etalcl_adc) *
-      (WT  / 66)^e_wt_cl_adc *
-      (AGE / 62)^e_age_cl_adc *
-      (ALB / 38)^e_alb_cl_adc *
-      (1 + e_japan_cl_adc * REGION_JAPAN) *
-      (1 + e_sexf_cl_adc  * SEXF)
-    vc_adc <- exp(lvc_adc + etalvc_adc) *
-      (WT / 66)^e_wt_vc_adc *
-      (1 + e_sexf_vc_adc * SEXF)
-    q_adc  <- exp(lq_adc  + etalq_adc)
-    vp_adc <- exp(lvp_adc + etalvp_adc) *
-      (WT / 66)^e_wt_vp_adc
+    cl <- exp(lcl + etalcl) *
+      (WT  / 66)^e_wt_cl *
+      (AGE / 62)^e_age_cl *
+      (ALB / 38)^e_alb_cl *
+      (1 + e_japan_cl * REGION_JAPAN) *
+      (1 + e_sexf_cl  * SEXF)
+    vc <- exp(lvc + etalvc) *
+      (WT / 66)^e_wt_vc *
+      (1 + e_sexf_vc * SEXF)
+    q  <- exp(lq  + etalq)
+    vp <- exp(lvp + etalvp) *
+      (WT / 66)^e_wt_vp
     vmax   <- exp(lvmax   + etalvmax) *
       (TUMSZ / 66)^e_tumsz_vmax
     km     <- exp(lkm)
@@ -222,11 +222,11 @@ Hong_2025_datopotamab <- function() {
 
     # ----- Dato-DXd plasma concentration (mg/L = ug/mL) and instantaneous
     # elimination rates. The Michaelis-Menten elimination rate has units of
-    # mass / time; with C_dato in mg/L = ug/mL and km in the same units,
+    # mass / time; with Cc in mg/L = ug/mL and km in the same units,
     # vmax * C / (km + C) is in mg/day.
-    Cdato     <- adc_central / vc_adc
-    rate_lin  <- cl_adc * Cdato
-    rate_mm   <- vmax * Cdato / (km + Cdato)
+    Cc        <- central / vc
+    rate_lin  <- cl * Cc
+    rate_mm   <- vmax * Cc / (km + Cc)
     rate_elim <- rate_lin + rate_mm
 
     # ----- Time-and-cycle dependent DAR (Hong 2025 Eq. 13). tad() is the time
@@ -245,19 +245,18 @@ Hong_2025_datopotamab <- function() {
     rate_dxd_in <- rate_elim * dar * (493.5 / 150000)
 
     # ----- ODE system. Dato-DXd dosing (IV bolus or short infusion) goes
-    # directly into adc_central; DXd has no exogenous dose.
-    d/dt(adc_central)     <- -rate_elim - q_adc * Cdato + (q_adc / vp_adc) * adc_peripheral1
-    d/dt(adc_peripheral1) <-              q_adc * Cdato - (q_adc / vp_adc) * adc_peripheral1
-    d/dt(dxd_central)     <-  rate_dxd_in - cl_dxd * dxd_central / vc_dxd
+    # directly into central; DXd has no exogenous dose.
+    d/dt(central)     <- -rate_elim - q * Cc + (q / vp) * peripheral1
+    d/dt(peripheral1) <-              q * Cc - (q / vp) * peripheral1
+    d/dt(central_dxd) <-  rate_dxd_in - cl_dxd * central_dxd / vc_dxd
 
     # ----- Observations: Dato-DXd plasma concentration (mg/L = ug/mL) and
     # DXd plasma concentration (mg/L = ug/mL). DXd is conventionally reported
-    # in ng/mL in the paper; multiply Cdxd by 1000 outside the model to obtain
-    # ng/mL.
-    Cc   <- Cdato
-    Cdxd <- dxd_central / vc_dxd
+    # in ng/mL in the paper; multiply Cc_dxd by 1000 outside the model to
+    # obtain ng/mL.
+    Cc_dxd <- central_dxd / vc_dxd
 
-    Cc   ~ prop(CcpropSd)
-    Cdxd ~ prop(CdxdpropSd)
+    Cc     ~ prop(propSd)
+    Cc_dxd ~ prop(propSd_dxd)
   })
 }

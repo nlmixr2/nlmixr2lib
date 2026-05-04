@@ -95,8 +95,8 @@ Moein_2022_etrolizumab <- function() {
     lonset       <- log(4.81);     label("Half-life of the time-dependent CL change (Onset, weeks)")             # Table 4: Onset = 4.81 weeks
 
     # Allometric exponents on body weight (reference 70 kg; Table 4 notes a, b).
-    allo_cl  <- 0.872;  label("Allometric exponent of WT on CL and Q")                                            # Table 4: WT on CL/Q = 0.872
-    allo_v   <- 0.788;  label("Allometric exponent of WT on Vc and Vp")                                           # Table 4: WT on Vc/Vp = 0.788
+    e_wt_cl_q  <- 0.872;  label("Allometric exponent of WT on CL and Q")                                          # Table 4: WT on CL/Q = 0.872
+    e_wt_vc_vp <- 0.788;  label("Allometric exponent of WT on Vc and Vp")                                         # Table 4: WT on Vc/Vp = 0.788
 
     # Continuous covariate effects on CL (exponential form per Table 4 note d: CovEff = exp(theta * (Cov - Cov_ref))).
     e_alb_cl   <- -0.0314;   label("Albumin effect on CL (exp(theta * (ALB - 41)))")                             # Table 4: Albumin on CL = -0.0314
@@ -143,11 +143,11 @@ Moein_2022_etrolizumab <- function() {
 
     # Individual PK parameters with allometric weight scaling and covariate effects.
     ka <- exp(lka)
-    cl <- exp(lcl + etalcl) * (WT / 70)^allo_cl *
+    cl <- exp(lcl + etalcl) * (WT / 70)^e_wt_cl_q *
       td_cl_factor * alb_cl * crp_cl * adat_cl * priortnf_cl * disext_cl
-    vc <- exp(lvc + etalvc) * (WT / 70)^allo_v
-    vp <- exp(lvp + etalvp) * (WT / 70)^allo_v
-    q  <- exp(lq)           * (WT / 70)^allo_cl
+    vc <- exp(lvc + etalvc) * (WT / 70)^e_wt_vc_vp
+    vp <- exp(lvp + etalvp) * (WT / 70)^e_wt_vc_vp
+    q  <- exp(lq)           * (WT / 70)^e_wt_cl_q
 
     kel <- cl / vc
     k12 <- q  / vc

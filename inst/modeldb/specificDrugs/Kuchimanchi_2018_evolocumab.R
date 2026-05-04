@@ -81,8 +81,8 @@ Kuchimanchi_2018_evolocumab <- function() {
 
     # ---- Covariate exponents (Table 3) ----
     e_wt_cl     <- 0.276;  label("Power exponent of WT/84 on CL (unitless)")                          # Table 3: Body weight exponent on CL = 0.276 (RSE 30.4%)
-    e_wt_v      <- 1.04;   label("Power exponent of WT/84 on V (unitless)")                           # Table 3: Body weight exponent on V = 1.04 (RSE 4.05%)
-    e_sexf_v    <- 1.11;   label("Female-vs-male multiplicative exponent on V (unitless)")            # Table 3: Female exponent on V = 1.11 (RSE 1.42%)
+    e_wt_vc     <- 1.04;   label("Power exponent of WT/84 on Vc (unitless)")                          # Table 3: Body weight exponent on V = 1.04 (RSE 4.05%)
+    e_sexf_vc   <- 1.11;   label("Female-vs-male multiplicative exponent on Vc (unitless)")           # Table 3: Female exponent on V = 1.11 (RSE 1.42%)
     e_wt_vmax   <- 0.145;  label("Power exponent of WT/84 on Vmax (unitless)")                        # Table 3: Body weight exponent on Vmax = 0.145 (RSE 33.0%)
     e_smono_vmax <- 1.13;  label("Statin-monotherapy multiplicative exponent on Vmax (unitless)")      # Table 3: Statin exponent on Vmax = 1.13 (RSE 1.02%)
     e_eze_vmax  <- 1.20;   label("Ezetimibe (combination-therapy) multiplicative exponent on Vmax (unitless)") # Table 3: Statin + ezetimibe exponent on Vmax = 1.20 (RSE 1.59%)
@@ -131,7 +131,7 @@ Kuchimanchi_2018_evolocumab <- function() {
     # lowering medication, with baseline PCSK9 = 425 ng/mL (paper Methods).
     ka    <- exp(lka + etalka)
     cl    <- exp(lcl + etalcl)   * (WT / 84)^e_wt_cl
-    vc    <- exp(lvc + etalvc)   * (WT / 84)^e_wt_v  * e_sexf_v^SEXF
+    vc    <- exp(lvc + etalvc)   * (WT / 84)^e_wt_vc * e_sexf_vc^SEXF
     vmax  <- exp(lvmax + etalvmax) * (WT / 84)^e_wt_vmax *
              e_smono_vmax^STATIN_MONO * e_eze_vmax^EZE *
              (PCSK9 / 425)^e_pcsk9_vmax   # Vmax in nM/day

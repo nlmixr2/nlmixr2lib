@@ -44,8 +44,8 @@
     ltlag   <- fixed(log(0.0803)); label("SC absorption lag time (tlag, day)")                        # Fiedler-Kelly 2019 Table 2 (FIXED in source)
 
     # Allometric exponents on weight (reference 71 kg)
-    allo_cl <- 1.05; label("Allometric exponent on CL (unitless)")                                    # Fiedler-Kelly 2019 Table 2, footnote c
-    allo_v  <- 1.53; label("Allometric exponent on Vc (unitless)")                                    # Fiedler-Kelly 2019 Table 2, footnotes d and e
+    e_wt_cl    <- 1.05; label("Allometric exponent on CL (unitless)")                                 # Fiedler-Kelly 2019 Table 2, footnote c
+    e_wt_vc_vp <- 1.53; label("Allometric exponent on Vc and Vp (unitless)")                          # Fiedler-Kelly 2019 Table 2, footnotes d and e
 
     # IIV - diagonal omega matrix (no off-diagonal terms estimated per Fiedler-Kelly 2019 Section 3.2)
     # omega^2 = log(CV^2 + 1) since BSV was modelled using an exponential form
@@ -60,16 +60,16 @@
     # Source reports variance-scale NONMEM $SIGMA entries; nlmixr2 expects SD.
     # Proportional variance 0.0531 -> propSd = sqrt(0.0531) = 0.2304
     # Additive variance 0.204 (ug/mL^2) -> addSd = sqrt(0.204) = 0.4517 ug/mL
-    CcpropSd <- 0.2304; label("Proportional residual error (SC, fraction)")                           # Fiedler-Kelly 2019 Table 2 (variance 0.0531)
-    CcaddSd  <- 0.4517; label("Additive residual error (SC, ug/mL)")                                  # Fiedler-Kelly 2019 Table 2 (variance 0.204)
+    propSd <- 0.2304; label("Proportional residual error (SC, fraction)")                           # Fiedler-Kelly 2019 Table 2 (variance 0.0531)
+    addSd  <- 0.4517; label("Additive residual error (SC, ug/mL)")                                  # Fiedler-Kelly 2019 Table 2 (variance 0.204)
   })
 
   model({
     # Individual PK parameters with allometric weight scaling (reference 71 kg)
     ka <- exp(lka + etalka)
-    cl <- exp(lcl + etalcl) * (WT / 71)^allo_cl
-    vc <- exp(lvc + etalvc) * (WT / 71)^allo_v
-    vp <- exp(lvp)          * (WT / 71)^allo_v
+    cl <- exp(lcl + etalcl) * (WT / 71)^e_wt_cl
+    vc <- exp(lvc + etalvc) * (WT / 71)^e_wt_vc_vp
+    vp <- exp(lvp)          * (WT / 71)^e_wt_vc_vp
     q  <- exp(lq)
 
     # Micro-constants
@@ -88,6 +88,6 @@
 
     # Observation: dose in mg, volume in L -> mg/L = ug/mL
     Cc <- central / vc
-    Cc ~ add(CcaddSd) + prop(CcpropSd)
+    Cc ~ add(addSd) + prop(propSd)
   })
 }

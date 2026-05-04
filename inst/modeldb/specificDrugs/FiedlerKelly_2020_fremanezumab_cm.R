@@ -78,8 +78,8 @@ FiedlerKelly_2020_fremanezumab_cm <- function() {
     # Residual error - additive on monthly M/S headache days.
     # Source reports variance 7.09 with SD column 2.66 (sqrt(7.09) = 2.663).
     # The output-prefixed name follows the multi-output residual-error
-    # convention (`<output>addSd`).
-    msHeadacheDaysaddSd <- 2.66; label("Additive residual error on monthly M/S headache days")  # Fiedler-Kelly 2020 Table S4 (SD of variance 7.09)
+    # convention (`addSd_<output>`).
+    addSd_msHeadacheDays <- 2.66; label("Additive residual error on monthly M/S headache days")  # Fiedler-Kelly 2020 Table S4 (SD of variance 7.09)
   })
 
   model({
@@ -115,6 +115,6 @@ FiedlerKelly_2020_fremanezumab_cm <- function() {
     # Predicted monthly M/S headache days = baseline + placebo time effect - drug effect.
     msHeadacheDays <- BL_i + placebo_eff - drug_eff
 
-    msHeadacheDays ~ add(msHeadacheDaysaddSd)
+    msHeadacheDays ~ add(addSd_msHeadacheDays)
   })
 }

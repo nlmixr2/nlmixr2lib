@@ -54,15 +54,15 @@ Soehoel_2022_tralokinumab <- function() {
     lvp <- log(1.44); label("Peripheral volume of distribution (L)")
     lq <- log(0.159); label("Intercompartmental clearance (L/day)")
     lfdepot <- log(0.761); label("Subcutaneous bioavailability (fraction)")
-    CcaddSd <- 0.238; label("Additive residual error (ug/mL)")
-    CcpropSd <- 0.216; label("Proportional residual error (fraction)")
+    addSd <- 0.238; label("Additive residual error (ug/mL)")
+    propSd <- 0.216; label("Proportional residual error (fraction)")
 
-    e_wt_vcvp <- 0.783; label("Effect of body weight on central and peripheral volumes (unitless)")
-    e_wt_clq <- 0.873; label("Effect of body weight on clearance and intercompartmental clearance (unitless)")
+    e_wt_vc_vp <- 0.783; label("Effect of body weight on central and peripheral volumes (unitless)")
+    e_wt_cl_q <- 0.873; label("Effect of body weight on clearance and intercompartmental clearance (unitless)")
     e_nonECZTRA_cl <- 0.344; label("Effect of non-ECZTRA trials on clearance (unitless)")
     e_nonECZTRA_vc <- 0.258; label("Effect of non-ECZTRA trials on central volume (unitless)")
-    e_f_dilution <- 0.354; label("Effect of dilution on bioavailability (unitless)")
-    e_ka_dilution <- -0.519; label("Effect of dilution trials on absorption rate (unitless)")
+    e_dilution_fdepot <- 0.354; label("Effect of dilution on bioavailability (unitless)")
+    e_dilution_ka <- -0.519; label("Effect of dilution trials on absorption rate (unitless)")
 
     # Variance-covariance matrix for (etalvc, etalcl); Table 2 reports
     # IIV via CV% = sqrt(exp(omega^2) - 1) * 100%, so omega^2 = log(1 + CV^2).
@@ -73,18 +73,18 @@ Soehoel_2022_tralokinumab <- function() {
                         0.071977, 0.093459)
   })
   model({
-    fdepot <- exp(lfdepot)*(1 + e_f_dilution*dilution)
-    ka <- exp(lka)*(1 + e_ka_dilution*dilution)
-    cl <- exp(lcl + etalcl)*(WT/75)^e_wt_clq * (1 + e_nonECZTRA_cl*nonECZTRA)
-    vc <- exp(lvc + etalvc)*(WT/75)^e_wt_vcvp * (1 + e_nonECZTRA_vc*nonECZTRA)
-    q <- exp(lq)*(WT/75)^e_wt_clq
-    vp <- exp(lvp)*(WT/75)^e_wt_vcvp
+    fdepot <- exp(lfdepot)*(1 + e_dilution_fdepot*dilution)
+    ka <- exp(lka)*(1 + e_dilution_ka*dilution)
+    cl <- exp(lcl + etalcl)*(WT/75)^e_wt_cl_q * (1 + e_nonECZTRA_cl*nonECZTRA)
+    vc <- exp(lvc + etalvc)*(WT/75)^e_wt_vc_vp * (1 + e_nonECZTRA_vc*nonECZTRA)
+    q <- exp(lq)*(WT/75)^e_wt_cl_q
+    vp <- exp(lvp)*(WT/75)^e_wt_vc_vp
 
     # No unit conversion is required to change mg/L (dosing amount/central
     # volume unit) to ug/mL (measurement unit)
     Cc <- linCmt()
     f(depot) <- fdepot
-    Cc ~ add(CcaddSd) + prop(CcpropSd)
+    Cc ~ add(addSd) + prop(propSd)
   })
 }
 

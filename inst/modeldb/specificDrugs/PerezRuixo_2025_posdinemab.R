@@ -45,9 +45,9 @@ PerezRuixo_2025_posdinemab <- function() {
   ini({
     # ----- Posdinemab serum PK (Table 2; allometrically scaled to 70 kg) -----
     lcl    <- log(9.21e-3);  label("Posdinemab clearance from central (CL, L/h, 70 kg ref)")            # Table 2: 9.21 x 10^-3 L/h
-    lv1    <- log(3.14);     label("Posdinemab central volume of distribution (V1, L, 70 kg ref)")      # Table 2: 3.14 L
+    lvc    <- log(3.14);     label("Posdinemab central volume of distribution (V1, L, 70 kg ref)")      # Table 2: 3.14 L
     lq     <- log(24.9e-3);  label("Posdinemab intercompartmental clearance central<->peripheral1 (Q, L/h, 70 kg ref)") # Table 2: 24.9 x 10^-3 L/h
-    lv2    <- log(2.87);     label("Posdinemab peripheral1 volume of distribution (V2, L, 70 kg ref)")   # Table 2: 2.87 L
+    lvp    <- log(2.87);     label("Posdinemab peripheral1 volume of distribution (V2, L, 70 kg ref)")   # Table 2: 2.87 L
 
     # ----- Posdinemab CSF / ISF distribution (Table 2; allometric) -----------
     lqcsf  <- log(4.02e-6);  label("Posdinemab intercompartmental clearance central<->CSF (QCSF, L/h, 70 kg ref)") # Table 2: 4.02 x 10^-6 L/h
@@ -56,8 +56,8 @@ PerezRuixo_2025_posdinemab <- function() {
     lvisf  <- log(43.4e-3);  label("Posdinemab ISF volume of distribution (VISF, L, 70 kg ref)")        # Table 2: 43.4 x 10^-3 L = 0.0434 L
 
     # ----- Allometric exponents (Results: fixed; Germovsek 2021 priors) ------
-    allo_cl <- 0.75;  label("Allometric exponent on clearances (fixed; Results: estimating exponents did not improve MOFV)")
-    allo_v  <- 1.00;  label("Allometric exponent on volumes (fixed; Results)")
+    e_wt_cl_q  <- 0.75;  label("Allometric (WT) exponent shared across all clearance-like terms (CL, Q, QCSF, QISF; fixed; Results: estimating exponents did not improve MOFV)")
+    e_wt_vc_vp <- 1.00;  label("Allometric (WT) exponent shared across all volume-like terms (Vc, Vp, VCSF, VISF; fixed; Results)")
 
     # ----- Mechanistic p217+tau / tau-seed parameters (Table 2) --------------
     lr0    <- log(0.793);                  label("Baseline free p217+tau in CSF, healthy (R0_HV, pmol/L)") # Table 2: R0 healthy 0.793 pmol/L
@@ -81,9 +81,9 @@ PerezRuixo_2025_posdinemab <- function() {
 
     # ----- IIV (Table 2; CV% -> omega^2 = log(1 + CV^2)) ---------------------
     etalcl   ~ 0.05181  # CL CV 23.4%
-    etalv1   ~ 0.03012  # V1 CV 17.5%
+    etalvc   ~ 0.03012  # V1 CV 17.5%
     etalq    ~ 0.18525  # Q  CV 44.9%
-    etalv2   ~ 0.04764  # V2 CV 22.1%
+    etalvp   ~ 0.04764  # V2 CV 22.1%
     etalqcsf ~ 0.08300  # QCSF CV 29.4%
     etalvcsf ~ 0.06244  # VCSF CV 25.5%
     etalvisf ~ 0.60466  # VISF CV 91.0%
@@ -95,22 +95,22 @@ PerezRuixo_2025_posdinemab <- function() {
     # Paper Methods: "an additive error model after natural logarithmic
     # transformation was used", which is proportional in linear space. Table 2
     # sigma values match the IIV CV% column convention (bare percentages).
-    CcpropSd       <- 0.0873; label("Proportional residual error on serum posdinemab (sigma_1 = 8.73)")        # Table 2: sigma_1 8.73
-    CcsfpropSd     <- 0.164;  label("Proportional residual error on CSF posdinemab (sigma_2 = 16.4)")          # Table 2: sigma_2 16.4
-    TotalTaupropSd <- 0.112;  label("Proportional residual error on CSF total p217+tau (sigma_3 = 11.2)")      # Table 2: sigma_3 11.2
-    FreeTaupropSd  <- 0.133;  label("Proportional residual error on CSF free p217+tau (sigma_4 = 13.3)")       # Table 2: sigma_4 13.3
+    propSd         <- 0.0873; label("Proportional residual error on serum posdinemab (sigma_1 = 8.73)")        # Table 2: sigma_1 8.73
+    propSd_Ccsf      <- 0.164;  label("Proportional residual error on CSF posdinemab (sigma_2 = 16.4)")          # Table 2: sigma_2 16.4
+    propSd_TotalTau  <- 0.112;  label("Proportional residual error on CSF total p217+tau (sigma_3 = 11.2)")      # Table 2: sigma_3 11.2
+    propSd_FreeTau   <- 0.133;  label("Proportional residual error on CSF free p217+tau (sigma_4 = 13.3)")       # Table 2: sigma_4 13.3
   })
 
   model({
     # Allometric scaling to 70 kg (Results: fixed exponents).
-    wt_cl <- (WT / 70)^allo_cl
-    wt_v  <- (WT / 70)^allo_v
+    wt_cl <- (WT / 70)^e_wt_cl_q
+    wt_v  <- (WT / 70)^e_wt_vc_vp
 
     # Individual structural parameters.
     cl    <- exp(lcl   + etalcl)   * wt_cl
-    v1    <- exp(lv1   + etalv1)   * wt_v
+    vc    <- exp(lvc   + etalvc)   * wt_v
     q     <- exp(lq    + etalq)    * wt_cl
-    v2    <- exp(lv2   + etalv2)   * wt_v
+    vp    <- exp(lvp   + etalvp)   * wt_v
     qcsf  <- exp(lqcsf + etalqcsf) * wt_cl
     vcsf  <- exp(lvcsf + etalvcsf) * wt_v
     qisf  <- exp(lqisf)            * wt_cl
@@ -140,9 +140,9 @@ PerezRuixo_2025_posdinemab <- function() {
     ksyn_isf <- kc * R0_isf
 
     # Concentrations (pmol/L). Drug compartments are tracked in pmol so that
-    # central / v1 yields pmol/L directly.
-    Cc   <- central    / v1
-    Cp   <- peripheral1 / v2
+    # central / vc yields pmol/L directly.
+    Cc   <- central    / vc
+    Cp   <- peripheral1 / vp
     Ccsf <- ACSF       / vcsf
     Cisf <- AISF       / visf
 
@@ -183,9 +183,9 @@ PerezRuixo_2025_posdinemab <- function() {
     TotalTau <- R + RC
     FreeTau  <- R
 
-    Cc       ~ prop(CcpropSd)
-    Ccsf     ~ prop(CcsfpropSd)
-    TotalTau ~ prop(TotalTaupropSd)
-    FreeTau  ~ prop(FreeTaupropSd)
+    Cc       ~ prop(propSd)
+    Ccsf     ~ prop(propSd_Ccsf)
+    TotalTau ~ prop(propSd_TotalTau)
+    FreeTau  ~ prop(propSd_FreeTau)
   })
 }

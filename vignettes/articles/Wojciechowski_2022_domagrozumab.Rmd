@@ -423,12 +423,12 @@ terminal slope.
   parameter for DMD patients, an exponential parameterization would give a
   different magnitude (`exp(-0.900) = 0.407`, a 59 % reduction) — preserving
   the paper's form is therefore load-bearing for reproducing Figures 3-5.
-- **A single `eta_kdegkint` random effect drives both `kdeg` and `kint`**,
+- **A single `etalkdeg_kint` random effect drives both `kdeg` and `kint`**,
   with `kint` scaled by the structural ratio `e_ratio_kdegkint = -0.295`.
   This matches Wojciechowski 2022 Table 2 ("Ratio of SD for eta_kint relative
-  to eta_kdeg" row); the convention check warning that `etalkdegkint` has no
-  matching `lkdegkint` fixed-effect parameter is expected and intentional —
-  the eta is shared between two structural parameters by design.
+  to eta_kdeg" row); the IIV name follows the shared-eta convention
+  `etal<param1>_<param2>` analogous to the shared-exponent covariate-effect
+  form `e_<cov>_<param1>_<param2>`.
 - **Concentration units are nM**, matching the paper, rather than the more
   common `ug/mL` (mass-per-volume) unit used by most nlmixr2lib mAb models.
   The total-myostatin observation is naturally in nM, and the drug-myostatin

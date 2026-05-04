@@ -89,7 +89,7 @@ Ma_2020_sarilumab_anc <- function() {
     lgamma <- log(0.862); label("Hill coefficient for sigmoidicity of ANC effect (unitless)")  # Ma 2020 Table 4
 
     # Covariate effect parameters (power-form exponents)
-    allo_kout       <- 0.875; label("Weight exponent on Kout (ref 71 kg, unitless)")                           # Ma 2020 Table 4
+    e_wt_kout       <- 0.875; label("Weight exponent on Kout (ref 71 kg, unitless)")                           # Ma 2020 Table 4
     e_smoke_base    <- 1.15;  label("Smoking multiplier on baseline ANC (power-form: BASE * 1.15^SMOKE)")      # Ma 2020 Table 4
     e_pricort_emax  <- 0.819; label("Prior corticosteroid multiplier on Emax (power-form: Emax * 0.819^PRICORT)")  # Ma 2020 Table 4
 
@@ -121,9 +121,9 @@ Ma_2020_sarilumab_anc <- function() {
     # PK: Xu 2019 fitted log-transformed concentrations with an additive error
     # on the log-scale of variance sigma^2 = 0.395; this maps to a
     # proportional error of sqrt(0.395) = 0.6285 in linear space.
-    CcpropSd  <- 0.6285; label("Proportional residual error on sarilumab concentration (fraction)")   # Xu 2019 Table 3
+    propSd  <- 0.6285; label("Proportional residual error on sarilumab concentration (fraction)")   # Xu 2019 Table 3
     # PD: Ma 2020 Table 4 reports a proportional residual error of 28.2%.
-    ANCpropSd <- 0.282;  label("Proportional residual error on ANC (fraction)")                      # Ma 2020 Table 4
+    propSd_ANC <- 0.282;  label("Proportional residual error on ANC (fraction)")                      # Ma 2020 Table 4
   })
 
   model({
@@ -160,7 +160,7 @@ Ma_2020_sarilumab_anc <- function() {
     base  <- exp(lbase  + etalbase)  * (e_smoke_base)^SMOKE
     emax  <- exp(lemax  + etalemax)  * (e_pricort_emax)^PRICORT
     ec50  <- exp(lec50  + etalec50)
-    kout  <- exp(lkout  + etalkout)  * (WT / 71)^allo_kout
+    kout  <- exp(lkout  + etalkout)  * (WT / 71)^e_wt_kout
     gamma <- exp(lgamma + etalgamma)
 
     kin <- kout * base
@@ -172,7 +172,7 @@ Ma_2020_sarilumab_anc <- function() {
 
     ANC <- effect
 
-    Cc  ~ prop(CcpropSd)
-    ANC ~ prop(ANCpropSd)
+    Cc  ~ prop(propSd)
+    ANC ~ prop(propSd_ANC)
   })
 }

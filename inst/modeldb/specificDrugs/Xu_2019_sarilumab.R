@@ -42,7 +42,7 @@ Xu_2019_sarilumab <- function() {
       units              = "(unitless ratio)",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Applied as (ALBR / 0.78)^e_albr_vm on Vm. Reference 0.78 corresponds to a median serum albumin of 38 g/L at a typical ULN of ~48.7 g/L per Xu 2019 final-model narrative.",
+      notes              = "Applied as (ALBR / 0.78)^e_albr_vmax on Vmax. Reference 0.78 corresponds to a median serum albumin of 38 g/L at a typical ULN of ~48.7 g/L per Xu 2019 final-model narrative.",
       source_name        = "ALBR"
     ),
     CRCL = list(
@@ -58,7 +58,7 @@ Xu_2019_sarilumab <- function() {
       units              = "mg/L",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Applied as (CRP / 14.2)^e_crp_vm on Vm per Xu 2019 Table 3 and the Vm equation. Reference 14.2 mg/L is the median of the Pop-PK dataset. Source column 'BLCRP' (baseline CRP) maps to the canonical general-scope CRP covariate; the baseline-only semantics are documented here in the covariateData entry.",
+      notes              = "Applied as (CRP / 14.2)^e_crp_vmax on Vmax per Xu 2019 Table 3 and the Vmax equation. Reference 14.2 mg/L is the median of the Pop-PK dataset. Source column 'BLCRP' (baseline CRP) maps to the canonical general-scope CRP covariate; the baseline-only semantics are documented here in the covariateData entry.",
       source_name        = "BLCRP"
     )
   )
@@ -90,16 +90,16 @@ Xu_2019_sarilumab <- function() {
     lq  <- log(0.156); label("Apparent intercompartmental clearance Q/F (L/day)")             # Xu 2019 Table 3, Q/F row
 
     # Parallel nonlinear Michaelis-Menten elimination from the central compartment.
-    lvm <- log(8.06);  label("Maximum Michaelis-Menten elimination rate Vm (mg/day)")         # Xu 2019 Table 3, Vm row
+    lvmax <- log(8.06);  label("Maximum Michaelis-Menten elimination rate Vmax (mg/day)")       # Xu 2019 Table 3, Vm row
     lkm <- log(0.939); label("Michaelis-Menten constant Km (mg/L)")                           # Xu 2019 Table 3, Km row
 
     # Covariate exponents and multiplicative effects - Xu 2019 Table 3 and the final-model
     # equations for Vm, CLO/F, and Ka.
     e_wt_cl    <-  0.885;  label("Power exponent of WT/71 on CLO/F (unitless)")                 # Xu 2019 Table 3: WT effect on CLO/F
-    e_wt_vm    <-  0.516;  label("Power exponent of WT/71 on Vm (unitless)")                    # Xu 2019 Table 3: WT effect on Vm
-    e_albr_vm  <- -0.844;  label("Power exponent of ALBR/0.78 on Vm (unitless)")                # Xu 2019 Table 3: ALBR effect on Vm
-    e_crcl_vm  <-  0.212;  label("Power exponent of CRCL/100 on Vm (unitless)")                 # Xu 2019 Table 3: CrCl effect on Vm
-    e_crp_vm   <-  0.0299; label("Power exponent of CRP/14.2 on Vm (unitless)")                 # Xu 2019 Table 3: baseline CRP effect on Vm
+    e_wt_vmax    <-  0.516;  label("Power exponent of WT/71 on Vmax (unitless)")                  # Xu 2019 Table 3: WT effect on Vm
+    e_albr_vmax  <- -0.844;  label("Power exponent of ALBR/0.78 on Vmax (unitless)")              # Xu 2019 Table 3: ALBR effect on Vm
+    e_crcl_vmax  <-  0.212;  label("Power exponent of CRCL/100 on Vmax (unitless)")               # Xu 2019 Table 3: CrCl effect on Vm
+    e_crp_vmax   <-  0.0299; label("Power exponent of CRP/14.2 on Vmax (unitless)")               # Xu 2019 Table 3: baseline CRP effect on Vm
     e_dp2_ka   <-  0.663;  label("Multiplier on Ka for drug product DP2 (unitless)")            # Xu 2019 Table 3: DP2 effect on Ka
     e_ada_cl   <-  1.43;   label("Multiplier on CLO/F for ADA-positive (unitless)")             # Xu 2019 Table 3: ADA effect on CLO/F
     e_dp2_cl   <-  1.30;   label("Multiplier on CLO/F for drug product DP2 (unitless)")         # Xu 2019 Table 3: DP2 effect on CLO/F
@@ -112,7 +112,7 @@ Xu_2019_sarilumab <- function() {
     #   Vc/F CV 37.3% -> omega^2 = log(0.373^2 + 1) = 0.1302
     #   Ka   CV 32.1% -> omega^2 = log(0.321^2 + 1) = 0.0981
     # Vm-CLO/F correlation -0.566 -> cov = -0.566 * sqrt(0.0998 * 0.2669) = -0.0924
-    etalvm + etalcl ~ c(0.0998, -0.0924, 0.2669)  # Xu 2019 Table 3: Vm IIV 32.4% CV, CLO/F IIV 55.3% CV, Vm-CLO/F correlation -0.566
+    etalvmax + etalcl ~ c(0.0998, -0.0924, 0.2669)  # Xu 2019 Table 3: Vm IIV 32.4% CV, CLO/F IIV 55.3% CV, Vm-CLO/F correlation -0.566
     etalvc ~ 0.1302                                # Xu 2019 Table 3: Vc/F IIV 37.3% CV (shrinkage 64.2%)
     etalka ~ 0.0981                                # Xu 2019 Table 3: Ka IIV 32.1% CV (shrinkage 49.6%)
 
@@ -123,11 +123,11 @@ Xu_2019_sarilumab <- function() {
   })
   model({
     # Individual PK parameters with Xu 2019 covariate models.
-    vm <- exp(lvm + etalvm) *
-          (WT / 71)^e_wt_vm *
-          (ALBR / 0.78)^e_albr_vm *
-          (CRCL / 100)^e_crcl_vm *
-          (CRP / 14.2)^e_crp_vm
+    vmax <- exp(lvmax + etalvmax) *
+          (WT / 71)^e_wt_vmax *
+          (ALBR / 0.78)^e_albr_vmax *
+          (CRCL / 100)^e_crcl_vmax *
+          (CRP / 14.2)^e_crp_vmax
     km <- exp(lkm)
     vc <- exp(lvc + etalvc)
     cl <- exp(lcl + etalcl) *
@@ -145,7 +145,7 @@ Xu_2019_sarilumab <- function() {
     d/dt(depot)       <- -ka * depot
     d/dt(central)     <-  ka * depot -
                           (cl / vc) * central -
-                          vm * Cc / (km + Cc) -
+                          vmax * Cc / (km + Cc) -
                           (q / vc) * central +
                           (q / vp) * peripheral1
     d/dt(peripheral1) <-  (q / vc) * central - (q / vp) * peripheral1

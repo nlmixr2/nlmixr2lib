@@ -65,8 +65,8 @@ LeTilly_2021_trastuzumab <- function() {
     # type for both serum and CSF trastuzumab concentrations" (Results),
     # with values from Table 2 in % CV. Stored as fractions in nlmixr2's
     # linear-space proportional parameterization.
-    CcpropSd   <- 0.2094; label("Serum proportional residual error (fraction)")  # Le Tilly 2021 Table 2: sigma_prop,serum = 20.94%
-    CcsfpropSd <- 0.5409; label("CSF proportional residual error (fraction)")    # Le Tilly 2021 Table 2: sigma_prop,CSF   = 54.09%
+    propSd    <- 0.2094; label("Serum proportional residual error (fraction)")  # Le Tilly 2021 Table 2: sigma_prop,serum = 20.94%
+    propSd_Ccsf <- 0.5409; label("CSF proportional residual error (fraction)")    # Le Tilly 2021 Table 2: sigma_prop,CSF   = 54.09%
   })
 
   model({
@@ -118,7 +118,7 @@ LeTilly_2021_trastuzumab <- function() {
     Cc   <- central / vc                         # serum concentration (mg/L = ug/mL)
     Ccsf <- csf     / vp                         # CSF concentration   (mg/L = ug/mL)
 
-    Cc   ~ prop(CcpropSd)
-    Ccsf ~ prop(CcsfpropSd)
+    Cc   ~ prop(propSd)
+    Ccsf ~ prop(propSd_Ccsf)
   })
 }

@@ -38,12 +38,12 @@ Grimm_2023_trontinemab <- function() {
     lcl <- log(1.01);  label("Clearance (mL/h/kg)")                                      # Table 1
     lvp <- log(63.2);  label("Peripheral volume of distribution (mL/kg)")                # Table 1
     lq  <- log(0.746); label("Intercompartmental clearance (mL/h/kg)")                   # Table 1
-    lvm <- log(78.8);  label("Michaelis-Menten maximum clearance (mL/h/kg)")             # CLmax from supplement
+    lvmax <- log(78.8);  label("Michaelis-Menten maximum clearance Vmax (mL/h/kg)")        # CLmax from supplement
     lkm <- log(78.6);  label("Michaelis-Menten half-maximal concentration (ng/mL)")      # from supplement
 
     # Allometric exponents — fixed per Grimm 2023 text on page 11
-    allo_cl <- fixed(0.85); label("Allometric exponent for clearance (unitless)")        # page 11
-    allo_v  <- fixed(1);    label("Allometric exponent for volume (unitless)")           # page 11
+    e_wt_cl_q <- fixed(0.85); label("Allometric exponent for CL and Q (unitless)")       # page 11
+    e_wt_vc_vp <- fixed(1);   label("Allometric exponent for Vc and Vp (unitless)")      # page 11
 
     # Brain-region effect-compartment parameters — Grimm 2023 supplementary Table 1
     # Cerebellum
@@ -82,18 +82,18 @@ Grimm_2023_trontinemab <- function() {
     fpla_csf <- fixed(0); label("Residual plasma fraction, cerebrospinal fluid")                  # supp. Table 1: fpla_csf fixed at 0
 
     # Residual error — source paper does not report residual error magnitudes; left at 0 as placeholders
-    CcpropSd <- 0; label("Proportional residual error, plasma Cc (fraction)")
-    CcaddSd  <- 0; label("Additive residual error, plasma Cc (ng/mL)")
+    propSd <- 0; label("Proportional residual error, plasma Cc (fraction)")
+    addSd  <- 0; label("Additive residual error, plasma Cc (ng/mL)")
   })
 
   model({
     # Individual plasma PK parameters with allometric scaling to 5 kg
-    cl <- exp(lcl + log(WT / 5) * allo_cl)
-    vc <- exp(lvc + log(WT / 5) * allo_v)
-    vp <- exp(lvp + log(WT / 5) * allo_v)
-    q  <- exp(lq  + log(WT / 5) * allo_cl)
-    vm <- exp(lvm)
-    km <- exp(lkm)
+    cl <- exp(lcl + log(WT / 5) * e_wt_cl_q)
+    vc <- exp(lvc + log(WT / 5) * e_wt_vc_vp)
+    vp <- exp(lvp + log(WT / 5) * e_wt_vc_vp)
+    q  <- exp(lq  + log(WT / 5) * e_wt_cl_q)
+    vmax <- exp(lvmax)
+    km   <- exp(lkm)
 
     # Individual residual plasma fractions per brain region (log-normal IIV)
     fpla_cerebellum     <- exp(lfpla_cerebellum     + etalfpla_cerebellum)
@@ -108,7 +108,7 @@ Grimm_2023_trontinemab <- function() {
     k21 <- q / vp
 
     # Plasma two-compartment model with parallel linear + Michaelis-Menten elimination
-    d/dt(central)     <- -kel * central - central * (vm / vc) / (1 + (central / vc * 1e6) / km) - k12 * central + k21 * peripheral1
+    d/dt(central)     <- -kel * central - central * (vmax / vc) / (1 + (central / vc * 1e6) / km) - k12 * central + k21 * peripheral1
     d/dt(peripheral1) <-  k12 * central - k21 * peripheral1
 
     # Plasma concentration: unit conversion from mg/kg compartment amount to ng/mL
@@ -135,6 +135,6 @@ Grimm_2023_trontinemab <- function() {
     d/dt(Ccsf)            <- kout_csf            * (kp_csf            * Cc - Ccsf)
     Cbrain_csf            <- fpla_csf            * Cc + Ccsf
 
-    Cc ~ add(CcaddSd) + prop(CcpropSd)
+    Cc ~ add(addSd) + prop(propSd)
   })
 }

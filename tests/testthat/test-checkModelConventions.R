@@ -440,4 +440,338 @@ test_that("an rxUi object is accepted directly", {
   expect_s3_class(res, "data.frame")
 })
 
+test_that("metabolite-suffixed parameters and compartments are accepted", {
+  good <- function() {
+    description <- "ADC parent + MMAE payload"
+    reference <- "R"
+    units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
+    ini({
+      lcl <- 1;       label("Parent CL (L/day)")
+      lvc <- 1;       label("Parent Vc (L)")
+      lcl_mmae <- 1;  label("MMAE CL (L/day)")
+      lvc_mmae <- 1;  label("MMAE Vc (L)")
+      etalcl ~ 0.09
+      propSd <- 0.1;          label("Parent prop residual (fraction)")
+      propSd_mmae <- 0.1;     label("MMAE prop residual (fraction)")
+    })
+    model({
+      cl <- exp(lcl + etalcl)
+      vc <- exp(lvc)
+      cl_mmae <- exp(lcl_mmae)
+      vc_mmae <- exp(lvc_mmae)
+      d/dt(central) <- -cl / vc * central
+      d/dt(central_mmae) <- cl / vc * central - cl_mmae / vc_mmae * central_mmae
+      Cc <- central / vc
+      Cc_mmae <- central_mmae / vc_mmae
+      Cc ~ prop(propSd)
+      Cc_mmae ~ prop(propSd_mmae)
+    })
+  }
+  res <- suppressWarnings(checkModelConventions(good, verbose = FALSE))
+  naming <- res[res$category == "parameter_naming", ]
+  cmts <- res[res$category == "compartments", ]
+  obs <- res[res$category == "observation", ]
+  expect_equal(nrow(naming), 0)
+  expect_equal(nrow(cmts), 0)
+  expect_equal(nrow(obs), 0)
+})
+
+test_that("DAR-numbered compartments are accepted", {
+  good <- function() {
+    description <- "DAR-mechanistic ADC"
+    reference <- "R"
+    units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
+    ini({
+      lcl <- 1; label("CL (L/day)")
+      lvc <- 1; label("Vc (L)")
+      propSd <- 0.1; label("Proportional residual error (fraction)")
+    })
+    model({
+      cl <- exp(lcl)
+      vc <- exp(lvc)
+      d/dt(dar0_central) <- -cl / vc * dar0_central
+      d/dt(dar1_central) <- -cl / vc * dar1_central
+      Cc <- (dar0_central + dar1_central) / vc
+      Cc ~ prop(propSd)
+    })
+  }
+  res <- suppressWarnings(checkModelConventions(good, verbose = FALSE))
+  cmts <- res[res$category == "compartments", ]
+  expect_equal(nrow(cmts), 0)
+})
+
+test_that("numbered precursor/lat chains are accepted", {
+  good <- function() {
+    description <- "Precursor maturation chain"
+    reference <- "R"
+    units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
+    ini({
+      lcl <- 1; label("CL (L/day)")
+      lvc <- 1; label("Vc (L)")
+      lkmat <- log(0.1); label("Maturation rate (1/day)")
+      propSd <- 0.1; label("Proportional residual error (fraction)")
+    })
+    model({
+      cl <- exp(lcl)
+      vc <- exp(lvc)
+      kmat <- exp(lkmat)
+      d/dt(central) <- -cl / vc * central - kmat * central
+      d/dt(precursor1) <- kmat * central - kmat * precursor1
+      d/dt(precursor2) <- kmat * precursor1 - kmat * precursor2
+      d/dt(precursor3) <- kmat * precursor2 - kmat * precursor3
+      Cc <- central / vc
+      Cc ~ prop(propSd)
+    })
+  }
+  res <- suppressWarnings(checkModelConventions(good, verbose = FALSE))
+  cmts <- res[res$category == "compartments", ]
+  expect_equal(nrow(cmts), 0)
+})
+
+test_that("shared-exponent covariate effects (e_<cov>_<param1>_<param2>) are accepted", {
+  good <- function() {
+    description <- "Shared allometric exponent"
+    reference <- "R"
+    units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
+    covariateData <- list(
+      WT = list(description = "Body weight", units = "kg",
+                type = "continuous")
+    )
+    ini({
+      lcl <- 1; label("CL (L/day)")
+      lvc <- 1; label("Vc (L)")
+      lq  <- 1; label("Q  (L/day)")
+      lvp <- 1; label("Vp (L)")
+      e_wt_cl_q  <- 0.75; label("Shared WT exponent on CL and Q (unitless)")
+      e_wt_vc_vp <- 1.0;  label("Shared WT exponent on Vc and Vp (unitless)")
+      propSd <- 0.1; label("Proportional residual error (fraction)")
+    })
+    model({
+      cl <- exp(lcl) * (WT / 70)^e_wt_cl_q
+      vc <- exp(lvc) * (WT / 70)^e_wt_vc_vp
+      q  <- exp(lq)  * (WT / 70)^e_wt_cl_q
+      vp <- exp(lvp) * (WT / 70)^e_wt_vc_vp
+      kel <- cl / vc
+      k12 <- q  / vc
+      k21 <- q  / vp
+      d/dt(central) <- -kel * central - k12 * central + k21 * peripheral1
+      d/dt(peripheral1) <- k12 * central - k21 * peripheral1
+      Cc <- central / vc
+      Cc ~ prop(propSd)
+    })
+  }
+  res <- suppressWarnings(checkModelConventions(good, verbose = FALSE))
+  dep <- res[res$category == "deprecated_names", ]
+  naming <- res[res$category == "parameter_naming", ]
+  expect_equal(nrow(dep), 0)
+  expect_equal(nrow(naming), 0)
+})
+
+test_that("multi-component CL covariate effects (e_<cov>_cl_ss, e_<cov>_cl_time) are accepted", {
+  good <- function() {
+    description <- "Time-varying CL"
+    reference <- "R"
+    units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
+    covariateData <- list(
+      WT = list(description = "Body weight", units = "kg",
+                type = "continuous")
+    )
+    ini({
+      lcl_ss <- 1;   label("Steady-state CL (L/day)")
+      lcl_time <- 1; label("Time-varying CL (L/day)")
+      lvc <- 1;      label("Vc (L)")
+      e_wt_cl_ss   <- 0.75; label("WT exponent on CL_ss (unitless)")
+      e_wt_cl_time <- 0.5;  label("WT exponent on CL_time (unitless)")
+      propSd <- 0.1; label("Proportional residual error (fraction)")
+    })
+    model({
+      cl_ss   <- exp(lcl_ss)   * (WT / 70)^e_wt_cl_ss
+      cl_time <- exp(lcl_time) * (WT / 70)^e_wt_cl_time
+      vc <- exp(lvc)
+      d/dt(central) <- -(cl_ss + cl_time * exp(-0.1 * t)) / vc * central
+      Cc <- central / vc
+      Cc ~ prop(propSd)
+    })
+  }
+  res <- suppressWarnings(checkModelConventions(good, verbose = FALSE))
+  dep <- res[res$category == "deprecated_names", ]
+  naming <- res[res$category == "parameter_naming", ]
+  expect_equal(nrow(dep), 0)
+  expect_equal(nrow(naming), 0)
+})
+
+test_that("deprecated lv1 / lv2 / lv structural names are flagged", {
+  bad <- function() {
+    description <- "A"
+    reference <- "R"
+    units <- list(time = "day", dosing = "mg", concentration = "mg/L")
+    ini({
+      lcl <- 1; label("a (L/day)")
+      lv1 <- 1; label("b (L)")
+      lv2 <- 1; label("c (L)")
+      propSd <- 0.1; label("d (fraction)")
+    })
+    model({
+      cl <- exp(lcl)
+      v1 <- exp(lv1)
+      v2 <- exp(lv2)
+      d/dt(central) <- -cl / v1 * central
+      Cc <- central / v1
+      Cc ~ prop(propSd)
+    })
+  }
+  res <- suppressWarnings(checkModelConventions(bad, verbose = FALSE))
+  dep <- res[res$category == "deprecated_names", ]
+  expect_true("lv1" %in% dep$name)
+  expect_true("lv2" %in% dep$name)
+  expect_match(dep$message[dep$name == "lv1"], "deprecated")
+  expect_match(dep$suggestion[dep$name == "lv1"], "lvc")
+})
+
+test_that("deprecated lvm / vm Michaelis-Menten names are flagged", {
+  bad <- function() {
+    description <- "A"
+    reference <- "R"
+    units <- list(time = "day", dosing = "mg", concentration = "mg/L")
+    ini({
+      lcl <- 1; label("a (L/day)")
+      lvc <- 1; label("b (L)")
+      lvm <- 1; label("c (mg/day)")
+      propSd <- 0.1; label("d (fraction)")
+    })
+    model({
+      cl <- exp(lcl)
+      vc <- exp(lvc)
+      vm <- exp(lvm)
+      d/dt(central) <- -cl * central / vc - vm * central / (1 + central)
+      Cc <- central / vc
+      Cc ~ prop(propSd)
+    })
+  }
+  res <- suppressWarnings(checkModelConventions(bad, verbose = FALSE))
+  dep <- res[res$category == "deprecated_names", ]
+  expect_true("lvm" %in% dep$name)
+  expect_match(dep$suggestion[dep$name == "lvm"], "lvmax")
+})
+
+test_that("deprecated parent _adc suffix is flagged", {
+  bad <- function() {
+    description <- "A"
+    reference <- "R"
+    units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
+    ini({
+      lcl_adc <- 1; label("a (L/day)")
+      lvc_adc <- 1; label("b (L)")
+      propSd <- 0.1; label("c (fraction)")
+    })
+    model({
+      cl_adc <- exp(lcl_adc)
+      vc_adc <- exp(lvc_adc)
+      d/dt(central) <- -cl_adc / vc_adc * central
+      Cc <- central / vc_adc
+      Cc ~ prop(propSd)
+    })
+  }
+  res <- suppressWarnings(checkModelConventions(bad, verbose = FALSE))
+  dep <- res[res$category == "deprecated_names", ]
+  expect_true("lcl_adc" %in% dep$name)
+  expect_match(dep$suggestion[dep$name == "lcl_adc"], "lcl")
+})
+
+test_that("deprecated covariate-effect suffixes are flagged with rename suggestions", {
+  bad <- function() {
+    description <- "A"
+    reference <- "R"
+    units <- list(time = "day", dosing = "mg", concentration = "mg/L")
+    covariateData <- list(
+      WT = list(description = "Body weight", units = "kg",
+                type = "continuous")
+    )
+    ini({
+      lcl <- 1; label("a (L/day)")
+      lvc <- 1; label("b (L)")
+      e_wt_v   <- 1.0; label("c1 (unitless)")
+      e_wt_clq <- 0.75; label("c2 (unitless)")
+      e_wt_vss <- 1.0; label("c3 (unitless)")
+      propSd <- 0.1; label("d (fraction)")
+    })
+    model({
+      cl <- exp(lcl) * (WT / 70)^e_wt_clq
+      vc <- exp(lvc) * (WT / 70)^e_wt_v * (WT / 70)^e_wt_vss
+      d/dt(central) <- -cl / vc * central
+      Cc <- central / vc
+      Cc ~ prop(propSd)
+    })
+  }
+  res <- suppressWarnings(checkModelConventions(bad, verbose = FALSE))
+  dep <- res[res$category == "deprecated_names", ]
+  expect_true("e_wt_v" %in% dep$name)
+  expect_true("e_wt_clq" %in% dep$name)
+  expect_true("e_wt_vss" %in% dep$name)
+  expect_match(dep$suggestion[dep$name == "e_wt_v"], "vc")
+  expect_match(dep$suggestion[dep$name == "e_wt_clq"], "cl_q")
+  expect_match(dep$suggestion[dep$name == "e_wt_vss"], "vc_vp")
+})
+
+test_that("reversed-order covariate effects (e_<param>_<cov>) are flagged", {
+  bad <- function() {
+    description <- "A"
+    reference <- "R"
+    units <- list(time = "day", dosing = "mg", concentration = "mg/L")
+    covariateData <- list(
+      WT = list(description = "Body weight", units = "kg",
+                type = "continuous")
+    )
+    ini({
+      lcl <- 1; label("a (L/day)")
+      lvc <- 1; label("b (L)")
+      e_cl_wt <- 0.75; label("c (unitless)")
+      propSd <- 0.1; label("d (fraction)")
+    })
+    model({
+      cl <- exp(lcl) * (WT / 70)^e_cl_wt
+      vc <- exp(lvc)
+      d/dt(central) <- -cl / vc * central
+      Cc <- central / vc
+      Cc ~ prop(propSd)
+    })
+  }
+  res <- suppressWarnings(checkModelConventions(bad, verbose = FALSE))
+  dep <- res[res$category == "deprecated_names" & res$name == "e_cl_wt", ]
+  expect_equal(nrow(dep), 1)
+  expect_match(dep$message, "reversed-order")
+})
+
+test_that("deprecated C<metab> output naming is flagged in multi-output models", {
+  bad <- function() {
+    description <- "A"
+    reference <- "R"
+    units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
+    ini({
+      lcl <- 1;       label("a (L/day)")
+      lvc <- 1;       label("b (L)")
+      lcl_mmae <- 1;  label("c (L/day)")
+      lvc_mmae <- 1;  label("d (L)")
+      CcpropSd     <- 0.1; label("e (fraction)")
+      CmmaepropSd <- 0.1;  label("f (fraction)")
+    })
+    model({
+      cl <- exp(lcl)
+      vc <- exp(lvc)
+      cl_mmae <- exp(lcl_mmae)
+      vc_mmae <- exp(lvc_mmae)
+      d/dt(central) <- -cl / vc * central
+      d/dt(central_mmae) <- cl / vc * central - cl_mmae / vc_mmae * central_mmae
+      Cc <- central / vc
+      Cmmae <- central_mmae / vc_mmae
+      Cc ~ prop(CcpropSd)
+      Cmmae ~ prop(CmmaepropSd)
+    })
+  }
+  res <- suppressWarnings(checkModelConventions(bad, verbose = FALSE))
+  obs <- res[res$category == "observation" & res$name == "Cmmae", ]
+  expect_equal(nrow(obs), 1)
+  expect_match(obs$suggestion, "Cc_mmae")
+})
+
 # nolint end

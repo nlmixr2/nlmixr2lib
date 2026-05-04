@@ -81,9 +81,9 @@ Clegg_2024_nirsevimab <- function() {
     lq       <- log(0.709);   label("Intercompartmental clearance for a 70 kg adult (Q, L/day)")
     lfdepot  <- log(0.839);   label("Intramuscular bioavailability (F, fraction)")
 
-    # Allometric exponents
-    allo_cl <- 0.589; label("Allometric exponent on CL and Q (unitless)")
-    allo_v  <- 0.84;  label("Allometric exponent on V2 and V3 (unitless)")
+    # Allometric exponents (shared between CL+Q and Vc+Vp)
+    e_wt_cl_q  <- 0.589; label("Shared allometric exponent on CL and Q (unitless)")
+    e_wt_vc_vp <- 0.84;  label("Shared allometric exponent on Vc and Vp (unitless)")
 
     # Maturation parameters for CL (asymptotic function centered at term birth: PAGE = 40/4.35 months)
     beta_cl <- 0.364; label("Fraction of mature CL at birth for a term infant (GA 40 weeks, unitless)")
@@ -94,9 +94,9 @@ Clegg_2024_nirsevimab <- function() {
     e_black_oth_cl         <-  0.132;   label("Race effect on CL: Black/African American or Other vs reference (fraction)")
     e_asian_amind_multi_cl <- -0.0894;  label("Race effect on CL: Asian, American Indian/Alaskan Native, or Multiple vs reference (fraction)")
 
-    # Race effect on V2
+    # Race effect on Vc
     # Reference group: White, Black/AA, Native Hawaiian/Pacific Islander, or Other
-    e_asian_amind_multi_v2 <- -0.226; label("Race effect on V2: Asian, American Indian/Alaskan Native, or Multiple vs reference (fraction)")
+    e_asian_amind_multi_vc <- -0.226; label("Race effect on Vc: Asian, American Indian/Alaskan Native, or Multiple vs reference (fraction)")
 
     # Season and ADA effects on CL
     e_season2_cl <- -0.122; label("Season 2 effect on CL (fraction)")
@@ -115,9 +115,9 @@ Clegg_2024_nirsevimab <- function() {
     page_centered <- PAGE - 40 / 4.35
     maturation_cl <- 1 - (1 - beta_cl) * exp(-page_centered * log(2) / t50_cl)
 
-    # Race effects on CL and V2 (multiplicative; reference groups above)
+    # Race effects on CL and Vc (multiplicative; reference groups above)
     race_cl <- 1 + e_black_oth_cl * RACE_BLACK_OTH + e_asian_amind_multi_cl * RACE_ASIAN_AMIND_MULTI
-    race_v2 <- 1 + e_asian_amind_multi_v2 * RACE_ASIAN_AMIND_MULTI
+    race_vc <- 1 + e_asian_amind_multi_vc * RACE_ASIAN_AMIND_MULTI
 
     # Season and ADA effects on CL
     season_cl <- 1 + e_season2_cl * SEASON2
@@ -125,10 +125,10 @@ Clegg_2024_nirsevimab <- function() {
 
     # PK parameters with allometric weight scaling (reference 70 kg)
     ka <- exp(lka + etalka)
-    cl <- exp(lcl + etalcl) * (WT / 70)^allo_cl * maturation_cl * race_cl * season_cl * ada_cl
-    vc <- exp(lvc + etalvc) * (WT / 70)^allo_v  * race_v2
-    vp <- exp(lvp)          * (WT / 70)^allo_v
-    q  <- exp(lq)           * (WT / 70)^allo_cl
+    cl <- exp(lcl + etalcl) * (WT / 70)^e_wt_cl_q  * maturation_cl * race_cl * season_cl * ada_cl
+    vc <- exp(lvc + etalvc) * (WT / 70)^e_wt_vc_vp * race_vc
+    vp <- exp(lvp)          * (WT / 70)^e_wt_vc_vp
+    q  <- exp(lq)           * (WT / 70)^e_wt_cl_q
 
     kel <- cl / vc
     k12 <- q  / vc

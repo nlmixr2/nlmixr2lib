@@ -49,8 +49,8 @@ Long_2017_necitumumab <- function() {
     lkm   <- log(7.97);   label("Michaelis-Menten constant Km (mg/L)")                           # Long 2017 Table 4, Km row (final model)
 
     # Body-weight allometric covariate exponents (reference 70 kg).
-    e_wt_cl <- 0.768;  label("Power exponent of WT/70 on CL and Q (unitless)")                   # Long 2017 Table 4, footnotes c and d (shared exponent)
-    e_wt_v  <- 0.498;  label("Power exponent of WT/70 on V1 and V2 (unitless)")                  # Long 2017 Table 4, footnotes e and f (shared exponent)
+    e_wt_cl_q  <- 0.768;  label("Shared power exponent of WT/70 on CL and Q (unitless)")          # Long 2017 Table 4, footnotes c and d (shared exponent)
+    e_wt_vc_vp <- 0.498;  label("Shared power exponent of WT/70 on Vc and Vp (unitless)")         # Long 2017 Table 4, footnotes e and f (shared exponent)
 
     # Inter-patient variability. Long 2017 places a single eta on total CL
     # (CLtot = CL + Vmax/(C+Km)); applying the same eta to both linear CL
@@ -76,12 +76,12 @@ Long_2017_necitumumab <- function() {
     # linear CL and Vmax so that the total clearance CLtot = CL + Vmax/(C+Km)
     # inherits the 28.8% CV reported on CLtot. Weight effects from Long 2017
     # Table 4: CL and Q share exponent 0.768; V1 and V2 share exponent 0.498.
-    cl   <- exp(lcl   + etalcl) * (WT / 70)^e_wt_cl
+    cl   <- exp(lcl   + etalcl) * (WT / 70)^e_wt_cl_q
     vmax <- exp(lvmax + etalcl)
     km   <- exp(lkm)
-    vc   <- exp(lvc   + etalvc) * (WT / 70)^e_wt_v
-    q    <- exp(lq)             * (WT / 70)^e_wt_cl
-    vp   <- exp(lvp   + etalvp) * (WT / 70)^e_wt_v
+    vc   <- exp(lvc   + etalvc) * (WT / 70)^e_wt_vc_vp
+    q    <- exp(lq)             * (WT / 70)^e_wt_cl_q
+    vp   <- exp(lvp   + etalvp) * (WT / 70)^e_wt_vc_vp
 
     # Two-compartment IV input model with parallel linear and
     # Michaelis-Menten elimination from the central compartment.

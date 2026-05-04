@@ -58,8 +58,8 @@ Diao_2016_daclizumab_treg <- function() {
     lfdepot  <- log(0.84);       label("SC bioavailability for 100-300 mg doses (F, fraction)") # Othman 2014 Table 2
     lalag    <- log(2 / 24);     label("Absorption lag time for SC doses (Tlag, day; 2 h)")     # Othman 2014 Table 2
 
-    allo_cl <- 0.54; label("Allometric exponent on CL and Q (unitless)") # Othman 2014 Table 2
-    allo_v  <- 0.64; label("Allometric exponent on Vc and Vp (unitless)") # Othman 2014 Table 2
+    e_wt_cl_q <- 0.54; label("Allometric exponent on CL and Q (unitless)") # Othman 2014 Table 2
+    e_wt_vc_vp <- 0.64; label("Allometric exponent on Vc and Vp (unitless)") # Othman 2014 Table 2
 
     e_dose_50mg_f <- -0.32143; label("Relative change in F for 50 mg SC vs 100-300 mg SC (fraction)") # Othman 2014 Table 2
 
@@ -69,8 +69,8 @@ Diao_2016_daclizumab_treg <- function() {
                         -0.10290, 0.07038)
     etalvc ~ 0.09175  # Othman 2014 Table 2 (Vc 31% CV)
 
-    CcpropSd <- 0.22; label("Proportional residual error on daclizumab HYP serum concentration (fraction)") # Othman 2014 Table 2
-    CcaddSd  <- 0.33; label("Additive residual error on daclizumab HYP serum concentration (ug/mL)")        # Othman 2014 Table 2
+    propSd <- 0.22; label("Proportional residual error on daclizumab HYP serum concentration (fraction)") # Othman 2014 Table 2
+    addSd  <- 0.33; label("Additive residual error on daclizumab HYP serum concentration (ug/mL)")        # Othman 2014 Table 2
 
     # ----------------------------------------------------------------------
     # Treg PD parameters (Diao 2016 Table 5, sigmoidal Emax model).
@@ -93,8 +93,8 @@ Diao_2016_daclizumab_treg <- function() {
     etaltregEmax ~ 0.01431  # Diao 2016 Table 5 (Emax IIV 12% CV)
 
     # Residual error (Diao 2016 Table 5): proportional 50.1% + additive 0.416 (% units).
-    tregpropSd <- 0.501; label("Proportional residual error on Treg (fraction)")                       # Diao 2016 Table 5
-    tregaddSd  <- 0.416; label("Additive residual error on Treg (% of CD4+ T cells)")                  # Diao 2016 Table 5
+    propSd_treg <- 0.501; label("Proportional residual error on Treg (fraction)")                       # Diao 2016 Table 5
+    addSd_treg  <- 0.416; label("Additive residual error on Treg (% of CD4+ T cells)")                  # Diao 2016 Table 5
   })
 
   model({
@@ -102,10 +102,10 @@ Diao_2016_daclizumab_treg <- function() {
     # 1. Individual PK parameters (Othman 2014 PK backbone).
     # ------------------------------------------------------------------
     ka <- exp(lka + etalka)
-    cl <- exp(lcl + etalcl) * (WT / 70)^allo_cl
-    vc <- exp(lvc + etalvc) * (WT / 70)^allo_v
-    vp <- exp(lvp)          * (WT / 70)^allo_v
-    q  <- exp(lq)           * (WT / 70)^allo_cl
+    cl <- exp(lcl + etalcl) * (WT / 70)^e_wt_cl_q
+    vc <- exp(lvc + etalvc) * (WT / 70)^e_wt_vc_vp
+    vp <- exp(lvp)          * (WT / 70)^e_wt_vc_vp
+    q  <- exp(lq)           * (WT / 70)^e_wt_cl_q
 
     kel <- cl / vc
     k12 <- q  / vc
@@ -139,7 +139,7 @@ Diao_2016_daclizumab_treg <- function() {
     # ------------------------------------------------------------------
     # 5. Observation and error model.
     # ------------------------------------------------------------------
-    Cc   ~ add(CcaddSd) + prop(CcpropSd)
-    treg ~ add(tregaddSd) + prop(tregpropSd)
+    Cc   ~ add(addSd) + prop(propSd)
+    treg ~ add(addSd_treg) + prop(propSd_treg)
   })
 }

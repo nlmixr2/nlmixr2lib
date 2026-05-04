@@ -51,8 +51,8 @@ Jackson_2022_ixekizumab <- function() {
     lfdepot <- fixed(log(0.72)); label("Subcutaneous bioavailability (F1, fraction) -- fixed at adult model value") # Table 2 footnote c: F1 fixed at 0.72 (adult model)
 
     # Allometric weight exponents (reference weight 58.6 kg)
-    allo_cl <- 0.989;          label("Allometric exponent on CL and Q (unitless)")                                # Table 2: weight on CL and Q = 0.989
-    allo_v  <- 0.998;          label("Allometric exponent on V2 and V3 (unitless)")                               # Table 2: weight on V2 and V3 = 0.998
+    e_wt_cl_q  <- 0.989;       label("Allometric exponent on CL and Q (unitless)")                                # Table 2: weight on CL and Q = 0.989
+    e_wt_vc_vp <- 0.998;       label("Allometric exponent on V2 and V3 (unitless)")                               # Table 2: weight on V2 and V3 = 0.998
 
     # ADA-titre effect on CL (log-linear multiplicative)
     e_ada_cl <- 0.0292;        label("ADA-titre effect on CL, log-linear (unitless slope on log_e titre)")        # Table 2: ADA titre on CL = 0.0292
@@ -69,10 +69,10 @@ Jackson_2022_ixekizumab <- function() {
 
     # Individual PK parameters with allometric weight scaling (reference 58.6 kg)
     ka <- exp(lka)
-    cl <- exp(lcl + etalcl) * (WT / 58.6)^allo_cl * ada_cl
-    vc <- exp(lvc)          * (WT / 58.6)^allo_v
-    vp <- exp(lvp)          * (WT / 58.6)^allo_v
-    q  <- exp(lq)           * (WT / 58.6)^allo_cl
+    cl <- exp(lcl + etalcl) * (WT / 58.6)^e_wt_cl_q * ada_cl
+    vc <- exp(lvc)          * (WT / 58.6)^e_wt_vc_vp
+    vp <- exp(lvp)          * (WT / 58.6)^e_wt_vc_vp
+    q  <- exp(lq)           * (WT / 58.6)^e_wt_cl_q
 
     kel <- cl / vc
     k12 <- q  / vc

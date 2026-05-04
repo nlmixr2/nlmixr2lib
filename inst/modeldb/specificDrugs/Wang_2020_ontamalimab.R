@@ -1,5 +1,5 @@
 Wang_2020_ontamalimab <- function() {
-  description <- "Two-compartment population PK model for ontamalimab (SHP647), a fully human IgG2 anti-MAdCAM-1 monoclonal antibody, in adults with moderate-to-severe ulcerative colitis or Crohn's disease (Wang 2020), with first-order SC absorption, absorption lag time, parallel linear and Michaelis-Menten elimination from the central compartment, and allometric weight scaling on CL, Vc, CLd, Vp, and Vmax."
+  description <- "Two-compartment population PK model for ontamalimab (SHP647), a fully human IgG2 anti-MAdCAM-1 monoclonal antibody, in adults with moderate-to-severe ulcerative colitis or Crohn's disease (Wang 2020), with first-order SC absorption, absorption lag time, parallel linear and Michaelis-Menten elimination from the central compartment, and allometric weight scaling on CL, Vc, Q, Vp, and Vmax."
   reference <- "Wang Y, Marier J-F, Kassir N, Chabot JR, Smith B, Cao C, Lewis L, Dorner AJ, Padula SJ, Banfield C. Population Pharmacokinetics and Pharmacodynamics of Ontamalimab (SHP647), a Fully Human Monoclonal Antibody Against Mucosal Addressin Cell Adhesion Molecule-1 (MAdCAM-1), in Patients With Ulcerative Colitis or Crohn's Disease. J Clin Pharmacol. 2020 Jul;60(7):903-914. doi:10.1002/jcph.1590"
   vignette <- "Wang_2020_ontamalimab"
   units <- list(time = "day", dosing = "mg", concentration = "mg/L")
@@ -62,7 +62,7 @@ Wang_2020_ontamalimab <- function() {
     ltlag   <- log(2.61 / 24);                label("Absorption lag time (day)")                                  # Wang 2020 Table 2: Lag = 2.61 h
     lcl     <- log(0.0127 * 24);              label("Apparent linear clearance CL/F (L/day) at reference covariates") # Wang 2020 Table 2: CL/F = 0.0127 L/h
     lvc     <- log(6.53);                     label("Apparent central volume Vc/F (L) at reference covariates")  # Wang 2020 Table 2: Vc/F = 6.53 L
-    lcld    <- log(0.000345 * 24);            label("Apparent inter-compartmental clearance CLd/F (L/day) at reference covariates") # Wang 2020 Table 2: CLd/F = 0.000345 L/h
+    lq      <- log(0.000345 * 24);            label("Apparent inter-compartmental clearance Q/F (L/day) at reference covariates") # Wang 2020 Table 2: CLd/F = 0.000345 L/h
     lvp     <- log(0.0216);                   label("Apparent peripheral volume Vp/F (L) at reference covariates") # Wang 2020 Table 2: Vp/F = 0.0216 L
     lvmax   <- log(5.87 * 24 / 1000);         label("Apparent Michaelis-Menten Vmax/F (mg/day) at reference WT")  # Wang 2020 Table 2: Vmax/F = 5.87 ug/h
     lkm     <- log(19.0 / 1000);              label("Michaelis-Menten constant Km (mg/L)")                        # Wang 2020 Table 2: Km = 19.0 ng/mL
@@ -70,7 +70,7 @@ Wang_2020_ontamalimab <- function() {
     # Covariate exponents - Wang 2020 Table 2 final-model equations.
     e_wt_cl    <-  0.0034; label("Power exponent of (WT/70 kg) on CL/F (unitless)")                              # Wang 2020 Table 2: CL/F ~ WT
     e_wt_vc    <-  0.635;  label("Power exponent of (WT/70 kg) on Vc/F (unitless)")                              # Wang 2020 Table 2: Vc/F ~ WT
-    e_wt_cld   <-  0.0034; label("Power exponent of (WT/70 kg) on CLd/F (unitless)")                             # Wang 2020 Table 2: CLd/F ~ WT
+    e_wt_q     <-  0.0034; label("Power exponent of (WT/70 kg) on Q/F (unitless)")                               # Wang 2020 Table 2: CLd/F ~ WT
     e_wt_vp    <-  0.635;  label("Power exponent of (WT/70 kg) on Vp/F (unitless)")                              # Wang 2020 Table 2: Vp/F ~ WT
     e_wt_vmax  <-  1.89;   label("Power exponent of (WT/70 kg) on Vmax/F (unitless)")                            # Wang 2020 Table 2: Vmax/F ~ WT
     e_alb_cl   <- -0.889;  label("Power exponent of (ALB/39 g/L) on CL/F (unitless)")                            # Wang 2020 Table 2: CL/F ~ ALB
@@ -101,7 +101,7 @@ Wang_2020_ontamalimab <- function() {
             (ALB / 39)^e_alb_cl *
             (CRP / 0.837)^e_crp_cl
     vc   <- exp(lvc + etalvc) * (WT / 70)^e_wt_vc
-    cld  <- exp(lcld) * (WT / 70)^e_wt_cld
+    q    <- exp(lq) * (WT / 70)^e_wt_q
     vp   <- exp(lvp) * (WT / 70)^e_wt_vp
     vmax <- exp(lvmax) * (WT / 70)^e_wt_vmax
     km   <- exp(lkm)
@@ -114,9 +114,9 @@ Wang_2020_ontamalimab <- function() {
     d/dt(central)     <-  ka * depot -
                           (cl / vc) * central -
                           vmax * Cc / (km + Cc) -
-                          (cld / vc) * central +
-                          (cld / vp) * peripheral1
-    d/dt(peripheral1) <-  (cld / vc) * central - (cld / vp) * peripheral1
+                          (q / vc) * central +
+                          (q / vp) * peripheral1
+    d/dt(peripheral1) <-  (q / vc) * central - (q / vp) * peripheral1
 
     alag(depot) <- tlag
 

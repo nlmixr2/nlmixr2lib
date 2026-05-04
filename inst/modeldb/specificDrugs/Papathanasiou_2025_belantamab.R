@@ -120,8 +120,8 @@ Papathanasiou_2025_belantamab <- function() {
     # weight exponents (theta_V_WTBL on volumes, theta_CL_WTBL on
     # clearances) are each shared between two structural parameters as
     # written in the source paper.
-    e_wt_v        <-  0.929;  label("Power exponent of WT on Vc and Vp (shared; theta_V_WTBL)")            # Papathanasiou 2025 Table 2: theta_V_WTBL
-    e_wt_cl       <-  0.542;  label("Power exponent of WT on CL and Q (shared; theta_CL_WTBL)")            # Papathanasiou 2025 Table 2: theta_CL_WTBL
+    e_wt_vc_vp    <-  0.929;  label("Shared power exponent of WT on Vc and Vp (theta_V_WTBL)")             # Papathanasiou 2025 Table 2: theta_V_WTBL
+    e_wt_cl_q     <-  0.542;  label("Shared power exponent of WT on CL and Q (theta_CL_WTBL)")             # Papathanasiou 2025 Table 2: theta_CL_WTBL
     e_alb_cl      <- -0.698;  label("Power exponent of ALB on CL")                                         # Papathanasiou 2025 Table 2: theta_CL_ALBBL
     e_alb_vc      <- -0.302;  label("Power exponent of ALB on Vc")                                         # Papathanasiou 2025 Table 2: theta_ADC_Vc_ALBBL
     e_alb_vp      <-  0.567;  label("Power exponent of ALB on Vp")                                         # Papathanasiou 2025 Table 2: theta_ADC_Vp_ALBBL
@@ -180,7 +180,7 @@ Papathanasiou_2025_belantamab <- function() {
     # multiplier^indicator so that subjects with RACE_ASIAN = 0 and
     # RACE_BLACK = 0 contribute factor 1.
     cl_base <- exp(lcl + etalcl) *
-      (WT    / 75)^e_wt_cl *
+      (WT    / 75)^e_wt_cl_q *
       (ALB   / 40)^e_alb_cl *
       (SBCMA / 50)^e_sbcma_cl *
       (IGG   / 15)^e_igg_cl *
@@ -195,17 +195,17 @@ Papathanasiou_2025_belantamab <- function() {
     # 5. Other individual structural parameters (Papathanasiou 2025
     # Table 2 Vc, Vp, Q equations).
     vc <- exp(lvc + etalvc) *
-      (WT    / 75)^e_wt_v *
+      (WT    / 75)^e_wt_vc_vp *
       (ALB   / 40)^e_alb_vc *
       (BMI   / 27)^e_bmi_vc *
       (SBCMA / 50)^e_sbcma_vc
 
     vp <- exp(lvp + etalvp) *
-      (WT  / 75)^e_wt_v *
+      (WT  / 75)^e_wt_vc_vp *
       (ALB / 40)^e_alb_vp
 
     q  <- exp(lq + etalq) *
-      (WT / 75)^e_wt_cl
+      (WT / 75)^e_wt_cl_q
 
     kel <- cl / vc
     k12 <- q  / vc

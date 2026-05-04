@@ -103,7 +103,7 @@ Frey_2013_tocilizumab <- function() {
     lvc <- log(3.5); label("Central volume of distribution V1 (L) -- Frey 2010 typical PK reference")   # Frey 2010 Table II, V1
     lq  <- log(0.2); label("Inter-compartmental clearance Q (L/day) -- Frey 2010 typical PK reference") # Frey 2010 Table II, Q
     lvp <- log(2.9); label("Peripheral volume of distribution V2 (L) -- Frey 2010 typical PK reference") # Frey 2010 Table II, V2
-    lvm <- log(7.5); label("Maximum Michaelis-Menten elimination rate Vm (mg/day) -- Frey 2010 typical PK reference") # Frey 2010 Table II, VM
+    lvmax <- log(7.5); label("Maximum Michaelis-Menten elimination rate Vmax (mg/day) -- Frey 2010 typical PK reference") # Frey 2010 Table II, VM
     lkm <- log(2.7); label("Michaelis-Menten constant Km (ug/mL) -- Frey 2010 typical PK reference")    # Frey 2010 Table II, KM
 
     # ------------------------------------------------------------------
@@ -164,12 +164,12 @@ Frey_2013_tocilizumab <- function() {
     #    or PK covariates here -- this file is the exposure-response
     #    overlay).
     # ------------------------------------------------------------------
-    cl <- exp(lcl)
-    vc <- exp(lvc)
-    vp <- exp(lvp)
-    q  <- exp(lq)
-    vm <- exp(lvm)
-    km <- exp(lkm)
+    cl   <- exp(lcl)
+    vc   <- exp(lvc)
+    vp   <- exp(lvp)
+    q    <- exp(lq)
+    vmax <- exp(lvmax)
+    km   <- exp(lkm)
 
     # ------------------------------------------------------------------
     # 2. Individual DAS28 PD parameters (Frey 2013 Table 2 covariate
@@ -202,7 +202,7 @@ Frey_2013_tocilizumab <- function() {
     Cc <- central / vc
 
     d/dt(central)     <- -(cl / vc) * central -
-                          vm * Cc / (km + Cc) -
+                          vmax * Cc / (km + Cc) -
                           (q / vc) * central +
                           (q / vp) * peripheral1
     d/dt(peripheral1) <-  (q / vc) * central -

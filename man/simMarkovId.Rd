@@ -23,12 +23,12 @@ A data.frame with two columns named "prev" and "cur"
 Simulate a Markov model broken down by ID
 }
 \seealso{
-Other Markov models: 
-\code{\link{createMarkovModel}()},
-\code{\link{createMarkovModelDataset}()},
-\code{\link{createMarkovModelFromSingleState}()},
-\code{\link{createMarkovTransitionMatrix}()},
-\code{\link{simMarkov}()}
+Other Markov models:
+\code{\link[=createMarkovModel]{createMarkovModel()}},
+\code{\link[=createMarkovModelDataset]{createMarkovModelDataset()}},
+\code{\link[=createMarkovModelFromSingleState]{createMarkovModelFromSingleState()}},
+\code{\link[=createMarkovTransitionMatrix]{createMarkovTransitionMatrix()}},
+\code{\link[=simMarkov]{simMarkov()}}
 }
 \concept{Markov models}
 \keyword{Internal}

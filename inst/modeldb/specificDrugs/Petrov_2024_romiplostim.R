@@ -81,7 +81,7 @@ Petrov_2024_romiplostim <- function() {
     # effects: V/F scales near-linearly with body weight and NAB+ subjects
     # have ~28% higher kel.
     # ---------------------------------------------------------------------
-    e_wt_v    <- 1.04;  label("Allometric power exponent of (WT/77 kg) on V/F (unitless)")                        # Petrov 2024 Table S1
+    e_wt_vc   <- 1.04;  label("Allometric power exponent of (WT/77 kg) on Vc/F (unitless)")                       # Petrov 2024 Table S1
     e_nab_kel <- 0.25;  label("Log-additive effect of NAB+ on kel: kel_NABpos = kel * exp(0.25)")                 # Petrov 2024 Table S1
 
     # ---------------------------------------------------------------------
@@ -107,13 +107,13 @@ Petrov_2024_romiplostim <- function() {
     # observations), so b is interpreted here as the proportional residual
     # error on platelet count. See vignette Errata for the ambiguity.
     # ---------------------------------------------------------------------
-    PLTpropSd <- 0.093; label("Proportional residual error on platelet count (fraction)")                        # Petrov 2024 Table S1
+    propSd_PLT <- 0.093; label("Proportional residual error on platelet count (fraction)")                        # Petrov 2024 Table S1
   })
 
   model({
     # Individual PK/PD parameters
     ka   <- exp(lka)
-    vc   <- exp(lvc + etalvc)   * (WT / 77)^e_wt_v
+    vc   <- exp(lvc + etalvc)   * (WT / 77)^e_wt_vc
     kel  <- exp(lkel + etalkel) * exp(e_nab_kel * ADA_POS)
     ec50 <- exp(lec50 + etalec50)
     emax <- exp(lemax + etalemax)
@@ -149,6 +149,6 @@ Petrov_2024_romiplostim <- function() {
 
     # Observation: circulating platelet count in 10^9 cells/L
     PLT <- circ
-    PLT ~ prop(PLTpropSd)
+    PLT ~ prop(propSd_PLT)
   })
 }

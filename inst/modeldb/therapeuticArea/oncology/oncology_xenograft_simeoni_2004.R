@@ -13,8 +13,8 @@ oncology_xenograft_simeoni_2004 <- function() {
     ldrugSlope <- log(c(0.00001, 0.000629, 0.1)) ; label("Linear drug effect on cycling cells (1/(day*ng/mL))")
     ltumorExpGrowth <- log(c(0.001, 0.273, 2)) ; label("Tumor exponential growth rate (1/day)")
     ltumorLinGrowth <- log(c(0.01, 0.814, 5)) ; label("Tumor linear growth rate (tumor volume/day)")
-    tumorVolpropSd <- 0.2 ; label("Proportional residual error (fraction)")
-    tumorVoladdSd <- 30 ; label("Additive residual error (tumor volume)")
+    propSd_tumorVol <- 0.2 ; label("Proportional residual error (fraction)")
+    addSd_tumorVol <- 30 ; label("Additive residual error (tumor volume)")
   })
   model({
     damageTransit <- exp(ldamageTransit)
@@ -34,7 +34,7 @@ oncology_xenograft_simeoni_2004 <- function() {
     d/dt(damagedCells1) <- drugEffectCyclingCells*cyclingCells - damageTransit*damagedCells1
     d/dt(damagedCells2) <- damageTransit*(damagedCells1 - damagedCells2)
     d/dt(damagedCells3) <- damageTransit*(damagedCells2 - damagedCells3)
-    tumorVol ~ prop(tumorVolpropSd) + add(tumorVoladdSd)
+    tumorVol ~ prop(propSd_tumorVol) + add(addSd_tumorVol)
   })
 }
 

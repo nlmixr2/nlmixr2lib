@@ -64,8 +64,8 @@ Hua_2015_anrukinzumab <- function() {
     lfdepot <- log(0.973);  label("SC bioavailability in non-moderate-to-severe-asthma subjects (F, log-scale)")  # Hua 2015 Table 3: F,pop = 0.973
 
     # Allometric exponents on body weight (reference 75 kg; Hua 2015 Table 3).
-    allo_cl <- fixed(0.75); label("Allometric exponent of WT on CL (fixed at 0.75)")                           # Hua 2015 Table 3 / Methods: fixed to 0.75
-    allo_v  <- 0.688;       label("Allometric exponent of WT on Vc and Vp (estimated, shared)")                # Hua 2015 Table 3: theta_WT (Vc,Vp) = 0.688
+    e_wt_cl    <- fixed(0.75); label("Allometric exponent of WT on CL (fixed at 0.75)")                        # Hua 2015 Table 3 / Methods: fixed to 0.75
+    e_wt_vc_vp <- 0.688;       label("Allometric exponent of WT on Vc and Vp (estimated, shared)")             # Hua 2015 Table 3: theta_WT (Vc,Vp) = 0.688
 
     # Covariate effects on CL and F (Hua 2015 Table 3 final model).
     e_alb_cl <- -1.07;  label("Power exponent of baseline albumin on CL ((ALB/4.3)^e_alb_cl)")                 # Hua 2015 Table 3: theta_albumin = -1.07
@@ -99,11 +99,11 @@ Hua_2015_anrukinzumab <- function() {
     #   F  = F_pop * (1 + theta_sA * DIS_SASTHMA) # applied at depot (SC); UC was IV-only
     ka <- exp(lka + etalka)
     cl <- exp(lcl + etalcl) *
-      (WT / 75)^allo_cl *
+      (WT / 75)^e_wt_cl *
       (ALB / 4.3)^e_alb_cl *
       (1 + e_uc_cl * DIS_UC)
-    vc <- exp(lvc + etalvc) * (WT / 75)^allo_v
-    vp <- exp(lvp + etalvc) * (WT / 75)^allo_v
+    vc <- exp(lvc + etalvc) * (WT / 75)^e_wt_vc_vp
+    vp <- exp(lvp + etalvc) * (WT / 75)^e_wt_vc_vp
     q  <- exp(lq)
 
     kel <- cl / vc

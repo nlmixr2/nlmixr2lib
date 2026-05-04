@@ -54,18 +54,18 @@ The same population information is available programmatically via `readModelDb("
 | Km = 0.00435 ug/mL (FIXED, in vitro Kd) | `lkm` (FIXED) | Toukam 2025 Table 3 and Results "Base PK Model Development" |
 | Tlag = 0.0793 day (FIXED) | `lalag` (FIXED) | Toukam 2025 Table 3 and Results "Base PK Model Development" |
 | F = 73.8% | `lfdepot` | Toukam 2025 Table 3 |
-| Allometric exponent on CL = 1.07 (estimated) | `allo_cl` | Toukam 2025 Table 3 |
-| Allometric exponents on V2, V3, Q (1, 1, 0.75; FIXED) | `allo_vc`, `allo_vp`, `allo_q` (FIXED) | Toukam 2025 Table 3 footnote |
+| Allometric exponent on CL = 1.07 (estimated) | `e_wt_cl` | Toukam 2025 Table 3 |
+| Allometric exponents on V2, V3, Q (1, 1, 0.75; FIXED) | `e_wt_vc`, `e_wt_vp`, `e_wt_q` (FIXED) | Toukam 2025 Table 3 footnote |
 | IIV CL 16% CV | `etalcl` (omega^2 = 0.02527) | Toukam 2025 Table 3 |
 | IIV V2 35% CV | `etalvc` (omega^2 = 0.11556) | Toukam 2025 Table 3 |
 | IIV Ka 41% CV | `etalka` (omega^2 = 0.15536) | Toukam 2025 Table 3 |
-| Additive PK residual error 8.67 (SC) | `CcaddSd` | Toukam 2025 Table 3 |
+| Additive PK residual error 8.67 (SC) | `addSd` | Toukam 2025 Table 3 |
 | E0 = 17.7% baseline alpha-4 saturation | `a4satE0` | Toukam 2025 Table 4 |
 | Emax = 77.5% above baseline | `a4satEmax` | Toukam 2025 Table 4 |
 | EC50 = 0.376 ug/mL | `la4satEC50` | Toukam 2025 Table 4 |
 | Hill gamma = 1 (FIXED) | `a4satGamma` (FIXED) | Toukam 2025 Results "Base PD Model Development" |
 | IIV EC50 10% CV | `etala4satEC50` (omega^2 = 0.00995) | Toukam 2025 Table 4 |
-| Additive PD residual error 15.8% (SC) | `a4sataddSd` | Toukam 2025 Table 4 |
+| Additive PD residual error 15.8% (SC) | `addSd_a4sat` | Toukam 2025 Table 4 |
 
 # Errata
 
@@ -276,8 +276,8 @@ nca_tbl |>
 
 # Assumptions and deviations
 
-* **Route-specific residual error simplified to a single additive term.** Toukam 2025 Tables 3-4 report separate additive errors for SC and IV administration (PK: 8.67 SC vs 7.32 IV; PD: 15.8% SC vs 7.93% IV). The library implementation uses the SC value as a single additive SD because the SC route is the intended clinical regimen and the route-specific error formulation does not currently have a clean nlmixr2 single-output form for a model where both routes share a common observation `Cc`. For typical-value simulation this difference is immaterial; for IIV-aware simulation users planning IV scenarios, override `CcaddSd` to `7.32` before solving.
-* **Residual-error units.** Per the Errata section above, the PK additive-error magnitude is reproduced verbatim from Toukam 2025 Table 3 with no rescaling. Users who would prefer a more conservative additive SD consistent with the paper's LLOQ (0.2 ug/mL) and standard mAb assays may override `CcaddSd` to a smaller value; this does not affect the typical-value PK profile.
+* **Route-specific residual error simplified to a single additive term.** Toukam 2025 Tables 3-4 report separate additive errors for SC and IV administration (PK: 8.67 SC vs 7.32 IV; PD: 15.8% SC vs 7.93% IV). The library implementation uses the SC value as a single additive SD because the SC route is the intended clinical regimen and the route-specific error formulation does not currently have a clean nlmixr2 single-output form for a model where both routes share a common observation `Cc`. For typical-value simulation this difference is immaterial; for IIV-aware simulation users planning IV scenarios, override `addSd` to `7.32` before solving.
+* **Residual-error units.** Per the Errata section above, the PK additive-error magnitude is reproduced verbatim from Toukam 2025 Table 3 with no rescaling. Users who would prefer a more conservative additive SD consistent with the paper's LLOQ (0.2 ug/mL) and standard mAb assays may override `addSd` to a smaller value; this does not affect the typical-value PK profile.
 * **EC50 value.** Used Table 4's 0.376 ug/mL; the Discussion's 0.382 ug/mL is treated as a transcription discrepancy (see Errata).
 * **Vmax not weight-scaled.** Toukam 2025 Methods restricts allometric scaling to "clearance (CL) and volume parameters (V2, V3, and Q)"; Vmax is therefore implemented as a constant (not body-weight-scaled). For TMDD models with target-mass-dependent Vmax, weight scaling on Vmax is sometimes appropriate; the source paper's choice is preserved.
 * **Virtual-cohort weights** are sampled from a log-normal distribution matched to the published mean 78.4 kg / SD 11.3 kg (Table 2) and clipped to the observed 50-110 kg range. No covariate other than weight is sampled because no other covariate enters the model.
