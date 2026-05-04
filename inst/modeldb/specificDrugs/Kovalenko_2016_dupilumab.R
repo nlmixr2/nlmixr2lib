@@ -57,7 +57,7 @@ Kovalenko_2016_dupilumab <- function() {
     lk23    <- log(0.0652); label("central-to-peripheral rate constant (1/d)")        # Table 2: k23 = 0.0652 1/d
     lk32    <- log(0.129);  label("peripheral-to-central rate constant (1/d)")        # Table 2: k32 = 0.129 1/d
     lka     <- log(0.254);  label("first-order absorption rate constant (1/d)")       # Table 2: ka = 0.254 1/d
-    lvm     <- log(0.968);  label("maximum target-mediated elimination rate (mg/L/d)")# Table 2: Vm = 0.968 mg/L/d
+    lvmax   <- log(0.968);  label("Maximum target-mediated elimination rate Vmax (mg/L/d)")# Table 2: Vm = 0.968 mg/L/d
     Km      <- fixed(0.01); label("Michaelis-Menten constant (mg/L)")                 # Table 2: Km = 0.01 (fixed)
     lfdepot <- log(0.607);  label("subcutaneous bioavailability (fraction)")          # Table 2: F = 0.607
 
@@ -68,7 +68,7 @@ Kovalenko_2016_dupilumab <- function() {
     etalvc ~ 0.0225  # Table 2: omega^2(V2) = 0.0225
     etalke ~ 0.131   # Table 2: omega^2(ke) = 0.131
     etalka ~ 0.251   # Table 2: omega^2(ka) = 0.251
-    etalvm ~ 0.0428  # Table 2: omega^2(Vm) = 0.0428
+    etalvmax ~ 0.0428  # Table 2: omega^2(Vm) = 0.0428
 
     # Residual error - Table 2: proportional CV% = 24.2 (SD = 0.242 on the linear scale);
     # additive SD fixed at 0.03 mg/L with BLQ data included.
@@ -82,11 +82,11 @@ Kovalenko_2016_dupilumab <- function() {
     k23 <- exp(lk23)
     k32 <- exp(lk32)
     ka  <- exp(lka + etalka)
-    Vm  <- exp(lvm + etalvm)
+    vmax <- exp(lvmax + etalvmax)
 
     d/dt(depot)       <- -ka * depot
     d/dt(central)     <-  ka * depot - ke * central - k23 * central + k32 * peripheral1 -
-                          central * (Vm / (Km + central / vc))
+                          central * (vmax / (Km + central / vc))
     d/dt(peripheral1) <-                              k23 * central - k32 * peripheral1
 
     # Subcutaneous bioavailability; IV doses bypass the depot via the event record
