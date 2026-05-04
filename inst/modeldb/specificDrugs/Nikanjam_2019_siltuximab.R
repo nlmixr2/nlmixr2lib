@@ -92,15 +92,15 @@ Nikanjam_2019_siltuximab <- function() {
     # exponents act as power-form effects normalized to the population
     # medians; the disease-state coefficients act as multiplicative scalars
     # raised to the {0,1} indicator (e.g., HV=1 multiplies CL by e_hv_cl).
-    e_alb_cl   <- -0.84;   label("Power exponent of albumin on CL (unitless)")              # Nikanjam 2019 Table 2: theta5
-    e_wt_v     <-  0.65;   label("Power exponent of weight on V1 and V2 (unitless)")        # Nikanjam 2019 Table 2: theta6
-    e_alb_v    <- -0.35;   label("Power exponent of albumin on V1 and V2 (unitless)")       # Nikanjam 2019 Table 2: theta7
-    e_hv_v     <-  0.83;   label("Multiplicative effect of healthy volunteer on V1/V2")      # Nikanjam 2019 Table 2: theta8
-    e_smm_v    <-  0.77;   label("Multiplicative effect of smoldering MM on V1/V2")          # Nikanjam 2019 Table 2: theta9
-    e_hv_cl    <-  0.77;   label("Multiplicative effect of healthy volunteer on CL")         # Nikanjam 2019 Table 2: theta10
-    e_alt_cl   <- -0.096;  label("Power exponent of ALT on CL (unitless)")                   # Nikanjam 2019 Table 2: theta11
-    e_creat_v  <-  0.16;   label("Power exponent of serum creatinine on V1 and V2")          # Nikanjam 2019 Table 2: theta12
-    e_cd_cl    <-  1.24;   label("Multiplicative effect of Castleman's disease on CL")        # Nikanjam 2019 Table 2: theta13
+    e_alb_cl      <- -0.84;   label("Power exponent of albumin on CL (unitless)")                     # Nikanjam 2019 Table 2: theta5
+    e_wt_vc_vp    <-  0.65;   label("Shared power exponent of weight on Vc and Vp (unitless)")        # Nikanjam 2019 Table 2: theta6
+    e_alb_vc_vp   <- -0.35;   label("Shared power exponent of albumin on Vc and Vp (unitless)")       # Nikanjam 2019 Table 2: theta7
+    e_hv_vc_vp    <-  0.83;   label("Shared multiplicative effect of healthy volunteer on Vc and Vp")  # Nikanjam 2019 Table 2: theta8
+    e_smm_vc_vp   <-  0.77;   label("Shared multiplicative effect of smoldering MM on Vc and Vp")      # Nikanjam 2019 Table 2: theta9
+    e_hv_cl       <-  0.77;   label("Multiplicative effect of healthy volunteer on CL")               # Nikanjam 2019 Table 2: theta10
+    e_alt_cl      <- -0.096;  label("Power exponent of ALT on CL (unitless)")                         # Nikanjam 2019 Table 2: theta11
+    e_creat_vc_vp <-  0.16;   label("Shared power exponent of serum creatinine on Vc and Vp")         # Nikanjam 2019 Table 2: theta12
+    e_cd_cl       <-  1.24;   label("Multiplicative effect of Castleman's disease on CL")             # Nikanjam 2019 Table 2: theta13
 
     # Inter-individual variability: a single eta on CL (BSV_CL = 20.0% CV)
     # and a single eta shared between V1 and V2 (BSV_Vss = 42.0% CV).
@@ -125,18 +125,18 @@ Nikanjam_2019_siltuximab <- function() {
       e_cd_cl^DIS_CASTLEMAN
 
     vc <- exp(lvc + etalvc) *
-      (WT  / 73)^e_wt_v *
-      (ALB / 4.1)^e_alb_v *
-      (CREAT / 0.9)^e_creat_v *
-      e_hv_v^DIS_HV *
-      e_smm_v^DIS_SMM
+      (WT  / 73)^e_wt_vc_vp *
+      (ALB / 4.1)^e_alb_vc_vp *
+      (CREAT / 0.9)^e_creat_vc_vp *
+      e_hv_vc_vp^DIS_HV *
+      e_smm_vc_vp^DIS_SMM
 
     vp <- exp(lvp + etalvc) *
-      (WT  / 73)^e_wt_v *
-      (ALB / 4.1)^e_alb_v *
-      (CREAT / 0.9)^e_creat_v *
-      e_hv_v^DIS_HV *
-      e_smm_v^DIS_SMM
+      (WT  / 73)^e_wt_vc_vp *
+      (ALB / 4.1)^e_alb_vc_vp *
+      (CREAT / 0.9)^e_creat_vc_vp *
+      e_hv_vc_vp^DIS_HV *
+      e_smm_vc_vp^DIS_SMM
 
     q <- exp(lq)
 
