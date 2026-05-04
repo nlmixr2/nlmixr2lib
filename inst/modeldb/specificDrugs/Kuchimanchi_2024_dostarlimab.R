@@ -103,8 +103,8 @@ Kuchimanchi_2024_dostarlimab <- function() {
     lhill <- log(7.05);  label("log Hill; sigmoid steepness coefficient (unitless)")                   # Kuchimanchi 2024 Table 2: Hill = 7.05
 
     # Allometric exponents on body weight (reference 70 kg).
-    e_wt_cl <- 0.523;  label("Allometric exponent of WT on CL (unitless)")           # Kuchimanchi 2024 Table 2: Effect of WT on CL = 0.523
-    e_wt_v  <- 0.48;   label("Allometric exponent of WT on Vc and Vp (unitless)")    # Kuchimanchi 2024 Table 2: Effect of WT on Vc and Vp = 0.48
+    e_wt_cl    <- 0.523;  label("Allometric exponent of WT on CL (unitless)")              # Kuchimanchi 2024 Table 2: Effect of WT on CL = 0.523
+    e_wt_vc_vp <- 0.48;   label("Shared allometric exponent of WT on Vc and Vp (unitless)") # Kuchimanchi 2024 Table 2: Effect of WT on Vc and Vp = 0.48
 
     # Continuous covariate effects on CL (power form: (cov / ref)^theta).
     e_age_cl <- -0.238;   label("AGE exponent on CL (power form (AGE/64)^theta)")        # Kuchimanchi 2024 Table 2: Effect of age on CL = -0.238
@@ -145,8 +145,8 @@ Kuchimanchi_2024_dostarlimab <- function() {
 
   model({
     # Allometric weight scaling (reference 70 kg).
-    wt_cl <- (WT / 70)^e_wt_cl
-    wt_v  <- (WT / 70)^e_wt_v
+    wt_cl    <- (WT / 70)^e_wt_cl
+    wt_vc_vp <- (WT / 70)^e_wt_vc_vp
 
     # Continuous covariate effects (power form, Kuchimanchi 2024 final-model
     # equations).
@@ -176,8 +176,8 @@ Kuchimanchi_2024_dostarlimab <- function() {
     # td_cl folds in the time dependency.
     cl_base <- exp(lcl + etalcl) * wt_cl * age_cl * alb_cl * alt_cl * sex_cl * combo_cl
     cl      <- cl_base * td_cl
-    vc      <- exp(lvc + etalvc) * wt_v * alb_vc * sex_vc
-    vp      <- exp(lvp)          * wt_v
+    vc      <- exp(lvc + etalvc) * wt_vc_vp * alb_vc * sex_vc
+    vp      <- exp(lvp)          * wt_vc_vp
     q       <- exp(lq)
 
     # Two-compartment micro-constants.
