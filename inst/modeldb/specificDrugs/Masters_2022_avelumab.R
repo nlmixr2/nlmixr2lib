@@ -54,8 +54,8 @@ Masters_2022_avelumab <- function() {
     # Allometric exponents on body weight (reference 80 kg). Exponent on Q
     # is fixed to 1 per Masters 2022 Methods ("Study overview").
     e_wt_cl <- 0.4714; label("Allometric exponent on CL (unitless)")                                   # Masters 2022 Table 1: theta_weight_on_CL = 0.4714
-    e_wt_v1 <- 0.4694; label("Allometric exponent on V1 (unitless)")                                   # Masters 2022 Table 1: theta_weight_on_V1 = 0.4694
-    e_wt_v2 <- 0.5826; label("Allometric exponent on V2 (unitless)")                                   # Masters 2022 Table 1: theta_weight_on_V2 = 0.5826
+    e_wt_vc <- 0.4694; label("Allometric exponent on Vc (unitless)")                                   # Masters 2022 Table 1: theta_weight_on_V1 = 0.4694
+    e_wt_vp <- 0.5826; label("Allometric exponent on Vp (unitless)")                                   # Masters 2022 Table 1: theta_weight_on_V2 = 0.5826
 
     # Inter-individual variability. CL, V1, V2 form a 3x3 log-normal block;
     # Imax has an independent log-normal eta on its magnitude. Variance /
@@ -80,8 +80,8 @@ Masters_2022_avelumab <- function() {
   model({
     # Allometric scaling (reference 80 kg); exponent on Q is fixed at 1.
     cl_base <- exp(lcl + etalcl) * (WT / 80)^e_wt_cl
-    v1      <- exp(lvc + etalvc) * (WT / 80)^e_wt_v1
-    v2      <- exp(lvp + etalvp) * (WT / 80)^e_wt_v2
+    vc      <- exp(lvc + etalvc) * (WT / 80)^e_wt_vc
+    vp      <- exp(lvp + etalvp) * (WT / 80)^e_wt_vp
     q       <- exp(lq)           * (WT / 80)
 
     # Time-dependent clearance modifier (Hill function of time since first dose).
@@ -91,15 +91,15 @@ Masters_2022_avelumab <- function() {
     cl     <- cl_base * (1 + Imax_i * t^gamma / (t50^gamma + t^gamma))
 
     # Two-compartment micro-constants.
-    kel <- cl / v1
-    k12 <- q  / v1
-    k21 <- q  / v2
+    kel <- cl / vc
+    k12 <- q  / vc
+    k21 <- q  / vp
 
     d/dt(central)     <- -kel * central - k12 * central + k21 * peripheral1
     d/dt(peripheral1) <-                   k12 * central - k21 * peripheral1
 
-    # Dose is in mg and V1 in L, so central/V1 has units mg/L = ug/mL.
-    Cc <- central / v1
+    # Dose is in mg and Vc in L, so central/Vc has units mg/L = ug/mL.
+    Cc <- central / vc
     Cc ~ prop(propSd) + add(addSd)
   })
 }
