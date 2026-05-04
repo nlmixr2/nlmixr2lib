@@ -93,8 +93,8 @@ Diao_2016_daclizumab_treg <- function() {
     etaltregEmax ~ 0.01431  # Diao 2016 Table 5 (Emax IIV 12% CV)
 
     # Residual error (Diao 2016 Table 5): proportional 50.1% + additive 0.416 (% units).
-    tregpropSd <- 0.501; label("Proportional residual error on Treg (fraction)")                       # Diao 2016 Table 5
-    tregaddSd  <- 0.416; label("Additive residual error on Treg (% of CD4+ T cells)")                  # Diao 2016 Table 5
+    propSd_treg <- 0.501; label("Proportional residual error on Treg (fraction)")                       # Diao 2016 Table 5
+    addSd_treg  <- 0.416; label("Additive residual error on Treg (% of CD4+ T cells)")                  # Diao 2016 Table 5
   })
 
   model({
@@ -140,6 +140,6 @@ Diao_2016_daclizumab_treg <- function() {
     # 5. Observation and error model.
     # ------------------------------------------------------------------
     Cc   ~ add(CcaddSd) + prop(CcpropSd)
-    treg ~ add(tregaddSd) + prop(tregpropSd)
+    treg ~ add(addSd_treg) + prop(propSd_treg)
   })
 }

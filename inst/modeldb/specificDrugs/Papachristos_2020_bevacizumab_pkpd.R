@@ -79,7 +79,7 @@ Papachristos_2020_bevacizumab_pkpd <- function() {
 
     # Residual error (proportional, two outputs)
     CcpropSd <- 0.238; label("Proportional residual error for bevacizumab (fraction)")   # Table 3 row sigma_BEVA
-    EpropSd  <- 0.264; label("Proportional residual error for free VEGF-A (fraction)")   # Table 3 row sigma_VEGF
+    propSd_E  <- 0.264; label("Proportional residual error for free VEGF-A (fraction)")   # Table 3 row sigma_VEGF
   })
   model({
     # Individual PK parameters (paper formulas, sec. 2.4)
@@ -108,6 +108,6 @@ Papachristos_2020_bevacizumab_pkpd <- function() {
     # Free VEGF-A observation: immediate-response Imax inhibition (no sigmoidicity)
     # E = E0 * (1 - Imax * Cc / (IC50 + Cc))
     E <- e0 * (1 - imax * Cc / (ic50 + Cc))
-    E ~ prop(EpropSd)
+    E ~ prop(propSd_E)
   })
 }

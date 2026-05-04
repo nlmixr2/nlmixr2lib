@@ -107,7 +107,7 @@ Petrov_2024_romiplostim <- function() {
     # observations), so b is interpreted here as the proportional residual
     # error on platelet count. See vignette Errata for the ambiguity.
     # ---------------------------------------------------------------------
-    PLTpropSd <- 0.093; label("Proportional residual error on platelet count (fraction)")                        # Petrov 2024 Table S1
+    propSd_PLT <- 0.093; label("Proportional residual error on platelet count (fraction)")                        # Petrov 2024 Table S1
   })
 
   model({
@@ -149,6 +149,6 @@ Petrov_2024_romiplostim <- function() {
 
     # Observation: circulating platelet count in 10^9 cells/L
     PLT <- circ
-    PLT ~ prop(PLTpropSd)
+    PLT ~ prop(propSd_PLT)
   })
 }

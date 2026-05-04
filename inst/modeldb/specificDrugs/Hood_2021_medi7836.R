@@ -74,9 +74,9 @@ Hood_2021_medi7836 <- function() {
     # PK is a combined model (Hood Eq. 2: y = pred * (1 + eps_prop) + eps_add) on
     # linear-space ng/mL concentrations. PD is proportional on the log-transformed
     # observation (Hood Eq. 3: y = log(IL13 + FR*Cx) * (1 + eps_prop)).
-    CcaddSd       <- 0.0546; label("Additive PK residual error (ng/mL = ug/L)")                     # Hood 2021 Table 2: e1 = 0.0546 ug/L
-    CcpropSd      <- 0.130;  label("Proportional PK residual error (fraction)")                     # Hood 2021 Table 2: e2 = 13.0%
-    pdIL13propSd  <- 0.069;  label("Proportional PD residual error on log(serum IL13 readout) (fraction)") # Hood 2021 Table 2: e3 = 6.9%
+    CcaddSd        <- 0.0546; label("Additive PK residual error (ng/mL = ug/L)")                     # Hood 2021 Table 2: e1 = 0.0546 ug/L
+    CcpropSd       <- 0.130;  label("Proportional PK residual error (fraction)")                     # Hood 2021 Table 2: e2 = 13.0%
+    propSd_pdIL13  <- 0.069;  label("Proportional PD residual error on log(serum IL13 readout) (fraction)") # Hood 2021 Table 2: e3 = 6.9%
   })
 
   model({
@@ -152,6 +152,6 @@ Hood_2021_medi7836 <- function() {
     # supposedly-free IL13 immunoassay also captures ~4% of the bound drug-target
     # complex, biasing the apparent free signal upward when drug is present.
     pdIL13 <- log(target + cxfr * complex / vcx)
-    pdIL13 ~ prop(pdIL13propSd)
+    pdIL13 ~ prop(propSd_pdIL13)
   })
 }

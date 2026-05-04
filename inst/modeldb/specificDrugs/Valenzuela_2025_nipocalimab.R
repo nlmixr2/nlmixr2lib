@@ -129,11 +129,11 @@ Valenzuela_2025_nipocalimab <- function() {
     CcpropSdPhase1 <- 0.0834; label("Proportional PK residual for Phase 1 observations (fraction)")        # Table 3
     CcpropSdPhase2 <- 0.367;  label("Proportional PK residual for Phase 2 observations (fraction)")        # Table 3
 
-    pctUnoccupiedFcRnaddSd  <- 2.98;  label("Additive residual SD for % unoccupied FcRn (percent)")        # Table 3
-    pctUnoccupiedFcRnpropSd <- 0.227; label("Proportional residual for % unoccupied FcRn (fraction)")       # Table 3
+    addSd_pctUnoccupiedFcRn  <- 2.98;  label("Additive residual SD for % unoccupied FcRn (percent)")        # Table 3
+    propSd_pctUnoccupiedFcRn <- 0.227; label("Proportional residual for % unoccupied FcRn (fraction)")       # Table 3
 
-    IgG_obspropSd <- 0.0858; label("Proportional residual for total serum IgG (fraction)")                  # Table 3
-    dMGADLaddSd   <- 1.50;   label("Additive residual SD for MG-ADL change from baseline (points)")          # Table 3
+    propSd_IgG_obs <- 0.0858; label("Proportional residual for total serum IgG (fraction)")                  # Table 3
+    addSd_dMGADL   <- 1.50;   label("Additive residual SD for MG-ADL change from baseline (points)")          # Table 3
   })
 
   model({
@@ -234,8 +234,8 @@ Valenzuela_2025_nipocalimab <- function() {
     CcpropSd  <- CcpropSdPhase1 * PHASE1 + CcpropSdPhase2 * (1 - PHASE1)
 
     Cc                ~ add(CcaddSd) + prop(CcpropSd)
-    pctUnoccupiedFcRn ~ add(pctUnoccupiedFcRnaddSd) + prop(pctUnoccupiedFcRnpropSd)
-    IgG_obs           ~ prop(IgG_obspropSd)
-    dMGADL            ~ add(dMGADLaddSd)
+    pctUnoccupiedFcRn ~ add(addSd_pctUnoccupiedFcRn) + prop(propSd_pctUnoccupiedFcRn)
+    IgG_obs           ~ prop(propSd_IgG_obs)
+    dMGADL            ~ add(addSd_dMGADL)
   })
 }

@@ -119,7 +119,7 @@ Diao_2016_daclizumab_cd25 <- function() {
     # Residual error on the CD25 occupancy observation.
     # Diao 2016 Table 3 reports "Residual error (additive) = 4.02" (units:
     # percentage points of CD4+ T cells).
-    cd25addSd <- 4.02; label("Additive residual error on unoccupied CD25 (% of CD4+ T cells)")  # Diao 2016 Table 3
+    addSd_cd25 <- 4.02; label("Additive residual error on unoccupied CD25 (% of CD4+ T cells)")  # Diao 2016 Table 3
   })
 
   model({
@@ -165,6 +165,6 @@ Diao_2016_daclizumab_cd25 <- function() {
     # 5. Observation and error model (PK + PD outputs).
     # ------------------------------------------------------------------
     Cc   ~ add(CcaddSd) + prop(CcpropSd)
-    cd25 ~ add(cd25addSd)
+    cd25 ~ add(addSd_cd25)
   })
 }

@@ -89,7 +89,7 @@ collects them for review.
 | `lcd25IC50` (desaturation phase IC50)                      | 2.07 mg/L | Diao 2016 Table 3 |
 | `etalcd25IC50` (desaturation IC50 IIV)                     | omega^2 0.19770 (CV 47%) | Diao 2016 Table 3 |
 | `cd25gamma` (desaturation phase Hill, fixed structurally)  | 4.44 | Diao 2016 Table 3 |
-| `cd25addSd` (additive residual error)                      | 4.02 percentage points | Diao 2016 Table 3 |
+| `addSd_cd25` (additive residual error)                     | 4.02 percentage points | Diao 2016 Table 3 |
 | Equation 1: `CD25 = E0 * (1 - Cc^gamma / (Cc^gamma + IC50^gamma))` | n/a | Diao 2016 Equation (1) |
 
 # Virtual cohort

@@ -10,8 +10,8 @@ tgi_no_sat_expo <- function() {
     lkge <- 0.7; label("First-order exponential growth rate (kge)")
     lkgl <- 0.7; label("Zero-order linear growth rate (kgl)")
     CcpropSd <- 0.5 ; label("PK proportional residual error (fraction)")
-    tumorSizepropSd <- 0.5 ; label("Tumor size proportional residual error (fraction)")
-    tumorSizeaddSd <- 30 ; label("Tumor size additive residual error (tumor volume)")
+    propSd_tumorSize <- 0.5 ; label("Tumor size proportional residual error (fraction)")
+    addSd_tumorSize <- 30 ; label("Tumor size additive residual error (tumor volume)")
   })
   model({
     ts0 <- exp(lts0)
@@ -31,6 +31,6 @@ tgi_no_sat_expo <- function() {
     
     Cc <- central / vc
     Cc ~ prop(CcpropSd)
-    tumorSize ~ prop(tumorSizepropSd) + add(tumorSizeaddSd)
+    tumorSize ~ prop(propSd_tumorSize) + add(addSd_tumorSize)
   })
 }

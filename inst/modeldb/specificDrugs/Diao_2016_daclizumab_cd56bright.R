@@ -97,7 +97,7 @@ Diao_2016_daclizumab_cd56bright <- function() {
     etalcd56Smax ~ 0.36398    # Diao 2016 Table 4 (Smax IIV 67% CV)
 
     # Residual error: proportional on CD56 bright NK %, 29.1%.
-    cd56brightpropSd <- 0.291; label("Proportional residual error on CD56 bright NK (fraction)") # Diao 2016 Table 4
+    propSd_cd56bright <- 0.291; label("Proportional residual error on CD56 bright NK (fraction)") # Diao 2016 Table 4
   })
 
   model({
@@ -151,6 +151,6 @@ Diao_2016_daclizumab_cd56bright <- function() {
     # 5. Observation and error model.
     # ------------------------------------------------------------------
     Cc         ~ add(CcaddSd) + prop(CcpropSd)
-    cd56bright ~ prop(cd56brightpropSd)
+    cd56bright ~ prop(propSd_cd56bright)
   })
 }

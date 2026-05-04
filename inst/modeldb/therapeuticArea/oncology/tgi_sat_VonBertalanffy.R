@@ -11,8 +11,8 @@ tgi_sat_VonBertalanffy <- function() {
     lkg <- 0.7; label("Birth rate")
     lkd <- 0.7; label ("Death rate")
     CcpropSd <- 0.5 ; label("PK proportional residual error (fraction)")
-    tumorSizepropSd <- 0.5 ; label("Tumor size proportional residual error (fraction)")
-    tumorSizeaddSd <- 30 ; label("Tumor size additive residual error (tumor volume)")
+    propSd_tumorSize <- 0.5 ; label("Tumor size proportional residual error (fraction)")
+    addSd_tumorSize <- 30 ; label("Tumor size additive residual error (tumor volume)")
   })
   model({
     ts0 <- exp(lts0)
@@ -33,6 +33,6 @@ tgi_sat_VonBertalanffy <- function() {
     
     Cc <- central / vc
     Cc ~ prop(CcpropSd)
-    tumorSize ~ prop(tumorSizepropSd) + add(tumorSizeaddSd)
+    tumorSize ~ prop(propSd_tumorSize) + add(addSd_tumorSize)
   })
 }

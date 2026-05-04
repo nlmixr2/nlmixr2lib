@@ -148,7 +148,7 @@ Aguiar_2021_ustekinumab <- function() {
     CcpropSd <- 0.0777; label("Proportional residual error on Cc (fraction)")                          # Aguiar 2021 Table 2 final-model proportional RUV (7.77%)
 
     # Proportional only on FC.
-    fcpropSd <- 0.573;  label("Proportional residual error on FC (fraction)")                          # Aguiar 2021 Table 3 final-model proportional RUV (57.3%)
+    propSd_fc <- 0.573;  label("Proportional residual error on FC (fraction)")                          # Aguiar 2021 Table 3 final-model proportional RUV (57.3%)
   })
 
   model({
@@ -257,6 +257,6 @@ Aguiar_2021_ustekinumab <- function() {
     Cc ~ add(CcaddSd) + prop(CcpropSd)
 
     # FC follows a proportional-only error model.
-    fc ~ prop(fcpropSd)
+    fc ~ prop(propSd_fc)
   })
 }

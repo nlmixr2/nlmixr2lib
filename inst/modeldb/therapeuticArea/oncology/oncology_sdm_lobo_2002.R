@@ -12,8 +12,8 @@ oncology_sdm_lobo_2002 <- function() {
     lec50 <- log(0.1) ; label("Drug concentration reducing the cell growth by 50% (ug/mL)")
     kmax <- 0.29 ; label("Maximum drug-related reduction in cell growth (1/hr)")
 
-    tumorVolpropSd <- c(0, 0.3) ; label("Proportional residual error (fraction)")
-    tumorVoladdSd <- c(0, 50, 1000) ; label("Additive residual error (tumor volume units)")
+    propSd_tumorVol <- c(0, 0.3) ; label("Proportional residual error (fraction)")
+    addSd_tumorVol <- c(0, 50, 1000) ; label("Additive residual error (tumor volume units)")
   })
   model({
     # Cc is the drug concentration
@@ -29,6 +29,6 @@ oncology_sdm_lobo_2002 <- function() {
     d/dt(transit2) <- (transit1 - transit2)/tau
     d/dt(transit3) <- (transit2 - transit3)/tau
     d/dt(transit4) <- (transit3 - transit4)/tau
-    tumorVol ~ prop(tumorVolpropSd) + add(tumorVoladdSd)
+    tumorVol ~ prop(propSd_tumorVol) + add(addSd_tumorVol)
   })
 }

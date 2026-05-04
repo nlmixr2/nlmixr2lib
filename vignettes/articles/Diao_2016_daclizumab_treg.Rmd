@@ -66,8 +66,8 @@ The typical baseline Treg percentage among CD4+ T cells is 12.1%
 | `treggamma` (Hill coefficient, fixed structurally) | 2 (unitless)           | Diao 2016 Table 5 (no SE / CI labelled) |
 | `ltregEmax` (max fractional reduction)           | 0.610                    | Diao 2016 Table 5 |
 | `etaltregEmax` (Emax IIV)                        | omega^2 0.01431 (CV 12%) | Diao 2016 Table 5 |
-| `tregpropSd` (proportional residual error)       | 0.501 (CV 50.1%)         | Diao 2016 Table 5 |
-| `tregaddSd` (additive residual error)            | 0.416 percentage points  | Diao 2016 Table 5 |
+| `propSd_treg` (proportional residual error)      | 0.501 (CV 50.1%)         | Diao 2016 Table 5 |
+| `addSd_treg` (additive residual error)           | 0.416 percentage points  | Diao 2016 Table 5 |
 | Equation 3: `Treg = E0 * (1 - Emax * Cc^gamma / (Cc^gamma + IC50^gamma))` | n/a | Diao 2016 Equation (3) |
 
 # Virtual cohort
@@ -290,7 +290,7 @@ paper errata. Two model-relevant ambiguities are documented:
   The Treg measurement scale is "% of CD4+ T cells" (per Table 5
   baseline row), so the additive residual error is interpreted here as
   0.416 percentage points; the proportional component (50.1%) is taken
-  as a CV on the same scale (`tregpropSd <- 0.501`).
+  as a CV on the same scale (`propSd_treg <- 0.501`).
 
 # Assumptions and deviations
 

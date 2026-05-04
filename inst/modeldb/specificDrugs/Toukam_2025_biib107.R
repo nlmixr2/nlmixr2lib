@@ -96,7 +96,7 @@ Toukam_2025_biib107 <- function() {
     # PD residual error. Toukam 2025 Table 4 reports separate additive
     # error terms for SC (15.8%) and IV (7.93%) administration. The SC
     # value is used here for the single output.
-    a4sataddSd <- 15.8; label("Additive residual error on alpha-4 integrin saturation (%, SC value)")  # Toukam 2025 Table 4
+    addSd_a4sat <- 15.8; label("Additive residual error on alpha-4 integrin saturation (%, SC value)")  # Toukam 2025 Table 4
   })
 
   model({
@@ -148,6 +148,6 @@ Toukam_2025_biib107 <- function() {
     # Observation and residual-error models.
     # ------------------------------------------------------------------
     Cc    ~ add(CcaddSd)
-    a4sat ~ add(a4sataddSd)
+    a4sat ~ add(addSd_a4sat)
   })
 }

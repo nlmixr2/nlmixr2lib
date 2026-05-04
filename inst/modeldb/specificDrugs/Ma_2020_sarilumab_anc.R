@@ -123,7 +123,7 @@ Ma_2020_sarilumab_anc <- function() {
     # proportional error of sqrt(0.395) = 0.6285 in linear space.
     CcpropSd  <- 0.6285; label("Proportional residual error on sarilumab concentration (fraction)")   # Xu 2019 Table 3
     # PD: Ma 2020 Table 4 reports a proportional residual error of 28.2%.
-    ANCpropSd <- 0.282;  label("Proportional residual error on ANC (fraction)")                      # Ma 2020 Table 4
+    propSd_ANC <- 0.282;  label("Proportional residual error on ANC (fraction)")                      # Ma 2020 Table 4
   })
 
   model({
@@ -173,6 +173,6 @@ Ma_2020_sarilumab_anc <- function() {
     ANC <- effect
 
     Cc  ~ prop(CcpropSd)
-    ANC ~ prop(ANCpropSd)
+    ANC ~ prop(propSd_ANC)
   })
 }

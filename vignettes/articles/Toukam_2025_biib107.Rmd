@@ -65,7 +65,7 @@ The same population information is available programmatically via `readModelDb("
 | EC50 = 0.376 ug/mL | `la4satEC50` | Toukam 2025 Table 4 |
 | Hill gamma = 1 (FIXED) | `a4satGamma` (FIXED) | Toukam 2025 Results "Base PD Model Development" |
 | IIV EC50 10% CV | `etala4satEC50` (omega^2 = 0.00995) | Toukam 2025 Table 4 |
-| Additive PD residual error 15.8% (SC) | `a4sataddSd` | Toukam 2025 Table 4 |
+| Additive PD residual error 15.8% (SC) | `addSd_a4sat` | Toukam 2025 Table 4 |
 
 # Errata
 
