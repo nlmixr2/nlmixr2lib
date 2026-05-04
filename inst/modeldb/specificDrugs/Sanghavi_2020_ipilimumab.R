@@ -101,8 +101,8 @@ Sanghavi_2020_ipilimumab <- function() {
 
     # Allometric exponents on baseline body weight (reference 80 kg).
     # CL_BBWT applies to both CL and Q; V_BBWT applies to both VC and VP.
-    e_wt_cl <- 0.694;             label("Power exponent of WT on CL and Q (unitless)")              # Sanghavi 2020 Table 2: CL_BBWT
-    e_wt_v  <- 0.600;             label("Power exponent of WT on VC and VP (unitless)")             # Sanghavi 2020 Table 2: V_BBWT
+    e_wt_cl_q  <- 0.694;          label("Shared power exponent of WT on CL and Q (unitless)")       # Sanghavi 2020 Table 2: CL_BBWT
+    e_wt_vc_vp <- 0.600;          label("Shared power exponent of WT on Vc and Vp (unitless)")      # Sanghavi 2020 Table 2: V_BBWT
 
     # Power exponent on the ratio of logs: (log(LDH)/log(217))^e_logldh_cl.
     # This is a literal reading of the Sanghavi 2020 final-model equation
@@ -155,7 +155,7 @@ Sanghavi_2020_ipilimumab <- function() {
     # Note the BLDH term raises a ratio of logs to a power (literal source
     # form), not the conventional (BLDH/ref)^theta.
     cl0 <- exp(lcl + etalcl) *
-      (WT / 80)^e_wt_cl *
+      (WT / 80)^e_wt_cl_q *
       (log(LDH) / log(217))^e_logldh_cl *
       exp(e_sclc_cl  * TUMTP_SCLC) *
       exp(e_line_cl  * LINE_1L) *
@@ -164,9 +164,9 @@ Sanghavi_2020_ipilimumab <- function() {
 
     # Volumes and Q with allometric scaling (BBWT exponents shared:
     # CL and Q use CL_BBWT; VC and VP use V_BBWT).
-    vc <- exp(lvc + etalvc) * (WT / 80)^e_wt_v
-    q  <- exp(lq)           * (WT / 80)^e_wt_cl
-    vp <- exp(lvp)          * (WT / 80)^e_wt_v
+    vc <- exp(lvc + etalvc) * (WT / 80)^e_wt_vc_vp
+    q  <- exp(lq)           * (WT / 80)^e_wt_cl_q
+    vp <- exp(lvp)          * (WT / 80)^e_wt_vc_vp
 
     # Individual Emax: monotherapy reference (Emax) + additive combo
     # offset for any-regimen nivolumab + additive normal eta.
