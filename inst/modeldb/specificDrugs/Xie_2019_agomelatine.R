@@ -25,7 +25,7 @@ Xie_2019_agomelatine <- function () {
       units              = "(binary)",
       type               = "binary",
       reference_category = "Not applicable; ooc1..ooc4 are a mutually exclusive set (exactly one is 1 per observation)",
-      notes              = "Lower-case name preserved from source per covariate-columns.md register. Used to select the period-specific IOV eta across k13, alag2, k23, clint, and the logit-fraction partitioning absorption between DEPOT1 and DEPOT2.",
+      notes              = "Lower-case name preserved from source per covariate-columns.md register. Used to select the period-specific IOV eta across k13, alag2, k23, clint, and the logit-fraction partitioning absorption between depot and depot2.",
       source_name        = "ooc1"
     ),
     ooc2 = list(
@@ -77,7 +77,7 @@ Xie_2019_agomelatine <- function () {
     lBA4 <- log(exp(-3.95)); label("BA4") # log(exp()) so that the original parameter value is maintained in the ini block
     ltvcl3oh <- log(44.9); label("CL3OH (L/h)")
     ltvcl7dm <- log(52.9); label("CL7DM (L/h)")
-    ltvalag1 <- log(0.185); label("ALAG1 (h)")
+    ltvalag <- log(0.185); label("ALAG1 (h)")
     ltvk23 <- log(4.23); label("K23 (1/h)")
     ltvalag2 <- log(0.305); label("ALAG2 (h)")
     F1 <- 0.681; label("F1")
@@ -85,9 +85,9 @@ Xie_2019_agomelatine <- function () {
     lvv7dm <- log(536); label("V7DM (L)")
     lvqalmt <- log(4.36); label("QALMT (L/h)")
     lvvalmt <- log(157); label("VALMT (L)")
-    sdalmt <- 0.39; label("Residual standard deviation of agomelatine (log-scale, additive error)")
-    sd3oh <- 0.228; label("Residual standard deviation of 3-hydroxy-agomelatine (log-scale, additive error)")
-    sd7dm <- 0.297; label("SD7DM")
+    addSd_lcalmt <- 0.39;  label("Additive residual SD of log-agomelatine plasma concentration (log-ng/mL)")
+    addSd_lc3oh  <- 0.228; label("Additive residual SD of log-3-hydroxy-agomelatine plasma concentration (log-ng/mL)")
+    addSd_lc7dm  <- 0.297; label("Additive residual SD of log-7-desmethyl-agomelatine plasma concentration (log-ng/mL)")
     etaltvk13 ~ 0.101
     etaltvv4 ~ 0.0374
     etaltvclint ~ 0.998
@@ -95,7 +95,7 @@ Xie_2019_agomelatine <- function () {
     etalBA4 ~ c(0.153, 0.231)
     etaltvcl3oh ~ 0.0414
     etaltvcl7dm ~ c(0.0492, 0.0774)
-    etaltvalag1 ~ 0.0628
+    etaltvalag ~ 0.0628
     etaltvk23 ~ 3.78
     etaltvalag2 ~ 3.3
     etaF1 ~ 0.526
@@ -103,44 +103,49 @@ Xie_2019_agomelatine <- function () {
     etalvv7dm ~ fix(0.001)
     etalvqalmt ~ 1.46
     etalvvalmt ~ fix(0.001)
-    e.IOV1 ~ 1.52
-    eta17 ~ fix(1.52)
-    eta18 ~ fix(1.52)
-    eta19 ~ fix(1.52)
-    e.IOV2 ~ 4.32
-    eta21 ~ fix(4.32)
-    eta22 ~ fix(4.32)
-    eta23 ~ fix(4.32)
-    e.IOV3 ~ 5.01
-    eta25 ~ fix(5.01)
-    eta26 ~ fix(5.01)
-    eta27 ~ fix(5.01)
-    e.IOV4 ~ 0.0779
-    eta29 ~ fix(0.0779)
-    eta30 ~ fix(0.0779)
-    eta31 ~ fix(0.0779)
-    e.IOV5 ~ 2.32
-    eta33 ~ fix(2.32)
-    eta34 ~ fix(2.32)
-    eta35 ~ fix(2.32)
+    # Inter-occasion variability (IOV). Each chain is a single estimated
+    # variance (occasion 1) propagated as fix(...) through occasions 2-4 so
+    # the four occasions share a common between-occasion variance. The eta
+    # name encodes which structural parameter the IOV applies to and the
+    # occasion index: etaiov_<param>_<occ>.
+    etaiov_k13_1 ~ 1.52
+    etaiov_k13_2 ~ fix(1.52)
+    etaiov_k13_3 ~ fix(1.52)
+    etaiov_k13_4 ~ fix(1.52)
+    etaiov_alag2_1 ~ 4.32
+    etaiov_alag2_2 ~ fix(4.32)
+    etaiov_alag2_3 ~ fix(4.32)
+    etaiov_alag2_4 ~ fix(4.32)
+    etaiov_k23_1 ~ 5.01
+    etaiov_k23_2 ~ fix(5.01)
+    etaiov_k23_3 ~ fix(5.01)
+    etaiov_k23_4 ~ fix(5.01)
+    etaiov_clint_1 ~ 0.0779
+    etaiov_clint_2 ~ fix(0.0779)
+    etaiov_clint_3 ~ fix(0.0779)
+    etaiov_clint_4 ~ fix(0.0779)
+    etaiov_F1_1 ~ 2.32
+    etaiov_F1_2 ~ fix(2.32)
+    etaiov_F1_3 ~ fix(2.32)
+    etaiov_F1_4 ~ fix(2.32)
   })
   model({
-    iov1 <- ooc1 * e.IOV1 + ooc2 * eta17 + ooc3 * eta18 + ooc4 * eta19
-    iov2 <- ooc1 * e.IOV2 + ooc2 * eta21 + ooc3 * eta22 + ooc4 * eta23
-    iov3 <- ooc1 * e.IOV3 + ooc2 * eta25 + ooc3 * eta26 + ooc4 * eta27
-    iov4 <- ooc1 * e.IOV4 + ooc2 * eta29 + ooc3 * eta30 + ooc4 * eta31
-    iov5 <- ooc1 * e.IOV5 + ooc2 * eta33 + ooc3 * eta34 + ooc4 * eta35
+    iov_k13   <- ooc1 * etaiov_k13_1   + ooc2 * etaiov_k13_2   + ooc3 * etaiov_k13_3   + ooc4 * etaiov_k13_4
+    iov_alag2 <- ooc1 * etaiov_alag2_1 + ooc2 * etaiov_alag2_2 + ooc3 * etaiov_alag2_3 + ooc4 * etaiov_alag2_4
+    iov_k23   <- ooc1 * etaiov_k23_1   + ooc2 * etaiov_k23_2   + ooc3 * etaiov_k23_3   + ooc4 * etaiov_k23_4
+    iov_clint <- ooc1 * etaiov_clint_1 + ooc2 * etaiov_clint_2 + ooc3 * etaiov_clint_3 + ooc4 * etaiov_clint_4
+    iov_F1    <- ooc1 * etaiov_F1_1    + ooc2 * etaiov_F1_2    + ooc3 * etaiov_F1_3    + ooc4 * etaiov_F1_4
 
-    k13 <- exp(ltvk13 + etaltvk13) * exp(iov1)
+    k13 <- exp(ltvk13 + etaltvk13) * exp(iov_k13)
     v4 <- exp(ltvv4 + etaltvv4)
-    clint <- exp(ltvclint + etaltvclint + iov4)
-    alag1 <- exp(ltvalag1 + etaltvalag1)
-    k23 <- exp(ltvk23 + etaltvk23) * exp(iov3)
-    alag2 <- exp(ltvalag2 + etaltvalag2 + iov2)
+    clint <- exp(ltvclint + etaltvclint + iov_clint)
+    alag_depot <- exp(ltvalag + etaltvalag)
+    k23 <- exp(ltvk23 + etaltvk23) * exp(iov_k23)
+    alag_depot2 <- exp(ltvalag2 + etaltvalag2 + iov_alag2)
 
     expp <- log(F1/(1 - F1)) + etaF1
-    fDepot1 <- exp(expp + iov5)/(1 + exp(expp + iov5))
-    fDepot2 <- 1 - fDepot1
+    fDepot <- exp(expp + iov_F1)/(1 + exp(expp + iov_F1))
+    fDepot2 <- 1 - fDepot
     lv <- 0.05012 * WT^0.78
     v3 <- lv
     pbr <- 1/0.69
@@ -165,38 +170,38 @@ Xie_2019_agomelatine <- function () {
     v5 <- v4
     v6 <- v4
 
-    d/dt(DEPOT1) <- -k13 * DEPOT1
-    d/dt(DEPOT2) <- -k23 * DEPOT2
-    d/dt(LIVER) <- k13 * DEPOT1 + k23 * DEPOT2 - qh * fh * LIVER/v3 + qh * CENTPRNT/v4 - clh * LIVER/v3
-    d/dt(CENTPRNT) <- qh * fh * LIVER/v3 - qh * CENTPRNT/v4 - CENTPRNT * qalmt/v4 + ALMTPERI * qalmt/valmt
-    d/dt(METB3OH) <- fm3oh * clh * LIVER/v3 * mpr1 - METB3OH * cl3oh/v5
-    d/dt(METB7DM) <- fm7dm * clh * LIVER/v3 * mpr2 - METB7DM * cl7dm/v6 - METB7DM * q7dm/v6 + METB7DMPERI * q7dm/v7dm
-    d/dt(METB7DMPERI) <- METB7DM * q7dm/v6 - METB7DMPERI * q7dm/v7dm
-    d/dt(ALMTPERI) <- CENTPRNT * qalmt/v4 - ALMTPERI * qalmt/valmt
+    d/dt(depot)           <- -k13 * depot
+    d/dt(depot2)          <- -k23 * depot2
+    d/dt(liver)           <- k13 * depot + k23 * depot2 - qh * fh * liver/v3 + qh * central/v4 - clh * liver/v3
+    d/dt(central)         <- qh * fh * liver/v3 - qh * central/v4 - central * qalmt/v4 + peripheral1 * qalmt/valmt
+    d/dt(central_3oh)     <- fm3oh * clh * liver/v3 * mpr1 - central_3oh * cl3oh/v5
+    d/dt(central_7dm)     <- fm7dm * clh * liver/v3 * mpr2 - central_7dm * cl7dm/v6 - central_7dm * q7dm/v6 + peripheral1_7dm * q7dm/v7dm
+    d/dt(peripheral1_7dm) <- central_7dm * q7dm/v6 - peripheral1_7dm * q7dm/v7dm
+    d/dt(peripheral1)     <- central * qalmt/v4 - peripheral1 * qalmt/valmt
 
-    alag(DEPOT1) <- alag1
-    alag(DEPOT2) <- alag2
-    f(DEPOT1) <- fDepot1
-    f(DEPOT2) <- fDepot2
+    alag(depot)  <- alag_depot
+    alag(depot2) <- alag_depot2
+    f(depot)     <- fDepot
+    f(depot2)    <- fDepot2
 
     # Concentration of agomelatine in plasma. The unit conversion of *1000 was
     # not in the original model. It is used to allow dosing units to be in mg and
-    calmt <- CENTPRNT/v4 * 1000
+    calmt <- central/v4 * 1000
     lcalmt <- log(calmt)
     # Concentration of 3-hydroxy-agomelatine in plasma. The unit conversion of *1000 was
     # not in the original model. It is used to allow dosing units to be in mg and
-    c3oh <- METB3OH/v5 * 1000
+    c3oh <- central_3oh/v5 * 1000
     lc3oh <- log(c3oh)
     # Concentration of 7-desmethyl-agomelatine in plasma. The unit conversion of *1000 was
     # not in the original model. It is used to allow dosing units to be in mg and
-    c7dm <- METB7DM/v6 * 1000
+    c7dm <- central_7dm/v6 * 1000
     lc7dm <- log(c7dm)
 
     lloqalmt <- log(0.0457)
     lloq7dm <- log(0.1372)
 
-    lcalmt ~ add(sdalmt)
-    lc3oh ~ add(sd3oh)
-    lc7dm ~ add(sd7dm)
+    lcalmt ~ add(addSd_lcalmt)
+    lc3oh  ~ add(addSd_lc3oh)
+    lc7dm  ~ add(addSd_lc7dm)
   })
 }

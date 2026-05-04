@@ -23,14 +23,18 @@
   ),
   compartments = c(
     "depot", "central", "peripheral1", "peripheral2", "effect",
-    "target", "complex", "total_target"
+    "target", "complex", "total_target",
+    # Semi-physiological liver compartment used by paper-specific
+    # extraction-ratio first-pass models (Xie_2019_agomelatine).
+    "liver"
   ),
-  # Bare numbered chains (transit / effect / precursor / lat / dar) and
-  # metabolite-suffixed compartments are validated separately via
-  # .matchesCompartment() so that the registered metabolite list can be
-  # honored at runtime; this static regex covers only the numbered-chain
-  # patterns.
-  compartmentRegex = "^(transit|effect|precursor|lat)[0-9]+$",
+  # Bare numbered chains (transit / effect / precursor / lat / dar /
+  # depot) and metabolite-suffixed compartments are validated
+  # separately via .matchesCompartment() so that the registered
+  # metabolite list can be honored at runtime; this static regex
+  # covers only the numbered-chain patterns. `depot[0-9]+` accommodates
+  # parallel-absorption models with two or more depots.
+  compartmentRegex = "^(transit|effect|precursor|lat|depot)[0-9]+$",
   darCompartmentRegex = "^dar[0-9]+_(central|peripheral[0-9]?)$",
   observationVar = "Cc",
   residualError = c("propSd", "addSd"),
@@ -52,7 +56,12 @@
   registeredMetabolites = c(
     "mmae", "dxd", "sn38", "dm4", "medm4", "mcmmaf",
     "complex", "ige", "tab", "nab",
-    "dar0", "dar1", "dar2", "dar3", "dar4", "dar5", "dar6", "dar7", "dar8"
+    "dar0", "dar1", "dar2", "dar3", "dar4", "dar5", "dar6", "dar7", "dar8",
+    # Small-molecule metabolites of agomelatine (Xie 2019): 3-hydroxy
+    # and 7-desmethyl. Suffixes start with a digit; this is fine
+    # because the convention check matches on `endsWith(name, "_<metab>")`
+    # rather than treating the metabolite name itself as an R identifier.
+    "3oh", "7dm"
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` denotes the time-varying decay arm.

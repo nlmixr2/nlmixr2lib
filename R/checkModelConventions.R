@@ -255,6 +255,26 @@ checkModelConventions <- function(model, verbose = TRUE) {
   all(matches)
 }
 
+# Recognize an inter-occasion-variability (IOV) eta suffix of the form
+# `iov_<param>_<occ>` where `<param>` corresponds to an existing
+# fixed-effect parameter (matched as the bare token `<param>`, with the
+# canonical log prefix `l<param>`, or with the typical-value prefixes
+# `ltv<param>` / `lv<param>`) and `<occ>` is a positive integer occasion
+# index. Used to accept names like `etaiov_k13_1` (a single IOV eta on
+# `k13` for occasion 1) without flagging them as missing a structural
+# pair.
+.isIOVEtaSuffix <- function(suffix, fixed_names) {
+  if (!startsWith(suffix, "iov_")) return(FALSE)
+  rest <- substr(suffix, 5L, nchar(suffix))
+  m <- regmatches(rest, regexec("^(.+)_([0-9]+)$", rest))[[1]]
+  if (length(m) != 3L) return(FALSE)
+  param <- m[[2L]]
+  param %in% fixed_names ||
+    paste0("l",   param) %in% fixed_names ||
+    paste0("ltv", param) %in% fixed_names ||
+    paste0("lv",  param) %in% fixed_names
+}
+
 .classifyParam <- function(name, conv) {
   if (.isPkParam(name, conv)) return("canonical_pk")
   if (grepl(conv$covEffectPattern, name) && startsWith(name, "e_")) {
@@ -317,6 +337,11 @@ checkModelConventions <- function(model, verbose = TRUE) {
         # is accepted when every "_"-separated token matches an existing
         # fixed-effect parameter (with an optional leading "l" prefix).
         # No issue is emitted.
+      } else if (.isIOVEtaSuffix(suffix, fixed$name)) {
+        # Inter-occasion variability eta of the form
+        # etaiov_<param>_<occ> where <param> is an existing fixed-effect
+        # parameter (with optional l/ltv/lv log-prefix) and <occ> is a
+        # positive integer occasion index. No issue is emitted.
       } else {
         issues <- rbind(issues, .issue(
           "parameter_naming", "warning", nm,

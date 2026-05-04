@@ -42,7 +42,7 @@ d_sim_dosing <-
     EVID = 1,
     AMT = 25, # mg
     TIME = 0,
-    CMT = c("DEPOT1", "DEPOT2")
+    CMT = c("depot", "depot2")
   )
 d_sim_obs <-
   data.frame(
