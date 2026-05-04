@@ -72,8 +72,8 @@ Narwal_2013_sifalimumab <- function() {
     e_steroid_cl  <- 0.195;  label("Fractional change in CL for baseline steroid users (unitless)")       # Narwal 2013 Table 2: theta8
 
     # Covariate effects on volumes (Eqs. 4-5)
-    e_wt_v1       <- 0.489;  label("Body-weight exponent on V1 (unitless)")                               # Narwal 2013 Table 2: theta9
-    e_wt_v2       <- 0.646;  label("Body-weight exponent on V2 (unitless)")                               # Narwal 2013 Table 2: theta10
+    e_wt_vc       <- 0.489;  label("Body-weight exponent on Vc (unitless)")                               # Narwal 2013 Table 2: theta9
+    e_wt_vp       <- 0.646;  label("Body-weight exponent on Vp (unitless)")                               # Narwal 2013 Table 2: theta10
 
     # Inter-individual variability. CL, V1, V2 form a 3x3 log-normal block with
     # correlations CL-V1 = 0.557 and V1-V2 = 0.131 (Narwal 2013 Table 2).
@@ -104,8 +104,8 @@ Narwal_2013_sifalimumab <- function() {
       (BGENE21 / 32)^e_bgene21_cl *
       (COHDOSE / 1)^e_cohdose_cl *
       (1 + e_steroid_cl * STEROID)
-    vc <- exp(lvc + etalvc) * (WT / 75)^e_wt_v1
-    vp <- exp(lvp + etalvp) * (WT / 75)^e_wt_v2
+    vc <- exp(lvc + etalvc) * (WT / 75)^e_wt_vc
+    vp <- exp(lvp + etalvp) * (WT / 75)^e_wt_vp
     q  <- exp(lq  + etalq)
 
     # Two-compartment micro-constants
