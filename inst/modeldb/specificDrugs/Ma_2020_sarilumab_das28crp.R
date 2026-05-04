@@ -91,7 +91,7 @@ Ma_2020_sarilumab_das28crp <- function() {
     lvc <- log(2.08);  label("Apparent central volume Vc/F (L)")                          # Xu 2019 Table 3, Vc/F row
     lvp <- log(5.23);  label("Apparent peripheral volume Vp/F (L)")                       # Xu 2019 Table 3, Vp/F row
     lq  <- log(0.156); label("Apparent intercompartmental clearance Q/F (L/day)")         # Xu 2019 Table 3, Q/F row
-    lvm <- log(8.06);  label("Maximum Michaelis-Menten elimination rate Vm (mg/day)")     # Xu 2019 Table 3, Vm row
+    lvmax <- log(8.06);  label("Maximum Michaelis-Menten elimination rate Vmax (mg/day)") # Xu 2019 Table 3, Vm row
     lkm <- log(0.939); label("Michaelis-Menten constant Km (mg/L)")                       # Xu 2019 Table 3, Km row
 
     # --------------------------------------------------------------------------
@@ -127,7 +127,7 @@ Ma_2020_sarilumab_das28crp <- function() {
     #   Ka   CV 32.1% -> omega^2 = log(0.321^2 + 1) = 0.0981
     #   Vm-CLO/F correlation -0.566 -> cov = -0.566 * sqrt(0.0998 * 0.2669) = -0.0924
     # --------------------------------------------------------------------------
-    etalvm + etalcl ~ c(0.0998, -0.0924, 0.2669)  # Xu 2019 Table 3: Vm IIV 32.4% CV, CLO/F IIV 55.3% CV, Vm-CLO/F correlation -0.566
+    etalvmax + etalcl ~ c(0.0998, -0.0924, 0.2669)  # Xu 2019 Table 3: Vm IIV 32.4% CV, CLO/F IIV 55.3% CV, Vm-CLO/F correlation -0.566
     etalvc ~ 0.1302                                # Xu 2019 Table 3: Vc/F IIV 37.3% CV
     etalka ~ 0.0981                                # Xu 2019 Table 3: Ka IIV 32.1% CV
 
@@ -159,7 +159,7 @@ Ma_2020_sarilumab_das28crp <- function() {
     # ------------------------------------------------------------------
     # 1. Individual PK parameters (Xu 2019 IIV only; no PK covariates).
     # ------------------------------------------------------------------
-    vm <- exp(lvm + etalvm)
+    vmax <- exp(lvmax + etalvmax)
     km <- exp(lkm)
     vc <- exp(lvc + etalvc)
     cl <- exp(lcl + etalcl)
@@ -195,7 +195,7 @@ Ma_2020_sarilumab_das28crp <- function() {
     d/dt(depot)       <- -ka * depot
     d/dt(central)     <-  ka * depot -
                           (cl / vc) * central -
-                          vm * Cc / (km + Cc) -
+                          vmax * Cc / (km + Cc) -
                           (q  / vc) * central +
                           (q  / vp) * peripheral1
     d/dt(peripheral1) <-  (q  / vc) * central - (q / vp) * peripheral1
