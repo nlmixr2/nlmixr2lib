@@ -723,10 +723,11 @@ checkModelConventions <- function(model, verbose = TRUE) {
   issues
 }
 
-# Flag bare-volume and Vmax names that have canonical replacements:
-#   Change: v / v1 / lv / lv1 -> vc / lvc
-#   Change: v2 / lv2 / v3 / lv3 -> ambiguous (vp / vp2); ask the source paper
-#   Change: vm / lvm -> vmax / lvmax
+# Flag bare-volume and Vmax names that have canonical replacements.
+# Change deprecated central-volume names "v", "v1", "lv", "lv1" to
+# "vc" or "lvc"; numbered "v2", "lv2", "v3", "lv3" are ambiguous
+# (could be vp or vp2) and must be verified against the source paper;
+# Michaelis-Menten names "vm" and "lvm" become "vmax" and "lvmax".
 .checkDeprecatedVolumeOrVmaxName <- function(nm, conv) {
   issues <- .emptyIssues()
   if (nm %in% c("v", "v1", "lv", "lv1")) {
@@ -785,11 +786,13 @@ checkModelConventions <- function(model, verbose = TRUE) {
 }
 
 # Flag covariate-effect names whose parameter token is a deprecated
-# numbered/synthesized form. Examples:
-#   Change: e_wt_v / _v1 -> e_wt_vc;  _v2 -> e_wt_vp (verify)
-#   Change: e_wt_clq -> e_wt_cl_q;  e_wt_vcvp -> e_wt_vc_vp
-#   Change: e_wt_clinf -> e_wt_cl_ss;  e_wt_clt -> e_wt_cl_time
-#   Change: e_wt_vss -> e_wt_vc_vp;  e_wt_clss -> e_wt_cl_ss
+# numbered or synthesized form. Examples of expected renames: the
+# deprecated tokens "v" and "v1" become "vc" (e.g. an effect named
+# e_wt_v should become e_wt_vc) and "v2" becomes "vp" (verify against
+# the source paper); the run-together tokens "clq" and "vcvp" become
+# "cl_q" and "vc_vp" with an underscore separator; "clinf" and "clt"
+# become "cl_ss" and "cl_time" respectively; and "vss" and "clss"
+# become "vc_vp" and "cl_ss".
 .checkDeprecatedCovEffectSuffix <- function(nm, conv) {
   issues <- .emptyIssues()
   if (!startsWith(nm, "e_")) return(issues)
