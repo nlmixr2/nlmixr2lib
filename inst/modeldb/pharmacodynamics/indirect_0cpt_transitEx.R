@@ -14,8 +14,8 @@ indirect_0cpt_transitEx <- function() {
     lktr8 <- c(0, 0.05);  label("Transit rate constant 8 (log-scale)")
     lktr9 <- c(0, 0.05);  label("Transit rate constant 9 (log-scale)")
     lktr10 <- c(0, 0.05); label("Transit rate constant 10 (log-scale)")
-    lvm <- 0.04
-    label("maximum target-mediated rate of elimination (mg/L/d)")
+    lvmax <- 0.04
+    label("Maximum target-mediated rate of elimination Vmax (mg/L/d)")
     lkm <- 0.01
     label("Michaelis-Menten constant (mg/L)")
     lvc <- 3
@@ -40,8 +40,8 @@ indirect_0cpt_transitEx <- function() {
     ktr8 <- exp(lktr8)
     ktr9 <- exp(lktr9)
     ktr10 <- exp(lktr10)
-    km <- exp(lkm)
-    vm <- exp(lvm)
+    km   <- exp(lkm)
+    vmax <- exp(lvmax)
     vc <- exp(lvc)
     vp <- exp(lvp)
     q <- exp(lq)
@@ -58,7 +58,7 @@ indirect_0cpt_transitEx <- function() {
     d/dt(transit8) <- ktr7 * transit7 - ktr8 * transit8
     d/dt(transit9) <- ktr8 * transit8 - ktr9 * transit9
     d/dt(transit10) <- ktr9 * transit9 - ktr10 * transit10
-    d/dt(central) <- ktr10 * transit10 - (vm/(km + central/vc)) * 
+    d/dt(central) <- ktr10 * transit10 - (vmax/(km + central/vc)) *
       central - k12 * central + k21 * peripheral1
     d/dt(peripheral1) <- k12 * central - k21 * peripheral1
     Cc <- central/vc
