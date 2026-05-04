@@ -83,18 +83,18 @@ table below collects them in one place.
 | Parameter (model name)            | Value      | Source                                           |
 |-----------------------------------|------------|--------------------------------------------------|
 | `lcl` (CLpop, L/day)              | log(0.200) | Papachristos 2020 Table 1, CLpop                 |
-| `lv1` (V1pop, L)                  | log(3.09)  | Papachristos 2020 Table 1, V1pop                 |
+| `lvc` (V1pop, L)                  | log(3.09)  | Papachristos 2020 Table 1, V1pop                 |
 | `lq`  (Qpop, L/day)               | log(0.35)  | Papachristos 2020 Table 1, Qpop                  |
-| `lv2` (V2pop, L)                  | log(2.39)  | Papachristos 2020 Table 1, V2pop                 |
-| `allo_cl` (allometric exponent)   | 1.04       | Papachristos 2020 Table 1, "log(weight/70) on CL" |
+| `lvp` (V2pop, L)                  | log(2.39)  | Papachristos 2020 Table 1, V2pop                 |
+| `e_wt_cl` (allometric exponent)   | 1.04       | Papachristos 2020 Table 1, "log(weight/70) on CL" |
 | `e_icam1_rs1799969_cl`            | -0.423     | Papachristos 2020 Table 1, "ICAM-1 rs1799969 mutant on CL" |
 | `e_vegfa_rs1570360_q`             | +0.378     | Papachristos 2020 Table 1, "VEGF-A rs1570360 mutant on Q"  |
 | `e_vegfa_rs699947_q`              | -0.429     | Papachristos 2020 Table 1, "VEGF-A rs699947 mutant on Q"   |
 | `etalcl` variance                 | 0.10176    | Papachristos 2020 Table 1, ω_CL = 0.319 (var = SD²)        |
 | `etalq` variance                  | 0.02560    | Papachristos 2020 Table 1, ω_Q = 0.160                     |
 | `cov(etalcl, etalq)`              | -0.05099   | Papachristos 2020 Table 1, ρ(Q,CL) = -0.999 × 0.319 × 0.160 |
-| `etalv1` variance                 | 0.03028    | Papachristos 2020 Table 1, ω_V1 = 0.174                    |
-| `etalv2` variance                 | 0.45698    | Papachristos 2020 Table 1, ω_V2 = 0.676                    |
+| `etalvc` variance                 | 0.03028    | Papachristos 2020 Table 1, ω_V1 = 0.174                    |
+| `etalvp` variance                 | 0.45698    | Papachristos 2020 Table 1, ω_V2 = 0.676                    |
 | `propSd`                          | 0.246      | Papachristos 2020 Table 1, σ_prop                          |
 
 Equations (paper section 2.2):

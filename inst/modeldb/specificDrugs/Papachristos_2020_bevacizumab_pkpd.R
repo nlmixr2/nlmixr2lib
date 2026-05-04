@@ -51,9 +51,9 @@ Papachristos_2020_bevacizumab_pkpd <- function() {
   ini({
     # Structural PK parameters (reference 70 kg adult, all SNPs wild-type)
     lcl <- log(0.388); label("Clearance for a 70 kg wild-type adult (CL, L/day)")  # Table 3 row CLpop
-    lv1 <- log(5.48);  label("Central volume of distribution (V1, L)")              # Table 3 row V1pop
+    lvc <- log(5.48);  label("Central volume of distribution (V1, L)")              # Table 3 row V1pop
     lq  <- log(0.315); label("Inter-compartmental clearance (Q, L/day)")            # Table 3 row Qpop
-    lv2 <- log(8.81);  label("Peripheral volume of distribution (V2, L)")           # Table 3 row V2(L)
+    lvp <- log(8.81);  label("Peripheral volume of distribution (V2, L)")           # Table 3 row V2(L)
 
     # PD parameters (immediate-response Imax model on free VEGF-A)
     le0    <- log(684);   label("Baseline free VEGF-A concentration for a wild-type adult (E0, ng/L)")  # Table 3 row E0pop
@@ -61,7 +61,7 @@ Papachristos_2020_bevacizumab_pkpd <- function() {
     lic50  <- log(29.1);  label("Bevacizumab concentration producing 50% Imax (IC50, mg/L)")           # Table 3 row IC50pop
 
     # Allometric / SNP covariate effects on log-CL
-    allo_cl <- 0.78;  label("Allometric exponent on CL for log(WT/70) (unitless)")  # Table 3 row "log(weight/70) on CL"
+    e_wt_cl <- 0.78;  label("Allometric exponent on CL for log(WT/70) (unitless)")  # Table 3 row "log(weight/70) on CL"
     e_icam1_rs1799969_cl <- -0.423; label("ICAM-1 rs1799969 mutant effect on log-CL (unitless)")  # Table 3 row "ICAM-1 rs1799969 mutant on CL"
 
     # SNP effect on Q (Table 3 value; the section-2.4 text gives "exp(0.378)" but that is a
@@ -73,8 +73,8 @@ Papachristos_2020_bevacizumab_pkpd <- function() {
     # IIV (exponential model; correlation rho(CL,Q) = -0.979 -> cov = -0.979 * 0.338 * 0.601 = -0.19891)
     etalcl + etalq ~ c(0.11424,
                        -0.19891, 0.36120)  # Table 3 omega_CL = 0.338, omega_Q = 0.601, p(Q,CL) = -0.979
-    etalv1 ~ 0.03098  # Table 3 omega_V1 = 0.176
-    etalv2 ~ 0.33524  # Table 3 omega_V2 = 0.579
+    etalvc ~ 0.03098  # Table 3 omega_V1 = 0.176
+    etalvp ~ 0.33524  # Table 3 omega_V2 = 0.579
     etale0 ~ 0.02789  # Table 3 omega_E0 = 0.167
 
     # Residual error (proportional, two outputs)
@@ -83,10 +83,10 @@ Papachristos_2020_bevacizumab_pkpd <- function() {
   })
   model({
     # Individual PK parameters (paper formulas, sec. 2.4)
-    cl  <- exp(lcl + allo_cl * log(WT / 70) + e_icam1_rs1799969_cl * SNP_ICAM1_RS1799969 + etalcl)
-    v1  <- exp(lv1 + etalv1)
+    cl  <- exp(lcl + e_wt_cl * log(WT / 70) + e_icam1_rs1799969_cl * SNP_ICAM1_RS1799969 + etalcl)
+    vc  <- exp(lvc + etalvc)
     q   <- exp(lq + e_vegfa_rs699947_q * SNP_VEGFA_RS699947 + etalq)
-    v2  <- exp(lv2 + etalv2)
+    vp  <- exp(lvp + etalvp)
 
     # Individual PD parameters
     e0  <- exp(le0 + etale0)
@@ -94,15 +94,15 @@ Papachristos_2020_bevacizumab_pkpd <- function() {
     imax <- imaxv
 
     # Two-compartment linear PK with IV-infusion dosing into central
-    kel <- cl / v1
-    k12 <- q  / v1
-    k21 <- q  / v2
+    kel <- cl / vc
+    k12 <- q  / vc
+    k21 <- q  / vp
 
     d/dt(central)     <- -kel * central - k12 * central + k21 * peripheral1
     d/dt(peripheral1) <-                   k12 * central - k21 * peripheral1
 
-    # Bevacizumab observation: dose in mg, V1 in L -> mg/L
-    Cc <- central / v1
+    # Bevacizumab observation: dose in mg, Vc in L -> mg/L
+    Cc <- central / vc
     Cc ~ prop(CcpropSd)
 
     # Free VEGF-A observation: immediate-response Imax inhibition (no sigmoidicity)

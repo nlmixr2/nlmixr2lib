@@ -51,9 +51,9 @@ Papachristos_2020_bevacizumab_qss <- function() {
   ini({
     # Structural PK parameters (reference 70 kg adult, all SNPs wild-type)
     lcl   <- log(0.344);  label("Linear clearance of free bevacizumab for a 70 kg wild-type adult (CL, L/day)")  # Table 2 row CL
-    lv1   <- log(5.83);   label("Central volume of distribution (V1, L)")                                          # Table 2 row V1pop
+    lvc   <- log(5.83);   label("Central volume of distribution (V1, L)")                                          # Table 2 row V1pop
     lq    <- log(0.136);  label("Inter-compartmental clearance (Q, L/day)")                                        # Table 2 row Qpop
-    lv2   <- log(3.17);   label("Peripheral volume of distribution (V2, L)")                                       # Table 2 row V2pop
+    lvp   <- log(3.17);   label("Peripheral volume of distribution (V2, L)")                                       # Table 2 row V2pop
 
     # Target turnover (free VEGF-A)
     lkout <- log(0.116);  label("First-order elimination rate constant of free VEGF-A (kout, 1/day)")              # Table 2 row Koutpop
@@ -63,7 +63,7 @@ Papachristos_2020_bevacizumab_qss <- function() {
     lkss  <- log(135);    label("Quasi-steady-state dissociation constant for bevacizumab-VEGF-A binding (Kss, nM)")  # Table 2 row KSSpop
 
     # Allometric / SNP covariate effects on log-CL
-    allo_cl <- 1.01;  label("Allometric exponent on CL for log(WT/70) (unitless)")                                 # Table 2 row "log(weight/70) on CL"
+    e_wt_cl <- 1.01;  label("Allometric exponent on CL for log(WT/70) (unitless)")                                 # Table 2 row "log(weight/70) on CL"
     e_icam1_rs1799969_cl <- -0.33; label("ICAM-1 rs1799969 mutant effect on log-CL (unitless)")                    # Table 2 row "ICAM-1 rs1799969 mutant on CL"
 
     # SNP effects on Kss and BM0
@@ -73,8 +73,8 @@ Papachristos_2020_bevacizumab_qss <- function() {
     # IIV (exponential model; correlation rho(CL,Q) = -0.999 -> cov = -0.999 * 0.309 * 0.201 = -0.06205)
     etalcl + etalq ~ c(0.09548,
                        -0.06205, 0.04040)  # Table 2 omega_CL = 0.309, omega_Q = 0.201, p(Q,CL) = -0.999
-    etalv1  ~ 0.02856  # Table 2 omega_V1 = 0.169
-    etalv2  ~ 0.30803  # Table 2 omega_V2 = 0.555
+    etalvc  ~ 0.02856  # Table 2 omega_V1 = 0.169
+    etalvp  ~ 0.30803  # Table 2 omega_V2 = 0.555
     etalbm0 ~ 0.05760  # Table 2 omega_BM0 = 0.24
 
     # Residual error (proportional, two outputs)
@@ -98,10 +98,10 @@ Papachristos_2020_bevacizumab_qss <- function() {
     nmol_per_mg_bev <- 1e6 / mw_bev
 
     # ---- Individual parameters (paper formulas, sec. 2.3) ----
-    cl   <- exp(lcl + allo_cl * log(WT / 70) + e_icam1_rs1799969_cl * SNP_ICAM1_RS1799969 + etalcl)
-    v1   <- exp(lv1 + etalv1)
+    cl   <- exp(lcl + e_wt_cl * log(WT / 70) + e_icam1_rs1799969_cl * SNP_ICAM1_RS1799969 + etalcl)
+    vc   <- exp(lvc + etalvc)
     q    <- exp(lq + etalq)
-    v2   <- exp(lv2 + etalv2)
+    vp   <- exp(lvp + etalvp)
     kout <- exp(lkout)
     bm0  <- exp(lbm0 + e_vegfa_rs699947_bm0 * SNP_VEGFA_RS699947 + etalbm0)
     kss  <- exp(lkss + e_vegfa_rs699947_kss * SNP_VEGFA_RS699947)
@@ -112,12 +112,12 @@ Papachristos_2020_bevacizumab_qss <- function() {
     # Complex elimination rate equals free-drug clearance per paper section 2.3
     # ("the elimination clearance of the bevacizumab-VEGF-A complex... was set equal to
     # the CL of free bevacizumab"), i.e. kint * V1 = CL, so kint = CL / V1.
-    kint <- cl / v1
+    kint <- cl / vc
 
     # ---- QSS algebra (Gibiansky et al. 2008) ----
     # central tracks TOTAL bevacizumab amount (free + complex) in nmol;
-    # total_target tracks TOTAL free+bound VEGF-A concentration in V1 (nM).
-    ctot <- central / v1
+    # total_target tracks TOTAL free+bound VEGF-A concentration in Vc (nM).
+    ctot <- central / vc
     ttot <- total_target
 
     # Numerically stable discriminant: (Ctot + Ttot + Kss)^2 - 4 Ctot Ttot
@@ -132,8 +132,8 @@ Papachristos_2020_bevacizumab_qss <- function() {
 
     # ---- ODEs ----
     # Central drug (free + complex; complex eliminated at rate kint * V1; peripheral has no binding)
-    d/dt(central)     <- -cl * cfree - q * cfree + q * (peripheral1 / v2) - kint * complex * v1
-    d/dt(peripheral1) <-               q * cfree - q * (peripheral1 / v2)
+    d/dt(central)     <- -cl * cfree - q * cfree + q * (peripheral1 / vp) - kint * complex * vc
+    d/dt(peripheral1) <-               q * cfree - q * (peripheral1 / vp)
     # Total target (free + complex; only present in central per QSS-TMDD convention)
     d/dt(total_target) <- kin - kout * tfree - kint * complex
     total_target(0)    <- bm0  # steady-state baseline (no drug -> tfree = bm0, complex = 0)
