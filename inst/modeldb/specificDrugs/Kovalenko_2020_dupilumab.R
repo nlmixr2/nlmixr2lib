@@ -52,7 +52,7 @@ Kovalenko_2020_dupilumab <- function() {
     Mpc <- 0.686; label("ratio of kcp and kpc (kpc is peripheral to central rate with units of 1/d)")
     lka <- log(0.256); label("absorption rate (1/d)")
     lmtt <- log(0.105); label("mean transit time (d)")
-    lvm <- log(1.07); label("maximum target-mediated rate of elimination (mg/L/d)")
+    lvmax <- log(1.07); label("Maximum target-mediated rate of elimination Vmax (mg/L/d)")
     Km <- fixed(0.01); label("Michaelis-Menten constant (mg/L)")
     lfdepot <- log(0.643); label("Bioavailability (fraction)")
     e_wt_vc <- 0.711; label("Exponent of weight on central volume (unitless)")
@@ -66,7 +66,7 @@ Kovalenko_2020_dupilumab <- function() {
     etalvc  ~ 0.192^2  # Supp. Table S2: omega_Vc  (SD) = 0.192
     etalke  ~ 0.285^2  # Supp. Table S2: omega_ke  (SD) = 0.285
     etalka  ~ 0.474^2  # Supp. Table S2: omega_ka  (SD) = 0.474
-    etalvm  ~ 0.236^2  # Supp. Table S2: omega_Vm  (SD) = 0.236
+    etalvmax ~ 0.236^2  # Supp. Table S2: omega_Vm  (SD) = 0.236
     etalmtt ~ 0.525^2  # Supp. Table S2: omega_MTT (SD) = 0.525; applied on log(MTT) here to prevent negative MTT draws (a reparameterization of the Supp. Table 2 additive-on-MTT formulation)
 
     CcpropSd <- 0.15; label("Proportional residual error (fraction)")
@@ -84,7 +84,7 @@ Kovalenko_2020_dupilumab <- function() {
     kcp <- exp(lkcp)
     ka <- exp(lka + etalka)
     MTT <- exp(lmtt + etalmtt)
-    Vm <- exp(lvm + etalvm)
+    vmax <- exp(lvmax + etalvmax)
 
     # Derived parameters
     kpc <- kcp/Mpc
@@ -95,7 +95,7 @@ Kovalenko_2020_dupilumab <- function() {
     d/dt(transit2) <- ktr*(transit1 - transit2)
     d/dt(transit3) <- ktr*transit2 - ka*transit3
     # Linear and Michaelis-Menten clearance
-    d/dt(central) <-                 ka*transit3 - ke*central - kcp*central + kpc*periph - central*(Vm/(Km + central/vc))
+    d/dt(central) <-                 ka*transit3 - ke*central - kcp*central + kpc*periph - central*(vmax/(Km + central/vc))
     d/dt(periph) <-                                             kcp*central - kpc*periph
 
     f(depot) <- exp(lfdepot)
