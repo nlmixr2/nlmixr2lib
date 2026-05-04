@@ -80,7 +80,7 @@ Xie_2019_agomelatine <- function () {
     ltvalag <- log(0.185); label("ALAG1 (h)")
     ltvk23 <- log(4.23); label("K23 (1/h)")
     ltvalag2 <- log(0.305); label("ALAG2 (h)")
-    F1 <- 0.681; label("F1")
+    fpop <- 0.681; label("Typical population fraction of dose absorbed via the primary depot (F1; unitless)")
     lvq7dm <- log(28.1); label("Q7DM (L/h)")
     lvv7dm <- log(536); label("V7DM (L)")
     lvqalmt <- log(4.36); label("QALMT (L/h)")
@@ -98,7 +98,7 @@ Xie_2019_agomelatine <- function () {
     etaltvalag ~ 0.0628
     etaltvk23 ~ 3.78
     etaltvalag2 ~ 3.3
-    etaF1 ~ 0.526
+    etafpop ~ 0.526
     etalvq7dm ~ fix(0.001)
     etalvv7dm ~ fix(0.001)
     etalvqalmt ~ 1.46
@@ -124,27 +124,27 @@ Xie_2019_agomelatine <- function () {
     etaiov_clint_2 ~ fix(0.0779)
     etaiov_clint_3 ~ fix(0.0779)
     etaiov_clint_4 ~ fix(0.0779)
-    etaiov_F1_1 ~ 2.32
-    etaiov_F1_2 ~ fix(2.32)
-    etaiov_F1_3 ~ fix(2.32)
-    etaiov_F1_4 ~ fix(2.32)
+    etaiov_fpop_1 ~ 2.32
+    etaiov_fpop_2 ~ fix(2.32)
+    etaiov_fpop_3 ~ fix(2.32)
+    etaiov_fpop_4 ~ fix(2.32)
   })
   model({
     iov_k13   <- ooc1 * etaiov_k13_1   + ooc2 * etaiov_k13_2   + ooc3 * etaiov_k13_3   + ooc4 * etaiov_k13_4
     iov_alag2 <- ooc1 * etaiov_alag2_1 + ooc2 * etaiov_alag2_2 + ooc3 * etaiov_alag2_3 + ooc4 * etaiov_alag2_4
     iov_k23   <- ooc1 * etaiov_k23_1   + ooc2 * etaiov_k23_2   + ooc3 * etaiov_k23_3   + ooc4 * etaiov_k23_4
     iov_clint <- ooc1 * etaiov_clint_1 + ooc2 * etaiov_clint_2 + ooc3 * etaiov_clint_3 + ooc4 * etaiov_clint_4
-    iov_F1    <- ooc1 * etaiov_F1_1    + ooc2 * etaiov_F1_2    + ooc3 * etaiov_F1_3    + ooc4 * etaiov_F1_4
+    iov_fpop    <- ooc1 * etaiov_fpop_1    + ooc2 * etaiov_fpop_2    + ooc3 * etaiov_fpop_3    + ooc4 * etaiov_fpop_4
 
     k13 <- exp(ltvk13 + etaltvk13) * exp(iov_k13)
     v4 <- exp(ltvv4 + etaltvv4)
     clint <- exp(ltvclint + etaltvclint + iov_clint)
-    alag_depot <- exp(ltvalag + etaltvalag)
+    alag <- exp(ltvalag + etaltvalag)
     k23 <- exp(ltvk23 + etaltvk23) * exp(iov_k23)
-    alag_depot2 <- exp(ltvalag2 + etaltvalag2 + iov_alag2)
+    alag2 <- exp(ltvalag2 + etaltvalag2 + iov_alag2)
 
-    expp <- log(F1/(1 - F1)) + etaF1
-    fDepot <- exp(expp + iov_F1)/(1 + exp(expp + iov_F1))
+    expp <- log(fpop/(1 - fpop)) + etafpop
+    fDepot <- exp(expp + iov_fpop)/(1 + exp(expp + iov_fpop))
     fDepot2 <- 1 - fDepot
     lv <- 0.05012 * WT^0.78
     v3 <- lv
@@ -165,8 +165,8 @@ Xie_2019_agomelatine <- function () {
     v7dm <- exp(lvv7dm + etalvv7dm)
     qalmt <- exp(lvqalmt + etalvqalmt)
     valmt <- exp(lvvalmt + etalvvalmt)
-    mpr1 <- 259/243
-    mpr2 <- 229/243
+    mpr_3oh <- 259/243
+    mpr_7dm <- 229/243
     v5 <- v4
     v6 <- v4
 
@@ -174,13 +174,13 @@ Xie_2019_agomelatine <- function () {
     d/dt(depot2)          <- -k23 * depot2
     d/dt(liver)           <- k13 * depot + k23 * depot2 - qh * fh * liver/v3 + qh * central/v4 - clh * liver/v3
     d/dt(central)         <- qh * fh * liver/v3 - qh * central/v4 - central * qalmt/v4 + peripheral1 * qalmt/valmt
-    d/dt(central_3oh)     <- fm3oh * clh * liver/v3 * mpr1 - central_3oh * cl3oh/v5
-    d/dt(central_7dm)     <- fm7dm * clh * liver/v3 * mpr2 - central_7dm * cl7dm/v6 - central_7dm * q7dm/v6 + peripheral1_7dm * q7dm/v7dm
+    d/dt(central_3oh)     <- fm3oh * clh * liver/v3 * mpr_3oh - central_3oh * cl3oh/v5
+    d/dt(central_7dm)     <- fm7dm * clh * liver/v3 * mpr_7dm - central_7dm * cl7dm/v6 - central_7dm * q7dm/v6 + peripheral1_7dm * q7dm/v7dm
     d/dt(peripheral1_7dm) <- central_7dm * q7dm/v6 - peripheral1_7dm * q7dm/v7dm
     d/dt(peripheral1)     <- central * qalmt/v4 - peripheral1 * qalmt/valmt
 
-    alag(depot)  <- alag_depot
-    alag(depot2) <- alag_depot2
+    alag(depot)  <- alag
+    alag(depot2) <- alag2
     f(depot)     <- fDepot
     f(depot2)    <- fDepot2
 
