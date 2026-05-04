@@ -41,11 +41,11 @@ See the Markov vignette (\code{vignette("markov", package = "nlmixr2lib")})
 for an example.
 }
 \seealso{
-Other Markov models: 
-\code{\link{createMarkovModel}()},
-\code{\link{createMarkovModelDataset}()},
-\code{\link{createMarkovModelFromSingleState}()},
-\code{\link{createMarkovTransitionMatrix}()},
-\code{\link{simMarkovId}()}
+Other Markov models:
+\code{\link[=createMarkovModel]{createMarkovModel()}},
+\code{\link[=createMarkovModelDataset]{createMarkovModelDataset()}},
+\code{\link[=createMarkovModelFromSingleState]{createMarkovModelFromSingleState()}},
+\code{\link[=createMarkovTransitionMatrix]{createMarkovTransitionMatrix()}},
+\code{\link[=simMarkovId]{simMarkovId()}}
 }
 \concept{Markov models}

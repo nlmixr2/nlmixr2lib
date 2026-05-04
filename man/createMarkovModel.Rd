@@ -30,11 +30,11 @@ A template `nlmixr2` model as a character string with `ini()` and `model()` bloc
 Create a Markov model for `nlmixr2`
 }
 \seealso{
-Other Markov models: 
-\code{\link{createMarkovModelDataset}()},
-\code{\link{createMarkovModelFromSingleState}()},
-\code{\link{createMarkovTransitionMatrix}()},
-\code{\link{simMarkov}()},
-\code{\link{simMarkovId}()}
+Other Markov models:
+\code{\link[=createMarkovModelDataset]{createMarkovModelDataset()}},
+\code{\link[=createMarkovModelFromSingleState]{createMarkovModelFromSingleState()}},
+\code{\link[=createMarkovTransitionMatrix]{createMarkovTransitionMatrix()}},
+\code{\link[=simMarkov]{simMarkov()}},
+\code{\link[=simMarkovId]{simMarkovId()}}
 }
 \concept{Markov models}
