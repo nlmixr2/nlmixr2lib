@@ -98,8 +98,8 @@ Frey_2010_tocilizumab <- function() {
     lvp <- log(2.9); label("Peripheral volume of distribution V2 (L)")                          # Frey 2010 Table II, V2 row
 
     # Parallel Michaelis-Menten elimination from the central compartment.
-    lvm <- log(7.5); label("Maximum Michaelis-Menten elimination rate Vm (mg/day)")             # Frey 2010 Table II, VM row
-    lkm <- log(2.7); label("Michaelis-Menten constant Km (ug/mL)")                              # Frey 2010 Table II, KM row
+    lvmax <- log(7.5); label("Maximum Michaelis-Menten elimination rate Vmax (mg/day)")           # Frey 2010 Table II, VM row
+    lkm   <- log(2.7); label("Michaelis-Menten constant Km (ug/mL)")                              # Frey 2010 Table II, KM row
 
     # Covariate exponents and multiplicative effects - Frey 2010 Table II ("Covariate effects")
     # and Table III equations (p760).
@@ -107,11 +107,11 @@ Frey_2010_tocilizumab <- function() {
     e_sexf_cl <- -0.16; label("Fractional change in linear CL for female sex (unitless)")        # Frey 2010 Table II: Sex on CL = -16%
     e_hdlc_cl <- -0.2;  label("Power exponent of HDLC/54 on linear CL (unitless)")               # Frey 2010 Table II / Table III: HDL-C on CL
     e_lrf_cl  <-  0.1;  label("Power exponent of log(RF)/log(110) on linear CL (unitless)")      # Frey 2010 Table II / Table III: log(RF) on CL
-    e_tpro_v1 <- -1.1;  label("Power exponent of TPRO/74 on V1 (unitless)")                      # Frey 2010 Table II / Table III: total protein on V1
-    e_alb_v1  <-  0.7;  label("Power exponent of ALB/38 on V1 (unitless)")                       # Frey 2010 Table II / Table III: albumin on V1
-    e_alb_vm  <- -0.4;  label("Power exponent of ALB/38 on Vm (unitless)")                       # Frey 2010 Table II / Table III: albumin on VM
-    e_crcl_vm <-  0.2;  label("Power exponent of CRCL/106 on Vm (unitless)")                     # Frey 2010 Table II / Table III: creatinine CL on VM
-    e_smk_vm  <-  0.11; label("Fractional change in Vm for current smoker (unitless)")           # Frey 2010 Table II: Smoking on VM = +11%
+    e_tpro_vc   <- -1.1;  label("Power exponent of TPRO/74 on Vc (unitless)")                      # Frey 2010 Table II / Table III: total protein on V1
+    e_alb_vc    <-  0.7;  label("Power exponent of ALB/38 on Vc (unitless)")                       # Frey 2010 Table II / Table III: albumin on V1
+    e_alb_vmax  <- -0.4;  label("Power exponent of ALB/38 on Vmax (unitless)")                     # Frey 2010 Table II / Table III: albumin on VM
+    e_crcl_vmax <-  0.2;  label("Power exponent of CRCL/106 on Vmax (unitless)")                   # Frey 2010 Table II / Table III: creatinine CL on VM
+    e_smk_vmax  <-  0.11; label("Fractional change in Vmax for current smoker (unitless)")         # Frey 2010 Table II: Smoking on VM = +11%
 
     # Inter-individual variability: Frey 2010 Table II reports CV% (linear-scale) and the
     # off-diagonal correlation coefficients r between the four etas (CL, V1, V2, Vm).
@@ -128,10 +128,10 @@ Frey_2010_tocilizumab <- function() {
     #   r(V1,V2)= 0.5 -> cov =  0.5 * 0.3583 * 0.6012 =  0.1077
     #   r(V1,Vm)= 0.2 -> cov =  0.2 * 0.3583 * 0.5062 =  0.0363
     #   r(V2,Vm)= 0.2 -> cov =  0.2 * 0.6012 * 0.5062 =  0.0609
-    etalcl + etalvc + etalvp + etalvm ~ c(0.1416,
-                                          0.0809,  0.1284,
-                                         -0.0226,  0.1077, 0.3614,
-                                         -0.0952,  0.0363, 0.0609, 0.2562)
+    etalcl + etalvc + etalvp + etalvmax ~ c(0.1416,
+                                            0.0809,  0.1284,
+                                           -0.0226,  0.1077, 0.3614,
+                                           -0.0952,  0.0363, 0.0609, 0.2562)
 
     # Residual error - Frey 2010 Table II ("Residual error" section, p759). Combined
     # additive + proportional model: Cobs = Cpred * (1 + eps_prop) + eps_add.
@@ -154,14 +154,14 @@ Frey_2010_tocilizumab <- function() {
           (HDLC / 54)^e_hdlc_cl *
           (log(RHEUMATOID_FACTOR) / log(110))^e_lrf_cl
     vc <- exp(lvc + etalvc) *
-          (TPRO / 74)^e_tpro_v1 *
-          (ALB / 38)^e_alb_v1
+          (TPRO / 74)^e_tpro_vc *
+          (ALB / 38)^e_alb_vc
     vp <- exp(lvp + etalvp)
     q  <- exp(lq)
-    vm <- exp(lvm + etalvm) *
-          (ALB / 38)^e_alb_vm *
-          (CRCL / 106)^e_crcl_vm *
-          (1 + e_smk_vm * SMOKE)
+    vmax <- exp(lvmax + etalvmax) *
+          (ALB / 38)^e_alb_vmax *
+          (CRCL / 106)^e_crcl_vmax *
+          (1 + e_smk_vmax * SMOKE)
     km <- exp(lkm)
 
     # Two-compartment IV PK with parallel linear and Michaelis-Menten elimination
@@ -170,7 +170,7 @@ Frey_2010_tocilizumab <- function() {
     Cc <- central / vc
 
     d/dt(central)     <- -(cl / vc) * central -
-                          vm * Cc / (km + Cc) -
+                          vmax * Cc / (km + Cc) -
                           (q / vc) * central +
                           (q / vp) * peripheral1
     d/dt(peripheral1) <-  (q / vc) * central -
