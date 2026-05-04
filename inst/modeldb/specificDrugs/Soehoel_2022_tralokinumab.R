@@ -57,8 +57,8 @@ Soehoel_2022_tralokinumab <- function() {
     CcaddSd <- 0.238; label("Additive residual error (ug/mL)")
     CcpropSd <- 0.216; label("Proportional residual error (fraction)")
 
-    e_wt_vcvp <- 0.783; label("Effect of body weight on central and peripheral volumes (unitless)")
-    e_wt_clq <- 0.873; label("Effect of body weight on clearance and intercompartmental clearance (unitless)")
+    e_wt_vc_vp <- 0.783; label("Effect of body weight on central and peripheral volumes (unitless)")
+    e_wt_cl_q <- 0.873; label("Effect of body weight on clearance and intercompartmental clearance (unitless)")
     e_nonECZTRA_cl <- 0.344; label("Effect of non-ECZTRA trials on clearance (unitless)")
     e_nonECZTRA_vc <- 0.258; label("Effect of non-ECZTRA trials on central volume (unitless)")
     e_f_dilution <- 0.354; label("Effect of dilution on bioavailability (unitless)")
@@ -75,10 +75,10 @@ Soehoel_2022_tralokinumab <- function() {
   model({
     fdepot <- exp(lfdepot)*(1 + e_f_dilution*dilution)
     ka <- exp(lka)*(1 + e_ka_dilution*dilution)
-    cl <- exp(lcl + etalcl)*(WT/75)^e_wt_clq * (1 + e_nonECZTRA_cl*nonECZTRA)
-    vc <- exp(lvc + etalvc)*(WT/75)^e_wt_vcvp * (1 + e_nonECZTRA_vc*nonECZTRA)
-    q <- exp(lq)*(WT/75)^e_wt_clq
-    vp <- exp(lvp)*(WT/75)^e_wt_vcvp
+    cl <- exp(lcl + etalcl)*(WT/75)^e_wt_cl_q * (1 + e_nonECZTRA_cl*nonECZTRA)
+    vc <- exp(lvc + etalvc)*(WT/75)^e_wt_vc_vp * (1 + e_nonECZTRA_vc*nonECZTRA)
+    q <- exp(lq)*(WT/75)^e_wt_cl_q
+    vp <- exp(lvp)*(WT/75)^e_wt_vc_vp
 
     # No unit conversion is required to change mg/L (dosing amount/central
     # volume unit) to ug/mL (measurement unit)

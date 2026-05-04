@@ -55,8 +55,8 @@ reference.
 | `lvp` (V3, peripheral volume)         | `log(1.44)` L    | Table 2 |
 | `lq`  (Q, intercompartmental CL)      | `log(0.159)` L/day | Table 2 |
 | `lfdepot` (F, SC bioavailability)     | `log(0.761)`     | Table 2 |
-| `e_wt_vcvp` (WT on V2 and V3)         | `0.783`          | Table 2 (allometric) |
-| `e_wt_clq` (WT on CL and Q)           | `0.873`          | Table 2 (allometric) |
+| `e_wt_vc_vp` (WT on V2 and V3)        | `0.783`          | Table 2 (allometric) |
+| `e_wt_cl_q` (WT on CL and Q)          | `0.873`          | Table 2 (allometric) |
 | `e_nonECZTRA_cl` (non-ECZTRA on CL)   | `0.344`          | Table 2 |
 | `e_nonECZTRA_vc` (non-ECZTRA on V2)   | `0.258`          | Table 2 |
 | `e_f_dilution` (dilution on F)        | `0.354`          | Table 2 |
