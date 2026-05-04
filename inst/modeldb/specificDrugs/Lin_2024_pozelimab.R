@@ -70,11 +70,11 @@ Lin_2024_pozelimab <- function() {
     # Covariate effects (Lin 2024 Table 2)
     # ---------------------------------------------------------------------------
     # Body weight on CL: power form CL = CL_TV * (WT/70)^e_wt_cl
-    # Body weight on Vc and Vp (single shared exponent): Vc = Vc_TV * (WT/70)^e_wt_v
+    # Body weight on Vc and Vp (single shared exponent): Vc = Vc_TV * (WT/70)^e_wt_vc_vp
     # PNH on Vc: additive-fractional, Vc = Vc_TV * (1 + e_pnh_vc * DIS_PNH)
-    e_wt_cl  <- 0.9989; label("Power exponent of body weight on CL (unitless; reference 70 kg)")  # Lin 2024 Table 2 ("Weight on CL")
-    e_wt_v   <- 0.7560; label("Power exponent of body weight on Vc and Vp (unitless; reference 70 kg)")  # Lin 2024 Table 2 ("Weight on Vc and Vp")
-    e_pnh_vc <- 0.3407; label("Additive-fractional effect of PNH disease state on Vc (unitless)")  # Lin 2024 Table 2 ("Patients with PNH on Vc")
+    e_wt_cl    <- 0.9989; label("Power exponent of body weight on CL (unitless; reference 70 kg)")  # Lin 2024 Table 2 ("Weight on CL")
+    e_wt_vc_vp <- 0.7560; label("Shared power exponent of body weight on Vc and Vp (unitless; reference 70 kg)")  # Lin 2024 Table 2 ("Weight on Vc and Vp")
+    e_pnh_vc   <- 0.3407; label("Additive-fractional effect of PNH disease state on Vc (unitless)")  # Lin 2024 Table 2 ("Patients with PNH on Vc")
 
     # ---------------------------------------------------------------------------
     # Inter-individual variability (Lin 2024 Table 2; %CV)
@@ -121,8 +121,8 @@ Lin_2024_pozelimab <- function() {
     # Individual PK parameters with covariates
     # ---------------------------------------------------------------------------
     cl <- exp(lcl + etalcl) * (WT/WT_ref)^e_wt_cl
-    vc <- exp(lvc + etalvc) * (WT/WT_ref)^e_wt_v * (1 + e_pnh_vc * DIS_PNH)
-    vp <- exp(lvp + etalvp) * (WT/WT_ref)^e_wt_v
+    vc <- exp(lvc + etalvc) * (WT/WT_ref)^e_wt_vc_vp * (1 + e_pnh_vc * DIS_PNH)
+    vp <- exp(lvp + etalvp) * (WT/WT_ref)^e_wt_vc_vp
     q  <- exp(lq)
     ka <- exp(lka)
 
