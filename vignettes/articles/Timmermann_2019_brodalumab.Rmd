@@ -58,19 +58,19 @@ term below is taken from Timmermann 2019 Table 3. The reference patient is a
 | `lka`  (Ka)                              | `log(0.300)` 1/day                      | Table 3, Ka row |
 | `lvc`  (V1)                              | `log(4.68)` L                           | Table 3, V1 row |
 | `lcl`  (CL)                              | `log(0.155)` L/day                      | Table 3, CL row |
-| `lvm`  (Vmax)                            | `log(6.07)` mg/day                      | Table 3, Vmax row |
+| `lvmax` (Vmax)                           | `log(6.07)` mg/day                      | Table 3, Vmax row |
 | `lq`   (Q)                               | `log(0.328)` L/day                      | Table 3, Q row |
 | `lvp`  (V2)                              | `log(2.41)` L                           | Table 3, V2 row |
 | `km`   (Km, fixed)                       | `0.02` ug/mL                            | Table 3, Km row (fixed) |
 | `lfdepot` (F, fixed)                     | `log(0.548)`                            | Table 3, F row (fixed at 54.8%) |
 | `e_wt_cl`   (WT/90 exponent on CL)       | `0.767`                                 | Table 3: Power of weight on CL |
 | `e_wt_vc`   (WT/90 exponent on V1)       | `0.938`                                 | Table 3: Power of weight on V1 |
-| `e_wt_vm`   (WT/90 exponent on Vmax)     | `0.769`                                 | Table 3: Power of weight on Vmax |
+| `e_wt_vmax` (WT/90 exponent on Vmax)     | `0.769`                                 | Table 3: Power of weight on Vmax |
 | `var(etalka)`                            | `log(0.626^2 + 1) = 0.33065`            | Table 3: Ka IIV 62.6% CV |
 | `var(etalcl)`                            | `log(0.575^2 + 1) = 0.28565`            | Table 3: CL IIV 57.5% CV |
 | `var(etalvc)`                            | `log(0.255^2 + 1) = 0.06300`            | Table 3: V1 IIV 25.5% CV |
 | `cov(etalcl, etalvc)`                    | `0.75 * sqrt(0.28565 * 0.06300) = 0.10061` | Table 3: CL-V1 correlation 0.75 |
-| `var(etalvm)`                            | `log(0.247^2 + 1) = 0.05922`            | Table 3: Vmax IIV 24.7% CV |
+| `var(etalvmax)`                          | `log(0.247^2 + 1) = 0.05922`            | Table 3: Vmax IIV 24.7% CV |
 | `var(etalq)`                             | `log(0.910^2 + 1) = 0.60328`            | Table 3: Q IIV 91% CV |
 | `var(etalvp)`                            | `log(1.890^2 + 1) = 1.51997`            | Table 3: V2 IIV 189% CV |
 | `CcpropSd`                               | `0.355` (fraction)                      | Table 3: Proportional residual error 35.5% CV |

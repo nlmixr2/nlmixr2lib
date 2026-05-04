@@ -37,7 +37,7 @@ Timmermann_2019_brodalumab <- function() {
     lka <- log(0.300); label("Absorption rate Ka (1/day)")                              # Timmermann 2019 Table 3, Ka row
     lvc <- log(4.68);  label("Central volume V1 at 90 kg (L)")                          # Timmermann 2019 Table 3, V1 row
     lcl <- log(0.155); label("Linear clearance CL at 90 kg (L/day)")                    # Timmermann 2019 Table 3, CL row
-    lvm <- log(6.07);  label("Maximum Michaelis-Menten elimination rate Vmax at 90 kg (mg/day)")  # Timmermann 2019 Table 3, Vmax row
+    lvmax <- log(6.07);  label("Maximum Michaelis-Menten elimination rate Vmax at 90 kg (mg/day)")  # Timmermann 2019 Table 3, Vmax row
     lq  <- log(0.328); label("Intercompartmental clearance Q (L/day)")                  # Timmermann 2019 Table 3, Q row
     lvp <- log(2.41);  label("Peripheral volume V2 (L)")                                # Timmermann 2019 Table 3, V2 row
 
@@ -50,7 +50,7 @@ Timmermann_2019_brodalumab <- function() {
     # Covariate exponents on reference 90 kg body weight - Timmermann 2019 Table 3.
     e_wt_vc <- 0.938; label("Power exponent of WT/90 on V1 (unitless)")                 # Timmermann 2019 Table 3: Power of weight on V1
     e_wt_cl <- 0.767; label("Power exponent of WT/90 on CL (unitless)")                 # Timmermann 2019 Table 3: Power of weight on CL
-    e_wt_vm <- 0.769; label("Power exponent of WT/90 on Vmax (unitless)")               # Timmermann 2019 Table 3: Power of weight on Vmax
+    e_wt_vmax <- 0.769; label("Power exponent of WT/90 on Vmax (unitless)")             # Timmermann 2019 Table 3: Power of weight on Vmax
 
     # Inter-individual variability. Timmermann 2019 Table 3 reports IIV as %CV on the
     # linear-parameter scale, with log-normal (multiplicative exponential) random
@@ -65,7 +65,7 @@ Timmermann_2019_brodalumab <- function() {
     # CL-V1 correlation 0.75 -> cov = 0.75 * sqrt(0.28565 * 0.06300) = 0.10061.
     etalcl + etalvc ~ c(0.28565, 0.10061, 0.06300)   # Timmermann 2019 Table 3: CL IIV 57.5% CV, V1 IIV 25.5% CV, CL-V1 correlation 0.75
     etalka ~ 0.33065                                  # Timmermann 2019 Table 3: Ka IIV 62.6% CV
-    etalvm ~ 0.05922                                  # Timmermann 2019 Table 3: Vmax IIV 24.7% CV
+    etalvmax ~ 0.05922                                # Timmermann 2019 Table 3: Vmax IIV 24.7% CV
     etalq  ~ 0.60328                                  # Timmermann 2019 Table 3: Q IIV 91% CV
     etalvp ~ 1.51997                                  # Timmermann 2019 Table 3: V2 IIV 189% CV
 
@@ -80,7 +80,7 @@ Timmermann_2019_brodalumab <- function() {
     ka <- exp(lka + etalka)
     vc <- exp(lvc + etalvc) * (WT / 90)^e_wt_vc
     cl <- exp(lcl + etalcl) * (WT / 90)^e_wt_cl
-    vm <- exp(lvm + etalvm) * (WT / 90)^e_wt_vm
+    vmax <- exp(lvmax + etalvmax) * (WT / 90)^e_wt_vmax
     q  <- exp(lq + etalq)
     vp <- exp(lvp + etalvp)
 
@@ -92,7 +92,7 @@ Timmermann_2019_brodalumab <- function() {
     d/dt(depot)       <- -ka * depot
     d/dt(central)     <-  ka * depot -
                           (cl / vc) * central -
-                          vm * Cc / (km + Cc) -
+                          vmax * Cc / (km + Cc) -
                           (q / vc) * central +
                           (q / vp) * peripheral1
     d/dt(peripheral1) <-  (q / vc) * central - (q / vp) * peripheral1
