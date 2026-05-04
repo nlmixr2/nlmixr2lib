@@ -106,20 +106,20 @@ Zhu_2017_lebrikizumab <- function() {
     # Zhu 2017 Table 3 reports WT effect on CL as 1.00; ambiguous whether this was
     # fixed (theta locked at 1.00) or estimated to ~1.00. Kept as estimated; flag
     # for follow-up if the intended behavior is fixed allometry.
-    e_cl_wt <- 1.00; label("Effect of body weight on clearance (unitless)")
-    e_vc_wt <- 0.814; label("Effect of body weight on central volume (unitless)")
-    e_vp_wt <- 0.692; label("Effect of body weight on peripheral volume (unitless)")
-    e_q_wt <- 0.479; label("Effect of body weight on intercompartmentl clearance (unitless)")
-    e_cl_age <- 0.0241; label("Effect of age on clearance (unitless)")
-    e_cl_sexf <- 1.06; label("Effect of sex on clearance (unitless)")
-    e_cl_race_black <- 1.07; label("Effect of race (black or African American) on clearance (unitless)")
-    e_cl_race_asian <- 1.09; label("Effect of race (Asian) on clearance (unitless)")
-    e_cl_race_other <- 1.11; label("Effect of race (other) on clearance (unitless)")
-    e_ka_form_nso <- 0.981; label("Effect of NSO formulation on absorption rate (unitless)")
-    e_ka_form_cho_phase2 <- 0.989; label("Effect of CHO formulation used during Phase 2 on absorption rate (unitless)")
-    e_f_form_nso <- 1.00; label("Effect of NSO formulation on bioavailability (unitless)")
-    e_f_form_cho_phase2 <- 0.973; label("Effect of CHO formulation used during Phase 2 on bioavailability (unitless)")
-    e_cl_ada_positive<- 1.04; label("Effect of anti-drug antibody (ADA) positivity on clearance (unitless)")
+    e_wt_cl <- 1.00; label("Effect of body weight on clearance (unitless)")
+    e_wt_vc <- 0.814; label("Effect of body weight on central volume (unitless)")
+    e_wt_vp <- 0.692; label("Effect of body weight on peripheral volume (unitless)")
+    e_wt_q <- 0.479; label("Effect of body weight on intercompartmental clearance (unitless)")
+    e_age_cl <- 0.0241; label("Effect of age on clearance (unitless)")
+    e_sexf_cl <- 1.06; label("Effect of sex on clearance (unitless)")
+    e_race_black_cl <- 1.07; label("Effect of race (black or African American) on clearance (unitless)")
+    e_race_asian_cl <- 1.09; label("Effect of race (Asian) on clearance (unitless)")
+    e_race_other_cl <- 1.11; label("Effect of race (other) on clearance (unitless)")
+    e_form_ns0_ka <- 0.981; label("Effect of NS0 formulation on absorption rate (unitless)")
+    e_form_cho_phase2_ka <- 0.989; label("Effect of CHO formulation used during Phase 2 on absorption rate (unitless)")
+    e_form_ns0_fdepot <- 1.00; label("Effect of NS0 formulation on bioavailability (unitless)")
+    e_form_cho_phase2_fdepot <- 0.973; label("Effect of CHO formulation used during Phase 2 on bioavailability (unitless)")
+    e_ada_pos_cl <- 1.04; label("Effect of anti-drug antibody (ADA) positivity on clearance (unitless)")
 
     # IIV variance-covariance matrix (omega^2 / cov) from Zhu 2017 Table 3.
     # Lower-triangular order is var(CL); cov(CL,Vc), var(Vc); cov(CL,ka), cov(Vc,ka), var(ka).
@@ -141,14 +141,14 @@ Zhu_2017_lebrikizumab <- function() {
 
     cl <-
       exp(lcl + etalcl) *
-      WTNORM^e_cl_wt * AGENORM^e_cl_age * e_cl_sexf^SEXF *
-      e_cl_race_black^RACE_BLACK * e_cl_race_asian^RACE_ASIAN * e_cl_race_other^RACE_OTHER *
-      e_cl_ada_positive^ADA_POS
-    vc <- exp(lvc + etalvc) * WTNORM^e_vc_wt
-    vp <- exp(lvp) * WTNORM^e_vp_wt
-    q <- exp(lq) * WTNORM^e_q_wt
-    ka <- exp(lka + etalka) * e_ka_form_nso^FORM_NS0 * e_ka_form_cho_phase2^FORM_CHO_PHASE2
-    fdepot <- exp(lfdepot) * e_f_form_nso^FORM_NS0 * e_f_form_cho_phase2^FORM_CHO_PHASE2
+      WTNORM^e_wt_cl * AGENORM^e_age_cl * e_sexf_cl^SEXF *
+      e_race_black_cl^RACE_BLACK * e_race_asian_cl^RACE_ASIAN * e_race_other_cl^RACE_OTHER *
+      e_ada_pos_cl^ADA_POS
+    vc <- exp(lvc + etalvc) * WTNORM^e_wt_vc
+    vp <- exp(lvp) * WTNORM^e_wt_vp
+    q <- exp(lq) * WTNORM^e_wt_q
+    ka <- exp(lka + etalka) * e_form_ns0_ka^FORM_NS0 * e_form_cho_phase2_ka^FORM_CHO_PHASE2
+    fdepot <- exp(lfdepot) * e_form_ns0_fdepot^FORM_NS0 * e_form_cho_phase2_fdepot^FORM_CHO_PHASE2
     Cc <- linCmt()
     f(depot) <- fdepot
     Cc ~ add(CcaddSd) + prop(CcpropSd)
