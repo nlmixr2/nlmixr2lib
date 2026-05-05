@@ -1,9 +1,10 @@
 # Model file template
 
-Copy this skeleton into `inst/modeldb/<category>/<FirstAuthor>_<Year>_<drug>.R` and fill in. Placeholders are wrapped in `<>`. Inline comments that start with `#!` are instructions for the person filling the template and must be deleted before committing.
+Copy this skeleton into `inst/modeldb/<category>/<FirstAuthor>_<Year>_<drug>.R` and fill in. For DDMORE-source extractions, `<category>` is `ddmore`. Placeholders are wrapped in `<>`. Inline comments that start with `#!` are instructions for the person filling the template and must be deleted before committing.
 
 Related references:
-- `naming-conventions.md` — parameter / compartment / IIV naming
+- `naming-conventions.md` — parameter / compartment / IIV naming, plus the NONMEM → nlmixr2 syntax-translation section consulted by DDMORE extractions
+- `ddmore-source.md` — DDMORE-source-specific guidance (read only when extracting from a DDMORE bundle directory)
 - `covariate-columns.md` — required register of covariate column names (consult before inventing any new name)
 - `verification-checklist.md` — run through after first pass
 
@@ -13,6 +14,11 @@ Related references:
   reference   <- "<Full citation with DOI>"
   vignette    <- "<FirstAuthor>_<Year>_<drug>"  #! basename of vignettes/articles/<FirstAuthor>_<Year>_<drug>.Rmd; used by list-of-models to link here
   units       <- list(time = "<day|hour>", dosing = "<mg|mg/kg>", concentration = "<ug/mL|ng/mL>")
+
+  #! DDMORE-source models additionally declare the next two fields.
+  #! Omit (or set to NULL) for paper-source models.
+  # ddmore_id    <- "DDMODEL00000<NNN>"  #! DDMORE Foundation ID; mandatory for inst/modeldb/ddmore/ files
+  # replicate_of <- "inst/modeldb/specificDrugs/<Other>_<Year>_<drug>.R"  #! when a paper-derived counterpart exists; reciprocal pointer added to that file in the same PR
 
   covariateData <- list(
     #! One entry per covariate. Canonical names come from inst/references/covariate-columns.md.
@@ -171,6 +177,40 @@ ini({
 
 Mirror the call-out in the vignette's Assumptions and deviations section (see
 `vignette-template.md`).
+
+## DDMORE-source metadata
+
+DDMORE-source extractions land under `inst/modeldb/ddmore/`. The model file declares two extra metadata fields immediately after `units`:
+
+```r
+ddmore_id    <- "DDMODEL00000301"
+replicate_of <- "inst/modeldb/specificDrugs/Themans_2019_meropenem.R"  # NULL or omit when no counterpart
+```
+
+- `ddmore_id` — the DDMORE Foundation ID (always full 12-character form `DDMODEL00000<NNN>`). Required for every file in `ddmore/`.
+- `replicate_of` — relative path (from package root) to a paper-derived counterpart in another `inst/modeldb/` subdirectory. **Required** when the same publication has been extracted both ways; otherwise omit (or set to `NULL`).
+
+When `replicate_of` is set, the same PR adds the reciprocal pointer in the counterpart file (or, if the counterpart already exists and the PR is small, a follow-up edit to the counterpart is opened in a separate PR — flag this in the PR body so the reviewer is aware). The link is bidirectional: a `specificDrugs/<X>.R` file pointing to a `ddmore/<Y>.R` file will have `replicate_of <- "inst/modeldb/ddmore/<Y>.R"` and the `ddmore/<Y>.R` will have `replicate_of <- "inst/modeldb/specificDrugs/<X>.R"`.
+
+The `reference` field for a DDMORE-source model with a linked publication takes this shape:
+
+```r
+reference <- paste(
+  "Themans P., Winkin J. J., Musuamba F. T. (2019).",
+  "An input-output approach for model-informed personalized drug dosing",
+  "for antibiotics: Application to meropenem in adult patients with",
+  "severe pneumonia. Br J Clin Pharmacol.",
+  "doi:10.1111/bcp.14025.",
+  "DDMORE Foundation Model Repository: DDMODEL00000301.",
+  sep = " "
+)
+```
+
+If no publication is linked (DDMORE repo entry only), drop the journal citation and keep only the DDMORE reference:
+
+```r
+reference <- "DDMORE Foundation Model Repository: DDMODEL00000<NNN>. No linked publication."
+```
 
 ## `depends_on` lineage in the `reference` field
 

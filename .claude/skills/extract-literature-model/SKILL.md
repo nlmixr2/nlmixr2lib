@@ -1,11 +1,15 @@
 ---
 name: extract-literature-model
-description: This skill should be used when the user wants to "add a model from a paper", "extract a pharmacometric model from the literature", "implement a published PK/PD model in nlmixr2lib", or provides a scientific article, conference poster, supplement, or regulatory review document and asks to add the model to nlmixr2lib. Guides source review, standardized model file creation under inst/modeldb/, in-file source-trace verification, and validation vignette with PKNCA NCA checks.
+description: This skill should be used when the user wants to "add a model from a paper", "extract a pharmacometric model from the literature", "implement a published PK/PD model in nlmixr2lib", or provides a scientific article, conference poster, supplement, regulatory review document, or DDMORE Foundation Model Repository bundle (NONMEM `.mod` / `.ctl` control stream + `.lst` listing + RDF metadata + Model_Accomodations file) and asks to add the model to nlmixr2lib. Guides source review, standardized model file creation under inst/modeldb/, in-file source-trace verification, and validation vignette with PKNCA NCA checks.
 ---
 
 # Extract a pharmacometric model from the literature
 
-Input: a scientific source describing a pharmacometric model (journal article, supplement, conference poster, or regulatory review).
+Input: a scientific source describing a pharmacometric model. Two source shapes are supported:
+
+- **Paper-source**: journal article, supplement, conference poster, or regulatory review.
+- **DDMORE-source**: a directory from the DDMORE Foundation Model Repository (typically a NONMEM `.mod` / `.ctl` control stream plus `.lst` listing, with optional RDF metadata and `Model_Accomodations` text file). DDMORE-source extractions land under `inst/modeldb/ddmore/`. See `references/ddmore-source.md` for the full DDMORE workflow.
+
 Output: a packaged nlmixr2lib model file under `inst/modeldb/`, a validation vignette under `vignettes/articles/`, and updated registry artifacts — opened as a pull request against `main`.
 
 Work through the six phases below. Stop and ask the user at any of the decision points called out explicitly; ambiguity is the main failure mode for this workflow, and silent assumptions are what get shipped as bugs.
@@ -14,18 +18,21 @@ Work through the six phases below. Stop and ask the user at any of the decision 
 
 Read these on demand; don't load them up front.
 
-- `references/naming-conventions.md` — parameter, compartment, IIV, and error-model names.
+- `references/naming-conventions.md` — parameter, compartment, IIV, and error-model names. Includes a NONMEM → nlmixr2 syntax-translation section consulted by DDMORE-source extractions.
 - `inst/references/covariate-columns.md` — authoritative register of covariate column names. Consult before introducing any new covariate. (Installed with the package so R code like `checkModelConventions()` can parse it at runtime.)
 - `references/model-file-template.md` — skeleton for the `.R` file.
 - `references/vignette-template.md` — skeleton for the validation vignette.
 - `references/pknca-recipes.md` — PKNCA setups for single-dose, steady-state, and multi-dose NCA.
 - `references/endogenous-validation.md` — validation strategy for endogenous / mechanistic / turnover models where PKNCA is not the right check.
 - `references/verification-checklist.md` — checklist to walk after the first-pass implementation.
+- `references/ddmore-source.md` — extra guidance for DDMORE Foundation Model Repository sources (NONMEM `.mod` / `.ctl` / MDL XML / `.txt` NMTRAN executables plus `.lst` listings, `DDMODEL00000<id>.rdf`, `Model_Accomodations.text|.txt`, `<id>.json`). **Read only when the source is a DDMORE bundle directory.**
 
 ## Phase 1 — Source acquisition and scoping
 
-1. Confirm the source type (journal article, supplement, poster, regulatory document).
-2. **Verify the on-disk file is the paper the task names.** Open the source file (or its trimmed `.md` companion) and read the title + first-author line + journal + year. Compare against the task's `Paper metadata` block. If any of {first-author, year, journal, drug} disagrees, stop and sidecar-ask:
+1. Confirm the source type. Two shapes are supported:
+   - **Paper-source** — journal article, supplement, poster, regulatory document. Continue with steps 2–11 below.
+   - **DDMORE-source** — directory from the DDMORE Foundation Model Repository. Telltale files: `Executable_*.{mod,ctl,xml,txt}`, `Output_real_*.lst`, `Output_simulated_*.lst`, optionally `DDMODEL00000<id>.rdf`, `Model_Accomodations.text` (or `.txt`), `<id>.json`. **Switch to `references/ddmore-source.md`** for the DDMORE-specific Phase 1 steps; come back to Phase 2 onward in this file when you reach the model-file-creation phase. The DDMORE flow replaces step 2 (paper identity), step 3 (species check), step 4 (trimmed markdown), step 5 (full-text check), and step 7 (supplement search) with DDMORE-tailored equivalents documented in `ddmore-source.md`. Steps 6 (upstream-popPK), 8 (errata), 9 (final estimates), 10 (multiple-model handling), and 11 (target subdirectory — DDMORE-source models always go to `ddmore/`) still apply, with DDMORE-aware tweaks.
+2. **(Paper-source)** **Verify the on-disk file is the paper the task names.** Open the source file (or its trimmed `.md` companion) and read the title + first-author line + journal + year. Compare against the task's `Paper metadata` block. If any of {first-author, year, journal, drug} disagrees, stop and sidecar-ask:
 
    > The on-disk file `<filename>` reports `<actual-author> <actual-year>, <actual-journal>: "<actual-title>"` but the task names `<expected-author> <expected-year>, ... <expected-drug>`. Options: (A) the task metadata is wrong and the file is the right paper — please correct the task metadata, (B) the file is mislabelled — please drop the correct PDF, (C) skip this task. Which applies?
 
@@ -61,11 +68,13 @@ Read these on demand; don't load them up front.
 
 7. **Always search for supplementary information.** Supplements frequently contain the NONMEM control stream and parameter tables that disambiguate model structure. If the user provided only a main article, ask whether a supplement exists and request it.
 8. **Always search for errata, corrigenda, or author corrections.** Check the journal's landing page for the article, the publisher's "corrections" / "notices" feed, and a search like `"<first author> <year> <drug>" erratum` on PubMed and Google Scholar. Ask the user whether they are aware of any corrections if the source is paywalled or the search is inconclusive. **When an erratum revises a value used in the model (parameter estimate, covariate effect, equation, units), the erratum value takes precedence over the main publication.** If multiple errata exist, the most recent supersedes earlier ones. Record the erratum citation in the model file's `reference` metadata alongside the main paper, and in every in-file source-trace comment whose value comes from the erratum, point to the erratum (not the original table).
-9. **Verify parameters are final estimates, not initial estimates.** Supplement control streams usually list initial values in `$THETA` / `$OMEGA`; final values come from the paper's results table or `$TABLE` output. If only a control stream is available, confirm values against any published point estimates before treating them as final.
+9. **Verify parameters are final estimates, not initial estimates.** Supplement control streams usually list initial values in `$THETA` / `$OMEGA`; final values come from the paper's results table or `$TABLE` output. If only a control stream is available, confirm values against any published point estimates before treating them as final. **For DDMORE-source extractions**, final estimates are in the `Output_*.lst` listing (the `FINAL PARAMETER ESTIMATE` block after `MINIMIZATION SUCCESSFUL`); the `.mod` `$THETA` / `$OMEGA` / `$SIGMA` blocks are initial values. See `ddmore-source.md` for the parsing recipe.
 10. **Multiple-model handling.**
     - Base model + final model → extract only the final.
     - Any other "multiple model" case (per-subpopulation, per-endpoint, sensitivity analyses) → list the candidates to the user and ask which to extract. Offer "one," "all," or "a subset."
-11. Confirm the target subdirectory under `inst/modeldb/` (usually `specificDrugs/`; endogenous, therapeuticArea, pharmacokinetics, and pharmacodynamics are also valid).
+11. Confirm the target subdirectory under `inst/modeldb/`:
+    - **Paper-source** — usually `specificDrugs/`; `endogenous/`, `therapeuticArea/`, `pharmacokinetics/`, `pharmacodynamics/` also valid.
+    - **DDMORE-source** — always `ddmore/` (parallel to `specificDrugs/`).
 
 ## Phase 2 — Sync with origin/main and branch
 
@@ -97,7 +106,12 @@ If the worktree's branch was **already committed and pushed in a prior run** (i.
 
 ## Phase 3 — Model file
 
-File path: `inst/modeldb/<category>/<FirstAuthor>_<Year>_<drug>.R`.
+File path:
+
+- **Paper-source**: `inst/modeldb/<category>/<FirstAuthor>_<Year>_<drug>.R`.
+- **DDMORE-source**: `inst/modeldb/ddmore/<FirstAuthor>_<Year>_<drug>.R`.
+
+If the chosen `<FirstAuthor>_<Year>_<drug>` name collides with an existing file in `ddmore/` (rare — e.g., two Themans 2019 meropenem entries with different scenarios), append a lowercase letter to the year: `Themans_2019a_meropenem.R`, `Themans_2019b_meropenem.R`. Use the same year-letter for both files in the pair so the chronological ordering is preserved.
 
 The function name **must equal the filename** minus `.R`; `buildModelDb()` enforces this.
 
@@ -109,6 +123,11 @@ Use `references/model-file-template.md` as the starting skeleton and the two bes
 The file body has this shape:
 
 1. `description`, `reference`, `vignette`, `units`, `covariateData`, `population` — metadata before `ini()`. `vignette` is the basename of the validation vignette in `vignettes/articles/` (e.g., `"Clegg_2024_nirsevimab"`, no path, no extension); `buildModelDb()` extracts it so the list-of-models table can link to the rendered vignette on the pkgdown site.
+
+   **DDMORE-source models additionally set:**
+   - `ddmore_id <- "DDMODEL00000<NNN>"` — the DDMORE Foundation ID, for repo traceability. Always present on `ddmore/` models.
+   - `replicate_of <- "inst/modeldb/specificDrugs/<Other>_<Year>_<drug>.R"` — relative path to a paper-derived counterpart in `specificDrugs/` when one exists (i.e., the same publication is also extracted there). Reciprocal — the `specificDrugs/` counterpart adds `replicate_of <- "inst/modeldb/ddmore/<This>_<Year>_<drug>.R"` pointing back. Omit when there is no counterpart.
+
 2. `ini()` — parameters with `label()` and a trailing **in-file comment pointing to the source location** for every value.
 3. `model()` — derived terms → individual parameters → micro-constants → ODEs → bioavailability → observation and error.
 
@@ -173,6 +192,13 @@ This is mandatory for any parameter not from the paper text/tables. The vignette
 ## Phase 5 — Validation vignette
 
 File path: `vignettes/articles/<FirstAuthor>_<Year>_<drug>.Rmd`, with matching `VignetteIndexEntry`. Drug-specific vignettes live under `vignettes/articles/` so pkgdown builds them for the site but CRAN does not — `.Rbuildignore` excludes that directory. The basename (without `.Rmd`) must match the `vignette <- "..."` field in the model file. Only the legacy `PK_2cmt_mAb_Davda_2014.Rmd` remains at top-level `vignettes/`.
+
+**Validation strategy is gated on model type, not source shape:**
+
+- **PK / PD models with published NCA** (paper-source or DDMORE-source) — full PKNCA section with side-by-side comparison against the publication. Default path.
+- **Endogenous / mechanistic / steady-state models** — replace PKNCA with the recipes in `references/endogenous-validation.md`.
+- **Count / Markov / IRT / dropout / TTE models** (most common for DDMORE-source non-PK entries) — replace PKNCA with mechanistic sanity checks: simulation reproduces the typical-value trajectory, baseline / steady-state probability matches the source, and (for TTE) the simulated event rate matches the published Kaplan-Meier or hazard. See `references/ddmore-source.md` § "Validation for non-PK/PD model classes" for templates. Skipping PKNCA without one of these substitutes is not allowed; if you can't decide which substitute applies, sidecar-ask the operator.
+- **DDMORE-source models with no linked publication** — comparison against published figures is not possible. Validation reduces to (a) the model parses, (b) `rxode2::rxSolve()` runs to completion on the simulated dataset shipped in the DDMORE bundle, (c) the simulated trajectory visually matches the bundle's `Output_simulated_*.lst`. Document the absence of a paper in the vignette's Assumptions and deviations section.
 
 Use `references/vignette-template.md`. Required sections, in order:
 
@@ -245,6 +271,13 @@ Naming conventions for mechanistic parameters are documented in `references/nami
    - Add Clegg 2024 nirsevimab ([doi:10.1007/s40262-024-01387-y](https://doi.org/10.1007/s40262-024-01387-y)) — preterm and term infants.
    ```
 
+   For DDMORE-source models, append `[DDMODEL00000<NNN>]` after the
+   citation:
+
+   ```
+   - Add Themans 2019 meropenem ([doi:10.1111/bcp.14025](https://doi.org/10.1111/bcp.14025)) [DDMODEL00000301] — adults with severe pneumonia.
+   ```
+
    Do NOT include: covariate list, compartment count, IIV structure,
    residual-error form, data origin, study counts, PKNCA sentence, or
    anything else that lives in the model file's metadata or vignette. A
@@ -273,6 +306,9 @@ Don't guess — ask the user when:
 - The worktree at dispatch has a pre-existing pushed branch for this task ID (prior completed run). See Phase 2 worktree-resumption step.
 - `devtools::check()` or vignette rendering produces a C-level segfault — the environment is broken; do not paper over with `--no-build-vignettes` or similar.
 - The `timeout 300 rmarkdown::render()` gate exits 124 — the vignette exceeds 5 minutes; reduce simulation size before committing.
+- (DDMORE-source) The DDMORE bundle directory has no `Executable_*` file (only `Output_*.lst`) — the model is output-only and cannot be re-extracted faithfully. Sidecar-ask whether to skip or chase the source `.mod` separately.
+- (DDMORE-source) The `Model_Accomodations.text` is missing or content-light, the `.mod` `$PROBLEM` line and `;;` author comments don't disambiguate authorship/drug, and a PubMed lookup by `$PROBLEM` keywords returns nothing. Sidecar-ask the operator to identify the publication or flag "DDMORE repo entry only" with no linked publication.
+- (DDMORE-source) The `.mod` references a covariate not present in the simulated dataset shipped with the bundle (i.e., the simulated dataset is incomplete relative to the model). Sidecar-ask whether to (A) reconstruct the covariate from the bundle's metadata, (B) skip the covariate effect, or (C) defer the task pending a complete dataset.
 
 Use this fixed format for ambiguities:
 

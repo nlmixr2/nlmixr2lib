@@ -10,13 +10,14 @@ Do not silently resolve ambiguity. Do not tune parameters to make a validation o
 
 - [ ] On-disk PDF / XML title, first author, journal, and year match the task's `Paper metadata` block. Filename PMID matches the actual PMID in the source (catches mislabelled drops like `PMID_23436260.pdf` actually being Frey 2010 / PMID 20097931).
 - [ ] Drug named in the task metadata matches the molecule the paper actually models.
+- [ ] **DDMORE-source only:** the directory's `DDMODEL00000<NNN>` ID matches the `ddmore_id` field in the model file. The `Model_Accomodations.text|.txt` reference matches `reference`. The `<id>.json` `version` field is not stale relative to the live DDMORE repository (sidecar-ask if a much newer version exists upstream).
 
 ## A. Parameter values
 
 - [ ] **Errata / corrigenda checked.** Confirmed search for published corrections to the source; any erratum value supersedes the main publication for conflicting values, with the most recent erratum winning when multiple exist. Erratum citation recorded in the model file's `reference` field, and each affected `ini()` comment points to the erratum.
 - [ ] Every parameter line in `ini()` has a clear provenance comment if it did not come from the paper's text/tables (author correspondence, figure-digitisation, upstream-task model file). The comment cites the followup-register entry (`tracking/operator_followups.md F<n>`) when applicable.
 - [ ] Every parameter in `ini()` has an in-file trailing comment pointing to the source location (table, equation, page, or figure). Re-check each comment matches what the source actually says.
-- [ ] Values are **final estimates**, not initial estimates. Supplement NONMEM control streams often list initial values in `$THETA` and `$OMEGA`; the final values come from the `$TABLE` output or the main paper. If the only source is a control stream, confirm the values match any published point estimates.
+- [ ] Values are **final estimates**, not initial estimates. Supplement NONMEM control streams often list initial values in `$THETA` and `$OMEGA`; the final values come from the `$TABLE` output or the main paper. If the only source is a control stream, confirm the values match any published point estimates. **DDMORE-source extractions:** final estimates come from the `Output_*.lst` listing (the `FINAL PARAMETER ESTIMATE` block after `MINIMIZATION SUCCESSFUL`). `.mod` `$THETA` / `$OMEGA` / `$SIGMA` are initial values. See `references/ddmore-source.md` § "Reading final estimates from `.lst`."
 - [ ] **Log-vs-linear reporting.** NONMEM often reports THETAs on the estimation scale (already log), but tables in the paper usually show the back-transformed value. A `log()` wrapper in `ini()` must match what the paper reports: `lcl <- log(0.0388)` is correct when the paper says "CL = 0.0388 L/day."
 - [ ] **CV% vs. variance.** `omega²` in NONMEM output is the variance on the internal scale. For log-normal parameters, CV% relates via `omega² = log(CV² + 1)`. Do not paste CV% directly into `ini()` as if it were a variance.
 - [ ] **Correlated IIV.** If the paper reports a correlation `r` and individual CV%, the covariance is `cov = r × sqrt(var_1 × var_2)`. Verify the block matrix entries match this formula.
@@ -51,7 +52,7 @@ Do not silently resolve ambiguity. Do not tune parameters to make a validation o
 
 ## E. File plumbing
 
-- [ ] File path is `inst/modeldb/<category>/<FirstAuthor>_<Year>_<drug>.R`.
+- [ ] File path is `inst/modeldb/<category>/<FirstAuthor>_<Year>_<drug>.R`. DDMORE-source models use `<category> = ddmore`.
 - [ ] Function name inside the file **equals** the filename minus `.R`. `buildModelDb()` rejects mismatches.
 - [ ] `description`, `reference`, `vignette`, `units`, `covariateData`, `population` all present before `ini()`.
 - [ ] Validation vignette lives at `vignettes/articles/<FirstAuthor>_<Year>_<drug>.Rmd`, and the model file's `vignette <- "..."` value matches that basename (no path, no extension). Confirm `readModelDb("<model>")$meta$vignette` returns the basename after `devtools::load_all()`.
@@ -59,13 +60,15 @@ Do not silently resolve ambiguity. Do not tune parameters to make a validation o
 - [ ] No stray `#!` instruction comments from the template remain.
 - [ ] Vignette path is `vignettes/articles/<...>.Rmd` (not top-level `vignettes/`), matching the pkgdown "articles" convention used by every non-legacy vignette in the package.
 - [ ] If this task `depends_on` an upstream-PK task, the model file's `reference` field cites the upstream model (e.g., `"... PK structure adapted from <Author> <Year>; see modellib('<Upstream>')"`). See `references/model-file-template.md` for the lineage snippet.
+- [ ] **DDMORE-source only:** the model file declares `ddmore_id <- "DDMODEL00000<NNN>"` matching the source bundle's directory ID.
+- [ ] **DDMORE-source only:** if the publication is also extracted under `inst/modeldb/specificDrugs/<...>.R`, both files declare `replicate_of <- "<relative path to the counterpart>"`. The reciprocal pointer on the `specificDrugs/` file is updated in the same PR (or in a separate PR if the counterpart already exists; flag it in the PR body).
 
 ## F. Sanity simulations
 
 - [ ] Running `readModelDb("<model>")` returns without error.
 - [ ] `rxode2::rxSolve(mod, events)` produces non-NaN, non-negative concentrations across the relevant time window.
-- [ ] Simulated Cmax, AUC, and half-life are within ~20% of published values for a typical dose in a typical subject. Larger discrepancies: investigate, don't tune.
-- [ ] A simulated VPC visually resembles the paper's VPC (dose-proportional scaling, right terminal slope, reasonable spread).
+- [ ] Simulated Cmax, AUC, and half-life are within ~20% of published values for a typical dose in a typical subject. Larger discrepancies: investigate, don't tune. **Skip this check** when the source publication does not report NCA values (common for DDMORE-source models with no linked publication, count / Markov / IRT / dropout / TTE modalities, or endogenous models). For DDMORE-source models with no linked publication, the substitute is in the F.2 block below.
+- [ ] A simulated VPC visually resembles the paper's VPC (dose-proportional scaling, right terminal slope, reasonable spread). Skip when the publication has no VPC figure to compare against.
 - [ ] If the event table was built from multiple cohorts via `bind_rows()`, ID ranges are disjoint (`anyDuplicated(events[, c("id","time","evid")]) == 0`). See `vignette-template.md`'s `make_cohort(..., id_offset = )` snippet for the pattern.
 
 ### F.1 Endogenous / mechanistic models
@@ -78,6 +81,23 @@ For models with no dosing (endogenous, mechanistic, steady-state turnover), repl
 - [ ] All augmentation outputs (e.g., `daily_phe_intake`) have correct units — verified by dimensional analysis, not just plausible magnitude.
 
 See `references/endogenous-validation.md` for full recipes.
+
+### F.2 DDMORE-source models with no linked publication
+
+When the DDMORE bundle does not link to a journal publication (or the linked paper is not on disk), the comparison-against-publication check (F first item) cannot be performed. Substitute:
+
+- [ ] Re-simulate the bundle's `Simulated_*.csv` event table through `rxode2::rxSolve()` and confirm the trajectory visually matches the bundle's `Output_simulated_*.lst` (typical-value parameters, no IIV / no residual error). Differences > 5% on a per-time-point basis are investigated, not tuned.
+- [ ] When a `Output_real_*.lst` is also shipped, do a typical-value re-simulation and compare against any per-subject predictions in the listing's `$TABLE` output if present.
+- [ ] Vignette's "Source trace" section explicitly states "DDMORE Foundation Model Repository entry; no linked publication available."
+
+### F.3 Count / Markov / IRT / dropout / TTE models
+
+- [ ] Typical-value (no-IIV, no-residual-error) simulation reproduces the published expected-count / hazard / probability trajectory within ~5% at canonical time points.
+- [ ] For TTE models: simulated event rate over the observation window matches the published Kaplan-Meier or expected-hazard curve within ~10% across decile time points.
+- [ ] For count models: simulated mean count at each scheduled visit matches the published mean within ~10%.
+- [ ] For IRT / dropout: predicted item-response or dropout probability at the published reference cohort time-points matches the published value within ~5%.
+
+If the source publication does not report the validation reference (e.g., DDMORE-only models), substitute the F.2 self-consistency check.
 
 ## G. Registration
 
