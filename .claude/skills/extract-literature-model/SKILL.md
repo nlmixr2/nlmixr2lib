@@ -12,6 +12,16 @@ Input: a scientific source describing a pharmacometric model. Two source shapes 
 
 Output: a packaged nlmixr2lib model file under `inst/modeldb/`, a validation vignette under `vignettes/articles/`, and updated registry artifacts — opened as a pull request against `main`.
 
+> **DDMORE-source support is a temporary one-time skill extension.**
+> The current revision adds extraction of the
+> `dpastoor/ddmore_scraping` bundle (~58 DDMORE Foundation Model
+> Repository models) into `inst/modeldb/ddmore/`. Once that batch is
+> done, the DDMORE-aware sections of this file and its references —
+> together with `references/ddmore-source.md` — are scheduled for
+> removal. See `references/ddmore-source.md` § "Cleanup recipe" for
+> the rollback steps. Until removal, the skill works for both
+> paper-source and DDMORE-source extractions.
+
 Work through the six phases below. Stop and ask the user at any of the decision points called out explicitly; ambiguity is the main failure mode for this workflow, and silent assumptions are what get shipped as bugs.
 
 ## References

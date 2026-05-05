@@ -1,5 +1,47 @@
 # DDMORE Foundation Model Repository extractions
 
+> **Temporary skill extension.** The DDMORE-source flow documented here
+> is a one-time batch addition for extracting the
+> `dpastoor/ddmore_scraping` bundle (~58 models) into
+> `inst/modeldb/ddmore/`. **Once the batch is complete and merged, this
+> file and the DDMORE-aware sections of `SKILL.md`,
+> `naming-conventions.md`, `verification-checklist.md`, and
+> `model-file-template.md` should be removed**, leaving the skill back
+> at its paper-source-only shape. The completed
+> `inst/modeldb/ddmore/` model files stay; only the skill scaffolding
+> goes.
+>
+> Cleanup recipe (when the batch is done):
+>
+> 1. Delete `references/ddmore-source.md` (this file).
+> 2. In `SKILL.md`: revert the frontmatter `description` to its
+>    paper-only form; remove the "Two source shapes…" paragraph;
+>    remove the `references/ddmore-source.md` bullet from References;
+>    revert Phase 1 step 1 to its paper-source-only form; remove the
+>    DDMORE-source addendum on step 9; revert step 11; remove the
+>    DDMORE-source variant of Phase 3 file path + ddmore_id /
+>    replicate_of; remove the DDMORE-aware Phase 5 validation gating;
+>    remove the DDMORE entry from Phase 6 NEWS examples; remove the
+>    three DDMORE-specific stop-and-ask triggers at the bottom.
+> 3. In `naming-conventions.md`: remove the year-letter collision
+>    bullet (or keep it — it's general-purpose); remove the entire
+>    "NONMEM → nlmixr2 syntax translation" section.
+> 4. In `verification-checklist.md`: revert the DDMORE-source
+>    sentence on the final-estimates item; revert the Phase E
+>    DDMORE bullet on file path; remove the two DDMORE-only Phase E
+>    bullets on `ddmore_id` / `replicate_of`; revert F first item to
+>    drop the "Skip when…" qualifier; remove F.2 and F.3; revert the
+>    Phase H source-identity DDMORE bullet.
+> 5. In `model-file-template.md`: revert the lead paragraph; remove
+>    the `ddmore_id` / `replicate_of` placeholders in the template;
+>    remove the "DDMORE-source metadata" section.
+>
+> A `git revert` of the single commit that introduced this support
+> (`add-ddmore-extraction-support` branch's first commit) achieves
+> almost the whole rollback in one step — re-apply by hand only the
+> general-purpose year-letter collision rule in `naming-conventions.md`
+> if it's worth keeping.
+
 This reference is loaded only when the source for `extract-literature-model` is a DDMORE Foundation Model Repository bundle (NONMEM `.mod` / `.ctl` control stream + `.lst` listing + RDF metadata + `Model_Accomodations` text). For paper-source extractions, follow `SKILL.md` directly without reading this file.
 
 The DDMORE Foundation Model Repository ([repository.ddmore.eu](https://repository.ddmore.eu); formerly `repository.ddmore.foundation`) hosts a curated set of executable pharmacometric models. Each entry is identified by a 12-character ID of the form `DDMODEL00000<NNN>`, where `<NNN>` is a zero-padded 5-digit number. The website is sometimes flaky; the canonical local source for these models is the GitHub mirror [`dpastoor/ddmore_scraping`](https://github.com/dpastoor/ddmore_scraping), which has 58 numbered directories spanning IDs 155-301 (with gaps) and includes the per-model RDF metadata files the headline `repository.ddmore.eu` API does not expose.
