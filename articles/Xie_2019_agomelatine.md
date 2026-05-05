@@ -44,10 +44,10 @@ reference.
 ``` r
 
 Xie_2019_agomelatine <- nlmixr(readModelDb("Xie_2019_agomelatine"))
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: e.IOV1, eta17, eta18, eta19, e.IOV2, eta21, eta22, eta23, e.IOV3, eta25, eta26, eta27, e.IOV4, eta29, eta30, eta31, e.IOV5, eta33, eta34, eta35
+#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_k13_1, etaiov_k13_2, etaiov_k13_3, etaiov_k13_4, etaiov_alag2_1, etaiov_alag2_2, etaiov_alag2_3, etaiov_alag2_4, etaiov_k23_1, etaiov_k23_2, etaiov_k23_3, etaiov_k23_4, etaiov_clint_1, etaiov_clint_2, etaiov_clint_3, etaiov_clint_4, etaiov_fpop_1, etaiov_fpop_2, etaiov_fpop_3, etaiov_fpop_4
 #> as a work-around try putting the mu-referenced expression on a simple line
 conc_unit <- rxode2::rxode(readModelDb("Xie_2019_agomelatine"))$units[["concentration"]]
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: e.IOV1, eta17, eta18, eta19, e.IOV2, eta21, eta22, eta23, e.IOV3, eta25, eta26, eta27, e.IOV4, eta29, eta30, eta31, e.IOV5, eta33, eta34, eta35
+#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_k13_1, etaiov_k13_2, etaiov_k13_3, etaiov_k13_4, etaiov_alag2_1, etaiov_alag2_2, etaiov_alag2_3, etaiov_alag2_4, etaiov_k23_1, etaiov_k23_2, etaiov_k23_3, etaiov_k23_4, etaiov_clint_1, etaiov_clint_2, etaiov_clint_3, etaiov_clint_4, etaiov_fpop_1, etaiov_fpop_2, etaiov_fpop_3, etaiov_fpop_4
 #> as a work-around try putting the mu-referenced expression on a simple line
 
 d_sim_dosing <-
@@ -56,7 +56,7 @@ d_sim_dosing <-
     EVID = 1,
     AMT = 25, # mg
     TIME = 0,
-    CMT = c("DEPOT1", "DEPOT2")
+    CMT = c("depot", "depot2")
   )
 d_sim_obs <-
   data.frame(

@@ -236,10 +236,10 @@ agomelatine and its metabolites in Chinese healthy volunteers</li>
 reference.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">Xie_2019_agomelatine</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://nlmixr2.github.io/nlmixr2est/reference/nlmixr2.html" class="external-link">nlmixr</a></span><span class="op">(</span><span class="fu"><a href="../reference/readModelDb.html">readModelDb</a></span><span class="op">(</span><span class="st">"Xie_2019_agomelatine"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: some etas defaulted to non-mu referenced, possible parsing error: e.IOV1, eta17, eta18, eta19, e.IOV2, eta21, eta22, eta23, e.IOV3, eta25, eta26, eta27, e.IOV4, eta29, eta30, eta31, e.IOV5, eta33, eta34, eta35</span></span>
+<span><span class="co">#&gt; Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_k13_1, etaiov_k13_2, etaiov_k13_3, etaiov_k13_4, etaiov_alag2_1, etaiov_alag2_2, etaiov_alag2_3, etaiov_alag2_4, etaiov_k23_1, etaiov_k23_2, etaiov_k23_3, etaiov_k23_4, etaiov_clint_1, etaiov_clint_2, etaiov_clint_3, etaiov_clint_4, etaiov_fpop_1, etaiov_fpop_2, etaiov_fpop_3, etaiov_fpop_4</span></span>
 <span><span class="co">#&gt; as a work-around try putting the mu-referenced expression on a simple line</span></span>
 <span><span class="va">conc_unit</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxode2.html" class="external-link">rxode</a></span><span class="op">(</span><span class="fu"><a href="../reference/readModelDb.html">readModelDb</a></span><span class="op">(</span><span class="st">"Xie_2019_agomelatine"</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="va">units</span><span class="op">[[</span><span class="st">"concentration"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; Warning: some etas defaulted to non-mu referenced, possible parsing error: e.IOV1, eta17, eta18, eta19, e.IOV2, eta21, eta22, eta23, e.IOV3, eta25, eta26, eta27, e.IOV4, eta29, eta30, eta31, e.IOV5, eta33, eta34, eta35</span></span>
+<span><span class="co">#&gt; Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_k13_1, etaiov_k13_2, etaiov_k13_3, etaiov_k13_4, etaiov_alag2_1, etaiov_alag2_2, etaiov_alag2_3, etaiov_alag2_4, etaiov_k23_1, etaiov_k23_2, etaiov_k23_3, etaiov_k23_4, etaiov_clint_1, etaiov_clint_2, etaiov_clint_3, etaiov_clint_4, etaiov_fpop_1, etaiov_fpop_2, etaiov_fpop_3, etaiov_fpop_4</span></span>
 <span><span class="co">#&gt; as a work-around try putting the mu-referenced expression on a simple line</span></span>
 <span></span>
 <span><span class="va">d_sim_dosing</span> <span class="op">&lt;-</span></span>
@@ -248,7 +248,7 @@ reference.</p>
 <span>    EVID <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>    AMT <span class="op">=</span> <span class="fl">25</span>, <span class="co"># mg</span></span>
 <span>    TIME <span class="op">=</span> <span class="fl">0</span>,</span>
-<span>    CMT <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"DEPOT1"</span>, <span class="st">"DEPOT2"</span><span class="op">)</span></span>
+<span>    CMT <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"depot"</span>, <span class="st">"depot2"</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="va">d_sim_obs</span> <span class="op">&lt;-</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
