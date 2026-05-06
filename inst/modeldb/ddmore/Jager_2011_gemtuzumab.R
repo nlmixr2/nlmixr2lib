@@ -1,5 +1,5 @@
 Jager_2011_gemtuzumab <- function() {
-  description <- "Mechanism-based PKPD model for the antibody-drug conjugate gemtuzumab ozogamicin (GO; Mylotarg) in patients with acute myeloid leukemia, as packaged in DDMORE Foundation Model Repository entry DDMODEL00000229. The model couples drug pharmacokinetics with explicit binding to the cell-surface antigen CD33: free drug in a central compartment binds free CD33 receptor to form a drug-receptor complex that is internalized; the toxic ozogamicin component then drives linear depletion of leukemic blast cells. The DDMORE entry extends the original Jager 2011 PK structure by adding a peripheral drug compartment and re-estimating all parameters simultaneously in Monolix, so it is not a literal reproduction of the published model — see the validation vignette for the comparison."
+  description <- "Mechanism-based PKPD model for the antibody-drug conjugate gemtuzumab ozogamicin (GO; Mylotarg) in patients with acute myeloid leukemia, as packaged in DDMORE Foundation Model Repository entry DDMODEL00000229. The model couples drug pharmacokinetics with explicit binding to the cell-surface antigen CD33: free drug in a central compartment binds free CD33 receptor to form a drug-receptor complex that is internalized; the toxic ozogamicin component then drives linear depletion of leukemic blast cells. The DDMORE entry extends the original Jager 2011 PK structure by adding a peripheral drug compartment and re-estimating all parameters simultaneously in Monolix, so it is not a literal reproduction of the published model -- see the validation vignette for the comparison."
   reference <- paste(
     "Jager E, van der Velden VHJ, te Marvelde JG, Walter RB, Agur Z, Vainstein V (2011).",
     "Targeted drug delivery by gemtuzumab ozogamicin: mechanism-based mathematical model for treatment strategy improvement and therapy individualization.",
@@ -41,12 +41,12 @@ Jager_2011_gemtuzumab <- function() {
   ini({
     # Parameter VALUES come from `GO_PK_model.mdl` parObj$STRUCTURAL and parObj$VARIABILITY.
     # The DDMORE bundle for DDMODEL00000229 ships only the MDL DSL source (`GO_PK_model.mdl`)
-    # and its PharmML rendering (`GO_PK_model.xml`) — there is NO `Output_real_*.lst` listing.
+    # and its PharmML rendering (`GO_PK_model.xml`) -- there is NO `Output_real_*.lst` listing.
     # `Model_Accommodations.txt` describes the parObj as the Monolix re-fit of Jager 2011 on
     # the same data as the publication; absent a `.lst` for cross-checking, the parObj values
     # are treated as the bundle's authoritative final estimates. See the vignette Errata.
 
-    # Drug PK — central volume and rate-constant parameterization (the MDL keeps drug PK in
+    # Drug PK -- central volume and rate-constant parameterization (the MDL keeps drug PK in
     # rate-constant form rather than CL/V form, with a peripheral compartment added on top of
     # the original 2011 structure).
     lvc    <- log(5.42);    label("Drug central volume of distribution V1 (L)")                                            # parObj POP_v1
@@ -54,7 +54,7 @@ Jager_2011_gemtuzumab <- function() {
     lkm    <- log(0.00757); label("Drug central -> peripheral first-order rate km (1/h)")                                  # parObj POP_km
     lkn    <- log(0.0185);  label("Drug peripheral -> central first-order rate kn (1/h)")                                  # parObj POP_kn
 
-    # CD33-directed binding kinetics — drug binds free receptor to form an internalized complex.
+    # CD33-directed binding kinetics -- drug binds free receptor to form an internalized complex.
     lkb    <- log(9.24e5);  label("Drug-receptor association (binding) rate kb (MDL native rate units)")                   # parObj POP_kb
     lku    <- log(310);     label("Drug-receptor dissociation (unbinding) rate ku (1/h)")                                  # parObj POP_ku
     lki    <- log(0.624);   label("Drug-receptor complex internalization rate ki (1/h)")                                   # parObj POP_ki
@@ -67,7 +67,7 @@ Jager_2011_gemtuzumab <- function() {
     lalph  <- log(0.0755);  label("Leukemic blast first-order depletion rate alpha (1/h)")                                 # parObj POP_alph
     ln0    <- log(1.32e-5); label("Initial leukemic blast count n0 at t = 0 (MDL native cell-count units)")                # parObj POP_n0
 
-    # Inter-individual variability — only ki, ke, and rp carry non-zero IIV in the parObj.
+    # Inter-individual variability -- only ki, ke, and rp carry non-zero IIV in the parObj.
     # The MDL declares omega_X with `type is sd`, so the parObj value IS the standard deviation;
     # nlmixr2 expects a variance for the `~` form, hence the squared values below.
     # The MDL parObj also declares an OMEGA correlation block among ETA_k, ETA_alph, ETA_n0,

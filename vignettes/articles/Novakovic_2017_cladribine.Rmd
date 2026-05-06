@@ -27,20 +27,20 @@ This model was extracted from the DDMORE Foundation Model Repository
 bundle for `DDMODEL00000223` (scraped to
 `dpastoor/ddmore_scraping/223/`). The bundle contains:
 
-- `Executable_Novakovic_2016_multiplesclerosis_cladribine_irt.mod` —
+- `Executable_Novakovic_2016_multiplesclerosis_cladribine_irt.mod` --
   the NONMEM `$PRED`-style control stream that encodes the full IRT
   model (8 EDSS items, latent disability, exposure-dependent
   symptomatic and exposure-independent protective drug effects, plus
   Full Random Effects on covariates (FREM) for Age, months since
   diagnosis (MSD), and exacerbation rate baseline (EXNB)).
-- `Output_real_*.lst` — NONMEM listing on the original real dataset
+- `Output_real_*.lst` -- NONMEM listing on the original real dataset
   with the FINAL PARAMETER ESTIMATE block used as the source of truth
   for the parameter values translated here.
-- `Output_simulated_*.lst` — companion listing on a simulated
+- `Output_simulated_*.lst` -- companion listing on a simulated
   dataset.
-- `Simulated_*.csv` — the simulated event dataset used by both
+- `Simulated_*.csv` -- the simulated event dataset used by both
   listings.
-- `DDMODEL00000223.rdf`, `Command.txt`, `223.json` — provenance and
+- `DDMODEL00000223.rdf`, `Command.txt`, `223.json` -- provenance and
   scraper metadata.
 
 The Novakovic 2017 publication is not on disk in this worktree, so the
@@ -60,7 +60,7 @@ and active-arm data from the CLARITY phase III cladribine program.
 The DDMORE bundle does **not** reproduce the published demographic
 table, so the model's `population` metadata fields for `n_subjects`,
 `n_studies`, `weight_range`, and `sex_female_pct` are intentionally
-`NA` — readers should consult the publication directly for those
+`NA` -- readers should consult the publication directly for those
 details. The FREM-modeled covariate population means are exposed as
 `age_mean = 38.6 years`, `msd_mean = 8.74 months`, and
 `exnb_mean = 1.35 / year`.
@@ -263,7 +263,7 @@ At baseline (`pd = 0`) the expected score on each EDSS subscale should
 correspond to the cumulative logits implied by the published item
 thresholds. We tabulate the typical-value expected score per item at
 baseline and at the end of the placebo trajectory (where pd reaches
-≈ 0.142 in latent units after two years of progression).
+~= 0.142 in latent units after two years of progression).
 
 ```{r per-item-baseline}
 key_times <- c(0, 730)
@@ -377,7 +377,7 @@ ggplot(vpc, aes(time, Q50, colour = arm, fill = arm)) +
 
 The DDMORE-source extraction skill renders this section under an
 "Assumptions and deviations" heading rather than the more pejorative
-"Errata" — the items below are informational caveats about the bundle
+"Errata" -- the items below are informational caveats about the bundle
 and the translation choices, not errors in the bundle itself.
 
 - **MINIMIZATION TERMINATED status.** The bundle's
@@ -403,7 +403,7 @@ and the translation choices, not errors in the bundle itself.
 - **FREM observations as outputs rather than fit-time tricks.** The
   source `.mod` treats Age, MSD, and EXNB as RTYPE=1/2/3 rows in the
   estimation dataset with `Y = THETA + P_i + EPS(1)` and SIGMA fixed
-  at 1e-5 — i.e., FREM continuous-covariate observations used at
+  at 1e-5 -- i.e., FREM continuous-covariate observations used at
   estimation time to identify the random-effect dimensions. In the
   forward-simulation translation here, those equations are exposed as
   three model outputs (`age_pred`, `msd_pred`, `exnb_pred`) with
@@ -421,7 +421,7 @@ and the translation choices, not errors in the bundle itself.
   `etap1 + etap2 + etap3 + etap4 + etap5 ~ c(...)` correlated-IIV
   block. This is mathematically equivalent for forward simulation but
   the user will not see the source-style var_p* / cor_p_* parameters
-  exposed individually — refitting the model would re-estimate the
+  exposed individually -- refitting the model would re-estimate the
   covariance matrix entries directly rather than the variance /
   correlation decomposition. The Cholesky-derived numeric values are
   documented inline in the model file's `ini()` block so the

@@ -21,7 +21,7 @@ library(ggplot2)
 * Citation: `r rxode2::rxode2(readModelDb("Schindler_2016_sunitinib"))$reference`
 * Description: `r rxode2::rxode2(readModelDb("Schindler_2016_sunitinib"))$description`
 * Article: <https://doi.org/10.1002/psp4.12057>
-* DDMORE Foundation Model Repository entry: `DDMODEL00000221` — bundle directory in the operator's `ddmore_scraping` mirror at `221/`, containing `Executable_SLD_SUV_OS_GIST.mod`, `Output_real_SLD_SUV_OS_GIST.lst`, `Output_simulated_SLD_SUV_OS_GIST.lst`, `Simulated_SLD_SUV_OS_GIST.csv`, `DDMODEL00000221.rdf`, `Command.txt`, and `221.json`. The linked publication itself (Schindler 2016, CPT:PSP) is not on disk in the worktree; parameter values, structural equations, and stop-and-ask decisions in this vignette and the model file are sourced from the bundle's `.mod` (structural equations + initial values) and `.lst` (final estimates).
+* DDMORE Foundation Model Repository entry: `DDMODEL00000221` -- bundle directory in the operator's `ddmore_scraping` mirror at `221/`, containing `Executable_SLD_SUV_OS_GIST.mod`, `Output_real_SLD_SUV_OS_GIST.lst`, `Output_simulated_SLD_SUV_OS_GIST.lst`, `Simulated_SLD_SUV_OS_GIST.csv`, `DDMODEL00000221.rdf`, `Command.txt`, and `221.json`. The linked publication itself (Schindler 2016, CPT:PSP) is not on disk in the worktree; parameter values, structural equations, and stop-and-ask decisions in this vignette and the model file are sourced from the bundle's `.mod` (structural equations + initial values) and `.lst` (final estimates).
 
 # Population
 
@@ -35,15 +35,15 @@ The per-parameter origin is recorded as an in-file comment next to each `ini()` 
 
 | Parameter (.lst label) | Final value | Role | Source location |
 |------------------------|-------------|------|-----------------|
-| `THETA(1)` `KOUT`         | 555.634 (1/week × 1000); FIX | SUVmax loss-of-response rate | `.lst` line 880; `.mod` line 54 |
+| `THETA(1)` `KOUT`         | 555.634 (1/week x 1000); FIX | SUVmax loss-of-response rate | `.lst` line 880; `.mod` line 54 |
 | `THETA(2)` `ALPHA`        | 0; FIX                       | SUVmax disease-progression slope | `.lst` line 880; `.mod` line 63 |
 | `THETA(3)` `DRUG`         | 0.94569; FIX                 | SUVmax drug-effect coefficient | `.lst` line 880; `.mod` line 72 |
 | `THETA(4)` `IBASE_SUV`    | 7.58866; FIX                 | Typical baseline SUVmax | `.lst` line 880; `.mod` line 81 |
 | `THETA(5)` `VAR RUV`      | 0.173794; FIX                | SUVmax residual variance (log scale) | `.lst` line 880; `.mod` line 90 |
 | `THETA(6)` `CORR RUV`     | 0.466827; FIX                | SUVmax across-lesion residual correlation | `.lst` line 880; `.mod` line 97 |
-| `THETA(7)` `KG*1000`      | 10.4796 (1/week × 1000); FIX | SLD tumor growth rate | `.lst` line 880; `.mod` line 111 |
-| `THETA(8)` `LAMBDA*1000`  | 20.0529 (1/week × 1000); FIX | SLD drug-resistance decay rate | `.lst` line 880; `.mod` line 113 |
-| `THETA(9)` `KDRUG*1000`   | 16.5971 (1/week × 1000); FIX | SLD drug-effect rate | `.lst` line 880; `.mod` line 115 |
+| `THETA(7)` `KG*1000`      | 10.4796 (1/week x 1000); FIX | SLD tumor growth rate | `.lst` line 880; `.mod` line 111 |
+| `THETA(8)` `LAMBDA*1000`  | 20.0529 (1/week x 1000); FIX | SLD drug-resistance decay rate | `.lst` line 880; `.mod` line 113 |
+| `THETA(9)` `KDRUG*1000`   | 16.5971 (1/week x 1000); FIX | SLD drug-effect rate | `.lst` line 880; `.mod` line 115 |
 | `THETA(10)` `IBASE_SLD`   | 263.064 mm; FIX              | Baseline sum of longest diameters | `.lst` line 880; `.mod` line 117 |
 | `THETA(11)` `RUV SLD`     | 0.0667619; FIX               | SLD proportional residual error | `.lst` line 880; `.mod` line 256 |
 | `THETA(12)` `LAMBH`       | 0.019030 (1/week)            | OS Weibull scale (estimated) | `.lst` iteration 8 NPARAMETR (line 790) |
@@ -52,16 +52,16 @@ The per-parameter origin is recorded as an in-file comment next to each `ini()` 
 | `THETA(15)` `ALPHD`       | 1; FIX                       | Dropout Weibull shape | `.lst` line 881; `.mod` line 126 |
 | `THETA(16)` `Predictor`   | 5.3558                       | OS hazard coefficient on RCFB1MAX | `.lst` iteration 8 NPARAMETR (line 790) |
 | `OMEGA BLOCK(2)` `KDRUG_SLD, DRUG_SUV` | (0.398557, 0.397941, 0.548112); FIX | Typical-subject drug-effect IIV | `.lst` lines 928-934; `.mod` lines 375-377 |
-| `OMEGA BLOCK(1) SAME` (×5) `DRUG_LES` | 0.324481; FIX | Lesion-specific drug-effect IIV | `.lst` lines 942-960; `.mod` lines 379-384 |
+| `OMEGA BLOCK(1) SAME` (x5) `DRUG_LES` | 0.324481; FIX | Lesion-specific drug-effect IIV | `.lst` lines 942-960; `.mod` lines 379-384 |
 | `OMEGA(20)` `IBASE_SLD`   | 0.288669; FIX                | SLD baseline IIV | `.lst` line 962; `.mod` line 386 |
 | `OMEGA(21)` `IBASE_SUV`   | 0.105177; FIX                | Typical-subject SUVmax baseline IIV | `.lst` line 968; `.mod` line 387 |
-| `OMEGA BLOCK(1) SAME` (×5) `IBASE_LES` | 0.0549036; FIX | Lesion-specific SUVmax baseline IIV | `.lst` lines 970-990; `.mod` lines 389-394 |
+| `OMEGA BLOCK(1) SAME` (x5) `IBASE_LES` | 0.0549036; FIX | Lesion-specific SUVmax baseline IIV | `.lst` lines 970-990; `.mod` lines 389-394 |
 | `OMEGA(27)` `KG`          | 0.361258; FIX                | SLD growth-rate IIV | `.lst` line 994; `.mod` line 396 |
 | `KEO`                     | log(2)/50 (1/h)              | Effect-compartment equilibration | `.mod` line 118 |
-| ODE structure (5×SUV + SLD + 2×Weibull + effect) | n/a | Equations 1-9 of the source | `.mod` `$DES` block lines 137-180 |
-| Residual error structure (5×log-additive + SLD prop) | n/a | `Y = log(A(i)) + EPSN`, Cholesky-decomposed EPS over 5 lesions; `Y = IPRED + W1·EPS(6)` for SLD | `.mod` `$ERROR` block lines 183-263 |
+| ODE structure (5xSUV + SLD + 2xWeibull + effect) | n/a | Equations 1-9 of the source | `.mod` `$DES` block lines 137-180 |
+| Residual error structure (5xlog-additive + SLD prop) | n/a | `Y = log(A(i)) + EPSN`, Cholesky-decomposed EPS over 5 lesions; `Y = IPRED + W1*EPS(6)` for SLD | `.mod` `$ERROR` block lines 183-263 |
 
-The MINIMIZATION line in `Output_real_*.lst` (line 795) reads `MINIMIZATION SUCCESSFUL` followed by `HOWEVER, PROBLEMS OCCURRED WITH THE MINIMIZATION. REGARD THE RESULTS OF THE ESTIMATION STEP CAREFULLY, AND ACCEPT THEM ONLY AFTER CHECKING THAT THE COVARIANCE STEP PRODUCES REASONABLE OUTPUT.` Per the `extract-literature-model` skill's `ddmore-source.md` § "Reading final estimates from `.lst`", `MINIMIZATION SUCCESSFUL` (with caveat) is acceptable; only `MINIMIZATION TERMINATED` triggers a sidecar. The caveat is recorded in the Errata below.
+The MINIMIZATION line in `Output_real_*.lst` (line 795) reads `MINIMIZATION SUCCESSFUL` followed by `HOWEVER, PROBLEMS OCCURRED WITH THE MINIMIZATION. REGARD THE RESULTS OF THE ESTIMATION STEP CAREFULLY, AND ACCEPT THEM ONLY AFTER CHECKING THAT THE COVARIANCE STEP PRODUCES REASONABLE OUTPUT.` Per the `extract-literature-model` skill's `ddmore-source.md` Section  "Reading final estimates from `.lst`", `MINIMIZATION SUCCESSFUL` (with caveat) is acceptable; only `MINIMIZATION TERMINATED` triggers a sidecar. The caveat is recorded in the Errata below.
 
 # Virtual cohort
 
@@ -104,8 +104,8 @@ stopifnot(!anyDuplicated(unique(events[, c("id", "time", "cmt")])))
 
 The OS / dropout TTE arms depend on `RCFB1MAX` (the per-subject week-1 maximum across-lesion relative SUVmax change from baseline). In the source NONMEM `.mod` `RCFB1MAX` is a record-loop intermediate computed inside `$ERROR` from the running SUVmax compartment values at FLAG = 1 / TIME = 168 h; rxode2 does not have an idiomatic equivalent of NONMEM's record-loop persistent state, so the model file consumes `RCFB1MAX` as a per-subject input covariate. The vignette therefore runs a two-stage simulation:
 
-1. **Stage 1** — simulate the SUVmax + SLD ODEs with `RCFB1MAX = 0` (the OS arm is irrelevant in stage 1; only its `RCFB1MAX` dependency is). Extract the per-subject lesion-specific SUVmax values at t = 168 h.
-2. **Stage 2** — compute `RCFB1MAX` per subject as the maximum (across the lesions present) of `(SUVmax(168) - SUVmax(0)) / SUVmax(0)`, bind it back into the event table as a per-subject covariate, and re-run the full model so the OS / dropout cumulative-hazard ODEs use the correct predictor.
+1. **Stage 1** -- simulate the SUVmax + SLD ODEs with `RCFB1MAX = 0` (the OS arm is irrelevant in stage 1; only its `RCFB1MAX` dependency is). Extract the per-subject lesion-specific SUVmax values at t = 168 h.
+2. **Stage 2** -- compute `RCFB1MAX` per subject as the maximum (across the lesions present) of `(SUVmax(168) - SUVmax(0)) / SUVmax(0)`, bind it back into the event table as a per-subject covariate, and re-run the full model so the OS / dropout cumulative-hazard ODEs use the correct predictor.
 
 ```{r stage1}
 mod <- rxode2::rxode2(readModelDb("Schindler_2016_sunitinib")) |> rxode2::zeroRe()
@@ -228,7 +228,7 @@ print(p_haz)
 
 # F.2 self-consistency check (typical-value re-simulation of the bundle dataset)
 
-The bundle's `Output_simulated_*.lst` reproduces a one-subject MAXEVAL = 0 simulation of the source `.mod` on `Simulated_SLD_SUV_OS_GIST.csv`. The check below runs a typical-value (zero-IIV) simulation through the packaged nlmixr2 model on a comparable layout and verifies that the SUVmax / SLD trajectories settle at the .mod's typical-baseline (`IBASE_SUV` ≈ 7.59 for the SUVmax compartments and `IBASE_SLD` ≈ 263 mm for SLD) at t = 0 and that the post-cycle SLD trajectory falls within an order of magnitude of those baselines — the bundle's Output_simulated `.lst` does not embed a parsable `$TABLE` block for direct numerical comparison, so this check is structural rather than per-time-point.
+The bundle's `Output_simulated_*.lst` reproduces a one-subject MAXEVAL = 0 simulation of the source `.mod` on `Simulated_SLD_SUV_OS_GIST.csv`. The check below runs a typical-value (zero-IIV) simulation through the packaged nlmixr2 model on a comparable layout and verifies that the SUVmax / SLD trajectories settle at the .mod's typical-baseline (`IBASE_SUV` ~= 7.59 for the SUVmax compartments and `IBASE_SLD` ~= 263 mm for SLD) at t = 0 and that the post-cycle SLD trajectory falls within an order of magnitude of those baselines -- the bundle's Output_simulated `.lst` does not embed a parsable `$TABLE` block for direct numerical comparison, so this check is structural rather than per-time-point.
 
 ```{r self-consistency}
 mod_typical <- rxode2::rxode2(readModelDb("Schindler_2016_sunitinib")) |> rxode2::zeroRe()
@@ -287,10 +287,10 @@ knitr::kable(structural_summary,
 
 # Assumptions and deviations
 
-- **Cross-lesion residual-error correlation dropped.** The source `.mod` `$ERROR` block applies a Cholesky-decomposed 5×5 residual-error structure across the SUVmax outputs, with diagonal variance THETA(5) = 0.173794 and across-lesion correlation THETA(6) = 0.466827. nlmixr2 does not support cross-output residual-error correlation in its standard `~ prop()` syntax, so each lesion's residual error is preserved at the per-lesion marginal scale (`propSd = sqrt(0.173794) ≈ 0.4169`) but the across-lesion correlation is omitted. Per-lesion typical values and IIV are unaffected.
-- **`RCFB1MAX` consumed as an input covariate, not an in-model state-snapshot.** In the source NONMEM `.mod` `RCFB1MAX` is computed inline at FLAG = 1 / TIME = 168 h via record-loop persistent state (see `.mod` `$ERROR` block lines 282-302). rxode2 does not have an idiomatic equivalent, so the model file consumes `RCFB1MAX` as a per-subject input covariate; the vignette implements the two-stage simulation (Stage 1 → compute RCFB1MAX → Stage 2) that emulates the NONMEM behavior.
+- **Cross-lesion residual-error correlation dropped.** The source `.mod` `$ERROR` block applies a Cholesky-decomposed 5x5 residual-error structure across the SUVmax outputs, with diagonal variance THETA(5) = 0.173794 and across-lesion correlation THETA(6) = 0.466827. nlmixr2 does not support cross-output residual-error correlation in its standard `~ prop()` syntax, so each lesion's residual error is preserved at the per-lesion marginal scale (`propSd = sqrt(0.173794) ~= 0.4169`) but the across-lesion correlation is omitted. Per-lesion typical values and IIV are unaffected.
+- **`RCFB1MAX` consumed as an input covariate, not an in-model state-snapshot.** In the source NONMEM `.mod` `RCFB1MAX` is computed inline at FLAG = 1 / TIME = 168 h via record-loop persistent state (see `.mod` `$ERROR` block lines 282-302). rxode2 does not have an idiomatic equivalent, so the model file consumes `RCFB1MAX` as a per-subject input covariate; the vignette implements the two-stage simulation (Stage 1 -> compute RCFB1MAX -> Stage 2) that emulates the NONMEM behavior.
 - **Sunitinib clearance is a required upstream-popPK input.** The source `.mod` `$INPUT` line declares `CL` as "post-hoc clearance from previously-developed PK model". The upstream sunitinib popPK model is not part of the DDMODEL00000221 bundle and is not currently in `nlmixr2lib`. The model file therefore requires `CLI` (per-subject CL/F, L/h) as an input covariate; the vignette virtual cohort uses 50 L/h as a literature-typical adult sunitinib clearance, consistent with Houk et al. (2010) `J Clin Pharmacol` 50:843-858, but does not reproduce Houk's popPK structure inline.
-- **`MINIMIZATION SUCCESSFUL` carried a NONMEM caveat.** `Output_real_*.lst` line 795 reports `MINIMIZATION SUCCESSFUL` immediately followed by `HOWEVER, PROBLEMS OCCURRED WITH THE MINIMIZATION. REGARD THE RESULTS OF THE ESTIMATION STEP CAREFULLY ...`. Per the `extract-literature-model` `ddmore-source.md` § "Reading final estimates from `.lst`", `MINIMIZATION SUCCESSFUL` (with caveat) is acceptable but flagged here.
+- **`MINIMIZATION SUCCESSFUL` carried a NONMEM caveat.** `Output_real_*.lst` line 795 reports `MINIMIZATION SUCCESSFUL` immediately followed by `HOWEVER, PROBLEMS OCCURRED WITH THE MINIMIZATION. REGARD THE RESULTS OF THE ESTIMATION STEP CAREFULLY ...`. Per the `extract-literature-model` `ddmore-source.md` Section  "Reading final estimates from `.lst`", `MINIMIZATION SUCCESSFUL` (with caveat) is acceptable but flagged here.
 - **Linked publication not on disk.** The Schindler 2016 publication is not on disk under `mab_human_consensus/literature/`; an external check of parameter values against the publication's tables was not performed. Final estimates were taken from the `.lst` only.
 - **Iteration-log precision used for estimated THETAs.** THETA(12), THETA(14), and THETA(16) (the only THETAs that moved during minimization) are reported in the `FINAL PARAMETER ESTIMATE` block at 3-significant-digit precision (`1.90E-02`, `1.99E-02`, `5.36E+00`); the model file uses the higher-precision values from iteration 8 of the iteration-log `NPARAMETR` row (`1.9030E-02`, `1.9924E-02`, `5.3558E+00`).
 - **Bundle simulated dataset is a 1-subject smoke test, not a representative cohort.** `Simulated_SLD_SUV_OS_GIST.csv` ships 315 records for a single virtual subject on a single dosing schedule, which is consistent with NONMEM regression-test usage but is not reflective of the 66-patient pooled GIST cohort that the model was built on. The vignette's virtual cohort is a deliberately small (n = 5) extension of the bundle's per-subject schedule to make the F.2 self-consistency and qualitative-VPC checks tractable; reproducing the publication's per-figure quantitative numbers would require the original observed dataset, which is not in the bundle.

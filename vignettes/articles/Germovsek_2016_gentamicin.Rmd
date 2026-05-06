@@ -51,7 +51,7 @@ PDF is not on disk, so detailed demographics (age range, weight range, sex
 balance, race / ethnicity, indication) could not be cross-checked. The
 DDMORE bundle's `Simulated_simdataDDM.csv` uses median covariates from the
 original analysis (WT 2.12 kg, PMA 33 weeks, PNA 5.4 days, GA 34 weeks,
-CREAT 78 µmol/L) — representative of a preterm neonate around the first
+CREAT 78 umol/L) -- representative of a preterm neonate around the first
 postnatal week.
 
 ```{r population}
@@ -107,7 +107,7 @@ effect of interest.
 
 Canonical units are used on input: `WT` in kg (the source data column was in
 grams), `PAGE` in months (the source used PMA in weeks), `PNA` in months
-(the source used PNA in days), `CREAT` in µmol/L. The model converts back
+(the source used PNA in days), `CREAT` in umol/L. The model converts back
 to the source-paper units (weeks, days) at use site so the numerical T50
 and P50 values match the `.lst` final estimates.
 
@@ -130,7 +130,7 @@ cohorts <- tibble::tibble(
   CREAT_uM     = c(78,   55,   30)
 )
 
-# Dosing — gentamicin 5 mg/kg IV q24h x 5 doses, 5-minute infusions.
+# Dosing -- gentamicin 5 mg/kg IV q24h x 5 doses, 5-minute infusions.
 # `rate` chosen so amt / rate = 1/12 h = 5 minutes.
 dose_times    <- c(0, 24, 48, 72, 96)
 sample_times  <- c(0.083, 0.5, 1, 2, 4, 8, 12, 24,
@@ -197,9 +197,9 @@ sim_stoch <- rxode2::rxSolve(
 
 The bundle's `Simulated_simdataDDM.csv` records the simulated `DV` column
 under the model's typical population at the median covariates above. A
-representative trace from the file (subject 1001) had `DV ≈ 7.02 mg/L`
-30 min after a 6 mg dose at 12 h, and `DV ≈ 2.21 mg/L` at 58.5 h after
-4 × maintenance doses; the values include residual error.
+representative trace from the file (subject 1001) had `DV ~= 7.02 mg/L`
+30 min after a 6 mg dose at 12 h, and `DV ~= 2.21 mg/L` at 58.5 h after
+4 x maintenance doses; the values include residual error.
 The block below confirms the packaged nlmixr2 model reproduces those
 DDMORE-bundle predictions for the same subject and dose history.
 
@@ -238,7 +238,7 @@ knitr::kable(
 
 The typical-value Cc and the residual-error-laden DDMORE `DV` agree to within
 the magnitude of the residual error reported in the model
-(`addSd ≈ 0.13 mg/L` and `propSd ≈ 19%`), which is the expected outcome of
+(`addSd ~= 0.13 mg/L` and `propSd ~= 19%`), which is the expected outcome of
 F.2 self-consistency.
 
 # Trajectories across the virtual cohort
@@ -252,7 +252,7 @@ sim_typical |>
   labs(
     x = "Time (h)", y = "Gentamicin concentration (mg/L)",
     title = "Typical-value trajectories across the virtual cohort",
-    subtitle = "Germovsek 2016 / DDMODEL00000238 — 5 mg/kg IV q24h x 5 doses",
+    subtitle = "Germovsek 2016 / DDMODEL00000238 -- 5 mg/kg IV q24h x 5 doses",
     colour = NULL
   ) +
   theme_minimal()
@@ -337,7 +337,7 @@ The Germovsek 2016 publication PDF is not on disk under
 `/home/bill/github/mab_human_consensus/literature/`, so the in-paper NCA
 tables (Cmax, AUC, trough by PMA / PNA stratum) cannot be reproduced here.
 This is the F.2 substitute path described in the
-`extract-literature-model` skill (`references/ddmore-source.md` §
+`extract-literature-model` skill (`references/ddmore-source.md` Section 
 "Validation strategy by model type"). Operator follow-up: pull the
 publication PDF and compare PKNCA outputs above against any in-paper
 Cmax / AUC / Cmin values reported by Germovsek et al.
@@ -361,9 +361,9 @@ Cmax / AUC / Cmin values reported by Germovsek et al.
 
 - **Inter-occasion variability (IOV) was dropped.** The source `.mod`
   defined a per-occasion CL random effect via 22 ETAs in BLOCK(1) SAME
-  blocks (`OCC = 1..22`), each with variance 0.0141 (≈ 12% CV). The
+  blocks (`OCC = 1..22`), each with variance 0.0141 (~= 12% CV). The
   packaged nlmixr2 model omits IOV because (a) it is small relative to
-  the inter-individual CL variance (0.175, ≈ 42% CV), (b) nlmixr2's
+  the inter-individual CL variance (0.175, ~= 42% CV), (b) nlmixr2's
   occasion-effect ergonomics differ from NONMEM's `BLOCK(1) SAME` idiom,
   and (c) the model is intended for typical-value and population
   simulation, not per-occasion re-estimation. Users fitting on real data
@@ -402,7 +402,7 @@ Cmax / AUC / Cmin values reported by Germovsek et al.
 
 - **Allometric exponents (1, 0.75, 0.632) are FIXED.** None of the
   exponents (CL, Q/Q2, V1/V2/V3 weight scaling) were estimated as
-  `THETA(...)`s — they are hard-coded in the `.mod` `$PK` block. They
+  `THETA(...)`s -- they are hard-coded in the `.mod` `$PK` block. They
   are wrapped in `fixed(...)` in `ini()` so estimation does not perturb
   them.
 
@@ -412,7 +412,7 @@ Cmax / AUC / Cmin values reported by Germovsek et al.
   packaged model.
 
 - **Validation strategy is F.2 self-consistency** (per
-  `references/ddmore-source.md` § "Validation strategy by model type"
+  `references/ddmore-source.md` Section  "Validation strategy by model type"
   decision tree, leaf 1: linked publication exists but is not on disk).
   PKNCA values shown above are informational; comparison against the
   Germovsek 2016 published NCA / population-prediction figures could

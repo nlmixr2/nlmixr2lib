@@ -25,7 +25,7 @@ library(ggplot2)
   [doi:10.1371/journal.pone.0024265](https://doi.org/10.1371/journal.pone.0024265).
 * DDMORE Foundation Model Repository entry:
   [DDMODEL00000229](https://repository.ddmore.eu/model/DDMODEL00000229)
-  — Monolix re-fit with an added peripheral drug compartment.
+  -- Monolix re-fit with an added peripheral drug compartment.
 * Description: Mechanism-based PKPD model coupling drug pharmacokinetics with
   explicit binding to the cell-surface antigen CD33. Free drug in a central
   compartment binds free CD33 receptor to form a drug-receptor complex that is
@@ -84,9 +84,9 @@ listing.
 | `lrp`             | log(823)   | `parObj$STRUCTURAL$POP_rp`                                          |
 | `lalph`           | log(0.0755)| `parObj$STRUCTURAL$POP_alph`                                        |
 | `ln0`             | log(1.32e-5)| `parObj$STRUCTURAL$POP_n0`                                         |
-| `etalki`          | 0.258²     | `parObj$VARIABILITY$omega_ki` (sd, type is sd)                      |
-| `etalke`          | 0.281²     | `parObj$VARIABILITY$omega_ke` (sd, type is sd)                      |
-| `etalrp`          | 0.611²     | `parObj$VARIABILITY$omega_rp` (sd, type is sd)                      |
+| `etalki`          | 0.258^2     | `parObj$VARIABILITY$omega_ki` (sd, type is sd)                      |
+| `etalke`          | 0.281^2     | `parObj$VARIABILITY$omega_ke` (sd, type is sd)                      |
+| `etalrp`          | 0.611^2     | `parObj$VARIABILITY$omega_rp` (sd, type is sd)                      |
 | `addSd`           | 0.000583   | `parObj$STRUCTURAL$a` (additive residual error)                     |
 | Constant `nav`    | 6.02214    | `mdlObj$MODEL_PREDICTION` inline (Avogadro number / 1e23)           |
 | Constant `vblood` | 4.8        | `mdlObj$MODEL_PREDICTION` inline (assumed blood volume, L)          |
@@ -104,7 +104,7 @@ Jager 2011 paper is not on disk, so no published clinical regimen is
 available to reproduce. The vignette exercises the packaged ODEs on a
 single typical-individual scenario (one 50 mg IV bolus into the central
 compartment) so that the simulated trajectories can be inspected for
-mechanistic plausibility — *not* as a clinically-grounded dosing
+mechanistic plausibility -- *not* as a clinically-grounded dosing
 regimen.
 
 ```{r cohort}
@@ -146,17 +146,17 @@ ggplot(sim, aes(time, Cc)) +
 ```
 
 ```{r mech-cc-check}
-stopifnot(sim$Cc[1] > 8)               # initial ≈ amt / vc = 50 / 5.42 ≈ 9.2
+stopifnot(sim$Cc[1] > 8)               # initial ~= amt / vc = 50 / 5.42 ~= 9.2
 stopifnot(all(diff(sim$Cc) < 0))       # monotonic decline (no rebound)
 stopifnot(tail(sim$Cc, 1) > 0)
 ```
 
 ## Free CD33 receptor depletes upon drug arrival, then recovers as drug clears
 
-The receptor is at steady state `rp / ke ≈ 4135` at `t = 0`, but the
+The receptor is at steady state `rp / ke ~= 4135` at `t = 0`, but the
 incoming dose drives a fast binding pulse that depletes free target by
-several orders of magnitude before `target` slowly recovers as drug —
-and complex — fall.
+several orders of magnitude before `target` slowly recovers as drug --
+and complex -- fall.
 
 ```{r mech-target}
 ggplot(sim, aes(time, target)) +
@@ -194,7 +194,7 @@ stopifnot(sim$complex[final_idx] < sim$complex[peak_idx])
 
 The cell ODE is `d/dt(cells) = -alph * cells`, so cells decay
 exponentially at typical-value rate `alph = 0.0755 1/h` (half-life
-`log(2) / alph ≈ 9.18 h`). The simulated trajectory should match this
+`log(2) / alph ~= 9.18 h`). The simulated trajectory should match this
 analytically.
 
 ```{r mech-cells}
@@ -232,7 +232,7 @@ stopifnot(any(diff(sim$peripheral1) < 0))      # then re-distribution / decline
 The DDMORE Foundation Model Repository entry DDMODEL00000229 ships only
 the MDL DSL source (`GO_PK_model.mdl`), its PharmML XML rendering
 (`GO_PK_model.xml`), the `Model_Accommodations.txt` reference note, and
-RDF / scraper metadata — there is **no** `Output_real_*.lst`,
+RDF / scraper metadata -- there is **no** `Output_real_*.lst`,
 `Output_simulated_*.lst`, or simulated event dataset. The Jager 2011
 publication itself is not on disk in this worktree's literature tree.
 The following assumptions and deviations apply.
@@ -275,8 +275,8 @@ The following assumptions and deviations apply.
   with **no** explicit unit annotations. The packaged `units` field
   declares `dosing = "mg"` and `concentration = "mg/L"` based on the
   observation that a 50-unit dose into `central` produces an initial
-  `Cc = amt / vc ≈ 9.22`, which is consistent with a clinical mg-scale
-  gemtuzumab ozogamicin bolus (typical adult IV ~6–18 mg) and a
+  `Cc = amt / vc ~= 9.22`, which is consistent with a clinical mg-scale
+  gemtuzumab ozogamicin bolus (typical adult IV ~6-18 mg) and a
   central volume `v1 = 5.42 L`. Receptor units (`target`, `complex`,
   `rp`) and cell-count units (`cells`, `n0`) are MDL-native and are
   mechanism-specific scalings rather than physical receptor or cell

@@ -36,7 +36,7 @@ Schindler_2016_sunitinib <- function() {
       units              = "(unitless)",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject. Sign convention: more negative `RCFB1MAX` (greater week-1 SUVmax suppression) reduces the OS hazard. In the source NONMEM `.mod` `RCFB1MAX` is computed inline at FLAG = 1 / TIME = 168 h from the running SUVmax compartment values and reused on subsequent records — a NONMEM record-loop construct without an idiomatic rxode2 / nlmixr2 equivalent. The model file therefore consumes `RCFB1MAX` as a per-subject input covariate; reproducing the source's behavior requires a two-stage simulation (run the SUVmax + SLD ODEs first, compute `RCFB1MAX` per subject from the t = 168 h SUVmax values, then run the OS / dropout TTE arms with `RCFB1MAX` bound). The vignette virtual cohort follows this pattern.",
+      notes              = "Time-fixed per subject. Sign convention: more negative `RCFB1MAX` (greater week-1 SUVmax suppression) reduces the OS hazard. In the source NONMEM `.mod` `RCFB1MAX` is computed inline at FLAG = 1 / TIME = 168 h from the running SUVmax compartment values and reused on subsequent records -- a NONMEM record-loop construct without an idiomatic rxode2 / nlmixr2 equivalent. The model file therefore consumes `RCFB1MAX` as a per-subject input covariate; reproducing the source's behavior requires a two-stage simulation (run the SUVmax + SLD ODEs first, compute `RCFB1MAX` per subject from the t = 168 h SUVmax values, then run the OS / dropout TTE arms with `RCFB1MAX` bound). The vignette virtual cohort follows this pattern.",
       source_name        = "RCFB1MAX"
     )
   )
@@ -150,8 +150,8 @@ Schindler_2016_sunitinib <- function() {
     # correlation THETA(6) = 0.466827 (.lst lines 880, 1010-1026; .mod
     # lines 90-106 and 188-225). NONMEM "additive on log scale" maps to
     # nlmixr2's `prop()` (proportional in linear space); the per-lesion
-    # standard deviation is sqrt(THETA(5)) ≈ 0.4169. The Cholesky-
-    # induced cross-lesion correlation (THETA(6) ≈ 0.467) is not
+    # standard deviation is sqrt(THETA(5)) ~= 0.4169. The Cholesky-
+    # induced cross-lesion correlation (THETA(6) ~= 0.467) is not
     # represented natively because nlmixr2 does not support cross-output
     # residual-error correlation in its standard `~ prop()` syntax;
     # marginal per-lesion residual variance is preserved. See the

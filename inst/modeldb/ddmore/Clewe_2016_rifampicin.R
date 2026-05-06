@@ -1,5 +1,5 @@
 Clewe_2016_rifampicin <- function() {
-  description <- "Multistate Tuberculosis Pharmacometric (MTP) model for in vitro M. tuberculosis H37Rv natural growth (no drug effect): three bacterial states (fast-multiplying, slow-multiplying, non-multiplying) with Gompertz growth on F and time-varying F->S transfer (Clewe 2016; DDMODEL00000240, scenario 4 — natural-growth backbone of the framework that the publication then couples with rifampicin exposure-response; the bundled .mod ships only the natural-growth scaffold)"
+  description <- "Multistate Tuberculosis Pharmacometric (MTP) model for in vitro M. tuberculosis H37Rv natural growth (no drug effect): three bacterial states (fast-multiplying, slow-multiplying, non-multiplying) with Gompertz growth on F and time-varying F->S transfer (Clewe 2016; DDMODEL00000240, scenario 4 -- natural-growth backbone of the framework that the publication then couples with rifampicin exposure-response; the bundled .mod ships only the natural-growth scaffold)"
   reference <- paste(
     "Clewe O, Aulin L, Hu Y, Coates AR, Simonsson US. (2016).",
     "A multistate tuberculosis pharmacometric model: a framework for studying",
@@ -78,15 +78,15 @@ Clewe_2016_rifampicin <- function() {
     # so etalf0 ~ var translates the diagonal $OMEGA verbatim.
     etalf0 ~ 22.4
     # Output_real_MTP.lst OMEGA ETA1 = 2.24E+01 (variance, log-scale);
-    # very wide IIV — etabar p-value 0.06, 41% etashrink — see vignette Errata.
+    # very wide IIV -- etabar p-value 0.06, 41% etashrink -- see vignette Errata.
 
     # Residual error: NONMEM `IPRED = LOG(F+S); Y = IPRED + EPS(1)` with
     # SIGMA = 0.160 (variance on log-scale residual). Per
-    # naming-conventions.md §"$ERROR block patterns" this maps to a
+    # naming-conventions.md Section "$ERROR block patterns" this maps to a
     # proportional error in linear space: cfu ~ prop(propSd) with
     # propSd = sqrt(SIGMA) = sqrt(0.160) = 0.400.
     propSd <- sqrt(0.160)
-    label("Proportional residual error on culturable CFU (F+S) — fraction; sqrt of SIGMA(1) on log-scale")
+    label("Proportional residual error on culturable CFU (F+S) -- fraction; sqrt of SIGMA(1) on log-scale")
     # Output_real_MTP.lst SIGMA EPS1 = 1.60E-01 (variance);
     # propSd = sqrt(0.160) = 0.4 ~ 40% CV in linear space.
   })
