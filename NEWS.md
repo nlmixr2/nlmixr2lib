@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Netterberg 2017 docetaxel ([doi:10.1007/s00280-017-3366-x](https://doi.org/10.1007/s00280-017-3366-x)) [DDMODEL00000224] — adults receiving docetaxel chemotherapy (Friberg-style myelosuppression PD model with Kloft 2006 parameter set).
 * Add Zecchin 2016 survival ([doi:10.1111/bcp.12994](https://doi.org/10.1111/bcp.12994)) [DDMODEL00000218] — adults with advanced epithelial ovarian cancer.
 * Add Hansson 2013 sunitinib fatigue Markov + proportional-odds model ([doi:10.1038/psp.2013.62](https://doi.org/10.1038/psp.2013.62)) [DDMODEL00000222] — adults with imatinib-resistant gastrointestinal stromal tumors.
 * Add Svensson 2016 bedaquiline ([doi:10.1002/psp4.12147](https://doi.org/10.1002/psp4.12147)) [DDMODEL00000219] — adults with multidrug-resistant tuberculosis (parent + N-desmethyl M2 metabolite, time-varying weight and albumin).
