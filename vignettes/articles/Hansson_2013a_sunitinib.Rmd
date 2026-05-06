@@ -61,7 +61,7 @@ Equations come from the `.mod`'s `$PK` / `$DES` / `$ERROR` blocks.
 | Equation / parameter | Value | Source location (DDMODEL00000197) |
 |----------------------|-------|------------------------------------|
 | Structural model: 4-compartment indirect response | n/a | `.mod` `$MODEL NCOMPS=4` (COMP1=VEGF, COMP2=sVEGFR-2, COMP3=sVEGFR-3, COMP4=sKIT) |
-| `auc <- DOSE_MG / CLI` | n/a | `.mod` `$PK` line `AUC = DOS/CL` |
+| `auc <- DOSE / CLI` | n/a | `.mod` `$PK` line `AUC = DOS/CL` |
 | `vegf` ODE (Kout inhibition) | n/a | `.mod` `$DES` line `DADT(1) = KIN-KOUT*(1-EFF)*A(1)` |
 | `svegfr2`, `svegfr3`, `skit` ODEs (Kin inhibition) | n/a | `.mod` `$DES` lines `DADT(2..4) = KIN*(1-EFF)-KOUT*A` |
 | Linear DP: `bl_vegf*(1+dp_slope_vegf*t)` | n/a | `.mod` `$PK` `DP1 = BM0*(1+DPSLO*TIME)` |
@@ -95,11 +95,11 @@ The `.mod`'s sVEGFR-2 residual is `W = sqrt(THETA(15)^2 + (THETA(16)/A(2))^2)` a
 # Drug-exposure inputs
 
 The Hansson 2013a model has no PK ODE: drug exposure is summarised
-per-dose as `AUC = DOSE_MG / CLI` and fed into a sigmoid-Imax (or
+per-dose as `AUC = DOSE / CLI` and fed into a sigmoid-Imax (or
 plain-Imax) drug-effect function on each biomarker's indirect-response
-chain. Both `DOSE_MG` and `CLI` are required data covariates:
+chain. Both `DOSE` and `CLI` are required data covariates:
 
-* `DOSE_MG` (mg) — current daily sunitinib dose at the time of the
+* `DOSE` (mg) — current daily sunitinib dose at the time of the
   record. Time-varying with the on/off cycling: 50 mg during a 4-week
   on-cycle, 0 mg during the 2-week off-cycle, and 0 mg for placebo
   subjects.
@@ -121,7 +121,7 @@ mod  <- readModelDb("Hansson_2013a_sunitinib")
 modT <- rxode2::zeroRe(mod)
 
 # Typical-value, single-subject events table for a 12-week follow-up.
-# DOSE_MG follows a 4-weeks-on / 2-weeks-off sunitinib schedule
+# DOSE follows a 4-weeks-on / 2-weeks-off sunitinib schedule
 # (50 mg during on-cycles, 0 mg during the off-cycle).
 on_off_dose <- function(time_h, daily_mg = 50) {
   week_idx <- floor(time_h / (7 * 24))
@@ -136,7 +136,7 @@ events <- data.frame(
   evid    = 0L,
   amt     = 0,
   cmt     = NA_integer_,
-  DOSE_MG = on_off_dose(obs_times, daily_mg = 50),
+  DOSE = on_off_dose(obs_times, daily_mg = 50),
   CLI     = 32.819
 )
 head(events, 10)
@@ -148,7 +148,7 @@ head(events, 10)
 sim <- rxode2::rxSolve(modT, events = events) |> as.data.frame()
 
 biomarkers <- sim |>
-  dplyr::select(time, vegf, svegfr2, svegfr3, skit, DOSE_MG) |>
+  dplyr::select(time, vegf, svegfr2, svegfr3, skit, DOSE) |>
   tidyr::pivot_longer(c(vegf, svegfr2, svegfr3, skit),
                       names_to = "biomarker", values_to = "conc")
 
@@ -217,7 +217,7 @@ bundle_csv <- system.file("modeldb", "ddmore",
 # subset to subject 1, used here for documentation / verification.
 # Until the file is bundled in the package, fall back to a synthetic
 # events table that mirrors the simulated CSV's first-subject structure
-# (constant DOSE_MG = 50, CLI = 32.819, observations every 24 h for 12
+# (constant DOSE = 50, CLI = 32.819, observations every 24 h for 12
 # cycles of 2 weeks each).
 if (!nzchar(bundle_csv) || !file.exists(bundle_csv)) {
   obs_t <- seq(0, 24 * 14 * 12, by = 24)
@@ -227,7 +227,7 @@ if (!nzchar(bundle_csv) || !file.exists(bundle_csv)) {
     evid    = 0L,
     amt     = 0,
     cmt     = NA_integer_,
-    DOSE_MG = 50,
+    DOSE = 50,
     CLI     = 32.819
   )
 } else {
@@ -268,7 +268,7 @@ by `(1 - eff_*)`-scaled Kin/Kout balance.
   published figure or table is not performed in this vignette; only F.2
   self-consistency and F.3 mechanistic-sanity checks are run.
 * **Upstream popPK not packaged.** The drug-exposure summary
-  `AUC = DOSE_MG / CLI` consumes `CLI` (individual posthoc clearance)
+  `AUC = DOSE / CLI` consumes `CLI` (individual posthoc clearance)
   from the paper's upstream 2-compartment popPK fit. That popPK is not
   extracted into nlmixr2lib; users must supply `CLI` per subject.
 * **Detailed demographics absent.** Age range, weight range, sex
@@ -330,7 +330,7 @@ by `(1 - eff_*)`-scaled Kin/Kout balance.
 * **Units `mg` × `pg/mL`.** `units$dosing = "mg"` and
   `units$concentration = "pg/mL"` differ in magnitude;
   `checkModelConventions()` reports this as an `info`-level note. The
-  PD model has no PK ODE — `DOSE_MG` is consumed only inside
-  `auc <- DOSE_MG / CLI`, and the four biomarker states use their own
+  PD model has no PK ODE — `DOSE` is consumed only inside
+  `auc <- DOSE / CLI`, and the four biomarker states use their own
   pg/mL scales independent of the dosing unit — so no scaling factor
   is needed inside `model()`.
