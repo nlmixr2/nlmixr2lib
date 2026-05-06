@@ -72,7 +72,11 @@
     "m2",
     # Endoxifen (4-hydroxy-N-desmethyltamoxifen), the major active
     # metabolite of tamoxifen — Ter Heine 2014.
-    "endx"
+    "endx",
+    # Phase-II conjugates: glucuronide (gluc) and sulphate (sulf).
+    # Used for paracetamol-glucuronide / paracetamol-sulphate plasma
+    # metabolite compartments in Allegaert 2015 (DDMODEL00000267).
+    "gluc", "sulf"
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` denotes the time-varying decay arm.

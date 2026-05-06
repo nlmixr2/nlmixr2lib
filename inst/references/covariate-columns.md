@@ -156,7 +156,42 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Scope:** general
 - **Example models:** `Hu_2026_clesrovimab.R`, used implicitly in `Clegg_2024_nirsevimab.R` (folded into PAGE).
 
+## Pregnancy / hormonal status
+
+### TERM_BIRTH (**canonical for term-vs-preterm birth indicator**)
+- **Description:** Binary indicator of term-vs-preterm birth status; `1` = term birth (>= 37 weeks gestation), `0` = preterm birth (< 37 weeks gestation). Time-fixed per subject. In Allegaert 2015 (paracetamol PK in young women) the indicator is used to select between two typical-value clearances for the sulphate-formation pathway.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (preterm). Effect form is the symmetric `CL = TERM_BIRTH * theta_term + (1 - TERM_BIRTH) * theta_preterm` selection — so neither category is "the multiplicative reference", and both per-stratum clearances are estimated parameters.
+- **Source aliases:**
+  - `TERM` (Allegaert 2015 NONMEM column; same orientation, no transformation) — used in `Allegaert_2015_paracetamol.R`.
+- **Example models:** `Allegaert_2015_paracetamol.R`.
+- **Notes:** Distinct from `GA` (continuous gestational age in weeks): `TERM_BIRTH` is the binarized version with the conventional 37-week cutoff. Use `GA` when the source paper carries gestational age as a continuous covariate; use `TERM_BIRTH` only when the paper itself dichotomizes. Do not derive `TERM_BIRTH` from `GA` programmatically inside `model()` — the term-cutoff convention belongs in data assembly, not the model file.
+
+### BC_USE (**canonical for oral-contraceptive use indicator**)
+- **Description:** Binary indicator of oral hormonal contraceptive use; `1` = currently taking an oral contraceptive (estrogen-progestin or progestin-only pill), `0` = not on hormonal contraception. Time-varying as women cycle on/off contraception across study occasions.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no oral contraceptive). Effect form in Allegaert 2015 is multiplicative: `CL_glucuronide *= theta_BC_USE` when `BC_USE == 1`, with `theta_BC_USE = 1.46` (estrogen-driven UGT2B7 induction).
+- **Source aliases:**
+  - `BC` (Allegaert 2015 NONMEM column; same orientation, no transformation) — used in `Allegaert_2015_paracetamol.R`.
+- **Example models:** `Allegaert_2015_paracetamol.R`.
+- **Notes:** Specific scope because the canonical encoding pools all oral contraceptive types (combined / progestin-only) into a single binary; future models that need to distinguish formulations should register a finer-grained canonical (e.g., `BC_COMBINED`, `BC_PROGESTIN`).
+
 ## Renal / hepatic function
+
+### UF (**canonical for instantaneous urine flow rate**)
+- **Description:** Instantaneous urine flow rate (mL/h) measured over the urine collection interval that includes the current observation. Time-varying.
+- **Units:** mL/h
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a — used with a centered-linear-effect form `CL_renal = base + theta_UF * (UF - UF_ref)` with `UF_ref = 100 mL/h` in Allegaert 2015. A value of `0` is a sentinel for "no urine collected during the interval" (i.e., the urine pathway contribution is dropped); the linear-effect term is gated by `UF > 0` and not extrapolated below the centering reference.
+- **Source aliases:**
+  - `UF` (Allegaert 2015 NONMEM column; same orientation, no transformation) — used in `Allegaert_2015_paracetamol.R`.
+- **Example models:** `Allegaert_2015_paracetamol.R`.
+- **Notes:** Specific scope because the centered-linear effect form with the `UF == 0` sentinel-zero rule reflects an Allegaert-specific convention rather than a universally-agreed-upon parameterization. A second model that uses a different effect form (e.g., direct `UF / UF_ref` proportional scaling, no zero-sentinel) should register its own canonical (e.g., `UF_PROP`) rather than reusing `UF` with conflicting semantics.
 
 ### CRCL (**canonical for creatinine-based renal function, BSA-normalized**)
 - **Description:** Creatinine-based renal function expressed in mL/min/1.73 m². Accepts either an MDRD-/CKD-EPI-estimated glomerular filtration rate or a measured creatinine clearance that has been BSA-normalized as `1.73 × CrCl / BSA`. The per-model `covariateData[[CRCL]]$description` and `notes` must state which method the source paper used.
@@ -2460,6 +2495,7 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 
 ## Change log
 
+- **2026-05-06** — Added `TERM_BIRTH` (specific scope under a new `Pregnancy / hormonal status` H2 section; binary term-vs-preterm birth indicator), `BC_USE` (specific scope under the same new `Pregnancy / hormonal status` H2 section; binary oral-contraceptive use indicator), and `UF` (specific scope under `Renal / hepatic function`; continuous instantaneous urine flow rate, mL/h, with centering reference 100 mL/h and a `UF == 0` sentinel-zero rule that gates the linear effect on renal CL) canonical entries while extracting `Allegaert_2015_paracetamol.R` (DDMODEL00000267). Source aliases mapped: `TERM` → `TERM_BIRTH` (same orientation, no transformation), `BC` → `BC_USE` (same orientation, no transformation), `UF` → `UF` (no rename). The Allegaert 2015 BMC Anesthesiol PDF is not on disk in this worktree; covariate semantics, units, and reference values are taken from the bundle's `Executable_OriginalModelCode.mod` `$INPUT` comments and `$PK` block.
 - **2026-05-06** — Added `HIV_POS` (general scope under a new `Infectious disease (HIV)` H2 section; binary HIV-positive comorbidity indicator, parallels the `_POS` suffix convention used by `ADA_POS` / `SARS_SEROPOS`) and `OCC` (general scope under `Occasion / period (IOV)`; integer-valued occasion / period column, decomposed into binary indicators inside `model()` for IOV multiplexing) canonical entries while extracting `Jonsson_2011_ethambutol.R` (DDMODEL00000220). Source aliases mapped: `HIV` → `HIV_POS` (same orientation, 1 = HIV-positive), `OCC` → `OCC` (no rename). The new `OCC` integer-valued canonical is the recommended form for new IOV-using models per the existing register-note steer (`ooc1..oocN` binary form retained as the legacy canonical).
 - **2026-05-06** — Added `KG`, `KD0`, `KD1`, `IBASE`, and `NWLS` (all specific scope, under `Oncology`) canonical entries while extracting `Zecchin_2016_survival.R` (Zecchin 2016 OS model, DDMODEL00000218). `KG` / `KD0` / `KD1` / `IBASE` are subject-level empirical-Bayes posterior estimates from the upstream Zecchin 2016 SLD model (DDMODEL00000217 / `Zecchin_2016_tumorovarian.R`) carried into the OS model via the dataset; `NWLS` is the time-varying RECIST-style step-function indicator for new (non-target) lesion appearance. Source aliases recorded: `KG`/`KD0`/`KD1`/`IBASE`/`NWLS` (`NWLSCOV` in the bundle's Simulated_OS.csv) → corresponding canonicals. The internal `/1000` and `/100` numerical scalings on `KG` / `KD0` / `KD1` and the `*1000` scaling on `IBASE` are preserved verbatim from the source `$DES` block to maintain numerical equivalence with the published estimates (Zecchin 2016 BJCP 82(3):717-727; doi:10.1111/bcp.12994). Extended `AUC_CARBO` and `AUC_GEM` example-models lists to include `Zecchin_2016_survival.R` (the OS model integrates the same SLD ODE inline).
 - **2026-05-06** — Added `AAG` (general-scope serum alpha-1 acid glycoprotein concentration; placed under `Inflammation markers` after `CRP`; reference 1.34 g/L from the Kloft 2006 cancer-cohort median; piecewise-linear effect form with breakpoint at the median documented), `PRIOR_ANTICANCER` (general-scope binary indicator for any prior anticancer therapy of any modality including cytotoxic chemotherapy / radiotherapy / surgery / hormonal therapy / targeted therapy / immunotherapy; placed under `Disease / treatment history` before `PRIOR_BIO`; broader than `LINE_1L` which is restricted to systemic-drug therapy lines), and `CP_MGL` (specific-scope instantaneous drug plasma concentration as a time-varying PD driver, mg/L = ug/mL; placed under `Drug exposure metrics` after `CAV`; distinct from `CAV` which is dosing-interval-averaged) canonical entries while extracting `Netterberg_2017_docetaxel.R` (DDMODEL00000224). Source aliases mapped: `SEX` (1 = male, 2 = female; values inverted via `SEXF = as.integer(SEX == 2)`) → `SEXF`; `PERF` (ordinal ECOG 0/1/2 with binarization at >= 1) → `ECOG_GE1`; `PC` (0/1) → `PRIOR_ANTICANCER`; `AAG` → `AAG`; `CP` → `CP_MGL`. The model is the Friberg-style myelosuppression PD model with parameter values fixed from Kloft 2006; Netterberg 2017 used the model unchanged for an ANC-prediction-methodology study (no re-fit) and submitted it to the DDMORE Foundation Model Repository. Neither Netterberg 2017 nor Kloft 2006 is on disk in this worktree; the absence of paper-on-disk parameter cross-checks is documented in the model file's vignette Errata.
