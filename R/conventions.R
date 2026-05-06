@@ -61,7 +61,10 @@
     # and 7-desmethyl. Suffixes start with a digit; this is fine
     # because the convention check matches on `endsWith(name, "_<metab>")`
     # rather than treating the metabolite name itself as an R identifier.
-    "3oh", "7dm"
+    "3oh", "7dm",
+    # N-desmethyl-bedaquiline metabolite (M2) of bedaquiline
+    # (Svensson 2016 DDMODEL00000219).
+    "m2"
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` denotes the time-varying decay arm.
@@ -73,7 +76,15 @@
   # ad-hoc pattern.
   paperNamedParams = c(
     "kd", "kd0", "kdes", "kdecay", "krel", "kss", "kint",
-    "frac", "alfm", "ksyn", "p", "vd", "kcat", "kpro", "krmr"
+    "frac", "alfm", "ksyn", "p", "vd", "kcat", "kpro", "krmr",
+    # Transit-absorption naming used by published popPK models that
+    # parameterize via mean-absorption-time / fraction-of-MAT
+    # (Svensson 2016 bedaquiline DDMODEL00000219, Kovalenko 2020
+    # dupilumab, etc.). `mat` = mean absorption time (hours / days);
+    # `mtt` = mean transit time; `fr` = fraction of MAT in the transit
+    # delay; `ktr` = first-order transit rate constant (= n_transit /
+    # MTT for a chain of length n).
+    "mat", "mtt", "fr", "ktr"
   ),
   requiredUnits = c("time", "dosing", "concentration"),
   requiredMetadata = c("description", "reference", "units"),
