@@ -262,10 +262,45 @@ Naming conventions for mechanistic parameters are documented in `references/nami
 
    Do not interpret silence as success — re-run with `quiet = FALSE` and confirm an HTML output file landed next to the `.Rmd`. Do not assume "checkModelConventions was clean, vignette must be fine" — those are independent failure modes. The render gate is the only one that exercises the full data path the way pkgdown CI does.
 
-5. Run `devtools::check()`. Vignettes must build cleanly.
+5. **Verify no non-ASCII characters in the new model file or vignette (mandatory pre-push gate).** R CMD check warns on non-ASCII strings in package data — and the `description <-` field of every model file is reified into `data/modeldb.rda`, so a single em-dash, en-dash, multiplication sign, or Greek letter in the description triggers a `WARNING: found non-ASCII strings` and breaks the R-CMD-check matrix on every platform. Comments inside the model file do not trigger the data-warning, but the same characters in vignette source can cause downstream encoding surprises (cross-platform, locale, knitr, pkgdown), so apply the gate to both.
+
+   Run, replacing the placeholders:
+
+   ```bash
+   for f in inst/modeldb/<category>/<FirstAuthor>_<Year>_<drug>.R \
+            vignettes/articles/<FirstAuthor>_<Year>_<drug>.Rmd; do
+     if LC_ALL=C grep -nP "[^\x00-\x7F]" "$f"; then
+       echo "FAIL: non-ASCII in $f"; exit 1
+     fi
+   done
+   echo "OK: all checked files are ASCII-only"
+   ```
+
+   If anything matches, replace the offending characters with their ASCII equivalents before committing. Common substitutions that have triggered this warning in past extractions:
+
+   | Non-ASCII | ASCII replacement |
+   | --- | --- |
+   | `—` (em dash, U+2014) | `--` |
+   | `–` (en dash, U+2013) | `-` |
+   | `×` (multiplication sign) | `x` (or `*` when between numeric quantities) |
+   | `·` (middle dot) | `*` (multiplication) or `.` (decimal-style) |
+   | `≈` | `~=` |
+   | `→` | `->` |
+   | `∈` | `in` |
+   | `≤` | `<=` |
+   | `≡` | `==` |
+   | `…` | `...` |
+   | `²` | `^2` |
+   | `µ` (Greek mu) | `u` (e.g. `µg/mL` → `ug/mL`) |
+   | Greek letters in prose (`η`, `λ`, etc.) | spell out (`eta`, `lambda`) |
+   | `§` | `Section ` |
+
+   The `description` string is the highest-impact site (it is what triggers the R-CMD-check warning), but be thorough — replace non-ASCII anywhere in the new model file and vignette so the gate stays clean even after edits.
+
+6. Run `devtools::check()`. Vignettes must build cleanly.
 
    A C-level segfault (`*** caught segfault ***`) during `check()` or vignette rendering is a red flag — it indicates a broken R / rxode2 / nlmixr2 install in the environment, not a model-file problem. Stop, sidecar-ask the operator to investigate and fix the environment, and do not work around it with `--no-build-vignettes` or similar flags.
-6. Add a short, single-line `NEWS.md` entry under the current development
+7. Add a short, single-line `NEWS.md` entry under the current development
    version. The goal is a scannable changelog — the model file and vignette
    already contain the full detail, so NEWS should only mention:
    - the drug,
@@ -294,8 +329,8 @@ Naming conventions for mechanistic parameters are documented in `references/nami
    residual-error form, data origin, study counts, PKNCA sentence, or
    anything else that lives in the model file's metadata or vignette. A
    reviewer who wants those details clicks through to the model file.
-7. Commit the model file, the vignette under `vignettes/articles/`, the regenerated `modeldb.rda` / `modeldb.qs2` / `modeldb.Rd`, the `NEWS.md` entry, and any updates to `inst/references/covariate-columns.md` (if a new covariate was registered) together on the feature branch.
-8. Push the branch and open a PR against `main`. Use `gh pr create` with a title like `Add <Author> <Year> <drug> model`. **Before pushing, confirm step 4 (vignette render) was run on the final state of the vignette file and exited 0 with HTML present.** If the vignette was edited after the last render — even for a typo fix or a cosmetic comment change — re-run the render gate; do not push on the strength of an earlier render against an older copy.
+8. Commit the model file, the vignette under `vignettes/articles/`, the regenerated `modeldb.rda` / `modeldb.qs2` / `modeldb.Rd`, the `NEWS.md` entry, and any updates to `inst/references/covariate-columns.md` (if a new covariate was registered) together on the feature branch.
+9. Push the branch and open a PR against `main`. Use `gh pr create` with a title like `Add <Author> <Year> <drug> model`. **Before pushing, confirm steps 4 (vignette render) and 5 (non-ASCII check) were both run on the final state of the model and vignette files and both exited clean.** If either file was edited after the last gate run — even for a typo fix or a cosmetic comment change — re-run both gates; do not push on the strength of an earlier check against an older copy.
 
 ## Stop-and-ask triggers (consolidated)
 

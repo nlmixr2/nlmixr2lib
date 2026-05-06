@@ -104,6 +104,17 @@ If the source publication does not report the validation reference (e.g., DDMORE
 - [ ] `nlmixr2lib::buildModelDb()` runs to completion.
 - [ ] The new model appears in `modellib()`.
 - [ ] `nlmixr2lib::checkModelConventions(model = "<...>")` returns clean (or all deviations are justified in the vignette's Assumptions and deviations section and noted in the PR body).
+- [ ] **Verify no non-ASCII characters in the new model file or vignette** (mandatory pre-push gate). The model file's `description <-` string is reified into `data/modeldb.rda`, and a single non-ASCII character there triggers `R CMD check` `WARNING: found non-ASCII strings`, breaking the R-CMD-check matrix. The vignette doesn't break R CMD check directly but can cause downstream encoding surprises (cross-platform, locale, knitr, pkgdown), so apply the gate to both.
+
+   ```bash
+   for f in inst/modeldb/<category>/<FirstAuthor>_<Year>_<drug>.R \
+            vignettes/articles/<FirstAuthor>_<Year>_<drug>.Rmd; do
+     LC_ALL=C grep -nP "[^\x00-\x7F]" "$f" && { echo "FAIL: non-ASCII in $f"; exit 1; }
+   done
+   ```
+
+   No matches → pass; replace any matches with ASCII (`—` → `--`, `–` → `-`, `×` → `x`, `·` → `*`, `≈` → `~=`, `→` → `->`, `≤` → `<=`, `…` → `...`, `²` → `^2`, `µ` → `u`, Greek letters in prose spelled out, `§` → `Section `). See SKILL.md Phase 6 step 5 for the full substitution table and rationale.
+
 - [ ] **Render the new vignette end-to-end** (mandatory pre-push gate). Run the exact command below on the worktree, with a 5-minute wall-clock budget — do not skip it, do not interpret silence as success, and do not push if it errors. This is the single highest-value gate the worker performs: it catches the failure modes that pkgdown CI also surfaces (missing data columns, time-varying covariates assigned to rxEt objects that get silently dropped, PKNCA formulas referencing absent columns, simulation crashes, vignettes exceeding the time budget).
 
    ```bash
