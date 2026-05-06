@@ -72,7 +72,12 @@
     "m2",
     # Endoxifen (4-hydroxy-N-desmethyltamoxifen), the major active
     # metabolite of tamoxifen — Ter Heine 2014.
-    "endx"
+    "endx",
+    # Colistin, the active polymyxin generated in vivo by hydrolysis of
+    # the prodrug colistimethate sodium (CMS). Used as a metabolite
+    # suffix in parent-prodrug CMS / metabolite-active-drug colistin
+    # popPK models (Leuppi-Taegtmeyer 2019 DDMODEL00000295).
+    "col"
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` denotes the time-varying decay arm.

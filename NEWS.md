@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Leuppi-Taegtmeyer 2019 colistin ([doi:10.1128/AAC.01957-18](https://doi.org/10.1128/AAC.01957-18)) [DDMODEL00000295] — critically ill adults receiving colistimethate sodium / colistin during continuous renal replacement therapy.
 * Add Clewe 2016 rifampicin ([doi:10.1093/jac/dkv416](https://doi.org/10.1093/jac/dkv416)) [DDMODEL00000240] — in vitro Mycobacterium tuberculosis H37Rv multistate natural-growth scaffold (fast / slow / non-multiplying bacterial states; rifampicin exposure-response not encoded in the bundled scenario).
 * Add Germovsek 2016 gentamicin ([doi:10.1128/AAC.00577-16](https://doi.org/10.1128/AAC.00577-16)) [DDMODEL00000238] — neonates and infants receiving gentamicin.
 * Add Novakovic 2017 cladribine ([doi:10.1208/s12248-016-9977-z](https://doi.org/10.1208/s12248-016-9977-z)) [DDMODEL00000223] — adults with relapsing-remitting multiple sclerosis (8-item EDSS Item Response Theory disease-progression model with FREM covariates).
