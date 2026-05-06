@@ -564,6 +564,28 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `FiedlerKelly_2020_fremanezumab_em.R`, `FiedlerKelly_2020_fremanezumab_cm.R`.
 - **Notes:** Specific scope because the value is intrinsically tied to the modelled drug — there is no shared meaning across drugs or studies. Each model's `covariateData[[CAV]]$notes` should state how the Cav values are derived (e.g., empirical-Bayes from a referenced population PK model) and that the column is set to 0 for placebo periods.
 
+### AUC_CARBO (**canonical for per-cycle average AUC of carboplatin**)
+- **Description:** Per-cycle average AUC of carboplatin used as the time-varying drug-exposure covariate driving cytotoxic tumour-death rates in tumour-size-dynamics models of platinum-based chemotherapy. The value is held step-wise constant over each chemotherapy cycle and resets at the start of the next cycle.
+- **Units:** carboplatin AUC units (typically `mg·min/mL`); document per-model via `covariateData[[AUC_CARBO]]$units`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a — set to 0 in cycles where carboplatin is not administered (e.g., post-discontinuation or non-platinum arms).
+- **Source aliases:**
+  - `CB` (NONMEM `$INPUT` column in DDMODEL00000217 / DDMODEL00000218) — used in `Zecchin_2016_tumorovarian.R` and `Zecchin_2016_survival.R`. The DDMORE bundles ship the simulated datasets with the column re-labelled `AUC0`; downstream consumers should map `AUC0` → `AUC_CARBO`.
+- **Example models:** `Zecchin_2016_tumorovarian.R` (Zecchin 2016 SLD model for advanced ovarian cancer, DDMODEL00000217), `Zecchin_2016_survival.R` (Zecchin 2016 OS model, DDMODEL00000218; the OS model integrates the same SLD ODE inline, with the prior IPP-fit subject-level KG/KD0/KD1/IBASE supplied via the dataset).
+- **Notes:** Specific scope because the column meaning is tied to a particular cytotoxic agent (carboplatin) and a particular per-cycle averaging convention. Reusing the same column for another platinum analogue (cisplatin, oxaliplatin) is not appropriate — register a sibling canonical (`AUC_CISPLATIN`, `AUC_OXALIPLATIN`) when needed. The Zecchin 2016 SLD and OS models use the value directly in the death-rate term `kd0 * AUC_CARBO * tumorSize`, with an internal `/1000` numerical scaling carried verbatim from the source `$DES` block.
+
+### AUC_GEM (**canonical for per-cycle average AUC of gemcitabine**)
+- **Description:** Per-cycle average AUC of gemcitabine (sum of parent and active metabolite exposure, per Zecchin 2016 Methods) used as the time-varying drug-exposure covariate driving cytotoxic tumour-death rates in tumour-size-dynamics models of gemcitabine-containing chemotherapy.
+- **Units:** gemcitabine AUC units (typically `mg·h/L` or the paper's `mol·day / 10^6 cells` scaling for the parent-plus-active-metabolite composite); document per-model via `covariateData[[AUC_GEM]]$units`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a — set to 0 in cycles where gemcitabine is not administered (e.g., carboplatin-monotherapy arms).
+- **Source aliases:**
+  - `G` (NONMEM `$INPUT` column in DDMODEL00000217 / DDMODEL00000218) — used in `Zecchin_2016_tumorovarian.R` and `Zecchin_2016_survival.R`. The DDMORE bundles ship the simulated datasets with the column re-labelled `AUC1`; downstream consumers should map `AUC1` → `AUC_GEM`.
+- **Example models:** `Zecchin_2016_tumorovarian.R` (Zecchin 2016 SLD model for advanced ovarian cancer, DDMODEL00000217), `Zecchin_2016_survival.R` (Zecchin 2016 OS model, DDMODEL00000218).
+- **Notes:** Specific scope. The Zecchin 2016 SLD and OS models use the value directly in the death-rate term `kd1 * AUC_GEM * tumorSize`, with an internal `/100` numerical scaling carried verbatim from the source `$DES` block.
+
 ### IGE (**canonical for serum total immunoglobulin E concentration**)
 - **Description:** Baseline serum total immunoglobulin E concentration (free IgE plus, in patients on anti-IgE therapy, omalizumab–IgE complex). For anti-IgE monoclonal antibodies (omalizumab, ligelizumab) IgE is the pharmacologic target; baseline IgE sets the magnitude of the target sink and modifies free-IgE clearance and the rate of IgE production in mechanism-based binding/turnover models.
 - **Units:** ng/mL (typical clinical-PK convention). Pretreatment values reported in `IU/mL` are converted via `1 IU/mL = 2.42 ng/mL` (Hayashi 2007 Methods). Document per-model via `covariateData[[IGE]]$units`.
@@ -1259,6 +1281,61 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   - `COMBO` (when the source dataset uses a generic combination flag for belantamab mafodotin pooled regimens) — used in `Papathanasiou_2025_belantamab.R`.
 - **Example models:** `Papathanasiou_2025_belantamab.R` (multiplicative factor θ = 1.44 on the Imax parameter of the time-varying CL function — combination therapy increases the steady-state CL reduction from 33.2 % to 44.0 %).
 - **Notes:** Pools the three combination backbones tested in DREAMM-6 / DREAMM-7 / DREAMM-8 (Bor-Dex, Len-Dex, Pom-Dex) into a single binary because Papathanasiou 2025 reports no meaningful per-backbone difference in cycle-1 ADC exposure. If a future paper tests per-backbone combination effects, register dedicated indicators (`COMBO_BELAMAF_BORDEX`, etc.) rather than overloading this aggregate.
+
+### KG (**canonical for subject-specific tumour-growth rate constant from a prior IPP fit**)
+- **Description:** Empirical-Bayes posterior estimate of the subject-specific tumour-size first-order growth rate constant carried over from an upstream tumour-size-dynamics population model. Supplied per subject in the dataset and used directly inside a downstream model (e.g., overall-survival hazard) that integrates the tumour-size ODE inline conditional on each subject's growth/death rates.
+- **Units:** internal scaled rate; the Zecchin 2016 OS model carries the source convention `KG / 1000 * tumorSize` in the SLD ODE so the column units are `(1/day) * 1000` as published in the source NONMEM run. Document per-model via `covariateData[[KG]]$units`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a — used directly inside the SLD ODE (see `Zecchin_2016_survival.R`).
+- **Source aliases:**
+  - `KG` (NONMEM `$INPUT` column in DDMODEL00000218; identical column shipped in the bundle's Simulated_OS.csv).
+- **Example models:** `Zecchin_2016_survival.R` (Zecchin 2016 OS model, DDMODEL00000218).
+- **Notes:** Specific scope because the column is the empirical-Bayes output of a particular upstream fit (`modellib('Zecchin_2016_tumorovarian')` / DDMODEL00000217). When this OS model is used standalone, the user must supply `KG` per subject — typically by first fitting the SLD model and extracting the per-subject empirical-Bayes posterior. The internal `/1000` scaling is preserved verbatim from the source `$DES` block to maintain numerical equivalence with the published estimates.
+
+### KD0 (**canonical for subject-specific carboplatin-related tumour-death rate constant from a prior IPP fit**)
+- **Description:** Empirical-Bayes posterior estimate of the subject-specific carboplatin-driven tumour-size death rate constant carried over from an upstream tumour-size-dynamics population model. Pairs with the time-varying `AUC_CARBO` covariate inside the SLD ODE term `KD0 * AUC_CARBO * tumorSize`.
+- **Units:** internal scaled rate; the Zecchin 2016 OS model carries the source convention `KD0 / 1000 * AUC_CARBO * tumorSize` so the column units are `(1/day per AUC unit) * 1000` as published in the source NONMEM run. Document per-model via `covariateData[[KD0]]$units`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a — used directly inside the SLD ODE (see `Zecchin_2016_survival.R`).
+- **Source aliases:**
+  - `KD0` (NONMEM `$INPUT` column in DDMODEL00000218).
+- **Example models:** `Zecchin_2016_survival.R` (Zecchin 2016 OS model, DDMODEL00000218).
+- **Notes:** Specific scope because the column is tied to a specific drug (carboplatin) and a specific upstream IPP fit. The internal `/1000` scaling is preserved verbatim from the source `$DES` block.
+
+### KD1 (**canonical for subject-specific gemcitabine-related tumour-death rate constant from a prior IPP fit**)
+- **Description:** Empirical-Bayes posterior estimate of the subject-specific gemcitabine-driven tumour-size death rate constant carried over from an upstream tumour-size-dynamics population model. Pairs with the time-varying `AUC_GEM` covariate inside the SLD ODE term `KD1 * AUC_GEM * tumorSize`.
+- **Units:** internal scaled rate; the Zecchin 2016 OS model carries the source convention `KD1 / 100 * AUC_GEM * tumorSize` so the column units are `(1/day per AUC unit) * 100` as published in the source NONMEM run. Document per-model via `covariateData[[KD1]]$units`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a — used directly inside the SLD ODE (see `Zecchin_2016_survival.R`).
+- **Source aliases:**
+  - `KD1` (NONMEM `$INPUT` column in DDMODEL00000218).
+- **Example models:** `Zecchin_2016_survival.R` (Zecchin 2016 OS model, DDMODEL00000218).
+- **Notes:** Specific scope because the column is tied to a specific drug (gemcitabine) and a specific upstream IPP fit. The internal `/100` scaling is preserved verbatim from the source `$DES` block.
+
+### IBASE (**canonical for subject-specific baseline tumour-size estimate from a prior IPP fit**)
+- **Description:** Empirical-Bayes posterior estimate of the subject-specific baseline sum-of-longest-diameters (SLD) tumour size carried over from an upstream tumour-size-dynamics population model. Used both to set the SLD ODE initial state (`tumorSize(0) <- IBASE * 1000` in the Zecchin 2016 model: source convention multiplies by 1000 to convert the internal value to mm) and to scale the time-varying tumour-size ratio (`mmbas <- IBASE * 1000`) inside the OS hazard.
+- **Units:** internal scaled length; the Zecchin 2016 OS model carries the source convention `IBASE * 1000 = mm` so the column itself is in metres (1 m = 1000 mm). Document per-model via `covariateData[[IBASE]]$units`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a — used as the SLD ODE initial condition and as the denominator in `(tumorSize - mmbas) / mmbas`.
+- **Source aliases:**
+  - `IBASE` (NONMEM `$INPUT` column in DDMODEL00000218; identical column shipped in the bundle's Simulated_OS.csv with values typically in the 0.04-0.50 m range).
+- **Example models:** `Zecchin_2016_survival.R` (Zecchin 2016 OS model, DDMODEL00000218).
+- **Notes:** Distinct from the canonical `TUM_SLD` column. `TUM_SLD` carries the *measured* baseline tumour size in mm (used to compute the time-fixed `NSLD0 = TUM_SLD / 70` covariate term in the Zecchin 2016 OS hazard), whereas `IBASE` carries the empirical-Bayes *fitted* baseline from the upstream SLD model (used to initialise the integrated SLD trajectory and to define the time-varying TSR(t) reference). The two are correlated but not equal because the upstream IPP fit smooths measurement noise away from the observed SLD0. Specific scope because the column is the empirical-Bayes output of a specific upstream model fit and the internal `*1000` unit-conversion is tied to the source NONMEM coding convention.
+
+### NWLS (**canonical for time-varying new-lesion appearance indicator**)
+- **Description:** Time-varying binary indicator of whether a new (non-target) RECIST lesion has appeared since enrolment. 1 = new lesion present at the current observation time; 0 = no new lesion as of the current observation time. Once `NWLS` flips to 1 it stays 1 for subsequent observation times in that subject (a step-function flag, not a transient pulse).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no new lesion appeared as of the current time).
+- **Source aliases:**
+  - `NWLS` (NONMEM `$INPUT` column in DDMODEL00000218); the bundle's Simulated_OS.csv re-labels the same column `NWLSCOV`. Downstream consumers should map `NWLSCOV` → `NWLS`.
+- **Example models:** `Zecchin_2016_survival.R` (Zecchin 2016 OS model, DDMODEL00000218; multiplicative effect on the Weibull hazard via `exp(e_nwls_haz * NWLS)` with `e_nwls_haz = 1.23` per Output_real_OS.lst FINAL TH5 / Table 2 of Zecchin 2016).
+- **Notes:** Specific scope because the column encodes a per-paper RECIST-style binary that is supplied by the dataset; it is not a generic "any new lesion" indicator the user can populate from routine clinical data without an explicit lesion-appearance imaging schedule. The Zecchin 2016 OS model uses `NWLS` directly (no time-gating), which is faithful to the simulated dataset shipped in the DDMORE bundle. The source `Output_real_OS.lst` (the listing on the original real dataset) gates the indicator with an additional `TNWLS` (lesion-appearance-time) column not shipped in the bundle's simulated dataset; the two encodings are functionally equivalent when the dataset's `NWLS` column is constructed as a 0/1 step that flips at the lesion-appearance time. The bundle's simulated dataset uses the simpler step-function form, and that is the form the nlmixr2lib model expects.
 
 ## Laboratory / disease-activity
 
@@ -2149,6 +2226,7 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 
 ## Change log
 
+- **2026-05-06** — Added `KG`, `KD0`, `KD1`, `IBASE`, and `NWLS` (all specific scope, under `Oncology`) canonical entries while extracting `Zecchin_2016_survival.R` (Zecchin 2016 OS model, DDMODEL00000218). `KG` / `KD0` / `KD1` / `IBASE` are subject-level empirical-Bayes posterior estimates from the upstream Zecchin 2016 SLD model (DDMODEL00000217 / `Zecchin_2016_tumorovarian.R`) carried into the OS model via the dataset; `NWLS` is the time-varying RECIST-style step-function indicator for new (non-target) lesion appearance. Also added `AUC_CARBO` and `AUC_GEM` (both specific scope, under `Drug exposure metrics`) — these are independently being added by the in-flight `Zecchin_2016_tumorovarian.R` extraction (PR for DDMODEL00000217); the entries are identical, so whichever PR merges first the other will resolve as a no-op merge. Source aliases recorded: `KG`/`KD0`/`KD1`/`IBASE`/`NWLS` (`NWLSCOV` in the bundle's Simulated_OS.csv) → corresponding canonicals; `CB`/`AUC0` → `AUC_CARBO`; `G`/`AUC1` → `AUC_GEM`. The internal `/1000` and `/100` numerical scalings on `KG` / `KD0` / `KD1` and the `*1000` scaling on `IBASE` are preserved verbatim from the source `$DES` block to maintain numerical equivalence with the published estimates (Zecchin 2016 BJCP 82(3):717-727; doi:10.1111/bcp.12994).
 - **2026-04-28** — Extended `RACE_WHITE` (general scope) example-models list and source aliases to record `Hu_2014_bapineuzumab.R` (Caucasian-vs-non-Caucasian dichotomy with the Caucasian subgroup as the typical-value reference). The canonical column encoding (1 = White / 0 = non-White) is unchanged; the model implements the 15% non-Caucasian effect on `(1 - RACE_WHITE)`. The change log notes that the typical-value reference category may legitimately differ between papers using `RACE_WHITE`.
 - **2026-04-29** — Added `IL6` (general-scope serum interleukin-6 cytokine biomarker, pg/mL, under `Inflammation markers`), `PAIN` (general-scope patient-reported global pain VAS 0-100, under `Rheumatoid-arthritis disease-activity covariates`), and `RACE_ASIAN_OTH` (specific-scope composite race indicator pooling Asian / American Indian / Other against a White + Black reference, under `Race / ethnicity`) canonical entries while extracting `Frey_2013_tocilizumab.R` (PMID 23436260). Source aliases mapped: `BLIL6` -> `IL6`. Frey 2013 uses log-transformed `(log(IL-6 * 1000) / 9.9)^exp` with reference IL-6 ~= 20 pg/mL; the canonical column carries the raw IL-6 in pg/mL and the log transformation is applied inside `model()`.
 - **2026-04-28** — Added `TUMTP_PCALCL` (specific scope under `Oncology`; primary cutaneous anaplastic large-cell lymphoma indicator following the `TUMTP_<GROUP>` decomposition pattern) and three ADA-status × assay-era indicators (`ADA_POS` [modern-assay arm; general scope], `ADA_POSOLD`, `ADA_MISSING` [both specific scope] under `Immunogenicity`) while extracting `Suri_2018_brentuximab.R`. Initially named `ADA_POSNEW`; renamed to `ADA_POS` on 2026-04-29 for consistency with the existing general `ADA_POS` canonical. The three indicators are mutually exclusive and decompose Suri 2018's four-level ADA-status × assay-era factor with ADA-negative as the reference; the multiplicative additive form `cl *= (1 + theta * ind)` from supplement 1's ATA-status equation is documented per model.
