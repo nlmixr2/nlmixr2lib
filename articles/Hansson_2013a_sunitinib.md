@@ -49,7 +49,7 @@ Equations come from the `.mod`’s `$PK` / `$DES` / `$ERROR` blocks.
 | Equation / parameter | Value | Source location (DDMODEL00000197) |
 |----|----|----|
 | Structural model: 4-compartment indirect response | n/a | `.mod` `$MODEL NCOMPS=4` (COMP1=VEGF, COMP2=sVEGFR-2, COMP3=sVEGFR-3, COMP4=sKIT) |
-| `auc <- DOSE_MG / CLI` | n/a | `.mod` `$PK` line `AUC = DOS/CL` |
+| `auc <- DOSE / CLI` | n/a | `.mod` `$PK` line `AUC = DOS/CL` |
 | `vegf` ODE (Kout inhibition) | n/a | `.mod` `$DES` line `DADT(1) = KIN-KOUT*(1-EFF)*A(1)` |
 | `svegfr2`, `svegfr3`, `skit` ODEs (Kin inhibition) | n/a | `.mod` `$DES` lines `DADT(2..4) = KIN*(1-EFF)-KOUT*A` |
 | Linear DP: `bl_vegf*(1+dp_slope_vegf*t)` | n/a | `.mod` `$PK` `DP1 = BM0*(1+DPSLO*TIME)` |
@@ -91,14 +91,13 @@ faithfully reproduced.
 ## Drug-exposure inputs
 
 The Hansson 2013a model has no PK ODE: drug exposure is summarised
-per-dose as `AUC = DOSE_MG / CLI` and fed into a sigmoid-Imax (or
+per-dose as `AUC = DOSE / CLI` and fed into a sigmoid-Imax (or
 plain-Imax) drug-effect function on each biomarker’s indirect-response
-chain. Both `DOSE_MG` and `CLI` are required data covariates:
+chain. Both `DOSE` and `CLI` are required data covariates:
 
-- `DOSE_MG` (mg) — current daily sunitinib dose at the time of the
-  record. Time-varying with the on/off cycling: 50 mg during a 4-week
-  on-cycle, 0 mg during the 2-week off-cycle, and 0 mg for placebo
-  subjects.
+- `DOSE` (mg) — current daily sunitinib dose at the time of the record.
+  Time-varying with the on/off cycling: 50 mg during a 4-week on-cycle,
+  0 mg during the 2-week off-cycle, and 0 mg for placebo subjects.
 - `CLI` (L/h) — subject-specific posthoc total plasma clearance from the
   paper’s upstream popPK fit. Time-fixed (one value per subject). The
   bundle’s simulated dataset uses 32.819 L/h for subject 1; the Houk
@@ -118,7 +117,7 @@ mod  <- readModelDb("Hansson_2013a_sunitinib")
 modT <- rxode2::zeroRe(mod)
 
 # Typical-value, single-subject events table for a 12-week follow-up.
-# DOSE_MG follows a 4-weeks-on / 2-weeks-off sunitinib schedule
+# DOSE follows a 4-weeks-on / 2-weeks-off sunitinib schedule
 # (50 mg during on-cycles, 0 mg during the off-cycle).
 on_off_dose <- function(time_h, daily_mg = 50) {
   week_idx <- floor(time_h / (7 * 24))
@@ -133,21 +132,21 @@ events <- data.frame(
   evid    = 0L,
   amt     = 0,
   cmt     = NA_integer_,
-  DOSE_MG = on_off_dose(obs_times, daily_mg = 50),
+  DOSE = on_off_dose(obs_times, daily_mg = 50),
   CLI     = 32.819
 )
 head(events, 10)
-#>    id time evid amt cmt DOSE_MG    CLI
-#> 1   1    0    0   0  NA      50 32.819
-#> 2   1   24    0   0  NA      50 32.819
-#> 3   1   48    0   0  NA      50 32.819
-#> 4   1   72    0   0  NA      50 32.819
-#> 5   1   96    0   0  NA      50 32.819
-#> 6   1  120    0   0  NA      50 32.819
-#> 7   1  144    0   0  NA      50 32.819
-#> 8   1  168    0   0  NA      50 32.819
-#> 9   1  192    0   0  NA      50 32.819
-#> 10  1  216    0   0  NA      50 32.819
+#>    id time evid amt cmt DOSE    CLI
+#> 1   1    0    0   0  NA   50 32.819
+#> 2   1   24    0   0  NA   50 32.819
+#> 3   1   48    0   0  NA   50 32.819
+#> 4   1   72    0   0  NA   50 32.819
+#> 5   1   96    0   0  NA   50 32.819
+#> 6   1  120    0   0  NA   50 32.819
+#> 7   1  144    0   0  NA   50 32.819
+#> 8   1  168    0   0  NA   50 32.819
+#> 9   1  192    0   0  NA   50 32.819
+#> 10  1  216    0   0  NA   50 32.819
 ```
 
 ## Mechanistic-sanity simulation (F.3)
@@ -158,7 +157,7 @@ sim <- rxode2::rxSolve(modT, events = events) |> as.data.frame()
 #> ℹ omega/sigma items treated as zero: 'etalbl_vegf', 'etalbl_svegfr2', 'etalbl_svegfr3', 'etalbl_skit', 'etalmrt_pooled', 'etalmrt_skit', 'etalic50_vegf', 'etalic50_svegfr2', 'etalic50_svegfr3', 'etalic50_skit', 'etaldp_slope_vegf', 'etaldp_slope_skit'
 
 biomarkers <- sim |>
-  dplyr::select(time, vegf, svegfr2, svegfr3, skit, DOSE_MG) |>
+  dplyr::select(time, vegf, svegfr2, svegfr3, skit, DOSE) |>
   tidyr::pivot_longer(c(vegf, svegfr2, svegfr3, skit),
                       names_to = "biomarker", values_to = "conc")
 
@@ -236,7 +235,7 @@ bundle_csv <- system.file("modeldb", "ddmore",
 # subset to subject 1, used here for documentation / verification.
 # Until the file is bundled in the package, fall back to a synthetic
 # events table that mirrors the simulated CSV's first-subject structure
-# (constant DOSE_MG = 50, CLI = 32.819, observations every 24 h for 12
+# (constant DOSE = 50, CLI = 32.819, observations every 24 h for 12
 # cycles of 2 weeks each).
 if (!nzchar(bundle_csv) || !file.exists(bundle_csv)) {
   obs_t <- seq(0, 24 * 14 * 12, by = 24)
@@ -246,7 +245,7 @@ if (!nzchar(bundle_csv) || !file.exists(bundle_csv)) {
     evid    = 0L,
     amt     = 0,
     cmt     = NA_integer_,
-    DOSE_MG = 50,
+    DOSE = 50,
     CLI     = 32.819
   )
 } else {
@@ -290,8 +289,8 @@ by `(1 - eff_*)`-scaled Kin/Kout balance.
   published figure or table is not performed in this vignette; only F.2
   self-consistency and F.3 mechanistic-sanity checks are run.
 - **Upstream popPK not packaged.** The drug-exposure summary
-  `AUC = DOSE_MG / CLI` consumes `CLI` (individual posthoc clearance)
-  from the paper’s upstream 2-compartment popPK fit. That popPK is not
+  `AUC = DOSE / CLI` consumes `CLI` (individual posthoc clearance) from
+  the paper’s upstream 2-compartment popPK fit. That popPK is not
   extracted into nlmixr2lib; users must supply `CLI` per subject.
 - **Detailed demographics absent.** Age range, weight range, sex
   balance, race distribution, and other baseline demographics are
@@ -357,7 +356,7 @@ by `(1 - eff_*)`-scaled Kin/Kout balance.
   `units$concentration = "pg/mL"` differ in magnitude;
   [`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
   reports this as an `info`-level note. The PD model has no PK ODE —
-  `DOSE_MG` is consumed only inside `auc <- DOSE_MG / CLI`, and the four
+  `DOSE` is consumed only inside `auc <- DOSE / CLI`, and the four
   biomarker states use their own pg/mL scales independent of the dosing
   unit — so no scaling factor is needed inside
   [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html).

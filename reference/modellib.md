@@ -57,7 +57,7 @@ modellib(name = "PK_1cmt")
 #>     Cc ~ prop(propSd)
 #>   })
 #> }
-#> <environment: 0x5582a626e310>
+#> <environment: 0x55dbb2da01e8>
 modellib(name = "PK_1cmt", eta = c("ka", "vc"), reserr = "addSd")
 #>  
 #>  
