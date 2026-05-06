@@ -564,6 +564,58 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `FiedlerKelly_2020_fremanezumab_em.R`, `FiedlerKelly_2020_fremanezumab_cm.R`.
 - **Notes:** Specific scope because the value is intrinsically tied to the modelled drug — there is no shared meaning across drugs or studies. Each model's `covariateData[[CAV]]$notes` should state how the Cav values are derived (e.g., empirical-Bayes from a referenced population PK model) and that the column is set to 0 for placebo periods.
 
+### DOSE_MG (**canonical for current administered dose level supplied as a data column**)
+- **Description:** Current administered dose level (in mg) carried as a per-record data column rather than via NONMEM/rxode2 dose events. Used in PD-only models that derive a per-cycle exposure metric (e.g., AUC = DOSE_MG / CLI) from a posthoc-CL covariate without instantiating a PK ODE. The column is set to 0 during off-treatment periods (drug holidays, placebo arm) so the derived exposure becomes 0.
+- **Units:** mg (document per-model via `covariateData[[DOSE_MG]]$units`).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a — appears directly in derived-exposure expressions; not a covariate effect coefficient.
+- **Source aliases:**
+  - `DOS` — used in the Hansson 2013 sunitinib biomarker / TGI / fatigue PD-model family (DDMODEL00000197 and siblings) as a per-record sunitinib dose column.
+- **Example models:** `Hansson_2013a_sunitinib.R` (DDMODEL00000197).
+- **Notes:** Specific scope because the value is study/regimen-specific and meaningless without a paired posthoc-CL column. Distinct from the rxode2/nlmixr2 event column `amt` (which carries the administered dose at dose events) and from `DOSE` (per-subject *assigned* dose level used as a power covariate on a PK parameter): `DOSE_MG` is a record-level value used directly inside `model()` to compute a per-cycle exposure summary in a model that has no PK ODE. For sunitinib 4-weeks-on / 2-weeks-off cycling, set DOSE_MG = nominal_daily_mg (e.g., 50) during on-cycles and 0 during off-cycles or for the placebo arm.
+
+### CLI (**canonical for individual posthoc clearance from an upstream popPK fit**)
+- **Description:** Subject-specific empirical-Bayes (posthoc) total plasma clearance from a separately published population PK model that the current PD model treats as a fixed input. Used as a per-subject (time-fixed) covariate in PD-only models that derive a per-cycle exposure metric (e.g., AUC = DOSE_MG / CLI) without instantiating a PK ODE.
+- **Units:** L/h (document per-model via `covariateData[[CLI]]$units`).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a — appears directly in derived-exposure expressions; not a covariate effect coefficient.
+- **Source aliases:**
+  - `CL` — used in the Hansson 2013 sunitinib biomarker / TGI / fatigue PD-model family (DDMODEL00000197 and siblings) as the posthoc CL column from the paper's upstream 2-compartment popPK fit.
+- **Example models:** `Hansson_2013a_sunitinib.R` (DDMODEL00000197; typical-value reference 32.819 L/h, drawn from the bundle's simulated dataset for subject 1 — broadly consistent with Houk et al. 2010 typical sunitinib CL).
+- **Notes:** Specific scope because the values are intrinsically tied to a specific upstream popPK fit (sunitinib in this case; another model adopting CLI would carry its own upstream-PK lineage). Renamed from the source's `CL` column because `cl` is the canonical nlmixr2 PK parameter name (a parameter, not a data column). Each model's `covariateData[[CLI]]$notes` should cite the upstream popPK source (paper or DDMORE ID) and explain how to populate the column for new simulations (typically: simulate the upstream popPK first to obtain individual CL, or set every subject to the typical-value CL for typical-trajectory simulations).
+
+### CL_INDIV (**canonical for per-subject empirical-Bayes drug clearance**)
+- **Description:** Individual point estimate of the modelled drug's clearance, supplied per-subject as a fixed data column. Used in sequential PK->PD models where the PK structure has been fixed from a previously-published population PK analysis and the per-subject empirical-Bayes (POSTHOC) clearances are passed through to drive the PD layer rather than being re-estimated alongside the PD parameters.
+- **Units:** L/h (document per-model via `covariateData[[CL_INDIV]]$units`).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a — used directly inside `model()` as `CL_INDIV` in place of an estimated `cl <- exp(lcl + etalcl)`.
+- **Source aliases:** `CLI` — used in `Friberg_2002_paclitaxel.R` (NM-TRAN data column for per-subject paclitaxel CL).
+- **Example models:** `Friberg_2002_paclitaxel.R`.
+- **Notes:** Specific scope because the value is intrinsically tied to the modelled drug — there is no shared meaning across drugs. Each model's `covariateData[[CL_INDIV]]$notes` should state which upstream popPK source the EBE values come from (e.g., Henningsson 2001 paclitaxel popPK, fixed in the DDMORE encoding) and whether placebo periods are present. Companion volumes are registered as `VC_INDIV` and `VP_INDIV`.
+
+### VC_INDIV (**canonical for per-subject empirical-Bayes central volume of distribution**)
+- **Description:** Individual point estimate of the modelled drug's central volume of distribution, supplied per-subject as a fixed data column. Companion to `CL_INDIV` in sequential PK->PD encodings.
+- **Units:** L (document per-model via `covariateData[[VC_INDIV]]$units`).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a — used directly inside `model()` as `VC_INDIV` in place of an estimated `vc <- exp(lvc + etalvc)`.
+- **Source aliases:** `V1I` — used in `Friberg_2002_paclitaxel.R` (NM-TRAN data column for per-subject paclitaxel V1).
+- **Example models:** `Friberg_2002_paclitaxel.R`.
+- **Notes:** See `CL_INDIV` notes for the broader convention.
+
+### VP_INDIV (**canonical for per-subject empirical-Bayes peripheral volume of distribution**)
+- **Description:** Individual point estimate of the modelled drug's first peripheral volume of distribution, supplied per-subject as a fixed data column. Companion to `CL_INDIV` and `VC_INDIV` in sequential PK->PD encodings.
+- **Units:** L (document per-model via `covariateData[[VP_INDIV]]$units`).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a — used directly inside `model()` as `VP_INDIV` in place of an estimated `vp <- exp(lvp + etalvp)`.
+- **Source aliases:** `V2I` — used in `Friberg_2002_paclitaxel.R` (NM-TRAN data column for per-subject paclitaxel V2).
+- **Example models:** `Friberg_2002_paclitaxel.R`.
+- **Notes:** See `CL_INDIV` notes for the broader convention. For models requiring a second peripheral compartment, register `VP2_INDIV` (and add a follow-on entry to this register) when a second model legitimately needs it.
+
 ### IGE (**canonical for serum total immunoglobulin E concentration**)
 - **Description:** Baseline serum total immunoglobulin E concentration (free IgE plus, in patients on anti-IgE therapy, omalizumab–IgE complex). For anti-IgE monoclonal antibodies (omalizumab, ligelizumab) IgE is the pharmacologic target; baseline IgE sets the magnitude of the target sink and modifies free-IgE clearance and the rate of IgE production in mechanism-based binding/turnover models.
 - **Units:** ng/mL (typical clinical-PK convention). Pretreatment values reported in `IU/mL` are converted via `1 IU/mL = 2.42 ng/mL` (Hayashi 2007 Methods). Document per-model via `covariateData[[IGE]]$units`.
@@ -1391,6 +1443,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Li_2019_abatacept.R` (exponential effect on CL: `CL * exp(0.0640 * CONMED_NSAID)`; ~6.6% higher CL, not clinically relevant per Li 2019).
 - **Notes:** Baseline-use-only in Li 2019; time-varying use is permitted, document per-model. Follows the `CONMED_*` concomitant-medication pattern established for IBD models (AZA / MP / MTX / AMINO).
 
+### CONMED_PARA (**canonical for concomitant paracetamol (acetaminophen) use**)
+- **Description:** 1 = on concomitant paracetamol (acetaminophen) at the observation, 0 = not.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no concomitant paracetamol).
+- **Source aliases:**
+  - `PCM` — used in `Plan_2012_pain.R` (DDMORE Foundation Model Repository entry DDMODEL00000194).
+- **Example models:** `Plan_2012_pain.R` (additive shift on the placebo-effect logit of the typical pain-score lambda: `phl = logit(TVLAM) + 0.364 * CONMED_PARA`; mean pain score ~9% higher on the 0-10 Likert scale during paracetamol use).
+- **Notes:** Distinct from `CONMED_NSAID` — paracetamol is not classed as an NSAID (no anti-inflammatory mechanism, distinct AE profile). Time-varying use is permitted; the daily Likert measurements in Plan 2012 carry PCM as a per-observation flag. Follows the `CONMED_*` concomitant-medication pattern established for IBD models (AZA / MP / MTX / AMINO) and `CONMED_NSAID` (Li 2019). Ratified canonically alongside the Plan 2012 DDMORE extraction.
+
 ### CONMED_RITUX (**canonical for concomitant rituximab combination therapy**)
 - **Description:** 1 = on concomitant rituximab combination therapy (with or without backbone chemotherapy), 0 = not on rituximab.
 - **Units:** (binary)
@@ -2150,6 +2213,7 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 ## Change log
 
 - **2026-04-28** — Extended `RACE_WHITE` (general scope) example-models list and source aliases to record `Hu_2014_bapineuzumab.R` (Caucasian-vs-non-Caucasian dichotomy with the Caucasian subgroup as the typical-value reference). The canonical column encoding (1 = White / 0 = non-White) is unchanged; the model implements the 15% non-Caucasian effect on `(1 - RACE_WHITE)`. The change log notes that the typical-value reference category may legitimately differ between papers using `RACE_WHITE`.
+- **2026-05-06** — Added `CL_INDIV`, `VC_INDIV`, and `VP_INDIV` (all specific scope) under `Drug exposure metrics` while extracting `Friberg_2002_paclitaxel.R` (DDMODEL00000186). The three columns carry per-subject empirical-Bayes paclitaxel PK estimates (clearance, central volume, peripheral volume) that drive the myelosuppression PD model in place of an estimated PK layer; the pattern parallels the existing `CAV` exposure-metric convention but for the structural PK parameters themselves rather than a derived exposure summary. Source aliases mapped: `CLI` → `CL_INDIV`, `V1I` → `VC_INDIV`, `V2I` → `VP_INDIV`. Reserved `VP2_INDIV` for future registration when a second peripheral compartment is needed.
 - **2026-04-29** — Added `IL6` (general-scope serum interleukin-6 cytokine biomarker, pg/mL, under `Inflammation markers`), `PAIN` (general-scope patient-reported global pain VAS 0-100, under `Rheumatoid-arthritis disease-activity covariates`), and `RACE_ASIAN_OTH` (specific-scope composite race indicator pooling Asian / American Indian / Other against a White + Black reference, under `Race / ethnicity`) canonical entries while extracting `Frey_2013_tocilizumab.R` (PMID 23436260). Source aliases mapped: `BLIL6` -> `IL6`. Frey 2013 uses log-transformed `(log(IL-6 * 1000) / 9.9)^exp` with reference IL-6 ~= 20 pg/mL; the canonical column carries the raw IL-6 in pg/mL and the log transformation is applied inside `model()`.
 - **2026-04-28** — Added `TUMTP_PCALCL` (specific scope under `Oncology`; primary cutaneous anaplastic large-cell lymphoma indicator following the `TUMTP_<GROUP>` decomposition pattern) and three ADA-status × assay-era indicators (`ADA_POS` [modern-assay arm; general scope], `ADA_POSOLD`, `ADA_MISSING` [both specific scope] under `Immunogenicity`) while extracting `Suri_2018_brentuximab.R`. Initially named `ADA_POSNEW`; renamed to `ADA_POS` on 2026-04-29 for consistency with the existing general `ADA_POS` canonical. The three indicators are mutually exclusive and decompose Suri 2018's four-level ADA-status × assay-era factor with ADA-negative as the reference; the multiplicative additive form `cl *= (1 + theta * ind)` from supplement 1's ATA-status equation is documented per model.
 - **2026-04-27** — Added `STUDY_ABA2_HLA78` and `STUDY_ABA2_HLA88` (both specific scope) canonical entries while extracting `Takahashi_2023_abatacept.R`. The two binary indicators jointly reproduce the three-level RA/JIA-vs-ABA2-7/8-vs-ABA2-8/8 cohort categorical that Takahashi 2023 Supplemental Table 4 retains as the only categorical PK covariate (multiplicative `Ratio` thetas on CL and on Vc; RA/JIA = both indicators 0 = ratio 1 fixed).
@@ -2280,6 +2344,7 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **2026-04-28** — Added `SMOKE_CURRENT` and `SMOKE_NEVER` (both general-scope, paired binary indicators for a 3-level smoking-status categorical with former smoker as the implicit reference) canonical entries under `Lifestyle / medical history`, alongside the existing 2-level `SMOKE`. Pattern follows the `RACE_<GROUP>` convention for paired indicators. Introduced while extracting `Hwang_2023_monalizumab.R`, where Table 2 reports separate proportional-shift coefficients on V1 for current smoker (+0.0484) and never smoker (-0.141) with former smoker (n=319/507) as the most-common reference category. The existing `SMOKE` entry remains in use for 2-level (current vs non-smoker) encodings; the per-model documentation cross-references the alternative encoding.
 - **2026-04-28** — Added `TUMTP_BC` (general-scope breast-cancer tumor-type indicator) and `HEPIMP_MOD_MISSING` (specific-scope composite moderate-or-data-missing hepatic impairment indicator) canonical entries while extracting `Lu_2022_patritumab.R`. Source aliases mapped: `TUMTP` (BC level)→`TUMTP_BC`; `HEPATIC`→`HEPIMP_MOD_MISSING` (composite of NCI ODWG group 3 = moderate plus n = 6 missing-data patients pooled together by the Lu 2022 covariate analysis). Extended `HEPIMP_MILD` example_models with Lu 2022.
 - **2026-04-29** — Added paired `HSCT_URD_7OF8` and `HSCT_URD_8OF8` (both specific-scope) canonical entries under `Disease state (cross-population indicators)` while extracting `Zhong_2026_abatacept.R`. The two indicators jointly decompose the 3-level Study IM101311 (ABA2) "cohort" categorical (non-HSCT-cohort / 7-of-8 / 8-of-8) into two orthogonal binary indicators in the same style as `DIS_CANCER` + `DIS_HV`. Source aliases mapped: `COHORT7` → `HSCT_URD_7OF8`, `COHORT8` → `HSCT_URD_8OF8`. Reused the existing `DIS_PJIA` canonical (source alias `JIA`) and the existing `AST` and `CRCL` canonicals (source aliases `AST` and `cGFR`). Names match the abbreviations used in the Zhong 2026 Figure 1 caption and describe the actual HLA-matching transplant treatment received.
+- **2026-05-06** — Added paired `DOSE_MG` and `CLI` (both specific-scope) canonical entries under `Drug exposure metrics` while extracting the Hansson 2013 sunitinib biomarker PD model (DDMODEL00000197, `Hansson_2013a_sunitinib.R`). The two columns jointly carry the per-cycle drug-exposure summary (`AUC = DOSE_MG / CLI`) for a PD-only model that consumes posthoc PK from a separately published popPK fit instead of instantiating its own PK ODE. Source aliases mapped: `DOS` → `DOSE_MG`, `CL` → `CLI`. Distinct from existing `DOSE` (per-subject assigned dose for power-covariate use on a PK parameter) and from the canonical PK parameter `cl` (which is a derived in-model quantity, not a data column). Designed to be reusable by the queue siblings `Hansson_2013b_sunitinib` (DDMODEL00000198, TGI) and any future PD-only model that consumes upstream-PK posthoc estimates as data covariates.
 - Subsequent additions: append new canonical entries as new papers are processed. When adding, bump the audit-completed count in the summary below.
 
 ## Summary
