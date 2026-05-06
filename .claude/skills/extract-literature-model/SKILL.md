@@ -241,7 +241,7 @@ Naming conventions for mechanistic parameters are documented in `references/nami
 1. Re-confirm the branch is on top of fresh `origin/main` (`git fetch origin && git rebase origin/main` if needed).
 2. Run `nlmixr2lib::buildModelDb()` to regenerate `data/modeldb.rda` and `inst/modeldb.qs2`. Confirm the new model appears in `modellib()`. **When verifying in R, do `devtools::load_all(".")` first so `modellib()` reads the worktree's in-development package, not the stale system install** — see `references/verification-checklist.md` § "Verifying against the worktree's nlmixr2lib" for why a bare `library(nlmixr2lib)` can return a misleading `FALSE`.
 3. Run `nlmixr2lib::checkModelConventions(model = "<FirstAuthor>_<Year>_<drug>")` and review the output. Any deviations from the canonical parameter / IIV / residual-error / covariate / compartment conventions (see `references/naming-conventions.md` and `inst/references/covariate-columns.md`) that the function flags should be either fixed in the model file before committing, or explicitly justified in the vignette's Assumptions and deviations section. `buildModelDb()` runs `checkModelConventions()` implicitly at package-build time, but running it explicitly on your new model makes drift visible before commit, not after CI. Paste the key lines of the output into the PR body so a reviewer can see what was checked.
-4. **Render the vignette locally and verify it completes without error in under 5 minutes of wall-clock time.** This is a mandatory pre-push gate — it catches missing columns, wrong variable names, PKNCA formula errors, and simulation crashes before CI does.
+4. **Render the vignette locally and verify it completes without error in under 5 minutes of wall-clock time. This is a mandatory pre-push gate — the worker MUST run this command and verify exit 0 / HTML present before any `git commit` / `git push` of the new vignette.** It catches the same failure modes pkgdown CI does — missing data columns, time-varying covariates assigned to rxEt objects that get silently dropped, PKNCA formulas referencing absent columns, simulation crashes — and surfaces them in seconds rather than after a CI cycle.
 
    ```bash
    timeout 300 Rscript --vanilla -e "
@@ -255,10 +255,12 @@ Naming conventions for mechanistic parameters are documented in `references/nami
 
    Interpret the result:
 
-   - **Exit 0, output HTML present** → vignette is clean; proceed to commit.
-   - **Exit non-zero with an R error** → fix the vignette before committing. Read the traceback carefully; the most common causes are (a) a `select()` / PKNCA formula referencing a column that was never created (add it in the preceding `mutate()`), (b) a variable name used before it is defined (reorder chunks), (c) a simulation that errors because covariate values are out of range for the model.
+   - **Exit 0, output HTML present** → vignette is clean; the gate is passed; proceed to commit.
+   - **Exit non-zero with an R error** → fix the vignette before committing. Read the traceback carefully; the most common causes are (a) a `select()` / PKNCA formula referencing a column that was never created (add it in the preceding `mutate()`), (b) a variable name used before it is defined (reorder chunks), (c) a simulation that errors because covariate values are out of range for the model, (d) `event_table$col <- vector` syntax against an `rxEt` object — rxode2 silently drops these assignments, so always materialize via `as.data.frame()` and add covariate columns there before passing to `rxSolve()`.
    - **Exit 124 (timeout)** → the vignette exceeds 5 minutes. Reduce simulation size: cut `nSub` (stochastic VPC subjects), shorten the observation grid, or move expensive chunks behind `eval = FALSE` with a note. Do **not** skip the time budget — pkgdown CI has strict wall-time limits and a slow vignette breaks the build for everyone.
    - **C-level segfault (`*** caught segfault ***`)** → broken R / rxode2 / nlmixr2 install, not a model-file problem. Stop, sidecar-ask the operator to fix the environment; do not work around with `--no-build-vignettes`.
+
+   Do not interpret silence as success — re-run with `quiet = FALSE` and confirm an HTML output file landed next to the `.Rmd`. Do not assume "checkModelConventions was clean, vignette must be fine" — those are independent failure modes. The render gate is the only one that exercises the full data path the way pkgdown CI does.
 
 5. Run `devtools::check()`. Vignettes must build cleanly.
 
@@ -293,7 +295,7 @@ Naming conventions for mechanistic parameters are documented in `references/nami
    anything else that lives in the model file's metadata or vignette. A
    reviewer who wants those details clicks through to the model file.
 7. Commit the model file, the vignette under `vignettes/articles/`, the regenerated `modeldb.rda` / `modeldb.qs2` / `modeldb.Rd`, the `NEWS.md` entry, and any updates to `inst/references/covariate-columns.md` (if a new covariate was registered) together on the feature branch.
-8. Push the branch and open a PR against `main`. Use `gh pr create` with a title like `Add <Author> <Year> <drug> model`.
+8. Push the branch and open a PR against `main`. Use `gh pr create` with a title like `Add <Author> <Year> <drug> model`. **Before pushing, confirm step 4 (vignette render) was run on the final state of the vignette file and exited 0 with HTML present.** If the vignette was edited after the last render — even for a typo fix or a cosmetic comment change — re-run the render gate; do not push on the strength of an earlier render against an older copy.
 
 ## Stop-and-ask triggers (consolidated)
 

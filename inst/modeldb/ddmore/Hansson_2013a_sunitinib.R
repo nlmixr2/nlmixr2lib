@@ -1,5 +1,5 @@
 Hansson_2013a_sunitinib <- function() {
-  description <- "Population PD biomarker model for sunitinib in adults with imatinib-resistant gastrointestinal stromal tumours (GIST). Four indirect-response compartments for the soluble biomarkers VEGF, sVEGFR-2, sVEGFR-3, and sKIT, each driven by a per-cycle drug-exposure summary AUC = DOSE_MG / CLI. Sigmoid Imax inhibition with a Hill coefficient applies to VEGF (Kout) and sVEGFR-2 (Kin); simple Imax inhibition applies to sVEGFR-3 (Kin) and sKIT (Kin). A linear disease-progression term increases the baseline of VEGF and sKIT over time. The PD model has no PK ODE: the user supplies DOSE_MG (current daily sunitinib dose, mg, time-varying with on/off cycling) and CLI (subject-specific posthoc total plasma clearance, L/h, from an upstream popPK fit) as data columns. No covariates other than the two exposure inputs."
+  description <- "Population PD biomarker model for sunitinib in adults with imatinib-resistant gastrointestinal stromal tumours (GIST). Four indirect-response compartments for the soluble biomarkers VEGF, sVEGFR-2, sVEGFR-3, and sKIT, each driven by a per-cycle drug-exposure summary AUC = DOSE / CLI. Sigmoid Imax inhibition with a Hill coefficient applies to VEGF (Kout) and sVEGFR-2 (Kin); simple Imax inhibition applies to sVEGFR-3 (Kin) and sKIT (Kin). A linear disease-progression term increases the baseline of VEGF and sKIT over time. The PD model has no PK ODE: the user supplies DOSE (current daily sunitinib dose, mg, time-varying with on/off cycling) and CLI (subject-specific posthoc total plasma clearance, L/h, from an upstream popPK fit) as data columns. No covariates other than the two exposure inputs."
   reference <- paste(
     "Hansson EK, Amantea MA, Westwood P, Milligan PA, Houk BE,",
     "French J, Karlsson MO, Friberg LE.",
@@ -16,12 +16,12 @@ Hansson_2013a_sunitinib <- function() {
   replicate_of <- NULL
 
   covariateData <- list(
-    DOSE_MG = list(
-      description        = "Current administered sunitinib daily dose (mg) carried as a time-varying data column. Set to 0 during off-cycles (4 weeks on / 2 weeks off in the Hansson 2013a GIST cohort) or for placebo subjects so the derived AUC = DOSE_MG / CLI becomes 0.",
+    DOSE = list(
+      description        = "Current administered sunitinib daily dose (mg) carried as a time-varying data column. Set to 0 during off-cycles (4 weeks on / 2 weeks off in the Hansson 2013a GIST cohort) or for placebo subjects so the derived AUC = DOSE / CLI becomes 0.",
       units              = "mg",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "DDMORE-bundle simulated dataset reports DOSE_MG = 50 (treated) or 0 (placebo) for every record of every subject. The .mod feeds DOSE_MG into AUC = DOSE_MG / CLI in $PK at every event call, producing a per-cycle daily-AUC equivalent (mg*h/L). For typical-cohort vignette simulations the value is held at 50 mg during the 4-week on-cycles.",
+      notes              = "DDMORE-bundle simulated dataset reports DOSE = 50 (treated) or 0 (placebo) for every record of every subject. The .mod feeds DOSE into AUC = DOSE / CLI in $PK at every event call, producing a per-cycle daily-AUC equivalent (mg*h/L). For typical-cohort vignette simulations the value is held at 50 mg during the 4-week on-cycles.",
       source_name        = "DOS"
     ),
     CLI = list(
@@ -163,8 +163,8 @@ Hansson_2013a_sunitinib <- function() {
     # Per-cycle drug-exposure summary fed by the two data covariates.
     # mg / (L/h) = mg*h/L; this is the daily-AUC equivalent for the current
     # dose level. CLI is per-subject (time-fixed, posthoc upstream PK);
-    # DOSE_MG is the current daily dose (time-varying with on/off cycling).
-    auc <- DOSE_MG / CLI
+    # DOSE is the current daily dose (time-varying with on/off cycling).
+    auc <- DOSE / CLI
 
     # Drug-effect functions: sigmoid Imax (with Hill) for VEGF and sVEGFR-2,
     # plain Imax (Hill = 1) for sVEGFR-3 and sKIT.

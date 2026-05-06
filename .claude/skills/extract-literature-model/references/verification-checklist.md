@@ -104,8 +104,25 @@ If the source publication does not report the validation reference (e.g., DDMORE
 - [ ] `nlmixr2lib::buildModelDb()` runs to completion.
 - [ ] The new model appears in `modellib()`.
 - [ ] `nlmixr2lib::checkModelConventions(model = "<...>")` returns clean (or all deviations are justified in the vignette's Assumptions and deviations section and noted in the PR body).
+- [ ] **Render the new vignette end-to-end** (mandatory pre-push gate). Run the exact command below on the worktree, with a 5-minute wall-clock budget — do not skip it, do not interpret silence as success, and do not push if it errors. This is the single highest-value gate the worker performs: it catches the failure modes that pkgdown CI also surfaces (missing data columns, time-varying covariates assigned to rxEt objects that get silently dropped, PKNCA formulas referencing absent columns, simulation crashes, vignettes exceeding the time budget).
+
+   ```bash
+   timeout 300 Rscript --vanilla -e "
+     pkgload::load_all('.', quiet = TRUE)
+     rmarkdown::render(
+       'vignettes/articles/<FirstAuthor>_<Year>_<drug>.Rmd',
+       quiet = FALSE
+     )
+   "
+   ```
+
+   Interpret the exit code:
+   - `0` with output HTML present → gate passed; proceed.
+   - non-zero R error → fix the vignette before committing. The traceback identifies the failing chunk; the most common causes are listed in SKILL.md Phase 6 step 4.
+   - `124` (timeout) → reduce simulation size; do not skip the gate.
+   - C-level segfault → broken environment; stop and sidecar-ask. Do **not** work around with `--no-build-vignettes`.
+
 - [ ] `devtools::check()` passes (warnings OK to discuss; errors are blocking). A C-level segfault during `check()` or vignette rendering is a red flag — stop, sidecar-ask the operator to investigate the environment, and do **not** work around with `--no-build-vignettes` or similar flags. See SKILL.md Phase 6 step 4.
-- [ ] Vignette builds cleanly.
 - [ ] `NEWS.md` entry added.
 
 ### Verifying against the **worktree's** nlmixr2lib, not the system install

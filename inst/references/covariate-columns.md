@@ -112,7 +112,7 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Source aliases:**
   - `SEXM` (values inverted: `SEXF = 1 - SEXM`; effect coefficient sign and reference category both invert) — used in `CarlssonPetri_2021_liraglutide.R`.
   - `SEX` with `"M"`/`"F"` strings — derive `SEXF = as.integer(SEX == "F")`.
-- **Example models:** `Zhu_2017_lebrikizumab.R` (canonical), `CarlssonPetri_2021_liraglutide.R` (alias `SEXM`), `Bajaj_2017_nivolumab.R` (male-indicator source; effect applied as `exp(coef * (1 - SEXF))` to preserve the paper's female-reference CL_REF / VC_REF), `Fau_2020_isatuximab.R` (exponential effect on Vc; reference category 0 = male).
+- **Example models:** `Zhu_2017_lebrikizumab.R` (canonical), `CarlssonPetri_2021_liraglutide.R` (alias `SEXM`), `Bajaj_2017_nivolumab.R` (male-indicator source; effect applied as `exp(coef * (1 - SEXF))` to preserve the paper's female-reference CL_REF / VC_REF), `Fau_2020_isatuximab.R` (exponential effect on Vc; reference category 0 = male), `Netterberg_2017_docetaxel.R` (multiplicative effect on baseline ANC: `BACOV *= (1 + theta * SEXF)`; source column `SEX` with 1 = male, 2 = female encoding, decomposed via `SEXF = as.integer(SEX == 2)`).
 - **Notes:** When translating a model that used `SEXM`, flag the sign/reference-category inversion to the user.
 
 ### CHILD
@@ -414,6 +414,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Mulyukov_2018_ranibizumab.R` (baseline BCVA used as the center for the initial-condition draw `g0 = BCVA + eta_g0`).
 - **Notes:** Ophthalmology-specific. Baseline-only in Mulyukov 2018 (carried once per subject and used only as the starting BCVA for the indirect-response model). Canonical name drops the `B` prefix to match the `EASI` / `AGE` / `WT` / `ALB` pattern (baseline-vs-time-varying status recorded in `covariateData[[BCVA]]$notes`). Scope is `specific` until a second ophthalmology model ratifies the name; at that point promote to `general`.
 
+### PREV_AE_SCORE (**canonical for previous-time-step ordinal adverse-event score**)
+- **Description:** Ordinal adverse-event score recorded at the immediately preceding observation time, used as a Markov-state covariate that conditions the current-time logit / probability calculation on the previous outcome. Integer 0..N where N is the maximum AE grade in the source-paper grading scheme; convention is that the value is 0 at the first observation (no prior AE).
+- **Units:** (ordinal score; document per-model the scale in `covariateData[[PREV_AE_SCORE]]$notes`)
+- **Type:** count
+- **Scope:** specific
+- **Reference category:** n/a — typically used as a categorical conditioner (`IF (PREV_AE_SCORE == 0) ...`) or via piecewise-FPS indicator decomposition; the natural reference is `PREV_AE_SCORE = 0` (no prior AE).
+- **Source aliases:**
+  - `PREVSCOR` — used in `Girard_2012_pimasertib.R` (CTCAE 0..3 ocular-AE score).
+- **Example models:** `Girard_2012_pimasertib.R` (Markov-state covariate that selects per-previous-score logit thresholds `b01`/`b11`/`b21` and `b02`/`b12`/`b22` and per-previous-score `emax` levels; reset to 0 at TIME = 0 per source `IF (TIME.EQ.0) PREVSCOR=0`).
+- **Notes:** Specific scope because the ordinal scale is paper-specific (different AE-grading schemes, different number of categories, different grouping rules — Girard 2012 collapses CTCAE grades 1+2 into a single "1-2" category and treats grades >=3 as a third stratum). When assembling the simulation event table, set `PREV_AE_SCORE = 0` at the first observation of every subject and update each subsequent observation to the previous observation's sampled score — matching the NONMEM `IF (TIME.EQ.0) PREVSCOR=0` / `PREVSCOR = DV` carry-forward idiom. Distinct from `PAIN` (continuous baseline pain score) and from `MGADL` / `EASI` (continuous severity scores not modelled as Markov states).
+
 ### ACUTE_MED_DAYS (**canonical for baseline number of days/month of acute migraine medication use**)
 - **Description:** Baseline number of days per month on which acute migraine medication (triptans or ergot compounds) was used during the 28-day run-in period prior to first dose. Enters as a piecewise-linear shift on baseline migraine or moderate-to-severe headache days in migraine exposure-response models.
 - **Units:** days/month
@@ -506,6 +517,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Thakre_2022_risankizumab.R`, `Xu_2019_sarilumab.R`, `Chua_2025_mirikizumab.R`, `Moein_2022_etrolizumab.R`, `Ma_2020_sarilumab_das28crp.R`, `Wang_2020_ontamalimab.R` (mg/dL, reference 0.837).
 - **Notes:** The prior separate `hsCRP`, `BLCRP`, and standard-assay `CRP` canonicals were merged on 2026-04-20 to a single general-scope `CRP` canonical. Assay type (standard vs hs-CRP), baseline-vs-time-varying status, and the paper-specific reference value all live in each model's `covariateData[[CRP]]$description` / `notes`. Only aggregate values from hs-validated assays as CRP when the downstream analysis relies on low-range sensitivity; for most inflammatory-disease cohorts (IBD, RA/PsA), baseline CRP is well above the hs-sensitivity range and the distinction is moot.
 
+### AAG (**canonical for alpha-1 acid glycoprotein concentration**)
+- **Description:** Serum alpha-1 acid glycoprotein (AAG; orosomucoid; ORM1) concentration, an acute-phase plasma glycoprotein that binds basic and lipophilic drugs (including taxanes such as docetaxel and paclitaxel). Elevated in cancer, inflammation, and infection; influences free-drug fraction and downstream PD effects in cytotoxic-chemotherapy myelosuppression models.
+- **Units:** g/L (= mg/mL; 1 g/L is the conventional clinical-PK reporting unit). Document per-model via `covariateData[[AAG]]$units` if a different unit is used.
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a — used in piecewise-linear, power, or exponential effect forms (e.g., the Kloft 2006 cytotoxic-chemotherapy myelosuppression family fits a piecewise-linear effect with breakpoint at the cohort median 1.34 g/L: separate slopes apply for `AAG <= 1.34` and `AAG > 1.34`). Reference values observed: 1.34 g/L (Kloft 2006 / Netterberg 2017, cohort median in mixed adult-cancer cohort).
+- **Source aliases:**
+  - `AAG` — used in `Netterberg_2017_docetaxel.R` (per the bundle's NM-TRAN $INPUT block; matching Kloft 2006).
+- **Example models:** `Netterberg_2017_docetaxel.R` (piecewise-linear effects on baseline ANC with separate low-AAG and high-AAG slopes around median 1.34 g/L; linear effect on the drug-effect slope SL via `(1 + theta * (AAG - 1.34))`).
+- **Notes:** General scope because serum AAG is a routine clinical-laboratory measurement that recurs across cytotoxic-chemotherapy population-PK / PD analyses (Bruno 1996/1998 docetaxel popPK uses AAG as a CL covariate; Kloft 2006 and downstream Friberg-family myelosuppression models use it on baseline ANC and drug-effect slope). Time-fixed at baseline unless the source paper states otherwise. The Kloft 2006 piecewise-linear breakpoint at 1.34 g/L corresponds to the population median in their pooled cancer cohort; future papers may use different breakpoints, so document the per-model breakpoint in `covariateData[[AAG]]$notes`. Distinct from `CRP` (a different acute-phase reactant with different binding properties).
+
 ### IL6 (**canonical for serum interleukin-6 concentration**)
 - **Description:** Serum (or plasma) interleukin-6 (IL-6) concentration. Pro-inflammatory cytokine; elevated in rheumatoid arthritis, Castleman's disease, sepsis, COVID-19, and other inflammatory conditions. Both baseline and time-varying usages are covered; document per-model in `covariateData[[IL6]]$notes` whether the column is baseline-only or time-varying.
 - **Units:** pg/mL (= ng/L; the two labels are numerically equivalent).
@@ -564,27 +586,38 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `FiedlerKelly_2020_fremanezumab_em.R`, `FiedlerKelly_2020_fremanezumab_cm.R`.
 - **Notes:** Specific scope because the value is intrinsically tied to the modelled drug — there is no shared meaning across drugs or studies. Each model's `covariateData[[CAV]]$notes` should state how the Cav values are derived (e.g., empirical-Bayes from a referenced population PK model) and that the column is set to 0 for placebo periods.
 
-### DOSE_MG (**canonical for current administered dose level supplied as a data column**)
-- **Description:** Current administered dose level (in mg) carried as a per-record data column rather than via NONMEM/rxode2 dose events. Used in PD-only models that derive a per-cycle exposure metric (e.g., AUC = DOSE_MG / CLI) from a posthoc-CL covariate without instantiating a PK ODE. The column is set to 0 during off-treatment periods (drug holidays, placebo arm) so the derived exposure becomes 0.
-- **Units:** mg (document per-model via `covariateData[[DOSE_MG]]$units`).
+### AUC_CARBO (**canonical for per-cycle average AUC of carboplatin**)
+- **Description:** Per-cycle average AUC of carboplatin used as the time-varying drug-exposure covariate driving cytotoxic tumour-death rates in tumour-size-dynamics models of platinum-based chemotherapy. The value is held step-wise constant over each chemotherapy cycle and resets at the start of the next cycle.
+- **Units:** carboplatin AUC units (typically `mg·min/mL`); document per-model via `covariateData[[AUC_CARBO]]$units`.
 - **Type:** continuous
 - **Scope:** specific
-- **Reference category:** n/a — appears directly in derived-exposure expressions; not a covariate effect coefficient.
+- **Reference category:** n/a — set to 0 in cycles where carboplatin is not administered (e.g., post-discontinuation or non-platinum arms).
 - **Source aliases:**
-  - `DOS` — used in the Hansson 2013 sunitinib biomarker / TGI / fatigue PD-model family (DDMODEL00000197 and siblings) as a per-record sunitinib dose column.
-- **Example models:** `Hansson_2013a_sunitinib.R` (DDMODEL00000197).
-- **Notes:** Specific scope because the value is study/regimen-specific and meaningless without a paired posthoc-CL column. Distinct from the rxode2/nlmixr2 event column `amt` (which carries the administered dose at dose events) and from `DOSE` (per-subject *assigned* dose level used as a power covariate on a PK parameter): `DOSE_MG` is a record-level value used directly inside `model()` to compute a per-cycle exposure summary in a model that has no PK ODE. For sunitinib 4-weeks-on / 2-weeks-off cycling, set DOSE_MG = nominal_daily_mg (e.g., 50) during on-cycles and 0 during off-cycles or for the placebo arm.
+  - `CB` (NONMEM `$INPUT` column in DDMODEL00000217 / DDMODEL00000218) — used in `Zecchin_2016_tumorovarian.R` and `Zecchin_2016_survival.R`. The DDMORE bundles ship the simulated datasets with the column re-labelled `AUC0`; downstream consumers should map `AUC0` → `AUC_CARBO`.
+- **Example models:** `Zecchin_2016_tumorovarian.R` (Zecchin 2016 SLD model for advanced ovarian cancer, DDMODEL00000217), `Zecchin_2016_survival.R` (Zecchin 2016 OS model, DDMODEL00000218; the OS model integrates the same SLD ODE inline, with the prior IPP-fit subject-level KG/KD0/KD1/IBASE supplied via the dataset).
+- **Notes:** Specific scope because the column meaning is tied to a particular cytotoxic agent (carboplatin) and a particular per-cycle averaging convention. Reusing the same column for another platinum analogue (cisplatin, oxaliplatin) is not appropriate — register a sibling canonical (`AUC_CISPLATIN`, `AUC_OXALIPLATIN`) when needed. The Zecchin 2016 SLD and OS models use the value directly in the death-rate term `kd0 * AUC_CARBO * tumorSize`, with an internal `/1000` numerical scaling carried verbatim from the source `$DES` block.
+
+### AUC_GEM (**canonical for per-cycle average AUC of gemcitabine**)
+- **Description:** Per-cycle average AUC of gemcitabine (sum of parent and active metabolite exposure, per Zecchin 2016 Methods) used as the time-varying drug-exposure covariate driving cytotoxic tumour-death rates in tumour-size-dynamics models of gemcitabine-containing chemotherapy.
+- **Units:** gemcitabine AUC units (typically `mg·h/L` or the paper's `mol·day / 10^6 cells` scaling for the parent-plus-active-metabolite composite); document per-model via `covariateData[[AUC_GEM]]$units`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a — set to 0 in cycles where gemcitabine is not administered (e.g., carboplatin-monotherapy arms).
+- **Source aliases:**
+  - `G` (NONMEM `$INPUT` column in DDMODEL00000217 / DDMODEL00000218) — used in `Zecchin_2016_tumorovarian.R` and `Zecchin_2016_survival.R`. The DDMORE bundles ship the simulated datasets with the column re-labelled `AUC1`; downstream consumers should map `AUC1` → `AUC_GEM`.
+- **Example models:** `Zecchin_2016_tumorovarian.R` (Zecchin 2016 SLD model for advanced ovarian cancer, DDMODEL00000217), `Zecchin_2016_survival.R` (Zecchin 2016 OS model, DDMODEL00000218).
+- **Notes:** Specific scope. The Zecchin 2016 SLD and OS models use the value directly in the death-rate term `kd1 * AUC_GEM * tumorSize`, with an internal `/100` numerical scaling carried verbatim from the source `$DES` block.
 
 ### CLI (**canonical for individual posthoc clearance from an upstream popPK fit**)
-- **Description:** Subject-specific empirical-Bayes (posthoc) total plasma clearance from a separately published population PK model that the current PD model treats as a fixed input. Used as a per-subject (time-fixed) covariate in PD-only models that derive a per-cycle exposure metric (e.g., AUC = DOSE_MG / CLI) without instantiating a PK ODE.
+- **Description:** Subject-specific empirical-Bayes (posthoc) total plasma clearance from a separately published population PK model that the current PD model treats as a fixed input. Used as a per-subject (time-fixed) covariate in PD-only models that derive a per-cycle exposure metric (e.g., AUC = DOSE / CLI) without instantiating a PK ODE.
 - **Units:** L/h (document per-model via `covariateData[[CLI]]$units`).
 - **Type:** continuous
 - **Scope:** specific
 - **Reference category:** n/a — appears directly in derived-exposure expressions; not a covariate effect coefficient.
 - **Source aliases:**
-  - `CL` — used in the Hansson 2013 sunitinib biomarker / TGI / fatigue PD-model family (DDMODEL00000197 and siblings) as the posthoc CL column from the paper's upstream 2-compartment popPK fit.
-- **Example models:** `Hansson_2013a_sunitinib.R` (DDMODEL00000197; typical-value reference 32.819 L/h, drawn from the bundle's simulated dataset for subject 1 — broadly consistent with Houk et al. 2010 typical sunitinib CL).
-- **Notes:** Specific scope because the values are intrinsically tied to a specific upstream popPK fit (sunitinib in this case; another model adopting CLI would carry its own upstream-PK lineage). Renamed from the source's `CL` column because `cl` is the canonical nlmixr2 PK parameter name (a parameter, not a data column). Each model's `covariateData[[CLI]]$notes` should cite the upstream popPK source (paper or DDMORE ID) and explain how to populate the column for new simulations (typically: simulate the upstream popPK first to obtain individual CL, or set every subject to the typical-value CL for typical-trajectory simulations).
+  - `CL` — used in the Hansson 2013 sunitinib biomarker / TGI / fatigue PD-model family (DDMODEL00000197 and siblings, including DDMODEL00000222) as the posthoc CL column from the paper's upstream 2-compartment popPK fit.
+- **Example models:** `Hansson_2013a_sunitinib.R` (DDMODEL00000197; typical-value reference 32.819 L/h, drawn from the bundle's simulated dataset for subject 1 — broadly consistent with Houk et al. 2010 typical sunitinib CL); `Hansson_2013c_sunitinib.R` (DDMODEL00000222; uses a per-record `CL` column with subject-specific values 30-43 L/h in the bundle's three-subject simulated dataset).
+- **Notes:** Specific scope because the values are intrinsically tied to a specific upstream popPK fit (sunitinib in this case; another model adopting CLI would carry its own upstream-PK lineage). Renamed from the source's `CL` column because `cl` is the canonical nlmixr2 PK parameter name (a parameter, not a data column). Each model's `covariateData[[CLI]]$notes` should cite the upstream popPK source (paper or DDMORE ID) and explain how to populate the column for new simulations (typically: simulate the upstream popPK first to obtain individual CL, or set every subject to the typical-value CL for typical-trajectory simulations). Distinct from `DOSE` (current administered dose level) — the two columns jointly carry a per-cycle drug-exposure summary (`AUC = DOSE / CLI`) for PD-only models that consume posthoc PK from an upstream popPK fit instead of instantiating their own PK ODE.
 
 ### CL_INDIV (**canonical for per-subject empirical-Bayes drug clearance**)
 - **Description:** Individual point estimate of the modelled drug's clearance, supplied per-subject as a fixed data column. Used in sequential PK->PD models where the PK structure has been fixed from a previously-published population PK analysis and the per-subject empirical-Bayes (POSTHOC) clearances are passed through to drive the PD layer rather than being re-estimated alongside the PD parameters.
@@ -595,6 +628,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Source aliases:** `CLI` — used in `Friberg_2002_paclitaxel.R` (NM-TRAN data column for per-subject paclitaxel CL).
 - **Example models:** `Friberg_2002_paclitaxel.R`.
 - **Notes:** Specific scope because the value is intrinsically tied to the modelled drug — there is no shared meaning across drugs. Each model's `covariateData[[CL_INDIV]]$notes` should state which upstream popPK source the EBE values come from (e.g., Henningsson 2001 paclitaxel popPK, fixed in the DDMORE encoding) and whether placebo periods are present. Companion volumes are registered as `VC_INDIV` and `VP_INDIV`.
+
+### CMAX_M1 (**canonical for maximum drug plasma concentration during month 1**)
+- **Description:** Empirical-Bayes maximum plasma concentration (Cmax) reached during the first month (or the first cycle) of dosing for the modelled drug, used as a per-subject early-exposure covariate in PD / safety models that condition later-time outcomes on early exposure. Continuous, time-invariant per subject (set once from the month-1 / cycle-1 PK simulation).
+- **Units:** ng/mL (document per-model via `covariateData[[CMAX_M1]]$units` if a different concentration unit is reported).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a — used as an additive logit shift `(CMAX_M1 - CMAX_M1_REF) * theta` (Girard 2012) or as a power scaling depending on the source. Reference value observed: 0 ng/mL (Girard 2012 sets `MED17 = 0` as the centering reference).
+- **Source aliases:**
+  - `CMAXM1` — used in `Girard_2012_pimasertib.R`.
+- **Example models:** `Girard_2012_pimasertib.R` (additive logit shift on the cumulative-logit AE-score model: `theta_cmaxm1 * CMAXM1`).
+- **Notes:** Specific scope because the value depends on the upstream drug-specific population-PK model used to derive the empirical-Bayes Cmax. Sibling of the existing `CAV` (average dosing-interval concentration); both are derived exposure metrics fed into downstream PD / safety models. Document the upstream PK model in `covariateData[[CMAX_M1]]$notes` for any future user.
 
 ### VC_INDIV (**canonical for per-subject empirical-Bayes central volume of distribution**)
 - **Description:** Individual point estimate of the modelled drug's central volume of distribution, supplied per-subject as a fixed data column. Companion to `CL_INDIV` in sequential PK->PD encodings.
@@ -615,6 +659,72 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Source aliases:** `V2I` — used in `Friberg_2002_paclitaxel.R` (NM-TRAN data column for per-subject paclitaxel V2).
 - **Example models:** `Friberg_2002_paclitaxel.R`.
 - **Notes:** See `CL_INDIV` notes for the broader convention. For models requiring a second peripheral compartment, register `VP2_INDIV` (and add a follow-on entry to this register) when a second model legitimately needs it.
+
+### BAS_SVEGFR3 (**canonical for individual posthoc baseline soluble VEGFR-3 concentration from an upstream PD fit**)
+- **Description:** Subject-specific empirical-Bayes (posthoc) baseline plasma sVEGFR-3 (soluble vascular endothelial growth factor receptor 3) concentration from a separately published indirect-response biomarker model that the current downstream PD model treats as a fixed input. Used as a per-subject (time-fixed) covariate in fatigue / adverse-event PD models that consume the upstream biomarker dynamics as data covariates without instantiating the biomarker ODE.
+- **Units:** pg/mL (document per-model via `covariateData[[BAS_SVEGFR3]]$units`).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a — appears directly inside `model()` as the initial condition `svegfr3(0) <- BAS_SVEGFR3` and inside the relative-change driver `bm = (svegfr3 - BAS_SVEGFR3) / BAS_SVEGFR3`.
+- **Source aliases:**
+  - `BAS3` — used in `Hansson_2013c_sunitinib.R` (DDMODEL00000222) as the posthoc sVEGFR-3 baseline column from the paper's upstream Hansson 2013a biomarker indirect-response fit (DDMODEL00000197).
+- **Example models:** `Hansson_2013c_sunitinib.R` (DDMODEL00000222; bundle's three-subject simulated dataset reports BAS_SVEGFR3 values 42554-57365 pg/mL).
+- **Notes:** Specific scope because the value is intrinsically tied to a specific upstream biomarker model (sVEGFR-3 indirect response under sunitinib in this case). The downstream fatigue model only consumes individual posthoc baseline / MRT / EC50 of the upstream biomarker; it does not re-fit them. Each model's `covariateData[[BAS_SVEGFR3]]$notes` should cite the upstream biomarker-PD source (paper or DDMORE ID) and explain how to populate the column for new simulations (typically: simulate from the upstream biomarker model to obtain individual posthoc baselines, or set every subject to the typical-value baseline for typical-trajectory simulations).
+
+### MRT_SVEGFR3 (**canonical for individual posthoc mean residence time of soluble VEGFR-3 from an upstream PD fit**)
+- **Description:** Subject-specific empirical-Bayes (posthoc) mean residence time of plasma sVEGFR-3 from a separately published indirect-response biomarker model that the current downstream PD model treats as a fixed input. Used as a per-subject (time-fixed) covariate in fatigue / adverse-event PD models that consume the upstream biomarker dynamics as data covariates without instantiating the biomarker ODE; appears as `kout3 = 1 / MRT_SVEGFR3` inside `model()`.
+- **Units:** h (hours) — document per-model via `covariateData[[MRT_SVEGFR3]]$units`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a — appears directly in derived rate-constant expressions; not a covariate effect coefficient.
+- **Source aliases:**
+  - `MRT3` — used in `Hansson_2013c_sunitinib.R` (DDMODEL00000222) as the posthoc sVEGFR-3 MRT column from the paper's upstream Hansson 2013a biomarker indirect-response fit (DDMODEL00000197).
+- **Example models:** `Hansson_2013c_sunitinib.R` (DDMODEL00000222; bundle's three-subject simulated dataset reports MRT_SVEGFR3 values 313-408 h, broadly consistent with the Hansson 2013a typical sVEGFR-3 MRT of 401 h).
+- **Notes:** Specific scope; same upstream-biomarker dependency rationale as `BAS_SVEGFR3`. The downstream fatigue model consumes the upstream MRT directly without re-fitting it.
+
+### EC50_SVEGFR3 (**canonical for individual posthoc drug-effect EC50 on soluble VEGFR-3 from an upstream PD fit**)
+- **Description:** Subject-specific empirical-Bayes (posthoc) half-maximum-effect concentration of the modelled drug on the production of sVEGFR-3 (or, depending on the upstream model parameterization, on the analogous Imax inhibition pathway) from a separately published indirect-response biomarker model that the current downstream PD model treats as a fixed input. Used as a per-subject (time-fixed) covariate in fatigue / adverse-event PD models that consume the upstream biomarker dynamics as data covariates without instantiating the biomarker ODE.
+- **Units:** mg·h/L (when the per-cycle drug-exposure summary is `auc = DOSE / CLI` in mg·h/L, EC50_SVEGFR3 carries the same units; document per-model via `covariateData[[EC50_SVEGFR3]]$units`).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a — appears directly inside `model()` in the simple-Imax drug-effect term `eff3 = auc / (EC50_SVEGFR3 + auc)`.
+- **Source aliases:**
+  - `EC53` — used in `Hansson_2013c_sunitinib.R` (DDMODEL00000222) as the posthoc sVEGFR-3 EC50 column from the paper's upstream Hansson 2013a biomarker indirect-response fit (DDMODEL00000197).
+- **Example models:** `Hansson_2013c_sunitinib.R` (DDMODEL00000222; bundle's three-subject simulated dataset reports EC50_SVEGFR3 values 1.0-2.8 mg·h/L, consistent with the Hansson 2013a typical sVEGFR-3 IC50 typical value of 1.0 mg·h/L).
+- **Notes:** Specific scope; same upstream-biomarker dependency rationale as `BAS_SVEGFR3`. The downstream fatigue model consumes the upstream EC50 directly without re-fitting it.
+
+### CP_MGL (**canonical for instantaneous drug plasma concentration as a time-varying PD driver**)
+- **Description:** Instantaneous (per-event-record) plasma concentration of the modeled drug, supplied directly as a time-varying covariate column rather than computed from a coupled PK model. Used in PD-only myelosuppression / toxicity / response models that consume an upstream PK trajectory as input — typically because the source analysis was done as a sequential PK-then-PD fit, with the PK model fixed from a previously published popPK analysis (e.g., a Bruno-style docetaxel popPK feeding a Friberg / Kloft myelosuppression PD model).
+- **Units:** mg/L (= ug/mL; the two labels are numerically equivalent and the canonical reporting convention for cytotoxic-chemotherapy concentrations in Kloft 2006 / Friberg 2002 family analyses). Document per-model via `covariateData[[CP_MGL]]$units` if a different unit is used.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a — typically enters as a linear term in the drug-effect expression (e.g., `drug = SL * CP_MGL`, where `SL` has units of `1/(mg/L)`). Set to 0 for placebo periods or any time outside the drug-exposure window. Reference values observed: docetaxel typical Cmax ~3 mg/L after a 100 mg/m^2 1-hour IV infusion (Kloft 2006 / Netterberg 2017 simulated dataset).
+- **Source aliases:**
+  - `CP` (Kloft 2006 / Netterberg 2017 NM-TRAN $INPUT convention for "predicted drug concentration"; values in mg/L) — used in `Netterberg_2017_docetaxel.R`.
+- **Example models:** `Netterberg_2017_docetaxel.R` (linear drug effect on the proliferation rate of the Friberg myelosuppression chain: `(1 - SL * CP_MGL)` with `SL = 19.27 (mg/L)^-1` after Kloft 2006's `THETA(3)/808*1000` MW-808 conversion; CP_MGL supplied per event row from an upstream docetaxel popPK simulation).
+- **Notes:** Specific scope because the covariate's mechanistic meaning is bound to the modeled drug and the source paper's chosen PK input (e.g., a Bruno 1996/1998 docetaxel popPK trajectory for Netterberg 2017). Distinct from `CAV` (dosing-interval-averaged exposure used in Emax / EC50 PD models) — `CP_MGL` is the instantaneous concentration, sampled at every PD event time. When a future paper requires the same time-varying-PK-as-PD-input pattern for a different drug, register a drug-specific canonical (e.g., `CP_PACL_MGL` for paclitaxel) rather than overloading this name; `CP_MGL` retains the implicit "drug = the modeled drug under the PD analysis" semantics. When a paper supplies the time-varying PK as separate per-subject empirical-Bayes PK parameters (e.g., `CL_INDIV`, `VC_INDIV`, `VP_INDIV`), use those columns in a coupled PK-PD ODE model (see `Friberg_2002_paclitaxel.R`) rather than reducing to `CP_MGL`. The choice between PK-as-covariate (this canonical) and PK-as-EBE-parameters depends on whether the source paper's NM-TRAN dataset shipped Cp directly or shipped the upstream individual PK parameters.
+
+### GLU (**canonical for plasma glucose time-course regressor**)
+- **Description:** Plasma glucose concentration as a time-varying *regressor* input that drives a mechanistic glucose-kinetics model. Not a covariate that modifies a parameter; the model integrates `GLU` directly through a smoothing filter into a site-of-action glucose variable.
+- **Units:** mmol/L
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a — used as a time-varying regressor. The model declares `linear(GLU)` so rxode2 linearly interpolates `GLU` between dataset rows.
+- **Source aliases:**
+  - `iglu` (glucose at the current row time) — used in the DDMORE bundle's `Simulated_glucoseKinetics.csv` for `DDMODEL00000227`. Rename `iglu` -> `GLU` before passing to `rxSolve`.
+- **Example models:** `Bizzotto_2016_glucose.R` (driving regressor for the glucose-at-site-of-action delay).
+- **Notes:** Specific scope because `GLU` is meaningful only for glucose-kinetics or glucose-PD models that take plasma glucose as an exogenous regressor. The DDMORE bundle's hand-rolled piecewise-linear interpolation (`GL = (t-T1)/(TOBS-T1)*(GLU-GLU1)+GLU1` with bracketing columns `iglu / glun / td / tn`) is replaced in nlmixr2 by `linear(GLU)` declared in `model()`; the bracketing columns are not required.
+
+### INS (**canonical for plasma insulin time-course regressor**)
+- **Description:** Plasma insulin concentration as a time-varying *regressor* input that drives a mechanistic glucose-kinetics model. Not a covariate that modifies a parameter; the model integrates `INS` directly through a smoothing filter into a site-of-action insulin variable.
+- **Units:** pmol/L
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a — used as a time-varying regressor. The model declares `linear(INS)` so rxode2 linearly interpolates `INS` between dataset rows.
+- **Source aliases:**
+  - `iins` (insulin at the current row time) — used in the DDMORE bundle's `Simulated_glucoseKinetics.csv` for `DDMODEL00000227`. Rename `iins` -> `INS` before passing to `rxSolve`.
+- **Example models:** `Bizzotto_2016_glucose.R` (driving regressor for the insulin-at-site-of-action delay).
+- **Notes:** Specific scope because `INS` is meaningful only for glucose-kinetics or insulin-PD models that take plasma insulin as an exogenous regressor. For drugs that *modify* circulating insulin as a downstream effect, use a different mechanism-specific name. The DDMORE bundle's hand-rolled piecewise-linear interpolation (`I = (t-T1)/(TOBS-T1)*(INS-INS1)+INS1` with bracketing columns `iins / insn / td / tn`) is replaced in nlmixr2 by `linear(INS)` declared in `model()`; the bracketing columns are not required.
 
 ### IGE (**canonical for serum total immunoglobulin E concentration**)
 - **Description:** Baseline serum total immunoglobulin E concentration (free IgE plus, in patients on anti-IgE therapy, omalizumab–IgE complex). For anti-IgE monoclonal antibodies (omalizumab, ligelizumab) IgE is the pharmacologic target; baseline IgE sets the magnitude of the target sink and modifies free-IgE clearance and the rate of IgE production in mechanism-based binding/turnover models.
@@ -778,6 +888,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   - `DIAB` — used in `Chen_2022_guselkumab.R`.
 - **Example models:** `Chen_2022_guselkumab.R` (multiplicative effect on CL/F: 1.15^DIAB, +15% in patients with diabetes).
 - **Notes:** Captures pre-existing diabetes mellitus as a comorbidity in non-diabetes-primary indications (e.g., psoriatic arthritis, psoriasis). Distinct from a primary disease-state indicator like `DIS_UC`. Type 1 vs Type 2 mellitus is not separated unless the source paper distinguishes them; in pooled-population PK analyses, the covariate is typically a single binary flag derived from medical history. Diabetic patients tend to have higher inflammation and altered IgG turnover, which can manifest as modest changes in monoclonal-antibody clearance.
+
+### HYPERT (**canonical for hypertension comorbidity / medical-history indicator**)
+- **Description:** 1 = patient has a history of (or current) hypertension as a comorbidity; 0 = no hypertension. Time-fixed at study entry per subject (medical-history flag rather than time-varying blood-pressure measurement).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no hypertension comorbidity).
+- **Source aliases:**
+  - `MHHY` (medical history of hypertension) — used in `Girard_2012_pimasertib.R`.
+- **Example models:** `Girard_2012_pimasertib.R` (additive shift on the cumulative-logit AE-score model: `theta_mhhy * HYPERT`; +0.539 logit units in patients with prior hypertension).
+- **Notes:** Companion to `DIAB` (diabetes-mellitus comorbidity); both are baseline binary medical-history flags collected from clinical-history forms. Captures any prior or current hypertension diagnosis, regardless of treatment status; if a future model needs to separate treated vs untreated hypertension, register a refinement (`HYPERT_TREATED`).
 
 ## Surgical history / disease state
 
@@ -996,6 +1117,20 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   - `OXYSTAT2` — used in `Lin_2024_casirivimab.R`.
 - **Example models:** `Lin_2024_casirivimab.R` (multiplicative fractional change on CL; +38.0%).
 - **Notes:** Companion indicator to `OXYSUP_LOW`. In Lin 2024 the rare mechanical-ventilation cases were pooled into the high-flow indicator (n = 24 across the 7598-subject dataset).
+
+## Infectious disease (HIV)
+
+### HIV_POS (**canonical for HIV-positive comorbidity indicator**)
+- **Description:** 1 = HIV-1 antibody positive at study entry, 0 = HIV-negative. Time-fixed per subject. Used as a binary comorbidity indicator on PK parameters (typically bioavailability or clearance) when a study population pools HIV-positive and HIV-negative subjects on a non-HIV primary indication (tuberculosis treatment, hepatitis treatment, etc.).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (HIV-negative).
+- **Source aliases:**
+  - `HIV` — used in `Jonsson_2011_ethambutol.R` (DDMODEL00000220 NMTRAN `$INPUT` column with values 0 = HIV negative, 1 = HIV positive; same orientation as the canonical).
+- **Example models:** `Jonsson_2011_ethambutol.R` (multiplicative `1 + e_hiv_pos_f * HIV_POS` shift on bioavailability; HIV-positive patients exhibit a 15.5% reduction in ethambutol bioavailability versus HIV-negative reference).
+- **Notes:** Parallels the `_POS` suffix convention used by `ADA_POS`, `SARS_SEROPOS`, and other serostatus / antibody-positivity indicators. Distinct from a primary disease-state indicator like `DIS_HIV` (not yet registered) — `HIV_POS` is a comorbidity flag in non-HIV-primary indications where HIV-vs-non-HIV is tested as a PK covariate. Ratified canonically on 2026-05-06.
+
 ### MM_NIGG (**canonical for non-IgG multiple myeloma immunoglobulin-type indicator**)
 - **Description:** 1 = patient with non-IgG-secreting multiple myeloma (e.g., IgA, IgD, IgE, IgM, light-chain-only / Bence Jones, or non-secretory MM), 0 = patient with IgG-secreting multiple myeloma.
 - **Units:** (binary)
@@ -1145,7 +1280,7 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   - `ECOG_1` — alternative explicit form; equivalent to `ECOG_GE1` when ECOG only takes values 0, 1, 2 in the analysis dataset (the typical oncology case).
   - `ECOG_PS_GT0` — retired name used in earlier register drafts; semantically identical (`>= 1` equals `> 0` for integer ECOG scores).
   - `ECOG101` (categorical 0/1/2 score with thresholding `IF(ECOG101.GT.0.5)`) — used in `Ide_2020_elotuzumab.R`. Decompose: `ECOG_GE1 = as.integer(ECOG101 >= 1)`.
-- **Example models:** `Bajaj_2017_nivolumab.R` (exponential effect on CL with coefficient 0.172), `Zhang_2019_nivolumab.R` (exponential effect exp(0.181) on baseline CL; additive effect -0.138 on the time-varying-CL Emax parameter), `Ide_2020_elotuzumab.R` (multiplicative effect on CL = 1.03; paired with `ECOG_GE2` for separate ECOG=1 vs ECOG>=2 effects).
+- **Example models:** `Bajaj_2017_nivolumab.R` (exponential effect on CL with coefficient 0.172), `Zhang_2019_nivolumab.R` (exponential effect exp(0.181) on baseline CL; additive effect -0.138 on the time-varying-CL Emax parameter), `Ide_2020_elotuzumab.R` (multiplicative effect on CL = 1.03; paired with `ECOG_GE2` for separate ECOG=1 vs ECOG>=2 effects), `Netterberg_2017_docetaxel.R` (multiplicative effect on baseline ANC of the Friberg myelosuppression chain: `BACOV *= (1 + theta * ECOG_GE1)` with theta = 0.130; source column `PERF` with ordinal ECOG 0/1/2 values, binarized via `ECOG_GE1 = as.integer(PERF >= 1)` per Kloft 2006).
 - **Notes:** Oncology papers conventionally report ECOG as an integer (0-5) but binarize at >= 1 because ECOG >= 2 is rare in trial cohorts. When a source paper provides the ordinal ECOG score separately, derive `ECOG_GE1 = as.integer(ECOG >= 1)`. Zhang 2019 uses `ECOG_GE1` on both baseline CL and the time-varying Emax parameter (unlike Bajaj 2017, which uses it on CL only); document the structural role in each model's `covariateData[[ECOG_GE1]]$notes`. When a paper retains separate effects for ECOG = 1 vs ECOG >= 2 (Ide 2020), pair this column with `ECOG_GE2` and supply both indicators in the event dataset.
 
 ### ECOG_GE2 (**canonical for Eastern Cooperative Oncology Group performance-status indicator, >= 2**)
@@ -1311,6 +1446,61 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   - `COMBO` (when the source dataset uses a generic combination flag for belantamab mafodotin pooled regimens) — used in `Papathanasiou_2025_belantamab.R`.
 - **Example models:** `Papathanasiou_2025_belantamab.R` (multiplicative factor θ = 1.44 on the Imax parameter of the time-varying CL function — combination therapy increases the steady-state CL reduction from 33.2 % to 44.0 %).
 - **Notes:** Pools the three combination backbones tested in DREAMM-6 / DREAMM-7 / DREAMM-8 (Bor-Dex, Len-Dex, Pom-Dex) into a single binary because Papathanasiou 2025 reports no meaningful per-backbone difference in cycle-1 ADC exposure. If a future paper tests per-backbone combination effects, register dedicated indicators (`COMBO_BELAMAF_BORDEX`, etc.) rather than overloading this aggregate.
+
+### KG (**canonical for subject-specific tumour-growth rate constant from a prior IPP fit**)
+- **Description:** Empirical-Bayes posterior estimate of the subject-specific tumour-size first-order growth rate constant carried over from an upstream tumour-size-dynamics population model. Supplied per subject in the dataset and used directly inside a downstream model (e.g., overall-survival hazard) that integrates the tumour-size ODE inline conditional on each subject's growth/death rates.
+- **Units:** internal scaled rate; the Zecchin 2016 OS model carries the source convention `KG / 1000 * tumorSize` in the SLD ODE so the column units are `(1/day) * 1000` as published in the source NONMEM run. Document per-model via `covariateData[[KG]]$units`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a — used directly inside the SLD ODE (see `Zecchin_2016_survival.R`).
+- **Source aliases:**
+  - `KG` (NONMEM `$INPUT` column in DDMODEL00000218; identical column shipped in the bundle's Simulated_OS.csv).
+- **Example models:** `Zecchin_2016_survival.R` (Zecchin 2016 OS model, DDMODEL00000218).
+- **Notes:** Specific scope because the column is the empirical-Bayes output of a particular upstream fit (`modellib('Zecchin_2016_tumorovarian')` / DDMODEL00000217). When this OS model is used standalone, the user must supply `KG` per subject — typically by first fitting the SLD model and extracting the per-subject empirical-Bayes posterior. The internal `/1000` scaling is preserved verbatim from the source `$DES` block to maintain numerical equivalence with the published estimates.
+
+### KD0 (**canonical for subject-specific carboplatin-related tumour-death rate constant from a prior IPP fit**)
+- **Description:** Empirical-Bayes posterior estimate of the subject-specific carboplatin-driven tumour-size death rate constant carried over from an upstream tumour-size-dynamics population model. Pairs with the time-varying `AUC_CARBO` covariate inside the SLD ODE term `KD0 * AUC_CARBO * tumorSize`.
+- **Units:** internal scaled rate; the Zecchin 2016 OS model carries the source convention `KD0 / 1000 * AUC_CARBO * tumorSize` so the column units are `(1/day per AUC unit) * 1000` as published in the source NONMEM run. Document per-model via `covariateData[[KD0]]$units`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a — used directly inside the SLD ODE (see `Zecchin_2016_survival.R`).
+- **Source aliases:**
+  - `KD0` (NONMEM `$INPUT` column in DDMODEL00000218).
+- **Example models:** `Zecchin_2016_survival.R` (Zecchin 2016 OS model, DDMODEL00000218).
+- **Notes:** Specific scope because the column is tied to a specific drug (carboplatin) and a specific upstream IPP fit. The internal `/1000` scaling is preserved verbatim from the source `$DES` block.
+
+### KD1 (**canonical for subject-specific gemcitabine-related tumour-death rate constant from a prior IPP fit**)
+- **Description:** Empirical-Bayes posterior estimate of the subject-specific gemcitabine-driven tumour-size death rate constant carried over from an upstream tumour-size-dynamics population model. Pairs with the time-varying `AUC_GEM` covariate inside the SLD ODE term `KD1 * AUC_GEM * tumorSize`.
+- **Units:** internal scaled rate; the Zecchin 2016 OS model carries the source convention `KD1 / 100 * AUC_GEM * tumorSize` so the column units are `(1/day per AUC unit) * 100` as published in the source NONMEM run. Document per-model via `covariateData[[KD1]]$units`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a — used directly inside the SLD ODE (see `Zecchin_2016_survival.R`).
+- **Source aliases:**
+  - `KD1` (NONMEM `$INPUT` column in DDMODEL00000218).
+- **Example models:** `Zecchin_2016_survival.R` (Zecchin 2016 OS model, DDMODEL00000218).
+- **Notes:** Specific scope because the column is tied to a specific drug (gemcitabine) and a specific upstream IPP fit. The internal `/100` scaling is preserved verbatim from the source `$DES` block.
+
+### IBASE (**canonical for subject-specific baseline tumour-size estimate from a prior IPP fit**)
+- **Description:** Empirical-Bayes posterior estimate of the subject-specific baseline sum-of-longest-diameters (SLD) tumour size carried over from an upstream tumour-size-dynamics population model. Used both to set the SLD ODE initial state (`tumorSize(0) <- IBASE * 1000` in the Zecchin 2016 model: source convention multiplies by 1000 to convert the internal value to mm) and to scale the time-varying tumour-size ratio (`mmbas <- IBASE * 1000`) inside the OS hazard.
+- **Units:** internal scaled length; the Zecchin 2016 OS model carries the source convention `IBASE * 1000 = mm` so the column itself is in metres (1 m = 1000 mm). Document per-model via `covariateData[[IBASE]]$units`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a — used as the SLD ODE initial condition and as the denominator in `(tumorSize - mmbas) / mmbas`.
+- **Source aliases:**
+  - `IBASE` (NONMEM `$INPUT` column in DDMODEL00000218; identical column shipped in the bundle's Simulated_OS.csv with values typically in the 0.04-0.50 m range).
+- **Example models:** `Zecchin_2016_survival.R` (Zecchin 2016 OS model, DDMODEL00000218).
+- **Notes:** Distinct from the canonical `TUM_SLD` column. `TUM_SLD` carries the *measured* baseline tumour size in mm (used to compute the time-fixed `NSLD0 = TUM_SLD / 70` covariate term in the Zecchin 2016 OS hazard), whereas `IBASE` carries the empirical-Bayes *fitted* baseline from the upstream SLD model (used to initialise the integrated SLD trajectory and to define the time-varying TSR(t) reference). The two are correlated but not equal because the upstream IPP fit smooths measurement noise away from the observed SLD0. Specific scope because the column is the empirical-Bayes output of a specific upstream model fit and the internal `*1000` unit-conversion is tied to the source NONMEM coding convention.
+
+### NWLS (**canonical for time-varying new-lesion appearance indicator**)
+- **Description:** Time-varying binary indicator of whether a new (non-target) RECIST lesion has appeared since enrolment. 1 = new lesion present at the current observation time; 0 = no new lesion as of the current observation time. Once `NWLS` flips to 1 it stays 1 for subsequent observation times in that subject (a step-function flag, not a transient pulse).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no new lesion appeared as of the current time).
+- **Source aliases:**
+  - `NWLS` (NONMEM `$INPUT` column in DDMODEL00000218); the bundle's Simulated_OS.csv re-labels the same column `NWLSCOV`. Downstream consumers should map `NWLSCOV` → `NWLS`.
+- **Example models:** `Zecchin_2016_survival.R` (Zecchin 2016 OS model, DDMODEL00000218; multiplicative effect on the Weibull hazard via `exp(e_nwls_haz * NWLS)` with `e_nwls_haz = 1.23` per Output_real_OS.lst FINAL TH5 / Table 2 of Zecchin 2016).
+- **Notes:** Specific scope because the column encodes a per-paper RECIST-style binary that is supplied by the dataset; it is not a generic "any new lesion" indicator the user can populate from routine clinical data without an explicit lesion-appearance imaging schedule. The Zecchin 2016 OS model uses `NWLS` directly (no time-gating), which is faithful to the simulated dataset shipped in the DDMORE bundle. The source `Output_real_OS.lst` (the listing on the original real dataset) gates the indicator with an additional `TNWLS` (lesion-appearance-time) column not shipped in the bundle's simulated dataset; the two encodings are functionally equivalent when the dataset's `NWLS` column is constructed as a 0/1 step that flips at the lesion-appearance time. The bundle's simulated dataset uses the simpler step-function form, and that is the form the nlmixr2lib model expects.
 
 ## Laboratory / disease-activity
 
@@ -1611,6 +1801,29 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 
 ## Pharmacogenetics
 
+### CYP2D6 (**canonical for CYP2D6 individual metabolic-activity score**)
+- **Description:** Continuous individual-level CYP2D6 metabolic-activity score. The intent is a single canonical column for any CYP2D6 phenotype proxy that the source paper reports as a continuous number (probe-substrate model-based individual clearance, copy-number-corrected expression score, activity-score sum from `*allele` genotypes, etc.); the per-model `covariateData[[CYP2D6]]$units`, `description`, and `notes` document which proxy is in force and the population-median reference value used inside the model. Time-invariant in all known examples (germline genotype or one-time probe-substrate measurement).
+- **Units:** Paper-specific — document per-model (e.g., `ng/L` in Ter Heine 2014 where the value is the dextromethorphan-probe model-based individual CYP2D6 clearance).
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a (continuous). Models center on a population median (e.g., 1560 ng/L in Ter Heine 2014); document the reference value per-model in `covariateData[[CYP2D6]]$notes`.
+- **Source aliases:**
+  - `CYP2D6` — used directly in `TerHeine_2014_tamoxifen.R`.
+- **Example models:** `TerHeine_2014_tamoxifen.R` (power-law effect on the tamoxifen → endoxifen formation clearance: `(CYP2D6 / 1560)^e_CYP2D6_cl_endx`).
+- **Notes:** TODO — consolidate the various CYP2D6 phenotype encodings (continuous probe-derived activity, copy-number-corrected score, categorical PM/IM/EM/UM phenotype, activity-score sum) into a single canonical `CYP2D6` column with an enumerated `notes`-documented `encoding` field, OR introduce companion canonicals (`CYP2D6_PHENO_GROUP` for the categorical PM/IM/EM/UM grouping, `CYP2D6_ACTSCORE` for the AS sum) when a future model needs the categorical form. The current general-scope continuous canonical is sufficient for the Ter Heine 2014 use case but will likely need refinement as more CYP2D6-aware models are added.
+
+### CYP3A4 (**canonical for CYP3A4 / CYP3A4-and-CYP3A5 individual metabolic-activity score**)
+- **Description:** Continuous individual-level CYP3A4 (or combined CYP3A4 + CYP3A5) metabolic-activity score. Same intent and documentation policy as `CYP2D6` above. Some sources measure CYP3A4 alone via probe substrate; others (Ter Heine 2014) report a combined CYP3A4/5 activity because the chosen probe (dextromethorphan N-demethylation) cannot distinguish CYP3A4 from CYP3A5. The per-model `notes` field documents whether the value is CYP3A4-only or the CYP3A4 + CYP3A5 combined score.
+- **Units:** Paper-specific — document per-model (e.g., `ng/L` in Ter Heine 2014 where the value is the dextromethorphan-probe model-based individual CYP3A4/5 clearance).
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a (continuous). Models center on a population median (e.g., 44.7 ng/L in Ter Heine 2014); document the reference value per-model.
+- **Source aliases:**
+  - `CYP3A4` — used directly in `TerHeine_2014_tamoxifen.R` (the column carries combined CYP3A4 + CYP3A5 activity per the source paper).
+  - `CYP3A4/5` — long form sometimes used in source manuscripts; standardize the column name to `CYP3A4` and document the combined-isoform semantics in per-model `notes`.
+- **Example models:** `TerHeine_2014_tamoxifen.R` (power-law effect on the tamoxifen → endoxifen formation clearance: `(CYP3A4 / 44.7)^e_CYP3A4_cl_endx`).
+- **Notes:** TODO — register the rest of the canonical drug-metabolizing-CYP set prospectively (`CYP1A2`, `CYP2A6`, `CYP2B6`, `CYP2C8`, `CYP2C9`, `CYP2C19`, `CYP2E1`, `CYP3A5`) using the same continuous-individual-activity-score pattern, so future popPK models that report CYP-probe-derived covariates can drop straight into the existing convention rather than re-deliberating the encoding each time. Coordinate with the consolidation TODO on `CYP2D6` so categorical-vs-continuous encoding is handled uniformly across all CYPs.
+
 ### FCGR3A_VV (**canonical for FCGR3A 158 V/V homozygote indicator**)
 - **Description:** 1 = subject is homozygous for valine at amino-acid position 158 of the FcγRIIIa receptor (V/V), encoded by the rs396991 polymorphism in the FCGR3A gene; 0 = otherwise (heterozygote V/F or homozygote F/F pooled). The dominant V/V vs (V/F + F/F) grouping is the encoding used in the Aguiar 2021 source paper after testing dominant and recessive groupings during covariate model building.
 - **Units:** (binary)
@@ -1687,6 +1900,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   - `PRIORTNF` (all caps, no underscore) — acceptable alternative spelling.
 - **Example models:** `Moein_2022_etrolizumab.R` (multiplicative fractional effect on CL, +4.9%).
 - **Notes:** Use when the source paper reports a binary "prior anti-TNF inhibitor" covariate on any PK parameter. Generally applicable across RA/PsA/IBD/axSpA biologic PK models.
+
+### PRIOR_ANTICANCER (**canonical for prior anticancer therapy of any modality**)
+- **Description:** 1 = subject received any prior anticancer therapy (cytotoxic chemotherapy, radiotherapy, hormonal therapy, targeted therapy, immunotherapy, or surgical debulking with adjuvant intent) before the start of the analyzed treatment, 0 = treatment-naive. Broader than `LINE_1L`, which is specifically a treatment-line indicator restricted to systemic drug therapy lines. `PRIOR_ANTICANCER` captures the full clinical concept of prior cancer treatment exposure as used in cytotoxic-chemotherapy myelosuppression analyses, where any prior anticancer modality may have depleted the bone-marrow proliferating pool and therefore affects baseline ANC.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (treatment-naive; no prior anticancer therapy of any modality).
+- **Source aliases:**
+  - `PC` (Kloft 2006 / Netterberg 2017 NM-TRAN convention for "previous anticancer therapy"; values 0 = naive, 1 = had prior anticancer therapy) — used in `Netterberg_2017_docetaxel.R`.
+- **Example models:** `Netterberg_2017_docetaxel.R` (multiplicative effect on baseline ANC: `BACOV *= (1 + theta * PRIOR_ANTICANCER)` with theta = -0.147; prior-anticancer patients have ~14.7% lower baseline ANC than treatment-naive patients).
+- **Notes:** Distinct from `LINE_1L` (which is the inverse semantics for systemic-drug therapy lines only) and `PRIOR_TNF` / `PRIOR_BIO` (which are modality-specific to anti-TNF / biologic exposure in inflammatory-disease cohorts). Use `PRIOR_ANTICANCER` when the source paper's covariate counts any anticancer modality (including radiotherapy and surgery) as prior exposure. When a future paper restricts the indicator to cytotoxic chemotherapy alone, use `LINE_1L` (with values inverted: paper's `PRIOR_CHEMO = 1 - LINE_1L`). When a paper distinguishes prior chemotherapy from prior radiotherapy, register a parallel `PRIOR_RADIATION` canonical.
 
 ### PRIOR_BIO (**canonical for prior biologic exposure**)
 - **Description:** 1 = subject previously treated with any biologic (broader than `PRIOR_TNF`: includes anti-TNF agents plus anti-integrin, anti-IL-12/23, anti-IL-17, anti-IL-23, anti-IL-6, etc.), 0 = biologic-naive.
@@ -1922,6 +2146,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Yu_2022_ofatumumab.R` (exponential effect on B cell elimination rate kout).
 - **Notes:** Captures a between-study shift in the B cell elimination rate not explained by the other covariates in the final model.
 
+### REGI_BID (**canonical for twice-daily dosing-regimen indicator**)
+- **Description:** 1 = subject's dosing regimen is BID (twice daily), 0 = QD (once daily) or other non-BID regimen. Per-subject (regimen-fixed) categorical indicator for population analyses that pool QD and BID arms and test regimen as a covariate.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-BID regimen — typically QD).
+- **Source aliases:**
+  - `BID` — used in `Girard_2012_pimasertib.R`.
+- **Example models:** `Girard_2012_pimasertib.R` (additive shift on the cumulative-logit AE-score model: `theta_bid * REGI_BID`; -0.399 logit units for BID vs QD).
+- **Notes:** Specific scope because the QD-vs-BID contrast is study-specific; future regimen-comparison models that contrast different schedules should either extend this entry's example list (when QD is the reference) or register a sibling indicator (`REGI_TID`, `REGI_QW`) following the same pattern. Distinct from `DOSE` (dose level in mg) and from total-daily-dose aggregates: a 60 mg/day cohort can include either a 60 mg QD subgroup or a 30 mg BID subgroup, and both share the same `DOSE = 60` while differing in `REGI_BID`.
+
 ### FED
 - **Description:** 1 = fed state at dosing, 0 = fasted.
 - **Units:** (binary)
@@ -2027,16 +2262,18 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   - `DOSE` — used in `Narwal_2013_sifalimumab.R` (the paper's Eq. 3 variable name; renamed to `COHDOSE` here to avoid colliding with the rxode2/nlmixr2 event-column convention where `DOSE` or `AMT` carries the administered dose).
 - **Example models:** `Narwal_2013_sifalimumab.R` (reference 1 mg/kg, exponent 0.0542 on CL).
 - **Notes:** Scope: specific because the interpretation depends on a study design where each subject stays on a single dose cohort. For fixed-dose simulations, set `COHDOSE = nominal_dose_mg / WT` per subject. When the subject receives a weight-based dose, `COHDOSE` is the mg/kg label (0.3, 1, 3, or 10 mg/kg for the MI-CP152 cohorts).
-### DOSE (**canonical for per-subject assigned dose level**)
-- **Description:** Continuous covariate carrying each subject's assigned fixed dose level (in mg) across the study. Used as a power-style covariate when the population PK model detects a dose-dependent shift in a PK parameter (central volume, clearance, etc.).
+### DOSE (**canonical for current administered dose level supplied as a data column**)
+- **Description:** Continuous covariate carrying the administered dose level (in mg) as a per-record data column. Two complementary use cases share this canonical:
+  (a) **Per-subject assigned dose** — each subject's fixed assigned dose level (in mg) across the study, used as a power-style or stratified covariate when the population PK model detects a dose-dependent shift in a PK parameter (central volume, clearance, etc.).
+  (b) **Time-varying current administered dose** — the current daily dose at the time of the record, used in PD-only models that derive a per-cycle exposure metric (e.g., `AUC = DOSE / CLI`) from a posthoc-CL covariate without instantiating a PK ODE. The column is set to 0 during off-treatment periods (drug holidays, placebo arm) so the derived exposure becomes 0.
 - **Units:** mg (document per-model in `covariateData[[DOSE]]$units` if a different dose unit is used).
 - **Type:** continuous
-- **Scope:** specific
-- **Reference category:** n/a — used with power scaling `(DOSE / ref)^exponent`. Reference values observed: 600 mg in `Zheng_2016_sifalimumab.R` (middle of the 200/600/1200 mg phase IIb dose range).
+- **Reference category:** n/a — used with power scaling `(DOSE / ref)^exponent` for use case (a), or directly inside derived-exposure expressions for use case (b). Reference values observed: 600 mg in `Zheng_2016_sifalimumab.R` (middle of the 200/600/1200 mg phase IIb dose range).
 - **Source aliases:**
   - `Dose` — used in `Zheng_2016_sifalimumab.R` and `Castro-Surez_2020_nimotuzumab.R`.
-- **Example models:** `Zheng_2016_sifalimumab.R` (power effect on V1 with exponent 0.06), `Castro-Surez_2020_nimotuzumab.R` (binary-indicator usage `(DOSE == 50)` applying a 53 % decrease in V1 for the 50 mg cohort).
-- **Notes:** Distinct from `DOSE_70MG` (binary indicator for a specific dose group in a trinary-dose design). Use `DOSE` when the source paper treats dose as a continuous covariate acting on a PK parameter, or when the paper reports a single-cohort dose-stratified shift in a PK parameter (encoded as `(DOSE == <level>)`). Scope: specific because the semantics (units, reference dose, whether the covariate applies to CL or V) are study-specific; future models using continuous dose as a covariate should either extend this entry's example-models list or register a more specific variant.
+  - `DOS` — used in the Hansson 2013 sunitinib biomarker / TGI / fatigue PD-model family (DDMODEL00000197 and siblings) as a per-record sunitinib dose column.
+- **Example models:** `Zheng_2016_sifalimumab.R` (power effect on V1 with exponent 0.06), `Castro-Surez_2020_nimotuzumab.R` (binary-indicator usage `(DOSE == 50)` applying a 53 % decrease in V1 for the 50 mg cohort), `Hansson_2013a_sunitinib.R` (DDMODEL00000197; time-varying record-level dose feeding `AUC = DOSE / CLI`), `Girard_2012_pimasertib.R` (linear coefficient on the dropout-hazard log-rate: `exp(beta * DOSE)` Weibull multiplier; per-subject daily dose, observed range 1-255 mg).
+- **Notes:** Distinct from `DOSE_70MG` (binary indicator for a specific dose group in a trinary-dose design) and from the rxode2/nlmixr2 event column `amt` (which carries the administered dose at dose events). For use case (a), the values are typically time-fixed per subject; for use case (b), the values are time-varying with on/off cycling — for sunitinib 4-weeks-on / 2-weeks-off cycling, set `DOSE = nominal_daily_mg` (e.g., 50) during on-cycles and 0 during off-cycles or for the placebo arm. Per-model `covariateData[[DOSE]]$notes` should state which use case applies.
 
 ### DOSE_70MG
 - **Description:** 1 = subject is on the 70 mg SC Q4W dose regimen, 0 = subject is on the 210 or 490 mg SC Q4W regimen.
@@ -2187,13 +2424,24 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 
 ## Occasion / period (IOV)
 
+### OCC (**canonical for the integer-valued occasion / period column**)
+- **Description:** Integer-valued occasion / period indicator for inter-occasion-variability (IOV) modelling. Values `1`, `2`, …, `N` identify the occasion to which each observation belongs (typically a dosing visit, study period, or sampling occasion). Time-varying within subject; constant within an occasion.
+- **Units:** (count)
+- **Type:** categorical
+- **Scope:** general
+- **Reference category:** n/a — `OCC` is decomposed inside `model()` into mutually-exclusive binary indicators, e.g., `oc1 <- (OCC == 1)`, `oc2 <- (OCC == 2)`, …, that are then multiplied against per-occasion `eta*` slots.
+- **Source aliases:**
+  - `OCC` — used in `Jonsson_2011_ethambutol.R` (DDMODEL00000220 NMTRAN `$INPUT` column; values 1..4).
+- **Example models:** `Jonsson_2011_ethambutol.R` (4-occasion IOV on log-CL; `cl <- exp(lcl + etalcl + oc1 * etalcl_oc1 + oc2 * etalcl_oc2 + oc3 * etalcl_oc3 + oc4 * etalcl_oc4) * (WT/50)^0.75`, where each `etalcl_oc<k>` is a separate `~ fix(0.127)` after the first to encode NONMEM `$OMEGA BLOCK(1) SAME`).
+- **Notes:** `OCC` is the recommended canonical for new IOV-using models — the binary `ooc1..oocN` indicators below remain canonical for legacy / pre-existing models that ship the data already-decomposed. Ratified canonically on 2026-05-06.
+
 ### ooc1, ooc2, ooc3, ooc4
 - **Description:** Mutually exclusive occasion indicators for a crossover / multi-period design. Exactly one is 1 per observation.
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** specific
 - **Example models:** `Xie_2019_agomelatine.R`.
-- **Notes:** Lower case preserved from source file. Future models should standardize on `OCC` as a categorical column with integer values (`OCC = 1`, `2`, …) and use `IOV` on the appropriate parameters.
+- **Notes:** Lower case preserved from source file. Pre-existing legacy form; new models should prefer the integer-valued `OCC` canonical above and decompose into binary indicators inside `model()`.
 
 ### CYCLE
 - **Description:** Treatment cycle number (1 = first dosing cycle, 2 = second, ...). Integer count, time-varying across a multi-cycle treatment course, incremented at each new dosing cycle.
@@ -2212,6 +2460,10 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 
 ## Change log
 
+- **2026-05-06** — Added `HIV_POS` (general scope under a new `Infectious disease (HIV)` H2 section; binary HIV-positive comorbidity indicator, parallels the `_POS` suffix convention used by `ADA_POS` / `SARS_SEROPOS`) and `OCC` (general scope under `Occasion / period (IOV)`; integer-valued occasion / period column, decomposed into binary indicators inside `model()` for IOV multiplexing) canonical entries while extracting `Jonsson_2011_ethambutol.R` (DDMODEL00000220). Source aliases mapped: `HIV` → `HIV_POS` (same orientation, 1 = HIV-positive), `OCC` → `OCC` (no rename). The new `OCC` integer-valued canonical is the recommended form for new IOV-using models per the existing register-note steer (`ooc1..oocN` binary form retained as the legacy canonical).
+- **2026-05-06** — Added `KG`, `KD0`, `KD1`, `IBASE`, and `NWLS` (all specific scope, under `Oncology`) canonical entries while extracting `Zecchin_2016_survival.R` (Zecchin 2016 OS model, DDMODEL00000218). `KG` / `KD0` / `KD1` / `IBASE` are subject-level empirical-Bayes posterior estimates from the upstream Zecchin 2016 SLD model (DDMODEL00000217 / `Zecchin_2016_tumorovarian.R`) carried into the OS model via the dataset; `NWLS` is the time-varying RECIST-style step-function indicator for new (non-target) lesion appearance. Source aliases recorded: `KG`/`KD0`/`KD1`/`IBASE`/`NWLS` (`NWLSCOV` in the bundle's Simulated_OS.csv) → corresponding canonicals. The internal `/1000` and `/100` numerical scalings on `KG` / `KD0` / `KD1` and the `*1000` scaling on `IBASE` are preserved verbatim from the source `$DES` block to maintain numerical equivalence with the published estimates (Zecchin 2016 BJCP 82(3):717-727; doi:10.1111/bcp.12994). Extended `AUC_CARBO` and `AUC_GEM` example-models lists to include `Zecchin_2016_survival.R` (the OS model integrates the same SLD ODE inline).
+- **2026-05-06** — Added `AAG` (general-scope serum alpha-1 acid glycoprotein concentration; placed under `Inflammation markers` after `CRP`; reference 1.34 g/L from the Kloft 2006 cancer-cohort median; piecewise-linear effect form with breakpoint at the median documented), `PRIOR_ANTICANCER` (general-scope binary indicator for any prior anticancer therapy of any modality including cytotoxic chemotherapy / radiotherapy / surgery / hormonal therapy / targeted therapy / immunotherapy; placed under `Disease / treatment history` before `PRIOR_BIO`; broader than `LINE_1L` which is restricted to systemic-drug therapy lines), and `CP_MGL` (specific-scope instantaneous drug plasma concentration as a time-varying PD driver, mg/L = ug/mL; placed under `Drug exposure metrics` after `CAV`; distinct from `CAV` which is dosing-interval-averaged) canonical entries while extracting `Netterberg_2017_docetaxel.R` (DDMODEL00000224). Source aliases mapped: `SEX` (1 = male, 2 = female; values inverted via `SEXF = as.integer(SEX == 2)`) → `SEXF`; `PERF` (ordinal ECOG 0/1/2 with binarization at >= 1) → `ECOG_GE1`; `PC` (0/1) → `PRIOR_ANTICANCER`; `AAG` → `AAG`; `CP` → `CP_MGL`. The model is the Friberg-style myelosuppression PD model with parameter values fixed from Kloft 2006; Netterberg 2017 used the model unchanged for an ANC-prediction-methodology study (no re-fit) and submitted it to the DDMORE Foundation Model Repository. Neither Netterberg 2017 nor Kloft 2006 is on disk in this worktree; the absence of paper-on-disk parameter cross-checks is documented in the model file's vignette Errata.
+- **2026-05-06** — Added `CYP2D6` and `CYP3A4` canonical entries (both general scope; continuous individual-activity scores) under `Pharmacogenetics` while extracting `TerHeine_2014_tamoxifen.R` (DDMODEL00000212). Both names match the source-data column names used in the Ter Heine 2014 dataset; the dextromethorphan-probe-derived model-based individual clearance values (median 1560 ng/L for CYP2D6; 44.7 ng/L for CYP3A4/5) drive a power-law effect on the tamoxifen → endoxifen formation clearance. Per-entry `notes` carry an explicit TODO to consolidate the variety of CYP-phenotype encodings into a uniform pattern and to register the rest of the canonical drug-metabolizing-CYP set (`CYP1A2`, `CYP2A6`, `CYP2B6`, `CYP2C8`, `CYP2C9`, `CYP2C19`, `CYP2E1`, `CYP3A5`) prospectively rather than ad hoc as each new model lands.
 - **2026-04-28** — Extended `RACE_WHITE` (general scope) example-models list and source aliases to record `Hu_2014_bapineuzumab.R` (Caucasian-vs-non-Caucasian dichotomy with the Caucasian subgroup as the typical-value reference). The canonical column encoding (1 = White / 0 = non-White) is unchanged; the model implements the 15% non-Caucasian effect on `(1 - RACE_WHITE)`. The change log notes that the typical-value reference category may legitimately differ between papers using `RACE_WHITE`.
 - **2026-05-06** — Added `CL_INDIV`, `VC_INDIV`, and `VP_INDIV` (all specific scope) under `Drug exposure metrics` while extracting `Friberg_2002_paclitaxel.R` (DDMODEL00000186). The three columns carry per-subject empirical-Bayes paclitaxel PK estimates (clearance, central volume, peripheral volume) that drive the myelosuppression PD model in place of an estimated PK layer; the pattern parallels the existing `CAV` exposure-metric convention but for the structural PK parameters themselves rather than a derived exposure summary. Source aliases mapped: `CLI` → `CL_INDIV`, `V1I` → `VC_INDIV`, `V2I` → `VP_INDIV`. Reserved `VP2_INDIV` for future registration when a second peripheral compartment is needed.
 - **2026-04-29** — Added `IL6` (general-scope serum interleukin-6 cytokine biomarker, pg/mL, under `Inflammation markers`), `PAIN` (general-scope patient-reported global pain VAS 0-100, under `Rheumatoid-arthritis disease-activity covariates`), and `RACE_ASIAN_OTH` (specific-scope composite race indicator pooling Asian / American Indian / Other against a White + Black reference, under `Race / ethnicity`) canonical entries while extracting `Frey_2013_tocilizumab.R` (PMID 23436260). Source aliases mapped: `BLIL6` -> `IL6`. Frey 2013 uses log-transformed `(log(IL-6 * 1000) / 9.9)^exp` with reference IL-6 ~= 20 pg/mL; the canonical column carries the raw IL-6 in pg/mL and the log transformation is applied inside `model()`.
@@ -2344,7 +2596,11 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **2026-04-28** — Added `SMOKE_CURRENT` and `SMOKE_NEVER` (both general-scope, paired binary indicators for a 3-level smoking-status categorical with former smoker as the implicit reference) canonical entries under `Lifestyle / medical history`, alongside the existing 2-level `SMOKE`. Pattern follows the `RACE_<GROUP>` convention for paired indicators. Introduced while extracting `Hwang_2023_monalizumab.R`, where Table 2 reports separate proportional-shift coefficients on V1 for current smoker (+0.0484) and never smoker (-0.141) with former smoker (n=319/507) as the most-common reference category. The existing `SMOKE` entry remains in use for 2-level (current vs non-smoker) encodings; the per-model documentation cross-references the alternative encoding.
 - **2026-04-28** — Added `TUMTP_BC` (general-scope breast-cancer tumor-type indicator) and `HEPIMP_MOD_MISSING` (specific-scope composite moderate-or-data-missing hepatic impairment indicator) canonical entries while extracting `Lu_2022_patritumab.R`. Source aliases mapped: `TUMTP` (BC level)→`TUMTP_BC`; `HEPATIC`→`HEPIMP_MOD_MISSING` (composite of NCI ODWG group 3 = moderate plus n = 6 missing-data patients pooled together by the Lu 2022 covariate analysis). Extended `HEPIMP_MILD` example_models with Lu 2022.
 - **2026-04-29** — Added paired `HSCT_URD_7OF8` and `HSCT_URD_8OF8` (both specific-scope) canonical entries under `Disease state (cross-population indicators)` while extracting `Zhong_2026_abatacept.R`. The two indicators jointly decompose the 3-level Study IM101311 (ABA2) "cohort" categorical (non-HSCT-cohort / 7-of-8 / 8-of-8) into two orthogonal binary indicators in the same style as `DIS_CANCER` + `DIS_HV`. Source aliases mapped: `COHORT7` → `HSCT_URD_7OF8`, `COHORT8` → `HSCT_URD_8OF8`. Reused the existing `DIS_PJIA` canonical (source alias `JIA`) and the existing `AST` and `CRCL` canonicals (source aliases `AST` and `cGFR`). Names match the abbreviations used in the Zhong 2026 Figure 1 caption and describe the actual HLA-matching transplant treatment received.
-- **2026-05-06** — Added paired `DOSE_MG` and `CLI` (both specific-scope) canonical entries under `Drug exposure metrics` while extracting the Hansson 2013 sunitinib biomarker PD model (DDMODEL00000197, `Hansson_2013a_sunitinib.R`). The two columns jointly carry the per-cycle drug-exposure summary (`AUC = DOSE_MG / CLI`) for a PD-only model that consumes posthoc PK from a separately published popPK fit instead of instantiating its own PK ODE. Source aliases mapped: `DOS` → `DOSE_MG`, `CL` → `CLI`. Distinct from existing `DOSE` (per-subject assigned dose for power-covariate use on a PK parameter) and from the canonical PK parameter `cl` (which is a derived in-model quantity, not a data column). Designed to be reusable by the queue siblings `Hansson_2013b_sunitinib` (DDMODEL00000198, TGI) and any future PD-only model that consumes upstream-PK posthoc estimates as data covariates.
+- **2026-05-06** — Extended canonical `DOSE` to general scope and folded in a second use case (time-varying current administered dose level supplied as a per-record data column, used in PD-only models that derive a per-cycle exposure metric from a posthoc-CL covariate without instantiating a PK ODE) while extracting the Hansson 2013 sunitinib biomarker PD model (DDMODEL00000197, `Hansson_2013a_sunitinib.R`). Added new specific-scope canonical `CLI` (individual posthoc clearance from an upstream popPK fit) under `Drug exposure metrics`. The two columns jointly carry the per-cycle drug-exposure summary (`AUC = DOSE / CLI`) for a PD-only model that consumes posthoc PK from a separately published popPK fit. Source aliases mapped: `DOS` → `DOSE`, `CL` → `CLI`. `CLI` is renamed from the source's `CL` column because `cl` is the canonical nlmixr2 PK parameter name. `CLI` is designed to be reusable by the queue siblings `Hansson_2013b_sunitinib` (DDMODEL00000198, TGI) and any future PD-only model that consumes upstream-PK posthoc estimates as data covariates.
+- **2026-05-06** — Added `CMAX_M1` (specific-scope, empirical-Bayes month-1 / cycle-1 Cmax under `Drug exposure metrics` next to `CAV`), `HYPERT` (general-scope hypertension comorbidity / medical-history indicator under `Comorbidities` next to `DIAB`), `REGI_BID` (specific-scope twice-daily dosing-regimen indicator under `Formulation / assay / study`), and `PREV_AE_SCORE` (specific-scope previous-time-step ordinal AE-score Markov-state covariate under `Disease severity scores`) canonical entries while extracting `Girard_2012_pimasertib.R` (DDMODEL00000215; PAGE 21 (2012) Abstr 2458). Source aliases mapped: `CMAXM1` -> `CMAX_M1`, `MHHY` -> `HYPERT`, `BID` -> `REGI_BID`, `PREVSCOR` -> `PREV_AE_SCORE`. The CTCAE 0-3 ocular-AE grading scheme used in Girard 2012 collapses grades 1+2 into a single 1-2 category in the cumulative-logit conditioning; documented in the per-model notes rather than the register so future Markov-AE models can adopt their own grading scheme.
+- **2026-05-06** — Added `AUC_CARBO` and `AUC_GEM` (both specific-scope per-cycle drug-exposure metrics) canonical entries under `Drug exposure metrics` while extracting `Zecchin_2016_tumorovarian.R` (DDMODEL00000217). Source aliases mapped: `CB` → `AUC_CARBO` (with the DDMORE bundle's simulated dataset using `AUC0`), `G` → `AUC_GEM` (with the bundle's simulated dataset using `AUC1`). The new entries follow the `CAV` template but document per-cycle AUC semantics for two specific cytotoxics; sibling entries (`AUC_CISPLATIN`, etc.) should be registered alongside, not by overloading these.
+- **2026-05-06** — Added `BAS_SVEGFR3`, `MRT_SVEGFR3`, `EC50_SVEGFR3` (all three specific-scope, under `Drug exposure metrics` because they are upstream-PD posthoc inputs that drive the per-cycle drug-effect summary in the downstream fatigue model) canonical entries while extracting the Hansson 2013c fatigue / adverse-event Markov + proportional-odds model (DDMODEL00000222, `Hansson_2013c_sunitinib.R`). The three sVEGFR-3 columns jointly carry the upstream Hansson 2013a biomarker indirect-response posthoc estimates (initial condition + turnover MRT + drug-effect EC50) for a downstream PD model that consumes the biomarker trajectory as data covariates instead of instantiating its own biomarker ODE. Source aliases mapped: `BAS3` → `BAS_SVEGFR3`, `MRT3` → `MRT_SVEGFR3`, `EC53` → `EC50_SVEGFR3`. Hansson_2013c also added to existing `DOSE` and `CLI` example-models lists.
+- **2026-05-06** — Added `INS` (specific-scope, plasma insulin time-course regressor in pmol/L) and `GLU` (specific-scope, plasma glucose time-course regressor in mmol/L) canonical entries under `Cardiometabolic / target biomarkers` while extracting the DDMORE bundle `DDMODEL00000227` as `Bizzotto_2016_glucose.R`. Both are time-varying regressor inputs (not covariates that modify a parameter); the model declares `linear(INS, GLU)` so rxode2 linearly interpolates them between dataset rows. Source aliases mapped: `iins` → `INS`, `iglu` → `GLU`. The bundle's bracketing columns `insn / glun / td / tn` (used in the bundle's hand-rolled piecewise-linear interpolation) are intentionally not registered — they are not consumed by the nlmixr2 translation, which uses rxode2's native `linear()` declaration instead.
 - Subsequent additions: append new canonical entries as new papers are processed. When adding, bump the audit-completed count in the summary below.
 
 ## Summary

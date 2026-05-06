@@ -2,6 +2,16 @@
 
 # development version
 
+* Add Ter Heine 2014 tamoxifen ([doi:10.1111/bcp.12388](https://doi.org/10.1111/bcp.12388)) [DDMODEL00000212] — adults with breast cancer on chronic 20 mg PO QD tamoxifen at steady state (joint parent-metabolite popPK with CYP2D6 and CYP3A4/5 covariates on endoxifen formation).
+* Add Mohamed 2016 colistin + meropenem ([doi:10.1093/jac/dkv488](https://doi.org/10.1093/jac/dkv488)) [DDMODEL00000173] — in vitro time-kill PK/PD against P. aeruginosa wild-type ATCC 27853 and meropenem-resistant ARU552.
+* Add Bizzotto 2016 glucose ([doi:10.1152/ajpendo.00045.2016](https://doi.org/10.1152/ajpendo.00045.2016)) [DDMODEL00000227] — adults across the glucose-tolerance spectrum (mechanistic glucose-tracer kinetics simulator).
+* Add Netterberg 2017 docetaxel ([doi:10.1007/s00280-017-3366-x](https://doi.org/10.1007/s00280-017-3366-x)) [DDMODEL00000224] — adults receiving docetaxel chemotherapy (Friberg-style myelosuppression PD model with Kloft 2006 parameter set).
+* Add Zecchin 2016 survival ([doi:10.1111/bcp.12994](https://doi.org/10.1111/bcp.12994)) [DDMODEL00000218] — adults with advanced epithelial ovarian cancer.
+* Add Hansson 2013 sunitinib fatigue Markov + proportional-odds model ([doi:10.1038/psp.2013.62](https://doi.org/10.1038/psp.2013.62)) [DDMODEL00000222] — adults with imatinib-resistant gastrointestinal stromal tumors.
+* Add Svensson 2016 bedaquiline ([doi:10.1002/psp4.12147](https://doi.org/10.1002/psp4.12147)) [DDMODEL00000219] — adults with multidrug-resistant tuberculosis (parent + N-desmethyl M2 metabolite, time-varying weight and albumin).
+* Add Jonsson 2011 ethambutol ([doi:10.1128/AAC.00274-11](https://doi.org/10.1128/AAC.00274-11)) [DDMODEL00000220] — adult South African pulmonary tuberculosis patients.
+* Add Zecchin 2016 tumorovarian ([doi:10.1111/bcp.12994](https://doi.org/10.1111/bcp.12994)) [DDMODEL00000217] — adults with advanced epithelial ovarian cancer receiving carboplatin monotherapy or carboplatin + gemcitabine combination chemotherapy.
+* Add Girard 2012 pimasertib ([www.page-meeting.org/?abstract=2458](https://www.page-meeting.org/?abstract=2458)) [DDMODEL00000215] — adults with advanced solid tumours and hematological malignancies (joint K-PD / cumulative-logit Markov ocular-AE-grade and Weibull-TTE dropout model).
 * Add Lestini 2015 TGF-β inhibitor ([doi:10.1007/s11095-015-1693-3](https://doi.org/10.1007/s11095-015-1693-3)) [DDMODEL00000192] — simulated 50-subject oncology cohort (one-compartment first-order absorption PK + indirect-response biomarker turnover; first nlmixr2lib `inst/modeldb/ddmore/` entry).
 * Add Li 2006 meropenem ([doi:10.1177/0091270006291035](https://doi.org/10.1177/0091270006291035)) [DDMODEL00000213] — adult patients receiving meropenem.
 * Add Friberg 2002 paclitaxel ([doi:10.1200/JCO.2002.02.140](https://doi.org/10.1200/JCO.2002.02.140)) [DDMODEL00000186] — adult cancer patients receiving paclitaxel chemotherapy (semi-mechanistic myelosuppression PK/PD with leukocyte output).
