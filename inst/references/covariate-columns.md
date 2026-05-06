@@ -564,6 +564,36 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `FiedlerKelly_2020_fremanezumab_em.R`, `FiedlerKelly_2020_fremanezumab_cm.R`.
 - **Notes:** Specific scope because the value is intrinsically tied to the modelled drug — there is no shared meaning across drugs or studies. Each model's `covariateData[[CAV]]$notes` should state how the Cav values are derived (e.g., empirical-Bayes from a referenced population PK model) and that the column is set to 0 for placebo periods.
 
+### CL_INDIV (**canonical for per-subject empirical-Bayes drug clearance**)
+- **Description:** Individual point estimate of the modelled drug's clearance, supplied per-subject as a fixed data column. Used in sequential PK->PD models where the PK structure has been fixed from a previously-published population PK analysis and the per-subject empirical-Bayes (POSTHOC) clearances are passed through to drive the PD layer rather than being re-estimated alongside the PD parameters.
+- **Units:** L/h (document per-model via `covariateData[[CL_INDIV]]$units`).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a — used directly inside `model()` as `CL_INDIV` in place of an estimated `cl <- exp(lcl + etalcl)`.
+- **Source aliases:** `CLI` — used in `Friberg_2002_paclitaxel.R` (NM-TRAN data column for per-subject paclitaxel CL).
+- **Example models:** `Friberg_2002_paclitaxel.R`.
+- **Notes:** Specific scope because the value is intrinsically tied to the modelled drug — there is no shared meaning across drugs. Each model's `covariateData[[CL_INDIV]]$notes` should state which upstream popPK source the EBE values come from (e.g., Henningsson 2001 paclitaxel popPK, fixed in the DDMORE encoding) and whether placebo periods are present. Companion volumes are registered as `VC_INDIV` and `VP_INDIV`.
+
+### VC_INDIV (**canonical for per-subject empirical-Bayes central volume of distribution**)
+- **Description:** Individual point estimate of the modelled drug's central volume of distribution, supplied per-subject as a fixed data column. Companion to `CL_INDIV` in sequential PK->PD encodings.
+- **Units:** L (document per-model via `covariateData[[VC_INDIV]]$units`).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a — used directly inside `model()` as `VC_INDIV` in place of an estimated `vc <- exp(lvc + etalvc)`.
+- **Source aliases:** `V1I` — used in `Friberg_2002_paclitaxel.R` (NM-TRAN data column for per-subject paclitaxel V1).
+- **Example models:** `Friberg_2002_paclitaxel.R`.
+- **Notes:** See `CL_INDIV` notes for the broader convention.
+
+### VP_INDIV (**canonical for per-subject empirical-Bayes peripheral volume of distribution**)
+- **Description:** Individual point estimate of the modelled drug's first peripheral volume of distribution, supplied per-subject as a fixed data column. Companion to `CL_INDIV` and `VC_INDIV` in sequential PK->PD encodings.
+- **Units:** L (document per-model via `covariateData[[VP_INDIV]]$units`).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a — used directly inside `model()` as `VP_INDIV` in place of an estimated `vp <- exp(lvp + etalvp)`.
+- **Source aliases:** `V2I` — used in `Friberg_2002_paclitaxel.R` (NM-TRAN data column for per-subject paclitaxel V2).
+- **Example models:** `Friberg_2002_paclitaxel.R`.
+- **Notes:** See `CL_INDIV` notes for the broader convention. For models requiring a second peripheral compartment, register `VP2_INDIV` (and add a follow-on entry to this register) when a second model legitimately needs it.
+
 ### IGE (**canonical for serum total immunoglobulin E concentration**)
 - **Description:** Baseline serum total immunoglobulin E concentration (free IgE plus, in patients on anti-IgE therapy, omalizumab–IgE complex). For anti-IgE monoclonal antibodies (omalizumab, ligelizumab) IgE is the pharmacologic target; baseline IgE sets the magnitude of the target sink and modifies free-IgE clearance and the rate of IgE production in mechanism-based binding/turnover models.
 - **Units:** ng/mL (typical clinical-PK convention). Pretreatment values reported in `IU/mL` are converted via `1 IU/mL = 2.42 ng/mL` (Hayashi 2007 Methods). Document per-model via `covariateData[[IGE]]$units`.
@@ -2150,6 +2180,7 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 ## Change log
 
 - **2026-04-28** — Extended `RACE_WHITE` (general scope) example-models list and source aliases to record `Hu_2014_bapineuzumab.R` (Caucasian-vs-non-Caucasian dichotomy with the Caucasian subgroup as the typical-value reference). The canonical column encoding (1 = White / 0 = non-White) is unchanged; the model implements the 15% non-Caucasian effect on `(1 - RACE_WHITE)`. The change log notes that the typical-value reference category may legitimately differ between papers using `RACE_WHITE`.
+- **2026-05-06** — Added `CL_INDIV`, `VC_INDIV`, and `VP_INDIV` (all specific scope) under `Drug exposure metrics` while extracting `Friberg_2002_paclitaxel.R` (DDMODEL00000186). The three columns carry per-subject empirical-Bayes paclitaxel PK estimates (clearance, central volume, peripheral volume) that drive the myelosuppression PD model in place of an estimated PK layer; the pattern parallels the existing `CAV` exposure-metric convention but for the structural PK parameters themselves rather than a derived exposure summary. Source aliases mapped: `CLI` → `CL_INDIV`, `V1I` → `VC_INDIV`, `V2I` → `VP_INDIV`. Reserved `VP2_INDIV` for future registration when a second peripheral compartment is needed.
 - **2026-04-29** — Added `IL6` (general-scope serum interleukin-6 cytokine biomarker, pg/mL, under `Inflammation markers`), `PAIN` (general-scope patient-reported global pain VAS 0-100, under `Rheumatoid-arthritis disease-activity covariates`), and `RACE_ASIAN_OTH` (specific-scope composite race indicator pooling Asian / American Indian / Other against a White + Black reference, under `Race / ethnicity`) canonical entries while extracting `Frey_2013_tocilizumab.R` (PMID 23436260). Source aliases mapped: `BLIL6` -> `IL6`. Frey 2013 uses log-transformed `(log(IL-6 * 1000) / 9.9)^exp` with reference IL-6 ~= 20 pg/mL; the canonical column carries the raw IL-6 in pg/mL and the log transformation is applied inside `model()`.
 - **2026-04-28** — Added `TUMTP_PCALCL` (specific scope under `Oncology`; primary cutaneous anaplastic large-cell lymphoma indicator following the `TUMTP_<GROUP>` decomposition pattern) and three ADA-status × assay-era indicators (`ADA_POS` [modern-assay arm; general scope], `ADA_POSOLD`, `ADA_MISSING` [both specific scope] under `Immunogenicity`) while extracting `Suri_2018_brentuximab.R`. Initially named `ADA_POSNEW`; renamed to `ADA_POS` on 2026-04-29 for consistency with the existing general `ADA_POS` canonical. The three indicators are mutually exclusive and decompose Suri 2018's four-level ADA-status × assay-era factor with ADA-negative as the reference; the multiplicative additive form `cl *= (1 + theta * ind)` from supplement 1's ATA-status equation is documented per model.
 - **2026-04-27** — Added `STUDY_ABA2_HLA78` and `STUDY_ABA2_HLA88` (both specific scope) canonical entries while extracting `Takahashi_2023_abatacept.R`. The two binary indicators jointly reproduce the three-level RA/JIA-vs-ABA2-7/8-vs-ABA2-8/8 cohort categorical that Takahashi 2023 Supplemental Table 4 retains as the only categorical PK covariate (multiplicative `Ratio` thetas on CL and on Vc; RA/JIA = both indicators 0 = ratio 1 fixed).
