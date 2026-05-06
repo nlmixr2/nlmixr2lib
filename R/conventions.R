@@ -72,7 +72,11 @@
     "m2",
     # Endoxifen (4-hydroxy-N-desmethyltamoxifen), the major active
     # metabolite of tamoxifen — Ter Heine 2014.
-    "endx"
+    "endx",
+    # Paracetamol (APAP) phase-II conjugate metabolites — APAP-glucuronide
+    # ("apapg") and APAP-sulphate ("apaps") used in the Cook 2016 newborn
+    # model (DDMODEL00000271).
+    "apapg", "apaps"
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` denotes the time-varying decay arm.
