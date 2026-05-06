@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Zecchin 2016 tumorovarian ([doi:10.1111/bcp.12994](https://doi.org/10.1111/bcp.12994)) [DDMODEL00000217] — adults with advanced epithelial ovarian cancer receiving carboplatin monotherapy or carboplatin + gemcitabine combination chemotherapy.
 * Add Girard 2012 pimasertib ([www.page-meeting.org/?abstract=2458](https://www.page-meeting.org/?abstract=2458)) [DDMODEL00000215] — adults with advanced solid tumours and hematological malignancies (joint K-PD / cumulative-logit Markov ocular-AE-grade and Weibull-TTE dropout model).
 * Add Lestini 2015 TGF-β inhibitor ([doi:10.1007/s11095-015-1693-3](https://doi.org/10.1007/s11095-015-1693-3)) [DDMODEL00000192] — simulated 50-subject oncology cohort (one-compartment first-order absorption PK + indirect-response biomarker turnover; first nlmixr2lib `inst/modeldb/ddmore/` entry).
 * Add Li 2006 meropenem ([doi:10.1177/0091270006291035](https://doi.org/10.1177/0091270006291035)) [DDMODEL00000213] — adult patients receiving meropenem.
