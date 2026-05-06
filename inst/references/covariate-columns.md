@@ -586,7 +586,6 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `FiedlerKelly_2020_fremanezumab_em.R`, `FiedlerKelly_2020_fremanezumab_cm.R`.
 - **Notes:** Specific scope because the value is intrinsically tied to the modelled drug — there is no shared meaning across drugs or studies. Each model's `covariateData[[CAV]]$notes` should state how the Cav values are derived (e.g., empirical-Bayes from a referenced population PK model) and that the column is set to 0 for placebo periods.
 
-<<<<<<< HEAD
 ### AUC_CARBO (**canonical for per-cycle average AUC of carboplatin**)
 - **Description:** Per-cycle average AUC of carboplatin used as the time-varying drug-exposure covariate driving cytotoxic tumour-death rates in tumour-size-dynamics models of platinum-based chemotherapy. The value is held step-wise constant over each chemotherapy cycle and resets at the start of the next cycle.
 - **Units:** carboplatin AUC units (typically `mg·min/mL`); document per-model via `covariateData[[AUC_CARBO]]$units`.
