@@ -84,7 +84,7 @@ Yamada_2025_zolbetuximab <- function() {
     # in L/h; we use time in days here to align with Kdecay (1/day), so L/h is
     # multiplied by 24 to give L/day. Values are from Yamada 2025 Table 1
     # (final TDC model; footnote a identifies it as the final model).
-    lcl_ss   <- log(0.0117 * 24); label("Steady-state clearance component (CLss, L/day)")    # Yamada 2025 Table 1 (0.0117 L/h * 24)
+    lcl   <- log(0.0117 * 24); label("Steady-state clearance component (CLss, L/day)")    # Yamada 2025 Table 1 (0.0117 L/h * 24)
     lcl_time <- log(0.0159 * 24); label("Time-decaying clearance component (CLT, L/day)")    # Yamada 2025 Table 1 (0.0159 L/h * 24)
     lkdecay  <- log(0.0209);      label("First-order decay rate of CLT (Kdecay, 1/day)")     # Yamada 2025 Table 1
     lvc      <- log(3.04);        label("Central volume of distribution (V1, L)")            # Yamada 2025 Table 1
@@ -98,20 +98,20 @@ Yamada_2025_zolbetuximab <- function() {
     # (param = typical * (1 + theta * I)).
     e_bsa_cl                <-  1.06;   label("Power exponent of BSA on CLss, CLT, Q (unitless; shared CL exponent)")  # Yamada 2025 Table 1
     e_bsa_vc_vp             <-  0.968;  label("Power exponent of BSA on V1, V2 (unitless; shared volume exponent)")    # Yamada 2025 Table 1
-    e_alb_cl_ss             <- -0.535;  label("Power exponent of albumin on CLss (unitless)")                          # Yamada 2025 Table 1
+    e_alb_cl             <- -0.535;  label("Power exponent of albumin on CLss (unitless)")                          # Yamada 2025 Table 1
     e_alb_kdecay            <-  1.48;   label("Power exponent of albumin on Kdecay (unitless)")                        # Yamada 2025 Table 1
     e_hgb_vc                <- -0.374;  label("Power exponent of hemoglobin on V1 (unitless)")                         # Yamada 2025 Table 1
     e_tbili_vc              <-  0.0347; label("Power exponent of total bilirubin on V1 (unitless)")                    # Yamada 2025 Table 1
-    e_prior_gast_cl_ss      <- -0.182;  label("Fractional change in CLss for prior gastrectomy (unitless)")            # Yamada 2025 Table 1
+    e_prior_gast_cl      <- -0.182;  label("Fractional change in CLss for prior gastrectomy (unitless)")            # Yamada 2025 Table 1
     e_prior_gast_cl_time    <- -0.495;  label("Fractional change in CLT for prior gastrectomy (unitless)")             # Yamada 2025 Table 1
     e_prior_gast_vc         <-  0.103;  label("Fractional change in V1 for prior gastrectomy (unitless)")              # Yamada 2025 Table 1
-    e_sexf_cl_ss            <- -0.195;  label("Fractional change in CLss for females (unitless)")                      # Yamada 2025 Table 1
+    e_sexf_cl            <- -0.195;  label("Fractional change in CLss for females (unitless)")                      # Yamada 2025 Table 1
     e_sexf_vc               <- -0.108;  label("Fractional change in V1 for females (unitless)")                        # Yamada 2025 Table 1
     e_comb_eox_vc           <-  0.466;  label("Fractional change in V1 for EOX chemotherapy backbone (unitless)")      # Yamada 2025 Table 1
 
     # Inter-individual variability. The paper reports %CV on log-normal
     # parameters; the stored variance follows omega^2 = log(CV^2 + 1).
-    etalcl_ss   ~ 0.0669  # 26.3% CV; Yamada 2025 Table 1
+    etalcl   ~ 0.0669  # 26.3% CV; Yamada 2025 Table 1
     etalcl_time ~ 0.4569  # 76.1% CV; Yamada 2025 Table 1
     etalkdecay  ~ 0.4685  # 77.3% CV; Yamada 2025 Table 1
     etalvc      ~ 0.0396  # 20.1% CV; Yamada 2025 Table 1
@@ -131,11 +131,11 @@ Yamada_2025_zolbetuximab <- function() {
     # Individual PK parameters. Reference subject (Yamada 2025 Figure 1):
     # BSA = 1.70 m^2, ALB = 39.1 g/L, HGB = 118 g/L, TBILI = 0.38 mg/dL, male,
     # no prior gastrectomy, non-EOX chemotherapy backbone.
-    cl_ss <- exp(lcl_ss + etalcl_ss) *
+    cl <- exp(lcl + etalcl) *
       (BSA / 1.70)^e_bsa_cl *
-      (ALB / 39.1)^e_alb_cl_ss *
-      (1 + e_prior_gast_cl_ss * PRIOR_GAST) *
-      (1 + e_sexf_cl_ss * SEXF)
+      (ALB / 39.1)^e_alb_cl *
+      (1 + e_prior_gast_cl * PRIOR_GAST) *
+      (1 + e_sexf_cl * SEXF)
 
     cl_time <- exp(lcl_time + etalcl_time) *
       (BSA / 1.70)^e_bsa_cl *
@@ -162,11 +162,11 @@ Yamada_2025_zolbetuximab <- function() {
     #   CL(t) = CLss + CLT * exp(-Kdecay * t)
     # `time` is the internal integration time in days, which corresponds to
     # time from the first dose for the event datasets this model expects.
-    cl <- cl_ss + cl_time * exp(-kdecay * time)
+    cl_tot <- cl + cl_time * exp(-kdecay * time)
 
     # Two-compartment model with zero-order IV input (infusion rate supplied
     # via the `rate` column on dose events).
-    kel <- cl / vc
+    kel <- cl_tot / vc
     k12 <- q  / vc
     k21 <- q  / vp
 
