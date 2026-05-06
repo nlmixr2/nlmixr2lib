@@ -308,9 +308,10 @@ clamp_grid <- tibble::tibble(
 )
 
 ev_clamp <- rxode2::et(clamp_grid$time)
-ev_clamp$INS <- clamp_grid$INS
-ev_clamp$GLU <- clamp_grid$GLU
 ev_clamp <- rxode2::et(ev_clamp, amt = 800, rate = 5, cmt = "xHL2", time = 0)
+ev_clamp <- as.data.frame(ev_clamp)
+ev_clamp$INS <- approx(clamp_grid$time, clamp_grid$INS, ev_clamp$time, rule = 2)$y
+ev_clamp$GLU <- approx(clamp_grid$time, clamp_grid$GLU, ev_clamp$time, rule = 2)$y
 
 sim_clamp <- rxode2::rxSolve(mod_typical, ev_clamp) |>
   as.data.frame()
