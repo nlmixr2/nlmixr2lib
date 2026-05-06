@@ -20,22 +20,36 @@ knitr::kable(display[, c("name", "description")])
 
 | name | description |
 |:---|:---|
+| PK_1cmt | One compartment PK model with linear clearance |
+| PK_1cmt_des | One compartment PK model with linear clearance using differential equations |
+| PK_2cmt | Two compartment PK model with linear clearance |
+| PK_2cmt_des | Two compartment PK model with linear clearance using differential equations |
+| PK_2cmt_no_depot | Two compartment PK model with linear clearance using differential equations |
+| PK_2cmt_tdcl_des | Two compartment PK model with time-dependent clearance using differential equations (structured like nivolumab PK model) |
+| PK_3cmt | Three compartment PK model with linear clearance |
+| PK_3cmt_des | Three compartment PK model with linear clearance using differential equations |
+| [Friberg_2002_paclitaxel](https://nlmixr2.github.io/nlmixr2lib/articles/Friberg_2002_paclitaxel.html) | Semi-mechanistic Friberg-style myelosuppression PK/PD model for paclitaxel in adult cancer patients (Friberg 2002, leukocyte arm of DDMODEL00000186). Paclitaxel exposure is driven by per-subject empirical-Bayes PK estimates supplied as data columns (CL_INDIV, VC_INDIV, VP_INDIV) with intercompartmental clearance Q fixed at 204 L/h. Leukocyte response is described by a self-renewing proliferating pool plus three transit compartments and a circulating compartment, with a linear drug effect (1 - SLOPU \* Cc) on proliferation and a feedback term (CIRC0 / circ)^GAMMA. Output is total circulating leukocytes in 10^9 cells/L. |
+| [Hansson_2013a_sunitinib](https://nlmixr2.github.io/nlmixr2lib/articles/Hansson_2013a_sunitinib.html) | Population PD biomarker model for sunitinib in adults with imatinib-resistant gastrointestinal stromal tumours (GIST). Four indirect-response compartments for the soluble biomarkers VEGF, sVEGFR-2, sVEGFR-3, and sKIT, each driven by a per-cycle drug-exposure summary AUC = DOSE_MG / CLI. Sigmoid Imax inhibition with a Hill coefficient applies to VEGF (Kout) and sVEGFR-2 (Kin); simple Imax inhibition applies to sVEGFR-3 (Kin) and sKIT (Kin). A linear disease-progression term increases the baseline of VEGF and sKIT over time. The PD model has no PK ODE: the user supplies DOSE_MG (current daily sunitinib dose, mg, time-varying with on/off cycling) and CLI (subject-specific posthoc total plasma clearance, L/h, from an upstream popPK fit) as data columns. No covariates other than the two exposure inputs. |
+| [Henin_2009_capecitabine](https://nlmixr2.github.io/nlmixr2lib/articles/Henin_2009_capecitabine.html) | Longitudinal Markov-proportional-odds model for hand-and-foot syndrome (HFS) toxicity grades 0-2 in cancer patients receiving capecitabine. Capecitabine exposure is described with a kinetic-pharmacodynamic (K-PD) one-compartment delay; the per-week effective drug rate drives a sigmoid Emax that shifts the cumulative log-odds for the next HFS grade conditional on the previous grade. Baseline-Cockcroft-Gault creatinine clearance is the only structural covariate. |
 | [Kloft_2004_sibrotuzumab](https://nlmixr2.github.io/nlmixr2lib/articles/Kloft_2004_sibrotuzumab.html) | Two-compartment population PK model for sibrotuzumab in adults with metastatic FAP-positive cancer (Kloft 2004), with parallel linear and Michaelis-Menten elimination from the central compartment and a fixed linear body-weight covariate (centered at 75 kg) on linear CL, central and peripheral volumes, and Vmax. |
+| [Lestini_2015_tgfbinhibitor](https://nlmixr2.github.io/nlmixr2lib/articles/Lestini_2015_tgfbinhibitor.html) | One-compartment first-order absorption PK with indirect-response biomarker turnover (E represents fractional inhibition of TGF-beta signalling) for a small-molecule TGF-beta inhibitor in oncology, simplified by Lestini 2015 from Bueno et al. for use as a population PK/PD test bench in adaptive-design simulations. |
+| [Li_2006_meropenem](https://nlmixr2.github.io/nlmixr2lib/articles/Li_2006_meropenem.html) | Two-compartment population PK model for meropenem in adult patients (Li 2006), as packaged in DDMORE Foundation Model Repository entry DDMODEL00000213. |
+| [Plan_2012_pain](https://nlmixr2.github.io/nlmixr2lib/articles/Plan_2012_pain.html) | Markov Integer Model for placebo time-course of Likert (0-10) pain scores in adults; pooled placebo arm of three Phase III neuropathic-pain trials (Plan 2012; DDMODEL00000194) |
 | igg_kim_2006 | Immunoglobulin G (IgG) model for nonlinear metabolism in healthy subjects |
 | phenylalanine_charbonneau_2021 | Phenylalanine model for absorption and metabolism in healthy subjects and patients with PKU |
 | indirect_0cpt_transitEx | Two compartment PK model with Michealis-Menten clearance using differential equations |
+| indirect_1cpt_inhi_kin | One compartment indirect response model with inhibition of kin. |
 | indirect_1cpt_inhi_kin_CLV | One compartment indirect response model with inhibition of kin. |
 | indirect_1cpt_inhi_kin_r0rmaxcrmax | One compartment indirect response model with inhibition of kin. |
-| indirect_1cpt_inhi_kin | One compartment indirect response model with inhibition of kin. |
+| indirect_1cpt_inhi_kout | One compartment indirect response model with inhibition of kout. |
 | indirect_1cpt_inhi_kout_CLV | One compartment indirect response model with inhibition of kout. |
 | indirect_1cpt_inhi_kout_r0rmaxcrmax | One compartment indirect response model with inhibition of kout. |
-| indirect_1cpt_inhi_kout | One compartment indirect response model with inhibition of kout. |
+| indirect_1cpt_stim_kin | One compartment indirect response model with stimulation of kin.Parameterized using rate cosntants |
 | indirect_1cpt_stim_kin_CLV | One compartment indirect response model with stimulation of kin. |
 | indirect_1cpt_stim_kin_r0rmaxcrmax | One compartment indirect response model with stimulation of kin. |
-| indirect_1cpt_stim_kin | One compartment indirect response model with stimulation of kin.Parameterized using rate cosntants |
+| indirect_1cpt_stim_kout | One compartment indirect response model with stimulation of kout.Parameterized using rate cosntants |
 | indirect_1cpt_stim_kout_CLV | One compartment indirect response model with stimulation of kout. |
 | indirect_1cpt_stim_kout_r0rmaxcrmax | One compartment indirect response model with stimulation of kout. |
-| indirect_1cpt_stim_kout | One compartment indirect response model with stimulation of kout.Parameterized using rate cosntants |
 | indirect_circ_1cpt_inhi_kin_kin_t | One compartment indirect response model with inhibition of kin and circadian kin_t. |
 | indirect_circ_1cpt_inhi_kin_kout_t | One compartment indirect response model with inhibition of kin and circadian kin_t. |
 | indirect_circ_1cpt_inhi_kout_kin_t | One compartment indirect response model with inhibition of kout and circadian kin_t. |
@@ -57,14 +71,6 @@ knitr::kable(display[, c("name", "description")])
 | PK_double_sim_01 | PK double absorption model with simultaneous zero order and first order absorptions |
 | PK_double_sim_10 | PK double absorption model with simultaneous first order and zero order absorptions |
 | PK_double_sim_11 | PK double absorption model with simultaneous first order absorptions |
-| PK_1cmt_des | One compartment PK model with linear clearance using differential equations |
-| PK_1cmt | One compartment PK model with linear clearance |
-| PK_2cmt_des | Two compartment PK model with linear clearance using differential equations |
-| PK_2cmt_no_depot | Two compartment PK model with linear clearance using differential equations |
-| PK_2cmt_tdcl_des | Two compartment PK model with time-dependent clearance using differential equations (structured like nivolumab PK model) |
-| PK_2cmt | Two compartment PK model with linear clearance |
-| PK_3cmt_des | Three compartment PK model with linear clearance using differential equations |
-| PK_3cmt | Three compartment PK model with linear clearance |
 | [Aguiar_2021_ustekinumab](https://nlmixr2.github.io/nlmixr2lib/articles/Aguiar_2021_ustekinumab.html) | Population pharmacokinetic-pharmacodynamic model for ustekinumab in adults with Crohn’s disease (Aguiar 2021): two-compartment quasi-equilibrium TMDD model for ustekinumab and the unbound IL-12/IL-23 p40 target, linked to fecal calprotectin via an indirect-response model with target-driven stimulation of FC production. |
 | [Almquist_2022_anifrolumab](https://nlmixr2.github.io/nlmixr2lib/articles/Almquist_2022_anifrolumab.html) | Two-compartment QSS-TMDD population PK model for anifrolumab (anti-IFNAR1 IgG1-kappa) in healthy volunteers and adults with systemic lupus erythematosus (Almquist 2022): linear plus quasi-steady-state target-mediated elimination via a dynamic IFNAR1 receptor pool, time-varying linear clearance (Emax-on-time), and IFNGS-high/low and body-weight covariate effects. |
 | [Bajaj_2017_nivolumab](https://nlmixr2.github.io/nlmixr2lib/articles/Bajaj_2017_nivolumab.html) | Two-compartment population PK model for nivolumab (anti-PD-1 IgG4) with time-varying clearance (sigmoid Emax) in patients with advanced solid tumors (Bajaj 2017) |
@@ -81,7 +87,6 @@ knitr::kable(display[, c("name", "description")])
 | [Chua_2025_mirikizumab](https://nlmixr2.github.io/nlmixr2lib/articles/Chua_2025_mirikizumab.html) | Two-compartment population PK model for mirikizumab (anti-IL-23p19 IgG4 mAb) in patients with moderately-to-severely active Crohn’s disease (Chua 2025 VIVID-1 phase 3) |
 | [Cirincione_2017_exenatide](https://nlmixr2.github.io/nlmixr2lib/articles/Cirincione_2017_exenatide.html) | Population PK model for exenatide immediate-release (Cirincione 2017): two-compartment, parallel linear and Michaelis-Menten elimination, sequential zero-order then saturable first-order absorption after SC dosing. |
 | [Clegg_2024_nirsevimab](https://nlmixr2.github.io/nlmixr2lib/articles/Clegg_2024_nirsevimab.html) | Two-compartment population PK model for nirsevimab in preterm and term infants (Clegg 2024) |
-| [deVriesSchultink_2020_zenocutuzumab](https://nlmixr2.github.io/nlmixr2lib/articles/deVriesSchultink_2020_zenocutuzumab.html) | Two-compartment population PK model with parallel linear and Michaelis-Menten non-linear elimination from the central compartment for intravenous zenocutuzumab (MCLA-128), a bispecific IgG1 (anti-HER2 x anti-HER3) monoclonal antibody, in patients with various advanced solid tumors (de Vries Schultink 2020) |
 | [Diao_2016_daclizumab_cd25](https://nlmixr2.github.io/nlmixr2lib/articles/Diao_2016_daclizumab_cd25.html) | Sigmoidal Emax PK/PD model of CD25 receptor occupancy on peripheral CD4+ T cells following subcutaneous daclizumab high-yield process (HYP) in adults with relapsing-remitting multiple sclerosis (Diao 2016). The PD output is the percentage of CD4+ T cells staining positive for unoccupied CD25 (i.e., the unbound CD25 fraction). The PK backbone is the two-compartment, first-order SC absorption + lag model from Othman 2014 (file inst/modeldb/specificDrugs/Othman_2014_daclizumab.R), copied verbatim with weight-based allometric scaling. |
 | [Diao_2016_daclizumab_cd56bright](https://nlmixr2.github.io/nlmixr2lib/articles/Diao_2016_daclizumab_cd56bright.html) | Indirect-response PK/PD model of CD56 bright natural killer (NK) cell expansion following subcutaneous daclizumab high-yield process (HYP) in adults with relapsing-remitting multiple sclerosis (Diao 2016). Daclizumab HYP serum concentration stimulates the zero-order production rate (Kin) of CD56 bright NK cells (% of all lymphocytes) via a saturable Smax function; first-order elimination rate Kout is fixed by the median baseline. The PK backbone is the two-compartment, first-order SC absorption + lag model from Othman 2014 (file inst/modeldb/specificDrugs/Othman_2014_daclizumab.R), copied verbatim with weight-based allometric scaling. |
 | [Diao_2016_daclizumab_treg](https://nlmixr2.github.io/nlmixr2lib/articles/Diao_2016_daclizumab_treg.html) | Sigmoidal Emax PK/PD model of regulatory T cell (Treg) reduction following subcutaneous daclizumab high-yield process (HYP) in adults with relapsing-remitting multiple sclerosis (Diao 2016). The PD output is the percentage of Treg (CD4+ CD127low/- Foxp3+) among all CD4+ T cells; daclizumab HYP serum concentration drives a maximum 60% reduction via a sigmoidal Emax function. The PK backbone is the two-compartment, first-order SC absorption + lag model from Othman 2014 (file inst/modeldb/specificDrugs/Othman_2014_daclizumab.R), copied verbatim with weight-based allometric scaling. |
@@ -189,14 +194,15 @@ knitr::kable(display[, c("name", "description")])
 | [Zhou_2021_belimumab](https://nlmixr2.github.io/nlmixr2lib/articles/Zhou_2021_belimumab.html) | Linear two-compartment IV population PK model for belimumab in Chinese and non-Chinese adult and pediatric patients with systemic lupus erythematosus (Zhou 2021) |
 | [Zhou_2025_brentuximab](https://nlmixr2.github.io/nlmixr2lib/articles/Zhou_2025_brentuximab.html) | Coupled population PK model for brentuximab vedotin antibody-drug conjugate (ADC) and its released payload monomethyl auristatin E (MMAE) in pediatric patients (5-18 years) with relapsed/refractory or newly diagnosed Hodgkin lymphoma or systemic anaplastic large-cell lymphoma (Zhou 2025). ADC is described by a linear 3-compartment model with first-order elimination; MMAE by a 2-compartment model with first-order elimination. ADC -\> MMAE flux is the sum of (a) a one-time saturable target-binding flux Kd*Target*ADC (initial Target = 1 unitless, irreversibly depleted) and (b) a proteolytic flux FM*exp(-ALFM*tad)*K10*ADC where the conversion fraction declines as a function of time after the most recent dose. Both fluxes accumulate in an intermediate Lag compartment that empties to MMAE central with rate Klag. Final-model parameter values come from Zhou 2025 supplementary Tables S1 (ADC) and S2 (MMAE); equations come from the NONMEM control streams in Zhou 2025 Supplementary Methods. |
 | [Zhu_2017_lebrikizumab](https://nlmixr2.github.io/nlmixr2lib/articles/Zhu_2017_lebrikizumab.html) | Lebrikizumab population PK model (Zhu 2017): two-compartment model with first-order absorption after SC dosing in adults with moderate-to-severe asthma. |
+| [deVriesSchultink_2020_zenocutuzumab](https://nlmixr2.github.io/nlmixr2lib/articles/deVriesSchultink_2020_zenocutuzumab.html) | Two-compartment population PK model with parallel linear and Michaelis-Menten non-linear elimination from the central compartment for intravenous zenocutuzumab (MCLA-128), a bispecific IgG1 (anti-HER2 x anti-HER3) monoclonal antibody, in patients with various advanced solid tumors (de Vries Schultink 2020) |
 | oncology_sdm_lobo_2002 | Signal transduction model for delayed concentration effects on cancer cell growth |
 | oncology_xenograft_simeoni_2004 | Oncology tumor growth model in xenograft models |
-| tgi_no_sat_expo | One-compartment TGI model with exponential tumor growth, without saturation. |
 | tgi_no_sat_Koch | One compartment TGI model with with exponential tumor growth, without saturation. |
+| tgi_no_sat_expo | One-compartment TGI model with exponential tumor growth, without saturation. |
 | tgi_no_sat_linear | One compartment TGI model with with linear tumor growth, without saturation. |
 | tgi_no_sat_powerLaw | One compartment TGI model with with exponential tumor growth, without saturation. |
+| tgi_sat_Gompertz | One compartment TGI model with tumor growth proportional to tumor size through a generalized logistic function, with saturation. |
+| tgi_sat_VonBertalanffy | One compartment TGI model where tumor growth is limited by a loss term, with saturation. |
 | tgi_sat_genLogistic | One compartment TGI model with tumor growth proportional to tumor size through a generalized logistic function, with saturation. |
 | tgi_sat_genVonBertalanffy | One compartment TGI model where tumor growth is limited by a loss term, with saturation. |
-| tgi_sat_Gompertz | One compartment TGI model with tumor growth proportional to tumor size through a generalized logistic function, with saturation. |
 | tgi_sat_logistic | One compartment TGI model with with exponential tumor growth that decelerates linearly, with saturation. |
-| tgi_sat_VonBertalanffy | One compartment TGI model where tumor growth is limited by a loss term, with saturation. |

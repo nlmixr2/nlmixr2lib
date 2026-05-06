@@ -184,12 +184,15 @@ this way.
 - [FiedlerKelly_2020_fremanezumab_em](https://nlmixr2.github.io/nlmixr2lib/articles/FiedlerKelly_2020_fremanezumab_em.md):
 - [Frey_2010_tocilizumab](https://nlmixr2.github.io/nlmixr2lib/articles/Frey_2010_tocilizumab.md):
 - [Frey_2013_tocilizumab](https://nlmixr2.github.io/nlmixr2lib/articles/Frey_2013_tocilizumab.md):
+- [Friberg_2002_paclitaxel](https://nlmixr2.github.io/nlmixr2lib/articles/Friberg_2002_paclitaxel.md):
 - [Gandhi_2021_abatacept](https://nlmixr2.github.io/nlmixr2lib/articles/Gandhi_2021_abatacept.md):
 - [Trontinemab and gantenerumab PK in plasma and brain (Grimm
   2023)](https://nlmixr2.github.io/nlmixr2lib/articles/Grimm_2023.md):
 - [Gupta_2016_amatuximab](https://nlmixr2.github.io/nlmixr2lib/articles/Gupta_2016_amatuximab.md):
+- [Hansson_2013a_sunitinib](https://nlmixr2.github.io/nlmixr2lib/articles/Hansson_2013a_sunitinib.md):
 - [Hanzel_2021_infliximab](https://nlmixr2.github.io/nlmixr2lib/articles/Hanzel_2021_infliximab.md):
 - [Hayashi_2007_omalizumab](https://nlmixr2.github.io/nlmixr2lib/articles/Hayashi_2007_omalizumab.md):
+- [Henin_2009_capecitabine](https://nlmixr2.github.io/nlmixr2lib/articles/Henin_2009_capecitabine.md):
 - [Datopotamab deruxtecan ADC + DXd coupled population PK model (Hong
   2025)](https://nlmixr2.github.io/nlmixr2lib/articles/Hong_2025_datopotamab.md):
 - [Hood_2021_medi7836](https://nlmixr2.github.io/nlmixr2lib/articles/Hood_2021_medi7836.md):
@@ -210,8 +213,10 @@ this way.
 - [Kuchimanchi_2018_evolocumab](https://nlmixr2.github.io/nlmixr2lib/articles/Kuchimanchi_2018_evolocumab.md):
 - [Kuchimanchi_2024_dostarlimab](https://nlmixr2.github.io/nlmixr2lib/articles/Kuchimanchi_2024_dostarlimab.md):
 - [Kyhl_2016_nalmefene](https://nlmixr2.github.io/nlmixr2lib/articles/Kyhl_2016_nalmefene.md):
+- [Lestini_2015_tgfbinhibitor](https://nlmixr2.github.io/nlmixr2lib/articles/Lestini_2015_tgfbinhibitor.md):
 - [Intrathecal trastuzumab in HER2+ breast cancer LMC (Le Tilly
   2021)](https://nlmixr2.github.io/nlmixr2lib/articles/LeTilly_2021_trastuzumab.md):
+- [Li_2006_meropenem](https://nlmixr2.github.io/nlmixr2lib/articles/Li_2006_meropenem.md):
 - [Brentuximab vedotin ADC + MMAE coupled population PK model (Li
   2017)](https://nlmixr2.github.io/nlmixr2lib/articles/Li_2017_brentuximab.md):
 - [Li_2019_abatacept](https://nlmixr2.github.io/nlmixr2lib/articles/Li_2019_abatacept.md):
@@ -254,6 +259,7 @@ this way.
 - [PerezRuixo_2025_posdinemab](https://nlmixr2.github.io/nlmixr2lib/articles/PerezRuixo_2025_posdinemab.md):
 - [Petrov_2024_romiplostim](https://nlmixr2.github.io/nlmixr2lib/articles/Petrov_2024_romiplostim.md):
 - [PK_2cmt_mAb_Davda_2014](https://nlmixr2.github.io/nlmixr2lib/articles/PK_2cmt_mAb_Davda_2014.md):
+- [Plan_2012_pain](https://nlmixr2.github.io/nlmixr2lib/articles/Plan_2012_pain.md):
 - [Pouzin_2022_tusamitamab](https://nlmixr2.github.io/nlmixr2lib/articles/Pouzin_2022_tusamitamab.md):
 - [Quartino_2019_trastuzumab](https://nlmixr2.github.io/nlmixr2lib/articles/Quartino_2019_trastuzumab.md):
 - [Robbie_2012_palivizumab](https://nlmixr2.github.io/nlmixr2lib/articles/Robbie_2012_palivizumab.md):

@@ -32,11 +32,14 @@ articles:
   articles/FiedlerKelly_2020_fremanezumab_em: FiedlerKelly_2020_fremanezumab_em.html
   articles/Frey_2010_tocilizumab: Frey_2010_tocilizumab.html
   articles/Frey_2013_tocilizumab: Frey_2013_tocilizumab.html
+  articles/Friberg_2002_paclitaxel: Friberg_2002_paclitaxel.html
   articles/Gandhi_2021_abatacept: Gandhi_2021_abatacept.html
   articles/Grimm_2023: Grimm_2023.html
   articles/Gupta_2016_amatuximab: Gupta_2016_amatuximab.html
+  articles/Hansson_2013a_sunitinib: Hansson_2013a_sunitinib.html
   articles/Hanzel_2021_infliximab: Hanzel_2021_infliximab.html
   articles/Hayashi_2007_omalizumab: Hayashi_2007_omalizumab.html
+  articles/Henin_2009_capecitabine: Henin_2009_capecitabine.html
   articles/Hong_2025_datopotamab: Hong_2025_datopotamab.html
   articles/Hood_2021_medi7836: Hood_2021_medi7836.html
   articles/Hu_2014_bapineuzumab: Hu_2014_bapineuzumab.html
@@ -56,7 +59,9 @@ articles:
   articles/Kuchimanchi_2018_evolocumab: Kuchimanchi_2018_evolocumab.html
   articles/Kuchimanchi_2024_dostarlimab: Kuchimanchi_2024_dostarlimab.html
   articles/Kyhl_2016_nalmefene: Kyhl_2016_nalmefene.html
+  articles/Lestini_2015_tgfbinhibitor: Lestini_2015_tgfbinhibitor.html
   articles/LeTilly_2021_trastuzumab: LeTilly_2021_trastuzumab.html
+  articles/Li_2006_meropenem: Li_2006_meropenem.html
   articles/Li_2017_brentuximab: Li_2017_brentuximab.html
   articles/Li_2019_abatacept: Li_2019_abatacept.html
   articles/Lin_2024_casirivimab: Lin_2024_casirivimab.html
@@ -93,6 +98,7 @@ articles:
   articles/PerezRuixo_2025_posdinemab: PerezRuixo_2025_posdinemab.html
   articles/Petrov_2024_romiplostim: Petrov_2024_romiplostim.html
   PK_2cmt_mAb_Davda_2014: PK_2cmt_mAb_Davda_2014.html
+  articles/Plan_2012_pain: Plan_2012_pain.html
   articles/Pouzin_2022_tusamitamab: Pouzin_2022_tusamitamab.html
   articles/Quartino_2019_trastuzumab: Quartino_2019_trastuzumab.html
   articles/Robbie_2012_palivizumab: Robbie_2012_palivizumab.html
@@ -131,7 +137,7 @@ articles:
   articles/Zhou_2021_belimumab: Zhou_2021_belimumab.html
   articles/Zhou_2025_brentuximab: Zhou_2025_brentuximab.html
   articles/Zhu_2017_lebrikizumab: Zhu_2017_lebrikizumab.html
-last_built: 2026-05-06T12:56Z
+last_built: 2026-05-06T14:18Z
 urls:
   reference: https://nlmixr2.github.io/nlmixr2lib/reference
   article: https://nlmixr2.github.io/nlmixr2lib/articles

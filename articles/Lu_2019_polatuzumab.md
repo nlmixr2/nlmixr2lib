@@ -137,7 +137,7 @@ table below collates them.
 |----|----|----|----|
 | `lkdes` | kdes | 0.0046 1/hour | Table 1, theta1 |
 | `lcl_time` | CL_TIME (initial) | 0.00623 L/hour | Table 1, theta2 |
-| `lcl_ss` | CL_SS | 0.0344 L/hour | Table 1, theta3 |
+| `lcl` | CL_SS | 0.0344 L/hour | Table 1, theta3 |
 | `lvc` | V1 | 3.15 L | Table 1, theta4 |
 | `lvp` | V2 | 3.98 L | Table 1, theta5 |
 | `lq` | Q | 0.0145 L/hour | Table 1, theta6 |
@@ -156,16 +156,16 @@ table below collates them.
 | `lfrac_mm` | FRAC_MM | 2.72 | Table 1, theta19 |
 | `lalph_mo` | alpha (1/month) | 0.167 1/month | Table 1, theta20 |
 | `frac_t` | FRAC_T | 0.139 | Table 1, theta21 |
-| `e_wt_cl_ss` | WT on CL_SS | 0.73 | Table 2, theta22 |
+| `e_wt_cl` | WT on CL_SS | 0.73 | Table 2, theta22 |
 | `e_wt_vc` | WT on Vc, Vp, Q (shared) | 0.50 | Table 2, theta23 |
 | `e_sexf_vc` | sex on Vc (1/1.20) | 0.8333 | Table 2, theta24 (inverted) |
 | `e_asian_vc` | Asian on Vc | 0.929 | Table 2, theta25 |
 | `e_line1l_vc` | Treatment-naive on Vc | 1.20 | Table 2, theta26 |
-| `e_sexf_cl_ss` | sex on CL_SS (1/1.10) | 0.9091 | Table 2, theta27 (inverted) |
-| `e_alb_cl_ss` | ALB on CL_SS (power) | -0.247 | Table 2, theta28 |
-| `e_combo_rg_cl_ss` | R/G combo on CL_SS | 0.844 | Table 2, theta29 |
-| `e_blbcell_cl_ss` | B-cell on CL_SS (power) | 0.0212 | Table 2, theta30 |
-| `e_tumsz_cl_ss` | TUMSZ on CL_SS (linear) | 0.0521 | Table 2, theta31 |
+| `e_sexf_cl` | sex on CL_SS (1/1.10) | 0.9091 | Table 2, theta27 (inverted) |
+| `e_alb_cl` | ALB on CL_SS (power) | -0.247 | Table 2, theta28 |
+| `e_combo_rg_cl` | R/G combo on CL_SS | 0.844 | Table 2, theta29 |
+| `e_blbcell_cl` | B-cell on CL_SS (power) | 0.0212 | Table 2, theta30 |
+| `e_tumsz_cl` | TUMSZ on CL_SS (linear) | 0.0521 | Table 2, theta31 |
 | `e_line1l_kdes` | Treatment-naive on kdes | 3.38 | Table 2, theta32 |
 | `e_combo_rg_kdes` | R/G combo on kdes | 0.932 | Table 2, theta33 |
 | `e_line1l_cl_time` | Treatment-naive on CL_TIME | 3.53 | Table 2, theta34 |
@@ -326,7 +326,7 @@ typ_events$BLBCELL    <- 1
 typ_events$TUMSZ      <- 5000
 
 typ_sim <- rxode2::rxSolve(typ, typ_events, returnType = "data.frame")
-#> ℹ omega/sigma items treated as zero: 'etalcl_time', 'etalcl_ss', 'etalvc', 'etalvp', 'etalq', 'etalvmax', 'etalfrac_mmae', 'etalcl_mmae', 'etalvp_mmae'
+#> ℹ omega/sigma items treated as zero: 'etalcl_time', 'etalcl', 'etalvc', 'etalvp', 'etalq', 'etalvmax', 'etalfrac_mmae', 'etalcl_mmae', 'etalvp_mmae'
 ```
 
 ``` r
@@ -815,42 +815,42 @@ ac_nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(ac_conc, ac_dose,
 #> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
-#>  ■■■■■■■■■■■■■                     40% |  ETA:  3s
+#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
+#>  ■■■■■■■■■■■■■■■                   46% |  ETA:  2s
 #> Warning: Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
@@ -1587,42 +1587,42 @@ mmae_nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(mmae_conc, mmae_dose,
 #> Requesting an AUC range starting (0) before the first measurement (0.333333) is not allowed
 #> Warning: Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
-#>  ■■■■■■■■■■■■■■■■■■■■■             67% |  ETA:  2s
+#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
+#>  ■■■■■■■■■■■■■■■■■■■■■■■           73% |  ETA:  1s
 #> Warning: Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (15.3535) is not allowed
@@ -1919,7 +1919,7 @@ expected to be reproduced.
   Multiplicative-ratio effects therefore invert: the paper’s
   `theta24 = 1.20` (V1 male:female) becomes
   `e_sexf_vc = 1/1.20 = 0.8333`; `theta27 = 1.10` becomes
-  `e_sexf_cl_ss = 1/1.10 = 0.9091`; `theta39 = 0.911` becomes
+  `e_sexf_cl = 1/1.10 = 0.9091`; `theta39 = 0.911` becomes
   `e_sexf_frac_mmae = 1/0.911 = 1.0977`. Effect magnitude and reference
   subject (male, SEXF = 0) are preserved.
 

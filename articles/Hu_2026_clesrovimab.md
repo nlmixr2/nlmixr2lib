@@ -301,10 +301,9 @@ data_obj <- PKNCAdata(conc_obj, dose_obj,
                          cmax = TRUE, tmax = TRUE,
                          auclast = TRUE, half.life = TRUE))
 nca_results <- pk.nca(data_obj)
-#>  ■■■■■■■■                          24% |  ETA:  9s
-#>  ■■■■■■■■■■■■■■■                   47% |  ETA:  7s
-#>  ■■■■■■■■■■■■■■■■■■■■■■            71% |  ETA:  4s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    97% |  ETA:  0s
+#>  ■■■■■■■■■■■■                      35% |  ETA:  7s
+#>  ■■■■■■■■■■■■■■■■■■■               61% |  ETA:  5s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      91% |  ETA:  1s
 nca_summary <- summary(nca_results)
 knitr::kable(nca_summary, digits = 2,
              caption = "NCA summary by baseline weight group (single 105 mg IM dose)")
