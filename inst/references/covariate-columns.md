@@ -564,6 +564,28 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `FiedlerKelly_2020_fremanezumab_em.R`, `FiedlerKelly_2020_fremanezumab_cm.R`.
 - **Notes:** Specific scope because the value is intrinsically tied to the modelled drug — there is no shared meaning across drugs or studies. Each model's `covariateData[[CAV]]$notes` should state how the Cav values are derived (e.g., empirical-Bayes from a referenced population PK model) and that the column is set to 0 for placebo periods.
 
+### CL_SUNITINIB (**canonical for per-subject sunitinib apparent clearance fed in from an upstream popPK model**)
+- **Description:** Per-subject post-hoc apparent oral clearance (CL/F) of sunitinib carried in from a previously-developed sunitinib popPK analysis. Used together with the time-varying daily dose (`DAILY_DOSE`) to drive an effect-compartment AUC = `DAILY_DOSE / CL_SUNITINIB` in tumor / SUVmax / TTE downstream PD models.
+- **Units:** L/h
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a — entered directly into the AUC calculation; not used with a power or linear-deviation form. Reference value observed: 50 L/h (Schindler 2016 simulated dataset; consistent with population-typical sunitinib CL/F reported by Houk 2010 J Clin Pharmacol 50:843-858).
+- **Source aliases:**
+  - `CL` (Schindler 2016 NONMEM `$INPUT` column; "post-hoc clearance from previously-developed PK model").
+- **Example models:** `Schindler_2016_sunitinib.R` (DDMODEL00000221).
+- **Notes:** Specific scope because the value is intrinsically tied to sunitinib (the upstream popPK source is a sunitinib model) and the column is supplied per-subject as a model input rather than estimated. The `CL_<drug>` naming pattern is reusable for future PD models that consume an upstream-popPK clearance the same way (Schindler 2016 is the first; a future cabozantinib analogue would register `CL_CABOZANTINIB`, etc.). The sunitinib popPK model that produced these clearances is not currently in nlmixr2lib; the vignette virtual cohort uses a single literature-typical value (50 L/h) and references Houk 2010 narratively.
+
+### DAILY_DOSE (**canonical for time-varying per-day administered dose**)
+- **Description:** Time-varying daily dose of the modelled drug at the current event-record time, in mg. Drives the per-day AUC entering the effect compartment in PD models that bypass an explicit absorption / disposition compartment (`AUC = DAILY_DOSE / CL_<drug>`). Switches between the prescribed daily-dose level (e.g., 50 mg/day) on dosing-cycle records and 0 on off-cycle / dose-holiday records.
+- **Units:** mg
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a — entered directly into the AUC calculation. Set to 0 during dose holidays and after permanent discontinuation. Reference values observed: 50 mg/day on-treatment in the Schindler 2016 simulated dataset (sunitinib 4-weeks-on / 2-weeks-off cycling).
+- **Source aliases:**
+  - `DOS` (Schindler 2016 NONMEM `$INPUT` column; "daily dose in mg").
+- **Example models:** `Schindler_2016_sunitinib.R` (DDMODEL00000221).
+- **Notes:** Specific scope because the column encodes the trial's per-cycle on/off dosing schedule rather than a per-administration dose amount; semantics differ from the existing `DOSE` canonical (a time-fixed per-subject dose level) and from the implicit `amt` event column (one value per dose record only). For a 50 mg/day continuous-dosing study a single non-zero value across all records is appropriate; for sunitinib 4-on / 2-off cycling the column toggles between 50 and 0 at each cycle boundary.
+
 ### IGE (**canonical for serum total immunoglobulin E concentration**)
 - **Description:** Baseline serum total immunoglobulin E concentration (free IgE plus, in patients on anti-IgE therapy, omalizumab–IgE complex). For anti-IgE monoclonal antibodies (omalizumab, ligelizumab) IgE is the pharmacologic target; baseline IgE sets the magnitude of the target sink and modifies free-IgE clearance and the rate of IgE production in mechanism-based binding/turnover models.
 - **Units:** ng/mL (typical clinical-PK convention). Pretreatment values reported in `IU/mL` are converted via `1 IU/mL = 2.42 ng/mL` (Hayashi 2007 Methods). Document per-model via `covariateData[[IGE]]$units`.
@@ -965,6 +987,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Notes:** Used when a population PK model pools plaque-psoriasis patients with a non-psoriasis reference population and psoriasis disease status is retained as a covariate. Scope: specific because the disease-pooling reference category is paper-defined. Ratified canonically on 2026-04-27.
 
 ## Oncology
+
+### RCFB1MAX (**canonical for week-1 maximum across-lesion relative change from baseline in SUVmax**)
+- **Description:** Per-subject scalar predictor entering the overall-survival hazard in the Schindler 2016 sunitinib joint SUVmax / SLD / OS-TTE / dropout model. Defined as the maximum (across the up-to-five tracked target lesions) of `(SUVmax(t = 168 h) - SUVmax(0)) / SUVmax(0)`, i.e., the most negative (largest reduction) relative change in `[18F]FDG-PET` standardized uptake value at one week of sunitinib therapy. The OS Weibull hazard is `lambh * alphh * t^(alphh - 1) * exp(theta_pred * RCFB1MAX)` with `alphh = 1` (degenerates to constant baseline hazard).
+- **Units:** unitless (relative change; typically negative for responders).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a — entered directly into the OS hazard exponent. Sign convention: more negative `RCFB1MAX` (greater week-1 SUVmax suppression) reduces the OS hazard (Schindler 2016 reports a positive theta_pred = 5.36, so `exp(5.36 * RCFB1MAX)` is < 1 for negative RCFB1MAX).
+- **Source aliases:**
+  - `RCFB1MAX` (Schindler 2016 NONMEM `$ERROR` block intermediate; "max relative change in SUVmax from baseline at week 1 across lesions"). Computed inline in the source `.mod` from the on-the-fly SUVmax states at TIME = 168 h and reused in subsequent records.
+- **Example models:** `Schindler_2016_sunitinib.R` (DDMODEL00000221).
+- **Notes:** Specific scope because the metric is tied to the Schindler 2016 GIST-on-sunitinib joint biomarker / OS analysis. In the source NONMEM `.mod` `RCFB1MAX` is a record-loop state, not a true subject-level covariate — it is captured at FLAG = 1 / TIME = 168 h from the running SUVmax compartment values and reused on every subsequent record. nlmixr2 / rxode2 do not have an idiomatic equivalent of NONMEM's record-loop persistent state, so the model file consumes `RCFB1MAX` as a per-subject input covariate; reproducing the source's behavior requires a two-stage simulation (run the SUVmax + SLD ODEs first, compute `RCFB1MAX` per subject from the t = 168 h SUVmax values, then run the OS / dropout TTE arms with `RCFB1MAX` bound). The vignette virtual cohort follows this pattern.
 
 ### TUMSZ (**canonical for baseline tumor size**)
 - **Description:** Baseline tumor size. For solid tumors, the sum of diameters of target lesions per RECIST; for classical Hodgkin lymphoma and lymphoma generally, the sum of products of perpendicular diameters (SPPD) or the sum of linear diameters of target lesions, depending on the source paper.
@@ -2149,6 +2182,7 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 
 ## Change log
 
+- **2026-05-06** — Added `CL_SUNITINIB` and `DAILY_DOSE` (both specific scope, under `Drug exposure metrics`) and `RCFB1MAX` (specific scope, under `Oncology`) canonical entries while extracting `Schindler_2016_sunitinib.R` (DDMODEL00000221). Source aliases mapped: `CL` → `CL_SUNITINIB`, `DOS` → `DAILY_DOSE`, `RCFB1MAX` → `RCFB1MAX` (no rename). The `CL_<drug>` and `RCFB1MAX` patterns are deliberately specific because each is tied to a single upstream popPK source (`CL_SUNITINIB`) or a single OS-hazard predictor definition (`RCFB1MAX`); future PD models that consume the same upstream-popPK clearance pattern would register `CL_<drug>` analogues, and Schindler-style SUV-week-1 hazard predictors would register their own canonical name.
 - **2026-04-28** — Extended `RACE_WHITE` (general scope) example-models list and source aliases to record `Hu_2014_bapineuzumab.R` (Caucasian-vs-non-Caucasian dichotomy with the Caucasian subgroup as the typical-value reference). The canonical column encoding (1 = White / 0 = non-White) is unchanged; the model implements the 15% non-Caucasian effect on `(1 - RACE_WHITE)`. The change log notes that the typical-value reference category may legitimately differ between papers using `RACE_WHITE`.
 - **2026-04-29** — Added `IL6` (general-scope serum interleukin-6 cytokine biomarker, pg/mL, under `Inflammation markers`), `PAIN` (general-scope patient-reported global pain VAS 0-100, under `Rheumatoid-arthritis disease-activity covariates`), and `RACE_ASIAN_OTH` (specific-scope composite race indicator pooling Asian / American Indian / Other against a White + Black reference, under `Race / ethnicity`) canonical entries while extracting `Frey_2013_tocilizumab.R` (PMID 23436260). Source aliases mapped: `BLIL6` -> `IL6`. Frey 2013 uses log-transformed `(log(IL-6 * 1000) / 9.9)^exp` with reference IL-6 ~= 20 pg/mL; the canonical column carries the raw IL-6 in pg/mL and the log transformation is applied inside `model()`.
 - **2026-04-28** — Added `TUMTP_PCALCL` (specific scope under `Oncology`; primary cutaneous anaplastic large-cell lymphoma indicator following the `TUMTP_<GROUP>` decomposition pattern) and three ADA-status × assay-era indicators (`ADA_POS` [modern-assay arm; general scope], `ADA_POSOLD`, `ADA_MISSING` [both specific scope] under `Immunogenicity`) while extracting `Suri_2018_brentuximab.R`. Initially named `ADA_POSNEW`; renamed to `ADA_POS` on 2026-04-29 for consistency with the existing general `ADA_POS` canonical. The three indicators are mutually exclusive and decompose Suri 2018's four-level ADA-status × assay-era factor with ADA-negative as the reference; the multiplicative additive form `cl *= (1 + theta * ind)` from supplement 1's ATA-status equation is documented per model.
