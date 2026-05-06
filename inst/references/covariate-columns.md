@@ -1391,6 +1391,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Li_2019_abatacept.R` (exponential effect on CL: `CL * exp(0.0640 * CONMED_NSAID)`; ~6.6% higher CL, not clinically relevant per Li 2019).
 - **Notes:** Baseline-use-only in Li 2019; time-varying use is permitted, document per-model. Follows the `CONMED_*` concomitant-medication pattern established for IBD models (AZA / MP / MTX / AMINO).
 
+### CONMED_PARA (**canonical for concomitant paracetamol (acetaminophen) use**)
+- **Description:** 1 = on concomitant paracetamol (acetaminophen) at the observation, 0 = not.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no concomitant paracetamol).
+- **Source aliases:**
+  - `PCM` — used in `Plan_2012_pain.R` (DDMORE Foundation Model Repository entry DDMODEL00000194).
+- **Example models:** `Plan_2012_pain.R` (additive shift on the placebo-effect logit of the typical pain-score lambda: `phl = logit(TVLAM) + 0.364 * CONMED_PARA`; mean pain score ~9% higher on the 0-10 Likert scale during paracetamol use).
+- **Notes:** Distinct from `CONMED_NSAID` — paracetamol is not classed as an NSAID (no anti-inflammatory mechanism, distinct AE profile). Time-varying use is permitted; the daily Likert measurements in Plan 2012 carry PCM as a per-observation flag. Follows the `CONMED_*` concomitant-medication pattern established for IBD models (AZA / MP / MTX / AMINO) and `CONMED_NSAID` (Li 2019). Ratified canonically alongside the Plan 2012 DDMORE extraction.
+
 ### CONMED_RITUX (**canonical for concomitant rituximab combination therapy**)
 - **Description:** 1 = on concomitant rituximab combination therapy (with or without backbone chemotherapy), 0 = not on rituximab.
 - **Units:** (binary)
