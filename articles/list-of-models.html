@@ -79,6 +79,7 @@
     <li><a class="dropdown-item" href="../articles/Ide_2020_elotuzumab.html">Ide_2020_elotuzumab</a></li>
     <li><a class="dropdown-item" href="../articles/Jackson_2022_ixekizumab.html">Jackson_2022_ixekizumab</a></li>
     <li><a class="dropdown-item" href="../articles/Kielbasa_2020_galcanezumab.html">Kielbasa_2020_galcanezumab</a></li>
+    <li><a class="dropdown-item" href="../articles/Kloft_2004_sibrotuzumab.html">Kloft_2004_sibrotuzumab</a></li>
     <li><a class="dropdown-item" href="../articles/Koopman_2023_factorix.html">Koopman_2023_factorix</a></li>
     <li><a class="dropdown-item" href="../articles/Kotani_2022_astegolimab.html">Kotani_2022_astegolimab</a></li>
     <li><a class="dropdown-item" href="../articles/Kovalenko_2016_dupilumab.html">Kovalenko_2016_dupilumab</a></li>
@@ -217,8 +218,199 @@ for that model.</p>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="left">PK_1cmt</td>
-<td align="left">One compartment PK model with linear clearance</td>
+<td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Kloft_2004_sibrotuzumab.html">Kloft_2004_sibrotuzumab</a></td>
+<td align="left">Two-compartment population PK model for sibrotuzumab in
+adults with metastatic FAP-positive cancer (Kloft 2004), with parallel
+linear and Michaelis-Menten elimination from the central compartment and
+a fixed linear body-weight covariate (centered at 75 kg) on linear CL,
+central and peripheral volumes, and Vmax.</td>
+</tr>
+<tr class="even">
+<td align="left">igg_kim_2006</td>
+<td align="left">Immunoglobulin G (IgG) model for nonlinear metabolism
+in healthy subjects</td>
+</tr>
+<tr class="odd">
+<td align="left">phenylalanine_charbonneau_2021</td>
+<td align="left">Phenylalanine model for absorption and metabolism in
+healthy subjects and patients with PKU</td>
+</tr>
+<tr class="even">
+<td align="left">indirect_0cpt_transitEx</td>
+<td align="left">Two compartment PK model with Michealis-Menten
+clearance using differential equations</td>
+</tr>
+<tr class="odd">
+<td align="left">indirect_1cpt_inhi_kin_CLV</td>
+<td align="left">One compartment indirect response model with inhibition
+of kin.</td>
+</tr>
+<tr class="even">
+<td align="left">indirect_1cpt_inhi_kin_r0rmaxcrmax</td>
+<td align="left">One compartment indirect response model with inhibition
+of kin.</td>
+</tr>
+<tr class="odd">
+<td align="left">indirect_1cpt_inhi_kin</td>
+<td align="left">One compartment indirect response model with inhibition
+of kin.</td>
+</tr>
+<tr class="even">
+<td align="left">indirect_1cpt_inhi_kout_CLV</td>
+<td align="left">One compartment indirect response model with inhibition
+of kout.</td>
+</tr>
+<tr class="odd">
+<td align="left">indirect_1cpt_inhi_kout_r0rmaxcrmax</td>
+<td align="left">One compartment indirect response model with inhibition
+of kout.</td>
+</tr>
+<tr class="even">
+<td align="left">indirect_1cpt_inhi_kout</td>
+<td align="left">One compartment indirect response model with inhibition
+of kout.</td>
+</tr>
+<tr class="odd">
+<td align="left">indirect_1cpt_stim_kin_CLV</td>
+<td align="left">One compartment indirect response model with
+stimulation of kin.</td>
+</tr>
+<tr class="even">
+<td align="left">indirect_1cpt_stim_kin_r0rmaxcrmax</td>
+<td align="left">One compartment indirect response model with
+stimulation of kin.</td>
+</tr>
+<tr class="odd">
+<td align="left">indirect_1cpt_stim_kin</td>
+<td align="left">One compartment indirect response model with
+stimulation of kin.Parameterized using rate cosntants</td>
+</tr>
+<tr class="even">
+<td align="left">indirect_1cpt_stim_kout_CLV</td>
+<td align="left">One compartment indirect response model with
+stimulation of kout.</td>
+</tr>
+<tr class="odd">
+<td align="left">indirect_1cpt_stim_kout_r0rmaxcrmax</td>
+<td align="left">One compartment indirect response model with
+stimulation of kout.</td>
+</tr>
+<tr class="even">
+<td align="left">indirect_1cpt_stim_kout</td>
+<td align="left">One compartment indirect response model with
+stimulation of kout.Parameterized using rate cosntants</td>
+</tr>
+<tr class="odd">
+<td align="left">indirect_circ_1cpt_inhi_kin_kin_t</td>
+<td align="left">One compartment indirect response model with inhibition
+of kin and circadian kin_t.</td>
+</tr>
+<tr class="even">
+<td align="left">indirect_circ_1cpt_inhi_kin_kout_t</td>
+<td align="left">One compartment indirect response model with inhibition
+of kin and circadian kin_t.</td>
+</tr>
+<tr class="odd">
+<td align="left">indirect_circ_1cpt_inhi_kout_kin_t</td>
+<td align="left">One compartment indirect response model with inhibition
+of kout and circadian kin_t.</td>
+</tr>
+<tr class="even">
+<td align="left">indirect_circ_1cpt_inhi_kout_kout_t</td>
+<td align="left">One compartment indirect response model with inhibition
+of kout and circadian kin_t.</td>
+</tr>
+<tr class="odd">
+<td align="left">indirect_circ_1cpt_stim_kin_kin_t</td>
+<td align="left">One compartment indirect response model with
+stimulation of kin and circadian kin_t.Parameterized using rate
+cosntants</td>
+</tr>
+<tr class="even">
+<td align="left">indirect_circ_1cpt_stim_kin_kout_t</td>
+<td align="left">One compartment indirect response model with
+stimulation of kin and circadian kout_t.Parameterized using rate
+constants</td>
+</tr>
+<tr class="odd">
+<td align="left">indirect_circ_1cpt_stim_kout_kin_t</td>
+<td align="left">One compartment indirect response model with
+stimulation of kout and circadian kin_t.Parameterized using rate
+cosntants</td>
+</tr>
+<tr class="even">
+<td align="left">indirect_circ_1cpt_stim_kout_kout_t</td>
+<td align="left">One compartment indirect response model with
+stimulation of kout and circadian kout_t.Parameterized using rate
+cosntants</td>
+</tr>
+<tr class="odd">
+<td align="left">indirect_prec_1cpt_inhi_CLV</td>
+<td align="left">One compartment precursor-dependent indirect response
+model with inhibition of drug response. Parameterized with clearance and
+volume. (effect).</td>
+</tr>
+<tr class="even">
+<td align="left">indirect_prec_1cpt_inhi_r0rmaxcrmax</td>
+<td align="left">One compartment precursor-dependent indirect response
+model with inhibition of drug response (effect).</td>
+</tr>
+<tr class="odd">
+<td align="left">indirect_prec_1cpt_stim_CLV</td>
+<td align="left">One compartment precursor-dependent indirect response
+model with inhibition of drug response (effect). Parameterized with
+clearance and volume</td>
+</tr>
+<tr class="even">
+<td align="left">indirect_prec_1cpt_stim_r0rmaxcrmax</td>
+<td align="left">One compartment precursor-dependent indirect response
+model with inhibition of drug response (effect). Parameterized with
+clearance and volume</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/tmdd_archetypes.html">PK_1cmt_tmdd_full</a></td>
+<td align="left">One-compartment TMDD archetype with explicit
+drug-target binding (Mager &amp; Jusko 2001 full model)</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/tmdd_archetypes.html">PK_1cmt_tmdd_mm</a></td>
+<td align="left">One-compartment TMDD archetype, Michaelis-Menten (MM)
+approximation (Gibiansky et al. 2008)</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/tmdd_archetypes.html">PK_1cmt_tmdd_qss</a></td>
+<td align="left">One-compartment TMDD archetype, quasi-steady-state
+(QSS) approximation (Gibiansky et al. 2008)</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/PK_2cmt_mAb_Davda_2014.html">PK_2cmt_mAb_Davda_2014</a></td>
+<td align="left">Two compartment PK model with linear clearance for
+average monoclonal antibodies (Davda 2014)</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/tmdd_archetypes.html">PK_2cmt_tmdd_mm</a></td>
+<td align="left">Two-compartment TMDD archetype, Michaelis-Menten (MM)
+approximation (Gibiansky et al. 2008)</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/tmdd_archetypes.html">PK_2cmt_tmdd_qss</a></td>
+<td align="left">Two-compartment TMDD archetype, quasi-steady-state
+(QSS) approximation (Gibiansky et al. 2008)</td>
+</tr>
+<tr class="odd">
+<td align="left">PK_double_sim_01</td>
+<td align="left">PK double absorption model with simultaneous zero order
+and first order absorptions</td>
+</tr>
+<tr class="even">
+<td align="left">PK_double_sim_10</td>
+<td align="left">PK double absorption model with simultaneous first
+order and zero order absorptions</td>
+</tr>
+<tr class="odd">
+<td align="left">PK_double_sim_11</td>
+<td align="left">PK double absorption model with simultaneous first
+order absorptions</td>
 </tr>
 <tr class="even">
 <td align="left">PK_1cmt_des</td>
@@ -226,8 +418,8 @@ for that model.</p>
 differential equations</td>
 </tr>
 <tr class="odd">
-<td align="left">PK_2cmt</td>
-<td align="left">Two compartment PK model with linear clearance</td>
+<td align="left">PK_1cmt</td>
+<td align="left">One compartment PK model with linear clearance</td>
 </tr>
 <tr class="even">
 <td align="left">PK_2cmt_des</td>
@@ -245,8 +437,8 @@ differential equations</td>
 using differential equations (structured like nivolumab PK model)</td>
 </tr>
 <tr class="odd">
-<td align="left">PK_3cmt</td>
-<td align="left">Three compartment PK model with linear clearance</td>
+<td align="left">PK_2cmt</td>
+<td align="left">Two compartment PK model with linear clearance</td>
 </tr>
 <tr class="even">
 <td align="left">PK_3cmt_des</td>
@@ -254,193 +446,10 @@ using differential equations (structured like nivolumab PK model)</td>
 differential equations</td>
 </tr>
 <tr class="odd">
-<td align="left">igg_kim_2006</td>
-<td align="left">Immunoglobulin G (IgG) model for nonlinear metabolism
-in healthy subjects</td>
+<td align="left">PK_3cmt</td>
+<td align="left">Three compartment PK model with linear clearance</td>
 </tr>
 <tr class="even">
-<td align="left">phenylalanine_charbonneau_2021</td>
-<td align="left">Phenylalanine model for absorption and metabolism in
-healthy subjects and patients with PKU</td>
-</tr>
-<tr class="odd">
-<td align="left">indirect_0cpt_transitEx</td>
-<td align="left">Two compartment PK model with Michealis-Menten
-clearance using differential equations</td>
-</tr>
-<tr class="even">
-<td align="left">indirect_1cpt_inhi_kin</td>
-<td align="left">One compartment indirect response model with inhibition
-of kin.</td>
-</tr>
-<tr class="odd">
-<td align="left">indirect_1cpt_inhi_kin_CLV</td>
-<td align="left">One compartment indirect response model with inhibition
-of kin.</td>
-</tr>
-<tr class="even">
-<td align="left">indirect_1cpt_inhi_kin_r0rmaxcrmax</td>
-<td align="left">One compartment indirect response model with inhibition
-of kin.</td>
-</tr>
-<tr class="odd">
-<td align="left">indirect_1cpt_inhi_kout</td>
-<td align="left">One compartment indirect response model with inhibition
-of kout.</td>
-</tr>
-<tr class="even">
-<td align="left">indirect_1cpt_inhi_kout_CLV</td>
-<td align="left">One compartment indirect response model with inhibition
-of kout.</td>
-</tr>
-<tr class="odd">
-<td align="left">indirect_1cpt_inhi_kout_r0rmaxcrmax</td>
-<td align="left">One compartment indirect response model with inhibition
-of kout.</td>
-</tr>
-<tr class="even">
-<td align="left">indirect_1cpt_stim_kin</td>
-<td align="left">One compartment indirect response model with
-stimulation of kin.Parameterized using rate cosntants</td>
-</tr>
-<tr class="odd">
-<td align="left">indirect_1cpt_stim_kin_CLV</td>
-<td align="left">One compartment indirect response model with
-stimulation of kin.</td>
-</tr>
-<tr class="even">
-<td align="left">indirect_1cpt_stim_kin_r0rmaxcrmax</td>
-<td align="left">One compartment indirect response model with
-stimulation of kin.</td>
-</tr>
-<tr class="odd">
-<td align="left">indirect_1cpt_stim_kout</td>
-<td align="left">One compartment indirect response model with
-stimulation of kout.Parameterized using rate cosntants</td>
-</tr>
-<tr class="even">
-<td align="left">indirect_1cpt_stim_kout_CLV</td>
-<td align="left">One compartment indirect response model with
-stimulation of kout.</td>
-</tr>
-<tr class="odd">
-<td align="left">indirect_1cpt_stim_kout_r0rmaxcrmax</td>
-<td align="left">One compartment indirect response model with
-stimulation of kout.</td>
-</tr>
-<tr class="even">
-<td align="left">indirect_circ_1cpt_inhi_kin_kin_t</td>
-<td align="left">One compartment indirect response model with inhibition
-of kin and circadian kin_t.</td>
-</tr>
-<tr class="odd">
-<td align="left">indirect_circ_1cpt_inhi_kin_kout_t</td>
-<td align="left">One compartment indirect response model with inhibition
-of kin and circadian kin_t.</td>
-</tr>
-<tr class="even">
-<td align="left">indirect_circ_1cpt_inhi_kout_kin_t</td>
-<td align="left">One compartment indirect response model with inhibition
-of kout and circadian kin_t.</td>
-</tr>
-<tr class="odd">
-<td align="left">indirect_circ_1cpt_inhi_kout_kout_t</td>
-<td align="left">One compartment indirect response model with inhibition
-of kout and circadian kin_t.</td>
-</tr>
-<tr class="even">
-<td align="left">indirect_circ_1cpt_stim_kin_kin_t</td>
-<td align="left">One compartment indirect response model with
-stimulation of kin and circadian kin_t.Parameterized using rate
-cosntants</td>
-</tr>
-<tr class="odd">
-<td align="left">indirect_circ_1cpt_stim_kin_kout_t</td>
-<td align="left">One compartment indirect response model with
-stimulation of kin and circadian kout_t.Parameterized using rate
-constants</td>
-</tr>
-<tr class="even">
-<td align="left">indirect_circ_1cpt_stim_kout_kin_t</td>
-<td align="left">One compartment indirect response model with
-stimulation of kout and circadian kin_t.Parameterized using rate
-cosntants</td>
-</tr>
-<tr class="odd">
-<td align="left">indirect_circ_1cpt_stim_kout_kout_t</td>
-<td align="left">One compartment indirect response model with
-stimulation of kout and circadian kout_t.Parameterized using rate
-cosntants</td>
-</tr>
-<tr class="even">
-<td align="left">indirect_prec_1cpt_inhi_CLV</td>
-<td align="left">One compartment precursor-dependent indirect response
-model with inhibition of drug response. Parameterized with clearance and
-volume. (effect).</td>
-</tr>
-<tr class="odd">
-<td align="left">indirect_prec_1cpt_inhi_r0rmaxcrmax</td>
-<td align="left">One compartment precursor-dependent indirect response
-model with inhibition of drug response (effect).</td>
-</tr>
-<tr class="even">
-<td align="left">indirect_prec_1cpt_stim_CLV</td>
-<td align="left">One compartment precursor-dependent indirect response
-model with inhibition of drug response (effect). Parameterized with
-clearance and volume</td>
-</tr>
-<tr class="odd">
-<td align="left">indirect_prec_1cpt_stim_r0rmaxcrmax</td>
-<td align="left">One compartment precursor-dependent indirect response
-model with inhibition of drug response (effect). Parameterized with
-clearance and volume</td>
-</tr>
-<tr class="even">
-<td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/tmdd_archetypes.html">PK_1cmt_tmdd_full</a></td>
-<td align="left">One-compartment TMDD archetype with explicit
-drug-target binding (Mager &amp; Jusko 2001 full model)</td>
-</tr>
-<tr class="odd">
-<td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/tmdd_archetypes.html">PK_1cmt_tmdd_mm</a></td>
-<td align="left">One-compartment TMDD archetype, Michaelis-Menten (MM)
-approximation (Gibiansky et al. 2008)</td>
-</tr>
-<tr class="even">
-<td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/tmdd_archetypes.html">PK_1cmt_tmdd_qss</a></td>
-<td align="left">One-compartment TMDD archetype, quasi-steady-state
-(QSS) approximation (Gibiansky et al. 2008)</td>
-</tr>
-<tr class="odd">
-<td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/PK_2cmt_mAb_Davda_2014.html">PK_2cmt_mAb_Davda_2014</a></td>
-<td align="left">Two compartment PK model with linear clearance for
-average monoclonal antibodies (Davda 2014)</td>
-</tr>
-<tr class="even">
-<td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/tmdd_archetypes.html">PK_2cmt_tmdd_mm</a></td>
-<td align="left">Two-compartment TMDD archetype, Michaelis-Menten (MM)
-approximation (Gibiansky et al. 2008)</td>
-</tr>
-<tr class="odd">
-<td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/tmdd_archetypes.html">PK_2cmt_tmdd_qss</a></td>
-<td align="left">Two-compartment TMDD archetype, quasi-steady-state
-(QSS) approximation (Gibiansky et al. 2008)</td>
-</tr>
-<tr class="even">
-<td align="left">PK_double_sim_01</td>
-<td align="left">PK double absorption model with simultaneous zero order
-and first order absorptions</td>
-</tr>
-<tr class="odd">
-<td align="left">PK_double_sim_10</td>
-<td align="left">PK double absorption model with simultaneous first
-order and zero order absorptions</td>
-</tr>
-<tr class="even">
-<td align="left">PK_double_sim_11</td>
-<td align="left">PK double absorption model with simultaneous first
-order absorptions</td>
-</tr>
-<tr class="odd">
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Aguiar_2021_ustekinumab.html">Aguiar_2021_ustekinumab</a></td>
 <td align="left">Population pharmacokinetic-pharmacodynamic model for
 ustekinumab in adults with Crohn’s disease (Aguiar 2021):
@@ -449,7 +458,7 @@ unbound IL-12/IL-23 p40 target, linked to fecal calprotectin via an
 indirect-response model with target-driven stimulation of FC
 production.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Almquist_2022_anifrolumab.html">Almquist_2022_anifrolumab</a></td>
 <td align="left">Two-compartment QSS-TMDD population PK model for
 anifrolumab (anti-IFNAR1 IgG1-kappa) in healthy volunteers and adults
@@ -458,13 +467,13 @@ quasi-steady-state target-mediated elimination via a dynamic IFNAR1
 receptor pool, time-varying linear clearance (Emax-on-time), and
 IFNGS-high/low and body-weight covariate effects.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Bajaj_2017_nivolumab.html">Bajaj_2017_nivolumab</a></td>
 <td align="left">Two-compartment population PK model for nivolumab
 (anti-PD-1 IgG4) with time-varying clearance (sigmoid Emax) in patients
 with advanced solid tumors (Bajaj 2017)</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Bender_2014_trastuzumabEmtansine_mechanistic.html">Bender_2014_trastuzumabEmtansine_mechanistic</a></td>
 <td align="left">Mechanistic DAR0-DAR7 catenary deconjugation PK model
 for trastuzumab emtansine (T-DM1) in cynomolgus monkeys (default) and
@@ -473,7 +482,7 @@ three-compartment backbone and deconjugates sequentially toward naked
 trastuzumab (DAR0); uses five shared upper-chain rate constants
 (k7-&gt;3) plus separate k_2-&gt;1 and k_1-&gt;0.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Bender_2014_trastuzumabEmtansine_reduced.html">Bender_2014_trastuzumabEmtansine_reduced</a></td>
 <td align="left">Reduced three-compartment population PK model for
 trastuzumab emtansine (T-DM1) and naked trastuzumab (DAR0) in cynomolgus
@@ -481,30 +490,30 @@ monkeys (default) and rats (Bender 2014): single lumped T-DM1 conjugate
 species deconjugates into DAR0 via a single deconjugation clearance;
 both species share V1/V2/V3 and distributional clearances.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Berends_2019_infliximab.html">Berends_2019_infliximab</a></td>
 <td align="left">Two-compartment TMDD-QSS population PK/target-dynamics
 model of infliximab and free TNF in adults with moderate-to-severe
 ulcerative colitis (Berends 2019)</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Brillac_2025_isatuximab.html">Brillac_2025_isatuximab</a></td>
 <td align="left">Two-compartment population PK model with linear
 elimination for isatuximab in pediatric and adult patients with
 relapsed/refractory acute leukemias (Brillac 2025)</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Budha_2023_tislelizumab.html">Budha_2023_tislelizumab</a></td>
 <td align="left">Three-compartment population PK model for intravenous
 tislelizumab (anti-PD-1 IgG4) in patients with advanced tumors (Budha
 2023)</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/CarlssonPetri_2021_liraglutide.html">CarlssonPetri_2021_liraglutide</a></td>
 <td align="left">Liraglutide PK model in adolescents (Carlsson Petri
 2021)</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Castro-Surez_2020_nimotuzumab.html">Castro-Surez_2020_nimotuzumab</a></td>
 <td align="left">Semi-mechanistic two-compartment QSS TMDD population PK
 model for nimotuzumab (anti-EGFR humanized IgG1) in adults with
@@ -514,7 +523,7 @@ compartments under quasi-steady-state, plus a turnover mediator that
 stimulates non-specific clearance via a sigmoid Emax of free central
 nimotuzumab.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Chen_2020_luspatercept.html">Chen_2020_luspatercept</a></td>
 <td align="left">One-compartment population PK model for luspatercept
 (activin receptor type IIB / IgG1 Fc-fusion) in adults with anemia due
@@ -523,37 +532,45 @@ absorption, first-order linear elimination parameterised in CL/F and
 V1/F, body weight + age + baseline albumin power covariates on CL/F, and
 body weight + baseline albumin power covariates on V1/F.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Chen_2022_guselkumab.html">Chen_2022_guselkumab</a></td>
 <td align="left">One-compartment population PK model with first-order SC
 absorption for guselkumab (anti-IL-23 human IgG1 lambda mAb) in patients
 with active psoriatic arthritis (DISCOVER-1 and DISCOVER-2 phase 3
 trials; Chen 2022)</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Cheng_2026_immunoglobulin.html">Cheng_2026_immunoglobulin</a></td>
 <td align="left">Two-compartment population PK model for intravenous
 immunoglobulin (IVIG) replacement therapy in pediatric
 primary-immunodeficiency and secondary-antibody-deficiency patients
 (Cheng 2026)</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Chua_2025_mirikizumab.html">Chua_2025_mirikizumab</a></td>
 <td align="left">Two-compartment population PK model for mirikizumab
 (anti-IL-23p19 IgG4 mAb) in patients with moderately-to-severely active
 Crohn’s disease (Chua 2025 VIVID-1 phase 3)</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Cirincione_2017_exenatide.html">Cirincione_2017_exenatide</a></td>
 <td align="left">Population PK model for exenatide immediate-release
 (Cirincione 2017): two-compartment, parallel linear and Michaelis-Menten
 elimination, sequential zero-order then saturable first-order absorption
 after SC dosing.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Clegg_2024_nirsevimab.html">Clegg_2024_nirsevimab</a></td>
 <td align="left">Two-compartment population PK model for nirsevimab in
 preterm and term infants (Clegg 2024)</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/deVriesSchultink_2020_zenocutuzumab.html">deVriesSchultink_2020_zenocutuzumab</a></td>
+<td align="left">Two-compartment population PK model with parallel
+linear and Michaelis-Menten non-linear elimination from the central
+compartment for intravenous zenocutuzumab (MCLA-128), a bispecific IgG1
+(anti-HER2 x anti-HER3) monoclonal antibody, in patients with various
+advanced solid tumors (de Vries Schultink 2020)</td>
 </tr>
 <tr class="odd">
 <td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/Diao_2016_daclizumab_cd25.html">Diao_2016_daclizumab_cd25</a></td>
@@ -1469,26 +1486,13 @@ two-compartment model with first-order absorption after SC dosing in
 adults with moderate-to-severe asthma.</td>
 </tr>
 <tr class="even">
-<td align="left"><a href="https://nlmixr2.github.io/nlmixr2lib/articles/deVriesSchultink_2020_zenocutuzumab.html">deVriesSchultink_2020_zenocutuzumab</a></td>
-<td align="left">Two-compartment population PK model with parallel
-linear and Michaelis-Menten non-linear elimination from the central
-compartment for intravenous zenocutuzumab (MCLA-128), a bispecific IgG1
-(anti-HER2 x anti-HER3) monoclonal antibody, in patients with various
-advanced solid tumors (de Vries Schultink 2020)</td>
-</tr>
-<tr class="odd">
 <td align="left">oncology_sdm_lobo_2002</td>
 <td align="left">Signal transduction model for delayed concentration
 effects on cancer cell growth</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">oncology_xenograft_simeoni_2004</td>
 <td align="left">Oncology tumor growth model in xenograft models</td>
-</tr>
-<tr class="odd">
-<td align="left">tgi_no_sat_Koch</td>
-<td align="left">One compartment TGI model with with exponential tumor
-growth, without saturation.</td>
 </tr>
 <tr class="even">
 <td align="left">tgi_no_sat_expo</td>
@@ -1496,41 +1500,46 @@ growth, without saturation.</td>
 growth, without saturation.</td>
 </tr>
 <tr class="odd">
+<td align="left">tgi_no_sat_Koch</td>
+<td align="left">One compartment TGI model with with exponential tumor
+growth, without saturation.</td>
+</tr>
+<tr class="even">
 <td align="left">tgi_no_sat_linear</td>
 <td align="left">One compartment TGI model with with linear tumor
 growth, without saturation.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">tgi_no_sat_powerLaw</td>
 <td align="left">One compartment TGI model with with exponential tumor
 growth, without saturation.</td>
 </tr>
-<tr class="odd">
-<td align="left">tgi_sat_Gompertz</td>
-<td align="left">One compartment TGI model with tumor growth
-proportional to tumor size through a generalized logistic function, with
-saturation.</td>
-</tr>
 <tr class="even">
-<td align="left">tgi_sat_VonBertalanffy</td>
-<td align="left">One compartment TGI model where tumor growth is limited
-by a loss term, with saturation.</td>
-</tr>
-<tr class="odd">
 <td align="left">tgi_sat_genLogistic</td>
 <td align="left">One compartment TGI model with tumor growth
 proportional to tumor size through a generalized logistic function, with
 saturation.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">tgi_sat_genVonBertalanffy</td>
 <td align="left">One compartment TGI model where tumor growth is limited
 by a loss term, with saturation.</td>
+</tr>
+<tr class="even">
+<td align="left">tgi_sat_Gompertz</td>
+<td align="left">One compartment TGI model with tumor growth
+proportional to tumor size through a generalized logistic function, with
+saturation.</td>
 </tr>
 <tr class="odd">
 <td align="left">tgi_sat_logistic</td>
 <td align="left">One compartment TGI model with with exponential tumor
 growth that decelerates linearly, with saturation.</td>
+</tr>
+<tr class="even">
+<td align="left">tgi_sat_VonBertalanffy</td>
+<td align="left">One compartment TGI model where tumor growth is limited
+by a loss term, with saturation.</td>
 </tr>
 </tbody>
 </table></main>

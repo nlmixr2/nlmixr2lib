@@ -202,6 +202,7 @@ this way.
 - [Ide_2020_elotuzumab](https://nlmixr2.github.io/nlmixr2lib/articles/Ide_2020_elotuzumab.md):
 - [Jackson_2022_ixekizumab](https://nlmixr2.github.io/nlmixr2lib/articles/Jackson_2022_ixekizumab.md):
 - [Kielbasa_2020_galcanezumab](https://nlmixr2.github.io/nlmixr2lib/articles/Kielbasa_2020_galcanezumab.md):
+- [Kloft_2004_sibrotuzumab](https://nlmixr2.github.io/nlmixr2lib/articles/Kloft_2004_sibrotuzumab.md):
 - [Koopman_2023_factorix](https://nlmixr2.github.io/nlmixr2lib/articles/Koopman_2023_factorix.md):
 - [Kotani_2022_astegolimab](https://nlmixr2.github.io/nlmixr2lib/articles/Kotani_2022_astegolimab.md):
 - [Kovalenko_2016_dupilumab](https://nlmixr2.github.io/nlmixr2lib/articles/Kovalenko_2016_dupilumab.md):
