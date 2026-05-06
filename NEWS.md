@@ -2,6 +2,7 @@
 
 # development version
 
+* Add van Rongen 2018 midazolam ([doi:10.1007/s40262-017-0579-4](https://doi.org/10.1007/s40262-017-0579-4)) [DDMODEL00000250] — 19 obese adolescents and 20 morbidly obese adults (CYP3A probe, oral + IV midazolam, sub-population-specific weight covariates on CL and Vp).
 * Add Ter Heine 2014 tamoxifen ([doi:10.1111/bcp.12388](https://doi.org/10.1111/bcp.12388)) [DDMODEL00000212] — adults with breast cancer on chronic 20 mg PO QD tamoxifen at steady state (joint parent-metabolite popPK with CYP2D6 and CYP3A4/5 covariates on endoxifen formation).
 * Add Mohamed 2016 colistin + meropenem ([doi:10.1093/jac/dkv488](https://doi.org/10.1093/jac/dkv488)) [DDMODEL00000173] — in vitro time-kill PK/PD against P. aeruginosa wild-type ATCC 27853 and meropenem-resistant ARU552.
 * Add Bizzotto 2016 glucose ([doi:10.1152/ajpendo.00045.2016](https://doi.org/10.1152/ajpendo.00045.2016)) [DDMODEL00000227] — adults across the glucose-tolerance spectrum (mechanistic glucose-tracer kinetics simulator).
