@@ -324,10 +324,18 @@ Use this fixed format for ambiguities:
 
 > Ambiguity at [source location]. Two plausible interpretations: (A) …, (B) …. Which applies?
 
-When running interactively, use `AskUserQuestion`. When running under
-`claude_runner`, follow the runner's injected preamble instructions for
-the sidecar stop-and-ask protocol (the runner provides the file paths and
-schema).
+A stop-and-ask trigger is **not advisory**: when one fires, stop work
+on the current task and wait for the operator. Do **not** "document a
+best guess and proceed" — silent best-guesses ship as bugs the
+operator cannot retroactively correct without re-running the whole
+extraction. If you find yourself thinking "I'll just pick the safest
+option and move on," that itself is a stop-and-ask signal.
+
+When running interactively, use `AskUserQuestion` and wait for the
+answer. When running under a task runner, use the runner's
+documented stop-and-ask protocol (the runner is responsible for the
+mechanics — file paths, schema, status transitions, re-dispatch).
+Either way: **stop, ask, wait — do not guess past the trigger.**
 
 ## Refusal handling
 
