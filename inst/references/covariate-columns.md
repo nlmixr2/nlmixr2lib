@@ -1888,9 +1888,13 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Type:** binary
 - **Scope:** specific
 - **Reference category:** 0 (SC).
-- **Source aliases:** "Admin route = IV" (categorical effect column in Yu 2022 covariate equations).
-- **Example models:** `Yu_2022_ofatumumab.R` (exponential effect on R0, CL, Q, ksyn∞).
-- **Notes:** This is the per-subject covariate-equation indicator, distinct from the dosing-event `cmt` column that names the target compartment. When simulating, set `ROUTE_IV = 1` for IV cohorts and dose into the central compartment; set `ROUTE_IV = 0` for SC cohorts and dose into the depot. Scope: specific because the set of parameters that differ by route is paper-specific.
+- **Source aliases:**
+  - "Admin route = IV" (categorical effect column in Yu 2022 covariate equations).
+  - `IV` — used in `Zierhut_2008_osteoprotegerin.R` (DDMODEL00000233 `dataObj` column flagging IV vs SC cohort, switching the PK observation residual SD between `CcpropSdIV` and `CcpropSdSC`).
+- **Example models:**
+  - `Yu_2022_ofatumumab.R` (exponential effect on R0, CL, Q, ksyn∞).
+  - `Zierhut_2008_osteoprotegerin.R` (per-subject indicator switching the PK observation residual SD between the IV cohort (`CcpropSdIV`) and the SC cohort (`CcpropSdSC`)).
+- **Notes:** This is the per-subject covariate-equation indicator, distinct from the dosing-event `cmt` column that names the target compartment. When simulating, set `ROUTE_IV = 1` for IV cohorts and dose into the central compartment; set `ROUTE_IV = 0` for SC cohorts and dose into the depot. Scope: specific because the set of parameters that differ by route is paper-specific (Yu 2022 carries route-specific exponential effects on disposition parameters; Zierhut 2008 carries a route-specific PK observation residual SD).
 
 ### DEVICE_AI
 - **Description:** 1 = subject's SC dose delivered via autoinjector (AI), 0 = prefilled syringe (PFS). Per-subject (study-fixed) covariate flagging the SC delivery device when a model carries device-specific PK effects.
