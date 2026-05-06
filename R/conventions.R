@@ -72,7 +72,10 @@
     "m2",
     # Endoxifen (4-hydroxy-N-desmethyltamoxifen), the major active
     # metabolite of tamoxifen — Ter Heine 2014.
-    "endx"
+    "endx",
+    # Morphine-3-glucuronide and morphine-6-glucuronide, the two major
+    # glucuronide metabolites of morphine — Knibbe 2009 DDMODEL00000248.
+    "m3g", "m6g"
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` denotes the time-varying decay arm.
