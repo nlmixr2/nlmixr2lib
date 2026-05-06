@@ -414,6 +414,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Mulyukov_2018_ranibizumab.R` (baseline BCVA used as the center for the initial-condition draw `g0 = BCVA + eta_g0`).
 - **Notes:** Ophthalmology-specific. Baseline-only in Mulyukov 2018 (carried once per subject and used only as the starting BCVA for the indirect-response model). Canonical name drops the `B` prefix to match the `EASI` / `AGE` / `WT` / `ALB` pattern (baseline-vs-time-varying status recorded in `covariateData[[BCVA]]$notes`). Scope is `specific` until a second ophthalmology model ratifies the name; at that point promote to `general`.
 
+### PREV_AE_SCORE (**canonical for previous-time-step ordinal adverse-event score**)
+- **Description:** Ordinal adverse-event score recorded at the immediately preceding observation time, used as a Markov-state covariate that conditions the current-time logit / probability calculation on the previous outcome. Integer 0..N where N is the maximum AE grade in the source-paper grading scheme; convention is that the value is 0 at the first observation (no prior AE).
+- **Units:** (ordinal score; document per-model the scale in `covariateData[[PREV_AE_SCORE]]$notes`)
+- **Type:** count
+- **Scope:** specific
+- **Reference category:** n/a — typically used as a categorical conditioner (`IF (PREV_AE_SCORE == 0) ...`) or via piecewise-FPS indicator decomposition; the natural reference is `PREV_AE_SCORE = 0` (no prior AE).
+- **Source aliases:**
+  - `PREVSCOR` — used in `Girard_2012_pimasertib.R` (CTCAE 0..3 ocular-AE score).
+- **Example models:** `Girard_2012_pimasertib.R` (Markov-state covariate that selects per-previous-score logit thresholds `b01`/`b11`/`b21` and `b02`/`b12`/`b22` and per-previous-score `emax` levels; reset to 0 at TIME = 0 per source `IF (TIME.EQ.0) PREVSCOR=0`).
+- **Notes:** Specific scope because the ordinal scale is paper-specific (different AE-grading schemes, different number of categories, different grouping rules — Girard 2012 collapses CTCAE grades 1+2 into a single "1-2" category and treats grades >=3 as a third stratum). When assembling the simulation event table, set `PREV_AE_SCORE = 0` at the first observation of every subject and update each subsequent observation to the previous observation's sampled score — matching the NONMEM `IF (TIME.EQ.0) PREVSCOR=0` / `PREVSCOR = DV` carry-forward idiom. Distinct from `PAIN` (continuous baseline pain score) and from `MGADL` / `EASI` (continuous severity scores not modelled as Markov states).
+
 ### ACUTE_MED_DAYS (**canonical for baseline number of days/month of acute migraine medication use**)
 - **Description:** Baseline number of days per month on which acute migraine medication (triptans or ergot compounds) was used during the 28-day run-in period prior to first dose. Enters as a piecewise-linear shift on baseline migraine or moderate-to-severe headache days in migraine exposure-response models.
 - **Units:** days/month
@@ -563,6 +574,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Source aliases:** `CAV`, `Cav`, `CAVG`.
 - **Example models:** `FiedlerKelly_2020_fremanezumab_em.R`, `FiedlerKelly_2020_fremanezumab_cm.R`.
 - **Notes:** Specific scope because the value is intrinsically tied to the modelled drug — there is no shared meaning across drugs or studies. Each model's `covariateData[[CAV]]$notes` should state how the Cav values are derived (e.g., empirical-Bayes from a referenced population PK model) and that the column is set to 0 for placebo periods.
+
+### CMAX_M1 (**canonical for maximum drug plasma concentration during month 1**)
+- **Description:** Empirical-Bayes maximum plasma concentration (Cmax) reached during the first month (or the first cycle) of dosing for the modelled drug, used as a per-subject early-exposure covariate in PD / safety models that condition later-time outcomes on early exposure. Continuous, time-invariant per subject (set once from the month-1 / cycle-1 PK simulation).
+- **Units:** ng/mL (document per-model via `covariateData[[CMAX_M1]]$units` if a different concentration unit is reported).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a — used as an additive logit shift `(CMAX_M1 - CMAX_M1_REF) * theta` (Girard 2012) or as a power scaling depending on the source. Reference value observed: 0 ng/mL (Girard 2012 sets `MED17 = 0` as the centering reference).
+- **Source aliases:**
+  - `CMAXM1` — used in `Girard_2012_pimasertib.R`.
+- **Example models:** `Girard_2012_pimasertib.R` (additive logit shift on the cumulative-logit AE-score model: `theta_cmaxm1 * CMAXM1`).
+- **Notes:** Specific scope because the value depends on the upstream drug-specific population-PK model used to derive the empirical-Bayes Cmax. Sibling of the existing `CAV` (average dosing-interval concentration); both are derived exposure metrics fed into downstream PD / safety models. Document the upstream PK model in `covariateData[[CMAX_M1]]$notes` for any future user.
 
 ### IGE (**canonical for serum total immunoglobulin E concentration**)
 - **Description:** Baseline serum total immunoglobulin E concentration (free IgE plus, in patients on anti-IgE therapy, omalizumab–IgE complex). For anti-IgE monoclonal antibodies (omalizumab, ligelizumab) IgE is the pharmacologic target; baseline IgE sets the magnitude of the target sink and modifies free-IgE clearance and the rate of IgE production in mechanism-based binding/turnover models.
@@ -726,6 +748,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   - `DIAB` — used in `Chen_2022_guselkumab.R`.
 - **Example models:** `Chen_2022_guselkumab.R` (multiplicative effect on CL/F: 1.15^DIAB, +15% in patients with diabetes).
 - **Notes:** Captures pre-existing diabetes mellitus as a comorbidity in non-diabetes-primary indications (e.g., psoriatic arthritis, psoriasis). Distinct from a primary disease-state indicator like `DIS_UC`. Type 1 vs Type 2 mellitus is not separated unless the source paper distinguishes them; in pooled-population PK analyses, the covariate is typically a single binary flag derived from medical history. Diabetic patients tend to have higher inflammation and altered IgG turnover, which can manifest as modest changes in monoclonal-antibody clearance.
+
+### HYPERT (**canonical for hypertension comorbidity / medical-history indicator**)
+- **Description:** 1 = patient has a history of (or current) hypertension as a comorbidity; 0 = no hypertension. Time-fixed at study entry per subject (medical-history flag rather than time-varying blood-pressure measurement).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no hypertension comorbidity).
+- **Source aliases:**
+  - `MHHY` (medical history of hypertension) — used in `Girard_2012_pimasertib.R`.
+- **Example models:** `Girard_2012_pimasertib.R` (additive shift on the cumulative-logit AE-score model: `theta_mhhy * HYPERT`; +0.539 logit units in patients with prior hypertension).
+- **Notes:** Companion to `DIAB` (diabetes-mellitus comorbidity); both are baseline binary medical-history flags collected from clinical-history forms. Captures any prior or current hypertension diagnosis, regardless of treatment status; if a future model needs to separate treated vs untreated hypertension, register a refinement (`HYPERT_TREATED`).
 
 ## Surgical history / disease state
 
@@ -1859,6 +1892,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Yu_2022_ofatumumab.R` (exponential effect on B cell elimination rate kout).
 - **Notes:** Captures a between-study shift in the B cell elimination rate not explained by the other covariates in the final model.
 
+### REGI_BID (**canonical for twice-daily dosing-regimen indicator**)
+- **Description:** 1 = subject's dosing regimen is BID (twice daily), 0 = QD (once daily) or other non-BID regimen. Per-subject (regimen-fixed) categorical indicator for population analyses that pool QD and BID arms and test regimen as a covariate.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-BID regimen — typically QD).
+- **Source aliases:**
+  - `BID` — used in `Girard_2012_pimasertib.R`.
+- **Example models:** `Girard_2012_pimasertib.R` (additive shift on the cumulative-logit AE-score model: `theta_bid * REGI_BID`; -0.399 logit units for BID vs QD).
+- **Notes:** Specific scope because the QD-vs-BID contrast is study-specific; future regimen-comparison models that contrast different schedules should either extend this entry's example list (when QD is the reference) or register a sibling indicator (`REGI_TID`, `REGI_QW`) following the same pattern. Distinct from `DOSE` (dose level in mg) and from total-daily-dose aggregates: a 60 mg/day cohort can include either a 60 mg QD subgroup or a 30 mg BID subgroup, and both share the same `DOSE = 60` while differing in `REGI_BID`.
+
 ### FED
 - **Description:** 1 = fed state at dosing, 0 = fasted.
 - **Units:** (binary)
@@ -1972,7 +2016,7 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Reference category:** n/a — used with power scaling `(DOSE / ref)^exponent`. Reference values observed: 600 mg in `Zheng_2016_sifalimumab.R` (middle of the 200/600/1200 mg phase IIb dose range).
 - **Source aliases:**
   - `Dose` — used in `Zheng_2016_sifalimumab.R` and `Castro-Surez_2020_nimotuzumab.R`.
-- **Example models:** `Zheng_2016_sifalimumab.R` (power effect on V1 with exponent 0.06), `Castro-Surez_2020_nimotuzumab.R` (binary-indicator usage `(DOSE == 50)` applying a 53 % decrease in V1 for the 50 mg cohort).
+- **Example models:** `Zheng_2016_sifalimumab.R` (power effect on V1 with exponent 0.06), `Castro-Surez_2020_nimotuzumab.R` (binary-indicator usage `(DOSE == 50)` applying a 53 % decrease in V1 for the 50 mg cohort), `Girard_2012_pimasertib.R` (linear coefficient on the dropout-hazard log-rate: `exp(beta * DOSE)` Weibull multiplier; per-subject daily dose, observed range 1-255 mg).
 - **Notes:** Distinct from `DOSE_70MG` (binary indicator for a specific dose group in a trinary-dose design). Use `DOSE` when the source paper treats dose as a continuous covariate acting on a PK parameter, or when the paper reports a single-cohort dose-stratified shift in a PK parameter (encoded as `(DOSE == <level>)`). Scope: specific because the semantics (units, reference dose, whether the covariate applies to CL or V) are study-specific; future models using continuous dose as a covariate should either extend this entry's example-models list or register a more specific variant.
 
 ### DOSE_70MG
@@ -2280,6 +2324,7 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **2026-04-28** — Added `SMOKE_CURRENT` and `SMOKE_NEVER` (both general-scope, paired binary indicators for a 3-level smoking-status categorical with former smoker as the implicit reference) canonical entries under `Lifestyle / medical history`, alongside the existing 2-level `SMOKE`. Pattern follows the `RACE_<GROUP>` convention for paired indicators. Introduced while extracting `Hwang_2023_monalizumab.R`, where Table 2 reports separate proportional-shift coefficients on V1 for current smoker (+0.0484) and never smoker (-0.141) with former smoker (n=319/507) as the most-common reference category. The existing `SMOKE` entry remains in use for 2-level (current vs non-smoker) encodings; the per-model documentation cross-references the alternative encoding.
 - **2026-04-28** — Added `TUMTP_BC` (general-scope breast-cancer tumor-type indicator) and `HEPIMP_MOD_MISSING` (specific-scope composite moderate-or-data-missing hepatic impairment indicator) canonical entries while extracting `Lu_2022_patritumab.R`. Source aliases mapped: `TUMTP` (BC level)→`TUMTP_BC`; `HEPATIC`→`HEPIMP_MOD_MISSING` (composite of NCI ODWG group 3 = moderate plus n = 6 missing-data patients pooled together by the Lu 2022 covariate analysis). Extended `HEPIMP_MILD` example_models with Lu 2022.
 - **2026-04-29** — Added paired `HSCT_URD_7OF8` and `HSCT_URD_8OF8` (both specific-scope) canonical entries under `Disease state (cross-population indicators)` while extracting `Zhong_2026_abatacept.R`. The two indicators jointly decompose the 3-level Study IM101311 (ABA2) "cohort" categorical (non-HSCT-cohort / 7-of-8 / 8-of-8) into two orthogonal binary indicators in the same style as `DIS_CANCER` + `DIS_HV`. Source aliases mapped: `COHORT7` → `HSCT_URD_7OF8`, `COHORT8` → `HSCT_URD_8OF8`. Reused the existing `DIS_PJIA` canonical (source alias `JIA`) and the existing `AST` and `CRCL` canonicals (source aliases `AST` and `cGFR`). Names match the abbreviations used in the Zhong 2026 Figure 1 caption and describe the actual HLA-matching transplant treatment received.
+- **2026-05-06** — Added `CMAX_M1` (specific-scope, empirical-Bayes month-1 / cycle-1 Cmax under `Drug exposure metrics` next to `CAV`), `HYPERT` (general-scope hypertension comorbidity / medical-history indicator under `Comorbidities` next to `DIAB`), `REGI_BID` (specific-scope twice-daily dosing-regimen indicator under `Formulation / assay / study`), and `PREV_AE_SCORE` (specific-scope previous-time-step ordinal AE-score Markov-state covariate under `Disease severity scores`) canonical entries while extracting `Girard_2012_pimasertib.R` (DDMODEL00000215; PAGE 21 (2012) Abstr 2458). Source aliases mapped: `CMAXM1` -> `CMAX_M1`, `MHHY` -> `HYPERT`, `BID` -> `REGI_BID`, `PREVSCOR` -> `PREV_AE_SCORE`. The CTCAE 0-3 ocular-AE grading scheme used in Girard 2012 collapses grades 1+2 into a single 1-2 category in the cumulative-logit conditioning; documented in the per-model notes rather than the register so future Markov-AE models can adopt their own grading scheme.
 - Subsequent additions: append new canonical entries as new papers are processed. When adding, bump the audit-completed count in the summary below.
 
 ## Summary

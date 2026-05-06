@@ -26,7 +26,12 @@
     "target", "complex", "total_target",
     # Semi-physiological liver compartment used by paper-specific
     # extraction-ratio first-pass models (Xie_2019_agomelatine).
-    "liver"
+    "liver",
+    # Cumulative-hazard state used by time-to-event / dropout sub-models
+    # (Girard_2012_pimasertib). The state integrates the instantaneous
+    # hazard so that survival = exp(-cumhaz); the source NONMEM idiom is
+    # `$MODEL COMP=(CUMHAZ)` with `DADT(<cumhaz>) = HAZARD`.
+    "cumhaz"
   ),
   # Bare numbered chains (transit / effect / precursor / lat / dar /
   # depot) and metabolite-suffixed compartments are validated
