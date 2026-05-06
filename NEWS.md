@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Schindler 2016 sunitinib ([doi:10.1002/psp4.12057](https://doi.org/10.1002/psp4.12057)) [DDMODEL00000221] — adults with imatinib-resistant or imatinib-intolerant advanced gastrointestinal stromal tumor.
 * Add Jager 2011 gemtuzumab ([doi:10.1371/journal.pone.0024265](https://doi.org/10.1371/journal.pone.0024265)) [DDMODEL00000229] — patients with acute myeloid leukemia (mechanism-based PKPD with explicit CD33 binding and leukemic-blast cell killing; DDMORE Monolix re-fit with added peripheral PK compartment).
 * Add Khan 2015 ciprofloxacin ([doi:10.1093/jac/dkv233](https://doi.org/10.1093/jac/dkv233)) [DDMODEL00000225] — in vitro time-kill experiments on E. coli K-12 wild-type and quinolone-resistant single-step mutants.
 * Add Ter Heine 2014 tamoxifen ([doi:10.1111/bcp.12388](https://doi.org/10.1111/bcp.12388)) [DDMODEL00000212] — adults with breast cancer on chronic 20 mg PO QD tamoxifen at steady state (joint parent-metabolite popPK with CYP2D6 and CYP3A4/5 covariates on endoxifen formation).
