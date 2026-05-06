@@ -1548,6 +1548,29 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 
 ## Pharmacogenetics
 
+### CYP2D6 (**canonical for CYP2D6 individual metabolic-activity score**)
+- **Description:** Continuous individual-level CYP2D6 metabolic-activity score. The intent is a single canonical column for any CYP2D6 phenotype proxy that the source paper reports as a continuous number (probe-substrate model-based individual clearance, copy-number-corrected expression score, activity-score sum from `*allele` genotypes, etc.); the per-model `covariateData[[CYP2D6]]$units`, `description`, and `notes` document which proxy is in force and the population-median reference value used inside the model. Time-invariant in all known examples (germline genotype or one-time probe-substrate measurement).
+- **Units:** Paper-specific — document per-model (e.g., `ng/L` in Ter Heine 2014 where the value is the dextromethorphan-probe model-based individual CYP2D6 clearance).
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a (continuous). Models center on a population median (e.g., 1560 ng/L in Ter Heine 2014); document the reference value per-model in `covariateData[[CYP2D6]]$notes`.
+- **Source aliases:**
+  - `CYP2D6` — used directly in `TerHeine_2014_tamoxifen.R`.
+- **Example models:** `TerHeine_2014_tamoxifen.R` (power-law effect on the tamoxifen → endoxifen formation clearance: `(CYP2D6 / 1560)^e_CYP2D6_cl_endx`).
+- **Notes:** TODO — consolidate the various CYP2D6 phenotype encodings (continuous probe-derived activity, copy-number-corrected score, categorical PM/IM/EM/UM phenotype, activity-score sum) into a single canonical `CYP2D6` column with an enumerated `notes`-documented `encoding` field, OR introduce companion canonicals (`CYP2D6_PHENO_GROUP` for the categorical PM/IM/EM/UM grouping, `CYP2D6_ACTSCORE` for the AS sum) when a future model needs the categorical form. The current general-scope continuous canonical is sufficient for the Ter Heine 2014 use case but will likely need refinement as more CYP2D6-aware models are added.
+
+### CYP3A4 (**canonical for CYP3A4 / CYP3A4-and-CYP3A5 individual metabolic-activity score**)
+- **Description:** Continuous individual-level CYP3A4 (or combined CYP3A4 + CYP3A5) metabolic-activity score. Same intent and documentation policy as `CYP2D6` above. Some sources measure CYP3A4 alone via probe substrate; others (Ter Heine 2014) report a combined CYP3A4/5 activity because the chosen probe (dextromethorphan N-demethylation) cannot distinguish CYP3A4 from CYP3A5. The per-model `notes` field documents whether the value is CYP3A4-only or the CYP3A4 + CYP3A5 combined score.
+- **Units:** Paper-specific — document per-model (e.g., `ng/L` in Ter Heine 2014 where the value is the dextromethorphan-probe model-based individual CYP3A4/5 clearance).
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a (continuous). Models center on a population median (e.g., 44.7 ng/L in Ter Heine 2014); document the reference value per-model.
+- **Source aliases:**
+  - `CYP3A4` — used directly in `TerHeine_2014_tamoxifen.R` (the column carries combined CYP3A4 + CYP3A5 activity per the source paper).
+  - `CYP3A4/5` — long form sometimes used in source manuscripts; standardize the column name to `CYP3A4` and document the combined-isoform semantics in per-model `notes`.
+- **Example models:** `TerHeine_2014_tamoxifen.R` (power-law effect on the tamoxifen → endoxifen formation clearance: `(CYP3A4 / 44.7)^e_CYP3A4_cl_endx`).
+- **Notes:** TODO — register the rest of the canonical drug-metabolizing-CYP set prospectively (`CYP1A2`, `CYP2A6`, `CYP2B6`, `CYP2C8`, `CYP2C9`, `CYP2C19`, `CYP2E1`, `CYP3A5`) using the same continuous-individual-activity-score pattern, so future popPK models that report CYP-probe-derived covariates can drop straight into the existing convention rather than re-deliberating the encoding each time. Coordinate with the consolidation TODO on `CYP2D6` so categorical-vs-continuous encoding is handled uniformly across all CYPs.
+
 ### FCGR3A_VV (**canonical for FCGR3A 158 V/V homozygote indicator**)
 - **Description:** 1 = subject is homozygous for valine at amino-acid position 158 of the FcγRIIIa receptor (V/V), encoded by the rs396991 polymorphism in the FCGR3A gene; 0 = otherwise (heterozygote V/F or homozygote F/F pooled). The dominant V/V vs (V/F + F/F) grouping is the encoding used in the Aguiar 2021 source paper after testing dominant and recessive groupings during covariate model building.
 - **Units:** (binary)
@@ -2149,6 +2172,7 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 
 ## Change log
 
+- **2026-05-06** — Added `CYP2D6` and `CYP3A4` canonical entries (both general scope; continuous individual-activity scores) under `Pharmacogenetics` while extracting `TerHeine_2014_tamoxifen.R` (DDMODEL00000212). Both names match the source-data column names used in the Ter Heine 2014 dataset; the dextromethorphan-probe-derived model-based individual clearance values (median 1560 ng/L for CYP2D6; 44.7 ng/L for CYP3A4/5) drive a power-law effect on the tamoxifen → endoxifen formation clearance. Per-entry `notes` carry an explicit TODO to consolidate the variety of CYP-phenotype encodings into a uniform pattern and to register the rest of the canonical drug-metabolizing-CYP set (`CYP1A2`, `CYP2A6`, `CYP2B6`, `CYP2C8`, `CYP2C9`, `CYP2C19`, `CYP2E1`, `CYP3A5`) prospectively rather than ad hoc as each new model lands.
 - **2026-04-28** — Extended `RACE_WHITE` (general scope) example-models list and source aliases to record `Hu_2014_bapineuzumab.R` (Caucasian-vs-non-Caucasian dichotomy with the Caucasian subgroup as the typical-value reference). The canonical column encoding (1 = White / 0 = non-White) is unchanged; the model implements the 15% non-Caucasian effect on `(1 - RACE_WHITE)`. The change log notes that the typical-value reference category may legitimately differ between papers using `RACE_WHITE`.
 - **2026-04-29** — Added `IL6` (general-scope serum interleukin-6 cytokine biomarker, pg/mL, under `Inflammation markers`), `PAIN` (general-scope patient-reported global pain VAS 0-100, under `Rheumatoid-arthritis disease-activity covariates`), and `RACE_ASIAN_OTH` (specific-scope composite race indicator pooling Asian / American Indian / Other against a White + Black reference, under `Race / ethnicity`) canonical entries while extracting `Frey_2013_tocilizumab.R` (PMID 23436260). Source aliases mapped: `BLIL6` -> `IL6`. Frey 2013 uses log-transformed `(log(IL-6 * 1000) / 9.9)^exp` with reference IL-6 ~= 20 pg/mL; the canonical column carries the raw IL-6 in pg/mL and the log transformation is applied inside `model()`.
 - **2026-04-28** — Added `TUMTP_PCALCL` (specific scope under `Oncology`; primary cutaneous anaplastic large-cell lymphoma indicator following the `TUMTP_<GROUP>` decomposition pattern) and three ADA-status × assay-era indicators (`ADA_POS` [modern-assay arm; general scope], `ADA_POSOLD`, `ADA_MISSING` [both specific scope] under `Immunogenicity`) while extracting `Suri_2018_brentuximab.R`. Initially named `ADA_POSNEW`; renamed to `ADA_POS` on 2026-04-29 for consistency with the existing general `ADA_POS` canonical. The three indicators are mutually exclusive and decompose Suri 2018's four-level ADA-status × assay-era factor with ADA-negative as the reference; the multiplicative additive form `cl *= (1 + theta * ind)` from supplement 1's ATA-status equation is documented per model.

@@ -61,7 +61,10 @@
     # and 7-desmethyl. Suffixes start with a digit; this is fine
     # because the convention check matches on `endsWith(name, "_<metab>")`
     # rather than treating the metabolite name itself as an R identifier.
-    "3oh", "7dm"
+    "3oh", "7dm",
+    # Endoxifen (4-hydroxy-N-desmethyltamoxifen), the major active
+    # metabolite of tamoxifen — Ter Heine 2014.
+    "endx"
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` denotes the time-varying decay arm.
