@@ -47,7 +47,7 @@ Hood_2021_medi7836 <- function() {
     # Structural PD parameters (IL13 turnover, complex distribution, assay fraction).
     lkin   <- log(0.0173);  label("IL13 production rate Kin (nM/day; paper labels nmol/d but the steady-state baseline 0.096 pM = Kin/Kout requires nM/day)") # Hood 2021 Table 2: Kin = 0.0173 [0.0136-0.0227]
     lkout  <- log(180);     label("IL13 elimination rate constant Kout (1/day; estimated, not constrained to MEDI7836 kel)") # Hood 2021 Table 2: Kout = 180 [143-227]
-    lvcx   <- log(13.6);    label("Apparent central volume of IL13:MEDI7836 complex Vcx/F (L)")           # Hood 2021 Table 2: Vcx/F = 13.6 [10.5-16.7]
+    lvc_complex   <- log(13.6);    label("Apparent central volume of IL13:MEDI7836 complex Vcx/F (L)")           # Hood 2021 Table 2: Vcx/F = 13.6 [10.5-16.7]
     lcxfr  <- log(0.0429);  label("Fraction of total IL13:MEDI7836 complex captured by the bioanalytical PD assay (unitless)") # Hood 2021 Table 2: Cx fraction = 4.29% [2.98-5.96%]
 
     # Fixed in-vitro binding constants from Biacore T100 molecule characterization.
@@ -101,7 +101,7 @@ Hood_2021_medi7836 <- function() {
     # Individual PD parameters (no IIV on Kin or Vcx per Hood 2021 Table 2).
     kin  <- exp(lkin)
     kout <- exp(lkout + etalkout)
-    vcx  <- exp(lvcx)
+    vc_complex  <- exp(lvc_complex)
     cxfr <- exp(lcxfr + etalcxfr)
 
     # Micro-rate constants for the linear distribution / elimination kinetics.
@@ -110,8 +110,8 @@ Hood_2021_medi7836 <- function() {
     kel    <- cl / vc
     k12    <- q  / vc
     k21    <- q  / vp
-    kel_cx <- cl / vcx
-    k12_cx <- q  / vcx
+    kel_cx <- cl / vc_complex
+    k12_cx <- q  / vc_complex
     k21_cx <- q  / vp
 
     # Drug mass balance (compartments in mg of MEDI7836).
@@ -151,7 +151,7 @@ Hood_2021_medi7836 <- function() {
     # central complex concentration; the paper's interpretation is that the
     # supposedly-free IL13 immunoassay also captures ~4% of the bound drug-target
     # complex, biasing the apparent free signal upward when drug is present.
-    pdIL13 <- log(target + cxfr * complex / vcx)
+    pdIL13 <- log(target + cxfr * complex / vc_complex)
     pdIL13 ~ prop(propSd_pdIL13)
   })
 }

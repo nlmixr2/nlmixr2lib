@@ -86,7 +86,7 @@ Lu_2019_polatuzumab <- function() {
       units              = "(binary)",
       type               = "binary",
       reference_category = 0,
-      notes              = "Time-fixed. Lu 2019 NONMEM defines RTX = 1 if COMBO == 1, GA101 = 1 if COMBO == 2, and applies effects as theta^(RTX+GA101); since RTX and GA101 are mutually exclusive, RTX+GA101 takes values 0 or 1 and the effect collapses to a single anti-CD20-combination indicator. Multiplicative effects on CL_SS (e_combo_rg_cl_ss = 0.844, lower CL_SS on combo), kdes (e_combo_rg_kdes = 0.932), and FRAC_NS (e_combo_rg_frac_mmae = 0.709). The paper distinguishes rituximab and obinutuzumab combos in Table S1 but the final model fits a single combined effect (i.e., does not detect a meaningful difference between the two).",
+      notes              = "Time-fixed. Lu 2019 NONMEM defines RTX = 1 if COMBO == 1, GA101 = 1 if COMBO == 2, and applies effects as theta^(RTX+GA101); since RTX and GA101 are mutually exclusive, RTX+GA101 takes values 0 or 1 and the effect collapses to a single anti-CD20-combination indicator. Multiplicative effects on CL_SS (e_combo_rg_cl = 0.844, lower CL_SS on combo), kdes (e_combo_rg_kdes = 0.932), and FRAC_NS (e_combo_rg_frac_mmae = 0.709). The paper distinguishes rituximab and obinutuzumab combos in Table S1 but the final model fits a single combined effect (i.e., does not detect a meaningful difference between the two).",
       source_name        = "COMBO"
     )
   )
@@ -113,7 +113,7 @@ Lu_2019_polatuzumab <- function() {
     # male, R/R, non-Asian, normal hepatic function, ECOG >= 1, single-agent.
     lkdes      <- log(0.0046);  label("Rate constant of CL_TIME exponential decay (kdes, 1/hour)")     # Lu 2019 Table 1, theta1
     lcl_time   <- log(0.00623); label("Initial CL_TIME at time 0 for the reference subject (CL_TIME, L/hour)") # Lu 2019 Table 1, theta2
-    lcl_ss     <- log(0.0344);  label("acMMAE nonspecific linear clearance after repeated dosing (CL_SS, L/hour)") # Lu 2019 Table 1, theta3
+    lcl     <- log(0.0344);  label("acMMAE nonspecific linear clearance after repeated dosing (CL_SS, L/hour)") # Lu 2019 Table 1, theta3
     lvc        <- log(3.15);    label("acMMAE central volume (Vc, L)")                                 # Lu 2019 Table 1, theta4
     lvp        <- log(3.98);    label("acMMAE peripheral volume (Vp, L)")                              # Lu 2019 Table 1, theta5
     lq         <- log(0.0145);  label("acMMAE intercompartmental clearance (Q, L/hour)")               # Lu 2019 Table 1, theta6
@@ -141,7 +141,7 @@ Lu_2019_polatuzumab <- function() {
     # ----- Covariate effects on acMMAE parameters (Lu 2019 Table 2, theta22-theta37) -----
     # WT enters all acMMAE clearance and volume parameters as power effects
     # normalized to 75 kg.
-    e_wt_cl_ss      <-  0.73;   label("Power exponent of WT on CL_SS (unitless)")                      # Lu 2019 Table 2, theta22
+    e_wt_cl      <-  0.73;   label("Power exponent of WT on CL_SS (unitless)")                      # Lu 2019 Table 2, theta22
     e_wt_vc         <-  0.50;   label("Shared power exponent of WT on Vc, Vp, Q (unitless)")           # Lu 2019 Table 2, theta23
 
     # SEXF coding inverts vs. the source's male-indicator: paper theta24 = 1.20
@@ -151,11 +151,11 @@ Lu_2019_polatuzumab <- function() {
     e_sexf_vc       <-  1 / 1.20;  label("Multiplicative effect of female sex on Vc (ratio female:male, unitless)")     # Lu 2019 Table 2, theta24 inverted (paper reports 1.20 as male:female; SEXF stores 1/1.20)
     e_asian_vc      <-  0.929;     label("Multiplicative effect of Asian race on Vc (unitless)")                        # Lu 2019 Table 2, theta25
     e_line1l_vc     <-  1.20;      label("Multiplicative effect of treatment-naive (first-line) status on Vc (unitless)") # Lu 2019 Table 2, theta26
-    e_sexf_cl_ss    <-  1 / 1.10;  label("Multiplicative effect of female sex on CL_SS (ratio female:male, unitless)")  # Lu 2019 Table 2, theta27 inverted
-    e_alb_cl_ss     <- -0.247;     label("Power exponent of ALB on CL_SS (unitless; reference 35 g/L)")                 # Lu 2019 Table 2, theta28
-    e_combo_rg_cl_ss <- 0.844;     label("Multiplicative effect of anti-CD20 (rituximab or obinutuzumab) combination on CL_SS (unitless)") # Lu 2019 Table 2, theta29
-    e_blbcell_cl_ss <-  0.0212;    label("Power exponent of max(1, BLBCELL) on CL_SS (unitless; B-cell count in cells/uL floored at 1)") # Lu 2019 Table 2, theta30
-    e_tumsz_cl_ss   <-  0.0521;    label("Linear coefficient of (TUMSZ/5000 - 1) on CL_SS (unitless; effect = 1 + theta * (TUMSZ/5000 - 1), reference 5000 mm^2 SPD)") # Lu 2019 Table 2, theta31
+    e_sexf_cl    <-  1 / 1.10;  label("Multiplicative effect of female sex on CL_SS (ratio female:male, unitless)")  # Lu 2019 Table 2, theta27 inverted
+    e_alb_cl     <- -0.247;     label("Power exponent of ALB on CL_SS (unitless; reference 35 g/L)")                 # Lu 2019 Table 2, theta28
+    e_combo_rg_cl <- 0.844;     label("Multiplicative effect of anti-CD20 (rituximab or obinutuzumab) combination on CL_SS (unitless)") # Lu 2019 Table 2, theta29
+    e_blbcell_cl <-  0.0212;    label("Power exponent of max(1, BLBCELL) on CL_SS (unitless; B-cell count in cells/uL floored at 1)") # Lu 2019 Table 2, theta30
+    e_tumsz_cl   <-  0.0521;    label("Linear coefficient of (TUMSZ/5000 - 1) on CL_SS (unitless; effect = 1 + theta * (TUMSZ/5000 - 1), reference 5000 mm^2 SPD)") # Lu 2019 Table 2, theta31
     e_line1l_kdes   <-  3.38;      label("Multiplicative effect of treatment-naive status on kdes (unitless)")          # Lu 2019 Table 2, theta32
     e_combo_rg_kdes <-  0.932;     label("Multiplicative effect of anti-CD20 combination on kdes (unitless)")           # Lu 2019 Table 2, theta33
     e_line1l_cl_time <- 3.53;      label("Multiplicative effect of treatment-naive status on CL_TIME (unitless)")        # Lu 2019 Table 2, theta34
@@ -185,7 +185,7 @@ Lu_2019_polatuzumab <- function() {
     # Stored as variances on the log scale exactly as the paper reports them
     # (the paper labels these omega^2; the per-row %CV column matches sqrt(exp(omega^2) - 1)).
     etalcl_time ~ 1.89                       # Lu 2019 Table S3, Omega11 (CV 138%)
-    etalcl_ss  ~ 0.0376                      # Lu 2019 Table S3, Omega22 (CV 19.5%)
+    etalcl  ~ 0.0376                      # Lu 2019 Table S3, Omega22 (CV 19.5%)
     etalvc     ~ 0.0151                      # Lu 2019 Table S3, Omega33 (CV 12.3%)
     etalvp     ~ 0.107                       # Lu 2019 Table S3, Omega44 (CV 32.7%)
     etalq      ~ 0.0538                      # Lu 2019 Table S3, Omega55 (CV 23.2%)
@@ -212,7 +212,7 @@ Lu_2019_polatuzumab <- function() {
     # (used in the CL_SS covariate). max(1, x) preserves the NONMEM
     # IF(BBCC.GT.thresh) BCEL=BBCC/thresh; ELSE BCEL=1 logic.
     bcel_cl_time <- max(1, BLBCELL / bcell_thr_cl_time)  # Lu 2019 supplement: BCEL  for CL_TIME
-    bcel_cl_ss   <- max(1, BLBCELL)                      # Lu 2019 supplement: BCEL1 for CL_SS
+    bcel_cl   <- max(1, BLBCELL)                      # Lu 2019 supplement: BCEL1 for CL_SS
 
     # Aggregate covariate multipliers (Lu 2019 supplement, COVV1, COVCLINF,
     # COVKDES, COVCLT, COVMMAE expressions), with reference categories at 75 kg
@@ -223,12 +223,12 @@ Lu_2019_polatuzumab <- function() {
               e_asian_vc^RACE_ASIAN *
               e_line1l_vc^LINE_1L
 
-    cov_cl_ss <- (WT / 75)^e_wt_cl_ss *
-                 e_sexf_cl_ss^SEXF *
-                 (ALB / 35)^e_alb_cl_ss *
-                 e_combo_rg_cl_ss^COMBO_RG *
-                 bcel_cl_ss^e_blbcell_cl_ss *
-                 (1 + e_tumsz_cl_ss * (TUMSZ / 5000 - 1))
+    cov_cl <- (WT / 75)^e_wt_cl *
+                 e_sexf_cl^SEXF *
+                 (ALB / 35)^e_alb_cl *
+                 e_combo_rg_cl^COMBO_RG *
+                 bcel_cl^e_blbcell_cl *
+                 (1 + e_tumsz_cl * (TUMSZ / 5000 - 1))
 
     cov_kdes <- e_line1l_kdes^LINE_1L *
                 e_combo_rg_kdes^COMBO_RG
@@ -249,7 +249,7 @@ Lu_2019_polatuzumab <- function() {
     # acMMAE side
     kdes        <- exp(lkdes) * cov_kdes                      # 1/hour
     cl_time_init <- exp(lcl_time + etalcl_time) * cov_cl_time # CL_TIME initial value at t = 0 (L/hour)
-    cl_ss       <- exp(lcl_ss + etalcl_ss) * cov_cl_ss        # L/hour
+    cl       <- exp(lcl + etalcl) * cov_cl        # L/hour
     vc          <- exp(lvc + etalvc) * cov_vc                 # L
     vp          <- exp(lvp + etalvp) * (WT / 75)^e_wt_vc      # L
     q           <- exp(lq + etalq) * (WT / 75)^e_wt_vc        # L/hour
@@ -274,7 +274,7 @@ Lu_2019_polatuzumab <- function() {
     # Hill function for CL_NS(t) (Lu 2019 Eq. 1). At t = 0, CL_NS = CL_SS *
     # (1 + CLSSEMAX); as t -> infinity, CL_NS -> CL_SS.
     tgam <- time^gamma_ns
-    cl_ns <- cl_ss * (1 + clss_emax * t50gam / (t50gam + tgam))
+    cl_ns <- cl * (1 + clss_emax * t50gam / (t50gam + tgam))
 
     # Exponential decay of CL_TIME (Lu 2019 supplement Notations: CLT = CLT0 * exp(-kdes*t)).
     cl_t <- cl_time_init * exp(-kdes * time)

@@ -78,7 +78,7 @@ Wu_2024_inotuzumab <- function() {
     # exp(-kdes * time). Mapping to nlmixr2lib conventions: CL1 -> CL_SS
     # (the steady-state, non-decaying arm) and CL2 -> CL_TIME (the
     # time-varying decay arm).
-    lcl_ss <- log(0.130);  label("Linear (steady-state) clearance for an NHL adult (CL_SS, L/h)")               # Wu 2024 Table 3 (CL1)
+    lcl <- log(0.130);  label("Linear (steady-state) clearance for an NHL adult (CL_SS, L/h)")               # Wu 2024 Table 3 (CL1)
     lvc    <- log(6.49);   label("Central volume of distribution for an NHL adult (Vc, L)")                     # Wu 2024 Table 3 (V1)
     lcl_time <- log(0.569); label("Initial value of time-dependent clearance for an NHL adult (CL_TIME, L/h)")  # Wu 2024 Table 3 (CL2)
     lkdes  <- log(0.0577); label("Decay coefficient of time-dependent clearance for an NHL adult (kdes, 1/h)")  # Wu 2024 Table 3
@@ -88,15 +88,15 @@ Wu_2024_inotuzumab <- function() {
     # Covariate-effect parameters (Wu 2024 Table 3). Continuous covariates enter
     # as power models centered on the reference value; categorical effects enter
     # as additive fractional-change dummy variables of the form (1 + theta * I).
-    e_lbm_cl_ss   <-  1.05;    label("Power exponent of LBM on CL_SS (unitless)")                            # Wu 2024 Table 3
+    e_lbm_cl   <-  1.05;    label("Power exponent of LBM on CL_SS (unitless)")                            # Wu 2024 Table 3
     e_lbm_vc      <-  0.977;   label("Power exponent of LBM on Vc (unitless)")                               # Wu 2024 Table 3
     e_lbm_cl_time <-  0.687;   label("Power exponent of LBM on CL_TIME (unitless)")                          # Wu 2024 Table 3
-    e_all_cl_ss   <- -0.767;   label("Fractional change in CL_SS for BCP-ALL (vs NHL, unitless)")            # Wu 2024 Table 3
+    e_all_cl   <- -0.767;   label("Fractional change in CL_SS for BCP-ALL (vs NHL, unitless)")            # Wu 2024 Table 3
     e_all_cl_time <- -0.362;   label("Fractional change in CL_TIME for BCP-ALL (vs NHL, unitless)")          # Wu 2024 Table 3
     e_all_kdes    <- -0.924;   label("Fractional change in kdes for BCP-ALL (vs NHL, unitless)")             # Wu 2024 Table 3
     e_blstabl_kdes <- -0.0484; label("Power exponent of BLSTABL on kdes for BCP-ALL only (unitless)")        # Wu 2024 Table 3
     e_age_kdes    <- -0.296;   label("Power exponent of AGE on kdes for BCP-ALL only (unitless)")            # Wu 2024 Table 3
-    e_ritux_cl_ss <- -0.132;   label("Fractional change in CL_SS for concomitant rituximab (unitless)")      # Wu 2024 Table 3
+    e_ritux_cl <- -0.132;   label("Fractional change in CL_SS for concomitant rituximab (unitless)")      # Wu 2024 Table 3
 
     # Inter-individual variability. Wu 2024 Table 3 reports CV% for IIV with
     # the convention CV = sqrt(omega^2) (i.e., the OMEGA variance equals the
@@ -104,7 +104,7 @@ Wu_2024_inotuzumab <- function() {
     # from the off-diagonal covariances (e.g., 0.136 / sqrt(0.16 * 0.1608)
     # = 0.847 = 84.7% as in Table 3 'CL1 - V1; correlations'). CL_SS, Vc,
     # CL_TIME are reported as a 3x3 correlated block; kdes is independent.
-    etalcl_ss + etalvc + etalcl_time ~ c(0.16,
+    etalcl + etalvc + etalcl_time ~ c(0.16,
                                          0.136, 0.16080,
                                          0.194, 0.204, 0.54317)  # Wu 2024 Table 3 (CV%: CL_SS 40.0, Vc 40.1, CL_TIME 73.7; covariances 0.136 / 0.194 / 0.204)
     etalkdes ~ 0.35641  # Wu 2024 Table 3 (CV% kdes 59.7)
@@ -130,10 +130,10 @@ Wu_2024_inotuzumab <- function() {
     #   kdes_ALL = 0.0577 * (1 - 0.924) * (BLSTABL/0.352)^-0.0484 * (AGE/60)^-0.296
     #   Q     = 0.0437
     #   Vp    = 4.74
-    cl_ss <- exp(lcl_ss + etalcl_ss) *
-      (1 + e_all_cl_ss   * DIS_BCPALL) *
-      (LBM / 52.7)^e_lbm_cl_ss *
-      (1 + e_ritux_cl_ss * CONMED_RITUX)
+    cl <- exp(lcl + etalcl) *
+      (1 + e_all_cl   * DIS_BCPALL) *
+      (LBM / 52.7)^e_lbm_cl *
+      (1 + e_ritux_cl * CONMED_RITUX)
 
     vc <- exp(lvc + etalvc) * (LBM / 52.7)^e_lbm_vc
 
@@ -160,7 +160,7 @@ Wu_2024_inotuzumab <- function() {
     # `time` is the internal integration time in hours, which corresponds to
     # time from the first dose for the event datasets this model expects.
     cl_t   <- cl_time * exp(-kdes * time)
-    cl_tot <- cl_ss + cl_t
+    cl_tot <- cl + cl_t
 
     # Two-compartment model with IV input (no depot; doses are administered
     # directly into the central compartment as 60-minute IV infusions, see
