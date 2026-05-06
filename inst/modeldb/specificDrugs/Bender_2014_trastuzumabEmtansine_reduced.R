@@ -57,9 +57,9 @@ Bender_2014_trastuzumabEmtansine_reduced <- function() {
     # Cc = central / vc directly in mg/L = ug/mL.
     lcl    <- log(0.0199);  label("Total trastuzumab clearance (CL_TT, L/day)")             # Bender 2014 Table III, cyno: 19.9 mL/day
     lvc    <- log(0.154);   label("Central volume shared by T-DM1 and DAR0 (V1, L)")         # Bender 2014 Table III, cyno: 154 mL
-    lqd2   <- log(0.0568);  label("Distributional clearance to peripheral1 (CLd2, L/day)")   # Bender 2014 Table III, cyno: 56.8 mL/day
+    lq   <- log(0.0568);  label("Distributional clearance to peripheral1 (CLd2, L/day)")   # Bender 2014 Table III, cyno: 56.8 mL/day
     lvp    <- log(0.0500);  label("Peripheral volume 1 shared by T-DM1 and DAR0 (V2, L)")    # Bender 2014 Table III, cyno: 50.0 mL
-    lqd3   <- log(0.0604);  label("Distributional clearance to peripheral2 (CLd3, L/day)")   # Bender 2014 Table III, cyno: 60.4 mL/day
+    lq2   <- log(0.0604);  label("Distributional clearance to peripheral2 (CLd3, L/day)")   # Bender 2014 Table III, cyno: 60.4 mL/day
     lvp2   <- log(0.0847);  label("Peripheral volume 2 shared by T-DM1 and DAR0 (V3, L)")    # Bender 2014 Table III, cyno: 84.7 mL
     lcldec <- log(0.0220);  label("Deconjugation clearance from T-DM1 to DAR0 (CL_DEC, L/day)") # Bender 2014 Table III, cyno: 22.0 mL/day
 
@@ -78,9 +78,9 @@ Bender_2014_trastuzumabEmtansine_reduced <- function() {
   model({
     cl     <- exp(lcl + etalcl)
     vc     <- exp(lvc + etalvc)
-    qd2    <- exp(lqd2)
+    q    <- exp(lq)
     vp     <- exp(lvp)
-    qd3    <- exp(lqd3)
+    q2    <- exp(lq2)
     vp2    <- exp(lvp2 + etalvp2)
     cldec  <- exp(lcldec + etalcldec)
 
@@ -89,16 +89,16 @@ Bender_2014_trastuzumabEmtansine_reduced <- function() {
     # DAR0 inherits the same V1/V2/V3 and distributional clearances and is
     # fed by the deconjugation flux out of the T-DM1 central compartment.
     d/dt(central)           <- -(cl + cldec) / vc * central -
-                                qd2 / vc * central + qd2 / vp  * peripheral1 -
-                                qd3 / vc * central + qd3 / vp2 * peripheral2
-    d/dt(peripheral1)       <-  qd2 / vc * central - qd2 / vp  * peripheral1
-    d/dt(peripheral2)       <-  qd3 / vc * central - qd3 / vp2 * peripheral2
+                                q / vc * central + q / vp  * peripheral1 -
+                                q2 / vc * central + q2 / vp2 * peripheral2
+    d/dt(peripheral1)       <-  q / vc * central - q / vp  * peripheral1
+    d/dt(peripheral2)       <-  q2 / vc * central - q2 / vp2 * peripheral2
 
     d/dt(dar0_central)      <-  cldec / vc * central - cl / vc * dar0_central -
-                                qd2 / vc * dar0_central + qd2 / vp  * dar0_peripheral1 -
-                                qd3 / vc * dar0_central + qd3 / vp2 * dar0_peripheral2
-    d/dt(dar0_peripheral1)  <-  qd2 / vc * dar0_central - qd2 / vp  * dar0_peripheral1
-    d/dt(dar0_peripheral2)  <-  qd3 / vc * dar0_central - qd3 / vp2 * dar0_peripheral2
+                                q / vc * dar0_central + q / vp  * dar0_peripheral1 -
+                                q2 / vc * dar0_central + q2 / vp2 * dar0_peripheral2
+    d/dt(dar0_peripheral1)  <-  q / vc * dar0_central - q / vp  * dar0_peripheral1
+    d/dt(dar0_peripheral2)  <-  q2 / vc * dar0_central - q2 / vp2 * dar0_peripheral2
 
     # Observations: T-DM1 = conjugated ADC central concentration;
     # total trastuzumab (TT) = T-DM1 + DAR0 central concentration

@@ -74,9 +74,9 @@ Bender_2014_trastuzumabEmtansine_mechanistic <- function() {
     lcl      <- log(0.0174);  label("Total trastuzumab clearance (CL_TT, L/day)")           # Bender 2014 Table II, cyno: 17.4 mL/day
     lkplasma <- log(0.0939);  label("Plasma antibody degradation rate constant (k_plasma, 1/day)") # Bender 2014 Table II, cyno: 0.0939 /day
     lvc      <- log(0.148);   label("Central volume shared by all DAR species (V1, L)")      # Bender 2014 Table II, cyno: 148 mL
-    lqd2     <- log(0.0255);  label("Distributional clearance to peripheral1 (CLd2, L/day)") # Bender 2014 Table II, cyno: 25.5 mL/day
+    lq     <- log(0.0255);  label("Distributional clearance to peripheral1 (CLd2, L/day)") # Bender 2014 Table II, cyno: 25.5 mL/day
     lvp      <- log(0.0572);  label("Peripheral volume 1 shared by all DAR species (V2, L)") # Bender 2014 Table II, cyno: 57.2 mL
-    lqd3     <- log(0.0812);  label("Distributional clearance to peripheral2 (CLd3, L/day)") # Bender 2014 Table II, cyno: 81.2 mL/day
+    lq2     <- log(0.0812);  label("Distributional clearance to peripheral2 (CLd3, L/day)") # Bender 2014 Table II, cyno: 81.2 mL/day
     lvp2     <- log(0.127);   label("Peripheral volume 2 shared by all DAR species (V3, L)") # Bender 2014 Table II, cyno: 127 mL
     lkhi     <- log(0.341);   label("Shared upper-chain deconjugation rate k_7->6 = k_6->5 = k_5->4 = k_4->3 = k_3->2 (1/day)") # Bender 2014 Table II, cyno: 0.341 /day
     lk21     <- log(0.255);   label("DAR2 deconjugation rate constant k_2->1 (1/day)")       # Bender 2014 Table II, cyno: 0.255 /day
@@ -97,9 +97,9 @@ Bender_2014_trastuzumabEmtansine_mechanistic <- function() {
     cl      <- exp(lcl + etalcl)
     kplasma <- exp(lkplasma)
     vc      <- exp(lvc + etalvc)
-    qd2     <- exp(lqd2)
+    q     <- exp(lq)
     vp      <- exp(lvp + etalvp)
-    qd3     <- exp(lqd3)
+    q2     <- exp(lq2)
     vp2     <- exp(lvp2)
     khi     <- exp(lkhi)
     k21     <- exp(lk21)
@@ -113,10 +113,10 @@ Bender_2014_trastuzumabEmtansine_mechanistic <- function() {
     kel        <- cl / vc
 
     # Three-compartment distribution parameters, shared across all DAR species
-    k12 <- qd2 / vc
-    k21d <- qd2 / vp
-    k13 <- qd3 / vc
-    k31d <- qd3 / vp2
+    k12 <- q / vc
+    k21d <- q / vp
+    k13 <- q2 / vc
+    k31d <- q2 / vp2
 
     # DAR7: no incoming deconjugation (no DAR8)
     d/dt(dar7_central)     <- -kel * dar7_central - khi * dar7_central -
