@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Friberg 2002 paclitaxel ([doi:10.1200/JCO.2002.02.140](https://doi.org/10.1200/JCO.2002.02.140)) [DDMODEL00000186] — adult cancer patients receiving paclitaxel chemotherapy (semi-mechanistic myelosuppression PK/PD with leukocyte output).
 * Add Hansson 2013 sunitinib ([doi:10.1038/psp.2013.61](https://doi.org/10.1038/psp.2013.61)) [DDMODEL00000197] — adults with imatinib-resistant gastrointestinal stromal tumours (biomarker PD model for VEGF, sVEGFR-2, sVEGFR-3, sKIT).
 * Add Henin 2009 capecitabine ([doi:10.1038/clpt.2008.220](https://doi.org/10.1038/clpt.2008.220)) [DDMODEL00000214] — adults with metastatic colorectal or advanced/metastatic breast cancer (Markov-proportional-odds model for hand-and-foot syndrome grades 0-2 with K-PD capecitabine exposure).
 * Add Plan 2012 pain ([doi:10.1038/clpt.2011.301](https://doi.org/10.1038/clpt.2011.301)) [DDMODEL00000194] — adults in placebo arm of three Phase III neuropathic-pain trials (Markov Integer Model for daily 11-point Likert pain scores).
