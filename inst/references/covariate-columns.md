@@ -100,7 +100,7 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Scope:** general
 - **Reference category:** n/a — used with a linear-deviation form (`1 + e * (BMI - ref)`) or a power form (`(BMI / ref)^e`). Document the reference value in `covariateData[[BMI]]$notes`.
 - **Source aliases:** none known.
-- **Example models:** `Chua_2025_mirikizumab.R` (reference 24.75 kg/m²; linear-deviation effect on logit of bioavailability).
+- **Example models:** `Chua_2025_mirikizumab.R` (reference 24.75 kg/m²; linear-deviation effect on logit of bioavailability), `NA_NA_lidocaine.R` (DDMODEL00000281; binary stratification at threshold 27.93 kg/m² adding +0.939 to the GX rate constant K30 in the BMI > 27.93 cohort).
 - **Notes:** Universal clinical-trial demographic. Derived as `WT / (height_m)^2`; assume time-fixed at baseline unless the source paper states otherwise.
 
 ### SEXF (**canonical for sex**)
@@ -172,7 +172,7 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   - `1.73*CrCl/BSA` — the formula form appearing in Xu 2019 Eq. for Vm.
   - `cGFR` — calculated/estimated GFR, BSA-normalized; used in `Li_2019_abatacept.R`.
 - **Example models:** `Cirincione_2017_exenatide.R` (MDRD eGFR), `Xu_2019_sarilumab.R` (measured CrCl BSA-normalized), `Kotani_2022_astegolimab.R` (MDRD eGFR), `Li_2019_abatacept.R` (cGFR).
-- **Example models:** `Cirincione_2017_exenatide.R` (MDRD eGFR), `Xu_2019_sarilumab.R` (measured CrCl BSA-normalized), `Kotani_2022_astegolimab.R` (MDRD eGFR), `Bajaj_2017_nivolumab.R` (CKD-EPI eGFR, reference 90 mL/min/1.73 m²).
+- **Example models:** `Cirincione_2017_exenatide.R` (MDRD eGFR), `Xu_2019_sarilumab.R` (measured CrCl BSA-normalized), `Kotani_2022_astegolimab.R` (MDRD eGFR), `Bajaj_2017_nivolumab.R` (CKD-EPI eGFR, reference 90 mL/min/1.73 m²), `NA_NA_lidocaine.R` (DDMODEL00000281; binary stratification at threshold 52.7 mL/min adding -0.319 to the GX rate constant K30 in the CRCL <= 52.7 cohort; the source `.ctl` does not state the BSA-normalisation method).
 - **Notes:** The two estimation methods (MDRD/CKD-EPI vs measured CrCl) produce values in the same units and are operationally interchangeable as a covariate on clearance. Document the method explicitly in each model's `covariateData[[CRCL]]$description` so future reviewers can trace the source assay.
 
 ### CREAT (**canonical for serum creatinine**)
@@ -238,8 +238,9 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Type:** continuous
 - **Scope:** general
 - **Reference category:** n/a — used with power scaling `(TBILI / ref)^exponent`.
-- **Source aliases:** none; `TBILI` is the common NONMEM / clinical-PK abbreviation.
-- **Example models:** `Yamada_2025_zolbetuximab.R` (mg/dL, reference 0.38; small positive exponent 0.0347 on V1).
+- **Source aliases:**
+  - `BIL` (legacy NONMEM short label for total bilirubin) — used in `NA_NA_lidocaine.R` (DDMODEL00000281; binarised at threshold 0.53 mg/dL with `BIL_HIGH = as.integer(BIL > 0.53)`).
+- **Example models:** `Yamada_2025_zolbetuximab.R` (mg/dL, reference 0.38; small positive exponent 0.0347 on V1), `NA_NA_lidocaine.R` (mg/dL, source column `BIL`; binary effect at threshold 0.53 mg/dL on the GX elimination rate constant K30).
 - **Notes:** Hepatic-function marker. Unit varies by paper (US convention mg/dL, SI convention umol/L; 1 mg/dL ~= 17.1 umol/L). The per-model `covariateData[[TBILI]]$units` field is load-bearing.
 
 ### AST (**canonical for aspartate aminotransferase**)
@@ -259,9 +260,10 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Type:** continuous
 - **Scope:** general
 - **Reference category:** n/a — used with power scaling `(ALT / ref)^exponent`.
-- **Source aliases:** none; `ALT` is the universal clinical-PK abbreviation.
-- **Example models:** `Nikanjam_2019_siltuximab.R` (U/L, reference 19; small negative exponent -0.096 on CL), `Melhem_2022_dostarlimab.R` (U/L, reference 18; small negative exponent -0.0585 on CL, time-varying).
-- **Notes:** Hepatic-function marker. Commonly reported alongside `AST` and `TBILI`. Ratified canonically on 2026-04-24.
+- **Source aliases:**
+  - `SGPT` (serum glutamic-pyruvic transaminase; the legacy clinical-chemistry name for ALT, paralleling `SGOT` -> `AST`) — used in `NA_NA_lidocaine.R` (DDMODEL00000281; binarised at threshold 11 with `SGPT_HIGH = as.integer(SGPT > 11)`).
+- **Example models:** `Nikanjam_2019_siltuximab.R` (U/L, reference 19; small negative exponent -0.096 on CL), `Melhem_2022_dostarlimab.R` (U/L, reference 18; small negative exponent -0.0585 on CL, time-varying), `NA_NA_lidocaine.R` (source column `SGPT`; binary effects at threshold 11 on the GX rate constant K30 and on the 2,6-xylidide rate constant K40).
+- **Notes:** Hepatic-function marker. Commonly reported alongside `AST` and `TBILI`. Ratified canonically on 2026-04-24. `SGPT` is the older lab-reporting name; values and units are identical to `ALT`.
 
 ### LDH (**canonical for serum lactate dehydrogenase**)
 - **Description:** Serum lactate dehydrogenase activity (baseline or time-varying). General-purpose marker of tissue / cellular turnover; in oncology PK analyses it is interpreted as a disease-burden / cell-turnover proxy.
@@ -271,7 +273,7 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Reference category:** n/a — used with power scaling `(LDH / ref)^exponent` or with an additive linear-on-log form `exp(coef * (log(LDH) - log(ref)))` (algebraically equivalent to `(log(LDH) / log(ref))^coef`). Reference values observed: 217 U/L (Sanghavi 2020).
 - **Source aliases:**
   - `BLDH` (baseline LDH) — used in `Sanghavi_2020_ipilimumab.R`.
-- **Example models:** `Sanghavi_2020_ipilimumab.R` (linear-on-log form on CL with reference 217 U/L; coefficient 0.703).
+- **Example models:** `Sanghavi_2020_ipilimumab.R` (linear-on-log form on CL with reference 217 U/L; coefficient 0.703), `NA_NA_lidocaine.R` (DDMODEL00000281; binary stratification at threshold 195 U/L switching the typical-value baseline of the 2,6-xylidide rate constant K40).
 - **Notes:** Universal lab marker. Sanghavi 2020 log-transforms LDH because the distribution is heavily right-skewed (range 74-6,245 U/L over a median of 217); other papers may use a simple `(LDH/ref)^exponent` form. Document the functional form in `covariateData[[LDH]]$notes`.
 
 ### HEPIMP_MILD (**canonical for mild hepatic impairment indicator**)
@@ -2387,6 +2389,27 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Source aliases:** derived per subject from the trial-cohort identifier (`Cohort = ABA2 8/8` → 1, else → 0). Takahashi 2023 Supplemental Table 4 names the corresponding theta `θCohort_CL` / `θCohort_Vc`.
 - **Example models:** `Takahashi_2023_abatacept.R` (multiplicative `Ratio` factors on CL = 0.91 and on Vc = 1.32 vs the RA/JIA reference; values from Takahashi 2023 Supplemental Table 4).
 - **Notes:** Pairs with `STUDY_ABA2_HLA78`. At most one of the two indicators is 1 per subject; both 0 reproduces the RA/JIA reference. Scope: specific.
+
+### DLVL (**canonical for source-protocol dose-level integer indicator**)
+- **Description:** Integer dose-level / protocol-arm indicator carried per subject in the DDMODEL00000281 lidocaine bundle's simulated dataset (`Simulated_Lid_B04_ddmore.csv`). Values 1-4 (or higher) flag distinct study-protocol dose / regimen tiers; the `NA_NA_lidocaine.R` model binarises as `DLVL > 2` to switch the typical-value baselines for both the GX elimination rate constant K30 and the lidocaine apparent central volume V1 between a "low" (DLVL <= 2) and a "high" (DLVL > 2) regimen.
+- **Units:** (integer-coded categorical)
+- **Type:** categorical
+- **Scope:** specific
+- **Reference category:** the binary form `DLVL <= 2` is the reference (THETA(4) for K30 and THETA(14) for V1 in the source `.ctl`); `DLVL > 2` selects the higher-exposure regimen (THETA(5) and THETA(15) respectively).
+- **Source aliases:** `DLVL` — the column header used in the DDMORE bundle's `.ctl` `$INPUT` and the Simulated_Lid_B04_ddmore.csv data file.
+- **Example models:** `NA_NA_lidocaine.R` (DDMODEL00000281; binary derivation `DLVL_HIGH = as.integer(DLVL > 2)` on K30 base and V1 base).
+- **Notes:** Specific scope because the integer-coded dose / regimen tiers are paper-specific to the lidocaine BAST.dat ("4-cRUN249") study and the linked publication is not on disk for this extraction. The binary threshold `> 2` reproduces the source `.ctl` line `IF(DLVL.GT.2)P1=0`. If a future model needs a different dose-level binarisation or a continuous treatment, register a distinct canonical name rather than overloading `DLVL`.
+
+### S1A2 (**canonical for source-protocol CYP1A2 substrate / co-medication categorical indicator**)
+- **Description:** Categorical CYP1A2-modifying co-medication / phenotype indicator carried per subject in the DDMODEL00000281 lidocaine bundle's simulated dataset. Integer code; in the `NA_NA_lidocaine.R` model the value `S1A2 == 3` selects the "CYP1A2 inducer present" sub-cohort (lidocaine N-deethylation to MEGX is CYP1A2-mediated, so the modifier acts on the GX elimination rate constant K30 in the source's parameterisation). Other integer codes (0, 1, 2) are pooled into the reference.
+- **Units:** (integer-coded categorical)
+- **Type:** categorical
+- **Scope:** specific
+- **Reference category:** `S1A2 != 3` (i.e., values 0, 1, 2) — pooled into the reference.
+- **Source aliases:** `S1A2` — the column header used in the DDMORE bundle's `.ctl` `$INPUT` and the simulated dataset, with sibling columns `D1A2` and `H1A2` carried in the data file but dropped via `=DROP` in the source `.ctl`.
+- **Example models:** `NA_NA_lidocaine.R` (DDMODEL00000281; binary derivation `S1A2_IND = as.integer(S1A2 == 3)` on the GX elimination rate constant K30).
+- **Notes:** Specific scope because the integer codes for `S1A2` are paper-specific to the lidocaine BAST.dat study and the linked publication is not on disk for this extraction. The exact biological meaning of each integer level (0/1/2/3) is not fully reconstructable from the bundle alone — the natural interpretation, given the column name encodes "CYP1A2" and the model attaches a sizeable positive K30 modifier of +0.853 to the level-3 cohort, is a CYP1A2-induction or smoking / inducer co-medication indicator. Sibling columns `D1A2` (donor / inhibitor?) and `H1A2` (host / inhibitor?) are dropped in the source `.ctl` so only the level-3 indicator is structurally identifiable from the surviving model code. If a future model needs a richer encoding of CYP1A2 modulation, register a separate canonical (e.g., `CYP1A2_IND`) rather than overloading `S1A2`.
+
 ## Study-site region
 
 Geographical study-site region indicators. Distinct from race / ethnicity (`RACE_*`), which describe subject ancestry; these describe the geographical location of the clinical trial site that enrolled the subject. Used in multi-regional studies (typically those including bridging analyses for Japan or East Asia) to capture region-specific clinical-practice or unmeasured-environment effects on PK that remain after accounting for body weight, race, and laboratory covariates. Encoded as a set of mutually exclusive binary indicators with US as the implicit reference category (all indicators = 0). When a paper groups some non-US regions with US (e.g., Hong 2025 groups US and Japan as the DXd CL reference), the model code uses only the indicators that distinguish the non-reference groups; the data column for the grouped region (e.g., `REGION_JAPAN`) is still recorded so the same dataset can serve other parameters that do separate that group.
@@ -2460,6 +2483,7 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 
 ## Change log
 
+- **2026-05-06** — Added `DLVL` (specific scope under `Formulation / assay / study`; integer-coded source-protocol dose-level / regimen indicator) and `S1A2` (specific scope under `Formulation / assay / study`; integer-coded source-protocol CYP1A2 substrate / co-medication indicator) canonical entries while extracting `NA_NA_lidocaine.R` (DDMODEL00000281). Both names match the source-data column names used in the BAST.dat ("4-cRUN249") lidocaine study and survive `=DROP` in the `.ctl` `$INPUT` declaration. The `DLVL` binary derivation `DLVL > 2` switches typical-value baselines for the GX rate constant K30 and the lidocaine apparent central volume V1; the `S1A2` binary derivation `S1A2 == 3` selects a CYP1A2-induction-style modifier on K30. Sibling columns `D1A2` and `H1A2` are dropped in the `.ctl` so only the level-3 indicator is structurally identifiable. Source aliases mapped: `BIL` (legacy total-bilirubin label) → `TBILI`; `SGPT` (legacy ALT label, paralleling `SGOT` → `AST`) → `ALT`. The linked publication is not on disk for this extraction; the absence of an external parameter cross-check is documented in the model file's vignette Errata.
 - **2026-05-06** — Added `HIV_POS` (general scope under a new `Infectious disease (HIV)` H2 section; binary HIV-positive comorbidity indicator, parallels the `_POS` suffix convention used by `ADA_POS` / `SARS_SEROPOS`) and `OCC` (general scope under `Occasion / period (IOV)`; integer-valued occasion / period column, decomposed into binary indicators inside `model()` for IOV multiplexing) canonical entries while extracting `Jonsson_2011_ethambutol.R` (DDMODEL00000220). Source aliases mapped: `HIV` → `HIV_POS` (same orientation, 1 = HIV-positive), `OCC` → `OCC` (no rename). The new `OCC` integer-valued canonical is the recommended form for new IOV-using models per the existing register-note steer (`ooc1..oocN` binary form retained as the legacy canonical).
 - **2026-05-06** — Added `KG`, `KD0`, `KD1`, `IBASE`, and `NWLS` (all specific scope, under `Oncology`) canonical entries while extracting `Zecchin_2016_survival.R` (Zecchin 2016 OS model, DDMODEL00000218). `KG` / `KD0` / `KD1` / `IBASE` are subject-level empirical-Bayes posterior estimates from the upstream Zecchin 2016 SLD model (DDMODEL00000217 / `Zecchin_2016_tumorovarian.R`) carried into the OS model via the dataset; `NWLS` is the time-varying RECIST-style step-function indicator for new (non-target) lesion appearance. Source aliases recorded: `KG`/`KD0`/`KD1`/`IBASE`/`NWLS` (`NWLSCOV` in the bundle's Simulated_OS.csv) → corresponding canonicals. The internal `/1000` and `/100` numerical scalings on `KG` / `KD0` / `KD1` and the `*1000` scaling on `IBASE` are preserved verbatim from the source `$DES` block to maintain numerical equivalence with the published estimates (Zecchin 2016 BJCP 82(3):717-727; doi:10.1111/bcp.12994). Extended `AUC_CARBO` and `AUC_GEM` example-models lists to include `Zecchin_2016_survival.R` (the OS model integrates the same SLD ODE inline).
 - **2026-05-06** — Added `AAG` (general-scope serum alpha-1 acid glycoprotein concentration; placed under `Inflammation markers` after `CRP`; reference 1.34 g/L from the Kloft 2006 cancer-cohort median; piecewise-linear effect form with breakpoint at the median documented), `PRIOR_ANTICANCER` (general-scope binary indicator for any prior anticancer therapy of any modality including cytotoxic chemotherapy / radiotherapy / surgery / hormonal therapy / targeted therapy / immunotherapy; placed under `Disease / treatment history` before `PRIOR_BIO`; broader than `LINE_1L` which is restricted to systemic-drug therapy lines), and `CP_MGL` (specific-scope instantaneous drug plasma concentration as a time-varying PD driver, mg/L = ug/mL; placed under `Drug exposure metrics` after `CAV`; distinct from `CAV` which is dosing-interval-averaged) canonical entries while extracting `Netterberg_2017_docetaxel.R` (DDMODEL00000224). Source aliases mapped: `SEX` (1 = male, 2 = female; values inverted via `SEXF = as.integer(SEX == 2)`) → `SEXF`; `PERF` (ordinal ECOG 0/1/2 with binarization at >= 1) → `ECOG_GE1`; `PC` (0/1) → `PRIOR_ANTICANCER`; `AAG` → `AAG`; `CP` → `CP_MGL`. The model is the Friberg-style myelosuppression PD model with parameter values fixed from Kloft 2006; Netterberg 2017 used the model unchanged for an ANC-prediction-methodology study (no re-fit) and submitted it to the DDMORE Foundation Model Repository. Neither Netterberg 2017 nor Kloft 2006 is on disk in this worktree; the absence of paper-on-disk parameter cross-checks is documented in the model file's vignette Errata.
