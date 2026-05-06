@@ -113,9 +113,9 @@ mod_rat <- mod |>
   ini(
     lcl    = log(0.00237),
     lvc    = log(0.0107),
-    lqd2   = log(0.0597),
+    lq     = log(0.0597),
     lvp    = log(0.00252),
-    lqd3   = log(0.0139),
+    lq2    = log(0.0139),
     lvp2   = log(0.0155),
     lcldec = log(0.00224),
     propSd   = 0.109,
