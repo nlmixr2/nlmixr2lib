@@ -564,6 +564,28 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `FiedlerKelly_2020_fremanezumab_em.R`, `FiedlerKelly_2020_fremanezumab_cm.R`.
 - **Notes:** Specific scope because the value is intrinsically tied to the modelled drug — there is no shared meaning across drugs or studies. Each model's `covariateData[[CAV]]$notes` should state how the Cav values are derived (e.g., empirical-Bayes from a referenced population PK model) and that the column is set to 0 for placebo periods.
 
+### AUC_CARBO (**canonical for per-cycle average AUC of carboplatin**)
+- **Description:** Per-cycle average AUC of carboplatin used as the time-varying drug-exposure covariate driving cytotoxic tumour-death rates in tumour-size-dynamics models of platinum-based chemotherapy. The value is held step-wise constant over each chemotherapy cycle and resets at the start of the next cycle.
+- **Units:** carboplatin AUC units (typically `mg·min/mL`); document per-model via `covariateData[[AUC_CARBO]]$units`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a — set to 0 in cycles where carboplatin is not administered (e.g., post-discontinuation or non-platinum arms).
+- **Source aliases:**
+  - `CB` (NONMEM `$INPUT` column in DDMODEL00000217) — used in `Zecchin_2016_tumorovarian.R`. The DDMORE bundle ships the simulated dataset with the column re-labelled `AUC0`; downstream consumers should map `AUC0` → `AUC_CARBO`.
+- **Example models:** `Zecchin_2016_tumorovarian.R` (Zecchin 2016 SLD model for advanced ovarian cancer, DDMODEL00000217).
+- **Notes:** Specific scope because the column meaning is tied to a particular cytotoxic agent (carboplatin) and a particular per-cycle averaging convention. Reusing the same column for another platinum analogue (cisplatin, oxaliplatin) is not appropriate — register a sibling canonical (`AUC_CISPLATIN`, `AUC_OXALIPLATIN`) when needed. The Zecchin 2016 model uses the value directly in the death-rate term `kd0 * AUC_CARBO * tumorSize`, with an internal `/1000` numerical scaling carried verbatim from the source `$DES` block.
+
+### AUC_GEM (**canonical for per-cycle average AUC of gemcitabine**)
+- **Description:** Per-cycle average AUC of gemcitabine (sum of parent and active metabolite exposure, per Zecchin 2016 Methods) used as the time-varying drug-exposure covariate driving cytotoxic tumour-death rates in tumour-size-dynamics models of gemcitabine-containing chemotherapy.
+- **Units:** gemcitabine AUC units (typically `mg·h/L` or the paper's `mol·day / 10^6 cells` scaling for the parent-plus-active-metabolite composite); document per-model via `covariateData[[AUC_GEM]]$units`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a — set to 0 in cycles where gemcitabine is not administered (e.g., carboplatin-monotherapy arms).
+- **Source aliases:**
+  - `G` (NONMEM `$INPUT` column in DDMODEL00000217) — used in `Zecchin_2016_tumorovarian.R`. The DDMORE bundle ships the simulated dataset with the column re-labelled `AUC1`; downstream consumers should map `AUC1` → `AUC_GEM`.
+- **Example models:** `Zecchin_2016_tumorovarian.R` (Zecchin 2016 SLD model for advanced ovarian cancer, DDMODEL00000217).
+- **Notes:** Specific scope. The Zecchin 2016 model uses the value directly in the death-rate term `kd1 * AUC_GEM * tumorSize`, with an internal `/100` numerical scaling carried verbatim from the source `$DES` block.
+
 ### IGE (**canonical for serum total immunoglobulin E concentration**)
 - **Description:** Baseline serum total immunoglobulin E concentration (free IgE plus, in patients on anti-IgE therapy, omalizumab–IgE complex). For anti-IgE monoclonal antibodies (omalizumab, ligelizumab) IgE is the pharmacologic target; baseline IgE sets the magnitude of the target sink and modifies free-IgE clearance and the rate of IgE production in mechanism-based binding/turnover models.
 - **Units:** ng/mL (typical clinical-PK convention). Pretreatment values reported in `IU/mL` are converted via `1 IU/mL = 2.42 ng/mL` (Hayashi 2007 Methods). Document per-model via `covariateData[[IGE]]$units`.
@@ -2280,6 +2302,7 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **2026-04-28** — Added `SMOKE_CURRENT` and `SMOKE_NEVER` (both general-scope, paired binary indicators for a 3-level smoking-status categorical with former smoker as the implicit reference) canonical entries under `Lifestyle / medical history`, alongside the existing 2-level `SMOKE`. Pattern follows the `RACE_<GROUP>` convention for paired indicators. Introduced while extracting `Hwang_2023_monalizumab.R`, where Table 2 reports separate proportional-shift coefficients on V1 for current smoker (+0.0484) and never smoker (-0.141) with former smoker (n=319/507) as the most-common reference category. The existing `SMOKE` entry remains in use for 2-level (current vs non-smoker) encodings; the per-model documentation cross-references the alternative encoding.
 - **2026-04-28** — Added `TUMTP_BC` (general-scope breast-cancer tumor-type indicator) and `HEPIMP_MOD_MISSING` (specific-scope composite moderate-or-data-missing hepatic impairment indicator) canonical entries while extracting `Lu_2022_patritumab.R`. Source aliases mapped: `TUMTP` (BC level)→`TUMTP_BC`; `HEPATIC`→`HEPIMP_MOD_MISSING` (composite of NCI ODWG group 3 = moderate plus n = 6 missing-data patients pooled together by the Lu 2022 covariate analysis). Extended `HEPIMP_MILD` example_models with Lu 2022.
 - **2026-04-29** — Added paired `HSCT_URD_7OF8` and `HSCT_URD_8OF8` (both specific-scope) canonical entries under `Disease state (cross-population indicators)` while extracting `Zhong_2026_abatacept.R`. The two indicators jointly decompose the 3-level Study IM101311 (ABA2) "cohort" categorical (non-HSCT-cohort / 7-of-8 / 8-of-8) into two orthogonal binary indicators in the same style as `DIS_CANCER` + `DIS_HV`. Source aliases mapped: `COHORT7` → `HSCT_URD_7OF8`, `COHORT8` → `HSCT_URD_8OF8`. Reused the existing `DIS_PJIA` canonical (source alias `JIA`) and the existing `AST` and `CRCL` canonicals (source aliases `AST` and `cGFR`). Names match the abbreviations used in the Zhong 2026 Figure 1 caption and describe the actual HLA-matching transplant treatment received.
+- **2026-05-06** — Added `AUC_CARBO` and `AUC_GEM` (both specific-scope per-cycle drug-exposure metrics) canonical entries under `Drug exposure metrics` while extracting `Zecchin_2016_tumorovarian.R` (DDMODEL00000217). Source aliases mapped: `CB` → `AUC_CARBO` (with the DDMORE bundle's simulated dataset using `AUC0`), `G` → `AUC_GEM` (with the bundle's simulated dataset using `AUC1`). The new entries follow the `CAV` template but document per-cycle AUC semantics for two specific cytotoxics; sibling entries (`AUC_CISPLATIN`, etc.) should be registered alongside, not by overloading these.
 - Subsequent additions: append new canonical entries as new papers are processed. When adding, bump the audit-completed count in the summary below.
 
 ## Summary
