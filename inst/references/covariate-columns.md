@@ -156,6 +156,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Scope:** general
 - **Example models:** `Hu_2026_clesrovimab.R`, used implicitly in `Clegg_2024_nirsevimab.R` (folded into PAGE).
 
+### WT_BIRTH (**canonical for birth weight**)
+- **Description:** Body weight at birth. Time-fixed per subject. Distinct from current body weight (`WT`), which is time-varying.
+- **Units:** kg
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a — used with linear-deviation `(1 + e * (WT_BIRTH - ref))` or power scaling. Reference value observed: 2.59 kg (Voller 2017 newborn cohort).
+- **Source aliases:**
+  - `BWEIGHT` — used in `Voller_2017_phenobarbital.R` (Voller 2017 source data column for birth weight in kg).
+- **Example models:** `Voller_2017_phenobarbital.R` (linear-deviation effect on CL: `clbw = 1 + 0.369 * (WT_BIRTH - 2.59)`).
+- **Notes:** Time-fixed at birth; characterises pre-/term-newborn cohorts. Pairs with `GA` (gestational age at birth) when both are reported. The conventional clinical-PK abbreviation `BWT` is intentionally NOT used as the canonical name because it is already used across the codebase (Gandhi 2021, Li 2019, Chen 2022, Wojciechowski 2022, Lu 2019) as a source-name alias for body weight (`WT`). The `WT_BIRTH` form keeps the `WT` root consistent with the existing body-weight canonical and avoids the `BWT` ambiguity.
+
 ## Renal / hepatic function
 
 ### CRCL (**canonical for creatinine-based renal function, BSA-normalized**)
@@ -2633,13 +2644,14 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **2026-05-06** — Added `AUC_CARBO` and `AUC_GEM` (both specific-scope per-cycle drug-exposure metrics) canonical entries under `Drug exposure metrics` while extracting `Zecchin_2016_tumorovarian.R` (DDMODEL00000217). Source aliases mapped: `CB` → `AUC_CARBO` (with the DDMORE bundle's simulated dataset using `AUC0`), `G` → `AUC_GEM` (with the bundle's simulated dataset using `AUC1`). The new entries follow the `CAV` template but document per-cycle AUC semantics for two specific cytotoxics; sibling entries (`AUC_CISPLATIN`, etc.) should be registered alongside, not by overloading these.
 - **2026-05-06** — Added `BAS_SVEGFR3`, `MRT_SVEGFR3`, `EC50_SVEGFR3` (all three specific-scope, under `Drug exposure metrics` because they are upstream-PD posthoc inputs that drive the per-cycle drug-effect summary in the downstream fatigue model) canonical entries while extracting the Hansson 2013c fatigue / adverse-event Markov + proportional-odds model (DDMODEL00000222, `Hansson_2013c_sunitinib.R`). The three sVEGFR-3 columns jointly carry the upstream Hansson 2013a biomarker indirect-response posthoc estimates (initial condition + turnover MRT + drug-effect EC50) for a downstream PD model that consumes the biomarker trajectory as data covariates instead of instantiating its own biomarker ODE. Source aliases mapped: `BAS3` → `BAS_SVEGFR3`, `MRT3` → `MRT_SVEGFR3`, `EC53` → `EC50_SVEGFR3`. Hansson_2013c also added to existing `DOSE` and `CLI` example-models lists.
 - **2026-05-06** — Added `INS` (specific-scope, plasma insulin time-course regressor in pmol/L) and `GLU` (specific-scope, plasma glucose time-course regressor in mmol/L) canonical entries under `Cardiometabolic / target biomarkers` while extracting the DDMORE bundle `DDMODEL00000227` as `Bizzotto_2016_glucose.R`. Both are time-varying regressor inputs (not covariates that modify a parameter); the model declares `linear(INS, GLU)` so rxode2 linearly interpolates them between dataset rows. Source aliases mapped: `iins` → `INS`, `iglu` → `GLU`. The bundle's bracketing columns `insn / glun / td / tn` (used in the bundle's hand-rolled piecewise-linear interpolation) are intentionally not registered — they are not consumed by the nlmixr2 translation, which uses rxode2's native `linear()` declaration instead.
+- **2026-05-06** — Added `WT_BIRTH` (general-scope, time-fixed birth weight in kg under `Pediatric / maturation` after `GA`) canonical entry while extracting `Voller_2017_phenobarbital.R` (DDMODEL00000256). Source alias `BWEIGHT` (Voller 2017) mapped. The conventional `BWT` abbreviation was rejected as the canonical because it is already used across five existing models (Gandhi 2021, Li 2019, Chen 2022, Wojciechowski 2022, Lu 2019) as a source-name alias for body weight `WT`; reusing `BWT` for birth weight would silently break those mappings. The chosen `WT_BIRTH` form preserves the `WT` root and follows the existing `<concept>_<modifier>` register convention. Reference value 2.59 kg observed in Voller 2017's preterm/term-newborn cohort. Operator-confirmed naming choice via runner sidecar (response-001, 2026-05-06).
 - Subsequent additions: append new canonical entries as new papers are processed. When adding, bump the audit-completed count in the summary below.
 
 ## Summary
 
 - Files audited: 69 R files under `inst/modeldb/` (20 of which reference covariates).
-- Canonical H3 entries: 58 (61 parsed entries when counting each `ooc<n>` individually; was ~57 before the 2026-04-20 mergers of `hsCRP`+`BLCRP`+standard-`CRP` → `CRP`, `eGFR`+`CRCL_BSA` → `CRCL`, and `ADA_TITRE`+`ADA_TITER` → `ADA_TITER`; +1 `PHASE2` and +1 `WBC` on 2026-04-21 from Farrell 2012 / Mould 2007; +3 on 2026-04-21 for `STEROID`, `BGENE21`, `COHDOSE` from Narwal 2013).
-- Scope: general: 35. Scope: specific: 26 (counting each `ooc<n>` individually, or 23 counting the `### ooc1, ooc2, ooc3, ooc4` heading as one entry).
+- Canonical H3 entries: 59 (62 parsed entries when counting each `ooc<n>` individually; was ~57 before the 2026-04-20 mergers of `hsCRP`+`BLCRP`+standard-`CRP` → `CRP`, `eGFR`+`CRCL_BSA` → `CRCL`, and `ADA_TITRE`+`ADA_TITER` → `ADA_TITER`; +1 `PHASE2` and +1 `WBC` on 2026-04-21 from Farrell 2012 / Mould 2007; +3 on 2026-04-21 for `STEROID`, `BGENE21`, `COHDOSE` from Narwal 2013; +1 `WT_BIRTH` on 2026-05-06 from Voller 2017).
+- Scope: general: 36. Scope: specific: 26 (counting each `ooc<n>` individually, or 23 counting the `### ooc1, ooc2, ooc3, ooc4` heading as one entry).
 - Aliases mapped (selected): SEXM→SEXF, ADA→ADA_POS, ADA_TITRE/ADAT→ADA_TITER, BLACK→RACE_BLACK, ASIAN→RACE_ASIAN, MULTIRACIAL→RACE_MULTI, BLACK_OTH→RACE_BLACK_OTH, ASIAN_AMIND_MULTI→RACE_ASIAN_AMIND_MULTI, DVID→STUDY1/STUDY5, CRE→CREAT, hsCRP/HSCRP/CRPHS/BLCRP→CRP, eGFR/EGFR/CRCL_BSA/1.73*CrCl/BSA→CRCL, DP2→FORM_DP2, DISEXT→DISEXT_EP/DISEXT_OTHER, BEASI→EASI, BEOS→EOS, GAST→PRIOR_GAST, COMB→COMB_EOX, TUMTP→TUMTP_CHL/TUMTP_GC, BSTEROID→STEROID, DOSE→COHDOSE.
 - Canonical H3 entries: 53 (56 parsed entries when counting each `ooc<n>` individually; was ~57 before the 2026-04-20 mergers of `hsCRP`+`BLCRP`+standard-`CRP` → `CRP`, `eGFR`+`CRCL_BSA` → `CRCL`, and `ADA_TITRE`+`ADA_TITER` → `ADA_TITER`).
 - Scope: general: 33. Scope: specific: 23 (counting each `ooc<n>` individually, or 20 counting the `### ooc1, ooc2, ooc3, ooc4` heading as one entry).
