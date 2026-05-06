@@ -564,6 +564,28 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `FiedlerKelly_2020_fremanezumab_em.R`, `FiedlerKelly_2020_fremanezumab_cm.R`.
 - **Notes:** Specific scope because the value is intrinsically tied to the modelled drug — there is no shared meaning across drugs or studies. Each model's `covariateData[[CAV]]$notes` should state how the Cav values are derived (e.g., empirical-Bayes from a referenced population PK model) and that the column is set to 0 for placebo periods.
 
+### INS (**canonical for plasma insulin time-course regressor**)
+- **Description:** Plasma insulin concentration as a time-varying *regressor* input that drives a mechanistic glucose-kinetics model. Not a covariate that modifies a parameter; the model integrates `INS` directly through a smoothing filter into a site-of-action insulin variable.
+- **Units:** pmol/L
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a — used as a time-varying regressor. The model declares `linear(INS)` so rxode2 linearly interpolates `INS` between dataset rows.
+- **Source aliases:**
+  - `iins` (insulin at the current row time) — used in the DDMORE bundle's `Simulated_glucoseKinetics.csv` for `DDMODEL00000227`. Rename `iins` -> `INS` before passing to `rxSolve`.
+- **Example models:** `Bizzotto_2016_glucose.R` (driving regressor for the insulin-at-site-of-action delay).
+- **Notes:** Specific scope because `INS` is meaningful only for glucose-kinetics or insulin-PD models that take plasma insulin as an exogenous regressor. For drugs that *modify* circulating insulin as a downstream effect, use a different mechanism-specific name. The DDMORE bundle's hand-rolled piecewise-linear interpolation (`I = (t-T1)/(TOBS-T1)*(INS-INS1)+INS1` with bracketing columns `iins / insn / td / tn`) is replaced in nlmixr2 by `linear(INS)` declared in `model()`; the bracketing columns are not required.
+
+### GLU (**canonical for plasma glucose time-course regressor**)
+- **Description:** Plasma glucose concentration as a time-varying *regressor* input that drives a mechanistic glucose-kinetics model. Not a covariate that modifies a parameter; the model integrates `GLU` directly through a smoothing filter into a site-of-action glucose variable.
+- **Units:** mmol/L
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a — used as a time-varying regressor. The model declares `linear(GLU)` so rxode2 linearly interpolates `GLU` between dataset rows.
+- **Source aliases:**
+  - `iglu` (glucose at the current row time) — used in the DDMORE bundle's `Simulated_glucoseKinetics.csv` for `DDMODEL00000227`. Rename `iglu` -> `GLU` before passing to `rxSolve`.
+- **Example models:** `Bizzotto_2016_glucose.R` (driving regressor for the glucose-at-site-of-action delay).
+- **Notes:** Specific scope because `GLU` is meaningful only for glucose-kinetics or glucose-PD models that take plasma glucose as an exogenous regressor. The DDMORE bundle's hand-rolled piecewise-linear interpolation (`GL = (t-T1)/(TOBS-T1)*(GLU-GLU1)+GLU1` with bracketing columns `iglu / glun / td / tn`) is replaced in nlmixr2 by `linear(GLU)` declared in `model()`; the bracketing columns are not required.
+
 ### IGE (**canonical for serum total immunoglobulin E concentration**)
 - **Description:** Baseline serum total immunoglobulin E concentration (free IgE plus, in patients on anti-IgE therapy, omalizumab–IgE complex). For anti-IgE monoclonal antibodies (omalizumab, ligelizumab) IgE is the pharmacologic target; baseline IgE sets the magnitude of the target sink and modifies free-IgE clearance and the rate of IgE production in mechanism-based binding/turnover models.
 - **Units:** ng/mL (typical clinical-PK convention). Pretreatment values reported in `IU/mL` are converted via `1 IU/mL = 2.42 ng/mL` (Hayashi 2007 Methods). Document per-model via `covariateData[[IGE]]$units`.
@@ -2280,6 +2302,7 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **2026-04-28** — Added `SMOKE_CURRENT` and `SMOKE_NEVER` (both general-scope, paired binary indicators for a 3-level smoking-status categorical with former smoker as the implicit reference) canonical entries under `Lifestyle / medical history`, alongside the existing 2-level `SMOKE`. Pattern follows the `RACE_<GROUP>` convention for paired indicators. Introduced while extracting `Hwang_2023_monalizumab.R`, where Table 2 reports separate proportional-shift coefficients on V1 for current smoker (+0.0484) and never smoker (-0.141) with former smoker (n=319/507) as the most-common reference category. The existing `SMOKE` entry remains in use for 2-level (current vs non-smoker) encodings; the per-model documentation cross-references the alternative encoding.
 - **2026-04-28** — Added `TUMTP_BC` (general-scope breast-cancer tumor-type indicator) and `HEPIMP_MOD_MISSING` (specific-scope composite moderate-or-data-missing hepatic impairment indicator) canonical entries while extracting `Lu_2022_patritumab.R`. Source aliases mapped: `TUMTP` (BC level)→`TUMTP_BC`; `HEPATIC`→`HEPIMP_MOD_MISSING` (composite of NCI ODWG group 3 = moderate plus n = 6 missing-data patients pooled together by the Lu 2022 covariate analysis). Extended `HEPIMP_MILD` example_models with Lu 2022.
 - **2026-04-29** — Added paired `HSCT_URD_7OF8` and `HSCT_URD_8OF8` (both specific-scope) canonical entries under `Disease state (cross-population indicators)` while extracting `Zhong_2026_abatacept.R`. The two indicators jointly decompose the 3-level Study IM101311 (ABA2) "cohort" categorical (non-HSCT-cohort / 7-of-8 / 8-of-8) into two orthogonal binary indicators in the same style as `DIS_CANCER` + `DIS_HV`. Source aliases mapped: `COHORT7` → `HSCT_URD_7OF8`, `COHORT8` → `HSCT_URD_8OF8`. Reused the existing `DIS_PJIA` canonical (source alias `JIA`) and the existing `AST` and `CRCL` canonicals (source aliases `AST` and `cGFR`). Names match the abbreviations used in the Zhong 2026 Figure 1 caption and describe the actual HLA-matching transplant treatment received.
+- **2026-05-06** — Added `INS` (specific-scope, plasma insulin time-course regressor in pmol/L) and `GLU` (specific-scope, plasma glucose time-course regressor in mmol/L) canonical entries under `Cardiometabolic / target biomarkers` while extracting the DDMORE bundle `DDMODEL00000227` as `Bizzotto_2016_glucose.R`. Both are time-varying regressor inputs (not covariates that modify a parameter); the model declares `linear(INS, GLU)` so rxode2 linearly interpolates them between dataset rows. Source aliases mapped: `iins` → `INS`, `iglu` → `GLU`. The bundle's bracketing columns `insn / glun / td / tn` (used in the bundle's hand-rolled piecewise-linear interpolation) are intentionally not registered — they are not consumed by the nlmixr2 translation, which uses rxode2's native `linear()` declaration instead.
 - Subsequent additions: append new canonical entries as new papers are processed. When adding, bump the audit-completed count in the summary below.
 
 ## Summary
