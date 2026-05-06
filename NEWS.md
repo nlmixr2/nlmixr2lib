@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Schoemaker 2018 levetiracetam ([doi:10.1007/s40262-017-0597-2](https://doi.org/10.1007/s40262-017-0597-2)) [DDMODEL00000239] — adults and children (4-16 years) with focal seizures (negative-binomial seizure-count PD model with mixture and Markovian dependence on previous-day count; LEV adult+pediatric fit used in the publication to scaffold a brivaracetam pediatric extrapolation).
 * Add Lestini 2015 TGF-β inhibitor ([doi:10.1007/s11095-015-1693-3](https://doi.org/10.1007/s11095-015-1693-3)) [DDMODEL00000192] — simulated 50-subject oncology cohort (one-compartment first-order absorption PK + indirect-response biomarker turnover; first nlmixr2lib `inst/modeldb/ddmore/` entry).
 * Add Li 2006 meropenem ([doi:10.1177/0091270006291035](https://doi.org/10.1177/0091270006291035)) [DDMODEL00000213] — adult patients receiving meropenem.
 * Add Friberg 2002 paclitaxel ([doi:10.1200/JCO.2002.02.140](https://doi.org/10.1200/JCO.2002.02.140)) [DDMODEL00000186] — adult cancer patients receiving paclitaxel chemotherapy (semi-mechanistic myelosuppression PK/PD with leukocyte output).
