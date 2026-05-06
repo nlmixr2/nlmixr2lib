@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Jonsson 2005 disufenton ([doi:10.2165/00003088-200544080-00007](https://doi.org/10.2165/00003088-200544080-00007)) [DDMODEL00000245] — adults with acute ischaemic or haemorrhagic stroke receiving 72-h IV NXY-059 infusion across CRCL 20-143 mL/min.
 * Add Ter Heine 2014 tamoxifen ([doi:10.1111/bcp.12388](https://doi.org/10.1111/bcp.12388)) [DDMODEL00000212] — adults with breast cancer on chronic 20 mg PO QD tamoxifen at steady state (joint parent-metabolite popPK with CYP2D6 and CYP3A4/5 covariates on endoxifen formation).
 * Add Mohamed 2016 colistin + meropenem ([doi:10.1093/jac/dkv488](https://doi.org/10.1093/jac/dkv488)) [DDMODEL00000173] — in vitro time-kill PK/PD against P. aeruginosa wild-type ATCC 27853 and meropenem-resistant ARU552.
 * Add Bizzotto 2016 glucose ([doi:10.1152/ajpendo.00045.2016](https://doi.org/10.1152/ajpendo.00045.2016)) [DDMODEL00000227] — adults across the glucose-tolerance spectrum (mechanistic glucose-tracer kinetics simulator).
