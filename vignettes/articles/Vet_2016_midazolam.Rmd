@@ -47,12 +47,13 @@ ESTIMATE block (post-`MINIMIZATION SUCCESSFUL`, OBJV 6301.530).
 
 The Vet 2016 publication studied 83 critically ill children receiving IV
 midazolam in the paediatric intensive care unit, with inflammation
-(C-reactive protein, CRP) and the number of failing organs (ORGF, ascertained
-per-day on a 0..>=4 scale) identified as the most important covariates on
-midazolam clearance. Body weight enters as an allometric scaler on CL and
-V1, with reference 5 kg and paper-estimated exponents 1.02 and 1.34
-respectively. The publication itself (DOI 10.1164/rccm.201510-2114OC) is
-not on disk in this worktree, so demographic ranges (age range, weight
+(C-reactive protein, CRP) and the number of failing organs
+(`ORG_FAIL_COUNT`; the source NMTRAN dataset names the column `ORGF`,
+ascertained per-day on a 0..>=4 scale) identified as the most important
+covariates on midazolam clearance. Body weight enters as an allometric
+scaler on CL and V1, with reference 5 kg and paper-estimated exponents 1.02
+and 1.34 respectively. The publication itself (DOI 10.1164/rccm.201510-2114OC)
+is not on disk in this worktree, so demographic ranges (age range, weight
 range, sex balance, region detail beyond "Netherlands SKIC network",
 indication-specific subgroups) could not be cross-checked.
 
@@ -70,16 +71,16 @@ ESTIMATE was reported.
 
 | Equation / parameter      | Value (FINAL)            | Source location                                                                       |
 |---------------------------|--------------------------|---------------------------------------------------------------------------------------|
-| `lcl` (THETA(1) FIX)      | log(1.60)                | .lst line 455, TH 1 = 1.60E+00 (`.mod $THETA` "1.6 FIX" = ORGF=0 typical CL, L/h)     |
+| `lcl` (THETA(1) FIX)      | log(1.60)                | .lst line 455, TH 1 = 1.60E+00 (`.mod $THETA` "1.6 FIX" = ORG_FAIL_COUNT=0 typical CL, L/h) |
 | `lvc` (THETA(2))          | log(3.28)                | .lst line 455, TH 2 = 3.28E+00 (V1 at WT=5 kg, L)                                     |
 | `lq`  (THETA(3))          | log(1.52)                | .lst line 455, TH 3 = 1.52E+00 (Q, L/h)                                               |
 | `lvp` (THETA(4))          | log(5.44)                | .lst line 455, TH 4 = 5.44E+00 (V2, L)                                                |
 | `e_wt_cl`  (THETA(5))     | 1.02                     | .lst line 455, TH 5 = 1.02E+00 (WT exponent on CL, ref 5 kg)                          |
 | `e_wt_vc`  (THETA(6))     | 1.34                     | .lst line 455, TH 6 = 1.34E+00 (WT exponent on V1, ref 5 kg)                          |
-| `e_orgf1_cl` (THETA(7))   | log(1.29 / 1.60) = -0.215 | .lst line 455, TH 7 = 1.29E+00 (CL for ORGF=1; encoded as log-shift relative to TH 1) |
-| `e_orgf2_cl` (THETA(8))   | log(0.957 / 1.60) = -0.514 | .lst line 455, TH 8 = 9.57E-01 (CL for ORGF=2; encoded as log-shift relative to TH 1) |
-| `e_orgf3_cl` (THETA(9))   | log(0.842 / 1.60) = -0.642 | .lst line 455, TH 9 = 8.42E-01 (CL for ORGF=3; encoded as log-shift relative to TH 1) |
-| `e_orgf_ge4_cl` (THETA(10)) | log(0.678 / 1.60) = -0.858 | .lst line 455, TH 10 = 6.78E-01 (CL for ORGF>=4; encoded as log-shift relative to TH 1) |
+| `e_orgf1_cl` (THETA(7))   | log(1.29 / 1.60) = -0.215 | .lst line 455, TH 7 = 1.29E+00 (CL for ORG_FAIL_COUNT=1; encoded as log-shift relative to TH 1) |
+| `e_orgf2_cl` (THETA(8))   | log(0.957 / 1.60) = -0.514 | .lst line 455, TH 8 = 9.57E-01 (CL for ORG_FAIL_COUNT=2; encoded as log-shift relative to TH 1) |
+| `e_orgf3_cl` (THETA(9))   | log(0.842 / 1.60) = -0.642 | .lst line 455, TH 9 = 8.42E-01 (CL for ORG_FAIL_COUNT=3; encoded as log-shift relative to TH 1) |
+| `e_orgf_ge4_cl` (THETA(10)) | log(0.678 / 1.60) = -0.858 | .lst line 455, TH 10 = 6.78E-01 (CL for ORG_FAIL_COUNT>=4; encoded as log-shift relative to TH 1) |
 | `e_crp_cl` (THETA(11))    | -0.312                   | .lst line 455, TH 11 = -3.12E-01 (CRP exponent on CL, ref 32 mg/L)                    |
 | `etalcl`  (OMEGA(1,1))    | 0.345 (var)              | .lst line 465 (IIV CL)                                                                |
 | `etalvc`  (OMEGA(2,2))    | 1.19  (var)              | .lst line 468 (IIV V1)                                                                |
@@ -94,17 +95,18 @@ ESTIMATE was reported.
 # Virtual cohort and simulation
 
 The DDMORE bundle ships a small simulated event table at
-`Simulated_MidaCriticallyIll.csv` (10 subjects, mixed ORGF strata, 3 kg
-WT, 58 mg/L starting CRP that decays over the ICU stay). The vignette uses
-a compact replica that exercises the four ORGF strata at a fixed reference
-weight and CRP, so the simulation runs comfortably under the pkgdown
-5-minute budget while still illustrating the per-stratum CL contrast.
+`Simulated_MidaCriticallyIll.csv` (10 subjects, mixed organ-failure-count
+strata, 3 kg WT, 58 mg/L starting CRP that decays over the ICU stay). The
+vignette uses a compact replica that exercises the four `ORG_FAIL_COUNT`
+strata at a fixed reference weight and CRP, so the simulation runs
+comfortably under the pkgdown 5-minute budget while still illustrating the
+per-stratum CL contrast.
 
 ```{r cohort}
 set.seed(20260506)
 
-# Four ORGF strata × n_per_stratum subjects, each receiving an initial
-# bolus + continuous IV infusion typical of PICU sedation regimens.
+# Four ORG_FAIL_COUNT strata × n_per_stratum subjects, each receiving an
+# initial bolus + continuous IV infusion typical of PICU sedation regimens.
 orgf_strata <- c(0L, 1L, 2L, 3L)
 n_per_stratum <- 3L
 
@@ -130,10 +132,10 @@ derive_OCC <- function(time_h) {
 make_cohort <- function(orgf_value, n, id_offset) {
   ids <- id_offset + seq_len(n)
   covs <- tibble::tibble(
-    id   = ids,
-    WT   = wt_ref,
-    CRP  = crp_ref,
-    ORGF = orgf_value
+    id             = ids,
+    WT             = wt_ref,
+    CRP            = crp_ref,
+    ORG_FAIL_COUNT = orgf_value
   )
   bolus <- covs |>
     mutate(time = 0,    evid = 1L,
@@ -146,7 +148,7 @@ make_cohort <- function(orgf_value, n, id_offset) {
   obs <- tidyr::expand_grid(covs, time = sample_times) |>
     mutate(evid = 0L, amt = NA_real_, rate = NA_real_, dv = NA_real_)
   bind_rows(bolus, infusion, obs) |>
-    mutate(orgf_label = paste0("ORGF = ", orgf_value),
+    mutate(orgf_label = paste0("ORG_FAIL_COUNT = ", orgf_value),
            OCC        = derive_OCC(time)) |>
     arrange(id, time, desc(evid))
 }
@@ -166,7 +168,7 @@ mod <- readModelDb("Vet_2016_midazolam")
 sim <- rxode2::rxSolve(
   object = mod,
   events = events,
-  keep   = c("ORGF", "WT", "CRP", "OCC", "orgf_label")
+  keep   = c("ORG_FAIL_COUNT", "WT", "CRP", "OCC", "orgf_label")
 ) |>
   as.data.frame() |>
   filter(time > 0)
@@ -178,7 +180,7 @@ mod_typical <- rxode2::zeroRe(mod)
 sim_typical <- rxode2::rxSolve(
   object = mod_typical,
   events = events,
-  keep   = c("ORGF", "WT", "CRP", "OCC", "orgf_label")
+  keep   = c("ORG_FAIL_COUNT", "WT", "CRP", "OCC", "orgf_label")
 ) |>
   as.data.frame() |>
   filter(time > 0)
@@ -188,11 +190,12 @@ sim_typical <- rxode2::rxSolve(
 
 The Vet 2016 paper's central finding is that organ failure in critically
 ill children reduces midazolam clearance roughly stratum-by-stratum:
-ORGF = 0 has typical CL = 1.60 L/h, falling to 1.29 / 0.957 / 0.842 / 0.678
-L/h for ORGF = 1 / 2 / 3 / >=4 (all at WT = 5 kg, CRP = 32 mg/L). The
-typical-value trajectories below confirm this gradient: with identical
-dosing and identical WT and CRP, higher ORGF strata produce higher
-steady-state midazolam concentrations.
+ORG_FAIL_COUNT = 0 has typical CL = 1.60 L/h, falling to
+1.29 / 0.957 / 0.842 / 0.678 L/h for ORG_FAIL_COUNT = 1 / 2 / 3 / >=4
+(all at WT = 5 kg, CRP = 32 mg/L). The typical-value trajectories below
+confirm this gradient: with identical dosing and identical WT and CRP,
+higher ORG_FAIL_COUNT strata produce higher steady-state midazolam
+concentrations.
 
 ```{r f2-stratum-contrast}
 sim_typical |>
@@ -202,7 +205,7 @@ sim_typical |>
   scale_y_log10() +
   labs(
     x = "Time (h)", y = "Midazolam concentration (ug/L)",
-    title = "Typical-value trajectories by ORGF stratum",
+    title = "Typical-value trajectories by ORG_FAIL_COUNT stratum",
     subtitle = "Vet 2016 / DDMODEL00000249 — re-simulated through nlmixr2 ODEs",
     colour = NULL
   ) +
@@ -223,14 +226,15 @@ css_summary <- sim_typical |>
 knitr::kable(
   css_summary,
   caption = paste(
-    "Typical-value steady-state concentration (mean over t >= 96 h) by ORGF",
-    "stratum, with the implied CL = R / Css and the paper-reported typical CL",
-    "for the same stratum. Implied and paper CL should agree to within rounding."
+    "Typical-value steady-state concentration (mean over t >= 96 h) by",
+    "ORG_FAIL_COUNT stratum, with the implied CL = R / Css and the",
+    "paper-reported typical CL for the same stratum. Implied and paper CL",
+    "should agree to within rounding."
   )
 )
 ```
 
-# Stochastic VPC across the same ORGF strata
+# Stochastic VPC across the same ORG_FAIL_COUNT strata
 
 ```{r vpc}
 sim |>
@@ -248,7 +252,7 @@ sim |>
   scale_y_log10() +
   labs(
     x = "Time (h)", y = "Midazolam concentration (ug/L)",
-    title = "Simulated VPC by ORGF stratum",
+    title = "Simulated VPC by ORG_FAIL_COUNT stratum",
     subtitle = "Median (line) and 5-95% interval (ribbon); IIV + IOV + residual error included"
   ) +
   theme_minimal()
@@ -298,7 +302,7 @@ nca_res  <- suppressWarnings(PKNCA::pk.nca(nca_data))
 
 knitr::kable(
   summary(nca_res),
-  caption = "Simulated NCA parameters by ORGF stratum (PKNCA)."
+  caption = "Simulated NCA parameters by ORG_FAIL_COUNT stratum (PKNCA)."
 )
 ```
 
@@ -325,15 +329,22 @@ knitr::kable(
   parameters is documented in the source-trace table above.
 
 - **Per-stratum CL parameterization.** The Vet 2016 .mod expresses the
-  ORGF effect as five separate typical-CL THETAs (THETA(1) for ORGF=0
-  fixed at 1.6 L/h, THETA(7..10) estimated for ORGF = 1, 2, 3, >=4). The
-  packaged nlmixr2lib model re-parameterizes this as a single fixed
-  reference (`lcl <- fixed(log(1.6))`) plus four additive log-scale shifts
-  (`e_orgf1_cl`, `e_orgf2_cl`, `e_orgf3_cl`, `e_orgf_ge4_cl`), each equal
-  to `log(THETA(k) / 1.6)`. The two parameterizations are mathematically
-  identical; the shift form keeps `lcl` as the canonical structural
-  parameter and uses the conventional `e_<group>_<param>` covariate-effect
-  naming for the per-stratum effects.
+  organ-failure-count effect as five separate typical-CL THETAs (THETA(1)
+  for ORG_FAIL_COUNT=0 fixed at 1.6 L/h, THETA(7..10) estimated for
+  ORG_FAIL_COUNT = 1, 2, 3, >=4). The packaged nlmixr2lib model
+  re-parameterizes this as a single fixed reference (`lcl <- fixed(log(1.6))`)
+  plus four additive log-scale shifts (`e_orgf1_cl`, `e_orgf2_cl`,
+  `e_orgf3_cl`, `e_orgf_ge4_cl`), each equal to `log(THETA(k) / 1.6)`. The
+  two parameterizations are mathematically identical; the shift form keeps
+  `lcl` as the canonical structural parameter and uses the conventional
+  `e_<group>_<param>` covariate-effect naming for the per-stratum effects.
+
+- **Source-data column rename.** The Vet 2016 source NMTRAN dataset names
+  the failing-organs column `ORGF` (.mod $INPUT line 11). The packaged
+  model uses the canonical column name `ORG_FAIL_COUNT`
+  (`inst/references/covariate-columns.md`), and downstream input data
+  must be renamed accordingly before being passed to `rxSolve` /
+  `nlmixr2est::nlmixr`.
 
 - **OCC column derivation.** The Vet 2016 .mod derives OCC from
   cumulative TIME inside `$PK` (`OCC=1; IF(TIME.GE.24)OCC=2; ... ; IF(TIME.GE.120)OCC=6`).
@@ -344,10 +355,11 @@ knitr::kable(
   `model()` block then decomposes OCC into `oc1..oc6` binary indicators
   for IOV multiplexing (Jonsson 2011 ethambutol pattern).
 
-- **ORGF >= 4 stratum collapse.** The Vet 2016 .mod uses
+- **ORG_FAIL_COUNT >= 4 stratum collapse.** The Vet 2016 .mod uses
   `IF (ORGF.GT.3.5) TVCL = THETA(10) * ...` to assign a single typical CL
-  to the ORGF=4 and ORGF=5 strata combined. The packaged model preserves
-  this collapse via the `orgf_ge4 <- (ORGF >= 4)` indicator; ORGF values
+  to the ORG_FAIL_COUNT=4 and ORG_FAIL_COUNT=5 strata combined. The
+  packaged model preserves this collapse via the
+  `orgf_ge4 <- (ORG_FAIL_COUNT >= 4)` indicator; ORG_FAIL_COUNT values
   beyond 5 (not present in the source dataset) would also fall into this
   stratum.
 
@@ -369,6 +381,6 @@ knitr::kable(
   multiple organ system failure (MOSF) criteria (per the Vet 2016 paper
   abstract and standard PICU reporting); the per-paper exact criteria
   could not be quoted from the publication itself because the PDF is not
-  on disk. Each downstream model that consumes `ORGF` should confirm the
-  ascertainment scheme of the dataset against the Vet 2016 / Wilkinson 1987
-  scheme before using the canonical per-stratum CL values.
+  on disk. Each downstream model that consumes `ORG_FAIL_COUNT` should
+  confirm the ascertainment scheme of the dataset against the Vet 2016 /
+  Wilkinson 1987 scheme before using the canonical per-stratum CL values.
