@@ -1,0 +1,314 @@
+---
+title: "Jager_2011_gemtuzumab"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Jager_2011_gemtuzumab}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: Jager E, van der Velden VHJ, te Marvelde JG, Walter RB, Agur Z,
+  Vainstein V (2011). *Targeted drug delivery by gemtuzumab ozogamicin:
+  mechanism-based mathematical model for treatment strategy improvement and
+  therapy individualization.* PLoS One 6(9):e24265.
+  [doi:10.1371/journal.pone.0024265](https://doi.org/10.1371/journal.pone.0024265).
+* DDMORE Foundation Model Repository entry:
+  [DDMODEL00000229](https://repository.ddmore.eu/model/DDMODEL00000229)
+  — Monolix re-fit with an added peripheral drug compartment.
+* Description: Mechanism-based PKPD model coupling drug pharmacokinetics with
+  explicit binding to the cell-surface antigen CD33. Free drug in a central
+  compartment binds free CD33 receptor to form a drug-receptor complex that is
+  internalized; the toxic ozogamicin component then drives linear depletion of
+  leukemic blast cells.
+
+The model packaged here translates the DDMORE bundle's `GO_PK_model.mdl`
+(MDL DSL source) to the nlmixr2lib `inst/modeldb/ddmore/` convention.
+Parameter values come from the bundle's MDL `parObj$STRUCTURAL` and
+`parObj$VARIABILITY` blocks, which `Model_Accommodations.txt` documents as
+the Monolix-fitted final estimates obtained by re-fitting the Jager 2011
+mechanism on the original publication data with an additional peripheral
+PK compartment and simultaneous (rather than step-wise) estimation of all
+parameters. The DDMORE bundle does **not** ship a `.lst` listing or a
+simulated dataset, and the original Jager 2011 PLoS One paper is not on
+disk under this worktree's literature tree, so the implementation is
+faithful to the MDL but has no external numeric cross-check; see
+**Assumptions and deviations** below.
+
+# Population
+
+The Jager 2011 publication describes a single-cohort mechanism-based PKPD
+analysis in patients with acute myeloid leukemia (AML) receiving the
+CD33-directed antibody-drug conjugate gemtuzumab ozogamicin (Mylotarg).
+The DDMORE bundle does not reproduce demographic detail (age, weight,
+sex, race distribution, regional balance, or trial design) in either the
+`Model_Accommodations.txt` accompaniment or the MDL `dataObj` block.
+Programmatic access:
+
+```{r population-meta}
+mod_fun <- readModelDb("Jager_2011_gemtuzumab")
+str(environment(mod_fun)$population)
+```
+
+Consult Jager et al. (2011) directly for the full population description.
+
+# Source trace
+
+The per-parameter origin is recorded as an in-file comment next to each
+`ini()` entry in
+`inst/modeldb/ddmore/Jager_2011_gemtuzumab.R`. The table below collects
+those entries in one place. All values come from the MDL bundle's
+`parObj` block in `GO_PK_model.mdl`; the bundle ships no `Output_real_*.lst`
+listing.
+
+| nlmixr2 parameter | Value      | DDMORE source location                                              |
+|-------------------|------------|---------------------------------------------------------------------|
+| `lvc`             | log(5.42)  | `parObj$STRUCTURAL$POP_v1`                                          |
+| `lk`              | log(0.0135)| `parObj$STRUCTURAL$POP_k`                                           |
+| `lkm`             | log(0.00757)| `parObj$STRUCTURAL$POP_km`                                         |
+| `lkn`             | log(0.0185)| `parObj$STRUCTURAL$POP_kn`                                          |
+| `lkb`             | log(9.24e5)| `parObj$STRUCTURAL$POP_kb`                                          |
+| `lku`             | log(310)   | `parObj$STRUCTURAL$POP_ku`                                          |
+| `lki`             | log(0.624) | `parObj$STRUCTURAL$POP_ki`                                          |
+| `lke`             | log(0.199) | `parObj$STRUCTURAL$POP_ke`                                          |
+| `lrp`             | log(823)   | `parObj$STRUCTURAL$POP_rp`                                          |
+| `lalph`           | log(0.0755)| `parObj$STRUCTURAL$POP_alph`                                        |
+| `ln0`             | log(1.32e-5)| `parObj$STRUCTURAL$POP_n0`                                         |
+| `etalki`          | 0.258²     | `parObj$VARIABILITY$omega_ki` (sd, type is sd)                      |
+| `etalke`          | 0.281²     | `parObj$VARIABILITY$omega_ke` (sd, type is sd)                      |
+| `etalrp`          | 0.611²     | `parObj$VARIABILITY$omega_rp` (sd, type is sd)                      |
+| `addSd`           | 0.000583   | `parObj$STRUCTURAL$a` (additive residual error)                     |
+| Constant `nav`    | 6.02214    | `mdlObj$MODEL_PREDICTION` inline (Avogadro number / 1e23)           |
+| Constant `vblood` | 4.8        | `mdlObj$MODEL_PREDICTION` inline (assumed blood volume, L)          |
+| ODE `central`     | n/a        | `mdlObj$MODEL_PREDICTION$DEQ` `A1`                                  |
+| ODE `target`      | n/a        | `mdlObj$MODEL_PREDICTION$DEQ` `A2` (init = rp / ke)                 |
+| ODE `complex`     | n/a        | `mdlObj$MODEL_PREDICTION$DEQ` `A3` (init = 0)                       |
+| ODE `cells`       | n/a        | `mdlObj$MODEL_PREDICTION$DEQ` `A4` (init = n0)                      |
+| ODE `peripheral1` | n/a        | `mdlObj$MODEL_PREDICTION$DEQ` `A5` (init = 0)                       |
+| Output `Cc`       | n/a        | `mdlObj$MODEL_PREDICTION$output1 = A1 / v1`                         |
+
+# Virtual cohort
+
+The DDMORE bundle for DDMODEL00000229 ships no event dataset and the
+Jager 2011 paper is not on disk, so no published clinical regimen is
+available to reproduce. The vignette exercises the packaged ODEs on a
+single typical-individual scenario (one 50 mg IV bolus into the central
+compartment) so that the simulated trajectories can be inspected for
+mechanistic plausibility — *not* as a clinically-grounded dosing
+regimen.
+
+```{r cohort}
+events <- data.frame(
+  id   = 1L,
+  time = c(0, seq(0.25, 336, by = 0.25)),
+  amt  = c(50, rep(NA_real_, length(seq(0.25, 336, by = 0.25)))),
+  evid = c(1L, rep(0L,  length(seq(0.25, 336, by = 0.25)))),
+  cmt  = c("central", rep("central", length(seq(0.25, 336, by = 0.25))))
+)
+```
+
+# Simulation
+
+```{r simulate}
+mod  <- rxode2::rxode2(readModelDb("Jager_2011_gemtuzumab"))
+mod_typ <- rxode2::zeroRe(mod)
+sim  <- rxode2::rxSolve(mod_typ, events = events)
+```
+
+# Mechanistic sanity checks
+
+The DDMORE bundle does not link to a `.lst` listing or a published NCA /
+VPC figure that this packaged model can be compared against numerically,
+and the structural model has no NCA-amenable PK arm in the ordinary sense
+(drug elimination is split across linear elimination, target-mediated
+internalization, and a peripheral PK compartment with two rate constants
+that are not in CL/Q form). Validation therefore consists of mechanistic
+sanity checks: each ODE has the qualitative behavior its mechanism implies.
+
+## Drug central concentration declines monotonically after the bolus
+
+```{r mech-cc}
+ggplot(sim, aes(time, Cc)) +
+  geom_line() +
+  scale_y_log10() +
+  labs(x = "Time (h)", y = "Cc (mg/L; assumed unit, see Errata)",
+       title = "Central drug concentration")
+```
+
+```{r mech-cc-check}
+stopifnot(sim$Cc[1] > 8)               # initial ≈ amt / vc = 50 / 5.42 ≈ 9.2
+stopifnot(all(diff(sim$Cc) < 0))       # monotonic decline (no rebound)
+stopifnot(tail(sim$Cc, 1) > 0)
+```
+
+## Free CD33 receptor depletes upon drug arrival, then recovers as drug clears
+
+The receptor is at steady state `rp / ke ≈ 4135` at `t = 0`, but the
+incoming dose drives a fast binding pulse that depletes free target by
+several orders of magnitude before `target` slowly recovers as drug —
+and complex — fall.
+
+```{r mech-target}
+ggplot(sim, aes(time, target)) +
+  geom_line() +
+  scale_y_log10() +
+  labs(x = "Time (h)", y = "Free CD33 target (relative units)",
+       title = "Free target dynamics")
+```
+
+```{r mech-target-check}
+target_steady <- with(environment(mod_fun), exp(log(823) - log(0.199)))  # rp / ke
+stopifnot(min(sim$target) < 1)                       # transient near-zero depletion
+stopifnot(tail(sim$target, 1) > min(sim$target) * 5) # partial recovery
+stopifnot(target_steady > 4000 && target_steady < 4200)
+```
+
+## Drug-receptor complex peaks early and decays as drug clears
+
+```{r mech-complex}
+ggplot(sim, aes(time, complex)) +
+  geom_line() +
+  labs(x = "Time (h)", y = "Drug-receptor complex (relative units)",
+       title = "Complex dynamics")
+```
+
+```{r mech-complex-check}
+stopifnot(sim$complex[1] > 0)
+stopifnot(max(sim$complex) > 1000)
+peak_idx  <- which.max(sim$complex)
+final_idx <- nrow(sim)
+stopifnot(sim$complex[final_idx] < sim$complex[peak_idx])
+```
+
+## Leukemic blast cells decline at the typical-population rate `alph`
+
+The cell ODE is `d/dt(cells) = -alph * cells`, so cells decay
+exponentially at typical-value rate `alph = 0.0755 1/h` (half-life
+`log(2) / alph ≈ 9.18 h`). The simulated trajectory should match this
+analytically.
+
+```{r mech-cells}
+ggplot(sim, aes(time, cells)) +
+  geom_line() +
+  scale_y_log10() +
+  labs(x = "Time (h)", y = "Leukemic blasts (relative units)",
+       title = "Blast cell depletion")
+```
+
+```{r mech-cells-check}
+alph_typ <- 0.0755
+expected <- 1.32e-5 * exp(-alph_typ * sim$time)
+rel_err  <- abs(sim$cells - expected) / expected
+stopifnot(max(rel_err) < 0.001)  # within 0.1% of the analytical solution
+```
+
+## Drug peripheral compartment fills then re-distributes
+
+```{r mech-peri}
+ggplot(sim, aes(time, peripheral1)) +
+  geom_line() +
+  labs(x = "Time (h)", y = "Drug in peripheral1 (mg)",
+       title = "Peripheral drug compartment")
+```
+
+```{r mech-peri-check}
+stopifnot(sim$peripheral1[1] > 0)
+stopifnot(any(diff(sim$peripheral1) > 0))      # at least transient accumulation
+stopifnot(any(diff(sim$peripheral1) < 0))      # then re-distribution / decline
+```
+
+# Assumptions and deviations
+
+The DDMORE Foundation Model Repository entry DDMODEL00000229 ships only
+the MDL DSL source (`GO_PK_model.mdl`), its PharmML XML rendering
+(`GO_PK_model.xml`), the `Model_Accommodations.txt` reference note, and
+RDF / scraper metadata — there is **no** `Output_real_*.lst`,
+`Output_simulated_*.lst`, or simulated event dataset. The Jager 2011
+publication itself is not on disk in this worktree's literature tree.
+The following assumptions and deviations apply.
+
+* **Parameter values come from the MDL `parObj` block, not a `.lst`
+  listing.** The bundle has no NONMEM listing file with a
+  `MINIMIZATION SUCCESSFUL` block whose final estimates can be read off,
+  and the DDMORE-source skill's default rule (read final estimates from
+  `Output_real_*.lst`) cannot apply. The MDL `parObj$STRUCTURAL` and
+  `parObj$VARIABILITY` values are treated as the bundle's authoritative
+  final estimates per `Model_Accommodations.txt`, which describes the
+  parObj as the Monolix re-fit of the Jager 2011 model on the
+  publication's data.
+* **Bundle is a Monolix re-fit, not a literal reproduction of Jager 2011.**
+  `Model_Accommodations.txt` documents two material differences from
+  the publication:
+  1. The PK structure was extended from the published one-compartment
+     drug PK (linear elimination only) to a two-compartment drug PK
+     with linear elimination plus a peripheral compartment (rate
+     constants `km`, `kn`).
+  2. All parameters were estimated simultaneously in Monolix, in
+     contrast with Jager 2011's step-wise estimation. As a result, the
+     parObj values for parameters that exist in both formulations
+     (e.g., `kb`, `ku`, `ki`, `ke`, `rp`, `k`, `alph`, `n0`, `v1`)
+     differ from the values reported in the original publication.
+
+  The packaged model reproduces the DDMORE bundle's Monolix-re-fit
+  formulation, **not** the published Jager 2011 formulation.
+* **No external numeric cross-check.** Without the publication PDF on
+  disk and without a `.lst` listing in the bundle, neither published
+  parameter tables nor the bundle's own re-fit objective function /
+  per-subject predictions are available for verification. Source-trace
+  comments point at the MDL `parObj` lines; reviewers wishing to verify
+  against the original Monolix run should consult the live DDMORE
+  repository entry at
+  `https://repository.ddmore.eu/model/DDMODEL00000229`.
+* **Units of dose, central concentration, additive error, receptor, and
+  cell counts are MDL-native.** The MDL `dataObj` block declares
+  `AMT : { use is amt, variable = A1 }` and `DV : { use is dv, variable = Y }`
+  with **no** explicit unit annotations. The packaged `units` field
+  declares `dosing = "mg"` and `concentration = "mg/L"` based on the
+  observation that a 50-unit dose into `central` produces an initial
+  `Cc = amt / vc ≈ 9.22`, which is consistent with a clinical mg-scale
+  gemtuzumab ozogamicin bolus (typical adult IV ~6–18 mg) and a
+  central volume `v1 = 5.42 L`. Receptor units (`target`, `complex`,
+  `rp`) and cell-count units (`cells`, `n0`) are MDL-native and are
+  mechanism-specific scalings rather than physical receptor or cell
+  numbers; the inline constants `nav = 6.02214` (Avogadro / 1e23) and
+  `vblood = 4.8 L` in the `central` ODE convert the per-cell binding
+  flux into a plasma-equivalent rate. Reviewers concerned about the
+  exact unit interpretation should consult Jager 2011 directly.
+* **OMEGA correlation block is dropped as vestigial.** The MDL parObj
+  declares an `OMEGA` block with `type is corr` over six etas
+  (`ETA_k`, `ETA_alph`, `ETA_n0`, `ETA_v1`, `ETA_kn`, `ETA_km`), but
+  every individual `omega_X` for those six parameters is `0.0` (`type is sd`).
+  Mathematically, a correlation among zero-variance random effects has
+  no effect on simulation; the packaged model omits the correlation
+  block and applies IIV only to `ki`, `ke`, and `rp` (the three etas
+  whose `omega_X` parObj sd is non-zero).
+* **Compartment name `cells` is non-canonical.**
+  `nlmixr2lib::checkModelConventions()` flags `cells` as not in the
+  canonical compartment list. The model's biology is leukemic blast
+  cell count, which has no canonical short name in the register;
+  `cells` was chosen by analogy with the `circ` / `precursor1..4`
+  naming used in the DDMORE bundle for `Friberg_2002_paclitaxel`. A
+  GitHub issue should ratify a canonical name for cell-count
+  compartments before this convention is reused for additional models.
+* **Population demographics absent.** The `population` metadata for
+  this model uses `NA_*` placeholders for age range, weight range, sex
+  ratio, region, and study count because the DDMORE bundle does not
+  ship that detail and the publication itself is not on disk. Consult
+  Jager 2011 for the population description.
+* **No PKNCA validation.** The structural model is not a standard PK
+  model, lacks NCA-amenable single-arm PK output for which Cmax / AUC
+  / half-life are clinically interpretable in isolation, and has no
+  published reference NCA values or VPC figure available locally to
+  compare against. Validation in this vignette is reduced to
+  mechanistic sanity (each ODE behaves as its mechanism implies) and
+  an analytical match for the leukemic-blast depletion ODE.
