@@ -244,7 +244,7 @@ intervals <- data.frame(
 )
 
 nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
-#>  ■■■■■■■■■■■■■■                    42% |  ETA:  2s
+#>  ■■■■■■■■■■■■■■■■                  50% |  ETA:  2s
 summary(nca_res)
 #>  start end    treatment   N     auclast       cmax       cmin        cav
 #>      0  14 300mg_Q2W_SS 400 2110 [41.5] 163 [40.7] 130 [43.4] 151 [41.5]

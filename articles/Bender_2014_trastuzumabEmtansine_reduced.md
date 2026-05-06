@@ -157,9 +157,9 @@ mod_rat <- mod |>
   ini(
     lcl    = log(0.00237),
     lvc    = log(0.0107),
-    lqd2   = log(0.0597),
+    lq     = log(0.0597),
     lvp    = log(0.00252),
-    lqd3   = log(0.0139),
+    lq2    = log(0.0139),
     lvp2   = log(0.0155),
     lcldec = log(0.00224),
     propSd   = 0.109,
@@ -167,9 +167,9 @@ mod_rat <- mod |>
   )
 #> ℹ change initial estimate of `lcl` to `-6.0448653238351`
 #> ℹ change initial estimate of `lvc` to `-4.53751153751428`
-#> ℹ change initial estimate of `lqd2` to `-2.81842325858358`
+#> ℹ change initial estimate of `lq` to `-2.81842325858358`
 #> ℹ change initial estimate of `lvp` to `-5.98349637745881`
-#> ℹ change initial estimate of `lqd3` to `-4.27586643884549`
+#> ℹ change initial estimate of `lq2` to `-4.27586643884549`
 #> ℹ change initial estimate of `lvp2` to `-4.16691525505694`
 #> ℹ change initial estimate of `lcldec` to `-6.10127941311519`
 #> ℹ change initial estimate of `propSd` to `0.109`
