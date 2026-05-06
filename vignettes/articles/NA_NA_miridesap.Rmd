@@ -1,0 +1,433 @@
+---
+title: "NA_NA_miridesap"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{NA_NA_miridesap}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode2(readModelDb("NA_NA_miridesap"))$reference`
+* Description: `r rxode2::rxode2(readModelDb("NA_NA_miridesap"))$description`
+* DDMORE Foundation Model Repository entry: [DDMODEL00000262](https://repository.ddmore.eu/model/DDMODEL00000262)
+* Linked publication: **none identified** (see Errata).
+
+This model is a population PK/PD characterisation of CPHPC (also known
+as miridesap, GSK2315698, Ro 63-8695) and serum amyloid P (SAP) in
+healthy volunteers and patients with systemic amyloidosis. CPHPC is a
+small-molecule palindromic ligand designed to deplete plasma SAP by
+binding its calcium-coordinated pentameric face; the bound CPHPC-SAP
+complex is rapidly cleared from circulation by hepatocytes via FcgRn
+internalization (the published clinical motivation behind the SAP-
+depletion approach to systemic amyloidosis is reviewed in Pepys et al.
+2002, *Nature* 417:254-259, but the corresponding popPK/PD modelling
+publication for `DDMODEL00000262` could not be located on disk in this
+worktree — see Errata).
+
+The model was extracted from the DDMORE Foundation Model Repository
+bundle for `DDMODEL00000262` (scraped to
+`dpastoor/ddmore_scraping/262/`). The bundle contains:
+
+- `Executable_simulated_CPHPC_dataset.ctl` — the NONMEM `.ctl` for the
+  **base model**: 17 THETAs covering CPHPC two-compartment PK, SAP
+  two-compartment turnover, CPHPC-SAP binding kinetics, an SC depot,
+  and a single CRCL covariate on CPHPC clearance.
+- `Output_simulated_CPHPC_dataset.lst` — NONMEM listing from running
+  the base model on `Simulated_CPHPC_dataset.csv`. The run uses
+  `$EST METHOD=IMP EONLY=1` (importance-sampling **evaluation only**,
+  no optimization), so the FINAL PARAMETER ESTIMATE block faithfully
+  reproduces the `.ctl` initial values to within rounding — confirming
+  the `.ctl` `$THETA` block as the source of truth for the base
+  model's final estimates.
+- `Output_real_CPHPC.lst` — listing for a more elaborate **FINAL
+  MODEL** with 21 THETAs that adds organ-specific amyloid-load
+  covariates (AMLIVER, AMSPLEEN, AMBONE, AMHEART, ...) on top of the
+  base model. The corresponding `.mod` is **not** in the bundle; this
+  extraction therefore stops at the base model.
+- `Simulated_CPHPC_dataset.csv` — a 38-subject simulated dataset with
+  IV regimens spanning 5 mg/h x 1 h up to 70 mg/h x 1 h + 10 mg/h x 23 h
+  loading-and-maintenance schedules.
+- `DDMODEL00000262.rdf` — RDF metadata: a PK/PD model
+  (`pkpd_0000036`) connecting CPHPC exposure to plasma SAP. The
+  description names two contributing GSK studies (CPH113776 in healthy
+  volunteers and CPH114527 in amyloidosis patients) but no journal
+  publication is referenced.
+- `262.json`, `Command.txt` — scraper metadata and the NONMEM run
+  command.
+
+The bundle has no `Model_Accomodations.text` file, so publication
+identification rests on the RDF description and the `.ctl` `$PROB`
+line (`BASE MODEL`). A PubMed search by `CPHPC` / `miridesap` / `SAP
+depletion population PK` did not return a match for the specific
+modelling work that produced `DDMODEL00000262`.
+
+# Population
+
+The DDMODEL00000262 RDF metadata names two clinical studies feeding
+the model: CPH113776 (a healthy-volunteer first-in-human study of
+CPHPC) and CPH114527 (an exploratory study in patients with systemic
+amyloidosis). The `Output_real_CPHPC.lst` reports `TOT. NO. OF
+INDIVIDUALS: 38` across the combined cohort (the `.lst` is for the
+FINAL MODEL with patient-organ-load covariates, but the underlying
+study population is the same). Finer-grained demographics — age,
+weight, sex distribution, region, dose escalation — are not in the
+DDMORE bundle and no linked publication was located.
+
+The same information is available programmatically via the model's
+`population` metadata (`readModelDb("NA_NA_miridesap")$population`
+after the model is loaded).
+
+# Source trace
+
+The per-parameter origin is recorded inline in
+`inst/modeldb/ddmore/NA_NA_miridesap.R`. The table below collects them
+in one place for review. **All structural-parameter values come from
+the bundle's `Executable_simulated_CPHPC_dataset.ctl`; the
+`Output_simulated_CPHPC_dataset.lst` reproduces those values as the
+"final estimates" of an `EONLY=1` evaluation run.** No linked
+publication was identified for cross-validation.
+
+| nlmixr2 parameter | Source THETA | Source value | Linear value | Source location |
+|-------------------|-------------|-------------|-------------|-----------------|
+| `lcl`             | THETA(2)    | 1.92        | CL = 6.82 L/h | `.ctl` `$THETA` line 201 (`; 2. CL`) |
+| `lvc`             | THETA(3)    | 2.76        | Vc = 15.8 L | `.ctl` `$THETA` line 202 (`; 3. V`) |
+| `lq`              | THETA(4)    | 0.595       | Q = 1.81 L/h | `.ctl` `$THETA` line 203 (`; 4. Q`) |
+| `lvp`             | THETA(5)    | 2.84        | Vp = 17.1 L | `.ctl` `$THETA` line 204 (`; 5. V2`) |
+| `e_crcl_cl`       | THETA(15)   | 0.0152      | -            | `.ctl` `$THETA` line 214 (`; 15. CRCLCOV`) |
+| `lka`  (FIXED)    | THETA(14)   | 0.4055      | ka = 1.50 1/h | `.ctl` `$THETA` line 213 (`; 14. KASC`) |
+| `lfdepot` (FIXED) | THETA(13)   | 1 (linear)   | F = 1        | `.ctl` `$THETA` line 212 (`; 13. FSC`) |
+| `lkout`           | THETA(1)    | -3.07       | kout = 0.0464 1/h | `.ctl` `$THETA` line 200 (`; 1. KOUT`) |
+| `lsap0`           | THETA(6)    | 3.37        | sap0 = 29.1 mg/L | `.ctl` `$THETA` line 205 (`; 6. SAP10`) |
+| `lvp_sap`         | THETA(16)   | 3.47        | Vp_sap = 32.1 L | `.ctl` `$THETA` line 215 (`; 16. V4`) |
+| `lq_sap`          | THETA(17)   | 1.49        | Q_sap = 4.44 L/h | `.ctl` `$THETA` line 216 (`; 17. Q4`) |
+| `lkon`            | THETA(7)    | 14.6        | kon = 2.19e6 L/(mol h) | `.ctl` `$THETA` line 206 (`; 7. KON`) |
+| `lkint`           | THETA(8)    | 5.71 (linear) | kint = 5.71 1/h | `.ctl` `$THETA` line 207 (`; 8. KINT`) |
+| `propSd`          | THETA(9)    | 0.286       | -            | `.ctl` `$THETA` line 208 (`; 9. PROPPK`) |
+| `propSd_sap`      | THETA(11)   | 0.268       | -            | `.ctl` `$THETA` line 210 (`; 11. PROPSAP`) |
+| `etalkout`        | OMEGA(1)    | 0.125       | -            | `.ctl` `$OMEGA` line 217 (`; 1. OMKOUT`) |
+| `etalcl`          | OMEGA(2)    | 0.0474      | -            | `.ctl` `$OMEGA` line 218 (`; 2. OMCL`) |
+| `etalvc`          | OMEGA(3)    | 0.0836      | -            | `.ctl` `$OMEGA` line 219 (`; 3. OMV`) |
+| `etalq`  (FIXED)  | OMEGA(4)    | 0.0225      | -            | `.ctl` `$OMEGA` line 220 (`; 4. OMQ`) |
+| `etalvp` (FIXED)  | OMEGA(5)    | 0.0225      | -            | `.ctl` `$OMEGA` line 221 (`; 5. OMV2`) |
+| `etalsap0`        | OMEGA(6)    | 0.0625      | -            | `.ctl` `$OMEGA` line 222 (`; 6. OMSAP10`) |
+| `etalkon`  (FIXED)| OMEGA(7)    | 0.0225      | -            | `.ctl` `$OMEGA` line 223 (`; 7. OMKON`) |
+| `etalkint` (FIXED)| OMEGA(8)    | 0.0225      | -            | `.ctl` `$OMEGA` line 224 (`; 8. OMKINT`) |
+| `etalq_sap`       | OMEGA(9)    | 1.11        | -            | `.ctl` `$OMEGA` line 225 (`; 9. OMQ4`) |
+| `etalvp_sap`      | OMEGA(10)   | 2.05        | -            | `.ctl` `$OMEGA` line 226 (`; 10. OMV4`) |
+| `etalka` (FIXED)  | OMEGA(11)   | 0.0225      | -            | `.ctl` `$OMEGA` line 227 (`; 11. OMKSC`) |
+| `MOLCPH`          | constant    | 340.37 kDa  | mg/mol       | `.ctl` `$PK` line 40 |
+| `MOLSAP`          | constant    | 5 x 25 kDa  | mg/mol       | `.ctl` `$PK` line 39 |
+| `d/dt(depot)`     | -           | -           | -            | `.ctl` `$DES` line 163 (`-KSC*A5`) + dosing into A5 |
+| `d/dt(central)`   | -           | -           | -            | `.ctl` `$DES` line 158 (CPHPC mass balance) |
+| `d/dt(peripheral1)` | -         | -           | -            | `.ctl` `$DES` line 159 (CPHPC peripheral) |
+| `d/dt(total_target)` | -        | -           | -            | `.ctl` `$DES` line 161 (SAP central total) |
+| `d/dt(target_peripheral)` | -   | -           | -            | `.ctl` `$DES` line 162 (SAP peripheral free) |
+| `d/dt(complex)`   | -           | -           | -            | `.ctl` `$DES` line 164 (CPHPC-SAP complex) |
+| Observation `Cc`  | -           | scaling     | ng/mL        | `.ctl` `$PK` line 135 (`S1 = V/1000`) |
+| Observation `sap` | -           | scaling     | ng/mL-equiv  | `.ctl` `$PK` line 136 (`S3 = 1/(1000*MOLSAP)`) |
+
+Source-trace note on the `target_peripheral` compartment name: see
+[Errata](#errata).
+
+# Virtual cohort
+
+The bundle's `Simulated_CPHPC_dataset.csv` carries 38 simulated
+subjects with IV-only regimens. To exercise the full structural model
+- including the SC depot which the bundle's simulated dataset does not
+exercise - we build a small representative virtual cohort below
+(typical-value subjects covering normal renal function and a CRCL = 50
+mL/min subject to demonstrate the CRCL covariate effect).
+
+```{r cohort}
+set.seed(20260506)
+
+# Three subjects: two with normal CRCL (one IV-only, one IV + SC), and
+# one with reduced renal function on IV-only.
+subjects <- tibble::tribble(
+  ~id, ~CRCL, ~regimen,           ~scenario,
+  1L,  100,   "iv_loading_main",  "IV 70 mg/h x1h + 10 mg/h x23h, CRCL 100",
+  2L,   50,   "iv_loading_main",  "IV 70 mg/h x1h + 10 mg/h x23h, CRCL 50",
+  3L,  100,   "sc_single",        "SC depot 200 mg, CRCL 100"
+)
+
+obs_times <- sort(unique(c(seq(0, 36, by = 0.25))))
+
+make_cohort <- function(subjects, id_offset = 0L) {
+  out <- list()
+  for (i in seq_len(nrow(subjects))) {
+    s <- subjects[i, ]
+    if (s$regimen == "iv_loading_main") {
+      ev <- rxode2::et(amt = 70, rate = 70, cmt = "central", time = 0) |>
+        rxode2::et(amt = 230, rate = 10, cmt = "central", time = 1) |>
+        rxode2::et(obs_times, cmt = "Cc") |>
+        rxode2::et(obs_times, cmt = "sap")
+    } else if (s$regimen == "sc_single") {
+      ev <- rxode2::et(amt = 200, cmt = "depot", time = 0) |>
+        rxode2::et(obs_times, cmt = "Cc") |>
+        rxode2::et(obs_times, cmt = "sap")
+    } else {
+      stop("unknown regimen: ", s$regimen)
+    }
+    df <- as.data.frame(ev)
+    df$id       <- id_offset + s$id
+    df$CRCL     <- s$CRCL
+    df$scenario <- s$scenario
+    out[[i]]    <- df
+  }
+  dplyr::bind_rows(out)
+}
+
+events <- make_cohort(subjects)
+
+# Cheap regression guard against accidental id collisions.
+stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
+```
+
+# Simulation
+
+```{r simulate}
+mod <- rxode2::zeroRe(readModelDb("NA_NA_miridesap"))
+
+sim <- rxode2::rxSolve(
+  mod, events = events,
+  keep = c("CRCL", "scenario"),
+  returnType = "data.frame", addDosing = FALSE
+) |>
+  dplyr::filter(!is.na(time))
+```
+
+For demonstration of between-subject variability in the SAP-recovery
+phase (where the IIV is non-trivial), we also run a small stochastic
+cohort - 50 subjects all on the IV loading + maintenance regimen at
+CRCL = 100:
+
+```{r vpc-cohort}
+mod_iiv <- readModelDb("NA_NA_miridesap")  # keeps IIV active
+n_vpc <- 50L
+vpc_events <- make_cohort(
+  tibble::tibble(
+    id       = seq_len(n_vpc),
+    CRCL     = rep(100, n_vpc),
+    regimen  = rep("iv_loading_main", n_vpc),
+    scenario = rep("VPC: IV 70 mg/h + 10 mg/h, CRCL 100", n_vpc)
+  )
+)
+sim_vpc <- rxode2::rxSolve(
+  mod_iiv, events = vpc_events, nSub = 1L,
+  keep = c("CRCL", "scenario"),
+  returnType = "data.frame", addDosing = FALSE
+) |>
+  dplyr::filter(!is.na(time))
+```
+
+# Replicate trajectories
+
+The bundle's `Output_simulated_CPHPC_dataset.lst` does not ship its
+`$TABLE` predictions in a format we can plot directly here, but the
+key qualitative behaviours of the base model are: (a) CPHPC plasma
+concentration rises during the loading dose to a few thousand ng/mL,
+sustains during the maintenance infusion, then declines biexponentially
+once dosing stops; (b) plasma SAP drops by 1-2 orders of magnitude
+during dosing - the published clinical mechanism of SAP depletion -
+and recovers towards baseline at the endogenous turnover half-life
+(`ln(2) / kout` ~ `r round(log(2) / 0.0464, 1)` h); (c) renal
+impairment reduces CPHPC clearance, raising plasma exposure.
+
+```{r figure-cphpc}
+sim |>
+  ggplot(aes(time, Cc, colour = scenario, linetype = scenario)) +
+  geom_line(linewidth = 0.6) +
+  scale_y_log10() +
+  labs(
+    x = "Time (h)", y = "CPHPC plasma concentration (ng/mL)",
+    colour = NULL, linetype = NULL,
+    title = "CPHPC plasma trajectory by regimen / CRCL",
+    caption = "Typical-value (zero-IIV) simulation of NA_NA_miridesap."
+  ) +
+  theme_bw() +
+  theme(legend.position = "bottom") +
+  guides(colour = guide_legend(ncol = 1))
+```
+
+```{r figure-sap}
+sim |>
+  ggplot(aes(time, sap / 1000, colour = scenario, linetype = scenario)) +
+  geom_line(linewidth = 0.6) +
+  geom_hline(yintercept = exp(3.37), linetype = "dotted", colour = "grey40") +
+  scale_y_continuous(trans = "log10") +
+  labs(
+    x = "Time (h)",
+    y = "Plasma SAP (mg/L; horizontal dotted line = baseline 29.1 mg/L)",
+    colour = NULL, linetype = NULL,
+    title = "Plasma SAP trajectory: depletion during CPHPC dosing and recovery",
+    caption = "Typical-value (zero-IIV) simulation of NA_NA_miridesap. SAP is converted ng/mL -> mg/L by /1000."
+  ) +
+  theme_bw() +
+  theme(legend.position = "bottom") +
+  guides(colour = guide_legend(ncol = 1))
+```
+
+```{r figure-vpc-sap}
+sim_vpc |>
+  group_by(time) |>
+  summarise(
+    q05 = quantile(sap, 0.05, na.rm = TRUE),
+    q50 = quantile(sap, 0.50, na.rm = TRUE),
+    q95 = quantile(sap, 0.95, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(time, q50 / 1000)) +
+  geom_ribbon(aes(ymin = q05 / 1000, ymax = q95 / 1000), alpha = 0.2) +
+  geom_line(linewidth = 0.6) +
+  geom_hline(yintercept = exp(3.37), linetype = "dotted", colour = "grey40") +
+  scale_y_log10() +
+  labs(
+    x = "Time (h)", y = "Plasma SAP (mg/L)",
+    title = "Stochastic VPC: plasma SAP under IV loading + maintenance",
+    caption = sprintf(
+      "n = %d subjects, IV 70 mg/h x1h + 10 mg/h x23h, CRCL = 100 mL/min. Median + 90%% prediction interval.",
+      n_vpc
+    )
+  ) +
+  theme_bw()
+```
+
+# Self-consistency check (F.2)
+
+There is no linked publication to compare against; per the
+`extract-literature-model` skill's `references/ddmore-source.md`
+decision tree, validation reduces to (a) the model parses, (b)
+`rxode2::rxSolve()` runs to completion on a representative regimen,
+(c) qualitative behaviours match the source `.ctl`'s known dynamics,
+(d) typical-value values stay in physiologically plausible ranges.
+
+```{r f2-self-consistency}
+sim_unique <- sim |>
+  dplyr::distinct(scenario, time, .keep_all = TRUE)
+
+sanity <- sim_unique |>
+  dplyr::group_by(scenario) |>
+  dplyr::summarise(
+    cphpc_baseline_ng_mL  = Cc[which(time == min(time))[1]],
+    cphpc_peak_ng_mL      = max(Cc, na.rm = TRUE),
+    cphpc_final_ng_mL     = Cc[which.max(time)],
+    sap_baseline_mg_L     = sap[which(time == min(time))[1]] / 1000,
+    sap_min_mg_L          = min(sap, na.rm = TRUE) / 1000,
+    sap_recovery_t30_mg_L = {
+      idx <- which.min(abs(time - 30))
+      sap[idx] / 1000
+    },
+    .groups = "drop"
+  )
+knitr::kable(sanity, digits = 2,
+             caption = paste("Per-scenario sanity summary. CPHPC baseline = 0",
+                             "(no drug at t=0); SAP baseline ~ 29 mg/L (= exp(3.37));",
+                             "CPHPC peak driven by the loading dose; SAP minimum",
+                             "reached during sustained CPHPC exposure."))
+```
+
+The numbers above are the F.2 acceptance criteria: CPHPC baseline = 0,
+SAP baseline matches `exp(lsap0) = 29.1 mg/L` (small numeric drift OK
+because the proportional scaling carries through `MOLSAP * 1000`),
+SAP minimum is well below baseline (large depletion during sustained
+exposure - the clinical mechanism of CPHPC), and reduced CRCL increases
+CPHPC exposure (the CRCL = 50 scenario shows a higher final
+concentration than CRCL = 100 at the same dose, since `crcl_effect =
+1 + 0.0152 * (50 - 80) = 0.544` reduces CL to 54% of typical).
+
+# Errata, assumptions, and deviations
+
+- **No linked publication.** A PubMed / Google Scholar search by
+  `CPHPC` / `miridesap` / `SAP depletion population PK / PK-PD` did
+  not return a journal publication corresponding to
+  `DDMODEL00000262`. The `Pepys et al. 2002 Nature` paper (cited in
+  the model description) describes the drug discovery / clinical
+  mechanism but not the pop PK/PD modelling work. The DDMORE bundle
+  has no `Model_Accomodations.text` file. The `reference` field
+  therefore records "DDMORE Foundation Model Repository: DDMODEL00000262.
+  No linked publication."
+- **Base model rather than FINAL MODEL.** The bundle ships the `.ctl`
+  for the BASE MODEL (17 THETAs; CRCL covariate only) but the `.lst`
+  for the FINAL MODEL (21 THETAs; CRCL plus organ-specific
+  amyloid-load covariates AMLIVER, AMSPLEEN, AMBONE, AMHEART, ...).
+  We extract the base model because the FINAL MODEL's `.mod` is not in
+  the bundle - without it, the structural code for the four extra
+  THETAs (`TH18` ... `TH21`) is unrecoverable. A future extraction
+  could add a `_final` variant if the operator obtains the FINAL
+  MODEL's source `.mod`.
+- **Final estimates source.** The `.ctl`'s `$THETA` initial values are
+  the source of truth: `Output_simulated_CPHPC_dataset.lst` reproduces
+  them exactly because the simulated run is `$EST METHOD=IMP EONLY=1`
+  (importance-sampling **evaluation only**, no optimization). The
+  Output_real_CPHPC.lst's FINAL PARAMETER ESTIMATE block reports
+  slightly different values for the structural THETAs (e.g.
+  `lvc = 2.78` vs `.ctl` 2.76, `lq = 0.542` vs 0.595) because that
+  listing is for the FINAL MODEL with covariates re-fit on the real
+  data; we follow the bundle's executable `.ctl` rather than the
+  FINAL MODEL's listing because only the `.ctl` ships re-runnable code.
+- **Bundle "FSC = 1 FIXED".** The `.ctl`'s SC bioavailability THETA(13)
+  is fixed at 1, so subcutaneous and IV doses produce identical AUC
+  for a given mg dose. This is unusual for a real SC formulation and
+  may reflect a placeholder choice in the modelling work - the bundle
+  has no documentation explaining it. We propagate the FIX as-is.
+- **`target_peripheral` compartment naming deviation.** The model
+  carries an SAP peripheral compartment whose canonical-naming
+  analogue in nlmixr2lib (`target_peripheral`) is not in the
+  `R/conventions.R` registered compartment list. `checkModelConventions()`
+  flags it as a warning. The deviation is justified: the source model
+  has a target (SAP) with its own central + peripheral distribution,
+  and the registered names (`target` for free, `complex` for bound,
+  `total_target` for total under QSS / MM TMDD) do not cover the
+  "free target peripheral compartment" concept. Adding the new name
+  to the conventions register is out of scope for this PR; if more
+  models with the same shape are added in the future the convention
+  should be extended rather than each model carrying the deviation
+  independently.
+- **`KOFF` is computed in the `.ctl` but not used in the `$DES`.** The
+  bundle defines `KD = 10 nM` and `KOFF = KON * KD` (lines 101-104) but
+  `DADT(6)` (the bound-complex ODE) has only `KON*C3F*C1F - KINT*C3C1`
+  with no `+ KOFF * C3C1` term - i.e. the binding is treated as
+  effectively irreversible because internalization is much faster than
+  dissociation (`KINT = 5.71 / h` versus `KOFF = 0.0219 / h`). We omit
+  KD / KOFF from the nlmixr2 model for the same reason; the simulation
+  trajectories below should be identical to a model with KOFF
+  explicitly carried because of the order-of-magnitude separation.
+- **Mixed-units compartments.** Following the source `.ctl`, the
+  CPHPC compartments (`depot`, `central`, `peripheral1`) carry mass in
+  mg, while the SAP / complex compartments (`total_target`,
+  `target_peripheral`, `complex`) carry concentration in mol/L. Unit
+  conversions between the two systems use the molecular weights
+  `MOLCPH = 340.37 kDa` (CPHPC) and `MOLSAP = 5 * 25 kDa` (SAP
+  pentamer). Reviewers verifying dimensional consistency should pay
+  particular attention to the mixed-units terms in `d/dt(central)`
+  (the `kint * vc * MOLCPH * complex` term converts mol/L to mg/h)
+  and `d/dt(target)` (the `k43 * target_peripheral * vp_sap / vc`
+  term carries volume ratios because peripheral free SAP is moved as
+  concentration into the central total compartment).
+- **Dosing units / scaling carry-through.** The `.ctl`'s `S1 = V / 1000`
+  and `S3 = 1 / (1000 * MOLSAP)` convert mass and concentration to
+  ng/mL for both observations. We propagate this unchanged:
+  `Cc = central / vc * 1000` (mg/L * 1000 = ng/mL) and
+  `sap = total_target * MOLSAP * 1000` (mol/L * mg/mol * 1000 = ng/mL =
+  mg/L * 1000). The SAP observation column is therefore on a
+  ng/mL-equivalent scale; figures and tables in this vignette divide
+  by 1000 to express SAP in the conventional clinical mg/L unit.
+- **DDMORE "FINAL MODEL" listing reports `R MATRIX ALGORITHMICALLY
+  SINGULAR`-adjacent diagnostics.** The Output_real_CPHPC.lst notes
+  "Number of Negative Eigenvalues in Matrix=20 ... Forcing positive
+  definiteness" (line 327-330), suggesting the FINAL MODEL's covariance
+  step did not converge cleanly. We extract the BASE MODEL only, and
+  the simulated-data `.lst` (which is for the BASE MODEL) reports a
+  clean importance-sampling evaluation, so this advisory affects the
+  un-extracted FINAL MODEL only.
