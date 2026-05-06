@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Novakovic 2017 cladribine ([doi:10.1208/s12248-016-9977-z](https://doi.org/10.1208/s12248-016-9977-z)) [DDMODEL00000223] — adults with relapsing-remitting multiple sclerosis (8-item EDSS Item Response Theory disease-progression model with FREM covariates).
 * Add Schindler 2016 sunitinib ([doi:10.1002/psp4.12057](https://doi.org/10.1002/psp4.12057)) [DDMODEL00000221] — adults with imatinib-resistant or imatinib-intolerant advanced gastrointestinal stromal tumor.
 * Add Jager 2011 gemtuzumab ([doi:10.1371/journal.pone.0024265](https://doi.org/10.1371/journal.pone.0024265)) [DDMODEL00000229] — patients with acute myeloid leukemia (mechanism-based PKPD with explicit CD33 binding and leukemic-blast cell killing; DDMORE Monolix re-fit with added peripheral PK compartment).
 * Add Khan 2015 ciprofloxacin ([doi:10.1093/jac/dkv233](https://doi.org/10.1093/jac/dkv233)) [DDMODEL00000225] — in vitro time-kill experiments on E. coli K-12 wild-type and quinolone-resistant single-step mutants.

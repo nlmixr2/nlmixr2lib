@@ -2286,6 +2286,26 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Zheng_2016_sifalimumab.R` (power effect on V1 with exponent 0.06), `Castro-Surez_2020_nimotuzumab.R` (binary-indicator usage `(DOSE == 50)` applying a 53 % decrease in V1 for the 50 mg cohort), `Hansson_2013a_sunitinib.R` (DDMODEL00000197; time-varying record-level dose feeding `AUC = DOSE / CLI`), `Schindler_2016_sunitinib.R` (DDMODEL00000221; same `AUC = DOSE / CLI` form, with the daily-dose column toggling between 50 mg/day on-cycle and 0 on dose-holiday records), `Girard_2012_pimasertib.R` (linear coefficient on the dropout-hazard log-rate: `exp(beta * DOSE)` Weibull multiplier; per-subject daily dose, observed range 1-255 mg).
 - **Notes:** Distinct from `DOSE_70MG` (binary indicator for a specific dose group in a trinary-dose design) and from the rxode2/nlmixr2 event column `amt` (which carries the administered dose at dose events). For use case (a), the values are typically time-fixed per subject; for use case (b), the values are time-varying with on/off cycling — for sunitinib 4-weeks-on / 2-weeks-off cycling, set `DOSE = nominal_daily_mg` (e.g., 50) during on-cycles and 0 during off-cycles or for the placebo arm. Per-model `covariateData[[DOSE]]$notes` should state which use case applies.
 
+### CD
+- **Description:** Time-varying cumulative cladribine dose (mg total dose, not body-weight-normalized) administered to each subject up to the current observation time. Stays at zero during the placebo arm and during the pre-dose baseline phase, rises stepwise across the dosing schedule (cladribine is given as short oral pulses), and remains constant between dose events.
+- **Units:** mg
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a — used inside `EXPS = CD * 104.5 / CRL` as an exposure surrogate driving an Emax-style symptomatic effect on disease progression, not as a power-form covariate.
+- **Source aliases:** `CD` — column name used in the DDMODEL00000223 input dataset (`Simulated_Novakovic_2016_multiplesclerosis_cladribine_irt.csv`).
+- **Example models:** `Novakovic_2017_cladribine.R`.
+- **Notes:** Distinct from `DOSE` (per-subject assigned dose level, time-fixed) and `COHDOSE` (mg/kg cohort label, time-fixed). `CD` is the *cumulative* dose accrued at each timepoint, supplied as a time-varying covariate column rather than via dosing events because the Novakovic 2017 model does not carry an explicit cladribine-PK compartment. Scope: specific because the constant 104.5 inside the exposure-surrogate equation is hard-coded for cladribine in the source.
+
+### TRT
+- **Description:** Treatment-cohort indicator used in the Novakovic 2017 cladribine IRT model. 0 = placebo, 1 = cladribine 3.5 mg/kg cumulative-dose cohort, 2 = cladribine 5.25 mg/kg cumulative-dose cohort.
+- **Units:** (categorical)
+- **Type:** categorical
+- **Scope:** specific
+- **Reference category:** 0 (placebo).
+- **Source aliases:** `TRT` — column name used in the DDMODEL00000223 input dataset (`Simulated_Novakovic_2016_multiplesclerosis_cladribine_irt.csv`).
+- **Example models:** `Novakovic_2017_cladribine.R`.
+- **Notes:** Gates the symptomatic and protective drug-effect terms via `TRT >= 1 && t > 0`; the categorical level (1 vs 2) is informational because the dose-response is driven by the time-varying `CD` covariate and the per-cohort dosing schedule, not by `TRT` itself. Scope: specific because the cohort labelling (3.5 vs 5.25 mg/kg cumulative dose over 2 years) is tied to the CLARITY-program cladribine dosing schedule. Future models that need a generic on-treatment indicator should register a new canonical name (e.g., `ON_TREATMENT`) rather than reusing `TRT`.
+
 ### DOSE_70MG
 - **Description:** 1 = subject is on the 70 mg SC Q4W dose regimen, 0 = subject is on the 210 or 490 mg SC Q4W regimen.
 - **Units:** (binary)
