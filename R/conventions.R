@@ -69,7 +69,10 @@
     "3oh", "7dm",
     # N-desmethyl-bedaquiline metabolite (M2) of bedaquiline
     # (Svensson 2016 DDMODEL00000219).
-    "m2"
+    "m2",
+    # Endoxifen (4-hydroxy-N-desmethyltamoxifen), the major active
+    # metabolite of tamoxifen — Ter Heine 2014.
+    "endx"
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` denotes the time-varying decay arm.
