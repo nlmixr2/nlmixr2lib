@@ -564,6 +564,62 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `FiedlerKelly_2020_fremanezumab_em.R`, `FiedlerKelly_2020_fremanezumab_cm.R`.
 - **Notes:** Specific scope because the value is intrinsically tied to the modelled drug — there is no shared meaning across drugs or studies. Each model's `covariateData[[CAV]]$notes` should state how the Cav values are derived (e.g., empirical-Bayes from a referenced population PK model) and that the column is set to 0 for placebo periods.
 
+### DOSE_MG (**canonical for current administered dose level supplied as a data column**)
+- **Description:** Current administered dose level (in mg) carried as a per-record data column rather than via NONMEM/rxode2 dose events. Used in PD-only models that derive a per-cycle exposure metric (e.g., AUC = DOSE_MG / CLI) from a posthoc-CL covariate without instantiating a PK ODE. The column is set to 0 during off-treatment periods (drug holidays, placebo arm) so the derived exposure becomes 0.
+- **Units:** mg (document per-model via `covariateData[[DOSE_MG]]$units`).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a — appears directly in derived-exposure expressions; not a covariate effect coefficient.
+- **Source aliases:**
+  - `DOS` — used in the Hansson 2013 sunitinib biomarker / fatigue PD-model family (DDMODEL00000197 and siblings) as a per-record sunitinib dose column.
+  - `DOSE` — used in `Hansson_2013c_sunitinib.R` (DDMODEL00000222 fatigue Markov / proportional-odds model) as the per-record sunitinib dose column.
+- **Example models:** `Hansson_2013a_sunitinib.R` (DDMODEL00000197), `Hansson_2013c_sunitinib.R` (DDMODEL00000222).
+- **Notes:** Specific scope because the value is study/regimen-specific and meaningless without a paired posthoc-CL column. Distinct from the rxode2/nlmixr2 event column `amt` (which carries the administered dose at dose events) and from `DOSE` (per-subject *assigned* dose level used as a power covariate on a PK parameter): `DOSE_MG` is a record-level value used directly inside `model()` to compute a per-cycle exposure summary in a model that has no PK ODE. For sunitinib 4-weeks-on / 2-weeks-off cycling, set DOSE_MG = nominal_daily_mg (e.g., 50) during on-cycles and 0 during off-cycles or for the placebo arm.
+
+### CLI (**canonical for individual posthoc clearance from an upstream popPK fit**)
+- **Description:** Subject-specific empirical-Bayes (posthoc) total plasma clearance from a separately published population PK model that the current PD model treats as a fixed input. Used as a per-subject (time-fixed) covariate in PD-only models that derive a per-cycle exposure metric (e.g., AUC = DOSE_MG / CLI) without instantiating a PK ODE.
+- **Units:** L/h (document per-model via `covariateData[[CLI]]$units`).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a — appears directly in derived-exposure expressions; not a covariate effect coefficient.
+- **Source aliases:**
+  - `CL` — used in the Hansson 2013 sunitinib biomarker / fatigue PD-model family (DDMODEL00000197 and DDMODEL00000222) as the posthoc CL column from the paper's upstream 2-compartment popPK fit.
+- **Example models:** `Hansson_2013a_sunitinib.R` (DDMODEL00000197; typical-value reference 32.819 L/h, drawn from the bundle's simulated dataset for subject 1 — broadly consistent with Houk et al. 2010 typical sunitinib CL); `Hansson_2013c_sunitinib.R` (DDMODEL00000222; uses a per-record `CL` column with subject-specific values 30-43 L/h in the bundle's three-subject simulated dataset).
+- **Notes:** Specific scope because the values are intrinsically tied to a specific upstream popPK fit (sunitinib in this case; another model adopting CLI would carry its own upstream-PK lineage). Renamed from the source's `CL` column because `cl` is the canonical nlmixr2 PK parameter name (a parameter, not a data column). Each model's `covariateData[[CLI]]$notes` should cite the upstream popPK source (paper or DDMORE ID) and explain how to populate the column for new simulations (typically: simulate the upstream popPK first to obtain individual CL, or set every subject to the typical-value CL for typical-trajectory simulations).
+
+### BAS_SVEGFR3 (**canonical for individual posthoc baseline soluble VEGFR-3 concentration from an upstream PD fit**)
+- **Description:** Subject-specific empirical-Bayes (posthoc) baseline plasma sVEGFR-3 (soluble vascular endothelial growth factor receptor 3) concentration from a separately published indirect-response biomarker model that the current downstream PD model treats as a fixed input. Used as a per-subject (time-fixed) covariate in fatigue / adverse-event PD models that consume the upstream biomarker dynamics as data covariates without instantiating the biomarker ODE.
+- **Units:** pg/mL (document per-model via `covariateData[[BAS_SVEGFR3]]$units`).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a — appears directly inside `model()` as the initial condition `svegfr3(0) <- BAS_SVEGFR3` and inside the relative-change driver `bm = (svegfr3 - BAS_SVEGFR3) / BAS_SVEGFR3`.
+- **Source aliases:**
+  - `BAS3` — used in `Hansson_2013c_sunitinib.R` (DDMODEL00000222) as the posthoc sVEGFR-3 baseline column from the paper's upstream Hansson 2013a biomarker indirect-response fit (DDMODEL00000197).
+- **Example models:** `Hansson_2013c_sunitinib.R` (DDMODEL00000222; bundle's three-subject simulated dataset reports BAS_SVEGFR3 values 42554-57365 pg/mL).
+- **Notes:** Specific scope because the value is intrinsically tied to a specific upstream biomarker model (sVEGFR-3 indirect response under sunitinib in this case). The downstream fatigue model only consumes individual posthoc baseline / MRT / EC50 of the upstream biomarker; it does not re-fit them. Each model's `covariateData[[BAS_SVEGFR3]]$notes` should cite the upstream biomarker-PD source (paper or DDMORE ID) and explain how to populate the column for new simulations (typically: simulate from the upstream biomarker model to obtain individual posthoc baselines, or set every subject to the typical-value baseline for typical-trajectory simulations).
+
+### MRT_SVEGFR3 (**canonical for individual posthoc mean residence time of soluble VEGFR-3 from an upstream PD fit**)
+- **Description:** Subject-specific empirical-Bayes (posthoc) mean residence time of plasma sVEGFR-3 from a separately published indirect-response biomarker model that the current downstream PD model treats as a fixed input. Used as a per-subject (time-fixed) covariate in fatigue / adverse-event PD models that consume the upstream biomarker dynamics as data covariates without instantiating the biomarker ODE; appears as `kout3 = 1 / MRT_SVEGFR3` inside `model()`.
+- **Units:** h (hours) — document per-model via `covariateData[[MRT_SVEGFR3]]$units`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a — appears directly in derived rate-constant expressions; not a covariate effect coefficient.
+- **Source aliases:**
+  - `MRT3` — used in `Hansson_2013c_sunitinib.R` (DDMODEL00000222) as the posthoc sVEGFR-3 MRT column from the paper's upstream Hansson 2013a biomarker indirect-response fit (DDMODEL00000197).
+- **Example models:** `Hansson_2013c_sunitinib.R` (DDMODEL00000222; bundle's three-subject simulated dataset reports MRT_SVEGFR3 values 313-408 h, broadly consistent with the Hansson 2013a typical sVEGFR-3 MRT of 401 h).
+- **Notes:** Specific scope; same upstream-biomarker dependency rationale as `BAS_SVEGFR3`. The downstream fatigue model consumes the upstream MRT directly without re-fitting it.
+
+### EC50_SVEGFR3 (**canonical for individual posthoc drug-effect EC50 on soluble VEGFR-3 from an upstream PD fit**)
+- **Description:** Subject-specific empirical-Bayes (posthoc) half-maximum-effect concentration of the modelled drug on the production of sVEGFR-3 (or, depending on the upstream model parameterization, on the analogous Imax inhibition pathway) from a separately published indirect-response biomarker model that the current downstream PD model treats as a fixed input. Used as a per-subject (time-fixed) covariate in fatigue / adverse-event PD models that consume the upstream biomarker dynamics as data covariates without instantiating the biomarker ODE.
+- **Units:** mg·h/L (when the per-cycle drug-exposure summary is `auc = DOSE_MG / CLI` in mg·h/L, EC50_SVEGFR3 carries the same units; document per-model via `covariateData[[EC50_SVEGFR3]]$units`).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a — appears directly inside `model()` in the simple-Imax drug-effect term `eff3 = auc / (EC50_SVEGFR3 + auc)`.
+- **Source aliases:**
+  - `EC53` — used in `Hansson_2013c_sunitinib.R` (DDMODEL00000222) as the posthoc sVEGFR-3 EC50 column from the paper's upstream Hansson 2013a biomarker indirect-response fit (DDMODEL00000197).
+- **Example models:** `Hansson_2013c_sunitinib.R` (DDMODEL00000222; bundle's three-subject simulated dataset reports EC50_SVEGFR3 values 1.0-2.8 mg·h/L, consistent with the Hansson 2013a typical sVEGFR-3 IC50 typical value of 1.0 mg·h/L).
+- **Notes:** Specific scope; same upstream-biomarker dependency rationale as `BAS_SVEGFR3`. The downstream fatigue model consumes the upstream EC50 directly without re-fitting it.
+
 ### IGE (**canonical for serum total immunoglobulin E concentration**)
 - **Description:** Baseline serum total immunoglobulin E concentration (free IgE plus, in patients on anti-IgE therapy, omalizumab–IgE complex). For anti-IgE monoclonal antibodies (omalizumab, ligelizumab) IgE is the pharmacologic target; baseline IgE sets the magnitude of the target sink and modifies free-IgE clearance and the rate of IgE production in mechanism-based binding/turnover models.
 - **Units:** ng/mL (typical clinical-PK convention). Pretreatment values reported in `IU/mL` are converted via `1 IU/mL = 2.42 ng/mL` (Hayashi 2007 Methods). Document per-model via `covariateData[[IGE]]$units`.
@@ -2280,6 +2336,7 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **2026-04-28** — Added `SMOKE_CURRENT` and `SMOKE_NEVER` (both general-scope, paired binary indicators for a 3-level smoking-status categorical with former smoker as the implicit reference) canonical entries under `Lifestyle / medical history`, alongside the existing 2-level `SMOKE`. Pattern follows the `RACE_<GROUP>` convention for paired indicators. Introduced while extracting `Hwang_2023_monalizumab.R`, where Table 2 reports separate proportional-shift coefficients on V1 for current smoker (+0.0484) and never smoker (-0.141) with former smoker (n=319/507) as the most-common reference category. The existing `SMOKE` entry remains in use for 2-level (current vs non-smoker) encodings; the per-model documentation cross-references the alternative encoding.
 - **2026-04-28** — Added `TUMTP_BC` (general-scope breast-cancer tumor-type indicator) and `HEPIMP_MOD_MISSING` (specific-scope composite moderate-or-data-missing hepatic impairment indicator) canonical entries while extracting `Lu_2022_patritumab.R`. Source aliases mapped: `TUMTP` (BC level)→`TUMTP_BC`; `HEPATIC`→`HEPIMP_MOD_MISSING` (composite of NCI ODWG group 3 = moderate plus n = 6 missing-data patients pooled together by the Lu 2022 covariate analysis). Extended `HEPIMP_MILD` example_models with Lu 2022.
 - **2026-04-29** — Added paired `HSCT_URD_7OF8` and `HSCT_URD_8OF8` (both specific-scope) canonical entries under `Disease state (cross-population indicators)` while extracting `Zhong_2026_abatacept.R`. The two indicators jointly decompose the 3-level Study IM101311 (ABA2) "cohort" categorical (non-HSCT-cohort / 7-of-8 / 8-of-8) into two orthogonal binary indicators in the same style as `DIS_CANCER` + `DIS_HV`. Source aliases mapped: `COHORT7` → `HSCT_URD_7OF8`, `COHORT8` → `HSCT_URD_8OF8`. Reused the existing `DIS_PJIA` canonical (source alias `JIA`) and the existing `AST` and `CRCL` canonicals (source aliases `AST` and `cGFR`). Names match the abbreviations used in the Zhong 2026 Figure 1 caption and describe the actual HLA-matching transplant treatment received.
+- **2026-05-06** — Added `DOSE_MG` and `CLI` (both specific-scope, under `Drug exposure metrics`; previously introduced in the parallel Hansson 2013a sunitinib branch and re-added here so 022 is independently parseable; the entries are content-identical to the 011 versions, with `Hansson_2013c_sunitinib.R` appended to each example-models list and to `DOSE_MG`'s source-alias list as `DOSE → DOSE_MG`) and added `BAS_SVEGFR3`, `MRT_SVEGFR3`, `EC50_SVEGFR3` (all three specific-scope, under `Drug exposure metrics` because they are upstream-PD posthoc inputs that drive the per-cycle drug-effect summary in the downstream fatigue model) canonical entries while extracting the Hansson 2013c fatigue / adverse-event Markov + proportional-odds model (DDMODEL00000222, `Hansson_2013c_sunitinib.R`). The three sVEGFR-3 columns jointly carry the upstream Hansson 2013a biomarker indirect-response posthoc estimates (initial condition + turnover MRT + drug-effect EC50) for a downstream PD model that consumes the biomarker trajectory as data covariates instead of instantiating its own biomarker ODE. Source aliases mapped: `BAS3` → `BAS_SVEGFR3`, `MRT3` → `MRT_SVEGFR3`, `EC53` → `EC50_SVEGFR3`.
 - Subsequent additions: append new canonical entries as new papers are processed. When adding, bump the audit-completed count in the summary below.
 
 ## Summary
