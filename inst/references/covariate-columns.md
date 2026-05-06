@@ -1040,6 +1040,20 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   - `OXYSTAT2` — used in `Lin_2024_casirivimab.R`.
 - **Example models:** `Lin_2024_casirivimab.R` (multiplicative fractional change on CL; +38.0%).
 - **Notes:** Companion indicator to `OXYSUP_LOW`. In Lin 2024 the rare mechanical-ventilation cases were pooled into the high-flow indicator (n = 24 across the 7598-subject dataset).
+
+## Infectious disease (HIV)
+
+### HIV_POS (**canonical for HIV-positive comorbidity indicator**)
+- **Description:** 1 = HIV-1 antibody positive at study entry, 0 = HIV-negative. Time-fixed per subject. Used as a binary comorbidity indicator on PK parameters (typically bioavailability or clearance) when a study population pools HIV-positive and HIV-negative subjects on a non-HIV primary indication (tuberculosis treatment, hepatitis treatment, etc.).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (HIV-negative).
+- **Source aliases:**
+  - `HIV` — used in `Jonsson_2011_ethambutol.R` (DDMODEL00000220 NMTRAN `$INPUT` column with values 0 = HIV negative, 1 = HIV positive; same orientation as the canonical).
+- **Example models:** `Jonsson_2011_ethambutol.R` (multiplicative `1 + e_hiv_pos_f * HIV_POS` shift on bioavailability; HIV-positive patients exhibit a 15.5% reduction in ethambutol bioavailability versus HIV-negative reference).
+- **Notes:** Parallels the `_POS` suffix convention used by `ADA_POS`, `SARS_SEROPOS`, and other serostatus / antibody-positivity indicators. Distinct from a primary disease-state indicator like `DIS_HIV` (not yet registered) — `HIV_POS` is a comorbidity flag in non-HIV-primary indications where HIV-vs-non-HIV is tested as a PK covariate. Ratified canonically on 2026-05-06.
+
 ### MM_NIGG (**canonical for non-IgG multiple myeloma immunoglobulin-type indicator**)
 - **Description:** 1 = patient with non-IgG-secreting multiple myeloma (e.g., IgA, IgD, IgE, IgM, light-chain-only / Bence Jones, or non-secretory MM), 0 = patient with IgG-secreting multiple myeloma.
 - **Units:** (binary)
@@ -2244,13 +2258,24 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 
 ## Occasion / period (IOV)
 
+### OCC (**canonical for the integer-valued occasion / period column**)
+- **Description:** Integer-valued occasion / period indicator for inter-occasion-variability (IOV) modelling. Values `1`, `2`, …, `N` identify the occasion to which each observation belongs (typically a dosing visit, study period, or sampling occasion). Time-varying within subject; constant within an occasion.
+- **Units:** (count)
+- **Type:** categorical
+- **Scope:** general
+- **Reference category:** n/a — `OCC` is decomposed inside `model()` into mutually-exclusive binary indicators, e.g., `oc1 <- (OCC == 1)`, `oc2 <- (OCC == 2)`, …, that are then multiplied against per-occasion `eta*` slots.
+- **Source aliases:**
+  - `OCC` — used in `Jonsson_2011_ethambutol.R` (DDMODEL00000220 NMTRAN `$INPUT` column; values 1..4).
+- **Example models:** `Jonsson_2011_ethambutol.R` (4-occasion IOV on log-CL; `cl <- exp(lcl + etalcl + oc1 * etalcl_oc1 + oc2 * etalcl_oc2 + oc3 * etalcl_oc3 + oc4 * etalcl_oc4) * (WT/50)^0.75`, where each `etalcl_oc<k>` is a separate `~ fix(0.127)` after the first to encode NONMEM `$OMEGA BLOCK(1) SAME`).
+- **Notes:** `OCC` is the recommended canonical for new IOV-using models — the binary `ooc1..oocN` indicators below remain canonical for legacy / pre-existing models that ship the data already-decomposed. Ratified canonically on 2026-05-06.
+
 ### ooc1, ooc2, ooc3, ooc4
 - **Description:** Mutually exclusive occasion indicators for a crossover / multi-period design. Exactly one is 1 per observation.
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** specific
 - **Example models:** `Xie_2019_agomelatine.R`.
-- **Notes:** Lower case preserved from source file. Future models should standardize on `OCC` as a categorical column with integer values (`OCC = 1`, `2`, …) and use `IOV` on the appropriate parameters.
+- **Notes:** Lower case preserved from source file. Pre-existing legacy form; new models should prefer the integer-valued `OCC` canonical above and decompose into binary indicators inside `model()`.
 
 ### CYCLE
 - **Description:** Treatment cycle number (1 = first dosing cycle, 2 = second, ...). Integer count, time-varying across a multi-cycle treatment course, incremented at each new dosing cycle.
@@ -2269,6 +2294,7 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 
 ## Change log
 
+- **2026-05-06** — Added `HIV_POS` (general scope under a new `Infectious disease (HIV)` H2 section; binary HIV-positive comorbidity indicator, parallels the `_POS` suffix convention used by `ADA_POS` / `SARS_SEROPOS`) and `OCC` (general scope under `Occasion / period (IOV)`; integer-valued occasion / period column, decomposed into binary indicators inside `model()` for IOV multiplexing) canonical entries while extracting `Jonsson_2011_ethambutol.R` (DDMODEL00000220). Source aliases mapped: `HIV` → `HIV_POS` (same orientation, 1 = HIV-positive), `OCC` → `OCC` (no rename). The new `OCC` integer-valued canonical is the recommended form for new IOV-using models per the existing register-note steer (`ooc1..oocN` binary form retained as the legacy canonical).
 - **2026-04-28** — Extended `RACE_WHITE` (general scope) example-models list and source aliases to record `Hu_2014_bapineuzumab.R` (Caucasian-vs-non-Caucasian dichotomy with the Caucasian subgroup as the typical-value reference). The canonical column encoding (1 = White / 0 = non-White) is unchanged; the model implements the 15% non-Caucasian effect on `(1 - RACE_WHITE)`. The change log notes that the typical-value reference category may legitimately differ between papers using `RACE_WHITE`.
 - **2026-05-06** — Added `CL_INDIV`, `VC_INDIV`, and `VP_INDIV` (all specific scope) under `Drug exposure metrics` while extracting `Friberg_2002_paclitaxel.R` (DDMODEL00000186). The three columns carry per-subject empirical-Bayes paclitaxel PK estimates (clearance, central volume, peripheral volume) that drive the myelosuppression PD model in place of an estimated PK layer; the pattern parallels the existing `CAV` exposure-metric convention but for the structural PK parameters themselves rather than a derived exposure summary. Source aliases mapped: `CLI` → `CL_INDIV`, `V1I` → `VC_INDIV`, `V2I` → `VP_INDIV`. Reserved `VP2_INDIV` for future registration when a second peripheral compartment is needed.
 - **2026-04-29** — Added `IL6` (general-scope serum interleukin-6 cytokine biomarker, pg/mL, under `Inflammation markers`), `PAIN` (general-scope patient-reported global pain VAS 0-100, under `Rheumatoid-arthritis disease-activity covariates`), and `RACE_ASIAN_OTH` (specific-scope composite race indicator pooling Asian / American Indian / Other against a White + Black reference, under `Race / ethnicity`) canonical entries while extracting `Frey_2013_tocilizumab.R` (PMID 23436260). Source aliases mapped: `BLIL6` -> `IL6`. Frey 2013 uses log-transformed `(log(IL-6 * 1000) / 9.9)^exp` with reference IL-6 ~= 20 pg/mL; the canonical column carries the raw IL-6 in pg/mL and the log transformation is applied inside `model()`.
