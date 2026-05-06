@@ -19,6 +19,7 @@ articles:
   articles/Chua_2025_mirikizumab: Chua_2025_mirikizumab.html
   articles/Cirincione_2017_exenatide: Cirincione_2017_exenatide.html
   articles/Clegg_2024_nirsevimab: Clegg_2024_nirsevimab.html
+  articles/Clewe_2016_rifampicin: Clewe_2016_rifampicin.html
   create-model-library: create-model-library.html
   articles/deVriesSchultink_2020_zenocutuzumab: deVriesSchultink_2020_zenocutuzumab.html
   articles/Diao_2016_daclizumab_cd25: Diao_2016_daclizumab_cd25.html
@@ -35,6 +36,7 @@ articles:
   articles/Frey_2013_tocilizumab: Frey_2013_tocilizumab.html
   articles/Friberg_2002_paclitaxel: Friberg_2002_paclitaxel.html
   articles/Gandhi_2021_abatacept: Gandhi_2021_abatacept.html
+  articles/Germovsek_2016_gentamicin: Germovsek_2016_gentamicin.html
   articles/Girard_2012_pimasertib: Girard_2012_pimasertib.html
   articles/Grimm_2023: Grimm_2023.html
   articles/Gupta_2016_amatuximab: Gupta_2016_amatuximab.html
@@ -53,7 +55,9 @@ articles:
   articles/Hwang_2023_monalizumab: Hwang_2023_monalizumab.html
   articles/Ide_2020_elotuzumab: Ide_2020_elotuzumab.html
   articles/Jackson_2022_ixekizumab: Jackson_2022_ixekizumab.html
+  articles/Jager_2011_gemtuzumab: Jager_2011_gemtuzumab.html
   articles/Jonsson_2011_ethambutol: Jonsson_2011_ethambutol.html
+  articles/Khan_2015_ciprofloxacin: Khan_2015_ciprofloxacin.html
   articles/Kielbasa_2020_galcanezumab: Kielbasa_2020_galcanezumab.html
   articles/Kloft_2004_sibrotuzumab: Kloft_2004_sibrotuzumab.html
   articles/Koopman_2023_factorix: Koopman_2023_factorix.html
@@ -94,6 +98,7 @@ articles:
   articles/Netterberg_2017_docetaxel: Netterberg_2017_docetaxel.html
   articles/Ngo_2020_HL2351: Ngo_2020_HL2351.html
   articles/Nikanjam_2019_siltuximab: Nikanjam_2019_siltuximab.html
+  articles/Novakovic_2017_cladribine: Novakovic_2017_cladribine.html
   articles/Ogasawara_2020_durvalumab: Ogasawara_2020_durvalumab.html
   articles/Okada_2025_rocatinlimab: Okada_2025_rocatinlimab.html
   articles/Othman_2014_daclizumab: Othman_2014_daclizumab.html
@@ -111,6 +116,7 @@ articles:
   articles/Rosario_2015_vedolizumab: Rosario_2015_vedolizumab.html
   articles/Sanghavi_2020_ipilimumab: Sanghavi_2020_ipilimumab.html
   articles/Sathe_2024_sacituzumab: Sathe_2024_sacituzumab.html
+  articles/Schindler_2016_sunitinib: Schindler_2016_sunitinib.html
   articles/Soehoel_2022_tralokinumab: Soehoel_2022_tralokinumab.html
   articles/Suleiman_2019_risankizumab: Suleiman_2019_risankizumab.html
   articles/Suri_2018_brentuximab: Suri_2018_brentuximab.html
@@ -147,7 +153,7 @@ articles:
   articles/Zhou_2021_belimumab: Zhou_2021_belimumab.html
   articles/Zhou_2025_brentuximab: Zhou_2025_brentuximab.html
   articles/Zhu_2017_lebrikizumab: Zhu_2017_lebrikizumab.html
-last_built: 2026-05-06T16:38Z
+last_built: 2026-05-06T21:44Z
 urls:
   reference: https://nlmixr2.github.io/nlmixr2lib/reference
   article: https://nlmixr2.github.io/nlmixr2lib/articles

@@ -249,7 +249,23 @@ nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = interv
 #> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
-#>  ■■■■■                             14% |  ETA:  9s
+#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
+#>  ■■■■■■■■■■                        30% |  ETA:  5s
 #> Warning: Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
@@ -292,7 +308,12 @@ nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = interv
 #> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
-#>  ■■■■■■■■■■■■■■■■■■                56% |  ETA:  4s
+#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■          77% |  ETA:  2s
 #> Warning: Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
@@ -316,29 +337,6 @@ nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = interv
 #> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■   99% |  ETA:  0s
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (0.0416667) is not allowed
 knitr::kable(summary(nca_res), caption = "Simulated NCA (300 mg SC single dose).")
 ```
 
