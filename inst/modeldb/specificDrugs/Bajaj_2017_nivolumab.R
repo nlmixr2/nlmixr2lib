@@ -3,6 +3,7 @@ Bajaj_2017_nivolumab <- function() {
   reference <- "Bajaj G, Wang X, Agrawal S, Gupta M, Roy A, Feng Y. Model-based population pharmacokinetic analysis of nivolumab in patients with solid tumors. CPT Pharmacometrics Syst Pharmacol. 2017;6(1):58-66. doi:10.1002/psp4.12143"
   vignette <- "Bajaj_2017_nivolumab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
+  replicate_of <- "inst/modeldb/ddmore/Bajaj_2017_nivolumab_ddmore.R"
 
   covariateData <- list(
     WT = list(
