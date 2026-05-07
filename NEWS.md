@@ -2,6 +2,7 @@
 
 # development version
 
+* Add van Rongen 2018 midazolam ([doi:10.1007/s40262-017-0579-4](https://doi.org/10.1007/s40262-017-0579-4)) [DDMODEL00000250] — 19 obese adolescents and 20 morbidly obese adults (CYP3A probe, oral + IV midazolam, sub-population-specific weight covariates on CL and Vp).
 * Add Vet 2016 midazolam ([doi:10.1164/rccm.201510-2114OC](https://doi.org/10.1164/rccm.201510-2114OC)) [DDMODEL00000249] — critically ill children in the paediatric ICU receiving continuous IV midazolam (per-stratum CL by number of failing organs, with CRP and body weight covariates).
 * Add Knibbe 2009 morphine ([doi:10.2165/00003088-200948060-00003](https://doi.org/10.2165/00003088-200948060-00003)) [DDMODEL00000248] — preterm neonates, term newborns, infants and toddlers <3 years (joint parent-metabolite popPK for morphine + M3G + M6G with body-weight allometric scaling and a postnatal-age-stratified glucuronidation step at PNA = 10 days).
 * Add Zurlinden 2016 paracetamol ([doi:10.1007/s13318-015-0253-x](https://doi.org/10.1007/s13318-015-0253-x)) [DDMODEL00000237] — healthy adults receiving a single 1000 mg oral dose (whole-body PBPK with Michaelis-Menten liver metabolism, cofactor depletion / resynthesis, and renal elimination of APAP and its conjugates AG and AS; first MCSim-source extraction in `inst/modeldb/ddmore/`).
