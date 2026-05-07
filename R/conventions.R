@@ -95,7 +95,10 @@
     # the prodrug colistimethate sodium (CMS). Used as a metabolite
     # suffix in parent-prodrug CMS / metabolite-active-drug colistin
     # popPK models (Leuppi-Taegtmeyer 2019 DDMODEL00000295).
-    "col"
+    "col",
+    # Dihydroartemisinin, the active metabolite of artesunate
+    # (Birgersson 2019 DDMODEL00000297).
+    "dha"
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` denotes the time-varying decay arm.
