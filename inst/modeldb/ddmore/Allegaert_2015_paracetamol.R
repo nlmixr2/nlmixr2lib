@@ -39,20 +39,20 @@ Allegaert_2015_paracetamol <- function() {
       notes              = "Selects between two typical-value sulphate-formation clearances via `CL_sulf = TERM_BIRTH * cl_sulf_term + (1 - TERM_BIRTH) * cl_sulf_preterm` (.mod $PK line `CLS=(TERM*THETA(3)+(1-TERM)*THETA(10))*EXP(ETA(3))`). Both arms are estimated parameters; neither category is the multiplicative reference. The .mod's $THETA comments label TH3 as 'CL formation APAP-S for TERM=0' and TH10 as 'CL formation APAP-S for TERM=1', but the $PK code applies TH3 when TERM=1 and TH10 when TERM=0 -- the code-level usage is taken as authoritative because `(TERM*TH3 + (1-TERM)*TH10)` evaluates that way.",
       source_name        = "TERM"
     ),
-    BC_USE = list(
+    BIRTHCONTROL = list(
       description        = "Oral hormonal contraceptive use indicator (1 = on oral contraceptive, 0 = not).",
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (no oral contraceptive)",
-      notes              = "Multiplicative scalar on the OCC-adjusted glucuronide-formation clearance (.mod $PK lines 39-43): `CL_gluc <- THETA(12) * CL_gluc_OCC` when BC == 1. Independent of OCC: a postpartum woman on contraceptives has both an OCC-2 typical-value adjustment AND the BC = 1 multiplier applied. The estrogen component of combined oral contraceptives is plausibly the driver via UGT2B7 induction.",
+      notes              = "Multiplicative scalar on the OCC-adjusted glucuronide-formation clearance (.mod $PK lines 39-43): `CL_gluc <- THETA(12) * CL_gluc_OCC` when BC == 1. Independent of OCC: a postpartum woman on contraceptives has both an OCC-2 typical-value adjustment AND the BIRTHCONTROL = 1 multiplier applied. The estrogen component of combined oral contraceptives is plausibly the driver via UGT2B7 induction.",
       source_name        = "BC"
     ),
-    UF = list(
+    URINE_FLOW = list(
       description        = "Instantaneous urine flow rate over the urine-collection interval.",
       units              = "mL/h",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Linear effect on renal clearance of unchanged paracetamol with centering at 100 mL/h: `CL_renal_apap = THETA(4) + THETA(16) * (UF - 100)` (.mod $PK lines 45-47), gated by `UF > 0` (urine-flow == 0 sets the slope contribution to zero, treated as 'no urine produced during the interval').",
+      notes              = "Linear effect on renal clearance of unchanged paracetamol with centering at 100 mL/h: `CL_renal_apap = THETA(4) + THETA(16) * (URINE_FLOW - 100)` (.mod $PK lines 45-47), gated by `URINE_FLOW > 0` (urine-flow == 0 sets the slope contribution to zero, treated as 'no urine produced during the interval').",
       source_name        = "UF"
     )
   )
@@ -68,7 +68,7 @@ Allegaert_2015_paracetamol <- function() {
     disease_state  = "Young women across five reproductive states (DDMODEL00000267 .mod $INPUT comment for OCC): pregnant (OCC = 1), 2 weeks postpartum (OCC = 2), 1 year postpartum (OCC = 3), non-pregnant volunteer not on birth control (OCC = 4), non-pregnant volunteer on birth control (OCC = 5). The intent of the analysis is to quantify how pregnancy, time post partum, and oral-contraceptive use modify paracetamol disposition in this population.",
     dose_range     = "Single-dose intravenous propacetamol (a paracetamol pro-drug; 1 g propacetamol is approximately equivalent to 0.5 g paracetamol on a molar basis), administered as a short infusion (the bundle's Simulated_APAP_YoungWomen.csv ships 1 g and 2 g propacetamol-equivalent doses delivered over ~20-30 min). Multiple-dose regimens are present in the simulated dataset for some subjects.",
     regions        = NA_character_,
-    notes          = "n_subjects (69) and n_obs (1118) come from the Output_real_OriginalModelCode.lst run summary lines 'TOT. NO. OF INDIVIDUALS:' and 'TOT. NO. OF OBS RECS:' respectively. The Allegaert 2015 BMC Anesthesiol publication is not on disk in this worktree, so finer-grained demographics (age range, weight range, region, baseline-renal/hepatic profile) are recorded as NA. The .mod's covariate columns (OCC, BC, TERM, UF, BW) reveal the variability axes the model resolves but do not by themselves constrain the underlying demographic distributions. See the validation vignette's Errata section for the full caveat list."
+    notes          = "n_subjects (69) and n_obs (1118) come from the Output_real_OriginalModelCode.lst run summary lines 'TOT. NO. OF INDIVIDUALS:' and 'TOT. NO. OF OBS RECS:' respectively. The Allegaert 2015 BMC Anesthesiol publication is not on disk in this worktree, so finer-grained demographics (age range, weight range, region, baseline-renal/hepatic profile) are recorded as NA. The .mod's covariate columns (OCC, BC -> BIRTHCONTROL, TERM -> TERM_BIRTH, UF -> URINE_FLOW, BW -> WT) reveal the variability axes the model resolves but do not by themselves constrain the underlying demographic distributions. See the validation vignette's Errata section for the full caveat list."
   )
 
   ini({
@@ -100,10 +100,10 @@ Allegaert_2015_paracetamol <- function() {
     e_oc1_vc          <- 1.86   ; label("Multiplicative scalar on V_central for pregnancy (OCC = 1)") # TH1 FINAL = 1.86E+00
     e_oc1_cl_gluc     <- 2.03   ; label("Multiplicative scalar on glucuronide-formation CL for pregnancy (OCC = 1)") # TH2 FINAL = 2.03E+00
     e_oc2_cl_gluc     <- 0.547  ; label("Multiplicative scalar on glucuronide-formation CL for 2-weeks postpartum (OCC = 2)") # TH11 FINAL = 5.47E-01
-    e_bc_use_cl_gluc  <- 1.46   ; label("Multiplicative scalar on glucuronide-formation CL for oral-contraceptive use (BC_USE = 1, applied on top of the OCC effect)") # TH12 FINAL = 1.46E+00
+    e_birthcontrol_cl_gluc  <- 1.46   ; label("Multiplicative scalar on glucuronide-formation CL for oral-contraceptive use (BIRTHCONTROL = 1, applied on top of the OCC effect)") # TH12 FINAL = 1.46E+00
     e_term_birth_cl_sulf <- 5.61 ; label("Sulphate-formation CL for term-birth subjects (TERM_BIRTH = 1) (L/h, on the linear scale; selector parameter rather than a multiplicative ratio)") # TH3 FINAL = 5.61E+00
     e_oc2_q2          <- 0.128  ; label("Multiplicative scalar on Q2 for 2-weeks postpartum (OCC = 2)") # TH15 FINAL = 1.28E-01
-    e_uf_cl_renal     <- 0.00535 ; label("Slope of urine-flow effect on renal CL of paracetamol (L/h per mL/h, centered at 100 mL/h)") # TH16 FINAL = 5.35E-03
+    e_urineflow_cl_renal     <- 0.00535 ; label("Slope of urine-flow effect on renal CL of paracetamol (L/h per mL/h, centered at 100 mL/h)") # TH16 FINAL = 5.35E-03
 
     # Inter-individual variability (IIV). NONMEM `$OMEGA` diagonal entries from
     # the FINAL PARAMETER ESTIMATE OMEGA block (lst lines 530-543). All etas
@@ -143,21 +143,23 @@ Allegaert_2015_paracetamol <- function() {
 
     # Typical-value covariate multipliers. The `m_*` factors evaluate to 1.0
     # for the reference category (OCC >= 3 for V_central / CL_gluc, OCC != 2
-    # for Q2, BC_USE = 0 for CL_gluc) and to the corresponding `e_*` parameter
-    # when the relevant indicator is 1. `m_occ_cl_gluc` and `m_bc_cl_gluc`
-    # multiply each other as in the .mod $PK lines 39-43, where BC = 1 scales
-    # the OCC-selected baseline by THETA(12) on top of the OCC-specific
-    # adjustment (OCC = 1 -> TH2*TH9, OCC = 2 -> TH11*TH9, OCC >= 3 -> TH9;
-    # then BC = 1 -> *TH12 applied uniformly).
+    # for Q2, BIRTHCONTROL = 0 for CL_gluc) and to the corresponding `e_*`
+    # parameter when the relevant indicator is 1. `m_occ_cl_gluc` and
+    # `m_bc_cl_gluc` multiply each other as in the .mod $PK lines 39-43, where
+    # BC = 1 scales the OCC-selected baseline by THETA(12) on top of the
+    # OCC-specific adjustment (OCC = 1 -> TH2*TH9, OCC = 2 -> TH11*TH9,
+    # OCC >= 3 -> TH9; then BC = 1 -> *TH12 applied uniformly).
     m_occ_vc       <- 1 + (e_oc1_vc - 1) * oc1
     m_occ_cl_gluc  <- 1 + (e_oc1_cl_gluc - 1) * oc1 + (e_oc2_cl_gluc - 1) * oc2
-    m_bc_cl_gluc   <- 1 + (e_bc_use_cl_gluc - 1) * BC_USE
+    m_bc_cl_gluc   <- 1 + (e_birthcontrol_cl_gluc - 1) * BIRTHCONTROL
     m_occ_q2       <- 1 + (e_oc2_q2 - 1) * oc2
 
-    # Renal-CL covariate effect: linear in (UF - 100), with a sentinel-zero
-    # rule -- when UF == 0 the slope contribution is dropped (.mod $PK lines
-    # 45-47: `RCUF=(THETA(16)*(UF-100)); IF(UF.EQ.0) RCUF=0`).
-    rcuf <- e_uf_cl_renal * (UF - 100) * (UF > 0)
+    # Renal-CL covariate effect: linear in (URINE_FLOW - 100), with a
+    # sentinel-zero rule -- when URINE_FLOW == 0 the slope contribution is
+    # dropped (.mod $PK lines 45-47: `RCUF=(THETA(16)*(UF-100));
+    # IF(UF.EQ.0) RCUF=0`; the source UF column is renamed to URINE_FLOW
+    # canonical at data assembly).
+    rcuf <- e_urineflow_cl_renal * (URINE_FLOW - 100) * (URINE_FLOW > 0)
 
     # Sulphate-formation CL: a binary selector between two typical values
     # rather than a multiplicative ratio (.mod $PK line 44:
