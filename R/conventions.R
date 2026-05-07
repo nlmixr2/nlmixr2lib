@@ -72,7 +72,14 @@
     "m2",
     # Endoxifen (4-hydroxy-N-desmethyltamoxifen), the major active
     # metabolite of tamoxifen — Ter Heine 2014.
-    "endx"
+    "endx",
+    # Lidocaine sequential metabolites (DDMODEL00000281, NA_NA_lidocaine):
+    # MEGX = monoethylglycinexylidide (LID -> MEGX via CYP1A2/3A4),
+    # GX   = glycinexylidide (MEGX -> GX), and 2,6-XYL = 2,6-xylidide
+    # (LID -> 2,6-XYL minor pathway). Each metabolite is a separate
+    # central compartment with its own apparent volume in the source's
+    # ADVAN5 parent + 3-metabolite structure.
+    "megx", "gx", "xyl"
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` denotes the time-varying decay arm.

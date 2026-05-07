@@ -2,6 +2,7 @@
 
 # development version
 
+* Add NA NA lidocaine ([DDMORE Foundation Model Repository: DDMODEL00000281](https://repository.ddmore.eu/model/DDMODEL00000281)) [DDMODEL00000281] — population unspecified (no linked publication; lidocaine + MEGX + GX + 2,6-xylidide ADVAN5 parent-and-three-metabolites model).
 * Add Laouenan 2015 ribavirin ([doi:10.1002/psp4.8](https://doi.org/10.1002/psp4.8)) [DDMODEL00000285] — HCV genotype 1 cirrhotic patients on telaprevir- or boceprevir-based triple therapy (hemoglobin turnover PD model with upstream-PK ribavirin regressors).
 * Add Clewe 2016 rifampicin ([doi:10.1093/jac/dkv416](https://doi.org/10.1093/jac/dkv416)) [DDMODEL00000240] — in vitro Mycobacterium tuberculosis H37Rv multistate natural-growth scaffold (fast / slow / non-multiplying bacterial states; rifampicin exposure-response not encoded in the bundled scenario).
 * Add Germovsek 2016 gentamicin ([doi:10.1128/AAC.00577-16](https://doi.org/10.1128/AAC.00577-16)) [DDMODEL00000238] — neonates and infants receiving gentamicin.
