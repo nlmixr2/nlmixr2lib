@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Birgersson 2019 artesunate ([doi:10.12688/wellcomeopenres.14849.2](https://doi.org/10.12688/wellcomeopenres.14849.2)) [DDMODEL00000297] — pregnant and non-pregnant women with uncomplicated Plasmodium falciparum malaria in Burkina Faso (joint parent-metabolite popPK of artesunate and dihydroartemisinin with 3-compartment transit absorption and pregnancy / ALT / log-parasitaemia covariates).
 * Add Dao 2020 sultiame ([doi:10.1002/prp2.558](https://doi.org/10.1002/prp2.558)) [DDMODEL00000298] — healthy adult volunteers (4-compartment popPK with saturable plasma <-> erythrocyte binding plus cumulative urinary excretion).
 * Add Conrado 2014 alzheimer ([doi:10.1007/s10928-014-9375-z](https://doi.org/10.1007/s10928-014-9375-z)) [DDMODEL00000290] -- adults with Alzheimer's disease (CAMD ADAS-Cog database; Richards three-parameter logistic disease-progression model with beta-regression residual).
 * Add Schoemaker 2018 levetiracetam ([doi:10.1007/s40262-017-0597-2](https://doi.org/10.1007/s40262-017-0597-2)) [DDMODEL00000239] -- adults and children (4-16 years) with focal seizures (negative-binomial seizure-count PD model with mixture and Markovian dependence on previous-day count; LEV adult+pediatric fit used in the publication to scaffold a brivaracetam pediatric extrapolation).

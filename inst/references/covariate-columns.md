@@ -115,6 +115,16 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Zhu_2017_lebrikizumab.R` (canonical), `CarlssonPetri_2021_liraglutide.R` (alias `SEXM`), `Bajaj_2017_nivolumab.R` (male-indicator source; effect applied as `exp(coef * (1 - SEXF))` to preserve the paper's female-reference CL_REF / VC_REF), `Fau_2020_isatuximab.R` (exponential effect on Vc; reference category 0 = male), `Netterberg_2017_docetaxel.R` (multiplicative effect on baseline ANC: `BACOV *= (1 + theta * SEXF)`; source column `SEX` with 1 = male, 2 = female encoding, decomposed via `SEXF = as.integer(SEX == 2)`).
 - **Notes:** When translating a model that used `SEXM`, flag the sign/reference-category inversion to the user.
 
+### PREG (**canonical for pregnancy status indicator**)
+- **Description:** 1 = pregnant, 0 = non-pregnant. Time-fixed per subject in trial cohorts that enrol pregnant and non-pregnant women in parallel; not a time-varying flag.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (non-pregnant).
+- **Source aliases:** none known; source NONMEM control streams typically use `PREG` directly.
+- **Example models:** `Birgersson_2019_artesunate.R` (multiplicative effect on dihydroartemisinin clearance; the published structural CLM = 190 L/h is reported with the source-paper reference category PREG = 1, so the model file applies the effect via `(1 + e_preg_cl_dha * (1 - PREG))` with `e_preg_cl_dha = -0.214` to preserve verbatim source values; non-pregnant women have ~21% lower CLM relative to pregnant women).
+- **Notes:** Use this canonical for adult clinical-trial models that test a pregnancy-vs-non-pregnancy contrast (typical settings: malaria-in-pregnancy PK, antiviral-in-pregnancy PK). Trimester or gestational-age stratification within the pregnant cohort should use a separate canonical (e.g., gestational-age weeks via `GA` or a trimester indicator, ratified separately when needed). The canonical convention is reference category 0 (non-pregnant) following the broader pharmacology default; source papers that use the pregnant cohort as the reference (Birgersson 2019) preserve their published structural values via a `(1 - PREG)` form on the effect coefficient. Ratified canonically on 2026-05-07.
+
 ### CHILD
 - **Description:** 1 = subject is a child, 0 = not a child.
 - **Units:** (binary)
@@ -1216,6 +1226,18 @@ readable.
   - `COHORT8` -- used in `Zhong_2026_abatacept.R` (Zhong 2026 NM-TRAN indicator for ABA2 study Cohort 8/8).
 - **Example models:** `Zhong_2026_abatacept.R` (exponential coefficient -0.0934 on CL and +0.257 on VC; the fully-HLA-matched HSCT cohort exhibits a small CL decrease and a larger VC increase relative to the reference complement).
 - **Notes:** Used together with `HSCT_URD_7OF8` to decompose a three-level "transplant cohort" categorical (non-HSCT-cohort / 7-of-8 / 8-of-8) into two orthogonal binary indicators. The 8-of-8 cohort is the lower-risk HLA-matching configuration. Scope: specific because the reference complement (the union of non-transplant disease cohorts pooled in the source analysis) is paper-defined. Ratified canonically on 2026-04-29.
+
+## Infectious disease (Plasmodium / malaria)
+
+### LNPC (**canonical for log-transformed admission Plasmodium parasitaemia**)
+- **Description:** Natural logarithm of the asexual Plasmodium parasite count (parasites per microlitre of blood) at study admission. Time-fixed per subject (one value per subject, captured at enrolment).
+- **Units:** log(parasites/uL)
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- used with linear-deviation forms `(1 + e * (LNPC - ref))`. Reference values observed: 5.88 log(parasites/uL) (Birgersson 2019, population median in the pooled pregnant + non-pregnant Burkina Faso cohort).
+- **Source aliases:** none formally; companion column `PARA` (raw asexual parasite count per microlitre) is provided alongside `LNPC` in the Birgersson 2019 NONMEM dataset but the model uses `LNPC = log(PARA)` as the active covariate.
+- **Example models:** `Birgersson_2019_artesunate.R` (linear-deviation effect on relative bioavailability `F1`: `F1LNPC = 1 + e_lnpc_f * (LNPC - 5.88)`; positive coefficient `e_lnpc_f = +0.138` per unit increase in log-parasite-count, reflecting increased oral artesunate bioavailability with higher parasite burden).
+- **Notes:** Disease-severity covariate specific to malaria PK models. Higher parasitaemia is a marker of more severe acute malaria infection and has been associated in the source publication with altered oral bioavailability of artesunate (presumably via gut-mucosal / first-pass effects of the febrile parasitised state). Scope: specific because the canonical reference value (5.88) is the Birgersson 2019 cohort median; future malaria-in-pregnancy or malaria-in-children PK models may legitimately reuse `LNPC` but should document their own cohort-specific reference value in `covariateData[[LNPC]]$notes`. Ratified canonically on 2026-05-07.
 
 ## Infectious disease (SARS-CoV-2 / COVID-19)
 
