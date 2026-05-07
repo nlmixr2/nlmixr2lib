@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Cook 2016 paracetamol ([doi:10.1007/s40262-016-0408-1](https://doi.org/10.1007/s40262-016-0408-1)) [DDMODEL00000271] — term and preterm newborns receiving IV paracetamol (parent + glucuronide + sulphate plasma compartments with cumulative urinary excretion).
 * Add Wang 2013 morphine ([doi:10.1007/s40261-013-0097-6](https://doi.org/10.1007/s40261-013-0097-6)) [DDMODEL00000269] — neonates / infants / children / adolescents / adults across the entire paediatric age range (bodyweight-dependent allometric exponent on morphine clearance).
 * Add Stevens 2012 remoxipride ([doi:10.1007/s10928-012-9262-4](https://doi.org/10.1007/s10928-012-9262-4)) [DDMODEL00000268] — preclinical Wistar rats (mechanism-based PK/PD pool model for the prolactin response with brain-ECF-driven Emax stimulation and positive feedback on synthesis).
 * Add Allegaert 2015 paracetamol ([doi:10.1186/s12871-015-0144-3](https://doi.org/10.1186/s12871-015-0144-3)) [DDMODEL00000267] — young women across pregnancy / postpartum / non-pregnant-volunteer reproductive states with and without oral contraceptive use (8-compartment IV propacetamol PK with glucuronide and sulphate metabolites and cumulative-urine outputs).
