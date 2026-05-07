@@ -121,7 +121,9 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Type:** binary
 - **Scope:** general
 - **Reference category:** 0 (not child, i.e., adult baseline).
-- **Example models:** `CarlssonPetri_2021_liraglutide.R`.
+- **Source aliases:**
+  - `PED` — used in the Schoemaker 2018 LEV / BRV pediatric extrapolation (DDMODEL00000239) as the pediatric-vs-adult indicator that gates the Markov-amplitude term, the overdispersion IIV, and the four pediatric offsets on log baseline rate / mixture / placebo / Emax / EC50.
+- **Example models:** `CarlssonPetri_2021_liraglutide.R`, `Schoemaker_2018_levetiracetam.R` (DDMODEL00000239).
 - **Notes:** Age-group indicator used alongside `ADOLESCENT`; paper's age cutoffs must be captured in `covariateData[[CHILD]]$notes`.
 
 ### ADOLESCENT
@@ -656,7 +658,7 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Scope:** specific
 - **Reference category:** n/a — used in Emax/EC50 (e.g., `Emax * CAV / (EC50 + CAV)`) or power (e.g., `(CAV / CavMedian)^exponent`) drug-effect terms. Set to 0 for placebo periods.
 - **Source aliases:** `CAV`, `Cav`, `CAVG`.
-- **Example models:** `FiedlerKelly_2020_fremanezumab_em.R`, `FiedlerKelly_2020_fremanezumab_cm.R`.
+- **Example models:** `FiedlerKelly_2020_fremanezumab_em.R`, `FiedlerKelly_2020_fremanezumab_cm.R`, `Schoemaker_2018_levetiracetam.R` (DDMODEL00000239; LEV plasma concentration in mg/L).
 - **Notes:** Specific scope because the value is intrinsically tied to the modelled drug — there is no shared meaning across drugs or studies. Each model's `covariateData[[CAV]]$notes` should state how the Cav values are derived (e.g., empirical-Bayes from a referenced population PK model) and that the column is set to 0 for placebo periods.
 
 ### AUC_CARBO (**canonical for per-cycle average AUC of carboplatin**)
@@ -842,6 +844,45 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   - `IgE0` (baseline IgE concentration) — used in `Hayashi_2007_omalizumab.R`.
 - **Example models:** `Hayashi_2007_omalizumab.R` (ng/mL, reference 482.4; power exponents −0.281 on apparent CL of free IgE and +0.657 on apparent IgE production rate; also used as the initial value for the total-IgE state at t = 0).
 - **Notes:** General scope because baseline serum total IgE is a routine clinical-laboratory measurement, not a target tied to one drug. In mechanism-based anti-IgE binding/turnover models the in-model IgE state is a separate dynamic variable (`X_TE`, in nmol or nmol/L) — `IGE` is the per-subject baseline column used for covariate scaling and (when applicable) state initialization, not the dynamic state itself. For models that use the alternative reporting unit `IU/mL`, multiply by 2.42 before applying the canonical-units (ng/mL) reference value, or document the per-model unit choice in `covariateData[[IGE]]$units` so downstream tooling can interpret the values correctly.
+
+## Count / Markov-feedback PD covariates
+
+These columns are specific to count / Markov / time-to-event PD models that
+fit per-record event counts (e.g., daily or monthly seizure counts) with
+optional dependence on the previous-period count. Register names retain
+their source-paper conventions where those names are unambiguous and
+readable.
+
+### TRT_PHASE (**canonical for double-blind active-treatment-phase indicator**)
+- **Description:** 1 = the record falls within the active double-blind treatment phase (drug + placebo effects are switched on); 0 = baseline / run-in / off-treatment (drug + placebo effects are zeroed).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (baseline / off-treatment).
+- **Source aliases:**
+  - `Q2` — used in the Schoemaker 2018 LEV / BRV pediatric extrapolation (DDMODEL00000239) as the treatment-phase gating multiplier on the combined placebo + drug-effect log-rate term (`LE = LS0 + Q2 * LTRTE`).
+- **Example models:** `Schoemaker_2018_levetiracetam.R` (DDMODEL00000239).
+- **Notes:** New canonical because the source name `Q2` collides with the canonical PK parameter `q2` (inter-compartmental clearance to peripheral2) — `q2` could not be used as a covariate column without confusing source-trace lookups. Useful for any phase-gated PD model where placebo and drug effects are constrained to a specific study period; analogous to a "treatment-on" indicator.
+
+### PDV (**canonical for previous-period observed seizure count**)
+- **Description:** Previous-period observed seizure count, supplied per-record as a covariate input to capture Markov dependence on the previous count. For daily-count datasets PDV is the observation on the immediately preceding day; for monthly (or other aggregate) records the previous-interval count would apply if used.
+- **Units:** (count, integer)
+- **Type:** count
+- **Scope:** specific
+- **Reference category:** n/a — typically used as `<param> * PDV / (ES50 + PDV)` (Markov-Hill) or analogous form.
+- **Source aliases:** `PDV` — used in the Schoemaker 2018 LEV/BRV pediatric extrapolation (DDMODEL00000239) and in the Ahn 2010 pregabalin Markov seizure-count model that the Schoemaker 2018 publication cites as the precursor structure.
+- **Example models:** `Schoemaker_2018_levetiracetam.R` (DDMODEL00000239).
+- **Notes:** Specific scope because the column's interpretation (a Markov feedback state) is intrinsic to count-likelihood Markov-feedback PD models. nlmixr2 / rxode2 cannot natively express a Markov dependence of an observation on the immediately preceding observation as a model state — supplying PDV as a per-record data column is the operator-approved (sidecar response-001 Q2) way to preserve the published structure in this batch. For records where the Markov term should not contribute (e.g., monthly counts in a mixed daily / monthly cohort) the bundle convention is to set PDV = -99 as a sentinel; in `Schoemaker_2018_levetiracetam.R` the model gates the Markov contribution on `CHILD = 1` so the sentinel is multiplied by 0 and is harmless.
+
+### NDAYS (**canonical for number of days in the count-record interval**)
+- **Description:** Number of days in the interval over which the observed seizure count was tabulated. Multiplies the per-day rate to give the expected count for the record (e.g., `LAMB = exp(LE) * NDAYS`).
+- **Units:** days
+- **Type:** count
+- **Scope:** general
+- **Reference category:** n/a — appears as a multiplier on a per-day rate.
+- **Source aliases:** `NDAYS` — used in the Schoemaker 2018 LEV/BRV pediatric extrapolation (DDMODEL00000239).
+- **Example models:** `Schoemaker_2018_levetiracetam.R` (DDMODEL00000239).
+- **Notes:** General scope because the count-interval-length concept is shared across any count or rate-based PD model that mixes record granularity (e.g., daily and monthly counts in the same dataset). For pure-daily or pure-monthly cohorts the column is constant; including it as a covariate keeps the model usable in mixed-granularity simulations.
 
 ## Race / ethnicity
 
@@ -2636,6 +2677,7 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 - **2026-05-06** — Added `DLVL` (specific scope under `Formulation / assay / study`; integer-coded source-protocol dose-level / regimen indicator) and `S1A2` (specific scope under `Formulation / assay / study`; integer-coded source-protocol CYP1A2 substrate / co-medication indicator) canonical entries while extracting `NA_NA_lidocaine.R` (DDMODEL00000281). Both names match the source-data column names used in the BAST.dat ("4-cRUN249") lidocaine study and survive `=DROP` in the `.ctl` `$INPUT` declaration. The `DLVL` binary derivation `DLVL > 2` switches typical-value baselines for the GX rate constant K30 and the lidocaine apparent central volume V1; the `S1A2` binary derivation `S1A2 == 3` selects a CYP1A2-induction-style modifier on K30. Sibling columns `D1A2` and `H1A2` are dropped in the `.ctl` so only the level-3 indicator is structurally identifiable. Source aliases mapped: `BIL` (legacy total-bilirubin label) → `TBILI`; `SGPT` (legacy ALT label, paralleling `SGOT` → `AST`) → `ALT`. The linked publication is not on disk for this extraction; the absence of an external parameter cross-check is documented in the model file's vignette Errata.
 =======
 - **2026-05-06** — Added `FDC` (specific scope under `Formulation / assay / study`; binary fixed-dose-combination antitubercular formulation indicator with FDC = 1 as the typical-value reference) canonical entry while extracting `Wilkins_2008_rifampicin.R` (DDMODEL00000280). The 1-level convention follows the Wilkins 2008 source (FDC = 1 = co-formulated tablet, 0 = single-drug tablets) and the bundle's `Most common` annotation in the `.mod` `IF(FDC.EQ.1) ... = 0` block. Distinct from `TABLET` (Kyhl 2016 tablet-vs-solution) and the `FORM_*` family because the FDC-vs-SDC contrast is a co-formulation contrast, not a drug-product-version one.
@@ -2651,6 +2693,9 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **2026-05-06** — Added `AAG` (general-scope serum alpha-1 acid glycoprotein concentration; placed under `Inflammation markers` after `CRP`; reference 1.34 g/L from the Kloft 2006 cancer-cohort median; piecewise-linear effect form with breakpoint at the median documented), `PRIOR_ANTICANCER` (general-scope binary indicator for any prior anticancer therapy of any modality including cytotoxic chemotherapy / radiotherapy / surgery / hormonal therapy / targeted therapy / immunotherapy; placed under `Disease / treatment history` before `PRIOR_BIO`; broader than `LINE_1L` which is restricted to systemic-drug therapy lines), and `CP_MGL` (specific-scope instantaneous drug plasma concentration as a time-varying PD driver, mg/L = ug/mL; placed under `Drug exposure metrics` after `CAV`; distinct from `CAV` which is dosing-interval-averaged) canonical entries while extracting `Netterberg_2017_docetaxel.R` (DDMODEL00000224). Source aliases mapped: `SEX` (1 = male, 2 = female; values inverted via `SEXF = as.integer(SEX == 2)`) → `SEXF`; `PERF` (ordinal ECOG 0/1/2 with binarization at >= 1) → `ECOG_GE1`; `PC` (0/1) → `PRIOR_ANTICANCER`; `AAG` → `AAG`; `CP` → `CP_MGL`. The model is the Friberg-style myelosuppression PD model with parameter values fixed from Kloft 2006; Netterberg 2017 used the model unchanged for an ANC-prediction-methodology study (no re-fit) and submitted it to the DDMORE Foundation Model Repository. Neither Netterberg 2017 nor Kloft 2006 is on disk in this worktree; the absence of paper-on-disk parameter cross-checks is documented in the model file's vignette Errata.
 - **2026-05-06** — Added `CYP2D6` and `CYP3A4` canonical entries (both general scope; continuous individual-activity scores) under `Pharmacogenetics` while extracting `TerHeine_2014_tamoxifen.R` (DDMODEL00000212). Both names match the source-data column names used in the Ter Heine 2014 dataset; the dextromethorphan-probe-derived model-based individual clearance values (median 1560 ng/L for CYP2D6; 44.7 ng/L for CYP3A4/5) drive a power-law effect on the tamoxifen → endoxifen formation clearance. Per-entry `notes` carry an explicit TODO to consolidate the variety of CYP-phenotype encodings into a uniform pattern and to register the rest of the canonical drug-metabolizing-CYP set (`CYP1A2`, `CYP2A6`, `CYP2B6`, `CYP2C8`, `CYP2C9`, `CYP2C19`, `CYP2E1`, `CYP3A5`) prospectively rather than ad hoc as each new model lands.
 - **2026-05-06** — Added `RCFB1MAX` (specific scope, under `Oncology`) canonical entry while extracting `Schindler_2016_sunitinib.R` (DDMODEL00000221). The Schindler 2016 PR (#300) was based on a state predating `DOSE`/`CLI` consolidation and originally proposed drug-specific `CL_SUNITINIB` and `DAILY_DOSE` canonicals; on merge those are folded into the existing general `DOSE` and specific `CLI` canonicals, with the model file and vignette renamed to match. Source aliases on Schindler: `CL` → `CLI` (existing alias), `DOS` → `DOSE` (existing alias), `RCFB1MAX` → `RCFB1MAX` (no rename).
+=======
+- **2026-05-06** — Added a new `## Count / Markov-feedback PD covariates` section with `TRT_PHASE` (general scope; double-blind active-treatment-phase indicator), `PDV` (specific scope; previous-period observed seizure count, used to express Markov dependence as a per-record covariate when the underlying inference framework cannot represent observation-to-state feedback as a model state), and `NDAYS` (general scope; number of days in the count-record interval) canonical entries while extracting `Schoemaker_2018_levetiracetam.R` (DDMODEL00000239). `Q2` source column renamed to canonical `TRT_PHASE` because the source name `Q2` collides with the canonical PK parameter `q2` (inter-compartmental clearance to peripheral2). `PDV` retained as the canonical name because the abbreviation is the established convention in the count-likelihood Markov-feedback literature. Extended the `CHILD` source-alias list to record `PED` (Schoemaker 2018), and the `CAV` example-models list to record `Schoemaker_2018_levetiracetam.R` (LEV in mg/L, EC50 about 31.5 mg/L).
+>>>>>>> origin/claude/034-schoemaker_2018_brivaracetam
 - **2026-04-28** — Extended `RACE_WHITE` (general scope) example-models list and source aliases to record `Hu_2014_bapineuzumab.R` (Caucasian-vs-non-Caucasian dichotomy with the Caucasian subgroup as the typical-value reference). The canonical column encoding (1 = White / 0 = non-White) is unchanged; the model implements the 15% non-Caucasian effect on `(1 - RACE_WHITE)`. The change log notes that the typical-value reference category may legitimately differ between papers using `RACE_WHITE`.
 - **2026-05-06** — Added `CL_INDIV`, `VC_INDIV`, and `VP_INDIV` (all specific scope) under `Drug exposure metrics` while extracting `Friberg_2002_paclitaxel.R` (DDMODEL00000186). The three columns carry per-subject empirical-Bayes paclitaxel PK estimates (clearance, central volume, peripheral volume) that drive the myelosuppression PD model in place of an estimated PK layer; the pattern parallels the existing `CAV` exposure-metric convention but for the structural PK parameters themselves rather than a derived exposure summary. Source aliases mapped: `CLI` → `CL_INDIV`, `V1I` → `VC_INDIV`, `V2I` → `VP_INDIV`. Reserved `VP2_INDIV` for future registration when a second peripheral compartment is needed.
 - **2026-04-29** — Added `IL6` (general-scope serum interleukin-6 cytokine biomarker, pg/mL, under `Inflammation markers`), `PAIN` (general-scope patient-reported global pain VAS 0-100, under `Rheumatoid-arthritis disease-activity covariates`), and `RACE_ASIAN_OTH` (specific-scope composite race indicator pooling Asian / American Indian / Other against a White + Black reference, under `Race / ethnicity`) canonical entries while extracting `Frey_2013_tocilizumab.R` (PMID 23436260). Source aliases mapped: `BLIL6` -> `IL6`. Frey 2013 uses log-transformed `(log(IL-6 * 1000) / 9.9)^exp` with reference IL-6 ~= 20 pg/mL; the canonical column carries the raw IL-6 in pg/mL and the log transformation is applied inside `model()`.
