@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Jonsson 2005 disufenton ([doi:10.2165/00003088-200544080-00007](https://doi.org/10.2165/00003088-200544080-00007)) [DDMODEL00000245] — adults with acute ischaemic or haemorrhagic stroke receiving 72-h IV NXY-059 infusion across CRCL 20-143 mL/min.
 * Add Wilkins 2008 rifampicin ([doi:10.1128/AAC.00461-07](https://doi.org/10.1128/AAC.00461-07)) [DDMODEL00000280] — adult South African pulmonary tuberculosis patients.
 * Add NA NA lidocaine ([DDMORE Foundation Model Repository: DDMODEL00000281](https://repository.ddmore.eu/model/DDMODEL00000281)) [DDMODEL00000281] — population unspecified (no linked publication; lidocaine + MEGX + GX + 2,6-xylidide ADVAN5 parent-and-three-metabolites model).
 * Add Laouenan 2015 ribavirin ([doi:10.1002/psp4.8](https://doi.org/10.1002/psp4.8)) [DDMODEL00000285] — HCV genotype 1 cirrhotic patients on telaprevir- or boceprevir-based triple therapy (hemoglobin turnover PD model with upstream-PK ribavirin regressors).
