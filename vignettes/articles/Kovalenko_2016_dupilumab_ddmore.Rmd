@@ -27,27 +27,27 @@ library(ggplot2)
 This model was extracted from the DDMORE bundle scraped to
 `dpastoor/ddmore_scraping/273/`. The bundle ships:
 
-- `Executable_Simulated_Dupilumab.ctl` — NONMEM control stream (NM-TRAN,
+- `Executable_Simulated_Dupilumab.ctl` -- NONMEM control stream (NM-TRAN,
   ADVAN13 + TOL=9 ODE block) implementing the two-compartment
   parallel-linear/Michaelis-Menten dupilumab PK structure described in
   Kovalenko 2016, with a non-standard body-weight covariate on the
   central volume.
-- `Output_simulated_Dupilumab.lst` — listing from running SAEM/IMP on the
+- `Output_simulated_Dupilumab.lst` -- listing from running SAEM/IMP on the
   shipped `Simulated_Dupilumab.CSV`. Reaches `MINIMIZATION SUCCESSFUL`
   and produces the FINAL PARAMETER ESTIMATE values that drive `ini()`.
-- `Simulated_Dupilumab.CSV` — single-subject placeholder dataset
+- `Simulated_Dupilumab.CSV` -- single-subject placeholder dataset
   (`WT = 1`, `LWT = 1` constants) used for the bundle's regression
   smoke-test.
-- `DDMODEL00000273.rdf`, `Command.txt`, `273.json` — provenance metadata.
+- `DDMODEL00000273.rdf`, `Command.txt`, `273.json` -- provenance metadata.
 
 The bundle does **not** ship an `Output_real_*.lst` and there is no
 `Model_Accomodations.text|.txt` file. The validation strategy is
 therefore the F.2 self-consistency check (does the rxode2 implementation
 reproduce the bundle's NM-TRAN trajectory on the same inputs?) plus a
 qualitative comparison of the model's typical-value profile against the
-publication's Figure 3 concentration–time plots. Direct replication of
+publication's Figure 3 concentration-time plots. Direct replication of
 Kovalenko 2016 Table 2 is **not** the goal of this DDMORE-source
-vignette — the parameter values reported here are the bundle's
+vignette -- the parameter values reported here are the bundle's
 simulated-data fit, not the publication's real-data fit. For the
 publication-faithful encoding, see the `replicate_of` counterpart
 [`Kovalenko_2016_dupilumab`](Kovalenko_2016_dupilumab.html).
@@ -60,8 +60,8 @@ The publication (Table 1 + Results / Data) reports a pooled cohort of
 NCT01484600) and four Phase 2 atopic-dermatitis patient studies
 (NCT01259323, NCT01385657, NCT01548404, NCT01639040), contributing
 2,518 serum dupilumab measurements. The DDMORE bundle's simulated CSV
-does not reproduce these demographics — it is a single-subject placeholder
-with `WT = 1` and `LWT = 1` constants — so the `population` metadata in
+does not reproduce these demographics -- it is a single-subject placeholder
+with `WT = 1` and `LWT = 1` constants -- so the `population` metadata in
 `inst/modeldb/ddmore/Kovalenko_2016_dupilumab_ddmore.R` is taken from the
 publication, not the bundle.
 
@@ -77,13 +77,13 @@ estimates and are not used here.
 
 | Equation / parameter | Value (linear units) | Source location |
 |----------------------|----------------------|-----------------|
-| `lvc` (V2 covariate parameter; not log V2 directly) | `0.705` (unitless inside the exponential) | `Output_simulated_Dupilumab.lst` FINAL TH 1 (POPV2). At WT=75 kg, V2 = exp(0.705) ≈ 2.024 L. |
-| `lke` (linear elimination rate, log scale) | `-1.40` → ke ≈ 0.247 1/d | FINAL TH 2 (POPKE) |
-| `lvmax` (max MM elimination rate, log scale) | `-1.08` → Vmax ≈ 0.339 mg/L/d | FINAL TH 3 (POPVM) |
-| `lka` (absorption rate, log scale) | `-1.04` → ka ≈ 0.353 1/d | FINAL TH 4 (POPKA) |
+| `lvc` (V2 covariate parameter; not log V2 directly) | `0.705` (unitless inside the exponential) | `Output_simulated_Dupilumab.lst` FINAL TH 1 (POPV2). At WT=75 kg, V2 = exp(0.705) ~= 2.024 L. |
+| `lke` (linear elimination rate, log scale) | `-1.40` -> ke ~= 0.247 1/d | FINAL TH 2 (POPKE) |
+| `lvmax` (max MM elimination rate, log scale) | `-1.08` -> Vmax ~= 0.339 mg/L/d | FINAL TH 3 (POPVM) |
+| `lka` (absorption rate, log scale) | `-1.04` -> ka ~= 0.353 1/d | FINAL TH 4 (POPKA) |
 | `lfdepot` (SC bioavailability, log scale) | `log(0.615)` (linear-MU `BIO = MU_5 + ETA(5)` in `.ctl` re-stored on log scale) | FINAL TH 5 (POPBIO) = 0.615 linear |
-| `k23` (central→peripheral, linear scale per `.ctl`) | `0.0475` 1/d | FINAL TH 6 (POPK23) |
-| `k32` (peripheral→central, linear scale per `.ctl`) | `0.105` 1/d | FINAL TH 7 (POPK32) |
+| `k23` (central->peripheral, linear scale per `.ctl`) | `0.0475` 1/d | FINAL TH 6 (POPK23) |
+| `k32` (peripheral->central, linear scale per `.ctl`) | `0.105` 1/d | FINAL TH 7 (POPK32) |
 | `Km` (Michaelis-Menten constant, fixed) | `fixed(0.01)` mg/L | FINAL TH 8 (POPKM); `.ctl $THETA(8) (0.01 FIXED)` |
 | `propSd` (proportional SD on log scale) | `0.0377` | FINAL TH 9 (POPSD1) |
 | `addSd` (additive SD, fixed) | `fixed(0.03)` mg/L | `.ctl $ERROR SD2 = 0.03` |
@@ -91,8 +91,8 @@ estimates and are not used here.
 | `var(etalke), cov(etalke,etalvmax), var(etalvmax)` (block) | `2.26e-07, -1.72e-07, 1.36e-07` | FINAL OMEGA BLOCK(2) ETAKE/ETAVM |
 | `var(etalka)` | `7.32e-08` | FINAL OMEGA(4,4) ETAKA |
 | ETAs 5-8 (BIO, K23, K32, KM) | 0 (FIXED) | `.ctl $OMEGA DIAGONAL(4) 0 FIX` |
-| Compartments: depot, central, peripheral1 | n/a | `.ctl $MODEL COMP=(INJ), COMP=(BLD), COMP=(PER); the `.ctl` AUC integrator (compartment 3) is dropped — users can request AUC at solve time. |
-| ODEs | n/a | `.ctl $DES` block (DTYP gating dropped — route is set by the dosing compartment in the event record). |
+| Compartments: depot, central, peripheral1 | n/a | `.ctl $MODEL COMP=(INJ), COMP=(BLD), COMP=(PER); the `.ctl` AUC integrator (compartment 3) is dropped -- users can request AUC at solve time. |
+| ODEs | n/a | `.ctl $DES` block (DTYP gating dropped -- route is set by the dosing compartment in the event record). |
 | `f(depot)` (SC bioavailability) | exp(lfdepot) | `.ctl $PK F1 = BIO` |
 
 The bundle's body-weight covariate equation is:
@@ -141,8 +141,8 @@ cat("Dose: ", dose_amt, "mg SC\n")
 The `.ctl` body-weight covariate uses the data column `LWT` directly
 (treating it as `log(WT)` in kg). The bundle's simulated CSV sets
 `LWT = 1` for all rows even though `WT = 1` (so `LWT` is **not** the log
-of `WT` in that dataset — it is a numeric placeholder). To reproduce
-the bundle's trajectory, we set `WT = exp(1) ≈ 2.718` so that the
+of `WT` in that dataset -- it is a numeric placeholder). To reproduce
+the bundle's trajectory, we set `WT = exp(1) ~= 2.718` so that the
 nlmixr2 covariate factor `(WT/75)^0.75` matches the bundle's
 `exp((LWT - log(75)) * 0.75)` exactly.
 
@@ -226,7 +226,7 @@ combination of (a) the ADVAN13 tolerance the bundle ran (`TOL=9`) versus
 the rxode2 default solver tolerance, and (b) the linearization of the
 bundle's `Y = IPRE * exp(ERR(1) * SD1) + ERR(2) * SD2` log-normal
 proportional + additive residual error to nlmixr2's `prop() + add()`
-form (the small-SD approximation is exact to within ≈ 0.1% at
+form (the small-SD approximation is exact to within ~= 0.1% at
 `SD1 = 0.0377`).
 
 # Typical-profile comparison against the publication
@@ -234,7 +234,7 @@ form (the small-SD approximation is exact to within ≈ 0.1% at
 Although direct Table 2 replication is out of scope (see the lead
 section), it is useful to confirm that the bundle-encoded model produces
 a typical-value profile in the **same shape** as the publication's
-Figure 3 concentration–time plots — bi-exponential decay after IV with
+Figure 3 concentration-time plots -- bi-exponential decay after IV with
 a steep low-concentration target-mediated drop-off, and a peak around
 day 3-7 after a single SC injection.
 
@@ -262,7 +262,7 @@ ggplot(sim_300sc, aes(time, Cc)) +
   theme_minimal(base_size = 11)
 ```
 
-# Single-dose NCA (PKNCA) — typical 300 mg SC profile
+# Single-dose NCA (PKNCA) -- typical 300 mg SC profile
 
 ```{r pknca}
 nca_data <- sim_300sc |>
@@ -307,10 +307,10 @@ knitr::kable(
   are a SAEM/IMP fit on `Simulated_Dupilumab.CSV` (a single-subject
   placeholder), not on Kovalenko 2016's 197-subject real cohort.
 - **Bundle parameter values do not match Kovalenko 2016 Table 2.**
-  Examples: bundle V2 typical at 75 kg ≈ 2.02 L vs Table 2: 2.74 L;
-  bundle ke ≈ 0.247 1/d vs Table 2: 0.0459 1/d; bundle ka ≈ 0.353 1/d
-  vs Table 2: 0.254 1/d; bundle proportional SD ≈ 0.0377 vs Table 2
-  CV% 24.2 (≈ 0.242). The publication-faithful counterpart at
+  Examples: bundle V2 typical at 75 kg ~= 2.02 L vs Table 2: 2.74 L;
+  bundle ke ~= 0.247 1/d vs Table 2: 0.0459 1/d; bundle ka ~= 0.353 1/d
+  vs Table 2: 0.254 1/d; bundle proportional SD ~= 0.0377 vs Table 2
+  CV% 24.2 (~= 0.242). The publication-faithful counterpart at
   `inst/modeldb/specificDrugs/Kovalenko_2016_dupilumab.R` carries the
   Table 2 values.
 - **Bundle's V2 weight covariate has a non-standard form.** The `.ctl`
@@ -321,11 +321,11 @@ knitr::kable(
   away from it; the bundle's form additionally couples the V2 random
   effect (ETA(1)) to body weight. The 0.75 exponent in the bundle is
   hard-coded (not estimated); 0.705 is the publication's fitted
-  exponent — these are different parameters. We preserve the bundle's
+  exponent -- these are different parameters. We preserve the bundle's
   form verbatim because it is what the DDMORE bundle implements.
 - **Bundle's IIV is degenerate.** The `Output_simulated_*.lst` FINAL
   OMEGA values are ~1e-6 to 1e-7 because the SAEM was run on a
-  single-subject simulated dataset with `WT = 1` constant — there is
+  single-subject simulated dataset with `WT = 1` constant -- there is
   no population variability for the algorithm to recover. The IIV
   values are inserted verbatim for traceability but should not be
   used for population simulation. For population-scale work, use the
@@ -333,7 +333,7 @@ knitr::kable(
 - **Bundle's simulated CSV uses `LWT = 1` (not `log(WT) = 0`).** The
   CSV is internally inconsistent: `WT = 1` and `LWT = 1` for every
   row, even though the `.ctl` treats `LWT` as `log(WT_kg)`. The F.2
-  self-consistency check above sets `WT = exp(1) ≈ 2.718` so that the
+  self-consistency check above sets `WT = exp(1) ~= 2.718` so that the
   rxode2-computed covariate factor `(WT/75)^0.75` matches the bundle's
   `exp((LWT - log(75)) * 0.75)` with `LWT = 1`. Any downstream user
   applying this model to a real cohort should set `WT` (in kg) and
@@ -341,7 +341,7 @@ knitr::kable(
 - **Linear-MU on `BIO`, `K23`, `K32` mapped to log scale where IIV is
   fixed at zero.** The `.ctl` writes `BIO = MU_5 + ETA(5)`,
   `K23 = MU_6 + ETA(6)`, and `K32 = MU_7 + ETA(7)` on the linear
-  scale. ETA(5)–ETA(7) are FIXED at 0 in the bundle, so the linear-MU
+  scale. ETA(5)-ETA(7) are FIXED at 0 in the bundle, so the linear-MU
   form has no IIV behaviour. We store `lfdepot` on the log scale
   (nlmixr2lib convention) and `k23`, `k32` on the linear scale (the
   per-rate-constant values are small and the convention checker does
@@ -354,7 +354,7 @@ knitr::kable(
   uses the data column `DTYP` to switch the depot rate on (SC) or
   off (IV). The simulated CSV has `DTYP = 1` throughout, so the gate
   is never exercised. nlmixr2 routes by dosing compartment instead:
-  SC doses go to `cmt = depot`, IV doses go to `cmt = central` — the
+  SC doses go to `cmt = depot`, IV doses go to `cmt = central` -- the
   cleaner equivalent.
 - **AUC integrator compartment dropped.** The bundle's `COMP=(AUC)`
   with `DADT(3) = A(2)/V2` is a passive integrator of central
@@ -369,5 +369,5 @@ knitr::kable(
 No erratum or corrigendum was identified for the publication
 ([10.1002/psp4.12136](https://doi.org/10.1002/psp4.12136)) at the time
 of this extraction. The DDMORE bundle (`273.json` `version: 8`) is the
-scraper's snapshot of the live repository — staleness against the live
+scraper's snapshot of the live repository -- staleness against the live
 DDMORE web UI was not checked here.

@@ -31,7 +31,7 @@ Terranova_2018_paclitaxel <- function() {
     age_range      = NA_character_,
     weight_range   = "approximately 21 g at study start (W_initial = 21.2 g per the .ctl)",
     sex_female_pct = NA_real_,
-    disease_state  = "Preclinical xenograft-mouse oncology efficacy / cachexia model. Terranova 2018 develops the Dynamic Energy Budget (DEB) framework as a generalisation of the Simeoni 2004 TGI model that simultaneously predicts tumor growth and host body-weight loss (cachexia). The framework was fit across multiple anticancer agents in xenograft mice; the DDMODEL00000274 bundle implements the paclitaxel scenario only ('Among the drugs considered in the paper, only PACLITAXEL has been used' — Model_Accomodations.txt).",
+    disease_state  = "Preclinical xenograft-mouse oncology efficacy / cachexia model. Terranova 2018 develops the Dynamic Energy Budget (DEB) framework as a generalisation of the Simeoni 2004 TGI model that simultaneously predicts tumor growth and host body-weight loss (cachexia). The framework was fit across multiple anticancer agents in xenograft mice; the DDMODEL00000274 bundle implements the paclitaxel scenario only ('Among the drugs considered in the paper, only PACLITAXEL has been used' -- Model_Accomodations.txt).",
     dose_range     = "Paclitaxel intravenous bolus AMT = 3e+07 (source units; consistent with K10/K12/K21 in 1/day and V1 = 813.1) at days 8, 12, 16, 20, 24 in the bundle's Simulated_DEB_TGI_data.csv (treated subject ID = 1; control subject ID = 2 receives no doses).",
     regions        = NA_character_,
     notes          = "DDMORE bundle 274 ships only a single Simulated_DEB_TGI_data.csv with two virtual subjects (one treated, one control) and a Simulated_*.pdf rendering of the typical-value trajectory; no Output_real_*.lst (real-data fit listing) is shipped, and the .ctl is configured for $SIM ONLYSIM with $OMEGA 0 FIX and $SIGMA 1 FIX for both DVID arms. The .ctl $THETA values are therefore the simulation-truth (publication-derived) point estimates rather than re-fitted final estimates; see the Errata section of the validation vignette for the full bundle-versus-publication caveat list. The Terranova 2018 publication (J Theor Biol 450:1-14) was paywalled and not available on disk at extraction time, so the simulation-truth values were not cross-checked against published tables."
@@ -42,7 +42,7 @@ Terranova_2018_paclitaxel <- function() {
     # Parameter values come from the .ctl $THETA block in
     # Executable_Terranova_2017_oncology_TGI_HM.ctl. The bundle ships no
     # Output_real_*.lst (real-data fit) and no Output_simulated_*.lst
-    # (NONMEM listing) — only an Output_simulated_*.pdf rendering of the
+    # (NONMEM listing) -- only an Output_simulated_*.pdf rendering of the
     # typical trajectory and a Simulated_DEB_TGI_data.csv event table.
     # The .ctl is configured for $SIM (12345) (54321) ONLYSIM with
     # $OMEGA 0 FIX and $SIGMA 1.0 FIX, so the $THETA values are the
@@ -78,16 +78,16 @@ Terranova_2018_paclitaxel <- function() {
     addSd_tumorWeight <- 0.134 ; label("Additive residual-error coefficient on tumor weight (b_Wu; original form: SD = b_Wu * sqrt(Wu))") # .ctl $THETA(11) = 0.134  ; b_Wu
 
     # ----- Parameters fixed from upstream literature (.ctl $THETA FIX) -----
-    lk10        <- fixed(log(20.832))  ; label("Paclitaxel central-elimination rate constant (k10, 1/day) — FIXED from upstream popPK")               # .ctl $THETA(12) = 20.832  FIX ; K10_POP
-    lk12        <- fixed(log(0.144))   ; label("Paclitaxel central-to-peripheral rate constant (k12, 1/day) — FIXED from upstream popPK")              # .ctl $THETA(13) = 0.144   FIX ; K12_POP
-    lk21        <- fixed(log(2.011))   ; label("Paclitaxel peripheral-to-central rate constant (k21, 1/day) — FIXED from upstream popPK")              # .ctl $THETA(14) = 2.011   FIX ; K21_POP
-    lvc         <- fixed(log(813.1))   ; label("Paclitaxel central-compartment volume Vc (source-unit volume; consistent with k10/k12/k21 and AMT) — FIXED from upstream popPK")  # .ctl $THETA(15) = 813.1   FIX ; V1_POP
-    len_initial <- fixed(log(1.3))     ; label("Initial enzyme density EN (DEB host-energy state; unitless) — FIXED")                                   # .ctl $THETA(16) = 1.3     FIX ; En_initial_POP
-    lxi         <- fixed(log(0.184))   ; label("DEB host-body composition coupling xi between EN and structural body component Z (unitless) — FIXED")  # .ctl $THETA(17) = 0.184   FIX ; xi_POP
-    lni         <- fixed(log(1.2242))  ; label("Tumor proliferation rate scaling ni (DEB; unitless) — FIXED")                                           # .ctl $THETA(18) = 1.2242  FIX ; ni_POP
-    lgr         <- fixed(log(12.2))    ; label("Tumor energy-budget rate constant gr (DEB; unitless) — FIXED")                                          # .ctl $THETA(19) = 12.2    FIX ; gr_POP
-    lv1inf      <- fixed(log(22.6))    ; label("Asymptotic tumor-volume scale V1inf (g; DEB) — FIXED")                                                  # .ctl $THETA(20) = 22.6    FIX ; V1inf_POP
-    lrho_b      <- fixed(log(1.0))     ; label("Basal proliferation factor rho_b (set to 1 = unrestricted untreated growth) — FIXED")                   # .ctl $THETA(21) = 1.0     FIX ; rho_b_POP
+    lk10        <- fixed(log(20.832))  ; label("Paclitaxel central-elimination rate constant (k10, 1/day) -- FIXED from upstream popPK")               # .ctl $THETA(12) = 20.832  FIX ; K10_POP
+    lk12        <- fixed(log(0.144))   ; label("Paclitaxel central-to-peripheral rate constant (k12, 1/day) -- FIXED from upstream popPK")              # .ctl $THETA(13) = 0.144   FIX ; K12_POP
+    lk21        <- fixed(log(2.011))   ; label("Paclitaxel peripheral-to-central rate constant (k21, 1/day) -- FIXED from upstream popPK")              # .ctl $THETA(14) = 2.011   FIX ; K21_POP
+    lvc         <- fixed(log(813.1))   ; label("Paclitaxel central-compartment volume Vc (source-unit volume; consistent with k10/k12/k21 and AMT) -- FIXED from upstream popPK")  # .ctl $THETA(15) = 813.1   FIX ; V1_POP
+    len_initial <- fixed(log(1.3))     ; label("Initial enzyme density EN (DEB host-energy state; unitless) -- FIXED")                                   # .ctl $THETA(16) = 1.3     FIX ; En_initial_POP
+    lxi         <- fixed(log(0.184))   ; label("DEB host-body composition coupling xi between EN and structural body component Z (unitless) -- FIXED")  # .ctl $THETA(17) = 0.184   FIX ; xi_POP
+    lni         <- fixed(log(1.2242))  ; label("Tumor proliferation rate scaling ni (DEB; unitless) -- FIXED")                                           # .ctl $THETA(18) = 1.2242  FIX ; ni_POP
+    lgr         <- fixed(log(12.2))    ; label("Tumor energy-budget rate constant gr (DEB; unitless) -- FIXED")                                          # .ctl $THETA(19) = 12.2    FIX ; gr_POP
+    lv1inf      <- fixed(log(22.6))    ; label("Asymptotic tumor-volume scale V1inf (g; DEB) -- FIXED")                                                  # .ctl $THETA(20) = 22.6    FIX ; V1inf_POP
+    lrho_b      <- fixed(log(1.0))     ; label("Basal proliferation factor rho_b (set to 1 = unrestricted untreated growth) -- FIXED")                   # .ctl $THETA(21) = 1.0     FIX ; rho_b_POP
   })
 
   model({
@@ -191,7 +191,7 @@ Terranova_2018_paclitaxel <- function() {
     }
 
     # ------------------------------------------------------------------
-    # 7. ODE system — direct port of the .ctl $DES DADT lines.
+    # 7. ODE system -- direct port of the .ctl $DES DADT lines.
     #    Compartment ordering matches the source so the bundle's
     #    Simulated_DEB_TGI_data.csv (CMT = 1 doses) maps onto
     #    rxode2's positional compartment numbering: central = 1,

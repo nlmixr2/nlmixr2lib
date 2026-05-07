@@ -27,33 +27,33 @@ This model was extracted from the DDMORE Foundation Model Repository
 bundle for `DDMODEL00000274` (scraped to
 `dpastoor/ddmore_scraping/274/`). The bundle contains:
 
-- `Executable_Terranova_2017_oncology_TGI_HM.ctl` — the hand-modified
+- `Executable_Terranova_2017_oncology_TGI_HM.ctl` -- the hand-modified
   NMTRAN executable produced by the DDMoRe `pharmML2Nmtran` converter
   (v.0.4.0) from the `.mdl` source. This is the executable used to
   produce the bundle's typical-value simulation.
-- `Terranova_2017_oncology_TGI.mdl`, `.xml`, `.ctl` — the
+- `Terranova_2017_oncology_TGI.mdl`, `.xml`, `.ctl` -- the
   pre-modification MDL / PharmML / NMTRAN forms (the `.ctl` is the
   auto-generated NMTRAN before the `Command.txt` "cut and replace"
   step that swaps Q1 and Z into compartments 1 and 2 respectively).
-- `Simulated_DEB_TGI_data.csv` — a 59-row simulated event table
+- `Simulated_DEB_TGI_data.csv` -- a 59-row simulated event table
   carrying two subjects (one treated, one untreated control), with
   body-weight (`DVID = 1`) and tumor-weight (`DVID = 2`)
   observations. The treated subject receives paclitaxel doses at
   days 8, 12, and 16.
-- `Output_simulated_Terranova_2017.pdf` — a graphical rendering of
+- `Output_simulated_Terranova_2017.pdf` -- a graphical rendering of
   the typical-value trajectory the bundle produces under
   `$SIM (12345) (54321) ONLYSIM`.
-- `Model_Accomodations.txt` — a one-paragraph note stating that
+- `Model_Accomodations.txt` -- a one-paragraph note stating that
   among the drugs considered in the publication, only paclitaxel was
   carried into the bundle.
-- `Command.txt` — the run-time recipe (DDMoRe `estimate(..., target =
+- `Command.txt` -- the run-time recipe (DDMoRe `estimate(..., target =
   "NONMEM")` followed by a hand-edit and `execute Executable_*.ctl`).
-- `DDMODEL00000274.rdf`, `274.json` — repository metadata (model
+- `DDMODEL00000274.rdf`, `274.json` -- repository metadata (model
   type, research stage, file inventory, scrape version 5).
 
 The bundle ships **no `Output_real_*.lst`** (a real-data NONMEM fit
 listing) and **no `Output_simulated_*.lst`** (a NONMEM listing on
-the simulated dataset) — only the `.pdf` rendering. The
+the simulated dataset) -- only the `.pdf` rendering. The
 `Executable_*.ctl` is configured for `$SIM (12345) (54321) ONLYSIM`
 with `$OMEGA 0 FIX` and `$SIGMA 1.0 FIX 1.0 FIX`, so the `$THETA`
 values are the publication-derived simulation truth (final estimates
@@ -70,7 +70,7 @@ body-weight loss (cachexia) in preclinical efficacy experiments.
 The framework was fit across multiple anticancer agents in
 xenograft mice; the DDMODEL00000274 bundle implements the
 **paclitaxel** scenario only ("Among the drugs considered in the
-paper, only PACLITAXEL has been used" — `Model_Accomodations.txt`).
+paper, only PACLITAXEL has been used" -- `Model_Accomodations.txt`).
 
 The bundle's `Simulated_DEB_TGI_data.csv` carries two virtual
 subjects: a paclitaxel-treated mouse (ID = 1, three IV bolus doses
@@ -134,16 +134,16 @@ The DEB-TGI piecewise dynamics use two thresholds derived in the
 - `switch2 = numerator / ((1 - ku) * (EN + omeg * gr))`
 
 The three branches selected by `switch1` and `switch2` are
-exhaustive (it can be shown that `switch1 < 0 ⇒ switch2 < 0`, since
+exhaustive (it can be shown that `switch1 < 0 => switch2 < 0`, since
 `gr + (1 - ku) * EN > (1 - ku) * (EN + omeg * gr) > 0` for the
 admissible range `0 < ku < 1`, `gr > 0`, `EN > 0`):
 
-- **Branch A** (`switch1 ≥ 0`) — host energy budget can sustain
+- **Branch A** (`switch1 >= 0`) -- host energy budget can sustain
   both tumor and structural body component growth.
-- **Branch B** (`switch1 < 0` and `switch2 ≥ -delta_Vmax`) — tumor
+- **Branch B** (`switch1 < 0` and `switch2 >= -delta_Vmax`) -- tumor
   outpaces the host energy budget; structural body component
   declines but does not hit the catabolic-loss cap.
-- **Branch C** (`switch1 < 0` and `switch2 < -delta_Vmax`) —
+- **Branch C** (`switch1 < 0` and `switch2 < -delta_Vmax`) --
   catabolic-loss cap binds; `dev_Z = -delta_Vmax`.
 
 # Validation strategy
@@ -177,7 +177,7 @@ substitutes from the extraction skill (
 3. **Drug-effect direction check.** The treated mouse's tumor must
    grow more slowly than the control's, and the treated mouse's
    body weight must decline less than the control's (or with a
-   different shape — the cachexia mechanism couples both directions
+   different shape -- the cachexia mechanism couples both directions
    so the direction is non-trivial). Both behaviours are visible
    qualitatively in the bundle's `Output_simulated_*.pdf`.
 
@@ -389,7 +389,7 @@ ggplot(sim_long, aes(time, value, colour = cohort)) +
 The bundle DV points scatter around the deterministic typical-value
 curve as expected for a `$SIM (12345) (54321) ONLYSIM` simulation
 under the source's `b * sqrt(IPRED)` residual. The body-weight
-trajectory shows a clear treatment effect — the treated mouse loses
+trajectory shows a clear treatment effect -- the treated mouse loses
 weight more slowly than expected from tumor-driven cachexia alone
 because the drug-induced tumor mass cap (via the Simeoni
 proliferation-inhibition arm) reduces the cachexia driver. The
@@ -434,7 +434,7 @@ sim_treated |>
 
 - **Bundle does not ship a fit listing.** DDMODEL00000274 carries no
   `Output_real_*.lst` (real-data fit) and no `Output_simulated_*.lst`
-  (NONMEM listing on the simulated dataset) — only an
+  (NONMEM listing on the simulated dataset) -- only an
   `Output_simulated_*.pdf` graphical rendering. The packaged model
   therefore takes its parameter values from the `.ctl` `$THETA`
   block, which under `$SIM ... ONLYSIM` carries the simulation truth
@@ -458,9 +458,9 @@ sim_treated |>
   The `Executable_*.ctl` carries `K10 = 20.832 1/day`,
   `K12 = 0.144 1/day`, `K21 = 2.011 1/day`, `V1 = 813.1` (volume,
   units unstated), and `AMT = 3e+07` per dose in the simulated
-  dataset. These values are mutually consistent — `Q1 / V1` after a
-  bolus reaches `~3e+07 / 813 ≈ 37000` "concentration units" and
-  the IC50 of `0.461` is then on the same scale — but the absolute
+  dataset. These values are mutually consistent -- `Q1 / V1` after a
+  bolus reaches `~3e+07 / 813 ~= 37000` "concentration units" and
+  the IC50 of `0.461` is then on the same scale -- but the absolute
   scale (mg, ug, ng; mL, uL) is ambiguous. The packaged model uses
   `units$dosing = "amu"` and `units$concentration = "amu/avu"` to
   make the ambiguity explicit; users feeding this model from a
@@ -471,7 +471,7 @@ sim_treated |>
 
 - **Residual error simplified to plain additive.** The `.ctl`
   `$ERROR` block uses `Y = IPRED + b * sqrt(IPRED) * EPS` (where
-  `EPS ~ N(0, sigma = 1)`, sigma fixed) — i.e. additive on the
+  `EPS ~ N(0, sigma = 1)`, sigma fixed) -- i.e. additive on the
   linear scale with **standard deviation proportional to
   `sqrt(IPRED)`**, a Poisson-like noise structure. nlmixr2 / rxode2
   do not have a direct `~ pow(s, 0.5)` residual-error term in the
@@ -510,7 +510,7 @@ sim_treated |>
   constants in `$PK` rather than via `$THETA`. The packaged model
   hard-codes them inside `model()` to match.
 
-- **The bundle's "cut and replace" Q1↔Z swap is preserved.** The
+- **The bundle's "cut and replace" Q1<->Z swap is preserved.** The
   source `.mdl` originally placed Z in compartment 1 and Q1 in
   compartment 2; `Command.txt` documents a hand-edit that swaps
   the two so paclitaxel doses (delivered to compartment 1 in the
