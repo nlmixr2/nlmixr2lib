@@ -28,26 +28,26 @@ This model was extracted from the DDMORE Foundation Model Repository
 bundle for `DDMODEL00000267` (scraped to
 `dpastoor/ddmore_scraping/267/`). The bundle contains:
 
-- `Executable_OriginalModelCode.mod` — the NONMEM control stream
+- `Executable_OriginalModelCode.mod` -- the NONMEM control stream
   (ADVAN6, 8 compartments, 16 THETAs, 4 ETAs, 6 EPSs).
-- `Output_real_OriginalModelCode.lst` — the NONMEM listing from the
+- `Output_real_OriginalModelCode.lst` -- the NONMEM listing from the
   fit on the original real dataset; the FINAL PARAMETER ESTIMATE
   block (lines 519-567) appears after `MINIMIZATION SUCCESSFUL`
   (line 452, OBJV = 5286.743) and is the authoritative source of
   parameter point values for this extraction.
-- `Output_simulated_OriginalModelCode.lst` — companion listing run
+- `Output_simulated_OriginalModelCode.lst` -- companion listing run
   on the bundle's simulated dataset; used for self-consistency
   checks below.
-- `Simulated_APAP_YoungWomen.csv` — a 6-subject simulated dataset
+- `Simulated_APAP_YoungWomen.csv` -- a 6-subject simulated dataset
   with 178 observation rows that exercises every OCC level (1
   through 5), every TERM_BIRTH / BC_USE combination, and a range of
   body weights and urine flow rates.
-- `DDMODEL00000267.rdf` — model classification metadata
+- `DDMODEL00000267.rdf` -- model classification metadata
   (`pkpd-ontology#pkpd_0006013` purpose).
 
 The Allegaert 2015 BMC Anesthesiol publication itself is not on
 disk in this worktree, so the validation strategy below follows
-verification-checklist § F.2 (DDMORE-source self-consistency) and
+verification-checklist Section  F.2 (DDMORE-source self-consistency) and
 the linked publication's tables are not used as a parameter
 cross-check. Per-parameter source comments in
 `inst/modeldb/ddmore/Allegaert_2015_paracetamol.R` cite the
@@ -126,12 +126,12 @@ comments in `inst/modeldb/ddmore/Allegaert_2015_paracetamol.R`):
 | `etalcl_gluc`                | `~ 0.121`                        | OMEGA(2,2) = 1.21E-01                 |
 | `etalcl_renal`               | `~ 0.122`                        | OMEGA(4,4) = 1.22E-01                 |
 | (no eta on `cl_sulf`)        | `0 FIX`                          | OMEGA(3,3) = 0.00E+00 (FIXED)         |
-| `CcpropSd`                   | `sqrt(0.0695)` (≈ 0.264)         | SIGMA(1,1) = 6.95E-02                 |
-| `Cc_oc5_propSd`              | `sqrt(0.0169)` (≈ 0.130)         | SIGMA(5,5) = 1.69E-02                 |
-| `Cc_oc5_addSd`               | `sqrt(0.0160)` (≈ 0.126)         | SIGMA(6,6) = 1.60E-02 (mg/L)          |
-| `propSd_urineGluc`           | `sqrt(0.292)`  (≈ 0.540)         | SIGMA(2,2) = 2.92E-01                 |
-| `propSd_urineSulf`           | `sqrt(0.147)`  (≈ 0.383)         | SIGMA(3,3) = 1.47E-01                 |
-| `propSd_urineApap`           | `sqrt(0.152)`  (≈ 0.390)         | SIGMA(4,4) = 1.52E-01                 |
+| `CcpropSd`                   | `sqrt(0.0695)` (~= 0.264)         | SIGMA(1,1) = 6.95E-02                 |
+| `Cc_oc5_propSd`              | `sqrt(0.0169)` (~= 0.130)         | SIGMA(5,5) = 1.69E-02                 |
+| `Cc_oc5_addSd`               | `sqrt(0.0160)` (~= 0.126)         | SIGMA(6,6) = 1.60E-02 (mg/L)          |
+| `propSd_urineGluc`           | `sqrt(0.292)`  (~= 0.540)         | SIGMA(2,2) = 2.92E-01                 |
+| `propSd_urineSulf`           | `sqrt(0.147)`  (~= 0.383)         | SIGMA(3,3) = 1.47E-01                 |
+| `propSd_urineApap`           | `sqrt(0.152)`  (~= 0.390)         | SIGMA(4,4) = 1.52E-01                 |
 | `d/dt(central)` ODE          | n/a                              | `Executable_*.mod` $DES line 73       |
 | `d/dt(peripheral1)` ODE      | n/a                              | $DES line 74                          |
 | `d/dt(central_gluc)` ODE     | n/a                              | $DES line 75                          |
@@ -140,7 +140,7 @@ comments in `inst/modeldb/ddmore/Allegaert_2015_paracetamol.R`):
 | `d/dt(urine_sulf)` ODE       | n/a                              | $DES line 78                          |
 | `d/dt(urine_apap)` ODE       | n/a                              | $DES line 79                          |
 | `d/dt(peripheral2)` ODE      | n/a                              | $DES line 80                          |
-| OCC-conditional plasma error | n/a                              | $ERROR lines 95-100; OCC = 5 -> Y2 (prop + add); OCC ≠ 5 -> Y1 (prop only) |
+| OCC-conditional plasma error | n/a                              | $ERROR lines 95-100; OCC = 5 -> Y2 (prop + add); OCC != 5 -> Y1 (prop only) |
 | metabolite plasma volume rule | `V_meta = 0.18 * V_central`     | $PK lines 31-32 (`V3 = V1 * 0.18`, `V4 = V3`) |
 | OCC-driven covariate effects  | (see ini comments)              | $PK lines 32-50 (`IF (OCC.EQ.k) ...`) |
 | BC-driven covariate effect    | (see ini comments)              | $PK lines 38-43 (`IF (BC.EQ.1) CLG = THETA(12) * ICLG`) |
@@ -158,10 +158,10 @@ elsewhere (mirroring the .mod's coding rule that BC = 1 implies
 the volunteer-on-BC stratum). All subjects receive a single
 2 000 mg propacetamol IV infusion delivered over 20 minutes
 (rate = 6 000 mg/h) into the central compartment. Note: the
-.mod's dosing units are propacetamol mg, not paracetamol mg —
-2 000 mg propacetamol corresponds to ≈ 1 000 mg paracetamol
+.mod's dosing units are propacetamol mg, not paracetamol mg --
+2 000 mg propacetamol corresponds to ~= 1 000 mg paracetamol
 equivalent on a molar basis, and the structural V / CL parameters
-absorb the propacetamol → paracetamol stoichiometry rather than
+absorb the propacetamol -> paracetamol stoichiometry rather than
 applying an explicit `f(central) = 0.5` bioavailability factor
 (see Errata).
 
@@ -204,7 +204,7 @@ The validation simulation uses typical-value parameters
 (`rxode2::zeroRe()` zeroes out the IIV) so that the per-OCC
 trajectories isolate the typical-value covariate effects from
 between-subject noise. The simulation horizon is 0-12 h, long
-enough to recover ≥ 90% of the IV bolus from plasma even in the
+enough to recover >= 90% of the IV bolus from plasma even in the
 high-CL pregnant arm.
 
 ```{r simulate}
@@ -223,12 +223,12 @@ sim <- rxode2::rxSolve(
 
 The figure below shows typical-value plasma APAP concentration
 trajectories per OCC stratum. Pregnancy (OCC = 1) has the largest
-V_central (1.86 × baseline) and the largest CL_gluc (2.03 × baseline);
-2-weeks postpartum (OCC = 2) has reduced CL_gluc (0.547 × baseline);
+V_central (1.86 x baseline) and the largest CL_gluc (2.03 x baseline);
+2-weeks postpartum (OCC = 2) has reduced CL_gluc (0.547 x baseline);
 1-yr postpartum (OCC = 3) and the non-pregnant volunteers (OCC = 4)
 share the baseline parameters. The OCC = 5 stratum (volunteer on
 BC) inherits the OCC = 4 typical-value parameters but adds a
-1.46 × scalar on CL_gluc through the BC_USE covariate.
+1.46 x scalar on CL_gluc through the BC_USE covariate.
 
 ```{r figure-plasma-apap}
 ggplot(sim, aes(time, Cc, colour = cohort)) +
@@ -326,7 +326,7 @@ this worktree, so a side-by-side comparison against published NCA
 parameters cannot be produced. The .lst-based self-consistency
 check above (typical-value simulation reproducing sensible plasma /
 urinary trajectories with the expected OCC-stratum ordering) is
-the substitute per `verification-checklist.md` § F.2.
+the substitute per `verification-checklist.md` Section  F.2.
 
 The DDMORE bundle's `Output_simulated_OriginalModelCode.lst`
 records the predicted plasma / urinary trajectories on the shipped
@@ -355,9 +355,9 @@ structural model and covariate-effect implementation are coherent.
   as `NA`.
 - **Dose-units convention (propacetamol vs paracetamol).** The
   .mod's dosing units are propacetamol mg, not paracetamol mg
-  (1 g propacetamol ≈ 0.5 g paracetamol equivalent on a molar
+  (1 g propacetamol ~= 0.5 g paracetamol equivalent on a molar
   basis). The structural `V` and `CL` parameter values absorb the
-  propacetamol → paracetamol stoichiometry rather than applying
+  propacetamol -> paracetamol stoichiometry rather than applying
   an explicit `f(central) = 0.5` bioavailability factor; the
   validation simulation here therefore administers 2 000 mg
   propacetamol-equivalent doses to match the bundle's
@@ -375,7 +375,7 @@ structural model and covariate-effect implementation are coherent.
   block uses `Y2 = F*(1 + ERR(5)) + ERR(6)` for OCC = 5 (volunteer
   on BC) and `Y1 = F*(1 + ERR(1))` for every other OCC. The
   conditional error is implemented inside `model()` by selecting
-  between the OCC ≠ 5 (`CcpropSd`) and OCC = 5 (`Cc_oc5_propSd`,
+  between the OCC != 5 (`CcpropSd`) and OCC = 5 (`Cc_oc5_propSd`,
   `Cc_oc5_addSd`) SD pairs based on an `oc5` indicator; there is
   no canonical `<output>_<segment>_propSd` name in
   `naming-conventions.md`, so the OCC = 5 sub-arm parameters use
@@ -392,7 +392,7 @@ structural model and covariate-effect implementation are coherent.
   and `sulf` newly registered in
   `R/conventions.R::registeredMetabolites` for paracetamol Phase-II
   conjugates.
-- **NONMEM $SIGMA → nlmixr2 SD conversion.** The .mod's $SIGMA
+- **NONMEM $SIGMA -> nlmixr2 SD conversion.** The .mod's $SIGMA
   diagonal entries are variances on the linear scale (because the
   .mod's $ERROR uses `Y = F*(1 + ERR(i))` and `Y = F*(1 + ERR(j)) +
   ERR(k)`, both linear-scale forms); nlmixr2's `prop()` and `add()`

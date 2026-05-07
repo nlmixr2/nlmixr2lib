@@ -51,7 +51,7 @@ Wilkins_2008_rifampicin <- function() {
     # `.mod` $THETA initial values (Executable_real_TB_Rifampicin_PK_Wilkins_2008.mod
     # lines 127-135), which equal the FINAL THETAs in TB_Rifampicin_PK_Wilkins_2008_real.lst
     # ("FINAL PARAMETER ESTIMATE" block, lines 244-246). The .mod's $PROBLEM line names
-    # this run "RIF Run71 newinits" — the THETAs are FINAL estimates from a previous
+    # this run "RIF Run71 newinits" -- the THETAs are FINAL estimates from a previous
     # successful upstream run carried forward as initial values; the .lst's MINIMIZATION
     # TERMINATED status reflects a smoke-test re-run that did not progress past iteration 4
     # on a slightly different real dataset, NOT a non-converged fit. The DDMORE-curated
@@ -67,7 +67,7 @@ Wilkins_2008_rifampicin <- function() {
 
     # Formulation covariate effects. NONMEM source uses multiplicative `(1 + theta * (1 - FDC))`
     # shifts on MTT (THETA(8)) and on CL (THETA(9)); both effects vanish for the FDC = 1
-    # typical-value reference. The .mod's CLLOC variable name is vestigial — the conditional
+    # typical-value reference. The .mod's CLLOC variable name is vestigial -- the conditional
     # is `IF(FDC.EQ.0) CLLOC = THETA(9)`, so the effect is FDC-driven, not LOC-driven.
     e_fdc0_mtt <- 1.04;  label("Multiplicative MTT increase for SDC (FDC = 0) vs FDC = 1 reference (unitless)")  # .mod $THETA(8) FINAL = 1.04E+00; Output_real_* summary 'SDC on MTT' = 1.04 (RSE 8.78%)
     e_fdc0_cl  <- 0.236; label("Multiplicative CL increase for SDC (FDC = 0) vs FDC = 1 reference (unitless)")   # .mod $THETA(9) FINAL = 2.36E-01; Output_real_* summary 'SDC on CL'  = 0.236 (RSE 9.63%)
@@ -76,9 +76,9 @@ Wilkins_2008_rifampicin <- function() {
     # (CL/V); diagonal $OMEGA on ETA(3) (KA), ETA(4) (MTT), ETA(17) (NN). nlmixr2 BLOCK(2)
     # form expects lower-triangle order in c(): (var_CL, cov, var_V).
     etalcl + etalvc ~ c(0.279, 0.217, 0.188)  # .mod $OMEGA BLOCK(2) on ETA(1)/ETA(2); .lst FINAL OMEGA(1,1) = 2.79E-01, OMEGA(1,2) = 2.17E-01, OMEGA(2,2) = 1.88E-01
-    etalka  ~ 0.439  # .mod $OMEGA on ETA(3); .lst FINAL OMEGA(3,3) = 4.39E-01 — IIV Ka  (log-normal variance)
-    etalmtt ~ 0.361  # .mod $OMEGA on ETA(4); .lst FINAL OMEGA(4,4) = 3.61E-01 — IIV MTT (log-normal variance)
-    etalnn  ~ 2.44   # .mod $OMEGA on ETA(17); .lst FINAL OMEGA(17,17) = 2.44E+00 — IIV NN (log-normal variance)
+    etalka  ~ 0.439  # .mod $OMEGA on ETA(3); .lst FINAL OMEGA(3,3) = 4.39E-01 -- IIV Ka  (log-normal variance)
+    etalmtt ~ 0.361  # .mod $OMEGA on ETA(4); .lst FINAL OMEGA(4,4) = 3.61E-01 -- IIV MTT (log-normal variance)
+    etalnn  ~ 2.44   # .mod $OMEGA on ETA(17); .lst FINAL OMEGA(17,17) = 2.44E+00 -- IIV NN (log-normal variance)
 
     # Inter-occasion variability (IOV) on log-CL across 6 occasions. NONMEM source declares
     # `$OMEGA BLOCK(1) 0.0508` followed by five `BLOCK(1) SAME` re-uses the same single-element
@@ -86,7 +86,7 @@ Wilkins_2008_rifampicin <- function() {
     # OMEGA(5,5) = 5.08E-02. nlmixr2 has no `SAME` shortcut, so each occasion gets its own
     # eta with the variance fixed to the shared value after the first (matching the
     # Jonsson_2011_ethambutol pattern).
-    etaiov_cl_1 ~ 0.0508         # .mod $OMEGA BLOCK(1) on ETA(5); .lst FINAL OMEGA(5,5) = 5.08E-02 — estimated occasion-1 IOV variance
+    etaiov_cl_1 ~ 0.0508         # .mod $OMEGA BLOCK(1) on ETA(5); .lst FINAL OMEGA(5,5) = 5.08E-02 -- estimated occasion-1 IOV variance
     etaiov_cl_2 ~ fix(0.0508)    # $OMEGA BLOCK(1) SAME on ETA(6); fixed equal to OMEGA(5,5)
     etaiov_cl_3 ~ fix(0.0508)    # $OMEGA BLOCK(1) SAME on ETA(7); fixed equal to OMEGA(5,5)
     etaiov_cl_4 ~ fix(0.0508)    # $OMEGA BLOCK(1) SAME on ETA(8); fixed equal to OMEGA(5,5)
@@ -95,7 +95,7 @@ Wilkins_2008_rifampicin <- function() {
 
     # IOV on log-MTT across 6 occasions. Same `BLOCK(1) + 5 SAME` pattern; FINAL shared
     # variance is OMEGA(11,11) = 4.61E-01.
-    etaiov_mtt_1 ~ 0.461         # .mod $OMEGA BLOCK(1) on ETA(11); .lst FINAL OMEGA(11,11) = 4.61E-01 — estimated occasion-1 IOV variance
+    etaiov_mtt_1 ~ 0.461         # .mod $OMEGA BLOCK(1) on ETA(11); .lst FINAL OMEGA(11,11) = 4.61E-01 -- estimated occasion-1 IOV variance
     etaiov_mtt_2 ~ fix(0.461)    # $OMEGA BLOCK(1) SAME on ETA(12)
     etaiov_mtt_3 ~ fix(0.461)    # $OMEGA BLOCK(1) SAME on ETA(13)
     etaiov_mtt_4 ~ fix(0.461)    # $OMEGA BLOCK(1) SAME on ETA(14)
@@ -106,7 +106,7 @@ Wilkins_2008_rifampicin <- function() {
     # uses `W = SQRT(THETA(4)**2 + THETA(5)**2 * F * F)` and `Y = IPRED + W * EPS(1)` with
     # `$SIGMA 1 FIX`; this is nlmixr2's default Pythagorean-SD `combined2` form with
     # additive SD = THETA(4) and proportional SD = THETA(5).
-    addSd  <- 0.0923;  label("Additive residual error (mg/L)")             # .mod $THETA(4) FINAL = 9.23E-02; .lst FINAL TH 4 = 9.23E-02. The DDMORE Output_real_* summary file lists `Additive residual error 0.0508 (mg/L)` for the same parameter — likely a transcription typo (the row immediately above reads `IOV on CL 0.0508 (variance)`); see vignette Errata.
+    addSd  <- 0.0923;  label("Additive residual error (mg/L)")             # .mod $THETA(4) FINAL = 9.23E-02; .lst FINAL TH 4 = 9.23E-02. The DDMORE Output_real_* summary file lists `Additive residual error 0.0508 (mg/L)` for the same parameter -- likely a transcription typo (the row immediately above reads `IOV on CL 0.0508 (variance)`); see vignette Errata.
     propSd <- 0.222;   label("Proportional residual error (fraction)")     # .mod $THETA(5) FINAL = 2.22E-01; matches Output_real_* summary 'Proportional residual error 0.222' (RSE 2.89%)
   })
 
@@ -163,7 +163,7 @@ Wilkins_2008_rifampicin <- function() {
     # input rate above.
     f(depot) <- 0
 
-    # Concentration in plasma. Dose units mg, V units L → Cc units mg/L (= ug/mL).
+    # Concentration in plasma. Dose units mg, V units L -> Cc units mg/L (= ug/mL).
     Cc <- central / vc
 
     # Combined additive + proportional residual error (Pythagorean / combined2 form,

@@ -27,8 +27,8 @@ library(ggplot2)
 This vignette validates the BAST 2017 PTTE Competing Event 1 hazard
 model packaged under `inst/modeldb/ddmore/NA_NA_tte_lognormal.R`
 (NONMEM run name `runCOMPEV1_101`). Competing Event 1 in the bundle is
-interval-censored; the BAST guiding document § 2.4.1 (Figure 2-3)
-selected log-normal as the base distribution by AIC, and § 2.4.2
+interval-censored; the BAST guiding document Section  2.4.1 (Figure 2-3)
+selected log-normal as the base distribution by AIC, and Section  2.4.2
 (Table 2-4) retained AGE as the only covariate.
 
 For sibling Event 1, Event 2, and Competing Event 2 hazard models from
@@ -39,8 +39,8 @@ the same bundle, see `NA_NA_tte_gompertz.R`,
 
 The BAST 2017 PTTE bundle is a methodological teaching example with
 N = 200 simulated patients, four timed event types, and six baseline
-covariates (BAST § 2.2.2). Of the 200 simulated patients, 36 (18%)
-experienced Competing Event 1 (BAST Table 2-1) — the lowest event
+covariates (BAST Section  2.2.2). Of the 200 simulated patients, 36 (18%)
+experienced Competing Event 1 (BAST Table 2-1) -- the lowest event
 incidence of the four event types. Competing Event 1 is **interval-
 censored**: exact event times are unknown, only that the event
 occurred between two scheduled assessment visits.
@@ -54,12 +54,12 @@ str(m()$meta$population, max.level = 1)
 
 | Equation / parameter             | Value      | Source location                                                                  |
 |----------------------------------|------------|----------------------------------------------------------------------------------|
-| Hazard form `h(t) = val * pdf(t) / (1 - Phi(num))` | n/a | Executable_runCOMPEV1_101.mod $PK / $DES (`pdf = (1/(fac*lambda*(T+DEL)))*exp(-(num**2)/(2*lambda*lambda))`, `DADT(1) = VAL*pdf/(1-phi(num/lambda))`); BAST guiding doc § 2.4.1 confirms log-normal selected |
+| Hazard form `h(t) = val * pdf(t) / (1 - Phi(num))` | n/a | Executable_runCOMPEV1_101.mod $PK / $DES (`pdf = (1/(fac*lambda*(T+DEL)))*exp(-(num**2)/(2*lambda*lambda))`, `DADT(1) = VAL*pdf/(1-phi(num/lambda))`); BAST guiding doc Section  2.4.1 confirms log-normal selected |
 | `llambda_compev1` (sigma)        | log(1.42)  | Output_simulated_runCOMPEV1_101.res FINAL TH1 = 1.42E+00; not rescaled |
 | `lalpha_compev1` (median scale)  | log(984)   | Output_simulated_runCOMPEV1_101.res FINAL TH2 = 9.84E+02; not rescaled |
 | `e_age_compev1` (AGE coefficient)| 50.9       | Output_simulated_runCOMPEV1_101.res FINAL TH3 = 5.09E+01; rescaled by /1000, applied to `(AGE - 55)` |
-| η on `lambda` (`OMEGA(1,1)`)     | 0 FIXED    | Output_simulated_runCOMPEV1_101.res FINAL OMEGA(1,1) = 0.00E+00 (placeholder; no estimated IIV) |
-| Covariate-selection ΔOFV         | -14.822    | BAST guiding doc § 2.4.2, Table 2-4 (AGE chosen as final covariate model COMPEV1_101) |
+| eta on `lambda` (`OMEGA(1,1)`)     | 0 FIXED    | Output_simulated_runCOMPEV1_101.res FINAL OMEGA(1,1) = 0.00E+00 (placeholder; no estimated IIV) |
+| Covariate-selection DeltaOFV         | -14.822    | BAST guiding doc Section  2.4.2, Table 2-4 (AGE chosen as final covariate model COMPEV1_101) |
 
 # Virtual cohort
 
@@ -92,15 +92,15 @@ sim <- rxode2::rxSolve(m, events = events) |>
   as.data.frame()
 ```
 
-# Replicate published behaviour — typical-value survival trajectory
+# Replicate published behaviour -- typical-value survival trajectory
 
-The BAST guiding document § 2.4.1 (Figure 2-3) reports a Kaplan-Meier
+The BAST guiding document Section  2.4.1 (Figure 2-3) reports a Kaplan-Meier
 curve of Competing Event 1 vs. the candidate parametric distributions;
 log-normal was chosen (AIC -2.144 vs. exponential 0). The covariate-
 VPC stratifications by patient age (Figure 2-11, Figure 2-12) cover
-the window 0 — 400 days. Competing Event 1 has the slowest event rate
+the window 0 -- 400 days. Competing Event 1 has the slowest event rate
 of the four events; at the typical AGE (55 years), the model's
-typical-value survival drops from `S(0) = 1` to about `S(800) ≈ 0.57`.
+typical-value survival drops from `S(0) = 1` to about `S(800) ~= 0.57`.
 
 ```{r km-style}
 sim |>
@@ -123,9 +123,9 @@ sim |>
   scale_y_continuous(limits = c(0, 1))
 ```
 
-# Mechanistic sanity checks (verification-checklist § F.3)
+# Mechanistic sanity checks (verification-checklist Section  F.3)
 
-## F.3.1 — Hazard has the characteristic log-normal shape (rises then falls)
+## F.3.1 -- Hazard has the characteristic log-normal shape (rises then falls)
 
 The log-normal hazard rises from 0 at `t = 0`, peaks near `t = alpha`
 (the median time scale), and decays at long times. The check below
@@ -151,9 +151,9 @@ stopifnot(hazard_peak > hazard_early)
 stopifnot(hazard_peak > hazard_late)
 ```
 
-## F.3.2 — Older patients have higher hazard (positive AGE coefficient)
+## F.3.2 -- Older patients have higher hazard (positive AGE coefficient)
 
-The BAST guiding document § 2.4.2 (Table 2-4) reports a +50.9
+The BAST guiding document Section  2.4.2 (Table 2-4) reports a +50.9
 coefficient on the centred `(AGE - 55)/1000` term, meaning older
 patients have a higher hazard. The check below confirms the simulated
 trajectories shift in the expected direction.
@@ -193,7 +193,7 @@ stopifnot(old_sur < ref_sur)
 stopifnot(young_sur > ref_sur)
 ```
 
-## F.3.3 — Final-fit objective-function value matches the bundle
+## F.3.3 -- Final-fit objective-function value matches the bundle
 
 `Output_simulated_runCOMPEV1_101.res` reports `OBJV = 360253.678` at
 the final estimates. This value is informational here.
@@ -231,7 +231,7 @@ dataset is outside this package and not redistributed.
   observed only between scheduled assessment visits. The packaged
   nlmixr2lib model is intended for forward simulation; users who want
   to honour the interval-censoring convention should snap simulated
-  event times to the next assessment visit (BAST guiding doc § 2.3.3).
+  event times to the next assessment visit (BAST guiding doc Section  2.3.3).
 
 * **No publication-PDF cross-check.** The BAST PTTE 2017 guiding
   document is the only source of equations and methodological

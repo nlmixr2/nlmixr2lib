@@ -76,7 +76,7 @@ is the de-facto executable; the table below cross-references both.
 | `etalvp ~ 0.0144` | variance | `.mdl` `VARIABILITY` `PPV_VP1` (`var =`) ; `.cpp` `[OMEGA] EVP1` |
 | `etalvp2 ~ 0.0333` | variance | `.mdl` `VARIABILITY` `PPV_VP2` (`var =`) ; `.cpp` `[OMEGA] EVP2` |
 | `etalq ~ 0.0379` | variance | `.mdl` `VARIABILITY` `PPV_Q1` (`var =`) ; `.cpp` `[OMEGA] EQ1` |
-| `etalka ~ 0.0457` | variance | `.cpp` `[OMEGA] EKA` (`.mdl` annotates as `sd = 0.0457` but the bundle simulates with mrgsolve `[OMEGA]` = variance — see Errata) |
+| `etalka ~ 0.0457` | variance | `.cpp` `[OMEGA] EKA` (`.mdl` annotates as `sd = 0.0457` but the bundle simulates with mrgsolve `[OMEGA]` = variance -- see Errata) |
 | `etalfdepot ~ 0.263` | variance | `.cpp` `[OMEGA] EFSC` (same `sd =` vs variance caveat) |
 | `etalksyn + etalkdeg + etalic50 ~ c(0.281, 0.0867, 0.0325, 0, 0, 1.18)` | covariance matrix | `.mdl` `VARIABILITY` `PPV_KSYN_KDEG_IC50` (`matrixValue = triangle(...)`) ; `.cpp` `[OMEGA] @block` |
 | `CcpropSdIV` | `sqrt(0.0193)` | `.mdl` `VARIABILITY` `ADDIV` ; `.cpp` `[SIGMA] ADDIV` (variance form) |
@@ -288,9 +288,9 @@ percent of baseline (see table above).
   consistent with the bundle's executable encoding even though they
   could not be cross-checked against the paper.
 - **MDL `sd = ...` vs. mrgsolve `[OMEGA]` variance encoding for `EKA`,
-  `EFSC`.** The DDMORE bundle ships two encodings of the model — an MDL
+  `EFSC`.** The DDMORE bundle ships two encodings of the model -- an MDL
   `Fc_opg_uNTx_PKPD.mdl` (Mike K Smith) and an mrgsolve `opg.cpp` (Kyle
-  Baron) — that are numerically inconsistent for two of the IIV
+  Baron) -- that are numerically inconsistent for two of the IIV
   parameters. The MDL annotates `PPV_KA` and `PPV_FSC` as `sd = 0.0457`
   and `sd = 0.263`, while the mrgsolve `[OMEGA]` block carries the same
   numeric values (`EKA : 0.0457`, `EFSC : 0.263`) but interprets them as
@@ -312,7 +312,7 @@ percent of baseline (see table above).
   therefore left as `NA` in the model's `population` metadata. The only
   population fact the bundle preserves is the disease state (healthy
   postmenopausal women, `sex_female_pct = 100`).
-- **Units conversion mg → ng/mL.** Compartment amounts are in mg (the
+- **Units conversion mg -> ng/mL.** Compartment amounts are in mg (the
   bundle's `[CMT]` annotation), volumes are in mL (the bundle's
   `[PARAM]` annotation), and the publication's reporting concentration
   unit is ng/mL (matching the units of `Km`, `IC50`, and the bundle's

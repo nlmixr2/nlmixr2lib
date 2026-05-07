@@ -30,8 +30,8 @@ The model is the Multistate Tuberculosis Pharmacometric (MTP) model coupled to
 the General Pharmacodynamic Interaction (GPDI) model for the triple combination
 of rifampicin (RIF), isoniazid (INH), and ethambutol (EMB) against an in vitro
 *Mycobacterium tuberculosis* B1585 culture. The MTP block carries three
-bacterial subpopulations — fast-multiplying (`Fbugs`), slow-multiplying
-(`Sbugs`), and non-replicating persisters (`Nbugs`) — that exchange via
+bacterial subpopulations -- fast-multiplying (`Fbugs`), slow-multiplying
+(`Sbugs`), and non-replicating persisters (`Nbugs`) -- that exchange via
 first-order rates and a time-dependent F-to-S transfer (`KFS = kfslin * t`).
 INH adaptive resistance is captured by a two-state ARON / AROFF system whose
 dynamic ARON value linearly inflates the INH EC50 on Fbugs and Sbugs. Each of
@@ -113,7 +113,7 @@ $THETA initial values are the operating final estimates for this scenario.
 | `sdier`           | THETA(41)        | 1.706 (cond. EMB > 0)         | GPDI: EMB -> RIF-SD EC50 shift |
 | `sdire`           | THETA(42)        | 479.458                       | GPDI: RIF -> EMB-SD scalar shift |
 | `sdierh`          | THETA(43)        | -0.677 (cond. EMB > 0)        | GPDI: EMB modulating the RIF-INH SDIRH interaction |
-| `addSd`           | SIGMA(1) FIX     | sqrt(0.937) ≈ 0.968 (log scale) | Additive residual SD on log(F + S) |
+| `addSd`           | SIGMA(1) FIX     | sqrt(0.937) ~= 0.968 (log scale) | Additive residual SD on log(F + S) |
 
 # Validation strategy
 
@@ -135,9 +135,9 @@ with the **F.3 mechanistic-sanity** path:
    combination) through `rxode2::rxSolve()` with typical-value parameters
    (no IIV, no residual error) and compare the trajectory against the
    bundle's `DV` values.
-2. Demonstrate the mechanistic kill ordering — control (pure growth) <
+2. Demonstrate the mechanistic kill ordering -- control (pure growth) <
    monotherapy (drug-specific kill) < combination (interaction-modulated
-   strongest effect) — at standard pharmacologically-relevant
+   strongest effect) -- at standard pharmacologically-relevant
    concentrations spanning the bundle's grid.
 
 # Representative experiments
@@ -275,7 +275,7 @@ knitr::kable(summary_df, digits = 3,
 ```
 
 The expected per-observation residual under perfect translation is the NONMEM
-stochastic noise term, with theoretical SD ≈ `sqrt(0.937) ≈ 0.968` on the
+stochastic noise term, with theoretical SD ~= `sqrt(0.937) ~= 0.968` on the
 natural-log scale. RMSE values comparable to that magnitude indicate the
 trajectory is consistent with the source model; values much larger flag a
 translation defect.
@@ -384,7 +384,7 @@ of the source model. Each is flagged here for downstream review.
   the standard additive residual on `logFSbugs`. Users fitting against
   censored data should populate the dataset's `cens` column accordingly.
 * **Non-canonical observation, compartments, and covariates** flagged as
-  10 `checkModelConventions()` warnings — `Fbugs` / `Sbugs` / `Nbugs` /
+  10 `checkModelConventions()` warnings -- `Fbugs` / `Sbugs` / `Nbugs` /
   `aron` / `aroff` are non-canonical compartments, `logFSbugs` is the
   paper-named observation (the canonical `Cc` is misleading for a log
   bacterial-density observation), `RIF` / `INH` / `EMB` are dataset-tied

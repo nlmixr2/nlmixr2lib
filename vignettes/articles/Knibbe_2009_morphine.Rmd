@@ -41,7 +41,7 @@ check against the publication is not possible).
 
 # Population
 
-Knibbe et al. 2009 fit a joint parent–metabolite population PK model for
+Knibbe et al. 2009 fit a joint parent-metabolite population PK model for
 morphine and its two glucuronide metabolites M3G and M6G in 248 preterm
 neonates, term newborns, infants, and toddlers younger than 3 years. The
 abstract reports 2,159 morphine concentrations across the 248 infants
@@ -49,7 +49,7 @@ and identifies bodyweight (BW exponent on clearance = 1.44) and a
 postnatal-age step at PNA = 10 days as the structural covariates on the
 glucuronidation pathways. The DDMORE-shipped `Output_real_run4.lst`
 listing was fit to a `Combined_InternalExternalData.csv` dataset
-covering 338 individuals / 2,809 observations / 5,302 records — a
+covering 338 individuals / 2,809 observations / 5,302 records -- a
 post-publication re-run on an extended pooled cohort. The full Knibbe
 2009 publication PDF was not on disk during extraction; the model file's
 `population` metadata flags the demographic detail fields as TODO.
@@ -98,15 +98,15 @@ control stream (`$MODEL`, `$PK`, `$ERROR` blocks).
 # Validation: F.2 self-consistency against the DDMORE simulated dataset
 
 The DDMORE bundle ships `Simulated_PaediatricMorphinePK.csv`, an event
-dataset for 5 subjects (BW 600 g–16,800 g, PNA 0.2 d–613 d) generated
+dataset for 5 subjects (BW 600 g-16,800 g, PNA 0.2 d-613 d) generated
 by the same NONMEM model on stochastic IIV / EPS draws. We re-simulate
 the same events with the packaged nlmixr2 model in **typical-value
 mode** (`rxode2::zeroRe()` to drop the IIV / EPS contributions) and
 overlay the typical-value trajectories on the bundle's per-record DV
-values. The simulated DV is on the natural-log scale of µg/L
+values. The simulated DV is on the natural-log scale of ug/L
 (equivalently ng/mL). Since the simulated DV carries IIV + residual
 error and the typical-value trajectory does not, we expect the
-typical-value line to pass through the cloud of DVs — not to match
+typical-value line to pass through the cloud of DVs -- not to match
 each value exactly.
 
 ```{r prepare-events}
@@ -131,7 +131,7 @@ events <- ds_raw |>
       CMT == 3     ~ "Cc_m6g",
       TRUE         ~ NA_character_
     ),
-    dv   = DV,                       # log(µg/L)
+    dv   = DV,                       # log(ug/L)
     cmt_label = dplyr::case_when(
       CMT == 1 ~ "morphine (Cc)",
       CMT == 2 ~ "M3G (Cc_m3g)",
@@ -182,7 +182,7 @@ sim_typ <- rxode2::rxSolve(mod_typ, events = events_full,
 head(sim_typ[, c("id", "time", "Cc", "Cc_m3g", "Cc_m6g")], 6)
 ```
 
-```{r overlay-figure, fig.cap = "Typical-value rxode2 trajectories overlaid on the DDMORE-shipped Simulated_PaediatricMorphinePK.csv DV values, by analyte and subject. The DV column is on the natural-log scale (µg/L); the rxode2 prediction has been log-transformed to match. Horizontal axes show time in minutes; subjects are stratified by panel."}
+```{r overlay-figure, fig.cap = "Typical-value rxode2 trajectories overlaid on the DDMORE-shipped Simulated_PaediatricMorphinePK.csv DV values, by analyte and subject. The DV column is on the natural-log scale (ug/L); the rxode2 prediction has been log-transformed to match. Horizontal axes show time in minutes; subjects are stratified by panel."}
 typ_long <- sim_typ |>
   dplyr::transmute(id, time,
                    `morphine (Cc)`  = log(pmax(Cc,     1e-6)),
@@ -202,9 +202,9 @@ ggplot() +
              aes(time, log_conc, colour = analyte),
              size = 2, alpha = 0.85) +
   facet_wrap(~ id, scales = "free", labeller = label_both) +
-  labs(x = "Time (min)", y = "log(concentration in µg/L)",
+  labs(x = "Time (min)", y = "log(concentration in ug/L)",
        colour = NULL,
-       title = "Knibbe 2009 — typical-value rxode2 predictions vs DDMORE simulated DV") +
+       title = "Knibbe 2009 -- typical-value rxode2 predictions vs DDMORE simulated DV") +
   theme_minimal()
 ```
 
@@ -247,12 +247,12 @@ knitr::kable(resid_tab,
 For reference the source `.lst`'s reported FINAL OMEGA / SIGMA imply
 expected log-scale SDs of approximately:
 
-* morphine: sqrt(IIV2 on V1 + SIGMA1) = sqrt(0.230 + 0.371) ≈ 0.78
-* M3G: sqrt(IIV4 on CL4 + IIV1 on CL2 + SIGMA2) = sqrt(0.258 + 0.104 + 0.206) ≈ 0.75
-* M6G: sqrt(IIV3 on CL5 + SIGMA3) = sqrt(0.185 + 0.0967) ≈ 0.53
+* morphine: sqrt(IIV2 on V1 + SIGMA1) = sqrt(0.230 + 0.371) ~= 0.78
+* M3G: sqrt(IIV4 on CL4 + IIV1 on CL2 + SIGMA2) = sqrt(0.258 + 0.104 + 0.206) ~= 0.75
+* M6G: sqrt(IIV3 on CL5 + SIGMA3) = sqrt(0.185 + 0.0967) ~= 0.53
 
 The empirical residual SDs from the 5-subject DDMORE simulated event
-table are within the same order as these analytic expectations — small
+table are within the same order as these analytic expectations -- small
 deviations are expected because (a) the event table only includes
 five randomly-drawn subjects, and (b) IIV on V1 also propagates into
 the metabolite compartment volumes via `vc_m3g = fvm * vc`.
@@ -271,7 +271,7 @@ the metabolite compartment volumes via `vc_m3g = fvm * vc`.
   2,159 morphine concentrations; the DDMORE-shipped `.lst` is a
   `run4` re-fit on an extended pooled `Combined_InternalExternalData.csv`
   dataset with 338 individuals / 2,809 observations. The parameter
-  values in this packaged model are the `run4` final estimates — i.e.
+  values in this packaged model are the `run4` final estimates -- i.e.
   fit on the extended cohort, not on the publication's primary cohort.
 - **Reference body weight.** The source NONMEM `.mod` uses
   `BW^exponent` (un-normalised) rather than `(BW / ref)^exponent`.
@@ -282,7 +282,7 @@ the metabolite compartment volumes via `vc_m3g = fvm * vc`.
 - **Postnatal-age threshold encoded in canonical months.** The source
   NONMEM `.mod` uses `IF (PNA.GT.10)` with PNA in days. The canonical
   PNA covariate (`inst/references/covariate-columns.md`) is in months,
-  so the model uses `PNA > 10/30.4375` (≈ 0.32855 months) for the
+  so the model uses `PNA > 10/30.4375` (~= 0.32855 months) for the
   switch. The arithmetic difference is exact (10/30.4375 days = 10
   days) but reviewers should note the unit-of-PNA difference between
   the source `.mod` and the packaged model.
@@ -290,8 +290,8 @@ the metabolite compartment volumes via `vc_m3g = fvm * vc`.
   weight in grams; the packaged model expects `WT` in kg. The vignette
   performs the per-row conversion in `prepare-events`.
 - **PNA-stratified clearance with shared IIV.** The source NONMEM
-  `.mod` defines `CL2` (morphine → M3G formation) with two THETAs
-  (`THETA(1)` for PNA ≤ 10 d, `THETA(10)` for PNA > 10 d) and a single
+  `.mod` defines `CL2` (morphine -> M3G formation) with two THETAs
+  (`THETA(1)` for PNA <= 10 d, `THETA(10)` for PNA > 10 d) and a single
   shared `ETA(1)` applied multiplicatively after the typical value is
   selected. The packaged model preserves this structure verbatim by
   exposing two ini parameters (`lcl_form_m3g_le10` and
@@ -305,7 +305,7 @@ the metabolite compartment volumes via `vc_m3g = fvm * vc`.
   `Cc ~ prop(propSd)` in nlmixr2 with `propSd = sqrt(SIGMA)`.
 - **NKOD-conditional 24-hour additive error term dropped.** The
   source `.mod` includes a fourth `EPS(4)` slot
-  (`+ TEH * ERR(4)` where `TEH = (TIME > 1900) & (NKOD ∈ {1,2})`)
+  (`+ TEH * ERR(4)` where `TEH = (TIME > 1900) & (NKOD in {1,2})`)
   that adds an extra additive variance for late post-infusion samples
   in one of the contributing studies. The gating column `NKOD` is
   study-specific to the `Combined_InternalExternalData.csv` dataset
@@ -315,7 +315,7 @@ the metabolite compartment volumes via `vc_m3g = fvm * vc`.
 - **Glucuronide molecular-weight conversion.** The source NONMEM
   `.mod` does not include a molecular-weight conversion factor when
   routing morphine mass-equivalents from `central` into the M3G /
-  M6G compartments (morphine MW ≈ 285, M3G MW ≈ 461, M6G MW ≈ 461).
+  M6G compartments (morphine MW ~= 285, M3G MW ~= 461, M6G MW ~= 461).
   Whether the metabolite-compartment "concentration" is best
   interpreted as "M3G or M6G mass per L" or as "morphine
   mass-equivalents per L" depends on how the source dataset's DV

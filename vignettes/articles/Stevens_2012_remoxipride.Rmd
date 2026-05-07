@@ -27,19 +27,19 @@ This model was extracted from the DDMORE Foundation Model Repository
 bundle for `DDMODEL00000268` (scraped to
 `dpastoor/ddmore_scraping/268/`). The bundle contains:
 
-- `Executable_PK_rats.txt` — NMTRAN control stream (NONMEM 7.3,
+- `Executable_PK_rats.txt` -- NMTRAN control stream (NONMEM 7.3,
   ADVAN9 + NWPRI prior on the prolactin elimination and EC50
   THETAs).
-- `Output_real_PK_rats.lst` — NONMEM listing on the original real
+- `Output_real_PK_rats.lst` -- NONMEM listing on the original real
   rat dataset; the `FINAL PARAMETER ESTIMATE` block (lines
   1283-1313) supplies the parameter values used here.
-- `Output_simulated_PK_rats.lst` and `Simulated_PK_rats.csv` — a
+- `Output_simulated_PK_rats.lst` and `Simulated_PK_rats.csv` -- a
   shipped simulated dataset and re-fit listing, used as the
   self-consistency reference in this vignette.
-- `DDMODEL00000268.rdf` — model classification (PK/PD purpose,
+- `DDMODEL00000268.rdf` -- model classification (PK/PD purpose,
   research-stage metadata).
 - `20120910- DDMORE-WP1.3. Specificationdocument_remoxipride
-  ECMdL.doc` — DDMORE-internal model-encoding specification
+  ECMdL.doc` -- DDMORE-internal model-encoding specification
   document; reproduces the publication's abstract and parameter
   labels (`BSLsd`, `BSLdd`, `kr,pr`, `kel,pr`, `EC50,pr`,
   `EC50,rem`) but not the parameter values themselves (those are
@@ -84,7 +84,7 @@ The model is preclinical (rat-only). Stevens et al. 2012 separately
 extrapolated the model to humans by allometric scaling of the
 prolactin release and elimination rates plus literature-derived
 human baseline prolactin and remoxipride PK; that human-scaled
-projection is **not** encoded in this implementation — only the
+projection is **not** encoded in this implementation -- only the
 rat-fitted typical-value parameters are.
 
 The same metadata is available programmatically via
@@ -99,9 +99,9 @@ comments in `inst/modeldb/ddmore/Stevens_2012_remoxipride.R`):
 |------------------------|----------------------|-----------------|
 | `lcl`                  | `fixed(log(1.12))`   | `Output_real_PK_rats.lst` line 1283, `TH3 FIX` (.mod L107: CL3 L/h) |
 | `lvc`                  | `fixed(log(0.0881))` | `.lst` L1283, `TH4 FIX` (.mod L108: V3 L/kg) |
-| `lq_brain`             | `fixed(log(0.700))`  | `.lst` L1283, `TH5 FIX` (.mod L109: Q4 plasma↔brain ECF) |
+| `lq_brain`             | `fixed(log(0.700))`  | `.lst` L1283, `TH5 FIX` (.mod L109: Q4 plasma<->brain ECF) |
 | `lvbrain`              | `fixed(log(0.873))`  | `.lst` L1283, `TH6 FIX` (.mod L110: V4 brain ECF, L/kg) |
-| `lq`                   | `fixed(log(1.20))`   | `.lst` L1283, `TH7 FIX` (.mod L111: Q5 plasma↔peripheral) |
+| `lq`                   | `fixed(log(1.20))`   | `.lst` L1283, `TH7 FIX` (.mod L111: Q5 plasma<->peripheral) |
 | `lvp`                  | `fixed(log(0.417))`  | `.lst` L1283, `TH8 FIX` (.mod L112: V5 peripheral, L/kg) |
 | `lfk40`                | `fixed(log(0.302))`  | `.lst` L1283, `TH9 FIX` (.mod L113: K40 = FK40 * K30) |
 | `lka`                  | `fixed(log(1.54))`   | `.lst` L1283, `TH10 FIX` (.mod L114: intranasal absorption rate KA) |
@@ -114,11 +114,11 @@ comments in `inst/modeldb/ddmore/Stevens_2012_remoxipride.R`):
 | `lemax_prl`            | `log(17.5)`          | `.lst` L1284, `TH15` (.mod L61) |
 | `lstdm`                | `log(0.125)`         | `.lst` L1284, `TH16` (.mod L63: positive-feedback synthesis-stimulation slope) |
 | `e_studydd_bsl`        | `-0.290`             | `.lst` L1284, `TH17` (.mod L56: TBSL = THETA(14) * (1 + THETA(17) * STDY)) |
-| `lk_release` (= K67)   | `log(0.740)`         | `.lst` L1284, `TH18` (.mod L59: lactotroph→plasma release rate) |
+| `lk_release` (= K67)   | `log(0.740)`         | `.lst` L1284, `TH18` (.mod L59: lactotroph->plasma release rate) |
 | `gamma_prl`            | `fixed(1.00)`        | `.lst` L1284, `TH19 FIX` (.mod L64: Hill coefficient on the brain-ECF remoxipride stimulation term) |
 | `etalbsl`              | `~ 0.0465`           | `.lst` line 1294, `OMEGA(1,1)` (log-scale variance on baseline prolactin; the .mod also fixes OMEGA(2,2) and OMEGA(3,3) to zero) |
 | `propSd`               | `sqrt(0.0780)`       | `.lst` L1310, `SIGMA(1,1)` (proportional residual; .mod L143) |
-| `addSd`                | `sqrt(6.62)`         | `.lst` L1313, `SIGMA(2,2)` (additive residual on prolactin in µg/L; .mod L144) |
+| `addSd`                | `sqrt(6.62)`         | `.lst` L1313, `SIGMA(2,2)` (additive residual on prolactin in ug/L; .mod L144) |
 | `d/dt(depot) = -ka * depot` | n/a              | `.mod` `$DES` L75 (DADT(1)) |
 | `d/dt(depot_brain) = -k24 * depot_brain` | n/a   | `.mod` `$DES` L76 (DADT(2)) |
 | `d/dt(central) = ka*depot - kel_plasma*central - k34*central - k35*central + k43*brain_ecf + k53*peripheral1` | n/a | `.mod` `$DES` L77 (DADT(3)) |
@@ -149,8 +149,8 @@ implementation.
 This bundle ships a simulated dataset (`Simulated_PK_rats.csv`) and
 a re-fit listing (`Output_simulated_PK_rats.lst`) but the linked
 publication is not on disk. Following
-`references/ddmore-source.md` § "Validation strategy by model type"
-(decision tree → no PKNCA → mechanistic / endogenous → F.2 + F.3
+`references/ddmore-source.md` Section  "Validation strategy by model type"
+(decision tree -> no PKNCA -> mechanistic / endogenous -> F.2 + F.3
 substitutes), this vignette validates by:
 
 1. **Steady-state hold (F.1 / endogenous-validation).** With no
@@ -194,7 +194,7 @@ With no remoxipride dose, the analytic baselines
 `prolactin(0) = bsl` and `lactotroph(0) = bsl * kel_prl / k_release`
 must hold across the integration horizon. For the single-dose
 study reference (`STUDY_DD = 0`) this means `prolactin = 6.64`
-µg/L and `lactotroph = 6.64 * 5.20 / 0.74 ≈ 46.66` "amount-units"
+ug/L and `lactotroph = 6.64 * 5.20 / 0.74 ~= 46.66` "amount-units"
 (the prolactin-pool compartment has no scale factor in the source,
 so the lactotroph state is in the same units as plasma prolactin
 times time-dimension; what matters is that it stays constant).
@@ -221,7 +221,7 @@ knitr::kable(
   baseline_summary,
   caption = paste(
     "Steady-state hold: with no dose, plasma prolactin stays at",
-    "6.64 µg/L and the lactotroph store stays at 46.66 across the",
+    "6.64 ug/L and the lactotroph store stays at 46.66 across the",
     "24-hour horizon."
   )
 )
@@ -229,7 +229,7 @@ knitr::kable(
 
 The same hold for the double-dosing-study cohort
 (`STUDY_DD = 1`) shifts the baseline by `1 + e_studydd_bsl = 0.71`
-to `prolactin = 6.64 * 0.71 ≈ 4.71` µg/L.
+to `prolactin = 6.64 * 0.71 ~= 4.71` ug/L.
 
 ```{r baseline-no-drug-dd}
 ev_baseline_dd_df <- ev_baseline_df
@@ -237,7 +237,7 @@ ev_baseline_dd_df$STUDY_DD <- 1L
 sim_baseline_dd <- rxode2::rxSolve(mod_typical, ev_baseline_dd_df,
                                    returnType = "data.frame")
 cat(sprintf(
-  "STUDY_DD = 1 baseline: prolactin = %.4f µg/L (expected %.4f).\n",
+  "STUDY_DD = 1 baseline: prolactin = %.4f ug/L (expected %.4f).\n",
   sim_baseline_dd$prolactin[1],
   6.64 * (1 + (-0.290))
 ))
@@ -276,13 +276,13 @@ ggplot(sim_doses, aes(time, prolactin, colour = dose)) +
              colour = "grey50") +
   labs(
     x = "Time (h)",
-    y = "Plasma prolactin (µg/L)",
+    y = "Plasma prolactin (ug/L)",
     title = paste(
       "Typical-value plasma prolactin vs time, single 30-min IV",
       "remoxipride infusion (rat, STUDY_DD = 0)"
     ),
     caption = paste(
-      "Dashed line = baseline plasma prolactin (6.64 µg/L).",
+      "Dashed line = baseline plasma prolactin (6.64 ug/L).",
       "Larger doses produce larger and longer-lasting peaks,",
       "consistent with an Emax-shaped stimulation of prolactin",
       "release driven by transient brain-ECF remoxipride."
@@ -371,7 +371,7 @@ ggplot() +
              colour = "grey50") +
   labs(
     x = "Time (h)",
-    y = "Plasma prolactin (µg/L)",
+    y = "Plasma prolactin (ug/L)",
     title = paste(
       "F.2 self-consistency: simulated typical-value trajectory",
       "(blue line) vs observed DV (red dots) for rat 304 from",
@@ -381,7 +381,7 @@ ggplot() +
       "Two 30-min IV infusions of 3.8 mg/kg (cumulative AMT 0.97",
       "mg per dose) at t = 0 and t = 4 h, double-dosing study",
       "(STUDY_DD = 1). Dashed line = STUDY_DD = 1 baseline (~4.71",
-      "µg/L). The observed DV vector is the simulated noise-added",
+      "ug/L). The observed DV vector is the simulated noise-added",
       "data shipped with the bundle; the typical-value trajectory",
       "(no IIV, no residual error) traces the centre of the",
       "scatter, consistent with the bundle's own typical-value",
@@ -392,17 +392,17 @@ ggplot() +
 
 The blue typical-value trajectory recovers the observed pattern:
 - the first IV pulse drives plasma prolactin up to a peak around
-  10-20 µg/L within ~0.3 h,
+  10-20 ug/L within ~0.3 h,
 - prolactin then dips below baseline (lactotroph depletion) and
   starts recovering,
 - the second IV pulse at t = 4 h re-stimulates the system,
   producing a second peak,
 - the late-time tail returns toward the STUDY_DD = 1 baseline
-  (~4.71 µg/L).
+  (~4.71 ug/L).
 
 A small fraction of the observed DV values are negative (e.g.
-−1.62 at t = 4.43 h) — these are the result of the additive
-residual `addSd ≈ 2.57` µg/L applied on top of an IPRED that drops
+-1.62 at t = 4.43 h) -- these are the result of the additive
+residual `addSd ~= 2.57` ug/L applied on top of an IPRED that drops
 toward zero during the lactotroph-depletion phase. The model
 reproduces the depletion phase (the typical-value trajectory dips
 below baseline near t = 1 h and t = 5 h) but cannot produce
@@ -448,8 +448,8 @@ purely a function of the additive-error noise model.
 - **Brain-ECF concentration units.** The .mod's `S3 = V3` and
   `S4 = V4` with `V3` / `V4` in L/kg means the central and
   brain-ECF "concentrations" are body-weight-normalized:
-  `central / vc` carries an extra factor of kg (mg·kg/L). The
-  `ec50_prl` parameter is on the same scale (mg·kg/L) so the
+  `central / vc` carries an extra factor of kg (mg*kg/L). The
+  `ec50_prl` parameter is on the same scale (mg*kg/L) so the
   Emax driver is dimensionally consistent inside the model. Users
   comparing brain-ECF concentrations against absolute mg/L values
   in the literature should multiply by body weight (in kg).

@@ -27,12 +27,12 @@ suppressPackageStartupMessages({
 The DDMORE bundle does not link to a journal publication. The
 `Model_Accommodations.txt` file in the bundle states that the uploaded model
 matches the (un-named) reference publication, but no first author / year /
-journal is recoverable from any on-disk material — neither the
+journal is recoverable from any on-disk material -- neither the
 `Executable_ddmore_final_run249.ctl` `$PROBLEM` line (`B.dat 4-cRUN249`),
 the bundle's `DDMODEL00000281.rdf`, the `281.json` scraper metadata, nor
 the bundle's other text files name a paper.
 
-Validation strategy: **self-consistency** — the bundle's
+Validation strategy: **self-consistency** -- the bundle's
 `Output_simulated_ddmore_final_run249.res` listing does not ship a `$TABLE`
 file (the `Executable_*.ctl` writes one to
 `ddmore_final_run249.tab` but only the `.res` listing was scraped), so
@@ -90,10 +90,10 @@ collects them in one place for review. All values come from the
 | `etalkel_gx`                 | 0.391             | `.res` FINAL OMEGA ETA1 (diagonal) - linear-scale exp(ETA) form                            |
 | `etalkel_xyl`                | 0.200             | `.res` FINAL OMEGA ETA2 (diagonal)                                                         |
 | `etalvc`                     | 0.311             | `.res` FINAL OMEGA ETA3 (diagonal)                                                         |
-| `addSd` (lidocaine)          | `sqrt(364)`       | `.res` FINAL SIGMA EPS1 variance = 3.64E+02 -> SD = sqrt(364) ≈ 19.08                      |
-| `addSd_megx`                 | `sqrt(53.3)`      | `.res` FINAL SIGMA EPS2 variance = 5.33E+01 -> SD = sqrt(53.3) ≈ 7.30                      |
-| `addSd_gx`                   | `sqrt(47.9)`      | `.res` FINAL SIGMA EPS3 variance = 4.79E+01 -> SD = sqrt(47.9) ≈ 6.92                      |
-| `addSd_xyl`                  | `sqrt(6.39)`      | `.res` FINAL SIGMA EPS4 variance = 6.39E+00 -> SD = sqrt(6.39) ≈ 2.53                      |
+| `addSd` (lidocaine)          | `sqrt(364)`       | `.res` FINAL SIGMA EPS1 variance = 3.64E+02 -> SD = sqrt(364) ~= 19.08                      |
+| `addSd_megx`                 | `sqrt(53.3)`      | `.res` FINAL SIGMA EPS2 variance = 5.33E+01 -> SD = sqrt(53.3) ~= 7.30                      |
+| `addSd_gx`                   | `sqrt(47.9)`      | `.res` FINAL SIGMA EPS3 variance = 4.79E+01 -> SD = sqrt(47.9) ~= 6.92                      |
+| `addSd_xyl`                  | `sqrt(6.39)`      | `.res` FINAL SIGMA EPS4 variance = 6.39E+00 -> SD = sqrt(6.39) ~= 2.53                      |
 | ODE: `d/dt(central) = -(k_megx_form+k_xyl_form) * central` | n/a | `.ctl` `$SUBR ADVAN5 TRANS1` rate matrix (1->2 K12, 1->4 K14)            |
 | ODE: `d/dt(central_megx) = k_megx_form*central - k_gx_form*central_megx` | n/a | `.ctl` rate matrix (2->3 K23)                                  |
 | ODE: `d/dt(central_gx) = k_gx_form*central_megx - kel_gx*central_gx` | n/a | `.ctl` rate matrix (3->5 K30)                                          |
@@ -199,7 +199,7 @@ ggplot(sim_long, aes(time, conc, colour = analyte)) +
   facet_wrap(~ analyte, scales = "free_y") +
   labs(x = "Time after dose start (h)",
        y = "Concentration (mass-unit / volume-unit)",
-       title = "NA_NA_lidocaine — typical-value trajectories",
+       title = "NA_NA_lidocaine -- typical-value trajectories",
        caption = paste(
          "Single 12-hour IV infusion of 21600 mass-units to lidocaine",
          "(cmt 1) under the reference covariate set."
@@ -369,7 +369,7 @@ ggplot(sim_md_long, aes(time, conc)) +
 ```
 
 The simulated typical-value steady-state magnitudes bracket the bundle's
-observed DV medians (red dashed lines) for all four analytes — the
+observed DV medians (red dashed lines) for all four analytes -- the
 typical-value trajectory passes through the median at the troughs /
 plateaus, and the simulated peak / trough excursions match the order of
 magnitude of the observed DV ranges. This confirms the packaged model

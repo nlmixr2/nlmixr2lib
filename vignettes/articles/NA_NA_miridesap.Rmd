@@ -33,37 +33,37 @@ internalization (the published clinical motivation behind the SAP-
 depletion approach to systemic amyloidosis is reviewed in Pepys et al.
 2002, *Nature* 417:254-259, but the corresponding popPK/PD modelling
 publication for `DDMODEL00000262` could not be located on disk in this
-worktree — see Errata).
+worktree -- see Errata).
 
 The model was extracted from the DDMORE Foundation Model Repository
 bundle for `DDMODEL00000262` (scraped to
 `dpastoor/ddmore_scraping/262/`). The bundle contains:
 
-- `Executable_simulated_CPHPC_dataset.ctl` — the NONMEM `.ctl` for the
+- `Executable_simulated_CPHPC_dataset.ctl` -- the NONMEM `.ctl` for the
   **base model**: 17 THETAs covering CPHPC two-compartment PK, SAP
   two-compartment turnover, CPHPC-SAP binding kinetics, an SC depot,
   and a single CRCL covariate on CPHPC clearance.
-- `Output_simulated_CPHPC_dataset.lst` — NONMEM listing from running
+- `Output_simulated_CPHPC_dataset.lst` -- NONMEM listing from running
   the base model on `Simulated_CPHPC_dataset.csv`. The run uses
   `$EST METHOD=IMP EONLY=1` (importance-sampling **evaluation only**,
   no optimization), so the FINAL PARAMETER ESTIMATE block faithfully
-  reproduces the `.ctl` initial values to within rounding — confirming
+  reproduces the `.ctl` initial values to within rounding -- confirming
   the `.ctl` `$THETA` block as the source of truth for the base
   model's final estimates.
-- `Output_real_CPHPC.lst` — listing for a more elaborate **FINAL
+- `Output_real_CPHPC.lst` -- listing for a more elaborate **FINAL
   MODEL** with 21 THETAs that adds organ-specific amyloid-load
   covariates (AMLIVER, AMSPLEEN, AMBONE, AMHEART, ...) on top of the
   base model. The corresponding `.mod` is **not** in the bundle; this
   extraction therefore stops at the base model.
-- `Simulated_CPHPC_dataset.csv` — a 38-subject simulated dataset with
+- `Simulated_CPHPC_dataset.csv` -- a 38-subject simulated dataset with
   IV regimens spanning 5 mg/h x 1 h up to 70 mg/h x 1 h + 10 mg/h x 23 h
   loading-and-maintenance schedules.
-- `DDMODEL00000262.rdf` — RDF metadata: a PK/PD model
+- `DDMODEL00000262.rdf` -- RDF metadata: a PK/PD model
   (`pkpd_0000036`) connecting CPHPC exposure to plasma SAP. The
   description names two contributing GSK studies (CPH113776 in healthy
   volunteers and CPH114527 in amyloidosis patients) but no journal
   publication is referenced.
-- `262.json`, `Command.txt` — scraper metadata and the NONMEM run
+- `262.json`, `Command.txt` -- scraper metadata and the NONMEM run
   command.
 
 The bundle has no `Model_Accomodations.text` file, so publication
@@ -80,8 +80,8 @@ CPHPC) and CPH114527 (an exploratory study in patients with systemic
 amyloidosis). The `Output_real_CPHPC.lst` reports `TOT. NO. OF
 INDIVIDUALS: 38` across the combined cohort (the `.lst` is for the
 FINAL MODEL with patient-organ-load covariates, but the underlying
-study population is the same). Finer-grained demographics — age,
-weight, sex distribution, region, dose escalation — are not in the
+study population is the same). Finer-grained demographics -- age,
+weight, sex distribution, region, dose escalation -- are not in the
 DDMORE bundle and no linked publication was located.
 
 The same information is available programmatically via the model's

@@ -89,7 +89,7 @@ Schoemaker_2018_levetiracetam <- function() {
     #   TH 2 = es50            (Markov ES50, seizures-per-record)
     #   TH 3 = lsmax           (max Markov amplitude on log-rate scale)
     #   TH 4 = lplac           (typical log placebo effect)
-    #   TH 5 = lemax            (typical log Emax — note the .ctl applies
+    #   TH 5 = lemax            (typical log Emax -- note the .ctl applies
     #                           ETA(4) multiplicatively as TH(5)*EXP(ETA4),
     #                           so TH5 is on log-rate scale and is itself
     #                           negative; see model() block)
@@ -114,7 +114,7 @@ Schoemaker_2018_levetiracetam <- function() {
     bc_shape <- 0.442;       label("Box-Cox shape parameter for the IIV transform on the baseline-rate eta") # Output_real_P241.res TH 8
     p_responder <- 0.335;    label("Mixture probability of 'responder' subpopulation (1 - p_responder is the 'placebo-like' subpopulation)") # Output_real_P241.res TH 9
 
-    # FIXED pediatric offsets — the .ctl declares four 'Peds on ...' THETAs
+    # FIXED pediatric offsets -- the .ctl declares four 'Peds on ...' THETAs
     # of which only TH11 (peds offset on log baseline rate) is freely
     # estimated. The other three are FIXED 0 in the source; we keep them
     # FIXED 0 here so the structural form is preserved verbatim and a
@@ -126,7 +126,7 @@ Schoemaker_2018_levetiracetam <- function() {
     lec50_ped       <- fixed(0); label("Peds offset on log EC50 (FIXED 0 in source)")                     # Output_real_P241.res TH14 (FIXED)
 
     # ------------------------------------------------------------------
-    # Inter-individual variability — Output_real_P241.res FINAL OMEGA
+    # Inter-individual variability -- Output_real_P241.res FINAL OMEGA
     # block (lines 389-407). All entries are diagonal (OMEGA off-diagonals
     # are 0.00E+00 in the FINAL block).
     #
@@ -135,16 +135,16 @@ Schoemaker_2018_levetiracetam <- function() {
     # are reproduced verbatim in model() below; ini() carries only the
     # OMEGA variance values.
     # ------------------------------------------------------------------
-    etalbase ~ 0.755    # ETA1 — Box-Cox-transformed iid eta on baseline   # Output_real_P241.res OMEGA(1,1)
-    etalsmax ~ 1.44     # ETA2 — additive eta on log Markov amplitude      # Output_real_P241.res OMEGA(2,2)
-    etalplac ~ 0.166    # ETA3 — additive eta on log placebo               # Output_real_P241.res OMEGA(3,3)
-    etalemax ~ 0.640    # ETA4 — multiplicative eta on log Emax            # Output_real_P241.res OMEGA(4,4)
-    etalovdp ~ 8.47     # ETA5 — eta on log overdispersion (CHILD = 1 only) # Output_real_P241.res OMEGA(5,5)
+    etalbase ~ 0.755    # ETA1 -- Box-Cox-transformed iid eta on baseline   # Output_real_P241.res OMEGA(1,1)
+    etalsmax ~ 1.44     # ETA2 -- additive eta on log Markov amplitude      # Output_real_P241.res OMEGA(2,2)
+    etalplac ~ 0.166    # ETA3 -- additive eta on log placebo               # Output_real_P241.res OMEGA(3,3)
+    etalemax ~ 0.640    # ETA4 -- multiplicative eta on log Emax            # Output_real_P241.res OMEGA(4,4)
+    etalovdp ~ 8.47     # ETA5 -- eta on log overdispersion (CHILD = 1 only) # Output_real_P241.res OMEGA(5,5)
   })
 
   model({
     # ------------------------------------------------------------------
-    # Per-subject parameters — translate the .ctl $PRED block.
+    # Per-subject parameters -- translate the .ctl $PRED block.
     # ------------------------------------------------------------------
 
     # Box-Cox transform on the baseline-rate eta (.ctl line:
@@ -168,7 +168,7 @@ Schoemaker_2018_levetiracetam <- function() {
     # Subject-level log Emax. The .ctl uses a multiplicative eta on the
     # negative typical value (`LEMAX = TVLEMAX * EXP(ETA(4)) + PED*LEMAXP`),
     # so etalemax scales the magnitude of the (negative) typical log Emax.
-    # This is reproduced verbatim — it is unusual but not a translation
+    # This is reproduced verbatim -- it is unusual but not a translation
     # error.
     lemax_subject <- lemax * exp(etalemax) + CHILD * lemax_ped
 
@@ -207,7 +207,7 @@ Schoemaker_2018_levetiracetam <- function() {
     expected_count_responder    <- exp(log_rate_responder)    * NDAYS
     expected_count_nonresponder <- exp(log_rate_nonresponder) * NDAYS
 
-    # Mixture-responder probability — a parameter exposed for downstream
+    # Mixture-responder probability -- a parameter exposed for downstream
     # use (the user computes the mixture-weighted expected count
     # externally; see vignette). Encoded as logit-additive in CHILD so
     # the FIXED-0 peds offset can be freed by a re-fitter without
@@ -216,7 +216,7 @@ Schoemaker_2018_levetiracetam <- function() {
       1 / (1 + exp(-(log(p_responder / (1 - p_responder)) + CHILD * p_responder_ped)))
 
     # ------------------------------------------------------------------
-    # Observation models — Plan_2012_pain precedent.
+    # Observation models -- Plan_2012_pain precedent.
     #
     # The source likelihood is a negative-binomial with overdispersion
     # alpha = exp(lovdp_subject) and per-record mean expected_count_*.
@@ -225,8 +225,8 @@ Schoemaker_2018_levetiracetam <- function() {
     # The simplification used here, matching the ddmore/Plan_2012_pain.R
     # precedent, is to declare a Poisson observation likelihood per
     # output branch with the same per-record mean. The deterministic
-    # typical-value rate trajectory — which is what the F.3
-    # mechanistic-sanity vignette validates — is unaffected; the
+    # typical-value rate trajectory -- which is what the F.3
+    # mechanistic-sanity vignette validates -- is unaffected; the
     # difference is only in the dispersion of stochastic VPC samples.
     # The vignette's "Assumptions and deviations" section calls this
     # out and exposes the source's overdispersion alpha as the model

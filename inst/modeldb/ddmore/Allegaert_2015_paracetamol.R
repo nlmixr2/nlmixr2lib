@@ -20,7 +20,7 @@ Allegaert_2015_paracetamol <- function() {
       units              = "kg",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Linear allometric exponent of 1.0 on the inter-compartmental clearance Q1 (THETA(6) * (BW/70)^1 in the .mod). Reference weight 70 kg. Source column is `BW` (body weight, kg) — same orientation, no transformation; rename to `WT` before passing the dataset to rxSolve.",
+      notes              = "Linear allometric exponent of 1.0 on the inter-compartmental clearance Q1 (THETA(6) * (BW/70)^1 in the .mod). Reference weight 70 kg. Source column is `BW` (body weight, kg) -- same orientation, no transformation; rename to `WT` before passing the dataset to rxSolve.",
       source_name        = "BW"
     ),
     OCC = list(
@@ -36,7 +36,7 @@ Allegaert_2015_paracetamol <- function() {
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (preterm)",
-      notes              = "Selects between two typical-value sulphate-formation clearances via `CL_sulf = TERM_BIRTH * cl_sulf_term + (1 - TERM_BIRTH) * cl_sulf_preterm` (.mod $PK line `CLS=(TERM*THETA(3)+(1-TERM)*THETA(10))*EXP(ETA(3))`). Both arms are estimated parameters; neither category is the multiplicative reference. The .mod's $THETA comments label TH3 as 'CL formation APAP-S for TERM=0' and TH10 as 'CL formation APAP-S for TERM=1', but the $PK code applies TH3 when TERM=1 and TH10 when TERM=0 — the code-level usage is taken as authoritative because `(TERM*TH3 + (1-TERM)*TH10)` evaluates that way.",
+      notes              = "Selects between two typical-value sulphate-formation clearances via `CL_sulf = TERM_BIRTH * cl_sulf_term + (1 - TERM_BIRTH) * cl_sulf_preterm` (.mod $PK line `CLS=(TERM*THETA(3)+(1-TERM)*THETA(10))*EXP(ETA(3))`). Both arms are estimated parameters; neither category is the multiplicative reference. The .mod's $THETA comments label TH3 as 'CL formation APAP-S for TERM=0' and TH10 as 'CL formation APAP-S for TERM=1', but the $PK code applies TH3 when TERM=1 and TH10 when TERM=0 -- the code-level usage is taken as authoritative because `(TERM*TH3 + (1-TERM)*TH10)` evaluates that way.",
       source_name        = "TERM"
     ),
     BC_USE = list(
@@ -94,7 +94,7 @@ Allegaert_2015_paracetamol <- function() {
     lcl_gluc      <- log(7.33)   ; label("CL of glucuronide formation at OCC >= 3 (L/h)")    # TH9 FINAL = 7.33E+00
     lcl_sulf      <- log(3.86)   ; label("CL of sulphate formation for preterm-birth subjects (TERM_BIRTH = 0) (L/h)") # TH10 FINAL = 3.86E+00
     lcl_renal     <- log(0.925)  ; label("Renal CL of unchanged paracetamol at urine flow 100 mL/h (L/h)")    # TH4 FINAL = 9.25E-01
-    lf_meta_renal <- log(4.62)   ; label("k35 / k17: ratio of plasma-metabolite-to-urine elimination rate to plasma-APAP-to-urine elimination rate (unitless)") # TH7 FINAL = 4.62E+00 — used as K35 = THETA(7) * K17, applied identically to glucuronide (k35) and sulphate (k46)
+    lf_meta_renal <- log(4.62)   ; label("k35 / k17: ratio of plasma-metabolite-to-urine elimination rate to plasma-APAP-to-urine elimination rate (unitless)") # TH7 FINAL = 4.62E+00 -- used as K35 = THETA(7) * K17, applied identically to glucuronide (k35) and sulphate (k46)
 
     # Covariate effects -----------------------------------------------------
     e_oc1_vc          <- 1.86   ; label("Multiplicative scalar on V_central for pregnancy (OCC = 1)") # TH1 FINAL = 1.86E+00
@@ -110,9 +110,9 @@ Allegaert_2015_paracetamol <- function() {
     # are Normal(0, var) on the log scale; the variance values are taken
     # verbatim. The sulphate-formation IIV slot was held FIX 0 in NONMEM (lst
     # OMEGA line 538-539, `0.00E+00`), so no eta is declared for cl_sulf.
-    etalvc      ~ 0.0867  # OMEGA(1,1) FINAL = 8.67E-02 — IIV V_central (log-normal variance)
-    etalcl_gluc ~ 0.121   # OMEGA(2,2) FINAL = 1.21E-01 — IIV CL_glucuronide
-    etalcl_renal ~ 0.122  # OMEGA(4,4) FINAL = 1.22E-01 — IIV CL_renal of unchanged paracetamol
+    etalvc      ~ 0.0867  # OMEGA(1,1) FINAL = 8.67E-02 -- IIV V_central (log-normal variance)
+    etalcl_gluc ~ 0.121   # OMEGA(2,2) FINAL = 1.21E-01 -- IIV CL_glucuronide
+    etalcl_renal ~ 0.122  # OMEGA(4,4) FINAL = 1.22E-01 -- IIV CL_renal of unchanged paracetamol
 
     # Residual error. NONMEM `$SIGMA` diagonal entries from the FINAL
     # PARAMETER ESTIMATE SIGMA block (lst lines 549-567). The .mod $ERROR

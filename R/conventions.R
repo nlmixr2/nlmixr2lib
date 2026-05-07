@@ -71,43 +71,31 @@
     # (Svensson 2016 DDMODEL00000219).
     "m2",
     # Endoxifen (4-hydroxy-N-desmethyltamoxifen), the major active
-    # metabolite of tamoxifen — Ter Heine 2014.
+    # metabolite of tamoxifen -- Ter Heine 2014.
     "endx",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
     # Lidocaine sequential metabolites (DDMODEL00000281, NA_NA_lidocaine):
     # MEGX = monoethylglycinexylidide (LID -> MEGX via CYP1A2/3A4),
     # GX   = glycinexylidide (MEGX -> GX), and 2,6-XYL = 2,6-xylidide
     # (LID -> 2,6-XYL minor pathway). Each metabolite is a separate
     # central compartment with its own apparent volume in the source's
     # ADVAN5 parent + 3-metabolite structure.
-    "megx", "gx", "xyl"
-=======
+    "megx", "gx", "xyl",
     # Morphine-3-glucuronide and morphine-6-glucuronide, the two major
-    # glucuronide metabolites of morphine — Knibbe 2009 DDMODEL00000248.
-    "m3g", "m6g"
->>>>>>> origin/claude/040-knibbe_2009_morphine
-=======
+    # glucuronide metabolites of morphine -- Knibbe 2009 DDMODEL00000248.
+    "m3g", "m6g",
     # Phase-II conjugates: glucuronide (gluc) and sulphate (sulf).
     # Used for paracetamol-glucuronide / paracetamol-sulphate plasma
     # metabolite compartments in Allegaert 2015 (DDMODEL00000267).
-    "gluc", "sulf"
->>>>>>> origin/claude/047-allegaert_2015_paracetamol
-=======
-    # Paracetamol (APAP) phase-II conjugate metabolites — APAP-glucuronide
+    "gluc", "sulf",
+    # Paracetamol (APAP) phase-II conjugate metabolites -- APAP-glucuronide
     # ("apapg") and APAP-sulphate ("apaps") used in the Cook 2016 newborn
     # model (DDMODEL00000271).
-    "apapg", "apaps"
->>>>>>> origin/claude/050-cook_2016_paracetamol
-=======
+    "apapg", "apaps",
     # Colistin, the active polymyxin generated in vivo by hydrolysis of
     # the prodrug colistimethate sodium (CMS). Used as a metabolite
     # suffix in parent-prodrug CMS / metabolite-active-drug colistin
     # popPK models (Leuppi-Taegtmeyer 2019 DDMODEL00000295).
     "col"
->>>>>>> origin/claude/059-leuppi-taegtmeyer_2019_colistin
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` denotes the time-varying decay arm.

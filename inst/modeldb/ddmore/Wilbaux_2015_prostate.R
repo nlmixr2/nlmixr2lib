@@ -1,5 +1,5 @@
 Wilbaux_2015_prostate <- function() {
-  description <- "Joint semi-mechanistic kinetic-pharmacodynamic (K-PD) model of circulating tumour cell (CTC) count and prostate-specific antigen (PSA) longitudinal kinetics during chemotherapy and/or hormonotherapy in adults with metastatic castration-resistant prostate cancer (mCRPC) (Wilbaux 2015 / DDMODEL00000261). The structural model couples (i) two parallel first-order K-PD compartments for chemotherapy and hormonotherapy (no PK data — virtual unit doses per cycle), (ii) a latent, dimensionless tumour-burden variable LV(t) governed by an indirect-response ODE with saturable Emax inhibition by both treatment compartments and a steady-state-anchored production rate, (iii) a CTC count that is the difference between two integrals of K0 * LV separated by the cell-lifespan delay LS (cell lifespan model implemented via a parallel delayed copy of the LV dynamics), and (iv) a PSA concentration following a non-steady-state indirect-response ODE driven by the same delayed LV. The published likelihood combines a negative-binomial count distribution for CTC observations (mean = alpha * CTC_total, overdispersion OVDP) with an exponential residual error on log-transformed PSA observations (W1 = 0.30); the full BLOCK(9) correlated $OMEGA across the nine PD parameters is preserved verbatim. nlmixr2's parser cannot natively express the .mod's F_FLAG=2 (-2*ln-likelihood) negative-binomial branch, so this implementation provides typical-value mechanistic outputs (NCTC = CTC * alpha, PSA, log_PSA) with placeholder additive residual errors on each — see vignette Assumptions and deviations."
+  description <- "Joint semi-mechanistic kinetic-pharmacodynamic (K-PD) model of circulating tumour cell (CTC) count and prostate-specific antigen (PSA) longitudinal kinetics during chemotherapy and/or hormonotherapy in adults with metastatic castration-resistant prostate cancer (mCRPC) (Wilbaux 2015 / DDMODEL00000261). The structural model couples (i) two parallel first-order K-PD compartments for chemotherapy and hormonotherapy (no PK data -- virtual unit doses per cycle), (ii) a latent, dimensionless tumour-burden variable LV(t) governed by an indirect-response ODE with saturable Emax inhibition by both treatment compartments and a steady-state-anchored production rate, (iii) a CTC count that is the difference between two integrals of K0 * LV separated by the cell-lifespan delay LS (cell lifespan model implemented via a parallel delayed copy of the LV dynamics), and (iv) a PSA concentration following a non-steady-state indirect-response ODE driven by the same delayed LV. The published likelihood combines a negative-binomial count distribution for CTC observations (mean = alpha * CTC_total, overdispersion OVDP) with an exponential residual error on log-transformed PSA observations (W1 = 0.30); the full BLOCK(9) correlated $OMEGA across the nine PD parameters is preserved verbatim. nlmixr2's parser cannot natively express the .mod's F_FLAG=2 (-2*ln-likelihood) negative-binomial branch, so this implementation provides typical-value mechanistic outputs (NCTC = CTC * alpha, PSA, log_PSA) with placeholder additive residual errors on each -- see vignette Assumptions and deviations."
   reference <- paste(
     "Wilbaux M, Tod M, De Bono J, Lorente D, Mateo J, Freyer G, You B,",
     "Henin E. (2015).",
@@ -46,7 +46,7 @@ Wilbaux_2015_prostate <- function() {
     # FINAL PARAMETER ESTIMATE block (post-SAEM convergence).
     #
     # The bundle .mod's $THETA / $OMEGA blocks (initial values) match the
-    # .lst's final estimates verbatim for this entry — i.e. the .mod was
+    # .lst's final estimates verbatim for this entry -- i.e. the .mod was
     # supplied with the published values. Cross-check against
     # Wilbaux 2015 Table 1 was performed via PMC4452933 full-text Methods
     # / Tables; all 14 thetas and the BLOCK(9) / BLOCK(2) OMEGAs match
@@ -63,7 +63,7 @@ Wilbaux_2015_prostate <- function() {
     # SFLV the EXP() wrapper still applies (TH = exp(MU_7 + ETA)), so
     # SFLV is on log scale internally and ETA(7) is on log scale. For
     # K0 and LS the EXP() wrapper is absent (K0 = MU_11 + ETA(11);
-    # ALAG5 = MU_12 + ETA(12)) — i.e. K0 and LS are estimated on the
+    # ALAG5 = MU_12 + ETA(12)) -- i.e. K0 and LS are estimated on the
     # **linear** scale and their ETAs are **additive** with linear-scale
     # variances (1430 (CTC*day/AU)^2 for K0; 61.9 day^2 for LS). The
     # nlmixr2 implementation preserves this: k0 / lag5 are plain
@@ -99,7 +99,7 @@ Wilbaux_2015_prostate <- function() {
     # `MU_7 = THETA(7); TH = EXP(MU_7 + ETA(7))` MU-reference pattern;
     # paper Table 1 reports SFLV = 6.33 (which is the THETA value, i.e.
     # log-scale; the back-transformed asymptote SFLV_lin = exp(6.33) is
-    # large enough that KinLV ~= LV0 * KoutLV at typical values — i.e.
+    # large enough that KinLV ~= LV0 * KoutLV at typical values -- i.e.
     # the latent variable is approximately at steady state at LV0).
     lsflv <- 6.33; label("Log of latent-variable steady-state scaling factor SFLV (AU*day, log scale per .mod MU-reference pattern)") # .lst FINAL TH 7 = 6.33E+00; paper Table 1 SFLV = 6.33
 
@@ -118,8 +118,8 @@ Wilbaux_2015_prostate <- function() {
     # as `k0_ind = k0 + etak0` and `lag5_ind = lag5 + etalag5` (plain
     # addition, no exp()). The published CV% column uses CV = SD/typical,
     # e.g. K0: sqrt(1430)/308 ~ 0.123 = 12% CV.
-    k0   <- 308;  label("Typical CTC zero-order production rate constant K0 (CTC*day^-1*AU^-1) — linear-scale ini parameter; etak0 is additive in model()")  # .lst FINAL TH11 = 3.08E+02; paper Table 1 K0 = 308
-    lag5 <- 57.7; label("Typical CTC cell lifespan LS (day); shared as the lag time on the chemo / hormo / latent-variable lagged-copy compartments — linear-scale ini parameter; etalag5 is additive in model()") # .lst FINAL TH12 = 5.77E+01; paper Table 1 LS = 58
+    k0   <- 308;  label("Typical CTC zero-order production rate constant K0 (CTC*day^-1*AU^-1) -- linear-scale ini parameter; etak0 is additive in model()")  # .lst FINAL TH11 = 3.08E+02; paper Table 1 K0 = 308
+    lag5 <- 57.7; label("Typical CTC cell lifespan LS (day); shared as the lag time on the chemo / hormo / latent-variable lagged-copy compartments -- linear-scale ini parameter; etalag5 is additive in model()") # .lst FINAL TH12 = 5.77E+01; paper Table 1 LS = 58
 
     # --- Negative-binomial overdispersion (AU, dimensionless) ---
     # OVDP > 0 increases variance of the count distribution above its mean
@@ -133,7 +133,7 @@ Wilbaux_2015_prostate <- function() {
     lw1 <- log(0.300); label("Log of exponential residual-error SD W1 on log-transformed PSA (unitless on log scale)") # .lst FINAL TH14 = 3.00E-01; paper Table 1 PSA res error = 0.3
 
     # ------------------------------------------------------------------
-    # Inter-individual variability — full BLOCK(9) correlated $OMEGA on
+    # Inter-individual variability -- full BLOCK(9) correlated $OMEGA on
     # ETA(2) .. ETA(10) (mapped to {Kc, Kh, A50c, A50h, KoutLV, SFLV,
     # KinPSA, KoutPSA, PSA0}). NONMEM stores the lower-triangle row by
     # row; the c(...) vector below mirrors that order so the resulting
@@ -145,7 +145,7 @@ Wilbaux_2015_prostate <- function() {
     #   ... etc.
     # ------------------------------------------------------------------
     etalk1 + etalk2 + etalq501 + etalq502 + etalkoutts + etalsflv + etalkinpsa + etalkoutpsa + etalpsa0 ~ c(
-      0.723,                                                                   # OMEGA(2,2)  — var Kc
+      0.723,                                                                   # OMEGA(2,2)  -- var Kc
       -0.698, 1.83,                                                            # OMEGA(3,2..3)
       -0.638, -0.634, 4.76,                                                    # OMEGA(4,2..4)
       -0.799, -0.228, 2.93, 2.84,                                              # OMEGA(5,2..5)
@@ -156,11 +156,11 @@ Wilbaux_2015_prostate <- function() {
       0.115, 0.693, -1.31, -1.25, -0.302, 0.153, 2.30, 0.0348, 2.40            # OMEGA(10,2..10)
     )
 
-    # BLOCK(2) on ETA(11), ETA(12) — additive (linear-scale) IIV on K0
+    # BLOCK(2) on ETA(11), ETA(12) -- additive (linear-scale) IIV on K0
     # and LS. Variances are in (CTC*day/AU)^2 and day^2.
     etak0 + etalag5 ~ c(1430, 294, 61.9)  # OMEGA(11,11), OMEGA(12,11), OMEGA(12,12)
 
-    # Diagonal $OMEGA on ETA(13) — log-scale IIV on OVDP.
+    # Diagonal $OMEGA on ETA(13) -- log-scale IIV on OVDP.
     etalovdp ~ 2.25  # OMEGA(13,13)
 
     # The .mod also declares ETA(1) on LV0 (FIX 1e-7) and ETA(14) on W1
@@ -185,7 +185,7 @@ Wilbaux_2015_prostate <- function() {
     # the user can override at fit time. See vignette Assumptions
     # and deviations for the full deviation rationale.
     # ------------------------------------------------------------------
-    addSd_NCTC    <- 1   ; label("Placeholder additive residual-error SD on NCTC typical-value output (cells per 7.5 mL aliquot); not the source likelihood — see vignette Assumptions and deviations")
+    addSd_NCTC    <- 1   ; label("Placeholder additive residual-error SD on NCTC typical-value output (cells per 7.5 mL aliquot); not the source likelihood -- see vignette Assumptions and deviations")
     addSd_log_PSA <- 0.300; label("Additive residual-error SD on log_PSA typical-value output (matches the published W1 exponential residual SD on log(PSA)); .lst FINAL TH14 = 3.00E-01")
   })
 

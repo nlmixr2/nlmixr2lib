@@ -56,10 +56,10 @@ NA_NA_miridesap <- function() {
     lq      <- 0.595           ; label("Log CPHPC inter-compartmental clearance (log L/h); Q = exp(lq) = 1.81 L/h")          # THETA(4)
     lvp     <- 2.84            ; label("Log CPHPC peripheral volume (log L); Vp = exp(lvp) = 17.1 L")                        # THETA(5)
 
-    # CRCL effect on CPHPC clearance — piecewise linear, saturating at CRCL = 80
+    # CRCL effect on CPHPC clearance -- piecewise linear, saturating at CRCL = 80
     e_crcl_cl <- 0.0152        ; label("Slope of CRCL effect on CPHPC CL for CRCL <= 80 mL/min (1 / (mL/min))")              # THETA(15)
 
-    # Subcutaneous depot — both fixed; the bundle's simulated dataset does not
+    # Subcutaneous depot -- both fixed; the bundle's simulated dataset does not
     # exercise SC dosing but the .ctl supports it via a separate compartment.
     lka     <- fixed(0.4055)   ; label("Log SC absorption rate (log 1/h); ka = exp(lka) = 1.50 1/h - FIXED")                 # THETA(14) FIXED
     lfdepot <- fixed(0)        ; label("Log SC bioavailability (log unitless); F = exp(lfdepot) = 1 - FIXED")                # THETA(13) FIXED
@@ -74,7 +74,7 @@ NA_NA_miridesap <- function() {
     lkon    <- 14.6            ; label("Log SAP-CPHPC binding on-rate (log L/(mol h)); kon = exp(lkon) = 2.19e6 L/(mol h)")  # THETA(7)
     lkint   <- log(5.71)       ; label("Log SAP-CPHPC complex internalization rate (log 1/h); kint = 5.71 1/h")              # THETA(8) (linear scale in .ctl)
 
-    # IIV — diagonal $OMEGA in the .ctl (lines 217-227); no correlations.
+    # IIV -- diagonal $OMEGA in the .ctl (lines 217-227); no correlations.
     # Variances copied verbatim from the .ctl OMEGA block, which the
     # Output_simulated lst confirms as final estimates.
     etalkout    ~ 0.125          # OMEGA1 (KOUT)

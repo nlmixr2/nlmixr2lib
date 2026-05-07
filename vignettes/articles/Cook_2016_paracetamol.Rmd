@@ -70,11 +70,11 @@ collects them in one place.
 
 | Equation / parameter | Value         | Source location                                                                                |
 |----------------------|---------------|------------------------------------------------------------------------------------------------|
-| `lvc`                | log(1.06)     | `.lst` FINAL TH 1 (V1 = TH1·BWS, L/kg)                                                          |
-| `lcl_apapg`          | log(0.266/1000)| `.lst` FINAL TH 2 with /1000 scale per `.mod` (CLG = TH2·BWS, L/min/kg)                        |
-| `lcl_apaps`          | log(1.46/1000)| `.lst` FINAL TH 3 with /1000 scale per `.mod` (CLS = TH3·BWS^TH6, L/min)                       |
-| `lcl`                | log(0.285/1000)| `.lst` FINAL TH 4 with /1000 scale per `.mod` (CLA = TH4·BWS, L/min/kg)                        |
-| `kratio_urine`       | 11.3          | `.lst` FINAL TH 5 (K24 = K36 = TH5·K15, dimensionless)                                          |
+| `lvc`                | log(1.06)     | `.lst` FINAL TH 1 (V1 = TH1*BWS, L/kg)                                                          |
+| `lcl_apapg`          | log(0.266/1000)| `.lst` FINAL TH 2 with /1000 scale per `.mod` (CLG = TH2*BWS, L/min/kg)                        |
+| `lcl_apaps`          | log(1.46/1000)| `.lst` FINAL TH 3 with /1000 scale per `.mod` (CLS = TH3*BWS^TH6, L/min)                       |
+| `lcl`                | log(0.285/1000)| `.lst` FINAL TH 4 with /1000 scale per `.mod` (CLA = TH4*BWS, L/min/kg)                        |
+| `kratio_urine`       | 11.3          | `.lst` FINAL TH 5 (K24 = K36 = TH5*K15, dimensionless)                                          |
 | `e_wt_cl_apaps`      | 1.40          | `.lst` FINAL TH 6 (BWS exponent for CLS only)                                                   |
 | `etalvc`             | 0.0925 (var)  | `.lst` FINAL OMEGA(1,1) (IIV log V1)                                                             |
 | `etalcl_apapg`       | 0.599  (var)  | `.lst` FINAL OMEGA(2,2) (IIV log CLG)                                                            |
@@ -86,7 +86,7 @@ collects them in one place.
 | `propSd_Aurine_apap` | sqrt(0.188)   | `.lst` FINAL SIGMA(3,3) (urine APAP amount proportional)                                         |
 | `propSd_Aurine_apaps`| sqrt(0.332)   | `.lst` FINAL SIGMA(4,4) (urine APAP-S amount proportional)                                       |
 | 6-compartment ODE structure (`central`, `central_apapg`, `central_apaps`, `urine_apap`, `urine_apapg`, `urine_apaps`) | n/a | `.mod` `$MODEL` and `$DES` blocks |
-| `V2 = V3 = 0.18·V1`, `K24 = K36 = TH5·K15`               | n/a | `.mod` `$PK` block constants                                                                   |
+| `V2 = V3 = 0.18*V1`, `K24 = K36 = TH5*K15`               | n/a | `.mod` `$PK` block constants                                                                   |
 | `Cc ~ add(addSd) + prop(propSd)`, urine outputs `~ prop(...)` | n/a | `.mod` `$ERROR` block (Y1 combined; Y4/Y5/Y6 proportional, per the deposited correct form) |
 
 The Cook 2016 publication PDF is not available on disk, so the table cites
@@ -122,7 +122,7 @@ sample_times <- c(0, 15, 30, 60, 90, 120, 180, 240, 360, 480)
 make_cohort <- function(grp_row, n, id_offset) {
   ids <- id_offset + seq_len(n)
   # Body weight is the only model covariate. Allow modest within-group
-  # variation (±10% lognormal noise) so the VPC ribbon picks up
+  # variation (+/-10% lognormal noise) so the VPC ribbon picks up
   # weight-driven dispersion alongside IIV / residual error.
   covs <- tibble::tibble(
     id  = ids,
@@ -179,7 +179,7 @@ sim_typical <- rxode2::rxSolve(
   filter(time > 0)
 ```
 
-# Plasma paracetamol — typical-value trajectories
+# Plasma paracetamol -- typical-value trajectories
 
 ```{r cc-typical}
 sim_typical |>
@@ -190,14 +190,14 @@ sim_typical |>
   labs(
     x = "Time (min)", y = "Plasma APAP (mg/L)",
     title = "Typical-value plasma paracetamol by neonatal weight stratum",
-    subtitle = "Cook 2016 / DDMODEL00000271 — single 10 mg/kg IV paracetamol over 15 min",
+    subtitle = "Cook 2016 / DDMODEL00000271 -- single 10 mg/kg IV paracetamol over 15 min",
     colour = NULL
   ) +
   theme_minimal() +
   theme(legend.position = "none")
 ```
 
-# Cumulative urinary recovery — mass balance check
+# Cumulative urinary recovery -- mass balance check
 
 The model carries three urine compartments that accumulate the cumulative
 amounts excreted as glucuronide (`Aurine_apapg`), unchanged drug
@@ -225,7 +225,7 @@ mass_balance |>
   labs(
     x = "Time (min)",
     y = "Cumulative urinary recovery / dose",
-    title = "Mass balance — total urinary recovery approaches the dose",
+    title = "Mass balance -- total urinary recovery approaches the dose",
     subtitle = "Sum of urine APAP + APAP-G + APAP-S amounts, normalised by 10 mg/kg dose",
     colour = NULL
   ) +
@@ -322,7 +322,7 @@ knitr::kable(
 # Assumptions and deviations
 
 - **Validation strategy is F.2 self-consistency** (per
-  `references/ddmore-source.md` § "Validation strategy by model type"
+  `references/ddmore-source.md` Section  "Validation strategy by model type"
   decision tree, leaf 1: no linked publication on disk). PKNCA values
   shown above are informational; comparison against Cook 2016's
   published NCA / figures was not possible because the publication PDF
@@ -341,8 +341,8 @@ knitr::kable(
   per-kg clearances).
 
 - **Per-kg parameterisation with no reference weight.** The
-  `.mod` `$PK` writes `V1 = TH1·BWS`, `CLG = TH2·BWS`, `CLA = TH4·BWS`,
-  and `CLS = TH3·BWS^TH6` — i.e., direct linear scaling with body
+  `.mod` `$PK` writes `V1 = TH1*BWS`, `CLG = TH2*BWS`, `CLA = TH4*BWS`,
+  and `CLS = TH3*BWS^TH6` -- i.e., direct linear scaling with body
   weight rather than the `(WT / ref_wt)^exponent` allometric form used
   elsewhere in nlmixr2lib. The model file preserves the source's
   per-kg form (`vc <- exp(lvc) * WT`, etc.) and stores the bare per-kg
@@ -356,7 +356,7 @@ knitr::kable(
   multiplication in the source `.mod`).
 
 - **`kratio_urine` (`.mod` TH5) is paper-named.** It is the fitted
-  ratio `K24 = K36 = TH5 · K15` linking metabolite-to-urine
+  ratio `K24 = K36 = TH5 * K15` linking metabolite-to-urine
   elimination rates to the parent unchanged-renal rate. There is no
   canonical nlmixr2lib parameter name for this construct; the name
   follows the paper-named-mechanistic-parameter convention rather
@@ -399,6 +399,6 @@ knitr::kable(
   unobserved transit states. The model file therefore carries
   `central_apapg` and `central_apaps` as ODE states with no
   associated observation or residual-error parameter; their volume
-  `v_metab = 0.18·vc` (per the `.mod` `S2 = S3 = V2 = V3 = 0.18·V1`
+  `v_metab = 0.18*vc` (per the `.mod` `S2 = S3 = V2 = V3 = 0.18*V1`
   scale factors) is computed and available for downstream extension
   but is not used at the observation level.

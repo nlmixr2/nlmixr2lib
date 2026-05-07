@@ -30,9 +30,9 @@ This model was extracted from the DDMORE Foundation Model Repository
 bundle for `DDMODEL00000250` (scraped to
 `dpastoor/ddmore_scraping/250/`). The bundle contains:
 
-- `Executable_FinalModelCode.mod` — NONMEM control stream for the
+- `Executable_FinalModelCode.mod` -- NONMEM control stream for the
   final published model (the canonical run; see `Command.txt`).
-- `Executable_AccessWeightModelCode.mod` — companion control stream
+- `Executable_AccessWeightModelCode.mod` -- companion control stream
   for an "access weight" sensitivity scenario in which the adolescent
   CL covariate is reparameterised as
   `THETA(1) * (WTAL/70)^0.75 + THETA(8) * WTAC` (allometric on
@@ -40,19 +40,19 @@ bundle for `DDMODEL00000250` (scraped to
   the allometric exponent fixed at 0.75). This vignette and the
   packaged model implement the **final** model only; the access-weight
   scenario is not separately extracted (see Errata).
-- `Output_real_FinalModelCode.lst` — NONMEM listing of a re-fit on
+- `Output_real_FinalModelCode.lst` -- NONMEM listing of a re-fit on
   the bundle's `Simulated_DatafileMidaObesity.csv`. The
   `MINIMIZATION SUCCESSFUL` block (line 353; `OBJV = 524.451`,
   line 407) is the source of the final parameter estimates the
   packaged model uses.
-- `Output_simulated_FinalModelCode.lst` — companion `$SIMULATION`
+- `Output_simulated_FinalModelCode.lst` -- companion `$SIMULATION`
   listing on the same simulated dataset.
-- `Simulated_DatafileMidaObesity.csv` — the simulated dataset (9
+- `Simulated_DatafileMidaObesity.csv` -- the simulated dataset (9
   subjects: ID 1-4 = adults, ID 31-50 = adolescents; PO + IV
   midazolam dosing).
-- `DDMODEL00000250.rdf` — purpose / research-stage / modelling-
+- `DDMODEL00000250.rdf` -- purpose / research-stage / modelling-
   question metadata.
-- `250.json`, `Command.txt` — scraper / run metadata.
+- `250.json`, `Command.txt` -- scraper / run metadata.
 
 The original publication is **not on disk** in this worktree;
 publication-level demographics, NCA tables, and figures are taken
@@ -73,7 +73,7 @@ inflammation to the suppression of CYP3A-mediated clearance.
 Subjects received both oral and intravenous midazolam dosing
 (intravenous administration is captured in the bundle's simulated
 dataset as a near-instantaneous infusion: AMT = 5000 microgram,
-RATE = 29997 microgram/min ≈ 10 s).
+RATE = 29997 microgram/min ~= 10 s).
 
 Numeric age range, sex distribution, and per-region breakdown are
 not in the abstract and are not reproduced in the bundle, so those
@@ -104,12 +104,12 @@ Per-parameter origin (also recorded as in-file comments next to each
 | `e_wt_cl`         | 1.05                    | FINAL THETA TH 8 (TBW power on adolescent CL; .mod initial 1.2) |
 | `e_wt_vp`         | 3.36                    | FINAL THETA TH 9 (TBW power on adult V3; .mod initial 3.28) |
 | `etalcl`          | 4.33e-06                | FINAL OMEGA(1,1); near-boundary, ETA shrinkage 98.97 % (.lst lines 356-368) |
-| `etalfdepot`      | 9.22e-02                | FINAL OMEGA(2,2) — IIV on F1 (ETA(2)) |
-| `etalq`           | 4.32e-01                | FINAL OMEGA(3,3) — IIV on Q (ETA(3)) |
-| `etalka`          | 8.61e-02                | FINAL OMEGA(4,4) — IIV on KA (ETA(4)) |
-| `etalvc`          | 1.86e-02                | FINAL OMEGA(5,5) — IIV on V2 (ETA(5)) |
-| `etalvp`          | 7.96e-02                | FINAL OMEGA(6,6) — IIV on V3 (ETA(6)) |
-| `propSd`          | sqrt(0.0988) ≈ 0.3143    | FINAL SIGMA(1,1) — Y = F * (1 + EPS(1)) |
+| `etalfdepot`      | 9.22e-02                | FINAL OMEGA(2,2) -- IIV on F1 (ETA(2)) |
+| `etalq`           | 4.32e-01                | FINAL OMEGA(3,3) -- IIV on Q (ETA(3)) |
+| `etalka`          | 8.61e-02                | FINAL OMEGA(4,4) -- IIV on KA (ETA(4)) |
+| `etalvc`          | 1.86e-02                | FINAL OMEGA(5,5) -- IIV on V2 (ETA(5)) |
+| `etalvp`          | 7.96e-02                | FINAL OMEGA(6,6) -- IIV on V3 (ETA(6)) |
+| `propSd`          | sqrt(0.0988) ~= 0.3143    | FINAL SIGMA(1,1) -- Y = F * (1 + EPS(1)) |
 | `d/dt(depot)`            | n/a | .mod $DES line 52: `DADT(1) = -K14*A(1)` (K14 = KA) |
 | `d/dt(transit1..5)`      | n/a | .mod $DES lines 55-59: 5-link `KTR` chain (KTR = KA) |
 | `d/dt(central)`          | n/a | .mod $DES line 53: `DADT(2) = KTR*A(8) - K23*A(2) + K32*A(3) - K20*A(2)` |
@@ -238,7 +238,7 @@ adults (van Rongen 2018, abstract: 0.71 vs 0.44 L/min). The typical
 concentration-time profile of the packaged model after a 7.5 mg
 oral dose plus a 5 mg IV bolus reproduces this ordering: at any
 given time, the morbidly-obese-adult concentration is higher than
-the matched obese-adolescent concentration (lower CL → higher
+the matched obese-adolescent concentration (lower CL -> higher
 exposure).
 
 ```{r figure-conc-vs-time, fig.width = 7, fig.height = 4.5}
@@ -261,7 +261,7 @@ sim_typical |>
     y = "Cc (microgram/L)",
     colour = NULL, fill = NULL,
     title = paste0(
-      "Typical-value midazolam Cc (zero IIV / EPS) — ",
+      "Typical-value midazolam Cc (zero IIV / EPS) -- ",
       "10th, 50th, 90th percentiles across the WT distribution"
     ),
     caption = paste0(
@@ -295,12 +295,12 @@ ggplot(typical_cl, aes(WT, cl_typical, colour = treatment)) +
     x = "Total body weight (kg)",
     y = "Typical CL (L/min)",
     colour = NULL,
-    title = "Typical CL vs WT — bundle .lst final estimates",
+    title = "Typical CL vs WT -- bundle .lst final estimates",
     caption = paste0(
       "Solid points: model-implied typical CL using lst final estimates ",
       "(0.540 / 0.793 L/min at WT = 141.8 / 104.7). ",
       "Dashed lines: van Rongen 2018 abstract typical values ",
-      "(0.44 adult, 0.71 adolescent — match .mod $THETA initial values)."
+      "(0.44 adult, 0.71 adolescent -- match .mod $THETA initial values)."
     )
   ) +
   theme(legend.position = "bottom")
@@ -364,9 +364,9 @@ The publication's headline result is the difference in typical CL
 between the two subgroups (van Rongen 2018 abstract): obese
 adolescents 0.71 L/min vs morbidly obese adults 0.44 L/min. The
 bundle's `Output_real_FinalModelCode.lst` final estimates are
-0.793 L/min (adolescents) and 0.540 L/min (adults) — i.e., 12 % and
+0.793 L/min (adolescents) and 0.540 L/min (adults) -- i.e., 12 % and
 22 % higher than the published typical values. The simulation-based
-NCA-implied CL (oral CL/F = Dose × F / AUCinf) should match the
+NCA-implied CL (oral CL/F = Dose x F / AUCinf) should match the
 bundle's typical values to within Monte-Carlo and NCA-extrapolation
 noise, **not** the publication's typical values, because the
 simulation is driven by the bundle's final estimates.
@@ -423,7 +423,7 @@ knitr::kable(
   MUST BE ADDRESSED BEFORE THE COVARIANCE STEP CAN BE IMPLEMENTED`
   (lines 356-358). The eta on CL is retained in the packaged model
   for structural fidelity, but it contributes negligibly to
-  simulation variability — practical IIV on CL in this re-fit is
+  simulation variability -- practical IIV on CL in this re-fit is
   effectively zero. A re-fit on the original (un-simulated)
   39-subject dataset would likely return a non-zero IIV on CL.
 - **The "AccessWeightModelCode" companion scenario is not

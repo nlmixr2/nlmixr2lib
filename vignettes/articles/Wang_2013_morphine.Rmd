@@ -22,7 +22,7 @@ library(ggplot2)
 * Citation: `r rxode2::rxode2(readModelDb("Wang_2013_morphine"))$reference`
 * Description: `r rxode2::rxode2(readModelDb("Wang_2013_morphine"))$description`
 * Article: [Clinical Drug Investigation 2013;33(7):523-534](https://doi.org/10.1007/s40261-013-0097-6)
-* DDMORE Foundation Model Repository entry: [DDMODEL00000269](https://repository.ddmore.eu/model/DDMODEL00000269) — Model I (morphine alone). The same bundle ships a separate joint morphine + M3G model (Model II) which is **not** packaged here; see Assumptions and deviations.
+* DDMORE Foundation Model Repository entry: [DDMODEL00000269](https://repository.ddmore.eu/model/DDMODEL00000269) -- Model I (morphine alone). The same bundle ships a separate joint morphine + M3G model (Model II) which is **not** packaged here; see Assumptions and deviations.
 
 # Population
 
@@ -32,9 +32,9 @@ subjects total) used to develop a population PK model for morphine. The
 DDMORE bundle's `.mod` $INPUT comments label each subject with a `POP` value
 that codes the age stratum:
 
-* `POP = 1` — newborns / infants / young children, 0-3 years (encoded here as `CHILD = 1`).
-* `POP = 2` — children-adolescents, 6-15 years (encoded here as `ADOLESCENT = 1`).
-* `POP = 3` — adults, 18-36 years (encoded here as `CHILD = 0` AND `ADOLESCENT = 0`, the implicit baseline).
+* `POP = 1` -- newborns / infants / young children, 0-3 years (encoded here as `CHILD = 1`).
+* `POP = 2` -- children-adolescents, 6-15 years (encoded here as `ADOLESCENT = 1`).
+* `POP = 3` -- adults, 18-36 years (encoded here as `CHILD = 0` AND `ADOLESCENT = 0`, the implicit baseline).
 
 Body weights in the bundle's simulated dataset span 0.6 kg (term neonate) to
 85 kg (adult). The original Wang 2013 PDF was not on disk under
@@ -59,7 +59,7 @@ blocks.
 | Equation / parameter | Value | Source location |
 |----------------------|-------|-----------------|
 | `lkdec`              | `log(0.594)` (KDEC, unitless) | `Output_real_ModelI_Morphine.lst` THETA TH 1 |
-| `lkmin`              | `log(0.872)` (KMAX − KDEC, unitless) | `Output_real_ModelI_Morphine.lst` THETA TH 2 |
+| `lkmin`              | `log(0.872)` (KMAX - KDEC, unitless) | `Output_real_ModelI_Morphine.lst` THETA TH 2 |
 | `lkhal`              | `log(4.01)` (KHAL, kg) | `Output_real_ModelI_Morphine.lst` THETA TH 3 |
 | `lgamma`             | `log(4.62)` (GAMMA, unitless) | `Output_real_ModelI_Morphine.lst` THETA TH 4 |
 | `lcl`                | `log(1.62)` L/min @ 70 kg adult | `Output_real_ModelI_Morphine.lst` THETA TH 5 |
@@ -74,7 +74,7 @@ blocks.
 | `etalvc` IIV         | `0.253` (variance, log scale) | `Output_real_ModelI_Morphine.lst` OMEGA ETA3 (V1) |
 | Q / V2 IIV           | 0 (FIXED in `$OMEGA`) | `Output_real_ModelI_Morphine.lst` OMEGA ETA2, ETA4 |
 | Structural equations | ADVAN5 2-compartment with K10 = CL/V1, K12 = Q/V1, K21 = Q/V2 | `Executable_ModelI1_Morphine.mod` `$MODEL` + `$PK` + `$SUBROUTINE ADVAN5` |
-| BDE allometric form  | `KBDE(WT) = KMAX − KDEC × WT^GAMMA / (KHAL^GAMMA + WT^GAMMA)` with `KMAX = KDEC + (KMAX − KDEC) = 0.594 + 0.872 = 1.466` | Wang 2013 abstract ("decreases sigmoidal across paediatric range from 1.47 to 0.88, midpoint 4.01 kg") and `Executable_ModelI1_Morphine.mod` `$PK` |
+| BDE allometric form  | `KBDE(WT) = KMAX - KDEC x WT^GAMMA / (KHAL^GAMMA + WT^GAMMA)` with `KMAX = KDEC + (KMAX - KDEC) = 0.594 + 0.872 = 1.466` | Wang 2013 abstract ("decreases sigmoidal across paediatric range from 1.47 to 0.88, midpoint 4.01 kg") and `Executable_ModelI1_Morphine.mod` `$PK` |
 | Concentration units  | `ug/L` | `.mod` `$INPUT` comment `CONC ;ug/L` |
 | Time units           | minutes | `.mod` `$INPUT` comment `TIME ;in min` |
 | Dose units           | micrograms (ug) | `.mod` `$INPUT` comment `AMT ;in microgram (ug)` |
@@ -145,9 +145,9 @@ cohort <- dplyr::bind_rows(
 )
 ```
 
-A single 60-min IV-equivalent infusion of weight-scaled morphine (100 µg/kg
+A single 60-min IV-equivalent infusion of weight-scaled morphine (100 ug/kg
 total dose) is administered to each subject and concentrations are sampled
-densely over 8 h (480 min). The dose level is illustrative — Wang 2013
+densely over 8 h (480 min). The dose level is illustrative -- Wang 2013
 pooled across many study-specific regimens; the goal here is to demonstrate
 the BDE-driven CL scaling and the adolescent / adult parameter overrides.
 
@@ -434,7 +434,7 @@ knitr::kable(
     dplyr::rename(
       Stratum                 = stratum,
       `N matched obs`         = n,
-      `Median (Cc − obs)/obs` = median_rel_err,
+      `Median (Cc - obs)/obs` = median_rel_err,
       `5th / 95th pct`        = q05_q95
     ),
   caption = paste("F.2 self-consistency: relative error of the typical-value",
@@ -457,7 +457,7 @@ miscoded equation.
   task assigned a singular target filename `Wang_2013_morphine.R`; an
   operator follow-up confirmed Model I is in scope. Anyone needing the
   parent + M3G joint model should look at
-  `ddmore_scraping/269/Executable_ModelII_MM3G.mod` directly — it is
+  `ddmore_scraping/269/Executable_ModelII_MM3G.mod` directly -- it is
   structurally a 3-compartment model (morphine 2-comp + M3G 1-comp) with
   metabolic-pathway clearances and would warrant a separate
   `Wang_2013b_morphine.R` extraction.
@@ -480,7 +480,7 @@ miscoded equation.
   block sets `Y = LOG(F) + ERR(1) * W` with `$SIGMA EPS1 FIXED = 1` and
   `W = THETA(9) = 0.432`. NONMEM "additive on log-scale with SIGMA fixed at
   1" maps to proportional residual error in nlmixr2's linear space with
-  `propSd = 0.432` (see `naming-conventions.md` § "NONMEM → nlmixr2 syntax
+  `propSd = 0.432` (see `naming-conventions.md` Section  "NONMEM -> nlmixr2 syntax
   translation").
 - **Real vs simulated executable.** The `Output_real_*.lst` reports an
   additional `EPS(2)` term gated by `IF (TIME.GT.1900.AND.FLAG.EQ.{1,2})`
@@ -502,6 +502,6 @@ miscoded equation.
   `mab_human_consensus/literature/` at extraction time, so per-subject
   parameter estimates and tabulated NCA values from the publication could
   not be compared against the simulation. The F.2 self-consistency check
-  above is the substitute mandated by `references/ddmore-source.md` §
+  above is the substitute mandated by `references/ddmore-source.md` Section 
   "Validation strategy by model type" for DDMORE-source models without an
   on-disk publication.

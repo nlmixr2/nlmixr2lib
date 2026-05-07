@@ -31,7 +31,7 @@ Conrado_2014_alzheimer <- function() {
       description        = "Sex indicator with 1 = female, 0 = male",
       units              = "(binary)",
       type               = "binary",
-      reference_category = "1 (female) — the source paper centres the baseline-coefficient on the female cohort, which it labels the 'most common' category",
+      reference_category = "1 (female) -- the source paper centres the baseline-coefficient on the female cohort, which it labels the 'most common' category",
       notes              = "Source column SEX in the bundle is coded 1 = female, 2 = male. The canonical SEXF (1 = female) is derived as `SEXF = as.integer(SEX == 1)`. The source-paper coefficient 0.953 multiplies the typical baseline score for males (SEXF = 0); the female reference cohort takes a multiplier of 1.",
       source_name        = "SEX"
     ),
@@ -40,14 +40,14 @@ Conrado_2014_alzheimer <- function() {
       units              = "(count, 0 / 1 / 2 alleles per subject)",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Centred on 0.72 inside model() — the population-mean APOE-epsilon-4 count in the CAMD cohort, taken directly from the source `.mod`'s `APOE4C - 0.72` re-centring expressions. Source column APOE4C in the bundle is the cleaned continuous version of the upstream APOE4 column (0 = non-carrier, 1 = heterozygous, 2 = homozygous, 3 = unknown), with the unknown subjects recoded to the population mean.",
+      notes              = "Centred on 0.72 inside model() -- the population-mean APOE-epsilon-4 count in the CAMD cohort, taken directly from the source `.mod`'s `APOE4C - 0.72` re-centring expressions. Source column APOE4C in the bundle is the cleaned continuous version of the upstream APOE4 column (0 = non-carrier, 1 = heterozygous, 2 = homozygous, 3 = unknown), with the unknown subjects recoded to the population mean.",
       source_name        = "APOE4C"
     ),
     CONMED_AD = list(
       description        = "Concomitant Alzheimer's-symptomatic medication indicator at baseline (typically a cholinesterase inhibitor and / or memantine), 1 = on treatment, 0 = not on treatment",
       units              = "(binary)",
       type               = "binary",
-      reference_category = "1 (on concomitant Alzheimer's-symptomatic medication) — the source paper labels this as the 'most common' category and centres the slope-effect coefficient on the on-treatment cohort, so the multiplicative slope factor is 1 for CONMED_AD = 1 and 1 + e_sl_conmed_ad_off for CONMED_AD = 0. The non-standard most-common-as-reference convention is preserved from the source for traceability.",
+      reference_category = "1 (on concomitant Alzheimer's-symptomatic medication) -- the source paper labels this as the 'most common' category and centres the slope-effect coefficient on the on-treatment cohort, so the multiplicative slope factor is 1 for CONMED_AD = 1 and 1 + e_sl_conmed_ad_off for CONMED_AD = 0. The non-standard most-common-as-reference convention is preserved from the source for traceability.",
       notes              = "Source column COMED2 in the bundle. Time-fixed per subject in the CAMD-derived dataset. The source `.mod` does not name the symptomatic-medication class beyond the binary flag; the publication context (CAMD ADAS-Cog disease-progression dataset, 2014) makes cholinesterase-inhibitor / memantine the dominant interpretation. See the canonical `CONMED_AD` entry in inst/references/covariate-columns.md for the full notes on the reference-category inversion.",
       source_name        = "COMED2"
     )
@@ -68,7 +68,7 @@ Conrado_2014_alzheimer <- function() {
   ini({
     # All values come from Output_real_CPathAD.lst FINAL PARAMETER ESTIMATE
     # block (after MINIMIZATION SUCCESSFUL at line 872). The .mod $THETA /
-    # $OMEGA blocks are the initial estimates only — the .lst final estimates
+    # $OMEGA blocks are the initial estimates only -- the .lst final estimates
     # are the canonical source per the DDMORE-source convention. The
     # publication's Tables 4-5 were not available on disk for cross-check;
     # this is documented in the vignette's Errata section. The TVBL parameter
@@ -77,7 +77,7 @@ Conrado_2014_alzheimer <- function() {
     # disease-progression slope can in principle be negative (the source-
     # paper IIV is additive on slope, consistent with this).
 
-    # Structural parameters — Richards three-parameter logistic for the
+    # Structural parameters -- Richards three-parameter logistic for the
     # population mean ADAS-Cog/70.
     lbl <- log(22.2) ; label("Log of typical baseline ADAS-Cog total score (0-70 scale)")
     # Output_real_CPathAD.lst FINAL PARAMETER ESTIMATE TH 1 = 2.22E+01.
@@ -107,7 +107,7 @@ Conrado_2014_alzheimer <- function() {
     e_bl_apoe4 <- 0.0372 ; label("Fractional change in typical baseline ADAS-Cog per APOE-epsilon-4 allele count unit above 0.72 (multiplicative on baseline: factor = 1 + e_bl_apoe4 * (APOE4_COUNT - 0.72))")
     # Output_real_CPathAD.lst FINAL PARAMETER ESTIMATE TH 9 = 3.72E-02.
 
-    # Subject-level inter-individual variability — BLOCK(2) on (etalbl, etasl).
+    # Subject-level inter-individual variability -- BLOCK(2) on (etalbl, etasl).
     # etalbl is on the log-baseline scale (multiplicative log-normal IIV on BL);
     # etasl is on the natural slope scale (additive IIV on SL). The off-diagonal
     # is the cross-scale covariance reported by NONMEM directly.

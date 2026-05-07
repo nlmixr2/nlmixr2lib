@@ -1,5 +1,5 @@
 NA_NA_tte_gompertz_ev2 <- function() {
-  description <- "Parametric time-to-event Gompertz hazard model for Event 2 in the BAST PTTE 2017 four-event teaching dataset (DDMODEL00000243). Hazard h(t) = (lam/1000) * exp((alpha/1000)*t) * exp((coef_auc/1000)*(AUC_BAST_FW - 3065.5)). Event 2 in the bundle's simulated dataset is interval-censored (CENSORING = 2), assessed at scheduled visits rather than observed exactly; the BAST guiding-document § 2.4.1 (Figure 2-2) selected Gompertz as the base distribution by AIC, then § 2.4.2 (Table 2-3) retained first-week AUC as the only covariate."
+  description <- "Parametric time-to-event Gompertz hazard model for Event 2 in the BAST PTTE 2017 four-event teaching dataset (DDMODEL00000243). Hazard h(t) = (lam/1000) * exp((alpha/1000)*t) * exp((coef_auc/1000)*(AUC_BAST_FW - 3065.5)). Event 2 in the bundle's simulated dataset is interval-censored (CENSORING = 2), assessed at scheduled visits rather than observed exactly; the BAST guiding-document Section  2.4.1 (Figure 2-2) selected Gompertz as the base distribution by AIC, then Section  2.4.2 (Table 2-3) retained first-week AUC as the only covariate."
   reference <- paste(
     "BAST Inc Limited.",
     "BAST approach to parametric time-to-event (PTTE) modelling.",
@@ -41,7 +41,7 @@ NA_NA_tte_gompertz_ev2 <- function() {
     disease_state  = "Hypothetical / unspecified clinical population (the BAST PTTE 2017 guiding document is a methodological teaching example with simulated event data; no real drug, indication, or patient cohort).",
     dose_range     = "Not applicable (no drug administration is modelled; the AUC_BAST_FW covariate is a per-subject baseline summary of the unspecified drug's first-week exposure).",
     regions        = "Not applicable (simulated data).",
-    notes          = "200 simulated patients; 104 (52%) had Event 2. Event 2 is interval-censored: exact event times are unknown, only that the event occurred between two scheduled assessment visits (BAST guiding document § 2.2.1). For the other three events in the same bundle see NA_NA_tte_gompertz.R, NA_NA_tte_lognormal.R, and NA_NA_tte_loglogistic.R. Source: BAST Inc Limited, 'BAST approach to parametric time-to-event (PTTE) modelling', 12 July 2017 (BAST_PTTE_modelling.pdf); base-distribution selection § 2.4.1 / Figure 2-2; covariate selection § 2.4.2 / Table 2-3; final-fit listing Output_simulated_runEV2_105.res."
+    notes          = "200 simulated patients; 104 (52%) had Event 2. Event 2 is interval-censored: exact event times are unknown, only that the event occurred between two scheduled assessment visits (BAST guiding document Section  2.2.1). For the other three events in the same bundle see NA_NA_tte_gompertz.R, NA_NA_tte_lognormal.R, and NA_NA_tte_loglogistic.R. Source: BAST Inc Limited, 'BAST approach to parametric time-to-event (PTTE) modelling', 12 July 2017 (BAST_PTTE_modelling.pdf); base-distribution selection Section  2.4.1 / Figure 2-2; covariate selection Section  2.4.2 / Table 2-3; final-fit listing Output_simulated_runEV2_105.res."
   )
 
   ini({

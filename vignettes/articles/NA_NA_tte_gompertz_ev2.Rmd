@@ -27,8 +27,8 @@ library(ggplot2)
 This vignette validates the BAST 2017 PTTE Event 2 hazard model packaged
 under `inst/modeldb/ddmore/NA_NA_tte_gompertz_ev2.R` (NONMEM run name
 `runEV2_105`). Event 2 in the bundle is interval-censored; the BAST
-guiding document § 2.4.1 (Figure 2-2) selected Gompertz as the base
-distribution by AIC, and § 2.4.2 (Table 2-3) retained first-week AUC
+guiding document Section  2.4.1 (Figure 2-2) selected Gompertz as the base
+distribution by AIC, and Section  2.4.2 (Table 2-3) retained first-week AUC
 as the only covariate.
 
 For sibling Event 1, Competing Event 1, and Competing Event 2 hazard
@@ -39,7 +39,7 @@ models from the same bundle, see `NA_NA_tte_gompertz.R`,
 
 The BAST 2017 PTTE bundle is a methodological teaching example with
 N = 200 simulated patients, four timed event types, and six baseline
-covariates (BAST § 2.2.2). Of the 200 simulated patients, 104 (52%)
+covariates (BAST Section  2.2.2). Of the 200 simulated patients, 104 (52%)
 experienced Event 2 (BAST Table 2-1). Event 2 is **interval-censored**:
 exact event times are unknown, only that the event occurred between two
 scheduled assessment visits.
@@ -53,12 +53,12 @@ str(m()$meta$population, max.level = 1)
 
 | Equation / parameter             | Value      | Source location                                                                  |
 |----------------------------------|------------|----------------------------------------------------------------------------------|
-| Hazard form `h(t) = val * lam_1 * exp(alpha_1 * t)` | n/a | Executable_runEV2_105.mod $PK / $DES (`Lam1 = Lam/1000`, `alpha1 = alpha/1000`, `DADT(1) = VAL*Lam1*exp(alpha1*T)`); BAST guiding doc § 2.4.1 confirms Gompertz selected |
+| Hazard form `h(t) = val * lam_1 * exp(alpha_1 * t)` | n/a | Executable_runEV2_105.mod $PK / $DES (`Lam1 = Lam/1000`, `alpha1 = alpha/1000`, `DADT(1) = VAL*Lam1*exp(alpha1*T)`); BAST guiding doc Section  2.4.1 confirms Gompertz selected |
 | `llam_ev2` (Gompertz lambda)     | log(3.28)  | Output_simulated_runEV2_105.res FINAL TH1 = 3.28E+00; rescaled by /1000 inside model() |
 | `lalpha_ev2` (Gompertz alpha)    | log(4.05)  | Output_simulated_runEV2_105.res FINAL TH2 = 4.05E+00; rescaled by /1000 inside model() |
 | `e_auc_ev2` (AUC coefficient)    | 0.309      | Output_simulated_runEV2_105.res FINAL TH3 = 3.09E-01; rescaled by /1000, applied to `(AUC_BAST_FW - 3065.5)` |
-| η on `lam` (`OMEGA(1,1)`)        | 0 FIXED    | Output_simulated_runEV2_105.res FINAL OMEGA(1,1) = 0.00E+00 (placeholder; no estimated IIV) |
-| Covariate-selection ΔOFV         | -9.775     | BAST guiding doc § 2.4.2, Table 2-3 (1st-week AUC chosen as final covariate model EV2_105) |
+| eta on `lam` (`OMEGA(1,1)`)        | 0 FIXED    | Output_simulated_runEV2_105.res FINAL OMEGA(1,1) = 0.00E+00 (placeholder; no estimated IIV) |
+| Covariate-selection DeltaOFV         | -9.775     | BAST guiding doc Section  2.4.2, Table 2-3 (1st-week AUC chosen as final covariate model EV2_105) |
 
 # Virtual cohort
 
@@ -91,15 +91,15 @@ sim <- rxode2::rxSolve(m, events = events) |>
   as.data.frame()
 ```
 
-# Replicate published behaviour — typical-value survival trajectory
+# Replicate published behaviour -- typical-value survival trajectory
 
-The BAST guiding document § 2.4.1 (Figure 2-2) reports a Kaplan-Meier
+The BAST guiding document Section  2.4.1 (Figure 2-2) reports a Kaplan-Meier
 curve of Event 2 vs. the candidate parametric distributions; Gompertz
 was chosen (AIC -6.655 vs. exponential 0). The covariate-VPC
 stratifications by 1st-week AUC (Figure 2-9, Figure 2-10) cover the
-window 0 — 400 days. Event 2 has the most aggressive late-time hazard
-of the four events: at the typical AUC (3065.5 µg·h/L), the model's
-typical-value survival drops from `S(0) = 1` to `S(400) ≈ 0.04`.
+window 0 -- 400 days. Event 2 has the most aggressive late-time hazard
+of the four events: at the typical AUC (3065.5 ug*h/L), the model's
+typical-value survival drops from `S(0) = 1` to `S(400) ~= 0.04`.
 
 ```{r km-style}
 sim |>
@@ -122,9 +122,9 @@ sim |>
   scale_y_continuous(limits = c(0, 1))
 ```
 
-# Mechanistic sanity checks (verification-checklist § F.3)
+# Mechanistic sanity checks (verification-checklist Section  F.3)
 
-## F.3.1 — Hazard increases monotonically with time (Gompertz alpha > 0)
+## F.3.1 -- Hazard increases monotonically with time (Gompertz alpha > 0)
 
 The Gompertz form `h(t) = lam_1 * exp(alpha_1 * t)` with `alpha_1 > 0`
 implies a hazard that rises exponentially with time. The check below
@@ -143,9 +143,9 @@ ggplot(sim_typ, aes(time, hazard)) +
 stopifnot(all(diff(sim_typ$hazard) > -1e-12))
 ```
 
-## F.3.2 — Higher AUC increases the hazard (positive coefficient)
+## F.3.2 -- Higher AUC increases the hazard (positive coefficient)
 
-The BAST guiding document § 2.4.2 (Table 2-3) reports a +0.309
+The BAST guiding document Section  2.4.2 (Table 2-3) reports a +0.309
 coefficient on the centred `(AUC_BAST_FW - 3065.5)/1000` term, meaning
 higher first-week drug exposure increases the Event 2 hazard. The
 check below confirms the simulated trajectories shift in the expected
@@ -186,7 +186,7 @@ stopifnot(high_auc_sur < ref_auc_sur)
 stopifnot(low_auc_sur  > ref_auc_sur)
 ```
 
-## F.3.3 — Final-fit objective-function value matches the bundle
+## F.3.3 -- Final-fit objective-function value matches the bundle
 
 `Output_simulated_runEV2_105.res` reports `OBJV = 1040443.295` at the
 final estimates. This value is informational here (we are not
@@ -212,7 +212,7 @@ smaller-scale analogue.
   biologically meaningful values are:
   - Gompertz lambda:        3.28 / 1000 = 0.00328 / day
   - Gompertz alpha:         4.05 / 1000 = 0.00405 / day
-  - AUC coefficient:        0.309 / 1000 = 3.09e-4 per µg·h/L above 3065.5
+  - AUC coefficient:        0.309 / 1000 = 3.09e-4 per ug*h/L above 3065.5
 
 * **No estimated IIV.** The source `$OMEGA` is `0 FIX` (placeholder slot
   with no estimated random effect). No inter-subject variability is in
@@ -227,9 +227,9 @@ smaller-scale analogue.
   reproduced here (it would only be needed for re-fitting the model
   on the original data). Forward-simulation users who want to honour
   the interval-censoring convention should snap simulated event times
-  to the next assessment visit (BAST guiding doc § 2.3.3).
+  to the next assessment visit (BAST guiding doc Section  2.3.3).
 
-* **Underestimate at low first-week AUC.** BAST § 2.4.2 (page 18)
+* **Underestimate at low first-week AUC.** BAST Section  2.4.2 (page 18)
   notes that the model "appears to underestimate the event rate for
   those patients with a first week AUC less than the median." This
   is a known model limitation in the source.

@@ -72,43 +72,43 @@ Svensson_2018_rifampicin <- function() {
     fed50  <- 67          ; label("Dose-dependent bioavailability EC50 offset above 450 mg (mg)")           # THETA(11) FINAL = 6.70E+01
 
     # Inter-individual variability. NONMEM $OMEGA structure (lst lines 195-213 / 633-682):
-    #   $OMEGA BLOCK(2)             — correlated KM (ETA1) - VMAX (ETA2)
-    #   $OMEGA  diag                — V2 (ETA3), MTT (ETA4), NN (ETA5), KA (ETA6)
-    #   $OMEGA BLOCK(1) + SAME      — IOV in F (BIO) over the 2 occasions  (ETA7, ETA8)
-    #   $OMEGA BLOCK(1) + SAME      — IOV in MTT                            (ETA9, ETA10)
-    #   $OMEGA BLOCK(1) + SAME      — IOV in KM                             (ETA11, ETA12)
-    #   $OMEGA BLOCK(1) + SAME      — IOV in KA                             (ETA13, ETA14)
+    #   $OMEGA BLOCK(2)             -- correlated KM (ETA1) - VMAX (ETA2)
+    #   $OMEGA  diag                -- V2 (ETA3), MTT (ETA4), NN (ETA5), KA (ETA6)
+    #   $OMEGA BLOCK(1) + SAME      -- IOV in F (BIO) over the 2 occasions  (ETA7, ETA8)
+    #   $OMEGA BLOCK(1) + SAME      -- IOV in MTT                            (ETA9, ETA10)
+    #   $OMEGA BLOCK(1) + SAME      -- IOV in KM                             (ETA11, ETA12)
+    #   $OMEGA BLOCK(1) + SAME      -- IOV in KA                             (ETA13, ETA14)
     # The .mod's KM = TVKM*EXP(ETA(1)+IOVKM) puts ETA(1) on lkm; correspondingly the BLOCK(2)
     # cross-term covar(ETA1,ETA2) carries to corr(etalkm, etalvmax). nlmixr2 syntax keeps the
     # 'l' prefix on the eta name to match the transformed parameter.
     etalkm + etalvmax ~ c(0.128, 0.0418, 0.0901)  # OMEGA(1,1)/(2,1)/(2,2) FINAL = 1.28E-01 / 4.18E-02 / 9.01E-02
-    etalvc  ~ 0.00618    # OMEGA(3,3) FINAL = 6.18E-03 — IIV log-V2 variance
-    etalmtt ~ 0.146      # OMEGA(4,4) FINAL = 1.46E-01 — IIV log-MTT variance
-    etalnn  ~ 0.607      # OMEGA(5,5) FINAL = 6.07E-01 — IIV log-NN variance
-    etalka  ~ 0.114      # OMEGA(6,6) FINAL = 1.14E-01 — IIV log-KA variance
+    etalvc  ~ 0.00618    # OMEGA(3,3) FINAL = 6.18E-03 -- IIV log-V2 variance
+    etalmtt ~ 0.146      # OMEGA(4,4) FINAL = 1.46E-01 -- IIV log-MTT variance
+    etalnn  ~ 0.607      # OMEGA(5,5) FINAL = 6.07E-01 -- IIV log-NN variance
+    etalka  ~ 0.114      # OMEGA(6,6) FINAL = 1.14E-01 -- IIV log-KA variance
 
     # IOV. NONMEM $OMEGA BLOCK(1) followed by BLOCK(1) SAME re-uses the same single-element
     # variance across the two occasions; the FINAL estimate of each shared variance is one
     # element only. nlmixr2 has no SAME shortcut, so each occasion gets its own eta with the
     # second occasion's variance fix(...)-pinned to the first (matching the Jonsson_2011_ethambutol
     # and Xie_2019_agomelatine patterns).
-    etaiov_bio_1 ~ 0.0248        # OMEGA(7,7)  FINAL = 2.48E-02 — estimated occasion-1 IOV in bioavailability
+    etaiov_bio_1 ~ 0.0248        # OMEGA(7,7)  FINAL = 2.48E-02 -- estimated occasion-1 IOV in bioavailability
     etaiov_bio_2 ~ fix(0.0248)   # OMEGA(8,8)  fixed equal to OMEGA(7,7) per $OMEGA BLOCK(1) SAME
-    etaiov_mtt_1 ~ 0.318         # OMEGA(9,9)  FINAL = 3.18E-01 — estimated occasion-1 IOV in MTT
+    etaiov_mtt_1 ~ 0.318         # OMEGA(9,9)  FINAL = 3.18E-01 -- estimated occasion-1 IOV in MTT
     etaiov_mtt_2 ~ fix(0.318)    # OMEGA(10,10) fixed equal to OMEGA(9,9) per $OMEGA BLOCK(1) SAME
-    etaiov_km_1  ~ 0.0355        # OMEGA(11,11) FINAL = 3.55E-02 — estimated occasion-1 IOV in KM
+    etaiov_km_1  ~ 0.0355        # OMEGA(11,11) FINAL = 3.55E-02 -- estimated occasion-1 IOV in KM
     etaiov_km_2  ~ fix(0.0355)   # OMEGA(12,12) fixed equal to OMEGA(11,11) per $OMEGA BLOCK(1) SAME
-    etaiov_ka_1  ~ 0.0985        # OMEGA(13,13) FINAL = 9.85E-02 — estimated occasion-1 IOV in KA
+    etaiov_ka_1  ~ 0.0985        # OMEGA(13,13) FINAL = 9.85E-02 -- estimated occasion-1 IOV in KA
     etaiov_ka_2  ~ fix(0.0985)   # OMEGA(14,14) fixed equal to OMEGA(13,13) per $OMEGA BLOCK(1) SAME
 
     # Residual error. The .mod uses log-transformed observations with $ERROR Y = IPRED + EPS(1)
     # where IPRED = LOG(A(2)/S2 + 1e-5); on the back-transformed linear scale this is
     # proportional with proportional-SD = sqrt(SIGMA(1,1)) = sqrt(0.0555) = 0.2356 (NONMEM
-    # 'additive on log-scale' ≡ proportional in nlmixr2's linear space — see naming-conventions.md
-    # § Residual error). The .mod additionally implements the Beal M3 method for BLOQ data
+    # 'additive on log-scale' == proportional in nlmixr2's linear space -- see naming-conventions.md
+    # Section  Residual error). The .mod additionally implements the Beal M3 method for BLOQ data
     # (LLOQ = log(0.13 mg/L), F_FLAG = 1 / Y = PHI((LLOQ - IPRED)/SD)); M3 is an estimation-time
     # construct, not part of the structural model, so it is not carried into the nlmixr2 model.
-    propSd <- 0.2356  ; label("Proportional residual error (SD on log-Cc scale ≡ fraction in linear space)") # SIGMA(1,1) FINAL = 5.55E-02 = 0.2356^2
+    propSd <- 0.2356  ; label("Proportional residual error (SD on log-Cc scale == fraction in linear space)") # SIGMA(1,1) FINAL = 5.55E-02 = 0.2356^2
   })
 
   model({
@@ -150,13 +150,13 @@ Svensson_2018_rifampicin <- function() {
     # AMT. rxode2's transit(n, mtt, bio) returns precisely the same gamma-density input
     # (using podo() and tad() internally for the most recent dose amount and time-after-dose).
     # The .mod sets F1 = 0 to disable normal dose accumulation in the depot, so transit() is
-    # the sole input to depot — preserve that with `f(depot) <- 0` below.
+    # the sole input to depot -- preserve that with `f(depot) <- 0` below.
     d/dt(depot)   <-  transit(nn, mtt, bio) - ka * depot
     d/dt(central) <-  ka * depot - vmax * Cc / (km + Cc) * enzyme
     d/dt(enzyme)  <-  kenz * (1 + eff) - kenz * enzyme
 
     # Initial conditions match the .mod $PK A_0 lines:
-    #   A_0(2) = 0.0001  ; numerical-stabilisation seed for M-M denominator (Cp ≈ 1e-6 mg/L)
+    #   A_0(2) = 0.0001  ; numerical-stabilisation seed for M-M denominator (Cp ~= 1e-6 mg/L)
     #   A_0(3) = 1       ; baseline auto-induction enzyme amount (steady state with no drug)
     central(0) <- 0.0001
     enzyme(0)  <- 1

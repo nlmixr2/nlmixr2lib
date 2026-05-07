@@ -19,12 +19,12 @@ library(ggplot2)
 
 # Model and source
 
-* Citation: Wilbaux M, Tod M, De Bono J, Lorente D, Mateo J, Freyer G, You B, Hénin E. (2015). *A joint model for the kinetics of CTC count and PSA concentration during treatment in metastatic castration-resistant prostate cancer.* CPT Pharmacometrics Syst Pharmacol 4(5):277-285.
+* Citation: Wilbaux M, Tod M, De Bono J, Lorente D, Mateo J, Freyer G, You B, Henin E. (2015). *A joint model for the kinetics of CTC count and PSA concentration during treatment in metastatic castration-resistant prostate cancer.* CPT Pharmacometrics Syst Pharmacol 4(5):277-285.
 * Article (open access): <https://doi.org/10.1002/psp4.34>
 * PubMed Central full text: <https://pmc.ncbi.nlm.nih.gov/articles/PMC4452933/>
 * DDMORE Foundation Model Repository entry: [DDMODEL00000261](https://repository.ddmore.eu/model/DDMODEL00000261)
 
-This model is a joint **semi-mechanistic kinetic-pharmacodynamic (K-PD) model** of two longitudinal biomarkers — circulating tumour cell (CTC) count and prostate-specific antigen (PSA) concentration — during chemotherapy and/or hormonotherapy in adults with metastatic castration-resistant prostate cancer (mCRPC). The CTC observations are integer counts modelled with a negative-binomial likelihood and an alpha = 0.0015 scaling from total-body CTC to per-aliquot count; PSA observations are recorded on the natural-log scale with an additive (exponential) residual error.
+This model is a joint **semi-mechanistic kinetic-pharmacodynamic (K-PD) model** of two longitudinal biomarkers -- circulating tumour cell (CTC) count and prostate-specific antigen (PSA) concentration -- during chemotherapy and/or hormonotherapy in adults with metastatic castration-resistant prostate cancer (mCRPC). The CTC observations are integer counts modelled with a negative-binomial likelihood and an alpha = 0.0015 scaling from total-body CTC to per-aliquot count; PSA observations are recorded on the natural-log scale with an additive (exponential) residual error.
 
 # Population
 
@@ -32,7 +32,7 @@ This model is a joint **semi-mechanistic kinetic-pharmacodynamic (K-PD) model** 
 * **Female fraction = 0%** (mCRPC is a male-only indication).
 * Median follow-up approximately six months. CTC count is enumerated per 7.5 mL blood aliquot (CellSearch system) and PSA in plasma (ng/mL).
 * The paper Methods section reports no covariates were retained in the final model: "No covariates were identified in the final model specification" (paper Results).
-* Detailed baseline demographics (age distribution, ECOG, Gleason score, prior therapy) are documented in the paper but were not transcribed into this extraction's `population` block — the paper PDF was not on disk in the operator's literature mirror at extraction time, so demographic values come from the publicly accessible PMC full text via the extraction-time E-utilities lookup.
+* Detailed baseline demographics (age distribution, ECOG, Gleason score, prior therapy) are documented in the paper but were not transcribed into this extraction's `population` block -- the paper PDF was not on disk in the operator's literature mirror at extraction time, so demographic values come from the publicly accessible PMC full text via the extraction-time E-utilities lookup.
 
 The same metadata is available programmatically from the model file's `population` list (free-floating `<-` assignment within the function body, before `ini()`).
 
@@ -43,7 +43,7 @@ The DDMORE bundle for `DDMODEL00000261` contains:
 | Bundle file | Role |
 |-------------|------|
 | `Executable_simulated_KPD_CTC.count_PSA.mod` | NONMEM control stream (initial values, structural model, ODEs, $ERROR likelihood) |
-| `Output_real_SAEM_KPD_CTC.count_PSA.lst` | NONMEM listing on the original (real) dataset; **final SAEM estimates** in the `FINAL PARAMETER ESTIMATE` block (line 2857) — used as the values in `ini()` |
+| `Output_real_SAEM_KPD_CTC.count_PSA.lst` | NONMEM listing on the original (real) dataset; **final SAEM estimates** in the `FINAL PARAMETER ESTIMATE` block (line 2857) -- used as the values in `ini()` |
 | `Output_real_COV_KPD_CTC.count_PSA.lst` | Standard-error / covariance step on the same fit |
 | `Output_simulated_KPD_CTC.count_PSA.lst` | Listing on the bundle's shipped simulated dataset (regression smoke test) |
 | `Simulated_KPD_CTC.count_PSA.csv` | Two-subject minimal simulated dataset |
@@ -100,7 +100,7 @@ $$
 \frac{\mathrm d \mathrm{LV}}{\mathrm d t} \;=\; K_{\mathrm{in,LV}} \cdot \left(1 - \frac{A_c}{A_{50c} + A_c}\right) \cdot \left(1 - \frac{A_h}{A_{50h} + A_h}\right) \;-\; K_{\mathrm{out,LV}} \cdot \mathrm{LV}
 $$
 
-with $K_{\mathrm{in,LV}} = \mathrm{LV}_0 \cdot K_{\mathrm{out,LV}} \cdot (1 + \mathrm{SFLV}) / \mathrm{SFLV}$ — i.e. the production rate is anchored such that LV approximately holds at LV0 = 1 in the absence of treatment (when SFLV is large, $K_{\mathrm{in,LV}} \to \mathrm{LV}_0 \cdot K_{\mathrm{out,LV}}$, so the steady state `LV* = K_{\mathrm{in,LV}} / K_{\mathrm{out,LV}} \to \mathrm{LV}_0`).
+with $K_{\mathrm{in,LV}} = \mathrm{LV}_0 \cdot K_{\mathrm{out,LV}} \cdot (1 + \mathrm{SFLV}) / \mathrm{SFLV}$ -- i.e. the production rate is anchored such that LV approximately holds at LV0 = 1 in the absence of treatment (when SFLV is large, $K_{\mathrm{in,LV}} \to \mathrm{LV}_0 \cdot K_{\mathrm{out,LV}}$, so the steady state `LV* = K_{\mathrm{in,LV}} / K_{\mathrm{out,LV}} \to \mathrm{LV}_0`).
 
 CTC count follows a cell-lifespan model in which a zero-order production rate $K_0 \cdot \mathrm{LV}(t)$ is balanced by an elimination rate equal to the production rate **delayed by the cell lifespan LS**:
 
@@ -120,7 +120,7 @@ The PSA compartment is initialised to PSA0 = 153 ng/mL (the population-typical b
 
 # Virtual cohort
 
-For the typical-value (no IIV, no residual error) sanity-check simulations below we build a single subject receiving 6 cycles of combined chemotherapy + hormonotherapy at days 0, 21, 42, 85, 108, 119 — matching the dosing schedule of subject 1 in the bundle's `Simulated_KPD_CTC.count_PSA.csv`. Each treatment cycle is encoded as a parallel AMT = 1 dose in CMT 1 (chemo), CMT 2 (hormo), CMT 5 (chemo_d, lag-shifted), and CMT 6 (hormo_d, lag-shifted), plus a one-time AMT = 1 initialisation dose to CMT 4 (CTC) at t = 0.
+For the typical-value (no IIV, no residual error) sanity-check simulations below we build a single subject receiving 6 cycles of combined chemotherapy + hormonotherapy at days 0, 21, 42, 85, 108, 119 -- matching the dosing schedule of subject 1 in the bundle's `Simulated_KPD_CTC.count_PSA.csv`. Each treatment cycle is encoded as a parallel AMT = 1 dose in CMT 1 (chemo), CMT 2 (hormo), CMT 5 (chemo_d, lag-shifted), and CMT 6 (hormo_d, lag-shifted), plus a one-time AMT = 1 initialisation dose to CMT 4 (CTC) at t = 0.
 
 ```{r cohort}
 mod <- readModelDb("Wilbaux_2015_prostate")
@@ -144,13 +144,13 @@ build_events <- function(chemo_times, hormo_times, obs_grid) {
 events_combo <- build_events(dose_times, dose_times, seq(0, 200, by = 1))
 ```
 
-# Simulation 1 — no-treatment hold
+# Simulation 1 -- no-treatment hold
 
 If we run the model with **no doses** (only the t = 0 initialisation of the CTC compartment and a fine observation grid):
 
 * The latent variable LV stays at LV0 = 1 by construction (the production rate $K_{\mathrm{in,LV}} = \mathrm{LV}_0 \cdot K_{\mathrm{out,LV}} \cdot (1 + \mathrm{SFLV}) / \mathrm{SFLV}$ is anchored so that $\mathrm{LV}^* = K_{\mathrm{in,LV}} / K_{\mathrm{out,LV}} \approx \mathrm{LV}_0$ when SFLV is large).
 * The CTC count holds at its anchor $K_0 \cdot \mathrm{LV}_0 \cdot \mathrm{LS} \cdot 0.0015 = 308 \cdot 1 \cdot 57.7 \cdot 0.0015 \approx 26.66$ cells / aliquot. The CTC ODE balances its own production-and-elimination loop because both terms collapse to $K_0 \cdot \mathrm{LV}_0$ once the cell-lifespan guard `latent_tumor_d_eff` aligns with `latent_tumor` (both at LV0 = 1).
-* PSA is **not** at its steady state PSA0 = 153 ng/mL — its true natural-history steady state is $K_{\mathrm{in,PSA}} / K_{\mathrm{out,PSA}} = 1.40 / 0.00813 \approx 172.2$ ng/mL. The non-steady-state indirect-response form means untreated PSA slowly grows from PSA0 toward this asymptote with time constant $1 / K_{\mathrm{out,PSA}} \approx 123$ days. This is a published feature of the model (paper Methods describes the PSA equation as a "non-steady-state model with zero-order production and first-order elimination rates"), not a bug — the typical PSA continues to rise during disease progression in the absence of treatment.
+* PSA is **not** at its steady state PSA0 = 153 ng/mL -- its true natural-history steady state is $K_{\mathrm{in,PSA}} / K_{\mathrm{out,PSA}} = 1.40 / 0.00813 \approx 172.2$ ng/mL. The non-steady-state indirect-response form means untreated PSA slowly grows from PSA0 toward this asymptote with time constant $1 / K_{\mathrm{out,PSA}} \approx 123$ days. This is a published feature of the model (paper Methods describes the PSA equation as a "non-steady-state model with zero-order production and first-order elimination rates"), not a bug -- the typical PSA continues to rise during disease progression in the absence of treatment.
 
 ```{r untreated}
 events_untreated <- rxode2::et(amt = 1, cmt = "ctc", time = 0)
@@ -193,9 +193,9 @@ stopifnot(
 )
 ```
 
-LV holds at 1 within 0.5 %, NCTC holds at 26.66 within 5 %, and the simulated PSA trajectory matches the closed-form solution of the PSA ODE within 5 % — confirming that the steady-state anchor on the latent variable, the CTC cell-lifespan integral guard, and the non-steady-state PSA dynamics are all wired correctly.
+LV holds at 1 within 0.5 %, NCTC holds at 26.66 within 5 %, and the simulated PSA trajectory matches the closed-form solution of the PSA ODE within 5 % -- confirming that the steady-state anchor on the latent variable, the CTC cell-lifespan integral guard, and the non-steady-state PSA dynamics are all wired correctly.
 
-# Simulation 2 — combined chemo + hormo cycles (typical subject)
+# Simulation 2 -- combined chemo + hormo cycles (typical subject)
 
 Six treatment cycles at days 0, 21, 42, 85, 108, 119. Both chemo and hormo doses are administered in parallel.
 
@@ -242,7 +242,7 @@ sim_combo |>
 
 The latent tumour variable is suppressed to about 0.6 of its baseline by the end of the simulation horizon, dragging the CTC count and PSA down with it. The CTC trajectory shows the cell-lifespan delay: NCTC continues to fall after each new cycle because the production-from-current-LV term drops faster than the elimination-from-delayed-LV term.
 
-# Simulation 3 — F.3 mechanistic-sanity: chemo-only vs hormo-only
+# Simulation 3 -- F.3 mechanistic-sanity: chemo-only vs hormo-only
 
 To confirm the saturable Emax inhibition is correctly wired for each treatment independently, we simulate two single-arm scenarios over a 200-day horizon: chemo-only (no hormo doses) and hormo-only (no chemo doses).
 
@@ -303,7 +303,7 @@ monotherapy_compare |>
 
 Sanity properties to confirm:
 
-* All three regimens share the same baseline values at t = 0 (`LV = 1`, `NCTC ≈ 26.66`, `PSA = 153`).
+* All three regimens share the same baseline values at t = 0 (`LV = 1`, `NCTC ~= 26.66`, `PSA = 153`).
 * Combination response dominates either monotherapy at all later time points: combination LV / NCTC / PSA values fall below the corresponding monotherapy values.
 * No state goes negative.
 * Hormo-only ends with a higher residual LV than chemo-only because Kh = 0.449/day is faster than Kc = 0.248/day, so each hormo dose decays out of A_h sooner and the inhibition has a shorter window per cycle.
@@ -331,7 +331,7 @@ stopifnot(
 
 # F.2 self-consistency check against the bundle's simulated dataset
 
-The DDMORE bundle ships `Simulated_KPD_CTC.count_PSA.csv` (intentionally minimal — two simulated subjects). We re-build subject 1's dosing schedule and observation times from that file and confirm that our typical-value trajectory passes through the same general regime as the bundle's recorded DV values. Because the bundle's DV values are *random samples* from the negative-binomial / log-normal distributions (with substantial IIV: paper "CV%" up to 450% on KoutLV), per-record agreement is not expected — a typical-value envelope and overall trend are the right comparison.
+The DDMORE bundle ships `Simulated_KPD_CTC.count_PSA.csv` (intentionally minimal -- two simulated subjects). We re-build subject 1's dosing schedule and observation times from that file and confirm that our typical-value trajectory passes through the same general regime as the bundle's recorded DV values. Because the bundle's DV values are *random samples* from the negative-binomial / log-normal distributions (with substantial IIV: paper "CV%" up to 450% on KoutLV), per-record agreement is not expected -- a typical-value envelope and overall trend are the right comparison.
 
 ```{r subject1-bundle}
 subj1_dose_times   <- c(0, 21, 42, 85, 108, 119)
@@ -398,15 +398,15 @@ knitr::kable(bundle_compare, digits = 3,
              caption = "Subject 1 typical-value vs bundle observations. Per-record discrepancies reflect (i) random sampling from the negative-binomial / log-normal observation distributions and (ii) the bundle's intentionally minimal regression dataset is not representative of the publication's cohort behaviour.")
 ```
 
-The typical trajectory and the bundle's noisy single-subject observations track in the same direction — both NCTC and log_PSA decline as the cycles accumulate — confirming that the structural model and parameter values reproduce the bundle's expected qualitative behaviour. Per-record absolute agreement is intentionally not a target for F.2 in the presence of large IIVs (paper CV% up to 450 % on KoutLV); the visual overlay is the validation anchor.
+The typical trajectory and the bundle's noisy single-subject observations track in the same direction -- both NCTC and log_PSA decline as the cycles accumulate -- confirming that the structural model and parameter values reproduce the bundle's expected qualitative behaviour. Per-record absolute agreement is intentionally not a target for F.2 in the presence of large IIVs (paper CV% up to 450 % on KoutLV); the visual overlay is the validation anchor.
 
 # Assumptions and deviations
 
 * **Wilbaux 2015 PDF not on disk for this extraction.** The paper PDF was not present anywhere under `/home/bill/github/mab_human_consensus/literature/` at extraction time. Methods quotes, parameter cross-checks, and the model-equation transcription used in this vignette come from the publicly accessible PMC4452933 full text via PubMed E-utilities (PMID 26225253; DOI 10.1002/psp4.34). All 14 thetas and the BLOCK(9) / BLOCK(2) OMEGAs in the model file match paper Table 1 to three significant figures. Demographic detail (age distribution, ECOG, Gleason score, prior therapy) was not transcribed because the paper's Table 1 / baseline-demographics narrative was not exhaustively quoted in the PMC extract obtained at extraction time; if the operator subsequently obtains the PDF, a follow-up audit pass to populate `population$age_range`, `population$weight_range`, etc. is recommended.
-* **No `MINIMIZATION SUCCESSFUL` marker in the .lst.** `Output_real_SAEM_KPD_CTC.count_PSA.lst` is a SAEM run; SAEM listings emit `STOCHASTIC APPROXIMATION EXPECTATION-MAXIMIZATION` with `FINAL VALUE OF LIKELIHOOD FUNCTION` and `FINAL PARAMETER ESTIMATE` blocks rather than the canonical `MINIMIZATION SUCCESSFUL` line characteristic of FOCEI fits. The SAEM iteration log (lines 800-2840 of the `.lst`) shows the chain has converged to a stable region — `OBJ` stabilizes around -3783 across the last burn-in / sampling iterations — and the `Output_real_COV_*.lst` companion run successfully ran the covariance step on the SAEM final estimates, confirming a well-defined fit.
-* **Negative-binomial observation likelihood replaced by typical-value placeholder.** The publication's CTC observation likelihood is a negative-binomial distribution with mean $\alpha \cdot \mathrm{CTC}_\mathrm{total}$ and variance $\mu + \mathrm{OVDP} \cdot \mu^2$ (paper Methods; .mod `$ERROR` lines 104-119, expressed as `Y = -2 * log L` under `F_FLAG = 2`). nlmixr2's `~` parser does not natively express this custom -2*ln-likelihood form (no first-class `dnbinomMu`-as-residual binding for `F_FLAG = 2` outputs). The model file therefore exposes `NCTC = ctc * 0.0015` as a typical-value mechanistic prediction with a placeholder additive residual error (`addSd_NCTC = 1`) that the user can override at fit time. The full negative-binomial likelihood expression (the `LFAC`, `LGAM1`, `LGAM2`, `LTRM1`, `LTRM2`, `LNB` lines) is documented in the source-trace table above and in the `.mod` for users who want to re-implement the exact likelihood via a custom `nlmixr2est` user-defined error function. The OVDP parameter is retained in `ini()` (`lovdp <- log(4.89)`) and exposed as `ovdp` in `model()` — its log-normal IIV (`etalovdp ~ 2.25`) is also preserved verbatim — so the parameter round-trip is maintained even though the residual model does not consume it.
+* **No `MINIMIZATION SUCCESSFUL` marker in the .lst.** `Output_real_SAEM_KPD_CTC.count_PSA.lst` is a SAEM run; SAEM listings emit `STOCHASTIC APPROXIMATION EXPECTATION-MAXIMIZATION` with `FINAL VALUE OF LIKELIHOOD FUNCTION` and `FINAL PARAMETER ESTIMATE` blocks rather than the canonical `MINIMIZATION SUCCESSFUL` line characteristic of FOCEI fits. The SAEM iteration log (lines 800-2840 of the `.lst`) shows the chain has converged to a stable region -- `OBJ` stabilizes around -3783 across the last burn-in / sampling iterations -- and the `Output_real_COV_*.lst` companion run successfully ran the covariance step on the SAEM final estimates, confirming a well-defined fit.
+* **Negative-binomial observation likelihood replaced by typical-value placeholder.** The publication's CTC observation likelihood is a negative-binomial distribution with mean $\alpha \cdot \mathrm{CTC}_\mathrm{total}$ and variance $\mu + \mathrm{OVDP} \cdot \mu^2$ (paper Methods; .mod `$ERROR` lines 104-119, expressed as `Y = -2 * log L` under `F_FLAG = 2`). nlmixr2's `~` parser does not natively express this custom -2*ln-likelihood form (no first-class `dnbinomMu`-as-residual binding for `F_FLAG = 2` outputs). The model file therefore exposes `NCTC = ctc * 0.0015` as a typical-value mechanistic prediction with a placeholder additive residual error (`addSd_NCTC = 1`) that the user can override at fit time. The full negative-binomial likelihood expression (the `LFAC`, `LGAM1`, `LGAM2`, `LTRM1`, `LTRM2`, `LNB` lines) is documented in the source-trace table above and in the `.mod` for users who want to re-implement the exact likelihood via a custom `nlmixr2est` user-defined error function. The OVDP parameter is retained in `ini()` (`lovdp <- log(4.89)`) and exposed as `ovdp` in `model()` -- its log-normal IIV (`etalovdp ~ 2.25`) is also preserved verbatim -- so the parameter round-trip is maintained even though the residual model does not consume it.
 * **PSA log-additive residual error preserved verbatim.** The PSA observation likelihood IS expressible in nlmixr2: `log(PSA) ~ Normal(log(IPRED), W1)` is `log_PSA ~ add(addSd_log_PSA)` with `addSd_log_PSA = exp(lw1) = 0.300`. This branch matches the publication exactly.
-* **Linear-scale ETAs on K0 and LS.** The .mod's MU-reference for THETA(11) (K0) and THETA(12) (LS) is `MU = THETA` (no LOG wrapper), so the corresponding ETAs are added linearly: `K0 = THETA(11) + ETA(11)`, `LS = THETA(12) + ETA(12)`. This is unusual for nlmixr2 — the dominant pattern is log-multiplicative (`exp(lparam + eta)`). The model preserves the source convention: `k0` and `lag5` are plain (non-log) ini parameters, and `k0_ind = k0 + etak0`, `lag5_ind = lag5 + etalag5` in `model()`. The variances 1430 (CTC*day/AU)^2 and 61.9 day^2 reproduce the paper's CV% = SD/mean column (12% and 14%), not the standard log-normal CV.
+* **Linear-scale ETAs on K0 and LS.** The .mod's MU-reference for THETA(11) (K0) and THETA(12) (LS) is `MU = THETA` (no LOG wrapper), so the corresponding ETAs are added linearly: `K0 = THETA(11) + ETA(11)`, `LS = THETA(12) + ETA(12)`. This is unusual for nlmixr2 -- the dominant pattern is log-multiplicative (`exp(lparam + eta)`). The model preserves the source convention: `k0` and `lag5` are plain (non-log) ini parameters, and `k0_ind = k0 + etak0`, `lag5_ind = lag5 + etalag5` in `model()`. The variances 1430 (CTC*day/AU)^2 and 61.9 day^2 reproduce the paper's CV% = SD/mean column (12% and 14%), not the standard log-normal CV.
 * **`alag(chemo_d)` and `alag(hormo_d)` reference the individual-level `lag5_ind`.** The .mod sets `ALAG5 = ALAG6 = ALAG7 = MU_12 + ETA(12)` so each subject's lag time on the parallel-delayed K-PD compartments is the same individual LS value used for the CTC bioavailability `f(ctc) = K0 * LS`. Reproduced exactly in `model()`.
 * **`latent_tumor_d_eff` cell-lifespan guard.** The .mod overrides the integrated state of compartment 7 with the constant LV0 for `t <= ALAG5` (.mod `$DES` lines 86-87), then switches to the actual integrated value for `t > ALAG5`. This ensures the CTC integrand $K_0 \cdot \mathrm{LV}(t) - K_0 \cdot \mathrm{LV}(t - \mathrm{LS})$ is well-defined at startup. nlmixr2 / rxode2 expresses this with `latent_tumor_d_eff <- ifelse(t > lag5_ind, latent_tumor_d, ts0)` (rxode2 supports `ifelse` and the lowercase `t` time variable). `checkModelConventions()` flags `latent_tumor_d_eff` as a non-canonical covariate name; this is a justified deviation for an internally-derived guard term that does not consume any data column.
 * **8 paper-specific compartment names flagged by `checkModelConventions()`.** The compartments `chemo`, `hormo`, `latent_tumor`, `ctc`, `chemo_d`, `hormo_d`, `latent_tumor_d`, `psa` are the paper's mechanism-faithful names, not in the `depot/central/peripheral1/peripheral2/effect/...` canonical list. Per `naming-conventions.md`, "Therapeutic-area or mechanism-specific compartments: open a GitHub issue before adding new names." For now the conventions checker emits eight compartment-name warnings; the names are accepted deviations for this paper-faithful K-PD model.

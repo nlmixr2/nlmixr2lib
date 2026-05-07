@@ -29,21 +29,21 @@ This model was extracted from the DDMORE Foundation Model Repository
 bundle for `DDMODEL00000285` (scraped to
 `dpastoor/ddmore_scraping/285/`). The bundle contains:
 
-- `Executable_Laouenant_2015_CPTPSP_hb_RBV` — the Monolix
+- `Executable_Laouenant_2015_CPTPSP_hb_RBV` -- the Monolix
   mlxtran control object (DESCRIPTION + INPUT + EQUATION + OUTPUT
   blocks). Notable features: `parameter = {hb0, Kout, EC50}`,
   `regressor = {css_mode, k_mode}`, `output = hb`.
-- `Output_real_Laouenant_2015_CPTPSP_hb_RBV` — the Monolix listing
+- `Output_real_Laouenant_2015_CPTPSP_hb_RBV` -- the Monolix listing
   with **final population estimates** from the fit on the real
   ANRS-CO20-CUPIC clinical dataset (generated 2013-11-06; this is
   the source of all parameter values used in the model file).
-- `Output_simulated_Laouenant_2015_CPTPSP_hb_RBV` — the Monolix
+- `Output_simulated_Laouenant_2015_CPTPSP_hb_RBV` -- the Monolix
   listing from a re-fit on the bundle's shipped simulated dataset
   (Monolix 4.4.0). Reports very similar but slightly different
   point estimates (`hb0_pop = 14.2`, `Kout_pop = 0.258`,
-  `EC50_pop = 9.37e+003`) — used here only as a self-consistency
+  `EC50_pop = 9.37e+003`) -- used here only as a self-consistency
   sanity check, not as the parameter source.
-- `Simulated_Laouenant_2015_CPTPSP_hb_RBV.txt` — a 15-subject /
+- `Simulated_Laouenant_2015_CPTPSP_hb_RBV.txt` -- a 15-subject /
   89-row simulated longitudinal dataset (whitespace-delimited
   text with header `ID_PAT, CAT, HEMOGLOBINE, TIME, css_mode,
   k_mode`). Subject IDs and arm labels (BOC = boceprevir, TVR =
@@ -51,15 +51,15 @@ bundle for `DDMODEL00000285` (scraped to
   Laouenan 2015 publication; CSS_RBV / K_RBV regressors are the
   per-subject empirical-Bayes estimates from the upstream popPK
   fit and are used in the bundle's typical-value re-simulation.
-- `DDMODEL00000285.rdf` — RDF metadata. Notable fields:
+- `DDMODEL00000285.rdf` -- RDF metadata. Notable fields:
   `model-field-purpose` URI = `pkpd_0001024` (PK/PD), and
   `model-has-description` = "Empirical Bayes estimates of
   individual values of ribavirin PK parameters (exponential model
   of trough concentrations at steady state) are used as
   regressors to link the concentration of ribavirin with the
   inhibition of hemoglobin synthesis (turnover model)".
-- `Command.txt` — `use the monolix 2016R1 interface`.
-- `285.json` — scraper metadata; `version: 6`.
+- `Command.txt` -- `use the monolix 2016R1 interface`.
+- `285.json` -- scraper metadata; `version: 6`.
 
 The bundle does **not** ship a `Model_Accomodations.text|.txt` file.
 Authorship and journal mapping (Laouenan C et al. 2015, CPT
@@ -106,7 +106,7 @@ comments in `inst/modeldb/ddmore/Laouenan_2015_ribavirin.R`).
 | `d/dt(hb) = hb0*kout*(1 - riba/(riba+ec50)) - kout*hb` | n/a | `Executable_*` mlxtran `EQUATION` block (`ddt_hb = ...`) |
 | `hb(0) = hb0`        | n/a                                  | `Executable_*` mlxtran `hb_0 = hb0` |
 | `output = hb`        | n/a                                  | `Executable_*` mlxtran `OUTPUT` block |
-| Imax (= 1) fixed     | n/a                                  | Laouenan 2015 Methods (`dHb/dt = kin,Hb*(1 - Imax*CRBV/(IC50RBV+CRBV)) - kout,Hb*Hb`) — Imax does not appear as a free parameter in the mlxtran |
+| Imax (= 1) fixed     | n/a                                  | Laouenan 2015 Methods (`dHb/dt = kin,Hb*(1 - Imax*CRBV/(IC50RBV+CRBV)) - kout,Hb*Hb`) -- Imax does not appear as a free parameter in the mlxtran |
 
 **Errata note.** The bundle's `Output_real_*` final estimate for
 `EC50` is **8,280 ng/mL**, while the Laouenan 2015 publication's
@@ -129,7 +129,7 @@ extraction skill:
 
 1. **Steady-state hold (drug-free).** With the ribavirin
    regressors forced to zero (`CSS_RBV = 0`), hemoglobin must
-   stay at `hb0` across the entire simulation horizon — the
+   stay at `hb0` across the entire simulation horizon -- the
    model's drug-free steady state.
 2. **Imax saturation limit.** As `CSS_RBV` climbs far above
    `EC50`, the inhibition `riba / (riba + EC50)` approaches 1 and
@@ -139,7 +139,7 @@ extraction skill:
 3. **Mid-range steady-state value.** For sustained `CSS_RBV =
    3000 ng/mL` (the cohort-typical value), the new SS hemoglobin
    must equal `hb0 * (1 - CSS_RBV / (CSS_RBV + EC50)) = 14.3 *
-   (1 - 3000/11280) ≈ 10.50 g/dL`, which is consistent with the
+   (1 - 3000/11280) ~= 10.50 g/dL`, which is consistent with the
    publication's reported median predicted Hbss of 10.0 g/dL
    (range 7.8-11.8).
 4. **Bundle self-consistency (F.2).** Re-simulate the bundle's
@@ -215,7 +215,7 @@ Drive `CSS_RBV` an order of magnitude above the typical EC50
 (`8.28e4 ng/mL`, ten times the typical EC50 `8.28e3 ng/mL`) so the
 inhibition is essentially complete. Hemoglobin must drift toward
 zero on a time-scale set by `kout = 0.124 1/day`
-(`t_1/2 = log(2)/kout ≈ 5.6 days`).
+(`t_1/2 = log(2)/kout ~= 5.6 days`).
 
 ```{r imax-saturation}
 ev_satur <- data.frame(
@@ -501,7 +501,7 @@ knitr::kable(
 
 # Cohort mean residual must be within ~1 g/dL of zero (typical-value run has no
 # IIV, so a small bias from the asymmetric IIV-folded distribution is allowed).
-# Cohort residual SD should be of order 1-2 g/dL — additive listing residual is
+# Cohort residual SD should be of order 1-2 g/dL -- additive listing residual is
 # 0.737 plus per-subject eta scatter on Hb0, kout, EC50.
 stopifnot(
   abs(resid_summary$mean_resid) < 1.5,
@@ -545,7 +545,7 @@ stopifnot(
   come from `Output_real_*.lst` (final estimates)"). The
   publication's value is approximately 14% lower; the difference
   is small relative to the reported between-subject variability
-  (`omega_EC50 = 0.301`, i.e. CV ≈ 31% on the log scale) and
+  (`omega_EC50 = 0.301`, i.e. CV ~= 31% on the log scale) and
   does not change the model's qualitative behaviour.
 - **Imax fixed at 1.** The mlxtran control object writes the
   inhibition function as `riba / (riba + EC50)` (without an

@@ -105,7 +105,7 @@ per-stratum CL contrast.
 ```{r cohort}
 set.seed(20260506)
 
-# Four ORG_FAIL_COUNT strata × n_per_stratum subjects, each receiving an
+# Four ORG_FAIL_COUNT strata x n_per_stratum subjects, each receiving an
 # initial bolus + continuous IV infusion typical of PICU sedation regimens.
 orgf_strata <- c(0L, 1L, 2L, 3L)
 n_per_stratum <- 3L
@@ -175,7 +175,7 @@ sim <- rxode2::rxSolve(
 ```
 
 ```{r simulate-typical}
-# Typical-value trajectory (no IIV, no IOV, no residual error) — the F.2 reference.
+# Typical-value trajectory (no IIV, no IOV, no residual error) -- the F.2 reference.
 mod_typical <- rxode2::zeroRe(mod)
 sim_typical <- rxode2::rxSolve(
   object = mod_typical,
@@ -206,7 +206,7 @@ sim_typical |>
   labs(
     x = "Time (h)", y = "Midazolam concentration (ug/L)",
     title = "Typical-value trajectories by ORG_FAIL_COUNT stratum",
-    subtitle = "Vet 2016 / DDMODEL00000249 — re-simulated through nlmixr2 ODEs",
+    subtitle = "Vet 2016 / DDMODEL00000249 -- re-simulated through nlmixr2 ODEs",
     colour = NULL
   ) +
   theme_minimal() +
@@ -371,7 +371,7 @@ knitr::kable(
   effective per-occasion variance matches the source.
 
 - **Validation strategy is F.2 self-consistency** (per
-  `references/ddmore-source.md` § "Validation strategy by model type"
+  `references/ddmore-source.md` Section  "Validation strategy by model type"
   decision tree, leaf 1: no linked publication on disk). The simulated
   NCA table above is informational; comparison against any Vet 2016
   per-stratum NCA was not possible.

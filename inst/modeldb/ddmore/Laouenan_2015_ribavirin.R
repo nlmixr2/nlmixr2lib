@@ -60,7 +60,7 @@ Laouenan_2015_ribavirin <- function() {
     lkout <- log(0.124)   ; label("Hemoglobin elimination (turnover) rate constant kout,Hb (1/day)")  # Output_real_Laouenant_2015_CPTPSP_hb_RBV: Kout = 0.124
     lec50 <- log(8.28e3)  ; label("Ribavirin half-maximal inhibitory concentration on Hb synthesis EC50 (ng/mL)")  # Output_real_Laouenant_2015_CPTPSP_hb_RBV: EC50 = 8.28e+003
 
-    # Inter-individual variability — Output_real_Laouenant_2015_CPTPSP_hb_RBV
+    # Inter-individual variability -- Output_real_Laouenant_2015_CPTPSP_hb_RBV
     # "Estimation of the population parameters" block reports omegas as Monolix random-
     # effect SDs on the log scale (default log-normal parameterization for positive-
     # constrained parameters). The internal nlmixr2 ini() variance on the eta is omega^2.

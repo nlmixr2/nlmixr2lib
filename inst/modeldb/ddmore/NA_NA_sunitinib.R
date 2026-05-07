@@ -42,7 +42,7 @@ NA_NA_sunitinib <- function() {
     # All values come from the MDL parObj STRUCTURAL{} and VARIABILITY{}
     # blocks (Sunitinib_MPD6_model.mdl). For DDMORE-source extractions the
     # final estimates normally come from Output_real_*.lst, but this bundle
-    # ships no listing — see vignette Errata. Per the operator decision
+    # ships no listing -- see vignette Errata. Per the operator decision
     # (sidecar response 030/response-001.json: extract_mdl), the parObj
     # values are treated as the deposited final estimates.
     #
@@ -102,7 +102,7 @@ NA_NA_sunitinib <- function() {
     lpdr <- log(0.0286);  label("Memory accumulation rate for delayed-signal and resistance compartments (1/day)")  # MDL parObj POP_pdr
 
     # ----------------------------------------------------------------------
-    # Inter-individual variability — MDL parObj VARIABILITY{} block.
+    # Inter-individual variability -- MDL parObj VARIABILITY{} block.
     # MDL declares `type is sd` for every per-parameter omega: variance =
     # omega^2. The MDL also declares an OMEGA `type is corr` 14x14 lower-
     # triangular correlation matrix with mostly small (~|0.01|-|0.07|)
@@ -111,26 +111,26 @@ NA_NA_sunitinib <- function() {
     # are kept as independent IIV.
     #
     # Etas with omega = 0 in the MDL (QQm, pdr, st2, st3, st4, x0, lam0,
-    # alphres, pd1, QQ, V2, Vm2, Ka, Kam) are dropped — those parameters
+    # alphres, pd1, QQ, V2, Vm2, Ka, Kam) are dropped -- those parameters
     # carry no inter-individual variability in the MDL.
     # ----------------------------------------------------------------------
-    etalkout_biom1 ~ 24.4;     label("IIV variance on log biomarker-1 Kout (variance = 4.94^2; very large — see vignette Errata)") # MDL omega_d1 = 4.94 sd
+    etalkout_biom1 ~ 24.4;     label("IIV variance on log biomarker-1 Kout (variance = 4.94^2; very large -- see vignette Errata)") # MDL omega_d1 = 4.94 sd
     etalkout_biom2 ~ 0.235;    label("IIV variance on log biomarker-2 Kout (variance = 0.485^2)")  # MDL omega_d2 = 0.485 sd
     etalkout_biom3 ~ 0.267;    label("IIV variance on log biomarker-3 Kout (variance = 0.517^2)")  # MDL omega_d3 = 0.517 sd
     etalkout_biom4 ~ 0.219;    label("IIV variance on log biomarker-4 Kout (variance = 0.468^2)")  # MDL omega_d4 = 0.468 sd
     etalst1        ~ 0.121;    label("IIV variance on log biomarker-1 baseline setpoint (variance = 0.348^2)")  # MDL omega_st1 = 0.348 sd
-    etalpdm        ~ 3.03;     label("IIV variance on log parent-integrator decay rate (variance = 1.74^2; very large — see vignette Errata)")  # MDL omega_pdm = 1.74 sd
-    etallam        ~ 4.45;     label("IIV variance on log lambda-feedback initial value (variance = 2.11^2; very large — see vignette Errata)") # MDL omega_lam = 2.11 sd
+    etalpdm        ~ 3.03;     label("IIV variance on log parent-integrator decay rate (variance = 1.74^2; very large -- see vignette Errata)")  # MDL omega_pdm = 1.74 sd
+    etallam        ~ 4.45;     label("IIV variance on log lambda-feedback initial value (variance = 2.11^2; very large -- see vignette Errata)") # MDL omega_lam = 2.11 sd
     etalpd2        ~ 0.219;    label("IIV variance on log inverse-EC50 for biomarker 2 (variance = 0.468^2)")  # MDL omega_pd2 = 0.468 sd
     etalpd3        ~ 0.976;    label("IIV variance on log inverse-EC50 for biomarker 3 (variance = 0.988^2)")  # MDL omega_pd3 = 0.988 sd
     etalpd4        ~ 0.147;    label("IIV variance on log inverse-EC50 for biomarker 4 (variance = 0.384^2)")  # MDL omega_pd4 = 0.384 sd
     etalcl         ~ 0.0882;   label("IIV variance on log parent CL (variance = 0.297^2)")  # MDL omega_Cl = 0.297 sd
-    etalvc         ~ 1.69;     label("IIV variance on log parent Vc (variance = 1.3^2; large — see vignette Errata)")  # MDL omega_V1 = 1.3 sd
+    etalvc         ~ 1.69;     label("IIV variance on log parent Vc (variance = 1.3^2; large -- see vignette Errata)")  # MDL omega_V1 = 1.3 sd
     etalcl_metab   ~ 0.197;    label("IIV variance on log metabolite CL (variance = 0.444^2)")  # MDL omega_Clm = 0.444 sd
-    etalvc_metab   ~ 0.824;    label("IIV variance on log metabolite Vc (variance = 0.908^2; large — see vignette Errata)") # MDL omega_Vm1 = 0.908 sd
+    etalvc_metab   ~ 0.824;    label("IIV variance on log metabolite Vc (variance = 0.908^2; large -- see vignette Errata)") # MDL omega_Vm1 = 0.908 sd
 
     # ----------------------------------------------------------------------
-    # Residual error — MDL parObj b_1..b_6 (proportional) and a_7/b_7
+    # Residual error -- MDL parObj b_1..b_6 (proportional) and a_7/b_7
     # (combined additive + proportional on Y7 = tumor radius).
     # MDL OBSERVATION block:
     #   Y1..Y6 = proportionalError(proportional = b_*, eps = EPS_Y, prediction = output*)
@@ -151,13 +151,13 @@ NA_NA_sunitinib <- function() {
     # MODEL_PREDICTION block. The MDL declares these as if they were
     # tunable but assigns each a numeric constant before the DEQ block;
     # they are documented in the vignette Errata.
-    fp      <- 0.21  # MDL line `fp=0.21` — fraction of dose entering the metabolite arm
-    th1     <- 1     # MDL `th1=1` — parent-only drive on biomarker 1 (metabolite drive disabled)
+    fp      <- 0.21  # MDL line `fp=0.21` -- fraction of dose entering the metabolite arm
+    th1     <- 1     # MDL `th1=1` -- parent-only drive on biomarker 1 (metabolite drive disabled)
     th2     <- 1     # MDL `th2=1`
     th3     <- 1     # MDL `th3=1`
     th4     <- 1     # MDL `th4=1`
-    thettum <- 1     # MDL `thettum=1` — parent-only drive on tumor
-    dres    <- 0     # MDL `dres=0` — no decay of resistance accumulator
+    thettum <- 1     # MDL `thettum=1` -- parent-only drive on tumor
+    dres    <- 0     # MDL `dres=0` -- no decay of resistance accumulator
     pi_     <- 3.1416  # MDL hard-codes PI as 3.1416 in the tumor-radius output
 
     # Individual structural parameters (typical * exp(eta))
@@ -260,7 +260,7 @@ NA_NA_sunitinib <- function() {
     d/dt(lam_feedback) <- alphres * lam_feedback                                                                           # MDL A13
 
     # Initial conditions (MDL DEQ init = ...). Depots A14/A15 receive the
-    # dose via standard rxode2 dose events, not via init = D — that MDL
+    # dose via standard rxode2 dose events, not via init = D -- that MDL
     # convention is handled by rxode2's dose-event mechanism.
     biom1(0)        <- stst1
     biom2(0)        <- stst2

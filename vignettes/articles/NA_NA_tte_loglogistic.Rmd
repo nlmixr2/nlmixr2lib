@@ -28,11 +28,11 @@ This vignette validates the BAST 2017 PTTE Competing Event 2 hazard
 model packaged under `inst/modeldb/ddmore/NA_NA_tte_loglogistic.R`
 (NONMEM run name `runCOMPEV2_005`). Competing Event 2 in the bundle is
 right-censored only; no covariate was retained. **Note**: the BAST
-guiding-document text § 2.4.1 (Figure 2-4) selected log-normal as the
+guiding-document text Section  2.4.1 (Figure 2-4) selected log-normal as the
 base distribution for Competing Event 2 by AIC, but the executable
 shipped in the bundle (`Executable_runCOMPEV2_005.mod`,
 `$PROBLEM "Log_logistic model"`) and the final-fit listing are
-log-logistic, not log-normal — see the Errata section below.
+log-logistic, not log-normal -- see the Errata section below.
 
 For sibling Event 1, Event 2, and Competing Event 1 hazard models from
 the same bundle, see `NA_NA_tte_gompertz.R`,
@@ -42,8 +42,8 @@ the same bundle, see `NA_NA_tte_gompertz.R`,
 
 The BAST 2017 PTTE bundle is a methodological teaching example with
 N = 200 simulated patients, four timed event types, and six baseline
-covariates (BAST § 2.2.2). Of the 200 simulated patients, 142 (71%)
-experienced Competing Event 2 (BAST Table 2-1) — the highest event
+covariates (BAST Section  2.2.2). Of the 200 simulated patients, 142 (71%)
+experienced Competing Event 2 (BAST Table 2-1) -- the highest event
 incidence of the four event types. Competing Event 2 is **right-
 censored only** (CENSORING = 1); exact event times are observed.
 
@@ -59,8 +59,8 @@ str(m()$meta$population, max.level = 1)
 | Hazard form `h(t) = alpha * lam^alpha * t^(alpha-1) / (1 + (lam*t)^alpha)` | n/a | Executable_runCOMPEV2_005.mod $PK / $DES (`Lam1 = Lam/1000`, `alpha1 = alpha`, `val1 = alpha1*(lam1**alpha1)*T**(alpha1-1)`); BAST guiding doc Appendix B |
 | `llam_compev2` (lambda)          | log(5.93)  | Output_simulated_runCOMPEV2_005.res FINAL TH1 = 5.93E+00; rescaled by /1000 inside model() |
 | `lalpha_compev2` (shape)         | log(1.60)  | Output_simulated_runCOMPEV2_005.res FINAL TH2 = 1.60E+00; not rescaled |
-| η on `lam` (`OMEGA(1,1)`)        | 0 FIXED    | Output_simulated_runCOMPEV2_005.res FINAL OMEGA(1,1) = 0.00E+00 (placeholder; no estimated IIV) |
-| Covariate-selection result       | none       | BAST guiding doc § 2.4.2, Table 2-5 (no covariate ΔOFV exceeded the −6.6 threshold; final model has no covariates) |
+| eta on `lam` (`OMEGA(1,1)`)        | 0 FIXED    | Output_simulated_runCOMPEV2_005.res FINAL OMEGA(1,1) = 0.00E+00 (placeholder; no estimated IIV) |
+| Covariate-selection result       | none       | BAST guiding doc Section  2.4.2, Table 2-5 (no covariate DeltaOFV exceeded the -6.6 threshold; final model has no covariates) |
 
 # Virtual cohort
 
@@ -94,15 +94,15 @@ Because the model has no covariates and no IIV, all 50 subjects share
 the same trajectory. The plot below shows a single-line typical-value
 survival curve.
 
-# Replicate published behaviour — typical-value survival trajectory
+# Replicate published behaviour -- typical-value survival trajectory
 
-The BAST guiding document § 2.4.1 (Figure 2-4) reports a Kaplan-Meier
+The BAST guiding document Section  2.4.1 (Figure 2-4) reports a Kaplan-Meier
 curve of Competing Event 2 vs. the candidate parametric distributions.
 The covariate VPC (Figure 2-13, Figure 2-14) covers the window
-0 — 400 days. Competing Event 2 is the most aggressive event in the
+0 -- 400 days. Competing Event 2 is the most aggressive event in the
 bundle (71% incidence); at the typical-value parameters (lambda =
 5.93/1000, alpha = 1.60), the model's survival drops from `S(0) = 1`
-to about `S(400) ≈ 0.20`.
+to about `S(400) ~= 0.20`.
 
 ```{r km-style}
 sim |>
@@ -118,14 +118,14 @@ sim |>
   scale_y_continuous(limits = c(0, 1))
 ```
 
-# Mechanistic sanity checks (verification-checklist § F.3)
+# Mechanistic sanity checks (verification-checklist Section  F.3)
 
-## F.3.1 — Hazard has the characteristic log-logistic shape (rises then falls when alpha > 1)
+## F.3.1 -- Hazard has the characteristic log-logistic shape (rises then falls when alpha > 1)
 
 The log-logistic hazard with `alpha > 1` rises, peaks at
 `t_peak = (alpha - 1)^(1/alpha) / lam`, and decays at long times.
 With `alpha = 1.60` and `lam = 5.93/1000 = 0.00593`, the peak is at
-`(0.60)^(1/1.60) / 0.00593 ≈ 0.731 / 0.00593 ≈ 123 days`. The check
+`(0.60)^(1/1.60) / 0.00593 ~= 0.731 / 0.00593 ~= 123 days`. The check
 below confirms the simulated hazard rises, peaks near day 100-150,
 and falls.
 
@@ -153,7 +153,7 @@ stopifnot(sim_typ$hazard[hazard_peak_idx] > sim_typ$hazard[sim_typ$time == 1])
 stopifnot(sim_typ$hazard[hazard_peak_idx] > sim_typ$hazard[sim_typ$time == 500])
 ```
 
-## F.3.2 — Closed-form survival check at long times
+## F.3.2 -- Closed-form survival check at long times
 
 For a log-logistic with `lam` (rate) and `alpha` (shape), the
 cumulative hazard is `H(t) = log(1 + (lam * t)^alpha)`. Compute the
@@ -177,7 +177,7 @@ cat(sprintf("S(%d) closed-form = %.4f, simulation = %.4f\n",
 stopifnot(abs(S_closed - S_sim) / S_closed < 0.01)
 ```
 
-## F.3.3 — Final-fit objective-function value matches the bundle
+## F.3.3 -- Final-fit objective-function value matches the bundle
 
 `Output_simulated_runCOMPEV2_005.res` reports `OBJV = 1846.946` at the
 final estimates. This value is informational here.
@@ -194,7 +194,7 @@ dataset is outside this package and not redistributed.
 
 * **Distribution discrepancy between the BAST guiding-document text and
   the bundle's executable.** The BAST PTTE 2017 guiding document
-  § 2.4.1 (Figure 2-4) selects log-normal as the base distribution for
+  Section  2.4.1 (Figure 2-4) selects log-normal as the base distribution for
   Competing Event 2 (AIC -2.144 vs. exponential 0). However, the bundle
   ships an executable (`Executable_runCOMPEV2_005.mod`) whose `$PROBLEM`
   line declares "Log_logistic model" and whose hazard equation is the

@@ -192,7 +192,7 @@ Zierhut_2008_osteoprotegerin <- function() {
     d/dt(peripheral2) <-  central * q2 / vc - peripheral2 * q2 / vp2
 
     # Indirect-response uNTX turnover. Imax is implicitly 1 (.mdl line
-    # 146: `KSYN*(1.0 - CP/(IC50+CP))` — the inhibition fraction reaches
+    # 146: `KSYN*(1.0 - CP/(IC50+CP))` -- the inhibition fraction reaches
     # unity as Cc -> infinity), and the baseline uNTX is the steady-state
     # ratio ksyn / kdeg (.mdl line 137: `NTX_0 = KSYN / KDEG`).
     ntx0 <- ksyn / kdeg

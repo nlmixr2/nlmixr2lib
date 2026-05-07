@@ -89,7 +89,7 @@ Knibbe_2009_morphine <- function() {
     # Output_real_run4.lst, FINAL PARAMETER ESTIMATE: TH 2 = 1.99E+00.
 
     # Morphine inter-compartmental clearance Q (CMT1 <-> CMT4).
-    # Source `.mod`: Q = THETA(3) — note the absence of WT scaling on Q.
+    # Source `.mod`: Q = THETA(3) -- note the absence of WT scaling on Q.
     lq <- log(0.0289)
     label("Morphine inter-compartmental clearance Q (L/min, no WT scaling)")
     # Output_real_run4.lst FINAL: TH 3 = 2.89E-02.

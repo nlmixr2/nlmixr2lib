@@ -30,11 +30,11 @@ NA_NA_tte_gompertz <- function() {
       source_name        = "AGE"
     ),
     NEUT = list(
-      description        = "Baseline absolute neutrophil count (cells/mm³).",
+      description        = "Baseline absolute neutrophil count (cells/mm^3).",
       units              = "cells/mm^3 (equivalent to cells/uL)",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject. Centred at 4133 cells/mm³ inside the hazard via `exp((coef_neut/10000) * (NEUT - 4133))`. The bundle's Simulated_event_data.csv carries NEUT for 200 hypothetical patients with range 1030-14,888 cells/mm³ (mean 4424); 4133 is the cohort median used by the BAST PTTE guiding-document.",
+      notes              = "Time-fixed per subject. Centred at 4133 cells/mm^3 inside the hazard via `exp((coef_neut/10000) * (NEUT - 4133))`. The bundle's Simulated_event_data.csv carries NEUT for 200 hypothetical patients with range 1030-14,888 cells/mm^3 (mean 4424); 4133 is the cohort median used by the BAST PTTE guiding-document.",
       source_name        = "NEUT"
     )
   )
@@ -49,7 +49,7 @@ NA_NA_tte_gompertz <- function() {
     disease_state  = "Hypothetical / unspecified clinical population (the BAST PTTE 2017 guiding document is a methodological teaching example with simulated event data; no real drug, indication, or patient cohort).",
     dose_range     = "Not applicable (no drug administration is modelled; covariates AGE and NEUT enter the hazard at baseline values).",
     regions        = "Not applicable (simulated data).",
-    notes          = "200 simulated patients with four timed event types (Event 1, Event 2, Competing Event 1, Competing Event 2) and six baseline covariates (AGE, NEUT, PRE_TRE, MAX_LEG, AUC, CMAX). This file extracts only the Event 1 final hazard model (runEV1_201). For the other three events see NA_NA_tte_gompertz_ev2.R, NA_NA_tte_lognormal.R, and NA_NA_tte_loglogistic.R. Source: BAST Inc Limited, 'BAST approach to parametric time-to-event (PTTE) modelling', 12 July 2017 (BAST_PTTE_modelling.pdf in the DDMORE bundle); guiding document § 2.2.1, Table 2-1; covariate selection result Table 2-2; final-fit listing Output_simulated_runEV1_201.res."
+    notes          = "200 simulated patients with four timed event types (Event 1, Event 2, Competing Event 1, Competing Event 2) and six baseline covariates (AGE, NEUT, PRE_TRE, MAX_LEG, AUC, CMAX). This file extracts only the Event 1 final hazard model (runEV1_201). For the other three events see NA_NA_tte_gompertz_ev2.R, NA_NA_tte_lognormal.R, and NA_NA_tte_loglogistic.R. Source: BAST Inc Limited, 'BAST approach to parametric time-to-event (PTTE) modelling', 12 July 2017 (BAST_PTTE_modelling.pdf in the DDMORE bundle); guiding document Section  2.2.1, Table 2-1; covariate selection result Table 2-2; final-fit listing Output_simulated_runEV1_201.res."
   )
 
   ini({
@@ -91,7 +91,7 @@ NA_NA_tte_gompertz <- function() {
     # equation has no `exp(alpha*t)` factor, so the realised hazard is
     # constant in time (i.e., exponential survival). The BAST guiding
     # document confirms an exponential distribution was selected for
-    # Event 1 (§ 2.4.1, Figure 2-1).
+    # Event 1 (Section  2.4.1, Figure 2-1).
     hazard <- val * lam_c
 
     # Cumulative hazard and survival.

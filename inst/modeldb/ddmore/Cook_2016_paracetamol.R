@@ -71,15 +71,15 @@ Cook_2016_paracetamol <- function() {
     # documents the .mod construct K24 = TH5*K15 / K36 = K24 with TH5 fitted.
     kratio_urine <- 11.3 ; label("Metabolite/parent renal-excretion rate ratio K24 = K36 = kratio_urine * K15 (unitless)")  # .lst FINAL TH5
 
-    # Inter-individual variability — diagonal $OMEGA. NONMEM ETA is on
+    # Inter-individual variability -- diagonal $OMEGA. NONMEM ETA is on
     # the log scale (V1 = TH1*BWS*EXP(ETA(1)) etc.), so OMEGA values are
     # variances on log-clearance / log-volume.
-    etalvc        ~ 0.0925  # .lst FINAL OMEGA(1,1) — IIV on log V1
-    etalcl_apapg  ~ 0.599   # .lst FINAL OMEGA(2,2) — IIV on log CLG
-    etalcl_apaps  ~ 0.312   # .lst FINAL OMEGA(3,3) — IIV on log CLS
-    etalcl        ~ 0.0879  # .lst FINAL OMEGA(4,4) — IIV on log CLA
+    etalvc        ~ 0.0925  # .lst FINAL OMEGA(1,1) -- IIV on log V1
+    etalcl_apapg  ~ 0.599   # .lst FINAL OMEGA(2,2) -- IIV on log CLG
+    etalcl_apaps  ~ 0.312   # .lst FINAL OMEGA(3,3) -- IIV on log CLS
+    etalcl        ~ 0.0879  # .lst FINAL OMEGA(4,4) -- IIV on log CLA
 
-    # Residual error — NONMEM SIGMAs are variances; nlmixr2 propSd / addSd
+    # Residual error -- NONMEM SIGMAs are variances; nlmixr2 propSd / addSd
     # are SDs, hence sqrt(.). The .mod $ERROR uses combined prop+add on
     # plasma APAP (Cc) and proportional only on each urine output. This
     # matches the deposited code (per Model_Accommodations.txt the
@@ -128,8 +128,8 @@ Cook_2016_paracetamol <- function() {
     d/dt(urine_apaps)    <-  k_apaps_urine * central_apaps
 
     # Observations:
-    #   Cc = A1 / V1 — plasma APAP concentration in mg/L (.mod S1=V1)
-    #   Aurine_* = A4/A5/A6 — cumulative urinary amounts in mg (.mod S4=S5=S6=1)
+    #   Cc = A1 / V1 -- plasma APAP concentration in mg/L (.mod S1=V1)
+    #   Aurine_* = A4/A5/A6 -- cumulative urinary amounts in mg (.mod S4=S5=S6=1)
     Cc           <- central / vc
     Aurine_apap  <- urine_apap
     Aurine_apapg <- urine_apapg

@@ -28,7 +28,7 @@ This is a **disease-progression model** for the Alzheimer's Disease Assessment S
 
 1. **Bounded non-linear growth.** The expected ADAS-Cog score is parameterised by a Richards three-parameter logistic growth function whose upper asymptote is the upper boundary score 70, replacing the linear / log-linear progression form used in earlier ADAS-Cog disease-progression models.
 2. **Beta-regression residual.** The residual distribution on the bounded fraction `ADAS_NORM = ADAS / 70` is a Beta distribution with precision parameter $\tau = \alpha + \beta$, which naturally accommodates the heteroscedasticity inherent to a bounded outcome (variance shrinks at the boundaries 0 and 1).
-3. **Three-level random-effects structure.** Inter-individual variability is modelled at both the subject level (BSV) and the study level (ISV); the latter — a level beyond the standard subject-level NONMEM random-effects layer — is the publication's headline methodological contribution.
+3. **Three-level random-effects structure.** Inter-individual variability is modelled at both the subject level (BSV) and the study level (ISV); the latter -- a level beyond the standard subject-level NONMEM random-effects layer -- is the publication's headline methodological contribution.
 
 The DDMORE bundle ships the model as a NONMEM control stream (`Executable_simulated_CPathAD.mod`) plus a real-data fit listing (`Output_real_CPathAD.lst`) and a simulated-dataset companion (`Output_simulated_CPathAD.lst` and `Simulated_data_CPathAD.csv`). The linked publication PDF was not on disk in `/home/bill/github/mab_human_consensus/literature/` at extraction time, so an external cross-check against the published parameter table was not performed; see the Errata section for the full deviation list.
 
@@ -38,14 +38,14 @@ The DDMORE bundle ships the model as a NONMEM control stream (`Executable_simula
 * The dominant indication is mild-to-moderate Alzheimer's disease; the baseline ADAS-Cog distribution is centred near the typical-value baseline of 22 (on the 0-70 scale).
 * **Age** at baseline centred on **75 years** in the source paper (used as the centring value for the slope-on-AGE effect).
 * **Sex** coded 1 = female, 2 = male in the source dataset; female is the "most common" reference category in the source-paper effect parameterisation. The simulated dataset shipped with the bundle uses `SEX = 1` (female) for the entire typical-value cohort.
-* **APOE-ε4 allele count** centred on **0.72** in the source paper (the population mean carrier-allele count in the CAMD cohort). The simulated dataset uses the population-mean centring value (0.72) for every row, indicating the bundle's typical-value cohort.
+* **APOE-epsilon4 allele count** centred on **0.72** in the source paper (the population mean carrier-allele count in the CAMD cohort). The simulated dataset uses the population-mean centring value (0.72) for every row, indicating the bundle's typical-value cohort.
 * **Concomitant Alzheimer's-symptomatic medication** (cholinesterase inhibitor and / or memantine) is recorded as the binary `COMED2` flag in the source dataset; `COMED2 = 1` is labelled the "most common" category by the source paper and is the reference for the slope effect.
 
 The same metadata is available programmatically:
 
 ```{r population-meta}
 mod_fn <- readModelDb("Conrado_2014_alzheimer")
-class(mod_fn)  # function — body holds free-floating description / reference / population
+class(mod_fn)  # function -- body holds free-floating description / reference / population
 ```
 
 # Source trace
@@ -63,16 +63,16 @@ Per-parameter origins are recorded as in-file comments next to each `ini()` entr
 | `e_sl_apoe4` (0.195)         | `THETA(7)` SLAPOE4C1 (APOE4-on-slope)  | 0.2 (init)                   | TH 7 = 1.95E-01     |
 | `e_sl_conmed_ad_off` (-0.302)| `THETA(8)` SLCOMED21 (off-treat slope) | -0.275 (init)                | TH 8 = -3.02E-01    |
 | `e_bl_apoe4` (0.0372)        | `THETA(9)` BLAPOE4C1 (APOE4-on-baseline)| 0.1 (init)                  | TH 9 = 3.72E-02     |
-| `etalbl + etasl` BLOCK(2)    | `$OMEGA BLOCK(2)` ETA(1), ETA(2) — BSV | 0.156 / 0.0224 / 0.0424 (init)| OMEGA ETA1/ETA1=1.56E-01, ETA1/ETA2=2.24E-02, ETA2/ETA2=4.13E-02 |
+| `etalbl + etasl` BLOCK(2)    | `$OMEGA BLOCK(2)` ETA(1), ETA(2) -- BSV | 0.156 / 0.0224 / 0.0424 (init)| OMEGA ETA1/ETA1=1.56E-01, ETA1/ETA2=2.24E-02, ETA2/ETA2=4.13E-02 |
 | (dropped) study-level ISV    | `$OMEGA BLOCK(2)` ETA(3), ETA(4)       | 0.0084 / 0.0014 / 0.0004 (init)| OMEGA ETA3/ETA3=9.77E-03, ETA3/ETA4=2.11E-03, ETA4/ETA4=6.71E-04 |
 | (dropped) STE WSV / BSV      | `THETA(10)`, `THETA(11)` STE effects   | 0.1 / 0.1 (init)             | TH10 = 1.06E+00, TH11 = -7.89E-01 |
 | Richards-growth equation     | `.mod $PRED` lines 154-162 (DEN1 / DEN2 / DEN3 / DENN / MUR) |  |  |
 | Beta likelihood              | `.mod $PRED` lines 180-215 (ALPHA / BETA / LGAMMAX1-3 / LLBETA) |  |  |
-| Time scaling (days → years)  | `.mod $PRED` line 118 (`YTIME = TIME/365.25`)               |  |  |
+| Time scaling (days -> years)  | `.mod $PRED` line 118 (`YTIME = TIME/365.25`)               |  |  |
 | Covariate factors            | `.mod $PRED` lines 84-105 (BLAPOE4C / SLCOMED2 / SLAPOE4C / SLAGE) |  |  |
 | BLSEX factor                 | `.mod $PRED` lines 109-116 (BLSEX, BLCOV)                   |  |  |
 
-The minimisation of the source `.mod` is reported as **MINIMIZATION SUCCESSFUL** (`Output_real_CPathAD.lst` line 872), with a noted "PROBLEMS OCCURRED WITH THE MINIMIZATION" caveat — the noted issue is parameter precision (NO. OF SIG. DIGITS IN FINAL EST. = 2.4), which is consistent with the 2-digit precision targeted by `$ESTIMATION ... NSIG=2`. The covariance step ran to completion and produced standard errors for all 11 THETAs and the BSV BLOCK(2); the study-level ISV BLOCK(2) is reported with `.........` for several covariance entries, indicating parameter rank-deficiency in that block (which is expected given only 15 study-level random-effect realisations).
+The minimisation of the source `.mod` is reported as **MINIMIZATION SUCCESSFUL** (`Output_real_CPathAD.lst` line 872), with a noted "PROBLEMS OCCURRED WITH THE MINIMIZATION" caveat -- the noted issue is parameter precision (NO. OF SIG. DIGITS IN FINAL EST. = 2.4), which is consistent with the 2-digit precision targeted by `$ESTIMATION ... NSIG=2`. The covariance step ran to completion and produced standard errors for all 11 THETAs and the BSV BLOCK(2); the study-level ISV BLOCK(2) is reported with `.........` for several covariance entries, indicating parameter rank-deficiency in that block (which is expected given only 15 study-level random-effect realisations).
 
 # Mechanistic structure
 
@@ -99,11 +99,11 @@ $$
 \mathrm{SL}_\mathrm{indiv} = (\mathrm{SL} + \eta_\mathrm{sl}) \cdot \mathrm{SL}_\text{cov}
 $$
 
-where the covariate factors are exactly the source's BLSEX × BLAPOE4C product on baseline and SLAGE × SLAPOE4C × SLCOMED2 product on slope, with the centring values `AGE - 75`, `APOE4_COUNT - 0.72`, and the binary CONMED_AD reference category set to 1 ("most common") per the source paper. The subject-level random effects $(\eta_\mathrm{bl}, \eta_\mathrm{sl})$ are correlated through a 2 × 2 BLOCK with variance / covariance / variance entries (0.156, 0.0224, 0.0413) on the (log-baseline, natural-slope) scales.
+where the covariate factors are exactly the source's BLSEX x BLAPOE4C product on baseline and SLAGE x SLAPOE4C x SLCOMED2 product on slope, with the centring values `AGE - 75`, `APOE4_COUNT - 0.72`, and the binary CONMED_AD reference category set to 1 ("most common") per the source paper. The subject-level random effects $(\eta_\mathrm{bl}, \eta_\mathrm{sl})$ are correlated through a 2 x 2 BLOCK with variance / covariance / variance entries (0.156, 0.0224, 0.0413) on the (log-baseline, natural-slope) scales.
 
 # Virtual cohort
 
-For the typical-value F.3 mechanistic-sanity check we simulate a single typical-value subject (female, 75 years, mean APOE-ε4 count, on concomitant AD medication) over the 5-year disease-progression follow-up window at quarterly observation times.
+For the typical-value F.3 mechanistic-sanity check we simulate a single typical-value subject (female, 75 years, mean APOE-epsilon4 count, on concomitant AD medication) over the 5-year disease-progression follow-up window at quarterly observation times.
 
 ```{r cohort}
 events <- rxode2::et(time = seq(0, 5 * 365.25, by = 91))
@@ -164,10 +164,10 @@ ggplot(cov_traj, aes(years, ADAS, colour = scenario)) +
 
 The directions match the source-paper coefficients:
 
-* **Sex** — males (SEXF = 0) start fractionally lower than females (`e_bl_male` = 0.953) and accumulate the same time-by-time deterioration; the curve is a vertical scale of the reference. The source-paper effect is small (~5% baseline reduction).
-* **APOE-ε4 carrier** — homozygous (count = 2) subjects start fractionally higher (`+e_bl_apoe4 (2 - 0.72) = +4.8%`) AND progress 25% faster (`+e_sl_apoe4 (2 - 0.72) = +25%`); both directions are consistent with the established APOE-ε4 risk-factor literature.
-* **Age** — older subjects (AGE = 85) progress more slowly than the 75-year reference (`+e_sl_age (85 - 75) = -24%`). The source-paper coefficient sign is captured here without judgement: the negative age effect on slope is widely interpreted as cohort-specific (older subjects tend to have already plateaued near a more advanced cognitive state, or to have higher attrition rates that bias the observed slope downward), but the implementation reproduces the source coefficient exactly.
-* **CONMED_AD = 0 (off treatment)** — slope is multiplied by `1 + e_sl_conmed_ad_off = 0.698`, i.e. ~30% slower progression off treatment than on. The source-paper labels CONMED_AD = 1 (on cholinesterase-inhibitor / memantine) as the "most common" reference category; the negative coefficient on the off-treatment cohort reflects selection bias for prescribing AD-symptomatic medication (more advanced or more rapidly progressing patients) rather than a causal effect of the medication itself.
+* **Sex** -- males (SEXF = 0) start fractionally lower than females (`e_bl_male` = 0.953) and accumulate the same time-by-time deterioration; the curve is a vertical scale of the reference. The source-paper effect is small (~5% baseline reduction).
+* **APOE-epsilon4 carrier** -- homozygous (count = 2) subjects start fractionally higher (`+e_bl_apoe4 (2 - 0.72) = +4.8%`) AND progress 25% faster (`+e_sl_apoe4 (2 - 0.72) = +25%`); both directions are consistent with the established APOE-epsilon4 risk-factor literature.
+* **Age** -- older subjects (AGE = 85) progress more slowly than the 75-year reference (`+e_sl_age (85 - 75) = -24%`). The source-paper coefficient sign is captured here without judgement: the negative age effect on slope is widely interpreted as cohort-specific (older subjects tend to have already plateaued near a more advanced cognitive state, or to have higher attrition rates that bias the observed slope downward), but the implementation reproduces the source coefficient exactly.
+* **CONMED_AD = 0 (off treatment)** -- slope is multiplied by `1 + e_sl_conmed_ad_off = 0.698`, i.e. ~30% slower progression off treatment than on. The source-paper labels CONMED_AD = 1 (on cholinesterase-inhibitor / memantine) as the "most common" reference category; the negative coefficient on the off-treatment cohort reflects selection bias for prescribing AD-symptomatic medication (more advanced or more rapidly progressing patients) rather than a causal effect of the medication itself.
 
 A quantitative sanity grid confirms the multiplicative factors:
 
@@ -181,7 +181,7 @@ knitr::kable(end, caption = "ADAS-Cog at 5 years under each covariate scenario."
 
 # Self-consistency check (F.2): bundle simulated dataset
 
-The DDMORE bundle ships `Simulated_data_CPathAD.csv` — a simulated event dataset (4,493 subjects, ~58k rows) generated from the source `.mod` against `$ESTIMATION METHOD=BAYES`. The simulated dataset uses the population-mean APOE-ε4 count (`APOE4C = 0.72`) and `COMED2 = 1` for every row, indicating the bundle's typical-value cohort. We re-simulate a representative slice of subjects through the nlmixr2lib model and verify the typical-value trajectory aligns with the bundle's per-subject ADAS-Cog/70 distribution at each scheduled visit.
+The DDMORE bundle ships `Simulated_data_CPathAD.csv` -- a simulated event dataset (4,493 subjects, ~58k rows) generated from the source `.mod` against `$ESTIMATION METHOD=BAYES`. The simulated dataset uses the population-mean APOE-epsilon4 count (`APOE4C = 0.72`) and `COMED2 = 1` for every row, indicating the bundle's typical-value cohort. We re-simulate a representative slice of subjects through the nlmixr2lib model and verify the typical-value trajectory aligns with the bundle's per-subject ADAS-Cog/70 distribution at each scheduled visit.
 
 ```{r self-consistency, eval = TRUE}
 bundle_csv <- system.file(
@@ -301,7 +301,7 @@ The 5-95% envelope at 5 years is approximately 0.20 - 0.55 on the bounded ADAS-C
 
 The nlmixr2lib model is a faithful translation of the source `.mod` structural equations and final-estimate parameter values, with the deviations listed below to fit nlmixr2's modelling frame.
 
-* **No PKNCA validation.** This is a disease-progression model, not a PK or PK/PD model — there is no drug input, no concentration-time profile, and no NCA-amenable summary parameter. The validation strategy uses the F.3 mechanistic-sanity recipes (typical-value Richards trajectory, covariate-effect directions) plus the F.2 self-consistency check against the bundle's simulated dataset.
+* **No PKNCA validation.** This is a disease-progression model, not a PK or PK/PD model -- there is no drug input, no concentration-time profile, and no NCA-amenable summary parameter. The validation strategy uses the F.3 mechanistic-sanity recipes (typical-value Richards trajectory, covariate-effect directions) plus the F.2 self-consistency check against the bundle's simulated dataset.
 
 * **Study-level random effects dropped.** The source paper's headline methodological contribution is the addition of a third-level random effect on baseline and slope (`$OMEGA BLOCK(2)` on ETA(3), ETA(4) with `$LEVEL STUDY=(3[1],4[2])`). nlmixr2 / rxode2 do not natively support multi-level random-effects models; the standard nlmixr2 random-effects layer is the subject level only. The nlmixr2lib model therefore drops the study-level ETA(3), ETA(4) and reproduces only the subject-level BSV BLOCK(2). A practical consequence is that the per-subject simulation envelope is somewhat tighter than the source-paper VPC; users who need the full study-by-subject envelope must add the study-level layer outside nlmixr2 (e.g., by stratifying simulations by an external study-effect draw and combining post-hoc).
 
@@ -311,7 +311,7 @@ The nlmixr2lib model is a faithful translation of the source `.mod` structural e
 
 * **Observation variable name `ADAS_NORM` rather than `Cc`.** `checkModelConventions("Conrado_2014_alzheimer")` warns that the single-output observation should be named `Cc`. The convention warning is preserved (rather than renaming) because the bounded ADAS-Cog/70 fraction is not a concentration; renaming to `Cc` would mislead users who load the model into a downstream PKNCA / VPC pipeline that assumes `Cc` is a drug concentration. This deviation is noted here in lieu of a code change.
 
-* **`units$concentration` is the bounded ADAS-Cog/70 fraction, not a mass-per-volume concentration.** `checkModelConventions` warns that the `units$concentration` field does not contain a `/`. The deviation is intentional: this is a disease-progression model, not a PK model. The `units$concentration` slot is repurposed to describe the bounded outcome's scale and range; users loading the model should interpret `mur` × 70 as the model's prediction of the ADAS-Cog total score on the 0-70 scale.
+* **`units$concentration` is the bounded ADAS-Cog/70 fraction, not a mass-per-volume concentration.** `checkModelConventions` warns that the `units$concentration` field does not contain a `/`. The deviation is intentional: this is a disease-progression model, not a PK model. The `units$concentration` slot is repurposed to describe the bounded outcome's scale and range; users loading the model should interpret `mur` x 70 as the model's prediction of the ADAS-Cog total score on the 0-70 scale.
 
 * **Linked publication PDF not on disk.** The Conrado 2014 publication (doi:10.1007/s10928-014-9375-z) was not on disk in `/home/bill/github/mab_human_consensus/literature/` at extraction time. Final-estimate values were taken directly from the bundle's `Output_real_CPathAD.lst FINAL PARAMETER ESTIMATE` block (after `MINIMIZATION SUCCESSFUL`); the bundle's `.mod` `$THETA` initial values are within ~3% of the .lst final values, consistent with a converged minimisation. An external cross-check of these final estimates against the publication's printed parameter table was not performed and remains a known gap.
 

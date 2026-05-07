@@ -1,5 +1,5 @@
 Zurlinden_2016_paracetamol <- function() {
-  description <- "Whole-body physiologically-based pharmacokinetic (PBPK) model for paracetamol (acetaminophen, APAP) and its conjugated metabolites APAP-glucuronide (AG) and APAP-sulfate (AS) in healthy adults (Zurlinden & Reisfeld 2016, DDMODEL00000237 Scenario 4 = 1000 mg single oral dose). Each chemical is distributed across nine flow-limited tissue compartments (fat, kidney, muscle, rapidly perfused, slowly perfused, liver, arterial blood, venous blood) with a separate hepatic sub-compartment for the conjugates. Liver metabolism uses Michaelis-Menten kinetics with partial substrate inhibition for CYP-mediated NAPQI formation, sulfation by SULT (cofactor PAPS), and glucuronidation by UGT (cofactor UDP-glucuronic acid, GA); both cofactors are tracked as relative-amount states with zeroth-order resynthesis. Renal elimination is linear, scaled by body weight. Oral absorption is encoded as a bi-exponential gastric-emptying rate function (Tg, Tp) added directly to the liver compartment, with dose-dependent bioavailability fa = 0.0005*Dose_mg + 0.37 (Dose < 1000 mg) or 0.88 (>= 1000 mg). The model is deterministic typical-value (no IIV, no residual error) — the DDMORE bundle exposes only the Bayesian posterior-mean parameters from Forward_APAP1.in, not the per-individual variability or measurement-error distributions reported in the publication."
+  description <- "Whole-body physiologically-based pharmacokinetic (PBPK) model for paracetamol (acetaminophen, APAP) and its conjugated metabolites APAP-glucuronide (AG) and APAP-sulfate (AS) in healthy adults (Zurlinden & Reisfeld 2016, DDMODEL00000237 Scenario 4 = 1000 mg single oral dose). Each chemical is distributed across nine flow-limited tissue compartments (fat, kidney, muscle, rapidly perfused, slowly perfused, liver, arterial blood, venous blood) with a separate hepatic sub-compartment for the conjugates. Liver metabolism uses Michaelis-Menten kinetics with partial substrate inhibition for CYP-mediated NAPQI formation, sulfation by SULT (cofactor PAPS), and glucuronidation by UGT (cofactor UDP-glucuronic acid, GA); both cofactors are tracked as relative-amount states with zeroth-order resynthesis. Renal elimination is linear, scaled by body weight. Oral absorption is encoded as a bi-exponential gastric-emptying rate function (Tg, Tp) added directly to the liver compartment, with dose-dependent bioavailability fa = 0.0005*Dose_mg + 0.37 (Dose < 1000 mg) or 0.88 (>= 1000 mg). The model is deterministic typical-value (no IIV, no residual error) -- the DDMORE bundle exposes only the Bayesian posterior-mean parameters from Forward_APAP1.in, not the per-individual variability or measurement-error distributions reported in the publication."
   reference <- paste(
     "Zurlinden TJ, Reisfeld B. (2016).",
     "Physiologically based modeling of the pharmacokinetics of acetaminophen and its major metabolites in humans using a Bayesian population approach.",
@@ -42,7 +42,7 @@ Zurlinden_2016_paracetamol <- function() {
     weight_range   = "70 kg reference (Forward_APAP1.in)",
     sex_female_pct = NA_real_,
     race_ethnicity = NA_character_,
-    disease_state  = "Healthy adult, no co-medication, single 1000 mg oral paracetamol dose. The Bayesian population fit in Zurlinden & Reisfeld (2016) used pooled human PK data from multiple published studies (per Methods of the publication, which is not on disk in this worktree); the DDMORE bundle does not redistribute the underlying dataset. The bundle's Real_APAP_data.csv is a digitisation of plasma concentrations from Jansen et al. (2004) J Pharm Biomed Anal 34:585-593 — a single-study reference dataset re-used by the authors as one validation source, not the full Bayesian inference dataset.",
+    disease_state  = "Healthy adult, no co-medication, single 1000 mg oral paracetamol dose. The Bayesian population fit in Zurlinden & Reisfeld (2016) used pooled human PK data from multiple published studies (per Methods of the publication, which is not on disk in this worktree); the DDMORE bundle does not redistribute the underlying dataset. The bundle's Real_APAP_data.csv is a digitisation of plasma concentrations from Jansen et al. (2004) J Pharm Biomed Anal 34:585-593 -- a single-study reference dataset re-used by the authors as one validation source, not the full Bayesian inference dataset.",
     dose_range     = "1000 mg single oral dose (Scenario 4)",
     regions        = NA_character_,
     notes          = "Population demographic detail (n, age range, sex distribution, race) is NOT exposed by the DDMORE bundle (Forward_APAP1.in fixes BW=70 kg and reports only the 21 Bayesian posterior-mean parameter values). The original Zurlinden & Reisfeld 2016 publication is not on disk in this worktree, so no cross-check against the publication's Methods is possible. The model is intended for typical-value adult simulation under the Scenario-4 dosing regimen; downstream users wishing to characterise variability must consult the publication directly to obtain the Bayesian posterior distributions for each parameter (these are summarised in the paper but are not exposed by the dpastoor scrape of DDMODEL00000237)."
@@ -60,7 +60,7 @@ Zurlinden_2016_paracetamol <- function() {
     # single derived expression).  The trailing comment carries the bundle
     # line number AND the original ln value for source-trace audits.
     # Forward_APAP1.in does NOT expose IIV or residual-error distributions
-    # — see the vignette Errata.
+    # -- see the vignette Errata.
     # ---------------------------------------------------------------------
 
     # CYP-mediated metabolism (APAP -> NAPQI)
@@ -116,7 +116,7 @@ Zurlinden_2016_paracetamol <- function() {
     VBLVC          <- 0.0557  ; label("Venous-blood volume fraction (kg/kg)")            # line 33
     VSC            <- 0.185   ; label("Slowly-perfused tissue volume fraction (kg/kg)")  # line 34
     VRC            <- 0.0765  ; label("Rapidly-perfused tissue volume fraction (kg/kg)") # line 35
-    # NB: bundle line 29 declares VGC = 0.0144 (gut) — used only inside the VTC
+    # NB: bundle line 29 declares VGC = 0.0144 (gut) -- used only inside the VTC
     # normalising sum which collapses to 1.0 exactly, so the gut volume fraction
     # is unused in this nlmixr2 translation and is not declared in this ini()
     # block to avoid a `parameter declared but not used` build-time error.
@@ -158,7 +158,7 @@ Zurlinden_2016_paracetamol <- function() {
 
     # Tissue:blood partition coefficients for AG (glucuronide).  PG_AG line 88 omitted.
     # NOTE: bundle line 91 has the linear value `PF_AG = 0.336` paired with a
-    # log-line `lnPM_AG = log(0.366)` — the values disagree.  This file uses
+    # log-line `lnPM_AG = log(0.366)` -- the values disagree.  This file uses
     # the linear value 0.336 (which is what the bundle's Initialize{} block
     # picks up via `PM_AG = exp(lnPM_AG)` ... unless the lnPM_AG override on
     # the same line is loaded; the order-of-execution is bundle-dependent).
@@ -166,11 +166,11 @@ Zurlinden_2016_paracetamol <- function() {
     PF_AG          <- 0.128   ; label("AG fat:blood partition coefficient (unitless)")                # line 87
     PK_AG          <- 0.392   ; label("AG kidney:blood partition coefficient (unitless)")             # line 89
     PL_AG          <- 0.321   ; label("AG liver:blood partition coefficient (unitless)")              # line 90
-    PM_AG          <- 0.336   ; label("AG muscle:blood partition coefficient (unitless; bundle .model line 91 is internally inconsistent — see Errata)")  # line 91
+    PM_AG          <- 0.336   ; label("AG muscle:blood partition coefficient (unitless; bundle .model line 91 is internally inconsistent -- see Errata)")  # line 91
     PR_AG          <- 0.364   ; label("AG rapidly-perfused tissue:blood partition coefficient")       # line 93
     PS_AG          <- 0.351   ; label("AG slowly-perfused tissue:blood partition coefficient")        # line 94
 
-    # Molecular weights (g/mol) — unit-conversion factors mcmol -> mcg
+    # Molecular weights (g/mol) -- unit-conversion factors mcmol -> mcg
     MW_APAP        <- 151.17  ; label("APAP molecular weight (g/mol)")                                # line 15
     MW_AG          <- 327.28  ; label("APAP-glucuronide molecular weight (g/mol)")                    # line 16
     MW_AS          <- 231.22  ; label("APAP-sulfate molecular weight (g/mol)")                        # line 17
@@ -317,8 +317,8 @@ Zurlinden_2016_paracetamol <- function() {
     #    same .model so changing the volumes here would invalidate the
     #    parameter values.
     # ---------------------------------------------------------------------
-    CA_APAP    <- a_art_apap / VBLV   # bundle line 712 (APAP only — see Errata)
-    CV_APAP    <- a_ven_apap / VBLA   # bundle line 713 (APAP only — see Errata)
+    CA_APAP    <- a_art_apap / VBLV   # bundle line 712 (APAP only -- see Errata)
+    CV_APAP    <- a_ven_apap / VBLA   # bundle line 713 (APAP only -- see Errata)
     Cplasma_apap <- CV_APAP / BP_APAP
     CA_AS      <- a_art_as / VBLA     # bundle line 716
     CV_AS      <- a_ven_as / VBLV     # bundle line 717
@@ -350,7 +350,7 @@ Zurlinden_2016_paracetamol <- function() {
     #    rate (mcmol/hr). Bundle lines 749, 770, 809, 842.
     #    Gastric emptying is encoded as a closed-form function of the
     #    simulation time t (NOT of stomach state), so this model is
-    #    parameterised for a single oral dose at t = 0 only — see vignette
+    #    parameterised for a single oral dose at t = 0 only -- see vignette
     #    Errata.
     # ---------------------------------------------------------------------
     r_renal_apap <- CLR_APAP * CA_APAP
