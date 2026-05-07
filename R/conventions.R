@@ -76,6 +76,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     # Lidocaine sequential metabolites (DDMODEL00000281, NA_NA_lidocaine):
     # MEGX = monoethylglycinexylidide (LID -> MEGX via CYP1A2/3A4),
     # GX   = glycinexylidide (MEGX -> GX), and 2,6-XYL = 2,6-xylidide
@@ -100,6 +101,13 @@
     # model (DDMODEL00000271).
     "apapg", "apaps"
 >>>>>>> origin/claude/050-cook_2016_paracetamol
+=======
+    # Colistin, the active polymyxin generated in vivo by hydrolysis of
+    # the prodrug colistimethate sodium (CMS). Used as a metabolite
+    # suffix in parent-prodrug CMS / metabolite-active-drug colistin
+    # popPK models (Leuppi-Taegtmeyer 2019 DDMODEL00000295).
+    "col"
+>>>>>>> origin/claude/059-leuppi-taegtmeyer_2019_colistin
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` denotes the time-varying decay arm.

@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Leuppi-Taegtmeyer 2019 colistin ([doi:10.1128/AAC.01957-18](https://doi.org/10.1128/AAC.01957-18)) [DDMODEL00000295] — critically ill adults receiving colistimethate sodium / colistin during continuous renal replacement therapy.
 * Add Voller 2017 phenobarbital ([doi:10.1016/j.ejps.2017.05.026](https://doi.org/10.1016/j.ejps.2017.05.026)) [DDMODEL00000256] — preterm and term newborns receiving a phenobarbital loading dose followed by oral maintenance.
 * Add BAST 2017 PTTE four-event teaching library [DDMODEL00000243] — 200 simulated patients, no linked publication; four parametric time-to-event hazard models packaged separately as `NA_NA_tte_gompertz` (Event 1, exponential / NEUT + AGE), `NA_NA_tte_gompertz_ev2` (Event 2, Gompertz / first-week AUC), `NA_NA_tte_lognormal` (Competing Event 1, log-normal / AGE), and `NA_NA_tte_loglogistic` (Competing Event 2, log-logistic / no covariate).
 * Add Cook 2016 paracetamol ([doi:10.1007/s40262-016-0408-1](https://doi.org/10.1007/s40262-016-0408-1)) [DDMODEL00000271] — term and preterm newborns receiving IV paracetamol (parent + glucuronide + sulphate plasma compartments with cumulative urinary excretion).
