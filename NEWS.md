@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Dao 2020 sultiame ([doi:10.1002/prp2.558](https://doi.org/10.1002/prp2.558)) [DDMODEL00000298] — healthy adult volunteers (4-compartment popPK with saturable plasma <-> erythrocyte binding plus cumulative urinary excretion).
 * Add Conrado 2014 alzheimer ([doi:10.1007/s10928-014-9375-z](https://doi.org/10.1007/s10928-014-9375-z)) [DDMODEL00000290] -- adults with Alzheimer's disease (CAMD ADAS-Cog database; Richards three-parameter logistic disease-progression model with beta-regression residual).
 * Add Schoemaker 2018 levetiracetam ([doi:10.1007/s40262-017-0597-2](https://doi.org/10.1007/s40262-017-0597-2)) [DDMODEL00000239] -- adults and children (4-16 years) with focal seizures (negative-binomial seizure-count PD model with mixture and Markovian dependence on previous-day count; LEV adult+pediatric fit used in the publication to scaffold a brivaracetam pediatric extrapolation).
 * Add MPD6 Sutent sunitinib NSCLC PK/PD/tumor-growth model (no linked publication) [DDMODEL00000231] -- semi-mechanistic 15-state ODE model with parent + metabolite 2-compartment oral PK, four indirect-response PD biomarkers, sphere-volume tumor growth, and three resistance / memory chains; MDL-only deposit, validated by F.2 self-consistency only (no `.lst`, no companion paper, no simulated dataset).
