@@ -327,9 +327,9 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
-#>  ■■■■■■■                           18% |  ETA:  7s
-#>  ■■■■■■■■■■■■■■■■■                 54% |  ETA:  4s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      89% |  ETA:  1s
+#>  ■■■■■■■■■                         28% |  ETA:  7s
+#>  ■■■■■■■■■■■■■■■■■■■               60% |  ETA:  4s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     92% |  ETA:  1s
 knitr::kable(summary(nca_res),
   caption = "Simulated NCA by age stratum (100 ug/kg, 60-min infusion).")
 ```

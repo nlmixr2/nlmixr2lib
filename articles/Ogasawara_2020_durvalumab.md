@@ -206,9 +206,10 @@ data_obj <- PKNCAdata(conc_obj, dose_obj,
                                               cmax = TRUE, tmax = TRUE,
                                               auclast = TRUE, half.life = TRUE))
 nca_results <- pk.nca(data_obj)
-#>  ■■■■■■■■                          24% |  ETA:  9s
-#>  ■■■■■■■■■■■■■■■■                  50% |  ETA:  6s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■           74% |  ETA:  3s
+#>  ■■■■■■■■                          23% |  ETA: 10s
+#>  ■■■■■■■■■■■■■■■                   46% |  ETA:  7s
+#>  ■■■■■■■■■■■■■■■■■■■■■■            69% |  ETA:  4s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      91% |  ETA:  1s
 nca_summary <- summary(nca_results)
 knitr::kable(nca_summary, digits = 2,
              caption = "NCA summary (3rd dosing interval, weeks 8-12)")

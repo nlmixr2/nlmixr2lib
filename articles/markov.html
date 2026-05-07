@@ -36,10 +36,12 @@
 <li><a class="dropdown-item" href="../articles/Aguiar_2021_ustekinumab.html">Aguiar_2021_ustekinumab</a></li>
     <li><a class="dropdown-item" href="../articles/Allegaert_2015_paracetamol.html">Allegaert_2015_paracetamol</a></li>
     <li><a class="dropdown-item" href="../articles/Almquist_2022_anifrolumab.html">Almquist_2022_anifrolumab</a></li>
+    <li><a class="dropdown-item" href="../articles/Bajaj_2017_nivolumab_ddmore.html">Bajaj_2017_nivolumab_ddmore</a></li>
     <li><a class="dropdown-item" href="../articles/Bajaj_2017_nivolumab.html">Bajaj_2017_nivolumab</a></li>
     <li><a class="dropdown-item" href="../articles/Bender_2014_trastuzumabEmtansine_mechanistic.html">Trastuzumab emtansine (T-DM1) preclinical mechanistic DAR PK model (Bender 2014)</a></li>
     <li><a class="dropdown-item" href="../articles/Bender_2014_trastuzumabEmtansine_reduced.html">Trastuzumab emtansine (T-DM1) preclinical reduced PK model (Bender 2014)</a></li>
     <li><a class="dropdown-item" href="../articles/Berends_2019_infliximab.html">Berends_2019_infliximab</a></li>
+    <li><a class="dropdown-item" href="../articles/Birgersson_2019_artesunate.html">Birgersson_2019_artesunate</a></li>
     <li><a class="dropdown-item" href="../articles/Bizzotto_2016_glucose.html">Bizzotto_2016_glucose</a></li>
     <li><a class="dropdown-item" href="../articles/Brillac_2025_isatuximab.html">Brillac_2025_isatuximab</a></li>
     <li><a class="dropdown-item" href="../articles/Budha_2023_tislelizumab.html">Budha_2023_tislelizumab</a></li>
@@ -56,6 +58,7 @@
     <li><a class="dropdown-item" href="../articles/Conrado_2014_alzheimer.html">Conrado_2014_alzheimer</a></li>
     <li><a class="dropdown-item" href="../articles/Cook_2016_paracetamol.html">Cook_2016_paracetamol</a></li>
     <li><a class="dropdown-item" href="../articles/create-model-library.html">Creating a model library</a></li>
+    <li><a class="dropdown-item" href="../articles/Dao_2020_sultiame.html">Dao_2020_sultiame</a></li>
     <li><a class="dropdown-item" href="../articles/deVriesSchultink_2020_zenocutuzumab.html">deVriesSchultink_2020_zenocutuzumab</a></li>
     <li><a class="dropdown-item" href="../articles/Diao_2016_daclizumab_cd25.html">Diao_2016_daclizumab_cd25</a></li>
     <li><a class="dropdown-item" href="../articles/Diao_2016_daclizumab_cd56bright.html">Diao_2016_daclizumab_cd56bright</a></li>
@@ -99,6 +102,7 @@
     <li><a class="dropdown-item" href="../articles/Knibbe_2009_morphine.html">Knibbe_2009_morphine</a></li>
     <li><a class="dropdown-item" href="../articles/Koopman_2023_factorix.html">Koopman_2023_factorix</a></li>
     <li><a class="dropdown-item" href="../articles/Kotani_2022_astegolimab.html">Kotani_2022_astegolimab</a></li>
+    <li><a class="dropdown-item" href="../articles/Kovalenko_2016_dupilumab_ddmore.html">Kovalenko_2016_dupilumab_ddmore</a></li>
     <li><a class="dropdown-item" href="../articles/Kovalenko_2016_dupilumab.html">Kovalenko_2016_dupilumab</a></li>
     <li><a class="dropdown-item" href="../articles/Kovalenko_2020_dupilumab.html">Kovalenko_2020_dupilumab</a></li>
     <li><a class="dropdown-item" href="../articles/Kuchimanchi_2018_evolocumab.html">Kuchimanchi_2018_evolocumab</a></li>
@@ -173,7 +177,9 @@
     <li><a class="dropdown-item" href="../articles/Takahashi_2023_abatacept.html">Takahashi_2023_abatacept</a></li>
     <li><a class="dropdown-item" href="../articles/Takeuchi_2023_ozoralizumab.html">Takeuchi_2023_ozoralizumab</a></li>
     <li><a class="dropdown-item" href="../articles/TerHeine_2014_tamoxifen.html">TerHeine_2014_tamoxifen</a></li>
+    <li><a class="dropdown-item" href="../articles/Terranova_2018_paclitaxel.html">Terranova_2018_paclitaxel</a></li>
     <li><a class="dropdown-item" href="../articles/Thakre_2022_risankizumab.html">Thakre_2022_risankizumab</a></li>
+    <li><a class="dropdown-item" href="../articles/Themans_2019_meropenem.html">Themans_2019_meropenem</a></li>
     <li><a class="dropdown-item" href="../articles/Timmermann_2019_brodalumab.html">Timmermann_2019_brodalumab</a></li>
     <li><a class="dropdown-item" href="../articles/Tiraboschi_2025_amlitelimab.html">Tiraboschi_2025_amlitelimab</a></li>
     <li><a class="dropdown-item" href="../articles/tmdd_archetypes.html">TMDD archetypes: full, QSS, and Michaelis-Menten approximations</a></li>
@@ -428,7 +434,7 @@ methods (with standard R functions) to convert that to a function for
 <span><span class="co">#&gt; <span style="font-weight: bold;">── Time (sec </span><span style="color: #BBBB00; font-weight: bold;">fit</span><span style="color: #0000BB; font-weight: bold;">$time</span><span style="font-weight: bold;">): ──</span></span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;            setup optimize covariance table compress    other</span></span>
-<span><span class="co">#&gt; elapsed 0.016876 0.002533   0.002535 0.029    0.001 2.275056</span></span>
+<span><span class="co">#&gt; elapsed 0.016875 0.002639    0.00264 0.029    0.001 2.314846</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">── (</span><span style="color: #BBBB00; font-weight: bold;">fit</span><span style="color: #0000BB; font-weight: bold;">$parFixed</span><span style="font-weight: bold;"> or </span><span style="color: #BBBB00; font-weight: bold;">fit</span><span style="color: #0000BB; font-weight: bold;">$parFixedDf</span><span style="font-weight: bold;">): ──</span></span></span>
 <span><span class="co">#&gt; </span></span>

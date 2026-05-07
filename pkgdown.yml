@@ -5,10 +5,12 @@ articles:
   articles/Aguiar_2021_ustekinumab: Aguiar_2021_ustekinumab.html
   articles/Allegaert_2015_paracetamol: Allegaert_2015_paracetamol.html
   articles/Almquist_2022_anifrolumab: Almquist_2022_anifrolumab.html
+  articles/Bajaj_2017_nivolumab_ddmore: Bajaj_2017_nivolumab_ddmore.html
   articles/Bajaj_2017_nivolumab: Bajaj_2017_nivolumab.html
   articles/Bender_2014_trastuzumabEmtansine_mechanistic: Bender_2014_trastuzumabEmtansine_mechanistic.html
   articles/Bender_2014_trastuzumabEmtansine_reduced: Bender_2014_trastuzumabEmtansine_reduced.html
   articles/Berends_2019_infliximab: Berends_2019_infliximab.html
+  articles/Birgersson_2019_artesunate: Birgersson_2019_artesunate.html
   articles/Bizzotto_2016_glucose: Bizzotto_2016_glucose.html
   articles/Brillac_2025_isatuximab: Brillac_2025_isatuximab.html
   articles/Budha_2023_tislelizumab: Budha_2023_tislelizumab.html
@@ -25,6 +27,7 @@ articles:
   articles/Conrado_2014_alzheimer: Conrado_2014_alzheimer.html
   articles/Cook_2016_paracetamol: Cook_2016_paracetamol.html
   create-model-library: create-model-library.html
+  articles/Dao_2020_sultiame: Dao_2020_sultiame.html
   articles/deVriesSchultink_2020_zenocutuzumab: deVriesSchultink_2020_zenocutuzumab.html
   articles/Diao_2016_daclizumab_cd25: Diao_2016_daclizumab_cd25.html
   articles/Diao_2016_daclizumab_cd56bright: Diao_2016_daclizumab_cd56bright.html
@@ -68,6 +71,7 @@ articles:
   articles/Knibbe_2009_morphine: Knibbe_2009_morphine.html
   articles/Koopman_2023_factorix: Koopman_2023_factorix.html
   articles/Kotani_2022_astegolimab: Kotani_2022_astegolimab.html
+  articles/Kovalenko_2016_dupilumab_ddmore: Kovalenko_2016_dupilumab_ddmore.html
   articles/Kovalenko_2016_dupilumab: Kovalenko_2016_dupilumab.html
   articles/Kovalenko_2020_dupilumab: Kovalenko_2020_dupilumab.html
   articles/Kuchimanchi_2018_evolocumab: Kuchimanchi_2018_evolocumab.html
@@ -142,7 +146,9 @@ articles:
   articles/Takahashi_2023_abatacept: Takahashi_2023_abatacept.html
   articles/Takeuchi_2023_ozoralizumab: Takeuchi_2023_ozoralizumab.html
   articles/TerHeine_2014_tamoxifen: TerHeine_2014_tamoxifen.html
+  articles/Terranova_2018_paclitaxel: Terranova_2018_paclitaxel.html
   articles/Thakre_2022_risankizumab: Thakre_2022_risankizumab.html
+  articles/Themans_2019_meropenem: Themans_2019_meropenem.html
   articles/Timmermann_2019_brodalumab: Timmermann_2019_brodalumab.html
   articles/Tiraboschi_2025_amlitelimab: Tiraboschi_2025_amlitelimab.html
   tmdd_archetypes: tmdd_archetypes.html
@@ -179,7 +185,7 @@ articles:
   articles/Zhu_2017_lebrikizumab: Zhu_2017_lebrikizumab.html
   articles/Zierhut_2008_osteoprotegerin: Zierhut_2008_osteoprotegerin.html
   articles/Zurlinden_2016_paracetamol: Zurlinden_2016_paracetamol.html
-last_built: 2026-05-07T16:28Z
+last_built: 2026-05-07T18:55Z
 urls:
   reference: https://nlmixr2.github.io/nlmixr2lib/reference
   article: https://nlmixr2.github.io/nlmixr2lib/articles
