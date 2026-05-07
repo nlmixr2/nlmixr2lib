@@ -2,6 +2,7 @@
 
 # development version
 
+* Add MPD6 Sutent sunitinib NSCLC PK/PD/tumor-growth model (no linked publication) [DDMODEL00000231] — semi-mechanistic 15-state ODE model with parent + metabolite 2-compartment oral PK, four indirect-response PD biomarkers, sphere-volume tumor growth, and three resistance / memory chains; MDL-only deposit, validated by F.2 self-consistency only (no `.lst`, no companion paper, no simulated dataset).
 * Add Leuppi-Taegtmeyer 2019 colistin ([doi:10.1128/AAC.01957-18](https://doi.org/10.1128/AAC.01957-18)) [DDMODEL00000295] — critically ill adults receiving colistimethate sodium / colistin during continuous renal replacement therapy.
 * Add Voller 2017 phenobarbital ([doi:10.1016/j.ejps.2017.05.026](https://doi.org/10.1016/j.ejps.2017.05.026)) [DDMODEL00000256] — preterm and term newborns receiving a phenobarbital loading dose followed by oral maintenance.
 * Add BAST 2017 PTTE four-event teaching library [DDMODEL00000243] — 200 simulated patients, no linked publication; four parametric time-to-event hazard models packaged separately as `NA_NA_tte_gompertz` (Event 1, exponential / NEUT + AGE), `NA_NA_tte_gompertz_ev2` (Event 2, Gompertz / first-week AUC), `NA_NA_tte_lognormal` (Competing Event 1, log-normal / AGE), and `NA_NA_tte_loglogistic` (Competing Event 2, log-logistic / no covariate).
