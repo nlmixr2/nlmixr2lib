@@ -2,6 +2,7 @@
 
 # development version
 
+* Add miridesap (CPHPC) [DDMODEL00000262] — healthy volunteers (study CPH113776) and patients with systemic amyloidosis (study CPH114527); two-compartment CPHPC PK with CRCL covariate plus two-compartment SAP turnover and CPHPC-SAP binding/internalization. No linked publication identified.
 * Add Svensson 2018 rifampicin ([doi:10.1002/cpt.778](https://doi.org/10.1002/cpt.778)) [DDMODEL00000244] — adult pulmonary tuberculosis patients on high-dose rifampicin (PanACEA HIGHRIF1 dose-escalation trial; auto-induction enzyme turnover with Michaelis-Menten clearance and dose-dependent bioavailability).
 * Add Wilbaux 2015 prostate ([doi:10.1002/psp4.34](https://doi.org/10.1002/psp4.34)) [DDMODEL00000261] — adults with metastatic castration-resistant prostate cancer on chemotherapy and/or hormonotherapy (joint K-PD model of CTC count and PSA kinetics with cell-lifespan delay and negative-binomial count likelihood).
 * Add Clewe 2018 rifampicin ([doi:10.1093/jac/dkx380](https://doi.org/10.1093/jac/dkx380)) [DDMODEL00000259] — in vitro M. tuberculosis B1585 time-kill under rifampicin + isoniazid + ethambutol triple-combination GPDI model (scenario 4).
