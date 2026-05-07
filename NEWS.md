@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Birgersson 2019 artesunate ([doi:10.12688/wellcomeopenres.14849.2](https://doi.org/10.12688/wellcomeopenres.14849.2)) [DDMODEL00000297] — pregnant and non-pregnant women with uncomplicated Plasmodium falciparum malaria in Burkina Faso (joint parent-metabolite popPK of artesunate and dihydroartemisinin with 3-compartment transit absorption and pregnancy / ALT / log-parasitaemia covariates).
 * Add Clewe 2016 rifampicin ([doi:10.1093/jac/dkv416](https://doi.org/10.1093/jac/dkv416)) [DDMODEL00000240] — in vitro Mycobacterium tuberculosis H37Rv multistate natural-growth scaffold (fast / slow / non-multiplying bacterial states; rifampicin exposure-response not encoded in the bundled scenario).
 * Add Germovsek 2016 gentamicin ([doi:10.1128/AAC.00577-16](https://doi.org/10.1128/AAC.00577-16)) [DDMODEL00000238] — neonates and infants receiving gentamicin.
 * Add Novakovic 2017 cladribine ([doi:10.1208/s12248-016-9977-z](https://doi.org/10.1208/s12248-016-9977-z)) [DDMODEL00000223] — adults with relapsing-remitting multiple sclerosis (8-item EDSS Item Response Theory disease-progression model with FREM covariates).
