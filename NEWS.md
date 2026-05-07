@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Laouenan 2015 ribavirin ([doi:10.1002/psp4.8](https://doi.org/10.1002/psp4.8)) [DDMODEL00000285] — HCV genotype 1 cirrhotic patients on telaprevir- or boceprevir-based triple therapy (hemoglobin turnover PD model with upstream-PK ribavirin regressors).
 * Add Clewe 2016 rifampicin ([doi:10.1093/jac/dkv416](https://doi.org/10.1093/jac/dkv416)) [DDMODEL00000240] — in vitro Mycobacterium tuberculosis H37Rv multistate natural-growth scaffold (fast / slow / non-multiplying bacterial states; rifampicin exposure-response not encoded in the bundled scenario).
 * Add Germovsek 2016 gentamicin ([doi:10.1128/AAC.00577-16](https://doi.org/10.1128/AAC.00577-16)) [DDMODEL00000238] — neonates and infants receiving gentamicin.
 * Add Novakovic 2017 cladribine ([doi:10.1208/s12248-016-9977-z](https://doi.org/10.1208/s12248-016-9977-z)) [DDMODEL00000223] — adults with relapsing-remitting multiple sclerosis (8-item EDSS Item Response Theory disease-progression model with FREM covariates).
