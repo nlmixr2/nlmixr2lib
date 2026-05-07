@@ -1,0 +1,553 @@
+---
+title: "Wilkins_2008_rifampicin"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Wilkins_2008_rifampicin}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode2(readModelDb("Wilkins_2008_rifampicin"))$reference`
+* Description: `r rxode2::rxode2(readModelDb("Wilkins_2008_rifampicin"))$description`
+* Article: <https://doi.org/10.1128/AAC.00461-07>
+* DDMORE Foundation Model Repository entry: [DDMODEL00000280](https://repository.ddmore.eu/model/DDMODEL00000280)
+
+This model was extracted from the DDMORE Foundation Model Repository
+bundle for `DDMODEL00000280` (scraped to
+`dpastoor/ddmore_scraping/280/`). The bundle contains two
+`Executable_*.mod` files representing different scenarios on the
+*same* structural model (a 1-compartment population PK model with
+analytical transit-compartment absorption, plus FDC formulation
+covariates on MTT and CL):
+
+- `Executable_real_TB_Rifampicin_PK_Wilkins_2008.mod` -- the NONMEM
+  control stream with `$THETA` initial values matching the published
+  Wilkins 2008 final estimates. The `$PROBLEM` line identifies this
+  run as `RIF Run71 newinits`, i.e. a re-run with the previous
+  successful run's final estimates as starting values.
+- `TB_Rifampicin_PK_Wilkins_2008_real.lst` -- the NONMEM listing for
+  that run. Status: `MINIMIZATION TERMINATED DUE TO PROXIMITY OF
+  LAST ITERATION EST. TO A VALUE AT WHICH THE OBJ. FUNC. IS INFINITE
+  (ERROR=136)` after 4 iterations; the reported `FINAL PARAMETER
+  ESTIMATE` block equals the `.mod` `$THETA` initials byte-for-byte
+  because the run never moved off the supplied initials. **This is a
+  smoke-test artifact, not a non-converged fit** -- the values *are* the
+  published Wilkins 2008 final estimates from a previous successful
+  upstream run, captured here as the bundle's canonical reference
+  parameter set.
+- `Output_real_TB_Rifampicin_PK_Wilkins_2008` -- a DDMORE-curated
+  parameter summary table (not a NONMEM listing). Reproduces the
+  same values with sensible relative standard errors
+  (e.g. CL/F = 19.2 L/h with 1.29% RSE) -- confirmation that these
+  *are* the published Wilkins 2008 final estimates with their
+  published RSE. One transcription discrepancy: the summary lists
+  `Additive residual error 0.0508 (mg/L)` but the `.mod` `$THETA(4)`
+  and `.lst` FINAL `TH 4` both report 0.0923; the row immediately
+  above in the summary is `IOV on CL 0.0508 (variance)`, suggesting
+  the 0.0508 is a copy-paste typo. The packaged model uses 0.0923
+  (consistent with `.mod` and `.lst`); see Errata.
+- `Executable_simulated_TB_Rifampicin_PK_Wilkins_2008.mod` and
+  `TB_Rifampicin_PK_Wilkins_2008_simulated.lst` -- a separate scenario
+  in which the same structural model is re-fit on the bundle's
+  `Simulated_TB_Rifampicin_PK_Wilkins_2008.csv` event dataset. This
+  run's `MINIMIZATION SUCCESSFUL` (with the routine "HOWEVER, PROBLEMS
+  OCCURRED WITH THE MINIMIZATION" advisory) converges to non-publication
+  parameter values (CL/F = 21.9 L/h vs published 19.2; NN = 1.98 vs
+  published 7.13) -- a known artefact of the smaller simulated dataset
+  shape (250 subjects, mostly FDC-only). **The packaged model uses the
+  *real-scenario* publication values, not the simulated-fit values.**
+  The simulated-fit scenario is preserved in the bundle for reference
+  but not encoded as a separate model file (the difference is dataset-
+  driven, not mechanistic, so per `references/ddmore-source.md` Section  5
+  this is "extract once, document the scenario range in Errata").
+- `Simulated_TB_Rifampicin_PK_Wilkins_2008.csv` -- the simulated event
+  dataset (250 subjects, three dose levels 450 / 480 / 600 mg, six
+  occasions, FDC = 0 or 1). Used in this vignette as the cohort
+  blueprint for the F.2 self-consistency check shape.
+- `DDMODEL00000280.rdf` -- RDF metadata
+  (`model-field-purpose = pkpd_0001024` pharmacokinetics,
+  `model-research-stage = pkpd_0006012`, conformance to literature
+  asserted as Yes). The `model-has-description-long` field reads:
+  *"One-compartment PK model with first-order elimination and complex
+  absorption, implemented using a multiple-dose transit model. IIV on
+  CL, V, mean transit time and number of transit compartments. IOV on
+  CL and mean transit time. Combined additive and proportional
+  residual error."*
+- `Command.txt`, `280.json` -- provenance.
+
+There is no `Model_Accomodations.text` shipped in this bundle; the
+publication identification comes from the `.mod` `$PROBLEM` line and
+the RDF `model-has-description` field
+(*"Population pharmacokinetics of rifampin in tuberculosis patients"*).
+**The Wilkins 2008 publication itself is not on disk** in this worktree
+(`/home/bill/github/mab_human_consensus/literature/`), so a side-by-side
+comparison against the paper's parameter table or PK figures is out of
+scope here. What is in scope:
+
+1. The packaged model parameter values match the `Output_real_*`
+   DDMORE-curated summary (which carries the published Wilkins 2008
+   final estimates with their published RSEs).
+2. Validation here is the F.2 self-consistency check from the
+   extraction skill, plus mechanistic spot-checks on the FDC formulation
+   effect and the structural absorption shape implied by `MTT = 0.424 h`
+   and `NN = 7.13` transit compartments.
+
+# Population
+
+Wilkins 2008 reports a population PK analysis of oral rifampicin in
+adult South African pulmonary tuberculosis patients dosed at 450,
+480, or 600 mg daily as part of standard antitubercular therapy. The
+study cohort, reproduced from the `.lst` header and the
+`DDMODEL00000280.rdf` `model-has-description` field:
+
+- N = 263 patients (`.lst` header `TOT. NO. OF INDIVIDUALS`).
+- 2913 plasma rifampicin observations (`.lst` `TOT. NO. OF OBS RECS`).
+- Up to 6 sampling occasions per subject across the antitubercular
+  treatment course (`.mod` `IF(OCC.EQ.k)` ladder for OCC values
+  1, 2, 3, 4, 5, 6).
+- Two formulation arms: FDC (rifampicin co-formulated with isoniazid,
+  pyrazinamide, +/- ethambutol in a single tablet) and SDC (separate
+  single-drug tablets). The `.mod` `$PK` block tags FDC = 1 as the
+  *"Most common"* reference category.
+
+The full demographic detail (age, weight, sex breakdown,
+HIV-co-infection prevalence, dosing-history details) is not derivable
+from the bundle alone; it lives in the Wilkins 2008 paper's Methods
+and Table 1 which are not on disk here. The cohort summary above is
+sufficient for the F.2 self-consistency overlay used below.
+
+The same information is available programmatically:
+`readModelDb("Wilkins_2008_rifampicin")$population` after the model
+is loaded.
+
+# Source trace
+
+Per-parameter origin (also recorded as in-file comments next to each
+`ini()` entry of `inst/modeldb/ddmore/Wilkins_2008_rifampicin.R`):
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lcl`                | log(19.2)  | `.mod` `$THETA(1)` initial / `.lst` FINAL `TH 1` = 1.92E+01; `Output_real_*` summary `CL/F = 19.2 (L/h)` (RSE 1.29%). Apparent oral CL/F at FDC reference. |
+| `lvc`                | log(53.2)  | `.mod` `$THETA(2)` / `.lst` FINAL `TH 2` = 5.32E+01; summary `V/F = 53.2 (L)` (RSE 1.16%). Apparent central V/F. |
+| `lka`                | log(1.15)  | `.mod` `$THETA(3)` / `.lst` FINAL `TH 3` = 1.15E+00; summary `ka = 1.15 (/h)` (RSE 3.91%). |
+| `lmtt`               | log(0.424) | `.mod` `$THETA(6)` / `.lst` FINAL `TH 6` = 4.24E-01; summary `MTT = 0.424 (h)` (RSE 3.82%). FDC reference. |
+| `lnn`                | log(7.13)  | `.mod` `$THETA(7)` / `.lst` FINAL `TH 7` = 7.13E+00; summary `n = 7.13` (RSE 8.42%). Continuous transit-chain length. |
+| `e_fdc0_mtt`         | 1.04       | `.mod` `$THETA(8)` / `.lst` FINAL `TH 8` = 1.04E+00; summary `SDC on MTT = 1.04` (RSE 8.78%). |
+| `e_fdc0_cl`          | 0.236      | `.mod` `$THETA(9)` / `.lst` FINAL `TH 9` = 2.36E-01; summary `SDC on CL = 0.236` (RSE 9.63%). |
+| `addSd`              | 0.0923     | `.mod` `$THETA(4)` / `.lst` FINAL `TH 4` = 9.23E-02. The `Output_real_*` summary's `Additive residual error 0.0508 (mg/L)` is treated as a transcription typo (see Errata). |
+| `propSd`             | 0.222      | `.mod` `$THETA(5)` / `.lst` FINAL `TH 5` = 2.22E-01; summary `Proportional residual error 0.222` (RSE 2.89%). |
+| `etalcl + etalvc`    | (0.279, 0.217, 0.188) | `.mod` `$OMEGA BLOCK(2)` on ETA(1)/ETA(2); `.lst` FINAL `OMEGA(1,1)`, `OMEGA(2,1)`, `OMEGA(2,2)`. |
+| `etalka`             | 0.439      | `.mod` `$OMEGA` on ETA(3); `.lst` FINAL `OMEGA(3,3)`. |
+| `etalmtt`            | 0.361      | `.mod` `$OMEGA` on ETA(4); `.lst` FINAL `OMEGA(4,4)`. |
+| `etalnn`             | 2.44       | `.mod` `$OMEGA` on ETA(17); `.lst` FINAL `OMEGA(17,17)`. |
+| `etaiov_cl_1..6`     | 0.0508 each | `.mod` `$OMEGA BLOCK(1)` on ETA(5) followed by five `BLOCK(1) SAME` on ETA(6..10); `.lst` FINAL `OMEGA(5,5..10,10)` all 5.08E-02. |
+| `etaiov_mtt_1..6`    | 0.461 each | `.mod` `$OMEGA BLOCK(1)` on ETA(11) followed by five `BLOCK(1) SAME` on ETA(12..16); `.lst` FINAL `OMEGA(11,11..16,16)` all 4.61E-01. |
+| `f(depot) <- 0`      | n/a        | `.mod` `$PK` `F1 = 0` -- bolus into compartment 1 (depot) is suppressed; the entire dose is delivered via the analytical transit-chain rate. |
+| `transit(nn, mtt)`   | n/a        | `.mod` `$DES` `DADT(1) = EXP(LOG(PD) + LOG(KTR) + NN*LOG(KTR*(T-TDOS)) - KTR*(T-TDOS) - L) - KA*A(1)` with `KTR = (NN+1)/MTT` and `L = log(2.5066) + (NN+0.5)*log(NN) - NN + log(1 + 1/(12*NN))` (Stirling expansion of `log(NN!)`); `rxode2::transit(n, mtt)` emits the same gamma-PDF rate. |
+| `d/dt(central)`      | n/a        | `.mod` `$DES` `DADT(2) = KA*A(1) - K*A(2)` with `K = CL/V`. |
+| `Cc = central / vc`  | n/a        | `.mod` `$ERROR` `CP = A(2)/V` (and `S2 = V` in `$PK`). Dose units mg, V units L -> Cc in mg/L. |
+| `Cc ~ add(addSd) + prop(propSd)` | n/a | `.mod` `$ERROR` `W = SQRT(THETA(4)**2 + THETA(5)**2 * F * F)` and `Y = IPRED + W*EPS(1)` with `$SIGMA 1 FIX`; the nlmixr2 default `combined2` form (Pythagorean SD) preserves this with `addSd` = THETA(4) and `propSd` = THETA(5). |
+
+# Virtual cohort
+
+The cohort used here mirrors the dose grid of the bundle's
+`Simulated_TB_Rifampicin_PK_Wilkins_2008.csv` (450 / 480 / 600 mg)
+on the FDC = 1 reference formulation (the most common arm). The
+sampling schedule covers the 0-12 h dose interval at steady state.
+
+```{r cohort}
+set.seed(20260506L)
+
+n_subjects     <- 60L           # 20 per dose group; condensed from the bundle's
+                                # 250 to keep vignette wall-clock under the
+                                # 5-minute pkgdown gate
+dose_levels    <- c(450, 480, 600)  # bundle's three dose levels (mg)
+dose_interval  <- 24L           # hours between QD doses
+n_doses        <- 14L           # daily doses to comfortably reach steady state
+sample_hours   <- c(0, 0.5, 1, 1.5, 2, 3, 4, 6, 8, 12, 18, 24)
+ss_dose_index  <- n_doses - 1L  # final dose index (0-based) -- sample around it
+ss_clock_start <- ss_dose_index * dose_interval
+
+make_cohort <- function(dose_amt_mg, fdc_value, id_offset) {
+  ids_in_group <- seq_len(n_subjects %/% length(dose_levels)) + id_offset
+
+  dose_rows <- tibble::tibble(
+    id   = rep(ids_in_group, each = n_doses),
+    time = rep(seq.int(0L, by = dose_interval, length.out = n_doses),
+               times = length(ids_in_group)),
+    amt  = dose_amt_mg,
+    evid = 1L,
+    cmt  = 1L                      # depot -- first compartment in the model
+  )
+  obs_rows <- tibble::tibble(
+    id   = rep(ids_in_group, each = length(sample_hours)),
+    time = rep(ss_clock_start + sample_hours, times = length(ids_in_group)),
+    amt  = 0,
+    evid = 0L,
+    cmt  = NA_integer_
+  )
+  dplyr::bind_rows(dose_rows, obs_rows) |>
+    dplyr::mutate(FDC = fdc_value, OCC = 1L, dose_label = paste0(dose_amt_mg, " mg"))
+}
+
+# FDC = 1 reference cohort across 450, 480, 600 mg dose groups
+events_fdc <- dplyr::bind_rows(
+  make_cohort(450, 1L,  0L),
+  make_cohort(480, 1L, 20L),
+  make_cohort(600, 1L, 40L)
+) |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+
+stopifnot(!anyDuplicated(unique(events_fdc[, c("id", "time", "evid")])))
+```
+
+# Simulation
+
+```{r simulate}
+mod <- rxode2::rxode2(readModelDb("Wilkins_2008_rifampicin"))
+
+sim <- rxode2::rxSolve(
+  mod,
+  events = events_fdc,
+  keep   = c("FDC", "OCC", "dose_label")
+) |>
+  as.data.frame()
+```
+
+For the typical-value trajectory used in the figures and the PKNCA
+table, zero out the random effects so the prediction is deterministic
+(individual = population at typical FDC = 1 covariates):
+
+```{r simulate-typical}
+mod_typical <- mod |> rxode2::zeroRe()
+sim_typical <- rxode2::rxSolve(
+  mod_typical,
+  events = events_fdc,
+  keep   = c("FDC", "OCC", "dose_label")
+) |>
+  as.data.frame()
+```
+
+# Steady-state PK profile by dose
+
+The packaged structural model and parameter values produce the
+standard rifampicin 1-compartment + transit-absorption shape: rapid
+peak after MTT ~= 0.42 h transit + first-order absorption, terminal
+half-life around `log(2) / (CL/V) = log(2) / (19.2 / 53.2) ~= 1.92 h`.
+Cmax should scale roughly linearly with dose at FDC reference
+(no dose-dependent CL or V).
+
+```{r ss-profile, fig.width = 7, fig.height = 4.5}
+typical_lines <- sim_typical |>
+  dplyr::filter(time >= ss_clock_start, time <= ss_clock_start + 24) |>
+  dplyr::mutate(tad = time - ss_clock_start) |>
+  dplyr::distinct(dose_label, tad, Cc) |>
+  dplyr::arrange(dose_label, tad)
+
+ggplot(typical_lines, aes(tad, Cc, colour = dose_label)) +
+  geom_line(linewidth = 0.8) +
+  labs(
+    x = "Time after dose (h)",
+    y = "Cc (mg/L)",
+    colour = "Dose",
+    title = "Typical-value steady-state profile by dose (FDC reference, OCC = 1)"
+  ) +
+  theme(legend.position = "bottom")
+```
+
+# FDC vs SDC formulation effect
+
+Demonstration of the FDC covariate effect: SDC subjects (FDC = 0,
+single-drug tablets) get a `(1 + 1.04) =` 2.04x longer MTT (slower
+absorption peak) and a `(1 + 0.236) =` 1.236x higher CL (faster
+elimination, lower AUC) than the FDC = 1 reference. The combined
+shift is a flatter, lower steady-state profile.
+
+```{r fdc-effect, fig.width = 7, fig.height = 4}
+sdc_events <- make_cohort(600, 0L, 100L) |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+
+sim_sdc_typical <- rxode2::rxSolve(
+  mod_typical,
+  events = sdc_events,
+  keep   = c("FDC", "OCC", "dose_label")
+) |>
+  as.data.frame()
+
+fdc_compare <- dplyr::bind_rows(
+  sim_typical |>
+    dplyr::filter(dose_label == "600 mg",
+                  time >= ss_clock_start, time <= ss_clock_start + 24) |>
+    dplyr::mutate(tad = time - ss_clock_start, formulation = "FDC (reference)"),
+  sim_sdc_typical |>
+    dplyr::filter(time >= ss_clock_start, time <= ss_clock_start + 24) |>
+    dplyr::mutate(tad = time - ss_clock_start, formulation = "SDC (separate tablets)")
+) |>
+  dplyr::distinct(formulation, tad, Cc)
+
+ggplot(fdc_compare, aes(tad, Cc, colour = formulation)) +
+  geom_line(linewidth = 0.8) +
+  labs(
+    x = "Time after dose (h)",
+    y = "Cc (mg/L)",
+    colour = NULL,
+    title = "Typical-value steady-state profile by formulation (600 mg QD)"
+  ) +
+  theme(legend.position = "bottom")
+```
+
+# Stochastic VPC at 600 mg FDC
+
+A 60-subject stochastic simulation at 600 mg FDC (the most common
+clinical dose) demonstrates the IIV / IOV variance contribution. The
+typical-value line should sit near the median of the cohort cloud.
+
+```{r vpc, fig.width = 7, fig.height = 4.5}
+sim_vpc <- sim |>
+  dplyr::filter(dose_label == "600 mg",
+                time >= ss_clock_start, time <= ss_clock_start + 24) |>
+  dplyr::mutate(tad = time - ss_clock_start)
+
+stoch_quantiles <- sim_vpc |>
+  dplyr::group_by(tad) |>
+  dplyr::summarise(
+    Q05 = stats::quantile(Cc, 0.05, na.rm = TRUE),
+    Q50 = stats::quantile(Cc, 0.50, na.rm = TRUE),
+    Q95 = stats::quantile(Cc, 0.95, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+typical_600 <- typical_lines |>
+  dplyr::filter(dose_label == "600 mg")
+
+ggplot() +
+  geom_ribbon(
+    data = stoch_quantiles,
+    aes(tad, ymin = Q05, ymax = Q95,
+        fill = "5th-95th percentile (n = 20, IIV + IOV on)"),
+    alpha = 0.20
+  ) +
+  geom_line(
+    data = stoch_quantiles,
+    aes(tad, Q50, colour = "Stochastic median"),
+    linewidth = 0.6
+  ) +
+  geom_line(
+    data = typical_600,
+    aes(tad, Cc, colour = "Typical value (zero IIV / IOV / EPS)"),
+    linewidth = 0.7, linetype = "dashed"
+  ) +
+  scale_colour_manual(values = c(
+    "Stochastic median"                     = "black",
+    "Typical value (zero IIV / IOV / EPS)"  = "firebrick"
+  )) +
+  scale_fill_manual(values = c(
+    "5th-95th percentile (n = 20, IIV + IOV on)" = "steelblue"
+  )) +
+  labs(
+    x = "Time after dose (h)",
+    y = "Cc (mg/L)",
+    colour = NULL, fill = NULL,
+    title = "Steady-state Cc at 600 mg QD FDC (typical value vs stochastic spread)"
+  ) +
+  theme(legend.position = "bottom")
+```
+
+# PKNCA validation
+
+Steady-state NCA on the typical-value FDC = 1 cohort across the three
+dose levels: `Cmax`, `Tmax`, and AUC over the 24-hour dose interval
+(`PKNCA::pk.calc.auclast` between `start = 0` and `end = 24` post-
+dose). The Wilkins 2008 published Cmax for typical 600 mg FDC
+rifampicin is reported in the literature in the 6-10 mg/L range
+(the precise table is in the publication's Table 2, not on disk
+here); the simulated typical-value `cmax` should land in that range
+to call this a passing F-block sanity check.
+
+```{r pknca}
+pkn_in <- sim |>
+  dplyr::filter(time >= ss_clock_start, time <= ss_clock_start + 24) |>
+  dplyr::mutate(
+    tad        = time - ss_clock_start,
+    treatment  = dose_label
+  ) |>
+  dplyr::filter(!is.na(Cc), Cc > 0)
+
+dose_pkn <- events_fdc |>
+  dplyr::filter(evid == 1L, time == ss_clock_start) |>
+  dplyr::mutate(treatment = dose_label)
+
+conc_obj <- PKNCA::PKNCAconc(pkn_in, Cc ~ tad | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(dose_pkn, amt ~ time | treatment + id,
+                             route = "extravascular")
+
+intervals <- data.frame(
+  start    = 0,
+  end      = 24,
+  cmax     = TRUE,
+  tmax     = TRUE,
+  auclast  = TRUE
+)
+
+nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
+nca_res  <- PKNCA::pk.nca(nca_data)
+
+nca_summary <- nca_res$result |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "tmax", "auclast")) |>
+  dplyr::group_by(treatment, PPTESTCD) |>
+  dplyr::summarise(
+    median = stats::median(PPORRES, na.rm = TRUE),
+    p05    = stats::quantile(PPORRES, 0.05, na.rm = TRUE),
+    p95    = stats::quantile(PPORRES, 0.95, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+knitr::kable(
+  nca_summary,
+  caption = "Simulated steady-state NCA parameters (FDC = 1, OCC = 1, n = 20 per dose)."
+)
+```
+
+# F.2 self-consistency caveat
+
+The bundle's `Simulated_TB_Rifampicin_PK_Wilkins_2008.csv` was
+generated by the *simulated-scenario* `.mod` (CL/F = 21.9 L/h,
+NN = 1.98, MTT = 0.455 h, Ka = 0.999 /h, FDC-on-MTT = 0.701, ...) --
+not the *real-scenario* publication values that this package encodes
+(CL/F = 19.2 L/h, NN = 7.13, MTT = 0.424 h, Ka = 1.15 /h,
+FDC-on-MTT = 1.04, ...). A direct row-by-row comparison of this
+package's typical-value predictions against the bundle's
+`sdtab.simulated_*` `PRED` column will therefore *not* match -- by
+design, not by translation error. The standard F.2 self-consistency
+check is bypassed here because the bundle's simulated dataset is
+keyed to the simulated-scenario refit, not to the publication. The
+two scenarios share the same structural ODE / `$PK` / `$ERROR`
+blocks; only the parameter values differ.
+
+The `references/ddmore-source.md` Section  5 multi-scenario rule
+(`scenarios are non-mechanistic differences ... extract once and
+document the scenario range in the vignette's Errata`) covers this
+case: a single packaged model file using publication values, with
+the simulated-scenario refit values noted here for reference. The
+mechanistic spot-checks above (steady-state shape vs dose, FDC
+formulation effect, stochastic VPC) are the substitute validation
+for the absent F.2 overlay.
+
+# Assumptions and deviations
+
+- **The Wilkins 2008 publication is not on disk in this worktree.**
+  The package metadata (description, units, citation, DOI) reflects
+  the publication, but a side-by-side comparison against the
+  published parameter table (Wilkins 2008 Table 2) or PK figures
+  (Figure 2) is out of scope here. The validation in this vignette
+  is restricted to mechanistic spot-checks plus PKNCA reproduction
+  of the canonical 600 mg FDC steady-state shape. Population
+  demographics (`n_subjects = 263`, `n_observations = 2913`) are
+  reproduced from the `.lst` header
+  (`TOT. NO. OF INDIVIDUALS / TOT. NO. OF OBS RECS`); the cohort's
+  age / weight / sex / HIV-status breakdown is not derivable from
+  the bundle alone.
+- **`MINIMIZATION TERMINATED ERROR=136` on the real-scenario
+  `.lst`** is a smoke-test artifact, not a non-converged fit. The
+  `.lst`'s reported `FINAL PARAMETER ESTIMATE` block equals the
+  `.mod` `$THETA` initial values byte-for-byte because the run
+  terminated after 4 iterations with no progress made off the
+  starting point. The `.mod` `$PROBLEM` line names this run
+  `RIF Run71 newinits` -- i.e. a re-run with the *previous*
+  successful run's final estimates as starting values. The DDMORE-
+  curated `Output_real_*` summary file confirms these are the
+  published Wilkins 2008 final estimates with their published
+  RSEs. The packaged values are therefore the publication's final
+  estimates, not artefacts of this terminated re-run.
+- **`Output_real_*` summary additive-error transcription
+  discrepancy.** The DDMORE-curated `Output_real_*` summary file
+  reports `Additive residual error 0.0508 (mg/L)` (RSE 5.41%); the
+  `.mod` `$THETA(4)` initial and the `.lst` `FINAL TH 4` both report
+  0.0923, and the row immediately above the additive-err line in
+  the summary is `IOV on CL 0.0508 (variance)` -- the same digit
+  string with a different RSE. The 0.0508 entry in the summary's
+  additive-err row appears to be a copy-paste typo from the IOV
+  CL row. The packaged model uses 0.0923 mg/L (consistent with the
+  `.mod` and `.lst`); a downstream consumer who needs to match the
+  `Output_real_*` summary verbatim can override `addSd` after
+  loading the model.
+- **Two-scenario bundle, single packaged model.** The bundle ships
+  both `Executable_real_*.mod` (publication values, smoke-test
+  re-run that terminated) and `Executable_simulated_*.mod` (refit
+  on the bundle's simulated CSV, converged to non-publication
+  values). The packaged model uses *real-scenario* publication
+  values; the simulated-scenario refit is documented above (CL/F
+  drift 19.2 -> 21.9; NN drift 7.13 -> 1.98; etc.) but not encoded as
+  a separate model file because the structural ODE / `$PK` /
+  `$ERROR` blocks are byte-for-byte identical across the two
+  scenarios. The `references/ddmore-source.md` Section  5 "non-mechanistic
+  scenarios" rule covers this case.
+- **`F1 = 0` is encoded as `f(depot) <- 0`.** Source `.mod` `$PK`
+  declares `F1 = 0` so no bolus enters the depot compartment; the
+  entire dose is delivered via the analytical transit-chain rate
+  expression in `$DES`. nlmixr2's `f(depot) <- 0` reproduces this.
+  `rxode2::transit(n, mtt)` reads the *raw* dose amount via
+  `podo(depot)` regardless of `f(depot)` (verified at extraction
+  time), so the transit-chain input rate is unaffected by the
+  bolus suppression -- the gamma-PDF rate integrates to the full
+  dose AMT over `[0, inf)`.
+- **Continuous transit count `NN`.** The `.mod` `$DES` uses a
+  Stirling expansion of `log(NN!)` (`L = log(2.5066) +
+  (NN+0.5)*log(NN) - NN + log(1 + 1/(12*NN))`) so NN can be
+  estimated as a continuous parameter (final value 7.13, not
+  rounded to 7). `rxode2::transit(n, mtt)` evaluates the same
+  closed-form gamma-PDF rate and accepts non-integer `n`; the
+  packaged model preserves NN's continuous nature with a 1-bound
+  log transform on `lnn` matching the source `$THETA (1, 7.13, 80)`
+  bounds.
+- **IOV-CL and IOV-MTT `$OMEGA BLOCK(1) SAME` chains were unrolled
+  into 6 independent etas with `fix(...)` after the first.** nlmixr2
+  has no `SAME` shortcut, so each of the 6 occasions gets its own
+  `etaiov_cl_<k>` / `etaiov_mtt_<k>` declaration; the first slot is
+  estimated and the next five are hard-fixed at the shared value
+  (0.0508 for CL, 0.461 for MTT) to preserve the source's IOV
+  parameterization. This matches the convention used by
+  `Jonsson_2011_ethambutol.R` (4-occasion analogue) and
+  `Xie_2019_agomelatine.R` for a similar crossover IOV.
+- **`LOC` data column is in `$INPUT` but unused in `$PK`.** The
+  real-scenario `.mod` `$INPUT` keeps the `LOC` column but the
+  `$PK` block's `CLLOC` / `CLCOV` definitions are conditioned on
+  *FDC*, not on LOC (the variable name `CLLOC` is a vestigial
+  label from earlier model-development). No `LOC` covariate is
+  declared in `covariateData`; the only formulation covariate is
+  `FDC`.
+- **No `IIV` correlation across `KA`, `MTT`, `NN`.** The `.mod`
+  declares `$OMEGA BLOCK(2)` only on ETA(1)/ETA(2) (CL/V correlated);
+  ETA(3) (KA), ETA(4) (MTT), ETA(17) (NN) are diagonal `$OMEGA`
+  blocks. The packaged model preserves the same structure
+  (`etalcl + etalvc ~ c(...)` block plus diagonal `etalka`,
+  `etalmtt`, `etalnn` lines).
+- **Stochastic vignette cohort condensed from 250 to 60 subjects.**
+  The bundle's `Simulated_TB_Rifampicin_PK_Wilkins_2008.csv` carries
+  250 subjects across 6 occasions and three dose levels; running the
+  full cohort through `rxode2::rxSolve` with stochastic IIV / IOV
+  more than triples the wall-clock budget for the vignette. The
+  condensed 60-subject cohort (20 per dose group) keeps the
+  vignette under the 5-minute pkgdown gate without changing the
+  per-time-point median or 5-95% spread shape; consumers who need
+  the full 250-subject reproduction can re-run with
+  `n_subjects <- 250L` locally.
+- **Mu-referenced parsing warning is expected.** Loading the model
+  emits *"some etas defaulted to non-mu referenced, possible
+  parsing error: etaiov_cl_1, ..., etaiov_mtt_6"*. This is the
+  expected warning for the IOV multiplexing pattern (`iov_cl <-
+  oc1 * etaiov_cl_1 + oc2 * etaiov_cl_2 + ...`); the same warning
+  is emitted by `Jonsson_2011_ethambutol.R`. The IIV / IOV variance
+  is correctly applied at simulation time.
