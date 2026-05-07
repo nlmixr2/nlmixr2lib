@@ -2,6 +2,7 @@
 
 # development version
 
+* Add BAST 2017 PTTE four-event teaching library [DDMODEL00000243] — 200 simulated patients, no linked publication; four parametric time-to-event hazard models packaged separately as `NA_NA_tte_gompertz` (Event 1, exponential / NEUT + AGE), `NA_NA_tte_gompertz_ev2` (Event 2, Gompertz / first-week AUC), `NA_NA_tte_lognormal` (Competing Event 1, log-normal / AGE), and `NA_NA_tte_loglogistic` (Competing Event 2, log-logistic / no covariate).
 * Add Cook 2016 paracetamol ([doi:10.1007/s40262-016-0408-1](https://doi.org/10.1007/s40262-016-0408-1)) [DDMODEL00000271] — term and preterm newborns receiving IV paracetamol (parent + glucuronide + sulphate plasma compartments with cumulative urinary excretion).
 * Add Wang 2013 morphine ([doi:10.1007/s40261-013-0097-6](https://doi.org/10.1007/s40261-013-0097-6)) [DDMODEL00000269] — neonates / infants / children / adolescents / adults across the entire paediatric age range (bodyweight-dependent allometric exponent on morphine clearance).
 * Add Stevens 2012 remoxipride ([doi:10.1007/s10928-012-9262-4](https://doi.org/10.1007/s10928-012-9262-4)) [DDMODEL00000268] — preclinical Wistar rats (mechanism-based PK/PD pool model for the prolactin response with brain-ECF-driven Emax stimulation and positive feedback on synthesis).
