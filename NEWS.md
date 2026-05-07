@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Stevens 2012 remoxipride ([doi:10.1007/s10928-012-9262-4](https://doi.org/10.1007/s10928-012-9262-4)) [DDMODEL00000268] — preclinical Wistar rats (mechanism-based PK/PD pool model for the prolactin response with brain-ECF-driven Emax stimulation and positive feedback on synthesis).
 * Add Allegaert 2015 paracetamol ([doi:10.1186/s12871-015-0144-3](https://doi.org/10.1186/s12871-015-0144-3)) [DDMODEL00000267] — young women across pregnancy / postpartum / non-pregnant-volunteer reproductive states with and without oral contraceptive use (8-compartment IV propacetamol PK with glucuronide and sulphate metabolites and cumulative-urine outputs).
 * Add miridesap (CPHPC) [DDMODEL00000262] — healthy volunteers (study CPH113776) and patients with systemic amyloidosis (study CPH114527); two-compartment CPHPC PK with CRCL covariate plus two-compartment SAP turnover and CPHPC-SAP binding/internalization. No linked publication identified.
 * Add Svensson 2018 rifampicin ([doi:10.1002/cpt.778](https://doi.org/10.1002/cpt.778)) [DDMODEL00000244] — adult pulmonary tuberculosis patients on high-dose rifampicin (PanACEA HIGHRIF1 dose-escalation trial; auto-induction enzyme turnover with Michaelis-Menten clearance and dose-dependent bioavailability).
