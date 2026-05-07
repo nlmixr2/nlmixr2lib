@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Zurlinden 2016 paracetamol ([doi:10.1007/s13318-015-0253-x](https://doi.org/10.1007/s13318-015-0253-x)) [DDMODEL00000237] — healthy adults receiving a single 1000 mg oral dose (whole-body PBPK with Michaelis-Menten liver metabolism, cofactor depletion / resynthesis, and renal elimination of APAP and its conjugates AG and AS; first MCSim-source extraction in `inst/modeldb/ddmore/`).
 * Add Zierhut 2008 osteoprotegerin ([doi:10.1007/s10928-008-9093-5](https://doi.org/10.1007/s10928-008-9093-5)) [DDMODEL00000233] — healthy postmenopausal women receiving single IV or SC Fc-osteoprotegerin (two-peripheral-compartment PK with parallel linear and Michaelis-Menten elimination, logistic-style SC bioavailability F = FSC / (1 + FSC), and an indirect-response uNTX biomarker turnover model with route-conditional PK observation residual SD).
 * Add Jonsson 2005 disufenton ([doi:10.2165/00003088-200544080-00007](https://doi.org/10.2165/00003088-200544080-00007)) [DDMODEL00000245] — adults with acute ischaemic or haemorrhagic stroke receiving 72-h IV NXY-059 infusion across CRCL 20-143 mL/min.
 * Add Wilkins 2008 rifampicin ([doi:10.1128/AAC.00461-07](https://doi.org/10.1128/AAC.00461-07)) [DDMODEL00000280] — adult South African pulmonary tuberculosis patients.
