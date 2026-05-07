@@ -307,9 +307,9 @@ data_obj <- PKNCAdata(
   )
 )
 nca_results <- pk.nca(data_obj)
-#>  ■■■■■■■                           22% |  ETA:  8s
-#>  ■■■■■■■■■■■■■■■■■                 54% |  ETA:  4s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■       86% |  ETA:  1s
+#>  ■■■■■■■                           19% |  ETA:  8s
+#>  ■■■■■■■■■■■■■■■■■■                56% |  ETA:  4s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     92% |  ETA:  1s
 nca_summary <- summary(nca_results)
 knitr::kable(
   nca_summary,
