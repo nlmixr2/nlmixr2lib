@@ -74,6 +74,7 @@
     # metabolite of tamoxifen — Ter Heine 2014.
     "endx",
 <<<<<<< HEAD
+<<<<<<< HEAD
     # Lidocaine sequential metabolites (DDMODEL00000281, NA_NA_lidocaine):
     # MEGX = monoethylglycinexylidide (LID -> MEGX via CYP1A2/3A4),
     # GX   = glycinexylidide (MEGX -> GX), and 2,6-XYL = 2,6-xylidide
@@ -86,6 +87,12 @@
     # glucuronide metabolites of morphine — Knibbe 2009 DDMODEL00000248.
     "m3g", "m6g"
 >>>>>>> origin/claude/040-knibbe_2009_morphine
+=======
+    # Phase-II conjugates: glucuronide (gluc) and sulphate (sulf).
+    # Used for paracetamol-glucuronide / paracetamol-sulphate plasma
+    # metabolite compartments in Allegaert 2015 (DDMODEL00000267).
+    "gluc", "sulf"
+>>>>>>> origin/claude/047-allegaert_2015_paracetamol
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` denotes the time-varying decay arm.
