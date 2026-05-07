@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Terranova 2018 paclitaxel ([doi:10.1016/j.jtbi.2018.04.012](https://doi.org/10.1016/j.jtbi.2018.04.012)) [DDMODEL00000274] — preclinical xenograft mice (Dynamic Energy Budget tumor-growth-inhibition model coupling paclitaxel PK to tumor mass and host body weight / cachexia).
 * Add Bajaj 2017 nivolumab ([doi:10.1002/psp4.12143](https://doi.org/10.1002/psp4.12143)) [DDMODEL00000284] — adults with advanced solid tumors (DDMORE-source replicate of the paper-source Bajaj 2017 nivolumab popPK; time kept in hours to mirror the bundle).
 * Add Birgersson 2019 artesunate ([doi:10.12688/wellcomeopenres.14849.2](https://doi.org/10.12688/wellcomeopenres.14849.2)) [DDMODEL00000297] — pregnant and non-pregnant women with uncomplicated Plasmodium falciparum malaria in Burkina Faso (joint parent-metabolite popPK of artesunate and dihydroartemisinin with 3-compartment transit absorption and pregnancy / ALT / log-parasitaemia covariates).
 * Add Dao 2020 sultiame ([doi:10.1002/prp2.558](https://doi.org/10.1002/prp2.558)) [DDMODEL00000298] — healthy adult volunteers (4-compartment popPK with saturable plasma <-> erythrocyte binding plus cumulative urinary excretion).
