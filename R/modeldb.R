@@ -56,6 +56,7 @@ buildModelDb <- function() {
   save(modeldb, file = savefile, compress = "bzip2", version = 2, ascii = FALSE)
   qs2::qs_save(modeldb, file = file.path(packageDirectory, "inst/modeldb.qs2"))
   .modeldbCacheWrite(cachePath, list(globalSig = sig, entries = result$entries))
+  .writePkgdownNavbar(modeldb, packageDirectory)
   message("Done saving the modeldb to ", savefile)
 
   colDesc <-
@@ -330,4 +331,89 @@ addFileToModelDb <- function(dir, file, modeldb) {
     error = reportFailure
   )
   invisible(NULL)
+}
+
+# Parse a model filename like "Bajaj_2017_nivolumab" into a friendlier
+# label "Nivolumab (Bajaj 2017)". Filenames whose first two underscore-
+# separated tokens are not "<Author>_<4-digit year>" fall back to the
+# bare name with underscores replaced by spaces. The "NA_NA_<drug>"
+# convention used by some ddmore models drops the parenthetical.
+.parseModelLabel <- function(filename) {
+  base <- tools::file_path_sans_ext(basename(filename))
+  parts <- strsplit(base, "_", fixed = TRUE)[[1]]
+  if (length(parts) >= 3 &&
+      grepl("^[0-9]{4}$", parts[2]) &&
+      parts[1] != "NA" && parts[2] != "NA") {
+    drug <- paste(parts[-(1:2)], collapse = " ")
+    drug <- paste0(toupper(substr(drug, 1, 1)),
+                   substr(drug, 2, nchar(drug)))
+    return(sprintf("%s (%s %s)", drug, parts[1], parts[2]))
+  }
+  if (length(parts) >= 3 && parts[1] == "NA" && parts[2] == "NA") {
+    return(paste(parts[-(1:2)], collapse = " "))
+  }
+  gsub("_", " ", base, fixed = TRUE)
+}
+
+# Mutate the package's `_pkgdown.yml` to add navbar dropdowns for the
+# specificDrugs/ and ddmore/ model directories plus a top-level
+# Covariates link. Owns only the `navbar.structure.left` ordering and
+# the `navbar.components.{specific_drugs,ddmore,covariates}` keys; any
+# other keys the maintainer has added to the file are preserved.
+.writePkgdownNavbar <- function(modeldb, packageDirectory) {
+  if (!requireNamespace("yaml", quietly = TRUE)) {
+    message("yaml package not installed; skipping _pkgdown.yml navbar refresh.")
+    return(invisible())
+  }
+  ymlPath <- file.path(packageDirectory, "_pkgdown.yml")
+  if (!file.exists(ymlPath)) return(invisible())
+
+  cfg <- yaml::read_yaml(ymlPath)
+  if (!is.list(cfg)) cfg <- list()
+
+  spec <- modeldb[grepl("^specificDrugs/", modeldb$filename) &
+                    !is.na(modeldb$vignette), , drop = FALSE]
+  ddmo <- modeldb[grepl("^ddmore/", modeldb$filename) &
+                    !is.na(modeldb$vignette), , drop = FALSE]
+
+  buildMenu <- function(rows) {
+    if (nrow(rows) == 0) return(list())
+    labels <- vapply(rows$filename, .parseModelLabel, character(1))
+    ord <- order(labels)
+    rows <- rows[ord, , drop = FALSE]
+    labels <- labels[ord]
+    lapply(seq_len(nrow(rows)), function(i) {
+      list(
+        text = labels[[i]],
+        href = sprintf("articles/%s.html", rows$vignette[[i]])
+      )
+    })
+  }
+
+  cfg$navbar            <- cfg$navbar            %||% list()
+  cfg$navbar$structure  <- cfg$navbar$structure  %||% list()
+  cfg$navbar$components <- cfg$navbar$components %||% list()
+
+  cfg$navbar$structure$left <- c(
+    "intro", "reference", "articles",
+    "specific_drugs", "ddmore", "covariates", "news"
+  )
+  cfg$navbar$components$specific_drugs <- list(
+    text = "Specific drug models",
+    menu = buildMenu(spec)
+  )
+  cfg$navbar$components$ddmore <- list(
+    text = "DDMoRe models",
+    menu = buildMenu(ddmo)
+  )
+  cfg$navbar$components$covariates <- list(
+    text = "Covariates",
+    href = "articles/covariate-columns.html"
+  )
+
+  message("Refreshing navbar in ", ymlPath,
+          " (specificDrugs=", nrow(spec),
+          ", ddmore=", nrow(ddmo), ")")
+  yaml::write_yaml(cfg, ymlPath)
+  invisible()
 }

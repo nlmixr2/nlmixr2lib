@@ -35,7 +35,7 @@ estimated because no IV reference was available, so the typical-value model
 treats every disappearing parent molecule as a metabolite molecule). Allometric
 scaling on parent CL/F (exponent 0.75) and Vd/F (exponent 1.0) standardises to
 70 kg per the paper's Methods (Eq. 5). Capsule and oral-solution arms are
-distinguished by a binary `CAPSULE` covariate that switches the absorption
+distinguished by a binary `FORM_CAPSULE` covariate that switches the absorption
 rate constant between 0.96 h^-1 (oral solution) and 0.09 h^-1 (capsule), and
 that gates the relative-bioavailability term so the capsule arm carries a
 typical-value `Frel = 0.55` with IIV `etalfdepot` while the oral-solution arm
@@ -93,14 +93,14 @@ NMTRAN control stream
 | `etalvc` variance            | log(1 + 0.758^2) = 0.45404         | Table II |
 | cov(`etalcl`, `etalvc`)      | 0.69 * sqrt(var_cl * var_vc) = 0.28938 | Random Effects Model paragraph |
 | `etalcl_ohi` variance        | log(1 + 0.734^2) = 0.43098         | Table II final model: CV 73.4% |
-| `etalfdepot` variance        | log(1 + 0.611^2) = 0.31734         | Table II final model: CV 61.1%; gated on `CAPSULE` |
+| `etalfdepot` variance        | log(1 + 0.611^2) = 0.31734         | Table II final model: CV 61.1%; gated on `FORM_CAPSULE` |
 | `propSd`                     | 0.499 (sigma 49.9%)                | Table II final model |
 | `propSd_ohi`                 | 0.470 (sigma 47.0%)                | Table II final model |
 | `mw_ratio` (722.64 / 705.64) | 1.02410                            | .ctl lines 32 and 35 |
 | ODE: `d/dt(depot)`           | `-ka * depot`                      | .ctl `$MODEL` GUTT + K12 = KA |
 | ODE: `d/dt(central)`         | `ka * depot - kpm * central`       | .ctl K12 / K20 = 0 / K23 = CL2/V2 |
 | ODE: `d/dt(central_ohi)`     | `kpm * central - kel * central_ohi`| .ctl K23 / K30 = CL3/V3 / K32 = 0 |
-| `f(depot) <- exp((lfdepot + etalfdepot) * CAPSULE)` | gated F | .ctl `IF (PREP.EQ.1) F1 = THETA(5) * EXP(ETA(3)) ELSE F1 = 1` |
+| `f(depot) <- exp((lfdepot + etalfdepot) * FORM_CAPSULE)` | gated F | .ctl `IF (PREP.EQ.1) F1 = THETA(5) * EXP(ETA(3)) ELSE F1 = 1` |
 | `lag(depot) <- exp(llag)`    | 0.318 h                            | .ctl `ALAG1 = TVLAG / 60` |
 
 # Virtual cohort
@@ -129,18 +129,18 @@ make_cohort <- function(n, capsule, id_offset = 0L) {
   doses_mg <- weights * dose_mg_per_kg_per_day
   base <- tibble(id = id_offset + seq_len(n),
                  WT = weights,
-                 CAPSULE = as.integer(capsule),
+                 FORM_CAPSULE = as.integer(capsule),
                  amt = doses_mg)
   doses <- base |>
     mutate(time = 0, evid = 1L, cmt = "depot")
   obs_grid <- seq(0.1, sim_horizon_h, length.out = 60)
   obs <- base |>
-    select(id, WT, CAPSULE) |>
+    select(id, WT, FORM_CAPSULE) |>
     tidyr::crossing(time = obs_grid) |>
     mutate(evid = 0L, cmt = "Cc", amt = NA_real_)
   bind_rows(doses, obs) |>
     arrange(id, time, desc(evid)) |>
-    mutate(treatment = ifelse(CAPSULE == 1, "capsule", "oral solution"))
+    mutate(treatment = ifelse(FORM_CAPSULE == 1, "capsule", "oral solution"))
 }
 
 events <- bind_rows(
@@ -156,7 +156,7 @@ stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
 sim <- rxode2::rxSolve(
   object  = mod,
   events  = events,
-  keep    = c("WT", "CAPSULE", "treatment"),
+  keep    = c("WT", "FORM_CAPSULE", "treatment"),
   returnType = "data.frame"
 ) |>
   filter(time > 0)
@@ -168,7 +168,7 @@ For deterministic typical-value replication, zero out the random effects:
 sim_typical <- rxode2::rxSolve(
   object  = rxode2::zeroRe(mod),
   events  = events,
-  keep    = c("WT", "CAPSULE", "treatment"),
+  keep    = c("WT", "FORM_CAPSULE", "treatment"),
   returnType = "data.frame"
 ) |>
   filter(time > 0)
@@ -189,15 +189,15 @@ shape of the published panels.
 ```{r figure-5-typical-profiles, fig.width = 7, fig.height = 4.5}
 events_typ <- bind_rows(
   tibble(id = 1L, time = 0, amt = 189, evid = 1L, cmt = "depot",
-         WT = 35, CAPSULE = 1L, treatment = "capsule"),
+         WT = 35, FORM_CAPSULE = 1L, treatment = "capsule"),
   tibble(id = 2L, time = 0, amt = 189, evid = 1L, cmt = "depot",
-         WT = 35, CAPSULE = 0L, treatment = "oral solution")
+         WT = 35, FORM_CAPSULE = 0L, treatment = "oral solution")
 ) |>
   bind_rows(
     tidyr::crossing(id = c(1L, 2L), time = seq(0.05, 24, length.out = 240)) |>
       mutate(evid = 0L, cmt = "Cc", amt = NA_real_) |>
       mutate(WT = 35,
-             CAPSULE = ifelse(id == 1L, 1L, 0L),
+             FORM_CAPSULE = ifelse(id == 1L, 1L, 0L),
              treatment = ifelse(id == 1L, "capsule", "oral solution"))
   ) |>
   arrange(id, time, desc(evid))
@@ -205,7 +205,7 @@ events_typ <- bind_rows(
 sim_typ <- rxode2::rxSolve(
   object = rxode2::zeroRe(mod),
   events = events_typ,
-  keep   = c("WT", "CAPSULE", "treatment"),
+  keep   = c("WT", "FORM_CAPSULE", "treatment"),
   returnType = "data.frame"
 ) |> filter(time > 0)
 
@@ -376,14 +376,14 @@ they do, investigate the source rather than tuning parameters.
   estimates two separate THETAs for ka (capsule 0.09 h^-1 and oral solution
   0.96 h^-1). The packaged model encodes this with one canonical `lka` (the
   oral-solution value) plus a binary `e_capsule_ka` covariate effect that is
-  added to `lka` when `CAPSULE == 1`. This preserves the canonical `lka`
+  added to `lka` when `FORM_CAPSULE == 1`. This preserves the canonical `lka`
   parameter name and standard `e_<cov>_<param>` covariate-effect form while
   reproducing the exact two-formulation behaviour.
 - **Relative-bioavailability IIV gated on the capsule arm only.** The
   supplied .ctl applies the `EXP(ETA(3))` BSV term on `F1` only when
   `PREP.EQ.1`. The packaged model achieves the same behaviour with
-  `f(depot) <- exp((lfdepot + etalfdepot) * CAPSULE)`: when `CAPSULE == 0` the
-  exponent collapses to 0 and `Frel = 1` exactly; when `CAPSULE == 1` the
+  `f(depot) <- exp((lfdepot + etalfdepot) * FORM_CAPSULE)`: when `FORM_CAPSULE == 0` the
+  exponent collapses to 0 and `Frel = 1` exactly; when `FORM_CAPSULE == 1` the
   exponent is `lfdepot + etalfdepot` and the IIV `etalfdepot` is realised.
 - **Lag time identical for capsule and oral solution.** The .ctl uses a
   single `ALAG1` value for both formulations (no formulation-specific

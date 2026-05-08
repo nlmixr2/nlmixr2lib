@@ -115,13 +115,13 @@ cohort <- weight_bands %>%
     PAGE = AGE_YR * 12 + 9,
     COMED_EFV       = 0L,
     COMED_RIF_LPVR4 = 0L,
-    TABLET          = 0L,
+    FORM_TABLET          = 0L,
     MAL_NOURISH     = 0L,
     T_NUT_SUPP      = 0,
     band = factor(band, levels = band_levels)
   ) %>%
   select(id, band, WT, AGE_YR, PAGE,
-         COMED_EFV, COMED_RIF_LPVR4, TABLET,
+         COMED_EFV, COMED_RIF_LPVR4, FORM_TABLET,
          MAL_NOURISH, T_NUT_SUPP)
 ```
 
@@ -155,7 +155,7 @@ events <- cohort %>%
       PAGE = row$PAGE,
       COMED_EFV       = row$COMED_EFV,
       COMED_RIF_LPVR4 = row$COMED_RIF_LPVR4,
-      TABLET          = row$TABLET,
+      FORM_TABLET          = row$FORM_TABLET,
       MAL_NOURISH     = row$MAL_NOURISH,
       T_NUT_SUPP      = row$T_NUT_SUPP
     )
@@ -170,7 +170,7 @@ events <- cohort %>%
       PAGE = row$PAGE,
       COMED_EFV       = row$COMED_EFV,
       COMED_RIF_LPVR4 = row$COMED_RIF_LPVR4,
-      TABLET          = row$TABLET,
+      FORM_TABLET          = row$FORM_TABLET,
       MAL_NOURISH     = row$MAL_NOURISH,
       T_NUT_SUPP      = row$T_NUT_SUPP
     )

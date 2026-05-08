@@ -1,5 +1,5 @@
 Hennig_2007_itraconazole <- function() {
-  description <- "Two-compartment population PK model for oral itraconazole and its one-compartment hydroxy-itraconazole metabolite in adult cystic fibrosis patients (Hennig 2007), with first-order absorption from a depot, formulation-specific absorption rate constants and bioavailability for capsule vs. oral solution selected by the binary CAPSULE covariate, and a single absorption lag-time shared across both formulations. The fraction of itraconazole metabolised to hydroxy-itraconazole is fixed to 1; metabolite parameters are reported as CL_m/(F*f_m) and V_m/(F*f_m)."
+  description <- "Two-compartment population PK model for oral itraconazole and its one-compartment hydroxy-itraconazole metabolite in adult cystic fibrosis patients (Hennig 2007), with first-order absorption from a depot, formulation-specific absorption rate constants and bioavailability for capsule vs. oral solution selected by the binary FORM_CAPSULE covariate, and a single absorption lag-time shared across both formulations. The fraction of itraconazole metabolised to hydroxy-itraconazole is fixed to 1; metabolite parameters are reported as CL_m/(F*f_m) and V_m/(F*f_m)."
   reference <- paste(
     "Hennig S, Waterhouse TH, Bell SC, France M, Wainwright CE, Miller H,",
     "Charles BG, Duffull SB. (2007).",
@@ -13,7 +13,7 @@ Hennig_2007_itraconazole <- function() {
   units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
-    CAPSULE = list(
+    FORM_CAPSULE = list(
       description        = "Itraconazole oral formulation indicator (1 = Sporanox capsule, 0 = Sporanox oral solution)",
       units              = "(binary)",
       type               = "binary",
@@ -31,7 +31,7 @@ Hennig_2007_itraconazole <- function() {
         "The single absorption lag time t_lag = 19.3 min is shared across",
         "both formulations (Hennig 2007 Table 3, t_lag row).",
         "Source NONMEM column is `PREP` with PREP = 1 = capsule and",
-        "PREP = 0 = oral solution; the canonical CAPSULE column has the",
+        "PREP = 0 = oral solution; the canonical FORM_CAPSULE column has the",
         "same orientation."
       ),
       source_name        = "PREP"
@@ -88,7 +88,7 @@ Hennig_2007_itraconazole <- function() {
 
   ini({
     # Structural absorption: separate first-order rate constants for capsule
-    # and oral solution. The CAPSULE covariate selects the relevant typical
+    # and oral solution. The FORM_CAPSULE covariate selects the relevant typical
     # value (and IIV) inside model(); both etas exist for every subject in
     # the cross-over design but only one is "active" for any given dose
     # record. Source $PK block:
@@ -144,11 +144,11 @@ Hennig_2007_itraconazole <- function() {
   })
 
   model({
-    # Formulation-specific first-order absorption: CAPSULE selects between
+    # Formulation-specific first-order absorption: FORM_CAPSULE selects between
     # the capsule and oral-solution typical values and IIV deviations.
     ka_cap <- exp(lka_cap + etalka_cap)
     ka_sol <- exp(lka_sol + etalka_sol)
-    ka     <- CAPSULE * ka_cap + (1 - CAPSULE) * ka_sol
+    ka     <- FORM_CAPSULE * ka_cap + (1 - FORM_CAPSULE) * ka_sol
 
     # Apparent itraconazole and hydroxy-itraconazole PK parameters.
     cl     <- exp(lcl + etalcl)
@@ -161,7 +161,7 @@ Hennig_2007_itraconazole <- function() {
     # Relative bioavailability and absorption lag-time. F = 1 (fixed) for
     # the oral solution; F = F_rel * exp(etalfdepot) for the capsule.
     fdepot     <- exp(lfdepot + etalfdepot)
-    f(depot)   <- (1 - CAPSULE) + CAPSULE * fdepot
+    f(depot)   <- (1 - FORM_CAPSULE) + FORM_CAPSULE * fdepot
     lag(depot) <- exp(llag)
 
     # Two-compartment parent disposition with first-order metabolism to

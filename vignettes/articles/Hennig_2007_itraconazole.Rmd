@@ -38,7 +38,7 @@ library(ggplot2)
   Beal 2001 M4 likelihood implementation rather than the final-model
   control stream, so all final parameter values come from the paper
   (Table 3); the .ctl is used only to confirm the structural ODE
-  topology and the cross-over design's per-record `PREP` / `CAPSULE`
+  topology and the cross-over design's per-record `PREP` / `FORM_CAPSULE`
   covariate handling.
 
 ```{r load-model}
@@ -120,7 +120,7 @@ rather than the final estimates).
 | 2-cmt parent + 1-cmt metabolite topology | -- | Hennig 2007 Figure 1 ("Final Model"); page 443 |
 | `f_m = 1` fixed (fraction metabolised to OH-itraconazole) | -- | Hennig 2007 Methods (page 441): "The fraction (f_m) ... was therefore fixed to 1" |
 | Pure proportional residual error (no additive component) | -- | Hennig 2007 Results (page 443): "A proportional error model was shown to be sufficient ... for both the parent drug and the metabolite" |
-| Formulation-specific KA via per-record CAPSULE covariate | -- | .ctl `$PK` block: `IF (PREP.EQ.1) KA = THETA(3)*EXP(ETA(4)) ; capsule` else THETA(4)*EXP(ETA(5)) |
+| Formulation-specific KA via per-record FORM_CAPSULE covariate | -- | .ctl `$PK` block: `IF (PREP.EQ.1) KA = THETA(3)*EXP(ETA(4)) ; capsule` else THETA(4)*EXP(ETA(5)) |
 | `F = 1` for solution arm; `F = F_rel` for capsule arm | -- | Hennig 2007 Methods (page 441): "F_rel was determined by fixing F_rel to 1 for administration of the oral solution and then estimating F_rel for the capsule" |
 | Single shared lag time across both formulations | -- | Hennig 2007 Table 3, single `t_lag` row; .ctl `ALAG1 = TVLAG/60` (no PREP branch) |
 
@@ -129,8 +129,8 @@ rather than the final estimates).
 We build a virtual cohort that mirrors the Hennig 2007 study design:
 30 cross-over subjects each receiving a single 200 mg oral dose of
 itraconazole, with half the simulation IDs marking the capsule arm
-(CAPSULE = 1) and the other half marking the oral-solution arm
-(CAPSULE = 0). The per-record `CAPSULE` covariate is the source
+(FORM_CAPSULE = 1) and the other half marking the oral-solution arm
+(FORM_CAPSULE = 0). The per-record `FORM_CAPSULE` covariate is the source
 NONMEM `PREP` column verbatim (PREP = 1 = capsule, PREP = 0 =
 solution; same orientation as the package canonical). Observations
 are taken over 72 h post-dose to match the published sampling
@@ -152,7 +152,7 @@ build_events <- function(n, capsule_value, treatment_label, id_offset) {
     amt       = 200,    # mg
     cmt       = 1L,     # depot
     treatment = treatment_label,
-    CAPSULE   = capsule_value
+    FORM_CAPSULE   = capsule_value
   )
   obs_rows <- expand.grid(
     id   = ids,
@@ -164,7 +164,7 @@ build_events <- function(n, capsule_value, treatment_label, id_offset) {
   obs_rows$cmt       <- 5L  # Cc (parent itraconazole); Cc_ohi is read from the
                             # sim's wide-format columns alongside Cc.
   obs_rows$treatment <- treatment_label
-  obs_rows$CAPSULE   <- capsule_value
+  obs_rows$FORM_CAPSULE   <- capsule_value
   out <- rbind(dose_rows, obs_rows)
   out[order(out$id, out$time, -out$evid), ]
 }
@@ -190,7 +190,7 @@ mod_typical <- rxode2::zeroRe(mod)
 sim_typical <- rxode2::rxSolve(
   mod_typical,
   events = events,
-  keep   = c("treatment", "CAPSULE")
+  keep   = c("treatment", "FORM_CAPSULE")
 ) |>
   as.data.frame()
 ```
@@ -199,7 +199,7 @@ sim_typical <- rxode2::rxSolve(
 sim <- rxode2::rxSolve(
   mod,
   events = events,
-  keep   = c("treatment", "CAPSULE")
+  keep   = c("treatment", "FORM_CAPSULE")
 ) |>
   as.data.frame()
 ```
@@ -435,7 +435,7 @@ build_ss_events <- function(n, capsule_value, treatment_label,
   dose_rows$amt       <- dose_mg
   dose_rows$cmt       <- 1L  # depot
   dose_rows$treatment <- treatment_label
-  dose_rows$CAPSULE   <- capsule_value
+  dose_rows$FORM_CAPSULE   <- capsule_value
   obs_rows <- expand.grid(
     id   = ids,
     time = ss_obs_grid,
@@ -445,7 +445,7 @@ build_ss_events <- function(n, capsule_value, treatment_label,
   obs_rows$amt       <- 0
   obs_rows$cmt       <- 5L  # Cc (parent itraconazole)
   obs_rows$treatment <- treatment_label
-  obs_rows$CAPSULE   <- capsule_value
+  obs_rows$FORM_CAPSULE   <- capsule_value
   out <- rbind(dose_rows, obs_rows)
   out[order(out$id, out$time, -out$evid), ]
 }
@@ -475,7 +475,7 @@ ss_events <- dplyr::bind_rows(lapply(seq_along(ss_arms), function(i) {
 ss_sim <- rxode2::rxSolve(
   mod,
   events = ss_events,
-  keep   = c("treatment", "CAPSULE")
+  keep   = c("treatment", "FORM_CAPSULE")
 ) |>
   as.data.frame()
 ```
@@ -572,12 +572,12 @@ knitr::kable(
   no covariate effects (Hennig 2007 page 444). The package model
   matches that final-model structure.
 
-* **CAPSULE covariate registration.** A new specific-scope
-  `CAPSULE` canonical was added to
+* **FORM_CAPSULE covariate registration.** A new specific-scope
+  `FORM_CAPSULE` canonical was added to
   `inst/references/covariate-columns.md` for this model; the source
   NONMEM column `PREP` (PREP = 1 = capsule, PREP = 0 = oral
-  solution) maps to `CAPSULE` with the same orientation. A
-  separate `TABLET` canonical (Kyhl 2016 nalmefene) already exists
+  solution) maps to `FORM_CAPSULE` with the same orientation. A
+  separate `FORM_TABLET` canonical (Kyhl 2016 nalmefene) already exists
   for tablet-vs-solution; the two are deliberately distinct because
   the formulation contrasts come from different studies and select
   different parameter splits.

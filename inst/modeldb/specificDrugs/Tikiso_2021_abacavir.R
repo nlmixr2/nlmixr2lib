@@ -37,13 +37,13 @@ Tikiso_2021_abacavir <- function() {
       notes              = "Multiplicative effect on F relative to the LPV/r 4:1 reference; -29.4% in Tikiso 2021 Table 4. The reduction is attributed to PXR-mediated UGT induction by rifampicin (and possibly extra ritonavir).",
       source_name        = "RIF"
     ),
-    TABLET = list(
+    FORM_TABLET = list(
       description        = "Abacavir tablet formulation indicator (1 = abacavir + lamivudine fixed-dose-combination tablet, 0 = abacavir liquid solution)",
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (liquid solution)",
       notes              = "Multiplicative effect on the absorption mean transit time MTT relative to the liquid reference; +24.9% (slower absorption) in Tikiso 2021 Table 4. Distinct from the FDC canonical (Wilkins 2008 antitubercular FDC vs SDC); see covariate-columns.md.",
-      source_name        = "TABLET"
+      source_name        = "FORM_TABLET"
     ),
     MAL_NOURISH = list(
       description        = "Malnutrition indicator at study entry (1 = malnourished per WHO definition, height-for-age and weight-for-age Z-scores both < -2.0; 0 = not malnourished)",
@@ -140,7 +140,7 @@ Tikiso_2021_abacavir <- function() {
     cl_mal  <- 1 + e_mal_cl              * mal_decay
     f_rif   <- 1 + e_rif_lpvr4_fdepot    * COMED_RIF_LPVR4
     f_mal   <- 1 + e_mal_fdepot          * mal_decay
-    mtt_tab <- 1 + e_tablet_mtt          * TABLET
+    mtt_tab <- 1 + e_tablet_mtt          * FORM_TABLET
 
     # 4. Individual PK parameters with allometric scaling on disposition.
     #    Reference weight 70 kg; ka, MTT, NN, and e_*_cl factors are not weight-scaled.

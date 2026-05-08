@@ -13,12 +13,12 @@ Hennig_2006_itraconazole <- function() {
       notes              = "Fixed allometric scaling: (WT/70)^0.75 on CL/F of itraconazole and (WT/70)^1.0 on Vd/F of itraconazole. No weight scaling on metabolite parameters per the source NMTRAN control stream. Reference weight 70 kg.",
       source_name        = "WT"
     ),
-    CAPSULE = list(
+    FORM_CAPSULE = list(
       description        = "Formulation indicator at the dose record: 1 = capsule (Sporanox), 0 = oral solution.",
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (oral solution; relative bioavailability fixed to 1).",
-      notes              = "Per-record covariate (each subject may switch formulations during follow-up). Switches absorption rate between ka(capsule) = 0.09 h^-1 and ka(solution) = 0.96 h^-1, and gates the IIV-bearing relative-bioavailability term so etalfdepot only contributes when CAPSULE = 1.",
+      notes              = "Per-record covariate (each subject may switch formulations during follow-up). Switches absorption rate between ka(capsule) = 0.09 h^-1 and ka(solution) = 0.96 h^-1, and gates the IIV-bearing relative-bioavailability term so etalfdepot only contributes when FORM_CAPSULE = 1.",
       source_name        = "PREP"
     )
   )
@@ -56,7 +56,7 @@ Hennig_2006_itraconazole <- function() {
     lvc_ohi <- log(5.29);  label("Apparent volume of distribution of hydroxy-itraconazole, Vd(m)/(F*fm) (L)")    # Hennig 2006 Table II, final model: 5.29 L
 
     # Absorption: oral-solution ka is the typical-value baseline, the capsule
-    # arm shifts ka multiplicatively via a binary CAPSULE covariate effect.
+    # arm shifts ka multiplicatively via a binary FORM_CAPSULE covariate effect.
     lka          <- log(0.96);                                                                                   # Hennig 2006 Table II, final model: ka(oral solution) = 0.96 h^-1
     label("First-order absorption rate constant for oral solution (1/h)")
     e_capsule_ka <- log(0.09 / 0.96);                                                                            # Hennig 2006 Table II, final model: ka(capsule) = 0.09 h^-1; log-shift = log(0.09/0.96) = -2.367
@@ -68,7 +68,7 @@ Hennig_2006_itraconazole <- function() {
 
     # Relative bioavailability: oral solution Frel fixed to 1 (reference);
     # capsule Frel = exp(lfdepot) = 0.55 with the etalfdepot IIV applied
-    # only on the capsule arm via the (lfdepot + etalfdepot) * CAPSULE form
+    # only on the capsule arm via the (lfdepot + etalfdepot) * FORM_CAPSULE form
     # in model().
     lfdepot <- log(0.55);                                                                                         # Hennig 2006 Table II, final model: Frel(capsule:solution) = 0.55
     label("Log relative bioavailability of capsule vs oral solution (unitless)")
@@ -88,7 +88,7 @@ Hennig_2006_itraconazole <- function() {
     etalcl + etalvc ~ c(0.38731, 0.28938, 0.45404)                                                                # Hennig 2006 Table II + Random Effects Model paragraph (rho = 0.69)
     # CLm   : log(1 + 0.734^2) = 0.43098
     etalcl_ohi ~ 0.43098                                                                                          # Hennig 2006 Table II, final model: CV 73.4% on CLm
-    # Frel (capsule arm only; gated by CAPSULE inside model()):
+    # Frel (capsule arm only; gated by FORM_CAPSULE inside model()):
     # log(1 + 0.611^2) = 0.31734
     etalfdepot ~ 0.31734                                                                                          # Hennig 2006 Table II, final model: CV 61.1% on Frel
 
@@ -124,12 +124,12 @@ Hennig_2006_itraconazole <- function() {
     vc_ohi <- exp(lvc_ohi) * mw_ratio
 
     # Absorption: solution baseline + capsule log-shift.
-    ka <- exp(lka + e_capsule_ka * CAPSULE)
+    ka <- exp(lka + e_capsule_ka * FORM_CAPSULE)
 
     # Relative bioavailability on the depot:
-    #   CAPSULE = 0 (solution): exp(0) = 1 (reference)
-    #   CAPSULE = 1 (capsule):  exp(lfdepot + etalfdepot) = ~0.55 with IIV
-    fdepot <- exp((lfdepot + etalfdepot) * CAPSULE)
+    #   FORM_CAPSULE = 0 (solution): exp(0) = 1 (reference)
+    #   FORM_CAPSULE = 1 (capsule):  exp(lfdepot + etalfdepot) = ~0.55 with IIV
+    fdepot <- exp((lfdepot + etalfdepot) * FORM_CAPSULE)
 
     # Micro-constants. fm fixed to 1 per the paper (Pharmacokinetic
     # Analysis paragraph): all eliminated parent appears as metabolite.
