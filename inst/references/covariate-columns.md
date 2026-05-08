@@ -637,6 +637,31 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Frey_2010_tocilizumab.R` (mg/dL, reference 54; small negative exponent -0.2 on linear CL; the paper interprets the effect as a body-size surrogate rather than a mechanism).
 - **Notes:** Cardiometabolic lipid-panel covariate. In Frey 2010 it correlates with body size (HDL-C is lower in larger patients) and the small CL effect (-14% to +15% across the observed 23-135 mg/dL range) was retained but not interpreted as mechanistic.
 
+### LDLC (**canonical for low-density lipoprotein cholesterol**)
+- **Description:** Serum low-density lipoprotein cholesterol concentration (baseline or time-varying). The pharmacologically meaningful endpoint for lipid-lowering therapies (statins, PCSK9 inhibitors, ANGPTL3 inhibitors); also serves as a baseline covariate or as the time-varying PD response in indirect-response exposure-response models.
+- **Units:** mg/dL or mmol/L -- document the unit used in each model via `covariateData[[LDLC]]$units` (1 mmol/L ~= 38.67 mg/dL for cholesterol).
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- used with power scaling `(LDLC / ref)^exponent` for the baseline-LDLC covariate role, or with no reference (used directly as the PD response state) when it is the modelled output. Reference values observed: 211 mg/dL (Pu 2021 HoFH typical-patient definition).
+- **Source aliases:**
+  - `LDL-C` -- common spelling with hyphen.
+  - `LDL_C` -- common alternative spelling.
+  - `LDLBL` (baseline LDL-C) -- used in `Pu_2021_evinacumab.R` (Pu 2021 NM-TRAN $INPUT column for centred baseline LDL-C as a covariate on IC50).
+- **Example models:** `Pu_2021_evinacumab.R` (mg/dL, baseline reference 211 mg/dL; power exponent -1.17 on IC50, where higher baseline LDL-C predicts a smaller IC50 and therefore greater sensitivity to evinacumab; LDL-C is also the PD output state initialised at the baseline value).
+- **Notes:** Cardiometabolic lipid-panel covariate. Distinct from `HDLC` (high-density lipoprotein cholesterol) and from any total-cholesterol or non-HDL-C derivation. When LDL-C is both the response variable AND a covariate (as in Pu 2021, where baseline LDLC drives IC50 and the time-varying state is the modelled PD), document the dual role in `covariateData[[LDLC]]$notes`.
+
+### ANGPTL3 (**canonical for angiopoietin-like protein 3 concentration**)
+- **Description:** Total serum angiopoietin-like protein 3 (ANGPTL3) concentration. ANGPTL3 is the pharmacological target for anti-ANGPTL3 monoclonal antibodies (evinacumab) and antisense oligonucleotides (vupanorsen). Baseline ANGPTL3 acts as a soluble-target biomarker that contributes to target-mediated drug disposition; higher baseline target predicts a higher saturable Vmax.
+- **Units:** mg/L (equivalent to ug/mL). Document per-model via `covariateData[[ANGPTL3]]$units`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- used with power scaling `(ANGPTL3 / ref)^exponent`. Reference value observed: 0.08 mg/L (Pu 2021 typical-patient median).
+- **Source aliases:**
+  - `ANGBL` (baseline ANGPTL3) -- used in `Pu_2021_evinacumab.R` (Pu 2021 NM-TRAN $INPUT column for centred baseline ANGPTL3).
+  - `ANGBL0` -- alternative Pu 2021 raw column.
+- **Example models:** `Pu_2021_evinacumab.R` (mg/L, baseline reference 0.08 mg/L; power exponent +0.405 on Vmax, where higher baseline target predicts a faster saturable elimination -- biologically consistent with evinacumab being co-cleared along with bound ANGPTL3).
+- **Notes:** Specific scope because the column is meaningful only for drugs whose mechanism involves ANGPTL3 (anti-ANGPTL3 mAbs / ASOs). Reusing the name for another anti-ANGPTL3 agent is acceptable (extend the example-models list). The assay in Pu 2021 detects both free and target-bound ANGPTL3 after acid pretreatment of serum; document the assay type (free vs. total) per model in `covariateData[[ANGPTL3]]$notes`.
+
 ### FPCSK9 (**canonical for free (unbound) proprotein convertase subtilisin/kexin type 9 concentration**)
 - **Description:** Free (unbound, non-drug-bound) serum proprotein convertase subtilisin/kexin type 9 (PCSK9) concentration. For anti-PCSK9 monoclonal antibodies (alirocumab, evolocumab, bococizumab) the free-PCSK9 pool is the pharmacologically active target fraction; drug-target binding reduces FPCSK9 relative to total PCSK9.
 - **Units:** ng/mL (document per-model if a paper reports a different unit).
@@ -1134,6 +1159,17 @@ readable.
 - **Source aliases:** none known; source NONMEM control streams typically use ad-hoc names (e.g., `CD`, `CASTLEMAN`).
 - **Example models:** `Nikanjam_2019_siltuximab.R` (multiplicative +24% effect on CL; no Vss effect).
 - **Notes:** Castleman's disease is a lymphoproliferative disorder strongly associated with elevated IL-6 levels; it is the only FDA-approved indication for siltuximab. Scope: specific because the disease-pooling reference category is paper-defined. Ratified canonically on 2026-04-24.
+
+### DIS_HOFH (**canonical for homozygous familial hypercholesterolemia patient indicator**)
+- **Description:** 1 = patient with homozygous familial hypercholesterolemia (HoFH), 0 = non-HoFH subject (typically healthy volunteer or another reference cohort pooled in the source analysis). Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-HoFH subject; the complement group is paper-defined -- for Pu 2021 the reference is the pooled healthy-volunteer cohort).
+- **Source aliases:**
+  - `DISTYPN` -- used in `Pu_2021_evinacumab.R` (Pu 2021 NM-TRAN $INPUT column for HoFH-vs-HV disease type, 1 = HoFH).
+- **Example models:** `Pu_2021_evinacumab.R` (multiplicative `exp(theta * DIS_HOFH)` factor on Vmax with theta = -0.289, i.e. HoFH patients show ~25% lower target-mediated Vmax than the HV reference; biologically consistent with the LDLR-pathway disruption in HoFH altering ANGPTL3 catabolic kinetics).
+- **Notes:** Used when a population PK model pools HoFH patients with healthy volunteers (or another non-HoFH cohort) and HoFH disease status is retained as a covariate. Distinct from a heterozygous-FH (HeFH) indicator because HoFH patients have markedly higher baseline LDL-C (untreated levels often > 500 mg/dL) and a more pronounced response to LDLR-independent therapies. Scope: specific because the reference category is paper-defined.
 
 ### DIS_DMD (**canonical for Duchenne muscular dystrophy patient indicator**)
 - **Description:** 1 = patient with Duchenne muscular dystrophy (DMD), 0 = non-DMD subject (healthy volunteer or other reference cohort). Time-fixed per subject.
@@ -2866,6 +2902,7 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **2026-05-06** -- Added `CSS_RBV` (specific-scope, individual posthoc ribavirin steady-state trough concentration from an upstream popPK fit; ng/mL) and `K_RBV` (specific-scope, individual posthoc ribavirin approach-to-Css rate constant from the same upstream popPK fit; 1/day) canonical entries under `Drug exposure metrics` while extracting the DDMORE bundle `DDMODEL00000285` as `Laouenan_2015_ribavirin.R`. The two columns jointly carry per-subject empirical-Bayes (modal) estimates from a Laouenan 2015 upstream RBV popPK fit; the downstream PD model uses them inside an analytical `riba = CSS_RBV * (1 - exp(-K_RBV * t))` expression that drives an Imax-style inhibition of hemoglobin synthesis (kin) in a turnover model. Source aliases mapped: `css_mode` -> `CSS_RBV`, `k_mode` -> `K_RBV`. The lumped exponential parameterization replaces a full one- or two-compartment PK ODE; `K_RBV` is *not* a structural elimination-rate constant.
 - **2026-05-06** -- Added `NEUT` (specific-scope, baseline absolute neutrophil count in cells/mm^3; placed under `Hematology` next to `NLR`) and `AUC_BAST_FW` (specific-scope, first-week drug AUC in ug*h/L; placed under `Drug exposure metrics` next to `AUC_CARBO`) canonical entries while extracting the BAST PTTE 2017 teaching guiding-document bundle (DDMODEL00000243) as four separate parametric time-to-event models (`NA_NA_tte_gompertz.R` Event 1 exponential / NEUT + AGE; `NA_NA_tte_gompertz_ev2.R` Event 2 Gompertz / AUC; `NA_NA_tte_lognormal.R` Competing Event 1 log-normal / AGE; `NA_NA_tte_loglogistic.R` Competing Event 2 log-logistic / no covariate). Source alias mapped: `AUC` (NM-TRAN $INPUT column name in DDMODEL00000243) -> `AUC_BAST_FW` (renamed in the register so a generic `AUC` column for a different drug in a future model does not collide). The four models share a common 200-subject hypothetical simulated cohort with covariates AGE (24-84 years), NEUT (1030-14,888 cells/mm^3, ref 4133), PRE_TRE (1-6 prior treatments), MAX_LEG (3-12 mm largest-lesion diameter), AUC_BAST_FW (859-7673 ug*h/L, ref 3065.5), and CMAX (100-813 ug/L); only AGE, NEUT, and AUC_BAST_FW survived covariate testing in the four final models. PRE_TRE / MAX_LEG / CMAX appear in the bundle dataset but in no final model and are therefore not registered.
 - **2026-05-06** -- Added `WT_BIRTH` (general-scope, time-fixed birth weight in kg under `Pediatric / maturation` after `GA`) canonical entry while extracting `Voller_2017_phenobarbital.R` (DDMODEL00000256). Source alias `BWEIGHT` (Voller 2017) mapped. The conventional `BWT` abbreviation was rejected as the canonical because it is already used across five existing models (Gandhi 2021, Li 2019, Chen 2022, Wojciechowski 2022, Lu 2019) as a source-name alias for body weight `WT`; reusing `BWT` for birth weight would silently break those mappings. The chosen `WT_BIRTH` form preserves the `WT` root and follows the existing `<concept>_<modifier>` register convention. Reference value 2.59 kg observed in Voller 2017's preterm/term-newborn cohort. Operator-confirmed naming choice via runner sidecar (response-001, 2026-05-06).
+- **2026-05-08** -- Added `LDLC` (general-scope serum low-density lipoprotein cholesterol concentration; placed under `Cardiometabolic / target biomarkers` next to `HDLC`), `ANGPTL3` (specific-scope total serum angiopoietin-like protein 3 concentration; placed under `Cardiometabolic / target biomarkers` next to `FPCSK9`), and `DIS_HOFH` (specific-scope homozygous familial hypercholesterolemia patient indicator; placed under `Disease state (cross-population indicators)` next to `DIS_DMD`) canonical entries while extracting `Pu_2021_evinacumab.R`. Source aliases mapped: `LDLBL` -> `LDLC`, `ANGBL` / `ANGBL0` -> `ANGPTL3`, `DISTYPN` -> `DIS_HOFH`. Reference values from the Pu 2021 typical-patient definitions: 211 mg/dL (LDLC), 0.08 mg/L (ANGPTL3).
 - Subsequent additions: append new canonical entries as new papers are processed. When adding, bump the audit-completed count in the summary below.
 
 ## Summary
