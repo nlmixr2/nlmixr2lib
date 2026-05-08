@@ -241,9 +241,20 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Reference category:** n/a -- used with power scaling `(CREAT / ref)^exponent`.
 - **Source aliases:**
   - `CRE` (umol/L, reference 70.73) -- used in `Thakre_2022_risankizumab.R`.
-  - `SCR` -- common clinical-PK abbreviation.
-- **Example models:** `Thakre_2022_risankizumab.R`.
+  - `SCR` -- common clinical-PK abbreviation; Llanos-Paez 2020 source column for the patient's individual serum creatinine.
+- **Example models:** `Thakre_2022_risankizumab.R`, `Llanos-Paez_2020_gentamicin.R` (umol/L; used as the patient's `SCR_i` in the renal-function ratio `(CREAT_REF / CREAT)^0.58` on CL).
 - **Notes:** `CREAT` chosen over the shorter `CRE`/`SCR` as the NONMEM/clinical-PK convention that is unambiguous. Per-model reference values must be documented in `covariateData[[CREAT]]$notes`.
+
+### CREAT_REF (**canonical for age- and sex-matched physiological mean serum creatinine**)
+- **Description:** Subject-level reference / "expected" serum creatinine concentration matched to the patient's age and sex, used as the numerator of an SCR ratio in pediatric population PK models that need a renal-function adjustment without requiring a measured creatinine clearance. The Llanos-Paez 2017/2020 gentamicin models use the Ceriotti et al. (2008, Clin Chem 54:559-566) age/sex bands to populate this column; other implementations may use Schwartz (2009) or any equivalent normative reference. The choice of normative source must be documented in each model's `covariateData[[CREAT_REF]]$notes`.
+- **Units:** umol/L or mg/dL -- document the unit used in each model via `covariateData[[CREAT_REF]]$units`. Must match the unit chosen for `CREAT`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- used as the numerator of a power ratio `(CREAT_REF / CREAT)^exponent` in the structural CL term. For typical-value simulation of a virtual patient with normal renal function for their age and sex, set `CREAT_REF = CREAT` so the ratio collapses to 1.
+- **Source aliases:**
+  - `SCR_mean` -- Llanos-Paez 2020 paper notation for the Ceriotti 2008 age/sex-matched physiological mean SCR. Maps directly to `CREAT_REF`.
+- **Example models:** `Llanos-Paez_2020_gentamicin.R` (umol/L; ratio `(CREAT_REF / CREAT)^0.58` multiplies the maturation-scaled CL).
+- **Notes:** Specific scope because the choice of normative reference (Ceriotti vs Schwartz vs locally-derived) is paper-tied. A pediatric / mixed-age model that needs a renal-function ratio without measured CrCl can reuse `CREAT_REF` and document its normative source; an adult model with measured CrCl should prefer the existing `CRCL` canonical instead.
 
 ### ALB (**canonical for serum albumin**)
 - **Description:** Serum albumin concentration.
@@ -1112,6 +1123,17 @@ readable.
 - **Source aliases:** none; source NONMEM / Monolix control streams typically derive the indicator from a `POP` or `STUDY` categorical alongside `DIS_HV`.
 - **Example models:** `Yang_2024_axatilimab.R` (multiplicative effect on baseline NCMC: `BL_NCMC x exp(1.22 x DIS_CANCER + 0.618 x DIS_HV)`; reference category cGVHD when both indicators are 0).
 - **Notes:** Used together with `DIS_HV` to decompose a three-level "participant population" categorical (cGVHD reference, advanced solid tumor, healthy volunteer) into two orthogonal binary indicators. Scope: specific because the disease-pooling reference category is paper-defined (Yang 2024 reference is patients with cGVHD). Ratified canonically on 2026-04-28.
+
+### DIS_PEDONC (**canonical for pediatric oncology cohort indicator**)
+- **Description:** 1 = pediatric patient receiving cancer-directed therapy (any malignancy, including hematologic cancers such as leukemia and lymphoma as well as solid tumors / blastomas), 0 = pediatric patient admitted for a non-oncology indication (e.g. infection, surgery, transplant). Time-fixed per subject. Distinct from `DIS_CANCER`, which is restricted to advanced/metastatic solid tumors in adults; `DIS_PEDONC` is broader and explicitly covers leukemia-dominant pediatric cohorts.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-oncology pediatric patient; the complement group is paper-defined -- in Llanos-Paez 2020 the complement is pediatric patients admitted for various non-oncology indications, with appendicitis and kidney disease / urinary tract infection the most common).
+- **Source aliases:**
+  - `ONCOLOGY` -- Llanos-Paez 2020 NONMEM column with the same orientation (1 = oncology, 0 = nononcology); maps directly to `DIS_PEDONC`.
+- **Example models:** `Llanos-Paez_2020_gentamicin.R` (multiplicative cohort shifts on V1 (-0.154) and Q (-0.321) relative to the nononcology baseline; CL has no oncology effect).
+- **Notes:** Use `DIS_PEDONC` rather than `DIS_CANCER` whenever the source paper's "oncology" cohort includes hematologic malignancies (leukemia / lymphoma) or pediatric blastomas, because `DIS_CANCER` is canonically restricted to advanced/metastatic solid tumors. Reference-category complement is paper-defined (Llanos-Paez 2020 complement is the pooled pediatric non-oncology admissions cohort). Scope: specific because the complement is paper-defined.
 
 ### DIS_HV (**canonical for healthy-volunteer cohort indicator**)
 - **Description:** 1 = healthy volunteer (no diagnosis), 0 = patient (any diagnosis represented in the pooled cohort). Time-fixed per subject.
