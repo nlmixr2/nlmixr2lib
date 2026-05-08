@@ -98,7 +98,11 @@
     "col",
     # Dihydroartemisinin, the active metabolite of artesunate
     # (Birgersson 2019 DDMODEL00000297).
-    "dha"
+    "dha",
+    # 25-O-desacetyl rifabutin, the primary active metabolite of
+    # rifabutin formed by arylacetamide deacetylase (Hennig 2015
+    # AAC doi:10.1128/AAC.01195-15).
+    "desrbn"
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` denotes the time-varying decay arm.
