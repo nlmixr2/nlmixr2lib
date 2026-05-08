@@ -137,7 +137,7 @@ Equation forms:
 | `RAAS` (1 = Asian) | `RACE_ASIAN` |
 | `IPI3Q3W` | `COADMIN_IPI_3Q3W` |
 | `IPI1Q6W` | `COADMIN_IPI_1Q6W` |
-| `CHEMO` | `COADMIN_CHEMO` |
+| `CHEMO` | `CONMED_CHEMO` |
 | `IPICO` | `COADMIN_IPI_ANY` |
 
 The Zhang 2019 Table 2 footnote defines RAAA = African American race and
@@ -223,7 +223,7 @@ make_regimen <- function(pop_in, regimen, id_offset) {
     as.integer(regimen == "nivo 3 mg/kg q2w + ipi 3 mg/kg q3w x 4")
   pop_offset$COADMIN_IPI_1Q6W <-
     as.integer(regimen == "nivo 3 mg/kg q2w + ipi 1 mg/kg q6w")
-  pop_offset$COADMIN_CHEMO    <- 0L
+  pop_offset$CONMED_CHEMO    <- 0L
   # Any-ipilimumab indicator (drives Emax of time-varying CL).
   pop_offset$COADMIN_IPI_ANY  <-
     as.integer(grepl("ipi", regimen))
