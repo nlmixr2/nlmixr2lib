@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Pu 2021 evinacumab ([doi:10.1002/psp4.12711](https://doi.org/10.1002/psp4.12711)) -- healthy volunteers and adult / pediatric patients with homozygous familial hypercholesterolemia.
 * Add Zhang 2021 dupilumab ([doi:10.1002/psp4.12667](https://doi.org/10.1002/psp4.12667)) -- adult and adolescent patients with moderate-to-severe asthma (pooled with healthy adults).
 * Add Hennig 2015 rifabutin ([doi:10.1128/AAC.01195-15](https://doi.org/10.1128/AAC.01195-15)) -- HIV-infected adults with pulmonary tuberculosis (joint parent + 25-O-desacetyl rifabutin metabolite popPK with allometric weight scaling, sex on V/F, and SLCO1B1 rs11045819 on bioavailability).
 * Add Hennig 2013 tobramycin ([doi:10.1007/s40262-013-0036-y](https://doi.org/10.1007/s40262-013-0036-y)) -- adults and children with and without cystic fibrosis.
