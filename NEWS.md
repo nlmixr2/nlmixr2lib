@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Hennig 2008 tobramycin ([doi:10.1111/j.1365-2125.2007.03045.x](https://doi.org/10.1111/j.1365-2125.2007.03045.x)) -- paediatric cystic fibrosis patients on once-daily intravenous tobramycin.
 * Add Kirubakaran 2022 tacrolimus ([doi:10.1111/bcp.15566](https://doi.org/10.1111/bcp.15566)) -- adult heart transplant recipients with concomitant azole antifungal therapy.
 * Add Hennig 2006 itraconazole ([doi:10.2165/00003088-200645110-00004](https://doi.org/10.2165/00003088-200645110-00004)) -- paediatric cystic-fibrosis and bone-marrow-transplant patients (parent + active metabolite popPK for oral itraconazole and hydroxy-itraconazole).
 * Add Lawson 2022 busulfan ([doi:10.1002/psp4.12809](https://doi.org/10.1002/psp4.12809)) -- pediatric hematopoietic stem cell transplant recipients receiving once-daily IV busulfan.
