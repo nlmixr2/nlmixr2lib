@@ -69,7 +69,7 @@ Zhang_2019_nivolumab <- function() {
       notes              = "Exponential effect on baseline CL (exp(0.159) = 1.172 fold higher CL than monotherapy).",
       source_name        = "IPI1Q6W"
     ),
-    COADMIN_CHEMO = list(
+    CONMED_CHEMO = list(
       description        = "Coadministration regimen: nivolumab + platinum-based chemotherapy",
       units              = "(binary)",
       type               = "binary",
@@ -179,7 +179,7 @@ Zhang_2019_nivolumab <- function() {
       exp(e_asian_cl   * RACE_ASIAN) *
       exp(e_ipi3q3w_cl * COADMIN_IPI_3Q3W) *
       exp(e_ipi1q6w_cl * COADMIN_IPI_1Q6W) *
-      exp(e_chemo_cl   * COADMIN_CHEMO)
+      exp(e_chemo_cl   * CONMED_CHEMO)
 
     vc <- exp(lvc + etalvc) *
       (WT / 80)^e_wt_vc *

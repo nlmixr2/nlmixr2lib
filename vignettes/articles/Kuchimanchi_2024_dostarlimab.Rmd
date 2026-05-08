@@ -156,12 +156,12 @@ cohort <- tibble(
   ALB           = pmin(pmax(rnorm(n_subj, 38.5, 5.2),      19,   51)), # Table 1: mean 38.5 g/L, range 19-51
   ALT           = pmin(pmax(rlnorm(n_subj, log(17), 0.5),  2.9, 243)), # Table 1: median 17, range 2.9-243
   SEXF          = rbinom(n_subj, 1, 0.820),                            # Table 1: 82.0% female
-  COADMIN_CHEMO = 0L                                                   # default: monotherapy
+  CONMED_CHEMO = 0L                                                   # default: monotherapy
 )
 ```
 
 The simulated cohort defaults to the **monotherapy** regimen
-(COADMIN_CHEMO = 0). For RUBY Part 1's combination phase, set the
+(CONMED_CHEMO = 0). For RUBY Part 1's combination phase, set the
 indicator to 1 in the event table only for the cycles where chemotherapy
 is co-administered (cycles 1-6 of RUBY Part 1; cycles 7+ revert to 1000
 mg Q6W monotherapy and the indicator should switch back to 0).
@@ -171,7 +171,7 @@ indication evaluated in RUBY Part 1 is **500 mg IV Q3W with
 carboplatin/paclitaxel for 6 cycles followed by 1000 mg IV Q6W
 monotherapy**. The simulation runs for one year of dosing.
 
-The `COADMIN_CHEMO` indicator switches per row (per time point) so
+The `CONMED_CHEMO` indicator switches per row (per time point) so
 that only cycles 1-6 are tagged as combination therapy. Because the
 indicator only multiplies CL_base in the structural model, switching it
 mid-simulation simply removes the 7.79% CL reduction once the patient
@@ -186,22 +186,22 @@ maint_doses_d   <- seq(maint_start_d, by = 42, length.out = 8)  # 1000 mg Q6W (c
 obs_times_d <- sort(unique(c(seq(0, 365, by = 1), loading_doses_d, maint_doses_d)))
 
 build_events <- function(pop) {
-  pop_baseline <- pop |> select(-COADMIN_CHEMO)
+  pop_baseline <- pop |> select(-CONMED_CHEMO)
   d_load <- pop_baseline |>
     tidyr::crossing(TIME = loading_doses_d) |>
     mutate(AMT = 500, EVID = 1, CMT = "central", DUR = 0.5 / 24, DV = NA_real_,
            treatment = "RUBY RTD 500 mg Q3W x6 -> 1000 mg Q6W",
-           COADMIN_CHEMO = 1L)
+           CONMED_CHEMO = 1L)
   d_maint <- pop_baseline |>
     tidyr::crossing(TIME = maint_doses_d) |>
     mutate(AMT = 1000, EVID = 1, CMT = "central", DUR = 0.5 / 24, DV = NA_real_,
            treatment = "RUBY RTD 500 mg Q3W x6 -> 1000 mg Q6W",
-           COADMIN_CHEMO = 0L)
+           CONMED_CHEMO = 0L)
   d_obs <- pop_baseline |>
     tidyr::crossing(TIME = obs_times_d) |>
     mutate(AMT = NA_real_, EVID = 0, CMT = "central", DUR = NA_real_,
            DV = NA_real_, treatment = "RUBY RTD 500 mg Q3W x6 -> 1000 mg Q6W",
-           COADMIN_CHEMO = ifelse(TIME < maint_start_d, 1L, 0L))
+           CONMED_CHEMO = ifelse(TIME < maint_start_d, 1L, 0L))
   bind_rows(d_load, d_maint, d_obs) |>
     arrange(ID, TIME, dplyr::desc(EVID)) |>
     as.data.frame()
@@ -262,7 +262,7 @@ etas = 0):
 t_grid <- seq(0, 365, by = 5)
 events_cl <- data.frame(
   ID            = 1, WT = 70, AGE = 64, ALB = 39, ALT = 18, SEXF = 1,
-  COADMIN_CHEMO = 0L,
+  CONMED_CHEMO = 0L,
   TIME = c(0, t_grid),
   AMT  = c(500, rep(NA_real_, length(t_grid))),
   EVID = c(1,  rep(0, length(t_grid))),
@@ -273,7 +273,7 @@ events_cl <- data.frame(
 sim_cl <- rxSolve(
   mod, events = events_cl,
   params = c(WT = 70, AGE = 64, ALB = 39, ALT = 18, SEXF = 1,
-             COADMIN_CHEMO = 0,
+             CONMED_CHEMO = 0,
              etalcl = 0, etalvc = 0, etalImax = 0),
   omega  = NA,
   returnType = "data.frame"
@@ -389,9 +389,9 @@ the equation form as written:
   `(1 - theta_CL_MONOTR)` does not have an explicit indicator. The
   parameter value (-0.0779) and the abstract phrasing
   ("CL was 7.79% lower in combination therapy") are most consistent
-  with the form `(1 + theta * COADMIN_CHEMO)`, where COADMIN_CHEMO = 1
+  with the form `(1 + theta * CONMED_CHEMO)`, where CONMED_CHEMO = 1
   in the combination phase. This is the form used in the model file;
-  see the model file's `notes` for `COADMIN_CHEMO`.
+  see the model file's `notes` for `CONMED_CHEMO`.
 - **"Independent random effects" claim.** The Results paragraph on the
   combined-trial-data model update states the IIVs on CL, Vc and Imax
   are "independent random effects", but Table 2 explicitly reports a
@@ -436,7 +436,7 @@ the equation form as written:
   can pass time-varying ALB / ALT columns to `rxSolve` directly via
   the event table.
 - **Combination-therapy indicator must be supplied per row.** The
-  `COADMIN_CHEMO` column needs to be present on every event-table row
+  `CONMED_CHEMO` column needs to be present on every event-table row
   (dose and observation alike). For the RUBY Part 1 RTD it should be 1
   during cycles 1-6 and 0 during cycles 7+; for GARNET-style
   monotherapy regimens it is 0 throughout.
