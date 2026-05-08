@@ -45,13 +45,13 @@ Kuchimanchi_2024_dostarlimab <- function() {
       notes              = "Female is the reference category (Kuchimanchi 2024: theta_CL_SEX and theta_Vc_SEX are 0 for females and estimated for males). Implemented as (1 + theta * (1 - SEXF)) so SEXF = 1 (female) gives factor 1 and SEXF = 0 (male) gives factor 1 + theta.",
       source_name        = "SEX (paper codes a male indicator; mapped to canonical SEXF via 1 - SEXM)"
     ),
-    COADMIN_CHEMO = list(
+    CONMED_CHEMO = list(
       description        = "Coadministration regimen: dostarlimab + platinum-doublet chemotherapy (carboplatin AUC 5 + paclitaxel 175 mg/m^2 Q3W)",
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (dostarlimab monotherapy; the reference regimen in this analysis)",
-      notes              = "Indicator for whether dostarlimab is being given as part of combination chemotherapy (RUBY Part 1 cycles 1-6) versus monotherapy (GARNET, RUBY cycles 7+). Implemented multiplicatively as (1 + e_combo_cl * COADMIN_CHEMO) with e_combo_cl = -0.0779, so combination therapy yields CL factor 0.9221 (~7.79% lower CL than monotherapy), matching Kuchimanchi 2024 Abstract and Table 2. The paper's Equation block writes the effect with an implicit indicator as '(1 - theta_CL_MONOTR)'; the most direct numerical match to the abstract phrasing 'CL was 7.79% lower in combination therapy' is achieved by treating the parameter as a fractional-change coefficient on a combination-therapy indicator.",
-      source_name        = "MONOTR (the paper's monotherapy/combination indicator; mapped to canonical COADMIN_CHEMO via the inverse value relation, see notes)"
+      notes              = "Indicator for whether dostarlimab is being given as part of combination chemotherapy (RUBY Part 1 cycles 1-6) versus monotherapy (GARNET, RUBY cycles 7+). Implemented multiplicatively as (1 + e_combo_cl * CONMED_CHEMO) with e_combo_cl = -0.0779, so combination therapy yields CL factor 0.9221 (~7.79% lower CL than monotherapy), matching Kuchimanchi 2024 Abstract and Table 2. The paper's Equation block writes the effect with an implicit indicator as '(1 - theta_CL_MONOTR)'; the most direct numerical match to the abstract phrasing 'CL was 7.79% lower in combination therapy' is achieved by treating the parameter as a fractional-change coefficient on a combination-therapy indicator.",
+      source_name        = "MONOTR (the paper's monotherapy/combination indicator; mapped to canonical CONMED_CHEMO via the inverse value relation, see notes)"
     )
   )
 
@@ -120,8 +120,8 @@ Kuchimanchi_2024_dostarlimab <- function() {
     # Categorical combination-therapy effect on CL. Kuchimanchi 2024 Table 2
     # reports "Effect of combination therapy on CL = -0.0779"; the abstract
     # describes this as combo CL being 7.79% lower than monotherapy. Encoded
-    # as (1 + e_combo_cl * COADMIN_CHEMO): combination therapy
-    # (COADMIN_CHEMO = 1) gives factor 1 - 0.0779 = 0.9221.
+    # as (1 + e_combo_cl * CONMED_CHEMO): combination therapy
+    # (CONMED_CHEMO = 1) gives factor 1 - 0.0779 = 0.9221.
     e_combo_cl <- -0.0779; label("Combination-therapy fractional change on CL vs. monotherapy reference") # Kuchimanchi 2024 Table 2: Effect of combination therapy on CL = -0.0779
 
     # IIV - block on (CL, Vc) and independent eta on |I_max|. Kuchimanchi 2024
@@ -160,9 +160,9 @@ Kuchimanchi_2024_dostarlimab <- function() {
     sex_cl <- 1 + e_sex_cl * (1 - SEXF)
     sex_vc <- 1 + e_sex_vc * (1 - SEXF)
 
-    # Combination-therapy effect: monotherapy reference (COADMIN_CHEMO = 0
-    # -> multiplier 1); combo (COADMIN_CHEMO = 1) -> multiplier 1 + theta.
-    combo_cl <- 1 + e_combo_cl * COADMIN_CHEMO
+    # Combination-therapy effect: monotherapy reference (CONMED_CHEMO = 0
+    # -> multiplier 1); combo (CONMED_CHEMO = 1) -> multiplier 1 + theta.
+    combo_cl <- 1 + e_combo_cl * CONMED_CHEMO
 
     # Time-dependent CL (Hill function of time since first dose; t in days).
     # I_max < 0; sign applied here to keep individual values strictly negative
