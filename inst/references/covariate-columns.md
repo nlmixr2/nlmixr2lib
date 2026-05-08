@@ -2346,6 +2346,17 @@ readable.
 - **Example models:** `Netterberg_2017_docetaxel.R` (multiplicative effect on baseline ANC: `BACOV *= (1 + theta * PRIOR_ANTICANCER)` with theta = -0.147; prior-anticancer patients have ~14.7% lower baseline ANC than treatment-naive patients).
 - **Notes:** Distinct from `LINE_1L` (which is the inverse semantics for systemic-drug therapy lines only) and `PRIOR_TNF` / `PRIOR_BIO` (which are modality-specific to anti-TNF / biologic exposure in inflammatory-disease cohorts). Use `PRIOR_ANTICANCER` when the source paper's covariate counts any anticancer modality (including radiotherapy and surgery) as prior exposure. When a future paper restricts the indicator to cytotoxic chemotherapy alone, use `LINE_1L` (with values inverted: paper's `PRIOR_CHEMO = 1 - LINE_1L`). When a paper distinguishes prior chemotherapy from prior radiotherapy, register a parallel `PRIOR_RADIATION` canonical.
 
+### PRIOR_ANTHRACYCLINE_DOSE (**canonical for prior cumulative anthracycline dose**)
+- **Description:** Cumulative dose of anthracycline chemotherapy received by the subject prior to the first dose analysed in the current popPK / popPK-PD model, expressed in doxorubicin-equivalent body-surface-area-normalised mg/m^2. Time-fixed per subject for the analysis window (the running cumulative anthracycline dose at the first observed dose).
+- **Units:** mg/m^2 (doxorubicin-equivalent)
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- typically used as a linear shift (`(1 + theta * (PRIOR_ANTHRACYCLINE_DOSE - ref))`) on a baseline parameter (e.g., baseline cardiac troponin I before the next anthracycline cycle). Reference values observed: 90 mg/m^2 (Kunarajah 2017, cohort median).
+- **Source aliases:**
+  - `PCAMT` -- Kunarajah 2017 NM-TRAN convention ("Prior Cumulative Anthracyclines aMounT"; doxorubicin-equivalent mg/m^2).
+- **Example models:** `Kunarajah_2017_doxorubicin.R` (linear shift on baseline cardiac troponin I: `bl_cTnI * (1 + 0.00308 * (PRIOR_ANTHRACYCLINE_DOSE - 90))` -- ~0.31% increase in baseline cTnI per 1 mg/m^2 of prior cumulative anthracycline exposure).
+- **Notes:** Distinct from `PRIOR_ANTICANCER` (a binary modality indicator, 1 = any prior anticancer therapy) -- `PRIOR_ANTHRACYCLINE_DOSE` carries the actual cumulative dose, restricted to the anthracycline drug class (doxorubicin, daunorubicin, epirubicin, idarubicin), and is the column needed when the source paper's effect is dose-response in the prior-exposure regime rather than presence / absence. When a paper records anthracycline exposure as anthracycline-class-by-class doses and the model effect aggregates them, sum to a single doxorubicin-equivalent value before populating this column (use the published bone-marrow / cardiotoxicity isoeffective conversion factors). When a paper distinguishes the type of anthracycline (e.g., doxorubicin vs daunorubicin separately), register parallel canonicals (`PRIOR_DOXORUBICIN_DOSE`, `PRIOR_DAUNORUBICIN_DOSE`) rather than overloading this name. Scope: specific because the column meaning is intrinsically tied to anthracycline-class chemotherapy exposure; promote to general if a second paper ratifies the same definition.
+
 ### PRIOR_BIO (**canonical for prior biologic exposure**)
 - **Description:** 1 = subject previously treated with any biologic (broader than `PRIOR_TNF`: includes anti-TNF agents plus anti-integrin, anti-IL-12/23, anti-IL-17, anti-IL-23, anti-IL-6, etc.), 0 = biologic-naive.
 - **Units:** (binary)

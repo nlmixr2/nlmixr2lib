@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Kunarajah 2017 doxorubicin ([doi:10.1007/s00280-017-3309-6](https://doi.org/10.1007/s00280-017-3309-6)) -- paediatric oncology patients (joint doxorubicin / doxorubicinol popPK with cardiac troponin I turnover sub-model; ratifies new `PRIOR_ANTHRACYCLINE_DOSE` covariate canonical and `doxol` registered metabolite suffix).
 * Add Llanos-Paez 2017 gentamicin ([doi:10.1208/s12248-017-0173-6](https://doi.org/10.1208/s12248-017-0173-6)) -- pediatric oncology patients with febrile or fever-only neutropenia.
 * Add Hennig 2015 phenytoin ([doi:10.1002/jcph.417](https://doi.org/10.1002/jcph.417)) -- critically ill children in a paediatric ICU (joint protein-unbound and protein-bound popPK with linear albumin partition).
 * Add Bergmann 2014 tacrolimus ([doi:10.1097/FTD.0b013e31829f1ab8](https://doi.org/10.1097/FTD.0b013e31829f1ab8)) -- adult kidney transplant recipients.

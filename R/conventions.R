@@ -110,7 +110,10 @@
     # suffix in parent + metabolite simultaneous popPK models
     # (Hennig 2006 Clin Pharmacokinet 45(11):1099-1114; Hennig 2007 BJCP
     # 63(4):438-450).
-    "ohi"
+    "ohi",
+    # Doxorubicinol, the C-13 alcohol metabolite of doxorubicin
+    # (Kunarajah 2017 paediatric oncology popPK/PD model).
+    "doxol"
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` denotes the time-varying decay arm.
