@@ -100,9 +100,10 @@
     # (Birgersson 2019 DDMODEL00000297).
     "dha",
     # Hydroxy-itraconazole (OH-ITZ), the major active metabolite of
-    # itraconazole produced by CYP3A4 hydroxylation (Hennig 2006 Clin
-    # Pharmacokinet 45(11):1099-1114). Used as a metabolite suffix in
-    # the parent + metabolite simultaneous popPK model.
+    # itraconazole produced by CYP3A4 hydroxylation. Used as a metabolite
+    # suffix in parent + metabolite simultaneous popPK models
+    # (Hennig 2006 Clin Pharmacokinet 45(11):1099-1114; Hennig 2007 BJCP
+    # 63(4):438-450).
     "ohi"
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
