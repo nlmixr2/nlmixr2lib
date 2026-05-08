@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Bergmann 2014 tacrolimus ([doi:10.1097/FTD.0b013e31829f1ab8](https://doi.org/10.1097/FTD.0b013e31829f1ab8)) -- adult kidney transplant recipients.
 * Add Harun 2019 cysticFibrosis ([doi:10.1136/thoraxjnl-2018-211550](https://doi.org/10.1136/thoraxjnl-2018-211550)) -- children with classic cystic fibrosis (sigmoid-Emax disease-progression model of FEV1% predicted from age 5 to 14 years).
 * Add Hennig 2007 itraconazole ([doi:10.1111/j.1365-2125.2006.02778.x](https://doi.org/10.1111/j.1365-2125.2006.02778.x)) -- adult cystic fibrosis patients (D-optimal-designed cross-over single-dose 200 mg oral itraconazole with parallel parent / hydroxy-itraconazole metabolite popPK and per-formulation absorption / bioavailability).
 * Add Hennig 2008 tobramycin ([doi:10.1111/j.1365-2125.2007.03045.x](https://doi.org/10.1111/j.1365-2125.2007.03045.x)) -- paediatric cystic fibrosis patients on once-daily intravenous tobramycin.
