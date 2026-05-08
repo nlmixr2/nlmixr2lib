@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Hennig 2006 itraconazole ([doi:10.2165/00003088-200645110-00004](https://doi.org/10.2165/00003088-200645110-00004)) -- paediatric cystic-fibrosis and bone-marrow-transplant patients (parent + active metabolite popPK for oral itraconazole and hydroxy-itraconazole).
 * Add Lawson 2022 busulfan ([doi:10.1002/psp4.12809](https://doi.org/10.1002/psp4.12809)) -- pediatric hematopoietic stem cell transplant recipients receiving once-daily IV busulfan.
 * Add Archary 2019 abacavir ([doi:10.1111/bcp.13998](https://doi.org/10.1111/bcp.13998)) -- severely malnourished HIV-infected children.
 * Add Bista 2015 fentanyl (manuscript, journal/DOI not on disk) -- adults with advanced cancer receiving Durogesic transdermal fentanyl matrix patches.
