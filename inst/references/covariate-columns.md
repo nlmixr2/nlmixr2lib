@@ -103,6 +103,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Chua_2025_mirikizumab.R` (reference 24.75 kg/m^2; linear-deviation effect on logit of bioavailability), `NA_NA_lidocaine.R` (DDMODEL00000281; binary stratification at threshold 27.93 kg/m^2 adding +0.939 to the GX rate constant K30 in the BMI > 27.93 cohort).
 - **Notes:** Universal clinical-trial demographic. Derived as `WT / (height_m)^2`; assume time-fixed at baseline unless the source paper states otherwise.
 
+### BMIZ (**canonical for body-mass-index z-score (age- and sex-standardised)**)
+- **Description:** Age- and sex-standardised body-mass-index z-score (number of standard deviations above or below the reference-population mean BMI for the subject's age and sex). Distinct from raw `BMI` (kg/m^2): `BMIZ` is unitless and centred at 0 in the reference population, so the reference value used in linear-deviation effects is 0 (not a population BMI in kg/m^2). Time-varying when the source paper carries a per-visit z-score; document baseline-vs-time-varying status in `covariateData[[BMIZ]]$notes`.
+- **Units:** unitless (z-score; standard-deviation units)
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- used with a linear-deviation form `(1 + e * (BMIZ - 0))` so the reference is 0 (population mean for the subject's age/sex). Effect coefficients are interpreted as fractional change per 1 z-score-unit deviation from the reference.
+- **Source aliases:**
+  - `BMI` -- when a paper uses the column name `BMI` for what is actually a z-score (e.g., the Harun 2019 NMTRAN control stream column `BMI` is documented in the dataset header as "body-mass index z-score"). The canonical column is `BMIZ`; the source-paper column name is recorded in `covariateData[[BMIZ]]$source_name`.
+- **Example models:** `Harun_2019_cysticFibrosis.R` (time-varying per-visit BMI z-score; linear-deviation effect on baseline FEV1% predicted with reference 0 and coefficient +0.0382 per z-score unit).
+- **Notes:** Distinct from `BMI` (raw kg/m^2 used in adult populations). Paediatric and adolescent studies routinely report BMI as a z-score relative to a growth reference (WHO 2007 Growth Reference for school-aged children, CDC 2000, etc.); document the reference standard the source paper used in `covariateData[[BMIZ]]$notes`. Specific scope until a second paediatric model ratifies the name; at that point promote to `general`.
+
 ### SEXF (**canonical for sex**)
 - **Description:** Biological sex indicator, 1 = female, 0 = male.
 - **Units:** (binary)
@@ -1226,6 +1237,30 @@ readable.
   - `COHORT8` -- used in `Zhong_2026_abatacept.R` (Zhong 2026 NM-TRAN indicator for ABA2 study Cohort 8/8).
 - **Example models:** `Zhong_2026_abatacept.R` (exponential coefficient -0.0934 on CL and +0.257 on VC; the fully-HLA-matched HSCT cohort exhibits a small CL decrease and a larger VC increase relative to the reference complement).
 - **Notes:** Used together with `HSCT_URD_7OF8` to decompose a three-level "transplant cohort" categorical (non-HSCT-cohort / 7-of-8 / 8-of-8) into two orthogonal binary indicators. The 8-of-8 cohort is the lower-risk HLA-matching configuration. Scope: specific because the reference complement (the union of non-transplant disease cohorts pooled in the source analysis) is paper-defined. Ratified canonically on 2026-04-29.
+
+## Cystic fibrosis lung-disease indicators
+
+### AIR_TRAP_5Y (**canonical for severe air trapping on chest HRCT scan at age 5 years**)
+- **Description:** 1 = subject had a non-zero "air trapping" component score on the validated Brody-II chest high-resolution computed tomography (HRCT) scan performed at age 5 years; 0 = air trapping component score of 0 (absent). Time-fixed per subject (the indicator captures the single end-of-study HRCT performed at age 5 in the Australasian Cystic Fibrosis Bronchoalveolar Lavage (ACFBAL) study). The Brody-II scoring system reports air trapping as a percentage of maximum possible HRCT score; the binary "present vs absent" dichotomy follows the same convention as Rosenow 2015 (Am J Respir Crit Care Med 191:1158-65).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no air trapping detected on the age-5 HRCT scan).
+- **Source aliases:**
+  - `ATS5C` -- used in `Harun_2019_cysticFibrosis.R` (Harun 2019 NMTRAN `$INPUT` column, "presence of air trapping at age 5"; values 0 = absent, 1 = present).
+- **Example models:** `Harun_2019_cysticFibrosis.R` (linear-deviation effect on baseline FEV1% predicted at age 5: `(1 + e_at_baseline * AIR_TRAP_5Y)` with coefficient -0.0417, i.e., subjects with severe air trapping at age 5 have a baseline FEV1% predicted approximately 4.17% lower than those without).
+- **Notes:** Specific scope because the indicator is tied to the ACFBAL study's standardised HRCT-at-age-5 protocol and the Brody-II scoring rubric; future paediatric CF lung-disease studies that score HRCT at a different age or use a different scoring system should register a separate canonical (`AIR_TRAP_8Y`, `AIR_TRAP_PRAGMA`, etc.) rather than overload this name. Ratified canonically on 2026-05-08 alongside the Harun 2019 extraction.
+
+### HOSPRA (**canonical for hospitalisation due to a pulmonary exacerbation**)
+- **Description:** Time-varying binary indicator of inpatient hospitalisation for management of a pulmonary exacerbation at the time of the FEV1% predicted measurement: 1 = subject is hospitalised because of a pulmonary exacerbation when the spirometry value is recorded, 0 = not hospitalised at that visit. Used as a per-visit covariate in disease-progression models of FEV1% decline in cystic fibrosis where pulmonary exacerbations are tracked from the Australian Cystic Fibrosis Data Registry (ACFDR) inpatient records.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (not hospitalised for a pulmonary exacerbation at the time of the FEV1% measurement).
+- **Source aliases:**
+  - `HOSPRA` -- used in `Harun_2019_cysticFibrosis.R` (Harun 2019 NMTRAN `$INPUT` column, "hospitalisation at the time of FEV1% predicted measurement; 0=no, 1=yes").
+- **Example models:** `Harun_2019_cysticFibrosis.R` (linear-deviation effects on the disease-progression maximum drop and on the half-effect age: `(1 + e_hpe_dmax * HOSPRA)` with coefficient -0.22 on the maximum FEV1% drop and `(1 + e_hpe_t50max * HOSPRA)` with coefficient -0.235 on the age at which 50% of the maximum drop occurs; hospitalised visits accelerate both the magnitude and the onset of FEV1% decline).
+- **Notes:** Specific scope because the canonical encoding pools all pulmonary exacerbation-driven hospitalisations into a single binary regardless of severity, duration, or treatment intensity; future CF / chronic-respiratory-disease studies that need to distinguish exacerbation severity (e.g., requiring intravenous antibiotics vs oral) should register a finer-grained canonical. Ratified canonically on 2026-05-08 alongside the Harun 2019 extraction.
 
 ## Infectious disease (Plasmodium / malaria)
 
