@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Yassen 2025 asundexian ([doi:10.1002/psp4.70142](https://doi.org/10.1002/psp4.70142)) -- healthy volunteers and adults at risk for thromboembolic / cardiovascular events (PACIFIC-AF, PACIFIC-STROKE, PACIFIC-AMI Phase II + six Phase I studies; pooled n = 2914).
 * Add Jelliffe 2014 digoxin ([doi:10.1097/FTD.0000000000000023](https://doi.org/10.1097/FTD.0000000000000023)) -- adults requiring digoxin therapy across normal-to-anephric renal function.
 * Add Aksenov 2018 uricAcid ([doi:10.14814/phy2.13614](https://doi.org/10.14814/phy2.13614)) -- healthy adults and gout patients with hyperuricemia.
 * Add Garmann 2017 BAY 81-8973 ([doi:10.1111/hae.13192](https://doi.org/10.1111/hae.13192)) -- patients aged 1-61 years with severe haemophilia A (LEOPOLD I/II/Kids).
