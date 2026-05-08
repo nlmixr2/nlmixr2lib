@@ -65,7 +65,20 @@ Read these on demand; don't load them up front.
 10. **Multiple-model handling.**
     - Base model + final model → extract only the final.
     - Any other "multiple model" case (per-subpopulation, per-endpoint, sensitivity analyses) → list the candidates to the user and ask which to extract. Offer "one," "all," or "a subset."
-11. Confirm the target subdirectory under `inst/modeldb/` (usually `specificDrugs/`; endogenous, therapeuticArea, pharmacokinetics, and pharmacodynamics are also valid).
+11. **Systematic review / meta-analysis handling.** If the source is a systematic review or meta-analysis that catalogs other authors' published popPK / PD models without developing an original model of its own, **the default action is to skip the task and queue the cited primary papers for future extraction.** Do not extract a cataloged model from the review's summary table — extracting from a secondary source loses model-selection rationale, covariate-encoding details (reference categories, units, allometric exponents, scaling normalisations), and the full residual-error / IIV structure that only the primary papers contain. Recognise systematic reviews by:
+
+    - An explicit "Review" / "Systematic Review" tag on page 1 or in the article-type header.
+    - A Methods section describing a literature-search protocol (PubMed / EMBASE / Scopus / Web of Science search query, PRISMA-style screening flowchart, inclusion / exclusion criteria).
+    - A Results section that tabulates other authors' models in side-by-side tables (one row per cited study, columns for structural model / parameter estimates / covariates).
+    - No `$THETA` / `$OMEGA` / `$SIGMA` block, no original VPC / GOF figures, no original NONMEM control stream attributable to the review's authors.
+
+    Sidecar-ask the operator with the list of cited primary papers and three options:
+
+    > `<paper-name>` is a systematic review of <N> previously published popPK / PD models. Per the standing policy, the recommended action is to skip this task and queue the cited primary papers individually for future extraction. Cited primary models: <numbered list with first-author + year + drug + journal>. Confirm: (A) skip this task and queue all <N> cited primary papers for future extraction (operator-followups register), (B) skip without queueing references (e.g. the references duplicate already-queued tasks), (C) extract one or more models from the review's tables (operator names which; the review becomes the transcription source with provenance noted prominently in vignette Errata).
+
+    Option (A) is the recommended default. The cited-papers list is committed in the report so the operator can add them to the queue in batch.
+
+12. Confirm the target subdirectory under `inst/modeldb/` (usually `specificDrugs/`; endogenous, therapeuticArea, pharmacokinetics, and pharmacodynamics are also valid).
 
 ## Phase 2 — Sync with origin/main and branch
 
