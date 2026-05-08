@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Lawson 2022 busulfan ([doi:10.1002/psp4.12809](https://doi.org/10.1002/psp4.12809)) -- pediatric hematopoietic stem cell transplant recipients receiving once-daily IV busulfan.
 * Add Archary 2019 abacavir ([doi:10.1111/bcp.13998](https://doi.org/10.1111/bcp.13998)) -- severely malnourished HIV-infected children.
 * Add Bista 2015 fentanyl (manuscript, journal/DOI not on disk) -- adults with advanced cancer receiving Durogesic transdermal fentanyl matrix patches.
 * Add Archary 2018 lopinavir ([doi:10.1097/INF.0000000000001867](https://doi.org/10.1097/INF.0000000000001867)) -- severely malnourished HIV-infected children (1-month to 12-year-olds) on twice-daily oral LPV/rtv with FFM allometric scaling and a total-cholesterol covariate effect on apparent clearance.
