@@ -2713,14 +2713,15 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Notes:** Lower case preserved from source file. Pre-existing legacy form; new models should prefer the integer-valued `OCC` canonical above and decompose into binary indicators inside `model()`.
 
 ### CYCLE
-- **Description:** Treatment cycle number (1 = first dosing cycle, 2 = second, ...). Integer count, time-varying across a multi-cycle treatment course, incremented at each new dosing cycle.
+- **Description:** Dose-number / treatment-cycle counter (1 = first dose or cycle, 2 = second, ...). Integer count, time-varying across a multi-dose / multi-cycle treatment course, incremented at each new administration.
 - **Units:** (count)
 - **Type:** count
-- **Scope:** specific
-- **Reference category:** n/a -- used either with a power-covariate form `CYCLE^Fm` (Fm typically negative) to capture cycle-over-cycle decline in a derived quantity such as ADC-to-payload conversion fraction (Li 2017 brentuximab vedotin), or with a piecewise indicator `CYCLE == 1 vs CYCLE >= 2` to capture a step change in DAR scaling between cycle 1 and later cycles (Hong 2025 datopotamab deruxtecan).
-- **Source aliases:** `CYCLE` -- used in `Li_2017_brentuximab.R`, `Hong_2025_datopotamab.R`, and `Lu_2022_patritumab.R` with the same canonical name.
+- **Scope:** general
+- **Reference category:** n/a -- used either with a power-covariate form `CYCLE^Fm` (Fm typically negative) to capture cycle-over-cycle decline in a derived quantity such as ADC-to-payload conversion fraction (Li 2017 brentuximab vedotin), or with a piecewise indicator `CYCLE == 1 vs CYCLE >= 2` to capture a step change in PK between the first and subsequent administrations (Hong 2025 datopotamab deruxtecan; Huynh 2026 VRC07-523LS).
+- **Source aliases:** `CYCLE` -- used in `Li_2017_brentuximab.R`, `Hong_2025_datopotamab.R`, `Lu_2022_patritumab.R`, and `Huynh_2026_VRC07523LS.R` with the same canonical name.
 - **Example models:**
   - `Li_2017_brentuximab.R` (exponent on the fraction of ADC that converts to MMAE by proteolytic degradation, Fm = -0.261, to reflect tumor-burden reduction across successive treatment cycles).
   - `Hong_2025_datopotamab.R` (cycle-1 vs cycle-2+ piecewise scaling Factor1 = 0.696 on the DAR equation that drives DXd formation rate from total Dato-DXd elimination).
   - `Lu_2022_patritumab.R` (cycle-1 vs cycle-2+ piecewise scaling Factor1 = theta = 0.648 on the payload-to-intact-drug ratio PIR that scales DXd release rate from intact ADC).
-- **Notes:** Must be >= 1 throughout (`CYCLE^Fm` is undefined at 0; the piecewise form requires `CYCLE` to be a positive integer at every observation row). Distinct from `ooc<n>` binary-occasion indicators: `CYCLE` is an integer count, not a mutually-exclusive set of indicator columns. Data-assembly helper: set `CYCLE = floor((TIME - TIME_FIRST_DOSE) / cycle_length_days) + 1` for a fixed-interval dosing regimen.
+  - `Huynh_2026_VRC07523LS.R` (first-dose vs repeat-dose piecewise scaling factor = 1.49 on Vc + Vp for the broadly neutralizing HIV-1 mAb VRC07-523LS in adults and infants).
+- **Notes:** Must be >= 1 throughout (`CYCLE^Fm` is undefined at 0; the piecewise form requires `CYCLE` to be a positive integer at every observation row). Distinct from `ooc<n>` binary-occasion indicators: `CYCLE` is an integer count, not a mutually-exclusive set of indicator columns. Originally scoped specific to ADC chemo-cycle accounting; promoted to `general` on 2026-05-08 when Huynh 2026 demonstrated the same first-vs-subsequent-administration semantics applies cleanly to non-oncology mAb models. Data-assembly helper: set `CYCLE = floor((TIME - TIME_FIRST_DOSE) / cycle_length_days) + 1` for a fixed-interval dosing regimen, or `CYCLE = cumsum(evid == 1)` for an irregular-interval regimen.
