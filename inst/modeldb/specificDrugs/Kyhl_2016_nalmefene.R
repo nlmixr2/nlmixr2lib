@@ -37,7 +37,7 @@ Kyhl_2016_nalmefene <- function() {
       notes              = "Multiplicative effect on oral bioavailability.",
       source_name        = "FED"
     ),
-    TABLET = list(
+    FORM_TABLET = list(
       description        = "Tablet vs. solution formulation indicator",
       units              = "(binary)",
       type               = "binary",
@@ -109,7 +109,7 @@ Kyhl_2016_nalmefene <- function() {
   model({
     ka_tablet <- exp(lka_tablet + etalka_tablet)
     ka_solution <- exp(lka_solution)
-    ka <- ka_tablet*TABLET + ka_solution*(1 - TABLET)
+    ka <- ka_tablet*FORM_TABLET + ka_solution*(1 - FORM_TABLET)
     cl <- exp(lcl + etalcl) * (LBM/56.28)^e_lbm_cl
     vc <- exp(lvc + etalvc) + e_age_vc*(AGE - 28)
     q <- exp(lq + etalq)

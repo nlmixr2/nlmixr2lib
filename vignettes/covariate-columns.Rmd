@@ -1,0 +1,32 @@
+---
+title: "Canonical covariate columns"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Canonical covariate columns}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = FALSE, results = "asis")
+md_path <- system.file("references", "covariate-columns.md",
+                       package = "nlmixr2lib")
+```
+
+```{r emit}
+if (nzchar(md_path) && file.exists(md_path)) {
+  lines <- readLines(md_path, warn = FALSE)
+  # Strip the leading top-level heading from the markdown — pkgdown
+  # already emits an h1 from the vignette's YAML `title:` field, so
+  # leaving it in produces a duplicated heading on the page.
+  if (length(lines) > 0 && grepl("^# ", lines[1])) {
+    lines <- lines[-1]
+    while (length(lines) > 0 && !nzchar(lines[1])) lines <- lines[-1]
+  }
+  cat(lines, sep = "\n")
+} else {
+  cat("The covariate-columns register could not be located via",
+      "`system.file()`; ensure the package is installed before",
+      "rendering this vignette.\n")
+}
+```

@@ -60,7 +60,7 @@ dSimPrep <-
     AGE = 28,
     RIA_ASSAY = 0,
     FED = 1,
-    TABLET = 1
+    FORM_TABLET = 1
   )
 Kyhl2016Nalmefene <- readModelDb("Kyhl_2016_nalmefene")
 conc_unit <- rxode2::rxode(Kyhl2016Nalmefene)$units[["concentration"]]
