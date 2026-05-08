@@ -4983,7 +4983,7 @@ tied to the study’s analysis plan.
   note for how the other ipilimumab schedules collapse into the
   reference group.
 
-### COADMIN_CHEMO (**canonical for anti-PD-(L)1 mAb + chemotherapy combination indicator**)
+### CONMED_CHEMO (**canonical for anti-PD-(L)1 mAb + chemotherapy combination indicator**)
 
 - **Description:** 1 = subject is receiving an anti-PD-(L)1 monoclonal
   antibody in combination with platinum-based chemotherapy
@@ -5000,7 +5000,7 @@ tied to the study’s analysis plan.
   - `CHEMO` – used in `Zhang_2019_nivolumab.R`.
   - `MONOTR` – used in `Kuchimanchi_2024_dostarlimab.R` (the paper’s
     structural-equation indicator for monotherapy; the canonical column
-    carries the inverse value, i.e. `COADMIN_CHEMO = 1 - MONOTR`, so the
+    carries the inverse value, i.e. `CONMED_CHEMO = 1 - MONOTR`, so the
     canonical column is 1 when the patient is on combo-chemotherapy).
 - **Example models:** `Zhang_2019_nivolumab.R` (exponential effect on
   baseline CL: `exp(-0.104)` ~= 0.90 fold, i.e. ~9.7% lower CL relative
@@ -5013,11 +5013,11 @@ tied to the study’s analysis plan.
   ratified the same pooling convention (any chemotherapy backbone
   collapsed into a single binary indicator). The two papers use
   different functional forms for the effect on CL – Zhang 2019 uses
-  `exp(theta * COADMIN_CHEMO)` (exponential) and Kuchimanchi 2024 uses
-  `(1 + theta * COADMIN_CHEMO)` (multiplicative); these are different
+  `exp(theta * CONMED_CHEMO)` (exponential) and Kuchimanchi 2024 uses
+  `(1 + theta * CONMED_CHEMO)` (multiplicative); these are different
   parameterisations of the same underlying study-design indicator and
   the canonical column meaning is unchanged. Document the per-model
-  functional form in `covariateData[[COADMIN_CHEMO]]$notes`.
+  functional form in `covariateData[[CONMED_CHEMO]]$notes`.
 
 ### COADMIN_IPI_ANY (**canonical for any-ipilimumab-coadministration indicator**)
 
@@ -5064,7 +5064,7 @@ tied to the study’s analysis plan.
 - **Example models:** `Zhou_2025_brentuximab.R` (power-form effect on
   ADC clearance: `CL * 2.12^COADMIN_AVD` – ADC clearance is ~2.1-fold
   higher under A+AVD vs single-agent BV).
-- **Notes:** Distinct from `COADMIN_CHEMO` (which is nivolumab +
+- **Notes:** Distinct from `CONMED_CHEMO` (which is nivolumab +
   platinum-based chemotherapy). The A+AVD regimen is the standard
   chemotherapy backbone for frontline classical Hodgkin lymphoma;
   promote to general scope if a second BV paper reports the same A+AVD

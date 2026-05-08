@@ -800,7 +800,7 @@ per Methods).</li>
 </tr>
 <tr class="odd">
 <td><code>CHEMO</code></td>
-<td><code>COADMIN_CHEMO</code></td>
+<td><code>CONMED_CHEMO</code></td>
 </tr>
 <tr class="even">
 <td><code>IPICO</code></td>
@@ -892,7 +892,7 @@ combination.</p>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">regimen</span> <span class="op">==</span> <span class="st">"nivo 3 mg/kg q2w + ipi 3 mg/kg q3w x 4"</span><span class="op">)</span></span>
 <span>  <span class="va">pop_offset</span><span class="op">$</span><span class="va">COADMIN_IPI_1Q6W</span> <span class="op">&lt;-</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">regimen</span> <span class="op">==</span> <span class="st">"nivo 3 mg/kg q2w + ipi 1 mg/kg q6w"</span><span class="op">)</span></span>
-<span>  <span class="va">pop_offset</span><span class="op">$</span><span class="va">COADMIN_CHEMO</span>    <span class="op">&lt;-</span> <span class="fl">0L</span></span>
+<span>  <span class="va">pop_offset</span><span class="op">$</span><span class="va">CONMED_CHEMO</span>    <span class="op">&lt;-</span> <span class="fl">0L</span></span>
 <span>  <span class="co"># Any-ipilimumab indicator (drives Emax of time-varying CL).</span></span>
 <span>  <span class="va">pop_offset</span><span class="op">$</span><span class="va">COADMIN_IPI_ANY</span>  <span class="op">&lt;-</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"ipi"</span>, <span class="va">regimen</span><span class="op">)</span><span class="op">)</span></span>

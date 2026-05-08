@@ -8697,8 +8697,8 @@ collapse into the reference group.</li>
 </ul>
 </div>
 <div class="section level3">
-<h3 id="coadmin_chemo-canonical-for-anti-pd-l1-mab-chemotherapy-combination-indicator">COADMIN_CHEMO (<strong>canonical for anti-PD-(L)1 mAb + chemotherapy
-combination indicator</strong>)<a class="anchor" aria-label="anchor" href="#coadmin_chemo-canonical-for-anti-pd-l1-mab-chemotherapy-combination-indicator"></a>
+<h3 id="conmed_chemo-canonical-for-anti-pd-l1-mab-chemotherapy-combination-indicator">CONMED_CHEMO (<strong>canonical for anti-PD-(L)1 mAb + chemotherapy
+combination indicator</strong>)<a class="anchor" aria-label="anchor" href="#conmed_chemo-canonical-for-anti-pd-l1-mab-chemotherapy-combination-indicator"></a>
 </h3>
 <ul>
 <li>
@@ -8728,7 +8728,7 @@ combination such as anti-PD-1 + anti-CTLA-4).</li>
 <code>MONOTR</code> – used in
 <code>Kuchimanchi_2024_dostarlimab.R</code> (the paper’s
 structural-equation indicator for monotherapy; the canonical column
-carries the inverse value, i.e. <code>COADMIN_CHEMO = 1 - MONOTR</code>,
+carries the inverse value, i.e. <code>CONMED_CHEMO = 1 - MONOTR</code>,
 so the canonical column is 1 when the patient is on
 combo-chemotherapy).</li>
 </ul>
@@ -8747,12 +8747,12 @@ monotherapy).</li>
 carboplatin/paclitaxel analysis ratified the same pooling convention
 (any chemotherapy backbone collapsed into a single binary indicator).
 The two papers use different functional forms for the effect on CL –
-Zhang 2019 uses <code>exp(theta * COADMIN_CHEMO)</code> (exponential)
-and Kuchimanchi 2024 uses <code>(1 + theta * COADMIN_CHEMO)</code>
+Zhang 2019 uses <code>exp(theta * CONMED_CHEMO)</code> (exponential) and
+Kuchimanchi 2024 uses <code>(1 + theta * CONMED_CHEMO)</code>
 (multiplicative); these are different parameterisations of the same
 underlying study-design indicator and the canonical column meaning is
 unchanged. Document the per-model functional form in
-<code>covariateData[[COADMIN_CHEMO]]$notes</code>.</li>
+<code>covariateData[[CONMED_CHEMO]]$notes</code>.</li>
 </ul>
 </div>
 <div class="section level3">
@@ -8835,7 +8835,7 @@ days as the other AVD agents in this regimen).</li>
 clearance: <code>CL * 2.12^COADMIN_AVD</code> – ADC clearance is
 ~2.1-fold higher under A+AVD vs single-agent BV).</li>
 <li>
-<strong>Notes:</strong> Distinct from <code>COADMIN_CHEMO</code>
+<strong>Notes:</strong> Distinct from <code>CONMED_CHEMO</code>
 (which is nivolumab + platinum-based chemotherapy). The A+AVD regimen is
 the standard chemotherapy backbone for frontline classical Hodgkin
 lymphoma; promote to general scope if a second BV paper reports the same

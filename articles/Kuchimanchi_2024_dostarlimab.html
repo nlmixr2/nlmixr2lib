@@ -714,19 +714,18 @@ published analysis-set demographics (Kuchimanchi 2024 Table 1).</p>
 <span>  ALB           <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n_subj</span>, <span class="fl">38.5</span>, <span class="fl">5.2</span><span class="op">)</span>,      <span class="fl">19</span>,   <span class="fl">51</span><span class="op">)</span><span class="op">)</span>, <span class="co"># Table 1: mean 38.5 g/L, range 19-51</span></span>
 <span>  ALT           <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Lognormal.html" class="external-link">rlnorm</a></span><span class="op">(</span><span class="va">n_subj</span>, <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">17</span><span class="op">)</span>, <span class="fl">0.5</span><span class="op">)</span>,  <span class="fl">2.9</span>, <span class="fl">243</span><span class="op">)</span><span class="op">)</span>, <span class="co"># Table 1: median 17, range 2.9-243</span></span>
 <span>  SEXF          <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="va">n_subj</span>, <span class="fl">1</span>, <span class="fl">0.820</span><span class="op">)</span>,                            <span class="co"># Table 1: 82.0% female</span></span>
-<span>  COADMIN_CHEMO <span class="op">=</span> <span class="fl">0L</span>                                                   <span class="co"># default: monotherapy</span></span>
+<span>  CONMED_CHEMO <span class="op">=</span> <span class="fl">0L</span>                                                   <span class="co"># default: monotherapy</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>The simulated cohort defaults to the <strong>monotherapy</strong>
-regimen (COADMIN_CHEMO = 0). For RUBY Part 1’s combination phase, set
-the indicator to 1 in the event table only for the cycles where
-chemotherapy is co-administered (cycles 1-6 of RUBY Part 1; cycles 7+
-revert to 1000 mg Q6W monotherapy and the indicator should switch back
-to 0).</p>
+regimen (CONMED_CHEMO = 0). For RUBY Part 1’s combination phase, set the
+indicator to 1 in the event table only for the cycles where chemotherapy
+is co-administered (cycles 1-6 of RUBY Part 1; cycles 7+ revert to 1000
+mg Q6W monotherapy and the indicator should switch back to 0).</p>
 <p>The recommended therapeutic dose for the dostarlimab + chemotherapy
 indication evaluated in RUBY Part 1 is <strong>500 mg IV Q3W with
 carboplatin/paclitaxel for 6 cycles followed by 1000 mg IV Q6W
 monotherapy</strong>. The simulation runs for one year of dosing.</p>
-<p>The <code>COADMIN_CHEMO</code> indicator switches per row (per time
+<p>The <code>CONMED_CHEMO</code> indicator switches per row (per time
 point) so that only cycles 1-6 are tagged as combination therapy.
 Because the indicator only multiplies CL_base in the structural model,
 switching it mid-simulation simply removes the 7.79% CL reduction once
@@ -740,22 +739,22 @@ the patient transitions to monotherapy maintenance.</p>
 <span><span class="va">obs_times_d</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">365</span>, by <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>, <span class="va">loading_doses_d</span>, <span class="va">maint_doses_d</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">build_events</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">pop</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="va">pop_baseline</span> <span class="op">&lt;-</span> <span class="va">pop</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">COADMIN_CHEMO</span><span class="op">)</span></span>
+<span>  <span class="va">pop_baseline</span> <span class="op">&lt;-</span> <span class="va">pop</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">CONMED_CHEMO</span><span class="op">)</span></span>
 <span>  <span class="va">d_load</span> <span class="op">&lt;-</span> <span class="va">pop_baseline</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/expand.html" class="external-link">crossing</a></span><span class="op">(</span>TIME <span class="op">=</span> <span class="va">loading_doses_d</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>AMT <span class="op">=</span> <span class="fl">500</span>, EVID <span class="op">=</span> <span class="fl">1</span>, CMT <span class="op">=</span> <span class="st">"central"</span>, DUR <span class="op">=</span> <span class="fl">0.5</span> <span class="op">/</span> <span class="fl">24</span>, DV <span class="op">=</span> <span class="cn">NA_real_</span>,</span>
 <span>           treatment <span class="op">=</span> <span class="st">"RUBY RTD 500 mg Q3W x6 -&gt; 1000 mg Q6W"</span>,</span>
-<span>           COADMIN_CHEMO <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span></span>
+<span>           CONMED_CHEMO <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span></span>
 <span>  <span class="va">d_maint</span> <span class="op">&lt;-</span> <span class="va">pop_baseline</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/expand.html" class="external-link">crossing</a></span><span class="op">(</span>TIME <span class="op">=</span> <span class="va">maint_doses_d</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>AMT <span class="op">=</span> <span class="fl">1000</span>, EVID <span class="op">=</span> <span class="fl">1</span>, CMT <span class="op">=</span> <span class="st">"central"</span>, DUR <span class="op">=</span> <span class="fl">0.5</span> <span class="op">/</span> <span class="fl">24</span>, DV <span class="op">=</span> <span class="cn">NA_real_</span>,</span>
 <span>           treatment <span class="op">=</span> <span class="st">"RUBY RTD 500 mg Q3W x6 -&gt; 1000 mg Q6W"</span>,</span>
-<span>           COADMIN_CHEMO <span class="op">=</span> <span class="fl">0L</span><span class="op">)</span></span>
+<span>           CONMED_CHEMO <span class="op">=</span> <span class="fl">0L</span><span class="op">)</span></span>
 <span>  <span class="va">d_obs</span> <span class="op">&lt;-</span> <span class="va">pop_baseline</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/expand.html" class="external-link">crossing</a></span><span class="op">(</span>TIME <span class="op">=</span> <span class="va">obs_times_d</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>AMT <span class="op">=</span> <span class="cn">NA_real_</span>, EVID <span class="op">=</span> <span class="fl">0</span>, CMT <span class="op">=</span> <span class="st">"central"</span>, DUR <span class="op">=</span> <span class="cn">NA_real_</span>,</span>
 <span>           DV <span class="op">=</span> <span class="cn">NA_real_</span>, treatment <span class="op">=</span> <span class="st">"RUBY RTD 500 mg Q3W x6 -&gt; 1000 mg Q6W"</span>,</span>
-<span>           COADMIN_CHEMO <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">TIME</span> <span class="op">&lt;</span> <span class="va">maint_start_d</span>, <span class="fl">1L</span>, <span class="fl">0L</span><span class="op">)</span><span class="op">)</span></span>
+<span>           CONMED_CHEMO <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">TIME</span> <span class="op">&lt;</span> <span class="va">maint_start_d</span>, <span class="fl">1L</span>, <span class="fl">0L</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">d_load</span>, <span class="va">d_maint</span>, <span class="va">d_obs</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">ID</span>, <span class="va">TIME</span>, <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">EVID</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -815,7 +814,7 @@ below reproduces the time course at the reference patient
 <code class="sourceCode R"><span><span class="va">t_grid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">365</span>, by <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span><span class="va">events_cl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  ID            <span class="op">=</span> <span class="fl">1</span>, WT <span class="op">=</span> <span class="fl">70</span>, AGE <span class="op">=</span> <span class="fl">64</span>, ALB <span class="op">=</span> <span class="fl">39</span>, ALT <span class="op">=</span> <span class="fl">18</span>, SEXF <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  COADMIN_CHEMO <span class="op">=</span> <span class="fl">0L</span>,</span>
+<span>  CONMED_CHEMO <span class="op">=</span> <span class="fl">0L</span>,</span>
 <span>  TIME <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">t_grid</span><span class="op">)</span>,</span>
 <span>  AMT  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">500</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="cn">NA_real_</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">t_grid</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  EVID <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,  <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">t_grid</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
@@ -826,7 +825,7 @@ below reproduces the time course at the reference patient
 <span><span class="va">sim_cl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span></span>
 <span>  <span class="va">mod</span>, events <span class="op">=</span> <span class="va">events_cl</span>,</span>
 <span>  params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>WT <span class="op">=</span> <span class="fl">70</span>, AGE <span class="op">=</span> <span class="fl">64</span>, ALB <span class="op">=</span> <span class="fl">39</span>, ALT <span class="op">=</span> <span class="fl">18</span>, SEXF <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>             COADMIN_CHEMO <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>             CONMED_CHEMO <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>             etalcl <span class="op">=</span> <span class="fl">0</span>, etalvc <span class="op">=</span> <span class="fl">0</span>, etalImax <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>,</span>
 <span>  omega  <span class="op">=</span> <span class="cn">NA</span>,</span>
 <span>  returnType <span class="op">=</span> <span class="st">"data.frame"</span></span>
@@ -890,7 +889,7 @@ is 500 mg.</p>
 <span></span>
 <span><span class="va">nca_data</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_obj</span>, <span class="va">dose_obj</span>, intervals <span class="op">=</span> <span class="va">intervals</span><span class="op">)</span></span>
 <span><span class="va">nca_res</span>  <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="va">nca_data</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■           </span>  65% |  ETA:  2s</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■          </span>  70% |  ETA:  1s</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">nca_res</span><span class="op">)</span>,</span>
 <span>             caption <span class="op">=</span> <span class="st">"Simulated NCA parameters (cycle-2 dosing interval, days 21-42)"</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
@@ -1001,9 +1000,9 @@ between ALT/17 and ALT/18 with exponent -0.0623 is &lt; 0.4%.</li>
 equation <code>(1 - theta_CL_MONOTR)</code> does not have an explicit
 indicator. The parameter value (-0.0779) and the abstract phrasing (“CL
 was 7.79% lower in combination therapy”) are most consistent with the
-form <code>(1 + theta * COADMIN_CHEMO)</code>, where COADMIN_CHEMO = 1
-in the combination phase. This is the form used in the model file; see
-the model file’s <code>notes</code> for <code>COADMIN_CHEMO</code>.</li>
+form <code>(1 + theta * CONMED_CHEMO)</code>, where CONMED_CHEMO = 1 in
+the combination phase. This is the form used in the model file; see the
+model file’s <code>notes</code> for <code>CONMED_CHEMO</code>.</li>
 <li>
 <strong>“Independent random effects” claim.</strong> The Results
 paragraph on the combined-trial-data model update states the IIVs on CL,
@@ -1060,7 +1059,7 @@ lab data can pass time-varying ALB / ALT columns to <code>rxSolve</code>
 directly via the event table.</li>
 <li>
 <strong>Combination-therapy indicator must be supplied per
-row.</strong> The <code>COADMIN_CHEMO</code> column needs to be present
+row.</strong> The <code>CONMED_CHEMO</code> column needs to be present
 on every event-table row (dose and observation alike). For the RUBY Part
 1 RTD it should be 1 during cycles 1-6 and 0 during cycles 7+; for
 GARNET-style monotherapy regimens it is 0 throughout.</li>
