@@ -289,8 +289,19 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Source aliases:**
   - `CRE` (umol/L, reference 70.73) -- used in `Thakre_2022_risankizumab.R`.
   - `SCR` -- common clinical-PK abbreviation.
-- **Example models:** `Thakre_2022_risankizumab.R`.
+- **Example models:** `Thakre_2022_risankizumab.R`, `Hennig_2013_tobra.R` (umol/L; paired with `CREAT_REF` for the SCR_mean / SCR ratio used in the Hennig 2013 renal-function factor).
 - **Notes:** `CREAT` chosen over the shorter `CRE`/`SCR` as the NONMEM/clinical-PK convention that is unambiguous. Per-model reference values must be documented in `covariateData[[CREAT]]$notes`.
+
+### CREAT_REF (**canonical for sex/age/size-expected normal-mean serum creatinine**)
+- **Description:** Externally-computed reference serum creatinine for the individual (the expected normal SCR for a healthy person of the same sex, age and body size). Used as the numerator of a ratio against the patient's measured `CREAT` to define a renal-function factor on clearance.
+- **Units:** umol/L or mg/dL -- must match the unit of the paired `CREAT` column. Document via `covariateData[[CREAT_REF]]$units`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- used as `(CREAT_REF / CREAT)^exponent` so that a patient with measured SCR equal to the population-expected normal SCR has factor 1.
+- **Source aliases:**
+  - `SCR_mean` -- used in `Hennig 2013` (Eq. 5: `f_SCR = (SCR_mean / SCR)^theta_SCR`).
+- **Example models:** `Hennig_2013_tobra.R`.
+- **Notes:** Specific scope because the formula used to derive the reference value is paper-defined (Hennig 2013 cites a combination of Ceriotti 2008, Junge 2004 and Johansson 2011 reference-interval relationships); a future paper that uses a different reference-SCR derivation (e.g., a CKD-EPI-style adult-only reference, or a Schwartz-derived paediatric-only reference) should pin its formula in `covariateData[[CREAT_REF]]$notes` so that a user assembling a virtual cohort can reproduce it. When no covariate data are available to compute `CREAT_REF`, set `CREAT_REF = CREAT` so the renal-function factor evaluates to 1 (matching the Hennig 2013 'covariate set to 1 for missing data' rule). Ratified canonically on 2026-05-08 alongside the Hennig 2013 tobramycin extraction.
 
 ### ALB (**canonical for serum albumin**)
 - **Description:** Serum albumin concentration.
