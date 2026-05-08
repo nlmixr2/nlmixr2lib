@@ -820,6 +820,39 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Netterberg_2017_docetaxel.R` (linear drug effect on the proliferation rate of the Friberg myelosuppression chain: `(1 - SL * CP_MGL)` with `SL = 19.27 (mg/L)^-1` after Kloft 2006's `THETA(3)/808*1000` MW-808 conversion; CP_MGL supplied per event row from an upstream docetaxel popPK simulation).
 - **Notes:** Specific scope because the covariate's mechanistic meaning is bound to the modeled drug and the source paper's chosen PK input (e.g., a Bruno 1996/1998 docetaxel popPK trajectory for Netterberg 2017). Distinct from `CAV` (dosing-interval-averaged exposure used in Emax / EC50 PD models) -- `CP_MGL` is the instantaneous concentration, sampled at every PD event time. When a future paper requires the same time-varying-PK-as-PD-input pattern for a different drug, register a drug-specific canonical (e.g., `CP_PACL_MGL` for paclitaxel) rather than overloading this name; `CP_MGL` retains the implicit "drug = the modeled drug under the PD analysis" semantics. When a paper supplies the time-varying PK as separate per-subject empirical-Bayes PK parameters (e.g., `CL_INDIV`, `VC_INDIV`, `VP_INDIV`), use those columns in a coupled PK-PD ODE model (see `Friberg_2002_paclitaxel.R`) rather than reducing to `CP_MGL`. The choice between PK-as-covariate (this canonical) and PK-as-EBE-parameters depends on whether the source paper's NM-TRAN dataset shipped Cp directly or shipped the upstream individual PK parameters.
 
+### CP_OXY_NGML (**canonical for instantaneous oxypurinol plasma concentration as a time-varying PD driver**)
+- **Description:** Instantaneous plasma concentration of oxypurinol (the active metabolite of allopurinol; xanthine oxidase inhibitor) supplied directly as a time-varying covariate column rather than computed from a coupled PK model. Used in semi-mechanistic uric-acid disposition models that take XOI exposure as input to the production-inhibition equation.
+- **Units:** ng/mL
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters as a Hill term in the production-inhibition expression `1 - Rmax * CP_OXY_NGML / (CP_OXY_NGML + p50)`. Set to 0 outside the drug-exposure window or for non-XOI scenarios. Reference values observed: mean daily concentration on 300 mg/day allopurinol is approximately 10,000 ng/mL (Aksenov 2018, Eq. 13).
+- **Source aliases:**
+  - `[P]_PIN` (oxypurinol) -- the symbol used in Aksenov 2018 Eq. 9 for the production-inhibitor concentration when the inhibitor is oxypurinol.
+- **Example models:** `Aksenov_2018_uricAcid.R` (Hill-type production inhibition with `rmax_oxy = 0.84` and `p50_oxy = 14000 ng/mL` per Aksenov 2018 Table 1).
+- **Notes:** Specific scope because the canonical name is bound to oxypurinol; allopurinol's PK is conventionally summarized via the active metabolite oxypurinol (Day et al. 2007). Distinct from `CP_FBX_NGML` (febuxostat) and `CP_LSN_NGML` (lesinurad). When the source paper supplies an upstream popPK for oxypurinol (e.g., Wright et al. 2013, Anzai & Endou 2012), the user simulates that PK to populate this column; otherwise a steady-state value can be used. Ratified canonically on 2026-05-08 alongside the Aksenov 2018 extraction.
+
+### CP_FBX_NGML (**canonical for instantaneous febuxostat plasma concentration as a time-varying PD driver**)
+- **Description:** Instantaneous plasma concentration of febuxostat (xanthine oxidase inhibitor) supplied directly as a time-varying covariate column rather than computed from a coupled PK model. Used in semi-mechanistic uric-acid disposition models that take XOI exposure as input to the production-inhibition equation.
+- **Units:** ng/mL
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters as a Hill term in the production-inhibition expression `1 - Rmax * CP_FBX_NGML / (CP_FBX_NGML + p50)`. Set to 0 outside the drug-exposure window or for non-XOI scenarios. Reference values observed: mean daily concentration on 40 mg/day febuxostat is approximately 1000-2000 ng/mL (Aksenov 2018, Bhattaram & Gobburu 2017 regulatory review).
+- **Source aliases:**
+  - `[P]_PIN` (febuxostat) -- the symbol used in Aksenov 2018 Eq. 9 for the production-inhibitor concentration when the inhibitor is febuxostat.
+- **Example models:** `Aksenov_2018_uricAcid.R` (Hill-type production inhibition with `rmax_fbx = 1` (fixed) and `p50_fbx = 120 ng/mL` for hyperuricemic subjects (or 87 ng/mL for normouricemic subjects) per Aksenov 2018 Table 1).
+- **Notes:** Specific scope; febuxostat-specific. The `p50` parameter differs between hyperuricemic and normouricemic populations in Aksenov 2018; `Rmax` is fixed at 1 per Bhattaram & Gobburu 2017. Distinct from `CP_OXY_NGML` (oxypurinol) and `CP_LSN_NGML` (lesinurad). Ratified canonically on 2026-05-08 alongside the Aksenov 2018 extraction.
+
+### CP_LSN_NGML (**canonical for instantaneous lesinurad plasma concentration as a time-varying PD driver**)
+- **Description:** Instantaneous plasma concentration of lesinurad (uricosuric URAT1 inhibitor) supplied directly as a time-varying covariate column rather than computed from a coupled PK model. Used in semi-mechanistic uric-acid disposition models that take uricosuric exposure as input to the fractional-excretion-increase equation.
+- **Units:** ng/mL
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters as a Hill term in the fractional-excretion expression `FE = FE0 + Fmax * CP_LSN_NGML / (CP_LSN_NGML + p50)`. Set to 0 outside the drug-exposure window. Reference values observed: peak plasma concentration after single dose 200 mg lesinurad is approximately 6,000-9,000 ng/mL (Fleischmann et al. 2014; Shen et al. 2015).
+- **Source aliases:**
+  - `[P]_RIN` (lesinurad) -- the symbol used in Aksenov 2018 Eq. 10 for the reabsorption-inhibitor concentration when the inhibitor is lesinurad.
+- **Example models:** `Aksenov_2018_uricAcid.R` (Hill-type increase in fractional excretion with `fmax_lsn = 0.56` (fixed) and `p50_lsn = 23000 ng/mL` for hyperuricemic subjects (or 11000 ng/mL for normouricemic subjects) per Aksenov 2018 Table 1).
+- **Notes:** Specific scope; lesinurad-specific. The `p50` parameter differs between hyperuricemic and normouricemic populations in Aksenov 2018; `Fmax` was fixed during estimation. Distinct from `CP_OXY_NGML` (oxypurinol) and `CP_FBX_NGML` (febuxostat). Ratified canonically on 2026-05-08 alongside the Aksenov 2018 extraction.
+
 ### GLU (**canonical for plasma glucose time-course regressor**)
 - **Description:** Plasma glucose concentration as a time-varying *regressor* input that drives a mechanistic glucose-kinetics model. Not a covariate that modifies a parameter; the model integrates `GLU` directly through a smoothing filter into a site-of-action glucose variable.
 - **Units:** mmol/L
