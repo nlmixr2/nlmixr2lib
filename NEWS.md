@@ -2,6 +2,20 @@
 
 # development version
 
+* Add Huynh 2026 VRC07-523LS ([doi:10.1093/jac/dkaf449](https://doi.org/10.1093/jac/dkaf449)) -- HIV-exposed infants and healthy adults.
+* Add Pu 2021 evinacumab ([doi:10.1002/psp4.12711](https://doi.org/10.1002/psp4.12711)) -- healthy volunteers and adult / pediatric patients with homozygous familial hypercholesterolemia.
+* Add Zhang 2021 dupilumab ([doi:10.1002/psp4.12667](https://doi.org/10.1002/psp4.12667)) -- adult and adolescent patients with moderate-to-severe asthma (pooled with healthy adults).
+* Add Hennig 2015 rifabutin ([doi:10.1128/AAC.01195-15](https://doi.org/10.1128/AAC.01195-15)) -- HIV-infected adults with pulmonary tuberculosis (joint parent + 25-O-desacetyl rifabutin metabolite popPK with allometric weight scaling, sex on V/F, and SLCO1B1 rs11045819 on bioavailability).
+* Add Hennig 2013 tobramycin ([doi:10.1007/s40262-013-0036-y](https://doi.org/10.1007/s40262-013-0036-y)) -- adults and children with and without cystic fibrosis.
+* Add Yassen 2025 asundexian ([doi:10.1002/psp4.70142](https://doi.org/10.1002/psp4.70142)) -- healthy volunteers and adults at risk for thromboembolic / cardiovascular events (PACIFIC-AF, PACIFIC-STROKE, PACIFIC-AMI Phase II + six Phase I studies; pooled n = 2914).
+* Add Jelliffe 2014 digoxin ([doi:10.1097/FTD.0000000000000023](https://doi.org/10.1097/FTD.0000000000000023)) -- adults requiring digoxin therapy across normal-to-anephric renal function.
+* Add Aksenov 2018 uricAcid ([doi:10.14814/phy2.13614](https://doi.org/10.14814/phy2.13614)) -- healthy adults and gout patients with hyperuricemia.
+* Add Garmann 2017 BAY 81-8973 ([doi:10.1111/hae.13192](https://doi.org/10.1111/hae.13192)) -- patients aged 1-61 years with severe haemophilia A (LEOPOLD I/II/Kids).
+* Add Shah 2012 mAb PBPK ([doi:10.1007/s10928-011-9232-2](https://doi.org/10.1007/s10928-011-9232-2)) -- platform PBPK model parameterized for the human (71 kg) reference subject; 15 anatomical tissues with FcRn-mediated recycling.
+* Add Kunarajah 2017 doxorubicin ([doi:10.1007/s00280-017-3309-6](https://doi.org/10.1007/s00280-017-3309-6)) -- paediatric oncology patients (joint doxorubicin / doxorubicinol popPK with cardiac troponin I turnover sub-model; ratifies new `PRIOR_ANTHRACYCLINE_DOSE` covariate canonical and `doxol` registered metabolite suffix).
+* Add Llanos-Paez 2017 gentamicin ([doi:10.1208/s12248-017-0173-6](https://doi.org/10.1208/s12248-017-0173-6)) -- pediatric oncology patients with febrile or fever-only neutropenia.
+* Add Hennig 2015 phenytoin ([doi:10.1002/jcph.417](https://doi.org/10.1002/jcph.417)) -- critically ill children in a paediatric ICU (joint protein-unbound and protein-bound popPK with linear albumin partition).
+* Add Bergmann 2014 tacrolimus ([doi:10.1097/FTD.0b013e31829f1ab8](https://doi.org/10.1097/FTD.0b013e31829f1ab8)) -- adult kidney transplant recipients.
 * Add Harun 2019 cysticFibrosis ([doi:10.1136/thoraxjnl-2018-211550](https://doi.org/10.1136/thoraxjnl-2018-211550)) -- children with classic cystic fibrosis (sigmoid-Emax disease-progression model of FEV1% predicted from age 5 to 14 years).
 * Add Hennig 2007 itraconazole ([doi:10.1111/j.1365-2125.2006.02778.x](https://doi.org/10.1111/j.1365-2125.2006.02778.x)) -- adult cystic fibrosis patients (D-optimal-designed cross-over single-dose 200 mg oral itraconazole with parallel parent / hydroxy-itraconazole metabolite popPK and per-formulation absorption / bioavailability).
 * Add Hennig 2008 tobramycin ([doi:10.1111/j.1365-2125.2007.03045.x](https://doi.org/10.1111/j.1365-2125.2007.03045.x)) -- paediatric cystic fibrosis patients on once-daily intravenous tobramycin.

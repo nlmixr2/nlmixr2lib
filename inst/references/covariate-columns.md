@@ -70,8 +70,9 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Type:** continuous
 - **Scope:** general
 - **Reference category:** n/a
-- **Source aliases:** none.
-- **Example models:** `Kyhl_2016_nalmefene.R` (reference 56.28 kg, exponent 0.626 on CL).
+- **Source aliases:**
+  - `LBW` (lean body weight) -- synonym; same biological quantity (total body weight minus body fat). Hemophilia popPK literature typically uses `LBW` (Hume or James formula) where mAb / general literature uses `LBM`. Used in `Garmann_2017_BAY81_8973.R` (reference 51.1 kg).
+- **Example models:** `Kyhl_2016_nalmefene.R` (reference 56.28 kg, exponent 0.626 on CL), `Garmann_2017_BAY81_8973.R` (alias `LBW`; reference 51.1 kg, exponents 0.610 on CL and 0.950 on Vc).
 
 ### FFM (**canonical for fat-free mass**)
 - **Description:** Fat-free mass derived from body weight, height, and sex via the Janmahasatian et al. formula (Clin Pharmacokinet 2005;44:1051-1065).
@@ -288,8 +289,19 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Source aliases:**
   - `CRE` (umol/L, reference 70.73) -- used in `Thakre_2022_risankizumab.R`.
   - `SCR` -- common clinical-PK abbreviation.
-- **Example models:** `Thakre_2022_risankizumab.R`.
+- **Example models:** `Thakre_2022_risankizumab.R`, `Hennig_2013_tobra.R` (umol/L; paired with `CREAT_REF` for the SCR_mean / SCR ratio used in the Hennig 2013 renal-function factor).
 - **Notes:** `CREAT` chosen over the shorter `CRE`/`SCR` as the NONMEM/clinical-PK convention that is unambiguous. Per-model reference values must be documented in `covariateData[[CREAT]]$notes`.
+
+### CREAT_REF (**canonical for sex/age/size-expected normal-mean serum creatinine**)
+- **Description:** Externally-computed reference serum creatinine for the individual (the expected normal SCR for a healthy person of the same sex, age and body size). Used as the numerator of a ratio against the patient's measured `CREAT` to define a renal-function factor on clearance.
+- **Units:** umol/L or mg/dL -- must match the unit of the paired `CREAT` column. Document via `covariateData[[CREAT_REF]]$units`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- used as `(CREAT_REF / CREAT)^exponent` so that a patient with measured SCR equal to the population-expected normal SCR has factor 1.
+- **Source aliases:**
+  - `SCR_mean` -- used in `Hennig 2013` (Eq. 5: `f_SCR = (SCR_mean / SCR)^theta_SCR`).
+- **Example models:** `Hennig_2013_tobra.R`.
+- **Notes:** Specific scope because the formula used to derive the reference value is paper-defined (Hennig 2013 cites a combination of Ceriotti 2008, Junge 2004 and Johansson 2011 reference-interval relationships); a future paper that uses a different reference-SCR derivation (e.g., a CKD-EPI-style adult-only reference, or a Schwartz-derived paediatric-only reference) should pin its formula in `covariateData[[CREAT_REF]]$notes` so that a user assembling a virtual cohort can reproduce it. When no covariate data are available to compute `CREAT_REF`, set `CREAT_REF = CREAT` so the renal-function factor evaluates to 1 (matching the Hennig 2013 'covariate set to 1 for missing data' rule). Ratified canonically on 2026-05-08 alongside the Hennig 2013 tobramycin extraction.
 
 ### ALB (**canonical for serum albumin**)
 - **Description:** Serum albumin concentration.
@@ -704,6 +716,30 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Source aliases:** none known.
 - **Example models:** `Archary_2019_lamivudine.R` (mmol/L, reference 5.3; linear-deviation effect on Vc/F with coefficient -0.13 per mmol/L deviation from the reference; lower triglyceride implies higher apparent central volume).
 - **Notes:** Cardiometabolic lipid-panel covariate. In Archary 2019 the inverse triglyceride--Vc relationship is interpreted as a nutritional-status / hydrophilic-drug-distribution surrogate: triglycerides rise during nutritional rehabilitation, and lamivudine (a hydrophilic drug) shows decreasing apparent volume as nutritional status improves. The linear-deviation form preserves the source's published parameterization; per-model `covariateData[[TRIG]]$units` is load-bearing because the centring reference and slope are unit-specific.
+### LDLC (**canonical for low-density lipoprotein cholesterol**)
+- **Description:** Serum low-density lipoprotein cholesterol concentration (baseline or time-varying). The pharmacologically meaningful endpoint for lipid-lowering therapies (statins, PCSK9 inhibitors, ANGPTL3 inhibitors); also serves as a baseline covariate or as the time-varying PD response in indirect-response exposure-response models.
+- **Units:** mg/dL or mmol/L -- document the unit used in each model via `covariateData[[LDLC]]$units` (1 mmol/L ~= 38.67 mg/dL for cholesterol).
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- used with power scaling `(LDLC / ref)^exponent` for the baseline-LDLC covariate role, or with no reference (used directly as the PD response state) when it is the modelled output. Reference values observed: 211 mg/dL (Pu 2021 HoFH typical-patient definition).
+- **Source aliases:**
+  - `LDL-C` -- common spelling with hyphen.
+  - `LDL_C` -- common alternative spelling.
+  - `LDLBL` (baseline LDL-C) -- used in `Pu_2021_evinacumab.R` (Pu 2021 NM-TRAN $INPUT column for centred baseline LDL-C as a covariate on IC50).
+- **Example models:** `Pu_2021_evinacumab.R` (mg/dL, baseline reference 211 mg/dL; power exponent -1.17 on IC50, where higher baseline LDL-C predicts a smaller IC50 and therefore greater sensitivity to evinacumab; LDL-C is also the PD output state initialised at the baseline value).
+- **Notes:** Cardiometabolic lipid-panel covariate. Distinct from `HDLC` (high-density lipoprotein cholesterol) and from any total-cholesterol or non-HDL-C derivation. When LDL-C is both the response variable AND a covariate (as in Pu 2021, where baseline LDLC drives IC50 and the time-varying state is the modelled PD), document the dual role in `covariateData[[LDLC]]$notes`.
+
+### ANGPTL3 (**canonical for angiopoietin-like protein 3 concentration**)
+- **Description:** Total serum angiopoietin-like protein 3 (ANGPTL3) concentration. ANGPTL3 is the pharmacological target for anti-ANGPTL3 monoclonal antibodies (evinacumab) and antisense oligonucleotides (vupanorsen). Baseline ANGPTL3 acts as a soluble-target biomarker that contributes to target-mediated drug disposition; higher baseline target predicts a higher saturable Vmax.
+- **Units:** mg/L (equivalent to ug/mL). Document per-model via `covariateData[[ANGPTL3]]$units`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- used with power scaling `(ANGPTL3 / ref)^exponent`. Reference value observed: 0.08 mg/L (Pu 2021 typical-patient median).
+- **Source aliases:**
+  - `ANGBL` (baseline ANGPTL3) -- used in `Pu_2021_evinacumab.R` (Pu 2021 NM-TRAN $INPUT column for centred baseline ANGPTL3).
+  - `ANGBL0` -- alternative Pu 2021 raw column.
+- **Example models:** `Pu_2021_evinacumab.R` (mg/L, baseline reference 0.08 mg/L; power exponent +0.405 on Vmax, where higher baseline target predicts a faster saturable elimination -- biologically consistent with evinacumab being co-cleared along with bound ANGPTL3).
+- **Notes:** Specific scope because the column is meaningful only for drugs whose mechanism involves ANGPTL3 (anti-ANGPTL3 mAbs / ASOs). Reusing the name for another anti-ANGPTL3 agent is acceptable (extend the example-models list). The assay in Pu 2021 detects both free and target-bound ANGPTL3 after acid pretreatment of serum; document the assay type (free vs. total) per model in `covariateData[[ANGPTL3]]$notes`.
 
 ### FPCSK9 (**canonical for free (unbound) proprotein convertase subtilisin/kexin type 9 concentration**)
 - **Description:** Free (unbound, non-drug-bound) serum proprotein convertase subtilisin/kexin type 9 (PCSK9) concentration. For anti-PCSK9 monoclonal antibodies (alirocumab, evolocumab, bococizumab) the free-PCSK9 pool is the pharmacologically active target fraction; drug-target binding reduces FPCSK9 relative to total PCSK9.
@@ -736,6 +772,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Source aliases:** `CAV`, `Cav`, `CAVG`.
 - **Example models:** `FiedlerKelly_2020_fremanezumab_em.R`, `FiedlerKelly_2020_fremanezumab_cm.R`, `Schoemaker_2018_levetiracetam.R` (DDMODEL00000239; LEV plasma concentration in mg/L).
 - **Notes:** Specific scope because the value is intrinsically tied to the modelled drug -- there is no shared meaning across drugs or studies. Each model's `covariateData[[CAV]]$notes` should state how the Cav values are derived (e.g., empirical-Bayes from a referenced population PK model) and that the column is set to 0 for placebo periods.
+
+### PRED_CMAX_FREE (**canonical for free prednisolone Cmax co-medication exposure**)
+- **Description:** Maximum free (unbound, ultrafiltrable) plasma prednisolone concentration over a co-medication dosing interval, used as a co-medication-exposure covariate on a primary modelled drug (e.g., tacrolimus) when concomitant prednisolone is suspected to alter the primary drug's PK via membrane-permeability or fluid-balance effects. Time-fixed per subject in the source paper (one Cmax value per subject, derived from limited-sampling concentrations).
+- **Units:** nmol/L
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- used in centred-deviation form `(1 + e * (PRED_CMAX_FREE - ref))`. Reference value observed: 155.5 nmol/L (Bergmann 2014 study median).
+- **Source aliases:**
+  - `PredCmax,free` / `PREDCFR` -- used in `Bergmann_2014_tacrolimus.R` (Bergmann 2014 Table 2 footnote; 162 nmol/L median per Table 1, 155.5 nmol/L centring value per Table 2 equation).
+- **Example models:** `Bergmann_2014_tacrolimus.R` (linear deviation effect on tacrolimus apparent central volume V1/F: every 1 nmol/L increase from 155.5 nmol/L decreases V1/F by 0.28%).
+- **Notes:** Specific scope because the value is intrinsically tied to a particular co-medication (oral prednisolone) and a particular reference population (kidney transplant recipients on a tapering steroid regimen). Future popPK models that test free prednisolone Cmax as a covariate on a different primary drug should reuse this canonical; if a future model uses a different prednisolone exposure metric (e.g., `PRED_AUC0_12_FREE` for free AUC 0-12 h, or `PRED_CMAX_TOTAL` for total Cmax), register parallel canonicals rather than overload `PRED_CMAX_FREE`. The source-paper Cmax is derived from limited-sampling concentrations at 1 / 2 / 4 hours postdose per Bergmann 2014 Methods (validated against earlier full-profile data from the same cohort). Distinct from `CAV` (average concentration of the modelled drug) and `CP_MGL` (instantaneous concentration of the modelled drug as a time-varying PD driver) -- `PRED_CMAX_FREE` is the maximum concentration of a co-medication, used as a per-subject covariate. Ratified canonically on 2026-05-08 alongside the Bergmann 2014 extraction.
 
 ### AUC_CARBO (**canonical for per-cycle average AUC of carboplatin**)
 - **Description:** Per-cycle average AUC of carboplatin used as the time-varying drug-exposure covariate driving cytotoxic tumour-death rates in tumour-size-dynamics models of platinum-based chemotherapy. The value is held step-wise constant over each chemotherapy cycle and resets at the start of the next cycle.
@@ -887,6 +934,39 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   - `CP` (Kloft 2006 / Netterberg 2017 NM-TRAN $INPUT convention for "predicted drug concentration"; values in mg/L) -- used in `Netterberg_2017_docetaxel.R`.
 - **Example models:** `Netterberg_2017_docetaxel.R` (linear drug effect on the proliferation rate of the Friberg myelosuppression chain: `(1 - SL * CP_MGL)` with `SL = 19.27 (mg/L)^-1` after Kloft 2006's `THETA(3)/808*1000` MW-808 conversion; CP_MGL supplied per event row from an upstream docetaxel popPK simulation).
 - **Notes:** Specific scope because the covariate's mechanistic meaning is bound to the modeled drug and the source paper's chosen PK input (e.g., a Bruno 1996/1998 docetaxel popPK trajectory for Netterberg 2017). Distinct from `CAV` (dosing-interval-averaged exposure used in Emax / EC50 PD models) -- `CP_MGL` is the instantaneous concentration, sampled at every PD event time. When a future paper requires the same time-varying-PK-as-PD-input pattern for a different drug, register a drug-specific canonical (e.g., `CP_PACL_MGL` for paclitaxel) rather than overloading this name; `CP_MGL` retains the implicit "drug = the modeled drug under the PD analysis" semantics. When a paper supplies the time-varying PK as separate per-subject empirical-Bayes PK parameters (e.g., `CL_INDIV`, `VC_INDIV`, `VP_INDIV`), use those columns in a coupled PK-PD ODE model (see `Friberg_2002_paclitaxel.R`) rather than reducing to `CP_MGL`. The choice between PK-as-covariate (this canonical) and PK-as-EBE-parameters depends on whether the source paper's NM-TRAN dataset shipped Cp directly or shipped the upstream individual PK parameters.
+
+### CP_OXY_NGML (**canonical for instantaneous oxypurinol plasma concentration as a time-varying PD driver**)
+- **Description:** Instantaneous plasma concentration of oxypurinol (the active metabolite of allopurinol; xanthine oxidase inhibitor) supplied directly as a time-varying covariate column rather than computed from a coupled PK model. Used in semi-mechanistic uric-acid disposition models that take XOI exposure as input to the production-inhibition equation.
+- **Units:** ng/mL
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters as a Hill term in the production-inhibition expression `1 - Rmax * CP_OXY_NGML / (CP_OXY_NGML + p50)`. Set to 0 outside the drug-exposure window or for non-XOI scenarios. Reference values observed: mean daily concentration on 300 mg/day allopurinol is approximately 10,000 ng/mL (Aksenov 2018, Eq. 13).
+- **Source aliases:**
+  - `[P]_PIN` (oxypurinol) -- the symbol used in Aksenov 2018 Eq. 9 for the production-inhibitor concentration when the inhibitor is oxypurinol.
+- **Example models:** `Aksenov_2018_uricAcid.R` (Hill-type production inhibition with `rmax_oxy = 0.84` and `p50_oxy = 14000 ng/mL` per Aksenov 2018 Table 1).
+- **Notes:** Specific scope because the canonical name is bound to oxypurinol; allopurinol's PK is conventionally summarized via the active metabolite oxypurinol (Day et al. 2007). Distinct from `CP_FBX_NGML` (febuxostat) and `CP_LSN_NGML` (lesinurad). When the source paper supplies an upstream popPK for oxypurinol (e.g., Wright et al. 2013, Anzai & Endou 2012), the user simulates that PK to populate this column; otherwise a steady-state value can be used. Ratified canonically on 2026-05-08 alongside the Aksenov 2018 extraction.
+
+### CP_FBX_NGML (**canonical for instantaneous febuxostat plasma concentration as a time-varying PD driver**)
+- **Description:** Instantaneous plasma concentration of febuxostat (xanthine oxidase inhibitor) supplied directly as a time-varying covariate column rather than computed from a coupled PK model. Used in semi-mechanistic uric-acid disposition models that take XOI exposure as input to the production-inhibition equation.
+- **Units:** ng/mL
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters as a Hill term in the production-inhibition expression `1 - Rmax * CP_FBX_NGML / (CP_FBX_NGML + p50)`. Set to 0 outside the drug-exposure window or for non-XOI scenarios. Reference values observed: mean daily concentration on 40 mg/day febuxostat is approximately 1000-2000 ng/mL (Aksenov 2018, Bhattaram & Gobburu 2017 regulatory review).
+- **Source aliases:**
+  - `[P]_PIN` (febuxostat) -- the symbol used in Aksenov 2018 Eq. 9 for the production-inhibitor concentration when the inhibitor is febuxostat.
+- **Example models:** `Aksenov_2018_uricAcid.R` (Hill-type production inhibition with `rmax_fbx = 1` (fixed) and `p50_fbx = 120 ng/mL` for hyperuricemic subjects (or 87 ng/mL for normouricemic subjects) per Aksenov 2018 Table 1).
+- **Notes:** Specific scope; febuxostat-specific. The `p50` parameter differs between hyperuricemic and normouricemic populations in Aksenov 2018; `Rmax` is fixed at 1 per Bhattaram & Gobburu 2017. Distinct from `CP_OXY_NGML` (oxypurinol) and `CP_LSN_NGML` (lesinurad). Ratified canonically on 2026-05-08 alongside the Aksenov 2018 extraction.
+
+### CP_LSN_NGML (**canonical for instantaneous lesinurad plasma concentration as a time-varying PD driver**)
+- **Description:** Instantaneous plasma concentration of lesinurad (uricosuric URAT1 inhibitor) supplied directly as a time-varying covariate column rather than computed from a coupled PK model. Used in semi-mechanistic uric-acid disposition models that take uricosuric exposure as input to the fractional-excretion-increase equation.
+- **Units:** ng/mL
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters as a Hill term in the fractional-excretion expression `FE = FE0 + Fmax * CP_LSN_NGML / (CP_LSN_NGML + p50)`. Set to 0 outside the drug-exposure window. Reference values observed: peak plasma concentration after single dose 200 mg lesinurad is approximately 6,000-9,000 ng/mL (Fleischmann et al. 2014; Shen et al. 2015).
+- **Source aliases:**
+  - `[P]_RIN` (lesinurad) -- the symbol used in Aksenov 2018 Eq. 10 for the reabsorption-inhibitor concentration when the inhibitor is lesinurad.
+- **Example models:** `Aksenov_2018_uricAcid.R` (Hill-type increase in fractional excretion with `fmax_lsn = 0.56` (fixed) and `p50_lsn = 23000 ng/mL` for hyperuricemic subjects (or 11000 ng/mL for normouricemic subjects) per Aksenov 2018 Table 1).
+- **Notes:** Specific scope; lesinurad-specific. The `p50` parameter differs between hyperuricemic and normouricemic populations in Aksenov 2018; `Fmax` was fixed during estimation. Distinct from `CP_OXY_NGML` (oxypurinol) and `CP_FBX_NGML` (febuxostat). Ratified canonically on 2026-05-08 alongside the Aksenov 2018 extraction.
 
 ### GLU (**canonical for plasma glucose time-course regressor**)
 - **Description:** Plasma glucose concentration as a time-varying *regressor* input that drives a mechanistic glucose-kinetics model. Not a covariate that modifies a parameter; the model integrates `GLU` directly through a smoothing filter into a site-of-action glucose variable.
@@ -1125,6 +1205,17 @@ readable.
 
 ## Surgical history / disease state
 
+### POD (**canonical for post-operative day**)
+- **Description:** Days elapsed since the qualifying surgical event (e.g., solid-organ transplantation, major resection). Time-varying within subject; integer- or fractional-day valued; rises monotonically from 0 at the day of surgery. Captures time-since-surgery effects on PK that are not explained by other covariates -- e.g., post-transplant clearance of immunosuppressants typically declines toward a steady value over the first weeks-to-months as graft function, fluid status, hematocrit, and corticosteroid taper stabilise.
+- **Units:** days
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- typically used in centred-deviation form `(1 + e_pod_param * (POD - ref_pod))`, sometimes with an upper cap (e.g., values > 180 fixed to 180 days when the residual time-varying effect plateaus).
+- **Source aliases:**
+  - `POD` -- used in `Bergmann_2014_tacrolimus.R` (capped at 180 days; centred at 22.7 days, the dataset mean).
+- **Example models:** `Bergmann_2014_tacrolimus.R` (linear deviation from POD = 22.7 days on tacrolimus CL/F; coefficient -0.0021 per day implies a 0.21% per-day decrease in apparent oral clearance with a 180-day plateau).
+- **Notes:** Time-varying within subject; the per-row value is the integer day count from the date of surgery to the observation date. For solid-organ-transplant cohorts, `POD` is the conventional NONMEM `$INPUT` column name. When the source paper reports a different name (`DPT` for "days post-transplant", `TX_DAY`, `T_POSTOP`), record the alias here. Distinct from `TIME` (rxode2 time clock) and from `OCC` (integer-valued occasion / period indicator for IOV). When a paper uses `POD` jointly with an IOV occasion column, both can coexist in the dataset: `POD` enters the typical-value covariate equation, `OCC` multiplexes the IOV etas. The 180-day cap in Bergmann 2014 is data-driven (most observations are within the first 90 days post-transplant, so the linear effect is identifiable only over that window) -- document any per-model cap in `covariateData[[POD]]$notes`. Ratified canonically on 2026-05-08 alongside the Bergmann 2014 extraction.
+
 ### PRIOR_GAST (**canonical for prior gastrectomy**)
 - **Description:** Prior (partial or total) gastrectomy indicator, 1 = prior gastrectomy, 0 = no prior gastrectomy. Time-fixed per subject.
 - **Units:** (binary)
@@ -1202,6 +1293,17 @@ readable.
 - **Source aliases:** none known; source NONMEM control streams typically use ad-hoc names (e.g., `CD`, `CASTLEMAN`).
 - **Example models:** `Nikanjam_2019_siltuximab.R` (multiplicative +24% effect on CL; no Vss effect).
 - **Notes:** Castleman's disease is a lymphoproliferative disorder strongly associated with elevated IL-6 levels; it is the only FDA-approved indication for siltuximab. Scope: specific because the disease-pooling reference category is paper-defined. Ratified canonically on 2026-04-24.
+
+### DIS_HOFH (**canonical for homozygous familial hypercholesterolemia patient indicator**)
+- **Description:** 1 = patient with homozygous familial hypercholesterolemia (HoFH), 0 = non-HoFH subject (typically healthy volunteer or another reference cohort pooled in the source analysis). Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-HoFH subject; the complement group is paper-defined -- for Pu 2021 the reference is the pooled healthy-volunteer cohort).
+- **Source aliases:**
+  - `DISTYPN` -- used in `Pu_2021_evinacumab.R` (Pu 2021 NM-TRAN $INPUT column for HoFH-vs-HV disease type, 1 = HoFH).
+- **Example models:** `Pu_2021_evinacumab.R` (multiplicative `exp(theta * DIS_HOFH)` factor on Vmax with theta = -0.289, i.e. HoFH patients show ~25% lower target-mediated Vmax than the HV reference; biologically consistent with the LDLR-pathway disruption in HoFH altering ANGPTL3 catabolic kinetics).
+- **Notes:** Used when a population PK model pools HoFH patients with healthy volunteers (or another non-HoFH cohort) and HoFH disease status is retained as a covariate. Distinct from a heterozygous-FH (HeFH) indicator because HoFH patients have markedly higher baseline LDL-C (untreated levels often > 500 mg/dL) and a more pronounced response to LDLR-independent therapies. Scope: specific because the reference category is paper-defined.
 
 ### DIS_DMD (**canonical for Duchenne muscular dystrophy patient indicator**)
 - **Description:** 1 = patient with Duchenne muscular dystrophy (DMD), 0 = non-DMD subject (healthy volunteer or other reference cohort). Time-fixed per subject.
@@ -2214,6 +2316,26 @@ readable.
 - **Example models:** `TerHeine_2014_tamoxifen.R` (power-law effect on the tamoxifen -> endoxifen formation clearance: `(CYP3A4 / 44.7)^e_CYP3A4_cl_endx`).
 - **Notes:** TODO -- register the rest of the canonical drug-metabolizing-CYP set prospectively (`CYP1A2`, `CYP2A6`, `CYP2B6`, `CYP2C8`, `CYP2C9`, `CYP2C19`, `CYP2E1`, `CYP3A5`) using the same continuous-individual-activity-score pattern, so future popPK models that report CYP-probe-derived covariates can drop straight into the existing convention rather than re-deliberating the encoding each time. Coordinate with the consolidation TODO on `CYP2D6` so categorical-vs-continuous encoding is handled uniformly across all CYPs.
 
+### CYP3A5_EXPR (**canonical for CYP3A5 expresser status**)
+- **Description:** 1 = subject carries at least one functional CYP3A5*1 allele (genotype *1/*1 or *1/*3, equivalent to one or two A alleles at rs776746); 0 = homozygous CYP3A5*3/*3 (G/G at rs776746) -- i.e., a nonexpresser. Time-fixed per subject (germline genotype).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (CYP3A5*3/*3 nonexpresser).
+- **Source aliases:**
+  - `X` -- used in `Bergmann_2014_tacrolimus.R` (Bergmann 2014 Table 2 footnote: `X = 1` for *1/*1 and *1/*3; `X = 0` for *3/*3).
+- **Example models:** `Bergmann_2014_tacrolimus.R` (multiplicative effect on tacrolimus CL/F: `theta_CYP3A5 ^ CYP3A5_EXPR`, with `theta_CYP3A5 = 1.60`; expressers have 60% higher apparent oral clearance than nonexpressers).
+- **Notes:** Distinct from the SNP-pattern canonical `SNP_<GENE>_<RSID>` (which encodes "mutant allele presence" -- 1 = at least one variant allele). For CYP3A5 the *3 allele (rs776746 G) is the variant that abolishes function, so a literal "mutant-allele-presence" indicator (1 = any G allele) would group *1/*3 heterozygotes with the *3/*3 nonexpressers, which is the **opposite** of the clinically meaningful expresser-vs-nonexpresser dichotomy used by every CYP3A5-aware popPK model. The `CYP3A5_EXPR` canonical preserves the expresser-equals-1 orientation directly. Future CYP3A5 papers using a *3/*3 indicator (rather than *1 carrier) should still record their values under `CYP3A5_EXPR` and document the value inversion in `notes` (`CYP3A5_EXPR = 1 - source_indicator`); registering a parallel `CYP3A5_NONEXPR` is discouraged. The canonical name follows the `<gene>_<phenotype>` rather than the `<gene>_<rsid>` pattern because the column captures derived metabolic phenotype rather than raw genotype. Distinct from `CYP3A4` (continuous individual-activity score for CYP3A4 / CYP3A4 + CYP3A5 combined): the binary `CYP3A5_EXPR` is the right fit for source papers that report only the rs776746 genotype, while the continuous `CYP3A4` is for sources that report a probe-substrate-derived activity number. Ratified canonically on 2026-05-08 alongside the Bergmann 2014 extraction.
+### CYP3A4_INH (**canonical for concomitant CYP3A4 inhibitor coadministration indicator**)
+- **Description:** 1 = subject coadministered any CYP3A4 inhibitor during the study, 0 = no concomitant CYP3A4 inhibitor. Distinct from the `CYP3A4` continuous-activity-score canonical above: `CYP3A4_INH` captures concomitant-medication exposure (a drug-drug-interaction indicator), not intrinsic enzyme activity. Use this canonical when the source paper enters CYP3A4-inhibitor coadministration into the popPK model as a binary indicator, regardless of which inhibitor strengths (strong / moderate / weak) the paper pools into the `1` category.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no CYP3A4 inhibitor coadministration).
+- **Source aliases:** none standardized; source datasets typically encode the column as `CYP3AI`, `CYP3A4I`, `CYP3AINH`, or a free-text concomitant-medication indicator. Document the source-column name per-model in `covariateData[[CYP3A4_INH]]$source_name`.
+- **Example models:** `Yassen_2025_asundexian.R` (proportional-shift effect on CL/F: `(1 + e_cyp3a4_inh_cl * CYP3A4_INH)` with `e_cyp3a4_inh_cl = -0.0531`; the asundexian dataset pools weak + moderate CYP3A4 inhibitors into the `CYP3A4_INH = 1` category because strong inhibitors were a Phase II exclusion criterion).
+- **Notes:** Per-model `covariateData[[CYP3A4_INH]]$notes` must document which inhibitor strengths (strong / moderate / weak) and which specific drug examples are pooled into the `CYP3A4_INH = 1` category, since inclusion criteria vary by study. Future models that need stratified encoding (separate strong / moderate / weak indicators) should register companion canonicals (e.g. `CYP3A4_INH_STRONG`, `CYP3A4_INH_MOD`, `CYP3A4_INH_WEAK`) rather than overloading `CYP3A4_INH`. The complementary CYP3A4-inducer indicator should follow the same pattern as a separate canonical (`CYP3A4_IND`) when first needed. Ratified canonically on 2026-05-08 alongside the Yassen 2025 asundexian extraction.
+
 ### APOE4_COUNT (**canonical for APOE-epsilon4 allele count**)
 - **Description:** Continuous individual-level APOE-epsilon4 allele count: 0 = non-carrier, 1 = heterozygous (one epsilon4 allele), 2 = homozygous (two epsilon4 alleles). Time-invariant (germline genotype). Models in the Alzheimer's-disease-progression literature treat the 0 / 1 / 2 count as a continuous effect on baseline cognitive score and / or disease-progression slope, with the population-mean carrier-allele count used as the centring value (e.g., 0.72 in the Conrado 2014 CAMD cohort).
 - **Units:** (count, 0 / 1 / 2 alleles per subject; population-mean centring value documented per-model)
@@ -2312,6 +2434,17 @@ readable.
   - `PC` (Kloft 2006 / Netterberg 2017 NM-TRAN convention for "previous anticancer therapy"; values 0 = naive, 1 = had prior anticancer therapy) -- used in `Netterberg_2017_docetaxel.R`.
 - **Example models:** `Netterberg_2017_docetaxel.R` (multiplicative effect on baseline ANC: `BACOV *= (1 + theta * PRIOR_ANTICANCER)` with theta = -0.147; prior-anticancer patients have ~14.7% lower baseline ANC than treatment-naive patients).
 - **Notes:** Distinct from `LINE_1L` (which is the inverse semantics for systemic-drug therapy lines only) and `PRIOR_TNF` / `PRIOR_BIO` (which are modality-specific to anti-TNF / biologic exposure in inflammatory-disease cohorts). Use `PRIOR_ANTICANCER` when the source paper's covariate counts any anticancer modality (including radiotherapy and surgery) as prior exposure. When a future paper restricts the indicator to cytotoxic chemotherapy alone, use `LINE_1L` (with values inverted: paper's `PRIOR_CHEMO = 1 - LINE_1L`). When a paper distinguishes prior chemotherapy from prior radiotherapy, register a parallel `PRIOR_RADIATION` canonical.
+
+### PRIOR_ANTHRACYCLINE_DOSE (**canonical for prior cumulative anthracycline dose**)
+- **Description:** Cumulative dose of anthracycline chemotherapy received by the subject prior to the first dose analysed in the current popPK / popPK-PD model, expressed in doxorubicin-equivalent body-surface-area-normalised mg/m^2. Time-fixed per subject for the analysis window (the running cumulative anthracycline dose at the first observed dose).
+- **Units:** mg/m^2 (doxorubicin-equivalent)
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- typically used as a linear shift (`(1 + theta * (PRIOR_ANTHRACYCLINE_DOSE - ref))`) on a baseline parameter (e.g., baseline cardiac troponin I before the next anthracycline cycle). Reference values observed: 90 mg/m^2 (Kunarajah 2017, cohort median).
+- **Source aliases:**
+  - `PCAMT` -- Kunarajah 2017 NM-TRAN convention ("Prior Cumulative Anthracyclines aMounT"; doxorubicin-equivalent mg/m^2).
+- **Example models:** `Kunarajah_2017_doxorubicin.R` (linear shift on baseline cardiac troponin I: `bl_cTnI * (1 + 0.00308 * (PRIOR_ANTHRACYCLINE_DOSE - 90))` -- ~0.31% increase in baseline cTnI per 1 mg/m^2 of prior cumulative anthracycline exposure).
+- **Notes:** Distinct from `PRIOR_ANTICANCER` (a binary modality indicator, 1 = any prior anticancer therapy) -- `PRIOR_ANTHRACYCLINE_DOSE` carries the actual cumulative dose, restricted to the anthracycline drug class (doxorubicin, daunorubicin, epirubicin, idarubicin), and is the column needed when the source paper's effect is dose-response in the prior-exposure regime rather than presence / absence. When a paper records anthracycline exposure as anthracycline-class-by-class doses and the model effect aggregates them, sum to a single doxorubicin-equivalent value before populating this column (use the published bone-marrow / cardiotoxicity isoeffective conversion factors). When a paper distinguishes the type of anthracycline (e.g., doxorubicin vs daunorubicin separately), register parallel canonicals (`PRIOR_DOXORUBICIN_DOSE`, `PRIOR_DAUNORUBICIN_DOSE`) rather than overloading this name. Scope: specific because the column meaning is intrinsically tied to anthracycline-class chemotherapy exposure; promote to general if a second paper ratifies the same definition.
 
 ### PRIOR_BIO (**canonical for prior biologic exposure**)
 - **Description:** 1 = subject previously treated with any biologic (broader than `PRIOR_TNF`: includes anti-TNF agents plus anti-integrin, anti-IL-12/23, anti-IL-17, anti-IL-23, anti-IL-6, etc.), 0 = biologic-naive.
@@ -2419,6 +2552,17 @@ readable.
   - `cat` -- Papachristos 2020 binding QSS model (effect on K_ss and BM0) and PK/PD model (effect on Q).
 - **Example models:** `Papachristos_2020_bevacizumab_pk.R` (effect on Q: -0.429), `Papachristos_2020_bevacizumab_qss.R` (effect on K_ss: +1.22, on BM0: -0.851), `Papachristos_2020_bevacizumab_pkpd.R` (effect on Q: -0.414).
 - **Notes:** Time-fixed per subject. Mutant carrier rate in the Papachristos 2020 mCRC cohort: 52%. The mutant allele is associated with lower baseline free VEGF-A levels and a higher in-vivo affinity (higher K_ss), consistent with reports that rs699947 mutants have prolonged overall survival on bevacizumab-based therapy.
+
+### SNP_SLCO1B1_RS11045819 (**canonical for SLCO1B1 rs11045819 mutant indicator**)
+- **Description:** Binary genotype indicator for the *SLCO1B1* rs11045819 single-nucleotide polymorphism (C > A; OATP1B1 transporter, exon 5, P155T). 1 = at least one mutant (A) allele present (heterozygous AC or homozygous AA); 0 = homozygous wild-type (CC). The Hennig 2015 cohort (n = 35 successfully genotyped of 44) reported 5 AC heterozygotes, 30 CC homozygotes, and 0 AA homozygotes, so the indicator is effectively heterozygous-vs-CC in that cohort.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (homozygous wild-type CC).
+- **Source aliases:**
+  - `SLCO1B1 rs11045819 genotype` -- Hennig 2015 (paper text; the source NONMEM control stream is in the unrecovered AAC supplement, so the formal column name is not on disk).
+- **Example models:** `Hennig_2015_rifabutin.R` (multiplicative effect on rifabutin bioavailability F: `F * (1 + 0.304 * SNP_SLCO1B1_RS11045819)` -- AC carriers have ~30% higher rifabutin F than CC reference; dOFV = -6.5).
+- **Notes:** Time-fixed per subject. Carrier rate in the Hennig 2015 South-African HIV/TB cohort: 14% (5 of 35 genotyped). SLCO1B1 encodes OATP1B1, a hepatic uptake transporter; rs11045819 has been associated with reduced rifampicin and lopinavir concentrations in prior studies but in Hennig 2015 was associated with INCREASED rifabutin bioavailability (note opposite direction of effect across rifamycins).
 
 ## Lifestyle / medical history
 
@@ -2961,12 +3105,12 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Notes:** Specific scope because the day-14 cutoff is tied to the MATCH-trial nutritional-rehabilitation timeline (severely malnourished children, two-week re-feeding window per WHO guidelines); future studies that test a similar within-subject step change with a different cutoff (day 7, day 28, etc.) should register a new canonical (e.g., `DAY28`). Distinct from `OCC` and `ooc<n>` (which decompose multi-occasion sampling for IOV), from `TRT_PHASE` (which gates active-vs-baseline study-phase contributions), and from `EARLY_ART` (which is a between-subject randomization-arm indicator, not a within-subject landmark). Data assemblers can derive `DAY14 = as.integer(time_post_treatment_start_days >= 14)` for a regularly-sampled multi-day study. Ratified canonically on 2026-05-08.
 
 ### CYCLE
-- **Description:** Treatment cycle number (1 = first dosing cycle, 2 = second, ...). Integer count, time-varying across a multi-cycle treatment course, incremented at each new dosing cycle.
+- **Description:** Dose-number / treatment-cycle counter (1 = first dose or cycle, 2 = second, ...). Integer count, time-varying across a multi-dose / multi-cycle treatment course, incremented at each new administration.
 - **Units:** (count)
 - **Type:** count
-- **Scope:** specific
-- **Reference category:** n/a -- used either with a power-covariate form `CYCLE^Fm` (Fm typically negative) to capture cycle-over-cycle decline in a derived quantity such as ADC-to-payload conversion fraction (Li 2017 brentuximab vedotin), or with a piecewise indicator `CYCLE == 1 vs CYCLE >= 2` to capture a step change in DAR scaling between cycle 1 and later cycles (Hong 2025 datopotamab deruxtecan).
-- **Source aliases:** `CYCLE` -- used in `Li_2017_brentuximab.R`, `Hong_2025_datopotamab.R`, and `Lu_2022_patritumab.R` with the same canonical name.
+- **Scope:** general
+- **Reference category:** n/a -- used either with a power-covariate form `CYCLE^Fm` (Fm typically negative) to capture cycle-over-cycle decline in a derived quantity such as ADC-to-payload conversion fraction (Li 2017 brentuximab vedotin), or with a piecewise indicator `CYCLE == 1 vs CYCLE >= 2` to capture a step change in PK between the first and subsequent administrations (Hong 2025 datopotamab deruxtecan; Huynh 2026 VRC07-523LS).
+- **Source aliases:** `CYCLE` -- used in `Li_2017_brentuximab.R`, `Hong_2025_datopotamab.R`, `Lu_2022_patritumab.R`, and `Huynh_2026_VRC07523LS.R` with the same canonical name.
 - **Example models:**
   - `Li_2017_brentuximab.R` (exponent on the fraction of ADC that converts to MMAE by proteolytic degradation, Fm = -0.261, to reflect tumor-burden reduction across successive treatment cycles).
   - `Hong_2025_datopotamab.R` (cycle-1 vs cycle-2+ piecewise scaling Factor1 = 0.696 on the DAR equation that drives DXd formation rate from total Dato-DXd elimination).

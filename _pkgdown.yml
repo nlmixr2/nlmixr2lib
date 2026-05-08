@@ -47,10 +47,14 @@ navbar:
         href: articles/Hua_2015_anrukinzumab.html
       - text: Astegolimab (Kotani 2022)
         href: articles/Kotani_2022_astegolimab.html
+      - text: Asundexian (Yassen 2025)
+        href: articles/Yassen_2025_asundexian.html
       - text: Avelumab (Masters 2022)
         href: articles/Masters_2022_avelumab.html
       - text: Axatilimab (Yang 2024)
         href: articles/Yang_2024_axatilimab.html
+      - text: BAY81 8973 (Garmann 2017)
+        href: articles/Garmann_2017_BAY81_8973.html
       - text: Bapineuzumab (Hu 2014)
         href: articles/Hu_2014_bapineuzumab.html
       - text: Belantamab (Papathanasiou 2025)
@@ -95,22 +99,30 @@ navbar:
         href: articles/Diao_2016_daclizumab_treg.html
       - text: Datopotamab (Hong 2025)
         href: articles/Hong_2025_datopotamab.html
+      - text: Digoxin (Jelliffe 2014)
+        href: articles/Jelliffe_2014_digoxin.html
       - text: Domagrozumab (Wojciechowski 2022)
         href: articles/Wojciechowski_2022_domagrozumab.html
       - text: Dostarlimab (Kuchimanchi 2024)
         href: articles/Kuchimanchi_2024_dostarlimab.html
       - text: Dostarlimab (Melhem 2022)
         href: articles/Melhem_2022_dostarlimab.html
+      - text: Doxorubicin (Kunarajah 2017)
+        href: articles/Kunarajah_2017_doxorubicin.html
       - text: Dupilumab (Kovalenko 2016)
         href: articles/Kovalenko_2016_dupilumab.html
       - text: Dupilumab (Kovalenko 2020)
         href: articles/Kovalenko_2020_dupilumab.html
+      - text: Dupilumab (Zhang 2021)
+        href: articles/Zhang_2021_dupilumab.html
       - text: Durvalumab (Ogasawara 2020)
         href: articles/Ogasawara_2020_durvalumab.html
       - text: Elotuzumab (Ide 2020)
         href: articles/Ide_2020_elotuzumab.html
       - text: Etrolizumab (Moein 2022)
         href: articles/Moein_2022_etrolizumab.html
+      - text: Evinacumab (Pu 2021)
+        href: articles/Pu_2021_evinacumab.html
       - text: Evolocumab (Kuchimanchi 2018)
         href: articles/Kuchimanchi_2018_evolocumab.html
       - text: Exenatide (Cirincione 2017)
@@ -133,6 +145,8 @@ navbar:
         href: articles/Kielbasa_2020_galcanezumab.html
       - text: Gantenerumab (Grimm 2023)
         href: articles/Grimm_2023.html
+      - text: Gentamicin (Llanos-Paez 2017)
+        href: articles/Llanos-Paez_2017_gentamicin.html
       - text: Guselkumab (Chen 2022)
         href: articles/Chen_2022_guselkumab.html
       - text: Guselkumab (Yao 2018)
@@ -211,6 +225,8 @@ navbar:
         href: articles/Robbie_2012_palivizumab.html
       - text: Patritumab (Lu 2022)
         href: articles/Lu_2022_patritumab.html
+      - text: Phenytoin (Hennig 2015)
+        href: articles/Hennig_2015_phenytoin.html
       - text: Polatuzumab (Lu 2019)
         href: articles/Lu_2019_polatuzumab.html
       - text: Posdinemab (PerezRuixo 2025)
@@ -219,6 +235,8 @@ navbar:
         href: articles/Lin_2024_pozelimab.html
       - text: Ranibizumab (Mulyukov 2018)
         href: articles/Mulyukov_2018_ranibizumab.html
+      - text: Rifabutin (Hennig 2015)
+        href: articles/Hennig_2015_rifabutin.html
       - text: Risankizumab (Suleiman 2019)
         href: articles/Suleiman_2019_risankizumab.html
       - text: Risankizumab (Thakre 2022)
@@ -247,12 +265,16 @@ navbar:
         href: articles/Goel_2016_Sonidegib.html
       - text: Sugemalimab (Wang 2024)
         href: articles/Wang_2024_sugemalimab.html
+      - text: Tacrolimus (Bergmann 2014)
+        href: articles/Bergmann_2014_tacrolimus.html
       - text: Tacrolimus (Kirubakaran 2022)
         href: articles/Kirubakaran_2022_tacrolimus.html
       - text: Tisagenlecleucel (Stein 2019)
         href: articles/Stein_2019_Tisagenlecleucel.html
       - text: Tislelizumab (Budha 2023)
         href: articles/Budha_2023_tislelizumab.html
+      - text: Tobra (Hennig 2013)
+        href: articles/Hennig_2013_tobra.html
       - text: Tobramycin (Hennig 2008)
         href: articles/Hennig_2008_tobramycin.html
       - text: Tocilizumab (Frey 2010)
@@ -281,6 +303,8 @@ navbar:
         href: articles/Pouzin_2022_tusamitamab.html
       - text: Ustekinumab (Aguiar 2021)
         href: articles/Aguiar_2021_ustekinumab.html
+      - text: VRC07523LS (Huynh 2026)
+        href: articles/Huynh_2026_VRC07523LS.html
       - text: Vedolizumab (Rosario 2015)
         href: articles/Rosario_2015_vedolizumab.html
       - text: Vrc01 (Huang 2017)

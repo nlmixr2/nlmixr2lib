@@ -31,7 +31,13 @@
     # (Girard_2012_pimasertib). The state integrates the instantaneous
     # hazard so that survival = exp(-cumhaz); the source NONMEM idiom is
     # `$MODEL COMP=(CUMHAZ)` with `DADT(<cumhaz>) = HAZARD`.
-    "cumhaz"
+    "cumhaz",
+    # Renal-cortex accumulation compartment used by aminoglycoside
+    # nephrotoxicity models (Llanos-Paez_2017_gentamicin). Tracks drug
+    # amount sequestered in the renal cortex via saturable uptake from
+    # the central compartment plus first-order tubular reabsorption back
+    # out (Rougier 2003 / Croes 2011 mechanism).
+    "renal_cortex"
   ),
   # Bare numbered chains (transit / effect / precursor / lat / dar /
   # depot) and metabolite-suffixed compartments are validated
@@ -104,7 +110,14 @@
     # suffix in parent + metabolite simultaneous popPK models
     # (Hennig 2006 Clin Pharmacokinet 45(11):1099-1114; Hennig 2007 BJCP
     # 63(4):438-450).
-    "ohi"
+    "ohi",
+    # Doxorubicinol, the C-13 alcohol metabolite of doxorubicin
+    # (Kunarajah 2017 paediatric oncology popPK/PD model).
+    "doxol",
+    # 25-O-desacetyl rifabutin, the primary active metabolite of
+    # rifabutin formed by arylacetamide deacetylase (Hennig 2015
+    # AAC doi:10.1128/AAC.01195-15).
+    "desrbn"
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` denotes the time-varying decay arm.
