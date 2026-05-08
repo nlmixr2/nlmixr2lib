@@ -98,7 +98,10 @@
     "col",
     # Dihydroartemisinin, the active metabolite of artesunate
     # (Birgersson 2019 DDMODEL00000297).
-    "dha"
+    "dha",
+    # Doxorubicinol, the C-13 alcohol metabolite of doxorubicin
+    # (Kunarajah 2017 paediatric oncology popPK/PD model).
+    "doxol"
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` denotes the time-varying decay arm.
