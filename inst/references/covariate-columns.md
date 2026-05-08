@@ -70,8 +70,9 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Type:** continuous
 - **Scope:** general
 - **Reference category:** n/a
-- **Source aliases:** none.
-- **Example models:** `Kyhl_2016_nalmefene.R` (reference 56.28 kg, exponent 0.626 on CL).
+- **Source aliases:**
+  - `LBW` (lean body weight) -- synonym; same biological quantity (total body weight minus body fat). Hemophilia popPK literature typically uses `LBW` (Hume or James formula) where mAb / general literature uses `LBM`. Used in `Garmann_2017_BAY81_8973.R` (reference 51.1 kg).
+- **Example models:** `Kyhl_2016_nalmefene.R` (reference 56.28 kg, exponent 0.626 on CL), `Garmann_2017_BAY81_8973.R` (alias `LBW`; reference 51.1 kg, exponents 0.610 on CL and 0.950 on Vc).
 
 ### FFM (**canonical for fat-free mass**)
 - **Description:** Fat-free mass derived from body weight, height, and sex via the Janmahasatian et al. formula (Clin Pharmacokinet 2005;44:1051-1065).
