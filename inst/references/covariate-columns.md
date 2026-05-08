@@ -1157,8 +1157,8 @@ readable.
 - **Source aliases:** none known; healthy-volunteer indicators in source NONMEM control streams typically use ad-hoc names (e.g., `HV`, `HEALTHY`).
 - **Example models:** `Nikanjam_2019_siltuximab.R` (multiplicative effects: 0.77 on CL, 0.83 on Vss; reference category is the pooled non-HV oncology cohort), `Okada_2025_rocatinlimab.R` (multiplicative shift `1 - 0.532` on Vmax when 1; reference complement is the pooled atopic-dermatitis + ulcerative-colitis + plaque-psoriasis patient cohort).
 - **Notes:** Used when a population PK model pools healthy volunteers with patients across heterogeneous indications and the HV-vs-patient contrast is retained as a covariate. Scope: specific because the complement reference category is paper-defined (Nikanjam 2019 reference is "all non-HV, non-Castleman, non-SMM tumor types"; Okada 2025 reference is the pooled AD+UC+psoriasis patient cohort). Ratified canonically on 2026-04-24.
-- **Example models:** `Nikanjam_2019_siltuximab.R` (multiplicative effects: 0.77 on CL, 0.83 on Vss; reference category is the pooled non-HV oncology cohort), `Yang_2024_axatilimab.R` (multiplicative effect on baseline NCMC: `BL_NCMC x exp(1.22 x DIS_CANCER + 0.618 x DIS_HV)`; reference category cGVHD).
-- **Notes:** Used when a population PK model pools healthy volunteers with patients across heterogeneous indications and the HV-vs-patient contrast is retained as a covariate. Scope: specific because the complement reference category is paper-defined (Nikanjam 2019 reference is "all non-HV, non-Castleman, non-SMM tumor types"; Yang 2024 reference is patients with cGVHD). Ratified canonically on 2026-04-24.
+- **Example models:** `Nikanjam_2019_siltuximab.R` (multiplicative effects: 0.77 on CL, 0.83 on Vss; reference category is the pooled non-HV oncology cohort), `Yang_2024_axatilimab.R` (multiplicative effect on baseline NCMC: `BL_NCMC x exp(1.22 x DIS_CANCER + 0.618 x DIS_HV)`; reference category cGVHD), `Goel_2016_Sonidegib.R` (multiplicative power-form effect on CL/F: `2.96^DIS_HV`; reference category is the pooled cancer-patient cohort across X2101 / X1101 / A2201).
+- **Notes:** Used when a population PK model pools healthy volunteers with patients across heterogeneous indications and the HV-vs-patient contrast is retained as a covariate. Scope: specific because the complement reference category is paper-defined (Nikanjam 2019 reference is "all non-HV, non-Castleman, non-SMM tumor types"; Yang 2024 reference is patients with cGVHD; Goel 2016 reference is the pooled cancer-patient cohort with advanced solid tumors or BCC). Ratified canonically on 2026-04-24.
 
 ### DIS_CASTLEMAN (**canonical for Castleman's disease indicator**)
 - **Description:** 1 = Castleman's disease (multicentric or unicentric), 0 = not Castleman's disease. Time-fixed per subject.
@@ -2045,6 +2045,28 @@ readable.
 - **Example models:** `Tikiso_2021_abacavir.R` (multiplicative effect on bioavailability: `f_depot *= (1 + (-0.294) * COMED_RIF_LPVR4)`; -29.4% relative to the LPV/r 4:1 reference).
 - **Notes:** Specific scope because the joint rifampicin + super-boosted-LPV/r contrast is paper-defined; the underlying induction is plausibly rifampicin-driven (the paper's discussion notes that LPV concentrations were similar with vs without super-boosting, weakening a separate ritonavir contribution), but the canonical column captures the joint indicator the paper modeled. Future TB/HIV co-treatment models that test the same regimen contrast should extend the example list rather than register a new canonical.
 
+### PPI (**canonical for concomitant proton-pump inhibitor use**)
+- **Description:** 1 = patient on concomitant proton-pump inhibitor (PPI) therapy, 0 = no PPI use. Captures gastric-pH-elevating co-medication that can reduce the bioavailability of solubility-limited (typically weakly basic) orally administered drugs.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no PPI use).
+- **Source aliases:**
+  - `PPI` -- used in `Goel_2016_Sonidegib.R` (Goel 2016 dataset; defined as "significant" PPI use, i.e. duration of PPI use >= 80% of the PK assessment phase).
+- **Example models:** `Goel_2016_Sonidegib.R` (multiplicative effect on F: `0.696^PPI`, ~30% lower bioavailability under PPI coadministration).
+- **Notes:** Per-model `covariateData[[PPI]]$notes` must document the operational definition (e.g., Goel 2016 requires PPI use covering >= 80% of the PK assessment window; other studies may use a simpler ever-vs-never indicator or a per-record time-varying flag). Distinct from `H2RA` (H2-receptor antagonist) which acts on gastric pH via a different mechanism.
+
+### H2RA (**canonical for concomitant H2-receptor-antagonist use**)
+- **Description:** 1 = patient on concomitant histamine H2-receptor-antagonist therapy (e.g., ranitidine, famotidine), 0 = no H2RA use. Captures another class of gastric-pH-modifying co-medication that may reduce bioavailability of pH-sensitive orally administered drugs.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no H2RA use).
+- **Source aliases:**
+  - `H2` -- used in `Goel_2016_Sonidegib.R` (Goel 2016 dataset; defined as "significant" H2RA use, i.e. duration of H2RA use >= 80% of the PK assessment phase).
+- **Example models:** `Goel_2016_Sonidegib.R` (multiplicative effect on F: `0.996^H2RA`, no clinically meaningful effect; reported alongside `PPI` for completeness).
+- **Notes:** Per-model `covariateData[[H2RA]]$notes` must document the operational definition (Goel 2016: >= 80% of PK assessment phase). Distinct from `PPI`.
+
 ## Pharmacogenetics
 
 ### CYP2D6 (**canonical for CYP2D6 individual metabolic-activity score**)
@@ -2425,6 +2447,40 @@ readable.
 - **Scope:** general
 - **Reference category:** 0 (fasted).
 - **Example models:** `Kyhl_2016_nalmefene.R`.
+
+### MEAL_HFAT (**canonical for high-fat-meal-at-dosing indicator**)
+- **Description:** 1 = oral dose administered after a high-fat meal, 0 = oral dose administered under any other meal condition (typically fasted or light meal). Refines the more general `FED` indicator for studies that specifically test the high-fat-meal food effect on bioavailability or absorption rate (a common solubility-limited absorption phenotype).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (non-high-fat meal condition; most often "fasted" or "2 h post light meal" as defined per study protocol). Document the operational reference per model.
+- **Source aliases:**
+  - `Fatmeal` -- used in `Goel_2016_Sonidegib.R` (covariate on F).
+  - `FATM` -- used in `Goel_2016_Sonidegib.R` (covariate on Ka; same indicator as `Fatmeal` in that paper).
+- **Example models:** `Goel_2016_Sonidegib.R` (multiplicative effect on F: `5.74^MEAL_HFAT` -- ~5.7-fold higher F under high-fat meal vs 2 h post-light-meal reference; multiplicative effect on Ka: `1.01^MEAL_HFAT` -- no meaningful effect).
+- **Notes:** Distinct from `FED` (binary fed-vs-fasted): `MEAL_HFAT` carries the specific "high-fat meal" semantic (typically >= 800 kcal, >= 50% calories from fat per FDA guidance). Document the per-protocol meal definition in `covariateData[[MEAL_HFAT]]$notes`. When a paper reports both a high-fat-meal arm and a fasted arm with separate effects (e.g., Goel 2016 has both `MEAL_HFAT` for high-fat and `HV_FAST` for healthy-volunteer fasting), both columns coexist on the same subject.
+
+### HV_FAST (**canonical for healthy-volunteer-dosed-fasted indicator**)
+- **Description:** 1 = healthy-volunteer subject dosed under overnight fasting, 0 = otherwise (any patient, or any healthy volunteer dosed under a non-fasted condition). A composite indicator combining the disease-state distinction (`DIS_HV`) with the meal-state distinction at dosing, used when a paper pools healthy volunteers and patients and reports a dedicated "HV-fasted" effect on bioavailability separate from the "high-fat-meal" arm.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (any non-HV-fasted record; in Goel 2016 the reference is "patient dosed 2 h post light meal" or "HV dosed after high-fat meal").
+- **Source aliases:**
+  - `HV.Fasting` -- used in `Goel_2016_Sonidegib.R` (Goel 2016 covariate on F applied to the healthy-volunteer fasted-arm cohorts in studies A1102 and A2114).
+- **Example models:** `Goel_2016_Sonidegib.R` (multiplicative effect on F: `0.855^HV_FAST` -- ~14.5% lower F in HV-fasted records vs the patient 2-h-post-light-meal reference, when the high-fat-meal effect is also accounted for).
+- **Notes:** Specific scope because the indicator is the intersection of the population-level `DIS_HV` covariate and the dose-record-level meal-state covariate, and the orientation of the meal-state half (overnight fast vs 2 h post light meal vs high-fat) is paper-specific. Future models that need only the `DIS_HV` half or only the meal-state half should reuse those general-scope canonicals; register a new sibling indicator (`HV_FED`, etc.) only if the same composite semantic recurs with a different combination.
+
+### MULTI_DOSE_PT (**canonical for multiple-dose-phase-in-patients indicator**)
+- **Description:** 1 = dose record from the multiple-dose phase of a clinical-pharmacology study in patients, 0 = otherwise (single-dose run-in records, healthy-volunteer records, or first-dose records in patient studies). Captures any systematic shift in apparent bioavailability between the controlled run-in and the longer multiple-dose phase, typically driven by variable food-restriction compliance over many dosing days.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (single-dose / run-in / healthy-volunteer dose records).
+- **Source aliases:**
+  - `FMDD` -- used in `Goel_2016_Sonidegib.R` (Goel 2016 covariate on F).
+- **Example models:** `Goel_2016_Sonidegib.R` (multiplicative effect on F: `1.16^MULTI_DOSE_PT` -- ~16% higher apparent F during the multiple-dose phase relative to first dose, attributed in the paper to occasional non-fasting compliance).
+- **Notes:** Specific scope because the indicator's exact definition (dose-record level vs subject level, run-in inclusion, occasion boundary) is paper-specific. In Goel 2016, the dataset distinguishes the run-in single dose from the daily multiple-dose phase; the indicator switches at the start of the multiple-dose phase for cancer patients. Distinct from `FED` and `MEAL_HFAT` (which are per-record meal-state indicators) and from `REGI_BID` (regimen indicator). Future models that need a generic "occasion boundary" effect should consider the existing `ooc<n>` IOV pattern instead.
 
 ### TABLET
 - **Description:** 1 = tablet formulation, 0 = solution.
@@ -2925,6 +2981,7 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **2026-05-06** -- Added `NEUT` (specific-scope, baseline absolute neutrophil count in cells/mm^3; placed under `Hematology` next to `NLR`) and `AUC_BAST_FW` (specific-scope, first-week drug AUC in ug*h/L; placed under `Drug exposure metrics` next to `AUC_CARBO`) canonical entries while extracting the BAST PTTE 2017 teaching guiding-document bundle (DDMODEL00000243) as four separate parametric time-to-event models (`NA_NA_tte_gompertz.R` Event 1 exponential / NEUT + AGE; `NA_NA_tte_gompertz_ev2.R` Event 2 Gompertz / AUC; `NA_NA_tte_lognormal.R` Competing Event 1 log-normal / AGE; `NA_NA_tte_loglogistic.R` Competing Event 2 log-logistic / no covariate). Source alias mapped: `AUC` (NM-TRAN $INPUT column name in DDMODEL00000243) -> `AUC_BAST_FW` (renamed in the register so a generic `AUC` column for a different drug in a future model does not collide). The four models share a common 200-subject hypothetical simulated cohort with covariates AGE (24-84 years), NEUT (1030-14,888 cells/mm^3, ref 4133), PRE_TRE (1-6 prior treatments), MAX_LEG (3-12 mm largest-lesion diameter), AUC_BAST_FW (859-7673 ug*h/L, ref 3065.5), and CMAX (100-813 ug/L); only AGE, NEUT, and AUC_BAST_FW survived covariate testing in the four final models. PRE_TRE / MAX_LEG / CMAX appear in the bundle dataset but in no final model and are therefore not registered.
 - **2026-05-06** -- Added `WT_BIRTH` (general-scope, time-fixed birth weight in kg under `Pediatric / maturation` after `GA`) canonical entry while extracting `Voller_2017_phenobarbital.R` (DDMODEL00000256). Source alias `BWEIGHT` (Voller 2017) mapped. The conventional `BWT` abbreviation was rejected as the canonical because it is already used across five existing models (Gandhi 2021, Li 2019, Chen 2022, Wojciechowski 2022, Lu 2019) as a source-name alias for body weight `WT`; reusing `BWT` for birth weight would silently break those mappings. The chosen `WT_BIRTH` form preserves the `WT` root and follows the existing `<concept>_<modifier>` register convention. Reference value 2.59 kg observed in Voller 2017's preterm/term-newborn cohort. Operator-confirmed naming choice via runner sidecar (response-001, 2026-05-06).
 - **2026-05-07** -- Added `AGE_DPF` (specific-scope, zebrafish-larval age in days post-fertilization under `Pediatric / maturation` after `WT_BIRTH`) canonical entry while extracting `vanWijk_2019_paracetamol.R` (DDMODEL00000294). Source alias `AGE` (van Wijk 2019) renamed to `AGE_DPF` to avoid colliding with the human-PK canonical `AGE` (subject age in years); same orientation, no value transformation. The covariate is the only non-mammalian-developmental-age column in the register and is intentionally registered specific-scope to keep the namespace clean for any future zebrafish-PK or other non-mammalian-larval-PK extractions that may follow. Operator-confirmed extract_verbatim disposition for the broader DDMORE 058 task via runner sidecar (response-001, 2026-05-07).
+- **2026-05-08** -- Added `PPI` and `H2RA` (both general-scope, concomitant gastric-pH-modifying medication indicators under `Concomitant / prior medication` after `STATIN`), `MEAL_HFAT` (general-scope, high-fat-meal-at-dosing indicator under `Formulation / assay / study` after `FED`), and `HV_FAST` and `MULTI_DOSE_PT` (both specific-scope, study-design composite indicators under `Formulation / assay / study` after `MEAL_HFAT`) canonical entries while extracting `Goel_2016_Sonidegib.R`. Source aliases mapped: `PPI` -> `PPI`; `H2` -> `H2RA`; `Fatmeal` and `FATM` -> `MEAL_HFAT`; `HV.Fasting` -> `HV_FAST`; `FMDD` -> `MULTI_DOSE_PT`. The PPI / H2RA pair is a candidate for promotion as more solubility-limited oral-PK models are added; MEAL_HFAT refines the existing `FED` for the FDA-defined high-fat-meal food-effect arm without overloading it; HV_FAST and MULTI_DOSE_PT remain specific because their exact composite semantics (the intersection of cohort, meal-state, and dosing-occasion in the Goel 2016 dataset) are paper-design-bound.
 - Subsequent additions: append new canonical entries as new papers are processed. When adding, bump the audit-completed count in the summary below.
 
 ## Summary
