@@ -31,7 +31,13 @@
     # (Girard_2012_pimasertib). The state integrates the instantaneous
     # hazard so that survival = exp(-cumhaz); the source NONMEM idiom is
     # `$MODEL COMP=(CUMHAZ)` with `DADT(<cumhaz>) = HAZARD`.
-    "cumhaz"
+    "cumhaz",
+    # Renal-cortex accumulation compartment used by aminoglycoside
+    # nephrotoxicity models (Llanos-Paez_2017_gentamicin). Tracks drug
+    # amount sequestered in the renal cortex via saturable uptake from
+    # the central compartment plus first-order tubular reabsorption back
+    # out (Rougier 2003 / Croes 2011 mechanism).
+    "renal_cortex"
   ),
   # Bare numbered chains (transit / effect / precursor / lat / dar /
   # depot) and metabolite-suffixed compartments are validated

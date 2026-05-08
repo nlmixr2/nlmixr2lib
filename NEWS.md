@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Llanos-Paez 2017 gentamicin ([doi:10.1208/s12248-017-0173-6](https://doi.org/10.1208/s12248-017-0173-6)) -- pediatric oncology patients with febrile or fever-only neutropenia.
 * Add Hennig 2015 phenytoin ([doi:10.1002/jcph.417](https://doi.org/10.1002/jcph.417)) -- critically ill children in a paediatric ICU (joint protein-unbound and protein-bound popPK with linear albumin partition).
 * Add Bergmann 2014 tacrolimus ([doi:10.1097/FTD.0b013e31829f1ab8](https://doi.org/10.1097/FTD.0b013e31829f1ab8)) -- adult kidney transplant recipients.
 * Add Harun 2019 cysticFibrosis ([doi:10.1136/thoraxjnl-2018-211550](https://doi.org/10.1136/thoraxjnl-2018-211550)) -- children with classic cystic fibrosis (sigmoid-Emax disease-progression model of FEV1% predicted from age 5 to 14 years).
