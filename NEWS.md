@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Archary 2018 lopinavir ([doi:10.1097/INF.0000000000001867](https://doi.org/10.1097/INF.0000000000001867)) -- severely malnourished HIV-infected children (1-month to 12-year-olds) on twice-daily oral LPV/rtv with FFM allometric scaling and a total-cholesterol covariate effect on apparent clearance.
 * Add Themans 2019 meropenem ([doi:10.1007/s40268-019-0268-x](https://doi.org/10.1007/s40268-019-0268-x)) [DDMODEL00000301] -- adults with severe pneumonia.
 * Add Kovalenko 2016 dupilumab ([doi:10.1002/psp4.12136](https://doi.org/10.1002/psp4.12136)) [DDMODEL00000273] -- DDMORE-bundle replicate of the existing Kovalenko_2016_dupilumab specificDrugs entry; encodes the bundle's non-standard V2 weight covariate and `Output_simulated_*.lst` final estimates (no `Output_real_*.lst` shipped).
 * Add Terranova 2018 paclitaxel ([doi:10.1016/j.jtbi.2018.04.012](https://doi.org/10.1016/j.jtbi.2018.04.012)) [DDMODEL00000274] -- preclinical xenograft mice (Dynamic Energy Budget tumor-growth-inhibition model coupling paclitaxel PK to tumor mass and host body weight / cachexia).
