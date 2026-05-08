@@ -40,8 +40,8 @@ bundle for `DDMODEL00000267` (scraped to
   checks below.
 - `Simulated_APAP_YoungWomen.csv` -- a 6-subject simulated dataset
   with 178 observation rows that exercises every OCC level (1
-  through 5), every TERM_BIRTH / BC_USE combination, and a range of
-  body weights and urine flow rates.
+  through 5), every TERM_BIRTH / BIRTHCONTROL combination, and a
+  range of body weights and urine flow rates.
 - `DDMODEL00000267.rdf` -- model classification metadata
   (`pkpd-ontology#pkpd_0006013` purpose).
 
@@ -67,7 +67,8 @@ pregnant (OCC = 1), 2 weeks postpartum (OCC = 2), 1 year postpartum
 and non-pregnant volunteer on birth control (OCC = 5). Each subject
 contributes one or more occasions; some occasions also include a
 TERM_BIRTH = 0 / 1 indicator (term-vs-preterm birth status) and a
-time-varying urine-flow column (UF, mL/h). The DDMORE bundle does
+time-varying urine-flow column (URINE_FLOW, mL/h; renamed from the
+source `UF` column at data assembly). The DDMORE bundle does
 not reproduce the published demographic table, so the model's
 `population` metadata fields for `weight_range`, `age_range`, and
 `regions` are intentionally `NA`. Readers needing those details
@@ -118,10 +119,10 @@ comments in `inst/modeldb/ddmore/Allegaert_2015_paracetamol.R`):
 | `e_oc1_vc`                   | `1.86`                           | TH1 = 1.86E+00                        |
 | `e_oc1_cl_gluc`              | `2.03`                           | TH2 = 2.03E+00                        |
 | `e_oc2_cl_gluc`              | `0.547`                          | TH11 = 5.47E-01                       |
-| `e_bc_use_cl_gluc`           | `1.46`                           | TH12 = 1.46E+00                       |
+| `e_birthcontrol_cl_gluc`     | `1.46`                           | TH12 = 1.46E+00                       |
 | `e_term_birth_cl_sulf`       | `5.61` L/h                       | TH3 = 5.61E+00 (term-birth arm)       |
 | `e_oc2_q2`                   | `0.128`                          | TH15 = 1.28E-01                       |
-| `e_uf_cl_renal`              | `0.00535` L/h per mL/h           | TH16 = 5.35E-03                       |
+| `e_urineflow_cl_renal`       | `0.00535` L/h per mL/h           | TH16 = 5.35E-03                       |
 | `etalvc`                     | `~ 0.0867`                       | OMEGA(1,1) = 8.67E-02                 |
 | `etalcl_gluc`                | `~ 0.121`                        | OMEGA(2,2) = 1.21E-01                 |
 | `etalcl_renal`               | `~ 0.122`                        | OMEGA(4,4) = 1.22E-01                 |
@@ -143,9 +144,9 @@ comments in `inst/modeldb/ddmore/Allegaert_2015_paracetamol.R`):
 | OCC-conditional plasma error | n/a                              | $ERROR lines 95-100; OCC = 5 -> Y2 (prop + add); OCC != 5 -> Y1 (prop only) |
 | metabolite plasma volume rule | `V_meta = 0.18 * V_central`     | $PK lines 31-32 (`V3 = V1 * 0.18`, `V4 = V3`) |
 | OCC-driven covariate effects  | (see ini comments)              | $PK lines 32-50 (`IF (OCC.EQ.k) ...`) |
-| BC-driven covariate effect    | (see ini comments)              | $PK lines 38-43 (`IF (BC.EQ.1) CLG = THETA(12) * ICLG`) |
-| TERM-driven covariate effect  | (see ini comments)              | $PK line 44 (`CLS = (TERM*TH3 + (1-TERM)*TH10) * EXP(ETA(3))`) |
-| UF-driven covariate effect    | (see ini comments)              | $PK lines 45-47 (`RCUF = TH16*(UF-100); IF(UF.EQ.0) RCUF = 0`) |
+| BIRTHCONTROL-driven covariate effect | (see ini comments)       | $PK lines 38-43 (`IF (BC.EQ.1) CLG = THETA(12) * ICLG`) |
+| TERM_BIRTH-driven covariate effect   | (see ini comments)       | $PK line 44 (`CLS = (TERM*TH3 + (1-TERM)*TH10) * EXP(ETA(3))`) |
+| URINE_FLOW-driven covariate effect   | (see ini comments)       | $PK lines 45-47 (`RCUF = TH16*(UF-100); IF(UF.EQ.0) RCUF = 0`) |
 
 # Virtual cohort
 
@@ -153,7 +154,7 @@ The virtual cohort below sweeps the five OCC strata at a single
 representative body weight (70 kg) and urine flow (100 mL/h),
 holds TERM_BIRTH at 1 (term birth) for the OCC = 1, 2, 3 arms
 (typical for non-preterm-history pregnant / postpartum subjects),
-and holds BC_USE at 1 only in the OCC = 5 stratum and at 0
+and holds BIRTHCONTROL at 1 only in the OCC = 5 stratum and at 0
 elsewhere (mirroring the .mod's coding rule that BC = 1 implies
 the volunteer-on-BC stratum). All subjects receive a single
 2 000 mg propacetamol IV infusion delivered over 20 minutes
@@ -169,11 +170,11 @@ applying an explicit `f(central) = 0.5` bioavailability factor
 set.seed(2026L)
 
 ocs <- tibble::tibble(
-  cohort     = c("OCC1_pregnant",   "OCC2_2wkPP",  "OCC3_1yrPP",
-                 "OCC4_volunteer",   "OCC5_volBC"),
-  OCC        = c(1L, 2L, 3L, 4L, 5L),
-  BC_USE     = c(0L, 0L, 0L, 0L, 1L),
-  TERM_BIRTH = c(1L, 1L, 1L, 1L, 1L)
+  cohort       = c("OCC1_pregnant",   "OCC2_2wkPP",  "OCC3_1yrPP",
+                   "OCC4_volunteer",   "OCC5_volBC"),
+  OCC          = c(1L, 2L, 3L, 4L, 5L),
+  BIRTHCONTROL = c(0L, 0L, 0L, 0L, 1L),
+  TERM_BIRTH   = c(1L, 1L, 1L, 1L, 1L)
 )
 
 # Build a per-cohort event table: dose at t = 0, observation grid spanning
@@ -185,13 +186,13 @@ events <- ocs |>
   tidyr::expand_grid(time = times_obs) |>
   dplyr::mutate(evid = 0L, amt = 0, rate = 0,
                 cmt = "Cc",
-                WT = 70, UF = 100) |>
+                WT = 70, URINE_FLOW = 100) |>
   dplyr::bind_rows(
     ocs |>
       dplyr::mutate(id = dplyr::row_number(),
                     time = 0, evid = 1L, amt = 2000, rate = 6000,
                     cmt = "central",
-                    WT = 70, UF = 100)
+                    WT = 70, URINE_FLOW = 100)
   ) |>
   dplyr::arrange(id, time, dplyr::desc(evid))
 
@@ -213,7 +214,7 @@ mod <- readModelDb("Allegaert_2015_paracetamol") |> rxode2::zeroRe()
 sim <- rxode2::rxSolve(
   mod,
   events = events,
-  keep   = c("cohort", "OCC", "BC_USE", "TERM_BIRTH", "WT", "UF")
+  keep   = c("cohort", "OCC", "BIRTHCONTROL", "TERM_BIRTH", "WT", "URINE_FLOW")
 ) |>
   as.data.frame() |>
   dplyr::filter(time > 0)
@@ -228,7 +229,7 @@ V_central (1.86 x baseline) and the largest CL_gluc (2.03 x baseline);
 1-yr postpartum (OCC = 3) and the non-pregnant volunteers (OCC = 4)
 share the baseline parameters. The OCC = 5 stratum (volunteer on
 BC) inherits the OCC = 4 typical-value parameters but adds a
-1.46 x scalar on CL_gluc through the BC_USE covariate.
+1.46 x scalar on CL_gluc through the BIRTHCONTROL covariate.
 
 ```{r figure-plasma-apap}
 ggplot(sim, aes(time, Cc, colour = cohort)) +
@@ -418,3 +419,15 @@ structural model and covariate-effect implementation are coherent.
   single-dose case. The multiple-dose case is structurally identical
   (same ODEs, same covariate effects) so the single-dose check is
   considered sufficient for a pre-publication validation.
+- **Canonical covariate-column names `BIRTHCONTROL` and `URINE_FLOW`.**
+  The first version of this extraction (commit `ced840f2`, then merged
+  into `main`) registered the source-data columns `BC` and `UF` under
+  the canonical names `BC_USE` and `UF`. Operator review (sidecar
+  response 047-001) preferred the full-word forms `BIRTHCONTROL` and
+  `URINE_FLOW` for clarity in source traces; the canonicals were
+  renamed in `inst/references/covariate-columns.md` and propagated
+  through this model file and vignette. The source-data column names
+  in the DDMORE bundle (`BC`, `UF`) are unchanged and remain the
+  documented source aliases. Datasets passed to `rxSolve` for this
+  model must rename `BC` -> `BIRTHCONTROL` and `UF` -> `URINE_FLOW`
+  before the call.
