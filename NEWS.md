@@ -2,6 +2,20 @@
 
 # development version
 
+* Add Harun 2019 cysticFibrosis ([doi:10.1136/thoraxjnl-2018-211550](https://doi.org/10.1136/thoraxjnl-2018-211550)) -- children with classic cystic fibrosis (sigmoid-Emax disease-progression model of FEV1% predicted from age 5 to 14 years).
+* Add Hennig 2007 itraconazole ([doi:10.1111/j.1365-2125.2006.02778.x](https://doi.org/10.1111/j.1365-2125.2006.02778.x)) -- adult cystic fibrosis patients (D-optimal-designed cross-over single-dose 200 mg oral itraconazole with parallel parent / hydroxy-itraconazole metabolite popPK and per-formulation absorption / bioavailability).
+* Add Hennig 2008 tobramycin ([doi:10.1111/j.1365-2125.2007.03045.x](https://doi.org/10.1111/j.1365-2125.2007.03045.x)) -- paediatric cystic fibrosis patients on once-daily intravenous tobramycin.
+* Add Kirubakaran 2022 tacrolimus ([doi:10.1111/bcp.15566](https://doi.org/10.1111/bcp.15566)) -- adult heart transplant recipients with concomitant azole antifungal therapy.
+* Add Hennig 2006 itraconazole ([doi:10.2165/00003088-200645110-00004](https://doi.org/10.2165/00003088-200645110-00004)) -- paediatric cystic-fibrosis and bone-marrow-transplant patients (parent + active metabolite popPK for oral itraconazole and hydroxy-itraconazole).
+* Add Lawson 2022 busulfan ([doi:10.1002/psp4.12809](https://doi.org/10.1002/psp4.12809)) -- pediatric hematopoietic stem cell transplant recipients receiving once-daily IV busulfan.
+* Add Archary 2019 abacavir ([doi:10.1111/bcp.13998](https://doi.org/10.1111/bcp.13998)) -- severely malnourished HIV-infected children.
+* Add Bista 2015 fentanyl (manuscript, journal/DOI not on disk) -- adults with advanced cancer receiving Durogesic transdermal fentanyl matrix patches.
+* Add Archary 2018 lopinavir ([doi:10.1097/INF.0000000000001867](https://doi.org/10.1097/INF.0000000000001867)) -- severely malnourished HIV-infected children (1-month to 12-year-olds) on twice-daily oral LPV/rtv with FFM allometric scaling and a total-cholesterol covariate effect on apparent clearance.
+* Add Xu 2023 sabatolimab MBG453 ([doi:10.1002/psp4.12962](https://doi.org/10.1002/psp4.12962)) -- adults with advanced solid tumors or hematologic malignancies (AML, MDS, CMML).
+* Add Goel 2016 sonidegib ([doi:10.1007/s00280-016-2982-1](https://doi.org/10.1007/s00280-016-2982-1)) -- healthy subjects and adults with advanced solid tumors or basal cell carcinoma.
+* Add Tikiso 2021 abacavir ([doi:10.1111/bcp.14984](https://doi.org/10.1111/bcp.14984)) -- HIV-infected African children on abacavir-containing antiretroviral therapy.
+* Add Stein 2019 tisagenlecleucel ([doi:10.1002/psp4.12388](https://doi.org/10.1002/psp4.12388)) -- pediatric and young adult patients with relapsed or refractory B-cell ALL (CAR-T cellular kinetic model: exponential expansion to Tmax followed by biexponential effector / memory-cell decline).
+* Add van Wijk 2019 paracetamol ([doi:10.1038/s41598-019-38530-w](https://doi.org/10.1038/s41598-019-38530-w)) [DDMODEL00000294] -- preclinical zebrafish (Danio rerio) larvae 3-5 dpf under continuous 1 mM paracetamol bath exposure.
 * Add Themans 2019 meropenem ([doi:10.1007/s40268-019-0268-x](https://doi.org/10.1007/s40268-019-0268-x)) [DDMODEL00000301] -- adults with severe pneumonia.
 * Add Kovalenko 2016 dupilumab ([doi:10.1002/psp4.12136](https://doi.org/10.1002/psp4.12136)) [DDMODEL00000273] -- DDMORE-bundle replicate of the existing Kovalenko_2016_dupilumab specificDrugs entry; encodes the bundle's non-standard V2 weight covariate and `Output_simulated_*.lst` final estimates (no `Output_real_*.lst` shipped).
 * Add Terranova 2018 paclitaxel ([doi:10.1016/j.jtbi.2018.04.012](https://doi.org/10.1016/j.jtbi.2018.04.012)) [DDMODEL00000274] -- preclinical xenograft mice (Dynamic Energy Budget tumor-growth-inhibition model coupling paclitaxel PK to tumor mass and host body weight / cachexia).

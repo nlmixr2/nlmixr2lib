@@ -98,7 +98,13 @@
     "col",
     # Dihydroartemisinin, the active metabolite of artesunate
     # (Birgersson 2019 DDMODEL00000297).
-    "dha"
+    "dha",
+    # Hydroxy-itraconazole (OH-ITZ), the major active metabolite of
+    # itraconazole produced by CYP3A4 hydroxylation. Used as a metabolite
+    # suffix in parent + metabolite simultaneous popPK models
+    # (Hennig 2006 Clin Pharmacokinet 45(11):1099-1114; Hennig 2007 BJCP
+    # 63(4):438-450).
+    "ohi"
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` denotes the time-varying decay arm.
