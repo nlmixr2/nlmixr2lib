@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Garmann 2017 BAY 81-8973 ([doi:10.1111/hae.13192](https://doi.org/10.1111/hae.13192)) -- patients aged 1-61 years with severe haemophilia A (LEOPOLD I/II/Kids).
 * Add Shah 2012 mAb PBPK ([doi:10.1007/s10928-011-9232-2](https://doi.org/10.1007/s10928-011-9232-2)) -- platform PBPK model parameterized for the human (71 kg) reference subject; 15 anatomical tissues with FcRn-mediated recycling.
 * Add Kunarajah 2017 doxorubicin ([doi:10.1007/s00280-017-3309-6](https://doi.org/10.1007/s00280-017-3309-6)) -- paediatric oncology patients (joint doxorubicin / doxorubicinol popPK with cardiac troponin I turnover sub-model; ratifies new `PRIOR_ANTHRACYCLINE_DOSE` covariate canonical and `doxol` registered metabolite suffix).
 * Add Llanos-Paez 2017 gentamicin ([doi:10.1208/s12248-017-0173-6](https://doi.org/10.1208/s12248-017-0173-6)) -- pediatric oncology patients with febrile or fever-only neutropenia.
