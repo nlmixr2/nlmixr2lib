@@ -190,6 +190,30 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `vanWijk_2019_paracetamol.R`.
 - **Notes:** Specific scope because the meaning is bounded to zebrafish-larval-development PK studies. Distinct from canonical `AGE` (human age in years), `PNA` (postnatal age in months), `PAGE` (postmenstrual age in months), and `GA` (gestational age in weeks) -- none of those are appropriate for a non-mammalian organism whose developmental clock is anchored at fertilization rather than birth. Integer values 3, 4, 5 in the van Wijk 2019 dataset, but treated as a continuous covariate in the elimination-rate power form. Future zebrafish-PK or other non-mammalian-developmental-age models should reuse this canonical only when the covariate is indeed dpf-anchored; other developmental-time conventions (e.g., somite-stage, hpf, dph) would warrant separate canonicals. Ratified canonically on 2026-05-07.
 
+## Nutritional status
+
+### MAL_NOURISH (**canonical for malnutrition status indicator**)
+- **Description:** 1 = subject is malnourished at study entry per a paper-defined anthropometric criterion (e.g., WHO height-for-age and weight-for-age Z-scores both < -2.0 in Tikiso 2021); 0 = not malnourished. Subject-level baseline indicator; the time-decaying recovery during nutritional supplementation is carried by the paired `T_NUT_SUPP` column rather than as a time-varying value of `MAL_NOURISH`.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (not malnourished).
+- **Source aliases:**
+  - `MAL` -- used in `Tikiso_2021_abacavir.R` (the dataset's paper-defined indicator, 1 = malnourished, 0 = not malnourished).
+- **Example models:** `Tikiso_2021_abacavir.R` (gates the time-decaying malnutrition effect: `mal_decay = MAL_NOURISH * exp(-T_NUT_SUPP * log(2) / 12.2)`, which then drives multiplicative shifts of `+115%` on F and `-64%` on CL at the start of nutritional supplementation, decaying with a 12.2-day half-life).
+- **Notes:** Specific scope because the malnutrition definition (WHO Z-score thresholds, mid-upper arm circumference, weight-for-height vs height-for-age, etc.) is paper-defined; per-model `covariateData[[MAL_NOURISH]]$notes` must document the criterion used. Pairs with `T_NUT_SUPP` (days on nutritional supplementation) when the model uses a time-decaying recovery function; otherwise `MAL_NOURISH` alone serves as a static baseline indicator. Distinct from generic body-weight Z-scores (which are continuous anthropometric metrics rather than a binarised malnutrition indicator).
+
+### T_NUT_SUPP (**canonical for time on nutritional supplementation**)
+- **Description:** Time elapsed since the start of nutritional / refeeding supplementation, in days. 0 at the start of supplementation; increases with time. Used by population PK models that describe the time-varying recovery of PK parameters during nutritional rehabilitation in malnourished cohorts.
+- **Units:** days
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters as the argument of an exponential decay function `exp(-T_NUT_SUPP * log(2) / T_half)` whose half-life `T_half` is an estimated parameter (12.2 days in Tikiso 2021).
+- **Source aliases:**
+  - `TNUTRI` -- used in `Tikiso_2021_abacavir.R` (the dataset's paper-defined column for days since start of nutritional supplementation; same orientation as the canonical, 0 = start of supplementation, increasing with time on supplementation).
+- **Example models:** `Tikiso_2021_abacavir.R` (paired with `MAL_NOURISH`; drives the recovery decay `exp(-T_NUT_SUPP * log(2) / 12.2)` of the malnutrition effect on F and CL).
+- **Notes:** Specific scope because the underlying recovery dynamics are tied to the nutritional-rehabilitation protocol of the source study. For non-malnourished subjects (`MAL_NOURISH == 0`) the value is irrelevant because the malnutrition effect is gated by `MAL_NOURISH`; supply 0 as a default. For fully-recovered malnourished subjects, supply a large value (e.g., `>= 100` days, well beyond the 12.2-day Tikiso 2021 half-life) so the decay function reaches near zero and the effect vanishes.
+
 ## Pregnancy / hormonal status
 
 ### TERM_BIRTH (**canonical for term-vs-preterm birth indicator**)
@@ -1999,6 +2023,28 @@ readable.
 - **Example models:** `Martinez_2019_alirocumab.R` (additive effect on linear clearance CLL: `CLL = TVCLL + COV1*(WT-82.9) + COV2*STATIN`; +0.00644 L/h when statin is coadministered).
 - **Notes:** Per-model `covariateData[[STATIN]]$notes` must document which statins and dose thresholds are included in the "STATIN = 1" category, since inclusion criteria vary by study. Martinez 2019 codes STATIN = 1 for coadministration of rosuvastatin (< 20 mg/day), atorvastatin (< 40 mg/day), or simvastatin (any dose); other statin regimens are coded as 0.
 
+### COMED_EFV (**canonical for concomitant efavirenz indicator**)
+- **Description:** 1 = subject is receiving efavirenz (EFV)-based antiretroviral therapy as the third agent in a combination ART regimen; 0 = subject is on the comparator regimen specified by the source paper (typically a protease-inhibitor-based regimen such as standard lopinavir/ritonavir 4:1). Efavirenz is a CYP3A and UGT inducer, so the indicator is used to flag PXR-mediated induction of metabolic clearance for co-administered antiretrovirals.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-EFV reference regimen, paper-defined; e.g., LPV/r 4:1 in Tikiso 2021).
+- **Source aliases:**
+  - `EFV` -- used in `Tikiso_2021_abacavir.R` (the dataset's paper-defined indicator, 1 = on EFV-based ART, 0 = on standard LPV/r 4:1).
+- **Example models:** `Tikiso_2021_abacavir.R` (multiplicative effect on apparent oral clearance: `cl *= (1 + 0.120 * COMED_EFV)`; +12.0% relative to the LPV/r 4:1 reference).
+- **Notes:** Specific scope because the comparator regimen (LPV/r 4:1 in Tikiso 2021) is paper-defined; future ART population-PK models that test EFV-vs-other contrasts should extend the example list when the comparator matches, or register a finer-grained sibling indicator otherwise.
+
+### COMED_RIF_LPVR4 (**canonical for concomitant rifampicin-based antitubercular treatment with super-boosted lopinavir/ritonavir 4:4 indicator**)
+- **Description:** 1 = subject is receiving rifampicin-based antitubercular treatment together with super-boosted lopinavir/ritonavir 4:4 (extra ritonavir added to standard 4:1 LPV/r to counter rifampicin-driven LPV induction); 0 = subject is on the comparator regimen specified by the source paper (typically standard LPV/r 4:1 without rifampicin in Tikiso 2021). Used to flag the combined induction effect of rifampicin (PXR-mediated UGT induction) plus extra ritonavir on co-administered antiretroviral PK.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-RIF + standard LPV/r 4:1 reference).
+- **Source aliases:**
+  - `RIF` -- used in `Tikiso_2021_abacavir.R` (the dataset's paper-defined indicator, 1 = on rifampicin-based TB treatment with super-boosted LPV/r 4:4, 0 = standard LPV/r 4:1 or EFV).
+- **Example models:** `Tikiso_2021_abacavir.R` (multiplicative effect on bioavailability: `f_depot *= (1 + (-0.294) * COMED_RIF_LPVR4)`; -29.4% relative to the LPV/r 4:1 reference).
+- **Notes:** Specific scope because the joint rifampicin + super-boosted-LPV/r contrast is paper-defined; the underlying induction is plausibly rifampicin-driven (the paper's discussion notes that LPV concentrations were similar with vs without super-boosting, weakening a separate ritonavir contribution), but the canonical column captures the joint indicator the paper modeled. Future TB/HIV co-treatment models that test the same regimen contrast should extend the example list rather than register a new canonical.
+
 ## Pharmacogenetics
 
 ### CYP2D6 (**canonical for CYP2D6 individual metabolic-activity score**)
@@ -2386,8 +2432,8 @@ readable.
 - **Type:** binary
 - **Scope:** specific
 - **Reference category:** 0 (solution).
-- **Example models:** `Kyhl_2016_nalmefene.R`.
-- **Notes:** Scoped specific because the "tablet vs solution" contrast is tied to Kyhl 2016's formulation-comparison design. Future formulation-comparison models should either add themselves here or register a more general `FORM_TABLET` entry.
+- **Example models:** `Kyhl_2016_nalmefene.R` (additive shift on residual error: tablet vs solution); `Tikiso_2021_abacavir.R` (multiplicative effect on the absorption mean transit time MTT: tablet (abacavir + lamivudine fixed-dose-combination tablet) vs liquid solution; `mtt *= (1 + 0.249 * TABLET)`, i.e. 24.9% slower absorption for the FDC tablet relative to the abacavir liquid reference).
+- **Notes:** Scoped specific because the "tablet vs solution" contrast is tied to formulation-comparison study designs (Kyhl 2016 nalmefene tablet-vs-oral-solution; Tikiso 2021 abacavir + lamivudine FDC tablet vs abacavir liquid). Distinct from the `FDC` canonical (Wilkins 2008 antitubercular fixed-dose-combination of multiple drugs, contrasted against single-drug tablets) because here the comparator is a non-tablet liquid / solution rather than a separate tablet product. Future formulation-comparison models should either extend this entry's example list when the comparator is a liquid / solution, or register a sibling canonical when contrasting two tablet products.
 
 ### FDC (**canonical for fixed-dose-combination antitubercular formulation indicator**)
 - **Description:** 1 = subject received the rifampicin-containing fixed-dose-combination (FDC) antitubercular product (rifampicin co-formulated with isoniazid, pyrazinamide, and optionally ethambutol in a single tablet); 0 = subject received the same drugs as separate single-drug tablets ("SDC", separate-drug-combination). Per-subject (regimen-fixed) categorical covariate flagging the formulation when a population analysis pools FDC and SDC arms and tests formulation as a covariate on absorption / disposition parameters.
@@ -2727,6 +2773,7 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 
 ## Change log
 
+- **2026-05-08** -- Added a new `## Nutritional status` H2 section (placed between `Pediatric / maturation` and `Pregnancy / hormonal status`) with `MAL_NOURISH` (specific scope; binary malnutrition indicator) and `T_NUT_SUPP` (specific scope; continuous days on nutritional supplementation) canonical entries while extracting `Tikiso_2021_abacavir.R`. Also added `COMED_EFV` (specific scope under `Concomitant / prior medication`; binary efavirenz co-administration indicator) and `COMED_RIF_LPVR4` (specific scope under `Concomitant / prior medication`; binary rifampicin + super-boosted lopinavir/ritonavir 4:4 co-administration indicator). Source aliases mapped: `MAL` -> `MAL_NOURISH`, `TNUTRI` -> `T_NUT_SUPP`, `EFV` -> `COMED_EFV`, `RIF` -> `COMED_RIF_LPVR4`. Extended `TABLET` example list to include `Tikiso_2021_abacavir.R` (FDC abacavir + lamivudine tablet vs liquid solution; +24.9% MTT for the FDC tablet). The new `MAL_NOURISH` / `T_NUT_SUPP` pair encodes the time-decaying recovery during nutritional rehabilitation that Tikiso 2021 Eq. 2 describes; `MAL_NOURISH` is a static baseline indicator and `T_NUT_SUPP` carries the time-varying recovery. Distinct from generic body-weight Z-scores: `MAL_NOURISH` is a binarised pediatric-malnutrition indicator following the source paper's WHO height-for-age and weight-for-age Z-score < -2.0 criterion.
 - **2026-05-06** -- Added `DLVL` (specific scope under `Formulation / assay / study`; integer-coded source-protocol dose-level / regimen indicator) and `S1A2` (specific scope under `Formulation / assay / study`; integer-coded source-protocol CYP1A2 substrate / co-medication indicator) canonical entries while extracting `NA_NA_lidocaine.R` (DDMODEL00000281). Both names match the source-data column names used in the BAST.dat ("4-cRUN249") lidocaine study and survive `=DROP` in the `.ctl` `$INPUT` declaration. The `DLVL` binary derivation `DLVL > 2` switches typical-value baselines for the GX rate constant K30 and the lidocaine apparent central volume V1; the `S1A2` binary derivation `S1A2 == 3` selects a CYP1A2-induction-style modifier on K30. Sibling columns `D1A2` and `H1A2` are dropped in the `.ctl` so only the level-3 indicator is structurally identifiable. Source aliases mapped: `BIL` (legacy total-bilirubin label) -> `TBILI`; `SGPT` (legacy ALT label, paralleling `SGOT` -> `AST`) -> `ALT`. The linked publication is not on disk for this extraction; the absence of an external parameter cross-check is documented in the model file's vignette Errata.
 - **2026-05-06** -- Added `FDC` (specific scope under `Formulation / assay / study`; binary fixed-dose-combination antitubercular formulation indicator with FDC = 1 as the typical-value reference) canonical entry while extracting `Wilkins_2008_rifampicin.R` (DDMODEL00000280). The 1-level convention follows the Wilkins 2008 source (FDC = 1 = co-formulated tablet, 0 = single-drug tablets) and the bundle's `Most common` annotation in the `.mod` `IF(FDC.EQ.1) ... = 0` block. Distinct from `TABLET` (Kyhl 2016 tablet-vs-solution) and the `FORM_*` family because the FDC-vs-SDC contrast is a co-formulation contrast, not a drug-product-version one.
 - **2026-05-06** -- Added `ORG_FAIL_COUNT` (specific scope under a new `Critical-illness severity` H2 section; integer count of failing organs in critically ill patients, decomposed into per-stratum binary indicators inside `model()` to select per-stratum typical clearance) canonical entry while extracting `Vet_2016_midazolam.R` (DDMODEL00000249). Source alias `ORGF` -> canonical `ORG_FAIL_COUNT` (renamed for descriptive clarity over the source NMTRAN abbreviation). Reference category 0 (no organs failing); per-stratum strata 1 / 2 / 3 / >=4. The new section sits between `Disease severity scores` and `Interferon / biomarker panels`. The Vet 2016 paper PDF is not on disk in this worktree; the absence of paper-on-disk parameter cross-checks is documented in the model file's vignette Errata.
