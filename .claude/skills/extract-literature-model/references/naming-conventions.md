@@ -307,14 +307,14 @@ After this metadata block come `ini()` and `model()`.
 
 ## File naming
 
-- Path: `inst/modeldb/<category>/<FirstAuthor>_<Year>_<drug>.R`. For DDMORE-source extractions, `<category>` is `ddmore/`.
+- Path: `inst/modeldb/<category>/<FirstAuthor>_<Year>_<drug>.R`.
 - Function name **must** equal the filename minus `.R`. Enforced by `buildModelDb()`.
 - Use the paper's first-author surname (no accents or spaces), four-digit year, and drug INN in lowercase.
-- **Year-letter collision suffix.** When two extractions resolve to the same `<FirstAuthor>_<Year>_<drug>` name (e.g., two Themans 2019 meropenem entries from different DDMORE scenarios), append a lowercase letter to the year — `Themans_2019a_meropenem.R`, `Themans_2019b_meropenem.R`. Allocate letters in chronological model-development order when known, otherwise in DDMORE ID order. Never overwrite an existing file silently.
+- **Year-letter collision suffix.** When two extractions resolve to the same `<FirstAuthor>_<Year>_<drug>` name (e.g., two same-author/year/drug entries with different scenarios), append a lowercase letter to the year — `Author_2019a_drug.R`, `Author_2019b_drug.R`. Allocate letters in chronological model-development order when known. Never overwrite an existing file silently.
 
 ## NONMEM → nlmixr2 syntax translation
 
-When the source is a NONMEM control stream (`.mod` / `.ctl`) — paper-supplement or DDMORE-source — translate the syntax using the rules below. See `references/ddmore-source.md` for the broader DDMORE workflow; this section focuses on the symbol-by-symbol mapping rules that apply any time NONMEM is the source language.
+When the source is a NONMEM control stream (`.mod` / `.ctl`, e.g. a paper supplement), translate the syntax using the rules below. The mapping rules apply any time NONMEM is the source language.
 
 ### Parameter symbols
 
