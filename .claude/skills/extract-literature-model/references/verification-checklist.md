@@ -37,6 +37,7 @@ Do not silently resolve ambiguity. Do not tune parameters to make a validation o
 ## C. Covariate effects
 
 - [ ] Every covariate used in `model()` is registered in `inst/references/covariate-columns.md` with a canonical name, or the PR adds a new entry.
+- [ ] No `## Change log` / `## Summary` section or per-extraction history line was added to `inst/references/covariate-columns.md`. Per-entry context (derivation rules, scope-promotion rationale, naming-decision sidecars) goes in the H3 entry's Description / Notes / Source aliases. Chronological history is read from `git log`.
 - [ ] Source column names different from the canonical names are recorded in `covariateData[[name]]$source_name` and any value transformation (e.g., `SEXM → SEXF` inverts values and flips the effect sign) is documented in `notes`.
 - [ ] **Reference categories** for categorical effects match the paper (especially after composite race groups like `RACE_BLACK_OTH` — the reference is everyone NOT in the composite).
 - [ ] **Effect form** is correct: multiplicative (`1 + e × COV`), power (`COV^e`), or exponential (`exp(e × COV)`). The form determines what `e` means.
