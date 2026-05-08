@@ -45,12 +45,12 @@
       notes              = "Time-varying. Population-typical SCR for the patient's age and sex per Ceriotti et al. 2008 Clin Chem 54:559-566. The vignette derives this column from a Ceriotti age-band lookup; for typical-value simulation of a virtual patient with normal renal function, set CREAT_REF = CREAT so the (CREAT_REF / CREAT)^0.58 ratio collapses to 1.",
       source_name        = "SCR_mean"
     ),
-    DIS_PEDONC = list(
+    DIS_CANCER_PED = list(
       description        = "Pediatric oncology cohort indicator (1 = oncology cohort, 0 = nononcology)",
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (nononcology pediatric admission; appendicitis and renal/urinary infection were most common in Llanos-Paez 2020)",
-      notes              = "Time-fixed per subject. Multiplicative cohort shifts on V1 (factor 1 - 0.154 when 1) and Q (factor 1 - 0.321 when 1); CL has no oncology effect. Renamed from source column ONCOLOGY to the canonical DIS_PEDONC per covariate-columns.md.",
+      notes              = "Time-fixed per subject. Multiplicative cohort shifts on V1 (factor 1 - 0.154 when 1) and Q (factor 1 - 0.321 when 1); CL has no oncology effect. Renamed from source column ONCOLOGY to the canonical DIS_CANCER_PED per covariate-columns.md.",
       source_name        = "ONCOLOGY"
     )
   )
@@ -73,7 +73,7 @@
 
   ini({
     # Structural population estimates -- nononcology baseline so the oncology
-    # multiplier (1 + e_pedonc_*) acts as a reduction. Values in Table 2.
+    # multiplier (1 + e_cancer_ped_*) acts as a reduction. Values in Table 2.
     lcl <- log(4.58); label("Population CL at NFM_std_CL = 62.8 kg, adult-mature GFR, normal SCR (L/h)")  # Llanos-Paez 2020 Table 2
     lvc <- log(21.4); label("Population V1 (nononcology) at NFM_std_V1 = 57.5 kg (L)")                    # Llanos-Paez 2020 Table 2
     lq  <- log(0.84); label("Population Q (nononcology) at NFM_std_Q = 56.1 kg (L/h)")                    # Llanos-Paez 2020 Table 2
@@ -85,8 +85,8 @@
     # Ffat for Q and V2 fixed to 0 in the published model; expressed inline in model().
 
     # Pediatric oncology cohort effects on V1 and Q (multiplicative-from-1 form)
-    e_pedonc_vc <- -0.154; label("Pediatric oncology effect on V1: V1_oncology / V1_nononcology - 1 (fraction)")  # Llanos-Paez 2020 Table 2 ratio 18.1 / 21.4
-    e_pedonc_q  <- -0.321; label("Pediatric oncology effect on Q: Q_oncology / Q_nononcology - 1 (fraction)")     # Llanos-Paez 2020 Table 2 ratio 0.57 / 0.84
+    e_cancer_ped_vc <- -0.154; label("Pediatric oncology effect on V1: V1_oncology / V1_nononcology - 1 (fraction)")  # Llanos-Paez 2020 Table 2 ratio 18.1 / 21.4
+    e_cancer_ped_q  <- -0.321; label("Pediatric oncology effect on Q: Q_oncology / Q_nononcology - 1 (fraction)")     # Llanos-Paez 2020 Table 2 ratio 0.57 / 0.84
 
     # Renal function on CL (power ratio of Ceriotti reference SCR over individual SCR)
     e_creat_cl <- 0.58; label("Exponent on (CREAT_REF / CREAT) ratio for CL (unitless)")  # Llanos-Paez 2020 Table 2 theta_serum_creatinine
@@ -120,8 +120,8 @@
     gfr_mat <- (nfm_cl / nfm_std_cl)^0.75 * pma_wks^3.43 / (46.5^3.43 + pma_wks^3.43) * 119
 
     # Multiplicative pediatric-oncology cohort effects on V1 and Q (no effect on CL or V2)
-    cohort_vc <- 1 + e_pedonc_vc * DIS_PEDONC
-    cohort_q  <- 1 + e_pedonc_q  * DIS_PEDONC
+    cohort_vc <- 1 + e_cancer_ped_vc * DIS_CANCER_PED
+    cohort_q  <- 1 + e_cancer_ped_q  * DIS_CANCER_PED
 
     # Renal function: ratio of age/sex-matched physiological mean SCR to individual SCR
     scr_factor <- (CREAT_REF / CREAT)^e_creat_cl

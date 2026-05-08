@@ -1124,16 +1124,16 @@ readable.
 - **Example models:** `Yang_2024_axatilimab.R` (multiplicative effect on baseline NCMC: `BL_NCMC x exp(1.22 x DIS_CANCER + 0.618 x DIS_HV)`; reference category cGVHD when both indicators are 0).
 - **Notes:** Used together with `DIS_HV` to decompose a three-level "participant population" categorical (cGVHD reference, advanced solid tumor, healthy volunteer) into two orthogonal binary indicators. Scope: specific because the disease-pooling reference category is paper-defined (Yang 2024 reference is patients with cGVHD). Ratified canonically on 2026-04-28.
 
-### DIS_PEDONC (**canonical for pediatric oncology cohort indicator**)
-- **Description:** 1 = pediatric patient receiving cancer-directed therapy (any malignancy, including hematologic cancers such as leukemia and lymphoma as well as solid tumors / blastomas), 0 = pediatric patient admitted for a non-oncology indication (e.g. infection, surgery, transplant). Time-fixed per subject. Distinct from `DIS_CANCER`, which is restricted to advanced/metastatic solid tumors in adults; `DIS_PEDONC` is broader and explicitly covers leukemia-dominant pediatric cohorts.
+### DIS_CANCER_PED (**canonical for pediatric oncology cohort indicator**)
+- **Description:** 1 = pediatric patient receiving cancer-directed therapy (any malignancy, including hematologic cancers such as leukemia and lymphoma as well as solid tumors / blastomas), 0 = pediatric patient admitted for a non-oncology indication (e.g. infection, surgery, transplant). Time-fixed per subject. Distinct from `DIS_CANCER`, which is restricted to advanced/metastatic solid tumors in adults; `DIS_CANCER_PED` is the pediatric variant in the `DIS_CANCER*` family and explicitly covers leukemia-dominant pediatric cohorts.
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** specific
 - **Reference category:** 0 (non-oncology pediatric patient; the complement group is paper-defined -- in Llanos-Paez 2020 the complement is pediatric patients admitted for various non-oncology indications, with appendicitis and kidney disease / urinary tract infection the most common).
 - **Source aliases:**
-  - `ONCOLOGY` -- Llanos-Paez 2020 NONMEM column with the same orientation (1 = oncology, 0 = nononcology); maps directly to `DIS_PEDONC`.
+  - `ONCOLOGY` -- Llanos-Paez 2020 NONMEM column with the same orientation (1 = oncology, 0 = nononcology); maps directly to `DIS_CANCER_PED`.
 - **Example models:** `Llanos-Paez_2020_gentamicin.R` (multiplicative cohort shifts on V1 (-0.154) and Q (-0.321) relative to the nononcology baseline; CL has no oncology effect).
-- **Notes:** Use `DIS_PEDONC` rather than `DIS_CANCER` whenever the source paper's "oncology" cohort includes hematologic malignancies (leukemia / lymphoma) or pediatric blastomas, because `DIS_CANCER` is canonically restricted to advanced/metastatic solid tumors. Reference-category complement is paper-defined (Llanos-Paez 2020 complement is the pooled pediatric non-oncology admissions cohort). Scope: specific because the complement is paper-defined.
+- **Notes:** Use `DIS_CANCER_PED` rather than `DIS_CANCER` whenever the source paper's "oncology" cohort includes hematologic malignancies (leukemia / lymphoma) or pediatric blastomas, because `DIS_CANCER` is canonically restricted to advanced/metastatic solid tumors. Reference-category complement is paper-defined (Llanos-Paez 2020 complement is the pooled pediatric non-oncology admissions cohort). Scope: specific because the complement is paper-defined. Covariate-effect parameters drop the `DIS_` prefix per the existing `DIS_CANCER` -> `e_cancer_*` convention (Yang 2024); use `e_cancer_ped_<param>`.
 
 ### DIS_HV (**canonical for healthy-volunteer cohort indicator**)
 - **Description:** 1 = healthy volunteer (no diagnosis), 0 = patient (any diagnosis represented in the pooled cohort). Time-fixed per subject.

@@ -82,8 +82,8 @@ from the Methods section "Mechanistic-based covariate model" on page 9.
 | `ffat_cl` (Ffat for CL)                            | 0.48       | Table 2 covariate model row "Ffat on CL" |
 | `ffat_v1` (Ffat for V1)                            | 0.10       | Table 2 covariate model row "Ffat on V1" |
 | Ffat for Q and V2                                  | 0 (FIXED)  | Table 2 covariate model rows "Ffat on Q", "Ffat on V2" (both reported as 0 fix) |
-| `e_pedonc_vc`                                      | -0.154     | Derived from Table 2: V1_oncology / V1_nononcology - 1 = 18.1 / 21.4 - 1 |
-| `e_pedonc_q`                                       | -0.321     | Derived from Table 2: Q_oncology / Q_nononcology - 1 = 0.57 / 0.84 - 1 |
+| `e_cancer_ped_vc`                                      | -0.154     | Derived from Table 2: V1_oncology / V1_nononcology - 1 = 18.1 / 21.4 - 1 |
+| `e_cancer_ped_q`                                       | -0.321     | Derived from Table 2: Q_oncology / Q_nononcology - 1 = 0.57 / 0.84 - 1 |
 | `e_creat_cl` (theta_serum_creatinine)              | 0.58       | Table 2 covariate model row "theta_serum_creatinine" |
 | `etalcl ~ 0.02686` (omega^2 = log(0.165^2 + 1))    | CV 16.5%   | Table 2 BSV CV(%) for CL |
 | `etalvc ~ 0.05509` (omega^2 = log(0.238^2 + 1))    | CV 23.8%   | Table 2 BSV CV(%) for V1 oncology |
@@ -162,7 +162,7 @@ make_arm <- function(arm_label, n, id_offset) {
     PAGE       = pma_wks / 4.35,            # postmenstrual age in months
     CREAT      = scr_ref,                   # typical patient: SCR matches reference
     CREAT_REF  = scr_ref,
-    DIS_PEDONC = if (is_oncology) 1L else 0L
+    DIS_CANCER_PED = if (is_oncology) 1L else 0L
   )
 }
 
@@ -201,7 +201,7 @@ events <- cohort |>
         PAGE       = row$PAGE,
         CREAT      = row$CREAT,
         CREAT_REF  = row$CREAT_REF,
-        DIS_PEDONC = row$DIS_PEDONC
+        DIS_CANCER_PED = row$DIS_CANCER_PED
       )
   }) |>
   ungroup() |>
@@ -400,7 +400,7 @@ deviations.
   drawn from a single Australian children's hospital and the
   publication does not break down race / ethnicity. No race effects
   are encoded.
-- **Pediatric oncology indicator (`DIS_PEDONC`) is a new canonical.**
+- **Pediatric oncology indicator (`DIS_CANCER_PED`) is a new canonical.**
   The covariate-columns register entry was created with this
   extraction; reference category is the paper-defined nononcology
   pediatric admission cohort. Distinct from the existing `DIS_CANCER`
