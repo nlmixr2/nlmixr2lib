@@ -415,6 +415,7 @@ intervals <- data.frame(
 )
 
 res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■       87% |  ETA:  0s
 ```
 
 ``` r

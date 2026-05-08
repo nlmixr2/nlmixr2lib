@@ -373,8 +373,8 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- suppressWarnings(PKNCA::pk.nca(nca_data))
-#>  ■■■■■■■■■■■                       34% |  ETA:  5s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■          78% |  ETA:  2s
+#>  ■■■■■■■■■■■■                      36% |  ETA:  5s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■         80% |  ETA:  1s
 
 knitr::kable(summary(nca_res),
              caption = "Simulated single-dose NCA across the MI-CP152 cohorts (first 14 days).")

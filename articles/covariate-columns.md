@@ -201,6 +201,40 @@ entries should default to all caps.
   `WT / (height_m)^2`; assume time-fixed at baseline unless the source
   paper states otherwise.
 
+### BMIZ (**canonical for body-mass-index z-score (age- and sex-standardised)**)
+
+- **Description:** Age- and sex-standardised body-mass-index z-score
+  (number of standard deviations above or below the reference-population
+  mean BMI for the subject’s age and sex). Distinct from raw `BMI`
+  (kg/m^2): `BMIZ` is unitless and centred at 0 in the reference
+  population, so the reference value used in linear-deviation effects is
+  0 (not a population BMI in kg/m^2). Time-varying when the source paper
+  carries a per-visit z-score; document baseline-vs-time-varying status
+  in `covariateData[[BMIZ]]$notes`.
+- **Units:** unitless (z-score; standard-deviation units)
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a – used with a linear-deviation form
+  `(1 + e * (BMIZ - 0))` so the reference is 0 (population mean for the
+  subject’s age/sex). Effect coefficients are interpreted as fractional
+  change per 1 z-score-unit deviation from the reference.
+- **Source aliases:**
+  - `BMI` – when a paper uses the column name `BMI` for what is actually
+    a z-score (e.g., the Harun 2019 NMTRAN control stream column `BMI`
+    is documented in the dataset header as “body-mass index z-score”).
+    The canonical column is `BMIZ`; the source-paper column name is
+    recorded in `covariateData[[BMIZ]]$source_name`.
+- **Example models:** `Harun_2019_cysticFibrosis.R` (time-varying
+  per-visit BMI z-score; linear-deviation effect on baseline FEV1%
+  predicted with reference 0 and coefficient +0.0382 per z-score unit).
+- **Notes:** Distinct from `BMI` (raw kg/m^2 used in adult populations).
+  Paediatric and adolescent studies routinely report BMI as a z-score
+  relative to a growth reference (WHO 2007 Growth Reference for
+  school-aged children, CDC 2000, etc.); document the reference standard
+  the source paper used in `covariateData[[BMIZ]]$notes`. Specific scope
+  until a second paediatric model ratifies the name; at that point
+  promote to `general`.
+
 ### SEXF (**canonical for sex**)
 
 - **Description:** Biological sex indicator, 1 = female, 0 = male.
@@ -338,6 +372,107 @@ entries should default to all caps.
   (`WT`). The `WT_BIRTH` form keeps the `WT` root consistent with the
   existing body-weight canonical and avoids the `BWT` ambiguity.
 
+### AGE_DPF (**canonical for zebrafish-larval age in days post-fertilization**)
+
+- **Description:** Age of a zebrafish (Danio rerio) larva in days
+  post-fertilization (dpf). Time-fixed per subject in
+  destructive-sampling designs (each larva is harvested at exactly one
+  observation, so its dpf is fixed at the value assigned at
+  exposure-start).
+- **Units:** days post-fertilization (dpf)
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a – used in van Wijk 2019 with a step-form
+  effect on the absorption rate
+  (`IF (AGE_DPF > 3) k12 = k12_3 * (1 + e_age_dpf_k12)`) and a per-day
+  power-form effect on the elimination rate
+  (`k25 = k25_3 * (1 + e_age_dpf_k25)^(AGE_DPF - 3)`). Reference age is
+  3 dpf (the youngest cohort in the study).
+- **Source aliases:**
+  - `AGE` – van Wijk 2019 NONMEM column. Renamed to canonical `AGE_DPF`
+    because the human-PK canonical `AGE` denotes subject age in years;
+    the zebrafish dpf semantic is incompatible and would silently
+    corrupt any future model that mixed them. Same orientation, no value
+    transformation.
+- **Example models:** `vanWijk_2019_paracetamol.R`.
+- **Notes:** Specific scope because the meaning is bounded to
+  zebrafish-larval-development PK studies. Distinct from canonical `AGE`
+  (human age in years), `PNA` (postnatal age in months), `PAGE`
+  (postmenstrual age in months), and `GA` (gestational age in weeks) –
+  none of those are appropriate for a non-mammalian organism whose
+  developmental clock is anchored at fertilization rather than birth.
+  Integer values 3, 4, 5 in the van Wijk 2019 dataset, but treated as a
+  continuous covariate in the elimination-rate power form. Future
+  zebrafish-PK or other non-mammalian-developmental-age models should
+  reuse this canonical only when the covariate is indeed dpf-anchored;
+  other developmental-time conventions (e.g., somite-stage, hpf, dph)
+  would warrant separate canonicals. Ratified canonically on 2026-05-07.
+
+## Nutritional status
+
+### MAL_NOURISH (**canonical for malnutrition status indicator**)
+
+- **Description:** 1 = subject is malnourished at study entry per a
+  paper-defined anthropometric criterion (e.g., WHO height-for-age and
+  weight-for-age Z-scores both \< -2.0 in Tikiso 2021); 0 = not
+  malnourished. Subject-level baseline indicator; the time-decaying
+  recovery during nutritional supplementation is carried by the paired
+  `T_NUT_SUPP` column rather than as a time-varying value of
+  `MAL_NOURISH`.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (not malnourished).
+- **Source aliases:**
+  - `MAL` – used in `Tikiso_2021_abacavir.R` (the dataset’s
+    paper-defined indicator, 1 = malnourished, 0 = not malnourished).
+- **Example models:** `Tikiso_2021_abacavir.R` (gates the time-decaying
+  malnutrition effect:
+  `mal_decay = MAL_NOURISH * exp(-T_NUT_SUPP * log(2) / 12.2)`, which
+  then drives multiplicative shifts of `+115%` on F and `-64%` on CL at
+  the start of nutritional supplementation, decaying with a 12.2-day
+  half-life).
+- **Notes:** Specific scope because the malnutrition definition (WHO
+  Z-score thresholds, mid-upper arm circumference, weight-for-height vs
+  height-for-age, etc.) is paper-defined; per-model
+  `covariateData[[MAL_NOURISH]]$notes` must document the criterion used.
+  Pairs with `T_NUT_SUPP` (days on nutritional supplementation) when the
+  model uses a time-decaying recovery function; otherwise `MAL_NOURISH`
+  alone serves as a static baseline indicator. Distinct from generic
+  body-weight Z-scores (which are continuous anthropometric metrics
+  rather than a binarised malnutrition indicator).
+
+### T_NUT_SUPP (**canonical for time on nutritional supplementation**)
+
+- **Description:** Time elapsed since the start of nutritional /
+  refeeding supplementation, in days. 0 at the start of supplementation;
+  increases with time. Used by population PK models that describe the
+  time-varying recovery of PK parameters during nutritional
+  rehabilitation in malnourished cohorts.
+- **Units:** days
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a – enters as the argument of an exponential
+  decay function `exp(-T_NUT_SUPP * log(2) / T_half)` whose half-life
+  `T_half` is an estimated parameter (12.2 days in Tikiso 2021).
+- **Source aliases:**
+  - `TNUTRI` – used in `Tikiso_2021_abacavir.R` (the dataset’s
+    paper-defined column for days since start of nutritional
+    supplementation; same orientation as the canonical, 0 = start of
+    supplementation, increasing with time on supplementation).
+- **Example models:** `Tikiso_2021_abacavir.R` (paired with
+  `MAL_NOURISH`; drives the recovery decay
+  `exp(-T_NUT_SUPP * log(2) / 12.2)` of the malnutrition effect on F and
+  CL).
+- **Notes:** Specific scope because the underlying recovery dynamics are
+  tied to the nutritional-rehabilitation protocol of the source study.
+  For non-malnourished subjects (`MAL_NOURISH == 0`) the value is
+  irrelevant because the malnutrition effect is gated by `MAL_NOURISH`;
+  supply 0 as a default. For fully-recovered malnourished subjects,
+  supply a large value (e.g., `>= 100` days, well beyond the 12.2-day
+  Tikiso 2021 half-life) so the decay function reaches near zero and the
+  effect vanishes.
+
 ## Pregnancy / hormonal status
 
 ### TERM_BIRTH (**canonical for term-vs-preterm birth indicator**)
@@ -369,7 +504,7 @@ entries should default to all caps.
   the term-cutoff convention belongs in data assembly, not the model
   file.
 
-### BC_USE (**canonical for oral-contraceptive use indicator**)
+### CONMED_BIRTHCONTROL (**canonical for oral-contraceptive use indicator**)
 
 - **Description:** Binary indicator of oral hormonal contraceptive use;
   `1` = currently taking an oral contraceptive (estrogen-progestin or
@@ -380,9 +515,10 @@ entries should default to all caps.
 - **Type:** binary
 - **Scope:** specific
 - **Reference category:** 0 (no oral contraceptive). Effect form in
-  Allegaert 2015 is multiplicative: `CL_glucuronide *= theta_BC_USE`
-  when `BC_USE == 1`, with `theta_BC_USE = 1.46` (estrogen-driven UGT2B7
-  induction).
+  Allegaert 2015 is multiplicative:
+  `CL_glucuronide *= theta_CONMED_BIRTHCONTROL` when
+  `CONMED_BIRTHCONTROL == 1`, with `theta_CONMED_BIRTHCONTROL = 1.46`
+  (estrogen-driven UGT2B7 induction).
 - **Source aliases:**
   - `BC` (Allegaert 2015 NONMEM column; same orientation, no
     transformation) – used in `Allegaert_2015_paracetamol.R`.
@@ -390,12 +526,14 @@ entries should default to all caps.
 - **Notes:** Specific scope because the canonical encoding pools all
   oral contraceptive types (combined / progestin-only) into a single
   binary; future models that need to distinguish formulations should
-  register a finer-grained canonical (e.g., `BC_COMBINED`,
-  `BC_PROGESTIN`).
+  register a finer-grained canonical (e.g.,
+  `CONMED_BIRTHCONTROL_COMBINED`, `CONMED_BIRTHCONTROL_PROGESTIN`). The
+  full-word canonical name was chosen over a shorter `BC_USE` form for
+  clarity in source traces.
 
 ## Renal / hepatic function
 
-### UF (**canonical for instantaneous urine flow rate**)
+### URINE_FLOW (**canonical for instantaneous urine flow rate**)
 
 - **Description:** Instantaneous urine flow rate (mL/h) measured over
   the urine collection interval that includes the current observation.
@@ -404,22 +542,25 @@ entries should default to all caps.
 - **Type:** continuous
 - **Scope:** specific
 - **Reference category:** n/a – used with a centered-linear-effect form
-  `CL_renal = base + theta_UF * (UF - UF_ref)` with `UF_ref = 100 mL/h`
-  in Allegaert 2015. A value of `0` is a sentinel for “no urine
-  collected during the interval” (i.e., the urine pathway contribution
-  is dropped); the linear-effect term is gated by `UF > 0` and not
-  extrapolated below the centering reference.
+  `CL_renal = base + theta_URINE_FLOW * (URINE_FLOW - URINE_FLOW_ref)`
+  with `URINE_FLOW_ref = 100 mL/h` in Allegaert 2015. A value of `0` is
+  a sentinel for “no urine collected during the interval” (i.e., the
+  urine pathway contribution is dropped); the linear-effect term is
+  gated by `URINE_FLOW > 0` and not extrapolated below the centering
+  reference.
 - **Source aliases:**
   - `UF` (Allegaert 2015 NONMEM column; same orientation, no
     transformation) – used in `Allegaert_2015_paracetamol.R`.
 - **Example models:** `Allegaert_2015_paracetamol.R`.
 - **Notes:** Specific scope because the centered-linear effect form with
-  the `UF == 0` sentinel-zero rule reflects an Allegaert-specific
-  convention rather than a universally-agreed-upon parameterization. A
-  second model that uses a different effect form (e.g., direct
-  `UF / UF_ref` proportional scaling, no zero-sentinel) should register
-  its own canonical (e.g., `UF_PROP`) rather than reusing `UF` with
-  conflicting semantics.
+  the `URINE_FLOW == 0` sentinel-zero rule reflects an
+  Allegaert-specific convention rather than a universally-agreed-upon
+  parameterization. A second model that uses a different effect form
+  (e.g., direct `URINE_FLOW / URINE_FLOW_ref` proportional scaling, no
+  zero-sentinel) should register its own canonical (e.g.,
+  `URINE_FLOW_PROP`) rather than reusing `URINE_FLOW` with conflicting
+  semantics. The full-word canonical name was chosen over the bare `UF`
+  source-data abbreviation for clarity in source traces.
 
 ### CRCL (**canonical for creatinine-based renal function, BSA-normalized**)
 
@@ -1458,6 +1599,69 @@ entries should default to all caps.
   correlates with body size (HDL-C is lower in larger patients) and the
   small CL effect (-14% to +15% across the observed 23-135 mg/dL range)
   was retained but not interpreted as mechanistic.
+
+### TCHOL (**canonical for total serum cholesterol**)
+
+- **Description:** Serum (or plasma) total cholesterol concentration
+  (baseline or time-varying). Sum of HDL, LDL, VLDL, and other
+  lipoprotein-associated cholesterol fractions; distinct from `HDLC`
+  which captures only the HDL fraction.
+- **Units:** mmol/L or mg/dL – document the unit used in each model via
+  `covariateData[[TCHOL]]$units` (1 mmol/L ~= 38.67 mg/dL for
+  cholesterol).
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a – used with linear-deviation forms
+  `1 + theta * (TCHOL - ref)` or power scaling `(TCHOL / ref)^exponent`.
+  Reference value observed: 3 mmol/L (Archary 2018, severely
+  malnourished pediatric LPV cohort, baseline mean 2.7-2.9 mmol/L).
+- **Source aliases:**
+  - `CHOL` – Archary 2018 NONMEM column abbreviation; the universal
+    short form.
+  - `TC` – alternative abbreviation common in lipid-panel literature.
+- **Example models:** `Archary_2018_lopinavir.R` (mmol/L, reference 3;
+  linear effect on apparent CL/F: `1 + 0.207 * (TCHOL - 3)`; serves as a
+  surrogate for nutritional / hepatic-function recovery rather than a
+  mechanistic effect).
+- **Notes:** In severe acute malnutrition, total cholesterol tracks
+  lipid-pool repletion and hepatic recovery and may serve as a surrogate
+  covariate when the actual driver of bioavailability or clearance
+  variability is not directly measured. Lopinavir is highly
+  protein-bound (to albumin and AAG) and lipophilic, so circulating
+  cholesterol can correlate with binding capacity for lipophilic drugs.
+  Distinct from `HDLC` (HDL fraction only) and from `CRP` / `ALB` /
+  `AAG` (separate canonicals for related malnutrition / inflammation
+  markers).
+
+### TRIG (**canonical for serum triglyceride concentration**)
+
+- **Description:** Serum triglyceride concentration (baseline or
+  time-varying).
+- **Units:** mmol/L or mg/dL – document the unit used in each model via
+  `covariateData[[TRIG]]$units` (1 mmol/L ~= 88.5 mg/dL for
+  triglyceride).
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a – used with linear-deviation form
+  `(1 + theta * (TRIG - ref))` or power scaling `(TRIG / ref)^exponent`.
+  Reference value observed: 5.3 mmol/L (Archary 2019 lamivudine equation
+  centring – the equation centring in the source is reported as the
+  cohort average; cohort median in Archary 2019 Table 1 is 2.2-2.3
+  mmol/L, see model-file Errata).
+- **Source aliases:** none known.
+- **Example models:** `Archary_2019_lamivudine.R` (mmol/L, reference
+  5.3; linear-deviation effect on Vc/F with coefficient -0.13 per mmol/L
+  deviation from the reference; lower triglyceride implies higher
+  apparent central volume).
+- **Notes:** Cardiometabolic lipid-panel covariate. In Archary 2019 the
+  inverse triglyceride–Vc relationship is interpreted as a
+  nutritional-status / hydrophilic-drug-distribution surrogate:
+  triglycerides rise during nutritional rehabilitation, and lamivudine
+  (a hydrophilic drug) shows decreasing apparent volume as nutritional
+  status improves. The linear-deviation form preserves the source’s
+  published parameterization; per-model `covariateData[[TRIG]]$units` is
+  load-bearing because the centring reference and slope are
+  unit-specific.
 
 ### FPCSK9 (**canonical for free (unbound) proprotein convertase subtilisin/kexin type 9 concentration**)
 
@@ -2649,14 +2853,17 @@ tied to the study’s analysis plan.
   non-HV oncology cohort), `Yang_2024_axatilimab.R` (multiplicative
   effect on baseline NCMC:
   `BL_NCMC x exp(1.22 x DIS_CANCER + 0.618 x DIS_HV)`; reference
-  category cGVHD).
+  category cGVHD), `Goel_2016_Sonidegib.R` (multiplicative power-form
+  effect on CL/F: `2.96^DIS_HV`; reference category is the pooled
+  cancer-patient cohort across X2101 / X1101 / A2201).
 - **Notes:** Used when a population PK model pools healthy volunteers
   with patients across heterogeneous indications and the HV-vs-patient
   contrast is retained as a covariate. Scope: specific because the
   complement reference category is paper-defined (Nikanjam 2019
   reference is “all non-HV, non-Castleman, non-SMM tumor types”; Yang
-  2024 reference is patients with cGVHD). Ratified canonically on
-  2026-04-24.
+  2024 reference is patients with cGVHD; Goel 2016 reference is the
+  pooled cancer-patient cohort with advanced solid tumors or BCC).
+  Ratified canonically on 2026-04-24.
 
 ### DIS_CASTLEMAN (**canonical for Castleman’s disease indicator**)
 
@@ -2769,8 +2976,84 @@ tied to the study’s analysis plan.
   future paper separates MDS and AML as distinct indicators, register
   `DIS_MDS` and `DIS_AML` separately. Scope: specific because the
   reference category is paper-defined. Ratified canonically on
-  2026-04-26. \### DIS_BCPALL (**canonical for B-cell precursor acute
-  lymphoblastic leukemia disease-state indicator**)
+  2026-04-26.
+
+### DIS_AML (**canonical for acute myeloid leukemia disease-state indicator**)
+
+- **Description:** 1 = patient with acute myeloid leukemia (AML), 0 =
+  non-AML subject (the complement group in a pooled multi-indication PK
+  analysis). Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-AML subject; the complement group is
+  paper-defined – for Xu 2023 the reference is patients with advanced
+  solid tumors, alongside the parallel `DIS_MDS` and `DIS_CMML`
+  indicators that decompose the hematologic-malignancy cohort).
+- **Source aliases:**
+  - `DISEASE_abb == "AML"` – used in `Xu_2023_MBG453.R` (the Monolix
+    supplement Appendix S2 encodes disease as the categorical column
+    `DISEASE_abb` with categories `{AML, CMML, MDS, Solid_Tumor}` and
+    reference `Solid_Tumor`; the canonical column carries the binary
+    `as.integer(DISEASE_abb == "AML")`).
+- **Example models:** `Xu_2023_MBG453.R` (exponential effect on CL:
+  `exp(-0.0146 * DIS_AML)`; not statistically significant in the full
+  covariate model but retained because Xu 2023 used the
+  full-covariate-model approach).
+- **Notes:** Use `DIS_AML` (rather than the combined `MDSAML`) when the
+  source paper separates AML from MDS as distinct indicators. Scope:
+  specific because the disease-pooling reference category is
+  paper-defined.
+
+### DIS_MDS (**canonical for myelodysplastic syndrome disease-state indicator**)
+
+- **Description:** 1 = patient with myelodysplastic syndrome (MDS), 0 =
+  non-MDS subject (the complement group in a pooled multi-indication PK
+  analysis). Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-MDS subject; the complement group is
+  paper-defined – for Xu 2023 the reference is patients with advanced
+  solid tumors, alongside the parallel `DIS_AML` and `DIS_CMML`
+  indicators).
+- **Source aliases:**
+  - `DISEASE_abb == "MDS"` – used in `Xu_2023_MBG453.R` (Monolix
+    supplement Appendix S2 categorical column; reference category
+    `Solid_Tumor`).
+- **Example models:** `Xu_2023_MBG453.R` (exponential effect on CL:
+  `exp(-0.149 * DIS_MDS)`; statistically significant, p = 0.021 –
+  patients with MDS have ~14% lower CL than the solid-tumor reference).
+- **Notes:** Use `DIS_MDS` (rather than the combined `MDSAML`) when the
+  source paper separates MDS from AML as distinct indicators. Scope:
+  specific because the disease-pooling reference category is
+  paper-defined.
+
+### DIS_CMML (**canonical for chronic myelomonocytic leukemia disease-state indicator**)
+
+- **Description:** 1 = patient with chronic myelomonocytic leukemia
+  (CMML), 0 = non-CMML subject (the complement group in a pooled
+  multi-indication PK analysis). Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-CMML subject; the complement group is
+  paper-defined – for Xu 2023 the reference is patients with advanced
+  solid tumors, alongside the parallel `DIS_AML` and `DIS_MDS`
+  indicators that decompose the hematologic-malignancy cohort).
+- **Source aliases:**
+  - `DISEASE_abb == "CMML"` – used in `Xu_2023_MBG453.R` (Monolix
+    supplement Appendix S2 categorical column; reference category
+    `Solid_Tumor`).
+- **Example models:** `Xu_2023_MBG453.R` (exponential effect on CL:
+  `exp(-0.0411 * DIS_CMML)`; not statistically significant in the full
+  covariate model but retained because Xu 2023 used the
+  full-covariate-model approach).
+- **Notes:** CMML is a clonal myeloid malignancy with overlapping
+  features of MDS and myeloproliferative neoplasms. Scope: specific
+  because the disease-pooling reference category is paper-defined. \###
+  DIS_BCPALL (**canonical for B-cell precursor acute lymphoblastic
+  leukemia disease-state indicator**)
 - **Description:** 1 = B-cell precursor acute lymphoblastic leukemia
   (BCP-ALL), 0 = B-cell non-Hodgkin’s lymphoma (NHL) or other
   non-BCP-ALL indication pooled in the source analysis. Time-fixed per
@@ -2900,6 +3183,75 @@ tied to the study’s analysis plan.
   reference complement (the union of non-transplant disease cohorts
   pooled in the source analysis) is paper-defined. Ratified canonically
   on 2026-04-29.
+
+## Cystic fibrosis lung-disease indicators
+
+### AIR_TRAP_5Y (**canonical for severe air trapping on chest HRCT scan at age 5 years**)
+
+- **Description:** 1 = subject had a non-zero “air trapping” component
+  score on the validated Brody-II chest high-resolution computed
+  tomography (HRCT) scan performed at age 5 years; 0 = air trapping
+  component score of 0 (absent). Time-fixed per subject (the indicator
+  captures the single end-of-study HRCT performed at age 5 in the
+  Australasian Cystic Fibrosis Bronchoalveolar Lavage (ACFBAL) study).
+  The Brody-II scoring system reports air trapping as a percentage of
+  maximum possible HRCT score; the binary “present vs absent” dichotomy
+  follows the same convention as Rosenow 2015 (Am J Respir Crit Care Med
+  191:1158-65).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no air trapping detected on the age-5 HRCT
+  scan).
+- **Source aliases:**
+  - `ATS5C` – used in `Harun_2019_cysticFibrosis.R` (Harun 2019 NMTRAN
+    `$INPUT` column, “presence of air trapping at age 5”; values 0 =
+    absent, 1 = present).
+- **Example models:** `Harun_2019_cysticFibrosis.R` (linear-deviation
+  effect on baseline FEV1% predicted at age 5:
+  `(1 + e_at_baseline * AIR_TRAP_5Y)` with coefficient -0.0417, i.e.,
+  subjects with severe air trapping at age 5 have a baseline FEV1%
+  predicted approximately 4.17% lower than those without).
+- **Notes:** Specific scope because the indicator is tied to the ACFBAL
+  study’s standardised HRCT-at-age-5 protocol and the Brody-II scoring
+  rubric; future paediatric CF lung-disease studies that score HRCT at a
+  different age or use a different scoring system should register a
+  separate canonical (`AIR_TRAP_8Y`, `AIR_TRAP_PRAGMA`, etc.) rather
+  than overload this name. Ratified canonically on 2026-05-08 alongside
+  the Harun 2019 extraction.
+
+### HOSPRA (**canonical for hospitalisation due to a pulmonary exacerbation**)
+
+- **Description:** Time-varying binary indicator of inpatient
+  hospitalisation for management of a pulmonary exacerbation at the time
+  of the FEV1% predicted measurement: 1 = subject is hospitalised
+  because of a pulmonary exacerbation when the spirometry value is
+  recorded, 0 = not hospitalised at that visit. Used as a per-visit
+  covariate in disease-progression models of FEV1% decline in cystic
+  fibrosis where pulmonary exacerbations are tracked from the Australian
+  Cystic Fibrosis Data Registry (ACFDR) inpatient records.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (not hospitalised for a pulmonary
+  exacerbation at the time of the FEV1% measurement).
+- **Source aliases:**
+  - `HOSPRA` – used in `Harun_2019_cysticFibrosis.R` (Harun 2019 NMTRAN
+    `$INPUT` column, “hospitalisation at the time of FEV1% predicted
+    measurement; 0=no, 1=yes”).
+- **Example models:** `Harun_2019_cysticFibrosis.R` (linear-deviation
+  effects on the disease-progression maximum drop and on the half-effect
+  age: `(1 + e_hpe_dmax * HOSPRA)` with coefficient -0.22 on the maximum
+  FEV1% drop and `(1 + e_hpe_t50max * HOSPRA)` with coefficient -0.235
+  on the age at which 50% of the maximum drop occurs; hospitalised
+  visits accelerate both the magnitude and the onset of FEV1% decline).
+- **Notes:** Specific scope because the canonical encoding pools all
+  pulmonary exacerbation-driven hospitalisations into a single binary
+  regardless of severity, duration, or treatment intensity; future CF /
+  chronic-respiratory-disease studies that need to distinguish
+  exacerbation severity (e.g., requiring intravenous antibiotics vs
+  oral) should register a finer-grained canonical. Ratified canonically
+  on 2026-05-08 alongside the Harun 2019 extraction.
 
 ## Infectious disease (Plasmodium / malaria)
 
@@ -3048,6 +3400,43 @@ tied to the study’s analysis plan.
   yet registered) – `HIV_POS` is a comorbidity flag in non-HIV-primary
   indications where HIV-vs-non-HIV is tested as a PK covariate. Ratified
   canonically on 2026-05-06.
+
+### EARLY_ART (**canonical for early-vs-delayed antiretroviral-treatment-initiation arm indicator**)
+
+- **Description:** Trial randomization-arm indicator: 1 = subject was
+  randomized to initiate antiretroviral treatment (ART) early (within
+  the first 14 days of admission, before nutritional recovery), 0 =
+  subject was randomized to delayed ART initiation (after nutritional
+  recovery, \> 14 days from admission). Time-fixed per subject within
+  the trial. The indicator captures the early-vs-delayed-ART contrast
+  tested in the Archary 2019 / MATCH (Malnutrition and ART Timing in
+  Children with HIV) trial in severely malnourished HIV-infected
+  children; the early-ART arm exhibits ~31% higher abacavir
+  bioavailability than the delayed-ART arm.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (delayed ART initiation; F = 1 typical-value
+  reference).
+- **Source aliases:**
+  - `EARLY` – Archary 2019 source description (“randomized to early
+    ART”); same orientation as the canonical (1 = early arm).
+- **Example models:** `Archary_2019_abacavir.R` (multiplicative additive
+  shift on bioavailability F:
+  `f(depot) <- (1 + e_earlyart_f * EARLY_ART) * exp(etalfdepot)` with
+  `e_earlyart_f = 0.31`; the early-arm IIV on F is 21.4%, the
+  delayed-arm IIV on F is fixed at 0 in the source – see model-file
+  vignette Errata).
+- **Notes:** Specific scope because the early/delayed cutoff (14 days
+  from admission) and the underlying nutritional-rehabilitation context
+  are tied to the MATCH-trial design; future studies that test a similar
+  early-vs-delayed contrast with a different time cutoff or
+  non-nutritional context should register a new canonical (e.g.,
+  `EARLY_ART_28D`). Distinct from `TRT_PHASE` (which gates
+  active-vs-baseline study-phase contributions on a per-record basis)
+  and from `DAY14` (which is a within-subject
+  time-since-treatment-initiation landmark, not an enrolment arm).
+  Ratified canonically on 2026-05-08.
 
 ### MM_NIGG (**canonical for non-IgG multiple myeloma immunoglobulin-type indicator**)
 
@@ -4681,6 +5070,30 @@ tied to the study’s analysis plan.
   promote to general scope if a second BV paper reports the same A+AVD
   covariate effect with a comparable encoding.
 
+### COADMIN_SPART (**canonical for spartalizumab (PDR001, anti-PD-1) coadministration indicator**)
+
+- **Description:** 1 = the analyzed therapeutic mAb is coadministered
+  with spartalizumab (PDR001, anti-PD-1 IgG4), 0 = no spartalizumab
+  coadministration. Time-fixed per subject in source analyses to date.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no spartalizumab coadministration –
+  monotherapy or combination with non-spartalizumab agents such as a
+  hypomethylating agent).
+- **Source aliases:**
+  - `HASPDR` – used in `Xu_2023_MBG453.R` (Monolix supplement Appendix
+    S2; the source describes the column as “this patient HAS received
+    PDR001 \[spartalizumab, anti PD-1 mAb\]”).
+- **Example models:** `Xu_2023_MBG453.R` (exponential effect on CL:
+  `exp(0.0194 * COADMIN_SPART)`; not statistically significant in the
+  full covariate model but retained because Xu 2023 used the
+  full-covariate-model approach).
+- **Notes:** Parallels `COMBO_NIVO` (ipilimumab + nivolumab) and
+  `COMBO_DURVA` (durvalumab combinations) but for spartalizumab. Promote
+  to general scope if a second paper reports a
+  spartalizumab-coadministration covariate with comparable encoding.
+
 ### STATIN (**canonical for concomitant statin (HMG-CoA reductase inhibitor) therapy**)
 
 - **Description:** 1 = patient coadministered a statin (HMG-CoA
@@ -4699,6 +5112,135 @@ tied to the study’s analysis plan.
   STATIN = 1 for coadministration of rosuvastatin (\< 20 mg/day),
   atorvastatin (\< 40 mg/day), or simvastatin (any dose); other statin
   regimens are coded as 0.
+
+### COMED_EFV (**canonical for concomitant efavirenz indicator**)
+
+- **Description:** 1 = subject is receiving efavirenz (EFV)-based
+  antiretroviral therapy as the third agent in a combination ART
+  regimen; 0 = subject is on the comparator regimen specified by the
+  source paper (typically a protease-inhibitor-based regimen such as
+  standard lopinavir/ritonavir 4:1). Efavirenz is a CYP3A and UGT
+  inducer, so the indicator is used to flag PXR-mediated induction of
+  metabolic clearance for co-administered antiretrovirals.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-EFV reference regimen, paper-defined;
+  e.g., LPV/r 4:1 in Tikiso 2021).
+- **Source aliases:**
+  - `EFV` – used in `Tikiso_2021_abacavir.R` (the dataset’s
+    paper-defined indicator, 1 = on EFV-based ART, 0 = on standard LPV/r
+    4:1).
+- **Example models:** `Tikiso_2021_abacavir.R` (multiplicative effect on
+  apparent oral clearance: `cl *= (1 + 0.120 * COMED_EFV)`; +12.0%
+  relative to the LPV/r 4:1 reference).
+- **Notes:** Specific scope because the comparator regimen (LPV/r 4:1 in
+  Tikiso 2021) is paper-defined; future ART population-PK models that
+  test EFV-vs-other contrasts should extend the example list when the
+  comparator matches, or register a finer-grained sibling indicator
+  otherwise.
+
+### COMED_RIF_LPVR4 (**canonical for concomitant rifampicin-based antitubercular treatment with super-boosted lopinavir/ritonavir 4:4 indicator**)
+
+- **Description:** 1 = subject is receiving rifampicin-based
+  antitubercular treatment together with super-boosted
+  lopinavir/ritonavir 4:4 (extra ritonavir added to standard 4:1 LPV/r
+  to counter rifampicin-driven LPV induction); 0 = subject is on the
+  comparator regimen specified by the source paper (typically standard
+  LPV/r 4:1 without rifampicin in Tikiso 2021). Used to flag the
+  combined induction effect of rifampicin (PXR-mediated UGT induction)
+  plus extra ritonavir on co-administered antiretroviral PK.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-RIF + standard LPV/r 4:1 reference).
+- **Source aliases:**
+  - `RIF` – used in `Tikiso_2021_abacavir.R` (the dataset’s
+    paper-defined indicator, 1 = on rifampicin-based TB treatment with
+    super-boosted LPV/r 4:4, 0 = standard LPV/r 4:1 or EFV).
+- **Example models:** `Tikiso_2021_abacavir.R` (multiplicative effect on
+  bioavailability: `f_depot *= (1 + (-0.294) * COMED_RIF_LPVR4)`; -29.4%
+  relative to the LPV/r 4:1 reference).
+- **Notes:** Specific scope because the joint rifampicin +
+  super-boosted-LPV/r contrast is paper-defined; the underlying
+  induction is plausibly rifampicin-driven (the paper’s discussion notes
+  that LPV concentrations were similar with vs without super-boosting,
+  weakening a separate ritonavir contribution), but the canonical column
+  captures the joint indicator the paper modeled. Future TB/HIV
+  co-treatment models that test the same regimen contrast should extend
+  the example list rather than register a new canonical.
+
+### PPI (**canonical for concomitant proton-pump inhibitor use**)
+
+- **Description:** 1 = patient on concomitant proton-pump inhibitor
+  (PPI) therapy, 0 = no PPI use. Captures gastric-pH-elevating
+  co-medication that can reduce the bioavailability of
+  solubility-limited (typically weakly basic) orally administered drugs.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no PPI use).
+- **Source aliases:**
+  - `PPI` – used in `Goel_2016_Sonidegib.R` (Goel 2016 dataset; defined
+    as “significant” PPI use, i.e. duration of PPI use \>= 80% of the PK
+    assessment phase).
+- **Example models:** `Goel_2016_Sonidegib.R` (multiplicative effect on
+  F: `0.696^PPI`, ~30% lower bioavailability under PPI
+  coadministration).
+- **Notes:** Per-model `covariateData[[PPI]]$notes` must document the
+  operational definition (e.g., Goel 2016 requires PPI use covering \>=
+  80% of the PK assessment window; other studies may use a simpler
+  ever-vs-never indicator or a per-record time-varying flag). Distinct
+  from `H2RA` (H2-receptor antagonist) which acts on gastric pH via a
+  different mechanism.
+
+### H2RA (**canonical for concomitant H2-receptor-antagonist use**)
+
+- **Description:** 1 = patient on concomitant histamine
+  H2-receptor-antagonist therapy (e.g., ranitidine, famotidine), 0 = no
+  H2RA use. Captures another class of gastric-pH-modifying co-medication
+  that may reduce bioavailability of pH-sensitive orally administered
+  drugs.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no H2RA use).
+- **Source aliases:**
+  - `H2` – used in `Goel_2016_Sonidegib.R` (Goel 2016 dataset; defined
+    as “significant” H2RA use, i.e. duration of H2RA use \>= 80% of the
+    PK assessment phase).
+- **Example models:** `Goel_2016_Sonidegib.R` (multiplicative effect on
+  F: `0.996^H2RA`, no clinically meaningful effect; reported alongside
+  `PPI` for completeness).
+- **Notes:** Per-model `covariateData[[H2RA]]$notes` must document the
+  operational definition (Goel 2016: \>= 80% of PK assessment phase).
+  Distinct from `PPI`. \### CONMED_AZOLE (**canonical for concomitant
+  azole antifungal therapy (CYP3A4/P-gp inhibitor)**)
+- **Description:** 1 = patient coadministered an azole antifungal
+  (itraconazole, voriconazole, fluconazole, ketoconazole, posaconazole,
+  isavuconazole, or another systemic azole) during the observation
+  interval, 0 = no concomitant azole antifungal. Time-varying per
+  subject because azole exposure starts and stops during the observation
+  period.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no concomitant azole antifungal).
+- **Source aliases:**
+  - `AZOLE` – used in `Kirubakaran_2022_tacrolimus.R`.
+- **Example models:** `Kirubakaran_2022_tacrolimus.R` (state-dependent
+  typical CL/F: 21.1 L/h without azole and 4.2 L/h with azole, an 80%
+  reduction; also a state-dependent BSV magnitude on CL/F: 61% CV
+  without azole vs 89.5% CV with azole).
+- **Notes:** Azoles are mechanism-based CYP3A4 and P-glycoprotein
+  inhibitors with different inhibitor potencies (itraconazole \>
+  voriconazole \> fluconazole). The per-model
+  `covariateData[[CONMED_AZOLE]]$notes` must document (1) which azoles
+  are pooled into the indicator, (2) any post-cessation lag (Kirubakaran
+  2022 carries `CONMED_AZOLE = 1` for one week after azole
+  discontinuation to allow tacrolimus apparent clearance to stabilize
+  given itraconazole’s long half-life), and (3) whether the indicator is
+  a baseline-only proxy or a true time-varying flag.
 
 ## Pharmacogenetics
 
@@ -5546,6 +6088,99 @@ promote to general when a second paper ratifies identical semantics.
 - **Reference category:** 0 (fasted).
 - **Example models:** `Kyhl_2016_nalmefene.R`.
 
+### MEAL_HFAT (**canonical for high-fat-meal-at-dosing indicator**)
+
+- **Description:** 1 = oral dose administered after a high-fat meal, 0 =
+  oral dose administered under any other meal condition (typically
+  fasted or light meal). Refines the more general `FED` indicator for
+  studies that specifically test the high-fat-meal food effect on
+  bioavailability or absorption rate (a common solubility-limited
+  absorption phenotype).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (non-high-fat meal condition; most often
+  “fasted” or “2 h post light meal” as defined per study protocol).
+  Document the operational reference per model.
+- **Source aliases:**
+  - `Fatmeal` – used in `Goel_2016_Sonidegib.R` (covariate on F).
+  - `FATM` – used in `Goel_2016_Sonidegib.R` (covariate on Ka; same
+    indicator as `Fatmeal` in that paper).
+- **Example models:** `Goel_2016_Sonidegib.R` (multiplicative effect on
+  F: `5.74^MEAL_HFAT` – ~5.7-fold higher F under high-fat meal vs 2 h
+  post-light-meal reference; multiplicative effect on Ka:
+  `1.01^MEAL_HFAT` – no meaningful effect).
+- **Notes:** Distinct from `FED` (binary fed-vs-fasted): `MEAL_HFAT`
+  carries the specific “high-fat meal” semantic (typically \>= 800 kcal,
+  \>= 50% calories from fat per FDA guidance). Document the per-protocol
+  meal definition in `covariateData[[MEAL_HFAT]]$notes`. When a paper
+  reports both a high-fat-meal arm and a fasted arm with separate
+  effects (e.g., Goel 2016 has both `MEAL_HFAT` for high-fat and
+  `HV_FAST` for healthy-volunteer fasting), both columns coexist on the
+  same subject.
+
+### HV_FAST (**canonical for healthy-volunteer-dosed-fasted indicator**)
+
+- **Description:** 1 = healthy-volunteer subject dosed under overnight
+  fasting, 0 = otherwise (any patient, or any healthy volunteer dosed
+  under a non-fasted condition). A composite indicator combining the
+  disease-state distinction (`DIS_HV`) with the meal-state distinction
+  at dosing, used when a paper pools healthy volunteers and patients and
+  reports a dedicated “HV-fasted” effect on bioavailability separate
+  from the “high-fat-meal” arm.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (any non-HV-fasted record; in Goel 2016 the
+  reference is “patient dosed 2 h post light meal” or “HV dosed after
+  high-fat meal”).
+- **Source aliases:**
+  - `HV.Fasting` – used in `Goel_2016_Sonidegib.R` (Goel 2016 covariate
+    on F applied to the healthy-volunteer fasted-arm cohorts in studies
+    A1102 and A2114).
+- **Example models:** `Goel_2016_Sonidegib.R` (multiplicative effect on
+  F: `0.855^HV_FAST` – ~14.5% lower F in HV-fasted records vs the
+  patient 2-h-post-light-meal reference, when the high-fat-meal effect
+  is also accounted for).
+- **Notes:** Specific scope because the indicator is the intersection of
+  the population-level `DIS_HV` covariate and the dose-record-level
+  meal-state covariate, and the orientation of the meal-state half
+  (overnight fast vs 2 h post light meal vs high-fat) is paper-specific.
+  Future models that need only the `DIS_HV` half or only the meal-state
+  half should reuse those general-scope canonicals; register a new
+  sibling indicator (`HV_FED`, etc.) only if the same composite semantic
+  recurs with a different combination.
+
+### MULTI_DOSE_PT (**canonical for multiple-dose-phase-in-patients indicator**)
+
+- **Description:** 1 = dose record from the multiple-dose phase of a
+  clinical-pharmacology study in patients, 0 = otherwise (single-dose
+  run-in records, healthy-volunteer records, or first-dose records in
+  patient studies). Captures any systematic shift in apparent
+  bioavailability between the controlled run-in and the longer
+  multiple-dose phase, typically driven by variable food-restriction
+  compliance over many dosing days.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (single-dose / run-in / healthy-volunteer
+  dose records).
+- **Source aliases:**
+  - `FMDD` – used in `Goel_2016_Sonidegib.R` (Goel 2016 covariate on F).
+- **Example models:** `Goel_2016_Sonidegib.R` (multiplicative effect on
+  F: `1.16^MULTI_DOSE_PT` – ~16% higher apparent F during the
+  multiple-dose phase relative to first dose, attributed in the paper to
+  occasional non-fasting compliance).
+- **Notes:** Specific scope because the indicator’s exact definition
+  (dose-record level vs subject level, run-in inclusion, occasion
+  boundary) is paper-specific. In Goel 2016, the dataset distinguishes
+  the run-in single dose from the daily multiple-dose phase; the
+  indicator switches at the start of the multiple-dose phase for cancer
+  patients. Distinct from `FED` and `MEAL_HFAT` (which are per-record
+  meal-state indicators) and from `REGI_BID` (regimen indicator). Future
+  models that need a generic “occasion boundary” effect should consider
+  the existing `ooc<n>` IOV pattern instead.
+
 ### FORM_TABLET
 
 - **Description:** 1 = tablet formulation, 0 = solution.
@@ -5554,14 +6189,27 @@ promote to general when a second paper ratifies identical semantics.
 - **Scope:** specific
 - **Reference category:** 0 (solution).
 - **Source aliases:**
-  - `TABLET` – earlier name used by `Kyhl_2016_nalmefene.R`; renamed to
-    `FORM_TABLET` for consistency with the `FORM_*` family
-    (`FORM_CAPSULE`, future `FORM_SUSPENSION`, etc.).
-- **Example models:** `Kyhl_2016_nalmefene.R`.
+  - `TABLET` – earlier name used by `Kyhl_2016_nalmefene.R` and
+    `Tikiso_2021_abacavir.R`; renamed to `FORM_TABLET` for consistency
+    with the `FORM_*` family (`FORM_CAPSULE`, future `FORM_SUSPENSION`,
+    etc.).
+- **Example models:** `Kyhl_2016_nalmefene.R` (additive shift on
+  residual error: tablet vs solution); `Tikiso_2021_abacavir.R`
+  (multiplicative effect on the absorption mean transit time MTT: tablet
+  (abacavir + lamivudine fixed-dose-combination tablet) vs liquid
+  solution; `mtt *= (1 + 0.249 * FORM_TABLET)`, i.e. 24.9% slower
+  absorption for the FDC tablet relative to the abacavir liquid
+  reference).
 - **Notes:** Scoped specific because the “tablet vs solution” contrast
-  is tied to Kyhl 2016’s formulation-comparison design. Future
-  formulation-comparison models that need a tablet indicator should
-  reuse this canonical (extending the example list).
+  is tied to formulation-comparison study designs (Kyhl 2016 nalmefene
+  tablet-vs-oral-solution; Tikiso 2021 abacavir + lamivudine FDC tablet
+  vs abacavir liquid). Distinct from the `FDC` canonical (Wilkins 2008
+  antitubercular fixed-dose-combination of multiple drugs, contrasted
+  against single-drug tablets) because here the comparator is a
+  non-tablet liquid / solution rather than a separate tablet product.
+  Future formulation-comparison models should either extend this entry’s
+  example list when the comparator is a liquid / solution, or register a
+  sibling canonical when contrasting two tablet products.
 
 ### FORM_CAPSULE
 
@@ -5569,19 +6217,33 @@ promote to general when a second paper ratifies identical semantics.
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** specific
-- **Reference category:** 0 (solution).
+- **Reference category:** 0 (solution; `fdepot` fixed to 1 for the
+  solution arm in Hennig 2006).
 - **Source aliases:**
-  - `PREP` – used in `Hennig_2007_itraconazole.R` (Br J Clin Pharmacol
-    2007;63(4):438-450; DOI 10.1111/j.1365-2125.2006.02778.x; PREP=1
-    capsule, PREP=0 oral solution, with capsule typical absorption
-    parameters as the published reference).
-- **Example models:** `Hennig_2007_itraconazole.R`.
+  - `PREP` – used in `Hennig_2006_itraconazole.R` (Clin Pharmacokinet
+    2006;45(11):1099-1114; PREP = 1 = capsule, PREP = 0 = oral solution)
+    and in `Hennig_2007_itraconazole.R` (Br J Clin Pharmacol
+    2007;63(4):438-450; DOI 10.1111/j.1365-2125.2006.02778.x; same
+    orientation, capsule typical absorption parameters as the published
+    reference).
+  - `CAPSULE` – earlier name used in the `Hennig_2006_itraconazole.R`
+    and `Hennig_2007_itraconazole.R` model files before the `FORM_*`
+    rename.
+- **Example models:** `Hennig_2006_itraconazole.R` (Hennig 2006 Table II
+  final estimates: capsule `ka` 0.09 h^-1 vs solution `ka` 0.96 h^-1 and
+  capsule relative bioavailability 0.55 vs solution 1; the `etalfdepot`
+  IIV applies only to the capsule arm); `Hennig_2007_itraconazole.R`
+  (selects between `lka_cap` and `lka_sol` typical-value absorption rate
+  constants and applies
+  `f(depot) <- (1 - FORM_CAPSULE) + FORM_CAPSULE * fdepot` so the
+  relative bioavailability `F_rel = 0.817` is applied only to the
+  capsule arm).
 - **Notes:** Scoped specific because the “capsule vs solution” contrast
-  is tied to Hennig 2007 itraconazole bioavailability comparison;
-  mirrors the sibling `FORM_TABLET` (Kyhl 2016 tablet vs solution) under
-  the `FORM_*` family. Future formulation-comparison models that need a
-  capsule indicator should reuse this canonical (extending the example
-  list).
+  is tied to Hennig 2006 / Hennig 2007 itraconazole bioavailability
+  comparisons; mirrors the sibling `FORM_TABLET` (Kyhl 2016 / Tikiso
+  2021 tablet vs solution) under the `FORM_*` family. Future
+  formulation-comparison models that need a capsule indicator should
+  reuse this canonical (extending the example list).
 
 ### FDC (**canonical for fixed-dose-combination antitubercular formulation indicator**)
 
@@ -6275,6 +6937,46 @@ serve other parameters that do separate that group.
   form; new models should prefer the integer-valued `OCC` canonical
   above and decompose into binary indicators inside
   [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html).
+
+### DAY14 (**canonical for day-14-post-treatment-initiation landmark indicator**)
+
+- **Description:** Binary within-subject landmark indicator: 1 = the
+  observation falls on or after day 14 of treatment
+  (post-nutritional-rehabilitation steady state in the Archary 2019 /
+  MATCH trial of severely malnourished HIV-infected children), 0 = the
+  observation falls before day 14 (acute / pre-rehabilitation baseline;
+  e.g., day 1 of antiretroviral treatment). Time-varying within subject
+  – gates a step change in typical-value PK parameters that the source
+  paper attributes to nutritional recovery + auto-induction of hepatic
+  metabolism over the first ~2 weeks of treatment.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (day 1 / pre-rehabilitation).
+- **Source aliases:** none known; Archary 2019 reports the
+  day-1-vs-day-14 contrast directly in the parameter table (separate
+  typical-value rows for “day 1” and “day 14”).
+- **Example models:**
+  - `Archary_2019_abacavir.R` (multiplicative additive shift on CL/F:
+    `cl <- exp(lcl + etalcl) * (WT/7)^0.75 * (1 + e_day14_cl * DAY14)`
+    with `e_day14_cl = 0.760`, encoding the day-1 typical CL/F = 3.33
+    -\> day-14 CL/F = 5.86 L/h per 7 kg step).
+  - `Archary_2019_lamivudine.R` (multiplicative additive shift on ka:
+    `ka <- exp(lka) * (1 + e_day14_ka * DAY14) * exp(etalka)` with
+    `e_day14_ka = 0.133`, encoding the day-1 typical ka = 0.30 -\>
+    day-14 ka = 0.34 /h step).
+- **Notes:** Specific scope because the day-14 cutoff is tied to the
+  MATCH-trial nutritional-rehabilitation timeline (severely malnourished
+  children, two-week re-feeding window per WHO guidelines); future
+  studies that test a similar within-subject step change with a
+  different cutoff (day 7, day 28, etc.) should register a new canonical
+  (e.g., `DAY28`). Distinct from `OCC` and `ooc<n>` (which decompose
+  multi-occasion sampling for IOV), from `TRT_PHASE` (which gates
+  active-vs-baseline study-phase contributions), and from `EARLY_ART`
+  (which is a between-subject randomization-arm indicator, not a
+  within-subject landmark). Data assemblers can derive
+  `DAY14 = as.integer(time_post_treatment_start_days >= 14)` for a
+  regularly-sampled multi-day study. Ratified canonically on 2026-05-08.
 
 ### CYCLE
 
