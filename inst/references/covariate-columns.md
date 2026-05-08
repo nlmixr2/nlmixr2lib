@@ -1211,6 +1211,39 @@ readable.
 - **Source aliases:** none; `MDSAML` is the combined indicator used directly in source analyses.
 - **Example models:** `Ogasawara_2020_durvalumab.R` (multiplicative factor 1.26 on CL; reference group is the union of MM and NHL subjects).
 - **Notes:** Use `MDSAML` as a combined MDS+AML indicator when the source paper collapses the two diagnoses into one covariate. If a future paper separates MDS and AML as distinct indicators, register `DIS_MDS` and `DIS_AML` separately. Scope: specific because the reference category is paper-defined. Ratified canonically on 2026-04-26.
+
+### DIS_AML (**canonical for acute myeloid leukemia disease-state indicator**)
+- **Description:** 1 = patient with acute myeloid leukemia (AML), 0 = non-AML subject (the complement group in a pooled multi-indication PK analysis). Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-AML subject; the complement group is paper-defined -- for Xu 2023 the reference is patients with advanced solid tumors, alongside the parallel `DIS_MDS` and `DIS_CMML` indicators that decompose the hematologic-malignancy cohort).
+- **Source aliases:**
+  - `DISEASE_abb == "AML"` -- used in `Xu_2023_MBG453.R` (the Monolix supplement Appendix S2 encodes disease as the categorical column `DISEASE_abb` with categories `{AML, CMML, MDS, Solid_Tumor}` and reference `Solid_Tumor`; the canonical column carries the binary `as.integer(DISEASE_abb == "AML")`).
+- **Example models:** `Xu_2023_MBG453.R` (exponential effect on CL: `exp(-0.0146 * DIS_AML)`; not statistically significant in the full covariate model but retained because Xu 2023 used the full-covariate-model approach).
+- **Notes:** Use `DIS_AML` (rather than the combined `MDSAML`) when the source paper separates AML from MDS as distinct indicators. Scope: specific because the disease-pooling reference category is paper-defined.
+
+### DIS_MDS (**canonical for myelodysplastic syndrome disease-state indicator**)
+- **Description:** 1 = patient with myelodysplastic syndrome (MDS), 0 = non-MDS subject (the complement group in a pooled multi-indication PK analysis). Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-MDS subject; the complement group is paper-defined -- for Xu 2023 the reference is patients with advanced solid tumors, alongside the parallel `DIS_AML` and `DIS_CMML` indicators).
+- **Source aliases:**
+  - `DISEASE_abb == "MDS"` -- used in `Xu_2023_MBG453.R` (Monolix supplement Appendix S2 categorical column; reference category `Solid_Tumor`).
+- **Example models:** `Xu_2023_MBG453.R` (exponential effect on CL: `exp(-0.149 * DIS_MDS)`; statistically significant, p = 0.021 -- patients with MDS have ~14% lower CL than the solid-tumor reference).
+- **Notes:** Use `DIS_MDS` (rather than the combined `MDSAML`) when the source paper separates MDS from AML as distinct indicators. Scope: specific because the disease-pooling reference category is paper-defined.
+
+### DIS_CMML (**canonical for chronic myelomonocytic leukemia disease-state indicator**)
+- **Description:** 1 = patient with chronic myelomonocytic leukemia (CMML), 0 = non-CMML subject (the complement group in a pooled multi-indication PK analysis). Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-CMML subject; the complement group is paper-defined -- for Xu 2023 the reference is patients with advanced solid tumors, alongside the parallel `DIS_AML` and `DIS_MDS` indicators that decompose the hematologic-malignancy cohort).
+- **Source aliases:**
+  - `DISEASE_abb == "CMML"` -- used in `Xu_2023_MBG453.R` (Monolix supplement Appendix S2 categorical column; reference category `Solid_Tumor`).
+- **Example models:** `Xu_2023_MBG453.R` (exponential effect on CL: `exp(-0.0411 * DIS_CMML)`; not statistically significant in the full covariate model but retained because Xu 2023 used the full-covariate-model approach).
+- **Notes:** CMML is a clonal myeloid malignancy with overlapping features of MDS and myeloproliferative neoplasms. Scope: specific because the disease-pooling reference category is paper-defined.
 ### DIS_BCPALL (**canonical for B-cell precursor acute lymphoblastic leukemia disease-state indicator**)
 - **Description:** 1 = B-cell precursor acute lymphoblastic leukemia (BCP-ALL), 0 = B-cell non-Hodgkin's lymphoma (NHL) or other non-BCP-ALL indication pooled in the source analysis. Time-fixed per subject.
 - **Units:** (binary)
@@ -2012,6 +2045,17 @@ readable.
   - `DOX` -- used in `Zhou_2025_brentuximab.R` (the NONMEM dataset uses the doxorubicin-administration flag as the AVD-coadministration indicator because doxorubicin is given on the same days as the other AVD agents in this regimen).
 - **Example models:** `Zhou_2025_brentuximab.R` (power-form effect on ADC clearance: `CL * 2.12^COADMIN_AVD` -- ADC clearance is ~2.1-fold higher under A+AVD vs single-agent BV).
 - **Notes:** Distinct from `COADMIN_CHEMO` (which is nivolumab + platinum-based chemotherapy). The A+AVD regimen is the standard chemotherapy backbone for frontline classical Hodgkin lymphoma; promote to general scope if a second BV paper reports the same A+AVD covariate effect with a comparable encoding.
+
+### COADMIN_SPART (**canonical for spartalizumab (PDR001, anti-PD-1) coadministration indicator**)
+- **Description:** 1 = the analyzed therapeutic mAb is coadministered with spartalizumab (PDR001, anti-PD-1 IgG4), 0 = no spartalizumab coadministration. Time-fixed per subject in source analyses to date.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no spartalizumab coadministration -- monotherapy or combination with non-spartalizumab agents such as a hypomethylating agent).
+- **Source aliases:**
+  - `HASPDR` -- used in `Xu_2023_MBG453.R` (Monolix supplement Appendix S2; the source describes the column as "this patient HAS received PDR001 [spartalizumab, anti PD-1 mAb]").
+- **Example models:** `Xu_2023_MBG453.R` (exponential effect on CL: `exp(0.0194 * COADMIN_SPART)`; not statistically significant in the full covariate model but retained because Xu 2023 used the full-covariate-model approach).
+- **Notes:** Parallels `COMBO_NIVO` (ipilimumab + nivolumab) and `COMBO_DURVA` (durvalumab combinations) but for spartalizumab. Promote to general scope if a second paper reports a spartalizumab-coadministration covariate with comparable encoding.
 
 ### STATIN (**canonical for concomitant statin (HMG-CoA reductase inhibitor) therapy**)
 - **Description:** 1 = patient coadministered a statin (HMG-CoA reductase inhibitor) during the study, 0 = no statin coadministration.

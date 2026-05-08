@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Xu 2023 sabatolimab MBG453 ([doi:10.1002/psp4.12962](https://doi.org/10.1002/psp4.12962)) -- adults with advanced solid tumors or hematologic malignancies (AML, MDS, CMML).
 * Add Goel 2016 sonidegib ([doi:10.1007/s00280-016-2982-1](https://doi.org/10.1007/s00280-016-2982-1)) -- healthy subjects and adults with advanced solid tumors or basal cell carcinoma.
 * Add Tikiso 2021 abacavir ([doi:10.1111/bcp.14984](https://doi.org/10.1111/bcp.14984)) -- HIV-infected African children on abacavir-containing antiretroviral therapy.
 * Add Stein 2019 tisagenlecleucel ([doi:10.1002/psp4.12388](https://doi.org/10.1002/psp4.12388)) -- pediatric and young adult patients with relapsed or refractory B-cell ALL (CAR-T cellular kinetic model: exponential expansion to Tmax followed by biexponential effector / memory-cell decline).
