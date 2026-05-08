@@ -2369,14 +2369,27 @@ readable.
 - **Reference category:** 0 (fasted).
 - **Example models:** `Kyhl_2016_nalmefene.R`.
 
-### TABLET
+### FORM_TABLET
 - **Description:** 1 = tablet formulation, 0 = solution.
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** specific
 - **Reference category:** 0 (solution).
+- **Source aliases:**
+  - `TABLET` -- earlier name used by `Kyhl_2016_nalmefene.R`; renamed to `FORM_TABLET` for consistency with the `FORM_*` family (`FORM_CAPSULE`, future `FORM_SUSPENSION`, etc.).
 - **Example models:** `Kyhl_2016_nalmefene.R`.
-- **Notes:** Scoped specific because the "tablet vs solution" contrast is tied to Kyhl 2016's formulation-comparison design. Future formulation-comparison models should either add themselves here or register a more general `FORM_TABLET` entry.
+- **Notes:** Scoped specific because the "tablet vs solution" contrast is tied to Kyhl 2016's formulation-comparison design. Future formulation-comparison models that need a tablet indicator should reuse this canonical (extending the example list).
+
+### FORM_CAPSULE
+- **Description:** 1 = capsule formulation, 0 = solution.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (solution).
+- **Source aliases:**
+  - `PREP` -- used in `Hennig_2007_itraconazole.R` (Br J Clin Pharmacol 2007;63(4):438-450; DOI 10.1111/j.1365-2125.2006.02778.x; PREP=1 capsule, PREP=0 oral solution, with capsule typical absorption parameters as the published reference).
+- **Example models:** `Hennig_2007_itraconazole.R`.
+- **Notes:** Scoped specific because the "capsule vs solution" contrast is tied to Hennig 2007 itraconazole bioavailability comparison; mirrors the sibling `FORM_TABLET` (Kyhl 2016 tablet vs solution) under the `FORM_*` family. Future formulation-comparison models that need a capsule indicator should reuse this canonical (extending the example list).
 
 ### FDC (**canonical for fixed-dose-combination antitubercular formulation indicator**)
 - **Description:** 1 = subject received the rifampicin-containing fixed-dose-combination (FDC) antitubercular product (rifampicin co-formulated with isoniazid, pyrazinamide, and optionally ethambutol in a single tablet); 0 = subject received the same drugs as separate single-drug tablets ("SDC", separate-drug-combination). Per-subject (regimen-fixed) categorical covariate flagging the formulation when a population analysis pools FDC and SDC arms and tests formulation as a covariate on absorption / disposition parameters.
@@ -2387,7 +2400,7 @@ readable.
 - **Source aliases:**
   - `FDC` -- used in `Wilkins_2008_rifampicin.R` (DDMODEL00000280 NMTRAN `$INPUT` column; values 0 / 1 with the same orientation as the canonical, 1 = FDC).
 - **Example models:** `Wilkins_2008_rifampicin.R` (multiplicative `(1 + e_fdc0_mtt * (1 - FDC))` shift on MTT and `(1 + e_fdc0_cl * (1 - FDC))` shift on CL; SDC subjects (FDC = 0) had 104% longer MTT and 23.6% higher CL than the FDC = 1 reference per Wilkins 2008 final estimates).
-- **Notes:** Specific scope because the FDC vs SDC contrast is tied to the antitubercular fixed-dose-combination context (rifampicin + isoniazid + pyrazinamide +/- ethambutol). Future antitubercular-FDC models should extend the example list rather than register a new canonical. Distinct from the generic `TABLET` (Kyhl 2016 nalmefene tablet vs solution) and `FORM_*` (drug-product-version) indicators because FDC vs SDC compares two tablet products, not a tablet vs a non-tablet, and the underlying mechanism is co-formulation-driven absorption rather than drug-product manufacturing.
+- **Notes:** Specific scope because the FDC vs SDC contrast is tied to the antitubercular fixed-dose-combination context (rifampicin + isoniazid + pyrazinamide +/- ethambutol). Future antitubercular-FDC models should extend the example list rather than register a new canonical. Distinct from `FORM_TABLET` (Kyhl 2016 nalmefene tablet vs solution) and the rest of the `FORM_*` (drug-product-version) family because the FDC-vs-SDC contrast compares two tablet products, not a tablet vs a non-tablet, and the underlying mechanism is co-formulation-driven absorption rather than drug-product manufacturing.
 
 ### RIA_ASSAY
 - **Description:** 1 = radioimmunoassay; 0 = LC-MS/MS.
@@ -2717,7 +2730,9 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 ## Change log
 
 - **2026-05-06** -- Added `DLVL` (specific scope under `Formulation / assay / study`; integer-coded source-protocol dose-level / regimen indicator) and `S1A2` (specific scope under `Formulation / assay / study`; integer-coded source-protocol CYP1A2 substrate / co-medication indicator) canonical entries while extracting `NA_NA_lidocaine.R` (DDMODEL00000281). Both names match the source-data column names used in the BAST.dat ("4-cRUN249") lidocaine study and survive `=DROP` in the `.ctl` `$INPUT` declaration. The `DLVL` binary derivation `DLVL > 2` switches typical-value baselines for the GX rate constant K30 and the lidocaine apparent central volume V1; the `S1A2` binary derivation `S1A2 == 3` selects a CYP1A2-induction-style modifier on K30. Sibling columns `D1A2` and `H1A2` are dropped in the `.ctl` so only the level-3 indicator is structurally identifiable. Source aliases mapped: `BIL` (legacy total-bilirubin label) -> `TBILI`; `SGPT` (legacy ALT label, paralleling `SGOT` -> `AST`) -> `ALT`. The linked publication is not on disk for this extraction; the absence of an external parameter cross-check is documented in the model file's vignette Errata.
-- **2026-05-06** -- Added `FDC` (specific scope under `Formulation / assay / study`; binary fixed-dose-combination antitubercular formulation indicator with FDC = 1 as the typical-value reference) canonical entry while extracting `Wilkins_2008_rifampicin.R` (DDMODEL00000280). The 1-level convention follows the Wilkins 2008 source (FDC = 1 = co-formulated tablet, 0 = single-drug tablets) and the bundle's `Most common` annotation in the `.mod` `IF(FDC.EQ.1) ... = 0` block. Distinct from `TABLET` (Kyhl 2016 tablet-vs-solution) and the `FORM_*` family because the FDC-vs-SDC contrast is a co-formulation contrast, not a drug-product-version one.
+- **2026-05-06** -- Added `FDC` (specific scope under `Formulation / assay / study`; binary fixed-dose-combination antitubercular formulation indicator with FDC = 1 as the typical-value reference) canonical entry while extracting `Wilkins_2008_rifampicin.R` (DDMODEL00000280). The 1-level convention follows the Wilkins 2008 source (FDC = 1 = co-formulated tablet, 0 = single-drug tablets) and the bundle's `Most common` annotation in the `.mod` `IF(FDC.EQ.1) ... = 0` block. Distinct from `FORM_TABLET` (Kyhl 2016 tablet-vs-solution) and the rest of the `FORM_*` family because the FDC-vs-SDC contrast is a co-formulation contrast, not a drug-product-version one.
+
+- **2026-05-08** -- Renamed `TABLET` canonical entry to `FORM_TABLET` for consistency with the new `FORM_*` family (introduced alongside `FORM_CAPSULE` for `Hennig_2007_itraconazole.R`). The canonical's semantics are unchanged; existing `Kyhl_2016_nalmefene.R` covariate column updated and the prior name `TABLET` retained as a `source_aliases` entry on `FORM_TABLET`. Added `FORM_CAPSULE` (specific scope, Hennig 2007 itraconazole capsule vs oral solution) at the same time.
 - **2026-05-06** -- Added `ORG_FAIL_COUNT` (specific scope under a new `Critical-illness severity` H2 section; integer count of failing organs in critically ill patients, decomposed into per-stratum binary indicators inside `model()` to select per-stratum typical clearance) canonical entry while extracting `Vet_2016_midazolam.R` (DDMODEL00000249). Source alias `ORGF` -> canonical `ORG_FAIL_COUNT` (renamed for descriptive clarity over the source NMTRAN abbreviation). Reference category 0 (no organs failing); per-stratum strata 1 / 2 / 3 / >=4. The new section sits between `Disease severity scores` and `Interferon / biomarker panels`. The Vet 2016 paper PDF is not on disk in this worktree; the absence of paper-on-disk parameter cross-checks is documented in the model file's vignette Errata.
 - **2026-05-06** -- Added `TERM_BIRTH` (specific scope under a new `Pregnancy / hormonal status` H2 section; binary term-vs-preterm birth indicator), `BC_USE` (specific scope under the same new `Pregnancy / hormonal status` H2 section; binary oral-contraceptive use indicator), and `UF` (specific scope under `Renal / hepatic function`; continuous instantaneous urine flow rate, mL/h, with centering reference 100 mL/h and a `UF == 0` sentinel-zero rule that gates the linear effect on renal CL) canonical entries while extracting `Allegaert_2015_paracetamol.R` (DDMODEL00000267). Source aliases mapped: `TERM` -> `TERM_BIRTH` (same orientation, no transformation), `BC` -> `BC_USE` (same orientation, no transformation), `UF` -> `UF` (no rename). The Allegaert 2015 BMC Anesthesiol PDF is not on disk in this worktree; covariate semantics, units, and reference values are taken from the bundle's `Executable_OriginalModelCode.mod` `$INPUT` comments and `$PK` block.
 - **2026-05-06** -- Added `HIV_POS` (general scope under a new `Infectious disease (HIV)` H2 section; binary HIV-positive comorbidity indicator, parallels the `_POS` suffix convention used by `ADA_POS` / `SARS_SEROPOS`) and `OCC` (general scope under `Occasion / period (IOV)`; integer-valued occasion / period column, decomposed into binary indicators inside `model()` for IOV multiplexing) canonical entries while extracting `Jonsson_2011_ethambutol.R` (DDMODEL00000220). Source aliases mapped: `HIV` -> `HIV_POS` (same orientation, 1 = HIV-positive), `OCC` -> `OCC` (no rename). The new `OCC` integer-valued canonical is the recommended form for new IOV-using models per the existing register-note steer (`ooc1..oocN` binary form retained as the legacy canonical).
