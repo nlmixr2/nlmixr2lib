@@ -229,8 +229,9 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   - `CRCL_BSA` -- BSA-normalized creatinine clearance (measured CrCl / BSA x 1.73); used in `Xu_2019_sarilumab.R`.
   - `1.73*CrCl/BSA` -- the formula form appearing in Xu 2019 Eq. for Vm.
   - `cGFR` -- calculated/estimated GFR, BSA-normalized; used in `Li_2019_abatacept.R`.
+  - `CLCR` -- raw Cockcroft-Gault creatinine clearance in mL/min (NOT BSA-normalized); used in `Delattre_2010_amikacin.R` (median 55.5 mL/min in critically ill septic adults).
 - **Example models:** `Cirincione_2017_exenatide.R` (MDRD eGFR), `Xu_2019_sarilumab.R` (measured CrCl BSA-normalized), `Kotani_2022_astegolimab.R` (MDRD eGFR), `Li_2019_abatacept.R` (cGFR).
-- **Example models:** `Cirincione_2017_exenatide.R` (MDRD eGFR), `Xu_2019_sarilumab.R` (measured CrCl BSA-normalized), `Kotani_2022_astegolimab.R` (MDRD eGFR), `Bajaj_2017_nivolumab.R` (CKD-EPI eGFR, reference 90 mL/min/1.73 m^2), `NA_NA_lidocaine.R` (DDMODEL00000281; binary stratification at threshold 52.7 mL/min adding -0.319 to the GX rate constant K30 in the CRCL <= 52.7 cohort; the source `.ctl` does not state the BSA-normalisation method).
+- **Example models:** `Cirincione_2017_exenatide.R` (MDRD eGFR), `Xu_2019_sarilumab.R` (measured CrCl BSA-normalized), `Kotani_2022_astegolimab.R` (MDRD eGFR), `Bajaj_2017_nivolumab.R` (CKD-EPI eGFR, reference 90 mL/min/1.73 m^2), `NA_NA_lidocaine.R` (DDMODEL00000281; binary stratification at threshold 52.7 mL/min adding -0.319 to the GX rate constant K30 in the CRCL <= 52.7 cohort; the source `.ctl` does not state the BSA-normalisation method), `Delattre_2010_amikacin.R` (raw Cockcroft-Gault mL/min, NOT BSA-normalized; reference 55.5 mL/min population median; additive linear effect 1.42 L/h per (CRCL/55.5) on CL).
 - **Notes:** The two estimation methods (MDRD/CKD-EPI vs measured CrCl) produce values in the same units and are operationally interchangeable as a covariate on clearance. Document the method explicitly in each model's `covariateData[[CRCL]]$description` so future reviewers can trace the source assay.
 
 ### CREAT (**canonical for serum creatinine**)
