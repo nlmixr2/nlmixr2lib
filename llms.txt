@@ -177,6 +177,8 @@ this way.
 - [Clewe_2018_rifampicin](https://nlmixr2.github.io/nlmixr2lib/articles/Clewe_2018_rifampicin.md):
 - [Conrado_2014_alzheimer](https://nlmixr2.github.io/nlmixr2lib/articles/Conrado_2014_alzheimer.md):
 - [Cook_2016_paracetamol](https://nlmixr2.github.io/nlmixr2lib/articles/Cook_2016_paracetamol.md):
+- [Canonical covariate
+  columns](https://nlmixr2.github.io/nlmixr2lib/articles/covariate-columns.md):
 - [Creating a model
   library](https://nlmixr2.github.io/nlmixr2lib/articles/create-model-library.md):
 - [Dao_2020_sultiame](https://nlmixr2.github.io/nlmixr2lib/articles/Dao_2020_sultiame.md):
