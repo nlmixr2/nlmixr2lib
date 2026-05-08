@@ -400,7 +400,9 @@ nca_results <- pk.nca(data_obj)
 #> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#>  ■■■■■■■■■                         27% |  ETA: 10s
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#>  ■■■■■■■■■                         28% |  ETA:  9s
 #> Warning: Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
@@ -493,7 +495,9 @@ nca_results <- pk.nca(data_obj)
 #> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#>  ■■■■■■■■■■■■■■■■                  50% |  ETA:  7s
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#>  ■■■■■■■■■■■■■■■■                  51% |  ETA:  6s
 #> Warning: Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
@@ -584,7 +588,21 @@ nca_results <- pk.nca(data_obj)
 #> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#>  ■■■■■■■■■■■■■■■■■■■■■■■           72% |  ETA:  4s
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■          77% |  ETA:  3s
 #> Warning: Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
@@ -660,25 +678,6 @@ nca_results <- pk.nca(data_obj)
 #> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    96% |  ETA:  1s
-#> Warning: Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed

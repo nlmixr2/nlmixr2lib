@@ -2,6 +2,7 @@
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/404.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/CLAUDE.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Aguiar_2021_ustekinumab.html</loc></url>
+<url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Aksenov_2018_uricAcid.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Allegaert_2015_paracetamol.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Almquist_2022_anifrolumab.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Archary_2018_lopinavir.html</loc></url>
@@ -12,6 +13,7 @@
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Bender_2014_trastuzumabEmtansine_mechanistic.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Bender_2014_trastuzumabEmtansine_reduced.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Berends_2019_infliximab.html</loc></url>
+<url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Bergmann_2014_tacrolimus.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Birgersson_2019_artesunate.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Bista_2015_fentanyl.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Bizzotto_2016_glucose.html</loc></url>
@@ -44,6 +46,7 @@
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Frey_2013_tocilizumab.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Friberg_2002_paclitaxel.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Gandhi_2021_abatacept.html</loc></url>
+<url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Garmann_2017_BAY81_8973.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Germovsek_2016_gentamicin.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Girard_2012_pimasertib.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Goel_2016_Sonidegib.html</loc></url>
@@ -58,17 +61,22 @@
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Hennig_2006_itraconazole.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Hennig_2007_itraconazole.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Hennig_2008_tobramycin.html</loc></url>
+<url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Hennig_2013_tobra.html</loc></url>
+<url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Hennig_2015_phenytoin.html</loc></url>
+<url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Hennig_2015_rifabutin.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Hong_2025_datopotamab.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Hood_2021_medi7836.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Hu_2014_bapineuzumab.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Hu_2026_clesrovimab.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Hua_2015_anrukinzumab.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Huang_2017_vrc01.html</loc></url>
+<url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Huynh_2026_VRC07523LS.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Hwang_2022_tremelimumab.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Hwang_2023_monalizumab.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Ide_2020_elotuzumab.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Jackson_2022_ixekizumab.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Jager_2011_gemtuzumab.html</loc></url>
+<url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Jelliffe_2014_digoxin.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Jonsson_2005_disufenton.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Jonsson_2011_ethambutol.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Khan_2015_ciprofloxacin.html</loc></url>
@@ -83,6 +91,7 @@
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Kovalenko_2020_dupilumab.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Kuchimanchi_2018_evolocumab.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Kuchimanchi_2024_dostarlimab.html</loc></url>
+<url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Kunarajah_2017_doxorubicin.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Kyhl_2016_nalmefene.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Laouenan_2015_ribavirin.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Lawson_2022_busulfan.html</loc></url>
@@ -94,6 +103,7 @@
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Li_2019_abatacept.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Lin_2024_casirivimab.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Lin_2024_pozelimab.html</loc></url>
+<url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Llanos-Paez_2017_gentamicin.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Lon_2013_abatacept.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Long_2017_necitumumab.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Lu_2014_trastuzumabemtansine.html</loc></url>
@@ -136,6 +146,7 @@
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Petrov_2024_romiplostim.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Plan_2012_pain.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Pouzin_2022_tusamitamab.html</loc></url>
+<url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Pu_2021_evinacumab.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Quartino_2019_trastuzumab.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Robbie_2012_palivizumab.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Rosario_2015_vedolizumab.html</loc></url>
@@ -143,6 +154,7 @@
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Sathe_2024_sacituzumab.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Schindler_2016_sunitinib.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Schoemaker_2018_levetiracetam.html</loc></url>
+<url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Shah_2012_mAb_PBPK.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Soehoel_2022_tralokinumab.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Stein_2019_Tisagenlecleucel.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Stevens_2012_remoxipride.html</loc></url>
@@ -180,11 +192,13 @@
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Yang_2021_cemiplimab.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Yang_2024_axatilimab.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Yao_2018_guselkumab.html</loc></url>
+<url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Yassen_2025_asundexian.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Yin_2021_trastuzumabDeruxtecan.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Yu_2022_ofatumumab.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Zecchin_2016_survival.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Zecchin_2016_tumorovarian.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Zhang_2019_nivolumab.html</loc></url>
+<url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Zhang_2021_dupilumab.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Zheng_2016_sifalimumab.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Zhong_2026_abatacept.html</loc></url>
 <url><loc>https://nlmixr2.github.io/nlmixr2lib/articles/Zhou_2021_belimumab.html</loc></url>

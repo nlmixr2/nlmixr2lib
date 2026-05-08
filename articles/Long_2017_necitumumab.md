@@ -457,22 +457,22 @@ res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#>  ■■■■■■■■■■■■■■■■■■■■              63% |  ETA:  2s
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#>  ■■■■■■■■■■■■■■■■■■■■■■            70% |  ETA:  2s
 #> Warning: Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed

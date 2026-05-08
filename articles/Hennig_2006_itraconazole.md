@@ -443,19 +443,7 @@ nca_parent <- PKNCA::pk.nca(
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#>  ■■■■■■                            15% |  ETA: 13s
+#>  ■■■■■                             14% |  ETA: 11s
 #> Warning: Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
@@ -650,7 +638,39 @@ nca_parent <- PKNCA::pk.nca(
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#>  ■■■■■■■■■■■                       35% |  ETA: 10s
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#>  ■■■■■■■■■■■■                      37% |  ETA:  8s
 #> Warning: Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
@@ -837,7 +857,17 @@ nca_parent <- PKNCA::pk.nca(
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#>  ■■■■■■■■■■■■■■■■■                 53% |  ETA:  7s
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#>  ■■■■■■■■■■■■■■■■■■                56% |  ETA:  6s
 #> Warning: Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
@@ -970,7 +1000,21 @@ nca_parent <- PKNCA::pk.nca(
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#>  ■■■■■■■■■■■■■■■■■■■■■             66% |  ETA:  6s
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#>  ■■■■■■■■■■■■■■■■■■■■■■            71% |  ETA:  4s
 #> Warning: Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
@@ -1101,7 +1145,25 @@ nca_parent <- PKNCA::pk.nca(
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■         79% |  ETA:  4s
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■       86% |  ETA:  2s
 #> Warning: Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
@@ -1173,69 +1235,6 @@ nca_parent <- PKNCA::pk.nca(
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     93% |  ETA:  1s
-#> Warning: Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
@@ -1709,7 +1708,8 @@ nca_ohi <- PKNCA::pk.nca(
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
+#>  ■■■■■■■■■■■■■■■■■■■■■■■           73% |  ETA:  1s
+#> Warning: Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.1) is not allowed
