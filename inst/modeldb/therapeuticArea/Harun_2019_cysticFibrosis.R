@@ -4,7 +4,7 @@ Harun_2019_cysticFibrosis <- function() {
     "Harun SN, Wainwright CE, Grimwood K, Hennig S; Australasian Cystic Fibrosis",
     "Bronchoalveolar Lavage (ACFBAL) study group. Aspergillus and progression of",
     "lung disease in children with cystic fibrosis. Thorax 2019;74(2):125-131.",
-    "doi:10.1136/thoraxjnl-2018-211548.",
+    "doi:10.1136/thoraxjnl-2018-211550.",
     sep = " "
   )
   vignette <- "Harun_2019_cysticFibrosis"

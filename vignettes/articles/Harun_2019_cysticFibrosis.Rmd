@@ -20,7 +20,7 @@ library(ggplot2)
 
 * Citation: `r rxode2::rxode(readModelDb("Harun_2019_cysticFibrosis"))$reference`
 * Description: `r rxode2::rxode(readModelDb("Harun_2019_cysticFibrosis"))$description`
-* Article: <https://doi.org/10.1136/thoraxjnl-2018-211548>
+* Article: <https://doi.org/10.1136/thoraxjnl-2018-211550>
 
 # Population
 
