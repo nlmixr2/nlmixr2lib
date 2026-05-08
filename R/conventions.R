@@ -113,7 +113,11 @@
     "ohi",
     # Doxorubicinol, the C-13 alcohol metabolite of doxorubicin
     # (Kunarajah 2017 paediatric oncology popPK/PD model).
-    "doxol"
+    "doxol",
+    # 25-O-desacetyl rifabutin, the primary active metabolite of
+    # rifabutin formed by arylacetamide deacetylase (Hennig 2015
+    # AAC doi:10.1128/AAC.01195-15).
+    "desrbn"
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` denotes the time-varying decay arm.
