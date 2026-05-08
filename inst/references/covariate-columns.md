@@ -242,8 +242,19 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Source aliases:**
   - `CRE` (umol/L, reference 70.73) -- used in `Thakre_2022_risankizumab.R`.
   - `SCR` -- common clinical-PK abbreviation.
-- **Example models:** `Thakre_2022_risankizumab.R`.
+- **Example models:** `Thakre_2022_risankizumab.R`, `Llanos_2017_gentamicin.R` (umol/L; standardized per-patient against CREAT_REF rather than a fixed cohort reference).
 - **Notes:** `CREAT` chosen over the shorter `CRE`/`SCR` as the NONMEM/clinical-PK convention that is unambiguous. Per-model reference values must be documented in `covariateData[[CREAT]]$notes`.
+
+### CREAT_REF (**canonical for age- and sex-expected reference serum creatinine**)
+- **Description:** Per-patient reference (age- and sex-expected mean) serum creatinine used to standardize an individual's measured `CREAT` in covariate-effect terms of the form `(CREAT_REF / CREAT)^exponent`. Distinct from `CREAT` (the individual measurement) and from a fixed cohort-mean reference (which is documented in `covariateData[[CREAT]]$notes` rather than as a separate column). Time-varying through age dependence.
+- **Units:** umol/L or mg/dL -- document the unit used in each model via `covariateData[[CREAT_REF]]$units`. Must match the unit of `CREAT` so the ratio is dimensionless.
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- consumed as a normalizer in `(CREAT_REF / CREAT)^exponent` (or its inverse).
+- **Source aliases:**
+  - `Scrmean` -- Llanos-Paez 2017 paper notation; computed from Ceriotti et al. 2008 age- and sex-stratified medians (Clin Chem 54:559-566, doi:10.1373/clinchem.2007.099648).
+- **Example models:** `Llanos_2017_gentamicin.R` (umol/L; computed externally per Ceriotti et al. 2008).
+- **Notes:** Ratified canonically on 2026-05-08 with the Llanos-Paez 2017 gentamicin extraction. The computation method (Ceriotti 2008 piecewise medians, Schwartz 1976/1985 reference, an institutional lookup, etc.) is paper-specific; record it in `covariateData[[CREAT_REF]]$notes`. The user is expected to compute `CREAT_REF` externally from age and sex (analogous to how `FFM` is precomputed via Janmahasatian) and supply it as a per-patient covariate.
 
 ### ALB (**canonical for serum albumin**)
 - **Description:** Serum albumin concentration.
