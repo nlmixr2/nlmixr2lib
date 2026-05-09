@@ -14,12 +14,12 @@
 .nlmixr2libConventionsStatic <- list(
   pkParams = c(
     "lka", "lcl", "lvc", "lvp", "lvp2", "lq", "lq2", "lfdepot",
-    "lvmax", "lcl_ss", "lcl_time"
+    "lvmax", "lcl_ss", "lcl_time", "lcl_renal", "lcl_nonren"
   ),
   pkBareParams = c(
     "ka", "cl", "vc", "vp", "vp2", "q", "q2", "kel",
     "k12", "k21", "k13", "k31", "fdepot",
-    "vmax", "cl_ss", "cl_time"
+    "vmax", "cl_ss", "cl_time", "cl_renal", "cl_nonren"
   ),
   compartments = c(
     "depot", "central", "peripheral1", "peripheral2", "effect",
@@ -121,7 +121,12 @@
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` denotes the time-varying decay arm.
-  clComponents = c("ss", "time"),
+  # `_renal` denotes the glomerular-filtration / tubular-secretion arm,
+  # `_nonren` the non-renal (hepatic / metabolic / extra-renal) arm,
+  # used by additive renal-plus-non-renal popPK models for renally
+  # cleared small molecules (e.g. Jonckheere 2019 cefepime, where
+  # CL_total = CL_renal + CL_nonren is the structural form).
+  clComponents = c("ss", "time", "renal", "nonren"),
   # Paper-named mechanistic parameters that don't fit any canonical PK
   # naming pattern but recur across published models. Treated as
   # acceptable bare names (with the usual `l<name>` convention if

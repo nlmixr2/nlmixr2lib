@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Jonckheere 2019 cefepime ([doi:10.1128/AAC.01552-19](https://doi.org/10.1128/AAC.01552-19)) -- critically ill ICU adults on continuous-infusion cefepime via target-controlled infusion.
 * Add Huynh 2026 VRC07-523LS ([doi:10.1093/jac/dkaf449](https://doi.org/10.1093/jac/dkaf449)) -- HIV-exposed infants and healthy adults.
 * Add Pu 2021 evinacumab ([doi:10.1002/psp4.12711](https://doi.org/10.1002/psp4.12711)) -- healthy volunteers and adult / pediatric patients with homozygous familial hypercholesterolemia.
 * Add Zhang 2021 dupilumab ([doi:10.1002/psp4.12667](https://doi.org/10.1002/psp4.12667)) -- adult and adolescent patients with moderate-to-severe asthma (pooled with healthy adults).
