@@ -2457,6 +2457,17 @@ readable.
 - **Example models:** `Aguiar_2021_ustekinumab.R` (Aguiar 2021 Table 2 footnote a; multiplicative effect on CL: factor `(1 - 0.227 * (1 - PRIOR_BIO))`, so bio-naive patients have ~23% lower CL than previously-exposed patients).
 - **Notes:** Distinct from `PRIOR_TNF` (a strict subset). Use `PRIOR_BIO` when the source paper's covariate counts any biologic as prior exposure (anti-TNF, anti-integrin, anti-IL-12/23, anti-IL-17, anti-IL-23, anti-IL-6, etc.); use `PRIOR_TNF` when the source paper specifically tested anti-TNF exposure. When the source paper uses the inverted "bio-naive" indicator (1 = naive), document the inversion in `covariateData[[PRIOR_BIO]]$notes` and apply `1 - PRIOR_BIO` in `model()` so the canonical column stores 1 = previously exposed.
 
+### COND_RIC (**canonical for reduced-intensity conditioning regimen indicator**)
+- **Description:** 1 = subject received reduced-intensity conditioning (RIC) chemotherapy prior to allogeneic hematopoietic cell transplantation, 0 = subject received myeloablative conditioning (MAC). Conditioning intensity is fixed per subject for the analysis window (the conditioning regimen was completed before transplantation, before any of the post-transplant tacrolimus PK observations). RIC regimens use lower-dose chemotherapy / radiotherapy to preserve some host haematopoiesis and rely on graft-versus-tumour effect for cytoreduction; MAC regimens deliver high-dose chemotherapy and / or total-body irradiation that fully ablates host marrow.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (myeloablative conditioning, MAC).
+- **Source aliases:**
+  - `RIC` (Dunlap 2025 NM-TRAN convention; binary 0 / 1) -- used directly in `Dunlap_2025_tacrolimus.R`.
+- **Example models:** `Dunlap_2025_tacrolimus.R` (Dunlap 2025 Table 2 reduced-covariate-model column; exponential effect on apparent oral clearance: `cl *= 0.63 ^ COND_RIC`, so RIC recipients have ~37% lower apparent oral tacrolimus clearance than MAC recipients).
+- **Notes:** Conditioning regimen intensity has been reported to associate with post-transplant tacrolimus apparent clearance, likely via gut / hepatic CYP3A activity, GVHD-related inflammatory response, and post-transplant haematopoietic state. The paper-specific definition of "RIC" follows the source publication's own classification (e.g., Dunlap 2025 follows the institutional protocol at UNCMC, which pools non-myeloablative conditioning regimens into the RIC category when assigning the binary indicator); document the source paper's RIC criteria in `covariateData[[COND_RIC]]$notes`. When a future paper distinguishes a third intensity tier (non-myeloablative, NMA) as a separate covariate level rather than pooling NMA into RIC, register a parallel canonical (e.g. `COND_NMA`) instead of overloading `COND_RIC`. Scope: specific because the column is meaningful only for allo-HCT recipients. Ratified canonically on 2026-05-09 alongside the Dunlap 2025 tacrolimus extraction.
+
 ### DISEXT_EP (**canonical for extensive colitis / pancolitis indicator**)
 - **Description:** 1 = extensive colitis or pancolitis disease extension, 0 = otherwise (any non-extensive disease extension, e.g. left-sided colitis or proctitis).
 - **Units:** (binary)
