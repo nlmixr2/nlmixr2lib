@@ -172,13 +172,38 @@ Cc_dar0, Cc_dar1, ... Cc_dar7
 
 Always label every parameter inside `ini()` with units and a short interpretation.
 
+## Fixed parameters
+
+Wrap a parameter value in `fixed()` whenever the source paper holds it constant rather than estimating it. This applies to **every** parameter type: structural THETAs, allometric exponents, IIV variances and covariances, residual-error magnitudes, covariate-effect coefficients, bioavailability anchors. The `fixed()` wrapper is load-bearing provenance — a downstream user must be able to tell which values are estimated point estimates vs structural assumptions.
+
+Source signals that a parameter is fixed:
+
+- Prose: "fixed during estimation", "fixed at <value>", "held fixed at the literature value", "not estimated", "set to 1 (fixed)".
+- Allometric exponents without RSE / SE / CI (canonical 0.75 / 1, especially under "fixed exponents" wording).
+- NONMEM `$THETA` / `$OMEGA` / `$SIGMA` with a `FIX` flag.
+- Bioavailability `F1 = 1` set as structural anchor.
+- Inherited parameters from an upstream publication that the current paper re-uses without re-fitting.
+
+Examples:
+
+```r
+lcl       <- log(0.225)            ; label("Clearance (L/h)")        # estimated
+e_wt_cl   <- fixed(0.75)           ; label("Allometric exp on CL")   # fixed
+lfdepot   <- fixed(log(1))         ; label("Bioavailability")        # fixed anchor
+etalcl    ~ 0.32                                                     # estimated IIV
+etalvc    ~ fixed(0.18)                                              # fixed IIV
+CcaddSd   <- fixed(0.10)           ; label("Additive SD (LTBS)")     # fixed residual
+```
+
+If a parameter is reported without uncertainty but the paper does not explicitly say "fixed", sidecar-ask the operator before guessing. Mis-encoding fixed-vs-estimated is a real downstream error.
+
 ## Inter-individual variability (IIV)
 
 Prefix `eta` + the **transformed** parameter name. Example: IIV on `lcl` is `etalcl`.
 
 - Single IIV: `etalcl ~ 0.09`
 - Correlated IIV (block): `etalcl + etalvc ~ c(var_cl, cov, var_vc)`
-- Fixed: wrap in `fixed()` when the source reports a known value.
+- Fixed: wrap in `fixed()` when the source reports a known value (see "Fixed parameters" above for the broader guidance applying to all parameter types).
 
 Do **not** use `iiv_`, `IIV_`, or `bsv_` prefixes for new models. The two most recent existing models (`Clegg_2024_nirsevimab`, `Hu_2026_clesrovimab`) write `etacl` without the `l`; this skill standardizes on `etalcl` going forward. Existing files are not migrated.
 

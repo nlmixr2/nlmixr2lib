@@ -124,8 +124,51 @@ Use `references/model-file-template.md` as the starting skeleton and the two bes
 The file body has this shape:
 
 1. `description`, `reference`, `vignette`, `units`, `covariateData`, `population` — metadata before `ini()`. `vignette` is the basename of the validation vignette in `vignettes/articles/` (e.g., `"Clegg_2024_nirsevimab"`, no path, no extension); `buildModelDb()` extracts it so the list-of-models table can link to the rendered vignette on the pkgdown site.
-2. `ini()` — parameters with `label()` and a trailing **in-file comment pointing to the source location** for every value.
+2. `ini()` — parameters with `label()` and a trailing **in-file comment pointing to the source location** for every value. **Wrap fixed parameters in `fixed()`** — see the "Fixed parameters" subsection below.
 3. `model()` — derived terms → individual parameters → micro-constants → ODEs → bioavailability → observation and error.
+
+### Fixed parameters in `ini()`
+
+When the source paper holds a parameter at a known value rather than estimating it, encode that fact by wrapping the value in `fixed()` in `ini()`. This applies to **every** parameter type — structural THETAs, allometric exponents, IIV variances/covariances, residual-error magnitudes, covariate-effect coefficients — not just IIV. Failing to encode the fixed status loses load-bearing provenance: a downstream user cannot tell whether the value was estimated and reported as a point estimate, or whether the source authors held it constant; re-fitting the model under one assumption vs the other gives different results.
+
+Recognise fixed parameters from any of these signals in the source:
+
+- Explicit prose: "fixed during estimation", "fixed at <value>", "held fixed at the literature value", "not estimated", "set to 1 (fixed)".
+- Allometric exponents reported without uncertainty (no SE / RSE / CI), especially the canonical 0.75 (CL-like) and 1 (V-like) values; if the paper says "allometric scaling with fixed exponents", encode those exponents as `fixed()`.
+- NONMEM `$THETA` lines with a `FIX` flag (`$THETA (0.225 FIX) ; CL`).
+- NONMEM `$OMEGA` / `$SIGMA` lines with a `FIX` flag (`$OMEGA 0.0 FIX` for an off-diagonal that was structurally constrained to zero; `$SIGMA 1.0 FIX` for log-transform-both-sides residual where the variance is absorbed into the additive term).
+- Bioavailability `F1 = 1` / `lfdepot <- log(1)` set as a structural anchor when the paper writes "F was fixed to 1 because absolute bioavailability was not identifiable".
+- Maturation reference values (e.g., reference WT = 70 kg, reference PMA = 40 weeks) — these are model-structural constants and are always fixed; encode them as numeric literals inside `model()` or as `fixed()` parameters in `ini()` if they appear in `label()`-worthy form.
+- Carry-over from upstream: when the current paper inherits a structural-PK model from a prior publication and re-estimates only a subset, the inherited parameters are fixed; wrap them in `fixed()` and put the upstream citation in the trailing comment.
+
+Encoding examples:
+
+```r
+ini({
+  # Estimated structural parameter (paper Table 2)
+  lcl <- log(0.225) ; label("Clearance (L/h)")
+
+  # Fixed allometric exponent (paper Methods: "WT scaling with fixed exponents")
+  e_wt_cl <- fixed(0.75) ; label("Allometric exponent on CL")
+
+  # Fixed bioavailability anchor (paper Methods: "F1 fixed to 1; absolute F not identifiable")
+  lfdepot <- fixed(log(1)) ; label("Bioavailability (depot)")
+
+  # Estimated IIV (paper Table 3, omega_CL = 0.32 reported as variance)
+  etalcl ~ 0.32
+
+  # Fixed IIV (paper Methods: "IIV on V was fixed to the prior published value (Hamberg 2007)")
+  etalvc ~ fixed(0.18)
+
+  # Fixed off-diagonal correlation (NONMEM $OMEGA BLOCK with one element FIX 0)
+  etalcl + etalvc ~ c(0.32, fixed(0), 0.18)
+
+  # Fixed residual error variance (NONMEM $SIGMA 1.0 FIX for LTBS approach)
+  CcaddSd <- fixed(0.10) ; label("Additive residual SD on log-Cc (LTBS)")
+})
+```
+
+When in doubt — for example, a $THETA reported with an RSE of 0% but no FIX flag, or a parameter reported to three decimal places with no uncertainty — sidecar-ask the operator before guessing. Mis-classifying an estimated parameter as fixed (or vice versa) is a real error that downstream users will hit.
 
 Follow `references/naming-conventions.md` strictly:
 
