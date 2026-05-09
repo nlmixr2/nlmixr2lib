@@ -117,7 +117,14 @@
     # 25-O-desacetyl rifabutin, the primary active metabolite of
     # rifabutin formed by arylacetamide deacetylase (Hennig 2015
     # AAC doi:10.1128/AAC.01195-15).
-    "desrbn"
+    "desrbn",
+    # AS(N-1)3' truncated antisense strand of GalNAc-conjugated
+    # siRNAs (givosiran and other galnac-siRNA conjugates), formed
+    # by removal of the 3'-terminal nucleotide from the antisense
+    # strand. Treated as the active metabolite that is equipotent
+    # with the parent in terms of RISC loading and target mRNA
+    # silencing (Ayyar 2024 doi:10.1016/j.xphs.2023.10.026).
+    "asn1"
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` denotes the time-varying decay arm.
