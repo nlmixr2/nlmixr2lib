@@ -67,24 +67,38 @@ Related references:
     #!   2. A label() with units and a plain-English description.
     #!   3. A trailing in-file comment pointing to the source location the value came from.
     #! Example: lcl <- log(0.0388); label("CL for 70 kg adult (L/day)")  # Clegg 2024 Table 3
+    #!
+    #! Wrap fixed values in fixed(): if the source paper holds the parameter
+    #! constant rather than estimating it, the value belongs in fixed(...).
+    #! See SKILL.md § "Fixed parameters in ini()" for the full source-signal
+    #! checklist (NONMEM FIX flags, "fixed at <value>" prose, allometric
+    #! exponents reported without uncertainty, F1=1 anchors, parameters
+    #! inherited from upstream papers, etc.).
 
     # Structural parameters — reference values for <reference weight / age>
     lka     <- log(<value>); label("<description with units>")  # <source location>
     lcl     <- log(<value>); label("<description with units>")  # <source location>
     lvc     <- log(<value>); label("<description with units>")  # <source location>
     # Add lvp, lq, lfdepot, etc. as applicable
+    # If F1 was fixed to 1: lfdepot <- fixed(log(1)); label("Bioavailability") # <source location>
 
     # Allometric / maturation parameters (if applicable)
+    # Estimated:           allo_cl <- <value>; label("Allometric exponent on CL (unitless)")
+    # Fixed at canonical:  allo_cl <- fixed(0.75); label("Allometric exponent on CL (unitless)")
     allo_cl <- <value>; label("Allometric exponent on CL (unitless)")  # <source location>
 
     # Covariate effects — one per covariate/parameter combination
+    # Wrap in fixed() if the paper held this coefficient constant.
     e_<cov>_<param> <- <value>; label("<Effect of <cov> on <param>>")  # <source location>
 
     # IIV — eta + transformed parameter name. Use a block for correlated IIV.
+    # Use ~ fixed(<var>) for IIVs the paper held constant from a prior publication.
+    # Use fixed(0) inside a c(...) block for off-diagonals NONMEM fixed to zero.
     etalcl + etalvc ~ c(<var_cl>, <cov_cl_vc>, <var_vc>)  # <source location>
     etalka          ~ <var_ka>                              # <source location>
 
     # Residual error
+    # Wrap in fixed() if NONMEM $SIGMA had FIX (LTBS pattern often does this).
     propSd <- <value>; label("Proportional residual error (fraction)")  # <source location>
     # addSd  <- <value>; label("Additive residual error (<units>)")     # uncomment if combined
   })
