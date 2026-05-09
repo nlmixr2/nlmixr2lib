@@ -396,19 +396,7 @@ nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = interv
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#>  ■■■■■■■■■■■■■■■■                  50% |  ETA:  3s
+#>  ■■■■■■■■■■■■■■                    44% |  ETA:  3s
 #> Warning: Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
@@ -504,6 +492,19 @@ nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = interv
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    97% |  ETA:  0s
+#> Warning: Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed

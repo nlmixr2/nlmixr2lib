@@ -377,7 +377,8 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
-#>  ■■■■■■■■■■■■■■■■■■■■■■■           74% |  ETA:  1s
+#>  ■■■■■■■■                          22% |  ETA:  4s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■        85% |  ETA:  1s
 
 nca_tbl <- as.data.frame(nca_res$result) |>
   dplyr::filter(PPTESTCD %in% c("cmax", "tmax", "cmin", "auclast")) |>
