@@ -356,7 +356,8 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Reference category:** n/a -- used with power scaling `(TBILI / ref)^exponent`.
 - **Source aliases:**
   - `BIL` (legacy NONMEM short label for total bilirubin) -- used in `NA_NA_lidocaine.R` (DDMODEL00000281; binarised at threshold 0.53 mg/dL with `BIL_HIGH = as.integer(BIL > 0.53)`).
-- **Example models:** `Yamada_2025_zolbetuximab.R` (mg/dL, reference 0.38; small positive exponent 0.0347 on V1), `NA_NA_lidocaine.R` (mg/dL, source column `BIL`; binary effect at threshold 0.53 mg/dL on the GX elimination rate constant K30).
+  - `BILT` (Urien 2005 capecitabine paper's NONMEM short label for "total bilirubin") -- used in `Urien_2005_capecitabine.R` (umol/L, reference 8.8; power scaling on the capecitabine non-transformation CL10 and on the 5'-DFUR -> 5-FU rate constant K34).
+- **Example models:** `Yamada_2025_zolbetuximab.R` (mg/dL, reference 0.38; small positive exponent 0.0347 on V1), `NA_NA_lidocaine.R` (mg/dL, source column `BIL`; binary effect at threshold 0.53 mg/dL on the GX elimination rate constant K30), `Urien_2005_capecitabine.R` (umol/L, reference 8.8; source column `BILT`; positive exponent +0.32 on capecitabine non-transformation CL10 and negative exponent -0.36 on the 5'-DFUR -> 5-FU rate constant K34).
 - **Notes:** Hepatic-function marker. Unit varies by paper (US convention mg/dL, SI convention umol/L; 1 mg/dL ~= 17.1 umol/L). The per-model `covariateData[[TBILI]]$units` field is load-bearing.
 
 ### AST (**canonical for aspartate aminotransferase**)

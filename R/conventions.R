@@ -117,7 +117,18 @@
     # 25-O-desacetyl rifabutin, the primary active metabolite of
     # rifabutin formed by arylacetamide deacetylase (Hennig 2015
     # AAC doi:10.1128/AAC.01195-15).
-    "desrbn"
+    "desrbn",
+    # Capecitabine sequential metabolites (Urien 2005
+    # doi:10.1007/s10928-005-0018-2): 5'-DFCR (5'-deoxy-5-
+    # fluorocytidine, formed in the liver by carboxylesterase from
+    # capecitabine), 5'-DFUR (5'-deoxy-5-fluorouridine, formed from
+    # 5'-DFCR by cytidine deaminase in liver and tumour cells), and
+    # 5-FU (5-fluorouracil, formed from 5'-DFUR by thymidine
+    # phosphorylase preferentially in tumour tissue). Each metabolite
+    # has its own central compartment with apparent volume fixed to
+    # 1 L (only output rate constants K23, K34, K40 are identifiable
+    # in the source NONMEM ADVAN6 fit).
+    "dfcr", "dfur", "5fu"
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` denotes the time-varying decay arm.
