@@ -36,6 +36,7 @@
 * Add Llanos-Paez 2017 gentamicin ([doi:10.1128/AAC.00205-17](https://doi.org/10.1128/AAC.00205-17)) -- pediatric oncology patients with febrile neutropenia.
 * Add Llanos-Paez 2020 gentamicin ([doi:10.1128/AAC.01730-19](https://doi.org/10.1128/AAC.01730-19)) -- pediatric oncology and nononcology patients.
 * Add Delattre 2010 amikacin ([doi:10.1097/FTD.0b013e3181f675c2](https://doi.org/10.1097/FTD.0b013e3181f675c2)) -- critically ill adults with severe sepsis or septic shock.
+* Add Diep 2022 eplontersen ([doi:10.1111/bcp.15468](https://doi.org/10.1111/bcp.15468)) -- healthy volunteers in two phase 1 studies (two-compartment popPK with site-specific SC absorption and indirect-response PD on serum transthyretin).
 * Add Themans 2019 meropenem ([doi:10.1007/s40268-019-0268-x](https://doi.org/10.1007/s40268-019-0268-x)) [DDMODEL00000301] -- adults with severe pneumonia.
 * Add Kovalenko 2016 dupilumab ([doi:10.1002/psp4.12136](https://doi.org/10.1002/psp4.12136)) [DDMODEL00000273] -- DDMORE-bundle replicate of the existing Kovalenko_2016_dupilumab specificDrugs entry; encodes the bundle's non-standard V2 weight covariate and `Output_simulated_*.lst` final estimates (no `Output_real_*.lst` shipped).
 * Add Terranova 2018 paclitaxel ([doi:10.1016/j.jtbi.2018.04.012](https://doi.org/10.1016/j.jtbi.2018.04.012)) [DDMODEL00000274] -- preclinical xenograft mice (Dynamic Energy Budget tumor-growth-inhibition model coupling paclitaxel PK to tumor mass and host body weight / cachexia).

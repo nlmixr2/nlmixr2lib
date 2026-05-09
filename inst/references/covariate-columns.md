@@ -2713,6 +2713,16 @@ readable.
 - **Example models:** `Yu_2022_ofatumumab.R` (exponential effect on k_e(P) and R0).
 - **Notes:** Set to 0 (PFS reference) for IV subjects, since the device is undefined for IV; the IV-specific effects are captured by `ROUTE_IV` instead. Scope: specific because the AI/PFS contrast and which parameters it affects depend on the study's device-comparison design.
 
+### INJSITE_ARM (**canonical for SC injection-site = arm indicator**)
+- **Description:** 1 = subject's SC dose injected into the arm, 0 = abdomen (the universal SC reference site across the popPK literature). Per-dose-record covariate flagging the SC injection site when a population analysis estimates site-specific absorption parameters.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (abdomen).
+- **Source aliases:** paper narrative "arm" / "abdomen" subgroup labels driving site-specific ka in Diep 2022.
+- **Example models:** `Diep_2022_eplontersen.R` (additive log-shift `e_injsite_arm_ka = log(ka_arm / ka_ab)` on the typical absorption rate constant: ka_arm = 0.217 1/h vs ka_ab = 0.282 1/h, ~30% higher ka for abdomen; INJSITE_ARM = 1 selects the arm typical value).
+- **Notes:** Specific scope because the arm-vs-abdomen contrast is paper-specific. Sister canonical to `INJSITE_THIGH` (thigh-vs-abdomen indicator anticipated for future SC-route models with thigh-specific absorption). Per-administration rather than per-subject -- a subject in a multi-dose simulation can switch SC injection sites between doses; supply the indicator on each dose record. Distinct from `ROUTE_IV` (IV vs SC route, not within-SC site) and from `DEVICE_AI` (autoinjector vs prefilled syringe, device rather than anatomical site).
+
 ### STUDY_APLIOS
 - **Description:** 1 = subject enrolled in the APLIOS bioequivalence study (NCT03560739; phase 2; ofatumumab AI vs PFS in RMS), 0 = other study in the Yu 2022 pooled analysis.
 - **Units:** (binary)
