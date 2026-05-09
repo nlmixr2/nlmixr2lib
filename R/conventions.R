@@ -117,7 +117,14 @@
     # 25-O-desacetyl rifabutin, the primary active metabolite of
     # rifabutin formed by arylacetamide deacetylase (Hennig 2015
     # AAC doi:10.1128/AAC.01195-15).
-    "desrbn"
+    "desrbn",
+    # Stereo-isomer (R / S) suffixes for enantiomer-resolved popPK
+    # models in which both enantiomers are followed in plasma but no
+    # interconversion is modelled (e.g. Valitalo 2017 ketorolac BJCP
+    # doi:10.1111/bcp.13311). Treated as "non-parent analyte" suffixes
+    # under the same registry as metabolites; neither enantiomer is the
+    # parent.
+    "r", "s"
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` denotes the time-varying decay arm.
