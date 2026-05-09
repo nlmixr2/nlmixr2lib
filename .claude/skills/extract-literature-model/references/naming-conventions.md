@@ -188,12 +188,15 @@ Examples:
 
 ```r
 lcl       <- log(0.225)            ; label("Clearance (L/h)")        # estimated
+lcl       <- fixed(log(2))         ; label("Clearance (L/h)")        # fixed log-transformed value: log() goes inside fixed()
 e_wt_cl   <- fixed(0.75)           ; label("Allometric exp on CL")   # fixed
-lfdepot   <- fixed(log(1))         ; label("Bioavailability")        # fixed anchor
+lfdepot   <- fixed(log(1))         ; label("Bioavailability")        # fixed anchor (log of 1 = 0)
 etalcl    ~ 0.32                                                     # estimated IIV
 etalvc    ~ fixed(0.18)                                              # fixed IIV
 CcaddSd   <- fixed(0.10)           ; label("Additive SD (LTBS)")     # fixed residual
 ```
+
+Note the `fixed(log(2))` form: when a log-transformed structural parameter is fixed (e.g. `lcl` for a paper that holds CL constant at 2 L/h from an upstream publication), the `log()` goes **inside** `fixed()`, not the other way around. `lcl <- log(fixed(2))` is wrong — it would fix the linear-scale `2` and then take its log, which is not what `fixed()` is meant to mark. Always: `<lparam> <- fixed(log(<linear_value>))`.
 
 If a parameter is reported without uncertainty but the paper does not explicitly say "fixed", sidecar-ask the operator before guessing. Mis-encoding fixed-vs-estimated is a real downstream error.
 
