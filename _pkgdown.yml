@@ -119,8 +119,6 @@ navbar:
         href: articles/Ogasawara_2020_durvalumab.html
       - text: Elotuzumab (Ide 2020)
         href: articles/Ide_2020_elotuzumab.html
-      - text: Eplontersen (Diep 2022)
-        href: articles/Diep_2022_eplontersen.html
       - text: Etrolizumab (Moein 2022)
         href: articles/Moein_2022_etrolizumab.html
       - text: Evinacumab (Pu 2021)
@@ -201,10 +199,6 @@ navbar:
         href: articles/Hwang_2023_monalizumab.html
       - text: Nalmefene (Kyhl 2016)
         href: articles/Kyhl_2016_nalmefene.html
-      - text: Nalmefene (Laffont 2024)
-        href: articles/Laffont_2024_nalmefene.html
-      - text: Naloxone (Laffont 2024)
-        href: articles/Laffont_2024_naloxone.html
       - text: Necitumumab (Long 2017)
         href: articles/Long_2017_necitumumab.html
       - text: Nimotuzumab (Castro-Surez 2020)
@@ -231,8 +225,6 @@ navbar:
         href: articles/Robbie_2012_palivizumab.html
       - text: Patritumab (Lu 2022)
         href: articles/Lu_2022_patritumab.html
-      - text: Pertuzumab (Wang 2021)
-        href: articles/Wang_2021_pertuzumab.html
       - text: Phenytoin (Hennig 2015)
         href: articles/Hennig_2015_phenytoin.html
       - text: Polatuzumab (Lu 2019)
@@ -261,8 +253,6 @@ navbar:
         href: articles/Ma_2020_sarilumab_anc.html
       - text: Sarilumab das28crp (Ma 2020)
         href: articles/Ma_2020_sarilumab_das28crp.html
-      - text: Semaglutide (Overgaard 2019)
-        href: articles/Overgaard_2019_semaglutide.html
       - text: Sifalimumab (Narwal 2013)
         href: articles/Narwal_2013_sifalimumab.html
       - text: Sifalimumab (Zheng 2016)
@@ -279,8 +269,8 @@ navbar:
         href: articles/Bergmann_2014_tacrolimus.html
       - text: Tacrolimus (Kirubakaran 2022)
         href: articles/Kirubakaran_2022_tacrolimus.html
-      - text: Tacrolimus (Storset 2014)
-        href: articles/Storset_2014_tacrolimus.html
+      - text: Theophylline (Rovei 1982)
+        href: articles/Rovei_1982_theophylline.html
       - text: Tisagenlecleucel (Stein 2019)
         href: articles/Stein_2019_Tisagenlecleucel.html
       - text: Tislelizumab (Budha 2023)
