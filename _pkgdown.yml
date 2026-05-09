@@ -143,6 +143,8 @@ navbar:
         href: articles/FiedlerKelly_2020_fremanezumab_em.html
       - text: Galcanezumab (Kielbasa 2020)
         href: articles/Kielbasa_2020_galcanezumab.html
+      - text: Ganciclovir (Chen 2021)
+        href: articles/Chen_2021_ganciclovir.html
       - text: Gantenerumab (Grimm 2023)
         href: articles/Grimm_2023.html
       - text: Gentamicin (Llanos-Paez 2017)
@@ -303,8 +305,6 @@ navbar:
         href: articles/Pouzin_2022_tusamitamab.html
       - text: Ustekinumab (Aguiar 2021)
         href: articles/Aguiar_2021_ustekinumab.html
-      - text: Valganciclovir (Vezina 2014)
-        href: articles/Vezina_2014_valganciclovir.html
       - text: Vedolizumab (Rosario 2015)
         href: articles/Rosario_2015_vedolizumab.html
       - text: Vrc01 (Huang 2017)
