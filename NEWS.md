@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Salinger 2013 magnesium sulphate ([doi:10.1111/1471-0528.12222](https://doi.org/10.1111/1471-0528.12222)) -- pregnant women with pre-eclampsia receiving IV or IM MgSO4-7H2O for eclampsia prevention.
 * Add Huynh 2026 VRC07-523LS ([doi:10.1093/jac/dkaf449](https://doi.org/10.1093/jac/dkaf449)) -- HIV-exposed infants and healthy adults.
 * Add Pu 2021 evinacumab ([doi:10.1002/psp4.12711](https://doi.org/10.1002/psp4.12711)) -- healthy volunteers and adult / pediatric patients with homozygous familial hypercholesterolemia.
 * Add Zhang 2021 dupilumab ([doi:10.1002/psp4.12667](https://doi.org/10.1002/psp4.12667)) -- adult and adolescent patients with moderate-to-severe asthma (pooled with healthy adults).
