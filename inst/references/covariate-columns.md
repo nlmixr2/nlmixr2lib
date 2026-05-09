@@ -2673,10 +2673,12 @@ readable.
 - **Source aliases:**
   - "Admin route = IV" (categorical effect column in Yu 2022 covariate equations).
   - `IV` -- used in `Zierhut_2008_osteoprotegerin.R` (DDMODEL00000233 `dataObj` column flagging IV vs SC cohort, switching the PK observation residual SD between `CcpropSdIV` and `CcpropSdSC`).
+  - "IV" / "SC arm" -- used in `Wang_2021_pertuzumab.R` (per-subject FeDeriCa arm indicator P+H IV vs PH FDC SC, switching the proportional residual SD between `CcpropSdIv` and `CcpropSdSc`).
 - **Example models:**
   - `Yu_2022_ofatumumab.R` (exponential effect on R0, CL, Q, ksyninf).
   - `Zierhut_2008_osteoprotegerin.R` (per-subject indicator switching the PK observation residual SD between the IV cohort (`CcpropSdIV`) and the SC cohort (`CcpropSdSC`)).
-- **Notes:** This is the per-subject covariate-equation indicator, distinct from the dosing-event `cmt` column that names the target compartment. When simulating, set `ROUTE_IV = 1` for IV cohorts and dose into the central compartment; set `ROUTE_IV = 0` for SC cohorts and dose into the depot. Scope: specific because the set of parameters that differ by route is paper-specific (Yu 2022 carries route-specific exponential effects on disposition parameters; Zierhut 2008 carries a route-specific PK observation residual SD).
+  - `Wang_2021_pertuzumab.R` (per-subject indicator switching the proportional residual SD between the IV (`CcpropSdIv` = 0.175) and SC (`CcpropSdSc` = 0.155) cohorts of the FeDeriCa popPK).
+- **Notes:** This is the per-subject covariate-equation indicator, distinct from the dosing-event `cmt` column that names the target compartment. When simulating, set `ROUTE_IV = 1` for IV cohorts and dose into the central compartment; set `ROUTE_IV = 0` for SC cohorts and dose into the depot. Scope: specific because the set of parameters that differ by route is paper-specific (Yu 2022 carries route-specific exponential effects on disposition parameters; Zierhut 2008 and Wang 2021 carry a route-specific PK observation residual SD).
 
 ### DEVICE_AI
 - **Description:** 1 = subject's SC dose delivered via autoinjector (AI), 0 = prefilled syringe (PFS). Per-subject (study-fixed) covariate flagging the SC delivery device when a model carries device-specific PK effects.
