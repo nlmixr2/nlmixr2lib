@@ -117,7 +117,11 @@
     # 25-O-desacetyl rifabutin, the primary active metabolite of
     # rifabutin formed by arylacetamide deacetylase (Hennig 2015
     # AAC doi:10.1128/AAC.01195-15).
-    "desrbn"
+    "desrbn",
+    # AZ5104 (N-desmethyl osimertinib), an active EGFR-inhibitor
+    # metabolite of osimertinib formed predominantly via CYP3A4/5
+    # (Brown 2017 BJCP 83(6):1216-1226 doi:10.1111/bcp.13223).
+    "az5104"
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` denotes the time-varying decay arm.
