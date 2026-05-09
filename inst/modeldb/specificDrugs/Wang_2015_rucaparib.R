@@ -12,18 +12,18 @@ Wang_2015_rucaparib <- function() {
   units <- list(time = "hr", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(
-    BLPARP = list(
+    BL_PARP_PBL = list(
       description        = "Subject-specific pre-dose baseline PARP-1 activity in peripheral blood lymphocytes",
       units              = "pmol/10^6 PBL",
       type               = "continuous",
       reference_category = NULL,
       notes              = paste(
         "Per-subject baseline biomarker; appears in the residual maximum-inhibition equation",
-        "Emin = TV(Emin) * (BLPARP / BLB_median)^alpha (Wang 2015 equation 2). The numeric BLB_median",
+        "Emin = TV(Emin) * (BL_PARP_PBL / BLB_median)^alpha (Wang 2015 equation 2). The numeric BLB_median",
         "is not published; the model uses 90.8 pmol/10^6 PBL (= TV(E0) from Wang 2015 Table 2)",
         "as a defensible stand-in for the cohort median because Wang 2015 reports only the typical",
         "E0 and the exponent value but not the actual centring constant. For typical-value",
-        "simulation, set BLPARP to 90.8 so Emin reduces to TV(Emin)."
+        "simulation, set BL_PARP_PBL to 90.8 so Emin reduces to TV(Emin)."
       ),
       source_name        = "BLB"
     )
@@ -49,7 +49,7 @@ Wang_2015_rucaparib <- function() {
     pk_sampling    = "Plasma sampled pre-infusion, 0.25 and 0.5 h after start of infusion, and 0.25, 0.5, 1, 2, 4, 6, 8, 24 h after end of infusion on Day -7 (single-agent), Day 1, and Day 4 of the first cycle.",
     pd_sampling_pbl = "PBL PARP activity sampled pre-dose, end-of-infusion, 4-6 h and 24 h after end of infusion on Days -7, 1, 4 of cycle 1 plus an additional Day 8 sample (3 days after last dose) for the duration-of-inhibition window.",
     pd_sampling_tumor = "Tumor biopsies were collected at baseline and 4-6 h or 24 h after treatment with rucaparib (Day 1) in Part 2 patients only.",
-    notes          = "S-PLUS 7.0 / NONMEM 7.1.2 (FOCE) used for analysis. M6 BQL handling per Ahn 2008 (12% of PK samples below LLOQ 2 ng/mL). Demographic / physiological covariates tested (age, gender, weight, body surface area, serum creatinine, AST, ALT, disease stage, PAR baseline in PBL, PAR baseline in tumor) -- only PAR baseline in PBL (BLPARP) and PAR baseline in tumor were retained. None of the demographic covariates entered the final model."
+    notes          = "S-PLUS 7.0 / NONMEM 7.1.2 (FOCE) used for analysis. M6 BQL handling per Ahn 2008 (12% of PK samples below LLOQ 2 ng/mL). Demographic / physiological covariates tested (age, gender, weight, body surface area, serum creatinine, AST, ALT, disease stage, PAR baseline in PBL, PAR baseline in tumor) -- only PAR baseline in PBL (BL_PARP_PBL) and PAR baseline in tumor were retained. None of the demographic covariates entered the final model."
   )
 
   ini({
@@ -72,9 +72,9 @@ Wang_2015_rucaparib <- function() {
     lemin <- log(8.24); label("Typical residual PARP activity at maximum inhibition Emin (pmol/10^6 PBL)") # Wang 2015 Table 2: TV(Emin) = 8.24 pmol/10^6 PBL (RSE 10.6%)
     lic50 <- log(1.05); label("Concentration producing 50% maximum inhibition IC50 (ng/mL)") # Wang 2015 Table 2: IC50 = 1.05 ng/mL (RSE 24.0%)
 
-    # Covariate effect -- power exponent on (BLPARP / BLB_median) for Emin
+    # Covariate effect -- power exponent on (BL_PARP_PBL / BLB_median) for Emin
     # (Wang 2015 equation 2: Emin = TV(Emin) * (BLB / BLB_median)^alpha)
-    e_blparp_emin <- 0.620; label("Power exponent on (BLPARP / 90.8) ratio for Emin (unitless)") # Wang 2015 Table 2: alpha1 = 0.620 (RSE 14.2%)
+    e_bl_parp_pbl_emin <- 0.620; label("Power exponent on (BL_PARP_PBL / 90.8) ratio for Emin (unitless)") # Wang 2015 Table 2: alpha1 = 0.620 (RSE 14.2%)
 
     # IIV -- Wang 2015 Table 1 reports CV% on the log-normal scale; omega^2 = log(1 + CV^2)
     # The paper text states "IIV on all PK parameters" but Table 1 reports IIV
@@ -133,8 +133,8 @@ Wang_2015_rucaparib <- function() {
     # Power covariate effect of baseline PBL PARP activity on Emin. The paper's
     # cohort median BLB_median is not published; 90.8 pmol/10^6 PBL is used as a
     # defensible stand-in (TV(E0) from Wang 2015 Table 2); for typical-value
-    # simulation set BLPARP = 90.8 so emin = emin_tv.
-    emin <- emin_tv * (BLPARP / 90.8)^e_blparp_emin
+    # simulation set BL_PARP_PBL = 90.8 so emin = emin_tv.
+    emin <- emin_tv * (BL_PARP_PBL / 90.8)^e_bl_parp_pbl_emin
 
     # Direct-effect Emax inhibition (Wang 2015 equation 1)
     parpPbl <- e0 - (e0 - emin) * Cc / (ic50 + Cc)

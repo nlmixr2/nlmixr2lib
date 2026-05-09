@@ -64,7 +64,7 @@ The table below collects the entries in one place.
 | `e_wt_cl_q` (allometric exponent on CL/F and Q/F) | 0.75 (FIX) | Table 2, RCM column, TVCL/F~TBW and TVQ/F~TBW rows |
 | `e_wt_vc_vp` (allometric exponent on V1/F and V2/F) | 1 (FIX) | Table 2, RCM column, TVV1/F~TBW and TVV2/F~TBW rows |
 | `e_cyp3a5_expr_cl` (CYP3A5 IM or NM factor on CL/F) | 2.14 [1.67, 2.74] | Table 2, RCM column, TVCL/F~CYP3A5 IM or NM row |
-| `e_cond_ric_cl` (RIC factor on CL/F) | 0.63 [0.51, 0.77] | Table 2, RCM column, TVCL/F~RIC row |
+| `e_hct_cond_ric_cl` (RIC factor on CL/F) | 0.63 [0.51, 0.77] | Table 2, RCM column, TVCL/F~RIC row |
 | IIV V1/F (omega^2 = log(0.95^2 + 1) = 0.65823) | 95% CV | Table 2, RCM column, IIV V1/F row |
 | IIV CL/F (omega^2 = log(0.55^2 + 1) = 0.26282) | 55% CV | Table 2, RCM column, IIV CL/F row |
 | IIV V2/F (omega^2 = log(0.66^2 + 1) = 0.36185) | 66% CV | Table 2, RCM column, IIV V2/F row |
@@ -85,12 +85,12 @@ set.seed(20250812)
 
 n_per_subgroup <- 100L
 
-make_cohort <- function(n, cyp3a5_expr, cond_ric, label, id_offset = 0L) {
+make_cohort <- function(n, cyp3a5_expr, hct_cond_ric, label, id_offset = 0L) {
   tibble(
     id          = id_offset + seq_len(n),
     WT          = exp(rnorm(n, mean = log(84), sd = 0.20)),  # TBW median 84 kg, IQR 71-97
     CYP3A5_EXPR = cyp3a5_expr,
-    COND_RIC    = cond_ric,
+    HCT_COND_RIC    = hct_cond_ric,
     subgroup    = label
   )
 }
@@ -98,13 +98,13 @@ make_cohort <- function(n, cyp3a5_expr, cond_ric, label, id_offset = 0L) {
 # Four sub-groups -- IDs are disjoint across panels (Dunlap 2025 Figure 3C
 # layout: PM/RIC, PM/MAC, IM_or_NM/RIC, IM_or_NM/MAC).
 demo <- bind_rows(
-  make_cohort(n_per_subgroup, cyp3a5_expr = 0L, cond_ric = 1L,
+  make_cohort(n_per_subgroup, cyp3a5_expr = 0L, hct_cond_ric = 1L,
               label = "PM, RIC",       id_offset = 0L * n_per_subgroup),
-  make_cohort(n_per_subgroup, cyp3a5_expr = 0L, cond_ric = 0L,
+  make_cohort(n_per_subgroup, cyp3a5_expr = 0L, hct_cond_ric = 0L,
               label = "PM, MAC",       id_offset = 1L * n_per_subgroup),
-  make_cohort(n_per_subgroup, cyp3a5_expr = 1L, cond_ric = 1L,
+  make_cohort(n_per_subgroup, cyp3a5_expr = 1L, hct_cond_ric = 1L,
               label = "IM or NM, RIC", id_offset = 2L * n_per_subgroup),
-  make_cohort(n_per_subgroup, cyp3a5_expr = 1L, cond_ric = 0L,
+  make_cohort(n_per_subgroup, cyp3a5_expr = 1L, hct_cond_ric = 0L,
               label = "IM or NM, MAC", id_offset = 3L * n_per_subgroup)
 )
 stopifnot(!anyDuplicated(demo$id))
@@ -158,7 +158,7 @@ build_events <- function(demo, regimen = c("UNCMC", "RCM"), sim_hours = 96) {
     tibble(id = row$id, time = times, amt = doses,
            evid = 1L, cmt = "depot",
            WT = row$WT, CYP3A5_EXPR = row$CYP3A5_EXPR,
-           COND_RIC = row$COND_RIC, subgroup = row$subgroup)
+           HCT_COND_RIC = row$HCT_COND_RIC, subgroup = row$subgroup)
   }
 
   doses_df <- do.call(rbind, lapply(seq_len(nrow(demo)),
@@ -169,7 +169,7 @@ build_events <- function(demo, regimen = c("UNCMC", "RCM"), sim_hours = 96) {
   # and t=72 (D0).
   obs_times <- sort(unique(c(24, 48, seq(72, 84, by = 0.5))))
   obs <- demo |>
-    select(id, WT, CYP3A5_EXPR, COND_RIC, subgroup) |>
+    select(id, WT, CYP3A5_EXPR, HCT_COND_RIC, subgroup) |>
     tidyr::crossing(time = obs_times) |>
     mutate(amt = NA_real_, evid = 0L, cmt = NA_character_)
 

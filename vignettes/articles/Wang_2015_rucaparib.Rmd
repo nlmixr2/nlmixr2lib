@@ -30,7 +30,7 @@ with advanced solid tumors who received rucaparib (AG-014699 / PF-01367338) by
 designated the PARP Inhibitory Dose (PID). PK was best described by a
 three-compartment IV model with IIV on all PK parameters and IOV on CL and Q2;
 PARP activity in PBL was described by a direct-effect Emax inhibition model with
-a power covariate effect of baseline PBL PARP activity (BLPARP) on the residual
+a power covariate effect of baseline PBL PARP activity (BL_PARP_PBL) on the residual
 maximum-inhibition parameter Emin.
 
 # Population
@@ -71,21 +71,21 @@ collects them in one place for review.
 | `le0` (E0)            | 90.8 pmol/10^6 PBL | Wang 2015 Table 2 |
 | `lemin` (Emin TV)     | 8.24 pmol/10^6 PBL | Wang 2015 Table 2 |
 | `lic50` (IC50)        | 1.05 ng/mL  | Wang 2015 Table 2 |
-| `e_blparp_emin` (alpha) | 0.620     | Wang 2015 Table 2 |
+| `e_bl_parp_pbl_emin` (alpha) | 0.620     | Wang 2015 Table 2 |
 | `etale0`              | log(1+1.16^2)  | Wang 2015 Table 2: IIV E0 = 116 %CV |
 | `etalemin`            | log(1+0.469^2) | Wang 2015 Table 2: IIV Emin = 46.9 %CV |
 | `etalic50`            | log(1+0.617^2) | Wang 2015 Table 2: IIV IC50 = 61.7 %CV |
 | `propSd_parpPbl`      | 0.529       | Wang 2015 Table 2: residual SD = 0.529 (additive on log scale = proportional in linear) |
 | ODE: `d/dt(central) = -kel*C - k12*C + k21*P1 - k13*C + k31*P2` | n/a | Standard 3-compartment IV; consistent with Wang 2015 Results, "PK of rucaparib following a 30 minutes infusion was best described by a three-compartment model" |
 | Emax PD: `parpPbl = E0 - (E0 - emin)*Cc / (IC50 + Cc)` | n/a | Wang 2015 equation 1 |
-| Covariate: `emin = TV(Emin) * (BLPARP / 90.8)^alpha` | n/a | Wang 2015 equation 2 (with BLPARP_median = 90.8 stand-in; see Assumptions) |
+| Covariate: `emin = TV(Emin) * (BL_PARP_PBL / 90.8)^alpha` | n/a | Wang 2015 equation 2 (with BL_PARP_PBL_median = 90.8 stand-in; see Assumptions) |
 
 # Virtual cohort
 
 Original observed data are not publicly available. The figures below use a
 virtual cohort spanning the six published dose levels (1, 2, 4, 8, 12, 18
 mg/m^2), with N = 50 subjects per dose level and a typical BSA of 1.7 m^2 used
-to convert per-area doses to absolute mg. BLPARP is sampled log-normally on
+to convert per-area doses to absolute mg. BL_PARP_PBL is sampled log-normally on
 the population-typical baseline (90.8 pmol/10^6 PBL) with the published 116 %CV
 to mirror the trial's observed range (10-1000 pmol/10^6 PBL).
 
@@ -108,12 +108,12 @@ make_cohort <- function(n, dose_mg_m2, id_offset, bsa = bsa_typical) {
   amt_mg  <- dose_mg_m2 * bsa
   rate_mg <- amt_mg / 0.5  # 30-min infusion
   ids <- id_offset + seq_len(n)
-  blparp <- rlnorm(n, meanlog = log(90.8) - 0.5 * log(1 + 1.16^2),
+  bl_parp_pbl <- rlnorm(n, meanlog = log(90.8) - 0.5 * log(1 + 1.16^2),
                    sdlog = sqrt(log(1 + 1.16^2)))
   dose_rows <- data.frame(
     id = ids, time = 0, amt = amt_mg, rate = rate_mg,
     evid = 1L, cmt = 1L,
-    BLPARP = blparp,
+    BL_PARP_PBL = bl_parp_pbl,
     dose_mg_m2 = dose_mg_m2
   )
   obs_rows <- expand.grid(id = ids, time = times_obs, KEEP.OUT.ATTRS = FALSE)
@@ -122,7 +122,7 @@ make_cohort <- function(n, dose_mg_m2, id_offset, bsa = bsa_typical) {
   obs_rows$evid <- 0L
   obs_rows$cmt  <- 4L  # Cc observation cmt; parpPbl shares time grid
   obs_rows <- merge(obs_rows,
-                    data.frame(id = ids, BLPARP = blparp, dose_mg_m2 = dose_mg_m2),
+                    data.frame(id = ids, BL_PARP_PBL = bl_parp_pbl, dose_mg_m2 = dose_mg_m2),
                     by = "id")
   rbind(dose_rows, obs_rows)
 }
@@ -144,7 +144,7 @@ cat("rows:", nrow(events), "  unique ids:", length(unique(events$id)), "\n")
 
 ```{r simulate}
 sim <- rxode2::rxSolve(mod, events = events,
-                       keep = c("dose_mg_m2", "BLPARP")) |>
+                       keep = c("dose_mg_m2", "BL_PARP_PBL")) |>
   as.data.frame()
 ```
 
@@ -154,7 +154,7 @@ panel), we additionally simulate the model with random effects zeroed:
 ```{r simulate-typical}
 mod_typical <- rxode2::zeroRe(mod)
 
-# Typical-cohort events (one subject per dose, BLPARP = 90.8 so emin = TV(Emin))
+# Typical-cohort events (one subject per dose, BL_PARP_PBL = 90.8 so emin = TV(Emin))
 typical_events <- dplyr::bind_rows(
   lapply(seq_along(dose_levels), function(i) {
     amt_mg <- dose_levels[i] * bsa_typical
@@ -162,10 +162,10 @@ typical_events <- dplyr::bind_rows(
     times <- sort(unique(c(seq(0, 1.5, by = 0.05), seq(2, 168, by = 0.5))))
     rbind(
       data.frame(id = i, time = 0, amt = amt_mg, rate = rate_mg,
-                 evid = 1L, cmt = 1L, BLPARP = 90.8,
+                 evid = 1L, cmt = 1L, BL_PARP_PBL = 90.8,
                  dose_mg_m2 = dose_levels[i]),
       data.frame(id = i, time = times, amt = NA_real_, rate = NA_real_,
-                 evid = 0L, cmt = 4L, BLPARP = 90.8,
+                 evid = 0L, cmt = 4L, BL_PARP_PBL = 90.8,
                  dose_mg_m2 = dose_levels[i])
     )
   })
@@ -312,15 +312,15 @@ approximately constant across the 1-18 mg/m^2 range.
 
 # Assumptions and deviations
 
-- **BLPARP_median centring constant.** The covariate equation
-  `Emin = TV(Emin) * (BLPARP / BLB_median)^alpha` (Wang 2015 equation 2)
+- **BL_PARP_PBL_median centring constant.** The covariate equation
+  `Emin = TV(Emin) * (BL_PARP_PBL / BLB_median)^alpha` (Wang 2015 equation 2)
   references a numeric `BLB_median` (the cohort median observed baseline PARP
   activity in PBL) that the publication does not report. The model uses
   90.8 pmol/10^6 PBL -- the population typical baseline E0 from Wang 2015
   Table 2 -- as a defensible stand-in. For a typical patient with
-  `BLPARP = 90.8`, the covariate ratio reduces to 1 and `emin` reduces to
+  `BL_PARP_PBL = 90.8`, the covariate ratio reduces to 1 and `emin` reduces to
   `TV(Emin) = 8.24 pmol/10^6 PBL`, recovering the published Imax of 90.9%
-  exactly. Patients with non-typical BLPARP shift Emin via the published
+  exactly. Patients with non-typical BL_PARP_PBL shift Emin via the published
   power exponent 0.620.
 
 - **IIV on V2, V3, Q2, Q3 omitted.** The paper text states "IIV on all PK
@@ -347,7 +347,7 @@ approximately constant across the 1-18 mg/m^2 range.
   pmol/mg protein, IC50 = 1.10 ng/mL, E0 = 630 pmol/mg protein, alpha = 0.706,
   IIV E0 = 114%) fit to N = 30 sparse biopsy samples from 15 patients. Because
   the tumor-tissue Emin / E0 are reported in different units (pmol per mg of
-  protein vs. pmol per 10^6 PBL) and the registered `BLPARP` covariate is
+  protein vs. pmol per 10^6 PBL) and the registered `BL_PARP_PBL` covariate is
   PBL-specific, the tumor PD model is documented in the source-paper trace but
   is not packaged in this model file. A follow-up extraction adding a parallel
   tumor PD output would also need a new tumor-PARP covariate canonical name in

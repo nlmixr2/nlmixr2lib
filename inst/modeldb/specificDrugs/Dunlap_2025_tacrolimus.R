@@ -64,7 +64,7 @@ Dunlap_2025_tacrolimus <- function() {
       ),
       source_name        = "CYP3A5"
     ),
-    COND_RIC = list(
+    HCT_COND_RIC = list(
       description        = paste0(
         "Reduced-intensity conditioning regimen indicator: 1 if the patient ",
         "received reduced-intensity conditioning (RIC) chemotherapy prior to ",
@@ -167,7 +167,7 @@ Dunlap_2025_tacrolimus <- function() {
     # log(2.14). Reference category is MAC (RIC = 0) and CYP3A5 PM
     # (CYP3A5_EXPR = 0).
     e_cyp3a5_expr_cl <- 2.14;  label("CYP3A5 IM or NM multiplicative factor on CL/F (expressers have ~114% higher CL/F than PM)")  # Dunlap 2025 Table 2 RCM TVCL/F~CYP3A5 IM or NM = 2.14 [95% CI 1.67-2.74]
-    e_cond_ric_cl    <- 0.63;  label("Reduced-intensity-conditioning multiplicative factor on CL/F (RIC have ~37% lower CL/F than MAC)")  # Dunlap 2025 Table 2 RCM TVCL/F~RIC = 0.63 [95% CI 0.51-0.77]
+    e_hct_cond_ric_cl    <- 0.63;  label("Reduced-intensity-conditioning multiplicative factor on CL/F (RIC have ~37% lower CL/F than MAC)")  # Dunlap 2025 Table 2 RCM TVCL/F~RIC = 0.63 [95% CI 0.51-0.77]
 
     # ----- Inter-individual variability -----
     # Dunlap 2025 Table 2 RCM IIV reported as %CV: V1/F 95%, CL/F 55%, V2/F 66%.
@@ -196,14 +196,14 @@ Dunlap_2025_tacrolimus <- function() {
     wt_vc_vp <- (WT / 70) ^ e_wt_vc_vp
 
     # ----- 2. Individual PK parameters -----
-    # Reference subject: 70 kg, CYP3A5 PM (CYP3A5_EXPR = 0), MAC (COND_RIC = 0).
+    # Reference subject: 70 kg, CYP3A5 PM (CYP3A5_EXPR = 0), MAC (HCT_COND_RIC = 0).
     # The covariate factors are applied as `theta ^ indicator`, which
     # collapses to 1 at the reference category and to theta when the
     # indicator is 1, reproducing Dunlap 2025 Eq. 6 directly.
     ka <- exp(lka)
     cl <- exp(lcl + etalcl) * wt_cl_q *
           e_cyp3a5_expr_cl ^ CYP3A5_EXPR *
-          e_cond_ric_cl    ^ COND_RIC
+          e_hct_cond_ric_cl    ^ HCT_COND_RIC
     vc <- exp(lvc + etalvc) * wt_vc_vp
     q  <- exp(lq)            * wt_cl_q
     vp <- exp(lvp + etalvp) * wt_vc_vp
