@@ -66,7 +66,7 @@
   # disambiguation.
   registeredMetabolites = c(
     "mmae", "dxd", "sn38", "dm4", "medm4", "mcmmaf",
-    "complex", "ige", "tab", "nab",
+    "complex", "ige", "il1b", "tab", "nab",
     "dar0", "dar1", "dar2", "dar3", "dar4", "dar5", "dar6", "dar7", "dar8",
     # Small-molecule metabolites of agomelatine (Xie 2019): 3-hydroxy
     # and 7-desmethyl. Suffixes start with a digit; this is fine

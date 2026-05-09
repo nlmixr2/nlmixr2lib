@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Chakraborty 2012 canakinumab ([doi:10.2165/11599820-000000000-00000](https://doi.org/10.2165/11599820-000000000-00000)) -- adults and children with cryopyrin-associated periodic syndromes (CAPS) and four other inflammatory cohorts (population PK / IL-1b binding model with quasi-steady-state binding; ratifies new `il1b` registered metabolite suffix).
 * Add Huynh 2026 VRC07-523LS ([doi:10.1093/jac/dkaf449](https://doi.org/10.1093/jac/dkaf449)) -- HIV-exposed infants and healthy adults.
 * Add Pu 2021 evinacumab ([doi:10.1002/psp4.12711](https://doi.org/10.1002/psp4.12711)) -- healthy volunteers and adult / pediatric patients with homozygous familial hypercholesterolemia.
 * Add Zhang 2021 dupilumab ([doi:10.1002/psp4.12667](https://doi.org/10.1002/psp4.12667)) -- adult and adolescent patients with moderate-to-severe asthma (pooled with healthy adults).
