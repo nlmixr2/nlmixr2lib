@@ -31,8 +31,6 @@ navbar:
         href: articles/Zhong_2026_abatacept.html
       - text: Adalimumab (Marquez-Megias 2023)
         href: articles/Marquez-Megias_2023_adalimumab.html
-      - text: Adecatumumab (Cao 2013)
-        href: articles/Cao_2013_adecatumumab.html
       - text: Agomelatine (Xie 2019)
         href: articles/Xie_2019_agomelatine.html
       - text: Alemtuzumab (Mould 2007)
@@ -85,8 +83,6 @@ navbar:
         href: articles/Lawson_2022_busulfan.html
       - text: Casirivimab (Lin 2024)
         href: articles/Lin_2024_casirivimab.html
-      - text: Cefepime (Jonckheere 2019)
-        href: articles/Jonckheere_2019_cefepime.html
       - text: Cemiplimab (Yang 2021)
         href: articles/Yang_2021_cemiplimab.html
       - text: Certolizumab (Wade 2015)
@@ -147,16 +143,10 @@ navbar:
         href: articles/FiedlerKelly_2020_fremanezumab_em.html
       - text: Galcanezumab (Kielbasa 2020)
         href: articles/Kielbasa_2020_galcanezumab.html
-      - text: Ganciclovir (Caldes 2009)
-        href: articles/Caldes_2009_ganciclovir.html
       - text: Gantenerumab (Grimm 2023)
         href: articles/Grimm_2023.html
       - text: Gentamicin (Llanos-Paez 2017)
         href: articles/Llanos-Paez_2017_gentamicin.html
-      - text: Gevokizumab (Cao 2013)
-        href: articles/Cao_2013_gevokizumab.html
-      - text: GNbAC1 (Cao 2013)
-        href: articles/Cao_2013_GNbAC1.html
       - text: Guselkumab (Chen 2022)
         href: articles/Chen_2022_guselkumab.html
       - text: Guselkumab (Yao 2018)
@@ -199,12 +189,8 @@ navbar:
         href: articles/Chen_2020_luspatercept.html
       - text: MBG453 (Xu 2023)
         href: articles/Xu_2023_MBG453.html
-      - text: MEDI528 (Cao 2013)
-        href: articles/Cao_2013_MEDI528.html
       - text: Medi7836 (Hood 2021)
         href: articles/Hood_2021_medi7836.html
-      - text: Mepolizumab (Cao 2013)
-        href: articles/Cao_2013_mepolizumab.html
       - text: Mirikizumab (Chua 2025)
         href: articles/Chua_2025_mirikizumab.html
       - text: Mogamulizumab (Mukai 2019)
@@ -233,28 +219,20 @@ navbar:
         href: articles/Hayashi_2007_omalizumab.html
       - text: Ontamalimab (Wang 2020)
         href: articles/Wang_2020_ontamalimab.html
-      - text: Osimertinib (Brown 2017)
-        href: articles/Brown_2017_osimertinib.html
       - text: Ozoralizumab (Takeuchi 2023)
         href: articles/Takeuchi_2023_ozoralizumab.html
       - text: Palivizumab (Robbie 2012)
         href: articles/Robbie_2012_palivizumab.html
-      - text: PAmAb (Cao 2013)
-        href: articles/Cao_2013_PAmAb.html
       - text: Patritumab (Lu 2022)
         href: articles/Lu_2022_patritumab.html
       - text: Phenytoin (Hennig 2015)
         href: articles/Hennig_2015_phenytoin.html
-      - text: Piperacillin (Boer-Perez 2026)
-        href: articles/Boer-Perez_2026_piperacillin.html
       - text: Polatuzumab (Lu 2019)
         href: articles/Lu_2019_polatuzumab.html
       - text: Posdinemab (PerezRuixo 2025)
         href: articles/PerezRuixo_2025_posdinemab.html
       - text: Pozelimab (Lin 2024)
         href: articles/Lin_2024_pozelimab.html
-      - text: PRO95780 (Cao 2013)
-        href: articles/Cao_2013_PRO95780.html
       - text: Ranibizumab (Mulyukov 2018)
         href: articles/Mulyukov_2018_ranibizumab.html
       - text: Rifabutin (Hennig 2015)
@@ -267,8 +245,6 @@ navbar:
         href: articles/Okada_2025_rocatinlimab.html
       - text: Romiplostim (Petrov 2024)
         href: articles/Petrov_2024_romiplostim.html
-      - text: Rucaparib (Wang 2015)
-        href: articles/Wang_2015_rucaparib.html
       - text: Sacituzumab (Sathe 2024)
         href: articles/Sathe_2024_sacituzumab.html
       - text: Sarilumab (Xu 2019)
@@ -281,8 +257,6 @@ navbar:
         href: articles/Narwal_2013_sifalimumab.html
       - text: Sifalimumab (Zheng 2016)
         href: articles/Zheng_2016_sifalimumab.html
-      - text: Siltuximab (Cao 2013)
-        href: articles/Cao_2013_siltuximab.html
       - text: Siltuximab (Nikanjam 2019)
         href: articles/Nikanjam_2019_siltuximab.html
       - text: Sirukumab (Xu 2011)
@@ -291,16 +265,10 @@ navbar:
         href: articles/Goel_2016_Sonidegib.html
       - text: Sugemalimab (Wang 2024)
         href: articles/Wang_2024_sugemalimab.html
-      - text: Tacrolimus (Benkali 2010)
-        href: articles/Benkali_2010_tacrolimus.html
       - text: Tacrolimus (Bergmann 2014)
         href: articles/Bergmann_2014_tacrolimus.html
-      - text: Tacrolimus (Dunlap 2025)
-        href: articles/Dunlap_2025_tacrolimus.html
       - text: Tacrolimus (Kirubakaran 2022)
         href: articles/Kirubakaran_2022_tacrolimus.html
-      - text: Tefibazumab (Cao 2013)
-        href: articles/Cao_2013_tefibazumab.html
       - text: Tisagenlecleucel (Stein 2019)
         href: articles/Stein_2019_Tisagenlecleucel.html
       - text: Tislelizumab (Budha 2023)
@@ -335,10 +303,10 @@ navbar:
         href: articles/Pouzin_2022_tusamitamab.html
       - text: Ustekinumab (Aguiar 2021)
         href: articles/Aguiar_2021_ustekinumab.html
+      - text: Valganciclovir (Vezina 2014)
+        href: articles/Vezina_2014_valganciclovir.html
       - text: Vedolizumab (Rosario 2015)
         href: articles/Rosario_2015_vedolizumab.html
-      - text: Visilizumab (Cao 2013)
-        href: articles/Cao_2013_visilizumab.html
       - text: Vrc01 (Huang 2017)
         href: articles/Huang_2017_vrc01.html
       - text: VRC07523LS (Huynh 2026)
