@@ -132,7 +132,14 @@
     # has its own central compartment with apparent volume fixed to
     # 1 L (only output rate constants K23, K34, K40 are identifiable
     # in the source NONMEM ADVAN6 fit).
-    "dfcr", "dfur", "5fu"
+    "dfcr", "dfur", "5fu",
+    # AS(N-1)3' truncated antisense strand of GalNAc-conjugated
+    # siRNAs (givosiran and other galnac-siRNA conjugates), formed
+    # by removal of the 3'-terminal nucleotide from the antisense
+    # strand. Treated as the active metabolite that is equipotent
+    # with the parent in terms of RISC loading and target mRNA
+    # silencing (Ayyar 2024 doi:10.1016/j.xphs.2023.10.026).
+    "asn1"
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` denotes the time-varying decay arm.
