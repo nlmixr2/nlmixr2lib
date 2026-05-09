@@ -117,7 +117,12 @@
     # 25-O-desacetyl rifabutin, the primary active metabolite of
     # rifabutin formed by arylacetamide deacetylase (Hennig 2015
     # AAC doi:10.1128/AAC.01195-15).
-    "desrbn"
+    "desrbn",
+    # 10-monohydroxy derivative (MHD, also "10-hydroxy-carbazepine"),
+    # the primary active metabolite of oxcarbazepine produced by
+    # cytosolic arylketone reductases (Rodrigues 2017 BJCP
+    # doi:10.1111/bcp.13392).
+    "mhd"
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` denotes the time-varying decay arm.

@@ -2237,6 +2237,17 @@ readable.
 - **Example models:** `Martinez_2019_alirocumab.R` (additive effect on linear clearance CLL: `CLL = TVCLL + COV1*(WT-82.9) + COV2*STATIN`; +0.00644 L/h when statin is coadministered).
 - **Notes:** Per-model `covariateData[[STATIN]]$notes` must document which statins and dose thresholds are included in the "STATIN = 1" category, since inclusion criteria vary by study. Martinez 2019 codes STATIN = 1 for coadministration of rosuvastatin (< 20 mg/day), atorvastatin (< 40 mg/day), or simvastatin (any dose); other statin regimens are coded as 0.
 
+### COMED_EIAED (**canonical for concomitant enzyme-inducing antiepileptic drug indicator**)
+- **Description:** 1 = subject is taking at least one enzyme-inducing antiepileptic drug (EIAED) such as carbamazepine, phenobarbital, or phenytoin during the study; 0 = no EIAED coadministration. EIAEDs induce hepatic metabolism (CYP3A4/UGT-mediated pathways) and increase the clearance of co-administered antiepileptic drugs and their active metabolites.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no EIAED coadministration).
+- **Source aliases:**
+  - `MED` (with the value convention inverted: source codes 1 = absence of EIAEDs and 0 = presence; canonical inverts this so 1 = presence and 0 = absence) -- used in `Rodrigues_2017_oxcarbazepine.R`.
+- **Example models:** `Rodrigues_2017_oxcarbazepine.R` (exponential effect on MHD apparent clearance: `cl_mhd *= exp(e_eiaed_cl_mhd * (1 - COMED_EIAED))`; CL_MHD is 29.3% higher with EIAEDs vs without, encoded as +0.257 on the absence-indicator in the source paper).
+- **Notes:** Per-model `covariateData[[COMED_EIAED]]$notes` should list the specific EIAEDs counted as "EIAED = 1" since inclusion criteria vary across antiepileptic-drug studies. Rodrigues 2017 counts carbamazepine, phenobarbital, and phenytoin as EIAEDs; other AEDs in the dataset (vigabatrin, clobazam, valproic acid, clonazepam, lamotrigine, diazepam, ethosuccimide, progabide) are not. The source paper uses an "absence of EIAED" indicator (`MED = 1` if no EIAED, `MED = 0` if EIAED present); the canonical column inverts this so that the 1 group is "on EIAED", matching the convention for other COMED indicators.
+
 ### COMED_EFV (**canonical for concomitant efavirenz indicator**)
 - **Description:** 1 = subject is receiving efavirenz (EFV)-based antiretroviral therapy as the third agent in a combination ART regimen; 0 = subject is on the comparator regimen specified by the source paper (typically a protease-inhibitor-based regimen such as standard lopinavir/ritonavir 4:1). Efavirenz is a CYP3A and UGT inducer, so the indicator is used to flag PXR-mediated induction of metabolic clearance for co-administered antiretrovirals.
 - **Units:** (binary)

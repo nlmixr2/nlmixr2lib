@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Rodrigues 2017 oxcarbazepine ([doi:10.1111/bcp.13392](https://doi.org/10.1111/bcp.13392)) -- epileptic children aged 2-12 years (parent oxcarbazepine + active monohydroxy-derivative metabolite popPK with allometric weight scaling, MHD-to-OXC back-transformation, and concomitant enzyme-inducing antiepileptic drug effect; ratifies new `COMED_EIAED` covariate canonical and `mhd` registered metabolite suffix).
 * Add Huynh 2026 VRC07-523LS ([doi:10.1093/jac/dkaf449](https://doi.org/10.1093/jac/dkaf449)) -- HIV-exposed infants and healthy adults.
 * Add Pu 2021 evinacumab ([doi:10.1002/psp4.12711](https://doi.org/10.1002/psp4.12711)) -- healthy volunteers and adult / pediatric patients with homozygous familial hypercholesterolemia.
 * Add Zhang 2021 dupilumab ([doi:10.1002/psp4.12667](https://doi.org/10.1002/psp4.12667)) -- adult and adolescent patients with moderate-to-severe asthma (pooled with healthy adults).
