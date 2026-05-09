@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Garg 2014 pertuzumab ([doi:10.1007/s00280-014-2560-3](https://doi.org/10.1007/s00280-014-2560-3)) -- patients with a variety of HER2-targeted solid tumors.
 * Add Huynh 2026 VRC07-523LS ([doi:10.1093/jac/dkaf449](https://doi.org/10.1093/jac/dkaf449)) -- HIV-exposed infants and healthy adults.
 * Add Pu 2021 evinacumab ([doi:10.1002/psp4.12711](https://doi.org/10.1002/psp4.12711)) -- healthy volunteers and adult / pediatric patients with homozygous familial hypercholesterolemia.
 * Add Zhang 2021 dupilumab ([doi:10.1002/psp4.12667](https://doi.org/10.1002/psp4.12667)) -- adult and adolescent patients with moderate-to-severe asthma (pooled with healthy adults).
