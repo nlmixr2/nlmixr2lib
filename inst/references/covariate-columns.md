@@ -1135,8 +1135,8 @@ readable.
 - **Scope:** specific
 - **Reference category:** 0. Document the dominant subgroup explicitly in `covariateData[[RACE_ASIAN_OTH]]$notes` for every model that uses this covariate.
 - **Source aliases:** none.
-- **Example models:** `Frey_2013_tocilizumab.R` (paper's "Other Asian" composite indicator on CL).
-- **Notes:** Distinct from `RACE_ASIAN_AMIND_MULTI` (a 4-way composite of Asian + American Indian + Multiple Races) because the underlying paper's grouping rule is different -- `RACE_ASIAN_OTH` is a within-Asian-population sub-indicator, not a multi-race composite. Operator decision (2026-04-28): kept separate from `RACE_ASIAN` because the paper's "Other Asian" category is its own grouping, not an alias of "Asian (any)".
+- **Example models:** `Frey_2013_tocilizumab.R` (paper's "Other Asian" composite indicator on CL), `Brown_2017_osimertinib.R` (paper's "Asian (not Japanese or Chinese)" composite indicator with linear effect on apparent clearance of the AZ5104 metabolite; reference category Caucasian).
+- **Notes:** Distinct from `RACE_ASIAN_AMIND_MULTI` (a 4-way composite of Asian + American Indian + Multiple Races) because the underlying paper's grouping rule is different -- `RACE_ASIAN_OTH` is a within-Asian-population sub-indicator, not a multi-race composite. Operator decision (2026-04-28): kept separate from `RACE_ASIAN` because the paper's "Other Asian" category is its own grouping, not an alias of "Asian (any)". Brown 2017 uses Caucasian (not Chinese) as the dominant reference.
 
 ### RACE_NEAS (**canonical for North East Asian composite race indicator**)
 - **Description:** 1 = North East Asian heritage (worldwide Chinese, Japanese, or Korean), 0 = non-North East Asian. Composite indicator analogous to `RACE_ASIAN` but specifically restricted to the East Asian subgroup most-relevant to ICH E5 ethnic-sensitivity / Asian-region bridging analyses.
@@ -1187,6 +1187,17 @@ readable.
   - `JAPANESE_HV` -- used in `Wang_2017_benralizumab.R` (Japanese healthy-volunteer cohort indicator; the healthy-volunteer vs. asthma-patient distinction is captured separately, not in this covariate).
 - **Example models:** `Wade_2015_certolizumab.R` (multiplicative fractional effect on V/F; Wade 2015 breaks Japanese [RACE.EQ.8] out separately from RACE_ASIAN), `Wang_2017_benralizumab.R` (multiplicative factor 1.34 on Vc).
 - **Notes:** Distinct from `RACE_NEAS` (North East Asian composite, includes Chinese, Japanese, and Korean) and from `RACE_ASIAN`. Use `RACE_JAPANESE` only when the source paper breaks out Japanese heritage as its own indicator; do not aggregate with other Asian groups when the paper keeps them separate. Ratified canonically on 2026-04-26.
+
+### RACE_CHINESE (**canonical for Chinese-heritage race indicator**)
+- **Description:** 1 = Chinese heritage, 0 = non-Chinese. Used when Chinese subjects form a distinct subgroup alongside Japanese, Asian-other, and other race categories (e.g., multiregional oncology trials enrolling Chinese, Japanese, and other Asian cohorts as separate strata).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (non-Chinese; document the paper-specific reference race composition per-model).
+- **Source aliases:** none formally; source NONMEM control streams typically use ad-hoc names (e.g., `CHINESE`, `RACE.EQ.X`).
+- **Example models:** `Brown_2017_osimertinib.R` (linear additive effect `(1 + 0.17 * RACE_CHINESE)` on apparent clearance of the AZ5104 metabolite; reference category Caucasian).
+- **Notes:** Distinct from `RACE_NEAS` (North East Asian composite, includes Chinese, Japanese, and Korean) and from `RACE_ASIAN`. Use `RACE_CHINESE` only when the source paper breaks out Chinese heritage as its own indicator alongside `RACE_JAPANESE` and `RACE_ASIAN_OTH`; do not aggregate with other Asian groups when the paper keeps them separate. Parallels the established `RACE_JAPANESE` entry. Ratified canonically on 2026-05-09.
+
 ## Geographic / enrollment-country indicators
 
 ## Pediatric comorbidities
@@ -1327,8 +1338,8 @@ readable.
 - **Source aliases:** none known; healthy-volunteer indicators in source NONMEM control streams typically use ad-hoc names (e.g., `HV`, `HEALTHY`).
 - **Example models:** `Nikanjam_2019_siltuximab.R` (multiplicative effects: 0.77 on CL, 0.83 on Vss; reference category is the pooled non-HV oncology cohort), `Okada_2025_rocatinlimab.R` (multiplicative shift `1 - 0.532` on Vmax when 1; reference complement is the pooled atopic-dermatitis + ulcerative-colitis + plaque-psoriasis patient cohort).
 - **Notes:** Used when a population PK model pools healthy volunteers with patients across heterogeneous indications and the HV-vs-patient contrast is retained as a covariate. Scope: specific because the complement reference category is paper-defined (Nikanjam 2019 reference is "all non-HV, non-Castleman, non-SMM tumor types"; Okada 2025 reference is the pooled AD+UC+psoriasis patient cohort). Ratified canonically on 2026-04-24.
-- **Example models:** `Nikanjam_2019_siltuximab.R` (multiplicative effects: 0.77 on CL, 0.83 on Vss; reference category is the pooled non-HV oncology cohort), `Yang_2024_axatilimab.R` (multiplicative effect on baseline NCMC: `BL_NCMC x exp(1.22 x DIS_CANCER + 0.618 x DIS_HV)`; reference category cGVHD), `Goel_2016_Sonidegib.R` (multiplicative power-form effect on CL/F: `2.96^DIS_HV`; reference category is the pooled cancer-patient cohort across X2101 / X1101 / A2201).
-- **Notes:** Used when a population PK model pools healthy volunteers with patients across heterogeneous indications and the HV-vs-patient contrast is retained as a covariate. Scope: specific because the complement reference category is paper-defined (Nikanjam 2019 reference is "all non-HV, non-Castleman, non-SMM tumor types"; Yang 2024 reference is patients with cGVHD; Goel 2016 reference is the pooled cancer-patient cohort with advanced solid tumors or BCC). Ratified canonically on 2026-04-24.
+- **Example models:** `Nikanjam_2019_siltuximab.R` (multiplicative effects: 0.77 on CL, 0.83 on Vss; reference category is the pooled non-HV oncology cohort), `Yang_2024_axatilimab.R` (multiplicative effect on baseline NCMC: `BL_NCMC x exp(1.22 x DIS_CANCER + 0.618 x DIS_HV)`; reference category cGVHD), `Goel_2016_Sonidegib.R` (multiplicative power-form effect on CL/F: `2.96^DIS_HV`; reference category is the pooled cancer-patient cohort across X2101 / X1101 / A2201), `Brown_2017_osimertinib.R` (linear factor `(1 + 0.44 x DIS_HV)` on apparent osimertinib clearance and `(1 + 1.25 x DIS_HV)` on apparent AZ5104 clearance; reference category is the pooled NSCLC cohort across AURA / AURA2).
+- **Notes:** Used when a population PK model pools healthy volunteers with patients across heterogeneous indications and the HV-vs-patient contrast is retained as a covariate. Scope: specific because the complement reference category is paper-defined (Nikanjam 2019 reference is "all non-HV, non-Castleman, non-SMM tumor types"; Yang 2024 reference is patients with cGVHD; Goel 2016 reference is the pooled cancer-patient cohort with advanced solid tumors or BCC; Brown 2017 reference is the pooled advanced NSCLC cohort). Ratified canonically on 2026-04-24.
 
 ### DIS_CASTLEMAN (**canonical for Castleman's disease indicator**)
 - **Description:** 1 = Castleman's disease (multicentric or unicentric), 0 = not Castleman's disease. Time-fixed per subject.
