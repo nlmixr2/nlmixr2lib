@@ -1780,15 +1780,16 @@ readable.
 - **Notes:** Follows the `TUMTP_CHL` / `TUMTP_GC` decomposition pattern. SCLC is the only retained tumor-type indicator in the Sanghavi 2020 final model after backward elimination; the other tumor types collapse into the reference (melanoma) group.
 
 ### TUMTP_LYMPH (**canonical for lymphoma (pooled) tumor-type indicator**)
-- **Description:** 1 = lymphoma (heterogeneous lymphoma pool spanning multiple lymphoma histologies -- e.g., classical Hodgkin lymphoma combined with extranodal NK/T-cell lymphoma), 0 = solid tumor or other tumor type.
+- **Description:** 1 = lymphoma (heterogeneous lymphoma pool spanning multiple lymphoma histologies -- e.g., classical Hodgkin lymphoma combined with extranodal NK/T-cell lymphoma; or any-histology lymphoma pooled with solid-tumor and leukemia cohorts), 0 = solid tumor or other tumor type.
 - **Units:** (binary)
 - **Type:** binary
-- **Scope:** specific
-- **Reference category:** 0 = non-lymphoma tumor type (per source paper; e.g., NSCLC, GC/GEJ, ESCC, "Other" solid tumors in the Wang 2024 cohort, with NSCLC as the implicit reference when paired with the other Wang 2024 `TUMTP_*` indicators).
+- **Scope:** general
+- **Reference category:** 0 = non-lymphoma tumor type (per source paper; e.g., NSCLC, GC/GEJ, ESCC, "Other" solid tumors in the Wang 2024 cohort, with NSCLC as the implicit reference when paired with the other Wang 2024 `TUMTP_*` indicators; or leukemia as the implicit reference in the Akbar 2025 cohort).
 - **Source aliases:**
   - `TTYPE1` (Wang 2024) -- decompose into `TUMTP_LYMPH = as.integer(TTYPE1 == 1)`. The Wang 2024 source paper uses a multi-level `TTYPE` factor with levels 1 = lymphoma, 2 = lung cancer (reference), 3 = other, 4 = GCGEJ, 5 = ESCC.
-- **Example models:** `Wang_2024_sugemalimab.R` (exponential coefficient log(0.877) on baseline CL and log(0.879) on Vc).
-- **Notes:** Distinct from `TUMTP_CHL` (which is specifically classical Hodgkin lymphoma). Wang 2024 pools two lymphoma histologies (extranodal NK/T-cell lymphoma from CS1001-201 / NCT03595657 and classical Hodgkin lymphoma from CS1001-202 / NCT03505996) into a single lymphoma indicator; the indicator therefore captures a generic "hematologic-vs-solid-tumor" contrast rather than a histology-specific effect. When a future paper studies a single lymphoma histology distinct from cHL, register a more specific canonical (e.g., `TUMTP_ENKTL`, `TUMTP_NHL`) rather than overloading this one. Document the per-paper histology composition in `covariateData[[TUMTP_LYMPH]]$notes`.
+  - Categorical column "type of cancer" with level "Lymphoma" (Akbar 2025) -- decompose into `TUMTP_LYMPH = as.integer(cancer_type == "Lymphoma")`.
+- **Example models:** `Wang_2024_sugemalimab.R` (exponential coefficient log(0.877) on baseline CL and log(0.879) on Vc), `Akbar_2025_voriconazole.R` (additive-fractional +1.91% effect on CL relative to leukemia reference; 95% CI spans zero).
+- **Notes:** Distinct from `TUMTP_CHL` (which is specifically classical Hodgkin lymphoma). Wang 2024 pools two lymphoma histologies (extranodal NK/T-cell lymphoma from CS1001-201 / NCT03595657 and classical Hodgkin lymphoma from CS1001-202 / NCT03505996) into a single lymphoma indicator; the indicator therefore captures a generic "hematologic-vs-solid-tumor" contrast rather than a histology-specific effect. Akbar 2025 uses a single "Lymphoma" category alongside leukemia, sarcoma, breast cancer, myeloma, and glioma in a heterogeneous-cancer TDM cohort. When a future paper studies a single lymphoma histology distinct from cHL, register a more specific canonical (e.g., `TUMTP_ENKTL`, `TUMTP_NHL`) rather than overloading this one. Document the per-paper histology composition in `covariateData[[TUMTP_LYMPH]]$notes`. Promoted from `Scope: specific` to `Scope: general` on 2026-05-09 alongside the Akbar 2025 voriconazole extraction so that any heterogeneous-cancer-cohort PK analysis can use this canonical name without scope-violation.
 
 ### TUMTP_BC (**canonical for breast-cancer tumor-type indicator**)
 - **Description:** 1 = breast cancer (any histology / receptor status), 0 = other tumor types.
@@ -1822,6 +1823,50 @@ readable.
   - `PCALCL` -- used in `Suri_2018_brentuximab.R`. Suri 2018 reports the effect as a power-form multiplier `cl_adc *= 0.728^TUMTP_PCALCL` (pcALCL CL ~27% lower than non-pcALCL).
 - **Example models:** `Suri_2018_brentuximab.R` (effect on ADC clearance only).
 - **Notes:** Follows the `TUMTP_CHL` / `TUMTP_GC` / `TUMTP_SCLC` decomposition pattern. Distinct from `TUMTP_LYMPH` (heterogeneous lymphoma pool) and `TUMTP_CHL` (classical Hodgkin lymphoma). pcALCL is one of two histologies pooled into the broader CTCL category in Suri 2018 (alongside mycosis fungoides); the model singles out pcALCL because Suri 2018 backward elimination retained pcALCL as a separate effect on ADC clearance after exploring the broader CTCL contrast. Ratified canonically on 2026-04-28.
+
+### TUMTP_SARC (**canonical for sarcoma tumor-type indicator**)
+- **Description:** 1 = sarcoma (any histology -- soft-tissue or bone sarcoma pooled), 0 = other tumor types.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 = all other tumor types (per source paper; in Akbar 2025 the implicit reference is leukemia when paired with the other Akbar `TUMTP_*` indicators all = 0).
+- **Source aliases:**
+  - Categorical column "type of cancer" with level "Sarcoma" -- decompose into `TUMTP_SARC = as.integer(cancer_type == "Sarcoma")`. Used in `Akbar_2025_voriconazole.R`.
+- **Example models:** `Akbar_2025_voriconazole.R` (additive-fractional +18.5% effect on CL relative to leukemia reference).
+- **Notes:** Follows the `TUMTP_CHL` / `TUMTP_GC` / `TUMTP_SCLC` decomposition pattern. Akbar 2025 pools soft-tissue and bone sarcoma histologies into a single sarcoma category. Scope: specific because the reference category (leukemia in Akbar 2025) is paper-defined. Ratified canonically on 2026-05-09.
+
+### TUMTP_MYELO (**canonical for multiple myeloma tumor-type indicator (used in heterogeneous-cancer pooled cohorts)**)
+- **Description:** 1 = multiple myeloma, 0 = other tumor types.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 = all other tumor types (per source paper; in Akbar 2025 the implicit reference is leukemia when paired with the other Akbar `TUMTP_*` indicators all = 0).
+- **Source aliases:**
+  - Categorical column "type of cancer" with level "Myeloma" -- decompose into `TUMTP_MYELO = as.integer(cancer_type == "Myeloma")`. Used in `Akbar_2025_voriconazole.R`.
+- **Example models:** `Akbar_2025_voriconazole.R` (additive-fractional -2.33% effect on CL relative to leukemia reference; the 95% CI spans zero).
+- **Notes:** Distinct from the stub `MM` entry (which is reserved for multiple-myeloma-as-primary-indication PK studies; the `MM` definition lacks a complete schema and predates the TUMTP_* convention) and from `DIS_SMM` (smoldering multiple myeloma, an asymptomatic plasma-cell disorder). Use `TUMTP_MYELO` when the source paper pools multiple myeloma alongside other tumor types in a heterogeneous oncology cohort and treats `cancer type` as a many-level categorical covariate. Scope: specific because the reference category (leukemia in Akbar 2025) is paper-defined. Ratified canonically on 2026-05-09.
+
+### TUMTP_GLIO (**canonical for glioma tumor-type indicator**)
+- **Description:** 1 = glioma (any grade / histology -- e.g., glioblastoma, anaplastic astrocytoma, oligodendroglioma pooled), 0 = other tumor types.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 = all other tumor types (per source paper; in Akbar 2025 the implicit reference is leukemia when paired with the other Akbar `TUMTP_*` indicators all = 0).
+- **Source aliases:**
+  - Categorical column "type of cancer" with level "Glioma" -- decompose into `TUMTP_GLIO = as.integer(cancer_type == "Glioma")`. Used in `Akbar_2025_voriconazole.R`.
+- **Example models:** `Akbar_2025_voriconazole.R` (additive-fractional +8.81% effect on CL relative to leukemia reference; the 95% CI spans zero).
+- **Notes:** Follows the `TUMTP_CHL` / `TUMTP_GC` / `TUMTP_SCLC` decomposition pattern. Akbar 2025 reports a single "glioma" category without further subdivision by histology or grade. Scope: specific because the reference category (leukemia in Akbar 2025) is paper-defined. Ratified canonically on 2026-05-09.
+
+### TUMTP_LEUK (**canonical for leukemia tumor-type indicator**)
+- **Description:** 1 = leukemia (any subtype -- AML / ALL / CLL / CML pooled), 0 = other tumor types. Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 = all other tumor types (per source paper). In Akbar 2025 leukemia is the implicit reference (column not used directly), but the canonical name is registered so that future papers that retain leukemia as a non-reference contrast can use it.
+- **Source aliases:**
+  - Categorical column "type of cancer" with level "Leukemia" -- decompose into `TUMTP_LEUK = as.integer(cancer_type == "Leukemia")`. Implicit reference category in `Akbar_2025_voriconazole.R` (so the model file does not consume this column directly; it is registered for future heterogeneous-cancer-cohort analyses).
+- **Example models:** none directly consume this column; `Akbar_2025_voriconazole.R` uses leukemia as the reference category and so does not need a leukemia indicator.
+- **Notes:** Distinct from the more specific `DIS_AML`, `DIS_BCPALL`, `DIS_CMML`, `MDSAML` entries -- those are for leukemia-only or leukemia-vs-leukemia contrasts; `TUMTP_LEUK` is for heterogeneous-cancer pooled cohorts where leukemia is one of several tumor types and the analysis treats `cancer type` as a many-level categorical. Akbar 2025 had leukemia as 56.8% of the cohort and used it as the reference category. Scope: specific because the reference category in any source paper is paper-defined. Ratified canonically on 2026-05-09.
 
 ### LINE_1L (**canonical for first-line-therapy indicator**)
 - **Description:** 1 = first-line therapy (1L) / treatment-naive, 0 = second-line or greater (2L+) / relapsed-or-refractory.
