@@ -139,7 +139,12 @@
     # strand. Treated as the active metabolite that is equipotent
     # with the parent in terms of RISC loading and target mRNA
     # silencing (Ayyar 2024 doi:10.1016/j.xphs.2023.10.026).
-    "asn1"
+    "asn1",
+    # 10-monohydroxy derivative (MHD, also "10-hydroxy-carbazepine"),
+    # the primary active metabolite of oxcarbazepine produced by
+    # cytosolic arylketone reductases (Rodrigues 2017 BJCP
+    # doi:10.1111/bcp.13392).
+    "mhd"
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` denotes the time-varying decay arm.
