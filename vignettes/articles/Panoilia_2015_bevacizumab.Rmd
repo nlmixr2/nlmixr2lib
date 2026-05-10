@@ -1,0 +1,435 @@
+---
+title: "Panoilia_2015_bevacizumab"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Panoilia_2015_bevacizumab}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: Panoilia E, Schindler E, Samantas E, Aravantinos G,
+  Kalofonos HP, Christodoulou C, Patrinos GP, Friberg LE,
+  Sivolapenko G. A pharmacokinetic binding model for bevacizumab
+  and VEGF165 in colorectal cancer patients. *Cancer Chemother
+  Pharmacol.* 2015;75(4):791-803.
+  doi:[10.1007/s00280-015-2701-3](https://doi.org/10.1007/s00280-015-2701-3).
+* Description: Two-compartment quasi-steady-state target-mediated
+  drug-disposition (TMDD QSS) model for IV bevacizumab and free
+  VEGF165 in adults with stage IV metastatic colorectal cancer
+  (mCRC), with body weight as the only covariate (allometric power
+  scaling with fixed exponents 0.75 on CL and Q, 1 on V1 and V2).
+  Final-model values come from Table 3 (TMDD model column) of
+  Panoilia 2015.
+* Modality: Therapeutic anti-VEGF-A monoclonal antibody
+  (humanized IgG1, MW about 149 kDa) bound to a soluble target
+  (free VEGF165, MW about 40 kDa back-calculated from the paper's
+  BM0 dual-unit reporting).
+
+This vignette validates the binding TMDD-QSS model. Panoilia 2015
+also fits a stand-alone descriptive PK model for bevacizumab
+(Table 3, PK model column) used internally as a base before linking
+the binding component; only the final TMDD model is packaged here.
+
+# Population
+
+The Panoilia 2015 cohort comprised **19 adult patients with
+histologically confirmed stage IV colorectal cancer** (ECOG 0-2)
+treated at three Greek clinics. Baseline demographics (paper
+"Patients and samples", page 797):
+
+- Sex: 58% male, 42% female (11 M / 8 F).
+- Median age 60 years (range 37-73).
+- Median body weight 70 kg (range 50-94).
+- Race / ethnicity: not formally tabulated; single-country (Greek)
+  observational study.
+- Dosing regimens: 5 mg/kg IV every 2 weeks (BEV-FOLFIRI or
+  BEV-FOLFOX, n = 10), 7.5 mg/kg IV every 3 weeks (BEV-CAPIRI,
+  n = 9), or 10 mg/kg every 2 weeks (1 patient, BEV-FOLFIRI).
+- Sample sizes: 86 total bevacizumab + 93 free VEGF165 serum
+  concentrations, median 4 samples per patient (range 2-10).
+
+VEGF-A polymorphisms rs699947 (-2578 C/A), rs1570360 (-1154 G/A),
+and rs2010963 (-634 G/C) were tested as covariates but **none was
+retained in the final TMDD model** after randomization-test
+correction (Discussion, page 800). Body weight is therefore the
+only covariate in the packaged model.
+
+The same metadata is available programmatically via
+`readModelDb("Panoilia_2015_bevacizumab")$population`.
+
+# Source trace
+
+| Parameter (model name)            | Value         | Source                                                   |
+|-----------------------------------|---------------|----------------------------------------------------------|
+| `lcl` (CL, L/day)                 | log(0.18)     | Panoilia 2015 Table 3, TMDD column row CL                |
+| `lvc` (V1, L)                     | log(3.23)     | Panoilia 2015 Table 3, TMDD column row V1                |
+| `lq` (Q, L/day)                   | log(1.38)     | Panoilia 2015 Table 3, TMDD column row Q                 |
+| `lvp` (V2, L)                     | log(3.1)      | Panoilia 2015 Table 3, TMDD column row V2                |
+| `lkout` (kout, 1/day)             | log(0.401)    | Panoilia 2015 Table 3, row kout                          |
+| `lbm0` (BM0, nM)                  | log(0.0053)   | Panoilia 2015 Table 3, row BM0 (= 212 ng/L per Results)  |
+| `lkss` (Kss, nM)                  | log(267)      | Panoilia 2015 Table 3, row Kss                           |
+| `e_wt_cl_q` (allometric exponent) | 0.75 (fixed)  | Panoilia 2015 Methods Eq 3 ("0.75 for clearance ... fixed") |
+| `e_wt_vc_vp` (allometric exponent)| 1   (fixed)   | Panoilia 2015 Methods Eq 3 ("1 for volume parameters ... fixed") |
+| `etalcl` variance (CV 20%)        | 0.03922       | Panoilia 2015 Table 3, IIV CL CV%                        |
+| `etalvc` variance (CV 22%)        | 0.04727       | Panoilia 2015 Table 3, IIV V1 CV%                        |
+| `etalbm0` variance (CV 24%)       | 0.05599       | Panoilia 2015 Table 3, IIV BM0 CV%                       |
+| `propSd` (bevacizumab)            | 0.28          | Panoilia 2015 Table 3, row Prop. error_bev               |
+| `propSd_freeVegf` (VEGF165)       | 0.32          | Panoilia 2015 Table 3, row Prop. error_VEGF165           |
+
+Equations (paper section "TMDD (binding) model", Eqs 5-9 plus
+Gibiansky et al. 2008 QSS algebra in numerically stable form):
+
+\[
+\dot A_1 = -\mathrm{CL}\,C_\mathrm{free} - Q\,C_\mathrm{free}
+            + Q\,(A_2/V_2) - k_\mathrm{int}\,R_c\,V_1
+\]
+\[
+\dot A_2 = Q\,C_\mathrm{free} - Q\,(A_2/V_2)
+\]
+\[
+\dot{T}_\mathrm{tot} = k_\mathrm{in}
+            - k_\mathrm{out}\,T_\mathrm{free}
+            - k_\mathrm{int}\,R_c
+\]
+
+with the QSS algebraic relation
+
+\[
+R_c = \tfrac{1}{2}\!\left(C_\mathrm{tot} + T_\mathrm{tot} + K_{ss}
+   - \sqrt{(C_\mathrm{tot} - T_\mathrm{tot})^2
+            + 2\,K_{ss}(C_\mathrm{tot} + T_\mathrm{tot}) + K_{ss}^2}\right)
+\]
+
+\(C_\mathrm{free} = C_\mathrm{tot} - R_c\),
+\(T_\mathrm{free} = T_\mathrm{tot} - R_c\),
+\(C_\mathrm{tot} = A_1/V_1\),
+\(k_\mathrm{in} = k_\mathrm{out}\,\mathrm{BM_0}\),
+\(k_\mathrm{int} = \mathrm{CL}/V_1\) (paper Eq 6 with
+\(\mathrm{CL_{RC}} = \mathrm{CL}\); Results page 798).
+
+The bevacizumab observation is total (free + complex) drug in
+mg/L; the free-VEGF165 observation is \(T_\mathrm{free}\) in
+ng/L. Both residual error models are proportional, derived from
+the paper's "additive error model on log-transformed data"
+(NONMEM additive on log scale equals proportional in linear space).
+
+# Errata note
+
+A literature search (May 2026) found no published corrigendum or
+erratum for Panoilia 2015. The paper is open-access under a
+Creative Commons Attribution license (Open Access notice, page 801).
+
+# Virtual cohort
+
+A 100-subject virtual cohort, with body weights drawn around the
+study median of 70 kg.
+
+```{r cohort}
+set.seed(2015)
+n_subj <- 100
+
+cohort <- tibble(
+  ID = seq_len(n_subj),
+  WT = pmin(pmax(rlnorm(n_subj, log(70), 0.18), 45), 110)
+)
+```
+
+```{r events}
+inf_dur     <- 1.5 / 24            # 90-min infusion (days)
+n_doses_q2w <- 6
+sim_horizon <- 84                  # 12 weeks total follow-up
+dose_times  <- seq(0, by = 14, length.out = n_doses_q2w)
+obs_times   <- sort(unique(c(0, seq(0.05, sim_horizon, by = 0.5))))
+
+build_events <- function(pop, mgkg, dose_times, regimen_label) {
+  amt_per_subject <- pop$WT * mgkg
+  d_dose <- pop |>
+    dplyr::mutate(amt = amt_per_subject) |>
+    tidyr::crossing(time = dose_times) |>
+    dplyr::mutate(evid = 1L, cmt = "central", dur = inf_dur,
+                  treatment = regimen_label)
+  d_obs_cc <- pop |>
+    tidyr::crossing(time = obs_times) |>
+    dplyr::mutate(amt = 0, evid = 0L, cmt = "Cc", dur = NA_real_,
+                  treatment = regimen_label)
+  d_obs_cv <- pop |>
+    tidyr::crossing(time = obs_times) |>
+    dplyr::mutate(amt = 0, evid = 0L, cmt = "freeVegf", dur = NA_real_,
+                  treatment = regimen_label)
+  dplyr::bind_rows(d_dose, d_obs_cc, d_obs_cv) |>
+    dplyr::rename(id = ID) |>
+    dplyr::arrange(id, time, dplyr::desc(evid)) |>
+    as.data.frame()
+}
+
+events <- build_events(cohort, mgkg = 5, dose_times = dose_times,
+                       regimen_label = "5 mg/kg Q2W")
+```
+
+# Simulation
+
+```{r simulate}
+mod <- rxode2::rxode2(readModelDb("Panoilia_2015_bevacizumab"))
+sim <- rxode2::rxSolve(mod, events = events,
+                       keep = c("treatment"),
+                       returnType = "data.frame")
+
+# Endpoint compartments: Cc -> CMT 4, freeVegf -> CMT 5 (after the 3 ODE states)
+sim_cc <- sim |> dplyr::filter(CMT == 4)
+sim_cv <- sim |> dplyr::filter(CMT == 5)
+```
+
+# Replicate published figures
+
+## Bevacizumab concentration-time profile (mirrors Panoilia 2015 Figure 3a)
+
+Panoilia 2015 Figure 3a shows the typical-patient (70 kg) total
+bevacizumab profile at 5 mg/kg Q2W. The simulation below extends
+the typical-value profile with a 90% prediction band drawn from
+the 100-subject cohort.
+
+```{r figure-3A-bev, fig.width = 7, fig.height = 4.5}
+sim_cc_summary <- sim_cc |>
+  dplyr::filter(time > 0) |>
+  dplyr::group_by(time) |>
+  dplyr::summarise(
+    median = stats::median(Cc, na.rm = TRUE),
+    lo     = stats::quantile(Cc, 0.05, na.rm = TRUE),
+    hi     = stats::quantile(Cc, 0.95, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+ggplot(sim_cc_summary, aes(time, median)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.2, fill = "steelblue") +
+  geom_line(linewidth = 1, colour = "steelblue") +
+  scale_y_log10() +
+  labs(
+    x = "Time since first dose (days)",
+    y = "Total bevacizumab (mg/L, log scale)",
+    title = "Simulated bevacizumab PK from binding QSS model (5 mg/kg Q2W)",
+    subtitle = paste0("Median and 90% prediction interval, N = ", n_subj),
+    caption = "Mirrors Panoilia 2015 Figure 3a (total bevacizumab profile)."
+  ) +
+  theme_bw()
+```
+
+## Free VEGF165 first-dose drop and pseudo-steady-state (mirrors Figure 3a)
+
+The paper reports a 73% drop in free VEGF165 after the first
+5 mg/kg dose, with subsequent doses producing successively smaller
+drops as the bevacizumab-VEGF165 complex accumulates and the
+system approaches pseudo-steady-state (Results, page 800). The
+typical-value simulation below quantifies that prediction.
+
+```{r figure-3A-vegf, fig.width = 7, fig.height = 4.5}
+sim_cv_summary <- sim_cv |>
+  dplyr::group_by(time) |>
+  dplyr::summarise(
+    median = stats::median(freeVegf, na.rm = TRUE),
+    lo     = stats::quantile(freeVegf, 0.05, na.rm = TRUE),
+    hi     = stats::quantile(freeVegf, 0.95, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+ggplot(sim_cv_summary, aes(time, median)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.2, fill = "darkorange") +
+  geom_line(linewidth = 1, colour = "darkorange") +
+  geom_hline(yintercept = 212, linetype = "dashed", colour = "grey40") +
+  labs(
+    x = "Time since first dose (days)",
+    y = "Free VEGF165 (ng/L)",
+    title = "Simulated free VEGF165 from binding QSS model (5 mg/kg Q2W)",
+    subtitle = "Median and 90% prediction interval. Dashed line = baseline BM0 (212 ng/L).",
+    caption = "Mirrors Panoilia 2015 Figure 3a (free VEGF165 panel)."
+  ) +
+  theme_bw()
+```
+
+## First-dose nadir of free VEGF165 (paper-reported 73% drop)
+
+```{r firstdose-drop}
+mod_typical <- rxode2::rxode2(readModelDb("Panoilia_2015_bevacizumab")) |>
+  rxode2::zeroRe()
+
+typ_grid <- tibble(id = 1L, WT = 70)
+typ_dose_times <- 0
+typ_obs_times <- sort(unique(c(0, seq(0.05, 14, by = 0.05))))
+
+build_typ_events <- function(grid, mgkg, dose_times, obs_times) {
+  d_dose <- grid |>
+    dplyr::mutate(amt = WT * mgkg) |>
+    tidyr::crossing(time = dose_times) |>
+    dplyr::mutate(evid = 1L, cmt = "central", dur = inf_dur)
+  d_obs_cc <- grid |>
+    tidyr::crossing(time = obs_times) |>
+    dplyr::mutate(amt = 0, evid = 0L, cmt = "Cc", dur = NA_real_)
+  d_obs_cv <- grid |>
+    tidyr::crossing(time = obs_times) |>
+    dplyr::mutate(amt = 0, evid = 0L, cmt = "freeVegf", dur = NA_real_)
+  dplyr::bind_rows(d_dose, d_obs_cc, d_obs_cv) |>
+    dplyr::arrange(id, time, dplyr::desc(evid)) |>
+    as.data.frame()
+}
+
+typ_events <- build_typ_events(typ_grid, 5, typ_dose_times, typ_obs_times)
+sim_typ_first <- rxode2::rxSolve(mod_typical, events = typ_events,
+                                 returnType = "data.frame") |>
+  dplyr::filter(CMT == 5)
+
+bm0_typ      <- 212  # ng/L (paper Table 3 / Results)
+nadir_5mgkg  <- min(sim_typ_first$freeVegf, na.rm = TRUE)
+nadir_drop   <- round(100 * (1 - nadir_5mgkg / bm0_typ), 1)
+
+knitr::kable(
+  tibble(
+    quantity         = c("Pre-dose BM0 (ng/L)",
+                         "First-dose nadir of free VEGF165 (ng/L)",
+                         "Percent drop after first 5 mg/kg dose"),
+    typical_70kg     = c(bm0_typ, round(nadir_5mgkg, 2), nadir_drop),
+    paper_value      = c(212, NA, 73)
+  ),
+  caption = "First-dose perturbation of free VEGF165 in a typical 70 kg patient. Paper-reported drop is 73% after the first 5 mg/kg Q2W dose (Panoilia 2015 Results, page 800)."
+)
+```
+
+# Steady-state and mass-balance checks
+
+This is a binding-target / turnover model -- PKNCA on free
+VEGF165 is not appropriate (VEGF165 is endogenous, not dosed).
+The two checks below verify model correctness:
+
+1. **Pre-dose baseline of free VEGF165 matches BM0.** With no drug
+   on board, T_free should equal BM0 = 212 ng/L (= 0.0053 nM x
+   40 kDa).
+
+```{r baseline-check}
+predose <- sim_typ_first |>
+  dplyr::filter(time == 0) |>
+  dplyr::summarise(observed_predose = freeVegf[1])
+predose$expected_bm0 <- 212
+knitr::kable(predose,
+             caption = "Pre-dose free VEGF165: simulated vs algebraic expectation (ng/L). Both should be 212.")
+```
+
+2. **Long-term recovery to baseline after dosing stops.** With no
+   further infusion, free VEGF165 should rebound to BM0 over a
+   few half-lives of the target turnover (1/k_out ~= 2.5 days).
+
+```{r recovery-check}
+recovery_grid     <- tibble(id = 1L, WT = 70)
+recovery_doses    <- 0
+recovery_obs      <- sort(unique(c(0, seq(0.05, 60, by = 0.5))))
+recovery_events   <- build_typ_events(recovery_grid, 5,
+                                      recovery_doses, recovery_obs)
+sim_recovery      <- rxode2::rxSolve(mod_typical,
+                                     events = recovery_events,
+                                     returnType = "data.frame") |>
+  dplyr::filter(CMT == 5)
+
+recovered <- sim_recovery |>
+  dplyr::filter(time >= 30) |>
+  dplyr::summarise(final_freeVegf = dplyr::last(freeVegf),
+                   pct_recovered  = round(100 * final_freeVegf / 212, 1))
+knitr::kable(recovered,
+             caption = "End-of-window free VEGF165 vs BM0 (ng/L). Single 5 mg/kg dose at t = 0; observed at day 60 (~24 x 1/k_out post-dose) -- expect full recovery.")
+```
+
+# Bevacizumab PKNCA validation
+
+For completeness, a steady-state NCA on the simulated bevacizumab
+output uses the last simulated dosing interval. Total drug
+includes the bevacizumab-VEGF165 complex, but at clinical doses
+the complex is a small fraction of total drug (Kss = 267 nM,
+Cmin >> Kss).
+
+```{r pknca}
+suppressPackageStartupMessages(library(PKNCA))
+
+start_ss <- max(dose_times)
+end_ss   <- start_ss + 14
+
+conc_df <- sim_cc |>
+  dplyr::filter(time >= start_ss, time <= end_ss, !is.na(Cc)) |>
+  dplyr::mutate(time_rel = time - start_ss) |>
+  dplyr::select(id, treatment, time_rel, Cc)
+
+dose_df <- events |>
+  dplyr::filter(treatment == "5 mg/kg Q2W", evid == 1, time == start_ss) |>
+  dplyr::mutate(time_rel = 0) |>
+  dplyr::select(id, treatment, time_rel, amt)
+
+conc_obj <- PKNCA::PKNCAconc(conc_df, Cc ~ time_rel | treatment + id,
+                             concu = "mg/L", timeu = "day")
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time_rel | treatment + id,
+                             doseu = "mg")
+
+intervals <- data.frame(
+  start    = 0,
+  end      = 14,
+  cmax     = TRUE,
+  tmax     = TRUE,
+  cmin     = TRUE,
+  auclast  = TRUE,
+  cav      = TRUE
+)
+
+nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
+nca_res  <- PKNCA::pk.nca(nca_data)
+knitr::kable(summary(nca_res),
+             caption = "Steady-state NCA for total bevacizumab (5 mg/kg Q2W, last simulated interval).")
+```
+
+# Assumptions and deviations
+
+- **Bevacizumab molecular weight (MW_BEV = 149,000 g/mol).** Required
+  to convert mg input doses to molar units (nM) for the binding
+  equations; not reported numerically in Panoilia 2015. The 149 kDa
+  value is the standard reference for the marketed antibody and is
+  documented as a model assumption in the model file's `model()`
+  block.
+- **VEGF165 effective molecular weight (MW_VEGF165 ~= 40,000 g/mol).**
+  Back-calculated from the paper's BM0 dual-unit reporting
+  (0.0053 nM == 212 ng/L; MW = 212 / 0.0053 / 1 = 40 kDa under the
+  paper's stated 1:1 binding assumption). Documented as a model
+  assumption.
+- **1:1 stoichiometric drug-target binding.** Paper Results page 798:
+  "assuming a 1:1 molecular interaction". The packaged QSS model
+  uses 1:1 binding consistent with the paper.
+- **Bevacizumab observation = total drug (free + complex).** Paper
+  Methods explicitly reports "total (free and bound to one molecule
+  of VEGF165) bevacizumab" via ELISA (page 793). Implemented as
+  Cc = (free + complex) drug.
+- **k_int = CL / V1.** Per Results page 798: "the elimination
+  clearance of the bevacizumab-VEGF165 complex... was therefore set
+  equal to the CL of the free bevacizumab (CL_RC = CL)." Implemented
+  as kint = CL / V1 in the concentration-rate form of Eq 6.
+- **Allometric exponents fixed.** Paper Methods Eq 3: "in case of
+  body weight, [the exponent] was either estimated or fixed to a
+  certain value (0.75 for clearance and 1 for volume parameters)".
+  Table 3 reports no exponent estimates with uncertainty; the final
+  TMDD model uses the canonical fixed exponents (Discussion page 800
+  confirms WT was the only retained covariate).
+- **No SNP covariates retained.** Three VEGF-A polymorphisms
+  (rs699947, rs1570360, rs2010963) were tested. Forward-inclusion
+  drops in OFV did not survive randomization-test correction
+  (Results page 798 and Discussion page 800-801). The packaged
+  model omits SNP terms.
+- **Race / ethnicity not reported.** The cohort was Greek;
+  population metadata records race as not formally tabulated.
+- **Residual error: log-additive == proportional.** Paper Methods
+  page 796: "Modeling was performed on log-transformed data ... an
+  additive error model on log-transformed data". Translated to
+  proportional residual on linear-scale concentrations per the
+  standard nlmixr2lib convention.
+- **No errata identified** (literature search May 2026).
