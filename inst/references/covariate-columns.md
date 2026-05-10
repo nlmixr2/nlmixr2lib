@@ -489,6 +489,16 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Nestorov_2014_factorviii.R` (reference 45 %, exponent -0.419 on V1).
 - **Notes:** Higher HCT (more red-cell volume) leaves a smaller plasma fraction within total body volume; for plasma-restricted distribution (e.g., factor VIII activity, which circulates in plasma) the central volume of distribution decreases as HCT rises, so the exponent is negative. Document baseline-vs-time-varying status in `covariateData[[HCT]]$notes`. Distinct from `HGB` (mass concentration of hemoglobin); the two correlate but enter different mechanistic relationships.
 
+### THB_MASS (**canonical for total hemoglobin mass**)
+- **Description:** Subject-level total hemoglobin mass in grams. Plasma-volume-independent quantity measured by the optimised CO-rebreathing method (Schmidt 2005, Pottgiesser 2008); distinct from `HGB` (mass concentration in plasma) and `HCT` (volume fraction). Used in erythropoiesis / RBC-regeneration models as the steady-state set point Base that drives the negative-feedback term and seeds the steady-state initial conditions of the precursor compartments.
+- **Units:** g
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- subject-level baseline supplied as a covariate column. Reference values observed: 885.42 g (Tetschke 2018 Table 1 example subject); Pottgiesser 2008 cohort mean ~870 g across 28 estimable adult-male volunteers.
+- **Source aliases:** `Base` (Tetschke 2018 paper symbol).
+- **Example models:** `Tetschke_2018_erythropoiesis.R` (reference 885.42 g; Pottgiesser 2008 dataset of 29 healthy adult male volunteers).
+- **Notes:** Specific scope because total hemoglobin mass requires the optimised CO-rebreathing method to obtain (Schmidt 2005), which is a specialised technique not present in routine clinical labs; promote to `general` if a second model registers this quantity. Distinct from `HGB` (g/L or g/dL plasma concentration) and `HCT` (RBC volume fraction): `THB_MASS` is the absolute body-pool mass and is not perturbed by short-term plasma-volume fluctuations (Pottgiesser 2008 Section 3.2 explicitly motivates the choice of mass over concentration). Sex-dimorphic: typical value in adult males is meaningfully higher than in adult females; document the sex composition of the population in `covariateData[[THB_MASS]]$notes`.
+
 ### NEUT (**canonical for absolute neutrophil count**)
 - **Description:** Absolute neutrophil count, typically as a baseline covariate (entered via centred-deviation `(NEUT - ref)` or power scaling `(NEUT / ref)^exponent`). Distinct from `NLR` (neutrophil-to-lymphocyte ratio): `NEUT` is the absolute count itself.
 - **Units:** cells/mm^3 (equivalent to cells/uL; i.e., the same value reported in 10^9/L x 1000). Document per-model via `covariateData[[NEUT]]$units`.
