@@ -746,8 +746,7 @@ nca_result <- PKNCA::pk.nca(nca_data)
 #> Requesting an AUC range starting (0) before the first measurement (1.83221) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1.83221) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1.83221) is not allowed
-#>  ■■■■■■■■■■■■■■■■■■■■■■■           75% |  ETA:  1s
-#> Warning: Requesting an AUC range starting (0) before the first measurement (1.83221) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1.83221) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1.83221) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1.83221) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1.83221) is not allowed

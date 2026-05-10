@@ -3,28 +3,48 @@ pkgdown: 2.2.0
 pkgdown_sha: ~
 articles:
   articles/Aguiar_2021_ustekinumab: Aguiar_2021_ustekinumab.html
+  articles/Akbar_2025_voriconazole: Akbar_2025_voriconazole.html
   articles/Aksenov_2018_uricAcid: Aksenov_2018_uricAcid.html
   articles/Allegaert_2015_paracetamol: Allegaert_2015_paracetamol.html
   articles/Almquist_2022_anifrolumab: Almquist_2022_anifrolumab.html
   articles/Archary_2018_lopinavir: Archary_2018_lopinavir.html
   articles/Archary_2019_abacavir: Archary_2019_abacavir.html
   articles/Archary_2019_lamivudine: Archary_2019_lamivudine.html
+  articles/Ayyar_2024_givosiran: Ayyar_2024_givosiran.html
   articles/Bajaj_2017_nivolumab_ddmore: Bajaj_2017_nivolumab_ddmore.html
   articles/Bajaj_2017_nivolumab: Bajaj_2017_nivolumab.html
   articles/Bender_2014_trastuzumabEmtansine_mechanistic: Bender_2014_trastuzumabEmtansine_mechanistic.html
   articles/Bender_2014_trastuzumabEmtansine_reduced: Bender_2014_trastuzumabEmtansine_reduced.html
+  articles/Benkali_2010_tacrolimus: Benkali_2010_tacrolimus.html
   articles/Berends_2019_infliximab: Berends_2019_infliximab.html
   articles/Bergmann_2014_tacrolimus: Bergmann_2014_tacrolimus.html
   articles/Birgersson_2019_artesunate: Birgersson_2019_artesunate.html
   articles/Bista_2015_fentanyl: Bista_2015_fentanyl.html
   articles/Bizzotto_2016_glucose: Bizzotto_2016_glucose.html
+  articles/Boer-Perez_2026_piperacillin: Boer-Perez_2026_piperacillin.html
   articles/Brillac_2025_isatuximab: Brillac_2025_isatuximab.html
+  articles/Brown_2017_osimertinib: Brown_2017_osimertinib.html
   articles/Budha_2023_tislelizumab: Budha_2023_tislelizumab.html
+  articles/Caldes_2009_ganciclovir: Caldes_2009_ganciclovir.html
+  articles/Cao_2013_adecatumumab: Cao_2013_adecatumumab.html
+  articles/Cao_2013_gevokizumab: Cao_2013_gevokizumab.html
+  articles/Cao_2013_GNbAC1: Cao_2013_GNbAC1.html
+  articles/Cao_2013_mab7E3: Cao_2013_mab7E3.html
+  articles/Cao_2013_mab8C2: Cao_2013_mab8C2.html
+  articles/Cao_2013_MEDI528: Cao_2013_MEDI528.html
+  articles/Cao_2013_mepolizumab: Cao_2013_mepolizumab.html
+  articles/Cao_2013_PAmAb: Cao_2013_PAmAb.html
+  articles/Cao_2013_PRO95780: Cao_2013_PRO95780.html
+  articles/Cao_2013_siltuximab: Cao_2013_siltuximab.html
+  articles/Cao_2013_tefibazumab: Cao_2013_tefibazumab.html
+  articles/Cao_2013_visilizumab: Cao_2013_visilizumab.html
   articles/CarlssonPetri_2021_liraglutide: CarlssonPetri_2021_liraglutide.html
   articles/Castro-Surez_2020_nimotuzumab: Castro-Surez_2020_nimotuzumab.html
   articles/Chen_2020_luspatercept: Chen_2020_luspatercept.html
+  articles/Chen_2021_ganciclovir: Chen_2021_ganciclovir.html
   articles/Chen_2022_guselkumab: Chen_2022_guselkumab.html
   articles/Cheng_2026_immunoglobulin: Cheng_2026_immunoglobulin.html
+  articles/Chien_2022_imatinib: Chien_2022_imatinib.html
   articles/Chua_2025_mirikizumab: Chua_2025_mirikizumab.html
   articles/Cirincione_2017_exenatide: Cirincione_2017_exenatide.html
   articles/Clegg_2024_nirsevimab: Clegg_2024_nirsevimab.html
@@ -35,10 +55,13 @@ articles:
   covariate-columns: covariate-columns.html
   create-model-library: create-model-library.html
   articles/Dao_2020_sultiame: Dao_2020_sultiame.html
+  articles/Delattre_2010_amikacin: Delattre_2010_amikacin.html
   articles/deVriesSchultink_2020_zenocutuzumab: deVriesSchultink_2020_zenocutuzumab.html
   articles/Diao_2016_daclizumab_cd25: Diao_2016_daclizumab_cd25.html
   articles/Diao_2016_daclizumab_cd56bright: Diao_2016_daclizumab_cd56bright.html
   articles/Diao_2016_daclizumab_treg: Diao_2016_daclizumab_treg.html
+  articles/Diep_2022_eplontersen: Diep_2022_eplontersen.html
+  articles/Dunlap_2025_tacrolimus: Dunlap_2025_tacrolimus.html
   articles/Faelens_2021_infliximab: Faelens_2021_infliximab.html
   articles/Farrell_2012_farletuzumab: Farrell_2012_farletuzumab.html
   articles/Fasanmade_2009_infliximab: Fasanmade_2009_infliximab.html
@@ -50,11 +73,13 @@ articles:
   articles/Frey_2013_tocilizumab: Frey_2013_tocilizumab.html
   articles/Friberg_2002_paclitaxel: Friberg_2002_paclitaxel.html
   articles/Gandhi_2021_abatacept: Gandhi_2021_abatacept.html
+  articles/Garg_2014_pertuzumab: Garg_2014_pertuzumab.html
   articles/Garmann_2017_BAY81_8973: Garmann_2017_BAY81_8973.html
   articles/Germovsek_2016_gentamicin: Germovsek_2016_gentamicin.html
   articles/Girard_2012_pimasertib: Girard_2012_pimasertib.html
   articles/Goel_2016_Sonidegib: Goel_2016_Sonidegib.html
   articles/Grimm_2023: Grimm_2023.html
+  articles/Guo_2022_PF_06939999: Guo_2022_PF_06939999.html
   articles/Gupta_2016_amatuximab: Gupta_2016_amatuximab.html
   articles/Hansson_2013a_sunitinib: Hansson_2013a_sunitinib.html
   articles/Hansson_2013c_sunitinib: Hansson_2013c_sunitinib.html
@@ -81,6 +106,7 @@ articles:
   articles/Jackson_2022_ixekizumab: Jackson_2022_ixekizumab.html
   articles/Jager_2011_gemtuzumab: Jager_2011_gemtuzumab.html
   articles/Jelliffe_2014_digoxin: Jelliffe_2014_digoxin.html
+  articles/Jonckheere_2019_cefepime: Jonckheere_2019_cefepime.html
   articles/Jonsson_2005_disufenton: Jonsson_2005_disufenton.html
   articles/Jonsson_2011_ethambutol: Jonsson_2011_ethambutol.html
   articles/Khan_2015_ciprofloxacin: Khan_2015_ciprofloxacin.html
@@ -97,6 +123,8 @@ articles:
   articles/Kuchimanchi_2024_dostarlimab: Kuchimanchi_2024_dostarlimab.html
   articles/Kunarajah_2017_doxorubicin: Kunarajah_2017_doxorubicin.html
   articles/Kyhl_2016_nalmefene: Kyhl_2016_nalmefene.html
+  articles/Laffont_2024_nalmefene: Laffont_2024_nalmefene.html
+  articles/Laffont_2024_naloxone: Laffont_2024_naloxone.html
   articles/Laouenan_2015_ribavirin: Laouenan_2015_ribavirin.html
   articles/Lawson_2022_busulfan: Lawson_2022_busulfan.html
   articles/Lestini_2015_tgfbinhibitor: Lestini_2015_tgfbinhibitor.html
@@ -108,7 +136,9 @@ articles:
   articles/Lin_2024_casirivimab: Lin_2024_casirivimab.html
   articles/Lin_2024_pozelimab: Lin_2024_pozelimab.html
   list-of-models: list-of-models.html
+  articles/Llanos_2017_gentamicin: Llanos_2017_gentamicin.html
   articles/Llanos-Paez_2017_gentamicin: Llanos-Paez_2017_gentamicin.html
+  articles/Llanos-Paez_2020_gentamicin: Llanos-Paez_2020_gentamicin.html
   articles/Lon_2013_abatacept: Lon_2013_abatacept.html
   articles/Long_2017_necitumumab: Long_2017_necitumumab.html
   articles/Lu_2014_trastuzumabemtansine: Lu_2014_trastuzumabemtansine.html
@@ -143,6 +173,7 @@ articles:
   articles/Ogasawara_2020_durvalumab: Ogasawara_2020_durvalumab.html
   articles/Okada_2025_rocatinlimab: Okada_2025_rocatinlimab.html
   articles/Othman_2014_daclizumab: Othman_2014_daclizumab.html
+  articles/Overgaard_2019_semaglutide: Overgaard_2019_semaglutide.html
   articles/Papachristos_2020_bevacizumab_pk: Papachristos_2020_bevacizumab_pk.html
   articles/Papachristos_2020_bevacizumab_pkpd: Papachristos_2020_bevacizumab_pkpd.html
   articles/Papachristos_2020_bevacizumab_qss: Papachristos_2020_bevacizumab_qss.html
@@ -156,6 +187,9 @@ articles:
   articles/Quartino_2019_trastuzumab: Quartino_2019_trastuzumab.html
   articles/Robbie_2012_palivizumab: Robbie_2012_palivizumab.html
   articles/Rosario_2015_vedolizumab: Rosario_2015_vedolizumab.html
+  articles/Rovei_1982_theophylline: Rovei_1982_theophylline.html
+  articles/Sadouki_2025_meropenem_gentamicin_ciprofloxacin: Sadouki_2025_meropenem_gentamicin_ciprofloxacin.html
+  articles/Salinger_2013_magnesiumSulfate: Salinger_2013_magnesiumSulfate.html
   articles/Sanghavi_2020_ipilimumab: Sanghavi_2020_ipilimumab.html
   articles/Sathe_2024_sacituzumab: Sathe_2024_sacituzumab.html
   articles/Schindler_2016_sunitinib: Schindler_2016_sunitinib.html
@@ -164,6 +198,7 @@ articles:
   articles/Soehoel_2022_tralokinumab: Soehoel_2022_tralokinumab.html
   articles/Stein_2019_Tisagenlecleucel: Stein_2019_Tisagenlecleucel.html
   articles/Stevens_2012_remoxipride: Stevens_2012_remoxipride.html
+  articles/Storset_2014_tacrolimus: Storset_2014_tacrolimus.html
   articles/Suleiman_2019_risankizumab: Suleiman_2019_risankizumab.html
   articles/Suri_2018_brentuximab: Suri_2018_brentuximab.html
   articles/Svensson_2016_bedaquiline: Svensson_2016_bedaquiline.html
@@ -179,15 +214,19 @@ articles:
   articles/Tiraboschi_2025_amlitelimab: Tiraboschi_2025_amlitelimab.html
   tmdd_archetypes: tmdd_archetypes.html
   articles/Toukam_2025_biib107: Toukam_2025_biib107.html
+  articles/Urien_2005_capecitabine: Urien_2005_capecitabine.html
   articles/Valenzuela_2025_nipocalimab: Valenzuela_2025_nipocalimab.html
   articles/vanRongen_2018_midazolam: vanRongen_2018_midazolam.html
   articles/vanWijk_2019_paracetamol: vanWijk_2019_paracetamol.html
   articles/Vet_2016_midazolam: Vet_2016_midazolam.html
+  articles/Vezina_2014_valganciclovir: Vezina_2014_valganciclovir.html
   articles/Voller_2017_phenobarbital: Voller_2017_phenobarbital.html
   articles/Wade_2015_certolizumab: Wade_2015_certolizumab.html
   articles/Wang_2013_morphine: Wang_2013_morphine.html
+  articles/Wang_2015_rucaparib: Wang_2015_rucaparib.html
   articles/Wang_2017_benralizumab: Wang_2017_benralizumab.html
   articles/Wang_2020_ontamalimab: Wang_2020_ontamalimab.html
+  articles/Wang_2021_pertuzumab: Wang_2021_pertuzumab.html
   articles/Wang_2024_sugemalimab: Wang_2024_sugemalimab.html
   articles/Wilbaux_2015_prostate: Wilbaux_2015_prostate.html
   articles/Wilkins_2008_rifampicin: Wilkins_2008_rifampicin.html
@@ -215,7 +254,7 @@ articles:
   articles/Zhu_2017_lebrikizumab: Zhu_2017_lebrikizumab.html
   articles/Zierhut_2008_osteoprotegerin: Zierhut_2008_osteoprotegerin.html
   articles/Zurlinden_2016_paracetamol: Zurlinden_2016_paracetamol.html
-last_built: 2026-05-09T17:37Z
+last_built: 2026-05-10T00:12Z
 urls:
   reference: https://nlmixr2.github.io/nlmixr2lib/reference
   article: https://nlmixr2.github.io/nlmixr2lib/articles

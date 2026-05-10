@@ -230,8 +230,7 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
-#>  ■■■■■■■■■■■                       32% |  ETA:  3s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  100% |  ETA:  0s
+#>  ■■■■■■■■■■■■                      38% |  ETA:  2s
 ```
 
 ### Comparison against Hennig 2008 Table 3 simulation summaries
