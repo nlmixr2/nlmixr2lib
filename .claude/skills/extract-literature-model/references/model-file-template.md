@@ -10,6 +10,13 @@ Related references:
 ```r
 <FirstAuthor>_<Year>_<drug> <- function() {
   description <- "<One-sentence summary, e.g., 'Two-compartment population PK model for <drug> in <population>'>"
+  #! Non-human studies: PREPEND the species to description, e.g.,
+  #!   description <- "Preclinical (rat, Sprague-Dawley). Two-compartment popPK model for ..."
+  #!   description <- "In vitro (SKBR3 cell line). Mechanistic HER2 receptor trafficking model."
+  #! so the species is visible in modellib() listings without inspecting population$species.
+  #! For preclinical/in vitro models: filename should also carry a species suffix
+  #!   <FirstAuthor>_<Year>_<drug>_<species>.R  (e.g., Geldof_2008_fluvoxamine_rat.R)
+  #! to keep human and animal extractions of the same drug as separate, non-colliding files.
   reference   <- "<Full citation with DOI>"
   vignette    <- "<FirstAuthor>_<Year>_<drug>"  #! basename of vignettes/articles/<FirstAuthor>_<Year>_<drug>.Rmd; used by list-of-models to link here
   units       <- list(time = "<day|hour>", dosing = "<mg|mg/kg>", concentration = "<ug/mL|ng/mL>")
@@ -47,6 +54,7 @@ Related references:
     #!   disease_state = "healthy infants at risk for RSV"
     #!   dose_range    = "50-200 mg IM single dose"
     #! Additional keys welcome (ga_range, renal_function, hepatic_function, co_medication, ...).
+    species        = "<required: 'human', 'rat (Sprague-Dawley)', 'mouse (HBCx-9 PDX)', 'beagle dog', 'in vitro (SKBR3 cell line)', 'human + rat', etc.>",
     n_subjects     = <integer>,
     n_studies      = <integer>,
     age_range      = "<adult: '18-75 years' | pediatric: '0-24 months'>",

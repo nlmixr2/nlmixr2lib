@@ -317,6 +317,7 @@ covariateData <- list(
   )
 )
 population <- list(
+  species      = "<required: 'human', 'rat (Sprague-Dawley)', 'mouse (HBCx-9 PDX)', 'beagle dog', 'in vitro (SKBR3 cell line)', etc.; for pooled cohorts list each (e.g., 'human + rat')>",
   n_subjects   = <integer>,
   n_studies    = <integer>,
   age_range    = "<e.g., 0-24 months>",

@@ -10,6 +10,7 @@ Do not silently resolve ambiguity. Do not tune parameters to make a validation o
 
 - [ ] On-disk PDF / XML title, first author, journal, and year match the task's `Paper metadata` block. Filename PMID matches the actual PMID in the source (catches mislabelled drops like `PMID_23436260.pdf` actually being Frey 2010 / PMID 20097931).
 - [ ] Drug named in the task metadata matches the molecule the paper actually models.
+- [ ] **Species recorded.** `population$species` is set to the species the final model was fit to (e.g., `"human"`, `"rat (Sprague-Dawley)"`, `"beagle dog"`, `"in vitro (SKBR3 cell line)"`, `"human + rat"` for pooled). Non-human models additionally prepend the species to `description` (e.g., `"Preclinical (rat). ..."`). Filename carries a species suffix when the same drug has both human and animal extractions (e.g., `Geldof_2008_fluvoxamine_rat.R`). Preclinical and in-vitro models are first-class and are extracted without sidecar-asking — the species check is a labelling step, not a gating decision. See SKILL.md Phase 1 step 3.
 
 ## A. Parameter values
 
