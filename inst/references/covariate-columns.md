@@ -1498,6 +1498,28 @@ readable.
 - **Example models:** `Zhong_2026_abatacept.R` (exponential coefficient -0.0934 on CL and +0.257 on VC; the fully-HLA-matched HSCT cohort exhibits a small CL decrease and a larger VC increase relative to the reference complement).
 - **Notes:** Used together with `HSCT_URD_7OF8` to decompose a three-level "transplant cohort" categorical (non-HSCT-cohort / 7-of-8 / 8-of-8) into two orthogonal binary indicators. The 8-of-8 cohort is the lower-risk HLA-matching configuration. Scope: specific because the reference complement (the union of non-transplant disease cohorts pooled in the source analysis) is paper-defined. Ratified canonically on 2026-04-29.
 
+## Pulmonary / lung-disease biomarkers
+
+### FEV1 (**canonical for forced expiratory volume in 1 second**)
+- **Description:** Baseline forced expiratory volume in 1 second (FEV1) reported as an absolute volume in litres. Pulmonary-function spirometry endpoint; reflects large-airway airflow obstruction and is a standard covariate in chronic obstructive pulmonary disease, alpha-1 antitrypsin deficiency, asthma, and cystic-fibrosis disease-progression analyses. Distinct from FEV1 percent-predicted (the % predicted value standardises absolute FEV1 by reference equations from sex / age / height / ethnicity); use this canonical only for the absolute-litre value supplied as a covariate column.
+- **Units:** L (absolute volume; document the exhalation-effort standard the source paper cites in `covariateData[[FEV1]]$notes` if non-default -- ATS / ERS post-bronchodilator is the typical convention).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- used with linear-deviation forms `(theta + e_fev1_param * (FEV1 - ref))` or power forms `(FEV1 / ref)^exponent`. Reference values observed: 1.6 L (Tortorici 2017, population median across the RAPID-RCT/RAPID-OLE A1-PI augmentation cohort).
+- **Source aliases:** none yet; canonical name preferred. Source papers typically use the abbreviation `FEV1` directly.
+- **Example models:** `Tortorici_2017_a1pi.R` (linear-deviation effect on the lung-density decline rate: `theta5 * (FEV1 - 1.6)` with `theta5 = +0.56 (g/L/year per L FEV1)`; lower-FEV1 patients have steeper natural decline rates independent of A1-PI exposure).
+- **Notes:** Distinct from FEV1 percent-predicted (which is a derived ratio with the reference-equation denominator built in; FEV1% is the outcome variable in `Harun_2019_cysticFibrosis.R` rather than a covariate column). Use `FEV1` only when the source paper supplies the absolute-volume value; if the source supplies a percent-predicted value as a covariate, register a separate canonical (`FEV1_PCTPRED`) at that time. Scope: specific until a second model ratifies the absolute-litre semantics; promote to general at that point. Ratified canonically on 2026-05-09 alongside the Tortorici 2017 extraction.
+
+### A1PI (**canonical for serum alpha-1 proteinase inhibitor concentration**)
+- **Description:** Baseline serum alpha-1 proteinase inhibitor (A1-PI; also known as alpha-1 antitrypsin, AAT) concentration. Used in alpha-1 antitrypsin deficiency (AATD) augmentation-therapy modelling as a per-subject pre-treatment exposure covariate (the subject's endogenous A1-PI level at study entry, before any augmentation infusions). Time-fixed per subject. Distinct from a time-course of A1-PI used as a state variable -- when the source paper carries A1-PI as the dynamic dependent variable (the augmentation model's PD output), use `Cc` rather than `A1PI`.
+- **Units:** umol/L (typical SI-convention reporting; also reported as mg/dL in US-convention papers -- document the unit used in each model via `covariateData[[A1PI]]$units`). Conversion: 1 umol/L A1-PI ~= 5.2 mg/dL (using MW ~52 kDa). The 11 umol/L "putative protective threshold" used clinically corresponds to ~57 mg/dL.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- used with power-form effects `(A1PI / ref)^exponent` on the post-treatment exposure intercept and slope. Reference values observed: 5.5 umol/L (Tortorici 2017, approximate median pre-treatment A1-PI among RAPID-RCT placebo-randomised patients, used as the normalisation denominator for power-form covariate effects).
+- **Source aliases:** `Cbase` -- used in Tortorici 2017's published equation 6 to denote the baseline pre-treatment A1-PI value; the column name in the modelled dataset would be `A1PI`.
+- **Example models:** `Tortorici_2017_a1pi.R` (two power-form effects: `(A1PI/5.5)^theta5` with `theta5 = +0.73` on the placebo-arm post-treatment exposure intercept, and `(A1PI/5.5)^theta4` with `theta4 = -0.12` on the dose-rate slope; together they encode the modest dose-exposure dependence on each subject's endogenous A1-PI level).
+- **Notes:** AATD enrolment criteria typically restrict A1PI to <= 11 umol/L (severe deficiency); reference / heterozygous PI*MZ phenotypes have higher levels. Document the source paper's AATD-genotype enrolment criteria in `covariateData[[A1PI]]$notes` per model. Specific scope because the canonical is tied to AATD augmentation-therapy modelling; future PK / PD analyses of A1-PI (or AAT) in non-AATD contexts (acute-phase response, smoking-induced inflammation) should ratify general scope at that time. Ratified canonically on 2026-05-09 alongside the Tortorici 2017 extraction.
+
 ## Cystic fibrosis lung-disease indicators
 
 ### AIR_TRAP_5Y (**canonical for severe air trapping on chest HRCT scan at age 5 years**)
