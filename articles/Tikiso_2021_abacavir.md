@@ -110,15 +110,15 @@ cohort <- weight_bands %>%
   mutate(
     id   = seq_len(n()),
     PAGE = AGE_YR * 12 + 9,
-    COMED_EFV       = 0L,
-    COMED_RIF_LPVR4 = 0L,
+    CONMED_EFV       = 0L,
+    CONMED_RIF_LPVR4 = 0L,
     FORM_TABLET          = 0L,
     MAL_NOURISH     = 0L,
     T_NUT_SUPP      = 0,
     band = factor(band, levels = band_levels)
   ) %>%
   select(id, band, WT, AGE_YR, PAGE,
-         COMED_EFV, COMED_RIF_LPVR4, FORM_TABLET,
+         CONMED_EFV, CONMED_RIF_LPVR4, FORM_TABLET,
          MAL_NOURISH, T_NUT_SUPP)
 ```
 
@@ -151,8 +151,8 @@ events <- cohort %>%
       cmt  = "depot",
       WT   = row$WT,
       PAGE = row$PAGE,
-      COMED_EFV       = row$COMED_EFV,
-      COMED_RIF_LPVR4 = row$COMED_RIF_LPVR4,
+      CONMED_EFV       = row$CONMED_EFV,
+      CONMED_RIF_LPVR4 = row$CONMED_RIF_LPVR4,
       FORM_TABLET          = row$FORM_TABLET,
       MAL_NOURISH     = row$MAL_NOURISH,
       T_NUT_SUPP      = row$T_NUT_SUPP
@@ -166,8 +166,8 @@ events <- cohort %>%
       cmt  = "central",
       WT   = row$WT,
       PAGE = row$PAGE,
-      COMED_EFV       = row$COMED_EFV,
-      COMED_RIF_LPVR4 = row$COMED_RIF_LPVR4,
+      CONMED_EFV       = row$CONMED_EFV,
+      CONMED_RIF_LPVR4 = row$CONMED_RIF_LPVR4,
       FORM_TABLET          = row$FORM_TABLET,
       MAL_NOURISH     = row$MAL_NOURISH,
       T_NUT_SUPP      = row$T_NUT_SUPP
@@ -376,7 +376,7 @@ cohort-median AUC.
 ``` r
 
 arms <- tibble::tribble(
-  ~arm_label,                      ~COMED_EFV, ~COMED_RIF_LPVR4, ~published_auc,
+  ~arm_label,                      ~CONMED_EFV, ~CONMED_RIF_LPVR4, ~published_auc,
   "LPV/r 4:1 (reference)",         0L,         0L,               10.2,
   "EFV",                           1L,         0L,               10.4,
   "RIF + super-boosted LPV/r 4:4", 0L,         1L,               6.66
@@ -385,8 +385,8 @@ arms <- tibble::tribble(
 simulate_arm_auc <- function(efv, rif) {
   events_arm <- events %>%
     mutate(
-      COMED_EFV       = efv,
-      COMED_RIF_LPVR4 = rif
+      CONMED_EFV       = efv,
+      CONMED_RIF_LPVR4 = rif
     )
   sim_arm <- rxode2::rxSolve(mod_typ, events = events_arm, keep = c("band", "WT")) %>%
     as.data.frame() %>%
@@ -414,7 +414,7 @@ simulate_arm_auc <- function(efv, rif) {
 arm_results <- arms %>%
   rowwise() %>%
   mutate(
-    simulated_auc = simulate_arm_auc(COMED_EFV, COMED_RIF_LPVR4),
+    simulated_auc = simulate_arm_auc(CONMED_EFV, CONMED_RIF_LPVR4),
     ratio         = simulated_auc / published_auc
   ) %>%
   ungroup()
@@ -423,7 +423,8 @@ arm_results <- arms %>%
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvp'
 #> Warning: There were 3 warnings in `mutate()`.
 #> The first warning was:
-#> ℹ In argument: `simulated_auc = simulate_arm_auc(COMED_EFV, COMED_RIF_LPVR4)`.
+#> ℹ In argument: `simulated_auc = simulate_arm_auc(CONMED_EFV,
+#>   CONMED_RIF_LPVR4)`.
 #> ℹ In row 1.
 #> Caused by warning:
 #> ! multi-subject simulation without without 'omega'

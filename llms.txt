@@ -155,9 +155,11 @@ this way.
 - [Aksenov_2018_uricAcid](https://nlmixr2.github.io/nlmixr2lib/articles/Aksenov_2018_uricAcid.md):
 - [Allegaert_2015_paracetamol](https://nlmixr2.github.io/nlmixr2lib/articles/Allegaert_2015_paracetamol.md):
 - [Almquist_2022_anifrolumab](https://nlmixr2.github.io/nlmixr2lib/articles/Almquist_2022_anifrolumab.md):
+- [Alsultan_2017_pyrazinamide](https://nlmixr2.github.io/nlmixr2lib/articles/Alsultan_2017_pyrazinamide.md):
 - [Archary_2018_lopinavir](https://nlmixr2.github.io/nlmixr2lib/articles/Archary_2018_lopinavir.md):
 - [Archary_2019_abacavir](https://nlmixr2.github.io/nlmixr2lib/articles/Archary_2019_abacavir.md):
 - [Archary_2019_lamivudine](https://nlmixr2.github.io/nlmixr2lib/articles/Archary_2019_lamivudine.md):
+- [Aregbe_2012_alvespimycin](https://nlmixr2.github.io/nlmixr2lib/articles/Aregbe_2012_alvespimycin.md):
 - [Ayyar_2024_givosiran](https://nlmixr2.github.io/nlmixr2lib/articles/Ayyar_2024_givosiran.md):
 - [Bajaj_2017_nivolumab_ddmore](https://nlmixr2.github.io/nlmixr2lib/articles/Bajaj_2017_nivolumab_ddmore.md):
 - [Bajaj_2017_nivolumab](https://nlmixr2.github.io/nlmixr2lib/articles/Bajaj_2017_nivolumab.md):
@@ -191,6 +193,7 @@ this way.
 - [Cao_2013_visilizumab](https://nlmixr2.github.io/nlmixr2lib/articles/Cao_2013_visilizumab.md):
 - [CarlssonPetri_2021_liraglutide](https://nlmixr2.github.io/nlmixr2lib/articles/CarlssonPetri_2021_liraglutide.md):
 - [Castro-Surez_2020_nimotuzumab](https://nlmixr2.github.io/nlmixr2lib/articles/Castro-Surez_2020_nimotuzumab.md):
+- [Chakraborty_2012_canakinumab](https://nlmixr2.github.io/nlmixr2lib/articles/Chakraborty_2012_canakinumab.md):
 - [Chen_2020_luspatercept](https://nlmixr2.github.io/nlmixr2lib/articles/Chen_2020_luspatercept.md):
 - [Chen_2021_ganciclovir](https://nlmixr2.github.io/nlmixr2lib/articles/Chen_2021_ganciclovir.md):
 - [Chen_2022_guselkumab](https://nlmixr2.github.io/nlmixr2lib/articles/Chen_2022_guselkumab.md):
@@ -215,10 +218,12 @@ this way.
 - [Diao_2016_daclizumab_treg](https://nlmixr2.github.io/nlmixr2lib/articles/Diao_2016_daclizumab_treg.md):
 - [Diep_2022_eplontersen](https://nlmixr2.github.io/nlmixr2lib/articles/Diep_2022_eplontersen.md):
 - [Dunlap_2025_tacrolimus](https://nlmixr2.github.io/nlmixr2lib/articles/Dunlap_2025_tacrolimus.md):
+- [Ekhart_2008_carboplatin](https://nlmixr2.github.io/nlmixr2lib/articles/Ekhart_2008_carboplatin.md):
 - [Faelens_2021_infliximab](https://nlmixr2.github.io/nlmixr2lib/articles/Faelens_2021_infliximab.md):
 - [Farrell_2012_farletuzumab](https://nlmixr2.github.io/nlmixr2lib/articles/Farrell_2012_farletuzumab.md):
 - [Fasanmade_2009_infliximab](https://nlmixr2.github.io/nlmixr2lib/articles/Fasanmade_2009_infliximab.md):
 - [Fau_2020_isatuximab](https://nlmixr2.github.io/nlmixr2lib/articles/Fau_2020_isatuximab.md):
+- [Ferron_2013_cabazitaxel](https://nlmixr2.github.io/nlmixr2lib/articles/Ferron_2013_cabazitaxel.md):
 - [Fiedler-Kelly_2019_fremanezumab](https://nlmixr2.github.io/nlmixr2lib/articles/Fiedler-Kelly_2019_fremanezumab.md):
 - [FiedlerKelly_2020_fremanezumab_cm](https://nlmixr2.github.io/nlmixr2lib/articles/FiedlerKelly_2020_fremanezumab_cm.md):
 - [FiedlerKelly_2020_fremanezumab_em](https://nlmixr2.github.io/nlmixr2lib/articles/FiedlerKelly_2020_fremanezumab_em.md):
@@ -277,6 +282,7 @@ this way.
 - [Kuchimanchi_2018_evolocumab](https://nlmixr2.github.io/nlmixr2lib/articles/Kuchimanchi_2018_evolocumab.md):
 - [Kuchimanchi_2024_dostarlimab](https://nlmixr2.github.io/nlmixr2lib/articles/Kuchimanchi_2024_dostarlimab.md):
 - [Kunarajah_2017_doxorubicin](https://nlmixr2.github.io/nlmixr2lib/articles/Kunarajah_2017_doxorubicin.md):
+- [Kunisawa_2014_olprinone](https://nlmixr2.github.io/nlmixr2lib/articles/Kunisawa_2014_olprinone.md):
 - [Kyhl_2016_nalmefene](https://nlmixr2.github.io/nlmixr2lib/articles/Kyhl_2016_nalmefene.md):
 - [Laffont_2024_nalmefene](https://nlmixr2.github.io/nlmixr2lib/articles/Laffont_2024_nalmefene.md):
 - [Laffont_2024_naloxone](https://nlmixr2.github.io/nlmixr2lib/articles/Laffont_2024_naloxone.md):
@@ -289,6 +295,7 @@ this way.
 - [Li_2006_meropenem](https://nlmixr2.github.io/nlmixr2lib/articles/Li_2006_meropenem.md):
 - [Brentuximab vedotin ADC + MMAE coupled population PK model (Li
   2017)](https://nlmixr2.github.io/nlmixr2lib/articles/Li_2017_brentuximab.md):
+- [Li_2017_cediranib](https://nlmixr2.github.io/nlmixr2lib/articles/Li_2017_cediranib.md):
 - [Li_2019_abatacept](https://nlmixr2.github.io/nlmixr2lib/articles/Li_2019_abatacept.md):
 - [Lin_2024_casirivimab](https://nlmixr2.github.io/nlmixr2lib/articles/Lin_2024_casirivimab.md):
 - [Lin_2024_pozelimab](https://nlmixr2.github.io/nlmixr2lib/articles/Lin_2024_pozelimab.md):
@@ -336,6 +343,8 @@ this way.
 - [Okada_2025_rocatinlimab](https://nlmixr2.github.io/nlmixr2lib/articles/Okada_2025_rocatinlimab.md):
 - [Othman_2014_daclizumab](https://nlmixr2.github.io/nlmixr2lib/articles/Othman_2014_daclizumab.md):
 - [Overgaard_2019_semaglutide](https://nlmixr2.github.io/nlmixr2lib/articles/Overgaard_2019_semaglutide.md):
+- [Ozawa_2007_docetaxel](https://nlmixr2.github.io/nlmixr2lib/articles/Ozawa_2007_docetaxel.md):
+- [Panoilia_2015_bevacizumab](https://nlmixr2.github.io/nlmixr2lib/articles/Panoilia_2015_bevacizumab.md):
 - [Papachristos_2020_bevacizumab_pk](https://nlmixr2.github.io/nlmixr2lib/articles/Papachristos_2020_bevacizumab_pk.md):
 - [Papachristos_2020_bevacizumab_pkpd](https://nlmixr2.github.io/nlmixr2lib/articles/Papachristos_2020_bevacizumab_pkpd.md):
 - [Papachristos_2020_bevacizumab_qss](https://nlmixr2.github.io/nlmixr2lib/articles/Papachristos_2020_bevacizumab_qss.md):
@@ -348,6 +357,7 @@ this way.
 - [Pu_2021_evinacumab](https://nlmixr2.github.io/nlmixr2lib/articles/Pu_2021_evinacumab.md):
 - [Quartino_2019_trastuzumab](https://nlmixr2.github.io/nlmixr2lib/articles/Quartino_2019_trastuzumab.md):
 - [Robbie_2012_palivizumab](https://nlmixr2.github.io/nlmixr2lib/articles/Robbie_2012_palivizumab.md):
+- [Rodrigues_2017_oxcarbazepine](https://nlmixr2.github.io/nlmixr2lib/articles/Rodrigues_2017_oxcarbazepine.md):
 - [Rosario_2015_vedolizumab](https://nlmixr2.github.io/nlmixr2lib/articles/Rosario_2015_vedolizumab.md):
 - [Rovei_1982_theophylline](https://nlmixr2.github.io/nlmixr2lib/articles/Rovei_1982_theophylline.md):
 - [Sadouki_2025_meropenem_gentamicin_ciprofloxacin](https://nlmixr2.github.io/nlmixr2lib/articles/Sadouki_2025_meropenem_gentamicin_ciprofloxacin.md):
@@ -367,8 +377,10 @@ this way.
 - [Svensson_2018_rifampicin](https://nlmixr2.github.io/nlmixr2lib/articles/Svensson_2018_rifampicin.md):
 - [Takahashi_2023_abatacept](https://nlmixr2.github.io/nlmixr2lib/articles/Takahashi_2023_abatacept.md):
 - [Takeuchi_2023_ozoralizumab](https://nlmixr2.github.io/nlmixr2lib/articles/Takeuchi_2023_ozoralizumab.md):
+- [Talke_2018_dexmedetomidine](https://nlmixr2.github.io/nlmixr2lib/articles/Talke_2018_dexmedetomidine.md):
 - [TerHeine_2014_tamoxifen](https://nlmixr2.github.io/nlmixr2lib/articles/TerHeine_2014_tamoxifen.md):
 - [Terranova_2018_paclitaxel](https://nlmixr2.github.io/nlmixr2lib/articles/Terranova_2018_paclitaxel.md):
+- [Tetschke_2018_erythropoiesis](https://nlmixr2.github.io/nlmixr2lib/articles/Tetschke_2018_erythropoiesis.md):
 - [Thakre_2022_risankizumab](https://nlmixr2.github.io/nlmixr2lib/articles/Thakre_2022_risankizumab.md):
 - [Themans_2019_meropenem](https://nlmixr2.github.io/nlmixr2lib/articles/Themans_2019_meropenem.md):
 - [Tikiso_2021_abacavir](https://nlmixr2.github.io/nlmixr2lib/articles/Tikiso_2021_abacavir.md):
@@ -376,12 +388,16 @@ this way.
 - [Tiraboschi_2025_amlitelimab](https://nlmixr2.github.io/nlmixr2lib/articles/Tiraboschi_2025_amlitelimab.md):
 - [TMDD archetypes: full, QSS, and Michaelis-Menten
   approximations](https://nlmixr2.github.io/nlmixr2lib/articles/tmdd_archetypes.md):
+- [Tortorici_2017_a1pi](https://nlmixr2.github.io/nlmixr2lib/articles/Tortorici_2017_a1pi.md):
 - [Toukam_2025_biib107](https://nlmixr2.github.io/nlmixr2lib/articles/Toukam_2025_biib107.md):
 - [Urien_2005_capecitabine](https://nlmixr2.github.io/nlmixr2lib/articles/Urien_2005_capecitabine.md):
 - [Valenzuela_2025_nipocalimab](https://nlmixr2.github.io/nlmixr2lib/articles/Valenzuela_2025_nipocalimab.md):
+- [Valitalo_2017_ketorolac](https://nlmixr2.github.io/nlmixr2lib/articles/Valitalo_2017_ketorolac.md):
 - [vanRongen_2018_midazolam](https://nlmixr2.github.io/nlmixr2lib/articles/vanRongen_2018_midazolam.md):
 - [vanWijk_2019_paracetamol](https://nlmixr2.github.io/nlmixr2lib/articles/vanWijk_2019_paracetamol.md):
+- [Varatharajan_2016_daunorubicin](https://nlmixr2.github.io/nlmixr2lib/articles/Varatharajan_2016_daunorubicin.md):
 - [Vet_2016_midazolam](https://nlmixr2.github.io/nlmixr2lib/articles/Vet_2016_midazolam.md):
+- [Vezina_2010_valganciclovir](https://nlmixr2.github.io/nlmixr2lib/articles/Vezina_2010_valganciclovir.md):
 - [Vezina_2014_valganciclovir](https://nlmixr2.github.io/nlmixr2lib/articles/Vezina_2014_valganciclovir.md):
 - [Voller_2017_phenobarbital](https://nlmixr2.github.io/nlmixr2lib/articles/Voller_2017_phenobarbital.md):
 - [Wade_2015_certolizumab](https://nlmixr2.github.io/nlmixr2lib/articles/Wade_2015_certolizumab.md):
@@ -407,6 +423,7 @@ this way.
 - [Yassen_2025_asundexian](https://nlmixr2.github.io/nlmixr2lib/articles/Yassen_2025_asundexian.md):
 - [Yin_2021_trastuzumabDeruxtecan](https://nlmixr2.github.io/nlmixr2lib/articles/Yin_2021_trastuzumabDeruxtecan.md):
 - [Yu_2022_ofatumumab](https://nlmixr2.github.io/nlmixr2lib/articles/Yu_2022_ofatumumab.md):
+- [Yukawa_1990_phenytoin](https://nlmixr2.github.io/nlmixr2lib/articles/Yukawa_1990_phenytoin.md):
 - [Zecchin_2016_survival](https://nlmixr2.github.io/nlmixr2lib/articles/Zecchin_2016_survival.md):
 - [Zecchin_2016_tumorovarian](https://nlmixr2.github.io/nlmixr2lib/articles/Zecchin_2016_tumorovarian.md):
 - [Zhang_2019_nivolumab](https://nlmixr2.github.io/nlmixr2lib/articles/Zhang_2019_nivolumab.md):
