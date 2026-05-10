@@ -51,7 +51,7 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Reference category:** n/a -- used with allometric scaling `(WT / ref_wt)^exponent`. Reference weights observed: 70 kg (adults), 75 kg, 84.8 kg, 5 kg (infants).
 - **Source aliases:** none known.
 - **Example models:** `Clegg_2024_nirsevimab.R`, `Hu_2026_clesrovimab.R`, `Zhu_2017_lebrikizumab.R`, `Kovalenko_2020_dupilumab.R`, `CarlssonPetri_2021_liraglutide.R`, `Cirincione_2017_exenatide.R`, `Grimm_2023_gantenerumab.R`, `Grimm_2023_trontinemab.R`, `Kyhl_2016_nalmefene.R`, `Soehoel_2022_tralokinumab.R`, `Xie_2019_agomelatine.R`, `PK_2cmt_mAb_Davda_2014.R`, `phenylalanine_charbonneau_2021.R`, `Chua_2025_mirikizumab.R`, `Jackson_2022_ixekizumab.R`, `Kotani_2022_astegolimab.R`, `Ma_2020_sarilumab_anc.R`, `Ma_2020_sarilumab_das28crp.R`, `Moein_2022_etrolizumab.R`, `Tiraboschi_2025_amlitelimab.R`, `Robbie_2012_palivizumab.R`, `Bajaj_2017_nivolumab.R`, `Quartino_2019_trastuzumab.R`, `Wang_2020_ontamalimab.R`, `Fau_2020_isatuximab.R`.
-- **Example models:** `Clegg_2024_nirsevimab.R`, `Hu_2026_clesrovimab.R`, `Zhu_2017_lebrikizumab.R`, `Kovalenko_2020_dupilumab.R`, `CarlssonPetri_2021_liraglutide.R`, `Cirincione_2017_exenatide.R`, `Grimm_2023_gantenerumab.R`, `Grimm_2023_trontinemab.R`, `Kyhl_2016_nalmefene.R`, `Soehoel_2022_tralokinumab.R`, `Xie_2019_agomelatine.R`, `PK_2cmt_mAb_Davda_2014.R`, `phenylalanine_charbonneau_2021.R`, `Chua_2025_mirikizumab.R`, `Jackson_2022_ixekizumab.R`, `Kotani_2022_astegolimab.R`, `Ma_2020_sarilumab_anc.R`, `Ma_2020_sarilumab_das28crp.R`, `Moein_2022_etrolizumab.R`, `Tiraboschi_2025_amlitelimab.R`, `Robbie_2012_palivizumab.R`, `Bajaj_2017_nivolumab.R`, `Quartino_2019_trastuzumab.R`, `Wang_2020_ontamalimab.R`, `Okada_2025_rocatinlimab.R`.
+- **Example models:** `Clegg_2024_nirsevimab.R`, `Hu_2026_clesrovimab.R`, `Zhu_2017_lebrikizumab.R`, `Kovalenko_2020_dupilumab.R`, `CarlssonPetri_2021_liraglutide.R`, `Cirincione_2017_exenatide.R`, `Grimm_2023_gantenerumab.R`, `Grimm_2023_trontinemab.R`, `Kyhl_2016_nalmefene.R`, `Soehoel_2022_tralokinumab.R`, `Xie_2019_agomelatine.R`, `PK_2cmt_mAb_Davda_2014.R`, `phenylalanine_charbonneau_2021.R`, `Chua_2025_mirikizumab.R`, `Jackson_2022_ixekizumab.R`, `Kotani_2022_astegolimab.R`, `Ma_2020_sarilumab_anc.R`, `Ma_2020_sarilumab_das28crp.R`, `Moein_2022_etrolizumab.R`, `Tiraboschi_2025_amlitelimab.R`, `Robbie_2012_palivizumab.R`, `Bajaj_2017_nivolumab.R`, `Quartino_2019_trastuzumab.R`, `Wang_2020_ontamalimab.R`, `Okada_2025_rocatinlimab.R`, `Kunisawa_2014_olprinone.R`.
 - **Notes:** Universal. Verify time-varying vs. baseline-only against the source paper.
 
 ### AGE
@@ -489,15 +489,26 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Nestorov_2014_factorviii.R` (reference 45 %, exponent -0.419 on V1).
 - **Notes:** Higher HCT (more red-cell volume) leaves a smaller plasma fraction within total body volume; for plasma-restricted distribution (e.g., factor VIII activity, which circulates in plasma) the central volume of distribution decreases as HCT rises, so the exponent is negative. Document baseline-vs-time-varying status in `covariateData[[HCT]]$notes`. Distinct from `HGB` (mass concentration of hemoglobin); the two correlate but enter different mechanistic relationships.
 
-### NEUT (**canonical for absolute neutrophil count**)
-- **Description:** Absolute neutrophil count, typically as a baseline covariate (entered via centred-deviation `(NEUT - ref)` or power scaling `(NEUT / ref)^exponent`). Distinct from `NLR` (neutrophil-to-lymphocyte ratio): `NEUT` is the absolute count itself.
-- **Units:** cells/mm^3 (equivalent to cells/uL; i.e., the same value reported in 10^9/L x 1000). Document per-model via `covariateData[[NEUT]]$units`.
+### THB_MASS (**canonical for total hemoglobin mass**)
+- **Description:** Subject-level total hemoglobin mass in grams. Plasma-volume-independent quantity measured by the optimised CO-rebreathing method (Schmidt 2005, Pottgiesser 2008); distinct from `HGB` (mass concentration in plasma) and `HCT` (volume fraction). Used in erythropoiesis / RBC-regeneration models as the steady-state set point Base that drives the negative-feedback term and seeds the steady-state initial conditions of the precursor compartments.
+- **Units:** g
 - **Type:** continuous
 - **Scope:** specific
-- **Reference category:** n/a -- used in centred-deviation form `exp(coef * (NEUT - ref))`. Reference values observed: 4133 cells/mm^3 (BAST PTTE 2017 simulated cohort median; `NA_NA_tte_gompertz.R` Event 1 base hazard model).
-- **Source aliases:** none.
-- **Example models:** `NA_NA_tte_gompertz.R` (BAST PTTE 2017 / DDMODEL00000243 Event 1 hazard model; centred at NEUT = 4133/mm^3; coefficient -1.56e-4 on the NONMEM rescaled scale, equivalent to `exp(-1.56e-4 * (NEUT - 4133))` on the hazard).
-- **Notes:** Specific scope because the BAST 2017 PTTE bundle is a teaching guiding-document with a fictional simulated population (N = 200 hypothetical patients, no real drug or indication); the centred-deviation form and reference value 4133 are tied to that specific cohort and should not be reused without re-deriving the reference from a new population's median. When a future model uses `NEUT` with general clinical-laboratory semantics (real-population hematology covariate), promote the scope to `general`. Distinct from `WBC` (total white blood cell count, of which neutrophils are the largest fraction in healthy adults) -- `NEUT` is a specific differential-count subfraction. Also distinct from `NLR` (neutrophil-to-lymphocyte ratio), which is a derived ratio. The BAST PTTE bundle uses `NEUT` as a baseline (time-fixed) covariate.
+- **Reference category:** n/a -- subject-level baseline supplied as a covariate column. Reference values observed: 885.42 g (Tetschke 2018 Table 1 example subject); Pottgiesser 2008 cohort mean ~870 g across 28 estimable adult-male volunteers.
+- **Source aliases:** `Base` (Tetschke 2018 paper symbol).
+- **Example models:** `Tetschke_2018_erythropoiesis.R` (reference 885.42 g; Pottgiesser 2008 dataset of 29 healthy adult male volunteers).
+- **Notes:** Specific scope because total hemoglobin mass requires the optimised CO-rebreathing method to obtain (Schmidt 2005), which is a specialised technique not present in routine clinical labs; promote to `general` if a second model registers this quantity. Distinct from `HGB` (g/L or g/dL plasma concentration) and `HCT` (RBC volume fraction): `THB_MASS` is the absolute body-pool mass and is not perturbed by short-term plasma-volume fluctuations (Pottgiesser 2008 Section 3.2 explicitly motivates the choice of mass over concentration). Sex-dimorphic: typical value in adult males is meaningfully higher than in adult females; document the sex composition of the population in `covariateData[[THB_MASS]]$notes`.
+
+### NEUT (**canonical for absolute neutrophil count**)
+- **Description:** Absolute neutrophil count, typically as a baseline covariate (entered via centred-deviation `(NEUT - ref)` or power scaling `(NEUT / ref)^exponent`) or, in semi-mechanistic myelosuppression models, as a per-subject initial-condition value for the proliferation, transit, and circulating compartments.
+- **Units:** cells/mm^3 (equivalent to cells/uL; i.e., the same value reported in 10^9/L x 1000). Document per-model via `covariateData[[NEUT]]$units` if the source paper uses a different unit (e.g., `10^9 cells/L` for `Ozawa_2007_docetaxel.R` per the paper's Table-3 reporting unit).
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- used in centred-deviation form `exp(coef * (NEUT - ref))`, in power scaling `(NEUT / ref)^exponent`, or as a direct per-subject initial-condition assignment in semi-mechanistic Friberg-family models. Reference values observed: 4133 cells/mm^3 (BAST PTTE 2017 simulated cohort median; `NA_NA_tte_gompertz.R` Event 1 base hazard model); 5 x 10^9/L (Ozawa 2007 typical Japanese cancer cohort, used as the initial condition for the proliferation, transit, and circulation compartments).
+- **Source aliases:**
+  - `BASE` -- per-subject baseline ANC supplied as a NONMEM data column (used in `Ozawa_2007_docetaxel.R`; Appendix I $INPUT).
+- **Example models:** `NA_NA_tte_gompertz.R` (BAST PTTE 2017 / DDMODEL00000243 Event 1 hazard model; centred at NEUT = 4133/mm^3; coefficient -1.56e-4 on the NONMEM rescaled scale, equivalent to `exp(-1.56e-4 * (NEUT - 4133))` on the hazard); `Ozawa_2007_docetaxel.R` (Friberg-extension myelosuppression PD; per-subject baseline ANC supplied via the `NEUT` column, used as the initial condition for the proliferating, three transit, and circulating compartments per the Methods text 'Circ (t = 0) was fixed at its observed value').
+- **Notes:** General scope because absolute neutrophil count is a routine clinical-laboratory measurement that recurs across cytotoxic-chemotherapy myelosuppression models (centred-deviation hazard models, Friberg-family per-subject baseline initial conditions, and time-varying ANC outputs). Promoted to general scope on 2026-05-10 to support `Ozawa_2007_docetaxel.R`. The NEUT canonical units are cells/mm^3, but the reporting unit `10^9 cells/L` (numerically NEUT_per_mm3 / 1000) is also common in oncology papers; per-model `covariateData[[NEUT]]$units` documents the per-paper unit. Distinct from `WBC` (total white blood cell count, of which neutrophils are the largest fraction in healthy adults) -- `NEUT` is a specific differential-count subfraction. Also distinct from `NLR` (neutrophil-to-lymphocyte ratio), which is a derived ratio.
 
 ## Coagulation / hemostasis biomarkers
 
@@ -680,8 +691,9 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Reference category:** n/a -- used in piecewise-linear, power, or exponential effect forms (e.g., the Kloft 2006 cytotoxic-chemotherapy myelosuppression family fits a piecewise-linear effect with breakpoint at the cohort median 1.34 g/L: separate slopes apply for `AAG <= 1.34` and `AAG > 1.34`). Reference values observed: 1.34 g/L (Kloft 2006 / Netterberg 2017, cohort median in mixed adult-cancer cohort).
 - **Source aliases:**
   - `AAG` -- used in `Netterberg_2017_docetaxel.R` (per the bundle's NM-TRAN $INPUT block; matching Kloft 2006).
-- **Example models:** `Netterberg_2017_docetaxel.R` (piecewise-linear effects on baseline ANC with separate low-AAG and high-AAG slopes around median 1.34 g/L; linear effect on the drug-effect slope SL via `(1 + theta * (AAG - 1.34))`).
-- **Notes:** General scope because serum AAG is a routine clinical-laboratory measurement that recurs across cytotoxic-chemotherapy population-PK / PD analyses (Bruno 1996/1998 docetaxel popPK uses AAG as a CL covariate; Kloft 2006 and downstream Friberg-family myelosuppression models use it on baseline ANC and drug-effect slope). Time-fixed at baseline unless the source paper states otherwise. The Kloft 2006 piecewise-linear breakpoint at 1.34 g/L corresponds to the population median in their pooled cancer cohort; future papers may use different breakpoints, so document the per-model breakpoint in `covariateData[[AAG]]$notes`. Distinct from `CRP` (a different acute-phase reactant with different binding properties).
+  - `AGP1` -- used in `Ozawa_2007_docetaxel.R` (Appendix I $INPUT block); reported in mg/dL with conversion to canonical g/L via `AAG_g_per_L = AGP_mg_per_dL / 100`.
+- **Example models:** `Netterberg_2017_docetaxel.R` (piecewise-linear effects on baseline ANC with separate low-AAG and high-AAG slopes around median 1.34 g/L; linear effect on the drug-effect slope SL via `(1 + theta * (AAG - 1.34))`); `Ozawa_2007_docetaxel.R` (multiplicative power-form effect on the linear drug-effect slope: `SLOPE = theta_SLOPE * (AAG / 0.94)^e_aag_slope` with `e_aag_slope = -1.38`; reference value 0.94 g/L from the published NONMEM control stream `AGPm = 94` mg/dL).
+- **Notes:** General scope because serum AAG is a routine clinical-laboratory measurement that recurs across cytotoxic-chemotherapy population-PK / PD analyses (Bruno 1996/1998 docetaxel popPK uses AAG as a CL covariate; Kloft 2006 and downstream Friberg-family myelosuppression models use it on baseline ANC and drug-effect slope; Ozawa 2007 uses a power-form effect on the drug-effect slope only). Time-fixed at baseline unless the source paper states otherwise. The Kloft 2006 piecewise-linear breakpoint at 1.34 g/L corresponds to the population median in their pooled cancer cohort; the Ozawa 2007 normalisation reference 0.94 g/L is the cohort median used inside that paper's NONMEM control stream. Future papers may use different breakpoints / reference values, so document the per-model reference in `covariateData[[AAG]]$notes`. Distinct from `CRP` (a different acute-phase reactant with different binding properties).
 
 ### IL6 (**canonical for serum interleukin-6 concentration**)
 - **Description:** Serum (or plasma) interleukin-6 (IL-6) concentration. Pro-inflammatory cytokine; elevated in rheumatoid arthritis, Castleman's disease, sepsis, COVID-19, and other inflammatory conditions. Both baseline and time-varying usages are covered; document per-model in `covariateData[[IL6]]$notes` whether the column is baseline-only or time-varying.
@@ -786,6 +798,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Source aliases:** `CAV`, `Cav`, `CAVG`.
 - **Example models:** `FiedlerKelly_2020_fremanezumab_em.R`, `FiedlerKelly_2020_fremanezumab_cm.R`, `Schoemaker_2018_levetiracetam.R` (DDMODEL00000239; LEV plasma concentration in mg/L).
 - **Notes:** Specific scope because the value is intrinsically tied to the modelled drug -- there is no shared meaning across drugs or studies. Each model's `covariateData[[CAV]]$notes` should state how the Cav values are derived (e.g., empirical-Bayes from a referenced population PK model) and that the column is set to 0 for placebo periods.
+
+### DOSE_PHT_MGKGD (**canonical for daily phenytoin dose per kg body weight**)
+- **Description:** Patient's own total daily dose of phenytoin (mg) divided by current body weight (kg), expressed as mg/kg/d. Per-dose-record covariate; constant within an inter-dose interval and updated when the prescriber alters the daily dose.
+- **Units:** mg/kg/d
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters as a self-dose-rate regressor in the dose-dependent powder bioavailability formula `F_powder = 1 - exp(-theta / DOSE_PHT_MGKGD)`. Has no effect when paired with `FORM_POWDER = 0` (tablet); a non-NA non-zero placeholder must still be supplied.
+- **Source aliases:**
+  - `Dij` -- used in `Yukawa_1990_phenytoin.R` (paper's per-record daily-dose-per-weight regressor, mg/kg/d, in the powder bioavailability equation 4 of Yukawa 1990).
+- **Example models:** `Yukawa_1990_phenytoin.R` (powder bioavailability `F_powder = 1 - exp(-9.92 / DOSE_PHT_MGKGD)`; F approaches 1 below ~2 mg/kg/d and decreases monotonically as the daily dose increases, reflecting the lower wettability of the Aleviatin brand phenytoin powder formulation).
+- **Notes:** Specific scope because the value is intrinsically tied to phenytoin (PHT) and the Yukawa 1990 powder-vs-tablet bioavailability contrast. Drug-self-dose covariates for other drugs should register sibling canonicals (e.g., `DOSE_<DRUG>_MGKGD`) rather than reuse this name -- the absolute coefficient (theta_BA2 = 9.92 in Yukawa 1990) is not transferable across drugs. Computed as the total daily dose summed across the 2-3 daily phenytoin doses (mg/d) divided by the patient's body weight at the dose record (kg). Ratified canonically on 2026-05-10 alongside the Yukawa 1990 phenytoin extraction.
 
 ### PRED_DOSE (**canonical for concomitant oral prednisolone daily dose**)
 - **Description:** Concomitant oral prednisolone (or prednisolone-equivalent glucocorticoid) daily dose. Time-varying across the dosing period as the post-transplant steroid taper progresses.
@@ -1488,6 +1511,28 @@ readable.
 - **Example models:** `Zhong_2026_abatacept.R` (exponential coefficient -0.0934 on CL and +0.257 on VC; the fully-HLA-matched HSCT cohort exhibits a small CL decrease and a larger VC increase relative to the reference complement).
 - **Notes:** Used together with `HSCT_URD_7OF8` to decompose a three-level "transplant cohort" categorical (non-HSCT-cohort / 7-of-8 / 8-of-8) into two orthogonal binary indicators. The 8-of-8 cohort is the lower-risk HLA-matching configuration. Scope: specific because the reference complement (the union of non-transplant disease cohorts pooled in the source analysis) is paper-defined. Ratified canonically on 2026-04-29.
 
+## Pulmonary / lung-disease biomarkers
+
+### FEV1 (**canonical for forced expiratory volume in 1 second**)
+- **Description:** Baseline forced expiratory volume in 1 second (FEV1) reported as an absolute volume in litres. Pulmonary-function spirometry endpoint; reflects large-airway airflow obstruction and is a standard covariate in chronic obstructive pulmonary disease, alpha-1 antitrypsin deficiency, asthma, and cystic-fibrosis disease-progression analyses. Distinct from FEV1 percent-predicted (the % predicted value standardises absolute FEV1 by reference equations from sex / age / height / ethnicity); use this canonical only for the absolute-litre value supplied as a covariate column.
+- **Units:** L (absolute volume; document the exhalation-effort standard the source paper cites in `covariateData[[FEV1]]$notes` if non-default -- ATS / ERS post-bronchodilator is the typical convention).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- used with linear-deviation forms `(theta + e_fev1_param * (FEV1 - ref))` or power forms `(FEV1 / ref)^exponent`. Reference values observed: 1.6 L (Tortorici 2017, population median across the RAPID-RCT/RAPID-OLE A1-PI augmentation cohort).
+- **Source aliases:** none yet; canonical name preferred. Source papers typically use the abbreviation `FEV1` directly.
+- **Example models:** `Tortorici_2017_a1pi.R` (linear-deviation effect on the lung-density decline rate: `theta5 * (FEV1 - 1.6)` with `theta5 = +0.56 (g/L/year per L FEV1)`; lower-FEV1 patients have steeper natural decline rates independent of A1-PI exposure).
+- **Notes:** Distinct from FEV1 percent-predicted (which is a derived ratio with the reference-equation denominator built in; FEV1% is the outcome variable in `Harun_2019_cysticFibrosis.R` rather than a covariate column). Use `FEV1` only when the source paper supplies the absolute-volume value; if the source supplies a percent-predicted value as a covariate, register a separate canonical (`FEV1_PCTPRED`) at that time. Scope: specific until a second model ratifies the absolute-litre semantics; promote to general at that point. Ratified canonically on 2026-05-09 alongside the Tortorici 2017 extraction.
+
+### A1PI (**canonical for serum alpha-1 proteinase inhibitor concentration**)
+- **Description:** Baseline serum alpha-1 proteinase inhibitor (A1-PI; also known as alpha-1 antitrypsin, AAT) concentration. Used in alpha-1 antitrypsin deficiency (AATD) augmentation-therapy modelling as a per-subject pre-treatment exposure covariate (the subject's endogenous A1-PI level at study entry, before any augmentation infusions). Time-fixed per subject. Distinct from a time-course of A1-PI used as a state variable -- when the source paper carries A1-PI as the dynamic dependent variable (the augmentation model's PD output), use `Cc` rather than `A1PI`.
+- **Units:** umol/L (typical SI-convention reporting; also reported as mg/dL in US-convention papers -- document the unit used in each model via `covariateData[[A1PI]]$units`). Conversion: 1 umol/L A1-PI ~= 5.2 mg/dL (using MW ~52 kDa). The 11 umol/L "putative protective threshold" used clinically corresponds to ~57 mg/dL.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- used with power-form effects `(A1PI / ref)^exponent` on the post-treatment exposure intercept and slope. Reference values observed: 5.5 umol/L (Tortorici 2017, approximate median pre-treatment A1-PI among RAPID-RCT placebo-randomised patients, used as the normalisation denominator for power-form covariate effects).
+- **Source aliases:** `Cbase` -- used in Tortorici 2017's published equation 6 to denote the baseline pre-treatment A1-PI value; the column name in the modelled dataset would be `A1PI`.
+- **Example models:** `Tortorici_2017_a1pi.R` (two power-form effects: `(A1PI/5.5)^theta5` with `theta5 = +0.73` on the placebo-arm post-treatment exposure intercept, and `(A1PI/5.5)^theta4` with `theta4 = -0.12` on the dose-rate slope; together they encode the modest dose-exposure dependence on each subject's endogenous A1-PI level).
+- **Notes:** AATD enrolment criteria typically restrict A1PI to <= 11 umol/L (severe deficiency); reference / heterozygous PI*MZ phenotypes have higher levels. Document the source paper's AATD-genotype enrolment criteria in `covariateData[[A1PI]]$notes` per model. Specific scope because the canonical is tied to AATD augmentation-therapy modelling; future PK / PD analyses of A1-PI (or AAT) in non-AATD contexts (acute-phase response, smoking-induced inflammation) should ratify general scope at that time. Ratified canonically on 2026-05-09 alongside the Tortorici 2017 extraction.
+
 ## Cystic fibrosis lung-disease indicators
 
 ### AIR_TRAP_5Y (**canonical for severe air trapping on chest HRCT scan at age 5 years**)
@@ -2185,6 +2230,17 @@ readable.
 - **Example models:** `Wu_2024_inotuzumab.R` (additive fractional change on CL1: `CL1 * (1 + (-0.132) * CONMED_RITUX)` ~= 13% lower CL1 with concomitant rituximab).
 - **Notes:** Wu 2024 Table 3 footnote b explicitly flips the reference category vs. the predecessor Garrett 2019 adult model: in Garrett 2019 the reference was "with rituximab" (RITUX = 0 meant on-rituximab), whereas in Wu 2024 the reference is "without rituximab" (RITUX = 0 means no concomitant rituximab). Future models that pool an analogous rituximab-combination cohort with a single-agent reference should use this canonical with the Wu 2024 sign convention; if a paper retains the Garrett 2019 reverse-coded convention, document the value transformation in `covariateData[[CONMED_RITUX]]$notes` (`CONMED_RITUX = 1 - source$RITUX`) rather than registering a second canonical. Ratified canonically on 2026-04-26.
 
+### CONMED_AED (**canonical for any concomitant antiepileptic drug coadministration**)
+- **Description:** 1 = subject is on at least one concomitant antiepileptic drug (AED) other than the modelled AED at the PK observation, 0 = on the modelled AED as monotherapy. Time-varying when concurrent AEDs cycle on / off across study occasions, time-fixed when the source paper analyses chronic-maintenance cohorts whose concurrent therapy is unchanged across the analysis window.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (modelled-AED monotherapy).
+- **Source aliases:**
+  - `CO_AED` -- used in `Yukawa_1990_phenytoin.R` (paper's `CO` indicator inverted: source `CO = 1` if PHT alone, theta_co otherwise; canonical `CONMED_AED = 1 - CO_indicator` so 0 is the PHT-monotherapy reference).
+- **Example models:** `Yukawa_1990_phenytoin.R` (multiplicative `^CONMED_AED` factor on Vmax (1.08) and Km (1.32) for chronic phenytoin patients on at least one of phenobarbital, carbamazepine, valproate, primidone, clonazepam, sultiame, ethotoin, ethosuximide, acetazolamide, or diazepam).
+- **Notes:** Generic concomitant-AED indicator covering the heterogeneous mix of older AEDs (PB, CBZ, VPA, primidone, clonazepam, etc.) studied alongside the modelled drug; the per-paper list of qualifying AEDs must be documented in `covariateData[[CONMED_AED]]$notes`. Distinct from drug-specific concomitant-AED indicators (e.g., a future `CONMED_PB` for concomitant phenobarbital alone) which would warrant separate canonicals when a paper distinguishes effects by AED class. Follows the `CONMED_*` family pattern (`CONMED_AZA`, `CONMED_NSAID`, etc.). Ratified canonically on 2026-05-10 alongside the Yukawa 1990 phenytoin extraction.
+
 ## Rheumatoid-arthritis disease-activity covariates
 
 ### RHEUMATOID_FACTOR (**canonical for serum rheumatoid factor concentration**)
@@ -2340,7 +2396,18 @@ readable.
 - **Example models:** `Martinez_2019_alirocumab.R` (additive effect on linear clearance CLL: `CLL = TVCLL + COV1*(WT-82.9) + COV2*STATIN`; +0.00644 L/h when statin is coadministered).
 - **Notes:** Per-model `covariateData[[STATIN]]$notes` must document which statins and dose thresholds are included in the "STATIN = 1" category, since inclusion criteria vary by study. Martinez 2019 codes STATIN = 1 for coadministration of rosuvastatin (< 20 mg/day), atorvastatin (< 40 mg/day), or simvastatin (any dose); other statin regimens are coded as 0.
 
-### COMED_EFV (**canonical for concomitant efavirenz indicator**)
+### CONMED_EIAED (**canonical for concomitant enzyme-inducing antiepileptic drug indicator**)
+- **Description:** 1 = subject is taking at least one enzyme-inducing antiepileptic drug (EIAED) such as carbamazepine, phenobarbital, or phenytoin during the study; 0 = no EIAED coadministration. EIAEDs induce hepatic metabolism (CYP3A4/UGT-mediated pathways) and increase the clearance of co-administered antiepileptic drugs and their active metabolites.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no EIAED coadministration).
+- **Source aliases:**
+  - `MED` (with the value convention inverted: source codes 1 = absence of EIAEDs and 0 = presence; canonical inverts this so 1 = presence and 0 = absence) -- used in `Rodrigues_2017_oxcarbazepine.R`.
+- **Example models:** `Rodrigues_2017_oxcarbazepine.R` (exponential effect on MHD apparent clearance: `cl_mhd *= exp(e_eiaed_cl_mhd * (1 - CONMED_EIAED))`; CL_MHD is 29.3% higher with EIAEDs vs without, encoded as +0.257 on the absence-indicator in the source paper).
+- **Notes:** Per-model `covariateData[[CONMED_EIAED]]$notes` should list the specific EIAEDs counted as "EIAED = 1" since inclusion criteria vary across antiepileptic-drug studies. Rodrigues 2017 counts carbamazepine, phenobarbital, and phenytoin as EIAEDs; other AEDs in the dataset (vigabatrin, clobazam, valproic acid, clonazepam, lamotrigine, diazepam, ethosuccimide, progabide) are not. The source paper uses an "absence of EIAED" indicator (`MED = 1` if no EIAED, `MED = 0` if EIAED present); the canonical column inverts this so that the 1 group is "on EIAED", matching the convention for other CONMED_* indicators.
+
+### CONMED_EFV (**canonical for concomitant efavirenz indicator**)
 - **Description:** 1 = subject is receiving efavirenz (EFV)-based antiretroviral therapy as the third agent in a combination ART regimen; 0 = subject is on the comparator regimen specified by the source paper (typically a protease-inhibitor-based regimen such as standard lopinavir/ritonavir 4:1). Efavirenz is a CYP3A and UGT inducer, so the indicator is used to flag PXR-mediated induction of metabolic clearance for co-administered antiretrovirals.
 - **Units:** (binary)
 - **Type:** binary
@@ -2348,10 +2415,10 @@ readable.
 - **Reference category:** 0 (non-EFV reference regimen, paper-defined; e.g., LPV/r 4:1 in Tikiso 2021).
 - **Source aliases:**
   - `EFV` -- used in `Tikiso_2021_abacavir.R` (the dataset's paper-defined indicator, 1 = on EFV-based ART, 0 = on standard LPV/r 4:1).
-- **Example models:** `Tikiso_2021_abacavir.R` (multiplicative effect on apparent oral clearance: `cl *= (1 + 0.120 * COMED_EFV)`; +12.0% relative to the LPV/r 4:1 reference).
+- **Example models:** `Tikiso_2021_abacavir.R` (multiplicative effect on apparent oral clearance: `cl *= (1 + 0.120 * CONMED_EFV)`; +12.0% relative to the LPV/r 4:1 reference).
 - **Notes:** Specific scope because the comparator regimen (LPV/r 4:1 in Tikiso 2021) is paper-defined; future ART population-PK models that test EFV-vs-other contrasts should extend the example list when the comparator matches, or register a finer-grained sibling indicator otherwise.
 
-### COMED_RIF_LPVR4 (**canonical for concomitant rifampicin-based antitubercular treatment with super-boosted lopinavir/ritonavir 4:4 indicator**)
+### CONMED_RIF_LPVR4 (**canonical for concomitant rifampicin-based antitubercular treatment with super-boosted lopinavir/ritonavir 4:4 indicator**)
 - **Description:** 1 = subject is receiving rifampicin-based antitubercular treatment together with super-boosted lopinavir/ritonavir 4:4 (extra ritonavir added to standard 4:1 LPV/r to counter rifampicin-driven LPV induction); 0 = subject is on the comparator regimen specified by the source paper (typically standard LPV/r 4:1 without rifampicin in Tikiso 2021). Used to flag the combined induction effect of rifampicin (PXR-mediated UGT induction) plus extra ritonavir on co-administered antiretroviral PK.
 - **Units:** (binary)
 - **Type:** binary
@@ -2359,7 +2426,7 @@ readable.
 - **Reference category:** 0 (non-RIF + standard LPV/r 4:1 reference).
 - **Source aliases:**
   - `RIF` -- used in `Tikiso_2021_abacavir.R` (the dataset's paper-defined indicator, 1 = on rifampicin-based TB treatment with super-boosted LPV/r 4:4, 0 = standard LPV/r 4:1 or EFV).
-- **Example models:** `Tikiso_2021_abacavir.R` (multiplicative effect on bioavailability: `f_depot *= (1 + (-0.294) * COMED_RIF_LPVR4)`; -29.4% relative to the LPV/r 4:1 reference).
+- **Example models:** `Tikiso_2021_abacavir.R` (multiplicative effect on bioavailability: `f_depot *= (1 + (-0.294) * CONMED_RIF_LPVR4)`; -29.4% relative to the LPV/r 4:1 reference).
 - **Notes:** Specific scope because the joint rifampicin + super-boosted-LPV/r contrast is paper-defined; the underlying induction is plausibly rifampicin-driven (the paper's discussion notes that LPV concentrations were similar with vs without super-boosting, weakening a separate ritonavir contribution), but the canonical column captures the joint indicator the paper modeled. Future TB/HIV co-treatment models that test the same regimen contrast should extend the example list rather than register a new canonical.
 
 ### PPI (**canonical for concomitant proton-pump inhibitor use**)
@@ -2897,6 +2964,17 @@ readable.
   - `CAPSULE` -- earlier name used in the `Hennig_2006_itraconazole.R` and `Hennig_2007_itraconazole.R` model files before the `FORM_*` rename.
 - **Example models:** `Hennig_2006_itraconazole.R` (Hennig 2006 Table II final estimates: capsule `ka` 0.09 h^-1 vs solution `ka` 0.96 h^-1 and capsule relative bioavailability 0.55 vs solution 1; the `etalfdepot` IIV applies only to the capsule arm); `Hennig_2007_itraconazole.R` (selects between `lka_cap` and `lka_sol` typical-value absorption rate constants and applies `f(depot) <- (1 - FORM_CAPSULE) + FORM_CAPSULE * fdepot` so the relative bioavailability `F_rel = 0.817` is applied only to the capsule arm).
 - **Notes:** Scoped specific because the "capsule vs solution" contrast is tied to Hennig 2006 / Hennig 2007 itraconazole bioavailability comparisons; mirrors the sibling `FORM_TABLET` (Kyhl 2016 / Tikiso 2021 tablet vs solution) under the `FORM_*` family. Future formulation-comparison models that need a capsule indicator should reuse this canonical (extending the example list).
+
+### FORM_POWDER (**canonical for oral powder formulation indicator**)
+- **Description:** 1 = subject received the oral powder formulation of the modelled drug; 0 = subject received the comparator solid oral formulation (typically a tablet, but document the per-paper comparator in `covariateData[[FORM_POWDER]]$notes`).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (tablet; F = 1 fixed in Yukawa 1990 Model 2).
+- **Source aliases:**
+  - `FORM_POWDER` -- used in `Yukawa_1990_phenytoin.R` (paper's `BA` indicator inverted: source `BA = 1` if tablet, 0 if powder; canonical `FORM_POWDER = 1 - BA_indicator` so 0 is the tablet reference).
+- **Example models:** `Yukawa_1990_phenytoin.R` (Yukawa 1990 Model 2 dose-dependent powder bioavailability `F_powder = 1 - exp(-9.92 / DOSE_PHT_MGKGD)`; tablet F fixed at 1).
+- **Notes:** Specific scope because the "powder vs tablet" contrast is tied to a particular drug-product manufacturing comparison (Yukawa 1990 contrasts Aleviatin brand phenytoin powder with Aleviatin tablets, both from Dainippon Pharmaceutical Co.). Mirrors the sibling `FORM_TABLET` (Kyhl 2016 / Tikiso 2021 tablet vs solution) and `FORM_CAPSULE` (Hennig 2006 / Hennig 2007 capsule vs solution) under the `FORM_*` family. Future powder-formulation models should reuse this canonical, extending the example list and documenting the per-paper comparator. Ratified canonically on 2026-05-10 alongside the Yukawa 1990 phenytoin extraction.
 
 ### FDC (**canonical for fixed-dose-combination antitubercular formulation indicator**)
 - **Description:** 1 = subject received the rifampicin-containing fixed-dose-combination (FDC) antitubercular product (rifampicin co-formulated with isoniazid, pyrazinamide, and optionally ethambutol in a single tablet); 0 = subject received the same drugs as separate single-drug tablets ("SDC", separate-drug-combination). Per-subject (regimen-fixed) categorical covariate flagging the formulation when a population analysis pools FDC and SDC arms and tests formulation as a covariate on absorption / disposition parameters.

@@ -1,0 +1,363 @@
+---
+title: "Chakraborty_2012_canakinumab"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Chakraborty_2012_canakinumab}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+```
+
+```{r setup}
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(PKNCA)
+```
+
+# Canakinumab population PK / IL-1b binding model
+
+Canakinumab is a fully human anti-interleukin-1b (IL-1b) IgG1/k monoclonal
+antibody developed by Novartis (commercial name: Ilaris). Its primary
+regulatory indication is cryopyrin-associated periodic syndromes (CAPS), a
+group of inherited NALP3-inflammasome-driven autoinflammatory disorders.
+Chakraborty et al. (2012) integrated data from six clinical studies (n = 233
+subjects) into a single population pharmacokinetic-binding model with
+quasi-steady-state (QSS) drug-target binding, structurally adapted from the
+Hayashi 2007 omalizumab framework. Two physical compartments (central and
+peripheral) each carry three species: free drug, free IL-1b, and the
+canakinumab-IL-1b complex. Drug, ligand, and complex share volumes; complex
+clearance is set equal to free-drug clearance.
+
+* Citation: `r rxode2::rxode(readModelDb("Chakraborty_2012_canakinumab"))$reference`
+* Article: <https://doi.org/10.2165/11599820-000000000-00000> (open access)
+
+# Population
+
+The pooled model-building dataset contains 233 subjects across six clinical
+studies (Chakraborty 2012 Table I and Table III):
+
+| Study              | Population              | Approx. n contribution | Dosing                                             |
+|--------------------|-------------------------|------------------------|----------------------------------------------------|
+| CACZ885B2101       | Healthy + mild asthma   | 37                     | 1, 3, 10 mg/kg IV; multiple-dose                   |
+| CACZ885A1101       | Japanese healthy        | 30                     | 1, 3 mg/kg IV; 600 mg IV; 150, 300 mg SC; combo    |
+| CACZ885A2101       | Rheumatoid arthritis    | 37                     | 0.3, 1, 3, 10 mg/kg IV; multiple-dose              |
+| CAZC885A2202       | Plaque psoriasis        | 10                     | 150 mg SC single                                   |
+| CACZ885A2102       | CAPS (phase II)         | 34                     | 10 mg/kg IV; 150 mg / 2 mg/kg SC                   |
+| CACZ885D2304       | CAPS (phase III)        | 85                     | 150 mg SC q8w (registration regimen)               |
+
+Median typical CAPS patient: 70 kg, 43 g/L serum albumin, 34 years. Sex
+distribution across the analysis cohort was 135 male / 98 female (42% female;
+Chakraborty 2012 Section 5.3 page e15). Age range 4-74 years, including
+paediatric CAPS subjects. The same metadata is available via
+`readModelDb("Chakraborty_2012_canakinumab")$population`.
+
+This vignette focuses on the typical adult CAPS patient because CAPS is the
+regulatory indication driving the registration dosing regimen
+(150 mg SC q8w). Per-population point estimates for Caucasian healthy
+volunteers, Japanese healthy volunteers, RA, mild asthma, and psoriasis
+cohorts are reported in Chakraborty 2012 Table IV; they are tabulated in the
+"Per-population estimates" section below.
+
+# Source trace
+
+Per-parameter origin is recorded as inline comments next to each `ini()`
+entry in `inst/modeldb/specificDrugs/Chakraborty_2012_canakinumab.R`. The
+table below collects them in one place for review.
+
+| Equation / parameter        | Value (paper)                | Value (file)             | Source                          |
+|-----------------------------|------------------------------|--------------------------|---------------------------------|
+| `lcl` (CLD, CAPS, 70 kg)    | 0.174 L/d                    | log(0.174)               | Table IV                        |
+| `lvc` (VC at 70 kg)         | 3.30 L                       | log(3.30)                | Table IV                        |
+| `lvp` (VP at 70 kg)         | 2.71 L                       | log(2.71)                | Table IV                        |
+| `lpsd` (PSD)                | 0.429 L/d                    | log(0.429)               | Table IV                        |
+| `lka` (Sp2/0, 34 y)         | 0.269 1/d                    | log(0.269)               | Table IV                        |
+| `lcll` (CLL, CAPS)          | 14.2 L/d                     | log(14.2)                | Table IV                        |
+| `lrli` (RLI, CAPS)          | 9.57 ng/d                    | log(9.57)                | Table IV                        |
+| `lkd` (KD, CAPS)            | 1.07 nmol/L                  | log(1.07)                | Table IV                        |
+| `lpsl` (PSL)                | 0.386 L/d                    | log(0.386)               | Table IV                        |
+| `lfdepot` (F1, Sp2/0)       | 70.0% (logit-back-calc)      | logit(0.70) = 0.847      | Table IV (footnote a)           |
+| `e_wt_cl`                   | 0.695                        | 0.695                    | Table IV (Covariates)           |
+| `e_alb_cl`                  | -0.916                       | -0.916                   | Table IV; equation 11           |
+| `e_wt_vc`                   | 0.684                        | 0.684                    | Table IV; equation 10           |
+| `e_wt_vp`                   | 0.798                        | 0.798                    | Table IV; equation 10           |
+| `e_age_ka`                  | -0.555                       | -0.555                   | Table IV                        |
+| `etalcl`                    | omega^2 = 0.0859 (CV ~29%)   | 0.0859                   | Table IV (CLD IIV)              |
+| `etalvc`                    | omega^2 = 0.0589 (CV ~24%)   | 0.0589                   | Table IV (VC IIV)               |
+| `etalvp`                    | omega^2 = 0.0817 (CV ~29%)   | 0.0817                   | Table IV (VP IIV)               |
+| `etalpsd`                   | omega^2 = 0.280 (CV ~53%)    | 0.280                    | Table IV (PSD IIV)              |
+| `etalka`                    | omega^2 = 0.406 (CV ~64%)    | 0.406                    | Table IV (ka IIV; on NS0 row)   |
+| `etalcll`                   | omega^2 = 0.371 (CV ~61%)    | 0.371                    | Table IV (CLL IIV)              |
+| `etalrli`                   | omega^2 = 0.261 (CV ~51%)    | 0.261                    | Table IV (RLI IIV)              |
+| `etalkd`                    | omega^2 = 0.395 (CV ~63%)    | 0.395                    | Table IV (KD IIV)               |
+| `etalpsl`                   | omega^2 = 0.254 (CV ~50%)    | 0.254                    | Table IV (PSL IIV)              |
+| `propSd` (canakinumab)      | sigma^2 = 0.0527 (CV ~23%)   | sqrt(0.0527) = 0.230     | Table IV; eq 8 (Y = log(IPRED) + e) |
+| `propSd_totalIL1b`          | sigma^2 = 0.0840 (CV ~29%)   | sqrt(0.0840) = 0.290     | Table IV; eq 8                  |
+| Eq. 1 dA/dt = -ka * A       | n/a                          | n/a                      | Methods page e7                 |
+| Eq. 2 dTDC/dt drug central  | n/a                          | n/a                      | Methods page e7-e8              |
+| Eq. 3 dTDP/dt drug periph.  | n/a                          | n/a                      | Methods page e8                 |
+| Eq. 4 dTLC/dt ligand cent.  | n/a                          | n/a                      | Methods page e8                 |
+| Eq. 5 dTLP/dt ligand per.   | n/a                          | n/a                      | Methods page e8                 |
+| Eq. 7 QSS quadratic for XC  | n/a                          | n/a                      | Methods page e8                 |
+| MW canakinumab ~150 kDa     | 150 kDa                      | 149.117 kDa              | Section 4.2.2 page e10          |
+| MW IL-1b 17000 ng/nmol      | 17 kDa                       | 17.000 kDa               | Eq. 5 footnote                  |
+| Centred power covariate eq. | y = y70 * (WT/70)^exp        | y * (WT/70)^exp          | Equation 10 page e15            |
+| Albumin scaling             | CLD = CLD * (alb/43)^-0.92   | encoded in `cl`          | Equation 11 page e15            |
+
+The IIV CV percentages reported by Chakraborty 2012 are well approximated by
+sqrt(omega^2) (e.g. variance 0.0859 -> 29% CV, variance 0.406 -> 64% CV), so
+the ini() variance entries can be read directly from Table IV without a
+log-normal CV-to-variance conversion. The residual error is reported as
+"additive on log-scale" (eq. 8: Y = log(IPRED) + e); for small sigma this is
+indistinguishable from a proportional model with propSd = sigma, the
+encoding used here.
+
+# Per-population point estimates from Table IV
+
+The published model treated study population (CAPS, Caucasian HV, Japanese
+HV, RA, asthma, psoriasis) as a categorical covariate on CLD, CLL, RLI, and
+KD (Section 4.2.2 page e9). The model in this package uses CAPS as the
+typical population (regulatory indication and dosing-driver). For
+completeness, the per-population point estimates are tabulated below; they
+are not encoded as covariates in `inst/modeldb/specificDrugs/Chakraborty_2012_canakinumab.R`.
+
+| Population         | CLD (L/d) | CLL (L/d) | RLI (ng/d) | KD (nmol/L) |
+|--------------------|-----------|-----------|------------|-------------|
+| CAPS (typical)     | 0.174     | 14.2      | 9.57       | 1.07        |
+| Caucasian HV       | 0.137     | 13.5      | 4.50       | 1.01        |
+| Japanese HV        | 0.169     | 31.0      | 4.72       | 0.354       |
+| Rheumatoid arth.   | 0.195     | 22.9      | 8.06       | 0.227       |
+| Mild asthma        | 0.168     | 24.9      | 6.18       | 0.543       |
+| Psoriasis          | 0.185     | 19.0      | 7.19       | 0.360       |
+
+Source: Chakraborty 2012 Table IV. To simulate any population other than
+CAPS, override the corresponding `lcl`, `lcll`, `lrli`, `lkd` values in the
+returned `rxode2` model.
+
+# Virtual cohort
+
+Original observed data are not publicly available. The cohort below
+reproduces the registered CAPS regimen of 150 mg SC every 8 weeks plus the
+single-dose IV reference arm at 10 mg/kg used for the Table III NCA
+comparison. Body weight, age, and serum albumin are sampled to approximate
+the typical adult CAPS patient.
+
+```{r cohort}
+set.seed(20250509)
+
+n_per_arm <- 50L
+obs_times <- c(0.0833, 0.5, 1, 2, 3, 5, 7, 10, 14, 21, 28, 42, 56, 70, 84)
+
+build_sc_arm <- function(n, dose_mg, regimen, id_offset) {
+  ev <- rxode2::et(amt = dose_mg, cmt = "depot", id = id_offset + seq_len(n)) |>
+    rxode2::et(obs_times, cmt = "Cc")
+  ev <- as.data.frame(ev)
+  ev$regimen <- regimen
+  ev$WT  <- exp(rnorm(n, log(70), 0.15))[match(ev$id, unique(ev$id))]
+  ev$AGE <- runif(n, 18, 65)             [match(ev$id, unique(ev$id))]
+  ev$ALB <- pmax(30, rnorm(n, 43, 4))    [match(ev$id, unique(ev$id))]
+  ev
+}
+
+build_iv_arm <- function(n, dose_mg, regimen, id_offset) {
+  # central is in nmol; convert mg dose to nmol via 1000/MWX (149.117 kDa).
+  amt_nmol <- dose_mg / 149.117 * 1000
+  ev <- rxode2::et(amt = amt_nmol, cmt = "central", dur = 2 / 24,
+                   id = id_offset + seq_len(n)) |>
+    rxode2::et(obs_times, cmt = "Cc")
+  ev <- as.data.frame(ev)
+  ev$regimen <- regimen
+  ev$WT  <- exp(rnorm(n, log(70), 0.15))[match(ev$id, unique(ev$id))]
+  ev$AGE <- runif(n, 18, 65)             [match(ev$id, unique(ev$id))]
+  ev$ALB <- pmax(30, rnorm(n, 43, 4))    [match(ev$id, unique(ev$id))]
+  ev
+}
+
+events <- dplyr::bind_rows(
+  build_sc_arm(n_per_arm, dose_mg = 150, regimen = "150 mg SC SD",
+               id_offset =   0L),
+  build_iv_arm(n_per_arm, dose_mg = 700, regimen = "10 mg/kg IV SD",
+               id_offset = 200L)
+)
+
+stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
+```
+
+# Simulation
+
+```{r simulate}
+mod <- readModelDb("Chakraborty_2012_canakinumab")
+sim <- rxode2::rxSolve(mod, events = events, keep = c("regimen", "WT", "AGE", "ALB"))
+sim_df <- as.data.frame(sim)
+```
+
+# Replicate Figure 1 - 150 mg SC single-dose canakinumab profile (CAPS)
+
+```{r figure-1, fig.cap = "Replicates the canakinumab profile of Figure 1 of Chakraborty 2012 (typical CAPS adult, 150 mg SC single dose)."}
+sim_typical <- rxode2::rxSolve(rxode2::zeroRe(mod),
+                               events = dplyr::filter(events, regimen == "150 mg SC SD",
+                                                      id == 1L))
+
+ggplot(as.data.frame(sim_typical), aes(time, Cc)) +
+  geom_line(linewidth = 0.7) +
+  labs(x = "Time (days)",
+       y = "Canakinumab (ug/mL)",
+       title = "Typical CAPS patient: 150 mg SC single dose",
+       caption = "Replicates the 150 mg SC profile of Chakraborty 2012 Figure 1.") +
+  theme_minimal()
+```
+
+```{r figure-1-il1b, fig.cap = "Total IL-1b time course in the same simulation; reflects accumulation of canakinumab-bound complex following SC dosing (Chakraborty 2012 Figure 1, lower panel)."}
+ggplot(as.data.frame(sim_typical), aes(time, totalIL1b)) +
+  geom_line(linewidth = 0.7, colour = "darkred") +
+  labs(x = "Time (days)",
+       y = "Total IL-1b (pg/mL)",
+       title = "Typical CAPS patient: total IL-1b after 150 mg SC dose",
+       caption = "Total IL-1b accumulates because complex CL = free-drug CL << free-IL-1b CL.") +
+  theme_minimal()
+```
+
+# PKNCA validation
+
+```{r pknca}
+sim_nca <- sim_df |>
+  dplyr::filter(!is.na(Cc), Cc > 0) |>
+  dplyr::select(id, time, Cc, regimen)
+
+dose_df <- events |>
+  dplyr::filter(evid == 1) |>
+  dplyr::select(id, time, amt, regimen) |>
+  dplyr::mutate(
+    amt   = ifelse(regimen == "10 mg/kg IV SD", 700, amt),
+    route = ifelse(regimen == "10 mg/kg IV SD", "intravascular", "extravascular")
+  )
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | regimen + id)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | regimen + id,
+                             route = "route")
+
+intervals <- data.frame(
+  start      = 0,
+  end        = 84,
+  cmax       = TRUE,
+  tmax       = TRUE,
+  auclast    = TRUE,
+  aucinf.obs = TRUE,
+  half.life  = TRUE
+)
+
+nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
+nca_res  <- suppressMessages(PKNCA::pk.nca(nca_data))
+nca_summary <- summary(nca_res)
+knitr::kable(nca_summary,
+             caption = "Simulated NCA parameters by dosing regimen (PKNCA, n = 50 per arm).")
+```
+
+## Comparison against Chakraborty 2012 Table III
+
+| Regimen          | Parameter        | Paper (mean +/- SD)             | Simulation (median, this vignette) |
+|------------------|------------------|---------------------------------|------------------------------------|
+| 150 mg SC SD     | Cmax (ug/mL)     | 15.9 +/- 3.52 (adult CAPS)      | see PKNCA table above              |
+| 150 mg SC SD     | Tmax (d)         | 6.98 (1.92-14.0)                | see PKNCA table above              |
+| 150 mg SC SD     | t1/2 (d)         | 26.1 +/- 7.31                   | see PKNCA table above              |
+| 150 mg SC SD     | CL/F (L/d)       | 0.228 +/- 0.0597                | implicit in dose / AUCinf          |
+| 10 mg/kg IV SD   | Cmax (ug/mL)     | 149 +/- 45.4 (n=4 adult CAPS)   | see PKNCA table above              |
+| 10 mg/kg IV SD   | t1/2 (d)         | 31.2 +/- 3.39                   | see PKNCA table above              |
+
+Differences within ~20% of the paper's mean values are expected because the
+simulation uses CAPS-typical covariate values whereas Table III aggregates
+over patients of varying weight. Larger discrepancies (e.g. > 30% on Cmax,
+half-life shorter than 20 days, AUC differing by an order of magnitude)
+should trigger a re-audit of the source-trace table - do not tune the
+parameters in `inst/modeldb/`.
+
+# Steady-state and accumulation
+
+The paper notes (page e11) that the registration regimen of 150 mg SC q8w
+reaches steady state at approximately 130 days (~5 half-lives) with about
+1.3-fold accumulation in a typical 70 kg CAPS adult. The chunk below
+verifies the typical-value model behaviour against this benchmark.
+
+```{r ss-accumulation}
+ev_q8w <- rxode2::et(amt = 150, cmt = "depot", ii = 56, until = 280) |>
+  rxode2::et(seq(0, 280, by = 7), cmt = "Cc")
+ev_q8w$WT  <- 70
+ev_q8w$AGE <- 34
+ev_q8w$ALB <- 43
+
+sim_ss <- as.data.frame(rxode2::rxSolve(rxode2::zeroRe(mod), ev_q8w))
+
+cmax_first <- max(sim_ss$Cc[sim_ss$time <= 56])
+cmax_ss    <- max(sim_ss$Cc[sim_ss$time >= 224 & sim_ss$time <= 280])
+cat(sprintf("Cmax cycle 1: %.2f ug/mL\n", cmax_first))
+cat(sprintf("Cmax cycle 5: %.2f ug/mL  (accumulation factor %.2f vs paper expected ~1.3)\n",
+            cmax_ss, cmax_ss / cmax_first))
+```
+
+```{r figure-q8w, fig.cap = "Typical-value canakinumab profile under the registered 150 mg SC q8w regimen reaching steady state by ~5 half-lives (~130 days) per Chakraborty 2012 page e11."}
+ggplot(sim_ss, aes(time, Cc)) +
+  geom_line(linewidth = 0.7) +
+  labs(x = "Time (days)", y = "Canakinumab (ug/mL)",
+       title = "150 mg SC q8w typical CAPS profile",
+       caption = "Accumulation factor reported in paper: ~1.3 (page e11).") +
+  theme_minimal()
+```
+
+# Assumptions and deviations
+
+- **Population covariate not encoded.** Chakraborty 2012 Table IV reports
+  per-population CLD, CLL, RLI, and KD point estimates for CAPS, Caucasian
+  HV, Japanese HV, RA, mild asthma, and psoriasis cohorts. This package
+  encodes the typical CAPS values; per-population values are tabulated
+  above for downstream users who wish to override. Encoding population
+  type as a covariate column would have required new canonical entries
+  (DIS_RA, DIS_CAPS, DIS_ASTHMA) in `inst/references/covariate-columns.md`
+  and was deferred. CAPS is the regulatory indication and the population
+  whose dosing regimen drove the model's clinical use.
+
+- **Cell-line covariate not encoded.** The paper estimates separate ka
+  and F1 for the NS0 (early development) and Sp2/0 (commercial) cell
+  lines; this file uses the Sp2/0 values (ka = 0.269 1/d, F1 = 0.70)
+  matching the commercial Ilaris product. The NS0 alternatives are
+  ka = 0.299 1/d and F1 = 0.633 (Chakraborty 2012 Table IV) for users
+  reproducing pre-2010 study data.
+
+- **Bioavailability F1 encoded as a fixed parameter on the logit scale.**
+  The paper coded F1 via a logit transformation to constrain it to (0, 1)
+  during estimation (page e9); no IIV was reported on F1, and the
+  back-calculated point estimate (70.0% +/- 8.25%) was reported on the
+  natural scale via simulation (Table IV footnote a). The model file
+  uses `lfdepot <- log(0.70 / 0.30)` and `f(depot) <- 1 / (1 + exp(-lfdepot))`
+  to preserve this structural choice while allowing an end user to
+  perturb F1 explicitly if needed.
+
+- **Initial conditions for endogenous IL-1b set analytically.** The paper
+  describes the dosing as starting from steady state without specifying
+  the t = 0 amounts of IL-1b in the central and peripheral compartments.
+  This package sets `central_il1b(0) = RLI * VC / (MWE * 1000 * CLL)`
+  and `peripheral1_il1b(0) = (VP/VC) * central_il1b(0) * (1 + CLL/PSL)`,
+  which is the analytical solution of the no-drug steady state
+  (eq. 4 with TDC = TDP = XC = XP = 0).
+
+- **Residual error encoded as proportional.** Chakraborty 2012 used
+  Y = log(IPRED) + e (eq. 8) with sigma^2 reported on the log scale.
+  For small sigma this is well approximated by `Y ~ prop(propSd)` with
+  propSd = sigma; the largest sigma reported is 0.290 (IL-1b) which is
+  within the regime where the prop approximation is faithful to ~1%.
+
+- **Inter-parameter IIV correlations.** Not reported in the paper. All
+  IIVs are encoded as independent / diagonal here.
+
+- **MW(canakinumab) = 149.117 kDa** is taken from the standard human
+  IgG1/k mass for canakinumab; the paper rounds to "~150 kDa" in
+  Section 4.2.2.
+
+- **Cohort covariate distributions.** WT was sampled lognormally around
+  70 kg (CV 15%); AGE uniform 18-65; ALB normal 43 g/L SD 4 g/L. None
+  of these distributions were reported in the paper; they bracket the
+  paper's typical-CAPS reference values.

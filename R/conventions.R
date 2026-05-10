@@ -66,7 +66,7 @@
   # disambiguation.
   registeredMetabolites = c(
     "mmae", "dxd", "sn38", "dm4", "medm4", "mcmmaf",
-    "complex", "ige", "tab", "nab",
+    "complex", "ige", "il1b", "tab", "nab",
     "dar0", "dar1", "dar2", "dar3", "dar4", "dar5", "dar6", "dar7", "dar8",
     # Small-molecule metabolites of agomelatine (Xie 2019): 3-hydroxy
     # and 7-desmethyl. Suffixes start with a digit; this is fine
@@ -114,6 +114,11 @@
     # Doxorubicinol, the C-13 alcohol metabolite of doxorubicin
     # (Kunarajah 2017 paediatric oncology popPK/PD model).
     "doxol",
+    # Daunorubicinol (DOL), the C-13 alcohol metabolite of
+    # daunorubicin formed primarily by carbonyl reductase 1 (CBR1)
+    # in adult AML patients (Varatharajan 2016 Cancer Chemother
+    # Pharmacol 78(5):1051-1058 doi:10.1007/s00280-016-3166-8).
+    "dol",
     # 25-O-desacetyl rifabutin, the primary active metabolite of
     # rifabutin formed by arylacetamide deacetylase (Hennig 2015
     # AAC doi:10.1128/AAC.01195-15).
@@ -139,7 +144,19 @@
     # strand. Treated as the active metabolite that is equipotent
     # with the parent in terms of RISC loading and target mRNA
     # silencing (Ayyar 2024 doi:10.1016/j.xphs.2023.10.026).
-    "asn1"
+    "asn1",
+    # 10-monohydroxy derivative (MHD, also "10-hydroxy-carbazepine"),
+    # the primary active metabolite of oxcarbazepine produced by
+    # cytosolic arylketone reductases (Rodrigues 2017 BJCP
+    # doi:10.1111/bcp.13392).
+    "mhd",
+    # Stereo-isomer (R / S) suffixes for enantiomer-resolved popPK
+    # models in which both enantiomers are followed in plasma but no
+    # interconversion is modelled (e.g. Valitalo 2017 ketorolac BJCP
+    # doi:10.1111/bcp.13311). Treated as "non-parent analyte" suffixes
+    # under the same registry as metabolites; neither enantiomer is the
+    # parent.
+    "r", "s"
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` denotes the time-varying decay arm.
