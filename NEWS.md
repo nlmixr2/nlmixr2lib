@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Alsultan 2017 pyrazinamide ([doi:10.1128/AAC.02625-16](https://doi.org/10.1128/AAC.02625-16)) -- adults with drug-susceptible pulmonary tuberculosis (TBTC studies 27 and 28).
 * Add Wang 2021 pertuzumab ([doi:10.1007/s00280-021-04296-0](https://doi.org/10.1007/s00280-021-04296-0)) -- women with HER2-positive early breast cancer (FeDeriCa study, NCT03493854; pooled IV and subcutaneous fixed-dose-combination pertuzumab+trastuzumab cohorts).
 * Add Storset 2014 tacrolimus ([doi:10.1111/bcp.12361](https://doi.org/10.1111/bcp.12361)) -- adult kidney-transplant recipients (theory-based plasma-parameterised popPK with FFM allometry, CYP3A5-expresser effects, prednisolone-induced reduction in F, first-day-post-transplant F spike, and saturable haematocrit-dependent RBC binding linking plasma to whole-blood concentration).
 * Add Overgaard 2019 semaglutide ([doi:10.1007/s13300-019-0581-y](https://doi.org/10.1007/s13300-019-0581-y)) -- pooled clinical pharmacology cohort of healthy volunteers and adults with type 2 diabetes.
