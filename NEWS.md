@@ -2,6 +2,26 @@
 
 # development version
 
+* Add Wang 2021 pertuzumab ([doi:10.1007/s00280-021-04296-0](https://doi.org/10.1007/s00280-021-04296-0)) -- women with HER2-positive early breast cancer (FeDeriCa study, NCT03493854; pooled IV and subcutaneous fixed-dose-combination pertuzumab+trastuzumab cohorts).
+* Add Storset 2014 tacrolimus ([doi:10.1111/bcp.12361](https://doi.org/10.1111/bcp.12361)) -- adult kidney-transplant recipients (theory-based plasma-parameterised popPK with FFM allometry, CYP3A5-expresser effects, prednisolone-induced reduction in F, first-day-post-transplant F spike, and saturable haematocrit-dependent RBC binding linking plasma to whole-blood concentration).
+* Add Overgaard 2019 semaglutide ([doi:10.1007/s13300-019-0581-y](https://doi.org/10.1007/s13300-019-0581-y)) -- pooled clinical pharmacology cohort of healthy volunteers and adults with type 2 diabetes.
+* Add Rovei 1982 theophylline ([doi:10.1111/j.1365-2125.1982.tb02035.x](https://doi.org/10.1111/j.1365-2125.1982.tb02035.x)) -- healthy adult volunteers receiving single oral 125-500 mg theophylline tablets.
+* Add Dunlap 2025 tacrolimus ([doi:10.1007/s40262-025-01529-w](https://doi.org/10.1007/s40262-025-01529-w)) -- adult allogeneic hematopoietic cell transplant recipients (CYP3A5 metabolizer phenotype and reduced-intensity conditioning effects on apparent clearance; ratifies new `HCT_COND_RIC` covariate canonical).
+* Add Benkali 2010 tacrolimus (Clin Pharmacokinet 2010;49(10):683-92; DOI not on disk) -- stable adult renal transplant recipients switched to once-daily extended-release tacrolimus (Advagraf).
+* Add Boer-Perez 2026 piperacillin ([doi:10.1128/aac.00998-25](https://doi.org/10.1128/aac.00998-25)) -- preterm and term neonates with severe infections.
+* Add Jonckheere 2019 cefepime ([doi:10.1128/AAC.01552-19](https://doi.org/10.1128/AAC.01552-19)) -- critically ill ICU adults on continuous-infusion cefepime via target-controlled infusion.
+* Add Wang 2015 rucaparib ([doi:10.1002/cpdd.176](https://doi.org/10.1002/cpdd.176)) -- adults with advanced solid tumors (Phase 1 first-in-patient study A4991002).
+* Add Brown 2017 osimertinib ([doi:10.1111/bcp.13223](https://doi.org/10.1111/bcp.13223)) -- adults with advanced EGFR-mutation-positive non-small cell lung cancer pooled with healthy volunteers (joint osimertinib + AZ5104 metabolite popPK).
+* Add Caldes 2009 ganciclovir ([doi:10.1128/AAC.00085-09](https://doi.org/10.1128/AAC.00085-09)) -- adult solid organ transplant recipients (kidney, liver, heart) with cytomegalovirus infection receiving IV ganciclovir followed by oral valganciclovir.
+* Add Vezina 2014 valganciclovir ([doi:10.1111/bcp.12343](https://doi.org/10.1111/bcp.12343)) -- paediatric and adult solid organ transplant recipients receiving valganciclovir prophylaxis.
+* Add Chen 2021 ganciclovir ([doi:10.1002/jcph.1735](https://doi.org/10.1002/jcph.1735)) -- adult Chinese renal allograft recipients receiving oral valganciclovir for CMV prophylaxis.
+* Add Guo 2022 PF-06939999 ([doi:10.1002/psp4.12882](https://doi.org/10.1002/psp4.12882)) -- adults with advanced solid tumors (Phase I FIP study NCT03854227; coupled PK + plasma SDMA indirect-response + Friberg semi-mechanistic platelet model).
+* Add Urien 2005 capecitabine ([doi:10.1007/s10928-005-0018-2](https://doi.org/10.1007/s10928-005-0018-2)) -- adults with metastatic cancer.
+* Add Garg 2014 pertuzumab ([doi:10.1007/s00280-014-2560-3](https://doi.org/10.1007/s00280-014-2560-3)) -- patients with a variety of HER2-targeted solid tumors.
+* Add Chien 2022 imatinib ([doi:10.1007/s00280-022-04454-y](https://doi.org/10.1007/s00280-022-04454-y)) -- healthy Caucasian volunteers receiving a single oral 400 mg dose.
+* Add Akbar 2025 voriconazole ([doi:10.1371/journal.pone.0318883](https://doi.org/10.1371/journal.pone.0318883)) -- adult and pediatric Pakistani cancer patients receiving therapeutic drug monitoring of intravenous voriconazole.
+* Add Ayyar 2024 givosiran ([doi:10.1016/j.xphs.2023.10.026](https://doi.org/10.1016/j.xphs.2023.10.026)) -- adults with acute hepatic porphyria (mechanistic translational PK with ASGPR-mediated hepatocyte uptake, endolysosomal kinetics, and cytoplasmic RISC loading; ratifies new `asn1` registered metabolite suffix for AS(N-1)3' GalNAc-siRNA).
+* Add Salinger 2013 magnesium sulphate ([doi:10.1111/1471-0528.12222](https://doi.org/10.1111/1471-0528.12222)) -- pregnant women with pre-eclampsia receiving IV or IM MgSO4-7H2O for eclampsia prevention.
 * Add Huynh 2026 VRC07-523LS ([doi:10.1093/jac/dkaf449](https://doi.org/10.1093/jac/dkaf449)) -- HIV-exposed infants and healthy adults.
 * Add Pu 2021 evinacumab ([doi:10.1002/psp4.12711](https://doi.org/10.1002/psp4.12711)) -- healthy volunteers and adult / pediatric patients with homozygous familial hypercholesterolemia.
 * Add Zhang 2021 dupilumab ([doi:10.1002/psp4.12667](https://doi.org/10.1002/psp4.12667)) -- adult and adolescent patients with moderate-to-severe asthma (pooled with healthy adults).
@@ -30,6 +50,14 @@
 * Add Tikiso 2021 abacavir ([doi:10.1111/bcp.14984](https://doi.org/10.1111/bcp.14984)) -- HIV-infected African children on abacavir-containing antiretroviral therapy.
 * Add Stein 2019 tisagenlecleucel ([doi:10.1002/psp4.12388](https://doi.org/10.1002/psp4.12388)) -- pediatric and young adult patients with relapsed or refractory B-cell ALL (CAR-T cellular kinetic model: exponential expansion to Tmax followed by biexponential effector / memory-cell decline).
 * Add van Wijk 2019 paracetamol ([doi:10.1038/s41598-019-38530-w](https://doi.org/10.1038/s41598-019-38530-w)) [DDMODEL00000294] -- preclinical zebrafish (Danio rerio) larvae 3-5 dpf under continuous 1 mM paracetamol bath exposure.
+* Add Llanos-Paez 2017 gentamicin ([doi:10.1128/AAC.00205-17](https://doi.org/10.1128/AAC.00205-17)) -- pediatric oncology patients with febrile neutropenia.
+* Add Llanos-Paez 2020 gentamicin ([doi:10.1128/AAC.01730-19](https://doi.org/10.1128/AAC.01730-19)) -- pediatric oncology and nononcology patients.
+* Add Delattre 2010 amikacin ([doi:10.1097/FTD.0b013e3181f675c2](https://doi.org/10.1097/FTD.0b013e3181f675c2)) -- critically ill adults with severe sepsis or septic shock.
+* Add Diep 2022 eplontersen ([doi:10.1111/bcp.15468](https://doi.org/10.1111/bcp.15468)) -- healthy volunteers in two phase 1 studies (two-compartment popPK with site-specific SC absorption and indirect-response PD on serum transthyretin).
+* Add Laffont 2024 nalmefene ([doi:10.3389/fpsyt.2024.1399803](https://doi.org/10.3389/fpsyt.2024.1399803)) -- healthy adult volunteers receiving intranasal nalmefene HCl.
+* Add Laffont 2024 naloxone ([doi:10.3389/fpsyt.2024.1399803](https://doi.org/10.3389/fpsyt.2024.1399803)) -- healthy adult volunteers receiving intranasal naloxone HCl.
+* Add Cao 2013 mPBPK 12-mAb cohort ([doi:10.1007/s10928-013-9332-2](https://doi.org/10.1007/s10928-013-9332-2)) -- second-generation minimal PBPK structural model packaged as one entry per fit: 10 human-mAb entries (adecatumumab, mepolizumab, gevokizumab, GNbAC1, MEDI528, tefibazumab, PAmAb, PRO95780, siltuximab, visilizumab) under specificDrugs/, plus 2 preclinical mouse entries (mab7E3, mab8C2) under pharmacokinetics/.
+* Add Sadouki 2025 meropenem / gentamicin / ciprofloxacin ([doi:10.1038/s41598-025-29354-y](https://doi.org/10.1038/s41598-025-29354-y)) -- in-vitro pharmacodynamic time-kill model for two- and three-way antibiotic combinations against Escherichia coli NCTC 12,241.
 * Add Themans 2019 meropenem ([doi:10.1007/s40268-019-0268-x](https://doi.org/10.1007/s40268-019-0268-x)) [DDMODEL00000301] -- adults with severe pneumonia.
 * Add Kovalenko 2016 dupilumab ([doi:10.1002/psp4.12136](https://doi.org/10.1002/psp4.12136)) [DDMODEL00000273] -- DDMORE-bundle replicate of the existing Kovalenko_2016_dupilumab specificDrugs entry; encodes the bundle's non-standard V2 weight covariate and `Output_simulated_*.lst` final estimates (no `Output_real_*.lst` shipped).
 * Add Terranova 2018 paclitaxel ([doi:10.1016/j.jtbi.2018.04.012](https://doi.org/10.1016/j.jtbi.2018.04.012)) [DDMODEL00000274] -- preclinical xenograft mice (Dynamic Energy Budget tumor-growth-inhibition model coupling paclitaxel PK to tumor mass and host body weight / cachexia).

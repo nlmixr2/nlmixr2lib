@@ -14,12 +14,12 @@
 .nlmixr2libConventionsStatic <- list(
   pkParams = c(
     "lka", "lcl", "lvc", "lvp", "lvp2", "lq", "lq2", "lfdepot",
-    "lvmax", "lcl_ss", "lcl_time"
+    "lvmax", "lcl_ss", "lcl_time", "lcl_renal", "lcl_nonren"
   ),
   pkBareParams = c(
     "ka", "cl", "vc", "vp", "vp2", "q", "q2", "kel",
     "k12", "k21", "k13", "k31", "fdepot",
-    "vmax", "cl_ss", "cl_time"
+    "vmax", "cl_ss", "cl_time", "cl_renal", "cl_nonren"
   ),
   compartments = c(
     "depot", "central", "peripheral1", "peripheral2", "effect",
@@ -117,11 +117,38 @@
     # 25-O-desacetyl rifabutin, the primary active metabolite of
     # rifabutin formed by arylacetamide deacetylase (Hennig 2015
     # AAC doi:10.1128/AAC.01195-15).
-    "desrbn"
+    "desrbn",
+    # AZ5104 (N-desmethyl osimertinib), an active EGFR-inhibitor
+    # metabolite of osimertinib formed predominantly via CYP3A4/5
+    # (Brown 2017 BJCP 83(6):1216-1226 doi:10.1111/bcp.13223).
+    "az5104",
+    # Capecitabine sequential metabolites (Urien 2005
+    # doi:10.1007/s10928-005-0018-2): 5'-DFCR (5'-deoxy-5-
+    # fluorocytidine, formed in the liver by carboxylesterase from
+    # capecitabine), 5'-DFUR (5'-deoxy-5-fluorouridine, formed from
+    # 5'-DFCR by cytidine deaminase in liver and tumour cells), and
+    # 5-FU (5-fluorouracil, formed from 5'-DFUR by thymidine
+    # phosphorylase preferentially in tumour tissue). Each metabolite
+    # has its own central compartment with apparent volume fixed to
+    # 1 L (only output rate constants K23, K34, K40 are identifiable
+    # in the source NONMEM ADVAN6 fit).
+    "dfcr", "dfur", "5fu",
+    # AS(N-1)3' truncated antisense strand of GalNAc-conjugated
+    # siRNAs (givosiran and other galnac-siRNA conjugates), formed
+    # by removal of the 3'-terminal nucleotide from the antisense
+    # strand. Treated as the active metabolite that is equipotent
+    # with the parent in terms of RISC loading and target mRNA
+    # silencing (Ayyar 2024 doi:10.1016/j.xphs.2023.10.026).
+    "asn1"
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` denotes the time-varying decay arm.
-  clComponents = c("ss", "time"),
+  # `_renal` denotes the glomerular-filtration / tubular-secretion arm,
+  # `_nonren` the non-renal (hepatic / metabolic / extra-renal) arm,
+  # used by additive renal-plus-non-renal popPK models for renally
+  # cleared small molecules (e.g. Jonckheere 2019 cefepime, where
+  # CL_total = CL_renal + CL_nonren is the structural form).
+  clComponents = c("ss", "time", "renal", "nonren"),
   # Paper-named mechanistic parameters that don't fit any canonical PK
   # naming pattern but recur across published models. Treated as
   # acceptable bare names (with the usual `l<name>` convention if
