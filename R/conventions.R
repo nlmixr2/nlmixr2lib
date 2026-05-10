@@ -114,6 +114,11 @@
     # Doxorubicinol, the C-13 alcohol metabolite of doxorubicin
     # (Kunarajah 2017 paediatric oncology popPK/PD model).
     "doxol",
+    # Daunorubicinol (DOL), the C-13 alcohol metabolite of
+    # daunorubicin formed primarily by carbonyl reductase 1 (CBR1)
+    # in adult AML patients (Varatharajan 2016 Cancer Chemother
+    # Pharmacol 78(5):1051-1058 doi:10.1007/s00280-016-3166-8).
+    "dol",
     # 25-O-desacetyl rifabutin, the primary active metabolite of
     # rifabutin formed by arylacetamide deacetylase (Hennig 2015
     # AAC doi:10.1128/AAC.01195-15).
