@@ -38,7 +38,7 @@ adult; Q_OXC/F and Vp_OXC/F are not weight-scaled. Concomitant
 enzyme-inducing antiepileptic drugs (carbamazepine, phenobarbital, or
 phenytoin) increase MHD apparent clearance by 29.3% (4.11 vs 3.18 L/h/70 kg)
 via an exponential covariate effect carried by the canonical
-`COMED_EIAED` indicator. Bioavailability `F` is fixed to 1 per the
+`CONMED_EIAED` indicator. Bioavailability `F` is fixed to 1 per the
 Flesch 2011 absolute-F estimate of 0.99.
 
 # Population
@@ -137,14 +137,14 @@ make_cohort <- function(n, dose_mg_per_kg, eiaed_prevalence,
   doses_mg <- weights * dose_mg_per_kg
   base <- tibble(id = id_offset + seq_len(n),
                  WT = weights,
-                 COMED_EIAED = eiaed,
+                 CONMED_EIAED = eiaed,
                  amt_per_dose = doses_mg,
                  regimen = regimen)
   doses <- base |>
     mutate(time = 0, evid = 1L, cmt = "depot", amt = amt_per_dose)
   obs_grid <- seq(0.25, 48, length.out = 96)
   obs <- base |>
-    select(id, WT, COMED_EIAED, regimen) |>
+    select(id, WT, CONMED_EIAED, regimen) |>
     tidyr::crossing(time = obs_grid) |>
     mutate(evid = 0L, cmt = "Cc", amt = NA_real_)
   bind_rows(doses, obs) |>
@@ -170,7 +170,7 @@ stopifnot(!anyDuplicated(unique(events_sd[, c("id", "time", "evid")])))
 sim_sd <- rxode2::rxSolve(
   object  = mod,
   events  = events_sd,
-  keep    = c("WT", "COMED_EIAED", "regimen"),
+  keep    = c("WT", "CONMED_EIAED", "regimen"),
   returnType = "data.frame"
 ) |>
   filter(time > 0)
@@ -183,7 +183,7 @@ profile, zero out the random effects:
 sim_sd_typical <- rxode2::rxSolve(
   object  = rxode2::zeroRe(mod),
   events  = events_sd,
-  keep    = c("WT", "COMED_EIAED", "regimen"),
+  keep    = c("WT", "CONMED_EIAED", "regimen"),
   returnType = "data.frame"
 ) |>
   filter(time > 0)
@@ -201,14 +201,14 @@ child with EIAED comedication, at the two trial dose levels.
 ```{r typical-profiles, fig.width = 7.5, fig.height = 4.5}
 ev_typ <- bind_rows(
   tibble(id = 1L, time = 0, amt = 23 * 5,  evid = 1L, cmt = "depot",
-         WT = 23, COMED_EIAED = 1L, regimen = "5 mg/kg"),
+         WT = 23, CONMED_EIAED = 1L, regimen = "5 mg/kg"),
   tibble(id = 2L, time = 0, amt = 23 * 15, evid = 1L, cmt = "depot",
-         WT = 23, COMED_EIAED = 1L, regimen = "15 mg/kg")
+         WT = 23, CONMED_EIAED = 1L, regimen = "15 mg/kg")
 ) |>
   bind_rows(
     tidyr::crossing(id = c(1L, 2L), time = seq(0.05, 48, length.out = 240)) |>
       mutate(evid = 0L, cmt = "Cc", amt = NA_real_,
-             WT = 23, COMED_EIAED = 1L,
+             WT = 23, CONMED_EIAED = 1L,
              regimen = ifelse(id == 1L, "5 mg/kg", "15 mg/kg"))
   ) |>
   arrange(id, time, desc(evid))
@@ -216,7 +216,7 @@ ev_typ <- bind_rows(
 sim_typ <- rxode2::rxSolve(
   object  = rxode2::zeroRe(mod),
   events  = ev_typ,
-  keep    = c("WT", "COMED_EIAED", "regimen"),
+  keep    = c("WT", "CONMED_EIAED", "regimen"),
   returnType = "data.frame"
 ) |>
   filter(time > 0)
@@ -245,7 +245,7 @@ sim_long <- sim_sd |>
   mutate(analyte = recode(analyte,
                           Cc     = "OXC",
                           Cc_mhd = "MHD"),
-         eiaed_label = ifelse(COMED_EIAED == 1, "EIAED+", "EIAED-"))
+         eiaed_label = ifelse(CONMED_EIAED == 1, "EIAED+", "EIAED-"))
 
 vpc <- sim_long |>
   group_by(regimen, analyte, eiaed_label, time) |>
@@ -375,7 +375,7 @@ build_ss_events <- function(wt, eiaed, dose_mg_per_kg_per_day,
   total_daily <- wt * dose_mg_per_kg_per_day
   per_dose    <- total_daily / 2
   ids <- id_offset + seq_len(n_per_cell)
-  base <- tibble(id = ids, WT = wt, COMED_EIAED = eiaed,
+  base <- tibble(id = ids, WT = wt, CONMED_EIAED = eiaed,
                  dose_per_kg_day = dose_mg_per_kg_per_day,
                  cell = paste0(wt, " kg, ",
                                ifelse(eiaed == 1, "EIAED+", "EIAED-")))
@@ -412,7 +412,7 @@ stopifnot(!anyDuplicated(unique(ev_ss[, c("id", "time", "evid")])))
 
 sim_ss <- rxode2::rxSolve(
   object = mod, events = ev_ss,
-  keep   = c("WT", "COMED_EIAED", "cell", "dose_per_kg_day"),
+  keep   = c("WT", "CONMED_EIAED", "cell", "dose_per_kg_day"),
   returnType = "data.frame"
 ) |>
   dplyr::filter(time > 0)
@@ -424,7 +424,7 @@ trapz_auc <- function(t, y) {
 }
 
 ss <- sim_ss |>
-  group_by(id, cell, COMED_EIAED, WT) |>
+  group_by(id, cell, CONMED_EIAED, WT) |>
   summarise(
     auc12   = trapz_auc(time, Cc_mhd),
     ctrough = Cc_mhd[which.max(time)],
@@ -523,9 +523,9 @@ allometrically) are reproduced.
   apparently has a sign typo: the published Discussion and Table 6
   consistency check confirm the coefficient is `theta_nEIAEDs_CLMHD =
   -0.257` and that EIAEDs *increase* MHD clearance by 29.3%). The
-  canonical `COMED_EIAED` column in nlmixr2lib follows the standard
-  COMED_* polarity (1 = on EIAED, 0 = off), and the model() block
-  applies the source coefficient via `(1 - COMED_EIAED)` so that
+  canonical `CONMED_EIAED` column in nlmixr2lib follows the standard
+  CONMED_* polarity (1 = on EIAED, 0 = off), and the model() block
+  applies the source coefficient via `(1 - CONMED_EIAED)` so that
   CL_MHD = 4.11 L/h/70 kg with EIAEDs and 4.11 * exp(-0.257) =
   3.18 L/h/70 kg without, matching the paper's reported clearances.
 - **Bioavailability F fixed to 1.** Rodrigues 2017 Methods page 2697

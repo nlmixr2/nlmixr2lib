@@ -21,7 +21,7 @@ Tikiso_2021_abacavir <- function() {
       notes              = "Time-varying. Drives the sigmoidal Hill maturation function on CL (Tikiso 2021 Eq. 1). Tikiso 2021 lacked subject-level gestational ages and assumed 9 months for every subject; for new simulations, supply PAGE = postnatal_age_months + 9 unless a real gestational age is available.",
       source_name        = "PMAGE"
     ),
-    COMED_EFV = list(
+    CONMED_EFV = list(
       description        = "Concomitant efavirenz indicator (1 = on EFV-based ART, 0 = on standard LPV/r 4:1 reference)",
       units              = "(binary)",
       type               = "binary",
@@ -29,7 +29,7 @@ Tikiso_2021_abacavir <- function() {
       notes              = "Multiplicative effect on CL relative to the LPV/r 4:1 reference; +12% in Tikiso 2021 Table 4 (efavirenz is a known UGT inducer).",
       source_name        = "EFV"
     ),
-    COMED_RIF_LPVR4 = list(
+    CONMED_RIF_LPVR4 = list(
       description        = "Concomitant rifampicin-based antitubercular treatment with super-boosted lopinavir/ritonavir 4:4 indicator (1 = RIF + super-boosted LPV/r 4:4, 0 = standard LPV/r 4:1 or EFV reference)",
       units              = "(binary)",
       type               = "binary",
@@ -136,9 +136,9 @@ Tikiso_2021_abacavir <- function() {
     mal_decay <- MAL_NOURISH * exp(-T_NUT_SUPP * log(2) / e_mal_thalf)
 
     # 3. Multiplicative covariate factors on disposition and absorption.
-    cl_efv  <- 1 + e_efv_cl              * COMED_EFV
+    cl_efv  <- 1 + e_efv_cl              * CONMED_EFV
     cl_mal  <- 1 + e_mal_cl              * mal_decay
-    f_rif   <- 1 + e_rif_lpvr4_fdepot    * COMED_RIF_LPVR4
+    f_rif   <- 1 + e_rif_lpvr4_fdepot    * CONMED_RIF_LPVR4
     f_mal   <- 1 + e_mal_fdepot          * mal_decay
     mtt_tab <- 1 + e_tablet_mtt          * FORM_TABLET
 

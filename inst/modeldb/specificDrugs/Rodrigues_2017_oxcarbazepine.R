@@ -13,12 +13,12 @@ Rodrigues_2017_oxcarbazepine <- function() {
       notes              = "Empirical allometric exponents on CL_OXC/F (0.798), Vc_OXC/F (2.4), CL_MHD/F (0.549), and Vc_MHD/F (1.09); Q_OXC/F and Vp_OXC/F are not weight-scaled in the final empirical model (Rodrigues 2017 Table 3 and final-model equation block, page 2699). Reference weight 70 kg.",
       source_name        = "WT"
     ),
-    COMED_EIAED = list(
+    CONMED_EIAED = list(
       description        = "Concomitant enzyme-inducing antiepileptic drug indicator: 1 = patient is taking carbamazepine, phenobarbital, or phenytoin; 0 = none of these EIAEDs.",
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (no EIAED coadministration; in the source paper this is the perturbation arm via MED = 1 -> CL_MHD reduced 22.7%).",
-      notes              = "Source paper uses MED with the inverted value convention (MED = 1 if EIAEDs are ABSENT, 0 if present). The canonical COMED_EIAED column inverts this so 1 = on EIAED (matching the COMED_* convention). The model() block applies the source coefficient via the absence indicator (1 - COMED_EIAED), so CL_MHD = 4.11 L/h/70 kg with EIAEDs and 4.11 * exp(-0.257) = 3.18 L/h/70 kg without. Rodrigues 2017 Table 1 enumerates the per-subject AED comedication; vigabatrin, clobazam, valproic acid, clonazepam, lamotrigine, diazepam, ethosuccimide, and progabide are NOT counted as EIAEDs.",
+      notes              = "Source paper uses MED with the inverted value convention (MED = 1 if EIAEDs are ABSENT, 0 if present). The canonical CONMED_EIAED column inverts this so 1 = on EIAED (matching the CONMED_* convention). The model() block applies the source coefficient via the absence indicator (1 - CONMED_EIAED), so CL_MHD = 4.11 L/h/70 kg with EIAEDs and 4.11 * exp(-0.257) = 3.18 L/h/70 kg without. Rodrigues 2017 Table 1 enumerates the per-subject AED comedication; vigabatrin, clobazam, valproic acid, clonazepam, lamotrigine, diazepam, ethosuccimide, and progabide are NOT counted as EIAEDs.",
       source_name        = "MED"
     )
   )
@@ -78,7 +78,7 @@ Rodrigues_2017_oxcarbazepine <- function() {
 
     # EIAED comedication effect on CL_MHD/F. Source coefficient is on the
     # absence-of-EIAED indicator (MED in the paper), so the model() block
-    # applies it via (1 - COMED_EIAED). Negative sign reduces CL_MHD when
+    # applies it via (1 - CONMED_EIAED). Negative sign reduces CL_MHD when
     # EIAEDs are absent (Rodrigues 2017 Discussion: "EIAEDs increased MHD
     # clearance by 29.3%", i.e. 4.11/3.18 = 1.293).
     e_eiaed_cl_mhd <- -0.257; label("Exponential coefficient on absence-of-EIAED for CL_MHD/F (unitless)")      # Rodrigues 2017 Table 3, empirical model: theta_nEIAEDs_CLMHD = -0.257, RSE 42%
@@ -121,8 +121,8 @@ Rodrigues_2017_oxcarbazepine <- function() {
 
     # Individual parameters - MHD metabolite. The EIAED effect from Table 3
     # is on the ABSENCE-of-EIAED indicator; convert from canonical
-    # COMED_EIAED (1 = on EIAED) via (1 - COMED_EIAED).
-    cl_mhd <- exp(lcl_mhd + etalcl_mhd + e_eiaed_cl_mhd * (1 - COMED_EIAED)) *
+    # CONMED_EIAED (1 = on EIAED) via (1 - CONMED_EIAED).
+    cl_mhd <- exp(lcl_mhd + etalcl_mhd + e_eiaed_cl_mhd * (1 - CONMED_EIAED)) *
               (WT / ref_wt)^e_wt_cl_mhd
     vc_mhd <- exp(lvc_mhd + etalvc_mhd) * (WT / ref_wt)^e_wt_vc_mhd
 

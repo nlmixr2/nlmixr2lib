@@ -2396,7 +2396,7 @@ readable.
 - **Example models:** `Martinez_2019_alirocumab.R` (additive effect on linear clearance CLL: `CLL = TVCLL + COV1*(WT-82.9) + COV2*STATIN`; +0.00644 L/h when statin is coadministered).
 - **Notes:** Per-model `covariateData[[STATIN]]$notes` must document which statins and dose thresholds are included in the "STATIN = 1" category, since inclusion criteria vary by study. Martinez 2019 codes STATIN = 1 for coadministration of rosuvastatin (< 20 mg/day), atorvastatin (< 40 mg/day), or simvastatin (any dose); other statin regimens are coded as 0.
 
-### COMED_EIAED (**canonical for concomitant enzyme-inducing antiepileptic drug indicator**)
+### CONMED_EIAED (**canonical for concomitant enzyme-inducing antiepileptic drug indicator**)
 - **Description:** 1 = subject is taking at least one enzyme-inducing antiepileptic drug (EIAED) such as carbamazepine, phenobarbital, or phenytoin during the study; 0 = no EIAED coadministration. EIAEDs induce hepatic metabolism (CYP3A4/UGT-mediated pathways) and increase the clearance of co-administered antiepileptic drugs and their active metabolites.
 - **Units:** (binary)
 - **Type:** binary
@@ -2404,10 +2404,10 @@ readable.
 - **Reference category:** 0 (no EIAED coadministration).
 - **Source aliases:**
   - `MED` (with the value convention inverted: source codes 1 = absence of EIAEDs and 0 = presence; canonical inverts this so 1 = presence and 0 = absence) -- used in `Rodrigues_2017_oxcarbazepine.R`.
-- **Example models:** `Rodrigues_2017_oxcarbazepine.R` (exponential effect on MHD apparent clearance: `cl_mhd *= exp(e_eiaed_cl_mhd * (1 - COMED_EIAED))`; CL_MHD is 29.3% higher with EIAEDs vs without, encoded as +0.257 on the absence-indicator in the source paper).
-- **Notes:** Per-model `covariateData[[COMED_EIAED]]$notes` should list the specific EIAEDs counted as "EIAED = 1" since inclusion criteria vary across antiepileptic-drug studies. Rodrigues 2017 counts carbamazepine, phenobarbital, and phenytoin as EIAEDs; other AEDs in the dataset (vigabatrin, clobazam, valproic acid, clonazepam, lamotrigine, diazepam, ethosuccimide, progabide) are not. The source paper uses an "absence of EIAED" indicator (`MED = 1` if no EIAED, `MED = 0` if EIAED present); the canonical column inverts this so that the 1 group is "on EIAED", matching the convention for other COMED indicators.
+- **Example models:** `Rodrigues_2017_oxcarbazepine.R` (exponential effect on MHD apparent clearance: `cl_mhd *= exp(e_eiaed_cl_mhd * (1 - CONMED_EIAED))`; CL_MHD is 29.3% higher with EIAEDs vs without, encoded as +0.257 on the absence-indicator in the source paper).
+- **Notes:** Per-model `covariateData[[CONMED_EIAED]]$notes` should list the specific EIAEDs counted as "EIAED = 1" since inclusion criteria vary across antiepileptic-drug studies. Rodrigues 2017 counts carbamazepine, phenobarbital, and phenytoin as EIAEDs; other AEDs in the dataset (vigabatrin, clobazam, valproic acid, clonazepam, lamotrigine, diazepam, ethosuccimide, progabide) are not. The source paper uses an "absence of EIAED" indicator (`MED = 1` if no EIAED, `MED = 0` if EIAED present); the canonical column inverts this so that the 1 group is "on EIAED", matching the convention for other CONMED_* indicators.
 
-### COMED_EFV (**canonical for concomitant efavirenz indicator**)
+### CONMED_EFV (**canonical for concomitant efavirenz indicator**)
 - **Description:** 1 = subject is receiving efavirenz (EFV)-based antiretroviral therapy as the third agent in a combination ART regimen; 0 = subject is on the comparator regimen specified by the source paper (typically a protease-inhibitor-based regimen such as standard lopinavir/ritonavir 4:1). Efavirenz is a CYP3A and UGT inducer, so the indicator is used to flag PXR-mediated induction of metabolic clearance for co-administered antiretrovirals.
 - **Units:** (binary)
 - **Type:** binary
@@ -2415,10 +2415,10 @@ readable.
 - **Reference category:** 0 (non-EFV reference regimen, paper-defined; e.g., LPV/r 4:1 in Tikiso 2021).
 - **Source aliases:**
   - `EFV` -- used in `Tikiso_2021_abacavir.R` (the dataset's paper-defined indicator, 1 = on EFV-based ART, 0 = on standard LPV/r 4:1).
-- **Example models:** `Tikiso_2021_abacavir.R` (multiplicative effect on apparent oral clearance: `cl *= (1 + 0.120 * COMED_EFV)`; +12.0% relative to the LPV/r 4:1 reference).
+- **Example models:** `Tikiso_2021_abacavir.R` (multiplicative effect on apparent oral clearance: `cl *= (1 + 0.120 * CONMED_EFV)`; +12.0% relative to the LPV/r 4:1 reference).
 - **Notes:** Specific scope because the comparator regimen (LPV/r 4:1 in Tikiso 2021) is paper-defined; future ART population-PK models that test EFV-vs-other contrasts should extend the example list when the comparator matches, or register a finer-grained sibling indicator otherwise.
 
-### COMED_RIF_LPVR4 (**canonical for concomitant rifampicin-based antitubercular treatment with super-boosted lopinavir/ritonavir 4:4 indicator**)
+### CONMED_RIF_LPVR4 (**canonical for concomitant rifampicin-based antitubercular treatment with super-boosted lopinavir/ritonavir 4:4 indicator**)
 - **Description:** 1 = subject is receiving rifampicin-based antitubercular treatment together with super-boosted lopinavir/ritonavir 4:4 (extra ritonavir added to standard 4:1 LPV/r to counter rifampicin-driven LPV induction); 0 = subject is on the comparator regimen specified by the source paper (typically standard LPV/r 4:1 without rifampicin in Tikiso 2021). Used to flag the combined induction effect of rifampicin (PXR-mediated UGT induction) plus extra ritonavir on co-administered antiretroviral PK.
 - **Units:** (binary)
 - **Type:** binary
@@ -2426,7 +2426,7 @@ readable.
 - **Reference category:** 0 (non-RIF + standard LPV/r 4:1 reference).
 - **Source aliases:**
   - `RIF` -- used in `Tikiso_2021_abacavir.R` (the dataset's paper-defined indicator, 1 = on rifampicin-based TB treatment with super-boosted LPV/r 4:4, 0 = standard LPV/r 4:1 or EFV).
-- **Example models:** `Tikiso_2021_abacavir.R` (multiplicative effect on bioavailability: `f_depot *= (1 + (-0.294) * COMED_RIF_LPVR4)`; -29.4% relative to the LPV/r 4:1 reference).
+- **Example models:** `Tikiso_2021_abacavir.R` (multiplicative effect on bioavailability: `f_depot *= (1 + (-0.294) * CONMED_RIF_LPVR4)`; -29.4% relative to the LPV/r 4:1 reference).
 - **Notes:** Specific scope because the joint rifampicin + super-boosted-LPV/r contrast is paper-defined; the underlying induction is plausibly rifampicin-driven (the paper's discussion notes that LPV concentrations were similar with vs without super-boosting, weakening a separate ritonavir contribution), but the canonical column captures the joint indicator the paper modeled. Future TB/HIV co-treatment models that test the same regimen contrast should extend the example list rather than register a new canonical.
 
 ### PPI (**canonical for concomitant proton-pump inhibitor use**)
