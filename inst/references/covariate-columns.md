@@ -787,6 +787,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `FiedlerKelly_2020_fremanezumab_em.R`, `FiedlerKelly_2020_fremanezumab_cm.R`, `Schoemaker_2018_levetiracetam.R` (DDMODEL00000239; LEV plasma concentration in mg/L).
 - **Notes:** Specific scope because the value is intrinsically tied to the modelled drug -- there is no shared meaning across drugs or studies. Each model's `covariateData[[CAV]]$notes` should state how the Cav values are derived (e.g., empirical-Bayes from a referenced population PK model) and that the column is set to 0 for placebo periods.
 
+### DOSE_PHT_MGKGD (**canonical for daily phenytoin dose per kg body weight**)
+- **Description:** Patient's own total daily dose of phenytoin (mg) divided by current body weight (kg), expressed as mg/kg/d. Per-dose-record covariate; constant within an inter-dose interval and updated when the prescriber alters the daily dose.
+- **Units:** mg/kg/d
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters as a self-dose-rate regressor in the dose-dependent powder bioavailability formula `F_powder = 1 - exp(-theta / DOSE_PHT_MGKGD)`. Has no effect when paired with `FORM_POWDER = 0` (tablet); a non-NA non-zero placeholder must still be supplied.
+- **Source aliases:**
+  - `Dij` -- used in `Yukawa_1990_phenytoin.R` (paper's per-record daily-dose-per-weight regressor, mg/kg/d, in the powder bioavailability equation 4 of Yukawa 1990).
+- **Example models:** `Yukawa_1990_phenytoin.R` (powder bioavailability `F_powder = 1 - exp(-9.92 / DOSE_PHT_MGKGD)`; F approaches 1 below ~2 mg/kg/d and decreases monotonically as the daily dose increases, reflecting the lower wettability of the Aleviatin brand phenytoin powder formulation).
+- **Notes:** Specific scope because the value is intrinsically tied to phenytoin (PHT) and the Yukawa 1990 powder-vs-tablet bioavailability contrast. Drug-self-dose covariates for other drugs should register sibling canonicals (e.g., `DOSE_<DRUG>_MGKGD`) rather than reuse this name -- the absolute coefficient (theta_BA2 = 9.92 in Yukawa 1990) is not transferable across drugs. Computed as the total daily dose summed across the 2-3 daily phenytoin doses (mg/d) divided by the patient's body weight at the dose record (kg). Ratified canonically on 2026-05-10 alongside the Yukawa 1990 phenytoin extraction.
+
 ### PRED_DOSE (**canonical for concomitant oral prednisolone daily dose**)
 - **Description:** Concomitant oral prednisolone (or prednisolone-equivalent glucocorticoid) daily dose. Time-varying across the dosing period as the post-transplant steroid taper progresses.
 - **Units:** mg/day. Document per-model via `covariateData[[PRED_DOSE]]$units` when a paper uses a different unit (mg/kg/day) or a different glucocorticoid (methylprednisolone, dexamethasone, hydrocortisone) -- in the latter case convert to prednisolone-equivalent mg/day before populating the column and record the conversion factor in `covariateData[[PRED_DOSE]]$notes`.
@@ -2185,6 +2196,17 @@ readable.
 - **Example models:** `Wu_2024_inotuzumab.R` (additive fractional change on CL1: `CL1 * (1 + (-0.132) * CONMED_RITUX)` ~= 13% lower CL1 with concomitant rituximab).
 - **Notes:** Wu 2024 Table 3 footnote b explicitly flips the reference category vs. the predecessor Garrett 2019 adult model: in Garrett 2019 the reference was "with rituximab" (RITUX = 0 meant on-rituximab), whereas in Wu 2024 the reference is "without rituximab" (RITUX = 0 means no concomitant rituximab). Future models that pool an analogous rituximab-combination cohort with a single-agent reference should use this canonical with the Wu 2024 sign convention; if a paper retains the Garrett 2019 reverse-coded convention, document the value transformation in `covariateData[[CONMED_RITUX]]$notes` (`CONMED_RITUX = 1 - source$RITUX`) rather than registering a second canonical. Ratified canonically on 2026-04-26.
 
+### CONMED_AED (**canonical for any concomitant antiepileptic drug coadministration**)
+- **Description:** 1 = subject is on at least one concomitant antiepileptic drug (AED) other than the modelled AED at the PK observation, 0 = on the modelled AED as monotherapy. Time-varying when concurrent AEDs cycle on / off across study occasions, time-fixed when the source paper analyses chronic-maintenance cohorts whose concurrent therapy is unchanged across the analysis window.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (modelled-AED monotherapy).
+- **Source aliases:**
+  - `CO_AED` -- used in `Yukawa_1990_phenytoin.R` (paper's `CO` indicator inverted: source `CO = 1` if PHT alone, theta_co otherwise; canonical `CONMED_AED = 1 - CO_indicator` so 0 is the PHT-monotherapy reference).
+- **Example models:** `Yukawa_1990_phenytoin.R` (multiplicative `^CONMED_AED` factor on Vmax (1.08) and Km (1.32) for chronic phenytoin patients on at least one of phenobarbital, carbamazepine, valproate, primidone, clonazepam, sultiame, ethotoin, ethosuximide, acetazolamide, or diazepam).
+- **Notes:** Generic concomitant-AED indicator covering the heterogeneous mix of older AEDs (PB, CBZ, VPA, primidone, clonazepam, etc.) studied alongside the modelled drug; the per-paper list of qualifying AEDs must be documented in `covariateData[[CONMED_AED]]$notes`. Distinct from drug-specific concomitant-AED indicators (e.g., a future `CONMED_PB` for concomitant phenobarbital alone) which would warrant separate canonicals when a paper distinguishes effects by AED class. Follows the `CONMED_*` family pattern (`CONMED_AZA`, `CONMED_NSAID`, etc.). Ratified canonically on 2026-05-10 alongside the Yukawa 1990 phenytoin extraction.
+
 ## Rheumatoid-arthritis disease-activity covariates
 
 ### RHEUMATOID_FACTOR (**canonical for serum rheumatoid factor concentration**)
@@ -2897,6 +2919,17 @@ readable.
   - `CAPSULE` -- earlier name used in the `Hennig_2006_itraconazole.R` and `Hennig_2007_itraconazole.R` model files before the `FORM_*` rename.
 - **Example models:** `Hennig_2006_itraconazole.R` (Hennig 2006 Table II final estimates: capsule `ka` 0.09 h^-1 vs solution `ka` 0.96 h^-1 and capsule relative bioavailability 0.55 vs solution 1; the `etalfdepot` IIV applies only to the capsule arm); `Hennig_2007_itraconazole.R` (selects between `lka_cap` and `lka_sol` typical-value absorption rate constants and applies `f(depot) <- (1 - FORM_CAPSULE) + FORM_CAPSULE * fdepot` so the relative bioavailability `F_rel = 0.817` is applied only to the capsule arm).
 - **Notes:** Scoped specific because the "capsule vs solution" contrast is tied to Hennig 2006 / Hennig 2007 itraconazole bioavailability comparisons; mirrors the sibling `FORM_TABLET` (Kyhl 2016 / Tikiso 2021 tablet vs solution) under the `FORM_*` family. Future formulation-comparison models that need a capsule indicator should reuse this canonical (extending the example list).
+
+### FORM_POWDER (**canonical for oral powder formulation indicator**)
+- **Description:** 1 = subject received the oral powder formulation of the modelled drug; 0 = subject received the comparator solid oral formulation (typically a tablet, but document the per-paper comparator in `covariateData[[FORM_POWDER]]$notes`).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (tablet; F = 1 fixed in Yukawa 1990 Model 2).
+- **Source aliases:**
+  - `FORM_POWDER` -- used in `Yukawa_1990_phenytoin.R` (paper's `BA` indicator inverted: source `BA = 1` if tablet, 0 if powder; canonical `FORM_POWDER = 1 - BA_indicator` so 0 is the tablet reference).
+- **Example models:** `Yukawa_1990_phenytoin.R` (Yukawa 1990 Model 2 dose-dependent powder bioavailability `F_powder = 1 - exp(-9.92 / DOSE_PHT_MGKGD)`; tablet F fixed at 1).
+- **Notes:** Specific scope because the "powder vs tablet" contrast is tied to a particular drug-product manufacturing comparison (Yukawa 1990 contrasts Aleviatin brand phenytoin powder with Aleviatin tablets, both from Dainippon Pharmaceutical Co.). Mirrors the sibling `FORM_TABLET` (Kyhl 2016 / Tikiso 2021 tablet vs solution) and `FORM_CAPSULE` (Hennig 2006 / Hennig 2007 capsule vs solution) under the `FORM_*` family. Future powder-formulation models should reuse this canonical, extending the example list and documenting the per-paper comparator. Ratified canonically on 2026-05-10 alongside the Yukawa 1990 phenytoin extraction.
 
 ### FDC (**canonical for fixed-dose-combination antitubercular formulation indicator**)
 - **Description:** 1 = subject received the rifampicin-containing fixed-dose-combination (FDC) antitubercular product (rifampicin co-formulated with isoniazid, pyrazinamide, and optionally ethambutol in a single tablet); 0 = subject received the same drugs as separate single-drug tablets ("SDC", separate-drug-combination). Per-subject (regimen-fixed) categorical covariate flagging the formulation when a population analysis pools FDC and SDC arms and tests formulation as a covariate on absorption / disposition parameters.
