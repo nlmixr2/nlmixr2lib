@@ -71,11 +71,14 @@ If a supplement is unobtainable but the lead PDF is on disk, decide based on whe
 
    This catches both "wrong-PMID-in-filename" (e.g. Frey 2010 saved as `PMID_23436260.pdf`) and "wrong-drug-guessed" task-generator errors. Do not proceed with extraction until the mismatch is resolved.
 
-3. **Check the study population species.** Skim the Methods / Subjects section. If every PK dataset contributing to the final model is non-human (rat, mouse, cyno, dog, etc.), stop and sidecar-ask the operator before drafting anything:
+3. **Record the study population species.** Skim the Methods / Subjects section to identify which species the final model was fit to (human, rat, mouse, cyno, dog, beagle, sheep, swine, in-vitro cell line, etc.). Preclinical and in-vitro models are first-class members of nlmixr2lib — extract them the same way you would a human popPK model, with the species recorded explicitly so downstream users can filter by it.
 
-   > This paper reports a preclinical-only (<species>) population PK model. nlmixr2lib is a library of human population-PK models. Should I (A) extract it anyway with clear preclinical metadata, (B) extract only a human-scaled projection if the paper includes one, or (C) skip this paper?
+   - **Required**: set `population$species` to a human-readable label (e.g., `"rat (Sprague-Dawley)"`, `"mouse (HBCx-9 PDX)"`, `"beagle dog"`, `"in vitro (SKBR3)"`, `"human"`). For pooled human+animal cohorts, list each species (e.g., `"human + rat"`).
+   - **Required for non-human**: prepend the species label to `description` (e.g., `description = "Preclinical (rat). Two-compartment popPK ..."` or `description = "In vitro (SKBR3 cell line). Mechanistic HER2 trafficking ..."`) so the species is visible in `modellib()` listings without inspecting `population`.
+   - **Recommended**: if the paper provides a human-scaled projection alongside the preclinical fit (e.g., allometric forward projection for first-in-human dosing), extract the preclinical and the human-scaled projection as **two separate model files** (`Author_Year_drug_<species>.R` and `Author_Year_drug_human.R`) so each is self-contained.
+   - **No sidecar needed for the species choice itself** — extract preclinical models without asking. Sidecar-ask only when the paper has *other* triggers (missing parameters, ambiguous covariate encoding, mixture model, multiple non-hierarchical models, etc.).
 
-   If the paper has both preclinical and human cohorts and the final model is fit to pooled or human-only data, proceed normally — this trigger is specifically for animal-only final models. Record the operator's decision in the PR body.
+   The drug field name should still match the on-disk PDF (per step 2). Animal cohorts often use the same INN as the human drug; in that case, the file is `Author_Year_drug_rat.R` (or similar species suffix) so it doesn't collide with a sibling human extraction.
 
 4. **Prefer trimmed markdown when available.** The preprocessor at `mab_human_consensus/tracking/preprocess_papers.py` writes a `<stem>_trimmed.md` next to each source file (PMC XML, PDF, DOCX, XLSX) containing only the sections the extraction actually needs: Title + Abstract + Methods + Results + Tables + Figure captions. The Introduction, Discussion, Conclusions, References, Acknowledgments, and publisher boilerplate are stripped. If `PMID_<pmid>_pmc_trimmed.md` (or `PMID_<pmid>_trimmed.md` for a PDF, or `<stem>_trimmed.md` for a supplement) exists, read it **instead of** the raw `.xml` / `.pdf` / `.docx` — it's typically 40-95% smaller with no loss of extractable content. Full-text sanity check on the trimmed file: ~15 KB+ (full-text trim) vs < 3 KB (abstract-only trim). Fall back to the raw source only if the `_trimmed.md` doesn't exist, the trim appears to have lost a specific piece of information you need (rare — only when the paper is structurally unusual), or you explicitly need the discarded sections (e.g., to quote a Discussion claim in the vignette narrative).
 
@@ -405,7 +408,7 @@ Don't guess — ask the user when:
 - PKNCA output disagrees with a published NCA table by more than ~20% after careful review.
 - The source is paywalled and the user hasn't supplied the text.
 - An erratum search is inconclusive (e.g., paywalled journal, ambiguous correction notice) — ask the user to confirm whether any corrections apply.
-- The paper's final model was fit to animal-only data (see Phase 1 species-check step).
+- (Removed: animal-only-data sidecar trigger — preclinical and in-vitro models are first-class and extracted without sidecar-asking. Phase 1 step 3 is now a species-labelling step, not a stop-and-ask.)
 - The PMC XML / PDF on disk contains only the paper's abstract (see Phase 1 full-text-check step).
 - The on-disk file's title / first-author / journal / year / drug disagrees with the task's `Paper metadata` block (see Phase 1 paper-identity-check step).
 - The paper depends on an upstream popPK model that is not on disk — either the upstream paper is identifiable (queue dependency) or unidentifiable (operator decision needed). See Phase 1 upstream-popPK detection step.
