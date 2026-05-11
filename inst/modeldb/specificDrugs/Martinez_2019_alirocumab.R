@@ -10,7 +10,7 @@ Martinez_2019_alirocumab <- function() {
       units              = "kg",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Linear-deviation effect on linear clearance CLL (additive): CLL = TVCLL + 2.92e-4 L/h/kg * (WT - 82.9) + 6.44e-3 L/h * STATIN. Reference 82.9 kg is the median body weight in the pooled Martinez 2019 dataset. Converted to day-units in the model file (x24).",
+      notes              = "Linear-deviation effect on linear clearance CLL (additive): CLL = TVCLL + 2.92e-4 L/h/kg * (WT - 82.9) + 6.44e-3 L/h * CONMED_STATIN. Reference 82.9 kg is the median body weight in the pooled Martinez 2019 dataset. Converted to day-units in the model file (x24).",
       source_name        = "WT"
     ),
     AGE = list(
@@ -21,13 +21,13 @@ Martinez_2019_alirocumab <- function() {
       notes              = "Power effect on the peripheral volume of distribution V3: V3 = TVV3 * (AGE/60)^0.310. Reference age 60 years is the median of the Martinez 2019 dataset.",
       source_name        = "AGE"
     ),
-    STATIN = list(
-      description        = "Concomitant statin administration",
+    CONMED_STATIN = list(
+      description        = "Concomitant conmed_statin administration",
       units              = "(binary)",
       type               = "binary",
-      reference_category = "0 (no statin coadministration)",
-      notes              = "Martinez 2019 codes STATIN = 1 for coadministration of rosuvastatin (< 20 mg/day), atorvastatin (< 40 mg/day), or simvastatin (any dose), and 0 otherwise. Additive effect on linear clearance CLL: +0.00644 L/h = +0.15456 L/day when STATIN = 1. Other lipid-lowering therapies (ezetimibe, fibrates) are not captured by STATIN.",
-      source_name        = "STATIN"
+      reference_category = "0 (no conmed_statin coadministration)",
+      notes              = "Martinez 2019 codes CONMED_STATIN = 1 for coadministration of rosuvastatin (< 20 mg/day), atorvastatin (< 40 mg/day), or simvastatin (any dose), and 0 otherwise. Additive effect on linear clearance CLL: +0.00644 L/h = +0.15456 L/day when CONMED_STATIN = 1. Other lipid-lowering therapies (ezetimibe, fibrates) are not captured by CONMED_STATIN.",
+      source_name        = "CONMED_STATIN"
     ),
     FPCSK9 = list(
       description        = "Free (unbound) serum proprotein convertase subtilisin/kexin type 9 concentration (time-varying, LOCF for missing)",
@@ -46,18 +46,18 @@ Martinez_2019_alirocumab <- function() {
     phases              = "Phase I, II, and III",
     age_median          = "60 years",
     weight_median       = "82.9 kg",
-    disease_state       = "Healthy volunteers (HV) and adult patients with hypercholesterolemia (including familial and non-familial hypercholesterolemia; subset with established coronary heart disease) not adequately controlled on a maximally tolerated statin regimen or with statin intolerance.",
+    disease_state       = "Healthy volunteers (HV) and adult patients with hypercholesterolemia (including familial and non-familial hypercholesterolemia; subset with established coronary heart disease) not adequately controlled on a maximally tolerated conmed_statin regimen or with conmed_statin intolerance.",
     dose_range          = "IV: 0.3-12 mg/kg single dose (n=30, phase I only). SC: 50-300 mg single or repeated (Q2W or Q4W over up to 104 weeks; current analysis included data up to 24 weeks). Marketed SC regimens are 75 mg or 150 mg Q2W.",
     regions             = "Multi-regional pool of 13 Sanofi/Regeneron trials including two Japanese cohorts (NCT01448317 phase I, NCT01812707 phase II); ODYSSEY phase III programme (MONO, COMBO II, FH I, LONG TERM).",
     fpcsk9_median       = "72.9 ng/mL (time-varying); 283 ng/mL baseline",
     fpcsk9_range_5_95   = "0-392 ng/mL (time-varying 5th-95th percentiles)",
-    concomitant         = "STATIN = 1 for rosuvastatin (< 20 mg/day), atorvastatin (< 40 mg/day), or simvastatin (any dose). STATIN = 0 for monotherapy, other statins, or statin-intolerant subjects.",
+    concomitant         = "CONMED_STATIN = 1 for rosuvastatin (< 20 mg/day), atorvastatin (< 40 mg/day), or simvastatin (any dose). CONMED_STATIN = 0 for monotherapy, other statins, or conmed_statin-intolerant subjects.",
     notes               = "Median body weight, age, and free-PCSK9 reference values are taken from Table 2 footnotes a-c of Martinez 2019. The covariate-screening list (sex, race, renal function, BMI, ADA status, injection site, injection device) was non-significant and is not carried as a model covariate. Trials included in the pooled dataset are listed in Table 1 of Martinez 2019 with NCT identifiers."
   )
 
   ini({
     # Structural PK parameters - Martinez 2019 Table 2 final-model typical values.
-    # Reference covariates: WT = 82.9 kg, AGE = 60 years, STATIN = 0, FPCSK9 = 72.9 ng/mL.
+    # Reference covariates: WT = 82.9 kg, AGE = 60 years, CONMED_STATIN = 0, FPCSK9 = 72.9 ng/mL.
     # Paper reports rates in h^-1; converted to day^-1 for the nlmixr2lib convention (x24).
     lka          <- log(7.68e-3 * 24); label("First-order SC absorption rate Ka (1/day)")                        # Martinez 2019 Table 2 (7.68e-3 /h)
     lcl          <- log(0.0124 * 24);  label("Linear clearance CLL at reference covariates (L/day)")             # Martinez 2019 Table 2 (0.0124 L/h)
@@ -72,7 +72,7 @@ Martinez_2019_alirocumab <- function() {
     # Covariate effects (additive on CLL, additive on Km, power on V3; Martinez 2019 Table 2 and equations).
     # Additive slopes on CL are in L/h in the paper and converted to L/day (x24).
     e_wt_cl       <-  2.92e-4 * 24; label("Additive slope of (WT - 82.9 kg) on CLL (L/day per kg)")                 # Martinez 2019 Table 2 (2.92e-4 L/h/kg)
-    e_statin_cl   <-  6.44e-3 * 24; label("Additive effect of STATIN on CLL (L/day when STATIN=1)")                 # Martinez 2019 Table 2 (6.44e-3 L/h)
+    e_conmed_statin_cl   <-  6.44e-3 * 24; label("Additive effect of CONMED_STATIN on CLL (L/day when CONMED_STATIN=1)")                 # Martinez 2019 Table 2 (6.44e-3 L/h)
     e_age_vp      <-  0.310;        label("Power exponent of AGE/60 on peripheral volume V3 (unitless)")            # Martinez 2019 Table 2
     e_fpcsk9_km   <- -0.541;        label("Additive slope of (FPCSK9/72.9) on Km (mg/L per unit of FPCSK9/72.9)")   # Martinez 2019 Table 2
 
@@ -95,8 +95,8 @@ Martinez_2019_alirocumab <- function() {
     # population *typical value* (additively on CLL and Km, as a power on V3) and then applies
     # exponential inter-individual variability to the typical value.
 
-    # Linear clearance: additive covariate model for WT (relative to 82.9 kg) and STATIN.
-    cl_tv <- exp(lcl) + e_wt_cl * (WT - 82.9) + e_statin_cl * STATIN
+    # Linear clearance: additive covariate model for WT (relative to 82.9 kg) and CONMED_STATIN.
+    cl_tv <- exp(lcl) + e_wt_cl * (WT - 82.9) + e_conmed_statin_cl * CONMED_STATIN
     cl    <- cl_tv * exp(etalcl)
 
     # Central volume (V2): no covariates.

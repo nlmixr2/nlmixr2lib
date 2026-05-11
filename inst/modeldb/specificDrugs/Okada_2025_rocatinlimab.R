@@ -29,12 +29,12 @@ Okada_2025_rocatinlimab <- function() {
       notes              = "Multiplicative shift on linear CL: CL is multiplied by (1 + e_psoriasis_cl) = (1 - 0.372) for psoriasis patients. Source column DIS in the NONMEM control stream encodes 0=healthy, 1=psoriasis, 2=UC, 3=AD; ingestion sets DIS_PSORIASIS = as.integer(DIS == 1).",
       source_name        = "DIS == 1"
     ),
-    DIS_HV = list(
+    DIS_HEALTHY = list(
       description        = "Healthy-volunteer cohort indicator (1 = healthy volunteer, 0 = patient)",
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (any patient: AD, UC, or psoriasis)",
-      notes              = "Multiplicative shift on Vmax: Vmax is multiplied by (1 + e_hv_vmax) = (1 - 0.532) for healthy volunteers. Source column DIS in the NONMEM control stream uses DIS=0 for healthy; ingestion sets DIS_HV = as.integer(DIS == 0).",
+      notes              = "Multiplicative shift on Vmax: Vmax is multiplied by (1 + e_healthy_vmax) = (1 - 0.532) for healthy volunteers. Source column DIS in the NONMEM control stream uses DIS=0 for healthy; ingestion sets DIS_HEALTHY = as.integer(DIS == 0).",
       source_name        = "DIS == 0"
     )
   )
@@ -78,7 +78,7 @@ Okada_2025_rocatinlimab <- function() {
     e_wt_vmax      <-  0.494; label("Body-weight power exponent on Vmax (unitless; reference 70 kg)")
     e_alb_cl       <- -1.30;  label("Serum-albumin power exponent on CL (unitless; reference 44 g/L)")
     e_psoriasis_cl <- -0.372; label("Multiplicative shift on CL for psoriasis vs non-psoriasis (fractional)")
-    e_hv_vmax      <- -0.532; label("Multiplicative shift on Vmax for healthy volunteers vs patients (fractional)")
+    e_healthy_vmax      <- -0.532; label("Multiplicative shift on Vmax for healthy volunteers vs patients (fractional)")
 
     # Inter-individual variability (BSV); omega^2 = log(CV^2 + 1)
     etalcl   ~ 0.04600  # 21.7% CV (Table S3)
@@ -99,7 +99,7 @@ Okada_2025_rocatinlimab <- function() {
     # Covariate effects (Table S3 footnote, supplement section 2.2)
     cl_cov   <- (WT / 70)^e_wt_cl * (ALB / 44)^e_alb_cl * (1 + e_psoriasis_cl * DIS_PSORIASIS)
     v1_cov   <- (WT / 70)^e_wt_vc
-    vmax_cov <- (WT / 70)^e_wt_vmax * (1 + e_hv_vmax * DIS_HV)
+    vmax_cov <- (WT / 70)^e_wt_vmax * (1 + e_healthy_vmax * DIS_HEALTHY)
 
     # Individual parameters
     cl   <- exp(lcl + etalcl)     * cl_cov

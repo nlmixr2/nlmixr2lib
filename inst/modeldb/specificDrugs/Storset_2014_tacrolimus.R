@@ -34,7 +34,7 @@ Storset_2014_tacrolimus <- function() {
       units              = "mg/day",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying with the post-transplant steroid taper (Storset 2014 Brisbane: 0.3 mg/kg ideal body weight per day initial, max 30 mg/day; Oslo: 20 mg/day initial, up to 80 mg/day in selected patients). Effect on F is a sigmoid-Emax fractional reduction (1 - Pred_max * PRED_DOSE / (Pred_50 + PRED_DOSE)) with Pred_max = 0.67 (95% CI 41%, 89%) and Pred_50 = 35 mg/day (95% CI 7, 50) -- Storset 2014 Table 2 and Methods Equations 4 + 6 with Hill = 1. Cohort medians 6.0 mg/day Brisbane / 0 mg/day Oslo (Storset 2014 Table 1).",
+      notes              = "Time-varying with the post-transplant conmed_steroid taper (Storset 2014 Brisbane: 0.3 mg/kg ideal body weight per day initial, max 30 mg/day; Oslo: 20 mg/day initial, up to 80 mg/day in selected patients). Effect on F is a sigmoid-Emax fractional reduction (1 - Pred_max * PRED_DOSE / (Pred_50 + PRED_DOSE)) with Pred_max = 0.67 (95% CI 41%, 89%) and Pred_50 = 35 mg/day (95% CI 7, 50) -- Storset 2014 Table 2 and Methods Equations 4 + 6 with Hill = 1. Cohort medians 6.0 mg/day Brisbane / 0 mg/day Oslo (Storset 2014 Table 1).",
       source_name        = "Prednisolone dose"
     ),
     POSTTX_DAY1 = list(

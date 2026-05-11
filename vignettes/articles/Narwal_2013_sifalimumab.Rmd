@@ -79,7 +79,7 @@ collects them in one place for review.
 | `e_wt_cl`                     | 0.481                | Table 2, theta5 (Eq. 3)                                        |
 | `e_bgene21_cl`                | 0.0558               | Table 2, theta6 (Eq. 3)                                        |
 | `e_cohdose_cl`                | 0.0542               | Table 2, theta7 (Eq. 3)                                        |
-| `e_steroid_cl`                | 0.195                | Table 2, theta8 (Eq. 3)                                        |
+| `e_conmed_steroid_cl`                | 0.195                | Table 2, theta8 (Eq. 3)                                        |
 | `e_wt_vc`                     | 0.489                | Table 2, theta9 (Eq. 4)                                        |
 | `e_wt_vp`                     | 0.646                | Table 2, theta10 (Eq. 5)                                       |
 | IIV block `etalcl/etalvc/etalvp` | lower-tri c(0.075478, 0.046354, 0.091758, 0, 0.021369, 0.289979) | Table 2 %CVs (28/31/58) and correlations (CL-V1 0.557, V1-V2 0.131) |
@@ -113,8 +113,8 @@ as zero in the 3x3 OMEGA block.
 Original observed concentrations are not publicly available. The
 simulations below use a virtual cohort whose body-weight distribution
 approximates the MI-CP152 population (median 73 kg, range 43.1-120).
-All subjects are assigned the median BGENE21 of 33, set to `STEROID = 0`
-(no baseline steroid use), and stratified into the four dose cohorts
+All subjects are assigned the median BGENE21 of 33, set to `CONMED_STEROID = 0`
+(no baseline conmed_steroid use), and stratified into the four dose cohorts
 that matched the phase Ib design.
 
 ```{r cohort}
@@ -129,7 +129,7 @@ cohort <- tibble::tibble(
                               meanlog = log(73), sdlog = 0.22),
                        43.1), 120),
   BGENE21  = 33,
-  STEROID  = 0
+  CONMED_STEROID  = 0
 )
 ```
 
@@ -273,7 +273,7 @@ ss_results <- lapply(ss_dose_mg, function(d) {
   ev$WT <- 75
   ev$BGENE21 <- 33
   ev$COHDOSE <- d / 75   # per-subject cohort dose in mg/kg (reference subject)
-  ev$STEROID <- 0
+  ev$CONMED_STEROID <- 0
   sim_ss <- rxode2::rxSolve(mod_ref, events = ev, returnType = "data.frame")
   last <- sim_ss |>
     dplyr::filter(time >= ss_start, time <= ss_end)
@@ -377,10 +377,10 @@ knitr::kable(summary(nca_res),
   The paper's Discussion (p. 1024) notes that the apparent dose effect
   may be a data artifact of the escalating design — single-dose data
   in MI-CP126 were linear across 0.3-30 mg/kg.
-- **`STEROID` default.** The phase IIb simulations in the paper set
-  BSTEROID = 0 (no baseline steroid use) as the reference. The virtual
-  cohort above does the same; set `STEROID = 1` per subject to simulate
-  the +19.5% CL effect for concomitant-steroid users.
+- **`CONMED_STEROID` default.** The phase IIb simulations in the paper set
+  BSTEROID = 0 (no baseline conmed_steroid use) as the reference. The virtual
+  cohort above does the same; set `CONMED_STEROID = 1` per subject to simulate
+  the +19.5% CL effect for concomitant-conmed_steroid users.
 - **Monthly dosing interval for Table 3.** Narwal 2013 Table 3 is
   labelled "monthly" without a numeric dosing-interval definition. The
   replication above uses every 28 days with an additional loading dose

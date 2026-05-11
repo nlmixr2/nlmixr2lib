@@ -13,12 +13,12 @@ Faelens_2021_infliximab <- function() {
       notes              = "Categorical effect on the elimination rate constant KE: typical KE values are 0.0422 /day for Mayo 1, 0.0463 /day for Mayo 2 (reference), and 0.0570 /day for Mayo 3 per Faelens 2021 supplement Table S1 (Adapted Model column). The original NONMEM dataset uses source column MPRE and additionally codes a sentinel `MPRE = -99` for missing values whose typical KE was carried over from the original Dreesen 2019 model with an unconverged initial estimate; that level is out-of-domain for this library implementation, which only supports Mayo 1/2/3.",
       source_name        = "MPRE"
     ),
-    STEROID = list(
+    CONMED_STEROID = list(
       description        = "Baseline corticosteroid use (binary indicator)",
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (no baseline corticosteroid use)",
-      notes              = "Multiplicative fold-change on V (and therefore on CL since CL = KE * V): V is multiplied by 1.30 when STEROID = 1 per Faelens 2021 supplement Table S1 (Adapted Model column; THETA(5) in the NONMEM control stream). Source column name `CS`; renamed to canonical STEROID per inst/references/covariate-columns.md.",
+      notes              = "Multiplicative fold-change on V (and therefore on CL since CL = KE * V): V is multiplied by 1.30 when CONMED_STEROID = 1 per Faelens 2021 supplement Table S1 (Adapted Model column; THETA(5) in the NONMEM control stream). Source column name `CS`; renamed to canonical CONMED_STEROID per inst/references/covariate-columns.md.",
       source_name        = "CS"
     ),
     DISEXT_EP = list(
@@ -77,9 +77,9 @@ Faelens_2021_infliximab <- function() {
 
     # Covariate effects on V (also propagate to CL since CL = KE * V).
     # Source covariate forms per Faelens 2021 supplement NONMEM control stream:
-    #   TVV = THETA(6) * THETA(5)^STEROID * (FFM/52)^THETA(7) * THETA(8)^DISEXT_EP
+    #   TVV = THETA(6) * THETA(5)^CONMED_STEROID * (FFM/52)^THETA(7) * THETA(8)^DISEXT_EP
     # with THETA(5) = 1.30, THETA(7) = 0.517, THETA(8) = 1.25.
-    e_steroid_vc   <- 1.30;  label("Multiplicative fold-change on Vc for baseline corticosteroid use (Vc * e_steroid_vc^STEROID)")           # Faelens 2021 supplement Table S1; THETA(5)
+    e_conmed_steroid_vc   <- 1.30;  label("Multiplicative fold-change on Vc for baseline corticosteroid use (Vc * e_conmed_steroid_vc^CONMED_STEROID)")           # Faelens 2021 supplement Table S1; THETA(5)
     e_ffm_vc       <- 0.517; label("Power exponent of fat-free mass on Vc with reference FFM 52 kg ((FFM/52)^e_ffm_vc)")                       # Faelens 2021 supplement Table S1; THETA(7)
     e_disext_ep_vc <- 1.25;  label("Multiplicative fold-change on Vc for extensive colitis at baseline (Vc * e_disext_ep_vc^DISEXT_EP)")       # Faelens 2021 supplement Table S1; THETA(8)
 
@@ -111,7 +111,7 @@ Faelens_2021_infliximab <- function() {
     mayo_cl <- exp(e_mayo1_cl * (MAYO_E == 1) + e_mayo3_cl * (MAYO_E == 3))
 
     # Covariate effects on Vc (and propagated to CL since CL = KE * V).
-    cov_vc <- (e_steroid_vc^STEROID) * ((FFM / 52)^e_ffm_vc) * (e_disext_ep_vc^DISEXT_EP)
+    cov_vc <- (e_conmed_steroid_vc^CONMED_STEROID) * ((FFM / 52)^e_ffm_vc) * (e_disext_ep_vc^DISEXT_EP)
 
     # Individual PK parameters.
     cl <- exp(lcl + etalcl) * mayo_cl * cov_vc

@@ -29,12 +29,12 @@ Narwal_2013_sifalimumab <- function() {
       notes              = "Power scaling on CL with reference value 1 mg/kg and exponent 0.0542 (Narwal 2013 Eq. 3). The MI-CP152 study fixed each subject to one of 0.3, 1, 3, or 10 mg/kg Q14D across all infusions, so this is a subject-level covariate rather than a per-dose covariate. Narwal et al. acknowledge (Discussion, p. 1024) that the apparent dose effect may be a data artifact of the escalating cohort design since single-dose data in MI-CP126 were linear across 0.3-30 mg/kg.",
       source_name        = "DOSE"
     ),
-    STEROID = list(
+    CONMED_STEROID = list(
       description        = "Baseline systemic corticosteroid use (0 = no, 1 = yes)",
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (no baseline corticosteroid use)",
-      notes              = "Multiplicative effect on CL of the form (1 + 0.195 x STEROID), giving +19.5% CL for baseline-steroid users (Narwal 2013 Eq. 3, Table 2). Corticosteroids (e.g., methylprednisolone) were used throughout the study to control disease activity.",
+      notes              = "Multiplicative effect on CL of the form (1 + 0.195 x CONMED_STEROID), giving +19.5% CL for baseline-conmed_steroid users (Narwal 2013 Eq. 3, Table 2). Corticosteroids (e.g., methylprednisolone) were used throughout the study to control disease activity.",
       source_name        = "BSTEROID"
     )
   )
@@ -59,7 +59,7 @@ Narwal_2013_sifalimumab <- function() {
 
   ini({
     # Structural parameters - typical values for a 75 kg subject with BGENE21 = 32,
-    # DOSE = 1 mg/kg, and no baseline steroid use.
+    # DOSE = 1 mg/kg, and no baseline conmed_steroid use.
     lcl <- log(0.176);  label("Clearance CL for the reference subject (L/day)")                           # Narwal 2013 Table 2: theta1 = 0.176 L/day (176 mL/day)
     lvc <- log(2.90);   label("Central volume V1 for a 75 kg subject (L)")                                # Narwal 2013 Table 2: theta2 = 2.90 L
     lvp <- log(2.12);   label("Peripheral volume V2 for a 75 kg subject (L)")                             # Narwal 2013 Table 2: theta3 = 2.12 L
@@ -69,7 +69,7 @@ Narwal_2013_sifalimumab <- function() {
     e_wt_cl       <- 0.481;  label("Body-weight exponent on CL (unitless)")                               # Narwal 2013 Table 2: theta5
     e_bgene21_cl  <- 0.0558; label("BGENE21 exponent on CL (unitless)")                                   # Narwal 2013 Table 2: theta6
     e_cohdose_cl  <- 0.0542; label("Dose (mg/kg) exponent on CL (unitless)")                              # Narwal 2013 Table 2: theta7
-    e_steroid_cl  <- 0.195;  label("Fractional change in CL for baseline steroid users (unitless)")       # Narwal 2013 Table 2: theta8
+    e_conmed_steroid_cl  <- 0.195;  label("Fractional change in CL for baseline conmed_steroid users (unitless)")       # Narwal 2013 Table 2: theta8
 
     # Covariate effects on volumes (Eqs. 4-5)
     e_wt_vc       <- 0.489;  label("Body-weight exponent on Vc (unitless)")                               # Narwal 2013 Table 2: theta9
@@ -103,7 +103,7 @@ Narwal_2013_sifalimumab <- function() {
       (WT / 75)^e_wt_cl *
       (BGENE21 / 32)^e_bgene21_cl *
       (COHDOSE / 1)^e_cohdose_cl *
-      (1 + e_steroid_cl * STEROID)
+      (1 + e_conmed_steroid_cl * CONMED_STEROID)
     vc <- exp(lvc + etalvc) * (WT / 75)^e_wt_vc
     vp <- exp(lvp + etalvp) * (WT / 75)^e_wt_vp
     q  <- exp(lq  + etalq)

@@ -53,12 +53,12 @@ Yamada_2025_zolbetuximab <- function() {
       notes              = "Time-fixed baseline value. Power effect on V1 (exponent 0.0347); reference 0.38 mg/dL per the Yamada 2025 Figure 1 reference population.",
       source_name        = "TBILI"
     ),
-    COMB_EOX = list(
+    CONMED_EOX = list(
       description        = "Concomitant EOX (epirubicin + oxaliplatin + capecitabine) chemotherapy backbone indicator",
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (non-EOX backbone; includes mFOLFOX6, CAPOX, and single-agent settings)",
-      notes              = "Source paper uses 'COMB' as the categorical column with EOX as the non-reference level; renamed to the canonical COMB_EOX per covariate-columns.md to preserve the semantic meaning of the 1-level. Fractional-change effect on V1 (+0.466) in the time-dependent-clearance model (Yamada 2025 Table 1).",
+      notes              = "Source paper uses 'COMB' as the categorical column with EOX as the non-reference level; renamed to the canonical CONMED_EOX per covariate-columns.md to preserve the semantic meaning of the 1-level. Fractional-change effect on V1 (+0.466) in the time-dependent-clearance model (Yamada 2025 Table 1).",
       source_name        = "COMB"
     )
   )
@@ -107,7 +107,7 @@ Yamada_2025_zolbetuximab <- function() {
     e_prior_gast_vc         <-  0.103;  label("Fractional change in V1 for prior gastrectomy (unitless)")              # Yamada 2025 Table 1
     e_sexf_cl            <- -0.195;  label("Fractional change in CLss for females (unitless)")                      # Yamada 2025 Table 1
     e_sexf_vc               <- -0.108;  label("Fractional change in V1 for females (unitless)")                        # Yamada 2025 Table 1
-    e_comb_eox_vc           <-  0.466;  label("Fractional change in V1 for EOX chemotherapy backbone (unitless)")      # Yamada 2025 Table 1
+    e_conmed_eox_vc           <-  0.466;  label("Fractional change in V1 for EOX chemotherapy backbone (unitless)")      # Yamada 2025 Table 1
 
     # Inter-individual variability. The paper reports %CV on log-normal
     # parameters; the stored variance follows omega^2 = log(CV^2 + 1).
@@ -150,7 +150,7 @@ Yamada_2025_zolbetuximab <- function() {
       (TBILI / 0.38)^e_tbili_vc *
       (1 + e_prior_gast_vc * PRIOR_GAST) *
       (1 + e_sexf_vc * SEXF) *
-      (1 + e_comb_eox_vc * COMB_EOX)
+      (1 + e_conmed_eox_vc * CONMED_EOX)
 
     q <- exp(lq + etalq) *
       (BSA / 1.70)^e_bsa_cl

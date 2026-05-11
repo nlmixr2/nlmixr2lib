@@ -15,7 +15,7 @@ Wilkins_2008_rifampicin <- function() {
   replicate_of <- NULL
 
   covariateData <- list(
-    FDC = list(
+    FORM_FDC = list(
       description        = "Fixed-dose-combination antitubercular formulation indicator (1 = FDC tablet, 0 = single-drug-combination, separate tablets).",
       units              = "(binary)",
       type               = "binary",
@@ -65,7 +65,7 @@ Wilkins_2008_rifampicin <- function() {
     lmtt <- log(0.424); label("Mean transit time through the absorption transit chain, MTT (h, FDC reference)") # .mod $THETA(6) FINAL = 4.24E-01; matches Output_real_* summary MTT = 0.424 (RSE 3.82%)
     lnn  <- log(7.13);  label("Number of transit compartments NN (continuous, dimensionless)")  # .mod $THETA(7) FINAL = 7.13E+00; matches Output_real_* summary n = 7.13 (RSE 8.42%)
 
-    # Formulation covariate effects. NONMEM source uses multiplicative `(1 + theta * (1 - FDC))`
+    # Formulation covariate effects. NONMEM source uses multiplicative `(1 + theta * (1 - FORM_FDC))`
     # shifts on MTT (THETA(8)) and on CL (THETA(9)); both effects vanish for the FDC = 1
     # typical-value reference. The .mod's CLLOC variable name is vestigial -- the conditional
     # is `IF(FDC.EQ.0) CLLOC = THETA(9)`, so the effect is FDC-driven, not LOC-driven.
@@ -130,7 +130,7 @@ Wilkins_2008_rifampicin <- function() {
     # on MTT and on CL, vanishing for the FDC = 1 typical-value reference (see .mod $PK
     # lines 18-34: `IF(FDC.EQ.1) MTTFDC = 0 ; Most common ... MTTCOV = (1 + MTTFDC)` and
     # the analogous `CLLOC` / `CLCOV` block).
-    fdc0    <- 1 - FDC
+    fdc0    <- 1 - FORM_FDC
     cl_cov  <- 1 + e_fdc0_cl  * fdc0
     mtt_cov <- 1 + e_fdc0_mtt * fdc0
 

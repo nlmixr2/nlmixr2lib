@@ -21,21 +21,21 @@ Kuchimanchi_2018_evolocumab <- function() {
       notes              = "Female-sex exponent on V (1.11) — multiplicative factor of 1.11 on V for female subjects (Kuchimanchi 2018 Table 3). Reference patient is male (Methods, exposure-response reference patient).",
       source_name        = "SEXF"
     ),
-    STATIN_MONO = list(
-      description        = "Concomitant statin monotherapy indicator, 1 = patient on a statin only (no other lipid-lowering comedication), 0 = otherwise",
+    CONMED_STATIN_MONO = list(
+      description        = "Concomitant conmed_statin monotherapy indicator, 1 = patient on a conmed_statin only (no other lipid-lowering comedication), 0 = otherwise",
       units              = "(binary)",
       type               = "binary",
-      reference_category = "0 (not on statin monotherapy)",
-      notes              = "Kuchimanchi 2018 defines the statin covariate narrowly as 'patients on a statin only and no other comedication' (Methods, PopPK analysis). Multiplicative exponent 1.13 on Vmax (Table 3). Reference patient is not on any lipid-lowering medication. Mutually compatible with EZE (a patient can be 1 on STATIN_MONO xor 1 on EZE).",
-      source_name        = "STATIN_MONO"
+      reference_category = "0 (not on conmed_statin monotherapy)",
+      notes              = "Kuchimanchi 2018 defines the conmed_statin covariate narrowly as 'patients on a conmed_statin only and no other comedication' (Methods, PopPK analysis). Multiplicative exponent 1.13 on Vmax (Table 3). Reference patient is not on any lipid-lowering medication. Mutually compatible with CONMED_EZE (a patient can be 1 on CONMED_STATIN_MONO xor 1 on CONMED_EZE).",
+      source_name        = "CONMED_STATIN_MONO"
     ),
-    EZE = list(
+    CONMED_EZE = list(
       description        = "Concomitant ezetimibe indicator, 1 = patient taking ezetimibe (with or without other lipid-lowering comedication), 0 = not on ezetimibe",
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (not on ezetimibe)",
-      notes              = "Kuchimanchi 2018 defines the ezetimibe covariate as 'all patients on ezetimibe, regardless of comedications' (Methods, PopPK analysis). In the popPK dataset ~79% of ezetimibe users were also on a statin, so the effect effectively captures statin+ezetimibe combination therapy (the paper notates the exponent as 'Statin + ezetimibe' in Table 3). Multiplicative exponent 1.20 on Vmax (Table 3). Reference patient is not on ezetimibe.",
-      source_name        = "EZE"
+      notes              = "Kuchimanchi 2018 defines the ezetimibe covariate as 'all patients on ezetimibe, regardless of comedications' (Methods, PopPK analysis). In the popPK dataset ~79% of ezetimibe users were also on a conmed_statin, so the effect effectively captures conmed_statin+ezetimibe combination therapy (the paper notates the exponent as 'Statin + ezetimibe' in Table 3). Multiplicative exponent 1.20 on Vmax (Table 3). Reference patient is not on ezetimibe.",
+      source_name        = "CONMED_EZE"
     ),
     PCSK9 = list(
       description        = "Baseline unbound PCSK9 (proprotein convertase subtilisin/kexin type 9) serum concentration",
@@ -57,7 +57,7 @@ Kuchimanchi_2018_evolocumab <- function() {
     weight_median    = "84.2 kg (mean)",
     sex_female_pct   = 50,
     race_ethnicity   = c(White = 87, Black = 7, Asian = 4, Hispanic = 0, Other = 1, AmericanIndianAlaska = 0, NativeHawaiianPacific = 0, Multiple = 0),
-    disease_state    = "Pooled adults: healthy volunteers (phase 1a) and patients with hypercholesterolemia (phase 1b, 2, and 3), including patients with heterozygous familial hypercholesterolemia (9%), diabetes (11%), and statin-intolerance cohorts. Most subjects received concomitant lipid-lowering therapy (statins 72%, ezetimibe 12%).",
+    disease_state    = "Pooled adults: healthy volunteers (phase 1a) and patients with hypercholesterolemia (phase 1b, 2, and 3), including patients with heterozygous familial hypercholesterolemia (9%), diabetes (11%), and conmed_statin-intolerance cohorts. Most subjects received concomitant lipid-lowering therapy (statins 72%, ezetimibe 12%).",
     dose_range       = "Evolocumab 7-420 mg IV or SC, single- and multiple-dose across Q2W and QM regimens. Phase 3 studies used the commercial regimens 140 mg SC Q2W and 420 mg SC QM.",
     regions          = "Multi-regional (11 pooled clinical studies spanning phase 1, 2, and 3).",
     pcsk9_baseline   = "Mean 402 ng/mL (SD 375), range 15.5-1233 ng/mL; median used for reference patient = 425 ng/mL (= 5.9 nM).",
@@ -85,7 +85,7 @@ Kuchimanchi_2018_evolocumab <- function() {
     e_sexf_vc   <- 1.11;   label("Female-vs-male multiplicative exponent on Vc (unitless)")           # Table 3: Female exponent on V = 1.11 (RSE 1.42%)
     e_wt_vmax   <- 0.145;  label("Power exponent of WT/84 on Vmax (unitless)")                        # Table 3: Body weight exponent on Vmax = 0.145 (RSE 33.0%)
     e_smono_vmax <- 1.13;  label("Statin-monotherapy multiplicative exponent on Vmax (unitless)")      # Table 3: Statin exponent on Vmax = 1.13 (RSE 1.02%)
-    e_eze_vmax  <- 1.20;   label("Ezetimibe (combination-therapy) multiplicative exponent on Vmax (unitless)") # Table 3: Statin + ezetimibe exponent on Vmax = 1.20 (RSE 1.59%)
+    e_conmed_eze_vmax  <- 1.20;   label("Ezetimibe (combination-therapy) multiplicative exponent on Vmax (unitless)") # Table 3: Statin + ezetimibe exponent on Vmax = 1.20 (RSE 1.59%)
     e_pcsk9_vmax <- 0.194; label("Power exponent of PCSK9/425 (ng/mL) on Vmax (unitless)")             # Table 3: PCSK9 baseline exponent on Vmax = 0.194 (RSE 7.47%)
 
     # ---- IIV (Table 3) ----
@@ -133,7 +133,7 @@ Kuchimanchi_2018_evolocumab <- function() {
     cl    <- exp(lcl + etalcl)   * (WT / 84)^e_wt_cl
     vc    <- exp(lvc + etalvc)   * (WT / 84)^e_wt_vc * e_sexf_vc^SEXF
     vmax  <- exp(lvmax + etalvmax) * (WT / 84)^e_wt_vmax *
-             e_smono_vmax^STATIN_MONO * e_eze_vmax^EZE *
+             e_smono_vmax^CONMED_STATIN_MONO * e_conmed_eze_vmax^CONMED_EZE *
              (PCSK9 / 425)^e_pcsk9_vmax   # Vmax in nM/day
     km    <- exp(lkm)            # km in nM
     fdepot <- exp(lfdepot)
