@@ -117,23 +117,23 @@ Grimm_2023_trontinemab <- function() {
     # Brain-region effect compartments — Grimm 2023 page 11
     # Equation 1: dCext/dt = kout * (Kp * Cpla - Cext)
     # Equation 2: Cbrn     = fpla * Cpla + Cext
-    d/dt(Ccerebellum)     <- kout_cerebellum     * (kp_cerebellum     * Cc - Ccerebellum)
-    Cbrain_cerebellum     <- fpla_cerebellum     * Cc + Ccerebellum
+    d/dt(cerebellum)     <- kout_cerebellum     * (kp_cerebellum     * Cc - cerebellum)
+    Cbrain_cerebellum     <- fpla_cerebellum     * Cc + cerebellum
 
-    d/dt(Chippocampus)    <- kout_hippocampus    * (kp_hippocampus    * Cc - Chippocampus)
-    Cbrain_hippocampus    <- fpla_hippocampus    * Cc + Chippocampus
+    d/dt(hippocampus)    <- kout_hippocampus    * (kp_hippocampus    * Cc - hippocampus)
+    Cbrain_hippocampus    <- fpla_hippocampus    * Cc + hippocampus
 
-    d/dt(Cstriatum)       <- kout_striatum       * (kp_striatum       * Cc - Cstriatum)
-    Cbrain_striatum       <- fpla_striatum       * Cc + Cstriatum
+    d/dt(striatum)       <- kout_striatum       * (kp_striatum       * Cc - striatum)
+    Cbrain_striatum       <- fpla_striatum       * Cc + striatum
 
-    d/dt(Ccortex)         <- kout_cortex         * (kp_cortex         * Cc - Ccortex)
-    Cbrain_cortex         <- fpla_cortex         * Cc + Ccortex
+    d/dt(cortex)         <- kout_cortex         * (kp_cortex         * Cc - cortex)
+    Cbrain_cortex         <- fpla_cortex         * Cc + cortex
 
-    d/dt(Cchoroid_plexus) <- kout_choroid_plexus * (kp_choroid_plexus * Cc - Cchoroid_plexus)
-    Cbrain_choroid_plexus <- fpla_choroid_plexus * Cc + Cchoroid_plexus
+    d/dt(choroid_plexus) <- kout_choroid_plexus * (kp_choroid_plexus * Cc - choroid_plexus)
+    Cbrain_choroid_plexus <- fpla_choroid_plexus * Cc + choroid_plexus
 
-    d/dt(Ccsf)            <- kout_csf            * (kp_csf            * Cc - Ccsf)
-    Cbrain_csf            <- fpla_csf            * Cc + Ccsf
+    d/dt(csf)            <- kout_csf            * (kp_csf            * Cc - csf)
+    Cbrain_csf            <- fpla_csf            * Cc + csf
 
     Cc ~ add(addSd) + prop(propSd)
   })

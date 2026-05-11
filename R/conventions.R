@@ -42,7 +42,13 @@
     # compartments used by mechanistic mAb / target-mediated disposition
     # models with multiple body-fluid distribution volumes
     # (Perez-Ruixo_2025_posdinemab).
-    "csf", "isf"
+    "csf", "isf",
+    # Anatomic brain-region compartments used by mAb brain-distribution
+    # PK models (Grimm_2023_trontinemab, Grimm_2023_gantenerumab). Each
+    # state holds the extracellular drug concentration in the named
+    # region; total brain concentration including residual plasma is
+    # derived as `Cbrain_<region>` in model().
+    "cerebellum", "hippocampus", "striatum", "cortex", "choroid_plexus"
   ),
   # Bare numbered chains (transit / effect / precursor / lat / dar /
   # depot) and metabolite-suffixed compartments are validated
