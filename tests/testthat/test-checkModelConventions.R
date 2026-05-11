@@ -774,4 +774,159 @@ test_that("deprecated C<metab> output naming is flagged in multi-output models",
   expect_match(obs$suggestion, "Cc_mmae")
 })
 
+test_that("csf and isf are accepted as canonical physiologic compartments", {
+  good <- function() {
+    description <- "A"
+    reference <- "R"
+    units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
+    ini({
+      lcl  <- 1; label("clearance (CL, L/day)")
+      lvc  <- 1; label("central volume (Vc, L)")
+      lqcsf <- 0.1; label("CSF distribution clearance (L/day)")
+      lvcsf <- 0.1; label("CSF volume (L)")
+      lqisf <- 0.1; label("ISF distribution clearance (L/day)")
+      lvisf <- 0.1; label("ISF volume (L)")
+      propSd <- 0.1; label("g (fraction)")
+    })
+    model({
+      cl  <- exp(lcl)
+      vc  <- exp(lvc)
+      qcsf <- exp(lqcsf)
+      vcsf <- exp(lvcsf)
+      qisf <- exp(lqisf)
+      visf <- exp(lvisf)
+      d/dt(central) <- -cl/vc*central - qcsf/vc*central + qcsf/vcsf*csf
+      d/dt(csf)     <-  qcsf/vc*central - qcsf/vcsf*csf - qisf/vcsf*csf + qisf/visf*isf
+      d/dt(isf)     <-  qisf/vcsf*csf - qisf/visf*isf
+      Cc <- central/vc
+      Cc ~ prop(propSd)
+    })
+  }
+  res <- suppressWarnings(checkModelConventions(good, verbose = FALSE))
+  comps <- res[res$category == "compartments", ]
+  expect_equal(nrow(comps), 0)
+})
+
+test_that("target/complex with csf/isf location suffix are accepted", {
+  good <- function() {
+    description <- "A"
+    reference <- "R"
+    units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
+    ini({
+      lcl   <- 1;     label("a (L/day)")
+      lvc   <- 1;     label("b (L)")
+      lkon  <- 0;     label("c (L/mg/day)")
+      lkoff <- 0;     label("d (1/day)")
+      lkint <- -1;    label("e (1/day)")
+      lr0   <- 0;     label("f (mg/L)")
+      propSd <- 0.1;  label("g (fraction)")
+    })
+    model({
+      cl   <- exp(lcl)
+      vc   <- exp(lvc)
+      kon  <- exp(lkon)
+      koff <- exp(lkoff)
+      kint <- exp(lkint)
+      R0   <- exp(lr0)
+      Cc <- central/vc
+      d/dt(central)     <- -cl/vc*central - kon*target*central + koff*complex*vc
+      d/dt(target)      <-  R0 - kon*target*Cc + koff*complex
+      d/dt(complex)     <-  kon*target*Cc - (koff + kint)*complex
+      d/dt(target_csf)  <- -kon*target_csf*Cc + koff*complex_csf
+      d/dt(complex_csf) <-  kon*target_csf*Cc - (koff + kint)*complex_csf
+      d/dt(target_isf)  <- -kon*target_isf*Cc + koff*complex_isf
+      d/dt(complex_isf) <-  kon*target_isf*Cc - (koff + kint)*complex_isf
+      target(0)      <- R0
+      target_csf(0)  <- R0
+      target_isf(0)  <- R0
+      Cc ~ prop(propSd)
+    })
+  }
+  res <- suppressWarnings(checkModelConventions(good, verbose = FALSE))
+  comps <- res[res$category == "compartments", ]
+  expect_equal(nrow(comps), 0)
+})
+
+test_that("expSd is accepted as a canonical residual error name for lnorm", {
+  good <- function() {
+    description <- "A"
+    reference <- "R"
+    units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
+    ini({
+      lka <- 0.1; label("ka (1/day)")
+      lcl <- 1;   label("CL (L/day)")
+      lvc <- 1;   label("Vc (L)")
+      expSd <- 0.4; label("Log-scale residual SD")
+    })
+    model({
+      ka <- exp(lka)
+      cl <- exp(lcl)
+      vc <- exp(lvc)
+      kel <- cl/vc
+      d/dt(depot)   <- -ka*depot
+      d/dt(central) <-  ka*depot - kel*central
+      Cc <- central/vc
+      Cc ~ lnorm(expSd)
+    })
+  }
+  res <- suppressWarnings(checkModelConventions(good, verbose = FALSE))
+  naming <- res[res$category == "parameter_naming" & res$name == "expSd", ]
+  expect_equal(nrow(naming), 0)
+})
+
+test_that("capitalized compartments get a specific 'uppercase letter' warning", {
+  bad <- function() {
+    description <- "A"
+    reference <- "R"
+    units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
+    ini({
+      lcl <- 1; label("CL (L/day)")
+      lvc <- 1; label("Vc (L)")
+      propSd <- 0.1; label("g (fraction)")
+    })
+    model({
+      cl <- exp(lcl)
+      vc <- exp(lvc)
+      d/dt(central) <- -cl/vc*central
+      d/dt(Cbrain)  <- 0.1*(0.5*central/vc - Cbrain)
+      Cc <- central/vc
+      Cc ~ prop(propSd)
+    })
+  }
+  res <- suppressWarnings(checkModelConventions(bad, verbose = FALSE))
+  comps <- res[res$category == "compartments" & res$name == "Cbrain", ]
+  expect_equal(nrow(comps), 1)
+  expect_match(comps$message, "uppercase")
+})
+
+test_that("parallel-absorption depot/depot2 passes (already permitted by depot<n> regex)", {
+  good <- function() {
+    description <- "A"
+    reference <- "R"
+    units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
+    ini({
+      lka1 <- 0.1; label("ka1 (1/day)")
+      lka2 <- 0.1; label("ka2 (1/day)")
+      lcl  <- 1;   label("CL (L/day)")
+      lvc  <- 1;   label("Vc (L)")
+      propSd <- 0.1; label("g (fraction)")
+    })
+    model({
+      ka1 <- exp(lka1)
+      ka2 <- exp(lka2)
+      cl  <- exp(lcl)
+      vc  <- exp(lvc)
+      kel <- cl/vc
+      d/dt(depot)   <- -ka1*depot
+      d/dt(depot2)  <- -ka2*depot2
+      d/dt(central) <-  ka1*depot + ka2*depot2 - kel*central
+      Cc <- central/vc
+      Cc ~ prop(propSd)
+    })
+  }
+  res <- suppressWarnings(checkModelConventions(good, verbose = FALSE))
+  comps <- res[res$category == "compartments", ]
+  expect_equal(nrow(comps), 0)
+})
+
 # nolint end

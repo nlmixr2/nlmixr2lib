@@ -37,7 +37,12 @@
     # amount sequestered in the renal cortex via saturable uptake from
     # the central compartment plus first-order tubular reabsorption back
     # out (Rougier 2003 / Croes 2011 mechanism).
-    "renal_cortex"
+    "renal_cortex",
+    # Cerebrospinal-fluid (CSF) and interstitial-fluid (ISF) physiologic
+    # compartments used by mechanistic mAb / target-mediated disposition
+    # models with multiple body-fluid distribution volumes
+    # (Perez-Ruixo_2025_posdinemab).
+    "csf", "isf"
   ),
   # Bare numbered chains (transit / effect / precursor / lat / dar /
   # depot) and metabolite-suffixed compartments are validated
@@ -47,8 +52,19 @@
   # parallel-absorption models with two or more depots.
   compartmentRegex = "^(transit|effect|precursor|lat|depot)[0-9]+$",
   darCompartmentRegex = "^dar[0-9]+_(central|peripheral[0-9]?)$",
+  # Target species in physiologic body-fluid compartments
+  # (e.g., target_csf, target_isf, complex_csf, complex_isf). Used by
+  # mechanistic mAb / TMDD models with multiple distribution volumes.
+  targetLocationRegex = "^(target|complex)_(csf|isf)$",
   observationVar = "Cc",
-  residualError = c("propSd", "addSd"),
+  # propSd and addSd are the canonical proportional and additive
+  # residual-error SDs used with `~ prop(...)`, `~ add(...)`, and the
+  # combined `~ prop(...) + add(...)` forms. expSd is the canonical
+  # log-scale residual SD used with `~ lnorm(...)` (a distinct error
+  # structure where the SD applies on the exponentiated scale), used by
+  # popPK papers reporting log-transformed proportional error directly
+  # (Cirincione_2017_exenatide, Wu_2024_inotuzumab).
+  residualError = c("propSd", "addSd", "expSd"),
   transformPrefixes = c("l", "logit", "probit"),
   # Covariate-effect names match e_<cov>(_<continuation>)+_<param>
   # (canonical) or have an additional trailing token for metabolite /
@@ -413,13 +429,15 @@
 
 # Compartment name validator. Recognizes:
 #   - canonical names from conv$compartments
-#   - numbered chains via conv$compartmentRegex (transit/effect/precursor/lat)
+#   - numbered chains via conv$compartmentRegex (transit/effect/precursor/lat/depot)
 #   - DAR-numbered ADC isoforms via conv$darCompartmentRegex
+#   - target species in physiologic compartments via conv$targetLocationRegex
 #   - metabolite-suffixed compartments: <canonical>_<metab>
 .matchesCompartment <- function(name, conv) {
   if (name %in% conv$compartments) return(TRUE)
   if (grepl(conv$compartmentRegex, name)) return(TRUE)
   if (grepl(conv$darCompartmentRegex, name)) return(TRUE)
+  if (grepl(conv$targetLocationRegex, name)) return(TRUE)
   for (metab in conv$registeredMetabolites) {
     suf <- paste0("_", metab)
     if (endsWith(name, suf)) {

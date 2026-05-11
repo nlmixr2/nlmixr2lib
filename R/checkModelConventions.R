@@ -399,7 +399,8 @@ checkModelConventions <- function(model, verbose = TRUE) {
     out <- c(
       out,
       paste0("propSd_", suffix),
-      paste0("addSd_",  suffix)
+      paste0("addSd_",  suffix),
+      paste0("expSd_",  suffix)
     )
   }
   unique(out)
@@ -595,14 +596,34 @@ checkModelConventions <- function(model, verbose = TRUE) {
   cmts <- ui$props$cmt %||% character()
   for (cm in cmts) {
     if (.matchesCompartment(cm, conv)) next
-    issues <- rbind(issues, .issue(
-      "compartments", "warning", cm,
-      sprintf("Compartment '%s' is not a canonical name.", cm),
-      sprintf(
+    # Tailor the message: a capital-prefixed name is almost never
+    # canonical because the convention is lowercase compartment names
+    # (observation variables like Cc are the exception). Surface that
+    # specifically so the fix is obvious.
+    if (grepl("^[A-Z]", cm)) {
+      msg <- sprintf(
+        paste0(
+          "Compartment '%s' starts with an uppercase letter; the ",
+          "convention is lowercase compartment names (observation ",
+          "variables like Cc are the only canonical capitalized form)."
+        ),
+        cm
+      )
+      sug <- paste0(
+        "Rename the state to lowercase. If a capital-prefixed ",
+        "concentration alias is needed for output mapping, derive it ",
+        "as a non-state assignment in model() (e.g., ",
+        "`d/dt(brain) <- ...; Cbrain <- brain/vbrain`)."
+      )
+    } else {
+      msg <- sprintf("Compartment '%s' is not a canonical name.", cm)
+      sug <- sprintf(
         paste0(
           "Use one of: %s; numbered chains (transit<n>, effect<n>, ",
-          "precursor<n>, lat<n>); DAR-numbered (dar<n>_central, ",
-          "dar<n>_peripheral<m>); or metabolite-suffixed ",
+          "precursor<n>, lat<n>, depot<n>); DAR-numbered ",
+          "(dar<n>_central, dar<n>_peripheral<m>); target species in a ",
+          "physiologic compartment (target_csf, target_isf, ",
+          "complex_csf, complex_isf); or metabolite-suffixed ",
           "(<canonical>_<metab>, e.g. central_mmae). Registered ",
           "metabolites: %s. For new payloads or therapeutic-area ",
           "compartments, register the new metabolite/compartment in ",
@@ -611,6 +632,9 @@ checkModelConventions <- function(model, verbose = TRUE) {
         paste(conv$compartments, collapse = ", "),
         paste(conv$registeredMetabolites, collapse = ", ")
       )
+    }
+    issues <- rbind(issues, .issue(
+      "compartments", "warning", cm, msg, sug
     ))
   }
   issues
