@@ -537,6 +537,45 @@ entries should default to all caps.
   full-word canonical name was chosen over a shorter `BC_USE` form for
   clarity in source traces.
 
+### DIS_EOPE (**canonical for early-onset pre-eclampsia indicator**)
+
+- **Description:** Binary indicator of early-onset pre-eclampsia (eoPE);
+  `1` = eoPE diagnosed before 34 weeks gestation, `0` = not eoPE.
+  Time-fixed per subject within the gestational PK study window. Used by
+  population PK models that compare drug disposition in pregnant women
+  with vs without early-onset pre-eclampsia.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no eoPE). Effect form in Schoenmakers 2025
+  is multiplicative on CL: `CL_eoPE = CL * ThetaPE^DIS_EOPE` with
+  `ThetaPE = 0.617` (38% reduction in betamethasone CL when eoPE is
+  present); encoded in nlmixr2 as the log-additive shift
+  `cl <- exp(lcl + etalcl + e_eope_cl * DIS_EOPE)` with
+  `e_eope_cl = log(0.617)`.
+- **Source aliases:**
+  - `PE` – common abbreviation in obstetric pharmacology papers when the
+    cohort restriction is to early-onset PE only; used in
+    `Schoenmakers_2025_betamethasone.R` (paper notation: `eoPE` /
+    `ThetaPE`).
+- **Example models:** `Schoenmakers_2025_betamethasone.R`
+  (multiplicative effect on CL, encoded via the log-additive form on
+  `lcl`; reduces apparent betamethasone clearance from 15.6 L/h to 9.6
+  L/h).
+- **Notes:** Distinct from a broader `PREECL` indicator that would pool
+  early-onset, late-onset and postpartum pre-eclampsia. The
+  “early-onset” specifier corresponds to diagnosis before 34 weeks
+  gestation, the conventional clinical cutoff (Phipps 2019 Nat Rev
+  Nephrol). Future papers that enrol mixed early-/late-onset cohorts or
+  that report PE status without the 34-week stratification should
+  register a separate canonical (e.g., `PREECL` for any-onset PE, or
+  `LOPE` for late-onset PE) rather than reusing `DIS_EOPE` with relaxed
+  semantics. Distinct from `PREG` (pregnancy status indicator):
+  `DIS_EOPE` is a complication-of-pregnancy stratifier within a pregnant
+  cohort, whereas `PREG` discriminates pregnant-vs-non-pregnant
+  subjects. Ratified canonically on 2026-05-11 alongside the
+  Schoenmakers 2025 betamethasone extraction.
+
 ## Renal / hepatic function
 
 ### URINE_FLOW (**canonical for instantaneous urine flow rate**)
@@ -877,6 +916,33 @@ entries should default to all caps.
 - **Notes:** Hepatic-function marker. Commonly reported alongside `AST`
   and `TBILI`. Ratified canonically on 2026-04-24. `SGPT` is the older
   lab-reporting name; values and units are identical to `ALT`.
+
+### GGT (**canonical for gamma-glutamyltransferase**)
+
+- **Description:** Serum gamma-glutamyltransferase activity (baseline or
+  time-varying); hepatic / cholestatic biliary-enzyme marker.
+- **Units:** U/L (IU/L; the two labels are used interchangeably in the
+  clinical-PK literature). Document per-model via
+  `covariateData[[GGT]]$units`.
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a – used with linear-deviation form
+  `1 + theta * (GGT - ref)` or power scaling `(GGT / ref)^exponent`.
+  Reference values observed: 33 U/L (Retlich 2015 popPK linagliptin
+  median), 32.3 U/L (Retlich 2015 popPK/PD linagliptin median).
+- **Source aliases:** none known.
+- **Example models:** `Retlich_2015_linagliptin.R` (U/L, reference 33;
+  linear-deviation effect on linagliptin CL with coefficient -0.0339 %
+  per U/L deviation. The PK/PD layer uses GGT (reference 32.3 U/L) as a
+  piecewise covariate on baseline DPP-4 activity BSL with a
+  linear-deviation effect below GGT = 175 U/L and a constant +21.3%
+  effect above the threshold).
+- **Notes:** Liver-function / cholestasis marker; routine
+  clinical-chemistry covariate. Commonly tested alongside `ALT` / `AST`
+  / `ALP` / `TBILI`. The piecewise above/below-threshold form in Retlich
+  2015 reflects empirical saturation of the GGT-vs-DPP-4-activity
+  relationship at extreme values. Ratified canonically alongside the
+  Retlich 2015 linagliptin extraction.
 
 ### LDH (**canonical for serum lactate dehydrogenase**)
 
@@ -2646,6 +2712,64 @@ entries should default to all caps.
   (oxypurinol) and `CP_FBX_NGML` (febuxostat). Ratified canonically on
   2026-05-08 alongside the Aksenov 2018 extraction.
 
+### FPG (**canonical for baseline fasting plasma glucose**)
+
+- **Description:** Fasting plasma glucose concentration at baseline (or
+  time-varying baseline-style observation; document per-model). Distinct
+  from `GLU` (time-varying plasma glucose regressor input for
+  mechanistic glucose-kinetics models).
+- **Units:** mmol/L (or mg/dL – 1 mmol/L glucose is approximately 18.02
+  mg/dL). Document per-model via `covariateData[[FPG]]$units`.
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a – used with linear-deviation form
+  `1 + theta * (FPG - ref)`. Reference values observed: 8.90 mmol/L
+  (Retlich 2015 popPK/PD linagliptin median fasting glucose at
+  baseline).
+- **Source aliases:** none known.
+- **Example models:** `Retlich_2015_linagliptin.R` (mmol/L, reference
+  8.90; linear-deviation effect on baseline DPP-4 activity BSL with
+  coefficient 1.46 % per mmol/L deviation).
+- **Notes:** Glycemic-control covariate (baseline FPG); routinely
+  reported alongside HbA1c in T2DM populations. Distinct from `GLU`
+  which is a time-varying within-subject glucose regressor for
+  mechanistic glucose-kinetics models (Bizzotto 2016). Ratified
+  canonically alongside the Retlich 2015 linagliptin extraction.
+
+### DPP4_BL_RFU (**canonical for baseline plasma dipeptidyl peptidase-4 activity in relative fluorescence units**)
+
+- **Description:** Baseline plasma dipeptidyl peptidase-4 (DPP-4)
+  enzymatic activity, measured by relative fluorescence units (RFU).
+  DPP-4 is the pharmacological target of the gliptin (DPP-4-inhibitor)
+  drug class; baseline activity correlates with circulating DPP-4
+  protein concentration in the central compartment and serves as a
+  covariate on the central-compartment binding-site concentration in
+  TMDD models for gliptins.
+- **Units:** RFU (assay-specific; document the assay in
+  `covariateData[[DPP4_BL_RFU]]$notes` since RFU values are not directly
+  comparable across assays).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a – used with linear-deviation form
+  `1 + theta * (DPP4_BL_RFU - ref)`. Reference values observed: 12,497
+  RFU (Retlich 2015 popPK linagliptin median baseline), 11,600 RFU
+  (Retlich 2015 popPK/PD linagliptin median baseline, applied to the
+  individual-predicted BSL_i parameter on EC50).
+- **Source aliases:** none known.
+- **Example models:** `Retlich_2015_linagliptin.R` (RFU, reference
+  12,497; linear-deviation effect on the central-compartment
+  binding-site concentration Bmax,C with coefficient 0.00332 % per RFU
+  deviation – captures the inter-individual correlation between baseline
+  DPP-4 protein concentration and the apparent saturable-binding
+  amplitude).
+- **Notes:** Specific scope because DPP-4-activity values in RFU are
+  assay-specific and not directly transferable between studies /
+  instruments. Future gliptin extractions reporting DPP-4 activity in
+  the same assay can reuse this canonical; extractions in absolute
+  enzymatic-rate units (pmol AMC per minute) or normalised units should
+  register a sibling canonical (e.g., `DPP4_BL_PMOL_MIN`). Ratified
+  canonically alongside the Retlich 2015 linagliptin extraction.
+
 ### GLU (**canonical for plasma glucose time-course regressor**)
 
 - **Description:** Plasma glucose concentration as a time-varying
@@ -3506,6 +3630,36 @@ tied to the study’s analysis plan.
   response to LDLR-independent therapies. Scope: specific because the
   reference category is paper-defined.
 
+### DIS_HAE (**canonical for hereditary angioedema patient indicator**)
+
+- **Description:** 1 = patient with hereditary angioedema
+  (HAE-C1INH-Type1, HAE-C1INH-Type2, or HAE-nC1INH), 0 = healthy
+  volunteer (or other non-HAE reference cohort pooled in the source
+  analysis). Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-HAE subject; the complement group is
+  paper-defined – for Diep 2026 the reference is the pooled
+  healthy-volunteer cohort from NCT03263507 and ISIS 721744-CS9).
+- **Source aliases:** paper narrative “patient with HAE” / “healthy
+  volunteer” subgroup labels driving the Diep 2026 disease-status
+  covariate effects on Vc/F, Q/F, baseline PKK, and IC50.
+- **Example models:** `Diep_2026_donidalorsen.R` (linear
+  `(1 + theta * DIS_HAE)` multiplicative effects on apparent central
+  volume Vc/F (theta = +0.426, +42.6%), apparent intercompartmental
+  clearance Q/F (theta = -0.261, -26.1%), baseline plasma prekallikrein
+  BL (theta = -0.132, -13.2%), and donidalorsen IC50 on PKK production
+  (theta = +0.770, +77.0%) for patients with HAE vs healthy volunteers).
+- **Notes:** Used when a population PK/PD model pools HAE patients with
+  healthy volunteers and HAE disease status is retained as a covariate.
+  The three molecular HAE subtypes (HAE-C1INH-Type1, HAE-C1INH-Type2,
+  HAE-nC1INH) are pooled in this indicator following the Diep 2026
+  analysis; if a future paper resolves subtype-specific covariate
+  effects, separate canonical indicators (e.g., `DIS_HAE_C1INH_T1`) can
+  be added without conflicting with this pooled indicator. Scope:
+  specific because the complement reference category is paper-defined.
+
 ### DIS_DMD (**canonical for Duchenne muscular dystrophy patient indicator**)
 
 - **Description:** 1 = patient with Duchenne muscular dystrophy (DMD), 0
@@ -3748,8 +3902,64 @@ tied to the study’s analysis plan.
   retained as a covariate on a target-related parameter (e.g., baseline
   p-tau, baseline p217+tau). Scope: specific because the complement
   reference category is paper-defined. Ratified canonically on
-  2026-04-28. \### HSCT_URD_7OF8 (**canonical for hematopoietic stem
-  cell transplant from a 7-of-8 HLA-matched unrelated donor**)
+  2026-04-28.
+
+### DIS_COPD (**canonical for chronic obstructive pulmonary disease patient indicator**)
+
+- **Description:** 1 = patient with chronic obstructive pulmonary
+  disease (clinical COPD diagnosis, typically moderate-to-severe per
+  GOLD criteria), 0 = non-COPD subject (typically healthy volunteer
+  pooled in the source analysis). Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-COPD subject; the complement group is
+  paper-defined – for Lahu 2010 the reference is the pooled phase I
+  healthy-volunteer cohort).
+- **Source aliases:**
+  - `COPD` – used in `Lahu_2010_roflumilast.R` (paper text covariate
+    symbol in equation 6 and 7).
+- **Example models:** `Lahu_2010_roflumilast.R` (linear additive effects
+  on roflumilast parent CL (-39.4%) and V1 (+184%) and on roflumilast
+  N-oxide CL (-7.9%) and Vd (-21.4%); reference category 0 = pooled
+  phase I healthy volunteers, 1 = pooled phase II/III moderate-to-severe
+  COPD patient).
+- **Notes:** Used when a population PK/PD model pools healthy volunteers
+  with COPD patients and the COPD-vs-HV contrast is retained as a
+  covariate on PK parameters. Scope: specific because the complement
+  reference category and the COPD-severity inclusion criteria are
+  paper-defined.
+
+### DIS_OBESE_MORBID (**canonical for morbidly obese cohort indicator**)
+
+- **Description:** 1 = morbidly obese patient (BMI \> 40 kg/m^2 in the
+  canonical definition; typical pooled-analysis enrollment criterion is
+  bariatric-surgery patients), 0 = non-obese subject (typically healthy
+  volunteer pooled in the source analysis). Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-obese subject; the complement group is
+  paper-defined – for de Hoogd 2017 the reference is the pooled
+  healthy-volunteer cohort from Sarton 2000 and Romberg 2004).
+- **Source aliases:** none known; source NONMEM control streams
+  typically use ad-hoc names (e.g., `OBESE`, `MO`, `COHORT`).
+- **Example models:** `deHoogd_2017_morphine.R` (selects per-cohort
+  proportional residual error magnitudes for each of three observed
+  species – morphine, M3G, M6G – after a pooled-cohort fit of 20
+  morbidly obese surgical patients and 20 healthy volunteers).
+- **Notes:** Used when a population PK or PK/PD model pools morbidly
+  obese patients with a non-obese reference population (typically
+  healthy volunteers) and the cohort indicator selects per-cohort
+  parameter values (residual error magnitudes, study-specific
+  bioavailability, or similar). Distinct from `BMI` (which is the
+  continuous body-mass-index covariate used for parameter scaling) –
+  `DIS_OBESE_MORBID` is the binary cohort-membership flag and does not
+  encode a specific BMI threshold for general use; the threshold is
+  paper-defined. Scope: specific because the complement reference
+  category is paper-defined. Ratified canonically on 2026-05-11. \###
+  HSCT_URD_7OF8 (**canonical for hematopoietic stem cell transplant from
+  a 7-of-8 HLA-matched unrelated donor**)
 - **Description:** 1 = patient received an allogeneic hematopoietic stem
   cell transplant (HSCT) from an unrelated donor (URD) HLA-matched at 7
   of 8 alleles (single-allele mismatch), 0 = otherwise (the union of
@@ -5485,6 +5695,32 @@ tied to the study’s analysis plan.
   concomitant-medication pattern established for IBD models (AZA / MP /
   MTX / AMINO).
 
+### CONMED_METFORMIN (**canonical for concomitant metformin co-administration indicator**)
+
+- **Description:** 1 = subject is on concomitant metformin during the
+  modelled treatment period, 0 = not. Time-fixed in source datasets
+  where metformin is a study-design “add-on” arm (e.g., Retlich 2015
+  Study 4 add-on-to-metformin design); permits a time-varying form for
+  cohorts with on/off metformin transitions, document per-model via
+  `covariateData[[CONMED_METFORMIN]]$notes`.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no concomitant metformin).
+- **Source aliases:** none known.
+- **Example models:** `Retlich_2015_linagliptin.R` (1 = study 4
+  add-on-to-metformin cohort; multiplicative effect on linagliptin
+  relative bioavailability F: +69% F for metformin co-administration vs
+  the monotherapy reference; the effect is attributed to a metformin –
+  linagliptin drug-drug interaction consistent with a separately
+  published DDI study, Graefe-Mody 2009).
+- **Notes:** Follows the `CONMED_*` concomitant-medication pattern (AZA
+  / MP / MTX / AMINO / NSAID / PARA / AD / RITUX / AED / CHEMO / EIAED /
+  EFV / AZOLE). Metformin is a widely-co-prescribed first-line T2DM oral
+  antidiabetic; future T2DM-popPK / -DDI extractions should reuse this
+  canonical. Ratified canonically alongside the Retlich 2015 linagliptin
+  extraction.
+
 ### CONMED_PARA (**canonical for concomitant paracetamol (acetaminophen) use**)
 
 - **Description:** 1 = on concomitant paracetamol (acetaminophen) at the
@@ -6124,6 +6360,35 @@ tied to the study’s analysis plan.
   discontinuation to allow tacrolimus apparent clearance to stabilize
   given itraconazole’s long half-life), and (3) whether the indicator is
   a baseline-only proxy or a true time-varying flag.
+
+### CONMED_IFNB1A (**canonical for concomitant interferon beta-1a coadministration indicator**)
+
+- **Description:** 1 = patient coadministered subcutaneous interferon
+  beta-1a (Rebif or equivalent recombinant IFN beta-1a product) during
+  the observation interval, 0 = no concomitant IFN beta-1a. Time-varying
+  per subject because the source studies enrol both monotherapy and IFN
+  beta-1a combination periods.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no concomitant IFN beta-1a).
+- **Source aliases:**
+  - `IFNB1A` – used in `Savic_2017_cladribine.R`.
+- **Example models:** `Savic_2017_cladribine.R` (multiplicative effect
+  on cladribine non-renal clearance:
+  `cl_nonrenal *= (1 + e_ifn_clnr * CONMED_IFNB1A)` with
+  `e_ifn_clnr = 0.21`, i.e. a 21% increase in non-renal CL when
+  coadministered with IFN beta-1a).
+- **Notes:** Captured at the dose-record level in Savic 2017
+  (multiple-dose study 26486 alternated between cladribine alone and
+  cladribine + IFN beta-1a periods). The interaction mechanism is not
+  definitively established in the source paper; Savic 2017 discusses
+  that the observed effect could alternatively be modelled on
+  bioavailability or interpreted as a period-effect / interoccasion
+  variability artefact. Future cladribine + immunomodulator extractions
+  should reuse this canonical when IFN beta-1a is the specific
+  concomitant agent; register a sibling canonical (e.g. `CONMED_IFNB1B`,
+  `CONMED_IFNALPHA`) if a different interferon species is intended.
 
 ## Pharmacogenetics
 
@@ -7090,12 +7355,16 @@ promote to general when a second paper ratifies identical semantics.
 - **Source aliases:** “Formulation = AI” (categorical effect column in
   Yu 2022 covariate equations).
 - **Example models:** `Yu_2022_ofatumumab.R` (exponential effect on
-  k_e(P) and R0).
-- **Notes:** Set to 0 (PFS reference) for IV subjects, since the device
-  is undefined for IV; the IV-specific effects are captured by
-  `ROUTE_IV` instead. Scope: specific because the AI/PFS contrast and
-  which parameters it affects depend on the study’s device-comparison
-  design.
+  k_e(P) and R0), `Diep_2026_donidalorsen.R` (Phoenix linear-effect
+  `(1 + e_device_ai_ka * DEVICE_AI)` on the typical SC absorption rate
+  constant with theta = +0.262 -\> multiplier 1.262 for autoinjector vs
+  vial-and-syringe reference; characterized in the ISIS 721744-CS9
+  single-dose bioequivalence cohort).
+- **Notes:** Set to 0 (PFS / vial reference) for IV subjects, since the
+  device is undefined for IV; the IV-specific effects are captured by
+  `ROUTE_IV` instead. Scope: specific because the AI / vial / PFS
+  contrast and which parameters it affects depend on the study’s
+  device-comparison design.
 
 ### INJSITE_ARM (**canonical for SC injection-site = arm indicator**)
 
@@ -7112,7 +7381,14 @@ promote to general when a second paper ratifies identical semantics.
 - **Example models:** `Diep_2022_eplontersen.R` (additive log-shift
   `e_injsite_arm_ka = log(ka_arm / ka_ab)` on the typical absorption
   rate constant: ka_arm = 0.217 1/h vs ka_ab = 0.282 1/h, ~30% higher ka
-  for abdomen; INJSITE_ARM = 1 selects the arm typical value).
+  for abdomen; INJSITE_ARM = 1 selects the arm typical value),
+  `Diep_2026_donidalorsen.R` (Phoenix linear-effect
+  `(1 + e_injsite_arm_ka * INJSITE_ARM)` on the typical absorption rate
+  constant with theta = -0.338 -\> multiplier 0.662 for arm; the paper’s
+  reference category is “abdomen or thigh” rather than “abdomen” alone,
+  but is consistent with the canonical reference because abdomen is the
+  universal SC reference site and the thigh effect is pooled into the
+  reference category by the Diep 2026 model).
 - **Notes:** Specific scope because the arm-vs-abdomen contrast is
   paper-specific. Sister canonical to `INJSITE_THIGH` (thigh-vs-abdomen
   indicator anticipated for future SC-route models with thigh-specific
@@ -7366,11 +7642,18 @@ promote to general when a second paper ratifies identical semantics.
     reference).
 - **Example models:** `Yukawa_1990_phenytoin.R` (Yukawa 1990 Model 2
   dose-dependent powder bioavailability
-  `F_powder = 1 - exp(-9.92 / DOSE_PHT_MGKGD)`; tablet F fixed at 1).
+  `F_powder = 1 - exp(-9.92 / DOSE_PHT_MGKGD)`; tablet F fixed at 1);
+  `Retlich_2015_linagliptin.R` (multiplicative shift on the linagliptin
+  first-order absorption rate constant Ka: powder-in-bottle Ka = 0.933
+  1/h vs tablet formulation 2 reference Ka = 0.441 1/h; the tablet
+  formulation 1 comparator is captured by the sibling canonical
+  `FORM_LINAG_TAB1`).
 - **Notes:** Specific scope because the “powder vs tablet” contrast is
   tied to a particular drug-product manufacturing comparison (Yukawa
   1990 contrasts Aleviatin brand phenytoin powder with Aleviatin
-  tablets, both from Dainippon Pharmaceutical Co.). Mirrors the sibling
+  tablets, both from Dainippon Pharmaceutical Co.; Retlich 2015
+  contrasts an early-phase linagliptin powder-in-bottle formulation
+  against the marketed linagliptin tablet). Mirrors the sibling
   `FORM_TABLET` (Kyhl 2016 / Tikiso 2021 tablet vs solution) and
   `FORM_CAPSULE` (Hennig 2006 / Hennig 2007 capsule vs solution) under
   the `FORM_*` family. Future powder-formulation models should reuse
@@ -7478,6 +7761,34 @@ promote to general when a second paper ratifies identical semantics.
   policy that drug-product-version indicators are kept model-specific
   unless they generalize across multiple drugs. Set to 1 to simulate the
   marketed material.
+
+### FORM_LINAG_TAB1 (**canonical for linagliptin tablet formulation 1 indicator**)
+
+- **Description:** 1 = subject received the linagliptin “tablet
+  formulation 1” (used in Retlich 2015 Study 2), 0 = subject received
+  tablet formulation 2 (the marketed linagliptin tablet, used in Studies
+  3 and 4) OR the powder-in-bottle formulation (used in Study 1). The
+  powder-vs-tablet contrast is captured by the sibling canonical
+  `FORM_POWDER`; this indicator switches between the two tablet
+  formulations.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (tablet formulation 2 = marketed linagliptin
+  tablet, the typical-value Ka reference; or `FORM_POWDER = 1` for the
+  powder).
+- **Source aliases:** none known.
+- **Example models:** `Retlich_2015_linagliptin.R` (multiplicative shift
+  on the linagliptin first-order absorption rate constant Ka; typical Ka
+  = 0.441 1/h for tablet formulation 2 (reference), 0.795 1/h for tablet
+  formulation 1, 0.933 1/h for the powder formulation).
+- **Notes:** Specific scope because the linagliptin “tablet 1 vs tablet
+  2” distinction is a drug-product-version comparison local to the
+  Retlich 2015 popPK dataset; tablet formulation 1 was a development
+  formulation that is not marketed. Mirrors the `FORM_DP2` (sarilumab)
+  and `FORM_P2F2` (isatuximab) entries under the `FORM_*` family. Set to
+  0 for routine marketed-formulation simulation. Ratified canonically
+  alongside the Retlich 2015 linagliptin extraction.
 
 ### FORM_DP2
 
@@ -7727,6 +8038,28 @@ promote to general when a second paper ratifies identical semantics.
 - **Example models:** `Cirincione_2017_exenatide.R`.
 - **Notes:** Paired with `STUDY1`. When both are 0, the subject is in
   the pooled “other studies” residual-error group.
+
+### STUDY_PKU015
+
+- **Description:** 1 = subject enrolled in study PKU-015 (pediatric
+  population pharmacokinetic study of sapropterin in infants and young
+  children, 0-6 years old, of the Qi 2014 pooled analysis); 0 = study
+  PKU-004 (adolescent / adult open-label extension study, \>= 9 years
+  old). Used to switch the residual-error magnitude per study under the
+  log-transform-both-sides (LTBS) constant-CV residual model.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (PKU-004 adolescent / adult cohort).
+- **Source aliases:** derived per subject from the trial identifier
+  (`PKU-015` -\> 1, `PKU-004` -\> 0).
+- **Example models:** `Qi_2014_sapropterin.R`.
+- **Notes:** Qi 2014 Table 3 reports separate residual-error estimates
+  for the two studies – PKU-004 = 21.1% CV, PKU-015 = 30.2% CV under the
+  LTBS approach. The `STUDY_PKU015` indicator selects between them.
+  Specific scope because the indicator is tied to the BioMarin
+  sapropterin clinical-development program (PKU-004 = phase 3b
+  extension, PKU-015 = phase 3b pediatric).
 
 ### PHASE2
 

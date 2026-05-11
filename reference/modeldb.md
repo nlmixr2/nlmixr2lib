@@ -11,7 +11,7 @@ modeldb
 
 ## Format
 
-A data frame with 319 rows and 10 columns
+A data frame with 341 rows and 12 columns
 
 - name:
 
@@ -54,6 +54,19 @@ A data frame with 319 rows and 10 columns
 
   Basename of the vignette associated with this model (without path or
   extension); NA if none
+
+- label:
+
+  Human-readable navbar label derived from the filename: 'Drug (Author
+  Year)' for the canonical '\<Author\>\_\<Year\>\_\<drug\>' form,
+  'DDMoRe: \<drug\>' for the parameterless NA_NA\_\<drug\> ddmore
+  entries, otherwise the basename with underscores replaced by spaces
+
+- category:
+
+  Coarse-grained model bucket derived from the filename path:
+  'specificDrugs', 'ddmore', or 'other' (anything not under those two
+  directories)
 
 - filename:
 

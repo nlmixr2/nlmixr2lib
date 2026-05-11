@@ -552,7 +552,6 @@ intervals_iv <- data.frame(start = 0, end = 6,
                            auclast = TRUE, cav = TRUE)
 nca_ped <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj_ped, dose_obj_ped,
                                           intervals = intervals_iv))
-#>  ■■■■■■■■■■■■■■■■                  49% |  ETA:  1s
 summary(nca_ped)
 #>  start end         treatment   N    auclast       cmax cmin
 #>      0   6 ped_HM_15_then_12 300 504 [16.7] 180 [21.8]   NC

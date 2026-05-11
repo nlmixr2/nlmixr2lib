@@ -334,13 +334,13 @@ nca_res  <- PKNCA::pk.nca(nca_data)
 #> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
-#>  ■■■■■■■■■■■■■■■                   46% |  ETA:  1s
+#>  ■■■■■■■■■■■■■                     39% |  ETA:  2s
 #> Warning: Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed

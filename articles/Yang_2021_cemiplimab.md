@@ -302,8 +302,8 @@ nca_window <- function(sim, dose_interval_d, n_doses, label) {
 nca_q2w <- nca_window(sim, 14, 12, "3 mg/kg Q2W")
 #>  ■■■■■■■■■■■■■■■■■■                58% |  ETA:  2s
 nca_q3w <- nca_window(sim, 21,  8, "350 mg Q3W")
-#>  ■■■■■■■                           21% |  ETA:  4s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■          78% |  ETA:  1s
+#>  ■■■■■■■                           20% |  ETA:  4s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■           73% |  ETA:  1s
 
 knitr::kable(summary(nca_q2w),
              caption = "Simulated NCA at steady state (6-week window), 3 mg/kg Q2W")
