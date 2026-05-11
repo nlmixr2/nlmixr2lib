@@ -250,6 +250,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Allegaert_2015_paracetamol.R`.
 - **Notes:** Specific scope because the canonical encoding pools all oral contraceptive types (combined / progestin-only) into a single binary; future models that need to distinguish formulations should register a finer-grained canonical (e.g., `CONMED_BIRTHCONTROL_COMBINED`, `CONMED_BIRTHCONTROL_PROGESTIN`). The full-word canonical name was chosen over a shorter `BC_USE` form for clarity in source traces.
 
+### EOPE (**canonical for early-onset pre-eclampsia indicator**)
+- **Description:** Binary indicator of early-onset pre-eclampsia (eoPE); `1` = eoPE diagnosed before 34 weeks gestation, `0` = not eoPE. Time-fixed per subject within the gestational PK study window. Used by population PK models that compare drug disposition in pregnant women with vs without early-onset pre-eclampsia.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no eoPE). Effect form in Schoenmakers 2025 is multiplicative on CL: `CL_eoPE = CL * ThetaPE^EOPE` with `ThetaPE = 0.617` (38% reduction in betamethasone CL when eoPE is present); encoded in nlmixr2 as the log-additive shift `cl <- exp(lcl + etalcl + e_eope_cl * EOPE)` with `e_eope_cl = log(0.617)`.
+- **Source aliases:**
+  - `PE` -- common abbreviation in obstetric pharmacology papers when the cohort restriction is to early-onset PE only; used in `Schoenmakers_2025_betamethasone.R` (paper notation: `eoPE` / `ThetaPE`).
+- **Example models:** `Schoenmakers_2025_betamethasone.R` (multiplicative effect on CL, encoded via the log-additive form on `lcl`; reduces apparent betamethasone clearance from 15.6 L/h to 9.6 L/h).
+- **Notes:** Distinct from a broader `PREECL` indicator that would pool early-onset, late-onset and postpartum pre-eclampsia. The "early-onset" specifier corresponds to diagnosis before 34 weeks gestation, the conventional clinical cutoff (Phipps 2019 Nat Rev Nephrol). Future papers that enrol mixed early-/late-onset cohorts or that report PE status without the 34-week stratification should register a separate canonical (e.g., `PREECL` for any-onset PE, or `LOPE` for late-onset PE) rather than reusing `EOPE` with relaxed semantics. Distinct from `PREG` (pregnancy status indicator): `EOPE` is a complication-of-pregnancy stratifier within a pregnant cohort, whereas `PREG` discriminates pregnant-vs-non-pregnant subjects. Ratified canonically on 2026-05-11 alongside the Schoenmakers 2025 betamethasone extraction.
+
 ## Renal / hepatic function
 
 ### URINE_FLOW (**canonical for instantaneous urine flow rate**)
