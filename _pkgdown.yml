@@ -130,6 +130,8 @@ navbar:
         href: articles/Savic_2017_cladribine.html
       - text: "Clesrovimab (Hu 2026)"
         href: articles/Hu_2026_clesrovimab.html
+      - text: "Cyclosporin (Debord 2001)"
+        href: articles/Debord_2001_cyclosporin.html
       - text: "Daclizumab (Othman 2014)"
         href: articles/Othman_2014_daclizumab.html
       - text: "Daclizumab cd25 (Diao 2016)"
@@ -662,6 +664,7 @@ articles:
   - articles/Conrado_2014_alzheimer
   - articles/Cook_2016_paracetamol
   - articles/Dao_2020_sultiame
+  - articles/Debord_2001_cyclosporin
   - articles/Delattre_2010_amikacin
   - articles/Diao_2014_rFIXFc
   - articles/Diao_2016_daclizumab_cd25
