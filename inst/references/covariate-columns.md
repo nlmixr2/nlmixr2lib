@@ -1758,15 +1758,16 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 
 ### TUMSZ (**canonical for baseline tumor size**)
 - **Description:** Baseline tumor size. For solid tumors, the sum of diameters of target lesions per RECIST; for classical Hodgkin lymphoma and lymphoma generally, the sum of products of perpendicular diameters (SPPD) or the sum of linear diameters of target lesions, depending on the source paper.
-- **Units:** mm
+- **Units:** mm (for linear-diameter constructs); mm^2 (for SPPD constructs; record the per-model convention in `covariateData[[TUMSZ]]$units` and `notes`).
 - **Type:** continuous
 - **Scope:** general
-- **Reference category:** n/a -- used with power scaling `(TUMSZ / ref)^exponent`. Reference values observed: 41 mm (Zhou 2025); 63 mm (Budha 2023); 90 mm (Lu 2014, source reference 9 cm converted to mm).
+- **Reference category:** n/a -- used with power scaling `(TUMSZ / ref)^exponent` for continuous effects, or with a paper-specific threshold for categorical-stratum indicators (e.g., Gibiansky 2014 splits BSIZ at 1750 mm^2 into low- vs high-burden strata). Reference values observed: 41 mm (Zhou 2025); 63 mm (Budha 2023); 90 mm (Lu 2014, source reference 9 cm converted to mm); 1750 mm^2 threshold (Gibiansky 2014, SPPD).
 - **Source aliases:**
   - `LDIAM` (Zhou 2025; pediatric lymphoma "linear diameter" of target lesions in mm).
   - `TMBD` (originally in cm; `TUMSZ_mm = TMBD_cm * 10`) -- used in `Lu_2014_trastuzumabemtansine.R`.
-- **Example models:** `Budha_2023_tislelizumab.R` (reference 63 mm), `Lu_2014_trastuzumabemtansine.R` (reference 90 mm; source column TMBD in cm, values converted to mm on ingestion), `Zhou_2025_brentuximab.R` (reference 41 mm; source column LDIAM is the sum of linear diameters of target lesions; effect on ADC clearance only).
-- **Notes:** Promoted to scope: general on 2026-04-20 as a conventional oncology baseline-tumor-size measure (RECIST for solid tumors, SPPD or sum-of-linear-diameters for lymphomas). The SPPD vs sum-of-diameters vs sum-of-linear-diameters convention is pooled onto a single column; document the per-model mixture where relevant. When the source paper reports tumor size in cm, convert to mm (the canonical unit) on data ingestion and scale the per-model reference accordingly so `(TUMSZ / ref)^exp` is numerically invariant. When a source paper specifically reports the RECIST 1.1 "sum of longest diameters" of target lesions, use the more specific `TUM_SLD` canonical instead -- `TUMSZ` remains the pooled-tumor-burden register.
+  - `BSIZ` (Gibiansky 2014; baseline tumor size as the sum of products of perpendicular diameters of target lesions, mm^2; used as the categorical indicator `(BSIZ <= 1750)` in the obinutuzumab popPK model rather than as a continuous power covariate).
+- **Example models:** `Budha_2023_tislelizumab.R` (reference 63 mm), `Lu_2014_trastuzumabemtansine.R` (reference 90 mm; source column TMBD in cm, values converted to mm on ingestion), `Zhou_2025_brentuximab.R` (reference 41 mm; source column LDIAM is the sum of linear diameters of target lesions; effect on ADC clearance only), `Gibiansky_2014_obinutuzumab.R` (SPPD in mm^2; used as a categorical indicator `(TUMSZ <= 1750)` on the time-dependent clearance decay rate kdes, not as a continuous power covariate).
+- **Notes:** Promoted to scope: general on 2026-04-20 as a conventional oncology baseline-tumor-size measure (RECIST for solid tumors, SPPD or sum-of-linear-diameters for lymphomas). The SPPD vs sum-of-diameters vs sum-of-linear-diameters convention is pooled onto a single column; document the per-model mixture where relevant. When the source paper reports tumor size in cm, convert to mm (the canonical unit) on data ingestion and scale the per-model reference accordingly so `(TUMSZ / ref)^exp` is numerically invariant. For SPPD constructs the natural unit is mm^2 (a product of two perpendicular diameters in mm); record that in the per-model `covariateData[[TUMSZ]]$units` field and do NOT cross-mix mm and mm^2 within a single ingest. When a source paper specifically reports the RECIST 1.1 "sum of longest diameters" of target lesions, use the more specific `TUM_SLD` canonical instead -- `TUMSZ` remains the pooled-tumor-burden register.
 
 ### TUM_SLD (**canonical for sum of longest diameters of target lesions**)
 - **Description:** Baseline sum of longest diameters of target lesions per RECIST 1.1. More specific than the pooled `TUMSZ` canonical; use `TUM_SLD` when the source paper explicitly reports "sum of longest diameters" (or "sum of lesions") as the tumor-burden metric, distinct from the pooled "sum of diameters / SPPD / sum of linear diameters" mixture covered by `TUMSZ`.
@@ -1996,6 +1997,39 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
   - Categorical column "type of cancer" with level "Leukemia" -- decompose into `TUMTP_LEUK = as.integer(cancer_type == "Leukemia")`. Implicit reference category in `Akbar_2025_voriconazole.R` (so the model file does not consume this column directly; it is registered for future heterogeneous-cancer-cohort analyses).
 - **Example models:** none directly consume this column; `Akbar_2025_voriconazole.R` uses leukemia as the reference category and so does not need a leukemia indicator.
 - **Notes:** Distinct from the more specific `DIS_AML`, `DIS_BCPALL`, `DIS_CMML`, `MDSAML` entries -- those are for leukemia-only or leukemia-vs-leukemia contrasts; `TUMTP_LEUK` is for heterogeneous-cancer pooled cohorts where leukemia is one of several tumor types and the analysis treats `cancer type` as a many-level categorical. Akbar 2025 had leukemia as 56.8% of the cohort and used it as the reference category. Scope: specific because the reference category in any source paper is paper-defined. Ratified canonically on 2026-05-09.
+
+### TUMTP_BCL (**canonical for B-cell lymphoma (pooled residual) tumor-type indicator**)
+- **Description:** 1 = B-cell lymphoma (BCL), 0 = other tumor types. Time-fixed per subject. In Gibiansky 2014 the BCL category is a pooled residual indolent-B-cell-lymphoma group that includes follicular lymphoma (FL was the primary indication in GAUDI; the four-level DIS column in the NONMEM control stream splits B-cell histologies into CLL = 1, BCL = 2 (residual indolent B-cell-lymphoma pool including FL), DLBCL = 3, MCL = 4).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 = all other tumor types (in Gibiansky 2014 the implicit reference is CLL when paired with `TUMTP_DLBCL` and `TUMTP_MCL` all = 0; the residual indolent-B-cell-lymphoma pool in this paper is dominated by follicular lymphoma).
+- **Source aliases:**
+  - `DIS` (Gibiansky 2014; integer code with `DIS == 2` flagging BCL) -- decompose into `TUMTP_BCL = as.integer(DIS == 2)`.
+- **Example models:** `Gibiansky_2014_obinutuzumab.R` (effect on time-dependent clearance decay rate kdes via the composite `(TUMTP_BCL + TUMTP_DLBCL + TUMTP_MCL)` (any-NHL effect; ratio 2.08) and on both time-dependent CL_T and steady-state CL_inf via the composite `(TUMTP_BCL + TUMTP_DLBCL)` (shared BCL/DLBCL effect; ratio 0.834 in the reverse direction, i.e., 16.6% lower CL than CLL)).
+- **Notes:** Follows the `TUMTP_CHL` / `TUMTP_GC` / `TUMTP_SCLC` decomposition pattern. Distinct from `TUMTP_LYMPH` (a broader heterogeneous lymphoma pool that lumps cHL with NHL histologies) -- `TUMTP_BCL` is specifically B-cell lymphoma and pairs with sibling `TUMTP_DLBCL` and `TUMTP_MCL` for histology-specific contrasts within the NHL family. When a future paper studies follicular lymphoma in isolation (rather than pooled into BCL), register a more specific canonical (e.g., `TUMTP_FL`) rather than overloading this one. Ratified canonically on 2026-05-11.
+
+### TUMTP_DLBCL (**canonical for diffuse large B-cell lymphoma indicator**)
+- **Description:** 1 = diffuse large B-cell lymphoma (DLBCL), 0 = other tumor types. Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 = all other tumor types (in Gibiansky 2014 the implicit reference is CLL when paired with `TUMTP_BCL` and `TUMTP_MCL` all = 0).
+- **Source aliases:**
+  - `DIS` (Gibiansky 2014; integer code with `DIS == 3` flagging DLBCL) -- decompose into `TUMTP_DLBCL = as.integer(DIS == 3)`.
+- **Example models:** `Gibiansky_2014_obinutuzumab.R` (effect on kdes via the any-NHL composite indicator; effect on CL_T and CL_inf via the shared BCL/DLBCL composite indicator).
+- **Notes:** Follows the `TUMTP_CHL` / `TUMTP_GC` / `TUMTP_SCLC` decomposition pattern. Distinct from `TUMTP_LYMPH` (broader lymphoma pool) and `TUMTP_PCALCL` (primary cutaneous anaplastic large-cell lymphoma; a CD30+ T-cell-lineage entity unrelated to DLBCL). DLBCL is the most common high-grade B-cell-NHL subtype; the Gibiansky 2014 cohort had only 30 DLBCL patients (4.4%), so a single estimated effect on CL is shared with BCL (a much larger pooled group; see `TUMTP_BCL` notes). Ratified canonically on 2026-05-11.
+
+### TUMTP_MCL (**canonical for mantle cell lymphoma indicator**)
+- **Description:** 1 = mantle cell lymphoma (MCL), 0 = other tumor types. Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 = all other tumor types (in Gibiansky 2014 the implicit reference is CLL when paired with `TUMTP_BCL` and `TUMTP_DLBCL` all = 0).
+- **Source aliases:**
+  - `DIS` (Gibiansky 2014; integer code with `DIS == 4` flagging MCL) -- decompose into `TUMTP_MCL = as.integer(DIS == 4)`.
+- **Example models:** `Gibiansky_2014_obinutuzumab.R` (effect on kdes via the any-NHL composite indicator; separate effect on CL_T and CL_inf via the standalone MCL indicator (ratio 1.75, i.e., 75% higher CL than CLL)).
+- **Notes:** Follows the `TUMTP_CHL` / `TUMTP_GC` / `TUMTP_SCLC` decomposition pattern. Distinct from `TUMTP_LYMPH` (broader lymphoma pool). The Gibiansky 2014 cohort had only 20 MCL patients (2.9%); the paper reports the highest obinutuzumab CL among the four B-cell-malignancy histologies for MCL, consistent with the highest CD20 expression density on MCL B-cells relative to the other histologies. Ratified canonically on 2026-05-11.
 
 ### LINE_1L (**canonical for first-line-therapy indicator**)
 - **Description:** 1 = first-line therapy (1L) / treatment-naive, 0 = second-line or greater (2L+) / relapsed-or-refractory.
