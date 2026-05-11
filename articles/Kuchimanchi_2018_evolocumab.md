@@ -32,16 +32,17 @@ of evolocumab, a fully human IgG2 monoclonal antibody against proprotein
 convertase subtilisin/kexin type 9 (PCSK9), in 3414 subjects pooled
 across 11 clinical studies spanning phase 1, 2, and 3 (healthy
 volunteers plus patients with hypercholesterolemia, including
-heterozygous familial hypercholesterolemia and statin-intolerance
+heterozygous familial hypercholesterolemia and conmed_statin-intolerance
 cohorts). The final model is a one-compartment model with first-order SC
 absorption from a depot compartment and parallel linear plus
 Michaelis–Menten (target-mediated) elimination from the central
 compartment. Body weight entered as a power effect on CL, V, and
-V_(max); female sex multiplied V; statin monotherapy, ezetimibe use
-(functionally the statin + ezetimibe combination-therapy indicator), and
-baseline PCSK9 modified V_(max). The absorption rate constant (k_(a)),
-SC bioavailability (F), Michaelis–Menten constant (k_(m)), and V_(max)
-typical value were fixed in the updated phase 3 population PK model.
+V_(max); female sex multiplied V; conmed_statin monotherapy, ezetimibe
+use (functionally the conmed_statin + ezetimibe combination-therapy
+indicator), and baseline PCSK9 modified V_(max). The absorption rate
+constant (k_(a)), SC bioavailability (F), Michaelis–Menten constant
+(k_(m)), and V_(max) typical value were fixed in the updated phase 3
+population PK model.
 
 This vignette reproduces typical-value concentration–time profiles for
 the two commercial regimens (140 mg SC Q2W and 420 mg SC QM), documents
@@ -148,8 +149,8 @@ set.seed(20260424)
 reference_covariates <- tibble::tibble(
   WT          = 84,
   SEXF        = 0L,
-  STATIN_MONO = 0L,
-  EZE         = 0L,
+  CONMED_STATIN_MONO = 0L,
+  CONMED_EZE         = 0L,
   PCSK9       = 425
 )
 
@@ -160,8 +161,8 @@ make_regimen <- function(amt, ii, addl, label) {
   df$id          <- 1L
   df$WT          <- reference_covariates$WT
   df$SEXF        <- reference_covariates$SEXF
-  df$STATIN_MONO <- reference_covariates$STATIN_MONO
-  df$EZE         <- reference_covariates$EZE
+  df$CONMED_STATIN_MONO <- reference_covariates$CONMED_STATIN_MONO
+  df$CONMED_EZE         <- reference_covariates$CONMED_EZE
   df$PCSK9       <- reference_covariates$PCSK9
   df$regimen     <- label
   df
@@ -382,9 +383,9 @@ observed C_(max). {.table}
   (which shifts observed mean C_(max) slightly relative to the reference
   patient) are not reproduced in this typical-value simulation.
 - **Time-fixed covariates.** All covariates in the model file (`WT`,
-  `SEXF`, `STATIN_MONO`, `EZE`, `PCSK9`) are treated as baseline
-  time-fixed. Kuchimanchi 2018’s dataset used baseline values for these
-  covariates; concomitant-medication status was required to be stable
-  (\>4 weeks of administration before study day 1) in the
+  `SEXF`, `CONMED_STATIN_MONO`, `CONMED_EZE`, `PCSK9`) are treated as
+  baseline time-fixed. Kuchimanchi 2018’s dataset used baseline values
+  for these covariates; concomitant-medication status was required to be
+  stable (\>4 weeks of administration before study day 1) in the
   exposure–response analysis, though the popPK analysis used any
   duration of administration.

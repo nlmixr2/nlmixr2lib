@@ -352,8 +352,7 @@ nca_oral <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj_o, dose_obj_o,
                                             intervals = intervals_iv))
 #> Warning: Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
-#>  ■■■■■■■■■■■■■■■■                  50% |  ETA:  1s
-#> Warning: Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
 knitr::kable(as.data.frame(nca_oral$result) |>
                dplyr::select(cohort, id, PPTESTCD, PPORRES) |>

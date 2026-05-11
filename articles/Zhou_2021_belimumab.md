@@ -61,8 +61,9 @@ clinical studies (Zhou 2021, Methods and Table 1):
   (BLISS-NEA), BEL116119, BEL110751 (BLISS-76), BEL110752 (BLISS-52),
   200909, BEL114448. The two early-phase studies LBSL01 and LBSL02 used
   an ELISA-based assay; the seven later studies used an
-  electrochemiluminescence-based assay. The model carries an `STDY_LBSL`
-  indicator that adjusts CL and V1 in the two early studies.
+  electrochemiluminescence-based assay. The model carries an
+  `STUDY_LBSL` indicator that adjusts CL and V1 in the two early
+  studies.
 - **Disease state:** active autoantibody-positive SLE (or healthy
   participants in the early-phase studies); median baseline serum IgG
   14.7 g/L (adults) and 14.5 g/L (pediatric); median baseline serum
@@ -105,7 +106,7 @@ noted.
 | Reference fat-free mass | 40.69 kg | Table 2: covariate normalisation `(FFM/40.69)` |
 | Reference baseline albumin | 40 g/L | Table 2: covariate normalisation `(BALB/40)` |
 | Reference baseline IgG | 14.8 g/L | Table 2: covariate normalisation `(BIGG/14.8)` |
-| `STDY_LBSL` semantics | INDR = 1 for LBSL01 and LBSL02 only | Table 2 footnote: “INDR=1 for study LBSL01 and LBSL02, INDR=0 for the rest of studies” |
+| `STUDY_LBSL` semantics | INDR = 1 for LBSL01 and LBSL02 only | Table 2 footnote: “INDR=1 for study LBSL01 and LBSL02, INDR=0 for the rest of studies” |
 | `RACE_NEAS` semantics | RAC4 = 1 for North East Asian (Chinese / Japanese / Korean) | Table 2 footnote d: “RAC4 = 1 for North East Asian population and RAC4 = 0 for other populations” |
 
 The published abstract reports a typical adult steady-state volume of
@@ -161,7 +162,7 @@ make_cohort <- function(n,
     ALB       = ALB,
     SEXF      = as.integer(runif(n) < sex_female_pct / 100),
     RACE_NEAS = as.integer(runif(n) < race_neas_pct / 100),
-    STDY_LBSL = as.integer(runif(n) < stdy_lbsl_pct / 100)
+    STUDY_LBSL = as.integer(runif(n) < stdy_lbsl_pct / 100)
   )
 }
 
@@ -364,8 +365,9 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- suppressWarnings(PKNCA::pk.nca(nca_data))
-#>  ■■■■■■■■■■■                       34% |  ETA:  6s
-#>  ■■■■■■■■■■■■■■■■■■■■■■            69% |  ETA:  3s
+#>  ■■■■■■■■■                         27% |  ETA:  7s
+#>  ■■■■■■■■■■■■■■■■■■■               60% |  ETA:  4s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     93% |  ETA:  1s
 nca_tbl  <- as.data.frame(nca_res$result)
 ```
 
@@ -431,8 +433,8 @@ covariates were not available for replication).
   truncated to \[20, 55\] g/L. The paper reports only median and range,
   so the parametric form is a working assumption.
 - **Race and study-indicator distributions** — `RACE_NEAS` and
-  `STDY_LBSL` sampled as Bernoulli at the published prevalences;
-  `STDY_LBSL` defaults to 0 % for the validation cohort because the 10
+  `STUDY_LBSL` sampled as Bernoulli at the published prevalences;
+  `STUDY_LBSL` defaults to 0 % for the validation cohort because the 10
   mg/kg Q4W exposure-comparison analysis (Zhou 2021 Table 3) is driven
   by the later, primary-assay studies.
 - **No IIV on residual error** — Zhou 2021 Table 2 reports an

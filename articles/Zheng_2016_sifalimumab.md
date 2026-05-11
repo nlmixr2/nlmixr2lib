@@ -81,18 +81,18 @@ holds the `population` list literal).
 | Q | Zheng 2016 Table 2, theta4 | 0.34 L/day |
 | WT exponent on CL | Zheng 2016 Table 2, theta5 | 0.45 (reference 64.3 kg) |
 | BGENE21 exponent on CL | Zheng 2016 Table 2, theta6 | 0.09 (reference 12.04) |
-| STEROID fractional effect on CL | Zheng 2016 Table 2, theta7 | +0.11 (so CL x (1 + 0.11 \* STEROID)) |
+| CONMED_STEROID fractional effect on CL | Zheng 2016 Table 2, theta7 | +0.11 (so CL x (1 + 0.11 \* CONMED_STEROID)) |
 | WT exponent on V1 | Zheng 2016 Table 2, theta8 | 0.36 (reference 64.3 kg) |
 | DOSE exponent on V1 | Zheng 2016 Table 2, theta9 | 0.06 (reference 600 mg) |
-| STEROID fractional effect on V1 | Zheng 2016 Table 2, theta10 | -0.09 (so V1 x (1 - 0.09 \* STEROID)) |
+| CONMED_STEROID fractional effect on V1 | Zheng 2016 Table 2, theta10 | -0.09 (so V1 x (1 - 0.09 \* CONMED_STEROID)) |
 | BSV on CL (log-normal) | Zheng 2016 Table 2, BSV (CV %) | 24% CV (omega^2 = log(CV^2 + 1) = 0.056016) |
 | BSV on V1 (log-normal) | Zheng 2016 Table 2, BSV (CV %) | 16% CV (omega^2 = 0.025278) |
 | IOV on V1 (per-occasion) | Zheng 2016 Table 2 / IOV paragraph | 26% CV, seven infusions; **not implemented** (see below) |
 | BSV correlations | Zheng 2016 Results | None significant; IIV treated as diagonal |
 | Proportional residual error | Zheng 2016 Table 2 | 7.01% -\> propSd = 0.0701 (fraction) |
 | Additive residual error | Zheng 2016 Table 2 | 1.14 ug/mL |
-| Covariate equation CL | Zheng 2016 Equations (Results) | CL = theta1 \* (WT/64.3)^0.45 \* (BGENE21/12.04)^0.09 \* (1 + 0.11 \* STEROID) |
-| Covariate equation V1 | Zheng 2016 Equations (Results) | V1 = theta2 \* (WT/64.3)^0.36 \* (DOSE/600)^0.06 \* (1 - 0.09 \* STEROID) |
+| Covariate equation CL | Zheng 2016 Equations (Results) | CL = theta1 \* (WT/64.3)^0.45 \* (BGENE21/12.04)^0.09 \* (1 + 0.11 \* CONMED_STEROID) |
+| Covariate equation V1 | Zheng 2016 Equations (Results) | V1 = theta2 \* (WT/64.3)^0.36 \* (DOSE/600)^0.06 \* (1 - 0.09 \* CONMED_STEROID) |
 | Dose regimens | Zheng 2016 Table 1 and Methods | 200, 600, or 1200 mg IV q4w for 52 weeks; loading dose day 15 |
 
 ### Virtual cohort
@@ -127,25 +127,25 @@ pop <- cohorts %>%
                            39), 131.3),
     BGENE21    = pmin(pmax(rlnorm(dplyr::n(), meanlog = log(12.04), sdlog = 0.8),
                            0.32), 38.59),
-    STEROID = as.integer(runif(dplyr::n()) < 0.85),
+    CONMED_STEROID = as.integer(runif(dplyr::n()) < 0.85),
     DOSE       = dose_mg
   ) %>%
-  select(ID, treatment, dose_mg, WT, BGENE21, STEROID, DOSE)
+  select(ID, treatment, dose_mg, WT, BGENE21, CONMED_STEROID, DOSE)
 
 pop
 #> # A tibble: 298 × 7
-#>       ID treatment dose_mg    WT BGENE21 STEROID  DOSE
-#>    <int> <chr>       <dbl> <dbl>   <dbl>   <int> <dbl>
-#>  1     1 200 mg        200  52.6    5.19       1   200
-#>  2     2 200 mg        200  80.1    5.96       1   200
-#>  3     3 200 mg        200  63.5   15.9        1   200
-#>  4     4 200 mg        200  68.6   15.9        1   200
-#>  5     5 200 mg        200  39     18.9        0   200
-#>  6     6 200 mg        200  60.4   35.5        1   200
-#>  7     7 200 mg        200  54.4    8.85       0   200
-#>  8     8 200 mg        200  55.3   10.2        1   200
-#>  9     9 200 mg        200  69.7   37.3        1   200
-#> 10    10 200 mg        200  66.9    4.27       1   200
+#>       ID treatment dose_mg    WT BGENE21 CONMED_STEROID  DOSE
+#>    <int> <chr>       <dbl> <dbl>   <dbl>          <int> <dbl>
+#>  1     1 200 mg        200  52.6    5.19              1   200
+#>  2     2 200 mg        200  80.1    5.96              1   200
+#>  3     3 200 mg        200  63.5   15.9               1   200
+#>  4     4 200 mg        200  68.6   15.9               1   200
+#>  5     5 200 mg        200  39     18.9               0   200
+#>  6     6 200 mg        200  60.4   35.5               1   200
+#>  7     7 200 mg        200  54.4    8.85              0   200
+#>  8     8 200 mg        200  55.3   10.2               1   200
+#>  9     9 200 mg        200  69.7   37.3               1   200
+#> 10    10 200 mg        200  66.9    4.27              1   200
 #> # ℹ 288 more rows
 ```
 
@@ -178,7 +178,7 @@ obs_times <- sort(unique(c(peri_dose, terminal)))
 dose_rows <- pop %>%
   tidyr::crossing(time = dose_days) %>%
   transmute(
-    ID, treatment, WT, BGENE21, STEROID, DOSE,
+    ID, treatment, WT, BGENE21, CONMED_STEROID, DOSE,
     time,
     amt  = dose_mg,
     evid = 1L,
@@ -188,7 +188,7 @@ dose_rows <- pop %>%
   )
 
 obs_rows <- pop %>%
-  select(ID, treatment, WT, BGENE21, STEROID, DOSE) %>%
+  select(ID, treatment, WT, BGENE21, CONMED_STEROID, DOSE) %>%
   tidyr::crossing(time = obs_times) %>%
   mutate(
     amt  = NA_real_,
@@ -427,12 +427,12 @@ variability.
   first-order elimination from `central`, no explicit depot or
   absorption compartment.
 - **IIV:** diagonal matrix on CL and V1; no BSV on Q or V2.
-- **Covariates:** WT, BGENE21, STEROID on CL; WT, DOSE, STEROID on V1.
-  Collectively these accounted for \< 10% of PK variability in the
-  published final model.
+- **Covariates:** WT, BGENE21, CONMED_STEROID on CL; WT, DOSE,
+  CONMED_STEROID on V1. Collectively these accounted for \< 10% of PK
+  variability in the published final model.
 - **Typical terminal half-life** predicted from the structural
   parameters for a typical 64.3 kg patient with BGENE21 = 12.04, DOSE =
-  600 mg, STEROID = 0 is approximately 24 days (dominated by the
+  600 mg, CONMED_STEROID = 0 is approximately 24 days (dominated by the
   central-compartment elimination rate CL/V1 = 0.184/2.82 = 0.0652
   day^-1 plus the small peripheral redistribution term), consistent with
   the Results narrative.

@@ -21,12 +21,12 @@ entries.
 
 Cao et al. fit the mPBPK model to visilizumab plasma concentration
 profiles digitised from Carpenter 2002, humanized non-FcR-binding
-anti-CD3 IgG2 in steroid-refractory acute graft-versus-host disease.
-Doses: 3 mg/m^2 IV. Cao 2013 does not reproduce the underlying Carpenter
-2002 demographics; consult the source publication for age, sex, and
-other baseline characteristics. Cao 2013 used a 70 kg reference body
-weight when assigning the human physiological constants (V_p = 2.6 L,
-ISF = 15.6 L, lymph flow = 2.9 L/day).
+anti-CD3 IgG2 in conmed_steroid-refractory acute graft-versus-host
+disease. Doses: 3 mg/m^2 IV. Cao 2013 does not reproduce the underlying
+Carpenter 2002 demographics; consult the source publication for age,
+sex, and other baseline characteristics. Cao 2013 used a 70 kg reference
+body weight when assigning the human physiological constants (V_p = 2.6
+L, ISF = 15.6 L, lymph flow = 2.9 L/day).
 
 The packaged metadata (`readModelDb("Cao_2013_visilizumab")$population`)
 records this study context.

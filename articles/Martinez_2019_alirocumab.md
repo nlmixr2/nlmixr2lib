@@ -38,11 +38,11 @@ I study gave single IV doses of 0.3-12 mg/kg. The marketed regimens are
 Baseline characteristics from the Martinez 2019 Table 2 footnotes:
 median body weight 82.9 kg, median age 60 years, and time-varying median
 free PCSK9 concentration 72.9 ng/mL (baseline median 283 ng/mL;
-time-varying 5th/95th percentiles 0/392 ng/mL). Concomitant statin use
-(rosuvastatin \< 20 mg/day, atorvastatin \< 40 mg/day, or simvastatin at
-any dose) was the other clinically-relevant covariate retained in the
-final model. Sex, race, renal function, BMI, and ADA positivity were
-evaluated but not retained.
+time-varying 5th/95th percentiles 0/392 ng/mL). Concomitant
+conmed_statin use (rosuvastatin \< 20 mg/day, atorvastatin \< 40 mg/day,
+or simvastatin at any dose) was the other clinically-relevant covariate
+retained in the final model. Sex, race, renal function, BMI, and ADA
+positivity were evaluated but not retained.
 
 The same information is available programmatically via
 `readModelDb("Martinez_2019_alirocumab")$population`.
@@ -53,7 +53,7 @@ Every structural parameter, covariate effect, IIV element, and
 residual-error term below is taken from Martinez 2019 Table 2 (“Final
 model with covariates” column) and its footnotes a-e. Reference
 covariate values: 82.9 kg body weight, 60 years age, no concomitant
-statin (STATIN = 0), and 72.9 ng/mL free PCSK9.
+conmed_statin (CONMED_STATIN = 0), and 72.9 ng/mL free PCSK9.
 
 | Equation / parameter | Value (paper / model file) | Source location |
 |----|----|----|
@@ -67,7 +67,7 @@ statin (STATIN = 0), and 72.9 ng/mL free PCSK9.
 | `llag` (LAG) | `0.641 h / 24 = 0.02671 day` | Table 2, LAG row |
 | `logitfdepot` (logit F_pop) | `logit(0.862) = 1.8326` | Table 2, F row (typical F = 0.862) |
 | `e_wt_cl` (WT additive slope) | `2.92e-4 L/h/kg * 24 = 7.008e-3 L/day/kg` | Table 2 theta12, Table 2 footnote a |
-| `e_statin_cl` (STATIN additive) | `6.44e-3 L/h * 24 = 0.15456 L/day` | Table 2 theta13, Table 2 footnote a |
+| `e_conmed_statin_cl` (CONMED_STATIN additive) | `6.44e-3 L/h * 24 = 0.15456 L/day` | Table 2 theta13, Table 2 footnote a |
 | `e_age_vp` (AGE power exponent) | `0.310` | Table 2 theta15, Table 2 footnote b |
 | `e_fpcsk9_km` (FPCSK9 slope) | `-0.541 mg/L per (FPCSK9/72.9)` | Table 2 theta14, Table 2 footnote c |
 | `var(etalcl)` | `0.232` (CV 48.2%) | Table 2, omega^2 CLL row |
@@ -79,7 +79,7 @@ statin (STATIN = 0), and 72.9 ng/mL free PCSK9.
 | `propSd` | `0.259` (25.9%) | Table 2, theta8 |
 | `addSd` | `0.0465 mg/L` | Table 2, theta9 |
 | Structure (2-cmt + 1st-order SC, linear + MM from central) | n/a | Fig. 1 and Results §3.1 |
-| CLL equation | `TVCLL + COV1*(WT - 82.9) + COV2*STATIN` | Table 2 footnote a, Eq in Results §3.1 |
+| CLL equation | `TVCLL + COV1*(WT - 82.9) + COV2*CONMED_STATIN` | Table 2 footnote a, Eq in Results §3.1 |
 | Km equation | `TVKM + COV3*(FPCSK9 / 72.9)` | Table 2 footnote c, Eq in Results §3.1 |
 | V3 equation | `TVV3 * (AGE / 60)^COV4` | Table 2 footnote b, Eq in Results §3.1 |
 
@@ -93,7 +93,7 @@ statin (STATIN = 0), and 72.9 ng/mL free PCSK9.
 - **Additive covariate structure on CLL and Km.** Martinez’s paper uses
   additive (rather than multiplicative) covariate models on the linear
   clearance CLL and on Km, evaluated on the population typical value:
-  `CLL_TV = TVCLL + theta * (WT - 82.9) + theta * STATIN` and
+  `CLL_TV = TVCLL + theta * (WT - 82.9) + theta * CONMED_STATIN` and
   `Km_TV = TVKM + theta * (FPCSK9 / 72.9)`. Individual values then carry
   an exponential between-subject term: `CLL_i = CLL_TV * exp(eta_CLL)`.
   This is preserved faithfully in
@@ -137,7 +137,7 @@ cohort <- tibble::tibble(
   id     = seq_len(n_subj),
   WT     = pmin(pmax(rnorm(n_subj, mean = 82.9, sd = 18),  45, 150)),
   AGE    = pmin(pmax(rnorm(n_subj, mean = 60,   sd = 12),  18,  90)),
-  STATIN = rbinom(n_subj, size = 1, prob = 0.80),
+  CONMED_STATIN = rbinom(n_subj, size = 1, prob = 0.80),
   FPCSK9 = pmin(pmax(rnorm(n_subj, mean = 72.9, sd = 120), 0,  400))
 )
 ```
@@ -179,7 +179,7 @@ make_cohort <- function(cohort, dose_amt, dose_days, treatment, tau,
   dplyr::bind_rows(ev_dose, ev_obs) |>
     dplyr::arrange(id, time, dplyr::desc(evid)) |>
     dplyr::select(id, time, amt, cmt, evid, treatment,
-                  WT, AGE, STATIN, FPCSK9)
+                  WT, AGE, CONMED_STATIN, FPCSK9)
 }
 
 events_75  <- make_cohort(cohort, 75,  dose_days_q2w, "75mg_Q2W",  tau_q2w,
@@ -198,7 +198,7 @@ stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
 
 mod <- rxode2::rxode2(readModelDb("Martinez_2019_alirocumab"))
 #> ℹ parameter labels from comments will be replaced by 'label()'
-keep_cols <- c("WT", "AGE", "STATIN", "FPCSK9", "treatment")
+keep_cols <- c("WT", "AGE", "CONMED_STATIN", "FPCSK9", "treatment")
 
 sim <- lapply(split(events, events$treatment), function(ev) {
   as.data.frame(rxode2::rxSolve(mod, events = ev, keep = keep_cols))
@@ -297,7 +297,7 @@ wt_grid <- wt_grid |>
     pct_vs_medianWT = 100 * (CLL_Lph - TVCLL) / TVCLL
   )
 knitr::kable(wt_grid, digits = 4,
-  caption = "CLL (typical value, STATIN = 0) at selected body weights. Paper: -78% at 50 kg, +40% at 100 kg.")
+  caption = "CLL (typical value, CONMED_STATIN = 0) at selected body weights. Paper: -78% at 50 kg, +40% at 100 kg.")
 ```
 
 | WT_kg | CLL_Lph | pct_vs_medianWT |
@@ -310,8 +310,8 @@ knitr::kable(wt_grid, digits = 4,
 | 100.0 |  0.0174 |         40.2677 |
 | 110.0 |  0.0203 |         63.8161 |
 
-CLL (typical value, STATIN = 0) at selected body weights. Paper: -78% at
-50 kg, +40% at 100 kg. {.table}
+CLL (typical value, CONMED_STATIN = 0) at selected body weights. Paper:
+-78% at 50 kg, +40% at 100 kg. {.table}
 
 ### Age impact on V3
 
@@ -403,7 +403,7 @@ intervals <- data.frame(
 )
 
 nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
-#>  ■■■■■■■■■■■■■■                    44% |  ETA:  3s
+#>  ■■■■■■■■■■■■■■■■■■■■■■            69% |  ETA:  2s
 summary(nca_res)
 #>  Interval Start Interval End treatment   N AUClast (day*mg/L) Cmax (mg/L)
 #>               0           14 150mg_Q2W 300        95.9 [52.6] 10.1 [46.0]
@@ -420,7 +420,7 @@ summary(nca_res)
 Martinez 2019 reports a reference steady-state AUC(0-336h) of 2170
 mg\*h/L for 75 mg Q2W in patients weighing 50-100 kg (Results §3.3).
 With a typical patient (IIV zeroed) and the paper’s
-STATIN-coadministration prevalence (~80% in the phase III pooled
+CONMED_STATIN-coadministration prevalence (~80% in the phase III pooled
 dataset), the simulated steady-state AUC should be close to that value.
 The typical-patient Cmax and Ctrough also have reasonable phase-III
 comparators.
@@ -429,9 +429,9 @@ comparators.
 
 mod_typical <- mod |> rxode2::zeroRe()
 
-typical_cov <- function(statin) {
+typical_cov <- function(conmed_statin) {
   tibble::tibble(
-    id = 1L, WT = 82.9, AGE = 60, STATIN = statin, FPCSK9 = 72.9
+    id = 1L, WT = 82.9, AGE = 60, CONMED_STATIN = conmed_statin, FPCSK9 = 72.9
   )
 }
 
@@ -448,7 +448,7 @@ ev_typ <- function(dose_amt, dose_days, cov_row) {
     dplyr::mutate(amt = 0, cmt = NA_character_, evid = 0L)
   dplyr::bind_rows(ev_dose, ev_obs) |>
     dplyr::arrange(id, time, dplyr::desc(evid)) |>
-    dplyr::select(id, time, amt, cmt, evid, WT, AGE, STATIN, FPCSK9)
+    dplyr::select(id, time, amt, cmt, evid, WT, AGE, CONMED_STATIN, FPCSK9)
 }
 
 ss_metrics <- function(sim_df, label) {
@@ -478,53 +478,53 @@ sim_typ_150_st1 <- as.data.frame(rxode2::rxSolve(mod_typical,
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalkm', 'etalogitfdepot'
 
 typ_tbl <- dplyr::bind_rows(
-  ss_metrics(sim_typ_75_st0,  "75 mg Q2W | no statin"),
-  ss_metrics(sim_typ_75_st1,  "75 mg Q2W | + statin"),
-  ss_metrics(sim_typ_150_st0, "150 mg Q2W | no statin"),
-  ss_metrics(sim_typ_150_st1, "150 mg Q2W | + statin")
+  ss_metrics(sim_typ_75_st0,  "75 mg Q2W | no conmed_statin"),
+  ss_metrics(sim_typ_75_st1,  "75 mg Q2W | + conmed_statin"),
+  ss_metrics(sim_typ_150_st0, "150 mg Q2W | no conmed_statin"),
+  ss_metrics(sim_typ_150_st1, "150 mg Q2W | + conmed_statin")
 )
 
 # Paper's reference AUC_0-336h was 2170 mg*h/L for 75 mg Q2W, 50-100 kg patients
-# (Results §3.3). The phase III pooled population is ~80% statin-coadministered;
-# a population-weighted typical AUC of 0.8 * (75 mg + statin) + 0.2 * (75 mg no
-# statin) should bracket the reported 2170 mg*h/L value.
-wt_75 <- 0.8 * typ_tbl$AUC_mghpL[typ_tbl$treatment == "75 mg Q2W | + statin"] +
-         0.2 * typ_tbl$AUC_mghpL[typ_tbl$treatment == "75 mg Q2W | no statin"]
+# (Results §3.3). The phase III pooled population is ~80% conmed_statin-coadministered;
+# a population-weighted typical AUC of 0.8 * (75 mg + conmed_statin) + 0.2 * (75 mg no
+# conmed_statin) should bracket the reported 2170 mg*h/L value.
+wt_75 <- 0.8 * typ_tbl$AUC_mghpL[typ_tbl$treatment == "75 mg Q2W | + conmed_statin"] +
+         0.2 * typ_tbl$AUC_mghpL[typ_tbl$treatment == "75 mg Q2W | no conmed_statin"]
 
 published <- tibble::tibble(
-  comparator = "75 mg Q2W, 50-100 kg, population-weighted (80% statin)",
+  comparator = "75 mg Q2W, 50-100 kg, population-weighted (80% conmed_statin)",
   AUC_paper_mghpL = 2170,
   AUC_sim_mghpL   = wt_75,
   pct_diff        = 100 * (wt_75 - 2170) / 2170
 )
 
 knitr::kable(typ_tbl, digits = 2,
-  caption = "Typical-patient steady-state exposures (IIV zeroed) at 82.9 kg / 60 y / FPCSK9 = 72.9 ng/mL with / without concomitant statin.")
+  caption = "Typical-patient steady-state exposures (IIV zeroed) at 82.9 kg / 60 y / FPCSK9 = 72.9 ng/mL with / without concomitant conmed_statin.")
 ```
 
-| treatment               | Cmax_mgpL | Ctrough_mgpL | AUC_mghpL |
-|:------------------------|----------:|-------------:|----------:|
-| 75 mg Q2W \| no statin  |      9.77 |         5.10 |   2645.69 |
-| 75 mg Q2W \| + statin   |      7.76 |         3.38 |   1982.24 |
-| 150 mg Q2W \| no statin |     24.01 |        14.39 |   6787.25 |
-| 150 mg Q2W \| + statin  |     17.82 |         8.72 |   4725.50 |
+| treatment                      | Cmax_mgpL | Ctrough_mgpL | AUC_mghpL |
+|:-------------------------------|----------:|-------------:|----------:|
+| 75 mg Q2W \| no conmed_statin  |      9.77 |         5.10 |   2645.69 |
+| 75 mg Q2W \| + conmed_statin   |      7.76 |         3.38 |   1982.24 |
+| 150 mg Q2W \| no conmed_statin |     24.01 |        14.39 |   6787.25 |
+| 150 mg Q2W \| + conmed_statin  |     17.82 |         8.72 |   4725.50 |
 
 Typical-patient steady-state exposures (IIV zeroed) at 82.9 kg / 60 y /
-FPCSK9 = 72.9 ng/mL with / without concomitant statin. {.table}
+FPCSK9 = 72.9 ng/mL with / without concomitant conmed_statin. {.table}
 
 ``` r
 
 knitr::kable(published, digits = 1,
-  caption = "Comparison vs. Martinez 2019 Results §3.3 reference AUC(0-336h) = 2170 mg*h/L for 75 mg Q2W in 50-100 kg phase III patients (population-weighted 80% statin coadministration).")
+  caption = "Comparison vs. Martinez 2019 Results §3.3 reference AUC(0-336h) = 2170 mg*h/L for 75 mg Q2W in 50-100 kg phase III patients (population-weighted 80% conmed_statin coadministration).")
 ```
 
 | comparator | AUC_paper_mghpL | AUC_sim_mghpL | pct_diff |
 |:---|---:|---:|---:|
-| 75 mg Q2W, 50-100 kg, population-weighted (80% statin) | 2170 | 2114.9 | -2.5 |
+| 75 mg Q2W, 50-100 kg, population-weighted (80% conmed_statin) | 2170 | 2114.9 | -2.5 |
 
 Comparison vs. Martinez 2019 Results §3.3 reference AUC(0-336h) = 2170
 mg\*h/L for 75 mg Q2W in 50-100 kg phase III patients
-(population-weighted 80% statin coadministration). {.table}
+(population-weighted 80% conmed_statin coadministration). {.table}
 
 ### Statin impact on AUC
 
@@ -537,12 +537,12 @@ statins are coadministered to a typical patient, at both the 75 mg and
 statin_tbl <- tibble::tibble(
   dose = c("75 mg Q2W", "150 mg Q2W"),
   AUC_no_statin = c(
-    typ_tbl$AUC_mghpL[typ_tbl$treatment == "75 mg Q2W | no statin"],
-    typ_tbl$AUC_mghpL[typ_tbl$treatment == "150 mg Q2W | no statin"]
+    typ_tbl$AUC_mghpL[typ_tbl$treatment == "75 mg Q2W | no conmed_statin"],
+    typ_tbl$AUC_mghpL[typ_tbl$treatment == "150 mg Q2W | no conmed_statin"]
   ),
   AUC_statin    = c(
-    typ_tbl$AUC_mghpL[typ_tbl$treatment == "75 mg Q2W | + statin"],
-    typ_tbl$AUC_mghpL[typ_tbl$treatment == "150 mg Q2W | + statin"]
+    typ_tbl$AUC_mghpL[typ_tbl$treatment == "75 mg Q2W | + conmed_statin"],
+    typ_tbl$AUC_mghpL[typ_tbl$treatment == "150 mg Q2W | + conmed_statin"]
   )
 ) |>
   dplyr::mutate(
@@ -550,7 +550,7 @@ statin_tbl <- tibble::tibble(
     pct_decrease_pub = 28.5
   )
 knitr::kable(statin_tbl, digits = 1,
-  caption = "Simulated steady-state AUC(0-336h) with/without concomitant statin. Paper: ~28-29% decrease at both dose levels.")
+  caption = "Simulated steady-state AUC(0-336h) with/without concomitant conmed_statin. Paper: ~28-29% decrease at both dose levels.")
 ```
 
 | dose       | AUC_no_statin | AUC_statin | pct_decrease_sim | pct_decrease_pub |
@@ -558,8 +558,8 @@ knitr::kable(statin_tbl, digits = 1,
 | 75 mg Q2W  |        2645.7 |     1982.2 |             25.1 |             28.5 |
 | 150 mg Q2W |        6787.3 |     4725.5 |             30.4 |             28.5 |
 
-Simulated steady-state AUC(0-336h) with/without concomitant statin.
-Paper: ~28-29% decrease at both dose levels. {.table}
+Simulated steady-state AUC(0-336h) with/without concomitant
+conmed_statin. Paper: ~28-29% decrease at both dose levels. {.table}
 
 ## Assumptions and deviations
 
@@ -577,11 +577,11 @@ Paper: ~28-29% decrease at both dose levels. {.table}
   model uses mg/L uniformly, matching Table 2.
 - **Virtual-cohort covariate distributions.** Body weight is drawn from
   `N(82.9, 18)` kg truncated to \[45, 150\]; age from `N(60, 12)`
-  truncated to \[18, 90\]; STATIN = Bernoulli(0.8) (phase III pooled
-  prevalence); FPCSK9 from `N(72.9, 120)` ng/mL truncated to \[0, 400\]
-  to approximate the 5th-95th percentile range of 0-392 ng/mL. The paper
-  does not release subject-level distributions; these assumptions are
-  approximations.
+  truncated to \[18, 90\]; CONMED_STATIN = Bernoulli(0.8) (phase III
+  pooled prevalence); FPCSK9 from `N(72.9, 120)` ng/mL truncated to \[0,
+  400\] to approximate the 5th-95th percentile range of 0-392 ng/mL. The
+  paper does not release subject-level distributions; these assumptions
+  are approximations.
 - **FPCSK9 treated as a covariate, not a state.** Alirocumab binds and
   depletes free PCSK9 (a true TMDD feedback mechanism), so in reality
   free PCSK9 is dynamically coupled to alirocumab concentration. The
@@ -592,11 +592,12 @@ Paper: ~28-29% decrease at both dose levels. {.table}
   typical-patient comparison) approximates the steady-state population
   median but does not capture the transient early-dose suppression of
   free PCSK9.
-- **Phase III statin prevalence.** The 80% weighting used in the
+- **Phase III conmed_statin prevalence.** The 80% weighting used in the
   population-weighted AUC comparison is an estimate — the phase III
-  ODYSSEY studies (COMBO II, FH I, LONG TERM, MONO) mix statin-treated
-  (COMBO II, FH I, LONG TERM) and statin-free (MONO) populations. Exact
-  pooled prevalence is not published for the Martinez 2019 dataset.
+  ODYSSEY studies (COMBO II, FH I, LONG TERM, MONO) mix
+  conmed_statin-treated (COMBO II, FH I, LONG TERM) and
+  conmed_statin-free (MONO) populations. Exact pooled prevalence is not
+  published for the Martinez 2019 dataset.
 - **IV dosing.** The phase I single-dose IV study (0.3-12 mg/kg) is not
   exercised in this vignette. Users can dose to `cmt = "central"` to
   bypass the depot, F, and lag for IV comparisons.

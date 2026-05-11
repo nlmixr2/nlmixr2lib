@@ -65,8 +65,8 @@ collects the same provenance for review.
 | `e_wt_vc` (power on parent V/F) | 0.65 | Brown 2017 Table 2 |
 | `e_alb_vc` (power on parent V/F) | 1.33 | Brown 2017 Table 2 |
 | `e_wt_cl_az5104` (power on metab CL/F) | 0.99 | Brown 2017 Table 2 |
-| `e_dis_hv_cl` (HV vs NSCLC on parent CL/F) | 0.44 | Brown 2017 Table 2 |
-| `e_dis_hv_cl_az5104` (HV vs NSCLC on metab CL/F) | 1.25 | Brown 2017 Table 2 |
+| `e_healthy_cl` (HV vs NSCLC on parent CL/F) | 0.44 | Brown 2017 Table 2 |
+| `e_healthy_cl_az5104` (HV vs NSCLC on metab CL/F) | 1.25 | Brown 2017 Table 2 |
 | `e_race_chinese_cl_az5104` | 0.17 | Brown 2017 Table 2 |
 | `e_race_japanese_cl_az5104` | 0.20 | Brown 2017 Table 2 |
 | `e_race_asian_oth_cl_az5104` | 0.21 | Brown 2017 Table 2 |
@@ -112,7 +112,7 @@ cohort <- tibble::tibble(
   id     = seq_len(n_sub),
   WT     = sample_truncated_lognorm(n_sub, lo = 33,  hi = 122,  median_val = 62, sd_log = 0.20),
   ALB    = sample_truncated_lognorm(n_sub, lo = 2.8, hi = 53.3, median_val = 39, sd_log = 0.13),
-  DIS_HV = 0L  # NSCLC cohort - the dominant population in Brown 2017 (95.9 percent)
+  DIS_HEALTHY = 0L  # NSCLC cohort - the dominant population in Brown 2017 (95.9 percent)
 )
 
 # Race: independent indicators reflecting Brown 2017 Table 1 percentages.
@@ -182,12 +182,12 @@ mod <- nlmixr2lib::readModelDb("Brown_2017_osimertinib")
 
 # Stochastic VPC over the cohort.
 sim <- rxode2::rxSolve(mod, events = events,
-                       keep = c("WT", "ALB", "DIS_HV", "race_label"))
+                       keep = c("WT", "ALB", "DIS_HEALTHY", "race_label"))
 
 # Typical-value (no IIV) replication for the figure comparisons.
 mod_typical <- mod |> rxode2::zeroRe()
 sim_typical <- rxode2::rxSolve(mod_typical, events = events,
-                               keep = c("WT", "ALB", "DIS_HV", "race_label"))
+                               keep = c("WT", "ALB", "DIS_HEALTHY", "race_label"))
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalcl_az5104', 'etalka', 'etalvc', 'etalvc_az5104'
 #> Warning: multi-subject simulation without without 'omega'
 

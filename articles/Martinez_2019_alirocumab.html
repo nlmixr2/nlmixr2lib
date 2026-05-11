@@ -386,11 +386,11 @@ I study gave single IV doses of 0.3-12 mg/kg. The marketed regimens are
 <p>Baseline characteristics from the Martinez 2019 Table 2 footnotes:
 median body weight 82.9 kg, median age 60 years, and time-varying median
 free PCSK9 concentration 72.9 ng/mL (baseline median 283 ng/mL;
-time-varying 5th/95th percentiles 0/392 ng/mL). Concomitant statin use
-(rosuvastatin &lt; 20 mg/day, atorvastatin &lt; 40 mg/day, or
-simvastatin at any dose) was the other clinically-relevant covariate
-retained in the final model. Sex, race, renal function, BMI, and ADA
-positivity were evaluated but not retained.</p>
+time-varying 5th/95th percentiles 0/392 ng/mL). Concomitant
+conmed_statin use (rosuvastatin &lt; 20 mg/day, atorvastatin &lt; 40
+mg/day, or simvastatin at any dose) was the other clinically-relevant
+covariate retained in the final model. Sex, race, renal function, BMI,
+and ADA positivity were evaluated but not retained.</p>
 <p>The same information is available programmatically via
 <code>readModelDb("Martinez_2019_alirocumab")$population</code>.</p>
 </div>
@@ -401,7 +401,7 @@ positivity were evaluated but not retained.</p>
 residual-error term below is taken from Martinez 2019 Table 2 (“Final
 model with covariates” column) and its footnotes a-e. Reference
 covariate values: 82.9 kg body weight, 60 years age, no concomitant
-statin (STATIN = 0), and 72.9 ng/mL free PCSK9.</p>
+conmed_statin (CONMED_STATIN = 0), and 72.9 ng/mL free PCSK9.</p>
 <table class="table">
 <colgroup>
 <col width="38%">
@@ -478,7 +478,7 @@ confirm mg/h)</td>
 </tr>
 <tr class="odd">
 <td>
-<code>e_statin_cl</code> (STATIN additive)</td>
+<code>e_conmed_statin_cl</code> (CONMED_STATIN additive)</td>
 <td><code>6.44e-3 L/h * 24 = 0.15456 L/day</code></td>
 <td>Table 2 theta13, Table 2 footnote a</td>
 </tr>
@@ -547,7 +547,7 @@ confirm mg/h)</td>
 </tr>
 <tr class="odd">
 <td>CLL equation</td>
-<td><code>TVCLL + COV1*(WT - 82.9) + COV2*STATIN</code></td>
+<td><code>TVCLL + COV1*(WT - 82.9) + COV2*CONMED_STATIN</code></td>
 <td>Table 2 footnote a, Eq in Results §3.1</td>
 </tr>
 <tr class="even">
@@ -577,9 +577,9 @@ and are carried through unchanged.</li>
 Martinez’s paper uses additive (rather than multiplicative) covariate
 models on the linear clearance CLL and on Km, evaluated on the
 population typical value:
-<code>CLL_TV = TVCLL + theta * (WT - 82.9) + theta * STATIN</code> and
-<code>Km_TV = TVKM + theta * (FPCSK9 / 72.9)</code>. Individual values
-then carry an exponential between-subject term:
+<code>CLL_TV = TVCLL + theta * (WT - 82.9) + theta * CONMED_STATIN</code>
+and <code>Km_TV = TVKM + theta * (FPCSK9 / 72.9)</code>. Individual
+values then carry an exponential between-subject term:
 <code>CLL_i = CLL_TV * exp(eta_CLL)</code>. This is preserved faithfully
 in <code><a href="https://nlmixr2.github.io/rxode2/reference/model.html" class="external-link">model()</a></code> rather than being refactored to a multiplicative
 / power form.</li>
@@ -632,7 +632,7 @@ ranges. No subject-level observed data were released with the paper.</p>
 <span>  id     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n_subj</span><span class="op">)</span>,</span>
 <span>  WT     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n_subj</span>, mean <span class="op">=</span> <span class="fl">82.9</span>, sd <span class="op">=</span> <span class="fl">18</span><span class="op">)</span>,  <span class="fl">45</span>, <span class="fl">150</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  AGE    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n_subj</span>, mean <span class="op">=</span> <span class="fl">60</span>,   sd <span class="op">=</span> <span class="fl">12</span><span class="op">)</span>,  <span class="fl">18</span>,  <span class="fl">90</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  STATIN <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="va">n_subj</span>, size <span class="op">=</span> <span class="fl">1</span>, prob <span class="op">=</span> <span class="fl">0.80</span><span class="op">)</span>,</span>
+<span>  CONMED_STATIN <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="va">n_subj</span>, size <span class="op">=</span> <span class="fl">1</span>, prob <span class="op">=</span> <span class="fl">0.80</span><span class="op">)</span>,</span>
 <span>  FPCSK9 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n_subj</span>, mean <span class="op">=</span> <span class="fl">72.9</span>, sd <span class="op">=</span> <span class="fl">120</span><span class="op">)</span>, <span class="fl">0</span>,  <span class="fl">400</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>Three regimens are simulated in parallel: 75 mg SC Q2W (lower-dose
@@ -671,7 +671,7 @@ interval.</p>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">ev_dose</span>, <span class="va">ev_obs</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">evid</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">amt</span>, <span class="va">cmt</span>, <span class="va">evid</span>, <span class="va">treatment</span>,</span>
-<span>                  <span class="va">WT</span>, <span class="va">AGE</span>, <span class="va">STATIN</span>, <span class="va">FPCSK9</span><span class="op">)</span></span>
+<span>                  <span class="va">WT</span>, <span class="va">AGE</span>, <span class="va">CONMED_STATIN</span>, <span class="va">FPCSK9</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="va">events_75</span>  <span class="op">&lt;-</span> <span class="fu">make_cohort</span><span class="op">(</span><span class="va">cohort</span>, <span class="fl">75</span>,  <span class="va">dose_days_q2w</span>, <span class="st">"75mg_Q2W"</span>,  <span class="va">tau_q2w</span>,</span>
@@ -689,7 +689,7 @@ interval.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxode2.html" class="external-link">rxode2</a></span><span class="op">(</span><span class="fu"><a href="../reference/readModelDb.html">readModelDb</a></span><span class="op">(</span><span class="st">"Martinez_2019_alirocumab"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> parameter labels from comments will be replaced by 'label()'</span></span>
-<span><span class="va">keep_cols</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"WT"</span>, <span class="st">"AGE"</span>, <span class="st">"STATIN"</span>, <span class="st">"FPCSK9"</span>, <span class="st">"treatment"</span><span class="op">)</span></span>
+<span><span class="va">keep_cols</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"WT"</span>, <span class="st">"AGE"</span>, <span class="st">"CONMED_STATIN"</span>, <span class="st">"FPCSK9"</span>, <span class="st">"treatment"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/split.html" class="external-link">split</a></span><span class="op">(</span><span class="va">events</span>, <span class="va">events</span><span class="op">$</span><span class="va">treatment</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">ev</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod</span>, events <span class="op">=</span> <span class="va">ev</span>, keep <span class="op">=</span> <span class="va">keep_cols</span><span class="op">)</span><span class="op">)</span></span>
@@ -782,10 +782,10 @@ directly from the additive covariate equation.</p>
 <span>    pct_vs_medianWT <span class="op">=</span> <span class="fl">100</span> <span class="op">*</span> <span class="op">(</span><span class="va">CLL_Lph</span> <span class="op">-</span> <span class="va">TVCLL</span><span class="op">)</span> <span class="op">/</span> <span class="va">TVCLL</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">wt_grid</span>, digits <span class="op">=</span> <span class="fl">4</span>,</span>
-<span>  caption <span class="op">=</span> <span class="st">"CLL (typical value, STATIN = 0) at selected body weights. Paper: -78% at 50 kg, +40% at 100 kg."</span><span class="op">)</span></span></code></pre></div>
+<span>  caption <span class="op">=</span> <span class="st">"CLL (typical value, CONMED_STATIN = 0) at selected body weights. Paper: -78% at 50 kg, +40% at 100 kg."</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
-<caption>CLL (typical value, STATIN = 0) at selected body weights.
-Paper: -78% at 50 kg, +40% at 100 kg.</caption>
+<caption>CLL (typical value, CONMED_STATIN = 0) at selected body
+weights. Paper: -78% at 50 kg, +40% at 100 kg.</caption>
 <thead><tr class="header">
 <th align="right">WT_kg</th>
 <th align="right">CLL_Lph</th>
@@ -955,7 +955,7 @@ and treatment.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">nca_res</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_obj</span>, <span class="va">dose_obj</span>, intervals <span class="op">=</span> <span class="va">intervals</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■                  </span>  44% |  ETA:  3s</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■          </span>  69% |  ETA:  2s</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">nca_res</span><span class="op">)</span></span>
 <span><span class="co">#&gt;  Interval Start Interval End treatment   N AUClast (day*mg/L) Cmax (mg/L)</span></span>
 <span><span class="co">#&gt;               0           14 150mg_Q2W 300        95.9 [52.6] 10.1 [46.0]</span></span>
@@ -970,16 +970,17 @@ and treatment.</p>
 </h3>
 <p>Martinez 2019 reports a reference steady-state AUC(0-336h) of 2170
 mg*h/L for 75 mg Q2W in patients weighing 50-100 kg (Results §3.3). With
-a typical patient (IIV zeroed) and the paper’s STATIN-coadministration
-prevalence (~80% in the phase III pooled dataset), the simulated
-steady-state AUC should be close to that value. The typical-patient Cmax
-and Ctrough also have reasonable phase-III comparators.</p>
+a typical patient (IIV zeroed) and the paper’s
+CONMED_STATIN-coadministration prevalence (~80% in the phase III pooled
+dataset), the simulated steady-state AUC should be close to that value.
+The typical-patient Cmax and Ctrough also have reasonable phase-III
+comparators.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod_typical</span> <span class="op">&lt;-</span> <span class="va">mod</span> <span class="op">|&gt;</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/zeroRe.html" class="external-link">zeroRe</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">typical_cov</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">statin</span><span class="op">)</span> <span class="op">{</span></span>
+<span><span class="va">typical_cov</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">conmed_statin</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
-<span>    id <span class="op">=</span> <span class="fl">1L</span>, WT <span class="op">=</span> <span class="fl">82.9</span>, AGE <span class="op">=</span> <span class="fl">60</span>, STATIN <span class="op">=</span> <span class="va">statin</span>, FPCSK9 <span class="op">=</span> <span class="fl">72.9</span></span>
+<span>    id <span class="op">=</span> <span class="fl">1L</span>, WT <span class="op">=</span> <span class="fl">82.9</span>, AGE <span class="op">=</span> <span class="fl">60</span>, CONMED_STATIN <span class="op">=</span> <span class="va">conmed_statin</span>, FPCSK9 <span class="op">=</span> <span class="fl">72.9</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
@@ -996,7 +997,7 @@ and Ctrough also have reasonable phase-III comparators.</p>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>amt <span class="op">=</span> <span class="fl">0</span>, cmt <span class="op">=</span> <span class="cn">NA_character_</span>, evid <span class="op">=</span> <span class="fl">0L</span><span class="op">)</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">ev_dose</span>, <span class="va">ev_obs</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">evid</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">amt</span>, <span class="va">cmt</span>, <span class="va">evid</span>, <span class="va">WT</span>, <span class="va">AGE</span>, <span class="va">STATIN</span>, <span class="va">FPCSK9</span><span class="op">)</span></span>
+<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">amt</span>, <span class="va">cmt</span>, <span class="va">evid</span>, <span class="va">WT</span>, <span class="va">AGE</span>, <span class="va">CONMED_STATIN</span>, <span class="va">FPCSK9</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="va">ss_metrics</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">sim_df</span>, <span class="va">label</span><span class="op">)</span> <span class="op">{</span></span>
@@ -1026,32 +1027,38 @@ and Ctrough also have reasonable phase-III comparators.</p>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalkm', 'etalogitfdepot'</span></span>
 <span></span>
 <span><span class="va">typ_tbl</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span></span>
-<span>  <span class="fu">ss_metrics</span><span class="op">(</span><span class="va">sim_typ_75_st0</span>,  <span class="st">"75 mg Q2W | no statin"</span><span class="op">)</span>,</span>
-<span>  <span class="fu">ss_metrics</span><span class="op">(</span><span class="va">sim_typ_75_st1</span>,  <span class="st">"75 mg Q2W | + statin"</span><span class="op">)</span>,</span>
-<span>  <span class="fu">ss_metrics</span><span class="op">(</span><span class="va">sim_typ_150_st0</span>, <span class="st">"150 mg Q2W | no statin"</span><span class="op">)</span>,</span>
-<span>  <span class="fu">ss_metrics</span><span class="op">(</span><span class="va">sim_typ_150_st1</span>, <span class="st">"150 mg Q2W | + statin"</span><span class="op">)</span></span>
+<span>  <span class="fu">ss_metrics</span><span class="op">(</span><span class="va">sim_typ_75_st0</span>,  <span class="st">"75 mg Q2W | no conmed_statin"</span><span class="op">)</span>,</span>
+<span>  <span class="fu">ss_metrics</span><span class="op">(</span><span class="va">sim_typ_75_st1</span>,  <span class="st">"75 mg Q2W | + conmed_statin"</span><span class="op">)</span>,</span>
+<span>  <span class="fu">ss_metrics</span><span class="op">(</span><span class="va">sim_typ_150_st0</span>, <span class="st">"150 mg Q2W | no conmed_statin"</span><span class="op">)</span>,</span>
+<span>  <span class="fu">ss_metrics</span><span class="op">(</span><span class="va">sim_typ_150_st1</span>, <span class="st">"150 mg Q2W | + conmed_statin"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Paper's reference AUC_0-336h was 2170 mg*h/L for 75 mg Q2W, 50-100 kg patients</span></span>
-<span><span class="co"># (Results §3.3). The phase III pooled population is ~80% statin-coadministered;</span></span>
-<span><span class="co"># a population-weighted typical AUC of 0.8 * (75 mg + statin) + 0.2 * (75 mg no</span></span>
-<span><span class="co"># statin) should bracket the reported 2170 mg*h/L value.</span></span>
-<span><span class="va">wt_75</span> <span class="op">&lt;-</span> <span class="fl">0.8</span> <span class="op">*</span> <span class="va">typ_tbl</span><span class="op">$</span><span class="va">AUC_mghpL</span><span class="op">[</span><span class="va">typ_tbl</span><span class="op">$</span><span class="va">treatment</span> <span class="op">==</span> <span class="st">"75 mg Q2W | + statin"</span><span class="op">]</span> <span class="op">+</span></span>
-<span>         <span class="fl">0.2</span> <span class="op">*</span> <span class="va">typ_tbl</span><span class="op">$</span><span class="va">AUC_mghpL</span><span class="op">[</span><span class="va">typ_tbl</span><span class="op">$</span><span class="va">treatment</span> <span class="op">==</span> <span class="st">"75 mg Q2W | no statin"</span><span class="op">]</span></span>
+<span><span class="co"># (Results §3.3). The phase III pooled population is ~80% conmed_statin-coadministered;</span></span>
+<span><span class="co"># a population-weighted typical AUC of 0.8 * (75 mg + conmed_statin) + 0.2 * (75 mg no</span></span>
+<span><span class="co"># conmed_statin) should bracket the reported 2170 mg*h/L value.</span></span>
+<span><span class="va">wt_75</span> <span class="op">&lt;-</span> <span class="fl">0.8</span> <span class="op">*</span> <span class="va">typ_tbl</span><span class="op">$</span><span class="va">AUC_mghpL</span><span class="op">[</span><span class="va">typ_tbl</span><span class="op">$</span><span class="va">treatment</span> <span class="op">==</span> <span class="st">"75 mg Q2W | + conmed_statin"</span><span class="op">]</span> <span class="op">+</span></span>
+<span>         <span class="fl">0.2</span> <span class="op">*</span> <span class="va">typ_tbl</span><span class="op">$</span><span class="va">AUC_mghpL</span><span class="op">[</span><span class="va">typ_tbl</span><span class="op">$</span><span class="va">treatment</span> <span class="op">==</span> <span class="st">"75 mg Q2W | no conmed_statin"</span><span class="op">]</span></span>
 <span></span>
 <span><span class="va">published</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
-<span>  comparator <span class="op">=</span> <span class="st">"75 mg Q2W, 50-100 kg, population-weighted (80% statin)"</span>,</span>
+<span>  comparator <span class="op">=</span> <span class="st">"75 mg Q2W, 50-100 kg, population-weighted (80% conmed_statin)"</span>,</span>
 <span>  AUC_paper_mghpL <span class="op">=</span> <span class="fl">2170</span>,</span>
 <span>  AUC_sim_mghpL   <span class="op">=</span> <span class="va">wt_75</span>,</span>
 <span>  pct_diff        <span class="op">=</span> <span class="fl">100</span> <span class="op">*</span> <span class="op">(</span><span class="va">wt_75</span> <span class="op">-</span> <span class="fl">2170</span><span class="op">)</span> <span class="op">/</span> <span class="fl">2170</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">typ_tbl</span>, digits <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>  caption <span class="op">=</span> <span class="st">"Typical-patient steady-state exposures (IIV zeroed) at 82.9 kg / 60 y / FPCSK9 = 72.9 ng/mL with / without concomitant statin."</span><span class="op">)</span></span></code></pre></div>
+<span>  caption <span class="op">=</span> <span class="st">"Typical-patient steady-state exposures (IIV zeroed) at 82.9 kg / 60 y / FPCSK9 = 72.9 ng/mL with / without concomitant conmed_statin."</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <caption>Typical-patient steady-state exposures (IIV zeroed) at 82.9 kg
 / 60 y / FPCSK9 = 72.9 ng/mL with / without concomitant
-statin.</caption>
+conmed_statin.</caption>
+<colgroup>
+<col width="51%">
+<col width="14%">
+<col width="19%">
+<col width="14%">
+</colgroup>
 <thead><tr class="header">
 <th align="left">treatment</th>
 <th align="right">Cmax_mgpL</th>
@@ -1060,25 +1067,25 @@ statin.</caption>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="left">75 mg Q2W | no statin</td>
+<td align="left">75 mg Q2W | no conmed_statin</td>
 <td align="right">9.77</td>
 <td align="right">5.10</td>
 <td align="right">2645.69</td>
 </tr>
 <tr class="even">
-<td align="left">75 mg Q2W | + statin</td>
+<td align="left">75 mg Q2W | + conmed_statin</td>
 <td align="right">7.76</td>
 <td align="right">3.38</td>
 <td align="right">1982.24</td>
 </tr>
 <tr class="odd">
-<td align="left">150 mg Q2W | no statin</td>
+<td align="left">150 mg Q2W | no conmed_statin</td>
 <td align="right">24.01</td>
 <td align="right">14.39</td>
 <td align="right">6787.25</td>
 </tr>
 <tr class="even">
-<td align="left">150 mg Q2W | + statin</td>
+<td align="left">150 mg Q2W | + conmed_statin</td>
 <td align="right">17.82</td>
 <td align="right">8.72</td>
 <td align="right">4725.50</td>
@@ -1087,16 +1094,16 @@ statin.</caption>
 </table>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">published</span>, digits <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  caption <span class="op">=</span> <span class="st">"Comparison vs. Martinez 2019 Results §3.3 reference AUC(0-336h) = 2170 mg*h/L for 75 mg Q2W in 50-100 kg phase III patients (population-weighted 80% statin coadministration)."</span><span class="op">)</span></span></code></pre></div>
+<span>  caption <span class="op">=</span> <span class="st">"Comparison vs. Martinez 2019 Results §3.3 reference AUC(0-336h) = 2170 mg*h/L for 75 mg Q2W in 50-100 kg phase III patients (population-weighted 80% conmed_statin coadministration)."</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <caption>Comparison vs. Martinez 2019 Results §3.3 reference AUC(0-336h)
 = 2170 mg*h/L for 75 mg Q2W in 50-100 kg phase III patients
-(population-weighted 80% statin coadministration).</caption>
+(population-weighted 80% conmed_statin coadministration).</caption>
 <colgroup>
-<col width="58%">
-<col width="17%">
-<col width="14%">
-<col width="9%">
+<col width="61%">
+<col width="15%">
+<col width="13%">
+<col width="8%">
 </colgroup>
 <thead><tr class="header">
 <th align="left">comparator</th>
@@ -1106,7 +1113,7 @@ statin.</caption>
 </tr></thead>
 <tbody><tr class="odd">
 <td align="left">75 mg Q2W, 50-100 kg, population-weighted (80%
-statin)</td>
+conmed_statin)</td>
 <td align="right">2170</td>
 <td align="right">2114.9</td>
 <td align="right">-2.5</td>
@@ -1123,12 +1130,12 @@ and 150 mg dose levels.</p>
 <code class="sourceCode R"><span><span class="va">statin_tbl</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
 <span>  dose <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"75 mg Q2W"</span>, <span class="st">"150 mg Q2W"</span><span class="op">)</span>,</span>
 <span>  AUC_no_statin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>    <span class="va">typ_tbl</span><span class="op">$</span><span class="va">AUC_mghpL</span><span class="op">[</span><span class="va">typ_tbl</span><span class="op">$</span><span class="va">treatment</span> <span class="op">==</span> <span class="st">"75 mg Q2W | no statin"</span><span class="op">]</span>,</span>
-<span>    <span class="va">typ_tbl</span><span class="op">$</span><span class="va">AUC_mghpL</span><span class="op">[</span><span class="va">typ_tbl</span><span class="op">$</span><span class="va">treatment</span> <span class="op">==</span> <span class="st">"150 mg Q2W | no statin"</span><span class="op">]</span></span>
+<span>    <span class="va">typ_tbl</span><span class="op">$</span><span class="va">AUC_mghpL</span><span class="op">[</span><span class="va">typ_tbl</span><span class="op">$</span><span class="va">treatment</span> <span class="op">==</span> <span class="st">"75 mg Q2W | no conmed_statin"</span><span class="op">]</span>,</span>
+<span>    <span class="va">typ_tbl</span><span class="op">$</span><span class="va">AUC_mghpL</span><span class="op">[</span><span class="va">typ_tbl</span><span class="op">$</span><span class="va">treatment</span> <span class="op">==</span> <span class="st">"150 mg Q2W | no conmed_statin"</span><span class="op">]</span></span>
 <span>  <span class="op">)</span>,</span>
 <span>  AUC_statin    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>    <span class="va">typ_tbl</span><span class="op">$</span><span class="va">AUC_mghpL</span><span class="op">[</span><span class="va">typ_tbl</span><span class="op">$</span><span class="va">treatment</span> <span class="op">==</span> <span class="st">"75 mg Q2W | + statin"</span><span class="op">]</span>,</span>
-<span>    <span class="va">typ_tbl</span><span class="op">$</span><span class="va">AUC_mghpL</span><span class="op">[</span><span class="va">typ_tbl</span><span class="op">$</span><span class="va">treatment</span> <span class="op">==</span> <span class="st">"150 mg Q2W | + statin"</span><span class="op">]</span></span>
+<span>    <span class="va">typ_tbl</span><span class="op">$</span><span class="va">AUC_mghpL</span><span class="op">[</span><span class="va">typ_tbl</span><span class="op">$</span><span class="va">treatment</span> <span class="op">==</span> <span class="st">"75 mg Q2W | + conmed_statin"</span><span class="op">]</span>,</span>
+<span>    <span class="va">typ_tbl</span><span class="op">$</span><span class="va">AUC_mghpL</span><span class="op">[</span><span class="va">typ_tbl</span><span class="op">$</span><span class="va">treatment</span> <span class="op">==</span> <span class="st">"150 mg Q2W | + conmed_statin"</span><span class="op">]</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
@@ -1136,10 +1143,10 @@ and 150 mg dose levels.</p>
 <span>    pct_decrease_pub <span class="op">=</span> <span class="fl">28.5</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">statin_tbl</span>, digits <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  caption <span class="op">=</span> <span class="st">"Simulated steady-state AUC(0-336h) with/without concomitant statin. Paper: ~28-29% decrease at both dose levels."</span><span class="op">)</span></span></code></pre></div>
+<span>  caption <span class="op">=</span> <span class="st">"Simulated steady-state AUC(0-336h) with/without concomitant conmed_statin. Paper: ~28-29% decrease at both dose levels."</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <caption>Simulated steady-state AUC(0-336h) with/without concomitant
-statin. Paper: ~28-29% decrease at both dose levels.</caption>
+conmed_statin. Paper: ~28-29% decrease at both dose levels.</caption>
 <colgroup>
 <col width="15%">
 <col width="20%">
@@ -1194,7 +1201,7 @@ This model uses mg/L uniformly, matching Table 2.</li>
 <li>
 <strong>Virtual-cohort covariate distributions.</strong> Body weight
 is drawn from <code>N(82.9, 18)</code> kg truncated to [45, 150]; age
-from <code>N(60, 12)</code> truncated to [18, 90]; STATIN =
+from <code>N(60, 12)</code> truncated to [18, 90]; CONMED_STATIN =
 Bernoulli(0.8) (phase III pooled prevalence); FPCSK9 from
 <code>N(72.9, 120)</code> ng/mL truncated to [0, 400] to approximate the
 5th-95th percentile range of 0-392 ng/mL. The paper does not release
@@ -1211,11 +1218,12 @@ done in the typical-patient comparison) approximates the steady-state
 population median but does not capture the transient early-dose
 suppression of free PCSK9.</li>
 <li>
-<strong>Phase III statin prevalence.</strong> The 80% weighting used
-in the population-weighted AUC comparison is an estimate — the phase III
-ODYSSEY studies (COMBO II, FH I, LONG TERM, MONO) mix statin-treated
-(COMBO II, FH I, LONG TERM) and statin-free (MONO) populations. Exact
-pooled prevalence is not published for the Martinez 2019 dataset.</li>
+<strong>Phase III conmed_statin prevalence.</strong> The 80%
+weighting used in the population-weighted AUC comparison is an estimate
+— the phase III ODYSSEY studies (COMBO II, FH I, LONG TERM, MONO) mix
+conmed_statin-treated (COMBO II, FH I, LONG TERM) and conmed_statin-free
+(MONO) populations. Exact pooled prevalence is not published for the
+Martinez 2019 dataset.</li>
 <li>
 <strong>IV dosing.</strong> The phase I single-dose IV study (0.3-12
 mg/kg) is not exercised in this vignette. Users can dose to

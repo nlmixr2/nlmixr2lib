@@ -519,7 +519,7 @@ below collects them in one place for review.</p>
 <td>Goel 2016 Table 2 theta9 (JPN effect on CL/F)</td>
 </tr>
 <tr class="odd">
-<td><code>e_dis_hv_cl</code></td>
+<td><code>e_healthy_cl</code></td>
 <td>2.96</td>
 <td>Goel 2016 Table 2 theta10 (HV effect on CL/F)</td>
 </tr>
@@ -539,27 +539,27 @@ below collects them in one place for review.</p>
 <td>Goel 2016 Table 2 theta16</td>
 </tr>
 <tr class="odd">
-<td><code>e_meal_hfat_ka</code></td>
+<td><code>e_fed_highfat_ka</code></td>
 <td>1.01</td>
 <td>Goel 2016 Table 2 theta18 (FATM effect on Ka)</td>
 </tr>
 <tr class="even">
-<td><code>e_h2ra_f</code></td>
+<td><code>e_conmed_h2ra_f</code></td>
 <td>0.996</td>
 <td>Goel 2016 Table 2 theta20 (H2 effect on F)</td>
 </tr>
 <tr class="odd">
-<td><code>e_ppi_f</code></td>
+<td><code>e_conmed_ppi_f</code></td>
 <td>0.696</td>
-<td>Goel 2016 Table 2 theta21 (PPI effect on F)</td>
+<td>Goel 2016 Table 2 theta21 (CONMED_PPI effect on F)</td>
 </tr>
 <tr class="even">
-<td><code>e_hv_fast_f</code></td>
+<td><code>e_healthy_fast_f</code></td>
 <td>0.855</td>
 <td>Goel 2016 Table 2 theta22 (HV.Fasting effect on F)</td>
 </tr>
 <tr class="odd">
-<td><code>e_meal_hfat_f</code></td>
+<td><code>e_fed_highfat_f</code></td>
 <td>5.74</td>
 <td>Goel 2016 Table 2 theta23 (Fatmeal effect on F)</td>
 </tr>
@@ -623,9 +623,9 @@ below collects them in one place for review.</p>
 <p>The original observed dataset is not publicly available. This
 vignette constructs a virtual cohort of cancer patients matched to the
 Table 1 / Figure 2 reference scenario (200 mg QD and 800 mg QD oral
-sonidegib, 2 h post light meal, no PPI / H2RA, no high-fat meal).
-Covariate distributions approximate the pooled cancer-patient sub-cohort
-(Goel 2016 Table 1 columns X2101 + X1101 + A2201).</p>
+sonidegib, 2 h post light meal, no CONMED_PPI / CONMED_H2RA, no high-fat
+meal). Covariate distributions approximate the pooled cancer-patient
+sub-cohort (Goel 2016 Table 1 columns X2101 + X1101 + A2201).</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2982</span><span class="op">)</span> <span class="co"># last 4 digits of doi:10.1007/s00280-016-2982-1</span></span>
 <span><span class="va">n_per_arm</span> <span class="op">&lt;-</span> <span class="fl">120L</span></span>
@@ -646,11 +646,11 @@ Covariate distributions approximate the pooled cancer-patient sub-cohort
 <span>    ALT           <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fl">0.05</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Lognormal.html" class="external-link">rlnorm</a></span><span class="op">(</span><span class="va">n_per_arm</span>, meanlog <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">0.42</span><span class="op">)</span>, sdlog <span class="op">=</span> <span class="fl">0.6</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>    TBILI         <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fl">0.05</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Lognormal.html" class="external-link">rlnorm</a></span><span class="op">(</span><span class="va">n_per_arm</span>, meanlog <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">0.38</span><span class="op">)</span>, sdlog <span class="op">=</span> <span class="fl">0.6</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>    RACE_JAPANESE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">n_per_arm</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">0.06</span><span class="op">)</span>, <span class="co"># ~6% Japanese</span></span>
-<span>    DIS_HV        <span class="op">=</span> <span class="fl">0L</span>,                                  <span class="co"># cancer patients only</span></span>
-<span>    PPI           <span class="op">=</span> <span class="fl">0L</span>,                                  <span class="co"># reference (no PPI)</span></span>
-<span>    H2RA          <span class="op">=</span> <span class="fl">0L</span>,                                  <span class="co"># reference (no H2RA)</span></span>
-<span>    MEAL_HFAT     <span class="op">=</span> <span class="fl">0L</span>,                                  <span class="co"># 2 h post light meal</span></span>
-<span>    HV_FAST       <span class="op">=</span> <span class="fl">0L</span>,                                  <span class="co"># not HV</span></span>
+<span>    DIS_HEALTHY        <span class="op">=</span> <span class="fl">0L</span>,                                  <span class="co"># cancer patients only</span></span>
+<span>    CONMED_PPI           <span class="op">=</span> <span class="fl">0L</span>,                                  <span class="co"># reference (no CONMED_PPI)</span></span>
+<span>    CONMED_H2RA          <span class="op">=</span> <span class="fl">0L</span>,                                  <span class="co"># reference (no CONMED_H2RA)</span></span>
+<span>    FED_HIGHFAT     <span class="op">=</span> <span class="fl">0L</span>,                                  <span class="co"># 2 h post light meal</span></span>
+<span>    FED           <span class="op">=</span> <span class="fl">1L</span>,                                  <span class="co"># patients dosed fed (2 h post light meal); healthy-fasted effect = DIS_HEALTHY * (1 - FED)</span></span>
 <span>    arm           <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">dose_mg</span>, <span class="st">" mg QD"</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">}</span></span>
@@ -705,7 +705,7 @@ carry <code>MULTI_DOSE_PT = 1</code>.</p>
 <span><span class="va">events</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">dose_recs</span>, <span class="va">obs_recs</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">evid</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">amt</span>, <span class="va">evid</span>, <span class="va">cmt</span>, <span class="va">AGE</span>, <span class="va">WT</span>, <span class="va">SEXF</span>, <span class="va">CRCL</span>, <span class="va">ALB</span>, <span class="va">ALT</span>, <span class="va">TBILI</span>,</span>
-<span>         <span class="va">RACE_JAPANESE</span>, <span class="va">DIS_HV</span>, <span class="va">PPI</span>, <span class="va">H2RA</span>, <span class="va">MEAL_HFAT</span>, <span class="va">HV_FAST</span>,</span>
+<span>         <span class="va">RACE_JAPANESE</span>, <span class="va">DIS_HEALTHY</span>, <span class="va">CONMED_PPI</span>, <span class="va">CONMED_H2RA</span>, <span class="va">FED_HIGHFAT</span>, <span class="va">FED</span>,</span>
 <span>         <span class="va">DOSE</span>, <span class="va">MULTI_DOSE_PT</span>, <span class="va">arm</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Disjoint-id assertion (multi-cohort safety)</span></span>
@@ -811,7 +811,7 @@ against Goel 2016 Table 3.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">nca_res</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_obj</span>, <span class="va">dose_obj</span>, intervals <span class="op">=</span> <span class="va">intervals</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■   </span>  92% |  ETA:  0s</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■           </span>  68% |  ETA:  1s</span></span>
 <span></span>
 <span><span class="co"># Simulated arithmetic means by group + phase (matching Goel 2016 Tables 3-4 reporting</span></span>
 <span><span class="co"># convention; arithmetic-mean is also right-tail-sensitive for high-CV log-normal IIV).</span></span>
@@ -1013,9 +1013,10 @@ for QD dosing where the profile declines monotonically after Tmax.</p>
 <li>The model file uses canonical column names where they exist
 (<code>AGE</code>, <code>WT</code>, <code>SEXF</code>,
 <code>CRCL</code>, <code>ALB</code>, <code>RACE_JAPANESE</code>,
-<code>DIS_HV</code>, <code>DOSE</code>). Five new canonical covariate
-entries were registered alongside this model: <code>PPI</code>,
-<code>H2RA</code>, <code>MEAL_HFAT</code>, <code>HV_FAST</code>, and
+<code>DIS_HEALTHY</code>, <code>DOSE</code>). Five new canonical
+covariate entries were registered alongside this model:
+<code>CONMED_PPI</code>, <code>CONMED_H2RA</code>,
+<code>FED_HIGHFAT</code>, <code>FED</code>, and
 <code>MULTI_DOSE_PT</code> (see
 <code>inst/references/covariate-columns.md</code> 2026-05-08 changelog
 entry).</li>

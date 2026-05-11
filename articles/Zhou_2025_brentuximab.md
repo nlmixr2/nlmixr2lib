@@ -84,7 +84,7 @@ n_cycles    <- 4L
 # cohorts can be bind_rows()-ed without colliding.
 make_cohort <- function(n, dose_mg, cycle_h, n_cycles, regimen,
                         wt, bsa, alb, creat, tumsz, tumtp_chl,
-                        ada_pos = 0L, coadmin_avd = 0L, id_offset = 0L) {
+                        ada_pos = 0L, conmed_avd = 0L, id_offset = 0L) {
   ids <- id_offset + seq_len(n)
   amt_umol <- dose_mg / MW_BV_kDa
   obs_t    <- seq(0, n_cycles * cycle_h, length.out = 200)
@@ -117,7 +117,7 @@ make_cohort <- function(n, dose_mg, cycle_h, n_cycles, regimen,
     TUMSZ       = tumsz,
     TUMTP_CHL   = as.integer(tumtp_chl),
     ADA_POS     = as.integer(ada_pos),
-    COADMIN_AVD = as.integer(coadmin_avd)
+    CONMED_AVD = as.integer(conmed_avd)
   )
 
   events <- dplyr::bind_rows(doses, obs) |>
@@ -147,7 +147,7 @@ study1 <- make_cohort(
   tumsz       = exp(rnorm(n_per_cohort, log(41),   0.40)),
   tumtp_chl   = rbinom(n_per_cohort, 1, 0.85),
   ada_pos     = 0L,
-  coadmin_avd = 0L,
+  conmed_avd = 0L,
   id_offset   = 0L
 )
 
@@ -166,7 +166,7 @@ study2 <- make_cohort(
   tumsz       = exp(rnorm(n_per_cohort, log(41), 0.40)),
   tumtp_chl   = 1L, # study 2 is HL only
   ada_pos     = 0L,
-  coadmin_avd = 1L,
+  conmed_avd = 1L,
   id_offset   = n_per_cohort
 )
 
@@ -874,8 +874,8 @@ quirks in the source documentation that needed re-derivation.
   `DOX` (the doxorubicin-administration flag) to indicate the A+AVD
   combination because doxorubicin, vinblastine, and dacarbazine are all
   given on the same days in the AVD backbone. The packaged model
-  registers this as `COADMIN_AVD` (binary) and routes the source `DOX`
-  column through `covariateData[[COADMIN_AVD]]$source_name`.
+  registers this as `CONMED_AVD` (binary) and routes the source `DOX`
+  column through `covariateData[[CONMED_AVD]]$source_name`.
 - **MMAE central-volume reference category.** The Non-HL effect on MMAE
   central volume VM has multiplier 0.296 with reference 1 = HL. The
   canonical `TUMTP_CHL` register entry encodes 1 = HL, so the model

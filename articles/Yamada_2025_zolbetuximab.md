@@ -71,7 +71,7 @@ collects the mapping in one place for reviewer audit.
 | TBILI on V1 | Yamada 2025 Table 1 | Power: `(TBILI/0.38)^0.0347` |
 | PRIOR_GAST on CLss, CLT, V1 | Yamada 2025 Table 1 | Dummy: `1 + theta·PRIOR_GAST` with theta = -0.182, -0.495, +0.103 |
 | SEX on CLss, V1 | Yamada 2025 Table 1 | Dummy: `1 + theta·SEXF` with theta = -0.195, -0.108 |
-| COMB on V1 (if EOX) | Yamada 2025 Table 1 | Dummy: `1 + 0.466·COMB_EOX` |
+| COMB on V1 (if EOX) | Yamada 2025 Table 1 | Dummy: `1 + 0.466·CONMED_EOX` |
 | Reference subject | Yamada 2025 Figure 1 caption | BSA 1.70 m^2, ALB 39.1 g/L, HGB 118 g/L, TBILI 0.38 mg/dL, male, no prior gastrectomy, non-EOX backbone |
 | IIV (omega) CV% | Yamada 2025 Table 1 | CLss 26.3%, CLT 76.1%, Kdecay 77.3%, V1 20.1%, Q 63.9%, V2 27.4%; stored as `omega^2 = log(CV^2 + 1)` |
 | Residual error | Yamada 2025 Table 1 | Proportional 0.169 (stored as SD = sqrt(0.169) ~ 0.411), additive 4.03 ug/mL |
@@ -88,7 +88,7 @@ collects the mapping in one place for reviewer audit.
 | `TBILI` | `TBILI` (mg/dL) | Time-fixed baseline; US units in this paper. |
 | `PRIOR_GAST` | `PRIOR_GAST` (binary) | 1 = prior gastrectomy; 0 = none. |
 | `SEX` (1 = female) | `SEXF` | Encoding matches canonical SEXF; column renamed. |
-| `COMB` (EOX vs others) | `COMB_EOX` | 1 = EOX backbone; 0 = mFOLFOX6 / CAPOX / single agent. Column renamed to preserve the semantic meaning of the 1-level. |
+| `COMB` (EOX vs others) | `CONMED_EOX` | 1 = EOX backbone; 0 = mFOLFOX6 / CAPOX / single agent. Column renamed to preserve the semantic meaning of the 1-level. |
 
 ### Virtual population
 
@@ -110,7 +110,7 @@ pop <- data.frame(
   TBILI    = pmin(pmax(rlnorm(n_subj, log(0.45), 0.45), 0.10), 2.00), # mg/dL
   SEXF     = rbinom(n_subj, 1, 0.34),          # ~34% female in phase 3 SPOTLIGHT/GLOW
   PRIOR_GAST     = rbinom(n_subj, 1, 0.30),          # ~30% prior gastrectomy
-  COMB_EOX = rbinom(n_subj, 1, 0.04)           # EOX used in a small subset
+  CONMED_EOX = rbinom(n_subj, 1, 0.04)           # EOX used in a small subset
 )
 ```
 
@@ -283,8 +283,8 @@ data_obj <- PKNCAdata(
 )
 
 nca_results <- pk.nca(data_obj)
-#>  ■■■■■■■■■                         26% |  ETA:  6s
-#>  ■■■■■■■■■■■■■■■■■■■■■             68% |  ETA:  2s
+#>  ■■■■■■■■■■■■■■■■                  51% |  ETA:  4s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      91% |  ETA:  1s
 nca_summary <- summary(nca_results)
 knitr::kable(
   nca_summary,
@@ -379,8 +379,8 @@ reference population rather than reproducing it:
   reported across SPOTLIGHT and GLOW.
 - **PRIOR_GAST** ~ Bernoulli(0.30). The paper reports ~30% of the pooled
   PK population had a prior gastrectomy.
-- **COMB_EOX** ~ Bernoulli(0.04). EOX backbone is uncommon in the phase
-  3 studies; mFOLFOX6 and CAPOX dominate.
+- **CONMED_EOX** ~ Bernoulli(0.04). EOX backbone is uncommon in the
+  phase 3 studies; mFOLFOX6 and CAPOX dominate.
 - **Residual error interpretation**: Table 1 reports “Proportional error
   0.169” and “Additive error 4.03 ug/mL”. Following the
   `Thakre_2022_risankizumab` convention already established in this

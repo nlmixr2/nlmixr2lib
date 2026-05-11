@@ -196,7 +196,7 @@ make_cohort <- function(dose_amt_mg, fdc_value, id_offset) {
     cmt  = NA_integer_
   )
   dplyr::bind_rows(dose_rows, obs_rows) |>
-    dplyr::mutate(FDC = fdc_value, OCC = 1L, dose_label = paste0(dose_amt_mg, " mg"))
+    dplyr::mutate(FORM_FDC = fdc_value, OCC = 1L, dose_label = paste0(dose_amt_mg, " mg"))
 }
 
 # FDC = 1 reference cohort across 450, 480, 600 mg dose groups
@@ -222,7 +222,7 @@ mod <- rxode2::rxode2(readModelDb("Wilkins_2008_rifampicin"))
 sim <- rxode2::rxSolve(
   mod,
   events = events_fdc,
-  keep   = c("FDC", "OCC", "dose_label")
+  keep   = c("FORM_FDC", "OCC", "dose_label")
 ) |>
   as.data.frame()
 ```
@@ -239,7 +239,7 @@ mod_typical <- mod |> rxode2::zeroRe()
 sim_typical <- rxode2::rxSolve(
   mod_typical,
   events = events_fdc,
-  keep   = c("FDC", "OCC", "dose_label")
+  keep   = c("FORM_FDC", "OCC", "dose_label")
 ) |>
   as.data.frame()
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalka', 'etalmtt', 'etalnn', 'etaiov_cl_1', 'etaiov_cl_2', 'etaiov_cl_3', 'etaiov_cl_4', 'etaiov_cl_5', 'etaiov_cl_6', 'etaiov_mtt_1', 'etaiov_mtt_2', 'etaiov_mtt_3', 'etaiov_mtt_4', 'etaiov_mtt_5', 'etaiov_mtt_6'
@@ -292,7 +292,7 @@ sdc_events <- make_cohort(600, 0L, 100L) |>
 sim_sdc_typical <- rxode2::rxSolve(
   mod_typical,
   events = sdc_events,
-  keep   = c("FDC", "OCC", "dose_label")
+  keep   = c("FORM_FDC", "OCC", "dose_label")
 ) |>
   as.data.frame()
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalka', 'etalmtt', 'etalnn', 'etaiov_cl_1', 'etaiov_cl_2', 'etaiov_cl_3', 'etaiov_cl_4', 'etaiov_cl_5', 'etaiov_cl_6', 'etaiov_mtt_1', 'etaiov_mtt_2', 'etaiov_mtt_3', 'etaiov_mtt_4', 'etaiov_mtt_5', 'etaiov_mtt_6'

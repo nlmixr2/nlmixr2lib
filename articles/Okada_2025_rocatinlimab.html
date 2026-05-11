@@ -528,7 +528,7 @@ table below collects them in one place.</p>
 <td>Supplement Table S3, footnote</td>
 </tr>
 <tr class="odd">
-<td><code>e_hv_vmax</code></td>
+<td><code>e_healthy_vmax</code></td>
 <td align="right">-0.532</td>
 <td>Supplement Table S3, footnote</td>
 </tr>
@@ -607,13 +607,13 @@ approximate the published trial demographics for Studies 4 and 5
 <span><span class="va">ALB</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n_subj</span>, <span class="fl">44.6</span>, <span class="fl">3.0</span><span class="op">)</span>, <span class="fl">31</span><span class="op">)</span>, <span class="fl">53</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Disease covariates: AD patients are non-psoriasis, non-healthy.</span></span>
-<span><span class="co"># (Set DIS_PSORIASIS = 0 and DIS_HV = 0 for the target indication.)</span></span>
+<span><span class="co"># (Set DIS_PSORIASIS = 0 and DIS_HEALTHY = 0 for the target indication.)</span></span>
 <span><span class="va">pop</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  ID            <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n_subj</span><span class="op">)</span>,</span>
 <span>  WT            <span class="op">=</span> <span class="va">WT</span>,</span>
 <span>  ALB           <span class="op">=</span> <span class="va">ALB</span>,</span>
 <span>  DIS_PSORIASIS <span class="op">=</span> <span class="fl">0L</span>,</span>
-<span>  DIS_HV        <span class="op">=</span> <span class="fl">0L</span></span>
+<span>  DIS_HEALTHY        <span class="op">=</span> <span class="fl">0L</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">pop</span><span class="op">$</span><span class="va">wt_group</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cut.html" class="external-link">cut</a></span><span class="op">(</span></span>
@@ -655,7 +655,7 @@ mg SC Q2W; we replicate it here.</p>
 <span></span>
 <span><span class="va">events</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">d_dose</span>, <span class="va">d_obs</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">ID</span>, <span class="va">TIME</span>, <span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">EVID</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">ID</span>, <span class="va">TIME</span>, <span class="va">AMT</span>, <span class="va">EVID</span>, <span class="va">CMT</span>, <span class="va">DV</span>, <span class="va">WT</span>, <span class="va">ALB</span>, <span class="va">DIS_PSORIASIS</span>, <span class="va">DIS_HV</span>, <span class="va">wt_group</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">ID</span>, <span class="va">TIME</span>, <span class="va">AMT</span>, <span class="va">EVID</span>, <span class="va">CMT</span>, <span class="va">DV</span>, <span class="va">WT</span>, <span class="va">ALB</span>, <span class="va">DIS_PSORIASIS</span>, <span class="va">DIS_HEALTHY</span>, <span class="va">wt_group</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/readModelDb.html">readModelDb</a></span><span class="op">(</span><span class="st">"Okada_2025_rocatinlimab"</span><span class="op">)</span></span>
 <span></span>
@@ -743,12 +743,12 @@ per-regimen results are computed and can be compared 1-to-1 to Table
 <span></span>
 <span>  <span class="va">dose_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>    ID <span class="op">=</span> <span class="va">id</span>, TIME <span class="op">=</span> <span class="va">dose_t</span>, AMT <span class="op">=</span> <span class="va">dose</span>, EVID <span class="op">=</span> <span class="fl">1</span>, CMT <span class="op">=</span> <span class="st">"depot"</span>,</span>
-<span>    DV <span class="op">=</span> <span class="cn">NA</span>, WT <span class="op">=</span> <span class="fl">80</span>, ALB <span class="op">=</span> <span class="fl">44</span>, DIS_PSORIASIS <span class="op">=</span> <span class="fl">0L</span>, DIS_HV <span class="op">=</span> <span class="fl">0L</span>,</span>
+<span>    DV <span class="op">=</span> <span class="cn">NA</span>, WT <span class="op">=</span> <span class="fl">80</span>, ALB <span class="op">=</span> <span class="fl">44</span>, DIS_PSORIASIS <span class="op">=</span> <span class="fl">0L</span>, DIS_HEALTHY <span class="op">=</span> <span class="fl">0L</span>,</span>
 <span>    regimen <span class="op">=</span> <span class="va">regimen</span></span>
 <span>  <span class="op">)</span></span>
 <span>  <span class="va">obs_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>    ID <span class="op">=</span> <span class="va">id</span>, TIME <span class="op">=</span> <span class="va">obs_t</span>, AMT <span class="op">=</span> <span class="fl">0</span>, EVID <span class="op">=</span> <span class="fl">0</span>, CMT <span class="op">=</span> <span class="st">"central"</span>,</span>
-<span>    DV <span class="op">=</span> <span class="cn">NA</span>, WT <span class="op">=</span> <span class="fl">80</span>, ALB <span class="op">=</span> <span class="fl">44</span>, DIS_PSORIASIS <span class="op">=</span> <span class="fl">0L</span>, DIS_HV <span class="op">=</span> <span class="fl">0L</span>,</span>
+<span>    DV <span class="op">=</span> <span class="cn">NA</span>, WT <span class="op">=</span> <span class="fl">80</span>, ALB <span class="op">=</span> <span class="fl">44</span>, DIS_PSORIASIS <span class="op">=</span> <span class="fl">0L</span>, DIS_HEALTHY <span class="op">=</span> <span class="fl">0L</span>,</span>
 <span>    regimen <span class="op">=</span> <span class="va">regimen</span></span>
 <span>  <span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">dose_df</span>, <span class="va">obs_df</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">ID</span>, <span class="va">TIME</span>, <span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">EVID</span><span class="op">)</span><span class="op">)</span></span>
@@ -1084,8 +1084,8 @@ dermatitis. Users simulating the healthy-volunteer cohort can replace
 <code>DIS</code> column is a 4-level categorical (0 = healthy, 1 =
 psoriasis, 2 = UC, 3 = AD). Only two effects survived backward
 elimination (psoriasis on CL, healthy on Vmax), so the model exposes two
-binary indicators (<code>DIS_PSORIASIS</code>, <code>DIS_HV</code>). For
-an AD or UC simulation, both are 0.</li>
+binary indicators (<code>DIS_PSORIASIS</code>,
+<code>DIS_HEALTHY</code>). For an AD or UC simulation, both are 0.</li>
 <li>Time variable in the saturable-clearance term
 <code>TDVM = Vmax · exp(-Kdes·t)</code> uses simulation time
 <code>t</code> directly, matching the NONMEM control-stream formulation.

@@ -589,7 +589,7 @@ population median).</p>
 <span>      DIS_AML       <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>      DIS_MDS       <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>      DIS_CMML      <span class="op">=</span> <span class="fl">0</span>,</span>
-<span>      COADMIN_SPART <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>      CONMED_SPART <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>      treatment     <span class="op">=</span> <span class="va">label</span></span>
 <span>    <span class="op">)</span></span>
 <span><span class="op">}</span></span>
@@ -730,7 +730,7 @@ steady-state surrogate), normalized by dose.</p>
 <span></span>
 <span><span class="va">nca_data</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_obj</span>, <span class="va">dose_obj</span>, intervals <span class="op">=</span> <span class="va">intervals</span><span class="op">)</span></span>
 <span><span class="va">nca_res</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span><span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="va">nca_data</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■         </span>  73% |  ETA:  1s</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■       </span>  78% |  ETA:  1s</span></span>
 <span><span class="va">nca_summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">nca_res</span><span class="op">)</span></span>
 <span><span class="va">nca_summary</span></span>
 <span><span class="co">#&gt;  Interval Start Interval End   treatment   N AUClast (day*ug/mL) Cmax (ug/mL)</span></span>
@@ -798,8 +798,8 @@ population should override the reference value.</li>
 pre-specified analysis plan (“the full covariate model approach was
 used… only one model was evaluated, without the need to select
 covariates for inclusion / exclusion”), all four CL covariates –
-DIS_AML, DIS_MDS, DIS_CMML, COADMIN_SPART – are retained even though
-only DIS_MDS reaches conventional significance (p = 0.0213). The paper’s
+DIS_AML, DIS_MDS, DIS_CMML, CONMED_SPART – are retained even though only
+DIS_MDS reaches conventional significance (p = 0.0213). The paper’s
 sensitivity analysis (reduced model with non-significant covariates
 dropped) reports the largest parameter shift was beta_CL,MDS from -0.149
 to -0.164 (~10% relative), so the full and reduced models are

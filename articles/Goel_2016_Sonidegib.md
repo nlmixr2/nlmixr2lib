@@ -90,15 +90,15 @@ collects them in one place for review.
 | `e_alt_cl` | 0.120 | Goel 2016 Table 2 theta7 (ALTN/0.42 effect on CL/F) |
 | `e_tbili_cl` | 0.064 | Goel 2016 Table 2 theta8 (BILN/0.38 effect on CL/F) |
 | `e_race_japanese_cl` | 0.905 | Goel 2016 Table 2 theta9 (JPN effect on CL/F) |
-| `e_dis_hv_cl` | 2.96 | Goel 2016 Table 2 theta10 (HV effect on CL/F) |
+| `e_healthy_cl` | 2.96 | Goel 2016 Table 2 theta10 (HV effect on CL/F) |
 | `e_wt_vc` | 0.731 | Goel 2016 Table 2 theta12 (shared with WT-on-Vp/F per paper) |
 | `e_alb_vc` | -2.33 | Goel 2016 Table 2 theta13 |
 | `e_alb_vp` | -0.087 | Goel 2016 Table 2 theta16 |
-| `e_meal_hfat_ka` | 1.01 | Goel 2016 Table 2 theta18 (FATM effect on Ka) |
-| `e_h2ra_f` | 0.996 | Goel 2016 Table 2 theta20 (H2 effect on F) |
-| `e_ppi_f` | 0.696 | Goel 2016 Table 2 theta21 (PPI effect on F) |
-| `e_hv_fast_f` | 0.855 | Goel 2016 Table 2 theta22 (HV.Fasting effect on F) |
-| `e_meal_hfat_f` | 5.74 | Goel 2016 Table 2 theta23 (Fatmeal effect on F) |
+| `e_fed_highfat_ka` | 1.01 | Goel 2016 Table 2 theta18 (FATM effect on Ka) |
+| `e_conmed_h2ra_f` | 0.996 | Goel 2016 Table 2 theta20 (H2 effect on F) |
+| `e_conmed_ppi_f` | 0.696 | Goel 2016 Table 2 theta21 (CONMED_PPI effect on F) |
+| `e_healthy_fast_f` | 0.855 | Goel 2016 Table 2 theta22 (HV.Fasting effect on F) |
+| `e_fed_highfat_f` | 5.74 | Goel 2016 Table 2 theta23 (Fatmeal effect on F) |
 | `e_dose_f` | -0.342 | Goel 2016 Table 2 theta24 (Dose/100 effect on F) |
 | `e_multi_dose_pt_f` | 1.16 | Goel 2016 Table 2 theta25 (FMDD effect on F) |
 | IIV CL/F | 64.8 % CV (omega^2 = 0.3505) | Goel 2016 Table 2 |
@@ -115,9 +115,9 @@ collects them in one place for review.
 The original observed dataset is not publicly available. This vignette
 constructs a virtual cohort of cancer patients matched to the Table 1 /
 Figure 2 reference scenario (200 mg QD and 800 mg QD oral sonidegib, 2 h
-post light meal, no PPI / H2RA, no high-fat meal). Covariate
-distributions approximate the pooled cancer-patient sub-cohort (Goel
-2016 Table 1 columns X2101 + X1101 + A2201).
+post light meal, no CONMED_PPI / CONMED_H2RA, no high-fat meal).
+Covariate distributions approximate the pooled cancer-patient sub-cohort
+(Goel 2016 Table 1 columns X2101 + X1101 + A2201).
 
 ``` r
 
@@ -140,11 +140,11 @@ make_arm <- function(dose_mg, id_offset = 0L) {
     ALT           = pmax(0.05, rlnorm(n_per_arm, meanlog = log(0.42), sdlog = 0.6)),
     TBILI         = pmax(0.05, rlnorm(n_per_arm, meanlog = log(0.38), sdlog = 0.6)),
     RACE_JAPANESE = as.integer(runif(n_per_arm) < 0.06), # ~6% Japanese
-    DIS_HV        = 0L,                                  # cancer patients only
-    PPI           = 0L,                                  # reference (no PPI)
-    H2RA          = 0L,                                  # reference (no H2RA)
-    MEAL_HFAT     = 0L,                                  # 2 h post light meal
-    HV_FAST       = 0L,                                  # not HV
+    DIS_HEALTHY        = 0L,                                  # cancer patients only
+    CONMED_PPI           = 0L,                                  # reference (no CONMED_PPI)
+    CONMED_H2RA          = 0L,                                  # reference (no CONMED_H2RA)
+    FED_HIGHFAT     = 0L,                                  # 2 h post light meal
+    FED           = 1L,                                  # patients dosed fed (2 h post light meal); healthy-fasted effect = DIS_HEALTHY * (1 - FED)
     arm           = paste0(dose_mg, " mg QD")
   )
 }
@@ -201,7 +201,7 @@ obs_recs <- pop[rep(seq_len(n_subj), each = length(all_obs_times)), ] |>
 events <- bind_rows(dose_recs, obs_recs) |>
   arrange(id, time, desc(evid)) |>
   select(id, time, amt, evid, cmt, AGE, WT, SEXF, CRCL, ALB, ALT, TBILI,
-         RACE_JAPANESE, DIS_HV, PPI, H2RA, MEAL_HFAT, HV_FAST,
+         RACE_JAPANESE, DIS_HEALTHY, CONMED_PPI, CONMED_H2RA, FED_HIGHFAT, FED,
          DOSE, MULTI_DOSE_PT, arm)
 
 # Disjoint-id assertion (multi-cohort safety)
@@ -314,7 +314,7 @@ intervals <- data.frame(
 )
 
 nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     92% |  ETA:  0s
+#>  ■■■■■■■■■■■■■■■■■■■■■             68% |  ETA:  1s
 
 # Simulated arithmetic means by group + phase (matching Goel 2016 Tables 3-4 reporting
 # convention; arithmetic-mean is also right-tail-sensitive for high-CV log-normal IIV).
@@ -409,10 +409,11 @@ for QD dosing where the profile declines monotonically after Tmax.
 ## Assumptions and deviations
 
 - The model file uses canonical column names where they exist (`AGE`,
-  `WT`, `SEXF`, `CRCL`, `ALB`, `RACE_JAPANESE`, `DIS_HV`, `DOSE`). Five
-  new canonical covariate entries were registered alongside this model:
-  `PPI`, `H2RA`, `MEAL_HFAT`, `HV_FAST`, and `MULTI_DOSE_PT` (see
-  `inst/references/covariate-columns.md` 2026-05-08 changelog entry).
+  `WT`, `SEXF`, `CRCL`, `ALB`, `RACE_JAPANESE`, `DIS_HEALTHY`, `DOSE`).
+  Five new canonical covariate entries were registered alongside this
+  model: `CONMED_PPI`, `CONMED_H2RA`, `FED_HIGHFAT`, `FED`, and
+  `MULTI_DOSE_PT` (see `inst/references/covariate-columns.md` 2026-05-08
+  changelog entry).
 - `ALT` and `TBILI` are reused with the per-model unit
   `"fraction of ULN"` (paper convention: ALT and bilirubin are
   normalized by the assay’s upper limit of normal before entering the

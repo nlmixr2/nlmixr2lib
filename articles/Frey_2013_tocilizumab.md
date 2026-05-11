@@ -27,13 +27,13 @@ patients** with **12,618 DAS28 observations** through week 24. About 80%
 of patients were female and the majority (~74%) were White; the
 remaining race groups (Asian, American Indian/Alaska Native, Other) were
 pooled by the paper into the Asian-and-Others composite that drives the
-`RACE_ASIAN_OTH` covariate effect on Kout. Tocilizumab was administered
-as **4 or 8 mg/kg by 1-hour IV infusion every 4 weeks for up to 24
-weeks**, plus a placebo-on-DMARD-background arm. Baseline biomarkers
-(Supplementary Table S1) gave median IL-6 around 20 pg/mL, median HAQ-DI
-1.5-1.6, median PAIN VAS 60-62, and median Physician’s Global VAS 65 —
-these median values are the reference covariate values used in the
-model.
+`RACE_ASIAN_AMIND_OTH` covariate effect on Kout. Tocilizumab was
+administered as **4 or 8 mg/kg by 1-hour IV infusion every 4 weeks for
+up to 24 weeks**, plus a placebo-on-DMARD-background arm. Baseline
+biomarkers (Supplementary Table S1) gave median IL-6 around 20 pg/mL,
+median HAQ-DI 1.5-1.6, median PAIN VAS 60-62, and median Physician’s
+Global VAS 65 — these median values are the reference covariate values
+used in the model.
 
 The same metadata are available programmatically via
 `readModelDb("Frey_2013_tocilizumab")$population`.
@@ -65,7 +65,7 @@ covariate-aware tocilizumab popPK, use the standalone
 | `lDMARD` | `log(0.30)` ug/mL | Frey 2013 Table 1, DMARD effect |
 | `e_lil6_ec50` (log IL-6 on EC50) | `-4.4` | Frey 2013 Table 2, EC50 row |
 | `e_sexm_emax` (+11% Emax in males) | `0.11` | Frey 2013 Table 2, SEX row |
-| `e_race_kout` (-25% Kout in Asian/AmInd/Other) | `-0.25` | Frey 2013 Table 2, RACE row |
+| `e_race_amind_oth_kout` (-25% Kout in Asian/AmInd/Other) | `-0.25` | Frey 2013 Table 2, RACE row |
 | `e_blhaq_base` (HAQ on BASE) | `0.043` | Frey 2013 Table 2, HAQ row (see Errata) |
 | `e_lil6_base` (log IL-6 on BASE) | `0.13` | Frey 2013 Table 2, log-IL-6-on-BASE row |
 | `e_pain_base` (PAIN on BASE) | `0.062` | Frey 2013 Table 2, PAIN row (see Errata) |
@@ -115,11 +115,11 @@ covariate-aware tocilizumab popPK, use the standalone
 - **Race covariate is the composite Asian/AmInd/Other indicator.** Frey
   2013 pools the smaller-N race groups into a single Asian-and-others
   composite (RACE = 1) with White + Black as the reference (RACE = 0).
-  The library introduces a new canonical `RACE_ASIAN_OTH` for this
+  The library introduces a new canonical `RACE_ASIAN_AMIND_OTH` for this
   composite (registered alongside the existing `RACE_BLACK_OTH` and
   `RACE_ASIAN_AMIND_MULTI` per-paper composites). Effect form:
-  `Kout = Kout_typ * (1 + (-0.25) * RACE_ASIAN_OTH)`, so Kout is 25%
-  lower in the Asian/AmInd/Other composite group.
+  `Kout = Kout_typ * (1 + (-0.25) * RACE_ASIAN_AMIND_OTH)`, so Kout is
+  25% lower in the Asian/AmInd/Other composite group.
 
 - **IL-6 is log-transformed via the (log(IL6 \* 1000) / 9.9) ratio.**
   The same log-IL-6 ratio appears in three places in the final model:
@@ -197,7 +197,7 @@ cohort <- tibble::tibble(
   id             = seq_len(n_subj),
   IL6            = pmax(rlnorm(n_subj, log(20) - 0.5 * 1.0^2, 1.0), 0.7),
   SEXF           = rbinom(n_subj, 1, 0.82),
-  RACE_ASIAN_OTH = rbinom(n_subj, 1, 0.24),
+  RACE_ASIAN_AMIND_OTH = rbinom(n_subj, 1, 0.24),
   BLHAQ          = pmin(pmax(rnorm(n_subj, mean = 1.55, sd = 0.65), 0, 3)),
   PAIN           = pmin(pmax(rnorm(n_subj, mean = 60,   sd = 20),  0, 100)),
   BLPHYVAS       = pmin(pmax(rnorm(n_subj, mean = 65,   sd = 18),  10, 100))
@@ -256,7 +256,7 @@ sim_one <- function(subj_row, dose_per_kg, treatment, body_kg = 70) {
   events <- dplyr::bind_rows(ev_dose, ev_obs) |>
     dplyr::arrange(id, time, dplyr::desc(evid)) |>
     dplyr::select(id, time, amt, rate, cmt, evid,
-                  IL6, SEXF, RACE_ASIAN_OTH, BLHAQ, PAIN, BLPHYVAS)
+                  IL6, SEXF, RACE_ASIAN_AMIND_OTH, BLHAQ, PAIN, BLPHYVAS)
   out <- as.data.frame(rxode2::rxSolve(mod, events = events))
   out$id        <- subj_row$id
   out$treatment <- treatment
@@ -279,8 +279,8 @@ sim <- dplyr::bind_rows(
 For the deterministic typical-patient comparison against the paper’s
 week-24 statistics, we zero the random effects and use the
 reference-covariate medians (IL6 20 pg/mL, SEXF = 1 (female),
-RACE_ASIAN_OTH = 0 (White or Black), BLHAQ = 1.6, PAIN = 60, BLPHYVAS =
-65):
+RACE_ASIAN_AMIND_OTH = 0 (White or Black), BLHAQ = 1.6, PAIN = 60,
+BLPHYVAS = 65):
 
 ``` r
 
@@ -290,7 +290,7 @@ typical_cov <- tibble::tibble(
   id = 1L,
   IL6 = 20,
   SEXF = 1L,
-  RACE_ASIAN_OTH = 0L,
+  RACE_ASIAN_AMIND_OTH = 0L,
   BLHAQ = 1.6,
   PAIN = 60,
   BLPHYVAS = 65
@@ -314,7 +314,7 @@ ev_typ <- function(dose_per_kg, body_kg = 70) {
   dplyr::bind_rows(ev_dose, ev_obs) |>
     dplyr::arrange(id, time, dplyr::desc(evid)) |>
     dplyr::select(id, time, amt, rate, cmt, evid,
-                  IL6, SEXF, RACE_ASIAN_OTH, BLHAQ, PAIN, BLPHYVAS)
+                  IL6, SEXF, RACE_ASIAN_AMIND_OTH, BLHAQ, PAIN, BLPHYVAS)
 }
 
 sim_typ <- dplyr::bind_rows(
@@ -488,11 +488,11 @@ values from the 108,500-patient full simulation. {.table}
 
 ### Baseline reproduction check
 
-With reference covariates (IL6 20 pg/mL, SEXF = 1, RACE_ASIAN_OTH = 0,
-BLHAQ = 1.6, PAIN = 60, BLPHYVAS = 65) the model’s typical `Base` must
-equal `exp(log(6.8)) = 6.8`. The DAS28 state is initialized to `Base`,
-so the `t = 0` value of the DAS28 compartment should be 6.8 regardless
-of regimen.
+With reference covariates (IL6 20 pg/mL, SEXF = 1, RACE_ASIAN_AMIND_OTH
+= 0, BLHAQ = 1.6, PAIN = 60, BLPHYVAS = 65) the model’s typical `Base`
+must equal `exp(log(6.8)) = 6.8`. The DAS28 state is initialized to
+`Base`, so the `t = 0` value of the DAS28 compartment should be 6.8
+regardless of regimen.
 
 ``` r
 
@@ -568,11 +568,11 @@ Typical-patient placebo-arm week-24 DAS28 reduction. {.table}
   paper-side floor for both covariates. Affects only subjects with zero
   VAS scores; below the floor the power form would otherwise collapse to
   0 and the model would predict an unphysical zero baseline.
-- **Composite race indicator RACE_ASIAN_OTH.** Frey 2013 pools the
+- **Composite race indicator RACE_ASIAN_AMIND_OTH.** Frey 2013 pools the
   smaller-N race groups (Asian, American Indian/Alaska Native, Other)
   into a single Asian-and-others category against a White + Black
   reference. The library introduces a new specific-scope canonical
-  `RACE_ASIAN_OTH` for this composite. The composite is mutually
+  `RACE_ASIAN_AMIND_OTH` for this composite. The composite is mutually
   exclusive with the decomposed `RACE_ASIAN`, `RACE_OTHER`, etc.
   indicators in the same model — do not combine them.
 - **Convention-checker warnings (compartment / observation naming).**
@@ -607,11 +607,11 @@ Typical-patient placebo-arm week-24 DAS28 reduction. {.table}
   between this model’s DAS28 and the Ma 2020 DAS28-CRP requires care.
 - **Virtual-cohort covariate distributions.** IL6 drawn from a
   log-normal with median 20 pg/mL and GSD ~2.7; SEXF Bernoulli(0.82);
-  RACE_ASIAN_OTH Bernoulli(0.24); BLHAQ from `N(1.55, 0.65)` truncated
-  to \[0, 3\]; PAIN from `N(60, 20)` truncated to \[0, 100\]; BLPHYVAS
-  from `N(65, 18)` truncated to \[10, 100\]. These ranges approximate
-  Supplementary Table S1 but are not drawn from observed subject-level
-  data, which were not publicly released.
+  RACE_ASIAN_AMIND_OTH Bernoulli(0.24); BLHAQ from `N(1.55, 0.65)`
+  truncated to \[0, 3\]; PAIN from `N(60, 20)` truncated to \[0, 100\];
+  BLPHYVAS from `N(65, 18)` truncated to \[10, 100\]. These ranges
+  approximate Supplementary Table S1 but are not drawn from observed
+  subject-level data, which were not publicly released.
 - **Body weight is fixed at 70 kg for cohort dose calculation.** Frey
   2013 doses tocilizumab in mg/kg, but the PK backbone in this file is
   fixed at the Frey 2010 typical-patient PK reference; we therefore use

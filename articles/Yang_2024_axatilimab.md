@@ -214,7 +214,7 @@ make_typical <- function(dose_mg_kg, regimen, weight_kg = 75,
   events$CSF1       <- CSF1_pgmL
   events$CPK        <- CPK_UL
   events$DIS_CANCER <- dis_cancer
-  events$DIS_HV     <- dis_hv
+  events$DIS_HEALTHY     <- dis_hv
   events$ADA_POS    <- ada_pos
   events$regimen    <- paste0(dose_mg_kg, " mg/kg ", regimen)
   events
@@ -325,7 +325,7 @@ the three population indicators:
 baseline_ncmc <- function(dis_cancer, dis_hv) {
   ev <- rxode2::et(seq(0, 168, by = 24), cmt = "Cc")
   ev$WT <- 75; ev$CSF1 <- 549; ev$CPK <- 63
-  ev$DIS_CANCER <- dis_cancer; ev$DIS_HV <- dis_hv; ev$ADA_POS <- 0
+  ev$DIS_CANCER <- dis_cancer; ev$DIS_HEALTHY <- dis_hv; ev$ADA_POS <- 0
   s <- rxode2::rxSolve(mod, ev, returnType = "data.frame")
   s$ncmc[1]
 }
@@ -364,7 +364,7 @@ typical_cl <- function(ada) {
   ev <- rxode2::et(amt = 1, cmt = "central", evid = 1, time = 0) |>
     rxode2::et(c(0, 0.001), cmt = "Cc")
   ev$WT <- 75; ev$CSF1 <- 549; ev$CPK <- 63
-  ev$DIS_CANCER <- 0; ev$DIS_HV <- 0; ev$ADA_POS <- ada
+  ev$DIS_CANCER <- 0; ev$DIS_HEALTHY <- 0; ev$ADA_POS <- ada
   s <- rxode2::rxSolve(mod, ev, returnType = "data.frame")
   unique(s$cl)[1]
 }
@@ -398,7 +398,7 @@ this is the standard endogenous-system invariant.
 
 ss_ev <- rxode2::et(seq(0, 4000, by = 48), cmt = "Cc")
 ss_ev$WT <- 75; ss_ev$CSF1 <- 549; ss_ev$CPK <- 63
-ss_ev$DIS_CANCER <- 0; ss_ev$DIS_HV <- 0; ss_ev$ADA_POS <- 0
+ss_ev$DIS_CANCER <- 0; ss_ev$DIS_HEALTHY <- 0; ss_ev$ADA_POS <- 0
 ss <- rxode2::rxSolve(mod, ss_ev, returnType = "data.frame")
 #> ℹ omega/sigma items treated as zero: 'etalvc', 'etalcl', 'etalvmax', 'etalbl_csf1', 'etalbl_ncmc', 'etalbl_ast', 'etalbl_cpk'
 
@@ -489,7 +489,7 @@ single_ev$WT         <- 75
 single_ev$CSF1       <- 549
 single_ev$CPK        <- 63
 single_ev$DIS_CANCER <- 0
-single_ev$DIS_HV     <- 0
+single_ev$DIS_HEALTHY     <- 0
 single_ev$ADA_POS    <- 0
 single_ev$regimen    <- "0.3 mg/kg single dose"
 sim_sd <- rxode2::rxSolve(mod, single_ev, returnType = "data.frame", keep = "regimen") |>

@@ -483,7 +483,7 @@ table below collects the mapping in one place for reviewer audit.</p>
 <tr class="even">
 <td>COMB on V1 (if EOX)</td>
 <td>Yamada 2025 Table 1</td>
-<td>Dummy: <code>1 + 0.466·COMB_EOX</code>
+<td>Dummy: <code>1 + 0.466·CONMED_EOX</code>
 </td>
 </tr>
 <tr class="odd">
@@ -573,7 +573,7 @@ infusion)</td>
 <tr class="odd">
 <td>
 <code>COMB</code> (EOX vs others)</td>
-<td><code>COMB_EOX</code></td>
+<td><code>CONMED_EOX</code></td>
 <td>1 = EOX backbone; 0 = mFOLFOX6 / CAPOX / single agent. Column
 renamed to preserve the semantic meaning of the 1-level.</td>
 </tr>
@@ -600,7 +600,7 @@ subject.</p>
 <span>  TBILI    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Lognormal.html" class="external-link">rlnorm</a></span><span class="op">(</span><span class="va">n_subj</span>, <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">0.45</span><span class="op">)</span>, <span class="fl">0.45</span><span class="op">)</span>, <span class="fl">0.10</span><span class="op">)</span>, <span class="fl">2.00</span><span class="op">)</span>, <span class="co"># mg/dL</span></span>
 <span>  SEXF     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="va">n_subj</span>, <span class="fl">1</span>, <span class="fl">0.34</span><span class="op">)</span>,          <span class="co"># ~34% female in phase 3 SPOTLIGHT/GLOW</span></span>
 <span>  PRIOR_GAST     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="va">n_subj</span>, <span class="fl">1</span>, <span class="fl">0.30</span><span class="op">)</span>,          <span class="co"># ~30% prior gastrectomy</span></span>
-<span>  COMB_EOX <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="va">n_subj</span>, <span class="fl">1</span>, <span class="fl">0.04</span><span class="op">)</span>           <span class="co"># EOX used in a small subset</span></span>
+<span>  CONMED_EOX <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="va">n_subj</span>, <span class="fl">1</span>, <span class="fl">0.04</span><span class="op">)</span>           <span class="co"># EOX used in a small subset</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
@@ -763,8 +763,8 @@ group by regimen and by subject.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">nca_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="va">data_obj</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■                       </span>  26% |  ETA:  6s</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■           </span>  68% |  ETA:  2s</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■                </span>  51% |  ETA:  4s</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■    </span>  91% |  ETA:  1s</span></span>
 <span><span class="va">nca_summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">nca_results</span><span class="op">)</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
 <span>  <span class="va">nca_summary</span>,</span>
@@ -917,7 +917,7 @@ fraction reported across SPOTLIGHT and GLOW.</li>
 <strong>PRIOR_GAST</strong> ~ Bernoulli(0.30). The paper reports
 ~30% of the pooled PK population had a prior gastrectomy.</li>
 <li>
-<strong>COMB_EOX</strong> ~ Bernoulli(0.04). EOX backbone is
+<strong>CONMED_EOX</strong> ~ Bernoulli(0.04). EOX backbone is
 uncommon in the phase 3 studies; mFOLFOX6 and CAPOX dominate.</li>
 <li>
 <strong>Residual error interpretation</strong>: Table 1 reports

@@ -463,7 +463,7 @@ table below collects them in one place for review.</p>
 <td>Table 2, theta7 (Eq. 3)</td>
 </tr>
 <tr class="even">
-<td><code>e_steroid_cl</code></td>
+<td><code>e_conmed_steroid_cl</code></td>
 <td>0.195</td>
 <td>Table 2, theta8 (Eq. 3)</td>
 </tr>
@@ -529,8 +529,9 @@ as zero in the 3x3 OMEGA block.</p>
 simulations below use a virtual cohort whose body-weight distribution
 approximates the MI-CP152 population (median 73 kg, range 43.1-120). All
 subjects are assigned the median BGENE21 of 33, set to
-<code>STEROID = 0</code> (no baseline steroid use), and stratified into
-the four dose cohorts that matched the phase Ib design.</p>
+<code>CONMED_STEROID = 0</code> (no baseline conmed_steroid use), and
+stratified into the four dose cohorts that matched the phase Ib
+design.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2013</span><span class="op">)</span></span>
 <span><span class="va">n_per_cohort</span> <span class="op">&lt;-</span> <span class="fl">50</span></span>
@@ -543,7 +544,7 @@ the four dose cohorts that matched the phase Ib design.</p>
 <span>                              meanlog <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">73</span><span class="op">)</span>, sdlog <span class="op">=</span> <span class="fl">0.22</span><span class="op">)</span>,</span>
 <span>                       <span class="fl">43.1</span><span class="op">)</span>, <span class="fl">120</span><span class="op">)</span>,</span>
 <span>  BGENE21  <span class="op">=</span> <span class="fl">33</span>,</span>
-<span>  STEROID  <span class="op">=</span> <span class="fl">0</span></span>
+<span>  CONMED_STEROID  <span class="op">=</span> <span class="fl">0</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>A Q14D dosing schedule of 14 infusions (to match MI-CP152) is used.
 Concentration observations are dense in the first dose interval (every 2
@@ -705,7 +706,7 @@ dosing interval.</p>
 <span>  <span class="va">ev</span><span class="op">$</span><span class="va">WT</span> <span class="op">&lt;-</span> <span class="fl">75</span></span>
 <span>  <span class="va">ev</span><span class="op">$</span><span class="va">BGENE21</span> <span class="op">&lt;-</span> <span class="fl">33</span></span>
 <span>  <span class="va">ev</span><span class="op">$</span><span class="va">COHDOSE</span> <span class="op">&lt;-</span> <span class="va">d</span> <span class="op">/</span> <span class="fl">75</span>   <span class="co"># per-subject cohort dose in mg/kg (reference subject)</span></span>
-<span>  <span class="va">ev</span><span class="op">$</span><span class="va">STEROID</span> <span class="op">&lt;-</span> <span class="fl">0</span></span>
+<span>  <span class="va">ev</span><span class="op">$</span><span class="va">CONMED_STEROID</span> <span class="op">&lt;-</span> <span class="fl">0</span></span>
 <span>  <span class="va">sim_ss</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_ref</span>, events <span class="op">=</span> <span class="va">ev</span>, returnType <span class="op">=</span> <span class="st">"data.frame"</span><span class="op">)</span></span>
 <span>  <span class="va">last</span> <span class="op">&lt;-</span> <span class="va">sim_ss</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&gt;=</span> <span class="va">ss_start</span>, <span class="va">time</span> <span class="op">&lt;=</span> <span class="va">ss_end</span><span class="op">)</span></span>
@@ -853,8 +854,8 @@ decline.</p>
 <span></span>
 <span><span class="va">nca_data</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_obj</span>, <span class="va">dose_obj</span>, intervals <span class="op">=</span> <span class="va">intervals</span><span class="op">)</span></span>
 <span><span class="va">nca_res</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span><span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="va">nca_data</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■                   </span>  42% |  ETA:  4s</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■   </span>  92% |  ETA:  0s</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■                  </span>  42% |  ETA:  4s</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■     </span>  86% |  ETA:  1s</span></span>
 <span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">nca_res</span><span class="op">)</span>,</span>
 <span>             caption <span class="op">=</span> <span class="st">"Simulated single-dose NCA across the MI-CP152 cohorts (first 14 days)."</span><span class="op">)</span></span></code></pre></div>
@@ -954,11 +955,11 @@ dose/WT for phase IIb fixed-dose simulations). The paper’s Discussion
 the escalating design — single-dose data in MI-CP126 were linear across
 0.3-30 mg/kg.</li>
 <li>
-<strong><code>STEROID</code> default.</strong> The phase IIb
-simulations in the paper set BSTEROID = 0 (no baseline steroid use) as
-the reference. The virtual cohort above does the same; set
-<code>STEROID = 1</code> per subject to simulate the +19.5% CL effect
-for concomitant-steroid users.</li>
+<strong><code>CONMED_STEROID</code> default.</strong> The phase IIb
+simulations in the paper set BSTEROID = 0 (no baseline conmed_steroid
+use) as the reference. The virtual cohort above does the same; set
+<code>CONMED_STEROID = 1</code> per subject to simulate the +19.5% CL
+effect for concomitant-conmed_steroid users.</li>
 <li>
 <strong>Monthly dosing interval for Table 3.</strong> Narwal 2013
 Table 3 is labelled “monthly” without a numeric dosing-interval

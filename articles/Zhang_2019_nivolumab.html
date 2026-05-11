@@ -628,7 +628,7 @@ per Methods).</li>
 <li>Time-varying CL:
 <code>CL(t) = CL0 * exp(Emax_i * t^HILL / (T50^HILL + t^HILL))</code>.</li>
 <li>Emax_i: additive linear-scale form
-<code>Emax_REF + e_ecog_emax * ECOG_GE1 + e_ipico_emax * COADMIN_IPI_ANY + etaEmax</code>.</li>
+<code>Emax_REF + e_ecog_emax * ECOG_GE1 + e_ipico_emax * CONMED_IPI_ANY + etaEmax</code>.</li>
 </ul>
 </div>
 <div class="section level2">
@@ -673,11 +673,11 @@ per Methods).</li>
 </tr>
 <tr class="odd">
 <td><code>IPI3Q3W</code></td>
-<td><code>COADMIN_IPI_3Q3W</code></td>
+<td><code>CONMED_IPI_3Q3W</code></td>
 </tr>
 <tr class="even">
 <td><code>IPI1Q6W</code></td>
-<td><code>COADMIN_IPI_1Q6W</code></td>
+<td><code>CONMED_IPI_1Q6W</code></td>
 </tr>
 <tr class="odd">
 <td><code>CHEMO</code></td>
@@ -685,7 +685,7 @@ per Methods).</li>
 </tr>
 <tr class="even">
 <td><code>IPICO</code></td>
-<td><code>COADMIN_IPI_ANY</code></td>
+<td><code>CONMED_IPI_ANY</code></td>
 </tr>
 </tbody>
 </table>
@@ -769,13 +769,13 @@ combination.</p>
 <span>  <span class="va">pop_offset</span><span class="op">$</span><span class="va">ID</span> <span class="op">&lt;-</span> <span class="va">pop_offset</span><span class="op">$</span><span class="va">ID</span> <span class="op">+</span> <span class="va">id_offset</span></span>
 <span></span>
 <span>  <span class="co"># Per-regimen indicators on baseline CL.</span></span>
-<span>  <span class="va">pop_offset</span><span class="op">$</span><span class="va">COADMIN_IPI_3Q3W</span> <span class="op">&lt;-</span></span>
+<span>  <span class="va">pop_offset</span><span class="op">$</span><span class="va">CONMED_IPI_3Q3W</span> <span class="op">&lt;-</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">regimen</span> <span class="op">==</span> <span class="st">"nivo 3 mg/kg q2w + ipi 3 mg/kg q3w x 4"</span><span class="op">)</span></span>
-<span>  <span class="va">pop_offset</span><span class="op">$</span><span class="va">COADMIN_IPI_1Q6W</span> <span class="op">&lt;-</span></span>
+<span>  <span class="va">pop_offset</span><span class="op">$</span><span class="va">CONMED_IPI_1Q6W</span> <span class="op">&lt;-</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">regimen</span> <span class="op">==</span> <span class="st">"nivo 3 mg/kg q2w + ipi 1 mg/kg q6w"</span><span class="op">)</span></span>
 <span>  <span class="va">pop_offset</span><span class="op">$</span><span class="va">CONMED_CHEMO</span>    <span class="op">&lt;-</span> <span class="fl">0L</span></span>
 <span>  <span class="co"># Any-ipilimumab indicator (drives Emax of time-varying CL).</span></span>
-<span>  <span class="va">pop_offset</span><span class="op">$</span><span class="va">COADMIN_IPI_ANY</span>  <span class="op">&lt;-</span></span>
+<span>  <span class="va">pop_offset</span><span class="op">$</span><span class="va">CONMED_IPI_ANY</span>  <span class="op">&lt;-</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"ipi"</span>, <span class="va">regimen</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span>  <span class="va">d_dose</span> <span class="op">&lt;-</span> <span class="va">pop_offset</span> <span class="op">|&gt;</span></span>
@@ -1335,11 +1335,11 @@ used.</li>
 <li>
 <strong>Coadministration regimens beyond the three simulated
 here</strong>: the model file supports all four ipilimumab schedules
-described in Zhang 2019 by combining the COADMIN_* indicators (the
+described in Zhang 2019 by combining the CONMED_* indicators (the
 unmodeled 1 mg/kg q3w x 4 induction and 1 mg/kg q12w schedules collapse
 into the reference group on baseline CL, but they would still set
-COADMIN_IPI_ANY = 1 and so contribute the IPICO additive effect on
-Emax). The vignette simulates only three regimens to keep the figures
+CONMED_IPI_ANY = 1 and so contribute the IPICO additive effect on Emax).
+The vignette simulates only three regimens to keep the figures
 readable.</li>
 <li>
 <strong>eta_Q and eta_Vp variances</strong>: per Zhang 2019 Methods,

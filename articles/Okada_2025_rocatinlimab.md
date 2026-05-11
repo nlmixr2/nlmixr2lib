@@ -104,7 +104,7 @@ collects them in one place.
 | `e_wt_vmax` | 0.494 | Supplement Table S3, footnote |
 | `e_alb_cl` | -1.30 | Supplement Table S3, footnote (reference 44 g/L) |
 | `e_psoriasis_cl` | -0.372 | Supplement Table S3, footnote |
-| `e_hv_vmax` | -0.532 | Supplement Table S3, footnote |
+| `e_healthy_vmax` | -0.532 | Supplement Table S3, footnote |
 | BSV CL (21.7% CV) | omega² = 0.04600 | Supplement Table S3 |
 | BSV V1 (17.3% CV) | omega² = 0.02949 | Supplement Table S3 |
 | BSV V2 (29.0% CV) | omega² = 0.08075 | Supplement Table S3 |
@@ -138,13 +138,13 @@ WT <- pmin(pmax(exp(rnorm(n_subj, log(70), 0.27)), 38), 166)
 ALB <- pmin(pmax(rnorm(n_subj, 44.6, 3.0), 31), 53)
 
 # Disease covariates: AD patients are non-psoriasis, non-healthy.
-# (Set DIS_PSORIASIS = 0 and DIS_HV = 0 for the target indication.)
+# (Set DIS_PSORIASIS = 0 and DIS_HEALTHY = 0 for the target indication.)
 pop <- data.frame(
   ID            = seq_len(n_subj),
   WT            = WT,
   ALB           = ALB,
   DIS_PSORIASIS = 0L,
-  DIS_HV        = 0L
+  DIS_HEALTHY        = 0L
 )
 
 pop$wt_group <- cut(
@@ -187,7 +187,7 @@ d_obs <- pop[rep(seq_len(n_subj), each = length(obs_days)), ] |>
 
 events <- bind_rows(d_dose, d_obs) |>
   arrange(ID, TIME, desc(EVID)) |>
-  select(ID, TIME, AMT, EVID, CMT, DV, WT, ALB, DIS_PSORIASIS, DIS_HV, wt_group)
+  select(ID, TIME, AMT, EVID, CMT, DV, WT, ALB, DIS_PSORIASIS, DIS_HEALTHY, wt_group)
 ```
 
 ``` r
@@ -284,12 +284,12 @@ build_regimen <- function(dose, ii, addl, regimen, id) {
 
   dose_df <- data.frame(
     ID = id, TIME = dose_t, AMT = dose, EVID = 1, CMT = "depot",
-    DV = NA, WT = 80, ALB = 44, DIS_PSORIASIS = 0L, DIS_HV = 0L,
+    DV = NA, WT = 80, ALB = 44, DIS_PSORIASIS = 0L, DIS_HEALTHY = 0L,
     regimen = regimen
   )
   obs_df <- data.frame(
     ID = id, TIME = obs_t, AMT = 0, EVID = 0, CMT = "central",
-    DV = NA, WT = 80, ALB = 44, DIS_PSORIASIS = 0L, DIS_HV = 0L,
+    DV = NA, WT = 80, ALB = 44, DIS_PSORIASIS = 0L, DIS_HEALTHY = 0L,
     regimen = regimen
   )
   bind_rows(dose_df, obs_df) |> arrange(ID, TIME, desc(EVID))
@@ -485,7 +485,8 @@ ggplot(typ_check, aes(x = time_d, y = nl_pct)) +
   is a 4-level categorical (0 = healthy, 1 = psoriasis, 2 = UC, 3 = AD).
   Only two effects survived backward elimination (psoriasis on CL,
   healthy on Vmax), so the model exposes two binary indicators
-  (`DIS_PSORIASIS`, `DIS_HV`). For an AD or UC simulation, both are 0.
+  (`DIS_PSORIASIS`, `DIS_HEALTHY`). For an AD or UC simulation, both are
+  0.
 - Time variable in the saturable-clearance term
   `TDVM = Vmax · exp(-Kdes·t)` uses simulation time `t` directly,
   matching the NONMEM control-stream formulation. Align datasets so the

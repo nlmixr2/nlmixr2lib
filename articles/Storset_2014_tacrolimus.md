@@ -496,8 +496,8 @@ cat("Storset 2014 Figure 4A reports 32% (95% CI 29-35%) for the same regimen.\n"
 - **Haematocrit and prednisolone tapers are simplified.** The vignette
   uses a linear HCT decline from 36% to 30% over 5 days and a flat 20
   mg/day prednisolone schedule. Storset 2014 used time-varying
-  per-occasion measurements of both HCT and the steroid taper as fed by
-  the source dataset; no closed-form taper is published.
+  per-occasion measurements of both HCT and the conmed_steroid taper as
+  fed by the source dataset; no closed-form taper is published.
 - **Storset 2014 does not report subject-level race / ethnicity.** The
   CYP3A5 *3/*3 frequency of 84.7% is consistent with a predominantly
   Caucasian cohort; the cohort is not stratified by ancestry in the

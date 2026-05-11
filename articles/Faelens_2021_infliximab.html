@@ -378,7 +378,7 @@ covariates retained in the adapted model are:</p>
 <ul>
 <li>baseline Mayo endoscopic subscore (<code>MAYO_E</code>, levels 1 / 2
 / 3),</li>
-<li>baseline corticosteroid use (<code>STEROID</code>, 0/1),</li>
+<li>baseline corticosteroid use (<code>CONMED_STEROID</code>, 0/1),</li>
 <li>extensive colitis at baseline (<code>DISEXT_EP</code>, 0/1),</li>
 <li>fat-free mass (<code>FFM</code>, kg).</li>
 </ul>
@@ -437,7 +437,7 @@ collects them in one place.</p>
 <td>Faelens 2021 supplement Table S1; THETA(6)</td>
 </tr>
 <tr class="odd">
-<td>STEROID fold-change on V</td>
+<td>CONMED_STEROID fold-change on V</td>
 <td align="right">1.30</td>
 <td>Faelens 2021 supplement Table S1; THETA(5)</td>
 </tr>
@@ -525,7 +525,7 @@ lists each assumption.</p>
 <span>    HT_M        <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span>, mean <span class="op">=</span> <span class="fl">1.72</span> <span class="op">-</span> <span class="fl">0.13</span> <span class="op">*</span> <span class="va">SEXF</span>, sd <span class="op">=</span> <span class="fl">0.08</span><span class="op">)</span>, <span class="fl">1.50</span><span class="op">)</span>, <span class="fl">1.95</span><span class="op">)</span>,</span>
 <span>    FFM         <span class="op">=</span> <span class="fu">janmahasatian_ffm</span><span class="op">(</span><span class="va">WT</span>, <span class="va">HT_M</span>, <span class="va">SEXF</span><span class="op">)</span>,</span>
 <span>    MAYO_E      <span class="op">=</span> <span class="va">mayo_level</span>,</span>
-<span>    STEROID     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="va">n</span>, <span class="fl">1</span>, <span class="fl">0.50</span><span class="op">)</span>,</span>
+<span>    CONMED_STEROID     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="va">n</span>, <span class="fl">1</span>, <span class="fl">0.50</span><span class="op">)</span>,</span>
 <span>    DISEXT_EP   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="va">n</span>, <span class="fl">1</span>, <span class="fl">0.40</span><span class="op">)</span>,</span>
 <span>    treatment   <span class="op">=</span> <span class="va">treatment</span>,</span>
 <span>    dose_per_kg <span class="op">=</span> <span class="va">dose_per_kg_mg</span></span>
@@ -549,7 +549,7 @@ lists each assumption.</p>
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>amt <span class="op">=</span> <span class="cn">NA_real_</span>, evid <span class="op">=</span> <span class="fl">0</span>, cmt <span class="op">=</span> <span class="st">"central"</span>, Cc <span class="op">=</span> <span class="cn">NA_real_</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">d_dose</span>, <span class="va">d_obs</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">evid</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">amt</span>, <span class="va">evid</span>, <span class="va">cmt</span>, <span class="va">Cc</span>, <span class="va">MAYO_E</span>, <span class="va">STEROID</span>, <span class="va">DISEXT_EP</span>, <span class="va">FFM</span>,</span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">amt</span>, <span class="va">evid</span>, <span class="va">cmt</span>, <span class="va">Cc</span>, <span class="va">MAYO_E</span>, <span class="va">CONMED_STEROID</span>, <span class="va">DISEXT_EP</span>, <span class="va">FFM</span>,</span>
 <span>           <span class="va">treatment</span>, <span class="va">dose_per_kg</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
@@ -669,8 +669,9 @@ subscore.</p>
 <span></span>
 <span><span class="va">nca_data</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_obj</span>, <span class="va">dose_obj</span>, intervals <span class="op">=</span> <span class="va">intervals</span><span class="op">)</span></span>
 <span><span class="va">nca_res</span>  <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="va">nca_data</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■                 </span>  48% |  ETA:  4s</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■    </span>  91% |  ETA:  1s</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■                           </span>  14% |  ETA:  7s</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■                </span>  49% |  ETA:  4s</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■     </span>  87% |  ETA:  1s</span></span>
 <span><span class="va">nca_summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">nca_res</span><span class="op">)</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">nca_summary</span>, caption <span class="op">=</span> <span class="st">"PKNCA summary on the [0, 84]-day induction window, by treatment and baseline Mayo subscore."</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
@@ -876,9 +877,10 @@ not reported in Faelens 2021.</li>
 Janmahasatian (2005) FFM formula; the model itself uses FFM
 directly.</li>
 <li>
-<strong>Baseline corticosteroid use (<code>STEROID</code>):</strong>
-Bernoulli prevalence 0.50. The simulation paper does not state the
-corticosteroid prevalence in the virtual cohort.</li>
+<strong>Baseline corticosteroid use
+(<code>CONMED_STEROID</code>):</strong> Bernoulli prevalence 0.50. The
+simulation paper does not state the corticosteroid prevalence in the
+virtual cohort.</li>
 <li>
 <strong>Extensive colitis at baseline
 (<code>DISEXT_EP</code>):</strong> Bernoulli prevalence 0.40. The

@@ -501,7 +501,7 @@ Table 1, pooled across studies).</p>
 <span><span class="co"># cohorts can be bind_rows()-ed without colliding.</span></span>
 <span><span class="va">make_cohort</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">n</span>, <span class="va">dose_mg</span>, <span class="va">cycle_h</span>, <span class="va">n_cycles</span>, <span class="va">regimen</span>,</span>
 <span>                        <span class="va">wt</span>, <span class="va">bsa</span>, <span class="va">alb</span>, <span class="va">creat</span>, <span class="va">tumsz</span>, <span class="va">tumtp_chl</span>,</span>
-<span>                        <span class="va">ada_pos</span> <span class="op">=</span> <span class="fl">0L</span>, <span class="va">coadmin_avd</span> <span class="op">=</span> <span class="fl">0L</span>, <span class="va">id_offset</span> <span class="op">=</span> <span class="fl">0L</span><span class="op">)</span> <span class="op">{</span></span>
+<span>                        <span class="va">ada_pos</span> <span class="op">=</span> <span class="fl">0L</span>, <span class="va">conmed_avd</span> <span class="op">=</span> <span class="fl">0L</span>, <span class="va">id_offset</span> <span class="op">=</span> <span class="fl">0L</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">ids</span> <span class="op">&lt;-</span> <span class="va">id_offset</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span></span>
 <span>  <span class="va">amt_umol</span> <span class="op">&lt;-</span> <span class="va">dose_mg</span> <span class="op">/</span> <span class="va">MW_BV_kDa</span></span>
 <span>  <span class="va">obs_t</span>    <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">n_cycles</span> <span class="op">*</span> <span class="va">cycle_h</span>, length.out <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></span>
@@ -534,7 +534,7 @@ Table 1, pooled across studies).</p>
 <span>    TUMSZ       <span class="op">=</span> <span class="va">tumsz</span>,</span>
 <span>    TUMTP_CHL   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">tumtp_chl</span><span class="op">)</span>,</span>
 <span>    ADA_POS     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">ada_pos</span><span class="op">)</span>,</span>
-<span>    COADMIN_AVD <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">coadmin_avd</span><span class="op">)</span></span>
+<span>    CONMED_AVD <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">conmed_avd</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
 <span>  <span class="va">events</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">doses</span>, <span class="va">obs</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -564,7 +564,7 @@ Table 1, pooled across studies).</p>
 <span>  tumsz       <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n_per_cohort</span>, <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">41</span><span class="op">)</span>,   <span class="fl">0.40</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  tumtp_chl   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="va">n_per_cohort</span>, <span class="fl">1</span>, <span class="fl">0.85</span><span class="op">)</span>,</span>
 <span>  ada_pos     <span class="op">=</span> <span class="fl">0L</span>,</span>
-<span>  coadmin_avd <span class="op">=</span> <span class="fl">0L</span>,</span>
+<span>  conmed_avd <span class="op">=</span> <span class="fl">0L</span>,</span>
 <span>  id_offset   <span class="op">=</span> <span class="fl">0L</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -583,7 +583,7 @@ Table 1, pooled across studies).</p>
 <span>  tumsz       <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n_per_cohort</span>, <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">41</span><span class="op">)</span>, <span class="fl">0.40</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  tumtp_chl   <span class="op">=</span> <span class="fl">1L</span>, <span class="co"># study 2 is HL only</span></span>
 <span>  ada_pos     <span class="op">=</span> <span class="fl">0L</span>,</span>
-<span>  coadmin_avd <span class="op">=</span> <span class="fl">1L</span>,</span>
+<span>  conmed_avd <span class="op">=</span> <span class="fl">1L</span>,</span>
 <span>  id_offset   <span class="op">=</span> <span class="va">n_per_cohort</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -1398,9 +1398,9 @@ paper.</li>
 stream uses <code>DOX</code> (the doxorubicin-administration flag) to
 indicate the A+AVD combination because doxorubicin, vinblastine, and
 dacarbazine are all given on the same days in the AVD backbone. The
-packaged model registers this as <code>COADMIN_AVD</code> (binary) and
+packaged model registers this as <code>CONMED_AVD</code> (binary) and
 routes the source <code>DOX</code> column through
-<code>covariateData[[COADMIN_AVD]]$source_name</code>.</li>
+<code>covariateData[[CONMED_AVD]]$source_name</code>.</li>
 <li>
 <strong>MMAE central-volume reference category.</strong> The Non-HL
 effect on MMAE central volume VM has multiplier 0.296 with reference 1 =

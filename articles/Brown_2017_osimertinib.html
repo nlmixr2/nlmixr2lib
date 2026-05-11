@@ -472,13 +472,13 @@ table below collects the same provenance for review.</p>
 </tr>
 <tr class="even">
 <td>
-<code>e_dis_hv_cl</code> (HV vs NSCLC on parent CL/F)</td>
+<code>e_healthy_cl</code> (HV vs NSCLC on parent CL/F)</td>
 <td>0.44</td>
 <td>Brown 2017 Table 2</td>
 </tr>
 <tr class="odd">
 <td>
-<code>e_dis_hv_cl_az5104</code> (HV vs NSCLC on metab CL/F)</td>
+<code>e_healthy_cl_az5104</code> (HV vs NSCLC on metab CL/F)</td>
 <td>1.25</td>
 <td>Brown 2017 Table 2</td>
 </tr>
@@ -593,7 +593,7 @@ demographics in Brown 2017 Table 1.</p>
 <span>  id     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n_sub</span><span class="op">)</span>,</span>
 <span>  WT     <span class="op">=</span> <span class="fu">sample_truncated_lognorm</span><span class="op">(</span><span class="va">n_sub</span>, lo <span class="op">=</span> <span class="fl">33</span>,  hi <span class="op">=</span> <span class="fl">122</span>,  median_val <span class="op">=</span> <span class="fl">62</span>, sd_log <span class="op">=</span> <span class="fl">0.20</span><span class="op">)</span>,</span>
 <span>  ALB    <span class="op">=</span> <span class="fu">sample_truncated_lognorm</span><span class="op">(</span><span class="va">n_sub</span>, lo <span class="op">=</span> <span class="fl">2.8</span>, hi <span class="op">=</span> <span class="fl">53.3</span>, median_val <span class="op">=</span> <span class="fl">39</span>, sd_log <span class="op">=</span> <span class="fl">0.13</span><span class="op">)</span>,</span>
-<span>  DIS_HV <span class="op">=</span> <span class="fl">0L</span>  <span class="co"># NSCLC cohort - the dominant population in Brown 2017 (95.9 percent)</span></span>
+<span>  DIS_HEALTHY <span class="op">=</span> <span class="fl">0L</span>  <span class="co"># NSCLC cohort - the dominant population in Brown 2017 (95.9 percent)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Race: independent indicators reflecting Brown 2017 Table 1 percentages.</span></span>
@@ -662,12 +662,12 @@ demographics in Brown 2017 Table 1.</p>
 <span></span>
 <span><span class="co"># Stochastic VPC over the cohort.</span></span>
 <span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod</span>, events <span class="op">=</span> <span class="va">events</span>,</span>
-<span>                       keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"WT"</span>, <span class="st">"ALB"</span>, <span class="st">"DIS_HV"</span>, <span class="st">"race_label"</span><span class="op">)</span><span class="op">)</span></span>
+<span>                       keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"WT"</span>, <span class="st">"ALB"</span>, <span class="st">"DIS_HEALTHY"</span>, <span class="st">"race_label"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Typical-value (no IIV) replication for the figure comparisons.</span></span>
 <span><span class="va">mod_typical</span> <span class="op">&lt;-</span> <span class="va">mod</span> <span class="op">|&gt;</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/zeroRe.html" class="external-link">zeroRe</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">sim_typical</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_typical</span>, events <span class="op">=</span> <span class="va">events</span>,</span>
-<span>                               keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"WT"</span>, <span class="st">"ALB"</span>, <span class="st">"DIS_HV"</span>, <span class="st">"race_label"</span><span class="op">)</span><span class="op">)</span></span>
+<span>                               keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"WT"</span>, <span class="st">"ALB"</span>, <span class="st">"DIS_HEALTHY"</span>, <span class="st">"race_label"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl', 'etalcl_az5104', 'etalka', 'etalvc', 'etalvc_az5104'</span></span>
 <span><span class="co">#&gt; Warning: multi-subject simulation without without 'omega'</span></span>
 <span></span>
