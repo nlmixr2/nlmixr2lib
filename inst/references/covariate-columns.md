@@ -384,6 +384,16 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Nikanjam_2019_siltuximab.R` (U/L, reference 19; small negative exponent -0.096 on CL), `Melhem_2022_dostarlimab.R` (U/L, reference 18; small negative exponent -0.0585 on CL, time-varying), `NA_NA_lidocaine.R` (source column `SGPT`; binary effects at threshold 11 on the GX rate constant K30 and on the 2,6-xylidide rate constant K40).
 - **Notes:** Hepatic-function marker. Commonly reported alongside `AST` and `TBILI`. Ratified canonically on 2026-04-24. `SGPT` is the older lab-reporting name; values and units are identical to `ALT`.
 
+### GGT (**canonical for gamma-glutamyltransferase**)
+- **Description:** Serum gamma-glutamyltransferase activity (baseline or time-varying); hepatic / cholestatic biliary-enzyme marker.
+- **Units:** U/L (IU/L; the two labels are used interchangeably in the clinical-PK literature). Document per-model via `covariateData[[GGT]]$units`.
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- used with linear-deviation form `1 + theta * (GGT - ref)` or power scaling `(GGT / ref)^exponent`. Reference values observed: 33 U/L (Retlich 2015 popPK linagliptin median), 32.3 U/L (Retlich 2015 popPK/PD linagliptin median).
+- **Source aliases:** none known.
+- **Example models:** `Retlich_2015_linagliptin.R` (U/L, reference 33; linear-deviation effect on linagliptin CL with coefficient -0.0339 % per U/L deviation. The PK/PD layer uses GGT (reference 32.3 U/L) as a piecewise covariate on baseline DPP-4 activity BSL with a linear-deviation effect below GGT = 175 U/L and a constant +21.3% effect above the threshold).
+- **Notes:** Liver-function / cholestasis marker; routine clinical-chemistry covariate. Commonly tested alongside `ALT` / `AST` / `ALP` / `TBILI`. The piecewise above/below-threshold form in Retlich 2015 reflects empirical saturation of the GGT-vs-DPP-4-activity relationship at extreme values. Ratified canonically alongside the Retlich 2015 linagliptin extraction.
+
 ### LDH (**canonical for serum lactate dehydrogenase**)
 - **Description:** Serum lactate dehydrogenase activity (baseline or time-varying). General-purpose marker of tissue / cellular turnover; in oncology PK analyses it is interpreted as a disease-burden / cell-turnover proxy.
 - **Units:** U/L (IU/L; interchangeable). Document per-model via `covariateData[[LDH]]$units`.
@@ -1015,6 +1025,26 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   - `[P]_RIN` (lesinurad) -- the symbol used in Aksenov 2018 Eq. 10 for the reabsorption-inhibitor concentration when the inhibitor is lesinurad.
 - **Example models:** `Aksenov_2018_uricAcid.R` (Hill-type increase in fractional excretion with `fmax_lsn = 0.56` (fixed) and `p50_lsn = 23000 ng/mL` for hyperuricemic subjects (or 11000 ng/mL for normouricemic subjects) per Aksenov 2018 Table 1).
 - **Notes:** Specific scope; lesinurad-specific. The `p50` parameter differs between hyperuricemic and normouricemic populations in Aksenov 2018; `Fmax` was fixed during estimation. Distinct from `CP_OXY_NGML` (oxypurinol) and `CP_FBX_NGML` (febuxostat). Ratified canonically on 2026-05-08 alongside the Aksenov 2018 extraction.
+
+### FPG (**canonical for baseline fasting plasma glucose**)
+- **Description:** Fasting plasma glucose concentration at baseline (or time-varying baseline-style observation; document per-model). Distinct from `GLU` (time-varying plasma glucose regressor input for mechanistic glucose-kinetics models).
+- **Units:** mmol/L (or mg/dL -- 1 mmol/L glucose is approximately 18.02 mg/dL). Document per-model via `covariateData[[FPG]]$units`.
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- used with linear-deviation form `1 + theta * (FPG - ref)`. Reference values observed: 8.90 mmol/L (Retlich 2015 popPK/PD linagliptin median fasting glucose at baseline).
+- **Source aliases:** none known.
+- **Example models:** `Retlich_2015_linagliptin.R` (mmol/L, reference 8.90; linear-deviation effect on baseline DPP-4 activity BSL with coefficient 1.46 % per mmol/L deviation).
+- **Notes:** Glycemic-control covariate (baseline FPG); routinely reported alongside HbA1c in T2DM populations. Distinct from `GLU` which is a time-varying within-subject glucose regressor for mechanistic glucose-kinetics models (Bizzotto 2016). Ratified canonically alongside the Retlich 2015 linagliptin extraction.
+
+### DPP4_BL_RFU (**canonical for baseline plasma dipeptidyl peptidase-4 activity in relative fluorescence units**)
+- **Description:** Baseline plasma dipeptidyl peptidase-4 (DPP-4) enzymatic activity, measured by relative fluorescence units (RFU). DPP-4 is the pharmacological target of the gliptin (DPP-4-inhibitor) drug class; baseline activity correlates with circulating DPP-4 protein concentration in the central compartment and serves as a covariate on the central-compartment binding-site concentration in TMDD models for gliptins.
+- **Units:** RFU (assay-specific; document the assay in `covariateData[[DPP4_BL_RFU]]$notes` since RFU values are not directly comparable across assays).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- used with linear-deviation form `1 + theta * (DPP4_BL_RFU - ref)`. Reference values observed: 12,497 RFU (Retlich 2015 popPK linagliptin median baseline), 11,600 RFU (Retlich 2015 popPK/PD linagliptin median baseline, applied to the individual-predicted BSL_i parameter on EC50).
+- **Source aliases:** none known.
+- **Example models:** `Retlich_2015_linagliptin.R` (RFU, reference 12,497; linear-deviation effect on the central-compartment binding-site concentration Bmax,C with coefficient 0.00332 % per RFU deviation -- captures the inter-individual correlation between baseline DPP-4 protein concentration and the apparent saturable-binding amplitude).
+- **Notes:** Specific scope because DPP-4-activity values in RFU are assay-specific and not directly transferable between studies / instruments. Future gliptin extractions reporting DPP-4 activity in the same assay can reuse this canonical; extractions in absolute enzymatic-rate units (pmol AMC per minute) or normalised units should register a sibling canonical (e.g., `DPP4_BL_PMOL_MIN`). Ratified canonically alongside the Retlich 2015 linagliptin extraction.
 
 ### GLU (**canonical for plasma glucose time-course regressor**)
 - **Description:** Plasma glucose concentration as a time-varying *regressor* input that drives a mechanistic glucose-kinetics model. Not a covariate that modifies a parameter; the model integrates `GLU` directly through a smoothing filter into a site-of-action glucose variable.
@@ -2197,6 +2227,16 @@ readable.
 - **Example models:** `Li_2019_abatacept.R` (exponential effect on CL: `CL * exp(0.0640 * CONMED_NSAID)`; ~6.6% higher CL, not clinically relevant per Li 2019).
 - **Notes:** Baseline-use-only in Li 2019; time-varying use is permitted, document per-model. Follows the `CONMED_*` concomitant-medication pattern established for IBD models (AZA / MP / MTX / AMINO).
 
+### CONMED_METFORMIN (**canonical for concomitant metformin co-administration indicator**)
+- **Description:** 1 = subject is on concomitant metformin during the modelled treatment period, 0 = not. Time-fixed in source datasets where metformin is a study-design "add-on" arm (e.g., Retlich 2015 Study 4 add-on-to-metformin design); permits a time-varying form for cohorts with on/off metformin transitions, document per-model via `covariateData[[CONMED_METFORMIN]]$notes`.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no concomitant metformin).
+- **Source aliases:** none known.
+- **Example models:** `Retlich_2015_linagliptin.R` (1 = study 4 add-on-to-metformin cohort; multiplicative effect on linagliptin relative bioavailability F: +69% F for metformin co-administration vs the monotherapy reference; the effect is attributed to a metformin -- linagliptin drug-drug interaction consistent with a separately published DDI study, Graefe-Mody 2009).
+- **Notes:** Follows the `CONMED_*` concomitant-medication pattern (AZA / MP / MTX / AMINO / NSAID / PARA / AD / RITUX / AED / CHEMO / EIAED / EFV / AZOLE). Metformin is a widely-co-prescribed first-line T2DM oral antidiabetic; future T2DM-popPK / -DDI extractions should reuse this canonical. Ratified canonically alongside the Retlich 2015 linagliptin extraction.
+
 ### CONMED_PARA (**canonical for concomitant paracetamol (acetaminophen) use**)
 - **Description:** 1 = on concomitant paracetamol (acetaminophen) at the observation, 0 = not.
 - **Units:** (binary)
@@ -2973,8 +3013,8 @@ readable.
 - **Reference category:** 0 (tablet; F = 1 fixed in Yukawa 1990 Model 2).
 - **Source aliases:**
   - `FORM_POWDER` -- used in `Yukawa_1990_phenytoin.R` (paper's `BA` indicator inverted: source `BA = 1` if tablet, 0 if powder; canonical `FORM_POWDER = 1 - BA_indicator` so 0 is the tablet reference).
-- **Example models:** `Yukawa_1990_phenytoin.R` (Yukawa 1990 Model 2 dose-dependent powder bioavailability `F_powder = 1 - exp(-9.92 / DOSE_PHT_MGKGD)`; tablet F fixed at 1).
-- **Notes:** Specific scope because the "powder vs tablet" contrast is tied to a particular drug-product manufacturing comparison (Yukawa 1990 contrasts Aleviatin brand phenytoin powder with Aleviatin tablets, both from Dainippon Pharmaceutical Co.). Mirrors the sibling `FORM_TABLET` (Kyhl 2016 / Tikiso 2021 tablet vs solution) and `FORM_CAPSULE` (Hennig 2006 / Hennig 2007 capsule vs solution) under the `FORM_*` family. Future powder-formulation models should reuse this canonical, extending the example list and documenting the per-paper comparator. Ratified canonically on 2026-05-10 alongside the Yukawa 1990 phenytoin extraction.
+- **Example models:** `Yukawa_1990_phenytoin.R` (Yukawa 1990 Model 2 dose-dependent powder bioavailability `F_powder = 1 - exp(-9.92 / DOSE_PHT_MGKGD)`; tablet F fixed at 1); `Retlich_2015_linagliptin.R` (multiplicative shift on the linagliptin first-order absorption rate constant Ka: powder-in-bottle Ka = 0.933 1/h vs tablet formulation 2 reference Ka = 0.441 1/h; the tablet formulation 1 comparator is captured by the sibling canonical `FORM_LINAG_TAB1`).
+- **Notes:** Specific scope because the "powder vs tablet" contrast is tied to a particular drug-product manufacturing comparison (Yukawa 1990 contrasts Aleviatin brand phenytoin powder with Aleviatin tablets, both from Dainippon Pharmaceutical Co.; Retlich 2015 contrasts an early-phase linagliptin powder-in-bottle formulation against the marketed linagliptin tablet). Mirrors the sibling `FORM_TABLET` (Kyhl 2016 / Tikiso 2021 tablet vs solution) and `FORM_CAPSULE` (Hennig 2006 / Hennig 2007 capsule vs solution) under the `FORM_*` family. Future powder-formulation models should reuse this canonical, extending the example list and documenting the per-paper comparator. Ratified canonically on 2026-05-10 alongside the Yukawa 1990 phenytoin extraction.
 
 ### FDC (**canonical for fixed-dose-combination antitubercular formulation indicator**)
 - **Description:** 1 = subject received the rifampicin-containing fixed-dose-combination (FDC) antitubercular product (rifampicin co-formulated with isoniazid, pyrazinamide, and optionally ethambutol in a single tablet); 0 = subject received the same drugs as separate single-drug tablets ("SDC", separate-drug-combination). Per-subject (regimen-fixed) categorical covariate flagging the formulation when a population analysis pools FDC and SDC arms and tests formulation as a covariate on absorption / disposition parameters.
@@ -3029,6 +3069,16 @@ readable.
   - `Drug_mat` -- used in `Fau_2020_isatuximab.R`. Values 0 / 1 with the same orientation as the canonical (1 = P2F2 / commercial-bound material).
 - **Example models:** `Fau_2020_isatuximab.R` (exponential effect on Vc with coefficient -0.137; P2F2 patients had ~13% lower Vc than P1F1).
 - **Notes:** Phase III / commercial-bound formulation indicator for isatuximab; the FORM_* family stays scope-specific per nlmixr2lib policy that drug-product-version indicators are kept model-specific unless they generalize across multiple drugs. Set to 1 to simulate the marketed material.
+
+### FORM_LINAG_TAB1 (**canonical for linagliptin tablet formulation 1 indicator**)
+- **Description:** 1 = subject received the linagliptin "tablet formulation 1" (used in Retlich 2015 Study 2), 0 = subject received tablet formulation 2 (the marketed linagliptin tablet, used in Studies 3 and 4) OR the powder-in-bottle formulation (used in Study 1). The powder-vs-tablet contrast is captured by the sibling canonical `FORM_POWDER`; this indicator switches between the two tablet formulations.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (tablet formulation 2 = marketed linagliptin tablet, the typical-value Ka reference; or `FORM_POWDER = 1` for the powder).
+- **Source aliases:** none known.
+- **Example models:** `Retlich_2015_linagliptin.R` (multiplicative shift on the linagliptin first-order absorption rate constant Ka; typical Ka = 0.441 1/h for tablet formulation 2 (reference), 0.795 1/h for tablet formulation 1, 0.933 1/h for the powder formulation).
+- **Notes:** Specific scope because the linagliptin "tablet 1 vs tablet 2" distinction is a drug-product-version comparison local to the Retlich 2015 popPK dataset; tablet formulation 1 was a development formulation that is not marketed. Mirrors the `FORM_DP2` (sarilumab) and `FORM_P2F2` (isatuximab) entries under the `FORM_*` family. Set to 0 for routine marketed-formulation simulation. Ratified canonically alongside the Retlich 2015 linagliptin extraction.
 
 ### FORM_DP2
 - **Description:** 1 = sarilumab drug product 2 formulation (used in some phase I studies and the dose-ranging phase II study), 0 = other drug product (DP1 or DP3; DP3 is the commercial formulation).

@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Retlich 2015 linagliptin ([doi:10.1007/s40262-014-0232-4](https://doi.org/10.1007/s40262-014-0232-4)) -- adults with type 2 diabetes mellitus (coupled two-compartment popPK with concentration-dependent DPP-4 binding in both compartments plus a sigmoid Emax PD model relating linagliptin to plasma DPP-4 activity; ratifies new `GGT`, `FPG`, `DPP4_BL_RFU`, `CONMED_METFORMIN`, and `FORM_LINAG_TAB1` covariate canonicals).
 * Add Tetschke 2018 erythropoiesis ([doi:10.3390/pr6090157](https://doi.org/10.3390/pr6090157)) -- healthy adult male volunteers undergoing a single 1-unit blood donation (three-compartment endogenous mixed-effects model for red blood cell regeneration after phlebotomy; ratifies new `THB_MASS` covariate canonical for total hemoglobin mass measured by CO-rebreathing).
 * Add Ekhart 2008 carboplatin ([doi:10.1007/s00280-008-0856-x](https://doi.org/10.1007/s00280-008-0856-x)) -- adult cancer patients (underweight to obese) receiving combination chemotherapy.
 * Add Aregbe 2012 alvespimycin / 17-DMAG ([doi:10.1007/s00280-012-1859-1](https://doi.org/10.1007/s00280-012-1859-1)) -- adult patients with advanced solid tumors.
