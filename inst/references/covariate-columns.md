@@ -1386,6 +1386,16 @@ readable.
 - **Example models:** `Pu_2021_evinacumab.R` (multiplicative `exp(theta * DIS_HOFH)` factor on Vmax with theta = -0.289, i.e. HoFH patients show ~25% lower target-mediated Vmax than the HV reference; biologically consistent with the LDLR-pathway disruption in HoFH altering ANGPTL3 catabolic kinetics).
 - **Notes:** Used when a population PK model pools HoFH patients with healthy volunteers (or another non-HoFH cohort) and HoFH disease status is retained as a covariate. Distinct from a heterozygous-FH (HeFH) indicator because HoFH patients have markedly higher baseline LDL-C (untreated levels often > 500 mg/dL) and a more pronounced response to LDLR-independent therapies. Scope: specific because the reference category is paper-defined.
 
+### DIS_HAE (**canonical for hereditary angioedema patient indicator**)
+- **Description:** 1 = patient with hereditary angioedema (HAE-C1INH-Type1, HAE-C1INH-Type2, or HAE-nC1INH), 0 = healthy volunteer (or other non-HAE reference cohort pooled in the source analysis). Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-HAE subject; the complement group is paper-defined -- for Diep 2026 the reference is the pooled healthy-volunteer cohort from NCT03263507 and ISIS 721744-CS9).
+- **Source aliases:** paper narrative "patient with HAE" / "healthy volunteer" subgroup labels driving the Diep 2026 disease-status covariate effects on Vc/F, Q/F, baseline PKK, and IC50.
+- **Example models:** `Diep_2026_donidalorsen.R` (linear `(1 + theta * DIS_HAE)` multiplicative effects on apparent central volume Vc/F (theta = +0.426, +42.6%), apparent intercompartmental clearance Q/F (theta = -0.261, -26.1%), baseline plasma prekallikrein BL (theta = -0.132, -13.2%), and donidalorsen IC50 on PKK production (theta = +0.770, +77.0%) for patients with HAE vs healthy volunteers).
+- **Notes:** Used when a population PK/PD model pools HAE patients with healthy volunteers and HAE disease status is retained as a covariate. The three molecular HAE subtypes (HAE-C1INH-Type1, HAE-C1INH-Type2, HAE-nC1INH) are pooled in this indicator following the Diep 2026 analysis; if a future paper resolves subtype-specific covariate effects, separate canonical indicators (e.g., `DIS_HAE_C1INH_T1`) can be added without conflicting with this pooled indicator. Scope: specific because the complement reference category is paper-defined.
+
 ### DIS_DMD (**canonical for Duchenne muscular dystrophy patient indicator**)
 - **Description:** 1 = patient with Duchenne muscular dystrophy (DMD), 0 = non-DMD subject (healthy volunteer or other reference cohort). Time-fixed per subject.
 - **Units:** (binary)
@@ -2856,8 +2866,8 @@ readable.
 - **Scope:** specific
 - **Reference category:** 0 (PFS).
 - **Source aliases:** "Formulation = AI" (categorical effect column in Yu 2022 covariate equations).
-- **Example models:** `Yu_2022_ofatumumab.R` (exponential effect on k_e(P) and R0).
-- **Notes:** Set to 0 (PFS reference) for IV subjects, since the device is undefined for IV; the IV-specific effects are captured by `ROUTE_IV` instead. Scope: specific because the AI/PFS contrast and which parameters it affects depend on the study's device-comparison design.
+- **Example models:** `Yu_2022_ofatumumab.R` (exponential effect on k_e(P) and R0), `Diep_2026_donidalorsen.R` (Phoenix linear-effect `(1 + e_device_ai_ka * DEVICE_AI)` on the typical SC absorption rate constant with theta = +0.262 -> multiplier 1.262 for autoinjector vs vial-and-syringe reference; characterized in the ISIS 721744-CS9 single-dose bioequivalence cohort).
+- **Notes:** Set to 0 (PFS / vial reference) for IV subjects, since the device is undefined for IV; the IV-specific effects are captured by `ROUTE_IV` instead. Scope: specific because the AI / vial / PFS contrast and which parameters it affects depend on the study's device-comparison design.
 
 ### INJSITE_ARM (**canonical for SC injection-site = arm indicator**)
 - **Description:** 1 = subject's SC dose injected into the arm, 0 = abdomen (the universal SC reference site across the popPK literature). Per-dose-record covariate flagging the SC injection site when a population analysis estimates site-specific absorption parameters.
@@ -2866,7 +2876,7 @@ readable.
 - **Scope:** specific
 - **Reference category:** 0 (abdomen).
 - **Source aliases:** paper narrative "arm" / "abdomen" subgroup labels driving site-specific ka in Diep 2022.
-- **Example models:** `Diep_2022_eplontersen.R` (additive log-shift `e_injsite_arm_ka = log(ka_arm / ka_ab)` on the typical absorption rate constant: ka_arm = 0.217 1/h vs ka_ab = 0.282 1/h, ~30% higher ka for abdomen; INJSITE_ARM = 1 selects the arm typical value).
+- **Example models:** `Diep_2022_eplontersen.R` (additive log-shift `e_injsite_arm_ka = log(ka_arm / ka_ab)` on the typical absorption rate constant: ka_arm = 0.217 1/h vs ka_ab = 0.282 1/h, ~30% higher ka for abdomen; INJSITE_ARM = 1 selects the arm typical value), `Diep_2026_donidalorsen.R` (Phoenix linear-effect `(1 + e_injsite_arm_ka * INJSITE_ARM)` on the typical absorption rate constant with theta = -0.338 -> multiplier 0.662 for arm; the paper's reference category is "abdomen or thigh" rather than "abdomen" alone, but is consistent with the canonical reference because abdomen is the universal SC reference site and the thigh effect is pooled into the reference category by the Diep 2026 model).
 - **Notes:** Specific scope because the arm-vs-abdomen contrast is paper-specific. Sister canonical to `INJSITE_THIGH` (thigh-vs-abdomen indicator anticipated for future SC-route models with thigh-specific absorption). Per-administration rather than per-subject -- a subject in a multi-dose simulation can switch SC injection sites between doses; supply the indicator on each dose record. Distinct from `ROUTE_IV` (IV vs SC route, not within-SC site) and from `DEVICE_AI` (autoinjector vs prefilled syringe, device rather than anatomical site).
 
 ### STUDY_APLIOS
