@@ -140,48 +140,52 @@ PerezRuixo_2025_posdinemab <- function() {
     ksyn_isf <- kc * R0_isf
 
     # Concentrations (pmol/L). Drug compartments are tracked in pmol so that
-    # central / vc yields pmol/L directly.
+    # central / vc yields pmol/L directly. csf and isf are the canonical
+    # nlmixr2lib physiologic compartment names (paper notation ACSF / AISF).
     Cc   <- central    / vc
     Cp   <- peripheral1 / vp
-    Ccsf <- ACSF       / vcsf
-    Cisf <- AISF       / visf
+    Ccsf <- csf        / vcsf
+    Cisf <- isf        / visf
 
-    # ODE system. Drug compartments (central, peripheral1, ACSF, AISF) are in
-    # pmol; target compartments (R, RC, RISF, RCISF) are concentrations in
-    # pmol/L. Equations 4 and 7 of the supplement are implemented in their
-    # mass-balanced form (see vignette "Errata"); equations 1-3, 5, 6, 8 are
-    # printed correctly.
+    # ODE system. Drug compartments (central, peripheral1, csf, isf) are in
+    # pmol; target species (target, complex in CSF; target_isf, complex_isf
+    # in ISF) are concentrations in pmol/L. Equations 4 and 7 of the
+    # supplement are implemented in their mass-balanced form (see vignette
+    # "Errata"); equations 1-3, 5, 6, 8 are printed correctly. Compartment
+    # names follow the canonical nlmixr2lib convention: lowercase physiologic
+    # compartments (csf, isf) with target_<loc> / complex_<loc> for target
+    # species in the physiologic compartment.
     d/dt(central)    <- -cl * Cc - q * Cc + q * Cp - qcsf * Cc + qcsf * Ccsf
     d/dt(peripheral1) <-  q * Cc - q * Cp
-    d/dt(ACSF)       <-  qcsf * Cc - qcsf * Ccsf - qisf * Ccsf + qisf * Cisf -
-                          kon * R * ACSF + koff * RC * vcsf
-    d/dt(AISF)       <-  qisf * Ccsf - qisf * Cisf -
-                          kon_isf * RISF * AISF + koff_isf * RCISF * visf
+    d/dt(csf)        <-  qcsf * Cc - qcsf * Ccsf - qisf * Ccsf + qisf * Cisf -
+                          kon * target * csf + koff * complex * vcsf
+    d/dt(isf)        <-  qisf * Ccsf - qisf * Cisf -
+                          kon_isf * target_isf * isf + koff_isf * complex_isf * visf
 
     # Free p217+tau in CSF (pmol/L).
-    d/dt(R)          <-  ksyn_csf - kc * R - kon * R * Ccsf + koff * RC
+    d/dt(target)     <-  ksyn_csf - kc * target - kon * target * Ccsf + koff * complex
 
     # Posdinemab-p217+tau complex in CSF (pmol/L).
-    d/dt(RC)         <-  kon * R * Ccsf - (koff + kint) * RC
+    d/dt(complex)    <-  kon * target * Ccsf - (koff + kint) * complex
 
     # Free tau seeds in ISF (pmol/L).
-    d/dt(RISF)       <-  ksyn_isf - kc * RISF - kon_isf * RISF * Cisf + koff_isf * RCISF
+    d/dt(target_isf) <-  ksyn_isf - kc * target_isf - kon_isf * target_isf * Cisf + koff_isf * complex_isf
 
     # Posdinemab-tau seed complex in ISF (pmol/L).
-    d/dt(RCISF)      <-  kon_isf * RISF * Cisf - (koff_isf + kint) * RCISF
+    d/dt(complex_isf) <- kon_isf * target_isf * Cisf - (koff_isf + kint) * complex_isf
 
     # Initial conditions for the target species. Drug compartments default to 0;
     # IV bolus places the dose into central via f(central) below.
-    R(0)    <- R0
-    RISF(0) <- R0_isf
+    target(0)     <- R0
+    target_isf(0) <- R0_isf
 
     # Bioavailability used as a unit-conversion factor: input dose in mg,
     # central state in pmol. 1 mg of posdinemab = 1e9 / mw_da pmol.
     f(central) <- 1e9 / mw_da
 
     # Outputs (pmol/L).
-    TotalTau <- R + RC
-    FreeTau  <- R
+    TotalTau <- target + complex
+    FreeTau  <- target
 
     Cc       ~ prop(propSd)
     Ccsf     ~ prop(propSd_Ccsf)
