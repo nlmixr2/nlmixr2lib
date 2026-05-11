@@ -1489,6 +1489,16 @@ readable.
 - **Source aliases:** none known; source NONMEM control streams typically use ad-hoc names (e.g., `AD`, `STATUS`, `DISGRP`).
 - **Example models:** `PerezRuixo_2025_posdinemab.R` (acts on baseline free p217+tau in CSF, R0; healthy R0 = 0.793 pmol/L vs AD R0 = 5.995 pmol/L, a 656% relative increase, no PK-parameter effects).
 - **Notes:** Used when a population PK/PD model pools healthy volunteers with Alzheimer's disease patients and the AD-vs-HV contrast is retained as a covariate on a target-related parameter (e.g., baseline p-tau, baseline p217+tau). Scope: specific because the complement reference category is paper-defined. Ratified canonically on 2026-04-28.
+
+### DIS_MORBOBESE (**canonical for morbidly obese cohort indicator**)
+- **Description:** 1 = morbidly obese patient (BMI > 40 kg/m^2 in the canonical definition; typical pooled-analysis enrollment criterion is bariatric-surgery patients), 0 = non-obese subject (typically healthy volunteer pooled in the source analysis). Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-obese subject; the complement group is paper-defined -- for de Hoogd 2017 the reference is the pooled healthy-volunteer cohort from Sarton 2000 and Romberg 2004).
+- **Source aliases:** none known; source NONMEM control streams typically use ad-hoc names (e.g., `OBESE`, `MO`, `COHORT`).
+- **Example models:** `deHoogd_2017_morphine.R` (selects per-cohort proportional residual error magnitudes for each of three observed species -- morphine, M3G, M6G -- after a pooled-cohort fit of 20 morbidly obese surgical patients and 20 healthy volunteers).
+- **Notes:** Used when a population PK or PK/PD model pools morbidly obese patients with a non-obese reference population (typically healthy volunteers) and the cohort indicator selects per-cohort parameter values (residual error magnitudes, study-specific bioavailability, or similar). Distinct from `BMI` (which is the continuous body-mass-index covariate used for parameter scaling) -- `DIS_MORBOBESE` is the binary cohort-membership flag and does not encode a specific BMI threshold for general use; the threshold is paper-defined. Scope: specific because the complement reference category is paper-defined. Ratified canonically on 2026-05-11.
 ### HSCT_URD_7OF8 (**canonical for hematopoietic stem cell transplant from a 7-of-8 HLA-matched unrelated donor**)
 - **Description:** 1 = patient received an allogeneic hematopoietic stem cell transplant (HSCT) from an unrelated donor (URD) HLA-matched at 7 of 8 alleles (single-allele mismatch), 0 = otherwise (the union of patients not in this transplant cohort, including non-HSCT patients and HSCT recipients matched at all 8 alleles). Time-fixed per subject.
 - **Units:** (binary)
