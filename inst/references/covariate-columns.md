@@ -2533,6 +2533,17 @@ readable.
 - **Example models:** `Kirubakaran_2022_tacrolimus.R` (state-dependent typical CL/F: 21.1 L/h without azole and 4.2 L/h with azole, an 80% reduction; also a state-dependent BSV magnitude on CL/F: 61% CV without azole vs 89.5% CV with azole).
 - **Notes:** Azoles are mechanism-based CYP3A4 and P-glycoprotein inhibitors with different inhibitor potencies (itraconazole > voriconazole > fluconazole). The per-model `covariateData[[CONMED_AZOLE]]$notes` must document (1) which azoles are pooled into the indicator, (2) any post-cessation lag (Kirubakaran 2022 carries `CONMED_AZOLE = 1` for one week after azole discontinuation to allow tacrolimus apparent clearance to stabilize given itraconazole's long half-life), and (3) whether the indicator is a baseline-only proxy or a true time-varying flag.
 
+### CONMED_IFNB1A (**canonical for concomitant interferon beta-1a coadministration indicator**)
+- **Description:** 1 = patient coadministered subcutaneous interferon beta-1a (Rebif or equivalent recombinant IFN beta-1a product) during the observation interval, 0 = no concomitant IFN beta-1a. Time-varying per subject because the source studies enrol both monotherapy and IFN beta-1a combination periods.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no concomitant IFN beta-1a).
+- **Source aliases:**
+  - `IFNB1A` -- used in `Savic_2017_cladribine.R`.
+- **Example models:** `Savic_2017_cladribine.R` (multiplicative effect on cladribine non-renal clearance: `cl_nonrenal *= (1 + e_ifn_clnr * CONMED_IFNB1A)` with `e_ifn_clnr = 0.21`, i.e. a 21% increase in non-renal CL when coadministered with IFN beta-1a).
+- **Notes:** Captured at the dose-record level in Savic 2017 (multiple-dose study 26486 alternated between cladribine alone and cladribine + IFN beta-1a periods). The interaction mechanism is not definitively established in the source paper; Savic 2017 discusses that the observed effect could alternatively be modelled on bioavailability or interpreted as a period-effect / interoccasion variability artefact. Future cladribine + immunomodulator extractions should reuse this canonical when IFN beta-1a is the specific concomitant agent; register a sibling canonical (e.g. `CONMED_IFNB1B`, `CONMED_IFNALPHA`) if a different interferon species is intended.
+
 ## Pharmacogenetics
 
 ### CYP2D6 (**canonical for CYP2D6 individual metabolic-activity score**)
