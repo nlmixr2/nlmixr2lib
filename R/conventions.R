@@ -163,7 +163,14 @@
     # where parent (roflumilast) and metabolite (N-oxide) are fitted
     # jointly but with independent apparent absorption parameters
     # (Lahu 2010 doi:10.2165/11536600-000000000-00000).
-    "noxide"
+    "noxide",
+    # Combined acetaminophen cysteine + mercapturate compartment used by
+    # CYP2E1-oxidation popPK models that lump the two oxidation
+    # metabolites (acetaminophen cysteine and acetaminophen mercapturate)
+    # into a single observation compartment because the two species are
+    # in rapid equilibrium with overlapping disposition (van Rongen 2016
+    # Clin Pharmacokinet doi:10.1007/s40262-015-0357-0).
+    "cysmer"
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` denotes the time-varying decay arm.
@@ -432,6 +439,7 @@
     if (endsWith(name, suf)) {
       base <- substr(name, 1, nchar(name) - nchar(suf))
       if (base %in% conv$compartments) return(TRUE)
+      if (grepl(conv$compartmentRegex, base)) return(TRUE)
     }
   }
   FALSE
