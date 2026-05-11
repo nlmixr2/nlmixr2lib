@@ -80,6 +80,38 @@ If a supplement is unobtainable but the lead PDF is on disk, decide based on whe
 
    The drug field name should still match the on-disk PDF (per step 2). Animal cohorts often use the same INN as the human drug; in that case, the file is `Author_Year_drug_rat.R` (or similar species suffix) so it doesn't collide with a sibling human extraction.
 
+### Step 3a — Model class: PBPK, QSP, MBMA, mechanistic-systems
+
+Whole-body PBPK, semi-mechanistic PBPK, quantitative systems pharmacology (QSP), and model-based meta-analysis (MBMA) papers are first-class members of nlmixr2lib when the source provides enough information to reproduce the model end-to-end. Extract them the same way you would a popPK model, with the following discipline points specific to non-popPK model classes:
+
+- **`description` prefix.** Prepend the modeling framework to `description` so users filtering by mechanism class see it in `modellib()` listings. Examples:
+  - `"PBPK (whole-body, SimCYP V12.1). APAP disposition in pregnancy ..."`
+  - `"QSP. 5-lipoxygenase pathway with 33 ODEs, 64 rate laws, 113 parameters ..."`
+  - `"MBMA. Trastuzumab + T-DXd from 103 published trials; between-study variability only ..."`
+
+- **Filename suffix when a popPK extraction already exists for the same drug.** Use `Author_Year_<drug>_pbpk.R`, `_qsp.R`, or `_mbma.R` so the mechanism class is visible at file-tree scan and so they don't collide with a sibling compartmental popPK extraction of the same paper / drug.
+
+- **Parameter sourcing — NEVER substitute from another paper unless that paper is on disk.** PBPK and QSP models often have 50-200+ parameters, many of which live in supplements rather than the main text. If a parameter is not reported in any on-disk source (paper text, on-disk supplement, on-disk upstream citation), DO NOT fill in the gap from training-data knowledge, class-typical values, default SimCYP / GastroPlus / Open Systems Pharmacology library entries, or "what a similar PBPK paper used for the same drug class." Instead, fire the Phase 4 missing-parameter sidecar and let the operator decide between (A) author correspondence, (B) operator drops the supplement, or (C) skip the paper.
+
+  This rule is **stricter** for PBPK / QSP / MBMA than for popPK because the literature is full of mechanism papers that cite each other circularly — substituting from "a representative PBPK paper for the same drug" introduces silent provenance ambiguity (which paper's parameters? which body-composition assumptions? which permeability model? which between-study covariance prior?) that a downstream user cannot audit. The acceptable substitution path is exactly one: the current paper explicitly states "we used the <Author Year> body-composition / metabolism / permeability model" AND that paper is on disk in the source directory; the inherited parameters then get an inline `# inherited from <Author Year> Table N` comment pointing to the upstream paper.
+
+  Class-typical training-data defaults are NOT an acceptable substitute. "kdeg for trastuzumab is typically 0.5/day in the literature" is not a citation; it's a guess. Sidecar instead.
+
+- **Reproducibility check before drafting.** Walk the paper for these provenance markers:
+  - Are all structural parameters (Vmax, Km, kcat, organ volumes, blood flows, permeabilities, partition coefficients, between-study covariance, etc.) tabulated explicitly with units?
+  - Are the ODEs written out, or only described in prose ("we used the standard SimCYP whole-body model")?
+  - Are the dosing-event handling and observation-mapping rules unambiguous?
+  - For MBMA: are the per-study weights / variance estimates explicit, or only summary parameter point estimates?
+
+  If any of these are insufficient, sidecar-ask the operator before drafting. Do not "fill in the gaps" from PBPK / QSP / MBMA class knowledge.
+
+- **PBPK / QSP platforms vs nlmixr2.** SimCYP, GastroPlus, PK-Sim/MoBi, OSP, and similar commercial platforms come with built-in whole-body models that users parameterise. nlmixr2 does not have those platforms — when extracting a SimCYP-published model, you must encode the platform's whole-body ODEs explicitly in `model()`. If the paper only states "we used SimCYP's standard whole-body model" without writing out the ODEs and parameter values, the model is not reproducible from on-disk sources and the appropriate action is sidecar-ask or skip — not fill in from training-data knowledge of how SimCYP's standard model is typically parameterised.
+
+- **MBMA `between-study variability` ≠ popPK BSV.** MBMA papers typically report between-study variance (a study-level random effect on summary metrics) rather than between-subject variance (individual-level $\eta$ on $\theta$). When extracting an MBMA model:
+  - Encode between-study variance as a study-level eta (e.g., `eta_study_lcl ~ <var>`) clearly labelled to distinguish from the popPK pattern; do NOT silently relabel it as `etalcl` (between-subject).
+  - The model is suitable for simulating study-level summary outcomes (per-arm mean response) but NOT individual-level concentrations.
+  - Document the simulation scope prominently in `description` and in the vignette's Assumptions and deviations section.
+
 4. **Prefer trimmed markdown when available.** The preprocessor at `mab_human_consensus/tracking/preprocess_papers.py` writes a `<stem>_trimmed.md` next to each source file (PMC XML, PDF, DOCX, XLSX) containing only the sections the extraction actually needs: Title + Abstract + Methods + Results + Tables + Figure captions. The Introduction, Discussion, Conclusions, References, Acknowledgments, and publisher boilerplate are stripped. If `PMID_<pmid>_pmc_trimmed.md` (or `PMID_<pmid>_trimmed.md` for a PDF, or `<stem>_trimmed.md` for a supplement) exists, read it **instead of** the raw `.xml` / `.pdf` / `.docx` — it's typically 40-95% smaller with no loss of extractable content. Full-text sanity check on the trimmed file: ~15 KB+ (full-text trim) vs < 3 KB (abstract-only trim). Fall back to the raw source only if the `_trimmed.md` doesn't exist, the trim appears to have lost a specific piece of information you need (rare — only when the paper is structurally unusual), or you explicitly need the discarded sections (e.g., to quote a Discussion claim in the vignette narrative).
 
 5. **Verify the source contains full text, not just the abstract.** Wiley / BJCP and some other publishers serve PMC XML containing only front matter + abstract. Before reading for model structure, run a quick sanity check (against the trimmed file if present, otherwise the raw source):
