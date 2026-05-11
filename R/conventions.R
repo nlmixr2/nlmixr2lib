@@ -156,7 +156,14 @@
     # doi:10.1111/bcp.13311). Treated as "non-parent analyte" suffixes
     # under the same registry as metabolites; neither enantiomer is the
     # parent.
-    "r", "s"
+    "r", "s",
+    # Roflumilast N-oxide, the active metabolite of roflumilast that
+    # contributes about 90% of total PDE4 inhibitory activity (tPDE4i).
+    # Used as a metabolite suffix in parent-plus-metabolite popPK models
+    # where parent (roflumilast) and metabolite (N-oxide) are fitted
+    # jointly but with independent apparent absorption parameters
+    # (Lahu 2010 doi:10.2165/11536600-000000000-00000).
+    "noxide"
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` denotes the time-varying decay arm.

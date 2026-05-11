@@ -1510,6 +1510,17 @@ readable.
 - **Source aliases:** none known; source NONMEM control streams typically use ad-hoc names (e.g., `AD`, `STATUS`, `DISGRP`).
 - **Example models:** `PerezRuixo_2025_posdinemab.R` (acts on baseline free p217+tau in CSF, R0; healthy R0 = 0.793 pmol/L vs AD R0 = 5.995 pmol/L, a 656% relative increase, no PK-parameter effects).
 - **Notes:** Used when a population PK/PD model pools healthy volunteers with Alzheimer's disease patients and the AD-vs-HV contrast is retained as a covariate on a target-related parameter (e.g., baseline p-tau, baseline p217+tau). Scope: specific because the complement reference category is paper-defined. Ratified canonically on 2026-04-28.
+
+### DIS_COPD (**canonical for chronic obstructive pulmonary disease patient indicator**)
+- **Description:** 1 = patient with chronic obstructive pulmonary disease (clinical COPD diagnosis, typically moderate-to-severe per GOLD criteria), 0 = non-COPD subject (typically healthy volunteer pooled in the source analysis). Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-COPD subject; the complement group is paper-defined -- for Lahu 2010 the reference is the pooled phase I healthy-volunteer cohort).
+- **Source aliases:**
+  - `COPD` -- used in `Lahu_2010_roflumilast.R` (paper text covariate symbol in equation 6 and 7).
+- **Example models:** `Lahu_2010_roflumilast.R` (linear additive effects on roflumilast parent CL (-39.4%) and V1 (+184%) and on roflumilast N-oxide CL (-7.9%) and Vd (-21.4%); reference category 0 = pooled phase I healthy volunteers, 1 = pooled phase II/III moderate-to-severe COPD patient).
+- **Notes:** Used when a population PK/PD model pools healthy volunteers with COPD patients and the COPD-vs-HV contrast is retained as a covariate on PK parameters. Scope: specific because the complement reference category and the COPD-severity inclusion criteria are paper-defined.
 ### HSCT_URD_7OF8 (**canonical for hematopoietic stem cell transplant from a 7-of-8 HLA-matched unrelated donor**)
 - **Description:** 1 = patient received an allogeneic hematopoietic stem cell transplant (HSCT) from an unrelated donor (URD) HLA-matched at 7 of 8 alleles (single-allele mismatch), 0 = otherwise (the union of patients not in this transplant cohort, including non-HSCT patients and HSCT recipients matched at all 8 alleles). Time-fixed per subject.
 - **Units:** (binary)
