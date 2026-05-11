@@ -309,6 +309,8 @@ navbar:
         href: articles/PerezRuixo_2025_posdinemab.html
       - text: Pozelimab (Lin 2024)
         href: articles/Lin_2024_pozelimab.html
+      - text: Propofol (Diepstraten 2013)
+        href: articles/Diepstraten_2013_propofol.html
       - text: Pyrazinamide (Alsultan 2017)
         href: articles/Alsultan_2017_pyrazinamide.html
       - text: Ranibizumab (Mulyukov 2018)
@@ -607,6 +609,7 @@ articles:
   - articles/Diao_2016_daclizumab_cd56bright
   - articles/Diao_2016_daclizumab_treg
   - articles/Diep_2022_eplontersen
+  - articles/Diepstraten_2013_propofol
   - articles/Dunlap_2025_tacrolimus
   - articles/Ekhart_2008_carboplatin
   - articles/Faelens_2021_infliximab
