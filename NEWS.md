@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Gupta 2017 ixazomib ([doi:10.1007/s40262-017-0526-4](https://doi.org/10.1007/s40262-017-0526-4)) -- adult patients with multiple myeloma, lymphoma, solid tumours, or light-chain amyloidosis (pooled phase I-III TOURMALINE-MM1 popPK; three-compartment oral + IV PK with BSA on V4 and time-after-dose-varying residual SD).
 * Add Tetschke 2018 erythropoiesis ([doi:10.3390/pr6090157](https://doi.org/10.3390/pr6090157)) -- healthy adult male volunteers undergoing a single 1-unit blood donation (three-compartment endogenous mixed-effects model for red blood cell regeneration after phlebotomy; ratifies new `THB_MASS` covariate canonical for total hemoglobin mass measured by CO-rebreathing).
 * Add Ekhart 2008 carboplatin ([doi:10.1007/s00280-008-0856-x](https://doi.org/10.1007/s00280-008-0856-x)) -- adult cancer patients (underweight to obese) receiving combination chemotherapy.
 * Add Aregbe 2012 alvespimycin / 17-DMAG ([doi:10.1007/s00280-012-1859-1](https://doi.org/10.1007/s00280-012-1859-1)) -- adult patients with advanced solid tumors.
