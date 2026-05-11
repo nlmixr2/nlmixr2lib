@@ -76,6 +76,17 @@ buildModelDb <- function() {
       dosing = "A comma separated string of identified dosing compartments",
       depends = "A comma separated string of objects the model depends on",
       vignette = "Basename of the vignette associated with this model (without path or extension); NA if none",
+      label = paste(
+        "Human-readable navbar label derived from the filename: 'Drug (Author Year)'",
+        "for the canonical '<Author>_<Year>_<drug>' form, 'DDMoRe: <drug>' for the",
+        "parameterless NA_NA_<drug> ddmore entries, otherwise the basename with",
+        "underscores replaced by spaces"
+      ),
+      category = paste(
+        "Coarse-grained model bucket derived from the filename path:",
+        "'specificDrugs', 'ddmore', or 'other' (anything not under those two",
+        "directories)"
+      ),
       filename = "Filename of the model.  By default these are installed in the model library and read on demand"
     )
   # The names must exactly match
@@ -233,6 +244,8 @@ addFileToModelDb <- function(dir, file, modeldb) {
       dosing      = dosing,
       depends     = depends,
       vignette    = vignette,
+      label       = .parseModelLabel(fileName),
+      category    = .parseModelCategory(fileName),
       filename    = fileName
     )
   modeldb <- rbind(modeldb, ret)
@@ -291,7 +304,7 @@ addFileToModelDb <- function(dir, file, modeldb) {
     )
   }
   list(
-    cacheVersion = 2L,
+    cacheVersion = 3L,
     rVersion     = R.version.string,
     nlmixr2      = safeVersion("nlmixr2"),
     nlmixr2est   = safeVersion("nlmixr2est"),
@@ -360,76 +373,72 @@ addFileToModelDb <- function(dir, file, modeldb) {
   gsub("_", " ", base, fixed = TRUE)
 }
 
-# Mutate the package's `_pkgdown.yml` to add navbar dropdowns for the
-# specificDrugs/ and ddmore/ model directories plus a top-level
-# Covariates link, and to mark every drug-specific article in
-# vignettes/articles/ as `internal: true` so they are reachable by URL
-# (and via the navbar dropdowns) but absent from the auto-generated
-# Articles index. Owns only the `navbar.structure.left` ordering, the
-# `navbar.components.{specific_drugs,ddmore,covariates}` keys, and the
-# top-level `articles` key; any other keys the maintainer has added to
-# the file are preserved.
+# Coarse-grained category derived from a model file's path. Matches the
+# inst/modeldb/ directory layout: "specificDrugs/<file>.R" -> "specificDrugs",
+# "ddmore/<file>.R" -> "ddmore", everything else (top-level templates and the
+# remaining therapeutic-area / endogenous / pharmacokinetics directories) ->
+# "other". `filename` here may be the relative path stored on the modeldb row
+# (e.g. "specificDrugs/Aguiar_2021_ustekinumab.R") or an absolute filesystem
+# path -- the prefix match is anchored on the canonical directory names.
+.parseModelCategory <- function(filename) {
+  if (grepl("(^|/)specificDrugs/", filename)) return("specificDrugs")
+  if (grepl("(^|/)ddmore/",        filename)) return("ddmore")
+  "other"
+}
+
+# Refresh the auto-generated regions of the package's `_pkgdown.yml` by
+# rewriting only the lines between AUTOGEN signpost comments. Three
+# regions are managed:
+#
+#   * `# AUTOGEN:specific_drugs:BEGIN` / `:END` -- the menu items under
+#     `navbar.components.specific_drugs.menu`. One entry per specificDrugs/
+#     model with a vignette.
+#   * `# AUTOGEN:ddmore:BEGIN` / `:END` -- the menu items under
+#     `navbar.components.ddmore.menu`. One entry per ddmore/ model with a
+#     vignette.
+#   * `# AUTOGEN:articles:BEGIN` / `:END` -- the top-level `articles:`
+#     groups. A visible "General" group listing every top-level
+#     `vignettes/*.Rmd`, and an `internal: true` group listing every
+#     `vignettes/articles/*.Rmd` -- so the drug-specific pages remain
+#     buildable and URL-addressable but are absent from the auto-generated
+#     Articles index (they are reached from the navbar dropdowns instead).
+#
+# Anything outside the signposts -- template, url, navbar.structure, the
+# `text:` lines of the dropdowns, comments, maintainer-added components,
+# blank lines, formatting -- is preserved byte-for-byte. This avoids the
+# yaml round-trip pitfalls of `yaml::read_yaml` + `yaml::write_yaml`
+# (lost comments, reordered keys, boolean reformatting, broken style),
+# and makes a maintainer-edited region trivially distinguishable from
+# the auto-generated parts.
+#
+# If a signpost block is missing, the function logs a message and skips
+# only that region; the others still refresh.
 .writePkgdownNavbar <- function(modeldb, packageDirectory) {
-  if (!requireNamespace("yaml", quietly = TRUE)) {
-    message("yaml package not installed; skipping _pkgdown.yml navbar refresh.")
-    return(invisible())
-  }
   ymlPath <- file.path(packageDirectory, "_pkgdown.yml")
   if (!file.exists(ymlPath)) return(invisible())
 
-  cfg <- yaml::read_yaml(ymlPath)
-  if (!is.list(cfg)) cfg <- list()
+  with_vignette <- !is.na(modeldb$vignette)
+  spec <- modeldb[with_vignette & modeldb$category == "specificDrugs", , drop = FALSE]
+  ddmo <- modeldb[with_vignette & modeldb$category == "ddmore",        , drop = FALSE]
 
-  spec <- modeldb[grepl("^specificDrugs/", modeldb$filename) &
-                    !is.na(modeldb$vignette), , drop = FALSE]
-  ddmo <- modeldb[grepl("^ddmore/", modeldb$filename) &
-                    !is.na(modeldb$vignette), , drop = FALSE]
-
-  buildMenu <- function(rows) {
-    if (nrow(rows) == 0) return(list())
-    labels <- vapply(rows$filename, .parseModelLabel, character(1))
-    ord <- order(labels)
+  # Each replacement line is emitted at column 0 (no leading whitespace).
+  # .replaceAutogen() prefixes whatever indentation the BEGIN signpost
+  # carries, so a marker at any nesting level renders correctly.
+  buildMenuLines <- function(rows) {
+    if (nrow(rows) == 0) return(character())
+    ord <- order(rows$label)
     rows <- rows[ord, , drop = FALSE]
-    labels <- labels[ord]
-    lapply(seq_len(nrow(rows)), function(i) {
-      list(
-        text = labels[[i]],
-        href = sprintf("articles/%s.html", rows$vignette[[i]])
+    unlist(lapply(seq_len(nrow(rows)), function(i) {
+      c(
+        sprintf("- text: %s",            .yamlQuote(rows$label[[i]])),
+        sprintf("  href: articles/%s.html", rows$vignette[[i]])
       )
-    })
+    }))
   }
 
-  cfg$navbar            <- cfg$navbar            %||% list()
-  cfg$navbar$structure  <- cfg$navbar$structure  %||% list()
-  cfg$navbar$components <- cfg$navbar$components %||% list()
-
-  cfg$navbar$structure$left <- c(
-    "intro", "reference", "articles",
-    "specific_drugs", "ddmore", "covariates", "news"
-  )
-  cfg$navbar$components$specific_drugs <- list(
-    text = "Specific drug models",
-    menu = buildMenu(spec)
-  )
-  cfg$navbar$components$ddmore <- list(
-    text = "DDMoRe models",
-    menu = buildMenu(ddmo)
-  )
-  cfg$navbar$components$covariates <- list(
-    text = "Covariates",
-    href = "articles/covariate-columns.html"
-  )
-
-  # Configure the Articles index: top-level `vignettes/*.Rmd` show in a
-  # visible "General" group; every `vignettes/articles/*.Rmd` goes into
-  # an `internal: true` group so the per-drug pages remain buildable
-  # and reachable by URL but are absent from the main Articles index
-  # (they are linked from the Specific drug models / DDMoRe navbar
-  # dropdowns instead). pkgdown matches `contents:` against the
-  # vignette name with its source-tree path preserved -- a file at
-  # `vignettes/articles/Foo.Rmd` is named `articles/Foo`, a file at
-  # `vignettes/Foo.Rmd` is named `Foo`. pkgdown errors if any built
-  # vignette is absent from `articles:`, so list every file.
+  # Top-level (visible) vignettes and the drug-specific articles list.
+  # Read straight from disk -- the modeldb only knows about model files,
+  # not vignettes -- and stay consistent with what pkgdown will build.
   vignDir <- file.path(packageDirectory, "vignettes")
   topNames <- character()
   articleNames <- character()
@@ -444,32 +453,83 @@ addFileToModelDb <- function(dir, file, modeldb) {
       ))
     }
   }
-  groups <- list()
+  articlesLines <- character()
   if (length(topNames) > 0) {
-    groups[[length(groups) + 1]] <- list(
-      title = "General",
-      desc = "Cross-cutting guides and the list of models.",
-      contents = as.list(topNames)
+    articlesLines <- c(
+      articlesLines,
+      "- title: General",
+      "  desc: Cross-cutting guides and the list of models.",
+      "  contents:",
+      sprintf("  - %s", topNames)
     )
   }
   if (length(articleNames) > 0) {
-    groups[[length(groups) + 1]] <- list(
-      title = "internal",
-      desc = paste(
-        "Drug-specific validation vignettes. They are reached from the",
-        "Specific drug models and DDMoRe models navbar dropdowns; this",
-        "group hides them from the main Articles index."
+    articlesLines <- c(
+      articlesLines,
+      "- title: internal",
+      paste(
+        "  desc: Drug-specific validation vignettes. They are reached from the",
+        "Specific drug models and DDMoRe models navbar dropdowns; this group",
+        "hides them from the main Articles index."
       ),
-      contents = as.list(paste0("articles/", articleNames)),
-      internal = TRUE
+      "  contents:",
+      sprintf("  - articles/%s", articleNames),
+      "  internal: true"
     )
   }
-  cfg$articles <- if (length(groups) > 0) groups else NULL
 
+  ymlLines <- readLines(ymlPath, encoding = "UTF-8", warn = FALSE)
+  result <- .replaceAutogen(ymlLines, "specific_drugs", buildMenuLines(spec))
+  result <- .replaceAutogen(result,   "ddmore",         buildMenuLines(ddmo))
+  result <- .replaceAutogen(result,   "articles",       articlesLines)
+
+  if (!identical(result, ymlLines)) {
+    writeLines(result, ymlPath, useBytes = FALSE, sep = "\n")
+  }
   message("Refreshing navbar in ", ymlPath,
           " (specificDrugs=", nrow(spec),
           ", ddmore=", nrow(ddmo),
           ", internal-articles=", length(articleNames), ")")
-  yaml::write_yaml(cfg, ymlPath)
   invisible()
+}
+
+# Replace the block of lines between `# AUTOGEN:<name>:BEGIN` and
+# `# AUTOGEN:<name>:END` markers with `replacement`. Each element of
+# `replacement` is one output line, emitted at column 0; the leading
+# whitespace of the BEGIN marker is prefixed onto every replacement
+# line so a marker at any YAML nesting level renders with correct
+# indentation. The marker lines themselves are preserved.
+#
+# If either marker is missing or malformed, the function leaves the
+# lines untouched and warns once per region.
+.replaceAutogen <- function(lines, name, replacement) {
+  beginRx <- sprintf("^([[:space:]]*)#[[:space:]]*AUTOGEN:%s:BEGIN", name)
+  endRx   <- sprintf("^[[:space:]]*#[[:space:]]*AUTOGEN:%s:END",   name)
+  bi <- grep(beginRx, lines)
+  ei <- grep(endRx,   lines)
+  if (length(bi) != 1L || length(ei) != 1L || ei <= bi) {
+    warning("AUTOGEN:", name, " signposts missing or malformed in _pkgdown.yml; ",
+            "leaving that region unchanged.", call. = FALSE)
+    return(lines)
+  }
+  indent <- sub(beginRx, "\\1", lines[bi])
+  if (length(replacement) > 0) {
+    replacement <- paste0(indent, replacement)
+    # Drop the trailing whitespace from any line that ended up bare-indent,
+    # so the file stays tidy without trailing spaces on otherwise-empty lines.
+    replacement <- sub("[[:space:]]+$", "", replacement)
+  }
+  c(lines[seq_len(bi)], replacement, lines[ei:length(lines)])
+}
+
+# Minimal YAML-scalar quoter for the menu `text:` field. Adds double
+# quotes when the label contains a leading colon, leading dash, hash,
+# leading-or-trailing whitespace, or any of YAML's flow indicators that
+# would otherwise need parsing care. Internal double quotes are escaped.
+# The fields we emit are short navbar labels like
+# `Ustekinumab (Aguiar 2021)` and `DDMoRe: lidocaine`; the latter has a
+# leading-colon-like prefix that would parse as a mapping without
+# quotes, so the conservative default is to always quote.
+.yamlQuote <- function(x) {
+  sprintf('"%s"', gsub('"', '\\\\"', x, fixed = TRUE))
 }
