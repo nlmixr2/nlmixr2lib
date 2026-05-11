@@ -1,4 +1,4 @@
-# Almquist_2022_anifrolumab
+# Anifrolumab (Almquist 2022)
 
 ``` r
 

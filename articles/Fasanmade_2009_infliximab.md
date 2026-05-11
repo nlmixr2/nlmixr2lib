@@ -1,4 +1,4 @@
-# Fasanmade_2009_infliximab
+# Infliximab (Fasanmade 2009)
 
 ``` r
 
@@ -221,9 +221,9 @@ data_obj <- PKNCAdata(
   )
 )
 nca_results <- pk.nca(data_obj)
-#>  ■■■■■                             14% |  ETA:  9s
-#>  ■■■■■■■■■■■■■                     41% |  ETA:  6s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■           72% |  ETA:  3s
+#>  ■■■■■                             12% |  ETA:  9s
+#>  ■■■■■■■■■■■■■                     40% |  ETA:  6s
+#>  ■■■■■■■■■■■■■■■■■■■■■■            71% |  ETA:  3s
 nca_summary <- summary(nca_results)
 knitr::kable(
   nca_summary,

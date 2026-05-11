@@ -1,4 +1,4 @@
-# Wilkins_2008_rifampicin
+# Rifampicin (Wilkins 2008)
 
 ## Model and source
 

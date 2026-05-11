@@ -1,4 +1,4 @@
-# Ayyar_2024_givosiran
+# Givosiran (Ayyar 2024)
 
 ## Model and source
 

@@ -1,4 +1,4 @@
-# Pouzin_2022_tusamitamab
+# Tusamitamab (Pouzin 2022)
 
 ## Model and source
 

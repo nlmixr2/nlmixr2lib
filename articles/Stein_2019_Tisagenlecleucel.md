@@ -1,4 +1,4 @@
-# Stein_2019_Tisagenlecleucel
+# Tisagenlecleucel (Stein 2019)
 
 ## Model and source
 

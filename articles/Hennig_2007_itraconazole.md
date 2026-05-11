@@ -1,4 +1,4 @@
-# Hennig_2007_itraconazole
+# Itraconazole (Hennig 2007)
 
 ## Model and source
 

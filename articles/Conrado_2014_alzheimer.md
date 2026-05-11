@@ -1,4 +1,4 @@
-# Conrado_2014_alzheimer
+# Alzheimer (Conrado 2014)
 
 ## Model and source
 

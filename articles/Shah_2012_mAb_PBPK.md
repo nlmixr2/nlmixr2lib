@@ -1,4 +1,4 @@
-# Shah_2012_mAb_PBPK
+# MAb PBPK (Shah 2012)
 
 ## Model and source
 

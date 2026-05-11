@@ -1,4 +1,4 @@
-# Aksenov_2018_uricAcid
+# UricAcid (Aksenov 2018)
 
 ## Model and source
 

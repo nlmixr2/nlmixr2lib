@@ -1,4 +1,4 @@
-# NA_NA_lidocaine
+# DDMoRe: lidocaine
 
 ## Model and source
 

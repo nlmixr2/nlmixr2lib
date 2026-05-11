@@ -1,4 +1,4 @@
-# Kunarajah_2017_doxorubicin
+# Doxorubicin (Kunarajah 2017)
 
 ## Model and source
 

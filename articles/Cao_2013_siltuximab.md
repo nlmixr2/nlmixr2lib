@@ -1,4 +1,4 @@
-# Cao_2013_siltuximab
+# Siltuximab (Cao 2013)
 
 ## Model and source
 

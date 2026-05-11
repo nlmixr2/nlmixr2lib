@@ -1,4 +1,4 @@
-# Ozawa_2007_docetaxel
+# Docetaxel (Ozawa 2007)
 
 ## Model and source
 

@@ -1,4 +1,4 @@
-# Allegaert_2015_paracetamol
+# Paracetamol (Allegaert 2015)
 
 ## Model and source
 

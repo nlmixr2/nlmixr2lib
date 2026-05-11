@@ -1,4 +1,4 @@
-# Soehoel_2022_tralokinumab
+# Tralokinumab (Soehoel 2022)
 
 ## Model and source
 

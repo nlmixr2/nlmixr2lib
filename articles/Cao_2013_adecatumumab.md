@@ -1,4 +1,4 @@
-# Cao_2013_adecatumumab
+# Adecatumumab (Cao 2013)
 
 ## Model and source
 

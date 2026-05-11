@@ -1,4 +1,4 @@
-# Yukawa_1990_phenytoin
+# Phenytoin (Yukawa 1990)
 
 ## Model and source
 

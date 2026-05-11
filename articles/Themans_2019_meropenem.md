@@ -1,4 +1,4 @@
-# Themans_2019_meropenem
+# Meropenem (Themans 2019)
 
 ## Model and source
 

@@ -1,4 +1,4 @@
-# Suri_2018_brentuximab
+# Brentuximab (Suri 2018)
 
 ## Model and source
 

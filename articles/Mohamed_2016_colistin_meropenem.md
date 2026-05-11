@@ -1,4 +1,4 @@
-# Mohamed_2016_colistin_meropenem
+# Colistin meropenem (Mohamed 2016)
 
 ## Model and source
 

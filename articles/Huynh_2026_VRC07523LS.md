@@ -1,4 +1,4 @@
-# Huynh_2026_VRC07523LS
+# VRC07523LS (Huynh 2026)
 
 ## Model and source
 
@@ -347,10 +347,9 @@ intervals <- data.frame(
 )
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
-#>  ■■■■                              10% |  ETA: 10s
-#>  ■■■■■■■■■■■■                      36% |  ETA:  7s
-#>  ■■■■■■■■■■■■■■■■■■■■              64% |  ETA:  4s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     92% |  ETA:  1s
+#>  ■■■■■■■■■■                        29% |  ETA:  8s
+#>  ■■■■■■■■■■■■■■■■■■                56% |  ETA:  5s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■        83% |  ETA:  2s
 
 nca_tbl <- as.data.frame(nca_res$result)
 ```

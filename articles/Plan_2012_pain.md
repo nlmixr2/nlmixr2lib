@@ -1,4 +1,4 @@
-# Plan_2012_pain
+# Pain (Plan 2012)
 
 ## Model and source
 

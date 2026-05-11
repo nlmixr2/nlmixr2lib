@@ -1,4 +1,4 @@
-# Panoilia_2015_bevacizumab
+# Bevacizumab (Panoilia 2015)
 
 ## Model and source
 

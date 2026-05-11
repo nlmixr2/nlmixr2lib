@@ -1,4 +1,4 @@
-# Zhong_2026_abatacept
+# Abatacept (Zhong 2026)
 
 ## Model and source
 

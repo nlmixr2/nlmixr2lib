@@ -1,4 +1,4 @@
-# Knibbe_2009_morphine
+# Morphine (Knibbe 2009)
 
 ## Model and source
 

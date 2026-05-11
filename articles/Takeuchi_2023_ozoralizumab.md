@@ -1,4 +1,4 @@
-# Takeuchi_2023_ozoralizumab
+# Ozoralizumab (Takeuchi 2023)
 
 ## Model and source
 

@@ -1,4 +1,4 @@
-# Rovei_1982_theophylline
+# Theophylline (Rovei 1982)
 
 ## Model and source
 

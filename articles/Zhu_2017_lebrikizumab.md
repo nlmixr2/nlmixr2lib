@@ -1,4 +1,4 @@
-# Zhu_2017_lebrikizumab
+# Lebrikizumab (Zhu 2017)
 
 ## Model and source
 

@@ -1,4 +1,4 @@
-# Jackson_2022_ixekizumab
+# Ixekizumab (Jackson 2022)
 
 ``` r
 

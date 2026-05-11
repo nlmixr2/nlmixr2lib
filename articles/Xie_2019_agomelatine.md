@@ -1,4 +1,4 @@
-# Xie_2019_agomelatine
+# Agomelatine (Xie 2019)
 
 ``` r
 

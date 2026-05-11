@@ -1,4 +1,4 @@
-# Germovsek_2016_gentamicin
+# Gentamicin (Germovsek 2016)
 
 ## Model and source
 

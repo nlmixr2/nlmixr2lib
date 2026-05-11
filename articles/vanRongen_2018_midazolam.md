@@ -1,4 +1,4 @@
-# vanRongen_2018_midazolam
+# Midazolam (vanRongen 2018)
 
 ## Model and source
 

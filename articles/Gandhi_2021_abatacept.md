@@ -1,4 +1,4 @@
-# Gandhi_2021_abatacept
+# Abatacept (Gandhi 2021)
 
 ## Model and source
 
@@ -412,7 +412,6 @@ dose_obj_ra <- PKNCA::PKNCAdose(nca_dose_ra, amt ~ time | treatment + id)
 
 nca_ra <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj_ra, dose_obj_ra,
                                          intervals = intervals_sc))
-#>  ■■■■■■■■■■■■■■■                   45% |  ETA:  1s
 summary(nca_ra)
 #>  start end    treatment   N     auclast        cmax        cmin
 #>      0   7 RA_SC_125_QW 300 95.9 [35.4] 15.4 [31.7] 11.1 [45.5]

@@ -1,4 +1,4 @@
-# Ide_2020_elotuzumab
+# Elotuzumab (Ide 2020)
 
 ## Model and source
 

@@ -1,4 +1,4 @@
-# Hu_2026_clesrovimab
+# Clesrovimab (Hu 2026)
 
 ``` r
 
@@ -301,10 +301,9 @@ data_obj <- PKNCAdata(conc_obj, dose_obj,
                          cmax = TRUE, tmax = TRUE,
                          auclast = TRUE, half.life = TRUE))
 nca_results <- pk.nca(data_obj)
-#>  ■■■■                              10% |  ETA: 11s
-#>  ■■■■■■■■■■■                       34% |  ETA:  8s
-#>  ■■■■■■■■■■■■■■■■■■                57% |  ETA:  5s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■        83% |  ETA:  2s
+#>  ■■■■■■■■■                         26% |  ETA:  9s
+#>  ■■■■■■■■■■■■■■■■                  50% |  ETA:  6s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■           75% |  ETA:  3s
 nca_summary <- summary(nca_results)
 knitr::kable(nca_summary, digits = 2,
              caption = "NCA summary by baseline weight group (single 105 mg IM dose)")

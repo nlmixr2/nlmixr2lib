@@ -1,4 +1,4 @@
-# Delattre_2010_amikacin
+# Amikacin (Delattre 2010)
 
 ## Model and source
 

@@ -1,4 +1,4 @@
-# Henin_2009_capecitabine
+# Capecitabine (Henin 2009)
 
 ## Model and source
 

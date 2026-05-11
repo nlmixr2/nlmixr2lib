@@ -1,4 +1,4 @@
-# Brillac_2025_isatuximab
+# Isatuximab (Brillac 2025)
 
 ## Model and source
 
@@ -324,7 +324,7 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
-#>  ■■■■■■■■■■■■■■■■■■■■■             65% |  ETA:  2s
+#>  ■■■■■■■■■■■■■■■■■■■■■             68% |  ETA:  2s
 
 knitr::kable(
   summary(nca_res),

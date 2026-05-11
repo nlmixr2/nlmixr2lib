@@ -1,4 +1,4 @@
-# Hennig_2015_rifabutin
+# Rifabutin (Hennig 2015)
 
 ## Model and source
 

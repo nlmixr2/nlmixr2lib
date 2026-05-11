@@ -1,4 +1,4 @@
-# Jonsson_2011_ethambutol
+# Ethambutol (Jonsson 2011)
 
 ## Model and source
 

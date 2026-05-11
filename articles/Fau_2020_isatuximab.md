@@ -1,4 +1,4 @@
-# Fau_2020_isatuximab
+# Isatuximab (Fau 2020)
 
 ## Model and source
 
@@ -402,7 +402,7 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      90% |  ETA:  0s
+#>  ■■■■■■■■■■■■                      37% |  ETA:  2s
 knitr::kable(summary(nca_res),
              caption = "Simulated steady-state NCA (final Q2W interval, weeks 30-32) by myeloma type.")
 ```

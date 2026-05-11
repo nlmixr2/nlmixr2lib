@@ -1,4 +1,4 @@
-# Zhou_2025_brentuximab
+# Brentuximab (Zhou 2025)
 
 ## Model and source
 

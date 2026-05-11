@@ -1,4 +1,4 @@
-# Kunisawa_2014_olprinone
+# Olprinone (Kunisawa 2014)
 
 ## Model and source
 

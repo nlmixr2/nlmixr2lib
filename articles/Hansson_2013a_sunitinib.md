@@ -1,4 +1,4 @@
-# Hansson_2013a_sunitinib
+# Sunitinib (Hansson 2013a)
 
 ## Model and source
 

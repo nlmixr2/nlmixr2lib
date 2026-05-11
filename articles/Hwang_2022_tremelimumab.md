@@ -1,4 +1,4 @@
-# Hwang_2022_tremelimumab
+# Tremelimumab (Hwang 2022)
 
 ## Model and source
 

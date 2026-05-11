@@ -1,4 +1,4 @@
-# Papachristos_2020_bevacizumab_pkpd
+# Bevacizumab pkpd (Papachristos 2020)
 
 ## Model and source
 

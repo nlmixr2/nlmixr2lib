@@ -1,4 +1,4 @@
-# Jonsson_2005_disufenton
+# Disufenton (Jonsson 2005)
 
 ## Model and source
 

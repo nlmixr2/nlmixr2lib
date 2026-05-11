@@ -1,4 +1,4 @@
-# Chen_2022_guselkumab
+# Guselkumab (Chen 2022)
 
 ``` r
 
@@ -307,9 +307,9 @@ data_obj <- PKNCAdata(
   )
 )
 nca_results <- pk.nca(data_obj)
-#>  ■■■■■■■■■■■■                      37% |  ETA:  6s
-#>  ■■■■■■■■■■■■■■■■■■■■              65% |  ETA:  4s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    96% |  ETA:  0s
+#>  ■■■■■■■■■■■                       33% |  ETA:  7s
+#>  ■■■■■■■■■■■■■■■■■■■               61% |  ETA:  4s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     93% |  ETA:  1s
 nca_summary <- summary(nca_results)
 knitr::kable(
   nca_summary,

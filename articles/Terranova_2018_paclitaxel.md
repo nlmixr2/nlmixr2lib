@@ -1,4 +1,4 @@
-# Terranova_2018_paclitaxel
+# Paclitaxel (Terranova 2018)
 
 ## Model and source
 

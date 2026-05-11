@@ -1,4 +1,4 @@
-# Valitalo_2017_ketorolac
+# Ketorolac (Valitalo 2017)
 
 ## Model and source
 

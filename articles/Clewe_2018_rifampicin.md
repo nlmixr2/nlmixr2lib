@@ -1,4 +1,4 @@
-# Clewe_2018_rifampicin
+# Rifampicin (Clewe 2018)
 
 ## Model and source
 

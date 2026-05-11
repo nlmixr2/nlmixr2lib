@@ -1,4 +1,4 @@
-# NA_NA_tte_lognormal
+# DDMoRe: tte lognormal
 
 ## Model and source
 

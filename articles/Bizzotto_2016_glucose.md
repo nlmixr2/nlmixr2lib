@@ -1,4 +1,4 @@
-# Bizzotto_2016_glucose
+# Glucose (Bizzotto 2016)
 
 ## Model and source
 

@@ -1,4 +1,4 @@
-# Svensson_2016_bedaquiline
+# Bedaquiline (Svensson 2016)
 
 ## Model and source
 

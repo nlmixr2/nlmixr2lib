@@ -1,4 +1,4 @@
-# Caldes_2009_ganciclovir
+# Ganciclovir (Caldes 2009)
 
 ## Model and source
 

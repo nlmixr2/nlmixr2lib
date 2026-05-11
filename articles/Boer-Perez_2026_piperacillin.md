@@ -1,4 +1,4 @@
-# Boer-Perez_2026_piperacillin
+# Piperacillin (Boer-Perez 2026)
 
 ## Model and source
 
@@ -281,12 +281,12 @@ intervals <- data.frame(
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- suppressWarnings(PKNCA::pk.nca(nca_data))
 #>  ■■■■■■                            16% |  ETA: 20s
-#>  ■■■■■■■■■■                        29% |  ETA: 17s
-#>  ■■■■■■■■■■■■■■                    42% |  ETA: 14s
-#>  ■■■■■■■■■■■■■■■■■                 55% |  ETA: 11s
-#>  ■■■■■■■■■■■■■■■■■■■■■             68% |  ETA:  8s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■         80% |  ETA:  5s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     93% |  ETA:  2s
+#>  ■■■■■■■■■                         28% |  ETA: 17s
+#>  ■■■■■■■■■■■■■                     41% |  ETA: 14s
+#>  ■■■■■■■■■■■■■■■■■                 53% |  ETA: 11s
+#>  ■■■■■■■■■■■■■■■■■■■■■             66% |  ETA:  8s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■          78% |  ETA:  5s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      90% |  ETA:  2s
 nca_df   <- as.data.frame(nca_res$result)
 
 nca_summary <- nca_df |>

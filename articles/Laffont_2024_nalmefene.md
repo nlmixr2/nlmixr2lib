@@ -1,4 +1,4 @@
-# Laffont_2024_nalmefene
+# Nalmefene (Laffont 2024)
 
 ## Model and source
 
@@ -199,8 +199,8 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- suppressWarnings(PKNCA::pk.nca(nca_data))
-#>  ■■■■■■■■■                         26% |  ETA:  6s
-#>  ■■■■■■■■■■■■■■■■■■■■              62% |  ETA:  3s
+#>  ■■■■■■■■■                         25% |  ETA:  6s
+#>  ■■■■■■■■■■■■■■■■■■■               61% |  ETA:  3s
 
 knitr::kable(
   summary(nca_res),

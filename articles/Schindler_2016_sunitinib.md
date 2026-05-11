@@ -1,4 +1,4 @@
-# Schindler_2016_sunitinib
+# Sunitinib (Schindler 2016)
 
 ## Model and source
 

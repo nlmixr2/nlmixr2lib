@@ -1,4 +1,4 @@
-# Tetschke_2018_erythropoiesis
+# Erythropoiesis (Tetschke 2018)
 
 ## Model and source
 

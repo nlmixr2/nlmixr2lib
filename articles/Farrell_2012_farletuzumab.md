@@ -1,4 +1,4 @@
-# Farrell_2012_farletuzumab
+# Farletuzumab (Farrell 2012)
 
 ## Model and source
 

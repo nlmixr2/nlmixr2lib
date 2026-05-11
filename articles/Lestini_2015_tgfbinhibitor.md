@@ -1,4 +1,4 @@
-# Lestini_2015_tgfbinhibitor
+# Tgfbinhibitor (Lestini 2015)
 
 ## Model and source
 

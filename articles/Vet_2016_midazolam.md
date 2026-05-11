@@ -1,4 +1,4 @@
-# Vet_2016_midazolam
+# Midazolam (Vet 2016)
 
 ## Model and source
 

@@ -1,4 +1,4 @@
-# Harun_2019_cysticFibrosis
+# CysticFibrosis (Harun 2019)
 
 ## Model and source
 

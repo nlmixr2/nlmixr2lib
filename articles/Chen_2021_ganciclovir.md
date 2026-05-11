@@ -1,4 +1,4 @@
-# Chen_2021_ganciclovir
+# Ganciclovir (Chen 2021)
 
 ## Model and source
 

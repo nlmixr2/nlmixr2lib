@@ -1,4 +1,4 @@
-# Li_2006_meropenem
+# Meropenem (Li 2006)
 
 ## Model and source
 

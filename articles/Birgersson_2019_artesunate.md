@@ -1,4 +1,4 @@
-# Birgersson_2019_artesunate
+# Artesunate (Birgersson 2019)
 
 ## Model and source
 

@@ -1,4 +1,4 @@
-# Salinger_2013_magnesiumSulfate
+# MagnesiumSulfate (Salinger 2013)
 
 ## Model and source
 

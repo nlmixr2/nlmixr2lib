@@ -1,4 +1,4 @@
-# Petrov_2024_romiplostim
+# Romiplostim (Petrov 2024)
 
 ## Romiplostim PopPK/PD model for adults with immune thrombocytopenia
 

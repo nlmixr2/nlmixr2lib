@@ -1,4 +1,4 @@
-# Papachristos_2020_bevacizumab_qss
+# Bevacizumab qss (Papachristos 2020)
 
 ## Model and source
 

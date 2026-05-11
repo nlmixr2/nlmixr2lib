@@ -1,4 +1,4 @@
-# Jager_2011_gemtuzumab
+# Gemtuzumab (Jager 2011)
 
 ## Model and source
 

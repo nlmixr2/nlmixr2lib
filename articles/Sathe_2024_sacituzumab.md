@@ -1,4 +1,4 @@
-# Sathe_2024_sacituzumab
+# Sacituzumab (Sathe 2024)
 
 ## Model and source
 

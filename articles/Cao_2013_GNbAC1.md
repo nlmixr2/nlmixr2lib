@@ -1,4 +1,4 @@
-# Cao_2013_GNbAC1
+# GNbAC1 (Cao 2013)
 
 ## Model and source
 

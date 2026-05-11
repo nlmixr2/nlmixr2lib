@@ -1,4 +1,4 @@
-# Pu_2021_evinacumab
+# Evinacumab (Pu 2021)
 
 ## Model and source
 

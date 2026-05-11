@@ -1,4 +1,4 @@
-# Akbar_2025_voriconazole
+# Voriconazole (Akbar 2025)
 
 ## Model and source
 

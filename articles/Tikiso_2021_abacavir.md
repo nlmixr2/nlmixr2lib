@@ -1,4 +1,4 @@
-# Tikiso_2021_abacavir
+# Abacavir (Tikiso 2021)
 
 ## Model and source
 

@@ -1,4 +1,4 @@
-# Yin_2021_trastuzumabDeruxtecan
+# TrastuzumabDeruxtecan (Yin 2021)
 
 ## Model and source
 

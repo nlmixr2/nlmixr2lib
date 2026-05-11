@@ -1,4 +1,4 @@
-# Hennig_2008_tobramycin
+# Tobramycin (Hennig 2008)
 
 ## Model and source
 
@@ -230,7 +230,7 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
-#>  ■■■■■■■■■■■                       35% |  ETA:  3s
+#>  ■■■■■■■■■■■                       34% |  ETA:  3s
 ```
 
 ### Comparison against Hennig 2008 Table 3 simulation summaries

@@ -1,4 +1,4 @@
-# Marquez-Megias_2023_adalimumab
+# Adalimumab (Marquez-Megias 2023)
 
 ## Model and source
 

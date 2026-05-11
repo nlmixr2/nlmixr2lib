@@ -1,4 +1,4 @@
-# Laffont_2024_naloxone
+# Naloxone (Laffont 2024)
 
 ## Model and source
 
@@ -197,8 +197,8 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- suppressWarnings(PKNCA::pk.nca(nca_data))
-#>  ■■■■■■■■■■                        30% |  ETA:  5s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■           72% |  ETA:  2s
+#>  ■■■■■■■■■■                        31% |  ETA:  5s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■           73% |  ETA:  2s
 
 knitr::kable(
   summary(nca_res),

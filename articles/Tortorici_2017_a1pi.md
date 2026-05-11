@@ -1,4 +1,4 @@
-# Tortorici_2017_a1pi
+# A1pi (Tortorici 2017)
 
 ## Model and source
 

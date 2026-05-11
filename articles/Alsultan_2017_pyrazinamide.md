@@ -1,4 +1,4 @@
-# Alsultan_2017_pyrazinamide
+# Pyrazinamide (Alsultan 2017)
 
 ## Model and source
 

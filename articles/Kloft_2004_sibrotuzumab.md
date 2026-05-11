@@ -1,4 +1,4 @@
-# Kloft_2004_sibrotuzumab
+# Sibrotuzumab (Kloft 2004)
 
 ## Model and source
 

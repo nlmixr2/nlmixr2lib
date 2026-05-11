@@ -1,4 +1,4 @@
-# Bista_2015_fentanyl
+# Fentanyl (Bista 2015)
 
 ## Model and source
 

@@ -1,4 +1,4 @@
-# Martinez_2019_alirocumab
+# Alirocumab (Martinez 2019)
 
 ## Model and source
 
@@ -403,7 +403,7 @@ intervals <- data.frame(
 )
 
 nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■         79% |  ETA:  1s
+#>  ■■■■■■■■■■■■■■■■■■■               61% |  ETA:  2s
 summary(nca_res)
 #>  Interval Start Interval End treatment   N AUClast (day*mg/L) Cmax (mg/L)
 #>               0           14 150mg_Q2W 300        95.9 [52.6] 10.1 [46.0]

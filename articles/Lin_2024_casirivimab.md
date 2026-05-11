@@ -1,4 +1,4 @@
-# Lin_2024_casirivimab
+# Casirivimab (Lin 2024)
 
 ## Model and source
 
@@ -336,12 +336,12 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- suppressWarnings(PKNCA::pk.nca(nca_data))
-#>  ■■■                                7% |  ETA: 20s
-#>  ■■■■■■■■                          23% |  ETA: 15s
-#>  ■■■■■■■■■■■■■                     39% |  ETA: 12s
+#>  ■■■■                               9% |  ETA: 17s
+#>  ■■■■■■■■                          25% |  ETA: 14s
+#>  ■■■■■■■■■■■■■                     40% |  ETA: 12s
 #>  ■■■■■■■■■■■■■■■■■■                56% |  ETA:  8s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■           74% |  ETA:  5s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      91% |  ETA:  2s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■           75% |  ETA:  5s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     92% |  ETA:  2s
 
 nca_summary <- summary(nca_res)
 knitr::kable(nca_summary,

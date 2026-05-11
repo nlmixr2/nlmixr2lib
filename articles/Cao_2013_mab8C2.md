@@ -1,4 +1,4 @@
-# Cao_2013_mab8C2
+# Mab8C2 (Cao 2013)
 
 ## Model and source
 

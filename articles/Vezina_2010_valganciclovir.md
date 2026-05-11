@@ -1,4 +1,4 @@
-# Vezina_2010_valganciclovir
+# Valganciclovir (Vezina 2010)
 
 ## Model and source
 

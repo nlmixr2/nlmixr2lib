@@ -1,4 +1,4 @@
-# Kovalenko_2016_dupilumab_ddmore
+# Dupilumab ddmore (Kovalenko 2016)
 
 ## Model and source
 

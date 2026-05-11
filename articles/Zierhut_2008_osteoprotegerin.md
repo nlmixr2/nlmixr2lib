@@ -1,4 +1,4 @@
-# Zierhut_2008_osteoprotegerin
+# Osteoprotegerin (Zierhut 2008)
 
 ## Model and source
 

@@ -1,4 +1,4 @@
-# Wilbaux_2015_prostate
+# Prostate (Wilbaux 2015)
 
 ## Model and source
 

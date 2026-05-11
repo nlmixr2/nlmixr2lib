@@ -1,4 +1,4 @@
-# Llanos-Paez_2017_gentamicin
+# Gentamicin (Llanos-Paez 2017)
 
 ## Model and source
 

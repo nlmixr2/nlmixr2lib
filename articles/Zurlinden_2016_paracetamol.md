@@ -1,4 +1,4 @@
-# Zurlinden_2016_paracetamol
+# Paracetamol (Zurlinden 2016)
 
 ## Model and source
 

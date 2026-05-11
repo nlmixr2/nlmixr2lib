@@ -1,4 +1,4 @@
-# Lin_2024_pozelimab
+# Pozelimab (Lin 2024)
 
 ``` r
 

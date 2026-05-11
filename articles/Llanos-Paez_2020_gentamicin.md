@@ -1,4 +1,4 @@
-# Llanos-Paez_2020_gentamicin
+# Gentamicin (Llanos-Paez 2020)
 
 ## Model and source
 

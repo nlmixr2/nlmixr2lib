@@ -1,4 +1,4 @@
-# Sadouki_2025_meropenem_gentamicin_ciprofloxacin
+# Meropenem gentamicin ciprofloxacin (Sadouki 2025)
 
 ## Model and source
 

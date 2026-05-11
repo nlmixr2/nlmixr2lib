@@ -1,4 +1,4 @@
-# Cook_2016_paracetamol
+# Paracetamol (Cook 2016)
 
 ## Model and source
 

@@ -1,4 +1,4 @@
-# Wang_2024_sugemalimab
+# Sugemalimab (Wang 2024)
 
 ``` r
 

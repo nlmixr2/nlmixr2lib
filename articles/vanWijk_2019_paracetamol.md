@@ -1,4 +1,4 @@
-# vanWijk_2019_paracetamol
+# Paracetamol (vanWijk 2019)
 
 ## Model and source
 

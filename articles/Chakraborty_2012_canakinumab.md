@@ -1,4 +1,4 @@
-# Chakraborty_2012_canakinumab
+# Canakinumab (Chakraborty 2012)
 
 ``` r
 

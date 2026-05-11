@@ -1,4 +1,4 @@
-# Bajaj_2017_nivolumab
+# Nivolumab (Bajaj 2017)
 
 ## Model and source
 
@@ -305,7 +305,7 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
-#>  ■■■■■■■                           20% |  ETA:  7s
+#>  ■■■■■■■■                          22% |  ETA:  7s
 #>  ■■■■■■■■■■■■■■■■■■■■              62% |  ETA:  3s
 knitr::kable(
   summary(nca_res),

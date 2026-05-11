@@ -1,4 +1,4 @@
-# Khan_2015_ciprofloxacin
+# Ciprofloxacin (Khan 2015)
 
 ## Model and source
 

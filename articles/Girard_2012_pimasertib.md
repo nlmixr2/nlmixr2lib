@@ -1,4 +1,4 @@
-# Girard_2012_pimasertib
+# Pimasertib (Girard 2012)
 
 ## Model and source
 

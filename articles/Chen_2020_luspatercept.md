@@ -1,4 +1,4 @@
-# Chen_2020_luspatercept
+# Luspatercept (Chen 2020)
 
 ## Model and source
 
@@ -291,9 +291,10 @@ intervals <- data.frame(
 )
 
 nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
-#>  ■■■■■■■                           18% |  ETA: 17s
-#>  ■■■■■■■■■■■                       33% |  ETA: 14s
-#>  ■■■■■■■■■■■■■■■                   48% |  ETA: 11s
+#>  ■■                                 4% |  ETA: 23s
+#>  ■■■■■■■                           19% |  ETA: 17s
+#>  ■■■■■■■■■■■                       34% |  ETA: 14s
+#>  ■■■■■■■■■■■■■■■■                  48% |  ETA: 11s
 #>  ■■■■■■■■■■■■■■■■■■■■              63% |  ETA:  8s
 #>  ■■■■■■■■■■■■■■■■■■■■■■■■          77% |  ETA:  5s
 #>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     92% |  ETA:  2s

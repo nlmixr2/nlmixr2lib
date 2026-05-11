@@ -1,4 +1,4 @@
-# NA_NA_tte_gompertz
+# DDMoRe: tte gompertz
 
 ## Model and source
 

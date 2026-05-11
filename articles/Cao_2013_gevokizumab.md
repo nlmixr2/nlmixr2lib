@@ -1,4 +1,4 @@
-# Cao_2013_gevokizumab
+# Gevokizumab (Cao 2013)
 
 ## Model and source
 

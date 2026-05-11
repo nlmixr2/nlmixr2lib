@@ -1,4 +1,4 @@
-# Archary_2019_lamivudine
+# Lamivudine (Archary 2019)
 
 ## Model and source
 

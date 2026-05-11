@@ -1,4 +1,4 @@
-# Jelliffe_2014_digoxin
+# Digoxin (Jelliffe 2014)
 
 ## Model and source
 

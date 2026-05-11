@@ -1,4 +1,4 @@
-# Netterberg_2017_docetaxel
+# Docetaxel (Netterberg 2017)
 
 ## Model and source
 

@@ -1,4 +1,4 @@
-# Laouenan_2015_ribavirin
+# Ribavirin (Laouenan 2015)
 
 ## Model and source
 

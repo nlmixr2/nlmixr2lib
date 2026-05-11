@@ -1,4 +1,4 @@
-# Varatharajan_2016_daunorubicin
+# Daunorubicin (Varatharajan 2016)
 
 ## Model and source
 

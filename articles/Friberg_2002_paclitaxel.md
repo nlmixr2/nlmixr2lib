@@ -1,4 +1,4 @@
-# Friberg_2002_paclitaxel
+# Paclitaxel (Friberg 2002)
 
 ## Model and source
 

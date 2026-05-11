@@ -1,4 +1,4 @@
-# Brown_2017_osimertinib
+# Osimertinib (Brown 2017)
 
 ## Model and source
 

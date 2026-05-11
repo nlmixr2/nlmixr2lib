@@ -1,4 +1,4 @@
-# Aregbe_2012_alvespimycin
+# Alvespimycin (Aregbe 2012)
 
 ## Model and source
 

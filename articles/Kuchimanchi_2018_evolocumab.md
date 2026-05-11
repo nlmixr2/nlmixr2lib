@@ -1,4 +1,4 @@
-# Kuchimanchi_2018_evolocumab
+# Evolocumab (Kuchimanchi 2018)
 
 ``` r
 

@@ -1,4 +1,4 @@
-# Overgaard_2019_semaglutide
+# Semaglutide (Overgaard 2019)
 
 ## Model and source
 

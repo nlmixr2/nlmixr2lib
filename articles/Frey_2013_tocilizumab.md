@@ -1,4 +1,4 @@
-# Frey_2013_tocilizumab
+# Tocilizumab (Frey 2013)
 
 ## Model and source
 

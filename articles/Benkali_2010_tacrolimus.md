@@ -1,4 +1,4 @@
-# Benkali_2010_tacrolimus
+# Tacrolimus (Benkali 2010)
 
 ## Model and source
 

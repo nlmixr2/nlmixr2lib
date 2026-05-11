@@ -1,4 +1,4 @@
-# NA_NA_sunitinib
+# DDMoRe: sunitinib
 
 ## Model and source
 

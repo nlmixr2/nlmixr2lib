@@ -1,4 +1,4 @@
-# Robbie_2012_palivizumab
+# Palivizumab (Robbie 2012)
 
 ``` r
 
@@ -415,7 +415,6 @@ intervals <- data.frame(
 )
 
 res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     92% |  ETA:  0s
 ```
 
 ``` r

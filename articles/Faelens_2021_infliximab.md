@@ -1,4 +1,4 @@
-# Faelens_2021_infliximab
+# Infliximab (Faelens 2021)
 
 ## Model and source
 
@@ -262,9 +262,8 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
-#>  ■■■■■■■                           19% |  ETA:  6s
-#>  ■■■■■■■■■■■■■■■■■■                57% |  ETA:  3s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    97% |  ETA:  0s
+#>  ■■■■■■■■■■■                       32% |  ETA:  5s
+#>  ■■■■■■■■■■■■■■■■■■■■■■            71% |  ETA:  2s
 nca_summary <- summary(nca_res)
 knitr::kable(nca_summary, caption = "PKNCA summary on the [0, 84]-day induction window, by treatment and baseline Mayo subscore.")
 ```

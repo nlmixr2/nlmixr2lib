@@ -1,4 +1,4 @@
-# Stevens_2012_remoxipride
+# Remoxipride (Stevens 2012)
 
 ## Model and source
 

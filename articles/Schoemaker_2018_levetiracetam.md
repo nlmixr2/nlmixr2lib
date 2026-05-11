@@ -1,4 +1,4 @@
-# Schoemaker_2018_levetiracetam
+# Levetiracetam (Schoemaker 2018)
 
 ## Model and source
 

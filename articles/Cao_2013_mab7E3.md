@@ -1,4 +1,4 @@
-# Cao_2013_mab7E3
+# Mab7E3 (Cao 2013)
 
 ## Model and source
 

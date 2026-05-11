@@ -1,4 +1,4 @@
-# Zecchin_2016_tumorovarian
+# Tumorovarian (Zecchin 2016)
 
 ## Model and source
 

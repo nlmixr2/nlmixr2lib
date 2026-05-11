@@ -1,4 +1,4 @@
-# Zecchin_2016_survival
+# Survival (Zecchin 2016)
 
 ## Model and source
 

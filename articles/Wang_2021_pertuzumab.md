@@ -1,4 +1,4 @@
-# Wang_2021_pertuzumab
+# Pertuzumab (Wang 2021)
 
 ## Model and source
 

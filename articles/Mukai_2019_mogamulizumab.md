@@ -1,4 +1,4 @@
-# Mukai_2019_mogamulizumab
+# Mogamulizumab (Mukai 2019)
 
 ## Model and source
 

@@ -1,4 +1,4 @@
-# NA_NA_tte_loglogistic
+# DDMoRe: tte loglogistic
 
 ## Model and source
 

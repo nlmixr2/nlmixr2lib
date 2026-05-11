@@ -1,4 +1,4 @@
-# TerHeine_2014_tamoxifen
+# Tamoxifen (TerHeine 2014)
 
 ## Model and source
 

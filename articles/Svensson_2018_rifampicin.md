@@ -1,4 +1,4 @@
-# Svensson_2018_rifampicin
+# Rifampicin (Svensson 2018)
 
 ## Model and source
 

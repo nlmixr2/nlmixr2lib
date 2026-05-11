@@ -1,4 +1,4 @@
-# Yu_2022_ofatumumab
+# Ofatumumab (Yu 2022)
 
 ``` r
 

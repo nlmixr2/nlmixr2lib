@@ -1,4 +1,4 @@
-# Leuppi-Taegtmeyer_2019_colistin
+# Colistin (Leuppi-Taegtmeyer 2019)
 
 ## Model and source
 

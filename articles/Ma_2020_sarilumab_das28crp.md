@@ -1,4 +1,4 @@
-# Ma_2020_sarilumab_das28crp
+# Sarilumab das28crp (Ma 2020)
 
 ## Model and source
 

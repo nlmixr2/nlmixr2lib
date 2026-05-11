@@ -1,4 +1,4 @@
-# Cao_2013_PAmAb
+# PAmAb (Cao 2013)
 
 ## Model and source
 

@@ -1,4 +1,4 @@
-# Hua_2015_anrukinzumab
+# Anrukinzumab (Hua 2015)
 
 ``` r
 

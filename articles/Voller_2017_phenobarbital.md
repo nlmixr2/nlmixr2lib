@@ -1,4 +1,4 @@
-# Voller_2017_phenobarbital
+# Phenobarbital (Voller 2017)
 
 ## Model and source
 

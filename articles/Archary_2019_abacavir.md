@@ -1,4 +1,4 @@
-# Archary_2019_abacavir
+# Abacavir (Archary 2019)
 
 ## Model and source
 

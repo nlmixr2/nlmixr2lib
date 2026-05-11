@@ -1,4 +1,4 @@
-# NA_NA_tte_gompertz_ev2
+# DDMoRe: tte gompertz ev2
 
 ## Model and source
 

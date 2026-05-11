@@ -1,4 +1,4 @@
-# Novakovic_2017_cladribine
+# Cladribine (Novakovic 2017)
 
 ## Model and source
 

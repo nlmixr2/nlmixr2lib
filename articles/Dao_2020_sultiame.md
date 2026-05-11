@@ -1,4 +1,4 @@
-# Dao_2020_sultiame
+# Sultiame (Dao 2020)
 
 ## Model and source
 
