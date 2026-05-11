@@ -17,6 +17,20 @@ Related references:
   #! For preclinical/in vitro models: filename should also carry a species suffix
   #!   <FirstAuthor>_<Year>_<drug>_<species>.R  (e.g., Geldof_2008_fluvoxamine_rat.R)
   #! to keep human and animal extractions of the same drug as separate, non-colliding files.
+  #!
+  #! PBPK / QSP / MBMA / mechanism-class models: PREPEND the class label, e.g.,
+  #!   description <- "PBPK (whole-body, SimCYP V12.1). APAP disposition in pregnancy ..."
+  #!   description <- "QSP. 5-lipoxygenase pathway with 33 ODEs, 113 parameters ..."
+  #!   description <- "MBMA. Trastuzumab + T-DXd from 103 trials; between-study variability only ..."
+  #! and use a class suffix on the filename when a popPK extraction of the same paper /
+  #! drug already exists:
+  #!   <FirstAuthor>_<Year>_<drug>_pbpk.R  /  _qsp.R  /  _mbma.R
+  #!
+  #! CRITICAL for PBPK / QSP / MBMA: every parameter in ini() must come from the paper
+  #! text, an on-disk supplement, or an on-disk upstream paper. Never substitute from
+  #! training-data class-typical values or platform defaults (SimCYP / GastroPlus / OSP
+  #! built-in libraries). When a parameter is missing in all on-disk sources, use the
+  #! Phase 4 missing-parameter sidecar. See SKILL.md Phase 1 step 3a.
   reference   <- "<Full citation with DOI>"
   vignette    <- "<FirstAuthor>_<Year>_<drug>"  #! basename of vignettes/articles/<FirstAuthor>_<Year>_<drug>.Rmd; used by list-of-models to link here
   units       <- list(time = "<day|hour>", dosing = "<mg|mg/kg>", concentration = "<ug/mL|ng/mL>")
