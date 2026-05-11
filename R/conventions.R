@@ -439,6 +439,11 @@
     if (endsWith(name, suf)) {
       base <- substr(name, 1, nchar(name) - nchar(suf))
       if (base %in% conv$compartments) return(TRUE)
+      # Compositions of a numbered-chain prefix with a metabolite
+      # suffix are canonical: e.g., `transit1_m3g`, `precursor2_dxd`,
+      # `lat1_complex`. Used by formation-delay transit chains feeding
+      # a metabolite central compartment (deHoogd 2017 morphine model:
+      # transit1_m3g..transit5_m3g and transit1_m6g..transit2_m6g).
       if (grepl(conv$compartmentRegex, base)) return(TRUE)
     }
   }
