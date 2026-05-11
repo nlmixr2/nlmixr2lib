@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Quartino 2016 trastuzumab ([doi:10.1007/s00280-015-2922-5](https://doi.org/10.1007/s00280-015-2922-5)) -- women with HER2-positive early breast cancer (HannaH study; subcutaneous fixed 600 mg q3w and intravenous weight-based regimens).
 * List of models vignette is grouped into General / Specific Drugs / DDMoRe with capped-width tables and uses the navbar-style "Drug (Author Year)" name (`DDMoRe: <drug>` for the parameterless DDMoRe entries). Drug-specific articles in `vignettes/articles/` are now hidden from the auto-generated pkgdown Articles index and reachable only via the navbar dropdowns or direct URL. Validation vignettes that previously titled themselves with the machine basename now use the human form so the page title matches the link.
 * Add Tetschke 2018 erythropoiesis ([doi:10.3390/pr6090157](https://doi.org/10.3390/pr6090157)) -- healthy adult male volunteers undergoing a single 1-unit blood donation (three-compartment endogenous mixed-effects model for red blood cell regeneration after phlebotomy; ratifies new `THB_MASS` covariate canonical for total hemoglobin mass measured by CO-rebreathing).
 * Add Ekhart 2008 carboplatin ([doi:10.1007/s00280-008-0856-x](https://doi.org/10.1007/s00280-008-0856-x)) -- adult cancer patients (underweight to obese) receiving combination chemotherapy.
