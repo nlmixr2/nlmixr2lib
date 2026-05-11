@@ -328,7 +328,7 @@ test_that("canonical covariates are parsed from inst/references/covariate-column
   expect_equal(canon$FORM_DP2$scope, "specific")
   expect_equal(canon$TUMTP_CHL$scope, "specific")
   expect_equal(canon$ooc1$scope, "specific")
-  expect_equal(canon$COMB_EOX$scope, "specific")
+  expect_equal(canon$CONMED_EOX$scope, "specific")
   expect_equal(canon$DOSE_70MG$scope, "specific")
   expect_true("Xu_2019_sarilumab" %in% canon$FORM_DP2$example_models)
   expect_true("Cirincione_2017_exenatide" %in% canon$STUDY1$example_models)
