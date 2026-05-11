@@ -1,8 +1,8 @@
 ---
-title: "deVriesSchultink_2020_zenocutuzumab"
+title: "Zenocutuzumab (deVriesSchultink 2020)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{deVriesSchultink_2020_zenocutuzumab}
+  %\VignetteIndexEntry{Zenocutuzumab (deVriesSchultink 2020)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

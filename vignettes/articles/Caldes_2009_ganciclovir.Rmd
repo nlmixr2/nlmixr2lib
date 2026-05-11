@@ -1,8 +1,8 @@
 ---
-title: "Caldes_2009_ganciclovir"
+title: "Ganciclovir (Caldes 2009)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Caldes_2009_ganciclovir}
+  %\VignetteIndexEntry{Ganciclovir (Caldes 2009)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

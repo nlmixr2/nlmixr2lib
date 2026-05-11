@@ -1,8 +1,8 @@
 ---
-title: "Plan_2012_pain"
+title: "Pain (Plan 2012)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Plan_2012_pain}
+  %\VignetteIndexEntry{Pain (Plan 2012)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

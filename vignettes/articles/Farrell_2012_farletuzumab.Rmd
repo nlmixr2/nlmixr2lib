@@ -1,8 +1,8 @@
 ---
-title: "Farrell_2012_farletuzumab"
+title: "Farletuzumab (Farrell 2012)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Farrell_2012_farletuzumab}
+  %\VignetteIndexEntry{Farletuzumab (Farrell 2012)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

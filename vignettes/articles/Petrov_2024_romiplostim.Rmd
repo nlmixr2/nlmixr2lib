@@ -1,8 +1,8 @@
 ---
-title: "Petrov_2024_romiplostim"
+title: "Romiplostim (Petrov 2024)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Petrov_2024_romiplostim}
+  %\VignetteIndexEntry{Romiplostim (Petrov 2024)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

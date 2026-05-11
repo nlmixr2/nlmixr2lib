@@ -1,8 +1,8 @@
 ---
-title: "Wilbaux_2015_prostate"
+title: "Prostate (Wilbaux 2015)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Wilbaux_2015_prostate}
+  %\VignetteIndexEntry{Prostate (Wilbaux 2015)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

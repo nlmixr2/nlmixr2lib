@@ -1,8 +1,8 @@
 ---
-title: "Takahashi_2023_abatacept"
+title: "Abatacept (Takahashi 2023)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Takahashi_2023_abatacept}
+  %\VignetteIndexEntry{Abatacept (Takahashi 2023)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

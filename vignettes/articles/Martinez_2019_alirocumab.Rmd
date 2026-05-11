@@ -1,8 +1,8 @@
 ---
-title: "Martinez_2019_alirocumab"
+title: "Alirocumab (Martinez 2019)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Martinez_2019_alirocumab}
+  %\VignetteIndexEntry{Alirocumab (Martinez 2019)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

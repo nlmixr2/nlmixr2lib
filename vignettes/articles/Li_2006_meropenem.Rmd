@@ -1,8 +1,8 @@
 ---
-title: "Li_2006_meropenem"
+title: "Meropenem (Li 2006)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Li_2006_meropenem}
+  %\VignetteIndexEntry{Meropenem (Li 2006)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

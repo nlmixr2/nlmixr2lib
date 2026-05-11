@@ -1,8 +1,8 @@
 ---
-title: "Lestini_2015_tgfbinhibitor"
+title: "Tgfbinhibitor (Lestini 2015)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Lestini_2015_tgfbinhibitor}
+  %\VignetteIndexEntry{Tgfbinhibitor (Lestini 2015)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

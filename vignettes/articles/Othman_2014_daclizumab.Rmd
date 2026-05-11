@@ -1,8 +1,8 @@
 ---
-title: "Othman_2014_daclizumab"
+title: "Daclizumab (Othman 2014)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Othman_2014_daclizumab}
+  %\VignetteIndexEntry{Daclizumab (Othman 2014)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

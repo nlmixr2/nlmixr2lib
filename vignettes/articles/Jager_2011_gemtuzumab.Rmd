@@ -1,8 +1,8 @@
 ---
-title: "Jager_2011_gemtuzumab"
+title: "Gemtuzumab (Jager 2011)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Jager_2011_gemtuzumab}
+  %\VignetteIndexEntry{Gemtuzumab (Jager 2011)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

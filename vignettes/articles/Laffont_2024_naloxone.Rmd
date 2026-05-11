@@ -1,8 +1,8 @@
 ---
-title: "Laffont_2024_naloxone"
+title: "Naloxone (Laffont 2024)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Laffont_2024_naloxone}
+  %\VignetteIndexEntry{Naloxone (Laffont 2024)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

@@ -1,8 +1,8 @@
 ---
-title: "Hood_2021_medi7836"
+title: "Medi7836 (Hood 2021)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Hood_2021_medi7836}
+  %\VignetteIndexEntry{Medi7836 (Hood 2021)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

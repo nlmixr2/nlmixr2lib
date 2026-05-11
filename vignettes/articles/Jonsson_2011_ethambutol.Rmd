@@ -1,8 +1,8 @@
 ---
-title: "Jonsson_2011_ethambutol"
+title: "Ethambutol (Jonsson 2011)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Jonsson_2011_ethambutol}
+  %\VignetteIndexEntry{Ethambutol (Jonsson 2011)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

@@ -1,8 +1,8 @@
 ---
-title: "Zhu_2017_lebrikizumab"
+title: "Lebrikizumab (Zhu 2017)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Zhu_2017_lebrikizumab}
+  %\VignetteIndexEntry{Lebrikizumab (Zhu 2017)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

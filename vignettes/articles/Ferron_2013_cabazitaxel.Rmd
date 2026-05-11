@@ -1,8 +1,8 @@
 ---
-title: "Ferron_2013_cabazitaxel"
+title: "Cabazitaxel (Ferron 2013)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Ferron_2013_cabazitaxel}
+  %\VignetteIndexEntry{Cabazitaxel (Ferron 2013)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

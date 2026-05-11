@@ -1,8 +1,8 @@
 ---
-title: "Aguiar_2021_ustekinumab"
+title: "Ustekinumab (Aguiar 2021)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Aguiar_2021_ustekinumab}
+  %\VignetteIndexEntry{Ustekinumab (Aguiar 2021)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

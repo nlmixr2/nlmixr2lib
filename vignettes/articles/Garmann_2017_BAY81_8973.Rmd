@@ -1,8 +1,8 @@
 ---
-title: "Garmann_2017_BAY81_8973"
+title: "BAY81 8973 (Garmann 2017)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Garmann_2017_BAY81_8973}
+  %\VignetteIndexEntry{BAY81 8973 (Garmann 2017)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

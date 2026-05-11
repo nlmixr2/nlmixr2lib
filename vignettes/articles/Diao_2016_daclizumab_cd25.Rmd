@@ -1,8 +1,8 @@
 ---
-title: "Diao_2016_daclizumab_cd25"
+title: "Daclizumab cd25 (Diao 2016)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Diao_2016_daclizumab_cd25}
+  %\VignetteIndexEntry{Daclizumab cd25 (Diao 2016)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

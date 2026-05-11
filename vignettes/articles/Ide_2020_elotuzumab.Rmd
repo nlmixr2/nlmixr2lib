@@ -1,8 +1,8 @@
 ---
-title: "Ide_2020_elotuzumab"
+title: "Elotuzumab (Ide 2020)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Ide_2020_elotuzumab}
+  %\VignetteIndexEntry{Elotuzumab (Ide 2020)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

@@ -1,8 +1,8 @@
 ---
-title: "Kuchimanchi_2024_dostarlimab"
+title: "Dostarlimab (Kuchimanchi 2024)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Kuchimanchi_2024_dostarlimab}
+  %\VignetteIndexEntry{Dostarlimab (Kuchimanchi 2024)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

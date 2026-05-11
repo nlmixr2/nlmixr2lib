@@ -1,8 +1,8 @@
 ---
-title: "Birgersson_2019_artesunate"
+title: "Artesunate (Birgersson 2019)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Birgersson_2019_artesunate}
+  %\VignetteIndexEntry{Artesunate (Birgersson 2019)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

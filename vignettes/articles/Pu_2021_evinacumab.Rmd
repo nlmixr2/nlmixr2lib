@@ -1,8 +1,8 @@
 ---
-title: "Pu_2021_evinacumab"
+title: "Evinacumab (Pu 2021)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Pu_2021_evinacumab}
+  %\VignetteIndexEntry{Evinacumab (Pu 2021)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

@@ -1,8 +1,8 @@
 ---
-title: "Marquez-Megias_2023_adalimumab"
+title: "Adalimumab (Marquez-Megias 2023)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Marquez-Megias_2023_adalimumab}
+  %\VignetteIndexEntry{Adalimumab (Marquez-Megias 2023)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

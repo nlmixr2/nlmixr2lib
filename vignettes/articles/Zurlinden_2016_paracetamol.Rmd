@@ -1,8 +1,8 @@
 ---
-title: "Zurlinden_2016_paracetamol"
+title: "Paracetamol (Zurlinden 2016)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Zurlinden_2016_paracetamol}
+  %\VignetteIndexEntry{Paracetamol (Zurlinden 2016)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

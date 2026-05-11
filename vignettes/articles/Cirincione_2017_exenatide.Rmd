@@ -1,8 +1,8 @@
 ---
-title: "Cirincione_2017_exenatide"
+title: "Exenatide (Cirincione 2017)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Cirincione_2017_exenatide}
+  %\VignetteIndexEntry{Exenatide (Cirincione 2017)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

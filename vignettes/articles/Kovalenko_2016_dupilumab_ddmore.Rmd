@@ -1,8 +1,8 @@
 ---
-title: "Kovalenko_2016_dupilumab_ddmore"
+title: "Dupilumab ddmore (Kovalenko 2016)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Kovalenko_2016_dupilumab_ddmore}
+  %\VignetteIndexEntry{Dupilumab ddmore (Kovalenko 2016)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

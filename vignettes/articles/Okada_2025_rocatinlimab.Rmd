@@ -1,8 +1,8 @@
 ---
-title: "Okada_2025_rocatinlimab"
+title: "Rocatinlimab (Okada 2025)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Okada_2025_rocatinlimab}
+  %\VignetteIndexEntry{Rocatinlimab (Okada 2025)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

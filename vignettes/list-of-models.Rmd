@@ -7,27 +7,102 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
+```{=html}
+<style>
+table.model-list-table {
+  width: 80%;
+  table-layout: fixed;
+  margin: 1em auto;
+  border-collapse: collapse;
+}
+table.model-list-table th,
+table.model-list-table td {
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+  vertical-align: top;
+  padding: 4px 8px;
+  border: 1px solid #ddd;
+}
+table.model-list-table td:first-child { width: 30%; }
+table.model-list-table td:last-child  { width: 70%; }
+</style>
+```
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 library(nlmixr2lib)
+
+# Inline copy of internal R/modeldb.R::.parseModelLabel so this vignette
+# is self-contained without a CRAN-NOTE-prone `:::` call. Keep behaviour
+# in sync with the package function.
+parse_model_label <- function(filename) {
+  base <- tools::file_path_sans_ext(basename(filename))
+  parts <- strsplit(base, "_", fixed = TRUE)[[1]]
+  if (length(parts) >= 3 &&
+      grepl("^[0-9]{4}[a-z]?$", parts[2]) &&
+      parts[1] != "NA" && parts[2] != "NA") {
+    drug <- paste(parts[-(1:2)], collapse = " ")
+    drug <- paste0(toupper(substr(drug, 1, 1)), substr(drug, 2, nchar(drug)))
+    sprintf("%s (%s %s)", drug, parts[1], parts[2])
+  } else if (length(parts) >= 3 && parts[1] == "NA" && parts[2] == "NA") {
+    sprintf("DDMoRe: %s", paste(parts[-(1:2)], collapse = " "))
+  } else {
+    gsub("_", " ", base, fixed = TRUE)
+  }
+}
 ```
 
 Drug-specific validation vignettes (one per published model) are published on
 the package website at
-<https://nlmixr2.github.io/nlmixr2lib/articles/>. The **name** column below
-links to the vignette when one exists for that model.
+<https://nlmixr2.github.io/nlmixr2lib/articles/>. The **name** column links to
+the vignette when one exists for that model. Models are grouped by their
+location in `inst/modeldb/`: general PK/PD templates first, then specific drug
+models, then models curated from the DDMoRe Foundation library.
 
-```{r listing}
-display <- modeldb
-has_vig <- !is.na(display$vignette)
+```{r build-display, include = FALSE}
+display <- nlmixr2lib::modeldb
+display$label <- vapply(display$filename, parse_model_label, character(1))
+
 base_url <- "https://nlmixr2.github.io/nlmixr2lib/articles/"
-display$name <- ifelse(
-  has_vig,
-  sprintf("[%s](%s%s.html)", display$name, base_url, display$vignette),
-  display$name
+display$name_html <- ifelse(
+  is.na(display$vignette),
+  display$label,
+  sprintf('<a href="%s%s.html">%s</a>',
+          base_url, display$vignette, display$label)
 )
-knitr::kable(display[, c("name", "description")])
+
+display$category <- ifelse(
+  grepl("^specificDrugs/", display$filename), "Specific Drugs",
+  ifelse(grepl("^ddmore/", display$filename), "DDMoRe", "General")
+)
+
+render_table <- function(rows) {
+  rows <- rows[order(rows$label), , drop = FALSE]
+  knitr::kable(
+    rows[, c("name_html", "description")],
+    format = "html",
+    col.names = c("name", "description"),
+    row.names = FALSE,
+    table.attr = 'class="model-list-table"',
+    escape = FALSE
+  )
+}
+```
+
+## General
+
+```{r general, results = "asis", echo = FALSE}
+render_table(subset(display, category == "General"))
+```
+
+## Specific Drugs
+
+```{r specific, results = "asis", echo = FALSE}
+render_table(subset(display, category == "Specific Drugs"))
+```
+
+## DDMoRe
+
+```{r ddmore, results = "asis", echo = FALSE}
+render_table(subset(display, category == "DDMoRe"))
 ```

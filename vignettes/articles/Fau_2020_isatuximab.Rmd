@@ -1,8 +1,8 @@
 ---
-title: "Fau_2020_isatuximab"
+title: "Isatuximab (Fau 2020)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Fau_2020_isatuximab}
+  %\VignetteIndexEntry{Isatuximab (Fau 2020)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

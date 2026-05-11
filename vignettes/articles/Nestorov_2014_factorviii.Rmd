@@ -1,8 +1,8 @@
 ---
-title: "Nestorov_2014_factorviii"
+title: "Factorviii (Nestorov 2014)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Nestorov_2014_factorviii}
+  %\VignetteIndexEntry{Factorviii (Nestorov 2014)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

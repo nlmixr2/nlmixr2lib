@@ -1,8 +1,8 @@
 ---
-title: "Mould_2007_alemtuzumab"
+title: "Alemtuzumab (Mould 2007)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Mould_2007_alemtuzumab}
+  %\VignetteIndexEntry{Alemtuzumab (Mould 2007)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

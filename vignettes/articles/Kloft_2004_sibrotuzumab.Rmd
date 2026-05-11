@@ -1,8 +1,8 @@
 ---
-title: "Kloft_2004_sibrotuzumab"
+title: "Sibrotuzumab (Kloft 2004)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Kloft_2004_sibrotuzumab}
+  %\VignetteIndexEntry{Sibrotuzumab (Kloft 2004)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

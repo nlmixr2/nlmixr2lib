@@ -1,8 +1,8 @@
 ---
-title: "Thakre_2022_risankizumab"
+title: "Risankizumab (Thakre 2022)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Thakre_2022_risankizumab}
+  %\VignetteIndexEntry{Risankizumab (Thakre 2022)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

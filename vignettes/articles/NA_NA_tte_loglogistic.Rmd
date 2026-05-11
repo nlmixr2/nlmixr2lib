@@ -1,8 +1,8 @@
 ---
-title: "NA_NA_tte_loglogistic"
+title: "DDMoRe: tte loglogistic"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{NA_NA_tte_loglogistic}
+  %\VignetteIndexEntry{DDMoRe: tte loglogistic}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

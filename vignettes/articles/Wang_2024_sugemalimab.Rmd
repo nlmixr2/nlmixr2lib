@@ -1,8 +1,8 @@
 ---
-title: "Wang_2024_sugemalimab"
+title: "Sugemalimab (Wang 2024)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Wang_2024_sugemalimab}
+  %\VignetteIndexEntry{Sugemalimab (Wang 2024)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

@@ -1,8 +1,8 @@
 ---
-title: "Papathanasiou_2025_belantamab"
+title: "Belantamab (Papathanasiou 2025)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Papathanasiou_2025_belantamab}
+  %\VignetteIndexEntry{Belantamab (Papathanasiou 2025)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

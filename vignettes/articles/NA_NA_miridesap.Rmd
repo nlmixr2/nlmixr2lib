@@ -1,8 +1,8 @@
 ---
-title: "NA_NA_miridesap"
+title: "DDMoRe: miridesap"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{NA_NA_miridesap}
+  %\VignetteIndexEntry{DDMoRe: miridesap}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

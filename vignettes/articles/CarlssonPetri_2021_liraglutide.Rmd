@@ -1,8 +1,8 @@
 ---
-title: "CarlssonPetri_2021_liraglutide"
+title: "Liraglutide (CarlssonPetri 2021)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{CarlssonPetri_2021_liraglutide}
+  %\VignetteIndexEntry{Liraglutide (CarlssonPetri 2021)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

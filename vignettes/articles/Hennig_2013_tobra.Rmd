@@ -1,8 +1,8 @@
 ---
-title: "Hennig_2013_tobra"
+title: "Tobra (Hennig 2013)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Hennig_2013_tobra}
+  %\VignetteIndexEntry{Tobra (Hennig 2013)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

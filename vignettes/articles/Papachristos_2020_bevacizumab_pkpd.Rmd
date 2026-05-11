@@ -1,8 +1,8 @@
 ---
-title: "Papachristos_2020_bevacizumab_pkpd"
+title: "Bevacizumab pkpd (Papachristos 2020)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Papachristos_2020_bevacizumab_pkpd}
+  %\VignetteIndexEntry{Bevacizumab pkpd (Papachristos 2020)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

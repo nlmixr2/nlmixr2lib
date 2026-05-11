@@ -1,8 +1,8 @@
 ---
-title: "Germovsek_2016_gentamicin"
+title: "Gentamicin (Germovsek 2016)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Germovsek_2016_gentamicin}
+  %\VignetteIndexEntry{Gentamicin (Germovsek 2016)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

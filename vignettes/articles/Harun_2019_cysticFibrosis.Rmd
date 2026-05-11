@@ -1,8 +1,8 @@
 ---
-title: "Harun_2019_cysticFibrosis"
+title: "CysticFibrosis (Harun 2019)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Harun_2019_cysticFibrosis}
+  %\VignetteIndexEntry{CysticFibrosis (Harun 2019)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

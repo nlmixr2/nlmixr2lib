@@ -2,6 +2,8 @@
 
 File path: `vignettes/articles/<FirstAuthor>_<Year>_<drug>.Rmd` — the pkgdown "articles" directory, not top-level `vignettes/`. Drug-specific vignettes live under `vignettes/articles/` so pkgdown builds them for the site but CRAN skips them (`.Rbuildignore` excludes the directory). The top-level `vignettes/` directory is reserved for the one legacy vignette (`PK_2cmt_mAb_Davda_2014.Rmd`). The basename must match the `vignette <- "..."` field in the model file.
 
+**Filename vs. title.** The **filename** stays in the machine form `<FirstAuthor>_<Year>_<drug>.Rmd` — it is what `buildModelDb()` matches against the `vignette <- "..."` field, what the modeldb `vignette` column stores, and what sorts the navbar dropdowns. The YAML `title:` field and `\VignetteIndexEntry{...}` use the **human form** `<Drug> (<FirstAuthor> <Year>)` (e.g. `Ustekinumab (Aguiar 2021)`), matching what the navbar dropdown displays. The two surfaces — link text and page title — therefore agree, and the list-of-models vignette renders the same form. For papers that warrant a richer descriptive title (mechanistic ADC + payload-coupled models, intrathecal-delivery scenarios, multi-agent regimens), expand the human title — but always keep `(<FirstAuthor> <Year>)` as the trailing parenthetical and keep `title:` and `\VignetteIndexEntry{...}` byte-identical.
+
 A validation vignette has two jobs:
 
 1. **Verification trail** — document exactly where each model equation and parameter came from.
@@ -13,10 +15,10 @@ Use this template as a starting point. Every section is required unless marked o
 
 ````markdown
 ---
-title: "<FirstAuthor>_<Year>_<drug>"
+title: "<Drug> (<FirstAuthor> <Year>)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{<FirstAuthor>_<Year>_<drug>}
+  %\VignetteIndexEntry{<Drug> (<FirstAuthor> <Year>)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

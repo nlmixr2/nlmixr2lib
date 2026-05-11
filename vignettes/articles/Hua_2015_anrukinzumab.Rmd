@@ -1,8 +1,8 @@
 ---
-title: "Hua_2015_anrukinzumab"
+title: "Anrukinzumab (Hua 2015)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Hua_2015_anrukinzumab}
+  %\VignetteIndexEntry{Anrukinzumab (Hua 2015)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

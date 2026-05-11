@@ -1,8 +1,8 @@
 ---
-title: "Cheng_2026_immunoglobulin"
+title: "Immunoglobulin (Cheng 2026)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Cheng_2026_immunoglobulin}
+  %\VignetteIndexEntry{Immunoglobulin (Cheng 2026)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

@@ -1,8 +1,8 @@
 ---
-title: "Salinger_2013_magnesiumSulfate"
+title: "MagnesiumSulfate (Salinger 2013)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Salinger_2013_magnesiumSulfate}
+  %\VignetteIndexEntry{MagnesiumSulfate (Salinger 2013)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

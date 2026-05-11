@@ -1,8 +1,8 @@
 ---
-title: "PerezRuixo_2025_posdinemab"
+title: "Posdinemab (PerezRuixo 2025)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{PerezRuixo_2025_posdinemab}
+  %\VignetteIndexEntry{Posdinemab (PerezRuixo 2025)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

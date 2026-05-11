@@ -1,8 +1,8 @@
 ---
-title: "Mukai_2019_mogamulizumab"
+title: "Mogamulizumab (Mukai 2019)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Mukai_2019_mogamulizumab}
+  %\VignetteIndexEntry{Mogamulizumab (Mukai 2019)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

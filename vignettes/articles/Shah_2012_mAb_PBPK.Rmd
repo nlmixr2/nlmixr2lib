@@ -1,8 +1,8 @@
 ---
-title: "Shah_2012_mAb_PBPK"
+title: "MAb PBPK (Shah 2012)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Shah_2012_mAb_PBPK}
+  %\VignetteIndexEntry{MAb PBPK (Shah 2012)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

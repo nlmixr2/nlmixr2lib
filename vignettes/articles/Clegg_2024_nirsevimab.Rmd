@@ -1,8 +1,8 @@
 ---
-title: "Clegg_2024_nirsevimab"
+title: "Nirsevimab (Clegg 2024)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Clegg_2024_nirsevimab}
+  %\VignetteIndexEntry{Nirsevimab (Clegg 2024)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

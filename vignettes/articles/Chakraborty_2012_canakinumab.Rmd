@@ -1,8 +1,8 @@
 ---
-title: "Chakraborty_2012_canakinumab"
+title: "Canakinumab (Chakraborty 2012)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Chakraborty_2012_canakinumab}
+  %\VignetteIndexEntry{Canakinumab (Chakraborty 2012)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

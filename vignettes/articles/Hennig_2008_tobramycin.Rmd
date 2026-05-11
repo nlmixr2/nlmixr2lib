@@ -1,8 +1,8 @@
 ---
-title: "Hennig_2008_tobramycin"
+title: "Tobramycin (Hennig 2008)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Hennig_2008_tobramycin}
+  %\VignetteIndexEntry{Tobramycin (Hennig 2008)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

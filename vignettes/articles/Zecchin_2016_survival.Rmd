@@ -1,8 +1,8 @@
 ---
-title: "Zecchin_2016_survival"
+title: "Survival (Zecchin 2016)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Zecchin_2016_survival}
+  %\VignetteIndexEntry{Survival (Zecchin 2016)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

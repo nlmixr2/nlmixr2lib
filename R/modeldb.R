@@ -334,15 +334,20 @@ addFileToModelDb <- function(dir, file, modeldb) {
 }
 
 # Parse a model filename like "Bajaj_2017_nivolumab" into a friendlier
-# label "Nivolumab (Bajaj 2017)". Filenames whose first two underscore-
-# separated tokens are not "<Author>_<4-digit year>" fall back to the
-# bare name with underscores replaced by spaces. The "NA_NA_<drug>"
-# convention used by some ddmore models drops the parenthetical.
+# label "Nivolumab (Bajaj 2017)". Year-letter collision suffixes
+# ("Hansson_2013a_sunitinib") are passed through verbatim so each entry
+# disambiguates from its siblings. Filenames whose first two
+# underscore-separated tokens are not "<Author>_<4-digit year>[letter]"
+# fall back to the bare name with underscores replaced by spaces. The
+# "NA_NA_<drug>" convention used by some ddmore models is prefixed with
+# "DDMoRe:" so the parameterless entries are clearly attributable
+# wherever the label appears (vignette title, list-of-models name
+# column, navbar dropdown).
 .parseModelLabel <- function(filename) {
   base <- tools::file_path_sans_ext(basename(filename))
   parts <- strsplit(base, "_", fixed = TRUE)[[1]]
   if (length(parts) >= 3 &&
-      grepl("^[0-9]{4}$", parts[2]) &&
+      grepl("^[0-9]{4}[a-z]?$", parts[2]) &&
       parts[1] != "NA" && parts[2] != "NA") {
     drug <- paste(parts[-(1:2)], collapse = " ")
     drug <- paste0(toupper(substr(drug, 1, 1)),
@@ -350,16 +355,20 @@ addFileToModelDb <- function(dir, file, modeldb) {
     return(sprintf("%s (%s %s)", drug, parts[1], parts[2]))
   }
   if (length(parts) >= 3 && parts[1] == "NA" && parts[2] == "NA") {
-    return(paste(parts[-(1:2)], collapse = " "))
+    return(sprintf("DDMoRe: %s", paste(parts[-(1:2)], collapse = " ")))
   }
   gsub("_", " ", base, fixed = TRUE)
 }
 
 # Mutate the package's `_pkgdown.yml` to add navbar dropdowns for the
 # specificDrugs/ and ddmore/ model directories plus a top-level
-# Covariates link. Owns only the `navbar.structure.left` ordering and
-# the `navbar.components.{specific_drugs,ddmore,covariates}` keys; any
-# other keys the maintainer has added to the file are preserved.
+# Covariates link, and to mark every drug-specific article in
+# vignettes/articles/ as `internal: true` so they are reachable by URL
+# (and via the navbar dropdowns) but absent from the auto-generated
+# Articles index. Owns only the `navbar.structure.left` ordering, the
+# `navbar.components.{specific_drugs,ddmore,covariates}` keys, and the
+# top-level `articles` key; any other keys the maintainer has added to
+# the file are preserved.
 .writePkgdownNavbar <- function(modeldb, packageDirectory) {
   if (!requireNamespace("yaml", quietly = TRUE)) {
     message("yaml package not installed; skipping _pkgdown.yml navbar refresh.")
@@ -411,9 +420,56 @@ addFileToModelDb <- function(dir, file, modeldb) {
     href = "articles/covariate-columns.html"
   )
 
+  # Configure the Articles index: top-level `vignettes/*.Rmd` show in a
+  # visible "General" group; every `vignettes/articles/*.Rmd` goes into
+  # an `internal: true` group so the per-drug pages remain buildable
+  # and reachable by URL but are absent from the main Articles index
+  # (they are linked from the Specific drug models / DDMoRe navbar
+  # dropdowns instead). pkgdown matches `contents:` against the
+  # vignette name with its source-tree path preserved -- a file at
+  # `vignettes/articles/Foo.Rmd` is named `articles/Foo`, a file at
+  # `vignettes/Foo.Rmd` is named `Foo`. pkgdown errors if any built
+  # vignette is absent from `articles:`, so list every file.
+  vignDir <- file.path(packageDirectory, "vignettes")
+  topNames <- character()
+  articleNames <- character()
+  if (dir.exists(vignDir)) {
+    topNames <- sort(tools::file_path_sans_ext(
+      list.files(vignDir, pattern = "\\.Rmd$")
+    ))
+    articleDir <- file.path(vignDir, "articles")
+    if (dir.exists(articleDir)) {
+      articleNames <- sort(tools::file_path_sans_ext(
+        list.files(articleDir, pattern = "\\.Rmd$")
+      ))
+    }
+  }
+  groups <- list()
+  if (length(topNames) > 0) {
+    groups[[length(groups) + 1]] <- list(
+      title = "General",
+      desc = "Cross-cutting guides and the list of models.",
+      contents = as.list(topNames)
+    )
+  }
+  if (length(articleNames) > 0) {
+    groups[[length(groups) + 1]] <- list(
+      title = "internal",
+      desc = paste(
+        "Drug-specific validation vignettes. They are reached from the",
+        "Specific drug models and DDMoRe models navbar dropdowns; this",
+        "group hides them from the main Articles index."
+      ),
+      contents = as.list(paste0("articles/", articleNames)),
+      internal = TRUE
+    )
+  }
+  cfg$articles <- if (length(groups) > 0) groups else NULL
+
   message("Refreshing navbar in ", ymlPath,
           " (specificDrugs=", nrow(spec),
-          ", ddmore=", nrow(ddmo), ")")
+          ", ddmore=", nrow(ddmo),
+          ", internal-articles=", length(articleNames), ")")
   yaml::write_yaml(cfg, ymlPath)
   invisible()
 }

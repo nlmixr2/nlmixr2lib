@@ -1,8 +1,8 @@
 ---
-title: "Yukawa_1990_phenytoin"
+title: "Phenytoin (Yukawa 1990)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Yukawa_1990_phenytoin}
+  %\VignetteIndexEntry{Phenytoin (Yukawa 1990)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

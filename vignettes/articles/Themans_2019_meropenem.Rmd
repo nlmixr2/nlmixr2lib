@@ -1,8 +1,8 @@
 ---
-title: "Themans_2019_meropenem"
+title: "Meropenem (Themans 2019)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Themans_2019_meropenem}
+  %\VignetteIndexEntry{Meropenem (Themans 2019)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

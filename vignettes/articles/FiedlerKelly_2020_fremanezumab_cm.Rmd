@@ -1,8 +1,8 @@
 ---
-title: "FiedlerKelly_2020_fremanezumab_cm"
+title: "Fremanezumab cm (FiedlerKelly 2020)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{FiedlerKelly_2020_fremanezumab_cm}
+  %\VignetteIndexEntry{Fremanezumab cm (FiedlerKelly 2020)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

@@ -1,8 +1,8 @@
 ---
-title: "Suleiman_2019_risankizumab"
+title: "Risankizumab (Suleiman 2019)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Suleiman_2019_risankizumab}
+  %\VignetteIndexEntry{Risankizumab (Suleiman 2019)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

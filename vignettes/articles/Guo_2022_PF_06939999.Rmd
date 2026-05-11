@@ -1,8 +1,8 @@
 ---
-title: "Guo_2022_PF_06939999"
+title: "PF 06939999 (Guo 2022)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Guo_2022_PF_06939999}
+  %\VignetteIndexEntry{PF 06939999 (Guo 2022)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

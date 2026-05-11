@@ -1,8 +1,8 @@
 ---
-title: "Hayashi_2007_omalizumab"
+title: "Omalizumab (Hayashi 2007)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Hayashi_2007_omalizumab}
+  %\VignetteIndexEntry{Omalizumab (Hayashi 2007)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

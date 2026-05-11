@@ -1,8 +1,8 @@
 ---
-title: "Rovei_1982_theophylline"
+title: "Theophylline (Rovei 1982)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Rovei_1982_theophylline}
+  %\VignetteIndexEntry{Theophylline (Rovei 1982)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

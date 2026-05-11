@@ -1,8 +1,8 @@
 ---
-title: "Castro-Surez_2020_nimotuzumab"
+title: "Nimotuzumab (Castro-Surez 2020)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Castro-Surez_2020_nimotuzumab}
+  %\VignetteIndexEntry{Nimotuzumab (Castro-Surez 2020)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

@@ -1,8 +1,8 @@
 ---
-title: "Jonckheere_2019_cefepime"
+title: "Cefepime (Jonckheere 2019)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Jonckheere_2019_cefepime}
+  %\VignetteIndexEntry{Cefepime (Jonckheere 2019)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

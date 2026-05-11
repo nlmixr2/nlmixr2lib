@@ -1,8 +1,8 @@
 ---
-title: "Gupta_2016_amatuximab"
+title: "Amatuximab (Gupta 2016)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Gupta_2016_amatuximab}
+  %\VignetteIndexEntry{Amatuximab (Gupta 2016)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

@@ -1,8 +1,8 @@
 ---
-title: "Aregbe_2012_alvespimycin"
+title: "Alvespimycin (Aregbe 2012)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Aregbe_2012_alvespimycin}
+  %\VignetteIndexEntry{Alvespimycin (Aregbe 2012)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

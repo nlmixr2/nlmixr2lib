@@ -1,8 +1,8 @@
 ---
-title: "Tikiso_2021_abacavir"
+title: "Abacavir (Tikiso 2021)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Tikiso_2021_abacavir}
+  %\VignetteIndexEntry{Abacavir (Tikiso 2021)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

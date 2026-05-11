@@ -1,8 +1,8 @@
 ---
-title: "Hu_2014_bapineuzumab"
+title: "Bapineuzumab (Hu 2014)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Hu_2014_bapineuzumab}
+  %\VignetteIndexEntry{Bapineuzumab (Hu 2014)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

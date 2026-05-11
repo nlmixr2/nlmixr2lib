@@ -1,8 +1,8 @@
 ---
-title: "Cao_2013_MEDI528"
+title: "MEDI528 (Cao 2013)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Cao_2013_MEDI528}
+  %\VignetteIndexEntry{MEDI528 (Cao 2013)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

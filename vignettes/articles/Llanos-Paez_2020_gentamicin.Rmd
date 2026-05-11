@@ -1,8 +1,8 @@
 ---
-title: "Llanos-Paez_2020_gentamicin"
+title: "Gentamicin (Llanos-Paez 2020)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Llanos-Paez_2020_gentamicin}
+  %\VignetteIndexEntry{Gentamicin (Llanos-Paez 2020)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

@@ -1,8 +1,8 @@
 ---
-title: "Zhang_2021_dupilumab"
+title: "Dupilumab (Zhang 2021)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Zhang_2021_dupilumab}
+  %\VignetteIndexEntry{Dupilumab (Zhang 2021)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

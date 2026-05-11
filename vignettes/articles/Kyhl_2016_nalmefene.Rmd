@@ -1,8 +1,8 @@
 ---
-title: "Kyhl_2016_nalmefene"
+title: "Nalmefene (Kyhl 2016)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Kyhl_2016_nalmefene}
+  %\VignetteIndexEntry{Nalmefene (Kyhl 2016)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

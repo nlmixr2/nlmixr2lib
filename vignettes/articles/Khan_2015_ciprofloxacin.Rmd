@@ -1,8 +1,8 @@
 ---
-title: "Khan_2015_ciprofloxacin"
+title: "Ciprofloxacin (Khan 2015)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Khan_2015_ciprofloxacin}
+  %\VignetteIndexEntry{Ciprofloxacin (Khan 2015)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

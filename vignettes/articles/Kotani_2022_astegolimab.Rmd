@@ -1,8 +1,8 @@
 ---
-title: "Kotani_2022_astegolimab"
+title: "Astegolimab (Kotani 2022)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Kotani_2022_astegolimab}
+  %\VignetteIndexEntry{Astegolimab (Kotani 2022)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

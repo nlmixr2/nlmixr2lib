@@ -1,8 +1,8 @@
 ---
-title: "Wang_2020_ontamalimab"
+title: "Ontamalimab (Wang 2020)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Wang_2020_ontamalimab}
+  %\VignetteIndexEntry{Ontamalimab (Wang 2020)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

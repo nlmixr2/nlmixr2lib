@@ -1,8 +1,8 @@
 ---
-title: "Takeuchi_2023_ozoralizumab"
+title: "Ozoralizumab (Takeuchi 2023)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Takeuchi_2023_ozoralizumab}
+  %\VignetteIndexEntry{Ozoralizumab (Takeuchi 2023)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

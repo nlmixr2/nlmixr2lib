@@ -1,8 +1,8 @@
 ---
-title: "Masters_2022_avelumab"
+title: "Avelumab (Masters 2022)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Masters_2022_avelumab}
+  %\VignetteIndexEntry{Avelumab (Masters 2022)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

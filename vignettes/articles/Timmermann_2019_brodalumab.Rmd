@@ -1,8 +1,8 @@
 ---
-title: "Timmermann_2019_brodalumab"
+title: "Brodalumab (Timmermann 2019)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Timmermann_2019_brodalumab}
+  %\VignetteIndexEntry{Brodalumab (Timmermann 2019)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
