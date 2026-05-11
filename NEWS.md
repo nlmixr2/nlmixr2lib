@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Sampson 2014 azithromycin ([doi:10.1038/psp.2013.80](https://doi.org/10.1038/psp.2013.80)) -- healthy adults (single oral 250 mg or 1,000 mg dose, simultaneous whole-blood / PBMC / PMN PK).
 * `_pkgdown.yml` is now refreshed in place using `# AUTOGEN:<name>:BEGIN`/`:END` signpost comments rather than a full `yaml::read_yaml` + `yaml::write_yaml` round-trip. The signpost-managed regions are the `specific_drugs` and `ddmore` navbar menus and the top-level `articles:` index; everything else in the file (template, navbar.structure, maintainer-added keys, comments, formatting) is preserved byte-for-byte. The modeldb gains two new cached columns -- `label` (human-readable navbar text like `Ustekinumab (Aguiar 2021)` or `DDMoRe: lidocaine`) and `category` (`specificDrugs` / `ddmore` / `other`) -- so the regeneration costs no extra work beyond the existing per-file md5 cache. Fixes the recurring pkgdown CI breakage where stale entries crept into the `articles:` index when the YAML round-trip captured a transient filesystem state.
 * Add Quartino 2016 trastuzumab ([doi:10.1007/s00280-015-2922-5](https://doi.org/10.1007/s00280-015-2922-5)) -- women with HER2-positive early breast cancer (HannaH study; subcutaneous fixed 600 mg q3w and intravenous weight-based regimens).
 * Add Diepstraten 2013 propofol ([doi:10.1038/psp.2013.47](https://doi.org/10.1038/psp.2013.47)) -- morbidly obese and nonobese adults, adolescents, and children (pooled meta-analysis across five previously published studies).
