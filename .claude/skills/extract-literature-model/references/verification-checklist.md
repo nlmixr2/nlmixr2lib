@@ -104,7 +104,24 @@ See `references/endogenous-validation.md` for full recipes.
    done
    ```
 
-   No matches → pass; replace any matches with ASCII (`—` → `--`, `–` → `-`, `×` → `x`, `·` → `*`, `≈` → `~=`, `→` → `->`, `≤` → `<=`, `…` → `...`, `²` → `^2`, `µ` → `u`, Greek letters in prose spelled out, `§` → `Section `). See SKILL.md Phase 6 step 5 for the full substitution table and rationale.
+   No matches → pass. If anything matches, replace the offending characters with their ASCII equivalents before committing. The `description` string is the highest-impact site (it is what triggers the R-CMD-check warning), but be thorough — replace non-ASCII anywhere in the new model file and vignette so the gate stays clean even after edits.
+
+   | Non-ASCII | ASCII replacement |
+   | --- | --- |
+   | `—` (em dash, U+2014) | `--` |
+   | `–` (en dash, U+2013) | `-` |
+   | `×` (multiplication sign) | `x` (or `*` when between numeric quantities) |
+   | `·` (middle dot) | `*` (multiplication) or `.` (decimal-style) |
+   | `≈` | `~=` |
+   | `→` | `->` |
+   | `∈` | `in` |
+   | `≤` | `<=` |
+   | `≡` | `==` |
+   | `…` | `...` |
+   | `²` | `^2` |
+   | `µ` (Greek mu) | `u` (e.g. `µg/mL` → `ug/mL`) |
+   | Greek letters in prose (`η`, `λ`, etc.) | spell out (`eta`, `lambda`) |
+   | `§` | `Section ` |
 
 - [ ] **Render the new vignette end-to-end** (mandatory pre-push gate). Run the exact command below on the worktree, with a 5-minute wall-clock budget — do not skip it, do not interpret silence as success, and do not push if it errors. This is the single highest-value gate the worker performs: it catches the failure modes that pkgdown CI also surfaces (missing data columns, time-varying covariates assigned to rxEt objects that get silently dropped, PKNCA formulas referencing absent columns, simulation crashes, vignettes exceeding the time budget).
 
