@@ -21,12 +21,12 @@ Frey_2013_tocilizumab <- function() {
       notes              = "Frey 2013 Table 2 reports the sex effect on Emax with female as the reference (Emax_female = Emax * 1.0; Emax_male = Emax * 1.1, +11% in males). The canonical SEXF column is 1 = female, 0 = male, so the model applies the equation Emax = Emax_typ * (1 + 0.11 * (1 - SEXF)) which preserves the female-as-reference NONMEM parameterization. The +11% male offset is below the known DAS28 measurement error (0.6 units) and is not clinically significant per the paper's Discussion.",
       source_name        = "SEX"
     ),
-    RACE_ASIAN_OTH = list(
+    RACE_ASIAN_AMIND_OTH = list(
       description        = "Composite race indicator: 1 = Asian, American Indian / Alaska Native, or Other; 0 = White or Black",
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (White or Black)",
-      notes              = "Frey 2013 pools the smaller-N race groups (Asian, American Indian/Alaska Native, Other) into a single Asian-and-others composite and uses White + Black as the reference. The composite covers ~21-27% of the OPTION/TOWARD pool per Supplementary Table S1. Multiplicative effect on Kout: Kout = Kout_typ * (1 + (-0.25) * RACE_ASIAN_OTH), i.e., Kout is 25% lower in the Asian/AmInd/Other composite than in the White+Black reference. Paper-defined composite grouping; see the canonical RACE_ASIAN_OTH register entry for the rationale.",
+      notes              = "Frey 2013 pools the smaller-N race groups (Asian, American Indian/Alaska Native, Other) into a single Asian-and-others composite and uses White + Black as the reference. The composite covers ~21-27% of the OPTION/TOWARD pool per Supplementary Table S1. Multiplicative effect on Kout: Kout = Kout_typ * (1 + (-0.25) * RACE_ASIAN_AMIND_OTH), i.e., Kout is 25% lower in the Asian/AmInd/Other composite than in the White+Black reference. Paper-defined composite grouping; see the canonical RACE_ASIAN_AMIND_OTH register entry for the rationale.",
       source_name        = "RACE"
     ),
     BLHAQ = list(
@@ -80,7 +80,7 @@ Frey_2013_tocilizumab <- function() {
       RheumatoidFactor_median_U_mL_OPTION = 79,
       RheumatoidFactor_median_U_mL_TOWARD = 112
     ),
-    notes          = "Baseline demographics from Frey 2013 Supplementary Table S1 (OPTION + TOWARD; OPTION N = 572 in the demographics table per the male+female totals of 105 + 467, TOWARD N = 1131 per 200 + 931 -- the paper's PKPD analysis subset n = 1703 reflects the union after restricting to subjects with at least one DAS28 observation and available individual PK estimates). Approximately 80% female and predominantly White; the smaller race groups (Asian, American Indian/Alaska Native, Other) are pooled by the paper into the Asian-and-others composite that drives the RACE_ASIAN_OTH covariate. The PD analysis used DAS28-ESR (not DAS28-CRP); the residual error of 0.68 DAS28 units is consistent with the published DAS28 measurement error of 0.60."
+    notes          = "Baseline demographics from Frey 2013 Supplementary Table S1 (OPTION + TOWARD; OPTION N = 572 in the demographics table per the male+female totals of 105 + 467, TOWARD N = 1131 per 200 + 931 -- the paper's PKPD analysis subset n = 1703 reflects the union after restricting to subjects with at least one DAS28 observation and available individual PK estimates). Approximately 80% female and predominantly White; the smaller race groups (Asian, American Indian/Alaska Native, Other) are pooled by the paper into the Asian-and-others composite that drives the RACE_ASIAN_AMIND_OTH covariate. The PD analysis used DAS28-ESR (not DAS28-CRP); the residual error of 0.68 DAS28 units is consistent with the published DAS28 measurement error of 0.60."
   )
 
   ini({
@@ -111,7 +111,7 @@ Frey_2013_tocilizumab <- function() {
     # Reference covariate values for the typical subject are the OPTION /
     # TOWARD pooled medians: IL6 = 20 pg/mL (i.e., log(IL6 * 1000) = 9.9),
     # BLHAQ = 1.6, PAIN = 60, BLPHYVAS = 65, SEXF = 1 (female), and
-    # RACE_ASIAN_OTH = 0 (White or Black).
+    # RACE_ASIAN_AMIND_OTH = 0 (White or Black).
     # ------------------------------------------------------------------
     lEC50  <- log(3.7);   label("Tocilizumab concentration at 50% of Emax (ug/mL)")             # Frey 2013 Table 1, EC50
     lEmax  <- log(0.73);  label("Maximum tocilizumab effect on DAS28 production rate Kin (fraction)") # Frey 2013 Table 1, Emax
@@ -125,7 +125,7 @@ Frey_2013_tocilizumab <- function() {
     # ------------------------------------------------------------------
     e_lil6_ec50    <- -4.4;   label("Power exponent of (log(IL6 * 1000)/9.9) on EC50 (unitless)")           # Frey 2013 Table 2 EC50 row
     e_sexm_emax    <-  0.11;  label("Fractional increase in Emax for males (unitless)")                    # Frey 2013 Table 2 SEX row (+11% male)
-    e_race_kout    <- -0.25;  label("Fractional change in Kout for RACE_ASIAN_OTH = 1 (unitless)")         # Frey 2013 Table 2 RACE row (-25%)
+    e_race_amind_oth_kout    <- -0.25;  label("Fractional change in Kout for RACE_ASIAN_AMIND_OTH = 1 (unitless)")         # Frey 2013 Table 2 RACE row (-25%)
     e_blhaq_base   <-  0.043; label("Power exponent of (BLHAQ/1.6) on BASE (unitless)")                    # Frey 2013 Table 2 HAQ row
     e_lil6_base    <-  0.13;  label("Power exponent of (log(IL6 * 1000)/9.9) on BASE (unitless)")          # Frey 2013 Table 2 log-IL-6 on BASE row
     e_pain_base    <-  0.062; label("Power exponent of (PAIN/60) on BASE (unitless)")                      # Frey 2013 Table 2 PAIN row
@@ -183,7 +183,7 @@ Frey_2013_tocilizumab <- function() {
 
     EC50  <- exp(lEC50  + etalEC50 ) * lil6_ratio^e_lil6_ec50
     Emax  <- exp(lEmax  + etalEmax ) * (1 + e_sexm_emax * (1 - SEXF))
-    Kout  <- exp(lKout  + etalKout ) * (1 + e_race_kout * RACE_ASIAN_OTH)
+    Kout  <- exp(lKout  + etalKout ) * (1 + e_race_amind_oth_kout * RACE_ASIAN_AMIND_OTH)
     gamma <- exp(lgamma)
     Base  <- exp(lBase  + etalBase ) *
              haq_floored^e_blhaq_base *

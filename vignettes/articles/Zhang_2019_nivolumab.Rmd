@@ -123,7 +123,7 @@ Equation forms:
 - Q: `Q = Q_REF * (WT/80)^e_wt_cl` (CL exponent reused per Methods).
 - Vp: `Vp = VP_REF * (WT/80)^e_wt_vc` (Vc exponent reused per Methods).
 - Time-varying CL: `CL(t) = CL0 * exp(Emax_i * t^HILL / (T50^HILL + t^HILL))`.
-- Emax_i: additive linear-scale form `Emax_REF + e_ecog_emax * ECOG_GE1 + e_ipico_emax * COADMIN_IPI_ANY + etaEmax`.
+- Emax_i: additive linear-scale form `Emax_REF + e_ecog_emax * ECOG_GE1 + e_ipico_emax * CONMED_IPI_ANY + etaEmax`.
 
 # Covariate column naming
 
@@ -135,10 +135,10 @@ Equation forms:
 | `PS` (binary collapse: PS>0 vs PS=0) | `ECOG_GE1` |
 | `RAAA` (1 = African American) | `RACE_BLACK` |
 | `RAAS` (1 = Asian) | `RACE_ASIAN` |
-| `IPI3Q3W` | `COADMIN_IPI_3Q3W` |
-| `IPI1Q6W` | `COADMIN_IPI_1Q6W` |
+| `IPI3Q3W` | `CONMED_IPI_3Q3W` |
+| `IPI1Q6W` | `CONMED_IPI_1Q6W` |
 | `CHEMO` | `CONMED_CHEMO` |
-| `IPICO` | `COADMIN_IPI_ANY` |
+| `IPICO` | `CONMED_IPI_ANY` |
 
 The Zhang 2019 Table 2 footnote defines RAAA = African American race and
 RAAS = Asian race; the reference category combines white and "other" into
@@ -219,13 +219,13 @@ make_regimen <- function(pop_in, regimen, id_offset) {
   pop_offset$ID <- pop_offset$ID + id_offset
 
   # Per-regimen indicators on baseline CL.
-  pop_offset$COADMIN_IPI_3Q3W <-
+  pop_offset$CONMED_IPI_3Q3W <-
     as.integer(regimen == "nivo 3 mg/kg q2w + ipi 3 mg/kg q3w x 4")
-  pop_offset$COADMIN_IPI_1Q6W <-
+  pop_offset$CONMED_IPI_1Q6W <-
     as.integer(regimen == "nivo 3 mg/kg q2w + ipi 1 mg/kg q6w")
   pop_offset$CONMED_CHEMO    <- 0L
   # Any-ipilimumab indicator (drives Emax of time-varying CL).
-  pop_offset$COADMIN_IPI_ANY  <-
+  pop_offset$CONMED_IPI_ANY  <-
     as.integer(grepl("ipi", regimen))
 
   d_dose <- pop_offset |>
@@ -480,10 +480,10 @@ virtual population is a coarse approximation of the Table 1 distributions.
   literature, so the canonical SEXF (1 = female, 0 = male) is used.
 - **Coadministration regimens beyond the three simulated here**: the
   model file supports all four ipilimumab schedules described in
-  Zhang 2019 by combining the COADMIN_* indicators (the unmodeled
+  Zhang 2019 by combining the CONMED_* indicators (the unmodeled
   1 mg/kg q3w x 4 induction and 1 mg/kg q12w schedules collapse into the
   reference group on baseline CL, but they would still set
-  COADMIN_IPI_ANY = 1 and so contribute the IPICO additive effect on
+  CONMED_IPI_ANY = 1 and so contribute the IPICO additive effect on
   Emax). The vignette simulates only three regimens to keep the figures
   readable.
 - **eta_Q and eta_Vp variances**: per Zhang 2019 Methods, the IIV on Q

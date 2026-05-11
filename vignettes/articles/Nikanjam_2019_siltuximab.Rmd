@@ -79,9 +79,9 @@ The same information is available programmatically from
 | ALB on CL | Nikanjam 2019 Table 2, theta5 | Power: `(ALB/4.1)^-0.84` |
 | WT on V1 and V2 | Nikanjam 2019 Table 2, theta6 | Power: `(WT/73)^0.65` |
 | ALB on V1 and V2 | Nikanjam 2019 Table 2, theta7 | Power: `(ALB/4.1)^-0.35` |
-| HV on V1 and V2 | Nikanjam 2019 Table 2, theta8 | Multiplicative: `0.83^DIS_HV` |
+| HV on V1 and V2 | Nikanjam 2019 Table 2, theta8 | Multiplicative: `0.83^DIS_HEALTHY` |
 | SMM on V1 and V2 | Nikanjam 2019 Table 2, theta9 | Multiplicative: `0.77^DIS_SMM` |
-| HV on CL | Nikanjam 2019 Table 2, theta10 | Multiplicative: `0.77^DIS_HV` |
+| HV on CL | Nikanjam 2019 Table 2, theta10 | Multiplicative: `0.77^DIS_HEALTHY` |
 | ALT on CL | Nikanjam 2019 Table 2, theta11 | Power: `(ALT/19)^-0.096` |
 | SCR on V1 and V2 | Nikanjam 2019 Table 2, theta12 | Power: `(CREAT/0.9)^0.16` |
 | CD on CL | Nikanjam 2019 Table 2, theta13 | Multiplicative: `1.24^DIS_CASTLEMAN` |
@@ -106,7 +106,7 @@ the reference values used in the parameterization.
 | `ALB` (g/dL) | `ALB` |
 | `ALT` (U/L) | `ALT` (newly registered; see `inst/references/covariate-columns.md`) |
 | `SCR` (mg/dL) | `CREAT` (canonical for serum creatinine) |
-| `HV` (healthy-volunteer indicator) | `DIS_HV` (newly registered) |
+| `HV` (healthy-volunteer indicator) | `DIS_HEALTHY` (newly registered) |
 | `CD` (Castleman's disease indicator) | `DIS_CASTLEMAN` (newly registered) |
 | `SMM` (smoldering MM indicator) | `DIS_SMM` (newly registered) |
 
@@ -131,7 +131,7 @@ make_cohort <- function(n, hv = 0L, cd = 0L, smm = 0L,
     ALB = pmax(2.0, pmin(rnorm(n, 4.1, 0.4), 5.2)),         # 4.1 g/dL, clip to study range
     ALT = pmax(4,   pmin(rlnorm(n, log(19), 0.45), 96)),    # 19 U/L, log-normal in study range
     CREAT = pmax(0.4, pmin(rlnorm(n, log(0.9), 0.20), 2.4)),# 0.9 mg/dL, log-normal in study range
-    DIS_HV        = hv,
+    DIS_HEALTHY        = hv,
     DIS_CASTLEMAN = cd,
     DIS_SMM       = smm
   )
@@ -375,7 +375,7 @@ distributions:
   volunteers, and a 24% increase for Castleman's disease) are
   consistent only with a power / multiplicative form of the type
   `TVCL = theta_CL * (ALB/4.1)^theta_5 * (ALT/19)^theta_11 *
-  theta_HV^DIS_HV * theta_CD^DIS_CASTLEMAN` (and analogously for V1 and
+  theta_HV^DIS_HEALTHY * theta_CD^DIS_CASTLEMAN` (and analogously for V1 and
   V2). The model implements this form, which is the standard
   parameterization for log-transformed monoclonal antibody PK models in
   NONMEM and reproduces Nikanjam 2019 Table 3 within 6% across all

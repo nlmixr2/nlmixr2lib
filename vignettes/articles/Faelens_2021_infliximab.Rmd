@@ -34,7 +34,7 @@ by dose-dependent feedback through acute-phase proteins. The baseline
 covariates retained in the adapted model are:
 
 * baseline Mayo endoscopic subscore (`MAYO_E`, levels 1 / 2 / 3),
-* baseline corticosteroid use (`STEROID`, 0/1),
+* baseline corticosteroid use (`CONMED_STEROID`, 0/1),
 * extensive colitis at baseline (`DISEXT_EP`, 0/1),
 * fat-free mass (`FFM`, kg).
 
@@ -63,7 +63,7 @@ in one place.
 | Typical KE, baseline Mayo 2 (reference) | 0.0463 /day | Faelens 2021 supplement Table S1 |
 | Typical KE, baseline Mayo 3 | 0.0570 /day | Faelens 2021 supplement Table S1 |
 | Typical V (FFM 52 kg, no CS, no DISEXT_EP) | 6.97 L | Faelens 2021 supplement Table S1; THETA(6) |
-| STEROID fold-change on V | 1.30 | Faelens 2021 supplement Table S1; THETA(5) |
+| CONMED_STEROID fold-change on V | 1.30 | Faelens 2021 supplement Table S1; THETA(5) |
 | FFM exponent on V (ref 52 kg) | 0.517 | Faelens 2021 supplement Table S1; THETA(7) |
 | DISEXT_EP fold-change on V | 1.25 | Faelens 2021 supplement Table S1; THETA(8) |
 | IIV on KE (CV%) | 33.4 | Faelens 2021 supplement Table S1, "Adapted Model" |
@@ -112,7 +112,7 @@ make_cohort <- function(n, mayo_level, dose_per_kg_mg, treatment, id_offset = 0L
     HT_M        = pmin(pmax(rnorm(n, mean = 1.72 - 0.13 * SEXF, sd = 0.08), 1.50), 1.95),
     FFM         = janmahasatian_ffm(WT, HT_M, SEXF),
     MAYO_E      = mayo_level,
-    STEROID     = rbinom(n, 1, 0.50),
+    CONMED_STEROID     = rbinom(n, 1, 0.50),
     DISEXT_EP   = rbinom(n, 1, 0.40),
     treatment   = treatment,
     dose_per_kg = dose_per_kg_mg
@@ -136,7 +136,7 @@ build_events <- function(cohort) {
     mutate(amt = NA_real_, evid = 0, cmt = "central", Cc = NA_real_)
   bind_rows(d_dose, d_obs) %>%
     arrange(id, time, desc(evid)) %>%
-    select(id, time, amt, evid, cmt, Cc, MAYO_E, STEROID, DISEXT_EP, FFM,
+    select(id, time, amt, evid, cmt, Cc, MAYO_E, CONMED_STEROID, DISEXT_EP, FFM,
            treatment, dose_per_kg)
 }
 
@@ -316,7 +316,7 @@ Specifically:
 - **Height:** sampled normal with sex-specific mean (males 1.72 m, females
   1.59 m) and SD 0.08 m. Used only as input to the Janmahasatian (2005) FFM
   formula; the model itself uses FFM directly.
-- **Baseline corticosteroid use (`STEROID`):** Bernoulli prevalence 0.50.
+- **Baseline corticosteroid use (`CONMED_STEROID`):** Bernoulli prevalence 0.50.
   The simulation paper does not state the corticosteroid prevalence in the
   virtual cohort.
 - **Extensive colitis at baseline (`DISEXT_EP`):** Bernoulli prevalence 0.40.

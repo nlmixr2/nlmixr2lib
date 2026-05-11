@@ -21,12 +21,12 @@ Brown_2017_osimertinib <- function() {
       notes              = "Power-form effect on parent Vc/F (exponent 1.33); reference albumin 39 g/L per Brown 2017 Table 1 baseline median.",
       source_name        = "Albumin"
     ),
-    DIS_HV = list(
+    DIS_HEALTHY = list(
       description        = "Healthy-volunteer cohort indicator (1 = Study 5 healthy volunteer, 0 = NSCLC patient pooled from AURA / AURA2).",
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (NSCLC patient; reference cohort is the pooled AURA + AURA2 advanced-NSCLC population).",
-      notes              = "Linear effects (1 + 0.44 * DIS_HV) on parent CL/F and (1 + 1.25 * DIS_HV) on AZ5104 CL/F. The healthy-volunteer cohort is Study 5 (D5160C00005, 32 subjects). The reference NSCLC values for clearance are the published typical values 14.2 L/h (parent) and 31.5 L/h (AZ5104); HV subjects therefore have ~44 percent higher parent CL/F and ~125 percent higher AZ5104 CL/F (35 percent and 55 percent lower AUCss, respectively).",
+      notes              = "Linear effects (1 + 0.44 * DIS_HEALTHY) on parent CL/F and (1 + 1.25 * DIS_HEALTHY) on AZ5104 CL/F. The healthy-volunteer cohort is Study 5 (D5160C00005, 32 subjects). The reference NSCLC values for clearance are the published typical values 14.2 L/h (parent) and 31.5 L/h (AZ5104); HV subjects therefore have ~44 percent higher parent CL/F and ~125 percent higher AZ5104 CL/F (35 percent and 55 percent lower AUCss, respectively).",
       source_name        = "POP"
     ),
     RACE_CHINESE = list(
@@ -105,8 +105,8 @@ Brown_2017_osimertinib <- function() {
 
     # Categorical-covariate linear-form effects (Brown 2017 Methods Eq.
     # P_j = theta_k * (1 + theta_i)^X_ij with X_ij in {0,1}).
-    e_dis_hv_cl              <- 0.44;   label("Linear coefficient for HV vs NSCLC on CL_parent (unitless)")    # Brown 2017 Table 2: 0.44
-    e_dis_hv_cl_az5104       <- 1.25;   label("Linear coefficient for HV vs NSCLC on CL_metabolite (unitless)")  # Brown 2017 Table 2: 1.25
+    e_healthy_cl              <- 0.44;   label("Linear coefficient for HV vs NSCLC on CL_parent (unitless)")    # Brown 2017 Table 2: 0.44
+    e_healthy_cl_az5104       <- 1.25;   label("Linear coefficient for HV vs NSCLC on CL_metabolite (unitless)")  # Brown 2017 Table 2: 1.25
     e_race_chinese_cl_az5104 <- 0.17;   label("Linear coefficient for Chinese vs Caucasian on CL_metabolite (unitless)")  # Brown 2017 Table 2: 0.17
     e_race_japanese_cl_az5104 <- 0.20;  label("Linear coefficient for Japanese vs Caucasian on CL_metabolite (unitless)") # Brown 2017 Table 2: 0.20
     e_race_asian_oth_cl_az5104 <- 0.21; label("Linear coefficient for Asian-other vs Caucasian on CL_metabolite (unitless)")  # Brown 2017 Table 2: 0.21
@@ -167,7 +167,7 @@ Brown_2017_osimertinib <- function() {
 
     cl <- exp(lcl + etalcl) *
           (WT / ref_wt)^e_wt_cl *
-          (1 + e_dis_hv_cl * DIS_HV)
+          (1 + e_healthy_cl * DIS_HEALTHY)
 
     vc <- exp(lvc + etalvc) *
           (WT / ref_wt)^e_wt_vc *
@@ -175,7 +175,7 @@ Brown_2017_osimertinib <- function() {
 
     cl_az5104 <- exp(lcl_az5104 + etalcl_az5104) *
                  (WT / ref_wt)^e_wt_cl_az5104 *
-                 (1 + e_dis_hv_cl_az5104 * DIS_HV) *
+                 (1 + e_healthy_cl_az5104 * DIS_HEALTHY) *
                  (1 + e_race_chinese_cl_az5104   * RACE_CHINESE) *
                  (1 + e_race_japanese_cl_az5104  * RACE_JAPANESE) *
                  (1 + e_race_asian_oth_cl_az5104 * RACE_ASIAN_OTH) *

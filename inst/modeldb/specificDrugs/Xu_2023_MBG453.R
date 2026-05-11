@@ -37,12 +37,12 @@ Xu_2023_MBG453 <- function() {
       notes              = "Exponential effect on CL (Xu 2023 Table 1 row beta_CL,CMML = -0.0411, NS p = 0.76). Source column is the categorical DISEASE_abb; the canonical column is the binary as.integer(DISEASE_abb == 'CMML').",
       source_name        = "DISEASE_abb"
     ),
-    COADMIN_SPART = list(
+    CONMED_SPART = list(
       description        = "Spartalizumab (PDR001, anti-PD-1) coadministration indicator",
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (no spartalizumab coadministration; the reference complement in Xu 2023 is the union of sabatolimab monotherapy and sabatolimab + hypomethylating-agent combination)",
-      notes              = "Exponential effect on CL (Xu 2023 Table 1 row beta_CL,HASPDR = 0.0194, NS p = 0.7). Renamed from the source column HASPDR (the supplement Appendix S2 documents the column as 'this patient HAS received PDR001 [spartalizumab, anti PD-1 mAb]') to the canonical COADMIN_SPART per covariate-columns.md.",
+      notes              = "Exponential effect on CL (Xu 2023 Table 1 row beta_CL,HASPDR = 0.0194, NS p = 0.7). Renamed from the source column HASPDR (the supplement Appendix S2 documents the column as 'this patient HAS received PDR001 [spartalizumab, anti PD-1 mAb]') to the canonical CONMED_SPART per covariate-columns.md.",
       source_name        = "HASPDR"
     )
   )
@@ -65,7 +65,7 @@ Xu_2023_MBG453 <- function() {
 
   ini({
     # Structural PK parameters - Xu 2023 Table 1 final-model estimates (p1660), reference patient is
-    # the typical solid-tumor patient (DIS_AML = DIS_MDS = DIS_CMML = 0, COADMIN_SPART = 0) at
+    # the typical solid-tumor patient (DIS_AML = DIS_MDS = DIS_CMML = 0, CONMED_SPART = 0) at
     # WT = WT_ref = 75 kg. CL, Q, and Vm were reported in per-hour units in Table 1 and are
     # converted to per-day here (multiplied by 24) because this model keeps time in days.
     lcl  <- log(0.0103 * 24); label("Linear clearance CL (L/day)")                                  # Xu 2023 Table 1: CL = 0.0103 L/h
@@ -92,7 +92,7 @@ Xu_2023_MBG453 <- function() {
     e_dis_aml_cl       <- -0.0146; label("Exponential coefficient of DIS_AML on CL (unitless; NS p=0.801)") # Xu 2023 Table 1: beta_CL,AML
     e_dis_mds_cl       <- -0.149;  label("Exponential coefficient of DIS_MDS on CL (unitless; p=0.0213)")   # Xu 2023 Table 1: beta_CL,MDS
     e_dis_cmml_cl      <- -0.0411; label("Exponential coefficient of DIS_CMML on CL (unitless; NS p=0.76)") # Xu 2023 Table 1: beta_CL,CMML
-    e_coadmin_spart_cl <-  0.0194; label("Exponential coefficient of COADMIN_SPART on CL (unitless; NS p=0.7)") # Xu 2023 Table 1: beta_CL,HASPDR
+    e_coadmin_spart_cl <-  0.0194; label("Exponential coefficient of CONMED_SPART on CL (unitless; NS p=0.7)") # Xu 2023 Table 1: beta_CL,HASPDR
 
     # Inter-individual variability - Xu 2023 Table 1 reports the SD (omega) of each log-normal
     # eta and the correlation between eta_V and eta_CL. Variance = omega^2; covariance =
@@ -119,13 +119,13 @@ Xu_2023_MBG453 <- function() {
 
     # Individual baseline PK parameters with the Xu 2023 covariate equations (p1657).
     # Reference patient: WT = wt_ref, solid tumor (DIS_AML = DIS_MDS = DIS_CMML = 0),
-    # no spartalizumab (COADMIN_SPART = 0).
+    # no spartalizumab (CONMED_SPART = 0).
     cl <- exp(lcl + etalcl) *
           (WT / wt_ref)^e_wt_cl *
           exp(e_dis_aml_cl       * DIS_AML +
               e_dis_mds_cl       * DIS_MDS +
               e_dis_cmml_cl      * DIS_CMML +
-              e_coadmin_spart_cl * COADMIN_SPART)
+              e_coadmin_spart_cl * CONMED_SPART)
     vc <- exp(lvc + etalvc) * (WT / wt_ref)^e_wt_vc
     vp <- exp(lvp + etalvp) * (WT / wt_ref)^e_wt_vp
     q    <- exp(lq)
