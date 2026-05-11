@@ -5,7 +5,7 @@
 \alias{modeldb}
 \title{Model library for nlmixr2}
 \format{
-A data frame with 341 rows and 10 columns
+A data frame with 341 rows and 12 columns
 \describe{
   \item{name}{Model name that can be used to extract the model from the model library}
   \item{description}{Model description in free from text; in model itself}
@@ -16,6 +16,8 @@ A data frame with 341 rows and 10 columns
   \item{dosing}{A comma separated string of identified dosing compartments}
   \item{depends}{A comma separated string of objects the model depends on}
   \item{vignette}{Basename of the vignette associated with this model (without path or extension); NA if none}
+  \item{label}{Human-readable navbar label derived from the filename: 'Drug (Author Year)' for the canonical '<Author>_<Year>_<drug>' form, 'DDMoRe: <drug>' for the parameterless NA_NA_<drug> ddmore entries, otherwise the basename with underscores replaced by spaces}
+  \item{category}{Coarse-grained model bucket derived from the filename path: 'specificDrugs', 'ddmore', or 'other' (anything not under those two directories)}
   \item{filename}{Filename of the model.  By default these are installed in the model library and read on demand}
 }
 }
