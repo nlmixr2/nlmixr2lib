@@ -3182,6 +3182,16 @@ readable.
 - **Example models:** `Cirincione_2017_exenatide.R`.
 - **Notes:** Paired with `STUDY1`. When both are 0, the subject is in the pooled "other studies" residual-error group.
 
+### STUDY_PKU015
+- **Description:** 1 = subject enrolled in study PKU-015 (pediatric population pharmacokinetic study of sapropterin in infants and young children, 0-6 years old, of the Qi 2014 pooled analysis); 0 = study PKU-004 (adolescent / adult open-label extension study, >= 9 years old). Used to switch the residual-error magnitude per study under the log-transform-both-sides (LTBS) constant-CV residual model.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (PKU-004 adolescent / adult cohort).
+- **Source aliases:** derived per subject from the trial identifier (`PKU-015` -> 1, `PKU-004` -> 0).
+- **Example models:** `Qi_2014_sapropterin.R`.
+- **Notes:** Qi 2014 Table 3 reports separate residual-error estimates for the two studies -- PKU-004 = 21.1% CV, PKU-015 = 30.2% CV under the LTBS approach. The `STUDY_PKU015` indicator selects between them. Specific scope because the indicator is tied to the BioMarin sapropterin clinical-development program (PKU-004 = phase 3b extension, PKU-015 = phase 3b pediatric).
+
 ### PHASE2
 - **Description:** 1 = subject enrolled in the Phase II study (MORAb-003-002) of the Farrell 2012 pooled analysis; 0 = Phase I study (MORAb-003-001). Used to switch the residual-error magnitude per study.
 - **Units:** (binary)
