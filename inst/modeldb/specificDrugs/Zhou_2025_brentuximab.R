@@ -57,12 +57,12 @@ Zhou_2025_brentuximab <- function() {
       notes              = "Time-fixed once positive (Zhou 2025 supplement: 'ATAPOS and ADA are filled as once positive then positive for the rest of the study'). Multiplicative effect 2.6 on ADC CL (~2.6-fold higher CL for ADA-positive subjects) and 0.696 on MMAE CL (~30% lower MMAE CL for ADA-positive subjects). Pediatric ADA incidence was low in these two studies, so the effect estimate is informed by a small subgroup.",
       source_name        = "ATAPOS"
     ),
-    COADMIN_AVD = list(
+    CONMED_AVD = list(
       description        = "Brentuximab vedotin + AVD chemotherapy combination indicator (1 = A+AVD, 0 = single-agent BV)",
       units              = "(binary)",
       type               = "binary",
       reference_category = 0,
-      notes              = "Time-fixed per study (Study 1 = single-agent BV, COADMIN_AVD = 0; Study 2 = BV + AVD, COADMIN_AVD = 1). Multiplicative effect 2.12 on ADC CL — patients on the A+AVD regimen have ~2.1-fold higher ADC CL relative to single-agent BV. The Zhou 2025 NONMEM dataset encodes this as DOX (doxorubicin / adriamycin administration flag); doxorubicin is given on the same days as vinblastine and dacarbazine in the AVD backbone, so the DOX column is equivalent to the A+AVD regimen indicator.",
+      notes              = "Time-fixed per study (Study 1 = single-agent BV, CONMED_AVD = 0; Study 2 = BV + AVD, CONMED_AVD = 1). Multiplicative effect 2.12 on ADC CL — patients on the A+AVD regimen have ~2.1-fold higher ADC CL relative to single-agent BV. The Zhou 2025 NONMEM dataset encodes this as DOX (doxorubicin / adriamycin administration flag); doxorubicin is given on the same days as vinblastine and dacarbazine in the AVD backbone, so the DOX column is equivalent to the A+AVD regimen indicator.",
       source_name        = "DOX"
     )
   )
@@ -83,7 +83,7 @@ Zhou_2025_brentuximab <- function() {
     regions        = "United States (children's hospital network).",
     study_phase    = "Two open-label phase I/II studies (NCT01492088 single-agent dose escalation; NCT02979522 BSA-based BV + AVD).",
     n_observations = "9479 ADC + MMAE concentration records (2608 from study 1, 6871 from study 2).",
-    reference_subject = "BSA 1.8 m^2, ALB 40 g/L, CREAT 45.689 umol/L, LDIAM 41 mm, TUMTP_CHL 1 (HL), ADA_POS 0, COADMIN_AVD 0.",
+    reference_subject = "BSA 1.8 m^2, ALB 40 g/L, CREAT 45.689 umol/L, LDIAM 41 mm, TUMTP_CHL 1 (HL), ADA_POS 0, CONMED_AVD 0.",
     notes          = "Baseline characteristics from Zhou 2025 Table 1 (per-study); pooled n = 95 patients. Albumin range 23-51 g/L (median 39-40); creatinine clearance Cockcroft 85.5-301.4 mL/min (median 132.3-165.3); sum-of-tumor-area median 1581-1639 mm^2. The NONMEM reference values 1.8 m^2 (BSA) and 40 g/L (ALB) are adult/normal-range anchors rather than pediatric medians."
   )
 
@@ -105,7 +105,7 @@ Zhou_2025_brentuximab <- function() {
     e_nonhl_q2  <- 0.509;  label("Power-form multiplier of non-HL on ADC Q2: q2 *= e_nonhl_q2^(1 - TUMTP_CHL)") # Zhou 2025 Table S1: 0.509 (32.2% RSE)
     e_bsa_vp2   <- 1.96;   label("Power exponent of (BSA/1.8) on ADC V3 = vp2 (unitless)")         # Zhou 2025 Table S1: 1.96 (20.8% RSE)
     e_ada_cl    <- 2.6;    label("Power-form multiplier of ADA positivity on ADC CL: cl *= e_ada_cl^ADA_POS") # Zhou 2025 Table S1: 2.6 (6.4% RSE)
-    e_avd_cl    <- 2.12;   label("Power-form multiplier of A+AVD coadministration on ADC CL: cl *= e_avd_cl^COADMIN_AVD") # Zhou 2025 Table S1: 2.12 (18.7% RSE) — supplement table label of 'theta13' for this row is a typo (control stream confirms theta14)
+    e_avd_cl    <- 2.12;   label("Power-form multiplier of A+AVD coadministration on ADC CL: cl *= e_avd_cl^CONMED_AVD") # Zhou 2025 Table S1: 2.12 (18.7% RSE) — supplement table label of 'theta13' for this row is a typo (control stream confirms theta14)
 
     # MMAE structural parameters (Zhou 2025 Table S2; 2-compartment linear with
     # an upstream Target binding pool and Lag compartment fed by ADC, ADVAN13
@@ -170,7 +170,7 @@ Zhou_2025_brentuximab <- function() {
               nalb^e_alb_cl *
               ntumsz^e_tumsz_cl *
               e_ada_cl^ADA_POS *
-              e_avd_cl^COADMIN_AVD
+              e_avd_cl^CONMED_AVD
     v1_adc <- exp(lvc)
     q2_adc <- exp(lq + etalq) * e_nonhl_q2^nonhl
     v2_adc <- exp(lvp)

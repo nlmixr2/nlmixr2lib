@@ -34,15 +34,15 @@ Yang_2024_axatilimab <- function() {
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (cGVHD or healthy volunteer)",
-      notes              = "One of two orthogonal indicators (with DIS_HV) decomposing the three-level participant population categorical (cGVHD reference, advanced solid tumor, healthy volunteer). Effect on baseline NCMC: BL_NCMC * exp(1.22 * DIS_CANCER + 0.618 * DIS_HV); reference category cGVHD when both indicators are 0. Yang 2024 Table 1 row 'Population with cancer on BLNCMC'.",
+      notes              = "One of two orthogonal indicators (with DIS_HEALTHY) decomposing the three-level participant population categorical (cGVHD reference, advanced solid tumor, healthy volunteer). Effect on baseline NCMC: BL_NCMC * exp(1.22 * DIS_CANCER + 0.618 * DIS_HEALTHY); reference category cGVHD when both indicators are 0. Yang 2024 Table 1 row 'Population with cancer on BLNCMC'.",
       source_name        = "POPULATION (Population type = 'Patients with cancer')"
     ),
-    DIS_HV = list(
+    DIS_HEALTHY = list(
       description        = "Healthy-volunteer cohort indicator (1 = healthy volunteer, 0 = patient)",
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (cGVHD or advanced solid tumor)",
-      notes              = "Paired with DIS_CANCER. Effect on baseline NCMC: BL_NCMC * exp(1.22 * DIS_CANCER + 0.618 * DIS_HV); reference category cGVHD. Yang 2024 Table 1 row 'Healthy population on BLNCMC'.",
+      notes              = "Paired with DIS_CANCER. Effect on baseline NCMC: BL_NCMC * exp(1.22 * DIS_CANCER + 0.618 * DIS_HEALTHY); reference category cGVHD. Yang 2024 Table 1 row 'Healthy population on BLNCMC'.",
       source_name        = "POPULATION (Population type = 'Healthy participants')"
     ),
     ADA_POS = list(
@@ -75,7 +75,7 @@ Yang_2024_axatilimab <- function() {
   ini({
     # === Structural PK parameters (all on log scale) ===
     # Yang 2024 Table 1 - reference covariate values: WT 73.6 kg, baseline CSF-1 549 pg/mL,
-    # baseline CPK 63 U/L, ADA-negative, cGVHD population (DIS_CANCER = DIS_HV = 0).
+    # baseline CPK 63 U/L, ADA-negative, cGVHD population (DIS_CANCER = DIS_HEALTHY = 0).
     lvc       <- log(3.48);   label("Central volume of distribution Vd (L) for a typical 73.6 kg cGVHD patient")                                              # Yang 2024 Table 1 row 'Volume of distribution (Vd)' = 3.48 L
     lcl       <- log(0.007);  label("Linear clearance CL (L/h) for a typical ADA-negative cGVHD patient at median CSF-1")                                       # Yang 2024 Table 1 row 'Clearance (CL)' = 0.007 L/h
     lq        <- log(0.015);  label("Inter-compartmental clearance Q (L/h)")                                                                                    # Yang 2024 Table 1 row 'Intercompartmental CL (Q)' = 0.015 L/h
@@ -121,7 +121,7 @@ Yang_2024_axatilimab <- function() {
     e_csf1_cl         <- 0.912;  label("Power exponent of (CSF1/549 pg/mL) on linear CL (unitless)")                                                            # Yang 2024 Table 1 row 'CSF-1 on CL' = 0.912
     e_csf1_blcsf1     <- 0.656;  label("Power exponent of (CSF1/549 pg/mL) on BL_CSF1 (unitless)")                                                              # Yang 2024 Table 1 row 'CSF-1 on BLCSF1' = 0.656
     e_cancer_blncmc   <- 1.22;   label("Exponential coefficient on DIS_CANCER for BL_NCMC (unitless; cGVHD reference)")                                         # Yang 2024 Table 1 row 'Population with cancer on BLNCMC' = 1.22
-    e_hv_blncmc       <- 0.618;  label("Exponential coefficient on DIS_HV for BL_NCMC (unitless; cGVHD reference)")                                             # Yang 2024 Table 1 row 'Healthy population on BLNCMC' = 0.618
+    e_healthy_blncmc       <- 0.618;  label("Exponential coefficient on DIS_HEALTHY for BL_NCMC (unitless; cGVHD reference)")                                             # Yang 2024 Table 1 row 'Healthy population on BLNCMC' = 0.618
     e_cpk_blncmc      <- 0.376;  label("Power exponent of (CPK/63 U/L) on BL_NCMC (unitless)")                                                                  # Yang 2024 Table 1 row 'BLCPK on BLNCMC' = 0.376
 
     # === Inter-individual variability (BSV; Monolix omega = SD on log-scale; ===
@@ -165,7 +165,7 @@ Yang_2024_axatilimab <- function() {
     Nh          <- exp(lnh)
     BL_CSF1     <- exp(lbl_csf1  + etalbl_csf1) * (CSF1 / 549)^e_csf1_blcsf1
     BL_NCMC     <- exp(lbl_ncmc  + etalbl_ncmc) *
-                     exp(e_cancer_blncmc * DIS_CANCER + e_hv_blncmc * DIS_HV) *
+                     exp(e_cancer_blncmc * DIS_CANCER + e_healthy_blncmc * DIS_HEALTHY) *
                      (CPK / 63)^e_cpk_blncmc
     kdeg_csf1   <- exp(lkdeg_csf1)
     kdeg_ncmc   <- exp(lkdeg_ncmc)

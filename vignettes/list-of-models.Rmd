@@ -31,25 +31,6 @@ table.model-list-table td:last-child  { width: 70%; }
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 library(nlmixr2lib)
-
-# Inline copy of internal R/modeldb.R::.parseModelLabel so this vignette
-# is self-contained without a CRAN-NOTE-prone `:::` call. Keep behaviour
-# in sync with the package function.
-parse_model_label <- function(filename) {
-  base <- tools::file_path_sans_ext(basename(filename))
-  parts <- strsplit(base, "_", fixed = TRUE)[[1]]
-  if (length(parts) >= 3 &&
-      grepl("^[0-9]{4}[a-z]?$", parts[2]) &&
-      parts[1] != "NA" && parts[2] != "NA") {
-    drug <- paste(parts[-(1:2)], collapse = " ")
-    drug <- paste0(toupper(substr(drug, 1, 1)), substr(drug, 2, nchar(drug)))
-    sprintf("%s (%s %s)", drug, parts[1], parts[2])
-  } else if (length(parts) >= 3 && parts[1] == "NA" && parts[2] == "NA") {
-    sprintf("DDMoRe: %s", paste(parts[-(1:2)], collapse = " "))
-  } else {
-    gsub("_", " ", base, fixed = TRUE)
-  }
-}
 ```
 
 Drug-specific validation vignettes (one per published model) are published on
@@ -61,7 +42,33 @@ models, then models curated from the DDMoRe Foundation library.
 
 ```{r build-display, include = FALSE}
 display <- nlmixr2lib::modeldb
-display$label <- vapply(display$filename, parse_model_label, character(1))
+
+# `label` and `category` are populated by buildModelDb() (see R/modeldb.R).
+# Older modeldb dumps without these columns degrade gracefully -- derive on
+# the fly using the same logic so an old data/modeldb.rda still renders.
+if (!"label" %in% names(display)) {
+  display$label <- vapply(display$filename, function(f) {
+    base <- tools::file_path_sans_ext(basename(f))
+    parts <- strsplit(base, "_", fixed = TRUE)[[1]]
+    if (length(parts) >= 3 &&
+        grepl("^[0-9]{4}[a-z]?$", parts[2]) &&
+        parts[1] != "NA" && parts[2] != "NA") {
+      drug <- paste(parts[-(1:2)], collapse = " ")
+      drug <- paste0(toupper(substr(drug, 1, 1)), substr(drug, 2, nchar(drug)))
+      sprintf("%s (%s %s)", drug, parts[1], parts[2])
+    } else if (length(parts) >= 3 && parts[1] == "NA" && parts[2] == "NA") {
+      sprintf("DDMoRe: %s", paste(parts[-(1:2)], collapse = " "))
+    } else {
+      gsub("_", " ", base, fixed = TRUE)
+    }
+  }, character(1))
+}
+if (!"category" %in% names(display)) {
+  display$category <- ifelse(
+    grepl("(^|/)specificDrugs/", display$filename), "specificDrugs",
+    ifelse(grepl("(^|/)ddmore/", display$filename), "ddmore", "other")
+  )
+}
 
 base_url <- "https://nlmixr2.github.io/nlmixr2lib/articles/"
 display$name_html <- ifelse(
@@ -71,9 +78,11 @@ display$name_html <- ifelse(
           base_url, display$vignette, display$label)
 )
 
-display$category <- ifelse(
-  grepl("^specificDrugs/", display$filename), "Specific Drugs",
-  ifelse(grepl("^ddmore/", display$filename), "DDMoRe", "General")
+# Map the internal category strings to the user-facing section labels.
+display$section <- factor(
+  display$category,
+  levels = c("other", "specificDrugs", "ddmore"),
+  labels = c("General", "Specific Drugs", "DDMoRe")
 )
 
 render_table <- function(rows) {
@@ -92,17 +101,17 @@ render_table <- function(rows) {
 ## General
 
 ```{r general, results = "asis", echo = FALSE}
-render_table(subset(display, category == "General"))
+render_table(subset(display, section == "General"))
 ```
 
 ## Specific Drugs
 
 ```{r specific, results = "asis", echo = FALSE}
-render_table(subset(display, category == "Specific Drugs"))
+render_table(subset(display, section == "Specific Drugs"))
 ```
 
 ## DDMoRe
 
 ```{r ddmore, results = "asis", echo = FALSE}
-render_table(subset(display, category == "DDMoRe"))
+render_table(subset(display, section == "DDMoRe"))
 ```

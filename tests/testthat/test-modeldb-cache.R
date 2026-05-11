@@ -49,7 +49,7 @@ test_that(".modeldbGlobalSig has expected structure and reacts to R/modeldb.R ed
     c("cacheVersion", "rVersion", "nlmixr2", "nlmixr2est", "rxode2", "modeldbRhash"),
     ignore.order = TRUE
   )
-  expect_identical(sig$cacheVersion, 2L)
+  expect_identical(sig$cacheVersion, 3L)
   expect_identical(sig$rVersion, R.version.string)
   expect_equal(nchar(sig$modeldbRhash), 32L)
 

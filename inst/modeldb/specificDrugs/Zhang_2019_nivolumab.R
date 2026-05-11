@@ -53,7 +53,7 @@ Zhang_2019_nivolumab <- function() {
       notes              = "Exponential effect on CL (CL_RAAS = -0.0354 = 3.5% lower CL than the reference group). Source column name RAAS, defined in the Zhang 2019 Table 2 footnote as 'Asian race'. Renamed to canonical RACE_ASIAN per covariate-columns.md.",
       source_name        = "RAAS"
     ),
-    COADMIN_IPI_3Q3W = list(
+    CONMED_IPI_3Q3W = list(
       description        = "Coadministration regimen: nivolumab + ipilimumab 3 mg/kg every 3 weeks (4-dose induction)",
       units              = "(binary)",
       type               = "binary",
@@ -61,7 +61,7 @@ Zhang_2019_nivolumab <- function() {
       notes              = "Exponential effect on baseline CL (exp(0.227) = 1.255 fold higher CL than monotherapy). Per Zhang 2019 Methods, the unmodeled ipilimumab schedules (1 mg/kg q3w x 4 induction; 1 mg/kg q12w) showed no statistically significant effect on CL and were collapsed into the reference group along with monotherapy.",
       source_name        = "IPI3Q3W"
     ),
-    COADMIN_IPI_1Q6W = list(
+    CONMED_IPI_1Q6W = list(
       description        = "Coadministration regimen: nivolumab + ipilimumab 1 mg/kg every 6 weeks (continuous maintenance)",
       units              = "(binary)",
       type               = "binary",
@@ -77,12 +77,12 @@ Zhang_2019_nivolumab <- function() {
       notes              = "Exponential effect on baseline CL (exp(-0.104) = 0.901 fold, ~9.7% lower than monotherapy). Pooled across the four chemotherapy backbones (gemcitabine + cisplatin, pemetrexed + cisplatin, paclitaxel + carboplatin, platinum doublet).",
       source_name        = "CHEMO"
     ),
-    COADMIN_IPI_ANY = list(
+    CONMED_IPI_ANY = list(
       description        = "Any-ipilimumab-coadministration indicator (regimen-agnostic)",
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (no ipilimumab coadministration)",
-      notes              = "Additive effect on the time-varying-CL Emax parameter (Emax_IPICO = -0.0668; subjects on any nivolumab + ipilimumab combination show an additional 6.7% reduction of CL at full saturation relative to monotherapy or chemotherapy combination). Source column name IPICO. Coexists with COADMIN_IPI_3Q3W / COADMIN_IPI_1Q6W because those act on baseline CL rather than on Emax.",
+      notes              = "Additive effect on the time-varying-CL Emax parameter (Emax_IPICO = -0.0668; subjects on any nivolumab + ipilimumab combination show an additional 6.7% reduction of CL at full saturation relative to monotherapy or chemotherapy combination). Source column name IPICO. Coexists with CONMED_IPI_3Q3W / CONMED_IPI_1Q6W because those act on baseline CL rather than on Emax.",
       source_name        = "IPICO"
     )
   )
@@ -169,7 +169,7 @@ Zhang_2019_nivolumab <- function() {
     # of the form exp(theta * indicator); continuous effects are power form
     # (cov / ref)^exponent. Reference covariates: WT 80 kg, eGFR 90 mL/min/1.73 m^2,
     # male (SEXF=0), PS 0 (ECOG_GE1=0), white/other race (RACE_BLACK=0 and
-    # RACE_ASIAN=0), monotherapy (all COADMIN_*=0).
+    # RACE_ASIAN=0), monotherapy (all CONMED_*=0).
     cl0 <- exp(lcl + etalcl) *
       (WT   / 80)^e_wt_cl *
       (CRCL / 90)^e_egfr_cl *
@@ -177,8 +177,8 @@ Zhang_2019_nivolumab <- function() {
       exp(e_ecog_cl    * ECOG_GE1) *
       exp(e_black_cl   * RACE_BLACK) *
       exp(e_asian_cl   * RACE_ASIAN) *
-      exp(e_ipi3q3w_cl * COADMIN_IPI_3Q3W) *
-      exp(e_ipi1q6w_cl * COADMIN_IPI_1Q6W) *
+      exp(e_ipi3q3w_cl * CONMED_IPI_3Q3W) *
+      exp(e_ipi1q6w_cl * CONMED_IPI_1Q6W) *
       exp(e_chemo_cl   * CONMED_CHEMO)
 
     vc <- exp(lvc + etalvc) *
@@ -194,7 +194,7 @@ Zhang_2019_nivolumab <- function() {
     # Time-varying CL: Hill-Emax function of time since first dose.
     t50  <- exp(lt50)
     hill <- exp(lhill)
-    Emax_i <- Emax + e_ecog_emax * ECOG_GE1 + e_ipico_emax * COADMIN_IPI_ANY + etaEmax
+    Emax_i <- Emax + e_ecog_emax * ECOG_GE1 + e_ipico_emax * CONMED_IPI_ANY + etaEmax
     cl <- cl0 * exp(Emax_i * t^hill / (t50^hill + t^hill))
 
     # Two-compartment micro-constants.

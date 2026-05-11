@@ -45,12 +45,12 @@ Zhou_2021_belimumab <- function() {
       notes              = "Multiplicative effect on V1 (factor 1.07) when RACE_NEAS = 1. Source column RAC4 (Zhou 2021 Table 2 footnote d).",
       source_name        = "RAC4"
     ),
-    STDY_LBSL = list(
+    STUDY_LBSL = list(
       description        = "Indicator for early-phase belimumab studies LBSL01 or LBSL02",
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (any other belimumab study in the pooled analysis)",
-      notes              = "Multiplicative effects on CL (factor 1.63) and V1 (factor 1.26) when STDY_LBSL = 1. Source column INDR (Zhou 2021 Table 2 footnote: INDR=1 for LBSL01/LBSL02, 0 otherwise). The two early studies used a different ELISA assay than the later electrochemiluminescence-based assay.",
+      notes              = "Multiplicative effects on CL (factor 1.63) and V1 (factor 1.26) when STUDY_LBSL = 1. Source column INDR (Zhou 2021 Table 2 footnote: INDR=1 for LBSL01/LBSL02, 0 otherwise). The two early studies used a different ELISA assay than the later electrochemiluminescence-based assay.",
       source_name        = "INDR"
     )
   )
@@ -86,11 +86,11 @@ Zhou_2021_belimumab <- function() {
     e_ffm_cl  <-  0.673; label("FFM power exponent on CL (reference FFM 40.69 kg)")           # Table 2: theta7
     e_alb_cl  <- -1.12;  label("Baseline albumin power exponent on CL (reference 40 g/L)")    # Table 2: theta9
     e_igg_cl  <-  0.293; label("Baseline IgG power exponent on CL (reference 14.8 g/L)")      # Table 2: theta10
-    e_stdy_cl <-  1.63;  label("Multiplicative factor on CL when STDY_LBSL = 1 (LBSL01/02)")  # Table 2: theta11
+    e_stdy_cl <-  1.63;  label("Multiplicative factor on CL when STUDY_LBSL = 1 (LBSL01/02)")  # Table 2: theta11
 
     # Covariate effects on V1 (Zhou 2021 Table 2)
     e_ffm_vc  <-  0.891; label("FFM power exponent on V1 (reference FFM 40.69 kg)")               # Table 2: theta8
-    e_stdy_vc <-  1.26;  label("Multiplicative factor on V1 when STDY_LBSL = 1 (LBSL01/02)")      # Table 2: theta12
+    e_stdy_vc <-  1.26;  label("Multiplicative factor on V1 when STUDY_LBSL = 1 (LBSL01/02)")      # Table 2: theta12
     e_neas_vc <-  1.07;  label("Multiplicative factor on V1 when RACE_NEAS = 1 (North East Asian)") # Table 2: theta13 (printed as theta12 due to a labelling typo)
     age50_vc  <-  1.58;  label("Age (years) at half-maximal V1 in the saturable AGE/(AGE+age50_vc) maturation term") # Table 2: theta14
 
@@ -108,10 +108,10 @@ Zhou_2021_belimumab <- function() {
     ffm_cl  <- (FFM / 40.69)^e_ffm_cl
     alb_cl  <- (ALB / 40)^e_alb_cl
     igg_cl  <- (IGG / 14.8)^e_igg_cl
-    stdy_cl <- e_stdy_cl^STDY_LBSL
+    stdy_cl <- e_stdy_cl^STUDY_LBSL
 
     ffm_vc  <- (FFM / 40.69)^e_ffm_vc
-    stdy_vc <- e_stdy_vc^STDY_LBSL
+    stdy_vc <- e_stdy_vc^STUDY_LBSL
     neas_vc <- e_neas_vc^RACE_NEAS
     age_vc  <- AGE / (AGE + age50_vc)
 

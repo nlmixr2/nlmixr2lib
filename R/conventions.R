@@ -178,7 +178,21 @@
     # doi:10.1111/bcp.13311). Treated as "non-parent analyte" suffixes
     # under the same registry as metabolites; neither enantiomer is the
     # parent.
-    "r", "s"
+    "r", "s",
+    # Roflumilast N-oxide, the active metabolite of roflumilast that
+    # contributes about 90% of total PDE4 inhibitory activity (tPDE4i).
+    # Used as a metabolite suffix in parent-plus-metabolite popPK models
+    # where parent (roflumilast) and metabolite (N-oxide) are fitted
+    # jointly but with independent apparent absorption parameters
+    # (Lahu 2010 doi:10.2165/11536600-000000000-00000).
+    "noxide",
+    # Combined acetaminophen cysteine + mercapturate compartment used by
+    # CYP2E1-oxidation popPK models that lump the two oxidation
+    # metabolites (acetaminophen cysteine and acetaminophen mercapturate)
+    # into a single observation compartment because the two species are
+    # in rapid equilibrium with overlapping disposition (van Rongen 2016
+    # Clin Pharmacokinet doi:10.1007/s40262-015-0357-0).
+    "cysmer"
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` denotes the time-varying decay arm.
@@ -449,6 +463,12 @@
     if (endsWith(name, suf)) {
       base <- substr(name, 1, nchar(name) - nchar(suf))
       if (base %in% conv$compartments) return(TRUE)
+      # Compositions of a numbered-chain prefix with a metabolite
+      # suffix are canonical: e.g., `transit1_m3g`, `precursor2_dxd`,
+      # `lat1_complex`. Used by formation-delay transit chains feeding
+      # a metabolite central compartment (deHoogd 2017 morphine model:
+      # transit1_m3g..transit5_m3g and transit1_m6g..transit2_m6g).
+      if (grepl(conv$compartmentRegex, base)) return(TRUE)
     }
   }
   FALSE
