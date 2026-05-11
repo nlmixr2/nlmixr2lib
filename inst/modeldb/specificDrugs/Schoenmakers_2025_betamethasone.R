@@ -12,13 +12,13 @@ Schoenmakers_2025_betamethasone <- function() {
   units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
-    EOPE = list(
+    DIS_EOPE = list(
       description        = "Binary indicator of early-onset pre-eclampsia (eoPE; diagnosed before 34 weeks gestation); 1 = eoPE present, 0 = not eoPE.",
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (no eoPE; pregnant woman with imminent preterm birth and no pre-eclampsia at the time of betamethasone administration)",
       notes              = "Time-fixed per subject. The Schoenmakers 2025 final model multiplies CL/F by ThetaPE = 0.617 (Eq 2 with the categorical-indicator form) when eoPE is present, giving a 38% reduction in apparent clearance (non-eoPE CL/F = 15.6 L/h; eoPE CL/F = 15.6 x 0.617 ~= 9.6 L/h, matching the abstract's reported 9.35 L/h vs 15.78 L/h median individual estimates). The source dataset cohort was 23 non-eoPE women + 5 eoPE women drawn from a single Dutch obstetric centre between January and October 2021.",
-      source_name        = "EOPE"
+      source_name        = "DIS_EOPE"
     )
   )
 
@@ -72,7 +72,7 @@ Schoenmakers_2025_betamethasone <- function() {
 
   ini({
     # Structural parameters - typical values reference a pregnant woman
-    # WITHOUT early-onset pre-eclampsia (EOPE = 0). The Schoenmakers 2025
+    # WITHOUT early-onset pre-eclampsia (DIS_EOPE = 0). The Schoenmakers 2025
     # final model fitted a 2-compartment open model with first-order
     # absorption (no lag time) and first-order elimination, with a
     # proportional residual error and IIV on CL and Vc (Methods 2.2 and
@@ -87,8 +87,8 @@ Schoenmakers_2025_betamethasone <- function() {
     # The source paper's Eq. 2 (categorical covariate form):
     #   theta_j = theta_jTPV * (theta_COVi)^FLAG_COVi
     # is implemented in nlmixr2 as a log-additive shift on lcl:
-    #   cl = exp(lcl + etalcl + e_eope_cl * EOPE)
-    # so EOPE = 0 yields the typical-value CL, and EOPE = 1 multiplies CL
+    #   cl = exp(lcl + etalcl + e_eope_cl * DIS_EOPE)
+    # so DIS_EOPE = 0 yields the typical-value CL, and DIS_EOPE = 1 multiplies CL
     # by exp(log(0.617)) = 0.617 (a 38% reduction).
     e_eope_cl <- log(0.617);  label("Log-multiplicative effect of early-onset pre-eclampsia on CL/F")         # Schoenmakers 2025 Table 2 final, ThetaPE = 0.617 (RSE 12%; SIR 95% CI 0.28-0.76); paper Methods Eq 2.
 
@@ -125,7 +125,7 @@ Schoenmakers_2025_betamethasone <- function() {
     # covariates; Vp, Q and Ka carry neither covariates nor IIV in the
     # published final model.
     ka <- exp(lka)
-    cl <- exp(lcl + etalcl + e_eope_cl * EOPE)
+    cl <- exp(lcl + etalcl + e_eope_cl * DIS_EOPE)
     vc <- exp(lvc + etalvc)
     vp <- exp(lvp)
     q  <- exp(lq)

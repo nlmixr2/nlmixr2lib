@@ -93,10 +93,10 @@ set.seed(20250211)
 
 n_per_stratum <- 200L
 
-make_stratum <- function(n, eope, id_offset) {
+make_stratum <- function(n, dis_eope, id_offset) {
   tibble(
     id   = id_offset + seq_len(n),
-    EOPE = eope,
+    DIS_EOPE = dis_eope,
     WT   = runif(n, 50, 95),
     AGE  = runif(n, 21, 41),
     GA   = runif(n, 24, 33)
@@ -129,17 +129,17 @@ build_events <- function(demo) {
            amt  = 11.4,
            evid = 1L,
            cmt  = "depot") |>
-    select(id, time, amt, evid, cmt, EOPE, WT, AGE, GA)
+    select(id, time, amt, evid, cmt, DIS_EOPE, WT, AGE, GA)
 
   dose2 <- demo |>
     mutate(time = 24,
            amt  = 11.4,
            evid = 1L,
            cmt  = "depot") |>
-    select(id, time, amt, evid, cmt, EOPE, WT, AGE, GA)
+    select(id, time, amt, evid, cmt, DIS_EOPE, WT, AGE, GA)
 
   obs <- demo |>
-    select(id, EOPE, WT, AGE, GA) |>
+    select(id, DIS_EOPE, WT, AGE, GA) |>
     tidyr::crossing(time = obs_times) |>
     mutate(amt  = NA_real_,
            evid = 0L,
@@ -157,13 +157,13 @@ mod <- rxode2::rxode2(readModelDb("Schoenmakers_2025_betamethasone"))
 
 sim <- rxode2::rxSolve(
   mod, events = events,
-  keep = c("EOPE", "WT", "AGE", "GA")
+  keep = c("DIS_EOPE", "WT", "AGE", "GA")
 ) |> as.data.frame()
 
 mod_typical <- mod |> rxode2::zeroRe()
 sim_typical <- rxode2::rxSolve(
   mod_typical, events = events,
-  keep = c("EOPE", "WT", "AGE", "GA")
+  keep = c("DIS_EOPE", "WT", "AGE", "GA")
 ) |> as.data.frame()
 ```
 
@@ -180,7 +180,7 @@ patient at the cohort-median weight (68 kg).
 ```{r figure-3, fig.cap = "Replicates Figure 3 of Schoenmakers 2025: typical-value betamethasone serum concentration after two 11.4 mg IM doses (q24h) for non-eoPE (red) vs eoPE (blue). Concentrations plotted in ug/L (= ng/mL = mg/L x 1000)."}
 typical_demo <- tibble::tibble(
   id   = 1:2,
-  EOPE = c(0L, 1L),
+  DIS_EOPE = c(0L, 1L),
   WT   = 68,
   AGE  = 31,
   GA   = 27
@@ -189,10 +189,10 @@ typical_events <- build_events(typical_demo)
 
 typical_sim <- rxode2::rxSolve(
   mod_typical, events = typical_events,
-  keep = c("EOPE")
+  keep = c("DIS_EOPE")
 ) |>
   as.data.frame() |>
-  mutate(stratum = ifelse(EOPE == 1, "eoPE", "w/o eoPE"),
+  mutate(stratum = ifelse(DIS_EOPE == 1, "eoPE", "w/o eoPE"),
          Cc_ugL  = Cc * 1000)  # mg/L -> ug/L
 
 ggplot(typical_sim, aes(time, Cc_ugL, colour = stratum)) +
@@ -226,12 +226,12 @@ stratum and individual EBE CL medians by stratum) and the abstract
 ```{r pknca}
 nca_window <- sim |>
   filter(!is.na(Cc), time <= 72) |>
-  mutate(stratum = ifelse(EOPE == 1, "eoPE", "w/o eoPE"),
+  mutate(stratum = ifelse(DIS_EOPE == 1, "eoPE", "w/o eoPE"),
          Cc_ugL  = Cc * 1000) |>
   select(id, time, Cc_ugL, stratum)
 
 dose_df <- demo |>
-  mutate(stratum = ifelse(EOPE == 1, "eoPE", "w/o eoPE")) |>
+  mutate(stratum = ifelse(DIS_EOPE == 1, "eoPE", "w/o eoPE")) |>
   select(id, stratum) |>
   tidyr::crossing(time = c(0, 24)) |>
   mutate(amt = 11.4)
@@ -265,7 +265,7 @@ cohort.
 
 ```{r compare-nca}
 per_subj <- sim |>
-  mutate(stratum = ifelse(EOPE == 1, "eoPE", "w/o eoPE"),
+  mutate(stratum = ifelse(DIS_EOPE == 1, "eoPE", "w/o eoPE"),
          Cc_ugL  = Cc * 1000) |>
   filter(time > 0) |>
   group_by(id, stratum) |>
@@ -352,7 +352,7 @@ AUC0-inf vs (Dose / CL) ratio raises.
   3.1: "keeping the weight-related covariates in the model did not
   result in a significantly better model and therefore was not added
   to the model"). The model file therefore has no `WT` covariate;
-  `covariateData` contains only `EOPE`. The virtual cohort samples
+  `covariateData` contains only `DIS_EOPE`. The virtual cohort samples
   body weight only for descriptive reporting.
 
 - **AUC0-inf vs (Dose / CL) discrepancy.** The published abstract
@@ -378,13 +378,13 @@ AUC0-inf vs (Dose / CL) ratio raises.
   supplement's Tables S2/S3 plus the figure-S5 metabolite VPC for
   validation.
 
-- **EOPE canonical covariate ratified with this extraction.**
+- **DIS_EOPE canonical covariate ratified with this extraction.**
   Early-onset pre-eclampsia (eoPE; pre-eclampsia diagnosed < 34
   weeks gestation) is registered as a new canonical covariate name
   in `inst/references/covariate-columns.md` alongside this model.
   Future models that enrol mixed early-/late-onset cohorts should
   register a separate canonical (e.g., `PREECL` for any-onset PE,
-  `LOPE` for late-onset PE) rather than reusing `EOPE` with relaxed
+  `LOPE` for late-onset PE) rather than reusing `DIS_EOPE` with relaxed
   semantics.
 
 - **Virtual cohort sized for stable medians.** The vignette uses 200

@@ -250,16 +250,16 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Allegaert_2015_paracetamol.R`.
 - **Notes:** Specific scope because the canonical encoding pools all oral contraceptive types (combined / progestin-only) into a single binary; future models that need to distinguish formulations should register a finer-grained canonical (e.g., `CONMED_BIRTHCONTROL_COMBINED`, `CONMED_BIRTHCONTROL_PROGESTIN`). The full-word canonical name was chosen over a shorter `BC_USE` form for clarity in source traces.
 
-### EOPE (**canonical for early-onset pre-eclampsia indicator**)
+### DIS_EOPE (**canonical for early-onset pre-eclampsia indicator**)
 - **Description:** Binary indicator of early-onset pre-eclampsia (eoPE); `1` = eoPE diagnosed before 34 weeks gestation, `0` = not eoPE. Time-fixed per subject within the gestational PK study window. Used by population PK models that compare drug disposition in pregnant women with vs without early-onset pre-eclampsia.
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** general
-- **Reference category:** 0 (no eoPE). Effect form in Schoenmakers 2025 is multiplicative on CL: `CL_eoPE = CL * ThetaPE^EOPE` with `ThetaPE = 0.617` (38% reduction in betamethasone CL when eoPE is present); encoded in nlmixr2 as the log-additive shift `cl <- exp(lcl + etalcl + e_eope_cl * EOPE)` with `e_eope_cl = log(0.617)`.
+- **Reference category:** 0 (no eoPE). Effect form in Schoenmakers 2025 is multiplicative on CL: `CL_eoPE = CL * ThetaPE^DIS_EOPE` with `ThetaPE = 0.617` (38% reduction in betamethasone CL when eoPE is present); encoded in nlmixr2 as the log-additive shift `cl <- exp(lcl + etalcl + e_eope_cl * DIS_EOPE)` with `e_eope_cl = log(0.617)`.
 - **Source aliases:**
   - `PE` -- common abbreviation in obstetric pharmacology papers when the cohort restriction is to early-onset PE only; used in `Schoenmakers_2025_betamethasone.R` (paper notation: `eoPE` / `ThetaPE`).
 - **Example models:** `Schoenmakers_2025_betamethasone.R` (multiplicative effect on CL, encoded via the log-additive form on `lcl`; reduces apparent betamethasone clearance from 15.6 L/h to 9.6 L/h).
-- **Notes:** Distinct from a broader `PREECL` indicator that would pool early-onset, late-onset and postpartum pre-eclampsia. The "early-onset" specifier corresponds to diagnosis before 34 weeks gestation, the conventional clinical cutoff (Phipps 2019 Nat Rev Nephrol). Future papers that enrol mixed early-/late-onset cohorts or that report PE status without the 34-week stratification should register a separate canonical (e.g., `PREECL` for any-onset PE, or `LOPE` for late-onset PE) rather than reusing `EOPE` with relaxed semantics. Distinct from `PREG` (pregnancy status indicator): `EOPE` is a complication-of-pregnancy stratifier within a pregnant cohort, whereas `PREG` discriminates pregnant-vs-non-pregnant subjects. Ratified canonically on 2026-05-11 alongside the Schoenmakers 2025 betamethasone extraction.
+- **Notes:** Distinct from a broader `PREECL` indicator that would pool early-onset, late-onset and postpartum pre-eclampsia. The "early-onset" specifier corresponds to diagnosis before 34 weeks gestation, the conventional clinical cutoff (Phipps 2019 Nat Rev Nephrol). Future papers that enrol mixed early-/late-onset cohorts or that report PE status without the 34-week stratification should register a separate canonical (e.g., `PREECL` for any-onset PE, or `LOPE` for late-onset PE) rather than reusing `DIS_EOPE` with relaxed semantics. Distinct from `PREG` (pregnancy status indicator): `DIS_EOPE` is a complication-of-pregnancy stratifier within a pregnant cohort, whereas `PREG` discriminates pregnant-vs-non-pregnant subjects. Ratified canonically on 2026-05-11 alongside the Schoenmakers 2025 betamethasone extraction.
 
 ## Renal / hepatic function
 
@@ -1552,7 +1552,7 @@ readable.
 - **Example models:** `Lahu_2010_roflumilast.R` (linear additive effects on roflumilast parent CL (-39.4%) and V1 (+184%) and on roflumilast N-oxide CL (-7.9%) and Vd (-21.4%); reference category 0 = pooled phase I healthy volunteers, 1 = pooled phase II/III moderate-to-severe COPD patient).
 - **Notes:** Used when a population PK/PD model pools healthy volunteers with COPD patients and the COPD-vs-HV contrast is retained as a covariate on PK parameters. Scope: specific because the complement reference category and the COPD-severity inclusion criteria are paper-defined.
 
-### DIS_MORBOBESE (**canonical for morbidly obese cohort indicator**)
+### DIS_OBESE_MORBID (**canonical for morbidly obese cohort indicator**)
 - **Description:** 1 = morbidly obese patient (BMI > 40 kg/m^2 in the canonical definition; typical pooled-analysis enrollment criterion is bariatric-surgery patients), 0 = non-obese subject (typically healthy volunteer pooled in the source analysis). Time-fixed per subject.
 - **Units:** (binary)
 - **Type:** binary
@@ -1560,7 +1560,7 @@ readable.
 - **Reference category:** 0 (non-obese subject; the complement group is paper-defined -- for de Hoogd 2017 the reference is the pooled healthy-volunteer cohort from Sarton 2000 and Romberg 2004).
 - **Source aliases:** none known; source NONMEM control streams typically use ad-hoc names (e.g., `OBESE`, `MO`, `COHORT`).
 - **Example models:** `deHoogd_2017_morphine.R` (selects per-cohort proportional residual error magnitudes for each of three observed species -- morphine, M3G, M6G -- after a pooled-cohort fit of 20 morbidly obese surgical patients and 20 healthy volunteers).
-- **Notes:** Used when a population PK or PK/PD model pools morbidly obese patients with a non-obese reference population (typically healthy volunteers) and the cohort indicator selects per-cohort parameter values (residual error magnitudes, study-specific bioavailability, or similar). Distinct from `BMI` (which is the continuous body-mass-index covariate used for parameter scaling) -- `DIS_MORBOBESE` is the binary cohort-membership flag and does not encode a specific BMI threshold for general use; the threshold is paper-defined. Scope: specific because the complement reference category is paper-defined. Ratified canonically on 2026-05-11.
+- **Notes:** Used when a population PK or PK/PD model pools morbidly obese patients with a non-obese reference population (typically healthy volunteers) and the cohort indicator selects per-cohort parameter values (residual error magnitudes, study-specific bioavailability, or similar). Distinct from `BMI` (which is the continuous body-mass-index covariate used for parameter scaling) -- `DIS_OBESE_MORBID` is the binary cohort-membership flag and does not encode a specific BMI threshold for general use; the threshold is paper-defined. Scope: specific because the complement reference category is paper-defined. Ratified canonically on 2026-05-11.
 ### HSCT_URD_7OF8 (**canonical for hematopoietic stem cell transplant from a 7-of-8 HLA-matched unrelated donor**)
 - **Description:** 1 = patient received an allogeneic hematopoietic stem cell transplant (HSCT) from an unrelated donor (URD) HLA-matched at 7 of 8 alleles (single-allele mismatch), 0 = otherwise (the union of patients not in this transplant cohort, including non-HSCT patients and HSCT recipients matched at all 8 alleles). Time-fixed per subject.
 - **Units:** (binary)

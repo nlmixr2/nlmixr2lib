@@ -13,7 +13,7 @@ deHoogd_2017_morphine <- function() {
     "all power-form normalised to a reference of 98.5 kg (population median).",
     "Proportional residual error is reported separately for the healthy-",
     "volunteer cohort and the morbidly obese cohort, selected via the",
-    "binary indicator DIS_MORBOBESE."
+    "binary indicator DIS_OBESE_MORBID."
   )
   reference <- paste(
     "de Hoogd S, Valitalo PAJ, Dahan A, van Kralingen S,",
@@ -49,7 +49,7 @@ deHoogd_2017_morphine <- function() {
       ),
       source_name        = "TBW"
     ),
-    DIS_MORBOBESE = list(
+    DIS_OBESE_MORBID = list(
       description        = "Morbidly obese cohort indicator",
       units              = "(binary)",
       type               = "binary",
@@ -179,8 +179,8 @@ deHoogd_2017_morphine <- function() {
 
     # ============================================================
     # Residual error - proportional, separate magnitudes for the
-    # healthy-volunteer (DIS_MORBOBESE = 0) and morbidly obese
-    # (DIS_MORBOBESE = 1) cohorts (Table 2 Final model column).
+    # healthy-volunteer (DIS_OBESE_MORBID = 0) and morbidly obese
+    # (DIS_OBESE_MORBID = 1) cohorts (Table 2 Final model column).
     # The canonical residual-error parameters propSd, propSd_m3g, and
     # propSd_m6g are derived in model() as cohort-weighted
     # combinations of the four per-cohort SDs below.
@@ -281,14 +281,14 @@ deHoogd_2017_morphine <- function() {
     Cc_m6g <- (central_m6g / vc_m6g) * mw_conv
 
     # ------------------------------------------------------------
-    # Cohort-conditional residual error. DIS_MORBOBESE = 1 selects
-    # the morbidly obese magnitude, DIS_MORBOBESE = 0 selects the
+    # Cohort-conditional residual error. DIS_OBESE_MORBID = 1 selects
+    # the morbidly obese magnitude, DIS_OBESE_MORBID = 0 selects the
     # healthy-volunteer magnitude (Table 2 Final, "Residual
     # variability (%)" block).
     # ------------------------------------------------------------
-    propSd     <- propSd_morphine_hv * (1 - DIS_MORBOBESE) + propSd_morphine_mo * DIS_MORBOBESE
-    propSd_m3g <- propSd_m3g_hv      * (1 - DIS_MORBOBESE) + propSd_m3g_mo      * DIS_MORBOBESE
-    propSd_m6g <- propSd_m6g_hv      * (1 - DIS_MORBOBESE) + propSd_m6g_mo      * DIS_MORBOBESE
+    propSd     <- propSd_morphine_hv * (1 - DIS_OBESE_MORBID) + propSd_morphine_mo * DIS_OBESE_MORBID
+    propSd_m3g <- propSd_m3g_hv      * (1 - DIS_OBESE_MORBID) + propSd_m3g_mo      * DIS_OBESE_MORBID
+    propSd_m6g <- propSd_m6g_hv      * (1 - DIS_OBESE_MORBID) + propSd_m6g_mo      * DIS_OBESE_MORBID
 
     Cc     ~ prop(propSd)
     Cc_m3g ~ prop(propSd_m3g)

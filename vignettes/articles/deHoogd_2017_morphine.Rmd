@@ -85,7 +85,7 @@ Original observed data are not publicly available. The simulation below
 reproduces the four representative individuals shown in de Hoogd 2017 Figure 4:
 body weights 56, 75, 125, and 253 kg. The 56-kg subject is the lightest healthy
 volunteer in the source dataset; the 253-kg subject is the heaviest morbidly
-obese patient. Body-weight category determines `DIS_MORBOBESE` per the source
+obese patient. Body-weight category determines `DIS_OBESE_MORBID` per the source
 inclusion criteria (BMI > 40 kg/m^2 for the morbidly obese cohort): 56 and
 75 kg fall in the healthy-volunteer band, 125 and 253 kg fall in the morbidly
 obese band.
@@ -96,7 +96,7 @@ set.seed(20170516)
 cov_df <- data.frame(
   id            = 1:4,
   WT            = c(56, 75, 125, 253),
-  DIS_MORBOBESE = c(0L, 0L, 1L, 1L),
+  DIS_OBESE_MORBID = c(0L, 0L, 1L, 1L),
   cohort        = factor(c("56 kg (HV)", "75 kg (HV)",
                            "125 kg (MO)", "253 kg (MO)"),
                           levels = c("56 kg (HV)", "75 kg (HV)",
@@ -125,7 +125,7 @@ build_events <- function(cov_df, obs_times, dose_events) {
       mutate(
         id            = row$id,
         WT            = row$WT,
-        DIS_MORBOBESE = row$DIS_MORBOBESE,
+        DIS_OBESE_MORBID = row$DIS_OBESE_MORBID,
         cohort        = as.character(row$cohort)
       )
     obs_rows <- data.frame(
@@ -136,7 +136,7 @@ build_events <- function(cov_df, obs_times, dose_events) {
       evid          = 0L,
       cmt           = "Cc",
       WT            = row$WT,
-      DIS_MORBOBESE = row$DIS_MORBOBESE,
+      DIS_OBESE_MORBID = row$DIS_OBESE_MORBID,
       cohort        = as.character(row$cohort),
       stringsAsFactors = FALSE
     )
@@ -160,7 +160,7 @@ events_bolus <- build_events(
 sim_bolus <- rxode2::rxSolve(
   mod_typical,
   events = events_bolus,
-  keep   = c("cohort", "WT", "DIS_MORBOBESE")
+  keep   = c("cohort", "WT", "DIS_OBESE_MORBID")
 ) |> as.data.frame()
 ```
 
@@ -194,7 +194,7 @@ events_inf <- build_events(
 sim_inf <- rxode2::rxSolve(
   mod_typical,
   events = events_inf,
-  keep   = c("cohort", "WT", "DIS_MORBOBESE")
+  keep   = c("cohort", "WT", "DIS_OBESE_MORBID")
 ) |> as.data.frame()
 ```
 
@@ -417,7 +417,7 @@ are "approximately 5x" and "approximately 3x" respectively (paper Section 3.3).
 - **Cohort-conditional residual error.** The paper reports separate
   proportional residual SDs for the healthy-volunteer and morbidly obese
   cohorts (Table 2). The packaged model parameterizes six per-cohort SDs in
-  `ini()` and combines them in `model()` using the binary `DIS_MORBOBESE`
+  `ini()` and combines them in `model()` using the binary `DIS_OBESE_MORBID`
   indicator, following the Cirincione 2017 study-conditional pattern. The
   per-cohort SD parameters use descriptive names
   (`propSd_morphine_hv`, `propSd_morphine_mo`, etc.) and are combined in
