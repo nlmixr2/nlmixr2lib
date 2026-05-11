@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Quartino 2016 trastuzumab ([doi:10.1007/s00280-015-2922-5](https://doi.org/10.1007/s00280-015-2922-5)) -- women with HER2-positive early breast cancer (HannaH study; subcutaneous fixed 600 mg q3w and intravenous weight-based regimens).
 * List of models vignette is grouped into General / Specific Drugs / DDMoRe with capped-width tables and uses the navbar-style "Drug (Author Year)" name (`DDMoRe: <drug>` for the parameterless DDMoRe entries). Drug-specific articles in `vignettes/articles/` are now hidden from the auto-generated pkgdown Articles index and reachable only via the navbar dropdowns or direct URL. Validation vignettes that previously titled themselves with the machine basename now use the human form so the page title matches the link.
 * Add Diep 2026 donidalorsen ([doi:10.1002/psp4.70206](https://doi.org/10.1002/psp4.70206)) -- pooled healthy volunteers and adult / adolescent patients with hereditary angioedema (ratifies new `DIS_HAE` covariate canonical).
 * Add Attarwala 2023 mRNA-3927 ([doi:10.1089/nat.2022.0036](https://doi.org/10.1089/nat.2022.0036)) -- preclinical PCC-deficient mice, juvenile Sprague-Dawley rats, and cynomolgus monkeys (translational semi-mechanistic PK + PK/PD model for an LNP-encapsulated dual mRNA encoding PCCA / PCCB subunits of propionyl-CoA carboxylase; allometrically scalable to humans).

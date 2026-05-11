@@ -387,6 +387,8 @@ navbar:
         href: articles/Dunn_2025_tranexamicAcid.html
       - text: Trastuzumab (LeTilly 2021)
         href: articles/LeTilly_2021_trastuzumab.html
+      - text: Trastuzumab (Quartino 2016)
+        href: articles/Quartino_2016_trastuzumab.html
       - text: Trastuzumab (Quartino 2019)
         href: articles/Quartino_2019_trastuzumab.html
       - text: TrastuzumabDeruxtecan (Yin 2021)
@@ -741,6 +743,7 @@ articles:
   - articles/Plan_2012_pain
   - articles/Pouzin_2022_tusamitamab
   - articles/Pu_2021_evinacumab
+  - articles/Quartino_2016_trastuzumab
   - articles/Quartino_2019_trastuzumab
   - articles/Robbie_2012_palivizumab
   - articles/Rodrigues_2017_oxcarbazepine
