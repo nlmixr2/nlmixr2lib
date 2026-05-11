@@ -1,8 +1,8 @@
 ---
-title: "Brillac_2025_isatuximab"
+title: "Isatuximab (Brillac 2025)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Brillac_2025_isatuximab}
+  %\VignetteIndexEntry{Isatuximab (Brillac 2025)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

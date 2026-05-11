@@ -1,8 +1,8 @@
 ---
-title: "Storset_2014_tacrolimus"
+title: "Tacrolimus (Storset 2014)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Storset_2014_tacrolimus}
+  %\VignetteIndexEntry{Tacrolimus (Storset 2014)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

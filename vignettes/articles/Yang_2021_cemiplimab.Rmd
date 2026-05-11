@@ -1,8 +1,8 @@
 ---
-title: "Yang_2021_cemiplimab"
+title: "Cemiplimab (Yang 2021)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Yang_2021_cemiplimab}
+  %\VignetteIndexEntry{Cemiplimab (Yang 2021)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

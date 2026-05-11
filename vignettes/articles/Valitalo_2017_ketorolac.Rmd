@@ -1,8 +1,8 @@
 ---
-title: "Valitalo_2017_ketorolac"
+title: "Ketorolac (Valitalo 2017)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Valitalo_2017_ketorolac}
+  %\VignetteIndexEntry{Ketorolac (Valitalo 2017)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

@@ -1,8 +1,8 @@
 ---
-title: "Suri_2018_brentuximab"
+title: "Brentuximab (Suri 2018)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Suri_2018_brentuximab}
+  %\VignetteIndexEntry{Brentuximab (Suri 2018)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

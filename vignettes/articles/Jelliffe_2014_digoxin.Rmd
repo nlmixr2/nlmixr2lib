@@ -1,8 +1,8 @@
 ---
-title: "Jelliffe_2014_digoxin"
+title: "Digoxin (Jelliffe 2014)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Jelliffe_2014_digoxin}
+  %\VignetteIndexEntry{Digoxin (Jelliffe 2014)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

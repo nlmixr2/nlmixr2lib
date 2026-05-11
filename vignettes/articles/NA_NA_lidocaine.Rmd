@@ -1,8 +1,8 @@
 ---
-title: "NA_NA_lidocaine"
+title: "DDMoRe: lidocaine"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{NA_NA_lidocaine}
+  %\VignetteIndexEntry{DDMoRe: lidocaine}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

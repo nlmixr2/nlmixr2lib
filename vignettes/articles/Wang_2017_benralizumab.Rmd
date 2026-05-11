@@ -1,8 +1,8 @@
 ---
-title: "Wang_2017_benralizumab"
+title: "Benralizumab (Wang 2017)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Wang_2017_benralizumab}
+  %\VignetteIndexEntry{Benralizumab (Wang 2017)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

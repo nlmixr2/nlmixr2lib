@@ -1,8 +1,8 @@
 ---
-title: "Conrado_2014_alzheimer"
+title: "Alzheimer (Conrado 2014)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Conrado_2014_alzheimer}
+  %\VignetteIndexEntry{Alzheimer (Conrado 2014)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

@@ -1,8 +1,8 @@
 ---
-title: "Bista_2015_fentanyl"
+title: "Fentanyl (Bista 2015)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Bista_2015_fentanyl}
+  %\VignetteIndexEntry{Fentanyl (Bista 2015)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

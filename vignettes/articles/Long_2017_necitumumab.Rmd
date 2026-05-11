@@ -1,8 +1,8 @@
 ---
-title: "Long_2017_necitumumab"
+title: "Necitumumab (Long 2017)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Long_2017_necitumumab}
+  %\VignetteIndexEntry{Necitumumab (Long 2017)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

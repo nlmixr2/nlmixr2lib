@@ -1,8 +1,8 @@
 ---
-title: "Xu_2023_MBG453"
+title: "MBG453 (Xu 2023)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Xu_2023_MBG453}
+  %\VignetteIndexEntry{MBG453 (Xu 2023)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

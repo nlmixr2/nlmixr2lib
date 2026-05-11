@@ -1,8 +1,8 @@
 ---
-title: "Rosario_2015_vedolizumab"
+title: "Vedolizumab (Rosario 2015)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Rosario_2015_vedolizumab}
+  %\VignetteIndexEntry{Vedolizumab (Rosario 2015)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

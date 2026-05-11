@@ -1,8 +1,8 @@
 ---
-title: "Archary_2019_abacavir"
+title: "Abacavir (Archary 2019)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Archary_2019_abacavir}
+  %\VignetteIndexEntry{Abacavir (Archary 2019)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

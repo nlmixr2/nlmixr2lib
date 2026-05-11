@@ -1,8 +1,8 @@
 ---
-title: "Yamada_2025_zolbetuximab"
+title: "Zolbetuximab (Yamada 2025)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Yamada_2025_zolbetuximab}
+  %\VignetteIndexEntry{Zolbetuximab (Yamada 2025)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

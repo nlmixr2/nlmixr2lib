@@ -1,8 +1,8 @@
 ---
-title: "Schindler_2016_sunitinib"
+title: "Sunitinib (Schindler 2016)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Schindler_2016_sunitinib}
+  %\VignetteIndexEntry{Sunitinib (Schindler 2016)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

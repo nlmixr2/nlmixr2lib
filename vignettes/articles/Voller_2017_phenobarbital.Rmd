@@ -1,8 +1,8 @@
 ---
-title: "Voller_2017_phenobarbital"
+title: "Phenobarbital (Voller 2017)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Voller_2017_phenobarbital}
+  %\VignetteIndexEntry{Phenobarbital (Voller 2017)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

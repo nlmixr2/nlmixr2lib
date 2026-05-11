@@ -1,8 +1,8 @@
 ---
-title: "Li_2017_cediranib"
+title: "Cediranib (Li 2017)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Li_2017_cediranib}
+  %\VignetteIndexEntry{Cediranib (Li 2017)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

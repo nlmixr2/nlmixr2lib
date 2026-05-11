@@ -1,8 +1,8 @@
 ---
-title: "Budha_2023_tislelizumab"
+title: "Tislelizumab (Budha 2023)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Budha_2023_tislelizumab}
+  %\VignetteIndexEntry{Tislelizumab (Budha 2023)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

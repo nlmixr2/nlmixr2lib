@@ -1,8 +1,8 @@
 ---
-title: "Jonsson_2005_disufenton"
+title: "Disufenton (Jonsson 2005)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Jonsson_2005_disufenton}
+  %\VignetteIndexEntry{Disufenton (Jonsson 2005)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

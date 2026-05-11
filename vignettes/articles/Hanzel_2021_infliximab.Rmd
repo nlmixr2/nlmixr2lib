@@ -1,8 +1,8 @@
 ---
-title: "Hanzel_2021_infliximab"
+title: "Infliximab (Hanzel 2021)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Hanzel_2021_infliximab}
+  %\VignetteIndexEntry{Infliximab (Hanzel 2021)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

@@ -1,8 +1,8 @@
 ---
-title: "Mulyukov_2018_ranibizumab"
+title: "Ranibizumab (Mulyukov 2018)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Mulyukov_2018_ranibizumab}
+  %\VignetteIndexEntry{Ranibizumab (Mulyukov 2018)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

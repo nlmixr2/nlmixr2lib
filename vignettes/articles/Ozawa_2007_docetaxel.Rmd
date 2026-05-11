@@ -1,8 +1,8 @@
 ---
-title: "Ozawa_2007_docetaxel"
+title: "Docetaxel (Ozawa 2007)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Ozawa_2007_docetaxel}
+  %\VignetteIndexEntry{Docetaxel (Ozawa 2007)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

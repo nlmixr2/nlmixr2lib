@@ -1,8 +1,8 @@
 ---
-title: "Cao_2013_tefibazumab"
+title: "Tefibazumab (Cao 2013)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Cao_2013_tefibazumab}
+  %\VignetteIndexEntry{Tefibazumab (Cao 2013)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

@@ -1,8 +1,8 @@
 ---
-title: "Goel_2016_Sonidegib"
+title: "Sonidegib (Goel 2016)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Goel_2016_Sonidegib}
+  %\VignetteIndexEntry{Sonidegib (Goel 2016)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

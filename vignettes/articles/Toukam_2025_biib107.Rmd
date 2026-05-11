@@ -1,8 +1,8 @@
 ---
-title: "Toukam_2025_biib107"
+title: "Biib107 (Toukam 2025)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Toukam_2025_biib107}
+  %\VignetteIndexEntry{Biib107 (Toukam 2025)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

@@ -1,8 +1,8 @@
 ---
-title: "Panoilia_2015_bevacizumab"
+title: "Bevacizumab (Panoilia 2015)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Panoilia_2015_bevacizumab}
+  %\VignetteIndexEntry{Bevacizumab (Panoilia 2015)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

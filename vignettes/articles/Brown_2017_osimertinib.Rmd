@@ -1,8 +1,8 @@
 ---
-title: "Brown_2017_osimertinib"
+title: "Osimertinib (Brown 2017)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Brown_2017_osimertinib}
+  %\VignetteIndexEntry{Osimertinib (Brown 2017)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

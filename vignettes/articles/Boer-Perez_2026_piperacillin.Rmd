@@ -1,8 +1,8 @@
 ---
-title: "Boer-Perez_2026_piperacillin"
+title: "Piperacillin (Boer-Perez 2026)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Boer-Perez_2026_piperacillin}
+  %\VignetteIndexEntry{Piperacillin (Boer-Perez 2026)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

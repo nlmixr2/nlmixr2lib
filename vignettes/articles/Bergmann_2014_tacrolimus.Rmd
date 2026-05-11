@@ -1,8 +1,8 @@
 ---
-title: "Bergmann_2014_tacrolimus"
+title: "Tacrolimus (Bergmann 2014)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Bergmann_2014_tacrolimus}
+  %\VignetteIndexEntry{Tacrolimus (Bergmann 2014)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

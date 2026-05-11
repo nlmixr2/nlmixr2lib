@@ -1,8 +1,8 @@
 ---
-title: "Alsultan_2017_pyrazinamide"
+title: "Pyrazinamide (Alsultan 2017)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Alsultan_2017_pyrazinamide}
+  %\VignetteIndexEntry{Pyrazinamide (Alsultan 2017)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

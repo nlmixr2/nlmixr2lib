@@ -1,8 +1,8 @@
 ---
-title: "Soehoel_2022_tralokinumab"
+title: "Tralokinumab (Soehoel 2022)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Soehoel_2022_tralokinumab}
+  %\VignetteIndexEntry{Tralokinumab (Soehoel 2022)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

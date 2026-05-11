@@ -1,8 +1,8 @@
 ---
-title: "Dunlap_2025_tacrolimus"
+title: "Tacrolimus (Dunlap 2025)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Dunlap_2025_tacrolimus}
+  %\VignetteIndexEntry{Tacrolimus (Dunlap 2025)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

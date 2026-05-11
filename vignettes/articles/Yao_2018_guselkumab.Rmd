@@ -1,8 +1,8 @@
 ---
-title: "Yao_2018_guselkumab"
+title: "Guselkumab (Yao 2018)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Yao_2018_guselkumab}
+  %\VignetteIndexEntry{Guselkumab (Yao 2018)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

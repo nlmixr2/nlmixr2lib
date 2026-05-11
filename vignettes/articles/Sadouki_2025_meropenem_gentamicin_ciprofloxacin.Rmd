@@ -1,8 +1,8 @@
 ---
-title: "Sadouki_2025_meropenem_gentamicin_ciprofloxacin"
+title: "Meropenem gentamicin ciprofloxacin (Sadouki 2025)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Sadouki_2025_meropenem_gentamicin_ciprofloxacin}
+  %\VignetteIndexEntry{Meropenem gentamicin ciprofloxacin (Sadouki 2025)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

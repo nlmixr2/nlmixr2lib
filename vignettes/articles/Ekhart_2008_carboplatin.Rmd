@@ -1,8 +1,8 @@
 ---
-title: "Ekhart_2008_carboplatin"
+title: "Carboplatin (Ekhart 2008)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Ekhart_2008_carboplatin}
+  %\VignetteIndexEntry{Carboplatin (Ekhart 2008)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

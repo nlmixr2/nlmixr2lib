@@ -1,8 +1,8 @@
 ---
-title: "Yassen_2025_asundexian"
+title: "Asundexian (Yassen 2025)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Yassen_2025_asundexian}
+  %\VignetteIndexEntry{Asundexian (Yassen 2025)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

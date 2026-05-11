@@ -1,8 +1,8 @@
 ---
-title: "Ngo_2020_HL2351"
+title: "HL2351 (Ngo 2020)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Ngo_2020_HL2351}
+  %\VignetteIndexEntry{HL2351 (Ngo 2020)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

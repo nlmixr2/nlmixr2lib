@@ -1,8 +1,8 @@
 ---
-title: "Hennig_2006_itraconazole"
+title: "Itraconazole (Hennig 2006)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Hennig_2006_itraconazole}
+  %\VignetteIndexEntry{Itraconazole (Hennig 2006)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

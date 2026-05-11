@@ -1,8 +1,8 @@
 ---
-title: "Tortorici_2017_a1pi"
+title: "A1pi (Tortorici 2017)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Tortorici_2017_a1pi}
+  %\VignetteIndexEntry{A1pi (Tortorici 2017)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

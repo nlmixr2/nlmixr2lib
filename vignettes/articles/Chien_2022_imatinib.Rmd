@@ -1,8 +1,8 @@
 ---
-title: "Chien_2022_imatinib"
+title: "Imatinib (Chien 2022)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Chien_2022_imatinib}
+  %\VignetteIndexEntry{Imatinib (Chien 2022)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

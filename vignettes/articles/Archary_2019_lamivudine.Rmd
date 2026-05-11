@@ -1,8 +1,8 @@
 ---
-title: "Archary_2019_lamivudine"
+title: "Lamivudine (Archary 2019)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Archary_2019_lamivudine}
+  %\VignetteIndexEntry{Lamivudine (Archary 2019)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

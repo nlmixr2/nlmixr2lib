@@ -1,8 +1,8 @@
 ---
-title: "Mo_2018_olaratumab"
+title: "Olaratumab (Mo 2018)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Mo_2018_olaratumab}
+  %\VignetteIndexEntry{Olaratumab (Mo 2018)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

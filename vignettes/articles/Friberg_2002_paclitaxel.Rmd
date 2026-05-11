@@ -1,8 +1,8 @@
 ---
-title: "Friberg_2002_paclitaxel"
+title: "Paclitaxel (Friberg 2002)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Friberg_2002_paclitaxel}
+  %\VignetteIndexEntry{Paclitaxel (Friberg 2002)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

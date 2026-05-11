@@ -1,8 +1,8 @@
 ---
-title: "Sanghavi_2020_ipilimumab"
+title: "Ipilimumab (Sanghavi 2020)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Sanghavi_2020_ipilimumab}
+  %\VignetteIndexEntry{Ipilimumab (Sanghavi 2020)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

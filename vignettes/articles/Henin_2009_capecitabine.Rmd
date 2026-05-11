@@ -1,8 +1,8 @@
 ---
-title: "Henin_2009_capecitabine"
+title: "Capecitabine (Henin 2009)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Henin_2009_capecitabine}
+  %\VignetteIndexEntry{Capecitabine (Henin 2009)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

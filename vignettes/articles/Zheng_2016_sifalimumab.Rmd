@@ -1,8 +1,8 @@
 ---
-title: "Zheng_2016_sifalimumab"
+title: "Sifalimumab (Zheng 2016)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Zheng_2016_sifalimumab}
+  %\VignetteIndexEntry{Sifalimumab (Zheng 2016)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

@@ -1,8 +1,8 @@
 ---
-title: "Ogasawara_2020_durvalumab"
+title: "Durvalumab (Ogasawara 2020)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Ogasawara_2020_durvalumab}
+  %\VignetteIndexEntry{Durvalumab (Ogasawara 2020)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

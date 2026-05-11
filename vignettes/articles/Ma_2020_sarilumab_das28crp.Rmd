@@ -1,8 +1,8 @@
 ---
-title: "Ma_2020_sarilumab_das28crp"
+title: "Sarilumab das28crp (Ma 2020)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Ma_2020_sarilumab_das28crp}
+  %\VignetteIndexEntry{Sarilumab das28crp (Ma 2020)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

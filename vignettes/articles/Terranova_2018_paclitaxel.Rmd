@@ -1,8 +1,8 @@
 ---
-title: "Terranova_2018_paclitaxel"
+title: "Paclitaxel (Terranova 2018)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Terranova_2018_paclitaxel}
+  %\VignetteIndexEntry{Paclitaxel (Terranova 2018)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

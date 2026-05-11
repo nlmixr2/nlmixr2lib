@@ -1,8 +1,8 @@
 ---
-title: "Lin_2024_casirivimab"
+title: "Casirivimab (Lin 2024)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Lin_2024_casirivimab}
+  %\VignetteIndexEntry{Casirivimab (Lin 2024)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

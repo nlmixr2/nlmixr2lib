@@ -1,8 +1,8 @@
 ---
-title: "Dao_2020_sultiame"
+title: "Sultiame (Dao 2020)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Dao_2020_sultiame}
+  %\VignetteIndexEntry{Sultiame (Dao 2020)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

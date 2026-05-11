@@ -1,8 +1,8 @@
 ---
-title: "Rodrigues_2017_oxcarbazepine"
+title: "Oxcarbazepine (Rodrigues 2017)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Rodrigues_2017_oxcarbazepine}
+  %\VignetteIndexEntry{Oxcarbazepine (Rodrigues 2017)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

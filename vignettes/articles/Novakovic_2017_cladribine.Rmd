@@ -1,8 +1,8 @@
 ---
-title: "Novakovic_2017_cladribine"
+title: "Cladribine (Novakovic 2017)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Novakovic_2017_cladribine}
+  %\VignetteIndexEntry{Cladribine (Novakovic 2017)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

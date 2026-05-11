@@ -1,8 +1,8 @@
 ---
-title: "Kuchimanchi_2018_evolocumab"
+title: "Evolocumab (Kuchimanchi 2018)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Kuchimanchi_2018_evolocumab}
+  %\VignetteIndexEntry{Evolocumab (Kuchimanchi 2018)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

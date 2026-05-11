@@ -1,8 +1,8 @@
 ---
-title: "NA_NA_tte_gompertz_ev2"
+title: "DDMoRe: tte gompertz ev2"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{NA_NA_tte_gompertz_ev2}
+  %\VignetteIndexEntry{DDMoRe: tte gompertz ev2}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

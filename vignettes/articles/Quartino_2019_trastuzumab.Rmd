@@ -1,8 +1,8 @@
 ---
-title: "Quartino_2019_trastuzumab"
+title: "Trastuzumab (Quartino 2019)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Quartino_2019_trastuzumab}
+  %\VignetteIndexEntry{Trastuzumab (Quartino 2019)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

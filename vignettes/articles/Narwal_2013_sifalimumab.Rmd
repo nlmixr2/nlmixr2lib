@@ -1,8 +1,8 @@
 ---
-title: "Narwal_2013_sifalimumab"
+title: "Sifalimumab (Narwal 2013)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Narwal_2013_sifalimumab}
+  %\VignetteIndexEntry{Sifalimumab (Narwal 2013)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

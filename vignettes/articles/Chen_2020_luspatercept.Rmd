@@ -1,8 +1,8 @@
 ---
-title: "Chen_2020_luspatercept"
+title: "Luspatercept (Chen 2020)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Chen_2020_luspatercept}
+  %\VignetteIndexEntry{Luspatercept (Chen 2020)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

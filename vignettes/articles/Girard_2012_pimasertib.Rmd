@@ -1,8 +1,8 @@
 ---
-title: "Girard_2012_pimasertib"
+title: "Pimasertib (Girard 2012)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Girard_2012_pimasertib}
+  %\VignetteIndexEntry{Pimasertib (Girard 2012)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

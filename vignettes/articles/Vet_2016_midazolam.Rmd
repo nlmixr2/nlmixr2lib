@@ -1,8 +1,8 @@
 ---
-title: "Vet_2016_midazolam"
+title: "Midazolam (Vet 2016)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Vet_2016_midazolam}
+  %\VignetteIndexEntry{Midazolam (Vet 2016)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

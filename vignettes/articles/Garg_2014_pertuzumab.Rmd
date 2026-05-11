@@ -1,8 +1,8 @@
 ---
-title: "Garg_2014_pertuzumab"
+title: "Pertuzumab (Garg 2014)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Garg_2014_pertuzumab}
+  %\VignetteIndexEntry{Pertuzumab (Garg 2014)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

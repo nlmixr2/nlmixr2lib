@@ -1,8 +1,8 @@
 ---
-title: "Berends_2019_infliximab"
+title: "Infliximab (Berends 2019)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Berends_2019_infliximab}
+  %\VignetteIndexEntry{Infliximab (Berends 2019)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

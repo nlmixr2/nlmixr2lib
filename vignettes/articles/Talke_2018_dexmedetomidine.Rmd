@@ -1,8 +1,8 @@
 ---
-title: "Talke_2018_dexmedetomidine"
+title: "Dexmedetomidine (Talke 2018)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Talke_2018_dexmedetomidine}
+  %\VignetteIndexEntry{Dexmedetomidine (Talke 2018)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

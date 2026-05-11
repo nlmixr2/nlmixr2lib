@@ -1,8 +1,8 @@
 ---
-title: "Hwang_2023_monalizumab"
+title: "Monalizumab (Hwang 2023)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Hwang_2023_monalizumab}
+  %\VignetteIndexEntry{Monalizumab (Hwang 2023)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

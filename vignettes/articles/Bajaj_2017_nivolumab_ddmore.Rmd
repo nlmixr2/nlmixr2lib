@@ -1,8 +1,8 @@
 ---
-title: "Bajaj_2017_nivolumab_ddmore"
+title: "Nivolumab ddmore (Bajaj 2017)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Bajaj_2017_nivolumab_ddmore}
+  %\VignetteIndexEntry{Nivolumab ddmore (Bajaj 2017)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

@@ -1,8 +1,8 @@
 ---
-title: "Tiraboschi_2025_amlitelimab"
+title: "Amlitelimab (Tiraboschi 2025)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Tiraboschi_2025_amlitelimab}
+  %\VignetteIndexEntry{Amlitelimab (Tiraboschi 2025)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

@@ -1,8 +1,8 @@
 ---
-title: "Akbar_2025_voriconazole"
+title: "Voriconazole (Akbar 2025)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Akbar_2025_voriconazole}
+  %\VignetteIndexEntry{Voriconazole (Akbar 2025)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

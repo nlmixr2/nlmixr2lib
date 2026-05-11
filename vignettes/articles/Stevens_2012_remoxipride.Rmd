@@ -1,8 +1,8 @@
 ---
-title: "Stevens_2012_remoxipride"
+title: "Remoxipride (Stevens 2012)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Stevens_2012_remoxipride}
+  %\VignetteIndexEntry{Remoxipride (Stevens 2012)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

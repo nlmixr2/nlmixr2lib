@@ -1,8 +1,8 @@
 ---
-title: "Zierhut_2008_osteoprotegerin"
+title: "Osteoprotegerin (Zierhut 2008)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Zierhut_2008_osteoprotegerin}
+  %\VignetteIndexEntry{Osteoprotegerin (Zierhut 2008)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

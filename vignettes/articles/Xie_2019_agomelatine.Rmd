@@ -1,8 +1,8 @@
 ---
-title: "Xie_2019_agomelatine"
+title: "Agomelatine (Xie 2019)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Xie_2019_agomelatine}
+  %\VignetteIndexEntry{Agomelatine (Xie 2019)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

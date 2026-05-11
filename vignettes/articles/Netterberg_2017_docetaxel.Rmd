@@ -1,8 +1,8 @@
 ---
-title: "Netterberg_2017_docetaxel"
+title: "Docetaxel (Netterberg 2017)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Netterberg_2017_docetaxel}
+  %\VignetteIndexEntry{Docetaxel (Netterberg 2017)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

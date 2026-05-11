@@ -1,8 +1,8 @@
 ---
-title: "Moein_2022_etrolizumab"
+title: "Etrolizumab (Moein 2022)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Moein_2022_etrolizumab}
+  %\VignetteIndexEntry{Etrolizumab (Moein 2022)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

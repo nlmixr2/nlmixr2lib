@@ -1,8 +1,8 @@
 ---
-title: "Wade_2015_certolizumab"
+title: "Certolizumab (Wade 2015)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Wade_2015_certolizumab}
+  %\VignetteIndexEntry{Certolizumab (Wade 2015)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

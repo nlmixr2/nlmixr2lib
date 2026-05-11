@@ -1,8 +1,8 @@
 ---
-title: "Robbie_2012_palivizumab"
+title: "Palivizumab (Robbie 2012)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Robbie_2012_palivizumab}
+  %\VignetteIndexEntry{Palivizumab (Robbie 2012)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

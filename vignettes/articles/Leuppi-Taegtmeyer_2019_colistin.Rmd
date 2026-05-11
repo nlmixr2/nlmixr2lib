@@ -1,8 +1,8 @@
 ---
-title: "Leuppi-Taegtmeyer_2019_colistin"
+title: "Colistin (Leuppi-Taegtmeyer 2019)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Leuppi-Taegtmeyer_2019_colistin}
+  %\VignetteIndexEntry{Colistin (Leuppi-Taegtmeyer 2019)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

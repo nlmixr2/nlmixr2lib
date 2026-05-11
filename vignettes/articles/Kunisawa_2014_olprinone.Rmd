@@ -1,8 +1,8 @@
 ---
-title: "Kunisawa_2014_olprinone"
+title: "Olprinone (Kunisawa 2014)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Kunisawa_2014_olprinone}
+  %\VignetteIndexEntry{Olprinone (Kunisawa 2014)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

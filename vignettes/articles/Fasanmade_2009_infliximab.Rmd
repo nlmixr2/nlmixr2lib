@@ -1,8 +1,8 @@
 ---
-title: "Fasanmade_2009_infliximab"
+title: "Infliximab (Fasanmade 2009)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Fasanmade_2009_infliximab}
+  %\VignetteIndexEntry{Infliximab (Fasanmade 2009)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

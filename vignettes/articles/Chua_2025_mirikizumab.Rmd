@@ -1,8 +1,8 @@
 ---
-title: "Chua_2025_mirikizumab"
+title: "Mirikizumab (Chua 2025)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Chua_2025_mirikizumab}
+  %\VignetteIndexEntry{Mirikizumab (Chua 2025)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

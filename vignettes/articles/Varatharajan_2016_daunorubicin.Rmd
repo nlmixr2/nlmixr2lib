@@ -1,8 +1,8 @@
 ---
-title: "Varatharajan_2016_daunorubicin"
+title: "Daunorubicin (Varatharajan 2016)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Varatharajan_2016_daunorubicin}
+  %\VignetteIndexEntry{Daunorubicin (Varatharajan 2016)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

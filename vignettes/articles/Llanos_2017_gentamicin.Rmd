@@ -1,8 +1,8 @@
 ---
-title: "Llanos_2017_gentamicin"
+title: "Gentamicin (Llanos 2017)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Llanos_2017_gentamicin}
+  %\VignetteIndexEntry{Gentamicin (Llanos 2017)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

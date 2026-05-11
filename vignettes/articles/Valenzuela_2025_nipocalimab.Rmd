@@ -1,8 +1,8 @@
 ---
-title: "Valenzuela_2025_nipocalimab"
+title: "Nipocalimab (Valenzuela 2025)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Valenzuela_2025_nipocalimab}
+  %\VignetteIndexEntry{Nipocalimab (Valenzuela 2025)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

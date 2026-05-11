@@ -1,8 +1,8 @@
 ---
-title: "Zhou_2025_brentuximab"
+title: "Brentuximab (Zhou 2025)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Zhou_2025_brentuximab}
+  %\VignetteIndexEntry{Brentuximab (Zhou 2025)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

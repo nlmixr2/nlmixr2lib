@@ -1,8 +1,8 @@
 ---
-title: "NA_NA_tte_lognormal"
+title: "DDMoRe: tte lognormal"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{NA_NA_tte_lognormal}
+  %\VignetteIndexEntry{DDMoRe: tte lognormal}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

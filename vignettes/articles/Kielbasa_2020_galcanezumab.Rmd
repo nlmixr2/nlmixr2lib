@@ -1,8 +1,8 @@
 ---
-title: "Kielbasa_2020_galcanezumab"
+title: "Galcanezumab (Kielbasa 2020)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Kielbasa_2020_galcanezumab}
+  %\VignetteIndexEntry{Galcanezumab (Kielbasa 2020)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

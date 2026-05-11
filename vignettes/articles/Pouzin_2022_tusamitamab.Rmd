@@ -1,8 +1,8 @@
 ---
-title: "Pouzin_2022_tusamitamab"
+title: "Tusamitamab (Pouzin 2022)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Pouzin_2022_tusamitamab}
+  %\VignetteIndexEntry{Tusamitamab (Pouzin 2022)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

@@ -1,8 +1,8 @@
 ---
-title: "Delattre_2010_amikacin"
+title: "Amikacin (Delattre 2010)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Delattre_2010_amikacin}
+  %\VignetteIndexEntry{Amikacin (Delattre 2010)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

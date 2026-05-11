@@ -1,8 +1,8 @@
 ---
-title: "Ayyar_2024_givosiran"
+title: "Givosiran (Ayyar 2024)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Ayyar_2024_givosiran}
+  %\VignetteIndexEntry{Givosiran (Ayyar 2024)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

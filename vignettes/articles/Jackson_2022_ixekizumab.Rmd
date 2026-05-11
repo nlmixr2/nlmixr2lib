@@ -1,8 +1,8 @@
 ---
-title: "Jackson_2022_ixekizumab"
+title: "Ixekizumab (Jackson 2022)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Jackson_2022_ixekizumab}
+  %\VignetteIndexEntry{Ixekizumab (Jackson 2022)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

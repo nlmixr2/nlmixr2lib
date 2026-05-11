@@ -1,8 +1,8 @@
 ---
-title: "Koopman_2023_factorix"
+title: "Factorix (Koopman 2023)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Koopman_2023_factorix}
+  %\VignetteIndexEntry{Factorix (Koopman 2023)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

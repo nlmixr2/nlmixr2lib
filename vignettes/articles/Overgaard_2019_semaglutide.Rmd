@@ -1,8 +1,8 @@
 ---
-title: "Overgaard_2019_semaglutide"
+title: "Semaglutide (Overgaard 2019)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Overgaard_2019_semaglutide}
+  %\VignetteIndexEntry{Semaglutide (Overgaard 2019)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

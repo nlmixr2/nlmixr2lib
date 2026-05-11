@@ -1,8 +1,8 @@
 ---
-title: "Wojciechowski_2022_domagrozumab"
+title: "Domagrozumab (Wojciechowski 2022)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Wojciechowski_2022_domagrozumab}
+  %\VignetteIndexEntry{Domagrozumab (Wojciechowski 2022)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

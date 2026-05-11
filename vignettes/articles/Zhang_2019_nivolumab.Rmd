@@ -1,8 +1,8 @@
 ---
-title: "Zhang_2019_nivolumab"
+title: "Nivolumab (Zhang 2019)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Zhang_2019_nivolumab}
+  %\VignetteIndexEntry{Nivolumab (Zhang 2019)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

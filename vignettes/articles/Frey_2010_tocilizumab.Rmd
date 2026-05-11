@@ -1,8 +1,8 @@
 ---
-title: "Frey_2010_tocilizumab"
+title: "Tocilizumab (Frey 2010)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Frey_2010_tocilizumab}
+  %\VignetteIndexEntry{Tocilizumab (Frey 2010)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

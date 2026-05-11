@@ -1,8 +1,8 @@
 ---
-title: "Almquist_2022_anifrolumab"
+title: "Anifrolumab (Almquist 2022)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Almquist_2022_anifrolumab}
+  %\VignetteIndexEntry{Anifrolumab (Almquist 2022)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

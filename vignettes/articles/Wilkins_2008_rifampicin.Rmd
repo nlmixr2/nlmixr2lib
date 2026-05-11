@@ -1,8 +1,8 @@
 ---
-title: "Wilkins_2008_rifampicin"
+title: "Rifampicin (Wilkins 2008)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Wilkins_2008_rifampicin}
+  %\VignetteIndexEntry{Rifampicin (Wilkins 2008)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
