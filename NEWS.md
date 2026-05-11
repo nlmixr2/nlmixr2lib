@@ -3,6 +3,7 @@
 # development version
 
 * List of models vignette is grouped into General / Specific Drugs / DDMoRe with capped-width tables and uses the navbar-style "Drug (Author Year)" name (`DDMoRe: <drug>` for the parameterless DDMoRe entries). Drug-specific articles in `vignettes/articles/` are now hidden from the auto-generated pkgdown Articles index and reachable only via the navbar dropdowns or direct URL. Validation vignettes that previously titled themselves with the machine basename now use the human form so the page title matches the link.
+* Add Doldan-Martelli 2013 EGF-IFN chimeric ligand ([doi:10.1038/psp.2013.2](https://doi.org/10.1038/psp.2013.2)) -- in-vitro Daudi / Daudi-EGFR cells (mechanistic two-receptor binding model for an EGF-IFNalpha-2a chimera with selectivity-by-affinity-mutant analysis).
 * Add Tetschke 2018 erythropoiesis ([doi:10.3390/pr6090157](https://doi.org/10.3390/pr6090157)) -- healthy adult male volunteers undergoing a single 1-unit blood donation (three-compartment endogenous mixed-effects model for red blood cell regeneration after phlebotomy; ratifies new `THB_MASS` covariate canonical for total hemoglobin mass measured by CO-rebreathing).
 * Add Ekhart 2008 carboplatin ([doi:10.1007/s00280-008-0856-x](https://doi.org/10.1007/s00280-008-0856-x)) -- adult cancer patients (underweight to obese) receiving combination chemotherapy.
 * Add Aregbe 2012 alvespimycin / 17-DMAG ([doi:10.1007/s00280-012-1859-1](https://doi.org/10.1007/s00280-012-1859-1)) -- adult patients with advanced solid tumors.
