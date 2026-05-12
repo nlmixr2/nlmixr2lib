@@ -23,26 +23,29 @@
   desc <- NULL
   for (d in c(cwd, dirname(cwd), dirname(dirname(cwd)))) {
     p <- file.path(d, "DESCRIPTION")
-    if (file.exists(p)) { desc <- p; break }
-  }
-  if (!is.null(desc) && grepl("^Package:\\s*nlmixr2lib",
-                              readLines(desc, n = 1L, warn = FALSE))) {
-    if (requireNamespace("pkgload", quietly = TRUE)) {
-      suppressPackageStartupMessages(
-        pkgload::load_all(dirname(desc), quiet = TRUE)
-      )
-      return(invisible(NULL))
-    }
-    if (requireNamespace("devtools", quietly = TRUE)) {
-      suppressPackageStartupMessages(
-        devtools::load_all(dirname(desc), quiet = TRUE)
-      )
-      return(invisible(NULL))
+    if (file.exists(p)) {
+      desc <- p
+      break
     }
   }
-  suppressPackageStartupMessages(
-    library(nlmixr2lib, warn.conflicts = FALSE)
+  is_pkg <- !is.null(desc) && grepl(
+    "^Package:\\s*nlmixr2lib",
+    readLines(desc, n = 1L, warn = FALSE)
   )
+  if (is_pkg && requireNamespace("pkgload", quietly = TRUE)) {
+    suppressPackageStartupMessages(
+      pkgload::load_all(dirname(desc), quiet = TRUE)
+    )
+  } else if (is_pkg && requireNamespace("devtools", quietly = TRUE)) {
+    suppressPackageStartupMessages(
+      devtools::load_all(dirname(desc), quiet = TRUE)
+    )
+  } else {
+    suppressPackageStartupMessages(
+      library(nlmixr2lib, warn.conflicts = FALSE)
+    )
+  }
+  invisible(NULL)
 }
 .loadNlmixr2lib()
 
