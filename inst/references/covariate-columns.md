@@ -877,6 +877,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Zecchin_2016_tumorovarian.R` (Zecchin 2016 SLD model for advanced ovarian cancer, DDMODEL00000217), `Zecchin_2016_survival.R` (Zecchin 2016 OS model, DDMODEL00000218).
 - **Notes:** Specific scope. The Zecchin 2016 SLD and OS models use the value directly in the death-rate term `kd1 * AUC_GEM * tumorSize`, with an internal `/100` numerical scaling carried verbatim from the source `$DES` block.
 
+### AUC_PAZO (**canonical for per-period mean AUC of pazopanib**)
+- **Description:** Per-period (per-dose-group in preclinical xenograft studies; per-subject mean dose-adjusted in clinical studies) mean AUC of pazopanib used as the drug-exposure covariate driving the antiangiogenic and cytotoxic effect rates in semi-mechanistic tumour-growth / angiogenesis-inhibition (TGI) models of pazopanib in renal-cell carcinoma. Time-varying step-wise (held constant within a treatment period and resetting when dose level changes or treatment ends).
+- **Units:** `ug*h/mL` (`= mg*h/L`). Document per-model via `covariateData[[AUC_PAZO]]$units`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters via power form `a = a0 * AUC_PAZO^e_auc_pazo_a` and `c = c0 * AUC_PAZO^e_auc_pazo_c`. Set to 0 in periods where pazopanib is not administered; the model rate terms reduce to baseline drug-off (a, c -> 0 when AUC_PAZO -> 0) under that convention.
+- **Source aliases:**
+  - `AUC` -- used in `Ouerdani_2015_pazopanib_mouse.R` and `Ouerdani_2015_pazopanib.R` (Ouerdani 2015 Methods Equations 2-3; preclinical values 220.2, 656.8, 1140.8 ug*h/mL for the 10, 30, 100 mg/kg mouse dose groups; clinical mean 771.6 ug*h/mL for 800 mg QD pazopanib in RCC patients, with per-subject values 629.4-802.4 ug*h/mL derived from an Emax fit to mean AUCs at the patient's dose history).
+- **Example models:** `Ouerdani_2015_pazopanib_mouse.R` (preclinical TGI in CAKI-2 xenograft mice; AUC enters as `c = c0 * AUC_PAZO^0.332` only -- the cytotoxic exponent `e_auc_pazo_a` was fixed to 0 because the in-mouse cytotoxic effect did not vary with exposure across the 10-100 mg/kg range), `Ouerdani_2015_pazopanib.R` (clinical TGI in RCC patients; AUC enters as both `a = a0 * AUC_PAZO^0.125` and `c = c0 * AUC_PAZO^0.142`).
+- **Notes:** Specific scope because the column meaning is tied to a particular drug (pazopanib) and the power-form parameterisation that the Ouerdani 2015 model uses. Reusing the name for a different tyrosine-kinase inhibitor is not appropriate -- register a sibling canonical (`AUC_SORAF` for sorafenib, `AUC_SUNI` for sunitinib, etc.) when needed. The Ouerdani 2015 paper reports the preclinical AUCs in `ug*h/mL` from a separate preclinical PK study (cited as the FDA Pharmacology Review for pazopanib NDA 022465); the clinical AUCs come from an Emax fit (Equation derived from Methods) to pooled mean AUCs at varying daily doses (5 mg to 2000 mg) across five prior pazopanib trials. Ratified canonically on 2026-05-12 alongside the Ouerdani 2015 pazopanib mouse and clinical extractions.
+
 ### CLI (**canonical for individual posthoc clearance from an upstream popPK fit**)
 - **Description:** Subject-specific empirical-Bayes (posthoc) total plasma clearance from a separately published population PK model that the current PD model treats as a fixed input. Used as a per-subject (time-fixed) covariate in PD-only models that derive a per-cycle exposure metric (e.g., AUC = DOSE / CLI) without instantiating a PK ODE.
 - **Units:** L/h (document per-model via `covariateData[[CLI]]$units`).
@@ -1425,8 +1436,8 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Scope:** specific
 - **Reference category:** 0 (patient subject; the complement group is the union of disease cohorts pooled in the source analysis).
 - **Source aliases:** none known; healthy-participant indicators in source NONMEM control streams typically use ad-hoc names (e.g., `HV`, `HEALTHY`, `DIS_HV`).
-- **Example models:** `Nikanjam_2019_siltuximab.R` (multiplicative effects: 0.77 on CL, 0.83 on Vss; reference category is the pooled non-healthy oncology cohort), `Okada_2025_rocatinlimab.R` (multiplicative shift `1 - 0.532` on Vmax when 1; reference complement is the pooled atopic-dermatitis + ulcerative-colitis + plaque-psoriasis patient cohort), `Yang_2024_axatilimab.R` (multiplicative effect on baseline NCMC: `BL_NCMC x exp(1.22 x DIS_CANCER + 0.618 x DIS_HEALTHY)`; reference category cGVHD), `Goel_2016_Sonidegib.R` (multiplicative power-form effect on CL/F: `2.96^DIS_HEALTHY`; reference category is the pooled cancer-patient cohort across X2101 / X1101 / A2201), `Brown_2017_osimertinib.R` (linear factor `(1 + 0.44 x DIS_HEALTHY)` on apparent osimertinib clearance and `(1 + 1.25 x DIS_HEALTHY)` on apparent AZ5104 clearance; reference category is the pooled NSCLC cohort across AURA / AURA2).
-- **Notes:** Used when a population PK model pools healthy participants with patients across heterogeneous indications and the healthy-vs-patient contrast is retained as a covariate. Scope: specific because the complement reference category is paper-defined (Nikanjam 2019 reference is "all non-healthy, non-Castleman, non-SMM tumor types"; Okada 2025 reference is the pooled AD+UC+psoriasis patient cohort; Yang 2024 reference is patients with cGVHD; Goel 2016 reference is the pooled cancer-patient cohort with advanced solid tumors or BCC; Brown 2017 reference is the pooled advanced NSCLC cohort). The retired canonical name `DIS_HV` (healthy-volunteer) was renamed on 2026-05-11 because "volunteer" terminology is discouraged for clinical-trial participants. Ratified canonically on 2026-04-24.
+- **Example models:** `Nikanjam_2019_siltuximab.R` (multiplicative effects: 0.77 on CL, 0.83 on Vss; reference category is the pooled non-healthy oncology cohort), `Okada_2025_rocatinlimab.R` (multiplicative shift `1 - 0.532` on Vmax when 1; reference complement is the pooled atopic-dermatitis + ulcerative-colitis + plaque-psoriasis patient cohort), `Yang_2024_axatilimab.R` (multiplicative effect on baseline NCMC: `BL_NCMC x exp(1.22 x DIS_CANCER + 0.618 x DIS_HEALTHY)`; reference category cGVHD), `Goel_2016_Sonidegib.R` (multiplicative power-form effect on CL/F: `2.96^DIS_HEALTHY`; reference category is the pooled cancer-patient cohort across X2101 / X1101 / A2201), `Brown_2017_osimertinib.R` (linear factor `(1 + 0.44 x DIS_HEALTHY)` on apparent osimertinib clearance and `(1 + 1.25 x DIS_HEALTHY)` on apparent AZ5104 clearance; reference category is the pooled NSCLC cohort across AURA / AURA2), `Lu_2015_vismodegib.R` (additive-on-log-scale shift on ka via `exp(0.671 * DIS_HEALTHY)` and on F via `exp(0.881 * DIS_HEALTHY)` gated on the Phase I formulation indicator; reference category is the pooled cancer-patient cohort across SHH3925g / SHH4610g / SHH4476g).
+- **Notes:** Used when a population PK model pools healthy participants with patients across heterogeneous indications and the healthy-vs-patient contrast is retained as a covariate. Scope: specific because the complement reference category is paper-defined (Nikanjam 2019 reference is "all non-healthy, non-Castleman, non-SMM tumor types"; Okada 2025 reference is the pooled AD+UC+psoriasis patient cohort; Yang 2024 reference is patients with cGVHD; Goel 2016 reference is the pooled cancer-patient cohort with advanced solid tumors or BCC; Brown 2017 reference is the pooled advanced NSCLC cohort; Lu 2015 reference is the pooled cancer-patient cohort with advanced solid tumors / metastatic or locally-advanced BCC). The retired canonical name `DIS_HV` (healthy-volunteer) was renamed on 2026-05-11 because "volunteer" terminology is discouraged for clinical-trial participants. Ratified canonically on 2026-04-24.
 
 ### DIS_CASTLEMAN (**canonical for Castleman's disease indicator**)
 - **Description:** 1 = Castleman's disease (multicentric or unicentric), 0 = not Castleman's disease. Time-fixed per subject.
@@ -1629,7 +1640,18 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Reference category:** n/a -- used with linear-deviation forms `(theta + e_fev1_param * (FEV1 - ref))` or power forms `(FEV1 / ref)^exponent`. Reference values observed: 1.6 L (Tortorici 2017, population median across the RAPID-RCT/RAPID-OLE A1-PI augmentation cohort).
 - **Source aliases:** none yet; canonical name preferred. Source papers typically use the abbreviation `FEV1` directly.
 - **Example models:** `Tortorici_2017_a1pi.R` (linear-deviation effect on the lung-density decline rate: `theta5 * (FEV1 - 1.6)` with `theta5 = +0.56 (g/L/year per L FEV1)`; lower-FEV1 patients have steeper natural decline rates independent of A1-PI exposure).
-- **Notes:** Distinct from FEV1 percent-predicted (which is a derived ratio with the reference-equation denominator built in; FEV1% is the outcome variable in `Harun_2019_cysticFibrosis.R` rather than a covariate column). Use `FEV1` only when the source paper supplies the absolute-volume value; if the source supplies a percent-predicted value as a covariate, register a separate canonical (`FEV1_PCTPRED`) at that time. Scope: specific until a second model ratifies the absolute-litre semantics; promote to general at that point. Ratified canonically on 2026-05-09 alongside the Tortorici 2017 extraction.
+- **Notes:** Distinct from FEV1 percent-predicted (which is a derived ratio with the reference-equation denominator built in; FEV1% is the outcome variable in `Harun_2019_cysticFibrosis.R` rather than a covariate column). Use `FEV1` only when the source paper supplies the absolute-volume value; if the source supplies a percent-predicted value as a covariate, the canonical for that surface is `FEV1_PCTPRED`. Scope: specific until a second model ratifies the absolute-litre semantics; promote to general at that point. Ratified canonically on 2026-05-09 alongside the Tortorici 2017 extraction.
+
+### FEV1_PCTPRED (**canonical for baseline FEV1 as percent of the predicted value**)
+- **Description:** Baseline forced expiratory volume in 1 second expressed as a percent of the sex / age / height / ethnicity reference-equation predicted value (FEV1% predicted). The percent-predicted scaling normalises the absolute-litre FEV1 measurement against a healthy-reference standard so a single covariate value is comparable across patient ages and body sizes. Standard pulmonary-function covariate in cystic-fibrosis disease-severity and inhaled-therapy popPK analyses. Time-fixed at study entry / baseline.
+- **Units:** % predicted (numeric percentage, e.g. 62.1 for the Ting 2014 population median; not a fraction 0.621).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- used with power-form effects `(FEV1_PCTPRED / ref)^exponent` or linear-deviation forms `(1 + e * (FEV1_PCTPRED - ref))`. Reference values observed: 62.1 % (Ting 2014, population median across the combined three-study cystic-fibrosis cohort).
+- **Source aliases:**
+  - `FEV1% predicted` -- used in `Ting_2014_tobramycin_inhaled.R` (paper Table 1 / Table 2). Free-text label, not a typical NMTRAN column header; downstream data sets should use the canonical column name `FEV1_PCTPRED`.
+- **Example models:** `Ting_2014_tobramycin_inhaled.R` (power-form effect on apparent central volume of distribution: `(FEV1_PCTPRED / 62.1)^-0.303`; lower lung-function patients have larger apparent Vd/F, consistent with the paper's hypothesis that worsening lung disease increases central-airway aerosol deposition).
+- **Notes:** Distinct from absolute-litre `FEV1` (canonical for the unstandardised volume) and from `FEV1` as an outcome variable in disease-progression models (e.g. `Harun_2019_cysticFibrosis.R`, where percent-predicted FEV1 is the dependent variable rather than a covariate). The reference equation used to derive the percent-predicted value is paper-specific; document any non-default reference standard (Hankinson 1999 NHANES III, GLI 2012, Wang 1993, etc.) in `covariateData[[FEV1_PCTPRED]]$notes` per model. Scope: specific until a second model ratifies the percent-predicted semantics; promote to general at that point. Ratified canonically on 2026-05-12 alongside the Ting 2014 extraction.
 
 ### A1PI (**canonical for serum alpha-1 proteinase inhibitor concentration**)
 - **Description:** Baseline serum alpha-1 proteinase inhibitor (A1-PI; also known as alpha-1 antitrypsin, AAT) concentration. Used in alpha-1 antitrypsin deficiency (AATD) augmentation-therapy modelling as a per-subject pre-treatment exposure covariate (the subject's endogenous A1-PI level at study entry, before any augmentation infusions). Time-fixed per subject. Distinct from a time-course of A1-PI used as a state variable -- when the source paper carries A1-PI as the dynamic dependent variable (the augmentation model's PD output), use `Cc` rather than `A1PI`.
@@ -1758,15 +1780,16 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 
 ### TUMSZ (**canonical for baseline tumor size**)
 - **Description:** Baseline tumor size. For solid tumors, the sum of diameters of target lesions per RECIST; for classical Hodgkin lymphoma and lymphoma generally, the sum of products of perpendicular diameters (SPPD) or the sum of linear diameters of target lesions, depending on the source paper.
-- **Units:** mm
+- **Units:** mm (for linear-diameter constructs); mm^2 (for SPPD constructs; record the per-model convention in `covariateData[[TUMSZ]]$units` and `notes`).
 - **Type:** continuous
 - **Scope:** general
-- **Reference category:** n/a -- used with power scaling `(TUMSZ / ref)^exponent`. Reference values observed: 41 mm (Zhou 2025); 63 mm (Budha 2023); 90 mm (Lu 2014, source reference 9 cm converted to mm).
+- **Reference category:** n/a -- used with power scaling `(TUMSZ / ref)^exponent` for continuous effects, or with a paper-specific threshold for categorical-stratum indicators (e.g., Gibiansky 2014 splits BSIZ at 1750 mm^2 into low- vs high-burden strata). Reference values observed: 41 mm (Zhou 2025); 63 mm (Budha 2023); 90 mm (Lu 2014, source reference 9 cm converted to mm); 1750 mm^2 threshold (Gibiansky 2014, SPPD).
 - **Source aliases:**
   - `LDIAM` (Zhou 2025; pediatric lymphoma "linear diameter" of target lesions in mm).
   - `TMBD` (originally in cm; `TUMSZ_mm = TMBD_cm * 10`) -- used in `Lu_2014_trastuzumabemtansine.R`.
-- **Example models:** `Budha_2023_tislelizumab.R` (reference 63 mm), `Lu_2014_trastuzumabemtansine.R` (reference 90 mm; source column TMBD in cm, values converted to mm on ingestion), `Zhou_2025_brentuximab.R` (reference 41 mm; source column LDIAM is the sum of linear diameters of target lesions; effect on ADC clearance only).
-- **Notes:** Promoted to scope: general on 2026-04-20 as a conventional oncology baseline-tumor-size measure (RECIST for solid tumors, SPPD or sum-of-linear-diameters for lymphomas). The SPPD vs sum-of-diameters vs sum-of-linear-diameters convention is pooled onto a single column; document the per-model mixture where relevant. When the source paper reports tumor size in cm, convert to mm (the canonical unit) on data ingestion and scale the per-model reference accordingly so `(TUMSZ / ref)^exp` is numerically invariant. When a source paper specifically reports the RECIST 1.1 "sum of longest diameters" of target lesions, use the more specific `TUM_SLD` canonical instead -- `TUMSZ` remains the pooled-tumor-burden register.
+  - `BSIZ` (Gibiansky 2014; baseline tumor size as the sum of products of perpendicular diameters of target lesions, mm^2; used as the categorical indicator `(BSIZ <= 1750)` in the obinutuzumab popPK model rather than as a continuous power covariate).
+- **Example models:** `Budha_2023_tislelizumab.R` (reference 63 mm), `Lu_2014_trastuzumabemtansine.R` (reference 90 mm; source column TMBD in cm, values converted to mm on ingestion), `Zhou_2025_brentuximab.R` (reference 41 mm; source column LDIAM is the sum of linear diameters of target lesions; effect on ADC clearance only), `Gibiansky_2014_obinutuzumab.R` (SPPD in mm^2; used as a categorical indicator `(TUMSZ <= 1750)` on the time-dependent clearance decay rate kdes, not as a continuous power covariate).
+- **Notes:** Promoted to scope: general on 2026-04-20 as a conventional oncology baseline-tumor-size measure (RECIST for solid tumors, SPPD or sum-of-linear-diameters for lymphomas). The SPPD vs sum-of-diameters vs sum-of-linear-diameters convention is pooled onto a single column; document the per-model mixture where relevant. When the source paper reports tumor size in cm, convert to mm (the canonical unit) on data ingestion and scale the per-model reference accordingly so `(TUMSZ / ref)^exp` is numerically invariant. For SPPD constructs the natural unit is mm^2 (a product of two perpendicular diameters in mm); record that in the per-model `covariateData[[TUMSZ]]$units` field and do NOT cross-mix mm and mm^2 within a single ingest. When a source paper specifically reports the RECIST 1.1 "sum of longest diameters" of target lesions, use the more specific `TUM_SLD` canonical instead -- `TUMSZ` remains the pooled-tumor-burden register.
 
 ### TUM_SLD (**canonical for sum of longest diameters of target lesions**)
 - **Description:** Baseline sum of longest diameters of target lesions per RECIST 1.1. More specific than the pooled `TUMSZ` canonical; use `TUM_SLD` when the source paper explicitly reports "sum of longest diameters" (or "sum of lesions") as the tumor-burden metric, distinct from the pooled "sum of diameters / SPPD / sum of linear diameters" mixture covered by `TUMSZ`.
@@ -1777,7 +1800,18 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Source aliases:**
   - `SoL` / "sum of lesions" (de Vries Schultink 2020 zenocutuzumab) -- same construct, mm.
 - **Example models:** `deVriesSchultink_2020_zenocutuzumab.R` (reference 70.0 mm; power exponent 0.447 on Vmax of the parallel non-linear / Michaelis-Menten clearance).
-- **Notes:** Distinct from `TUMSZ` (pooled tumor-size canonical covering RECIST sum-of-diameters / SPPD / sum-of-linear-diameters); `TUM_SLD` is the precise RECIST 1.1 sum-of-longest-diameters metric. Ratified canonically on 2026-04-29 alongside the pilot bispecific extraction (de Vries Schultink 2020 zenocutuzumab). When the source paper reports tumor burden in cm, convert to mm (the canonical unit) on data ingestion and scale the per-model reference accordingly so `(TUM_SLD / ref)^exp` is numerically invariant.
+- **Notes:** Distinct from `TUMSZ` (pooled tumor-size canonical covering RECIST sum-of-diameters / SPPD / sum-of-linear-diameters); `TUM_SLD` is the precise RECIST 1.1 sum-of-longest-diameters metric. Ratified canonically on 2026-04-29 alongside the pilot bispecific extraction (de Vries Schultink 2020 zenocutuzumab). When the source paper reports tumor burden in cm, convert to mm (the canonical unit) on data ingestion and scale the per-model reference accordingly so `(TUM_SLD / ref)^exp` is numerically invariant. Also used as the per-subject initial-condition input for tumour-growth / angiogenesis-inhibition (TGI) ODE models where the source paper sets the SLD state at time zero from the observed baseline SLD rather than estimating a typical-value baseline (e.g., `Ouerdani_2015_pazopanib.R` uses `tumorSize(0) <- TUM_SLD`).
+
+### TUM_VOL (**canonical for caliper-measured baseline tumor volume in xenograft / preclinical studies**)
+- **Description:** Baseline tumor volume measured by handheld caliper in subcutaneous-xenograft preclinical studies and similar small-animal models, computed from longest length and orthogonal width via `volume = (length * width^2) / 2` (the standard ellipsoid-approximation formula used in xenograft pharmacology). Per-subject (per-animal) baseline measurement at randomisation into a dosing group. Used both as a covariate stratifier (size at randomisation) and as the per-subject initial-condition input for TGI ODE models where the source paper sets the tumor-volume state at time zero from the observed measurement rather than estimating a typical-value baseline.
+- **Units:** `mm^3`
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- typically used directly as the ODE initial state (`tumorSize(0) <- TUM_VOL`); not a covariate effect coefficient.
+- **Source aliases:**
+  - `P0` (Ouerdani 2015 mouse model symbol for the observed initial tumour volume; mm^3 in the CAKI-2 xenograft cohort; range 100-250 mm^3 at randomisation per the paper's preclinical Methods).
+- **Example models:** `Ouerdani_2015_pazopanib_mouse.R` (Ouerdani 2015 preclinical TGI in CAKI-2 xenograft mice; per-subject `TUM_VOL` initialises the `tumorSize` state and is held constant per individual across the 24-day dosing window).
+- **Notes:** General scope because xenograft tumor-volume baselines have a shared meaning across preclinical TGI papers regardless of the drug or cell line. Use `TUM_VOL` whenever a preclinical paper supplies per-animal caliper tumor volumes as the per-subject initial state of a tumor-volume ODE; use `TUM_SLD` for clinical RECIST sum-of-longest-diameters (a length, not a volume) and `TUMSZ` for the pooled "baseline tumor burden as a covariate on PK" use case in clinical models. Ratified canonically on 2026-05-12 alongside the Ouerdani 2015 pazopanib mouse extraction.
 
 ### TUMTP_CHL (**canonical for classical Hodgkin lymphoma tumor-type indicator**)
 - **Description:** 1 = classical Hodgkin lymphoma (cHL) or Hodgkin lymphoma generally, 0 = other tumor types.
@@ -1996,6 +2030,39 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
   - Categorical column "type of cancer" with level "Leukemia" -- decompose into `TUMTP_LEUK = as.integer(cancer_type == "Leukemia")`. Implicit reference category in `Akbar_2025_voriconazole.R` (so the model file does not consume this column directly; it is registered for future heterogeneous-cancer-cohort analyses).
 - **Example models:** none directly consume this column; `Akbar_2025_voriconazole.R` uses leukemia as the reference category and so does not need a leukemia indicator.
 - **Notes:** Distinct from the more specific `DIS_AML`, `DIS_BCPALL`, `DIS_CMML`, `MDSAML` entries -- those are for leukemia-only or leukemia-vs-leukemia contrasts; `TUMTP_LEUK` is for heterogeneous-cancer pooled cohorts where leukemia is one of several tumor types and the analysis treats `cancer type` as a many-level categorical. Akbar 2025 had leukemia as 56.8% of the cohort and used it as the reference category. Scope: specific because the reference category in any source paper is paper-defined. Ratified canonically on 2026-05-09.
+
+### TUMTP_BCL (**canonical for B-cell lymphoma (pooled residual) tumor-type indicator**)
+- **Description:** 1 = B-cell lymphoma (BCL), 0 = other tumor types. Time-fixed per subject. In Gibiansky 2014 the BCL category is a pooled residual indolent-B-cell-lymphoma group that includes follicular lymphoma (FL was the primary indication in GAUDI; the four-level DIS column in the NONMEM control stream splits B-cell histologies into CLL = 1, BCL = 2 (residual indolent B-cell-lymphoma pool including FL), DLBCL = 3, MCL = 4).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 = all other tumor types (in Gibiansky 2014 the implicit reference is CLL when paired with `TUMTP_DLBCL` and `TUMTP_MCL` all = 0; the residual indolent-B-cell-lymphoma pool in this paper is dominated by follicular lymphoma).
+- **Source aliases:**
+  - `DIS` (Gibiansky 2014; integer code with `DIS == 2` flagging BCL) -- decompose into `TUMTP_BCL = as.integer(DIS == 2)`.
+- **Example models:** `Gibiansky_2014_obinutuzumab.R` (effect on time-dependent clearance decay rate kdes via the composite `(TUMTP_BCL + TUMTP_DLBCL + TUMTP_MCL)` (any-NHL effect; ratio 2.08) and on both time-dependent CL_T and steady-state CL_inf via the composite `(TUMTP_BCL + TUMTP_DLBCL)` (shared BCL/DLBCL effect; ratio 0.834 in the reverse direction, i.e., 16.6% lower CL than CLL)).
+- **Notes:** Follows the `TUMTP_CHL` / `TUMTP_GC` / `TUMTP_SCLC` decomposition pattern. Distinct from `TUMTP_LYMPH` (a broader heterogeneous lymphoma pool that lumps cHL with NHL histologies) -- `TUMTP_BCL` is specifically B-cell lymphoma and pairs with sibling `TUMTP_DLBCL` and `TUMTP_MCL` for histology-specific contrasts within the NHL family. When a future paper studies follicular lymphoma in isolation (rather than pooled into BCL), register a more specific canonical (e.g., `TUMTP_FL`) rather than overloading this one. Ratified canonically on 2026-05-11.
+
+### TUMTP_DLBCL (**canonical for diffuse large B-cell lymphoma indicator**)
+- **Description:** 1 = diffuse large B-cell lymphoma (DLBCL), 0 = other tumor types. Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 = all other tumor types (in Gibiansky 2014 the implicit reference is CLL when paired with `TUMTP_BCL` and `TUMTP_MCL` all = 0).
+- **Source aliases:**
+  - `DIS` (Gibiansky 2014; integer code with `DIS == 3` flagging DLBCL) -- decompose into `TUMTP_DLBCL = as.integer(DIS == 3)`.
+- **Example models:** `Gibiansky_2014_obinutuzumab.R` (effect on kdes via the any-NHL composite indicator; effect on CL_T and CL_inf via the shared BCL/DLBCL composite indicator).
+- **Notes:** Follows the `TUMTP_CHL` / `TUMTP_GC` / `TUMTP_SCLC` decomposition pattern. Distinct from `TUMTP_LYMPH` (broader lymphoma pool) and `TUMTP_PCALCL` (primary cutaneous anaplastic large-cell lymphoma; a CD30+ T-cell-lineage entity unrelated to DLBCL). DLBCL is the most common high-grade B-cell-NHL subtype; the Gibiansky 2014 cohort had only 30 DLBCL patients (4.4%), so a single estimated effect on CL is shared with BCL (a much larger pooled group; see `TUMTP_BCL` notes). Ratified canonically on 2026-05-11.
+
+### TUMTP_MCL (**canonical for mantle cell lymphoma indicator**)
+- **Description:** 1 = mantle cell lymphoma (MCL), 0 = other tumor types. Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 = all other tumor types (in Gibiansky 2014 the implicit reference is CLL when paired with `TUMTP_BCL` and `TUMTP_DLBCL` all = 0).
+- **Source aliases:**
+  - `DIS` (Gibiansky 2014; integer code with `DIS == 4` flagging MCL) -- decompose into `TUMTP_MCL = as.integer(DIS == 4)`.
+- **Example models:** `Gibiansky_2014_obinutuzumab.R` (effect on kdes via the any-NHL composite indicator; separate effect on CL_T and CL_inf via the standalone MCL indicator (ratio 1.75, i.e., 75% higher CL than CLL)).
+- **Notes:** Follows the `TUMTP_CHL` / `TUMTP_GC` / `TUMTP_SCLC` decomposition pattern. Distinct from `TUMTP_LYMPH` (broader lymphoma pool). The Gibiansky 2014 cohort had only 20 MCL patients (2.9%); the paper reports the highest obinutuzumab CL among the four B-cell-malignancy histologies for MCL, consistent with the highest CD20 expression density on MCL B-cells relative to the other histologies. Ratified canonically on 2026-05-11.
 
 ### LINE_1L (**canonical for first-line-therapy indicator**)
 - **Description:** 1 = first-line therapy (1L) / treatment-naive, 0 = second-line or greater (2L+) / relapsed-or-refractory.
@@ -2862,6 +2929,28 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Hennig_2015_rifabutin.R` (multiplicative effect on rifabutin bioavailability F: `F * (1 + 0.304 * SNP_SLCO1B1_RS11045819)` -- AC carriers have ~30% higher rifabutin F than CC reference; dOFV = -6.5).
 - **Notes:** Time-fixed per subject. Carrier rate in the Hennig 2015 South-African HIV/TB cohort: 14% (5 of 35 genotyped). SLCO1B1 encodes OATP1B1, a hepatic uptake transporter; rs11045819 has been associated with reduced rifampicin and lopinavir concentrations in prior studies but in Hennig 2015 was associated with INCREASED rifabutin bioavailability (note opposite direction of effect across rifamycins).
 
+### SLCO1B1_HAP15_HET (**canonical for SLCO1B1*15 haplotype heterozygote indicator**)
+- **Description:** Binary haplotype indicator for the *SLCO1B1* `*15` reduced-function haplotype (the cis combination of the 388A>G / rs2306283 and 521T>C / rs4149056 variants; encodes the OATP1B1 N130D + V174A double mutant). 1 = subject carries exactly one *15 allele (heterozygous: `*1a/*15` or `*1b/*15`), 0 = otherwise (the union of *15-noncarriers and *15-homozygotes; the paired indicator `SLCO1B1_HAP15_HOM` flags the homozygous group). Time-fixed per subject (germline haplotype).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (homozygous *1a/*1a, *1a/*1b, or *1b/*1b -- i.e., no *15 allele). The reference group is the union of the three non-*15 diplotypes; `SLCO1B1_HAP15_HOM` flags the *15/*15 group.
+- **Source aliases:**
+  - `HT` -- Ide 2009 (paper text Eq. for `Frel = 1 * theta1^HT * theta2^HM` where `HT = 1` for heterozygotes `*1a/*15` and `*1b/*15`).
+- **Example models:** `Ide_2009_pravastatin.R` (multiplicative effect on relative bioavailability Frel: `Frel = 1.50^SLCO1B1_HAP15_HET * 1.95^SLCO1B1_HAP15_HOM` -- *15 heterozygotes have 50% higher Frel than *15-noncarriers; dOFV = 32.2 in backward elimination, p < 0.001).
+- **Notes:** Paired with `SLCO1B1_HAP15_HOM` to encode a three-level haplotype categorical (noncarrier / heterozygote / homozygote) with `*15`-noncarrier as the implicit reference (both indicators = 0). Distinct from the SNP-level canonical `SNP_SLCO1B1_RS11045819` (which encodes only the C>A variant at a different position; rs11045819 = P155T) and from the *15 component SNPs rs2306283 (388A>G) and rs4149056 (521T>C) individually: future Ide-style extractions that pool *5 (521T>C only) with *15 should still record their values under this canonical and document the pooling rule in `covariateData[[SLCO1B1_HAP15_HET]]$notes`. Distribution in the Ide 2009 cohort of 57 healthy Japanese male volunteers (Table I): 28 noncarriers, 23 heterozygotes, 6 homozygotes. Ratified canonically on 2026-05-12 alongside the Ide 2009 extraction.
+
+### SLCO1B1_HAP15_HOM (**canonical for SLCO1B1*15 haplotype homozygote indicator**)
+- **Description:** Binary haplotype indicator for the *SLCO1B1* `*15` reduced-function haplotype. 1 = subject carries two *15 alleles (homozygous: `*15/*15`), 0 = otherwise (the union of *15-noncarriers and *15-heterozygotes; the paired indicator `SLCO1B1_HAP15_HET` flags the heterozygous group). Time-fixed per subject (germline haplotype).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (homozygous *1a/*1a, *1a/*1b, or *1b/*1b -- i.e., no *15 allele). The reference group is the union of the three non-*15 diplotypes; `SLCO1B1_HAP15_HET` flags the *15-heterozygote group.
+- **Source aliases:**
+  - `HM` -- Ide 2009 (paper text Eq. for `Frel = 1 * theta1^HT * theta2^HM` where `HM = 1` for homozygotes `*15/*15`).
+- **Example models:** `Ide_2009_pravastatin.R` (multiplicative effect on relative bioavailability Frel: `Frel = 1.50^SLCO1B1_HAP15_HET * 1.95^SLCO1B1_HAP15_HOM` -- *15 homozygotes have 95% higher Frel than *15-noncarriers; dOFV = 33.7 in backward elimination, p < 0.001).
+- **Notes:** Paired with `SLCO1B1_HAP15_HET` to encode a three-level haplotype categorical (noncarrier / heterozygote / homozygote) with `*15`-noncarrier as the implicit reference (both indicators = 0). See `SLCO1B1_HAP15_HET` Notes for the broader context; population distribution in Ide 2009 was 6 of 57 (10.5%) homozygotes. Ratified canonically on 2026-05-12 alongside the Ide 2009 extraction.
+
 ## Lifestyle / medical history
 
 ### SMOKE (**canonical for current-smoker binary indicator**)
@@ -3105,6 +3194,16 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
   - `DP2` -- used in `Xu_2019_sarilumab.R`.
 - **Example models:** `Xu_2019_sarilumab.R`.
 - **Notes:** Affects both CLO/F (1.30x multiplier) and Ka (0.663x multiplier) in Xu 2019. Set to 0 for routine commercial-formulation simulation.
+
+### FORM_VISMO_PHASEI (**canonical for vismodegib Phase I (dry-blend capsule) formulation indicator**)
+- **Description:** 1 = subject received the Phase I clinical-development vismodegib formulation (dry-blend capsules used in early-phase studies SHH3925g and the Phase I cohort of SHH4610g); 0 = subject received the Phase II / commercial-bound formulation (wet-granulation capsules used in SHH4476g, SHH4433g, and most of SHH4683g / SHH4871g). Per-subject (regimen-fixed) categorical indicator.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (Phase II / commercial wet-granulation capsule; F = 1 fixed as the reference in Lu 2015 Eq. 4 and the typical-value `ka` reference in Eq. 4).
+- **Source aliases:** none known; Lu 2015 reports formulation as a paper-defined "Phase I vs Phase II formulation" categorical without committing to a single column name.
+- **Example models:** `Lu_2015_vismodegib.R` (multiplicative shifts on Ka and relative bioavailability F: typical Ka = 9.025 1/day for the Phase II reference in patients, with `exp(-0.602) = 0.55x` for the Phase I formulation and `exp(0.671) = 1.96x` for healthy volunteers; F = 1 for the Phase II reference, F = 0.346 for the Phase I formulation in patients and 0.836 in HV).
+- **Notes:** Specific scope because the "Phase I (dry blend) vs Phase II (wet granulation) capsule" contrast is tied to the vismodegib drug-product-version comparison in Lu 2015. Mirrors the `FORM_DP2` (sarilumab), `FORM_P2F2` (isatuximab), and `FORM_LINAG_TAB1` (linagliptin) entries under the `FORM_*` family of drug-product-version indicators. Set to 0 for routine commercial-formulation simulation. Ratified canonically alongside the Lu 2015 vismodegib extraction.
 
 ### dilution (**canonical for diluted-drug-product indicator**)
 - **Description:** 1 = drug diluted (Soehoel 2022 study D2213C00001), 0 = not diluted.
