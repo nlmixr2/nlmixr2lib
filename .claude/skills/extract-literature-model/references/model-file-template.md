@@ -3,34 +3,19 @@
 Copy this skeleton into `inst/modeldb/<category>/<FirstAuthor>_<Year>_<drug>.R` and fill in. Placeholders are wrapped in `<>`. Inline comments that start with `#!` are instructions for the person filling the template and must be deleted before committing.
 
 Related references:
-- `naming-conventions.md` — parameter / compartment / IIV naming, plus the NONMEM → nlmixr2 syntax-translation section
-- `covariate-columns.md` — required register of covariate column names (consult before inventing any new name)
-- `verification-checklist.md` — run through after first pass
+- `compartment-names.md`, `parameter-names.md` — naming rules.
+- `nonmem-translation.md` — load only when the source is a NONMEM control stream.
+- `covariate-columns.md` (in `inst/references/`) — required register of covariate column names.
+- `verification-checklist.md` — run through after first pass.
 
 ```r
 <FirstAuthor>_<Year>_<drug> <- function() {
   description <- "<One-sentence summary, e.g., 'Two-compartment population PK model for <drug> in <population>'>"
-  #! Non-human studies: PREPEND the species to description, e.g.,
-  #!   description <- "Preclinical (rat, Sprague-Dawley). Two-compartment popPK model for ..."
-  #!   description <- "In vitro (SKBR3 cell line). Mechanistic HER2 receptor trafficking model."
-  #! so the species is visible in modellib() listings without inspecting population$species.
-  #! For preclinical/in vitro models: filename should also carry a species suffix
-  #!   <FirstAuthor>_<Year>_<drug>_<species>.R  (e.g., Geldof_2008_fluvoxamine_rat.R)
-  #! to keep human and animal extractions of the same drug as separate, non-colliding files.
-  #!
-  #! PBPK / QSP / MBMA / mechanism-class models: PREPEND the class label, e.g.,
-  #!   description <- "PBPK (whole-body, SimCYP V12.1). APAP disposition in pregnancy ..."
-  #!   description <- "QSP. 5-lipoxygenase pathway with 33 ODEs, 113 parameters ..."
-  #!   description <- "MBMA. Trastuzumab + T-DXd from 103 trials; between-study variability only ..."
-  #! and use a class suffix on the filename when a popPK extraction of the same paper /
-  #! drug already exists:
-  #!   <FirstAuthor>_<Year>_<drug>_pbpk.R  /  _qsp.R  /  _mbma.R
-  #!
-  #! CRITICAL for PBPK / QSP / MBMA: every parameter in ini() must come from the paper
-  #! text, an on-disk supplement, or an on-disk upstream paper. Never substitute from
-  #! training-data class-typical values or platform defaults (SimCYP / GastroPlus / OSP
-  #! built-in libraries). When a parameter is missing in all on-disk sources, use the
-  #! Phase 4 missing-parameter sidecar. See SKILL.md Phase 1 step 3a.
+  #! Prepend a class / species prefix to description when applicable
+  #! (preclinical, in vitro, PBPK, QSP, MBMA) and use the matching
+  #! filename suffix. See SKILL.md Phase 1 steps 3 and 3a for the
+  #! per-class rules and the strict on-disk-only parameter-sourcing rule
+  #! that applies to PBPK / QSP / MBMA.
   reference   <- "<Full citation with DOI>"
   vignette    <- "<FirstAuthor>_<Year>_<drug>"  #! basename of vignettes/articles/<FirstAuthor>_<Year>_<drug>.Rmd; used by list-of-models to link here
   units       <- list(time = "<day|hour>", dosing = "<mg|mg/kg>", concentration = "<ug/mL|ng/mL>")
@@ -51,23 +36,9 @@ Related references:
   )
 
   population <- list(
-    #! Common fields, all optional except n_subjects. Units and wording are not fixed —
-    #! match the source. Pick whichever age/weight units match the study population.
-    #! Example A (adult study):
-    #!   age_range     = "18-75 years"
-    #!   age_median    = "52 years"
-    #!   weight_range  = "50-120 kg"
-    #!   weight_median = "78 kg"
-    #!   disease_state = "moderate-to-severe atopic dermatitis"
-    #!   dose_range    = "150-300 mg SC Q2W"
-    #! Example B (pediatric study):
-    #!   age_range     = "0-24 months"
-    #!   age_median    = "3 months"
-    #!   weight_range  = "2-12 kg"
-    #!   weight_median = "5 kg"
-    #!   disease_state = "healthy infants at risk for RSV"
-    #!   dose_range    = "50-200 mg IM single dose"
-    #! Additional keys welcome (ga_range, renal_function, hepatic_function, co_medication, ...).
+    #! Common fields below; all optional except n_subjects and species.
+    #! Units/wording match the source. Additional keys welcome
+    #! (ga_range, renal_function, hepatic_function, co_medication, ...).
     species        = "<required: 'human', 'rat (Sprague-Dawley)', 'mouse (HBCx-9 PDX)', 'beagle dog', 'in vitro (SKBR3 cell line)', 'human + rat', etc.>",
     n_subjects     = <integer>,
     n_studies      = <integer>,
@@ -84,18 +55,10 @@ Related references:
   )
 
   ini({
-    #! Every parameter has:
-    #!   1. A log-transform prefix where applicable.
-    #!   2. A label() with units and a plain-English description.
-    #!   3. A trailing in-file comment pointing to the source location the value came from.
-    #! Example: lcl <- log(0.0388); label("CL for 70 kg adult (L/day)")  # Clegg 2024 Table 3
-    #!
-    #! Wrap fixed values in fixed(): if the source paper holds the parameter
-    #! constant rather than estimating it, the value belongs in fixed(...).
-    #! See SKILL.md § "Fixed parameters in ini()" for the full source-signal
-    #! checklist (NONMEM FIX flags, "fixed at <value>" prose, allometric
-    #! exponents reported without uncertainty, F1=1 anchors, parameters
-    #! inherited from upstream papers, etc.).
+    #! Every parameter: log-transform prefix where applicable, label() with units, and a
+    #! trailing in-file comment pointing to the source location. Wrap fixed values in
+    #! fixed(). See parameter-names.md for the rules and SKILL.md § "Fixed parameters in
+    #! ini()" for the source-signal checklist.
 
     # Structural parameters — reference values for <reference weight / age>
     lka     <- log(<value>); label("<description with units>")  # <source location>

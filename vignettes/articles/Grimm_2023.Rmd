@@ -119,13 +119,16 @@ Replicate figure 3 from the paper.
 ```{r plot-brain}
 d_plot_brain <-
   dSim |>
-  select(time, Analyte, starts_with("C", ignore.case = FALSE)) |>
-  select(-starts_with("Cbrain"), -Cc) |>
+  select(
+    time, Analyte,
+    any_of(c("cerebellum", "hippocampus", "striatum", "cortex",
+             "choroid_plexus", "csf"))
+  ) |>
   tidyr::pivot_longer(cols = -c("time", "Analyte"), names_to = "ASPEC", values_to = "AVAL") |>
   mutate(
     ASPEC =
       factor(
-        gsub(x = ASPEC, pattern = "^C", replacement = ""),
+        ASPEC,
         levels = c("hippocampus", "cerebellum", "choroid_plexus", "cortex", "striatum", "csf"),
         labels = c("Hippocampus", "Cerebellum", "Choroid Plexus", "Cortex", "Striatum", "Cerebrospinal Fluid")
       )

@@ -479,12 +479,25 @@ methods narrative and the parameter values' physical interpretation, are:
    mass-balanced interpretation (Errata items 1-4) as the most physically
    defensible and report the discrepancy explicitly here.
 
-6. **Compartment naming.** The mechanistic compartments (`ACSF`, `AISF`,
-   `R`, `RC`, `RISF`, `RCISF`) follow the paper's notation directly. This
-   triggers warnings from `nlmixr2lib::checkModelConventions` because they
-   are not in the canonical PK-compartment list (`central`, `peripheral1`,
-   ...). The mechanistic terminology is preserved here for traceability
-   to the paper.
+6. **Compartment naming.** The mechanistic compartments are encoded with
+   canonical nlmixr2lib names, with the paper's notation noted in parentheses
+   for traceability:
+
+   | Paper        | Model file        | Role                          |
+   |--------------|-------------------|-------------------------------|
+   | `ACSF`       | `csf`             | Drug amount in CSF (pmol)     |
+   | `AISF`       | `isf`             | Drug amount in ISF (pmol)     |
+   | `R`          | `target`          | Free p217+tau in CSF (pmol/L) |
+   | `RC`         | `complex`         | Posdinemab-target complex in CSF (pmol/L) |
+   | `RISF`       | `target_isf`      | Free tau seeds in ISF (pmol/L) |
+   | `RCISF`      | `complex_isf`     | Posdinemab-tau complex in ISF (pmol/L) |
+
+   `csf` and `isf` are registered physiologic body-fluid compartments
+   (`R/conventions.R`); `target_csf` / `target_isf` / `complex_csf` /
+   `complex_isf` match the `targetLocationRegex` pattern for target
+   species in a physiologic compartment. The paper's notation
+   appears in the Errata-quoted supplement equations above so the
+   mapping back to the source remains explicit.
 
 7. **Dosing unit convention.** `units$dosing` is `"mg"` while the model
    internally tracks drug amounts in pmol; the conversion is performed via

@@ -12,55 +12,50 @@ Work through the six phases below. Stop and ask the user at any of the decision 
 
 ## References
 
-Read these on demand; don't load them up front.
+Read on demand based on the paper's model class. The most-used references are listed first.
 
-- `references/naming-conventions.md` — parameter, compartment, IIV, and error-model names.
+**Always:**
+- `references/pre-flight-checklist.md` — consolidated stop-and-ask triggers. Read this once at dispatch.
+- `references/compartment-names.md` — compartment and observation-variable names.
+- `references/parameter-names.md` — structural PK, IIV, residual-error, covariate-effect, fixed-parameter encoding, file-level metadata, file naming.
 - `inst/references/covariate-columns.md` — authoritative register of covariate column names. Consult before introducing any new covariate. (Installed with the package so R code like `checkModelConventions()` can parse it at runtime.)
 - `references/model-file-template.md` — skeleton for the `.R` file.
 - `references/vignette-template.md` — skeleton for the validation vignette.
-- `references/pknca-recipes.md` — PKNCA setups for single-dose, steady-state, and multi-dose NCA.
-- `references/endogenous-validation.md` — validation strategy for endogenous / mechanistic / turnover models where PKNCA is not the right check.
 - `references/verification-checklist.md` — checklist to walk after the first-pass implementation.
+
+**Conditional (load only when the model class applies):**
+- `references/nonmem-translation.md` — NONMEM → nlmixr2 syntax conversion. Load only when the source is a NONMEM control stream (`.mod` / `.ctl`, supplement with `$PK` / `$DES` / `$THETA` blocks).
+- `references/pknca-recipes.md` — PKNCA setups for single-dose, steady-state, and multi-dose NCA. Load for popPK validation; skip for endogenous / mechanistic models.
+- `references/endogenous-validation.md` — validation strategy for endogenous / mechanistic / turnover models. Load only when the source describes turnover, enzyme-kinetic, or steady-state-balance models where PKNCA is not the right check.
+- `references/oa-acquisition.md` — detailed OA-PDF ladder. The Phase 1 Step 0 script (`scripts/acquire-paper.R`) is the entry point; this reference is for understanding the script's failure modes or extending the source list.
+
+**Scripts:**
+- `scripts/acquire-paper.R` — open-access PDF acquisition (Phase 1 Step 0).
+- `scripts/lint-conventions.R` — pretty-print `checkModelConventions()` results (Phase 6 step 3).
 
 ## Phase 1 — Source acquisition and scoping
 
 ### Step 0 — Source-file presence and self-acquisition
 
-Before any of the numbered steps below, confirm every source file the task references is on disk and is a valid PDF. The task block includes `Lead PDF`, `Supplements`, `Model files`, and `Source dir` paths; check each path that is set.
+Confirm every source file the task references is on disk and is a valid PDF. The task block includes `Lead PDF`, `Supplements`, `Model files`, and `Source dir` paths; check each path that is set.
 
-For each missing or invalid file (file does not exist, is < 10 KB, or whose first 4 bytes are not `%PDF`), attempt OA acquisition before giving up. The task agent has `Bash` and `WebFetch` tools — use them. Try sources in this order, stopping at the first that yields a valid `%PDF`-headed download of ≥ 10 KB:
+For each missing or invalid file, run the acquisition script:
 
-1. **CrossRef link array.** `curl -sS "https://api.crossref.org/works/<DOI>" -A "literature-acquisition (mailto:wdenney@humanpredictions.com)"` → inspect the `message.link[]` array; download any URL whose `content-type` contains `pdf` or whose URL ends in `.pdf`.
-2. **Unpaywall.** `curl -sS "https://api.unpaywall.org/v2/<DOI>?email=wdenney@humanpredictions.com"` → if `best_oa_location.url_for_pdf` is set, download it.
-3. **Europe PMC.** `curl -sS "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=DOI:<DOI>&format=json"` → if any result has a `pmcid` field, download `https://europepmc.org/articles/<PMCID>?pdf=render`. Most effective for Wiley, Elsevier, and Springer papers in PMC after embargo.
-4. **NCBI PMC ID converter.** `curl -sS "https://www.ncbi.nlm.nih.gov/pmc/utils/idconv/v1.0/?ids=<DOI>&format=json&tool=literature-acquisition&email=wdenney@humanpredictions.com"` → download `https://www.ncbi.nlm.nih.gov/pmc/articles/<PMCID>/pdf/`.
-5. **Publisher-specific patterns** (only for known-OA outlets):
-   - BMC: `https://<journal>.biomedcentral.com/track/pdf/<DOI>`
-   - Frontiers: `https://www.frontiersin.org/articles/<DOI>/pdf`
-   - Nature OA / Springer Nature OA: `https://www.nature.com/articles/<id>.pdf` (where `<id>` is the trailing segment of the DOI)
-   - Hindawi: `https://onlinelibrary.wiley.com/doi/pdf/<DOI>` (post-Wiley acquisition)
-   - Dovepress: `https://www.dovepress.com/getfile.php?fileID=<file_id>`
-   - Static Springer Nature media (for Nature Comm SI files): `https://static-content.springer.com/esm/art%3A<doi-percent-encoded>/MediaObjects/<id>_MOESM1_ESM.pdf`
+```bash
+Rscript .claude/skills/extract-literature-model/scripts/acquire-paper.R \
+  --doi "<DOI>" \
+  --out "<expected-on-disk-path.pdf>" \
+  --title "<expected-first-author or short title>" \
+  --log "/tmp/acquire-log.json"
+```
 
-**Validation after each download:** confirm size ≥ 10 KB AND the first 4 bytes equal `%PDF`. Wiley/Elsevier non-OA endpoints typically return ~5 KB HTML challenge pages — these MUST be rejected (delete and try the next source). Do NOT extract from a file whose head bytes are not `%PDF`.
+Interpret the exit code:
 
-**Title-content sanity check** for the lead PDF: after a successful download, `pdftotext -l 1 <file> -` and confirm the title / first-author line approximately matches what the task block expects. CrossRef DOIs occasionally point to a different paper than the task's metadata claims (publishers' DOI sequence is not always continuous, e.g. `10.1038/aps.2014.120` was a Zhang ROR review when the task expected Lu 2015 tacrolimus). If the downloaded PDF's title disagrees with the task expectation, don't extract from it — sidecar-ask the operator with the actual-vs-expected metadata.
+- **0** → PDF at `--out` is valid; proceed.
+- **2** → all 5 sources tried, none produced a valid PDF whose title matched. Read `/tmp/acquire-log.json` for the per-source outcome, then sidecar-ask the operator with the structured attempts list (Options: A operator drops the PDF and re-dispatches, B operator emails corresponding author, C skip). Do **not** attempt to fabricate the missing source.
+- **3** → environment problem (missing `curl`, bad DOI). Fix the environment; do not work around.
 
-**When to give up and sidecar.** If all 5 source paths above have been tried and none produced a valid PDF whose title matches the task expectation, write a sidecar request describing what was attempted:
-
-> Lead PDF for <paper> not on disk and OA acquisition failed. Tried: CrossRef link array (n URLs), Unpaywall (oa_status=<status>, pdf_url=<url-or-none>), Europe PMC (PMCID=<id-or-not-found>), NCBI PMC (PMCID=<id-or-not-found>), publisher landing (<list-of-tried-URLs>). Each returned <reason: HTML challenge page / 404 / not-PDF / title-mismatch>. Options: (A) operator drops the PDF on disk and re-dispatches, (B) operator emails corresponding author, (C) skip this task. Which applies?
-
-The same ladder applies to **supplements** and **errata**:
-
-- For Wiley supplements: try `https://onlinelibrary.wiley.com/action/downloadSupplement?doi=<DOI>&file=<filename>`. Filenames often follow the pattern `<journal-prefix><articleid>-sup-<NNNN>-<descriptor>.pdf`; if the exact filename isn't known, fetch the article landing page and grep for `downloadSupplement` URLs.
-- For Springer Nature SI: `https://static-content.springer.com/esm/art%3A<doi-percent-encoded>/MediaObjects/<id>_MOESM1_ESM.pdf`. Increment `MOESM2_ESM`, `MOESM3_ESM`, etc. for additional supplements.
-- For BMC: PMC mirror often has supplements at `https://www.ncbi.nlm.nih.gov/pmc/articles/<PMCID>/bin/<filename>`.
-- For Frontiers: typically inline at the article landing page; fetch the page and grep for `Image_*.pdf` / `Table_*.docx` / `Presentation_*.pdf` in the HTML.
-- For errata: search PubMed (`https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=<title>+AND+erratum&retmode=json`) for the original PMID + erratum link; download the erratum PDF via the same OA ladder.
-
-If a supplement is unobtainable but the lead PDF is on disk, decide based on whether the missing supplement contains parameter values you need: if it does, sidecar-ask before extracting (see Phase 4 missing-parameter pathway); if it does not, document the gap in the vignette Errata and proceed.
-
-**Reasonable-attempts cap.** Don't loop forever. The 5-source ladder above with one retry per source is the cap; after that, sidecar. If a source returns a 5xx error, retry once after 5 seconds; otherwise treat as failed and move on.
+For supplements / errata that the script doesn't cover, see `references/oa-acquisition.md` for the full ladder; if a supplement is unobtainable but the lead PDF is on disk, decide based on whether the missing supplement contains parameter values you need (sidecar-ask if it does; document the gap in vignette Errata if it doesn't).
 
 ### Numbered steps
 
@@ -206,55 +201,16 @@ The file body has this shape:
 
 When the source paper holds a parameter at a known value rather than estimating it, encode that fact by wrapping the value in `fixed()` in `ini()`. This applies to **every** parameter type — structural THETAs, allometric exponents, IIV variances/covariances, residual-error magnitudes, covariate-effect coefficients — not just IIV. Failing to encode the fixed status loses load-bearing provenance: a downstream user cannot tell whether the value was estimated and reported as a point estimate, or whether the source authors held it constant; re-fitting the model under one assumption vs the other gives different results.
 
-Recognise fixed parameters from any of these signals in the source:
+See `references/parameter-names.md` § "Fixed parameters" for the full list of source signals (prose, NONMEM `FIX` flag, etc.) and the encoding examples. The key syntactic point is that `log()` goes **inside** `fixed()` for log-transformed parameters (`lcl <- fixed(log(2))`, never `log(fixed(2))`).
 
-- Explicit prose: "fixed during estimation", "fixed at <value>", "held fixed at the literature value", "not estimated", "set to 1 (fixed)".
-- Allometric exponents reported without uncertainty (no SE / RSE / CI), especially the canonical 0.75 (CL-like) and 1 (V-like) values; if the paper says "allometric scaling with fixed exponents", encode those exponents as `fixed()`.
-- NONMEM `$THETA` lines with a `FIX` flag (`$THETA (0.225 FIX) ; CL`).
-- NONMEM `$OMEGA` / `$SIGMA` lines with a `FIX` flag (`$OMEGA 0.0 FIX` for an off-diagonal that was structurally constrained to zero; `$SIGMA 1.0 FIX` for log-transform-both-sides residual where the variance is absorbed into the additive term).
-- Bioavailability `F1 = 1` / `lfdepot <- log(1)` set as a structural anchor when the paper writes "F was fixed to 1 because absolute bioavailability was not identifiable".
-- Maturation reference values (e.g., reference WT = 70 kg, reference PMA = 40 weeks) — these are model-structural constants and are always fixed; encode them as numeric literals inside `model()` or as `fixed()` parameters in `ini()` if they appear in `label()`-worthy form.
-- Carry-over from upstream: when the current paper inherits a structural-PK model from a prior publication and re-estimates only a subset, the inherited parameters are fixed; wrap them in `fixed()` and put the upstream citation in the trailing comment.
+When in doubt — a $THETA reported with an RSE of 0% but no FIX flag, or a parameter reported to three decimal places with no uncertainty — sidecar-ask the operator before guessing.
 
-Encoding examples:
-
-```r
-ini({
-  # Estimated structural parameter (paper Table 2)
-  lcl <- log(0.225) ; label("Clearance (L/h)")
-
-  # Fixed log-transformed structural parameter (paper inherits CL = 2 L/h from upstream)
-  # log() goes INSIDE fixed(); never fixed() inside log().
-  lcl <- fixed(log(2)) ; label("Clearance (L/h)")
-
-  # Fixed allometric exponent (paper Methods: "WT scaling with fixed exponents")
-  e_wt_cl <- fixed(0.75) ; label("Allometric exponent on CL")
-
-  # Fixed bioavailability anchor (paper Methods: "F1 fixed to 1; absolute F not identifiable")
-  lfdepot <- fixed(log(1)) ; label("Bioavailability (depot)")
-
-  # Estimated IIV (paper Table 3, omega_CL = 0.32 reported as variance)
-  etalcl ~ 0.32
-
-  # Fixed IIV (paper Methods: "IIV on V was fixed to the prior published value (Hamberg 2007)")
-  etalvc ~ fixed(0.18)
-
-  # Fixed off-diagonal correlation (NONMEM $OMEGA BLOCK with one element FIX 0)
-  etalcl + etalvc ~ c(0.32, fixed(0), 0.18)
-
-  # Fixed residual error variance (NONMEM $SIGMA 1.0 FIX for LTBS approach)
-  CcaddSd <- fixed(0.10) ; label("Additive residual SD on log-Cc (LTBS)")
-})
-```
-
-When in doubt — for example, a $THETA reported with an RSE of 0% but no FIX flag, or a parameter reported to three decimal places with no uncertainty — sidecar-ask the operator before guessing. Mis-classifying an estimated parameter as fixed (or vice versa) is a real error that downstream users will hit.
-
-Follow `references/naming-conventions.md` strictly:
+Follow `references/compartment-names.md` and `references/parameter-names.md` strictly. The quick-reference rules:
 
 - Structural PK parameters log-transformed: `lka`, `lcl`, `lvc`, `lvp`, `lvp2`, `lq`, `lq2`, `lfdepot`.
 - IIV: `eta` + transformed name, e.g., `etalcl` (not `etacl`). Block correlations via `etalcl + etalvc ~ c(var, cov, var)`.
-- Residual error: `propSd`, `addSd`. Multi-output: `CcpropSd`, `tumorSizeaddSd`, etc.
-- Compartments: `depot`, `central`, `peripheral1`, `peripheral2`, `effect`. Observation: `Cc`.
+- Residual error: `propSd`, `addSd`, `expSd`. Multi-output: `propSd_<output>`, `addSd_<output>`, etc.
+- Compartments: `depot`, `central`, `peripheral1`, `peripheral2`, `effect`, `target`, `complex`, `csf`, `isf`, etc. Observation: `Cc`.
 
 Covariate columns come from `inst/references/covariate-columns.md`. Before writing any covariate into the file:
 
@@ -263,7 +219,7 @@ Covariate columns come from `inst/references/covariate-columns.md`. Before writi
 - If the concept isn't in the register at all, propose a new entry (canonical name, description, units, type, reference category, source aliases) and ask the user to confirm before adding it. The new entry is committed alongside the model.
 - Do **not** add a change-log / history / "## Change log" / "## Summary" section or per-extraction history line to `inst/references/covariate-columns.md`. The H3 entry itself is the authoritative record; chronological history of when an entry was added or modified is read from `git log`. Any context that someone needs to use the covariate (derivation rules, scope-promotion rationale, name-collision history, naming-decision sidecars) belongs in the H3 entry's Description / Notes / Source aliases — not in a separate change log.
 
-`population` uses the extensible schema in `naming-conventions.md`. Common fields: `n_subjects`, `n_studies`, `age_range`, `weight_range`, `sex_female_pct`, `race_ethnicity`, `disease_state`, `dose_range`, `regions`, `notes`. Add any additional keys the paper describes (e.g., `ga_range`, `renal_function`, `co_medication`) — do not force facts into the common schema.
+`population` uses the extensible schema documented in `references/parameter-names.md` § "File-level metadata". Common fields: `n_subjects`, `n_studies`, `age_range`, `weight_range`, `sex_female_pct`, `race_ethnicity`, `disease_state`, `dose_range`, `regions`, `notes`. Add any additional keys the paper describes (e.g., `ga_range`, `renal_function`, `co_medication`) — do not force facts into the common schema.
 
 ## Phase 4 — Verification (re-read the source)
 
@@ -338,13 +294,20 @@ Papers that describe endogenous turnover, steady-state balance, or mechanistic e
 - Validation is **not** PKNCA. Use steady-state / perturbation-recovery / mass-balance checks. See `references/endogenous-validation.md`.
 - Dimensional analysis is load-bearing. These models often mix `mg/mL`, `mg/kg`, `L/kg`, `1/day`; a single unit slip silently corrupts the balance. Walk through every term in every ODE and the derived rates.
 
-Naming conventions for mechanistic parameters are documented in `references/naming-conventions.md` under "Endogenous / mechanistic parameters."
+Naming conventions for mechanistic parameters are documented in `references/parameter-names.md` § "Endogenous / mechanistic parameters."
 
 ## Phase 6 — Registration, tests, docs, PR
 
 1. Re-confirm the branch is on top of fresh `origin/main` (`git fetch origin && git rebase origin/main` if needed).
 2. Run `nlmixr2lib::buildModelDb()` to regenerate `data/modeldb.rda` and `inst/modeldb.qs2`. Confirm the new model appears in `modellib()`. **When verifying in R, do `devtools::load_all(".")` first so `modellib()` reads the worktree's in-development package, not the stale system install** — see `references/verification-checklist.md` § "Verifying against the worktree's nlmixr2lib" for why a bare `library(nlmixr2lib)` can return a misleading `FALSE`.
-3. Run `nlmixr2lib::checkModelConventions(model = "<FirstAuthor>_<Year>_<drug>")` and review the output. Any deviations from the canonical parameter / IIV / residual-error / covariate / compartment conventions (see `references/naming-conventions.md` and `inst/references/covariate-columns.md`) that the function flags should be either fixed in the model file before committing, or explicitly justified in the vignette's Assumptions and deviations section. `buildModelDb()` runs `checkModelConventions()` implicitly at package-build time, but running it explicitly on your new model makes drift visible before commit, not after CI. Paste the key lines of the output into the PR body so a reviewer can see what was checked.
+3. Run the convention lint and review the output:
+
+   ```bash
+   Rscript .claude/skills/extract-literature-model/scripts/lint-conventions.R \
+     "<FirstAuthor>_<Year>_<drug>"
+   ```
+
+   The script wraps `nlmixr2lib::checkModelConventions()` and emits PR-paste-ready output. Exit 0 = clean; exit 1 = warnings only; exit 2 = errors. Any deviations from the canonical parameter / IIV / residual-error / covariate / compartment conventions (see `references/compartment-names.md`, `references/parameter-names.md`, and `inst/references/covariate-columns.md`) should be either fixed in the model file before committing, or explicitly justified in the vignette's Assumptions and deviations section. `buildModelDb()` runs `checkModelConventions()` implicitly at package-build time, but running the lint explicitly on your new model surfaces drift before commit. Paste the lint output into the PR body so a reviewer can see what was checked.
 4. **Render the vignette locally and verify it completes without error in under 5 minutes of wall-clock time. This is a mandatory pre-push gate — the worker MUST run this command and verify exit 0 / HTML present before any `git commit` / `git push` of the new vignette.** It catches the same failure modes pkgdown CI does — missing data columns, time-varying covariates assigned to rxEt objects that get silently dropped, PKNCA formulas referencing absent columns, simulation crashes — and surfaces them in seconds rather than after a CI cycle.
 
    ```bash
@@ -366,9 +329,7 @@ Naming conventions for mechanistic parameters are documented in `references/nami
 
    Do not interpret silence as success — re-run with `quiet = FALSE` and confirm an HTML output file landed next to the `.Rmd`. Do not assume "checkModelConventions was clean, vignette must be fine" — those are independent failure modes. The render gate is the only one that exercises the full data path the way pkgdown CI does.
 
-5. **Verify no non-ASCII characters in the new model file or vignette (mandatory pre-push gate).** R CMD check warns on non-ASCII strings in package data — and the `description <-` field of every model file is reified into `data/modeldb.rda`, so a single em-dash, en-dash, multiplication sign, or Greek letter in the description triggers a `WARNING: found non-ASCII strings` and breaks the R-CMD-check matrix on every platform. Comments inside the model file do not trigger the data-warning, but the same characters in vignette source can cause downstream encoding surprises (cross-platform, locale, knitr, pkgdown), so apply the gate to both.
-
-   Run, replacing the placeholders:
+5. **Verify no non-ASCII characters in the new model file or vignette (mandatory pre-push gate).** R CMD check warns on non-ASCII strings in package data — the `description <-` field of every model file is reified into `data/modeldb.rda`, so a single em-dash, en-dash, multiplication sign, or Greek letter in the description triggers a `WARNING: found non-ASCII strings` on every platform. Apply the gate to both the `.R` file and the `.Rmd` vignette.
 
    ```bash
    for f in inst/modeldb/<category>/<FirstAuthor>_<Year>_<drug>.R \
@@ -380,26 +341,7 @@ Naming conventions for mechanistic parameters are documented in `references/nami
    echo "OK: all checked files are ASCII-only"
    ```
 
-   If anything matches, replace the offending characters with their ASCII equivalents before committing. Common substitutions that have triggered this warning in past extractions:
-
-   | Non-ASCII | ASCII replacement |
-   | --- | --- |
-   | `—` (em dash, U+2014) | `--` |
-   | `–` (en dash, U+2013) | `-` |
-   | `×` (multiplication sign) | `x` (or `*` when between numeric quantities) |
-   | `·` (middle dot) | `*` (multiplication) or `.` (decimal-style) |
-   | `≈` | `~=` |
-   | `→` | `->` |
-   | `∈` | `in` |
-   | `≤` | `<=` |
-   | `≡` | `==` |
-   | `…` | `...` |
-   | `²` | `^2` |
-   | `µ` (Greek mu) | `u` (e.g. `µg/mL` → `ug/mL`) |
-   | Greek letters in prose (`η`, `λ`, etc.) | spell out (`eta`, `lambda`) |
-   | `§` | `Section ` |
-
-   The `description` string is the highest-impact site (it is what triggers the R-CMD-check warning), but be thorough — replace non-ASCII anywhere in the new model file and vignette so the gate stays clean even after edits.
+   See `references/verification-checklist.md` for the full ASCII substitution table when anything matches.
 
 6. Run `devtools::check()`. Vignettes must build cleanly.
 
@@ -429,44 +371,15 @@ Naming conventions for mechanistic parameters are documented in `references/nami
 8. Commit the model file, the vignette under `vignettes/articles/`, the regenerated `modeldb.rda` / `modeldb.qs2` / `modeldb.Rd`, the `NEWS.md` entry, and any updates to `inst/references/covariate-columns.md` (if a new covariate was registered) together on the feature branch.
 9. Push the branch and open a PR against `main`. Use `gh pr create` with a title like `Add <Author> <Year> <drug> model`. **Before pushing, confirm steps 4 (vignette render) and 5 (non-ASCII check) were both run on the final state of the model and vignette files and both exited clean.** If either file was edited after the last gate run — even for a typo fix or a cosmetic comment change — re-run both gates; do not push on the strength of an earlier check against an older copy.
 
-## Stop-and-ask triggers (consolidated)
+## Stop-and-ask triggers
 
-Don't guess — ask the user when:
+The full consolidated list is in `references/pre-flight-checklist.md`. Review it once at dispatch (before starting Phase 1) so each trigger is visible up-front rather than discovered inline.
 
-- The source has multiple non-hierarchical models and it's not obvious which to extract.
-- Parameter values look like initial estimates rather than final.
-- Covariate encoding isn't fully specified (reference category, units, transformation).
-- A source column name is not in `inst/references/covariate-columns.md` (propose a new entry and confirm).
-- A source column is an alias of an existing canonical name and the mapping involves value inversion or a reference-category flip.
-- A parameter name deviates from the nlmixr2lib standard (propose the canonical name and confirm).
-- PKNCA output disagrees with a published NCA table by more than ~20% after careful review.
-- The source is paywalled and the user hasn't supplied the text.
-- An erratum search is inconclusive (e.g., paywalled journal, ambiguous correction notice) — ask the user to confirm whether any corrections apply.
-- (Removed: animal-only-data sidecar trigger — preclinical and in-vitro models are first-class and extracted without sidecar-asking. Phase 1 step 3 is now a species-labelling step, not a stop-and-ask.)
-- The PMC XML / PDF on disk contains only the paper's abstract (see Phase 1 full-text-check step).
-- The on-disk file's title / first-author / journal / year / drug disagrees with the task's `Paper metadata` block (see Phase 1 paper-identity-check step).
-- The paper depends on an upstream popPK model that is not on disk — either the upstream paper is identifiable (queue dependency) or unidentifiable (operator decision needed). See Phase 1 upstream-popPK detection step.
-- A required structural-model parameter is absent from every on-disk source (paper + supplements + regulatory review). Use the Phase 4 missing-parameter sidecar template; do not fall back to training data.
-- The worktree at dispatch has a pre-existing pushed branch for this task ID (prior completed run). See Phase 2 worktree-resumption step.
-- `devtools::check()` or vignette rendering produces a C-level segfault — the environment is broken; do not paper over with `--no-build-vignettes` or similar.
-- The `timeout 300 rmarkdown::render()` gate exits 124 — the vignette exceeds 5 minutes; reduce simulation size before committing.
-
-Use this fixed format for ambiguities:
+Use this fixed format for any ambiguity:
 
 > Ambiguity at [source location]. Two plausible interpretations: (A) …, (B) …. Which applies?
 
-A stop-and-ask trigger is **not advisory**: when one fires, stop work
-on the current task and wait for the operator. Do **not** "document a
-best guess and proceed" — silent best-guesses ship as bugs the
-operator cannot retroactively correct without re-running the whole
-extraction. If you find yourself thinking "I'll just pick the safest
-option and move on," that itself is a stop-and-ask signal.
-
-When running interactively, use `AskUserQuestion` and wait for the
-answer. When running under a task runner, use the runner's
-documented stop-and-ask protocol (the runner is responsible for the
-mechanics — file paths, schema, status transitions, re-dispatch).
-Either way: **stop, ask, wait — do not guess past the trigger.**
+When running interactively, use `AskUserQuestion` and wait for the answer. When running under a task runner, use the runner's documented stop-and-ask protocol. Either way: **stop, ask, wait — do not guess past the trigger.**
 
 ## Refusal handling
 
