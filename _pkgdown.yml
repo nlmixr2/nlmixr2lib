@@ -330,6 +330,10 @@ navbar:
         href: articles/Cao_2013_PAmAb.html
       - text: "Patritumab (Lu 2022)"
         href: articles/Lu_2022_patritumab.html
+      - text: "Pazopanib (Ouerdani 2015)"
+        href: articles/Ouerdani_2015_pazopanib.html
+      - text: "Pazopanib mouse (Ouerdani 2015)"
+        href: articles/Ouerdani_2015_pazopanib_mouse.html
       - text: "Pertuzumab (Garg 2014)"
         href: articles/Garg_2014_pertuzumab.html
       - text: "Pertuzumab (Wang 2021)"
@@ -796,6 +800,8 @@ articles:
   - articles/Ogasawara_2020_durvalumab
   - articles/Okada_2025_rocatinlimab
   - articles/Othman_2014_daclizumab
+  - articles/Ouerdani_2015_pazopanib
+  - articles/Ouerdani_2015_pazopanib_mouse
   - articles/Overgaard_2019_semaglutide
   - articles/Ozawa_2007_docetaxel
   - articles/Panoilia_2015_bevacizumab
