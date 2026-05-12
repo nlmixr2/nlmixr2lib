@@ -361,7 +361,7 @@ nca_res  <- suppressWarnings(PKNCA::pk.nca(nca_data))
 #>  ■■■■■■■                           21% |  ETA: 12s
 #>  ■■■■■■■■■■■■■                     40% |  ETA:  9s
 #>  ■■■■■■■■■■■■■■■■■■■               60% |  ETA:  6s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■         81% |  ETA:  3s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■         80% |  ETA:  3s
 nca_tbl  <- as.data.frame(nca_res$result)
 
 nca_summary <- nca_tbl |>

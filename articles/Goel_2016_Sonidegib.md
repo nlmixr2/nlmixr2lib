@@ -314,7 +314,7 @@ intervals <- data.frame(
 )
 
 nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
-#>  ■■■■■■■■■■■■■■■■■■■■■             68% |  ETA:  1s
+#>  ■■■■■■■■■■■■                      36% |  ETA:  2s
 
 # Simulated arithmetic means by group + phase (matching Goel 2016 Tables 3-4 reporting
 # convention; arithmetic-mean is also right-tail-sensitive for high-CV log-normal IIV).

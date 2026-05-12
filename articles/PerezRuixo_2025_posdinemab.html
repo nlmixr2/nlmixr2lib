@@ -1335,14 +1335,63 @@ either of the straightforward equation interpretations we have explored
 without access to the original NONMEM control stream. We retain the
 mass-balanced interpretation (Errata items 1-4) as the most physically
 defensible and report the discrepancy explicitly here.</p></li>
-<li><p><strong>Compartment naming.</strong> The mechanistic compartments
-(<code>ACSF</code>, <code>AISF</code>, <code>R</code>, <code>RC</code>,
-<code>RISF</code>, <code>RCISF</code>) follow the paper’s notation
-directly. This triggers warnings from
-<code><a href="../reference/checkModelConventions.html">nlmixr2lib::checkModelConventions</a></code> because they are not in
-the canonical PK-compartment list (<code>central</code>,
-<code>peripheral1</code>, …). The mechanistic terminology is preserved
-here for traceability to the paper.</p></li>
+<li>
+<p><strong>Compartment naming.</strong> The mechanistic compartments
+are encoded with canonical nlmixr2lib names, with the paper’s notation
+noted in parentheses for traceability:</p>
+<table class="table">
+<colgroup>
+<col width="21%">
+<col width="29%">
+<col width="48%">
+</colgroup>
+<thead><tr class="header">
+<th>Paper</th>
+<th>Model file</th>
+<th>Role</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td><code>ACSF</code></td>
+<td><code>csf</code></td>
+<td>Drug amount in CSF (pmol)</td>
+</tr>
+<tr class="even">
+<td><code>AISF</code></td>
+<td><code>isf</code></td>
+<td>Drug amount in ISF (pmol)</td>
+</tr>
+<tr class="odd">
+<td><code>R</code></td>
+<td><code>target</code></td>
+<td>Free p217+tau in CSF (pmol/L)</td>
+</tr>
+<tr class="even">
+<td><code>RC</code></td>
+<td><code>complex</code></td>
+<td>Posdinemab-target complex in CSF (pmol/L)</td>
+</tr>
+<tr class="odd">
+<td><code>RISF</code></td>
+<td><code>target_isf</code></td>
+<td>Free tau seeds in ISF (pmol/L)</td>
+</tr>
+<tr class="even">
+<td><code>RCISF</code></td>
+<td><code>complex_isf</code></td>
+<td>Posdinemab-tau complex in ISF (pmol/L)</td>
+</tr>
+</tbody>
+</table>
+<p><code>csf</code> and <code>isf</code> are registered physiologic
+body-fluid compartments (<code>R/conventions.R</code>);
+<code>target_csf</code> / <code>target_isf</code> /
+<code>complex_csf</code> / <code>complex_isf</code> match the
+<code>targetLocationRegex</code> pattern for target species in a
+physiologic compartment. The paper’s notation appears in the
+Errata-quoted supplement equations above so the mapping back to the
+source remains explicit.</p>
+</li>
 <li><p><strong>Dosing unit convention.</strong>
 <code>units$dosing</code> is <code>"mg"</code> while the model
 internally tracks drug amounts in pmol; the conversion is performed via
