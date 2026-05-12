@@ -2862,6 +2862,28 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Hennig_2015_rifabutin.R` (multiplicative effect on rifabutin bioavailability F: `F * (1 + 0.304 * SNP_SLCO1B1_RS11045819)` -- AC carriers have ~30% higher rifabutin F than CC reference; dOFV = -6.5).
 - **Notes:** Time-fixed per subject. Carrier rate in the Hennig 2015 South-African HIV/TB cohort: 14% (5 of 35 genotyped). SLCO1B1 encodes OATP1B1, a hepatic uptake transporter; rs11045819 has been associated with reduced rifampicin and lopinavir concentrations in prior studies but in Hennig 2015 was associated with INCREASED rifabutin bioavailability (note opposite direction of effect across rifamycins).
 
+### SLCO1B1_HAP15_HET (**canonical for SLCO1B1*15 haplotype heterozygote indicator**)
+- **Description:** Binary haplotype indicator for the *SLCO1B1* `*15` reduced-function haplotype (the cis combination of the 388A>G / rs2306283 and 521T>C / rs4149056 variants; encodes the OATP1B1 N130D + V174A double mutant). 1 = subject carries exactly one *15 allele (heterozygous: `*1a/*15` or `*1b/*15`), 0 = otherwise (the union of *15-noncarriers and *15-homozygotes; the paired indicator `SLCO1B1_HAP15_HOM` flags the homozygous group). Time-fixed per subject (germline haplotype).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (homozygous *1a/*1a, *1a/*1b, or *1b/*1b -- i.e., no *15 allele). The reference group is the union of the three non-*15 diplotypes; `SLCO1B1_HAP15_HOM` flags the *15/*15 group.
+- **Source aliases:**
+  - `HT` -- Ide 2009 (paper text Eq. for `Frel = 1 * theta1^HT * theta2^HM` where `HT = 1` for heterozygotes `*1a/*15` and `*1b/*15`).
+- **Example models:** `Ide_2009_pravastatin.R` (multiplicative effect on relative bioavailability Frel: `Frel = 1.50^SLCO1B1_HAP15_HET * 1.95^SLCO1B1_HAP15_HOM` -- *15 heterozygotes have 50% higher Frel than *15-noncarriers; dOFV = 32.2 in backward elimination, p < 0.001).
+- **Notes:** Paired with `SLCO1B1_HAP15_HOM` to encode a three-level haplotype categorical (noncarrier / heterozygote / homozygote) with `*15`-noncarrier as the implicit reference (both indicators = 0). Distinct from the SNP-level canonical `SNP_SLCO1B1_RS11045819` (which encodes only the C>A variant at a different position; rs11045819 = P155T) and from the *15 component SNPs rs2306283 (388A>G) and rs4149056 (521T>C) individually: future Ide-style extractions that pool *5 (521T>C only) with *15 should still record their values under this canonical and document the pooling rule in `covariateData[[SLCO1B1_HAP15_HET]]$notes`. Distribution in the Ide 2009 cohort of 57 healthy Japanese male volunteers (Table I): 28 noncarriers, 23 heterozygotes, 6 homozygotes. Ratified canonically on 2026-05-12 alongside the Ide 2009 extraction.
+
+### SLCO1B1_HAP15_HOM (**canonical for SLCO1B1*15 haplotype homozygote indicator**)
+- **Description:** Binary haplotype indicator for the *SLCO1B1* `*15` reduced-function haplotype. 1 = subject carries two *15 alleles (homozygous: `*15/*15`), 0 = otherwise (the union of *15-noncarriers and *15-heterozygotes; the paired indicator `SLCO1B1_HAP15_HET` flags the heterozygous group). Time-fixed per subject (germline haplotype).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (homozygous *1a/*1a, *1a/*1b, or *1b/*1b -- i.e., no *15 allele). The reference group is the union of the three non-*15 diplotypes; `SLCO1B1_HAP15_HET` flags the *15-heterozygote group.
+- **Source aliases:**
+  - `HM` -- Ide 2009 (paper text Eq. for `Frel = 1 * theta1^HT * theta2^HM` where `HM = 1` for homozygotes `*15/*15`).
+- **Example models:** `Ide_2009_pravastatin.R` (multiplicative effect on relative bioavailability Frel: `Frel = 1.50^SLCO1B1_HAP15_HET * 1.95^SLCO1B1_HAP15_HOM` -- *15 homozygotes have 95% higher Frel than *15-noncarriers; dOFV = 33.7 in backward elimination, p < 0.001).
+- **Notes:** Paired with `SLCO1B1_HAP15_HET` to encode a three-level haplotype categorical (noncarrier / heterozygote / homozygote) with `*15`-noncarrier as the implicit reference (both indicators = 0). See `SLCO1B1_HAP15_HET` Notes for the broader context; population distribution in Ide 2009 was 6 of 57 (10.5%) homozygotes. Ratified canonically on 2026-05-12 alongside the Ide 2009 extraction.
+
 ## Lifestyle / medical history
 
 ### SMOKE (**canonical for current-smoker binary indicator**)
