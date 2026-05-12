@@ -74,6 +74,8 @@ navbar:
         href: articles/Masters_2022_avelumab.html
       - text: "Axatilimab (Yang 2024)"
         href: articles/Yang_2024_axatilimab.html
+      - text: "Azithromycin (Sampson 2014)"
+        href: articles/Sampson_2014_azithromycin.html
       - text: "Bapineuzumab (Hu 2014)"
         href: articles/Hu_2014_bapineuzumab.html
       - text: "BAY81 8973 (Garmann 2017)"
@@ -306,14 +308,10 @@ navbar:
         href: articles/Bajaj_2017_nivolumab.html
       - text: "Nivolumab (Zhang 2019)"
         href: articles/Zhang_2019_nivolumab.html
-      - text: "Obinutuzumab (Gibiansky 2014)"
-        href: articles/Gibiansky_2014_obinutuzumab.html
       - text: "Ofatumumab (Yu 2022)"
         href: articles/Yu_2022_ofatumumab.html
       - text: "Olaratumab (Mo 2018)"
         href: articles/Mo_2018_olaratumab.html
-      - text: "Olokizumab (Kretsos 2014)"
-        href: articles/Kretsos_2014_olokizumab.html
       - text: "Olprinone (Kunisawa 2014)"
         href: articles/Kunisawa_2014_olprinone.html
       - text: "Omalizumab (Hayashi 2007)"
@@ -398,8 +396,6 @@ navbar:
         href: articles/Wu_2012_sirolimus.html
       - text: "Sirukumab (Xu 2011)"
         href: articles/Xu_2011_sirukumab.html
-      - text: "Sodium nitrite qsp (VegaVilla 2013)"
-        href: articles/VegaVilla_2013_sodium_nitrite_qsp.html
       - text: "Sonidegib (Goel 2016)"
         href: articles/Goel_2016_Sonidegib.html
       - text: "Sugemalimab (Wang 2024)"
@@ -741,7 +737,6 @@ articles:
   - articles/Kovalenko_2016_dupilumab
   - articles/Kovalenko_2016_dupilumab_ddmore
   - articles/Kovalenko_2020_dupilumab
-  - articles/Kretsos_2014_olokizumab
   - articles/Kuchimanchi_2018_evolocumab
   - articles/Kuchimanchi_2024_dostarlimab
   - articles/Kunarajah_2017_doxorubicin
@@ -822,6 +817,7 @@ articles:
   - articles/Rovei_1982_theophylline
   - articles/Sadouki_2025_meropenem_gentamicin_ciprofloxacin
   - articles/Salinger_2013_magnesiumSulfate
+  - articles/Sampson_2014_azithromycin
   - articles/Sanghavi_2020_ipilimumab
   - articles/Sathe_2024_sacituzumab
   - articles/Savic_2017_cladribine
@@ -857,7 +853,6 @@ articles:
   - articles/vanRongen_2018_midazolam
   - articles/vanWijk_2019_paracetamol
   - articles/Varatharajan_2016_daunorubicin
-  - articles/VegaVilla_2013_sodium_nitrite_qsp
   - articles/Vet_2016_midazolam
   - articles/Vezina_2010_valganciclovir
   - articles/Vezina_2014_valganciclovir
