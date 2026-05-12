@@ -312,6 +312,8 @@ navbar:
         href: articles/Yu_2022_ofatumumab.html
       - text: "Olaratumab (Mo 2018)"
         href: articles/Mo_2018_olaratumab.html
+      - text: "Olokizumab (Kretsos 2014)"
+        href: articles/Kretsos_2014_olokizumab.html
       - text: "Olprinone (Kunisawa 2014)"
         href: articles/Kunisawa_2014_olprinone.html
       - text: "Omalizumab (Hayashi 2007)"
@@ -739,6 +741,7 @@ articles:
   - articles/Kovalenko_2016_dupilumab
   - articles/Kovalenko_2016_dupilumab_ddmore
   - articles/Kovalenko_2020_dupilumab
+  - articles/Kretsos_2014_olokizumab
   - articles/Kuchimanchi_2018_evolocumab
   - articles/Kuchimanchi_2024_dostarlimab
   - articles/Kunarajah_2017_doxorubicin
