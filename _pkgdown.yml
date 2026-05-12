@@ -622,7 +622,6 @@ articles:
   desc: Cross-cutting guides and the list of models.
   contents:
   - PK_2cmt_mAb_Davda_2014
-  - Tiraboschi_2025_amlitelimab
   - covariate-columns
   - create-model-library
   - list-of-models
