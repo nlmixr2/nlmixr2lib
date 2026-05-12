@@ -422,6 +422,8 @@ navbar:
         href: articles/Hennig_2013_tobra.html
       - text: "Tobramycin (Hennig 2008)"
         href: articles/Hennig_2008_tobramycin.html
+      - text: "Tobramycin inhaled (Ting 2014)"
+        href: articles/Ting_2014_tobramycin_inhaled.html
       - text: "Tocilizumab (Frey 2010)"
         href: articles/Frey_2010_tocilizumab.html
       - text: "Tocilizumab (Frey 2013)"
@@ -843,6 +845,7 @@ articles:
   - articles/Themans_2019_meropenem
   - articles/Tikiso_2021_abacavir
   - articles/Timmermann_2019_brodalumab
+  - articles/Ting_2014_tobramycin_inhaled
   - articles/Tiraboschi_2025_amlitelimab
   - articles/Tortorici_2017_a1pi
   - articles/Toukam_2025_biib107
