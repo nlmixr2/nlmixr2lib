@@ -348,6 +348,8 @@ navbar:
         href: articles/PerezRuixo_2025_posdinemab.html
       - text: "Pozelimab (Lin 2024)"
         href: articles/Lin_2024_pozelimab.html
+      - text: "Pravastatin (Ide 2009)"
+        href: articles/Ide_2009_pravastatin.html
       - text: "Propofol (Diepstraten 2013)"
         href: articles/Diepstraten_2013_propofol.html
       - text: "Pyrazinamide (Alsultan 2017)"
@@ -716,6 +718,7 @@ articles:
   - articles/Huynh_2026_VRC07523LS
   - articles/Hwang_2022_tremelimumab
   - articles/Hwang_2023_monalizumab
+  - articles/Ide_2009_pravastatin
   - articles/Ide_2020_elotuzumab
   - articles/Jackson_2022_ixekizumab
   - articles/Jager_2011_gemtuzumab

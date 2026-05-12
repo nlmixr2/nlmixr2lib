@@ -37,7 +37,14 @@
     # amount sequestered in the renal cortex via saturable uptake from
     # the central compartment plus first-order tubular reabsorption back
     # out (Rougier 2003 / Croes 2011 mechanism).
-    "renal_cortex"
+    "renal_cortex",
+    # Gallbladder / biliary recirculation compartment used by
+    # enterohepatic-circulation (EHC) popPK models (Ide_2009_pravastatin
+    # and similar). Drug accumulates from the central compartment via
+    # biliary excretion (k12) and re-enters central after a delay
+    # (k21 gated by gallbladder-emptying time tg), producing the
+    # characteristic second-peak phenomenon.
+    "gallbladder"
   ),
   # Bare numbered chains (transit / effect / precursor / lat / dar /
   # depot) and metabolite-suffixed compartments are validated
