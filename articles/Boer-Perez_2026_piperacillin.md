@@ -280,13 +280,14 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- suppressWarnings(PKNCA::pk.nca(nca_data))
-#>  ■■■■■■                            17% |  ETA: 19s
+#>  ■■                                 5% |  ETA: 22s
+#>  ■■■■■■                            18% |  ETA: 19s
 #>  ■■■■■■■■■■                        30% |  ETA: 16s
-#>  ■■■■■■■■■■■■■■                    43% |  ETA: 13s
+#>  ■■■■■■■■■■■■■■                    44% |  ETA: 13s
 #>  ■■■■■■■■■■■■■■■■■■                56% |  ETA: 10s
-#>  ■■■■■■■■■■■■■■■■■■■■■■            68% |  ETA:  7s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■         81% |  ETA:  4s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     94% |  ETA:  1s
+#>  ■■■■■■■■■■■■■■■■■■■■■■            70% |  ETA:  7s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■        82% |  ETA:  4s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     95% |  ETA:  1s
 nca_df   <- as.data.frame(nca_res$result)
 
 nca_summary <- nca_df |>
