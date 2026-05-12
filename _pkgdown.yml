@@ -460,6 +460,8 @@ navbar:
         href: articles/Rosario_2015_vedolizumab.html
       - text: "Visilizumab (Cao 2013)"
         href: articles/Cao_2013_visilizumab.html
+      - text: "Vismodegib (Lu 2015)"
+        href: articles/Lu_2015_vismodegib.html
       - text: "Voriconazole (Akbar 2025)"
         href: articles/Akbar_2025_voriconazole.html
       - text: "Vrc01 (Huang 2017)"
@@ -758,6 +760,7 @@ articles:
   - articles/Lon_2013_abatacept
   - articles/Long_2017_necitumumab
   - articles/Lu_2014_trastuzumabemtansine
+  - articles/Lu_2015_vismodegib
   - articles/Lu_2019_polatuzumab
   - articles/Lu_2022_patritumab
   - articles/Ma_2020_sarilumab_anc
