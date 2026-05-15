@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Hansson 2013b sunitinib ([doi:10.1038/psp.2013.61](https://doi.org/10.1038/psp.2013.61)) -- adults with imatinib-resistant gastrointestinal stromal tumours (GIST) (tumor growth inhibition PD model with sKIT and sVEGFR-3 biomarker drivers; companion to `Hansson_2013a_sunitinib`; ratifies new `BAS_SKIT`, `MRT_SKIT`, `EC50_SKIT`, and `SLOPE_SKIT` covariate canonicals; `[DDMODEL00000198]`).
 * Add Yuan 2019 concizumab ([doi:10.1016/j.ejps.2019.105032](https://doi.org/10.1016/j.ejps.2019.105032)) -- healthy adult males receiving single-dose IV or SC concizumab (23-state systems PK/PD model with two nested endothelial endosome compartments for mTFPI-mediated TMDD and FcRn-recycled linear clearance of free and sTFPI-bound antibody).
 * Add Debord 2001 cyclosporin ([doi:10.2165/00003088-200140050-00004](https://doi.org/10.2165/00003088-200140050-00004)) -- stable renal transplant recipients receiving oral cyclosporin microemulsion (Neoral) 75-175 mg twice daily (gamma-distribution absorption convolved with two-compartment disposition; F fixed to 1).
 * Add Ide 2009 pravastatin ([doi:10.1177/0091270009341960](https://doi.org/10.1177/0091270009341960)) -- 57 healthy Japanese male volunteers (single 10 mg oral; enterohepatic-circulation model with Erlang absorption and SLCO1B1*15 haplotype effect on relative bioavailability; ratifies new `SLCO1B1_HAP15_HET` and `SLCO1B1_HAP15_HOM` covariate canonicals and new `gallbladder` compartment name).
