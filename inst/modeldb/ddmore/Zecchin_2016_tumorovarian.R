@@ -63,7 +63,7 @@ Zecchin_2016_tumorovarian <- function() {
     libase  <- log(0.0713); label("Baseline SLD (m); converted to mm via internal *1000 scaling")    # Output_real_SLD.lst FINAL TH4 = 7.13E-02
     addSd_tumorSize <- 18.4 ; label("Additive residual error on SLD (mm)")  # Output_real_SLD.lst FINAL TH5 = 1.84E+01
 
-    # IIV — diagonal $OMEGA from Output_real_SLD.lst FINAL OMEGA block. The
+    # IIV - diagonal $OMEGA from Output_real_SLD.lst FINAL OMEGA block. The
     # source NONMEM model (.mod $PK) wires the same ETA(2) onto BOTH KD0 and
     # KD1, so a single shared eta is added to both lkd0 and lkd1 in the
     # model() block via etalkd0_kd1.
@@ -87,7 +87,7 @@ Zecchin_2016_tumorovarian <- function() {
     # NONMEM trajectory.
     tumorSize(0) <- ibase * 1000
 
-    # Tumour size dynamics — direct port of $DES from Executable_SLD.mod:
+    # Tumour size dynamics - direct port of $DES from Executable_SLD.mod:
     #   DADT(1) = KG/1000 * A(1)
     #             - (KD0/1000 * E0 + KD1/100 * E1) * A(1)
     # AUC_CARBO and AUC_GEM are time-varying covariates supplied per cycle
