@@ -1172,8 +1172,8 @@ readable.
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** general
-- **Source aliases:** `ASIAN` -- used in `Hu_2026_clesrovimab.R`, `Robbie_2012_palivizumab.R`, `Fau_2020_isatuximab.R`. `RAAS` (race-Asian-vs-other indicator as named in Bajaj 2017 Table 1) -- used in `Bajaj_2017_nivolumab.R`.
-- **Example models:** `Zhu_2017_lebrikizumab.R` (canonical form), `Robbie_2012_palivizumab.R`, `Bajaj_2017_nivolumab.R`, `Fau_2020_isatuximab.R`.
+- **Source aliases:** `ASIAN` -- used in `Hu_2026_clesrovimab.R`, `Robbie_2012_palivizumab.R`, `Fau_2020_isatuximab.R`. `RAAS` (race-Asian-vs-other indicator as named in Bajaj 2017 Table 1) -- used in `Bajaj_2017_nivolumab.R`. `RACEN` (race-numeric indicator as named in Lu 2019 / Shi 2020 NONMEM control stream; ASIAN = 1 if RACEN == 1) -- used in `Lu_2019_polatuzumab.R`.
+- **Example models:** `Zhu_2017_lebrikizumab.R` (canonical form), `Robbie_2012_palivizumab.R`, `Bajaj_2017_nivolumab.R`, `Fau_2020_isatuximab.R`, `Lu_2019_polatuzumab.R` (multiplicative factor `e_asian_vc = 0.929` on acMMAE Vc, i.e., 7.1% lower V1 in Asian patients; verbatim Shi 2020 (PMID 32770353) ethnicity-sensitivity re-quote of the Lu 2019 popPK Asian-race covariate).
 
 ### RACE_ASIAN_AMIND_OTH (**canonical for composite Asian / American Indian / Other group**)
 - **Description:** 1 = Asian, American Indian / Alaska Native, or Other race; 0 = White or Black. Composite indicator that pools the smaller-N race groups in a population dominated by White and Black subjects, with White + Black serving as the reference category. Distinct from `RACE_ASIAN_AMIND_MULTI` (Clegg 2024 grouping that includes Multiracial; pooled against a different reference), from `RACE_ASIAN_OTH` (within-Asian-population sub-indicator), and from `RACE_BLACK_OTH` (different composite).
