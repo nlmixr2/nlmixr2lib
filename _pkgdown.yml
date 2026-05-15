@@ -557,6 +557,8 @@ navbar:
         href: articles/Germovsek_2016_gentamicin.html
       - text: "Glucose (Bizzotto 2016)"
         href: articles/Bizzotto_2016_glucose.html
+      - text: "Il21 (Elishmereni 2011)"
+        href: articles/Elishmereni_2011_il21.html
       - text: "Levetiracetam (Schoemaker 2018)"
         href: articles/Schoemaker_2018_levetiracetam.html
       - text: "Meropenem (Li 2006)"
@@ -721,6 +723,7 @@ articles:
   - articles/Dunlap_2025_tacrolimus
   - articles/Dunn_2025_tranexamicAcid
   - articles/Ekhart_2008_carboplatin
+  - articles/Elishmereni_2011_il21
   - articles/Faelens_2021_infliximab
   - articles/Farrell_2012_farletuzumab
   - articles/Fasanmade_2009_infliximab
