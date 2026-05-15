@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Choy 2016 type 2 diabetes WHIG model ([doi:10.1002/psp4.12051](https://doi.org/10.1002/psp4.12051)) -- obese newly-diagnosed adults with T2DM on diet+exercise (placebo arm of NCT00236600; semi-mechanistic weight-HbA1c-insulin-glucose disease-progression model).
+* Add Taylor 2020 methotrexate ([doi:10.1002/cpt.1957](https://doi.org/10.1002/cpt.1957)) -- pediatric NOPHO ALL2000 / ALL2008 patients receiving high-dose IV methotrexate (3-compartment PK with BSA scaling and time-varying serum creatinine; default popPK model behind MTXPK.org).
 * Add Yuan 2019 concizumab ([doi:10.1016/j.ejps.2019.105032](https://doi.org/10.1016/j.ejps.2019.105032)) -- healthy adult males receiving single-dose IV or SC concizumab (23-state systems PK/PD model with two nested endothelial endosome compartments for mTFPI-mediated TMDD and FcRn-recycled linear clearance of free and sTFPI-bound antibody).
 * Add Debord 2001 cyclosporin ([doi:10.2165/00003088-200140050-00004](https://doi.org/10.2165/00003088-200140050-00004)) -- stable renal transplant recipients receiving oral cyclosporin microemulsion (Neoral) 75-175 mg twice daily (gamma-distribution absorption convolved with two-compartment disposition; F fixed to 1).
 * Add Ide 2009 pravastatin ([doi:10.1177/0091270009341960](https://doi.org/10.1177/0091270009341960)) -- 57 healthy Japanese male volunteers (single 10 mg oral; enterohepatic-circulation model with Erlang absorption and SLCO1B1*15 haplotype effect on relative bioavailability; ratifies new `SLCO1B1_HAP15_HET` and `SLCO1B1_HAP15_HOM` covariate canonicals and new `gallbladder` compartment name).
