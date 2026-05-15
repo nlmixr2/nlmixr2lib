@@ -42,6 +42,8 @@ navbar:
         href: articles/Zhong_2026_abatacept.html
       - text: "Acetaminophen (vanRongen 2016)"
         href: articles/vanRongen_2016_acetaminophen.html
+      - text: "Adalimumab (Drweesh 2026)"
+        href: articles/Drweesh_2026_adalimumab.html
       - text: "Adalimumab (Marquez-Megias 2023)"
         href: articles/Marquez-Megias_2023_adalimumab.html
       - text: "Adecatumumab (Cao 2013)"
@@ -709,6 +711,7 @@ articles:
   - articles/Diep_2026_donidalorsen
   - articles/Diepstraten_2013_propofol
   - articles/DoldanMartelli_2013_EGF_IFN_chimera
+  - articles/Drweesh_2026_adalimumab
   - articles/Dunlap_2025_tacrolimus
   - articles/Dunn_2025_tranexamicAcid
   - articles/Ekhart_2008_carboplatin
