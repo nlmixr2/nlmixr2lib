@@ -123,7 +123,8 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Source aliases:**
   - `SEXM` (values inverted: `SEXF = 1 - SEXM`; effect coefficient sign and reference category both invert) -- used in `CarlssonPetri_2021_liraglutide.R`.
   - `SEX` with `"M"`/`"F"` strings -- derive `SEXF = as.integer(SEX == "F")`.
-- **Example models:** `Zhu_2017_lebrikizumab.R` (canonical), `CarlssonPetri_2021_liraglutide.R` (alias `SEXM`), `Bajaj_2017_nivolumab.R` (male-indicator source; effect applied as `exp(coef * (1 - SEXF))` to preserve the paper's female-reference CL_REF / VC_REF), `Fau_2020_isatuximab.R` (exponential effect on Vc; reference category 0 = male), `Netterberg_2017_docetaxel.R` (multiplicative effect on baseline ANC: `BACOV *= (1 + theta * SEXF)`; source column `SEX` with 1 = male, 2 = female encoding, decomposed via `SEXF = as.integer(SEX == 2)`), `Xu_2020_daratumumab.R` (additive shift on V1 `(1 + e_sexf_vc * SEXF)` with `e_sexf_vc = -0.205`: female V1 is 20.5% lower than male, reference category 0 = male).
+  - `SEX` with `1`=male / `2`=female numeric coding -- derive `SEXF = as.integer(SEX == 2)`. Used in `Netterberg_2017_docetaxel.R` and `NA_NA_miridesap.R` (DDMODEL00000262 source bundle; Sahota 2015 NONMEM convention).
+- **Example models:** `Zhu_2017_lebrikizumab.R` (canonical), `CarlssonPetri_2021_liraglutide.R` (alias `SEXM`), `Bajaj_2017_nivolumab.R` (male-indicator source; effect applied as `exp(coef * (1 - SEXF))` to preserve the paper's female-reference CL_REF / VC_REF), `Fau_2020_isatuximab.R` (exponential effect on Vc; reference category 0 = male), `Netterberg_2017_docetaxel.R` (multiplicative effect on baseline ANC: `BACOV *= (1 + theta * SEXF)`; source column `SEX` with 1 = male, 2 = female encoding, decomposed via `SEXF = as.integer(SEX == 2)`), `NA_NA_miridesap.R` (DDMODEL00000262 / Sahota 2015; multiplicative effect on baseline SAP via `SAP_BASE_ref * (1 + e_sexf_sap0 * SEXF)` with `e_sexf_sap0 = -0.30`; female baseline is ~30% lower than male).
 - **Notes:** When translating a model that used `SEXM`, flag the sign/reference-category inversion to the user.
 
 ### PREG (**canonical for pregnancy status indicator**)
@@ -598,6 +599,26 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Source aliases:** "Baseline days/month of acute medications" -- used in `FiedlerKelly_2020_fremanezumab_em.R` and `FiedlerKelly_2020_fremanezumab_cm.R`.
 - **Example models:** `FiedlerKelly_2020_fremanezumab_em.R` (slope 0.438 d/d, episodic migraine), `FiedlerKelly_2020_fremanezumab_cm.R` (slope 0.460 d/d, chronic migraine).
 - **Notes:** Specific scope because the variable is migraine-domain-bound. Time-fixed per subject (baseline-only). When future migraine E-R models register additional aliases or alternative breakpoints, document them per-model and consider promoting to `general`.
+
+### AMLOAD (**canonical for systemic-amyloidosis whole-body amyloid load grade**)
+- **Description:** Ordinal whole-body amyloid load score in patients with systemic amyloidosis. Integer 0-3: 0 = no amyloid (healthy volunteers), 1 = small amyloid load, 2 = moderate amyloid load, 3 = large amyloid load. The grading combines organ-by-organ amyloid presence (liver, spleen, bone, adrenals, gut, heart) and SAP-scintigraphy uptake into a single per-patient severity grade at baseline. Time-fixed per subject.
+- **Units:** (categorical 0-3)
+- **Type:** categorical
+- **Scope:** specific
+- **Reference category:** 0 (no amyloid). Sahota 2015 Eq. 2 also treats category 1 as part of the reference for the V4 effect (categories 0 and 1 share a V4 multiplier of 1); only categories 2 and 3 carry a non-zero effect via the cumulative parameters `e_amload2_vp_sap` and `e_amload2_vp_sap + e_amload3_vp_sap` respectively.
+- **Source aliases:** none beyond the source-paper `AMLOAD` column.
+- **Example models:** `NA_NA_miridesap.R` (DDMODEL00000262; Sahota 2015 Eq. 2 multiplicative effect on SAP peripheral volume V4: V4 = V4_ref * (1 + e_amload2_vp_sap * I(AMLOAD>=2) + e_amload3_vp_sap * I(AMLOAD>=3)); reported effects e_amload2_vp_sap = 6.39 / e_amload3_vp_sap = 26.39 yielding ~7.4x V4 at moderate load and ~33.8x at large load).
+- **Notes:** Scope: specific because the grading scheme is amyloidosis-specific (Sahota 2015 Methods: "The whole body amyloid load covariate, AMLOAD, was a categorical score: 0 for no amyloid in healthy volunteers, 1 for small, 2 for moderate, and 3 for large"). The cumulative monotonic parameterisation in Sahota 2015 Eq. 2 encodes a positive-only step at each grade increment. Co-used with `AMLIVER` for the binary hepatic-involvement modifier. Ratified canonically on 2026-05-15 alongside the DDMODEL00000262 / Sahota 2015 extraction.
+
+### AMLIVER (**canonical for hepatic amyloid involvement indicator**)
+- **Description:** Binary indicator for the presence of amyloid in the liver as a separate organ involvement from the overall whole-body amyloid load. 1 = liver amyloid present at baseline; 0 = no liver amyloid. Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no liver amyloid).
+- **Source aliases:** none beyond the source-paper `AMLIVER` column.
+- **Example models:** `NA_NA_miridesap.R` (DDMODEL00000262; Sahota 2015 Eq. 2 multiplicative effect on SAP intercompartmental clearance Q4: Q4 = Q4_ref * (1 + e_amliver_q4 * AMLIVER); reported effect 4.01, yielding ~5x Q4 in patients with hepatic amyloid).
+- **Notes:** Scope: specific because the covariate is amyloidosis-specific (Sahota 2015 Methods names AMLIVER alongside AMSPLEEN / AMHEART as organ-specific amyloid-involvement binary indicators; only AMLIVER was retained as a covariate in the final model). Used in combination with the global `AMLOAD` grade so the model can express both general amyloid burden and the specific hepatic-clearance modifier (the SAP-CPHPC complex is cleared by the liver, motivating the hepatic-amyloid-specific Q4 effect). Ratified canonically on 2026-05-15 alongside the DDMODEL00000262 / Sahota 2015 extraction.
 
 ## Critical-illness severity
 
