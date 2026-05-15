@@ -272,8 +272,8 @@ navbar:
         href: articles/Buil-Bruna_2015_lanreotide.html
       - text: "Lebrikizumab (Zhu 2017)"
         href: articles/Zhu_2017_lebrikizumab.html
-      - text: "Ligelizumab (Bienczak 2025)"
-        href: articles/Bienczak_2025_ligelizumab.html
+      - text: "Lenvatinib (Gupta 2016)"
+        href: articles/Gupta_2016_lenvatinib.html
       - text: "Linagliptin (Retlich 2015)"
         href: articles/Retlich_2015_linagliptin.html
       - text: "Liraglutide (CarlssonPetri 2021)"
@@ -751,6 +751,7 @@ articles:
   - articles/Grimm_2023
   - articles/Guo_2022_PF_06939999
   - articles/Gupta_2016_amatuximab
+  - articles/Gupta_2016_lenvatinib
   - articles/Gupta_2017_ixazomib
   - articles/Hansson_2013a_sunitinib
   - articles/Hansson_2013b_sunitinib
