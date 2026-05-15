@@ -28,18 +28,18 @@ This model was extracted from the DDMORE Foundation Model Repository
 bundle for `DDMODEL00000195` (scraped to
 `dpastoor/ddmore_scraping/195/`). The bundle contains:
 
-- `Executable_sibrotuzumab.mdl` — the human-readable MDL control object
+- `Executable_sibrotuzumab.mdl` -- the human-readable MDL control object
   (PARAMETERS, MODEL_PREDICTION, OBSERVATION blocks).
-- `Executable_sibrotuzumab.xml` — PharmML-rendered version of the same
+- `Executable_sibrotuzumab.xml` -- PharmML-rendered version of the same
   MDL.
-- `Output_simulated_nca_simulation.1.lst` — NMTRAN simulation listing
+- `Output_simulated_nca_simulation.1.lst` -- NMTRAN simulation listing
   produced by the `pharmML2Nmtran` v0.3.0 converter from the MDL
   (a 20-replicate `$SIMULATION ... ONLYSIMULATION` over a single
   80 mg / 1-hour IV infusion per subject; **not an estimation run**).
-- `Simulated_sibrotuzumab.csv` — the corresponding simulated dataset
+- `Simulated_sibrotuzumab.csv` -- the corresponding simulated dataset
   (`ID, TIME, WT, AMT, RATE, DV, MDV`) with 20 subjects and WT in
   {70, 80, 90, 100} kg.
-- `Model_Accommodations.txt`, `DDMODEL00000195.rdf` — provenance and
+- `Model_Accommodations.txt`, `DDMODEL00000195.rdf` -- provenance and
   scenario notes.
 
 The `.mdl` PARAMETERS block carries the publication-derived point
@@ -57,7 +57,7 @@ activation protein, FAP) from a Phase I dose-escalation study in adults
 with metastatic FAP-positive solid tumors. The DDMORE bundle does **not**
 reproduce the published demographic table, so the model's `population`
 metadata fields for `n_subjects`, `n_studies`, `weight_range`,
-`age_range`, and `sex_female_pct` are intentionally `NA` — readers
+`age_range`, and `sex_female_pct` are intentionally `NA` -- readers
 should consult the publication directly for those details.
 
 The bundle ships a 20-subject smoke-test cohort
@@ -85,10 +85,10 @@ Per-parameter origin (also recorded as in-file comments next to each
 | `e_wt_vc`            | fixed(0.0125)  | `.mdl` PARAMETERS `BETA_V1_WT` (`fix = true`) |
 | `e_wt_vp`            | fixed(0.0105)  | `.mdl` PARAMETERS `BETA_V2_WT` (`fix = true`) |
 | `e_wt_vmax`          | fixed(0.00934) | `.mdl` PARAMETERS `BETA_Vmax_WT` (`fix = true`) |
-| `etalcl`             | 0.3249 (= 0.57²) | `.mdl` VARIABILITY `PPV_CLL` SD = 0.57 (squared to log-scale variance) |
-| `etalvc`             | 0.04 (= 0.20²)   | `.mdl` VARIABILITY `PPV_V1` SD = 0.20 |
-| `etalvp`             | 0.04 (= 0.20²)   | `.mdl` VARIABILITY `PPV_V2` SD = 0.20 |
-| `etalvmax`           | fixed(0.0841 = 0.29²) | `.mdl` VARIABILITY `PPV_Vmax` SD = 0.29 (`fix = true`) |
+| `etalcl`             | 0.3249 (= 0.57^2) | `.mdl` VARIABILITY `PPV_CLL` SD = 0.57 (squared to log-scale variance) |
+| `etalvc`             | 0.04 (= 0.20^2)   | `.mdl` VARIABILITY `PPV_V1` SD = 0.20 |
+| `etalvp`             | 0.04 (= 0.20^2)   | `.mdl` VARIABILITY `PPV_V2` SD = 0.20 |
+| `etalvmax`           | fixed(0.0841 = 0.29^2) | `.mdl` VARIABILITY `PPV_Vmax` SD = 0.29 (`fix = true`) |
 | `addSd`              | 0.093 (mg/L)     | `.mdl` PARAMETERS `RUV_ADD` |
 | `propSd`             | 0.0491 (frac)    | `.mdl` PARAMETERS `RUV_PROP` |
 | `Cc = central / vc`           | n/a | `.mdl` MODEL_PREDICTION DEQ block |
@@ -172,7 +172,7 @@ the F.2 self-consistency check from the extraction skill: the typical-
 value trajectory of this `rxode2`-translated model should match the
 shape of the per-subject DV cloud shipped in the bundle's
 `Simulated_sibrotuzumab.csv`. (Per-subject exact matches are not
-expected — each NMTRAN simulation subject draws its own ETAs and the
+expected -- each NMTRAN simulation subject draws its own ETAs and the
 combined-error EPS, which differ from the seeds drawn here.)
 
 ```{r bundle-overlay, fig.width = 7, fig.height = 4.5}
@@ -294,7 +294,7 @@ nca_res$result |>
   supported bioavailability via depot compartments or PK macros, neither
   of which fits a 2-compartment model with combined linear and
   Michaelis-Menten elimination dosed IV. The DDMORE encoder therefore
-  removed the IOV-on-F term entirely — see
+  removed the IOV-on-F term entirely -- see
   `Model_Accommodations.txt` and the
   `model-implementation-source-discrepancies-freetext` field of
   `DDMODEL00000195.rdf`. This vignette and the packaged model both
@@ -305,7 +305,7 @@ nca_res$result |>
   `Output_real_*.lst` from a `$ESTIMATION` step. The values used by the
   packaged model are the values declared in
   `Executable_sibrotuzumab.mdl` PARAMETERS / STRUCTURAL and VARIABILITY
-  blocks — i.e., the publication's reported numbers as transcribed into
+  blocks -- i.e., the publication's reported numbers as transcribed into
   the DDMORE encoding, not numbers obtained from a re-fit.
 - **The Kloft 2004 publication is not on disk in this worktree.** The
   package metadata (description, units, citation, DOI) reflects the
@@ -321,12 +321,12 @@ nca_res$result |>
 - **Combined-error parameterisation is `combined1()` (linear SD), not
   the nlmixr2lib default `combined2()` (Pythagorean SD).** The MDL
   source uses the `combinedError1` form
-  (`combinedError1(additive=…, proportional=…, eps=…, prediction=…)`);
+  (`combinedError1(additive=..., proportional=..., eps=..., prediction=...)`);
   the rendered NMTRAN `Output_simulated_*.lst` confirms this with
   `W = RUV_ADD + RUV_PROP*IPRED; Y = IPRED + W*EPS(1)` and
   `$SIGMA 1.0 FIX`. The nlmixr2 syntax `Cc ~ add(addSd) + prop(propSd) + combined1()`
   preserves this parameterisation; do not "simplify" to
-  `Cc ~ add(addSd) + prop(propSd)` — that defaults to combined2 and
+  `Cc ~ add(addSd) + prop(propSd)` -- that defaults to combined2 and
   changes the residual SD function.
 - **Reference WT = 75 kg, linear (not allometric) covariate form.**
   Each affected parameter is multiplied by `(1 + e_wt_<param> * (WT - 75))`
