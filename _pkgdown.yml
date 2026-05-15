@@ -611,6 +611,8 @@ navbar:
         href: articles/Dao_2020_sultiame.html
       - text: "Sunitinib (Hansson 2013a)"
         href: articles/Hansson_2013a_sunitinib.html
+      - text: "Sunitinib (Hansson 2013b)"
+        href: articles/Hansson_2013b_sunitinib.html
       - text: "Sunitinib (Hansson 2013c)"
         href: articles/Hansson_2013c_sunitinib.html
       - text: "Sunitinib (Schindler 2016)"
@@ -741,6 +743,7 @@ articles:
   - articles/Gupta_2016_amatuximab
   - articles/Gupta_2017_ixazomib
   - articles/Hansson_2013a_sunitinib
+  - articles/Hansson_2013b_sunitinib
   - articles/Hansson_2013c_sunitinib
   - articles/Hanzel_2021_infliximab
   - articles/Harun_2019_cysticFibrosis
