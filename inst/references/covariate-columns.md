@@ -3273,6 +3273,17 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Novakovic_2017_cladribine.R`.
 - **Notes:** Gates the symptomatic and protective drug-effect terms via `TRT >= 1 && t > 0`; the categorical level (1 vs 2) is informational because the dose-response is driven by the time-varying `CD` covariate and the per-cohort dosing schedule, not by `TRT` itself. Scope: specific because the cohort labelling (3.5 vs 5.25 mg/kg cumulative dose over 2 years) is tied to the CLARITY-program cladribine dosing schedule. Future models that need a generic on-treatment indicator should register a new canonical name (e.g., `ON_TREATMENT`) rather than reusing `TRT`.
 
+### DRUG_ORMU (**canonical for Ormutivimab vs HRIG drug-product comparator indicator**)
+- **Description:** 1 = subject received Ormutivimab (a recombinant human anti-rabies IgG1 monoclonal antibody, also referred to in the source paper as rHRIG); 0 = subject received plasma-derived human rabies immunoglobulin (HRIG) comparator (or placebo + vaccine without passive antibody). Per-subject (time-fixed) categorical indicator carrying the head-to-head drug-arm assignment in a randomized rabies-vaccine pharmacodynamics study where rabies virus neutralizing antibody (RVNA) activity is modelled with a time-dependent Emax response to the vaccine and the passive antibody product modifies the typical-value Emax / ET50.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (HRIG / no passive antibody).
+- **Source aliases:**
+  - `antibody type` -- Zhang 2022 Results section 3.4 covariate-effect prose ("antibody type was determined as the covariate significantly affecting the model"); the source NMTRAN column name is not separately reported.
+- **Example models:** `Zhang_2022_ormutivimab.R` (additive typical-value shifts on the linear-scale Emax and ET50 of the vaccine-induced RVNA Emax model: `Emax_tv = exp(lEmax) + e_drug_ormu_Emax * DRUG_ORMU` with `e_drug_ormu_Emax = +0.143 IU/mL` and `ET50_tv = exp(lET50) + e_drug_ormu_ET50 * DRUG_ORMU` with `e_drug_ormu_ET50 = -3.8 day`, yielding a higher and faster vaccine-induced antibody peak in the Ormutivimab arms relative to the HRIG comparator).
+- **Notes:** Distinct from the `FORM_*` family (within-product formulation-version contrasts of a single drug) because the contrast here is between two biologically distinct products: HRIG is a polyclonal plasma-derived immunoglobulin, while Ormutivimab is a recombinant monoclonal antibody (CHO-cell-produced; the first rhRIG approved in China). Specific scope because the head-to-head HRIG-vs-rHRIG comparator design is tied to the Zhang 2022 phase II rabies-vaccine study. Future head-to-head rhRIG-vs-HRIG popPD models (e.g., SII Rabishield or Twinrab against HRIG) should register a sibling canonical (`DRUG_SIIRMAB`, `DRUG_TWINRAB`) rather than overloading `DRUG_ORMU`; cross-product comparisons that need both indicators in the same dataset can carry them as independent binaries with HRIG as the shared reference. Ratified canonically alongside the Zhang 2022 ormutivimab extraction.
+
 ### DOSE_70MG (**canonical for 70 mg dose regimen indicator**)
 - **Description:** 1 = subject is on the 70 mg SC Q4W dose regimen, 0 = subject is on the 210 or 490 mg SC Q4W regimen.
 - **Units:** (binary)
