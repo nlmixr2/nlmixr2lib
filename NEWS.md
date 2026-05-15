@@ -2,6 +2,7 @@
 
 # development version
 
+* Add Peng 2024 SAL003 ([doi:10.1021/acsptsci.3c00256](https://doi.org/10.1021/acsptsci.3c00256)) -- pooled Chinese healthy volunteers (SAD) and patients with primary hypercholesterolemia / mixed hyperlipidemia (MAD) receiving subcutaneous SAL003, a novel anti-PCSK9 IgG4 monoclonal antibody.
 * Add Yuan 2019 concizumab ([doi:10.1016/j.ejps.2019.105032](https://doi.org/10.1016/j.ejps.2019.105032)) -- healthy adult males receiving single-dose IV or SC concizumab (23-state systems PK/PD model with two nested endothelial endosome compartments for mTFPI-mediated TMDD and FcRn-recycled linear clearance of free and sTFPI-bound antibody).
 * Add Debord 2001 cyclosporin ([doi:10.2165/00003088-200140050-00004](https://doi.org/10.2165/00003088-200140050-00004)) -- stable renal transplant recipients receiving oral cyclosporin microemulsion (Neoral) 75-175 mg twice daily (gamma-distribution absorption convolved with two-compartment disposition; F fixed to 1).
 * Add Ide 2009 pravastatin ([doi:10.1177/0091270009341960](https://doi.org/10.1177/0091270009341960)) -- 57 healthy Japanese male volunteers (single 10 mg oral; enterohepatic-circulation model with Erlang absorption and SLCO1B1*15 haplotype effect on relative bioavailability; ratifies new `SLCO1B1_HAP15_HET` and `SLCO1B1_HAP15_HOM` covariate canonicals and new `gallbladder` compartment name).
