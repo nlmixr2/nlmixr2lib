@@ -87,7 +87,7 @@ Hansson_2013c_sunitinib <- function() {
     #
     # The bundle .mod's $THETA / $OMEGA are NOT the published values for the
     # parameters that are estimated (TH1-TH12 transition betas, TH13-TH16
-    # placebo coefficients, OMEGA1-OMEGA4) — the .mod is a MAXEVAL=0
+    # placebo coefficients, OMEGA1-OMEGA4) -- the .mod is a MAXEVAL=0
     # evaluation-run scaffold whose initial values were left at rough
     # placeholders (e.g. TH4 = -2.78, OMEGA(i,i) = 0.01). The actual
     # published values come from the .lst's FINAL PARAMETER ESTIMATE block.
@@ -98,8 +98,8 @@ Hansson_2013c_sunitinib <- function() {
     # PX0..PX3 placebo coefficients) is .mod TH(13+i) <-> .lst TH(14+i) for
     # i in 0..3. The structural sVEGFR-3 ODE is identical between the two
     # (the .lst's KEO-driven effect compartment was never fed into the EFF3
-    # expression — the DRG0/DRG1/DRG2/DRG3 lines that consumed A(2) are
-    # commented out in the .mod header — so EFF3 = AUC/(EC53+AUC) in both
+    # expression -- the DRG0/DRG1/DRG2/DRG3 lines that consumed A(2) are
+    # commented out in the .mod header -- so EFF3 = AUC/(EC53+AUC) in both
     # cases with AUC = DOSE/CL; the .lst's CP rename is cosmetic).
     #
     # Reparameterization note: the .mod parameterizes the proportional-odds
@@ -175,7 +175,7 @@ Hansson_2013c_sunitinib <- function() {
     # vignette's Assumptions and deviations section for the full deviation
     # rationale.
     addSd_fatigue_grade <- 0.5
-    label("Placeholder additive residual error on the typical-value expected-fatigue output (units: ordinal grade); not from the source — see vignette Assumptions")
+    label("Placeholder additive residual error on the typical-value expected-fatigue output (units: ordinal grade); not from the source -- see vignette Assumptions")
   })
 
   model({
