@@ -571,6 +571,8 @@ navbar:
         href: articles/Vet_2016_midazolam.html
       - text: "Morphine (Knibbe 2009)"
         href: articles/Knibbe_2009_morphine.html
+      - text: "Morphine (Valitalo 2017)"
+        href: articles/Valitalo_2017_morphine.html
       - text: "Morphine (Wang 2013)"
         href: articles/Wang_2013_morphine.html
       - text: "Nivolumab ddmore (Bajaj 2017)"
@@ -907,6 +909,7 @@ articles:
   - articles/Urien_2005_capecitabine
   - articles/Valenzuela_2025_nipocalimab
   - articles/Valitalo_2017_ketorolac
+  - articles/Valitalo_2017_morphine
   - articles/vanRongen_2016_acetaminophen
   - articles/vanRongen_2018_midazolam
   - articles/vanWijk_2019_paracetamol
