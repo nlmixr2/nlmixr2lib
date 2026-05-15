@@ -1039,6 +1039,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Aksenov_2018_uricAcid.R` (Hill-type increase in fractional excretion with `fmax_lsn = 0.56` (fixed) and `p50_lsn = 23000 ng/mL` for hyperuricemic subjects (or 11000 ng/mL for normouricemic subjects) per Aksenov 2018 Table 1).
 - **Notes:** Specific scope; lesinurad-specific. The `p50` parameter differs between hyperuricemic and normouricemic populations in Aksenov 2018; `Fmax` was fixed during estimation. Distinct from `CP_OXY_NGML` (oxypurinol) and `CP_FBX_NGML` (febuxostat). Ratified canonically on 2026-05-08 alongside the Aksenov 2018 extraction.
 
+### CP_MORPH_NGML (**canonical for instantaneous morphine plasma concentration as a time-varying PD driver**)
+- **Description:** Instantaneous plasma concentration of morphine supplied directly as a time-varying covariate column rather than computed from a coupled PK model. Used in PD-only IRT / latent-pain models that take morphine exposure as an external input to a concentration-effect equation.
+- **Units:** ng/mL
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters linearly into the latent-pain equation `pain = pain_state - e_morph_pain * CP_MORPH_NGML + e_time_pain * time` (Valitalo 2017). Reference values observed: most individual predicted concentrations in Valitalo 2017 were within 0-60 ng/mL (Figure 2a); the IRT linear morphine-effect slope is 0.0091 (ng/mL)^-1, so a 20 ng/mL morphine exposure reduces the latent pain by ~0.18 latent-variable units.
+- **Source aliases:**
+  - `CP` (Valitalo 2017 NM-TRAN $INPUT convention for "morphine plasma concentration"; values in ng/mL) -- used in `Valitalo_2017_morphine.R`.
+- **Example models:** `Valitalo_2017_morphine.R` (linear morphine concentration-effect on the IRT latent pain variable; CP_MORPH_NGML supplied per event row from an upstream morphine popPK simulation, typically `Knibbe_2009_morphine.R`).
+- **Notes:** Specific scope; morphine-specific. The drug-specific naming follows the existing `CP_OXY_NGML` / `CP_FBX_NGML` / `CP_LSN_NGML` precedent established with Aksenov 2018. Distinct from the broader `CP_MGL` (mg/L PD-driver convention used in Netterberg 2017 docetaxel myelosuppression and similar) because the IRT PD models in this family use ng/mL natively. When a future morphine PD analysis uses mg/L, the conversion is `CP_MORPH_NGML = CP_MORPH_MGL * 1000`. Ratified canonically alongside the Valitalo 2017 morphine extraction (DDMODEL00000247).
+
 ### FPG (**canonical for baseline fasting plasma glucose**)
 - **Description:** Fasting plasma glucose concentration at baseline (or time-varying baseline-style observation; document per-model). Distinct from `GLU` (time-varying plasma glucose regressor input for mechanistic glucose-kinetics models).
 - **Units:** mmol/L (or mg/dL -- 1 mmol/L glucose is approximately 18.02 mg/dL). Document per-model via `covariateData[[FPG]]$units`.
@@ -1130,6 +1141,36 @@ readable.
 - **Source aliases:** `NDAYS` -- used in the Schoemaker 2018 LEV/BRV pediatric extrapolation (DDMODEL00000239).
 - **Example models:** `Schoemaker_2018_levetiracetam.R` (DDMODEL00000239).
 - **Notes:** General scope because the count-interval-length concept is shared across any count or rate-based PD model that mixes record granularity (e.g., daily and monthly counts in the same dataset). For pure-daily or pure-monthly cohorts the column is constant; including it as a covariate keeps the model usable in mixed-granularity simulations.
+
+### MOMENT (**canonical for endotracheal suctioning procedural state**)
+- **Description:** Procedural state at the time of the pain / distress assessment in invasive-ventilation studies, used to select between separate pre-procedure / intra-procedure / post-procedure baseline parameters. Coded 1 = before suctioning, 2 = during suctioning, 3 = after suctioning.
+- **Units:** (categorical, 3 levels)
+- **Type:** categorical
+- **Scope:** specific
+- **Reference category:** 1 (before suctioning).
+- **Source aliases:** `MOMENT` -- used in the Valitalo 2017 IRT morphine PD model (DDMODEL00000247).
+- **Example models:** `Valitalo_2017_morphine.R` (DDMODEL00000247; selects between the three baseline pain typical values `presuct` / `suct` / `aftsuct` and the matching 3x3 correlated etas).
+- **Notes:** Specific scope because the column's meaning is tied to a particular study procedure (endotracheal suctioning during mechanical ventilation in neonates). The Simons 2003 cohort that Valitalo 2017 re-analysed scheduled pain assessments around suctioning events, so MOMENT changes within-subject at each scheduled assessment. Ratified canonically alongside the Valitalo 2017 morphine extraction.
+
+### ITEM (**canonical for pain-assessment item identifier in IRT graded-response models**)
+- **Description:** Identifier of the specific pain-assessment item being scored at each observation row, used to dispatch between the IRT discrimination / difficulty parameter sets in a graded-response model. Valitalo 2017 coding: 1 = COMFORT-B alertness; 2 = COMFORT-B calmness/agitation; 3 = COMFORT-B respiratory response; 5 = COMFORT-B body movement; 7 = COMFORT-B facial tension; 12 = VAS (cm, range 0-10); 25 = PIPP brow bulge; 26 = PIPP eye squeeze; 27 = PIPP nasolabial furrow; 28 = NIPS total.
+- **Units:** (categorical, 9-10 levels depending on cohort)
+- **Type:** categorical
+- **Scope:** specific
+- **Reference category:** n/a -- selects per-item parameter sets rather than acting as a reference contrast.
+- **Source aliases:** `ITEM` -- used in the Valitalo 2017 IRT morphine PD model (DDMODEL00000247).
+- **Example models:** `Valitalo_2017_morphine.R` (DDMODEL00000247; switches the IRT graded-response discrimination / difficulty parameters per row).
+- **Notes:** Specific scope because the integer-to-item mapping is tied to the Valitalo 2017 NM-TRAN dataset's coding. Other IRT graded-response models in the library (when they are added) may use different integer codings and should register their own canonical (e.g., `ITEM_<study>`) when the codings collide. The COMFORT-B "muscle tension" item is omitted from the Valitalo 2017 coding because it could not be assessed from video recordings.
+
+### OBSTYPE (**canonical for VAS observer type**)
+- **Description:** Observer type for visual-analogue-scale pain assessments: 1 = investigator (video-based), 2 = bedside nurse. Used to select between observer-specific VAS difficulty / discrimination THETAs and between observer-specific residual-error SDs.
+- **Units:** (categorical, 2 levels)
+- **Type:** categorical
+- **Scope:** specific
+- **Reference category:** 1 (video investigator).
+- **Source aliases:** `OBSTYPE` -- used in the Valitalo 2017 IRT morphine PD model (DDMODEL00000247).
+- **Example models:** `Valitalo_2017_morphine.R` (DDMODEL00000247; selects between `diff_vas_video` vs `diff_vas_bedside`, `discr_vas_video` vs `discr_vas_bedside`, and `addSd_vas_video` vs `addSd_vas_bedside`).
+- **Notes:** Specific scope because the binary observer-coding is tied to the Valitalo 2017 NM-TRAN dataset. Future IRT models with a different observer split (e.g., parent / nurse / physician) should register their own canonical rather than overloading this 2-level coding.
 
 ## Race / ethnicity
 
