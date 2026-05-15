@@ -1122,8 +1122,20 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Reference category:** n/a -- used as a time-varying regressor. The model declares `linear(INS)` so rxode2 linearly interpolates `INS` between dataset rows.
 - **Source aliases:**
   - `iins` (insulin at the current row time) -- used in the DDMORE bundle's `Simulated_glucoseKinetics.csv` for `DDMODEL00000227`. Rename `iins` -> `INS` before passing to `rxSolve`.
-- **Example models:** `Bizzotto_2016_glucose.R` (driving regressor for the insulin-at-site-of-action delay).
+  - `INSU` -- used in the DDMORE bundle's `Simulated_ddmoremockdata2.txt` for `DDMODEL00000228`. Rename `INSU` -> `INS` before passing to `rxSolve`.
+- **Example models:** `Bizzotto_2016_glucose.R` (driving regressor for the insulin-at-site-of-action delay), `NA_NA_paracetamol.R` (DDMODEL00000228 OGTT model: drives the insulin-on-glucose-elimination first-order effect compartment via `kie * (INS / 6.945 - effect_ins)`).
 - **Notes:** Specific scope because `INS` is meaningful only for glucose-kinetics or insulin-PD models that take plasma insulin as an exogenous regressor. For drugs that *modify* circulating insulin as a downstream effect, use a different mechanism-specific name. The DDMORE bundle's hand-rolled piecewise-linear interpolation (`I = (t-T1)/(TOBS-T1)*(INS-INS1)+INS1` with bracketing columns `iins / insn / td / tn`) is replaced in nlmixr2 by `linear(INS)` declared in `model()`; the bracketing columns are not required.
+
+### INS_BL (**canonical for baseline (fasting) plasma insulin concentration**)
+- **Description:** Baseline (fasting) plasma insulin concentration, time-fixed per subject. Used as the per-subject anchor for steady-state insulin-driven processes (e.g., initial condition of an insulin-on-elimination effect compartment) and as the per-subject baseline-state insulin input to a baseline-glucose-production rate calculation.
+- **Units:** pmol/L (or uU/mL; document per-model via `covariateData[[INS_BL]]$units`). The example model rescales via `INS_BL / 6.945` to convert pmol/L to uU/mL.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a.
+- **Source aliases:**
+  - `BASI` (baseline insulin) -- used in the DDMORE bundle's `Simulated_ddmoremockdata2.txt` for `DDMODEL00000228`. Rename `BASI` -> `INS_BL` before passing to `rxSolve`.
+- **Example models:** `NA_NA_paracetamol.R` (DDMODEL00000228 OGTT model: initialises the insulin-on-elimination effect compartment `effect_ins(0) = INS_BL / 6.945` and feeds the steady-state baseline-glucose-production rate `gpro = gss * (kg + kgi * INS_BL / 6.945) * vg * 180 / 1000`).
+- **Notes:** Distinct from `INS` (time-varying regressor); `INS_BL` is a per-subject baseline-state anchor used in initial conditions and steady-state derived quantities, not the dynamic regressor itself. Specific scope because the conversion factor (1/6.945) and the rescaled-units interpretation are paper-specific; future extractions that report baseline insulin in mIU/L or pmol/L directly without rescaling can ratify the same canonical and document the per-model units / conversion in `covariateData[[INS_BL]]$units` / `notes`. Companion concept to `FPG` (baseline fasting plasma glucose).
 
 ### IGE (**canonical for serum total immunoglobulin E concentration**)
 - **Description:** Baseline serum total immunoglobulin E concentration (free IgE plus, in patients on anti-IgE therapy, omalizumab-IgE complex). For anti-IgE monoclonal antibodies (omalizumab, ligelizumab) IgE is the pharmacologic target; baseline IgE sets the magnitude of the target sink and modifies free-IgE clearance and the rate of IgE production in mechanism-based binding/turnover models.
@@ -1370,6 +1382,17 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
   - `DIAB` -- used in `Chen_2022_guselkumab.R`.
 - **Example models:** `Chen_2022_guselkumab.R` (multiplicative effect on CL/F: 1.15^DIAB, +15% in patients with diabetes).
 - **Notes:** Captures pre-existing diabetes mellitus as a comorbidity in non-diabetes-primary indications (e.g., psoriatic arthritis, psoriasis). Distinct from a primary disease-state indicator like `DIS_UC`. Type 1 vs Type 2 mellitus is not separated unless the source paper distinguishes them; in pooled-population PK analyses, the covariate is typically a single binary flag derived from medical history. Diabetic patients tend to have higher inflammation and altered IgG turnover, which can manifest as modest changes in monoclonal-antibody clearance.
+
+### T2DM (**canonical for type-2-diabetes-mellitus-specific indicator**)
+- **Description:** 1 = patient has Type-2 diabetes mellitus specifically; 0 = normal-glucose-tolerance control (or other reference cohort pooled in the source analysis). Time-fixed at study entry per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (normal-glucose-tolerance control).
+- **Source aliases:**
+  - `T2DM` -- used in `NA_NA_paracetamol.R` (DDMODEL00000228).
+- **Example models:** `NA_NA_paracetamol.R` (DDMODEL00000228): switches glucose baseline (GSSH vs GSSD), insulin-independent glucose clearance (CLGH vs CLGD), insulin-dependent glucose clearance (CLGIH vs CLGID), glucose bioavailability into central (FPGH vs FPGD = 1 FIXED), and the empirical glucose-on-production exponent (GPRG = -2.79 healthy, 0 T2DM).
+- **Notes:** Distinct from the existing `DIAB` canonical (which deliberately does not distinguish Type 1 vs Type 2). Specific scope because the reference cohort is study-specific and the mechanism in the example model is a Type-2-versus-healthy stratification of OGTT response; a future T2DM-specific study (e.g., a popPK/PD analysis stratifying by HbA1c level) can ratify the same canonical and document the reference cohort in `covariateData[[T2DM]]$notes`.
 
 ### HYPERT (**canonical for hypertension comorbidity / medical-history indicator**)
 - **Description:** 1 = patient has a history of (or current) hypertension as a comorbidity; 0 = no hypertension. Time-fixed at study entry per subject (medical-history flag rather than time-varying blood-pressure measurement).
