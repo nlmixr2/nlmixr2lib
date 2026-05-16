@@ -30,7 +30,7 @@ population PK model from the phase Ib MI-CP152 study (NCT00482989), a
 multicentre, randomised, placebo-controlled, dose-escalation trial in
 which 121 SLE patients received escalating IV doses of 0.3, 1, 3, or
 10 mg/kg every 14 days for up to 14 doses. The final model is the
-single structural model of record in the paper — the authors describe a
+single structural model of record in the paper -- the authors describe a
 base model and one final model with covariates; no alternative
 candidate models are presented.
 
@@ -184,7 +184,7 @@ sim_typical <- rxode2::rxSolve(mod_typical, events = events,
 sim_typical$treatment <- paste0(sim_typical$COHDOSE, " mg/kg Q14D")
 ```
 
-# Replicate Figure 2 — VPC by dose cohort
+# Replicate Figure 2 -- VPC by dose cohort
 
 Narwal 2013 Fig. 2 displays a visual predictive check of serum
 concentrations stratified by dose cohort (0.3, 1, 3, 10 mg/kg Q14D)
@@ -221,7 +221,7 @@ ggplot(sim_vpc, aes(time, q50)) +
   theme_bw()
 ```
 
-# Replicate Table 3 — steady-state exposure for fixed monthly dosing
+# Replicate Table 3 -- steady-state exposure for fixed monthly dosing
 
 Narwal 2013 Table 3 reports predicted median steady-state
 pharmacokinetic parameters following fixed monthly IV dosing of 200,
@@ -308,7 +308,7 @@ knitr::kable(comparison,
              digits = c(0, 0, 0, 0, 1, 1, 1, 1, 1, 1))
 ```
 
-# PKNCA validation — single-dose NCA across the 4 cohorts
+# PKNCA validation -- single-dose NCA across the 4 cohorts
 
 Single-dose NCA parameters (Cmax, Tmax, AUC over 14 days, half-life)
 across the 4 dose cohorts. The paper does not publish per-cohort NCA
@@ -375,7 +375,7 @@ knitr::kable(summary(nca_res),
   `events` data, use the cohort assignment (0.3, 1, 3, 10 mg/kg for
   the phase Ib design; dose/WT for phase IIb fixed-dose simulations).
   The paper's Discussion (p. 1024) notes that the apparent dose effect
-  may be a data artifact of the escalating design — single-dose data
+  may be a data artifact of the escalating design -- single-dose data
   in MI-CP126 were linear across 0.3-30 mg/kg.
 - **`CONMED_STEROID` default.** The phase IIb simulations in the paper set
   BSTEROID = 0 (no baseline conmed_steroid use) as the reference. The virtual
