@@ -286,8 +286,6 @@ navbar:
         href: articles/VasquezBahena_2009_lumiracoxib_rat.html
       - text: "Luspatercept (Chen 2020)"
         href: articles/Chen_2020_luspatercept.html
-      - text: "M3g rat (Xie 2000)"
-        href: articles/Xie_2000_m3g_rat.html
       - text: "MagnesiumSulfate (Salinger 2013)"
         href: articles/Salinger_2013_magnesiumSulfate.html
       - text: "MBG453 (Xu 2023)"
@@ -436,6 +434,10 @@ navbar:
         href: articles/Xu_2011_sirukumab.html
       - text: "Sodium nitrite qsp (VegaVilla 2013)"
         href: articles/VegaVilla_2013_sodium_nitrite_qsp.html
+      - text: "Somatropin human (Thorsted 2016)"
+        href: articles/Thorsted_2016_somatropin_human.html
+      - text: "Somatropin rat (Thorsted 2016)"
+        href: articles/Thorsted_2016_somatropin_rat.html
       - text: "Sonidegib (Goel 2016)"
         href: articles/Goel_2016_Sonidegib.html
       - text: "Sugemalimab (Wang 2024)"
@@ -929,6 +931,8 @@ articles:
   - articles/Tetschke_2018_erythropoiesis
   - articles/Thakre_2022_risankizumab
   - articles/Themans_2019_meropenem
+  - articles/Thorsted_2016_somatropin_human
+  - articles/Thorsted_2016_somatropin_rat
   - articles/Tikiso_2021_abacavir
   - articles/Timmermann_2019_brodalumab
   - articles/Ting_2014_tobramycin_inhaled
