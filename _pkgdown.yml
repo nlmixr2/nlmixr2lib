@@ -290,8 +290,8 @@ navbar:
         href: articles/CarlssonPetri_2021_liraglutide.html
       - text: "Lopinavir (Archary 2018)"
         href: articles/Archary_2018_lopinavir.html
-      - text: "Lumiracoxib rat (VasquezBahena 2009)"
-        href: articles/VasquezBahena_2009_lumiracoxib_rat.html
+      - text: "Lumefantrine (Kloprogge 2013)"
+        href: articles/Kloprogge_2013_lumefantrine.html
       - text: "Luspatercept (Chen 2020)"
         href: articles/Chen_2020_luspatercept.html
       - text: "MagnesiumSulfate (Salinger 2013)"
@@ -749,7 +749,6 @@ articles:
   - articles/Debord_2001_cyclosporin
   - articles/deHoogd_2017_morphine
   - articles/Delattre_2010_amikacin
-  - articles/Delor_2013_alzheimer
   - articles/deVriesSchultink_2020_zenocutuzumab
   - articles/Diao_2014_rFIXFc
   - articles/Diao_2016_daclizumab_cd25
@@ -827,6 +826,7 @@ articles:
   - articles/Kimura_2023_glucarpidase
   - articles/Kirubakaran_2022_tacrolimus
   - articles/Kloft_2004_sibrotuzumab
+  - articles/Kloprogge_2013_lumefantrine
   - articles/Knibbe_2009_morphine
   - articles/Koloskoff_2025_ganciclovir
   - articles/Koopman_2023_factorix

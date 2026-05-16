@@ -261,6 +261,19 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Schoenmakers_2025_betamethasone.R` (multiplicative effect on CL, encoded via the log-additive form on `lcl`; reduces apparent betamethasone clearance from 15.6 L/h to 9.6 L/h).
 - **Notes:** Distinct from a broader `PREECL` indicator that would pool early-onset, late-onset and postpartum pre-eclampsia. The "early-onset" specifier corresponds to diagnosis before 34 weeks gestation, the conventional clinical cutoff (Phipps 2019 Nat Rev Nephrol). Future papers that enrol mixed early-/late-onset cohorts or that report PE status without the 34-week stratification should register a separate canonical (e.g., `PREECL` for any-onset PE, or `LOPE` for late-onset PE) rather than reusing `DIS_EOPE` with relaxed semantics. Distinct from `PREG` (pregnancy status indicator): `DIS_EOPE` is a complication-of-pregnancy stratifier within a pregnant cohort, whereas `PREG` discriminates pregnant-vs-non-pregnant subjects. Ratified canonically on 2026-05-11 alongside the Schoenmakers 2025 betamethasone extraction.
 
+## Vital signs
+
+### BODYTEMP (**canonical for body temperature**)
+- **Description:** Subject body temperature (typically axillary or oral) at the relevant clinical observation. Captured at study admission in acute-infection PK studies (fever as a marker of acute illness severity); may be time-varying when serial temperature measurements are recorded across visits. Document baseline-vs-time-varying status in `covariateData[[BODYTEMP]]$notes` per model.
+- **Units:** degC
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- used with linear-deviation forms `(1 + e * (BODYTEMP - ref))`. Reference values observed: 36.9 degC (Kloprogge 2013 lumefantrine; pooled-cohort median in Ugandan pregnant + non-pregnant women with uncomplicated P. falciparum malaria).
+- **Source aliases:**
+  - `TEMP` -- common short form in malaria / infectious-disease NONMEM control streams; used in `Kloprogge_2013_lumefantrine.R` (same orientation as the canonical, no value transformation).
+- **Example models:** `Kloprogge_2013_lumefantrine.R` (linear-deviation effect on mean absorption transit time MTT: `MTT_indiv = TVMTT * (1 + e_bodytemp_mtt * (BODYTEMP - 36.9))` with `e_bodytemp_mtt = 0.165` per degC; mean transit time increases ~16.5% per degC over 36.0-39.8 degC, plausibly reflecting reduced gut motility / prolonged absorption in feverish malaria patients).
+- **Notes:** General scope because body temperature is a universally applicable vital sign; the Kloprogge 2013 reference value 36.9 degC is cohort-specific (Ugandan malaria cohort median) and future models should document their own reference in `covariateData[[BODYTEMP]]$notes`. Units are degrees Celsius; convert from Fahrenheit (degF) at data-assembly time, not inside `model()`. Distinct from `BODYTEMP_FEBRILE` (not yet registered) which would be a binary fever indicator if a future paper dichotomises at the conventional 37.5 / 38.0 degC threshold. Ratified canonically on 2026-05-16 alongside the Kloprogge 2013 lumefantrine extraction.
+
 ## Renal / hepatic function
 
 ### URINE_FLOW (**canonical for instantaneous urine flow rate**)
