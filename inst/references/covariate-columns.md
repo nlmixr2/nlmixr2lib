@@ -1990,10 +1990,10 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Units:** ng/mL
 - **Type:** continuous
 - **Scope:** specific
-- **Reference category:** n/a -- used with power scaling `(HER2_ECD / ref)^exponent`. Reference 25 ng/mL used in Lu 2014.
+- **Reference category:** n/a -- used with power scaling `(HER2_ECD / ref)^exponent`. Reference 25 ng/mL used in Lu 2014; reference 8.23 ng/mL (population median) used in Bruno 2005, with a 200 ng/mL plateau cap.
 - **Source aliases:**
-  - `ECD` -- used in `Lu_2014_trastuzumabemtansine.R`.
-- **Example models:** `Lu_2014_trastuzumabemtansine.R` (reference 25 ng/mL; exponent 0.035 on CL).
+  - `ECD` -- used in `Lu_2014_trastuzumabemtansine.R` and `Bruno_2005_trastuzumab.R`.
+- **Example models:** `Lu_2014_trastuzumabemtansine.R` (reference 25 ng/mL; exponent 0.035 on CL), `Bruno_2005_trastuzumab.R` (reference 8.23 ng/mL; power exponents 0.041 on CL and 0.105 on V; HER2_ECD capped at 200 ng/mL inside model() to reflect the Bruno 2005 plateau observation).
 - **Notes:** Scoped specific because the covariate is meaningful only for HER2-targeted agents; if a non-HER2 paper uses a shed-antigen analog for a different target, register a target-specific canonical (e.g., `EGFR_ECD`) rather than reusing this one. Disambiguated from the covariate-columns register by the explicit `HER2_` prefix.
 
 ### TRAST_BL (**canonical for baseline trastuzumab concentration from prior therapy**)
@@ -2065,6 +2065,17 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Source aliases:** none; `LMET` is the common NONMEM / clinical-PK abbreviation used directly by the source papers.
 - **Example models:** `Quartino_2019_trastuzumab.R` (exponential effect on linear CL; +16.4% typical CL when LMET = 1, per Quartino 2019 Table 1 theta12 = 0.152).
 - **Notes:** Liver metastases are associated with hepatic protein-synthesis impairment and altered IgG catabolism, making `LMET` a commonly tested covariate in oncology mAb population PK analyses. Scope: general so future oncology papers can reuse the canonical column. Time-fixed baseline indicator; if a source paper treats it as time-varying (progression during treatment), document in `covariateData[[LMET]]$notes`.
+
+### MET_GE4 (**canonical for baseline number of metastatic sites >= 4 indicator**)
+- **Description:** Binary indicator dichotomising the count of baseline metastatic sites at 4, 1 = patient has four or more documented metastatic sites at baseline, 0 = patient has zero to three metastatic sites at baseline. Time-fixed per subject. Treated as a surrogate for tumor burden in oncology mAb popPK analyses.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (fewer than four metastatic sites at baseline).
+- **Source aliases:**
+  - `MET` -- used in `Bruno_2005_trastuzumab.R` (Bruno 2005 Methods: "MET=1 if number of metastatic sites=4 or greater; otherwise MET=0"). When a source paper supplies the raw integer count column (`NMET`, `N_METS`, etc.) rather than the pre-binarised indicator, derive `MET_GE4 = as.integer(NMET >= 4)`.
+- **Example models:** `Bruno_2005_trastuzumab.R` (multiplicative effect on linear CL: typical CL multiplied by `(1 + 0.221 * MET_GE4)`, i.e. +22.1% CL in MET_GE4 = 1 patients; reference MET_GE4 = 0 per Bruno 2005 Table 3).
+- **Notes:** The >= 4 split is the dichotomisation used by Bruno 2005 to capture "patients with four or more metastatic sites" as a high-tumor-burden subgroup. Scope: general so future oncology popPK papers using the same dichotomisation can reuse this canonical column. If a future paper uses a different split (e.g. >= 2 or >= 5), register a separate `MET_GEN` canonical rather than overloading this entry. A `MET_GE4 = 1` patient may also have `LMET = 1`; the two columns are not mutually exclusive (liver-only metastases would have `LMET = 1`, `MET_GE4 = 0`).
 
 ### ECOG_GE1 (**canonical for Eastern Cooperative Oncology Group performance-status indicator, >= 1**)
 - **Description:** 1 if baseline Eastern Cooperative Oncology Group (ECOG) performance status is greater than or equal to 1, 0 if ECOG = 0. Time-fixed per subject.

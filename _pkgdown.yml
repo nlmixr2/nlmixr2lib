@@ -468,6 +468,8 @@ navbar:
         href: articles/Soehoel_2022_tralokinumab.html
       - text: "TranexamicAcid (Dunn 2025)"
         href: articles/Dunn_2025_tranexamicAcid.html
+      - text: "Trastuzumab (Bruno 2005)"
+        href: articles/Bruno_2005_trastuzumab.html
       - text: "Trastuzumab (LeTilly 2021)"
         href: articles/LeTilly_2021_trastuzumab.html
       - text: "Trastuzumab (Quartino 2016)"
@@ -687,6 +689,7 @@ articles:
   - articles/Brillac_2025_isatuximab
   - articles/Brooks_2021_tacrolimus
   - articles/Brown_2017_osimertinib
+  - articles/Bruno_2005_trastuzumab
   - articles/Budha_2023_tislelizumab
   - articles/Buil-Bruna_2015_lanreotide
   - articles/Caldes_2009_ganciclovir
