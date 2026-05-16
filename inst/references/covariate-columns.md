@@ -3279,16 +3279,49 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Ide_2009_pravastatin.R` (multiplicative effect on relative bioavailability Frel: `Frel = 1.50^SLCO1B1_HAP15_HET * 1.95^SLCO1B1_HAP15_HOM` -- *15 homozygotes have 95% higher Frel than *15-noncarriers; dOFV = 33.7 in backward elimination, p < 0.001).
 - **Notes:** Paired with `SLCO1B1_HAP15_HET` to encode a three-level haplotype categorical (noncarrier / heterozygote / homozygote) with `*15`-noncarrier as the implicit reference (both indicators = 0). See `SLCO1B1_HAP15_HET` Notes for the broader context; population distribution in Ide 2009 was 6 of 57 (10.5%) homozygotes. Ratified canonically on 2026-05-12 alongside the Ide 2009 extraction.
 
-### ABCB1_HAP_TTT (**canonical for ABCB1 TTT haplotype carrier indicator**)
-- **Description:** Binary haplotype indicator for the *ABCB1* `TTT` haplotype across the rs1128503 (1236C>T, exon 12, synonymous Gly412Gly) / rs2032582 (2677G>T/A, exon 21, Ala893Ser/Thr) / rs1045642 (3435C>T, exon 26, synonymous Ile1145Ile) SNP block. 1 = subject carries at least one `TTT` haplotype (heterozygous or homozygous; pooled because the homozygote frequency was < 0.1 in the de Wit 2016 cohort); 0 = no `TTT` haplotype. Time-fixed per subject (germline haplotype).
-- **Units:** (binary)
-- **Type:** binary
-- **Scope:** specific
-- **Reference category:** 0 (no `TTT` haplotype).
+### CYP2C9_S1_COUNT (**canonical for CYP2C9*1 (wild-type) allele count**)
+- **Description:** Continuous individual-level CYP2C9*1 allele count: 0 = no *1 allele, 1 = one *1 allele (heterozygous), 2 = two *1 alleles (homozygous wild-type). Time-invariant (germline genotype). Paired with `CYP2C9_S2_COUNT` and `CYP2C9_S3_COUNT` to encode the three loss-of-function-allele dosage form used by Hamberg-family warfarin models, where the subject's CL is the sum of per-allele CL contributions across the two CYP2C9 alleles. The three count columns sum to 2 for each subject.
+- **Units:** (count, 0/1/2 alleles per subject)
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a (continuous). Used directly as a multiplier on a fixed per-allele CL contribution (0.174 L/h per *1 allele in Hamberg / Xia 2024).
 - **Source aliases:**
-  - `ABCB1 TTT haplotype` -- de Wit 2016 (paper text Methods 'Pharmacogenetic analysis' and Table 2 final-model `theta TTT on F` row; haplotypes phased in gPLINK with certainty > 0.97).
-- **Example models:** `deWit_2016_everolimus.R` (multiplicative effect on apparent bioavailability F: `F = 1 * 0.792^ABCB1_HAP_TTT` -- carriers have 20.8% lower F than non-carriers; dOFV = 9.6 in backward elimination, P < 0.01).
-- **Notes:** The `TTT` haplotype of *ABCB1* (P-glycoprotein, MDR1 efflux transporter) is associated with enhanced P-gp efflux activity and reduced everolimus bioavailability (de Wit 2016 Discussion paragraph 5); de Wit cites prior evidence that the same `TTT` haplotype also reduces exposure / efficacy of other P-gp substrates [refs 20-22 in the paper], although directionally inconsistent results have been reported [refs 7, 23, 24]. Het and hom carriers were pooled in de Wit 2016 because the homozygote frequency was < 0.1 (Methods 'Pharmacogenetic analysis'); future extractions that estimate separate het / hom effects should register paired `ABCB1_HAP_TTT_HET` and `ABCB1_HAP_TTT_HOM` indicators following the `SLCO1B1_HAP15_HET` / `SLCO1B1_HAP15_HOM` precedent above. Distinct from any individual ABCB1 SNP indicator (rs1128503, rs2032582, rs1045642 alone) because the haplotype is the cis combination tested jointly. Ratified canonically on 2026-05-16 alongside the de Wit 2016 everolimus extraction.
+  - `CYP2C9` (genotype string such as `"*1/*1"`, `"*1/*3"`): derive `CYP2C9_S1_COUNT = (length of *1 matches in the genotype string)`. The model `Xia_2024_warfarin.R` carries the source `CYP2C9` genotype string mapped to the three count columns.
+- **Example models:** `Xia_2024_warfarin.R` (per-allele CL contributions: `cl = CYP2C9_S1_COUNT * 0.174 + CYP2C9_S2_COUNT * 0.0879 + CYP2C9_S3_COUNT * 0.0422`, times an age effect).
+- **Notes:** Hamberg's warfarin K-PD model parameterises CL as a sum of two per-allele CL contributions (one per CYP2C9 allele on each chromosome), which is more flexible than a single genotype indicator because it naturally accommodates any combination of *1, *2, *3 alleles (six diplotypes: *1/*1, *1/*2, *1/*3, *2/*2, *2/*3, *3/*3). When a paper reports additional CYP2C9 alleles (e.g. *5, *6, *8, *11), register parallel canonicals (`CYP2C9_S5_COUNT` etc.) rather than overloading the existing three counts. Distinct from the categorical phenotype canonicals `CYP3A5_EXPR` (binary expresser) and from continuous-activity scores like `CYP3A4` -- the count form preserves loss-of-function-allele dosage exactly. Ratified canonically on 2026-05-16 alongside the Xia 2024 warfarin extraction.
+
+### CYP2C9_S2_COUNT (**canonical for CYP2C9*2 reduced-function allele count**)
+- **Description:** Continuous individual-level CYP2C9*2 allele count: 0 = no *2 allele, 1 = one *2 allele (heterozygous), 2 = two *2 alleles (homozygous). Time-invariant (germline genotype). Paired with `CYP2C9_S1_COUNT` and `CYP2C9_S3_COUNT`; the three counts sum to 2 for each subject. The *2 allele (rs1799853, R144C) encodes a reduced-function CYP2C9 isoform.
+- **Units:** (count, 0/1/2 alleles per subject)
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a (continuous). Used directly as a multiplier on a fixed per-allele CL contribution (0.0879 L/h per *2 allele in Hamberg / Xia 2024).
+- **Source aliases:**
+  - `CYP2C9` (genotype string such as `"*1/*2"`, `"*2/*2"`, `"*2/*3"`): derive `CYP2C9_S2_COUNT = (length of *2 matches in the genotype string)`.
+- **Example models:** `Xia_2024_warfarin.R` (per-allele CL contributions; the Xia 2024 Han cohort had no *2 carriers, but the model retains the term for general use across CYP2C9 papers).
+- **Notes:** See `CYP2C9_S1_COUNT` for the broader rationale. Ratified canonically on 2026-05-16 alongside the Xia 2024 warfarin extraction.
+
+### CYP2C9_S3_COUNT (**canonical for CYP2C9*3 reduced-function allele count**)
+- **Description:** Continuous individual-level CYP2C9*3 allele count: 0 = no *3 allele, 1 = one *3 allele (heterozygous), 2 = two *3 alleles (homozygous). Time-invariant (germline genotype). Paired with `CYP2C9_S1_COUNT` and `CYP2C9_S2_COUNT`; the three counts sum to 2 for each subject. The *3 allele (rs1057910, I359L) encodes a strongly reduced-function CYP2C9 isoform and is the dominant CYP2C9 pharmacogenomic risk variant in East-Asian populations (warfarin / phenytoin sensitivity).
+- **Units:** (count, 0/1/2 alleles per subject)
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a (continuous). Used directly as a multiplier on a fixed per-allele CL contribution (0.0422 L/h per *3 allele in Hamberg / Xia 2024).
+- **Source aliases:**
+  - `CYP2C9` (genotype string such as `"*1/*3"`, `"*3/*3"`): derive `CYP2C9_S3_COUNT = (length of *3 matches in the genotype string)`.
+- **Example models:** `Xia_2024_warfarin.R` (per-allele CL contributions; 5.7% of the Han cohort were *1/*3 heterozygous per Xia 2024 Table 1).
+- **Notes:** See `CYP2C9_S1_COUNT` for the broader rationale. Ratified canonically on 2026-05-16 alongside the Xia 2024 warfarin extraction.
+
+### VKORC1_1639G_COUNT (**canonical for VKORC1 -1639G allele count**)
+- **Description:** Continuous individual-level count of VKORC1 -1639G alleles (rs9923231, also reported as VKORC1 -1639 G > A or 1173 C > T depending on numbering convention). 0 = AA homozygous (warfarin-sensitive), 1 = GA heterozygous, 2 = GG homozygous (warfarin-resistant). Time-invariant (germline genotype). The complementary -1639A count is `2 - VKORC1_1639G_COUNT`.
+- **Units:** (count, 0/1/2 alleles per subject)
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a (continuous). In the Hamberg / Xia 2024 EC50 model the typical EC50 is a per-allele sum: `ec50_typ = VKORC1_1639G_COUNT * ec50_per_G + (2 - VKORC1_1639G_COUNT) * ec50_per_A`. Distribution in the Xia 2024 Han cohort (Table 1): AA 80.3%, GA 18.7%, GG 0.9% (G allele frequency ~10%, consistent with East-Asian populations).
+- **Source aliases:**
+  - `VKORC1` (genotype string such as `"AA"`, `"GA"`, `"GG"` or `"1639AA"` etc.): derive `VKORC1_1639G_COUNT = (count of G in the two-letter genotype)`.
+- **Example models:** `Xia_2024_warfarin.R` (per-allele EC50 contributions, re-estimated for the Han Chinese cohort: 4.3 mg/L per G allele, 1.14 mg/L per A allele).
+- **Notes:** VKORC1 -1639G > A is the strongest single-SNP determinant of warfarin sensitivity (the A allele reduces VKORC1 expression via a promoter-region effect, requiring less warfarin to achieve target anticoagulation). The per-allele count form is preferred over a binary carrier indicator because the heterozygous and homozygous mutant subjects respond detectably differently to warfarin. Ratified canonically on 2026-05-16 alongside the Xia 2024 warfarin extraction.
 
 ## Lifestyle / medical history
 
