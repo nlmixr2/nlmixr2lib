@@ -226,8 +226,6 @@ navbar:
         href: articles/Ayyar_2024_givosiran.html
       - text: "Glibenclamide (Rambiritch 2016)"
         href: articles/Rambiritch_2016_glibenclamide.html
-      - text: "Glucarpidase (Kimura 2023)"
-        href: articles/Kimura_2023_glucarpidase.html
       - text: "GNbAC1 (Cao 2013)"
         href: articles/Cao_2013_GNbAC1.html
       - text: "Guselkumab (Chen 2022)"
@@ -500,6 +498,8 @@ navbar:
         href: articles/Vezina_2010_valganciclovir.html
       - text: "Valganciclovir (Vezina 2014)"
         href: articles/Vezina_2014_valganciclovir.html
+      - text: "Vancomycin (Goti 2018)"
+        href: articles/Goti_2018_vancomycin.html
       - text: "Vedolizumab (Rosario 2015)"
         href: articles/Rosario_2015_vedolizumab.html
       - text: "Visilizumab (Cao 2013)"
@@ -762,6 +762,7 @@ articles:
   - articles/Gilkey_2015_DiRnanoparticle
   - articles/Girard_2012_pimasertib
   - articles/Goel_2016_Sonidegib
+  - articles/Goti_2018_vancomycin
   - articles/Grimm_2023
   - articles/Guo_2022_PF_06939999
   - articles/Gupta_2016_amatuximab
