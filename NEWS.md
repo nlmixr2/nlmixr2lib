@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Martial 2017 micafungin ([doi:10.1007/s40262-017-0509-5](https://doi.org/10.1007/s40262-017-0509-5)) -- adult intensive-care-unit patients with suspected or proven fungal infection.
+* Add Vargo 2014 statins + ezetimibe MBMA ([doi:10.1038/clpt.2014.66](https://doi.org/10.1038/clpt.2014.66)) -- literature-based meta-analysis of LDL-C lowering across 245 trials and 106,808 patients for six statins, ezetimibe, and statin + ezetimibe combinations.
 * Add Valitalo 2017 morphine ([doi:10.1002/psp4.12156](https://doi.org/10.1002/psp4.12156)) -- mechanically ventilated preterm neonates undergoing endotracheal suctioning (item response theory PD model with linear morphine concentration-effect and study-time effect on a latent pain variable; ratifies new `CP_MORPH_NGML`, `MOMENT`, `ITEM`, and `OBSTYPE` covariate canonicals) [DDMODEL00000247].
 * Add Yuan 2019 concizumab ([doi:10.1016/j.ejps.2019.105032](https://doi.org/10.1016/j.ejps.2019.105032)) -- healthy adult males receiving single-dose IV or SC concizumab (23-state systems PK/PD model with two nested endothelial endosome compartments for mTFPI-mediated TMDD and FcRn-recycled linear clearance of free and sTFPI-bound antibody).
 * Add Debord 2001 cyclosporin ([doi:10.2165/00003088-200140050-00004](https://doi.org/10.2165/00003088-200140050-00004)) -- stable renal transplant recipients receiving oral cyclosporin microemulsion (Neoral) 75-175 mg twice daily (gamma-distribution absorption convolved with two-compartment disposition; F fixed to 1).
