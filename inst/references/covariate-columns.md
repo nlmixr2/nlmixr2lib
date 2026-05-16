@@ -2741,6 +2741,17 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Goel_2016_Sonidegib.R` (multiplicative effect on F: `0.696^CONMED_PPI`, ~30% lower bioavailability under CONMED_PPI coadministration).
 - **Notes:** Per-model `covariateData[[CONMED_PPI]]$notes` must document the operational definition (e.g., Goel 2016 requires CONMED_PPI use covering >= 80% of the PK assessment window; other studies may use a simpler ever-vs-never indicator or a per-record time-varying flag). Distinct from `CONMED_H2RA` (H2-receptor antagonist) which acts on gastric pH via a different mechanism.
 
+### CONMED_PROBENECID (**canonical for concomitant probenecid co-administration indicator**)
+- **Description:** 1 = subject coadministered probenecid (organic-anion transport inhibitor; multidrug resistance protein (MRP) family modulator with documented activity at the blood-brain barrier, blood-CSF barrier, and renal tubular secretion sites), 0 = no concomitant probenecid. Time-varying per subject because probenecid exposure can start and stop within the observation period.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no probenecid coadministration).
+- **Source aliases:**
+  - Paper-specific day-2 treatment-arm indicator -- used in `Xie_2000_m3g_rat.R` (the paper distinguishes a probenecid-treatment arm from a control arm by experimental day; the canonical column is 1 during the day-2 probenecid co-infusion and 0 otherwise, including on day 1 of the probenecid arm before the probenecid loading dose).
+- **Example models:** `Xie_2000_m3g_rat.R` (multiplicative exponential effect on the unbound BBB influx clearance CL_u,in: `cluin *= exp(e_conmed_probenecid_cluin * CONMED_PROBENECID)` with `e_conmed_probenecid_cluin = log(0.17 / 0.11) = 0.4353`, i.e. a 1.55-fold increase in CL_u,in into rat brain ECF under probenecid co-administration; CL_u,out and the intercompartmental brain clearance Q_br are not statistically affected by probenecid in the paper's model selection and so are not paired with this canonical).
+- **Notes:** Scope: specific because the only on-disk source is a preclinical microdialysis rat BBB-transport paper (Xie 2000) and the column meaning is intrinsically tied to the day-2 probenecid co-infusion design rather than a general clinical-coadministration indicator. Per-model `covariateData[[CONMED_PROBENECID]]$notes` must document the dose / regimen of probenecid used (Xie 2000: 70 umol/kg IV loading dose plus 70 umol/kg/h constant infusion in male Sprague-Dawley rats), the parameter the indicator modifies, and any per-subject vs per-record time-varying convention.
+
 ### CONMED_RIF_LPVR4 (**canonical for concomitant rifampicin-based antitubercular treatment with super-boosted lopinavir/ritonavir 4:4 indicator**)
 - **Description:** 1 = subject is receiving rifampicin-based antitubercular treatment together with super-boosted lopinavir/ritonavir 4:4 (extra ritonavir added to standard 4:1 LPV/r to counter rifampicin-driven LPV induction); 0 = subject is on the comparator regimen specified by the source paper (typically standard LPV/r 4:1 without rifampicin in Tikiso 2021). Used to flag the combined induction effect of rifampicin (PXR-mediated UGT induction) plus extra ritonavir on co-administered antiretroviral PK.
 - **Units:** (binary)
