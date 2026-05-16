@@ -438,6 +438,8 @@ navbar:
         href: articles/Benkali_2010_tacrolimus.html
       - text: "Tacrolimus (Bergmann 2014)"
         href: articles/Bergmann_2014_tacrolimus.html
+      - text: "Tacrolimus (Brooks 2021)"
+        href: articles/Brooks_2021_tacrolimus.html
       - text: "Tacrolimus (Dunlap 2025)"
         href: articles/Dunlap_2025_tacrolimus.html
       - text: "Tacrolimus (Kirubakaran 2022)"
@@ -679,6 +681,7 @@ articles:
   - articles/Boer-Perez_2026_piperacillin
   - articles/Brill_2014_midazolam
   - articles/Brillac_2025_isatuximab
+  - articles/Brooks_2021_tacrolimus
   - articles/Brown_2017_osimertinib
   - articles/Budha_2023_tislelizumab
   - articles/Buil-Bruna_2015_lanreotide
