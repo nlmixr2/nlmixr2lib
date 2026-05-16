@@ -1801,6 +1801,17 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Okada_2025_rocatinlimab.R` (multiplicative shift `1 - 0.372` on linear CL when 1; reference complement is the pooled atopic dermatitis + ulcerative colitis + healthy-volunteer cohort).
 - **Notes:** Used when a population PK model pools plaque-psoriasis patients with a non-psoriasis reference population and psoriasis disease status is retained as a covariate. Scope: specific because the disease-pooling reference category is paper-defined. Ratified canonically on 2026-04-27.
 
+### CARRAGEENAN (**canonical for intraplantar-carrageenan inflammatory-challenge indicator**)
+- **Description:** Binary indicator for intraplantar injection of carrageenan suspension as an experimental inflammatory / hyperalgesic challenge. 1 = subject received an intraplantar carrageenan injection at the start of the experiment (the carrageenan-induced peripheral inflammation / thermal-hyperalgesia paradigm); 0 = subject received an intraplantar saline injection (sham control). Time-fixed per subject within an experiment.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (saline-injected sham animal; no induced inflammation).
+- **Source aliases:**
+  - `CARRAGEENAN` -- used in `VasquezBahena_2009_lumiracoxib_rat.R` (1 = groups II-IX, 100 uL of 1% carrageenan suspension into the right hind paw; 0 = group I, 100 uL of 0.9% saline solution).
+- **Example models:** `VasquezBahena_2009_lumiracoxib_rat.R` (switches the COX-2 synthesis-rate model: CARRAGEENAN = 0 selects the constant saline synthesis rate `ks_cox2_saline` and CARRAGEENAN = 1 selects the time-variant gamma function `ks_cox2(t) = A * t^alpha * exp(-beta * t)` driving the carrageenan-induced inflammation profile).
+- **Notes:** The carrageenan-induced peripheral inflammation / hyperalgesia model (Winter 1962; Hargreaves 1988 thermal-hyperalgesia variant) is one of the most widely used preclinical assays for screening anti-inflammatory and analgesic drugs in rodents, so the canonical name is reusable for future preclinical extractions. Scope: specific until a second model ratifies the binary-switch semantics on a different PD framework. The Hargreaves-test thermal-hyperalgesia readout (`LT` paw withdrawal latency, seconds) is the typical observable when this indicator is in use, but other readouts (paw oedema, mechanical-allodynia von Frey threshold) are equally valid. Distinct from disease-state indicators (`DIS_*`) because the inflammatory state is experimentally induced at a defined time, not a chronic patient condition.
+
 ## Pulmonary / lung-disease biomarkers
 
 ### FEV1 (**canonical for forced expiratory volume in 1 second**)

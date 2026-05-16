@@ -282,6 +282,8 @@ navbar:
         href: articles/CarlssonPetri_2021_liraglutide.html
       - text: "Lopinavir (Archary 2018)"
         href: articles/Archary_2018_lopinavir.html
+      - text: "Lumiracoxib rat (VasquezBahena 2009)"
+        href: articles/VasquezBahena_2009_lumiracoxib_rat.html
       - text: "Luspatercept (Chen 2020)"
         href: articles/Chen_2020_luspatercept.html
       - text: "MagnesiumSulfate (Salinger 2013)"
@@ -939,6 +941,7 @@ articles:
   - articles/vanRongen_2018_midazolam
   - articles/vanWijk_2019_paracetamol
   - articles/Varatharajan_2016_daunorubicin
+  - articles/VasquezBahena_2009_lumiracoxib_rat
   - articles/VegaVilla_2013_sodium_nitrite_qsp
   - articles/Vet_2016_midazolam
   - articles/Vezina_2010_valganciclovir
