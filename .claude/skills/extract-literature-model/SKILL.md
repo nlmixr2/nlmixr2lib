@@ -121,11 +121,32 @@ Whole-body PBPK, semi-mechanistic PBPK, quantitative systems pharmacology (QSP),
 
    Never attempt extraction from an abstract alone — population-PK parameter values, covariate effects, and equations are not in an abstract.
 
-6. **Detect upstream-popPK dependencies.** Skim Methods for phrases like "PK was described using the popPK model previously developed from <study/phase>", "the structural PK model was fixed from <reference>", "covariate effects were carried over from <author> et al.", or "the PK model from <prior publication> was used as a backbone." If the current paper's PD model fixes its PK parameters from a separate publication that is not on disk:
+6. **Detect upstream-popPK dependencies — DEFAULT is auto-handle, not sidecar.** Skim Methods for phrases like "PK was described using the popPK model previously developed from <study/phase>", "the structural PK model was fixed from <reference>", "covariate effects were carried over from <author> et al.", or "the PK model from <prior publication> was used as a backbone." If the current paper's PD model fixes its PK parameters from a separate publication that is not on disk:
 
-   1. Try to identify the upstream paper from the references list (PMID, DOI, or full citation).
-   2. If identifiable: sidecar-ask whether the operator wants this task to acquire `depends_on: [<upstream-task>]` and pause until the upstream task completes — versus extracting only the PD layer with the upstream PK parameters reproduced inline.
-   3. If unidentifiable (e.g. "the popPK model from internal Phase 1/2 studies" with no specific citation): sidecar-ask whether to (A) skip the task, (B) proceed with parameters fixed inline as reported in the current paper, with a clear "upstream PK source not located" note in the vignette Errata, or (C) defer pending operator investigation.
+   1. **Try to identify** the upstream paper from the references list (PMID, DOI, or full citation).
+
+   2. **If identifiable, run the helper script** to handle the dependency automatically (no sidecar):
+
+      ```sh
+      python3 .claude/skills/extract-literature-model/scripts/handle-upstream-dependency.py \\
+          --queue-dir <queue path>             `# the runner queue dir` \\
+          --current-task-id "$TASK_ID"         `# the downstream task` \\
+          --upstream-pmid <PMID>               `# or --upstream-doi <DOI>` \\
+          --upstream-citation '<verbatim citation>' \\
+          --upstream-drug <drug name>          `# e.g. clozapine, warfarin`
+      ```
+
+      The script:
+        a. **Tries to acquire** the upstream PDF via `acquire-paper.R`'s OA-PDF ladder.
+        b. **If acquired**: places the PDF at `papers/PMID_<id>/PMID_<id>.pdf` and drops a `trim_queue` marker so the trim daemon picks it up.
+        c. **If NOT acquired** (paywall, no OA): writes `papers/PMID_<id>/PMID_<id>_needs_acquisition.flag` with clear "operator drops the PDF here" instructions.
+        d. **Either way**: queues the upstream as a new task in `todo/` (next free `NNN-<author>_<year>_<drug>.yaml` slot), with a prompt that re-uses this same `/extract-literature-model` skill.
+        e. **Edits the current task's YAML** to add `depends_on: [<upstream_task_id>]`.
+        f. **Writes a deferral report** and exits cleanly.
+
+      The current task does NOT inline-extract the upstream model and does NOT extract the current paper's PD layer in isolation. Wait for the upstream extraction to commit; on re-dispatch, the current task imports the upstream PK parameters with `# inherited from <Author Year> Table N` provenance comments.
+
+   3. **If unidentifiable** (e.g. "the popPK model from internal Phase 1/2 studies" with no specific citation, an unpublished company internal model, or an in-house simulator output), sidecar-ask: (A) skip the task, (B) proceed with parameters fixed inline as reported in the current paper, with a clear "upstream PK source not located" note in the vignette Errata, or (C) defer pending operator investigation. The auto-handle helper above is only safe when the upstream is uniquely identifiable.
 
    Never silently fabricate upstream PK parameters from training data.
 
