@@ -1574,7 +1574,7 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Source aliases:**
   - `DIAB` -- used in `Chen_2022_guselkumab.R`.
   - `Diabetes` -- used in `Sherer_2012_AAA.R` (Sherer 2012 Methods page 2 symbol "Diabetes").
-- **Example models:** `Chen_2022_guselkumab.R` (multiplicative effect on CL/F: 1.15^DIAB, +15% in patients with diabetes).
+- **Example models:**
   - `Chen_2022_guselkumab.R` (multiplicative effect on CL/F: 1.15^DIAB, +15% in patients with diabetes).
   - `Sherer_2012_AAA.R` (additive shift on the first derivative of AAA growth rate with size beta2: `e_diab_b2 = -0.32/year` for diabetics; cohort prevalence 14%).
 - **Notes:** Captures pre-existing diabetes mellitus as a comorbidity in non-diabetes-primary indications (e.g., psoriatic arthritis, psoriasis, vascular disease). Distinct from a primary disease-state indicator like `DIS_UC`. Type 1 vs Type 2 mellitus is not separated unless the source paper distinguishes them; in pooled-population PK analyses, the covariate is typically a single binary flag derived from medical history. Diabetic patients tend to have higher inflammation and altered IgG turnover, which can manifest as modest changes in monoclonal-antibody clearance. In vascular populations (Sherer 2012) diabetes is associated with slower AAA growth, possibly via aberrant monocyte-matrix interactions (Golledge 2008 mechanism cited in Sherer 2012 Discussion).
