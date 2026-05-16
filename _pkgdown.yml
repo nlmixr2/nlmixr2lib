@@ -314,6 +314,8 @@ navbar:
         href: articles/Hwang_2023_monalizumab.html
       - text: "Morphine (deHoogd 2017)"
         href: articles/deHoogd_2017_morphine.html
+      - text: "Morphine (Franken 2015)"
+        href: articles/Franken_2015_morphine.html
       - text: "MRNA3927 (Attarwala 2023)"
         href: articles/Attarwala_2023_mRNA3927.html
       - text: "Nalmefene (Kyhl 2016)"
@@ -412,10 +414,10 @@ navbar:
         href: articles/Petrov_2024_romiplostim.html
       - text: "Rucaparib (Wang 2015)"
         href: articles/Wang_2015_rucaparib.html
-      - text: "SAL003 (Peng 2024)"
-        href: articles/Peng_2024_SAL003.html
       - text: "Sacituzumab (Sathe 2024)"
         href: articles/Sathe_2024_sacituzumab.html
+      - text: "SAL003 (Peng 2024)"
+        href: articles/Peng_2024_SAL003.html
       - text: "Sapropterin (Qi 2014)"
         href: articles/Qi_2014_sapropterin.html
       - text: "Sarilumab (Xu 2019)"
@@ -766,6 +768,7 @@ articles:
   - articles/Fiedler-Kelly_2019_fremanezumab
   - articles/FiedlerKelly_2020_fremanezumab_cm
   - articles/FiedlerKelly_2020_fremanezumab_em
+  - articles/Franken_2015_morphine
   - articles/Frey_2010_tocilizumab
   - articles/Frey_2013_tocilizumab
   - articles/Friberg_2002_paclitaxel
@@ -951,6 +954,7 @@ articles:
   - articles/Urien_2005_capecitabine
   - articles/Valenzuela_2025_nipocalimab
   - articles/Valitalo_2017_ketorolac
+  - articles/Valitalo_2017_morphine
   - articles/vanRongen_2016_acetaminophen
   - articles/vanRongen_2018_midazolam
   - articles/vanWijk_2019_paracetamol

@@ -1552,6 +1552,17 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Bergmann_2014_tacrolimus.R` (linear deviation from POD = 22.7 days on tacrolimus CL/F; coefficient -0.0021 per day implies a 0.21% per-day decrease in apparent oral clearance with a 180-day plateau).
 - **Notes:** Time-varying within subject; the per-row value is the integer day count from the date of surgery to the observation date. For solid-organ-transplant cohorts, `POD` is the conventional NONMEM `$INPUT` column name. When the source paper reports a different name (`DPT` for "days post-transplant", `TX_DAY`, `T_POSTOP`), record the alias here. Distinct from `TIME` (rxode2 time clock) and from `OCC` (integer-valued occasion / period indicator for IOV). When a paper uses `POD` jointly with an IOV occasion column, both can coexist in the dataset: `POD` enters the typical-value covariate equation, `OCC` multiplexes the IOV etas. The 180-day cap in Bergmann 2014 is data-driven (most observations are within the first 90 days post-transplant, so the linear effect is identifiable only over that window) -- document any per-model cap in `covariateData[[POD]]$notes`. Ratified canonically on 2026-05-08 alongside the Bergmann 2014 extraction.
 
+### TTD (**canonical for time to death**)
+- **Description:** Days remaining from the observation time to the patient's recorded time of death (TTD >= 0; falls to 0 on the day of death). Time-varying per subject. Available only retrospectively in observational palliative-care / end-of-life cohorts; not usable as a prospective predictor.
+- **Units:** days
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- used in a first-order exponential decay form on a structural PK parameter. The Franken 2015 morphine model parameterises `CL(TTD) = CL_pop - theta_D * exp(-theta_rate * TTD)`, so the decay term vanishes as TTD -> infinity (asymptotic CL far from death) and reaches its peak drop `theta_D` as TTD -> 0 (day of death).
+- **Source aliases:**
+  - `TTD` -- used in `Franken_2015_morphine.R` (Franken 2015 NONMEM column for time-to-death in days; paper Eq. 3 and Table 2).
+- **Example models:** `Franken_2015_morphine.R` (Franken 2015 Clin Pharmacokinet; first-order exponential decay term on morphine clearance with theta_D = 17.6 L/h and theta_rate = 0.13 /day; CL drops from 47.5 to 29.9 L/h as TTD goes from infinity to 0).
+- **Notes:** Specific scope because the covariate's semantics depend on a palliative-care / observational-cohort study design where time of death is known by retrospective abstraction. The Franken 2015 model interprets the TTD-dependent CL change as a composite of physiological end-of-life processes (e.g., reduced hepatic blood flow, cachexia) that are not captured by standard blood-chemistry covariates. For prospective simulation of a virtual cohort without a known time of death, set TTD to a large value (e.g., > 50 days) to recover the asymptotic CL_pop. Distinct from the canonical `POD` (post-operative day, monotonically increasing from a surgery date) -- TTD counts down to death rather than up from a procedure. Ratified canonically on 2026-05-16 alongside the Franken 2015 morphine extraction.
+
 ### POSTTX_DAY1 (**canonical for first-24-hours-post-transplant indicator**)
 - **Description:** Binary indicator for the first 24 hours post-transplant. 1 = the observation falls within the first 24 hours (day 1) post-transplant; 0 = otherwise. Time-varying per subject.
 - **Units:** (binary)
