@@ -617,6 +617,28 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Nestorov_2014_factorviii.R` (reference 118 IU/dL, exponent -0.343 on CL; VWF antigen).
 - **Notes:** Higher VWF protects FVIII from clearance, so the exponent on CL is negative. VWF is time-varying within an individual (acute-phase response, age, blood group, etc.), but most published population PK models use baseline-only VWF when the within-subject dynamics are not characterized; document the per-model convention in `covariateData[[VWF]]$notes`.
 
+### DDIMER (**canonical for plasma D-dimer concentration**)
+- **Description:** Plasma D-dimer protein concentration, the fibrin-degradation peptide produced by plasmin-mediated cleavage of cross-linked fibrin. Used in vascular / coagulation-pathology models as a circulating biomarker of fibrin turnover, intra-aneurysmal thrombus burden, or systemic fibrinolytic activity.
+- **Units:** ng/mL
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- used either with log10-transformed proportional scaling `log10(DDIMER) / median(log10(DDIMER))` (Sherer 2012) or with categorical strata (Sherer 2012 sensitivity analysis groups: <=150, 151-300, 301-900, >900 ng/mL). Reference values observed: 326 ng/mL (Sherer 2012 cohort median; log10 approx 2.513).
+- **Source aliases:**
+  - `C^(D-dimer)` -- used in `Sherer_2012_AAA.R` (the symbol in Sherer 2012 Methods equation page 2).
+- **Example models:** `Sherer_2012_AAA.R` (proportional log10-transformed covariate on the baseline AAA growth rate `beta1` (`e_ddimer_b1 = 0.90 mm/year`) and on the first derivative of growth rate with size `beta2` (`e_ddimer_b2 = 0.37/year`)).
+- **Notes:** Specific scope until a second model registers the canonical. Time-fixed (baseline-only) in Sherer 2012 because the HIMS cohort had a single follow-up D-dimer measurement; the source paper flags this as a limitation. Cohort interquartile range 142-785 ng/mL; extrapolation outside this range is not validated by the source. The log10 transformation reflects Sherer 2012's finding that "differences in AAA growth were predominantly driven by patients with the highest plasma D-dimer concentrations." Distinct from the time-varying biomarker columns in indirect-response / TMDD models -- DDIMER enters Sherer 2012 as a baseline regression covariate, not as a dynamic exposure / response variable. Ratified canonically on 2026-05-16 alongside the Sherer 2012 extraction.
+
+### AAA_DIAM (**canonical for baseline abdominal aortic aneurysm diameter**)
+- **Description:** Abdominal aortic aneurysm (AAA) maximum infrarenal diameter, ascertained by ultrasound at study entry. Used in vascular disease-progression models as the per-subject baseline severity covariate that anchors the typical-value regression for individual-level growth parameters.
+- **Units:** mm
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- used in proportional form `AAA_DIAM / median(AAA_DIAM)` so the effect coefficients represent the contribution at the cohort median. Reference value observed: 32.7 mm (Sherer 2012 cohort median; q1 30.8, q3 36.0).
+- **Source aliases:**
+  - `Y(0)` -- used in `Sherer_2012_AAA.R` (the symbol in Sherer 2012 Methods equation page 2; the baseline screening ultrasound diameter).
+- **Example models:** `Sherer_2012_AAA.R` (proportional covariate on all three individual-level parameters: `e_aaadiam_b0 = 32.6 mm` on baseline size beta0, `e_aaadiam_b1 = 2.03 mm/year` on baseline growth rate beta1, and `e_aaadiam_b2 = 0.59/year` on the first derivative of growth rate with size beta2).
+- **Notes:** Specific scope until a second model registers the canonical. Time-fixed (baseline-only) per subject -- the value is the single screening ultrasound diameter; the time-evolving AAA diameter during follow-up is the model's observation, not the covariate. Sherer 2012 inclusion criterion (HIMS cohort): 30-49 mm small AAA, so extrapolation outside this range to <30 mm (non-aneurysmal aorta) or >=50 mm (surgical-referral threshold) is not validated by the source. Ratified canonically on 2026-05-16 alongside the Sherer 2012 extraction.
+
 ## Disease severity scores
 
 ### EASI (**canonical for Eczema Area and Severity Index**)
@@ -1514,8 +1536,11 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Reference category:** 0 (no diabetes comorbidity).
 - **Source aliases:**
   - `DIAB` -- used in `Chen_2022_guselkumab.R`.
-- **Example models:** `Chen_2022_guselkumab.R` (multiplicative effect on CL/F: 1.15^DIAB, +15% in patients with diabetes).
-- **Notes:** Captures pre-existing diabetes mellitus as a comorbidity in non-diabetes-primary indications (e.g., psoriatic arthritis, psoriasis). Distinct from a primary disease-state indicator like `DIS_UC`. Type 1 vs Type 2 mellitus is not separated unless the source paper distinguishes them; in pooled-population PK analyses, the covariate is typically a single binary flag derived from medical history. Diabetic patients tend to have higher inflammation and altered IgG turnover, which can manifest as modest changes in monoclonal-antibody clearance.
+  - `Diabetes` -- used in `Sherer_2012_AAA.R` (Sherer 2012 Methods page 2 symbol "Diabetes").
+- **Example models:**
+  - `Chen_2022_guselkumab.R` (multiplicative effect on CL/F: 1.15^DIAB, +15% in patients with diabetes).
+  - `Sherer_2012_AAA.R` (additive shift on the first derivative of AAA growth rate with size beta2: `e_diab_b2 = -0.32/year` for diabetics; cohort prevalence 14%).
+- **Notes:** Captures pre-existing diabetes mellitus as a comorbidity in non-diabetes-primary indications (e.g., psoriatic arthritis, psoriasis, vascular disease). Distinct from a primary disease-state indicator like `DIS_UC`. Type 1 vs Type 2 mellitus is not separated unless the source paper distinguishes them; in pooled-population PK analyses, the covariate is typically a single binary flag derived from medical history. Diabetic patients tend to have higher inflammation and altered IgG turnover, which can manifest as modest changes in monoclonal-antibody clearance. In vascular populations (Sherer 2012) diabetes is associated with slower AAA growth, possibly via aberrant monocyte-matrix interactions (Golledge 2008 mechanism cited in Sherer 2012 Discussion).
 
 ### T2DM (**canonical for type-2-diabetes-mellitus-specific indicator**)
 - **Description:** 1 = patient has Type-2 diabetes mellitus specifically; 0 = normal-glucose-tolerance control (or other reference cohort pooled in the source analysis). Time-fixed at study entry per subject.
