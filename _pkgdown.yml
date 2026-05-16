@@ -140,6 +140,8 @@ navbar:
         href: articles/Yuan_2019_concizumab.html
       - text: "Cyclosporin (Debord 2001)"
         href: articles/Debord_2001_cyclosporin.html
+      - text: "Dabigatran (Liesenfeld 2013)"
+        href: articles/Liesenfeld_2013_dabigatran.html
       - text: "Daclizumab (Othman 2014)"
         href: articles/Othman_2014_daclizumab.html
       - text: "Daclizumab cd25 (Diao 2016)"
@@ -842,6 +844,7 @@ articles:
   - articles/Li_2017_brentuximab
   - articles/Li_2017_cediranib
   - articles/Li_2019_abatacept
+  - articles/Liesenfeld_2013_dabigatran
   - articles/Lin_2024_casirivimab
   - articles/Lin_2024_pozelimab
   - articles/Llanos_2017_gentamicin

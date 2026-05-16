@@ -501,6 +501,36 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Yang_2024_axatilimab.R` (baseline-only covariate on baseline NCMC concentration `BL_NCMC` with power exponent 0.376; reference 63 U/L).
 - **Notes:** Muscle-origin enzyme distinct from `AST` / `ALT` (hepatic) and `LDH` (general tissue turnover). Yang 2024 uses CPK alongside `AST` and `LDH` as tracked safety biomarkers. Per-model `covariateData[[CPK]]$notes` should document baseline-vs-time-varying status and the clinical interpretation in the source population (skeletal-muscle injury, macrophage-clearance surrogate, or both). Distinct from any model state variable representing CPK time-course dynamics -- covariate column is the pre-dose laboratory observation.
 
+### DIAL (**canonical for hemodialysis-active indicator (time-varying)**)
+- **Description:** Within-subject time-varying indicator for whether an extracorporeal renal-replacement-therapy session (intermittent hemodialysis, hemofiltration, or hemodiafiltration) is currently running. 1 during the session; 0 in the interdialytic interval and in non-dialysed subjects.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no dialysis running). Models that compose an additional `CL_dialysis` term should gate it by `DIAL = 1` so that the interdialytic clearance reduces to the intrinsic body clearance.
+- **Source aliases:** none known; the source paper for the ratification model uses `DIAL` as the data column name directly (Liesenfeld 2013 Methods).
+- **Example models:** `Liesenfeld_2013_dabigatran.R` (Michaels-equation gate; `cl_total <- cl + DIAL * Michaels(BFR, DFR, KoA)`).
+- **Notes:** Distinct from a renal-impairment indicator (subject-level baseline class) and from a renal-replacement-therapy modality indicator (categorical: IHD vs CRRT vs SLED) -- `DIAL` is the per-time-point gate that turns the dialysis-clearance term on and off. Pair with `BFR` and `DFR` when the dialysis clearance depends on flow rates; pair with a filter-specific mass-transfer coefficient (estimated `lkoa` in the model, not a covariate) when the Michaels parameterisation is used. Ratified canonically on 2026-05-16 alongside the Liesenfeld 2013 dabigatran extraction.
+
+### BFR (**canonical for blood flow rate through the extracorporeal circuit during dialysis**)
+- **Description:** Instantaneous blood flow rate through the extracorporeal circuit during an active dialysis session. Time-varying within subject; meaningful only when `DIAL = 1` -- in the interdialytic period the value is sentinel and the Michaels-equation term is gated off by `DIAL`.
+- **Units:** mL/min
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- enters the Michaels equation together with `DFR` and a hemodialyzer mass-transfer-area coefficient. Values investigated in the ratification source were 200, 300, and 400 mL/min (Liesenfeld 2013 Methods, Study Design; Table 1).
+- **Source aliases:** none known.
+- **Example models:** `Liesenfeld_2013_dabigatran.R`.
+- **Notes:** Pairs with `DIAL` (binary on/off gate) and `DFR` (dialysate flow rate). Ratified canonically on 2026-05-16 alongside the Liesenfeld 2013 dabigatran extraction.
+
+### DFR (**canonical for dialysate flow rate through the extracorporeal circuit during dialysis**)
+- **Description:** Instantaneous dialysate flow rate through the extracorporeal circuit during an active dialysis session. Time-varying within subject; meaningful only when `DIAL = 1`.
+- **Units:** mL/min
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- enters the Michaels equation together with `BFR`. The ratification source fixed DFR at 700 mL/min throughout (Liesenfeld 2013 Methods, Study Design) and additionally simulated 500 mL/min (Methods, Simulations).
+- **Source aliases:** none known.
+- **Example models:** `Liesenfeld_2013_dabigatran.R`.
+- **Notes:** Pairs with `DIAL` and `BFR`. Ratified canonically on 2026-05-16 alongside the Liesenfeld 2013 dabigatran extraction.
+
 ## Hematology
 
 ### HGB (**canonical for hemoglobin**)
