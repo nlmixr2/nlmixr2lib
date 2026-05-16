@@ -294,8 +294,8 @@ navbar:
         href: articles/Hood_2021_medi7836.html
       - text: "Mepolizumab (Cao 2013)"
         href: articles/Cao_2013_mepolizumab.html
-      - text: "Methotrexate (Taylor 2020)"
-        href: articles/Taylor_2020_methotrexate.html
+      - text: "MHD rat (Clinckers 2008)"
+        href: articles/Clinckers_2008_MHD_rat.html
       - text: "Midazolam (Brill 2014)"
         href: articles/Brill_2014_midazolam.html
       - text: "Mirikizumab (Chua 2025)"
@@ -724,6 +724,7 @@ articles:
   - articles/Clegg_2024_nirsevimab
   - articles/Clewe_2016_rifampicin
   - articles/Clewe_2018_rifampicin
+  - articles/Clinckers_2008_MHD_rat
   - articles/Conrado_2014_alzheimer
   - articles/Cook_2016_paracetamol
   - articles/Dao_2020_sultiame
