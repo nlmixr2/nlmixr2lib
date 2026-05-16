@@ -294,6 +294,8 @@ navbar:
         href: articles/VasquezBahena_2009_lumiracoxib_rat.html
       - text: "Luspatercept (Chen 2020)"
         href: articles/Chen_2020_luspatercept.html
+      - text: "M3g rat (Xie 2000)"
+        href: articles/Xie_2000_m3g_rat.html
       - text: "MagnesiumSulfate (Salinger 2013)"
         href: articles/Salinger_2013_magnesiumSulfate.html
       - text: "MBG453 (Xu 2023)"
@@ -985,7 +987,7 @@ articles:
   - articles/Wojciechowski_2022_domagrozumab
   - articles/Wu_2012_sirolimus
   - articles/Wu_2024_inotuzumab
-  - articles/Xia_2024_warfarin
+  - articles/Xie_2000_m3g_rat
   - articles/Xie_2019_agomelatine
   - articles/Xu_2011_sirukumab
   - articles/Xu_2019_sarilumab
