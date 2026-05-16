@@ -84,6 +84,8 @@ navbar:
         href: articles/Garmann_2017_BAY81_8973.html
       - text: "Belantamab (Papathanasiou 2025)"
         href: articles/Papathanasiou_2025_belantamab.html
+      - text: "Belatacept (Shen 2013)"
+        href: articles/Shen_2013_belatacept.html
       - text: "Belimumab (Zhou 2021)"
         href: articles/Zhou_2021_belimumab.html
       - text: "Benralizumab (Wang 2017)"
@@ -740,7 +742,6 @@ articles:
   - articles/deHoogd_2017_morphine
   - articles/Delattre_2010_amikacin
   - articles/deVriesSchultink_2020_zenocutuzumab
-  - articles/deWit_2016_everolimus
   - articles/Diao_2014_rFIXFc
   - articles/Diao_2016_daclizumab_cd25
   - articles/Diao_2016_daclizumab_cd56bright
@@ -917,6 +918,7 @@ articles:
   - articles/Schoemaker_2018_levetiracetam
   - articles/Schoenmakers_2025_betamethasone
   - articles/Shah_2012_mAb_PBPK
+  - articles/Shen_2013_belatacept
   - articles/Soehoel_2022_tralokinumab
   - articles/Stein_2019_Tisagenlecleucel
   - articles/Stevens_2012_remoxipride
