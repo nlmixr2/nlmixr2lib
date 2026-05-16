@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Franken 2015 morphine ([doi:10.1007/s40262-015-0345-4](https://doi.org/10.1007/s40262-015-0345-4)) -- terminally ill adult palliative-care patients receiving oral or subcutaneous morphine (joint morphine + M3G + M6G popPK with time-to-death covariate on morphine clearance and eGFR + albumin covariates on metabolite clearance; ratifies new `TTD` covariate canonical for retrospective time-to-death in days).
+* Add Prytula 2016 tacrolimus ([doi:10.1007/s40262-016-0390-7](https://doi.org/10.1007/s40262-016-0390-7)) -- stable paediatric renal transplant recipients at least one year post-transplantation receiving twice-daily oral tacrolimus (Prograft).
 * Add Valitalo 2017 morphine ([doi:10.1002/psp4.12156](https://doi.org/10.1002/psp4.12156)) -- mechanically ventilated preterm neonates undergoing endotracheal suctioning (item response theory PD model with linear morphine concentration-effect and study-time effect on a latent pain variable; ratifies new `CP_MORPH_NGML`, `MOMENT`, `ITEM`, and `OBSTYPE` covariate canonicals) [DDMODEL00000247].
 * Add Yuan 2019 concizumab ([doi:10.1016/j.ejps.2019.105032](https://doi.org/10.1016/j.ejps.2019.105032)) -- healthy adult males receiving single-dose IV or SC concizumab (23-state systems PK/PD model with two nested endothelial endosome compartments for mTFPI-mediated TMDD and FcRn-recycled linear clearance of free and sTFPI-bound antibody).
 * Add Debord 2001 cyclosporin ([doi:10.2165/00003088-200140050-00004](https://doi.org/10.2165/00003088-200140050-00004)) -- stable renal transplant recipients receiving oral cyclosporin microemulsion (Neoral) 75-175 mg twice daily (gamma-distribution absorption convolved with two-compartment disposition; F fixed to 1).
