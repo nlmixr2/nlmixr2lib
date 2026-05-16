@@ -460,6 +460,8 @@ navbar:
         href: articles/Dunlap_2025_tacrolimus.html
       - text: "Tacrolimus (Kirubakaran 2022)"
         href: articles/Kirubakaran_2022_tacrolimus.html
+      - text: "Tacrolimus (Prytula 2016)"
+        href: articles/Prytula_2016_tacrolimus.html
       - text: "Tacrolimus (Storset 2014)"
         href: articles/Storset_2014_tacrolimus.html
       - text: "Tefibazumab (Cao 2013)"
@@ -904,6 +906,7 @@ articles:
   - articles/Plan_2012_pain
   - articles/Plock_2014_ferumoxytol
   - articles/Pouzin_2022_tusamitamab
+  - articles/Prytula_2016_tacrolimus
   - articles/Pu_2021_evinacumab
   - articles/Qi_2014_sapropterin
   - articles/Quartino_2016_trastuzumab
