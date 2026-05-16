@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Brooks 2021 tacrolimus ([doi:10.3389/fphar.2021.750672](https://doi.org/10.3389/fphar.2021.750672)) -- pediatric and young adult patients undergoing allogeneic hematopoietic cell transplantation receiving IV continuous-infusion tacrolimus for GVHD prophylaxis.
+* Add Chen 2015 voriconazole ([doi:10.1248/bpb.b14-00768](https://doi.org/10.1248/bpb.b14-00768)) -- Chinese adult ICU patients with pulmonary disease (one-compartment IV; ratifies new `DBIL` direct-bilirubin covariate canonical).
 * Add Yuan 2019 concizumab ([doi:10.1016/j.ejps.2019.105032](https://doi.org/10.1016/j.ejps.2019.105032)) -- healthy adult males receiving single-dose IV or SC concizumab (23-state systems PK/PD model with two nested endothelial endosome compartments for mTFPI-mediated TMDD and FcRn-recycled linear clearance of free and sTFPI-bound antibody).
 * Add Debord 2001 cyclosporin ([doi:10.2165/00003088-200140050-00004](https://doi.org/10.2165/00003088-200140050-00004)) -- stable renal transplant recipients receiving oral cyclosporin microemulsion (Neoral) 75-175 mg twice daily (gamma-distribution absorption convolved with two-compartment disposition; F fixed to 1).
 * Add Ide 2009 pravastatin ([doi:10.1177/0091270009341960](https://doi.org/10.1177/0091270009341960)) -- 57 healthy Japanese male volunteers (single 10 mg oral; enterohepatic-circulation model with Erlang absorption and SLCO1B1*15 haplotype effect on relative bioavailability; ratifies new `SLCO1B1_HAP15_HET` and `SLCO1B1_HAP15_HOM` covariate canonicals and new `gallbladder` compartment name).
