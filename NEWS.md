@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Kimura 2023 glucarpidase ([doi:10.21873/anticanres.16351](https://doi.org/10.21873/anticanres.16351)) -- Japanese phase II simulation virtual patients receiving glucarpidase rescue after high-dose methotrexate (modified Michaelis-Menten PK/PD model coupling MTX 2-compartment and CPG2 1-compartment disposition; ratifies new `cpg2` registered non-parent-species suffix).
+* Add Goti 2018 vancomycin ([doi:10.1097/FTD.0000000000000490](https://doi.org/10.1097/FTD.0000000000000490)) -- hospitalized adults with and without intermittent hemodialysis (ratifies new `HEMODIAL` covariate canonical for intermittent-hemodialysis treatment-status).
 * Add Yuan 2019 concizumab ([doi:10.1016/j.ejps.2019.105032](https://doi.org/10.1016/j.ejps.2019.105032)) -- healthy adult males receiving single-dose IV or SC concizumab (23-state systems PK/PD model with two nested endothelial endosome compartments for mTFPI-mediated TMDD and FcRn-recycled linear clearance of free and sTFPI-bound antibody).
 * Add Debord 2001 cyclosporin ([doi:10.2165/00003088-200140050-00004](https://doi.org/10.2165/00003088-200140050-00004)) -- stable renal transplant recipients receiving oral cyclosporin microemulsion (Neoral) 75-175 mg twice daily (gamma-distribution absorption convolved with two-compartment disposition; F fixed to 1).
 * Add Ide 2009 pravastatin ([doi:10.1177/0091270009341960](https://doi.org/10.1177/0091270009341960)) -- 57 healthy Japanese male volunteers (single 10 mg oral; enterohepatic-circulation model with Erlang absorption and SLCO1B1*15 haplotype effect on relative bioavailability; ratifies new `SLCO1B1_HAP15_HET` and `SLCO1B1_HAP15_HOM` covariate canonicals and new `gallbladder` compartment name).
