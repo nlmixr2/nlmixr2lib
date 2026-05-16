@@ -82,8 +82,6 @@ navbar:
         href: articles/Hu_2014_bapineuzumab.html
       - text: "BAY81 8973 (Garmann 2017)"
         href: articles/Garmann_2017_BAY81_8973.html
-      - text: "Bedaquiline (Svensson 2018)"
-        href: articles/Svensson_2018_bedaquiline.html
       - text: "Belantamab (Papathanasiou 2025)"
         href: articles/Papathanasiou_2025_belantamab.html
       - text: "Belimumab (Zhou 2021)"
@@ -278,6 +276,8 @@ navbar:
         href: articles/Gupta_2016_lenvatinib.html
       - text: "Linagliptin (Retlich 2015)"
         href: articles/Retlich_2015_linagliptin.html
+      - text: "Linezolid (Tsuji 2017)"
+        href: articles/Tsuji_2017_linezolid.html
       - text: "Liraglutide (CarlssonPetri 2021)"
         href: articles/CarlssonPetri_2021_liraglutide.html
       - text: "Lopinavir (Archary 2018)"
@@ -930,6 +930,7 @@ articles:
   - articles/Tiraboschi_2025_amlitelimab
   - articles/Tortorici_2017_a1pi
   - articles/Toukam_2025_biib107
+  - articles/Tsuji_2017_linezolid
   - articles/Urien_2005_capecitabine
   - articles/Valenzuela_2025_nipocalimab
   - articles/Valitalo_2017_ketorolac
