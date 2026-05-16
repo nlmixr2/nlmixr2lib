@@ -302,8 +302,8 @@ navbar:
         href: articles/Hood_2021_medi7836.html
       - text: "Mepolizumab (Cao 2013)"
         href: articles/Cao_2013_mepolizumab.html
-      - text: "MHD rat (Clinckers 2008)"
-        href: articles/Clinckers_2008_MHD_rat.html
+      - text: "Micafungin (Martial 2017)"
+        href: articles/Martial_2017_micafungin.html
       - text: "Midazolam (Brill 2014)"
         href: articles/Brill_2014_midazolam.html
       - text: "Mirikizumab (Chua 2025)"
@@ -314,8 +314,6 @@ navbar:
         href: articles/Hwang_2023_monalizumab.html
       - text: "Morphine (deHoogd 2017)"
         href: articles/deHoogd_2017_morphine.html
-      - text: "Morphine (Franken 2015)"
-        href: articles/Franken_2015_morphine.html
       - text: "MRNA3927 (Attarwala 2023)"
         href: articles/Attarwala_2023_mRNA3927.html
       - text: "Nalmefene (Kyhl 2016)"
@@ -864,6 +862,7 @@ articles:
   - articles/Ma_2020_sarilumab_anc
   - articles/Ma_2020_sarilumab_das28crp
   - articles/Marquez-Megias_2023_adalimumab
+  - articles/Martial_2017_micafungin
   - articles/Martinez_2019_alirocumab
   - articles/Masters_2022_avelumab
   - articles/Melhem_2022_dostarlimab
