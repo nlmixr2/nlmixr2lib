@@ -710,6 +710,63 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Girard_2012_pimasertib.R` (Markov-state covariate that selects per-previous-score logit thresholds `b01`/`b11`/`b21` and `b02`/`b12`/`b22` and per-previous-score `emax` levels; reset to 0 at TIME = 0 per source `IF (TIME.EQ.0) PREVSCOR=0`).
 - **Notes:** Specific scope because the ordinal scale is paper-specific (different AE-grading schemes, different number of categories, different grouping rules -- Girard 2012 collapses CTCAE grades 1+2 into a single "1-2" category and treats grades >=3 as a third stratum). When assembling the simulation event table, set `PREV_AE_SCORE = 0` at the first observation of every subject and update each subsequent observation to the previous observation's sampled score -- matching the NONMEM `IF (TIME.EQ.0) PREVSCOR=0` / `PREVSCOR = DV` carry-forward idiom. Distinct from `PAIN` (continuous baseline pain score) and from `MGADL` / `EASI` (continuous severity scores not modelled as Markov states).
 
+### CDR_SOB (**canonical for Clinical Dementia Rating - Sum of Boxes score**)
+- **Description:** Clinical Dementia Rating scale - Sum of Boxes (CDR-SOB) score, the unweighted sum of the six CDR-box scores (memory, orientation, judgement and problem solving, community affairs, home and hobbies, personal care; each scored 0 / 0.5 / 1 / 2 / 3). Total ranges 0-18; higher values indicate more severe cognitive and functional impairment. Widely used as a primary efficacy endpoint in Alzheimer's-disease (AD) clinical trials and as a disease-progression biomarker in mild-cognitive-impairment (MCI) / prodromal-AD populations.
+- **Units:** (CDR-SOB units, 0-18 score)
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- the source paper centres covariate effects on dataset medians (e.g., Delor 2013 uses CDR_SOB / 2 in the DOT power-form and CDR_SOB - 1 in the mixture-logit additive form).
+- **Source aliases:**
+  - `CDR_bsl` -- used in `Delor_2013_alzheimer.R` (baseline CDR-SOB at study entry).
+  - `CDR` -- alternative bare-name often seen in ADNI / CAMD-style NONMEM datasets.
+- **Example models:** `Delor_2013_alzheimer.R` (time-fixed baseline covariate; enters both the per-subject DOT power form (`(CDR_SOB / 2)^e_cdr_sob_dot` with `e_cdr_sob_dot = -0.072`) and the per-subject slow-progression mixture-logit additive form (`+ e_cdr_sob_slow * (CDR_SOB - 1)` with `e_cdr_sob_slow = -1.27`)).
+- **Notes:** Canonical name is `CDR_SOB` without a `_BL` suffix to match the `EASI` / `MGADL` / `BCVA` pattern (baseline-vs-time-varying status recorded in `covariateData[[CDR_SOB]]$notes`). The CDR sum-of-boxes form is distinct from the global CDR rating (`CDR_GLOBAL`, a 0 / 0.5 / 1 / 2 / 3 ordinal); the sum-of-boxes is preferred in disease-progression modelling for its finer granularity. Ratified canonically on 2026-05-16 alongside the Delor 2013 extraction.
+
+### ADAS_COG (**canonical for ADAS-cog total cognitive subscale score**)
+- **Description:** Alzheimer's Disease Assessment Scale - cognitive subscale (ADAS-cog) total score. The total-11 form ranges 0-70; the modernised total-13 form ranges 0-85. Higher values = more cognitive impairment. The ADAS-cog is the most widely used cognitive endpoint in AD clinical trials and disease-progression modelling.
+- **Units:** (ADAS-cog units; document the form (total-11 / total-13) per-model in `covariateData[[ADAS_COG]]$units`)
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- covariate effects typically centred on a dataset median (e.g., Delor 2013 centres on ADAS_COG = 12.67).
+- **Source aliases:**
+  - `ADAS_bsl` -- used in `Delor_2013_alzheimer.R` (baseline ADAS-cog total-11 at study entry).
+  - `ADAS`, `ADAS_COG_11`, `ADAS_COG_13` -- alternative bare-name forms seen across ADNI / CAMD datasets.
+- **Example models:** `Delor_2013_alzheimer.R` (time-fixed baseline covariate; ADAS-cog total-11 form; enters the per-subject DOT power form `(ADAS_COG / 12.67)^e_adas_cog_dot` with `e_adas_cog_dot = -0.0439`).
+- **Notes:** Canonical name is `ADAS_COG` (no `_BL` suffix; baseline-vs-time-varying recorded in notes). The total-11 vs total-13 form must be documented per-model in `covariateData[[ADAS_COG]]$units` because the same numeric ADAS_COG value has different clinical interpretation across the two forms. Conrado 2014 uses ADAS-cog as the modelled observation (response variable) rather than as a baseline covariate; that model file therefore does not list ADAS_COG in its `covariateData`. Ratified canonically on 2026-05-16 alongside the Delor 2013 extraction.
+
+### MMSE (**canonical for Mini Mental State Examination score**)
+- **Description:** Mini Mental State Examination total score (0-30; higher values = better cognitive function). A widely used cognitive-screening instrument in AD and MCI populations.
+- **Units:** (MMSE units, 0-30 score)
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- covariate effects typically centred on a dataset median (e.g., Delor 2013 centres on MMSE = 26).
+- **Source aliases:**
+  - `MMSE_bsl` -- used in `Delor_2013_alzheimer.R` (baseline MMSE at study entry).
+- **Example models:** `Delor_2013_alzheimer.R` (time-fixed baseline covariate; modifies the per-subject disease-progression acceleration parameter alpha via a power form `(MMSE / 26)^e_mmse_alpha` with `e_mmse_alpha = -2.01`).
+- **Notes:** Canonical name is `MMSE` (no `_BL` suffix; baseline-vs-time-varying recorded in notes). MMSE is the inverse-direction counterpart of CDR_SOB / ADAS_COG (MMSE high = healthy; CDR_SOB / ADAS_COG high = impaired); covariate-effect coefficient signs are therefore typically opposite to those for CDR_SOB / ADAS_COG. Ratified canonically on 2026-05-16 alongside the Delor 2013 extraction.
+
+### FAQ (**canonical for Functional Assessment Questionnaire score**)
+- **Description:** Functional Assessment Questionnaire (Pfeffer FAQ) total score: sum of ten functional-activities items (each scored 0 = normal to 3 = dependent), total 0-30; higher values = greater functional impairment. Used as a functional-status covariate alongside cognitive scores in AD and MCI populations.
+- **Units:** (FAQ units, 0-30 score)
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- covariate effects typically centred on a dataset median (e.g., Delor 2013 centres on FAQ = 1).
+- **Source aliases:**
+  - `FAQ_bsl` -- used in `Delor_2013_alzheimer.R` (baseline FAQ at study entry).
+- **Example models:** `Delor_2013_alzheimer.R` (time-fixed baseline covariate; enters the per-subject slow-progression mixture-logit additive form `+ e_faq_slow * (FAQ - 1)` with `e_faq_slow = -0.341`).
+- **Notes:** Canonical name is `FAQ` (no `_BL` suffix; baseline-vs-time-varying recorded in notes). Distinct from the cognitive scores (CDR_SOB / ADAS_COG / MMSE): FAQ measures instrumental activities of daily living rather than cognitive performance, and adds incremental information about disease-stage severity in MCI cohorts. Ratified canonically on 2026-05-16 alongside the Delor 2013 extraction.
+
+### RHPNM (**canonical for normalized hippocampal volume (head-size and age-adjusted)**)
+- **Description:** Normalised hippocampal volume: the subject's average left+right hippocampal volume divided by the value expected for a healthy subject of the same age and estimated intracranial volume (head size). 1.0 corresponds to the healthy reference; values below 1.0 indicate hippocampal atrophy. Derived from MRI volumetry and a healthy-subject regression on age and intracranial volume.
+- **Units:** (unitless ratio; 1.0 = healthy reference)
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- covariate effects typically centred on RHPNM = 1 (the healthy reference, e.g., Delor 2013).
+- **Source aliases:**
+  - `RHPNM` -- used in `Delor_2013_alzheimer.R` (baseline normalized hippocampal volume; Delor 2013 derivation: `RHPNMbsl_i = HIPVbsl_i / HPNMbsl_i` where `HPNMbsl_i = Age_i * (-26.6268 + EICVbsl_i * 0.0016 + 3340.4395)`).
+- **Example models:** `Delor_2013_alzheimer.R` (time-fixed baseline covariate; enters the per-subject slow-progression mixture-logit additive form `+ e_rhpnm_slow * (RHPNM - 1)` with `e_rhpnm_slow = 7.5`, a strongly positive effect indicating that less atrophic hippocampi (RHPNM closer to 1) are associated with a higher probability of being in the slow-progressing subpopulation).
+- **Notes:** Distinct from the raw hippocampal volume (which would be a `HIPV` canonical not yet registered; raw HIPV is confounded with head size and age, hence the need for the normalisation). The Delor 2013 paper notes that the same effect is only marginally significant with unnormalised HIPV (P = 0.02) but strongly significant with the normalised form (RHPNM). The exact age / EICV regression coefficients are paper-specific and any future model adopting this canonical should re-derive the normalisation for its own population or document why the Delor 2013 regression is reused. Ratified canonically on 2026-05-16 alongside the Delor 2013 extraction.
+
 ### ACUTE_MED_DAYS (**canonical for baseline number of days/month of acute migraine medication use**)
 - **Description:** Baseline number of days per month on which acute migraine medication (triptans or ergot compounds) was used during the 28-day run-in period prior to first dose. Enters as a piecewise-linear shift on baseline migraine or moderate-to-severe headache days in migraine exposure-response models.
 - **Units:** days/month
@@ -3834,26 +3891,12 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
   - `Lu_2022_patritumab.R` (cycle-1 vs cycle-2+ piecewise scaling Factor1 = theta = 0.648 on the payload-to-intact-drug ratio PIR that scales DXd release rate from intact ADC).
 - **Notes:** Must be >= 1 throughout (`CYCLE^Fm` is undefined at 0; the piecewise form requires `CYCLE` to be a positive integer at every observation row). Distinct from `ooc<n>` binary-occasion indicators: `CYCLE` is an integer count, not a mutually-exclusive set of indicator columns. Data-assembly helper: set `CYCLE = floor((TIME - TIME_FIRST_DOSE) / cycle_length_days) + 1` for a fixed-interval dosing regimen.
 
-## Preclinical experimental conditions
-
-### SEIZURE_ACUTE (**canonical for acute focal-seizure-activity indicator in preclinical brain-distribution studies**)
-- **Description:** 1 = the animal is undergoing acute focal seizure activity (typically chemoconvulsant-induced, e.g., intrahippocampal pilocarpine perfusion in a microdialysis design) during the modelled observation window; 0 = no acute seizure activity. Captures the experimental flag used by preclinical BBB / biophase-distribution PK studies to test whether seizure-driven changes in blood-brain barrier permeability or brain redistribution alter brain PK parameters relative to non-seizing control animals. Time-fixed per animal in single-condition allocations (each rat in one arm); a time-varying form is permitted when a study induces transient seizures during a sampling window and the operator chooses to gate the covariate only over the seizure interval (document in `covariateData[[SEIZURE_ACUTE]]$notes`).
-- **Units:** (binary)
-- **Type:** binary
+### T_ENTRY (**canonical for per-subject study-entry time on the model integration axis**)
+- **Description:** Per-subject study-entry time, expressed on the same integration-time axis the model is solved on (years for AD disease-progression models). The dataset's `TIME` column carries the integration-time variable (with `TIME = 0` the integration origin, typically well before any subject's disease onset); `T_ENTRY` records, per subject, the integration-time value at which the subject's first observation falls. Used in models whose pre-study and post-study time semantics differ -- e.g., a disease-progression activation function defined on global disease time plus a placebo-effect term defined on time-since-study-entry need access to both reference clocks within the same `model()` block.
+- **Units:** year (or whatever time unit the model's `units$time` field declares)
+- **Type:** continuous
 - **Scope:** specific
-- **Reference category:** 0 (no acute seizure activity; non-seizing control animal).
-- **Source aliases:**
-  - `A` (values inverted: source `A = 1` means non-seizing control and `A = 0` means seizing, per Clinckers 2008 Methods 'Both A and B were set to 1 in control animals; to 0 and 1, respectively, in seizing animals'; the canonical encoding flips the polarity via `SEIZURE_ACUTE = 1 - A`) -- used in `Clinckers_2008_MHD_rat.R`.
-- **Example models:** `Clinckers_2008_MHD_rat.R` (mutually-exclusive selection of the seizure-specific biophase volume V3b in place of the control V3a inside the V3 expression of the one-compartment-plus-biophase model for MHD in male Wistar rats; `v3 = exp(lv3a + etalv3a) * (1 - SEIZURE_ACUTE) * (1 - EFFLUX_INHIB) + exp(lv3b) * SEIZURE_ACUTE * (1 - EFFLUX_INHIB) + exp(lv3c + etalv3c) * (1 - SEIZURE_ACUTE) * EFFLUX_INHIB`).
-- **Notes:** Specific scope because the indicator's semantics are tied to acute, induced focal seizure activity in preclinical BBB / biophase PK designs; clinical-trial canonicals for epilepsy (`CONMED_AED`, `CONMED_EIAED`, `PDV` previous-period seizure count) describe distinct concepts and should not be conflated. Future preclinical studies that test a similar seizure-vs-non-seizure contrast should extend the example list; promote to general scope once a second model legitimately ratifies the name. Mutually exclusive with `EFFLUX_INHIB` in Clinckers 2008 (each rat is allocated to exactly one of {control, seizure, efflux-inhibition}); the model() encoding uses `(1 - SEIZURE_ACUTE) * (1 - EFFLUX_INHIB)` as the control multiplier, so any data record that asserts both flags as 1 would zero out the V3a term -- data assemblers should preserve mutual exclusivity unless a model is explicitly designed for the cross-condition case. Ratified canonically on 2026-05-16 alongside the Clinckers 2008 extraction.
-
-### EFFLUX_INHIB (**canonical for local efflux-transporter-inhibitor co-perfusion indicator in preclinical brain-distribution studies**)
-- **Description:** 1 = the animal's brain microdialysis probe is co-perfused with an efflux-transporter inhibitor (e.g., verapamil 5 mM for P-glycoprotein / MDT blockade in Clinckers 2008) at the site of brain sampling, 0 = no local efflux-transporter inhibitor co-perfusion. Captures the experimental flag used by preclinical BBB / biophase-distribution PK studies to test whether local pharmacological blockade of brain efflux transporters alters brain PK parameters relative to non-blocked control animals. Time-fixed per animal in single-condition allocations.
-- **Units:** (binary)
-- **Type:** binary
-- **Scope:** specific
-- **Reference category:** 0 (no local efflux-transporter blockade; non-perfused control side or no inhibitor in the perfusion fluid).
-- **Source aliases:**
-  - `B` (values inverted: source `B = 1` means non-blocked control and `B = 0` means verapamil-co-perfused, per Clinckers 2008 Methods 'Both A and B were set to 1 in control animals; to ... 1 and 0, respectively, in verapamil-treated animals'; the canonical encoding flips the polarity via `EFFLUX_INHIB = 1 - B`) -- used in `Clinckers_2008_MHD_rat.R`.
-- **Example models:** `Clinckers_2008_MHD_rat.R` (mutually-exclusive selection of the verapamil-specific biophase volume V3c in place of the control V3a inside the V3 expression; see the V3 expression quoted under `SEIZURE_ACUTE`).
-- **Notes:** Specific scope because the indicator's semantics are tied to local pharmacological efflux-transporter blockade in a brain-microdialysis biophase design; clinical-trial coadministration canonicals (`CONMED_AZOLE` CYP3A4/P-gp inhibitor, etc.) describe distinct systemic-coadministration concepts and should not be conflated. Future preclinical studies that test a similar efflux-blockade-vs-control contrast (verapamil, elacridar, tariquidar, etc.) should extend the example list and document the inhibitor / concentration in `covariateData[[EFFLUX_INHIB]]$notes`. Mutually exclusive with `SEIZURE_ACUTE` in Clinckers 2008 (see notes under `SEIZURE_ACUTE`). Ratified canonically on 2026-05-16 alongside the Clinckers 2008 extraction.
+- **Reference category:** n/a -- `T_ENTRY` is a per-subject time-offset covariate that anchors the time-since-study-entry clock used by post-entry-only model terms (placebo / learning effects, study-design transient drops).
+- **Source aliases:** none standardized; this canonical originates with the Delor 2013 AD disease-progression extraction. The source paper's NONMEM dataset handles the global / study-time split internally (the dataset is staged with TIME = study time and the model uses a fixed offset to align with DOT); when porting to rxode2 / nlmixr2 the per-subject offset is exposed as a covariate so simulation event tables can carry it explicitly.
+- **Example models:** `Delor_2013_alzheimer.R` (placebo-term clock: `t_pl_raw <- time - T_ENTRY; post_entry <- t_pl_raw > 0; placebo_term <- pl_indiv * (1 - exp(-kpl_indiv * t_pl_raw * post_entry)) * post_entry`).
+- **Notes:** Scope: specific because the variable is paper-domain-bound -- it only makes sense for models that operate on a global disease-time axis distinct from per-subject study-entry timing. For a typical-value reproduction the user supplies `T_ENTRY` per subject in the simulation event table; a reasonable construction is `T_ENTRY = DOT_individual + a few years of established disease` so the patient is observed during disease progression (see the Delor 2013 vignette for the construction used to reproduce Figures 2-4). Ratified canonically on 2026-05-16 alongside the Delor 2013 extraction.
