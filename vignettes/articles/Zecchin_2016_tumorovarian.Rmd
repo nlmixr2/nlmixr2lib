@@ -43,14 +43,14 @@ Equations were extracted from `Executable_SLD.mod` (`$PK` and `$DES` blocks) and
 | `libase` (baseline SLD, m)     | `log(0.0713)`                  | `Output_real_SLD.lst` FINAL TH4                                                               |
 | `addSd_tumorSize` (mm)         | `18.4`                         | `Output_real_SLD.lst` FINAL TH5                                                               |
 | `etalkg`                       | `1.72`                         | `Output_real_SLD.lst` FINAL OMEGA(1,1)                                                        |
-| `etalkd0_kd1` (shared)         | `1.09`                         | `Output_real_SLD.lst` FINAL OMEGA(2,2) — shared by KD0 and KD1 per `$PK` block                |
+| `etalkd0_kd1` (shared)         | `1.09`                         | `Output_real_SLD.lst` FINAL OMEGA(2,2) -- shared by KD0 and KD1 per `$PK` block               |
 | `etalibase`                    | `0.515`                        | `Output_real_SLD.lst` FINAL OMEGA(3,3)                                                        |
 
 # Virtual cohort and event table
 
 The DDMORE bundle ships a `Simulated_SLD.csv` event dataset (336 subjects, ~16 records per subject, structured as cycle-start exposure events plus per-cycle SLD observations). Per the skill's DDMORE-source guidance, that file is "intentionally minimal" and not directly representative of the publication's clinical study; this vignette therefore builds a small virtual cohort that mimics the trial regimen at the structural level and lets the model generate the trajectories.
 
-* 6 chemotherapy cycles, 21 days apart (`Q3W` carboplatin pacing — the standard advanced-ovarian-cancer regimen referenced by the DDMORE bundle).
+* 6 chemotherapy cycles, 21 days apart (`Q3W` carboplatin pacing -- the standard advanced-ovarian-cancer regimen referenced by the DDMORE bundle).
 * Two equally-allocated arms: carboplatin monotherapy (`AUC_GEM = 0`) and carboplatin + gemcitabine combination.
 * Per-cycle carboplatin AUC drawn from a lognormal centred on the source-dataset median scale; per-cycle gemcitabine AUC drawn from a lognormal centred on its source-dataset scale (combination arm only). The numerical values absorb the source dataset's implicit unit conventions, which the Zecchin model then re-scales internally via the `/1000` (carboplatin and growth) and `/100` (gemcitabine) factors carried verbatim from the source `$DES` block.
 * SLD observations every 21 days from baseline through day 252 (12 visits in total: 6 on-treatment + 6 follow-up).
@@ -142,11 +142,11 @@ The expected qualitative pattern holds:
 
 * **Tumour shrinks during treatment.** Both arms show a downward trajectory while AUC_CARBO and AUC_GEM are non-zero (cycles 1-6, days 0-126). The combination arm declines faster than the carboplatin-only arm because both cytotoxic-death terms contribute additively (`kd0 * AUC_CARBO + kd1 * AUC_GEM`, `$DES` block).
 * **Tumour regrows after treatment ends.** Once the AUC inputs drop to zero (after day 126), the death terms vanish and the growth term `kg * tumorSize` takes over, producing exponential regrowth. This matches the model's structural assumption of no resistance.
-* **Initial value tracks `IBASE * 1000`.** At time 0 the trajectory begins at `exp(libase) * 1000` ≈ 71 mm, exactly the published baseline-SLD scale.
+* **Initial value tracks `IBASE * 1000`.** At time 0 the trajectory begins at `exp(libase) * 1000` ~= 71 mm, exactly the published baseline-SLD scale.
 
 # Stochastic simulation (between-subject variability)
 
-Including the model's IIV (typical of the source dataset's variability — `etalkg ~ 1.72`, `etalkd0_kd1 ~ 1.09`, `etalibase ~ 0.515`) shows the population spread of trajectories. The shared `etalkd0_kd1` introduces strong correlation between an individual's response to carboplatin and their response to gemcitabine, which is the source paper's mechanistic assumption (a single underlying "drug-sensitivity" scale per subject).
+Including the model's IIV (typical of the source dataset's variability -- `etalkg ~ 1.72`, `etalkd0_kd1 ~ 1.09`, `etalibase ~ 0.515`) shows the population spread of trajectories. The shared `etalkd0_kd1` introduces strong correlation between an individual's response to carboplatin and their response to gemcitabine, which is the source paper's mechanistic assumption (a single underlying "drug-sensitivity" scale per subject).
 
 ```{r simulate-iiv}
 sim_iiv <- rxode2::rxSolve(
@@ -176,7 +176,7 @@ ggplot(iiv_summary, aes(time, Q50, colour = arm, fill = arm)) +
   theme_minimal()
 ```
 
-The 5th-95th percentile bands are wide — consistent with the very large between-subject variability the source NONMEM run reports (CV on KG > 200% on the lognormal scale, with ETA-shrinkage of 55% on KG and 28% on KD; see *Assumptions and deviations* below for context).
+The 5th-95th percentile bands are wide -- consistent with the very large between-subject variability the source NONMEM run reports (CV on KG > 200% on the lognormal scale, with ETA-shrinkage of 55% on KG and 28% on KD; see *Assumptions and deviations* below for context).
 
 # Mechanistic checks: dose-AUC-effect linearity
 
@@ -206,7 +206,7 @@ knitr::kable(
 
 # Validation strategy
 
-The validation strategy for this DDMORE-source extraction is **mechanistic_sanity** (per the per-task validation flag `validation:mechanistic_sanity`). Per `references/ddmore-source.md` § *Validation strategy by model type*, the relevant checklist is `verification-checklist.md` § F.3 (count / hazard / typical-trajectory) plus the F.2 self-consistency substitute, since the linked Zecchin 2016 publication was not directly on disk for this extraction:
+The validation strategy for this DDMORE-source extraction is **mechanistic_sanity** (per the per-task validation flag `validation:mechanistic_sanity`). Per `references/ddmore-source.md` Section *Validation strategy by model type*, the relevant checklist is `verification-checklist.md` Section F.3 (count / hazard / typical-trajectory) plus the F.2 self-consistency substitute, since the linked Zecchin 2016 publication was not directly on disk for this extraction:
 
 * **F.3 typical-value mechanistic check.** The deterministic SLD trajectory matches the model's mechanism (decline during treatment, regrowth after treatment ends, additive on the two drug effects, baseline = `IBASE * 1000`).
 * **F.2 self-consistency.** The model parses (`buildModelDb()` + `checkModelConventions()` clean), `rxode2::rxSolve()` runs to completion across the 50-subject virtual cohort with no NaNs or negative SLD values across the 252-day window, and the simulated trajectories visually match the qualitative shape one would expect from the source `Executable_SLD.mod` `$DES` equation.
@@ -216,7 +216,7 @@ A side-by-side comparison against the bundle's `Output_simulated_SLD.lst` IPRED 
 # Assumptions, deviations, and Errata
 
 * **`checkModelConventions()` deviations.** `nlmixr2lib::checkModelConventions("Zecchin_2016_tumorovarian")` reports three warnings (no errors): (1) the `tumorSize` compartment is not on the canonical-compartment list; (2) the single-output observation variable should be `Cc`; (3) `units$concentration` does not contain `/` (the mass/volume divider). All three are intrinsic to a tumour-size-dynamics model and apply to every existing tumour-size model in the package (e.g., `tgi_no_sat_expo`, `oncology_xenograft_simeoni_2004`): SLD is a **length** (mm), not a drug concentration; the `Cc` canonical name is reserved for plasma drug concentrations and does not fit a tumour-size endpoint; the convention checker's mass/volume unit pattern is also drug-concentration-specific. Renaming `tumorSize` to `Cc` here would mislead readers about what the observation actually represents. The deviations are intentional.
-* **`MINIMIZATION SUCCESSFUL` with caveats.** The source `.lst` reports `MINIMIZATION SUCCESSFUL` but adds `HOWEVER, PROBLEMS OCCURRED WITH THE MINIMIZATION. REGARD THE RESULTS OF THE ESTIMATION STEP CAREFULLY, AND ACCEPT THEM ONLY AFTER CHECKING THAT THE COVARIANCE STEP PRODUCES REASONABLE OUTPUT.` The reported correlation matrix shows THETA-THETA correlations near `±0.98-1.00`, indicating near-non-identifiability of the structural parameters. ETA-shrinkage on KG is `55.3%` and on the shared KD eta is `28.2%`. This is consistent with a small-N (336 patients), short-follow-up SLD model trying to estimate three structural parameters plus three random-effect variances simultaneously. The values are extracted as published; **the high correlations and shrinkage should be borne in mind when interpreting individual parameter estimates from this model.**
+* **`MINIMIZATION SUCCESSFUL` with caveats.** The source `.lst` reports `MINIMIZATION SUCCESSFUL` but adds `HOWEVER, PROBLEMS OCCURRED WITH THE MINIMIZATION. REGARD THE RESULTS OF THE ESTIMATION STEP CAREFULLY, AND ACCEPT THEM ONLY AFTER CHECKING THAT THE COVARIANCE STEP PRODUCES REASONABLE OUTPUT.` The reported correlation matrix shows THETA-THETA correlations near `+/-0.98-1.00`, indicating near-non-identifiability of the structural parameters. ETA-shrinkage on KG is `55.3%` and on the shared KD eta is `28.2%`. This is consistent with a small-N (336 patients), short-follow-up SLD model trying to estimate three structural parameters plus three random-effect variances simultaneously. The values are extracted as published; **the high correlations and shrinkage should be borne in mind when interpreting individual parameter estimates from this model.**
 * **No external publication-table cross-check.** The publication PDF (Zecchin 2016, BJCP, doi:10.1111/bcp.12994) was not on disk for this extraction. Parameter values come exclusively from `Output_real_SLD.lst`; the `Model_Accomodations.text` file that DDMORE bundles usually ship was also not present in this directory. Citation metadata was confirmed via PubMed E-utilities (PMID 27136318).
 * **No in-bundle `Model_Accomodations.text`.** The DDMORE bundle for `DDMODEL00000217` does not ship a `Model_Accomodations` reference file (one of the optional bundle artefacts described in `references/ddmore-source.md`). The publication mapping used here was reconstructed from the PubMed citation match for the task metadata.
 * **M3 censored-likelihood handling omitted.** The source `$ERROR` block uses the M3 method to handle below-LLOQ SLD observations (`LLOQ = 5 mm`, `BQL` indicator column, `F_FLAG = 1` censoring branch with `Y = PHI((LLOQ - IPRED)/W)`). Forward simulation does not exercise the censoring likelihood, so the nlmixr2 translation drops the M3 branch and uses only the open-likelihood `Y = IPRED + ERR(1)*W` branch. Re-fitting this model in nlmixr2 with M3-style censoring would require explicit `cens()` handling on the dataset and is outside the scope of this packaged-model extraction.

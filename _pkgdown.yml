@@ -42,6 +42,8 @@ navbar:
         href: articles/Zhong_2026_abatacept.html
       - text: "Acetaminophen (vanRongen 2016)"
         href: articles/vanRongen_2016_acetaminophen.html
+      - text: "Adalimumab (Drweesh 2026)"
+        href: articles/Drweesh_2026_adalimumab.html
       - text: "Adalimumab (Marquez-Megias 2023)"
         href: articles/Marquez-Megias_2023_adalimumab.html
       - text: "Adecatumumab (Cao 2013)"
@@ -144,6 +146,8 @@ navbar:
         href: articles/Diao_2016_daclizumab_cd56bright.html
       - text: "Daclizumab treg (Diao 2016)"
         href: articles/Diao_2016_daclizumab_treg.html
+      - text: "Daratumumab (Xu 2020)"
+        href: articles/Xu_2020_daratumumab.html
       - text: "Datopotamab (Hong 2025)"
         href: articles/Hong_2025_datopotamab.html
       - text: "Daunorubicin (Varatharajan 2016)"
@@ -268,6 +272,8 @@ navbar:
         href: articles/Buil-Bruna_2015_lanreotide.html
       - text: "Lebrikizumab (Zhu 2017)"
         href: articles/Zhu_2017_lebrikizumab.html
+      - text: "Ligelizumab (Bienczak 2025)"
+        href: articles/Bienczak_2025_ligelizumab.html
       - text: "Linagliptin (Retlich 2015)"
         href: articles/Retlich_2015_linagliptin.html
       - text: "Liraglutide (CarlssonPetri 2021)"
@@ -330,6 +336,8 @@ navbar:
         href: articles/Hayashi_2007_omalizumab.html
       - text: "Ontamalimab (Wang 2020)"
         href: articles/Wang_2020_ontamalimab.html
+      - text: "Ormutivimab (Zhang 2022)"
+        href: articles/Zhang_2022_ormutivimab.html
       - text: "Osimertinib (Brown 2017)"
         href: articles/Brown_2017_osimertinib.html
       - text: "Oxcarbazepine (Rodrigues 2017)"
@@ -378,6 +386,8 @@ navbar:
         href: articles/Mulyukov_2018_ranibizumab.html
       - text: "Rifabutin (Hennig 2015)"
         href: articles/Hennig_2015_rifabutin.html
+      - text: "Rilotumumab (Zhang 2016)"
+        href: articles/Zhang_2016_rilotumumab.html
       - text: "Risankizumab (Suleiman 2019)"
         href: articles/Suleiman_2019_risankizumab.html
       - text: "Risankizumab (Thakre 2022)"
@@ -390,6 +400,8 @@ navbar:
         href: articles/Petrov_2024_romiplostim.html
       - text: "Rucaparib (Wang 2015)"
         href: articles/Wang_2015_rucaparib.html
+      - text: "SAL003 (Peng 2024)"
+        href: articles/Peng_2024_SAL003.html
       - text: "Sacituzumab (Sathe 2024)"
         href: articles/Sathe_2024_sacituzumab.html
       - text: "Sapropterin (Qi 2014)"
@@ -519,6 +531,8 @@ navbar:
         href: articles/NA_NA_lidocaine.html
       - text: "DDMoRe: miridesap"
         href: articles/NA_NA_miridesap.html
+      - text: "DDMoRe: paracetamol"
+        href: articles/NA_NA_paracetamol.html
       - text: "DDMoRe: sunitinib"
         href: articles/NA_NA_sunitinib.html
       - text: "DDMoRe: tte gompertz"
@@ -543,6 +557,8 @@ navbar:
         href: articles/Germovsek_2016_gentamicin.html
       - text: "Glucose (Bizzotto 2016)"
         href: articles/Bizzotto_2016_glucose.html
+      - text: "Il21 (Elishmereni 2011)"
+        href: articles/Elishmereni_2011_il21.html
       - text: "Levetiracetam (Schoemaker 2018)"
         href: articles/Schoemaker_2018_levetiracetam.html
       - text: "Meropenem (Li 2006)"
@@ -555,6 +571,8 @@ navbar:
         href: articles/vanRongen_2018_midazolam.html
       - text: "Morphine (Knibbe 2009)"
         href: articles/Knibbe_2009_morphine.html
+      - text: "Morphine (Valitalo 2017)"
+        href: articles/Valitalo_2017_morphine.html
       - text: "Morphine (Wang 2013)"
         href: articles/Wang_2013_morphine.html
       - text: "Nivolumab ddmore (Bajaj 2017)"
@@ -599,6 +617,8 @@ navbar:
         href: articles/Dao_2020_sultiame.html
       - text: "Sunitinib (Hansson 2013a)"
         href: articles/Hansson_2013a_sunitinib.html
+      - text: "Sunitinib (Hansson 2013b)"
+        href: articles/Hansson_2013b_sunitinib.html
       - text: "Sunitinib (Hansson 2013c)"
         href: articles/Hansson_2013c_sunitinib.html
       - text: "Sunitinib (Schindler 2016)"
@@ -650,6 +670,7 @@ articles:
   - articles/Benkali_2010_tacrolimus
   - articles/Berends_2019_infliximab
   - articles/Bergmann_2014_tacrolimus
+  - articles/Bienczak_2025_ligelizumab
   - articles/Birgersson_2019_artesunate
   - articles/Bista_2015_fentanyl
   - articles/Bizzotto_2016_glucose
@@ -698,9 +719,11 @@ articles:
   - articles/Diep_2026_donidalorsen
   - articles/Diepstraten_2013_propofol
   - articles/DoldanMartelli_2013_EGF_IFN_chimera
+  - articles/Drweesh_2026_adalimumab
   - articles/Dunlap_2025_tacrolimus
   - articles/Dunn_2025_tranexamicAcid
   - articles/Ekhart_2008_carboplatin
+  - articles/Elishmereni_2011_il21
   - articles/Faelens_2021_infliximab
   - articles/Farrell_2012_farletuzumab
   - articles/Fasanmade_2009_infliximab
@@ -725,6 +748,7 @@ articles:
   - articles/Gupta_2016_amatuximab
   - articles/Gupta_2017_ixazomib
   - articles/Hansson_2013a_sunitinib
+  - articles/Hansson_2013b_sunitinib
   - articles/Hansson_2013c_sunitinib
   - articles/Hanzel_2021_infliximab
   - articles/Harun_2019_cysticFibrosis
@@ -808,6 +832,7 @@ articles:
   - articles/Mulyukov_2018_ranibizumab
   - articles/NA_NA_lidocaine
   - articles/NA_NA_miridesap
+  - articles/NA_NA_paracetamol
   - articles/NA_NA_sunitinib
   - articles/NA_NA_tte_gompertz
   - articles/NA_NA_tte_gompertz_ev2
@@ -832,6 +857,7 @@ articles:
   - articles/Papachristos_2020_bevacizumab_qss
   - articles/Papathanasiou_2025_belantamab
   - articles/Parhiz_2024_mRNALNP
+  - articles/Peng_2024_SAL003
   - articles/PerezRuixo_2025_posdinemab
   - articles/Petrov_2024_romiplostim
   - articles/Plan_2012_pain
@@ -882,6 +908,7 @@ articles:
   - articles/Urien_2005_capecitabine
   - articles/Valenzuela_2025_nipocalimab
   - articles/Valitalo_2017_ketorolac
+  - articles/Valitalo_2017_morphine
   - articles/Varatharajan_2016_daunorubicin
   - articles/VegaVilla_2013_sodium_nitrite_qsp
   - articles/Vet_2016_midazolam
@@ -903,6 +930,7 @@ articles:
   - articles/Xie_2019_agomelatine
   - articles/Xu_2011_sirukumab
   - articles/Xu_2019_sarilumab
+  - articles/Xu_2020_daratumumab
   - articles/Xu_2023_MBG453
   - articles/Yamada_2025_zolbetuximab
   - articles/Yang_2021_cemiplimab
@@ -915,8 +943,10 @@ articles:
   - articles/Yukawa_1990_phenytoin
   - articles/Zecchin_2016_survival
   - articles/Zecchin_2016_tumorovarian
+  - articles/Zhang_2016_rilotumumab
   - articles/Zhang_2019_nivolumab
   - articles/Zhang_2021_dupilumab
+  - articles/Zhang_2022_ormutivimab
   - articles/Zheng_2016_sifalimumab
   - articles/Zhong_2026_abatacept
   - articles/Zhou_2021_belimumab

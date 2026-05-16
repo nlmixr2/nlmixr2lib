@@ -55,7 +55,7 @@ Girard_2012_pimasertib <- function() {
       units              = "(CTCAE ocular-toxicity grade, 0..3)",
       type               = "count",
       reference_category = NULL,
-      notes              = "Source column PREVSCOR — the lagged-DV column carried via NONMEM's IF (TIME.EQ.0) PREVSCOR=0 / PREVSCOR=DV idiom in $PK / $ERROR. Set to 0 at the first observation per subject; updated each subsequent observation to the previous-step sampled CTCAE grade. The cumulative-logit thresholds (b01/b11/b21 for AE >= 1, b02/b12/b22 for AE >= 2) and the Emax term are conditioned on the FPS group: FPS0 = (PREV == 0), FPS1 = (PREV in {1,2}), FPS2 = (PREV >= 3). Values 1 and 2 collapse into the FPS1 stratum per the source Markov grouping; in the simulated dataset shipped with DDMODEL00000215 the observed DVID == 2 values are 0/1/2/3.",
+      notes              = "Source column PREVSCOR -- the lagged-DV column carried via NONMEM's IF (TIME.EQ.0) PREVSCOR=0 / PREVSCOR=DV idiom in $PK / $ERROR. Set to 0 at the first observation per subject; updated each subsequent observation to the previous-step sampled CTCAE grade. The cumulative-logit thresholds (b01/b11/b21 for AE >= 1, b02/b12/b22 for AE >= 2) and the Emax term are conditioned on the FPS group: FPS0 = (PREV == 0), FPS1 = (PREV in {1,2}), FPS2 = (PREV >= 3). Values 1 and 2 collapse into the FPS1 stratum per the source Markov grouping; in the simulated dataset shipped with DDMODEL00000215 the observed DVID == 2 values are 0/1/2/3.",
       source_name        = "PREVSCOR"
     )
   )
@@ -63,7 +63,7 @@ Girard_2012_pimasertib <- function() {
   population <- list(
     n_subjects     = 199,
     n_studies      = 2,
-    age_range      = "(adult oncology cohort; specific range not extracted — the linked PAGE 21 (2012) Abstr 2458 publication is conference-abstract-only and was not on disk for cross-check at extraction time)",
+    age_range      = "(adult oncology cohort; specific range not extracted -- the linked PAGE 21 (2012) Abstr 2458 publication is conference-abstract-only and was not on disk for cross-check at extraction time)",
     weight_range   = "(not extracted)",
     sex_female_pct = "(not extracted)",
     disease_state  = "Advanced solid tumours and hematological malignancies (two phase I dose-escalation studies)",
@@ -120,7 +120,7 @@ Girard_2012_pimasertib <- function() {
     label("Maximum sigmoidal Emax effect on AE-score logit given PREV_AE_SCORE >= 1")
     # .lst TH 9 = -4.83E-01 (EMAX1).
 
-    # emax2 — .lst TH10 = 0 FIX (EMAX2) — is intentionally omitted from
+    # emax2 -- .lst TH10 = 0 FIX (EMAX2) -- is intentionally omitted from
     # ini() because nlmixr2 rejects ini-only parameters that are never read
     # by model(). The corresponding IF(PREVSCOR.GE.3) EMAX = EMAX2 branch
     # in the source $PK is commented out in the executable, so emax2 is
@@ -227,7 +227,7 @@ Girard_2012_pimasertib <- function() {
     #     DVID == 5 returns survival probability). nlmixr2 / rxode2 do not
     #     natively express this multi-DVID joint likelihood, so the formal
     #     observation here is the typical-value expected ordinal AE score
-    #     (0 * P0 + 1 * P1 + 2 * P2 in {0..2}) modelled as Poisson — purely
+    #     (0 * P0 + 1 * P1 + 2 * P2 in {0..2}) modelled as Poisson -- purely
     #     a placeholder that lets the model parse and that drives F.3
     #     mechanistic-sanity simulation in the validation vignette. The full
     #     Markov / cumulative-logit / Weibull-TTE structure is encoded
