@@ -82,6 +82,8 @@ navbar:
         href: articles/Hu_2014_bapineuzumab.html
       - text: "BAY81 8973 (Garmann 2017)"
         href: articles/Garmann_2017_BAY81_8973.html
+      - text: "Bedaquiline (Svensson 2018)"
+        href: articles/Svensson_2018_bedaquiline.html
       - text: "Belantamab (Papathanasiou 2025)"
         href: articles/Papathanasiou_2025_belantamab.html
       - text: "Belimumab (Zhou 2021)"
@@ -912,6 +914,7 @@ articles:
   - articles/Suleiman_2019_risankizumab
   - articles/Suri_2018_brentuximab
   - articles/Svensson_2016_bedaquiline
+  - articles/Svensson_2018_bedaquiline
   - articles/Svensson_2018_rifampicin
   - articles/Takahashi_2023_abatacept
   - articles/Takeuchi_2023_ozoralizumab
