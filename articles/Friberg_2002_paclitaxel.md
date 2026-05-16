@@ -25,24 +25,24 @@ This model was extracted from the DDMORE Foundation Model Repository
 bundle for `DDMODEL00000186` (scraped to
 `dpastoor/ddmore_scraping/186/`). The bundle contains:
 
-- `Executable_Myelosuppression.mdl` — the human-readable MDL control
+- `Executable_Myelosuppression.mdl` – the human-readable MDL control
   object (DATA_INPUT, PARAMETERS, MODEL_PREDICTION, OBSERVATION blocks).
-- `Executable_Myelosuppression.xml` — PharmML-rendered version of the
+- `Executable_Myelosuppression.xml` – PharmML-rendered version of the
   same MDL.
-- `Output_simulated_SEE_NONMEM.lst` — NMTRAN listing produced by the
+- `Output_simulated_SEE_NONMEM.lst` – NMTRAN listing produced by the
   `pharmML2Nmtran` v0.3.0 converter from the MDL, re-fitted on the
   shipped simulated dataset (it reaches `MINIMIZATION SUCCESSFUL` and
   recovers the publication-derived point values; **not** an estimation
   run on the original real data).
-- `Output_simulated_SEE_MONOLIX.txt` — companion Monolix simulation
+- `Output_simulated_SEE_MONOLIX.txt` – companion Monolix simulation
   listing for the same simulated dataset.
-- `Simulated_WBC_pacl_ddmore.csv` — the simulated event dataset (46
+- `Simulated_WBC_pacl_ddmore.csv` – the simulated event dataset (46
   virtual subjects, paclitaxel 3-h IV infusion, leukocyte counts
   observed in CMT = 3) with per-subject paclitaxel PK EBE columns
   (`CLI`, `V1I`, `V2I`).
-- `Model_Accommodations.txt`, `DDMODEL00000186.rdf`, `186.json` —
+- `Model_Accommodations.txt`, `DDMODEL00000186.rdf`, `186.json` –
   provenance and scenario notes.
-- `Neutrophils time profile.tiff`, `Neutrophils_VPC.tiff` — figure
+- `Neutrophils time profile.tiff`, `Neutrophils_VPC.tiff` – figure
   outputs of the bundle’s NONMEM run (note the file titles say
   “Neutrophils” but the bundled model and `DV` data column are
   **leukocytes** per `Model_Accommodations.txt`).
@@ -68,7 +68,7 @@ bundle for `DDMODEL00000186` implements only the **paclitaxel +
 leukocyte** sub-fit on a 46-subject paclitaxel cohort. Per
 `Model_Accommodations.txt`, the model structure is unchanged from the
 publication and only minor dataset accommodations were needed (EVID
-remapping, removal of dummy initialisation doses) — none changed the
+remapping, removal of dummy initialisation doses) – none changed the
 structural model and the impact on the objective function was minimal.
 
 The DDMORE bundle does not reproduce the published demographic table
@@ -111,7 +111,7 @@ Per-parameter origin (also recorded as in-file comments next to each
 For the self-consistency check below the cohort mirrors the bundle’s
 simulated dataset structure: a single representative subject with the
 median paclitaxel EBE PK values (`CL_INDIV = 285 L/h`,
-`VC_INDIV = 290 L`, `VP_INDIV = 1000 L`) receiving a 410 µmol paclitaxel
+`VC_INDIV = 290 L`, `VP_INDIV = 1000 L`) receiving a 410 umol paclitaxel
 infusion over 3 hours.
 
 ``` r

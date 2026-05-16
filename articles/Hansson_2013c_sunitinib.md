@@ -42,7 +42,7 @@ bundle.
 The same information is available programmatically via the model’s
 `population` metadata
 (`readModelDb("Hansson_2013c_sunitinib")$population` after the model is
-loaded — note that `readModelDb` returns the model **function**, so call
+loaded – note that `readModelDb` returns the model **function**, so call
 the function to materialise the model and inspect attributes via the
 `Hansson_2013c_sunitinib()` body).
 
@@ -55,12 +55,12 @@ bundle’s `Executable_Fatigue_GIST.mod` is a `MAXEVAL=0` evaluation-run
 scaffold whose `$THETA` / `$OMEGA` initial values are deliberately set
 to placeholder values (e.g. TH4 = -2.78, OMEGA(i,i) = 0.01) and **not**
 the published estimates. Equations come from the `.mod`’s `$PK` / `$DES`
-/ `$ERROR` blocks — equivalent to the listing’s full-fit `.mod` header
+/ `$ERROR` blocks – equivalent to the listing’s full-fit `.mod` header
 except for an unused effect-compartment relic that does not feed the
 EFF3 expression (commented-out DRG0/DRG1/DRG2/DRG3 lines).
 
 `.lst` \<-\> bundle `.mod` THETA mapping: the listing’s run had 17
-thetas (TH13 = KEO FIXED 0.422 — an unused effect-compartment relic;
+thetas (TH13 = KEO FIXED 0.422 – an unused effect-compartment relic;
 TH14-TH17 = PX0..PX3 placebo coefficients). The bundle `.mod` has 16
 thetas with no KEO slot, so the bundle’s TH13-TH16 are the listing’s
 TH14-TH17. The structural sVEGFR-3 model (EFF3 = AUC/(EC53+AUC) with AUC
@@ -98,7 +98,7 @@ TH14-TH17. The structural sVEGFR-3 model (EFF3 = AUC/(EC53+AUC) with AUC
 | `etaclge_px1 ~ 1.57` | `Output_real .lst` OMEGA(2,2) |
 | `etaclge_px2 ~ 1.68` | `Output_real .lst` OMEGA(3,3) |
 | `etaclge_px3 ~ 0.708` | `Output_real .lst` OMEGA(4,4) |
-| `addSd_fatigue_grade = 0.5` | placeholder (no source — see Assumptions) |
+| `addSd_fatigue_grade = 0.5` | placeholder (no source – see Assumptions) |
 
 ## Drug-exposure inputs and required covariates
 
@@ -108,10 +108,10 @@ inhibition function on the sVEGFR-3 indirect-response turnover. Both
 `DOSE` and `CLI` are required data covariates, matching the upstream
 Hansson 2013a model:
 
-- `DOSE` (mg) — current daily sunitinib dose at the time of the record.
+- `DOSE` (mg) – current daily sunitinib dose at the time of the record.
   Time-varying with the on/off cycling: 50 mg during a 4-week on-cycle,
   0 mg during the 2-week off-cycle, and 0 mg for placebo subjects.
-- `CLI` (L/h) — subject-specific posthoc total plasma clearance from the
+- `CLI` (L/h) – subject-specific posthoc total plasma clearance from the
   paper’s upstream 2-compartment popPK fit. Time-fixed (one value per
   subject). The bundle’s three-subject simulated dataset reports
   `CL = 30, 33, 43` L/h.
@@ -120,17 +120,17 @@ The fatigue model additionally requires three sVEGFR-3-specific posthoc
 covariates from the **upstream Hansson 2013a biomarker indirect-response
 fit** (DDMODEL00000197):
 
-- `BAS_SVEGFR3` (pg/mL) — individual baseline sVEGFR-3, used both as the
+- `BAS_SVEGFR3` (pg/mL) – individual baseline sVEGFR-3, used both as the
   initial condition `svegfr3(0) <- BAS_SVEGFR3` and as the denominator
   in the relative-change driver
   `bm = (svegfr3 - BAS_SVEGFR3) / BAS_SVEGFR3`. Bundle simulated values
   42554 / 48040 / 57365 pg/mL.
-- `MRT_SVEGFR3` (h) — individual mean residence time of sVEGFR-3, used
+- `MRT_SVEGFR3` (h) – individual mean residence time of sVEGFR-3, used
   as `kout3 = 1 / MRT_SVEGFR3`. Bundle simulated values 313 / 368 / 408
   h.
-- `EC50_SVEGFR3` (mg·h/L) — individual EC50 of the simple-Imax drug
+- `EC50_SVEGFR3` (mg*h/L) – individual EC50 of the simple-Imax drug
   effect, used in `eff3 = auc / (EC50_SVEGFR3 + auc)`. Bundle simulated
-  values 1.0 / 1.1 / 2.8 mg·h/L.
+  values 1.0 / 1.1 / 2.8 mg*h/L.
 
 The upstream popPK and the upstream Hansson 2013a biomarker model are
 **not** packaged together with this fatigue model. To use the fatigue
@@ -139,8 +139,8 @@ model on a new population, populate the four upstream covariates either
 needs `CLI` from a sunitinib popPK) and the upstream popPK to obtain
 individual posthoc baselines / MRT / EC50 / CL, or (b) by setting every
 subject to typical values (the Hansson 2013a typical sVEGFR-3
-parameters: BL = 63900 pg/mL, MRT = 401 h, IC50 = 1.0 mg·h/L; the Houk
-2010 sunitinib typical CL ≈ 32.8 L/h).
+parameters: BL = 63900 pg/mL, MRT = 401 h, IC50 = 1.0 mg\*h/L; the Houk
+2010 sunitinib typical CL ~ 32.8 L/h).
 
 ## Virtual cohort
 
@@ -218,7 +218,7 @@ ggplot(sim, aes(time / (7 * 24), bm)) +
   geom_line() +
   geom_hline(yintercept = 0, linetype = "dashed", colour = "grey50") +
   labs(x = "Time (weeks)",
-       y = "BM = (sVEGFR-3 − baseline) / baseline (unitless)",
+       y = "BM = (sVEGFR-3 - baseline) / baseline (unitless)",
        title = "Relative change in sVEGFR-3 under 4-on/2-off sunitinib",
        caption = "BM drives the placebo coefficient on each starting-state baseline logit.") +
   theme_minimal()
@@ -283,17 +283,17 @@ Interpretation: typical-value sVEGFR-3 drops from 63900 to roughly 38000
 pg/mL (about 40% depletion) by the end of a 4-week on-cycle, matching
 the qualitative sVEGFR-3 dynamics reported by the upstream Hansson 2013a
 biomarker model under continuous sunitinib exposure (and quantitatively
-close to it — the upstream typical-value figure also shows ~40-50%
+close to it – the upstream typical-value figure also shows ~40-50%
 depletion at end of on-cycle). The drug-driven shift in each
 starting-state baseline logit raises the conditional probability of
-fatigue grade ≥1 from any starting state, with the absolute change small
-in magnitude (typical estimates indicate fatigue is rare and slow to
-develop) but unambiguous in sign.
+fatigue grade \>=1 from any starting state, with the absolute change
+small in magnitude (typical estimates indicate fatigue is rare and slow
+to develop) but unambiguous in sign.
 
 ## Per-state transition probabilities at typical values
 
 The four rows of the typical-value transition matrix (no IIV, no placebo
-shift — i.e. drug-free baseline) are:
+shift – i.e. drug-free baseline) are:
 
 ``` r
 
@@ -316,7 +316,7 @@ round(P_typical, 4)
 
 The matrix is dominated by the diagonal (subjects tend to stay in their
 previous fatigue state from one visit to the next), with off- diagonal
-exits weighted toward adjacent states — both expected properties of a
+exits weighted toward adjacent states – both expected properties of a
 first-order Markov fatigue model. Row sums equal 1 within numerical
 tolerance:
 
@@ -439,7 +439,7 @@ listing.
 - **Per-state shared eta on cumulative logits.** The .mod adds `ETA(i)`
   only to the B1 (grade\>=1) logit per state. In the cumulative-logit
   reparameterisation each per-state eta (`etaclge_px<i>`) is shared
-  across the three cumulative thresholds for the same starting state —
+  across the three cumulative thresholds for the same starting state –
   the per-subject shift on B1 propagates additively into the cumulative
   sums, which is the same effect as the source.
   [`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
@@ -457,7 +457,7 @@ listing.
     than a literal data-column covariate.
 
 - **Compartment naming.** The single PD state is `svegfr3` (paper-named,
-  lowercase) — the same naming choice as the upstream Hansson 2013a
+  lowercase) – the same naming choice as the upstream Hansson 2013a
   model (`vegf`, `svegfr2`, `svegfr3`, `skit`) and consistent with the
   precedent set by `Petrov_2024_romiplostim` and
   `oncology_xenograft_simeoni_2004`.
@@ -472,7 +472,7 @@ listing.
   [`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
   flags this as an `observation` warning; the deviation matches the
   “non-PK multi-output paper-named variable” exemption documented in
-  `naming-conventions.md` § Observation variable.
+  `naming-conventions.md` section “Observation variable”.
 
 - **Concentration units field.** `units$concentration` is set to
   `"(NCI-CTC fatigue grade 0-3+, ordinal)"` rather than a `mass/volume`

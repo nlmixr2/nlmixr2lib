@@ -71,7 +71,7 @@ negative exponent the model predicts CL/F *decreases* as albumin rises:
 
 e_alb_cl <- -2.33
 ratio_low_to_high <- (1.97 / 4.96)^e_alb_cl
-ratio_low_to_high  # ~8.6 — model-predicted CL/F ratio at low vs high albumin
+ratio_low_to_high  # ~8.6 -- model-predicted CL/F ratio at low vs high albumin
 #> [1] 8.597378
 ```
 
@@ -361,8 +361,8 @@ The paper does not report a tabulated NCA. The two published quantities
 that can be cross-checked against the simulation are the median observed
 TSC (4.90 mg/L, Table 1) and the trough-band distribution (68.2 / 16.2 /
 15.6%, Section 3.1). The trough-band distribution above qualitatively
-matches the published one — the population is heavily skewed below the 8
-mg/L target — but the simulated median is somewhat lower (~3.1 vs 4.9
+matches the published one – the population is heavily skewed below the 8
+mg/L target – but the simulated median is somewhat lower (~3.1 vs 4.9
 mg/L). This residual discrepancy is consistent with two real-world
 features the simulation does not include:
 

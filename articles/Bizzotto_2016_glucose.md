@@ -30,30 +30,30 @@ This model was extracted from the DDMORE Foundation Model Repository
 bundle for `DDMODEL00000227` (scraped to
 `dpastoor/ddmore_scraping/227/`). The bundle contains:
 
-- `glucoseKinetics.mdl` — the human-readable MDL control object
+- `glucoseKinetics.mdl` – the human-readable MDL control object
   (`gu_v1_par` `STRUCTURAL` / `VARIABILITY` blocks for parameters,
   `gu_v1_mdl` `MODEL_PREDICTION` for equations).
-- `glucoseKinetics.xml` — PharmML rendering of the same MDL.
+- `glucoseKinetics.xml` – PharmML rendering of the same MDL.
 - `Executable_glucoseKinetics.mlxtran` and
-  `Executable_glucoseKinetics.txt` — Monolix 4.3.2 executable forms used
+  `Executable_glucoseKinetics.txt` – Monolix 4.3.2 executable forms used
   to drive the bundle’s simulation.
-- `Simulated_glucoseKinetics.csv` — the simulated dataset (123 virtual
+- `Simulated_glucoseKinetics.csv` – the simulated dataset (123 virtual
   subjects spread across five experimental tests: HGclamp, ISOclamp,
   OGTT/clamp, MTT, MTT/clamp). Each row carries the regressor columns
   `iins` / `iglu` (insulin / glucose at the current row time) and `insn`
   / `glun` / `td` / `tn` (next-row insulin / glucose / time, used by the
   bundle’s hand-rolled piecewise-linear interpolation in the
   `.mlxtran`).
-- `Output_simulated_glucoseKinetics.txt` — the simulated dataset
+- `Output_simulated_glucoseKinetics.txt` – the simulated dataset
   reformatted by Monolix.
-- `Output_real_glucoseKinetics.txt` — population summary from a re-fit
+- `Output_real_glucoseKinetics.txt` – population summary from a re-fit
   on the simulated dataset; flagged as meaningless for estimation in
   `Long_technical_model_description_glucoseKinetics.txt` because the
   simulation inputs collapse subject-level identity across paired tests.
 - `Long_technical_model_description_glucoseKinetics.txt`,
-  `Model_Accommodations.txt`, `DDMODEL00000227.rdf` — provenance and
+  `Model_Accommodations.txt`, `DDMODEL00000227.rdf` – provenance and
   scenario notes.
-- `glucoseKineticsPLOT.pdf` — the bundle-generated typical-value
+- `glucoseKineticsPLOT.pdf` – the bundle-generated typical-value
   trajectories per test, said to correspond to Figure 3 of the Bizzotto
   2016 publication.
 
@@ -393,8 +393,8 @@ ggplot(clamp_long, aes(time, value)) +
 The site-of-action quantities `Z` and `X` track the regressors with the
 model’s smoothing-filter delays; tracer concentration `G` declines as
 insulin and glucose at the site of action push Vmax up and clearance
-with it. This is the qualitative phenomenon that motivated the model —
-hyperglycemia attenuates the hyperinsulinemia-driven glucose clearance —
+with it. This is the qualitative phenomenon that motivated the model –
+hyperglycemia attenuates the hyperinsulinemia-driven glucose clearance –
 captured here as the final phase of `G`’s trajectory plateauing rather
 than continuing to rise with the infusion.
 
@@ -411,7 +411,7 @@ cloud brackets the deterministic trajectory.
 The `Simulated_glucoseKinetics.csv` is **not** redistributed in this
 package (the bundle’s CSV uses a non-standard column convention
 `iins / iglu / insn / glun / td / tn` which the packaged model does not
-consume directly — the packaged model uses `INS` / `GLU` with linear
+consume directly – the packaged model uses `INS` / `GLU` with linear
 interpolation declared in
 [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html) via
 `linear(INS, GLU)`). Users who want to reproduce the bundle’s simulated
@@ -446,7 +446,7 @@ columns, and pass the result to
   - T1) \* (INS - INS1) + INS1`, with the bracketing columns`iins / insn
     / iglu / glun / td /
     tn`carried in the dataset) to enforce linear interpolation regardless of the simulator's default. The packaged`rxode2`model uses the equivalent native declaration`linear(INS,
-    GLU)`in`model()`so only`INS`and`GLU`need to be supplied — the bracketing columns are not required. The two forms are mathematically equivalent at any simulation time provided that`INS`and`GLU\`
+    GLU)`in`model()`so only`INS`and`GLU`need to be supplied -- the bracketing columns are not required. The two forms are mathematically equivalent at any simulation time provided that`INS`and`GLU\`
     are supplied at every observation row.
 
 - **Bizzotto 2016 publication is not on disk.** The packaged model’s

@@ -52,7 +52,7 @@ the *Assumptions, deviations, and Errata* section below.
 | `libase` (baseline SLD, m) | `log(0.0713)` | `Output_real_SLD.lst` FINAL TH4 |
 | `addSd_tumorSize` (mm) | `18.4` | `Output_real_SLD.lst` FINAL TH5 |
 | `etalkg` | `1.72` | `Output_real_SLD.lst` FINAL OMEGA(1,1) |
-| `etalkd0_kd1` (shared) | `1.09` | `Output_real_SLD.lst` FINAL OMEGA(2,2) — shared by KD0 and KD1 per `$PK` block |
+| `etalkd0_kd1` (shared) | `1.09` | `Output_real_SLD.lst` FINAL OMEGA(2,2) – shared by KD0 and KD1 per `$PK` block |
 | `etalibase` | `0.515` | `Output_real_SLD.lst` FINAL OMEGA(3,3) |
 
 ## Virtual cohort and event table
@@ -65,7 +65,7 @@ representative of the publication’s clinical study; this vignette
 therefore builds a small virtual cohort that mimics the trial regimen at
 the structural level and lets the model generate the trajectories.
 
-- 6 chemotherapy cycles, 21 days apart (`Q3W` carboplatin pacing — the
+- 6 chemotherapy cycles, 21 days apart (`Q3W` carboplatin pacing – the
   standard advanced-ovarian-cancer regimen referenced by the DDMORE
   bundle).
 - Two equally-allocated arms: carboplatin monotherapy (`AUC_GEM = 0`)
@@ -204,12 +204,12 @@ The expected qualitative pattern holds:
   `kg * tumorSize` takes over, producing exponential regrowth. This
   matches the model’s structural assumption of no resistance.
 - **Initial value tracks `IBASE * 1000`.** At time 0 the trajectory
-  begins at `exp(libase) * 1000` ≈ 71 mm, exactly the published
+  begins at `exp(libase) * 1000` ~= 71 mm, exactly the published
   baseline-SLD scale.
 
 ## Stochastic simulation (between-subject variability)
 
-Including the model’s IIV (typical of the source dataset’s variability —
+Including the model’s IIV (typical of the source dataset’s variability –
 `etalkg ~ 1.72`, `etalkd0_kd1 ~ 1.09`, `etalibase ~ 0.515`) shows the
 population spread of trajectories. The shared `etalkd0_kd1` introduces
 strong correlation between an individual’s response to carboplatin and
@@ -248,7 +248,7 @@ ggplot(iiv_summary, aes(time, Q50, colour = arm, fill = arm)) +
 
 ![](Zecchin_2016_tumorovarian_files/figure-html/simulate-iiv-1.png)
 
-The 5th-95th percentile bands are wide — consistent with the very large
+The 5th-95th percentile bands are wide – consistent with the very large
 between-subject variability the source NONMEM run reports (CV on KG \>
 200% on the lognormal scale, with ETA-shrinkage of 55% on KG and 28% on
 KD; see *Assumptions and deviations* below for context).
@@ -307,11 +307,12 @@ trajectory). {.table}
 
 The validation strategy for this DDMORE-source extraction is
 **mechanistic_sanity** (per the per-task validation flag
-`validation:mechanistic_sanity`). Per `references/ddmore-source.md` §
-*Validation strategy by model type*, the relevant checklist is
-`verification-checklist.md` § F.3 (count / hazard / typical-trajectory)
-plus the F.2 self-consistency substitute, since the linked Zecchin 2016
-publication was not directly on disk for this extraction:
+`validation:mechanistic_sanity`). Per `references/ddmore-source.md`
+Section *Validation strategy by model type*, the relevant checklist is
+`verification-checklist.md` Section F.3 (count / hazard /
+typical-trajectory) plus the F.2 self-consistency substitute, since the
+linked Zecchin 2016 publication was not directly on disk for this
+extraction:
 
 - **F.3 typical-value mechanistic check.** The deterministic SLD
   trajectory matches the model’s mechanism (decline during treatment,
@@ -354,7 +355,7 @@ was not on disk for this extraction.
   `MINIMIZATION SUCCESSFUL` but adds
   `HOWEVER, PROBLEMS OCCURRED WITH THE MINIMIZATION. REGARD THE RESULTS OF THE ESTIMATION STEP CAREFULLY, AND ACCEPT THEM ONLY AFTER CHECKING THAT THE COVARIANCE STEP PRODUCES REASONABLE OUTPUT.`
   The reported correlation matrix shows THETA-THETA correlations near
-  `±0.98-1.00`, indicating near-non-identifiability of the structural
+  `+/-0.98-1.00`, indicating near-non-identifiability of the structural
   parameters. ETA-shrinkage on KG is `55.3%` and on the shared KD eta is
   `28.2%`. This is consistent with a small-N (336 patients),
   short-follow-up SLD model trying to estimate three structural

@@ -55,7 +55,7 @@ Per-parameter origins are recorded as in-file comments next to each
 them in one place; every value comes from the
 `Output_real_Pimasertib_AeDropout.lst` `FINAL PARAMETER ESTIMATE` block
 (TH 1..18; OMEGA ETA1 / ETA2). The .lst was produced by
-`$ESTIMATION METHOD=1 MAXEVALS=0 LIKE LAPLACE` — a Laplacian evaluation
+`$ESTIMATION METHOD=1 MAXEVALS=0 LIKE LAPLACE` – a Laplacian evaluation
 run, not an estimation, so the listing’s `FINAL PARAMETER ESTIMATE`
 echoes the .mod’s `$THETA` / `$OMEGA` slots verbatim. The DDMORE
 convention is that the .mod carries the publication’s **final**
@@ -75,9 +75,9 @@ estimates as its initial values.
 | (omitted) | `THETA(10)` EMAX2 FIX 0 | TH 10 = 0 | source IF(PREVSCOR.GE.3) branch is `;`-commented out |
 | `led50` (7.69) | `THETA(11)` LNED50 | TH 11 = 7.69E+00 | log ED50 (K-PD exposure units) |
 | (omitted) | `THETA(12)` CL exponent FIX 0 | TH 12 = 0 | source `(CL_IND/39.4)^THETA(12)` term collapses to 1 |
-| `e_hypert_logit` (0.539) | `THETA(13)` Cov11_MHHY | TH 13 = 5.39E-01 | logit shift, MHHY → HYPERT |
-| `e_regi_bid_logit` (-0.399) | `THETA(14)` Cov13_BID | TH 14 = -3.99E-01 | logit shift, BID → REGI_BID |
-| `e_cmax_m1_logit` (0.000902) | `THETA(15)` COV17_CMAXM1 | TH 15 = 9.02E-04 | logit shift / (ng/mL), CMAXM1 → CMAX_M1 |
+| `e_hypert_logit` (0.539) | `THETA(13)` Cov11_MHHY | TH 13 = 5.39E-01 | logit shift, MHHY -\> HYPERT |
+| `e_regi_bid_logit` (-0.399) | `THETA(14)` Cov13_BID | TH 14 = -3.99E-01 | logit shift, BID -\> REGI_BID |
+| `e_cmax_m1_logit` (0.000902) | `THETA(15)` COV17_CMAXM1 | TH 15 = 9.02E-04 | logit shift / (ng/mL), CMAXM1 -\> CMAX_M1 |
 | `llambda` (-3.32) | `THETA(16)` LNLAMBDA | TH 16 = -3.32E+00 | log Weibull baseline-hazard scale |
 | `lalpha` (0.232) | `THETA(17)` LNALPHA | TH 17 = 2.32E-01 | log Weibull shape |
 | `e_dose_haz` (0.00416) | `THETA(18)` BETA1 | TH 18 = 4.16E-03 | linear coefficient on DOSE in `exp(beta * DOSE)` hazard multiplier |
@@ -104,30 +104,31 @@ and `etalogit = 0`), the model says:
 - The K-PD exposure proxy `central` is dosed with the per-week
   pimasertib AUC (`AMT` column in the source dataset is the AUC, not a
   mass dose) and decays at rate `kel = exp(lkel) = 2.33` /week
-  (half-life ≈ 0.298 week ≈ 2.1 days).
+  (half-life ~= 0.298 week ~= 2.1 days).
 - The instantaneous AE-score logit thresholds at the first observation
   are `aa1 = b01 + eff` and `aa2 = b01 + b02 + eff`, where
   `eff = emax0 * expo / (expo + exp(led50))` is the sigmoidal Emax
   effect of the K-PD exposure on the logit. With `b01 = -6.12` and
   `emax0 = 4.04`, the asymptotic high-exposure logit limit is
-  `aa1 = -6.12 + 4.04 = -2.08`, so `P(AE >= 1) -> expit(-2.08) ≈ 0.111`.
+  `aa1 = -6.12 + 4.04 = -2.08`, so
+  `P(AE >= 1) -> expit(-2.08) ~= 0.111`.
 - The dropout sub-model is a Weibull baseline hazard
   `h(t) = lambda * alpha * t^(alpha-1) * exp(beta * DOSE)` integrated
   into the cumulative-hazard state `cumhaz`. With
   `lambda = exp(-3.32) = 0.0362` and `alpha = exp(0.232) = 1.261`
   (slightly increasing hazard), and `beta = 0.00416` /mg, the cumulative
   hazard at week 12 for a 60 mg/day patient is
-  `0.0362 * 12^1.261 * exp(0.00416 * 60) = 0.0362 * 21.7 * 1.284 ≈ 1.01`,
+  `0.0362 * 12^1.261 * exp(0.00416 * 60) = 0.0362 * 21.7 * 1.284 ~= 1.01`,
   giving a typical-value 12-week dropout probability
-  `1 - exp(-1.01) ≈ 0.636`.
+  `1 - exp(-1.01) ~= 0.636`.
 
 ## Virtual cohort (typical-value, single subject)
 
 For the F.3 mechanistic-sanity check we simulate a single typical
 patient over the 12-week horizon. The K-PD exposure compartment is dosed
-weekly with a representative AUC value (`AMT = 20000` ng·h/mL — close to
-the per-week AUC the bundled simulated dataset records for ID = 1 on the
-90 mg/day cohort).
+weekly with a representative AUC value (`AMT = 20000` ng\*h/mL – close
+to the per-week AUC the bundled simulated dataset records for ID = 1 on
+the 90 mg/day cohort).
 
 ``` r
 
@@ -178,12 +179,12 @@ ggplot(prob_long, aes(time, prob, colour = category)) +
 ![](Girard_2012_pimasertib_files/figure-html/prob-trajectory-1.png)
 
 The probability of any AE (P1 + P2) oscillates with the weekly dose
-pulse — at the time of dose the K-PD exposure spikes to 20000 + the
+pulse – at the time of dose the K-PD exposure spikes to 20000 + the
 residual, and the EFF term saturates close to `emax0 = 4.04` (since
-`exp(led50) ≈ 2188 << 20000`); between doses the exposure decays toward
+`exp(led50) ~= 2188 << 20000`); between doses the exposure decays toward
 zero and EFF collapses. The asymptotic between-dose (long after a single
 20000 dose) probability of any AE is
-`1 - expit(b01) = 1 - expit(-6.12) ≈ 0.0022`.
+`1 - expit(b01) = 1 - expit(-6.12) ~= 0.0022`.
 
 ### F.3 mechanistic-sanity check: cumulative-hazard / survival reproduction
 
@@ -446,7 +447,7 @@ not on the Weibull hazard.
   express that joint multi-DVID categorical-plus-TTE likelihood. The
   model file therefore declares the observation as a plain Poisson on
   the typical-value expected ordinal score `0*P0 + 1*P1 + 2*P2`
-  (`aescore ~ pois(expected_aescore)`) — purely a placeholder that lets
+  (`aescore ~ pois(expected_aescore)`) – purely a placeholder that lets
   the model parse and that drives F.3 mechanistic-sanity simulation.
   **The placeholder Poisson is not a valid likelihood for re-fitting the
   original Girard 2012 dataset.** The full structural equations (`p0`,
@@ -500,12 +501,12 @@ not on the Weibull hazard.
 - **Three documented
   [`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
   warnings.** (a) `etalogit` has no matching fixed-effect parameter
-  `logit` — by construction, the IIV is a shared additive shift across
+  `logit` – by construction, the IIV is a shared additive shift across
   both cumulative-logit thresholds and across all FPS strata; no single
   fixed-effect counterpart exists. (b) `aescore` is the single
-  observation variable, not `Cc` — the model’s observation is an
+  observation variable, not `Cc` – the model’s observation is an
   expected ordinal AE score, not a concentration. (c)
-  `units$concentration` does not contain `/` — same root cause as the
+  `units$concentration` does not contain `/` – same root cause as the
   K-PD AUC dosing convention. All three are justified deviations for a
   non-PK Markov / TTE DDMORE-source model.
 - **`cumhaz` registered as a canonical compartment.** Added to

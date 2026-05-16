@@ -396,7 +396,7 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
-#>  ■■■■■■■■■■■■■■■■■■■               60% |  ETA:  2s
+#>  ■■■■■■■■■■                        30% |  ETA:  3s
 knitr::kable(
   summary(nca_res),
   caption = "Simulated NCA parameters at steady state (12th dosing interval)"
