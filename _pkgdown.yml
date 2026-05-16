@@ -474,6 +474,8 @@ navbar:
         href: articles/Quartino_2016_trastuzumab.html
       - text: "Trastuzumab (Quartino 2019)"
         href: articles/Quartino_2019_trastuzumab.html
+      - text: "Trastuzumab skbr3 (FehlingKaschek 2019)"
+        href: articles/FehlingKaschek_2019_trastuzumab_skbr3.html
       - text: "TrastuzumabDeruxtecan (Yin 2021)"
         href: articles/Yin_2021_trastuzumabDeruxtecan.html
       - text: "Trastuzumabemtansine (Lu 2014)"
@@ -508,8 +510,6 @@ navbar:
         href: articles/Huang_2017_vrc01.html
       - text: "VRC07523LS (Huynh 2026)"
         href: articles/Huynh_2026_VRC07523LS.html
-      - text: "Warfarin (Xia 2024)"
-        href: articles/Xia_2024_warfarin.html
       - text: "Zenocutuzumab (deVriesSchultink 2020)"
         href: articles/deVriesSchultink_2020_zenocutuzumab.html
       - text: "Zolbetuximab (Yamada 2025)"
@@ -741,6 +741,7 @@ articles:
   - articles/Farrell_2012_farletuzumab
   - articles/Fasanmade_2009_infliximab
   - articles/Fau_2020_isatuximab
+  - articles/FehlingKaschek_2019_trastuzumab_skbr3
   - articles/Ferron_2013_cabazitaxel
   - articles/Fiedler-Kelly_2019_fremanezumab
   - articles/FiedlerKelly_2020_fremanezumab_cm
