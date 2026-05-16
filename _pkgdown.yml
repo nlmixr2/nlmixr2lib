@@ -502,6 +502,8 @@ navbar:
         href: articles/Lu_2015_vismodegib.html
       - text: "Voriconazole (Akbar 2025)"
         href: articles/Akbar_2025_voriconazole.html
+      - text: "Voriconazole (Chen 2015)"
+        href: articles/Chen_2015_voriconazole.html
       - text: "Vrc01 (Huang 2017)"
         href: articles/Huang_2017_vrc01.html
       - text: "VRC07523LS (Huynh 2026)"
@@ -701,6 +703,7 @@ articles:
   - articles/CarlssonPetri_2021_liraglutide
   - articles/Castro-Surez_2020_nimotuzumab
   - articles/Chakraborty_2012_canakinumab
+  - articles/Chen_2015_voriconazole
   - articles/Chen_2020_luspatercept
   - articles/Chen_2021_ganciclovir
   - articles/Chen_2022_guselkumab

@@ -372,6 +372,16 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Yamada_2025_zolbetuximab.R` (mg/dL, reference 0.38; small positive exponent 0.0347 on V1), `NA_NA_lidocaine.R` (mg/dL, source column `BIL`; binary effect at threshold 0.53 mg/dL on the GX elimination rate constant K30), `Urien_2005_capecitabine.R` (umol/L, reference 8.8; source column `BILT`; positive exponent +0.32 on capecitabine non-transformation CL10 and negative exponent -0.36 on the 5'-DFUR -> 5-FU rate constant K34).
 - **Notes:** Hepatic-function marker. Unit varies by paper (US convention mg/dL, SI convention umol/L; 1 mg/dL ~= 17.1 umol/L). The per-model `covariateData[[TBILI]]$units` field is load-bearing.
 
+### DBIL (**canonical for direct (conjugated) bilirubin**)
+- **Description:** Direct (conjugated) serum bilirubin concentration. Distinct from `TBILI`: direct bilirubin is the water-soluble glucuronide-conjugated fraction processed by hepatocytes and excreted in bile, so a rise in DBIL specifically flags impaired biliary excretion / cholestasis or intrahepatic shunting, whereas total bilirubin also captures unconjugated (indirect) hyperbilirubinaemia from haemolysis or Gilbert-type conjugation defects.
+- **Units:** mg/dL or umol/L -- document the unit used in each model via `covariateData[[DBIL]]$units`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- used with power scaling `(DBIL / ref)^exponent`. Reference values observed: 2.6 umol/L (Chen 2015 voriconazole Chinese ICU cohort population median).
+- **Source aliases:** none known.
+- **Example models:** `Chen_2015_voriconazole.R` (umol/L, reference 2.6; negative exponent -0.40 on CL: `CL = TVCL * (DBIL / 2.6)^-0.40`).
+- **Notes:** Hepatic-function / cholestasis-specific marker. Unit varies by paper (US convention mg/dL, SI convention umol/L; 1 mg/dL ~= 17.1 umol/L). Distinct entry from `TBILI` because direct vs total are not interchangeable: total = direct + indirect, and the two fractions track different pathophysiologic processes. Scope kept `specific` pending a second model that ratifies DBIL with consistent semantics; promote to `general` once corroborated.
+
 ### AST (**canonical for aspartate aminotransferase**)
 - **Description:** Serum aspartate aminotransferase activity (baseline or time-varying).
 - **Units:** U/L (IU/L; the two labels are used interchangeably in the clinical-PK literature). Document per-model via `covariateData[[AST]]$units`.
