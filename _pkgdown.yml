@@ -466,6 +466,8 @@ navbar:
         href: articles/Prytula_2016_tacrolimus.html
       - text: "Tacrolimus (Storset 2014)"
         href: articles/Storset_2014_tacrolimus.html
+      - text: "Tacrolimus (Woillard 2011)"
+        href: articles/Woillard_2011_tacrolimus.html
       - text: "Tefibazumab (Cao 2013)"
         href: articles/Cao_2013_tefibazumab.html
       - text: "Theophylline (Rovei 1982)"
@@ -983,6 +985,7 @@ articles:
   - articles/Wang_2024_sugemalimab
   - articles/Wilbaux_2015_prostate
   - articles/Wilkins_2008_rifampicin
+  - articles/Woillard_2011_tacrolimus
   - articles/Wojciechowski_2022_domagrozumab
   - articles/Wu_2012_sirolimus
   - articles/Wu_2024_inotuzumab
