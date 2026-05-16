@@ -226,6 +226,8 @@ navbar:
         href: articles/Ayyar_2024_givosiran.html
       - text: "Glibenclamide (Rambiritch 2016)"
         href: articles/Rambiritch_2016_glibenclamide.html
+      - text: "Glucarpidase (Kimura 2023)"
+        href: articles/Kimura_2023_glucarpidase.html
       - text: "GNbAC1 (Cao 2013)"
         href: articles/Cao_2013_GNbAC1.html
       - text: "Guselkumab (Chen 2022)"
@@ -798,6 +800,7 @@ articles:
   - articles/Jonsson_2011_ethambutol
   - articles/Khan_2015_ciprofloxacin
   - articles/Kielbasa_2020_galcanezumab
+  - articles/Kimura_2023_glucarpidase
   - articles/Kirubakaran_2022_tacrolimus
   - articles/Kloft_2004_sibrotuzumab
   - articles/Knibbe_2009_morphine
