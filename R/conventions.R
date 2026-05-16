@@ -200,13 +200,10 @@
     # in rapid equilibrium with overlapping disposition (van Rongen 2016
     # Clin Pharmacokinet doi:10.1007/s40262-015-0357-0).
     "cysmer",
-    # Glucarpidase (CPG2), the bacterial carboxypeptidase G2 enzyme
-    # given as a rescue therapy after high-dose methotrexate (MTX). Not
-    # a metabolite of MTX but a co-administered perpetrator that
-    # enzymatically hydrolyzes the substrate; the suffix marks the
-    # non-parent species in 2-drug PK/PD models (Kimura 2023
-    # doi:10.21873/anticanres.16351).
-    "cpg2"
+    # Dapagliflozin 3-O-glucuronide (D3OG, identified as M15 in
+    # chromatography), the major inactive UGT1A9 glucuronide metabolite
+    # of dapagliflozin (van der Walt 2013 CPT:PSP doi:10.1038/psp.2013.20).
+    "d3og"
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` denotes the time-varying decay arm.

@@ -152,8 +152,8 @@ navbar:
         href: articles/Diao_2016_daclizumab_cd56bright.html
       - text: "Daclizumab treg (Diao 2016)"
         href: articles/Diao_2016_daclizumab_treg.html
-      - text: "Daratumumab (Xu 2020)"
-        href: articles/Xu_2020_daratumumab.html
+      - text: "Dapagliflozin (vanderWalt 2013)"
+        href: articles/vanderWalt_2013_dapagliflozin.html
       - text: "Datopotamab (Hong 2025)"
         href: articles/Hong_2025_datopotamab.html
       - text: "Daunorubicin (Varatharajan 2016)"
@@ -1028,5 +1028,6 @@ articles:
   - articles/vanRongen_2016_acetaminophen
   - articles/vanRongen_2018_midazolam
   - articles/vanWijk_2019_paracetamol
+  - articles/vanderWalt_2013_dapagliflozin
   internal: true
 # AUTOGEN:articles:END
