@@ -1849,6 +1849,16 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Diep_2026_donidalorsen.R` (linear `(1 + theta * DIS_HAE)` multiplicative effects on apparent central volume Vc/F (theta = +0.426, +42.6%), apparent intercompartmental clearance Q/F (theta = -0.261, -26.1%), baseline plasma prekallikrein BL (theta = -0.132, -13.2%), and donidalorsen IC50 on PKK production (theta = +0.770, +77.0%) for patients with HAE vs healthy volunteers).
 - **Notes:** Used when a population PK/PD model pools HAE patients with healthy volunteers and HAE disease status is retained as a covariate. The three molecular HAE subtypes (HAE-C1INH-Type1, HAE-C1INH-Type2, HAE-nC1INH) are pooled in this indicator following the Diep 2026 analysis; if a future paper resolves subtype-specific covariate effects, separate canonical indicators (e.g., `DIS_HAE_C1INH_T1`) can be added without conflicting with this pooled indicator. Scope: specific because the complement reference category is paper-defined.
 
+### DIS_PBC (**canonical for primary biliary cirrhosis disease-state indicator**)
+- **Description:** 1 = patient with primary biliary cirrhosis (PBC), an autoimmune destruction of intrahepatic bile ducts causing chronic cholestasis; 0 = non-PBC subject (healthy reference cohort or other non-PBC reference). Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-PBC subject; complement reference is paper-defined -- for Zuo 2016 the reference is the pooled healthy-adult cohort from Xiang 2011 / Dilger 2012 / Hess 2004).
+- **Source aliases:** paper narrative "patient with PBC" / "healthy" subgroup labels in Zuo 2016.
+- **Example models:** `Zuo_2016_UDCA.R` (multiplicative scaling on liver-to-biliary rate constants when DIS_PBC = 1: K_LB,0 scaled by 0.10 -- 90% reduction; K_LB,1 scaled by 0.30 -- 70% reduction; K_LB,2 scaled by 0.10 -- 90% reduction; reproduces the Zuo 2016 Figure 3 PBC simulation).
+- **Notes:** Used when a systems / popPK model adapts a healthy-state structural model to a PBC population via fixed disease-state scaling on hepatic-excretion rate constants. Scope: specific because the structural adaptation form (which K parameters are scaled, by how much) is paper-defined; future PBC extractions that re-estimate or alter the scaling pattern can extend the example-models list. Distinct from `DIS_HEPATIMP` (hepatic-impairment severity categorical), `DBIL` (direct bilirubin biomarker), and `ALP` (cholestasis biomarker), which describe pathophysiology rather than the disease label itself.
+
 ### DIS_DMD (**canonical for Duchenne muscular dystrophy patient indicator**)
 - **Description:** 1 = patient with Duchenne muscular dystrophy (DMD), 0 = non-DMD subject (healthy volunteer or other reference cohort). Time-fixed per subject.
 - **Units:** (binary)
@@ -3579,6 +3589,36 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
   - `BID` -- used in `Girard_2012_pimasertib.R`.
 - **Example models:** `Girard_2012_pimasertib.R` (additive shift on the cumulative-logit AE-score model: `theta_bid * REGI_BID`; -0.399 logit units for BID vs QD).
 - **Notes:** Specific scope because the QD-vs-BID contrast is study-specific; future regimen-comparison models that contrast different schedules should either extend this entry's example list (when QD is the reference) or register a sibling indicator (`REGI_TID`, `REGI_QW`) following the same pattern. Distinct from `DOSE` (dose level in mg) and from total-daily-dose aggregates: a 60 mg/day cohort can include either a 60 mg QD subgroup or a 30 mg BID subgroup, and both share the same `DOSE = 60` while differing in `REGI_BID`.
+
+### MEAL_FLAG (**canonical for intra-day meal-window indicator (time-varying)**)
+- **Description:** 1 = the current observation time falls within a meal window (typically lunch or dinner, ~1 hour duration each); 0 = no meal-driven physiological perturbation active. Distinct from `FED` (per-dose-record fed-vs-fasted indicator): MEAL_FLAG is a time-varying intra-day flag that switches on at meal onset, stays on through the meal duration, and switches off afterward. Used by enterohepatic-recirculation / gallbladder-contraction models that need to scale post-prandial transport rate constants for the duration of a meal.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no meal effect active at this time).
+- **Source aliases:** paper narrative "meal effect on K_BI" / "post-prandial gallbladder contraction" in Zuo 2016.
+- **Example models:** `Zuo_2016_UDCA.R` (multiplies the biliary-to-intestine rate constants K_BI,0/1/2 by E_meal = 35.33 during meal windows to simulate gallbladder contraction; two meals modelled per day, lunch at +4 h and dinner at +10 h after the morning dose, each 1 hour long).
+- **Notes:** Specific scope because the operational definition (meal duration, schedule, magnitude of the rate-constant scaling) is paper-defined. Time-varying: must be supplied at every observation row in the event dataset. Pair with `SNACK_FLAG` for studies that distinguish meal and snack effects. Distinct from `FED` and `FED_HIGHFAT` (per-dose-record meal-state indicators tied to a single dosing event); MEAL_FLAG is decoupled from any specific dose record and instead drives ongoing physiology over a multi-hour window.
+
+### SNACK_FLAG (**canonical for intra-day snack-window indicator (time-varying)**)
+- **Description:** 1 = the current observation time falls within a snack window (typically 0.5 hour duration, a smaller perturbation than a meal); 0 = no snack-driven physiological perturbation active. Used in tandem with `MEAL_FLAG` by enterohepatic-recirculation / gallbladder-contraction models that scale post-prandial transport rate constants with a smaller magnitude for snacks than for full meals.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no snack effect active at this time).
+- **Source aliases:** paper narrative "snack effect on K_BI" in Zuo 2016.
+- **Example models:** `Zuo_2016_UDCA.R` (multiplies the biliary-to-intestine rate constants K_BI,0/1/2 by E_snack = 9.53 during snack windows; one snack modelled per day at +7 h after the morning dose in the Xiang 2011 single-dose study, 0.5 hour long).
+- **Notes:** Specific scope; same per-paper-defined operational definition as `MEAL_FLAG`. Time-varying.
+
+### FRACABS (**canonical for dose-record fractional absorption supplied as a data column**)
+- **Description:** Per-dose-record fractional absorption (0-1) supplied as a covariate when the source paper reports F as a dose-dependent function rather than as a single estimable bioavailability parameter. The model wires the covariate into a bioavailability hook (`f(<depot>) <- FRACABS`); the user supplies the per-dose F value derived from the paper's regression / lookup table.
+- **Units:** fraction
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a (continuous covariate).
+- **Source aliases:** paper narrative "F = 0.66 at 150 mg" / "F = 0.31 at 1000 mg" / Walker 1992 / Crosignani 1991 / Dilger 2012 reported absorption values in Zuo 2016.
+- **Example models:** `Zuo_2016_UDCA.R` (dose-dependent fractional absorption derived from a log-dose linear regression: F = 0.66 at 150 mg and F = 0.31 at 1000 mg, with R^2 = 0.99 over 200-2000 mg per the paper; combined with the UDCA molecular-weight conversion in the bioavailability hook `f(stomach_udca) <- FRACABS / mw_udca`).
+- **Notes:** Specific scope because the operational definition (which doses get which F value; whether F is treated as a known input or as a parameter to be re-estimated) is paper-defined. Distinct from `lfdepot` / `f(depot)` in models where bioavailability is an estimable PK parameter rather than a supplied covariate. When the paper's F regression is itself a function of `DOSE`, the user can derive FRACABS from the DOSE column upstream of `rxSolve` rather than carrying the regression inside `model()`.
 
 ### FED (**canonical for fed-vs-fasted dose-record indicator**)
 - **Description:** 1 = fed state at dosing, 0 = fasted.

@@ -546,6 +546,8 @@ navbar:
         href: articles/Grimm_2023.html
       - text: "Tusamitamab (Pouzin 2022)"
         href: articles/Pouzin_2022_tusamitamab.html
+      - text: "UDCA (Zuo 2016)"
+        href: articles/Zuo_2016_UDCA.html
       - text: "Ustekinumab (Aguiar 2021)"
         href: articles/Aguiar_2021_ustekinumab.html
       - text: "Valganciclovir (Vezina 2010)"
@@ -1061,6 +1063,7 @@ articles:
   - articles/Zhou_2025_brentuximab
   - articles/Zhu_2017_lebrikizumab
   - articles/Zierhut_2008_osteoprotegerin
+  - articles/Zuo_2016_UDCA
   - articles/Zurlinden_2016_paracetamol
   internal: true
 # AUTOGEN:articles:END
