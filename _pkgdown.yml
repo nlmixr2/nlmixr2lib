@@ -186,6 +186,8 @@ navbar:
         href: articles/Ide_2020_elotuzumab.html
       - text: "Eplontersen (Diep 2022)"
         href: articles/Diep_2022_eplontersen.html
+      - text: "Eribulin (vanHasselt 2015)"
+        href: articles/vanHasselt_2015_eribulin.html
       - text: "Etrolizumab (Moein 2022)"
         href: articles/Moein_2022_etrolizumab.html
       - text: "Everolimus (deWit 2016)"
@@ -1023,5 +1025,11 @@ articles:
   - articles/Zhu_2017_lebrikizumab
   - articles/Zierhut_2008_osteoprotegerin
   - articles/Zurlinden_2016_paracetamol
+  - articles/deHoogd_2017_morphine
+  - articles/deVriesSchultink_2020_zenocutuzumab
+  - articles/vanHasselt_2015_eribulin
+  - articles/vanRongen_2016_acetaminophen
+  - articles/vanRongen_2018_midazolam
+  - articles/vanWijk_2019_paracetamol
   internal: true
 # AUTOGEN:articles:END

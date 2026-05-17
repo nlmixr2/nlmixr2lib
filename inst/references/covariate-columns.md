@@ -3289,6 +3289,28 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Moein_2022_etrolizumab.R` (multiplicative effect on CL, +18% vs. left-sided colitis; large uncertainty due to 2% prevalence).
 - **Notes:** Paired with `DISEXT_EP`; together they encode the three-level disease-extension categorical.
 
+### PRIOR_TAXANE (**canonical for binary prior-taxane chemotherapy indicator**)
+- **Description:** 1 = subject received any prior taxane regimen (docetaxel, paclitaxel, cabazitaxel, etc.) before study entry, 0 = taxane-naive. Time-invariant within a subject (records treatment history at baseline). Oncology-pretreatment indicator: relevant for cohorts in which prior taxane exposure plausibly alters disease biology (e.g., advanced / castration-resistant prostate cancer, where taxane pretreatment is associated with more advanced disease and selects for taxane-resistant clones).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (taxane-naive).
+- **Source aliases:**
+  - `PTAX` -- used in `vanHasselt_2015_eribulin.R` (van Hasselt 2015 paper notation; binary 0 / 1 for prior docetaxel pretreatment).
+- **Example models:** `vanHasselt_2015_eribulin.R` (multiplicative effect on baseline serum PSA: `psa0 = exp(lpsa0 + etalpsa0) * e_prior_taxane_psa0^PRIOR_TAXANE` with `e_prior_taxane_psa0 = 3.23` -- prior-taxane patients have ~3.2x higher baseline PSA than taxane-naive patients, consistent with more advanced disease at study entry).
+- **Notes:** Pairs with `PRIOR_TAXANE_DAYS` when a continuous duration-of-pretreatment is also relevant (e.g., van Hasselt 2015 uses both: PTAX on PSA0 and NTRT on KD). Distinct from `CONMED_*` (which is concomitant medication during the study, not pretreatment history) and from generic `PRIOR_*` chemotherapy indicators (which would warrant a separate canonical when a paper differentiates by drug class rather than collapsing to taxanes). Scope: specific because the population semantics (CRPC) and the "any prior taxane" pooling are tied to van Hasselt 2015; future papers that distinguish per-drug pretreatment (docetaxel vs paclitaxel vs cabazitaxel separately) should register parallel canonicals rather than overloading `PRIOR_TAXANE`.
+
+### PRIOR_TAXANE_DAYS (**canonical for cumulative days of prior taxane treatment**)
+- **Description:** Cumulative number of days of prior taxane chemotherapy at study entry. 0 for taxane-naive patients (i.e., for any subject with `PRIOR_TAXANE = 0`). Time-invariant within a subject (records the pretreatment history at baseline).
+- **Units:** days
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- normalised by a population reference value (van Hasselt 2015 uses the population median of 720 days among prior-taxane-pretreated patients) and entered as a power covariate `(1 + PRIOR_TAXANE_DAYS / 720) ^ e_prior_taxane_days_<param>`. The `+1` inside the bracket makes the covariate effect collapse to a multiplier of 1 for taxane-naive patients (PRIOR_TAXANE_DAYS = 0) regardless of the estimated exponent.
+- **Source aliases:**
+  - `NTRT` -- used in `vanHasselt_2015_eribulin.R` (van Hasselt 2015 paper notation; cumulative number of days of prior taxane treatment).
+- **Example models:** `vanHasselt_2015_eribulin.R` (van Hasselt 2015 Eq. 4 power covariate on drug PSA inhibition rate KD0: `kd0 = exp(lkd0 + etalkd0) * (1 + PRIOR_TAXANE_DAYS / 720)^e_prior_taxane_days_kd0` with `e_prior_taxane_days_kd0 = -4.00` -- KD0 decreases with longer prior-taxane exposure, encoding cross-resistance between docetaxel and eribulin via the shared microtubule-inhibition mechanism).
+- **Notes:** Pairs with `PRIOR_TAXANE` (binary). The paper also considered an alternative continuous parameterisation in cycles of prior taxane (`NCYCL`, median 30 cycles) which was deemed slightly less informative (dOFV = -8 for NCYCL vs -10 for NTRT) and was not retained in the final model. If a future model needs the cycle-count form, register a parallel canonical (e.g. `PRIOR_TAXANE_CYCLES`) rather than overloading this one. Scope: specific because the 720-day normalisation reference is tied to the van Hasselt 2015 study population (post-docetaxel mCRPC patients).
+
 ## Hypercholesterolemia biomarkers
 
 ### PCSK9 (**canonical for baseline unbound serum PCSK9 concentration**)

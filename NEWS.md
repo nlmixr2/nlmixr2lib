@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Sahota 2015 miridesap / CPHPC ([doi:10.1002/psp4.15](https://doi.org/10.1002/psp4.15)) -- healthy volunteers and patients with systemic amyloidosis (target-mediated drug disposition PK/PD model with covariate effects on clearance, SAP baseline, and SAP peripheral distribution).
+* Add van Hasselt 2015 eribulin ([doi:10.1002/psp4.49](https://doi.org/10.1002/psp4.49)) -- adults with metastatic castration-resistant prostate cancer (K-PD disease-progression model for PSA dynamics with drug-resistance development; ratifies new `PRIOR_TAXANE` and `PRIOR_TAXANE_DAYS` covariate canonicals).
 * Add Valitalo 2017 morphine ([doi:10.1002/psp4.12156](https://doi.org/10.1002/psp4.12156)) -- mechanically ventilated preterm neonates undergoing endotracheal suctioning (item response theory PD model with linear morphine concentration-effect and study-time effect on a latent pain variable; ratifies new `CP_MORPH_NGML`, `MOMENT`, `ITEM`, and `OBSTYPE` covariate canonicals) [DDMODEL00000247].
 * Add Yuan 2019 concizumab ([doi:10.1016/j.ejps.2019.105032](https://doi.org/10.1016/j.ejps.2019.105032)) -- healthy adult males receiving single-dose IV or SC concizumab (23-state systems PK/PD model with two nested endothelial endosome compartments for mTFPI-mediated TMDD and FcRn-recycled linear clearance of free and sTFPI-bound antibody).
 * Add Debord 2001 cyclosporin ([doi:10.2165/00003088-200140050-00004](https://doi.org/10.2165/00003088-200140050-00004)) -- stable renal transplant recipients receiving oral cyclosporin microemulsion (Neoral) 75-175 mg twice daily (gamma-distribution absorption convolved with two-compartment disposition; F fixed to 1).
