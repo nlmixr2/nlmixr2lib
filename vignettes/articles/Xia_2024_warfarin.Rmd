@@ -1,0 +1,419 @@
+---
+title: "Warfarin (Xia 2024)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Warfarin (Xia 2024)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>",
+                      fig.width = 7, fig.height = 4.5, dpi = 90)
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: Xia X, Cai X, Chen J, Jiang S, Zhang J. Construction of warfarin
+  population pharmacokinetics and pharmacodynamics model in Han population based
+  on Bayesian method. *Sci Rep* 2024;14:14894.
+* Article: <https://doi.org/10.1038/s41598-024-65048-7>
+* Supplementary information (open-access): linked from the article landing page;
+  Section 1 of the supplement contains the K-PD structural equations, the
+  random-effects and covariate models, and the simulation reference (Section
+  1.6).
+
+This is a K-PD warfarin PK/PD model built on the Hamberg structural backbone
+and re-fit to a Han Chinese cohort. Because the source dataset contains INR
+observations but no warfarin plasma concentrations, the PK component is fixed
+at the Hamberg literature values (CL per CYP2C9*1/*2/*3 allele, age effect on
+CL, V/F, Emax, the Hill coefficient gamma, the two transit-chain mean transit
+times MTT1 and MTT2, and the INR-scaling constant INRmax). The PD component
+(typical EC50 per VKORC1 -1639G / -1639A allele, the body-weight power
+exponent on EC50, the amiodarone effect on EC50, and the inter-individual
+variability on EC50) is re-estimated for the Han cohort.
+
+# Population
+
+* **646 subjects** with 5467 INR measurements pooled from Fujian Medical
+  University Union Hospital and 8 sub-central Chinese hospitals between March
+  2016 and October 2020 (Xia 2024 Table 1, total cohort column).
+* Modelling cohort n = 537 (subject IDs 115-1103); external-validation cohort
+  n = 109 (IDs 1-114).
+* Age range 1-82 years (mean +/- SD 54.7 +/- 12.5 y in the total cohort); body
+  weight 7-106 kg (mean 59.7 +/- 11.6 kg); body mass index 12.5-35.8 kg/m^2;
+  female 48.9%.
+* Genotype distribution in the total cohort: CYP2C9*1/*1 94.3%, *1/*3 5.7%; no
+  *2 carriers and no *3/*3 homozygotes. VKORC1 -1639 AA 80.3%, GA 18.7%,
+  GG 0.9% (G allele frequency ~10%, typical of East-Asian populations).
+* Baseline INR (pre-medication): mean 1.13 +/- 0.59.
+* Daily warfarin dose 0.625-6.25 mg, once daily; INR sampled mostly 7-10 h
+  after administration.
+* Indications include valvular heart disease, post-valve replacement,
+  non-valvular atrial fibrillation, and deep vein thrombosis.
+
+The same metadata is available programmatically via the model's `population`
+field after `devtools::load_all(".")`.
+
+```{r population-meta}
+mod_fn <- readModelDb("Xia_2024_warfarin")
+class(mod_fn)
+```
+
+# Source trace
+
+The per-parameter origin is recorded as an in-file comment next to each `ini()`
+entry in `inst/modeldb/specificDrugs/Xia_2024_warfarin.R`. The table below
+collects them in one place.
+
+| Equation / parameter   | Value           | Source location                                                  |
+|------------------------|-----------------|------------------------------------------------------------------|
+| `lcl_cyp2c9_s1`        | log(0.174) L/h  | Xia 2024 Table 3, fixed from Hamberg literature                  |
+| `lcl_cyp2c9_s2`        | log(0.0879) L/h | Xia 2024 Table 3, fixed                                          |
+| `lcl_cyp2c9_s3`        | log(0.0422) L/h | Xia 2024 Table 3, fixed                                          |
+| `e_age_cl`             | -0.00571 /y     | Xia 2024 Table 3 & supplement Eq 7, fixed (ref age 71 y)         |
+| `lvc`                  | log(14.3) L     | Xia 2024 Table 3, fixed                                          |
+| `lemax`                | log(1)          | Xia 2024 supplement Section 1.1, fixed at 1                      |
+| `lgamma`               | log(1.39)       | Xia 2024 Table 3, fixed                                          |
+| `lmtt1`                | log(27.2) h     | Xia 2024 Table 3, fixed                                          |
+| `lmtt2`                | log(110.9) h    | Xia 2024 Table 3, fixed                                          |
+| `linrmax`              | log(20)         | Xia 2024 Table 3 & supplement Section 1.1, fixed                 |
+| `lec50_vkorc1_g`       | log(4.3) mg/L   | Xia 2024 Table 3, estimated for Han cohort (RSE 16.3%)           |
+| `lec50_vkorc1_a`       | log(1.14) mg/L  | Xia 2024 Table 3, estimated for Han cohort (RSE 7.7%)            |
+| `e_wt_ec50`            | 1.34            | Xia 2024 Table 3, estimated (RSE 34.3%), ref 60 kg               |
+| `e_amio_ec50`          | -0.602          | Xia 2024 Table 3, estimated (RSE 46.7%); piecewise per Eq 9      |
+| `etalec50` (omega^2)   | 0.2712          | log(1 + 0.558^2); Xia 2024 Table 3 CV(EC50) = 55.8% (RSE 8.2%)   |
+| `propSd_INR`           | 0.365           | Xia 2024 Table 3, estimated (RSE 4.1%); supplement Eq 4          |
+| Effect ODE             | n/a             | Xia 2024 supplement Eq 1 (sigmoid Emax)                          |
+| Two transit chains     | n/a             | Xia 2024 supplement Section 1.1 paragraph 3; Hamberg structure   |
+| INR equation           | n/a             | Xia 2024 supplement Eq 2 (with INR_max fixed at 20)              |
+
+# Mechanistic structure
+
+The model is a K-PD model with two parallel three-compartment coagulation-factor
+transit chains driving INR.
+
+1. **K-PD elimination.** A single virtual administration compartment `depot`
+   receives the warfarin dose (mg); first-order elimination at rate KDE = CL/V
+   removes drug from `depot`. The drug-delivery rate at the effect site is
+   DR = `depot` * KDE.
+2. **Anticoagulant effect.** Sigmoid Emax inhibition of activated vitamin
+   K-dependent coagulation-factor formation:
+   E_anticoag = Emax * (DR / EDK50)^gamma / (1 + (DR / EDK50)^gamma),
+   where EDK50 = EC50 * CL. Equivalently, using the effective drug
+   concentration CDR = `depot` / V:
+   E_anticoag = Emax * CDR^gamma / (EC50^gamma + CDR^gamma).
+3. **Coagulation-factor transit chains.** Two parallel 3-compartment chains
+   (`coag_s1` to `coag_s3` for the fast pool with MTT1 = 27.2 h;
+   `coag_l1` to `coag_l3` for the slow pool with MTT2 = 110.9 h) describe the
+   indirect coagulation-factor turnover. Both chains receive input
+   (1 - E_anticoag) and approach 1 - E_anticoag at steady state. Following
+   Hamberg's convention, the transit rate constant is ktr = N / MTT where
+   N = 3 transit compartments per chain.
+4. **INR observation.** INR = INR_baseline + INR_max * (1 - (coag_s3 + coag_l3) / 2),
+   with INR_max fixed at 20 (so the maximum INR ascends to INR_baseline + 20
+   under complete anticoagulation, returning to INR_baseline when drug is
+   withdrawn and the coagulation factors recover).
+
+Covariate effects (Xia 2024 Table 3 and supplement Section 1.3):
+
+* **CL** = (CYP2C9*1*count * 0.174 + CYP2C9*2*count * 0.0879 + CYP2C9*3*count * 0.0422)
+  * [1 - 0.00571 * (AGE - 71)] L/h.
+* **Typical EC50** = VKORC1_1639G_COUNT * EC50_G + (2 - VKORC1_1639G_COUNT) * EC50_A
+  with EC50_G = 4.3 mg/L and EC50_A = 1.14 mg/L (re-estimated for the Han
+  cohort).
+* **EC50 covariate scaling** = (WT / 60)^1.34 * (1 + (-0.602) * CONMED_AMIO);
+  i.e. amiodarone reduces EC50 by ~60.2% (multiplicative piecewise per Eq 9).
+
+# Virtual cohort
+
+The mechanistic checks below use a single deterministic (typical-value, IIV
+zeroed) subject simulated under different covariate strata. The simulation
+covers a 60-day window so the slow coagulation chain (MTT2 ~ 4.6 days)
+relaxes well past five chain time constants.
+
+```{r make-cohort}
+make_warfarin_events <- function(dose_mg, days = 60,
+                                 wt = 60, age = 55,
+                                 cyp2c9_s1 = 2L, cyp2c9_s2 = 0L, cyp2c9_s3 = 0L,
+                                 vkorc1_g  = 0L, conmed_amio = 0L,
+                                 inr_base  = 1.13,
+                                 id        = 1L) {
+  dose_times <- seq(0, (days - 1) * 24, by = 24)
+  obs_times  <- seq(0, days * 24, by = 4)
+  data.frame(
+    ID    = id,
+    TIME  = c(dose_times, obs_times),
+    EVID  = c(rep(1L, length(dose_times)),  rep(0L, length(obs_times))),
+    AMT   = c(rep(dose_mg, length(dose_times)), rep(NA_real_, length(obs_times))),
+    CMT   = c(rep("depot", length(dose_times)), rep(NA_character_, length(obs_times))),
+    WT    = wt,
+    AGE   = age,
+    CYP2C9_S1_COUNT    = cyp2c9_s1,
+    CYP2C9_S2_COUNT    = cyp2c9_s2,
+    CYP2C9_S3_COUNT    = cyp2c9_s3,
+    VKORC1_1639G_COUNT = vkorc1_g,
+    CONMED_AMIO        = conmed_amio,
+    INR_BASE           = inr_base
+  ) |>
+    dplyr::arrange(TIME)
+}
+```
+
+# Simulation
+
+```{r simulate-baseline}
+mod <- readModelDb("Xia_2024_warfarin") |> rxode2::zeroRe()
+
+ev_typical <- make_warfarin_events(dose_mg = 2.5)
+sim_typical <- rxode2::rxSolve(mod, events = ev_typical,
+                               keep = c("WT", "AGE", "CYP2C9_S1_COUNT",
+                                        "CYP2C9_S2_COUNT", "CYP2C9_S3_COUNT",
+                                        "VKORC1_1639G_COUNT",
+                                        "CONMED_AMIO", "INR_BASE")) |>
+  as.data.frame()
+```
+
+# Replicate published reference: steady-state dose-INR mapping (supplement Section 1.6)
+
+Section 1.6 of the Xia 2024 supplement reports the once-daily warfarin doses
+that yield steady-state INR values of 2, 2.5, and 3 for a typical Han subject
+(CYP2C9*1/*1, VKORC1 AA, no amiodarone, 60 kg, 55 y) and for perturbations of
+each covariate. The chunk below replays those doses through the packaged model
+and reads the steady-state INR off the last 5 days of a 60-day daily-dosing
+simulation.
+
+```{r supplement-section16}
+ss_inr <- function(dose, days = 60, ...) {
+  ev <- make_warfarin_events(dose_mg = dose, days = days, ...)
+  sim <- rxode2::rxSolve(mod, events = ev) |> as.data.frame()
+  mean(sim$INR[sim$time > (days - 5) * 24], na.rm = TRUE)
+}
+
+scenarios <- tibble::tribble(
+  ~scenario,                            ~dose,  ~published_inr,
+  "Typical, dose for INR 2",            2.5,    2.0,
+  "Typical, dose for INR 2.5",          3.5,    2.5,
+  "Typical, dose for INR 3",            4.625,  3.0,
+  "CYP2C9*1/*3, dose for INR 2",        1.875,  2.0,
+  "CYP2C9*1/*3, dose for INR 2.5",      2.75,   2.5,
+  "CYP2C9*1/*3, dose for INR 3",        3.625,  3.0,
+  "Amiodarone co-med, dose for INR 2",  1.875,  2.0,
+  "Amiodarone co-med, dose for INR 2.5",2.625,  2.5,
+  "Amiodarone co-med, dose for INR 3",  3.5,    3.0,
+  "WT 80 kg, dose for INR 2",           3.5,    2.0,
+  "WT 80 kg, dose for INR 2.5",         5.125,  2.5,
+  "WT 80 kg, dose for INR 3",           6.625,  3.0,
+  "WT 40 kg, dose for INR 2",           1.5,    2.0,
+  "WT 40 kg, dose for INR 2.5",         2.125,  2.5,
+  "WT 40 kg, dose for INR 3",           2.875,  3.0,
+  "Age 70 y, dose for INR 2",           2.25,   2.0,
+  "Age 70 y, dose for INR 2.5",         3.25,   2.5,
+  "Age 70 y, dose for INR 3",           4.25,   3.0,
+  "Age 40 y, dose for INR 2",           2.625,  2.0,
+  "Age 40 y, dose for INR 2.5",         3.75,   2.5,
+  "Age 40 y, dose for INR 3",           5.0,    3.0
+)
+
+scenarios$simulated_inr <- mapply(function(scn, d) {
+  if (grepl("CYP2C9", scn)) ss_inr(d, cyp2c9_s1 = 1L, cyp2c9_s3 = 1L)
+  else if (grepl("Amiodarone", scn)) ss_inr(d, conmed_amio = 1L)
+  else if (grepl("WT 80", scn))      ss_inr(d, wt = 80)
+  else if (grepl("WT 40", scn))      ss_inr(d, wt = 40)
+  else if (grepl("Age 70", scn))     ss_inr(d, age = 70)
+  else if (grepl("Age 40", scn))     ss_inr(d, age = 40)
+  else                                ss_inr(d)
+}, scenarios$scenario, scenarios$dose)
+
+scenarios <- scenarios |>
+  mutate(percent_diff = 100 * (simulated_inr - published_inr) / published_inr)
+
+knitr::kable(scenarios, digits = 3,
+             caption = "Simulated vs Xia 2024 supplement Section 1.6 targets.")
+```
+
+The agreement is within ~10% across the 21 scenarios, well inside the
+~20% threshold the verification checklist recommends as the
+investigate-but-do-not-tune cutoff. A small consistent overshoot (the
+typical-subject prediction is 2.13 instead of 2.0 at 2.5 mg/d) is likely a
+combination of rounding in the supplement's reported doses and the fact that
+the supplement reads steady-state INR from a typical (deterministic) curve
+where the slow coagulation chain may not have reached full equilibrium.
+
+# Reproducing dose-titration trajectories (Xia 2024 Figure 2 family)
+
+Figure 2 of Xia 2024 reports the typical INR distribution at steady state vs
+warfarin dose for different covariate strata. The chunks below replay that
+analysis: typical subject, CYP2C9 *1/*3, amiodarone coadministration, and
+weight stratification.
+
+```{r figure2-strata}
+dose_grid <- seq(0.5, 7.5, by = 0.25)
+strata <- tibble::tribble(
+  ~stratum,        ~args,
+  "Typical",       list(),
+  "CYP2C9 *1/*3",  list(cyp2c9_s1 = 1L, cyp2c9_s3 = 1L),
+  "VKORC1 AG",     list(vkorc1_g  = 1L),
+  "VKORC1 GG",     list(vkorc1_g  = 2L),
+  "Amiodarone",    list(conmed_amio = 1L),
+  "WT 80 kg",      list(wt = 80),
+  "WT 40 kg",      list(wt = 40),
+  "Age 70 y",      list(age = 70),
+  "Age 40 y",      list(age = 40)
+)
+
+f2 <- purrr::map2_dfr(strata$stratum, strata$args, function(name, args) {
+  inr <- vapply(dose_grid, function(d)
+    do.call(ss_inr, c(list(dose = d, days = 60), args)),
+    numeric(1))
+  data.frame(stratum = name, dose = dose_grid, inr = inr)
+})
+```
+
+```{r figure2-plot, fig.width=7.5, fig.height=5}
+ggplot(f2, aes(x = dose, y = inr, colour = stratum)) +
+  geom_line(linewidth = 0.6) +
+  geom_hline(yintercept = c(2, 3), linetype = "dashed", alpha = 0.4) +
+  geom_hline(yintercept = 2.5, linetype = "dashed", alpha = 0.4, colour = "red") +
+  labs(x = "Daily warfarin dose (mg)",
+       y = "Steady-state INR (mean of days 56-60)",
+       title = "Steady-state INR vs daily warfarin dose by covariate stratum",
+       caption = "Reproduces the structure of Xia 2024 Figure 2; dashed lines mark INR = 2, 2.5, 3.",
+       colour = NULL)
+```
+
+The qualitative ordering matches Xia 2024 Figure 2: VKORC1 G-allele carriers
+need substantially higher doses to reach therapeutic INR; amiodarone
+coadministration lowers EC50, so a smaller dose achieves the same INR; heavier
+subjects need higher doses and lighter subjects need lower; older subjects
+have reduced CL and therefore need lower doses than younger subjects at the
+same target INR.
+
+# Mass-balance and ODE sanity checks
+
+Because the source paper does not report PK / NCA observations, the standard
+PKNCA gate is replaced with the steady-state and perturbation checks described
+in `references/endogenous-validation.md`.
+
+## Steady-state check (no drug)
+
+Without warfarin administration the K-PD model should hold the INR at the
+subject baseline indefinitely.
+
+```{r mass-balance-no-drug}
+ev_no_drug <- make_warfarin_events(dose_mg = 0)
+sim_no_drug <- rxode2::rxSolve(mod, events = ev_no_drug) |> as.data.frame()
+stopifnot(all.equal(range(sim_no_drug$INR), c(1.13, 1.13), tolerance = 1e-6))
+stopifnot(all.equal(range(sim_no_drug$coag_s3), c(1, 1), tolerance = 1e-6))
+stopifnot(all.equal(range(sim_no_drug$coag_l3), c(1, 1), tolerance = 1e-6))
+cat("No-drug steady state: INR holds at INR_BASE = 1.13; all coagulation",
+    "compartments hold at 1.\n")
+```
+
+## Withdrawal-recovery check
+
+Administer a 14-day daily dose, then stop and observe the return of INR to
+baseline.
+
+```{r withdrawal-recovery, fig.width=7.5, fig.height=4}
+days_total <- 60
+dose_days  <- 14
+ev_wd <- make_warfarin_events(dose_mg = 2.5, days = days_total) |>
+  dplyr::filter(!(EVID == 1 & TIME >= dose_days * 24))
+sim_wd <- rxode2::rxSolve(mod, events = ev_wd) |> as.data.frame()
+
+ggplot(sim_wd, aes(time / 24, INR)) +
+  geom_line() +
+  geom_hline(yintercept = 1.13, linetype = "dashed", colour = "grey60") +
+  geom_vline(xintercept = dose_days, linetype = "dotted", colour = "grey40") +
+  labs(x = "Time (days)", y = "INR",
+       title = "INR returns to baseline after warfarin is withdrawn",
+       caption = "Daily 2.5 mg dosing for the first 14 days; observation continues to day 60.")
+```
+
+The recovery half-life is dominated by the slow chain (MTT2 = 110.9 h ~ 4.6
+days); the chain has 3 transits, so full recovery to within 1% of baseline
+takes about 5 x MTT2 = 23 days after the last dose, consistent with the
+visual return to baseline by day ~35.
+
+## Dimensional check
+
+Units in each ODE term, walked once for review:
+
+* `depot` (mg) | `kde` (1/h) | `cl` (L/h) | `vc` (L) | `ec50` (mg/L)
+  | `cdr` (mg / L = concentration) | `e_anticoag` (unitless, 0 to 1)
+* `d/dt(depot)` = `kde * depot` ~ (1/h) * mg = mg/h. Correct.
+* `d/dt(coag_*)` = `ktr * (input - state)` ~ (1/h) * (unitless) = 1/h.
+  Correct (coag compartments are unitless fractional coagulation-factor
+  activity).
+* `INR` = `INR_BASE` (unitless) + `inrmax` (unitless) * (1 - average) ~
+  unitless. Correct.
+
+# Assumptions and deviations
+
+* **PK observations are absent in the source dataset.** All structural PK
+  parameters are reproduced from the Hamberg literature model as inline
+  constants in `ini()` wrapped in `fixed()`. The original Hamberg publication
+  is not on disk; Xia 2024 itself reports the inherited Hamberg values
+  numerically in Table 3, so the model file's values come directly from the
+  on-disk Xia 2024 paper rather than from training-data recall of the Hamberg
+  paper.
+* **Amiodarone effect encoding.** Xia 2024 supplement Section 1.3 Eq 9
+  describes the categorical-covariate model as a piecewise multiplicative
+  factor `P_TV * (1 + theta)`; the model file encodes the amiodarone effect
+  in that form (`(1 + e_amio_ec50 * CONMED_AMIO)`, with e_amio_ec50 = -0.602
+  giving a 60.2% multiplicative reduction in EC50). The main paper text
+  separately states the effect as a "0.602 mg/L absolute decrease" in EC50;
+  this prose is inconsistent with the supplement's multiplicative covariate
+  model and with the dimensionless RSE convention applied to the other
+  reported effects. The vignette uses the supplement specification because it
+  is the only fully specified mathematical equation.
+* **Transit-chain rate constant.** Xia 2024 supplement uses MTT for the
+  Hamberg coagulation-factor chain rate constants; the supplement prose is
+  ambiguous as to whether MTT is the per-compartment mean transit time or the
+  whole-chain mean transit time. The model uses the standard Hamberg
+  convention `ktr = N / MTT_total` with N = 3 transit compartments per chain.
+  The steady-state INR predictions agree with the supplement Section 1.6
+  reference doses within ~10% under this convention; the choice does not
+  affect steady-state predictions.
+* **Linear INR transduction.** The supplement INR equation is linear in
+  (1 - (coag_s3 + coag_l3) / 2). Hamberg's original publication contains an
+  additional exponent gamma_INR on this term; Xia 2024 reports only one
+  Hill-coefficient parameter (the gamma = 1.39 on the Emax sigmoid). The
+  model uses the linear form per Xia 2024.
+* **IIV on KDE.** Xia 2024 supplement Section 1.2 mentions that the literature
+  (Hamberg) model carried inter-individual variability on both KDE and EC50,
+  but Table 3 of Xia 2024 reports only `eta(EC50) = 55.8%`. Because Xia 2024
+  fixed the PK component from Hamberg and the data contain no warfarin
+  concentrations, the final model effectively has IIV only on EC50; the
+  packaged model follows Table 3 (no `eta_kde`).
+* **Baseline INR as a covariate.** INR_BASE is treated as a per-subject
+  covariate (the measured pre-medication INR), not as an estimated parameter.
+  Xia 2024 supplement Section 1.6 uses the cohort mean baseline of 1.13 for
+  the typical-value simulation; the vignette uses the same default.
+* **Compartment naming deviation.** The two parallel coagulation-factor
+  transit chains use mechanism-specific names `coag_s1` / `coag_s2` /
+  `coag_s3` (short chain) and `coag_l1` / `coag_l2` / `coag_l3` (long chain).
+  The canonical `transit<n>` chain prefix accommodates only a single chain;
+  there is no canonical name for parallel Hamberg-style coagulation chains.
+  `checkModelConventions()` emits warnings for these six compartments;
+  Hamberg-family warfarin / vitamin-K-cycle models are sufficiently common
+  that registering a canonical pair of names is a candidate future change
+  but is out of scope for this extraction.
+* **Observation variable deviation.** The single observation is `INR`
+  (rather than the canonical `Cc`) because the K-PD model does not predict a
+  plasma concentration. `checkModelConventions()` emits a warning recommending
+  `Cc`; the deviation is intentional because INR is the natural and only
+  output.
+* **Parameter naming deviation.** EC50 is parameterised allele-specifically
+  (`lec50_vkorc1_g` and `lec50_vkorc1_a`) rather than as a single `lec50`
+  with a covariate effect, because the Hamberg / Xia 2024 model treats each
+  VKORC1 allele as a separate contribution that is summed within an
+  individual. `checkModelConventions()` emits a warning that `etalec50` has
+  no matching fixed-effect parameter `lec50`; this is the expected pattern
+  given the per-allele parameterisation.
