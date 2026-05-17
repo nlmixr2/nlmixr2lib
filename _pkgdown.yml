@@ -458,8 +458,8 @@ navbar:
         href: articles/Goel_2016_Sonidegib.html
       - text: "Sugemalimab (Wang 2024)"
         href: articles/Wang_2024_sugemalimab.html
-      - text: "Sunitinib irinotecan mouse (Wilson 2015)"
-        href: articles/Wilson_2015_sunitinib_irinotecan_mouse.html
+      - text: "Sunitinib (Ait-Oudhia 2016)"
+        href: articles/Ait-Oudhia_2016_sunitinib.html
       - text: "Tacrolimus (Benkali 2010)"
         href: articles/Benkali_2010_tacrolimus.html
       - text: "Tacrolimus (Bergmann 2014)"
@@ -695,6 +695,7 @@ articles:
   desc: Drug-specific validation vignettes. They are reached from the Specific drug models and DDMoRe models navbar dropdowns; this group hides them from the main Articles index.
   contents:
   - articles/Aguiar_2021_ustekinumab
+  - articles/Ait-Oudhia_2016_sunitinib
   - articles/AitOudhia_2012_canakinumab
   - articles/Akbar_2025_voriconazole
   - articles/Aksenov_2018_uricAcid

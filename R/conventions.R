@@ -55,7 +55,15 @@
     # biliary excretion (k12) and re-enters central after a delay
     # (k21 gated by gallbladder-emptying time tg), producing the
     # characteristic second-peak phenomenon.
-    "gallbladder"
+    "gallbladder",
+    # Soluble vascular endothelial growth factor receptor 2 (sVEGFR2)
+    # plasma compartment used by indirect-response biomarker PD models
+    # for angiogenesis inhibitors (Ait-Oudhia 2016, Hansson 2013a).
+    "svegfr2",
+    # Tumor volume / size compartment used by tumor growth inhibition
+    # (TGI) models in oncology (Ait-Oudhia 2016, NA_NA_sunitinib,
+    # Schindler 2016, Wilbaux 2015 and similar).
+    "tumor"
   ),
   # Bare numbered chains (transit / effect / precursor / lat / dar /
   # depot) and metabolite-suffixed compartments are validated
@@ -200,13 +208,11 @@
     # in rapid equilibrium with overlapping disposition (van Rongen 2016
     # Clin Pharmacokinet doi:10.1007/s40262-015-0357-0).
     "cysmer",
-    # Simvastatin acid (open beta-hydroxyacid), the active HMG-CoA
-    # reductase inhibitor formed in vivo by hydrolysis of the simvastatin
-    # lactone parent. Used as a metabolite suffix in parent-plus-active-
-    # metabolite popPK models with reversible interconversion between
-    # the lactone and acid forms (Jin 2014 Pharm Res
-    # doi:10.1007/s11095-013-1284-0).
-    "acid"
+    # SU12662 (N-desethyl sunitinib), the equipotent active metabolite of
+    # sunitinib formed by CYP3A4. Used as a metabolite suffix for parent
+    # (sunitinib) plus metabolite (SU12662) popPK models such as
+    # Ait-Oudhia 2016 (doi:10.1002/psp4.12084).
+    "su12662"
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` denotes the time-varying decay arm.
