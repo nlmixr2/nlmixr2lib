@@ -514,6 +514,8 @@ navbar:
         href: articles/Frey_2010_tocilizumab.html
       - text: "Tocilizumab (Frey 2013)"
         href: articles/Frey_2013_tocilizumab.html
+      - text: "Torsemide (Jeong 2022)"
+        href: articles/Jeong_2022_torsemide.html
       - text: "Tralokinumab (Soehoel 2022)"
         href: articles/Soehoel_2022_tralokinumab.html
       - text: "TranexamicAcid (Dunn 2025)"
@@ -856,7 +858,7 @@ articles:
   - articles/Jackson_2022_ixekizumab
   - articles/Jager_2011_gemtuzumab
   - articles/Jelliffe_2014_digoxin
-  - articles/Jin_2014_simvastatin
+  - articles/Jeong_2022_torsemide
   - articles/Jonckheere_2019_cefepime
   - articles/Jonsson_2005_disufenton
   - articles/Jonsson_2011_ethambutol
