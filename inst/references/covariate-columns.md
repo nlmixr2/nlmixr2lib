@@ -797,7 +797,7 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Scope:** specific
 - **Reference category:** 0 (no amyloid). Sahota 2015 Eq. 2 also treats category 1 as part of the reference for the V4 effect (categories 0 and 1 share a V4 multiplier of 1); only categories 2 and 3 carry a non-zero effect via the cumulative parameters `e_amload2_vp_sap` and `e_amload2_vp_sap + e_amload3_vp_sap` respectively.
 - **Source aliases:** none beyond the source-paper `AMLOAD` column.
-- **Example models:** `NA_NA_miridesap.R` (DDMODEL00000262; Sahota 2015 Eq. 2 multiplicative effect on SAP peripheral volume V4: V4 = V4_ref * (1 + e_amload2_vp_sap * I(AMLOAD>=2) + e_amload3_vp_sap * I(AMLOAD>=3)); reported effects e_amload2_vp_sap = 6.39 / e_amload3_vp_sap = 26.39 yielding ~7.4x V4 at moderate load and ~33.8x at large load).
+- **Example models:** `NA_NA_miridesap.R` (DDMODEL00000262; Sahota 2015 Eq. 2 multiplicative effect on SAP peripheral volume V4: V4 = V4_ref * (1 + e_amload2_vp_sap * I(AMLOAD>=2) + e_amload3_vp_sap * I(AMLOAD>=3)); reported effects e_amload2_vp_sap = 6.39 / e_amload3_vp_sap = 26.39 yielding ~7.4x V4 at moderate load and ~33.8x at large load), `Sahota_2015_miridesap.R` (paper-only extraction of the same Sahota 2015 final model with identical Eq. 2 effect on V4; values 6.39 / 26.39 taken from Table 2).
 - **Notes:** Scope: specific because the grading scheme is amyloidosis-specific (Sahota 2015 Methods: "The whole body amyloid load covariate, AMLOAD, was a categorical score: 0 for no amyloid in healthy volunteers, 1 for small, 2 for moderate, and 3 for large"). The cumulative monotonic parameterisation in Sahota 2015 Eq. 2 encodes a positive-only step at each grade increment. Co-used with `AMLIVER` for the binary hepatic-involvement modifier. Ratified canonically on 2026-05-15 alongside the DDMODEL00000262 / Sahota 2015 extraction.
 
 ### AMLIVER (**canonical for hepatic amyloid involvement indicator**)
@@ -807,7 +807,7 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Scope:** specific
 - **Reference category:** 0 (no liver amyloid).
 - **Source aliases:** none beyond the source-paper `AMLIVER` column.
-- **Example models:** `NA_NA_miridesap.R` (DDMODEL00000262; Sahota 2015 Eq. 2 multiplicative effect on SAP intercompartmental clearance Q4: Q4 = Q4_ref * (1 + e_amliver_q4 * AMLIVER); reported effect 4.01, yielding ~5x Q4 in patients with hepatic amyloid).
+- **Example models:** `NA_NA_miridesap.R` (DDMODEL00000262; Sahota 2015 Eq. 2 multiplicative effect on SAP intercompartmental clearance Q4: Q4 = Q4_ref * (1 + e_amliver_q4 * AMLIVER); reported effect 4.01, yielding ~5x Q4 in patients with hepatic amyloid), `Sahota_2015_miridesap.R` (paper-only extraction of the same Sahota 2015 final model with identical Eq. 2 effect on Q4; value 4.01 from Table 2).
 - **Notes:** Scope: specific because the covariate is amyloidosis-specific (Sahota 2015 Methods names AMLIVER alongside AMSPLEEN / AMHEART as organ-specific amyloid-involvement binary indicators; only AMLIVER was retained as a covariate in the final model). Used in combination with the global `AMLOAD` grade so the model can express both general amyloid burden and the specific hepatic-clearance modifier (the SAP-CPHPC complex is cleared by the liver, motivating the hepatic-amyloid-specific Q4 effect). Ratified canonically on 2026-05-15 alongside the DDMODEL00000262 / Sahota 2015 extraction.
 
 ## Critical-illness severity

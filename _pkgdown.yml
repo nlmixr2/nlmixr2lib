@@ -308,6 +308,8 @@ navbar:
         href: articles/Martial_2017_micafungin.html
       - text: "Midazolam (Brill 2014)"
         href: articles/Brill_2014_midazolam.html
+      - text: "Miridesap (Sahota 2015)"
+        href: articles/Sahota_2015_miridesap.html
       - text: "Mirikizumab (Chua 2025)"
         href: articles/Chua_2025_mirikizumab.html
       - text: "Mogamulizumab (Mukai 2019)"
@@ -928,6 +930,7 @@ articles:
   - articles/Rosario_2015_vedolizumab
   - articles/Rovei_1982_theophylline
   - articles/Sadouki_2025_meropenem_gentamicin_ciprofloxacin
+  - articles/Sahota_2015_miridesap
   - articles/Salinger_2013_magnesiumSulfate
   - articles/Sampson_2014_azithromycin
   - articles/Sanghavi_2020_ipilimumab
