@@ -82,6 +82,8 @@ navbar:
         href: articles/Hu_2014_bapineuzumab.html
       - text: "BAY81 8973 (Garmann 2017)"
         href: articles/Garmann_2017_BAY81_8973.html
+      - text: "Bedaquiline (Svensson 2018)"
+        href: articles/Svensson_2018_bedaquiline.html
       - text: "Belantamab (Papathanasiou 2025)"
         href: articles/Papathanasiou_2025_belantamab.html
       - text: "Belatacept (Shen 2013)"
@@ -236,6 +238,8 @@ navbar:
         href: articles/Ayyar_2024_givosiran.html
       - text: "Glibenclamide (Rambiritch 2016)"
         href: articles/Rambiritch_2016_glibenclamide.html
+      - text: "Glucarpidase (Kimura 2023)"
+        href: articles/Kimura_2023_glucarpidase.html
       - text: "GNbAC1 (Cao 2013)"
         href: articles/Cao_2013_GNbAC1.html
       - text: "Guselkumab (Chen 2022)"
@@ -296,6 +300,8 @@ navbar:
         href: articles/Kloprogge_2013_lumefantrine.html
       - text: "Luspatercept (Chen 2020)"
         href: articles/Chen_2020_luspatercept.html
+      - text: "M3g rat (Xie 2000)"
+        href: articles/Xie_2000_m3g_rat.html
       - text: "MagnesiumSulfate (Salinger 2013)"
         href: articles/Salinger_2013_magnesiumSulfate.html
       - text: "MBG453 (Xu 2023)"
@@ -306,6 +312,10 @@ navbar:
         href: articles/Hood_2021_medi7836.html
       - text: "Mepolizumab (Cao 2013)"
         href: articles/Cao_2013_mepolizumab.html
+      - text: "Methotrexate (Taylor 2020)"
+        href: articles/Taylor_2020_methotrexate.html
+      - text: "MHD rat (Clinckers 2008)"
+        href: articles/Clinckers_2008_MHD_rat.html
       - text: "Micafungin (Martial 2017)"
         href: articles/Martial_2017_micafungin.html
       - text: "Midazolam (Brill 2014)"
@@ -318,10 +328,10 @@ navbar:
         href: articles/Mukai_2019_mogamulizumab.html
       - text: "Monalizumab (Hwang 2023)"
         href: articles/Hwang_2023_monalizumab.html
-      - text: "Morphine (Franken 2015)"
-        href: articles/Franken_2015_morphine.html
       - text: "Morphine (deHoogd 2017)"
         href: articles/deHoogd_2017_morphine.html
+      - text: "Morphine (Franken 2015)"
+        href: articles/Franken_2015_morphine.html
       - text: "MRNA3927 (Attarwala 2023)"
         href: articles/Attarwala_2023_mRNA3927.html
       - text: "Nalmefene (Kyhl 2016)"
@@ -548,6 +558,8 @@ navbar:
         href: articles/Huang_2017_vrc01.html
       - text: "VRC07523LS (Huynh 2026)"
         href: articles/Huynh_2026_VRC07523LS.html
+      - text: "Warfarin (Xia 2024)"
+        href: articles/Xia_2024_warfarin.html
       - text: "Zenocutuzumab (deVriesSchultink 2020)"
         href: articles/deVriesSchultink_2020_zenocutuzumab.html
       - text: "Zolbetuximab (Yamada 2025)"
@@ -766,6 +778,7 @@ articles:
   - articles/deHoogd_2017_morphine
   - articles/Delattre_2010_amikacin
   - articles/deVriesSchultink_2020_zenocutuzumab
+  - articles/deWit_2016_everolimus
   - articles/Diao_2014_rFIXFc
   - articles/Diao_2016_daclizumab_cd25
   - articles/Diao_2016_daclizumab_cd56bright
@@ -802,6 +815,7 @@ articles:
   - articles/Goel_2016_Sonidegib
   - articles/Goti_2018_vancomycin
   - articles/Grimm_2023
+  - articles/Guiastrennec_2016_gastric_emptying
   - articles/Guo_2022_PF_06939999
   - articles/Gupta_2016_amatuximab
   - articles/Gupta_2016_lenvatinib

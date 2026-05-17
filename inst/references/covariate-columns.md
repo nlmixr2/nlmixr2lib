@@ -124,7 +124,8 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   - `SEXM` (values inverted: `SEXF = 1 - SEXM`; effect coefficient sign and reference category both invert) -- used in `CarlssonPetri_2021_liraglutide.R`.
   - `SEX` with `"M"`/`"F"` strings -- derive `SEXF = as.integer(SEX == "F")`.
   - `SEX` with `1`=male / `2`=female numeric coding -- derive `SEXF = as.integer(SEX == 2)`. Used in `Netterberg_2017_docetaxel.R` and `NA_NA_miridesap.R` (DDMODEL00000262 source bundle; Sahota 2015 NONMEM convention).
-- **Example models:** `Zhu_2017_lebrikizumab.R` (canonical), `CarlssonPetri_2021_liraglutide.R` (alias `SEXM`), `Bajaj_2017_nivolumab.R` (male-indicator source; effect applied as `exp(coef * (1 - SEXF))` to preserve the paper's female-reference CL_REF / VC_REF), `Fau_2020_isatuximab.R` (exponential effect on Vc; reference category 0 = male), `Netterberg_2017_docetaxel.R` (multiplicative effect on baseline ANC: `BACOV *= (1 + theta * SEXF)`; source column `SEX` with 1 = male, 2 = female encoding, decomposed via `SEXF = as.integer(SEX == 2)`), `NA_NA_miridesap.R` (DDMODEL00000262 / Sahota 2015; multiplicative effect on baseline SAP via `SAP_BASE_ref * (1 + e_sexf_sap0 * SEXF)` with `e_sexf_sap0 = -0.30`; female baseline is ~30% lower than male), `Xu_2020_daratumumab.R` (additive shift on V1 `(1 + e_sexf_vc * SEXF)` with `e_sexf_vc = -0.205`: female V1 is 20.5% lower than male, reference category 0 = male).
+  - `FEM` (1 = female, 0 = male; same orientation as canonical, no transformation) -- used in `Guiastrennec_2016_gastric_emptying.R`.
+- **Example models:** `Zhu_2017_lebrikizumab.R` (canonical), `CarlssonPetri_2021_liraglutide.R` (alias `SEXM`), `Bajaj_2017_nivolumab.R` (male-indicator source; effect applied as `exp(coef * (1 - SEXF))` to preserve the paper's female-reference CL_REF / VC_REF), `Fau_2020_isatuximab.R` (exponential effect on Vc; reference category 0 = male), `Netterberg_2017_docetaxel.R` (multiplicative effect on baseline ANC: `BACOV *= (1 + theta * SEXF)`; source column `SEX` with 1 = male, 2 = female encoding, decomposed via `SEXF = as.integer(SEX == 2)`), `NA_NA_miridesap.R` (DDMODEL00000262 / Sahota 2015; multiplicative effect on baseline SAP via `SAP_BASE_ref * (1 + e_sexf_sap0 * SEXF)` with `e_sexf_sap0 = -0.30`; female baseline is ~30% lower than male), `Xu_2020_daratumumab.R` (additive shift on V1 `(1 + e_sexf_vc * SEXF)` with `e_sexf_vc = -0.205`: female V1 is 20.5% lower than male, reference category 0 = male), `Guiastrennec_2016_gastric_emptying.R` (multiplicative +40.7% strengthening of the caloric-feedback slope SLPCAL on gastric emptying in females; `SLPCAL_eff = SLPCAL * (1 + 0.407 * SEXF)`).
 - **Notes:** When translating a model that used `SEXM`, flag the sign/reference-category inversion to the user.
 
 ### PREG (**canonical for pregnancy status indicator**)
@@ -225,6 +226,26 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   - `TNUTRI` -- used in `Tikiso_2021_abacavir.R` (the dataset's paper-defined column for days since start of nutritional supplementation; same orientation as the canonical, 0 = start of supplementation, increasing with time on supplementation).
 - **Example models:** `Tikiso_2021_abacavir.R` (paired with `MAL_NOURISH`; drives the recovery decay `exp(-T_NUT_SUPP * log(2) / 12.2)` of the malnutrition effect on F and CL).
 - **Notes:** Specific scope because the underlying recovery dynamics are tied to the nutritional-rehabilitation protocol of the source study. For non-malnourished subjects (`MAL_NOURISH == 0`) the value is irrelevant because the malnutrition effect is gated by `MAL_NOURISH`; supply 0 as a default. For fully-recovered malnourished subjects, supply a large value (e.g., `>= 100` days, well beyond the 12.2-day Tikiso 2021 half-life) so the decay function reaches near zero and the effect vanishes.
+
+### DRINK_OGTT (**canonical for oral-glucose-tolerance-test-only drink indicator**)
+- **Description:** Binary indicator that the postprandial test drink is glucose-only (oral glucose tolerance test, OGTT). 1 = the drink is glucose-only with no fat content (e.g., 25 / 75 / 125 g OGTT); 0 = otherwise (water, or any drink containing fat). Per-occasion (per-test-drink-administration) covariate -- a single subject in a crossover challenge protocol receives different drink types across occasions, so the indicator varies per dose-record rather than per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (water or fat-containing drink). Mutually exclusive with `DRINK_FAT` -- both indicators cannot be 1 simultaneously.
+- **Source aliases:** paper narrative "glucose solution" / "OGTT" cohort labels driving the gastric-emptying-onset T50OGTT selection in Guiastrennec 2016.
+- **Example models:** `Guiastrennec_2016_gastric_emptying.R` (selects the OGTT-specific half-onset time T50OGTT = 15.7 min for the gastric-emptying delay Hill function; water is recovered when DRINK_OGTT = DRINK_FAT = 0 with the onset factor pinned to 1).
+- **Notes:** Specific scope because the OGTT / fat-containing partition is tied to the Guiastrennec 2016 postprandial-challenge design (Studies B and C OGTT arms). Set to 1 for Study B's 25 / 75 / 125 g OGTT drinks and the Study C 75 g OGTT arm; set to 0 for Study A water and for all fat-containing drinks. Pairs with `DRINK_FAT`: the two indicators jointly select the appropriate gastric-emptying-delay T50 parameter (T50OGTT vs T50Fat) for the Hill onset function. Ratified canonically alongside the Guiastrennec 2016 gastric-emptying / CCK / GBE extraction.
+
+### DRINK_FAT (**canonical for fat-containing test-drink indicator**)
+- **Description:** Binary indicator that the postprandial test drink contains fat (any nonzero fat content). 1 = the drink contains fat (e.g., the Study C low / medium / high-fat isocaloric drinks, or the Study D medium-high-fat drink); 0 = otherwise (water or glucose-only OGTT drinks). Per-occasion covariate -- a single subject in a crossover challenge protocol receives different drink types across occasions.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (water or glucose-only drink). Mutually exclusive with `DRINK_OGTT` -- both indicators cannot be 1 simultaneously.
+- **Source aliases:** paper narrative "low-fat" / "medium-fat" / "high-fat" / "medium-high-fat" cohort labels driving the gastric-emptying-onset T50Fat selection in Guiastrennec 2016.
+- **Example models:** `Guiastrennec_2016_gastric_emptying.R` (selects the fat-specific half-onset time T50Fat = 23.1 min for the gastric-emptying delay Hill function).
+- **Notes:** Specific scope because the fat-containing partition is tied to the Guiastrennec 2016 postprandial-challenge design. Pairs with `DRINK_OGTT`: the two indicators jointly select the appropriate gastric-emptying-delay T50 parameter (T50OGTT vs T50Fat) for the Hill onset function. Ratified canonically alongside the Guiastrennec 2016 gastric-emptying / CCK / GBE extraction.
 
 ## Pregnancy / hormonal status
 
@@ -1657,7 +1678,10 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Reference category:** 0 (normal-glucose-tolerance control).
 - **Source aliases:**
   - `T2DM` -- used in `NA_NA_paracetamol.R` (DDMODEL00000228).
-- **Example models:** `NA_NA_paracetamol.R` (DDMODEL00000228).
+  - `T2D` -- used in `Guiastrennec_2016_gastric_emptying.R` (matched-cohort flag, 1 = T2D patient vs 0 = matched nondiabetic control).
+- **Example models:**
+  - `NA_NA_paracetamol.R` (DDMODEL00000228).
+  - `Guiastrennec_2016_gastric_emptying.R` (multiplicative -81.1% depression of POTcarbC, the carbohydrate potency on CCK release; all other parameters are common across cohorts).
 - **Notes:** Distinct from the existing `DIAB` canonical (which deliberately does not distinguish Type 1 vs Type 2). Specific scope because the reference cohort is study-specific and the mechanism in the example model is a Type-2-versus-healthy stratification of OGTT response; a future T2DM-specific study (e.g., a popPK/PD analysis stratifying by HbA1c level) can ratify the same canonical and document the reference cohort in `covariateData[[T2DM]]$notes`.
 
 ### HYPERT (**canonical for hypertension comorbidity / medical-history indicator**)
