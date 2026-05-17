@@ -200,13 +200,13 @@
     # in rapid equilibrium with overlapping disposition (van Rongen 2016
     # Clin Pharmacokinet doi:10.1007/s40262-015-0357-0).
     "cysmer",
-    # Glucarpidase (CPG2), the bacterial carboxypeptidase G2 enzyme
-    # given as a rescue therapy after high-dose methotrexate (MTX). Not
-    # a metabolite of MTX but a co-administered perpetrator that
-    # enzymatically hydrolyzes the substrate; the suffix marks the
-    # non-parent species in 2-drug PK/PD models (Kimura 2023
-    # doi:10.21873/anticanres.16351).
-    "cpg2"
+    # Simvastatin acid (open beta-hydroxyacid), the active HMG-CoA
+    # reductase inhibitor formed in vivo by hydrolysis of the simvastatin
+    # lactone parent. Used as a metabolite suffix in parent-plus-active-
+    # metabolite popPK models with reversible interconversion between
+    # the lactone and acid forms (Jin 2014 Pharm Res
+    # doi:10.1007/s11095-013-1284-0).
+    "acid"
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` denotes the time-varying decay arm.

@@ -442,6 +442,8 @@ navbar:
         href: articles/Cao_2013_siltuximab.html
       - text: "Siltuximab (Nikanjam 2019)"
         href: articles/Nikanjam_2019_siltuximab.html
+      - text: "Simvastatin (Jin 2014)"
+        href: articles/Jin_2014_simvastatin.html
       - text: "Sirolimus (Wu 2012)"
         href: articles/Wu_2012_sirolimus.html
       - text: "Sirukumab (Xu 2011)"
@@ -828,6 +830,7 @@ articles:
   - articles/Jackson_2022_ixekizumab
   - articles/Jager_2011_gemtuzumab
   - articles/Jelliffe_2014_digoxin
+  - articles/Jin_2014_simvastatin
   - articles/Jonckheere_2019_cefepime
   - articles/Jonsson_2005_disufenton
   - articles/Jonsson_2011_ethambutol
