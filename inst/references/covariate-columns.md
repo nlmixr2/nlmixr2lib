@@ -2343,6 +2343,17 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Sanghavi_2020_ipilimumab.R` (exponential coefficient -0.124 on CL).
 - **Notes:** Follows the `TUMTP_CHL` / `TUMTP_GC` decomposition pattern. SCLC is the only retained tumor-type indicator in the Sanghavi 2020 final model after backward elimination; the other tumor types collapse into the reference (melanoma) group.
 
+### TUMTP_NSCLC (**canonical for non-small-cell-lung-cancer tumor-type indicator**)
+- **Description:** 1 = non-small cell lung cancer (NSCLC), 0 = other tumor types.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 = all other tumor types (in Ahamadi 2017 the implicit reference is melanoma, with the rare "other" cancer type pooled into the reference).
+- **Source aliases:**
+  - `TUMTP` (categorical column with levels including `melanoma`, `NSCLC`, `other`) -- decompose into `TUMTP_NSCLC = as.integer(TUMTP == "NSCLC")`.
+- **Example models:** `Ahamadi_2017_pembrolizumab.R` (proportional change of +14.5% on CL for NSCLC patients relative to melanoma; the "other" cancer type cohort -- 1.01% of the population -- is pooled into the melanoma reference per the paper's model description).
+- **Notes:** Follows the `TUMTP_CHL` / `TUMTP_GC` / `TUMTP_SCLC` decomposition pattern. Scope: general because NSCLC is a high-frequency tumor-type contrast (with melanoma or "other" reference) across PD-1 / PD-L1 / chemotherapy popPK analyses, and is likely to recur in future extractions. Ratified canonically on 2026-05-17 alongside the Ahamadi 2017 pembrolizumab extraction.
+
 ### TUMTP_LYMPH (**canonical for lymphoma (pooled) tumor-type indicator**)
 - **Description:** 1 = lymphoma (heterogeneous lymphoma pool spanning multiple lymphoma histologies -- e.g., classical Hodgkin lymphoma combined with extranodal NK/T-cell lymphoma; or any-histology lymphoma pooled with solid-tumor and leukemia cohorts), 0 = solid tumor or other tumor type.
 - **Units:** (binary)
@@ -3101,6 +3112,17 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
   - `PRIORTNF` (all caps, no underscore) -- acceptable alternative spelling.
 - **Example models:** `Moein_2022_etrolizumab.R` (multiplicative fractional effect on CL, +4.9%).
 - **Notes:** Use when the source paper reports a binary "prior anti-TNF inhibitor" covariate on any PK parameter. Generally applicable across RA/PsA/IBD/axSpA biologic PK models.
+
+### PRIOR_IPI (**canonical for prior ipilimumab treatment indicator**)
+- **Description:** 1 = subject previously treated with ipilimumab (anti-CTLA-4 monoclonal antibody) before the start of the current anti-PD-1 / anti-PD-L1 (or other) checkpoint-inhibitor regimen, 0 = ipilimumab-naive.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (ipilimumab-naive). Document per-paper how subjects with missing IPI status are pooled (Ahamadi 2017 pools "missing" with naive in the final coefficient; some papers may report a separate "missing" effect).
+- **Source aliases:**
+  - `IPI` (Ahamadi 2017; categorical with levels `IPI-naive`, `IPI-treated`, `missing`) -- decompose into `PRIOR_IPI = as.integer(IPI == "IPI-treated")` and treat the missing category like naive unless the source paper retains a separate "missing" coefficient.
+- **Example models:** `Ahamadi_2017_pembrolizumab.R` (proportional changes on CL of +14.0% and on Vc of +7.36% for IPI-treated relative to IPI-naive; "missing" 26.4% of cohort is pooled with naive in the canonical encoding because Table 3 reports only the naive-vs-treated coefficient).
+- **Notes:** Distinct from `PRIOR_ANTICANCER` (any modality), `PRIOR_BIO` (any biologic), `PRIOR_TNF` (anti-TNF biologic). Use `PRIOR_IPI` when the source paper specifically tested prior ipilimumab exposure as a covariate; this is a common covariate in advanced-melanoma popPK analyses where ipilimumab was the standard-of-care immune-checkpoint inhibitor preceding PD-1 / PD-L1 entrants. Ratified canonically on 2026-05-17 alongside the Ahamadi 2017 pembrolizumab extraction.
 
 ## Rheumatoid-arthritis disease-activity covariates
 
