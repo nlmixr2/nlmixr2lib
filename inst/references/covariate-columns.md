@@ -1018,6 +1018,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Zecchin_2016_tumorovarian.R` (Zecchin 2016 SLD model for advanced ovarian cancer, DDMODEL00000217), `Zecchin_2016_survival.R` (Zecchin 2016 OS model, DDMODEL00000218).
 - **Notes:** Specific scope. The Zecchin 2016 SLD and OS models use the value directly in the death-rate term `kd1 * AUC_GEM * tumorSize`, with an internal `/100` numerical scaling carried verbatim from the source `$DES` block.
 
+### AUC_GCV (**canonical for per-q12h-interval AUC of ganciclovir**)
+- **Description:** Time-varying ganciclovir AUC over a q12h dosing interval (AUC_0-12), used as the drug-exposure input to indirect-response viral-turnover PK/PD models of cytomegalovirus (CMV) viral load decline under (val)ganciclovir treatment. The Koloskoff 2025 source computes individual AUC_0-12 from an upstream popPK model (Franck 2021) and feeds it to the PD model as a Monolix "varying input"; the PD model itself does not integrate a PK ODE, so AUC_GCV is supplied to nlmixr2 as a time-varying data column.
+- **Units:** `mg*h/L` (document per-model via `covariateData[[AUC_GCV]]$units` if a different exposure unit is reported).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- set to 0 in pre-treatment / off-treatment records so the drug-stimulation term `Emax * AUC_GCV / (EC50 + AUC_GCV)` vanishes and the viral load returns to the `kin / kout` steady-state baseline.
+- **Source aliases:**
+  - `AUC_0-12` -- the printed variable name in Koloskoff 2025 (Methods Section 2.3, Eq. 1, and Table 1). Q24h dosing intervals are entered as `AUC_0-24 / 2` so all data live in the q12h framework (Koloskoff 2025 Methods Section 2.1).
+- **Example models:** `Koloskoff_2025_ganciclovir.R` (Koloskoff 2025 indirect viral turnover model for CMV viral load in pediatric SOT / HSCT recipients; AUC_GCV enters the ODE via `kout * (1 + Emax * AUC_GCV / (EC50 + AUC_GCV)) * viralLoad`).
+- **Notes:** Specific scope -- the column meaning is tied to ganciclovir as the drug and to a q12h interval-averaging convention. Sibling drug-specific AUC canonicals (`AUC_CARBO`, `AUC_GEM`, `AUC_BAST_FW`, `AUC_PAZO`) follow the same `AUC_<DRUG>` naming pattern; a future PK/PD model that uses a different exposure metric for ganciclovir (e.g., trough concentration, instantaneous concentration) should register a parallel canonical rather than overload `AUC_GCV`. Koloskoff 2025 Monte Carlo simulations are reported under AUC_0-24 (Tables 3 and 4) assuming AUC_0-24 = 2 x AUC_0-12 at steady state; nlmixr2 simulations should set AUC_GCV to the q12h-interval value (i.e., AUC_0-24 / 2).
+
 ### AUC_PAZO (**canonical for per-period mean AUC of pazopanib**)
 - **Description:** Per-period (per-dose-group in preclinical xenograft studies; per-subject mean dose-adjusted in clinical studies) mean AUC of pazopanib used as the drug-exposure covariate driving the antiangiogenic and cytotoxic effect rates in semi-mechanistic tumour-growth / angiogenesis-inhibition (TGI) models of pazopanib in renal-cell carcinoma. Time-varying step-wise (held constant within a treatment period and resetting when dose level changes or treatment ends).
 - **Units:** `ug*h/mL` (`= mg*h/L`). Document per-model via `covariateData[[AUC_PAZO]]$units`.

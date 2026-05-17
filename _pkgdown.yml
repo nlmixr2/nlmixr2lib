@@ -222,6 +222,8 @@ navbar:
         href: articles/Caldes_2009_ganciclovir.html
       - text: "Ganciclovir (Chen 2021)"
         href: articles/Chen_2021_ganciclovir.html
+      - text: "Ganciclovir (Koloskoff 2025)"
+        href: articles/Koloskoff_2025_ganciclovir.html
       - text: "Gantenerumab (Grimm 2023)"
         href: articles/Grimm_2023.html
       - text: "Gentamicin (Llanos 2017)"
@@ -837,6 +839,7 @@ articles:
   - articles/Kirubakaran_2022_tacrolimus
   - articles/Kloft_2004_sibrotuzumab
   - articles/Knibbe_2009_morphine
+  - articles/Koloskoff_2025_ganciclovir
   - articles/Koopman_2023_factorix
   - articles/Kotani_2022_astegolimab
   - articles/Kovalenko_2016_dupilumab
