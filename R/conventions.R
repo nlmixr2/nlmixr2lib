@@ -208,11 +208,12 @@
     # in rapid equilibrium with overlapping disposition (van Rongen 2016
     # Clin Pharmacokinet doi:10.1007/s40262-015-0357-0).
     "cysmer",
-    # SU12662 (N-desethyl sunitinib), the equipotent active metabolite of
-    # sunitinib formed by CYP3A4. Used as a metabolite suffix for parent
-    # (sunitinib) plus metabolite (SU12662) popPK models such as
-    # Ait-Oudhia 2016 (doi:10.1002/psp4.12084).
-    "su12662"
+    # Ticagrelor active metabolite AR-C124910XX (TAM), the major active
+    # metabolite of ticagrelor with similar potency at P2Y12 (Almquist
+    # 2016 doi:10.1002/psp4.12089). Used as the metabolite suffix in
+    # parent-plus-metabolite ticagrelor PK models where TAM is followed
+    # in plasma alongside the parent.
+    "tam"
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` denotes the time-varying decay arm.

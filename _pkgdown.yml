@@ -482,6 +482,8 @@ navbar:
         href: articles/Mazzocco_2015_temozolomide.html
       - text: "Theophylline (Rovei 1982)"
         href: articles/Rovei_1982_theophylline.html
+      - text: "Ticagrelor (Almquist 2016)"
+        href: articles/Almquist_2016_ticagrelor.html
       - text: "Tisagenlecleucel (Stein 2019)"
         href: articles/Stein_2019_Tisagenlecleucel.html
       - text: "Tislelizumab (Budha 2023)"
@@ -700,6 +702,7 @@ articles:
   - articles/Akbar_2025_voriconazole
   - articles/Aksenov_2018_uricAcid
   - articles/Allegaert_2015_paracetamol
+  - articles/Almquist_2016_ticagrelor
   - articles/Almquist_2022_anifrolumab
   - articles/Alsultan_2017_pyrazinamide
   - articles/Archary_2018_lopinavir
@@ -1031,11 +1034,5 @@ articles:
   - articles/Zhu_2017_lebrikizumab
   - articles/Zierhut_2008_osteoprotegerin
   - articles/Zurlinden_2016_paracetamol
-  - articles/deHoogd_2017_morphine
-  - articles/deVriesSchultink_2020_zenocutuzumab
-  - articles/vanHasselt_2015_eribulin
-  - articles/vanRongen_2016_acetaminophen
-  - articles/vanRongen_2018_midazolam
-  - articles/vanWijk_2019_paracetamol
   internal: true
 # AUTOGEN:articles:END
