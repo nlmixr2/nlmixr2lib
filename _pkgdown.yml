@@ -410,6 +410,10 @@ navbar:
         href: articles/Diepstraten_2013_propofol.html
       - text: "Pyrazinamide (Alsultan 2017)"
         href: articles/Alsultan_2017_pyrazinamide.html
+      - text: "Quinine rat (Sheng 2016)"
+        href: articles/Sheng_2016_quinine_rat.html
+      - text: "RFIXFc (Diao 2014)"
+        href: articles/Diao_2014_rFIXFc.html
       - text: "Ranibizumab (Mulyukov 2018)"
         href: articles/Mulyukov_2018_ranibizumab.html
       - text: "RFIXFc (Diao 2014)"
@@ -967,6 +971,8 @@ articles:
   - articles/Schoemaker_2018_levetiracetam
   - articles/Schoenmakers_2025_betamethasone
   - articles/Shah_2012_mAb_PBPK
+  - articles/Shen_2013_belatacept
+  - articles/Sheng_2016_quinine_rat
   - articles/Sherer_2012_AAA
   - articles/Soehoel_2022_tralokinumab
   - articles/Stein_2019_Tisagenlecleucel
