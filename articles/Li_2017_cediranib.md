@@ -345,8 +345,8 @@ intervals <- data.frame(
 )
 
 nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
-#>  ■■■■■■■                           21% |  ETA:  5s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■        85% |  ETA:  1s
+#>  ■■■■■■■■■■■                       32% |  ETA:  4s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  100% |  ETA:  0s
 nca_summary <- summary(nca_res)
 knitr::kable(nca_summary,
              caption = "Simulated steady-state cediranib NCA parameters by dose group (eighth dose, 168-192 h).")

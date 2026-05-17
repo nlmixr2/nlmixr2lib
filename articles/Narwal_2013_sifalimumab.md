@@ -19,7 +19,7 @@ population PK model from the phase Ib MI-CP152 study (NCT00482989), a
 multicentre, randomised, placebo-controlled, dose-escalation trial in
 which 121 SLE patients received escalating IV doses of 0.3, 1, 3, or 10
 mg/kg every 14 days for up to 14 doses. The final model is the single
-structural model of record in the paper — the authors describe a base
+structural model of record in the paper – the authors describe a base
 model and one final model with covariates; no alternative candidate
 models are presented.
 
@@ -187,7 +187,7 @@ sim_typical <- rxode2::rxSolve(mod_typical, events = events,
 sim_typical$treatment <- paste0(sim_typical$COHDOSE, " mg/kg Q14D")
 ```
 
-## Replicate Figure 2 — VPC by dose cohort
+## Replicate Figure 2 – VPC by dose cohort
 
 Narwal 2013 Fig. 2 displays a visual predictive check of serum
 concentrations stratified by dose cohort (0.3, 1, 3, 10 mg/kg Q14D) with
@@ -227,7 +227,7 @@ ggplot(sim_vpc, aes(time, q50)) +
 
 ![](Narwal_2013_sifalimumab_files/figure-html/figure-2-1.png)
 
-## Replicate Table 3 — steady-state exposure for fixed monthly dosing
+## Replicate Table 3 – steady-state exposure for fixed monthly dosing
 
 Narwal 2013 Table 3 reports predicted median steady-state
 pharmacokinetic parameters following fixed monthly IV dosing of 200,
@@ -329,7 +329,7 @@ Simulated vs published steady-state parameters (Narwal 2013 Table 3).
 Percent differences within ~20% are consistent with the typical-value
 fit. {.table}
 
-## PKNCA validation — single-dose NCA across the 4 cohorts
+## PKNCA validation – single-dose NCA across the 4 cohorts
 
 Single-dose NCA parameters (Cmax, Tmax, AUC over 14 days, half-life)
 across the 4 dose cohorts. The paper does not publish per-cohort NCA
@@ -373,7 +373,7 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- suppressWarnings(PKNCA::pk.nca(nca_data))
-#>  ■■■■■■■■■■■■■■■                   45% |  ETA:  4s
+#>  ■■■■■■■■■■■■■■                    44% |  ETA:  4s
 #>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    96% |  ETA:  0s
 
 knitr::kable(summary(nca_res),
@@ -409,7 +409,7 @@ Simulated single-dose NCA across the MI-CP152 cohorts (first 14 days).
   `events` data, use the cohort assignment (0.3, 1, 3, 10 mg/kg for the
   phase Ib design; dose/WT for phase IIb fixed-dose simulations). The
   paper’s Discussion (p. 1024) notes that the apparent dose effect may
-  be a data artifact of the escalating design — single-dose data in
+  be a data artifact of the escalating design – single-dose data in
   MI-CP126 were linear across 0.3-30 mg/kg.
 - **`CONMED_STEROID` default.** The phase IIb simulations in the paper
   set BSTEROID = 0 (no baseline conmed_steroid use) as the reference.

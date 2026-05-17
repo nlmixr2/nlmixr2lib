@@ -36,13 +36,19 @@ and 2,474 patients with episodic or chronic migraine) pooled across
 seven phase 1 / 2b / 3 studies with IV and SC administration.
 
 The structural model is a 2-compartment disposition with first-order SC
-absorption, an absorption lag time, and first-order elimination. Weight
-was the only covariate retained in the final model, entering as an
-allometric power on clearance (exponent 1.05) and on central volume of
-distribution (exponent 1.53) with a 71 kg reference. All other intrinsic
-and extrinsic factors examined (age, sex, race, albumin, renal and
-hepatic function, ADA status, injection site, acute / analgesic /
-preventive medication use, patient vs. healthy subject status) were not
+absorption from a depot compartment, an absorption lag time, and
+first-order elimination. Weight is the only covariate retained in the
+final model, entering as an allometric power on clearance (exponent
+1.05) and on central volume of distribution (exponent 1.53) with a 71 kg
+reference. The paper estimated separate central volumes of distribution
+for the IV (Vc,IV = 2.98 L, FIXED) and SC (Vc,SC = 1.88 L) cohorts, and
+a different residual-error structure for each cohort (IV:
+proportional-only; SC: combined additive + proportional). The packaged
+model carries both specifications and selects between them via the
+`ROUTE_IV` covariate column (1 = IV, 0 = SC). All other intrinsic and
+extrinsic factors examined (age, sex, race, albumin, renal and hepatic
+function, ADA status, injection site, acute / analgesic / preventive
+medication use, patient vs. healthy subject status) were not
 statistically significant and are absent from the packaged model.
 
 Article: [Br J Clin Pharmacol
@@ -50,12 +56,13 @@ Article: [Br J Clin Pharmacol
 
 ### Population
 
-From Fiedler-Kelly 2019 (Section 3.1 and Supporting Table S1): 2,546
-subjects contributed 13,745 concentrations. The analysis population was
-primarily Caucasian (79.9%) and female (86.1%), with median (range) age
-43 (18-71) years and median (range) body weight 70.8 (43.5-131.8) kg.
-The presence of anti-drug antibodies was confirmed in only 0.7% of
-samples and was not a significant covariate.
+From Fiedler-Kelly 2019 (Exploratory data analysis paragraph and
+Supporting Table S1): 2,546 subjects contributed 13,745 concentrations.
+The analysis population was primarily Caucasian (79.9%) and female
+(86.1%), with median (range) age 43 (18-71) years and median (range)
+body weight 70.8 (43.5-131.8) kg. The presence of anti-drug antibodies
+was confirmed in only 0.7% of samples and was not a significant
+covariate.
 
 The same information is available programmatically via
 `readModelDb("Fiedler-Kelly_2019_fremanezumab")$population` (note:
@@ -67,30 +74,31 @@ attribute of the function body rather than a live list).
 
 | Element | Source location | Value / form |
 |----|----|----|
-| Structural model | Fiedler-Kelly 2019 Section 3.2 | 2-compartment, first-order SC absorption + lag |
+| Structural model | Fiedler-Kelly 2019 Results, Figure 3 | 2-compartment, first-order SC absorption + lag, separate Vc,IV and Vc,SC |
 | CL (71 kg subject) | Fiedler-Kelly 2019 Table 2 | 0.0902 L/day |
 | Allometric exponent on CL | Fiedler-Kelly 2019 Table 2, footnote c | 1.05; TVCL = 0.0902 \* (WT/71)^1.05 |
-| Vc (SC, 71 kg subject) | Fiedler-Kelly 2019 Table 2 | 1.88 L |
-| Allometric exponent on Vc | Fiedler-Kelly 2019 Table 2, footnotes d,e | 1.53; TVVc = 1.88 \* (WT/71)^1.53 |
+| Vc,IV (71 kg subject, FIXED) | Fiedler-Kelly 2019 Table 2, footnote d | 2.98 L (FIXED) |
+| Vc,SC (71 kg subject) | Fiedler-Kelly 2019 Table 2, footnote e | 1.88 L |
+| Allometric exponent on Vc | Fiedler-Kelly 2019 Table 2, footnotes d, e | 1.53; same exponent applied to both Vc,IV and Vc,SC |
 | ka | Fiedler-Kelly 2019 Table 2 | 0.180 /day |
 | Q (FIXED) | Fiedler-Kelly 2019 Table 2 | 0.262 L/day |
-| Vp (FIXED) | Fiedler-Kelly 2019 Table 2 | 1.72 L |
-| F (SC, FIXED) | Fiedler-Kelly 2019 Table 2 | 0.658 |
-| Tlag (SC, FIXED) | Fiedler-Kelly 2019 Table 2 | 0.0803 day |
-| IIV on CL | Fiedler-Kelly 2019 Table 2 | 23.4% CV (omega^2 = log(CV^2 + 1) = 0.0534) |
-| IIV on Vc | Fiedler-Kelly 2019 Table 2 | 35.1% CV (omega^2 = 0.1162) |
-| IIV on ka | Fiedler-Kelly 2019 Table 2 | 59.0% CV (omega^2 = 0.2986) |
-| Off-diagonal omega | Fiedler-Kelly 2019 Section 3.2 | None estimated (diagonal matrix) |
-| SC residual error | Fiedler-Kelly 2019 Table 2, footnote g | Proportional var 0.0531 + additive var 0.204 |
-| IV residual error (not used here) | Fiedler-Kelly 2019 Table 2 | Proportional var 0.0467 |
-| Dose regimens | Fiedler-Kelly 2019 Table 1 | 225 mg SC Q4W, 675 mg SC Q12W, loading 675 mg SC |
+| Vp (FIXED) | Fiedler-Kelly 2019 Table 2 | 1.72 L (no allometric weight effect) |
+| F1 (FIXED) | Fiedler-Kelly 2019 Table 2 | 0.658 (SC bioavailability) |
+| ALAG1 (FIXED) | Fiedler-Kelly 2019 Table 2 | 0.0803 day (SC absorption lag time) |
+| IIV on CL | Fiedler-Kelly 2019 Table 2 | 23.4% CV (omega^2 = log(CV^2 + 1) = 0.05334) |
+| IIV on Vc | Fiedler-Kelly 2019 Table 2 | 35.1% CV (omega^2 = 0.11618; SC fit, applied to Vc,SC in the packaged model) |
+| IIV on ka | Fiedler-Kelly 2019 Table 2 | 59.0% CV (omega^2 = 0.29870) |
+| Off-diagonal omega | Fiedler-Kelly 2019 Results | None estimated (diagonal matrix) |
+| IV residual error | Fiedler-Kelly 2019 Table 2 | Proportional only, sigma^2 = 0.0467 (SD = sqrt(0.0467) = 0.21610) |
+| SC residual error | Fiedler-Kelly 2019 Table 2, footnote g | Combined: proportional sigma^2 = 0.0531 + additive sigma^2 = 0.204 (ug/mL)^2 |
+| Dose regimens | Fiedler-Kelly 2019 Table 1 | 225 / 675 / 900 mg single IV or SC (phase 1); 225 mg SC Q4W, 675 mg SC Q12W |
 
 ### Virtual cohort
 
 Simulate a 500-subject virtual cohort whose weight distribution matches
-Section 3.1 of Fiedler-Kelly 2019 (median 70.8 kg, range 43.5-131.8 kg).
-The paper did not publish an individual-level weight distribution, so we
-use a log-normal approximation bounded to the reported range.
+Fiedler-Kelly 2019 (median 70.8 kg, range 43.5-131.8 kg). The paper did
+not publish an individual-level weight distribution, so we use a
+log-normal approximation bounded to the reported range.
 
 ``` r
 
@@ -105,10 +113,11 @@ pop <- tibble(
 
 ### Dosing and event table
 
-Replicate the two phase 3 therapeutic regimens reported in Fiedler-Kelly
-2019 Section 3.4: 225 mg SC once monthly for 12 doses, and 675 mg SC
-once quarterly for 4 doses. Simulate over 12 months with daily sampling
-through the first cycle and weekly samples thereafter.
+Replicate the two phase 3 therapeutic SC regimens reported in
+Fiedler-Kelly 2019 Simulations section: 225 mg SC once monthly for 12
+doses, and 675 mg SC once quarterly for 4 doses. Each subject is
+assigned to one of the two SC regimens; covariate `ROUTE_IV = 0` selects
+the SC Vc and combined residual error.
 
 ``` r
 
@@ -117,15 +126,17 @@ obs_times <- sort(unique(c(
   seq(28, 364, by = 7)
 )))
 
-build_events <- function(pop, dose_mg, dose_times, regimen_label) {
+build_events <- function(pop, dose_mg, dose_times, regimen_label,
+                         route_iv = 0L, dose_cmt = "depot") {
   dose_rows <- pop %>%
     crossing(time = dose_times) %>%
-    mutate(amt = dose_mg, evid = 1, cmt = "depot", dv = NA_real_)
+    mutate(amt = dose_mg, evid = 1, cmt = dose_cmt, dv = NA_real_)
   obs_rows <- pop %>%
     crossing(time = obs_times) %>%
     mutate(amt = NA_real_, evid = 0, cmt = NA_character_, dv = NA_real_)
   bind_rows(dose_rows, obs_rows) %>%
-    mutate(treatment = regimen_label) %>%
+    mutate(treatment = regimen_label,
+           ROUTE_IV  = route_iv) %>%
     arrange(ID, time, desc(evid))
 }
 
@@ -148,7 +159,6 @@ events_all <- bind_rows(events_monthly, events_quarterly)
 
 mod <- readModelDb("Fiedler-Kelly_2019_fremanezumab")
 conc_unit <- rxode2::rxode(mod)$units[["concentration"]]
-#> ℹ parameter labels from comments will be replaced by 'label()'
 
 sim <- events_all %>%
   group_by(treatment) %>%
@@ -157,14 +167,12 @@ sim <- events_all %>%
     as_tibble(rxSolve(mod, ev, returnType = "data.frame"))
   }) %>%
   ungroup()
-#> ℹ parameter labels from comments will be replaced by 'label()'
-#> ℹ parameter labels from comments will be replaced by 'label()'
 ```
 
 ### Replicate Figure 7: concentration-time profiles over 12 months
 
 Figure 7 of Fiedler-Kelly 2019 shows median and 90% prediction intervals
-for fremanezumab concentration-time profiles under the two phase 3
+for fremanezumab concentration-time profiles under the two phase 3 SC
 regimens.
 
 ``` r
@@ -239,10 +247,57 @@ ggplot(cav_bind, aes(x = wt_quartile, y = Cav)) +
 
 ![](Fiedler-Kelly_2019_fremanezumab_files/figure-html/figure-8-1.png)
 
+### IV vs SC route check (phase 1, single 225 mg dose)
+
+The packaged model carries both Vc,IV = 2.98 L (FIXED) and Vc,SC = 1.88
+L and the ROUTE_IV covariate selects between them. A single 225 mg dose
+under the two routes (1-hour IV infusion vs single SC injection) at the
+typical-subject covariates (WT = 71 kg, no IIV) confirms the structural
+switch:
+
+``` r
+
+mod_typical <- mod |> rxode2::zeroRe()
+#> Warning: No sigma parameters in the model
+
+iv_ev <- et() |>
+  et(amt = 225, cmt = "central", rate = 225 / (1/24), time = 0) |>
+  et(seq(0, 90, by = 0.25))
+iv_ev$WT <- 71
+iv_ev$ROUTE_IV <- 1
+
+sc_ev <- et() |>
+  et(amt = 225, cmt = "depot", time = 0) |>
+  et(seq(0, 90, by = 0.25))
+sc_ev$WT <- 71
+sc_ev$ROUTE_IV <- 0
+
+sim_iv <- as_tibble(rxSolve(mod_typical, iv_ev)) %>% mutate(route = "IV (Vc,IV = 2.98 L)")
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc_sc', 'etalka'
+sim_sc <- as_tibble(rxSolve(mod_typical, sc_ev)) %>% mutate(route = "SC (Vc,SC = 1.88 L)")
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc_sc', 'etalka'
+
+bind_rows(sim_iv, sim_sc) %>%
+  filter(time > 0) %>%
+  ggplot(aes(time, Cc, colour = route)) +
+  geom_line(linewidth = 1) +
+  scale_y_log10() +
+  labs(
+    x       = "Time since dose (days)",
+    y       = paste0("Fremanezumab concentration (", conc_unit, "; log scale)"),
+    title   = "Single 225 mg dose: typical-value IV vs SC profile",
+    caption = "Typical-value profiles (no IIV / no residual error). IV: 1-h infusion to central, ROUTE_IV = 1. SC: depot dose with F = 0.658 and lag = 0.0803 d, ROUTE_IV = 0."
+  ) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+![](Fiedler-Kelly_2019_fremanezumab_files/figure-html/iv-vs-sc-typical-1.png)
+
 ## PKNCA validation
 
 Paper-reported NCA metrics against which the simulation can be compared
-(Fiedler-Kelly 2019 Section 3.4 and Table 3):
+(Fiedler-Kelly 2019 Simulations section and Table 3):
 
 - median terminal half-life approximately 30 days, independent of dose
   or regimen;
@@ -310,10 +365,10 @@ knitr::kable(nca_summary,
 
 | start | end | treatment | N | auclast | cmax | tmax |
 |---:|---:|:---|:---|:---|:---|:---|
-| 0 | 84 | 225 mg SC Q4W dose 1 | 500 | NC | 33.4 \[36.6\] | 8.00 \[2.00, 28.0\] |
-| 0 | 84 | 225 mg SC Q4W last dose | 500 | 1610 \[33.9\] | 71.2 \[30.6\] | 7.00 \[7.00, 14.0\] |
-| 0 | 84 | 675 mg SC Q12W dose 1 | 500 | NC | 99.8 \[37.4\] | 8.00 \[2.00, 35.0\] |
-| 0 | 84 | 675 mg SC Q12W last dose | 500 | 4740 \[33.0\] | 115 \[31.8\] | 7.00 \[7.00, 21.0\] |
+| 0 | 84 | 225 mg SC Q4W dose 1 | 500 | NC | 32.8 \[33.0\] | 7.00 \[2.00, 28.0\] |
+| 0 | 84 | 225 mg SC Q4W last dose | 500 | 1610 \[33.7\] | 71.0 \[30.3\] | 7.00 \[7.00, 7.00\] |
+| 0 | 84 | 675 mg SC Q12W dose 1 | 500 | NC | 97.8 \[33.7\] | 8.00 \[2.00, 35.0\] |
+| 0 | 84 | 675 mg SC Q12W last dose | 500 | 4740 \[32.9\] | 113 \[30.1\] | 7.00 \[7.00, 28.0\] |
 
 PKNCA summary by treatment / interval (auclast in ug\*day/mL, Cmax in
 ug/mL). {.table style="width:100%;"}
@@ -351,8 +406,8 @@ knitr::kable(acc_table,
 
 | regimen | AR_AUC simulated | AR_AUC published (median) | AR_Cmax simulated | AR_Cmax published (median) |
 |:---|---:|---:|---:|---:|
-| 225 mg SC Q4W | NA | 2.43 | 2.13 | 2.38 |
-| 675 mg SC Q12W | NA | 1.21 | 1.14 | 1.22 |
+| 225 mg SC Q4W | NA | 2.43 | 2.17 | 2.38 |
+| 675 mg SC Q12W | NA | 1.21 | 1.19 | 1.22 |
 
 Accumulation ratios: simulated medians vs. Fiedler-Kelly 2019 Table 3.
 {.table}
@@ -367,24 +422,22 @@ of the dose schedule or sampling grid rather than parameter tuning.
   per-subject weight distribution. We sample log-normal around a 70.8 kg
   median with SD 0.22 on the log scale, clipped to the reported
   43.5-131.8 kg range.
-- **SC residual error only.** The source paper reports different
-  residual error models for IV (proportional, variance 0.0467) and SC
-  (combined proportional variance 0.0531 + additive variance 0.204)
-  observations. Because the approved therapeutic route is SC and the
-  vast majority of the dataset is SC, the packaged model uses only the
-  SC combined error model. Users simulating IV administration should be
-  aware that the published IV-specific proportional-only error is not
-  reproduced here.
-- **Vc,SC only.** The source paper estimated separate central volumes
-  for IV (Vc,iv = 2.98 L, FIXED) and SC (Vc,SC = 1.88 L) administration
-  to reconcile the biphasic IV profile with the monophasic SC profile in
-  the pooled dataset. The packaged model uses Vc,SC = 1.88 L because the
-  primary therapeutic use is SC dosing. Simulating IV administration
-  with this model will slightly under-represent the initial central
-  volume relative to the source paper.
-- **IV dosing not exercised in the vignette.** The phase 1 IV arm (225
-  mg and 900 mg, 1-hour infusion) is supported structurally (omit the
-  depot dose, dose directly to `central`) but not simulated here.
+- **Per-subject Vc BSV applied regardless of route.** Fiedler-Kelly 2019
+  estimated the Vc BSV (35.1% CV) only from SC subjects (IV-infusion or
+  trough-only subjects had their individual Vc fixed to the typical
+  value during the fit, as did ka BSV for non-intensive-sampling
+  subjects). For general-purpose simulation, the packaged model applies
+  `etalvc_sc` to every subject regardless of route. Users replicating
+  the fitting protocol exactly should hold `etalvc_sc` (and `etalka`) at
+  zero for IV-infusion subjects.
+- **IV vs SC residual-error and Vc switch driven by ROUTE_IV.** The
+  model carries both the IV-only proportional residual SD (sqrt(0.0467)
+  = 0.21610) and the SC combined residual SDs (sqrt(0.0531)
+  proportional, sqrt(0.204) additive), and selects between them per
+  record using the `ROUTE_IV` covariate column (1 = IV, 0 = SC).
+  Likewise, Vc switches between Vc,IV = 2.98 L (FIXED) and Vc,SC = 1.88
+  L by `ROUTE_IV`. Event datasets must supply `ROUTE_IV` on every
+  record.
 - **Race and ADA status** are not included as simulated covariates
   because they were not retained as significant predictors in the final
   model.
@@ -394,20 +447,23 @@ of the dose schedule or sampling grid rather than parameter tuning.
 - **Structural model:** 2-compartment with first-order SC absorption,
   absorption lag time, first-order elimination, and allometric weight
   scaling on CL (exponent 1.05) and Vc (exponent 1.53) relative to a 71
-  kg reference.
-- **Fixed parameters:** Q, Vp, F, and tlag were held fixed in the source
-  (Section 3.2 rationale: Q and Vp were estimated from IV phase 1 data,
-  F and tlag from combined IV + SC phase 1 data, then fixed when pooling
-  phase 2b / 3 trough samples). The packaged model preserves this by
-  wrapping them in `fixed()`.
-- **IIV:** diagonal matrix on CL, Vc, and ka; the source paper reports
-  no off-diagonal terms were estimated.
+  kg reference. Vp = 1.72 L is FIXED with no allometric weight effect.
+- **Fixed parameters:** Q, Vp, F, ALAG1, and Vc,IV were held fixed in
+  the source paper (Q and Vp were estimated from IV phase 1 data, F and
+  ALAG1 from the combined IV + SC phase 1 data, Vc,IV from the IV phase
+  1 data; all were then fixed when pooling phase 2b / 3 trough samples).
+  The packaged model preserves this by wrapping them in `fixed()`.
+- **IIV:** diagonal matrix on CL, Vc (the SC-fit value, applied to all
+  subjects), and ka; the source paper reports no off-diagonal terms were
+  estimated.
 - **Terminal half-life** predicted from the structural parameters is
-  approximately 30 days, matching the paper’s reported median.
+  approximately 30 days, matching the paper’s reported median terminal
+  half-life of about 30 days.
 
 ### Reference
 
-- Fiedler-Kelly JB, Cohen-Barak O, Morris DN, et al. Population
-  pharmacokinetic modelling and simulation of fremanezumab in healthy
-  subjects and patients with migraine. Br J Clin Pharmacol.
-  2019;85(12):2721-2733. <doi:10.1111/bcp.14096>
+- Fiedler-Kelly JB, Cohen-Barak O, Morris DN, Yoon E, Yeo KR, Ludwig EA,
+  Bauer R, Loupe P. Population pharmacokinetic modelling and simulation
+  of fremanezumab in healthy subjects and patients with migraine. Br J
+  Clin Pharmacol. 2019;85(12):2721-2733. <doi:10.1111/bcp.14096> (PMID
+  31418911).
