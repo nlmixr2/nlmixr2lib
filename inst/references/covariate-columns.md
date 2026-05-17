@@ -2596,6 +2596,29 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
   - `Ig_type` -- used in `Fau_2020_isatuximab.R`. Values 0 / 1 with the same orientation as the canonical (1 = non-IgG MM).
 - **Example models:** `Fau_2020_isatuximab.R` (exponential effect on the steady-state linear CL CLinf with coefficient -0.751, and on the time-varying-CL half-time KCL with coefficient -0.931), `Xu_2020_daratumumab.R` (additive shift `(1 + 0.806 * (1 - MM_NIGG))` on linear CL — Xu 2020 parameterises with non-IgG MM as reference, so an IgG MM patient receives an 80.6% higher linear CL than a non-IgG MM patient; canonical column semantics 1 = non-IgG / 0 = IgG are preserved).
 - **Notes:** Within-disease (multiple-myeloma) immunoglobulin-subtype stratifier. The mechanistic rationale (Fau 2020) is that endogenous IgG monoclonal protein in IgG-MM patients competes with the therapeutic IgG mAb for FcRn-mediated salvage, raising the therapeutic mAb's catabolic clearance; non-IgG-MM patients lack that competition and exhibit lower therapeutic-mAb clearance. Distinct from the disease-state indicators (`DIS_SMM` = smoldering MM); applies only after a multiple-myeloma diagnosis is established. Scope: specific because the comparison is a within-MM stratifier rather than a cross-population indicator. Reference category at the model level (which value of MM_NIGG corresponds to TVCL = base) varies between papers: Fau 2020 anchors to 0 (IgG MM) and Xu 2020 anchors to 1 (non-IgG MM); the canonical column orientation (1 = non-IgG) is fixed across papers and the per-model `covariateData[[MM_NIGG]]$reference_category` field records which anchor each model uses.
+
+### TUM_TP53_MUT (**canonical for tumour TP53 / p53 mutation indicator**)
+- **Description:** Binary indicator of tumour-cell TP53 mutational status as assessed in the source paper. 1 = TP53 mutant tumour (typically a missense mutation detected by sequencing, or p53 protein overexpression by immunohistochemistry used as a surrogate for TP53 missense mutation per Gillet et al. J Neurooncol 2014); 0 = TP53 wild-type tumour. Time-fixed per subject (a somatic tumour-genotype call made at diagnosis, not a germline genotype).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (TP53 wild-type).
+- **Source aliases:**
+  - "p53 mutation" / "p53 mutated" (Mazzocco 2015, paper text; p53 overexpression by IHC used as a surrogate for TP53 missense mutation).
+- **Example models:** `Mazzocco_2015_temozolomide.R` (exponential effect on the temozolomide tumour-cell-death rate constant `gamma`: `gamma = gamma0 * exp(beta_p53 * TUM_TP53_MUT)` with `beta_p53 = log(0.143 / 0.254) = -0.574`; TP53-mutant LGG tumours are 44% less sensitive to TMZ than TP53-wild-type tumours).
+- **Notes:** Specific scope because the column encodes a somatic tumour-genotype call (mechanism = altered DNA-damage response in tumour cells) rather than a germline pharmacogenomic variant. Distinct from the `SNP_<GENE>_<RSID>` family, which encodes inherited host germline genotypes affecting drug PK; `TUM_TP53_MUT` encodes a tumour-cell mutation and only makes mechanistic sense for drugs whose effect depends on a functional p53 pathway in the tumour. The Mazzocco 2015 cohort assayed p53 status by IHC overexpression; future extractions that use direct TP53 sequencing should still record their values under this canonical and document the assay method in `covariateData[[TUM_TP53_MUT]]$notes`. Ratified canonically on 2026-05-17 alongside the Mazzocco 2015 temozolomide extraction.
+
+### TUM_1P19Q_CODEL (**canonical for tumour 1p/19q chromosomal codeletion indicator**)
+- **Description:** Binary indicator of tumour-cell 1p/19q chromosomal codeletion status. 1 = tumour carries the combined loss of the short arm of chromosome 1 (1p) and the long arm of chromosome 19 (19q); 0 = non-codeleted tumour (intact 1p and/or 19q). Time-fixed per subject (a somatic tumour-genotype call made at diagnosis, typically by fluorescence in-situ hybridisation, comparative genomic hybridisation, or loss-of-heterozygosity assay).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-codeleted; intact 1p and/or 19q).
+- **Source aliases:**
+  - "1p/19q codeletion" / "1p/19q codeleted" (Mazzocco 2015, paper text).
+- **Example models:** `Mazzocco_2015_temozolomide.R` (exponential effect on the damaged-quiescent-to-proliferative repair rate constant `kQpP`: `kQpP = kQpP0 * exp(beta_1p19q * TUM_1P19Q_CODEL)` with `beta_1p19q = log(0.00807 / 0.00947) = -0.160`; 1p/19q-codeleted LGG tumours have 15% lower kQpP than non-codeleted tumours, consistent with longer reported duration of response in codeleted patients).
+- **Notes:** Specific scope because the column encodes a brain-tumour-specific somatic chromosomal alteration with mechanistic relevance to DNA-repair capacity in glioma cells; it is not a generic "any tumour-chromosomal-alteration" indicator. The 1p/19q codeletion is a defining molecular feature of oligodendrogliomas (per the 2016 WHO classification of CNS tumours) and is mutually exclusive with TP53 missense mutation in the Mazzocco 2015 cohort (Ricard 2007, ref 12 of Mazzocco 2015). Ratified canonically on 2026-05-17 alongside the Mazzocco 2015 temozolomide extraction.
+
 ## Laboratory / disease-activity
 
 ### ALBR (**canonical for serum albumin normalized to the laboratory's upper limit of normal**)

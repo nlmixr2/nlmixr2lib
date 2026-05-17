@@ -470,6 +470,8 @@ navbar:
         href: articles/Woillard_2011_tacrolimus.html
       - text: "Tefibazumab (Cao 2013)"
         href: articles/Cao_2013_tefibazumab.html
+      - text: "Temozolomide (Mazzocco 2015)"
+        href: articles/Mazzocco_2015_temozolomide.html
       - text: "Theophylline (Rovei 1982)"
         href: articles/Rovei_1982_theophylline.html
       - text: "Tisagenlecleucel (Stein 2019)"
@@ -873,6 +875,7 @@ articles:
   - articles/Martial_2017_micafungin
   - articles/Martinez_2019_alirocumab
   - articles/Masters_2022_avelumab
+  - articles/Mazzocco_2015_temozolomide
   - articles/Melhem_2022_dostarlimab
   - articles/Mo_2018_olaratumab
   - articles/Moein_2022_etrolizumab
