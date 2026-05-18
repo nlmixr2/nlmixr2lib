@@ -212,6 +212,10 @@ navbar:
         href: articles/Bista_2015_fentanyl.html
       - text: "Ferumoxytol (Plock 2014)"
         href: articles/Plock_2014_ferumoxytol.html
+      - text: "Fosdagrocorat oc (Shoji 2017)"
+        href: articles/Shoji_2017_fosdagrocorat_oc.html
+      - text: "Fosdagrocorat p1np (Shoji 2017)"
+        href: articles/Shoji_2017_fosdagrocorat_p1np.html
       - text: "Fremanezumab (Fiedler-Kelly 2019)"
         href: articles/Fiedler-Kelly_2019_fremanezumab.html
       - text: "Fremanezumab cm (FiedlerKelly 2020)"
@@ -991,6 +995,8 @@ articles:
   - articles/Shen_2013_belatacept
   - articles/Sheng_2016_quinine_rat
   - articles/Sherer_2012_AAA
+  - articles/Shoji_2017_fosdagrocorat_oc
+  - articles/Shoji_2017_fosdagrocorat_p1np
   - articles/Soehoel_2022_tralokinumab
   - articles/Stein_2019_Tisagenlecleucel
   - articles/Stevens_2012_remoxipride
