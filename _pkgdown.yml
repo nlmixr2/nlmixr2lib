@@ -198,6 +198,8 @@ navbar:
         href: articles/Diep_2022_eplontersen.html
       - text: "Eribulin (vanHasselt 2015)"
         href: articles/vanHasselt_2015_eribulin.html
+      - text: "Ethanol (Nemoto 2017)"
+        href: articles/Nemoto_2017_ethanol.html
       - text: "Etrolizumab (Moein 2022)"
         href: articles/Moein_2022_etrolizumab.html
       - text: "Everolimus (deWit 2016)"
@@ -981,6 +983,7 @@ articles:
   - articles/NA_NA_tte_lognormal
   - articles/Nanga_2019_tacrolimus_metaanalysis
   - articles/Narwal_2013_sifalimumab
+  - articles/Nemoto_2017_ethanol
   - articles/Nestorov_2014_factorviii
   - articles/Netterberg_2017_docetaxel
   - articles/Ngo_2020_HL2351

@@ -3680,6 +3680,28 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `deWit_2016_everolimus.R` (multiplicative effect on apparent bioavailability F: `F = 1 * 0.792^ABCB1_HAP_TTT` -- carriers have 20.8% lower F than non-carriers; dOFV = 9.6 in backward elimination, P < 0.01).
 - **Notes:** The `TTT` haplotype of *ABCB1* (P-glycoprotein, MDR1 efflux transporter) is associated with enhanced P-gp efflux activity and reduced everolimus bioavailability (de Wit 2016 Discussion paragraph 5); de Wit cites prior evidence that the same `TTT` haplotype also reduces exposure / efficacy of other P-gp substrates [refs 20-22 in the paper], although directionally inconsistent results have been reported [refs 7, 23, 24]. Het and hom carriers were pooled in de Wit 2016 because the homozygote frequency was < 0.1 (Methods 'Pharmacogenetic analysis'); future extractions that estimate separate het / hom effects should register paired `ABCB1_HAP_TTT_HET` and `ABCB1_HAP_TTT_HOM` indicators following the `SLCO1B1_HAP15_HET` / `SLCO1B1_HAP15_HOM` precedent above. Distinct from any individual ABCB1 SNP indicator (rs1128503, rs2032582, rs1045642 alone) because the haplotype is the cis combination tested jointly. Ratified canonically on 2026-05-16 alongside the de Wit 2016 everolimus extraction.
 
+### ALDH2_S2_CARRIER (**canonical for ALDH2*2 inactive-variant carrier indicator**)
+- **Description:** Binary genotype indicator for the *ALDH2* `*2` (inactive) variant allele (rs671 G>A; Glu487Lys, aldehyde dehydrogenase 2 mitochondrial isoform). 1 = subject carries at least one ALDH2*2 allele (heterozygous *1/*2 or homozygous *2/*2); 0 = ALDH2*1/*1 wild-type. Time-fixed per subject (germline genotype).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (ALDH2*1/*1 wild-type, fully active aldehyde dehydrogenase 2).
+- **Source aliases:**
+  - `ALDH2` (the source NONMEM indicator used in `Nemoto_2017_ethanol.R`; 1 for *1/*2 carriers, 0 for *1/*1 wild-type; the Nemoto 2017 cohort had no *2/*2 homozygotes so the indicator is effectively heterozygote-vs-wild-type in that cohort).
+- **Example models:** `Nemoto_2017_ethanol.R` (additive shift on Vd/F: -20.4 L when ALDH2_S2_CARRIER = 1 vs ALDH2*1/*1 reference; Nemoto 2017 Table II final model).
+- **Notes:** ALDH2*2 is the canonical East-Asian aldehyde-dehydrogenase deficiency allele (rs671 GAA -> AAA, Glu487Lys); homozygous *2/*2 subjects are essentially ALDH2-null and experience severe acetaldehyde-flush after even small ethanol doses, so are typically excluded from alcohol-PK studies. The Nemoto 2017 Japanese cohort contained 21/34 (62%) *1/*1 and 13/34 (38%) *1/*2 subjects; no *2/*2 homozygotes were enrolled. The single binary carrier indicator pools heterozygous and homozygous variant carriers; future ethanol-PK extractions that distinguish *1/*2 from *2/*2 effects should register paired `ALDH2_S2_HET` and `ALDH2_S2_HOM` indicators following the `SLCO1B1_HAP15_HET` / `SLCO1B1_HAP15_HOM` precedent. Ratified canonically on 2026-05-18 alongside the Nemoto 2017 ethanol extraction.
+
+### ADH1B_S2_HOM (**canonical for ADH1B*2 homozygote indicator**)
+- **Description:** Binary genotype indicator for the *ADH1B* `*2` (high-activity) variant allele (rs1229984 G>A; Arg47His, alcohol dehydrogenase 1B class I beta-subunit). 1 = subject is homozygous *2/*2; 0 = otherwise (the default reference covers ADH1B*2/*1 heterozygotes; ADH1B*1/*1 wild-type subjects fall outside the published parameterization of Nemoto 2017 and are conventionally assigned the same reference value as heterozygotes). Time-fixed per subject (germline genotype).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (ADH1B*2/*1 heterozygous; ADH1B*1/*1 wild-type by extension when the model is applied beyond the published parameter range).
+- **Source aliases:**
+  - `ADH1B` (the source NONMEM indicator used in `Nemoto_2017_ethanol.R`; 1 for *2/*2 homozygotes, 0 for *2/*1 heterozygotes; Nemoto 2017 Table II structural model encodes the Vmax conditional via two separate THETAs).
+- **Example models:** `Nemoto_2017_ethanol.R` (additive shift on Vmax: +176 mg/h for *2/*2 homozygotes relative to the *2/*1 reference Vmax of 7790 mg/h; Nemoto 2017 Table II final model).
+- **Notes:** ADH1B*2 is the East-Asian high-activity alcohol-dehydrogenase variant (rs1229984 Arg47His); the *2 allele encodes a ~40x faster ethanol oxidation rate than the *1 wild-type. Allele frequency in Japanese populations is ~70%, so most subjects are *2/*2 or *1/*2 with a small *1/*1 minority (~9% expected). Nemoto 2017 inherits the two-Vmax parameterization from Seng et al. 2014 (which estimated Vmax separately for *2/*1 and *2/*2 in a Chinese + Indian cohort) and does not report an ADH1B genotype distribution for its 34-subject Japanese cohort; the structural model is silent on ADH1B*1/*1 subjects. Future ADH1B-aware ethanol-PK extractions that explicitly model all three genotypes should register `ADH1B_S2_HET` as a companion indicator following the `SLCO1B1_HAP15_HET` / `SLCO1B1_HAP15_HOM` precedent. Ratified canonically on 2026-05-18 alongside the Nemoto 2017 ethanol extraction.
+
 ## Lifestyle / medical history
 
 ### SMOKE (**canonical for current-smoker binary indicator**)
