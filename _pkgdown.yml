@@ -354,8 +354,6 @@ navbar:
         href: articles/deHoogd_2017_morphine.html
       - text: "Morphine (Franken 2015)"
         href: articles/Franken_2015_morphine.html
-      - text: "Morphine (Pierre 2017)"
-        href: articles/Pierre_2017_morphine.html
       - text: "MRNA3927 (Attarwala 2023)"
         href: articles/Attarwala_2023_mRNA3927.html
       - text: "Nalmefene (Kyhl 2016)"
@@ -438,8 +436,6 @@ navbar:
         href: articles/Diepstraten_2013_propofol.html
       - text: "Pyrazinamide (Alsultan 2017)"
         href: articles/Alsultan_2017_pyrazinamide.html
-      - text: "Quinine rat (Sheng 2016)"
-        href: articles/Sheng_2016_quinine_rat.html
       - text: "Ranibizumab (Mulyukov 2018)"
         href: articles/Mulyukov_2018_ranibizumab.html
       - text: "RFIXFc (Diao 2014)"
@@ -526,10 +522,8 @@ navbar:
         href: articles/Prytula_2016_tacrolimus.html
       - text: "Tacrolimus (Storset 2014)"
         href: articles/Storset_2014_tacrolimus.html
-      - text: "Tacrolimus (Woillard 2011)"
-        href: articles/Woillard_2011_tacrolimus.html
-      - text: "Tacrolimus metaanalysis (Nanga 2019)"
-        href: articles/Nanga_2019_tacrolimus_metaanalysis.html
+      - text: "Tacrolimus unbound plasma (Sikma 2020)"
+        href: articles/Sikma_2020_tacrolimus_unbound_plasma.html
       - text: "Tefibazumab (Cao 2013)"
         href: articles/Cao_2013_tefibazumab.html
       - text: "Temozolomide (Mazzocco 2015)"
@@ -831,9 +825,7 @@ articles:
   - articles/Dao_2020_sultiame
   - articles/Debord_2001_cyclosporin
   - articles/deHoogd_2017_morphine
-  - articles/deKock_2017_sulfadoxinePyrimethamine
   - articles/Delattre_2010_amikacin
-  - articles/Delor_2013_alzheimer
   - articles/deVriesSchultink_2020_zenocutuzumab
   - articles/deWit_2016_everolimus
   - articles/Diao_2014_rFIXFc
@@ -1038,8 +1030,7 @@ articles:
   - articles/Shen_2013_belatacept
   - articles/Sheng_2016_quinine_rat
   - articles/Sherer_2012_AAA
-  - articles/Shoji_2017_fosdagrocorat_oc
-  - articles/Shoji_2017_fosdagrocorat_p1np
+  - articles/Sikma_2020_tacrolimus_unbound_plasma
   - articles/Soehoel_2022_tralokinumab
   - articles/Stein_2019_Tisagenlecleucel
   - articles/Stevens_2012_remoxipride
@@ -1074,8 +1065,6 @@ articles:
   - articles/Valenzuela_2025_nipocalimab
   - articles/Valitalo_2017_ketorolac
   - articles/Valitalo_2017_morphine
-  - articles/vanderWalt_2013_dapagliflozin
-  - articles/vanHasselt_2015_eribulin
   - articles/vanRongen_2016_acetaminophen
   - articles/vanRongen_2018_midazolam
   - articles/vanWijk_2019_paracetamol
