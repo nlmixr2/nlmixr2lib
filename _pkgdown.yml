@@ -330,6 +330,10 @@ navbar:
         href: articles/Mukai_2019_mogamulizumab.html
       - text: "Monalizumab (Hwang 2023)"
         href: articles/Hwang_2023_monalizumab.html
+      - text: "Morphine (Franken 2015)"
+        href: articles/Franken_2015_morphine.html
+      - text: "Morphine (Pierre 2017)"
+        href: articles/Pierre_2017_morphine.html
       - text: "Morphine (deHoogd 2017)"
         href: articles/deHoogd_2017_morphine.html
       - text: "Morphine (Franken 2015)"
@@ -958,6 +962,7 @@ articles:
   - articles/Peng_2024_SAL003
   - articles/PerezRuixo_2025_posdinemab
   - articles/Petrov_2024_romiplostim
+  - articles/Pierre_2017_morphine
   - articles/Plan_2012_pain
   - articles/Plock_2014_ferumoxytol
   - articles/Pouzin_2022_tusamitamab

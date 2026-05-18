@@ -545,31 +545,16 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Lu_2019_polatuzumab.R` (multiplicative effect on FRAC_NS = 1.19, applied as `1.19^HEPIMP`).
 - **Notes:** NCI ODWG classification (Ramalingam SS et al., J Clin Oncol 2010;28:4507) groups subjects by total bilirubin and AST: group 1 = normal, group 2 = mild (TBILI <= ULN and AST > ULN, or TBILI > 1-1.5 x ULN), group 3 = moderate (TBILI > 1.5-3 x ULN), group 4 = severe (TBILI > 3 x ULN). Source papers typically pool groups 2-4 versus group 1 for a binary indicator because the impaired-liver subgroups are individually small. If a future model needs finer resolution (separate effects for mild vs moderate-or-worse), add a parallel `HEPIMP_MOD` canonical rather than overloading this one.
 
-### HEPIMP_SEV (**canonical for severe hepatic impairment indicator**)
-- **Description:** 1 = severe hepatic impairment, 0 = normal hepatic function or less-than-severe category. The classification scheme that defines "severe" is paper-specific and must be documented in per-model `covariateData[[HEPIMP_SEV]]$notes`. Two schemes are commonly encountered:
-  - **NCI ODWG group 4**: total bilirubin > 3 x ULN with any AST (Ramalingam SS et al., J Clin Oncol 2010;28:4507).
-  - **Child-Pugh Class C**: composite score 10-15 across bilirubin, albumin, INR, ascites, and encephalopathy.
-- **Units:** (binary)
-- **Type:** binary
-- **Scope:** general
-- **Reference category:** 0 (any non-severe category: normal, mild, or moderate; the model typically uses HEPIMP_SEV alongside other severity-specific indicators that partition the non-severe pool further).
+### NASF (**canonical for nonalcoholic steatohepatitis severity score combining NAS and fibrosis staging**)
+- **Description:** Integer composite severity score for nonalcoholic steatohepatitis (NASH), summing the NAFLD activity score (NAS: steatosis 0-3 + hepatocyte ballooning 0-2 + lobular inflammation 0-3, total 0-8) and the fibrosis staging score (0 = absent, 1 = perisinusoidal / pericellular, 2 = periportal, 3 = bridging, 4 = cirrhosis). Total range 0-12; healthy subjects without biopsy-confirmed NASH are assigned NASF = 0 by convention. Scores below 5 reflect a benign form of NAFLD; scores >= 5 reflect biopsy-confirmed NASH.
+- **Units:** (count, 0-12)
+- **Type:** count
+- **Scope:** specific
+- **Reference category:** n/a -- used with a linear effect on `log(NASF / 4)` for NASF >= 4 and zero contribution for NASF < 4 (so NASF = 4 and any NASF < 4 reduce to the typical-value reference). The cutoff of 4 distinguishes patients with a benign form of NAFLD from those with biopsy-confirmed NASH (Pierre 2017 Methods 'Covariate analysis' and references 31 and 34).
 - **Source aliases:**
-  - `Child-Pugh Class C` -- used in `vanderWalt_2013_dapagliflozin.R` (covariate effects on CLP_M15 and V2M; the paper dichotomizes severe hepatic impairment per the Child-Pugh classification).
-- **Example models:** `vanderWalt_2013_dapagliflozin.R` (Child-Pugh Class C; multiplicative fractional effects -0.422 on the dapagliflozin -> D3OG metabolic clearance and +1.33 on the D3OG central volume of distribution; paper text "With severe HI (Child-Pugh Class C), CLP M15 decreased by 41% and V2M increased by 134%").
-- **Notes:** Use this column when a model dichotomizes severe hepatic impairment as a separate indicator from milder categories. The classification scheme (NCI ODWG vs Child-Pugh vs other) is paper-specific and must be documented per-model. For composite "moderate-or-severe" pooled indicators, use the parallel `HEPIMP_MODSEV` canonical rather than overloading this entry. Companion to `HEPIMP_MILD` (mild only) and `HEPIMP_MODSEV` (moderate + severe pooled); the SKILL.md anticipates each severity level as its own canonical when the source paper tests them as separate covariates.
-
-### HEPIMP_MODSEV (**canonical for composite moderate-or-severe hepatic impairment indicator**)
-- **Description:** 1 = moderate or severe hepatic impairment, 0 = normal hepatic function or mild impairment. Composite indicator used by source papers that pool the moderate and severe subgroups because the severe subgroup alone is too small to support a separate covariate-effect estimate. Distinct from `HEPIMP_MOD_MISSING` (which pools moderate cases with missing-data cases, not with severe cases). The classification scheme that defines the cut points is paper-specific and must be documented in per-model `covariateData[[HEPIMP_MODSEV]]$notes`. Two schemes are commonly encountered:
-  - **NCI ODWG groups 3-4 pooled**: total bilirubin > 1.5 x ULN with any AST.
-  - **Child-Pugh Class B or C pooled**: composite score >= 7.
-- **Units:** (binary)
-- **Type:** binary
-- **Scope:** general
-- **Reference category:** 0 (normal hepatic function or mild impairment; the indicator is mutually exclusive with HEPIMP_MILD, so all-zero on both indicators corresponds to the normal-function reference and HEPIMP_MILD=1 with HEPIMP_MODSEV=0 corresponds to mild-only).
-- **Source aliases:**
-  - `Child-Pugh Class B,C` -- used in `vanderWalt_2013_dapagliflozin.R` (covariate effects on V3P and CLM; the paper dichotomizes moderate-or-severe hepatic impairment per the Child-Pugh classification).
-- **Example models:** `vanderWalt_2013_dapagliflozin.R` (Child-Pugh Class B or C; multiplicative fractional effects -0.600 on the dapagliflozin peripheral volume of distribution V3P and -0.293 on the D3OG renal clearance CLM; paper text "Moderate or severe HI (Child-Pugh Class B or C) decreased CLM and the peripheral volume of distribution of dapagliflozin (V3P) by 29 and 60%, respectively").
-- **Notes:** Use this column when a model pools moderate-and-severe hepatic impairment under a single coefficient (typically because the severe subgroup alone is too small to estimate as its own effect). The classification scheme (NCI ODWG vs Child-Pugh vs other) is paper-specific and must be documented per-model. Companion to `HEPIMP_MILD` (mild only) and `HEPIMP_SEV` (severe only). Distinct from `HEPIMP_MOD_MISSING` (which pools moderate cases with subjects whose hepatic-function data are missing/unknown, not with severe cases). The composite mod-or-sev pooling is a different load-bearing convention than the mod-or-missing pooling, so the two canonicals must remain separate.
+  - `NASF` -- used in `Pierre_2017_morphine.R` (Pierre 2017 Methods 'Covariate analysis').
+- **Example models:** `Pierre_2017_morphine.R` (linear effect on `log(NASF / 4)` for NASF >= 4 with coefficient -0.628 on M3G clearance: `CL_M3G_i = CL_M3G_pop * (1 + e_nasf_cl_m3g * log(NASF / 4))` for NASF >= 4 and `CL_M3G_i = CL_M3G_pop` for NASF < 4; higher NASF reduces M3G clearance via reduced biliary excretion and increased basolateral efflux of M3G into systemic circulation).
+- **Notes:** The NAFLD activity score (NAS) component is the histology score described by Bondini 2007 / Kleiner 2005 and references therein; the fibrosis staging is the Brunt / NASH-CRN system. The combined NASF score is the noninvasive staging proposed by Santiago-Rolon 2015 (Proc R Health Sci J 34:189-194) and used by Angulo 2007 as the NAFLD Fibrosis Score cutoff. Scope: specific because the precise cutoff (NASF >= 4) and the linear-on-log functional form are Pierre 2017's modeling choice; future papers may model NASF or its components differently. Distinct from `HEPIMP*` (NCI ODWG oncology-trial hepatic-impairment categories) and from continuous liver enzymes (ALT, AST, ALP) -- NASF is a biopsy-derived disease-severity ordinal specific to NAFLD / NASH. Ratified canonically on 2026-05-18 alongside the Pierre 2017 morphine extraction.
 
 ### CPK (**canonical for serum creatine phosphokinase / creatine kinase**)
 - **Description:** Serum creatine phosphokinase (also called creatine kinase, CK) activity (baseline or time-varying). Skeletal-muscle / cardiac-muscle injury and turnover marker; in macrophage-targeted PK/PD analyses (axatilimab, anti-CSF-1R) it is interpreted as a Kupffer-cell / tissue-macrophage clearance surrogate because Kupffer cells participate in the elimination of circulating muscle-derived enzymes.
