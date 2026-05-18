@@ -502,8 +502,8 @@ navbar:
         href: articles/Prytula_2016_tacrolimus.html
       - text: "Tacrolimus (Storset 2014)"
         href: articles/Storset_2014_tacrolimus.html
-      - text: "Tacrolimus (Woillard 2011)"
-        href: articles/Woillard_2011_tacrolimus.html
+      - text: "Tacrolimus metaanalysis (Nanga 2019)"
+        href: articles/Nanga_2019_tacrolimus_metaanalysis.html
       - text: "Tefibazumab (Cao 2013)"
         href: articles/Cao_2013_tefibazumab.html
       - text: "Temozolomide (Mazzocco 2015)"
@@ -946,6 +946,7 @@ articles:
   - articles/NA_NA_tte_gompertz_ev2
   - articles/NA_NA_tte_loglogistic
   - articles/NA_NA_tte_lognormal
+  - articles/Nanga_2019_tacrolimus_metaanalysis
   - articles/Narwal_2013_sifalimumab
   - articles/Nestorov_2014_factorviii
   - articles/Netterberg_2017_docetaxel
