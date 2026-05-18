@@ -55,7 +55,15 @@
     # biliary excretion (k12) and re-enters central after a delay
     # (k21 gated by gallbladder-emptying time tg), producing the
     # characteristic second-peak phenomenon.
-    "gallbladder"
+    "gallbladder",
+    # Soluble vascular endothelial growth factor receptor 2 (sVEGFR2)
+    # plasma compartment used by indirect-response biomarker PD models
+    # for angiogenesis inhibitors (Ait-Oudhia 2016, Hansson 2013a).
+    "svegfr2",
+    # Tumor volume / size compartment used by tumor growth inhibition
+    # (TGI) models in oncology (Ait-Oudhia 2016, NA_NA_sunitinib,
+    # Schindler 2016, Wilbaux 2015 and similar).
+    "tumor"
   ),
   # Bare numbered chains (transit / effect / precursor / lat / dar /
   # depot) and metabolite-suffixed compartments are validated
@@ -156,6 +164,12 @@
     # metabolite of osimertinib formed predominantly via CYP3A4/5
     # (Brown 2017 BJCP 83(6):1216-1226 doi:10.1111/bcp.13223).
     "az5104",
+    # N-desmethyl-selumetinib (also reported as the active selumetinib
+    # metabolite, ~3-5-fold more potent for MEK1 inhibition than the
+    # parent), formed by oxidative N-demethylation of selumetinib
+    # (Patel 2017 CPT Pharmacometrics Syst Pharmacol 6(5):305-314
+    # doi:10.1002/psp4.12175).
+    "ndsel",
     # Capecitabine sequential metabolites (Urien 2005
     # doi:10.1007/s10928-005-0018-2): 5'-DFCR (5'-deoxy-5-
     # fluorocytidine, formed in the liver by carboxylesterase from
@@ -206,7 +220,13 @@
     # enzymatically hydrolyzes the substrate; the suffix marks the
     # non-parent species in 2-drug PK/PD models (Kimura 2023
     # doi:10.21873/anticanres.16351).
-    "cpg2"
+    "cpg2",
+    # 3-N-acetyl-3,4-diaminopyridine (3-Ac DAP), the inactive N-acetyl
+    # metabolite of 3,4-diaminopyridine (amifampridine) free base
+    # produced by N-acetyltransferases. Used in parent-plus-metabolite
+    # popPK models for amifampridine in patients with Lambert-Eaton
+    # myasthenia (Thakkar 2017 doi:10.1002/psp4.12218).
+    "acdap"
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` denotes the time-varying decay arm.
@@ -231,7 +251,14 @@
     # `mtt` = mean transit time; `fr` = fraction of MAT in the transit
     # delay; `ktr` = first-order transit rate constant (= n_transit /
     # MTT for a chain of length n).
-    "mat", "mtt", "fr", "ktr"
+    "mat", "mtt", "fr", "ktr",
+    # First-order rate constant for in-vivo formation of an active
+    # metabolite from the parent central compartment, when the source
+    # paper parameterises metabolite formation independently of the
+    # parent's total clearance (i.e. fraction-metabolised is implicit
+    # in kmet * Vc_parent / CL_parent rather than estimated as Fm).
+    # Used in Krause 2017 selexipag (-> ACT-333679) popPK.
+    "kmet"
   ),
   requiredUnits = c("time", "dosing", "concentration"),
   requiredMetadata = c("description", "reference", "units"),
