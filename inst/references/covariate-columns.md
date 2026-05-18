@@ -4083,6 +4083,16 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Takahashi_2023_abatacept.R` (multiplicative `Ratio` factors on CL = 0.91 and on Vc = 1.32 vs the RA/JIA reference; values from Takahashi 2023 Supplemental Table 4).
 - **Notes:** Pairs with `STUDY_ABA2_HLA78`. At most one of the two indicators is 1 per subject; both 0 reproduces the RA/JIA reference. Scope: specific.
 
+### STUDY_RIV201 (**canonical for Tammara 2017 rivipansel phase II SCD study indicator**)
+- **Description:** 1 = subject enrolled in the phase II rivipansel study (NCT01119833; "study 201" in the Tammara 2017 integrated population PK analysis; Telen 2015 Blood 125:2656-2664 reports the trial results); 0 = healthy adult volunteers from the three rivipansel phase I studies (studies 101, 102, and 103) pooled into the integrated dataset. Used both as an additive shift on typical clearance (interpreted by the authors as the SCD-hyperfiltration component, ~23%) and to switch the additive / proportional residual-error magnitudes between the two cohorts (Table 1).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (rivipansel phase I healthy-adult studies 101, 102, and study 103 healthy adults with SCD pooled with phase I per Tammara 2017; the paper labels these as "phase I studies" in the residual-error rows of Table 1).
+- **Source aliases:** derived per subject from the trial identifier (`NCT01119833` -> 1, else -> 0); the source `STUD` column in the NONMEM dataset described in Tammara 2017 Table 1 footnote b.
+- **Example models:** `Tammara_2017_rivipansel.R` (Table 1: additive effect 0.234 on CL via `1 + 0.234 * STUDY_RIV201`; selects the cohort-specific additive and proportional residual SDs in `model()`).
+- **Notes:** Specific scope because the contrast is tied to the rivipansel development program. The Tammara 2017 paper interprets the 23% CL increment as a putative hyperfiltration effect of SCD; in simulation use cases targeting the SCD population (the paper's stated goal) set `STUDY_RIV201 = 1` for every subject. Subject-level / time-fixed; set once from the trial identifier on each subject record.
+
 ### DLVL (**canonical for source-protocol dose-level integer indicator**)
 - **Description:** Integer dose-level / protocol-arm indicator carried per subject in the DDMODEL00000281 lidocaine bundle's simulated dataset (`Simulated_Lid_B04_ddmore.csv`). Values 1-4 (or higher) flag distinct study-protocol dose / regimen tiers; the `NA_NA_lidocaine.R` model binarises as `DLVL > 2` to switch the typical-value baselines for both the GX elimination rate constant K30 and the lidocaine apparent central volume V1 between a "low" (DLVL <= 2) and a "high" (DLVL > 2) regimen.
 - **Units:** (integer-coded categorical)

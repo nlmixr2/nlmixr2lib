@@ -436,6 +436,8 @@ navbar:
         href: articles/Suleiman_2019_risankizumab.html
       - text: "Risankizumab (Thakre 2022)"
         href: articles/Thakre_2022_risankizumab.html
+      - text: "Rivipansel (Tammara 2017)"
+        href: articles/Tammara_2017_rivipansel.html
       - text: "Rocatinlimab (Okada 2025)"
         href: articles/Okada_2025_rocatinlimab.html
       - text: "Roflumilast (Lahu 2010)"
@@ -1011,6 +1013,7 @@ articles:
   - articles/Takahashi_2023_abatacept
   - articles/Takeuchi_2023_ozoralizumab
   - articles/Talke_2018_dexmedetomidine
+  - articles/Tammara_2017_rivipansel
   - articles/Taylor_2020_methotrexate
   - articles/TerHeine_2014_tamoxifen
   - articles/Terranova_2018_paclitaxel
