@@ -336,6 +336,8 @@ navbar:
         href: articles/Shekar_2014_meropenem.html
       - text: "Methotrexate (Taylor 2020)"
         href: articles/Taylor_2020_methotrexate.html
+      - text: "Methylphenidate (Teuscher 2015)"
+        href: articles/Teuscher_2015_methylphenidate.html
       - text: "MHD rat (Clinckers 2008)"
         href: articles/Clinckers_2008_MHD_rat.html
       - text: "Micafungin (Martial 2017)"
@@ -1064,6 +1066,7 @@ articles:
   - articles/TerHeine_2014_tamoxifen
   - articles/Terranova_2018_paclitaxel
   - articles/Tetschke_2018_erythropoiesis
+  - articles/Teuscher_2015_methylphenidate
   - articles/Thakkar_2017_amifampridine
   - articles/Thakre_2022_risankizumab
   - articles/Themans_2019_meropenem
