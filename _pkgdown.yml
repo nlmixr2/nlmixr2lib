@@ -192,6 +192,8 @@ navbar:
         href: articles/DoldanMartelli_2013_EGF_IFN_chimera.html
       - text: "Elotuzumab (Ide 2020)"
         href: articles/Ide_2020_elotuzumab.html
+      - text: "Epinephrine (Abboud 2009)"
+        href: articles/Abboud_2009_epinephrine.html
       - text: "Eplontersen (Diep 2022)"
         href: articles/Diep_2022_eplontersen.html
       - text: "Eribulin (vanHasselt 2015)"
@@ -750,6 +752,7 @@ articles:
 - title: internal
   desc: Drug-specific validation vignettes. They are reached from the Specific drug models and DDMoRe models navbar dropdowns; this group hides them from the main Articles index.
   contents:
+  - articles/Abboud_2009_epinephrine
   - articles/Aguiar_2021_ustekinumab
   - articles/Ahamadi_2017_pembrolizumab
   - articles/Ait-Oudhia_2016_sunitinib

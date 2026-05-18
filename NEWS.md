@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Wicha 2017 linezolid + meropenem + vancomycin ([doi:10.1002/psp4.12197](https://doi.org/10.1002/psp4.12197)) -- in vitro time-kill MSSA (ATCC 29213) semimechanistic PD model of three antibiotics alone and in dual combinations.
+* Add Abboud 2009 epinephrine ([doi:10.1186/cc7972](https://doi.org/10.1186/cc7972)) -- adults with septic shock (ratifies new `SAPS_II` covariate canonical for the new Simplified Acute Physiology Score II at ICU admission).
 * Rewrite Fiedler-Kelly 2019 fremanezumab ([doi:10.1111/bcp.14096](https://doi.org/10.1111/bcp.14096)) to support both IV and SC routes -- the packaged model now carries the route-specific central volume (Vc,IV = 2.98 L FIXED vs Vc,SC = 1.88 L) and the route-specific residual-error structure (IV proportional-only vs SC additive+proportional) from Fiedler-Kelly 2019 Table 2, switched by the `ROUTE_IV` covariate column. Removes the previous spurious allometric weight effect on Vp (the source paper holds Vp FIXED with no weight effect).
 * Add Yuan 2019 concizumab ([doi:10.1016/j.ejps.2019.105032](https://doi.org/10.1016/j.ejps.2019.105032)) -- healthy adult males receiving single-dose IV or SC concizumab (23-state systems PK/PD model with two nested endothelial endosome compartments for mTFPI-mediated TMDD and FcRn-recycled linear clearance of free and sTFPI-bound antibody).
 * Add Debord 2001 cyclosporin ([doi:10.2165/00003088-200140050-00004](https://doi.org/10.2165/00003088-200140050-00004)) -- stable renal transplant recipients receiving oral cyclosporin microemulsion (Neoral) 75-175 mg twice daily (gamma-distribution absorption convolved with two-compartment disposition; F fixed to 1).
