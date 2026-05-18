@@ -164,6 +164,12 @@
     # metabolite of osimertinib formed predominantly via CYP3A4/5
     # (Brown 2017 BJCP 83(6):1216-1226 doi:10.1111/bcp.13223).
     "az5104",
+    # N-desmethyl-selumetinib (also reported as the active selumetinib
+    # metabolite, ~3-5-fold more potent for MEK1 inhibition than the
+    # parent), formed by oxidative N-demethylation of selumetinib
+    # (Patel 2017 CPT Pharmacometrics Syst Pharmacol 6(5):305-314
+    # doi:10.1002/psp4.12175).
+    "ndsel",
     # Capecitabine sequential metabolites (Urien 2005
     # doi:10.1007/s10928-005-0018-2): 5'-DFCR (5'-deoxy-5-
     # fluorocytidine, formed in the liver by carboxylesterase from

@@ -452,8 +452,8 @@ navbar:
         href: articles/Ma_2020_sarilumab_anc.html
       - text: "Sarilumab das28crp (Ma 2020)"
         href: articles/Ma_2020_sarilumab_das28crp.html
-      - text: "Selexipag (Krause 2017)"
-        href: articles/Krause_2017_selexipag.html
+      - text: "Selumetinib (Patel 2017)"
+        href: articles/Patel_2017_selumetinib.html
       - text: "Semaglutide (Overgaard 2019)"
         href: articles/Overgaard_2019_semaglutide.html
       - text: "Sifalimumab (Narwal 2013)"
@@ -959,6 +959,7 @@ articles:
   - articles/Papachristos_2020_bevacizumab_qss
   - articles/Papathanasiou_2025_belantamab
   - articles/Parhiz_2024_mRNALNP
+  - articles/Patel_2017_selumetinib
   - articles/Peng_2024_SAL003
   - articles/PerezRuixo_2025_posdinemab
   - articles/Petrov_2024_romiplostim
