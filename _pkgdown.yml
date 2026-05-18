@@ -58,6 +58,8 @@ navbar:
         href: articles/Aregbe_2012_alvespimycin.html
       - text: "Amatuximab (Gupta 2016)"
         href: articles/Gupta_2016_amatuximab.html
+      - text: "Amifampridine (Thakkar 2017)"
+        href: articles/Thakkar_2017_amifampridine.html
       - text: "Amikacin (Delattre 2010)"
         href: articles/Delattre_2010_amikacin.html
       - text: "Amlitelimab (Tiraboschi 2025)"
@@ -1013,6 +1015,7 @@ articles:
   - articles/TerHeine_2014_tamoxifen
   - articles/Terranova_2018_paclitaxel
   - articles/Tetschke_2018_erythropoiesis
+  - articles/Thakkar_2017_amifampridine
   - articles/Thakre_2022_risankizumab
   - articles/Themans_2019_meropenem
   - articles/Thorsted_2016_somatropin_human

@@ -221,14 +221,12 @@
     # non-parent species in 2-drug PK/PD models (Kimura 2023
     # doi:10.21873/anticanres.16351).
     "cpg2",
-    # ACT-333679, the active demethyl-aminobutyric-acid metabolite of
-    # selexipag (Actelion compound code; also known as MRE-269 in the
-    # earlier Nippon Shinyaku literature). Selexipag is hydrolysed
-    # in vivo to ACT-333679, which is approximately 37-fold more potent
-    # than the parent at the human IP prostacyclin receptor and is the
-    # primary contributor to clinical efficacy (Krause 2017
-    # CPT Pharmacometrics Syst Pharmacol doi:10.1002/psp4.12202).
-    "act"
+    # 3-N-acetyl-3,4-diaminopyridine (3-Ac DAP), the inactive N-acetyl
+    # metabolite of 3,4-diaminopyridine (amifampridine) free base
+    # produced by N-acetyltransferases. Used in parent-plus-metabolite
+    # popPK models for amifampridine in patients with Lambert-Eaton
+    # myasthenia (Thakkar 2017 doi:10.1002/psp4.12218).
+    "acdap"
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` denotes the time-varying decay arm.
