@@ -356,6 +356,8 @@ navbar:
         href: articles/Franken_2015_morphine.html
       - text: "Morphine (Pierre 2017)"
         href: articles/Pierre_2017_morphine.html
+      - text: "Moxifloxacin (Hong 2015)"
+        href: articles/Hong_2015_moxifloxacin.html
       - text: "MRNA3927 (Attarwala 2023)"
         href: articles/Attarwala_2023_mRNA3927.html
       - text: "Nalmefene (Kyhl 2016)"
@@ -896,6 +898,7 @@ articles:
   - articles/Hennig_2013_tobra
   - articles/Hennig_2015_phenytoin
   - articles/Hennig_2015_rifabutin
+  - articles/Hong_2015_moxifloxacin
   - articles/Hong_2025_datopotamab
   - articles/Hood_2021_medi7836
   - articles/Hu_2014_bapineuzumab
