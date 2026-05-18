@@ -1,0 +1,496 @@
+# Dapsone (Hall 2017)
+
+## Model and source
+
+- Citation: Hall RG II, Pasipanodya JG, Swancutt MA, Meek C, Leff R,
+  Gumbo T. Supervised machine-learning reveals that old and obese people
+  achieve low dapsone concentrations. CPT Pharmacometrics Syst
+  Pharmacol. 2017;6(8):552-559. <doi:10.1002/psp4.12208>
+- Description: One-compartment population PK model with first-order oral
+  absorption for dapsone in healthy US adults across a wide weight
+  range; covariate effects on Ka, CL, and Vc are encoded via the
+  published MARS piecewise-linear basis functions of weight, age, and
+  blood urea nitrogen (Hall 2017).
+- Article: <https://doi.org/10.1002/psp4.12208>
+
+The structural model is a one-compartment disposition with first-order
+oral absorption. Hall 2017 fits the per-subject pharmacokinetic
+parameters with ADAPT 5 / MLEM and then applies Multivariate Adaptive
+Regression Splines (MARS) to the individual posthoc PK estimates to
+express each parameter as a piecewise-linear combination of hinge basis
+functions of body weight, age, and blood urea nitrogen (Table 2 of the
+paper). The packaged model encodes the MARS equations verbatim; the IIV
+and residual error magnitudes are documented under Assumptions and
+deviations below.
+
+## Population
+
+35 healthy adult volunteers (NCT01165840) recruited at the University of
+Texas Southwestern Clinical Trials and Research Center between July 2010
+and May 2012 received a single 100 mg oral dose of dapsone under
+directly observed therapy. Recruitment was stratified by BMI to enrol
+equal numbers of normal-weight (BMI \< 25), overweight / class I-II
+obese (BMI 25-40), and class III obese (BMI \> 40) participants, with
+equal numbers of men and women within each stratum (Hall 2017 Methods,
+“Recruitment”). Plasma dapsone concentrations were measured at eight
+timepoints over 72 h, with sampling times chosen by D-optimal design in
+ADAPT 5. Baseline demographics are in Hall 2017 Table 1; the same fields
+are available programmatically via
+`readModelDb("Hall_2017_dapsone")$population`.
+
+## Source trace
+
+The per-parameter origin is recorded as an in-file comment next to each
+[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
+`inst/modeldb/specificDrugs/Hall_2017_dapsone.R`. The table below
+collects them for reviewer audit.
+
+| Equation / parameter | Value | Source location |
+|----|----|----|
+| `lka` (Ka MARS intercept, 1/h) | log(3.967) | Table 2, Eq. (2) intercept |
+| `lcl` (CL MARS intercept, L/h) | log(2.048) | Table 2, Eq. (3) intercept |
+| `lvc` (Vc MARS intercept, L) | log(36.648) | Table 2, Eq. (4) intercept |
+| `e_bf3ka_ka` (coef on BF3_Ka) | -0.062 | Table 2, Eq. (2) BF3 term |
+| `e_bf5ka_ka` (coef on BF5_Ka) | +0.162 | Table 2, Eq. (2) BF5 term |
+| `e_bf3cl_cl` (coef on BF3_CL) | -0.002 | Table 2, Eq. (3) BF3 term |
+| `e_bf4cl_cl` (coef on BF4_CL) | -0.005 | Table 2, Eq. (3) BF4 term |
+| `e_bf8v_vc` (coef on BF8_V) | +8.894 | Table 2, Eq. (4) BF8 term |
+| `e_bf10v_vc` (coef on BF10_V) | -8.818 | Table 2, Eq. (4) BF10 term |
+| Hinge BF1_Ka = max(0, BUN - 7) | structural | Table 2, BF1 definition |
+| Hinge BF3_Ka = max(0, 63.7 - WT) \* BF1_Ka | structural | Table 2, BF3 definition (Ka row) |
+| Hinge BF5_Ka = max(0, 74.8 - WT) | structural | Table 2, BF5 definition (Ka row) |
+| Hinge BF2_CL = max(0, 77.2 - WT) | structural | Table 2, BF2 definition (CL row) |
+| Hinge BF3_CL = max(0, AGE - 27) \* BF2_CL | structural | Table 2, BF3 definition (CL row) |
+| Hinge BF4_CL = max(0, 27 - AGE) \* BF2_CL | structural | Table 2, BF4 definition (CL row) |
+| Hinge BF8_V = max(0, WT - 69.8) | structural | Table 2, BF8 definition (V row) |
+| Hinge BF10_V = max(0, WT - 74.8) | structural | Table 2, BF10 definition (V row) |
+| IIV omega^2 on Ka (CV 94.7%) | 0.6402 | Results, p. 553-554 (base model) |
+| IIV omega^2 on CL (CV 37.6%) | 0.1322 | Results, p. 553-554 (base model) |
+| IIV omega^2 on Vc (CV 50.5%) | 0.2271 | Results, p. 553-554 (base model) |
+| `propSd` (proportional residual SD) | 0.20 | Figure 2b derivation (see Deviations) |
+| 1-compartment ODE with first-order absorption | structural | Methods, “Pharmacokinetic modeling”; Figure 2b model selection |
+
+## Virtual cohort
+
+Original observed concentrations are not publicly distributed. The
+cohort below approximates the published baseline demographics (Table 1)
+within the in-cohort covariate ranges, sized to give stable
+MARS-typical-value behavior without straying into the extrapolation
+regions where the linear-scale typical value would otherwise be clamped
+at the model’s safety floor.
+
+``` r
+
+set.seed(20260518)
+n_sim <- 200
+
+cohort <- tibble(
+  id  = seq_len(n_sim),
+  WT  = pmin(pmax(rnorm(n_sim, mean = 85.1, sd = 18.0), 58), 138),
+  AGE = pmin(pmax(rgamma(n_sim, shape = 2.5, rate = 2.5 / 38), 21), 77),
+  BUN = pmin(pmax(rnorm(n_sim, mean = 13.0, sd = 4.5), 7), 28),
+  treatment = "100 mg PO"
+)
+
+obs_times <- c(0, 1, 2, 4, 8, 16, 24, 48, 72)
+
+dose_rows <- cohort |>
+  transmute(id, time = 0, amt = 100, evid = 1, cmt = "depot",
+            WT, AGE, BUN, treatment)
+obs_rows <- cohort |>
+  tidyr::crossing(time = obs_times) |>
+  mutate(amt = 0, evid = 0, cmt = "central") |>
+  select(id, time, amt, evid, cmt, WT, AGE, BUN, treatment)
+events <- bind_rows(dose_rows, obs_rows) |>
+  arrange(id, time, desc(evid))
+
+stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
+```
+
+## Simulation
+
+``` r
+
+sim <- rxode2::rxSolve(mod, events = events, keep = c("treatment", "WT", "AGE", "BUN"))
+#> ℹ parameter labels from comments will be replaced by 'label()'
+```
+
+For the typical-value replication used in the figures below, also
+simulate without between-subject variability:
+
+``` r
+
+mod_typical <- rxode2::zeroRe(mod)
+#> ℹ parameter labels from comments will be replaced by 'label()'
+sim_typical <- rxode2::rxSolve(mod_typical, events = events, keep = c("treatment", "WT", "AGE", "BUN"))
+#> ℹ omega/sigma items treated as zero: 'etalka', 'etalcl', 'etalvc'
+#> Warning: multi-subject simulation without without 'omega'
+```
+
+## Replicate published figures
+
+### Figure 2a – concentration-time envelope across subjects
+
+Hall 2017 Figure 2a shows the dapsone concentration-time profiles in all
+35 subjects after a single 100 mg oral dose, illustrating the order-of-
+magnitude variability in peak concentration that motivates the covariate
+analysis. The simulated 5th-50th-95th percentile envelope below
+reproduces that order-of-magnitude spread.
+
+``` r
+
+sim_summary <- sim |>
+  filter(time > 0) |>
+  group_by(time) |>
+  summarise(
+    Q05 = quantile(Cc, 0.05, na.rm = TRUE),
+    Q50 = quantile(Cc, 0.50, na.rm = TRUE),
+    Q95 = quantile(Cc, 0.95, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+ggplot(sim_summary, aes(time, Q50)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.25) +
+  geom_line(linewidth = 0.7) +
+  scale_y_log10() +
+  labs(x = "Time (h)", y = "Dapsone Cc (mg/L)",
+       title = "Figure 2a - simulated concentration envelope",
+       caption = "Replicates Figure 2a of Hall 2017 (5th-50th-95th percentile across 200 virtual subjects).")
+```
+
+![](Hall_2017_dapsone_files/figure-html/figure-2a-1.png)
+
+### Figure 3 – relationship between weight and volume of distribution
+
+Hall 2017 Figure 3 depicts the MARS BF8 and BF10 hinges for weight
+versus volume of distribution. The figure below shows the simulated
+typical-value Vc versus weight at the median BUN and AGE, reproducing
+the two hinge break points at 69.8 kg and 74.8 kg.
+
+``` r
+
+wt_grid <- tibble(WT = seq(50, 150, length.out = 201), AGE = 36, BUN = 13)
+vc_grid <- wt_grid |>
+  mutate(
+    BF8_V  = pmax(0, WT - 69.8),
+    BF10_V = pmax(0, WT - 74.8),
+    Vc     = pmax(0.1, 36.648 + 8.894 * BF8_V - 8.818 * BF10_V)
+  )
+
+ggplot(vc_grid, aes(WT, Vc)) +
+  geom_vline(xintercept = c(69.8, 74.8), linetype = "dashed", colour = "grey50") +
+  geom_line(linewidth = 0.7) +
+  labs(x = "Weight (kg)", y = "Typical Vc (L)",
+       title = "Figure 3 - typical-value Vc vs weight (hinges at 69.8 and 74.8 kg)",
+       caption = "Replicates Figure 3 of Hall 2017 with BF8 and BF10 of Table 2.")
+```
+
+![](Hall_2017_dapsone_files/figure-html/figure-3-1.png)
+
+## PKNCA validation
+
+``` r
+
+sim_nca <- sim |>
+  filter(!is.na(Cc), time > 0) |>
+  select(id, time, Cc, treatment)
+
+conc_obj <- PKNCA::PKNCAconc(
+  sim_nca, Cc ~ time | treatment + id,
+  concu = "mg/L", timeu = "hr"
+)
+
+dose_df <- events |>
+  filter(evid == 1) |>
+  select(id, time, amt, treatment)
+dose_obj <- PKNCA::PKNCAdose(
+  dose_df, amt ~ time | treatment + id,
+  doseu = "mg"
+)
+
+intervals <- data.frame(
+  start       = 0,
+  end         = Inf,
+  cmax        = TRUE,
+  tmax        = TRUE,
+  aucinf.obs  = TRUE,
+  half.life   = TRUE,
+  clast.obs   = TRUE,
+  lambda.z    = TRUE
+)
+
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+#> Warning: Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (1) is not allowed
+nca_summary <- summary(nca_res)
+knitr::kable(nca_summary, caption = "Simulated NCA parameters (single 100 mg oral dose).")
+```
+
+| Interval Start | Interval End | treatment | N | Cmax (mg/L) | Tmax (hr) | Clast (mg/L) | Half-life (hr) | $`\lambda_z`$ (1/hr) | AUCinf,obs (hr\*mg/L) |
+|---:|---:|:---|:---|:---|:---|:---|:---|:---|:---|
+| 0 | Inf | 100 mg PO | 200 | 1.36 \[60.5\] | 1.00 \[1.00, 8.00\] | 0.113 \[337\] | 30.3 \[20.8\] | 0.0282 \[74.9\] | NC |
+
+Simulated NCA parameters (single 100 mg oral dose). {.table}
+
+### Comparison against published NCA
+
+Hall 2017 does not tabulate per-subject NCA parameters; only the
+base-model PK parameter point estimates and population half-life (25.2
++/- 7.7 h) are reported. The simulated half-life summary from the PKNCA
+block above should fall within roughly +/- 30% of 25.2 h. The simulated
+AUCinf median maps to `100 mg / typical CL (L/h)` and should track the
+MARS-typical-value CL at the median weight / age (CL = 2.048 L/h, giving
+AUCinf ~= 49 mg.h/L).
+
+## Assumptions and deviations
+
+- **Drug-name correction**: the source task block reported
+  `drug: "CPT: Pharmacometrics & Sys"`, which is the journal name. The
+  paper’s title and Abstract identify dapsone as the modeled drug; the
+  file is named `Hall_2017_dapsone.R` accordingly.
+- **MARS-style covariate model**: Hall 2017 fit individual posthoc PK
+  estimates with MLEM in ADAPT 5 and then applied a MARS regression to
+  express Ka, CL, and Vc as additive linear combinations of hinge basis
+  functions of WT, AGE, and BUN. This is unusual for nlmixr2 (the
+  standard form is a multiplicative power-law on log-transformed
+  parameters). The packaged model encodes the MARS equations verbatim in
+  linear-parameter space, with the population intercept stored on the
+  log scale (`lka`, `lcl`, `lvc`) so log-normal IIV can be applied
+  multiplicatively around the MARS typical value.
+- **In-cohort covariate range**: the MARS hinges have no physical
+  constraint outside the cohort’s covariate range (WT 58-138 kg, AGE
+  21-77 yr, BUN 7-28 mg/dL). The linear-scale typical value can go
+  non-positive under extrapolation; the
+  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html)
+  block clamps Ka, CL, and Vc at a small positive floor (0.01, 0.01, and
+  0.1 respectively) to keep the ODE well-posed. Stay inside the
+  in-cohort range for virtual cohorts; outside that range the clamped
+  values are not a meaningful PK prediction.
+- **IIV from base model, not covariate-adjusted**: Hall 2017 reports the
+  base 1-compartment %CVs (94.7% Ka, 37.6% CL, 50.5% Vc) but does not
+  report IIV after the MARS hinges are applied. The packaged model uses
+  the base %CVs verbatim, which overstates the residual IIV the MARS
+  covariates would leave unexplained (Table 3 reports MARS
+  cross-validated r^2 = 0.36 / 0.48 / 0.64 for Ka / CL / Vc; the
+  covariate-adjusted IIV would be smaller by roughly `sqrt(1 - r^2)`).
+- **Residual error model**: Hall 2017 does not report a residual-error
+  specification. The packaged `propSd <- fixed(0.20)` is approximated
+  from Figure 2b: observed vs predicted r^2 = 0.91, slope 0.90 +/- 0.02,
+  observed mean 1.63 mg/L and SD 1.03 mg/L give a residual SD of
+  approximately `sqrt(1 - r^2) * SD(obs) / mean(obs) ~= 19%`. This is a
+  paper-derived approximation, not a directly reported value; documented
+  here per the extract-literature-model skill’s non-paper-provenance
+  rule.
+- **Bioavailability**: F is held at the structural anchor of 1 (not
+  encoded explicitly as `lfdepot`). Hall 2017 does not estimate or
+  constrain F, and the published parameter values are apparent (CL/F,
+  V/F, ka/F).
+- **Race / SEX / metabolic-syndrome covariates**: Hall 2017 evaluated
+  race (White vs non-White) and gender in bivariate analyses; gender
+  showed a univariate effect on volume that did not survive multivariate
+  MARS. The packaged model carries only the three covariates retained in
+  the final MARS model (WT, AGE, BUN); race and gender are not used.
+- **Supplement S1**: Supplementary Table S1 (model selection AIC / BIC
+  comparison across 1-, 2-, and 3-compartment structures) was referenced
+  in the paper but is not on disk. The 1-compartment selection is
+  reported in the Results text and is encoded as such; the supplement
+  would only inform the model-comparison narrative, not the parameter
+  values.
