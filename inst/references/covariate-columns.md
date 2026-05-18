@@ -3556,6 +3556,17 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 
 **Canonical pattern: `SNP_<GENE>_<RSID>`.** Use one binary indicator per SNP genotype that the source paper tests as a model covariate. The `SNP_` prefix makes the category unambiguous; the gene symbol disambiguates rsIDs grouped by gene; the rsID provides a globally unique identifier. Encoding follows the most common pharmacogenomic convention (also used by Papachristos 2020): `1` = mutant allele present (heterozygous or homozygous mutant); `0` = homozygous wild-type. When a paper uses a different encoding (e.g., per-allele dosage `0/1/2`, dominant model with mutant homozygotes only, or recessive model), document the encoding explicitly in `covariateData[[<COL>]]$notes` and consider registering a separate canonical name. SNP indicators default to scope: specific because the parameter on which they act and the encoded reference category are tied to the source paper's analysis plan; promote to general when a second paper ratifies identical semantics.
 
+### SNP_ABCG2_RS4148157 (**canonical for ABCG2 rs4148157 variant indicator**)
+- **Description:** Binary genotype indicator for the *ABCG2* (BCRP) rs4148157 single-nucleotide polymorphism (G > A; intron 11, population MAF ~0.10). 1 = at least one variant (A) allele present (heterozygous AG or homozygous AA carrier); 0 = homozygous wild-type (GG).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (homozygous wild-type GG).
+- **Source aliases:**
+  - `GENECAT` -- Roberts 2016 (paper Results 'Population Pharmacokinetic Analysis' section: the individual-Ka equation Ka_i = Ka_pop * exp(theta_1 * GENECAT), with GENECAT = 1 for AG / AA and 0 for GG).
+- **Example models:** `Roberts_2016_topotecan.R` (exponential effect on oral topotecan absorption rate constant Ka: `Ka = Ka_pop * exp(1.06 * SNP_ABCG2_RS4148157)`; AG/AA carriers have Ka approximately 2.89x higher than GG homozygotes, corresponding to an observed Cmax approximately 1.7x higher).
+- **Notes:** Time-fixed per subject (germline genotype). Variant carrier rate in the Roberts 2016 paediatric brain-tumour cohort: 19% (10 of 52 successfully genotyped patients; 9 AG heterozygotes plus 1 AA homozygote, with AA and AG pooled because only one AA homozygote was present). The rs4148157 variant is intronic and is in strong linkage disequilibrium with the better-characterised rs2231142 variant (Q141K, exon 6); Roberts 2016 Discussion proposes that rs4148157 may be acting as a surrogate marker for rs2231142 in this analysis. ABCG2 (also called BCRP, breast cancer resistance protein) is an intestinal and hepatic efflux transporter that influences oral bioavailability of topotecan and other substrates.
+
 ### SNP_ICAM1_RS1799969 (**canonical for ICAM-1 rs1799969 mutant indicator**)
 - **Description:** Binary genotype indicator for the *ICAM1* rs1799969 single-nucleotide polymorphism (G > A; Gly241Arg / K469E in some references). 1 = at least one mutant (A) allele present (heterozygous or homozygous mutant); 0 = homozygous wild-type (GG).
 - **Units:** (binary)

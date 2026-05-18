@@ -356,8 +356,6 @@ navbar:
         href: articles/Franken_2015_morphine.html
       - text: "Morphine (Pierre 2017)"
         href: articles/Pierre_2017_morphine.html
-      - text: "Moxifloxacin (Hong 2015)"
-        href: articles/Hong_2015_moxifloxacin.html
       - text: "MRNA3927 (Attarwala 2023)"
         href: articles/Attarwala_2023_mRNA3927.html
       - text: "Nalmefene (Kyhl 2016)"
@@ -556,6 +554,8 @@ navbar:
         href: articles/Frey_2010_tocilizumab.html
       - text: "Tocilizumab (Frey 2013)"
         href: articles/Frey_2013_tocilizumab.html
+      - text: "Topotecan (Roberts 2016)"
+        href: articles/Roberts_2016_topotecan.html
       - text: "Torsemide (Jeong 2022)"
         href: articles/Jeong_2022_torsemide.html
       - text: "Tralokinumab (Soehoel 2022)"
@@ -1025,6 +1025,7 @@ articles:
   - articles/Rambiritch_2016_glibenclamide
   - articles/Retlich_2015_linagliptin
   - articles/Robbie_2012_palivizumab
+  - articles/Roberts_2016_topotecan
   - articles/Rodrigues_2017_oxcarbazepine
   - articles/Rosario_2015_vedolizumab
   - articles/Rovei_1982_theophylline
