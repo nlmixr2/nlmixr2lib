@@ -888,16 +888,26 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Vet_2016_midazolam.R` (per-stratum typical CL values: ORG_FAIL_COUNT=0 fixed at 1.6 L/h for a 5 kg child with CRP=32 mg/L; ORG_FAIL_COUNT=1 -> 1.29 L/h; ORG_FAIL_COUNT=2 -> 0.957 L/h; ORG_FAIL_COUNT=3 -> 0.842 L/h; ORG_FAIL_COUNT>=4 -> 0.678 L/h).
 - **Notes:** Specific scope because the variable is critical-care-population-bound (PICU / ICU). Time-varying within subject (re-evaluated each ICU day). The Vet 2016 organ-failure ascertainment follows the Wilkinson 1987 paediatric multiple organ system failure (MOSF) criteria -- operator-confirmed per-paper criteria should be documented in each model's `covariateData[["ORG_FAIL_COUNT"]]$notes`. Decompose inside `model()` into binary indicators (`orgf1 <- (ORG_FAIL_COUNT == 1)`, `orgf2 <- (ORG_FAIL_COUNT == 2)`, `orgf3 <- (ORG_FAIL_COUNT == 3)`, `orgf_ge4 <- (ORG_FAIL_COUNT >= 4)`) and select per-stratum CL with mutually-exclusive multiplicative-flag arithmetic. Ratified canonically on 2026-05-06.
 
-### SAPS_II (**canonical for new Simplified Acute Physiology Score II at ICU admission**)
-- **Description:** New Simplified Acute Physiology Score II (SAPS II) at intensive-care-unit admission. Validated 17-item ICU severity-of-illness score (Le Gall, Lemeshow & Saulnier, JAMA 1993;270:2957-2963) computed from age, vital signs, laboratory values, type of admission, and chronic-disease history during the first 24 hours after ICU admission; higher scores indicate greater severity and a higher predicted hospital mortality. Range theoretically 0-163; in adult ICU cohorts admission scores typically span ~10-100 with cohort means in the 35-65 range. Time-fixed per ICU stay.
-- **Units:** points
+### RACHS1 (**canonical for Risk Adjustment for Congenital Heart Surgery 1 (RACHS-1) category**)
+- **Description:** Integer 1-6 RACHS-1 surgical-risk category, ascertained pre-operatively from the type of congenital heart defect and the planned operation. Higher categories indicate greater perioperative risk of in-hospital mortality (Jenkins 2002 Pediatrics). Time-fixed per subject.
+- **Units:** (categorical; 1-6 integer)
+- **Type:** categorical
+- **Scope:** specific
+- **Reference category:** Paper-specific. Oualha 2014 uses RACHS-1 = 2 as the low-risk reference stratum on SV*SVR_max (categories 1 are absent from the cohort; 3 and 4 are pooled as the higher-risk stratum).
+- **Source aliases:**
+  - `RACHS-1` -- the publication's printed form with a hyphen, not a valid R identifier; renamed to `RACHS1` when assembling input data.
+- **Example models:** `Oualha_2014_epinephrine.R` (decomposed inside `model()` into a binary indicator `rachs1_high <- (RACHS1 >= 3)` that selects an additive log-shift on SV*SVR_max from 0.44 to 0.26 for the high-risk pool).
+- **Notes:** Specific scope because the variable is paediatric-cardiac-surgery-population-bound and the reference category depends on which RACHS-1 strata the cohort contains (Oualha 2014 has categories 2-4 only; a paper with categories 1-6 would need a different decomposition). Decompose inside `model()` into mutually exclusive binary indicators matching the source's pooling (e.g., `rachs1_high <- (RACHS1 >= 3)`) and document the pooling rule in `covariateData[["RACHS1"]]$notes`.
+
+### CVP (**canonical for central venous pressure**)
+- **Description:** Central venous pressure (CVP), measured in mmHg through a central venous catheter. Time-varying when monitored continuously; in cardiovascular Emax PD models it enters the mean-arterial-pressure equation (MAP = HR * SV*SVR + CVP) as an additive constant rather than a fitted covariate effect.
+- **Units:** mmHg
 - **Type:** continuous
 - **Scope:** specific
-- **Reference category:** n/a -- used with power scaling `(SAPS_II / ref)^exponent`. Reference value observed: 50 points (Abboud 2009 typical-subject reference for the septic-shock cohort, mean SAPS II = 64 +/- 23).
-- **Source aliases:**
-  - `SAPS II` (with whitespace, as printed in the source paper's prose) -- used in `Abboud_2009_epinephrine.R`.
-- **Example models:** `Abboud_2009_epinephrine.R` (power exponent -0.67 on epinephrine CL with reference 50; higher SAPS II is associated with lower clearance).
-- **Notes:** Specific scope because the column is critical-care-population-bound (adult ICU) and the score's clinical meaning depends on the SAPS-II derivation rules; future ICU models reusing the score with the same definition can extend `Example models` rather than registering a new canonical. Should not be confused with SAPS I or SAPS 3 (different scoring rules / item sets) -- register those under separate canonicals if a future paper uses them. Ratified canonically on 2026-05-18 alongside the Abboud 2009 epinephrine extraction.
+- **Reference category:** n/a -- used additively in the MAP equation. Cohort medians observed: 11 mmHg (Oualha 2014, range 8-15).
+- **Source aliases:** none.
+- **Example models:** `Oualha_2014_epinephrine.R` (enters Eq. 7 as the additive offset in MAP = HR * SV*SVR + CVP; the vignette defaults to the cohort median 11 mmHg when CVP is not supplied per subject).
+- **Notes:** Specific scope because CVP is meaningful only for haemodynamic-PD models that resolve mean arterial pressure into its component cardiac-output and venous-return terms. The Oualha 2014 final model does not test CVP as a fitted covariate on PK or PD parameters; the column is used only as the structural offset in the MAP equation. Future haemodynamic models that fit a covariate effect on CVP itself can re-use the canonical name.
 
 ## Interferon / biomarker panels
 

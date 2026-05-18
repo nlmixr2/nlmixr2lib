@@ -63,7 +63,15 @@
     # Tumor volume / size compartment used by tumor growth inhibition
     # (TGI) models in oncology (Ait-Oudhia 2016, NA_NA_sunitinib,
     # Schindler 2016, Wilbaux 2015 and similar).
-    "tumor"
+    "tumor",
+    # Endogenous plasma metabolic species used by glucose / lactate
+    # turnover sub-models with drug-stimulated production (Oualha 2014
+    # epinephrine: glucose zero-order production is stimulated by Ep
+    # via an Emax function, and lactate is produced at the rate of
+    # glucose elimination and itself first-order eliminated). Each
+    # state holds a concentration (mmol/L) rather than an amount,
+    # mirroring the source paper's mass-balance parameterisation.
+    "glucose", "lactate"
   ),
   # Bare numbered chains (transit / effect / precursor / lat / dar /
   # depot) and metabolite-suffixed compartments are validated
