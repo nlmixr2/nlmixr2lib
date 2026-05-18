@@ -330,6 +330,8 @@ navbar:
         href: articles/Hood_2021_medi7836.html
       - text: "Mepolizumab (Cao 2013)"
         href: articles/Cao_2013_mepolizumab.html
+      - text: "Meropenem (Shekar 2014)"
+        href: articles/Shekar_2014_meropenem.html
       - text: "Methotrexate (Taylor 2020)"
         href: articles/Taylor_2020_methotrexate.html
       - text: "MHD rat (Clinckers 2008)"
@@ -1029,6 +1031,7 @@ articles:
   - articles/Schoemaker_2018_levetiracetam
   - articles/Schoenmakers_2025_betamethasone
   - articles/Shah_2012_mAb_PBPK
+  - articles/Shekar_2014_meropenem
   - articles/Shen_2013_belatacept
   - articles/Sheng_2016_quinine_rat
   - articles/Sherer_2012_AAA
