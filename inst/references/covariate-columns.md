@@ -2915,6 +2915,28 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Rodrigues_2017_oxcarbazepine.R` (exponential effect on MHD apparent clearance: `cl_mhd *= exp(e_eiaed_cl_mhd * (1 - CONMED_EIAED))`; CL_MHD is 29.3% higher with EIAEDs vs without, encoded as +0.257 on the absence-indicator in the source paper).
 - **Notes:** Per-model `covariateData[[CONMED_EIAED]]$notes` should list the specific EIAEDs counted as "EIAED = 1" since inclusion criteria vary across antiepileptic-drug studies. Rodrigues 2017 counts carbamazepine, phenobarbital, and phenytoin as EIAEDs; other AEDs in the dataset (vigabatrin, clobazam, valproic acid, clonazepam, lamotrigine, diazepam, ethosuccimide, progabide) are not. The source paper uses an "absence of EIAED" indicator (`MED = 1` if no EIAED, `MED = 0` if EIAED present); the canonical column inverts this so that the 1 group is "on EIAED", matching the convention for other CONMED_* indicators.
 
+### CONMED_ERA (**canonical for concomitant endothelin-receptor-antagonist monotherapy indicator in PAH**)
+- **Description:** 1 = patient is on a concomitant endothelin-receptor-antagonist (ERA) PAH therapy (e.g., bosentan, macitentan, ambrisentan) alone -- i.e. on an ERA but NOT also on a phosphodiesterase type 5 inhibitor; 0 = otherwise. Time-fixed per subject for the PK/PD analysis (PAH comedication at baseline, stable dose required before selexipag start).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (PAH-comedication-naive OR on PDE5 inhibitor alone OR on both ERA+PDE5; mutually exclusive with `CONMED_PDE5I` and `CONMED_ERA_PDE5I`).
+- **Source aliases:**
+  - `PAHCOMED` category 1 ("ERA only") -- decomposed from the categorical `PAHCOMED` source column with levels {naive, ERA, PDE5, ERA+PDE5} in `Krause_2017_selexipag.R`.
+- **Example models:** `Krause_2017_selexipag.R` (multiplicative effect on the ACT-333679 elimination rate constant: `km *= (1 + 0.15 * CONMED_ERA)`; +15% relative to the PAH-comedication-naive reference, Krause 2017 Table 1).
+- **Notes:** Used together with `CONMED_PDE5I` and `CONMED_ERA_PDE5I` to decompose a four-level PAH-comedication categorical (naive / ERA-only / PDE5-only / ERA-and-PDE5) into three orthogonal mutually-exclusive binary indicators, with the PAH-comedication-naive group as the reference (all three indicators = 0). The four-level categorical encoding preserves the source paper's stratum-specific coefficient set (Krause 2017 reports a separate categorical b-coefficient for each non-reference stratum rather than independent class-level effects). Specific scope because the indicator's semantics are tied to the GRIPHON study's PAH-comedication taxonomy.
+
+### CONMED_ERA_PDE5I (**canonical for concomitant ERA + PDE5-inhibitor combination indicator in PAH**)
+- **Description:** 1 = patient is on both a concomitant endothelin-receptor-antagonist (ERA) and a phosphodiesterase type 5 inhibitor (PDE5I) as PAH therapy; 0 = otherwise. Time-fixed per subject for the PK/PD analysis.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (PAH-comedication-naive OR on ERA alone OR on PDE5I alone; mutually exclusive with `CONMED_ERA` and `CONMED_PDE5I`).
+- **Source aliases:**
+  - `PAHCOMED` category 3 ("ERA and PDE5 inh.") -- decomposed from the categorical `PAHCOMED` source column with levels {naive, ERA, PDE5, ERA+PDE5} in `Krause_2017_selexipag.R`.
+- **Example models:** `Krause_2017_selexipag.R` (multiplicative effect on the ACT-333679 elimination rate constant: `km *= (1 + 0.37 * CONMED_ERA_PDE5I)`; +37% relative to the PAH-comedication-naive reference, Krause 2017 Table 1; the combined stratum has its own categorical coefficient distinct from the sum of the ERA-only and PDE5I-only effects). Krause 2017 Table 3 reports a 30% reduction in ACT-333679 AUCss for this stratum vs. naive.
+- **Notes:** Used together with `CONMED_ERA` and `CONMED_PDE5I` to decompose a four-level PAH-comedication categorical (naive / ERA-only / PDE5-only / ERA-and-PDE5) into three orthogonal mutually-exclusive binary indicators. The standalone combined-stratum coefficient (rather than a product of class-level indicator effects) preserves Krause 2017's full categorical-effect parameterisation. Specific scope because the indicator's semantics are tied to the GRIPHON study's PAH-comedication taxonomy.
+
 ### CONMED_EZE (**canonical for concomitant ezetimibe coadministration indicator**)
 - **Description:** 1 = patient is taking ezetimibe (with or without other lipid-lowering comedication), 0 = not on ezetimibe.
 - **Units:** (binary)
@@ -3032,6 +3054,17 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
   - `PCM` -- used in `Plan_2012_pain.R` (DDMORE Foundation Model Repository entry DDMODEL00000194).
 - **Example models:** `Plan_2012_pain.R` (additive shift on the placebo-effect logit of the typical pain-score lambda: `phl = logit(TVLAM) + 0.364 * CONMED_PARA`; mean pain score ~9% higher on the 0-10 Likert scale during paracetamol use).
 - **Notes:** Distinct from `CONMED_NSAID` -- paracetamol is not classed as an NSAID (no anti-inflammatory mechanism, distinct AE profile). Time-varying use is permitted; the daily Likert measurements in Plan 2012 carry PCM as a per-observation flag. Follows the `CONMED_*` concomitant-medication pattern established for IBD models (AZA / MP / MTX / AMINO) and `CONMED_NSAID` (Li 2019). Ratified canonically alongside the Plan 2012 DDMORE extraction.
+
+### CONMED_PDE5I (**canonical for concomitant PDE5-inhibitor monotherapy indicator in PAH**)
+- **Description:** 1 = patient is on a concomitant phosphodiesterase type 5 inhibitor (PDE5I) PAH therapy (e.g., sildenafil, tadalafil) alone -- i.e. on a PDE5 inhibitor but NOT also on an endothelin-receptor antagonist; 0 = otherwise. Time-fixed per subject for the PK/PD analysis (PAH comedication at baseline, stable dose required before selexipag start).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (PAH-comedication-naive OR on ERA alone OR on both ERA+PDE5; mutually exclusive with `CONMED_ERA` and `CONMED_ERA_PDE5I`).
+- **Source aliases:**
+  - `PAHCOMED` category 2 ("PDE5 inh.") -- decomposed from the categorical `PAHCOMED` source column with levels {naive, ERA, PDE5, ERA+PDE5} in `Krause_2017_selexipag.R`.
+- **Example models:** `Krause_2017_selexipag.R` (multiplicative effect on the ACT-333679 elimination rate constant: `km *= (1 + 0.07 * CONMED_PDE5I)`; +7% relative to the PAH-comedication-naive reference, Krause 2017 Table 1. The PDE5-only coefficient is statistically not significant (p = 0.19) but retained in the final model so the four-level PAH-comedication categorical is preserved end-to-end).
+- **Notes:** Used together with `CONMED_ERA` and `CONMED_ERA_PDE5I` to decompose a four-level PAH-comedication categorical (naive / ERA-only / PDE5-only / ERA-and-PDE5) into three orthogonal mutually-exclusive binary indicators. Specific scope because the indicator's semantics are tied to the GRIPHON study's PAH-comedication taxonomy.
 
 ### CONMED_PPI (**canonical for concomitant proton-pump inhibitor use**)
 - **Description:** 1 = patient on concomitant proton-pump inhibitor (CONMED_PPI) therapy, 0 = no CONMED_PPI use. Captures gastric-pH-elevating co-medication that can reduce the bioavailability of solubility-limited (typically weakly basic) orally administered drugs.

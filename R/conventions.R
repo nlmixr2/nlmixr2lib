@@ -215,13 +215,14 @@
     # non-parent species in 2-drug PK/PD models (Kimura 2023
     # doi:10.21873/anticanres.16351).
     "cpg2",
-    # Pyrimethamine, the co-administered antifolate in the
-    # sulfadoxine/pyrimethamine (SP) fixed-dose combination used for
-    # intermittent preventive treatment of malaria in pregnancy. Not
-    # a metabolite of sulfadoxine but a separate co-administered drug;
-    # suffix marks the non-parent species in the joint SP popPK model
-    # (de Kock 2017 CPT:PSP doi:10.1002/psp4.12181).
-    "pyra"
+    # ACT-333679, the active demethyl-aminobutyric-acid metabolite of
+    # selexipag (Actelion compound code; also known as MRE-269 in the
+    # earlier Nippon Shinyaku literature). Selexipag is hydrolysed
+    # in vivo to ACT-333679, which is approximately 37-fold more potent
+    # than the parent at the human IP prostacyclin receptor and is the
+    # primary contributor to clinical efficacy (Krause 2017
+    # CPT Pharmacometrics Syst Pharmacol doi:10.1002/psp4.12202).
+    "act"
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` denotes the time-varying decay arm.
@@ -246,7 +247,14 @@
     # `mtt` = mean transit time; `fr` = fraction of MAT in the transit
     # delay; `ktr` = first-order transit rate constant (= n_transit /
     # MTT for a chain of length n).
-    "mat", "mtt", "fr", "ktr"
+    "mat", "mtt", "fr", "ktr",
+    # First-order rate constant for in-vivo formation of an active
+    # metabolite from the parent central compartment, when the source
+    # paper parameterises metabolite formation independently of the
+    # parent's total clearance (i.e. fraction-metabolised is implicit
+    # in kmet * Vc_parent / CL_parent rather than estimated as Fm).
+    # Used in Krause 2017 selexipag (-> ACT-333679) popPK.
+    "kmet"
   ),
   requiredUnits = c("time", "dosing", "concentration"),
   requiredMetadata = c("description", "reference", "units"),
