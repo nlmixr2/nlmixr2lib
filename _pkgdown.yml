@@ -404,6 +404,8 @@ navbar:
         href: articles/Robbie_2012_palivizumab.html
       - text: "PAmAb (Cao 2013)"
         href: articles/Cao_2013_PAmAb.html
+      - text: "Paroxetine (Kim 2015)"
+        href: articles/Kim_2015_paroxetine.html
       - text: "Patritumab (Lu 2022)"
         href: articles/Lu_2022_patritumab.html
       - text: "Pazopanib (Ouerdani 2015)"
@@ -915,6 +917,7 @@ articles:
   - articles/Jonsson_2011_ethambutol
   - articles/Khan_2015_ciprofloxacin
   - articles/Kielbasa_2020_galcanezumab
+  - articles/Kim_2015_paroxetine
   - articles/Kimura_2023_glucarpidase
   - articles/Kirubakaran_2022_tacrolimus
   - articles/Kloft_2004_sibrotuzumab
