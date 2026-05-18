@@ -404,8 +404,6 @@ navbar:
         href: articles/Robbie_2012_palivizumab.html
       - text: "PAmAb (Cao 2013)"
         href: articles/Cao_2013_PAmAb.html
-      - text: "Paroxetine (Kim 2015)"
-        href: articles/Kim_2015_paroxetine.html
       - text: "Patritumab (Lu 2022)"
         href: articles/Lu_2022_patritumab.html
       - text: "Pazopanib (Ouerdani 2015)"
@@ -486,6 +484,8 @@ navbar:
         href: articles/Patel_2017_selumetinib.html
       - text: "Semaglutide (Overgaard 2019)"
         href: articles/Overgaard_2019_semaglutide.html
+      - text: "Sibutramine (Han 2015)"
+        href: articles/Han_2015_sibutramine.html
       - text: "Sifalimumab (Narwal 2013)"
         href: articles/Narwal_2013_sifalimumab.html
       - text: "Sifalimumab (Zheng 2016)"

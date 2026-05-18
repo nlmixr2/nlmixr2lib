@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Kim 2015 paroxetine ([doi:10.2147/DDDT.S84718](https://doi.org/10.2147/DDDT.S84718)) -- Korean adult outpatients with major depressive disorder or anxiety disorder.
+* Add Han 2015 sibutramine ([doi:10.2147/DDDT.S85435](https://doi.org/10.2147/DDDT.S85435)) -- Korean abdominally obese adults with metabolic syndrome (PK of active metabolites M1 and M2 plus asymptotic weight-loss PD with sigmoid Emax on AUC_ss,sum and BMI/sex-modulated constant placebo effect).
 * Add Nanga 2019 tacrolimus meta-model ([doi:10.1111/bcp.14110](https://doi.org/10.1111/bcp.14110)) -- pooled paediatric and adult solid-organ transplant recipients (n = 281; 201 liver and 80 kidney) on oral tacrolimus; ratifies new `TX_LIVER` and `FORM_SYRUP` covariate canonicals.
 * Rewrite Fiedler-Kelly 2019 fremanezumab ([doi:10.1111/bcp.14096](https://doi.org/10.1111/bcp.14096)) to support both IV and SC routes -- the packaged model now carries the route-specific central volume (Vc,IV = 2.98 L FIXED vs Vc,SC = 1.88 L) and the route-specific residual-error structure (IV proportional-only vs SC additive+proportional) from Fiedler-Kelly 2019 Table 2, switched by the `ROUTE_IV` covariate column. Removes the previous spurious allometric weight effect on Vp (the source paper holds Vp FIXED with no weight effect).
 * Add Yuan 2019 concizumab ([doi:10.1016/j.ejps.2019.105032](https://doi.org/10.1016/j.ejps.2019.105032)) -- healthy adult males receiving single-dose IV or SC concizumab (23-state systems PK/PD model with two nested endothelial endosome compartments for mTFPI-mediated TMDD and FcRn-recycled linear clearance of free and sTFPI-bound antibody).
