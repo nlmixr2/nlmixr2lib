@@ -534,8 +534,12 @@ navbar:
         href: articles/Prytula_2016_tacrolimus.html
       - text: "Tacrolimus (Storset 2014)"
         href: articles/Storset_2014_tacrolimus.html
-      - text: "Tacrolimus unbound plasma (Sikma 2020)"
-        href: articles/Sikma_2020_tacrolimus_unbound_plasma.html
+      - text: "Tacrolimus (Woillard 2011)"
+        href: articles/Woillard_2011_tacrolimus.html
+      - text: "Tacrolimus industry meta (Lu 2019)"
+        href: articles/Lu_2019_tacrolimus_industry_meta.html
+      - text: "Tacrolimus metaanalysis (Nanga 2019)"
+        href: articles/Nanga_2019_tacrolimus_metaanalysis.html
       - text: "Tefibazumab (Cao 2013)"
         href: articles/Cao_2013_tefibazumab.html
       - text: "Temozolomide (Mazzocco 2015)"
@@ -967,6 +971,7 @@ articles:
   - articles/Lu_2014_trastuzumabemtansine
   - articles/Lu_2015_vismodegib
   - articles/Lu_2019_polatuzumab
+  - articles/Lu_2019_tacrolimus_industry_meta
   - articles/Lu_2022_patritumab
   - articles/Ma_2020_sarilumab_anc
   - articles/Ma_2020_sarilumab_das28crp
