@@ -252,6 +252,8 @@ navbar:
         href: articles/Ngo_2020_HL2351.html
       - text: "Imatinib (Chien 2022)"
         href: articles/Chien_2022_imatinib.html
+      - text: "Imatinib (Schindler 2017)"
+        href: articles/Schindler_2017_imatinib.html
       - text: "Immunoglobulin (Cheng 2026)"
         href: articles/Cheng_2026_immunoglobulin.html
       - text: "Infliximab (Berends 2019)"
@@ -330,10 +332,6 @@ navbar:
         href: articles/Mukai_2019_mogamulizumab.html
       - text: "Monalizumab (Hwang 2023)"
         href: articles/Hwang_2023_monalizumab.html
-      - text: "Morphine (Franken 2015)"
-        href: articles/Franken_2015_morphine.html
-      - text: "Morphine (Pierre 2017)"
-        href: articles/Pierre_2017_morphine.html
       - text: "Morphine (deHoogd 2017)"
         href: articles/deHoogd_2017_morphine.html
       - text: "Morphine (Franken 2015)"
@@ -986,6 +984,7 @@ articles:
   - articles/Sathe_2024_sacituzumab
   - articles/Savic_2017_cladribine
   - articles/Schindler_2016_sunitinib
+  - articles/Schindler_2017_imatinib
   - articles/Schoemaker_2018_levetiracetam
   - articles/Schoenmakers_2025_betamethasone
   - articles/Shah_2012_mAb_PBPK
