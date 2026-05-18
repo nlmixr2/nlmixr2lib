@@ -208,12 +208,20 @@
     # in rapid equilibrium with overlapping disposition (van Rongen 2016
     # Clin Pharmacokinet doi:10.1007/s40262-015-0357-0).
     "cysmer",
-    # Ticagrelor active metabolite AR-C124910XX (TAM), the major active
-    # metabolite of ticagrelor with similar potency at P2Y12 (Almquist
-    # 2016 doi:10.1002/psp4.12089). Used as the metabolite suffix in
-    # parent-plus-metabolite ticagrelor PK models where TAM is followed
-    # in plasma alongside the parent.
-    "tam"
+    # Glucarpidase (CPG2), the bacterial carboxypeptidase G2 enzyme
+    # given as a rescue therapy after high-dose methotrexate (MTX). Not
+    # a metabolite of MTX but a co-administered perpetrator that
+    # enzymatically hydrolyzes the substrate; the suffix marks the
+    # non-parent species in 2-drug PK/PD models (Kimura 2023
+    # doi:10.21873/anticanres.16351).
+    "cpg2",
+    # Pyrimethamine, the co-administered antifolate in the
+    # sulfadoxine/pyrimethamine (SP) fixed-dose combination used for
+    # intermittent preventive treatment of malaria in pregnancy. Not
+    # a metabolite of sulfadoxine but a separate co-administered drug;
+    # suffix marks the non-parent species in the joint SP popPK model
+    # (de Kock 2017 CPT:PSP doi:10.1002/psp4.12181).
+    "pyra"
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` denotes the time-varying decay arm.

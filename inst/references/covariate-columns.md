@@ -249,6 +249,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 
 ## Pregnancy / hormonal status
 
+### TPP (**canonical for time postpartum (time after delivery)**)
+- **Description:** Time elapsed since delivery, in weeks. 0 during pregnancy and at delivery; increases after delivery. Used by popPK models that describe the time-varying postpartum recovery of pregnancy-induced PK changes (e.g., renal blood flow, hepatic enzyme activity) that return gradually to the prepregnant baseline over weeks to months rather than instantaneously at delivery.
+- **Units:** weeks
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- enters as the argument of a sigmoidal recovery function `(TPP^gamma) / (TPP^gamma + T50^gamma)` whose `T50` (weeks-to-50%-recovery) and `gamma` (shape parameter) are estimated. For pregnant visits (`TPP = 0`) the sigmoid evaluates to 0 and the pregnancy-state PK parameter is unchanged; for far-postpartum visits (`TPP >> T50`) the sigmoid approaches 1 and the parameter reaches its asymptotic non-pregnant value.
+- **Source aliases:**
+  - `TPP` -- de Kock 2017 NONMEM column for time after delivery in weeks; same orientation, no transformation; assigned 0 for samples collected during pregnancy.
+- **Example models:** `deKock_2017_sulfadoxinePyrimethamine.R` (sigmoidal effect on sulfadoxine CL with asymptotic fractional change -0.757, T50 = 6.35 weeks, gamma = 4.90; the sigmoid approaches its asymptote ~13 weeks postpartum, consistent with the literature for return of GFR and renal blood flow to prepregnant values within 6-12 weeks postpartum).
+- **Notes:** Paired with `PREG` (pregnancy status indicator) when the source paper models pregnancy as a step contrast on one PK parameter and as a sigmoidal time-decay on another. During pregnancy `TPP = 0`; after delivery `TPP > 0`. Document the postpartum sampling window in `covariateData[[TPP]]$notes` per model. Distinct from `T_NUT_SUPP` (time on nutritional supplementation, days) and `GA` (gestational age at birth, weeks) -- those are different timescale covariates anchored to different events. Ratified canonically on 2026-05-18 alongside the de Kock 2017 sulfadoxine/pyrimethamine extraction.
+
 ### TERM_BIRTH (**canonical for term-vs-preterm birth indicator**)
 - **Description:** Binary indicator of term-vs-preterm birth status; `1` = term birth (>= 37 weeks gestation), `0` = preterm birth (< 37 weeks gestation). Time-fixed per subject. In Allegaert 2015 (paracetamol PK in young women) the indicator is used to select between two typical-value clearances for the sulphate-formation pathway.
 - **Units:** (binary)
@@ -1650,6 +1661,36 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Source aliases:** none yet; canonical name preferred.
 - **Example models:** `Hong_2025_datopotamab.R` (multiplicative effect 1 + 0.196 = 1.196 on DXd clearance versus US/Japan reference).
 - **Notes:** "Rest of the World" composition is paper-specific (e.g., Hong 2025 = study sites outside US, Japan, and Europe). Document the subject set in `covariateData[[REGION_ROW]]$notes` per model.
+
+### REGION_MOZAMBIQUE (**canonical for Mozambique study-site / enrollment-country indicator**)
+- **Description:** 1 = study site in Mozambique, 0 = otherwise. Country-level study-site indicator used in multi-country sub-Saharan African trials of intermittent preventive treatment of malaria in pregnancy (IPTp).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-Mozambique sites; specific reference set varies per model -- in de Kock 2017 the reference is Mali).
+- **Source aliases:** none yet; canonical name preferred.
+- **Example models:** `deKock_2017_sulfadoxinePyrimethamine.R` (multiplicative -20.2% effect on apparent pyrimethamine clearance; +57.6% scaling on observed pyrimethamine concentrations; +21.2% scaling on observed sulfadoxine concentrations; the on-observation scalings capture residual site-specific differences in apparent bioavailability or dried-blood-spot sample handling).
+- **Notes:** Specific scope because the canonical models a single Mozambique vs non-Mozambique contrast within a specific multi-site trial; the reference set is paper-specific (e.g., Mali in de Kock 2017). Pairs with `REGION_SUDAN` and `REGION_ZAMBIA` for a 4-country sub-Saharan African IPTp trial design with Mali as the implicit reference. Ratified canonically on 2026-05-18.
+
+### REGION_SUDAN (**canonical for Sudan study-site / enrollment-country indicator**)
+- **Description:** 1 = study site in Sudan, 0 = otherwise. Country-level study-site indicator used in multi-country sub-Saharan African trials.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-Sudan sites; specific reference set varies per model -- in de Kock 2017 the reference is Mali).
+- **Source aliases:** none yet; canonical name preferred.
+- **Example models:** `deKock_2017_sulfadoxinePyrimethamine.R` (+15.5% scaling on observed sulfadoxine concentrations; +33.2% scaling on observed pyrimethamine concentrations).
+- **Notes:** Specific scope; pairs with `REGION_MOZAMBIQUE` and `REGION_ZAMBIA`. Ratified canonically on 2026-05-18.
+
+### REGION_ZAMBIA (**canonical for Zambia study-site / enrollment-country indicator**)
+- **Description:** 1 = study site in Zambia, 0 = otherwise. Country-level study-site indicator used in multi-country sub-Saharan African trials.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-Zambia sites; specific reference set varies per model -- in de Kock 2017 the reference is Mali).
+- **Source aliases:** none yet; canonical name preferred.
+- **Example models:** `deKock_2017_sulfadoxinePyrimethamine.R` (-24.8% scaling on observed sulfadoxine concentrations; -5.4% scaling on observed pyrimethamine concentrations).
+- **Notes:** Specific scope; pairs with `REGION_MOZAMBIQUE` and `REGION_SUDAN`. Ratified canonically on 2026-05-18.
 
 ## Pediatric comorbidities
 

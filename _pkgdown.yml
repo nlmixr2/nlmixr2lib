@@ -476,8 +476,8 @@ navbar:
         href: articles/Goel_2016_Sonidegib.html
       - text: "Sugemalimab (Wang 2024)"
         href: articles/Wang_2024_sugemalimab.html
-      - text: "Sunitinib (Ait-Oudhia 2016)"
-        href: articles/Ait-Oudhia_2016_sunitinib.html
+      - text: "SulfadoxinePyrimethamine (deKock 2017)"
+        href: articles/deKock_2017_sulfadoxinePyrimethamine.html
       - text: "Tacrolimus (Benkali 2010)"
         href: articles/Benkali_2010_tacrolimus.html
       - text: "Tacrolimus (Bergmann 2014)"
@@ -1066,5 +1066,12 @@ articles:
   - articles/Zierhut_2008_osteoprotegerin
   - articles/Zuo_2016_UDCA
   - articles/Zurlinden_2016_paracetamol
+  - articles/deHoogd_2017_morphine
+  - articles/deKock_2017_sulfadoxinePyrimethamine
+  - articles/deVriesSchultink_2020_zenocutuzumab
+  - articles/deWit_2016_everolimus
+  - articles/vanRongen_2016_acetaminophen
+  - articles/vanRongen_2018_midazolam
+  - articles/vanWijk_2019_paracetamol
   internal: true
 # AUTOGEN:articles:END
