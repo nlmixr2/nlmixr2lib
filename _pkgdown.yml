@@ -384,8 +384,8 @@ navbar:
         href: articles/Ouerdani_2015_pazopanib.html
       - text: "Pazopanib mouse (Ouerdani 2015)"
         href: articles/Ouerdani_2015_pazopanib_mouse.html
-      - text: "Pembrolizumab (Ahamadi 2017)"
-        href: articles/Ahamadi_2017_pembrolizumab.html
+      - text: "Pembrolizumab (Elassaiss-Schaap 2017)"
+        href: articles/Elassaiss-Schaap_2017_pembrolizumab.html
       - text: "Pertuzumab (Garg 2014)"
         href: articles/Garg_2014_pertuzumab.html
       - text: "Pertuzumab (Wang 2021)"
@@ -412,10 +412,6 @@ navbar:
         href: articles/Diepstraten_2013_propofol.html
       - text: "Pyrazinamide (Alsultan 2017)"
         href: articles/Alsultan_2017_pyrazinamide.html
-      - text: "Quinine rat (Sheng 2016)"
-        href: articles/Sheng_2016_quinine_rat.html
-      - text: "RFIXFc (Diao 2014)"
-        href: articles/Diao_2014_rFIXFc.html
       - text: "Ranibizumab (Mulyukov 2018)"
         href: articles/Mulyukov_2018_ranibizumab.html
       - text: "RFIXFc (Diao 2014)"
@@ -806,6 +802,7 @@ articles:
   - articles/Dunlap_2025_tacrolimus
   - articles/Dunn_2025_tranexamicAcid
   - articles/Ekhart_2008_carboplatin
+  - articles/Elassaiss-Schaap_2017_pembrolizumab
   - articles/Elishmereni_2011_il21
   - articles/Faelens_2021_infliximab
   - articles/Farrell_2012_farletuzumab
@@ -1066,12 +1063,5 @@ articles:
   - articles/Zierhut_2008_osteoprotegerin
   - articles/Zuo_2016_UDCA
   - articles/Zurlinden_2016_paracetamol
-  - articles/deHoogd_2017_morphine
-  - articles/deKock_2017_sulfadoxinePyrimethamine
-  - articles/deVriesSchultink_2020_zenocutuzumab
-  - articles/deWit_2016_everolimus
-  - articles/vanRongen_2016_acetaminophen
-  - articles/vanRongen_2018_midazolam
-  - articles/vanWijk_2019_paracetamol
   internal: true
 # AUTOGEN:articles:END
