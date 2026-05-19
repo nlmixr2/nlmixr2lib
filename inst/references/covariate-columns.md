@@ -83,6 +83,18 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Zhou_2021_belimumab.R` (reference 40.69 kg; exponents 0.673 on CL and 0.891 on V1), `Aguiar_2021_ustekinumab.R` (reference 45 kg; power exponents 0.598 on CL, 0.590 on Vc, 0.586 on Vp).
 - **Notes:** Distinct from `LBM` (lean body mass) which is sometimes computed by the Boer or Hume formulae. When the source paper reports the body-composition formula it used (e.g., Janmahasatian for FFM), record it in `covariateData[[FFM]]$notes`. FFM is preferred over total body weight when scaling monoclonal-antibody PK because mAb distribution is largely confined to extracellular fluid; muscle / lean tissue tracks extracellular volume better than total weight in heavier patients.
 
+### HT (**canonical for body height at baseline**)
+- **Description:** Subject body height at baseline. Time-fixed unless the source paper states otherwise.
+- **Units:** cm
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- used with a linear-deviation form `(HT - ref)` or with a power-style scaling. Reference values observed: 167 cm (Naik 2016, vortioxetine adult MDD/GAD population median).
+- **Source aliases:**
+  - `HGT` -- height (cm) abbreviation appearing in some NONMEM control streams.
+  - `HEIGHT` -- spelled-out form.
+- **Example models:** `Naik_2016_vortioxetine.R` (reference 167 cm; linear-additive effect 0.40 L/hr per (HT - 167) cm on CL/F, retained over weight and BMI in stepwise selection because it produced the larger reduction in CL IIV).
+- **Notes:** Height is sometimes retained as a size covariate when allometric scaling on weight performs less well; it is also an input to BSA, BMI, FFM, and LBM derivations, so a model that retains `HT` alongside one of those derived covariates should document the dependency in `covariateData[[HT]]$notes`. Specific scope until a second adult-popPK model ratifies the name; at that point promote to `general`.
+
 ### BSA (**canonical for body surface area**)
 - **Description:** Body surface area (typically computed by DuBois, Mosteller, or Haycock from height and weight).
 - **Units:** m^2
@@ -1670,7 +1682,7 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Scope:** specific
 - **Reference category:** 0 (non-Europe study sites; specific reference set varies per model).
 - **Source aliases:** none yet; canonical name preferred.
-- **Example models:** `Hong_2025_datopotamab.R` (multiplicative effect 1 + 0.240 = 1.240 on DXd clearance versus US/Japan reference).
+- **Example models:** `Hong_2025_datopotamab.R` (multiplicative effect 1 + 0.240 = 1.240 on DXd clearance versus US/Japan reference), `Naik_2016_vortioxetine.R` (additive intercept-shift form: TVCL_EU = 39 L/hr is the typical CL/F when `REGION_EUROPE = 1`, versus USA reference TVCL = 51 L/hr).
 - **Notes:** Pair with `REGION_JAPAN` and `REGION_ROW` to encode multi-regional study membership; subjects with all three indicators = 0 are in the "US" reference group.
 
 ### REGION_ROW (**canonical for Rest-of-World study-site indicator**)
@@ -1679,9 +1691,10 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Type:** binary
 - **Scope:** specific
 - **Reference category:** 0 (US / Japan / Europe study sites; specific reference set varies per model).
-- **Source aliases:** none yet; canonical name preferred.
-- **Example models:** `Hong_2025_datopotamab.R` (multiplicative effect 1 + 0.196 = 1.196 on DXd clearance versus US/Japan reference).
-- **Notes:** "Rest of the World" composition is paper-specific (e.g., Hong 2025 = study sites outside US, Japan, and Europe). Document the subject set in `covariateData[[REGION_ROW]]$notes` per model.
+- **Source aliases:**
+  - `REGION_RoW` -- mixed-case variant in some source publications (e.g., Naik 2016).
+- **Example models:** `Hong_2025_datopotamab.R` (multiplicative effect 1 + 0.196 = 1.196 on DXd clearance versus US/Japan reference), `Naik_2016_vortioxetine.R` (additive intercept-shift form: TVCL_RoW = 38 L/hr is the typical CL/F when `REGION_ROW = 1`, versus USA reference TVCL = 51 L/hr; the RoW group for Naik 2016 spans study sites in Canada, Australia, and Asia).
+- **Notes:** "Rest of the World" composition is paper-specific (e.g., Hong 2025 = study sites outside US, Japan, and Europe; Naik 2016 = Canada, Australia, and Asia). Document the subject set in `covariateData[[REGION_ROW]]$notes` per model.
 
 ### REGION_MOZAMBIQUE (**canonical for Mozambique study-site / enrollment-country indicator**)
 - **Description:** 1 = study site in Mozambique, 0 = otherwise. Country-level study-site indicator used in multi-country sub-Saharan African trials of intermittent preventive treatment of malaria in pregnancy (IPTp).
