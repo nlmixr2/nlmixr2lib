@@ -220,6 +220,8 @@ navbar:
         href: articles/Bista_2015_fentanyl.html
       - text: "Ferumoxytol (Plock 2014)"
         href: articles/Plock_2014_ferumoxytol.html
+      - text: "Follitropin delta (Rose 2016)"
+        href: articles/Rose_2016_follitropin_delta.html
       - text: "Fosdagrocorat oc (Shoji 2017)"
         href: articles/Shoji_2017_fosdagrocorat_oc.html
       - text: "Fosdagrocorat p1np (Shoji 2017)"
@@ -336,8 +338,6 @@ navbar:
         href: articles/Shekar_2014_meropenem.html
       - text: "Methotrexate (Taylor 2020)"
         href: articles/Taylor_2020_methotrexate.html
-      - text: "Methylphenidate (Teuscher 2015)"
-        href: articles/Teuscher_2015_methylphenidate.html
       - text: "MHD rat (Clinckers 2008)"
         href: articles/Clinckers_2008_MHD_rat.html
       - text: "Micafungin (Martial 2017)"
@@ -1030,6 +1030,7 @@ articles:
   - articles/Roberts_2016_topotecan
   - articles/Rodrigues_2017_oxcarbazepine
   - articles/Rosario_2015_vedolizumab
+  - articles/Rose_2016_follitropin_delta
   - articles/Rovei_1982_theophylline
   - articles/Sadouki_2025_meropenem_gentamicin_ciprofloxacin
   - articles/Sahota_2015_miridesap
