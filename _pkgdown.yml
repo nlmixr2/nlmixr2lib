@@ -426,6 +426,8 @@ navbar:
         href: articles/Guo_2022_PF_06939999.html
       - text: "Phenytoin (Hennig 2015)"
         href: articles/Hennig_2015_phenytoin.html
+      - text: "Phenytoin (Tanaka 2012)"
+        href: articles/Tanaka_2012_phenytoin.html
       - text: "Phenytoin (Yukawa 1990)"
         href: articles/Yukawa_1990_phenytoin.html
       - text: "Piperacillin (Boer-Perez 2026)"
@@ -1073,6 +1075,7 @@ articles:
   - articles/Takeuchi_2023_ozoralizumab
   - articles/Talke_2018_dexmedetomidine
   - articles/Tammara_2017_rivipansel
+  - articles/Tanaka_2012_phenytoin
   - articles/Taylor_2020_methotrexate
   - articles/TerHeine_2014_tamoxifen
   - articles/Terranova_2018_paclitaxel
