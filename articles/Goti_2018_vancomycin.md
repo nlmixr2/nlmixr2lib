@@ -222,16 +222,19 @@ intervals <- data.frame(
 nca_res <- PKNCA::pk.nca(
   PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 )
-#>  ■■■■                              10% |  ETA: 32s
-#>  ■■■■■■■                           18% |  ETA: 29s
-#>  ■■■■■■■■■                         28% |  ETA: 25s
-#>  ■■■■■■■■■■■■                      37% |  ETA: 21s
-#>  ■■■■■■■■■■■■■■■                   47% |  ETA: 18s
-#>  ■■■■■■■■■■■■■■■■■■                56% |  ETA: 15s
-#>  ■■■■■■■■■■■■■■■■■■■■■             65% |  ETA: 11s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■           75% |  ETA:  8s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■        84% |  ETA:  5s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     93% |  ETA:  2s
+#>  ■■                                 3% |  ETA: 42s
+#>  ■■■■                              10% |  ETA: 37s
+#>  ■■■■■■                            17% |  ETA: 34s
+#>  ■■■■■■■■■                         25% |  ETA: 30s
+#>  ■■■■■■■■■■■                       33% |  ETA: 26s
+#>  ■■■■■■■■■■■■■                     41% |  ETA: 23s
+#>  ■■■■■■■■■■■■■■■■                  49% |  ETA: 20s
+#>  ■■■■■■■■■■■■■■■■■■                57% |  ETA: 17s
+#>  ■■■■■■■■■■■■■■■■■■■■■             65% |  ETA: 14s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■           73% |  ETA: 10s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■         81% |  ETA:  7s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      89% |  ETA:  4s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    97% |  ETA:  1s
 
 nca_summary <- summary(nca_res)
 knitr::kable(nca_summary, caption = "Simulated NCA parameters by covariate cohort (single 1000 mg IV infusion over 1 hour).")

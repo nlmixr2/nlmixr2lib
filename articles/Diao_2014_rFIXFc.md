@@ -302,8 +302,9 @@ intervals <- data.frame(
 
 nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj,
                                           intervals = intervals))
-#>  ■■■■■■                            17% |  ETA:  7s
-#>  ■■■■■■■■■■■■■■■■■■                58% |  ETA:  3s
+#>  ■■■■■■                            18% |  ETA:  8s
+#>  ■■■■■■■■■■■■■■■■■■                56% |  ETA:  4s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     93% |  ETA:  1s
 nca_tbl <- as.data.frame(nca_res$result)
 
 summary_by_param <- function(param) {

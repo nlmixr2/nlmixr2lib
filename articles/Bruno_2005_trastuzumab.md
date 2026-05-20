@@ -506,23 +506,7 @@ nca_result <- PKNCA::pk.nca(nca_data)
 #> Requesting an AUC range starting (0) before the first measurement (0.411765) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.411765) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.411765) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.411765) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.411765) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.411765) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.411765) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.411765) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.411765) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.411765) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.411765) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.411765) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.411765) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.411765) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.411765) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.411765) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.411765) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.411765) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.411765) is not allowed
-#>  ■■■■■■■■■■                        32% |  ETA:  5s
+#>  ■■■■■■■■■■                        28% |  ETA:  6s
 #> Warning: Requesting an AUC range starting (0) before the first measurement (0.411765) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.411765) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.411765) is not allowed
@@ -615,6 +599,22 @@ nca_result <- PKNCA::pk.nca(nca_data)
 #> Requesting an AUC range starting (0) before the first measurement (0.411765) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.411765) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.411765) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.411765) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.411765) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.411765) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.411765) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.411765) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.411765) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.411765) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.411765) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.411765) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.411765) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.411765) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.411765) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.411765) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.411765) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.411765) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.411765) is not allowed
 #> Warning: Requesting an AUC range starting (0) before the first measurement
 #> (1.94118) is not allowed
 #> Warning: Requesting an AUC range starting (0) before the first measurement
@@ -891,141 +891,141 @@ nca_result <- PKNCA::pk.nca(nca_data)
 #> (1.94118) is not allowed
 #> Warning: Requesting an AUC range starting (0) before the first measurement
 #> (8.94118) is not allowed
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (1.94118) is not allowed
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (8.94118) is not allowed
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (1.94118) is not allowed
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (8.94118) is not allowed
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (1.94118) is not allowed
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (8.94118) is not allowed
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (1.94118) is not allowed
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (8.94118) is not allowed
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (1.94118) is not allowed
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (8.94118) is not allowed
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (1.94118) is not allowed
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (8.94118) is not allowed
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (1.94118) is not allowed
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (8.94118) is not allowed
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (1.94118) is not allowed
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (8.94118) is not allowed
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (1.94118) is not allowed
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (8.94118) is not allowed
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (1.94118) is not allowed
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (8.94118) is not allowed
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (1.94118) is not allowed
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (8.94118) is not allowed
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (1.94118) is not allowed
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (8.94118) is not allowed
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (1.94118) is not allowed
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (8.94118) is not allowed
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (1.94118) is not allowed
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (8.94118) is not allowed
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (1.94118) is not allowed
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (8.94118) is not allowed
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (1.94118) is not allowed
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (8.94118) is not allowed
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (1.94118) is not allowed
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (8.94118) is not allowed
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (1.94118) is not allowed
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (8.94118) is not allowed
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (1.94118) is not allowed
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (8.94118) is not allowed
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (1.94118) is not allowed
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (8.94118) is not allowed
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (1.94118) is not allowed
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (8.94118) is not allowed
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (1.94118) is not allowed
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (8.94118) is not allowed
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (1.94118) is not allowed
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (8.94118) is not allowed
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (1.94118) is not allowed
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (8.94118) is not allowed
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (1.94118) is not allowed
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (8.94118) is not allowed
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (1.94118) is not allowed
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (8.94118) is not allowed
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (1.94118) is not allowed
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (8.94118) is not allowed
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (1.94118) is not allowed
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (8.94118) is not allowed
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (1.94118) is not allowed
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (8.94118) is not allowed
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (1.94118) is not allowed
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (8.94118) is not allowed
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (1.94118) is not allowed
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (8.94118) is not allowed
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (1.94118) is not allowed
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (8.94118) is not allowed
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (1.94118) is not allowed
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (8.94118) is not allowed
-#>  ■■■■■■■■■■■■■■■■■■■■■■            70% |  ETA:  2s
+#>  ■■■■■■■■■■■■■■■■■■■■              64% |  ETA:  3s
 #> Warning: Requesting an AUC range starting (0) before the first measurement (1.94118) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (8.94118) is not allowed
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (1.94118) is not allowed
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (8.94118) is not allowed
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (1.94118) is not allowed
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (8.94118) is not allowed
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (1.94118) is not allowed
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (8.94118) is not allowed
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (1.94118) is not allowed
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (8.94118) is not allowed
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (1.94118) is not allowed
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (8.94118) is not allowed
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (1.94118) is not allowed
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (8.94118) is not allowed
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (1.94118) is not allowed
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (8.94118) is not allowed
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (1.94118) is not allowed
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (8.94118) is not allowed
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (1.94118) is not allowed
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (8.94118) is not allowed
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (1.94118) is not allowed
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (8.94118) is not allowed
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (1.94118) is not allowed
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (8.94118) is not allowed
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (1.94118) is not allowed
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (8.94118) is not allowed
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (1.94118) is not allowed
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (8.94118) is not allowed
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (1.94118) is not allowed
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (8.94118) is not allowed
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (1.94118) is not allowed
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (8.94118) is not allowed
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (1.94118) is not allowed
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (8.94118) is not allowed
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (1.94118) is not allowed
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (8.94118) is not allowed
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (1.94118) is not allowed
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (8.94118) is not allowed
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (1.94118) is not allowed
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (8.94118) is not allowed
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (1.94118) is not allowed
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (8.94118) is not allowed
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (1.94118) is not allowed
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (8.94118) is not allowed
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (1.94118) is not allowed
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (8.94118) is not allowed
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (1.94118) is not allowed
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (8.94118) is not allowed
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (1.94118) is not allowed
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (8.94118) is not allowed
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (1.94118) is not allowed
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (8.94118) is not allowed
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (1.94118) is not allowed
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (8.94118) is not allowed
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (1.94118) is not allowed
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (8.94118) is not allowed
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (1.94118) is not allowed
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (8.94118) is not allowed
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (1.94118) is not allowed
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (8.94118) is not allowed
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (1.94118) is not allowed
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (8.94118) is not allowed
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (1.94118) is not allowed
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (8.94118) is not allowed
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (1.94118) is not allowed
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (8.94118) is not allowed
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (1.94118) is not allowed
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (8.94118) is not allowed
 #> Warning: Requesting an AUC range starting (0) before the first measurement
 #> (1.94118) is not allowed
 #> Warning: Requesting an AUC range starting (0) before the first measurement

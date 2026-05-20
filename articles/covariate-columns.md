@@ -148,7 +148,10 @@ entries should default to all caps.
     uses `LBM`. Used in `Garmann_2017_BAY81_8973.R` (reference 51.1 kg).
 - **Example models:** `Kyhl_2016_nalmefene.R` (reference 56.28 kg,
   exponent 0.626 on CL), `Garmann_2017_BAY81_8973.R` (alias `LBW`;
-  reference 51.1 kg, exponents 0.610 on CL and 0.950 on Vc).
+  reference 51.1 kg, exponents 0.610 on CL and 0.950 on Vc),
+  `Schoemaker_2017_brivaracetam.R` (alias `LBW`; paediatric cohort,
+  reference 50 kg adult typical value, fixed theoretical allometric
+  exponents 0.750 on CL/F and 1.00 on V/F).
 
 ### FFM (**canonical for fat-free mass**)
 
@@ -175,6 +178,32 @@ entries should default to all caps.
   distribution is largely confined to extracellular fluid; muscle / lean
   tissue tracks extracellular volume better than total weight in heavier
   patients.
+
+### HT (**canonical for body height at baseline**)
+
+- **Description:** Subject body height at baseline. Time-fixed unless
+  the source paper states otherwise.
+- **Units:** cm
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a – used with a linear-deviation form
+  `(HT - ref)` or with a power-style scaling. Reference values observed:
+  167 cm (Naik 2016, vortioxetine adult MDD/GAD population median).
+- **Source aliases:**
+  - `HGT` – height (cm) abbreviation appearing in some NONMEM control
+    streams.
+  - `HEIGHT` – spelled-out form.
+- **Example models:** `Naik_2016_vortioxetine.R` (reference 167 cm;
+  linear-additive effect 0.40 L/hr per (HT - 167) cm on CL/F, retained
+  over weight and BMI in stepwise selection because it produced the
+  larger reduction in CL IIV).
+- **Notes:** Height is sometimes retained as a size covariate when
+  allometric scaling on weight performs less well; it is also an input
+  to BSA, BMI, FFM, and LBM derivations, so a model that retains `HT`
+  alongside one of those derived covariates should document the
+  dependency in `covariateData[[HT]]$notes`. Specific scope until a
+  second adult-popPK model ratifies the name; at that point promote to
+  `general`.
 
 ### BSA (**canonical for body surface area**)
 
@@ -959,6 +988,60 @@ entries should default to all caps.
   hemodialysis subjects is highly variable and the dialysis indicator
   captures the bulk PK shift on top of the CRCL covariate. Ratified
   canonically on 2026-05-16 alongside the Goti 2018 vancomycin
+  extraction.
+
+### CRRT_STATUS (**canonical for continuous / extended renal-replacement-therapy treatment-status indicator**)
+
+- **Description:** 1 = the subject was undergoing a continuous or
+  extended (long-session) extracorporeal renal-replacement-therapy
+  modality during the modeled period (continuous venovenous
+  hemofiltration CVVH / CVVHF, continuous venovenous hemodiafiltration
+  CVVHDF, sustained low-efficiency dialysis SLED, extended daily
+  diafiltration EDD-f, or similar slow-clearance / long-duration
+  extracorporeal therapies); 0 = no such therapy. Treatment-status flag
+  rather than a measured renal-function value; used as a multiplicative
+  or piecewise covariate on PK parameters that change when slow
+  extracorporeal solute removal is active (typically CL). Per-subject
+  indicator in the source data; in Shekar 2014 it is treated as
+  time-fixed at the subject level (the cohort either was or was not
+  receiving RRT during the entire PK sampling period; all RRT patients
+  were on CVVH or EDD-f continuously / daily during sampling) – the
+  indicator captures the subject-level RRT status, not session-level
+  on/off timing.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no continuous / extended RRT).
+- **Source aliases:**
+  - `RRT` – used in `Shekar_2014_meropenem.R` (binary indicator
+    selecting between the RRT-fixed-CL term and the CrCL-driven non-RRT
+    CL term in a 2-compartment meropenem popPK model). Shekar 2014
+    Methods describes the RRT cohort as mixed CVVH (control RRT
+    subjects, true CRRT) and EDD-f (ECMO RRT subjects, extended daily
+    diafiltration; pharmacokinetically CRRT-like for slow-clearance
+    solutes such as meropenem) and the model treats the modalities as a
+    single binary covariate without distinguishing them.
+- **Example models:** `Shekar_2014_meropenem.R` (piecewise CL:
+  `TVCL = exp(lcl) * CRRT_STATUS + e_crcl_cl * CRCL_in_Lh * (1 - CRRT_STATUS)`,
+  with CRCL in raw Cockcroft-Gault mL/min converted to L/h inside
+  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html);
+  5/11 ECMO patients and 5/10 controls were on RRT).
+- **Notes:** Distinct from `HEMODIAL` (intermittent hemodialysis IHD
+  only) and from `DIAL` (per-time-point session gate in within-subject
+  time-varying dialysis-clearance models such as Liesenfeld 2013
+  dabigatran). Anticipated as a future canonical in the `HEMODIAL`
+  register entry alongside `PERIT_DIAL` for peritoneal dialysis. Shekar
+  2014 ratification uses a mixed CVVH + EDD-f cohort because the source
+  paper treats them identically as a single binary RRT covariate; a
+  future paper that retains modality as a separate covariate (e.g. CVVH
+  vs SLED vs CVVHDF) would either reuse `CRRT_STATUS` with finer
+  per-modality columns layered on top, or warrant its own
+  modality-specific canonical (`CVVH_STATUS`, `SLED_STATUS`, etc.). When
+  pairing `CRRT_STATUS` with `CRCL`, note that Cockcroft-Gault CrCL is
+  conventionally not defined / not reported for RRT-dependent subjects;
+  Shekar 2014 records CrCL only for non-RRT subjects and the model
+  formula switches off the CrCL term when `CRRT_STATUS = 1`. Ratified
+  canonically on 2026-05-18 alongside the Shekar 2014 meropenem
   extraction.
 
 ### ALB (**canonical for serum albumin**)
@@ -2282,6 +2365,94 @@ entries should default to all caps.
   `orgf_ge4 <- (ORG_FAIL_COUNT >= 4)`) and select per-stratum CL with
   mutually-exclusive multiplicative-flag arithmetic. Ratified
   canonically on 2026-05-06.
+
+### SAPS_II (**canonical for new Simplified Acute Physiology Score II at ICU admission**)
+
+- **Description:** New Simplified Acute Physiology Score II (SAPS II) at
+  intensive-care-unit admission. Validated 17-item ICU
+  severity-of-illness score (Le Gall, Lemeshow & Saulnier, JAMA
+  1993;270:2957-2963) computed from age, vital signs, laboratory values,
+  type of admission, and chronic-disease history during the first 24
+  hours after ICU admission; higher scores indicate greater severity and
+  a higher predicted hospital mortality. Range theoretically 0-163; in
+  adult ICU cohorts admission scores typically span ~10-100 with cohort
+  means in the 35-65 range. Time-fixed per ICU stay.
+- **Units:** points
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a – used with power scaling
+  `(SAPS_II / ref)^exponent`. Reference value observed: 50 points
+  (Abboud 2009 typical-subject reference for the septic-shock cohort,
+  mean SAPS II = 64 +/- 23).
+- **Source aliases:**
+  - `SAPS II` (with whitespace, as printed in the source paper’s prose)
+    – used in `Abboud_2009_epinephrine.R`.
+- **Example models:** `Abboud_2009_epinephrine.R` (power exponent -0.67
+  on epinephrine CL with reference 50; higher SAPS II is associated with
+  lower clearance).
+- **Notes:** Specific scope because the column is
+  critical-care-population-bound (adult ICU) and the score’s clinical
+  meaning depends on the SAPS-II derivation rules; future ICU models
+  reusing the score with the same definition can extend `Example models`
+  rather than registering a new canonical. Should not be confused with
+  SAPS I or SAPS 3 (different scoring rules / item sets) – register
+  those under separate canonicals if a future paper uses them. Ratified
+  canonically on 2026-05-18 alongside the Abboud 2009 epinephrine
+  extraction. \### RACHS1 (**canonical for Risk Adjustment for
+  Congenital Heart Surgery 1 (RACHS-1) category**)
+- **Description:** Integer 1-6 RACHS-1 surgical-risk category,
+  ascertained pre-operatively from the type of congenital heart defect
+  and the planned operation. Higher categories indicate greater
+  perioperative risk of in-hospital mortality (Jenkins 2002 Pediatrics).
+  Time-fixed per subject.
+- **Units:** (categorical; 1-6 integer)
+- **Type:** categorical
+- **Scope:** specific
+- **Reference category:** Paper-specific. Oualha 2014 uses RACHS-1 = 2
+  as the low-risk reference stratum on SV\*SVR_max (categories 1 are
+  absent from the cohort; 3 and 4 are pooled as the higher-risk
+  stratum).
+- **Source aliases:**
+  - `RACHS-1` – the publication’s printed form with a hyphen, not a
+    valid R identifier; renamed to `RACHS1` when assembling input data.
+- **Example models:** `Oualha_2014_epinephrine.R` (decomposed inside
+  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html)
+  into a binary indicator `rachs1_high <- (RACHS1 >= 3)` that selects an
+  additive log-shift on SV\*SVR_max from 0.44 to 0.26 for the high-risk
+  pool).
+- **Notes:** Specific scope because the variable is
+  paediatric-cardiac-surgery-population-bound and the reference category
+  depends on which RACHS-1 strata the cohort contains (Oualha 2014 has
+  categories 2-4 only; a paper with categories 1-6 would need a
+  different decomposition). Decompose inside
+  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html)
+  into mutually exclusive binary indicators matching the source’s
+  pooling (e.g., `rachs1_high <- (RACHS1 >= 3)`) and document the
+  pooling rule in `covariateData[["RACHS1"]]$notes`.
+
+### CVP (**canonical for central venous pressure**)
+
+- **Description:** Central venous pressure (CVP), measured in mmHg
+  through a central venous catheter. Time-varying when monitored
+  continuously; in cardiovascular Emax PD models it enters the
+  mean-arterial-pressure equation (MAP = HR \* SV\*SVR + CVP) as an
+  additive constant rather than a fitted covariate effect.
+- **Units:** mmHg
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a – used additively in the MAP equation.
+  Cohort medians observed: 11 mmHg (Oualha 2014, range 8-15).
+- **Source aliases:** none.
+- **Example models:** `Oualha_2014_epinephrine.R` (enters Eq. 7 as the
+  additive offset in MAP = HR \* SV\*SVR + CVP; the vignette defaults to
+  the cohort median 11 mmHg when CVP is not supplied per subject).
+- **Notes:** Specific scope because CVP is meaningful only for
+  haemodynamic-PD models that resolve mean arterial pressure into its
+  component cardiac-output and venous-return terms. The Oualha 2014
+  final model does not test CVP as a fitted covariate on PK or PD
+  parameters; the column is used only as the structural offset in the
+  MAP equation. Future haemodynamic models that fit a covariate effect
+  on CVP itself can re-use the canonical name.
 
 ## Interferon / biomarker panels
 
@@ -4504,7 +4675,10 @@ serve other parameters that do separate that group.
   set varies per model).
 - **Source aliases:** none yet; canonical name preferred.
 - **Example models:** `Hong_2025_datopotamab.R` (multiplicative effect
-  1 + 0.240 = 1.240 on DXd clearance versus US/Japan reference).
+  1 + 0.240 = 1.240 on DXd clearance versus US/Japan reference),
+  `Naik_2016_vortioxetine.R` (additive intercept-shift form: TVCL_EU =
+  39 L/hr is the typical CL/F when `REGION_EUROPE = 1`, versus USA
+  reference TVCL = 51 L/hr).
 - **Notes:** Pair with `REGION_JAPAN` and `REGION_ROW` to encode
   multi-regional study membership; subjects with all three indicators =
   0 are in the “US” reference group.
@@ -4519,12 +4693,19 @@ serve other parameters that do separate that group.
 - **Scope:** specific
 - **Reference category:** 0 (US / Japan / Europe study sites; specific
   reference set varies per model).
-- **Source aliases:** none yet; canonical name preferred.
+- **Source aliases:**
+  - `REGION_RoW` – mixed-case variant in some source publications (e.g.,
+    Naik 2016).
 - **Example models:** `Hong_2025_datopotamab.R` (multiplicative effect
-  1 + 0.196 = 1.196 on DXd clearance versus US/Japan reference).
+  1 + 0.196 = 1.196 on DXd clearance versus US/Japan reference),
+  `Naik_2016_vortioxetine.R` (additive intercept-shift form: TVCL_RoW =
+  38 L/hr is the typical CL/F when `REGION_ROW = 1`, versus USA
+  reference TVCL = 51 L/hr; the RoW group for Naik 2016 spans study
+  sites in Canada, Australia, and Asia).
 - **Notes:** “Rest of the World” composition is paper-specific (e.g.,
-  Hong 2025 = study sites outside US, Japan, and Europe). Document the
-  subject set in `covariateData[[REGION_ROW]]$notes` per model.
+  Hong 2025 = study sites outside US, Japan, and Europe; Naik 2016 =
+  Canada, Australia, and Asia). Document the subject set in
+  `covariateData[[REGION_ROW]]$notes` per model.
 
 ### REGION_MOZAMBIQUE (**canonical for Mozambique study-site / enrollment-country indicator**)
 
@@ -7698,6 +7879,39 @@ serve other parameters that do separate that group.
   given itraconazole’s long half-life), and (3) whether the indicator is
   a baseline-only proxy or a true time-varying flag.
 
+### CONMED_CBZ (**canonical for concomitant carbamazepine coadministration indicator**)
+
+- **Description:** 1 = subject is taking carbamazepine (CBZ) as a
+  concomitant antiepileptic drug at the PK observation, 0 = no
+  concomitant carbamazepine. Carbamazepine is a strong CYP3A4 / UGT /
+  P-gp inducer that increases the apparent clearance of co-administered
+  drugs. Time-varying when carbamazepine starts / stops within the
+  observation window; time-fixed when the source paper analyses
+  chronic-maintenance cohorts whose AED therapy is stable across the
+  analysis window.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no concomitant carbamazepine).
+- **Source aliases:**
+  - `CBZ` – used in `Schoemaker_2017_brivaracetam.R` (paper covariate
+    `CBZ` for carbamazepine coadministration).
+- **Example models:** `Schoemaker_2017_brivaracetam.R` (multiplicative
+  effect on apparent oral clearance: `cl *= (1 + 0.479 * CONMED_CBZ)`;
+  +47.9% relative to no-CBZ reference, corresponding to ~32% lower
+  brivaracetam exposure, Schoemaker 2017 Table 1).
+- **Notes:** Drug-specific CONMED\_\* indicator anticipated in the
+  \[\[CONMED_AED\]\] notes; used when a paper estimates a separate
+  CBZ-induction effect distinct from the pooled EIAED / AED class
+  effect. Distinct from the broader \[\[CONMED_EIAED\]\] (any
+  enzyme-inducing AED) and \[\[CONMED_AED\]\] (any concomitant AED).
+  When a paper distinguishes individual AEDs separately (Schoemaker
+  2017: PB, CBZ, VPA each carry their own coefficient), use the
+  drug-specific canonicals \[\[CONMED_PB\]\], `CONMED_CBZ`,
+  \[\[CONMED_VPA\]\] rather than collapsing into the class-level
+  indicator. Ratified canonically on 2026-05-20 alongside the Schoemaker
+  2017 brivaracetam paediatric extraction.
+
 ### CONMED_CHEMO (**canonical for anti-PD-(L)1 mAb + chemotherapy combination indicator**)
 
 - **Description:** 1 = subject is receiving an anti-PD-(L)1 monoclonal
@@ -8090,6 +8304,44 @@ serve other parameters that do separate that group.
   MTX / AMINO) and `CONMED_NSAID` (Li 2019). Ratified canonically
   alongside the Plan 2012 DDMORE extraction.
 
+### CONMED_PB (**canonical for concomitant phenobarbital coadministration indicator**)
+
+- **Description:** 1 = subject is taking phenobarbital (PB) – including
+  primidone, which is metabolised to phenobarbital and is conventionally
+  pooled with PB – as a concomitant antiepileptic drug at the PK
+  observation, 0 = no concomitant phenobarbital / primidone.
+  Phenobarbital is a broad-spectrum CYP and UGT inducer that increases
+  the apparent clearance of co-administered drugs. Time-varying when
+  phenobarbital starts / stops within the observation window; time-fixed
+  when the source paper analyses chronic-maintenance cohorts whose AED
+  therapy is stable.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no concomitant phenobarbital or primidone).
+- **Source aliases:**
+  - `PB` – used in `Schoemaker_2017_brivaracetam.R` (paper covariate
+    `PB` for phenobarbital or primidone coadministration; the source
+    pools primidone with phenobarbital because primidone is metabolised
+    to phenobarbital).
+- **Example models:** `Schoemaker_2017_brivaracetam.R` (multiplicative
+  effect on apparent oral clearance: `cl *= (1 + 0.408 * CONMED_PB)`;
+  +40.8% relative to no-PB reference, corresponding to ~29% lower
+  brivaracetam exposure, Schoemaker 2017 Table 1).
+- **Notes:** Drug-specific CONMED\_\* indicator anticipated in the
+  \[\[CONMED_AED\]\] notes; used when a paper estimates a separate
+  phenobarbital-induction effect distinct from the pooled EIAED / AED
+  class effect. Per-model `covariateData[[CONMED_PB]]$notes` should
+  document whether primidone is pooled with phenobarbital (Schoemaker
+  2017 pools them because primidone is metabolised to phenobarbital).
+  Distinct from the broader \[\[CONMED_EIAED\]\] (any enzyme-inducing
+  AED) and \[\[CONMED_AED\]\] (any concomitant AED). When a paper
+  distinguishes individual AEDs separately, use the drug-specific
+  canonicals \[\[CONMED_CBZ\]\], `CONMED_PB`, \[\[CONMED_VPA\]\] rather
+  than collapsing into the class-level indicator. Ratified canonically
+  on 2026-05-20 alongside the Schoemaker 2017 brivaracetam paediatric
+  extraction.
+
 ### CONMED_PDE5I (**canonical for concomitant PDE5-inhibitor monotherapy indicator in PAH**)
 
 - **Description:** 1 = patient is on a concomitant phosphodiesterase
@@ -8337,6 +8589,39 @@ serve other parameters that do separate that group.
   the same subject. The name `STEROID_BL` was used as an alias in
   earlier register drafts and is retired; use `CONMED_STEROID` for all
   future models.
+
+### CONMED_VPA (**canonical for concomitant valproate (valproic acid) coadministration indicator**)
+
+- **Description:** 1 = subject is taking valproate (valproic acid,
+  sodium valproate, divalproex) as a concomitant antiepileptic drug at
+  the PK observation, 0 = no concomitant valproate. Valproate is a
+  broad-spectrum AED that inhibits UGT and CYP2C9, and chronic use is
+  associated with weight gain. Time-varying when valproate starts /
+  stops within the observation window; time-fixed when the source paper
+  analyses chronic-maintenance cohorts whose AED therapy is stable.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no concomitant valproate).
+- **Source aliases:**
+  - `VPA` – used in `Schoemaker_2017_brivaracetam.R` (paper covariate
+    `VPA` for valproate coadministration).
+- **Example models:** `Schoemaker_2017_brivaracetam.R` (multiplicative
+  effect on apparent oral clearance: `cl *= (1 - 0.101 * CONMED_VPA)`;
+  -10.1% relative to no-VPA reference, corresponding to ~11% higher
+  brivaracetam exposure, Schoemaker 2017 Table 1).
+- **Notes:** Drug-specific CONMED\_\* indicator anticipated in the
+  \[\[CONMED_AED\]\] notes. Schoemaker 2017 retained the VPA effect in
+  the final model even though it did not formally meet the SCM inclusion
+  criteria (forward p \< 0.01) because quantifying its contribution was
+  considered informative; the authors note the apparent VPA-induced
+  exposure rise may be confounded with VPA-driven weight / fat gain in
+  chronic users. Distinct from the broader \[\[CONMED_AED\]\] (any
+  concomitant AED). When a paper distinguishes individual AEDs
+  separately, use the drug-specific canonicals \[\[CONMED_CBZ\]\],
+  \[\[CONMED_PB\]\], `CONMED_VPA` rather than collapsing into the
+  class-level indicator. Ratified canonically on 2026-05-20 alongside
+  the Schoemaker 2017 brivaracetam paediatric extraction.
 
 ### PRICORT (**canonical for prior corticosteroid use indicator**)
 
@@ -9283,6 +9568,38 @@ to scope: specific because the parameter on which they act and the
 encoded reference category are tied to the source paper’s analysis plan;
 promote to general when a second paper ratifies identical semantics.
 
+### SNP_ABCG2_RS4148157 (**canonical for ABCG2 rs4148157 variant indicator**)
+
+- **Description:** Binary genotype indicator for the *ABCG2* (BCRP)
+  rs4148157 single-nucleotide polymorphism (G \> A; intron 11,
+  population MAF ~0.10). 1 = at least one variant (A) allele present
+  (heterozygous AG or homozygous AA carrier); 0 = homozygous wild-type
+  (GG).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (homozygous wild-type GG).
+- **Source aliases:**
+  - `GENECAT` – Roberts 2016 (paper Results ‘Population Pharmacokinetic
+    Analysis’ section: the individual-Ka equation Ka_i = Ka_pop \*
+    exp(theta_1 \* GENECAT), with GENECAT = 1 for AG / AA and 0 for GG).
+- **Example models:** `Roberts_2016_topotecan.R` (exponential effect on
+  oral topotecan absorption rate constant Ka:
+  `Ka = Ka_pop * exp(1.06 * SNP_ABCG2_RS4148157)`; AG/AA carriers have
+  Ka approximately 2.89x higher than GG homozygotes, corresponding to an
+  observed Cmax approximately 1.7x higher).
+- **Notes:** Time-fixed per subject (germline genotype). Variant carrier
+  rate in the Roberts 2016 paediatric brain-tumour cohort: 19% (10 of 52
+  successfully genotyped patients; 9 AG heterozygotes plus 1 AA
+  homozygote, with AA and AG pooled because only one AA homozygote was
+  present). The rs4148157 variant is intronic and is in strong linkage
+  disequilibrium with the better-characterised rs2231142 variant (Q141K,
+  exon 6); Roberts 2016 Discussion proposes that rs4148157 may be acting
+  as a surrogate marker for rs2231142 in this analysis. ABCG2 (also
+  called BCRP, breast cancer resistance protein) is an intestinal and
+  hepatic efflux transporter that influences oral bioavailability of
+  topotecan and other substrates.
+
 ### SNP_ICAM1_RS1799969 (**canonical for ICAM-1 rs1799969 mutant indicator**)
 
 - **Description:** Binary genotype indicator for the *ICAM1* rs1799969
@@ -9597,8 +9914,55 @@ promote to general when a second paper ratifies identical semantics.
   carrier indicator because the heterozygous and homozygous mutant
   subjects respond detectably differently to warfarin. Ratified
   canonically on 2026-05-16 alongside the Xia 2024 warfarin extraction.
-  \### ABCB1_HAP_TTT (**canonical for ABCB1 TTT haplotype carrier
-  indicator**)
+  \### CYP2C19_S2_CARRIER (\*\*canonical for CYP2C19\*2 loss-of-function
+  allele carrier indicator\*\*)
+- **Description:** Binary indicator for carriage of the *CYP2C19*2
+  loss-of-function allele (rs4244285, c.681G\>A; creates a cryptic
+  splice site that abolishes CYP2C19 enzyme activity). 1 = subject
+  carries at least one *2 allele (heterozygous* 1/*2 or homozygous*
+  2/*2); 0 = no* 2 allele. Time-fixed per subject (germline genotype).
+  Het and hom carriers are pooled in studies where the *2/*2 (poor
+  metabolizer) frequency is too low for a separate phenotype layer;
+  future extractions that distinguish
+  heterozygous-intermediate-metabolizer from homozygous-poor-metabolizer
+  effects should register paired `CYP2C19_S2_HET` / `CYP2C19_S2_HOM`
+  indicators (or, where the source uses the per-allele count form, a
+  `CYP2C19_S2_COUNT` column following the `CYP2C9_S2_COUNT` precedent).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no *2 allele –* 1/*1,* 1/*17, or* 17/\*17).
+- **Source aliases:**
+  - `CYP2C19*2` – Danielak 2017 (paper Methods ‘Determination of genetic
+    polymorphisms’ and Table 2 final-model
+    `Effect of CYP2C19*2 on FM (COV)` row; PCR-RFLP genotyping for
+    rs4244285). The Danielak 2017 cohort had no *2/*2
+    homozygous-poor-metabolizers, so heterozygous *1/*2 carriers were
+    pooled into the binary CYP2C19_S2_CARRIER = 1 group with no
+    information loss.
+- **Example models:** `Danielak_2017_clopidogrel.R` (linear-deviation
+  effect on the fraction of clopidogrel metabolised to the active thiol
+  H4: `fm = TVFM * (1 + e_cyp2c19_s2_fm * CYP2C19_S2_CARRIER)` with
+  `e_cyp2c19_s2_fm = -0.45`; carriers convert 45% less of the absorbed
+  clopidogrel to the active H4 metabolite, giving a 36.7% lower
+  predicted AUC of H4 vs non-carriers; Danielak 2017 Table 2 final-model
+  and Results page 1628).
+- **Notes:** CYP2C19*2 is the dominant* loss-of-function\* CYP2C19
+  allele in clopidogrel pharmacogenetics; it reduces clopidogrel’s
+  metabolic activation to the antiplatelet-active H4 thiol and is
+  associated with elevated rates of stent thrombosis and major adverse
+  cardiovascular events on clopidogrel therapy (FDA boxed warning,
+  2010). The paired \*17 ultra-rapid-metabolizer allele (rs12248560) is
+  typically registered separately when present (a `CYP2C19_S17_CARRIER`
+  indicator following the same pattern). The
+  continuous-individual-activity-score consolidation TODO logged on
+  `CYP2D6` line 3321 also applies prospectively to CYP2C19, but the
+  binary carrier indicator remains the standard discrete encoding used
+  by most published clopidogrel popPK / PD models. Ratified canonically
+  on 2026-05-20 alongside the Danielak 2017 clopidogrel extraction.
+
+### ABCB1_HAP_TTT (**canonical for ABCB1 TTT haplotype carrier indicator**)
+
 - **Description:** Binary haplotype indicator for the *ABCB1* `TTT`
   haplotype across the rs1128503 (1236C\>T, exon 12, synonymous
   Gly412Gly) / rs2032582 (2677G\>T/A, exon 21, Ala893Ser/Thr) /
@@ -9635,6 +9999,79 @@ promote to general when a second paper ratifies identical semantics.
   the haplotype is the cis combination tested jointly. Ratified
   canonically on 2026-05-16 alongside the de Wit 2016 everolimus
   extraction.
+
+### ALDH2_S2_CARRIER (\*\*canonical for ALDH2\*2 inactive-variant carrier indicator\*\*)
+
+- **Description:** Binary genotype indicator for the *ALDH2* `*2`
+  (inactive) variant allele (rs671 G\>A; Glu487Lys, aldehyde
+  dehydrogenase 2 mitochondrial isoform). 1 = subject carries at least
+  one ALDH2*2 allele (heterozygous* 1/*2 or homozygous* 2/*2); 0 =
+  ALDH2*1/\*1 wild-type. Time-fixed per subject (germline genotype).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (ALDH2*1/*1 wild-type, fully active aldehyde
+  dehydrogenase 2).
+- **Source aliases:**
+  - `ALDH2` (the source NONMEM indicator used in
+    `Nemoto_2017_ethanol.R`; 1 for *1/*2 carriers, 0 for *1/*1
+    wild-type; the Nemoto 2017 cohort had no *2/*2 homozygotes so the
+    indicator is effectively heterozygote-vs-wild-type in that cohort).
+- **Example models:** `Nemoto_2017_ethanol.R` (additive shift on Vd/F:
+  -20.4 L when ALDH2_S2_CARRIER = 1 vs ALDH2*1/*1 reference; Nemoto 2017
+  Table II final model).
+- **Notes:** ALDH2*2 is the canonical East-Asian aldehyde-dehydrogenase
+  deficiency allele (rs671 GAA -\> AAA, Glu487Lys); homozygous* 2/*2
+  subjects are essentially ALDH2-null and experience severe
+  acetaldehyde-flush after even small ethanol doses, so are typically
+  excluded from alcohol-PK studies. The Nemoto 2017 Japanese cohort
+  contained 21/34 (62%)* 1/*1 and 13/34 (38%)* 1/*2 subjects; no* 2/*2
+  homozygotes were enrolled. The single binary carrier indicator pools
+  heterozygous and homozygous variant carriers; future ethanol-PK
+  extractions that distinguish* 1/*2 from* 2/\*2 effects should register
+  paired `ALDH2_S2_HET` and `ALDH2_S2_HOM` indicators following the
+  `SLCO1B1_HAP15_HET` / `SLCO1B1_HAP15_HOM` precedent. Ratified
+  canonically on 2026-05-18 alongside the Nemoto 2017 ethanol
+  extraction.
+
+### ADH1B_S2_HOM (\*\*canonical for ADH1B\*2 homozygote indicator\*\*)
+
+- **Description:** Binary genotype indicator for the *ADH1B* `*2`
+  (high-activity) variant allele (rs1229984 G\>A; Arg47His, alcohol
+  dehydrogenase 1B class I beta-subunit). 1 = subject is homozygous
+  *2/*2; 0 = otherwise (the default reference covers ADH1B*2/*1
+  heterozygotes; ADH1B*1/*1 wild-type subjects fall outside the
+  published parameterization of Nemoto 2017 and are conventionally
+  assigned the same reference value as heterozygotes). Time-fixed per
+  subject (germline genotype).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (ADH1B*2/*1 heterozygous; ADH1B*1/*1
+  wild-type by extension when the model is applied beyond the published
+  parameter range).
+- **Source aliases:**
+  - `ADH1B` (the source NONMEM indicator used in
+    `Nemoto_2017_ethanol.R`; 1 for *2/*2 homozygotes, 0 for *2/*1
+    heterozygotes; Nemoto 2017 Table II structural model encodes the
+    Vmax conditional via two separate THETAs).
+- **Example models:** `Nemoto_2017_ethanol.R` (additive shift on Vmax:
+  +176 mg/h for *2/*2 homozygotes relative to the *2/*1 reference Vmax
+  of 7790 mg/h; Nemoto 2017 Table II final model).
+- **Notes:** ADH1B*2 is the East-Asian high-activity
+  alcohol-dehydrogenase variant (rs1229984 Arg47His); the* 2 allele
+  encodes a ~40x faster ethanol oxidation rate than the *1 wild-type.
+  Allele frequency in Japanese populations is ~70%, so most subjects
+  are* 2/*2 or* 1/*2 with a small* 1/*1 minority (~9% expected). Nemoto
+  2017 inherits the two-Vmax parameterization from Seng et al. 2014
+  (which estimated Vmax separately for* 2/*1 and* 2/*2 in a Chinese +
+  Indian cohort) and does not report an ADH1B genotype distribution for
+  its 34-subject Japanese cohort; the structural model is silent on
+  ADH1B*1/\*1 subjects. Future ADH1B-aware ethanol-PK extractions that
+  explicitly model all three genotypes should register `ADH1B_S2_HET` as
+  a companion indicator following the `SLCO1B1_HAP15_HET` /
+  `SLCO1B1_HAP15_HOM` precedent. Ratified canonically on 2026-05-18
+  alongside the Nemoto 2017 ethanol extraction.
 
 ## Lifestyle / medical history
 
@@ -10396,14 +10833,16 @@ promote to general when a second paper ratifies identical semantics.
   administered every 12 hours; 0 = subject received the once-daily
   prolonged-release tacrolimus formulation (Advagraf in Europe, Astagraf
   XL in the US; both Astellas) administered every 24 hours. Per-subject
-  (regimen-fixed) categorical indicator used in popPK analyses that pool
-  the two oral tacrolimus formulations and test formulation as a
-  covariate on absorption and disposition parameters.
+  (regimen-fixed; per-occasion in cross-over conversion studies)
+  categorical indicator used in popPK analyses that pool the two oral
+  tacrolimus formulations and test formulation as a covariate on
+  absorption and disposition parameters.
 - **Units:** (binary)
 - **Type:** binary
-- **Scope:** specific
-- **Reference category:** 0 (Advagraf prolonged-release; the
-  typical-value reference for Ktr and Vc/F in Woillard 2011 Table 4).
+- **Scope:** general
+- **Reference category:** 0 (Advagraf / Astagraf XL prolonged-release;
+  the typical-value reference for Ktr and Vc/F in Woillard 2011 Table
+  4).
 - **Source aliases:**
   - `study` – used in `Woillard_2011_tacrolimus.R` (Woillard 2011
     Methods: “study factor (assumed to be similar to drug formulation) …
@@ -10413,25 +10852,40 @@ promote to general when a second paper ratifies identical semantics.
     (Prograf = 1 = IR, Advagraf = 0 = PR), which also matches the
     standard convention of treating the older immediate-release
     formulation as the non-reference level.
+  - `FORMULATION` (with 1 = PR-T, opposite polarity) – used in
+    `Lu_2019_tacrolimus_industry_meta.R`. Lu 2019 writes the Ka
+    covariate equation as
+    `Ka = 0.375 * (1 - (1 - theta_form) * FORMULATION)` with
+    `FORMULATION = 1` for prolonged-release; the model derives
+    `form_pr = 1 - FORM_TAC_IR` inside
+    [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html)
+    to match the paper’s published equation while keeping the canonical
+    column oriented Prograf = 1.
 - **Example models:** `Woillard_2011_tacrolimus.R` (multiplicative
   effects per Woillard 2011 Table 4: `Ktr = theta1 * theta2^FORM_TAC_IR`
   with `theta1 = 3.34/h` and `theta2 = 1.53` (Prograf ~53 % faster
   absorption than Advagraf); `Vc/F = theta6 * theta7^FORM_TAC_IR` with
   `theta6 = 486 L` and `theta7 = 0.29` (Prograf Vc/F is 29 % of the
-  Advagraf reference)).
-- **Notes:** Specific scope because the Prograf-vs-Advagraf contrast is
-  tied to oral tacrolimus formulation comparisons; mirrors the existing
-  `FORM_DP2` (sarilumab), `FORM_P2F2` (isatuximab), `FORM_LINAG_TAB1`
-  (linagliptin), and `FORM_VISMO_PHASEI` (vismodegib) entries under the
-  `FORM_*` family of drug-product-version indicators. The Woillard 2011
-  paper notes the formulation effect partially confounds with
-  time-post-transplant (Prograf cohort sampled within the first 6 months
-  post-transplant, Advagraf cohort \> 12 months post-transplant). Future
-  tacrolimus models that include Envarsus XR (modified-release
-  once-daily granules) or LCP-Tacro (life-cycle-pharma melt-extrusion
-  tablets) should register a sibling canonical (e.g.,
-  `FORM_TAC_ENVARSUS`) rather than overloading `FORM_TAC_IR`. Ratified
-  canonically alongside the Woillard 2011 tacrolimus extraction.
+  Advagraf reference)), `Lu_2019_tacrolimus_industry_meta.R` (linear
+  effect on Ka per Lu 2019 Table 3 ‘Prolonged-release tacrolimus on Ka’
+  = 0.499, encoded as `Ka(PR-T) = Ka(IR-T) * 0.499` via
+  `form_pr = 1 - FORM_TAC_IR`; 50 % slower absorption for PR-T vs IR-T).
+- **Notes:** Scope promoted to `general` after Lu 2019 corroborated the
+  Prograf-vs-Advagraf contrast in a second, larger-cohort population
+  (Woillard 2011 n = 173 + 174, Lu 2019 n = 408 across 8 Astellas Phase
+  II studies). Mirrors the existing `FORM_DP2` (sarilumab), `FORM_P2F2`
+  (isatuximab), `FORM_LINAG_TAB1` (linagliptin), and `FORM_VISMO_PHASEI`
+  (vismodegib) entries under the `FORM_*` family of drug-product-version
+  indicators. The Woillard 2011 paper notes the formulation effect
+  partially confounds with time-post-transplant (Prograf cohort sampled
+  within the first 6 months post-transplant, Advagraf cohort \> 12
+  months post-transplant); Lu 2019 has no such confounding because most
+  studies are within-subject IR-T-to-PR-T conversions. Future tacrolimus
+  models that include Envarsus XR (modified-release once-daily granules)
+  or LCP-Tacro (life-cycle-pharma melt-extrusion tablets) should
+  register a sibling canonical (e.g., `FORM_TAC_ENVARSUS`) rather than
+  overloading `FORM_TAC_IR`. Ratified canonically alongside the Woillard
+  2011 tacrolimus extraction.
 
 ### dilution (**canonical for diluted-drug-product indicator**)
 
@@ -10862,6 +11316,37 @@ promote to general when a second paper ratifies identical semantics.
   Subject-level (time-fixed); set from the trial identifier on each
   subject record.
 
+### SAMPLE_INTENSIVE (**canonical for per-observation sampling-intensity indicator**)
+
+- **Description:** 1 = observation belongs to an intensive (rich,
+  post-dose) PK sampling window; 0 = sparse (pre-dose / steady-state
+  trough) sampling. Per-observation (record-level) indicator used to
+  switch the proportional residual-error magnitude when a source paper
+  estimates separate residual errors for intensive vs sparse sampling
+  phases of the same dataset.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (sparse sampling).
+- **Source aliases:** derived per observation from the sampling-design
+  label in the source dataset (intensive 24-h profiles / dense post-dose
+  schedules -\> 1; pre-dose troughs and steady-state population samples
+  -\> 0).
+- **Example models:** `Macpherson_2015_rosuvastatin.R` (Table 2 final
+  model: 39.4% CV intensive vs 59.5% CV sparse residual error; switched
+  per observation as
+  `propSd <- propSdIntensive * SAMPLE_INTENSIVE + propSdSparse * (1 - SAMPLE_INTENSIVE)`).
+- **Notes:** Conceptually similar to `STUDY1` / `STUDY5` / `PHASE1` /
+  `ELISA` (per-record switches that select between estimated
+  residual-error magnitudes) but the contrast is sampling design rather
+  than study cohort or bioanalytical assay. The indicator is generally
+  applicable: any pediatric / dense-vs-sparse pooled popPK design that
+  estimates two residual errors can carry it. Within-subject variation
+  is permitted (a single subject can have both intensive and sparse
+  observations, as in the Macpherson 2015 CHARON PK-pilot cohort where
+  12 subjects had a Day-0 intensive profile followed by 2 years of
+  sparse troughs).
+
 ### ELISA (**canonical for ELISA-vs-ECLIA bioanalytical assay indicator**)
 
 - **Description:** 1 = serum nipocalimab concentration measured by ELISA
@@ -11075,7 +11560,10 @@ promote to general when a second paper ratifies identical semantics.
   log-CL;
   `cl <- exp(lcl + etalcl + oc1 * etalcl_oc1 + oc2 * etalcl_oc2 + oc3 * etalcl_oc3 + oc4 * etalcl_oc4) * (WT/50)^0.75`,
   where each `etalcl_oc<k>` is a separate `~ fix(0.127)` after the first
-  to encode NONMEM `$OMEGA BLOCK(1) SAME`).
+  to encode NONMEM `$OMEGA BLOCK(1) SAME`), `Aregbe_2012_alvespimycin.R`
+  (5-occasion BOV on Q2 and V1), `Oosten_2016_fentanyl.R` (10-occasion
+  IOV on transdermal Ka; only `OCC >= 1` records carry IOV, sc /
+  non-transdermal records pass `OCC = 0` so all indicators zero out).
 - **Notes:** `OCC` is the recommended canonical for new IOV-using models
   – the binary `ooc1..oocN` indicators below remain canonical for legacy
   / pre-existing models that ship the data already-decomposed. Ratified

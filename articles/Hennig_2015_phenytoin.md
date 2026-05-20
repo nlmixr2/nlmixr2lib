@@ -484,7 +484,8 @@ nca_cu <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj_cu, dose_obj,
 #> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
+#>  ■■■■■■■■■■■■■■■■                  51% |  ETA:  2s
+#> Warning: Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
@@ -521,11 +522,8 @@ nca_cu <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj_cu, dose_obj,
 #> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
 #> Warning: Too few points for half-life calculation (min.hl.points=3 with only 1
 #> points)
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (0.05) is not allowed
-#>  ■■■■■■■■■■■■■■■■■■■               62% |  ETA:  2s
-#> Warning: Requesting an AUC range starting (0) before the first measurement
-#> (0.05) is not allowed
+#> Warning: Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
 #> Warning: Too few points for half-life calculation (min.hl.points=3 with only 0
 #> points)
 #> Warning: Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
@@ -655,8 +653,7 @@ nca_cb <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj_cb, dose_obj,
 #> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
-#>  ■■■■■■■                           22% |  ETA:  4s
-#> Warning: Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
 #> Warning: Too few points for half-life calculation (min.hl.points=3 with only 0
 #> points)
@@ -752,7 +749,8 @@ nca_cb <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj_cb, dose_obj,
 #> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
+#>  ■■■■■■■■■■■■■■■■■■■■■             67% |  ETA:  2s
+#> Warning: Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
@@ -803,9 +801,9 @@ nca_cb <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj_cb, dose_obj,
 #> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     94% |  ETA:  0s
-#> Warning: Too few points for half-life calculation (min.hl.points=3 with only 2 points)
-#> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
+#> Warning: Too few points for half-life calculation (min.hl.points=3 with only 2
+#> points)
+#> Warning: Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed

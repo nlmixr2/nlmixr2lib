@@ -306,7 +306,8 @@ intervals <- data.frame(
 nca_plasma <- PKNCA::pk.nca(
   PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 )
-#>  ■■■■■■■■■■■■■                     41% |  ETA:  3s
+#>  ■■■■■■■■■■■■                      38% |  ETA:  4s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     92% |  ETA:  0s
 
 plasma_summary <- as.data.frame(nca_plasma$result) |>
   filter(PPTESTCD %in% c("cmax", "tmax", "aucinf.obs", "half.life")) |>
@@ -345,7 +346,7 @@ conc_obj_b <- PKNCA::PKNCAconc(brain_nca, Cc ~ time | arm + id)
 nca_brain <- PKNCA::pk.nca(
   PKNCA::PKNCAdata(conc_obj_b, dose_obj, intervals = intervals)
 )
-#>  ■■■■■■■■■■■■■■■■■■■■■■■           72% |  ETA:  1s
+#>  ■■■■■■■■■■■■■■■■                  51% |  ETA:  2s
 
 brain_summary <- as.data.frame(nca_brain$result) |>
   filter(PPTESTCD %in% c("cmax", "tmax", "aucinf.obs", "half.life")) |>
