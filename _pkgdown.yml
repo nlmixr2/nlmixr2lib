@@ -334,6 +334,8 @@ navbar:
         href: articles/Bienczak_2025_ligelizumab.html
       - text: "Linagliptin (Retlich 2015)"
         href: articles/Retlich_2015_linagliptin.html
+      - text: "Linagliptin (Tadayasu 2014)"
+        href: articles/Tadayasu_2014_linagliptin.html
       - text: "Linezolid (Tsuji 2017)"
         href: articles/Tsuji_2017_linezolid.html
       - text: "Liraglutide (CarlssonPetri 2021)"
@@ -366,8 +368,6 @@ navbar:
         href: articles/Teuscher_2015_methylphenidate.html
       - text: "MHD rat (Clinckers 2008)"
         href: articles/Clinckers_2008_MHD_rat.html
-      - text: "MI 219 (Zou 2012)"
-        href: articles/Zou_2012_MI_219.html
       - text: "Micafungin (Martial 2017)"
         href: articles/Martial_2017_micafungin.html
       - text: "Midazolam (Brill 2014)"
