@@ -592,6 +592,8 @@ navbar:
         href: articles/Quartino_2016_trastuzumab.html
       - text: "Trastuzumab (Quartino 2019)"
         href: articles/Quartino_2019_trastuzumab.html
+      - text: "Trastuzumab (Reijers 2016)"
+        href: articles/Reijers_2016_trastuzumab.html
       - text: "Trastuzumab skbr3 (FehlingKaschek 2019)"
         href: articles/FehlingKaschek_2019_trastuzumab_skbr3.html
       - text: "TrastuzumabDeruxtecan (Yin 2021)"
@@ -1052,6 +1054,7 @@ articles:
   - articles/Quartino_2016_trastuzumab
   - articles/Quartino_2019_trastuzumab
   - articles/Rambiritch_2016_glibenclamide
+  - articles/Reijers_2016_trastuzumab
   - articles/Retlich_2015_linagliptin
   - articles/Robbie_2012_palivizumab
   - articles/Roberts_2016_topotecan
