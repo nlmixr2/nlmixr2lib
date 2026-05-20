@@ -220,6 +220,8 @@ navbar:
         href: articles/Farrell_2012_farletuzumab.html
       - text: "Fentanyl (Bista 2015)"
         href: articles/Bista_2015_fentanyl.html
+      - text: "Fentanyl (Oosten 2016)"
+        href: articles/Oosten_2016_fentanyl.html
       - text: "Ferumoxytol (Plock 2014)"
         href: articles/Plock_2014_ferumoxytol.html
       - text: "Follitropin delta (Rose 2016)"
@@ -1017,6 +1019,7 @@ articles:
   - articles/Odongo_2015_sulfadoxinePyrimethamine
   - articles/Ogasawara_2020_durvalumab
   - articles/Okada_2025_rocatinlimab
+  - articles/Oosten_2016_fentanyl
   - articles/Othman_2014_daclizumab
   - articles/Oualha_2014_epinephrine
   - articles/Ouerdani_2015_pazopanib
