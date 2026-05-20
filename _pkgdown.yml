@@ -266,6 +266,8 @@ navbar:
         href: articles/Chen_2022_guselkumab.html
       - text: "Guselkumab (Yao 2018)"
         href: articles/Yao_2018_guselkumab.html
+      - text: "Haloperidol (Franken 2017)"
+        href: articles/Franken_2017_haloperidol.html
       - text: "HL2351 (Ngo 2020)"
         href: articles/Ngo_2020_HL2351.html
       - text: "Imatinib (Chien 2022)"
@@ -883,6 +885,7 @@ articles:
   - articles/FiedlerKelly_2020_fremanezumab_cm
   - articles/FiedlerKelly_2020_fremanezumab_em
   - articles/Franken_2015_morphine
+  - articles/Franken_2017_haloperidol
   - articles/Frey_2010_tocilizumab
   - articles/Frey_2013_tocilizumab
   - articles/Friberg_2002_paclitaxel
