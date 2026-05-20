@@ -4214,6 +4214,16 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Zhou_2021_belimumab.R` (multiplicative factors 1.63 on CL and 1.26 on V1 when STUDY_LBSL = 1).
 - **Notes:** Conceptually similar to `STUDY1` / `PHASE2` / `ELISA` / `PHASE1` (per-study switches) but specific to the belimumab program. Subject-level (time-fixed); set from the trial identifier on each subject record.
 
+### SAMPLE_INTENSIVE (**canonical for per-observation sampling-intensity indicator**)
+- **Description:** 1 = observation belongs to an intensive (rich, post-dose) PK sampling window; 0 = sparse (pre-dose / steady-state trough) sampling. Per-observation (record-level) indicator used to switch the proportional residual-error magnitude when a source paper estimates separate residual errors for intensive vs sparse sampling phases of the same dataset.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (sparse sampling).
+- **Source aliases:** derived per observation from the sampling-design label in the source dataset (intensive 24-h profiles / dense post-dose schedules -> 1; pre-dose troughs and steady-state population samples -> 0).
+- **Example models:** `Macpherson_2015_rosuvastatin.R` (Table 2 final model: 39.4% CV intensive vs 59.5% CV sparse residual error; switched per observation as `propSd <- propSdIntensive * SAMPLE_INTENSIVE + propSdSparse * (1 - SAMPLE_INTENSIVE)`).
+- **Notes:** Conceptually similar to `STUDY1` / `STUDY5` / `PHASE1` / `ELISA` (per-record switches that select between estimated residual-error magnitudes) but the contrast is sampling design rather than study cohort or bioanalytical assay. The indicator is generally applicable: any pediatric / dense-vs-sparse pooled popPK design that estimates two residual errors can carry it. Within-subject variation is permitted (a single subject can have both intensive and sparse observations, as in the Macpherson 2015 CHARON PK-pilot cohort where 12 subjects had a Day-0 intensive profile followed by 2 years of sparse troughs).
+
 ### ELISA (**canonical for ELISA-vs-ECLIA bioanalytical assay indicator**)
 - **Description:** 1 = serum nipocalimab concentration measured by ELISA assay (LLOQ 0.150 ug/mL; studies MOM-M281-001, MOM-M281-007, MOM-M281-010); 0 = measured by ECLIA assay (LLOQ 0.010 ug/mL; studies EDI1001, EDI1002, MOM-M281-004). Used to switch the additive PK residual-error magnitude per assay.
 - **Units:** (binary)

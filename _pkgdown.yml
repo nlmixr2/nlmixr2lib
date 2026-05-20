@@ -408,8 +408,6 @@ navbar:
         href: articles/Robbie_2012_palivizumab.html
       - text: "PAmAb (Cao 2013)"
         href: articles/Cao_2013_PAmAb.html
-      - text: "Paracetamol (Krekels 2015)"
-        href: articles/Krekels_2015_paracetamol.html
       - text: "Patritumab (Lu 2022)"
         href: articles/Lu_2022_patritumab.html
       - text: "Pazopanib (Ouerdani 2015)"
@@ -474,6 +472,8 @@ navbar:
         href: articles/Lahu_2010_roflumilast.html
       - text: "Romiplostim (Petrov 2024)"
         href: articles/Petrov_2024_romiplostim.html
+      - text: "Rosuvastatin (Macpherson 2015)"
+        href: articles/Macpherson_2015_rosuvastatin.html
       - text: "Rucaparib (Wang 2015)"
         href: articles/Wang_2015_rucaparib.html
       - text: "Sacituzumab (Sathe 2024)"
@@ -984,6 +984,7 @@ articles:
   - articles/Lu_2022_patritumab
   - articles/Ma_2020_sarilumab_anc
   - articles/Ma_2020_sarilumab_das28crp
+  - articles/Macpherson_2015_rosuvastatin
   - articles/Marquez-Megias_2023_adalimumab
   - articles/Martial_2017_micafungin
   - articles/Martinez_2019_alirocumab
