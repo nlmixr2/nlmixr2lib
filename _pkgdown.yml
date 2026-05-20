@@ -168,6 +168,8 @@ navbar:
         href: articles/Talke_2018_dexmedetomidine.html
       - text: "Digoxin (Jelliffe 2014)"
         href: articles/Jelliffe_2014_digoxin.html
+      - text: "Dilmapimod (Yang 2016)"
+        href: articles/Yang_2016_dilmapimod.html
       - text: "Docetaxel (Ozawa 2007)"
         href: articles/Ozawa_2007_docetaxel.html
       - text: "Domagrozumab (Wojciechowski 2022)"
@@ -1128,6 +1130,7 @@ articles:
   - articles/Xu_2020_daratumumab
   - articles/Xu_2023_MBG453
   - articles/Yamada_2025_zolbetuximab
+  - articles/Yang_2016_dilmapimod
   - articles/Yang_2021_cemiplimab
   - articles/Yang_2024_axatilimab
   - articles/Yao_2018_guselkumab
