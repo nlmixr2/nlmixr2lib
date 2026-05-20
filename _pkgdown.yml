@@ -550,6 +550,8 @@ navbar:
         href: articles/Dunlap_2025_tacrolimus.html
       - text: "Tacrolimus (Kirubakaran 2022)"
         href: articles/Kirubakaran_2022_tacrolimus.html
+      - text: "Tacrolimus (Passey 2011)"
+        href: articles/Passey_2011_tacrolimus.html
       - text: "Tacrolimus (Prytula 2016)"
         href: articles/Prytula_2016_tacrolimus.html
       - text: "Tacrolimus (Storset 2014)"
@@ -1054,6 +1056,7 @@ articles:
   - articles/Papachristos_2020_bevacizumab_qss
   - articles/Papathanasiou_2025_belantamab
   - articles/Parhiz_2024_mRNALNP
+  - articles/Passey_2011_tacrolimus
   - articles/Patel_2017_selumetinib
   - articles/Peng_2024_SAL003
   - articles/PerezRuixo_2025_posdinemab
