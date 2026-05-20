@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Ji 2018 tacrolimus ([doi:10.2147/TCRM.S184376](https://doi.org/10.2147/TCRM.S184376)) -- Korean adult living-donor liver-transplant recipients during the first 14 days post-transplantation; ratifies new `CYP3A5_EXPR_DONOR` covariate canonical for transplant-donor CYP3A5 expresser status.
+* Add Chen 2014 nab-paclitaxel ([doi:10.1002/jcph.304](https://doi.org/10.1002/jcph.304)) -- adults with advanced solid tumors.
 * Add Nanga 2019 tacrolimus meta-model ([doi:10.1111/bcp.14110](https://doi.org/10.1111/bcp.14110)) -- pooled paediatric and adult solid-organ transplant recipients (n = 281; 201 liver and 80 kidney) on oral tacrolimus; ratifies new `TX_LIVER` and `FORM_SYRUP` covariate canonicals.
 * Rewrite Fiedler-Kelly 2019 fremanezumab ([doi:10.1111/bcp.14096](https://doi.org/10.1111/bcp.14096)) to support both IV and SC routes -- the packaged model now carries the route-specific central volume (Vc,IV = 2.98 L FIXED vs Vc,SC = 1.88 L) and the route-specific residual-error structure (IV proportional-only vs SC additive+proportional) from Fiedler-Kelly 2019 Table 2, switched by the `ROUTE_IV` covariate column. Removes the previous spurious allometric weight effect on Vp (the source paper holds Vp FIXED with no weight effect).
 * Add Yuan 2019 concizumab ([doi:10.1016/j.ejps.2019.105032](https://doi.org/10.1016/j.ejps.2019.105032)) -- healthy adult males.
