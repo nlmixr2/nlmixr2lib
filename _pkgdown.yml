@@ -314,6 +314,8 @@ navbar:
         href: articles/Gupta_2017_ixazomib.html
       - text: "Ixekizumab (Jackson 2022)"
         href: articles/Jackson_2022_ixekizumab.html
+      - text: "Ketoprofen (Park 2001)"
+        href: articles/Park_2001_ketoprofen.html
       - text: "Ketorolac (Valitalo 2017)"
         href: articles/Valitalo_2017_ketorolac.html
       - text: "Lamivudine (Archary 2019)"
@@ -1082,7 +1084,7 @@ articles:
   - articles/Papachristos_2020_bevacizumab_qss
   - articles/Papathanasiou_2025_belantamab
   - articles/Parhiz_2024_mRNALNP
-  - articles/Passey_2011_tacrolimus
+  - articles/Park_2001_ketoprofen
   - articles/Patel_2017_selumetinib
   - articles/Peng_2024_SAL003
   - articles/PerezRuixo_2025_posdinemab
