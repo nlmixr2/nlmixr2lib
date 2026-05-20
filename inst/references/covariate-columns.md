@@ -4381,6 +4381,17 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Xie_2019_agomelatine.R`.
 - **Notes:** Lower case preserved from source file. Pre-existing legacy form; new models should prefer the integer-valued `OCC` canonical above and decompose into binary indicators inside `model()`.
 
+### MONTH1 (**canonical for first-month-of-treatment landmark indicator**)
+- **Description:** Binary within-subject landmark indicator: 1 = the observation falls within the first 30 days after treatment initiation, 0 = subsequent months. Time-varying within subject -- gates a transient step change in typical-value CL that the source paper attributes to higher Erwinia asparaginase clearance in the first month of pediatric ALL therapy.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (month 2 onwards).
+- **Source aliases:** none known; Sassen 2017 reports the first-month-vs-after contrast as a single multiplicative coefficient on TVCL.
+- **Example models:**
+  - `Sassen_2017_crisantaspase.R` (multiplicative shift on CL: `cl <- exp(lcl + etalcl) * (WT/70)^0.75 * (1 + e_month1_cl * MONTH1)` with `e_month1_cl = 0.14`, encoding the 14% higher CL in the first month of treatment relative to subsequent months).
+- **Notes:** Specific scope because the 1-month (30-day) cutoff is tied to Sassen 2017's pediatric Erwinia asparaginase pharmacology (transient higher CL early in treatment; mechanism not established in the source paper). Future studies that test a similar within-subject step change with a different cutoff (e.g., 2 weeks or 6 weeks) should register a new canonical name. Distinct from `OCC` and `ooc<n>` (which decompose multi-occasion sampling for IOV), from `DAY14` (which uses a 14-day cutoff for malnutrition-recovery contrasts), and from `CYCLE` (which is a dose-number counter, not a single binary landmark). Data assemblers can derive `MONTH1 = as.integer(time_post_treatment_start_days < 30)` for a regularly-sampled multi-month study. Ratified canonically on 2026-05-20 alongside the Sassen 2017 extraction.
+
 ### DAY14 (**canonical for day-14-post-treatment-initiation landmark indicator**)
 - **Description:** Binary within-subject landmark indicator: 1 = the observation falls on or after day 14 of treatment (post-nutritional-rehabilitation steady state in the Archary 2019 / MATCH trial of severely malnourished HIV-infected children), 0 = the observation falls before day 14 (acute / pre-rehabilitation baseline; e.g., day 1 of antiretroviral treatment). Time-varying within subject -- gates a step change in typical-value PK parameters that the source paper attributes to nutritional recovery + auto-induction of hepatic metabolism over the first ~2 weeks of treatment.
 - **Units:** (binary)
