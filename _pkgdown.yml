@@ -302,6 +302,8 @@ navbar:
         href: articles/Hanzel_2021_infliximab.html
       - text: "Inotuzumab (Wu 2024)"
         href: articles/Wu_2024_inotuzumab.html
+      - text: "InterferonAlfa2a (Jeon 2013)"
+        href: articles/Jeon_2013_interferonAlfa2a.html
       - text: "Ipilimumab (Sanghavi 2020)"
         href: articles/Sanghavi_2020_ipilimumab.html
       - text: "Isatuximab (Brillac 2025)"
@@ -987,6 +989,7 @@ articles:
   - articles/Jackson_2022_ixekizumab
   - articles/Jager_2011_gemtuzumab
   - articles/Jelliffe_2014_digoxin
+  - articles/Jeon_2013_interferonAlfa2a
   - articles/Jeong_2022_torsemide
   - articles/Jin_2014_simvastatin
   - articles/Jonckheere_2019_cefepime
