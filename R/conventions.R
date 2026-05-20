@@ -63,7 +63,15 @@
     # Tumor volume / size compartment used by tumor growth inhibition
     # (TGI) models in oncology (Ait-Oudhia 2016, NA_NA_sunitinib,
     # Schindler 2016, Wilbaux 2015 and similar).
-    "tumor"
+    "tumor",
+    # Endogenous plasma metabolic species used by glucose / lactate
+    # turnover sub-models with drug-stimulated production (Oualha 2014
+    # epinephrine: glucose zero-order production is stimulated by Ep
+    # via an Emax function, and lactate is produced at the rate of
+    # glucose elimination and itself first-order eliminated). Each
+    # state holds a concentration (mmol/L) rather than an amount,
+    # mirroring the source paper's mass-balance parameterisation.
+    "glucose", "lactate"
   ),
   # Bare numbered chains (transit / effect / precursor / lat / dar /
   # depot) and metabolite-suffixed compartments are validated
@@ -226,7 +234,15 @@
     # produced by N-acetyltransferases. Used in parent-plus-metabolite
     # popPK models for amifampridine in patients with Lambert-Eaton
     # myasthenia (Thakkar 2017 doi:10.1002/psp4.12218).
-    "acdap"
+    "acdap",
+    # H4 (active thiol) metabolite of clopidogrel: the pharmacologically
+    # active species responsible for P2Y12 receptor inhibition, formed
+    # via sequential CYP-mediated oxidation of clopidogrel (CYP2C19 is
+    # the dominant isoform for the second oxidation step). The "H4"
+    # designator refers to the H4 stereoisomer specifically, which is
+    # the antiplatelet-active diastereomer. Used in parent-plus-
+    # metabolite popPK models (Danielak 2017 doi:10.1007/s00228-017-2334-z).
+    "h4"
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` denotes the time-varying decay arm.
@@ -258,7 +274,14 @@
     # parent's total clearance (i.e. fraction-metabolised is implicit
     # in kmet * Vc_parent / CL_parent rather than estimated as Fm).
     # Used in Krause 2017 selexipag (-> ACT-333679) popPK.
-    "kmet"
+    "kmet",
+    # Fraction of parent clearance routed to an active metabolite
+    # (FM = "fraction metabolised"), estimated as a structural
+    # parameter in parent-metabolite joint popPK models. Distinct
+    # from `kmet` (formation rate constant): FM is unitless and
+    # bounded in (0, 1] while kmet has rate units. Used in
+    # Danielak 2017 clopidogrel -> H4 (doi:10.1007/s00228-017-2334-z).
+    "fm"
   ),
   requiredUnits = c("time", "dosing", "concentration"),
   requiredMetadata = c("description", "reference", "units"),
