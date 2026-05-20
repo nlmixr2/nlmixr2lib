@@ -181,8 +181,19 @@ typical_ev$WT  <- 70
 typical_ev$OCC <- 1L
 typical_sim <- rxode2::rxSolve(mod_typical, typical_ev)
 
-tmax_h    <- typical_sim$time[which.max(typical_sim$Cc)]
-cmax_ngmL <- max(typical_sim$Cc, na.rm = TRUE)
+# Older rxode2 versions don't always expose the residual-error endpoint Cc as
+# an output column after zeroRe(); fall back to central/Vc directly. Vc at the
+# reference 70 kg is 280 L (lvc <- fixed(log(280)), e_wt_vc = 1, WT = 70).
+cc_vec <- if (!is.null(typical_sim$Cc)) typical_sim$Cc else typical_sim$central / 280
+finite_idx <- which(is.finite(cc_vec))
+if (length(finite_idx) > 0L) {
+  peak_idx  <- finite_idx[which.max(cc_vec[finite_idx])]
+  tmax_h    <- typical_sim$time[peak_idx]
+  cmax_ngmL <- cc_vec[peak_idx]
+} else {
+  tmax_h    <- NA_real_
+  cmax_ngmL <- NA_real_
+}
 thalf_el  <- log(2) * 280 / 49.6  # ln(2) * V/CL at 70 kg
 thalf_a   <- log(2) / 0.0135       # td absorption half-life
 
