@@ -356,8 +356,6 @@ navbar:
         href: articles/Shekar_2014_meropenem.html
       - text: "Methotrexate (Taylor 2020)"
         href: articles/Taylor_2020_methotrexate.html
-      - text: "Methylphenidate (Teuscher 2015)"
-        href: articles/Teuscher_2015_methylphenidate.html
       - text: "MHD rat (Clinckers 2008)"
         href: articles/Clinckers_2008_MHD_rat.html
       - text: "Micafungin (Martial 2017)"
@@ -378,8 +376,6 @@ navbar:
         href: articles/Franken_2015_morphine.html
       - text: "Morphine (Pierre 2017)"
         href: articles/Pierre_2017_morphine.html
-      - text: "Moxifloxacin (Hong 2015)"
-        href: articles/Hong_2015_moxifloxacin.html
       - text: "MRNA3927 (Attarwala 2023)"
         href: articles/Attarwala_2023_mRNA3927.html
       - text: "Nalmefene (Kyhl 2016)"
@@ -428,10 +424,6 @@ navbar:
         href: articles/Robbie_2012_palivizumab.html
       - text: "PAmAb (Cao 2013)"
         href: articles/Cao_2013_PAmAb.html
-      - text: "Paracetamol (Krekels 2015)"
-        href: articles/Krekels_2015_paracetamol.html
-      - text: "Paroxetine (Kim 2015)"
-        href: articles/Kim_2015_paroxetine.html
       - text: "Patritumab (Lu 2022)"
         href: articles/Lu_2022_patritumab.html
       - text: "Pazopanib (Ouerdani 2015)"
@@ -566,8 +558,8 @@ navbar:
         href: articles/Ji_2018_tacrolimus.html
       - text: "Tacrolimus (Kirubakaran 2022)"
         href: articles/Kirubakaran_2022_tacrolimus.html
-      - text: "Tacrolimus (Passey 2011)"
-        href: articles/Passey_2011_tacrolimus.html
+      - text: "Tacrolimus (Moes 2016)"
+        href: articles/Moes_2016_tacrolimus.html
       - text: "Tacrolimus (Prytula 2016)"
         href: articles/Prytula_2016_tacrolimus.html
       - text: "Tacrolimus (Storset 2014)"
@@ -1038,6 +1030,7 @@ articles:
   - articles/Melhem_2022_dostarlimab
   - articles/Mo_2018_olaratumab
   - articles/Moein_2022_etrolizumab
+  - articles/Moes_2016_tacrolimus
   - articles/Mohamed_2016_colistin_meropenem
   - articles/Moore_2016_vancomycin
   - articles/Mould_2007_alemtuzumab
