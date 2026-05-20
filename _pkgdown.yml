@@ -572,8 +572,8 @@ navbar:
         href: articles/Brooks_2021_tacrolimus.html
       - text: "Tacrolimus (Dunlap 2025)"
         href: articles/Dunlap_2025_tacrolimus.html
-      - text: "Tacrolimus (Ji 2018)"
-        href: articles/Ji_2018_tacrolimus.html
+      - text: "Tacrolimus (Grover 2011)"
+        href: articles/Grover_2011_tacrolimus.html
       - text: "Tacrolimus (Kirubakaran 2022)"
         href: articles/Kirubakaran_2022_tacrolimus.html
       - text: "Tacrolimus (Moes 2016)"
@@ -951,6 +951,7 @@ articles:
   - articles/Goel_2016_Sonidegib
   - articles/Goti_2018_vancomycin
   - articles/Grimm_2023
+  - articles/Grover_2011_tacrolimus
   - articles/Guiastrennec_2016_gastric_emptying
   - articles/Guo_2022_PF_06939999
   - articles/Gupta_2016_amatuximab
