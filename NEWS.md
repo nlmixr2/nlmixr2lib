@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Sassen 2017 Erwinia asparaginase / crisantaspase ([doi:10.3324/haematol.2016.149195](https://doi.org/10.3324/haematol.2016.149195)) -- pediatric acute lymphoblastic leukemia patients on intravenous Erwinia asparaginase (DCOG ALL-10 / ALL-11 protocols); ratifies new `MONTH1` first-month-of-treatment covariate canonical.
+* Add Bisaso 2014 plasma albumin disease progression ([doi:10.1186/s40203-014-0003-9](https://doi.org/10.1186/s40203-014-0003-9)) -- Ugandan adults co-infected with HIV (on efavirenz-based ART) and TB (on rifampicin-based co-treatment); ratifies new `TB_POS` and `SNP_ABCB1_RS1045642` covariate canonicals.
 * Add Nanga 2019 tacrolimus meta-model ([doi:10.1111/bcp.14110](https://doi.org/10.1111/bcp.14110)) -- pooled paediatric and adult solid-organ transplant recipients (n = 281; 201 liver and 80 kidney) on oral tacrolimus; ratifies new `TX_LIVER` and `FORM_SYRUP` covariate canonicals.
 * Rewrite Fiedler-Kelly 2019 fremanezumab ([doi:10.1111/bcp.14096](https://doi.org/10.1111/bcp.14096)) to support both IV and SC routes -- the packaged model now carries the route-specific central volume (Vc,IV = 2.98 L FIXED vs Vc,SC = 1.88 L) and the route-specific residual-error structure (IV proportional-only vs SC additive+proportional) from Fiedler-Kelly 2019 Table 2, switched by the `ROUTE_IV` covariate column. Removes the previous spurious allometric weight effect on Vp (the source paper holds Vp FIXED with no weight effect).
 * Add Yuan 2019 concizumab ([doi:10.1016/j.ejps.2019.105032](https://doi.org/10.1016/j.ejps.2019.105032)) -- healthy adult males.

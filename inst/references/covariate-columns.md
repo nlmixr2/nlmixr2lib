@@ -2294,6 +2294,17 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Jonsson_2011_ethambutol.R` (multiplicative `1 + e_hiv_pos_f * HIV_POS` shift on bioavailability; HIV-positive patients exhibit a 15.5% reduction in ethambutol bioavailability versus HIV-negative reference).
 - **Notes:** Parallels the `_POS` suffix convention used by `ADA_POS`, `SARS_SEROPOS`, and other serostatus / antibody-positivity indicators. Distinct from a primary disease-state indicator like `DIS_HIV` (not yet registered) -- `HIV_POS` is a comorbidity flag in non-HIV-primary indications where HIV-vs-non-HIV is tested as a PK covariate. Ratified canonically on 2026-05-06.
 
+### TB_POS (**canonical for active tuberculosis co-infection indicator**)
+- **Description:** 1 = active tuberculosis (typically pulmonary) at study entry, 0 = no active TB. Time-fixed per subject. Used as a binary comorbidity indicator on PK or PD parameters (typically albumin secretion, hepatic clearance, bioavailability, or disease-progression rates) when a study population pools TB-positive and TB-negative subjects on a non-TB primary indication (HIV ART, hepatitis treatment, malnutrition, etc.) or when a TB-cohort study pools TB subjects against a separately enrolled non-TB comparator group.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no active TB).
+- **Source aliases:**
+  - `TB` -- used in `Bisaso_2014_albumin.R` (paper text and Table 1 stratification column with values 0 = HIV only, 1 = HIV + TB co-infection; same orientation as the canonical).
+- **Example models:** `Bisaso_2014_albumin.R` (multiplicative additive shift on baseline albumin secretion rate Q0: `Q0 = exp(lq0) * (1 + e_tb_pos_q0 * TB_POS)` with `e_tb_pos_q0 = -0.308`; TB-positive subjects have ~30.8% lower Q0 than the HIV-only reference -- equivalent to the paper text's "44.2% lower" framing relative to the TB-HIV cohort).
+- **Notes:** Parallels the `_POS` suffix convention used by `HIV_POS`, `ADA_POS`, `SARS_SEROPOS`, and other serostatus / disease-state indicators. Distinct from any TB-treatment-regimen indicator (e.g. `CONMED_RIF_LPVR4` for concomitant rifampicin) -- `TB_POS` is the active-disease flag; the medication exposure is a separate concept. In Bisaso 2014 all 158 TB-positive subjects were also on rifampicin-based anti-TB therapy, so the two are confounded in that single cohort; the canonical preserves the conceptual distinction for future studies that decouple them. Ratified canonically on 2026-05-20 alongside the Bisaso 2014 albumin extraction.
+
 ### EARLY_ART (**canonical for early-vs-delayed antiretroviral-treatment-initiation arm indicator**)
 - **Description:** Trial randomization-arm indicator: 1 = subject was randomized to initiate antiretroviral treatment (ART) early (within the first 14 days of admission, before nutritional recovery), 0 = subject was randomized to delayed ART initiation (after nutritional recovery, > 14 days from admission). Time-fixed per subject within the trial. The indicator captures the early-vs-delayed-ART contrast tested in the Archary 2019 / MATCH (Malnutrition and ART Timing in Children with HIV) trial in severely malnourished HIV-infected children; the early-ART arm exhibits ~31% higher abacavir bioavailability than the delayed-ART arm.
 - **Units:** (binary)
@@ -3666,6 +3677,17 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
   - `SLCO1B1 rs11045819 genotype` -- Hennig 2015 (paper text; the source NONMEM control stream is in the unrecovered AAC supplement, so the formal column name is not on disk).
 - **Example models:** `Hennig_2015_rifabutin.R` (multiplicative effect on rifabutin bioavailability F: `F * (1 + 0.304 * SNP_SLCO1B1_RS11045819)` -- AC carriers have ~30% higher rifabutin F than CC reference; dOFV = -6.5).
 - **Notes:** Time-fixed per subject. Carrier rate in the Hennig 2015 South-African HIV/TB cohort: 14% (5 of 35 genotyped). SLCO1B1 encodes OATP1B1, a hepatic uptake transporter; rs11045819 has been associated with reduced rifampicin and lopinavir concentrations in prior studies but in Hennig 2015 was associated with INCREASED rifabutin bioavailability (note opposite direction of effect across rifamycins).
+
+### SNP_ABCB1_RS1045642 (**canonical for ABCB1 rs1045642 (c.3435C>T) mutant allele carrier indicator**)
+- **Description:** Binary genotype indicator for the *ABCB1* rs1045642 single-nucleotide polymorphism (c.3435C>T; exon 26; synonymous Ile1145Ile; encodes P-glycoprotein / MDR1 efflux transporter). 1 = subject carries at least one T (mutant) allele (heterozygous CT or homozygous TT; pooled because TT homozygote frequency was 1 of 262 in the Bisaso 2014 cohort); 0 = homozygous wild-type (CC). Time-fixed per subject (germline genotype).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (homozygous wild-type CC).
+- **Source aliases:**
+  - `ABCB13435` -- used in `Bisaso_2014_albumin.R` (paper text "ABCB1c.3435C>T mutation" and Figure 3 stratification "ABCB13435==0 stands for ABCB1c.3435CC while ABCB13435==1 stands for ABCB1c.3435CT and ABCB1c.3435TT"; same orientation as the canonical).
+- **Example models:** `Bisaso_2014_albumin.R` (multiplicative additive shift on baseline albumin secretion rate Q0: `Q0 = exp(lq0) * (1 + e_snp_abcb1_rs1045642_q0 * SNP_ABCB1_RS1045642)` with `e_snp_abcb1_rs1045642_q0 = 0.167`; T-carriers have 16.7% higher Q0 than CC wild-type, equivalent to the paper text's "16% higher" framing).
+- **Notes:** Distinct from `ABCB1_HAP_TTT` (which is the multi-SNP haplotype across rs1128503 / rs2032582 / rs1045642 jointly -- a different concept even though rs1045642 is one of the three contributing SNPs); use `ABCB1_HAP_TTT` when the source paper reports a phased haplotype, and `SNP_ABCB1_RS1045642` when the source paper reports the single c.3435C>T SNP alone. Heterozygote and homozygote T-carriers are pooled in Bisaso 2014 because the TT cohort was n = 1; future extractions that estimate separate het / hom effects should register paired `SNP_ABCB1_RS1045642_HET` and `SNP_ABCB1_RS1045642_HOM` indicators following the `SLCO1B1_HAP15_HET` / `SLCO1B1_HAP15_HOM` precedent. ABCB1 c.3435C>T is associated with altered P-glycoprotein expression and has been linked in the literature to predisposition to ART and rifampicin-based anti-TB drug-induced liver injury (Yimer 2011, cited in Bisaso 2014 Discussion). Ratified canonically on 2026-05-20 alongside the Bisaso 2014 albumin extraction.
 
 ### SLCO1B1_HAP15_HET (**canonical for SLCO1B1*15 haplotype heterozygote indicator**)
 - **Description:** Binary haplotype indicator for the *SLCO1B1* `*15` reduced-function haplotype (the cis combination of the 388A>G / rs2306283 and 521T>C / rs4149056 variants; encodes the OATP1B1 N130D + V174A double mutant). 1 = subject carries exactly one *15 allele (heterozygous: `*1a/*15` or `*1b/*15`), 0 = otherwise (the union of *15-noncarriers and *15-homozygotes; the paired indicator `SLCO1B1_HAP15_HOM` flags the homozygous group). Time-fixed per subject (germline haplotype).
