@@ -352,8 +352,6 @@ navbar:
         href: articles/Shekar_2014_meropenem.html
       - text: "Methotrexate (Taylor 2020)"
         href: articles/Taylor_2020_methotrexate.html
-      - text: "Metoprolol (Eugene 2016)"
-        href: articles/Eugene_2016_metoprolol.html
       - text: "MHD rat (Clinckers 2008)"
         href: articles/Clinckers_2008_MHD_rat.html
       - text: "Micafungin (Martial 2017)"
@@ -508,8 +506,8 @@ navbar:
         href: articles/Patel_2017_selumetinib.html
       - text: "Semaglutide (Overgaard 2019)"
         href: articles/Overgaard_2019_semaglutide.html
-      - text: "Sglt qsp (Lu 2014)"
-        href: articles/Lu_2014_sglt_qsp.html
+      - text: "Sepantronium (Aoyama 2012)"
+        href: articles/Aoyama_2012_sepantronium.html
       - text: "Sifalimumab (Narwal 2013)"
         href: articles/Narwal_2013_sifalimumab.html
       - text: "Sifalimumab (Zheng 2016)"
@@ -813,6 +811,7 @@ articles:
   - articles/Almquist_2016_ticagrelor
   - articles/Almquist_2022_anifrolumab
   - articles/Alsultan_2017_pyrazinamide
+  - articles/Aoyama_2012_sepantronium
   - articles/Archary_2018_lopinavir
   - articles/Archary_2019_abacavir
   - articles/Archary_2019_lamivudine

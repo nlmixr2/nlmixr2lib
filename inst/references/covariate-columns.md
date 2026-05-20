@@ -2512,8 +2512,32 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Reference category:** 0 = all other tumor types (in Ahamadi 2017 the implicit reference is melanoma, with the rare "other" cancer type pooled into the reference).
 - **Source aliases:**
   - `TUMTP` (categorical column with levels including `melanoma`, `NSCLC`, `other`) -- decompose into `TUMTP_NSCLC = as.integer(TUMTP == "NSCLC")`.
-- **Example models:** `Ahamadi_2017_pembrolizumab.R` (proportional change of +14.5% on CL for NSCLC patients relative to melanoma; the "other" cancer type cohort -- 1.01% of the population -- is pooled into the melanoma reference per the paper's model description).
+- **Example models:** `Ahamadi_2017_pembrolizumab.R` (proportional change of +14.5% on CL for NSCLC patients relative to melanoma; the "other" cancer type cohort -- 1.01% of the population -- is pooled into the melanoma reference per the paper's model description). `Aoyama_2012_sepantronium.R` registers the NSCLC cohort as the implicit reference (TUMTP_HRPC = 0 AND TUMTP_MEL = 0) so a TUMTP_NSCLC indicator column is not required as a model input for that file, but downstream users decomposing the source TUMTP categorical may still want to materialise it.
 - **Notes:** Follows the `TUMTP_CHL` / `TUMTP_GC` / `TUMTP_SCLC` decomposition pattern. Scope: general because NSCLC is a high-frequency tumor-type contrast (with melanoma or "other" reference) across PD-1 / PD-L1 / chemotherapy popPK analyses, and is likely to recur in future extractions. Ratified canonically on 2026-05-17 alongside the Ahamadi 2017 pembrolizumab extraction.
+
+### TUMTP_HRPC (**canonical for hormone-refractory prostate cancer tumor-type indicator**)
+- **Description:** 1 = hormone-refractory prostate cancer (HRPC), 0 = other tumor types. The historical term HRPC has since been displaced by CRPC (castration-resistant prostate cancer); the two terms refer to the same clinical entity. `TUMTP_HRPC` is the canonical column for both wordings (no separate `TUMTP_CRPC` is registered; if a future paper distinguishes hormone-naive metastatic prostate cancer from CRPC, register a more specific canonical at that time).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 = all other tumor types (per source paper; in Aoyama 2012 the implicit reference is NSCLC when paired with TUMTP_MEL = 0).
+- **Source aliases:**
+  - `TUMTP` (categorical column with levels including `HRPC`, `NSCLC`, `MM`) -- decompose into `TUMTP_HRPC = as.integer(TUMTP == "HRPC")`.
+  - `STUDY` / `CANCER_TYPE` factor columns where one level is `HRPC` or `CRPC` -- decompose identically.
+- **Example models:** `Aoyama_2012_sepantronium.R` (proportional change of -4.5% on CL for HRPC patients relative to the NSCLC reference; ratio THETA_HRPC = 0.955 in the paper's power form).
+- **Notes:** Follows the `TUMTP_CHL` / `TUMTP_GC` / `TUMTP_SCLC` / `TUMTP_NSCLC` decomposition pattern. Scope: general because prostate-cancer cohorts (under either HRPC or CRPC nomenclature) recur across small-molecule and targeted-therapy popPK analyses. The "hormone-refractory" wording reflects the 2010s convention; modern papers using CRPC map onto the same canonical. Ratified canonically on 2026-05-20 alongside the Aoyama 2012 sepantronium extraction.
+
+### TUMTP_MEL (**canonical for melanoma tumor-type indicator**)
+- **Description:** 1 = melanoma (any anatomic site; in advanced-solid-tumor cohorts typically unresectable stage III or IV cutaneous melanoma), 0 = other tumor types.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 = all other tumor types (per source paper; in Aoyama 2012 the implicit reference is NSCLC when paired with TUMTP_HRPC = 0).
+- **Source aliases:**
+  - `TUMTP` (categorical column with levels including `MM`, `NSCLC`, `HRPC`) -- decompose into `TUMTP_MEL = as.integer(TUMTP == "MM")`. NOTE: in Aoyama 2012 the abbreviation `MM` denotes malignant (unresectable) melanoma, NOT multiple myeloma; do not confuse with the canonical `MM` register entry (which is specifically active multiple myeloma).
+  - `STUDY` / `CANCER_TYPE` factor columns where one level is `melanoma` or `MM` (melanoma sense) -- decompose identically.
+- **Example models:** `Aoyama_2012_sepantronium.R` (proportional change of +24% on CL for melanoma patients relative to the NSCLC reference; ratio THETA_MM = 1.24 in the paper's power form).
+- **Notes:** Follows the `TUMTP_CHL` / `TUMTP_GC` / `TUMTP_SCLC` / `TUMTP_NSCLC` decomposition pattern. The canonical name uses `MEL` (not `MM`) to disambiguate from the existing `MM` register entry for multiple myeloma. Scope: general because melanoma cohorts recur across PD-1 / PD-L1 / BRAF-inhibitor / small-molecule popPK analyses. Ratified canonically on 2026-05-20 alongside the Aoyama 2012 sepantronium extraction.
 
 ### TUMTP_LYMPH (**canonical for lymphoma (pooled) tumor-type indicator**)
 - **Description:** 1 = lymphoma (heterogeneous lymphoma pool spanning multiple lymphoma histologies -- e.g., classical Hodgkin lymphoma combined with extranodal NK/T-cell lymphoma; or any-histology lymphoma pooled with solid-tumor and leukemia cohorts), 0 = solid tumor or other tumor type.
