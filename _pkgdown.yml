@@ -546,8 +546,8 @@ navbar:
         href: articles/Storset_2014_tacrolimus.html
       - text: "Tacrolimus (Woillard 2011)"
         href: articles/Woillard_2011_tacrolimus.html
-      - text: "Tacrolimus industry meta (Lu 2019)"
-        href: articles/Lu_2019_tacrolimus_industry_meta.html
+      - text: "Tacrolimus (Zhu 2014)"
+        href: articles/Zhu_2014_tacrolimus.html
       - text: "Tacrolimus metaanalysis (Nanga 2019)"
         href: articles/Nanga_2019_tacrolimus_metaanalysis.html
       - text: "Tefibazumab (Cao 2013)"
@@ -1162,6 +1162,7 @@ articles:
   - articles/Zhong_2026_abatacept
   - articles/Zhou_2021_belimumab
   - articles/Zhou_2025_brentuximab
+  - articles/Zhu_2014_tacrolimus
   - articles/Zhu_2017_lebrikizumab
   - articles/Zierhut_2008_osteoprotegerin
   - articles/Zuo_2016_UDCA
