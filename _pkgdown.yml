@@ -366,6 +366,8 @@ navbar:
         href: articles/Teuscher_2015_methylphenidate.html
       - text: "MHD rat (Clinckers 2008)"
         href: articles/Clinckers_2008_MHD_rat.html
+      - text: "MI 219 (Zou 2012)"
+        href: articles/Zou_2012_MI_219.html
       - text: "Micafungin (Martial 2017)"
         href: articles/Martial_2017_micafungin.html
       - text: "Midazolam (Brill 2014)"
@@ -1228,6 +1230,7 @@ articles:
   - articles/Zhu_2014_tacrolimus
   - articles/Zhu_2017_lebrikizumab
   - articles/Zierhut_2008_osteoprotegerin
+  - articles/Zou_2012_MI_219
   - articles/Zuo_2016_UDCA
   - articles/Zurlinden_2016_paracetamol
   internal: true
