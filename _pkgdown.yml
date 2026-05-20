@@ -140,6 +140,8 @@ navbar:
         href: articles/Savic_2017_cladribine.html
       - text: "Clesrovimab (Hu 2026)"
         href: articles/Hu_2026_clesrovimab.html
+      - text: "Clopidogrel (Danielak 2017)"
+        href: articles/Danielak_2017_clopidogrel.html
       - text: "Concizumab (Yuan 2019)"
         href: articles/Yuan_2019_concizumab.html
       - text: "Cyclosporin (Debord 2001)"
@@ -853,6 +855,7 @@ articles:
   - articles/Clinckers_2008_MHD_rat
   - articles/Conrado_2014_alzheimer
   - articles/Cook_2016_paracetamol
+  - articles/Danielak_2017_clopidogrel
   - articles/Dao_2020_sultiame
   - articles/Debord_2001_cyclosporin
   - articles/deHoogd_2017_morphine
