@@ -1463,7 +1463,7 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Reference category:** n/a -- used as a time-varying regressor. The model declares `linear(GLU)` so rxode2 linearly interpolates `GLU` between dataset rows.
 - **Source aliases:**
   - `iglu` (glucose at the current row time) -- used in the DDMORE bundle's `Simulated_glucoseKinetics.csv` for `DDMODEL00000227`. Rename `iglu` -> `GLU` before passing to `rxSolve`.
-- **Example models:** `Bizzotto_2016_glucose.R` (driving regressor for the glucose-at-site-of-action delay).
+- **Example models:** `Bizzotto_2016_glucose.R` (driving regressor for the glucose-at-site-of-action delay), `Lu_2014_sglt_qsp.R` (drives the rate of glucose entry into PCT1 by glomerular filtration in the SGLT renal-glucose-reabsorption QSP model: filtered glucose load = GFR * GLU mmol/h).
 - **Notes:** Specific scope because `GLU` is meaningful only for glucose-kinetics or glucose-PD models that take plasma glucose as an exogenous regressor. The DDMORE bundle's hand-rolled piecewise-linear interpolation (`GL = (t-T1)/(TOBS-T1)*(GLU-GLU1)+GLU1` with bracketing columns `iglu / glun / td / tn`) is replaced in nlmixr2 by `linear(GLU)` declared in `model()`; the bracketing columns are not required.
 
 ### INS (**canonical for plasma insulin time-course regressor**)
@@ -1488,6 +1488,16 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   - `BASI` (baseline insulin) -- used in the DDMORE bundle's `Simulated_ddmoremockdata2.txt` for `DDMODEL00000228`. Rename `BASI` -> `INS_BL` before passing to `rxSolve`.
 - **Example models:** `NA_NA_paracetamol.R` (DDMODEL00000228 OGTT model: initialises the insulin-on-elimination effect compartment `effect_ins(0) = INS_BL / 6.945` and feeds the steady-state baseline-glucose-production rate `gpro = gss * (kg + kgi * INS_BL / 6.945) * vg * 180 / 1000`).
 - **Notes:** Distinct from `INS` (time-varying regressor); `INS_BL` is a per-subject baseline-state anchor used in initial conditions and steady-state derived quantities, not the dynamic regressor itself. Specific scope because the conversion factor (1/6.945) and the rescaled-units interpretation are paper-specific; future extractions that report baseline insulin in mIU/L or pmol/L directly without rescaling can ratify the same canonical and document the per-model units / conversion in `covariateData[[INS_BL]]$units` / `notes`. Companion concept to `FPG` (baseline fasting plasma glucose).
+
+### CINH (**canonical for plasma SGLT-inhibitor concentration time-course regressor**)
+- **Description:** Plasma SGLT-inhibitor (e.g., dapagliflozin, canagliflozin) concentration as a time-varying *regressor* input that drives the rate of unbound-drug entry into the proximal tubule via glomerular filtration in renal-glucose-reabsorption QSP models. Not a covariate that modifies a parameter; the model integrates `CINH` directly through `linear(CINH)` and multiplies by the unbound fraction `fup` inside `model()`.
+- **Units:** nmol/L (matching the units of the inhibitor's affinity constants Ki1 and Ki2 in the SGLT MM kinetics).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- used as a time-varying regressor. The model declares `linear(CINH)` so rxode2 linearly interpolates `CINH` between dataset rows.
+- **Source aliases:** none known.
+- **Example models:** `Lu_2014_sglt_qsp.R` (drives the rate of unbound inhibitor entering PCT1 by glomerular filtration: filtered drug load = GFR * fup * CINH nmol/h; set CINH = 0 for baseline / no-inhibitor simulations).
+- **Notes:** Specific scope because `CINH` is meaningful only for renal-glucose-reabsorption or other SGLT-mediated models that take plasma SGLT-inhibitor exposure as an exogenous regressor. The clinical reporting unit is ng/mL; convert by `1 ng/mL = (1000 / MW_drug) nmol/L` (dapagliflozin MW = 409 g/mol so 1 ng/mL = 2.44 nmol/L; canagliflozin MW = 454 g/mol so 1 ng/mL = 2.20 nmol/L). The Lu 2014 paper feeds the model an interpolated dapagliflozin observed mean profile (DeFronzo et al. 2013) or a fitted two-compartment canagliflozin PK profile (Devineni et al. 2013) -- the SGLT-mechanism model itself does not include an internal PK sub-model for the inhibitor. Companion concept to `GLU` (the plasma-glucose regressor that drives the same filtration arm).
 
 ### IGE (**canonical for serum total immunoglobulin E concentration**)
 - **Description:** Baseline serum total immunoglobulin E concentration (free IgE plus, in patients on anti-IgE therapy, omalizumab-IgE complex). For anti-IgE monoclonal antibodies (omalizumab, ligelizumab) IgE is the pharmacologic target; baseline IgE sets the magnitude of the target sink and modifies free-IgE clearance and the rate of IgE production in mechanism-based binding/turnover models.
@@ -1811,7 +1821,8 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `NA_NA_paracetamol.R` (DDMODEL00000228).
   - `NA_NA_paracetamol.R` (DDMODEL00000228).
   - `Guiastrennec_2016_gastric_emptying.R` (multiplicative -81.1% depression of POTcarbC, the carbohydrate potency on CCK release; all other parameters are common across cohorts).
-- **Notes:** Distinct from the existing `DIAB` canonical (which deliberately does not distinguish Type 1 vs Type 2). Specific scope because the reference cohort is study-specific and the mechanism in the example model is a Type-2-versus-healthy stratification of OGTT response; a future T2DM-specific study (e.g., a popPK/PD analysis stratifying by HbA1c level) can ratify the same canonical and document the reference cohort in `covariateData[[T2DM]]$notes`.
+  - `Lu_2014_sglt_qsp.R` (multiplicative +17.6% shift on the typical-value Vmax2 of SGLT2 in the renal-glucose-reabsorption QSP model: Vmax2_T2DM = 110 mmol/h vs Vmax2_healthy = 93.5 mmol/h per Lu 2014 Table 2 calibration; coded for the Lu 2014 evaluation cohort, where the pre-modern-classification 'diabetics' of Mogensen 1971 are also coded T2DM = 1).
+- **Notes:** Distinct from the existing `DIAB` canonical (which deliberately does not distinguish Type 1 vs Type 2). Specific scope because the reference cohort is study-specific and the mechanism in the example models is a Type-2-versus-healthy stratification of OGTT or SGLT response; a future T2DM-specific study (e.g., a popPK/PD analysis stratifying by HbA1c level) can ratify the same canonical and document the reference cohort in `covariateData[[T2DM]]$notes`.
 
 ### HYPERT (**canonical for hypertension comorbidity / medical-history indicator**)
 - **Description:** 1 = patient has a history of (or current) hypertension as a comorbidity; 0 = no hypertension. Time-fixed at study entry per subject (medical-history flag rather than time-varying blood-pressure measurement).
