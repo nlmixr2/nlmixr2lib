@@ -2523,7 +2523,7 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Reference category:** 0 = all other tumor types (in Ahamadi 2017 the implicit reference is melanoma, with the rare "other" cancer type pooled into the reference).
 - **Source aliases:**
   - `TUMTP` (categorical column with levels including `melanoma`, `NSCLC`, `other`) -- decompose into `TUMTP_NSCLC = as.integer(TUMTP == "NSCLC")`.
-- **Example models:** `Ahamadi_2017_pembrolizumab.R` (proportional change of +14.5% on CL for NSCLC patients relative to melanoma; the "other" cancer type cohort -- 1.01% of the population -- is pooled into the melanoma reference per the paper's model description). `Aoyama_2012_sepantronium.R` registers the NSCLC cohort as the implicit reference (TUMTP_HRPC = 0 AND TUMTP_MEL = 0) so a TUMTP_NSCLC indicator column is not required as a model input for that file, but downstream users decomposing the source TUMTP categorical may still want to materialise it.
+- **Example models:** `Ahamadi_2017_pembrolizumab.R` (proportional change of +14.5% on CL for NSCLC patients relative to melanoma; the "other" cancer type cohort -- 1.01% of the population -- is pooled into the melanoma reference per the paper's model description), `Aoyama_2012_sepantronium.R`.
 - **Notes:** Follows the `TUMTP_CHL` / `TUMTP_GC` / `TUMTP_SCLC` decomposition pattern. Scope: general because NSCLC is a high-frequency tumor-type contrast (with melanoma or "other" reference) across PD-1 / PD-L1 / chemotherapy popPK analyses, and is likely to recur in future extractions. Ratified canonically on 2026-05-17 alongside the Ahamadi 2017 pembrolizumab extraction.
 
 ### TUMTP_HRPC (**canonical for hormone-refractory prostate cancer tumor-type indicator**)
