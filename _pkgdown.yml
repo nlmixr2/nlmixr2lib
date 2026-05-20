@@ -120,6 +120,8 @@ navbar:
         href: articles/Timmermann_2019_brodalumab.html
       - text: "Busulfan (Lawson 2022)"
         href: articles/Lawson_2022_busulfan.html
+      - text: "CC292 (Li 2017)"
+        href: articles/Li_2017_CC292.html
       - text: "Cabazitaxel (Ferron 2013)"
         href: articles/Ferron_2013_cabazitaxel.html
       - text: "Canakinumab (AitOudhia 2012)"
@@ -999,6 +1001,7 @@ articles:
   - articles/LeTilly_2021_trastuzumab
   - articles/Leuppi-Taegtmeyer_2019_colistin
   - articles/Li_2006_meropenem
+  - articles/Li_2017_CC292
   - articles/Li_2017_brentuximab
   - articles/Li_2017_cediranib
   - articles/Li_2019_abatacept
