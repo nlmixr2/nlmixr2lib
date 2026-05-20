@@ -352,6 +352,8 @@ navbar:
         href: articles/Shekar_2014_meropenem.html
       - text: "Methotrexate (Taylor 2020)"
         href: articles/Taylor_2020_methotrexate.html
+      - text: "Metoprolol (Eugene 2016)"
+        href: articles/Eugene_2016_metoprolol.html
       - text: "MHD rat (Clinckers 2008)"
         href: articles/Clinckers_2008_MHD_rat.html
       - text: "Micafungin (Martial 2017)"
@@ -893,6 +895,7 @@ articles:
   - articles/Ekhart_2008_carboplatin
   - articles/Elassaiss-Schaap_2017_pembrolizumab
   - articles/Elishmereni_2011_il21
+  - articles/Eugene_2016_metoprolol
   - articles/Faelens_2021_infliximab
   - articles/Farrell_2012_farletuzumab
   - articles/Fasanmade_2009_infliximab
