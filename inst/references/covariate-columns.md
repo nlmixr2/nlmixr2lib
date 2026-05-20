@@ -71,7 +71,7 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Reference category:** n/a
 - **Source aliases:**
   - `LBW` (lean body weight) -- synonym; same biological quantity (total body weight minus body fat). Hemophilia popPK literature typically uses `LBW` (Hume or James formula) where mAb / general literature uses `LBM`. Used in `Garmann_2017_BAY81_8973.R` (reference 51.1 kg).
-- **Example models:** `Kyhl_2016_nalmefene.R` (reference 56.28 kg, exponent 0.626 on CL), `Garmann_2017_BAY81_8973.R` (alias `LBW`; reference 51.1 kg, exponents 0.610 on CL and 0.950 on Vc).
+- **Example models:** `Kyhl_2016_nalmefene.R` (reference 56.28 kg, exponent 0.626 on CL), `Garmann_2017_BAY81_8973.R` (alias `LBW`; reference 51.1 kg, exponents 0.610 on CL and 0.950 on Vc), `Schoemaker_2017_brivaracetam.R` (alias `LBW`; paediatric cohort, reference 50 kg adult typical value, fixed theoretical allometric exponents 0.750 on CL/F and 1.00 on V/F).
 
 ### FFM (**canonical for fat-free mass**)
 - **Description:** Fat-free mass derived from body weight, height, and sex via the Janmahasatian et al. formula (Clin Pharmacokinet 2005;44:1051-1065).
@@ -2948,6 +2948,17 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Kirubakaran_2022_tacrolimus.R` (state-dependent typical CL/F: 21.1 L/h without azole and 4.2 L/h with azole, an 80% reduction; also a state-dependent BSV magnitude on CL/F: 61% CV without azole vs 89.5% CV with azole).
 - **Notes:** Azoles are mechanism-based CYP3A4 and P-glycoprotein inhibitors with different inhibitor potencies (itraconazole > voriconazole > fluconazole). The per-model `covariateData[[CONMED_AZOLE]]$notes` must document (1) which azoles are pooled into the indicator, (2) any post-cessation lag (Kirubakaran 2022 carries `CONMED_AZOLE = 1` for one week after azole discontinuation to allow tacrolimus apparent clearance to stabilize given itraconazole's long half-life), and (3) whether the indicator is a baseline-only proxy or a true time-varying flag.
 
+### CONMED_CBZ (**canonical for concomitant carbamazepine coadministration indicator**)
+- **Description:** 1 = subject is taking carbamazepine (CBZ) as a concomitant antiepileptic drug at the PK observation, 0 = no concomitant carbamazepine. Carbamazepine is a strong CYP3A4 / UGT / P-gp inducer that increases the apparent clearance of co-administered drugs. Time-varying when carbamazepine starts / stops within the observation window; time-fixed when the source paper analyses chronic-maintenance cohorts whose AED therapy is stable across the analysis window.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no concomitant carbamazepine).
+- **Source aliases:**
+  - `CBZ` -- used in `Schoemaker_2017_brivaracetam.R` (paper covariate `CBZ` for carbamazepine coadministration).
+- **Example models:** `Schoemaker_2017_brivaracetam.R` (multiplicative effect on apparent oral clearance: `cl *= (1 + 0.479 * CONMED_CBZ)`; +47.9% relative to no-CBZ reference, corresponding to ~32% lower brivaracetam exposure, Schoemaker 2017 Table 1).
+- **Notes:** Drug-specific CONMED_* indicator anticipated in the [[CONMED_AED]] notes; used when a paper estimates a separate CBZ-induction effect distinct from the pooled EIAED / AED class effect. Distinct from the broader [[CONMED_EIAED]] (any enzyme-inducing AED) and [[CONMED_AED]] (any concomitant AED). When a paper distinguishes individual AEDs separately (Schoemaker 2017: PB, CBZ, VPA each carry their own coefficient), use the drug-specific canonicals [[CONMED_PB]], `CONMED_CBZ`, [[CONMED_VPA]] rather than collapsing into the class-level indicator. Ratified canonically on 2026-05-20 alongside the Schoemaker 2017 brivaracetam paediatric extraction.
+
 ### CONMED_CHEMO (**canonical for anti-PD-(L)1 mAb + chemotherapy combination indicator**)
 - **Description:** 1 = subject is receiving an anti-PD-(L)1 monoclonal antibody in combination with platinum-based chemotherapy (gemcitabine + cisplatin, pemetrexed + cisplatin, paclitaxel + carboplatin, or platinum-doublet); 0 = otherwise. Encodes chemotherapy coadministration as a study-design covariate on the antibody's CL.
 - **Units:** (binary)
@@ -3122,6 +3133,17 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Plan_2012_pain.R` (additive shift on the placebo-effect logit of the typical pain-score lambda: `phl = logit(TVLAM) + 0.364 * CONMED_PARA`; mean pain score ~9% higher on the 0-10 Likert scale during paracetamol use).
 - **Notes:** Distinct from `CONMED_NSAID` -- paracetamol is not classed as an NSAID (no anti-inflammatory mechanism, distinct AE profile). Time-varying use is permitted; the daily Likert measurements in Plan 2012 carry PCM as a per-observation flag. Follows the `CONMED_*` concomitant-medication pattern established for IBD models (AZA / MP / MTX / AMINO) and `CONMED_NSAID` (Li 2019). Ratified canonically alongside the Plan 2012 DDMORE extraction.
 
+### CONMED_PB (**canonical for concomitant phenobarbital coadministration indicator**)
+- **Description:** 1 = subject is taking phenobarbital (PB) -- including primidone, which is metabolised to phenobarbital and is conventionally pooled with PB -- as a concomitant antiepileptic drug at the PK observation, 0 = no concomitant phenobarbital / primidone. Phenobarbital is a broad-spectrum CYP and UGT inducer that increases the apparent clearance of co-administered drugs. Time-varying when phenobarbital starts / stops within the observation window; time-fixed when the source paper analyses chronic-maintenance cohorts whose AED therapy is stable.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no concomitant phenobarbital or primidone).
+- **Source aliases:**
+  - `PB` -- used in `Schoemaker_2017_brivaracetam.R` (paper covariate `PB` for phenobarbital or primidone coadministration; the source pools primidone with phenobarbital because primidone is metabolised to phenobarbital).
+- **Example models:** `Schoemaker_2017_brivaracetam.R` (multiplicative effect on apparent oral clearance: `cl *= (1 + 0.408 * CONMED_PB)`; +40.8% relative to no-PB reference, corresponding to ~29% lower brivaracetam exposure, Schoemaker 2017 Table 1).
+- **Notes:** Drug-specific CONMED_* indicator anticipated in the [[CONMED_AED]] notes; used when a paper estimates a separate phenobarbital-induction effect distinct from the pooled EIAED / AED class effect. Per-model `covariateData[[CONMED_PB]]$notes` should document whether primidone is pooled with phenobarbital (Schoemaker 2017 pools them because primidone is metabolised to phenobarbital). Distinct from the broader [[CONMED_EIAED]] (any enzyme-inducing AED) and [[CONMED_AED]] (any concomitant AED). When a paper distinguishes individual AEDs separately, use the drug-specific canonicals [[CONMED_CBZ]], `CONMED_PB`, [[CONMED_VPA]] rather than collapsing into the class-level indicator. Ratified canonically on 2026-05-20 alongside the Schoemaker 2017 brivaracetam paediatric extraction.
+
 ### CONMED_PDE5I (**canonical for concomitant PDE5-inhibitor monotherapy indicator in PAH**)
 - **Description:** 1 = patient is on a concomitant phosphodiesterase type 5 inhibitor (PDE5I) PAH therapy (e.g., sildenafil, tadalafil) alone -- i.e. on a PDE5 inhibitor but NOT also on an endothelin-receptor antagonist; 0 = otherwise. Time-fixed per subject for the PK/PD analysis (PAH comedication at baseline, stable dose required before selexipag start).
 - **Units:** (binary)
@@ -3219,6 +3241,17 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
   - `BSTEROID` -- used in `Narwal_2013_sifalimumab.R` and `Zheng_2016_sifalimumab.R`.
 - **Example models:** `Narwal_2013_sifalimumab.R` (multiplicative on CL: `CL * (1 + 0.195 * CONMED_STEROID)`), `Zheng_2016_sifalimumab.R` (multiplicative on CL `(1 + 0.11 * CONMED_STEROID)` and on V1 `(1 - 0.09 * CONMED_STEROID)` in the SLE phase IIb cohort, which was ~85% conmed_steroid-treated at baseline).
 - **Notes:** Distinct from `PRICORT`, which is strictly a prior (pre-study) indicator. `CONMED_STEROID` captures concurrent corticosteroid use at / from study baseline in diseases where background conmed_steroid use is standard of care (SLE, severe asthma, etc.). When a future paper needs the two jointly, both can coexist on the same subject. The name `STEROID_BL` was used as an alias in earlier register drafts and is retired; use `CONMED_STEROID` for all future models.
+
+### CONMED_VPA (**canonical for concomitant valproate (valproic acid) coadministration indicator**)
+- **Description:** 1 = subject is taking valproate (valproic acid, sodium valproate, divalproex) as a concomitant antiepileptic drug at the PK observation, 0 = no concomitant valproate. Valproate is a broad-spectrum AED that inhibits UGT and CYP2C9, and chronic use is associated with weight gain. Time-varying when valproate starts / stops within the observation window; time-fixed when the source paper analyses chronic-maintenance cohorts whose AED therapy is stable.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no concomitant valproate).
+- **Source aliases:**
+  - `VPA` -- used in `Schoemaker_2017_brivaracetam.R` (paper covariate `VPA` for valproate coadministration).
+- **Example models:** `Schoemaker_2017_brivaracetam.R` (multiplicative effect on apparent oral clearance: `cl *= (1 - 0.101 * CONMED_VPA)`; -10.1% relative to no-VPA reference, corresponding to ~11% higher brivaracetam exposure, Schoemaker 2017 Table 1).
+- **Notes:** Drug-specific CONMED_* indicator anticipated in the [[CONMED_AED]] notes. Schoemaker 2017 retained the VPA effect in the final model even though it did not formally meet the SCM inclusion criteria (forward p < 0.01) because quantifying its contribution was considered informative; the authors note the apparent VPA-induced exposure rise may be confounded with VPA-driven weight / fat gain in chronic users. Distinct from the broader [[CONMED_AED]] (any concomitant AED). When a paper distinguishes individual AEDs separately, use the drug-specific canonicals [[CONMED_CBZ]], [[CONMED_PB]], `CONMED_VPA` rather than collapsing into the class-level indicator. Ratified canonically on 2026-05-20 alongside the Schoemaker 2017 brivaracetam paediatric extraction.
 
 ### PRICORT (**canonical for prior corticosteroid use indicator**)
 - **Description:** 1 = patient received systemic corticosteroid treatment prior to study entry, 0 = no prior corticosteroid use. Time-fixed per subject.
