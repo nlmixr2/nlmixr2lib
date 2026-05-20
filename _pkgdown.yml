@@ -676,6 +676,8 @@ navbar:
         href: articles/Huynh_2026_VRC07523LS.html
       - text: "Warfarin (Xia 2024)"
         href: articles/Xia_2024_warfarin.html
+      - text: "Warfarin vk2 (Zhou 2016)"
+        href: articles/Zhou_2016_warfarin_vk2.html
       - text: "Zenocutuzumab (deVriesSchultink 2020)"
         href: articles/deVriesSchultink_2020_zenocutuzumab.html
       - text: "Zolbetuximab (Yamada 2025)"
@@ -1220,6 +1222,7 @@ articles:
   - articles/Zhang_2022_ormutivimab
   - articles/Zheng_2016_sifalimumab
   - articles/Zhong_2026_abatacept
+  - articles/Zhou_2016_warfarin_vk2
   - articles/Zhou_2021_belimumab
   - articles/Zhou_2025_brentuximab
   - articles/Zhu_2014_tacrolimus

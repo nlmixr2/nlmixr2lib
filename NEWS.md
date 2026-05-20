@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Frymoyer 2017 infliximab ([doi:10.1097/MPG.0000000000001620](https://doi.org/10.1097/MPG.0000000000001620)) -- children and adults with Crohn's disease (REACH + ACCENT I model description reproduced in Frymoyer 2017 Methods); ratifies new `CONMED_IMMUNOMOD` covariate canonical.
+* Add Zhou 2016 warfarin + vitamin K2 ([doi:10.1186/s40780-016-0053-8](https://doi.org/10.1186/s40780-016-0053-8)) -- Japanese adults with atrial fibrillation undergoing catheter ablation; two-drug indirect-response PK/PD model registering new `vk2` (vitamin K2 / menatetrenone) co-administered-species suffix.
 * Add Schoemaker 2017 brivaracetam ([doi:10.1007/s00228-017-2230-6](https://doi.org/10.1007/s00228-017-2230-6)) -- paediatric patients with epilepsy aged 1 month to 16 years; ratifies new `CONMED_PB`, `CONMED_CBZ`, and `CONMED_VPA` covariate canonicals.
 * Add Nanga 2019 tacrolimus meta-model ([doi:10.1111/bcp.14110](https://doi.org/10.1111/bcp.14110)) -- pooled paediatric and adult solid-organ transplant recipients (n = 281; 201 liver and 80 kidney) on oral tacrolimus; ratifies new `TX_LIVER` and `FORM_SYRUP` covariate canonicals.
 * Rewrite Fiedler-Kelly 2019 fremanezumab ([doi:10.1111/bcp.14096](https://doi.org/10.1111/bcp.14096)) to support both IV and SC routes -- the packaged model now carries the route-specific central volume (Vc,IV = 2.98 L FIXED vs Vc,SC = 1.88 L) and the route-specific residual-error structure (IV proportional-only vs SC additive+proportional) from Fiedler-Kelly 2019 Table 2, switched by the `ROUTE_IV` covariate column. Removes the previous spurious allometric weight effect on Vp (the source paper holds Vp FIXED with no weight effect).
