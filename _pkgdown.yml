@@ -456,6 +456,8 @@ navbar:
         href: articles/Diao_2014_rFIXFc.html
       - text: "Rifabutin (Hennig 2015)"
         href: articles/Hennig_2015_rifabutin.html
+      - text: "Rifampicin (Clewe 2015)"
+        href: articles/Clewe_2015_rifampicin.html
       - text: "Rifampicin (Svensson 2016)"
         href: articles/Svensson_2016_rifampicin.html
       - text: "Rilotumumab (Zhang 2016)"
@@ -841,6 +843,7 @@ articles:
   - articles/Chua_2025_mirikizumab
   - articles/Cirincione_2017_exenatide
   - articles/Clegg_2024_nirsevimab
+  - articles/Clewe_2015_rifampicin
   - articles/Clewe_2016_rifampicin
   - articles/Clewe_2018_rifampicin
   - articles/Clinckers_2008_MHD_rat
