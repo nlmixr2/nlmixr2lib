@@ -234,7 +234,16 @@
     # produced by N-acetyltransferases. Used in parent-plus-metabolite
     # popPK models for amifampridine in patients with Lambert-Eaton
     # myasthenia (Thakkar 2017 doi:10.1002/psp4.12218).
-    "acdap"
+    "acdap",
+    # Pyrimethamine (2,4-diamino-5-(4-chlorophenyl)-6-ethylpyrimidine),
+    # the dihydrofolate-reductase inhibitor co-formulated with
+    # sulfadoxine as the fixed-dose antimalarial SP. Pyrimethamine is
+    # not a metabolite of sulfadoxine but a separately-disposed second
+    # drug; the suffix marks the non-parent analyte under the same
+    # multi-output naming registry used for ADCs / parent + metabolite
+    # models. Used in de Kock 2017 (CPT-PSP) and Odongo 2015 (Drugs in
+    # R&D) joint-popPK models for the SP fixed-dose combination.
+    "pyra"
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` denotes the time-varying decay arm.

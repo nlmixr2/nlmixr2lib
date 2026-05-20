@@ -514,6 +514,8 @@ navbar:
         href: articles/Wang_2024_sugemalimab.html
       - text: "SulfadoxinePyrimethamine (deKock 2017)"
         href: articles/deKock_2017_sulfadoxinePyrimethamine.html
+      - text: "SulfadoxinePyrimethamine (Odongo 2015)"
+        href: articles/Odongo_2015_sulfadoxinePyrimethamine.html
       - text: "Sunitinib (Ait-Oudhia 2016)"
         href: articles/Ait-Oudhia_2016_sunitinib.html
       - text: "Sunitinib irinotecan mouse (Wilson 2015)"
@@ -997,6 +999,7 @@ articles:
   - articles/Ngo_2020_HL2351
   - articles/Nikanjam_2019_siltuximab
   - articles/Novakovic_2017_cladribine
+  - articles/Odongo_2015_sulfadoxinePyrimethamine
   - articles/Ogasawara_2020_durvalumab
   - articles/Okada_2025_rocatinlimab
   - articles/Othman_2014_daclizumab
