@@ -3116,6 +3116,17 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Savic_2017_cladribine.R` (multiplicative effect on cladribine non-renal clearance: `cl_nonrenal *= (1 + e_ifn_clnr * CONMED_IFNB1A)` with `e_ifn_clnr = 0.21`, i.e. a 21% increase in non-renal CL when coadministered with IFN beta-1a).
 - **Notes:** Captured at the dose-record level in Savic 2017 (multiple-dose study 26486 alternated between cladribine alone and cladribine + IFN beta-1a periods). The interaction mechanism is not definitively established in the source paper; Savic 2017 discusses that the observed effect could alternatively be modelled on bioavailability or interpreted as a period-effect / interoccasion variability artefact. Future cladribine + immunomodulator extractions should reuse this canonical when IFN beta-1a is the specific concomitant agent; register a sibling canonical (e.g. `CONMED_IFNB1B`, `CONMED_IFNALPHA`) if a different interferon species is intended.
 
+### CONMED_IMMUNOMOD (**canonical for any-immunomodulator (purine analogue or methotrexate) composite indicator**)
+- **Description:** 1 = subject is on at least one concomitant immunomodulator (any of: azathioprine (AZA), 6-mercaptopurine (6-MP), or methotrexate (MTX)) at the PK observation, 0 = no concomitant immunomodulator from this class. A composite pooled indicator used in inflammatory-bowel-disease popPK analyses where the source paper does not separate the individual thiopurine vs MTX effects on therapeutic-mAb (typically anti-TNF) clearance.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no concomitant immunomodulator from the AZA / 6-MP / MTX class).
+- **Source aliases:**
+  - `IMM` -- used in `Frymoyer_2017_infliximab.R` (pooled purine-analogue-or-MTX indicator per Table 1 footnote of Frymoyer 2017: "Concomitant immunomodulation refers to purine-analogue or methotrexate.").
+- **Example models:** `Frymoyer_2017_infliximab.R` (power-of-coefficient effect on CL: `CL_typ * 0.863^CONMED_IMMUNOMOD`, i.e. -13.7% when on an immunomodulator).
+- **Notes:** Distinct from the per-drug indicators `CONMED_AZA`, `CONMED_MP`, and `CONMED_MTX`, which model the effect of each immunomodulator separately. Use `CONMED_IMMUNOMOD` only when the source paper itself pools the three under a single binary; use the per-drug indicators when the source paper estimates separate effects. Future IBD popPK extractions that pool thiopurines + MTX into a single indicator should reuse this canonical and extend the example list. Ratified canonically on 2026-05-20 alongside the Frymoyer 2017 infliximab pediatric Crohn's disease extraction.
+
 ### CONMED_IPI_1Q6W (**canonical for nivolumab + ipilimumab 1 mg/kg q6w combination indicator**)
 - **Description:** 1 = subject is receiving nivolumab in combination with ipilimumab 1 mg/kg every 6 weeks (continuous maintenance); 0 = otherwise.
 - **Units:** (binary)

@@ -296,6 +296,8 @@ navbar:
         href: articles/Faelens_2021_infliximab.html
       - text: "Infliximab (Fasanmade 2009)"
         href: articles/Fasanmade_2009_infliximab.html
+      - text: "Infliximab (Frymoyer 2017)"
+        href: articles/Frymoyer_2017_infliximab.html
       - text: "Infliximab (Hanzel 2021)"
         href: articles/Hanzel_2021_infliximab.html
       - text: "Inotuzumab (Wu 2024)"
@@ -932,6 +934,7 @@ articles:
   - articles/Frey_2010_tocilizumab
   - articles/Frey_2013_tocilizumab
   - articles/Friberg_2002_paclitaxel
+  - articles/Frymoyer_2017_infliximab
   - articles/Gandhi_2021_abatacept
   - articles/Garg_2014_pertuzumab
   - articles/Garmann_2017_BAY81_8973
