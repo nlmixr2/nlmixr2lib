@@ -556,6 +556,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Fau_2020_isatuximab.R` (mg/L, reference 3.90; exponent 0.343 on the steady-state linear clearance CLinf).
 - **Notes:** In multiple myeloma B2M is part of the International Staging System (ISS); in routine PK analyses it is interpreted simultaneously as a renal-function and disease-burden marker. Document the interpretation per-model via `covariateData[[B2M]]$notes`.
 
+### CYSC (**canonical for serum cystatin C**)
+- **Description:** Serum cystatin C concentration. Low-molecular-weight (~13 kDa) protease-inhibitor protein produced at a near-constant rate by all nucleated cells; freely filtered at the glomerulus and almost entirely reabsorbed and catabolized in the proximal tubule, so serum cystatin C reflects glomerular filtration rate (GFR) more directly than serum creatinine. Used as a renal-function covariate on the clearance of renally-eliminated drugs, especially in populations where creatinine-based estimates of GFR are unreliable (low muscle mass, normal-creatinine concentrations masking impaired GFR, ICU patients).
+- **Units:** mg/L
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- used with power scaling `(CYSC / ref)^exponent`. Reference values observed: 0.91 mg/L (Chung 2013 vancomycin Korean adults with SCr <= 1.2 mg/dL; cohort median).
+- **Source aliases:**
+  - `Cystatin C` / `cystatin` -- Chung 2013 paper narrative and Table 2 footnote.
+- **Example models:** `Chung_2013_vancomycin.R` (mg/L, reference 0.91; power exponent -0.780 on CL: `CL_pop * (CYSC / 0.91)^-0.780`).
+- **Notes:** Cystatin C is freely filtered at the glomerulus and is not secreted by the renal tubule (unlike creatinine), so it is less sensitive to muscle mass, body composition, and tubular-secretion blockers. Reference ranges 0.57-0.97 mg/L for adult females and 0.65-1.10 mg/L for adult males (Chung 2013 Methods; Roche Cobas 6000 particle-enhanced immunoturbidimetric assay). Distinct from `CREAT` (serum creatinine) -- the two are commonly reported alongside each other and can enter the same model as separate covariates (as in Chung 2013, where CYSC explains 62% of CL variability vs SCr 13%). Scope kept `specific` pending a second model that ratifies CYSC with consistent semantics; promote to `general` once corroborated. Ratified canonically on 2026-05-20 alongside the Chung 2013 vancomycin extraction.
+
 ### HEPIMP (**canonical for hepatic-impairment indicator (NCI ODWG classification)**)
 - **Description:** Baseline hepatic-impairment indicator per the National Cancer Institute Organ Dysfunction Working Group (NCI ODWG) classification: 1 = mild or worse hepatic impairment (group >= 2 = mild, moderate, or severe), 0 = normal hepatic function (group 1).
 - **Units:** (binary)

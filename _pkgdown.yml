@@ -358,6 +358,8 @@ navbar:
         href: articles/Shekar_2014_meropenem.html
       - text: "Methotrexate (Taylor 2020)"
         href: articles/Taylor_2020_methotrexate.html
+      - text: "Methylphenidate (Teuscher 2015)"
+        href: articles/Teuscher_2015_methylphenidate.html
       - text: "MHD rat (Clinckers 2008)"
         href: articles/Clinckers_2008_MHD_rat.html
       - text: "Micafungin (Martial 2017)"
@@ -378,6 +380,8 @@ navbar:
         href: articles/Franken_2015_morphine.html
       - text: "Morphine (Pierre 2017)"
         href: articles/Pierre_2017_morphine.html
+      - text: "Moxifloxacin (Hong 2015)"
+        href: articles/Hong_2015_moxifloxacin.html
       - text: "MRNA3927 (Attarwala 2023)"
         href: articles/Attarwala_2023_mRNA3927.html
       - text: "Nalmefene (Kyhl 2016)"
@@ -426,6 +430,10 @@ navbar:
         href: articles/Robbie_2012_palivizumab.html
       - text: "PAmAb (Cao 2013)"
         href: articles/Cao_2013_PAmAb.html
+      - text: "Paracetamol (Krekels 2015)"
+        href: articles/Krekels_2015_paracetamol.html
+      - text: "Paroxetine (Kim 2015)"
+        href: articles/Kim_2015_paroxetine.html
       - text: "Patritumab (Lu 2022)"
         href: articles/Lu_2022_patritumab.html
       - text: "Pazopanib (Ouerdani 2015)"
@@ -640,6 +648,8 @@ navbar:
         href: articles/Vezina_2010_valganciclovir.html
       - text: "Valganciclovir (Vezina 2014)"
         href: articles/Vezina_2014_valganciclovir.html
+      - text: "Vancomycin (Chung 2013)"
+        href: articles/Chung_2013_vancomycin.html
       - text: "Vancomycin (Goti 2018)"
         href: articles/Goti_2018_vancomycin.html
       - text: "Vancomycin (Moore 2016)"
@@ -873,6 +883,7 @@ articles:
   - articles/Chien_2022_imatinib
   - articles/Choy_2016_T2DM_WHIG
   - articles/Chua_2025_mirikizumab
+  - articles/Chung_2013_vancomycin
   - articles/Cirincione_2017_exenatide
   - articles/Clegg_2024_nirsevimab
   - articles/Clewe_2015_rifampicin
