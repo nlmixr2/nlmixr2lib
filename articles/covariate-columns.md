@@ -84,7 +84,8 @@ entries should default to all caps.
 - **Scope:** general
 - **Reference category:** n/a – used with allometric scaling
   `(WT / ref_wt)^exponent`. Reference weights observed: 70 kg (adults),
-  75 kg, 84.8 kg, 5 kg (infants).
+  75 kg, 84.8 kg, 56 kg (Kloprogge 2014 quinine cohort typical), 5 kg
+  (infants).
 - **Source aliases:** none known.
 - **Example models:** `Clegg_2024_nirsevimab.R`,
   `Hu_2026_clesrovimab.R`, `Zhu_2017_lebrikizumab.R`,
@@ -734,20 +735,29 @@ entries should default to all caps.
 - **Type:** continuous
 - **Scope:** general
 - **Reference category:** n/a – used with linear-deviation forms
-  `(1 + e * (BODYTEMP - ref))`. Reference values observed: 36.9 degC
+  `(1 + e * (BODYTEMP - ref))` or exponential forms
+  `exp(e * (BODYTEMP - ref))`. Reference values observed: 36.9 degC
   (Kloprogge 2013 lumefantrine; pooled-cohort median in Ugandan
   pregnant + non-pregnant women with uncomplicated P. falciparum
-  malaria).
+  malaria), 37.2 degC (Kloprogge 2014 quinine; pregnant Ugandan women
+  with uncomplicated P. falciparum malaria, cohort median at admission).
 - **Source aliases:**
   - `TEMP` – common short form in malaria / infectious-disease NONMEM
-    control streams; used in `Kloprogge_2013_lumefantrine.R` (same
-    orientation as the canonical, no value transformation).
+    control streams; used in `Kloprogge_2013_lumefantrine.R` and
+    `Kloprogge_2014_quinine.R` (same orientation as the canonical, no
+    value transformation).
 - **Example models:** `Kloprogge_2013_lumefantrine.R` (linear-deviation
   effect on mean absorption transit time MTT:
   `MTT_indiv = TVMTT * (1 + e_bodytemp_mtt * (BODYTEMP - 36.9))` with
   `e_bodytemp_mtt = 0.165` per degC; mean transit time increases ~16.5%
   per degC over 36.0-39.8 degC, plausibly reflecting reduced gut
-  motility / prolonged absorption in feverish malaria patients).
+  motility / prolonged absorption in feverish malaria patients),
+  `Kloprogge_2014_quinine.R` (exponential effect on elimination
+  clearance: `CL_indiv = TVCL * exp(e_bodytemp_cl * (BODYTEMP - 37.2))`
+  with `e_bodytemp_cl = -0.243` per degC, centered at the cohort median;
+  clearance decreases ~21.6% per degC increase in admission body
+  temperature over 36.0-38.9 degC, reflecting reduced metabolic CYP3A4
+  activity during acute febrile malaria).
 - **Notes:** General scope because body temperature is a universally
   applicable vital sign; the Kloprogge 2013 reference value 36.9 degC is
   cohort-specific (Ugandan malaria cohort median) and future models
@@ -888,10 +898,17 @@ entries should default to all caps.
   - `Scrmean` – Llanos-Paez 2017 paper notation; computed from Ceriotti
     et al. 2008 age- and sex-stratified medians (Clin Chem 54:559-566,
     <doi:10.1373/clinchem.2007.099648>).
+  - `SCR_standardised` – Germovsek 2018 paper notation; PMA-adjusted
+    standardisation of raw SCR per the paper’s reference 28 (a
+    previously-developed Standing-style PMA stratification).
 - **Example models:** `Hennig_2013_tobra.R`, `Llanos_2017_gentamicin.R`
   (umol/L; computed externally per Ceriotti et al. 2008),
   `Llanos-Paez_2020_gentamicin.R` (umol/L; ratio
-  `(CREAT_REF / CREAT)^0.58` multiplies the maturation-scaled CL).
+  `(CREAT_REF / CREAT)^0.58` multiplies the maturation-scaled CL),
+  `Germovsek_2018_meropenem.R` (umol/L; ratio `(CREAT_REF / CREAT)^0.40`
+  multiplies the maturation-scaled CL for renal meropenem clearance in
+  neonates and young infants; PMA-stratification reference per Germovsek
+  2018 Methods reference 28).
 - **Notes:** Specific scope because the formula used to derive the
   reference value is paper-defined (Hennig 2013 cites a combination of
   Ceriotti 2008, Junge 2004 and Johansson 2011 reference-interval
@@ -937,6 +954,40 @@ entries should default to all caps.
   machine-learning-driven hinge model, not a standard popPK covariate
   transform. Ratified canonically on 2026-05-18 alongside the Hall 2017
   dapsone extraction.
+
+### SOD (**canonical for serum sodium concentration**)
+
+- **Description:** Serum (or plasma) sodium concentration. Most commonly
+  captured at study entry as a baseline biochemistry value, but can be
+  time-varying when serial electrolytes are recorded. Reflects fluid /
+  electrolyte balance; hyponatraemia is common in severe acute illness,
+  severe malnutrition, GI losses, SIADH and adrenal insufficiency, while
+  hypernatraemia accompanies dehydration and excessive sodium intake.
+- **Units:** mmol/L (equivalent to mEq/L for sodium).
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a – used with a centered-linear-deviation
+  form `(1 + e_sod_<param> * (SOD - ref))`. Reference values observed:
+  136 mmol/L (Thuo 2011 ciprofloxacin; cohort median in Kenyan children
+  with severe malnutrition, normal-range lower bound).
+- **Source aliases:**
+  - `Na+` / `NA` / `SODIUM` – common source-paper printed forms; renamed
+    to canonical `SOD` when assembling input data. Used in
+    `Thuo_2011_ciprofloxacin.R` (the paper writes “Na+ (mmol/L)” in
+    Table 1 and structural-model equations).
+- **Example models:** `Thuo_2011_ciprofloxacin.R` (linear
+  centered-deviation effects on apparent CL and apparent Vc:
+  `1 + 0.0368*(SOD - 136)` and `1 + 0.0291*(SOD - 136)`; reference 136
+  mmol/L is the cohort median).
+- **Notes:** General scope because serum sodium is a universally
+  applicable serum-electrolyte covariate. Reference value is
+  paper-specific (cohort median); future models should document their
+  own reference in `covariateData[[SOD]]$notes`. Distinct from any
+  “sodium content of dosed formulation” concept (e.g., sodium-rich oral
+  rehydration solution) – that would warrant a separate canonical
+  (`DOSE_NA_MGML`, etc.) if a future model retains it. Ratified
+  canonically on 2026-05-21 alongside the Thuo 2011 ciprofloxacin
+  extraction.
 
 ### HEMODIAL (**canonical for intermittent-hemodialysis treatment-status indicator**)
 
@@ -1094,6 +1145,43 @@ entries should default to all caps.
   positive) and notes there is no clear mechanistic explanation; the
   joint effect may reflect serum-volume modifications. `TPRO` ratified
   canonically on 2026-04-28 alongside the Frey 2010 extraction.
+
+### CSF_TPRO (**canonical for cerebrospinal-fluid total protein**)
+
+- **Description:** Total protein concentration measured in cerebrospinal
+  fluid (baseline or time-varying). CNS-compartment analogue of `TPRO`;
+  used in popPK models of CSF-penetrating drugs as a surrogate for
+  blood-brain-barrier integrity (elevated CSF protein indicates
+  inflammation or barrier breakdown and typically correlates with
+  increased CNS penetration of small-molecule drugs).
+- **Units:** g/L (most common in popPK papers); occasionally mg/dL (1
+  g/L = 100 mg/dL). Document per-model via
+  `covariateData[[CSF_TPRO]]$units`.
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a – enters either as an additive term on the
+  logit-scale CSF uptake / barrier parameter, or as a power scaling
+  `(CSF_TPRO / ref)^exponent` on a penetration fraction. Reference value
+  observed: 1.2 g/L (Germovsek 2018 typical-infant value; sick-neonate
+  cohort median).
+- **Source aliases:**
+  - `CSF_protein` – Germovsek 2018 paper notation.
+  - `CSFPROT` / `CSF_PROT` – compact column-name forms common in NONMEM
+    control streams.
+- **Example models:** `Germovsek_2018_meropenem.R` (g/L, reference 1.2;
+  additive on the logit CSF barrier parameter with coefficient
+  theta_CSFproteins = -0.17 per g/L deviation from 1.2; ratified
+  canonically on 2026-05-21 alongside the Germovsek 2018 meropenem
+  extraction).
+- **Notes:** Distinct from `TPRO` (serum total protein) – the two are
+  biologically independent because the blood-brain barrier prevents free
+  equilibration of serum protein into CSF. Normal CSF protein is
+  approximately 0.15-0.45 g/L in healthy adults; sick neonates and
+  meningitis patients can reach several g/L. The covariate is typically
+  time-varying because CSF protein evolves over the course of CNS
+  inflammation; missing values are commonly imputed to the cohort median
+  when the source paper does not report a per-sample CSF protein
+  measurement.
 
 ### IGG (**canonical for serum immunoglobulin G**)
 
@@ -2482,6 +2570,51 @@ entries should default to all caps.
   MAP equation. Future haemodynamic models that fit a covariate effect
   on CVP itself can re-use the canonical name.
 
+### MORTRISK_HIGH (**canonical for high-mortality-risk composite indicator**)
+
+- **Description:** 1 = subject meets the paper-defined “high mortality
+  risk” composite criteria at study entry; 0 = subject is in the low or
+  intermediate risk strata. Subject-level baseline indicator. The
+  defining criteria are paper-specific: in Thuo 2011 (severe
+  malnutrition cohort, following Berkley et al. Arch Dis Child 2003), a
+  child is “high risk” if any one of the following is present: depressed
+  conscious state, bradycardia (heart rate \< 80 bpm), evidence of shock
+  (capillary refill time \>= 2 s, temperature gradient or weak pulse),
+  or hypoglycaemia (blood glucose \< 3 mmol/L); “intermediate risk” is
+  any one of deep acidotic breathing, severe dehydration with diarrhoea,
+  lethargy, hyponatraemia (Na \< 125 mmol/L), or hypokalaemia (K \< 2.5
+  mmol/L); “low risk” is none of the above. The canonical column
+  collapses the intermediate and low strata into the 0 reference because
+  the Thuo 2011 model only retains the high-vs-not-high contrast as a
+  covariate on CL.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (low or intermediate mortality risk).
+- **Source aliases:**
+  - `HIGHRISK` / `RISK` (Thuo 2011 NONMEM notation; paper writes “high
+    risk” in prose and structural equations as
+    `[1 + theta3 * (high risk)]`) – used in `Thuo_2011_ciprofloxacin.R`.
+- **Example models:** `Thuo_2011_ciprofloxacin.R` (multiplicative
+  fractional effect on apparent CL: `1 + (-0.283) * MORTRISK_HIGH`,
+  i.e., a 28.3% reduction in apparent oral clearance for high-risk
+  children; the standardised CL falls from 42.7 L/h/70 kg in
+  low/intermediate-risk to 30.6 L/h/70 kg in high-risk; the paper
+  attributes the contrast to delayed gastric emptying / impaired gut
+  absorption in critically ill malnourished children).
+- **Notes:** Specific scope because the underlying definition of “high
+  mortality risk” is paper-defined (Thuo 2011 follows Berkley 2003’s
+  three-stratum risk score for severely malnourished children). Distinct
+  from `SAPS_II` (continuous adult-ICU severity score), `RACHS1`
+  (paediatric cardiac surgery risk category), and `ORG_FAIL_COUNT`
+  (integer organ-failure count) – each is its own canonical with
+  paper-specific scoring rules. Future paediatric-severe-malnutrition
+  popPK papers that retain the Berkley 2003 three-stratum score (or a
+  close variant) can reuse this canonical; per-model
+  `covariateData[[MORTRISK_HIGH]]$notes` must document the exact
+  criteria the source paper used. Ratified canonically on 2026-05-21
+  alongside the Thuo 2011 ciprofloxacin extraction.
+
 ## Interferon / biomarker panels
 
 ### BGENE21 (**canonical for 21-gene type I interferon signature score**)
@@ -3022,17 +3155,27 @@ entries should default to all caps.
   `Emax * CAV / (EC50 + CAV)`) or power (e.g.,
   `(CAV / CavMedian)^exponent`) drug-effect terms. Set to 0 for placebo
   periods.
-- **Source aliases:** `CAV`, `Cav`, `CAVG`.
+- **Source aliases:** `CAV`, `Cav`, `CAVG`, `Cav,W` (Svensson 2017
+  weekly-average bedaquiline plasma concentration; same orientation as
+  the canonical, in mg/L).
 - **Example models:** `FiedlerKelly_2020_fremanezumab_em.R`,
   `FiedlerKelly_2020_fremanezumab_cm.R`,
   `Schoemaker_2018_levetiracetam.R` (DDMODEL00000239; LEV plasma
-  concentration in mg/L).
+  concentration in mg/L), `Svensson_2017_bedaquiline.R` (weekly-average
+  bedaquiline concentration in mg/L driving an Emax effect on the
+  mycobacterial-load half-life; EC50 = 1.42 mg/L, Emax fixed at -100%;
+  placebo subjects use CAV = 0).
 - **Notes:** Specific scope because the value is intrinsically tied to
   the modelled drug – there is no shared meaning across drugs or
   studies. Each model’s `covariateData[[CAV]]$notes` should state how
   the Cav values are derived (e.g., empirical-Bayes from a referenced
   population PK model) and that the column is set to 0 for placebo
-  periods.
+  periods. The averaging window is also model-specific
+  (per-dosing-interval Cav = AUC_tau / tau in Schoemaker 2018 /
+  Fiedler-Kelly 2020, but weekly-rolling-mean Cav_W in Svensson 2017 –
+  where the bedaquiline once-daily loading + thrice-weekly maintenance
+  schedule makes “per dosing interval” ambiguous); document the
+  averaging convention in each model’s `covariateData[[CAV]]$notes`.
 
 ### DOSE_PHT_MGKGD (**canonical for daily phenytoin dose per kg body weight**)
 
@@ -3333,6 +3476,46 @@ entries should default to all caps.
   at varying daily doses (5 mg to 2000 mg) across five prior pazopanib
   trials. Ratified canonically on 2026-05-12 alongside the Ouerdani 2015
   pazopanib mouse and clinical extractions.
+
+### AUC_RTV (**canonical for ritonavir AUC over the 0-24 h dosing interval**)
+
+- **Description:** Per-subject (time-fixed within an evaluated regimen)
+  ritonavir AUC over the 0-24 h once-daily dosing interval, used as a
+  co-medication exposure covariate driving boosted-protease-inhibitor
+  (atazanavir, lopinavir, darunavir, etc.) clearance in popPK models
+  that account for ritonavir’s CYP3A4-inhibition effect. In Dickinson
+  2009 the value is computed by non-compartmental methods on the
+  observed ritonavir concentration-time profile (WinNonlin 5.2) and
+  feeds the atazanavir CL/F power form
+  `cl = exp(lcl) * (AUC_RTV / 7.52)^e_aucrtv_cl`.
+- **Units:** `mg*h/L` (document per-model via
+  `covariateData[[AUC_RTV]]$units` if a different exposure unit is
+  reported).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a – enters via centred power form. Reference
+  value observed: 7.52 mg\*h/L (Dickinson 2009 cohort median across
+  HIV-infected and healthy volunteers; healthy 7.36, HIV 7.59 per Table
+  1).
+- **Source aliases:**
+  - `RTVAUC` – printed name in Dickinson 2009 Table 1 / Table 3 (the
+    paper writes `RTVAUC0-24` with the dosing-interval subscript; the
+    column name is registered without the subscript to fit standard
+    data-column character constraints).
+- **Example models:** `Dickinson_2009_atazanavir.R` (atazanavir CL/F
+  power-function dependence on RTVAUC0-24, centred at 7.52 mg\*h/L with
+  exponent -0.8).
+- **Notes:** Specific scope because the column meaning is tied to
+  ritonavir as the booster drug and to the 0-24 h once-daily
+  dosing-interval AUC convention. Sibling drug-specific AUC canonicals
+  (`AUC_CARBO`, `AUC_GEM`, `AUC_BAST_FW`, `AUC_PAZO`, `AUC_GCV`) follow
+  the same `AUC_<DRUG>` naming pattern. A future PK model that uses a
+  different ritonavir exposure metric (trough concentration,
+  q12h-interval AUC for BID ritonavir regimens) should register a
+  parallel canonical rather than overload `AUC_RTV`. For simulation
+  users without observed ritonavir AUC, the Dickinson 2009 cohort median
+  7.52 mg\*h/L reproduces typical-value behaviour (the centring point of
+  the covariate effect).
 
 ### CLI (**canonical for individual posthoc clearance from an upstream popPK fit**)
 
@@ -5275,12 +5458,17 @@ serve other parameters that do separate that group.
   CL/F vs cancer patients), `Bienczak_2025_ligelizumab.R` (log-additive
   `exp(-0.087 * DIS_HEALTHY)` on apparent ligelizumab CL/F; reference
   category is the pooled chronic-spontaneous-urticaria patient cohort
-  across C2201 / C2202 / C2302 / C2303), `Li_2017_CC292.R` (binary
-  stratifier on the proportional residual error magnitude: HNP cohort
-  uses propSd = sqrt(0.234) and patient cohort uses propSd =
-  sqrt(0.659); reference category 0 is the pooled relapsed/refractory
-  B-cell-malignancy patient cohort from AVL-292-003; source column
-  `HNP`).
+  across C2201 / C2202 / C2302 / C2303), `Lu_2015_tacrolimus.R`
+  (multiplicative factor `1 / 0.562 = 1.78` on CL/F at DIS_HEALTHY = 1;
+  reference category is the adult Chinese orthotopic liver-transplant
+  recipient cohort; healthy-volunteer CL/F is 1.78x patient CL/F at ALT
+  = 0. Paper Eq. 10 uses the reverse-coded `SubPop` indicator – the
+  model file re-expresses it as DIS_HEALTHY = 1 - SubPop),
+  `Li_2017_CC292.R` (binary stratifier on the proportional residual
+  error magnitude: HNP cohort uses propSd = sqrt(0.234) and patient
+  cohort uses propSd = sqrt(0.659); reference category 0 is the pooled
+  relapsed/refractory B-cell-malignancy patient cohort from AVL-292-003;
+  source column `HNP`).
 - **Notes:** Used when a population PK model pools healthy participants
   with patients across heterogeneous indications and the
   healthy-vs-patient contrast is retained as a covariate. Scope:
@@ -5290,11 +5478,13 @@ serve other parameters that do separate that group.
   patient cohort; Yang 2024 reference is patients with cGVHD; Goel 2016
   reference is the pooled cancer-patient cohort with advanced solid
   tumors or BCC; Brown 2017 reference is the pooled advanced NSCLC
-  cohort; Lu 2015 reference is the pooled cancer-patient cohort with
-  advanced solid tumors / metastatic or locally-advanced BCC). The
-  retired canonical name `DIS_HV` (healthy-volunteer) was renamed on
-  2026-05-11 because “volunteer” terminology is discouraged for
-  clinical-trial participants. Ratified canonically on 2026-04-24.
+  cohort; Lu 2015 vismodegib reference is the pooled cancer-patient
+  cohort with advanced solid tumors / metastatic or locally-advanced
+  BCC; Lu 2015 tacrolimus reference is the adult Chinese
+  liver-transplant recipient cohort). The retired canonical name
+  `DIS_HV` (healthy-volunteer) was renamed on 2026-05-11 because
+  “volunteer” terminology is discouraged for clinical-trial
+  participants. Ratified canonically on 2026-04-24.
 
 ### DIS_CASTLEMAN (**canonical for Castleman’s disease indicator**)
 
@@ -6051,7 +6241,57 @@ serve other parameters that do separate that group.
   future malaria-in-pregnancy or malaria-in-children PK models may
   legitimately reuse `LNPC` but should document their own
   cohort-specific reference value in `covariateData[[LNPC]]$notes`.
+  Distinct from `PARA` (raw parasitaemia in parasites/uL), which is the
+  companion canonical for models that apply the log transform inside
+  `model()` rather than pre-computing it at dataset-assembly time, and
+  that use a time-varying (last-observation-carried-forward)
+  parasitaemia trajectory rather than the admission-only fixed value.
   Ratified canonically on 2026-05-07.
+
+### PARA (**canonical for raw Plasmodium parasitaemia (parasites/uL)**)
+
+- **Description:** Asexual Plasmodium parasite count per microlitre of
+  blood. May be admission-only (time-fixed) or time-varying with serial
+  counts across follow-up (last-observation-carried-forward is the
+  typical NONMEM idiom in this lab’s malaria models). Document
+  time-varying vs time-fixed mode in `covariateData[[PARA]]$notes` per
+  model.
+- **Units:** parasites/uL
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a – used with log-transformed linear forms
+  `(1 + e * log10(PARA))` or `(1 + e * (log10(PARA) - ref))` when the
+  source paper applies the log transform inside the model. Reference
+  values observed: implicit log10(PARA) = 0 (i.e. PARA = 1 parasite/uL)
+  in Kloprogge 2014 (the linear form anchors F at the typical population
+  estimate when PARA = 1).
+- **Source aliases:**
+  - `PARA` – used in `Kloprogge_2014_quinine.R` (raw parasitaemia in
+    parasites/uL, time-varying via last-observation-carried-forward
+    across the 7-day quinine treatment course).
+- **Example models:** `Kloprogge_2014_quinine.R` (linear effect on
+  relative bioavailability with the log10 transform applied inside
+  `model()`: `F1PARA = 1 + e_para_f * log10(max(PARA, 1))` with
+  `e_para_f = +0.389` per log10 parasitaemia; gated by `max(PARA, 1)` so
+  that PARA values below 1 parasite/uL (effectively zero / below
+  detection) collapse to no covariate effect, matching the source
+  paper’s “effect only during the acute phase when parasitaemia was
+  above the limit of detection” wording).
+- **Notes:** Companion to `LNPC` – both canonicals describe the same
+  biological quantity (asexual Plasmodium parasite count) but differ in
+  the transform location: `LNPC` is pre-transformed to natural log at
+  dataset-assembly time and used as `(LNPC - ref)`, whereas `PARA` is
+  the raw count with the log transform applied inside `model()`. Use
+  `PARA` when the source paper reports the covariate coefficient on the
+  log10 scale (per log10 parasitaemia) and / or when parasitaemia is
+  time-varying. Use `LNPC` when the source dataset pre-computes the
+  natural log at admission. Scope: specific because the gating-at-1
+  convention and the log10-inside-model() idiom reflect Kloprogge 2014’s
+  specific implementation; a future malaria PK model that uses a
+  different gating threshold (e.g., LOQ-aware, or log base-e inside the
+  model) or a different reference value should document its own
+  convention in `covariateData[[PARA]]$notes`. Ratified canonically on
+  2026-05-21 alongside the Kloprogge 2014 quinine extraction.
 
 ### SARS_VLOAD (**canonical for SARS-CoV-2 baseline viral load**)
 
@@ -6233,6 +6473,95 @@ serve other parameters that do separate that group.
   and from `DAY14` (which is a within-subject
   time-since-treatment-initiation landmark, not an enrolment arm).
   Ratified canonically on 2026-05-08.
+
+### DIS_TB_XDR (**canonical for (pre-)XDR vs MDR tuberculosis drug-resistance stratum indicator**)
+
+- **Description:** 1 = subject’s *Mycobacterium tuberculosis* isolate is
+  classified as pre-extensively-drug-resistant (pre-XDR; resistant to
+  isoniazid + rifampicin plus a second-line fluoroquinolone OR an
+  injectable, but not both) or extensively-drug-resistant (XDR;
+  resistant to isoniazid + rifampicin plus a second-line fluoroquinolone
+  AND an injectable); 0 = multidrug-resistant (MDR; resistant to
+  isoniazid + rifampicin only), drug-susceptible, or unclassified TB.
+  Time-fixed per subject (one drug-susceptibility profile per subject
+  from baseline sputum culture). The dichotomisation pools pre-XDR with
+  XDR into the “1” stratum because Svensson 2017 found these two
+  categories share the same slower-clearance bacterial-load phenotype
+  (28.1% longer half-life of mycobacterial load decline relative to
+  MDR).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (MDR / susceptible / missing-treated-as-MDR;
+  the typical-value reference). Per Svensson 2017 Results paragraph 4,
+  the 19% of subjects with missing TB-type information were assigned to
+  the reference (MDR) group after testing that the missing group did not
+  differ significantly from MDR.
+- **Source aliases:** none formally; the Svensson 2017 source describes
+  the variable in prose as the “(pre-)XDR” stratum, operationally
+  encoded as 1 when TB type = pre-XDR or XDR and 0 otherwise (MDR +
+  susceptible + missing).
+- **Example models:** `Svensson_2017_bedaquiline.R` (multiplicative
+  `(1 + e_xdr_hl * DIS_TB_XDR)` shift on the half-life of mycobacterial
+  load decline; pre-XDR/XDR patients have a 28.1% longer MBL half-life
+  than MDR/susceptible patients, translating to 2-4 weeks longer median
+  time-to-sputum-culture-conversion per Svensson 2017 Table 3).
+- **Notes:** Specific scope because the dichotomisation is tied to the
+  Svensson 2017 multidrug-resistant tuberculosis cohort (TMC207-C208
+  Phase IIb registration trial) and the pre-XDR + XDR pooling convention
+  may not transfer to studies that report a different TB-resistance
+  categorisation (e.g., separate XDR vs pre-XDR stratification, or
+  rifampicin-monoresistant TB as a distinct category). Future TB
+  drug-resistance models should consider sibling canonicals (e.g.,
+  `DIS_TB_XDR_STRICT` for XDR-only, `DIS_TB_RIFRES` for
+  rifampicin-monoresistant) rather than overloading this name. Distinct
+  from `HIV_POS` (a comorbidity indicator on TB-coinfected patients, not
+  a drug-resistance stratum). Ratified canonically on 2026-05-21
+  alongside the Svensson 2017 bedaquiline extraction.
+
+### TTP_MGIT_BASE (**canonical for baseline mean time-to-positivity in mycobacterial growth indicator tube**)
+
+- **Description:** Subject-specific baseline (pre-treatment) mean
+  time-to-positivity (TTP) in the mycobacterial growth indicator tube
+  (MGIT) liquid-culture system, expressed in days. Computed in the
+  source paper as the mean of three replicate spot-sputum-sample TTP
+  values collected the day before the start of treatment. The MGIT
+  system automatically records the time in hours from inoculation to a
+  positive signal indicating presence of *M. tuberculosis* (cap at 42
+  days = negative); the per-subject baseline TTP is then used as a
+  covariate driving the model’s starting mycobacterial load (a longer
+  baseline TTP corresponds to fewer viable bacteria in the inoculum and
+  a lower starting MBL). Time-fixed per subject in the Svensson 2017
+  source.
+- **Units:** days
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a – used in power form
+  `(TTP_MGIT_BASE / ref)^exponent`. Reference value observed: 6.8 days
+  (Svensson 2017 Table 1 cohort median, n = 191).
+- **Source aliases:**
+  - `mTTP0` (Svensson 2017 paper symbol, also written `mTTP_{0,i}`) –
+    used in `Svensson_2017_bedaquiline.R`.
+- **Example models:** `Svensson_2017_bedaquiline.R` (power-form
+  covariate on the starting mycobacterial load
+  `mbl0_i = exp(lmbl0) * (TTP_MGIT_BASE / 6.8)^e_ttp_mbl0` with
+  `e_ttp_mbl0 = -3.69`; a four-fold longer median TSCC is predicted in
+  patients with the lowest baseline TTP versus the highest, per Svensson
+  2017 Discussion paragraph 3).
+- **Notes:** Specific scope because the cohort-median reference value
+  (6.8 days) is tied to the Svensson 2017 cohort (TMC207-C208 Phase IIb
+  registration trial); future MGIT-based mycobacterial-load models
+  should reuse this canonical but document their own cohort-specific
+  reference in `covariateData[[TTP_MGIT_BASE]]$notes`. Distinct from
+  `LNPC` (log-transformed admission Plasmodium parasitaemia, a different
+  pathogen-quantification method for malaria) and from `SARS_VLOAD`
+  (SARS-CoV-2 RT-qPCR log10 copies/mL, a different infectious-disease
+  baseline biomarker). MGIT samples without a positive signal within 42
+  days are classified as negative in the source paper; for the
+  per-subject baseline mean, only the positive triplicate values are
+  averaged (a subject with all-negative baseline samples has missing
+  TTP_MGIT_BASE). Ratified canonically on 2026-05-21 alongside the
+  Svensson 2017 bedaquiline extraction.
 
 ## Oncology
 
@@ -8071,39 +8400,50 @@ serve other parameters that do separate that group.
   indicator. Ratified canonically on 2026-05-20 alongside the Schoemaker
   2017 brivaracetam paediatric extraction.
 
-### CONMED_CCB (**canonical for concomitant calcium channel blocker coadministration indicator**)
+### CONMED_CSA (**canonical for concomitant cyclosporine (CsA) coadministration indicator**)
 
-- **Description:** 1 = subject coadministered any calcium channel
-  blocker (CCB) during the observation interval (diltiazem, verapamil,
-  amlodipine, nifedipine, felodipine, or another CCB); 0 = no
-  concomitant CCB. Time-varying per subject because CCB use can start
-  and stop during the observation period.
+- **Description:** 1 = subject is receiving cyclosporine (CsA) as the
+  concomitant calcineurin inhibitor at the PK observation; 0 = no
+  concomitant cyclosporine (in mycophenolate mofetil studies the typical
+  alternative comparator is tacrolimus). Cyclosporine inhibits the MRP2
+  (ABCC2) biliary efflux transporter, which decreases biliary excretion
+  of MPAG into the gut lumen and therefore decreases enterohepatic
+  recirculation (EHC) of mycophenolic acid; cyclosporine also displaces
+  mycophenolic acid from plasma protein binding sites. Time-varying when
+  cyclosporine starts / stops within the observation window; time-fixed
+  when the source paper analyses subjects randomized to one CNI regimen
+  for the entire study window (e.g., de Winter 2009).
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** general
-- **Reference category:** 0 (no concomitant calcium channel blocker).
+- **Reference category:** 0 (no concomitant cyclosporine; in MPA studies
+  the reference is typically a tacrolimus-based regimen).
 - **Source aliases:**
-  - `calcium channel blocker use` – used in `Passey_2011_tacrolimus.R`
-    (Passey 2011 Methods describes the column as “the concomitant use of
-    a CCB at the time of the trough measurement”).
-- **Example models:** `Passey_2011_tacrolimus.R`
-  (power-of-binary-indicator multiplicative factor on apparent oral
-  clearance: `e_ccb_cl ^ CONMED_CCB` with `e_ccb_cl = 0.94`; CCB
-  coadministration reduces tacrolimus CL/F by 6% averaged across the
-  pooled CCB class).
-- **Notes:** Per-model `covariateData[[CONMED_CCB]]$notes` must
-  document (1) which CCBs are pooled into the indicator, since potent
-  CYP3A4 inhibitors (diltiazem, verapamil) and non-inhibitor
-  dihydropyridines (amlodipine, nifedipine) are typically pooled in the
-  source datasets but have very different drug-interaction strengths –
-  Passey 2011 Discussion notes that “the inhibitory effects of some CCBs
-  may be overestimated whereas the effect of diltiazem is likely
-  underestimated” by the pooled-class average; (2) whether the indicator
-  is a baseline-only proxy or a true time-varying flag. Future models
-  that need stratified encoding (separate `CONMED_CCB_DILT`,
-  `CONMED_CCB_DHP`, etc.) should register companion canonicals rather
-  than overloading `CONMED_CCB`. Ratified canonically on 2026-05-20
-  alongside the Passey 2011 tacrolimus extraction.
+  - `CsA` – used in de Winter 2009 (binary indicator on the
+    MPAG-to-gallbladder transport rate constant k57 to encode
+    cyclosporine inhibition of MRP2-mediated biliary efflux); the
+    canonical column is `CONMED_CSA` with the same value semantics.
+- **Example models:** `deWinter_2009_mycophenolic_acid.R`
+  (multiplicative power-form effect on the fMPAG-to-gallbladder rate
+  constant k57: `k57 <- exp(lk57) * e_csa_k57^CONMED_CSA` with
+  `e_csa_k57 = 0.002`, so cyclosporine cotreatment reduces k57 from
+  0.0796 1/h to 0.000159 1/h, suppressing EHC by ~99.8% relative to the
+  tacrolimus reference; Table 2 / Eq. 9 of de Winter 2009).
+- **Notes:** Ratified canonically on 2026-05-21 alongside the de Winter
+  2009 mycophenolic acid extraction. Distinct from a generic
+  concomitant-immunosuppressant indicator: this canonical is
+  specifically cyclosporine vs another CNI / no CNI. In renal-transplant
+  popPK studies that randomise patients between cyclosporine and
+  tacrolimus immunosuppression (the de Winter 2009 design),
+  `CONMED_CSA = 1` and `CONMED_TAC` (if registered later for
+  tacrolimus-as-perpetrator effects) would be mutually exclusive at the
+  patient level. Cyclosporine and tacrolimus differ in their effect on
+  MPA pharmacokinetics: cyclosporine inhibits MRP2 (decreasing EHC of
+  MPAG -\> MPA) while tacrolimus does not, so co-administered MPA
+  exposure is typically lower under cyclosporine than under tacrolimus
+  for the same MMF dose. Data assemblers can derive
+  `CONMED_CSA = as.integer(cni_drug == "cyclosporine")` from a raw
+  `CNI_DRUG` text column.
 
 ### CONMED_CHEMO (**canonical for anti-PD-(L)1 mAb + chemotherapy combination indicator**)
 
@@ -8659,6 +8999,81 @@ serve other parameters that do separate that group.
   Sprague-Dawley rats), the parameter the indicator modifies, and any
   per-subject vs per-record time-varying convention.
 
+### CONMED_RIF (**canonical for concomitant rifampicin co-administration at full CYP3A4 induction**)
+
+- **Description:** 1 = subject is on concomitant rifampicin (typically
+  daily 600 mg oral rifampicin) and has reached the post-induction
+  equilibrium state on the perpetrator drug’s enzyme-induced expression;
+  0 = subject is not on rifampicin or is still inside the pre-induction
+  lag window (rifampicin-specific induction kinetics generally require
+  several days of daily dosing for full effect). Time-varying per
+  subject because rifampicin co-administration starts and the induction
+  state is reached only after a paper-specific lag (typically 3-7 days
+  of daily dosing).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no rifampicin co-administration or
+  pre-induction lag).
+- **Source aliases:**
+  - `RIF` – used in `Svensson_2014_bedaquiline.R` (paper-defined
+    indicator switching on at day 3 of 600 mg daily rifampicin
+    co-administration; the 3-day lag was selected by NONMEM
+    objective-function search over 1-8 day candidates and chosen as the
+    best fit per the paper’s Methods).
+- **Example models:** `Svensson_2014_bedaquiline.R` (multiplicative
+  factor on apparent CL_BDQ and CL_M2:
+  `cl_eff = cl_base * 4.78^CONMED_RIF`; 4.78-fold induction of apparent
+  clearance at full induction).
+- **Notes:** Distinct from `CONMED_RIF_LPVR4` (which is a compound
+  indicator for rifampicin + super-boosted LPV/r 4:4 used by Tikiso 2021
+  pediatric abacavir popPK and carries a non-CL effect). The general
+  `CONMED_RIF` covers any popPK study of a CYP3A4 substrate where
+  rifampicin is used as a perpetrator at standard doses with the
+  full-induction lag handled by the data-supplier. The exact
+  lag-to-full-induction (3, 7, 14 days, etc.) must be documented in
+  `covariateData[[CONMED_RIF]]$notes` per model. Future popPK
+  extractions that hold rifampicin co-administration as a binary
+  covariate at full induction should reuse this canonical; if a future
+  model needs a paper-specific time-decaying induction trajectory rather
+  than a step indicator, register a separate canonical
+  (`CONMED_RIF_INDUCTION_TIME`). Specific scope because the
+  post-induction-lag definition is paper-specific; promote to general
+  when a second model legitimately ratifies the same step-indicator
+  semantics. Ratified canonically on 2026-05-21 alongside the Svensson
+  2014 bedaquiline DDI extraction.
+
+### CONMED_RPT (**canonical for concomitant rifapentine co-administration at full CYP3A4 induction**)
+
+- **Description:** 1 = subject is on concomitant rifapentine (typically
+  daily 600 mg oral rifapentine) and has reached the post-induction
+  equilibrium state on the perpetrator drug’s enzyme-induced expression;
+  0 = subject is not on rifapentine or is still inside the pre-induction
+  lag window.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no rifapentine co-administration or
+  pre-induction lag).
+- **Source aliases:**
+  - `RPT` – used in `Svensson_2014_bedaquiline.R` (paper-defined
+    indicator switching on at day 3 of 600 mg daily rifapentine
+    co-administration; same lag as the sibling `CONMED_RIF` arm of the
+    same paper).
+- **Example models:** `Svensson_2014_bedaquiline.R` (multiplicative
+  factor on apparent CL_BDQ and CL_M2:
+  `cl_eff = cl_base * 3.96^CONMED_RPT`; 3.96-fold induction of apparent
+  clearance at full induction).
+- **Notes:** Sibling canonical to `CONMED_RIF`. Rifapentine and
+  rifampicin are both CYP3A4-inducing rifamycins with similar
+  mechanisms; the per-paper magnitude differs (rifapentine often
+  slightly less induction than rifampicin per the on-disk Svensson 2014
+  fit). Like `CONMED_RIF`, this is a step indicator at full induction
+  with the paper-specific lag documented in
+  `covariateData[[CONMED_RPT]]$notes`. Specific scope until a second
+  model ratifies the canonical; ratified on 2026-05-21 alongside the
+  Svensson 2014 extraction.
+
 ### CONMED_RIF_LPVR4 (**canonical for concomitant rifampicin-based antitubercular treatment with super-boosted lopinavir/ritonavir 4:4 indicator**)
 
 - **Description:** 1 = subject is receiving rifampicin-based
@@ -8738,6 +9153,34 @@ serve other parameters that do separate that group.
   `COMBO_DURVA` (durvalumab combinations) but for spartalizumab. Promote
   to general scope if a second paper reports a
   spartalizumab-coadministration covariate with comparable encoding.
+
+### CONMED_SPIRON (**canonical for concomitant spironolactone coadministration indicator**)
+
+- **Description:** 1 = subject is coadministered spironolactone
+  (aldosterone-receptor antagonist; potassium-sparing diuretic; renal
+  P-glycoprotein / OATP inhibitor at the digoxin tubular-secretion site)
+  during the study, 0 = no concomitant spironolactone. Spironolactone is
+  widely combined with digoxin in CHF therapy and inhibits digoxin renal
+  tubular excretion, raising digoxin serum concentration.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no concomitant spironolactone).
+- **Source aliases:**
+  - `SPI` – used in `Zhou_2010_digoxin.R` (Zhou 2010 Table 1 and Table 7
+    column label).
+- **Example models:** `Zhou_2010_digoxin.R` (multiplicative
+  linear-deviation form on Cl/F: `cl *= (1 - 0.412 * CONMED_SPIRON)`,
+  i.e. ~41% lower Cl/F with concomitant spironolactone in the older
+  Chinese CHF cohort; Zhou 2010 Table 7).
+- **Notes:** 32 of 119 subjects (27%) in Zhou 2010 were coadministered
+  spironolactone. The clinical rationale (Zhou 2010 Discussion) is that
+  spironolactone inhibits the renal-tubular secretion of digoxin via
+  competition for the renal P-glycoprotein transporter, raising digoxin
+  steady-state concentration. Promote to general scope if a second popPK
+  paper reports a spironolactone-coadministration covariate with
+  comparable encoding. Ratified canonically on 2026-05-21 alongside the
+  Zhou 2010 digoxin extraction.
 
 ### CONMED_STATIN (**canonical for concomitant conmed_statin (HMG-CoA reductase inhibitor) therapy**)
 
@@ -9237,7 +9680,58 @@ serve other parameters that do separate that group.
   `CYP2D6_ACTSCORE` for the AS sum) when a future model needs the
   categorical form. The current general-scope continuous canonical is
   sufficient for the Ter Heine 2014 use case but will likely need
-  refinement as more CYP2D6-aware models are added.
+  refinement as more CYP2D6-aware models are added. The companion binary
+  `CYP2D6_PM` entry below covers source papers that report only a
+  poor-metabolizer-versus-not-poor-metabolizer dichotomy.
+
+### CYP2D6_PM (**canonical for CYP2D6 poor-metabolizer phenotype indicator**)
+
+- **Description:** 1 = subject is a CYP2D6 poor metabolizer (genotype
+  encoding no functional enzyme activity; e.g., homozygous *4/*4, *5/*5,
+  or any compound combination of nonfunctional alleles); 0 = subject is
+  an extensive, intermediate, or ultrarapid metabolizer (i.e., carrying
+  at least one functional or reduced-function but not null allele).
+  Time-fixed per subject (germline genotype-derived phenotype).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (extensive, intermediate, or ultrarapid
+  metabolizer; carries at least one functional or reduced-function
+  CYP2D6 allele).
+- **Source aliases:**
+  - `2D6PM` – used in `Knights_2015_aripiprazole.R` (Knights 2015 Eq. 2
+    binary `2D6PM = 1` if CYP2D6 poor metabolizer, `= 0` otherwise; in
+    the supplement NONMEM control stream the dataset column `CYP2D6EM`
+    is recoded as `PM = (CYP2D6EM == 0)` – i.e., the source dataset’s
+    `CYP2D6EM` extensive-metabolizer indicator is value-inverted to
+    produce the model’s PM indicator).
+- **Example models:** `Knights_2015_aripiprazole.R` (proportional-shift
+  effect on apparent oral clearance:
+  `CL/F = TVCL * (1 + e_2d6pm_cl * CYP2D6_PM)` with
+  `e_2d6pm_cl = -0.478`; CYP2D6 poor metabolizers have 47.8% lower
+  apparent oral clearance than non-poor-metabolizers; Knights 2015
+  Equation 2 and Figure 1B).
+- **Notes:** Opposite-orientation companion to the `CYP2C9_EM` precedent
+  (which encodes the extensive-metabolizer-equals-1 phenotype) – here
+  the `1` indicates the poor-metabolizer end of the phenotype spectrum
+  because the Knights 2015 source paper explicitly defines its binary as
+  `2D6PM` (PM = 1) and reports the coefficient sign relative to that
+  orientation; preserving the PM-equals-1 orientation reproduces the
+  paper’s reported coefficient sign and typical-value parameters
+  directly. Distinct from the continuous `CYP2D6` activity-score
+  canonical above: use `CYP2D6_PM` when the source paper reports only a
+  binary PM-vs-not-PM dichotomy; use `CYP2D6` when the source reports a
+  probe-derived continuous activity number. Future papers that
+  distinguish IM from EM (separately from PM) should propose a paired
+  companion (`CYP2D6_EM`) so the three-level EM / IM / PM phenotype can
+  be encoded with two binary indicators on the `SLCO1B1_HAP15_HET` /
+  `SLCO1B1_HAP15_HOM` pattern; this is consistent with the CYP2C9_EM
+  register entry’s anticipated `CYP2C9_PM` companion. The Knights 2015
+  source dataset records `CYP2D6EM` (extensive-metabolizer indicator, 1
+  = EM, 0 = not-EM); the model’s PM indicator is derived by value
+  inversion (`CYP2D6_PM = 1 - CYP2D6EM` after handling the supplement’s
+  `-99` missing-value sentinel as `CYP2D6_PM = 0`). Ratified canonically
+  on 2026-05-21 alongside the Knights 2015 aripiprazole extraction.
 
 ### CYP3A4 (**canonical for CYP3A4 / CYP3A4-and-CYP3A5 individual metabolic-activity score**)
 
@@ -9494,6 +9988,125 @@ serve other parameters that do separate that group.
   ratified; see TODO on `CYP3A4`) when a future paper reports a
   probe-derived activity number. Ratified canonically on 2026-05-17
   alongside the Jeong 2022 torsemide extraction.
+
+### CYP2B6_IM (**canonical for CYP2B6 intermediate-metabolizer phenotype indicator**)
+
+- **Description:** 1 = subject is a CYP2B6 intermediate metabolizer
+  defined by the combined 516G\>T (rs3745274) \| 983T\>C (rs28399499)
+  SNP-vector phenotype assignment used in the African paediatric
+  antiretroviral literature: 516GT \| 983TT (heterozygous
+  loss-of-function at 516) or 516GG \| 983TC (heterozygous
+  loss-of-function at 983); 0 = any other phenotype (extensive, slow, or
+  ultra-slow metabolizer; see paired canonicals `CYP2B6_SM` and
+  `CYP2B6_USM`). Time-fixed per subject (germline genotype-derived
+  phenotype). EM (516GG \| 983TT) is the reference category when all
+  three of `CYP2B6_IM`, `CYP2B6_SM`, and `CYP2B6_USM` are 0.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (any non-IM phenotype: EM, SM, or USM).
+- **Source aliases:**
+  - `metabolizer status IM` / `IM` – Bienczak 2016 (paper Methods
+    ‘Covariate effects’ paragraph 2, Results ‘Population
+    pharmacokinetics’ paragraph 3, and Table 3 final estimates;
+    categorical metabolizer indicator entered as multiplicative effect
+    on intrinsic clearance CLint with EM reference).
+- **Example models:** `Bienczak_2016_nevirapine.R` (multiplicative
+  log-additive effect on CLint:
+  `cl_meta <- exp(e_cyp2b6_im_cl * CYP2B6_IM + e_cyp2b6_sm_cl * CYP2B6_SM + e_cyp2b6_usm_cl * CYP2B6_USM)`,
+  with `e_cyp2b6_im_cl = log(1 - 0.17) = -0.186`, giving the 17% lower
+  CLint reported in Bienczak 2016 Table 3 / Results ‘Population
+  pharmacokinetics’ paragraph 3).
+- **Notes:** Sibling indicators `CYP2B6_SM` and `CYP2B6_USM` together
+  encode the four-level EM / IM / SM / USM phenotype with three binary
+  columns (EM = all three zero); follows the dummy-coding pattern used
+  elsewhere in the register for multi-level categoricals (e.g. `RACE_*`,
+  `HEPIMP_MILD` / `HEPIMP_SEV` / `HEPIMP_MODSEV`). The IM grouping pools
+  the two distinct genotypes (516GT \| 983TT and 516GG \| 983TC) into a
+  single indicator because Bienczak 2016 Results ‘Population
+  pharmacokinetics’ paragraph 3 reports that ‘Using six rather than four
+  516G\>T \| 983T\>C SNP-vector metabolizer groups reduced OFV by only 5
+  points (df = 2, P = 0.08) and was therefore not used.’ Distinct from
+  the continuous `CYP3A4` activity-score canonical (which captures
+  probe-substrate-derived activity rather than SNP-vector phenotype) and
+  from `CYP3A5_EXPR` (binary expresser indicator built on a single
+  rs776746 genotype). Ratified canonically on 2026-05-21 alongside the
+  Bienczak 2016 nevirapine extraction.
+
+### CYP2B6_SM (**canonical for CYP2B6 slow-metabolizer phenotype indicator**)
+
+- **Description:** 1 = subject is a CYP2B6 slow metabolizer defined by
+  the combined 516G\>T (rs3745274) \| 983T\>C (rs28399499) SNP-vector
+  phenotype assignment used in the African paediatric antiretroviral
+  literature: 516TT \| 983TT (homozygous loss-of-function at 516) or
+  516GT \| 983TC (compound heterozygous loss-of-function at both); 0 =
+  any other phenotype (extensive, intermediate, or ultra-slow
+  metabolizer; see paired canonicals `CYP2B6_IM` and `CYP2B6_USM`).
+  Time-fixed per subject (germline genotype-derived phenotype). EM
+  (516GG \| 983TT) is the reference category when all three of
+  `CYP2B6_IM`, `CYP2B6_SM`, and `CYP2B6_USM` are 0.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (any non-SM phenotype: EM, IM, or USM).
+- **Source aliases:**
+  - `metabolizer status SM` / `SM` – Bienczak 2016 (paper Methods
+    ‘Covariate effects’ paragraph 2, Results ‘Population
+    pharmacokinetics’ paragraph 3, and Table 3 final estimates;
+    categorical metabolizer indicator entered as multiplicative effect
+    on intrinsic clearance CLint with EM reference).
+- **Example models:** `Bienczak_2016_nevirapine.R` (multiplicative
+  log-additive effect on CLint:
+  `cl_meta <- exp(e_cyp2b6_im_cl * CYP2B6_IM + e_cyp2b6_sm_cl * CYP2B6_SM + e_cyp2b6_usm_cl * CYP2B6_USM)`,
+  with `e_cyp2b6_sm_cl = log(1 - 0.50) = -0.693`, giving the 50% lower
+  CLint reported in Bienczak 2016 Table 3 / Results ‘Population
+  pharmacokinetics’ paragraph 3).
+- **Notes:** Sibling indicators `CYP2B6_IM` and `CYP2B6_USM` together
+  encode the four-level EM / IM / SM / USM phenotype with three binary
+  columns (EM = all three zero). See `CYP2B6_IM` Notes for the
+  SNP-vector pooling rationale and the link back to the dummy-coding
+  pattern used elsewhere in the register. Ratified canonically on
+  2026-05-21 alongside the Bienczak 2016 nevirapine extraction.
+
+### CYP2B6_USM (**canonical for CYP2B6 ultra-slow-metabolizer phenotype indicator**)
+
+- **Description:** 1 = subject is a CYP2B6 ultra-slow metabolizer
+  defined by the combined 516G\>T (rs3745274) \| 983T\>C (rs28399499)
+  SNP-vector phenotype assignment used in the African paediatric
+  antiretroviral literature: 983CC homozygosity (irrespective of 516G\>T
+  genotype, i.e. 516GG \| 983CC in Bienczak 2016’s principal grouping);
+  0 = any other phenotype (extensive, intermediate, or slow metabolizer;
+  see paired canonicals `CYP2B6_IM` and `CYP2B6_SM`). Time-fixed per
+  subject (germline genotype-derived phenotype). EM (516GG \| 983TT) is
+  the reference category when all three of `CYP2B6_IM`, `CYP2B6_SM`, and
+  `CYP2B6_USM` are 0.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (any non-USM phenotype: EM, IM, or SM).
+- **Source aliases:**
+  - `metabolizer status USM` / `USM` – Bienczak 2016 (paper Methods
+    ‘Covariate effects’ paragraph 2, Results ‘Population
+    pharmacokinetics’ paragraph 3, and Table 3 final estimates;
+    categorical metabolizer indicator entered as multiplicative effect
+    on intrinsic clearance CLint with EM reference).
+- **Example models:** `Bienczak_2016_nevirapine.R` (multiplicative
+  log-additive effect on CLint:
+  `cl_meta <- exp(e_cyp2b6_im_cl * CYP2B6_IM + e_cyp2b6_sm_cl * CYP2B6_SM + e_cyp2b6_usm_cl * CYP2B6_USM)`,
+  with `e_cyp2b6_usm_cl = log(1 - 0.68) = -1.139`, giving the 68% lower
+  CLint reported in Bienczak 2016 Table 3 / Results ‘Population
+  pharmacokinetics’ paragraph 3).
+- **Notes:** Sibling indicators `CYP2B6_IM` and `CYP2B6_SM` together
+  encode the four-level EM / IM / SM / USM phenotype with three binary
+  columns (EM = all three zero). Bienczak 2016 is the first study to
+  quantify the USM phenotype on nevirapine clearance (cohort prevalence
+  0.6%; Table 2 row 4); the rs28399499 (983T\>C) loss-of-function allele
+  is essentially absent from European-ancestry populations but reaches
+  appreciable frequency in sub-Saharan African cohorts, so models on
+  European or East Asian populations may report only EM / IM / SM (with
+  `CYP2B6_USM` identically zero across the dataset). See `CYP2B6_IM`
+  Notes for the SNP-vector pooling rationale. Ratified canonically on
+  2026-05-21 alongside the Bienczak 2016 nevirapine extraction.
 
 ### CYP3A4_INH (**canonical for concomitant CYP3A4 inhibitor coadministration indicator**)
 
@@ -10355,8 +10968,106 @@ promote to general when a second paper ratifies identical semantics.
   carrier indicator because the heterozygous and homozygous mutant
   subjects respond detectably differently to warfarin. Ratified
   canonically on 2026-05-16 alongside the Xia 2024 warfarin extraction.
-  \### CYP2C19_S2_CARRIER (\*\*canonical for CYP2C19\*2 loss-of-function
-  allele carrier indicator\*\*)
+
+### SNP_CYP2B6_RS3745274_T_COUNT (**canonical for CYP2B6 516G\>T (rs3745274) T-allele count**)
+
+- **Description:** Continuous individual-level CYP2B6 c.516G\>T
+  (rs3745274, p.Q172H) T-allele count: 0 = GG homozygous wild-type, 1 =
+  GT heterozygous, 2 = TT homozygous variant. Time-invariant (germline
+  genotype). The 516G\>T variant reduces CYP2B6 enzyme activity in a
+  gene-dose-dependent but non-additive manner; in nevirapine and
+  efavirenz populations, the TT-vs-GG decrease in apparent oral
+  clearance is approximately 2-3x larger than the GT-vs-GG decrease,
+  motivating a heterozygous-vs-homozygous indicator parameterization
+  rather than a linear per-allele model.
+- **Units:** (count, 0/1/2 alleles per subject)
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a (continuous). In the Schipani 2011
+  nevirapine model the count is decomposed in `model()` into
+  mutually-exclusive heterozygous (`count == 1`) and homozygous
+  (`count == 2`) indicators, each multiplied by an independently
+  estimated CL/F shift (-0.5 L/h for GT, -1.3 L/h for TT relative to the
+  GG reference).
+- **Source aliases:**
+  - `X_516GT` / `X_516TT` – Schipani 2011 (paper Table 2 / final-model
+    equation
+    `TVCL = theta0 + theta_BW * (BW - 72.5) + theta_516GT * X_516GT + theta_516TT * X_516TT + theta_983TC * X_983TC`;
+    the two indicators are mutually exclusive across the three 516
+    genotypes, so the canonical count column reconstructs them
+    deterministically via
+    `X_516GT = as.integer(SNP_CYP2B6_RS3745274_T_COUNT == 1)` and
+    `X_516TT = as.integer(SNP_CYP2B6_RS3745274_T_COUNT == 2)`).
+- **Example models:** `Schipani_2011_nevirapine.R` (additive linear
+  shift on CL/F:
+  `cl = exp(lcl) + e_516gt_cl * (SNP_CYP2B6_RS3745274_T_COUNT == 1) + e_516tt_cl * (SNP_CYP2B6_RS3745274_T_COUNT == 2) + ...`;
+  516TT homozygotes have approximately 37% lower CL/F than the GG
+  reference; Schipani 2011 Table 2).
+- **Notes:** Distribution in the Schipani 2011 European HIV-positive
+  cohort (Table 1, n = 275): 516GG 47%, 516GT 46%, 516TT 7%. The CYP2B6
+  516G\>T variant is one of the two most-extensively-studied CYP2B6
+  pharmacogenomic polymorphisms (together with 983T\>C / rs28399499,
+  registered as `SNP_CYP2B6_RS28399499_C_COUNT`) and is consistently
+  associated with reduced metabolism of nevirapine, efavirenz,
+  bupropion, and methadone. The count-form encoding is preferred over
+  paired binary HET / HOM indicators because (a) it follows the
+  established `_COUNT` precedent used for `CYP2C9_S{1,2,3}_COUNT` and
+  `VKORC1_1639G_COUNT`, (b) a single count column captures the
+  underlying genotype without redundancy, and (c) the model code can
+  deterministically derive either a linear per-allele effect (`* count`)
+  or a non-additive HET / HOM decomposition (`* (count == 1)`,
+  `* (count == 2)`) depending on the source paper’s parameterization.
+  Ratified canonically on 2026-05-21 alongside the Schipani 2011
+  nevirapine extraction.
+
+### SNP_CYP2B6_RS28399499_C_COUNT (**canonical for CYP2B6 983T\>C (rs28399499) C-allele count**)
+
+- **Description:** Continuous individual-level CYP2B6 c.983T\>C
+  (rs28399499, p.I328T) C-allele count: 0 = TT homozygous wild-type, 1 =
+  TC heterozygous, 2 = CC homozygous variant. Time-invariant (germline
+  genotype). The 983T\>C variant lies within the CYP2B6 J-helix and
+  changes a highly conserved hydrophobic Ile to polar Thr; recombinant
+  expression in COS-1 cells shows essentially zero enzyme activity
+  (Klein et al. 2005), and clinical cohorts consistently show large
+  reductions in apparent oral clearance of CYP2B6 substrates in
+  heterozygous carriers.
+- **Units:** (count, 0/1/2 alleles per subject)
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a (continuous). In the Schipani 2011
+  nevirapine model the count is decomposed in `model()` into a
+  heterozygous indicator (`count == 1`) multiplied by an estimated CL/F
+  shift (-1.4 L/h relative to the TT reference); the homozygous
+  indicator (`count == 2`) is not estimated because no 983CC homozygotes
+  have been reported in any published cohort.
+- **Source aliases:**
+  - `X_983TC` – Schipani 2011 (paper Table 2 / final-model equation; the
+    heterozygous indicator is mutually exclusive with the TT-homozygous
+    reference, so the canonical count column reconstructs it via
+    `X_983TC = as.integer(SNP_CYP2B6_RS28399499_C_COUNT == 1)`).
+- **Example models:** `Schipani_2011_nevirapine.R` (additive linear
+  shift on CL/F:
+  `cl = exp(lcl) + e_983tc_cl * (SNP_CYP2B6_RS28399499_C_COUNT == 1) + ...`;
+  983TC heterozygotes have approximately 40% lower CL/F than the TT
+  reference; Schipani 2011 Table 2).
+- **Notes:** Distribution in the Schipani 2011 European HIV-positive
+  cohort (Table 1, n = 275): 983TT 97%, 983TC 3%, 983CC 0%. The 983T\>C
+  variant is also known as CYP2B6\*18 and is found primarily in African
+  and African-admixed populations (allele frequency ~6-8% in West
+  Africans, ~0% in Europeans and East Asians); the Schipani 2011 cohort
+  included 33% Black-ethnicity subjects, which explains the observed 3%
+  heterozygote frequency. No 983CC homozygotes have been described in
+  the published literature as of the 2011 report (Schipani 2011 Results
+  paragraph 4), so models that include the variant typically estimate
+  only a heterozygous shift. Often co-tested with 516G\>T
+  (linkage-disequilibrium block: subjects homozygous for both 516TT and
+  983TC are CYP2B6 “slow metabolizers” of efavirenz / nevirapine). The
+  count-form encoding follows the same rationale as
+  `SNP_CYP2B6_RS3745274_T_COUNT`. Ratified canonically on 2026-05-21
+  alongside the Schipani 2011 nevirapine extraction.
+
+### CYP2C19_S2_CARRIER (\*\*canonical for CYP2C19\*2 loss-of-function allele carrier indicator\*\*)
+
 - **Description:** Binary indicator for carriage of the *CYP2C19*2
   loss-of-function allele (rs4244285, c.681G\>A; creates a cryptic
   splice site that abolishes CYP2C19 enzyme activity). 1 = subject
@@ -10742,6 +11453,48 @@ promote to general when a second paper ratifies identical semantics.
   subgroup, and both share the same `DOSE = 60` while differing in
   `REGI_BID`.
 
+### MIL_REGIMEN (**canonical for miltefosine monotherapy vs combination-with-LAmB regimen indicator**)
+
+- **Description:** Per-subject (time-fixed) binary indicator carrying
+  the visceral-leishmaniasis miltefosine treatment-arm assignment in the
+  Dorlo 2017 Eastern African LEAP-0208 study. 1 = monotherapy arm (28
+  days oral miltefosine 2.5 mg/kg/day, maximum 150 mg/day); 0 =
+  combination arm (single IV liposomal amphotericin B 10 mg/kg on day 1
+  plus 10 days oral miltefosine 2.5 mg/kg/day, maximum 150 mg/day). Used
+  to select the duration of the initial reduced-bioavailability window:
+  7 days for monotherapy, 1 day for the combination arm (Dorlo 2017
+  Table 2 footnote d).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (combination arm: single LAmB IV on day 1 +
+  10-day oral miltefosine).
+- **Source aliases:** derived per subject from the trial-arm assignment
+  in NCT01067443; the source paper does not name an NMTRAN column
+  directly. Dorlo 2017 narrative labels the arms ‘MIL’ (monotherapy) and
+  ‘combination therapy arm’.
+- **Example models:** `Dorlo_2017_miltefosine.R` (sets
+  `tlowf <- 7 * MIL_REGIMEN + 1 * (1 - MIL_REGIMEN)` inside `model()`;
+  tlowf is then used in the `(t > 0) * (t <= tlowf)` predicate that
+  gates the typical 74.3% reduction in relative bioavailability during
+  the initial absorption window).
+- **Notes:** Specific scope because the miltefosine-vs-miltefosine+LAmB
+  head-to-head and the per-arm absorption-window durations are tied to
+  the Dorlo 2017 design. The combination-arm reduction window is shorter
+  than the monotherapy window because the LAmB infusion is hypothesised
+  to accelerate the patients’ overall physiological recovery (Discussion
+  paragraph ‘Pharmacokinetics’); future Eastern African VL
+  combination-with-LAmB miltefosine popPK extractions that share the
+  same regimen pair can extend this entry’s example list, while a
+  contrast against a different miltefosine combination partner (e.g.,
+  paromomycin, fexinidazole) should register a sibling indicator.
+  Distinct from `REGI_BID` (within-monotherapy QD vs BID schedule) and
+  from the `CONMED_*` family (the LAmB co-administration in the
+  combination arm is captured implicitly via the regimen indicator
+  rather than via an explicit concomitant-medication binary, because the
+  LAmB-driven effect modelled here is on the absorption-window duration
+  rather than on miltefosine clearance or distribution).
+
 ### MEAL_FLAG (**canonical for intra-day meal-window indicator (time-varying)**)
 
 - **Description:** 1 = the current observation time falls within a meal
@@ -11088,6 +11841,45 @@ promote to general when a second paper ratifies identical semantics.
   rather than registering a sibling canonical. Ratified canonically on
   2026-05-18 alongside the Nanga 2019 tacrolimus meta-analysis
   extraction.
+
+### FORM_CACO3 (**canonical for calcium-carbonate-tablet vs calcium-containing mineral-water formulation indicator**)
+
+- **Description:** 1 = subject received calcium as a calcium carbonate
+  (CaCO3) tablet; 0 = subject received calcium as calcium-containing
+  thermal mineral water (Geumjin thermal spring water, the Ahn 2014
+  reference comparator). Per-subject (treatment-arm) categorical
+  indicator in the Ahn 2014 parallel-arm calcium-absorption design.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (Geumjin thermal spring water; the
+  typical-value bioavailability reference in Ahn 2014, F = 1 fixed for
+  the reference arm).
+- **Source aliases:** none known; Ahn 2014 narratives the treatment
+  factor as “thermal spring water versus calcium carbonate tablet”
+  without a single NMTRAN column name.
+- **Example models:** `Ahn_2014_parathyroidHormone.R` (multiplicative
+  effect on the depot bioavailability per Ahn 2014 Table 2 ‘Relative F1’
+  = 1.98: `fdepot = exp(lfdepot + e_form_caco3_fdepot * FORM_CACO3)`
+  with `lfdepot` fixed at log(1) for the thermal-water reference and
+  `e_form_caco3_fdepot = log(1.98)` for the CaCO3 arm; 95% CI on
+  relative F1 1.06-2.90).
+- **Notes:** Specific scope because the contrast pairs a specific
+  calcium product (calcium carbonate tablet) against a specific natural
+  mineral-water source (Geumjin thermal spring water) rather than a
+  generic tablet-vs-solution contrast (`FORM_TABLET`) – the 0-level here
+  is calcium-containing spring water naturally rich in dissolved
+  calcium, not a manufactured aqueous solution of the modelled drug.
+  Future calcium-bioavailability studies that compare CaCO3 against a
+  different calcium source (citrate, gluconate, dietary-calcium
+  baseline) should reuse this canonical with the reference clearly
+  documented in per-model notes, or register a sibling canonical if the
+  comparator is meaningfully different. Sits in the `FORM_*` family
+  alongside `FORM_FDC` (Wilkins 2008 rifampicin co-formulation),
+  `FORM_SYRUP` (Nanga 2019 tacrolimus paediatric syrup), and
+  `FORM_TABLET` (Kyhl 2016 nalmefene / Tikiso 2021 abacavir tablet vs
+  solution). Ratified canonically on 2026-05-21 alongside the Ahn 2014
+  parathyroid-hormone calcium-absorption extraction.
 
 ### FORM_FDC (**canonical for fixed-dose-combination antitubercular formulation indicator**)
 

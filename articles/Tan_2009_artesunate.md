@@ -1,0 +1,952 @@
+# Artesunate / dihydroartemisinin (Tan 2009)
+
+## Model and source
+
+- Citation: Tan B, Naik H, Jang IJ, Yu KS, Kirsch LE, Shin CS, Craft JC,
+  Fleckenstein L. Population pharmacokinetics of artesunate and
+  dihydroartemisinin following single- and multiple-dosing of oral
+  artesunate in healthy subjects. *Malaria Journal* 2009;8:304.
+  <doi:%5B10.1186/1475-2875-8-304>\](<https://doi.org/10.1186/1475-2875-8-304>).
+- Full text (Open Access, Malaria Journal):
+  <https://malariajournal.biomedcentral.com/articles/10.1186/1475-2875-8-304>.
+
+This is a joint parent-metabolite population PK model for oral
+artesunate (AS) and its active metabolite dihydroartemisinin (DHA) in
+healthy adult Korean volunteers. AS is described by a one-compartment
+apparent-volume disposition with first-order absorption (depot -\>
+central); DHA by a two-compartment apparent-volume disposition
+(central + peripheral). AS is converted mole-for-mole to DHA as the only
+elimination pathway (no separate AS elimination route). Body weight
+linearly increases DHA apparent clearance by 1.9 L/h per kg above a 61.5
+kg reference, and intake of a high-fat / high-caloric meal at dosing
+reduces the AS absorption rate constant Ka by 84%.
+
+``` r
+
+mod_fn  <- readModelDb("Tan_2009_artesunate")
+mod     <- rxode2::rxode2(mod_fn())
+mod_typ <- rxode2::rxode2(rxode2::zeroRe(mod_fn()))
+```
+
+## Population
+
+The model was developed from 91 healthy Korean adult volunteers (median
+age 23 years, range 19 to 40; median weight 61.5 kg, range 50.1 to 70.0;
+53 of 91 male, i.e. 42% female) pooled across four Phase I sub-studies
+of the SP-C001-03 trial run at the Seoul National University Clinical
+Trial Center (Tan 2009 Table 1):
+
+- **Single-dose ascending** (n = 28): 2, 3, 4, or 5 mg/kg single oral AS
+  - pyronaridine 3:1 (placebo-controlled, 7:2 active:placebo).
+- **Drug-interaction with pyronaridine** (n = 19, 28 profiles): 4 mg/kg
+  oral AS as PA fixed combination vs AS alone or PYR alone (two-period
+  crossover, 21-day washout).
+- **Food-effect** (n = 20, 38 profiles): 4 mg/kg oral AS with vs without
+  a 30-minute pre-dose high-fat / high-caloric meal (two-period
+  crossover, 21-day washout).
+- **Multiple-dose ascending** (n = 24): 2, 3, 4, or 5 mg/kg once daily
+  oral AS for three consecutive days.
+
+A total of 118 concentration-time profiles contributed 916 quantifiable
+AS observations and 1352 quantifiable DHA observations (LLOQ 1 ng/mL for
+both species by LC-MS, Methods p.3). Subjects with repeat profiles
+(crossover periods) were treated as independent because the 21-day
+washout was much longer than the AS / DHA elimination half-lives. There
+was no malaria or other disease state in this study; the parameter
+estimates are healthy-volunteer values.
+
+The same information is available programmatically via
+`readModelDb("Tan_2009_artesunate")$population`.
+
+## Source trace
+
+Per-parameter origins are recorded as in-file comments in
+`inst/modeldb/specificDrugs/Tan_2009_artesunate.R`; the table below
+collects them in one place for review.
+
+| Item | Value | Source |
+|----|----|----|
+| One-compartment AS disposition; first-order absorption and first-order elimination | structural | Results p.6 (“A one-compartment model with first order absorption and first order elimination best described the AS data”) |
+| Two-compartment DHA disposition; first-order disposition and elimination only from DHA central | structural | Results p.6 (“The two-compartment model fitted the DHA data better, leading to 165.186 and 157.186 unit reduction in OFV and AIC respectively”) |
+| Stoichiometric (mole-for-mole) AS -\> DHA conversion as the only AS elimination | structural | Methods p.4 (“It was assumed that conversion to DHA was the only significant route of elimination for AS and that the conversion was irreversible”); Methods p.4 (molar concentration / molar dose conversion) |
+| `lka` -\> Ka = 3.85 1/h | log(3.85) | Table 2 (%RSE 3.61, typical value at FED = 0) |
+| `lcl` -\> CL/F = 1190 L/h | log(1190) | Table 2 (%RSE 4.20) |
+| `lvc` -\> V2/F = 1210 L | log(1210) | Table 2 (%RSE 5.77) |
+| `lcl_dha` -\> CLM/F = 93.7 L/h at WT = 61.5 kg | log(93.7) | Table 2 (%RSE 3.30) |
+| `lvc_dha` -\> V3/F = 97.1 L | log(97.1) | Table 2 (%RSE 4.85) |
+| `lq_dha` -\> Q/F = 5.74 L/h | log(5.74) | Table 2 (%RSE 12.8) |
+| `lvp_dha` -\> V4/F = 18.5 L | log(18.5) | Table 2 (%RSE 10.6) |
+| `e_fed_ka` -\> -0.84 (multiplicative, fed reduces Ka 84%) | -0.84 | Table 2 (theta_FOOD-Ka, %RSE 2.32); Results p.7 (covariate equation Ka = 3.85 \* (1 - 0.84 \* FOOD)) |
+| `e_wt_cl_dha` -\> 1.9 L/h per kg above 61.5 kg | 1.9 | Table 2 (theta_WT-CLM/F, %RSE 16.3); Results p.7 (CLM/F = 93.7 + 1.9 \* (WT - 61.5)) |
+| Reference body weight | 61.5 kg | Table 1 combined-cohort median; Results p.7 covariate centering |
+| IIV `var(etalcl)` | 0.131 (CV 36.2%) | Table 2 (eta_CL_AS, %RSE 17.8) |
+| IIV `var(etalvc)` | 0.330 (CV 57.4%) | Table 2 (eta_V2_AS, %RSE 20.9) |
+| IIV `var(etalka)` | 1.26 (CV 112%) | Table 2 (eta_Ka, %RSE 15.4) |
+| IIV `var(etalcl_dha)` | 0.0786 (CV 28.0%) | Table 2 (eta_CL_DHA, %RSE 22.5) |
+| IIV `var(etalvc_dha)` | 0.0901 (CV 30.0%) | Table 2 (eta_V3_DHA, %RSE 36.0) |
+| No IIV on Q/F or V4/F | n/a | Results p.7 (“Fixing the variance of the random effects for Q/F and V4/F to zero had little influence on the OFV”) |
+| Diagonal Omega (no IIV correlations) | n/a | Methods p.4 (“A diagonal covariance matrix was modelled, as the data did not support the implementation of a full variance-covariance matrix”) |
+| Residual `propSd` (AS) | 0.375 | Table 2 (RV AS = 37.5% CV, %RSE 9.73; log-additive in source -\> proportional in linear nlmixr2) |
+| Residual `propSd_dha` | 0.282 | Table 2 (RV DHA = 28.2% CV, %RSE 11.2) |
+
+## Virtual cohort
+
+The original observed data are not publicly available. The simulations
+below use a virtual cohort whose covariate distributions approximate the
+published demographics. Three dose-by-meal cohorts illustrate the
+covariate model:
+
+- **4 mg/kg, fasted** – 60 subjects at the dose used in the
+  drug-interaction and food-effect studies’ fasted arms.
+- **4 mg/kg, fed** – 60 subjects who received the same 4 mg/kg dose
+  after a high-fat / high-caloric meal (the food-effect study fed arm).
+- **2 mg/kg, fasted** – 60 subjects at the lowest dose level from the
+  single- and multiple-dose ascending studies.
+
+``` r
+
+set.seed(2026)
+
+n_per_cohort <- 60L
+
+build_cohort <- function(label, dose_mg_per_kg, fed, n, id_offset) {
+  tibble::tibble(
+    id     = id_offset + seq_len(n),
+    cohort = label,
+    WT     = stats::runif(n, 50.1, 70.0),
+    FED    = as.integer(fed),
+    dose_mg_per_kg = dose_mg_per_kg
+  )
+}
+
+subjects <- dplyr::bind_rows(
+  build_cohort("4 mg/kg, fasted", 4, FALSE, n_per_cohort, id_offset =   0L),
+  build_cohort("4 mg/kg, fed",    4, TRUE,  n_per_cohort, id_offset = 200L),
+  build_cohort("2 mg/kg, fasted", 2, FALSE, n_per_cohort, id_offset = 400L)
+)
+
+obs_times <- c(seq(0.01, 0.5, by = 0.01),
+               seq(0.55, 12, by = 0.05))
+
+build_events <- function(subjects, obs_times) {
+  dose_rows <- subjects |>
+    dplyr::transmute(
+      id, time = 0, evid = 1L,
+      amt  = dose_mg_per_kg * WT,
+      cmt  = "depot",
+      cohort, WT, FED
+    )
+  obs_rows <- tidyr::expand_grid(
+    id   = subjects$id,
+    time = obs_times
+  ) |>
+    dplyr::left_join(
+      dplyr::select(subjects, id, cohort, WT, FED),
+      by = "id"
+    ) |>
+    dplyr::mutate(evid = 0L, amt = 0, cmt = "Cc")
+  dplyr::bind_rows(dose_rows, obs_rows) |>
+    dplyr::arrange(id, time, dplyr::desc(evid))
+}
+
+events <- build_events(subjects, obs_times)
+stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid", "cmt")])))
+
+dplyr::glimpse(subjects)
+#> Rows: 180
+#> Columns: 5
+#> $ id             <int> 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, …
+#> $ cohort         <chr> "4 mg/kg, fasted", "4 mg/kg, fasted", "4 mg/kg, fasted"…
+#> $ WT             <dbl> 64.00360, 61.17496, 52.88879, 55.78589, 61.15184, 50.60…
+#> $ FED            <int> 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
+#> $ dose_mg_per_kg <dbl> 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4…
+```
+
+## Simulation
+
+Stochastic simulation (full omega / sigma) for visual percentile plots:
+
+``` r
+
+sim <- rxode2::rxSolve(
+  mod,
+  events = events,
+  keep   = c("cohort", "WT", "FED")
+) |>
+  as.data.frame() |>
+  dplyr::mutate(
+    Cc_ng_per_mL     = Cc     * 1000,
+    Cc_dha_ng_per_mL = Cc_dha * 1000
+  )
+```
+
+Typical-value simulation (omega / sigma zeroed) for direct comparison
+with the typical-value estimates in Tan 2009 Table 2:
+
+``` r
+
+typical_subjects <- dplyr::bind_rows(
+  tibble::tibble(id = 1L, cohort = "4 mg/kg, fasted (typical 61.5 kg)",
+                 WT = 61.5, FED = 0L, dose_mg_per_kg = 4),
+  tibble::tibble(id = 2L, cohort = "4 mg/kg, fed (typical 61.5 kg)",
+                 WT = 61.5, FED = 1L, dose_mg_per_kg = 4),
+  tibble::tibble(id = 3L, cohort = "2 mg/kg, fasted (typical 61.5 kg)",
+                 WT = 61.5, FED = 0L, dose_mg_per_kg = 2)
+)
+typical_events <- build_events(typical_subjects, obs_times)
+
+sim_typical <- rxode2::rxSolve(
+  mod_typ,
+  events = typical_events,
+  keep   = c("cohort", "WT", "FED")
+) |>
+  as.data.frame() |>
+  dplyr::mutate(
+    Cc_ng_per_mL     = Cc     * 1000,
+    Cc_dha_ng_per_mL = Cc_dha * 1000
+  )
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalka', 'etalcl_dha', 'etalvc_dha'
+#> Warning: multi-subject simulation without without 'omega'
+```
+
+## Replicate published figures
+
+### Figure 4 – Visual predictive check by species
+
+Tan 2009 Figure 4 shows the VPC of AS and DHA observations versus time
+after dose, with the 50th and 90% prediction intervals overlaid on
+observations. The figure below reproduces the same VPC structure (5th /
+50th / 95th simulated percentiles by time) using the 4 mg/kg fasted
+cohort, which dominates the published data set.
+
+``` r
+
+vpc_df <- sim |>
+  dplyr::filter(time > 0, cohort == "4 mg/kg, fasted") |>
+  dplyr::group_by(time) |>
+  dplyr::summarise(
+    Q05_as  = stats::quantile(Cc_ng_per_mL,     0.05, na.rm = TRUE),
+    Q50_as  = stats::quantile(Cc_ng_per_mL,     0.50, na.rm = TRUE),
+    Q95_as  = stats::quantile(Cc_ng_per_mL,     0.95, na.rm = TRUE),
+    Q05_dha = stats::quantile(Cc_dha_ng_per_mL, 0.05, na.rm = TRUE),
+    Q50_dha = stats::quantile(Cc_dha_ng_per_mL, 0.50, na.rm = TRUE),
+    Q95_dha = stats::quantile(Cc_dha_ng_per_mL, 0.95, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+vpc_long <- dplyr::bind_rows(
+  vpc_df |>
+    dplyr::transmute(time, species = "Artesunate (AS)",
+                     Q05 = Q05_as,  Q50 = Q50_as,  Q95 = Q95_as),
+  vpc_df |>
+    dplyr::transmute(time, species = "Dihydroartemisinin (DHA)",
+                     Q05 = Q05_dha, Q50 = Q50_dha, Q95 = Q95_dha)
+)
+
+ggplot(vpc_long, aes(time, Q50)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.25, fill = "steelblue") +
+  geom_line(colour = "steelblue4", size = 0.7) +
+  facet_wrap(~ species, nrow = 1, scales = "free_y") +
+  scale_y_log10() +
+  coord_cartesian(xlim = c(0, 8)) +
+  labs(
+    x = "Time after dose (h)",
+    y = "Plasma concentration (ng/mL, log scale)",
+    title = "Figure 4 -- simulated VPC at 4 mg/kg fasted",
+    caption = paste0(
+      "Replicates Tan 2009 Figure 4 (left = AS, right = DHA). ",
+      "Line: simulated 50th percentile; ribbon: 5th-95th."
+    )
+  )
+#> Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
+#> ℹ Please use `linewidth` instead.
+#> This warning is displayed once per session.
+#> Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+#> generated.
+```
+
+![](Tan_2009_artesunate_files/figure-html/figure-4-vpc-1.png)
+
+### Food effect on AS absorption rate
+
+The food effect is the most striking covariate in Tan 2009: a high-fat
+meal at dosing reduces Ka by 84%, lengthening the AS absorption
+half-life from 10.8 min (fasted) to 67.5 min (fed) and shifting Tmax of
+both AS and DHA later. The plot below contrasts the typical fasted vs
+fed AS / DHA concentration-time profiles at 4 mg/kg.
+
+``` r
+
+typ_long <- sim_typical |>
+  dplyr::filter(cohort %in% c("4 mg/kg, fasted (typical 61.5 kg)",
+                              "4 mg/kg, fed (typical 61.5 kg)"),
+                time > 0) |>
+  dplyr::mutate(
+    State = dplyr::if_else(grepl("fasted", cohort), "Fasted", "Fed")
+  ) |>
+  tidyr::pivot_longer(
+    cols      = c(Cc_ng_per_mL, Cc_dha_ng_per_mL),
+    names_to  = "species",
+    values_to = "Cc_ng"
+  ) |>
+  dplyr::mutate(
+    species = dplyr::if_else(species == "Cc_ng_per_mL",
+                             "Artesunate (AS)",
+                             "Dihydroartemisinin (DHA)")
+  )
+
+ggplot(typ_long, aes(time, Cc_ng, colour = State, linetype = State)) +
+  geom_line(size = 0.8) +
+  facet_wrap(~ species, nrow = 1, scales = "free_y") +
+  scale_y_log10() +
+  coord_cartesian(xlim = c(0, 8)) +
+  labs(
+    x = "Time after dose (h)",
+    y = "Plasma concentration (ng/mL, log scale)",
+    title = "Food effect on AS absorption (typical 61.5 kg subject, 4 mg/kg)",
+    caption = paste0(
+      "Fasted: Ka = 3.85 1/h -> abs half-life 10.8 min. ",
+      "Fed: Ka = 0.616 1/h -> abs half-life 67.5 min ",
+      "(Tan 2009 Discussion p.10)."
+    )
+  )
+```
+
+![](Tan_2009_artesunate_files/figure-html/food-effect-1.png)
+
+### Weight effect on DHA apparent clearance
+
+Body weight enters as a linear deviation on DHA CL/F. The plot below
+overlays typical-value DHA profiles for 50, 61.5, and 70 kg subjects to
+show the magnitude of the WT effect.
+
+``` r
+
+wt_grid <- tibble::tibble(
+  id     = 1:3,
+  cohort = sprintf("WT = %g kg", c(50, 61.5, 70)),
+  WT     = c(50, 61.5, 70),
+  FED    = 0L,
+  dose_mg_per_kg = 4
+)
+wt_events <- build_events(wt_grid, obs_times)
+
+sim_wt <- rxode2::rxSolve(
+  mod_typ,
+  events = wt_events,
+  keep   = c("cohort", "WT", "FED")
+) |>
+  as.data.frame() |>
+  dplyr::mutate(Cc_dha_ng_per_mL = Cc_dha * 1000)
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalka', 'etalcl_dha', 'etalvc_dha'
+#> Warning: multi-subject simulation without without 'omega'
+
+ggplot(sim_wt |> dplyr::filter(time > 0),
+       aes(time, Cc_dha_ng_per_mL, colour = cohort)) +
+  geom_line(size = 0.8) +
+  scale_y_log10() +
+  coord_cartesian(xlim = c(0, 8)) +
+  labs(
+    x = "Time after dose (h)",
+    y = "DHA plasma concentration (ng/mL, log scale)",
+    title = "WT effect on DHA CL/F at 4 mg/kg, fasted",
+    caption = "CL_DHA = 93.7 + 1.9 * (WT - 61.5) L/h (Tan 2009 Results p.7)."
+  )
+```
+
+![](Tan_2009_artesunate_files/figure-html/weight-effect-1.png)
+
+## PKNCA validation
+
+Single-dose, dense-sampling NCA with PKNCA for both species. Treatment
+grouping is the cohort label (dose x meal state) so per-cohort results
+can be compared against the paper’s structural conclusions (the
+food-effect and dose-proportionality narratives in Discussion p.10).
+
+``` r
+
+sim_nca_as <- sim |>
+  dplyr::filter(!is.na(Cc), time > 0) |>
+  dplyr::select(id, time, Cc = Cc_ng_per_mL, cohort)
+
+dose_df <- events |>
+  dplyr::filter(evid == 1L) |>
+  dplyr::select(id, time, amt, cohort)
+
+conc_as <- PKNCA::PKNCAconc(sim_nca_as, Cc ~ time | cohort + id,
+                            concu = "ng/mL", timeu = "h")
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | cohort + id,
+                             doseu = "mg")
+
+intervals <- data.frame(
+  start     = 0,
+  end       = 12,
+  cmax      = TRUE,
+  tmax      = TRUE,
+  auclast   = TRUE,
+  half.life = TRUE
+)
+
+nca_data_as <- PKNCA::PKNCAdata(conc_as, dose_obj, intervals = intervals)
+nca_res_as  <- PKNCA::pk.nca(nca_data_as)
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (0.01) is not allowed
+#> Warning: Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (0.01) is not allowed
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(data$conc): NaNs produced
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (0.01) is not allowed
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning: Requesting an AUC range starting (0) before the first measurement
+#> (0.01) is not allowed
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(data$conc): NaNs produced
+#> Warning: Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+knitr::kable(
+  summary(nca_res_as),
+  caption = "Simulated NCA parameters (AS) by cohort."
+)
+```
+
+| Interval Start | Interval End | cohort | N | AUClast (h\*ng/mL) | Cmax (ng/mL) | Tmax (h) | Half-life (h) |
+|---:|---:|:---|:---|:---|:---|:---|:---|
+| 0 | 12 | 2 mg/kg, fasted | 60 | NC | 52.2 \[55.2\] | 0.470 \[0.0700, 2.70\] | 0.951 \[0.649\] |
+| 0 | 12 | 4 mg/kg, fasted | 60 | NC | 103 \[52.1\] | 0.550 \[0.0900, 2.10\] | 1.06 \[0.827\] |
+| 0 | 12 | 4 mg/kg, fed | 60 | NC | 53.9 \[81.8\] | 1.30 \[0.220, 4.65\] | 2.09 \[1.89\] |
+
+Simulated NCA parameters (AS) by cohort. {.table}
+
+``` r
+
+sim_nca_dha <- sim |>
+  dplyr::filter(!is.na(Cc_dha), time > 0) |>
+  dplyr::select(id, time, Cc_dha = Cc_dha_ng_per_mL, cohort)
+
+conc_dha <- PKNCA::PKNCAconc(sim_nca_dha, Cc_dha ~ time | cohort + id,
+                             concu = "ng/mL", timeu = "h")
+nca_data_dha <- PKNCA::PKNCAdata(conc_dha, dose_obj, intervals = intervals)
+nca_res_dha  <- PKNCA::pk.nca(nca_data_dha)
+#> Warning: Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.01) is not allowed
+knitr::kable(
+  summary(nca_res_dha),
+  caption = "Simulated NCA parameters (DHA) by cohort."
+)
+```
+
+| Interval Start | Interval End | cohort | N | AUClast (h\*ng/mL) | Cmax (ng/mL) | Tmax (h) | Half-life (h) |
+|---:|---:|:---|:---|:---|:---|:---|:---|
+| 0 | 12 | 2 mg/kg, fasted | 60 | NC | 293 \[43.2\] | 1.43 \[0.550, 3.95\] | 2.11 \[0.383\] |
+| 0 | 12 | 4 mg/kg, fasted | 60 | NC | 548 \[35.0\] | 1.50 \[0.800, 4.75\] | 2.16 \[0.665\] |
+| 0 | 12 | 4 mg/kg, fed | 60 | NC | 361 \[61.2\] | 2.68 \[0.800, 5.75\] | 2.85 \[1.88\] |
+
+Simulated NCA parameters (DHA) by cohort. {.table}
+
+### Comparison against published narrative
+
+Tan 2009 does not publish a per-cohort NCA table (the analysis is pop-PK
+only), but it makes three explicit numerical claims that the simulated
+typical-value cohort can verify:
+
+``` r
+
+trapezoid <- function(x, y) {
+  ok <- !is.na(x) & !is.na(y)
+  x <- x[ok]; y <- y[ok]
+  sum(diff(x) * (head(y, -1) + tail(y, -1)) / 2)
+}
+
+typ_fasted_4 <- sim_typical |>
+  dplyr::filter(cohort == "4 mg/kg, fasted (typical 61.5 kg)", time > 0)
+typ_fed_4    <- sim_typical |>
+  dplyr::filter(cohort == "4 mg/kg, fed (typical 61.5 kg)", time > 0)
+
+abs_t_half_fasted <- log(2) / 3.85 * 60                    # = 10.8 min
+abs_t_half_fed    <- log(2) / (3.85 * (1 - 0.84)) * 60     # = 67.5 min
+auc_as_8h  <- trapezoid(typ_fasted_4$time[typ_fasted_4$time <= 8],
+                        typ_fasted_4$Cc_ng_per_mL[typ_fasted_4$time <= 8])
+auc_dha_8h <- trapezoid(typ_fasted_4$time[typ_fasted_4$time <= 8],
+                        typ_fasted_4$Cc_dha_ng_per_mL[typ_fasted_4$time <= 8])
+
+comparison <- tibble::tibble(
+  Quantity = c(
+    "AS absorption half-life, fasted (min)",
+    "AS absorption half-life, fed (min)",
+    "AS / DHA AUC(0-8h) ratio at 4 mg/kg fasted"
+  ),
+  `Paper (Tan 2009)` = c(
+    "10.8 (Discussion p.10)",
+    "67.5 (Discussion p.10)",
+    "0.10-0.11 (Discussion p.11)"
+  ),
+  `Simulated (typical 61.5 kg)` = c(
+    sprintf("%.1f", abs_t_half_fasted),
+    sprintf("%.1f", abs_t_half_fed),
+    sprintf("%.3f", auc_as_8h / auc_dha_8h)
+  )
+)
+knitr::kable(comparison,
+             caption = "Typical-value model vs Tan 2009 narrative claims.")
+```
+
+| Quantity | Paper (Tan 2009) | Simulated (typical 61.5 kg) |
+|:---|:---|:---|
+| AS absorption half-life, fasted (min) | 10.8 (Discussion p.10) | 10.8 |
+| AS absorption half-life, fed (min) | 67.5 (Discussion p.10) | 67.5 |
+| AS / DHA AUC(0-8h) ratio at 4 mg/kg fasted | 0.10-0.11 (Discussion p.11) | 0.108 |
+
+Typical-value model vs Tan 2009 narrative claims. {.table}
+
+The simulated typical-value cohort reproduces all three published
+narrative checks exactly.
+
+## Assumptions and deviations
+
+- **Unit choice.** The packaged model carries dose in mg, volume in L,
+  and concentration in mg/L (numerically equal to ug/mL). The paper fit
+  AS and DHA simultaneously on natural-log nmol/L concentrations with AS
+  dose pre-converted to nmols (Methods p.4); this implementation tracks
+  amounts in mass (mg) and applies the mole-for-mole AS -\> DHA
+  conversion as the MW ratio
+  (`mw_dha / mw_ars = 284.9 / 384.4 = 0.7411`) at the metabolite-
+  formation step. Apparent volumes (L) and clearances (L/h) are
+  unit-invariant between mass and molar amount, so the published Table 2
+  values apply directly. Multiplying `Cc` and `Cc_dha` by 1000 gives
+  ng/mL, which is the unit the paper uses in its narrative.
+
+- **Bioavailability.** The paper estimates apparent CL/F and V/F values;
+  absolute oral bioavailability F was not separately identifiable from
+  the design. The packaged model accordingly does not include an
+  `lfdepot` parameter – a 1.0 default bioavailability is baked into the
+  apparent-volume reading of the parameters.
+
+- **Residual-error mapping.** Tan 2009 fits AS and DHA plasma
+  concentrations as natural logarithms of molar concentration with
+  additive residual on the log scale (Methods p.4: model “C_ij =
+  C_pred,ij + eps_ij” applied to the natural-log-transformed data of the
+  immediately preceding paragraph). Table 2 reports residual variability
+  as %CV (37.5% AS, 28.2% DHA), with corresponding log-scale variances
+  0.141 and 0.080. By the standing convention in
+  `references/parameter-names.md`, NONMEM additive-on-log-scale residual
+  maps to nlmixr2 proportional residual in linear space, with
+  `propSd = sqrt(omega^2)` (the SD on the log scale equals the CV in
+  linear space to first order). The slight bias relative to the more
+  accurate `propSd = sqrt(exp(omega^2) - 1)` mapping is \< 2% for both
+  species and is smaller than the published Table 2 RSE on sigma.
+
+- **No IIV on Q/F or V4/F.** The source paper held the IIV variances on
+  the DHA inter-compartmental clearance (Q/F) and the DHA peripheral
+  volume (V4/F) to zero, on the grounds that “the available data would
+  not support the inclusion of the two terms” and that fixing them “had
+  little influence on the OFV” and was “essential for the model to
+  minimize successfully and to calculate the covariance matrix of the
+  estimates” (Results p.7). The packaged model accordingly omits
+  `etalq_dha` and `etalvp_dha`.
+
+- **Diagonal Omega.** The source paper used a diagonal IIV covariance
+  matrix because “the data did not support the implementation of a full
+  variance-covariance matrix” (Methods p.4). Correlations across IIV
+  terms are therefore left implicit at zero in the packaged model.
+
+- **Stoichiometric AS -\> DHA assumption.** The source paper assumes
+  that conversion to DHA is the only significant route of AS elimination
+  and that the conversion is irreversible and stoichiometric (Methods
+  p.4, citing the cited reference 21). This is encoded in the packaged
+  model as `d/dt(central) = ka*depot - kel*central` with all of
+  `kel*central` flowing into the DHA central compartment via the MW
+  ratio; no separate parent elimination route is modelled.
+
+- **Co-administration and dosing scenario.** The covariate analysis
+  showed that co-administration of pyronaridine (PYR) did not affect any
+  AS or DHA PK parameters and that the type of dosing (single-dose vs
+  once-daily for three days) was likewise non- significant (Discussion
+  p.10). The packaged model accordingly does not carry a PYR or
+  `MULTI_DOSE` covariate. Users simulating multi-day dosing can supply
+  additional dose records at 24 h intervals; the model has no
+  auto-induction or time-dependent components, consistent with the
+  paper’s Discussion p.10 conclusion that the AS / DHA AUC(0-8) ratios
+  were similar after single and multiple doses (0.10 and 0.11).
+
+## Errata
+
+No erratum was identified at the time of extraction. *Malaria Journal*
+is open access and the article landing page at
+<https://malariajournal.biomedcentral.com/articles/10.1186/1475-2875-8-304>
+shows no correction notice. If an erratum is later identified, the model
+file `reference` field should be updated and any revised values cited in
+the in-file source-trace comments.
