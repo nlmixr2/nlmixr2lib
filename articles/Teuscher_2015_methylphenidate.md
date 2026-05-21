@@ -280,8 +280,8 @@ dose_obj <- PKNCA::PKNCAdose(ev_dose,
                              doseu = "mg")
 nca_res  <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj,
                                            intervals = intervals))
-#>  ■■■■■■■■■■■■■                     40% |  ETA:  3s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    96% |  ETA:  0s
+#>  ■■■■■■■■■■■■                      36% |  ETA:  3s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     93% |  ETA:  0s
 
 knitr::kable(as.data.frame(summary(nca_res)),
              caption = "Simulated single-dose NCA -- MPH-MLR 40 mg in a 45 kg pediatric subject (ng/mL, h).")

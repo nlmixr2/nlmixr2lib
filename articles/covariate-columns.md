@@ -1427,6 +1427,42 @@ entries should default to all caps.
   simultaneously as a renal-function and disease-burden marker. Document
   the interpretation per-model via `covariateData[[B2M]]$notes`.
 
+### CYSC (**canonical for serum cystatin C**)
+
+- **Description:** Serum cystatin C concentration. Low-molecular-weight
+  (~13 kDa) protease-inhibitor protein produced at a near-constant rate
+  by all nucleated cells; freely filtered at the glomerulus and almost
+  entirely reabsorbed and catabolized in the proximal tubule, so serum
+  cystatin C reflects glomerular filtration rate (GFR) more directly
+  than serum creatinine. Used as a renal-function covariate on the
+  clearance of renally-eliminated drugs, especially in populations where
+  creatinine-based estimates of GFR are unreliable (low muscle mass,
+  normal-creatinine concentrations masking impaired GFR, ICU patients).
+- **Units:** mg/L
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a – used with power scaling
+  `(CYSC / ref)^exponent`. Reference values observed: 0.91 mg/L (Chung
+  2013 vancomycin Korean adults with SCr \<= 1.2 mg/dL; cohort median).
+- **Source aliases:**
+  - `Cystatin C` / `cystatin` – Chung 2013 paper narrative and Table 2
+    footnote.
+- **Example models:** `Chung_2013_vancomycin.R` (mg/L, reference 0.91;
+  power exponent -0.780 on CL: `CL_pop * (CYSC / 0.91)^-0.780`).
+- **Notes:** Cystatin C is freely filtered at the glomerulus and is not
+  secreted by the renal tubule (unlike creatinine), so it is less
+  sensitive to muscle mass, body composition, and tubular-secretion
+  blockers. Reference ranges 0.57-0.97 mg/L for adult females and
+  0.65-1.10 mg/L for adult males (Chung 2013 Methods; Roche Cobas 6000
+  particle-enhanced immunoturbidimetric assay). Distinct from `CREAT`
+  (serum creatinine) – the two are commonly reported alongside each
+  other and can enter the same model as separate covariates (as in Chung
+  2013, where CYSC explains 62% of CL variability vs SCr 13%). Scope
+  kept `specific` pending a second model that ratifies CYSC with
+  consistent semantics; promote to `general` once corroborated. Ratified
+  canonically on 2026-05-20 alongside the Chung 2013 vancomycin
+  extraction.
+
 ### HEPIMP (**canonical for hepatic-impairment indicator (NCI ODWG classification)**)
 
 - **Description:** Baseline hepatic-impairment indicator per the
@@ -4054,7 +4090,10 @@ entries should default to all caps.
     bundle’s `Simulated_glucoseKinetics.csv` for `DDMODEL00000227`.
     Rename `iglu` -\> `GLU` before passing to `rxSolve`.
 - **Example models:** `Bizzotto_2016_glucose.R` (driving regressor for
-  the glucose-at-site-of-action delay).
+  the glucose-at-site-of-action delay), `Lu_2014_sglt_qsp.R` (drives the
+  rate of glucose entry into PCT1 by glomerular filtration in the SGLT
+  renal-glucose-reabsorption QSP model: filtered glucose load = GFR \*
+  GLU mmol/h).
 - **Notes:** Specific scope because `GLU` is meaningful only for
   glucose-kinetics or glucose-PD models that take plasma glucose as an
   exogenous regressor. The DDMORE bundle’s hand-rolled piecewise-linear
@@ -4132,6 +4171,41 @@ entries should default to all caps.
   rescaling can ratify the same canonical and document the per-model
   units / conversion in `covariateData[[INS_BL]]$units` / `notes`.
   Companion concept to `FPG` (baseline fasting plasma glucose).
+
+### CINH (**canonical for plasma SGLT-inhibitor concentration time-course regressor**)
+
+- **Description:** Plasma SGLT-inhibitor (e.g., dapagliflozin,
+  canagliflozin) concentration as a time-varying *regressor* input that
+  drives the rate of unbound-drug entry into the proximal tubule via
+  glomerular filtration in renal-glucose-reabsorption QSP models. Not a
+  covariate that modifies a parameter; the model integrates `CINH`
+  directly through `linear(CINH)` and multiplies by the unbound fraction
+  `fup` inside
+  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html).
+- **Units:** nmol/L (matching the units of the inhibitor’s affinity
+  constants Ki1 and Ki2 in the SGLT MM kinetics).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a – used as a time-varying regressor. The
+  model declares `linear(CINH)` so rxode2 linearly interpolates `CINH`
+  between dataset rows.
+- **Source aliases:** none known.
+- **Example models:** `Lu_2014_sglt_qsp.R` (drives the rate of unbound
+  inhibitor entering PCT1 by glomerular filtration: filtered drug load =
+  GFR \* fup \* CINH nmol/h; set CINH = 0 for baseline / no-inhibitor
+  simulations).
+- **Notes:** Specific scope because `CINH` is meaningful only for
+  renal-glucose-reabsorption or other SGLT-mediated models that take
+  plasma SGLT-inhibitor exposure as an exogenous regressor. The clinical
+  reporting unit is ng/mL; convert by
+  `1 ng/mL = (1000 / MW_drug) nmol/L` (dapagliflozin MW = 409 g/mol so 1
+  ng/mL = 2.44 nmol/L; canagliflozin MW = 454 g/mol so 1 ng/mL = 2.20
+  nmol/L). The Lu 2014 paper feeds the model an interpolated
+  dapagliflozin observed mean profile (DeFronzo et al. 2013) or a fitted
+  two-compartment canagliflozin PK profile (Devineni et al. 2013) – the
+  SGLT-mechanism model itself does not include an internal PK sub-model
+  for the inhibitor. Companion concept to `GLU` (the plasma-glucose
+  regressor that drives the same filtration arm).
 
 ### IGE (**canonical for serum total immunoglobulin E concentration**)
 
@@ -4841,13 +4915,19 @@ serve other parameters that do separate that group.
   - `Guiastrennec_2016_gastric_emptying.R` (multiplicative -81.1%
     depression of POTcarbC, the carbohydrate potency on CCK release; all
     other parameters are common across cohorts).
+  - `Lu_2014_sglt_qsp.R` (multiplicative +17.6% shift on the
+    typical-value Vmax2 of SGLT2 in the renal-glucose-reabsorption QSP
+    model: Vmax2_T2DM = 110 mmol/h vs Vmax2_healthy = 93.5 mmol/h per Lu
+    2014 Table 2 calibration; coded for the Lu 2014 evaluation cohort,
+    where the pre-modern-classification ‘diabetics’ of Mogensen 1971 are
+    also coded T2DM = 1).
 - **Notes:** Distinct from the existing `DIAB` canonical (which
   deliberately does not distinguish Type 1 vs Type 2). Specific scope
   because the reference cohort is study-specific and the mechanism in
-  the example model is a Type-2-versus-healthy stratification of OGTT
-  response; a future T2DM-specific study (e.g., a popPK/PD analysis
-  stratifying by HbA1c level) can ratify the same canonical and document
-  the reference cohort in `covariateData[[T2DM]]$notes`.
+  the example models is a Type-2-versus-healthy stratification of OGTT
+  or SGLT response; a future T2DM-specific study (e.g., a popPK/PD
+  analysis stratifying by HbA1c level) can ratify the same canonical and
+  document the reference cohort in `covariateData[[T2DM]]$notes`.
 
 ### HYPERT (**canonical for hypertension comorbidity / medical-history indicator**)
 
@@ -5219,7 +5299,12 @@ serve other parameters that do separate that group.
   CL/F vs cancer patients), `Bienczak_2025_ligelizumab.R` (log-additive
   `exp(-0.087 * DIS_HEALTHY)` on apparent ligelizumab CL/F; reference
   category is the pooled chronic-spontaneous-urticaria patient cohort
-  across C2201 / C2202 / C2302 / C2303).
+  across C2201 / C2202 / C2302 / C2303), `Li_2017_CC292.R` (binary
+  stratifier on the proportional residual error magnitude: HNP cohort
+  uses propSd = sqrt(0.234) and patient cohort uses propSd =
+  sqrt(0.659); reference category 0 is the pooled relapsed/refractory
+  B-cell-malignancy patient cohort from AVL-292-003; source column
+  `HNP`).
 - **Notes:** Used when a population PK model pools healthy participants
   with patients across heterogeneous indications and the
   healthy-vs-patient contrast is retained as a covariate. Scope:
@@ -6101,6 +6186,41 @@ serve other parameters that do separate that group.
   indications where HIV-vs-non-HIV is tested as a PK covariate. Ratified
   canonically on 2026-05-06.
 
+### TB_POS (**canonical for active tuberculosis co-infection indicator**)
+
+- **Description:** 1 = active tuberculosis (typically pulmonary) at
+  study entry, 0 = no active TB. Time-fixed per subject. Used as a
+  binary comorbidity indicator on PK or PD parameters (typically albumin
+  secretion, hepatic clearance, bioavailability, or disease-progression
+  rates) when a study population pools TB-positive and TB-negative
+  subjects on a non-TB primary indication (HIV ART, hepatitis treatment,
+  malnutrition, etc.) or when a TB-cohort study pools TB subjects
+  against a separately enrolled non-TB comparator group.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no active TB).
+- **Source aliases:**
+  - `TB` – used in `Bisaso_2014_albumin.R` (paper text and Table 1
+    stratification column with values 0 = HIV only, 1 = HIV + TB
+    co-infection; same orientation as the canonical).
+- **Example models:** `Bisaso_2014_albumin.R` (multiplicative additive
+  shift on baseline albumin secretion rate Q0:
+  `Q0 = exp(lq0) * (1 + e_tb_pos_q0 * TB_POS)` with
+  `e_tb_pos_q0 = -0.308`; TB-positive subjects have ~30.8% lower Q0 than
+  the HIV-only reference – equivalent to the paper text’s “44.2% lower”
+  framing relative to the TB-HIV cohort).
+- **Notes:** Parallels the `_POS` suffix convention used by `HIV_POS`,
+  `ADA_POS`, `SARS_SEROPOS`, and other serostatus / disease-state
+  indicators. Distinct from any TB-treatment-regimen indicator
+  (e.g. `CONMED_RIF_LPVR4` for concomitant rifampicin) – `TB_POS` is the
+  active-disease flag; the medication exposure is a separate concept. In
+  Bisaso 2014 all 158 TB-positive subjects were also on rifampicin-based
+  anti-TB therapy, so the two are confounded in that single cohort; the
+  canonical preserves the conceptual distinction for future studies that
+  decouple them. Ratified canonically on 2026-05-20 alongside the Bisaso
+  2014 albumin extraction.
+
 ### EARLY_ART (**canonical for early-vs-delayed antiretroviral-treatment-initiation arm indicator**)
 
 - **Description:** Trial randomization-arm indicator: 1 = subject was
@@ -6720,13 +6840,76 @@ serve other parameters that do separate that group.
 - **Example models:** `Ahamadi_2017_pembrolizumab.R` (proportional
   change of +14.5% on CL for NSCLC patients relative to melanoma; the
   “other” cancer type cohort – 1.01% of the population – is pooled into
-  the melanoma reference per the paper’s model description).
+  the melanoma reference per the paper’s model description),
+  `Aoyama_2012_sepantronium.R`.
 - **Notes:** Follows the `TUMTP_CHL` / `TUMTP_GC` / `TUMTP_SCLC`
   decomposition pattern. Scope: general because NSCLC is a
   high-frequency tumor-type contrast (with melanoma or “other”
   reference) across PD-1 / PD-L1 / chemotherapy popPK analyses, and is
   likely to recur in future extractions. Ratified canonically on
   2026-05-17 alongside the Ahamadi 2017 pembrolizumab extraction.
+
+### TUMTP_HRPC (**canonical for hormone-refractory prostate cancer tumor-type indicator**)
+
+- **Description:** 1 = hormone-refractory prostate cancer (HRPC), 0 =
+  other tumor types. The historical term HRPC has since been displaced
+  by CRPC (castration-resistant prostate cancer); the two terms refer to
+  the same clinical entity. `TUMTP_HRPC` is the canonical column for
+  both wordings (no separate `TUMTP_CRPC` is registered; if a future
+  paper distinguishes hormone-naive metastatic prostate cancer from
+  CRPC, register a more specific canonical at that time).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 = all other tumor types (per source paper;
+  in Aoyama 2012 the implicit reference is NSCLC when paired with
+  TUMTP_MEL = 0).
+- **Source aliases:**
+  - `TUMTP` (categorical column with levels including `HRPC`, `NSCLC`,
+    `MM`) – decompose into `TUMTP_HRPC = as.integer(TUMTP == "HRPC")`.
+  - `STUDY` / `CANCER_TYPE` factor columns where one level is `HRPC` or
+    `CRPC` – decompose identically.
+- **Example models:** `Aoyama_2012_sepantronium.R` (proportional change
+  of -4.5% on CL for HRPC patients relative to the NSCLC reference;
+  ratio THETA_HRPC = 0.955 in the paper’s power form).
+- **Notes:** Follows the `TUMTP_CHL` / `TUMTP_GC` / `TUMTP_SCLC` /
+  `TUMTP_NSCLC` decomposition pattern. Scope: general because
+  prostate-cancer cohorts (under either HRPC or CRPC nomenclature) recur
+  across small-molecule and targeted-therapy popPK analyses. The
+  “hormone-refractory” wording reflects the 2010s convention; modern
+  papers using CRPC map onto the same canonical. Ratified canonically on
+  2026-05-20 alongside the Aoyama 2012 sepantronium extraction.
+
+### TUMTP_MEL (**canonical for melanoma tumor-type indicator**)
+
+- **Description:** 1 = melanoma (any anatomic site; in
+  advanced-solid-tumor cohorts typically unresectable stage III or IV
+  cutaneous melanoma), 0 = other tumor types.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 = all other tumor types (per source paper;
+  in Aoyama 2012 the implicit reference is NSCLC when paired with
+  TUMTP_HRPC = 0).
+- **Source aliases:**
+  - `TUMTP` (categorical column with levels including `MM`, `NSCLC`,
+    `HRPC`) – decompose into `TUMTP_MEL = as.integer(TUMTP == "MM")`.
+    NOTE: in Aoyama 2012 the abbreviation `MM` denotes malignant
+    (unresectable) melanoma, NOT multiple myeloma; do not confuse with
+    the canonical `MM` register entry (which is specifically active
+    multiple myeloma).
+  - `STUDY` / `CANCER_TYPE` factor columns where one level is `melanoma`
+    or `MM` (melanoma sense) – decompose identically.
+- **Example models:** `Aoyama_2012_sepantronium.R` (proportional change
+  of +24% on CL for melanoma patients relative to the NSCLC reference;
+  ratio THETA_MM = 1.24 in the paper’s power form).
+- **Notes:** Follows the `TUMTP_CHL` / `TUMTP_GC` / `TUMTP_SCLC` /
+  `TUMTP_NSCLC` decomposition pattern. The canonical name uses `MEL`
+  (not `MM`) to disambiguate from the existing `MM` register entry for
+  multiple myeloma. Scope: general because melanoma cohorts recur across
+  PD-1 / PD-L1 / BRAF-inhibitor / small-molecule popPK analyses.
+  Ratified canonically on 2026-05-20 alongside the Aoyama 2012
+  sepantronium extraction.
 
 ### TUMTP_LYMPH (**canonical for lymphoma (pooled) tumor-type indicator**)
 
@@ -7912,6 +8095,40 @@ serve other parameters that do separate that group.
   indicator. Ratified canonically on 2026-05-20 alongside the Schoemaker
   2017 brivaracetam paediatric extraction.
 
+### CONMED_CCB (**canonical for concomitant calcium channel blocker coadministration indicator**)
+
+- **Description:** 1 = subject coadministered any calcium channel
+  blocker (CCB) during the observation interval (diltiazem, verapamil,
+  amlodipine, nifedipine, felodipine, or another CCB); 0 = no
+  concomitant CCB. Time-varying per subject because CCB use can start
+  and stop during the observation period.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no concomitant calcium channel blocker).
+- **Source aliases:**
+  - `calcium channel blocker use` – used in `Passey_2011_tacrolimus.R`
+    (Passey 2011 Methods describes the column as “the concomitant use of
+    a CCB at the time of the trough measurement”).
+- **Example models:** `Passey_2011_tacrolimus.R`
+  (power-of-binary-indicator multiplicative factor on apparent oral
+  clearance: `e_ccb_cl ^ CONMED_CCB` with `e_ccb_cl = 0.94`; CCB
+  coadministration reduces tacrolimus CL/F by 6% averaged across the
+  pooled CCB class).
+- **Notes:** Per-model `covariateData[[CONMED_CCB]]$notes` must
+  document (1) which CCBs are pooled into the indicator, since potent
+  CYP3A4 inhibitors (diltiazem, verapamil) and non-inhibitor
+  dihydropyridines (amlodipine, nifedipine) are typically pooled in the
+  source datasets but have very different drug-interaction strengths –
+  Passey 2011 Discussion notes that “the inhibitory effects of some CCBs
+  may be overestimated whereas the effect of diltiazem is likely
+  underestimated” by the pooled-class average; (2) whether the indicator
+  is a baseline-only proxy or a true time-varying flag. Future models
+  that need stratified encoding (separate `CONMED_CCB_DILT`,
+  `CONMED_CCB_DHP`, etc.) should register companion canonicals rather
+  than overloading `CONMED_CCB`. Ratified canonically on 2026-05-20
+  alongside the Passey 2011 tacrolimus extraction.
+
 ### CONMED_CHEMO (**canonical for anti-PD-(L)1 mAb + chemotherapy combination indicator**)
 
 - **Description:** 1 = subject is receiving an anti-PD-(L)1 monoclonal
@@ -8142,6 +8359,38 @@ serve other parameters that do separate that group.
   should reuse this canonical when IFN beta-1a is the specific
   concomitant agent; register a sibling canonical (e.g. `CONMED_IFNB1B`,
   `CONMED_IFNALPHA`) if a different interferon species is intended.
+
+### CONMED_IMMUNOMOD (**canonical for any-immunomodulator (purine analogue or methotrexate) composite indicator**)
+
+- **Description:** 1 = subject is on at least one concomitant
+  immunomodulator (any of: azathioprine (AZA), 6-mercaptopurine (6-MP),
+  or methotrexate (MTX)) at the PK observation, 0 = no concomitant
+  immunomodulator from this class. A composite pooled indicator used in
+  inflammatory-bowel-disease popPK analyses where the source paper does
+  not separate the individual thiopurine vs MTX effects on
+  therapeutic-mAb (typically anti-TNF) clearance.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no concomitant immunomodulator from the AZA
+  / 6-MP / MTX class).
+- **Source aliases:**
+  - `IMM` – used in `Frymoyer_2017_infliximab.R` (pooled
+    purine-analogue-or-MTX indicator per Table 1 footnote of Frymoyer
+    2017: “Concomitant immunomodulation refers to purine-analogue or
+    methotrexate.”).
+- **Example models:** `Frymoyer_2017_infliximab.R` (power-of-coefficient
+  effect on CL: `CL_typ * 0.863^CONMED_IMMUNOMOD`, i.e. -13.7% when on
+  an immunomodulator).
+- **Notes:** Distinct from the per-drug indicators `CONMED_AZA`,
+  `CONMED_MP`, and `CONMED_MTX`, which model the effect of each
+  immunomodulator separately. Use `CONMED_IMMUNOMOD` only when the
+  source paper itself pools the three under a single binary; use the
+  per-drug indicators when the source paper estimates separate effects.
+  Future IBD popPK extractions that pool thiopurines + MTX into a single
+  indicator should reuse this canonical and extend the example list.
+  Ratified canonically on 2026-05-20 alongside the Frymoyer 2017
+  infliximab pediatric Crohn’s disease extraction.
 
 ### CONMED_IPI_1Q6W (**canonical for nivolumab + ipilimumab 1 mg/kg q6w combination indicator**)
 
@@ -8589,6 +8838,54 @@ serve other parameters that do separate that group.
   the same subject. The name `STEROID_BL` was used as an alias in
   earlier register drafts and is retired; use `CONMED_STEROID` for all
   future models.
+
+### CONMED_STEROID_SPARING (**canonical for steroid-sparing immunosuppression-protocol indicator**)
+
+- **Description:** 1 = subject was assigned a steroid-sparing
+  immunosuppressive protocol (corticosteroids administered for a short
+  period – typically \<= 7-14 days post-transplant – as opposed to a
+  continuous-steroid regimen); 0 = subject was on a
+  continuous-corticosteroid regimen. Time-fixed per subject (the
+  protocol is assigned at the transplantation date and does not change
+  during the analysis window). Operationally a centre-level attribute in
+  source datasets where the protocol is determined by the transplanting
+  centre (Passey 2011) or a per-subject protocol decision in other
+  datasets.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (continuous-corticosteroid regimen;
+  non-sparing protocol).
+- **Source aliases:**
+  - `steroid sparing centre` – used in `Passey_2011_tacrolimus.R`
+    (Passey 2011 Methods: “Centres were designated as using a steroid
+    sparing immunosuppressive regimen if they administered steroids for
+    \<= 7 days post transplant”).
+- **Example models:** `Passey_2011_tacrolimus.R`
+  (power-of-binary-indicator multiplicative factor on apparent oral
+  clearance: `e_steroid_spare_cl ^ CONMED_STEROID_SPARING` with
+  `e_steroid_spare_cl = 0.70`; steroid-sparing patients have 30% lower
+  apparent oral tacrolimus CL/F than continuous-steroid patients; Passey
+  2011 Discussion attributes the effect to reduced CYP3A induction in
+  the absence of ongoing corticosteroid therapy).
+- **Notes:** Companion to `CONMED_STEROID` (which captures concurrent /
+  baseline corticosteroid USE; `CONMED_STEROID_SPARING` captures the
+  protocol-level decision to MINIMIZE corticosteroid use). The two
+  coexist in the same dataset when needed: a steroid-sparing patient
+  still has `CONMED_STEROID = 1` during days 1-7 post-transplant (the
+  short-duration administration window) and `CONMED_STEROID = 0`
+  thereafter. The Passey 2011 binary indicator collapses both phases
+  into a single time-invariant per-subject attribute via the
+  centre-level assignment; document the per-model temporal
+  interpretation in `covariateData[[CONMED_STEROID_SPARING]]$notes`.
+  Distinct from `PRICORT` (pre-study corticosteroid history) and from
+  `HCT_COND_RIC` (reduced-intensity conditioning regimen for HSC
+  transplantation, which is a different protocol axis). Future models
+  that distinguish the specific duration of steroid administration
+  (e.g. 7 days vs 14 days vs 30 days) should register companion
+  canonicals rather than overloading `CONMED_STEROID_SPARING`. Ratified
+  canonically on 2026-05-20 alongside the Passey 2011 tacrolimus
+  extraction.
 
 ### CONMED_VPA (**canonical for concomitant valproate (valproic acid) coadministration indicator**)
 
@@ -9050,8 +9347,142 @@ serve other parameters that do separate that group.
   for CYP3A4 / CYP3A4 + CYP3A5 combined): the binary `CYP3A5_EXPR` is
   the right fit for source papers that report only the rs776746
   genotype, while the continuous `CYP3A4` is for sources that report a
-  probe-substrate-derived activity number. Ratified canonically on
-  2026-05-08 alongside the Bergmann 2014 extraction.
+  probe-substrate-derived activity number. In solid-organ-transplant
+  popPK / pharmacogenetics studies that genotype both the recipient and
+  the donated graft separately (e.g., Moes 2016 liver-transplant
+  tacrolimus), the recipient genotype goes into `CYP3A5_EXPR` and the
+  donor genotype into the sibling canonical `CYP3A5_EXPR_DONOR` below.
+  Ratified canonically on 2026-05-08 alongside the Bergmann 2014
+  extraction.
+
+### CYP3A5_EXPR_DONOR (**canonical for transplanted-graft donor CYP3A5 expresser status**)
+
+- **Description:** 1 = transplanted graft (typically liver, kidney, or
+  other CYP3A5-expressing organ) was donated by a donor carrying at
+  least one functional CYP3A5*1 allele (genotype* 1/*1 or* 1/*3 at
+  rs776746); 0 = donor is homozygous CYP3A5*3/\*3 (nonexpresser).
+  Time-fixed per recipient (germline genotype of the donor at the time
+  of transplantation). Sibling canonical to the recipient-genotype
+  indicator `CYP3A5_EXPR`.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (donor CYP3A5*3/*3 nonexpresser graft).
+- **Source aliases:**
+  - `Donor CYP3A5*3` – used in `Moes_2016_tacrolimus.R` (Moes 2016
+    Methods; donor and recipient genotypes pooled with the four-level
+    combination indicator `C1 / C2 / C3 / C4` defined in Methods, where
+    `CYP3A5_EXPR_DONOR = 1` corresponds to graft from a `*1`-carrying
+    donor).
+  - `CYP3A5 donor` – used in `Ji_2018_tacrolimus.R` (Ji 2018 derives the
+    donor-side genotype from the four-level combinational CYP3A5 group:
+    REDE/RNDE -\> 1; REDN/RNDN -\> 0).
+- **Example models:** `Moes_2016_tacrolimus.R` (categorical donor +
+  recipient CYP3A5 combination effect on apparent oral CL/F: reference
+  C1 = both nonexpressers; C2 = recipient `*1` carrier + donor
+  nonexpresser = +33%; C3 = recipient nonexpresser + donor `*1` carrier
+  = +33%; C4 = both `*1` carriers = +71%; Moes 2016 Table 4 final model
+  – the C2 / C3 / C4 levels are reconstructed inside
+  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html)
+  from the two binary inputs `CYP3A5_EXPR` and `CYP3A5_EXPR_DONOR`),
+  `Ji_2018_tacrolimus.R` (combinational categorical effect on tacrolimus
+  CL/F that depends on both recipient and donor CYP3A5 status:
+  multiplier 2.314 when the recipient is an expresser and the donor is
+  an expresser (REDE), 1.523 when the recipient is an expresser and the
+  donor is a nonexpresser (REDN), and 1.0 otherwise (RNDE / RNDN
+  reference, which Ji 2018 merged because the two estimated effects were
+  similar)).
+- **Notes:** Genotyped only in transplant studies where donor DNA is
+  recoverable (Moes 2016 obtained donor DNA from spleen / liver
+  biopsies). When the same paper reports both recipient and donor
+  genotypes separately, encode them as two binary inputs (`CYP3A5_EXPR`
+  for the recipient, `CYP3A5_EXPR_DONOR` for the donor) rather than as a
+  single four-level combination column, so the underlying recipient /
+  donor biology is explicit in the dataset. Models that fit a
+  categorical four-level combination effect (paper-Moes-style C1 / C2 /
+  C3 / C4) reconstruct the levels inside
+  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html)
+  from the two binary inputs, so the source-paper’s per-level
+  coefficients remain the estimated quantities. The intestinal-CYP3A5
+  contribution (recipient genotype) and the hepatic-CYP3A5 contribution
+  (donor genotype) act on different anatomic compartments of
+  tacrolimus’s first-pass metabolism, which is why both donor and
+  recipient genotypes are independently informative in liver-transplant
+  tacrolimus PK. Ratified canonically on 2026-05-20 alongside the Moes
+  2016 tacrolimus extraction.
+
+### CYP3A5_STAR1_HET (**canonical for CYP3A5*1/*3 heterozygote indicator**)
+
+- **Description:** Binary genotype indicator for the CYP3A5*1/*3
+  heterozygote group. 1 = subject carries exactly one functional
+  CYP3A5*1 allele at rs776746 (genotype* 1/*3); 0 = otherwise (the union
+  of* 3/*3 nonexpressers and* 1/\*1 homozygotes; the paired indicator
+  `CYP3A5_STAR1_HOM` flags the homozygous-expresser group). Time-fixed
+  per subject (germline genotype).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (CYP3A5*3/*3 nonexpresser, when paired with
+  `CYP3A5_STAR1_HOM = 0`). The reference group is the homozygous *3/*3
+  nonexpresser stratum; `CYP3A5_STAR1_HOM` flags the
+  homozygous-expresser stratum.
+- **Source aliases:**
+  - `CYP3A5*1/*3` – used directly in `Passey_2011_tacrolimus.R` (Passey
+    2011 Table 3 reports a separate multiplicative factor of 1.70 for
+    the heterozygote stratum vs the *3/*3 reference).
+- **Example models:** `Passey_2011_tacrolimus.R`
+  (power-of-binary-indicator multiplicative factor on apparent oral
+  clearance: `e_cyp3a5_het_cl ^ CYP3A5_STAR1_HET` with
+  `e_cyp3a5_het_cl = 1.70`; *1/*3 heterozygotes have ~70% higher
+  apparent oral CL/F than *3/*3 nonexpressers; paired with
+  `CYP3A5_STAR1_HOM` and used jointly).
+- **Notes:** Follows the `SLCO1B1_HAP15_HET` / `SLCO1B1_HAP15_HOM`
+  precedent (paired binary indicators for a three-level genotype) rather
+  than overloading `CYP3A5_EXPR` (which pools *1/*1 and *1/*3 into a
+  single expresser indicator and is the right canonical when a source
+  paper does the same pooling). Use the paired `CYP3A5_STAR1_HET` +
+  `CYP3A5_STAR1_HOM` binaries when the source paper assigns a distinct
+  typical-value covariate effect to each of the three CYP3A5 genotype
+  strata (*3/*3, *1/*3, *1/*1). Passey 2011 motivated the three-level
+  decomposition because the cohort (n = 681) had enough *1/*1
+  homozygotes (72, 11%) to identify a distinct typical-value factor for
+  that stratum, whereas earlier popPK papers (Bergmann 2014,
+  Storset 2014) had too few *1/*1 subjects (or the equivalent
+  expresser-pooled treatment) to distinguish *1/*1 from *1/*3. The
+  `_STAR1_` token (rather than `_STAR3_`) names the
+  functional-allele-presence orientation consistent with the parent
+  `CYP3A5_EXPR` canonical’s expresser-equals-1 convention. Ratified
+  canonically on 2026-05-20 alongside the Passey 2011 tacrolimus
+  extraction.
+
+### CYP3A5_STAR1_HOM (**canonical for CYP3A5*1/*1 homozygote indicator**)
+
+- **Description:** Binary genotype indicator for the CYP3A5*1/*1
+  homozygote group. 1 = subject carries two functional CYP3A5*1 alleles
+  at rs776746 (genotype* 1/*1); 0 = otherwise (the union of* 3/*3
+  nonexpressers and* 1/\*3 heterozygotes; the paired indicator
+  `CYP3A5_STAR1_HET` flags the heterozygous group). Time-fixed per
+  subject (germline genotype).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (CYP3A5*3/*3 nonexpresser, when paired with
+  `CYP3A5_STAR1_HET = 0`). The reference group is the homozygous *3/*3
+  nonexpresser stratum; `CYP3A5_STAR1_HET` flags the
+  heterozygous-expresser stratum.
+- **Source aliases:**
+  - `CYP3A5*1/*1` – used directly in `Passey_2011_tacrolimus.R` (Passey
+    2011 Table 3 reports a separate multiplicative factor of 2.00 for
+    the homozygote-expresser stratum vs the *3/*3 reference).
+- **Example models:** `Passey_2011_tacrolimus.R`
+  (power-of-binary-indicator multiplicative factor on apparent oral
+  clearance: `e_cyp3a5_hom_cl ^ CYP3A5_STAR1_HOM` with
+  `e_cyp3a5_hom_cl = 2.00`; *1/*1 homozygotes have 100% higher apparent
+  oral CL/F than *3/*3 nonexpressers; paired with `CYP3A5_STAR1_HET` and
+  used jointly).
+- **Notes:** Paired with `CYP3A5_STAR1_HET` (see that entry’s Notes for
+  the three-level decomposition rationale). Ratified canonically on
+  2026-05-20 alongside the Passey 2011 tacrolimus extraction.
 
 ### CYP2C9_EM (**canonical for CYP2C9 extensive-metabolizer phenotype indicator**)
 
@@ -9701,6 +10132,47 @@ promote to general when a second paper ratifies identical semantics.
   with reduced rifampicin and lopinavir concentrations in prior studies
   but in Hennig 2015 was associated with INCREASED rifabutin
   bioavailability (note opposite direction of effect across rifamycins).
+
+### SNP_ABCB1_RS1045642 (**canonical for ABCB1 rs1045642 (c.3435C\>T) mutant allele carrier indicator**)
+
+- **Description:** Binary genotype indicator for the *ABCB1* rs1045642
+  single-nucleotide polymorphism (c.3435C\>T; exon 26; synonymous
+  Ile1145Ile; encodes P-glycoprotein / MDR1 efflux transporter). 1 =
+  subject carries at least one T (mutant) allele (heterozygous CT or
+  homozygous TT; pooled because TT homozygote frequency was 1 of 262 in
+  the Bisaso 2014 cohort); 0 = homozygous wild-type (CC). Time-fixed per
+  subject (germline genotype).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (homozygous wild-type CC).
+- **Source aliases:**
+  - `ABCB13435` – used in `Bisaso_2014_albumin.R` (paper text
+    “ABCB1c.3435C\>T mutation” and Figure 3 stratification “ABCB13435==0
+    stands for ABCB1c.3435CC while ABCB13435==1 stands for ABCB1c.3435CT
+    and ABCB1c.3435TT”; same orientation as the canonical).
+- **Example models:** `Bisaso_2014_albumin.R` (multiplicative additive
+  shift on baseline albumin secretion rate Q0:
+  `Q0 = exp(lq0) * (1 + e_snp_abcb1_rs1045642_q0 * SNP_ABCB1_RS1045642)`
+  with `e_snp_abcb1_rs1045642_q0 = 0.167`; T-carriers have 16.7% higher
+  Q0 than CC wild-type, equivalent to the paper text’s “16% higher”
+  framing).
+- **Notes:** Distinct from `ABCB1_HAP_TTT` (which is the multi-SNP
+  haplotype across rs1128503 / rs2032582 / rs1045642 jointly – a
+  different concept even though rs1045642 is one of the three
+  contributing SNPs); use `ABCB1_HAP_TTT` when the source paper reports
+  a phased haplotype, and `SNP_ABCB1_RS1045642` when the source paper
+  reports the single c.3435C\>T SNP alone. Heterozygote and homozygote
+  T-carriers are pooled in Bisaso 2014 because the TT cohort was n = 1;
+  future extractions that estimate separate het / hom effects should
+  register paired `SNP_ABCB1_RS1045642_HET` and
+  `SNP_ABCB1_RS1045642_HOM` indicators following the `SLCO1B1_HAP15_HET`
+  / `SLCO1B1_HAP15_HOM` precedent. ABCB1 c.3435C\>T is associated with
+  altered P-glycoprotein expression and has been linked in the
+  literature to predisposition to ART and rifampicin-based anti-TB
+  drug-induced liver injury (Yimer 2011, cited in Bisaso 2014
+  Discussion). Ratified canonically on 2026-05-20 alongside the Bisaso
+  2014 albumin extraction.
 
 ### SLCO1B1_HAP15_HET (\*\*canonical for SLCO1B1\*15 haplotype heterozygote indicator\*\*)
 
@@ -11581,6 +12053,40 @@ promote to general when a second paper ratifies identical semantics.
   form; new models should prefer the integer-valued `OCC` canonical
   above and decompose into binary indicators inside
   [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html).
+
+### MONTH1 (**canonical for first-month-of-treatment landmark indicator**)
+
+- **Description:** Binary within-subject landmark indicator: 1 = the
+  observation falls within the first 30 days after treatment initiation,
+  0 = subsequent months. Time-varying within subject – gates a transient
+  step change in typical-value CL that the source paper attributes to
+  higher Erwinia asparaginase clearance in the first month of pediatric
+  ALL therapy.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (month 2 onwards).
+- **Source aliases:** none known; Sassen 2017 reports the
+  first-month-vs-after contrast as a single multiplicative coefficient
+  on TVCL.
+- **Example models:**
+  - `Sassen_2017_crisantaspase.R` (multiplicative shift on CL:
+    `cl <- exp(lcl + etalcl) * (WT/70)^0.75 * (1 + e_month1_cl * MONTH1)`
+    with `e_month1_cl = 0.14`, encoding the 14% higher CL in the first
+    month of treatment relative to subsequent months).
+- **Notes:** Specific scope because the 1-month (30-day) cutoff is tied
+  to Sassen 2017’s pediatric Erwinia asparaginase pharmacology
+  (transient higher CL early in treatment; mechanism not established in
+  the source paper). Future studies that test a similar within-subject
+  step change with a different cutoff (e.g., 2 weeks or 6 weeks) should
+  register a new canonical name. Distinct from `OCC` and `ooc<n>` (which
+  decompose multi-occasion sampling for IOV), from `DAY14` (which uses a
+  14-day cutoff for malnutrition-recovery contrasts), and from `CYCLE`
+  (which is a dose-number counter, not a single binary landmark). Data
+  assemblers can derive
+  `MONTH1 = as.integer(time_post_treatment_start_days < 30)` for a
+  regularly-sampled multi-month study. Ratified canonically on
+  2026-05-20 alongside the Sassen 2017 extraction.
 
 ### DAY14 (**canonical for day-14-post-treatment-initiation landmark indicator**)
 

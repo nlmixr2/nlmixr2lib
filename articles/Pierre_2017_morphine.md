@@ -288,8 +288,8 @@ intervals_m <- data.frame(
 )
 
 nca_m <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_m, dose_m, intervals = intervals_m))
-#>  ■■■■■■■■■                         25% |  ETA:  6s
-#>  ■■■■■■■■■■■■■■■■■■■■■             67% |  ETA:  3s
+#>  ■■■■■■■■■                         28% |  ETA:  6s
+#>  ■■■■■■■■■■■■■■■■■■■■■■            70% |  ETA:  2s
 nca_m_summary <- summary(nca_m)
 knitr::kable(
   nca_m_summary,
@@ -322,8 +322,8 @@ intervals_m3g <- data.frame(
 )
 nca_m3g <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_m3g, intervals = intervals_m3g))
 #> No dose information provided, calculations requiring dose will return NA.
-#>  ■■■■■■■■■■■■■■■                   47% |  ETA:  4s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      89% |  ETA:  1s
+#>  ■■■■■■■■■■■■■■■■                  50% |  ETA:  4s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     92% |  ETA:  1s
 nca_m3g_summary <- summary(nca_m3g)
 knitr::kable(
   nca_m3g_summary,

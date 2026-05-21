@@ -414,9 +414,9 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
-#>  ■■■■■■■■■                         27% |  ETA:  8s
-#>  ■■■■■■■■■■■■■■■■■■■               60% |  ETA:  4s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     93% |  ETA:  1s
+#>  ■■■■■■■■■                         27% |  ETA:  9s
+#>  ■■■■■■■■■■■■■■■■■■■               59% |  ETA:  4s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      91% |  ETA:  1s
 
 nca_summary <- summary(nca_res)
 knitr::kable(nca_summary, caption = "Selumetinib NCA parameters by regimen (single-dose; PKNCA on the stochastic simulation).")
@@ -443,9 +443,9 @@ sim_ndsel <- sim_vpc |>
 conc_obj_m <- PKNCA::PKNCAconc(sim_ndsel, Cc ~ time | regimen + id)
 nca_data_m <- PKNCA::PKNCAdata(conc_obj_m, dose_obj, intervals = intervals)
 nca_res_m  <- PKNCA::pk.nca(nca_data_m)
-#>  ■■■■■■                            16% |  ETA:  9s
-#>  ■■■■■■■■■■■■■■■                   47% |  ETA:  5s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■         81% |  ETA:  2s
+#>  ■■■■■                             15% |  ETA:  9s
+#>  ■■■■■■■■■■■■■■                    45% |  ETA:  6s
+#>  ■■■■■■■■■■■■■■■■■■■■■■■■■         79% |  ETA:  2s
 
 knitr::kable(summary(nca_res_m), caption = "N-desmethyl-selumetinib NCA parameters by regimen.")
 ```

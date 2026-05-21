@@ -257,9 +257,7 @@ nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = interv
 #> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
-#>  ■■■■■■■■                          24% |  ETA:  6s
+#>  ■■■■■■■■                          22% |  ETA:  6s
 #> Warning: Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
@@ -300,9 +298,11 @@ nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = interv
 #> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
-#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
-#>  ■■■■■■■■■■■■■■■■■■■■■             65% |  ETA:  3s
+#>  ■■■■■■■■■■■■■■■■■■■■              62% |  ETA:  3s
 #> Warning: Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
