@@ -86,8 +86,6 @@ navbar:
         href: articles/Hu_2014_bapineuzumab.html
       - text: "BAY81 8973 (Garmann 2017)"
         href: articles/Garmann_2017_BAY81_8973.html
-      - text: "Bedaquiline (Svensson 2017)"
-        href: articles/Svensson_2017_bedaquiline.html
       - text: "Bedaquiline (Svensson 2018)"
         href: articles/Svensson_2018_bedaquiline.html
       - text: "Belantamab (Papathanasiou 2025)"
@@ -506,6 +504,8 @@ navbar:
         href: articles/Clewe_2015_rifampicin.html
       - text: "Rifampicin (Svensson 2016)"
         href: articles/Svensson_2016_rifampicin.html
+      - text: "Rifampicin (Vinnard 2017)"
+        href: articles/Vinnard_2017_rifampicin.html
       - text: "Rilotumumab (Zhang 2016)"
         href: articles/Zhang_2016_rilotumumab.html
       - text: "Risankizumab (Suleiman 2019)"
@@ -1220,6 +1220,7 @@ articles:
   - articles/Vet_2016_midazolam
   - articles/Vezina_2010_valganciclovir
   - articles/Vezina_2014_valganciclovir
+  - articles/Vinnard_2017_rifampicin
   - articles/Voller_2017_phenobarbital
   - articles/Wade_2015_certolizumab
   - articles/Wang_2013_morphine
