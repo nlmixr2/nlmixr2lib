@@ -598,10 +598,8 @@ navbar:
         href: articles/Ji_2018_tacrolimus.html
       - text: "Tacrolimus (Kirubakaran 2022)"
         href: articles/Kirubakaran_2022_tacrolimus.html
-      - text: "Tacrolimus (Moes 2016)"
-        href: articles/Moes_2016_tacrolimus.html
-      - text: "Tacrolimus (Passey 2011)"
-        href: articles/Passey_2011_tacrolimus.html
+      - text: "Tacrolimus (Lu 2015)"
+        href: articles/Lu_2015_tacrolimus.html
       - text: "Tacrolimus (Prytula 2016)"
         href: articles/Prytula_2016_tacrolimus.html
       - text: "Tacrolimus (Storset 2014)"
@@ -1079,6 +1077,7 @@ articles:
   - articles/Lowe_2009_omalizumab
   - articles/Lu_2014_sglt_qsp
   - articles/Lu_2014_trastuzumabemtansine
+  - articles/Lu_2015_tacrolimus
   - articles/Lu_2015_vismodegib
   - articles/Lu_2019_polatuzumab
   - articles/Lu_2019_tacrolimus_industry_meta
