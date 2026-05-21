@@ -24,7 +24,14 @@ jobs:
       # .github/scripts/pkgdown-parallel-build.R. Leave blank to use
       # parallel::detectCores(); set to a positive integer to override
       # (e.g. "16" to cap memory on a 32-core larger runner).
-      PKGDOWN_WORKERS: ""
+      #
+      # EXPERIMENT: oversubscribing 4-vCPU ubuntu-latest with 6 workers to
+      # see whether non-CPU-bound stretches (rxode2 compile I/O, pandoc
+      # subprocess waits, knitr lazy-load reads) make extra workers
+      # productive despite the CPU contention. Compare run time against the
+      # main-branch baseline (PKGDOWN_WORKERS = "" => detectCores() = 4).
+      # Revert to "" if no benefit or if memory pressure shows up.
+      PKGDOWN_WORKERS: "6"
     permissions:
       contents: write
     steps:
