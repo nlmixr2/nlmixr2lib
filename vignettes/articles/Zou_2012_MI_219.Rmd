@@ -1,0 +1,151 @@
+---
+title: "MI-219 (Zou 2012)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{MI-219 (Zou 2012)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 6, fig.height = 4)
+library(nlmixr2lib)
+library(rxode2)
+library(PKNCA)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: Zou P, Zheng N, Yu Y, Yu S, Sun W, McEachern D, Yang Y, Yu LX, Wang S, Sun D. Preclinical pharmacokinetics of MI-219, a novel human double minute 2 (HDM2) inhibitor and prediction of human pharmacokinetics. *J Pharm Pharm Sci.* 2012;15(2):265-280.
+* Article: <https://doi.org/10.18433/j34s4n>
+
+MI-219 is a small-molecule inhibitor of the human double minute 2 (HDM2) / p53 interaction in development for p53-wild-type cancer therapy. Zou et al. characterised single-dose IV plasma PK in CD-1 mice (10 mg/kg, n = 33), Sprague-Dawley rats (5 mg/kg, n = 3), beagle dogs (2 mg/kg, n = 3), and cynomolgus monkeys (10 mg/kg, n = 6), then predicted human PK with several scaling approaches (simple allometry, multi-exponential allometry, two-term power equation, single-species scaling, fu-corrected intercept, IVIVE, Oie-Tozer, Dedrick plots, Wajima normalisation, and NONMEM-based joint interspecies allometric scaling). The packaged model corresponds to the **NONMEM-based interspecies allometric scaling** prediction (Zou 2012 Table 5, NONMEM column, and Figure 7), which is described in the Methods (page 270) as a two-compartment model with linear elimination from the central compartment and body-weight allometry `P = PTV * WT^b` applied to every PK parameter, fit jointly to rat, dog, and monkey plasma concentration profiles. Mouse data were collected but excluded from the joint NONMEM fit because the mouse profile was not superimposable on the other species under Wajima or Dedrick normalisation (Zou 2012 Results, page 274).
+
+# Population
+
+The fit population is rats (n = 3, 5 mg/kg IV, 195 +/- 15 g), beagle dogs (n = 3, 2 mg/kg IV, 8.0 +/- 1.1 kg), and cynomolgus monkeys (n = 6, 10 mg/kg IV, 2.5 +/- 0.26 kg); the projected target is a 70 kg human adult. Zou 2012 did not dose human subjects -- the packaged model is a typical-value prediction. The packaged metadata (`readModelDb("Zou_2012_MI_219")$population`) records the projection context.
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| Two-compartment IV model with linear elimination from the central compartment | n/a | Zou 2012 Methods, page 270 (Interspecies scaling of pharmacokinetics of MI-219 using NONMEM) |
+| Body-weight allometry `P = PTV * WT^b` on every PK parameter | n/a | Zou 2012 Methods, page 270 |
+| alpha (rapid disposition rate constant) | 2.839 /h | Zou 2012 Table 5, NONMEM column |
+| beta (terminal disposition rate constant) | 0.161 /h | Zou 2012 Table 5, NONMEM column |
+| A (rapid macro-coefficient at 5 mg/kg) | 21714 ng/mL | Zou 2012 Table 5, NONMEM column |
+| B (slow macro-coefficient at 5 mg/kg) | 3109 ng/mL | Zou 2012 Table 5, NONMEM column |
+| CL (predicted human clearance per kg) | 0.186 L/h/kg | Zou 2012 Table 5, NONMEM column |
+| Vdss (predicted human steady-state volume per kg) | 0.843 L/kg | Zou 2012 Table 5, NONMEM column |
+| MRT (predicted human mean residence time) | 4.53 h | Zou 2012 Table 5, NONMEM column |
+| t1/2 (predicted human terminal half-life) | 4.30 h | Zou 2012 Table 5, NONMEM column |
+| `lcl` = log(12.98) for 70 kg | 12.98 L/h | derived from `CL = k10 * Vc` (closed-form 2-compartment IV; see model file in-line derivation) |
+| `lvc` = log(14.10) for 70 kg | 14.10 L | derived from `Vc = Dose / (A + B)` with Dose = 350 mg |
+| `lq`  = log(22.32) for 70 kg | 22.32 L/h | derived from `Q  = k12 * Vc`, with `k12 = alpha + beta - k10 - k21` |
+| `lvp` = log(44.96) for 70 kg | 44.96 L | derived from `Vp = Q / k21`, with `k21 = (A*beta + B*alpha)/(A+B)` |
+| Per-species PTV and exponent b for joint NONMEM fit | -- | Zou 2012 Table S1 of supplement (not on disk for this extraction) |
+
+# Virtual cohort
+
+The packaged model has no IIV and no residual error -- the typical-value forward prediction is the deliverable. The simulation panel below dosed a single 70 kg human at 5 mg/kg IV bolus (= 350 mg), matching the dose Zou 2012 used to draw the Figure 7 projection.
+
+```{r cohort}
+obs_times <- sort(unique(c(seq(0, 1, by = 0.05),
+                            seq(1, 4, by = 0.25),
+                            seq(4, 24, by = 0.5))))
+
+dose_mg <- 5 * 70  # 5 mg/kg * 70 kg = 350 mg
+
+events <- rxode2::et(amt = dose_mg, cmt = "central", id = 1L) |>
+  rxode2::et(time = obs_times, id = 1L) |>
+  as.data.frame() |>
+  dplyr::mutate(dose_mg_per_kg = 5)
+stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
+```
+
+# Simulation
+
+```{r simulate}
+mod <- readModelDb("Zou_2012_MI_219")
+sim <- rxode2::rxSolve(rxode2::rxode2(mod), events = events,
+                       keep = "dose_mg_per_kg") |>
+  as.data.frame() |>
+  dplyr::mutate(id = 1L)  # rxSolve drops single-subject id; restore for PKNCA
+```
+
+# Replicate Figure 7 (NONMEM-based human prediction)
+
+Zou 2012 Figure 7 plots the predicted human plasma concentration profile in ng/mL following a single 5 mg/kg IV bolus, derived from the NONMEM-based allometric scaling. The packaged model reproduces this projection deterministically. Cc is in mg/L; the plot multiplies by 1000 to land in ng/mL for direct visual comparison.
+
+```{r figure-7}
+sim |>
+  dplyr::filter(time > 0) |>
+  dplyr::mutate(Cc_ng_mL = Cc * 1000) |>
+  ggplot2::ggplot(ggplot2::aes(time, Cc_ng_mL)) +
+  ggplot2::geom_line() +
+  ggplot2::scale_y_log10() +
+  ggplot2::labs(
+    x = "Time (h)", y = "Plasma concentration (ng/mL)",
+    title = "Zou 2012 Figure 7 -- predicted human PK at 5 mg/kg IV",
+    caption = "Replicates Figure 7 of Zou 2012 using the packaged NONMEM-based interspecies scaling fit."
+  )
+```
+
+# PKNCA validation
+
+Run NCA on the simulated profile and compare against the published Table 5 (NONMEM column) point estimates.
+
+```{r pknca}
+sim_nca <- sim |>
+  dplyr::filter(!is.na(Cc), Cc > 0) |>
+  dplyr::transmute(id = id, time = time, conc = Cc,
+                   dose_mg_per_kg = dose_mg_per_kg)
+
+dose_df <- events |>
+  dplyr::filter(evid == 1) |>
+  dplyr::transmute(id = id, time = time, amt = amt,
+                   dose_mg_per_kg = dose_mg_per_kg)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, conc ~ time | dose_mg_per_kg + id)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | dose_mg_per_kg + id)
+
+intervals <- data.frame(
+  start         = 0,
+  end           = Inf,
+  cmax          = TRUE,
+  tmax          = TRUE,
+  aucinf.obs    = TRUE,
+  half.life     = TRUE,
+  cl.obs        = TRUE,
+  vss.obs       = TRUE,
+  mrt.iv.obs    = TRUE
+)
+
+nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca_res <- as.data.frame(nca$result)
+knitr::kable(nca_res, caption = "PKNCA NCA parameters for the simulated 5 mg/kg IV bolus profile (70 kg human prediction).")
+```
+
+## Comparison against Zou 2012 Table 5 (NONMEM column)
+
+Cc is in mg/L; conversion factors to compare directly with the paper:
+
+* `cmax` here vs. `A + B` in Zou 2012 Table 5: A + B = 24823 ng/mL = 24.823 mg/L.
+* `aucinf.obs` here vs. analytic AUC = `A/alpha + B/beta` = 21714/2.839 + 3109/0.161 = 26960 ng*h/mL = 26.96 mg*h/L.
+* `cl.obs` here vs. Table 5 NONMEM CL = 0.186 L/h/kg * 70 kg = 13.02 L/h.
+* `vss.obs` here vs. Table 5 NONMEM Vdss = 0.843 L/kg * 70 kg = 59.01 L.
+* `half.life` here vs. Table 5 NONMEM t1/2 = 4.30 h (terminal; also = ln(2)/beta = 4.305 h).
+* `mrt.iv.obs` here vs. Table 5 NONMEM MRT = 4.53 h.
+
+Any differences are at the percent level and are driven by the closed-form derivation of `lcl`, `lvc`, `lq`, and `lvp` from the macroconstants alpha, beta, A, and B reported in Table 5 (the paper's reported CL and Vdss are rounded to three significant figures). See the model file in-line derivation for the algebraic identities.
+
+# Assumptions and deviations
+
+- **No IIV, no residual error.** Zou 2012 reports the NONMEM-derived predicted human PK as a typical-value projection; the per-species Omega (IIV) and Sigma (residual variability) estimates from the joint NONMEM fit are reported only in Zou 2012 Table S1 of the supplement, which is not on disk for this extraction. The packaged model is a structural typical-value forward prediction. Downstream users wanting between-subject variability must add their own IIV.
+- **Predicted human, not fit human.** Zou 2012 did not dose human subjects. The encoded parameters are the projection from a joint NONMEM allometric fit to rat, dog, and monkey IV PK; they are not anchored to human plasma observations.
+- **Mouse data excluded from the joint NONMEM fit.** Zou 2012 (Results, page 274) found that the mouse plasma profile was not superimposable on the rat / dog / monkey curves under Wajima or Dedrick normalisation, attributing the misalignment to non-hepatic clearance in the mouse (blood clearance exceeded hepatic blood flow in CD-1 mice). The NONMEM fit therefore used rats, dogs, and monkeys only; the mouse table-3 NCA parameters are not represented in this model.
+- **70 kg reference body weight, no body-weight covariate.** Zou 2012 reports CL and Vdss in per-kg units (Table 5) and projected human PK at 70 kg in Figure 7. The packaged model encodes the structural parameters at the 70 kg projection target. The body-weight exponent `b` from the joint NONMEM fit `P = PTV * WT^b` is reported per parameter in Zou 2012 Table S1 of the supplement (not on disk for this extraction); no body-weight covariate is therefore exposed in `model()`. Simulations at body weights other than 70 kg require external scaling.
+- **Closed-form derivation of micro-parameters.** The paper reports the predicted human two-compartment model in macroconstant form (alpha, beta, A, B at 5 mg/kg) together with the marginal point estimates CL and Vdss. The microconstants encoded in `ini()` (`lcl`, `lvc`, `lq`, `lvp`) are derived deterministically from the macroconstants and the 350 mg dose used for the Figure 7 projection; the algebraic identities are documented in the model file. Derived CL = 12.98 L/h and Vss = 59.06 L round to Table 5's reported 0.186 L/h/kg * 70 kg = 13.02 L/h and 0.843 L/kg * 70 kg = 59.01 L within rounding error.
