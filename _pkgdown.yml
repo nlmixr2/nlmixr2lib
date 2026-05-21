@@ -72,8 +72,8 @@ navbar:
         href: articles/Knights_2015_aripiprazole.html
       - text: "Artesunate (Hendriksen 2013)"
         href: articles/Hendriksen_2013_artesunate.html
-      - text: "Artesunate (Morris 2011)"
-        href: articles/Morris_2011_artesunate.html
+      - text: "Artesunate (Tan 2009)"
+        href: articles/Tan_2009_artesunate.html
       - text: "Astegolimab (Kotani 2022)"
         href: articles/Kotani_2022_astegolimab.html
       - text: "Asundexian (Yassen 2025)"
@@ -1211,6 +1211,7 @@ articles:
   - articles/Takeuchi_2023_ozoralizumab
   - articles/Talke_2018_dexmedetomidine
   - articles/Tammara_2017_rivipansel
+  - articles/Tan_2009_artesunate
   - articles/Tanaka_2012_phenytoin
   - articles/Taylor_2020_methotrexate
   - articles/TerHeine_2014_tamoxifen
