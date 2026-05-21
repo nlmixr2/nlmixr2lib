@@ -382,6 +382,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Hall_2017_dapsone.R` (mg/dL; population median 13 mg/dL [range 7-28]; enters the MARS-based covariate model on the absorption rate constant via the basis function `BF1 = max(0, BUN - 7)`, which interacts with a weight hinge to drive `Ka`).
 - **Notes:** Scope kept `specific` pending a second model that ratifies BUN with consistent semantics; promote to `general` once corroborated. Hall 2017 enters BUN only through a piecewise-linear MARS hinge (`max(0, BUN - 7) * max(0, 63.7 - WT)`), not as a power scaling -- the per-model `covariateData[[BUN]]$notes` documents this is part of a machine-learning-driven hinge model, not a standard popPK covariate transform. Ratified canonically on 2026-05-18 alongside the Hall 2017 dapsone extraction.
 
+### SOD (**canonical for serum sodium concentration**)
+- **Description:** Serum (or plasma) sodium concentration. Most commonly captured at study entry as a baseline biochemistry value, but can be time-varying when serial electrolytes are recorded. Reflects fluid / electrolyte balance; hyponatraemia is common in severe acute illness, severe malnutrition, GI losses, SIADH and adrenal insufficiency, while hypernatraemia accompanies dehydration and excessive sodium intake.
+- **Units:** mmol/L (equivalent to mEq/L for sodium).
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- used with a centered-linear-deviation form `(1 + e_sod_<param> * (SOD - ref))`. Reference values observed: 136 mmol/L (Thuo 2011 ciprofloxacin; cohort median in Kenyan children with severe malnutrition, normal-range lower bound).
+- **Source aliases:**
+  - `Na+` / `NA` / `SODIUM` -- common source-paper printed forms; renamed to canonical `SOD` when assembling input data. Used in `Thuo_2011_ciprofloxacin.R` (the paper writes "Na+ (mmol/L)" in Table 1 and structural-model equations).
+- **Example models:** `Thuo_2011_ciprofloxacin.R` (linear centered-deviation effects on apparent CL and apparent Vc: `1 + 0.0368*(SOD - 136)` and `1 + 0.0291*(SOD - 136)`; reference 136 mmol/L is the cohort median).
+- **Notes:** General scope because serum sodium is a universally applicable serum-electrolyte covariate. Reference value is paper-specific (cohort median); future models should document their own reference in `covariateData[[SOD]]$notes`. Distinct from any "sodium content of dosed formulation" concept (e.g., sodium-rich oral rehydration solution) -- that would warrant a separate canonical (`DOSE_NA_MGML`, etc.) if a future model retains it. Ratified canonically on 2026-05-21 alongside the Thuo 2011 ciprofloxacin extraction.
+
 ### HEMODIAL (**canonical for intermittent-hemodialysis treatment-status indicator**)
 - **Description:** 1 = the subject was undergoing intermittent hemodialysis during the modeled period; 0 = no intermittent hemodialysis. Treatment-status flag rather than a measured renal-function value; used as a multiplicative covariate on PK parameters that change with chronic dialysis (typically CL and Vc -- intermittent hemodialysis decreases vancomycin-class CL and reduces interstitial volume overload, lowering Vc). Per-subject indicator in the source data; in Goti 2018 it is treated as time-fixed at the subject level (the cohort either was or was not receiving intermittent hemodialysis during the admission), and Goti 2018 explicitly notes that actual hemodialysis-session timing was not used because of documentation limitations.
 - **Units:** (binary)
@@ -941,6 +952,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Source aliases:** none.
 - **Example models:** `Oualha_2014_epinephrine.R` (enters Eq. 7 as the additive offset in MAP = HR * SV*SVR + CVP; the vignette defaults to the cohort median 11 mmHg when CVP is not supplied per subject).
 - **Notes:** Specific scope because CVP is meaningful only for haemodynamic-PD models that resolve mean arterial pressure into its component cardiac-output and venous-return terms. The Oualha 2014 final model does not test CVP as a fitted covariate on PK or PD parameters; the column is used only as the structural offset in the MAP equation. Future haemodynamic models that fit a covariate effect on CVP itself can re-use the canonical name.
+
+### MORTRISK_HIGH (**canonical for high-mortality-risk composite indicator**)
+- **Description:** 1 = subject meets the paper-defined "high mortality risk" composite criteria at study entry; 0 = subject is in the low or intermediate risk strata. Subject-level baseline indicator. The defining criteria are paper-specific: in Thuo 2011 (severe malnutrition cohort, following Berkley et al. Arch Dis Child 2003), a child is "high risk" if any one of the following is present: depressed conscious state, bradycardia (heart rate < 80 bpm), evidence of shock (capillary refill time >= 2 s, temperature gradient or weak pulse), or hypoglycaemia (blood glucose < 3 mmol/L); "intermediate risk" is any one of deep acidotic breathing, severe dehydration with diarrhoea, lethargy, hyponatraemia (Na < 125 mmol/L), or hypokalaemia (K < 2.5 mmol/L); "low risk" is none of the above. The canonical column collapses the intermediate and low strata into the 0 reference because the Thuo 2011 model only retains the high-vs-not-high contrast as a covariate on CL.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (low or intermediate mortality risk).
+- **Source aliases:**
+  - `HIGHRISK` / `RISK` (Thuo 2011 NONMEM notation; paper writes "high risk" in prose and structural equations as `[1 + theta3 * (high risk)]`) -- used in `Thuo_2011_ciprofloxacin.R`.
+- **Example models:** `Thuo_2011_ciprofloxacin.R` (multiplicative fractional effect on apparent CL: `1 + (-0.283) * MORTRISK_HIGH`, i.e., a 28.3% reduction in apparent oral clearance for high-risk children; the standardised CL falls from 42.7 L/h/70 kg in low/intermediate-risk to 30.6 L/h/70 kg in high-risk; the paper attributes the contrast to delayed gastric emptying / impaired gut absorption in critically ill malnourished children).
+- **Notes:** Specific scope because the underlying definition of "high mortality risk" is paper-defined (Thuo 2011 follows Berkley 2003's three-stratum risk score for severely malnourished children). Distinct from `SAPS_II` (continuous adult-ICU severity score), `RACHS1` (paediatric cardiac surgery risk category), and `ORG_FAIL_COUNT` (integer organ-failure count) -- each is its own canonical with paper-specific scoring rules. Future paediatric-severe-malnutrition popPK papers that retain the Berkley 2003 three-stratum score (or a close variant) can reuse this canonical; per-model `covariateData[[MORTRISK_HIGH]]$notes` must document the exact criteria the source paper used. Ratified canonically on 2026-05-21 alongside the Thuo 2011 ciprofloxacin extraction.
 
 ## Interferon / biomarker panels
 
