@@ -68,8 +68,8 @@ navbar:
         href: articles/Almquist_2022_anifrolumab.html
       - text: "Anrukinzumab (Hua 2015)"
         href: articles/Hua_2015_anrukinzumab.html
-      - text: "Artemisinin (Birgersson 2016)"
-        href: articles/Birgersson_2016_artemisinin.html
+      - text: "Artemether (Tarning 2012)"
+        href: articles/Tarning_2012_artemether.html
       - text: "Artesunate (Hendriksen 2013)"
         href: articles/Hendriksen_2013_artesunate.html
       - text: "Artesunate (Tan 2009)"
@@ -1218,6 +1218,7 @@ articles:
   - articles/Tammara_2017_rivipansel
   - articles/Tan_2009_artesunate
   - articles/Tanaka_2012_phenytoin
+  - articles/Tarning_2012_artemether
   - articles/Taylor_2020_methotrexate
   - articles/TerHeine_2014_tamoxifen
   - articles/Terranova_2018_paclitaxel
