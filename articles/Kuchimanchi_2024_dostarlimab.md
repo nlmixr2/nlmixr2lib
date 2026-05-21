@@ -82,7 +82,7 @@ The same metadata is available programmatically via
 ## Source trace
 
 The per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
+`ini()` entry in
 `inst/modeldb/specificDrugs/Kuchimanchi_2024_dostarlimab.R`. The table
 below collects them in one place for review.
 
@@ -331,7 +331,6 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
-#>  ■■■■■■■■■■■■■■■■■■■■              62% |  ETA:  2s
 knitr::kable(summary(nca_res),
              caption = "Simulated NCA parameters (cycle-2 dosing interval, days 21-42)")
 ```
@@ -416,15 +415,13 @@ the equation form as written:
 - **Imax parameterisation.** I_max is always negative in the source
   (-0.113). To keep every individual I_max strictly negative under
   log-normal IIV, the model stores log\|I_max\| and applies the negative
-  sign in the
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html)
-  block: `Imax_i <- -exp(lImax + etalImax)`. The reported omega^2_Imax =
-  0.903 maps to omega = sqrt(0.903) = 0.950, which the paper labels
-  “95.0% CV” — i.e., omega is reported as a CV without the log-normal CV
-  = sqrt(exp(omega^2) - 1) correction. The packaged model uses 0.903
-  directly as the variance of `etalImax`, preserving the paper’s table
-  value. The same parameterisation is used by
-  `Melhem_2022_dostarlimab.R` and `Masters_2022_avelumab.R`.
+  sign in the `model()` block: `Imax_i <- -exp(lImax + etalImax)`. The
+  reported omega^2_Imax = 0.903 maps to omega = sqrt(0.903) = 0.950,
+  which the paper labels “95.0% CV” — i.e., omega is reported as a CV
+  without the log-normal CV = sqrt(exp(omega^2) - 1) correction. The
+  packaged model uses 0.903 directly as the variance of `etalImax`,
+  preserving the paper’s table value. The same parameterisation is used
+  by `Melhem_2022_dostarlimab.R` and `Masters_2022_avelumab.R`.
 - **Time variable.** The packaged model uses rxode2’s `t` (simulation
   time in days) for the time-dependent CL term. Simulations must
   therefore start at t = 0 with the first dose so that the time-on-CL

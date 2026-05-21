@@ -568,7 +568,7 @@ method.</p>
 <p>The full population descriptor is available programmatically:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxode2.html" class="external-link">rxode2</a></span><span class="op">(</span><span class="fu"><a href="../reference/readModelDb.html">readModelDb</a></span><span class="op">(</span><span class="st">"Lin_2024_pozelimab"</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="va">meta</span><span class="op">$</span><span class="va">population</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> parameter labels from comments will be replaced by 'label()'</span></span>
+<span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
 <span><span class="co">#&gt; List of 13</span></span>
 <span><span class="co">#&gt;  $ n_subjects    : int 116</span></span>
 <span><span class="co">#&gt;  $ n_studies     : int 4</span></span>
@@ -834,7 +834,7 @@ exposures.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod</span>         <span class="op">&lt;-</span> <span class="fu"><a href="../reference/readModelDb.html">readModelDb</a></span><span class="op">(</span><span class="st">"Lin_2024_pozelimab"</span><span class="op">)</span></span>
 <span><span class="va">mod_typical</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/zeroRe.html" class="external-link">zeroRe</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> parameter labels from comments will be replaced by 'label()'</span></span>
+<span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
 <span></span>
 <span><span class="co"># Sampling grid: dense early to catch the IV peak and SC absorption,</span></span>
 <span><span class="co"># coarser later for the QW maintenance phase out to ~6 months.</span></span>
@@ -866,11 +866,11 @@ exposures.</p>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="va">sim_hv</span>    <span class="op">&lt;-</span> <span class="fu">run_typical</span><span class="op">(</span>wt <span class="op">=</span> <span class="fl">70</span>, pnh <span class="op">=</span> <span class="fl">0</span>, iv_dose_mg <span class="op">=</span> <span class="fl">30</span> <span class="op">*</span> <span class="fl">70</span>, sc_dose_mg <span class="op">=</span> <span class="fl">800</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalksyn', 'etalkint1'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalksyn', 'etalkint1'</span></span>
 <span><span class="va">sim_pnh</span>   <span class="op">&lt;-</span> <span class="fu">run_typical</span><span class="op">(</span>wt <span class="op">=</span> <span class="fl">70</span>, pnh <span class="op">=</span> <span class="fl">1</span>, iv_dose_mg <span class="op">=</span> <span class="fl">30</span> <span class="op">*</span> <span class="fl">70</span>, sc_dose_mg <span class="op">=</span> <span class="fl">800</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalksyn', 'etalkint1'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalksyn', 'etalkint1'</span></span>
 <span><span class="va">sim_chaple</span> <span class="op">&lt;-</span> <span class="fu">run_typical</span><span class="op">(</span>wt <span class="op">=</span> <span class="fl">25</span>, pnh <span class="op">=</span> <span class="fl">0</span>, iv_dose_mg <span class="op">=</span> <span class="fl">30</span> <span class="op">*</span> <span class="fl">25</span>, sc_dose_mg <span class="op">=</span> <span class="fl">350</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalksyn', 'etalkint1'</span></span></code></pre></div>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalksyn', 'etalkint1'</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="replicate-published-figures">Replicate published figures<a class="anchor" aria-label="anchor" href="#replicate-published-figures"></a>
@@ -903,10 +903,10 @@ takes over.</p>
 <span></span>
 <span><span class="va">fig4</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">fig4_doses</span>, <span class="va">fig4_one</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>dose <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">dose</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">fig4_doses</span>, <span class="st">" mg/kg"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalksyn', 'etalkint1'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalksyn', 'etalkint1'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalksyn', 'etalkint1'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalksyn', 'etalkint1'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalksyn', 'etalkint1'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalksyn', 'etalkint1'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalksyn', 'etalkint1'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalksyn', 'etalkint1'</span></span>
 <span></span>
 <span><span class="va">fig4_long</span> <span class="op">&lt;-</span> <span class="va">fig4</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">dose</span>, <span class="va">Cc</span>, <span class="va">free_drug</span>, <span class="va">free_target</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -1037,16 +1037,16 @@ give comparable exposures.</p>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">tier_label</span>, <span class="va">wt_kg</span>, <span class="va">tiered_mg</span>, <span class="va">weight_based_mg</span>,</span>
 <span>         <span class="va">Cmin_tiered</span>, <span class="va">Cmin_wbased</span>, <span class="va">AUC_tiered</span>, <span class="va">AUC_wbased</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalksyn', 'etalkint1'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalksyn', 'etalkint1'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalksyn', 'etalkint1'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalksyn', 'etalkint1'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalksyn', 'etalkint1'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalksyn', 'etalkint1'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalksyn', 'etalkint1'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalksyn', 'etalkint1'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalksyn', 'etalkint1'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalksyn', 'etalkint1'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalksyn', 'etalkint1'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalksyn', 'etalkint1'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalksyn', 'etalkint1'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalksyn', 'etalkint1'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalksyn', 'etalkint1'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalksyn', 'etalkint1'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalksyn', 'etalkint1'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalksyn', 'etalkint1'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalksyn', 'etalkint1'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalksyn', 'etalkint1'</span></span>
 <span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">fig5</span>, digits <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>             caption <span class="op">=</span> <span class="st">"Simulated steady-state Cmin,ss (mg/L) and AUCtau,ss (mg/L*day) for CHAPLE patients under the weight-tiered vs 10 mg/kg weight-based SC QW maintenance regimens (typical-value, after 25 weekly doses)."</span><span class="op">)</span></span></code></pre></div>

@@ -628,67 +628,67 @@ methods (with standard R functions) to convert that to a function for
 </h2>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu">nlmixr2est</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/nlmixr2est/reference/nlmixr2.html" class="external-link">nlmixr</a></span><span class="op">(</span><span class="va">modFun</span>, data <span class="op">=</span> <span class="va">dMarkov</span>, est <span class="op">=</span> <span class="st">"focei"</span>, control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>print <span class="op">=</span> <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> parameter labels from comments are typically ignored in non-interactive mode</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Need to run with the source intact to parse comments</span></span>
-<span><span class="co">#&gt; → loading into <span style="color: #0000BB;">symengine</span> environment...</span></span>
+<span><span class="co">#&gt; ℹ parameter labels from comments are typically ignored in non-interactive mode</span></span>
+<span><span class="co">#&gt; ℹ Need to run with the source intact to parse comments</span></span>
+<span><span class="co">#&gt; → loading into symengine environment...</span></span>
 <span><span class="co">#&gt; → pruning branches (`if`/`else`) of full model...</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> done</span></span>
+<span><span class="co">#&gt; ✔ done</span></span>
 <span><span class="co">#&gt; → finding duplicate expressions in EBE model...</span></span>
 <span><span class="co">#&gt; [====|====|====|====|====|====|====|====|====|====] 0:00:00</span></span>
 <span><span class="co">#&gt; → optimizing duplicate expressions in EBE model...</span></span>
 <span><span class="co">#&gt; [====|====|====|====|====|====|====|====|====|====] 0:00:00</span></span>
 <span><span class="co">#&gt; → compiling EBE model...</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> done</span></span>
+<span><span class="co">#&gt; ✔ done</span></span>
 <span><span class="co">#&gt; rxode2 5.0.2 using 2 threads (see ?getRxThreads)</span></span>
 <span><span class="co">#&gt;   no cache: create with `rxCreateCache()`</span></span>
 <span><span class="co">#&gt; calculating covariance matrix</span></span>
 <span><span class="co">#&gt; [====|====|====|====|====|====|====|====|====|====] 0:00:00 </span></span>
 <span><span class="co">#&gt; done</span></span>
 <span><span class="co">#&gt; → Calculating residuals/tables</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> done</span></span>
+<span><span class="co">#&gt; ✔ done</span></span>
 <span><span class="va">fit</span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">── </span><span style="color: #0000BB; font-weight: bold;">nlmix</span><span style="color: #BB0000; font-weight: bold;">r²</span><span style="font-weight: bold;"> log-likelihood </span><span style="color: #BBBB00; font-weight: bold;">Population Only</span><span style="font-weight: bold;"> (outer: nlminb) ──</span></span></span>
+<span><span class="co">#&gt; ── nlmixr² log-likelihood Population Only (outer: nlminb) ──</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;          OBJF      AIC     BIC Log-likelihood Condition#(Cov) Condition#(Cor)</span></span>
 <span><span class="co">#&gt; lPop 70.21154 109.7797 114.028      -48.88985        4.404546        1.000178</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">── Time (sec </span><span style="color: #BBBB00; font-weight: bold;">fit</span><span style="color: #0000BB; font-weight: bold;">$time</span><span style="font-weight: bold;">): ──</span></span></span>
+<span><span class="co">#&gt; ── Time (sec fit$time): ──</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;            setup optimize covariance table compress    other</span></span>
-<span><span class="co">#&gt; elapsed 0.018003 0.002667   0.002668  0.03    0.001 2.425662</span></span>
+<span><span class="co">#&gt; elapsed 0.030063 0.004317   0.004319 0.061    0.002 3.962301</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">── (</span><span style="color: #BBBB00; font-weight: bold;">fit</span><span style="color: #0000BB; font-weight: bold;">$parFixed</span><span style="font-weight: bold;"> or </span><span style="color: #BBBB00; font-weight: bold;">fit</span><span style="color: #0000BB; font-weight: bold;">$parFixedDf</span><span style="font-weight: bold;">): ──</span></span></span>
+<span><span class="co">#&gt; ── (fit$parFixed or fit$parFixedDf): ──</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;                                                                                                              <span style="font-weight: bold;">Parameter</span></span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">logitnonetonone</span>                                  Probability of transition from state none to none (logit probability)</span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">lognonetomild</span>           Probability of transition from state none to mild (log-logit link difference from prior state)</span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">logitmildtonone</span>                                  Probability of transition from state mild to none (logit probability)</span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">logmildtomild</span>           Probability of transition from state mild to mild (log-logit link difference from prior state)</span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">logitmoderatetonone</span>                          Probability of transition from state moderate to none (logit probability)</span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">logmoderatetomild</span>   Probability of transition from state moderate to mild (log-logit link difference from prior state)</span></span>
-<span><span class="co">#&gt;                          <span style="font-weight: bold;">Est.</span>     <span style="font-weight: bold;">SE</span>     <span style="font-weight: bold;">%RSE</span>     <span style="font-weight: bold;">Back-transformed(95%CI)</span></span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">logitnonetonone</span>     -0.000185 0.0112 6.06e+03 -0.000185 (-0.0221, 0.0218)</span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">lognonetomild</span>            -1.1 0.0235     2.14         -1.1 (-1.15, -1.05)</span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">logitmildtonone</span>        -0.693 0.0189     2.73      -0.693 (-0.73, -0.656)</span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">logmildtomild</span>          -0.693 0.0189     2.73      -0.693 (-0.73, -0.656)</span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">logitmoderatetonone</span>    -0.693 0.0189     2.73      -0.693 (-0.73, -0.656)</span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">logmoderatetomild</span>        -1.1 0.0235     2.14         -1.1 (-1.15, -1.05)</span></span>
-<span><span class="co">#&gt;                     <span style="font-weight: bold;">BSV(SD)</span> <span style="font-weight: bold;">Shrink(SD)%</span></span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">logitnonetonone</span>                        </span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">lognonetomild</span>                          </span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">logitmildtonone</span>                        </span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">logmildtomild</span>                          </span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">logitmoderatetonone</span>                    </span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">logmoderatetomild</span>                      </span></span>
+<span><span class="co">#&gt;                                                                                                              Parameter</span></span>
+<span><span class="co">#&gt; logitnonetonone                                  Probability of transition from state none to none (logit probability)</span></span>
+<span><span class="co">#&gt; lognonetomild           Probability of transition from state none to mild (log-logit link difference from prior state)</span></span>
+<span><span class="co">#&gt; logitmildtonone                                  Probability of transition from state mild to none (logit probability)</span></span>
+<span><span class="co">#&gt; logmildtomild           Probability of transition from state mild to mild (log-logit link difference from prior state)</span></span>
+<span><span class="co">#&gt; logitmoderatetonone                          Probability of transition from state moderate to none (logit probability)</span></span>
+<span><span class="co">#&gt; logmoderatetomild   Probability of transition from state moderate to mild (log-logit link difference from prior state)</span></span>
+<span><span class="co">#&gt;                          Est.     SE     %RSE     Back-transformed(95%CI)</span></span>
+<span><span class="co">#&gt; logitnonetonone     -0.000185 0.0112 6.06e+03 -0.000185 (-0.0221, 0.0218)</span></span>
+<span><span class="co">#&gt; lognonetomild            -1.1 0.0235     2.14         -1.1 (-1.15, -1.05)</span></span>
+<span><span class="co">#&gt; logitmildtonone        -0.693 0.0189     2.73      -0.693 (-0.73, -0.656)</span></span>
+<span><span class="co">#&gt; logmildtomild          -0.693 0.0189     2.73      -0.693 (-0.73, -0.656)</span></span>
+<span><span class="co">#&gt; logitmoderatetonone    -0.693 0.0189     2.73      -0.693 (-0.73, -0.656)</span></span>
+<span><span class="co">#&gt; logmoderatetomild        -1.1 0.0235     2.14         -1.1 (-1.15, -1.05)</span></span>
+<span><span class="co">#&gt;                     BSV(SD) Shrink(SD)%</span></span>
+<span><span class="co">#&gt; logitnonetonone                        </span></span>
+<span><span class="co">#&gt; lognonetomild                          </span></span>
+<span><span class="co">#&gt; logitmildtonone                        </span></span>
+<span><span class="co">#&gt; logmildtomild                          </span></span>
+<span><span class="co">#&gt; logitmoderatetonone                    </span></span>
+<span><span class="co">#&gt; logmoderatetomild                      </span></span>
 <span><span class="co">#&gt;  </span></span>
-<span><span class="co">#&gt;   Covariance Type (<span style="color: #BBBB00;">fit</span><span style="color: #0000BB; font-weight: bold;">$covMethod</span>): <span style="font-weight: bold;">r</span></span></span>
-<span><span class="co">#&gt;   Information about run found (<span style="color: #BBBB00;">fit</span><span style="color: #0000BB; font-weight: bold;">$runInfo</span>):</span></span>
+<span><span class="co">#&gt;   Covariance Type (fit$covMethod): r</span></span>
+<span><span class="co">#&gt;   Information about run found (fit$runInfo):</span></span>
 <span><span class="co">#&gt;    • gradient problems with initial estimate and covariance; see $scaleInfo </span></span>
 <span><span class="co">#&gt;    • last objective function was not at minimum, possible problems in optimization </span></span>
 <span><span class="co">#&gt;    • Hessian reset during optimization; (can control by foceiControl(resetHessianAndEta=.)) </span></span>
 <span><span class="co">#&gt;    • bad solve during optimization </span></span>
-<span><span class="co">#&gt;   Censoring (<span style="color: #BBBB00;">fit</span><span style="color: #0000BB; font-weight: bold;">$censInformation</span>): No censoring</span></span>
-<span><span class="co">#&gt;   Minimization message (<span style="color: #BBBB00;">fit</span><span style="color: #0000BB; font-weight: bold;">$message</span>):  </span></span>
+<span><span class="co">#&gt;   Censoring (fit$censInformation): No censoring</span></span>
+<span><span class="co">#&gt;   Minimization message (fit$message):  </span></span>
 <span><span class="co">#&gt;     false convergence (8) </span></span>
 <span><span class="co">#&gt;   In an ODE system, false convergence may mean "useless" evaluations were performed.</span></span>
 <span><span class="co">#&gt;   See https://tinyurl.com/yyrrwkce</span></span>
@@ -696,20 +696,20 @@ methods (with standard R functions) to convert that to a function for
 <span><span class="co">#&gt;   You may also try a good derivative free optimization:</span></span>
 <span><span class="co">#&gt;     nlmixr2(...,control=list(outerOpt="bobyqa"))</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">── Fit Data (object </span><span style="color: #BBBB00; font-weight: bold;">fit</span><span style="font-weight: bold;"> is a modified </span><span style="color: #0000BB; font-weight: bold;">tibble</span><span style="font-weight: bold;">): ──</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 15 × 29</span></span></span>
+<span><span class="co">#&gt; ── Fit Data (object fit is a modified tibble): ──</span></span>
+<span><span class="co">#&gt; # A tibble: 15 × 29</span></span>
 <span><span class="co">#&gt;   ID     TIME    DV  IPRED linknonetonone cumprnonetonone linknonetomild</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> 1         0     0 -<span style="color: #BB0000;">2.49</span>       -<span style="color: #BB0000;">0.000</span><span style="color: #BB0000; text-decoration: underline;">185</span>           0.500          0.333</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> 1         1     0 -<span style="color: #BB0000;">0.601</span>      -<span style="color: #BB0000;">0.000</span><span style="color: #BB0000; text-decoration: underline;">185</span>           0.500          0.333</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> 1         2     0 -<span style="color: #BB0000;">2.56</span>       -<span style="color: #BB0000;">0.000</span><span style="color: #BB0000; text-decoration: underline;">185</span>           0.500          0.333</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 12 more rows</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 22 more variables: cumprnonetomild &lt;dbl&gt;, prnonetonone &lt;dbl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   prnonetomild &lt;dbl&gt;, prnonetomoderate &lt;dbl&gt;, llnone &lt;dbl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   linkmildtonone &lt;dbl&gt;, cumprmildtonone &lt;dbl&gt;, linkmildtomild &lt;dbl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   cumprmildtomild &lt;dbl&gt;, prmildtonone &lt;dbl&gt;, prmildtomild &lt;dbl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   prmildtomoderate &lt;dbl&gt;, llmild &lt;dbl&gt;, linkmoderatetonone &lt;dbl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   cumprmoderatetonone &lt;dbl&gt;, linkmoderatetomild &lt;dbl&gt;, …</span></span></span></code></pre></div>
+<span><span class="co">#&gt;   &lt;fct&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;          &lt;dbl&gt;           &lt;dbl&gt;          &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt; 1 1         0     0 -2.49       -0.000185           0.500          0.333</span></span>
+<span><span class="co">#&gt; 2 1         1     0 -0.601      -0.000185           0.500          0.333</span></span>
+<span><span class="co">#&gt; 3 1         2     0 -2.56       -0.000185           0.500          0.333</span></span>
+<span><span class="co">#&gt; # ℹ 12 more rows</span></span>
+<span><span class="co">#&gt; # ℹ 22 more variables: cumprnonetomild &lt;dbl&gt;, prnonetonone &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   prnonetomild &lt;dbl&gt;, prnonetomoderate &lt;dbl&gt;, llnone &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   linkmildtonone &lt;dbl&gt;, cumprmildtonone &lt;dbl&gt;, linkmildtomild &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   cumprmildtomild &lt;dbl&gt;, prmildtonone &lt;dbl&gt;, prmildtomild &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   prmildtomoderate &lt;dbl&gt;, llmild &lt;dbl&gt;, linkmoderatetonone &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   cumprmoderatetonone &lt;dbl&gt;, linkmoderatetomild &lt;dbl&gt;, …</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="simulate-your-data">Simulate your data<a class="anchor" aria-label="anchor" href="#simulate-your-data"></a>
@@ -719,11 +719,11 @@ simulation from the model to get probabilities of each state. Then,
 post-process the simulation results to get the states.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dSimRaw</span> <span class="op">&lt;-</span> <span class="fu">nlmixr2est</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/nlmixr2est/reference/nlmixr2.html" class="external-link">nlmixr</a></span><span class="op">(</span><span class="va">fit</span>, est <span class="op">=</span> <span class="st">"rxSolve"</span>, control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>nStud <span class="op">=</span> <span class="fl">5</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> use `data` from prior/supplied fit</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> using population uncertainty from fitted model (`thetaMat`)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> using `dfObs=15` from the number of observations in fitted model</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> using `dfSub=0` from the number of subjects in fitted model</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> using diagonal `sigma` based on model</span></span>
+<span><span class="co">#&gt; ℹ use `data` from prior/supplied fit</span></span>
+<span><span class="co">#&gt; ℹ using population uncertainty from fitted model (`thetaMat`)</span></span>
+<span><span class="co">#&gt; ℹ using `dfObs=15` from the number of observations in fitted model</span></span>
+<span><span class="co">#&gt; ℹ using `dfSub=0` from the number of subjects in fitted model</span></span>
+<span><span class="co">#&gt; ℹ using diagonal `sigma` based on model</span></span>
 <span><span class="co">#&gt; Warning in FUN(X[[i]], ...): multi-subject simulation without without 'omega'</span></span>
 <span><span class="va">dSim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/simMarkov.html">simMarkov</a></span><span class="op">(</span><span class="va">dSimRaw</span>, states <span class="op">=</span> <span class="va">fit</span><span class="op">$</span><span class="va">markovStates</span>, initialState <span class="op">=</span> <span class="st">"none"</span>, colPrev <span class="op">=</span> <span class="st">"previous"</span>, colCur <span class="op">=</span> <span class="st">"current"</span><span class="op">)</span></span></code></pre></div>
 <div class="section level3">

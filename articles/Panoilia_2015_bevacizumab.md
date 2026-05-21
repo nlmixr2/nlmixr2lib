@@ -523,9 +523,7 @@ interval). {.table}
   convert mg input doses to molar units (nM) for the binding equations;
   not reported numerically in Panoilia 2015. The 149 kDa value is the
   standard reference for the marketed antibody and is documented as a
-  model assumption in the model file’s
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html)
-  block.
+  model assumption in the model file’s `model()` block.
 - **VEGF165 effective molecular weight (MW_VEGF165 ~= 40,000 g/mol).**
   Back-calculated from the paper’s BM0 dual-unit reporting (0.0053 nM ==
   212 ng/L; MW = 212 / 0.0053 / 1 = 40 kDa under the paper’s stated 1:1

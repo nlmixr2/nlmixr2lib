@@ -36,9 +36,8 @@ The same information is available programmatically via
 ## Source trace
 
 The per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/ddmore/TerHeine_2014_tamoxifen.R`. The table below
-collects them in one place for review.
+`ini()` entry in `inst/modeldb/ddmore/TerHeine_2014_tamoxifen.R`. The
+table below collects them in one place for review.
 
 | Equation / parameter | Value | Source location |
 |----|----|----|
@@ -363,12 +362,9 @@ tamoxifen in adult breast-cancer patients.
   endoxifen elimination clearance (5.1 L/h) and central volume (400 L)
   are fixed from Ahmad et al. (2010) Clin Pharmacol Ther 88(6):814-817,
   not estimated by Ter Heine 2014. The fixed values are hard-coded
-  inside
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html)
-  rather than being declared as
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html)
-  parameters (with `fixed()`) because they are literature constants, not
-  parameters of the Ter Heine 2014 fit.
+  inside `model()` rather than being declared as `ini()` parameters
+  (with `fixed()`) because they are literature constants, not parameters
+  of the Ter Heine 2014 fit.
 
 - **Implicit mass-conserving parent-to-metabolite conversion.** The
   source `.mdl` tracks the metabolite compartment in tamoxifen-mass

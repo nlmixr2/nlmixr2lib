@@ -295,8 +295,7 @@ ggplot(sim_20mg, aes(time, Cc)) +
     title   = "Replicates Figure 5 of Yu 2022",
     caption = "Typical 70 kg, 38 y subject. Three weekly loading doses (days 0/7/14) then 20 mg q4w."
   )
-#> Warning in scale_y_log10(): log-10 transformation introduced
-#> infinite values.
+#> Warning in scale_y_log10(): log-10 transformation introduced infinite values.
 ```
 
 ![](Yu_2022_ofatumumab_files/figure-html/figure-5-pk-1.png)

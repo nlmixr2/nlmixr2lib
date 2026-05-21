@@ -539,7 +539,7 @@ or every 3 weeks (Q3W).</li>
 <h2 id="source-trace">Source trace<a class="anchor" aria-label="anchor" href="#source-trace"></a>
 </h2>
 <p>The per-parameter origin is recorded as an in-file comment next to
-each <code><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini()</a></code> entry in
+each <code>ini()</code> entry in
 <code>inst/modeldb/specificDrugs/Bajaj_2017_nivolumab.R</code>. The
 table below collects them in one place for review.</p>
 <table class="table">
@@ -680,7 +680,7 @@ categorical covariates match the reported marginal distributions.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2017</span><span class="op">)</span></span>
 <span><span class="va">n_subj</span> <span class="op">&lt;-</span> <span class="fl">200</span></span>
 <span></span>
-<span><span class="va">cohort</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
+<span><span class="va">cohort</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="op">(</span></span>
 <span>  ID         <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n_subj</span><span class="op">)</span>,</span>
 <span>  WT         <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Lognormal.html" class="external-link">rlnorm</a></span><span class="op">(</span><span class="va">n_subj</span>, <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">79.1</span><span class="op">)</span>, <span class="fl">0.24</span><span class="op">)</span>, <span class="fl">34.1</span><span class="op">)</span>, <span class="fl">168.2</span><span class="op">)</span>,</span>
 <span>  CRCL       <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n_subj</span>, <span class="fl">78.5</span>, <span class="fl">21.6</span><span class="op">)</span>, <span class="fl">30</span><span class="op">)</span>, <span class="fl">180</span><span class="op">)</span>,</span>
@@ -701,13 +701,13 @@ highest dose in the PK analysis).</p>
 <span><span class="va">build_events</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">pop</span>, <span class="va">mgkg</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">amt_per_subject</span> <span class="op">&lt;-</span> <span class="va">pop</span><span class="op">$</span><span class="va">WT</span> <span class="op">*</span> <span class="va">mgkg</span></span>
 <span>  <span class="va">d_dose</span> <span class="op">&lt;-</span> <span class="va">pop</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>AMT <span class="op">=</span> <span class="va">amt_per_subject</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">mutate</span><span class="op">(</span>AMT <span class="op">=</span> <span class="va">amt_per_subject</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/expand.html" class="external-link">crossing</a></span><span class="op">(</span>TIME <span class="op">=</span> <span class="va">dose_times_d</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>EVID <span class="op">=</span> <span class="fl">1</span>, CMT <span class="op">=</span> <span class="st">"central"</span>, DUR <span class="op">=</span> <span class="fl">1</span> <span class="op">/</span> <span class="fl">24</span>, DV <span class="op">=</span> <span class="cn">NA_real_</span>,</span>
+<span>    <span class="fu">mutate</span><span class="op">(</span>EVID <span class="op">=</span> <span class="fl">1</span>, CMT <span class="op">=</span> <span class="st">"central"</span>, DUR <span class="op">=</span> <span class="fl">1</span> <span class="op">/</span> <span class="fl">24</span>, DV <span class="op">=</span> <span class="cn">NA_real_</span>,</span>
 <span>           treatment <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">mgkg</span>, <span class="st">" mg/kg Q2W"</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="va">d_obs</span> <span class="op">&lt;-</span> <span class="va">pop</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/expand.html" class="external-link">crossing</a></span><span class="op">(</span>TIME <span class="op">=</span> <span class="va">obs_times_d</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>AMT <span class="op">=</span> <span class="cn">NA_real_</span>, EVID <span class="op">=</span> <span class="fl">0</span>, CMT <span class="op">=</span> <span class="st">"central"</span>, DUR <span class="op">=</span> <span class="cn">NA_real_</span>,</span>
+<span>    <span class="fu">mutate</span><span class="op">(</span>AMT <span class="op">=</span> <span class="cn">NA_real_</span>, EVID <span class="op">=</span> <span class="fl">0</span>, CMT <span class="op">=</span> <span class="st">"central"</span>, DUR <span class="op">=</span> <span class="cn">NA_real_</span>,</span>
 <span>           DV <span class="op">=</span> <span class="cn">NA_real_</span>,</span>
 <span>           treatment <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">mgkg</span>, <span class="st">" mg/kg Q2W"</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">d_dose</span>, <span class="va">d_obs</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -723,10 +723,10 @@ highest dose in the PK analysis).</p>
 </h2>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/readModelDb.html">readModelDb</a></span><span class="op">(</span><span class="st">"Bajaj_2017_nivolumab"</span><span class="op">)</span></span>
-<span><span class="va">sim_3</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod</span>, events <span class="op">=</span> <span class="va">events_3</span>,  returnType <span class="op">=</span> <span class="st">"data.frame"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> parameter labels from comments will be replaced by 'label()'</span></span>
-<span><span class="va">sim_10</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod</span>, events <span class="op">=</span> <span class="va">events_10</span>, returnType <span class="op">=</span> <span class="st">"data.frame"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> parameter labels from comments will be replaced by 'label()'</span></span>
+<span><span class="va">sim_3</span>  <span class="op">&lt;-</span> <span class="fu">rxSolve</span><span class="op">(</span><span class="va">mod</span>, events <span class="op">=</span> <span class="va">events_3</span>,  returnType <span class="op">=</span> <span class="st">"data.frame"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
+<span><span class="va">sim_10</span> <span class="op">&lt;-</span> <span class="fu">rxSolve</span><span class="op">(</span><span class="va">mod</span>, events <span class="op">=</span> <span class="va">events_10</span>, returnType <span class="op">=</span> <span class="st">"data.frame"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
 <span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span><span class="va">sim_3</span>,  treatment <span class="op">=</span> <span class="st">"3 mg/kg Q2W"</span><span class="op">)</span>,</span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span><span class="va">sim_10</span>, treatment <span class="op">=</span> <span class="st">"10 mg/kg Q2W"</span><span class="op">)</span></span>
@@ -750,11 +750,11 @@ shaded bands of the paper’s VPC.</p>
 <span>    .groups <span class="op">=</span> <span class="st">"drop"</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">sim_summary</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">median</span>, colour <span class="op">=</span> <span class="va">treatment</span>, fill <span class="op">=</span> <span class="va">treatment</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_ribbon.html" class="external-link">geom_ribbon</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>ymin <span class="op">=</span> <span class="va">lo</span>, ymax <span class="op">=</span> <span class="va">hi</span><span class="op">)</span>, alpha <span class="op">=</span> <span class="fl">0.15</span>, colour <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_log10</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">sim_summary</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">time</span>, <span class="va">median</span>, colour <span class="op">=</span> <span class="va">treatment</span>, fill <span class="op">=</span> <span class="va">treatment</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_ribbon</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>ymin <span class="op">=</span> <span class="va">lo</span>, ymax <span class="op">=</span> <span class="va">hi</span><span class="op">)</span>, alpha <span class="op">=</span> <span class="fl">0.15</span>, colour <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">scale_y_log10</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span></span>
 <span>    x <span class="op">=</span> <span class="st">"Time since first dose (days)"</span>,</span>
 <span>    y <span class="op">=</span> <span class="st">"Nivolumab concentration (ug/mL, log scale)"</span>,</span>
 <span>    title <span class="op">=</span> <span class="st">"Simulated nivolumab PK: 3 mg/kg vs 10 mg/kg Q2W"</span>,</span>
@@ -762,7 +762,7 @@ shaded bands of the paper’s VPC.</p>
 <span>                      <span class="va">n_subj</span>, <span class="st">" virtual patients per arm). Replicates Bajaj 2017 Figure 3."</span><span class="op">)</span>,</span>
 <span>    caption <span class="op">=</span> <span class="st">"Model: Bajaj 2017 CPT:PSP 6(1):58-66"</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu">theme_bw</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Bajaj_2017_nivolumab_files/figure-html/pk-plot-1.png" class="r-plt" alt="" width="672"></p>
 </div>
 <div class="section level2">
@@ -791,22 +791,22 @@ non-Asian reference subject (deterministic, etas = 0):</p>
 <span>  DV         <span class="op">=</span> <span class="cn">NA_real_</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">mod_typ</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/zeroRe.html" class="external-link">zeroRe</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> parameter labels from comments will be replaced by 'label()'</span></span>
-<span><span class="va">sim_cl</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_typ</span>, events <span class="op">=</span> <span class="va">events_cl</span>, returnType <span class="op">=</span> <span class="st">"data.frame"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etacl_emax'</span></span>
+<span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
+<span><span class="va">sim_cl</span>  <span class="op">&lt;-</span> <span class="fu">rxSolve</span><span class="op">(</span><span class="va">mod_typ</span>, events <span class="op">=</span> <span class="va">events_cl</span>, returnType <span class="op">=</span> <span class="st">"data.frame"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etacl_emax'</span></span>
 <span><span class="va">sim_cl</span>  <span class="op">&lt;-</span> <span class="va">sim_cl</span><span class="op">[</span><span class="va">sim_cl</span><span class="op">$</span><span class="va">time</span> <span class="op">&gt;</span> <span class="fl">0</span>, <span class="op">]</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">sim_cl</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">cl</span> <span class="op">/</span> <span class="va">cl_base</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">1</span>, colour <span class="op">=</span> <span class="st">"steelblue"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">1</span>,           linetype <span class="op">=</span> <span class="st">"dashed"</span>, colour <span class="op">=</span> <span class="st">"grey40"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.295</span><span class="op">)</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span>, colour <span class="op">=</span> <span class="st">"grey40"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">sim_cl</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">time</span>, <span class="va">cl</span> <span class="op">/</span> <span class="va">cl_base</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">1</span>, colour <span class="op">=</span> <span class="st">"steelblue"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_hline</span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">1</span>,           linetype <span class="op">=</span> <span class="st">"dashed"</span>, colour <span class="op">=</span> <span class="st">"grey40"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_hline</span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.295</span><span class="op">)</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span>, colour <span class="op">=</span> <span class="st">"grey40"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span></span>
 <span>    x <span class="op">=</span> <span class="st">"Time since first dose (days)"</span>,</span>
 <span>    y <span class="op">=</span> <span class="st">"CL(t) / CL(0)"</span>,</span>
 <span>    title <span class="op">=</span> <span class="st">"Time-varying clearance in Bajaj 2017"</span>,</span>
 <span>    subtitle <span class="op">=</span> <span class="st">"Typical reference subject; asymptote at exp(Emax) = 0.745 (24.5% reduction)"</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu">theme_bw</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Bajaj_2017_nivolumab_files/figure-html/time-dep-cl-1.png" class="r-plt" alt="" width="576"></p>
 </div>
 <div class="section level2">
@@ -863,8 +863,6 @@ state is in the range Bajaj 2017 reports for t_{1/2}(β) (geometric mean
 <span></span>
 <span><span class="va">nca_data</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_obj</span>, <span class="va">dose_obj</span>, intervals <span class="op">=</span> <span class="va">intervals</span><span class="op">)</span></span>
 <span><span class="va">nca_res</span>  <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="va">nca_data</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■                     </span>  33% |  ETA:  6s</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■          </span>  70% |  ETA:  2s</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">nca_res</span><span class="op">)</span>,</span>
 <span>  caption <span class="op">=</span> <span class="st">"Simulated NCA parameters at steady state (12th dosing interval, days 154-168)"</span></span>
@@ -942,7 +940,7 @@ be cross-checked against the packaged model:</p>
 <td>Baseline CL at reference covariates</td>
 <td>9.4 mL/h (= 0.226 L/day)</td>
 <td>
-<code>exp(lcl) = 0.226 L/day</code> (see <code><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini()</a></code>)</td>
+<code>exp(lcl) = 0.226 L/day</code> (see <code>ini()</code>)</td>
 </tr>
 <tr class="even">
 <td>Mean maximal reduction in CL from baseline</td>
@@ -1002,7 +1000,7 @@ is a male-indicator (1 = male, 0 = female) with female as the reference
 category (Table 1 footnote a: “white female reference”). The packaged
 model stores sex under the canonical <code>SEXF</code> column (1 =
 female, 0 = male) and derives the male-indicator inside
-<code><a href="https://nlmixr2.github.io/rxode2/reference/model.html" class="external-link">model()</a></code> as <code>(1 - SEXF)</code>, preserving the paper’s
+<code>model()</code> as <code>(1 - SEXF)</code>, preserving the paper’s
 reference values for CL_REF and VC_REF. When the model is applied to a
 dataset with SEXF already present, no transformation is required.</li>
 <li>

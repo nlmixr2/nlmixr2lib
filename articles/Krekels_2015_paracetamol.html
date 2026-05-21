@@ -745,11 +745,11 @@ build a small stochastic VPC across the published bodyweight range
 <span></span>
 <span><span class="va">make_cohort</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">wt</span>, <span class="va">n</span> <span class="op">=</span> <span class="fl">1L</span>, <span class="va">id_offset</span> <span class="op">=</span> <span class="fl">0L</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="co"># wt: vector of body weights (kg); n: number of subjects per weight.</span></span>
-<span>  <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
+<span>  <span class="fu">tibble</span><span class="op">(</span></span>
 <span>    id <span class="op">=</span> <span class="va">id_offset</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">wt</span><span class="op">)</span> <span class="op">*</span> <span class="va">n</span><span class="op">)</span>,</span>
 <span>    WT <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">wt</span>, each <span class="op">=</span> <span class="va">n</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>amt_mg <span class="op">=</span> <span class="va">dose_mg_per_kg</span> <span class="op">*</span> <span class="va">WT</span>,</span>
+<span>    <span class="fu">mutate</span><span class="op">(</span>amt_mg <span class="op">=</span> <span class="va">dose_mg_per_kg</span> <span class="op">*</span> <span class="va">WT</span>,</span>
 <span>           rate_mg_per_min <span class="op">=</span> <span class="va">amt_mg</span> <span class="op">/</span> <span class="va">inf_dur_min</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
@@ -762,14 +762,14 @@ build a small stochastic VPC across the published bodyweight range
 <span></span>
 <span><span class="va">build_events</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">cohort</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">doses</span> <span class="op">&lt;-</span> <span class="va">cohort</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/transmute.html" class="external-link">transmute</a></span><span class="op">(</span><span class="va">id</span>, time <span class="op">=</span> <span class="fl">0</span>, evid <span class="op">=</span> <span class="fl">1L</span>, amt <span class="op">=</span> <span class="va">amt_mg</span>,</span>
+<span>    <span class="fu">transmute</span><span class="op">(</span><span class="va">id</span>, time <span class="op">=</span> <span class="fl">0</span>, evid <span class="op">=</span> <span class="fl">1L</span>, amt <span class="op">=</span> <span class="va">amt_mg</span>,</span>
 <span>              rate <span class="op">=</span> <span class="va">rate_mg_per_min</span>, cmt <span class="op">=</span> <span class="st">"central"</span>, WT <span class="op">=</span> <span class="va">WT</span><span class="op">)</span></span>
 <span>  <span class="va">obs</span> <span class="op">&lt;-</span> <span class="va">cohort</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/expand_grid.html" class="external-link">expand_grid</a></span><span class="op">(</span>time <span class="op">=</span> <span class="va">times_obs</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/transmute.html" class="external-link">transmute</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, evid <span class="op">=</span> <span class="fl">0L</span>, amt <span class="op">=</span> <span class="cn">NA_real_</span>, rate <span class="op">=</span> <span class="cn">NA_real_</span>,</span>
+<span>    <span class="fu">transmute</span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, evid <span class="op">=</span> <span class="fl">0L</span>, amt <span class="op">=</span> <span class="cn">NA_real_</span>, rate <span class="op">=</span> <span class="cn">NA_real_</span>,</span>
 <span>              cmt <span class="op">=</span> <span class="st">"Cc"</span>, WT <span class="op">=</span> <span class="va">WT</span><span class="op">)</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">doses</span>, <span class="va">obs</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">evid</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="fu">bind_rows</span><span class="op">(</span><span class="va">doses</span>, <span class="va">obs</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">arrange</span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="fu">desc</span><span class="op">(</span><span class="va">evid</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="va">events_typ</span> <span class="op">&lt;-</span> <span class="fu">build_events</span><span class="op">(</span><span class="va">typical</span><span class="op">)</span></span>
@@ -790,20 +790,20 @@ CL_sulf, and CL_renal.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod_full</span>    <span class="op">&lt;-</span> <span class="fu"><a href="../reference/readModelDb.html">readModelDb</a></span><span class="op">(</span><span class="st">"Krekels_2015_paracetamol"</span><span class="op">)</span></span>
 <span><span class="va">mod_typical</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/zeroRe.html" class="external-link">zeroRe</a></span><span class="op">(</span><span class="va">mod_full</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> parameter labels from comments will be replaced by 'label()'</span></span>
+<span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
 <span></span>
 <span><span class="va">sim_typ</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_typical</span>, events <span class="op">=</span> <span class="va">events_typ</span>,</span>
 <span>                           keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"WT"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&gt;=</span> <span class="fl">0</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalvc', 'etalcl_gluc', 'etalcl_sulf', 'etalcl_renal'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalvc', 'etalcl_gluc', 'etalcl_sulf', 'etalcl_renal'</span></span>
 <span></span>
 <span><span class="va">sim_vpc</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_full</span>, events <span class="op">=</span> <span class="va">events_vpc</span>,</span>
 <span>                           keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"WT"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&gt;=</span> <span class="fl">0</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> parameter labels from comments will be replaced by 'label()'</span></span></code></pre></div>
+<span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="replicate-figure-3-cumulative-urinary-recovery">Replicate Figure 3 (cumulative urinary recovery)<a class="anchor" aria-label="anchor" href="#replicate-figure-3-cumulative-urinary-recovery"></a>
@@ -819,7 +819,7 @@ dose).</p>
 <code class="sourceCode R"><span><span class="va">dose_typ_mg</span> <span class="op">&lt;-</span> <span class="va">typical</span><span class="op">$</span><span class="va">amt_mg</span></span>
 <span></span>
 <span><span class="va">fig3</span> <span class="op">&lt;-</span> <span class="va">sim_typ</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/transmute.html" class="external-link">transmute</a></span><span class="op">(</span></span>
+<span>  <span class="fu">transmute</span><span class="op">(</span></span>
 <span>    time_h    <span class="op">=</span> <span class="va">time</span> <span class="op">/</span> <span class="fl">60</span>,</span>
 <span>    P_pct     <span class="op">=</span> <span class="fl">100</span> <span class="op">*</span> <span class="va">urineP</span>  <span class="op">/</span> <span class="va">dose_typ_mg</span>,</span>
 <span>    PG_pct    <span class="op">=</span> <span class="fl">100</span> <span class="op">*</span> <span class="va">urinePG</span> <span class="op">/</span> <span class="va">dose_typ_mg</span>,</span>
@@ -833,10 +833,10 @@ dose).</p>
 <span>                                            <span class="st">"Paracetamol-glucuronide (PG)"</span>,</span>
 <span>                                            <span class="st">"Unchanged paracetamol (P)"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">fig3</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">time_h</span>, <span class="va">pct_dose</span>, colour <span class="op">=</span> <span class="va">species</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_x_continuous</a></span><span class="op">(</span>breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">36</span>, by <span class="op">=</span> <span class="fl">6</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">fig3</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">time_h</span>, <span class="va">pct_dose</span>, colour <span class="op">=</span> <span class="va">species</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">scale_x_continuous</span><span class="op">(</span>breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">36</span>, by <span class="op">=</span> <span class="fl">6</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span></span>
 <span>    x <span class="op">=</span> <span class="st">"Time after dose (h)"</span>,</span>
 <span>    y <span class="op">=</span> <span class="st">"Cumulative urinary recovery (% of administered dose)"</span>,</span>
 <span>    colour <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -846,7 +846,7 @@ dose).</p>
 <span>    <span class="op">)</span>,</span>
 <span>    caption <span class="op">=</span> <span class="st">"Typical 2.5 kg individual, single 15 mg/kg paracetamol-equivalent IV infusion over 15 minutes."</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu">theme_minimal</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Krekels_2015_paracetamol_files/figure-html/figure-3-1.png" class="r-plt" alt="" width="672"></p>
 <p>The per-6-h-interval fractions of dose recovered as each species can
 be read off the cumulative trajectory by differencing successive 6-hour
@@ -965,21 +965,21 @@ ribbons.</p>
 <span>    .groups <span class="op">=</span> <span class="st">"drop"</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">vpc_quantiles</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">time</span> <span class="op">/</span> <span class="fl">60</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_ribbon.html" class="external-link">geom_ribbon</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>ymin <span class="op">=</span> <span class="va">Q05</span>, ymax <span class="op">=</span> <span class="va">Q95</span><span class="op">)</span>, alpha <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">Q50</span><span class="op">)</span>, linewidth <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_log10</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_x_continuous</a></span><span class="op">(</span>breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">36</span>, by <span class="op">=</span> <span class="fl">6</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">vpc_quantiles</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">time</span> <span class="op">/</span> <span class="fl">60</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_ribbon</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>ymin <span class="op">=</span> <span class="va">Q05</span>, ymax <span class="op">=</span> <span class="va">Q95</span><span class="op">)</span>, alpha <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>y <span class="op">=</span> <span class="va">Q50</span><span class="op">)</span>, linewidth <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">scale_y_log10</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">scale_x_continuous</span><span class="op">(</span>breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">36</span>, by <span class="op">=</span> <span class="fl">6</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span></span>
 <span>    x <span class="op">=</span> <span class="st">"Time after dose (h)"</span>,</span>
 <span>    y <span class="op">=</span> <span class="st">"Plasma paracetamol Cc (mg/L, log scale)"</span>,</span>
 <span>    title <span class="op">=</span> <span class="st">"Stochastic VPC of plasma paracetamol (60 subjects spanning 0.5-6.3 kg)"</span>,</span>
 <span>    caption <span class="op">=</span> <span class="st">"Median (line) and 5th-95th percentiles (ribbon) of simulated plasma Cc."</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning in scale_y_log10(): <span style="color: #00BB00;">log-10</span> transformation introduced infinite values.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">log-10</span> transformation introduced infinite values.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">log-10</span> transformation introduced infinite values.</span></span></code></pre></div>
+<span>  <span class="fu">theme_minimal</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning in scale_y_log10(): log-10 transformation introduced infinite values.</span></span>
+<span><span class="co">#&gt; log-10 transformation introduced infinite values.</span></span>
+<span><span class="co">#&gt; log-10 transformation introduced infinite values.</span></span></code></pre></div>
 <p><img src="Krekels_2015_paracetamol_files/figure-html/figure-vpc-plasma-1.png" class="r-plt" alt="" width="672"></p>
 </div>
 <div class="section level2">

@@ -43,8 +43,7 @@ observations are recorded on the natural-log scale with an additive
 
 The same metadata is available programmatically from the model file’s
 `population` list (free-floating `<-` assignment within the function
-body, before
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html)).
+body, before `ini()`).
 
 ## Source trace
 
@@ -53,7 +52,7 @@ The DDMORE bundle for `DDMODEL00000261` contains:
 | Bundle file | Role |
 |----|----|
 | `Executable_simulated_KPD_CTC.count_PSA.mod` | NONMEM control stream (initial values, structural model, ODEs, \$ERROR likelihood) |
-| `Output_real_SAEM_KPD_CTC.count_PSA.lst` | NONMEM listing on the original (real) dataset; **final SAEM estimates** in the `FINAL PARAMETER ESTIMATE` block (line 2857) – used as the values in [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) |
+| `Output_real_SAEM_KPD_CTC.count_PSA.lst` | NONMEM listing on the original (real) dataset; **final SAEM estimates** in the `FINAL PARAMETER ESTIMATE` block (line 2857) – used as the values in `ini()` |
 | `Output_real_COV_KPD_CTC.count_PSA.lst` | Standard-error / covariance step on the same fit |
 | `Output_simulated_KPD_CTC.count_PSA.lst` | Listing on the bundle’s shipped simulated dataset (regression smoke test) |
 | `Simulated_KPD_CTC.count_PSA.csv` | Two-subject minimal simulated dataset |
@@ -61,13 +60,12 @@ The DDMORE bundle for `DDMODEL00000261` contains:
 | `Command.txt` | Run command + bundle context |
 
 Per-parameter origins are recorded as in-file comments next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/ddmore/Wilbaux_2015_prostate.R`. The table below collects
-them in one place; the values in the third column are read from
-`Output_real_SAEM_KPD_CTC.count_PSA.lst`’s `FINAL PARAMETER ESTIMATE`
-block, which matches the `Executable_simulated_KPD_CTC.count_PSA.mod`’s
-`$THETA` initial values verbatim and matches paper Table 1 to three
-significant figures.
+`ini()` entry in `inst/modeldb/ddmore/Wilbaux_2015_prostate.R`. The
+table below collects them in one place; the values in the third column
+are read from `Output_real_SAEM_KPD_CTC.count_PSA.lst`’s
+`FINAL PARAMETER ESTIMATE` block, which matches the
+`Executable_simulated_KPD_CTC.count_PSA.mod`’s `$THETA` initial values
+verbatim and matches paper Table 1 to three significant figures.
 
 | nlmixr2 parameter | Paper notation (Table 1) | Value | NONMEM source slot |
 |----|----|----|----|
@@ -633,13 +631,10 @@ overlay is the validation anchor.
   lines) is documented in the source-trace table above and in the `.mod`
   for users who want to re-implement the exact likelihood via a custom
   `nlmixr2est` user-defined error function. The OVDP parameter is
-  retained in
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html)
-  (`lovdp <- log(4.89)`) and exposed as `ovdp` in
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html) –
-  its log-normal IIV (`etalovdp ~ 2.25`) is also preserved verbatim – so
-  the parameter round-trip is maintained even though the residual model
-  does not consume it.
+  retained in `ini()` (`lovdp <- log(4.89)`) and exposed as `ovdp` in
+  `model()` – its log-normal IIV (`etalovdp ~ 2.25`) is also preserved
+  verbatim – so the parameter round-trip is maintained even though the
+  residual model does not consume it.
 - **PSA log-additive residual error preserved verbatim.** The PSA
   observation likelihood IS expressible in nlmixr2:
   `log(PSA) ~ Normal(log(IPRED), W1)` is `log_PSA ~ add(addSd_log_PSA)`
@@ -652,16 +647,14 @@ overlay is the validation anchor.
   pattern is log-multiplicative (`exp(lparam + eta)`). The model
   preserves the source convention: `k0` and `lag5` are plain (non-log)
   ini parameters, and `k0_ind = k0 + etak0`, `lag5_ind = lag5 + etalag5`
-  in [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html).
-  The variances 1430 (CTC\*day/AU)^2 and 61.9 day^2 reproduce the
-  paper’s CV% = SD/mean column (12% and 14%), not the standard
-  log-normal CV.
+  in `model()`. The variances 1430 (CTC\*day/AU)^2 and 61.9 day^2
+  reproduce the paper’s CV% = SD/mean column (12% and 14%), not the
+  standard log-normal CV.
 - **`alag(chemo_d)` and `alag(hormo_d)` reference the individual-level
   `lag5_ind`.** The .mod sets `ALAG5 = ALAG6 = ALAG7 = MU_12 + ETA(12)`
   so each subject’s lag time on the parallel-delayed K-PD compartments
   is the same individual LS value used for the CTC bioavailability
-  `f(ctc) = K0 * LS`. Reproduced exactly in
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html).
+  `f(ctc) = K0 * LS`. Reproduced exactly in `model()`.
 - **`latent_tumor_d_eff` cell-lifespan guard.** The .mod overrides the
   integrated state of compartment 7 with the constant LV0 for
   `t <= ALAG5` (.mod `$DES` lines 86-87), then switches to the actual

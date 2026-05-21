@@ -59,7 +59,7 @@ The same metadata is available programmatically via
 ## Source trace
 
 Per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
+`ini()` entry in
 `inst/modeldb/specificDrugs/Papachristos_2020_bevacizumab_pk.R`. The
 table below collects them in one place.
 

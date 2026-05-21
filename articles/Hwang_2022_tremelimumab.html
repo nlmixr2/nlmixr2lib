@@ -570,7 +570,7 @@ development-dataset regimens.</p>
 <h2 id="source-trace">Source trace<a class="anchor" aria-label="anchor" href="#source-trace"></a>
 </h2>
 <p>The per-parameter origin is recorded as an in-file comment next to
-each <code><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini()</a></code> entry in
+each <code>ini()</code> entry in
 <code>inst/modeldb/specificDrugs/Hwang_2022_tremelimumab.R</code>. The
 table below collects them in one place for review.</p>
 <table class="table">
@@ -762,14 +762,14 @@ monotherapy regimen used in DETERMINE, ARCTIC, and CONDOR).</li>
 <span></span>
 <span>  <span class="va">amt_per_subj</span> <span class="op">&lt;-</span> <span class="va">pop</span><span class="op">$</span><span class="va">WT</span> <span class="op">*</span> <span class="va">mg_per_kg</span></span>
 <span>  <span class="va">d_dose</span> <span class="op">&lt;-</span> <span class="va">pop</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>AMT <span class="op">=</span> <span class="va">amt_per_subj</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">mutate</span><span class="op">(</span>AMT <span class="op">=</span> <span class="va">amt_per_subj</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/expand.html" class="external-link">crossing</a></span><span class="op">(</span>TIME <span class="op">=</span> <span class="va">dose_times</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>EVID <span class="op">=</span> <span class="fl">1L</span>, CMT <span class="op">=</span> <span class="st">"central"</span>, DUR <span class="op">=</span> <span class="fl">1</span> <span class="op">/</span> <span class="fl">24</span>, DV <span class="op">=</span> <span class="cn">NA_real_</span>,</span>
+<span>    <span class="fu">mutate</span><span class="op">(</span>EVID <span class="op">=</span> <span class="fl">1L</span>, CMT <span class="op">=</span> <span class="st">"central"</span>, DUR <span class="op">=</span> <span class="fl">1</span> <span class="op">/</span> <span class="fl">24</span>, DV <span class="op">=</span> <span class="cn">NA_real_</span>,</span>
 <span>           treatment <span class="op">=</span> <span class="va">regimen</span><span class="op">)</span></span>
 <span>  <span class="va">d_obs</span> <span class="op">&lt;-</span> <span class="va">pop</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/expand.html" class="external-link">crossing</a></span><span class="op">(</span>TIME <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">dose_times</span>,</span>
 <span>                                         <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">365</span>, by <span class="op">=</span> <span class="fl">3</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>AMT <span class="op">=</span> <span class="cn">NA_real_</span>, EVID <span class="op">=</span> <span class="fl">0L</span>, CMT <span class="op">=</span> <span class="st">"central"</span>, DUR <span class="op">=</span> <span class="cn">NA_real_</span>,</span>
+<span>    <span class="fu">mutate</span><span class="op">(</span>AMT <span class="op">=</span> <span class="cn">NA_real_</span>, EVID <span class="op">=</span> <span class="fl">0L</span>, CMT <span class="op">=</span> <span class="st">"central"</span>, DUR <span class="op">=</span> <span class="cn">NA_real_</span>,</span>
 <span>           DV <span class="op">=</span> <span class="cn">NA_real_</span>, treatment <span class="op">=</span> <span class="va">regimen</span><span class="op">)</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">d_dose</span>, <span class="va">d_obs</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">TIME</span>, <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">EVID</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -787,10 +787,10 @@ monotherapy regimen used in DETERMINE, ARCTIC, and CONDOR).</li>
 <span></span>
 <span><span class="va">sim_combo</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod</span>, events <span class="op">=</span> <span class="va">events_combo</span>,</span>
 <span>                             returnType <span class="op">=</span> <span class="st">"data.frame"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> parameter labels from comments will be replaced by 'label()'</span></span>
+<span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
 <span><span class="va">sim_mono</span>  <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod</span>, events <span class="op">=</span> <span class="va">events_mono</span>,</span>
 <span>                             returnType <span class="op">=</span> <span class="st">"data.frame"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> parameter labels from comments will be replaced by 'label()'</span></span>
+<span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
 <span></span>
 <span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span><span class="va">sim_combo</span>, treatment <span class="op">=</span> <span class="st">"1 mg/kg + durva"</span><span class="op">)</span>,</span>
@@ -816,12 +816,12 @@ packaged model.</p>
 <span>    .groups <span class="op">=</span> <span class="st">"drop"</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">sim_summary</span>,</span>
-<span>       <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">median</span>, colour <span class="op">=</span> <span class="va">treatment</span>, fill <span class="op">=</span> <span class="va">treatment</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_ribbon.html" class="external-link">geom_ribbon</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>ymin <span class="op">=</span> <span class="va">lo</span>, ymax <span class="op">=</span> <span class="va">hi</span><span class="op">)</span>, alpha <span class="op">=</span> <span class="fl">0.15</span>, colour <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_log10</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">sim_summary</span>,</span>
+<span>       <span class="fu">aes</span><span class="op">(</span><span class="va">time</span>, <span class="va">median</span>, colour <span class="op">=</span> <span class="va">treatment</span>, fill <span class="op">=</span> <span class="va">treatment</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_ribbon</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>ymin <span class="op">=</span> <span class="va">lo</span>, ymax <span class="op">=</span> <span class="va">hi</span><span class="op">)</span>, alpha <span class="op">=</span> <span class="fl">0.15</span>, colour <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">scale_y_log10</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span></span>
 <span>    x <span class="op">=</span> <span class="st">"Time since first dose (days)"</span>,</span>
 <span>    y <span class="op">=</span> <span class="st">"Tremelimumab concentration (ug/mL, log scale)"</span>,</span>
 <span>    title <span class="op">=</span> <span class="st">"Simulated tremelimumab PK by regimen"</span>,</span>
@@ -830,7 +830,7 @@ packaged model.</p>
 <span>                      <span class="st">"Replicates Figure 3 of Hwang 2022."</span><span class="op">)</span>,</span>
 <span>    caption <span class="op">=</span> <span class="st">"Model: Hwang 2022 Br J Clin Pharmacol 89(5):1601-1616"</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu">theme_bw</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Hwang_2022_tremelimumab_files/figure-html/figure-3-1.png" class="r-plt" alt="" width="672"></p>
 </div>
 <div class="section level2">
@@ -860,13 +860,13 @@ reference subject (WT = 71 kg, ALB = 39 g/L, etas = 0).</p>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="va">mod_typ</span>  <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/zeroRe.html" class="external-link">zeroRe</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> parameter labels from comments will be replaced by 'label()'</span></span>
+<span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
 <span><span class="va">sim_typ_mono</span>  <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_typ</span>, events <span class="op">=</span> <span class="fu">build_typ_events</span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>,</span>
 <span>                                 returnType <span class="op">=</span> <span class="st">"data.frame"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etacl_tmax'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etacl_tmax'</span></span>
 <span><span class="va">sim_typ_combo</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_typ</span>, events <span class="op">=</span> <span class="fu">build_typ_events</span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>,</span>
 <span>                                 returnType <span class="op">=</span> <span class="st">"data.frame"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etacl_tmax'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etacl_tmax'</span></span>
 <span></span>
 <span><span class="va">cl_curves</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span><span class="va">sim_typ_mono</span>,  regimen <span class="op">=</span> <span class="st">"Monotherapy"</span><span class="op">)</span>,</span>
@@ -877,10 +877,10 @@ reference subject (WT = 71 kg, ALB = 39 g/L, etas = 0).</p>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>cl_ratio <span class="op">=</span> <span class="va">cl</span> <span class="op">/</span> <span class="va">cl</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">cl_curves</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">cl_ratio</span>, colour <span class="op">=</span> <span class="va">regimen</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">1</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span>, colour <span class="op">=</span> <span class="st">"grey40"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">cl_curves</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">time</span>, <span class="va">cl_ratio</span>, colour <span class="op">=</span> <span class="va">regimen</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_hline</span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">1</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span>, colour <span class="op">=</span> <span class="st">"grey40"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span></span>
 <span>    x <span class="op">=</span> <span class="st">"Time since first dose (days)"</span>,</span>
 <span>    y <span class="op">=</span> <span class="st">"CL(t) / CL(0)"</span>,</span>
 <span>    title <span class="op">=</span> <span class="st">"Time-varying clearance in Hwang 2022"</span>,</span>
@@ -888,7 +888,7 @@ reference subject (WT = 71 kg, ALB = 39 g/L, etas = 0).</p>
 <span>                      <span class="st">"Asymptotes: monotherapy exp(0.151) = 1.163 (+16.3%); "</span>,</span>
 <span>                      <span class="st">"combination exp(-0.187) = 0.829 (-17.1%)."</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu">theme_bw</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Hwang_2022_tremelimumab_files/figure-html/figure-5-1.png" class="r-plt" alt="" width="576"></p>
 <p>The horizontal asymptotes (<code>exp(Tmax_mono) = 1.163</code> and
 <code>exp(Tmax_combo) = 0.829</code>) match Hwang 2022’s reported ~16%
@@ -1124,7 +1124,7 @@ reported “approximately 16%” (page 1609).</li>
 <strong>Convention deviation: <code>etacl_tmax</code> IIV.</strong>
 The shared additive eta on the regimen-active Tmax does not pair with a
 single fixed-effect parameter named <code>cl_tmax</code> in
-<code><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini()</a></code>; instead, two regimen-specific
+<code>ini()</code>; instead, two regimen-specific
 <code>cl_tmax_mono</code> and <code>cl_tmax_combo</code> fixed effects
 are mixed at runtime by <code>COMBO_DURVA</code>.
 <code><a href="../reference/checkModelConventions.html">nlmixr2lib::checkModelConventions()</a></code> flags this with a

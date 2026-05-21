@@ -34,10 +34,9 @@ programmatically via `readModelDb("Goti_2018_vancomycin")$population`.
 
 ## Source trace
 
-Every numeric value in
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) carries
-an in-file comment pointing to the Goti 2018 source location. The table
-below collects them in one place for review.
+Every numeric value in `ini()` carries an in-file comment pointing to
+the Goti 2018 source location. The table below collects them in one
+place for review.
 
 | Equation / parameter | Value         | Source location                |
 |----------------------|---------------|--------------------------------|
@@ -222,18 +221,6 @@ intervals <- data.frame(
 nca_res <- PKNCA::pk.nca(
   PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 )
-#>  ■■■                                7% |  ETA: 39s
-#>  ■■■■■                             14% |  ETA: 36s
-#>  ■■■■■■■■                          22% |  ETA: 31s
-#>  ■■■■■■■■■■                        30% |  ETA: 28s
-#>  ■■■■■■■■■■■■                      38% |  ETA: 24s
-#>  ■■■■■■■■■■■■■■■                   46% |  ETA: 21s
-#>  ■■■■■■■■■■■■■■■■■                 54% |  ETA: 18s
-#>  ■■■■■■■■■■■■■■■■■■■               61% |  ETA: 15s
-#>  ■■■■■■■■■■■■■■■■■■■■■■            69% |  ETA: 12s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■          77% |  ETA:  9s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■        84% |  ETA:  6s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     92% |  ETA:  3s
 
 nca_summary <- summary(nca_res)
 knitr::kable(nca_summary, caption = "Simulated NCA parameters by covariate cohort (single 1000 mg IV infusion over 1 hour).")

@@ -748,12 +748,10 @@ arms (typical patient, residual SD scaled to N_arm = 50).
 
 - **Magnitude interpretation of Eq 3.** The published Eq 3
   (`f_combo = f_statin + f_ezetimibe * (1 - gamma * f_statin)`) is
-  evaluated on a MAGNITUDE scale in
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html) –
-  i.e., the signed Eq 4 statin Emax is converted to a positive magnitude
-  before being multiplied into the interaction term. This reproduces
-  both (a) the paper’s quoted ~7% sub-additivity at maximal monotherapy
-  effect and
+  evaluated on a MAGNITUDE scale in `model()` – i.e., the signed Eq 4
+  statin Emax is converted to a positive magnitude before being
+  multiplied into the interaction term. This reproduces both (a) the
+  paper’s quoted ~7% sub-additivity at maximal monotherapy effect and
 
   2.  the predicted 50.3-65.1% LDL-C reduction range for the 10/10 to
       10/80 mg FDC doses (paper Discussion). With signed values the same

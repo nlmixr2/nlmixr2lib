@@ -540,7 +540,7 @@ years old, with baseline albumin 39 g/L and ALT 18 U/L.</p>
 <h2 id="source-trace">Source trace<a class="anchor" aria-label="anchor" href="#source-trace"></a>
 </h2>
 <p>The per-parameter origin is recorded as an in-file comment next to
-each <code><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini()</a></code> entry in
+each <code>ini()</code> entry in
 <code>inst/modeldb/specificDrugs/Melhem_2022_dostarlimab.R</code>. The
 table below collects them in one place for review.</p>
 <table class="table">
@@ -684,7 +684,7 @@ published trial demographics (Melhem 2022 Table 2).</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2022</span><span class="op">)</span></span>
 <span><span class="va">n_subj</span> <span class="op">&lt;-</span> <span class="fl">200</span></span>
 <span></span>
-<span><span class="va">cohort</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
+<span><span class="va">cohort</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="op">(</span></span>
 <span>  ID   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n_subj</span><span class="op">)</span>,</span>
 <span>  WT   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Lognormal.html" class="external-link">rlnorm</a></span><span class="op">(</span><span class="va">n_subj</span>, <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">71.4</span><span class="op">)</span>, <span class="fl">0.27</span><span class="op">)</span>, <span class="fl">34</span><span class="op">)</span>,  <span class="fl">182</span><span class="op">)</span>,  <span class="co"># Table 2: median 71.4 kg, range 34-182</span></span>
 <span>  AGE  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n_subj</span>,  <span class="fl">62.5</span>, <span class="fl">11.0</span><span class="op">)</span>,       <span class="fl">24</span><span class="op">)</span>,  <span class="fl">86</span><span class="op">)</span>,  <span class="co"># Table 2: mean 62.5, range 24-86</span></span>
@@ -706,15 +706,15 @@ one year of dosing.</p>
 <span><span class="va">build_events</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">pop</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">d_load</span> <span class="op">&lt;-</span> <span class="va">pop</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/expand.html" class="external-link">crossing</a></span><span class="op">(</span>TIME <span class="op">=</span> <span class="va">loading_doses_d</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>AMT <span class="op">=</span> <span class="fl">500</span>, EVID <span class="op">=</span> <span class="fl">1</span>, CMT <span class="op">=</span> <span class="st">"central"</span>, DUR <span class="op">=</span> <span class="fl">0.5</span> <span class="op">/</span> <span class="fl">24</span>, DV <span class="op">=</span> <span class="cn">NA_real_</span>,</span>
+<span>    <span class="fu">mutate</span><span class="op">(</span>AMT <span class="op">=</span> <span class="fl">500</span>, EVID <span class="op">=</span> <span class="fl">1</span>, CMT <span class="op">=</span> <span class="st">"central"</span>, DUR <span class="op">=</span> <span class="fl">0.5</span> <span class="op">/</span> <span class="fl">24</span>, DV <span class="op">=</span> <span class="cn">NA_real_</span>,</span>
 <span>           treatment <span class="op">=</span> <span class="st">"RTD 500 mg Q3W x4 -&gt; 1000 mg Q6W"</span><span class="op">)</span></span>
 <span>  <span class="va">d_maint</span> <span class="op">&lt;-</span> <span class="va">pop</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/expand.html" class="external-link">crossing</a></span><span class="op">(</span>TIME <span class="op">=</span> <span class="va">maint_doses_d</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>AMT <span class="op">=</span> <span class="fl">1000</span>, EVID <span class="op">=</span> <span class="fl">1</span>, CMT <span class="op">=</span> <span class="st">"central"</span>, DUR <span class="op">=</span> <span class="fl">0.5</span> <span class="op">/</span> <span class="fl">24</span>, DV <span class="op">=</span> <span class="cn">NA_real_</span>,</span>
+<span>    <span class="fu">mutate</span><span class="op">(</span>AMT <span class="op">=</span> <span class="fl">1000</span>, EVID <span class="op">=</span> <span class="fl">1</span>, CMT <span class="op">=</span> <span class="st">"central"</span>, DUR <span class="op">=</span> <span class="fl">0.5</span> <span class="op">/</span> <span class="fl">24</span>, DV <span class="op">=</span> <span class="cn">NA_real_</span>,</span>
 <span>           treatment <span class="op">=</span> <span class="st">"RTD 500 mg Q3W x4 -&gt; 1000 mg Q6W"</span><span class="op">)</span></span>
 <span>  <span class="va">d_obs</span> <span class="op">&lt;-</span> <span class="va">pop</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/expand.html" class="external-link">crossing</a></span><span class="op">(</span>TIME <span class="op">=</span> <span class="va">obs_times_d</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>AMT <span class="op">=</span> <span class="cn">NA_real_</span>, EVID <span class="op">=</span> <span class="fl">0</span>, CMT <span class="op">=</span> <span class="st">"central"</span>, DUR <span class="op">=</span> <span class="cn">NA_real_</span>,</span>
+<span>    <span class="fu">mutate</span><span class="op">(</span>AMT <span class="op">=</span> <span class="cn">NA_real_</span>, EVID <span class="op">=</span> <span class="fl">0</span>, CMT <span class="op">=</span> <span class="st">"central"</span>, DUR <span class="op">=</span> <span class="cn">NA_real_</span>,</span>
 <span>           DV <span class="op">=</span> <span class="cn">NA_real_</span>, treatment <span class="op">=</span> <span class="st">"RTD 500 mg Q3W x4 -&gt; 1000 mg Q6W"</span><span class="op">)</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">d_load</span>, <span class="va">d_maint</span>, <span class="va">d_obs</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">ID</span>, <span class="va">TIME</span>, <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">EVID</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -728,7 +728,7 @@ one year of dosing.</p>
 </h2>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/readModelDb.html">readModelDb</a></span><span class="op">(</span><span class="st">"Melhem_2022_dostarlimab"</span><span class="op">)</span></span>
-<span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod</span>, events <span class="op">=</span> <span class="va">events</span>, returnType <span class="op">=</span> <span class="st">"data.frame"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu">rxSolve</span><span class="op">(</span><span class="va">mod</span>, events <span class="op">=</span> <span class="va">events</span>, returnType <span class="op">=</span> <span class="st">"data.frame"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="concentration-time-profiles">Concentration-time profiles<a class="anchor" aria-label="anchor" href="#concentration-time-profiles"></a>
@@ -746,10 +746,10 @@ the recommended therapeutic dose:</p>
 <span>    .groups <span class="op">=</span> <span class="st">"drop"</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">sim_summary</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">median</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_ribbon.html" class="external-link">geom_ribbon</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>ymin <span class="op">=</span> <span class="va">lo</span>, ymax <span class="op">=</span> <span class="va">hi</span><span class="op">)</span>, alpha <span class="op">=</span> <span class="fl">0.2</span>, fill <span class="op">=</span> <span class="st">"steelblue"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">1</span>, colour <span class="op">=</span> <span class="st">"steelblue"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">sim_summary</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">time</span>, <span class="va">median</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_ribbon</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>ymin <span class="op">=</span> <span class="va">lo</span>, ymax <span class="op">=</span> <span class="va">hi</span><span class="op">)</span>, alpha <span class="op">=</span> <span class="fl">0.2</span>, fill <span class="op">=</span> <span class="st">"steelblue"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">1</span>, colour <span class="op">=</span> <span class="st">"steelblue"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span></span>
 <span>    x <span class="op">=</span> <span class="st">"Time (days)"</span>,</span>
 <span>    y <span class="op">=</span> <span class="st">"Dostarlimab serum concentration (mg/L)"</span>,</span>
 <span>    title <span class="op">=</span> <span class="st">"Simulated dostarlimab PK at the recommended therapeutic dose"</span>,</span>
@@ -757,7 +757,7 @@ the recommended therapeutic dose:</p>
 <span>                      <span class="va">n_subj</span>, <span class="st">" virtual patients)"</span><span class="op">)</span>,</span>
 <span>    caption <span class="op">=</span> <span class="st">"Model: Melhem 2022 Br J Clin Pharmacol 88(9):4142-4154"</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu">theme_bw</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Melhem_2022_dostarlimab_files/figure-html/pk-plot-1.png" class="r-plt" alt="" width="672"></p>
 </div>
 <div class="section level2">
@@ -778,7 +778,7 @@ reproduces the time course at the reference patient (deterministic, etas
 <span>  DUR  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span> <span class="op">/</span> <span class="fl">24</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="cn">NA_real_</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">t_grid</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  DV   <span class="op">=</span> <span class="cn">NA_real_</span></span>
 <span><span class="op">)</span></span>
-<span><span class="va">sim_cl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span></span>
+<span><span class="va">sim_cl</span> <span class="op">&lt;-</span> <span class="fu">rxSolve</span><span class="op">(</span></span>
 <span>  <span class="va">mod</span>, events <span class="op">=</span> <span class="va">events_cl</span>,</span>
 <span>  params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>WT <span class="op">=</span> <span class="fl">70</span>, AGE <span class="op">=</span> <span class="fl">64</span>, ALB <span class="op">=</span> <span class="fl">39</span>, ALT <span class="op">=</span> <span class="fl">18</span>, SEXF <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>             etalcl <span class="op">=</span> <span class="fl">0</span>, etalvc <span class="op">=</span> <span class="fl">0</span>, etalImax <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>,</span>
@@ -787,16 +787,16 @@ reproduces the time course at the reference patient (deterministic, etas
 <span><span class="op">)</span></span>
 <span><span class="va">sim_cl</span> <span class="op">&lt;-</span> <span class="va">sim_cl</span><span class="op">[</span><span class="va">sim_cl</span><span class="op">$</span><span class="va">time</span> <span class="op">&gt;</span> <span class="fl">0</span>, <span class="op">]</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">sim_cl</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">cl</span> <span class="op">/</span> <span class="va">cl_base</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">1</span>, colour <span class="op">=</span> <span class="st">"steelblue"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.161</span><span class="op">)</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span>, colour <span class="op">=</span> <span class="st">"grey40"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">sim_cl</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">time</span>, <span class="va">cl</span> <span class="op">/</span> <span class="va">cl_base</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">1</span>, colour <span class="op">=</span> <span class="st">"steelblue"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_hline</span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.161</span><span class="op">)</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span>, colour <span class="op">=</span> <span class="st">"grey40"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span></span>
 <span>    x <span class="op">=</span> <span class="st">"Time since first dose (days)"</span>,</span>
 <span>    y <span class="op">=</span> <span class="st">"CL(t) / CL(0)"</span>,</span>
 <span>    title <span class="op">=</span> <span class="st">"Time-dependent clearance in Melhem 2022"</span>,</span>
 <span>    subtitle <span class="op">=</span> <span class="st">"Reference patient; asymptotes at exp(I_max) = 0.851 (14.9% reduction)"</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu">theme_bw</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Melhem_2022_dostarlimab_files/figure-html/time-dep-cl-1.png" class="r-plt" alt="" width="576"></p>
 </div>
 <div class="section level2">
@@ -838,7 +838,6 @@ cohort:</p>
 <span></span>
 <span><span class="va">nca_data</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_obj</span>, <span class="va">dose_obj</span>, intervals <span class="op">=</span> <span class="va">intervals</span><span class="op">)</span></span>
 <span><span class="va">nca_res</span>  <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="va">nca_data</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■          </span>  69% |  ETA:  1s</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">nca_res</span><span class="op">)</span>,</span>
 <span>             caption <span class="op">=</span> <span class="st">"Simulated NCA parameters (3rd dosing interval, days 21-42 after first dose)"</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
@@ -939,7 +938,7 @@ with mAb assay residuals reported in comparable anti-PD-1 papers.</li>
 <strong>Imax parameterization.</strong> I_max is always negative in
 the source (-0.161). To keep every individual I_max strictly negative
 under log-normal IIV, the model stores log|I_max| and applies the
-negative sign in the <code><a href="https://nlmixr2.github.io/rxode2/reference/model.html" class="external-link">model()</a></code> block:
+negative sign in the <code>model()</code> block:
 <code>Imax_i &lt;- -exp(lImax + etalImax)</code>. The table’s
 omega^2_Imax = 0.537 maps to omega = sqrt(0.537) = 0.733, which the
 paper labels “73.3% CV” — i.e., omega is reported as a CV without the

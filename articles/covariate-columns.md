@@ -2,10 +2,9 @@
 
 This file is the authoritative register of covariate column names used
 in nlmixr2lib models. Every covariate referenced inside a model’s
-[`model()`](https://nlmixr2.github.io/rxode2/reference/model.html) block
-must have an entry here. The register is seeded from a full audit of
-`inst/modeldb/` and extended whenever a new paper introduces a covariate
-that isn’t yet registered.
+`model()` block must have an entry here. The register is seeded from a
+full audit of `inst/modeldb/` and extended whenever a new paper
+introduces a covariate that isn’t yet registered.
 
 ## How to use this register
 
@@ -652,10 +651,8 @@ entries should default to all caps.
   cutoff. Use `GA` when the source paper carries gestational age as a
   continuous covariate; use `TERM_BIRTH` only when the paper itself
   dichotomizes. Do not derive `TERM_BIRTH` from `GA` programmatically
-  inside
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html) –
-  the term-cutoff convention belongs in data assembly, not the model
-  file.
+  inside `model()` – the term-cutoff convention belongs in data
+  assembly, not the model file.
 
 ### CONMED_BIRTHCONTROL (**canonical for oral-contraceptive use indicator**)
 
@@ -756,8 +753,7 @@ entries should default to all caps.
   cohort-specific (Ugandan malaria cohort median) and future models
   should document their own reference in
   `covariateData[[BODYTEMP]]$notes`. Units are degrees Celsius; convert
-  from Fahrenheit (degF) at data-assembly time, not inside
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html).
+  from Fahrenheit (degF) at data-assembly time, not inside `model()`.
   Distinct from `BODYTEMP_FEBRILE` (not yet registered) which would be a
   binary fever indicator if a future paper dichotomises at the
   conventional 37.5 / 38.0 degC threshold. Ratified canonically on
@@ -1024,8 +1020,7 @@ entries should default to all caps.
 - **Example models:** `Shekar_2014_meropenem.R` (piecewise CL:
   `TVCL = exp(lcl) * CRRT_STATUS + e_crcl_cl * CRCL_in_Lh * (1 - CRRT_STATUS)`,
   with CRCL in raw Cockcroft-Gault mL/min converted to L/h inside
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html);
-  5/11 ECMO patients and 5/10 controls were on RRT).
+  `model()`; 5/11 ECMO patients and 5/10 controls were on RRT).
 - **Notes:** Distinct from `HEMODIAL` (intermittent hemodialysis IHD
   only) and from `DIAL` (per-time-point session gate in within-subject
   time-varying dialysis-clearance models such as Liesenfeld 2013
@@ -2394,8 +2389,7 @@ entries should default to all caps.
   ascertainment follows the Wilkinson 1987 paediatric multiple organ
   system failure (MOSF) criteria – operator-confirmed per-paper criteria
   should be documented in each model’s
-  `covariateData[["ORG_FAIL_COUNT"]]$notes`. Decompose inside
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html)
+  `covariateData[["ORG_FAIL_COUNT"]]$notes`. Decompose inside `model()`
   into binary indicators (`orgf1 <- (ORG_FAIL_COUNT == 1)`,
   `orgf2 <- (ORG_FAIL_COUNT == 2)`, `orgf3 <- (ORG_FAIL_COUNT == 3)`,
   `orgf_ge4 <- (ORG_FAIL_COUNT >= 4)`) and select per-stratum CL with
@@ -2452,19 +2446,17 @@ entries should default to all caps.
   - `RACHS-1` – the publication’s printed form with a hyphen, not a
     valid R identifier; renamed to `RACHS1` when assembling input data.
 - **Example models:** `Oualha_2014_epinephrine.R` (decomposed inside
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html)
-  into a binary indicator `rachs1_high <- (RACHS1 >= 3)` that selects an
-  additive log-shift on SV\*SVR_max from 0.44 to 0.26 for the high-risk
-  pool).
+  `model()` into a binary indicator `rachs1_high <- (RACHS1 >= 3)` that
+  selects an additive log-shift on SV\*SVR_max from 0.44 to 0.26 for the
+  high-risk pool).
 - **Notes:** Specific scope because the variable is
   paediatric-cardiac-surgery-population-bound and the reference category
   depends on which RACHS-1 strata the cohort contains (Oualha 2014 has
   categories 2-4 only; a paper with categories 1-6 would need a
-  different decomposition). Decompose inside
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html)
-  into mutually exclusive binary indicators matching the source’s
-  pooling (e.g., `rachs1_high <- (RACHS1 >= 3)`) and document the
-  pooling rule in `covariateData[["RACHS1"]]$notes`.
+  different decomposition). Decompose inside `model()` into mutually
+  exclusive binary indicators matching the source’s pooling (e.g.,
+  `rachs1_high <- (RACHS1 >= 3)`) and document the pooling rule in
+  `covariateData[["RACHS1"]]$notes`.
 
 ### CVP (**canonical for central venous pressure**)
 
@@ -3399,8 +3391,7 @@ entries should default to all caps.
   `covariateData[[CL_INDIV]]$units`).
 - **Type:** continuous
 - **Scope:** specific
-- **Reference category:** n/a – used directly inside
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html) as
+- **Reference category:** n/a – used directly inside `model()` as
   `CL_INDIV` in place of an estimated `cl <- exp(lcl + etalcl)`.
 - **Source aliases:** `CLI` – used in `Friberg_2002_paclitaxel.R`
   (NM-TRAN data column for per-subject paclitaxel CL).
@@ -3450,8 +3441,7 @@ entries should default to all caps.
   `covariateData[[VC_INDIV]]$units`).
 - **Type:** continuous
 - **Scope:** specific
-- **Reference category:** n/a – used directly inside
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html) as
+- **Reference category:** n/a – used directly inside `model()` as
   `VC_INDIV` in place of an estimated `vc <- exp(lvc + etalvc)`.
 - **Source aliases:** `V1I` – used in `Friberg_2002_paclitaxel.R`
   (NM-TRAN data column for per-subject paclitaxel V1).
@@ -3468,8 +3458,7 @@ entries should default to all caps.
   `covariateData[[VP_INDIV]]$units`).
 - **Type:** continuous
 - **Scope:** specific
-- **Reference category:** n/a – used directly inside
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html) as
+- **Reference category:** n/a – used directly inside `model()` as
   `VP_INDIV` in place of an estimated `vp <- exp(lvp + etalvp)`.
 - **Source aliases:** `V2I` – used in `Friberg_2002_paclitaxel.R`
   (NM-TRAN data column for per-subject paclitaxel V2).
@@ -3493,9 +3482,8 @@ entries should default to all caps.
   `covariateData[[BAS_SVEGFR3]]$units`).
 - **Type:** continuous
 - **Scope:** specific
-- **Reference category:** n/a – appears directly inside
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html) as
-  the initial condition `svegfr3(0) <- BAS_SVEGFR3` and inside the
+- **Reference category:** n/a – appears directly inside `model()` as the
+  initial condition `svegfr3(0) <- BAS_SVEGFR3` and inside the
   relative-change driver `bm = (svegfr3 - BAS_SVEGFR3) / BAS_SVEGFR3`.
 - **Source aliases:**
   - `BAS3` – used in `Hansson_2013b_sunitinib.R` (DDMODEL00000198) and
@@ -3526,8 +3514,7 @@ entries should default to all caps.
   treats as a fixed input. Used as a per-subject (time-fixed) covariate
   in fatigue / adverse-event PD models that consume the upstream
   biomarker dynamics as data covariates without instantiating the
-  biomarker ODE; appears as `kout3 = 1 / MRT_SVEGFR3` inside
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html).
+  biomarker ODE; appears as `kout3 = 1 / MRT_SVEGFR3` inside `model()`.
 - **Units:** h (hours) – document per-model via
   `covariateData[[MRT_SVEGFR3]]$units`.
 - **Type:** continuous
@@ -3563,9 +3550,8 @@ entries should default to all caps.
   document per-model via `covariateData[[EC50_SVEGFR3]]$units`).
 - **Type:** continuous
 - **Scope:** specific
-- **Reference category:** n/a – appears directly inside
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html) in
-  the simple-Imax drug-effect term `eff3 = auc / (EC50_SVEGFR3 + auc)`.
+- **Reference category:** n/a – appears directly inside `model()` in the
+  simple-Imax drug-effect term `eff3 = auc / (EC50_SVEGFR3 + auc)`.
 - **Source aliases:**
   - `EC53` – used in `Hansson_2013b_sunitinib.R` (DDMODEL00000198) and
     `Hansson_2013c_sunitinib.R` (DDMODEL00000222) as the posthoc
@@ -3594,12 +3580,11 @@ entries should default to all caps.
   `covariateData[[BAS_SKIT]]$units`).
 - **Type:** continuous
 - **Scope:** specific
-- **Reference category:** n/a – appears directly inside
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html) as
-  the initial condition for treated and placebo sKIT compartments and
-  inside the relative-change driver `(skit_pla - skit_drug) / skit_pla`
-  (or the analogous BAS_SKIT-denominated form when only one sKIT
-  compartment is simulated).
+- **Reference category:** n/a – appears directly inside `model()` as the
+  initial condition for treated and placebo sKIT compartments and inside
+  the relative-change driver `(skit_pla - skit_drug) / skit_pla` (or the
+  analogous BAS_SKIT-denominated form when only one sKIT compartment is
+  simulated).
 - **Source aliases:**
   - `SBAS` – used in `Hansson_2013b_sunitinib.R` (DDMODEL00000198) as
     the posthoc sKIT baseline column from the paper’s upstream Hansson
@@ -3630,8 +3615,7 @@ entries should default to all caps.
   in tumor-growth-inhibition / fatigue / adverse-event PD models that
   consume the upstream sKIT dynamics as data covariates without
   instantiating the biomarker ODE for sKIT in isolation; appears as
-  `kout_skit = 1 / MRT_SKIT` inside
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html).
+  `kout_skit = 1 / MRT_SKIT` inside `model()`.
 - **Units:** h (hours) – document per-model via
   `covariateData[[MRT_SKIT]]$units`.
 - **Type:** continuous
@@ -3667,9 +3651,8 @@ entries should default to all caps.
   document per-model via `covariateData[[EC50_SKIT]]$units`).
 - **Type:** continuous
 - **Scope:** specific
-- **Reference category:** n/a – appears directly inside
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html) in
-  the simple-Imax drug-effect term `eff_skit = auc / (EC50_SKIT + auc)`.
+- **Reference category:** n/a – appears directly inside `model()` in the
+  simple-Imax drug-effect term `eff_skit = auc / (EC50_SKIT + auc)`.
 - **Source aliases:**
   - `SEC5` – used in `Hansson_2013b_sunitinib.R` (DDMODEL00000198) as
     the posthoc sKIT EC50 column from the paper’s upstream Hansson 2013a
@@ -3692,8 +3675,7 @@ entries should default to all caps.
   that need to simulate the placebo-arm sKIT trajectory as a comparator
   for the drug-arm sKIT compartment; appears as
   `dps_skit = BAS_SKIT * (1 + SLOPE_SKIT * t)` and
-  `kin_skit = dps_skit * kout_skit` inside
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html).
+  `kin_skit = dps_skit * kout_skit` inside `model()`.
 - **Units:** 1/h (document per-model via
   `covariateData[[SLOPE_SKIT]]$units`).
 - **Type:** continuous
@@ -3724,16 +3706,15 @@ entries should default to all caps.
   concentration from a separately fitted population PK model (e.g., the
   Laouenan 2015 upstream RBV popPK fit) that the current downstream PD
   model treats as a fixed input. Used together with `K_RBV` inside
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html) to
-  reconstruct the individual ribavirin concentration time-course
-  analytically as `riba(t) = CSS_RBV * (1 - exp(-K_RBV * t))`.
+  `model()` to reconstruct the individual ribavirin concentration
+  time-course analytically as
+  `riba(t) = CSS_RBV * (1 - exp(-K_RBV * t))`.
 - **Units:** ng/mL (document per-model via
   `covariateData[[CSS_RBV]]$units`).
 - **Type:** continuous
 - **Scope:** specific
-- **Reference category:** n/a – appears directly inside
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html) in
-  the analytical RBV-concentration expression
+- **Reference category:** n/a – appears directly inside `model()` in the
+  analytical RBV-concentration expression
   `riba = CSS_RBV * (1 - exp(-K_RBV * t))` that drives the inhibition
   term `riba / (riba + ec50)`.
 - **Source aliases:**
@@ -3766,10 +3747,9 @@ entries should default to all caps.
   estimate of the first-order rate constant governing the exponential
   approach of ribavirin plasma trough concentrations to steady state,
   from the same upstream popPK fit that supplies `CSS_RBV`. Used
-  together with `CSS_RBV` inside
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html) to
-  reconstruct the individual ribavirin concentration time-course
-  analytically as `riba(t) = CSS_RBV * (1 - exp(-K_RBV * t))`.
+  together with `CSS_RBV` inside `model()` to reconstruct the individual
+  ribavirin concentration time-course analytically as
+  `riba(t) = CSS_RBV * (1 - exp(-K_RBV * t))`.
 - **Units:** 1/day (document per-model via
   `covariateData[[K_RBV]]$units`).
 - **Type:** continuous
@@ -4099,9 +4079,8 @@ entries should default to all caps.
   exogenous regressor. The DDMORE bundle’s hand-rolled piecewise-linear
   interpolation (`GL = (t-T1)/(TOBS-T1)*(GLU-GLU1)+GLU1` with bracketing
   columns `iglu / glun / td / tn`) is replaced in nlmixr2 by
-  `linear(GLU)` declared in
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html);
-  the bracketing columns are not required.
+  `linear(GLU)` declared in `model()`; the bracketing columns are not
+  required.
 
 ### INS (**canonical for plasma insulin time-course regressor**)
 
@@ -4135,9 +4114,7 @@ entries should default to all caps.
   bundle’s hand-rolled piecewise-linear interpolation
   (`I = (t-T1)/(TOBS-T1)*(INS-INS1)+INS1` with bracketing columns
   `iins / insn / td / tn`) is replaced in nlmixr2 by `linear(INS)`
-  declared in
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html);
-  the bracketing columns are not required.
+  declared in `model()`; the bracketing columns are not required.
 
 ### INS_BL (**canonical for baseline (fasting) plasma insulin concentration**)
 
@@ -4180,8 +4157,7 @@ entries should default to all caps.
   glomerular filtration in renal-glucose-reabsorption QSP models. Not a
   covariate that modifies a parameter; the model integrates `CINH`
   directly through `linear(CINH)` and multiplies by the unbound fraction
-  `fup` inside
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html).
+  `fup` inside `model()`.
 - **Units:** nmol/L (matching the units of the inhibitor’s affinity
   constants Ki1 and Ki2 in the SGLT MM kinetics).
 - **Type:** continuous
@@ -9028,9 +9004,8 @@ serve other parameters that do separate that group.
 - **Source aliases:**
   - `bio-naive` (Aguiar 2021 source-paper variable, with the indicator
     inverted: paper’s `bio-naive = 1 - PRIOR_BIO`). Effect coefficients
-    in the source paper apply to `bio-naive`; in
-    [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html)
-    derive `bio_naive <- 1 - PRIOR_BIO` to preserve the paper’s reported
+    in the source paper apply to `bio-naive`; in `model()` derive
+    `bio_naive <- 1 - PRIOR_BIO` to preserve the paper’s reported
     coefficient.
 - **Example models:** `Aguiar_2021_ustekinumab.R` (Aguiar 2021 Table 2
   footnote a; multiplicative effect on CL: factor
@@ -9043,8 +9018,7 @@ serve other parameters that do separate that group.
   specifically tested anti-TNF exposure. When the source paper uses the
   inverted “bio-naive” indicator (1 = naive), document the inversion in
   `covariateData[[PRIOR_BIO]]$notes` and apply `1 - PRIOR_BIO` in
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html) so
-  the canonical column stores 1 = previously exposed.
+  `model()` so the canonical column stores 1 = previously exposed.
 
 ### PRIOR_TNF (**canonical for prior anti-TNF biologic exposure indicator**)
 
@@ -9120,8 +9094,7 @@ serve other parameters that do separate that group.
     2010 fits the covariate on the log scale and reports the reference
     as `LRF = 4.7` (i.e., `log(110) ~= 4.7`). The canonical column
     carries the raw RF concentration in U/mL; the log transform is
-    applied inside
-    [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html).
+    applied inside `model()`.
   - `RF` – universal NONMEM/clinical-PK abbreviation; rejected as the
     canonical name on 2026-04-28 because the bare two-letter
     abbreviation is uncommon in published popPK papers and could be
@@ -9198,11 +9171,10 @@ serve other parameters that do separate that group.
   reports no pain at the assessment), which makes the bare power form
   `(PAIN/60)^exp` return 0. Frey 2013 documents an explicit 0.010 floor
   on PAIN in its Table 2 covariate range; the model file applies the
-  same floor inside
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html) so
-  simulation under PAIN = 0 returns a finite BASE rather than collapsing
-  to zero. Canonical name follows the `EOS` / `EASI` convention (no `BL`
-  prefix); baseline-vs-time-varying status is per-model.
+  same floor inside `model()` so simulation under PAIN = 0 returns a
+  finite BASE rather than collapsing to zero. Canonical name follows the
+  `EOS` / `EASI` convention (no `BL` prefix); baseline-vs-time-varying
+  status is per-model.
 
 ### SWOL_28JOINT (**canonical for 28-joint swollen joint count**)
 
@@ -9382,9 +9354,8 @@ serve other parameters that do separate that group.
   C1 = both nonexpressers; C2 = recipient `*1` carrier + donor
   nonexpresser = +33%; C3 = recipient nonexpresser + donor `*1` carrier
   = +33%; C4 = both `*1` carriers = +71%; Moes 2016 Table 4 final model
-  – the C2 / C3 / C4 levels are reconstructed inside
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html)
-  from the two binary inputs `CYP3A5_EXPR` and `CYP3A5_EXPR_DONOR`),
+  – the C2 / C3 / C4 levels are reconstructed inside `model()` from the
+  two binary inputs `CYP3A5_EXPR` and `CYP3A5_EXPR_DONOR`),
   `Ji_2018_tacrolimus.R` (combinational categorical effect on tacrolimus
   CL/F that depends on both recipient and donor CYP3A5 status:
   multiplier 2.314 when the recipient is an expresser and the donor is
@@ -9400,16 +9371,14 @@ serve other parameters that do separate that group.
   single four-level combination column, so the underlying recipient /
   donor biology is explicit in the dataset. Models that fit a
   categorical four-level combination effect (paper-Moes-style C1 / C2 /
-  C3 / C4) reconstruct the levels inside
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html)
-  from the two binary inputs, so the source-paper’s per-level
-  coefficients remain the estimated quantities. The intestinal-CYP3A5
-  contribution (recipient genotype) and the hepatic-CYP3A5 contribution
-  (donor genotype) act on different anatomic compartments of
-  tacrolimus’s first-pass metabolism, which is why both donor and
-  recipient genotypes are independently informative in liver-transplant
-  tacrolimus PK. Ratified canonically on 2026-05-20 alongside the Moes
-  2016 tacrolimus extraction.
+  C3 / C4) reconstruct the levels inside `model()` from the two binary
+  inputs, so the source-paper’s per-level coefficients remain the
+  estimated quantities. The intestinal-CYP3A5 contribution (recipient
+  genotype) and the hepatic-CYP3A5 contribution (donor genotype) act on
+  different anatomic compartments of tacrolimus’s first-pass metabolism,
+  which is why both donor and recipient genotypes are independently
+  informative in liver-transplant tacrolimus PK. Ratified canonically on
+  2026-05-20 alongside the Moes 2016 tacrolimus extraction.
 
 ### CYP3A5_STAR1_HET (**canonical for CYP3A5*1/*3 heterozygote indicator**)
 
@@ -10852,8 +10821,7 @@ promote to general when a second paper ratifies identical semantics.
   PK parameter rather than a supplied covariate. When the paper’s F
   regression is itself a function of `DOSE`, the user can derive FRACABS
   from the DOSE column upstream of `rxSolve` rather than carrying the
-  regression inside
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html).
+  regression inside `model()`.
 
 ### FED (**canonical for fed-vs-fasted dose-record indicator**)
 
@@ -11329,10 +11297,9 @@ promote to general when a second paper ratifies identical semantics.
     covariate equation as
     `Ka = 0.375 * (1 - (1 - theta_form) * FORMULATION)` with
     `FORMULATION = 1` for prolonged-release; the model derives
-    `form_pr = 1 - FORM_TAC_IR` inside
-    [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html)
-    to match the paper’s published equation while keeping the canonical
-    column oriented Prograf = 1.
+    `form_pr = 1 - FORM_TAC_IR` inside `model()` to match the paper’s
+    published equation while keeping the canonical column oriented
+    Prograf = 1.
 - **Example models:** `Woillard_2011_tacrolimus.R` (multiplicative
   effects per Woillard 2011 Table 4: `Ktr = theta1 * theta2^FORM_TAC_IR`
   with `theta1 = 3.34/h` and `theta2 = 1.53` (Prograf ~53 % faster
@@ -11932,8 +11899,7 @@ promote to general when a second paper ratifies identical semantics.
   NONMEM dataset described in Tammara 2017 Table 1 footnote b.
 - **Example models:** `Tammara_2017_rivipansel.R` (Table 1: additive
   effect 0.234 on CL via `1 + 0.234 * STUDY_RIV201`; selects the
-  cohort-specific additive and proportional residual SDs in
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html)).
+  cohort-specific additive and proportional residual SDs in `model()`).
 - **Notes:** Specific scope because the contrast is tied to the
   rivipansel development program. The Tammara 2017 paper interprets the
   23% CL increment as a putative hyperfiltration effect of SCD; in
@@ -12020,8 +11986,7 @@ promote to general when a second paper ratifies identical semantics.
 - **Units:** (count)
 - **Type:** categorical
 - **Scope:** general
-- **Reference category:** n/a – `OCC` is decomposed inside
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html)
+- **Reference category:** n/a – `OCC` is decomposed inside `model()`
   into mutually-exclusive binary indicators, e.g., `oc1 <- (OCC == 1)`,
   `oc2 <- (OCC == 2)`, …, that are then multiplied against per-occasion
   `eta*` slots.
@@ -12051,8 +12016,7 @@ promote to general when a second paper ratifies identical semantics.
 - **Example models:** `Xie_2019_agomelatine.R`.
 - **Notes:** Lower case preserved from source file. Pre-existing legacy
   form; new models should prefer the integer-valued `OCC` canonical
-  above and decompose into binary indicators inside
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html).
+  above and decompose into binary indicators inside `model()`.
 
 ### MONTH1 (**canonical for first-month-of-treatment landmark indicator**)
 
@@ -12177,9 +12141,7 @@ promote to general when a second paper ratifies identical semantics.
   semantics differ – e.g., a disease-progression activation function
   defined on global disease time plus a placebo-effect term defined on
   time-since-study-entry need access to both reference clocks within the
-  same
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html)
-  block.
+  same `model()` block.
 - **Units:** year (or whatever time unit the model’s `units$time` field
   declares)
 - **Type:** continuous

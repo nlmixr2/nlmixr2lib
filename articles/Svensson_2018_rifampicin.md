@@ -117,8 +117,7 @@ loaded.
 ## Source trace
 
 Per-parameter origin (also recorded as in-file comments next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry of
-`inst/modeldb/ddmore/Svensson_2018_rifampicin.R`):
+`ini()` entry of `inst/modeldb/ddmore/Svensson_2018_rifampicin.R`):
 
 | Equation / parameter | Value | Source location |
 |----|----|----|
@@ -714,8 +713,7 @@ ggplot(iov_summary, aes(tad, Q50, colour = occasion)) +
   `$ERROR` blocks reference only `FFM`, `DOSE`, and `OCC`. The packaged
   `covariateData` declares only the three effective covariates; the
   others remain in the bundle CSV for downstream analysis but are
-  dropped by
-  [`rxSolve()`](https://nlmixr2.github.io/rxode2/reference/rxSolve.html).
+  dropped by `rxSolve()`.
 
 - **[`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
   flags three justified deviations.** The packaged model trips three
@@ -736,23 +734,20 @@ ggplot(iov_summary, aes(tad, Q50, colour = occasion)) +
         is out of scope here.
   2.  `etaiov_bio_1` / `etaiov_bio_2` (and the analogous IOV-MTT,
       IOV-KM, IOV-KA pairs) follow the `etaiov_<param>_<occasion>` shape
-      but the `param` token `bio` does not match any
-      [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html)
+      but the `param` token `bio` does not match any `ini()`
       fixed-effect parameter (the canonical IOV check accepts `<param>`,
       `l<param>`, `ltv<param>`, or `lv<param>`). The bioavailability
-      multiplier `bio` is computed inside
-      [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html)
-      from `femax`, `fed50`, `DOSE`, and the IOV eta itself; there is no
-      structural `lbio` parameter to anchor the IOV name to, because the
+      multiplier `bio` is computed inside `model()` from `femax`,
+      `fed50`, `DOSE`, and the IOV eta itself; there is no structural
+      `lbio` parameter to anchor the IOV name to, because the
       typical-value bioavailability at the reference 450 mg dose is
       exactly 1 by construction. Adding a fictitious
-      `lbio <- fixed(log(1))` to
-      [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html)
-      solely to satisfy the convention checker would be artificial and
-      misleading. The IOV-MTT / IOV-KM / IOV-KA pairs *do* anchor
-      cleanly via `lmtt` / `lkm` / `lka` respectively (the checker
-      accepts those), so only `etaiov_bio_<k>` carry the deviation.
-      Functionally the IOV is still correctly parameterised:
+      `lbio <- fixed(log(1))` to `ini()` solely to satisfy the
+      convention checker would be artificial and misleading. The IOV-MTT
+      / IOV-KM / IOV-KA pairs *do* anchor cleanly via `lmtt` / `lkm` /
+      `lka` respectively (the checker accepts those), so only
+      `etaiov_bio_<k>` carry the deviation. Functionally the IOV is
+      still correctly parameterised:
       `bio = (1 + femax*(DOSE-450)/(...)) * exp(iov_bio)` with
       `iov_bio = oc1 * etaiov_bio_1 + oc2 * etaiov_bio_2` and the
       second-occasion variance hard-fixed at the first per

@@ -650,8 +650,7 @@ nca_r <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj_r, dose_obj_r,
 #> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■       87% |  ETA:  0s
-#> Warning: Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
@@ -928,8 +927,7 @@ nca_s <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj_s, dose_obj_s,
 #> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     94% |  ETA:  0s
-#> Warning: Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0333) is not allowed
@@ -1149,8 +1147,7 @@ on CL are shared between enantiomers.
   volumes (vc, vp, vp2) of the corresponding enantiomer. The shared-eta
   naming uses the canonical “central volume” eta name (`etalvc_*`) per
   `references/naming-conventions.md`; the application to vp / vp2 is
-  done in
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html).
+  done in `model()`.
 
 - **WAD covariate renamed to canonical PREG.** The source NONMEM column
   is `WAD` (women at delivery, 1 = at delivery). Per
@@ -1174,11 +1171,9 @@ on CL are shared between enantiomers.
   across enantiomers.** Per Table 2 footnotes b and d, the same exponent
   `WT_V = 0.807` is applied to V1, V2, V3 of each enantiomer. The
   model-file parameter is named `e_wt_vc_vp` (canonical shared exponent
-  on Vc and Vp); the same value is reused for vp2 in
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html).
-  The convention checker accepts the shared-exponent name and the
-  in-[`model()`](https://nlmixr2.github.io/rxode2/reference/model.html)
-  reuse for vp2 is documented in the file comments.
+  on Vc and Vp); the same value is reused for vp2 in `model()`. The
+  convention checker accepts the shared-exponent name and the
+  in-`model()` reuse for vp2 is documented in the file comments.
 
 - **No depot compartment; user splits the racemic dose 50/50.** The
   paper treats half the racemic dose as R and half as S directly in the

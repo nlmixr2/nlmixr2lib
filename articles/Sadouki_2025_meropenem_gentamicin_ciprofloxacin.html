@@ -550,7 +550,7 @@ programmatically:</p>
 <h2 id="source-trace">Source trace<a class="anchor" aria-label="anchor" href="#source-trace"></a>
 </h2>
 <p>The per-parameter origin is recorded as an in-file comment next to
-each <code><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini()</a></code> entry in
+each <code>ini()</code> entry in
 <code>inst/modeldb/pharmacodynamics/Sadouki_2025_meropenem_gentamicin_ciprofloxacin.R</code>.
 The table below collects them in one place.</p>
 <table class="table">
@@ -709,7 +709,7 @@ control through 16 x MIC). Standard inoculum (10^5 CFU/mL).</p>
 <span></span>
 <span><span class="va">mic_levels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">4</span>, <span class="fl">8</span>, <span class="fl">16</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">regimens</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
+<span><span class="va">regimens</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="op">(</span></span>
 <span>  regimen <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Growth control"</span>,</span>
 <span>              <span class="st">"Mer mono"</span>, <span class="st">"Gen mono"</span>, <span class="st">"Cip mono"</span>,</span>
 <span>              <span class="st">"Mer + Gen"</span>, <span class="st">"Mer + Cip"</span>, <span class="st">"Gen + Cip"</span>,</span>
@@ -720,8 +720,8 @@ control through 16 x MIC). Standard inoculum (10^5 CFU/mL).</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">scenarios</span> <span class="op">&lt;-</span> <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/expand_grid.html" class="external-link">expand_grid</a></span><span class="op">(</span><span class="va">regimens</span>, mic_mult <span class="op">=</span> <span class="va">mic_levels</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="op">(</span><span class="va">regimen</span> <span class="op">==</span> <span class="st">"Growth control"</span> <span class="op">&amp;</span> <span class="va">mic_mult</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="op">(</span><span class="va">regimen</span> <span class="op">==</span> <span class="st">"Growth control"</span> <span class="op">&amp;</span> <span class="va">mic_mult</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">mutate</span><span class="op">(</span></span>
 <span>    Cmer_init <span class="op">=</span> <span class="va">mer_in</span> <span class="op">*</span> <span class="va">mic_mult</span> <span class="op">*</span> <span class="va">mic</span><span class="op">[[</span><span class="st">"meropenem"</span><span class="op">]</span><span class="op">]</span>,</span>
 <span>    Cgen      <span class="op">=</span> <span class="va">gen_in</span> <span class="op">*</span> <span class="va">mic_mult</span> <span class="op">*</span> <span class="va">mic</span><span class="op">[[</span><span class="st">"gentamicin"</span><span class="op">]</span><span class="op">]</span>,</span>
 <span>    Ccip      <span class="op">=</span> <span class="va">cip_in</span> <span class="op">*</span> <span class="va">mic_mult</span> <span class="op">*</span> <span class="va">mic</span><span class="op">[[</span><span class="st">"ciprofloxacin"</span><span class="op">]</span><span class="op">]</span>,</span>
@@ -1397,10 +1397,10 @@ but the published figures are typical-value predictions.</p>
 <span><span class="va">times</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">8</span>, by <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">9</span>, <span class="fl">24</span>, by <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">ev</span> <span class="op">&lt;-</span> <span class="va">scenarios</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rowwise.html" class="external-link">rowwise</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/do.html" class="external-link">do</a></span><span class="op">(</span><span class="op">{</span></span>
+<span>  <span class="fu">rowwise</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">do</span><span class="op">(</span><span class="op">{</span></span>
 <span>    <span class="va">sc</span> <span class="op">&lt;-</span> <span class="va">.</span></span>
-<span>    <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
+<span>    <span class="fu">tibble</span><span class="op">(</span></span>
 <span>      id   <span class="op">=</span> <span class="va">sc</span><span class="op">$</span><span class="va">id</span>,</span>
 <span>      time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">times</span><span class="op">)</span>,</span>
 <span>      evid <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1L</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0L</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">times</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
@@ -1416,7 +1416,7 @@ but the published figures are typical-value predictions.</p>
 <span>      mic_mult    <span class="op">=</span> <span class="va">sc</span><span class="op">$</span><span class="va">mic_mult</span></span>
 <span>    <span class="op">)</span></span>
 <span>  <span class="op">}</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="fu">ungroup</span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span></span>
 <span>  <span class="va">mod_typ</span>,</span>
@@ -1427,7 +1427,7 @@ but the published figures are typical-value predictions.</p>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html" class="external-link">as_tibble</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>log10_bact <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log10</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="va">bacteria</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalknet', 'etalemax_mer', 'etalic50_mer', 'etalhill_mer', 'etabeta_mer', 'etalemax_gen', 'etalhill_gen', 'etalemax_cip', 'etalic50_cip', 'etalhill_cip'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalknet', 'etalemax_mer', 'etalic50_mer', 'etalhill_mer', 'etabeta_mer', 'etalemax_gen', 'etalhill_gen', 'etalemax_cip', 'etalic50_cip', 'etalhill_cip'</span></span>
 <span><span class="co">#&gt; Warning: multi-subject simulation without without 'omega'</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -1438,8 +1438,8 @@ regimens at one MIC multiple. The y-axis dashed line at 100 CFU/mL (=
 10^2) is the practical limit of detection.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fig1_data</span> <span class="op">&lt;-</span> <span class="va">sim</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&lt;=</span> <span class="fl">24</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>panel <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">mic_mult</span>, <span class="st">"x MIC"</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&lt;=</span> <span class="fl">24</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">mutate</span><span class="op">(</span>panel <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">mic_mult</span>, <span class="st">"x MIC"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">fig1_data</span><span class="op">$</span><span class="va">panel</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span></span>
 <span>  <span class="va">fig1_data</span><span class="op">$</span><span class="va">panel</span>,</span>
@@ -1447,20 +1447,20 @@ regimens at one MIC multiple. The y-axis dashed line at 100 CFU/mL (=
 <span>             <span class="st">"2x MIC"</span>, <span class="st">"4x MIC"</span>, <span class="st">"8x MIC"</span>, <span class="st">"16x MIC"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">fig1_data</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">log10_bact</span>, colour <span class="op">=</span> <span class="va">regimen</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">2</span>, linetype <span class="op">=</span> <span class="fl">2</span>, colour <span class="op">=</span> <span class="st">"grey40"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span> <span class="va">panel</span>, ncol <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_continuous</a></span><span class="op">(</span>limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">11</span><span class="op">)</span>, breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">10</span>, by <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">fig1_data</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">time</span>, <span class="va">log10_bact</span>, colour <span class="op">=</span> <span class="va">regimen</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_hline</span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">2</span>, linetype <span class="op">=</span> <span class="fl">2</span>, colour <span class="op">=</span> <span class="st">"grey40"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">facet_wrap</span><span class="op">(</span><span class="op">~</span> <span class="va">panel</span>, ncol <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">scale_y_continuous</span><span class="op">(</span>limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">11</span><span class="op">)</span>, breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">10</span>, by <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span></span>
 <span>    x <span class="op">=</span> <span class="st">"Time (h)"</span>,</span>
 <span>    y <span class="op">=</span> <span class="st">"log10 CFU/mL"</span>,</span>
 <span>    colour <span class="op">=</span> <span class="st">"Regimen"</span>,</span>
 <span>    title <span class="op">=</span> <span class="st">"Figure 1 -- typical-value time-kill curves"</span>,</span>
 <span>    caption <span class="op">=</span> <span class="st">"Replicates Figure 1 of Sadouki 2025."</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"bottom"</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu">theme_bw</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">theme</span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"bottom"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Sadouki_2025_meropenem_gentamicin_ciprofloxacin_files/figure-html/figure-1-1.png" class="r-plt" alt="" width="864"></p>
 <p>Sanity checks against Sadouki 2025 Figure 1:</p>
 <ul>
@@ -1488,32 +1488,32 @@ modifiers (combination changes IC50 for ciprofloxacin via the
 proportional synergy terms).</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">peak_effect</span> <span class="op">&lt;-</span> <span class="va">sim</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span>  <span class="co"># Effect at t = 0 isolates the Hill curve from the regrowth term</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">regimen</span>, <span class="va">mic_mult</span>, <span class="va">MER_PRESENT</span>, <span class="va">GEN_PRESENT</span>, <span class="va">CIP_PRESENT</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span>  <span class="co"># Effect at t = 0 isolates the Hill curve from the regrowth term</span></span>
+<span>  <span class="fu">select</span><span class="op">(</span><span class="va">regimen</span>, <span class="va">mic_mult</span>, <span class="va">MER_PRESENT</span>, <span class="va">GEN_PRESENT</span>, <span class="va">CIP_PRESENT</span>,</span>
 <span>         <span class="va">eff_mer</span>, <span class="va">eff_gen</span>, <span class="va">eff_cip</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Hill curves -- peak Emax * C^h / (IC50^h + C^h)</span></span>
-<span><span class="va">conc_grid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
+<span><span class="va">conc_grid</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="op">(</span></span>
 <span>  conc <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">1e-4</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span>, length.out <span class="op">=</span> <span class="fl">200</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Meropenem (constant across regimens for the peak-effect Hill curve)</span></span>
 <span><span class="va">hill_mer</span> <span class="op">&lt;-</span> <span class="va">conc_grid</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
+<span>  <span class="fu">mutate</span><span class="op">(</span></span>
 <span>    eff <span class="op">=</span> <span class="fl">4.18</span> <span class="op">*</span> <span class="va">conc</span><span class="op">^</span><span class="fl">2.76</span> <span class="op">/</span> <span class="op">(</span><span class="fl">0.0781</span><span class="op">^</span><span class="fl">2.76</span> <span class="op">+</span> <span class="va">conc</span><span class="op">^</span><span class="fl">2.76</span><span class="op">)</span>,</span>
 <span>    drug <span class="op">=</span> <span class="st">"Meropenem"</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Gentamicin</span></span>
 <span><span class="va">hill_gen</span> <span class="op">&lt;-</span> <span class="va">conc_grid</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
+<span>  <span class="fu">mutate</span><span class="op">(</span></span>
 <span>    eff <span class="op">=</span> <span class="fl">5.47</span> <span class="op">*</span> <span class="va">conc</span><span class="op">^</span><span class="fl">3.63</span> <span class="op">/</span> <span class="op">(</span><span class="fl">1.12</span><span class="op">^</span><span class="fl">3.63</span> <span class="op">+</span> <span class="va">conc</span><span class="op">^</span><span class="fl">3.63</span><span class="op">)</span>,</span>
 <span>    drug <span class="op">=</span> <span class="st">"Gentamicin"</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Ciprofloxacin -- one curve per IC50 multiplier (mono / +Mer / +Gen / +Mer+Gen)</span></span>
 <span><span class="va">ic50_cip_base</span> <span class="op">&lt;-</span> <span class="fl">0.0106</span></span>
-<span><span class="va">ic50_cip_mods</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
+<span><span class="va">ic50_cip_mods</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="op">(</span></span>
 <span>  presence <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Cip alone"</span>, <span class="st">"Cip + Mer"</span>, <span class="st">"Cip + Gen"</span>, <span class="st">"Cip + Mer + Gen"</span><span class="op">)</span>,</span>
 <span>  factor   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,</span>
 <span>               <span class="fl">1</span> <span class="op">+</span> <span class="op">(</span><span class="op">-</span><span class="fl">0.353</span><span class="op">)</span>,</span>
@@ -1521,19 +1521,19 @@ proportional synergy terms).</p>
 <span>               <span class="fl">1</span> <span class="op">+</span> <span class="op">(</span><span class="op">-</span><span class="fl">0.353</span><span class="op">)</span> <span class="op">+</span> <span class="op">(</span><span class="op">-</span><span class="fl">0.576</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">hill_cip</span> <span class="op">&lt;-</span> <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/expand_grid.html" class="external-link">expand_grid</a></span><span class="op">(</span><span class="va">conc_grid</span>, <span class="va">ic50_cip_mods</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
+<span>  <span class="fu">mutate</span><span class="op">(</span></span>
 <span>    ic50_eff <span class="op">=</span> <span class="va">ic50_cip_base</span> <span class="op">*</span> <span class="va">factor</span>,</span>
 <span>    eff      <span class="op">=</span> <span class="fl">4.55</span> <span class="op">*</span> <span class="va">conc</span><span class="op">^</span><span class="fl">3.58</span> <span class="op">/</span> <span class="op">(</span><span class="va">ic50_eff</span><span class="op">^</span><span class="fl">3.58</span> <span class="op">+</span> <span class="va">conc</span><span class="op">^</span><span class="fl">3.58</span><span class="op">)</span>,</span>
 <span>    drug     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Ciprofloxacin ("</span>, <span class="va">presence</span>, <span class="st">")"</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">hill_mer</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">conc</span>, <span class="va">eff</span><span class="op">)</span>, colour <span class="op">=</span> <span class="st">"steelblue"</span>, linewidth <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">hill_gen</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">conc</span>, <span class="va">eff</span><span class="op">)</span>, colour <span class="op">=</span> <span class="st">"darkgreen"</span>, linewidth <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">hill_cip</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">conc</span>, <span class="va">eff</span>, colour <span class="op">=</span> <span class="va">presence</span><span class="op">)</span>, linewidth <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span> <span class="cn">NULL</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_x_log10</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span>data <span class="op">=</span> <span class="va">hill_mer</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">conc</span>, <span class="va">eff</span><span class="op">)</span>, colour <span class="op">=</span> <span class="st">"steelblue"</span>, linewidth <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span>data <span class="op">=</span> <span class="va">hill_gen</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">conc</span>, <span class="va">eff</span><span class="op">)</span>, colour <span class="op">=</span> <span class="st">"darkgreen"</span>, linewidth <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span>data <span class="op">=</span> <span class="va">hill_cip</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">conc</span>, <span class="va">eff</span>, colour <span class="op">=</span> <span class="va">presence</span><span class="op">)</span>, linewidth <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">facet_wrap</span><span class="op">(</span><span class="op">~</span> <span class="cn">NULL</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">scale_x_log10</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span></span>
 <span>    x <span class="op">=</span> <span class="st">"Drug concentration (mg/L, log scale)"</span>,</span>
 <span>    y <span class="op">=</span> <span class="st">"Peak killing effect (1/h)"</span>,</span>
 <span>    colour <span class="op">=</span> <span class="st">"Cip context"</span>,</span>
@@ -1541,8 +1541,8 @@ proportional synergy terms).</p>
 <span>    caption <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Replicates Figure 2 of Sadouki 2025;"</span>,</span>
 <span>                    <span class="st">"blue = Mer, green = Gen, multi-coloured = Cip variants."</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"bottom"</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu">theme_bw</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">theme</span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"bottom"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Sadouki_2025_meropenem_gentamicin_ciprofloxacin_files/figure-html/figure-2-effect-1.png" class="r-plt" alt="" width="768"></p>
 <p>Note the leftward shift of the ciprofloxacin curve when meropenem and
 / or gentamicin are present – this is the synergy on potency (lower
@@ -1567,10 +1567,10 @@ effect is <em>enhanced</em> over time.</p>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="co"># Meropenem panel: monotherapy (BETA = 0.922) and combination (BETA = -0.078)</span></span>
-<span><span class="va">mer_curves</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>time <span class="op">=</span> <span class="va">t_grid</span>, rel_eff <span class="op">=</span> <span class="fu">loss_curve</span><span class="op">(</span><span class="fl">0.922</span>, <span class="fl">0.570</span><span class="op">)</span>,</span>
+<span><span class="va">mer_curves</span> <span class="op">&lt;-</span> <span class="fu">bind_rows</span><span class="op">(</span></span>
+<span>  <span class="fu">tibble</span><span class="op">(</span>time <span class="op">=</span> <span class="va">t_grid</span>, rel_eff <span class="op">=</span> <span class="fu">loss_curve</span><span class="op">(</span><span class="fl">0.922</span>, <span class="fl">0.570</span><span class="op">)</span>,</span>
 <span>         drug <span class="op">=</span> <span class="st">"Mer"</span>, context <span class="op">=</span> <span class="st">"monotherapy"</span><span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>time <span class="op">=</span> <span class="va">t_grid</span>, rel_eff <span class="op">=</span> <span class="fu">loss_curve</span><span class="op">(</span><span class="fl">0.922</span> <span class="op">-</span> <span class="fl">1</span>, <span class="fl">0.570</span><span class="op">)</span>,</span>
+<span>  <span class="fu">tibble</span><span class="op">(</span>time <span class="op">=</span> <span class="va">t_grid</span>, rel_eff <span class="op">=</span> <span class="fu">loss_curve</span><span class="op">(</span><span class="fl">0.922</span> <span class="op">-</span> <span class="fl">1</span>, <span class="fl">0.570</span><span class="op">)</span>,</span>
 <span>         drug <span class="op">=</span> <span class="st">"Mer"</span>, context <span class="op">=</span> <span class="st">"in 2/3-way combination"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -1580,16 +1580,16 @@ effect is <em>enhanced</em> over time.</p>
 <span><span class="va">beta_gen_shift</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">c</span>, <span class="va">ic50</span> <span class="op">=</span> <span class="fl">5.72</span>, <span class="va">emax</span> <span class="op">=</span> <span class="op">-</span><span class="fl">2.97</span>, <span class="va">h</span> <span class="op">=</span> <span class="fl">20</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">emax</span> <span class="op">*</span> <span class="va">c</span><span class="op">^</span><span class="va">h</span> <span class="op">/</span> <span class="op">(</span><span class="va">ic50</span><span class="op">^</span><span class="va">h</span> <span class="op">+</span> <span class="va">c</span><span class="op">^</span><span class="va">h</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
-<span><span class="va">gen_curves</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span></span>
+<span><span class="va">gen_curves</span> <span class="op">&lt;-</span> <span class="fu">bind_rows</span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">gen_concs</span>, <span class="kw">function</span><span class="op">(</span><span class="va">c</span><span class="op">)</span> <span class="op">{</span></span>
-<span>    <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>time <span class="op">=</span> <span class="va">t_grid</span>,</span>
+<span>    <span class="fu">tibble</span><span class="op">(</span>time <span class="op">=</span> <span class="va">t_grid</span>,</span>
 <span>           rel_eff <span class="op">=</span> <span class="fu">loss_curve</span><span class="op">(</span><span class="fl">0.829</span> <span class="op">+</span> <span class="fu">beta_gen_shift</span><span class="op">(</span><span class="va">c</span><span class="op">)</span>, <span class="fl">0.517</span><span class="op">)</span>,</span>
 <span>           drug <span class="op">=</span> <span class="st">"Gen"</span>,</span>
 <span>           context <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">c</span>, <span class="st">" mg/L (mono)"</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="op">}</span><span class="op">)</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span></span>
-<span>    <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>time <span class="op">=</span> <span class="va">t_grid</span>,</span>
+<span>  <span class="fu">bind_rows</span><span class="op">(</span></span>
+<span>    <span class="fu">tibble</span><span class="op">(</span>time <span class="op">=</span> <span class="va">t_grid</span>,</span>
 <span>           rel_eff <span class="op">=</span> <span class="fu">loss_curve</span><span class="op">(</span><span class="fl">0.829</span> <span class="op">-</span> <span class="fl">1</span>, <span class="fl">0.517</span><span class="op">)</span>,</span>
 <span>           drug <span class="op">=</span> <span class="st">"Gen"</span>,</span>
 <span>           context <span class="op">=</span> <span class="st">"in 2/3-way combination"</span><span class="op">)</span></span>
@@ -1600,36 +1600,36 @@ effect is <em>enhanced</em> over time.</p>
 <span><span class="va">beta_cip_shift</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">c</span>, <span class="va">ic50</span> <span class="op">=</span> <span class="fl">0.017</span>, <span class="va">emax</span> <span class="op">=</span> <span class="op">-</span><span class="fl">4</span>, <span class="va">h</span> <span class="op">=</span> <span class="fl">20</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">emax</span> <span class="op">*</span> <span class="va">c</span><span class="op">^</span><span class="va">h</span> <span class="op">/</span> <span class="op">(</span><span class="va">ic50</span><span class="op">^</span><span class="va">h</span> <span class="op">+</span> <span class="va">c</span><span class="op">^</span><span class="va">h</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
-<span><span class="va">cip_curves</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span></span>
+<span><span class="va">cip_curves</span> <span class="op">&lt;-</span> <span class="fu">bind_rows</span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">cip_concs</span>, <span class="kw">function</span><span class="op">(</span><span class="va">c</span><span class="op">)</span> <span class="op">{</span></span>
-<span>    <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>time <span class="op">=</span> <span class="va">t_grid</span>,</span>
+<span>    <span class="fu">tibble</span><span class="op">(</span>time <span class="op">=</span> <span class="va">t_grid</span>,</span>
 <span>           rel_eff <span class="op">=</span> <span class="fu">loss_curve</span><span class="op">(</span><span class="fl">0.674</span> <span class="op">+</span> <span class="fu">beta_cip_shift</span><span class="op">(</span><span class="va">c</span><span class="op">)</span>, <span class="fl">0.359</span><span class="op">)</span>,</span>
 <span>           drug <span class="op">=</span> <span class="st">"Cip"</span>,</span>
 <span>           context <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">c</span>, <span class="st">" mg/L (mono)"</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="op">}</span><span class="op">)</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span></span>
-<span>    <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>time <span class="op">=</span> <span class="va">t_grid</span>,</span>
+<span>  <span class="fu">bind_rows</span><span class="op">(</span></span>
+<span>    <span class="fu">tibble</span><span class="op">(</span>time <span class="op">=</span> <span class="va">t_grid</span>,</span>
 <span>           rel_eff <span class="op">=</span> <span class="fu">loss_curve</span><span class="op">(</span><span class="fl">0.674</span> <span class="op">-</span> <span class="fl">1</span>, <span class="fl">0.359</span><span class="op">)</span>,</span>
 <span>           drug <span class="op">=</span> <span class="st">"Cip"</span>,</span>
 <span>           context <span class="op">=</span> <span class="st">"in 2/3-way combination"</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
-<span><span class="va">loss_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">mer_curves</span>, <span class="va">gen_curves</span>, <span class="va">cip_curves</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>drug <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">drug</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Mer"</span>, <span class="st">"Gen"</span>, <span class="st">"Cip"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">loss_data</span> <span class="op">&lt;-</span> <span class="fu">bind_rows</span><span class="op">(</span><span class="va">mer_curves</span>, <span class="va">gen_curves</span>, <span class="va">cip_curves</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">mutate</span><span class="op">(</span>drug <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">drug</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Mer"</span>, <span class="st">"Gen"</span>, <span class="st">"Cip"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">loss_data</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">rel_eff</span>, colour <span class="op">=</span> <span class="va">context</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">1</span>, linetype <span class="op">=</span> <span class="fl">3</span>, colour <span class="op">=</span> <span class="st">"grey50"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span> <span class="va">drug</span>, ncol <span class="op">=</span> <span class="fl">1</span>, scales <span class="op">=</span> <span class="st">"free_y"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">loss_data</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">time</span>, <span class="va">rel_eff</span>, colour <span class="op">=</span> <span class="va">context</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_hline</span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">1</span>, linetype <span class="op">=</span> <span class="fl">3</span>, colour <span class="op">=</span> <span class="st">"grey50"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">facet_wrap</span><span class="op">(</span><span class="op">~</span> <span class="va">drug</span>, ncol <span class="op">=</span> <span class="fl">1</span>, scales <span class="op">=</span> <span class="st">"free_y"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span></span>
 <span>    x <span class="op">=</span> <span class="st">"Time (h)"</span>, y <span class="op">=</span> <span class="st">"Relative effect (1 - BETA*(1-exp(-t*TAU)))"</span>,</span>
 <span>    colour <span class="op">=</span> <span class="st">"Context"</span>,</span>
 <span>    title <span class="op">=</span> <span class="st">"Figure 2 (right column) -- loss / enhancement of effect over time"</span>,</span>
 <span>    caption <span class="op">=</span> <span class="st">"Replicates Figure 2 (right) of Sadouki 2025."</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"right"</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu">theme_bw</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">theme</span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"right"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Sadouki_2025_meropenem_gentamicin_ciprofloxacin_files/figure-html/figure-2-loss-1.png" class="r-plt" alt="" width="768"></p>
 </div>
 <div class="section level2">
@@ -1708,7 +1708,7 @@ standard fields (<code>age_range</code>, <code>weight_range</code>,
 <strong>Random effects are between-experiment, not
 between-subject.</strong> The paper’s Methods section (page 2): “Random
 effects (eta) were distinguishing variability between experiments”. The
-eta values in <code><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini()</a></code> are kept for faithfulness to the
+eta values in <code>ini()</code> are kept for faithfulness to the
 published model but are not “IIV” in the standard pop-PK sense.</li>
 <li>
 <strong>PKNCA validation is replaced with figure

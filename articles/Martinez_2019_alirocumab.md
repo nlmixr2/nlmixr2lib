@@ -96,9 +96,8 @@ conmed_statin (CONMED_STATIN = 0), and 72.9 ng/mL free PCSK9.
   `CLL_TV = TVCLL + theta * (WT - 82.9) + theta * CONMED_STATIN` and
   `Km_TV = TVKM + theta * (FPCSK9 / 72.9)`. Individual values then carry
   an exponential between-subject term: `CLL_i = CLL_TV * exp(eta_CLL)`.
-  This is preserved faithfully in
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html)
-  rather than being refactored to a multiplicative / power form.
+  This is preserved faithfully in `model()` rather than being refactored
+  to a multiplicative / power form.
 - **Power covariate on V3.** `V3_TV = TVV3 * (AGE / 60)^0.310` (Table 2
   footnote b). Individual V3 is `V3_i = V3_TV * exp(eta_V3)`.
 - **Correlated V3 / Km.** The paper reports an omega-block covariance
@@ -403,8 +402,6 @@ intervals <- data.frame(
 )
 
 nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
-#>  ■■■■■■■■■■                        29% |  ETA:  3s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      89% |  ETA:  1s
 summary(nca_res)
 #>  Interval Start Interval End treatment   N AUClast (day*mg/L) Cmax (mg/L)
 #>               0           14 150mg_Q2W 300        95.9 [52.6] 10.1 [46.0]

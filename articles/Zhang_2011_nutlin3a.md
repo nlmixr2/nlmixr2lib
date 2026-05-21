@@ -43,9 +43,8 @@ model’s `population` metadata
 ## Source trace
 
 The per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/specificDrugs/Zhang_2011_nutlin3a.R`. The table below
-collects them for review.
+`ini()` entry in `inst/modeldb/specificDrugs/Zhang_2011_nutlin3a.R`. The
+table below collects them for review.
 
 | Equation / parameter | Value | Source location |
 |----|----|----|
@@ -262,8 +261,7 @@ ggplot(md_sim, aes(time, Cc, colour = treatment)) +
   labs(x = "Time (h)", y = "Plasma nutlin-3a (mg/L)",
        title = "Figure 4: Plasma nutlin-3a after multiple oral 200 mg/kg doses",
        caption = "Replicates Figure 4 of Zhang 2011.")
-#> Warning in scale_y_log10(): log-10 transformation introduced
-#> infinite values.
+#> Warning in scale_y_log10(): log-10 transformation introduced infinite values.
 ```
 
 ![](Zhang_2011_nutlin3a_files/figure-html/figure-4-1.png)
@@ -389,8 +387,7 @@ Simulated 0-24 h AUC by treatment. {.table}
   min at low concentration that matches the paper’s narrative
   description of “very rapid” clearance below 10 uM (5.8 mg/L). Users
   who need a different unit system can override the corresponding
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) values
-  via `rxSolve(params = c(lvmax = ..., lkm = ..., ...))`.
+  `ini()` values via `rxSolve(params = c(lvmax = ..., lkm = ..., ...))`.
 
 - **Hepatic linear elimination term acts on C_ART, not C_LIV.** The
   paper’s liver ODE on p.17 literally writes
@@ -399,8 +396,7 @@ Simulated 0-24 h AUC by treatment. {.table}
   rather than the local liver concentration. The packaged model
   preserves this literal form. Mechanistically a more usual choice is
   `- k_e * C_LIV` (clearance from the local hepatic concentration);
-  users who prefer that interpretation can swap the term in
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html) or
+  users who prefer that interpretation can swap the term in `model()` or
   refit K_e against the original data.
 
 - **Bone marrow partition coefficient K_MRW is not reported.** Table 2

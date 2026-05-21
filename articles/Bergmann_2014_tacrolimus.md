@@ -411,12 +411,10 @@ multiplier of 1.60 on CL/F.
   field documents this override; user datasets that record HCT in
   percent must be rescaled (HCT_fraction = HCT_percent / 100) before
   passing to this model.
-- **POD cap implemented inside
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html).**
-  The paper applies a 180-day plateau to the POD effect on CL/F
-  (Bergmann 2014 Table 2 footnote). The cap is reproduced inline as
-  `pod_capped <- min(POD, 180)`, so users do not have to pre-cap POD in
-  their dataset.
+- **POD cap implemented inside `model()`.** The paper applies a 180-day
+  plateau to the POD effect on CL/F (Bergmann 2014 Table 2 footnote).
+  The cap is reproduced inline as `pod_capped <- min(POD, 180)`, so
+  users do not have to pre-cap POD in their dataset.
 - **Free prednisolone Cmax centring.** Bergmann 2014 Table 1 reports a
   population median PredCmax,free of 162 nmol/L, but the Table 2
   covariate equation centres at 155.5 nmol/L (likely the population

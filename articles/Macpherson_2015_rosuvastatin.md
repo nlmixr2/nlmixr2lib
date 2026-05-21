@@ -329,10 +329,9 @@ would warrant investigation rather than parameter tuning.
   time-on-treatment effect; the packaged model captures this via the
   time-varying `WT` covariate.
 - **No IIV on Ka or Vp/F.** The published final model estimated IIV on
-  CL/F, Vc/F, and Q/F only (Table 2). The packaged
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) mirrors
-  that choice; downstream users wishing to perturb absorption or
-  peripheral volume must add IIV terms manually.
+  CL/F, Vc/F, and Q/F only (Table 2). The packaged `ini()` mirrors that
+  choice; downstream users wishing to perturb absorption or peripheral
+  volume must add IIV terms manually.
 - **Covariate sign convention for sex.** The paper reports Male CL/F x
   1.41 with female children as the implicit reference, so the model
   encodes the factor as 1.41^(1 - SEXF) to keep the published structural

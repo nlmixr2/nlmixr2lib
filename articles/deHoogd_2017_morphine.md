@@ -45,9 +45,8 @@ same information is available programmatically via
 ## Source trace
 
 The per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/specificDrugs/deHoogd_2017_morphine.R`. The table below
-collects them in one place.
+`ini()` entry in `inst/modeldb/specificDrugs/deHoogd_2017_morphine.R`.
+The table below collects them in one place.
 
 | Equation / parameter | Final value | Source location |
 |----|----|----|
@@ -513,30 +512,24 @@ for M6G; the published values are “approximately 5x” and “approximately
   resulting constant `0.4805 L/min` directly (computed once as
   `0.35 / 0.65` times the Final-model formation clearances at 70 kg).
   This is a structural assumption inherited from the paper and is
-  wrapped in `fixed()` in
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html).
+  wrapped in `fixed()` in `ini()`.
 - **Cohort-conditional residual error.** The paper reports separate
   proportional residual SDs for the healthy-volunteer and morbidly obese
   cohorts (Table 2). The packaged model parameterizes six per-cohort SDs
-  in [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) and
-  combines them in
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html)
-  using the binary `DIS_OBESE_MORBID` indicator, following the
-  Cirincione 2017 study-conditional pattern. The per-cohort SD
-  parameters use descriptive names (`propSd_morphine_hv`,
-  `propSd_morphine_mo`, etc.) and are combined in
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html)
-  into the canonical `propSd`, `propSd_m3g`, and `propSd_m6g` output
-  names. The canonical residual-error names appear in the error model
-  declarations (`Cc ~ prop(propSd)`, etc.) so the convention check
-  passes cleanly.
+  in `ini()` and combines them in `model()` using the binary
+  `DIS_OBESE_MORBID` indicator, following the Cirincione 2017
+  study-conditional pattern. The per-cohort SD parameters use
+  descriptive names (`propSd_morphine_hv`, `propSd_morphine_mo`, etc.)
+  and are combined in `model()` into the canonical `propSd`,
+  `propSd_m3g`, and `propSd_m6g` output names. The canonical
+  residual-error names appear in the error model declarations
+  (`Cc ~ prop(propSd)`, etc.) so the convention check passes cleanly.
 - **Single shared eta on the structural M3G/M6G volume.** The Final
   model reports a single IIV magnitude on `VM3G = VM6G` (29.7% CV)
   because the paper imposes `VM3G = VM6G` as a structural equality. The
   packaged model honors this by applying `etalvc_m3g` to `lvc_m3g` and
-  assigning `vc_m6g <- vc_m3g` in
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html);
-  the shared eta is thus propagated to both metabolite volumes.
+  assigning `vc_m6g <- vc_m3g` in `model()`; the shared eta is thus
+  propagated to both metabolite volumes.
 - **M3G transit chain length and rate.** `n = 5` transit compartments
   fed at rate `Ktr` (1.68 1/min at 98.5 kg); mean transit time MTT = n /
   Ktr = 2.98 min at 98.5 kg, matching the paper-reported MTT of 3.05 min

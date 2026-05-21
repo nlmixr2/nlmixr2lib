@@ -698,20 +698,20 @@ with p = 0.85 to match the published 85% prevalence.</p>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">ID</span>, <span class="va">treatment</span>, <span class="va">dose_mg</span>, <span class="va">WT</span>, <span class="va">BGENE21</span>, <span class="va">CONMED_STEROID</span>, <span class="va">DOSE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">pop</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 298 × 7</span></span></span>
+<span><span class="co">#&gt; # A tibble: 298 × 7</span></span>
 <span><span class="co">#&gt;       ID treatment dose_mg    WT BGENE21 CONMED_STEROID  DOSE</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>     1 200 mg        200  52.6    5.19              1   200</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>     2 200 mg        200  80.1    5.96              1   200</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>     3 200 mg        200  63.5   15.9               1   200</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>     4 200 mg        200  68.6   15.9               1   200</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>     5 200 mg        200  39     18.9               0   200</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>     6 200 mg        200  60.4   35.5               1   200</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>     7 200 mg        200  54.4    8.85              0   200</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>     8 200 mg        200  55.3   10.2               1   200</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>     9 200 mg        200  69.7   37.3               1   200</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>    10 200 mg        200  66.9    4.27              1   200</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 288 more rows</span></span></span></code></pre></div>
+<span><span class="co">#&gt;    &lt;int&gt; &lt;chr&gt;       &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;          &lt;int&gt; &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1     1 200 mg        200  52.6    5.19              1   200</span></span>
+<span><span class="co">#&gt;  2     2 200 mg        200  80.1    5.96              1   200</span></span>
+<span><span class="co">#&gt;  3     3 200 mg        200  63.5   15.9               1   200</span></span>
+<span><span class="co">#&gt;  4     4 200 mg        200  68.6   15.9               1   200</span></span>
+<span><span class="co">#&gt;  5     5 200 mg        200  39     18.9               0   200</span></span>
+<span><span class="co">#&gt;  6     6 200 mg        200  60.4   35.5               1   200</span></span>
+<span><span class="co">#&gt;  7     7 200 mg        200  54.4    8.85              0   200</span></span>
+<span><span class="co">#&gt;  8     8 200 mg        200  55.3   10.2               1   200</span></span>
+<span><span class="co">#&gt;  9     9 200 mg        200  69.7   37.3               1   200</span></span>
+<span><span class="co">#&gt; 10    10 200 mg        200  66.9    4.27              1   200</span></span>
+<span><span class="co">#&gt; # ℹ 288 more rows</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="dosing-and-event-table">Dosing and event table<a class="anchor" aria-label="anchor" href="#dosing-and-event-table"></a>
@@ -782,7 +782,7 @@ virtual cohort matches the paper’s reported variability.</p>
 <span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">mod</span>, events <span class="op">=</span> <span class="va">events_sim</span>, returnType <span class="op">=</span> <span class="st">"data.frame"</span>,</span>
 <span>               keep <span class="op">=</span> <span class="st">"treatment"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html" class="external-link">as_tibble</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> parameter labels from comments will be replaced by 'label()'</span></span></code></pre></div>
+<span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="replicate-figure-2-representative-concentration-time-profiles">Replicate Figure 2: representative concentration-time profiles<a class="anchor" aria-label="anchor" href="#replicate-figure-2-representative-concentration-time-profiles"></a>

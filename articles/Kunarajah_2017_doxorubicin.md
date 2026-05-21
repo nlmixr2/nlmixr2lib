@@ -68,9 +68,8 @@ are flagged.
 | PCAMT factor `1 + 0.00308*(PCAMT-90)` | – | Table 2 footnote (Cbase_cTnI equation) |
 
 The `value` column shows the typical-value parameter estimate; the
-in-file comments next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry pin
-every value to the same locations.
+in-file comments next to each `ini()` entry pin every value to the same
+locations.
 
 ## Virtual cohort
 
@@ -467,11 +466,10 @@ sentiment of the paper Discussion.
 - Q2, V2, Q3, V3, and Qm typical values were FIXED in this analysis,
   carried forward from Kontny 2013 / Voller 2015 (references 12 / 13 in
   the paper). The packaged model writes these values literally with
-  `fixed(...)` in
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) so the
-  FIXED status is preserved during any downstream `nlmixr()` re-fit.
-  Kontny 2013 itself is not on disk for this extraction; all numeric
-  values come from Kunarajah 2017 Table 2 / Appendix.
+  `fixed(...)` in `ini()` so the FIXED status is preserved during any
+  downstream `nlmixr()` re-fit. Kontny 2013 itself is not on disk for
+  this extraction; all numeric values come from Kunarajah 2017 Table 2 /
+  Appendix.
 - Inter-individual variability (`etalcl` / `etalcl_doxol`) carries the
   NONMEM `$OMEGA BLOCK(2)` correlated covariance verbatim (var = 0.0344,
   cov = 0.0523, var = 0.116). Other IIV terms are diagonal.

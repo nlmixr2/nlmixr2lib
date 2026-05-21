@@ -578,7 +578,7 @@ only; the transit kinetics use the structural ktr_P unchanged.</li>
 <h2 id="source-trace">Source trace<a class="anchor" aria-label="anchor" href="#source-trace"></a>
 </h2>
 <p>The per-parameter origin is recorded as an in-file comment next to
-each <code><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini()</a></code> entry. Every numeric value below was taken from
+each <code>ini()</code> entry. Every numeric value below was taken from
 Table 3 of Han et al. 2015 (“Final parameter estimates and bootstrap
 outcomes”). The BSV columns (reported as %CV) were converted to
 log-scale variances via omega^2 = log(1 + CV^2); residual error
@@ -843,7 +843,7 @@ ug/mL = 1000 ng/mL).</p>
 <span>  events <span class="op">=</span> <span class="va">events</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">id</span> <span class="op">==</span> <span class="fl">1L</span><span class="op">)</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl', 'etalslope_anc', 'etalbase_anc', 'etalgamma_anc', 'etalslope_plt', 'etalbase_plt', 'etalimp'</span></span></code></pre></div>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etalslope_anc', 'etalbase_anc', 'etalgamma_anc', 'etalslope_plt', 'etalbase_plt', 'etalimp'</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="replicate-published-figures">Replicate published figures<a class="anchor" aria-label="anchor" href="#replicate-published-figures"></a>
@@ -874,14 +874,14 @@ policy of “flag, do not tune.”</p>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">Cc</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>Cc_ngmL <span class="op">=</span> <span class="va">Cc</span> <span class="op">*</span> <span class="fl">1000</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">cmax_check</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">Cc_ngmL</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="fl">1</span>, linetype <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time after first dose (h)"</span>,</span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">cmax_check</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">time</span>, <span class="va">Cc_ngmL</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_vline</span><span class="op">(</span>xintercept <span class="op">=</span> <span class="fl">1</span>, linetype <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time after first dose (h)"</span>,</span>
 <span>       y <span class="op">=</span> <span class="st">"Decitabine plasma concentration (ng/mL)"</span>,</span>
 <span>       title <span class="op">=</span> <span class="st">"Cycle 1 Day 1 typical-value profile after 1-h infusion of 5 mg/m^2"</span>,</span>
 <span>       caption <span class="op">=</span> <span class="st">"Vertical dashed line marks end of infusion."</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu">theme_minimal</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Han_2015_decitabine_files/figure-html/cmax-cross-check-1.png" class="r-plt" alt="" width="672"></p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
@@ -940,13 +940,13 @@ ANC &gt; 1000/mm^3 is approximately 5 weeks for the ANC.</p>
 <span>    .groups <span class="op">=</span> <span class="st">"drop"</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">anc_quants</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">week</span>, <span class="va">p50</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_ribbon.html" class="external-link">geom_ribbon</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>ymin <span class="op">=</span> <span class="va">p10</span>, ymax <span class="op">=</span> <span class="va">p90</span><span class="op">)</span>, fill <span class="op">=</span> <span class="st">"steelblue"</span>, alpha <span class="op">=</span> <span class="fl">0.15</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_ribbon.html" class="external-link">geom_ribbon</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>ymin <span class="op">=</span> <span class="va">p25</span>, ymax <span class="op">=</span> <span class="va">p75</span><span class="op">)</span>, fill <span class="op">=</span> <span class="st">"steelblue"</span>, alpha <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">0.9</span>, colour <span class="op">=</span> <span class="st">"steelblue"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">1.0</span>, linetype <span class="op">=</span> <span class="fl">2</span>, colour <span class="op">=</span> <span class="st">"darkred"</span><span class="op">)</span> <span class="op">+</span>   <span class="co"># 1000/mm^3 = 1.0 * 10^9/L</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">0.5</span>, linetype <span class="op">=</span> <span class="fl">2</span>, colour <span class="op">=</span> <span class="st">"indianred"</span><span class="op">)</span> <span class="op">+</span> <span class="co"># 500/mm^3 = 0.5 * 10^9/L grade 4 toxicity</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time since treatment initiation (weeks)"</span>,</span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">anc_quants</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">week</span>, <span class="va">p50</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_ribbon</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>ymin <span class="op">=</span> <span class="va">p10</span>, ymax <span class="op">=</span> <span class="va">p90</span><span class="op">)</span>, fill <span class="op">=</span> <span class="st">"steelblue"</span>, alpha <span class="op">=</span> <span class="fl">0.15</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_ribbon</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>ymin <span class="op">=</span> <span class="va">p25</span>, ymax <span class="op">=</span> <span class="va">p75</span><span class="op">)</span>, fill <span class="op">=</span> <span class="st">"steelblue"</span>, alpha <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">0.9</span>, colour <span class="op">=</span> <span class="st">"steelblue"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_hline</span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">1.0</span>, linetype <span class="op">=</span> <span class="fl">2</span>, colour <span class="op">=</span> <span class="st">"darkred"</span><span class="op">)</span> <span class="op">+</span>   <span class="co"># 1000/mm^3 = 1.0 * 10^9/L</span></span>
+<span>  <span class="fu">geom_hline</span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">0.5</span>, linetype <span class="op">=</span> <span class="fl">2</span>, colour <span class="op">=</span> <span class="st">"indianred"</span><span class="op">)</span> <span class="op">+</span> <span class="co"># 500/mm^3 = 0.5 * 10^9/L grade 4 toxicity</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time since treatment initiation (weeks)"</span>,</span>
 <span>       y <span class="op">=</span> <span class="st">"Absolute neutrophil count (10^9 cells/L)"</span>,</span>
 <span>       title <span class="op">=</span> <span class="st">"Replicates Han 2015 Figure 2 (ANC time course at 5 mg/m^2/day)"</span>,</span>
 <span>       caption <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span></span>
@@ -955,7 +955,7 @@ ANC &gt; 1000/mm^3 is approximately 5 weeks for the ANC.</p>
 <span>         <span class="st">"Dashed lines: ANC = 1.0 (recovery threshold) and ANC = 0.5 "</span>,</span>
 <span>         <span class="st">"(grade 4 toxicity) x 10^9/L."</span></span>
 <span>       <span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu">theme_minimal</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Han_2015_decitabine_files/figure-html/figure-2-1.png" class="r-plt" alt="" width="672"></p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
@@ -1024,13 +1024,13 @@ decitabine to cell proliferation reported in previous studies.</p>
 <span>    .groups <span class="op">=</span> <span class="st">"drop"</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">plt_quants</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">week</span>, <span class="va">p50</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_ribbon.html" class="external-link">geom_ribbon</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>ymin <span class="op">=</span> <span class="va">p10</span>, ymax <span class="op">=</span> <span class="va">p90</span><span class="op">)</span>, fill <span class="op">=</span> <span class="st">"darkgreen"</span>, alpha <span class="op">=</span> <span class="fl">0.15</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_ribbon.html" class="external-link">geom_ribbon</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>ymin <span class="op">=</span> <span class="va">p25</span>, ymax <span class="op">=</span> <span class="va">p75</span><span class="op">)</span>, fill <span class="op">=</span> <span class="st">"darkgreen"</span>, alpha <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">0.9</span>, colour <span class="op">=</span> <span class="st">"darkgreen"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">30</span>, linetype <span class="op">=</span> <span class="fl">2</span>, colour <span class="op">=</span> <span class="st">"darkred"</span><span class="op">)</span> <span class="op">+</span>  <span class="co"># 30,000/mm^3 holding threshold</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">25</span>, linetype <span class="op">=</span> <span class="fl">3</span>, colour <span class="op">=</span> <span class="st">"indianred"</span><span class="op">)</span> <span class="op">+</span><span class="co"># 25,000/mm^3 grade 4 toxicity</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time since treatment initiation (weeks)"</span>,</span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">plt_quants</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">week</span>, <span class="va">p50</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_ribbon</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>ymin <span class="op">=</span> <span class="va">p10</span>, ymax <span class="op">=</span> <span class="va">p90</span><span class="op">)</span>, fill <span class="op">=</span> <span class="st">"darkgreen"</span>, alpha <span class="op">=</span> <span class="fl">0.15</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_ribbon</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>ymin <span class="op">=</span> <span class="va">p25</span>, ymax <span class="op">=</span> <span class="va">p75</span><span class="op">)</span>, fill <span class="op">=</span> <span class="st">"darkgreen"</span>, alpha <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">0.9</span>, colour <span class="op">=</span> <span class="st">"darkgreen"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_hline</span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">30</span>, linetype <span class="op">=</span> <span class="fl">2</span>, colour <span class="op">=</span> <span class="st">"darkred"</span><span class="op">)</span> <span class="op">+</span>  <span class="co"># 30,000/mm^3 holding threshold</span></span>
+<span>  <span class="fu">geom_hline</span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">25</span>, linetype <span class="op">=</span> <span class="fl">3</span>, colour <span class="op">=</span> <span class="st">"indianred"</span><span class="op">)</span> <span class="op">+</span><span class="co"># 25,000/mm^3 grade 4 toxicity</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time since treatment initiation (weeks)"</span>,</span>
 <span>       y <span class="op">=</span> <span class="st">"Platelet count (10^9 cells/L)"</span>,</span>
 <span>       title <span class="op">=</span> <span class="st">"Platelet time course at 5 mg/m^2/day maintenance"</span>,</span>
 <span>       caption <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span></span>
@@ -1038,7 +1038,7 @@ decitabine to cell proliferation reported in previous studies.</p>
 <span>         <span class="st">"Dashed line: PLT = 30 x 10^9/L (dose-hold);"</span>,</span>
 <span>         <span class="st">"dotted line: PLT = 25 x 10^9/L (grade 4 toxicity)."</span></span>
 <span>       <span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu">theme_minimal</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Han_2015_decitabine_files/figure-html/figure-platelet-1.png" class="r-plt" alt="" width="672"></p>
 </div>
 </div>
@@ -1089,7 +1089,6 @@ compares Cmax and half-life with the paper.</p>
 <span><span class="va">nca_res</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span></span>
 <span>  <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_obj</span>, <span class="va">dose_obj</span>, intervals <span class="op">=</span> <span class="va">intervals</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■                 </span>  47% |  ETA:  2s</span></span>
 <span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">nca_res</span><span class="op">)</span>,</span>
 <span>             caption <span class="op">=</span> <span class="st">"Cycle-1 Day-1 single-dose NCA (200 subjects, 5 mg/m^2 1-h IV)."</span><span class="op">)</span></span></code></pre></div>
@@ -3381,7 +3380,7 @@ IIV.</strong> Table 3’s BSV column reports “NE” (not estimated) for
 these parameters; the Methods says “BSV … was the only random effect
 which could be estimated, except for the proportional residual error”
 for PK CL. The model carries these as typical-value-only parameters (no
-corresponding eta in <code><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini()</a></code>), consistent with the paper’s
+corresponding eta in <code>ini()</code>), consistent with the paper’s
 reporting.</li>
 <li>
 <strong>Friberg / Wallin transit kinetics use a single ktr.</strong>
@@ -3449,7 +3448,7 @@ Friberg-precedent files (<code>Friberg_2002_paclitaxel</code> in DDMORE,
 <code><a href="../reference/checkModelConventions.html">checkModelConventions()</a></code> flags these as warnings of
 <code>compartments</code> severity; the deviation is intentional.</li>
 <li>
-<strong>Residual error stored in <code><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini()</a></code> on the canonical
+<strong>Residual error stored in <code>ini()</code> on the canonical
 10^9/L PD unit.</strong> Han 2015 reports the PD additive residual
 variances as <code>sigma^2_PD,N = 754 /mm^3^2</code> and
 <code>sigma^2_PD,P = 25,000 /mm^3^2</code>. The SDs in
@@ -3457,7 +3456,7 @@ variances as <code>sigma^2_PD,N = 754 /mm^3^2</code> and
 <code>sqrt(25000) = 158.1</code>. To match <code>addSd_ANC</code> /
 <code>addSd_PLT</code> to the canonical PD observation unit of
 <code>10^9 cells/L</code> (i.e. <code>1000 / mm^3</code>), the SDs in
-<code><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini()</a></code> are divided by 1000 to give <code>0.0275</code> and
+<code>ini()</code> are divided by 1000 to give <code>0.0275</code> and
 <code>0.158</code>.</li>
 <li>
 <strong>Successful-bootstrap convergence not propagated.</strong>

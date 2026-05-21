@@ -48,9 +48,8 @@ The same information is available programmatically via
 ## Source trace
 
 The per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/specificDrugs/Zhou_2016_warfarin_vk2.R`. The table below
-collects them in one place.
+`ini()` entry in `inst/modeldb/specificDrugs/Zhou_2016_warfarin_vk2.R`.
+The table below collects them in one place.
 
 | Quantity | Value | Source |
 |----|----|----|

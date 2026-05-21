@@ -470,7 +470,7 @@
     
 <p>This file is the authoritative register of covariate column names
 used in nlmixr2lib models. Every covariate referenced inside a model’s
-<code><a href="https://nlmixr2.github.io/rxode2/reference/model.html" class="external-link">model()</a></code> block must have an entry here. The register is
+<code>model()</code> block must have an entry here. The register is
 seeded from a full audit of <code>inst/modeldb/</code> and extended
 whenever a new paper introduces a covariate that isn’t yet
 registered.</p>
@@ -1528,7 +1528,7 @@ version with the conventional 37-week cutoff. Use <code>GA</code> when
 the source paper carries gestational age as a continuous covariate; use
 <code>TERM_BIRTH</code> only when the paper itself dichotomizes. Do not
 derive <code>TERM_BIRTH</code> from <code>GA</code> programmatically
-inside <code><a href="https://nlmixr2.github.io/rxode2/reference/model.html" class="external-link">model()</a></code> – the term-cutoff convention belongs in data
+inside <code>model()</code> – the term-cutoff convention belongs in data
 assembly, not the model file.</li>
 </ul>
 </div>
@@ -1691,7 +1691,7 @@ universally applicable vital sign; the Kloprogge 2013 reference value
 models should document their own reference in
 <code>covariateData[[BODYTEMP]]$notes</code>. Units are degrees Celsius;
 convert from Fahrenheit (degF) at data-assembly time, not inside
-<code><a href="https://nlmixr2.github.io/rxode2/reference/model.html" class="external-link">model()</a></code>. Distinct from <code>BODYTEMP_FEBRILE</code> (not
+<code>model()</code>. Distinct from <code>BODYTEMP_FEBRILE</code> (not
 yet registered) which would be a binary fever indicator if a future
 paper dichotomises at the conventional 37.5 / 38.0 degC threshold.
 Ratified canonically on 2026-05-16 alongside the Kloprogge 2013
@@ -2100,7 +2100,7 @@ binary covariate without distinguishing them.</li>
 <code>Shekar_2014_meropenem.R</code> (piecewise CL:
 <code>TVCL = exp(lcl) * CRRT_STATUS + e_crcl_cl * CRCL_in_Lh * (1 - CRRT_STATUS)</code>,
 with CRCL in raw Cockcroft-Gault mL/min converted to L/h inside
-<code><a href="https://nlmixr2.github.io/rxode2/reference/model.html" class="external-link">model()</a></code>; 5/11 ECMO patients and 5/10 controls were on
+<code>model()</code>; 5/11 ECMO patients and 5/10 controls were on
 RRT).</li>
 <li>
 <strong>Notes:</strong> Distinct from <code>HEMODIAL</code>
@@ -4277,7 +4277,7 @@ follows the Wilkinson 1987 paediatric multiple organ system failure
 (MOSF) criteria – operator-confirmed per-paper criteria should be
 documented in each model’s
 <code>covariateData[["ORG_FAIL_COUNT"]]$notes</code>. Decompose inside
-<code><a href="https://nlmixr2.github.io/rxode2/reference/model.html" class="external-link">model()</a></code> into binary indicators
+<code>model()</code> into binary indicators
 (<code>orgf1 &lt;- (ORG_FAIL_COUNT == 1)</code>,
 <code>orgf2 &lt;- (ORG_FAIL_COUNT == 2)</code>,
 <code>orgf3 &lt;- (ORG_FAIL_COUNT == 3)</code>,
@@ -4366,7 +4366,7 @@ input data.</li>
 <li>
 <strong>Example models:</strong>
 <code>Oualha_2014_epinephrine.R</code> (decomposed inside
-<code><a href="https://nlmixr2.github.io/rxode2/reference/model.html" class="external-link">model()</a></code> into a binary indicator
+<code>model()</code> into a binary indicator
 <code>rachs1_high &lt;- (RACHS1 &gt;= 3)</code> that selects an additive
 log-shift on SV*SVR_max from 0.44 to 0.26 for the high-risk pool).</li>
 <li>
@@ -4374,7 +4374,7 @@ log-shift on SV*SVR_max from 0.44 to 0.26 for the high-risk pool).</li>
 paediatric-cardiac-surgery-population-bound and the reference category
 depends on which RACHS-1 strata the cohort contains (Oualha 2014 has
 categories 2-4 only; a paper with categories 1-6 would need a different
-decomposition). Decompose inside <code><a href="https://nlmixr2.github.io/rxode2/reference/model.html" class="external-link">model()</a></code> into mutually
+decomposition). Decompose inside <code>model()</code> into mutually
 exclusive binary indicators matching the source’s pooling (e.g.,
 <code>rachs1_high &lt;- (RACHS1 &gt;= 3)</code>) and document the
 pooling rule in <code>covariateData[["RACHS1"]]$notes</code>.</li>
@@ -5821,7 +5821,7 @@ parameters.</li>
 <strong>Scope:</strong> specific</li>
 <li>
 <strong>Reference category:</strong> n/a – used directly inside
-<code><a href="https://nlmixr2.github.io/rxode2/reference/model.html" class="external-link">model()</a></code> as <code>CL_INDIV</code> in place of an estimated
+<code>model()</code> as <code>CL_INDIV</code> in place of an estimated
 <code>cl &lt;- exp(lcl + etalcl)</code>.</li>
 <li>
 <strong>Source aliases:</strong> <code>CLI</code> – used in
@@ -5907,7 +5907,7 @@ PK-&gt;PD encodings.</li>
 <strong>Scope:</strong> specific</li>
 <li>
 <strong>Reference category:</strong> n/a – used directly inside
-<code><a href="https://nlmixr2.github.io/rxode2/reference/model.html" class="external-link">model()</a></code> as <code>VC_INDIV</code> in place of an estimated
+<code>model()</code> as <code>VC_INDIV</code> in place of an estimated
 <code>vc &lt;- exp(lvc + etalvc)</code>.</li>
 <li>
 <strong>Source aliases:</strong> <code>V1I</code> – used in
@@ -5940,7 +5940,7 @@ and <code>VC_INDIV</code> in sequential PK-&gt;PD encodings.</li>
 <strong>Scope:</strong> specific</li>
 <li>
 <strong>Reference category:</strong> n/a – used directly inside
-<code><a href="https://nlmixr2.github.io/rxode2/reference/model.html" class="external-link">model()</a></code> as <code>VP_INDIV</code> in place of an estimated
+<code>model()</code> as <code>VP_INDIV</code> in place of an estimated
 <code>vp &lt;- exp(lvp + etalvp)</code>.</li>
 <li>
 <strong>Source aliases:</strong> <code>V2I</code> – used in
@@ -5979,7 +5979,7 @@ ODE.</li>
 <strong>Scope:</strong> specific</li>
 <li>
 <strong>Reference category:</strong> n/a – appears directly inside
-<code><a href="https://nlmixr2.github.io/rxode2/reference/model.html" class="external-link">model()</a></code> as the initial condition
+<code>model()</code> as the initial condition
 <code>svegfr3(0) &lt;- BAS_SVEGFR3</code> and inside the relative-change
 driver <code>bm = (svegfr3 - BAS_SVEGFR3) / BAS_SVEGFR3</code>.</li>
 <li>
@@ -6027,7 +6027,7 @@ PD model treats as a fixed input. Used as a per-subject (time-fixed)
 covariate in fatigue / adverse-event PD models that consume the upstream
 biomarker dynamics as data covariates without instantiating the
 biomarker ODE; appears as <code>kout3 = 1 / MRT_SVEGFR3</code> inside
-<code><a href="https://nlmixr2.github.io/rxode2/reference/model.html" class="external-link">model()</a></code>.</li>
+<code>model()</code>.</li>
 <li>
 <strong>Units:</strong> h (hours) – document per-model via
 <code>covariateData[[MRT_SVEGFR3]]$units</code>.</li>
@@ -6089,7 +6089,7 @@ carries the same units; document per-model via
 <strong>Scope:</strong> specific</li>
 <li>
 <strong>Reference category:</strong> n/a – appears directly inside
-<code><a href="https://nlmixr2.github.io/rxode2/reference/model.html" class="external-link">model()</a></code> in the simple-Imax drug-effect term
+<code>model()</code> in the simple-Imax drug-effect term
 <code>eff3 = auc / (EC50_SVEGFR3 + auc)</code>.</li>
 <li>
 <strong>Source aliases:</strong>
@@ -6138,7 +6138,7 @@ sKIT in isolation.</li>
 <strong>Scope:</strong> specific</li>
 <li>
 <strong>Reference category:</strong> n/a – appears directly inside
-<code><a href="https://nlmixr2.github.io/rxode2/reference/model.html" class="external-link">model()</a></code> as the initial condition for treated and placebo
+<code>model()</code> as the initial condition for treated and placebo
 sKIT compartments and inside the relative-change driver
 <code>(skit_pla - skit_drug) / skit_pla</code> (or the analogous
 BAS_SKIT-denominated form when only one sKIT compartment is
@@ -6188,7 +6188,7 @@ treats as a fixed input. Used as a per-subject (time-fixed) covariate in
 tumor-growth-inhibition / fatigue / adverse-event PD models that consume
 the upstream sKIT dynamics as data covariates without instantiating the
 biomarker ODE for sKIT in isolation; appears as
-<code>kout_skit = 1 / MRT_SKIT</code> inside <code><a href="https://nlmixr2.github.io/rxode2/reference/model.html" class="external-link">model()</a></code>.</li>
+<code>kout_skit = 1 / MRT_SKIT</code> inside <code>model()</code>.</li>
 <li>
 <strong>Units:</strong> h (hours) – document per-model via
 <code>covariateData[[MRT_SKIT]]$units</code>.</li>
@@ -6250,7 +6250,7 @@ carries the same units; document per-model via
 <strong>Scope:</strong> specific</li>
 <li>
 <strong>Reference category:</strong> n/a – appears directly inside
-<code><a href="https://nlmixr2.github.io/rxode2/reference/model.html" class="external-link">model()</a></code> in the simple-Imax drug-effect term
+<code>model()</code> in the simple-Imax drug-effect term
 <code>eff_skit = auc / (EC50_SKIT + auc)</code>.</li>
 <li>
 <strong>Source aliases:</strong>
@@ -6291,7 +6291,7 @@ models that need to simulate the placebo-arm sKIT trajectory as a
 comparator for the drug-arm sKIT compartment; appears as
 <code>dps_skit = BAS_SKIT * (1 + SLOPE_SKIT * t)</code> and
 <code>kin_skit = dps_skit * kout_skit</code> inside
-<code><a href="https://nlmixr2.github.io/rxode2/reference/model.html" class="external-link">model()</a></code>.</li>
+<code>model()</code>.</li>
 <li>
 <strong>Units:</strong> 1/h (document per-model via
 <code>covariateData[[SLOPE_SKIT]]$units</code>).</li>
@@ -6339,7 +6339,7 @@ steady-state plasma concentration from an upstream PK fit</strong>)<a class="anc
 trough concentration from a separately fitted population PK model (e.g.,
 the Laouenan 2015 upstream RBV popPK fit) that the current downstream PD
 model treats as a fixed input. Used together with <code>K_RBV</code>
-inside <code><a href="https://nlmixr2.github.io/rxode2/reference/model.html" class="external-link">model()</a></code> to reconstruct the individual ribavirin
+inside <code>model()</code> to reconstruct the individual ribavirin
 concentration time-course analytically as
 <code>riba(t) = CSS_RBV * (1 - exp(-K_RBV * t))</code>.</li>
 <li>
@@ -6351,7 +6351,7 @@ concentration time-course analytically as
 <strong>Scope:</strong> specific</li>
 <li>
 <strong>Reference category:</strong> n/a – appears directly inside
-<code><a href="https://nlmixr2.github.io/rxode2/reference/model.html" class="external-link">model()</a></code> in the analytical RBV-concentration expression
+<code>model()</code> in the analytical RBV-concentration expression
 <code>riba = CSS_RBV * (1 - exp(-K_RBV * t))</code> that drives the
 inhibition term <code>riba / (riba + ec50)</code>.</li>
 <li>
@@ -6401,7 +6401,7 @@ fit</strong>)<a class="anchor" aria-label="anchor" href="#k_rbv-canonical-for-in
 exponential approach of ribavirin plasma trough concentrations to steady
 state, from the same upstream popPK fit that supplies
 <code>CSS_RBV</code>. Used together with <code>CSS_RBV</code> inside
-<code><a href="https://nlmixr2.github.io/rxode2/reference/model.html" class="external-link">model()</a></code> to reconstruct the individual ribavirin
+<code>model()</code> to reconstruct the individual ribavirin
 concentration time-course analytically as
 <code>riba(t) = CSS_RBV * (1 - exp(-K_RBV * t))</code>.</li>
 <li>
@@ -6913,7 +6913,7 @@ plasma glucose as an exogenous regressor. The DDMORE bundle’s
 hand-rolled piecewise-linear interpolation
 (<code>GL = (t-T1)/(TOBS-T1)*(GLU-GLU1)+GLU1</code> with bracketing
 columns <code>iglu / glun / td / tn</code>) is replaced in nlmixr2 by
-<code>linear(GLU)</code> declared in <code><a href="https://nlmixr2.github.io/rxode2/reference/model.html" class="external-link">model()</a></code>; the
+<code>linear(GLU)</code> declared in <code>model()</code>; the
 bracketing columns are not required.</li>
 </ul>
 </div>
@@ -6969,7 +6969,7 @@ mechanism-specific name. The DDMORE bundle’s hand-rolled
 piecewise-linear interpolation
 (<code>I = (t-T1)/(TOBS-T1)*(INS-INS1)+INS1</code> with bracketing
 columns <code>iins / insn / td / tn</code>) is replaced in nlmixr2 by
-<code>linear(INS)</code> declared in <code><a href="https://nlmixr2.github.io/rxode2/reference/model.html" class="external-link">model()</a></code>; the
+<code>linear(INS)</code> declared in <code>model()</code>; the
 bracketing columns are not required.</li>
 </ul>
 </div>
@@ -7038,7 +7038,7 @@ the proximal tubule via glomerular filtration in
 renal-glucose-reabsorption QSP models. Not a covariate that modifies a
 parameter; the model integrates <code>CINH</code> directly through
 <code>linear(CINH)</code> and multiplies by the unbound fraction
-<code>fup</code> inside <code><a href="https://nlmixr2.github.io/rxode2/reference/model.html" class="external-link">model()</a></code>.</li>
+<code>fup</code> inside <code>model()</code>.</li>
 <li>
 <strong>Units:</strong> nmol/L (matching the units of the
 inhibitor’s affinity constants Ki1 and Ki2 in the SGLT MM
@@ -14949,7 +14949,7 @@ anti-IL-6, etc.), 0 = biologic-naive.</li>
 <code>bio-naive</code> (Aguiar 2021 source-paper variable, with the
 indicator inverted: paper’s <code>bio-naive = 1 - PRIOR_BIO</code>).
 Effect coefficients in the source paper apply to <code>bio-naive</code>;
-in <code><a href="https://nlmixr2.github.io/rxode2/reference/model.html" class="external-link">model()</a></code> derive
+in <code>model()</code> derive
 <code>bio_naive &lt;- 1 - PRIOR_BIO</code> to preserve the paper’s
 reported coefficient.</li>
 </ul>
@@ -14969,7 +14969,7 @@ use <code>PRIOR_TNF</code> when the source paper specifically tested
 anti-TNF exposure. When the source paper uses the inverted “bio-naive”
 indicator (1 = naive), document the inversion in
 <code>covariateData[[PRIOR_BIO]]$notes</code> and apply
-<code>1 - PRIOR_BIO</code> in <code><a href="https://nlmixr2.github.io/rxode2/reference/model.html" class="external-link">model()</a></code> so the canonical
+<code>1 - PRIOR_BIO</code> in <code>model()</code> so the canonical
 column stores 1 = previously exposed.</li>
 </ul>
 </div>
@@ -15097,7 +15097,7 @@ U/mL); Frey 2010 fits the covariate on the log scale and reports the
 reference as <code>LRF = 4.7</code> (i.e.,
 <code>log(110) ~= 4.7</code>). The canonical column carries the raw RF
 concentration in U/mL; the log transform is applied inside
-<code><a href="https://nlmixr2.github.io/rxode2/reference/model.html" class="external-link">model()</a></code>.</li>
+<code>model()</code>.</li>
 <li>
 <code>RF</code> – universal NONMEM/clinical-PK abbreviation;
 rejected as the canonical name on 2026-04-28 because the bare two-letter
@@ -15222,7 +15222,7 @@ indirect-response BASE parameter with reference 60 and exponent
 patient who reports no pain at the assessment), which makes the bare
 power form <code>(PAIN/60)^exp</code> return 0. Frey 2013 documents an
 explicit 0.010 floor on PAIN in its Table 2 covariate range; the model
-file applies the same floor inside <code><a href="https://nlmixr2.github.io/rxode2/reference/model.html" class="external-link">model()</a></code> so simulation
+file applies the same floor inside <code>model()</code> so simulation
 under PAIN = 0 returns a finite BASE rather than collapsing to zero.
 Canonical name follows the <code>EOS</code> / <code>EASI</code>
 convention (no <code>BL</code> prefix); baseline-vs-time-varying status
@@ -15516,7 +15516,7 @@ oral CL/F: reference C1 = both nonexpressers; C2 = recipient
 <code>*1</code> carrier + donor nonexpresser = +33%; C3 = recipient
 nonexpresser + donor <code>*1</code> carrier = +33%; C4 = both
 <code>*1</code> carriers = +71%; Moes 2016 Table 4 final model – the C2
-/ C3 / C4 levels are reconstructed inside <code><a href="https://nlmixr2.github.io/rxode2/reference/model.html" class="external-link">model()</a></code> from the
+/ C3 / C4 levels are reconstructed inside <code>model()</code> from the
 two binary inputs <code>CYP3A5_EXPR</code> and
 <code>CYP3A5_EXPR_DONOR</code>), <code>Ji_2018_tacrolimus.R</code>
 (combinational categorical effect on tacrolimus CL/F that depends on
@@ -15535,7 +15535,7 @@ genotypes separately, encode them as two binary inputs
 four-level combination column, so the underlying recipient / donor
 biology is explicit in the dataset. Models that fit a categorical
 four-level combination effect (paper-Moes-style C1 / C2 / C3 / C4)
-reconstruct the levels inside <code><a href="https://nlmixr2.github.io/rxode2/reference/model.html" class="external-link">model()</a></code> from the two binary
+reconstruct the levels inside <code>model()</code> from the two binary
 inputs, so the source-paper’s per-level coefficients remain the
 estimated quantities. The intestinal-CYP3A5 contribution (recipient
 genotype) and the hepatic-CYP3A5 contribution (donor genotype) act on
@@ -17838,7 +17838,7 @@ where bioavailability is an estimable PK parameter rather than a
 supplied covariate. When the paper’s F regression is itself a function
 of <code>DOSE</code>, the user can derive FRACABS from the DOSE column
 upstream of <code>rxSolve</code> rather than carrying the regression
-inside <code><a href="https://nlmixr2.github.io/rxode2/reference/model.html" class="external-link">model()</a></code>.</li>
+inside <code>model()</code>.</li>
 </ul>
 </div>
 <div class="section level3">
@@ -18609,7 +18609,7 @@ in <code>Lu_2019_tacrolimus_industry_meta.R</code>. Lu 2019 writes the
 Ka covariate equation as
 <code>Ka = 0.375 * (1 - (1 - theta_form) * FORMULATION)</code> with
 <code>FORMULATION = 1</code> for prolonged-release; the model derives
-<code>form_pr = 1 - FORM_TAC_IR</code> inside <code><a href="https://nlmixr2.github.io/rxode2/reference/model.html" class="external-link">model()</a></code> to
+<code>form_pr = 1 - FORM_TAC_IR</code> inside <code>model()</code> to
 match the paper’s published equation while keeping the canonical column
 oriented Prograf = 1.</li>
 </ul>
@@ -19591,7 +19591,7 @@ Table 1 footnote b.</li>
 <code>Tammara_2017_rivipansel.R</code> (Table 1: additive effect 0.234
 on CL via <code>1 + 0.234 * STUDY_RIV201</code>; selects the
 cohort-specific additive and proportional residual SDs in
-<code><a href="https://nlmixr2.github.io/rxode2/reference/model.html" class="external-link">model()</a></code>).</li>
+<code>model()</code>).</li>
 <li>
 <strong>Notes:</strong> Specific scope because the contrast is tied
 to the rivipansel development program. The Tammara 2017 paper interprets
@@ -19725,7 +19725,7 @@ within an occasion.</li>
 <strong>Scope:</strong> general</li>
 <li>
 <strong>Reference category:</strong> n/a – <code>OCC</code> is
-decomposed inside <code><a href="https://nlmixr2.github.io/rxode2/reference/model.html" class="external-link">model()</a></code> into mutually-exclusive binary
+decomposed inside <code>model()</code> into mutually-exclusive binary
 indicators, e.g., <code>oc1 &lt;- (OCC == 1)</code>,
 <code>oc2 &lt;- (OCC == 2)</code>, …, that are then multiplied against
 per-occasion <code>eta*</code> slots.</li>
@@ -19778,7 +19778,7 @@ observation.</li>
 <strong>Notes:</strong> Lower case preserved from source file.
 Pre-existing legacy form; new models should prefer the integer-valued
 <code>OCC</code> canonical above and decompose into binary indicators
-inside <code><a href="https://nlmixr2.github.io/rxode2/reference/model.html" class="external-link">model()</a></code>.</li>
+inside <code>model()</code>.</li>
 </ul>
 </div>
 <div class="section level3">
@@ -19971,7 +19971,7 @@ Used in models whose pre-study and post-study time semantics differ –
 e.g., a disease-progression activation function defined on global
 disease time plus a placebo-effect term defined on
 time-since-study-entry need access to both reference clocks within the
-same <code><a href="https://nlmixr2.github.io/rxode2/reference/model.html" class="external-link">model()</a></code> block.</li>
+same <code>model()</code> block.</li>
 <li>
 <strong>Units:</strong> year (or whatever time unit the model’s
 <code>units$time</code> field declares)</li>

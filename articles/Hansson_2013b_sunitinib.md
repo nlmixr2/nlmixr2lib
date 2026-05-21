@@ -380,11 +380,9 @@ above are the operative validation strategy for this model class.
   source paper / `.mod` intentionally tie the two scales together.
 - **LAMBDA IIV omitted.** The source `.mod` declares `$OMEGA 0 FIX` on
   ETA(3) (LAMBDA’s IIV). A fixed-zero IIV is mathematically the absence
-  of IIV, so the `etallam` slot is omitted entirely from
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html); the
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html)
-  block computes `lam <- exp(llam)` without an eta term. This matches
-  the paper Table 3, which leaves the LAMBDA IIV column blank.
+  of IIV, so the `etallam` slot is omitted entirely from `ini()`; the
+  `model()` block computes `lam <- exp(llam)` without an eta term. This
+  matches the paper Table 3, which leaves the LAMBDA IIV column blank.
 - **No IIV on KVEGFR3.** The source `.mod` line for KVEGFR3 is
   `KVEG3 = TVKV3` with no `EXP(ETA)` factor (the alternative
   `*EXP(ETA(2))` form is commented out). The model file follows the
@@ -425,9 +423,8 @@ above are the operative validation strategy for this model class.
   `.mod`’s placebo-arm Kin expression is
   `DPS = BM0S * (1 + DPSLOS * T)`; the model file matches this with
   `dps_skit <- BAS_SKIT * (1 + SLOPE_SKIT * t)` (using the rxode2 `t`
-  symbol for time inside
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html);
-  equivalent at observation-dense schedules).
+  symbol for time inside `model()`; equivalent at observation-dense
+  schedules).
 - **Bundle is an evaluation run.** The DDMORE-bundle .lst is a NONMEM
   evaluation run on a simulated dataset (the bundle’s
   `Simulated_TGI_GIST.csv`), not the original Phase III data; it reports

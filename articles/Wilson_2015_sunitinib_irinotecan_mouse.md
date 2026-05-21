@@ -124,17 +124,16 @@ stopifnot(!anyDuplicated(unique(events_typ[, c("id", "time", "evid", "cmt")])))
 
 ## Replicate Figure 5: typical-value trajectories for the 5-arm experiment
 
-A typical-value simulation
-([`zeroRe()`](https://nlmixr2.github.io/rxode2/reference/zeroRe.html) so
-the placeholder residual error and any IIV are disabled) reproduces the
-deterministic curves in Wilson 2015 Figure 5: control grows nearly to
-the carrying capacity, sunitinib monotherapy strongly inhibits growth,
-irinotecan monotherapy produces a temporary dip followed by regrowth,
-and the two combination arms produce the most prolonged inhibition. The
-Group 5 arm (irinotecan on day 15) shows the steepest dip because by day
-15 the cumulative sunitinib exposure has fully accumulated and the
-interaction term has scaled the irinotecan transit-death rate kC to its
-maximum value (see the mechanistic check below).
+A typical-value simulation (`zeroRe()` so the placeholder residual error
+and any IIV are disabled) reproduces the deterministic curves in Wilson
+2015 Figure 5: control grows nearly to the carrying capacity, sunitinib
+monotherapy strongly inhibits growth, irinotecan monotherapy produces a
+temporary dip followed by regrowth, and the two combination arms produce
+the most prolonged inhibition. The Group 5 arm (irinotecan on day 15)
+shows the steepest dip because by day 15 the cumulative sunitinib
+exposure has fully accumulated and the interaction term has scaled the
+irinotecan transit-death rate kC to its maximum value (see the
+mechanistic check below).
 
 ``` r
 
@@ -376,8 +375,7 @@ as such in Wilson 2015 page 724.
   interaction model to per-group median data via nonlinear least squares
   and does not report any residual-error structure. The
   `propSd_tumorSize = 0.10` and `addSd_tumorSize = 0.50` values in
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) are
-  placeholders on the same order as Simeoni 2004
+  `ini()` are placeholders on the same order as Simeoni 2004
   (`oncology_xenograft_simeoni_2004`); a downstream user re-fitting
   Wilson 2015 to subject-level data should re-estimate these. All
   figures in this vignette are produced with

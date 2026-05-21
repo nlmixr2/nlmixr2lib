@@ -132,14 +132,13 @@ stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
 ## Typical-value PSA trajectory (Figure 2 analogue)
 
 van Hasselt 2015 Figure 2 plots individual log-PSA trajectories under
-eribulin treatment. A typical-value simulation
-([`zeroRe()`](https://nlmixr2.github.io/rxode2/reference/zeroRe.html)
-zeroes all between-subject random effects) shows the qualitative shape:
-initial PSA decline driven by drug inhibition `KD0 * D(t)`, with the
-inhibition strength decaying over time via the resistance term
-`exp(-k_res*t)`, and underlying first-order growth at rate `KG` that
-eventually dominates as resistance builds. The right panel shows the
-same trajectory plotted on a log scale to match Figure 2 of the paper.
+eribulin treatment. A typical-value simulation (`zeroRe()` zeroes all
+between-subject random effects) shows the qualitative shape: initial PSA
+decline driven by drug inhibition `KD0 * D(t)`, with the inhibition
+strength decaying over time via the resistance term `exp(-k_res*t)`, and
+underlying first-order growth at rate `KG` that eventually dominates as
+resistance builds. The right panel shows the same trajectory plotted on
+a log scale to match Figure 2 of the paper.
 
 ``` r
 

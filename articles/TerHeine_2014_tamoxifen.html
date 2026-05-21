@@ -511,7 +511,7 @@ CYP-probe-derived metabolic activity.</p>
 <h2 id="source-trace">Source trace<a class="anchor" aria-label="anchor" href="#source-trace"></a>
 </h2>
 <p>The per-parameter origin is recorded as an in-file comment next to
-each <code><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini()</a></code> entry in
+each <code>ini()</code> entry in
 <code>inst/modeldb/ddmore/TerHeine_2014_tamoxifen.R</code>. The table
 below collects them in one place for review.</p>
 <table class="table">
@@ -706,7 +706,7 @@ approximating ultrarapid-metabolizer activity);</li>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">scenarios</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html" class="external-link">tribble</a></span><span class="op">(</span></span>
+<span><span class="va">scenarios</span> <span class="op">&lt;-</span> <span class="fu">tribble</span><span class="op">(</span></span>
 <span>  <span class="op">~</span><span class="va">scenario</span>,        <span class="op">~</span><span class="va">CYP2D6</span>, <span class="op">~</span><span class="va">CYP3A4</span>,</span>
 <span>  <span class="st">"typical"</span>,        <span class="fl">1560</span>,    <span class="fl">44.7</span>,</span>
 <span>  <span class="st">"CYP2D6-low"</span>,      <span class="fl">156</span>,    <span class="fl">44.7</span>,</span>
@@ -759,7 +759,7 @@ approximating ultrarapid-metabolizer activity);</li>
 <span>  events <span class="op">=</span> <span class="va">events</span>,</span>
 <span>  keep   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"scenario"</span>, <span class="st">"CYP2D6"</span>, <span class="st">"CYP3A4"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalcl_endx'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalcl_endx'</span></span>
 <span><span class="co">#&gt; Warning: multi-subject simulation without without 'omega'</span></span>
 <span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -780,26 +780,26 @@ it).</p>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">CMT</span> <span class="op">==</span> <span class="fl">4</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">scenario</span>, <span class="va">Cc</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">sim_tam</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">Cc</span>, colour <span class="op">=</span> <span class="va">scenario</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time after dose (h)"</span>, y <span class="op">=</span> <span class="st">"Tamoxifen Cc (nmol/L)"</span>,</span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">sim_tam</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">time</span>, <span class="va">Cc</span>, colour <span class="op">=</span> <span class="va">scenario</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time after dose (h)"</span>, y <span class="op">=</span> <span class="st">"Tamoxifen Cc (nmol/L)"</span>,</span>
 <span>       colour <span class="op">=</span> <span class="st">"scenario"</span>,</span>
 <span>       title <span class="op">=</span> <span class="st">"Tamoxifen steady-state profile, 20 mg PO QD"</span>,</span>
 <span>       caption <span class="op">=</span> <span class="st">"Typical-value simulation; CYP covariates affect endoxifen formation only, so the parent profile is invariant across scenarios."</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu">theme_bw</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="TerHeine_2014_tamoxifen_files/figure-html/profile-tam-1.png" class="r-plt" alt="" width="672"></p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim_endx</span> <span class="op">&lt;-</span> <span class="va">sim</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">CMT</span> <span class="op">==</span> <span class="fl">5</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="va">scenario</span>, <span class="va">Cc_endx</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">sim_endx</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">Cc_endx</span>, colour <span class="op">=</span> <span class="va">scenario</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time after dose (h)"</span>, y <span class="op">=</span> <span class="st">"Endoxifen Cc (nmol/L)"</span>,</span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">sim_endx</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">time</span>, <span class="va">Cc_endx</span>, colour <span class="op">=</span> <span class="va">scenario</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time after dose (h)"</span>, y <span class="op">=</span> <span class="st">"Endoxifen Cc (nmol/L)"</span>,</span>
 <span>       colour <span class="op">=</span> <span class="st">"scenario"</span>,</span>
 <span>       title <span class="op">=</span> <span class="st">"Endoxifen steady-state profile, 20 mg PO QD"</span>,</span>
 <span>       caption <span class="op">=</span> <span class="st">"CYP2D6-high / CYP3A4-high increase endoxifen formation; the *-low scenarios reduce it."</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu">theme_bw</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="TerHeine_2014_tamoxifen_files/figure-html/profile-endx-1.png" class="r-plt" alt="" width="672"></p>
 </div>
 <div class="section level2">
@@ -1107,8 +1107,8 @@ formulation that is outside the standard nlmixr2 multi-output
 publication.</strong> The endoxifen elimination clearance (5.1 L/h) and
 central volume (400 L) are fixed from Ahmad et al. (2010) Clin Pharmacol
 Ther 88(6):814-817, not estimated by Ter Heine 2014. The fixed values
-are hard-coded inside <code><a href="https://nlmixr2.github.io/rxode2/reference/model.html" class="external-link">model()</a></code> rather than being declared as
-<code><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini()</a></code> parameters (with <code>fixed()</code>) because they
+are hard-coded inside <code>model()</code> rather than being declared as
+<code>ini()</code> parameters (with <code>fixed()</code>) because they
 are literature constants, not parameters of the Ter Heine 2014
 fit.</p></li>
 <li><p><strong>Implicit mass-conserving parent-to-metabolite

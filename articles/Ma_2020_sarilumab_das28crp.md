@@ -141,8 +141,7 @@ medians per the Ma 2020 narrative (CRP 15.7 mg/L, BLPHYVAS 66, BLHAQ
 - **CV% to log-normal variance.** IIV in both Ma 2020 Table 3 and Xu
   2019 Table 3 is reported as CV% on the linear-parameter scale. The
   nlmixr2 convention is log-normal IIV on the log-transformed parameter;
-  the conversion `omega^2 = log(CV^2 + 1)` is applied in
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html).
+  the conversion `omega^2 = log(CV^2 + 1)` is applied in `ini()`.
 - **Residual-error units on DAS28.** Ma 2020 Table 3 lists the additive
   residual SD as `0.647 mg/L`, but the DAS28-CRP score is unitless. The
   paper’s CWRES and VPC are on DAS28-CRP units, so the tabulated value
@@ -203,13 +202,11 @@ obs_days  <- sort(unique(c(
 
 Because this model has two observation equations (`Cc ~ prop(...)` for
 sarilumab concentration and `das28 ~ add(...)` for DAS28-CRP), combining
-a cohort of subjects into one
-[`rxSolve()`](https://nlmixr2.github.io/rxode2/reference/rxSolve.html)
-call triggers an internal rxode2 segfault in the version used at
-packaging time. The vignette therefore simulates subjects one at a time
-and stitches the results together — a workaround that preserves
-correctness at a modest computational cost for this small (N = 60)
-validation cohort.
+a cohort of subjects into one `rxSolve()` call triggers an internal
+rxode2 segfault in the version used at packaging time. The vignette
+therefore simulates subjects one at a time and stitches the results
+together — a workaround that preserves correctness at a modest
+computational cost for this small (N = 60) validation cohort.
 
 ``` r
 
@@ -549,9 +546,8 @@ Typical-patient placebo-arm week-24 DAS28-CRP reduction. {.table}
 - **Dual observation model.** The model declares two observation
   equations: `Cc ~ prop(propSd)` (sarilumab concentration) and
   `das28 ~ add(addSd_das28)` (DAS28-CRP score). Event tables used with
-  [`rxSolve()`](https://nlmixr2.github.io/rxode2/reference/rxSolve.html)
-  therefore need an explicit `cmt = "Cc"` or `cmt = "das28"` on
-  observation records to disambiguate the two outputs; the simulation
+  `rxSolve()` therefore need an explicit `cmt = "Cc"` or `cmt = "das28"`
+  on observation records to disambiguate the two outputs; the simulation
   blocks above do this.
 - **Per-subject simulation workaround.** When combining a multi-subject
   event table (two or more unique IDs) with this model’s two-output

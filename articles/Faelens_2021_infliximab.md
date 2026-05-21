@@ -47,9 +47,8 @@ The same metadata is available programmatically via
 
 Per-parameter origin is recorded in
 `inst/modeldb/specificDrugs/Faelens_2021_infliximab.R` in trailing
-comments next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry.
-The table below collects them in one place.
+comments next to each `ini()` entry. The table below collects them in
+one place.
 
 | Equation / parameter | Value | Source location |
 |----|---:|----|
@@ -75,9 +74,8 @@ Mayo 2 reference category
 (`e_mayo1_cl = log(0.0422 / 0.0463) = -0.0928`,
 `e_mayo3_cl = log(0.0570 / 0.0463) = +0.2079`). The independent IIV on
 KE and V in the source becomes a 2x2 correlated block on (etalcl,
-etalvc) with induced correlation ~0.58 — see
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) block
-comments for the variance / covariance arithmetic.
+etalvc) with induced correlation ~0.58 — see `ini()` block comments for
+the variance / covariance arithmetic.
 
 ## Virtual cohort
 
@@ -262,9 +260,6 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
-#>  ■■■■■■■                           19% |  ETA:  6s
-#>  ■■■■■■■■■■■■■■■■■■■               59% |  ETA:  3s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    97% |  ETA:  0s
 nca_summary <- summary(nca_res)
 knitr::kable(nca_summary, caption = "PKNCA summary on the [0, 84]-day induction window, by treatment and baseline Mayo subscore.")
 ```
@@ -391,9 +386,7 @@ Specifically:
 - **Source’s (KE, V) → nlmixr2lib’s (CL, Vc):** the source’s two
   independent random effects on KE and V become a single 2x2 correlated
   block on (etalcl, etalvc) under the CL = KE \* V reparameterisation.
-  The arithmetic is documented in the model file’s
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html)
-  comments.
+  The arithmetic is documented in the model file’s `ini()` comments.
 - **Distinct from Berends 2019 and Hanzel 2021 infliximab models:**
   Berends 2019 is a target-mediated drug disposition (TMDD) model with
   explicit free TNF dynamics; Hanzel 2021 is a two-compartment SC + IV

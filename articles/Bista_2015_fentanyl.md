@@ -40,9 +40,8 @@ The same information is available programmatically via
 ## Source trace
 
 Per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/specificDrugs/Bista_2015_fentanyl.R`. The table below
-collects them for review.
+`ini()` entry in `inst/modeldb/specificDrugs/Bista_2015_fentanyl.R`. The
+table below collects them for review.
 
 | Equation / parameter | Value | Source location |
 |----|----|----|
@@ -348,9 +347,8 @@ steady state.
 - **Body-weight allometric exponents fixed a priori.** Per Bista 2015
   Methods (paragraph 4) and Table 2 footnote, weight effects on CL/F
   (exponent 0.75) and V/F (exponent 1) were fixed before covariate model
-  building. They are encoded as `fix(...)` in
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html); the
-  paper does not estimate them.
+  building. They are encoded as `fix(...)` in `ini()`; the paper does
+  not estimate them.
 - **V/F fixed.** V/F was fixed to 350 L/70 kg from the Janssen Durogesic
   Product Information (Bista 2015 ref 26). The Bista 2015 Discussion
   reports a sensitivity analysis showing CL/F estimates were stable

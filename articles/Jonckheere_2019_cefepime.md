@@ -56,7 +56,7 @@ Table 1 of Jonckheere 2019.
 ## Source trace
 
 The per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
+`ini()` entry in
 `inst/modeldb/specificDrugs/Jonckheere_2019_cefepime.R`. The table below
 collects them in one place for review.
 

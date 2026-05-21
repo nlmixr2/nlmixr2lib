@@ -677,26 +677,26 @@ gain is modeled over the short post-dosing observation window).</p>
 <span>  <span class="op">)</span></span>
 <span></span>
 <span><span class="va">pop</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 17 × 3</span></span></span>
+<span><span class="co">#&gt; # A tibble: 17 × 3</span></span>
 <span><span class="co">#&gt;    treatment             ID    WT</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> IV 10 mg/kg            1 0.162</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> IV 10 mg/kg            2 0.174</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> IV 10 mg/kg            3 0.170</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> IV 10 mg/kg            4 0.169</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> IV 10 mg/kg            5 0.156</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> SC 20 mg/kg single     6 0.168</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> SC 20 mg/kg single     7 0.173</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> SC 20 mg/kg single     8 0.170</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> SC 20 mg/kg single     9 0.173</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> SC 20 mg/kg single    10 0.170</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span> SC 20 mg/kg single    11 0.150</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">12</span> SC multiple           12 0.156</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">13</span> SC multiple           13 0.169</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">14</span> SC multiple           14 0.171</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">15</span> SC multiple           15 0.166</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">16</span> SC multiple           16 0.168</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">17</span> SC multiple           17 0.174</span></span></code></pre></div>
+<span><span class="co">#&gt;    &lt;chr&gt;              &lt;int&gt; &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1 IV 10 mg/kg            1 0.162</span></span>
+<span><span class="co">#&gt;  2 IV 10 mg/kg            2 0.174</span></span>
+<span><span class="co">#&gt;  3 IV 10 mg/kg            3 0.170</span></span>
+<span><span class="co">#&gt;  4 IV 10 mg/kg            4 0.169</span></span>
+<span><span class="co">#&gt;  5 IV 10 mg/kg            5 0.156</span></span>
+<span><span class="co">#&gt;  6 SC 20 mg/kg single     6 0.168</span></span>
+<span><span class="co">#&gt;  7 SC 20 mg/kg single     7 0.173</span></span>
+<span><span class="co">#&gt;  8 SC 20 mg/kg single     8 0.170</span></span>
+<span><span class="co">#&gt;  9 SC 20 mg/kg single     9 0.173</span></span>
+<span><span class="co">#&gt; 10 SC 20 mg/kg single    10 0.170</span></span>
+<span><span class="co">#&gt; 11 SC 20 mg/kg single    11 0.150</span></span>
+<span><span class="co">#&gt; 12 SC multiple           12 0.156</span></span>
+<span><span class="co">#&gt; 13 SC multiple           13 0.169</span></span>
+<span><span class="co">#&gt; 14 SC multiple           14 0.171</span></span>
+<span><span class="co">#&gt; 15 SC multiple           15 0.166</span></span>
+<span><span class="co">#&gt; 16 SC multiple           16 0.168</span></span>
+<span><span class="co">#&gt; 17 SC multiple           17 0.174</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="dosing-and-event-table">Dosing and event table<a class="anchor" aria-label="anchor" href="#dosing-and-event-table"></a>
@@ -786,7 +786,7 @@ variability.</p>
 <span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">mod</span>, events <span class="op">=</span> <span class="va">events_sim</span>, returnType <span class="op">=</span> <span class="st">"data.frame"</span>,</span>
 <span>               keep <span class="op">=</span> <span class="st">"treatment"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html" class="external-link">as_tibble</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> parameter labels from comments will be replaced by 'label()'</span></span></code></pre></div>
+<span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="replicate-figure-2-plasma-concentration-time-profiles-by-treatment">Replicate Figure 2: plasma concentration-time profiles by

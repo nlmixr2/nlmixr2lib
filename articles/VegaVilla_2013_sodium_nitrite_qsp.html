@@ -512,7 +512,7 @@ development.</p>
 <h2 id="source-trace">Source trace<a class="anchor" aria-label="anchor" href="#source-trace"></a>
 </h2>
 <p>Per-parameter origin is recorded as an in-file comment next to each
-<code><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini()</a></code> entry in
+<code>ini()</code> entry in
 <code>inst/modeldb/specificDrugs/VegaVilla_2013_sodium_nitrite_qsp.R</code>.
 The table below collects them in one place.</p>
 <table class="table">
@@ -806,7 +806,7 @@ each dose level the paper studied, plus a small VPC at MTD with the
 published IIV.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxode2.html" class="external-link">rxode2</a></span><span class="op">(</span><span class="fu"><a href="../reference/readModelDb.html">readModelDb</a></span><span class="op">(</span><span class="st">"VegaVilla_2013_sodium_nitrite_qsp"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> parameter labels from comments will be replaced by 'label()'</span></span>
+<span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
 <span></span>
 <span><span class="co"># Sodium nitrite (NaNO2) MW = 69 g/mol. Convert paper dose rates (ug/kg/h,</span></span>
 <span><span class="co"># per a 70-kg typical subject) into umol/min for the rxode2 RATE field.</span></span>
@@ -856,7 +856,7 @@ dynamics at steady state.</p>
 <span><span class="va">ev_baseline</span> <span class="op">&lt;-</span> <span class="va">ev_baseline</span><span class="op">[</span><span class="va">ev_baseline</span><span class="op">$</span><span class="va">evid</span> <span class="op">!=</span> <span class="fl">1</span>, <span class="op">]</span>  <span class="co"># drop the zero-dose event row</span></span>
 <span><span class="va">mod_typical</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/zeroRe.html" class="external-link">zeroRe</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span></span>
 <span><span class="va">ss</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_typical</span>, <span class="va">ev_baseline</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalkpt_no2', 'etalktp_no2', 'etalkno2_rdt', 'etalvno2_p', 'etalcl0_no3', 'etalkpr_no2', 'etalkrp_no3', 'etalkno3_r', 'etalsmethb', 'etalvr_no2', 'etalvr_methb'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalkpt_no2', 'etalktp_no2', 'etalkno2_rdt', 'etalvno2_p', 'etalcl0_no3', 'etalkpr_no2', 'etalkrp_no3', 'etalkno3_r', 'etalsmethb', 'etalvr_no2', 'etalvr_methb'</span></span>
 <span><span class="va">outs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Cc_nitrite_p"</span>, <span class="st">"Cc_nitrite_r"</span>, <span class="st">"Cc_nitrate_p"</span>, <span class="st">"Cc_nitrate_r"</span>, <span class="st">"Cc_methb"</span><span class="op">)</span></span>
 <span><span class="va">ss_range</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="va">outs</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>min <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">ss</span><span class="op">[[</span><span class="va">x</span><span class="op">]</span><span class="op">]</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, max <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">ss</span><span class="op">[[</span><span class="va">x</span><span class="op">]</span><span class="op">]</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
@@ -919,7 +919,7 @@ attempt to reproduce.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ev_mtd</span> <span class="op">&lt;-</span> <span class="fu">make_infusion_events</span><span class="op">(</span><span class="va">mtd</span>, follow_up_h <span class="op">=</span> <span class="fl">24</span>, sampling_min <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span><span class="va">sim_mtd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_typical</span>, <span class="va">ev_mtd</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalkpt_no2', 'etalktp_no2', 'etalkno2_rdt', 'etalvno2_p', 'etalcl0_no3', 'etalkpr_no2', 'etalkrp_no3', 'etalkno3_r', 'etalsmethb', 'etalvr_no2', 'etalvr_methb'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalkpt_no2', 'etalktp_no2', 'etalkno2_rdt', 'etalvno2_p', 'etalcl0_no3', 'etalkpr_no2', 'etalkrp_no3', 'etalkno3_r', 'etalsmethb', 'etalvr_no2', 'etalvr_methb'</span></span>
 <span></span>
 <span><span class="va">mtd_long</span> <span class="op">&lt;-</span> <span class="va">sim_mtd</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">time</span>, <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/all_of.html" class="external-link">all_of</a></span><span class="op">(</span><span class="va">outs</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -932,11 +932,11 @@ attempt to reproduce.</p>
 <span>                                             <span class="st">"Methemoglobin"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">mtd_long</span><span class="op">$</span><span class="va">time_h</span> <span class="op">&lt;-</span> <span class="va">mtd_long</span><span class="op">$</span><span class="va">time</span> <span class="op">/</span> <span class="fl">60</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">mtd_long</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">time_h</span>, <span class="va">conc</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="va">infusion_duration_h</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span>, alpha <span class="op">=</span> <span class="fl">0.4</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span> <span class="va">endpoint_label</span>, scales <span class="op">=</span> <span class="st">"free_y"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time (h)"</span>, y <span class="op">=</span> <span class="st">"Concentration (umol/L)"</span>,</span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">mtd_long</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">time_h</span>, <span class="va">conc</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_vline</span><span class="op">(</span>xintercept <span class="op">=</span> <span class="va">infusion_duration_h</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span>, alpha <span class="op">=</span> <span class="fl">0.4</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">facet_wrap</span><span class="op">(</span><span class="op">~</span> <span class="va">endpoint_label</span>, scales <span class="op">=</span> <span class="st">"free_y"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time (h)"</span>, y <span class="op">=</span> <span class="st">"Concentration (umol/L)"</span>,</span>
 <span>       title <span class="op">=</span> <span class="st">"Typical-subject profile at MTD (266.9 ug/kg/h x 48 h)"</span>,</span>
 <span>       caption <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Replicates the structure of Figure 2 of Vega-Villa 2013;"</span>,</span>
 <span>                       <span class="st">"dashed line marks end of infusion."</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
@@ -960,15 +960,15 @@ dose levels.</p>
 <span>    <span class="va">s</span></span>
 <span>  <span class="op">}</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalkpt_no2', 'etalktp_no2', 'etalkno2_rdt', 'etalvno2_p', 'etalcl0_no3', 'etalkpr_no2', 'etalkrp_no3', 'etalkno3_r', 'etalsmethb', 'etalvr_no2', 'etalvr_methb'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalkpt_no2', 'etalktp_no2', 'etalkno2_rdt', 'etalvno2_p', 'etalcl0_no3', 'etalkpr_no2', 'etalkrp_no3', 'etalkno3_r', 'etalsmethb', 'etalvr_no2', 'etalvr_methb'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalkpt_no2', 'etalktp_no2', 'etalkno2_rdt', 'etalvno2_p', 'etalcl0_no3', 'etalkpr_no2', 'etalkrp_no3', 'etalkno3_r', 'etalsmethb', 'etalvr_no2', 'etalvr_methb'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalkpt_no2', 'etalktp_no2', 'etalkno2_rdt', 'etalvno2_p', 'etalcl0_no3', 'etalkpr_no2', 'etalkrp_no3', 'etalkno3_r', 'etalsmethb', 'etalvr_no2', 'etalvr_methb'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalkpt_no2', 'etalktp_no2', 'etalkno2_rdt', 'etalvno2_p', 'etalcl0_no3', 'etalkpr_no2', 'etalkrp_no3', 'etalkno3_r', 'etalsmethb', 'etalvr_no2', 'etalvr_methb'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalkpt_no2', 'etalktp_no2', 'etalkno2_rdt', 'etalvno2_p', 'etalcl0_no3', 'etalkpr_no2', 'etalkrp_no3', 'etalkno3_r', 'etalsmethb', 'etalvr_no2', 'etalvr_methb'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalkpt_no2', 'etalktp_no2', 'etalkno2_rdt', 'etalvno2_p', 'etalcl0_no3', 'etalkpr_no2', 'etalkrp_no3', 'etalkno3_r', 'etalsmethb', 'etalvr_no2', 'etalvr_methb'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalkpt_no2', 'etalktp_no2', 'etalkno2_rdt', 'etalvno2_p', 'etalcl0_no3', 'etalkpr_no2', 'etalkrp_no3', 'etalkno3_r', 'etalsmethb', 'etalvr_no2', 'etalvr_methb'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalkpt_no2', 'etalktp_no2', 'etalkno2_rdt', 'etalvno2_p', 'etalcl0_no3', 'etalkpr_no2', 'etalkrp_no3', 'etalkno3_r', 'etalsmethb', 'etalvr_no2', 'etalvr_methb'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalkpt_no2', 'etalktp_no2', 'etalkno2_rdt', 'etalvno2_p', 'etalcl0_no3', 'etalkpr_no2', 'etalkrp_no3', 'etalkno3_r', 'etalsmethb', 'etalvr_no2', 'etalvr_methb'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalkpt_no2', 'etalktp_no2', 'etalkno2_rdt', 'etalvno2_p', 'etalcl0_no3', 'etalkpr_no2', 'etalkrp_no3', 'etalkno3_r', 'etalsmethb', 'etalvr_no2', 'etalvr_methb'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalkpt_no2', 'etalktp_no2', 'etalkno2_rdt', 'etalvno2_p', 'etalcl0_no3', 'etalkpr_no2', 'etalkrp_no3', 'etalkno3_r', 'etalsmethb', 'etalvr_no2', 'etalvr_methb'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalkpt_no2', 'etalktp_no2', 'etalkno2_rdt', 'etalvno2_p', 'etalcl0_no3', 'etalkpr_no2', 'etalkrp_no3', 'etalkno3_r', 'etalsmethb', 'etalvr_no2', 'etalvr_methb'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalkpt_no2', 'etalktp_no2', 'etalkno2_rdt', 'etalvno2_p', 'etalcl0_no3', 'etalkpr_no2', 'etalkrp_no3', 'etalkno3_r', 'etalsmethb', 'etalvr_no2', 'etalvr_methb'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalkpt_no2', 'etalktp_no2', 'etalkno2_rdt', 'etalvno2_p', 'etalcl0_no3', 'etalkpr_no2', 'etalkrp_no3', 'etalkno3_r', 'etalsmethb', 'etalvr_no2', 'etalvr_methb'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalkpt_no2', 'etalktp_no2', 'etalkno2_rdt', 'etalvno2_p', 'etalcl0_no3', 'etalkpr_no2', 'etalkrp_no3', 'etalkno3_r', 'etalsmethb', 'etalvr_no2', 'etalvr_methb'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalkpt_no2', 'etalktp_no2', 'etalkno2_rdt', 'etalvno2_p', 'etalcl0_no3', 'etalkpr_no2', 'etalkrp_no3', 'etalkno3_r', 'etalsmethb', 'etalvr_no2', 'etalvr_methb'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalkpt_no2', 'etalktp_no2', 'etalkno2_rdt', 'etalvno2_p', 'etalcl0_no3', 'etalkpr_no2', 'etalkrp_no3', 'etalkno3_r', 'etalsmethb', 'etalvr_no2', 'etalvr_methb'</span></span>
 <span></span>
 <span><span class="co"># End-of-infusion (t = 48 h = 2880 min) values per dose level</span></span>
 <span><span class="va">eoi</span> <span class="op">&lt;-</span> <span class="va">sim_ladder</span> <span class="op">|&gt;</span></span>
@@ -1187,12 +1187,12 @@ illustrates the spread expected around the typical-value prediction.</p>
 <span>    q95 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">conc</span>, <span class="fl">0.95</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>    .groups <span class="op">=</span> <span class="st">"drop"</span></span>
 <span>  <span class="op">)</span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">vpc_summary</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">time_h</span>, <span class="va">q50</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_ribbon.html" class="external-link">geom_ribbon</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>ymin <span class="op">=</span> <span class="va">q05</span>, ymax <span class="op">=</span> <span class="va">q95</span><span class="op">)</span>, alpha <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="va">infusion_duration_h</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span>, alpha <span class="op">=</span> <span class="fl">0.4</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span> <span class="va">endpoint_label</span>, scales <span class="op">=</span> <span class="st">"free_y"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time (h)"</span>, y <span class="op">=</span> <span class="st">"Concentration (umol/L)"</span>,</span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">vpc_summary</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">time_h</span>, <span class="va">q50</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_ribbon</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>ymin <span class="op">=</span> <span class="va">q05</span>, ymax <span class="op">=</span> <span class="va">q95</span><span class="op">)</span>, alpha <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_vline</span><span class="op">(</span>xintercept <span class="op">=</span> <span class="va">infusion_duration_h</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span>, alpha <span class="op">=</span> <span class="fl">0.4</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">facet_wrap</span><span class="op">(</span><span class="op">~</span> <span class="va">endpoint_label</span>, scales <span class="op">=</span> <span class="st">"free_y"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time (h)"</span>, y <span class="op">=</span> <span class="st">"Concentration (umol/L)"</span>,</span>
 <span>       title <span class="op">=</span> <span class="st">"VPC at MTD across 50 virtual subjects"</span>,</span>
 <span>       caption <span class="op">=</span> <span class="st">"Shaded band: 5-95 % simulated range; line: simulated median."</span><span class="op">)</span></span></code></pre></div>
 <p><img src="VegaVilla_2013_sodium_nitrite_qsp_files/figure-html/vpc-mtd-1.png" class="r-plt" alt="" width="672"></p>
@@ -1207,7 +1207,7 @@ for the dominant flux terms.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mb</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_typical</span>, <span class="va">ev_baseline</span>,</span>
 <span>                                    returnType <span class="op">=</span> <span class="st">"data.frame"</span><span class="op">)</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalkpt_no2', 'etalktp_no2', 'etalkno2_rdt', 'etalvno2_p', 'etalcl0_no3', 'etalkpr_no2', 'etalkrp_no3', 'etalkno3_r', 'etalsmethb', 'etalvr_no2', 'etalvr_methb'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalkpt_no2', 'etalktp_no2', 'etalkno2_rdt', 'etalvno2_p', 'etalcl0_no3', 'etalkpr_no2', 'etalkrp_no3', 'etalkno3_r', 'etalsmethb', 'etalvr_no2', 'etalvr_methb'</span></span>
 <span><span class="co"># Recompute the dominant nitrite-plasma flux components at t = 0 from the</span></span>
 <span><span class="co"># typical-value parameters (parameter values mirror Table 1 of the paper).</span></span>
 <span><span class="va">ini</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
@@ -1290,7 +1290,7 @@ constants.</strong> In the published fit <code>[NO2-]P(0)</code>,
 per-subject predose measurements (data columns <code>NO2P</code>,
 <code>HB3</code>, <code>HBUM</code>). The data file ships separately
 from the article and is not publicly available, so the model uses three
-typical-adult constants embedded in <code><a href="https://nlmixr2.github.io/rxode2/reference/model.html" class="external-link">model()</a></code>:</p>
+typical-adult constants embedded in <code>model()</code>:</p>
 <ul>
 <li>
 <code>bl_nitrite_p_conc = 0.5 umol/L</code> (plasma nitrite predose,
@@ -1364,7 +1364,7 @@ nitrate) is fixed at 0.</strong> Supplement <code>$THETA(7)</code>
 carries the <code>FIX</code> flag, so the term
 <code>kno3_p * nitrite_p</code> in <code>d/dt(nitrite_p)</code> and
 <code>d/dt(nitrate_p)</code> vanishes by construction. The parameter is
-retained in <code><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini()</a></code> with <code>fixed(0)</code> for structural
+retained in <code>ini()</code> with <code>fixed(0)</code> for structural
 transparency.</p></li>
 <li><p><strong>Residual error parameters for nitrate plasma and RBC are
 duplicated.</strong> The supplement <code>$ERROR</code> shares a single

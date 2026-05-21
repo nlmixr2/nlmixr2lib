@@ -151,13 +151,12 @@ nrow(events); n_distinct(events$id)
 
 ## Typical-value simulation (replicates the response shapes from Figure 1)
 
-A typical-value simulation
-([`zeroRe()`](https://nlmixr2.github.io/rxode2/reference/zeroRe.html):
-no IIV, no residual error) shows the structural response shape Mazzocco
-2015 highlights in Figure 1 (bottom panels): an initial MTD drop driven
-by the TMZ effect on both P and Q tissues, followed by a slow rebound as
-the proliferative-tissue drug effect decays via `exp(-res*t)` and the
-damaged-quiescent compartment Qp repairs back to P at rate kQpP.
+A typical-value simulation (`zeroRe()`: no IIV, no residual error) shows
+the structural response shape Mazzocco 2015 highlights in Figure 1
+(bottom panels): an initial MTD drop driven by the TMZ effect on both P
+and Q tissues, followed by a slow rebound as the proliferative-tissue
+drug effect decays via `exp(-res*t)` and the damaged-quiescent
+compartment Qp repairs back to P at rate kQpP.
 
 ``` r
 

@@ -40,10 +40,7 @@ Study 20 and the fasted-assumed Study 29). The fed arm came from Study
 
 The same metadata is available programmatically via the source-file
 function (the model file’s `population` list is captured by the source
-function before the
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) /
-[`model()`](https://nlmixr2.github.io/rxode2/reference/model.html) block
-is evaluated):
+function before the `ini()` / `model()` block is evaluated):
 
 ``` r
 
@@ -91,9 +88,8 @@ str(patel_meta$population, max.level = 1)
 ## Source trace
 
 Per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/specificDrugs/Patel_2017_selumetinib.R`. The table below
-collects the references in one place.
+`ini()` entry in `inst/modeldb/specificDrugs/Patel_2017_selumetinib.R`.
+The table below collects the references in one place.
 
 | Element | Value | Source location |
 |----|----|----|
@@ -128,11 +124,10 @@ collects the references in one place.
 
 The selumetinib molecular weight 457.68 g/mol (PubChem CID 10127622) and
 N-desmethyl-selumetinib molecular weight 443.65 g/mol (PubChem CID
-11355684) are used inside
-[`model()`](https://nlmixr2.github.io/rxode2/reference/model.html) to
-convert the molar parent-elimination flux into the mass-based
-metabolite-formation flux so the 1:1 stoichiometry of parent
-demethylation is preserved at the mass level.
+11355684) are used inside `model()` to convert the molar
+parent-elimination flux into the mass-based metabolite-formation flux so
+the 1:1 stoichiometry of parent demethylation is preserved at the mass
+level.
 
 ## Virtual cohort
 
@@ -141,10 +136,8 @@ approximates the Patel 2017 pooled-cohort demographics used for model
 development (Table 1, n = 105: 72 adults from Studies 16 + 20 and 33
 children from Study 29). Reference covariate values BSA = 1.66 m^2, AGE
 = 53 years, ALT = 20 U/L are the approximate pooled-cohort medians used
-as normalization constants inside
-[`model()`](https://nlmixr2.github.io/rxode2/reference/model.html) (the
-paper does not state the exact NONMEM normalization constants; see
-Assumptions).
+as normalization constants inside `model()` (the paper does not state
+the exact NONMEM normalization constants; see Assumptions).
 
 ``` r
 
@@ -414,9 +407,6 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
-#>  ■■■■■■■■■                         27% |  ETA:  9s
-#>  ■■■■■■■■■■■■■■■■■■■               59% |  ETA:  4s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      91% |  ETA:  1s
 
 nca_summary <- summary(nca_res)
 knitr::kable(nca_summary, caption = "Selumetinib NCA parameters by regimen (single-dose; PKNCA on the stochastic simulation).")
@@ -443,9 +433,6 @@ sim_ndsel <- sim_vpc |>
 conc_obj_m <- PKNCA::PKNCAconc(sim_ndsel, Cc ~ time | regimen + id)
 nca_data_m <- PKNCA::PKNCAdata(conc_obj_m, dose_obj, intervals = intervals)
 nca_res_m  <- PKNCA::pk.nca(nca_data_m)
-#>  ■■■■■                             15% |  ETA:  9s
-#>  ■■■■■■■■■■■■■■                    45% |  ETA:  6s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■         79% |  ETA:  2s
 
 knitr::kable(summary(nca_res_m), caption = "N-desmethyl-selumetinib NCA parameters by regimen.")
 ```

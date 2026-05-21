@@ -58,13 +58,13 @@ to switch scenarios (see “Replicating Figure 2 across variants” below).
 ## Source trace
 
 Per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
+`ini()` entry in
 `inst/modeldb/specificDrugs/DoldanMartelli_2013_EGF_IFN_chimera.R`. The
 table below consolidates the references.
 
 | Equation / parameter | Value (default) | Source location |
 |----|----|----|
-| Eq. 6 (`k_c_i`) | derived in [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html) | Doldan-Martelli 2013, p. 6, Eq. 6 |
+| Eq. 6 (`k_c_i`) | derived in `model()` | Doldan-Martelli 2013, p. 6, Eq. 6 |
 | Eq. 7 (`k_diff_i`) | derived | Doldan-Martelli 2013, p. 6, Eq. 7 |
 | Eq. 8 (`b_i`) | derived | Doldan-Martelli 2013, p. 6, Eq. 8 |
 | Eq. 9 (`k'_on_i`) | derived | Doldan-Martelli 2013, p. 6, Eq. 9 |
@@ -109,8 +109,7 @@ normalization-by-A convention (Methods, p. 6, paragraph after Eq. 7).
 | `ke1 * c_egf` | min^-1 x mol | internalization flux of EGF-only complex |
 | `(ku1 + ku2 + ke3) * c_full` | min^-1 x mol | dissociation back to C1/C2 + internalization |
 
-Unit conversion steps inside
-[`model()`](https://nlmixr2.github.io/rxode2/reference/model.html):
+Unit conversion steps inside `model()`:
 
 - `V1_L = A * (h1 + a) * 1e-19` converts (um^2) x (Angstrom) -\> liters
   (1 um^2 x 1 Angstrom = 1e-22 m^3 = 1e-19 L).
@@ -132,9 +131,8 @@ mod_typ <- rxode2::zeroRe(mod)
 #> Warning: No sigma parameters in the model
 ```
 
-The model has no etas and no residual error, so
-[`zeroRe()`](https://nlmixr2.github.io/rxode2/reference/zeroRe.html) is
-a no-op beyond silencing the “no omega/sigma parameters” warnings.
+The model has no etas and no residual error, so `zeroRe()` is a no-op
+beyond silencing the “no omega/sigma parameters” warnings.
 
 ## Baseline check (no ligand)
 
@@ -360,15 +358,12 @@ ggplot(sweep, aes(x = R1, y = R2, fill = max_ifn)) +
   Again this is a faithful representation of the paper: the state and
   output are counts of molecular species on one cell’s surface, not a
   bulk-fluid concentration.
-- **Mu-reference aliasing.** Each
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) THETA
-  is aliased to a model-local variable (`k1on -> kk1on`, `A -> AA`, …)
-  at the top of
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html).
-  nlmixr2est’s parser forbids more than one bare THETA in a single
-  expression, and the ODE right-hand sides reference many THETAs each.
-  The aliases carry the same values; this is a syntax workaround, not a
-  numerical change.
+- **Mu-reference aliasing.** Each `ini()` THETA is aliased to a
+  model-local variable (`k1on -> kk1on`, `A -> AA`, …) at the top of
+  `model()`. nlmixr2est’s parser forbids more than one bare THETA in a
+  single expression, and the ODE right-hand sides reference many THETAs
+  each. The aliases carry the same values; this is a syntax workaround,
+  not a numerical change.
 - **`b_i` uses initial receptor counts `R1_0`, `R2_0`** rather than the
   dynamic states `egfr(t)`, `ifnr(t)`. The 2D rate constants `k_diff_i`
   and `k'_on_i` are structural properties of the cell membrane, derived
@@ -383,11 +378,9 @@ ggplot(sweep, aes(x = R1, y = R2, fill = max_ifn)) +
 - **Constant extracellular `L`.** Per the paper’s Methods (p. 6,
   paragraph after Eq. 15 referring to Supplementary Text S1), the
   extracellular ligand concentration is treated as constant during the
-  simulated assay window. This is parameter `L` in
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html), not a
-  state. A user who wants to model ligand depletion should add a state
-  and adjust the `k1on * egfr * L` / `k2on * ifnr * L` terms
-  accordingly.
+  simulated assay window. This is parameter `L` in `ini()`, not a state.
+  A user who wants to model ligand depletion should add a state and
+  adjust the `k1on * egfr * L` / `k2on * ifnr * L` terms accordingly.
 - **Three IFN variants share one model file.** The file defaults to
   wild-type IFN; the K133A and R144A mutants are parameter swaps on
   `k2on` and `k2off` (and `ke2` if the user has a more recent source

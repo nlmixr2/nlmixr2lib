@@ -74,8 +74,7 @@ Reference values are WT = 70 kg and AGE = 40 years (Table 3 footnote).
 A previous release of the model file stored the six IIV entries as
 `sqrt(variance)` rather than as variances/covariances; the current
 version encodes the raw variance-covariance matrix expected by the
-`~ c(...)` form in
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html).
+`~ c(...)` form in `ini()`.
 
 ## Virtual cohort
 

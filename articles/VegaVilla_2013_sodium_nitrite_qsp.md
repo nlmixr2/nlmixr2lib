@@ -38,7 +38,7 @@ The same information is available programmatically via
 ## Source trace
 
 Per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
+`ini()` entry in
 `inst/modeldb/specificDrugs/VegaVilla_2013_sodium_nitrite_qsp.R`. The
 table below collects them in one place.
 
@@ -422,8 +422,7 @@ Nitrite-plasma flux components at t = 0. Net imbalance (relative):
   `[Hb]total` were read from per-subject predose measurements (data
   columns `NO2P`, `HB3`, `HBUM`). The data file ships separately from
   the article and is not publicly available, so the model uses three
-  typical-adult constants embedded in
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html):
+  typical-adult constants embedded in `model()`:
 
   - `bl_nitrite_p_conc = 0.5 umol/L` (plasma nitrite predose,
     representative of Figure 4b)
@@ -486,8 +485,7 @@ Nitrite-plasma flux components at t = 0. Net imbalance (relative):
 - **`kno3_p` (direct plasma nitrite -\> plasma nitrate) is fixed at 0.**
   Supplement `$THETA(7)` carries the `FIX` flag, so the term
   `kno3_p * nitrite_p` in `d/dt(nitrite_p)` and `d/dt(nitrate_p)`
-  vanishes by construction. The parameter is retained in
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) with
+  vanishes by construction. The parameter is retained in `ini()` with
   `fixed(0)` for structural transparency.
 
 - **Residual error parameters for nitrate plasma and RBC are

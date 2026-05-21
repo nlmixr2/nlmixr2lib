@@ -44,10 +44,10 @@ page 9). The same metadata is exposed programmatically via
 ## Source trace
 
 The per-parameter origin is recorded as an inline `# ...` comment next
-to each [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html)
-entry in `inst/modeldb/specificDrugs/AitOudhia_2012_canakinumab.R`. The
-table below collects them in one place for review. All parameter values
-come from Ait-Oudhia 2012 Tables 1 and 2 unless noted otherwise.
+to each `ini()` entry in
+`inst/modeldb/specificDrugs/AitOudhia_2012_canakinumab.R`. The table
+below collects them in one place for review. All parameter values come
+from Ait-Oudhia 2012 Tables 1 and 2 unless noted otherwise.
 
 | Equation / parameter | Value | Source location |
 |----|----|----|
@@ -332,7 +332,6 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
-#>  ■■■■■■■■■■■■■■■■■■■■■■■           75% |  ETA:  1s
 
 knitr::kable(
   summary(nca_res),
@@ -399,8 +398,7 @@ fits.
   clearance (`CL`) and the drug-ligand complex clearance (`CL_DL`) were
   similar during model building and constrained them to a common value
   (Methods, Results page 2). The model file encodes this constraint with
-  `cl_dl <- cl` inside
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html).
+  `cl_dl <- cl` inside `model()`.
 - **IL-1beta additive residual error unit anomaly**: Table 1 reports the
   total-IL-1beta additive residual error as `b2 = 0.317 nmol/L`.
   Converting via the published IL-1beta molecular weight of 17 kDa gives

@@ -523,7 +523,7 @@ function and inspect <code><a href="https://rdrr.io/r/base/formals.html" class="
 <h2 id="source-trace">Source trace<a class="anchor" aria-label="anchor" href="#source-trace"></a>
 </h2>
 <p>Per-parameter origins are recorded as in-file comments next to each
-<code><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini()</a></code> entry in
+<code>ini()</code> entry in
 <code>inst/modeldb/ddmore/Valitalo_2017_morphine.R</code>. The table
 below collects them in one place.</p>
 <table class="table">
@@ -679,7 +679,7 @@ suctioning states.</p>
 <span></span>
 <span><span class="va">sim_baseline</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_typ</span>, events <span class="op">=</span> <span class="va">events_baseline</span>,</span>
 <span>                                keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"MOMENT"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etapresuct', 'etasuct', 'etaaftsuct'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etapresuct', 'etasuct', 'etaaftsuct'</span></span>
 <span></span>
 <span><span class="va">result_baseline</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  MOMENT    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span>,</span>
@@ -728,7 +728,7 @@ matches Valitalo 2017 Table 2.</caption>
 </table>
 <p>All three values should match the paper to numerical precision (&lt;
 1e-10 absolute error) because they are read directly out of
-<code><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini()</a></code>.</p>
+<code>ini()</code>.</p>
 </div>
 <div class="section level3">
 <h3 id="f-2-anchor-2-figure-5a-concentration-effect-during-suctioning">F.2 anchor 2: Figure 5a (concentration-effect during
@@ -755,7 +755,7 @@ units</strong>, on average.”</p>
 <span></span>
 <span><span class="va">sim_5a</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_typ</span>, events <span class="op">=</span> <span class="va">events_5a</span>,</span>
 <span>                          keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CP_MORPH_NGML"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etapresuct', 'etasuct', 'etaaftsuct'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etapresuct', 'etasuct', 'etaaftsuct'</span></span>
 <span></span>
 <span><span class="va">result_5a</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">sim_5a</span><span class="op">)</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"time"</span>, <span class="st">"CP_MORPH_NGML"</span>,</span>
 <span>                                       <span class="st">"pain_typ"</span>, <span class="st">"vas_pred_typ"</span><span class="op">)</span><span class="op">]</span></span>
@@ -823,11 +823,11 @@ as a function of morphine concentration.</caption>
 </table>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">result_5a</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">CP_MORPH_NGML</span>, <span class="va">vas_pred_typ</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>colour <span class="op">=</span> <span class="st">"steelblue"</span>, linewidth <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_continuous</a></span><span class="op">(</span>limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Morphine plasma concentration (ng/mL)"</span>,</span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">result_5a</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">CP_MORPH_NGML</span>, <span class="va">vas_pred_typ</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span>colour <span class="op">=</span> <span class="st">"steelblue"</span>, linewidth <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_point</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">scale_y_continuous</span><span class="op">(</span>limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Morphine plasma concentration (ng/mL)"</span>,</span>
 <span>       y <span class="op">=</span> <span class="st">"Typical VAS prediction (0-10 cm)"</span>,</span>
 <span>       title <span class="op">=</span> <span class="st">"Figure 5a (VAS arm): typical VAS during suctioning vs morphine concentration"</span>,</span>
 <span>       caption <span class="op">=</span> <span class="st">"Replicates the VAS arm of Figure 5a of Valitalo 2017 (during-suctioning population median)."</span><span class="op">)</span></span></code></pre></div>
@@ -865,7 +865,7 @@ unit</strong>, on average.”</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">sim_5b</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_typ</span>, events <span class="op">=</span> <span class="va">events_5b</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etapresuct', 'etasuct', 'etaaftsuct'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etapresuct', 'etasuct', 'etaaftsuct'</span></span>
 <span></span>
 <span><span class="va">result_5b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">sim_5b</span><span class="op">)</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"time"</span>, <span class="st">"pain_typ"</span>, <span class="st">"vas_pred_typ"</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">result_5b</span>, digits <span class="op">=</span> <span class="fl">4</span>,</span>
@@ -923,11 +923,11 @@ as a function of study time (CP = 0).</caption>
 </table>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">result_5b</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">vas_pred_typ</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>colour <span class="op">=</span> <span class="st">"darkorange"</span>, linewidth <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_continuous</a></span><span class="op">(</span>limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Study time (days)"</span>,</span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">result_5b</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">time</span>, <span class="va">vas_pred_typ</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span>colour <span class="op">=</span> <span class="st">"darkorange"</span>, linewidth <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_point</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">scale_y_continuous</span><span class="op">(</span>limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Study time (days)"</span>,</span>
 <span>       y <span class="op">=</span> <span class="st">"Typical VAS prediction (0-10 cm)"</span>,</span>
 <span>       title <span class="op">=</span> <span class="st">"Figure 5b (VAS arm): typical VAS during suctioning vs study time"</span>,</span>
 <span>       caption <span class="op">=</span> <span class="st">"Replicates the VAS arm of Figure 5b of Valitalo 2017 (during-suctioning population median, CP = 0)."</span><span class="op">)</span></span></code></pre></div>
@@ -960,7 +960,7 @@ prediction differs by OBSTYPE at fixed pain:</p>
 <span><span class="op">)</span></span>
 <span><span class="va">sim_obs</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_typ</span>, events <span class="op">=</span> <span class="va">events_obs</span>,</span>
 <span>                           keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"OBSTYPE"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etapresuct', 'etasuct', 'etaaftsuct'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etapresuct', 'etasuct', 'etaaftsuct'</span></span>
 <span><span class="va">result_obs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">sim_obs</span><span class="op">)</span><span class="op">[</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"time"</span>, <span class="st">"OBSTYPE"</span>, <span class="st">"pain_typ"</span>, <span class="st">"vas_pred_typ"</span>, <span class="st">"vas_diff_typ"</span>,</span>
 <span>    <span class="st">"vas_discr_typ"</span><span class="op">)</span><span class="op">]</span></span>
@@ -1041,7 +1041,7 @@ only the continuous VAS observation as the formal
 <code>vas_pred ~ add(vas_add)</code> – the only observation type that
 nlmixr2 fits directly. The full categorical-likelihood machinery
 (per-grade probabilities <code>peq1..peq8</code>) is still computed in
-<code><a href="https://nlmixr2.github.io/rxode2/reference/model.html" class="external-link">model()</a></code> for source-trace fidelity and for vignette
+<code>model()</code> for source-trace fidelity and for vignette
 analysis, but is not exercised as the fitted-observation in this nlmixr2
 implementation. F.2 mechanistic-sanity validation is restricted to the
 latent-pain trajectory and the typical-value VAS prediction;
@@ -1097,7 +1097,7 @@ parameters.</strong> The source paper fixed the IRT discrimination and
 difficulty thetas to their graded-response sub-model estimates and did
 not test covariates on them in the PD layer (only on baseline pain and
 on the morphine / time slopes). This nlmixr2lib model therefore exposes
-them all as <code>fixed()</code> in <code><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini()</a></code>.</li>
+them all as <code>fixed()</code> in <code>ini()</code>.</li>
 <li>
 <strong>Sex split not reported.</strong> Valitalo 2017 does not
 tabulate sex distribution in the available trimmed source;

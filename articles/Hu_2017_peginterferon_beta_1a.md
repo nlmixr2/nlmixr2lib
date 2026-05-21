@@ -35,7 +35,7 @@ The same information is available programmatically via
 ## Source trace
 
 Per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
+`ini()` entry in
 `inst/modeldb/specificDrugs/Hu_2017_peginterferon_beta_1a.R`. The table
 below collects them for review.
 
@@ -315,7 +315,6 @@ intervals_ss <- data.frame(
 
 nca_all <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj_all, dose_obj_all,
                                           intervals = intervals_ss))
-#>  ■■■■■■■■■■■■■■■■■                 53% |  ETA:  2s
 
 summary(nca_all)
 #>  Interval Start Interval End quintile   N AUClast (hour*ng/mL) Cmax (ng/mL)

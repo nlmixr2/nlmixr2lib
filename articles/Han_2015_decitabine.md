@@ -106,12 +106,11 @@ mod_meta$meta$population
 ## Source trace
 
 The per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry.
-Every numeric value below was taken from Table 3 of Han et al. 2015
-(“Final parameter estimates and bootstrap outcomes”). The BSV columns
-(reported as %CV) were converted to log-scale variances via omega^2 =
-log(1 + CV^2); residual error variances were converted to SDs via
-sqrt(.) with a /mm^3 -\> 10^9/L unit conversion (divide by 1000).
+`ini()` entry. Every numeric value below was taken from Table 3 of Han
+et al. 2015 (“Final parameter estimates and bootstrap outcomes”). The
+BSV columns (reported as %CV) were converted to log-scale variances via
+omega^2 = log(1 + CV^2); residual error variances were converted to SDs
+via sqrt(.) with a /mm^3 -\> 10^9/L unit conversion (divide by 1000).
 
 | Equation / parameter | Value | Source location (Han 2015) |
 |----|----|----|
@@ -462,7 +461,6 @@ intervals <- data.frame(
 nca_res <- PKNCA::pk.nca(
   PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 )
-#>  ■■■■■■■■■■■■■■■                   47% |  ETA:  2s
 
 knitr::kable(summary(nca_res),
              caption = "Cycle-1 Day-1 single-dose NCA (200 subjects, 5 mg/m^2 1-h IV).")
@@ -713,9 +711,7 @@ knitr::kable(data.frame(
   Methods says “BSV … was the only random effect which could be
   estimated, except for the proportional residual error” for PK CL. The
   model carries these as typical-value-only parameters (no corresponding
-  eta in
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html)),
-  consistent with the paper’s reporting.
+  eta in `ini()`), consistent with the paper’s reporting.
 - **Friberg / Wallin transit kinetics use a single ktr.** Both ANC and
   PLT chains use one structural ktr (the rate constant of inter-
   compartmental movement, reported in 1/h directly in Table 3) applied
@@ -771,16 +767,13 @@ knitr::kable(data.frame(
   [`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
   flags these as warnings of `compartments` severity; the deviation is
   intentional.
-- **Residual error stored in
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) on the
-  canonical 10^9/L PD unit.** Han 2015 reports the PD additive residual
-  variances as `sigma^2_PD,N = 754 /mm^3^2` and
-  `sigma^2_PD,P = 25,000 /mm^3^2`. The SDs in `mm^-3` are
-  `sqrt(754) = 27.46` and `sqrt(25000) = 158.1`. To match `addSd_ANC` /
-  `addSd_PLT` to the canonical PD observation unit of `10^9 cells/L`
-  (i.e. `1000 / mm^3`), the SDs in
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) are
-  divided by 1000 to give `0.0275` and `0.158`.
+- **Residual error stored in `ini()` on the canonical 10^9/L PD unit.**
+  Han 2015 reports the PD additive residual variances as
+  `sigma^2_PD,N = 754 /mm^3^2` and `sigma^2_PD,P = 25,000 /mm^3^2`. The
+  SDs in `mm^-3` are `sqrt(754) = 27.46` and `sqrt(25000) = 158.1`. To
+  match `addSd_ANC` / `addSd_PLT` to the canonical PD observation unit
+  of `10^9 cells/L` (i.e. `1000 / mm^3`), the SDs in `ini()` are divided
+  by 1000 to give `0.0275` and `0.158`.
 - **Successful-bootstrap convergence not propagated.** Han 2015 reports
   bootstrap convergence rates of 78.8% (PK) and 78.0% (PD) with median
   parameter estimates that closely match the point estimates (Table 3,

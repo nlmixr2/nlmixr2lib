@@ -120,15 +120,13 @@ nrow(events_mouse); n_distinct(events_mouse$id)
 
 ## Typical-value simulation (Figure 4 left panel)
 
-A typical-value simulation
-([`zeroRe()`](https://nlmixr2.github.io/rxode2/reference/zeroRe.html):
-no IIV, no residual error) reproduces the mechanistic shape Ouerdani
-2015 highlights in Figure 4 (left panel): tumour volume rises
-monotonically in vehicle animals (pure logistic growth), declines
-monotonically at low pazopanib doses (cytotoxic effect dominates), and
-shows an initial decrease followed by limited regrowth at higher doses
-(the “dual-action” pattern as the antiangiogenic carrying-capacity
-reduction kicks in).
+A typical-value simulation (`zeroRe()`: no IIV, no residual error)
+reproduces the mechanistic shape Ouerdani 2015 highlights in Figure 4
+(left panel): tumour volume rises monotonically in vehicle animals (pure
+logistic growth), declines monotonically at low pazopanib doses
+(cytotoxic effect dominates), and shows an initial decrease followed by
+limited regrowth at higher doses (the “dual-action” pattern as the
+antiangiogenic carrying-capacity reduction kicks in).
 
 ``` r
 

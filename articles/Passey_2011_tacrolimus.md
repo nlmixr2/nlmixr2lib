@@ -477,8 +477,7 @@ for this vignette.
   for consistency with the other multiplicative factors (e.g., 0.71 for
   11-180 DPT, whose bootstrap median is 0.72), but downstream users who
   prefer the equation-as-published convention should replace 1.70 with
-  1.69 in
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html).
+  1.69 in `ini()`.
 - **Days post-transplant categorical decomposition.** Passey 2011
   Methods reports that the model failed to converge when POD was
   modelled as a continuous function (or as a Bateman / Emax form). The
@@ -486,8 +485,7 @@ for this vignette.
   strata: days 3-5 (reference), days 6-10 (factor 0.86), days 11-180
   (factor 0.71). The model file receives the canonical continuous `POD`
   column and derives the two binary indicators ((POD \>= 6 & POD \<= 10)
-  and (POD \>= 11)) inside
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html).
+  and (POD \>= 11)) inside `model()`.
 - **Three-level CYP3A5 genotype.** Passey 2011 distinguishes CYP3A5*1/*1
   from CYP3A5*1/*3 (in contrast to Bergmann 2014 and Storset 2014, which
   pool the two expresser strata into a single CYP3A5_EXPR binary

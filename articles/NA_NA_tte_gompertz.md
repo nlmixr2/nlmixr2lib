@@ -81,9 +81,8 @@ str(m()$meta$population, max.level = 1)
 ## Source trace
 
 Per-parameter origin is captured as in-file comments next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/ddmore/NA_NA_tte_gompertz.R`. The table below collects
-them in one place.
+`ini()` entry in `inst/modeldb/ddmore/NA_NA_tte_gompertz.R`. The table
+below collects them in one place.
 
 | Equation / parameter | Value | Source location |
 |----|----|----|
@@ -288,9 +287,7 @@ redistributed. A user wanting to exercise the check should:
     (Event 1) rows.
 2.  Pass the per-record `AGE` and `NEUT` covariates to `rxSolve(m, ...)`
     with the typical-value parameters (this nlmixr2lib model has no IIV,
-    so no
-    [`zeroRe()`](https://nlmixr2.github.io/rxode2/reference/zeroRe.html)
-    is needed).
+    so no `zeroRe()` is needed).
 3.  Compare the simulated `sur`, `cumHazard`, `hazard` outputs against
     the .res `$TABLE`’s `SURV`, `CHAZ`, `HAZNOW` columns. Differences
     beyond floating-point should be investigated, not tuned.
@@ -313,11 +310,8 @@ a faithful smaller-scale analogue.
 - **Numerical rescalings preserved.** The .mod uses internal /1000,
   /10000, /100 rescalings on lambda, NEUT effect, and AGE effect for
   optimizer numerical stability. We preserve these rescalings inside
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html) so
-  that the
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) values
-  match the .lst FINAL THETA values one-to-one. The biologically
-  meaningful values are:
+  `model()` so that the `ini()` values match the .lst FINAL THETA values
+  one-to-one. The biologically meaningful values are:
 
   - Baseline hazard rate: 2.80 / 1000 = 0.0028 / day
   - NEUT coefficient: -1.56 / 10000 = -1.56e-4 per /mm^3 above 4133

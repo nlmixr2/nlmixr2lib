@@ -73,9 +73,8 @@ str(rxode2::rxode(mod)$population)
 ## Source trace
 
 The per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/specificDrugs/Tanaka_2012_phenytoin.R`. The table below
-collects the same information in one place for review.
+`ini()` entry in `inst/modeldb/specificDrugs/Tanaka_2012_phenytoin.R`.
+The table below collects the same information in one place for review.
 
 | Equation / parameter | Value at reference 60 kg | Source location |
 |----|----|----|
@@ -302,26 +301,6 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- suppressWarnings(PKNCA::pk.nca(nca_data))
-#>  ■■■                                5% |  ETA:  1m
-#>  ■■■■                              10% |  ETA:  1m
-#>  ■■■■■                             15% |  ETA:  1m
-#>  ■■■■■■■                           19% |  ETA:  1m
-#>  ■■■■■■■■                          24% |  ETA: 49s
-#>  ■■■■■■■■■■                        29% |  ETA: 45s
-#>  ■■■■■■■■■■■                       33% |  ETA: 43s
-#>  ■■■■■■■■■■■■                      38% |  ETA: 40s
-#>  ■■■■■■■■■■■■■■                    43% |  ETA: 36s
-#>  ■■■■■■■■■■■■■■■                   48% |  ETA: 33s
-#>  ■■■■■■■■■■■■■■■■■                 52% |  ETA: 30s
-#>  ■■■■■■■■■■■■■■■■■■                57% |  ETA: 27s
-#>  ■■■■■■■■■■■■■■■■■■■■              62% |  ETA: 24s
-#>  ■■■■■■■■■■■■■■■■■■■■■             67% |  ETA: 21s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■           72% |  ETA: 18s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■          77% |  ETA: 15s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■         81% |  ETA: 12s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■       86% |  ETA:  9s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      91% |  ETA:  6s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    96% |  ETA:  3s
 nca_tbl  <- as.data.frame(nca_res$result)
 
 nca_summary <- nca_tbl |>

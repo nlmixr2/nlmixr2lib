@@ -64,9 +64,8 @@ The same metadata is available programmatically via
 ## Source trace
 
 The per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/specificDrugs/Bajaj_2017_nivolumab.R`. The table below
-collects them in one place for review.
+`ini()` entry in `inst/modeldb/specificDrugs/Bajaj_2017_nivolumab.R`.
+The table below collects them in one place for review.
 
 | Parameter (model name) | Value | Source |
 |----|----|----|
@@ -305,8 +304,6 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
-#>  ■■■■■■■■■■■                       33% |  ETA:  6s
-#>  ■■■■■■■■■■■■■■■■■■■■■■            70% |  ETA:  2s
 knitr::kable(
   summary(nca_res),
   caption = "Simulated NCA parameters at steady state (12th dosing interval, days 154-168)"
@@ -329,7 +326,7 @@ be cross-checked against the packaged model:
 
 | Quantity | Bajaj 2017 | This model |
 |----|----|----|
-| Baseline CL at reference covariates | 9.4 mL/h (= 0.226 L/day) | `exp(lcl) = 0.226 L/day` (see [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html)) |
+| Baseline CL at reference covariates | 9.4 mL/h (= 0.226 L/day) | `exp(lcl) = 0.226 L/day` (see `ini()`) |
 | Mean maximal reduction in CL from baseline | ~24.5% | `1 - exp(cl_emax) = 1 - exp(-0.295) = 25.5%` |
 | Geometric mean terminal t\_{1/2}(alpha) | 32.5 h (CV 24.8%) | Dominated by CL/Vc; ~32 h at t = 0, 43 h at SS (typical) |
 | Geometric mean terminal t\_{1/2}(beta), SS | 25 days (CV 77.5%) | Consistent with `half.life` column in PKNCA table above |
@@ -363,11 +360,10 @@ with the log-normal CL variability.
   male, 0 = female) with female as the reference category (Table 1
   footnote a: “white female reference”). The packaged model stores sex
   under the canonical `SEXF` column (1 = female, 0 = male) and derives
-  the male-indicator inside
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html) as
-  `(1 - SEXF)`, preserving the paper’s reference values for CL_REF and
-  VC_REF. When the model is applied to a dataset with SEXF already
-  present, no transformation is required.
+  the male-indicator inside `model()` as `(1 - SEXF)`, preserving the
+  paper’s reference values for CL_REF and VC_REF. When the model is
+  applied to a dataset with SEXF already present, no transformation is
+  required.
 - **Performance-status encoding.** Bajaj 2017’s `PS` column is binary: 1
   if baseline ECOG \>= 1, else 0. The packaged model stores this under
   the canonical `ECOG_GE1` column. Bajaj 2017 Methods notes that one

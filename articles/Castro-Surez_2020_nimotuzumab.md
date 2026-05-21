@@ -257,8 +257,7 @@ ggplot(sim_typ_one, aes(time, Cc, colour = dose_label)) +
     caption = "Replicates Figure 4A of Castro-Suárez 2020 — central compartment concentration following a single IV infusion of 50, 100, 200, 400, 800, or 1200 mg nimotuzumab in an ADPKD patient."
   ) +
   theme_bw()
-#> Warning in scale_y_log10(): log-10 transformation introduced
-#> infinite values.
+#> Warning in scale_y_log10(): log-10 transformation introduced infinite values.
 ```
 
 ![](Castro-Surez_2020_nimotuzumab_files/figure-html/fig4a-1.png)
@@ -281,8 +280,7 @@ ggplot(sim_typ_one, aes(time, peripheral1 / 9.92e-3, colour = dose_label)) +
     caption = "Replicates Figure 4(b) of Castro-Suárez 2020 (typical-value simulation)."
   ) +
   theme_bw()
-#> Warning in scale_y_log10(): log-10 transformation introduced
-#> infinite values.
+#> Warning in scale_y_log10(): log-10 transformation introduced infinite values.
 ```
 
 ![](Castro-Surez_2020_nimotuzumab_files/figure-html/fig4b-1.png)
@@ -392,25 +390,6 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- suppressWarnings(PKNCA::pk.nca(nca_data))
-#>  ■■■                                5% |  ETA:  1m
-#>  ■■■■                              10% |  ETA:  1m
-#>  ■■■■■■                            15% |  ETA:  1m
-#>  ■■■■■■■                           20% |  ETA: 47s
-#>  ■■■■■■■■■                         26% |  ETA: 44s
-#>  ■■■■■■■■■■                        31% |  ETA: 41s
-#>  ■■■■■■■■■■■■                      36% |  ETA: 38s
-#>  ■■■■■■■■■■■■■                     41% |  ETA: 35s
-#>  ■■■■■■■■■■■■■■■                   46% |  ETA: 32s
-#>  ■■■■■■■■■■■■■■■■                  51% |  ETA: 29s
-#>  ■■■■■■■■■■■■■■■■■■                56% |  ETA: 26s
-#>  ■■■■■■■■■■■■■■■■■■■               62% |  ETA: 23s
-#>  ■■■■■■■■■■■■■■■■■■■■■             66% |  ETA: 20s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■           72% |  ETA: 17s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■          77% |  ETA: 13s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■        82% |  ETA: 11s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■       87% |  ETA:  8s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     92% |  ETA:  5s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    97% |  ETA:  2s
 
 nca_tbl <- as.data.frame(nca_res$result) |>
   filter(PPTESTCD %in% c("cmax", "tmax", "aucinf.obs", "half.life", "clast.obs")) |>

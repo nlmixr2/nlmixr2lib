@@ -154,8 +154,7 @@ vignette therefore follows the F.2 (self-consistency) and F.1
 The packaged model parses, runs to completion under
 [`rxode2::rxSolve()`](https://nlmixr2.github.io/rxode2/reference/rxSolve.html),
 and reproduces these qualitative behaviours in the chunks below.
-Sections 1-3 use deterministic typical-value simulations
-([`zeroRe()`](https://nlmixr2.github.io/rxode2/reference/zeroRe.html));
+Sections 1-3 use deterministic typical-value simulations (`zeroRe()`);
 section 4 uses the same typical-value parameters with per-subject
 regressors.
 
@@ -623,10 +622,9 @@ stopifnot(
   reports `omega_*` parameters; these are Monolix random-effect standard
   deviations on the log scale by the default log-normal parameterization
   for positive- constrained structural parameters. nlmixr2 stores
-  variances on the eta, so the
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) block
-  declares `etalhb0 ~ omega^2` etc. See the in-file comments next to
-  each `eta*` line for the conversion arithmetic.
+  variances on the eta, so the `ini()` block declares
+  `etalhb0 ~ omega^2` etc. See the in-file comments next to each `eta*`
+  line for the conversion arithmetic.
 - **No correlated random effects.** The `Output_real_*` listing reports
   a correlation matrix among the population estimates (FIM
   linearization) and a separate correlation matrix among the omega

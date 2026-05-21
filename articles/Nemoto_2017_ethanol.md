@@ -88,9 +88,8 @@ rxode2::rxode(readModelDb("Nemoto_2017_ethanol"))$meta$population
 ## Source trace
 
 The per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/specificDrugs/Nemoto_2017_ethanol.R`. The table below
-collects them for review.
+`ini()` entry in `inst/modeldb/specificDrugs/Nemoto_2017_ethanol.R`. The
+table below collects them for review.
 
 | Quantity | Value | Source location |
 |----|----|----|
@@ -116,10 +115,9 @@ collects them for review.
 ## Typical-value parameter checks
 
 Replicate the narrative parameter values stated in the Results section
-of Nemoto 2017 (pages 4-5). The model file’s
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) is
-encoded for a reference 29.4-year-old, 61.3-kg, ALDH2*1/*1 wild-type,
-ADH1B*2/*1 heterozygous male, matching the centring used by the paper.
+of Nemoto 2017 (pages 4-5). The model file’s `ini()` is encoded for a
+reference 29.4-year-old, 61.3-kg, ALDH2*1/*1 wild-type, ADH1B*2/*1
+heterozygous male, matching the centring used by the paper.
 
 ``` r
 

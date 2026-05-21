@@ -108,9 +108,7 @@ Table 2 (Base, Imax, IC50) is reconciled by the paper text “The final
 pembrolizumab IC50 estimate was 0.54 mg/L” matching the table value
 0.535 directly – so the tabulated PD values are point estimates on the
 linear scale (back-transformed from log-domain theta), and the model
-file uses `log(...)` inside
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) to put
-them on the estimation scale.
+file uses `log(...)` inside `ini()` to put them on the estimation scale.
 
 ## Virtual cohort
 
@@ -329,7 +327,6 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
-#>  ■■■■■■■■■■■■■■■■■■■■              62% |  ETA:  2s
 knitr::kable(
   summary(nca_res),
   caption = "Simulated NCA parameters over Q3W cycle 1 at 2 and 10 mg/kg"
@@ -378,11 +375,8 @@ of the figure.
       form with the published Base = 2.09 and Imax = 0.961 would
       asymptote at 0.08 instead, which contradicts the paper. If a
       future user retrieves the supplement and finds a different
-      parameterization, the
-      [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html)
-      block can be updated without changing the
-      [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html)
-      values.
+      parameterization, the `model()` block can be updated without
+      changing the `ini()` values.
 - **Interoccasion variability on F.** Elassaiss-Schaap 2017 Table 2
   reports a 37.7% interoccasion variability on bioavailability with F
   fixed at 1. The packaged model recasts the IOV as conventional

@@ -85,8 +85,7 @@ loaded.
 ## Source trace
 
 Per-parameter origin (also recorded as in-file comments next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry of
-`inst/modeldb/ddmore/Jonsson_2011_ethambutol.R`):
+`ini()` entry of `inst/modeldb/ddmore/Jonsson_2011_ethambutol.R`):
 
 | Equation / parameter | Value | Source location |
 |----|----|----|

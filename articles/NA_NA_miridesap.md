@@ -299,8 +299,7 @@ sim |>
   theme_bw() +
   theme(legend.position = "bottom") +
   guides(colour = guide_legend(ncol = 1))
-#> Warning in scale_y_log10(): log-10 transformation introduced
-#> infinite values.
+#> Warning in scale_y_log10(): log-10 transformation introduced infinite values.
 ```
 
 ![](NA_NA_miridesap_files/figure-html/figure-cphpc-1.png)
@@ -426,13 +425,11 @@ Expected qualitative outcomes:
 
 ## Sahota 2015 Table 2 cross-check
 
-The model file’s
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) block
-embeds the FINAL parameter estimates from `Output_real_CPHPC.lst` (the
-.lst that fit the real CPHPC + SAP data) and the per-parameter inline
-comments include the Sahota 2015 Table 2 cell for cross-check. The
-agreement is to within rounding in all 21 THETAs and 11 OMEGAs. Notable
-cell-level matches:
+The model file’s `ini()` block embeds the FINAL parameter estimates from
+`Output_real_CPHPC.lst` (the .lst that fit the real CPHPC + SAP data)
+and the per-parameter inline comments include the Sahota 2015 Table 2
+cell for cross-check. The agreement is to within rounding in all 21
+THETAs and 11 OMEGAs. Notable cell-level matches:
 
 | Parameter | .lst final | Sahota 2015 Table 2 |
 |----|----|----|

@@ -44,9 +44,8 @@ The same metadata is available programmatically via
 ## Source trace
 
 The per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/specificDrugs/Hennig_2013_tobra.R`. The table below
-collects them in one place for review.
+`ini()` entry in `inst/modeldb/specificDrugs/Hennig_2013_tobra.R`. The
+table below collects them in one place for review.
 
 | Equation / parameter (model name) | Value (final model) | Source location |
 |----|----|----|
@@ -384,8 +383,8 @@ V1.
 
 | Quantity | Hennig 2013 | This model |
 |----|----|----|
-| Typical CL, female adult, 70 kg FFM, 18 y | 8.1 L/h | `exp(lcl) = 8.1` L/h ([`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) reference value) |
-| Typical CL, male adult, 70 kg FFM, 18 y | 9.4 L/h | `exp(lcl + e_male_cl) = 9.4` L/h ([`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html)) |
+| Typical CL, female adult, 70 kg FFM, 18 y | 8.1 L/h | `exp(lcl) = 8.1` L/h (`ini()` reference value) |
+| Typical CL, male adult, 70 kg FFM, 18 y | 9.4 L/h | `exp(lcl + e_male_cl) = 9.4` L/h (`ini()`) |
 | Typical V1, female adult, 70 kg FFM | 20.1 L | `exp(lvc) = 20.1` L |
 | Typical V1, male adult, 70 kg FFM | 25.1 L | `exp(lvc + e_male_vc) = 25.1` L |
 | Optimal once-daily dose (CF cohort, utility fn) | 11 mg/kg total bodyweight q24h | Used as the simulated regimen above; peak ~20 mg/L target is achieved |

@@ -95,8 +95,7 @@ review.
 BSV magnitudes for each parameter come from Table 2’s “BSV (%RSE)”
 column. The paper reports CV-percent; the model converts via the
 log-normal relation omega^2 = log(1 + CV^2). Parameters with the label
-“15% FIX” in Table 2 are wrapped in `fixed()` in
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html);
+“15% FIX” in Table 2 are wrapped in `fixed()` in `ini()`;
 identifiability of the binding kinetics required the authors to hold
 KON, KINT, KSC, Q2, and V2 BSVs constant at 15 percent.
 
@@ -369,10 +368,9 @@ subject; 20 mg/h IV infusion x 48 h). {.table}
   TMDD pattern.
 - **Units header.** `units$dosing = "mg"` and
   `units$concentration = "ng/mL (CPHPC plasma); ng/mL-equivalent for SAP"`
-  differ by a factor of 1000 in magnitude; the model
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html)
-  block explicitly applies the conversion (`Cc <- central / vc * 1000`
-  and \`sap \<- total_target
+  differ by a factor of 1000 in magnitude; the model `model()` block
+  explicitly applies the conversion (`Cc <- central / vc * 1000` and
+  \`sap \<- total_target
   - MW_SAP \*
     1000`) so the observation columns are in ng/mL while the internal volume is in L.`checkModelConventions()\`
     emits a units-magnitude info note for this combination; the

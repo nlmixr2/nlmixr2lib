@@ -83,8 +83,7 @@ multiple treatment cycles.
 ## Source trace
 
 Per-parameter origin (also recorded as in-file comments next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry of
-`inst/modeldb/ddmore/Friberg_2002_paclitaxel.R`):
+`ini()` entry of `inst/modeldb/ddmore/Friberg_2002_paclitaxel.R`):
 
 | Equation / parameter | Value | Source location |
 |----|----|----|
@@ -355,11 +354,10 @@ sim_bundle <- rxode2::rxSolve(
   this encoding by carrying `CL_INDIV` / `VC_INDIV` / `VP_INDIV` as
   per-subject covariate columns (registered in
   `inst/references/covariate-columns.md`) and using them directly inside
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html).
-  Intercompartmental clearance `Q` is hard-coded at 204 L/h per the
-  `.mod`. Users who do not have per-subject paclitaxel EBEs in their
-  dataset will need to substitute population-mean values or switch to a
-  fully PK-coupled paclitaxel myelosuppression model; neither is
+  `model()`. Intercompartmental clearance `Q` is hard-coded at 204 L/h
+  per the `.mod`. Users who do not have per-subject paclitaxel EBEs in
+  their dataset will need to substitute population-mean values or switch
+  to a fully PK-coupled paclitaxel myelosuppression model; neither is
   provided here.
 - **Compartment naming deviates from the canonical list for `circ`.**
   [`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)

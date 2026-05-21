@@ -64,8 +64,7 @@ cohort.
 ## Source trace
 
 Per-parameter origin (also recorded as in-file comments next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry of
-`inst/modeldb/ddmore/Kloft_2004_sibrotuzumab.R`):
+`ini()` entry of `inst/modeldb/ddmore/Kloft_2004_sibrotuzumab.R`):
 
 | Equation / parameter | Value | Source location |
 |----|----|----|

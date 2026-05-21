@@ -53,13 +53,12 @@ after the model is loaded).
 ## Source trace
 
 The per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/ddmore/Schindler_2016_sunitinib.R`. The table below
-collects them in one place for review. All values are final estimates
-from the `Output_real_SLD_SUV_OS_GIST.lst` `FINAL PARAMETER ESTIMATE`
-block (lines 868-1000); the `.mod` `$THETA / $OMEGA / $SIGMA` blocks are
-initial values and are not used as the parameter source per
-`extract-literature-model` Phase 1 step 9.
+`ini()` entry in `inst/modeldb/ddmore/Schindler_2016_sunitinib.R`. The
+table below collects them in one place for review. All values are final
+estimates from the `Output_real_SLD_SUV_OS_GIST.lst`
+`FINAL PARAMETER ESTIMATE` block (lines 868-1000); the `.mod`
+`$THETA / $OMEGA / $SIGMA` blocks are initial values and are not used as
+the parameter source per `extract-literature-model` Phase 1 step 9.
 
 | Parameter (.lst label) | Final value | Role | Source location |
 |----|----|----|----|

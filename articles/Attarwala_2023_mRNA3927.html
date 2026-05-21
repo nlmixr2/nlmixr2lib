@@ -531,7 +531,7 @@ human-extrapolation use case described in the Discussion (Attarwala
 <h2 id="source-trace">Source trace<a class="anchor" aria-label="anchor" href="#source-trace"></a>
 </h2>
 <p>Parameter origin is recorded in-file alongside each
-<code><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini()</a></code> entry. The table below lists each parameter and its
+<code>ini()</code> entry. The table below lists each parameter and its
 source location.</p>
 <table class="table">
 <caption>Per-parameter source trace for the PK and PD layers.</caption>
@@ -827,14 +827,14 @@ published parameter estimates.</p>
 </h2>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod_typical</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/readModelDb.html">readModelDb</a></span><span class="op">(</span><span class="st">"Attarwala_2023_mRNA3927"</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/zeroRe.html" class="external-link">zeroRe</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> parameter labels from comments will be replaced by 'label()'</span></span>
+<span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
 <span></span>
 <span><span class="va">sim_pk</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span></span>
 <span>  <span class="va">mod_typical</span>,</span>
 <span>  events <span class="op">=</span> <span class="va">cohorts_pk</span>,</span>
 <span>  keep   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"species"</span>, <span class="st">"dose_label"</span><span class="op">)</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl32', 'etale0_mc2', 'etalbase_mc2', 'etale0_hp3', 'etalbase_hp3', 'etale0_c3c2', 'etalbase_c3c2'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl32', 'etale0_mc2', 'etalbase_mc2', 'etale0_hp3', 'etalbase_hp3', 'etale0_c3c2', 'etalbase_c3c2'</span></span>
 <span><span class="co">#&gt; Warning: multi-subject simulation without without 'omega'</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -851,11 +851,11 @@ black curve in Figure 2A.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim_pk</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">Cc</span>, group <span class="op">=</span> <span class="va">dose_label</span>, colour <span class="op">=</span> <span class="va">dose_label</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span> <span class="va">species</span>, scales <span class="op">=</span> <span class="st">"free"</span>, nrow <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_log10</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time after dose (h)"</span>, y <span class="op">=</span> <span class="st">"Plasma mRNA Cc (mg/mL)"</span>,</span>
+<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span><span class="va">time</span>, <span class="va">Cc</span>, group <span class="op">=</span> <span class="va">dose_label</span>, colour <span class="op">=</span> <span class="va">dose_label</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">facet_wrap</span><span class="op">(</span><span class="op">~</span> <span class="va">species</span>, scales <span class="op">=</span> <span class="st">"free"</span>, nrow <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">scale_y_log10</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time after dose (h)"</span>, y <span class="op">=</span> <span class="st">"Plasma mRNA Cc (mg/mL)"</span>,</span>
 <span>       colour <span class="op">=</span> <span class="st">"Cohort"</span>,</span>
 <span>       title <span class="op">=</span> <span class="st">"Figure 2A replication -- plasma PCCA / PCCB mRNA across species"</span>,</span>
 <span>       caption <span class="op">=</span> <span class="st">"Typical-individual simulation; Attarwala 2023 Fig 2A."</span><span class="op">)</span></span></code></pre></div>
@@ -876,16 +876,15 @@ bolus in PCC-deficient mice<a class="anchor" aria-label="anchor" href="#figure-2
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">time</span>, <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">evid</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">sim_pcc</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_typical</span>, events <span class="op">=</span> <span class="va">pcc_events</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl32', 'etale0_mc2', 'etalbase_mc2', 'etale0_hp3', 'etalbase_hp3', 'etale0_c3c2', 'etalbase_c3c2'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl32', 'etale0_mc2', 'etalbase_mc2', 'etale0_hp3', 'etalbase_hp3', 'etale0_c3c2', 'etalbase_c3c2'</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">sim_pcc</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>day <span class="op">=</span> <span class="va">time</span> <span class="op">/</span> <span class="fl">24</span><span class="op">)</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">day</span>, <span class="va">PCC</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_log10</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time (days)"</span>, y <span class="op">=</span> <span class="st">"Liver PCC protein (mass per liver tissue)"</span>,</span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">sim_pcc</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>day <span class="op">=</span> <span class="va">time</span> <span class="op">/</span> <span class="fl">24</span><span class="op">)</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">day</span>, <span class="va">PCC</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">scale_y_log10</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time (days)"</span>, y <span class="op">=</span> <span class="st">"Liver PCC protein (mass per liver tissue)"</span>,</span>
 <span>       title <span class="op">=</span> <span class="st">"Figure 2B replication -- liver PCC protein after 1 mg/kg IV mRNA-3927"</span>,</span>
 <span>       caption <span class="op">=</span> <span class="st">"Typical-individual simulation in PCC-deficient mouse (WT = 0.025 kg)."</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning in scale_y_log10(): <span style="color: #00BB00;">log-10</span> transformation introduced</span></span>
-<span><span class="co">#&gt; infinite values.</span></span></code></pre></div>
+<span><span class="co">#&gt; Warning in scale_y_log10(): log-10 transformation introduced infinite values.</span></span></code></pre></div>
 <p><img src="Attarwala_2023_mRNA3927_files/figure-html/pcc-cohort-1.png" class="r-plt" alt="" width="672"></p>
 </div>
 <div class="section level2">
@@ -913,17 +912,17 @@ suppression at q3W doses of &gt;= 2 mg/kg.</p>
 <span></span>
 <span><span class="va">sim_biom</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_typical</span>, events <span class="op">=</span> <span class="va">biom_events</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl32', 'etale0_mc2', 'etalbase_mc2', 'etale0_hp3', 'etalbase_hp3', 'etale0_c3c2', 'etalbase_c3c2'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl32', 'etale0_mc2', 'etalbase_mc2', 'etale0_hp3', 'etalbase_hp3', 'etale0_c3c2', 'etalbase_c3c2'</span></span>
 <span></span>
 <span><span class="va">biom_long</span> <span class="op">&lt;-</span> <span class="va">sim_biom</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">MC2</span>, <span class="va">HP3</span>, <span class="va">C3C2</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">MC2</span>, <span class="va">HP3</span>, <span class="va">C3C2</span><span class="op">)</span>, names_to <span class="op">=</span> <span class="st">"biomarker"</span>, values_to <span class="op">=</span> <span class="st">"value"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>day <span class="op">=</span> <span class="va">time</span> <span class="op">/</span> <span class="fl">24</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">biom_long</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">day</span>, <span class="va">value</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span> <span class="va">biomarker</span>, scales <span class="op">=</span> <span class="st">"free_y"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time (days)"</span>, y <span class="op">=</span> <span class="st">"Biomarker (umol/L)"</span>,</span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">biom_long</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">day</span>, <span class="va">value</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">facet_wrap</span><span class="op">(</span><span class="op">~</span> <span class="va">biomarker</span>, scales <span class="op">=</span> <span class="st">"free_y"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time (days)"</span>, y <span class="op">=</span> <span class="st">"Biomarker (umol/L)"</span>,</span>
 <span>       title <span class="op">=</span> <span class="st">"Q3W 2 mg/kg mRNA-3927 in PCC-deficient mice -- plasma biomarkers"</span>,</span>
 <span>       caption <span class="op">=</span> <span class="st">"Typical-individual simulation; replicates Attarwala 2023 Suppl. Figs S1-S3."</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Attarwala_2023_mRNA3927_files/figure-html/biomarker-q3w-1.png" class="r-plt" alt="" width="672"></p>
@@ -949,17 +948,17 @@ protein (PCC) are shown.</p>
 <span></span>
 <span><span class="va">sim_human</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_typical</span>, events <span class="op">=</span> <span class="va">human_events</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl32', 'etale0_mc2', 'etalbase_mc2', 'etale0_hp3', 'etalbase_hp3', 'etale0_c3c2', 'etalbase_c3c2'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl32', 'etale0_mc2', 'etalbase_mc2', 'etale0_hp3', 'etalbase_hp3', 'etale0_c3c2', 'etalbase_c3c2'</span></span>
 <span></span>
 <span><span class="va">sim_human</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>day <span class="op">=</span> <span class="va">time</span> <span class="op">/</span> <span class="fl">24</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">Cc</span>, <span class="va">PCC</span><span class="op">)</span>, names_to <span class="op">=</span> <span class="st">"Output"</span>, values_to <span class="op">=</span> <span class="st">"Value"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">day</span>, <span class="va">Value</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span> <span class="va">Output</span>, scales <span class="op">=</span> <span class="st">"free_y"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_log10</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time (days)"</span>, y <span class="op">=</span> <span class="st">"Output value"</span>,</span>
+<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span><span class="va">day</span>, <span class="va">Value</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">facet_wrap</span><span class="op">(</span><span class="op">~</span> <span class="va">Output</span>, scales <span class="op">=</span> <span class="st">"free_y"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">scale_y_log10</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time (days)"</span>, y <span class="op">=</span> <span class="st">"Output value"</span>,</span>
 <span>       title <span class="op">=</span> <span class="st">"Allometric extrapolation -- 70 kg adult, 1 mg/kg IV mRNA-3927"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Attarwala_2023_mRNA3927_files/figure-html/human-extrap-1.png" class="r-plt" alt="" width="672"></p>
 </div>
@@ -985,7 +984,7 @@ side-by-side comparison against the source.</p>
 <span>                              keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"treatment"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl32', 'etale0_mc2', 'etalbase_mc2', 'etale0_hp3', 'etalbase_hp3', 'etale0_c3c2', 'etalbase_c3c2'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl32', 'etale0_mc2', 'etalbase_mc2', 'etale0_hp3', 'etalbase_hp3', 'etale0_c3c2', 'etalbase_c3c2'</span></span>
 <span></span>
 <span><span class="va">conc_df</span> <span class="op">&lt;-</span> <span class="va">sim_pknca</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span>, <span class="va">time</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -1058,12 +1057,12 @@ parameters.</li>
 IIV as a percentage for the seven IIV parameters (CL32 plus two per
 biomarker). We treat these as CV% and convert via
 <code>omega^2 = log(1 + CV^2)</code>; the converted values are pasted
-into <code><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini()</a></code> with the conversion shown in comments.</li>
+into <code>ini()</code> with the conversion shown in comments.</li>
 <li>
 <strong>Fixed parameters.</strong> <code>V</code>, <code>V2</code>,
 and <code>Imax</code> are reported with “Fixed” values in Attarwala 2023
 Table 1 (footnotes f and m). All three are wrapped in
-<code>fixed(...)</code> in <code><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini()</a></code>. Allometric exponents on
+<code>fixed(...)</code> in <code>ini()</code>. Allometric exponents on
 volume parameters are also fixed at 1 per Supplementary Table S1.</li>
 <li>
 <strong>Species-pooled PK fit, mouse-only PD fit.</strong> The

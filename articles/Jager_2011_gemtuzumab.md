@@ -52,11 +52,10 @@ description.
 ## Source trace
 
 The per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/ddmore/Jager_2011_gemtuzumab.R`. The table below collects
-those entries in one place. All values come from the MDL bundle’s
-`parObj` block in `GO_PK_model.mdl`; the bundle ships no
-`Output_real_*.lst` listing.
+`ini()` entry in `inst/modeldb/ddmore/Jager_2011_gemtuzumab.R`. The
+table below collects those entries in one place. All values come from
+the MDL bundle’s `parObj` block in `GO_PK_model.mdl`; the bundle ships
+no `Output_real_*.lst` listing.
 
 | nlmixr2 parameter | Value | DDMORE source location |
 |----|----|----|

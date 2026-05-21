@@ -71,9 +71,8 @@ The same metadata is available programmatically via
 ## Source trace
 
 The per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/specificDrugs/Brillac_2025_isatuximab.R`. The table below
-collects them in one place for review.
+`ini()` entry in `inst/modeldb/specificDrugs/Brillac_2025_isatuximab.R`.
+The table below collects them in one place for review.
 
 | Parameter (model name) | Value | Source |
 |----|----|----|
@@ -324,7 +323,6 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
-#>  ■■■■■■■■■■■■■■■■■■■               61% |  ETA:  2s
 
 knitr::kable(
   summary(nca_res),
@@ -349,7 +347,7 @@ cross-checked against the packaged model.
 
 | Quantity | Brillac 2025 | This model |
 |----|----|----|
-| Typical CL at 38 kg | 0.00556 L/h = 0.133 L/day | `exp(lcl) = 0.133 L/day` (see [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html)) |
+| Typical CL at 38 kg | 0.00556 L/h = 0.133 L/day | `exp(lcl) = 0.133 L/day` (see `ini()`) |
 | Typical V1 at 38 kg | 1.98 L | `exp(lvc) = 1.98 L` |
 | Typical Q at 38 kg | 0.0358 L/h = 0.859 L/day | `exp(lq) = 0.859 L/day` |
 | Typical V2 at 38 kg | 2.20 L | `exp(lvp) = 2.20 L` |
@@ -379,9 +377,8 @@ rather than a coding error.
   approximate coefficient of variation” under their exponential
   random-effects model `parameter_i = TV * exp(eta_i)`. The packaged
   model interprets the percentages reported in Table 1 as the SD of eta
-  on the log scale and stores `omega² = (%/100)²` in
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html), in
-  line with how Monolix reports ω.
+  on the log scale and stores `omega² = (%/100)²` in `ini()`, in line
+  with how Monolix reports ω.
 - **IIV structure.** Brillac 2025 Methods state Ω was modelled as
   diagonal (no covariance between etas); the packaged model uses four
   independent eta parameters accordingly.

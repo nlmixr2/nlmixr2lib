@@ -377,8 +377,7 @@ style="width:100%;"}
   packaged model carries only the single-dose Emax = 9.88 because that
   is the value the paper itself carries forward to the human projection
   (Table 3). Users who want to simulate the repeated-dose PD cohort
-  response should override `lemax` with `log(23.9)` in
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html).
+  response should override `lemax` with `log(23.9)` in `ini()`.
 
 - **Dual IGF-1 residual SD collapsed to the single-dose value.**
   Symmetrically, Table 2 reports two additive residual SDs for the IGF-1

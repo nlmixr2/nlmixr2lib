@@ -81,9 +81,8 @@ class(mod_fn)  # function -- body holds free-floating description / reference / 
 ## Source trace
 
 Per-parameter origins are recorded as in-file comments next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/ddmore/Conrado_2014_alzheimer.R`. The table below collects
-them in one place.
+`ini()` entry in `inst/modeldb/ddmore/Conrado_2014_alzheimer.R`. The
+table below collects them in one place.
 
 nlmixr2 parameter \| NONMEM source \| .mod \$THETA/ \$OMEGA initial \|
 .lst final estimate \|

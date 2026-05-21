@@ -358,10 +358,9 @@ clearance). Any larger discrepancy points to a misinterpreted parameter
   omega(V2/F) = 153% and omega(V3/F) = 107%, interpreted here literally
   as SD of the log-scale random effect (variance 2.34 and 1.14).
   Stochastic simulations therefore show wide spread in volumes / Q; the
-  typical-value
-  ([`zeroRe()`](https://nlmixr2.github.io/rxode2/reference/zeroRe.html))
-  simulation is the cleaner anchor for figure replication, while the
-  IIV-included simulation reproduces the breadth of the VPC envelope.
+  typical-value (`zeroRe()`) simulation is the cleaner anchor for figure
+  replication, while the IIV-included simulation reproduces the breadth
+  of the VPC envelope.
 - **Vignette uses 60 subjects per dose group.** This keeps the vignette
   render comfortably under the 5-minute pkgdown gate while giving stable
   means for the NCA comparison. The original cohort had 41 (450 mg) and

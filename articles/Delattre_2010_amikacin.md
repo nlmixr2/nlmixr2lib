@@ -71,10 +71,9 @@ str(mod_meta$population)
 ## Source trace
 
 The per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/specificDrugs/Delattre_2010_amikacin.R`. The table below
-collects them in one place; values come from Delattre 2010 Table 2
-final-model column.
+`ini()` entry in `inst/modeldb/specificDrugs/Delattre_2010_amikacin.R`.
+The table below collects them in one place; values come from Delattre
+2010 Table 2 final-model column.
 
 | Parameter / equation | Value | Source location |
 |----|----|----|

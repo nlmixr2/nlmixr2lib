@@ -127,24 +127,20 @@ covariate-aware tocilizumab popPK, use the standalone
   (exponent -6.4). The constant 9.9 = log(20000) corresponds to a
   reference IL-6 of ~20 pg/mL (the OPTION/TOWARD median per
   Supplementary Table S1). The library carries IL6 as a raw pg/mL column
-  and applies the log transform inside
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html).
+  and applies the log transform inside `model()`.
 
 - **PAIN and HAQ are floored at 0.010 inside model().** Frey 2013 Table
   2 reports paper-side covariate ranges for PAIN and HAQ starting at
   `0.010` (not `0`), reflecting an explicit floor used to keep the power
   form well-defined when the patient reports a zero score. The library
-  applies the same floor inside
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html) via
-  `max(0.010, PAIN)` and `max(0.010, BLHAQ)`. This affects only the
-  small fraction of subjects with a zero score on those VAS-style
-  components.
+  applies the same floor inside `model()` via `max(0.010, PAIN)` and
+  `max(0.010, BLHAQ)`. This affects only the small fraction of subjects
+  with a zero score on those VAS-style components.
 
 - **CV% to log-normal variance.** All IIV is reported as CV% on the
   linear-parameter scale (Frey 2013 Table 1). The nlmixr2 convention is
   log-normal IIV on the log-transformed parameter; the conversion
-  `omega^2 = log(CV^2 + 1)` is applied in
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html).
+  `omega^2 = log(CV^2 + 1)` is applied in `ini()`.
 
 ## Errata
 
@@ -174,12 +170,10 @@ for `Emax` (Table 1: 0.73; Table 2 formula: 0.72 \* 1.0 for female, 0.72
 0.72 is the female-reference NONMEM theta, Table 1’s 0.73 is the
 typical-population value at the cohort’s ~80%-female mix (0.72 \* 0.80 +
 0.72 \* 1.1 \* 0.20 = 0.736 ≈ 0.73). The library uses the Table 1
-typical 0.73 in
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) and
-applies the +11% bump for males via `(1 + 0.11 * (1 - SEXF))`; this
-slightly overstates Emax in both sexes by ~1% relative to the strict
-Table 2 parameterization but keeps the model anchored to Table 1’s
-reported typical estimate.
+typical 0.73 in `ini()` and applies the +11% bump for males via
+`(1 + 0.11 * (1 - SEXF))`; this slightly overstates Emax in both sexes
+by ~1% relative to the strict Table 2 parameterization but keeps the
+model anchored to Table 1’s reported typical estimate.
 
 ## Virtual cohort
 
@@ -225,9 +219,8 @@ infusion_dur <- 1 / 24                   # 1-hour infusion in days
 ## Simulation
 
 Because the model declares a single observation equation
-(`das28 ~ add(...)`),
-[`rxSolve()`](https://nlmixr2.github.io/rxode2/reference/rxSolve.html)
-accepts straightforward multi-subject event tables.
+(`das28 ~ add(...)`), `rxSolve()` accepts straightforward multi-subject
+event tables.
 
 ``` r
 

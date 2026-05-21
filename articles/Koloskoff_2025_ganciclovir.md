@@ -68,7 +68,7 @@ str(mod_ui$population, max.level = 1)
 ## Source trace
 
 The per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
+`ini()` entry in
 `inst/modeldb/specificDrugs/Koloskoff_2025_ganciclovir.R`. The table
 below collects them in one place.
 

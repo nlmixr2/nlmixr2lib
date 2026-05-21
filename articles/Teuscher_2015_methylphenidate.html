@@ -529,7 +529,7 @@ independent variable (Methods, PK/PD modeling).</p>
 <h2 id="source-trace">Source trace<a class="anchor" aria-label="anchor" href="#source-trace"></a>
 </h2>
 <p>Per-parameter origin is recorded inline next to each
-<code><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini()</a></code> entry in
+<code>ini()</code> entry in
 <code>inst/modeldb/specificDrugs/Teuscher_2015_methylphenidate.R</code>.
 The table below collects the same provenance for review.</p>
 <table class="table">
@@ -734,7 +734,7 @@ weight to mirror the published study design.</p>
 <span><span class="co"># Deterministic typical-value trajectories across the body-weight x</span></span>
 <span><span class="co"># dose grid for the figure reproductions.</span></span>
 <span><span class="va">mod_typical</span> <span class="op">&lt;-</span> <span class="va">mod</span> <span class="op">|&gt;</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/zeroRe.html" class="external-link">zeroRe</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> parameter labels from comments will be replaced by 'label()'</span></span>
+<span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
 <span><span class="va">sim_typical</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span></span>
 <span>  <span class="va">mod_typical</span>,</span>
 <span>  events <span class="op">=</span> <span class="va">events_typical</span>,</span>
@@ -744,7 +744,7 @@ weight to mirror the published study design.</p>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">typical_design</span> <span class="op">|&gt;</span></span>
 <span>                     <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">weight_kg</span>, <span class="va">dose_mg</span><span class="op">)</span>,</span>
 <span>                   by <span class="op">=</span> <span class="st">"id"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl', 'etalvc'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc'</span></span>
 <span><span class="co">#&gt; Warning: multi-subject simulation without without 'omega'</span></span>
 <span></span>
 <span><span class="co"># Stochastic cohort for the PKNCA validation.</span></span>
@@ -754,7 +754,7 @@ weight to mirror the published study design.</p>
 <span>  keep   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"treatment"</span>, <span class="st">"WT"</span><span class="op">)</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> parameter labels from comments will be replaced by 'label()'</span></span></code></pre></div>
+<span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="replicate-published-concentration-time-profile">Replicate published concentration-time profile<a class="anchor" aria-label="anchor" href="#replicate-published-concentration-time-profile"></a>
@@ -769,9 +769,9 @@ strengths in a 45 kg subject.</p>
 <code class="sourceCode R"><span><span class="va">sim_typical</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">weight_kg</span> <span class="op">==</span> <span class="fl">45</span>, <span class="va">dose_mg</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">20</span>, <span class="fl">40</span>, <span class="fl">80</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&lt;=</span> <span class="fl">24</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">Cc</span>, colour <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">dose_mg</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time after dose (h)"</span>,</span>
+<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span><span class="va">time</span>, <span class="va">Cc</span>, colour <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">dose_mg</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time after dose (h)"</span>,</span>
 <span>       y <span class="op">=</span> <span class="st">"Plasma MPH (ng/mL)"</span>,</span>
 <span>       colour <span class="op">=</span> <span class="st">"MPH-MLR dose"</span>,</span>
 <span>       caption <span class="op">=</span> <span class="st">"Typical-value (zero-RE) trajectories for a 45 kg subject across four MPH-MLR doses. Reproduces the bimodal absorption pattern (fast IR peak + lagged ER peak) of Teuscher 2015 Figure 2."</span><span class="op">)</span></span></code></pre></div>
@@ -819,8 +819,6 @@ for sanity checking the order of magnitude.</p>
 <span>                             doseu <span class="op">=</span> <span class="st">"mg"</span><span class="op">)</span></span>
 <span><span class="va">nca_res</span>  <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_obj</span>, <span class="va">dose_obj</span>,</span>
 <span>                                           intervals <span class="op">=</span> <span class="va">intervals</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■                    </span>  36% |  ETA:  3s</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■   </span>  93% |  ETA:  0s</span></span>
 <span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">nca_res</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>             caption <span class="op">=</span> <span class="st">"Simulated single-dose NCA -- MPH-MLR 40 mg in a 45 kg pediatric subject (ng/mL, h)."</span><span class="op">)</span></span></code></pre></div>
@@ -881,13 +879,13 @@ strengths).</p>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>Cmax <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">Cc</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, .groups <span class="op">=</span> <span class="st">"drop"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>adhd_rs_change <span class="op">=</span> <span class="va">emax_value</span> <span class="op">*</span> <span class="va">Cmax</span> <span class="op">/</span> <span class="op">(</span><span class="va">ec50_value</span> <span class="op">+</span> <span class="va">Cmax</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">cmax_typical</span>,</span>
-<span>       <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">weight_kg</span>, <span class="va">adhd_rs_change</span>,</span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">cmax_typical</span>,</span>
+<span>       <span class="fu">aes</span><span class="op">(</span><span class="va">weight_kg</span>, <span class="va">adhd_rs_change</span>,</span>
 <span>           colour <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">dose_mg</span><span class="op">)</span>,</span>
 <span>           group <span class="op">=</span> <span class="va">dose_mg</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">0.6</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Body weight (kg)"</span>,</span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">0.6</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_point</span><span class="op">(</span>size <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Body weight (kg)"</span>,</span>
 <span>       y <span class="op">=</span> <span class="st">"Predicted change from baseline ADHD-RS-IV total score"</span>,</span>
 <span>       colour <span class="op">=</span> <span class="st">"MPH-MLR dose"</span>,</span>
 <span>       caption <span class="op">=</span> <span class="st">"Typical-value Cmax mapped through the Emax exposure-response model (Table 2). Reproduces the body-weight / dose dependence of Teuscher 2015 Figure 5."</span><span class="op">)</span></span></code></pre></div>
@@ -1115,7 +1113,7 @@ write the V covariate equation. The packaged model encodes V = 64.7 L
 (literal) and flags the discrepancy here; users who need to reproduce
 the paper’s Cmax / Emax simulations should replace
 <code>vc &lt;- exp(lvc + etalvc)</code> with
-<code>vc &lt;- exp(lvc + etalvc) * WT</code> in <code><a href="https://nlmixr2.github.io/rxode2/reference/model.html" class="external-link">model()</a></code> and
+<code>vc &lt;- exp(lvc + etalvc) * WT</code> in <code>model()</code> and
 re-run.</li>
 <li>
 <strong>Proportional residual error magnitude.</strong> Table 1
@@ -1136,10 +1134,10 @@ only omega_CL and omega_V. The packaged model therefore declines IIV on
 Ka1, Ka2, F1, and tlag; setting any of these as additional random
 effects is left to the user.</li>
 <li>
-<strong>PD parameters not encoded in <code><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini()</a></code>.</strong>
+<strong>PD parameters not encoded in <code>ini()</code>.</strong>
 Emax = -34.96 and EC50 = 5.77 ng/mL appear only in the vignette code and
 the source-trace table; they are not part of the packaged model’s
-<code><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini()</a></code> block. If a future use case calls for a single
+<code>ini()</code> block. If a future use case calls for a single
 combined PK/PD model file, the natural extension is a sibling
 <code>Teuscher_2015_methylphenidate_pkpd.R</code> model carrying both
 the PK ODE structure and a turnover-style PD compartment driven by Cc

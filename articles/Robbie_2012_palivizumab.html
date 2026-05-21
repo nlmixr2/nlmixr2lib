@@ -682,7 +682,7 @@ single typical subject (no between-subject variability, no dose) should
 yield the published per-subject CL, Vc, Vp, Q at each reference.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod0</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/zeroRe.html" class="external-link">zeroRe</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> parameter labels from comments will be replaced by 'label()'</span></span>
+<span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
 <span></span>
 <span><span class="va">ref_ev</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">WT</span>, <span class="va">PAGE</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
@@ -698,9 +698,9 @@ yield the published per-subject CL, Vc, Vp, Q at each reference.</p>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="va">adult</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod0</span>, events <span class="op">=</span> <span class="fu">ref_ev</span><span class="op">(</span><span class="fl">70</span>, <span class="fl">12</span> <span class="op">*</span> <span class="fl">30</span> <span class="op">+</span> <span class="fl">9</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl', 'etalvc'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc'</span></span>
 <span><span class="va">ped</span>   <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod0</span>, events <span class="op">=</span> <span class="fu">ref_ev</span><span class="op">(</span><span class="fl">4.5</span>, <span class="fl">12.3</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl', 'etalvc'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc'</span></span>
 <span></span>
 <span><span class="va">ref_table</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  parameter <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CL (mL/day)"</span>, <span class="st">"Vc (mL)"</span>, <span class="st">"Vp (mL)"</span>, <span class="st">"Q (mL/day)"</span><span class="op">)</span>,</span>
@@ -853,7 +853,7 @@ pediatric cohort.</p>
 <span></span>
 <span><span class="va">out_f3</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod</span>, events <span class="op">=</span> <span class="va">sim_f3</span>, keep <span class="op">=</span> <span class="st">"regimen"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> parameter labels from comments will be replaced by 'label()'</span></span>
+<span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
 <span></span>
 <span><span class="va">d_f3</span> <span class="op">&lt;-</span> <span class="va">out_f3</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">regimen</span>, <span class="va">time</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -926,7 +926,7 @@ differing in postnatal age at first dose.</p>
 <span><span class="co"># duplicate-ID merge trap altogether.</span></span>
 <span><span class="va">out_f5</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod</span>, events <span class="op">=</span> <span class="va">sim_f5</span>, keep <span class="op">=</span> <span class="st">"cohort"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> parameter labels from comments will be replaced by 'label()'</span></span>
+<span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
 <span></span>
 <span><span class="va">d_f5</span> <span class="op">&lt;-</span> <span class="va">out_f5</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">cohort</span>, <span class="va">time</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -1067,7 +1067,7 @@ variance for adult Vp (consistent with the adult fit’s reported %RSE of
 5.39% on Vp = 2,410 mL: SE = 130 mL, SE^2 = 16,900). The model file uses
 the post-fit final parameter estimates from Table 2, not the priors from
 equation 10, so the erratum’s numerical correction does not propagate to
-any <code><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini()</a></code> value. The other erratum corrections (renaming
+any <code>ini()</code> value. The other erratum corrections (renaming
 equation 4 to “1a”, adding Anderson/Allegaert/Holford 2006 as reference
 1a, the Figure 3 replacement, the Figure 5 legend rewording) are all
 reflected in the model file’s <code>reference</code> field and the

@@ -65,9 +65,8 @@ The same metadata is available programmatically via
 ## Source trace
 
 Per-parameter origins are recorded as in-file comments next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/therapeuticArea/Delor_2013_alzheimer.R`. The table below
-collects them in one place.
+`ini()` entry in `inst/modeldb/therapeuticArea/Delor_2013_alzheimer.R`.
+The table below collects them in one place.
 
 | nlmixr2 parameter | Value | Source location |
 |----|----|----|
@@ -439,11 +438,10 @@ extraction time. The following choices were made:
 3.  **Mixture-weighted single observation endpoint.** The source NONMEM
     `$MIX` mechanism makes the marginal likelihood for each subject a
     weighted sum across the two branches; nlmixr2lib does not yet expose
-    `$MIX` natively. To keep the model usable with
-    [`rxSolve()`](https://nlmixr2.github.io/rxode2/reference/rxSolve.html)
-    (which requires a single observation endpoint or a per-row CMT /
-    DVID specifier on every observation row), the model declares a
-    single observation endpoint `cdr_mix` that is the deterministic
+    `$MIX` natively. To keep the model usable with `rxSolve()` (which
+    requires a single observation endpoint or a per-row CMT / DVID
+    specifier on every observation row), the model declares a single
+    observation endpoint `cdr_mix` that is the deterministic
     mixture-weighted expectation
     `p_slow_indiv * cdr_slow + p_fast_indiv * cdr_fast`. The per-branch
     trajectories `cdr_fast` and `cdr_slow` plus the per-subject mixture
@@ -486,14 +484,13 @@ extraction time. The following choices were made:
     per-branch trajectories (`cdr_fast`, `cdr_slow`) and the per-subject
     mixture probability (`p_slow_indiv`) as derived model variables in
     the `rxSolve` data frame. This single-endpoint encoding is what
-    allows the model to plug into
-    [`rxSolve()`](https://nlmixr2.github.io/rxode2/reference/rxSolve.html)
-    without per-row CMT / DVID assignments. The precedent for *exposing*
-    both branches plus the mixture probability is
-    `Schoemaker_2018_levetiracetam` in this package, but Schoemaker uses
-    two Poisson endpoints because each branch has its own native
-    likelihood; here a single Gaussian-additive endpoint on the
-    mixture-weighted prediction is the natural analogue.
+    allows the model to plug into `rxSolve()` without per-row CMT / DVID
+    assignments. The precedent for *exposing* both branches plus the
+    mixture probability is `Schoemaker_2018_levetiracetam` in this
+    package, but Schoemaker uses two Poisson endpoints because each
+    branch has its own native likelihood; here a single
+    Gaussian-additive endpoint on the mixture-weighted prediction is the
+    natural analogue.
 
 7.  **Time variable handling and the per-subject covariate T_ENTRY.**
     The source paper’s disease-progression equation (Equation 1) uses a

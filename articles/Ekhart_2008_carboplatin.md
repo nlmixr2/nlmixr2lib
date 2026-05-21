@@ -42,7 +42,7 @@ loaded.
 ## Source trace
 
 Per-parameter origin (also recorded as in-file comments next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry of
+`ini()` entry of
 `inst/modeldb/specificDrugs/Ekhart_2008_carboplatin.R`):
 
 | Equation / parameter | Value | Source location |
@@ -248,8 +248,6 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
-#>  ■■■■■■■■■■■                       34% |  ETA:  3s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■   99% |  ETA:  0s
 
 nca_summary <- nca_res$result |>
   dplyr::filter(PPTESTCD %in% c("cmax", "tmax", "auclast", "aucinf.obs", "half.life")) |>

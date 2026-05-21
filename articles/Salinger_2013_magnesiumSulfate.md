@@ -35,7 +35,7 @@ The same information is available programmatically via
 ## Source trace
 
 The per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
+`ini()` entry in
 `inst/modeldb/specificDrugs/Salinger_2013_magnesiumSulfate.R`. The table
 below collects them in one place.
 
@@ -175,10 +175,9 @@ sim <- rxode2::rxSolve(mod_typical, events = events,
 ```
 
 The model has no inter-individual variability (Salinger 2013 explicitly
-did not estimate it);
-[`zeroRe()`](https://nlmixr2.github.io/rxode2/reference/zeroRe.html)
-additionally suppresses the proportional residual error so the curves
-represent typical-value predictions for each subject’s covariate vector.
+did not estimate it); `zeroRe()` additionally suppresses the
+proportional residual error so the curves represent typical-value
+predictions for each subject’s covariate vector.
 
 ## Replicate published figures
 

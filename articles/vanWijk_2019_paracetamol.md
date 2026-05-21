@@ -56,10 +56,9 @@ The same information is available programmatically via the model’s
 ## Source trace
 
 The per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/ddmore/vanWijk_2019_paracetamol.R`. The table below
-collects them in one place. Every `THETA(*)` reference is to the **FINAL
-PARAMETER ESTIMATE** block of
+`ini()` entry in `inst/modeldb/ddmore/vanWijk_2019_paracetamol.R`. The
+table below collects them in one place. Every `THETA(*)` reference is to
+the **FINAL PARAMETER ESTIMATE** block of
 `Output_real_Paracetamol_Zebrafish_345dpf.lst` (post
 `MINIMIZATION SUCCESSFUL`, OBJV = 466.583); `SIGMA` references are to
 the final SIGMA block in the same listing.

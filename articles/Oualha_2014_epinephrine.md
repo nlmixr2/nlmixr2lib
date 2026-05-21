@@ -60,9 +60,8 @@ mod_meta$population$disease_state
 ## Source trace
 
 The per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/specificDrugs/Oualha_2014_epinephrine.R`. The table below
-collects them in one place for review.
+`ini()` entry in `inst/modeldb/specificDrugs/Oualha_2014_epinephrine.R`.
+The table below collects them in one place for review.
 
 | Symbol | Value | Source location |
 |----|----|----|
@@ -390,9 +389,8 @@ omega(q0) = 1.1 estimates (Table 2).
 - **Time unit.** The model uses hours as the time unit. R_GLY is
   reported in the paper as 0.04 mmol/L/min and is encoded here as 0.04
   \* 60 = 2.4 mmol/L/h; k_GLY and k_LAC are derived from steady state
-  (Eq. 12-13) inside
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html) so
-  they automatically use the same time unit.
+  (Eq. 12-13) inside `model()` so they automatically use the same time
+  unit.
 
 - **No upstream popPK dependency.** All structural parameters were
   estimated within the Oualha 2014 study itself; there are no values

@@ -75,12 +75,11 @@ str(mod_meta$population)
 
 ## Source trace
 
-Every parameter in the model file’s
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) block
-carries an in-file provenance comment pointing back to the DDMORE
-bundle. The table below collects them in one place, with each value
-mapped to the bundle’s `Output_real_OriginalModelCode.lst` line(s) where
-the FINAL PARAMETER ESTIMATE was reported.
+Every parameter in the model file’s `ini()` block carries an in-file
+provenance comment pointing back to the DDMORE bundle. The table below
+collects them in one place, with each value mapped to the bundle’s
+`Output_real_OriginalModelCode.lst` line(s) where the FINAL PARAMETER
+ESTIMATE was reported.
 
 | Equation / parameter | Value (FINAL) | Source location |
 |----|----|----|
@@ -411,9 +410,8 @@ Simulated NCA parameters by ORG_FAIL_COUNT stratum (PKNCA). {.table}
   rule
   (`derive_OCC <- function(time_h) pmin(1L + floor(time_h / 24), 6L)`)
   before passing the event table to `rxSolve`; the model file’s
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html)
-  block then decomposes OCC into `oc1..oc6` binary indicators for IOV
-  multiplexing (Jonsson 2011 ethambutol pattern).
+  `model()` block then decomposes OCC into `oc1..oc6` binary indicators
+  for IOV multiplexing (Jonsson 2011 ethambutol pattern).
 
 - **ORG_FAIL_COUNT \>= 4 stratum collapse.** The Vet 2016 .mod uses
   `IF (ORGF.GT.3.5) TVCL = THETA(10) * ...` to assign a single typical

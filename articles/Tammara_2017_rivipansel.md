@@ -39,8 +39,7 @@ readModelDb("Tammara_2017_rivipansel")$population
 
 ## Source trace
 
-Every [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html)
-value carries a trailing comment in
+Every `ini()` value carries a trailing comment in
 `inst/modeldb/specificDrugs/Tammara_2017_rivipansel.R` pointing to its
 source location. The table below collects them for review.
 

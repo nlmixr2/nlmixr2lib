@@ -403,12 +403,11 @@ target as the QD Advagraf).
   five occasions per patient), with 33 %, 75 %, and 31 % CV
   respectively. The Advagraf cohort had a single occasion and no IOV.
   nlmixr2lib popPK models carry only IIV (inter-patient variability);
-  IOV is documented here but is not encoded in
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html). For
-  applications that need to mimic the intra-subject variability across
-  multiple post-transplant occasions in the Prograf cohort, the user
-  should add IOV exogenously (e.g., via per-occasion etas in an extended
-  model object).
+  IOV is documented here but is not encoded in `ini()`. For applications
+  that need to mimic the intra-subject variability across multiple
+  post-transplant occasions in the Prograf cohort, the user should add
+  IOV exogenously (e.g., via per-occasion etas in an extended model
+  object).
 - **Mixture model not encoded.** Woillard 2011 evaluated a
   two-subpopulation mixture model on Ktr (subpopulation 1: Ktr 5.74 1/h
   with all Prograf and 31 % of Advagraf; subpopulation 2: Ktr 1.94 1/h

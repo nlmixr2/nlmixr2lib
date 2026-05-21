@@ -67,8 +67,7 @@ str(mod_obj$population, vec.len = 2, no.list = TRUE)
 
 ## Source trace
 
-Per-parameter origin is recorded next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
+Per-parameter origin is recorded next to each `ini()` entry in
 `inst/modeldb/ddmore/Knibbe_2009_morphine.R`. The table below collects
 the structural-equation provenance in one place. All numeric values are
 the FINAL PARAMETER ESTIMATE entries from the DDMORE-shipped

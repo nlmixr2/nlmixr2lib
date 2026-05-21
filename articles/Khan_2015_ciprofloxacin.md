@@ -105,8 +105,7 @@ structure exactly.
 ## Source trace
 
 Per-parameter origin (also recorded as in-file comments next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry of
-`inst/modeldb/ddmore/Khan_2015_ciprofloxacin.R`):
+`ini()` entry of `inst/modeldb/ddmore/Khan_2015_ciprofloxacin.R`):
 
 | Equation / parameter | Value | Source location |
 |----|----|----|
@@ -120,17 +119,17 @@ Per-parameter origin (also recorded as in-file comments next to each
 | `lec50_693` | fixed(log(31.0)) | `.mod` `$THETA(8) = (0, 31) FIX` |
 | `lec50_707` | fixed(log(92.0)) | `.mod` `$THETA(9) = (0, 92) FIX` |
 | `lgam` | log(1.98) | `.mod` `$THETA(10) = (0.5, 1.98)` |
-| `lpc_raw` | log(0.0186) | `.mod` `$THETA(11) = (0, 0.0186)`; multiplied by `1e-7` in [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html) |
+| `lpc_raw` | log(0.0186) | `.mod` `$THETA(11) = (0, 0.0186)`; multiplied by `1e-7` in `model()` |
 | `lkgs2` | log(0.344) | `.mod` `$THETA(12) = (0.18, 0.344)` |
 | `lec502` | log(1.25) | `.mod` `$THETA(13) = (0, 1.25)` |
-| `lmut_raw` | log(0.81) | `.mod` `$THETA(14) = (0, 0.81)`; multiplied by `1e-6` in [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html) |
+| `lmut_raw` | log(0.81) | `.mod` `$THETA(14) = (0, 0.81)`; multiplied by `1e-6` in `model()` |
 | `lksnc_max` | log(5.83) | `.mod` `$THETA(15) = (0, 5.83)` |
 | `lknc_factor` | log(0.17) | `.mod` `$THETA(16) = (0, 0.17)` |
 | `lgam_nc` | fixed(log(20)) | `.mod` `$THETA(17) = (0, 20) FIX` |
 | `ltr50` | log(0.24) | `.mod` `$THETA(18) = (0, 0.24)` |
 | `ltmtime` | log(5.3158) | `.mod` `$THETA(19) = (2, 5.3158)` |
 | `addSd` | 1.5544 = sqrt(2.41597) | `.mod` `$SIGMA 2.41597` (across-tube residual; per-position SAME blocks dropped – see Errata) |
-| `kk = 0.179` constant in [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html) | n/a | `.mod` `$PK` line 32 – hardcoded death rate, not estimated |
+| `kk = 0.179` constant in `model()` | n/a | `.mod` `$PK` line 32 – hardcoded death rate, not estimated |
 | Strain cascade `(STR == X) * exp(lec50_X)` sum | n/a | `.mod` `$PK` lines 39-45 IF(STR.EQ.X) cascade |
 | `ec50` selection by `STR` | n/a | dataset column `STR` in {347, 202, 378, 534, 625, 693, 707} |
 | `drugs = emax * CAB^gam / (ec50^gam + CAB^gam)` | n/a | `.mod` `$DES` line 113 (EMAX equation, sensitive subpopulation) |

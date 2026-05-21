@@ -471,7 +471,7 @@
 <div class="section level2">
 <h2 id="model-and-source">Model and source<a class="anchor" aria-label="anchor" href="#model-and-source"></a>
 </h2>
-<pre><code><span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> parameter labels from comments will be replaced by 'label()'</span></span></code></pre>
+<pre><code><span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span></code></pre>
 <ul>
 <li>Citation: Rodrigues C, Chiron C, Rey E, Dulac O, Comets E, Pons G,
 Jullien V. Population pharmacokinetics of oxcarbazepine and its
@@ -536,7 +536,7 @@ was not reported.</p>
 <h2 id="source-trace">Source trace<a class="anchor" aria-label="anchor" href="#source-trace"></a>
 </h2>
 <p>The per-parameter origin is recorded as an in-file comment next to
-each <code><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini()</a></code> entry in
+each <code>ini()</code> entry in
 <code>inst/modeldb/specificDrugs/Rodrigues_2017_oxcarbazepine.R</code>.
 The table below collects them in one place for review. All point
 estimates are from Rodrigues 2017 Table 3 column 2 (“Model with
@@ -737,7 +737,7 @@ indicator is randomly assigned to 24/31 (77%) of subjects per Rodrigues
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">20171001</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxode2.html" class="external-link">rxode</a></span><span class="op">(</span><span class="fu"><a href="../reference/readModelDb.html">readModelDb</a></span><span class="op">(</span><span class="st">"Rodrigues_2017_oxcarbazepine"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> parameter labels from comments will be replaced by 'label()'</span></span>
+<span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
 <span></span>
 <span><span class="va">n_per_arm</span> <span class="op">&lt;-</span> <span class="fl">200</span></span>
 <span><span class="va">weight_min</span> <span class="op">&lt;-</span> <span class="fl">12.7</span></span>
@@ -750,23 +750,23 @@ indicator is randomly assigned to 24/31 (77%) of subjects per Rodrigues
 <span>                       <span class="va">weight_min</span><span class="op">)</span>, <span class="va">weight_max</span><span class="op">)</span></span>
 <span>  <span class="va">eiaed</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="va">n</span>, <span class="fl">1</span>, <span class="va">eiaed_prevalence</span><span class="op">)</span></span>
 <span>  <span class="va">doses_mg</span> <span class="op">&lt;-</span> <span class="va">weights</span> <span class="op">*</span> <span class="va">dose_mg_per_kg</span></span>
-<span>  <span class="va">base</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>id <span class="op">=</span> <span class="va">id_offset</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span>,</span>
+<span>  <span class="va">base</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="op">(</span>id <span class="op">=</span> <span class="va">id_offset</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span>,</span>
 <span>                 WT <span class="op">=</span> <span class="va">weights</span>,</span>
 <span>                 CONMED_EIAED <span class="op">=</span> <span class="va">eiaed</span>,</span>
 <span>                 amt_per_dose <span class="op">=</span> <span class="va">doses_mg</span>,</span>
 <span>                 regimen <span class="op">=</span> <span class="va">regimen</span><span class="op">)</span></span>
 <span>  <span class="va">doses</span> <span class="op">&lt;-</span> <span class="va">base</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>time <span class="op">=</span> <span class="fl">0</span>, evid <span class="op">=</span> <span class="fl">1L</span>, cmt <span class="op">=</span> <span class="st">"depot"</span>, amt <span class="op">=</span> <span class="va">amt_per_dose</span><span class="op">)</span></span>
+<span>    <span class="fu">mutate</span><span class="op">(</span>time <span class="op">=</span> <span class="fl">0</span>, evid <span class="op">=</span> <span class="fl">1L</span>, cmt <span class="op">=</span> <span class="st">"depot"</span>, amt <span class="op">=</span> <span class="va">amt_per_dose</span><span class="op">)</span></span>
 <span>  <span class="va">obs_grid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0.25</span>, <span class="fl">48</span>, length.out <span class="op">=</span> <span class="fl">96</span><span class="op">)</span></span>
 <span>  <span class="va">obs</span> <span class="op">&lt;-</span> <span class="va">base</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">WT</span>, <span class="va">CONMED_EIAED</span>, <span class="va">regimen</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">select</span><span class="op">(</span><span class="va">id</span>, <span class="va">WT</span>, <span class="va">CONMED_EIAED</span>, <span class="va">regimen</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/expand.html" class="external-link">crossing</a></span><span class="op">(</span>time <span class="op">=</span> <span class="va">obs_grid</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>evid <span class="op">=</span> <span class="fl">0L</span>, cmt <span class="op">=</span> <span class="st">"Cc"</span>, amt <span class="op">=</span> <span class="cn">NA_real_</span><span class="op">)</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">doses</span>, <span class="va">obs</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">evid</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="fu">mutate</span><span class="op">(</span>evid <span class="op">=</span> <span class="fl">0L</span>, cmt <span class="op">=</span> <span class="st">"Cc"</span>, amt <span class="op">=</span> <span class="cn">NA_real_</span><span class="op">)</span></span>
+<span>  <span class="fu">bind_rows</span><span class="op">(</span><span class="va">doses</span>, <span class="va">obs</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">arrange</span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="fu">desc</span><span class="op">(</span><span class="va">evid</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
-<span><span class="va">events_sd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span></span>
+<span><span class="va">events_sd</span> <span class="op">&lt;-</span> <span class="fu">bind_rows</span><span class="op">(</span></span>
 <span>  <span class="fu">make_cohort</span><span class="op">(</span><span class="va">n_per_arm</span>, dose_mg_per_kg <span class="op">=</span> <span class="fl">5</span>,</span>
 <span>              eiaed_prevalence <span class="op">=</span> <span class="fl">24</span> <span class="op">/</span> <span class="fl">31</span>,</span>
 <span>              regimen <span class="op">=</span> <span class="st">"5 mg/kg single dose"</span>,</span>
@@ -788,7 +788,7 @@ indicator is randomly assigned to 24/31 (77%) of subjects per Rodrigues
 <span>  keep    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"WT"</span>, <span class="st">"CONMED_EIAED"</span>, <span class="st">"regimen"</span><span class="op">)</span>,</span>
 <span>  returnType <span class="op">=</span> <span class="st">"data.frame"</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span></span></code></pre></div>
 <p>For deterministic typical-value replication of the population mean
 profile, zero out the random effects:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
@@ -798,8 +798,8 @@ profile, zero out the random effects:</p>
 <span>  keep    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"WT"</span>, <span class="st">"CONMED_EIAED"</span>, <span class="st">"regimen"</span><span class="op">)</span>,</span>
 <span>  returnType <span class="op">=</span> <span class="st">"data.frame"</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp', 'etalcl_mhd', 'etalvc_mhd', 'etalkbt'</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp', 'etalcl_mhd', 'etalvc_mhd', 'etalkbt'</span></span>
 <span><span class="co">#&gt; Warning: multi-subject simulation without without 'omega'</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -814,19 +814,19 @@ h post-dose. The figure below shows the typical-value 0-48 h plasma
 concentration trajectory for OXC and MHD in a representative 23-kg child
 with EIAED comedication, at the two trial dose levels.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">ev_typ</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fl">1L</span>, time <span class="op">=</span> <span class="fl">0</span>, amt <span class="op">=</span> <span class="fl">23</span> <span class="op">*</span> <span class="fl">5</span>,  evid <span class="op">=</span> <span class="fl">1L</span>, cmt <span class="op">=</span> <span class="st">"depot"</span>,</span>
+<code class="sourceCode R"><span><span class="va">ev_typ</span> <span class="op">&lt;-</span> <span class="fu">bind_rows</span><span class="op">(</span></span>
+<span>  <span class="fu">tibble</span><span class="op">(</span>id <span class="op">=</span> <span class="fl">1L</span>, time <span class="op">=</span> <span class="fl">0</span>, amt <span class="op">=</span> <span class="fl">23</span> <span class="op">*</span> <span class="fl">5</span>,  evid <span class="op">=</span> <span class="fl">1L</span>, cmt <span class="op">=</span> <span class="st">"depot"</span>,</span>
 <span>         WT <span class="op">=</span> <span class="fl">23</span>, CONMED_EIAED <span class="op">=</span> <span class="fl">1L</span>, regimen <span class="op">=</span> <span class="st">"5 mg/kg"</span><span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fl">2L</span>, time <span class="op">=</span> <span class="fl">0</span>, amt <span class="op">=</span> <span class="fl">23</span> <span class="op">*</span> <span class="fl">15</span>, evid <span class="op">=</span> <span class="fl">1L</span>, cmt <span class="op">=</span> <span class="st">"depot"</span>,</span>
+<span>  <span class="fu">tibble</span><span class="op">(</span>id <span class="op">=</span> <span class="fl">2L</span>, time <span class="op">=</span> <span class="fl">0</span>, amt <span class="op">=</span> <span class="fl">23</span> <span class="op">*</span> <span class="fl">15</span>, evid <span class="op">=</span> <span class="fl">1L</span>, cmt <span class="op">=</span> <span class="st">"depot"</span>,</span>
 <span>         WT <span class="op">=</span> <span class="fl">23</span>, CONMED_EIAED <span class="op">=</span> <span class="fl">1L</span>, regimen <span class="op">=</span> <span class="st">"15 mg/kg"</span><span class="op">)</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span></span>
+<span>  <span class="fu">bind_rows</span><span class="op">(</span></span>
 <span>    <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/expand.html" class="external-link">crossing</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1L</span>, <span class="fl">2L</span><span class="op">)</span>, time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0.05</span>, <span class="fl">48</span>, length.out <span class="op">=</span> <span class="fl">240</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>evid <span class="op">=</span> <span class="fl">0L</span>, cmt <span class="op">=</span> <span class="st">"Cc"</span>, amt <span class="op">=</span> <span class="cn">NA_real_</span>,</span>
+<span>      <span class="fu">mutate</span><span class="op">(</span>evid <span class="op">=</span> <span class="fl">0L</span>, cmt <span class="op">=</span> <span class="st">"Cc"</span>, amt <span class="op">=</span> <span class="cn">NA_real_</span>,</span>
 <span>             WT <span class="op">=</span> <span class="fl">23</span>, CONMED_EIAED <span class="op">=</span> <span class="fl">1L</span>,</span>
 <span>             regimen <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">id</span> <span class="op">==</span> <span class="fl">1L</span>, <span class="st">"5 mg/kg"</span>, <span class="st">"15 mg/kg"</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">evid</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="fu">arrange</span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="fu">desc</span><span class="op">(</span><span class="va">evid</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">sim_typ</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span></span>
 <span>  object  <span class="op">=</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/zeroRe.html" class="external-link">zeroRe</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span>,</span>
@@ -834,20 +834,20 @@ with EIAED comedication, at the two trial dose levels.</p>
 <span>  keep    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"WT"</span>, <span class="st">"CONMED_EIAED"</span>, <span class="st">"regimen"</span><span class="op">)</span>,</span>
 <span>  returnType <span class="op">=</span> <span class="st">"data.frame"</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp', 'etalcl_mhd', 'etalvc_mhd', 'etalkbt'</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp', 'etalcl_mhd', 'etalvc_mhd', 'etalkbt'</span></span>
 <span><span class="co">#&gt; Warning: multi-subject simulation without without 'omega'</span></span>
 <span></span>
 <span><span class="va">sim_typ_long</span> <span class="op">&lt;-</span> <span class="va">sim_typ</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">Cc</span>, <span class="va">Cc_mhd</span><span class="op">)</span>, names_to <span class="op">=</span> <span class="st">"analyte"</span>, values_to <span class="op">=</span> <span class="st">"conc"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>analyte <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/recode.html" class="external-link">recode</a></span><span class="op">(</span><span class="va">analyte</span>,</span>
+<span>  <span class="fu">pivot_longer</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">Cc</span>, <span class="va">Cc_mhd</span><span class="op">)</span>, names_to <span class="op">=</span> <span class="st">"analyte"</span>, values_to <span class="op">=</span> <span class="st">"conc"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">mutate</span><span class="op">(</span>analyte <span class="op">=</span> <span class="fu">recode</span><span class="op">(</span><span class="va">analyte</span>,</span>
 <span>                          Cc     <span class="op">=</span> <span class="st">"Oxcarbazepine (OXC)"</span>,</span>
 <span>                          Cc_mhd <span class="op">=</span> <span class="st">"Monohydroxy derivative (MHD)"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">sim_typ_long</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">conc</span>, colour <span class="op">=</span> <span class="va">analyte</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span> <span class="va">regimen</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time after dose (h)"</span>,</span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">sim_typ_long</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">time</span>, <span class="va">conc</span>, colour <span class="op">=</span> <span class="va">analyte</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">facet_wrap</span><span class="op">(</span><span class="op">~</span> <span class="va">regimen</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time after dose (h)"</span>,</span>
 <span>       y <span class="op">=</span> <span class="st">"Plasma concentration (mg/L)"</span>,</span>
 <span>       colour <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>       title  <span class="op">=</span> <span class="st">"Typical-value 5 vs 15 mg/kg single-dose profile, 23 kg child with EIAED"</span>,</span>
@@ -859,26 +859,26 @@ with EIAED comedication, at the two trial dose levels.</p>
 </h3>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim_long</span> <span class="op">&lt;-</span> <span class="va">sim_sd</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">Cc</span>, <span class="va">Cc_mhd</span><span class="op">)</span>, names_to <span class="op">=</span> <span class="st">"analyte"</span>, values_to <span class="op">=</span> <span class="st">"conc"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>analyte <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/recode.html" class="external-link">recode</a></span><span class="op">(</span><span class="va">analyte</span>,</span>
+<span>  <span class="fu">pivot_longer</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">Cc</span>, <span class="va">Cc_mhd</span><span class="op">)</span>, names_to <span class="op">=</span> <span class="st">"analyte"</span>, values_to <span class="op">=</span> <span class="st">"conc"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">mutate</span><span class="op">(</span>analyte <span class="op">=</span> <span class="fu">recode</span><span class="op">(</span><span class="va">analyte</span>,</span>
 <span>                          Cc     <span class="op">=</span> <span class="st">"OXC"</span>,</span>
 <span>                          Cc_mhd <span class="op">=</span> <span class="st">"MHD"</span><span class="op">)</span>,</span>
 <span>         eiaed_label <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">CONMED_EIAED</span> <span class="op">==</span> <span class="fl">1</span>, <span class="st">"EIAED+"</span>, <span class="st">"EIAED-"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">vpc</span> <span class="op">&lt;-</span> <span class="va">sim_long</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">regimen</span>, <span class="va">analyte</span>, <span class="va">eiaed_label</span>, <span class="va">time</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span></span>
+<span>  <span class="fu">group_by</span><span class="op">(</span><span class="va">regimen</span>, <span class="va">analyte</span>, <span class="va">eiaed_label</span>, <span class="va">time</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">summarise</span><span class="op">(</span></span>
 <span>    Q05 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">conc</span>, <span class="fl">0.05</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>    Q50 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">conc</span>, <span class="fl">0.50</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>    Q95 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">conc</span>, <span class="fl">0.95</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>    .groups <span class="op">=</span> <span class="st">"drop"</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">vpc</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">Q50</span>, colour <span class="op">=</span> <span class="va">analyte</span>, fill <span class="op">=</span> <span class="va">analyte</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_ribbon.html" class="external-link">geom_ribbon</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>ymin <span class="op">=</span> <span class="va">Q05</span>, ymax <span class="op">=</span> <span class="va">Q95</span><span class="op">)</span>, alpha <span class="op">=</span> <span class="fl">0.20</span>, colour <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html" class="external-link">facet_grid</a></span><span class="op">(</span><span class="va">eiaed_label</span> <span class="op">~</span> <span class="va">regimen</span>, scales <span class="op">=</span> <span class="st">"free_y"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time after dose (h)"</span>,</span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">vpc</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">time</span>, <span class="va">Q50</span>, colour <span class="op">=</span> <span class="va">analyte</span>, fill <span class="op">=</span> <span class="va">analyte</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_ribbon</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>ymin <span class="op">=</span> <span class="va">Q05</span>, ymax <span class="op">=</span> <span class="va">Q95</span><span class="op">)</span>, alpha <span class="op">=</span> <span class="fl">0.20</span>, colour <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">facet_grid</span><span class="op">(</span><span class="va">eiaed_label</span> <span class="op">~</span> <span class="va">regimen</span>, scales <span class="op">=</span> <span class="st">"free_y"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time after dose (h)"</span>,</span>
 <span>       y <span class="op">=</span> <span class="st">"Plasma concentration (mg/L)"</span>,</span>
 <span>       colour <span class="op">=</span> <span class="cn">NULL</span>, fill <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>       title <span class="op">=</span> <span class="st">"Stochastic VPC: 5/15 mg/kg single dose, EIAED+ vs EIAED-"</span>,</span>
@@ -963,8 +963,6 @@ is averaged within each dose group.</p>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■                            </span>  10% |  ETA: 27s</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
@@ -1006,8 +1004,6 @@ is averaged within each dose group.</p>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■                         </span>  20% |  ETA: 23s</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
@@ -1047,8 +1043,6 @@ is averaged within each dose group.</p>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■                      </span>  30% |  ETA: 20s</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
@@ -1089,8 +1083,6 @@ is averaged within each dose group.</p>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■                   </span>  41% |  ETA: 17s</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
@@ -1131,8 +1123,6 @@ is averaged within each dose group.</p>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■                </span>  51% |  ETA: 14s</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
@@ -1171,8 +1161,6 @@ is averaged within each dose group.</p>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■             </span>  61% |  ETA: 12s</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
@@ -1214,8 +1202,6 @@ is averaged within each dose group.</p>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■          </span>  71% |  ETA:  8s</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
@@ -1256,8 +1242,6 @@ is averaged within each dose group.</p>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■       </span>  82% |  ETA:  5s</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
@@ -1298,8 +1282,15 @@ is averaged within each dose group.</p>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■   </span>  92% |  ETA:  2s</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed</span></span>
@@ -1891,20 +1882,20 @@ medians and 95% CIs for visual comparison.</p>
 <span>  <span class="va">total_daily</span> <span class="op">&lt;-</span> <span class="va">wt</span> <span class="op">*</span> <span class="va">dose_mg_per_kg_per_day</span></span>
 <span>  <span class="va">per_dose</span>    <span class="op">&lt;-</span> <span class="va">total_daily</span> <span class="op">/</span> <span class="fl">2</span></span>
 <span>  <span class="va">ids</span> <span class="op">&lt;-</span> <span class="va">id_offset</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n_per_cell</span><span class="op">)</span></span>
-<span>  <span class="va">base</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>id <span class="op">=</span> <span class="va">ids</span>, WT <span class="op">=</span> <span class="va">wt</span>, CONMED_EIAED <span class="op">=</span> <span class="va">eiaed</span>,</span>
+<span>  <span class="va">base</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="op">(</span>id <span class="op">=</span> <span class="va">ids</span>, WT <span class="op">=</span> <span class="va">wt</span>, CONMED_EIAED <span class="op">=</span> <span class="va">eiaed</span>,</span>
 <span>                 dose_per_kg_day <span class="op">=</span> <span class="va">dose_mg_per_kg_per_day</span>,</span>
 <span>                 cell <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">wt</span>, <span class="st">" kg, "</span>,</span>
 <span>                               <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">eiaed</span> <span class="op">==</span> <span class="fl">1</span>, <span class="st">"EIAED+"</span>, <span class="st">"EIAED-"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="va">doses</span> <span class="op">&lt;-</span> <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/expand.html" class="external-link">crossing</a></span><span class="op">(</span>id <span class="op">=</span> <span class="va">ids</span>, dose_idx <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n_doses</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>time <span class="op">=</span> <span class="op">(</span><span class="va">dose_idx</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op">*</span> <span class="va">tau</span>, amt <span class="op">=</span> <span class="va">per_dose</span>,</span>
+<span>    <span class="fu">mutate</span><span class="op">(</span>time <span class="op">=</span> <span class="op">(</span><span class="va">dose_idx</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op">*</span> <span class="va">tau</span>, amt <span class="op">=</span> <span class="va">per_dose</span>,</span>
 <span>           evid <span class="op">=</span> <span class="fl">1L</span>, cmt <span class="op">=</span> <span class="st">"depot"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">base</span>, by <span class="op">=</span> <span class="st">"id"</span><span class="op">)</span></span>
+<span>    <span class="fu">left_join</span><span class="op">(</span><span class="va">base</span>, by <span class="op">=</span> <span class="st">"id"</span><span class="op">)</span></span>
 <span>  <span class="va">obs_grid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">(</span><span class="va">n_doses</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op">*</span> <span class="va">tau</span> <span class="op">+</span> <span class="fl">0.25</span>, <span class="va">n_doses</span> <span class="op">*</span> <span class="va">tau</span>, by <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span>
 <span>  <span class="va">obs</span> <span class="op">&lt;-</span> <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/expand.html" class="external-link">crossing</a></span><span class="op">(</span>id <span class="op">=</span> <span class="va">ids</span>, time <span class="op">=</span> <span class="va">obs_grid</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>evid <span class="op">=</span> <span class="fl">0L</span>, cmt <span class="op">=</span> <span class="st">"Cc"</span>, amt <span class="op">=</span> <span class="cn">NA_real_</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">base</span>, by <span class="op">=</span> <span class="st">"id"</span><span class="op">)</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">doses</span>, <span class="va">obs</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">evid</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="fu">mutate</span><span class="op">(</span>evid <span class="op">=</span> <span class="fl">0L</span>, cmt <span class="op">=</span> <span class="st">"Cc"</span>, amt <span class="op">=</span> <span class="cn">NA_real_</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">left_join</span><span class="op">(</span><span class="va">base</span>, by <span class="op">=</span> <span class="st">"id"</span><span class="op">)</span></span>
+<span>  <span class="fu">bind_rows</span><span class="op">(</span><span class="va">doses</span>, <span class="va">obs</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">arrange</span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="fu">desc</span><span class="op">(</span><span class="va">evid</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="va">cells</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/expand.grid.html" class="external-link">expand.grid</a></span><span class="op">(</span></span>
@@ -1940,14 +1931,14 @@ medians and 95% CIs for visual comparison.</p>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="va">ss</span> <span class="op">&lt;-</span> <span class="va">sim_ss</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">cell</span>, <span class="va">CONMED_EIAED</span>, <span class="va">WT</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span></span>
+<span>  <span class="fu">group_by</span><span class="op">(</span><span class="va">id</span>, <span class="va">cell</span>, <span class="va">CONMED_EIAED</span>, <span class="va">WT</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">summarise</span><span class="op">(</span></span>
 <span>    auc12   <span class="op">=</span> <span class="fu">trapz_auc</span><span class="op">(</span><span class="va">time</span>, <span class="va">Cc_mhd</span><span class="op">)</span>,</span>
 <span>    ctrough <span class="op">=</span> <span class="va">Cc_mhd</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html" class="external-link">which.max</a></span><span class="op">(</span><span class="va">time</span><span class="op">)</span><span class="op">]</span>,</span>
 <span>    .groups <span class="op">=</span> <span class="st">"drop"</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
-<span><span class="va">published_table4</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html" class="external-link">tribble</a></span><span class="op">(</span></span>
+<span><span class="va">published_table4</span> <span class="op">&lt;-</span> <span class="fu">tribble</span><span class="op">(</span></span>
 <span>  <span class="op">~</span><span class="va">cell</span>,                <span class="op">~</span><span class="va">auc12_med</span>,</span>
 <span>  <span class="st">"10 kg, EIAED-"</span>,         <span class="fl">151.0</span>,</span>
 <span>  <span class="st">"30 kg, EIAED-"</span>,         <span class="fl">302.0</span>,</span>
@@ -1956,7 +1947,7 @@ medians and 95% CIs for visual comparison.</p>
 <span>  <span class="st">"30 kg, EIAED+"</span>,         <span class="fl">233.1</span>,</span>
 <span>  <span class="st">"50 kg, EIAED+"</span>,         <span class="fl">289.1</span></span>
 <span><span class="op">)</span></span>
-<span><span class="va">published_table5</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html" class="external-link">tribble</a></span><span class="op">(</span></span>
+<span><span class="va">published_table5</span> <span class="op">&lt;-</span> <span class="fu">tribble</span><span class="op">(</span></span>
 <span>  <span class="op">~</span><span class="va">cell</span>,                <span class="op">~</span><span class="va">ctrough_med</span>,</span>
 <span>  <span class="st">"10 kg, EIAED-"</span>,          <span class="fl">8.9</span>,</span>
 <span>  <span class="st">"30 kg, EIAED-"</span>,         <span class="fl">17.9</span>,</span>
@@ -1967,15 +1958,15 @@ medians and 95% CIs for visual comparison.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">ss_summary</span> <span class="op">&lt;-</span> <span class="va">ss</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">cell</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span></span>
+<span>  <span class="fu">group_by</span><span class="op">(</span><span class="va">cell</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">summarise</span><span class="op">(</span></span>
 <span>    auc12_sim_med   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">auc12</span><span class="op">)</span>,</span>
 <span>    ctrough_sim_med <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">ctrough</span><span class="op">)</span>,</span>
 <span>    .groups <span class="op">=</span> <span class="st">"drop"</span></span>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">published_table4</span>, by <span class="op">=</span> <span class="st">"cell"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">published_table5</span>, by <span class="op">=</span> <span class="st">"cell"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
+<span>  <span class="fu">left_join</span><span class="op">(</span><span class="va">published_table4</span>, by <span class="op">=</span> <span class="st">"cell"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">left_join</span><span class="op">(</span><span class="va">published_table5</span>, by <span class="op">=</span> <span class="st">"cell"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">mutate</span><span class="op">(</span></span>
 <span>    auc12_pct_diff   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fl">100</span> <span class="op">*</span> <span class="op">(</span><span class="va">auc12_sim_med</span> <span class="op">-</span> <span class="va">auc12_med</span><span class="op">)</span> <span class="op">/</span> <span class="va">auc12_med</span>, <span class="fl">1</span><span class="op">)</span>,</span>
 <span>    ctrough_pct_diff <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fl">100</span> <span class="op">*</span> <span class="op">(</span><span class="va">ctrough_sim_med</span> <span class="op">-</span> <span class="va">ctrough_med</span><span class="op">)</span> <span class="op">/</span> <span class="va">ctrough_med</span>, <span class="fl">1</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
@@ -2113,7 +2104,7 @@ consistent with Eq. 1 (<code>theta_i = theta_TV * exp(eta_i)</code> with
 <code>eta_i ~ N(0, omega^2)</code>). Following the Monolix output
 convention used elsewhere in the literature, the printed values are
 interpreted as standard deviations on the log scale; the packaged
-<code><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini()</a></code> therefore squares each <code>omega</code> to obtain
+<code>ini()</code> therefore squares each <code>omega</code> to obtain
 the variance required by nlmixr2’s <code>eta ~ var</code> syntax (e.g.,
 <code>etalcl ~ 0.1544 == 0.393^2</code>). The trailing source-trace
 comments cite both the squared variance and the source
@@ -2160,7 +2151,7 @@ reports KBT = 0.0622 h^-1 with no further qualification; mass-balance
 with the parent’s elimination flux requires that the same first-order
 rate be subtracted from the MHD compartment and added to the OXC central
 compartment, which is what the packaged ODE does. The paper reports an
-IIV on KBT (omega = 0.63), so the packaged <code><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini()</a></code> carries an
+IIV on KBT (omega = 0.63), so the packaged <code>ini()</code> carries an
 <code>etalkbt</code>.</li>
 <li>
 <strong>Steady-state validation cohort is virtual.</strong>

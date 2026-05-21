@@ -964,13 +964,13 @@ encodes the structural parameters at the 70 kg projection target. The
 body-weight exponent <code>b</code> from the joint NONMEM fit
 <code>P = PTV * WT^b</code> is reported per parameter in Zou 2012 Table
 S1 of the supplement (not on disk for this extraction); no body-weight
-covariate is therefore exposed in <code><a href="https://nlmixr2.github.io/rxode2/reference/model.html" class="external-link">model()</a></code>. Simulations at
+covariate is therefore exposed in <code>model()</code>. Simulations at
 body weights other than 70 kg require external scaling.</li>
 <li>
 <strong>Closed-form derivation of micro-parameters.</strong> The
 paper reports the predicted human two-compartment model in macroconstant
 form (alpha, beta, A, B at 5 mg/kg) together with the marginal point
-estimates CL and Vdss. The microconstants encoded in <code><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini()</a></code>
+estimates CL and Vdss. The microconstants encoded in <code>ini()</code>
 (<code>lcl</code>, <code>lvc</code>, <code>lq</code>, <code>lvp</code>)
 are derived deterministically from the macroconstants and the 350 mg
 dose used for the Figure 7 projection; the algebraic identities are

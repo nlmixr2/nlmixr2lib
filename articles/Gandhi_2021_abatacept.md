@@ -86,7 +86,7 @@ plot.
   `KA` in 1/h (the published Table 2 row header “KA (L/h)” is a units
   typo for the rate constant). The nlmixr2lib convention is time in
   days, so each of these values is multiplied by 24 inside `log(...)` in
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html).
+  `ini()`.
 - **Logit-F parameterisation.** Gandhi 2021 constrains absolute
   bioavailability to (0, 1) via an inverse-logit link (Methods Eq. S1):
   `F_abs = 1 / (1 + exp(-F_TV))` with
@@ -568,7 +568,6 @@ re-reading the source alongside this model should be aware of:
   beyond the column-symmetry argument used here. If a future reader
   obtains the supplement and the residual-error parameterisation
   conflicts with this interpretation, the `propSd` / `addSd` lines in
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) should
-  be updated.
+  `ini()` should be updated.
 - **No formal erratum.** A search of PubMed and the J Clin Pharmacol
   corrections feed on 2026-04-25 returned no published corrections.

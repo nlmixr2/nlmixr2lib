@@ -733,10 +733,10 @@ paper’s popPK analysis used post-first-dose samples only).</p>
 <span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="va">subjects</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Rows: 420</span></span>
 <span><span class="co">#&gt; Columns: 4</span></span>
-<span><span class="co">#&gt; $ id   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 1<span style="color: #949494;">, </span>2<span style="color: #949494;">, </span>3<span style="color: #949494;">, </span>4<span style="color: #949494;">, </span>5<span style="color: #949494;">, </span>6<span style="color: #949494;">, </span>7<span style="color: #949494;">, </span>8<span style="color: #949494;">, </span>9<span style="color: #949494;">, </span>10<span style="color: #949494;">, </span>11<span style="color: #949494;">, </span>12<span style="color: #949494;">, </span>13<span style="color: #949494;">, </span>14<span style="color: #949494;">, </span>15<span style="color: #949494;">, </span>16<span style="color: #949494;">, </span>17<span style="color: #949494;">, </span>18<span style="color: #949494;">, </span>19…</span></span>
-<span><span class="co">#&gt; $ band <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span> 6-7<span style="color: #949494;">, </span>6-7<span style="color: #949494;">, </span>6-7<span style="color: #949494;">, </span>6-7<span style="color: #949494;">, </span>6-7<span style="color: #949494;">, </span>6-7<span style="color: #949494;">, </span>6-7<span style="color: #949494;">, </span>6-7<span style="color: #949494;">, </span>6-7<span style="color: #949494;">, </span>6-7<span style="color: #949494;">, </span>6-7<span style="color: #949494;">, </span>6-7<span style="color: #949494;">, </span>6-7<span style="color: #949494;">, </span>…</span></span>
-<span><span class="co">#&gt; $ WT   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 6.698673<span style="color: #949494;">, </span>6.556531<span style="color: #949494;">, </span>6.140140<span style="color: #949494;">, </span>6.285723<span style="color: #949494;">, </span>6.555369<span style="color: #949494;">, </span>6.025131<span style="color: #949494;">, </span>6.466…</span></span>
-<span><span class="co">#&gt; $ HGB  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 6.042066<span style="color: #949494;">, </span>7.432784<span style="color: #949494;">, </span>6.590553<span style="color: #949494;">, </span>7.765565<span style="color: #949494;">, </span>7.464866<span style="color: #949494;">, </span>9.429187<span style="color: #949494;">, </span>8.286…</span></span></code></pre></div>
+<span><span class="co">#&gt; $ id   &lt;int&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19…</span></span>
+<span><span class="co">#&gt; $ band &lt;fct&gt; 6-7, 6-7, 6-7, 6-7, 6-7, 6-7, 6-7, 6-7, 6-7, 6-7, 6-7, 6-7, 6-7, …</span></span>
+<span><span class="co">#&gt; $ WT   &lt;dbl&gt; 6.698673, 6.556531, 6.140140, 6.285723, 6.555369, 6.025131, 6.466…</span></span>
+<span><span class="co">#&gt; $ HGB  &lt;dbl&gt; 6.042066, 7.432784, 6.590553, 7.765565, 7.464866, 9.429187, 8.286…</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="simulation">Simulation<a class="anchor" aria-label="anchor" href="#simulation"></a>
@@ -779,7 +779,7 @@ with the typical estimates in Hendriksen 2013 Table 2:</p>
 <span>    Cc_ng_per_mL     <span class="op">=</span> <span class="va">Cc</span> <span class="op">*</span> <span class="fl">1000</span>,</span>
 <span>    Cc_dha_ng_per_mL <span class="op">=</span> <span class="va">Cc_dha</span> <span class="op">*</span> <span class="fl">1000</span></span>
 <span>  <span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalcl_dha'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalcl_dha'</span></span>
 <span><span class="co">#&gt; Warning: multi-subject simulation without without 'omega'</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -816,12 +816,12 @@ cohort-average weight (~12 kg) and hemoglobin (7.1 g/dL).</p>
 <span>                     Q05 <span class="op">=</span> <span class="va">Q05_dha</span>, Q50 <span class="op">=</span> <span class="va">Q50_dha</span>, Q95 <span class="op">=</span> <span class="va">Q95_dha</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">vpc_long</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">Q50</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_ribbon.html" class="external-link">geom_ribbon</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>ymin <span class="op">=</span> <span class="va">Q05</span>, ymax <span class="op">=</span> <span class="va">Q95</span><span class="op">)</span>, alpha <span class="op">=</span> <span class="fl">0.25</span>, fill <span class="op">=</span> <span class="st">"steelblue"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>colour <span class="op">=</span> <span class="st">"steelblue4"</span>, size <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span> <span class="va">species</span>, nrow <span class="op">=</span> <span class="fl">1</span>, scales <span class="op">=</span> <span class="st">"free_y"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_log10</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">vpc_long</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">time</span>, <span class="va">Q50</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_ribbon</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>ymin <span class="op">=</span> <span class="va">Q05</span>, ymax <span class="op">=</span> <span class="va">Q95</span><span class="op">)</span>, alpha <span class="op">=</span> <span class="fl">0.25</span>, fill <span class="op">=</span> <span class="st">"steelblue"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span>colour <span class="op">=</span> <span class="st">"steelblue4"</span>, size <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">facet_wrap</span><span class="op">(</span><span class="op">~</span> <span class="va">species</span>, nrow <span class="op">=</span> <span class="fl">1</span>, scales <span class="op">=</span> <span class="st">"free_y"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">scale_y_log10</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span></span>
 <span>    x <span class="op">=</span> <span class="st">"Time after first dose (h)"</span>,</span>
 <span>    y <span class="op">=</span> <span class="st">"Plasma concentration (ng/mL, log scale)"</span>,</span>
 <span>    title <span class="op">=</span> <span class="st">"Figure 2 -- simulated prediction-corrected VPC"</span>,</span>
@@ -831,13 +831,12 @@ cohort-average weight (~12 kg) and hemoglobin (7.1 g/dL).</p>
 <span>    <span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Please use `linewidth` instead.</span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">This warning is displayed once per session.</span></span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">Call `lifecycle::last_lifecycle_warnings()` to see where this warning was</span></span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">generated.</span></span></span>
+<span><span class="co">#&gt; ℹ Please use `linewidth` instead.</span></span>
+<span><span class="co">#&gt; This warning is displayed once per session.</span></span>
+<span><span class="co">#&gt; Call `lifecycle::last_lifecycle_warnings()` to see where this warning was</span></span>
+<span><span class="co">#&gt; generated.</span></span>
 <span><span class="co">#&gt; Warning in transformation$transform(x): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in scale_y_log10(): <span style="color: #00BB00;">log-10</span> transformation introduced</span></span>
-<span><span class="co">#&gt; infinite values.</span></span>
+<span><span class="co">#&gt; Warning in scale_y_log10(): log-10 transformation introduced infinite values.</span></span>
 <span><span class="co">#&gt; Warning: Removed 7 rows containing missing values or values outside the scale range</span></span>
 <span><span class="co">#&gt; (`geom_ribbon()`).</span></span></code></pre></div>
 <p><img src="Hendriksen_2013_artesunate_files/figure-html/figure-2-vpc-1.png" class="r-plt" alt="" width="672"></p>
@@ -888,12 +887,12 @@ scaling), so an adjusted dosing regimen is needed (Figure 3c and
 <span>                     med <span class="op">=</span> <span class="va">AUC_DHA_med</span>, lo <span class="op">=</span> <span class="va">AUC_DHA_Q25</span>, hi <span class="op">=</span> <span class="va">AUC_DHA_Q75</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">auc_long</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">WT_med</span>, <span class="va">med</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_linerange.html" class="external-link">geom_errorbar</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>ymin <span class="op">=</span> <span class="va">lo</span>, ymax <span class="op">=</span> <span class="va">hi</span><span class="op">)</span>, width <span class="op">=</span> <span class="fl">0.4</span>, colour <span class="op">=</span> <span class="st">"grey50"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">2.5</span>, colour <span class="op">=</span> <span class="st">"steelblue4"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span> <span class="va">species</span>, nrow <span class="op">=</span> <span class="fl">1</span>, scales <span class="op">=</span> <span class="st">"free_y"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_x_continuous</a></span><span class="op">(</span>breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">6</span>, <span class="fl">25</span>, by <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">auc_long</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">WT_med</span>, <span class="va">med</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_errorbar</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>ymin <span class="op">=</span> <span class="va">lo</span>, ymax <span class="op">=</span> <span class="va">hi</span><span class="op">)</span>, width <span class="op">=</span> <span class="fl">0.4</span>, colour <span class="op">=</span> <span class="st">"grey50"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_point</span><span class="op">(</span>size <span class="op">=</span> <span class="fl">2.5</span>, colour <span class="op">=</span> <span class="st">"steelblue4"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">facet_wrap</span><span class="op">(</span><span class="op">~</span> <span class="va">species</span>, nrow <span class="op">=</span> <span class="fl">1</span>, scales <span class="op">=</span> <span class="st">"free_y"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">scale_x_continuous</span><span class="op">(</span>breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">6</span>, <span class="fl">25</span>, by <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span></span>
 <span>    x <span class="op">=</span> <span class="st">"Body weight (kg)"</span>,</span>
 <span>    y <span class="op">=</span> <span class="st">"AUC 0-12 h (ng*h/mL)"</span>,</span>
 <span>    title <span class="op">=</span> <span class="st">"Figure 3a-b -- AUC 0-12 h vs. body weight at 2.4 mg/kg"</span>,</span>
@@ -928,7 +927,7 @@ clearance.</p>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>Cc_dha_ng_per_mL <span class="op">=</span> <span class="va">Cc_dha</span> <span class="op">*</span> <span class="fl">1000</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalcl_dha'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalcl_dha'</span></span>
 <span><span class="co">#&gt; Warning: multi-subject simulation without without 'omega'</span></span>
 <span></span>
 <span><span class="va">auc_hgb</span> <span class="op">&lt;-</span> <span class="va">sim_hgb</span> <span class="op">|&gt;</span></span>
@@ -936,10 +935,10 @@ clearance.</p>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>AUC_DHA <span class="op">=</span> <span class="fu">trapezoid</span><span class="op">(</span><span class="va">time</span>, <span class="va">Cc_dha_ng_per_mL</span><span class="op">)</span>,</span>
 <span>                   .groups <span class="op">=</span> <span class="st">"drop"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">auc_hgb</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">HGB</span>, <span class="va">AUC_DHA</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>colour <span class="op">=</span> <span class="st">"steelblue4"</span>, size <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">2.5</span>, colour <span class="op">=</span> <span class="st">"steelblue4"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">auc_hgb</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">HGB</span>, <span class="va">AUC_DHA</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span>colour <span class="op">=</span> <span class="st">"steelblue4"</span>, size <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_point</span><span class="op">(</span>size <span class="op">=</span> <span class="fl">2.5</span>, colour <span class="op">=</span> <span class="st">"steelblue4"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span></span>
 <span>    x <span class="op">=</span> <span class="st">"Hemoglobin (g/dL)"</span>,</span>
 <span>    y <span class="op">=</span> <span class="st">"DHA AUC 0-12 h (ng*h/mL)"</span>,</span>
 <span>    title <span class="op">=</span> <span class="st">"Figure 4a -- DHA AUC 0-12 h vs. hemoglobin at WT = 10.9 kg"</span>,</span>
@@ -1058,54 +1057,6 @@ be compared against the per-band Cmax / AUC structure implied by Figure
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■                             </span>   5% |  ETA: 40s</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
-<span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Requesting</span></span>
-<span><span class="co">#&gt; an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc = conc): Negative concentrations found</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
-<span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
-<span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
-<span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
-<span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning in log(data$conc): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
-<span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
-<span><span class="co">#&gt; (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc = conc): Negative concentrations found</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
-<span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
-<span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
-<span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
-<span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning in log(data$conc): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
-<span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
-<span><span class="co">#&gt; (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc = conc): Negative concentrations found</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
-<span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
-<span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
-<span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
-<span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning in log(data$conc): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
 <span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
@@ -1125,18 +1076,6 @@ be compared against the per-band Cmax / AUC structure implied by Figure
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
 <span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
@@ -1165,19 +1104,6 @@ be compared against the per-band Cmax / AUC structure implied by Figure
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
 <span><span class="co">#&gt; Warning in log(data$conc): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
-<span><span class="co">#&gt; (0.001) is not allowed</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■                           </span>  12% |  ETA: 38s</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
 <span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
@@ -1204,6 +1130,25 @@ be compared against the per-band Cmax / AUC structure implied by Figure
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
+<span><span class="co">#&gt; (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc = conc): Negative concentrations found</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning in log(data$conc): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
 <span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
@@ -1222,24 +1167,6 @@ be compared against the per-band Cmax / AUC structure implied by Figure
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■                         </span>  19% |  ETA: 35s</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
-<span><span class="co">#&gt; (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
-<span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
-<span><span class="co">#&gt; (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc = conc): Negative concentrations found</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
-<span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
-<span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
-<span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
-<span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning in log(data$conc): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
@@ -1273,35 +1200,21 @@ be compared against the per-band Cmax / AUC structure implied by Figure
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■                       </span>  25% |  ETA: 33s</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
+<span><span class="co">#&gt; (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc = conc): Negative concentrations found</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning in log(data$conc): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
@@ -1320,9 +1233,6 @@ be compared against the per-band Cmax / AUC structure implied by Figure
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
 <span><span class="co">#&gt; Warning in log(data$conc): NaNs produced</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■                     </span>  32% |  ETA: 30s</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
-<span><span class="co">#&gt; (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
@@ -1359,81 +1269,12 @@ be compared against the per-band Cmax / AUC structure implied by Figure
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
-<span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
-<span><span class="co">#&gt; (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc = conc): Negative concentrations found</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
-<span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
-<span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
-<span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
-<span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning in log(data$conc): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■                   </span>  38% |  ETA: 27s</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
-<span><span class="co">#&gt; (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
-<span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
-<span><span class="co">#&gt; (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc = conc): Negative concentrations found</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
-<span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
-<span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
-<span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
-<span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning in log(data$conc): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
-<span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
-<span><span class="co">#&gt; (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc = conc): Negative concentrations found</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
-<span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
-<span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
-<span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
-<span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning in log(data$conc): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■                 </span>  45% |  ETA: 24s</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
@@ -1475,8 +1316,154 @@ be compared against the per-band Cmax / AUC structure implied by Figure
 <span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■               </span>  52% |  ETA: 21s</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
+<span><span class="co">#&gt; (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc = conc): Negative concentrations found</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning in log(data$conc): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
+<span><span class="co">#&gt; (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc = conc): Negative concentrations found</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning in log(data$conc): NaNs produced</span></span>
+<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
+<span><span class="co">#&gt; (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc = conc): Negative concentrations found</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning in log(data$conc): NaNs produced</span></span>
+<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
+<span><span class="co">#&gt; (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc = conc): Negative concentrations found</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning in log(data$conc): NaNs produced</span></span>
+<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
+<span><span class="co">#&gt; (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc = conc): Negative concentrations found</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning in log(data$conc): NaNs produced</span></span>
+<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
@@ -1531,11 +1518,10 @@ be compared against the per-band Cmax / AUC structure implied by Figure
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■             </span>  59% |  ETA: 18s</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Requesting</span></span>
-<span><span class="co">#&gt; an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
+<span><span class="co">#&gt; (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc = conc): Negative concentrations found</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
@@ -1639,40 +1625,7 @@ be compared against the per-band Cmax / AUC structure implied by Figure
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
 <span><span class="co">#&gt; Warning in log(data$conc): NaNs produced</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■           </span>  66% |  ETA: 15s</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
-<span><span class="co">#&gt; (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
-<span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
-<span><span class="co">#&gt; (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc = conc): Negative concentrations found</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
-<span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
-<span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
-<span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
-<span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning in log(data$conc): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
@@ -1696,8 +1649,38 @@ be compared against the per-band Cmax / AUC structure implied by Figure
 <span><span class="co">#&gt; Warning in log(data$conc): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■         </span>  73% |  ETA: 12s</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
+<span><span class="co">#&gt; (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc = conc): Negative concentrations found</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning in log(data$conc): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
@@ -1764,28 +1747,6 @@ be compared against the per-band Cmax / AUC structure implied by Figure
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■       </span>  79% |  ETA:  9s</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
-<span><span class="co">#&gt; (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
-<span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
-<span><span class="co">#&gt; (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc = conc): Negative concentrations found</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
-<span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
-<span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
-<span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
-<span><span class="co">#&gt; concentrations found</span></span>
-<span><span class="co">#&gt; Warning in log(data$conc): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
 <span><span class="co">#&gt; concentrations found</span></span>
@@ -1803,25 +1764,6 @@ be compared against the per-band Cmax / AUC structure implied by Figure
 <span><span class="co">#&gt; Warning in log(data$conc): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■     </span>  86% |  ETA:  6s</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
@@ -1863,8 +1805,45 @@ be compared against the per-band Cmax / AUC structure implied by Figure
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■   </span>  93% |  ETA:  3s</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
+<span><span class="co">#&gt; (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc = conc): Negative concentrations found</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning in log(data$conc): NaNs produced</span></span>
 <span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
@@ -1919,9 +1898,7 @@ be compared against the per-band Cmax / AUC structure implied by Figure
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ </span> 100% |  ETA:  0s</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
-<span><span class="co">#&gt; (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span></span>
 <span><span class="va">nca_summary_ars</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">nca_res</span><span class="op">)</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
@@ -2057,8 +2034,6 @@ IM.</caption>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■                             </span>   5% |  ETA: 36s</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
@@ -2089,8 +2064,6 @@ IM.</caption>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■                           </span>  13% |  ETA: 34s</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
@@ -2124,8 +2097,6 @@ IM.</caption>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■                         </span>  21% |  ETA: 30s</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
@@ -2161,8 +2132,6 @@ IM.</caption>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■                      </span>  30% |  ETA: 26s</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
@@ -2197,8 +2166,6 @@ IM.</caption>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■                    </span>  38% |  ETA: 23s</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
@@ -2232,8 +2199,6 @@ IM.</caption>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■                 </span>  46% |  ETA: 20s</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
@@ -2268,8 +2233,6 @@ IM.</caption>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■               </span>  54% |  ETA: 17s</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
@@ -2302,8 +2265,6 @@ IM.</caption>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■            </span>  62% |  ETA: 14s</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
@@ -2338,8 +2299,6 @@ IM.</caption>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■          </span>  70% |  ETA: 11s</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
@@ -2374,8 +2333,6 @@ IM.</caption>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■       </span>  79% |  ETA:  8s</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
@@ -2410,8 +2367,6 @@ IM.</caption>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■     </span>  87% |  ETA:  5s</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
@@ -2446,8 +2401,18 @@ IM.</caption>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  </span>  95% |  ETA:  2s</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.001) is not allowed</span></span>

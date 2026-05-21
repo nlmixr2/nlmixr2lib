@@ -63,9 +63,9 @@ The same population metadata is available programmatically via
 ## Source trace
 
 The per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/specificDrugs/Zhang_2022_ormutivimab.R`. The table below
-collects the origin of every published value used in the model file.
+`ini()` entry in `inst/modeldb/specificDrugs/Zhang_2022_ormutivimab.R`.
+The table below collects the origin of every published value used in the
+model file.
 
 | Equation / parameter | Value | Source location |
 |----|----|----|
@@ -264,8 +264,7 @@ at t = ET50_arm (should equal E0 + Emax_arm / 2). {.table}
 
 The half-effect column reproduces the analytic identity `E0 + Emax/2` at
 `t = ET50` to machine precision, confirming the `t^gamma` term cancels
-correctly in
-[`model()`](https://nlmixr2.github.io/rxode2/reference/model.html).
+correctly in `model()`.
 
 ## PKNCA validation
 

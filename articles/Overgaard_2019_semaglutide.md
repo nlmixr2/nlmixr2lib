@@ -37,7 +37,7 @@ The same population summary is available programmatically via
 ## Source trace
 
 Per-parameter origins are recorded as in-file comments next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
+`ini()` entry in
 `inst/modeldb/specificDrugs/Overgaard_2019_semaglutide.R`. The table
 below collects them in one place.
 
@@ -63,7 +63,7 @@ below collects them in one place.
 Covariate-effect parameterization (Methods page 653, equations on page
 653-654):
 
-| Effect | Functional form | Implementation in [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html) |
+| Effect | Functional form | Implementation in `model()` |
 |----|----|----|
 | Body weight on CL | (WT/85)^1.01 | `(WT / 85)^e_wt_cl_q` |
 | Body weight on Q | (WT/85)^1.01 (shared exponent) | `(WT / 85)^e_wt_cl_q` |

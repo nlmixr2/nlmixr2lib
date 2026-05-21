@@ -94,9 +94,8 @@ body-weight normalizations use `WT / 90`.
   2.3. The nlmixr2 internal variance is therefore
   `omega^2 = log(CV^2 + 1)`.
 - **CL-V1 correlation.** Table 3 reports a 0.75 correlation between the
-  etas on CL and V1, encoded as a 2x2 block in
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) with
-  the off-diagonal computed as the correlation times
+  etas on CL and V1, encoded as a 2x2 block in `ini()` with the
+  off-diagonal computed as the correlation times
   `sqrt(var_cl * var_vc)`.
 - **Combined residual error.** Table 3 footnote states “Proportional and
   additive errors are given as %CV and standard deviation.”
@@ -324,7 +323,6 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
-#>  ■■■■■■■■■■■■■■                    42% |  ETA:  2s
 summary(nca_res)
 #>  start end treatment   N    auclast        cmax           cmin
 #>      0  14 210mg_Q2W 400 19.2 [137] 3.23 [99.8] 0.00288 [2610]

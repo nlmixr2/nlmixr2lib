@@ -50,7 +50,7 @@ The same information is available programmatically via
 ## Source trace
 
 The per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
+`ini()` entry in
 `inst/modeldb/specificDrugs/Ting_2014_tobramycin_inhaled.R`. The table
 below collects them in one place for review.
 

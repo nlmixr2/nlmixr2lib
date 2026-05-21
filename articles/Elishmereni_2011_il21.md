@@ -73,9 +73,8 @@ str(mod_meta$population, max.level = 1)
 ## Source trace
 
 The per-parameter origin is recorded as an in-file comment on each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/ddmore/Elishmereni_2011_il21.R`. The table below collects
-them in one place.
+`ini()` entry in `inst/modeldb/ddmore/Elishmereni_2011_il21.R`. The
+table below collects them in one place.
 
 | Equation / parameter | Value | Source location |
 |----|----|----|
@@ -303,7 +302,6 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- suppressWarnings(PKNCA::pk.nca(nca_data))
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      90% |  ETA:  0s
 
 nca_summary <- summary(nca_res)
 knitr::kable(nca_summary,
@@ -353,8 +351,7 @@ self-consistency). {.table style="width:100%;"}
   in DDMORE deposit convention are the final fitted Monolix point
   estimates rather than initial guesses.
 - **Vestigial parameters omitted.** Six parameters present in the .mdl
-  are inert in the DDMORE deposit and are not carried into
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html):
+  are inert in the DDMORE deposit and are not carried into `ini()`:
   `POP_v1` (= 0.001) and `POP_v3` (= 0.001) are placeholder volumes that
   never appear in the MODEL_PREDICTION rate equations; `POP_k30` (= 0)
   is the sc-depot direct elimination rate; `POP_sa1`, `POP_sa2`,

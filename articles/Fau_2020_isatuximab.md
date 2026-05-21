@@ -102,9 +102,9 @@ The same metadata is available programmatically:
 ## Source trace
 
 The per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/specificDrugs/Fau_2020_isatuximab.R`. The table below
-collects the final-model values from Fau 2020 Table S3 in one place.
+`ini()` entry in `inst/modeldb/specificDrugs/Fau_2020_isatuximab.R`. The
+table below collects the final-model values from Fau 2020 Table S3 in
+one place.
 
 | Parameter (model name) | Value (this package) | Source location |
 |----|----|----|
@@ -402,7 +402,6 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
-#>  ■■■■■■■■■■■■■■■■■■■■■■■           72% |  ETA:  1s
 knitr::kable(summary(nca_res),
              caption = "Simulated steady-state NCA (final Q2W interval, weeks 30-32) by myeloma type.")
 ```

@@ -905,7 +905,7 @@ is non-trivial). Both behaviours are visible qualitatively in the
 bundle’s <code>Output_simulated_*.pdf</code>.</li>
 </ol>
 <p>The packaged model parses, runs to completion under
-<code><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve()</a></code>, and reproduces these qualitative behaviours in
+<code>rxSolve()</code>, and reproduces these qualitative behaviours in
 the chunks below.</p>
 </div>
 <div class="section level2">
@@ -1167,7 +1167,7 @@ of the piecewise dynamics).</caption>
 <p>Re-simulate the treated and control mouse event tables from the
 bundle’s <code>Simulated_DEB_TGI_data.csv</code> through
 <code><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxode2::rxSolve()</a></code> (typical values via
-<code><a href="https://nlmixr2.github.io/rxode2/reference/zeroRe.html" class="external-link">zeroRe()</a></code>, no residual error) and compare the deterministic
+<code>zeroRe()</code>, no residual error) and compare the deterministic
 trajectory against the bundle’s per-row DV values.</p>
 <p>The treated mouse (ID = 1) receives paclitaxel IV bolus doses of
 <code>AMT = 3e+07</code> (source units) at days 8, 12, and 16. The
@@ -1240,7 +1240,7 @@ tumor-weight observations at integer days 8 through 28.</p>
 <span>    `Typical tumor weight (g)` <span class="op">=</span> <span class="va">tumorWeight</span></span>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span></span>
-<span>    <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">starts_with</a></span><span class="op">(</span><span class="st">"Typical"</span><span class="op">)</span>,</span>
+<span>    <span class="fu">starts_with</span><span class="op">(</span><span class="st">"Typical"</span><span class="op">)</span>,</span>
 <span>    names_to  <span class="op">=</span> <span class="st">"quantity"</span>,</span>
 <span>    values_to <span class="op">=</span> <span class="st">"predicted"</span></span>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -1442,19 +1442,19 @@ the predicted column is the deterministic mean.</caption>
 <span>    <span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">sim_long</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">value</span>, colour <span class="op">=</span> <span class="va">cohort</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span></span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">sim_long</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">time</span>, <span class="va">value</span>, colour <span class="op">=</span> <span class="va">cohort</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_point</span><span class="op">(</span></span>
 <span>    data <span class="op">=</span> <span class="va">bundle_dv</span> <span class="op">|&gt;</span></span>
 <span>      <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/transmute.html" class="external-link">transmute</a></span><span class="op">(</span>time <span class="op">=</span> <span class="va">TIME</span>, value <span class="op">=</span> <span class="va">DV</span>, <span class="va">cohort</span>, <span class="va">quantity</span><span class="op">)</span>,</span>
 <span>    alpha <span class="op">=</span> <span class="fl">0.6</span>, size <span class="op">=</span> <span class="fl">1.6</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span> <span class="va">quantity</span>, scales <span class="op">=</span> <span class="st">"free_y"</span>, ncol <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_colour_manual</a></span><span class="op">(</span></span>
+<span>  <span class="fu">facet_wrap</span><span class="op">(</span><span class="op">~</span> <span class="va">quantity</span>, scales <span class="op">=</span> <span class="st">"free_y"</span>, ncol <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">scale_colour_manual</span><span class="op">(</span></span>
 <span>    values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Treated (ID 1, paclitaxel days 8/12/16)"</span> <span class="op">=</span> <span class="st">"#1f77b4"</span>,</span>
 <span>               <span class="st">"Control (ID 2, no drug)"</span>               <span class="op">=</span> <span class="st">"#d62728"</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span></span>
 <span>    x <span class="op">=</span> <span class="st">"Time (days)"</span>,</span>
 <span>    y <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>    colour <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -1466,8 +1466,8 @@ the predicted column is the deterministic mean.</caption>
 <span>      sep <span class="op">=</span> <span class="st">"\n"</span></span>
 <span>    <span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"bottom"</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu">theme_minimal</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">theme</span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"bottom"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Terranova_2018_paclitaxel_files/figure-html/bundle-figure-1.png" class="r-plt" alt="" width="672"></p>
 <p>The bundle DV points scatter around the deterministic typical-value
 curve as expected for a <code>$SIM (12345) (54321) ONLYSIM</code>
@@ -1492,9 +1492,9 @@ control-arm tumor grows faster than the treated arm.</p>
 <span>  <span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: Values from `bodyWeight`, `Cc_pacl` and `tumorWeight` are not uniquely</span></span>
 <span><span class="co">#&gt; identified; output will contain list-cols.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Use `values_fn = list` to suppress this warning.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Use `values_fn = {summary_fun}` to summarise duplicates.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Use the following dplyr code to identify duplicates.</span></span>
+<span><span class="co">#&gt; • Use `values_fn = list` to suppress this warning.</span></span>
+<span><span class="co">#&gt; • Use `values_fn = {summary_fun}` to summarise duplicates.</span></span>
+<span><span class="co">#&gt; • Use the following dplyr code to identify duplicates.</span></span>
 <span><span class="co">#&gt;   {data} |&gt;</span></span>
 <span><span class="co">#&gt;   dplyr::summarise(n = dplyr::n(), .by = c(time, cohort)) |&gt;</span></span>
 <span><span class="co">#&gt;   dplyr::filter(n &gt; 1L)</span></span>
@@ -1597,17 +1597,17 @@ accumulated.</caption>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim_treated</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&lt;=</span> <span class="fl">25</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">Cc_pacl</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">8</span>, <span class="fl">12</span>, <span class="fl">16</span><span class="op">)</span>,</span>
+<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span><span class="va">time</span>, <span class="va">Cc_pacl</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_vline</span><span class="op">(</span>xintercept <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">8</span>, <span class="fl">12</span>, <span class="fl">16</span><span class="op">)</span>,</span>
 <span>             linetype <span class="op">=</span> <span class="st">"dotted"</span>, colour <span class="op">=</span> <span class="st">"grey60"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span></span>
 <span>    x <span class="op">=</span> <span class="st">"Time (days)"</span>,</span>
 <span>    y <span class="op">=</span> <span class="st">"Paclitaxel central concentration (source units)"</span>,</span>
 <span>    title <span class="op">=</span> <span class="st">"Paclitaxel central-compartment concentration (treated mouse)"</span>,</span>
 <span>    caption <span class="op">=</span> <span class="st">"Vertical dotted lines mark the three IV bolus doses (days 8, 12, 16)."</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu">theme_minimal</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Terranova_2018_paclitaxel_files/figure-html/drug-pk-figure-1.png" class="r-plt" alt="" width="672"></p>
 </div>
 <div class="section level2">
@@ -1692,13 +1692,13 @@ structure (e.g. lognormal scatter on <code>lvu1_initial</code>,
 <code>DENSITY_V = DENSITY_VU = 1</code> and <code>OMEG = 0.75</code> as
 literal constants in <code>$PK</code> rather than via
 <code>$THETA</code>. The packaged model hard-codes them inside
-<code><a href="https://nlmixr2.github.io/rxode2/reference/model.html" class="external-link">model()</a></code> to match.</p></li>
+<code>model()</code> to match.</p></li>
 <li><p><strong>The bundle’s “cut and replace” Q1&lt;-&gt;Z swap is
 preserved.</strong> The source <code>.mdl</code> originally placed Z in
 compartment 1 and Q1 in compartment 2; <code>Command.txt</code>
 documents a hand-edit that swaps the two so paclitaxel doses (delivered
 to compartment 1 in the simulated dataset) land on the drug central
-compartment. The packaged <code><a href="https://nlmixr2.github.io/rxode2/reference/model.html" class="external-link">model()</a></code> declares
+compartment. The packaged <code>model()</code> declares
 <code>d/dt(central)</code> first to match this post-swap layout, so the
 bundle’s <code>Simulated_DEB_TGI_data.csv</code> with
 <code>CMT = 1</code> doses maps directly onto the rxode2 compartment

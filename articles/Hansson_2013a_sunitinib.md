@@ -311,11 +311,10 @@ by `(1 - eff_*)`-scaled Kin/Kout balance.
   introduced.
 - **Disease progression evaluated continuously.** The `.mod`
   re-evaluates `DP1` and `DPS` at `$PK` calls (i.e. at events). This
-  port evaluates `dp_vegf` and `dp_skit` inside
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html) at
-  every integration step using the rxode2 `t` symbol. For
-  observation-dense schedules the two are equivalent; for the
-  typical-value cohort here the rxode2 form is exact.
+  port evaluates `dp_vegf` and `dp_skit` inside `model()` at every
+  integration step using the rxode2 `t` symbol. For observation-dense
+  schedules the two are equivalent; for the typical-value cohort here
+  the rxode2 form is exact.
 - **Biomarker compartment naming.** The four biomarker states are named
   `vegf`, `svegfr2`, `svegfr3`, and `skit` (paper-named, lowercase).
   This follows the precedent set by `Petrov_2024_romiplostim` (`circ`,
@@ -328,10 +327,9 @@ by `(1 - eff_*)`-scaled Kin/Kout balance.
   states do not map onto any of the canonical drug-compartment names
   (`depot`, `central`, `peripheral<n>`, `effect`, `target`, `complex`,
   `total_target`, `liver`).
-- **Shared-eta IIV.** Several `eta*` parameters in
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) do not
-  pair one-to-one with a fixed-effect parameter of the same root name.
-  This is intentional and matches the `.mod`’s structure:
+- **Shared-eta IIV.** Several `eta*` parameters in `ini()` do not pair
+  one-to-one with a fixed-effect parameter of the same root name. This
+  is intentional and matches the `.mod`’s structure:
   - `etalmrt_pooled` is shared across `lmrt_vegf`, `lmrt_svegfr2`, and
     `lmrt_svegfr3` because the `.mod` assigns NONMEM `ETA(5)` to MRT,
     MRT2, and MRT3 (a single eta couples all three biomarkers’ MRTs).
@@ -358,5 +356,4 @@ by `(1 - eff_*)`-scaled Kin/Kout balance.
   reports this as an `info`-level note. The PD model has no PK ODE —
   `DOSE` is consumed only inside `auc <- DOSE / CLI`, and the four
   biomarker states use their own pg/mL scales independent of the dosing
-  unit — so no scaling factor is needed inside
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html).
+  unit — so no scaling factor is needed inside `model()`.

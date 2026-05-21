@@ -60,10 +60,9 @@ after the model is loaded).
 ## Source trace
 
 The per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/therapeuticArea/Choy_2016_T2DM_WHIG.R`. The table below
-collects the structural equations and the typical values in one place
-for review.
+`ini()` entry in `inst/modeldb/therapeuticArea/Choy_2016_T2DM_WHIG.R`.
+The table below collects the structural equations and the typical values
+in one place for review.
 
 | Equation / parameter | Value (paper) | Source location |
 |----|----|----|
@@ -301,13 +300,12 @@ panel at every time point).
 ## Steady-state check (no intervention)
 
 The model’s lifestyle intervention is hard-coded as time-dependent step
-functions in
-[`model()`](https://nlmixr2.github.io/rxode2/reference/model.html) (EFDE
-active from `t = 0`, EFP active from `t = tTRT = 42`). To verify the FSI
-/ FPG / HbA1c sub-model holds at its steady-state baseline in the
-absence of disease progression and intervention, we override the
-parameters to zero out all treatment effects and the beta-cell
-progression rate, then run the simulation for the full study horizon.
+functions in `model()` (EFDE active from `t = 0`, EFP active from
+`t = tTRT = 42`). To verify the FSI / FPG / HbA1c sub-model holds at its
+steady-state baseline in the absence of disease progression and
+intervention, we override the parameters to zero out all treatment
+effects and the beta-cell progression rate, then run the simulation for
+the full study horizon.
 
 ``` r
 
@@ -528,8 +526,7 @@ ggplot(data.frame(dwgt = dwgt_grid, IS_rel = is_rel),
   in Choy 2016 Eq. 10-12 plus the two HOMA constants
   (`KinFSI/KoutFSI = 7.8`, `KinFPG/KoutFPG = 35.1`). The packaged model
   encodes the analytic positive root of the FPG quadratic directly in
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html);
-  FSI follows from `FSI_SS = 7.8 * Beff * (FPG_SS - 3.5)`.
+  `model()`; FSI follows from `FSI_SS = 7.8 * Beff * (FPG_SS - 3.5)`.
 
 - **IIV interpretation (Table 1 footnote b).** Footnote b states that
   the CV values for `is0`, `b0`, `rb`, `efde`, `efp`, and `efup` are
@@ -569,10 +566,9 @@ ggplot(data.frame(dwgt = dwgt_grid, IS_rel = is_rel),
   must align their time column to the run-in start, not the active-phase
   start, for the EFP step to fire at the correct day.
 
-- **Boolean step functions in
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html).**
-  The EFP step `(t >= tTRT)` and the PPG-scale step `(t > 0)` are
-  evaluated as 1/0 indicators by rxode2 at each integration step. The
-  integrator handles the discontinuity natively but tightly-spaced
-  observation grids near `t = tTRT` will resolve the step crispness more
-  sharply than coarser grids.
+- **Boolean step functions in `model()`.** The EFP step `(t >= tTRT)`
+  and the PPG-scale step `(t > 0)` are evaluated as 1/0 indicators by
+  rxode2 at each integration step. The integrator handles the
+  discontinuity natively but tightly-spaced observation grids near
+  `t = tTRT` will resolve the step crispness more sharply than coarser
+  grids.

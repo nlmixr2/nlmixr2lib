@@ -31,13 +31,11 @@ bolus. n = 3 mice were destructively sampled per time point across blood
 and five organs (lung, heart, kidney, spleen, liver). The physiological
 parameters (tissue volumes, blood flows) were taken from the BioDMET
 database and scaled to a 25-g mouse (paper Table S3); only the 12 LNP /
-luciferase parameters in
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) were
-estimated. The present file packages the bare-LNP parameter set (no
-surface antibody conjugation, no active targeting). The vignette below
-documents the alternate parameter sets for control-IgG-coated and
-PECAM-targeted LNPs (paper Tables 1-3) that share the same structural
-model.
+luciferase parameters in `ini()` were estimated. The present file
+packages the bare-LNP parameter set (no surface antibody conjugation, no
+active targeting). The vignette below documents the alternate parameter
+sets for control-IgG-coated and PECAM-targeted LNPs (paper Tables 1-3)
+that share the same structural model.
 
 ``` r
 
@@ -47,9 +45,8 @@ mod <- readModelDb("Parhiz_2024_mRNALNP")
 ## Source trace
 
 The per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/pharmacokinetics/Parhiz_2024_mRNALNP.R`. The table below
-collects them in one place for review.
+`ini()` entry in `inst/modeldb/pharmacokinetics/Parhiz_2024_mRNALNP.R`.
+The table below collects them in one place for review.
 
 | Equation / parameter | Value (bare LNP) | Source |
 |----|----|----|
@@ -366,9 +363,8 @@ ug/mL).
 
 The same structural model accommodates the IgG-coated and PECAM-targeted
 parameterizations reported in the paper. To reproduce those fits,
-override the
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entries
-as follows. Numerical values come directly from paper Tables 1-3.
+override the `ini()` entries as follows. Numerical values come directly
+from paper Tables 1-3.
 
 ### Control IgG (BLI assay) parameters
 
@@ -399,13 +395,12 @@ mod_igg <- mod |>
 The PECAM model has additional terms not in the bare/IgG cases:
 target-mediated extravasation (`CL_PECAM`), target-binding affinity
 (`K_D`), and per-organ accessible PECAM concentration (`R_or`). To add
-these, extend the
-[`model()`](https://nlmixr2.github.io/rxode2/reference/model.html) block
-with the equilibrium-binding quadratic from paper supplement S1 (“Lung
-Vasculature” equation) and add the receptor-mediated internalization
-compartments (paper supplement S1 `dARI_or/dt`). The bare-LNP file
-collapses to that extended model when `R_or = CL_PECAM = 0`. The
-estimated PECAM parameters from paper Table 3 are:
+these, extend the `model()` block with the equilibrium-binding quadratic
+from paper supplement S1 (“Lung Vasculature” equation) and add the
+receptor-mediated internalization compartments (paper supplement S1
+`dARI_or/dt`). The bare-LNP file collapses to that extended model when
+`R_or = CL_PECAM = 0`. The estimated PECAM parameters from paper Table 3
+are:
 
 | Parameter             | Value   | Units       |
 |-----------------------|---------|-------------|
@@ -428,11 +423,9 @@ separately.
 - **Bare LNP parameter set only.** The packaged model file reproduces
   the bare-LNP fit (Tables 1-2 columns “Bare LNPs” and “Bare LNPs
   Homogenate”). Control-IgG and PECAM-targeted parameter sets are
-  documented in this vignette but require either an
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html)
-  override (IgG case, same structural model) or an extension of
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html) to
-  add the receptor-mediated pathway (PECAM case). The PECAM extension is
+  documented in this vignette but require either an `ini()` override
+  (IgG case, same structural model) or an extension of `model()` to add
+  the receptor-mediated pathway (PECAM case). The PECAM extension is
   straightforward: add 5 receptor-bound-LNP compartments, 5
   receptor-pathway mRNA compartments, 5 receptor-pathway luciferase
   compartments, and the equilibrium free-vs-total quadratic. The
@@ -449,16 +442,12 @@ separately.
   section sources `kRNA = 0.114 1/h` from prior in vitro work (Anderson
   et al. 2011 *Nucleic Acids Res* 39:9329-9338, reference
   36. and holds it constant during the PBPK fit. The file encodes this
-      with `fixed(log(0.114))` in
-      [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html).
+      with `fixed(log(0.114))` in `ini()`.
 - **Physiological parameters are mouse-25 g specific.** All tissue
   volumes and blood flows in the model() block are hard-coded from paper
   Table S3 (BioDMET database, 25 g mouse). For scaling to larger mice or
-  other species, override the volumes and flows in
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html)
-  (these are not currently exposed as
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html)
-  parameters).
+  other species, override the volumes and flows in `model()` (these are
+  not currently exposed as `ini()` parameters).
 - **No IIV, no residual error.** The paper fits a single typical-value
   parameter set per assay-formulation combination using ADAPT 5’s
   maximum-likelihood estimator (Methods “Software”); RSE values in

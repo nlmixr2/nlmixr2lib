@@ -459,10 +459,9 @@ target cited in the paper’s discussion.
   with the adult fit’s reported %RSE of 5.39% on Vp = 2,410 mL: SE = 130
   mL, SE^2 = 16,900). The model file uses the post-fit final parameter
   estimates from Table 2, not the priors from equation 10, so the
-  erratum’s numerical correction does not propagate to any
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) value.
-  The other erratum corrections (renaming equation 4 to “1a”, adding
-  Anderson/Allegaert/Holford 2006 as reference 1a, the Figure 3
+  erratum’s numerical correction does not propagate to any `ini()`
+  value. The other erratum corrections (renaming equation 4 to “1a”,
+  adding Anderson/Allegaert/Holford 2006 as reference 1a, the Figure 3
   replacement, the Figure 5 legend rewording) are all reflected in the
   model file’s `reference` field and the source trace above.
 - **Maturation parameterization.** The paper’s eq. 4 / 1a reads

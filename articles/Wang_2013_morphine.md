@@ -52,9 +52,8 @@ The same information is available programmatically via
 ## Source trace
 
 Per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/ddmore/Wang_2013_morphine.R`. The table below collects
-them for review. All parameter values come from the
+`ini()` entry in `inst/modeldb/ddmore/Wang_2013_morphine.R`. The table
+below collects them for review. All parameter values come from the
 **`FINAL PARAMETER ESTIMATE`** block of
 `Output_real_ModelI_Morphine.lst` (the real-data NONMEM listing
 reporting `MINIMIZATION SUCCESSFUL`). The structural equations come from
@@ -206,11 +205,9 @@ sim <- rxode2::rxSolve(
 
 ### Typical-value concentration profiles by stratum
 
-The deterministic typical-value
-([`zeroRe()`](https://nlmixr2.github.io/rxode2/reference/zeroRe.html))
-profiles below show how the adolescent overrides on Q and V1 and the
-adult F1 = 0.88 reduce concentrations relative to a strict allometric
-model.
+The deterministic typical-value (`zeroRe()`) profiles below show how the
+adolescent overrides on Q and V1 and the adult F1 = 0.88 reduce
+concentrations relative to a strict allometric model.
 
 ``` r
 
@@ -327,9 +324,6 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
-#>  ■■■■■■■■                          23% |  ETA:  7s
-#>  ■■■■■■■■■■■■■■■■■                 54% |  ETA:  4s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■        84% |  ETA:  2s
 knitr::kable(summary(nca_res),
   caption = "Simulated NCA by age stratum (100 ug/kg, 60-min infusion).")
 ```

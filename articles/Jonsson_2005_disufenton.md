@@ -77,10 +77,9 @@ str(mod_meta$population)
 
 ## Source trace
 
-Every parameter in the model file’s
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) block
-carries an in-file provenance comment pointing back to the DDMORE
-bundle. The table below collects them in one place.
+Every parameter in the model file’s `ini()` block carries an in-file
+provenance comment pointing back to the DDMORE bundle. The table below
+collects them in one place.
 
 | Equation / parameter | Value | Source location |
 |----|----|----|

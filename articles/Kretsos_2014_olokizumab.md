@@ -54,10 +54,9 @@ The same information is available programmatically via
 ## Source trace
 
 Per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/specificDrugs/Kretsos_2014_olokizumab.R`. The table below
-collects them for review. All values come from Kretsos 2014 Table 1,
-Final column unless otherwise noted.
+`ini()` entry in `inst/modeldb/specificDrugs/Kretsos_2014_olokizumab.R`.
+The table below collects them for review. All values come from Kretsos
+2014 Table 1, Final column unless otherwise noted.
 
 | Equation / parameter | Value | Source location |
 |----|----|----|
@@ -445,8 +444,6 @@ nca_res  <- PKNCA::pk.nca(nca_data)
 #> Requesting an AUC range starting (0) before the first measurement (0.0417) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0417) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0417) is not allowed
-#>  ■■■■■■■■■■                        28% |  ETA:  7s
-#> Warning: Requesting an AUC range starting (0) before the first measurement (0.0417) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0417) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0417) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0417) is not allowed
@@ -585,8 +582,8 @@ nca_res  <- PKNCA::pk.nca(nca_data)
 #> Requesting an AUC range starting (0) before the first measurement (0.0417) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0417) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0417) is not allowed
-#>  ■■■■■■■■■■■■■■■■■■■■              63% |  ETA:  3s
-#> Warning: Requesting an AUC range starting (0) before the first measurement (0.0417) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.0417) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.0417) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0417) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0417) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0417) is not allowed
@@ -768,12 +765,11 @@ are visible in the PKNCA summary table above.
   docs psp201417x5-x8) contains only the PD NONMEM control stream, not
   the PK control stream. The Final population means in Table 1 are
   retained here as typical values for a 70-kg adult, and the body-weight
-  covariate effect is omitted from
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html) so
-  the model represents the population mean rather than an individualised
-  prediction. Downstream users who need WT scaling should add it
-  externally; the canonical a priori choice for an IgG4 mAb is
-  `(WT/70)^0.75` on CL/Q and `(WT/70)^1` on V1/V2.
+  covariate effect is omitted from `model()` so the model represents the
+  population mean rather than an individualised prediction. Downstream
+  users who need WT scaling should add it externally; the canonical a
+  priori choice for an IgG4 mAb is `(WT/70)^0.75` on CL/Q and
+  `(WT/70)^1` on V1/V2.
 - **Endogenous anti-IL-6 baseline encoded as a per-subject random
   intercept added to the observed PK.** Kretsos 2014 Methods p.6 says
   “The effect of endogenous anti-IL-6 levels was included as an additive

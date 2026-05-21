@@ -47,12 +47,11 @@ information is available programmatically via
 ## Source trace
 
 Per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/specificDrugs/Zhou_2025_brentuximab.R`. The table below
-collects the source locations in one place. Tables S1 / S2 references
-are to Zhou 2025 Supplementary Tables; the NONMEM control streams that
-fix the structural ODE form are reproduced in Zhou 2025 Supplementary
-Methods.
+`ini()` entry in `inst/modeldb/specificDrugs/Zhou_2025_brentuximab.R`.
+The table below collects the source locations in one place. Tables S1 /
+S2 references are to Zhou 2025 Supplementary Tables; the NONMEM control
+streams that fix the structural ODE form are reproduced in Zhou 2025
+Supplementary Methods.
 
 | Equation / parameter | Value | Source location |
 |----|----|----|

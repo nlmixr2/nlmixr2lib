@@ -816,21 +816,21 @@ the between-subject variability of CL is then absent.</p>
 </h2>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">modT</span>, events <span class="op">=</span> <span class="va">events</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalbl_vegf', 'etalbl_svegfr2', 'etalbl_svegfr3', 'etalbl_skit', 'etalmrt_pooled', 'etalmrt_skit', 'etalic50_vegf', 'etalic50_svegfr2', 'etalic50_svegfr3', 'etalic50_skit', 'etaldp_slope_vegf', 'etaldp_slope_skit'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalbl_vegf', 'etalbl_svegfr2', 'etalbl_svegfr3', 'etalbl_skit', 'etalmrt_pooled', 'etalmrt_skit', 'etalic50_vegf', 'etalic50_svegfr2', 'etalic50_svegfr3', 'etalic50_skit', 'etaldp_slope_vegf', 'etaldp_slope_skit'</span></span>
 <span></span>
 <span><span class="va">biomarkers</span> <span class="op">&lt;-</span> <span class="va">sim</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">vegf</span>, <span class="va">svegfr2</span>, <span class="va">svegfr3</span>, <span class="va">skit</span>, <span class="va">DOSE</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">vegf</span>, <span class="va">svegfr2</span>, <span class="va">svegfr3</span>, <span class="va">skit</span><span class="op">)</span>,</span>
 <span>                      names_to <span class="op">=</span> <span class="st">"biomarker"</span>, values_to <span class="op">=</span> <span class="st">"conc"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">biomarkers</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">time</span> <span class="op">/</span> <span class="op">(</span><span class="fl">7</span> <span class="op">*</span> <span class="fl">24</span><span class="op">)</span>, <span class="va">conc</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">biomarker</span>, scales <span class="op">=</span> <span class="st">"free_y"</span>, ncol <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time (weeks)"</span>,</span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">biomarkers</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">time</span> <span class="op">/</span> <span class="op">(</span><span class="fl">7</span> <span class="op">*</span> <span class="fl">24</span><span class="op">)</span>, <span class="va">conc</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">facet_wrap</span><span class="op">(</span><span class="op">~</span><span class="va">biomarker</span>, scales <span class="op">=</span> <span class="st">"free_y"</span>, ncol <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time (weeks)"</span>,</span>
 <span>       y <span class="op">=</span> <span class="st">"Plasma concentration (pg/mL)"</span>,</span>
 <span>       title <span class="op">=</span> <span class="st">"Typical-value biomarker trajectories"</span>,</span>
 <span>       caption <span class="op">=</span> <span class="st">"Sunitinib 50 mg PO QD on a 4-weeks-on / 2-weeks-off schedule, CLI = 32.819 L/h."</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu">theme_minimal</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Hansson_2013a_sunitinib_files/figure-html/f3-typical-1.png" class="r-plt" alt="" width="700"></p>
 <p>Mechanistic sanity at the typical-value parameters:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
@@ -907,21 +907,21 @@ port reproduces the same trajectory shape that produced
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="va">ref_sim</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">modT</span>, events <span class="op">=</span> <span class="va">ref_events</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalbl_vegf', 'etalbl_svegfr2', 'etalbl_svegfr3', 'etalbl_skit', 'etalmrt_pooled', 'etalmrt_skit', 'etalic50_vegf', 'etalic50_svegfr2', 'etalic50_svegfr3', 'etalic50_skit', 'etaldp_slope_vegf', 'etaldp_slope_skit'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalbl_vegf', 'etalbl_svegfr2', 'etalbl_svegfr3', 'etalbl_skit', 'etalmrt_pooled', 'etalmrt_skit', 'etalic50_vegf', 'etalic50_svegfr2', 'etalic50_svegfr3', 'etalic50_skit', 'etaldp_slope_vegf', 'etaldp_slope_skit'</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span></span>
+<span><span class="fu">ggplot</span><span class="op">(</span></span>
 <span>  <span class="va">ref_sim</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">vegf</span>, <span class="va">svegfr2</span>, <span class="va">svegfr3</span>, <span class="va">skit</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">vegf</span>, <span class="va">svegfr2</span>, <span class="va">svegfr3</span>, <span class="va">skit</span><span class="op">)</span>,</span>
 <span>                        names_to <span class="op">=</span> <span class="st">"biomarker"</span>, values_to <span class="op">=</span> <span class="st">"conc"</span><span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">time</span> <span class="op">/</span> <span class="op">(</span><span class="fl">7</span> <span class="op">*</span> <span class="fl">24</span><span class="op">)</span>, <span class="va">conc</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">biomarker</span>, scales <span class="op">=</span> <span class="st">"free_y"</span>, ncol <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time (weeks)"</span>,</span>
+<span>  <span class="fu">aes</span><span class="op">(</span><span class="va">time</span> <span class="op">/</span> <span class="op">(</span><span class="fl">7</span> <span class="op">*</span> <span class="fl">24</span><span class="op">)</span>, <span class="va">conc</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">facet_wrap</span><span class="op">(</span><span class="op">~</span><span class="va">biomarker</span>, scales <span class="op">=</span> <span class="st">"free_y"</span>, ncol <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time (weeks)"</span>,</span>
 <span>       y <span class="op">=</span> <span class="st">"Plasma concentration (pg/mL)"</span>,</span>
 <span>       title <span class="op">=</span> <span class="st">"Self-consistency simulation (bundle subject 1, constant 50 mg/day)"</span>,</span>
 <span>       caption <span class="op">=</span> <span class="st">"Re-simulation through the nlmixr2 port; trajectory shape should match Output_simulated_Biomarker_GIST.lst."</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu">theme_minimal</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Hansson_2013a_sunitinib_files/figure-html/f2-self-consistency-1.png" class="r-plt" alt="" width="700"></p>
 <p>The trajectory matches the expected drug-driven dynamics: a
 continuous 50 mg/day exposure (no off-cycles) drives VEGF monotonically
@@ -976,7 +976,7 @@ no approximation was introduced.</li>
 <code>.mod</code> re-evaluates <code>DP1</code> and <code>DPS</code> at
 <code>$PK</code> calls (i.e. at events). This port evaluates
 <code>dp_vegf</code> and <code>dp_skit</code> inside
-<code><a href="https://nlmixr2.github.io/rxode2/reference/model.html" class="external-link">model()</a></code> at every integration step using the rxode2
+<code>model()</code> at every integration step using the rxode2
 <code>t</code> symbol. For observation-dense schedules the two are
 equivalent; for the typical-value cohort here the rxode2 form is
 exact.</li>
@@ -998,7 +998,7 @@ canonical drug-compartment names (<code>depot</code>,
 <code>total_target</code>, <code>liver</code>).</li>
 <li>
 <strong>Shared-eta IIV.</strong> Several <code>eta*</code>
-parameters in <code><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini()</a></code> do not pair one-to-one with a
+parameters in <code>ini()</code> do not pair one-to-one with a
 fixed-effect parameter of the same root name. This is intentional and
 matches the <code>.mod</code>’s structure:
 <ul>
@@ -1042,7 +1042,7 @@ file.</li>
 <code>DOSE</code> is consumed only inside
 <code>auc &lt;- DOSE / CLI</code>, and the four biomarker states use
 their own pg/mL scales independent of the dosing unit — so no scaling
-factor is needed inside <code><a href="https://nlmixr2.github.io/rxode2/reference/model.html" class="external-link">model()</a></code>.</li>
+factor is needed inside <code>model()</code>.</li>
 </ul>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

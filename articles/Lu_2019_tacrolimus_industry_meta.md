@@ -55,7 +55,7 @@ The same information is available programmatically via
 ## Source trace
 
 The per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
+`ini()` entry in
 `inst/modeldb/specificDrugs/Lu_2019_tacrolimus_industry_meta.R`. The
 table below collects them in one place for review.
 
@@ -287,13 +287,6 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
-#>  ■■■■■                             13% |  ETA: 22s
-#>  ■■■■■■■■                          24% |  ETA: 20s
-#>  ■■■■■■■■■■■■                      37% |  ETA: 16s
-#>  ■■■■■■■■■■■■■■■■                  50% |  ETA: 12s
-#>  ■■■■■■■■■■■■■■■■■■■■              64% |  ETA:  9s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■          77% |  ETA:  5s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      90% |  ETA:  2s
 
 knitr::kable(
   summary(nca_res),

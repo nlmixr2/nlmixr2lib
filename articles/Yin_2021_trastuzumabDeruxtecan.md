@@ -88,7 +88,7 @@ The same metadata is available programmatically via
 ## Source trace
 
 The per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
+`ini()` entry in
 `inst/modeldb/specificDrugs/Yin_2021_trastuzumabDeruxtecan.R`. The table
 below collects them in one place for review.
 
@@ -406,10 +406,8 @@ paper.
 - **Sex encoding.** Yin 2021’s Sex column is a male-indicator (1 if
   male, 0 if female) with female as the reference category. The packaged
   model stores sex under the canonical `SEXF` column (1 = female, 0 =
-  male) and derives the male-indicator inside
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html) as
-  `(1 - SEXF)`, preserving the paper’s reference values for CL_intact
-  and V1_intact.
+  male) and derives the male-indicator inside `model()` as `(1 - SEXF)`,
+  preserving the paper’s reference values for CL_intact and V1_intact.
 - **Country encoding.** Yin 2021’s Country column is a Japan-indicator
   (1 if Japanese-country enrollment, 0 if non-Japan). Stored under the
   canonical `REGION_JAPAN` column (formerly `COUNTRY_JPN`). Race and

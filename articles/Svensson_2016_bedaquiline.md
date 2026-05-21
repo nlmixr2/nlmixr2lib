@@ -61,9 +61,8 @@ str(ui$meta$population, max.level = 1)
 ## Source trace
 
 Per-parameter origins are recorded as inline comments next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/ddmore/Svensson_2016_bedaquiline.R`. The table below
-summarises the audit trail.
+`ini()` entry in `inst/modeldb/ddmore/Svensson_2016_bedaquiline.R`. The
+table below summarises the audit trail.
 
 | Parameter / equation | Value | Source |
 |----|----|----|
@@ -310,8 +309,7 @@ sim_compare |>
     caption = paste("Black patients have ~84 % higher CL (e_race_black_cl = 0.84,",
                     "Svensson 2016 Table 3) and therefore lower exposure for the same dose.")
   )
-#> Warning in scale_y_log10(): log-10 transformation introduced
-#> infinite values.
+#> Warning in scale_y_log10(): log-10 transformation introduced infinite values.
 ```
 
 ![](Svensson_2016_bedaquiline_files/figure-html/figure-black-effect-1.png)

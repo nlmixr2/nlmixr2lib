@@ -36,7 +36,7 @@ The same information is available programmatically via
 ## Source trace
 
 The per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
+`ini()` entry in
 `inst/modeldb/specificDrugs/Dunn_2025_tranexamicAcid.R`. The table below
 collects them in one place.
 
@@ -345,29 +345,6 @@ intervals <- data.frame(
 
 nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj,
                                           intervals = intervals))
-#>  ■                                  1% |  ETA:  4m
-#>  ■■                                 2% |  ETA:  4m
-#>  ■■                                 3% |  ETA:  4m
-#>  ■■                                 5% |  ETA:  4m
-#>  ■■■                                6% |  ETA:  4m
-#>  ■■■                                7% |  ETA:  4m
-#>  ■■■■                               8% |  ETA:  4m
-#>  ■■■■                              10% |  ETA:  4m
-#>  ■■■■                              11% |  ETA:  4m
-#>  ■■■■■                             12% |  ETA:  3m
-#>  ■■■■■                             14% |  ETA:  3m
-#>  ■■■■■                             15% |  ETA:  3m
-#>  ■■■■■■                            16% |  ETA:  3m
-#>  ■■■■■■                            17% |  ETA:  3m
-#>  ■■■■■■■                           19% |  ETA:  3m
-#>  ■■■■■■■                           20% |  ETA:  3m
-#>  ■■■■■■■                           21% |  ETA:  3m
-#>  ■■■■■■■■                          22% |  ETA:  3m
-#>  ■■■■■■■■                          24% |  ETA:  3m
-#>  ■■■■■■■■                          25% |  ETA:  3m
-#>  ■■■■■■■■■                         26% |  ETA:  3m
-#>  ■■■■■■■■■                         28% |  ETA:  3m
-#>  ■■■■■■■■■■                        29% |  ETA:  3m
 #> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
 #> concentrations found
 #> Warning in log(conc.2/conc.1): NaNs produced
@@ -381,55 +358,6 @@ nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj,
 #> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
 #> concentrations found
 #> Warning in log(data$conc): NaNs produced
-#>  ■■■■■■■■■■                        30% |  ETA:  3m
-#>  ■■■■■■■■■■■                       32% |  ETA:  3m
-#>  ■■■■■■■■■■■                       33% |  ETA:  3m
-#>  ■■■■■■■■■■■                       34% |  ETA:  3m
-#>  ■■■■■■■■■■■■                      36% |  ETA:  2m
-#>  ■■■■■■■■■■■■                      37% |  ETA:  2m
-#>  ■■■■■■■■■■■■■                     38% |  ETA:  2m
-#>  ■■■■■■■■■■■■■                     40% |  ETA:  2m
-#>  ■■■■■■■■■■■■■                     41% |  ETA:  2m
-#>  ■■■■■■■■■■■■■■                    43% |  ETA:  2m
-#>  ■■■■■■■■■■■■■■                    44% |  ETA:  2m
-#>  ■■■■■■■■■■■■■■■                   45% |  ETA:  2m
-#>  ■■■■■■■■■■■■■■■                   47% |  ETA:  2m
-#>  ■■■■■■■■■■■■■■■                   48% |  ETA:  2m
-#>  ■■■■■■■■■■■■■■■■                  50% |  ETA:  2m
-#>  ■■■■■■■■■■■■■■■■                  51% |  ETA:  2m
-#>  ■■■■■■■■■■■■■■■■■                 52% |  ETA:  2m
-#>  ■■■■■■■■■■■■■■■■■                 53% |  ETA:  2m
-#>  ■■■■■■■■■■■■■■■■■                 55% |  ETA:  2m
-#>  ■■■■■■■■■■■■■■■■■■                56% |  ETA:  2m
-#>  ■■■■■■■■■■■■■■■■■■                57% |  ETA:  2m
-#>  ■■■■■■■■■■■■■■■■■■■               58% |  ETA:  2m
-#>  ■■■■■■■■■■■■■■■■■■■               60% |  ETA:  2m
-#>  ■■■■■■■■■■■■■■■■■■■               61% |  ETA:  1m
-#>  ■■■■■■■■■■■■■■■■■■■■              62% |  ETA:  1m
-#>  ■■■■■■■■■■■■■■■■■■■■              63% |  ETA:  1m
-#>  ■■■■■■■■■■■■■■■■■■■■              65% |  ETA:  1m
-#>  ■■■■■■■■■■■■■■■■■■■■■             66% |  ETA:  1m
-#>  ■■■■■■■■■■■■■■■■■■■■■             67% |  ETA:  1m
-#>  ■■■■■■■■■■■■■■■■■■■■■             68% |  ETA:  1m
-#>  ■■■■■■■■■■■■■■■■■■■■■■            70% |  ETA:  1m
-#>  ■■■■■■■■■■■■■■■■■■■■■■            71% |  ETA:  1m
-#>  ■■■■■■■■■■■■■■■■■■■■■■■           72% |  ETA:  1m
-#>  ■■■■■■■■■■■■■■■■■■■■■■■           73% |  ETA:  1m
-#>  ■■■■■■■■■■■■■■■■■■■■■■■           75% |  ETA:  1m
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■          76% |  ETA:  1m
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■          78% |  ETA:  1m
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■         80% |  ETA: 46s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■         82% |  ETA: 42s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■        83% |  ETA: 38s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■       85% |  ETA: 34s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■       87% |  ETA: 29s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      89% |  ETA: 25s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      90% |  ETA: 21s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     92% |  ETA: 17s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     94% |  ETA: 13s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    96% |  ETA:  9s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    98% |  ETA:  5s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■   99% |  ETA:  1s
 nca_summary <- summary(nca_res)
 knitr::kable(nca_summary,
              caption = "Simulated NCA parameters by regimen (24-h window).")

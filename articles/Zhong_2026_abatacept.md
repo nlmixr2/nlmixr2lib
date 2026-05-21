@@ -106,10 +106,8 @@ covariate range.
 
 - **Time-unit conversion.** Zhong 2026 reports CL and Q in L/h and KA in
   1/h. The nlmixr2lib convention is time in days, so each of these
-  values is multiplied by 24 inside `log(...)` in
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html). VC,
-  VP, F, IIV variances, and residual-error magnitudes carry through
-  unchanged.
+  values is multiplied by 24 inside `log(...)` in `ini()`. VC, VP, F,
+  IIV variances, and residual-error magnitudes carry through unchanged.
 - **Logit-F parameterization, additive on logit.** Zhong 2026 Methods
   (page
   6.  writes the F1 covariate model as

@@ -148,9 +148,8 @@ follows the F.2 / F.3 substitutes from the extraction skill:
     clamp), with tracer concentration falling as peripheral clearance
     rises with insulin and glucose at the site of action.
 
-The packaged model parses, runs to completion under
-[`rxSolve()`](https://nlmixr2.github.io/rxode2/reference/rxSolve.html),
-and reproduces these qualitative behaviours in the chunks below. The
+The packaged model parses, runs to completion under `rxSolve()`, and
+reproduces these qualitative behaviours in the chunks below. The
 typical-value trajectories shown here are deterministic (no IIV, no
 residual error); inter-individual variability is not exercised in the
 validation simulations because the bundle is shipped as a typical-value
@@ -412,10 +411,9 @@ The `Simulated_glucoseKinetics.csv` is **not** redistributed in this
 package (the bundle’s CSV uses a non-standard column convention
 `iins / iglu / insn / glun / td / tn` which the packaged model does not
 consume directly – the packaged model uses `INS` / `GLU` with linear
-interpolation declared in
-[`model()`](https://nlmixr2.github.io/rxode2/reference/model.html) via
-`linear(INS, GLU)`). Users who want to reproduce the bundle’s simulated
-trajectories should download the CSV from
+interpolation declared in `model()` via `linear(INS, GLU)`). Users who
+want to reproduce the bundle’s simulated trajectories should download
+the CSV from
 [`dpastoor/ddmore_scraping/227`](https://github.com/dpastoor/ddmore_scraping/tree/master/227),
 rename `iins -> INS` and `iglu -> GLU`, drop the `insn / glun / td / tn`
 columns, and pass the result to

@@ -35,12 +35,11 @@ loaded.
 
 ## Source trace
 
-Every [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html)
-parameter has an in-file comment pointing to its source location; the
-table below collects them in one place. Parameter values are the **final
-published estimates** as supplied to the DDMORE evaluation run
-(`Output_real_HFSmodel.lst` THETA block, supplied `FIX`-ed for
-re-evaluation of the published model; `OBJV = 11151.253`).
+Every `ini()` parameter has an in-file comment pointing to its source
+location; the table below collects them in one place. Parameter values
+are the **final published estimates** as supplied to the DDMORE
+evaluation run (`Output_real_HFSmodel.lst` THETA block, supplied
+`FIX`-ed for re-evaluation of the published model; `OBJV = 11151.253`).
 
 | Equation / parameter | Value | Source location |
 |----|----|----|

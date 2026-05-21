@@ -80,9 +80,8 @@ The full population metadata is available programmatically via
 
 ## Source trace
 
-Per-parameter origin (recorded as in-file comments next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry of
-`inst/modeldb/specificDrugs/Gupta_2017_ixazomib.R`):
+Per-parameter origin (recorded as in-file comments next to each `ini()`
+entry of `inst/modeldb/specificDrugs/Gupta_2017_ixazomib.R`):
 
 | Equation / parameter | Value | Source location |
 |----|----|----|
@@ -360,10 +359,6 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
-#>  ■■■■■■■■■                         25% |  ETA: 10s
-#>  ■■■■■■■■■■■■■■■                   48% |  ETA:  7s
-#>  ■■■■■■■■■■■■■■■■■■■■■■            71% |  ETA:  4s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     94% |  ETA:  1s
 
 nca_tbl <- as.data.frame(nca_res$result)
 

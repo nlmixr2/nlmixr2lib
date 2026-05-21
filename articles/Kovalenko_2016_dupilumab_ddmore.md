@@ -37,8 +37,7 @@ This model was extracted from the DDMORE bundle scraped to
 - `Output_simulated_Dupilumab.lst` – listing from running SAEM/IMP on
   the shipped `Simulated_Dupilumab.CSV`. Reaches
   `MINIMIZATION SUCCESSFUL` and produces the FINAL PARAMETER ESTIMATE
-  values that drive
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html).
+  values that drive `ini()`.
 - `Simulated_Dupilumab.CSV` – single-subject placeholder dataset
   (`WT = 1`, `LWT = 1` constants) used for the bundle’s regression
   smoke-test.
@@ -75,12 +74,10 @@ The same information is available programmatically via
 
 ## Source trace
 
-Every value in
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) is the
-bundle’s `Output_simulated_Dupilumab.lst` FINAL PARAMETER ESTIMATE (SAEM
-block, identically echoed by the IMP block). The `.ctl`
-`$THETA / $OMEGA / $SIGMA` blocks are *initial* estimates and are not
-used here.
+Every value in `ini()` is the bundle’s `Output_simulated_Dupilumab.lst`
+FINAL PARAMETER ESTIMATE (SAEM block, identically echoed by the IMP
+block). The `.ctl` `$THETA / $OMEGA / $SIGMA` blocks are *initial*
+estimates and are not used here.
 
 | Equation / parameter | Value (linear units) | Source location |
 |----|----|----|
@@ -275,8 +272,7 @@ ggplot(sim_300sc, aes(time, Cc)) +
          "Reproduces the qualitative shape of Kovalenko 2016 Figure 3B."
        )) +
   theme_minimal(base_size = 11)
-#> Warning in scale_y_log10(): log-10 transformation introduced
-#> infinite values.
+#> Warning in scale_y_log10(): log-10 transformation introduced infinite values.
 ```
 
 ![Typical-value dupilumab profile after a single 300 mg SC dose at WT =

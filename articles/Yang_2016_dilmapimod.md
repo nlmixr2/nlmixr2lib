@@ -69,9 +69,8 @@ The same information is available programmatically:
 
 ## Source trace
 
-Per-parameter origin (recorded as in-file comments next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry of
-`inst/modeldb/specificDrugs/Yang_2016_dilmapimod.R`):
+Per-parameter origin (recorded as in-file comments next to each `ini()`
+entry of `inst/modeldb/specificDrugs/Yang_2016_dilmapimod.R`):
 
 | Equation / parameter | Value | Source location |
 |----|----|----|

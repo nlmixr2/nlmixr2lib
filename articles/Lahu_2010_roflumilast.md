@@ -77,8 +77,7 @@ deviations” below.
 
 ## Source trace
 
-Per-parameter origin is recorded inline next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
+Per-parameter origin is recorded inline next to each `ini()` entry in
 `inst/modeldb/specificDrugs/Lahu_2010_roflumilast.R`. The table below
 collects the same provenance for review.
 
@@ -404,10 +403,8 @@ transcription error).
   without IV roflumilast or directly-administered N-oxide data (Lahu
   2010 Methods page 591). The packaged model implements this by not
   declaring a free Frel parameter; the covariate-dependent expression
-  `frel` in the
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html)
-  block has a baseline of 1 with multiplicative covariate effects on
-  age, sex, and race.
+  `frel` in the `model()` block has a baseline of 1 with multiplicative
+  covariate effects on age, sex, and race.
 - **Parent bioavailability F1 fixed at 1.** The apparent fraction
   absorbed for roflumilast is also non-identifiable without IV data. The
   absolute oral bioavailability is reported as 79 percent in the

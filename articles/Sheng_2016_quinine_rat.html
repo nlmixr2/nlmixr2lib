@@ -518,7 +518,7 @@ each quinine concentration n = 718-722).</li>
 <h2 id="source-trace">Source trace<a class="anchor" aria-label="anchor" href="#source-trace"></a>
 </h2>
 <p>Per-parameter origins are recorded as in-file comments next to each
-<code><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini()</a></code> entry in
+<code>ini()</code> entry in
 <code>inst/modeldb/specificDrugs/Sheng_2016_quinine_rat.R</code>. The
 table below collects them in one place.</p>
 <table class="table">
@@ -733,7 +733,7 @@ vs quinine concentration) at the typical value.</p>
 <span><span class="co">#&gt; Warning: No sigma parameters in the model</span></span>
 <span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_typical</span>, events <span class="op">=</span> <span class="va">events</span>,</span>
 <span>                       keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"STIM_QUININE_MM"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalEmax', 'etalRIC50', 'etae0', 'etalk1', 'etalk2', 'etad1', 'etad2', 'etaE'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalEmax', 'etalRIC50', 'etae0', 'etalk1', 'etalk2', 'etad1', 'etad2', 'etaE'</span></span>
 <span></span>
 <span><span class="va">sim_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">STIM_QUININE_MM</span>, <span class="va">drugEmax</span>, <span class="va">E</span>, <span class="va">p_low</span>, <span class="va">p_high</span>,</span>
@@ -757,11 +757,11 @@ vs quinine concentration) at the typical value.</p>
 <code class="sourceCode R"><span><span class="co"># Replicates Figure 2a of Sheng 2016: drug effect E vs quinine concentration</span></span>
 <span><span class="va">sim_df</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html" class="external-link">distinct</a></span><span class="op">(</span><span class="va">STIM_QUININE_MM</span>, <span class="va">E</span>, <span class="va">drugEmax</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">STIM_QUININE_MM</span> <span class="op">+</span> <span class="fl">1e-4</span>, <span class="va">E</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>colour <span class="op">=</span> <span class="st">"steelblue"</span>, linewidth <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_x_log10</a></span><span class="op">(</span>breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1e-4</span>, <span class="fl">1e-2</span>, <span class="fl">1e-1</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Quinine concentration (mM, log scale; water plotted as 1e-4)"</span>,</span>
+<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span><span class="va">STIM_QUININE_MM</span> <span class="op">+</span> <span class="fl">1e-4</span>, <span class="va">E</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span>colour <span class="op">=</span> <span class="st">"steelblue"</span>, linewidth <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_point</span><span class="op">(</span>size <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">scale_x_log10</span><span class="op">(</span>breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1e-4</span>, <span class="fl">1e-2</span>, <span class="fl">1e-1</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Quinine concentration (mM, log scale; water plotted as 1e-4)"</span>,</span>
 <span>       y <span class="op">=</span> <span class="st">"Drug effect E (logit-scale)"</span>,</span>
 <span>       title <span class="op">=</span> <span class="st">"Figure 2a -- E vs quinine concentration"</span>,</span>
 <span>       caption <span class="op">=</span> <span class="st">"Replicates Figure 2a of Sheng 2016 (2GP final model)."</span><span class="op">)</span></span></code></pre></div>
@@ -770,11 +770,11 @@ vs quinine concentration) at the typical value.</p>
 <code class="sourceCode R"><span><span class="co"># Replicates Figure 2b of Sheng 2016: mixture probability p_low vs quinine concentration</span></span>
 <span><span class="va">sim_df</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html" class="external-link">distinct</a></span><span class="op">(</span><span class="va">STIM_QUININE_MM</span>, <span class="va">p_low</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">STIM_QUININE_MM</span> <span class="op">+</span> <span class="fl">1e-4</span>, <span class="va">p_low</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>colour <span class="op">=</span> <span class="st">"steelblue"</span>, linewidth <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_x_log10</a></span><span class="op">(</span>breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1e-4</span>, <span class="fl">1e-2</span>, <span class="fl">1e-1</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Quinine concentration (mM, log scale; water plotted as 1e-4)"</span>,</span>
+<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span><span class="va">STIM_QUININE_MM</span> <span class="op">+</span> <span class="fl">1e-4</span>, <span class="va">p_low</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span>colour <span class="op">=</span> <span class="st">"steelblue"</span>, linewidth <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_point</span><span class="op">(</span>size <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">scale_x_log10</span><span class="op">(</span>breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1e-4</span>, <span class="fl">1e-2</span>, <span class="fl">1e-1</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Quinine concentration (mM, log scale; water plotted as 1e-4)"</span>,</span>
 <span>       y <span class="op">=</span> <span class="st">"Low-count mixture probability p_low"</span>,</span>
 <span>       title <span class="op">=</span> <span class="st">"Figure 2b -- mixture probability vs quinine concentration"</span>,</span>
 <span>       caption <span class="op">=</span> <span class="st">"Replicates Figure 2b of Sheng 2016 (proportion of low-count GP)."</span><span class="op">)</span></span></code></pre></div>
@@ -1004,7 +1004,7 @@ bootstrap CIs (1,000 bootstrap datasets).</caption>
 likelihood is a mixture of two generalized-Poisson distributions, the
 second right-truncated at the observed maximum lick number of 61. rxode2
 / nlmixr2 do not natively express this composite likelihood within the
-<code><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini()</a></code> / <code><a href="https://nlmixr2.github.io/rxode2/reference/model.html" class="external-link">model()</a></code> syntax in this batch, so the
+<code>ini()</code> / <code>model()</code> syntax in this batch, so the
 packaged model declares two parallel <code>~ pois(...)</code>
 observation branches with means <code>mu_low</code> and
 <code>mu_high</code> – the same pattern used by
@@ -1096,7 +1096,7 @@ composite drug effect
 <code>E = E0 + Emax * conc^c / (RIC50^c + conc^c)</code>, which is a
 derived expression, not a single fixed-effect parameter. The
 <code>etaE</code> is added additively to that composite inside
-<code><a href="https://nlmixr2.github.io/rxode2/reference/model.html" class="external-link">model()</a></code> to preserve the source-trace fidelity of the
+<code>model()</code> to preserve the source-trace fidelity of the
 paper’s stated three-parameter structural IIV plus one composite
 IIV.</li>
 <li>

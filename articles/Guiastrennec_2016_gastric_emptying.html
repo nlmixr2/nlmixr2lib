@@ -516,7 +516,7 @@ reference).</p>
 <p>The same metadata is available programmatically:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod_meta</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxode2.html" class="external-link">rxode2</a></span><span class="op">(</span><span class="fu"><a href="../reference/readModelDb.html">readModelDb</a></span><span class="op">(</span><span class="st">"Guiastrennec_2016_gastric_emptying"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> parameter labels from comments will be replaced by 'label()'</span></span>
+<span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">mod_meta</span><span class="op">$</span><span class="va">population</span><span class="op">)</span></span>
 <span><span class="co">#&gt; List of 12</span></span>
 <span><span class="co">#&gt;  $ species       : chr "human"</span></span>
@@ -536,7 +536,7 @@ reference).</p>
 <h2 id="source-trace">Source trace<a class="anchor" aria-label="anchor" href="#source-trace"></a>
 </h2>
 <p>The per-parameter origin is recorded in the model file’s
-<code><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini()</a></code> block. The table below collects them for quick
+<code>ini()</code> block. The table below collects them for quick
 review.</p>
 <table class="table">
 <colgroup>
@@ -863,12 +863,12 @@ acetaminophen as the gastric-emptying tracer.</p>
 reproduces the median responses for each test drink.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod</span>         <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxode2.html" class="external-link">rxode2</a></span><span class="op">(</span><span class="fu"><a href="../reference/readModelDb.html">readModelDb</a></span><span class="op">(</span><span class="st">"Guiastrennec_2016_gastric_emptying"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> parameter labels from comments will be replaced by 'label()'</span></span>
+<span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
 <span><span class="va">mod_typical</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/zeroRe.html" class="external-link">zeroRe</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span></span>
 <span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_typical</span>, <span class="va">events</span>,</span>
 <span>                       keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cohort"</span><span class="op">)</span>,</span>
 <span>                       returnType <span class="op">=</span> <span class="st">"tibble"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalvc', 'etalfdepot', 'etalkg0', 'etalkul', 'etalslpcal_mag', 'etalbase_cckf', 'etalpool_cckl', 'etalkoutf', 'etalbase_bile', 'etalkrb', 'etals50_bile'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalvc', 'etalfdepot', 'etalkg0', 'etalkul', 'etalslpcal_mag', 'etalbase_cckf', 'etalpool_cckl', 'etalkoutf', 'etalbase_bile', 'etalkrb', 'etals50_bile'</span></span>
 <span><span class="co">#&gt; Warning: multi-subject simulation without without 'omega'</span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="va">cohort</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="va">cohort</span>,</span>
 <span>                     levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Water (Study A)"</span>,</span>
@@ -883,42 +883,42 @@ reproduces the median responses for each test drink.</p>
 <span><span class="co"># course, stratified by test drink. The published median curves rise</span></span>
 <span><span class="co"># fastest for water, more slowly for OGTT, and slowest for high-fat</span></span>
 <span><span class="co"># drinks - matching the GE-feedback structure.</span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">sim</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">Cc</span>, colour <span class="op">=</span> <span class="va">cohort</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time (min)"</span>,</span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">sim</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">time</span>, <span class="va">Cc</span>, colour <span class="op">=</span> <span class="va">cohort</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time (min)"</span>,</span>
 <span>       y <span class="op">=</span> <span class="st">"Acetaminophen Cc (umol/L)"</span>,</span>
 <span>       colour <span class="op">=</span> <span class="st">"Test drink"</span>,</span>
 <span>       title <span class="op">=</span> <span class="st">"Figure 2 (top) - acetaminophen Cc by test drink"</span>,</span>
 <span>       caption <span class="op">=</span> <span class="st">"Typical-value (zeroRe) simulation; matches the qualitative ordering of the paper's Figure 2 (top)."</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu">theme_minimal</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Guiastrennec_2016_gastric_emptying_files/figure-html/figure-2-acetaminophen-1.png" class="r-plt" alt="" width="672"></p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Replicates Figure 2 (bottom): gallbladder volume time course. The</span></span>
 <span><span class="co"># fat-containing drink drives a substantial gallbladder ejection; the</span></span>
 <span><span class="co"># OGTT drink drives a small ejection; water leaves the volume at</span></span>
 <span><span class="co"># baseline.</span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">sim</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">GVol</span>, colour <span class="op">=</span> <span class="va">cohort</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time (min)"</span>,</span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">sim</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">time</span>, <span class="va">GVol</span>, colour <span class="op">=</span> <span class="va">cohort</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time (min)"</span>,</span>
 <span>       y <span class="op">=</span> <span class="st">"Gallbladder volume (mL)"</span>,</span>
 <span>       colour <span class="op">=</span> <span class="st">"Test drink"</span>,</span>
 <span>       title <span class="op">=</span> <span class="st">"Figure 2 (bottom) - gallbladder volume by test drink"</span>,</span>
 <span>       caption <span class="op">=</span> <span class="st">"Typical-value (zeroRe) simulation."</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu">theme_minimal</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Guiastrennec_2016_gastric_emptying_files/figure-html/figure-2-gallbladder-1.png" class="r-plt" alt="" width="672"></p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Total plasma CCK time course (paper Supplementary Material S3). The</span></span>
 <span><span class="co"># high-fat drink drives the largest postprandial CCK rise via the</span></span>
 <span><span class="co"># duodenal Emax stimulus; the OGTT drink drives a small rise; water</span></span>
 <span><span class="co"># stays at baseline.</span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">sim</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">TCCK</span>, colour <span class="op">=</span> <span class="va">cohort</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time (min)"</span>,</span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">sim</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">time</span>, <span class="va">TCCK</span>, colour <span class="op">=</span> <span class="va">cohort</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time (min)"</span>,</span>
 <span>       y <span class="op">=</span> <span class="st">"Total plasma CCK (pmol/L)"</span>,</span>
 <span>       colour <span class="op">=</span> <span class="st">"Test drink"</span>,</span>
 <span>       title <span class="op">=</span> <span class="st">"Postprandial total CCK by test drink"</span>,</span>
 <span>       caption <span class="op">=</span> <span class="st">"Typical-value (zeroRe) simulation."</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu">theme_minimal</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Guiastrennec_2016_gastric_emptying_files/figure-html/cck-trajectories-1.png" class="r-plt" alt="" width="672"></p>
 </div>
 <div class="section level2">
@@ -984,8 +984,8 @@ trajectories rather than from NCA.</p>
 <span><span class="co"># initial dose is 1500 mg into the stomach; the trajectory falls</span></span>
 <span><span class="co"># monotonically until KG drains it past 50% of the initial value).</span></span>
 <span><span class="va">tge50</span> <span class="op">&lt;-</span> <span class="va">sim</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">cohort</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span></span>
+<span>  <span class="fu">group_by</span><span class="op">(</span><span class="va">cohort</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">summarise</span><span class="op">(</span></span>
 <span>    initial_stomach <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">stomach</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>    tge50_min       <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/approxfun.html" class="external-link">approx</a></span><span class="op">(</span><span class="va">stomach</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">stomach</span><span class="op">)</span>, <span class="va">time</span>,</span>
 <span>                             xout <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">$</span><span class="va">y</span>,</span>
@@ -1022,12 +1022,12 @@ min).</caption>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">ef_pct</span> <span class="op">&lt;-</span> <span class="va">sim</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">cohort</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span></span>
-<span>    base_volume <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/nth.html" class="external-link">first</a></span><span class="op">(</span><span class="va">GVol</span><span class="op">)</span>,</span>
+<span>  <span class="fu">group_by</span><span class="op">(</span><span class="va">cohort</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">summarise</span><span class="op">(</span></span>
+<span>    base_volume <span class="op">=</span> <span class="fu">first</span><span class="op">(</span><span class="va">GVol</span><span class="op">)</span>,</span>
 <span>    min_volume  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">GVol</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span>    ef_pct      <span class="op">=</span> <span class="fl">100</span> <span class="op">*</span> <span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/nth.html" class="external-link">first</a></span><span class="op">(</span><span class="va">GVol</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">GVol</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span></span>
-<span>                  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/nth.html" class="external-link">first</a></span><span class="op">(</span><span class="va">GVol</span><span class="op">)</span>,</span>
+<span>    ef_pct      <span class="op">=</span> <span class="fl">100</span> <span class="op">*</span> <span class="op">(</span><span class="fu">first</span><span class="op">(</span><span class="va">GVol</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">GVol</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span></span>
+<span>                  <span class="fu">first</span><span class="op">(</span><span class="va">GVol</span><span class="op">)</span>,</span>
 <span>    .groups     <span class="op">=</span> <span class="st">"drop"</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">ef_pct</span>,</span>
@@ -1116,7 +1116,7 @@ on the linear-scale gastric-emptying feedback (-0.0173 /kcal in Table
 3). The packaged model encodes |SLPCAL| as <code>exp(lslpcal_mag)</code>
 so the reported 19% CV between-subject variability can be carried as a
 standard log-normal eta on the magnitude (with the sign fixed negative
-in <code><a href="https://nlmixr2.github.io/rxode2/reference/model.html" class="external-link">model()</a></code>). This is equivalent to the NONMEM idiom
+in <code>model()</code>). This is equivalent to the NONMEM idiom
 <code>SLPCAL_i = -THETA(SLPCAL) * exp(ETA(SLPCAL))</code> and preserves
 the paper’s interpretation that the caloric feedback is always
 inhibitory of GE.</li>

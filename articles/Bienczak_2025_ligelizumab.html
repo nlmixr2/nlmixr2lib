@@ -707,7 +707,7 @@ q4w subcutaneous dosing (six doses) with observations every 7 days, plus
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/readModelDb.html">readModelDb</a></span><span class="op">(</span><span class="st">"Bienczak_2025_ligelizumab"</span><span class="op">)</span></span>
 <span><span class="va">conc_unit</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxode2.html" class="external-link">rxode</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span><span class="op">$</span><span class="va">meta</span><span class="op">$</span><span class="va">units</span><span class="op">[[</span><span class="st">"concentration"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> parameter labels from comments will be replaced by 'label()'</span></span>
+<span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
 <span></span>
 <span><span class="co"># Dosing schedule: q4w (28-day interval) for 6 doses</span></span>
 <span><span class="va">dose_times</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">28</span> <span class="op">*</span> <span class="fl">5</span>, by <span class="op">=</span> <span class="fl">28</span><span class="op">)</span></span>
@@ -750,7 +750,7 @@ q4w subcutaneous dosing (six doses) with observations every 7 days, plus
 <span></span>
 <span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod</span>, events <span class="op">=</span> <span class="va">events</span>, keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dose_group"</span>, <span class="st">"WT"</span>, <span class="st">"IGE"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> parameter labels from comments will be replaced by 'label()'</span></span></code></pre></div>
+<span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="replicate-figure-3a-steady-state-trough-concentrations-by-dose">Replicate Figure 3a – steady-state trough concentrations by
@@ -942,9 +942,6 @@ exposure rather than a multi-dose accumulation.</p>
 <span></span>
 <span><span class="va">nca_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_obj</span>, <span class="va">dose_obj</span>, intervals <span class="op">=</span> <span class="va">intervals</span><span class="op">)</span></span>
 <span><span class="va">nca_res</span>  <span class="op">&lt;-</span> <span class="fu"><a href="http://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="va">nca_data</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Too few points for half-life calculation (min.hl.points=3 with only 2</span></span>
-<span><span class="co">#&gt; points)</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■                             </span>   8% |  ETA: 18s</span></span>
 <span><span class="co">#&gt; Warning: Too few points for half-life calculation (min.hl.points=3 with only 2 points)</span></span>
 <span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 2 points)</span></span>
 <span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 2 points)</span></span>
@@ -970,8 +967,6 @@ exposure rather than a multi-dose accumulation.</p>
 <span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 2 points)</span></span>
 <span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 2 points)</span></span>
 <span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 2 points)</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■                        </span>  25% |  ETA: 14s</span></span>
-<span><span class="co">#&gt; Warning: Too few points for half-life calculation (min.hl.points=3 with only 2 points)</span></span>
 <span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 2 points)</span></span>
 <span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 2 points)</span></span>
 <span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 2 points)</span></span>
@@ -985,8 +980,9 @@ exposure rather than a multi-dose accumulation.</p>
 <span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 2 points)</span></span>
 <span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 2 points)</span></span>
 <span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 2 points)</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■                  </span>  42% |  ETA: 10s</span></span>
-<span><span class="co">#&gt; Warning: Too few points for half-life calculation (min.hl.points=3 with only 2 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 2 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 2 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 2 points)</span></span>
 <span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 2 points)</span></span>
 <span><span class="co">#&gt; Warning: Too few points for half-life calculation (min.hl.points=3 with only 1</span></span>
 <span><span class="co">#&gt; points)</span></span>
@@ -1001,17 +997,6 @@ exposure rather than a multi-dose accumulation.</p>
 <span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 2 points)</span></span>
 <span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 2 points)</span></span>
 <span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 2 points)</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■             </span>  60% |  ETA:  7s</span></span>
-<span><span class="co">#&gt; Warning: Too few points for half-life calculation (min.hl.points=3 with only 2 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 2 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 2 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 2 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 2 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 2 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 2 points)</span></span>
-<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 2 points)</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■        </span>  77% |  ETA:  4s</span></span>
-<span><span class="co">#&gt; Warning: Too few points for half-life calculation (min.hl.points=3 with only 2 points)</span></span>
 <span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 2 points)</span></span>
 <span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 2 points)</span></span>
 <span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 2 points)</span></span>
@@ -1029,9 +1014,16 @@ exposure rather than a multi-dose accumulation.</p>
 <span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 2 points)</span></span>
 <span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 2 points)</span></span>
 <span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 2 points)</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■   </span>  95% |  ETA:  1s</span></span>
-<span><span class="co">#&gt; Warning: Too few points for half-life calculation (min.hl.points=3 with only 2</span></span>
-<span><span class="co">#&gt; points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 2 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 2 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 2 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 2 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 2 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 2 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 2 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 2 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 2 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 2 points)</span></span>
 <span><span class="co">#&gt; Warning: Too few points for half-life calculation (min.hl.points=3 with only 1</span></span>
 <span><span class="co">#&gt; points)</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>

@@ -53,9 +53,8 @@ str(formals(mod_fn))
 ## Source trace
 
 Per-parameter origins are recorded as in-file comments next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/ddmore/Schoemaker_2018_levetiracetam.R`. The table below
-collects them in one place.
+`ini()` entry in `inst/modeldb/ddmore/Schoemaker_2018_levetiracetam.R`.
+The table below collects them in one place.
 
 nlmixr2 parameter \| NONMEM source \| .ctl \$THETA/ \$OMEGA \| .res
 final estimate \|
@@ -100,9 +99,7 @@ The `Output_real_P241.res` `MINIMIZATION SUCCESSFUL` block (line 303 of
 the .res) preceded the `FINAL PARAMETER ESTIMATE` block (lines 372-407).
 The `$EST` line in the .ctl uses `METHOD=COND LAPLACE -2LL`. The .ctl
 `$THETA` / `$OMEGA` blocks carry initial values that **differ** from the
-.res final estimates; values in
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) are the
-.res finals.
+.res final estimates; values in `ini()` are the .res finals.
 
 ## Mechanistic structure
 
@@ -525,8 +522,7 @@ simulation. {.table}
   precedent in this library.
 - **Box-Cox transform on the baseline-rate eta is preserved.** The .ctl
   line `TETA1 = (EXP(ETA(1))**SHP1 - 1) / SHP1` with `SHP1 = 0.442` is
-  reproduced verbatim in
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html) as
+  reproduced verbatim in `model()` as
   `bc_eta_base <- (exp(etalbase)^bc_shape - 1) / bc_shape`. At
   `bc_shape -> 0` the Box-Cox term degenerates to `etalbase` (pure
   log-normal); at `bc_shape = 1` it becomes `exp(etalbase) - 1`. For
@@ -549,10 +545,9 @@ simulation. {.table}
   THETAs of which only TH 11 (peds offset on log baseline rate) is
   freely estimated (= +0.420). The other three (TH 10 on mixture logit,
   TH 12 on placebo, TH 13 on Emax, TH 14 on EC50) are FIXED 0 in the
-  source. We retain them as FIXED 0 in
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) so the
-  structural form is preserved verbatim and a downstream re-fitter can
-  free them by editing one line.
+  source. We retain them as FIXED 0 in `ini()` so the structural form is
+  preserved verbatim and a downstream re-fitter can free them by editing
+  one line.
 - **Schoemaker 2018 publication PDF not on disk for cross-check.** The
   publication (<doi:10.1007/s40262-017-0597-2>) was not present anywhere
   under `/home/bill/github/mab_human_consensus/literature/` at
@@ -580,6 +575,5 @@ simulation. {.table}
   `EC50 approximately 31.5 mg/L`, and the +0.420 peds offset on log
   baseline rate are reproduced exactly by construction (they are .res TH
   9, exp(TH 6), TH 11). The closed-form cross-check above is a numerical
-  confirmation that the nlmixr2 model and
-  [`rxSolve()`](https://nlmixr2.github.io/rxode2/reference/rxSolve.html)
-  evaluate the source equations correctly.
+  confirmation that the nlmixr2 model and `rxSolve()` evaluate the
+  source equations correctly.

@@ -42,9 +42,8 @@ available programmatically via
 ## Source trace
 
 Per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) line in
-`inst/modeldb/specificDrugs/Caldes_2009_ganciclovir.R`. The table below
-collects the provenance in one place.
+`ini()` line in `inst/modeldb/specificDrugs/Caldes_2009_ganciclovir.R`.
+The table below collects the provenance in one place.
 
 | Equation / parameter | Value | Source location |
 |----|----|----|

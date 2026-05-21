@@ -60,9 +60,8 @@ str(mod()$population)
 ## Source trace
 
 The per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/specificDrugs/Lawson_2022_busulfan.R`. The table below
-collects them in one place for review.
+`ini()` entry in `inst/modeldb/specificDrugs/Lawson_2022_busulfan.R`.
+The table below collects them in one place for review.
 
 | Equation / parameter | Value | Source location |
 |----|----|----|
@@ -386,7 +385,6 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- suppressWarnings(PKNCA::pk.nca(nca_data))
-#>  ■■■■■■■■■■■■■■■■■                 54% |  ETA:  2s
 
 nca_tbl <- as.data.frame(nca_res$result) |>
   dplyr::filter(PPTESTCD == "auclast") |>

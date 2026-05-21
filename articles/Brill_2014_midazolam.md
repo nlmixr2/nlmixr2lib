@@ -404,8 +404,7 @@ load-bearing check.
   `$INPUT OBES` column is the operational source. Because no canonical
   obesity-status column exists in `inst/references/covariate-columns.md`
   and the canonical `BMI` column already covers the underlying clinical
-  threshold, the model derives `is_obes = (BMI > 40)` inside
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html)
+  threshold, the model derives `is_obes = (BMI > 40)` inside `model()`
   following the `NA_NA_lidocaine.R` (DDMODEL00000281) precedent of using
   `BMI` with a binary threshold rather than registering a separate
   canonical column. In the original Brill 2014 cohort, this derivation
@@ -415,9 +414,8 @@ load-bearing check.
 - **OBES-conditional residual error.** The model retains the two
   proportional residual errors that the source paper estimates
   separately for the morbidly obese (46.7% CV) and healthy-volunteer
-  (10.0% CV) cohorts. They are combined inside
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html) as
-  a single BMI-threshold-weighted standard deviation,
+  (10.0% CV) cohorts. They are combined inside `model()` as a single
+  BMI-threshold-weighted standard deviation,
   `propSdEff = propSd_hv * (1 - is_obes) + propSd_mo * is_obes`, rather
   than via a separate model output for each cohort. The published paper
   attributes the larger morbidly-obese residual partly to the 42 BLOQ
@@ -441,9 +439,8 @@ load-bearing check.
   17. 
 - **IIV on Q held fixed at zero.** The .docx ESM 4 \$OMEGA block
   contains `0 FIX ;Q`. This is preserved as `etalq ~ fixed(0)` in
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) for
-  structural fidelity to the source; the parameter contributes no
-  between-subject variability to simulations.
+  `ini()` for structural fidelity to the source; the parameter
+  contributes no between-subject variability to simulations.
 - **Sex and race distribution.** The published Table 1 reports 12 F / 8
   M in the morbidly obese cohort and 0 F / 12 M in the healthy volunteer
   cohort but no race / ethnicity distribution. The virtual cohort above

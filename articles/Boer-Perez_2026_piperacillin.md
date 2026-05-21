@@ -46,10 +46,9 @@ The same metadata is available programmatically via
 
 ## Source trace
 
-The per-parameter origin is recorded inline next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/specificDrugs/Boer-Perez_2026_piperacillin.R`. The table
-below collects them in one place for review.
+The per-parameter origin is recorded inline next to each `ini()` entry
+in `inst/modeldb/specificDrugs/Boer-Perez_2026_piperacillin.R`. The
+table below collects them in one place for review.
 
 | Equation / parameter | Value | Source location |
 |----|----|----|
@@ -280,13 +279,6 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- suppressWarnings(PKNCA::pk.nca(nca_data))
-#>  ■■■■■                             12% |  ETA: 22s
-#>  ■■■■■■■■■                         25% |  ETA: 18s
-#>  ■■■■■■■■■■■■                      38% |  ETA: 15s
-#>  ■■■■■■■■■■■■■■■■                  50% |  ETA: 12s
-#>  ■■■■■■■■■■■■■■■■■■■■              63% |  ETA:  9s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■          76% |  ETA:  6s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      88% |  ETA:  3s
 nca_df   <- as.data.frame(nca_res$result)
 
 nca_summary <- nca_df |>
@@ -363,10 +355,8 @@ piperacillin \> 50 mg/L. {.table}
   `PAGE` is in months by canonical convention (see
   `inst/references/covariate-columns.md`). The model file converts back
   to weeks via `pma_wk = PAGE * 4.35` so the Rhodin TM50 and Hill values
-  appear unchanged in
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html). The
-  conversion is exact for the 4.35 weeks-per-month factor used by the
-  canonical.
+  appear unchanged in `ini()`. The conversion is exact for the 4.35
+  weeks-per-month factor used by the canonical.
 
 - **Maturation parameters fixed, not estimated.** The paper states
   (Methods, Covariate model building): “Due to the limited number of

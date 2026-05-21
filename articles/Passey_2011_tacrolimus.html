@@ -639,7 +639,7 @@ Discussion section.</p>
 <span>  <span class="va">cyp3a5_het</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">cyp3a5_geno</span> <span class="op">==</span> <span class="st">"*1/*3"</span><span class="op">)</span></span>
 <span>  <span class="va">cyp3a5_hom</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">cyp3a5_geno</span> <span class="op">==</span> <span class="st">"*1/*1"</span><span class="op">)</span></span>
 <span></span>
-<span>  <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
+<span>  <span class="fu">tibble</span><span class="op">(</span></span>
 <span>    id                     <span class="op">=</span> <span class="va">id_offset</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span>,</span>
 <span>    cohort_label           <span class="op">=</span> <span class="va">label</span>,</span>
 <span>    AGE                    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span>, mean <span class="op">=</span> <span class="fl">50.2</span>, sd <span class="op">=</span> <span class="fl">12.2</span><span class="op">)</span>, <span class="fl">80</span><span class="op">)</span>, <span class="fl">18</span><span class="op">)</span>,</span>
@@ -745,14 +745,14 @@ independent of <code>vc</code>.</p>
 <span><span class="co"># Typical-value simulation (random effects zeroed) - predicted Css should</span></span>
 <span><span class="co"># match the analytical Passey 2011 covariate-equation calculation exactly.</span></span>
 <span><span class="va">mod_typical</span> <span class="op">&lt;-</span> <span class="va">mod</span> <span class="op">|&gt;</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/zeroRe.html" class="external-link">zeroRe</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> parameter labels from comments will be replaced by 'label()'</span></span>
+<span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
 <span><span class="va">sim_typical</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span></span>
 <span>  <span class="va">mod_typical</span>,</span>
 <span>  events <span class="op">=</span> <span class="va">events</span>,</span>
 <span>  keep   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AGE"</span>, <span class="st">"POD"</span>, <span class="st">"CYP3A5_STAR1_HET"</span>, <span class="st">"CYP3A5_STAR1_HOM"</span>,</span>
 <span>             <span class="st">"CONMED_STEROID_SPARING"</span>, <span class="st">"CONMED_CCB"</span><span class="op">)</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">==</span> <span class="fl">12</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl'</span></span>
 <span><span class="co">#&gt; Warning: multi-subject simulation without without 'omega'</span></span>
 <span></span>
 <span><span class="co"># Stochastic simulation (with between-subject variability on CL/F and</span></span>
@@ -764,7 +764,7 @@ independent of <code>vc</code>.</p>
 <span>  keep   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AGE"</span>, <span class="st">"POD"</span>, <span class="st">"CYP3A5_STAR1_HET"</span>, <span class="st">"CYP3A5_STAR1_HOM"</span>,</span>
 <span>             <span class="st">"CONMED_STEROID_SPARING"</span>, <span class="st">"CONMED_CCB"</span><span class="op">)</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">==</span> <span class="fl">12</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> parameter labels from comments will be replaced by 'label()'</span></span></code></pre></div>
+<span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="typical-value-steady-state-css-matches-the-passey-2011-equation">Typical-value steady-state Css matches the Passey 2011 equation<a class="anchor" aria-label="anchor" href="#typical-value-steady-state-css-matches-the-passey-2011-equation"></a>
 </h3>
@@ -831,7 +831,7 @@ total daily dose of ~17.5 mg.</p>
 <span><span class="va">ex1_sim</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_typical</span>, events <span class="op">=</span> <span class="va">ex1_events</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">==</span> <span class="fl">12</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl'</span></span>
 <span></span>
 <span><span class="co"># rate = 0.7219 mg/h, CL = 72.192 L/h -&gt; Css = 1000 * 0.7219 / 72.192 =</span></span>
 <span><span class="co"># 10.00 ng/mL. Total daily dose = 0.7219 * 24 = 17.33 mg/day (rounded to</span></span>
@@ -872,7 +872,7 @@ centre, and is not receiving a CCB. The paper computes CL/F = 38.4 *
 <span><span class="va">ex2_sim</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_typical</span>, events <span class="op">=</span> <span class="va">ex2_events</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">==</span> <span class="fl">12</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl'</span></span>
 <span></span>
 <span><span class="co"># rate = 0.1527 mg/h, CL = 19.0848 L/h -&gt; Css = 1000 * 0.1527 / 19.0848 =</span></span>
 <span><span class="co"># 8.00 ng/mL. Total daily dose = 0.1527 * 24 = 3.66 mg/day (rounded to</span></span>
@@ -916,11 +916,11 @@ with the three CYP3A5 strata stacked at 1.0 / 1.70 / 2.00 fold).</p>
 <span>                    <span class="op">(</span><span class="fl">50</span> <span class="op">/</span> <span class="fl">50</span><span class="op">)</span> <span class="op">^</span> <span class="op">(</span><span class="op">-</span><span class="fl">0.40</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">fig3_data</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">POD</span>, <span class="va">cl_typical</span>, colour <span class="op">=</span> <span class="va">cyp3a5_geno</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">1.0</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_x_continuous</a></span><span class="op">(</span>breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">5</span>, <span class="fl">10</span>, <span class="fl">30</span>, <span class="fl">60</span>, <span class="fl">90</span>, <span class="fl">120</span>, <span class="fl">150</span>, <span class="fl">180</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_continuous</a></span><span class="op">(</span>limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="cn">NA</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">fig3_data</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">POD</span>, <span class="va">cl_typical</span>, colour <span class="op">=</span> <span class="va">cyp3a5_geno</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">1.0</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">scale_x_continuous</span><span class="op">(</span>breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">5</span>, <span class="fl">10</span>, <span class="fl">30</span>, <span class="fl">60</span>, <span class="fl">90</span>, <span class="fl">120</span>, <span class="fl">150</span>, <span class="fl">180</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">scale_y_continuous</span><span class="op">(</span>limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="cn">NA</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span></span>
 <span>    x      <span class="op">=</span> <span class="st">"Days post-transplant (POD)"</span>,</span>
 <span>    y      <span class="op">=</span> <span class="st">"Typical-value CL/F (L/h)"</span>,</span>
 <span>    colour <span class="op">=</span> <span class="st">"CYP3A5 genotype"</span>,</span>
@@ -947,11 +947,11 @@ variability.</p>
 <span>    <span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">sim_stoch_summary</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">Cc</span>, fill <span class="op">=</span> <span class="va">cyp3a5_geno</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_histogram.html" class="external-link">geom_histogram</a></span><span class="op">(</span>bins <span class="op">=</span> <span class="fl">30</span>, alpha <span class="op">=</span> <span class="fl">0.6</span>, position <span class="op">=</span> <span class="st">"identity"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="va">target_trough_ng_mL</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span> <span class="va">cyp3a5_geno</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">sim_stoch_summary</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">Cc</span>, fill <span class="op">=</span> <span class="va">cyp3a5_geno</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_histogram</span><span class="op">(</span>bins <span class="op">=</span> <span class="fl">30</span>, alpha <span class="op">=</span> <span class="fl">0.6</span>, position <span class="op">=</span> <span class="st">"identity"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_vline</span><span class="op">(</span>xintercept <span class="op">=</span> <span class="va">target_trough_ng_mL</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">facet_wrap</span><span class="op">(</span><span class="op">~</span> <span class="va">cyp3a5_geno</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span></span>
 <span>    x       <span class="op">=</span> <span class="st">"Steady-state trough Cc (ng/mL)"</span>,</span>
 <span>    y       <span class="op">=</span> <span class="st">"Subject count"</span>,</span>
 <span>    fill    <span class="op">=</span> <span class="st">"CYP3A5 genotype"</span>,</span>
@@ -1018,7 +1018,7 @@ model file carries 1.70 to match the “Study population Estimate” column
 header for consistency with the other multiplicative factors (e.g., 0.71
 for 11-180 DPT, whose bootstrap median is 0.72), but downstream users
 who prefer the equation-as-published convention should replace 1.70 with
-1.69 in <code><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini()</a></code>.</li>
+1.69 in <code>ini()</code>.</li>
 <li>
 <strong>Days post-transplant categorical decomposition.</strong>
 Passey 2011 Methods reports that the model failed to converge when POD
@@ -1028,7 +1028,7 @@ strata: days 3-5 (reference), days 6-10 (factor 0.86), days 11-180
 (factor 0.71). The model file receives the canonical continuous
 <code>POD</code> column and derives the two binary indicators ((POD
 &gt;= 6 &amp; POD &lt;= 10) and (POD &gt;= 11)) inside
-<code><a href="https://nlmixr2.github.io/rxode2/reference/model.html" class="external-link">model()</a></code>.</li>
+<code>model()</code>.</li>
 <li>
 <strong>Three-level CYP3A5 genotype.</strong> Passey 2011
 distinguishes CYP3A5<em>1/</em>1 from CYP3A5<em>1/</em>3 (in contrast to

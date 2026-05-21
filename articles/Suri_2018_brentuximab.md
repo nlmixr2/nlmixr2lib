@@ -68,12 +68,11 @@ The same information is available programmatically via
 ## Source trace
 
 Per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/specificDrugs/Suri_2018_brentuximab.R`. The table below
-collects the source locations in one place. Tables S1, S3, S5 references
-are to Suri 2018 supplementary tables (supplements 6, 8, 10
-respectively); Table 1 is the main paper’s overall-population baseline
-characteristics table.
+`ini()` entry in `inst/modeldb/specificDrugs/Suri_2018_brentuximab.R`.
+The table below collects the source locations in one place. Tables S1,
+S3, S5 references are to Suri 2018 supplementary tables (supplements 6,
+8, 10 respectively); Table 1 is the main paper’s overall-population
+baseline characteristics table.
 
 | Equation / parameter | Value | Source location |
 |----|----|----|

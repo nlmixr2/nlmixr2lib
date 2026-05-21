@@ -524,7 +524,7 @@ block only.</li>
 <h2 id="source-trace">Source trace<a class="anchor" aria-label="anchor" href="#source-trace"></a>
 </h2>
 <p>Per-parameter origins are recorded as in-file comments next to each
-<code><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini()</a></code> entry in
+<code>ini()</code> entry in
 <code>inst/modeldb/ddmore/Clewe_2016_rifampicin.R</code>. The table
 below collects them in one place. All values come from the
 <code>Output_real_MTP.lst</code> <code>FINAL PARAMETER ESTIMATE</code>
@@ -745,24 +745,24 @@ below are reproduced inline from the DDMODEL00000240 bundle
 <code class="sourceCode R"><span><span class="co"># rxode2 event table for the typical-value simulation (no IIV, no error).</span></span>
 <span><span class="va">events</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/et.html" class="external-link">et</a></span><span class="op">(</span>time <span class="op">=</span> <span class="va">bundle</span><span class="op">$</span><span class="va">TIME</span>, evid <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
 <span><span class="va">events</span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">── EventTable with 11 records ──</span></span></span>
-<span><span class="co">#&gt; 0 dosing records (see <span style="color: #BBBB00;">x</span>$<span style="color: #0000BB;">get.dosing</span>(); add with <span style="color: #0000BB;">add.dosing</span> or <span style="color: #0000BB;">et</span>)</span></span>
-<span><span class="co">#&gt; 11 observation times (see <span style="color: #BBBB00;">x</span>$<span style="color: #0000BB;">get.sampling</span>(); add with <span style="color: #0000BB;">add.sampling</span> or <span style="color: #0000BB;">et</span>)</span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">── First part of </span><span style="color: #BBBB00; font-weight: bold;">x</span><span style="font-weight: bold;">: ──</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 11 × 2</span></span></span>
+<span><span class="co">#&gt; ── EventTable with 11 records ──</span></span>
+<span><span class="co">#&gt; 0 dosing records (see x$get.dosing(); add with add.dosing or et)</span></span>
+<span><span class="co">#&gt; 11 observation times (see x$get.sampling(); add with add.sampling or et)</span></span>
+<span><span class="co">#&gt; ── First part of x: ──</span></span>
+<span><span class="co">#&gt; # A tibble: 11 × 2</span></span>
 <span><span class="co">#&gt;     time evid         </span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;evid&gt;</span>       </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>     0 <span style="color: #0000BB; font-weight: bold;">0</span>:<span style="color: #BBBBBB;">Observation</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>     4 <span style="color: #0000BB; font-weight: bold;">0</span>:<span style="color: #BBBBBB;">Observation</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>     7 <span style="color: #0000BB; font-weight: bold;">0</span>:<span style="color: #BBBBBB;">Observation</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>    14 <span style="color: #0000BB; font-weight: bold;">0</span>:<span style="color: #BBBBBB;">Observation</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>    35 <span style="color: #0000BB; font-weight: bold;">0</span>:<span style="color: #BBBBBB;">Observation</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>    45 <span style="color: #0000BB; font-weight: bold;">0</span>:<span style="color: #BBBBBB;">Observation</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>    60 <span style="color: #0000BB; font-weight: bold;">0</span>:<span style="color: #BBBBBB;">Observation</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>    70 <span style="color: #0000BB; font-weight: bold;">0</span>:<span style="color: #BBBBBB;">Observation</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>    80 <span style="color: #0000BB; font-weight: bold;">0</span>:<span style="color: #BBBBBB;">Observation</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>   120 <span style="color: #0000BB; font-weight: bold;">0</span>:<span style="color: #BBBBBB;">Observation</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span>   200 <span style="color: #0000BB; font-weight: bold;">0</span>:<span style="color: #BBBBBB;">Observation</span></span></span></code></pre></div>
+<span><span class="co">#&gt;    &lt;dbl&gt; &lt;evid&gt;       </span></span>
+<span><span class="co">#&gt;  1     0 0:Observation</span></span>
+<span><span class="co">#&gt;  2     4 0:Observation</span></span>
+<span><span class="co">#&gt;  3     7 0:Observation</span></span>
+<span><span class="co">#&gt;  4    14 0:Observation</span></span>
+<span><span class="co">#&gt;  5    35 0:Observation</span></span>
+<span><span class="co">#&gt;  6    45 0:Observation</span></span>
+<span><span class="co">#&gt;  7    60 0:Observation</span></span>
+<span><span class="co">#&gt;  8    70 0:Observation</span></span>
+<span><span class="co">#&gt;  9    80 0:Observation</span></span>
+<span><span class="co">#&gt; 10   120 0:Observation</span></span>
+<span><span class="co">#&gt; 11   200 0:Observation</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="simulation-f-2-self-consistency">Simulation (F.2 self-consistency)<a class="anchor" aria-label="anchor" href="#simulation-f-2-self-consistency"></a>
@@ -775,7 +775,7 @@ bundle’s <code>Output_simulated_MTP.lst</code> is also a
 <span><span class="va">mod_typical</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/zeroRe.html" class="external-link">zeroRe</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_typical</span>, events <span class="op">=</span> <span class="va">events</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalf0'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalf0'</span></span>
 <span></span>
 <span><span class="va">cmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">fbugs</span>, <span class="va">sbugs</span>, <span class="va">nbugs</span>, <span class="va">cfu</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -970,12 +970,12 @@ gate (&lt;= 5% per-time-point differences) is met.</p>
 <span><span class="va">bundle_plot</span> <span class="op">&lt;-</span> <span class="va">bundle</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/transmute.html" class="external-link">transmute</a></span><span class="op">(</span>time <span class="op">=</span> <span class="va">TIME</span>, count <span class="op">=</span> <span class="va">NDV</span>, state <span class="op">=</span> <span class="st">"bundle CFU"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">plot_df</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">count</span>, colour <span class="op">=</span> <span class="va">state</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">bundle_plot</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">count</span><span class="op">)</span>,</span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">plot_df</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">time</span>, <span class="va">count</span>, colour <span class="op">=</span> <span class="va">state</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_point</span><span class="op">(</span>data <span class="op">=</span> <span class="va">bundle_plot</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">time</span>, <span class="va">count</span><span class="op">)</span>,</span>
 <span>             colour <span class="op">=</span> <span class="st">"black"</span>, size <span class="op">=</span> <span class="fl">2.5</span>, shape <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_log10</a></span><span class="op">(</span>labels <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/label_scientific.html" class="external-link">label_scientific</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time (day)"</span>, y <span class="op">=</span> <span class="st">"Bacterial count (CFU/mL, log scale)"</span>,</span>
+<span>  <span class="fu">scale_y_log10</span><span class="op">(</span>labels <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/label_scientific.html" class="external-link">label_scientific</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time (day)"</span>, y <span class="op">=</span> <span class="st">"Bacterial count (CFU/mL, log scale)"</span>,</span>
 <span>       colour <span class="op">=</span> <span class="st">"State"</span>,</span>
 <span>       title <span class="op">=</span> <span class="st">"Multistate TB natural-growth trajectory (Clewe 2016)"</span>,</span>
 <span>       caption <span class="op">=</span> <span class="st">"Lines: nlmixr2lib typical-value simulation. Crosses: DDMODEL00000240 bundle `Simulated_*.csv` (NDV = F+S)."</span><span class="op">)</span></span></code></pre></div>

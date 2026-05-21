@@ -513,7 +513,7 @@ Tables 1 and 2 for the per-study breakdown.</p>
 <h2 id="source-trace">Source trace<a class="anchor" aria-label="anchor" href="#source-trace"></a>
 </h2>
 <p>The per-parameter origin is recorded as a trailing in-file comment
-next to each <code><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini()</a></code> entry in
+next to each <code>ini()</code> entry in
 <code>inst/modeldb/specificDrugs/Tikiso_2021_abacavir.R</code>. The
 table below collects them in one place.</p>
 <table class="table">
@@ -692,15 +692,15 @@ paper’s “reference” arm.</p>
 <span><span class="va">n_per_band</span> <span class="op">&lt;-</span> <span class="fl">30</span></span>
 <span><span class="va">band_levels</span> <span class="op">&lt;-</span> <span class="va">weight_bands</span><span class="op">$</span><span class="va">band</span></span>
 <span></span>
-<span><span class="va">cohort</span> <span class="op">&lt;-</span> <span class="va">weight_bands</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">band</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/reframe.html" class="external-link">reframe</a></span><span class="op">(</span></span>
+<span><span class="va">cohort</span> <span class="op">&lt;-</span> <span class="va">weight_bands</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu">group_by</span><span class="op">(</span><span class="va">band</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu">reframe</span><span class="op">(</span></span>
 <span>    WT  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">n_per_band</span>, <span class="va">wt_lo</span>, <span class="va">wt_hi</span><span class="op">)</span>,</span>
 <span>    AGE_YR <span class="op">=</span> <span class="va">age_yr</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n_per_band</span>, <span class="fl">0</span>, <span class="fl">0.10</span><span class="op">)</span><span class="op">)</span></span>
-<span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
-<span>    id   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  <span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu">ungroup</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu">mutate</span><span class="op">(</span></span>
+<span>    id   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="fu">n</span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>    PAGE <span class="op">=</span> <span class="va">AGE_YR</span> <span class="op">*</span> <span class="fl">12</span> <span class="op">+</span> <span class="fl">9</span>,</span>
 <span>    CONMED_EFV       <span class="op">=</span> <span class="fl">0L</span>,</span>
 <span>    CONMED_RIF_LPVR4 <span class="op">=</span> <span class="fl">0L</span>,</span>
@@ -708,8 +708,8 @@ paper’s “reference” arm.</p>
 <span>    MAL_NOURISH     <span class="op">=</span> <span class="fl">0L</span>,</span>
 <span>    T_NUT_SUPP      <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>    band <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">band</span>, levels <span class="op">=</span> <span class="va">band_levels</span><span class="op">)</span></span>
-<span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">band</span>, <span class="va">WT</span>, <span class="va">AGE_YR</span>, <span class="va">PAGE</span>,</span>
+<span>  <span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu">select</span><span class="op">(</span><span class="va">id</span>, <span class="va">band</span>, <span class="va">WT</span>, <span class="va">AGE_YR</span>, <span class="va">PAGE</span>,</span>
 <span>         <span class="va">CONMED_EFV</span>, <span class="va">CONMED_RIF_LPVR4</span>, <span class="va">FORM_TABLET</span>,</span>
 <span>         <span class="va">MAL_NOURISH</span>, <span class="va">T_NUT_SUPP</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -728,11 +728,11 @@ AUC0-tau calculation.</p>
 <span></span>
 <span><span class="va">obs_grid_ss</span>    <span class="op">&lt;-</span> <span class="va">ss_window</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">tau</span>, by <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">events</span> <span class="op">&lt;-</span> <span class="va">cohort</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rowwise.html" class="external-link">rowwise</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/do.html" class="external-link">do</a></span><span class="op">(</span><span class="op">{</span></span>
+<span><span class="va">events</span> <span class="op">&lt;-</span> <span class="va">cohort</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu">rowwise</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu">do</span><span class="op">(</span><span class="op">{</span></span>
 <span>    <span class="va">row</span> <span class="op">&lt;-</span> <span class="va">.</span></span>
-<span>    <span class="va">doses</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
+<span>    <span class="va">doses</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="op">(</span></span>
 <span>      id   <span class="op">=</span> <span class="va">row</span><span class="op">$</span><span class="va">id</span>,</span>
 <span>      band <span class="op">=</span> <span class="va">row</span><span class="op">$</span><span class="va">band</span>,</span>
 <span>      time <span class="op">=</span> <span class="va">dose_time_grid</span>,</span>
@@ -747,7 +747,7 @@ AUC0-tau calculation.</p>
 <span>      MAL_NOURISH     <span class="op">=</span> <span class="va">row</span><span class="op">$</span><span class="va">MAL_NOURISH</span>,</span>
 <span>      T_NUT_SUPP      <span class="op">=</span> <span class="va">row</span><span class="op">$</span><span class="va">T_NUT_SUPP</span></span>
 <span>    <span class="op">)</span></span>
-<span>    <span class="va">obs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
+<span>    <span class="va">obs</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="op">(</span></span>
 <span>      id   <span class="op">=</span> <span class="va">row</span><span class="op">$</span><span class="va">id</span>,</span>
 <span>      band <span class="op">=</span> <span class="va">row</span><span class="op">$</span><span class="va">band</span>,</span>
 <span>      time <span class="op">=</span> <span class="va">obs_grid_ss</span>,</span>
@@ -762,10 +762,10 @@ AUC0-tau calculation.</p>
 <span>      MAL_NOURISH     <span class="op">=</span> <span class="va">row</span><span class="op">$</span><span class="va">MAL_NOURISH</span>,</span>
 <span>      T_NUT_SUPP      <span class="op">=</span> <span class="va">row</span><span class="op">$</span><span class="va">T_NUT_SUPP</span></span>
 <span>    <span class="op">)</span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">doses</span>, <span class="va">obs</span><span class="op">)</span></span>
-<span>  <span class="op">}</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">evid</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="fu">bind_rows</span><span class="op">(</span><span class="va">doses</span>, <span class="va">obs</span><span class="op">)</span></span>
+<span>  <span class="op">}</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu">ungroup</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu">arrange</span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="fu">desc</span><span class="op">(</span><span class="va">evid</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/duplicated.html" class="external-link">anyDuplicated</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">events</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span>, <span class="st">"time"</span>, <span class="st">"evid"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -779,15 +779,15 @@ the spread reflects weight and age variation only.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/readModelDb.html">readModelDb</a></span><span class="op">(</span><span class="st">"Tikiso_2021_abacavir"</span><span class="op">)</span></span>
 <span><span class="va">mod_typ</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/zeroRe.html" class="external-link">zeroRe</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> parameter labels from comments will be replaced by 'label()'</span></span>
+<span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
 <span></span>
 <span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span></span>
 <span>  <span class="va">mod_typ</span>,</span>
 <span>  events <span class="op">=</span> <span class="va">events</span>,</span>
 <span>  keep   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"band"</span>, <span class="st">"WT"</span><span class="op">)</span></span>
-<span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span><span class="op">)</span> <span class="op">%&gt;%</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl', 'etalvp'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etalvp'</span></span>
 <span><span class="co">#&gt; Warning: multi-subject simulation without without 'omega'</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -798,17 +798,17 @@ the final 12-hour dosing interval. The treatment-grouping variable is
 the WHO weight band so results roll up per band as in Tikiso 2021 Table
 3 and Figure 4.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sim_ss</span> <span class="op">&lt;-</span> <span class="va">sim</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&gt;=</span> <span class="va">ss_window</span>, <span class="va">time</span> <span class="op">&lt;=</span> <span class="va">ss_window</span> <span class="op">+</span> <span class="va">tau</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>time_in_tau <span class="op">=</span> <span class="va">time</span> <span class="op">-</span> <span class="va">ss_window</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">sim_ss</span> <span class="op">&lt;-</span> <span class="va">sim</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&gt;=</span> <span class="va">ss_window</span>, <span class="va">time</span> <span class="op">&lt;=</span> <span class="va">ss_window</span> <span class="op">+</span> <span class="va">tau</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu">mutate</span><span class="op">(</span>time_in_tau <span class="op">=</span> <span class="va">time</span> <span class="op">-</span> <span class="va">ss_window</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">sim_nca</span> <span class="op">&lt;-</span> <span class="va">sim_ss</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/transmute.html" class="external-link">transmute</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">band</span>, time <span class="op">=</span> <span class="va">time_in_tau</span>, <span class="va">Cc</span><span class="op">)</span></span>
+<span><span class="va">sim_nca</span> <span class="op">&lt;-</span> <span class="va">sim_ss</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu">transmute</span><span class="op">(</span><span class="va">id</span>, <span class="va">band</span>, time <span class="op">=</span> <span class="va">time_in_tau</span>, <span class="va">Cc</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">dose_nca</span> <span class="op">&lt;-</span> <span class="va">events</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">evid</span> <span class="op">==</span> <span class="fl">1</span>, <span class="va">time</span> <span class="op">==</span> <span class="va">ss_window</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/transmute.html" class="external-link">transmute</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">band</span>, time <span class="op">=</span> <span class="fl">0</span>, <span class="va">amt</span><span class="op">)</span></span>
+<span><span class="va">dose_nca</span> <span class="op">&lt;-</span> <span class="va">events</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">evid</span> <span class="op">==</span> <span class="fl">1</span>, <span class="va">time</span> <span class="op">==</span> <span class="va">ss_window</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu">transmute</span><span class="op">(</span><span class="va">id</span>, <span class="va">band</span>, time <span class="op">=</span> <span class="fl">0</span>, <span class="va">amt</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">conc_obj</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAconc.html" class="external-link">PKNCAconc</a></span><span class="op">(</span></span>
 <span>  data    <span class="op">=</span> <span class="va">sim_nca</span>,</span>
@@ -943,15 +943,15 @@ formulation.</caption>
 <h2 id="replicate-figure-4-left-panel-auc0-12-by-weight-band">Replicate Figure 4 left panel: AUC0-12 by weight band<a class="anchor" aria-label="anchor" href="#replicate-figure-4-left-panel-auc0-12-by-weight-band"></a>
 </h2>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">nca_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">nca_res</span><span class="op">$</span><span class="va">result</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">PPTESTCD</span> <span class="op">==</span> <span class="st">"auclast"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>auc012 <span class="op">=</span> <span class="va">PPORRES</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>band <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">band</span>, levels <span class="op">=</span> <span class="va">band_levels</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">auc012</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">nca_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">nca_res</span><span class="op">$</span><span class="va">result</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">PPTESTCD</span> <span class="op">==</span> <span class="st">"auclast"</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu">rename</span><span class="op">(</span>auc012 <span class="op">=</span> <span class="va">PPORRES</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu">mutate</span><span class="op">(</span>band <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">band</span>, levels <span class="op">=</span> <span class="va">band_levels</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">auc012</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">band_summary</span> <span class="op">&lt;-</span> <span class="va">nca_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">band</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span></span>
+<span><span class="va">band_summary</span> <span class="op">&lt;-</span> <span class="va">nca_df</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu">group_by</span><span class="op">(</span><span class="va">band</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu">summarise</span><span class="op">(</span></span>
 <span>    median_auc <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">auc012</span><span class="op">)</span>,</span>
 <span>    p25_auc    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">auc012</span>, <span class="fl">0.25</span><span class="op">)</span>,</span>
 <span>    p75_auc    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">auc012</span>, <span class="fl">0.75</span><span class="op">)</span>,</span>
@@ -1019,18 +1019,18 @@ Tikiso 2021 Figure 4 left panel (LPV/r 4:1 without RIF).</caption>
 </tbody>
 </table>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">nca_df</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">band</span>, y <span class="op">=</span> <span class="va">auc012</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_boxplot.html" class="external-link">geom_boxplot</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"#f4a3c7"</span>, outlier.size <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">6.02</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span>, colour <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_continuous</a></span><span class="op">(</span>limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">30</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="fu">ggplot</span><span class="op">(</span><span class="va">nca_df</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">band</span>, y <span class="op">=</span> <span class="va">auc012</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_boxplot</span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"#f4a3c7"</span>, outlier.size <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_hline</span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">6.02</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span>, colour <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">scale_y_continuous</span><span class="op">(</span>limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">30</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span></span>
 <span>    x <span class="op">=</span> <span class="st">"Weight band (kg)"</span>,</span>
 <span>    y <span class="op">=</span> <span class="st">"AUC0-12 (mg*h/L)"</span>,</span>
 <span>    title <span class="op">=</span> <span class="st">"Simulated steady-state AUC0-12 by weight band"</span>,</span>
 <span>    subtitle <span class="op">=</span> <span class="st">"Abacavir 8 mg/kg BID, LPV/r 4:1, well-nourished, liquid"</span>,</span>
 <span>    caption <span class="op">=</span> <span class="st">"Replicates Tikiso 2021 Figure 4 left panel. Red dashed line = adult median AUC reference of 6.02 mg*h/L."</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu">theme_bw</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Tikiso_2021_abacavir_files/figure-html/figure4-plot-1.png" class="r-plt" alt="" width="576"></p>
 </div>
 <div class="section level2">
@@ -1043,10 +1043,10 @@ seven weight bands is reported below for comparison.</p>
 <code class="sourceCode R"><span><span class="va">median_pooled</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">nca_df</span><span class="op">$</span><span class="va">auc012</span><span class="op">)</span></span>
 <span><span class="va">ratio_to_pub</span>  <span class="op">&lt;-</span> <span class="va">median_pooled</span> <span class="op">/</span> <span class="fl">10.2</span></span>
 <span></span>
-<span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
+<span><span class="fu">tibble</span><span class="op">(</span></span>
 <span>  source     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Tikiso 2021 Table 3 (LPV/r 4:1)"</span>, <span class="st">"This vignette (typical-value cohort median)"</span><span class="op">)</span>,</span>
 <span>  AUC0_12_mg_h_L <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10.2</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">median_pooled</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span><span class="op">)</span> <span class="op">%&gt;%</span></span>
 <span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
 <span>    caption <span class="op">=</span> <span class="st">"Pooled-cohort steady-state AUC0-12 comparison."</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
@@ -1091,21 +1091,21 @@ report the cohort-median AUC.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">simulate_arm_auc</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">efv</span>, <span class="va">rif</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="va">events_arm</span> <span class="op">&lt;-</span> <span class="va">events</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
+<span>  <span class="va">events_arm</span> <span class="op">&lt;-</span> <span class="va">events</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu">mutate</span><span class="op">(</span></span>
 <span>      CONMED_EFV       <span class="op">=</span> <span class="va">efv</span>,</span>
 <span>      CONMED_RIF_LPVR4 <span class="op">=</span> <span class="va">rif</span></span>
 <span>    <span class="op">)</span></span>
-<span>  <span class="va">sim_arm</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_typ</span>, events <span class="op">=</span> <span class="va">events_arm</span>, keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"band"</span>, <span class="st">"WT"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&gt;=</span> <span class="va">ss_window</span>, <span class="va">time</span> <span class="op">&lt;=</span> <span class="va">ss_window</span> <span class="op">+</span> <span class="va">tau</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>time_in_tau <span class="op">=</span> <span class="va">time</span> <span class="op">-</span> <span class="va">ss_window</span><span class="op">)</span></span>
-<span>  <span class="va">sim_nca_arm</span> <span class="op">&lt;-</span> <span class="va">sim_arm</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/transmute.html" class="external-link">transmute</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">band</span>, time <span class="op">=</span> <span class="va">time_in_tau</span>, <span class="va">Cc</span><span class="op">)</span></span>
-<span>  <span class="va">dose_nca_arm</span> <span class="op">&lt;-</span> <span class="va">events_arm</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">evid</span> <span class="op">==</span> <span class="fl">1</span>, <span class="va">time</span> <span class="op">==</span> <span class="va">ss_window</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/transmute.html" class="external-link">transmute</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">band</span>, time <span class="op">=</span> <span class="fl">0</span>, <span class="va">amt</span><span class="op">)</span></span>
+<span>  <span class="va">sim_arm</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_typ</span>, events <span class="op">=</span> <span class="va">events_arm</span>, keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"band"</span>, <span class="st">"WT"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&gt;=</span> <span class="va">ss_window</span>, <span class="va">time</span> <span class="op">&lt;=</span> <span class="va">ss_window</span> <span class="op">+</span> <span class="va">tau</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu">mutate</span><span class="op">(</span>time_in_tau <span class="op">=</span> <span class="va">time</span> <span class="op">-</span> <span class="va">ss_window</span><span class="op">)</span></span>
+<span>  <span class="va">sim_nca_arm</span> <span class="op">&lt;-</span> <span class="va">sim_arm</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu">transmute</span><span class="op">(</span><span class="va">id</span>, <span class="va">band</span>, time <span class="op">=</span> <span class="va">time_in_tau</span>, <span class="va">Cc</span><span class="op">)</span></span>
+<span>  <span class="va">dose_nca_arm</span> <span class="op">&lt;-</span> <span class="va">events_arm</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">evid</span> <span class="op">==</span> <span class="fl">1</span>, <span class="va">time</span> <span class="op">==</span> <span class="va">ss_window</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu">transmute</span><span class="op">(</span><span class="va">id</span>, <span class="va">band</span>, time <span class="op">=</span> <span class="fl">0</span>, <span class="va">amt</span><span class="op">)</span></span>
 <span>  <span class="va">conc_obj_arm</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAconc.html" class="external-link">PKNCAconc</a></span><span class="op">(</span><span class="va">sim_nca_arm</span>, <span class="va">Cc</span> <span class="op">~</span> <span class="va">time</span> <span class="op">|</span> <span class="va">band</span> <span class="op">+</span> <span class="va">id</span>,</span>
 <span>                                   concu <span class="op">=</span> <span class="st">"ug/mL"</span>, timeu <span class="op">=</span> <span class="st">"h"</span><span class="op">)</span></span>
 <span>  <span class="va">dose_obj_arm</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdose.html" class="external-link">PKNCAdose</a></span><span class="op">(</span><span class="va">dose_nca_arm</span>, <span class="va">amt</span> <span class="op">~</span> <span class="va">time</span> <span class="op">|</span> <span class="va">band</span> <span class="op">+</span> <span class="va">id</span>,</span>
@@ -1113,34 +1113,34 @@ report the cohort-median AUC.</p>
 <span>  <span class="va">res_arm</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span></span>
 <span>    <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_obj_arm</span>, <span class="va">dose_obj_arm</span>, intervals <span class="op">=</span> <span class="va">intervals</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
-<span>  <span class="va">res_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">res_arm</span><span class="op">$</span><span class="va">result</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">PPTESTCD</span> <span class="op">==</span> <span class="st">"auclast"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html" class="external-link">pull</a></span><span class="op">(</span><span class="va">PPORRES</span><span class="op">)</span></span>
+<span>  <span class="va">res_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">res_arm</span><span class="op">$</span><span class="va">result</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">PPTESTCD</span> <span class="op">==</span> <span class="st">"auclast"</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu">pull</span><span class="op">(</span><span class="va">PPORRES</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">res_df</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
-<span><span class="va">arm_results</span> <span class="op">&lt;-</span> <span class="va">arms</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rowwise.html" class="external-link">rowwise</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
+<span><span class="va">arm_results</span> <span class="op">&lt;-</span> <span class="va">arms</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu">rowwise</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu">mutate</span><span class="op">(</span></span>
 <span>    simulated_auc <span class="op">=</span> <span class="fu">simulate_arm_auc</span><span class="op">(</span><span class="va">CONMED_EFV</span>, <span class="va">CONMED_RIF_LPVR4</span><span class="op">)</span>,</span>
 <span>    ratio         <span class="op">=</span> <span class="va">simulated_auc</span> <span class="op">/</span> <span class="va">published_auc</span></span>
-<span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl', 'etalvp'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl', 'etalvp'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl', 'etalvp'</span></span>
+<span>  <span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu">ungroup</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etalvp'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etalvp'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etalvp'</span></span>
 <span><span class="co">#&gt; Warning: There were 3 warnings in `mutate()`.</span></span>
 <span><span class="co">#&gt; The first warning was:</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> In argument: `simulated_auc = simulate_arm_auc(CONMED_EFV,</span></span>
+<span><span class="co">#&gt; ℹ In argument: `simulated_auc = simulate_arm_auc(CONMED_EFV,</span></span>
 <span><span class="co">#&gt;   CONMED_RIF_LPVR4)`.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> In row 1.</span></span>
+<span><span class="co">#&gt; ℹ In row 1.</span></span>
 <span><span class="co">#&gt; Caused by warning:</span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> multi-subject simulation without without 'omega'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Run `dplyr::last_dplyr_warnings()` to see the 2 remaining warnings.</span></span>
+<span><span class="co">#&gt; ! multi-subject simulation without without 'omega'</span></span>
+<span><span class="co">#&gt; ℹ Run `dplyr::last_dplyr_warnings()` to see the 2 remaining warnings.</span></span>
 <span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
-<span>  <span class="va">arm_results</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">arm_label</span>, <span class="va">published_auc</span>, <span class="va">simulated_auc</span>, <span class="va">ratio</span><span class="op">)</span>,</span>
+<span>  <span class="va">arm_results</span> <span class="op">%&gt;%</span></span>
+<span>    <span class="fu">select</span><span class="op">(</span><span class="va">arm_label</span>, <span class="va">published_auc</span>, <span class="va">simulated_auc</span>, <span class="va">ratio</span><span class="op">)</span>,</span>
 <span>  digits  <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>  caption <span class="op">=</span> <span class="st">"AUC0-12 (mg*h/L) in three concomitant-medication arms: published value (Tikiso 2021 Table 3) vs simulated typical-value cohort median."</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -1246,7 +1246,7 @@ between-occasion (BOV) on Ka (77.3% CV), F (39.2% CV), and MTT (132% CV)
 are not in the model file because BVV / BOV require visit / occasion
 identifiers that are not standardised across nlmixr2lib datasets. Users
 who wish to include these variability components should augment the
-<code><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini()</a></code> block with the appropriate eta terms keyed to
+<code>ini()</code> block with the appropriate eta terms keyed to
 per-visit / per-occasion indicators in their event data.</p></li>
 <li><p><strong>Ages assigned per weight band.</strong> The validation
 vignette assigns a representative age to each WHO weight band (3-4.9 kg

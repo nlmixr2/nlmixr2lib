@@ -68,9 +68,8 @@ The same information is available programmatically:
 ## Source trace
 
 The per-parameter origin is recorded as in-file comments next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry of
-`inst/modeldb/specificDrugs/Hong_2015_moxifloxacin.R`. The table below
-collates them for review.
+`ini()` entry of `inst/modeldb/specificDrugs/Hong_2015_moxifloxacin.R`.
+The table below collates them for review.
 
 | Parameter (nlmixr2lib) | Value | Source location |
 |----|----|----|
@@ -407,8 +406,7 @@ nca_res  <- PKNCA::pk.nca(nca_data)
 #> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
-#>  ■■■■■■■■■■■■■■■■■■■               60% |  ETA:  2s
-#> Warning: Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
@@ -614,8 +612,7 @@ deviations would point at unit / formula bugs.
   paper’s scope; the absorption rate at those doses is not
   characterised.
 
-- **Heart-rate correction factor `a` is included in
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) for
+- **Heart-rate correction factor `a` is included in `ini()` for
   source-trace completeness but is not used by the forward simulation.**
   The observation variable in the packaged model is QTcI (already
   corrected for heart rate), matching Hong 2015’s PD model output. The

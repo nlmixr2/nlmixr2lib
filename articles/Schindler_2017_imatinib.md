@@ -367,11 +367,10 @@ Typical doubling-time check (Schindler 2017 Discussion paragraph 4).
   common variance across the two lesions of a patient). Table 2 does not
   report a numerical estimate for this ILV variance (only the IIV CV %
   per subpopulation and the per-lesion typical values), so the ILV on
-  `S0` is omitted from
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) and the
-  per-subject IIV term is the only random effect on size baselines. The
-  corresponding ILV on density parameters `D0` and `Kdrug,D` is encoded
-  (Table 3 reports the ILV CV % values 18 % and 53 %).
+  `S0` is omitted from `ini()` and the per-subject IIV term is the only
+  random effect on size baselines. The corresponding ILV on density
+  parameters `D0` and `Kdrug,D` is encoded (Table 3 reports the ILV CV %
+  values 18 % and 53 %).
 - **OS and PFS time-to-event arms not encoded.** Schindler 2017 develops
   parametric log-normal-baseline-hazard models for overall survival (OS,
   Eq. 4, driven by log-transformed Vactual(t)) and progression-free

@@ -62,7 +62,7 @@ The same information is available programmatically via the model’s
 ## Source trace
 
 Per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
+`ini()` entry in
 `inst/modeldb/ddmore/Leuppi-Taegtmeyer_2019_colistin.R`. The table below
 collects them in one place.
 
@@ -380,9 +380,8 @@ interval) provides the reusable steady-state exposure summary.
   documents units in % (0-100). The `.mod` here uses HCT as a fraction
   (0-1), so the model file works with HCT in fractional form. When a
   user-supplied data column carries hematocrit in %, divide by 100
-  before passing into the event table OR rescale inside
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html)
-  before commit-time. This is recorded in `covariateData[[HCT]]$notes`.
+  before passing into the event table OR rescale inside `model()` before
+  commit-time. This is recorded in `covariateData[[HCT]]$notes`.
 - **Detailed baseline demographics not reproduced.** Without the
   publication, population fields beyond what the DDMORE bundle’s
   simulated CSV reveals (n = 10, adults on CRRT) cannot be filled in

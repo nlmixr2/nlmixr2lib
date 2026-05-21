@@ -503,9 +503,8 @@ implements the published ODE correctly.
 
 - **Median-centring constants.** The typical-value regression equations
   divide the raw covariate by its cohort median, so `AAA_DIAM / 32.7`
-  and `log10(DDIMER) / log10(326)` are hard-coded inside
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html).
-  The values 32.7 mm and 326 ng/mL are the Sherer 2012 Table 1 cohort
+  and `log10(DDIMER) / log10(326)` are hard-coded inside `model()`. The
+  values 32.7 mm and 326 ng/mL are the Sherer 2012 Table 1 cohort
   medians; applying the model to a cohort whose median diverges
   substantially from these values would re-anchor the meaning of the
   effect coefficients but the model itself does not re-centre.

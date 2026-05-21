@@ -351,15 +351,12 @@ table above).
   unit is ng/mL (matching the units of `Km`, `IC50`, and the bundle’s
   `PKDV` capture). The model therefore declares
   `units$concentration = "ng/mL"` and applies the explicit factor
-  `Cc <- (central / vc) * 1e6` in
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html) to
-  convert mg/mL to ng/mL, reproducing the bundle’s
-  `#define CP (CENT/(VC/1000000.0))` formula.
+  `Cc <- (central / vc) * 1e6` in `model()` to convert mg/mL to ng/mL,
+  reproducing the bundle’s `#define CP (CENT/(VC/1000000.0))` formula.
   [`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
   flags the mg/ng magnitude difference in the `units` heuristic at info
-  severity; the explicit 1e6 factor in
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html)
-  resolves the conversion.
+  severity; the explicit 1e6 factor in `model()` resolves the
+  conversion.
 - **Per-subject PK observation residual SD by route.** The bundle’s
   residual error model selects between two SDs depending on the dosing
   route (IV vs SC), with the IV cohort receiving a much smaller residual
@@ -367,10 +364,8 @@ table above).
   `ROUTE_IV` covariate column (1 = IV cohort, 0 = SC cohort) and a
   derived
   `CcpropSd <- CcpropSdIV * ROUTE_IV + CcpropSdSC * (1 - ROUTE_IV)`
-  switch in
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html).
-  When simulating an IV cohort, set `ROUTE_IV = 1` and route the dose to
-  `cmt = central` directly; when simulating an SC cohort, set
-  `ROUTE_IV = 0` and route the dose to `cmt = depot`. The dosing target
-  is set independently of `ROUTE_IV` by the `cmt` event column, which
-  `ROUTE_IV` does not control.
+  switch in `model()`. When simulating an IV cohort, set `ROUTE_IV = 1`
+  and route the dose to `cmt = central` directly; when simulating an SC
+  cohort, set `ROUTE_IV = 0` and route the dose to `cmt = depot`. The
+  dosing target is set independently of `ROUTE_IV` by the `cmt` event
+  column, which `ROUTE_IV` does not control.

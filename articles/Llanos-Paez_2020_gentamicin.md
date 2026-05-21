@@ -83,12 +83,11 @@ str(mod_meta$population)
 
 ## Source trace
 
-Every parameter in the model file’s
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) block
-carries an in-file provenance comment pointing back to Llanos-Paez 2020
-Table 2. The table below collects equation provenance in one place;
-equation forms (1-7) come from the Methods section “Mechanistic-based
-covariate model” on page 9.
+Every parameter in the model file’s `ini()` block carries an in-file
+provenance comment pointing back to Llanos-Paez 2020 Table 2. The table
+below collects equation provenance in one place; equation forms (1-7)
+come from the Methods section “Mechanistic-based covariate model” on
+page 9.
 
 | Parameter / equation | Value | Source location |
 |----|----|----|

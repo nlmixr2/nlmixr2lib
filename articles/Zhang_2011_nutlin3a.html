@@ -517,7 +517,7 @@ model’s <code>population</code> metadata
 <h2 id="source-trace">Source trace<a class="anchor" aria-label="anchor" href="#source-trace"></a>
 </h2>
 <p>The per-parameter origin is recorded as an in-file comment next to
-each <code><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini()</a></code> entry in
+each <code>ini()</code> entry in
 <code>inst/modeldb/specificDrugs/Zhang_2011_nutlin3a.R</code>. The table
 below collects them for review.</p>
 <table class="table">
@@ -840,12 +840,12 @@ and oral 200 mg/kg, each in 25 g (0.025 kg) typical C57BL/6 mice.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/readModelDb.html">readModelDb</a></span><span class="op">(</span><span class="st">"Zhang_2011_nutlin3a"</span><span class="op">)</span></span>
 <span><span class="va">mod_typical</span> <span class="op">&lt;-</span> <span class="va">mod</span> <span class="op">|&gt;</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/zeroRe.html" class="external-link">zeroRe</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> parameter labels from comments will be replaced by 'label()'</span></span>
+<span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
 <span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span></span>
 <span>  <span class="va">mod_typical</span>, events <span class="op">=</span> <span class="va">events</span>,</span>
 <span>  keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"treatment"</span>, <span class="st">"dose_mgkg"</span>, <span class="st">"route"</span>, <span class="st">"WT"</span><span class="op">)</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalka', 'etalke', 'etalvmax'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalka', 'etalke', 'etalvmax'</span></span>
 <span><span class="co">#&gt; Warning: multi-subject simulation without without 'omega'</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -873,11 +873,11 @@ and oral 200 mg/kg, each in 25 g (0.025 kg) typical C57BL/6 mice.</p>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span><span class="op">-</span><span class="va">time</span>, names_to <span class="op">=</span> <span class="st">"tissue"</span>, values_to <span class="op">=</span> <span class="st">"conc"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">plot_df</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">conc</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">tissue</span>, ncol <span class="op">=</span> <span class="fl">3</span>, scales <span class="op">=</span> <span class="st">"free_y"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_log10</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time (h)"</span>, y <span class="op">=</span> <span class="st">"Concentration (mg/L)"</span>,</span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">plot_df</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">time</span>, <span class="va">conc</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">facet_wrap</span><span class="op">(</span><span class="op">~</span><span class="va">tissue</span>, ncol <span class="op">=</span> <span class="fl">3</span>, scales <span class="op">=</span> <span class="st">"free_y"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">scale_y_log10</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time (h)"</span>, y <span class="op">=</span> <span class="st">"Concentration (mg/L)"</span>,</span>
 <span>       title <span class="op">=</span> <span class="st">"Figure 3: Tissue concentration-time after IV 20 mg/kg"</span>,</span>
 <span>       caption <span class="op">=</span> <span class="st">"Replicates Figure 3 of Zhang 2011 (typical-value prediction)."</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Zhang_2011_nutlin3a_files/figure-html/figure-3-1.png" class="r-plt" alt="" width="672"></p>
@@ -890,10 +890,10 @@ and oral 200 mg/kg, each in 25 g (0.025 kg) typical C57BL/6 mice.</p>
 <span>                   Vitreous <span class="op">=</span> <span class="va">c_vit</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span><span class="op">-</span><span class="va">time</span>, names_to <span class="op">=</span> <span class="st">"tissue"</span>, values_to <span class="op">=</span> <span class="st">"conc"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">eye_df</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">conc</span>, colour <span class="op">=</span> <span class="va">tissue</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_log10</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time (h)"</span>, y <span class="op">=</span> <span class="st">"Concentration (mg/L)"</span>,</span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">eye_df</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">time</span>, <span class="va">conc</span>, colour <span class="op">=</span> <span class="va">tissue</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">scale_y_log10</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time (h)"</span>, y <span class="op">=</span> <span class="st">"Concentration (mg/L)"</span>,</span>
 <span>       title <span class="op">=</span> <span class="st">"Retina + vitreous after PO 200 mg/kg"</span>,</span>
 <span>       caption <span class="op">=</span> <span class="st">"Reproduces the ocular sub-system used by Zhang 2011 to design retinoblastoma dosing."</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Zhang_2011_nutlin3a_files/figure-html/figure-eye-1.png" class="r-plt" alt="" width="672"></p>
@@ -927,17 +927,16 @@ and oral 200 mg/kg, each in 25 g (0.025 kg) typical C57BL/6 mice.</p>
 <span><span class="va">md_sim</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_typical</span>, events <span class="op">=</span> <span class="va">md_events</span>,</span>
 <span>                          keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"treatment"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalka', 'etalke', 'etalvmax'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalka', 'etalke', 'etalvmax'</span></span>
 <span><span class="co">#&gt; Warning: multi-subject simulation without without 'omega'</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">md_sim</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">Cc</span>, colour <span class="op">=</span> <span class="va">treatment</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_log10</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time (h)"</span>, y <span class="op">=</span> <span class="st">"Plasma nutlin-3a (mg/L)"</span>,</span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">md_sim</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">time</span>, <span class="va">Cc</span>, colour <span class="op">=</span> <span class="va">treatment</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">scale_y_log10</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time (h)"</span>, y <span class="op">=</span> <span class="st">"Plasma nutlin-3a (mg/L)"</span>,</span>
 <span>       title <span class="op">=</span> <span class="st">"Figure 4: Plasma nutlin-3a after multiple oral 200 mg/kg doses"</span>,</span>
 <span>       caption <span class="op">=</span> <span class="st">"Replicates Figure 4 of Zhang 2011."</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning in scale_y_log10(): <span style="color: #00BB00;">log-10</span> transformation introduced</span></span>
-<span><span class="co">#&gt; infinite values.</span></span></code></pre></div>
+<span><span class="co">#&gt; Warning in scale_y_log10(): log-10 transformation introduced infinite values.</span></span></code></pre></div>
 <p><img src="Zhang_2011_nutlin3a_files/figure-html/figure-4-1.png" class="r-plt" alt="" width="672"></p>
 </div>
 <div class="section level2">
@@ -1095,7 +1094,7 @@ spot-check.</p>
 <span><span class="op">)</span></span>
 <span><span class="va">f_sim</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_typical</span>, events <span class="op">=</span> <span class="va">f_events</span>,</span>
 <span>                          keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"treatment"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalka', 'etalke', 'etalvmax'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalka', 'etalke', 'etalvmax'</span></span>
 <span><span class="co">#&gt; Warning: multi-subject simulation without without 'omega'</span></span>
 <span></span>
 <span><span class="va">f_auc</span> <span class="op">&lt;-</span> <span class="va">f_sim</span> <span class="op">|&gt;</span></span>
@@ -1148,7 +1147,7 @@ apparent clearance of V_max / K_m ~ 0.57 L/h at C &lt;&lt; K_m, giving a
 half-life of ~1.5 min at low concentration that matches the paper’s
 narrative description of “very rapid” clearance below 10 uM (5.8 mg/L).
 Users who need a different unit system can override the corresponding
-<code><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini()</a></code> values via
+<code>ini()</code> values via
 <code>rxSolve(params = c(lvmax = ..., lkm = ..., ...))</code>.</p></li>
 <li><p><strong>Hepatic linear elimination term acts on C_ART, not
 C_LIV.</strong> The paper’s liver ODE on p.17 literally writes
@@ -1158,7 +1157,7 @@ than the local liver concentration. The packaged model preserves this
 literal form. Mechanistically a more usual choice is
 <code>- k_e * C_LIV</code> (clearance from the local hepatic
 concentration); users who prefer that interpretation can swap the term
-in <code><a href="https://nlmixr2.github.io/rxode2/reference/model.html" class="external-link">model()</a></code> or refit K_e against the original data.</p></li>
+in <code>model()</code> or refit K_e against the original data.</p></li>
 <li><p><strong>Bone marrow partition coefficient K_MRW is not
 reported.</strong> Table 2 lists partition coefficients for ten tissues
 (adipose, adrenal, brain, intestine, liver, lung, muscle, retina,

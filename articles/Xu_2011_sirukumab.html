@@ -671,20 +671,20 @@ kg.</p>
 <span>  <span class="op">)</span></span>
 <span></span>
 <span><span class="va">pop</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 34 × 5</span></span></span>
+<span><span class="co">#&gt; # A tibble: 34 × 5</span></span>
 <span><span class="co">#&gt;    treatment dose_mgkg    ID    WT   amt</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> 0.3 mg/kg       0.3     1  64.6  19.4</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> 0.3 mg/kg       0.3     2  71.0  21.3</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> 0.3 mg/kg       0.3     3  69.3  20.8</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> 0.3 mg/kg       0.3     4  62.3  18.7</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> 0.3 mg/kg       0.3     5  86.8  26.0</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> 0.3 mg/kg       0.3     6  63.0  18.9</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> 1 mg/kg         1       7  68.6  68.6</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> 1 mg/kg         1       8  73.9  73.9</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> 1 mg/kg         1       9  66.9  66.9</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> 1 mg/kg         1      10  64.8  64.8</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 24 more rows</span></span></span></code></pre></div>
+<span><span class="co">#&gt;    &lt;chr&gt;         &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1 0.3 mg/kg       0.3     1  64.6  19.4</span></span>
+<span><span class="co">#&gt;  2 0.3 mg/kg       0.3     2  71.0  21.3</span></span>
+<span><span class="co">#&gt;  3 0.3 mg/kg       0.3     3  69.3  20.8</span></span>
+<span><span class="co">#&gt;  4 0.3 mg/kg       0.3     4  62.3  18.7</span></span>
+<span><span class="co">#&gt;  5 0.3 mg/kg       0.3     5  86.8  26.0</span></span>
+<span><span class="co">#&gt;  6 0.3 mg/kg       0.3     6  63.0  18.9</span></span>
+<span><span class="co">#&gt;  7 1 mg/kg         1       7  68.6  68.6</span></span>
+<span><span class="co">#&gt;  8 1 mg/kg         1       8  73.9  73.9</span></span>
+<span><span class="co">#&gt;  9 1 mg/kg         1       9  66.9  66.9</span></span>
+<span><span class="co">#&gt; 10 1 mg/kg         1      10  64.8  64.8</span></span>
+<span><span class="co">#&gt; # ℹ 24 more rows</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="dosing-and-event-table">Dosing and event table<a class="anchor" aria-label="anchor" href="#dosing-and-event-table"></a>
@@ -744,7 +744,7 @@ virtual cohort matches the paper’s individual variability.</p>
 <span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">mod</span>, events <span class="op">=</span> <span class="va">events_sim</span>, returnType <span class="op">=</span> <span class="st">"data.frame"</span>,</span>
 <span>               keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"treatment"</span>, <span class="st">"dose_mgkg"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html" class="external-link">as_tibble</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> parameter labels from comments will be replaced by 'label()'</span></span></code></pre></div>
+<span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="replicate-figure-3-concentration-time-profiles-by-dose">Replicate Figure 3: concentration-time profiles by dose<a class="anchor" aria-label="anchor" href="#replicate-figure-3-concentration-time-profiles-by-dose"></a>
@@ -819,27 +819,27 @@ half-life per subject per cohort and compare to the published NCA values
 <span>  <span class="op">)</span></span>
 <span></span>
 <span><span class="va">sim_nca</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 18 × 5</span></span></span>
+<span><span class="co">#&gt; # A tibble: 18 × 5</span></span>
 <span><span class="co">#&gt;    treatment        PPTESTCD      mean      sd     med</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> 0.3 mg/kg        aucinf.obs   49.4    5.85    48.5 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> 0.3 mg/kg        cmax          5.85   0.517    6.03</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> 0.3 mg/kg        half.life    21.4    7.75    19.2 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> 1 mg/kg          aucinf.obs  201.    39.7    194.  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> 1 mg/kg          cmax         24.9    5.64    23.8 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> 1 mg/kg          half.life    23.1    6.73    22.1 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> 10 mg/kg         aucinf.obs <span style="text-decoration: underline;">2</span>330.   746.    <span style="text-decoration: underline;">2</span>081.  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> 10 mg/kg         cmax        212.    34.7    224.  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> 10 mg/kg         half.life    22.1    6.24    21.2 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> 3 mg/kg          aucinf.obs  641.   309.     588.  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span> 3 mg/kg          cmax         57.5    7.67    60.4 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">12</span> 3 mg/kg          half.life    20.8    9.10    22.0 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">13</span> 6 mg/kg (female) aucinf.obs <span style="text-decoration: underline;">1</span>332.   315.    <span style="text-decoration: underline;">1</span>251.  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">14</span> 6 mg/kg (female) cmax        119.    19.3    109.  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">15</span> 6 mg/kg (female) half.life    28.6   13.6     22.3 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">16</span> 6 mg/kg (male)   aucinf.obs <span style="text-decoration: underline;">1</span>300.   318.    <span style="text-decoration: underline;">1</span>284.  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">17</span> 6 mg/kg (male)   cmax        129.    24.8    131.  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">18</span> 6 mg/kg (male)   half.life    22.1    8.16    18.7</span></span></code></pre></div>
+<span><span class="co">#&gt;    &lt;chr&gt;            &lt;chr&gt;        &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1 0.3 mg/kg        aucinf.obs   49.4    5.85    48.5 </span></span>
+<span><span class="co">#&gt;  2 0.3 mg/kg        cmax          5.85   0.517    6.03</span></span>
+<span><span class="co">#&gt;  3 0.3 mg/kg        half.life    21.4    7.75    19.2 </span></span>
+<span><span class="co">#&gt;  4 1 mg/kg          aucinf.obs  201.    39.7    194.  </span></span>
+<span><span class="co">#&gt;  5 1 mg/kg          cmax         24.9    5.64    23.8 </span></span>
+<span><span class="co">#&gt;  6 1 mg/kg          half.life    23.1    6.73    22.1 </span></span>
+<span><span class="co">#&gt;  7 10 mg/kg         aucinf.obs 2330.   746.    2081.  </span></span>
+<span><span class="co">#&gt;  8 10 mg/kg         cmax        212.    34.7    224.  </span></span>
+<span><span class="co">#&gt;  9 10 mg/kg         half.life    22.1    6.24    21.2 </span></span>
+<span><span class="co">#&gt; 10 3 mg/kg          aucinf.obs  641.   309.     588.  </span></span>
+<span><span class="co">#&gt; 11 3 mg/kg          cmax         57.5    7.67    60.4 </span></span>
+<span><span class="co">#&gt; 12 3 mg/kg          half.life    20.8    9.10    22.0 </span></span>
+<span><span class="co">#&gt; 13 6 mg/kg (female) aucinf.obs 1332.   315.    1251.  </span></span>
+<span><span class="co">#&gt; 14 6 mg/kg (female) cmax        119.    19.3    109.  </span></span>
+<span><span class="co">#&gt; 15 6 mg/kg (female) half.life    28.6   13.6     22.3 </span></span>
+<span><span class="co">#&gt; 16 6 mg/kg (male)   aucinf.obs 1300.   318.    1284.  </span></span>
+<span><span class="co">#&gt; 17 6 mg/kg (male)   cmax        129.    24.8    131.  </span></span>
+<span><span class="co">#&gt; 18 6 mg/kg (male)   half.life    22.1    8.16    18.7</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="comparison-against-xu-2011-table-3">Comparison against Xu 2011 Table 3<a class="anchor" aria-label="anchor" href="#comparison-against-xu-2011-table-3"></a>
 </h3>

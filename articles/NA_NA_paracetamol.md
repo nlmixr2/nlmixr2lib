@@ -71,9 +71,8 @@ str(mod$population)
 ## Source trace
 
 Per-parameter origins are recorded as in-file comments next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/ddmore/NA_NA_paracetamol.R`. The table below collects them
-in one place.
+`ini()` entry in `inst/modeldb/ddmore/NA_NA_paracetamol.R`. The table
+below collects them in one place.
 
 | Component | Bundle source location | Value (final estimate) |
 |----|----|----|

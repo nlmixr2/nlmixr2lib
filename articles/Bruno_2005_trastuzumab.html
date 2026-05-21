@@ -792,7 +792,7 @@ loading + 2 mg/kg weekly regimen, and an investigational 8 mg/kg loading
 <span>  keep   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"regimen"</span><span class="op">)</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> parameter labels from comments will be replaced by 'label()'</span></span>
+<span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="va">time</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="va">time</span><span class="op">)</span></span></code></pre></div>
 <div class="section level4">
 <h4 id="typical-subject-profiles-reproduces-figure-4-of-bruno-2005">Typical-subject profiles (reproduces Figure 4 of Bruno 2005)<a class="anchor" aria-label="anchor" href="#typical-subject-profiles-reproduces-figure-4-of-bruno-2005"></a>
@@ -1011,8 +1011,6 @@ ug*day/mL, Cmax,ss 110 ug/mL, Cmin,ss 66 ug/mL for the weekly arm).</p>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.411765) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.411765) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.411765) is not allowed</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■                          </span>  16% |  ETA:  8s</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.411765) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.411765) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.411765) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.411765) is not allowed</span></span>
@@ -1173,8 +1171,6 @@ ug*day/mL, Cmax,ss 110 ug/mL, Cmin,ss 66 ug/mL for the weekly arm).</p>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.411765) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.411765) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.411765) is not allowed</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■                 </span>  48% |  ETA:  5s</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (0.411765) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.411765) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.411765) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.411765) is not allowed</span></span>
@@ -1184,6 +1180,12 @@ ug*day/mL, Cmax,ss 110 ug/mL, Cmin,ss 66 ug/mL for the weekly arm).</p>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.411765) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.411765) is not allowed</span></span>
 <span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.411765) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.411765) is not allowed</span></span>
+<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (0.411765) is not allowed</span></span>
+<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
+<span><span class="co">#&gt; (1.94118) is not allowed</span></span>
+<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
+<span><span class="co">#&gt; (8.94118) is not allowed</span></span>
 <span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
 <span><span class="co">#&gt; (1.94118) is not allowed</span></span>
 <span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
@@ -1912,9 +1914,6 @@ ug*day/mL, Cmax,ss 110 ug/mL, Cmin,ss 66 ug/mL for the weekly arm).</p>
 <span><span class="co">#&gt; (1.94118) is not allowed</span></span>
 <span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
 <span><span class="co">#&gt; (8.94118) is not allowed</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■     </span>  86% |  ETA:  1s</span></span>
-<span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement (1.94118) is not allowed</span></span>
-<span><span class="co">#&gt; Requesting an AUC range starting (0) before the first measurement (8.94118) is not allowed</span></span>
 <span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>
 <span><span class="co">#&gt; (1.94118) is not allowed</span></span>
 <span><span class="co">#&gt; Warning: Requesting an AUC range starting (0) before the first measurement</span></span>

@@ -525,8 +525,7 @@ multiplicative `exp(eta)` IIV.
   exponential IIV on both slopes (`Slope_i = theta * exp(eta)`). The
   disease-induced slope `theta = -84.9 m/year` is negative; the packaged
   model stores the log of the magnitude (`lslope_decl = log(84.9)`) and
-  applies the negative sign in
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html) as
+  applies the negative sign in `model()` as
   `slope_decl <- -exp(lslope_decl + etalslope_decl)`. This is
   algebraically equivalent to `theta * exp(eta)` with `theta < 0` and
   keeps the IIV multiplicative on the magnitude. Both the sign and the

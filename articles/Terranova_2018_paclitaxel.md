@@ -184,9 +184,8 @@ substitutes from the extraction skill (
     non-trivial). Both behaviours are visible qualitatively in the
     bundle’s `Output_simulated_*.pdf`.
 
-The packaged model parses, runs to completion under
-[`rxSolve()`](https://nlmixr2.github.io/rxode2/reference/rxSolve.html),
-and reproduces these qualitative behaviours in the chunks below.
+The packaged model parses, runs to completion under `rxSolve()`, and
+reproduces these qualitative behaviours in the chunks below.
 
 ## Setup
 
@@ -270,10 +269,8 @@ piecewise dynamics). {.table}
 Re-simulate the treated and control mouse event tables from the bundle’s
 `Simulated_DEB_TGI_data.csv` through
 [`rxode2::rxSolve()`](https://nlmixr2.github.io/rxode2/reference/rxSolve.html)
-(typical values via
-[`zeroRe()`](https://nlmixr2.github.io/rxode2/reference/zeroRe.html), no
-residual error) and compare the deterministic trajectory against the
-bundle’s per-row DV values.
+(typical values via `zeroRe()`, no residual error) and compare the
+deterministic trajectory against the bundle’s per-row DV values.
 
 The treated mouse (ID = 1) receives paclitaxel IV bolus doses of
 `AMT = 3e+07` (source units) at days 8, 12, and 16. The control mouse
@@ -589,16 +586,13 @@ sim_treated |>
 - **`density_V`, `density_Vu`, `omeg` hard-coded.** The `.ctl` fixes
   `DENSITY_V = DENSITY_VU = 1` and `OMEG = 0.75` as literal constants in
   `$PK` rather than via `$THETA`. The packaged model hard-codes them
-  inside
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html) to
-  match.
+  inside `model()` to match.
 
 - **The bundle’s “cut and replace” Q1\<-\>Z swap is preserved.** The
   source `.mdl` originally placed Z in compartment 1 and Q1 in
   compartment 2; `Command.txt` documents a hand-edit that swaps the two
   so paclitaxel doses (delivered to compartment 1 in the simulated
-  dataset) land on the drug central compartment. The packaged
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html)
+  dataset) land on the drug central compartment. The packaged `model()`
   declares `d/dt(central)` first to match this post-swap layout, so the
   bundle’s `Simulated_DEB_TGI_data.csv` with `CMT = 1` doses maps
   directly onto the rxode2 compartment numbering (`central = 1`).

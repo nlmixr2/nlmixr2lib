@@ -54,9 +54,8 @@ human-extrapolation use case described in the Discussion (Attarwala
 
 ## Source trace
 
-Parameter origin is recorded in-file alongside each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry.
-The table below lists each parameter and its source location.
+Parameter origin is recorded in-file alongside each `ini()` entry. The
+table below lists each parameter and its source location.
 
 | Parameter | Value (mouse reference) | Source |
 |:---|:---|:---|
@@ -230,8 +229,7 @@ ggplot(sim_pcc |> dplyr::mutate(day = time / 24), aes(day, PCC)) +
   labs(x = "Time (days)", y = "Liver PCC protein (mass per liver tissue)",
        title = "Figure 2B replication -- liver PCC protein after 1 mg/kg IV mRNA-3927",
        caption = "Typical-individual simulation in PCC-deficient mouse (WT = 0.025 kg).")
-#> Warning in scale_y_log10(): log-10 transformation introduced
-#> infinite values.
+#> Warning in scale_y_log10(): log-10 transformation introduced infinite values.
 ```
 
 ![](Attarwala_2023_mRNA3927_files/figure-html/pcc-cohort-1.png)
@@ -405,15 +403,12 @@ summary(nca_res)
 - **IIV interpretation.** The published Table 1 reports IIV as a
   percentage for the seven IIV parameters (CL32 plus two per biomarker).
   We treat these as CV% and convert via `omega^2 = log(1 + CV^2)`; the
-  converted values are pasted into
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) with
-  the conversion shown in comments.
+  converted values are pasted into `ini()` with the conversion shown in
+  comments.
 - **Fixed parameters.** `V`, `V2`, and `Imax` are reported with “Fixed”
   values in Attarwala 2023 Table 1 (footnotes f and m). All three are
-  wrapped in `fixed(...)` in
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html).
-  Allometric exponents on volume parameters are also fixed at 1 per
-  Supplementary Table S1.
+  wrapped in `fixed(...)` in `ini()`. Allometric exponents on volume
+  parameters are also fixed at 1 per Supplementary Table S1.
 - **Species-pooled PK fit, mouse-only PD fit.** The published PK model
   was fit jointly across mouse / rat / monkey using allometric scaling;
   PD layers (PCC protein and downstream biomarkers) were fit on mouse

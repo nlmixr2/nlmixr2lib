@@ -62,11 +62,10 @@ column is an explicitly-labelled sensitivity analysis).
 The column header “omega^2” in Table 2 indicates that the tabulated
 values are variances of the log-scale random effects, which matches what
 nlmixr2 stores on the right-hand side of the `~` operator. They are
-therefore inserted verbatim (no squaring) in
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html). The
-“sigma^2 proportional (CV%)” row reports the coefficient of variation of
-the proportional residual, so 24.2 % maps to an SD of 0.242 on the
-linear scale, which is what `propSd` stores.
+therefore inserted verbatim (no squaring) in `ini()`. The “sigma^2
+proportional (CV%)” row reports the coefficient of variation of the
+proportional residual, so 24.2 % maps to an SD of 0.242 on the linear
+scale, which is what `propSd` stores.
 
 ### Parameterization notes
 
@@ -257,8 +256,6 @@ nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = interv
 #> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
-#>  ■■■■■■■■                          22% |  ETA:  6s
-#> Warning: Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
@@ -298,8 +295,8 @@ nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = interv
 #> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
-#>  ■■■■■■■■■■■■■■■■■■■■              62% |  ETA:  3s
-#> Warning: Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0416667) is not allowed

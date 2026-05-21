@@ -45,7 +45,7 @@ The same information is available programmatically via
 ## Source trace
 
 The per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
+`ini()` entry in
 `inst/modeldb/specificDrugs/Rose_2016_follitropin_delta.R`. The table
 below collects them in one place for review.
 
@@ -388,22 +388,6 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- suppressWarnings(PKNCA::pk.nca(nca_data))
-#>  ■■■                                6% |  ETA: 48s
-#>  ■■■■■                             12% |  ETA: 44s
-#>  ■■■■■■                            18% |  ETA: 40s
-#>  ■■■■■■■■                          24% |  ETA: 38s
-#>  ■■■■■■■■■■                        30% |  ETA: 35s
-#>  ■■■■■■■■■■■■                      36% |  ETA: 31s
-#>  ■■■■■■■■■■■■■■                    42% |  ETA: 28s
-#>  ■■■■■■■■■■■■■■■■                  49% |  ETA: 25s
-#>  ■■■■■■■■■■■■■■■■■                 55% |  ETA: 22s
-#>  ■■■■■■■■■■■■■■■■■■■               61% |  ETA: 19s
-#>  ■■■■■■■■■■■■■■■■■■■■■             67% |  ETA: 16s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■           73% |  ETA: 13s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■         79% |  ETA: 10s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■       85% |  ETA:  7s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      92% |  ETA:  4s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    98% |  ETA:  1s
 
 nca_summary <- as.data.frame(nca_res) |>
   dplyr::filter(PPTESTCD %in% c("cmax", "tmax", "aucinf.obs", "half.life")) |>
@@ -453,9 +437,8 @@ dose as expected from the first-order model.
   the packaged model are encoded as diagonal `etalcl`, `etalvc`,
   `etalka` and no `etalcl + etalvc ~ c(...)` block is used. A user who
   needs the correlation in a downstream simulation can re-introduce it
-  by editing
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) with a
-  plausible correlation coefficient from the literature.
+  by editing `ini()` with a plausible correlation coefficient from the
+  literature.
 - **Body weight treated as time-fixed within subject.** The trial is
   single-dose with all subjects dosed once at day 0, so body weight is
   effectively fixed. The covariate is declared `time-varying` in
@@ -479,7 +462,6 @@ dose as expected from the first-order model.
   same conversion before populating `amt`.
 - **Allometric exponents fixed at canonical 0.75 / 1.0.** Section 3
   states the power exponents were “fixed to allometric values”; the
-  exponents are wrapped in `fixed()` in
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) to
-  preserve that provenance. Estimating them in a downstream refit
-  requires removing the `fixed()` wrapper explicitly.
+  exponents are wrapped in `fixed()` in `ini()` to preserve that
+  provenance. Estimating them in a downstream refit requires removing
+  the `fixed()` wrapper explicitly.

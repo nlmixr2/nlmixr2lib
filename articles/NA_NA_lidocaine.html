@@ -519,7 +519,7 @@ intensive-care anti-arrhythmic / pain-management dosing.</p>
 <p>The same information is available programmatically:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxode2.html" class="external-link">rxode2</a></span><span class="op">(</span><span class="fu"><a href="../reference/readModelDb.html">readModelDb</a></span><span class="op">(</span><span class="st">"NA_NA_lidocaine"</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="va">meta</span><span class="op">$</span><span class="va">population</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> parameter labels from comments will be replaced by 'label()'</span></span>
+<span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
 <span><span class="co">#&gt; $n_subjects</span></span>
 <span><span class="co">#&gt; [1] 325</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -551,7 +551,7 @@ intensive-care anti-arrhythmic / pain-management dosing.</p>
 <h2 id="source-trace">Source trace<a class="anchor" aria-label="anchor" href="#source-trace"></a>
 </h2>
 <p>Per-parameter source-trace comments are recorded in-file alongside
-each <code><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini()</a></code> entry in
+each <code>ini()</code> entry in
 <code>inst/modeldb/ddmore/NA_NA_lidocaine.R</code>. The table below
 collects them in one place for review. All values come from the
 <code>Output_real_data_original_final_run249.res</code> listing (the
@@ -885,10 +885,10 @@ simulated dataset:</p>
 </h2>
 <p>Wrap the model with <code><a href="https://nlmixr2.github.io/rxode2/reference/rxode2.html" class="external-link">rxode2::rxode2()</a></code> and zero out the
 random effects for typical-value simulations, then call
-<code><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve()</a></code>:</p>
+<code>rxSolve()</code>:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod</span>     <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxode2.html" class="external-link">rxode2</a></span><span class="op">(</span><span class="fu"><a href="../reference/readModelDb.html">readModelDb</a></span><span class="op">(</span><span class="st">"NA_NA_lidocaine"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> parameter labels from comments will be replaced by 'label()'</span></span>
+<span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
 <span><span class="va">mod_typ</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/zeroRe.html" class="external-link">zeroRe</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span></span>
@@ -897,7 +897,7 @@ random effects for typical-value simulations, then call
 <span>  keep   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"DLVL"</span>, <span class="st">"TBILI"</span>, <span class="st">"LDH"</span>, <span class="st">"CRCL"</span>, <span class="st">"S1A2"</span>, <span class="st">"BMI"</span>, <span class="st">"ALT"</span><span class="op">)</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalkel_gx', 'etalkel_xyl', 'etalvc'</span></span></code></pre></div>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalkel_gx', 'etalkel_xyl', 'etalvc'</span></span></code></pre></div>
 <p>Pivot to long form for plotting:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim_long</span> <span class="op">&lt;-</span> <span class="va">sim</span> <span class="op">|&gt;</span></span>
@@ -922,18 +922,18 @@ delay; the 2,6-XYL pathway carries the small
 <code>k_xyl_form = 0.007 1/h</code> rate constant so the 2,6-XYL
 trajectory rises slowly relative to MEGX / GX.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">sim_long</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">conc</span>, colour <span class="op">=</span> <span class="va">analyte</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span> <span class="va">analyte</span>, scales <span class="op">=</span> <span class="st">"free_y"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time after dose start (h)"</span>,</span>
+<code class="sourceCode R"><span><span class="fu">ggplot</span><span class="op">(</span><span class="va">sim_long</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">time</span>, <span class="va">conc</span>, colour <span class="op">=</span> <span class="va">analyte</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">facet_wrap</span><span class="op">(</span><span class="op">~</span> <span class="va">analyte</span>, scales <span class="op">=</span> <span class="st">"free_y"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time after dose start (h)"</span>,</span>
 <span>       y <span class="op">=</span> <span class="st">"Concentration (mass-unit / volume-unit)"</span>,</span>
 <span>       title <span class="op">=</span> <span class="st">"NA_NA_lidocaine -- typical-value trajectories"</span>,</span>
 <span>       caption <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span></span>
 <span>         <span class="st">"Single 12-hour IV infusion of 21600 mass-units to lidocaine"</span>,</span>
 <span>         <span class="st">"(cmt 1) under the reference covariate set."</span></span>
 <span>       <span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu">theme_bw</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">theme</span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="NA_NA_lidocaine_files/figure-html/profile-typical-1.png" class="r-plt" alt="" width="672"></p>
 <p>Sanity ranges (no covariate-driven excursions):</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
@@ -1020,31 +1020,31 @@ direction.</p>
 <span>  <span class="fu">sweep_one</span><span class="op">(</span><span class="st">"ALT"</span>,   <span class="fl">9</span>,    <span class="fl">20</span>,  <span class="st">"ALT"</span><span class="op">)</span>,    <span class="co"># threshold &gt; 11</span></span>
 <span>  <span class="fu">sweep_one</span><span class="op">(</span><span class="st">"LDH"</span>,   <span class="fl">174</span>,  <span class="fl">220</span>, <span class="st">"LDH"</span><span class="op">)</span>     <span class="co"># threshold &gt; 195</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalkel_gx', 'etalkel_xyl', 'etalvc'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalkel_gx', 'etalkel_xyl', 'etalvc'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalkel_gx', 'etalkel_xyl', 'etalvc'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalkel_gx', 'etalkel_xyl', 'etalvc'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalkel_gx', 'etalkel_xyl', 'etalvc'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalkel_gx', 'etalkel_xyl', 'etalvc'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalkel_gx', 'etalkel_xyl', 'etalvc'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalkel_gx', 'etalkel_xyl', 'etalvc'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalkel_gx', 'etalkel_xyl', 'etalvc'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalkel_gx', 'etalkel_xyl', 'etalvc'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalkel_gx', 'etalkel_xyl', 'etalvc'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalkel_gx', 'etalkel_xyl', 'etalvc'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalkel_gx', 'etalkel_xyl', 'etalvc'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalkel_gx', 'etalkel_xyl', 'etalvc'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalkel_gx', 'etalkel_xyl', 'etalvc'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalkel_gx', 'etalkel_xyl', 'etalvc'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalkel_gx', 'etalkel_xyl', 'etalvc'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalkel_gx', 'etalkel_xyl', 'etalvc'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalkel_gx', 'etalkel_xyl', 'etalvc'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalkel_gx', 'etalkel_xyl', 'etalvc'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalkel_gx', 'etalkel_xyl', 'etalvc'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalkel_gx', 'etalkel_xyl', 'etalvc'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalkel_gx', 'etalkel_xyl', 'etalvc'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalkel_gx', 'etalkel_xyl', 'etalvc'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalkel_gx', 'etalkel_xyl', 'etalvc'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalkel_gx', 'etalkel_xyl', 'etalvc'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalkel_gx', 'etalkel_xyl', 'etalvc'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalkel_gx', 'etalkel_xyl', 'etalvc'</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">sweeps</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">conc</span>, colour <span class="op">=</span> <span class="va">level</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">0.6</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html" class="external-link">facet_grid</a></span><span class="op">(</span><span class="va">analyte</span> <span class="op">~</span> <span class="va">covariate</span>, scales <span class="op">=</span> <span class="st">"free_y"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time after dose start (h)"</span>,</span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">sweeps</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">time</span>, <span class="va">conc</span>, colour <span class="op">=</span> <span class="va">level</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">0.6</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">facet_grid</span><span class="op">(</span><span class="va">analyte</span> <span class="op">~</span> <span class="va">covariate</span>, scales <span class="op">=</span> <span class="st">"free_y"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time after dose start (h)"</span>,</span>
 <span>       y <span class="op">=</span> <span class="st">"Concentration"</span>,</span>
 <span>       colour <span class="op">=</span> <span class="st">"covariate cohort"</span>,</span>
 <span>       title <span class="op">=</span> <span class="st">"Covariate sensitivity sweeps (typical-value)"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"bottom"</span>,</span>
-<span>        strip.text.x <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">8</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu">theme_bw</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">theme</span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"bottom"</span>,</span>
+<span>        strip.text.x <span class="op">=</span> <span class="fu">element_text</span><span class="op">(</span>size <span class="op">=</span> <span class="fl">8</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="NA_NA_lidocaine_files/figure-html/cov-sweep-1.png" class="r-plt" alt="" width="672"></p>
 <p>The sweeps confirm the expected directions:</p>
 <ul>
@@ -1161,7 +1161,7 @@ the same range as the bundle’s observed DV medians:</p>
 <span></span>
 <span><span class="va">ev_md</span>   <span class="op">&lt;-</span> <span class="fu">multi_dose_events</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">sim_md</span>  <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_typ</span>, events <span class="op">=</span> <span class="va">ev_md</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalkel_gx', 'etalkel_xyl', 'etalvc'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalkel_gx', 'etalkel_xyl', 'etalvc'</span></span>
 <span><span class="va">sim_md_long</span> <span class="op">&lt;-</span> <span class="va">sim_md</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">Cc</span>, <span class="va">Cc_megx</span>, <span class="va">Cc_gx</span>, <span class="va">Cc_xyl</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">Cc</span>, <span class="va">Cc_megx</span>, <span class="va">Cc_gx</span>, <span class="va">Cc_xyl</span><span class="op">)</span>,</span>
@@ -1173,20 +1173,20 @@ the same range as the bundle’s observed DV medians:</p>
 <span>  median  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">26.62</span>, <span class="fl">6.30</span>, <span class="fl">7.57</span>, <span class="fl">4.17</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">sim_md_long</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">conc</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">0.6</span>, colour <span class="op">=</span> <span class="st">"steelblue"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">obs_medians</span>,</span>
-<span>             <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="va">median</span><span class="op">)</span>,</span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">sim_md_long</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">time</span>, <span class="va">conc</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">0.6</span>, colour <span class="op">=</span> <span class="st">"steelblue"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_hline</span><span class="op">(</span>data <span class="op">=</span> <span class="va">obs_medians</span>,</span>
+<span>             <span class="fu">aes</span><span class="op">(</span>yintercept <span class="op">=</span> <span class="va">median</span><span class="op">)</span>,</span>
 <span>             linetype <span class="op">=</span> <span class="st">"dashed"</span>, colour <span class="op">=</span> <span class="st">"firebrick"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span> <span class="va">analyte</span>, scales <span class="op">=</span> <span class="st">"free_y"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time (h)"</span>,</span>
+<span>  <span class="fu">facet_wrap</span><span class="op">(</span><span class="op">~</span> <span class="va">analyte</span>, scales <span class="op">=</span> <span class="st">"free_y"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time (h)"</span>,</span>
 <span>       y <span class="op">=</span> <span class="st">"Concentration"</span>,</span>
 <span>       title <span class="op">=</span> <span class="st">"Multi-dose typical-value trajectories vs bundle observed DV medians"</span>,</span>
 <span>       caption <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span></span>
 <span>         <span class="st">"Solid: rxode2 typical-value simulation, 20 daily 12-h infusions."</span>,</span>
 <span>         <span class="st">"Dashed (red): bundle observed DV median per analyte."</span></span>
 <span>       <span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu">theme_bw</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="NA_NA_lidocaine_files/figure-html/multi-dose-1.png" class="r-plt" alt="" width="672"></p>
 <p>The simulated typical-value steady-state magnitudes bracket the
 bundle’s observed DV medians (red dashed lines) for all four analytes –
@@ -1215,7 +1215,7 @@ not declare time, dose, or concentration units.
 <code>units$concentration = "mg/L"</code> are operator-default
 placeholders chosen so the values flow through
 <code><a href="../reference/checkModelConventions.html">checkModelConventions()</a></code> consistently. The numeric values in
-<code><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini()</a></code> are unchanged from the <code>.res</code> listing
+<code>ini()</code> are unchanged from the <code>.res</code> listing
 regardless of the unit interpretation. If the linked publication is
 later identified, the units may need to be revised; the parameter values
 stay correct.</li>

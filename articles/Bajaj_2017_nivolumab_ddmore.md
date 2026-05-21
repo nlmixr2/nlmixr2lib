@@ -69,10 +69,9 @@ The same metadata is available programmatically via
 ## Source trace
 
 The per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/ddmore/Bajaj_2017_nivolumab_ddmore.R`. The table below
-collects them in one place for review; line numbers refer to
-`Output_real_Nivo-PPK.lst` in the DDMORE bundle.
+`ini()` entry in `inst/modeldb/ddmore/Bajaj_2017_nivolumab_ddmore.R`.
+The table below collects them in one place for review; line numbers
+refer to `Output_real_Nivo-PPK.lst` in the DDMORE bundle.
 
 | Parameter (model name) | Value | Source |
 |----|----|----|
@@ -396,7 +395,6 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■        84% |  ETA:  1s
 knitr::kable(
   summary(nca_res),
   caption = "Simulated NCA parameters at steady state (12th dosing interval)"
@@ -440,10 +438,8 @@ coding error.
   (`Output_real_Nivo-PPK.lst` `$PK` lines 168 and 179: “reference is
   SEX=2 (Female)”). The packaged model stores sex under the canonical
   `SEXF` column (1 = female, 0 = male) and derives the male-indicator
-  inside
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html) as
-  `(1 - SEXF)`, preserving the bundle’s reference values for CL_REF and
-  VC_REF. Conversion when applying the model:
+  inside `model()` as `(1 - SEXF)`, preserving the bundle’s reference
+  values for CL_REF and VC_REF. Conversion when applying the model:
   `SEXF = as.integer(SEXN == 2)`.
 - **ECOG performance status.** The bundle’s `PS` column is already
   binary (0 / 1) per the `.mod` header line 12. The packaged model
@@ -466,10 +462,10 @@ coding error.
   CL_MEL, TH15 = CL_OTH, TH16 = CL_RCC, TH17 = CL_RAAA, TH19 = CL_HEPA,
   TH5 = additive residual error) are FIXED at zero in the bundle’s run,
   with no effect on predictions. They are omitted from the packaged
-  model’s [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html)
-  for clarity. The `.mod`’s `Executable_Simulated_IMNIVO_PPK.CTL` is a
-  16-theta reduced rerun of the same fit (with the zero-fixed thetas
-  already removed); it produces identical predictions to the FCM.
+  model’s `ini()` for clarity. The `.mod`’s
+  `Executable_Simulated_IMNIVO_PPK.CTL` is a 16-theta reduced rerun of
+  the same fit (with the zero-fixed thetas already removed); it produces
+  identical predictions to the FCM.
 - **Time-varying CL parameterization.** `Output_real_Nivo-PPK.lst` `$PK`
   line 122 expresses Emax as additive: `EMAX = AEMAX + ZEMAX` (rather
   than log-normal). The packaged model preserves this verbatim

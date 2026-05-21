@@ -649,50 +649,50 @@ visits in total: 6 on-treatment + 6 follow-up).</li>
 <span>  <span class="co"># Cycle-start records carry that cycle's per-cycle average AUCs; rxode2's</span></span>
 <span>  <span class="co"># locf semantics on time-varying covariates then keep those AUC values</span></span>
 <span>  <span class="co"># constant during ODE integration through the next cycle boundary.</span></span>
-<span>  <span class="va">cycle_records</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
+<span>  <span class="va">cycle_records</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="op">(</span></span>
 <span>    id <span class="op">=</span> <span class="va">id</span>,</span>
 <span>    time <span class="op">=</span> <span class="va">cycle_starts</span>,</span>
 <span>    evid <span class="op">=</span> <span class="fl">0L</span>,</span>
 <span>    AUC_CARBO <span class="op">=</span> <span class="va">cycle_carbo</span>,</span>
 <span>    AUC_GEM   <span class="op">=</span> <span class="va">cycle_gem</span></span>
 <span>  <span class="op">)</span></span>
-<span>  <span class="va">followup_records</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
+<span>  <span class="va">followup_records</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="op">(</span></span>
 <span>    id <span class="op">=</span> <span class="va">id</span>,</span>
 <span>    time <span class="op">=</span> <span class="va">followup_days</span>,</span>
 <span>    evid <span class="op">=</span> <span class="fl">0L</span>,</span>
 <span>    AUC_CARBO <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>    AUC_GEM   <span class="op">=</span> <span class="fl">0</span></span>
 <span>  <span class="op">)</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">cycle_records</span>, <span class="va">followup_records</span><span class="op">)</span></span>
+<span>  <span class="fu">bind_rows</span><span class="op">(</span><span class="va">cycle_records</span>, <span class="va">followup_records</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
-<span><span class="va">events</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span></span>
+<span><span class="va">events</span> <span class="op">&lt;-</span> <span class="fu">bind_rows</span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n_per_arm</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span> <span class="fu">make_subject</span><span class="op">(</span><span class="va">i</span>, arm <span class="op">=</span> <span class="st">"mono"</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n_per_arm</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span> <span class="fu">make_subject</span><span class="op">(</span><span class="va">i</span> <span class="op">+</span> <span class="va">n_per_arm</span>, arm <span class="op">=</span> <span class="st">"combo"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>arm <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/if_else.html" class="external-link">if_else</a></span><span class="op">(</span><span class="va">id</span> <span class="op">&lt;=</span> <span class="va">n_per_arm</span>, <span class="st">"carboplatin alone"</span>, <span class="st">"carbo + gem"</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="fu">mutate</span><span class="op">(</span>arm <span class="op">=</span> <span class="fu">if_else</span><span class="op">(</span><span class="va">id</span> <span class="op">&lt;=</span> <span class="va">n_per_arm</span>, <span class="st">"carboplatin alone"</span>, <span class="st">"carbo + gem"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Disjoint-id sanity check</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/duplicated.html" class="external-link">anyDuplicated</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">events</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span>, <span class="st">"time"</span>, <span class="st">"evid"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">events</span>, <span class="fl">15</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 15 × 6</span></span></span>
+<span><span class="co">#&gt; # A tibble: 15 × 6</span></span>
 <span><span class="co">#&gt;       id  time  evid AUC_CARBO AUC_GEM arm              </span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>     1     0     0      6.02       0 carboplatin alone</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>     1    21     0      5.05       0 carboplatin alone</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>     1    42     0      6.31       0 carboplatin alone</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>     1    63     0      7.32       0 carboplatin alone</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>     1    84     0      5.59       0 carboplatin alone</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>     1   105     0      4.76       0 carboplatin alone</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>     1   126     0      0          0 carboplatin alone</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>     1   147     0      0          0 carboplatin alone</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>     1   168     0      0          0 carboplatin alone</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>     1   189     0      0          0 carboplatin alone</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span>     1   210     0      0          0 carboplatin alone</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">12</span>     1   231     0      0          0 carboplatin alone</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">13</span>     1   252     0      0          0 carboplatin alone</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">14</span>     2     0     0      5.63       0 carboplatin alone</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">15</span>     2    21     0      4.88       0 carboplatin alone</span></span></code></pre></div>
+<span><span class="co">#&gt;    &lt;int&gt; &lt;int&gt; &lt;int&gt;     &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;            </span></span>
+<span><span class="co">#&gt;  1     1     0     0      6.02       0 carboplatin alone</span></span>
+<span><span class="co">#&gt;  2     1    21     0      5.05       0 carboplatin alone</span></span>
+<span><span class="co">#&gt;  3     1    42     0      6.31       0 carboplatin alone</span></span>
+<span><span class="co">#&gt;  4     1    63     0      7.32       0 carboplatin alone</span></span>
+<span><span class="co">#&gt;  5     1    84     0      5.59       0 carboplatin alone</span></span>
+<span><span class="co">#&gt;  6     1   105     0      4.76       0 carboplatin alone</span></span>
+<span><span class="co">#&gt;  7     1   126     0      0          0 carboplatin alone</span></span>
+<span><span class="co">#&gt;  8     1   147     0      0          0 carboplatin alone</span></span>
+<span><span class="co">#&gt;  9     1   168     0      0          0 carboplatin alone</span></span>
+<span><span class="co">#&gt; 10     1   189     0      0          0 carboplatin alone</span></span>
+<span><span class="co">#&gt; 11     1   210     0      0          0 carboplatin alone</span></span>
+<span><span class="co">#&gt; 12     1   231     0      0          0 carboplatin alone</span></span>
+<span><span class="co">#&gt; 13     1   252     0      0          0 carboplatin alone</span></span>
+<span><span class="co">#&gt; 14     2     0     0      5.63       0 carboplatin alone</span></span>
+<span><span class="co">#&gt; 15     2    21     0      4.88       0 carboplatin alone</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="typical-value-simulation-replicates-published-mechanism">Typical-value simulation (replicates published mechanism)<a class="anchor" aria-label="anchor" href="#typical-value-simulation-replicates-published-mechanism"></a>
@@ -706,31 +706,31 @@ ends?</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/readModelDb.html">readModelDb</a></span><span class="op">(</span><span class="st">"Zecchin_2016_tumorovarian"</span><span class="op">)</span></span>
 <span><span class="va">mod_typical</span> <span class="op">&lt;-</span> <span class="va">mod</span> <span class="op">|&gt;</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/zeroRe.html" class="external-link">zeroRe</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> parameter labels from comments will be replaced by 'label()'</span></span>
+<span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
 <span><span class="va">sim_typical</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span></span>
 <span>  <span class="va">mod_typical</span>,</span>
 <span>  events <span class="op">=</span> <span class="va">events</span>,</span>
 <span>  keep   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"arm"</span><span class="op">)</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalkg', 'etalkd0_kd1', 'etalibase'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalkg', 'etalkd0_kd1', 'etalibase'</span></span>
 <span><span class="co">#&gt; Warning: multi-subject simulation without without 'omega'</span></span>
 <span></span>
 <span><span class="co"># Population-typical median trajectories per arm</span></span>
 <span><span class="va">typical_summary</span> <span class="op">&lt;-</span> <span class="va">sim_typical</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">arm</span>, <span class="va">time</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>median_SLD <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">tumorSize</span><span class="op">)</span>, .groups <span class="op">=</span> <span class="st">"drop"</span><span class="op">)</span></span>
+<span>  <span class="fu">group_by</span><span class="op">(</span><span class="va">arm</span>, <span class="va">time</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">summarise</span><span class="op">(</span>median_SLD <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">tumorSize</span><span class="op">)</span>, .groups <span class="op">=</span> <span class="st">"drop"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">typical_summary</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">median_SLD</span>, colour <span class="op">=</span> <span class="va">arm</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="va">n_cycles</span> <span class="op">*</span> <span class="va">cycle_days</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span>,</span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">typical_summary</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">time</span>, <span class="va">median_SLD</span>, colour <span class="op">=</span> <span class="va">arm</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_vline</span><span class="op">(</span>xintercept <span class="op">=</span> <span class="va">n_cycles</span> <span class="op">*</span> <span class="va">cycle_days</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span>,</span>
 <span>             colour <span class="op">=</span> <span class="st">"grey60"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/annotate.html" class="external-link">annotate</a></span><span class="op">(</span><span class="st">"text"</span>, x <span class="op">=</span> <span class="va">n_cycles</span> <span class="op">*</span> <span class="va">cycle_days</span> <span class="op">+</span> <span class="fl">3</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">typical_summary</span><span class="op">$</span><span class="va">median_SLD</span><span class="op">)</span>,</span>
+<span>  <span class="fu">annotate</span><span class="op">(</span><span class="st">"text"</span>, x <span class="op">=</span> <span class="va">n_cycles</span> <span class="op">*</span> <span class="va">cycle_days</span> <span class="op">+</span> <span class="fl">3</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">typical_summary</span><span class="op">$</span><span class="va">median_SLD</span><span class="op">)</span>,</span>
 <span>           label <span class="op">=</span> <span class="st">"treatment ends"</span>, hjust <span class="op">=</span> <span class="fl">0</span>, size <span class="op">=</span> <span class="fl">3.2</span>, colour <span class="op">=</span> <span class="st">"grey40"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time (days)"</span>, y <span class="op">=</span> <span class="st">"Typical SLD (mm)"</span>,</span>
+<span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time (days)"</span>, y <span class="op">=</span> <span class="st">"Typical SLD (mm)"</span>,</span>
 <span>       title <span class="op">=</span> <span class="st">"Mechanistic sanity: typical-value SLD trajectory by arm"</span>,</span>
 <span>       caption <span class="op">=</span> <span class="st">"Zecchin 2016 SLD model with no IIV / no residual error."</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu">theme_minimal</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Zecchin_2016_tumorovarian_files/figure-html/simulate-typical-1.png" class="r-plt" alt="" width="672"></p>
 <p>The expected qualitative pattern holds:</p>
 <ul>
@@ -771,26 +771,26 @@ which is the source paper’s mechanistic assumption (a single underlying
 <span>  keep   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"arm"</span><span class="op">)</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> parameter labels from comments will be replaced by 'label()'</span></span>
+<span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
 <span></span>
 <span><span class="va">iiv_summary</span> <span class="op">&lt;-</span> <span class="va">sim_iiv</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">arm</span>, <span class="va">time</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span></span>
+<span>  <span class="fu">group_by</span><span class="op">(</span><span class="va">arm</span>, <span class="va">time</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">summarise</span><span class="op">(</span></span>
 <span>    Q05 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">tumorSize</span>, <span class="fl">0.05</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>    Q50 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">tumorSize</span>, <span class="fl">0.50</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>    Q95 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">tumorSize</span>, <span class="fl">0.95</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>    .groups <span class="op">=</span> <span class="st">"drop"</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">iiv_summary</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">Q50</span>, colour <span class="op">=</span> <span class="va">arm</span>, fill <span class="op">=</span> <span class="va">arm</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_ribbon.html" class="external-link">geom_ribbon</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>ymin <span class="op">=</span> <span class="va">Q05</span>, ymax <span class="op">=</span> <span class="va">Q95</span><span class="op">)</span>, alpha <span class="op">=</span> <span class="fl">0.2</span>, colour <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="va">n_cycles</span> <span class="op">*</span> <span class="va">cycle_days</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span>,</span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">iiv_summary</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">time</span>, <span class="va">Q50</span>, colour <span class="op">=</span> <span class="va">arm</span>, fill <span class="op">=</span> <span class="va">arm</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_ribbon</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>ymin <span class="op">=</span> <span class="va">Q05</span>, ymax <span class="op">=</span> <span class="va">Q95</span><span class="op">)</span>, alpha <span class="op">=</span> <span class="fl">0.2</span>, colour <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_vline</span><span class="op">(</span>xintercept <span class="op">=</span> <span class="va">n_cycles</span> <span class="op">*</span> <span class="va">cycle_days</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span>,</span>
 <span>             colour <span class="op">=</span> <span class="st">"grey60"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time (days)"</span>, y <span class="op">=</span> <span class="st">"SLD (mm)"</span>,</span>
+<span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time (days)"</span>, y <span class="op">=</span> <span class="st">"SLD (mm)"</span>,</span>
 <span>       title <span class="op">=</span> <span class="st">"Stochastic SLD trajectory by arm (median + 5-95% interval)"</span>,</span>
 <span>       caption <span class="op">=</span> <span class="st">"50 virtual subjects (25 per arm). Random-effect variances from Output_real_SLD.lst FINAL OMEGA."</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu">theme_minimal</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Zecchin_2016_tumorovarian_files/figure-html/simulate-iiv-1.png" class="r-plt" alt="" width="672"></p>
 <p>The 5th-95th percentile bands are wide – consistent with the very
 large between-subject variability the source NONMEM run reports (CV on
@@ -809,26 +809,26 @@ approximation is valid).</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">linear_check</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">scale_factor</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">events_scaled</span> <span class="op">&lt;-</span> <span class="va">events</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>AUC_CARBO <span class="op">=</span> <span class="va">AUC_CARBO</span> <span class="op">*</span> <span class="va">scale_factor</span><span class="op">)</span></span>
+<span>    <span class="fu">mutate</span><span class="op">(</span>AUC_CARBO <span class="op">=</span> <span class="va">AUC_CARBO</span> <span class="op">*</span> <span class="va">scale_factor</span><span class="op">)</span></span>
 <span>  <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span></span>
 <span>    <span class="va">mod_typical</span>,</span>
 <span>    events <span class="op">=</span> <span class="va">events_scaled</span>,</span>
 <span>    keep   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"arm"</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">==</span> <span class="va">n_cycles</span> <span class="op">*</span> <span class="va">cycle_days</span>, <span class="va">arm</span> <span class="op">==</span> <span class="st">"carboplatin alone"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>SLD_at_end_of_treatment <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">tumorSize</span><span class="op">)</span>,</span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">==</span> <span class="va">n_cycles</span> <span class="op">*</span> <span class="va">cycle_days</span>, <span class="va">arm</span> <span class="op">==</span> <span class="st">"carboplatin alone"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">summarise</span><span class="op">(</span>SLD_at_end_of_treatment <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">tumorSize</span><span class="op">)</span>,</span>
 <span>              scale_factor <span class="op">=</span> <span class="va">scale_factor</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
-<span><span class="va">linear_table</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.5</span>, <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>, <span class="va">linear_check</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalkg', 'etalkd0_kd1', 'etalibase'</span></span>
+<span><span class="va">linear_table</span> <span class="op">&lt;-</span> <span class="fu">bind_rows</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.5</span>, <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>, <span class="va">linear_check</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalkg', 'etalkd0_kd1', 'etalibase'</span></span>
 <span><span class="co">#&gt; Warning: multi-subject simulation without without 'omega'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalkg', 'etalkd0_kd1', 'etalibase'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalkg', 'etalkd0_kd1', 'etalibase'</span></span>
 <span><span class="co">#&gt; Warning: multi-subject simulation without without 'omega'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalkg', 'etalkd0_kd1', 'etalibase'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalkg', 'etalkd0_kd1', 'etalibase'</span></span>
 <span><span class="co">#&gt; Warning: multi-subject simulation without without 'omega'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalkg', 'etalkd0_kd1', 'etalibase'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalkg', 'etalkd0_kd1', 'etalibase'</span></span>
 <span><span class="co">#&gt; Warning: multi-subject simulation without without 'omega'</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
 <span>  <span class="va">linear_table</span>,</span>

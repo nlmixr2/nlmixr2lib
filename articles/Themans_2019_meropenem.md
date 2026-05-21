@@ -45,12 +45,12 @@ The same information is available programmatically via the model’s
 ## Source trace
 
 The per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/ddmore/Themans_2019_meropenem.R`. The table below collects
-them in one place for review. Every `THETA(*)` reference is to the
-**FINAL PARAMETER ESTIMATE** block of `Output_real_merop_PK_run3.lst`
-(post `MINIMIZATION SUCCESSFUL`, OBJV = 1488.719); `OMEGA` and `SIGMA`
-references are to the corresponding final blocks in the same listing.
+`ini()` entry in `inst/modeldb/ddmore/Themans_2019_meropenem.R`. The
+table below collects them in one place for review. Every `THETA(*)`
+reference is to the **FINAL PARAMETER ESTIMATE** block of
+`Output_real_merop_PK_run3.lst` (post `MINIMIZATION SUCCESSFUL`, OBJV =
+1488.719); `OMEGA` and `SIGMA` references are to the corresponding final
+blocks in the same listing.
 
 | Equation / parameter | Value | Source location |
 |----|----|----|
@@ -284,8 +284,7 @@ ggplot(matched, aes(Celf, DV_observed)) +
        y = "DDMORE Simulated_dataset.csv observed ELF DV (mg/L)",
        title = "Bundle ELF DV vs model typical-value (no IIV)",
        caption = "Dashed line = unity. Scatter is dominated by the proportional residual error (~64% CV).")
-#> Warning in scale_y_log10(): log-10 transformation introduced
-#> infinite values.
+#> Warning in scale_y_log10(): log-10 transformation introduced infinite values.
 ```
 
 ![](Themans_2019_meropenem_files/figure-html/selfcheck-elf-1.png)

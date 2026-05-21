@@ -219,10 +219,7 @@ Files in a model library should have the following characteristics:
   list please discuss first in a GitHub issue.
 
 - The remainder of the file should be an nlmixr2 model in a function
-  with a typical
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) and
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html)
-  block.
+  with a typical `ini()` and `model()` block.
 
 - The name of the file should match the name of the model within the
   file.

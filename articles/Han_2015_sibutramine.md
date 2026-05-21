@@ -43,9 +43,8 @@ The same information is available programmatically via the model’s
 ## Source trace
 
 The per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/specificDrugs/Han_2015_sibutramine.R`. The table below
-collects them in one place for review.
+`ini()` entry in `inst/modeldb/specificDrugs/Han_2015_sibutramine.R`.
+The table below collects them in one place for review.
 
 | Equation / parameter | Value | Source location (Han 2015) |
 |----|----|----|
@@ -396,8 +395,7 @@ within PK-simulation accuracy and the Dose/CL algebra (no discrepancy \>
   exponential BSV for all PK parameters and for BASE/MW (i.e.,
   `P_i = P_pop * exp(eta_i)`) and additive BSV for the female placebo
   coefficient (`P_fem,i = P_fem + eta_i`). Table 2 reports the BSV
-  column as CV%, which is converted in
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) as:
+  column as CV%, which is converted in `ini()` as:
 
   - Exponential BSV: `omega^2 = log(1 + (CV/100)^2)`.
   - Additive BSV on `p_fem`: NONMEM convention

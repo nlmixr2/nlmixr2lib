@@ -523,7 +523,7 @@ serum UA 5.2-10 mg/dL; Aksenov 2018 Table 6).</p>
 <h2 id="source-trace">Source trace<a class="anchor" aria-label="anchor" href="#source-trace"></a>
 </h2>
 <p>The per-parameter origin is recorded as an in-file comment next to
-each <code><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini()</a></code> entry in
+each <code>ini()</code> entry in
 <code>inst/modeldb/endogenous/Aksenov_2018_uricAcid.R</code>. The table
 below collects them in one place for review.</p>
 <table class="table">
@@ -712,7 +712,7 @@ factor</td>
 </table>
 <p>The single non-trivial unit conversion is for the renal flux: the
 source paper reports GFR in mL/min (Cockcroft-Gault), so the
-<code><a href="https://nlmixr2.github.io/rxode2/reference/model.html" class="external-link">model()</a></code> block converts to L/h via
+<code>model()</code> block converts to L/h via
 <code>gfr_lh &lt;- CRCL * 60 / 1000</code> before using GFR in any ODE
 term. With GFR = 130 mL/min the converted value is 7.8 L/h.</p>
 </div>
@@ -783,12 +783,12 @@ simulation and the analytic Eq. 5:</p>
 <span>    urine_mg_per_day <span class="op">=</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">tail</a></span><span class="op">(</span><span class="va">s</span><span class="op">$</span><span class="va">urine</span>, <span class="fl">1</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">tail</a></span><span class="op">(</span><span class="va">s</span><span class="op">$</span><span class="va">time</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">*</span> <span class="fl">24</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">ss_table</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">GFR</span>, <span class="va">sUA_mgdL_at_ss</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"GFR (mL/min)"</span>, y <span class="op">=</span> <span class="st">"Steady-state serum UA (mg/dL)"</span>,</span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">ss_table</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">GFR</span>, <span class="va">sUA_mgdL_at_ss</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"GFR (mL/min)"</span>, y <span class="op">=</span> <span class="st">"Steady-state serum UA (mg/dL)"</span>,</span>
 <span>       title <span class="op">=</span> <span class="st">"Drug-free steady-state serum UA vs GFR"</span>,</span>
 <span>       caption <span class="op">=</span> <span class="st">"Compare to Figure 6, third row from top of Aksenov 2018 (typical FE0 = 0.07)."</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu">theme_minimal</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Aksenov_2018_uricAcid_files/figure-html/ss-vs-gfr-1.png" class="r-plt" alt="" width="672"></p>
 <p>For a typical FE0 of 0.07 the model predicts steady-state serum UA
 decreasing from approximately 9 mg/dL at GFR = 30 mL/min to
@@ -883,7 +883,7 @@ unchanged.</p>
 <span>  <span class="va">ev</span></span>
 <span><span class="op">}</span></span>
 <span></span>
-<span><span class="va">cohort_lsn</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span></span>
+<span><span class="va">cohort_lsn</span> <span class="op">&lt;-</span> <span class="fu">bind_rows</span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="fu">make_lsn_events</span><span class="op">(</span><span class="fl">50</span><span class="op">)</span>,  dose <span class="op">=</span> <span class="st">"LSN 50 mg"</span><span class="op">)</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="fu">make_lsn_events</span><span class="op">(</span><span class="fl">200</span><span class="op">)</span>, dose <span class="op">=</span> <span class="st">"LSN 200 mg"</span><span class="op">)</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="fu">make_lsn_events</span><span class="op">(</span><span class="fl">600</span><span class="op">)</span>, dose <span class="op">=</span> <span class="st">"LSN 600 mg"</span><span class="op">)</span></span>
@@ -893,7 +893,7 @@ unchanged.</p>
 <span><span class="co"># matching the population that contributed Figure 4 data.</span></span>
 <span><span class="va">mod_norm</span> <span class="op">&lt;-</span> <span class="va">mod_typ</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini</a></span><span class="op">(</span>p50_lsn <span class="op">=</span> <span class="fl">11000</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> change initial estimate of `p50_lsn` to `11000`</span></span>
+<span><span class="co">#&gt; ℹ change initial estimate of `p50_lsn` to `11000`</span></span>
 <span></span>
 <span><span class="va">sim_lsn</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span></span>
 <span>  <span class="va">mod_norm</span>,</span>
@@ -910,17 +910,17 @@ unchanged.</p>
 <span><span class="va">sim_lsn</span><span class="op">$</span><span class="va">dose</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">sim_lsn</span><span class="op">$</span><span class="va">dose</span>,</span>
 <span>                       levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"LSN 50 mg"</span>, <span class="st">"LSN 200 mg"</span>, <span class="st">"LSN 600 mg"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">p_fe</span>   <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">sim_lsn</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">fe</span><span class="op">)</span><span class="op">)</span>    <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span> <span class="va">dose</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time relative to dose (h)"</span>, y <span class="op">=</span> <span class="st">"Fractional excretion UA"</span>,</span>
+<span><span class="va">p_fe</span>   <span class="op">&lt;-</span> <span class="fu">ggplot</span><span class="op">(</span><span class="va">sim_lsn</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">time</span>, <span class="va">fe</span><span class="op">)</span><span class="op">)</span>    <span class="op">+</span> <span class="fu">geom_line</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">facet_wrap</span><span class="op">(</span><span class="op">~</span> <span class="va">dose</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time relative to dose (h)"</span>, y <span class="op">=</span> <span class="st">"Fractional excretion UA"</span>,</span>
 <span>       title <span class="op">=</span> <span class="st">"Fractional excretion (replicates Figure 4 top row)"</span><span class="op">)</span></span>
-<span><span class="va">p_sua</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">sim_lsn</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">sUA</span><span class="op">)</span><span class="op">)</span>   <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span> <span class="va">dose</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time relative to dose (h)"</span>, y <span class="op">=</span> <span class="st">"UA in serum (mg/dL)"</span>,</span>
+<span><span class="va">p_sua</span>  <span class="op">&lt;-</span> <span class="fu">ggplot</span><span class="op">(</span><span class="va">sim_lsn</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">time</span>, <span class="va">sUA</span><span class="op">)</span><span class="op">)</span>   <span class="op">+</span> <span class="fu">geom_line</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">facet_wrap</span><span class="op">(</span><span class="op">~</span> <span class="va">dose</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time relative to dose (h)"</span>, y <span class="op">=</span> <span class="st">"UA in serum (mg/dL)"</span>,</span>
 <span>       title <span class="op">=</span> <span class="st">"Serum UA (replicates Figure 4 middle row)"</span><span class="op">)</span></span>
-<span><span class="va">p_uua</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">sim_lsn</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">urine</span> <span class="op">/</span> <span class="fl">1000</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span> <span class="va">dose</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time relative to dose (h)"</span>, y <span class="op">=</span> <span class="st">"UA in urine (mg x1000)"</span>,</span>
+<span><span class="va">p_uua</span>  <span class="op">&lt;-</span> <span class="fu">ggplot</span><span class="op">(</span><span class="va">sim_lsn</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">time</span>, <span class="va">urine</span> <span class="op">/</span> <span class="fl">1000</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fu">geom_line</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">facet_wrap</span><span class="op">(</span><span class="op">~</span> <span class="va">dose</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time relative to dose (h)"</span>, y <span class="op">=</span> <span class="st">"UA in urine (mg x1000)"</span>,</span>
 <span>       title <span class="op">=</span> <span class="st">"Cumulative urinary UA (replicates Figure 4 bottom row)"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">p_fe</span></span></code></pre></div>
@@ -965,12 +965,12 @@ concentration approximated as a constant 1500 ng/mL based on Bhattaram
 <span>  CP_LSN_NGML <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">combo_times</span> <span class="op">&gt;</span> <span class="fl">24</span><span class="op">*</span><span class="fl">7</span> <span class="op">&amp;</span> <span class="va">combo_times</span> <span class="op">&lt;=</span> <span class="fl">24</span><span class="op">*</span><span class="fl">14</span>, <span class="fl">5000</span>, <span class="fl">0</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">sim_combo</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_typ</span>, events <span class="op">=</span> <span class="va">combo_ev</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">sim_combo</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">time</span> <span class="op">/</span> <span class="fl">24</span>, <span class="va">sUA</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">7</span>, <span class="fl">14</span><span class="op">)</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span>, colour <span class="op">=</span> <span class="st">"grey50"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time (days)"</span>, y <span class="op">=</span> <span class="st">"Serum UA (mg/dL)"</span>,</span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">sim_combo</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">time</span> <span class="op">/</span> <span class="fl">24</span>, <span class="va">sUA</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fu">geom_line</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_vline</span><span class="op">(</span>xintercept <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">7</span>, <span class="fl">14</span><span class="op">)</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span>, colour <span class="op">=</span> <span class="st">"grey50"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time (days)"</span>, y <span class="op">=</span> <span class="st">"Serum UA (mg/dL)"</span>,</span>
 <span>       title <span class="op">=</span> <span class="st">"Sequential treatment: FBX -&gt; FBX+LSN -&gt; placebo"</span>,</span>
 <span>       caption <span class="op">=</span> <span class="st">"Replicates the conceptual structure of Figure 5 of Aksenov 2018."</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu">theme_minimal</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Aksenov_2018_uricAcid_files/figure-html/combo-fbx-lsn-1.png" class="r-plt" alt="" width="672"></p>
 <p>The model captures the expected pattern: febuxostat alone produces an
 approximately 50% reduction in serum UA, the addition of lesinurad
@@ -1067,7 +1067,7 @@ precedent of <code>NA_NA_lidocaine.R</code>, where the <code>.ctl</code>
 does not state the BSA-normalisation method but the column is registered
 under <code>CRCL</code>. Users importing data with a column called
 <code>GFR</code> should rename to <code>CRCL</code> before passing to
-<code><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve()</a></code>.</li>
+<code>rxSolve()</code>.</li>
 </ul>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

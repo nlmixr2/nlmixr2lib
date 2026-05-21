@@ -66,8 +66,7 @@ str(mod_meta$population)
 
 ## Source trace
 
-The per-parameter origin is recorded in the model file’s
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) block.
+The per-parameter origin is recorded in the model file’s `ini()` block.
 The table below collects them for quick review.
 
 | Equation / parameter | Value | Source location |
@@ -386,9 +385,7 @@ prediction-interval envelopes for the three test drinks shown.
   packaged model encodes \|SLPCAL\| as `exp(lslpcal_mag)` so the
   reported 19% CV between-subject variability can be carried as a
   standard log-normal eta on the magnitude (with the sign fixed negative
-  in
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html)).
-  This is equivalent to the NONMEM idiom
+  in `model()`). This is equivalent to the NONMEM idiom
   `SLPCAL_i = -THETA(SLPCAL) * exp(ETA(SLPCAL))` and preserves the
   paper’s interpretation that the caloric feedback is always inhibitory
   of GE.

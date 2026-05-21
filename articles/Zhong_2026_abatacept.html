@@ -740,7 +740,7 @@ Final-model paragraph</td>
 <strong>Time-unit conversion.</strong> Zhong 2026 reports CL and Q
 in L/h and KA in 1/h. The nlmixr2lib convention is time in days, so each
 of these values is multiplied by 24 inside <code>log(...)</code> in
-<code><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini()</a></code>. VC, VP, F, IIV variances, and residual-error
+<code>ini()</code>. VC, VP, F, IIV variances, and residual-error
 magnitudes carry through unchanged.</li>
 <li>
 <strong>Logit-F parameterization, additive on logit.</strong> Zhong
@@ -1030,21 +1030,21 @@ label.</p>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">time</span>, <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">evid</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">sim_single_sc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_typ</span>, events <span class="op">=</span> <span class="va">ev_single_sc</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalka', 'etalogitfdepot'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalka', 'etalogitfdepot'</span></span>
 <span></span>
 <span><span class="va">tmax_day</span>  <span class="op">&lt;-</span> <span class="va">sim_single_sc</span><span class="op">$</span><span class="va">time</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html" class="external-link">which.max</a></span><span class="op">(</span><span class="va">sim_single_sc</span><span class="op">$</span><span class="va">Cc</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="va">cmax_mgL</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">sim_single_sc</span><span class="op">$</span><span class="va">Cc</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">sim_single_sc</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="va">tmax_day</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span>, colour <span class="op">=</span> <span class="st">"steelblue"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">sim_single_sc</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">time</span>, <span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_vline</span><span class="op">(</span>xintercept <span class="op">=</span> <span class="va">tmax_day</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span>, colour <span class="op">=</span> <span class="st">"steelblue"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span></span>
 <span>    x <span class="op">=</span> <span class="st">"Time after single SC dose (days)"</span>,</span>
 <span>    y <span class="op">=</span> <span class="st">"Abatacept Cc (mg/L = ug/mL)"</span>,</span>
 <span>    title <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Typical adult RA single 125 mg SC: Tmax = %.1f days, Cmax = %.2f mg/L"</span>,</span>
 <span>                    <span class="va">tmax_day</span>, <span class="va">cmax_mgL</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu">theme_minimal</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Zhong_2026_abatacept_files/figure-html/sc-typical-1.png" class="r-plt" alt="" width="672"></p>
 </div>
 <div class="section level3">
@@ -1096,16 +1096,16 @@ doses for further consideration.</p>
 <span>                                       <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">AGE</span> <span class="op">&gt;=</span> <span class="fl">6</span>, <span class="va">AGE</span> <span class="op">&lt;=</span> <span class="fl">12</span><span class="op">)</span>,</span>
 <span>                                       <span class="st">"IM101311 6-12 y (10 mg/kg)"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: There was 1 warning in `dplyr::summarise()`.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> In argument: `Cmax1 = max(Cc, na.rm = TRUE)`.</span></span>
+<span><span class="co">#&gt; ℹ In argument: `Cmax1 = max(Cc, na.rm = TRUE)`.</span></span>
 <span><span class="co">#&gt; Caused by warning in `max()`:</span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> no non-missing arguments to max; returning -Inf</span></span>
+<span><span class="co">#&gt; ! no non-missing arguments to max; returning -Inf</span></span>
 <span><span class="va">hm_first_1317</span> <span class="op">&lt;-</span> <span class="fu">per_subject_first_dose</span><span class="op">(</span><span class="va">sim_hm8_iv10</span> <span class="op">|&gt;</span></span>
 <span>                                        <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">AGE</span> <span class="op">&gt;</span> <span class="fl">12</span>, <span class="va">AGE</span> <span class="op">&lt;=</span> <span class="fl">17</span><span class="op">)</span>,</span>
 <span>                                        <span class="st">"IM101311 13-17 y (10 mg/kg)"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: There was 1 warning in `dplyr::summarise()`.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> In argument: `Cmax1 = max(Cc, na.rm = TRUE)`.</span></span>
+<span><span class="co">#&gt; ℹ In argument: `Cmax1 = max(Cc, na.rm = TRUE)`.</span></span>
 <span><span class="co">#&gt; Caused by warning in `max()`:</span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> no non-missing arguments to max; returning -Inf</span></span>
+<span><span class="co">#&gt; ! no non-missing arguments to max; returning -Inf</span></span>
 <span><span class="va">hm_first_adult</span> <span class="op">&lt;-</span> <span class="fu">per_subject_first_dose</span><span class="op">(</span><span class="va">sim_hm8_iv10</span> <span class="op">|&gt;</span></span>
 <span>                                         <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">AGE</span> <span class="op">&gt;=</span> <span class="fl">18</span><span class="op">)</span>,</span>
 <span>                                         <span class="st">"IM101311 &gt;=18 y (10 mg/kg)"</span><span class="op">)</span></span>
@@ -1115,17 +1115,17 @@ doses for further consideration.</p>
 <span>  <span class="va">hm_first_812</span>, <span class="va">hm_first_1317</span>, <span class="va">hm_first_adult</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">first_dose_long</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">regimen</span>, <span class="va">AUC1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_boxplot.html" class="external-link">geom_boxplot</a></span><span class="op">(</span>outlier.size <span class="op">=</span> <span class="fl">0.6</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_log10</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">first_dose_long</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">regimen</span>, <span class="va">AUC1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_boxplot</span><span class="op">(</span>outlier.size <span class="op">=</span> <span class="fl">0.6</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">scale_y_log10</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span></span>
 <span>    x <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>    y <span class="op">=</span> <span class="st">"AUC1 (mg*day/L, log scale)"</span>,</span>
 <span>    title <span class="op">=</span> <span class="st">"Replicates Figure 3a (AUC1 across pediatric IV dose levels)"</span>,</span>
 <span>    caption <span class="op">=</span> <span class="st">"Pediatric 2-&lt;6 y virtual cohort vs IM101311 6-12 y / 13-17 y / &gt;=18 y subgroups."</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>axis.text.x <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>angle <span class="op">=</span> <span class="fl">25</span>, hjust <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu">theme_minimal</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">theme</span><span class="op">(</span>axis.text.x <span class="op">=</span> <span class="fu">element_text</span><span class="op">(</span>angle <span class="op">=</span> <span class="fl">25</span>, hjust <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Zhong_2026_abatacept_files/figure-html/fig3-replicate-1.png" class="r-plt" alt="" width="720"></p>
 </div>
 <div class="section level3">

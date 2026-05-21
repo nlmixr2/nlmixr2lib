@@ -381,11 +381,9 @@ Simulated day-5 trough at 5 mg BID, POD 14, by cohort. {.table}
   lag time were fixed to 3.37/h and 0.33 hours, respectively”, but Table
   3 reports non-zero RSE for both (KA RSE = 17.7%, ALAG1 RSE = 6.2%).
   The text statement is treated as authoritative, so both parameters are
-  wrapped in `fixed()` in
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html). The
-  slight discrepancy between the text value (0.33 h) and the Table 3
-  value (0.32 h) for ALAG1 is resolved in favour of Table 3 (the actual
-  parameter table).
+  wrapped in `fixed()` in `ini()`. The slight discrepancy between the
+  text value (0.33 h) and the Table 3 value (0.32 h) for ALAG1 is
+  resolved in favour of Table 3 (the actual parameter table).
 - **Vignette uses 100 subjects per cohort.** This is small enough to
   render the vignette in well under the 5 minute pkgdown gate but large
   enough to give stable percentiles for the cohort summary statistics.

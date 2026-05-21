@@ -248,12 +248,9 @@ analogue.
 
 - **Numerical rescalings preserved.** The .mod uses internal /1000
   rescalings on lambda, alpha, and AUC effect for optimizer numerical
-  stability. We preserve these rescalings inside
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html) so
-  that the
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) values
-  match the .lst FINAL THETA values one-to-one. The biologically
-  meaningful values are:
+  stability. We preserve these rescalings inside `model()` so that the
+  `ini()` values match the .lst FINAL THETA values one-to-one. The
+  biologically meaningful values are:
 
   - Gompertz lambda: 3.28 / 1000 = 0.00328 / day
   - Gompertz alpha: 4.05 / 1000 = 0.00405 / day

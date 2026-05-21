@@ -56,8 +56,7 @@ metadata programmatically.
 
 ## Source trace
 
-Per-parameter origins are recorded next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
+Per-parameter origins are recorded next to each `ini()` entry in
 `inst/modeldb/specificDrugs/Clewe_2015_rifampicin.R`. The table below
 collects them in one place for review.
 

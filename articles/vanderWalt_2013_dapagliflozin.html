@@ -515,7 +515,7 @@ mL/min. See van der Walt 2013 Table 2.</p>
 <h2 id="source-trace">Source trace<a class="anchor" aria-label="anchor" href="#source-trace"></a>
 </h2>
 <p>The per-parameter origin is recorded as an in-file comment next to
-each <code><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini()</a></code> entry in
+each <code>ini()</code> entry in
 <code>inst/modeldb/specificDrugs/vanderWalt_2013_dapagliflozin.R</code>.
 The table below collects them in one place.</p>
 <table class="table">
@@ -846,14 +846,14 @@ simulations.</p>
 <span>                                   <span class="st">"HEPIMP_SEV"</span>, <span class="st">"HEPIMP_MODSEV"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl_form_d3og', 'etalvc_d3og', 'etalcl_nonren', 'etalth_cl_renal', 'etalvc', 'etalq', 'etalvp', 'etalmtt', 'etalnn', 'etalth_cl_d3og', 'etalogitfdepot'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl_form_d3og', 'etalvc_d3og', 'etalcl_nonren', 'etalth_cl_renal', 'etalvc', 'etalq', 'etalvp', 'etalmtt', 'etalnn', 'etalth_cl_d3og', 'etalogitfdepot'</span></span>
 <span><span class="co">#&gt; Warning: multi-subject simulation without without 'omega'</span></span>
 <span></span>
 <span><span class="va">sim_ss</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_typical</span>, events <span class="op">=</span> <span class="va">events_ss</span>,</span>
 <span>                          keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cohort"</span>, <span class="st">"WT"</span>, <span class="st">"AGE"</span>, <span class="st">"SEXF"</span>, <span class="st">"CRCL"</span>,</span>
 <span>                                   <span class="st">"HEPIMP_SEV"</span>, <span class="st">"HEPIMP_MODSEV"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl_form_d3og', 'etalvc_d3og', 'etalcl_nonren', 'etalth_cl_renal', 'etalvc', 'etalq', 'etalvp', 'etalmtt', 'etalnn', 'etalth_cl_d3og', 'etalogitfdepot'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl_form_d3og', 'etalvc_d3og', 'etalcl_nonren', 'etalth_cl_renal', 'etalvc', 'etalq', 'etalvp', 'etalmtt', 'etalnn', 'etalth_cl_d3og', 'etalogitfdepot'</span></span>
 <span><span class="co">#&gt; Warning: multi-subject simulation without without 'omega'</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -867,16 +867,16 @@ curves for the same three renal-function strata used in Table 3 (CRCL of
 “typical patient” line in those VPC panels.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim_sd</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">Cc</span>, <span class="va">Cc_d3og</span><span class="op">)</span>, names_to <span class="op">=</span> <span class="st">"species"</span>, values_to <span class="op">=</span> <span class="st">"conc"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>species <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">species</span>,</span>
+<span>  <span class="fu">pivot_longer</span><span class="op">(</span>cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">Cc</span>, <span class="va">Cc_d3og</span><span class="op">)</span>, names_to <span class="op">=</span> <span class="st">"species"</span>, values_to <span class="op">=</span> <span class="st">"conc"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">mutate</span><span class="op">(</span>species <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">species</span>,</span>
 <span>                          levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Cc"</span>, <span class="st">"Cc_d3og"</span><span class="op">)</span>,</span>
 <span>                          labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Dapagliflozin"</span>, <span class="st">"D3OG"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">conc</span>, colour <span class="op">=</span> <span class="va">cohort</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span> <span class="va">species</span>, scales <span class="op">=</span> <span class="st">"free_y"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_x_continuous</a></span><span class="op">(</span>limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">24</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_log10</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time after single 10-mg dose (h)"</span>,</span>
+<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span><span class="va">time</span>, <span class="va">conc</span>, colour <span class="op">=</span> <span class="va">cohort</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">facet_wrap</span><span class="op">(</span><span class="op">~</span> <span class="va">species</span>, scales <span class="op">=</span> <span class="st">"free_y"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">scale_x_continuous</span><span class="op">(</span>limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">24</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">scale_y_log10</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time after single 10-mg dose (h)"</span>,</span>
 <span>       y <span class="op">=</span> <span class="st">"Plasma concentration (ng/mL)"</span>,</span>
 <span>       colour <span class="op">=</span> <span class="st">"Renal function stratum"</span>,</span>
 <span>       title <span class="op">=</span> <span class="st">"Typical-value PK by renal function"</span>,</span>
@@ -1086,7 +1086,7 @@ because (i) most downstream nlmixr2lib users want plasma PK only, and
 (ii) urine modelling adds two extra excretion compartments and two extra
 residual-error parameters without changing the typical plasma
 trajectory. Users who need the urine submodel should extend the ODEs in
-<code><a href="https://nlmixr2.github.io/rxode2/reference/model.html" class="external-link">model()</a></code> to add d/dt(urine_dapa) and d/dt(urine_d3og)
+<code>model()</code> to add d/dt(urine_dapa) and d/dt(urine_d3og)
 accumulators driven by CLP_renal and CLM respectively.</p></li>
 <li><p><strong>Replicate residual-error cross-correlation
 dropped.</strong> The source paper reports a “replicate” residual error
@@ -1106,9 +1106,9 @@ ref 22 in van der Walt 2013.</p></li>
 logit-transformed BIO parameter so the individual estimate of
 bioavailability stays in (0, 1). This is reproduced exactly:
 <code>logitfdepot &lt;- log(BIO_tv / (1 - BIO_tv))</code> in
-<code><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini()</a></code> and
+<code>ini()</code> and
 <code>fdepot &lt;- 1 / (1 + exp(-(logitfdepot + etalogitfdepot)))</code>
-in <code><a href="https://nlmixr2.github.io/rxode2/reference/model.html" class="external-link">model()</a></code>. The IIV on <code>logitfdepot</code> is reported
+in <code>model()</code>. The IIV on <code>logitfdepot</code> is reported
 by the paper as 11.1% CV back-transformed (footnote g); the raw omega on
 the logit scale is recovered via the delta-method approximation
 <code>omega ~= (CV / (1 - F_tv))^2</code> giving 0.611.</p></li>

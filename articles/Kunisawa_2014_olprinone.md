@@ -75,10 +75,9 @@ str(mod_meta$population)
 ## Source trace
 
 The per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/specificDrugs/Kunisawa_2014_olprinone.R`. The table below
-collects the entries in one place; values come from Kunisawa 2014 Table
-3 (final model column).
+`ini()` entry in `inst/modeldb/specificDrugs/Kunisawa_2014_olprinone.R`.
+The table below collects the entries in one place; values come from
+Kunisawa 2014 Table 3 (final model column).
 
 | Parameter / equation | Value | Source location |
 |----|----|----|

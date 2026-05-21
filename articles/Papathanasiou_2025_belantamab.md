@@ -87,7 +87,7 @@ The same metadata is available programmatically via
 ## Source trace
 
 The per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
+`ini()` entry in
 `inst/modeldb/specificDrugs/Papathanasiou_2025_belantamab.R`. The table
 below collects them in one place for review.
 
@@ -366,7 +366,6 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     93% |  ETA:  0s
 knitr::kable(
   summary(nca_res),
   caption = "Simulated cycle-1 NCA parameters at 2.5 mg/kg q3w (monotherapy vs combination)."

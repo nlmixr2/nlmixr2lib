@@ -372,8 +372,7 @@ short sampling windows shrink relative to the hybrid-rate value).
   or other pharmacokinetic parameters.” The model therefore carries no
   covariate effects; weight is included in the virtual cohort only for
   downstream per-kilogram dose computations a user might want to
-  overlay, not because it enters
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html).
+  overlay, not because it enters `model()`.
 - **Native American specificity.** The Grover 2011 estimates differ
   substantially from other ethnic-group popPK reports for tacrolimus
   (Table 3 of the paper: Native American CL/F = 11.1 L/h vs. Australian

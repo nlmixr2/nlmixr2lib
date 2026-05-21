@@ -541,7 +541,7 @@ fremanezumab 225 mg q1m with a 675 mg starting dose, 675 mg quarterly,
 unit is one 28-day month.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxode2.html" class="external-link">rxode2</a></span><span class="op">(</span><span class="fu"><a href="../reference/readModelDb.html">readModelDb</a></span><span class="op">(</span><span class="st">"FiedlerKelly_2020_fremanezumab_cm"</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="va">meta</span><span class="op">$</span><span class="va">population</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> parameter labels from comments will be replaced by 'label()'</span></span>
+<span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
 <span><span class="co">#&gt; Warning: some etas defaulted to non-mu referenced, possible parsing error: etalogitDrugInt</span></span>
 <span><span class="co">#&gt; as a work-around try putting the mu-referenced expression on a simple line</span></span>
 <span><span class="co">#&gt; List of 14</span></span>
@@ -693,12 +693,12 @@ eta)</td>
 <span>  ACUTE_MED_DAYS <span class="op">=</span> <span class="fl">0</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">sim_check</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod</span> <span class="op">|&gt;</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/zeroRe.html" class="external-link">zeroRe</a></span><span class="op">(</span><span class="op">)</span>, events <span class="op">=</span> <span class="va">ev_check</span>, returnType <span class="op">=</span> <span class="st">"data.frame"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> parameter labels from comments will be replaced by 'label()'</span></span>
+<span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
 <span><span class="co">#&gt; Warning: some etas defaulted to non-mu referenced, possible parsing error: etalogitDrugInt</span></span>
 <span><span class="co">#&gt; as a work-around try putting the mu-referenced expression on a simple line</span></span>
 <span><span class="co">#&gt; Warning: some etas defaulted to non-mu referenced, possible parsing error: etalogitDrugInt</span></span>
 <span><span class="co">#&gt; as a work-around try putting the mu-referenced expression on a simple line</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etabl_cm', 'etamaxPLC_cm', 'etalhill_PLC', 'etalogitDrugInt', 'etaldrugExp'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etabl_cm', 'etamaxPLC_cm', 'etalhill_PLC', 'etalogitDrugInt', 'etaldrugExp'</span></span>
 <span><span class="va">sim_check</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"time"</span>, <span class="st">"msHeadacheDays"</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="co">#&gt;   time msHeadacheDays</span></span>
 <span><span class="co">#&gt; 1    0      10.200000</span></span>
@@ -766,12 +766,12 @@ quarterly) using a fixed schedule of period-mean Cav values.</p>
 <span>  keep       <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"regimen"</span><span class="op">)</span>,</span>
 <span>  returnType <span class="op">=</span> <span class="st">"data.frame"</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> parameter labels from comments will be replaced by 'label()'</span></span>
+<span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
 <span><span class="co">#&gt; Warning: some etas defaulted to non-mu referenced, possible parsing error: etalogitDrugInt</span></span>
 <span><span class="co">#&gt; as a work-around try putting the mu-referenced expression on a simple line</span></span>
 <span><span class="co">#&gt; Warning: some etas defaulted to non-mu referenced, possible parsing error: etalogitDrugInt</span></span>
 <span><span class="co">#&gt; as a work-around try putting the mu-referenced expression on a simple line</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etabl_cm', 'etamaxPLC_cm', 'etalhill_PLC', 'etalogitDrugInt', 'etaldrugExp'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etabl_cm', 'etamaxPLC_cm', 'etalhill_PLC', 'etalogitDrugInt', 'etaldrugExp'</span></span>
 <span><span class="co">#&gt; Warning: multi-subject simulation without without 'omega'</span></span>
 <span></span>
 <span><span class="va">sim_iiv</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span></span>
@@ -780,7 +780,7 @@ quarterly) using a fixed schedule of period-mean Cav values.</p>
 <span>  keep       <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"regimen"</span><span class="op">)</span>,</span>
 <span>  returnType <span class="op">=</span> <span class="st">"data.frame"</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> parameter labels from comments will be replaced by 'label()'</span></span>
+<span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
 <span><span class="co">#&gt; Warning: some etas defaulted to non-mu referenced, possible parsing error: etalogitDrugInt</span></span>
 <span><span class="co">#&gt; as a work-around try putting the mu-referenced expression on a simple line</span></span></code></pre></div>
 </div>

@@ -81,11 +81,10 @@ The same metadata is available programmatically via
 ## Source trace
 
 The per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/specificDrugs/Hwang_2023_monalizumab.R`. The table below
-collects them in one place for review. All values come from Hwang 2023
-Table 2 (p. 821, “Summary of the Final Model Pharmacokinetic Parameters
-for Monalizumab”).
+`ini()` entry in `inst/modeldb/specificDrugs/Hwang_2023_monalizumab.R`.
+The table below collects them in one place for review. All values come
+from Hwang 2023 Table 2 (p. 821, “Summary of the Final Model
+Pharmacokinetic Parameters for Monalizumab”).
 
 | Parameter (model name) | Value | Source |
 |----|----|----|
@@ -400,8 +399,6 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
-#>  ■■■■■■■■■■■■■■■                   48% |  ETA:  4s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■       86% |  ETA:  1s
 knitr::kable(
   summary(nca_res),
   caption = "Simulated NCA parameters at near-steady-state (5th dosing interval, days 56-70)."
@@ -424,7 +421,7 @@ in the paper.
 
 | Quantity | Hwang 2023 | This model |
 |----|----|----|
-| CL at typical covariates (70.6 kg, 3.80 g/dL, etc.) | 0.255 L/day (Table 2) | `exp(lcl) = 0.255 L/day` (see [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html)) |
+| CL at typical covariates (70.6 kg, 3.80 g/dL, etc.) | 0.255 L/day (Table 2) | `exp(lcl) = 0.255 L/day` (see `ini()`) |
 | Apparent volume of distribution at typical covariates | 6.36 L (Abstract; V1 + V2) | `exp(lvc) + exp(lvp) = 3.58 + 2.78 = 6.36 L` |
 | Half-life range (single IV dose) | 2-3 weeks (Discussion, p. 818) | PKNCA `half.life` column above (terminal beta-phase governed by V2 / Q) |
 | Accumulation after 4 Q2W doses | 1.4- to 2-fold (Discussion, p. 818) | Implicit in steady-state vs. first-dose AUC ratio; not tabulated separately |

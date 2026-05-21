@@ -577,9 +577,8 @@ warns on each.
   tissue-and-sub-compartment names like `vp_li`, `eu_mu`, `bc_lu`.
 - **Dose vs. concentration units.** `units$dosing = "mg"` and
   `units$concentration = "umol/L"` are dimensionally distinct (mass vs.
-  amount-of-substance); they are bridged inside
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html) by
-  the bioavailability hook `f(stomach_udca) <- FRACABS / mw_udca`, which
+  amount-of-substance); they are bridged inside `model()` by the
+  bioavailability hook `f(stomach_udca) <- FRACABS / mw_udca`, which
   applies both the dose-dependent fractional absorption and the
   mg-to-mmol unit conversion.
   [`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
@@ -588,11 +587,9 @@ warns on each.
 - **No IIV, no residual error.** The source paper fit the model to mean
   published profiles using least-squares, not maximum-likelihood
   population fitting; only the typical-value parameter set + bootstrap
-  CIs are reported. The vignette uses
-  [`rxSolve()`](https://nlmixr2.github.io/rxode2/reference/rxSolve.html)
-  directly; downstream users who want to fit subject-level data would
-  need to add IIV (and residual error) before passing the model to
-  [`nlmixr2()`](https://nlmixr2.github.io/nlmixr2est/reference/nlmixr2.html).
+  CIs are reported. The vignette uses `rxSolve()` directly; downstream
+  users who want to fit subject-level data would need to add IIV (and
+  residual error) before passing the model to `nlmixr2()`.
 - **PBC adaptation is a binary structural switch, not a continuous
   covariate.** The `DIS_PBC` indicator selects between two fixed
   parameter sets (healthy and PBC); intermediate disease severity is not

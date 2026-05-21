@@ -349,9 +349,7 @@ structural mismatch and are worth investigating rather than tuning.
   individual-level fits. This is the only place a non-paper-derived
   numerical value enters the model file: the 0.571 is a derived
   population mean rather than an estimated parameter, and is marked
-  `fixed()` in
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) with
-  the derivation in the trailing comment.
+  `fixed()` in `ini()` with the derivation in the trailing comment.
 - **Gallbladder-release gating via `(t >= tg)`.** Ide 2009 describes
   `tg` as the gallbladder-emptying time and parameterises it alongside
   the K12 / K21 rate constants in Table II. The packaged model encodes

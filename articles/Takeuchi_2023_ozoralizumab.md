@@ -471,7 +471,6 @@ Supplemental Tables S1-S3 under the typical-patient simulation above.
 - **Typical-patient comparison.** The published Tables S1 / S2 report
   medians from 1000 stochastic simulations with IIV and RUV; the
   comparison block uses a deterministic typical-patient simulation
-  ([`zeroRe()`](https://nlmixr2.github.io/rxode2/reference/zeroRe.html)).
-  For the typical-patient log-normal parameterisation the median equals
-  the typical value, so the comparison is appropriate; the 95%
-  prediction interval the paper reports is not reproduced here.
+  (`zeroRe()`). For the typical-patient log-normal parameterisation the
+  median equals the typical value, so the comparison is appropriate; the
+  95% prediction interval the paper reports is not reproduced here.

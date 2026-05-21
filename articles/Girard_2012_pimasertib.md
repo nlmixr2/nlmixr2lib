@@ -37,8 +37,7 @@ simulated dataset.
   cross-check was not performed.
 
 The metadata is queryable programmatically via the model file’s
-free-floating assignments before
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html):
+free-floating assignments before `ini()`:
 
 ``` r
 
@@ -50,9 +49,8 @@ print(class(mod_fn))
 ## Source trace
 
 Per-parameter origins are recorded as in-file comments next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/ddmore/Girard_2012_pimasertib.R`. The table below collects
-them in one place; every value comes from the
+`ini()` entry in `inst/modeldb/ddmore/Girard_2012_pimasertib.R`. The
+table below collects them in one place; every value comes from the
 `Output_real_Pimasertib_AeDropout.lst` `FINAL PARAMETER ESTIMATE` block
 (TH 1..18; OMEGA ETA1 / ETA2). The .lst was produced by
 `$ESTIMATION METHOD=1 MAXEVALS=0 LIKE LAPLACE` – a Laplacian evaluation
@@ -236,11 +234,9 @@ cat(sprintf("Maximum |rel_err_pct| over t in (0, 12]: %.4g%%\n",
 #> Maximum |rel_err_pct| over t in (0, 12]: 0.001217%
 ```
 
-The
-[`rxSolve()`](https://nlmixr2.github.io/rxode2/reference/rxSolve.html)
-cumulative-hazard trajectory matches the analytic Weibull form to
-numerical precision at every observation. F.3 mechanistic-sanity passes
-for the dropout sub-model.
+The `rxSolve()` cumulative-hazard trajectory matches the analytic
+Weibull form to numerical precision at every observation. F.3
+mechanistic-sanity passes for the dropout sub-model.
 
 ``` r
 
@@ -452,11 +448,8 @@ not on the Weibull hazard.
   **The placeholder Poisson is not a valid likelihood for re-fitting the
   original Girard 2012 dataset.** The full structural equations (`p0`,
   `p1`, `p2`, `pc1`, `pc2`, `hazard`, `cumhaz`, `survival`) are still
-  computed in
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html) and
-  exposed as
-  [`rxSolve()`](https://nlmixr2.github.io/rxode2/reference/rxSolve.html)
-  outputs, exercised directly in this vignette.
+  computed in `model()` and exposed as `rxSolve()` outputs, exercised
+  directly in this vignette.
 - **`PREV_AE_SCORE` Markov-state covariate is dataset-supplied.** The
   source NONMEM model uses the in-PRED idiom
   `IF (TIME.EQ.0) PREVSCOR = 0` and `PREVSCOR = DV` to carry the
@@ -469,18 +462,16 @@ not on the Weibull hazard.
   prior AE), which corresponds to the publication’s “first observation”
   condition and is the default initial Markov state.
 - **`emax2` (CTCAE \>= 3) and `THETA(12)` (CL exponent) are
-  intentionally omitted from
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html).** Both
-  are fixed at 0 in the source `.mod`. `emax2` is referenced only inside
-  an `IF(PREVSCOR.GE.3) EMAX = EMAX2` branch that is `;`-commented out
-  in the executable, so the active emax-selection is `emax0` vs `emax1`
+  intentionally omitted from `ini()`.** Both are fixed at 0 in the
+  source `.mod`. `emax2` is referenced only inside an
+  `IF(PREVSCOR.GE.3) EMAX = EMAX2` branch that is `;`-commented out in
+  the executable, so the active emax-selection is `emax0` vs `emax1`
   only. `THETA(12)` is the exponent in the term
   `(CL_IND/39.4)^THETA(12)` in the ED50 expression; with `THETA(12) = 0`
   the term collapses to 1 and ED50 reduces to `exp(led50)`. nlmixr2
-  rejects ini-only parameters that are never read by
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html), so
-  both are documented as comments next to the live ini entries rather
-  than declared.
+  rejects ini-only parameters that are never read by `model()`, so both
+  are documented as comments next to the live ini entries rather than
+  declared.
 - **`CL_IND` covariate is intentionally not registered.** Source
   `$INPUT` lists `CL_IND` (individual clearance from the upstream
   pimasertib popPK model, used as a continuous scaling covariate on

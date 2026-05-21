@@ -840,13 +840,13 @@ Figure 4.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">20201202</span><span class="op">)</span></span>
 <span><span class="va">sim_full</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod</span>, events <span class="op">=</span> <span class="va">d_sim</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> parameter labels from comments will be replaced by 'label()'</span></span>
+<span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
 <span></span>
 <span><span class="va">mod_typ</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/zeroRe.html" class="external-link">zeroRe</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> parameter labels from comments will be replaced by 'label()'</span></span>
+<span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
 <span><span class="va">sim_typ</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_typ</span>, events <span class="op">=</span> <span class="va">d_sim</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalrtotp', 'etalkout'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalrtotp', 'etalkout'</span></span>
 <span><span class="co">#&gt; Warning: multi-subject simulation without without 'omega'</span></span></code></pre></div>
 </div>
 <div class="section level3">
@@ -875,8 +875,7 @@ horizon.</p>
 <span>    caption <span class="op">=</span> <span class="st">"Replicates Figure 4A of Castro-Suárez 2020 — central compartment concentration following a single IV infusion of 50, 100, 200, 400, 800, or 1200 mg nimotuzumab in an ADPKD patient."</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning in scale_y_log10(): <span style="color: #00BB00;">log-10</span> transformation introduced</span></span>
-<span><span class="co">#&gt; infinite values.</span></span></code></pre></div>
+<span><span class="co">#&gt; Warning in scale_y_log10(): log-10 transformation introduced infinite values.</span></span></code></pre></div>
 <p><img src="Castro-Surez_2020_nimotuzumab_files/figure-html/fig4a-1.png" class="r-plt" alt="" width="672"></p>
 <p>The simulated 50 mg curve shows the faster early decline visible in
 the published Figure 4A, providing visual support for the V<sub>1</sub>
@@ -895,8 +894,7 @@ remaining ambiguity).</p>
 <span>    caption <span class="op">=</span> <span class="st">"Replicates Figure 4(b) of Castro-Suárez 2020 (typical-value simulation)."</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning in scale_y_log10(): <span style="color: #00BB00;">log-10</span> transformation introduced</span></span>
-<span><span class="co">#&gt; infinite values.</span></span></code></pre></div>
+<span><span class="co">#&gt; Warning in scale_y_log10(): log-10 transformation introduced infinite values.</span></span></code></pre></div>
 <p><img src="Castro-Surez_2020_nimotuzumab_files/figure-html/fig4b-1.png" class="r-plt" alt="" width="672"></p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">sim_typ_one</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">effect</span>, colour <span class="op">=</span> <span class="va">dose_label</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -947,10 +945,10 @@ mg dose where the mediator sensitivity is highest.</p>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning in scale_y_log10(): <span style="color: #00BB00;">log-10</span> transformation introduced infinite values.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">log-10</span> transformation introduced infinite values.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">log-10</span> transformation introduced infinite values.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">log-10</span> transformation introduced infinite values.</span></span></code></pre></div>
+<span><span class="co">#&gt; Warning in scale_y_log10(): log-10 transformation introduced infinite values.</span></span>
+<span><span class="co">#&gt; log-10 transformation introduced infinite values.</span></span>
+<span><span class="co">#&gt; log-10 transformation introduced infinite values.</span></span>
+<span><span class="co">#&gt; log-10 transformation introduced infinite values.</span></span></code></pre></div>
 <p><img src="Castro-Surez_2020_nimotuzumab_files/figure-html/vpc-1.png" class="r-plt" alt="" width="672"></p>
 </div>
 <div class="section level3">
@@ -995,25 +993,6 @@ the dose-group grouping variable so the summary rolls up per cohort.</p>
 <span></span>
 <span><span class="va">nca_data</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_obj</span>, <span class="va">dose_obj</span>, intervals <span class="op">=</span> <span class="va">intervals</span><span class="op">)</span></span>
 <span><span class="va">nca_res</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span><span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="va">nca_data</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■                             </span>   5% |  ETA:  1m</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■                            </span>  10% |  ETA:  1m</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■                          </span>  15% |  ETA:  1m</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■                         </span>  20% |  ETA: 47s</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■                       </span>  26% |  ETA: 44s</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■                      </span>  31% |  ETA: 41s</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■                    </span>  36% |  ETA: 38s</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■                   </span>  41% |  ETA: 35s</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■                 </span>  46% |  ETA: 32s</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■                </span>  51% |  ETA: 29s</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■              </span>  56% |  ETA: 26s</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■             </span>  62% |  ETA: 23s</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■           </span>  66% |  ETA: 20s</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■         </span>  72% |  ETA: 17s</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■        </span>  77% |  ETA: 13s</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■      </span>  82% |  ETA: 11s</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■     </span>  87% |  ETA:  8s</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■   </span>  92% |  ETA:  5s</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  </span>  97% |  ETA:  2s</span></span>
 <span></span>
 <span><span class="va">nca_tbl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">nca_res</span><span class="op">$</span><span class="va">result</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">PPTESTCD</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cmax"</span>, <span class="st">"tmax"</span>, <span class="st">"aucinf.obs"</span>, <span class="st">"half.life"</span>, <span class="st">"clast.obs"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -1027,29 +1006,29 @@ the dose-group grouping variable so the summary rolls up per cohort.</p>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>treatment <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">treatment</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"50 mg"</span>, <span class="st">"100 mg"</span>, <span class="st">"200 mg"</span>, <span class="st">"400 mg"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">treatment</span>, <span class="va">PPTESTCD</span><span class="op">)</span></span>
 <span><span class="va">nca_tbl</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 20 × 5</span></span></span>
+<span><span class="co">#&gt; # A tibble: 20 × 5</span></span>
 <span><span class="co">#&gt;    treatment PPTESTCD      median        p05       p95</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> 50 mg     aucinf.obs  <span style="text-decoration: underline;">2</span>867.     <span style="text-decoration: underline;">2</span>193.      <span style="text-decoration: underline;">3</span>803.   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> 50 mg     clast.obs      0.100     0.020<span style="text-decoration: underline;">4</span>     0.697</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> 50 mg     cmax          40.1      40.1       40.1  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> 50 mg     half.life    130.       86.9      265.   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> 50 mg     tmax           0.5       0.5        0.5  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> 100 mg    aucinf.obs  <span style="text-decoration: underline;">4</span>936.     <span style="text-decoration: underline;">4</span>091.      <span style="text-decoration: underline;">6</span>955.   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> 100 mg    clast.obs      0.507     0.341      1.44 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> 100 mg    cmax          37.9      37.9       37.9  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> 100 mg    half.life    180.      130.       283.   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> 100 mg    tmax           0.5       0.5        0.5  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span> 200 mg    aucinf.obs  <span style="text-decoration: underline;">9</span>484.     <span style="text-decoration: underline;">7</span>306.     <span style="text-decoration: underline;">13</span>227.   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">12</span> 200 mg    clast.obs      0.595     0.408      1.83 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">13</span> 200 mg    cmax          75.8      75.8       75.8  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">14</span> 200 mg    half.life    168.      115.       268.   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">15</span> 200 mg    tmax           0.5       0.5        0.5  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">16</span> 400 mg    aucinf.obs <span style="text-decoration: underline;">17</span>128.    <span style="text-decoration: underline;">12</span>511.     <span style="text-decoration: underline;">26</span>952.   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">17</span> 400 mg    clast.obs      0.808     0.484      2.38 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">18</span> 400 mg    cmax         152.      152.       152.   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">19</span> 400 mg    half.life    165.      104.       255.   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">20</span> 400 mg    tmax           0.5       0.5        0.5</span></span></code></pre></div>
+<span><span class="co">#&gt;    &lt;fct&gt;     &lt;chr&gt;          &lt;dbl&gt;      &lt;dbl&gt;     &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1 50 mg     aucinf.obs  2867.     2193.      3803.   </span></span>
+<span><span class="co">#&gt;  2 50 mg     clast.obs      0.100     0.0204     0.697</span></span>
+<span><span class="co">#&gt;  3 50 mg     cmax          40.1      40.1       40.1  </span></span>
+<span><span class="co">#&gt;  4 50 mg     half.life    130.       86.9      265.   </span></span>
+<span><span class="co">#&gt;  5 50 mg     tmax           0.5       0.5        0.5  </span></span>
+<span><span class="co">#&gt;  6 100 mg    aucinf.obs  4936.     4091.      6955.   </span></span>
+<span><span class="co">#&gt;  7 100 mg    clast.obs      0.507     0.341      1.44 </span></span>
+<span><span class="co">#&gt;  8 100 mg    cmax          37.9      37.9       37.9  </span></span>
+<span><span class="co">#&gt;  9 100 mg    half.life    180.      130.       283.   </span></span>
+<span><span class="co">#&gt; 10 100 mg    tmax           0.5       0.5        0.5  </span></span>
+<span><span class="co">#&gt; 11 200 mg    aucinf.obs  9484.     7306.     13227.   </span></span>
+<span><span class="co">#&gt; 12 200 mg    clast.obs      0.595     0.408      1.83 </span></span>
+<span><span class="co">#&gt; 13 200 mg    cmax          75.8      75.8       75.8  </span></span>
+<span><span class="co">#&gt; 14 200 mg    half.life    168.      115.       268.   </span></span>
+<span><span class="co">#&gt; 15 200 mg    tmax           0.5       0.5        0.5  </span></span>
+<span><span class="co">#&gt; 16 400 mg    aucinf.obs 17128.    12511.     26952.   </span></span>
+<span><span class="co">#&gt; 17 400 mg    clast.obs      0.808     0.484      2.38 </span></span>
+<span><span class="co">#&gt; 18 400 mg    cmax         152.      152.       152.   </span></span>
+<span><span class="co">#&gt; 19 400 mg    half.life    165.      104.       255.   </span></span>
+<span><span class="co">#&gt; 20 400 mg    tmax           0.5       0.5        0.5</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="comparison-against-the-published-narrative-values">Comparison against the published narrative values<a class="anchor" aria-label="anchor" href="#comparison-against-the-published-narrative-values"></a>
@@ -1097,14 +1076,14 @@ mg).</p>
 <span>  <span class="st">"Free Cc above S50 (8.57 mg/L) duration @ 100 mg (typ.)"</span>, <span class="cn">NA_real_</span>,              <span class="va">hours_above_S50_100</span>,                <span class="st">"h"</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">comparison</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 5 × 4</span></span></span>
+<span><span class="co">#&gt; # A tibble: 5 × 4</span></span>
 <span><span class="co">#&gt;   metric                                               published simulated units</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                                    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> Vss (typical) = V1 + V2                                   2.64      2.64 L    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> Cmax @ 100 mg, end of 30-min infusion (typical)          <span style="color: #BB0000;">NA</span>        37.9  mg/L </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> Cmax @ 50 mg, end of 30-min infusion (typical)           <span style="color: #BB0000;">NA</span>        40.1  mg/L </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> Cmax @ 50 mg if V1 shift were not applied                <span style="color: #BB0000;">NA</span>        19.0  mg/L </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> Free Cc above S50 (8.57 mg/L) duration @ 100 mg (ty…     <span style="color: #BB0000;">NA</span>       174.   h</span></span></code></pre></div>
+<span><span class="co">#&gt;   &lt;chr&gt;                                                    &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;</span></span>
+<span><span class="co">#&gt; 1 Vss (typical) = V1 + V2                                   2.64      2.64 L    </span></span>
+<span><span class="co">#&gt; 2 Cmax @ 100 mg, end of 30-min infusion (typical)          NA        37.9  mg/L </span></span>
+<span><span class="co">#&gt; 3 Cmax @ 50 mg, end of 30-min infusion (typical)           NA        40.1  mg/L </span></span>
+<span><span class="co">#&gt; 4 Cmax @ 50 mg if V1 shift were not applied                NA        19.0  mg/L </span></span>
+<span><span class="co">#&gt; 5 Free Cc above S50 (8.57 mg/L) duration @ 100 mg (ty…     NA       174.   h</span></span></code></pre></div>
 <p>The simulated typical-patient V<sub>ss</sub> exactly matches the
 published 2.64 L (V<sub>1</sub> + V<sub>2</sub> are direct fixed-effect
 parameters; for doses other than 50 mg no covariate scaling applies).

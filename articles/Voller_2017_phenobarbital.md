@@ -62,14 +62,13 @@ str(mod_meta$population)
 
 ## Source trace
 
-Every parameter in the model file’s
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) block
-carries an in-file provenance comment pointing back to the DDMORE
-bundle. The table below collects them in one place; THETA / OMEGA /
-SIGMA values come from the `FINAL PARAMETER ESTIMATE` block of
-`Output_real_run522.lst` after `MINIMIZATION SUCCESSFUL` (objective
-function value 1129.151), and the equation forms come from
-`Executable_OriginalModelCode.mod` `$PK` / `$ERROR`.
+Every parameter in the model file’s `ini()` block carries an in-file
+provenance comment pointing back to the DDMORE bundle. The table below
+collects them in one place; THETA / OMEGA / SIGMA values come from the
+`FINAL PARAMETER ESTIMATE` block of `Output_real_run522.lst` after
+`MINIMIZATION SUCCESSFUL` (objective function value 1129.151), and the
+equation forms come from `Executable_OriginalModelCode.mod` `$PK` /
+`$ERROR`.
 
 | Parameter / equation | Value | Source location |
 |----|----|----|
@@ -424,8 +423,7 @@ al.
   `MINIMIZATION SUCCESSFUL`, 53 subjects / 229 observations). The `.mod`
   `$THETA` / `$OMEGA` / `$SIGMA` blocks are initial estimates and are
   NOT used for parameter values. KA was FIXED in the source
-  (`$THETA 50 FIX`) and is wrapped in `fixed(...)` in
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html).
+  (`$THETA 50 FIX`) and is wrapped in `fixed(...)` in `ini()`.
 
 - **Canonical PNA units (months) vs source-paper units (days).** The
   covariate-columns register fixes `PNA` in months. The Voller 2017
@@ -447,15 +445,13 @@ al.
   `BWTBIRTH`) was confirmed by the operator via the runner sidecar
   protocol.
 
-- **Bioavailability `lfdepot` is not bounded in
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html).** The
-  source `$THETA` declared `(0, 0.594, 1)` for F1, an explicit (0, 1)
-  bound. The packaged nlmixr2 model holds the typical value as
-  `exp(lfdepot)` without the explicit bound; for typical-value
-  simulation this is exact. Users re-fitting on real data should
-  re-introduce the (0, 1) bound via a logit transformation in their
-  fitting workflow rather than estimating `lfdepot` directly on the log
-  scale.
+- **Bioavailability `lfdepot` is not bounded in `ini()`.** The source
+  `$THETA` declared `(0, 0.594, 1)` for F1, an explicit (0, 1) bound.
+  The packaged nlmixr2 model holds the typical value as `exp(lfdepot)`
+  without the explicit bound; for typical-value simulation this is
+  exact. Users re-fitting on real data should re-introduce the (0, 1)
+  bound via a logit transformation in their fitting workflow rather than
+  estimating `lfdepot` directly on the log scale.
 
 - **No correlation between IIV(CL) and IIV(V).** The source declared two
   separate diagonal `$OMEGA` blocks (`$OMEGA 0.0898` / `$OMEGA 0.0504`),

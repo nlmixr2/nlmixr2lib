@@ -43,9 +43,8 @@ str(formals(mod_fn))
 ## Source trace
 
 Per-parameter origins are recorded as in-file comments next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/ddmore/Plan_2012_pain.R`. The table below collects them in
-one place.
+`ini()` entry in `inst/modeldb/ddmore/Plan_2012_pain.R`. The table below
+collects them in one place.
 
 nlmixr2 parameter \| NONMEM source \| .mod \$THETA/ \$OMEGA \| .lst
 final estimate \|
@@ -243,9 +242,8 @@ Effect of CONMED_PARA = 1 on the typical pain score lambda. {.table}
   (`score ~ pois(lam)`), retaining the typical-value mean-count
   trajectory but dropping the Markov / underdispersion / inflation
   variance structure. The full likelihood expressions (`pi00`, `pi09`,
-  `pi10`, `pi1`, `pi2`, `pi3`, `dis`) are still computed in
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html) for
-  source-trace fidelity. **F.3 mechanistic-sanity validation is
+  `pi10`, `pi1`, `pi2`, `pi3`, `dis`) are still computed in `model()`
+  for source-trace fidelity. **F.3 mechanistic-sanity validation is
   therefore restricted to the typical-value `lam(t)` trajectory** (which
   the simplified Poisson reproduces exactly). VPC-style validation of
   the Markov / underdispersion structure is out of scope of this
@@ -265,8 +263,7 @@ Effect of CONMED_PARA = 1 on the typical pain score lambda. {.table}
 - **`ETA(4)` shared across `pi00` / `pi09` / `pi10` in the source.** In
   the .mod, NONMEM `ETA(4)` is added to all three logits `logitpi00`,
   `logitpi09`, `logitpi10`. The nlmixr2 model attaches the shared eta to
-  `etalogitpi00` and replicates it onto the other two within
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html).
+  `etalogitpi00` and replicates it onto the other two within `model()`.
   Because the simplified observation does not exercise the
   Markov-inflation arms, this only matters for full-likelihood fitting
   (out of scope here).
@@ -288,6 +285,5 @@ Effect of CONMED_PARA = 1 on the typical pain score lambda. {.table}
   supports. The publication’s reported `BAS = 6.21`, `PEF = 0.190`,
   `PHA = 27.7 d` are reproduced exactly by construction (they are
   `THETA(1) / THETA(2) / THETA(3)`); the validation plot above is a
-  numerical confirmation that the nlmixr2 model and
-  [`rxSolve()`](https://nlmixr2.github.io/rxode2/reference/rxSolve.html)
-  evaluate the closed-form placebo-decay expression correctly.
+  numerical confirmation that the nlmixr2 model and `rxSolve()` evaluate
+  the closed-form placebo-decay expression correctly.

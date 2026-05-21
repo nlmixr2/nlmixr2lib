@@ -68,7 +68,7 @@ str(mod$meta$covariateData)
 ## Source trace
 
 Per-parameter origin is recorded as in-file comments next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
+`ini()` entry in
 `inst/modeldb/endogenous/Tetschke_2018_erythropoiesis.R`. The table
 below collects them in one place for review.
 

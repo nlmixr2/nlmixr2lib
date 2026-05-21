@@ -83,8 +83,7 @@ loaded).
 ## Source trace
 
 Per-parameter origin (also recorded as in-file comments next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry of
-`inst/modeldb/ddmore/vanRongen_2018_midazolam.R`):
+`ini()` entry of `inst/modeldb/ddmore/vanRongen_2018_midazolam.R`):
 
 | Equation / parameter | Value | Source location |
 |----|----|----|

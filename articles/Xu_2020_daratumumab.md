@@ -56,9 +56,8 @@ The same metadata is available programmatically via
 ## Source trace
 
 The per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/specificDrugs/Xu_2020_daratumumab.R`. The table below
-collects the equation and parameter origins in one place.
+`ini()` entry in `inst/modeldb/specificDrugs/Xu_2020_daratumumab.R`. The
+table below collects the equation and parameter origins in one place.
 
 | Equation / parameter | Value | Source location |
 |----|----|----|
@@ -479,5 +478,4 @@ timing of the second infusion. {.table}
 - **Errata.** No erratum or correction notice was located on disk; the
   source files comprise the main PMC XML plus the docx supplement. If a
   later correction adjusts an Online Resource 6 value, the affected
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry
-  should be updated and the citation extended.
+  `ini()` entry should be updated and the citation extended.

@@ -41,9 +41,8 @@ are available programmatically via
 ## Source trace
 
 The per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/specificDrugs/Hall_2017_dapsone.R`. The table below
-collects them for reviewer audit.
+`ini()` entry in `inst/modeldb/specificDrugs/Hall_2017_dapsone.R`. The
+table below collects them for reviewer audit.
 
 | Equation / parameter | Value | Source location |
 |----|----|----|
@@ -458,12 +457,11 @@ AUCinf ~= 49 mg.h/L).
 - **In-cohort covariate range**: the MARS hinges have no physical
   constraint outside the cohort’s covariate range (WT 58-138 kg, AGE
   21-77 yr, BUN 7-28 mg/dL). The linear-scale typical value can go
-  non-positive under extrapolation; the
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html)
-  block clamps Ka, CL, and Vc at a small positive floor (0.01, 0.01, and
-  0.1 respectively) to keep the ODE well-posed. Stay inside the
-  in-cohort range for virtual cohorts; outside that range the clamped
-  values are not a meaningful PK prediction.
+  non-positive under extrapolation; the `model()` block clamps Ka, CL,
+  and Vc at a small positive floor (0.01, 0.01, and 0.1 respectively) to
+  keep the ODE well-posed. Stay inside the in-cohort range for virtual
+  cohorts; outside that range the clamped values are not a meaningful PK
+  prediction.
 - **IIV from base model, not covariate-adjusted**: Hall 2017 reports the
   base 1-compartment %CVs (94.7% Ka, 37.6% CL, 50.5% Vc) but does not
   report IIV after the MARS hinges are applied. The packaged model uses

@@ -57,9 +57,8 @@ The same metadata is available programmatically via
 ## Source trace
 
 The per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/specificDrugs/Diao_2014_rFIXFc.R`. The table below
-collects them in one place for review.
+`ini()` entry in `inst/modeldb/specificDrugs/Diao_2014_rFIXFc.R`. The
+table below collects them in one place for review.
 
 | Parameter (model name) | Value | Source |
 |----|----|----|
@@ -302,9 +301,6 @@ intervals <- data.frame(
 
 nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj,
                                           intervals = intervals))
-#>  ■■■■■                             14% |  ETA:  8s
-#>  ■■■■■■■■■■■■■■■■                  50% |  ETA:  4s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■       87% |  ETA:  1s
 nca_tbl <- as.data.frame(nca_res$result)
 
 summary_by_param <- function(param) {

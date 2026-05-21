@@ -72,8 +72,7 @@ str(ui$population)
 ## Source trace
 
 Every parameter’s source location is also recorded as an inline comment
-next to its
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) line in
+next to its `ini()` line in
 `inst/modeldb/specificDrugs/Petrov_2024_romiplostim.R`.
 
 | Equation / parameter | Value | Source |

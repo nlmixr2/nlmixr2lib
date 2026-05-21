@@ -300,10 +300,9 @@ data.frame(
   (metabolite formation fraction), `th1..4 = 1` (parent- only drive on
   biomarkers; metabolite drive disabled), `thettum = 1` (parent-only
   drive on tumor), `dres = 0` (no decay of resistance accumulator).
-  These are encoded as numeric constants inside
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html)
-  rather than as estimable parameters. They cannot be changed without
-  editing the model file.
+  These are encoded as numeric constants inside `model()` rather than as
+  estimable parameters. They cannot be changed without editing the model
+  file.
 - **Off-diagonal IIV correlations dropped.** The MDL declares a 14x14
   `OMEGA` `type is corr` correlation matrix on the active etas with
   mostly small (\|0.01\|-\|0.07\|) off-diagonal entries. The nlmixr2

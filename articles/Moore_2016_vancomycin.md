@@ -39,10 +39,9 @@ programmatically via `readModelDb("Moore_2016_vancomycin")$population`.
 
 ## Source trace
 
-Every numeric value in
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) carries
-an in-file comment pointing to the Moore 2016 source location. The table
-below collects them in one place for review.
+Every numeric value in `ini()` carries an in-file comment pointing to
+the Moore 2016 source location. The table below collects them in one
+place for review.
 
 | Equation / parameter | Value | Source location |
 |----|----|----|
@@ -219,8 +218,7 @@ sim |>
     title = "Median simulated vancomycin by covariate cohort",
     caption = "Five 1 g IV doses every 12 h; cohorts bracket the WT and CRCL ranges in Moore 2016 Table 1."
   )
-#> Warning in scale_y_log10(): log-10 transformation introduced
-#> infinite values.
+#> Warning in scale_y_log10(): log-10 transformation introduced infinite values.
 ```
 
 ![](Moore_2016_vancomycin_files/figure-html/cohort-overlay-1.png)
@@ -270,11 +268,6 @@ intervals <- data.frame(
 nca_res <- PKNCA::pk.nca(
   PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 )
-#>  ■■■■■■                            15% |  ETA: 12s
-#>  ■■■■■■■■■■■■                      36% |  ETA:  9s
-#>  ■■■■■■■■■■■■■■■■■■                57% |  ETA:  6s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■          78% |  ETA:  3s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    97% |  ETA:  0s
 
 nca_summary <- summary(nca_res)
 knitr::kable(

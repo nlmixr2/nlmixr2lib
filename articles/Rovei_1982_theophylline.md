@@ -30,9 +30,8 @@ The same information is available programmatically via
 ## Source trace
 
 Per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/specificDrugs/Rovei_1982_theophylline.R`. The table below
-collects them for review.
+`ini()` entry in `inst/modeldb/specificDrugs/Rovei_1982_theophylline.R`.
+The table below collects them for review.
 
 | Equation / parameter | Value | Source location |
 |----|----|----|
@@ -1334,8 +1333,7 @@ derived vs 8.1-8.8 h paper Table 3) match closely.
   1982 describes individual subject fits to a one-compartment open model
   with Gauss-Newton iteration, then summarizes the eight individual
   parameter estimates as means and ranges (Table 3) and means +/- SDs
-  (Results page 773 narrative). The parameter values in
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) are the
+  (Results page 773 narrative). The parameter values in `ini()` are the
   across-dose means; IIV omegas are approximated from the inter-subject
   SD/mean (CV) reported for each dose. These are not formal
   nonlinear-mixed-effect omega estimates.

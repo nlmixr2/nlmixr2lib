@@ -70,7 +70,7 @@ The same metadata is available programmatically via
 ## Source trace
 
 The per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
+`ini()` entry in
 `inst/modeldb/specificDrugs/Ahamadi_2017_pembrolizumab.R`. The table
 below collects them in one place for review.
 
@@ -330,7 +330,6 @@ intervals_sd <- data.frame(
 nca_sd <- PKNCA::pk.nca(
   PKNCA::PKNCAdata(conc_obj_sd, dose_obj_sd, intervals = intervals_sd)
 )
-#>  ■■■■■■■■■■■■■■■■                  50% |  ETA:  3s
 knitr::kable(
   summary(nca_sd),
   caption = "Simulated NCA parameters over the first dosing interval (days 0-21)."
@@ -385,7 +384,6 @@ intervals_ss <- data.frame(
 nca_ss <- PKNCA::pk.nca(
   PKNCA::PKNCAdata(conc_obj_ss, dose_obj_ss, intervals = intervals_ss)
 )
-#>  ■■■■■■■■■■■■■■■■■                 52% |  ETA:  3s
 knitr::kable(
   summary(nca_ss),
   caption = "Simulated NCA parameters at near steady state (8th interval, days 147-168)."
@@ -408,7 +406,7 @@ can be cross-checked against the packaged model:
 
 | Quantity | Ahamadi 2017 | This model |
 |----|----|----|
-| Baseline CL at reference covariates | 0.22 L/day | `exp(lcl) = 0.22 L/day` (see [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html)) |
+| Baseline CL at reference covariates | 0.22 L/day | `exp(lcl) = 0.22 L/day` (see `ini()`) |
 | Vc | 3.48 L | `exp(lvc) = 3.48 L` |
 | Q | 0.795 L/day | `exp(lq) = 0.795 L/day` |
 | Vp | 4.06 L | `exp(lvp) = 4.06 L` |

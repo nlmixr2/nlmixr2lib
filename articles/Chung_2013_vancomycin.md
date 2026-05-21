@@ -37,10 +37,9 @@ infusion). The same information is available programmatically via
 
 ## Source trace
 
-Every numeric value in
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) carries
-an in-file comment pointing to the Chung 2013 source location. The table
-below collects them in one place for review.
+Every numeric value in `ini()` carries an in-file comment pointing to
+the Chung 2013 source location. The table below collects them in one
+place for review.
 
 | Equation / parameter | Value | Source location |
 |----|----|----|

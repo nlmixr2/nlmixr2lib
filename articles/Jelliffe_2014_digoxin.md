@@ -49,9 +49,8 @@ The same metadata is available programmatically via
 ## Source trace
 
 Per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/specificDrugs/Jelliffe_2014_digoxin.R`. The table below
-collects them for review.
+`ini()` entry in `inst/modeldb/specificDrugs/Jelliffe_2014_digoxin.R`.
+The table below collects them for review.
 
 | Equation / parameter | Value | Source location |
 |----|----|----|
@@ -420,11 +419,10 @@ Simulated single-dose PKNCA output for the Patient A reference subject.
   uses log-transformed rate-constant parameters `lknr`, `lkr`, `lkcp`,
   `lkpc` directly, in addition to the canonical `lka`, `lvc`, and
   `lfdepot`. The composite central elimination rate
-  `kel = knr + kr * CRCL` is computed inside
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html).
-  This is a deviation from the canonical CL/V/Q parameterization used
-  elsewhere in nlmixr2lib but matches the structural model published by
-  Jelliffe 2014.
+  `kel = knr + kr * CRCL` is computed inside `model()`. This is a
+  deviation from the canonical CL/V/Q parameterization used elsewhere in
+  nlmixr2lib but matches the structural model published by Jelliffe
+  2014.
 - **Volumes scale linearly with body weight.** Vc is a per-kg parameter
   (1.5714 L/kg); the peripheral state is amount-per-kg. There is no
   allometric exponent estimated – the paper applies a strictly linear WT

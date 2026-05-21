@@ -58,11 +58,10 @@ The same information is available programmatically via
 ## Source trace
 
 The per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/ddmore/Lestini_2015_tgfbinhibitor.R`. The table below
-collects them in one place. All numerical values are read from
-`Output_simulated_PKPD.txt` of the DDMORE bundle (Monolix v4.3.0 MLE
-re-fit of the bundled `Simulated_PKPD.txt`); equations come from the
+`ini()` entry in `inst/modeldb/ddmore/Lestini_2015_tgfbinhibitor.R`. The
+table below collects them in one place. All numerical values are read
+from `Output_simulated_PKPD.txt` of the DDMORE bundle (Monolix v4.3.0
+MLE re-fit of the bundled `Simulated_PKPD.txt`); equations come from the
 `pkpd_model.txt` and `Executable_PKPD.mlxtran` MLXTRAN files.
 
 | Element | Value / form | Source location |

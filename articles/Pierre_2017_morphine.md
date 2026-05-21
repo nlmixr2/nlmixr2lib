@@ -50,9 +50,8 @@ the same information is available programmatically via
 ## Source trace
 
 The per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/specificDrugs/Pierre_2017_morphine.R`. The table below
-collects them in one place for review.
+`ini()` entry in `inst/modeldb/specificDrugs/Pierre_2017_morphine.R`.
+The table below collects them in one place for review.
 
 | Equation / parameter | Final value | Source location |
 |----|----|----|
@@ -257,11 +256,10 @@ ggplot(plot_fig4, aes(x = time, y = Q50, color = group, fill = group)) +
 
 PKNCA estimates Cmax, Tmax, and the steady-state AUC over the last
 dosing interval \[20-24 hr\] for both serum analytes by cohort. The
-morphine and M3G results are computed in separate
-[`PKNCAdata()`](http://humanpred.github.io/pknca/reference/PKNCAdata.md)
-objects because the dose column refers to morphine; the M3G NCA does not
-consume a dose column (metabolite exposure is computed against time, not
-against an explicit dose event).
+morphine and M3G results are computed in separate `PKNCAdata()` objects
+because the dose column refers to morphine; the M3G NCA does not consume
+a dose column (metabolite exposure is computed against time, not against
+an explicit dose event).
 
 ``` r
 
@@ -288,8 +286,6 @@ intervals_m <- data.frame(
 )
 
 nca_m <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_m, dose_m, intervals = intervals_m))
-#>  ■■■■■■■■■                         28% |  ETA:  6s
-#>  ■■■■■■■■■■■■■■■■■■■■■■            70% |  ETA:  2s
 nca_m_summary <- summary(nca_m)
 knitr::kable(
   nca_m_summary,
@@ -322,8 +318,6 @@ intervals_m3g <- data.frame(
 )
 nca_m3g <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_m3g, intervals = intervals_m3g))
 #> No dose information provided, calculations requiring dose will return NA.
-#>  ■■■■■■■■■■■■■■■■                  50% |  ETA:  4s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     92% |  ETA:  1s
 nca_m3g_summary <- summary(nca_m3g)
 knitr::kable(
   nca_m3g_summary,

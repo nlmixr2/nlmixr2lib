@@ -68,9 +68,8 @@ The same information is available programmatically:
 
 ## Source trace
 
-Per-parameter origin (recorded as in-file comments next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry of
-`inst/modeldb/specificDrugs/Aregbe_2012_alvespimycin.R`):
+Per-parameter origin (recorded as in-file comments next to each `ini()`
+entry of `inst/modeldb/specificDrugs/Aregbe_2012_alvespimycin.R`):
 
 | Equation / parameter | Value | Source location |
 |----|----|----|
@@ -227,8 +226,7 @@ ggplot(typical_one, aes(time, Cc)) +
     caption = paste("Five 1 h IV infusions of 36 mg/m^2 (= 68.4 mg per dose at BSA 1.9 m^2);",
                     "shape replicates Aregbe 2012 Supplemental Figure 2 panel A.")
   )
-#> Warning in scale_y_log10(): log-10 transformation introduced
-#> infinite values.
+#> Warning in scale_y_log10(): log-10 transformation introduced infinite values.
 ```
 
 ![](Aregbe_2012_alvespimycin_files/figure-html/supp-figure-2-1.png)

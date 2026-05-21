@@ -841,25 +841,25 @@ per-state baseline logit being shifted toward higher fatigue
 probability.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">modT</span>, events <span class="op">=</span> <span class="va">events</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etaclge_px0', 'etaclge_px1', 'etaclge_px2', 'etaclge_px3'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etaclge_px0', 'etaclge_px1', 'etaclge_px2', 'etaclge_px3'</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">sim</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">time</span> <span class="op">/</span> <span class="op">(</span><span class="fl">7</span> <span class="op">*</span> <span class="fl">24</span><span class="op">)</span>, <span class="va">svegfr3</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time (weeks)"</span>,</span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">sim</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">time</span> <span class="op">/</span> <span class="op">(</span><span class="fl">7</span> <span class="op">*</span> <span class="fl">24</span><span class="op">)</span>, <span class="va">svegfr3</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time (weeks)"</span>,</span>
 <span>       y <span class="op">=</span> <span class="st">"sVEGFR-3 (pg/mL)"</span>,</span>
 <span>       title <span class="op">=</span> <span class="st">"Typical-value sVEGFR-3 trajectory under 4-on/2-off sunitinib"</span>,</span>
 <span>       caption <span class="op">=</span> <span class="st">"Hansson 2013c typical-value parameters; 50 mg during on-cycles, 0 mg during off-cycles. Baseline 63900 pg/mL."</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu">theme_minimal</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Hansson_2013c_sunitinib_files/figure-html/f3-typical-1.png" class="r-plt" alt="" width="700"></p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">sim</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">time</span> <span class="op">/</span> <span class="op">(</span><span class="fl">7</span> <span class="op">*</span> <span class="fl">24</span><span class="op">)</span>, <span class="va">bm</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">0</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span>, colour <span class="op">=</span> <span class="st">"grey50"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time (weeks)"</span>,</span>
+<code class="sourceCode R"><span><span class="fu">ggplot</span><span class="op">(</span><span class="va">sim</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">time</span> <span class="op">/</span> <span class="op">(</span><span class="fl">7</span> <span class="op">*</span> <span class="fl">24</span><span class="op">)</span>, <span class="va">bm</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_hline</span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">0</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span>, colour <span class="op">=</span> <span class="st">"grey50"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time (weeks)"</span>,</span>
 <span>       y <span class="op">=</span> <span class="st">"BM = (sVEGFR-3 - baseline) / baseline (unitless)"</span>,</span>
 <span>       title <span class="op">=</span> <span class="st">"Relative change in sVEGFR-3 under 4-on/2-off sunitinib"</span>,</span>
 <span>       caption <span class="op">=</span> <span class="st">"BM drives the placebo coefficient on each starting-state baseline logit."</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu">theme_minimal</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Hansson_2013c_sunitinib_files/figure-html/f3-bm-trajectory-1.png" class="r-plt" alt="" width="700"></p>
 <p>Mechanistic sanity at the typical-value parameters:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
@@ -983,17 +983,17 @@ dynamics that produced
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">sub1_sim</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">modT</span>, events <span class="op">=</span> <span class="va">sub1_events</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etaclge_px0', 'etaclge_px1', 'etaclge_px2', 'etaclge_px3'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etaclge_px0', 'etaclge_px1', 'etaclge_px2', 'etaclge_px3'</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">sub1_sim</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">svegfr3</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">42554</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span>, colour <span class="op">=</span> <span class="st">"grey50"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time (h)"</span>,</span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">sub1_sim</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">time</span>, <span class="va">svegfr3</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_hline</span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">42554</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span>, colour <span class="op">=</span> <span class="st">"grey50"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time (h)"</span>,</span>
 <span>       y <span class="op">=</span> <span class="st">"sVEGFR-3 (pg/mL)"</span>,</span>
 <span>       title <span class="op">=</span> <span class="st">"Bundle subject 1: sVEGFR-3 trajectory under continuous 50 mg/day"</span>,</span>
 <span>       subtitle <span class="op">=</span> <span class="st">"BAS_SVEGFR3 = 42554, MRT_SVEGFR3 = 368, EC50_SVEGFR3 = 1.0, CLI = 33"</span>,</span>
 <span>       caption <span class="op">=</span> <span class="st">"Should match the structural Output_simulated_Fatigue_GIST.lst sVEGFR-3 dynamics."</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu">theme_minimal</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Hansson_2013c_sunitinib_files/figure-html/f2-self-consistency-1.png" class="r-plt" alt="" width="700"></p>
 <p>By the end of the 27-day window, sVEGFR-3 has dropped from 42554 to
 roughly 22000 pg/mL (~50% depletion), driving <code>bm</code> to about

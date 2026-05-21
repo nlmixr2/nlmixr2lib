@@ -48,7 +48,7 @@ The same information is available programmatically via
 ## Source trace
 
 Per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
+`ini()` entry in
 `inst/modeldb/specificDrugs/Schipani_2013_atazanavir_ritonavir.R`. The
 table below collects them for review.
 
@@ -242,8 +242,6 @@ intervals_ss <- data.frame(
 
 nca_res_atv <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_atv, dose_atv,
                                               intervals = intervals_ss))
-#>  ■■■■■■■■■■■■■■■■■                 54% |  ETA:  3s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    98% |  ETA:  0s
 nca_summary_atv <- as.data.frame(summary(nca_res_atv))
 knitr::kable(nca_summary_atv,
              caption = "Simulated steady-state NCA -- atazanavir, by regimen.")
@@ -280,8 +278,6 @@ dose_rtv <- PKNCA::PKNCAdose(dose_df_rtv, amt ~ time | regimen + id,
 
 nca_res_rtv <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_rtv, dose_rtv,
                                               intervals = intervals_ss))
-#>  ■■■■■■■■■■                        30% |  ETA:  5s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■          76% |  ETA:  2s
 nca_summary_rtv <- as.data.frame(summary(nca_res_rtv))
 knitr::kable(nca_summary_rtv,
              caption = "Simulated steady-state NCA -- ritonavir, by regimen.")
@@ -363,8 +359,7 @@ recommended minimum effective concentration for boosted ATV). {.table}
   estimates** (ATV 1.81 1/h, RTV 0.898 1/h). The paper holds these
   parameters constant because joint estimation produced numerical
   instability (Schipani 2013 Results). They are encoded with `fixed()`
-  in [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) so
-  downstream users can see the constraint.
+  in `ini()` so downstream users can see the constraint.
 - **Bioavailability F is not in the model (F = 1 by default).** The
   paper parameterises CL/F and V/F directly without resolving F; the
   rxode2/nlmixr2 default `f(depot) = 1` reproduces this.

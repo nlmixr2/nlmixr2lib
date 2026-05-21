@@ -76,9 +76,8 @@ in `inst/modeldb/specificDrugs/Lu_2014_sglt_qsp.R`):
 Canagliflozin defaults are documented in the `lki1`, `lki2`, and `lfup`
 labels in the model file (`lki1` = 200 nmol/L, `lki2` = 0.6 nmol/L,
 `lfup` = 0.01); to simulate canagliflozin instead of dapagliflozin, edit
-the model file’s
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) block or
-override the parameters at simulation time.
+the model file’s `ini()` block or override the parameters at simulation
+time.
 
 ## Validation strategy
 
@@ -427,20 +426,18 @@ ggplot(fig6a, aes(loss_of_function_pct, daily_uge_g)) +
   time-varying GFR (clamp procedures with measured iohexol clearance
   changing over the visit), an upstream extension would add `GFR` as a
   regressor; not implemented here.
-- **T2DM vs healthy Vmax2.** The typical-value Vmax2 in
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) is the
+- **T2DM vs healthy Vmax2.** The typical-value Vmax2 in `ini()` is the
   calibrated healthy value (93.5 mmol/h); the T2DM = 1 cohort uses
   Vmax2_TYP \* (1 + 0.176) = 110 mmol/h via the covariate effect
   `e_t2dm_vmax2`. All other SGLT-kinetics parameters (Vmax1, Km1, Km2,
   Ki1, Ki2) are held common between T2DM and healthy per Lu 2014
   Methods.
-- **Dapagliflozin defaults in
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html).**
-  `lki1`, `lki2`, and `lfup` default to the dapagliflozin values from Lu
-  2014 Table 3. To simulate canagliflozin, override the parameters at
-  simulation time (`lki1 = log(200)`, `lki2 = log(0.6)`,
-  `lfup = log(0.01)`) or edit the model file. The canagliflozin values
-  are noted in the labels of the relevant parameters in the model file.
+- **Dapagliflozin defaults in `ini()`.** `lki1`, `lki2`, and `lfup`
+  default to the dapagliflozin values from Lu 2014 Table 3. To simulate
+  canagliflozin, override the parameters at simulation time
+  (`lki1 = log(200)`, `lki2 = log(0.6)`, `lfup = log(0.01)`) or edit the
+  model file. The canagliflozin values are noted in the labels of the
+  relevant parameters in the model file.
 - **No fitted IIV or residual error.** The Lu 2014 publication does not
   report a population-PK style estimation: the model is calibrated by
   hand-tuning typical-value parameters in Berkeley Madonna v8.3.18 to

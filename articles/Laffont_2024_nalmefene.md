@@ -37,9 +37,8 @@ The same information is available programmatically via
 ## Source trace
 
 Per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/specificDrugs/Laffont_2024_nalmefene.R`. The table below
-collects them for review.
+`ini()` entry in `inst/modeldb/specificDrugs/Laffont_2024_nalmefene.R`.
+The table below collects them for review.
 
 | Equation / parameter | Value | Source location |
 |----|----|----|
@@ -199,8 +198,6 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- suppressWarnings(PKNCA::pk.nca(nca_data))
-#>  ■■■■■■■■■                         26% |  ETA:  6s
-#>  ■■■■■■■■■■■■■■■■■■■■              62% |  ETA:  3s
 
 knitr::kable(
   summary(nca_res),
@@ -236,8 +233,7 @@ form and parameter values were extracted correctly.
   The IM arm exists only because Crystal et al. 2024 included a 1 mg IM
   reference dose; the rescue indication for nalmefene is intranasal, so
   the Laffont_2024_nalmefene model file simulates only the IN route. To
-  extend the model to IM, replace `inka` with `imka` in the
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html)
+  extend the model to IM, replace `inka` with `imka` in the `model()`
   block, set the zero-order fraction to `IMFK0`, and divide CL/F by FR
   (`= 0.834`) to back out the absolute IM CL.
 - **STDEFF (proportional shift in INKA under hypercapnic mask) set to

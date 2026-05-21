@@ -54,9 +54,8 @@ The same metadata are available programmatically via
 
 ## Source trace
 
-The per-parameter origin is recorded inline next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/specificDrugs/Xie_2000_m3g_rat.R`. The table below
+The per-parameter origin is recorded inline next to each `ini()` entry
+in `inst/modeldb/specificDrugs/Xie_2000_m3g_rat.R`. The table below
 collects everything in one place for review.
 
 | Equation / parameter | Value | Source location |
@@ -344,8 +343,7 @@ Model A into a 1-compartment plasma surrogate (documented below).
 - **Single IIV magnitude on CL_u,in across treatment arms.** Table 3 of
   the paper reports two different inter-animal variabilities for
   CL_u,in: 49% in the without-probenecid pool (RSE 25%) and 20% in the
-  with-probenecid arm (RSE 47%). The current nlmixr2lib
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) syntax
+  with-probenecid arm (RSE 47%). The current nlmixr2lib `ini()` syntax
   does not support arm-dependent IIV magnitudes directly; the packaged
   model uses the without-probenecid value (49%) for both arms. Users
   simulating probenecid-arm data should expect mildly over-dispersed

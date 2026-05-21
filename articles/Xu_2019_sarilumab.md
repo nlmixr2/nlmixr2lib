@@ -80,12 +80,11 @@ albumin/ULN ratio of 0.78 (i.e. 38 g/L over a typical ULN of 48.7 g/L),
 - **CV% to log-normal variance.** Xu 2019 Table 3 reports
   between-subject variability as CV% on the linear-parameter scale. The
   nlmixr2 convention is log-normal IIV on the log-transformed parameter;
-  the conversion `omega^2 = log(CV^2 + 1)` is applied in
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html).
+  the conversion `omega^2 = log(CV^2 + 1)` is applied in `ini()`.
 - **Vm / CLO/F correlation.** Table 3 reports a -0.566 correlation
   between the etas on Vm and CLO/F, which is encoded as a 2x2 block in
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) with
-  the off-diagonal computed as *r* times `sqrt(var_vmax * var_cl)`.
+  `ini()` with the off-diagonal computed as *r* times
+  `sqrt(var_vmax * var_cl)`.
 - **Log-additive residual error.** Xu 2019 fit log-transformed
   concentrations with an additive residual error on the log scale
   (NONMEM log-EPS, `sigma^2 = 0.395`). On the linear scale this maps to
@@ -306,7 +305,6 @@ intervals <- data.frame(
 )
 
 nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
-#>  ■■■■■■■■■■■■■                     41% |  ETA:  2s
 summary(nca_res)
 #>  start end treatment   N     auclast        cmax         cmin              tmax
 #>      0  14 150mg_Q2W 200 60.2 [55.5] 8.80 [46.1] 0.565 [91.5] 3.00 [1.50, 5.00]

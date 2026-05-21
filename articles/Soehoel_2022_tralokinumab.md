@@ -64,11 +64,9 @@ Table 2 footnote (d) of Soehoel 2022 states that IIV is reported as
 `sqrt(exp(omega^2) - 1)`, i.e., the log-normal CV convention. The
 inverse relation `omega^2 = log(1 + CV^2)` is used to convert the
 reported 40.1% / 31.3% CVs into the variance/covariance triple stored by
-the `~ c(...)` form in
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html). A
-previous release stored sqrt(.) values (standard deviations), which
-would have under-estimated IIV at simulation time; this vignette depends
-on the corrected form.
+the `~ c(...)` form in `ini()`. A previous release stored sqrt(.) values
+(standard deviations), which would have under-estimated IIV at
+simulation time; this vignette depends on the corrected form.
 
 ## Virtual cohort
 
@@ -333,8 +331,7 @@ dilution = 0; IIV zeroed). {.table}
 - IIV variances were back-calculated from the reported CV% using the
   log-normal convention from the Table 2 footnote
   (`omega^2 = log(1 + CV^2)`). The variance-covariance triple passed to
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) is
-  (0.148971, 0.071977, 0.093459).
+  `ini()` is (0.148971, 0.071977, 0.093459).
 - Soehoel 2022 does not publish numerical Cmax / Cmin / AUC_tau at
   steady state; the PKNCA summary is therefore a self-consistency check
   of the implemented model rather than a back-to-paper numerical

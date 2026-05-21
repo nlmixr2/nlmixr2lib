@@ -40,8 +40,8 @@ The same information is available programmatically via
 ## Source trace
 
 The per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry.
-The table below collects the structural quantities in one place.
+`ini()` entry. The table below collects the structural quantities in one
+place.
 
 | Equation / parameter | Value | Source location |
 |----|----|----|
@@ -208,8 +208,6 @@ intervals <- data.frame(
 )
 
 nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
-#>  ■■■■■■■■■■■■■■■                   46% |  ETA:  4s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      89% |  ETA:  1s
 nca_tbl <- as.data.frame(nca_res$result)
 ```
 

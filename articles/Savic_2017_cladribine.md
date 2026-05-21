@@ -65,8 +65,7 @@ str(rxode2::rxode(readModelDb("Savic_2017_cladribine"))$population)
 
 ## Source trace
 
-Per-parameter origin is recorded inline next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
+Per-parameter origin is recorded inline next to each `ini()` entry in
 `inst/modeldb/specificDrugs/Savic_2017_cladribine.R`. Consolidated here
 for review:
 
@@ -257,8 +256,7 @@ ggplot(ri_sim, aes(time, Cc, colour = crcl_label)) +
        colour = NULL) +
   theme_minimal() +
   theme(legend.position = "bottom")
-#> Warning in scale_y_log10(): log-10 transformation introduced
-#> infinite values.
+#> Warning in scale_y_log10(): log-10 transformation introduced infinite values.
 ```
 
 ![](Savic_2017_cladribine_files/figure-html/renal-impairment-1.png)
@@ -558,8 +556,6 @@ nca_res  <- PKNCA::pk.nca(nca_data)
 #> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#>  ■■■■■■■■■■■■■■                    43% |  ETA:  4s
-#> Warning: Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
@@ -865,8 +861,8 @@ nca_res  <- PKNCA::pk.nca(nca_data)
 #> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     94% |  ETA:  0s
-#> Warning: Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed

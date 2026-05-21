@@ -55,9 +55,8 @@ clinical pulse-chase study by Farrokhi et al. 2018.
 ## Source trace
 
 The per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/specificDrugs/Yuan_2019_concizumab.R`. The table below
-collects them in one place for review.
+`ini()` entry in `inst/modeldb/specificDrugs/Yuan_2019_concizumab.R`.
+The table below collects them in one place for review.
 
 | Parameter or equation | Value (human) | Units | Source |
 |----|----|----|----|
@@ -126,9 +125,8 @@ nmol_per_mg <- 1000 / mw_kda
 Before any antibody is administered, the endogenous baselines for sTFPI
 (plasma and Ve2 endosome), mTFPI (plasma and Ve1 endosome), and FcRn
 (both endosomes) must hold to machine precision. This verifies the
-initial conditions in
-[`model()`](https://nlmixr2.github.io/rxode2/reference/model.html) match
-the analytic steady states in Yuan 2019 Appendix II.
+initial conditions in `model()` match the analytic steady states in Yuan
+2019 Appendix II.
 
 ``` r
 
@@ -295,8 +293,8 @@ ggplot(sim_all |> filter(time <= 45),
        colour = "Dose",
        caption = "Replicates Yuan 2019 Figure 2 left column. Note: ug/mL = nM x 0.15.") +
   theme_bw()
-#> Warning in scale_y_log10(limits = c(0.01, 200)): log-10
-#> transformation introduced infinite values.
+#> Warning in scale_y_log10(limits = c(0.01, 200)): log-10 transformation
+#> introduced infinite values.
 #> Warning: Removed 372 rows containing missing values or values outside the scale range
 #> (`geom_line()`).
 ```
@@ -379,10 +377,8 @@ Figure 3 of Yuan 2019 shows that an anti-TFPI recycling antibody
 engineered with a 100-fold higher endosomal target dissociation rate
 constant (keoff) than concizumab can extend sTFPI suppression from 12
 days to approximately 30 days at IV 3 mg/kg. The model reproduces this
-by overriding `keoff_per_day` in
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) while
-keeping plasma binding kinetics (kon, koff) and FcRn binding kinetics
-(k1on, k1off) unchanged.
+by overriding `keoff_per_day` in `ini()` while keeping plasma binding
+kinetics (kon, koff) and FcRn binding kinetics (k1on, k1off) unchanged.
 
 ``` r
 

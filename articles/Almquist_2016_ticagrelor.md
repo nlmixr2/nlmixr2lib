@@ -50,8 +50,7 @@ range, and the residual-error structure.
 
 ## Source trace
 
-Every [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html)
-parameter carries an inline source-trace comment in
+Every `ini()` parameter carries an inline source-trace comment in
 `inst/modeldb/specificDrugs/Almquist_2016_ticagrelor.R`. The table below
 groups them for review.
 
@@ -103,20 +102,17 @@ denominators yields the quadratic
 
 whose positive root is the free-Fab equilibrium. The measured “free”
 ticagrelor and TAM are then `f * TicaV_eq` and `f * TamV_eq`. The model
-file implements this directly in
-[`model()`](https://nlmixr2.github.io/rxode2/reference/model.html) and
-exposes the results as `freeTicaObs` and `freeTamObs`. For free MEDI2452
-the correction is marginal (per Almquist 2016 Supplementary Figure S3)
-so the in-vivo `cFab` is reported directly as `freeMEDI`.
+file implements this directly in `model()` and exposes the results as
+`freeTicaObs` and `freeTamObs`. For free MEDI2452 the correction is
+marginal (per Almquist 2016 Supplementary Figure S3) so the in-vivo
+`cFab` is reported directly as `freeMEDI`.
 
 ## Virtual cohort (deterministic, no IIV)
 
 Almquist 2016 used naive-pooled estimation without inter-individual
 variability, so this validation simulation is a deterministic typical-
-value replication (no
-[`zeroRe()`](https://nlmixr2.github.io/rxode2/reference/zeroRe.html)
-toggle is needed because the model already has no `eta*` parameters).
-Two designs are simulated:
+value replication (no `zeroRe()` toggle is needed because the model
+already has no `eta*` parameters). Two designs are simulated:
 
 - **Study 2 (ticagrelor pre-study)** – 2000 ug/kg ticagrelor IV bolus in
   mouse, no MEDI2452. Used for PKNCA validation of total ticagrelor in
@@ -236,8 +232,7 @@ ggplot(fig3_long, aes(time, conc, colour = treatment, linetype = treatment)) +
                        "Dashed: ticagrelor infusion only (vehicle arm).")) +
   theme_bw() +
   theme(legend.position = "bottom", legend.direction = "vertical")
-#> Warning in scale_y_log10(): log-10 transformation introduced
-#> infinite values.
+#> Warning in scale_y_log10(): log-10 transformation introduced infinite values.
 ```
 
 ![](Almquist_2016_ticagrelor_files/figure-html/figure-3-total-tica-1.png)
@@ -334,10 +329,9 @@ consistent with the dominant decay phase governed by Cl / (V + V_1)).
 - **Observation model (closed-form ex-vivo equilibrium).** Almquist 2016
   derives the analytical solution in Supplementary Text S2 (not
   available on disk for this extraction). The quadratic implemented in
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html) is
-  re-derived from the conservation laws plus the in-text equilibrium
-  relations K_d = f \* X \* Fab / X_complex; the derivation is
-  reproduced inline in the “Observation model” section above so a
+  `model()` is re-derived from the conservation laws plus the in-text
+  equilibrium relations K_d = f \* X \* Fab / X_complex; the derivation
+  is reproduced inline in the “Observation model” section above so a
   reviewer can audit it without the supplement. For free MEDI2452 the
   correction is approximated by the in-vivo `cFab` per the paper’s note
   that the observation-model effect is marginal at MEDI2452

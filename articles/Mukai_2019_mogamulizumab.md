@@ -40,7 +40,7 @@ loaded).
 ## Source trace
 
 The per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
+`ini()` entry in
 `inst/modeldb/specificDrugs/Mukai_2019_mogamulizumab.R`. The table below
 collects them in one place for review.
 
@@ -420,24 +420,26 @@ sessionInfo()
 #> [4] rxode2_5.0.2          PKNCA_0.12.1          nlmixr2lib_0.3.2.9000
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] sass_0.4.10           generics_0.1.4        lattice_0.22-9       
-#>  [4] digest_0.6.39         magrittr_2.0.5        evaluate_1.0.5       
-#>  [7] grid_4.6.0            RColorBrewer_1.1-3    fastmap_1.2.0        
-#> [10] lotri_1.0.4           qs2_0.2.1             jsonlite_2.0.0       
-#> [13] rxode2ll_2.0.14       backports_1.5.1       purrr_1.2.2          
-#> [16] scales_1.4.0          textshaping_1.0.5     jquerylib_0.1.4      
-#> [19] cli_3.6.6             symengine_0.2.11      crayon_1.5.3         
-#> [22] rlang_1.2.0           withr_3.0.2           cachem_1.1.0         
-#> [25] yaml_2.3.12           tools_4.6.0           memoise_2.0.1        
-#> [28] checkmate_2.3.4       vctrs_0.7.3           R6_2.6.1             
-#> [31] lifecycle_1.0.5       fs_2.1.0              stringfish_0.19.0    
-#> [34] ragg_1.5.2            PreciseSums_0.7       pkgconfig_2.0.3      
-#> [37] desc_1.4.3            rex_1.2.2             pkgdown_2.2.0        
-#> [40] RcppParallel_5.1.11-2 pillar_1.11.1         bslib_0.11.0         
-#> [43] gtable_0.3.6          data.table_1.18.4     glue_1.8.1           
-#> [46] Rcpp_1.1.1-1.1        systemfonts_1.3.2     xfun_0.57            
-#> [49] tibble_3.3.1          tidyselect_1.2.1      sys_3.4.3            
-#> [52] knitr_1.51            farver_2.1.2          dparser_1.3.1-13     
-#> [55] htmltools_0.5.9       nlme_3.1-169          rmarkdown_2.31       
-#> [58] compiler_4.6.0        S7_0.2.2
+#>  [1] gtable_0.3.6          xfun_0.57             bslib_0.11.0         
+#>  [4] lattice_0.22-9        vctrs_0.7.3           tools_4.6.0          
+#>  [7] generics_0.1.4        parallel_4.6.0        tibble_3.3.1         
+#> [10] symengine_0.2.11      pkgconfig_2.0.3       data.table_1.18.4    
+#> [13] checkmate_2.3.4       RColorBrewer_1.1-3    S7_0.2.2             
+#> [16] desc_1.4.3            RcppParallel_5.1.11-2 lifecycle_1.0.5      
+#> [19] compiler_4.6.0        farver_2.1.2          textshaping_1.0.5    
+#> [22] fontawesome_0.5.3     htmltools_0.5.9       sys_3.4.3            
+#> [25] sass_0.4.10           yaml_2.3.12           pillar_1.11.1        
+#> [28] pkgdown_2.2.0         crayon_1.5.3          jquerylib_0.1.4      
+#> [31] whisker_0.4.1         openssl_2.4.1         cachem_1.1.0         
+#> [34] nlme_3.1-169          qs2_0.2.1             tidyselect_1.2.1     
+#> [37] digest_0.6.39         lotri_1.0.4           purrr_1.2.2          
+#> [40] rxode2ll_2.0.14       fastmap_1.2.0         grid_4.6.0           
+#> [43] cli_3.6.6             dparser_1.3.1-13      magrittr_2.0.5       
+#> [46] withr_3.0.2           scales_1.4.0          backports_1.5.1      
+#> [49] rmarkdown_2.31        askpass_1.2.1         ragg_1.5.2           
+#> [52] stringfish_0.19.0     memoise_2.0.1         evaluate_1.0.5       
+#> [55] knitr_1.51            rex_1.2.2             PreciseSums_0.7      
+#> [58] rlang_1.2.0           downlit_0.4.5         Rcpp_1.1.1-1.1       
+#> [61] glue_1.8.1            xml2_1.5.2            jsonlite_2.0.0       
+#> [64] R6_2.6.1              systemfonts_1.3.2     fs_2.1.0
 ```

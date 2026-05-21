@@ -83,9 +83,9 @@ rxode2::rxode(readModelDb("Chen_2017_TB_MTP_GPDI_mouse"))$population
 
 ## Source trace
 
-Every [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html)
-entry carries an in-file comment pointing to the Chen 2017 (or upstream)
-source location. The table below collects them for reviewer use.
+Every `ini()` entry carries an in-file comment pointing to the Chen 2017
+(or upstream) source location. The table below collects them for
+reviewer use.
 
 | Block | Parameter | Value | Units | Source |
 |----|----|----|----|----|

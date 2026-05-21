@@ -48,10 +48,10 @@ str(formals(mod_fn))
 ## Source trace
 
 Per-parameter origins are recorded as in-file comments next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/ddmore/Clewe_2016_rifampicin.R`. The table below collects
-them in one place. All values come from the `Output_real_MTP.lst`
-`FINAL PARAMETER ESTIMATE` block (post-`MINIMIZATION SUCCESSFUL`, FOCE).
+`ini()` entry in `inst/modeldb/ddmore/Clewe_2016_rifampicin.R`. The
+table below collects them in one place. All values come from the
+`Output_real_MTP.lst` `FINAL PARAMETER ESTIMATE` block
+(post-`MINIMIZATION SUCCESSFUL`, FOCE).
 
 nlmixr2 parameter \| NONMEM source \| Bundle .mod\$THETA / \$OMEGA /
 \$SIGMA \| .lst final estimate \| Back-transformed value\|

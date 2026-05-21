@@ -44,9 +44,8 @@ str(formals(mod_fn))
 ## Source trace
 
 Per-parameter origins are recorded as in-file comments next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/specificDrugs/Sheng_2016_quinine_rat.R`. The table below
-collects them in one place.
+`ini()` entry in `inst/modeldb/specificDrugs/Sheng_2016_quinine_rat.R`.
+The table below collects them in one place.
 
 | nlmixr2 parameter | Typical value | Source location |
 |----|----|----|
@@ -290,12 +289,11 @@ Sheng 2016 Table 2 2GP final-model point estimates and 90% bootstrap CIs
   mixture of two generalized-Poisson distributions, the second
   right-truncated at the observed maximum lick number of 61. rxode2 /
   nlmixr2 do not natively express this composite likelihood within the
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) /
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html)
-  syntax in this batch, so the packaged model declares two parallel
-  `~ pois(...)` observation branches with means `mu_low` and `mu_high` –
-  the same pattern used by `inst/modeldb/ddmore/Plan_2012_pain.R`
-  (truncated Markov-inflated Poisson -\> plain Poisson on lambda) and by
+  `ini()` / `model()` syntax in this batch, so the packaged model
+  declares two parallel `~ pois(...)` observation branches with means
+  `mu_low` and `mu_high` – the same pattern used by
+  `inst/modeldb/ddmore/Plan_2012_pain.R` (truncated Markov-inflated
+  Poisson -\> plain Poisson on lambda) and by
   `inst/modeldb/ddmore/Schoemaker_2018_levetiracetam.R`
   (negative-binomial -\> Poisson per mixture branch). The mixture
   probability `p_low` is exposed as a model variable so a downstream
@@ -360,10 +358,9 @@ Sheng 2016 Table 2 2GP final-model point estimates and 90% bootstrap CIs
     paper applies an extra log-normal IIV to the composite drug effect
     `E = E0 + Emax * conc^c / (RIC50^c + conc^c)`, which is a derived
     expression, not a single fixed-effect parameter. The `etaE` is added
-    additively to that composite inside
-    [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html)
-    to preserve the source-trace fidelity of the paper’s stated
-    three-parameter structural IIV plus one composite IIV.
+    additively to that composite inside `model()` to preserve the
+    source-trace fidelity of the paper’s stated three-parameter
+    structural IIV plus one composite IIV.
   - `units$concentration` is the free-text count description
     `"(none; observation is a count of licks in 8 s, 0-61)"` rather than
     a mass-per-volume string. The observation is a count of licks

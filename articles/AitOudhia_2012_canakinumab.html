@@ -515,7 +515,7 @@ page 9). The same metadata is exposed programmatically via
 <h2 id="source-trace">Source trace<a class="anchor" aria-label="anchor" href="#source-trace"></a>
 </h2>
 <p>The per-parameter origin is recorded as an inline <code># ...</code>
-comment next to each <code><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini()</a></code> entry in
+comment next to each <code>ini()</code> entry in
 <code>inst/modeldb/specificDrugs/AitOudhia_2012_canakinumab.R</code>.
 The table below collects them in one place for review. All parameter
 values come from Ait-Oudhia 2012 Tables 1 and 2 unless noted
@@ -749,7 +749,7 @@ PK model.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod</span>          <span class="op">&lt;-</span> <span class="fu"><a href="../reference/readModelDb.html">readModelDb</a></span><span class="op">(</span><span class="st">"AitOudhia_2012_canakinumab"</span><span class="op">)</span></span>
 <span><span class="va">mod_typical</span>  <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/zeroRe.html" class="external-link">zeroRe</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> parameter labels from comments will be replaced by 'label()'</span></span>
+<span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
 <span></span>
 <span><span class="co"># Replicates Figure 4: 2, 4, 8, 12 mg/kg SC Q2W for five doses (10 weeks</span></span>
 <span><span class="co"># of dosing followed by observation through day 500).</span></span>
@@ -777,7 +777,7 @@ PK model.</p>
 <span>  keep   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"regimen"</span>, <span class="st">"WT"</span><span class="op">)</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalka', 'etalvc', 'etalvp', 'etalcl', 'etalcll', 'etalq', 'etalkd', 'etalfdepot', 'etalcrp0', 'etalkout', 'etalbeta', 'etalgamma', 'etaacrshift'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalka', 'etalvc', 'etalvp', 'etalcl', 'etalcll', 'etalq', 'etalkd', 'etalfdepot', 'etalcrp0', 'etalkout', 'etalbeta', 'etalgamma', 'etaacrshift'</span></span>
 <span><span class="co">#&gt; Warning: multi-subject simulation without without 'omega'</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -801,7 +801,7 @@ window after a single SC dose to verify the mean dynamics.</p>
 <span><span class="va">sim_fig2</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_typical</span>, events <span class="op">=</span> <span class="va">events_fig2</span>,</span>
 <span>                            keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"regimen"</span>, <span class="st">"WT"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalka', 'etalvc', 'etalvp', 'etalcl', 'etalcll', 'etalq', 'etalkd', 'etalfdepot', 'etalcrp0', 'etalkout', 'etalbeta', 'etalgamma', 'etaacrshift'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalka', 'etalvc', 'etalvp', 'etalcl', 'etalcll', 'etalq', 'etalkd', 'etalfdepot', 'etalcrp0', 'etalkout', 'etalbeta', 'etalgamma', 'etaacrshift'</span></span>
 <span></span>
 <span><span class="va">fig2</span> <span class="op">&lt;-</span> <span class="va">sim_fig2</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">Cc</span>, <span class="va">totalIL1b</span>, <span class="va">freeIL1b</span>, <span class="va">crp</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -815,10 +815,10 @@ window after a single SC dose to verify the mean dynamics.</p>
 <span>                                             <span class="st">"Free IL-1b (pg/mL)"</span>,</span>
 <span>                                             <span class="st">"CRP (mg/L)"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">fig2</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">value</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span> <span class="va">endpoint</span>, scales <span class="op">=</span> <span class="st">"free_y"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time (days)"</span>, y <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">fig2</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">time</span>, <span class="va">value</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">facet_wrap</span><span class="op">(</span><span class="op">~</span> <span class="va">endpoint</span>, scales <span class="op">=</span> <span class="st">"free_y"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time (days)"</span>, y <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>       title <span class="op">=</span> <span class="st">"Typical-patient profiles after 2 mg/kg SC canakinumab"</span>,</span>
 <span>       caption <span class="op">=</span> <span class="st">"Replicates the dynamic patterns shown in Figure 2 of Ait-Oudhia 2012."</span><span class="op">)</span></span></code></pre></div>
 <p><img src="AitOudhia_2012_canakinumab_files/figure-html/figure-2-1.png" class="r-plt" alt="" width="672"></p>
@@ -846,13 +846,13 @@ window after a single SC dose to verify the mean dynamics.</p>
 <span>                                             <span class="st">"(c) Free IL-1b (pg/mL)"</span>,</span>
 <span>                                             <span class="st">"(d) Baseline - free IL-1b (pg/mL)"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">fig4</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">value</span>, linetype <span class="op">=</span> <span class="va">regimen</span>, colour <span class="op">=</span> <span class="va">regimen</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span> <span class="va">endpoint</span>, scales <span class="op">=</span> <span class="st">"free_y"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time (days)"</span>, y <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">fig4</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">time</span>, <span class="va">value</span>, linetype <span class="op">=</span> <span class="va">regimen</span>, colour <span class="op">=</span> <span class="va">regimen</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">facet_wrap</span><span class="op">(</span><span class="op">~</span> <span class="va">endpoint</span>, scales <span class="op">=</span> <span class="st">"free_y"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time (days)"</span>, y <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>       title <span class="op">=</span> <span class="st">"Simulated dose-ranging profiles, Q2W SC canakinumab"</span>,</span>
 <span>       caption <span class="op">=</span> <span class="st">"Replicates Figure 4 of Ait-Oudhia 2012."</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"bottom"</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu">theme</span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"bottom"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="AitOudhia_2012_canakinumab_files/figure-html/figure-4-1.png" class="r-plt" alt="" width="672"></p>
 </div>
 <div class="section level2">
@@ -877,7 +877,7 @@ window after a single SC dose to verify the mean dynamics.</p>
 <span><span class="va">sim_fig5</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_typical</span>, events <span class="op">=</span> <span class="va">events_fig5</span>,</span>
 <span>                            keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"regimen"</span>, <span class="st">"WT"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalka', 'etalvc', 'etalvp', 'etalcl', 'etalcll', 'etalq', 'etalkd', 'etalfdepot', 'etalcrp0', 'etalkout', 'etalbeta', 'etalgamma', 'etaacrshift'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalka', 'etalvc', 'etalvp', 'etalcl', 'etalcll', 'etalq', 'etalkd', 'etalfdepot', 'etalcrp0', 'etalkout', 'etalbeta', 'etalgamma', 'etaacrshift'</span></span>
 <span><span class="co">#&gt; Warning: multi-subject simulation without without 'omega'</span></span>
 <span></span>
 <span><span class="va">fig5</span> <span class="op">&lt;-</span> <span class="va">sim_fig5</span> <span class="op">|&gt;</span></span>
@@ -893,13 +893,13 @@ window after a single SC dose to verify the mean dynamics.</p>
 <span>                                             <span class="st">"(b) Prob(ACR70)"</span>,</span>
 <span>                                             <span class="st">"(d) ACR latent (ACRL)"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">fig5</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">month</span>, <span class="va">value</span>, linetype <span class="op">=</span> <span class="va">regimen</span>, colour <span class="op">=</span> <span class="va">regimen</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span> <span class="va">endpoint</span>, scales <span class="op">=</span> <span class="st">"free_y"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time (months)"</span>, y <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">fig5</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">month</span>, <span class="va">value</span>, linetype <span class="op">=</span> <span class="va">regimen</span>, colour <span class="op">=</span> <span class="va">regimen</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">facet_wrap</span><span class="op">(</span><span class="op">~</span> <span class="va">endpoint</span>, scales <span class="op">=</span> <span class="st">"free_y"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time (months)"</span>, y <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>       title <span class="op">=</span> <span class="st">"Simulated ACR response probabilities after a single SC dose"</span>,</span>
 <span>       caption <span class="op">=</span> <span class="st">"Replicates Figure 5 of Ait-Oudhia 2012."</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"bottom"</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu">theme</span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"bottom"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="AitOudhia_2012_canakinumab_files/figure-html/figure-5-1.png" class="r-plt" alt="" width="672"></p>
 </div>
 <div class="section level2">
@@ -942,7 +942,6 @@ window after a single SC dose to verify the mean dynamics.</p>
 <span></span>
 <span><span class="va">nca_data</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_obj</span>, <span class="va">dose_obj</span>, intervals <span class="op">=</span> <span class="va">intervals</span><span class="op">)</span></span>
 <span><span class="va">nca_res</span>  <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="va">nca_data</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■         </span>  75% |  ETA:  1s</span></span>
 <span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">nca_res</span><span class="op">)</span>,</span>
@@ -1050,7 +1049,7 @@ free-drug clearance (<code>CL</code>) and the drug-ligand complex
 clearance (<code>CL_DL</code>) were similar during model building and
 constrained them to a common value (Methods, Results page 2). The model
 file encodes this constraint with <code>cl_dl &lt;- cl</code> inside
-<code><a href="https://nlmixr2.github.io/rxode2/reference/model.html" class="external-link">model()</a></code>.</li>
+<code>model()</code>.</li>
 <li>
 <strong>IL-1beta additive residual error unit anomaly</strong>:
 Table 1 reports the total-IL-1beta additive residual error as

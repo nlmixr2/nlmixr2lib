@@ -36,9 +36,9 @@ The same information is available programmatically via
 ## Source trace
 
 The per-parameter origin is recorded as a trailing in-file comment next
-to each [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html)
-entry in `inst/modeldb/specificDrugs/Chien_2022_imatinib.R`. The table
-below collects them in one place.
+to each `ini()` entry in
+`inst/modeldb/specificDrugs/Chien_2022_imatinib.R`. The table below
+collects them in one place.
 
 | Equation / parameter | Value | Source location (Chien 2022) |
 |----|----|----|
@@ -201,9 +201,6 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
-#>  ■■■■■■■                           18% |  ETA:  6s
-#>  ■■■■■■■■■■■■■■■■■■                56% |  ETA:  3s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■   98% |  ETA:  0s
 
 nca_summary <- summary(nca_res)
 knitr::kable(
@@ -281,8 +278,7 @@ investigation rather than tuning.
   bound) when computing cov(CL, V1) = 0.9 \* sqrt(omega^2_CL \*
   omega^2_V1) = 0.05978. This is a documented approximation; users
   requiring a tighter correlation can edit the off-diagonal in the
-  `etalcl + etalvc` block of
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html).
+  `etalcl + etalvc` block of `ini()`.
 
 - **Body-text vs Table 1 conflict on the OMEGA BLOCK target
   parameters.** Chien 2022 Table 1 row D1 labels the final model as
@@ -296,9 +292,8 @@ investigation rather than tuning.
   packaged model follows the body text (CL and V1) and treats the Table
   1 row caption as a typographical inconsistency. Users wanting the
   alternative interpretation can replace `etalcl + etalvc ~ ...` with
-  `etalcl + etalka ~ ...` in the
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) block,
-  supplying the same off-diagonal recipe.
+  `etalcl + etalka ~ ...` in the `ini()` block, supplying the same
+  off-diagonal recipe.
 
 - **No covariates encoded.** Chien 2022 page 5 paragraph 2 (‘Covariates
   analysis’) reports that none of body weight, BMI, BSA, gender, or any

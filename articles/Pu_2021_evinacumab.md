@@ -104,8 +104,7 @@ reference covariates: WT = 74.1 kg, ANGPTL3 = 0.08 mg/L, DIS_HOFH = 0
   options): `sigma(eta_CL) = 0.355`, `sigma(eta_V) = 0.213`, with the
   off- diagonal `sigma(eta_(2,1)) = 0.213` representing the correlation,
   not the covariance. Conversion to the variance/covariance form used
-  inside [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html)
-  is therefore `var(CL) = 0.355^2 = 0.126025`,
+  inside `ini()` is therefore `var(CL) = 0.355^2 = 0.126025`,
   `var(Vc) = 0.213^2 = 0.045369`, and
   `cov(CL, Vc) = 0.213 * 0.355 * 0.213 = 0.016108`. The CV percentages
   predicted from the variances (`sqrt(exp(sigma^2) - 1)`) reproduce the

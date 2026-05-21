@@ -35,9 +35,8 @@ The same information is available programmatically via the model’s
 ## Source trace
 
 The per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/specificDrugs/Abboud_2009_epinephrine.R`. The table below
-collects them in one place for review.
+`ini()` entry in `inst/modeldb/specificDrugs/Abboud_2009_epinephrine.R`.
+The table below collects them in one place for review.
 
 | Equation / parameter | Value | Source location |
 |----|----|----|

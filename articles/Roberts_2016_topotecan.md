@@ -405,9 +405,8 @@ distribution.
   fit in Monolix 4.3.2, which by default reports the standard deviation
   (square root of the log-scale variance) for each random effect. The
   reported omegas (0.517, 0.338, 0.465 for Ka, V/F, CL/F respectively)
-  are therefore squared in
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) to
-  obtain the variances nlmixr2 expects (0.2672, 0.1142, 0.2162). This
-  interpretation is consistent with the paper’s residual error reporting
-  (sigma 0.592 ng/mL as an additive SD) and with the magnitude of the
-  reported standard errors on the omegas.
+  are therefore squared in `ini()` to obtain the variances nlmixr2
+  expects (0.2672, 0.1142, 0.2162). This interpretation is consistent
+  with the paper’s residual error reporting (sigma 0.592 ng/mL as an
+  additive SD) and with the magnitude of the reported standard errors on
+  the omegas.

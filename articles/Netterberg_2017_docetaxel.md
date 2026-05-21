@@ -100,13 +100,12 @@ as `readModelDb("Netterberg_2017_docetaxel")$population`.
 ## Source trace
 
 The per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/ddmore/Netterberg_2017_docetaxel.R`. The table below
-collects them in one place. All values were read from the bundle’s
-NM-TRAN `.mod` `$THETA` / `$OMEGA` / `$SIGMA` blocks (publication-fixed,
-`MAXEVALS=0`); the corresponding entries in the `.lst`
-`FINAL PARAMETER ESTIMATE` block reproduce them to three significant
-figures.
+`ini()` entry in `inst/modeldb/ddmore/Netterberg_2017_docetaxel.R`. The
+table below collects them in one place. All values were read from the
+bundle’s NM-TRAN `.mod` `$THETA` / `$OMEGA` / `$SIGMA` blocks
+(publication-fixed, `MAXEVALS=0`); the corresponding entries in the
+`.lst` `FINAL PARAMETER ESTIMATE` block reproduce them to three
+significant figures.
 
 | Equation / parameter | Value | Source location |
 |----|----|----|

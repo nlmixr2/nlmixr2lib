@@ -84,7 +84,7 @@ into rxode2 `d/dt(<state>)` syntax.
 | `Tg` | `exp(-1.1567)` ~= 0.315 | Forward_APAP1.in line 20 |
 | `Tp` | `exp(-2.0559)` ~= 0.128 | Forward_APAP1.in line 10 |
 | Tissue volume / flow fractions, partition coefficients, MWs, alpha factors, BP ratio | literal numerical values | `Executable_APAP.model` lines 24-94 (carried verbatim from the literature defaults the bundle ships) |
-| ODE structure (~30 d/dt equations) | [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html) block lines 200-330 of the .R file | `Executable_APAP.model` `Dynamics { ... }` block lines 663-849 (translated by hand from MCSim `dt(state) = ...` to rxode2 `d/dt(state) <- ...`) |
+| ODE structure (~30 d/dt equations) | `model()` block lines 200-330 of the .R file | `Executable_APAP.model` `Dynamics { ... }` block lines 663-849 (translated by hand from MCSim `dt(state) = ...` to rxode2 `d/dt(state) <- ...`) |
 | Bi-exponential gastric input + dose-dependent fa | `gastric_in <- true_dose * (exp(-t/Tg) - exp(-t/Tp))/(Tg - Tp)` and `fa <- ifelse(...)` | `Executable_APAP.model` `Initialize{}` lines 597-599 and Dynamics line 749 |
 
 The 21 Bayesian posterior-mean parameters are the population means of
@@ -417,9 +417,7 @@ the verbatim PBPK extraction:
   SI prefix mismatch. The model is internally dimensionally consistent:
   the ODE solves on `mcmol` amounts (`mcmol = mg x 1000 / MW_APAP`) and
   the `Cplasma_*_mcgL` outputs are converted from `mcmol/L` via `x MW`.
-  The user-facing dosing scalar in
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) is
-  `OralDose_APAP_mg` in mg.
+  The user-facing dosing scalar in `ini()` is `OralDose_APAP_mg` in mg.
 
 ## Assumptions and deviations / Errata
 
@@ -511,8 +509,7 @@ the verbatim PBPK extraction:
         fa = (Dose < 1000 mg)  ?  0.0005 * Dose + 0.37   :   0.88
 
     For Scenario 4 (1000 mg), `fa = 0.88`. The piecewise form is
-    preserved as `ifelse(OralDose_APAP_mg < 1000, ...)` in the
-    [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html)
+    preserved as `ifelse(OralDose_APAP_mg < 1000, ...)` in the `model()`
     block. Users overriding the dose to non-Scenario-4 values get the
     bundle’s piecewise saturable-absorption form, with the discontinuity
     at 1000 mg.

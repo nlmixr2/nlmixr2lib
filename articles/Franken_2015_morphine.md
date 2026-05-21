@@ -45,9 +45,8 @@ the same information is available programmatically via
 ## Source trace
 
 The per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/specificDrugs/Franken_2015_morphine.R`. The table below
-collects them in one place.
+`ini()` entry in `inst/modeldb/specificDrugs/Franken_2015_morphine.R`.
+The table below collects them in one place.
 
 | Equation / parameter | Final value | Source location |
 |----|----|----|

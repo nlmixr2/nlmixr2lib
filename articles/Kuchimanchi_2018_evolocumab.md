@@ -221,8 +221,7 @@ ggplot(sim, aes(time, Cc, colour = regimen)) +
   labs(x = "Time (day)", y = "Serum evolocumab (µg/mL, log)",
        colour = "Regimen") +
   theme_minimal(base_size = 11)
-#> Warning in scale_y_log10(): log-10 transformation introduced
-#> infinite values.
+#> Warning in scale_y_log10(): log-10 transformation introduced infinite values.
 ```
 
 ![Same simulation on a log scale, showing the dose-proportional scaling

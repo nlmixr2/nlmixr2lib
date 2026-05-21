@@ -33,7 +33,7 @@ The same information is available programmatically via
 ## Source trace
 
 Per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
+`ini()` entry in
 `inst/modeldb/specificDrugs/CarlssonPetri_2021_liraglutide.R`. The table
 below collects them for review.
 
@@ -276,7 +276,6 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res <- PKNCA::pk.nca(nca_data)
-#>  ■■■■■■■■■■■■■■■■■■■■■             67% |  ETA:  1s
 knitr::kable(summary(nca_res),
   caption = "Steady-state NCA at the final 24-h dosing interval (3 mg QD SC adolescent cohort).")
 ```

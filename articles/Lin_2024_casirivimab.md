@@ -44,12 +44,11 @@ The same information is available programmatically via
 ## Source trace
 
 Per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/specificDrugs/Lin_2024_casirivimab.R`. The table collects
-them in one place for review. Reference subject for typical-value PK
-parameters: 45-year-old non-White male, 81.6 kg, ALB 43 g/L, baseline
-SARS-CoV-2 viral load 6.4 log10 copies/mL, CRP 5.48 mg/L, NLR 2.11,
-baseline seronegative, no supplemental oxygen at baseline.
+`ini()` entry in `inst/modeldb/specificDrugs/Lin_2024_casirivimab.R`.
+The table collects them in one place for review. Reference subject for
+typical-value PK parameters: 45-year-old non-White male, 81.6 kg, ALB 43
+g/L, baseline SARS-CoV-2 viral load 6.4 log10 copies/mL, CRP 5.48 mg/L,
+NLR 2.11, baseline seronegative, no supplemental oxygen at baseline.
 
 | Equation / parameter | Value | Source location |
 |----|----|----|
@@ -336,12 +335,6 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- suppressWarnings(PKNCA::pk.nca(nca_data))
-#>  ■■■■                              10% |  ETA: 18s
-#>  ■■■■■■■■■                         26% |  ETA: 14s
-#>  ■■■■■■■■■■■■■■                    42% |  ETA: 11s
-#>  ■■■■■■■■■■■■■■■■■■■               59% |  ETA:  8s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■          78% |  ETA:  4s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    96% |  ETA:  1s
 
 nca_summary <- summary(nca_res)
 knitr::kable(nca_summary,
@@ -385,9 +378,8 @@ by the skill.
 - **Pediatric switch.** The source paper switches to fixed allometric
   exponents (0.75 on CL, 1 on Vc) and a higher SC bioavailability for
   subjects with `AGE < 6` years. The model implements this as an
-  `as.numeric(AGE < 6)` indicator computed inside
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html); no
-  separate `PED` covariate column is required from the user.
+  `as.numeric(AGE < 6)` indicator computed inside `model()`; no separate
+  `PED` covariate column is required from the user.
 - **Viral load = 0 for non-infected subjects.** The source dataset
   encodes baseline viral load as `0` for non-infected subjects. The
   model uses a power form `(SARS_VLOAD/6.4)^e_vload_cl` with a small

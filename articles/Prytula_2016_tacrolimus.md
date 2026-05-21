@@ -417,13 +417,11 @@ h.ug/L (IQR 80-120) for trough levels in the 4-8 ug/L target range.
   2016 Table 2 reports an intra-patient variability of 25% CV on CL/F
   representing the within-subject change in CL/F from one year to the
   next. nlmixr2 model files do not have a native IOV construct in
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) /
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html),
-  and the source paper does not specify an `OCC` indicator pattern. For
-  typical-value simulation the IIV-only form is sufficient; for
-  stochastic prediction across visits, users with multi-occasion data
-  should implement per-occasion etas in their own extension of the model
-  and reduce the IIV variance accordingly.
+  `ini()` / `model()`, and the source paper does not specify an `OCC`
+  indicator pattern. For typical-value simulation the IIV-only form is
+  sufficient; for stochastic prediction across visits, users with
+  multi-occasion data should implement per-occasion etas in their own
+  extension of the model and reduce the IIV variance accordingly.
 - **Haematocrit kept as a fraction, not a percent.** The
   canonical-register `HCT` entry uses percent units (e.g. 33%), but
   Prytula 2016 reports HCT as a fraction (e.g. 0.34), and the published
@@ -445,8 +443,7 @@ h.ug/L (IQR 80-120) for trough levels in the 4-8 ug/L target range.
   C\>T genotype as a covariate but did not retain it in the final model.
   The cohort’s ABCB1 distribution is recorded in
   `population$abcb1_distribution` for completeness but the covariate
-  does not enter
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html).
+  does not enter `model()`.
 - **Race/ethnicity not encoded.** The cohort was 70% Caucasian (Table 1)
   but race was not retained as a covariate; the model has no race
   effect.

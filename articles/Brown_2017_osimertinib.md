@@ -49,8 +49,7 @@ nlmixr2lib::readModelDb("Brown_2017_osimertinib")$population
 
 ## Source trace
 
-Per-parameter origin is recorded inline next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
+Per-parameter origin is recorded inline next to each `ini()` entry in
 `inst/modeldb/specificDrugs/Brown_2017_osimertinib.R`. The table below
 collects the same provenance for review.
 

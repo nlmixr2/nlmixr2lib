@@ -836,7 +836,7 @@ ng/mL, log-normal).</p>
 <span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod</span>, events <span class="op">=</span> <span class="va">events</span>,</span>
 <span>                       keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dose"</span>, <span class="st">"WT"</span>, <span class="st">"IGE"</span><span class="op">)</span>,</span>
 <span>                       returnType <span class="op">=</span> <span class="st">"data.frame"</span>, addDosing <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> parameter labels from comments will be replaced by 'label()'</span></span>
+<span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="va">dose_label</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="va">dose</span>, <span class="st">" mg"</span><span class="op">)</span>,</span>
 <span>                         levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">study_1101_doses</span>, <span class="st">" mg"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -1049,12 +1049,12 @@ when there is no drug; once dosing begins the binding kinetics dominate
 this small drift.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod_typ</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/zeroRe.html" class="external-link">zeroRe</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> parameter labels from comments will be replaced by 'label()'</span></span>
+<span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
 <span><span class="va">ev_nodose</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/et.html" class="external-link">et</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">30</span>, by <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>, cmt <span class="op">=</span> <span class="st">"Cc"</span><span class="op">)</span></span>
 <span><span class="va">sim_nodose</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_typ</span>, events <span class="op">=</span> <span class="va">ev_nodose</span>,</span>
 <span>                              params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>WT <span class="op">=</span> <span class="fl">61.1</span>, IGE <span class="op">=</span> <span class="fl">482.4</span><span class="op">)</span>,</span>
 <span>                              returnType <span class="op">=</span> <span class="st">"data.frame"</span>, addDosing <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalka', 'etalcl', 'etaldcl_complex', 'etalvc', 'etalvc_complex', 'etalcl_ige', 'etalp_ige'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalka', 'etalcl', 'etaldcl_complex', 'etalvc', 'etalvc_complex', 'etalcl_ige', 'etalp_ige'</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">sim_nodose</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">freeIgE</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">482.4</span>, lty <span class="op">=</span> <span class="fl">2</span>, colour <span class="op">=</span> <span class="st">"grey40"</span><span class="op">)</span> <span class="op">+</span></span>
@@ -1166,26 +1166,28 @@ computing <code>p_ige</code>, <code>cl_ige</code>, and
 <span><span class="co">#&gt; [4] dplyr_1.2.1           rxode2_5.0.2          nlmixr2lib_0.3.2.9000</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
-<span><span class="co">#&gt;  [1] sass_0.4.10           generics_0.1.4        lattice_0.22-9       </span></span>
-<span><span class="co">#&gt;  [4] digest_0.6.39         magrittr_2.0.5        evaluate_1.0.5       </span></span>
-<span><span class="co">#&gt;  [7] grid_4.6.0            RColorBrewer_1.1-3    fastmap_1.2.0        </span></span>
-<span><span class="co">#&gt; [10] lotri_1.0.4           qs2_0.2.1             jsonlite_2.0.0       </span></span>
-<span><span class="co">#&gt; [13] rxode2ll_2.0.14       backports_1.5.1       purrr_1.2.2          </span></span>
-<span><span class="co">#&gt; [16] scales_1.4.0          textshaping_1.0.5     jquerylib_0.1.4      </span></span>
-<span><span class="co">#&gt; [19] cli_3.6.6             crayon_1.5.3          rlang_1.2.0          </span></span>
-<span><span class="co">#&gt; [22] withr_3.0.2           cachem_1.1.0          yaml_2.3.12          </span></span>
-<span><span class="co">#&gt; [25] tools_4.6.0           memoise_2.0.1         checkmate_2.3.4      </span></span>
-<span><span class="co">#&gt; [28] vctrs_0.7.3           R6_2.6.1              lifecycle_1.0.5      </span></span>
-<span><span class="co">#&gt; [31] fs_2.1.0              stringfish_0.19.0     ragg_1.5.2           </span></span>
-<span><span class="co">#&gt; [34] PreciseSums_0.7       pkgconfig_2.0.3       desc_1.4.3           </span></span>
-<span><span class="co">#&gt; [37] rex_1.2.2             pkgdown_2.2.0         RcppParallel_5.1.11-2</span></span>
-<span><span class="co">#&gt; [40] pillar_1.11.1         bslib_0.11.0          gtable_0.3.6         </span></span>
-<span><span class="co">#&gt; [43] data.table_1.18.4     glue_1.8.1            Rcpp_1.1.1-1.1       </span></span>
-<span><span class="co">#&gt; [46] systemfonts_1.3.2     xfun_0.57             tibble_3.3.1         </span></span>
-<span><span class="co">#&gt; [49] tidyselect_1.2.1      sys_3.4.3             knitr_1.51           </span></span>
-<span><span class="co">#&gt; [52] farver_2.1.2          dparser_1.3.1-13      htmltools_0.5.9      </span></span>
-<span><span class="co">#&gt; [55] nlme_3.1-169          labeling_0.4.3        rmarkdown_2.31       </span></span>
-<span><span class="co">#&gt; [58] compiler_4.6.0        S7_0.2.2</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1] gtable_0.3.6          xfun_0.57             bslib_0.11.0         </span></span>
+<span><span class="co">#&gt;  [4] lattice_0.22-9        vctrs_0.7.3           tools_4.6.0          </span></span>
+<span><span class="co">#&gt;  [7] generics_0.1.4        parallel_4.6.0        tibble_3.3.1         </span></span>
+<span><span class="co">#&gt; [10] pkgconfig_2.0.3       data.table_1.18.4     checkmate_2.3.4      </span></span>
+<span><span class="co">#&gt; [13] RColorBrewer_1.1-3    S7_0.2.2              desc_1.4.3           </span></span>
+<span><span class="co">#&gt; [16] RcppParallel_5.1.11-2 lifecycle_1.0.5       compiler_4.6.0       </span></span>
+<span><span class="co">#&gt; [19] farver_2.1.2          textshaping_1.0.5     fontawesome_0.5.3    </span></span>
+<span><span class="co">#&gt; [22] htmltools_0.5.9       sys_3.4.3             sass_0.4.10          </span></span>
+<span><span class="co">#&gt; [25] yaml_2.3.12           pillar_1.11.1         pkgdown_2.2.0        </span></span>
+<span><span class="co">#&gt; [28] crayon_1.5.3          jquerylib_0.1.4       whisker_0.4.1        </span></span>
+<span><span class="co">#&gt; [31] openssl_2.4.1         cachem_1.1.0          nlme_3.1-169         </span></span>
+<span><span class="co">#&gt; [34] qs2_0.2.1             tidyselect_1.2.1      digest_0.6.39        </span></span>
+<span><span class="co">#&gt; [37] lotri_1.0.4           purrr_1.2.2           labeling_0.4.3       </span></span>
+<span><span class="co">#&gt; [40] rxode2ll_2.0.14       fastmap_1.2.0         grid_4.6.0           </span></span>
+<span><span class="co">#&gt; [43] cli_3.6.6             dparser_1.3.1-13      magrittr_2.0.5       </span></span>
+<span><span class="co">#&gt; [46] withr_3.0.2           scales_1.4.0          backports_1.5.1      </span></span>
+<span><span class="co">#&gt; [49] rmarkdown_2.31        askpass_1.2.1         ragg_1.5.2           </span></span>
+<span><span class="co">#&gt; [52] stringfish_0.19.0     memoise_2.0.1         evaluate_1.0.5       </span></span>
+<span><span class="co">#&gt; [55] knitr_1.51            rex_1.2.2             PreciseSums_0.7      </span></span>
+<span><span class="co">#&gt; [58] rlang_1.2.0           downlit_0.4.5         Rcpp_1.1.1-1.1       </span></span>
+<span><span class="co">#&gt; [61] glue_1.8.1            xml2_1.5.2            jsonlite_2.0.0       </span></span>
+<span><span class="co">#&gt; [64] R6_2.6.1              systemfonts_1.3.2     fs_2.1.0</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

@@ -71,11 +71,10 @@ place.
 | Sampling: 0, 0.25, 1, 2, 4, 6, 24 h on day 1 | \- | Methods “Pharmacokinetic sampling” |
 
 The `value` column shows the typical-value parameter estimate; the
-in-file comments next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry pin
-every value to the same locations. IIV CV% are converted to log-scale
-variances via `omega^2 = log(1 + CV^2)` in the model file; the comments
-note the arithmetic.
+in-file comments next to each `ini()` entry pin every value to the same
+locations. IIV CV% are converted to log-scale variances via
+`omega^2 = log(1 + CV^2)` in the model file; the comments note the
+arithmetic.
 
 ## Virtual cohort
 
@@ -143,9 +142,8 @@ stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
 Two simulations are produced:
 
 1.  **Stochastic** (full IIV): rendered as a VPC ribbon for Figure 1.
-2.  **Typical-value**
-    ([`zeroRe()`](https://nlmixr2.github.io/rxode2/reference/zeroRe.html)):
-    used for the deterministic CL and AUC comparison in the NCA section.
+2.  **Typical-value** (`zeroRe()`): used for the deterministic CL and
+    AUC comparison in the NCA section.
 
 ``` r
 
@@ -216,8 +214,7 @@ ggplot(vpc_pct, aes(time, Q50)) +
        title = "Replicates Figure 1 of Varatharajan 2016",
        caption = "Median (black), 25th-75th (blue), and 5th-95th (grey) percentiles from a 70-subject virtual cohort (60 mg/m^2 Dnr, 1-h IV infusion).")
 #> Warning in transformation$transform(x): NaNs produced
-#> Warning in scale_y_log10(): log-10 transformation introduced
-#> infinite values.
+#> Warning in scale_y_log10(): log-10 transformation introduced infinite values.
 #> Warning: Removed 1 row containing missing values or values outside the scale range
 #> (`geom_ribbon()`).
 ```
@@ -335,8 +332,7 @@ nca_res  <- PKNCA::pk.nca(nca_data)
 #> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
-#>  ■■■■■■■■■■■■■                     40% |  ETA:  2s
-#> Warning: Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.05) is not allowed

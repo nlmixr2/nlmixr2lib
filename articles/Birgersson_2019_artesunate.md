@@ -930,9 +930,8 @@ structural ODE chain implements the published algebraic relationship
   the reference category as 0 (non-pregnant) following the broader
   pharmacology default, but this model preserves the source paper’s
   structural value verbatim by applying the effect coefficient via
-  `(1 - PREG)` in the
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html)
-  block: `cl_dha <- ... * (1 + e_preg_cl_dha * (1 - PREG))` with
+  `(1 - PREG)` in the `model()` block:
+  `cl_dha <- ... * (1 + e_preg_cl_dha * (1 - PREG))` with
   `e_preg_cl_dha = -0.214`. Pregnant simulations match the published 190
   L/h structural value; non-pregnant simulations apply the 0.786
   multiplier.

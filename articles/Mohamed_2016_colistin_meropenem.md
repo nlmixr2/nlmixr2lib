@@ -94,14 +94,9 @@ reproduces the cross-walk for review.
 
 NONMEM placeholders THETA(6) (FIX 0), THETA(24) (FIX 1), THETA(25) (FIX
 1), THETA(30) (FIX 0), and THETA(32) (FIX 0) are not referenced anywhere
-in `$DES` / `$ERROR`; they are deliberately omitted from
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) because
-nlmixr2 requires every
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry to
-be used inside
-[`model()`](https://nlmixr2.github.io/rxode2/reference/model.html). The
-omission is documented inline in the model file’s
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) block.
+in `$DES` / `$ERROR`; they are deliberately omitted from `ini()` because
+nlmixr2 requires every `ini()` entry to be used inside `model()`. The
+omission is documented inline in the model file’s `ini()` block.
 
 The ODE structure is reproduced verbatim from `$DES` (lines 280-437 of
 the .mod). The 56-line KE2 lookup cascade in `$PK` (lines 199-276) is
@@ -351,9 +346,8 @@ review.
   `Ccol`. Any `Ccol` value not in the cascade leaves `KE2 = 0`.
   Downstream users repurposing the model with arbitrary colistin
   concentrations will need to set their own `KE2` (e.g., by editing the
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html)
-  block or supplying `KE2` as a covariate). The verbatim decision was
-  made by the operator
+  `model()` block or supplying `KE2` as a covariate). The verbatim
+  decision was made by the operator
   (`queue/.claude_task_runner/sidecar/006-mohamed_2016_colistin_meropenem/response-001.json`).
 - **`ETA(1)` dropped.** The .mod declares `ETA(1)` shared between `KGA`
   and `KGP` with `OMEGA = 0 FIX`, contributing nothing to the
@@ -374,13 +368,8 @@ review.
   THETA(30), and THETA(32) are FIX placeholders in the source that are
   declared but never referenced in any `$PK` / `$DES` / `$ERROR`
   expression. They are documented inline as comments in the model file’s
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) block
-  but not declared as
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html)
-  parameters because nlmixr2 requires every
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry
-  to appear in
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html).
+  `ini()` block but not declared as `ini()` parameters because nlmixr2
+  requires every `ini()` entry to appear in `model()`.
 - **Mutant initial condition sourced via vignette preprocessing.** The
   .mod’s `$PK` block sets `A_0(9) = NMUT = AMT * MUT` per dose record.
   rxode2 cannot read `AMT` from the event table inside the model body,

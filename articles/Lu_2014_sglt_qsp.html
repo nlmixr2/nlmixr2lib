@@ -657,7 +657,7 @@ starting point 6 nM)</td>
 <code>lki2</code>, and <code>lfup</code> labels in the model file
 (<code>lki1</code> = 200 nmol/L, <code>lki2</code> = 0.6 nmol/L,
 <code>lfup</code> = 0.01); to simulate canagliflozin instead of
-dapagliflozin, edit the model file’s <code><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini()</a></code> block or
+dapagliflozin, edit the model file’s <code>ini()</code> block or
 override the parameters at simulation time.</p>
 </div>
 <div class="section level2">
@@ -898,12 +898,12 @@ inhibitor.</caption>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>transporter <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span></span>
 <span>    <span class="va">transporter</span> <span class="op">==</span> <span class="st">"oe_sglt1"</span>, <span class="st">"SGLT1"</span>, <span class="st">"SGLT2"</span></span>
 <span>  <span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">plasma_glucose_mgdl</span>, <span class="va">operation_efficiency</span>,</span>
+<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span><span class="va">plasma_glucose_mgdl</span>, <span class="va">operation_efficiency</span>,</span>
 <span>             colour <span class="op">=</span> <span class="va">transporter</span>, shape <span class="op">=</span> <span class="va">transporter</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_continuous</a></span><span class="op">(</span>limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">100</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_point</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">scale_y_continuous</span><span class="op">(</span>limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">100</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span></span>
 <span>    x <span class="op">=</span> <span class="st">"Plasma glucose (mg/dL)"</span>,</span>
 <span>    y <span class="op">=</span> <span class="st">"Operation efficiency (% of Vmax)"</span>,</span>
 <span>    title <span class="op">=</span> <span class="st">"Figure 5A -- SGLT operation efficiency, healthy, no inhibitor"</span>,</span>
@@ -947,9 +947,9 @@ after-treatment).</p>
 <span></span>
 <span><span class="va">sim_shc</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">sim_baseline_shc</span>, <span class="va">sim_dapa_shc</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">sim_shc</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">uge_rate</span>, colour <span class="op">=</span> <span class="va">treatment</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">sim_shc</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">time</span>, <span class="va">uge_rate</span>, colour <span class="op">=</span> <span class="va">treatment</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span></span>
 <span>    x <span class="op">=</span> <span class="st">"Time (h)"</span>,</span>
 <span>    y <span class="op">=</span> <span class="st">"UGE rate (mmol/h)"</span>,</span>
 <span>    title <span class="op">=</span> <span class="st">"Figure 2 -- UGE rate during stepped hyperglycemic clamp, T2DM"</span>,</span>
@@ -1150,10 +1150,10 @@ reduction.</caption>
 </table>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">fig6a</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">loss_of_function_pct</span>, <span class="va">daily_uge_g</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">fig6a</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">loss_of_function_pct</span>, <span class="va">daily_uge_g</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_point</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span></span>
 <span>    x <span class="op">=</span> <span class="st">"Loss of SGLT2 function (%)"</span>,</span>
 <span>    y <span class="op">=</span> <span class="st">"Daily UGE (g/day)"</span>,</span>
 <span>    title <span class="op">=</span> <span class="st">"Figure 6A -- daily UGE vs loss of SGLT2 function (normoglycemic healthy)"</span>,</span>
@@ -1200,13 +1200,13 @@ extension would add <code>GFR</code> as a regressor; not implemented
 here.</li>
 <li>
 <strong>T2DM vs healthy Vmax2.</strong> The typical-value Vmax2 in
-<code><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini()</a></code> is the calibrated healthy value (93.5 mmol/h); the
+<code>ini()</code> is the calibrated healthy value (93.5 mmol/h); the
 T2DM = 1 cohort uses Vmax2_TYP * (1 + 0.176) = 110 mmol/h via the
 covariate effect <code>e_t2dm_vmax2</code>. All other SGLT-kinetics
 parameters (Vmax1, Km1, Km2, Ki1, Ki2) are held common between T2DM and
 healthy per Lu 2014 Methods.</li>
 <li>
-<strong>Dapagliflozin defaults in <code><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini()</a></code>.</strong>
+<strong>Dapagliflozin defaults in <code>ini()</code>.</strong>
 <code>lki1</code>, <code>lki2</code>, and <code>lfup</code> default to
 the dapagliflozin values from Lu 2014 Table 3. To simulate
 canagliflozin, override the parameters at simulation time

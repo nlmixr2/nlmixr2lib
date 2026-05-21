@@ -72,11 +72,11 @@ str(rxode2::rxode2(readModelDb("LeTilly_2021_trastuzumab"))$meta$population)
 
 ## Source trace
 
-Every [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html)
-value in `inst/modeldb/specificDrugs/LeTilly_2021_trastuzumab.R` comes
-from Le Tilly 2021 Table 2 (final model). The structural ODEs are
-equations (1) and (3)–(8) of the same paper. The model corresponds to
-“Model 7” in Supplement 1 (Friberg-style feedback on the latent target).
+Every `ini()` value in
+`inst/modeldb/specificDrugs/LeTilly_2021_trastuzumab.R` comes from Le
+Tilly 2021 Table 2 (final model). The structural ODEs are equations (1)
+and (3)–(8) of the same paper. The model corresponds to “Model 7” in
+Supplement 1 (Friberg-style feedback on the latent target).
 
 | Parameter / equation | Value | Source location |
 |----|---:|----|

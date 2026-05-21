@@ -598,8 +598,7 @@ is a load-bearing biological feature of intravitreally administered Fabs
   etas in the packaged model.
 - **`Kss` is fixed.** The QSS binding constant is held at the in-vitro
   KD value of ~20 pM (= 0.96e-3 mg/L for a 48 kDa Fab, Le 2015 Table 1
-  footnote d). Wrapped in `fixed()` in
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html).
+  footnote d). Wrapped in `fixed()` in `ini()`.
 - **`kinT` table value used (0.364 ug/mL/day).** Le 2015 Table 1 reports
   `kinT = 0.364 mg/mL/day` while the paper’s Discussion (p.600) refers
   to “0.32 ug/mL/day”. The order-of-magnitude argument that follows

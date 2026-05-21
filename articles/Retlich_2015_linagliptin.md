@@ -43,11 +43,10 @@ The same metadata are available programmatically via
 
 ## Source trace
 
-Every [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html)
-parameter in `inst/modeldb/specificDrugs/Retlich_2015_linagliptin.R`
-carries an inline source-trace comment. The table below collects them in
-one place for review; numeric values are reproduced verbatim from the
-source.
+Every `ini()` parameter in
+`inst/modeldb/specificDrugs/Retlich_2015_linagliptin.R` carries an
+inline source-trace comment. The table below collects them in one place
+for review; numeric values are reproduced verbatim from the source.
 
 | Equation / parameter | Value | Source location |
 |----|----|----|

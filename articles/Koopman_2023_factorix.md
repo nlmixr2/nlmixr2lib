@@ -55,9 +55,8 @@ The same metadata is available programmatically via
 ## Source trace
 
 The per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/specificDrugs/Koopman_2023_factorix.R`. The table below
-collects them in one place for review.
+`ini()` entry in `inst/modeldb/specificDrugs/Koopman_2023_factorix.R`.
+The table below collects them in one place for review.
 
 | Parameter (model name) | Value | Source |
 |----|----|----|
@@ -317,9 +316,6 @@ intervals <- data.frame(
 
 nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj,
                                           intervals = intervals))
-#>  ■■■■■                             13% |  ETA: 10s
-#>  ■■■■■■■■■■■■■■                    44% |  ETA:  6s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■           74% |  ETA:  3s
 nca_tbl <- as.data.frame(nca_res$result)
 
 half_life_summary <- nca_tbl |>
@@ -447,8 +443,7 @@ within the reported observed ranges.
 - **Allometric exponents fixed at theoretical values.** Koopman 2023
   fixed the body weight exponents at 0.75 (CL, Q) and 1.00 (V1, V2) per
   Anderson & Holford 2008, rather than estimating them. The packaged
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html)
-  block hard-codes these constants accordingly.
+  `model()` block hard-codes these constants accordingly.
 - **Reference age centering.** The age effect is centered at 15.8 years
   (the median age of the development cohort). Setting `AGE = 15.8`
   recovers the typical-value parameters in Table 2; setting `AGE`

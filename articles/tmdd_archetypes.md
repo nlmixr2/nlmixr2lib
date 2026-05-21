@@ -60,9 +60,9 @@ explicitly.
 ## Source trace
 
 Per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-the model source under `inst/modeldb/pharmacokinetics/PK_*_tmdd_*.R`.
-The table below collects the equation references.
+`ini()` entry in the model source under
+`inst/modeldb/pharmacokinetics/PK_*_tmdd_*.R`. The table below collects
+the equation references.
 
 | Parameter (symbol) | Mager & Jusko 2001 | Gibiansky et al. 2008 |
 |----|----|----|
@@ -124,8 +124,7 @@ sims_single |>
        title = "Cc — 100 mg SC, typical-value simulation",
        caption = "The 1-cmt full and 1-cmt QSS curves overlay in the fast-binding, large-Kss regime.",
        colour = "variant", linetype = "structure")
-#> Warning in scale_y_log10(): log-10 transformation introduced
-#> infinite values.
+#> Warning in scale_y_log10(): log-10 transformation introduced infinite values.
 ```
 
 ![](tmdd_archetypes_files/figure-html/sim-single-1.png)
@@ -189,8 +188,7 @@ sims_multi |>
   scale_y_log10() +
   labs(x = "Time (day)", y = expression(C[c] ~ "(mg/L)"),
        title = "Cc — 100 mg SC Q14D x 6, typical value")
-#> Warning in scale_y_log10(): log-10 transformation introduced
-#> infinite values.
+#> Warning in scale_y_log10(): log-10 transformation introduced infinite values.
 ```
 
 ![](tmdd_archetypes_files/figure-html/sim-multi-1.png)
@@ -212,9 +210,7 @@ and QSS curves above is the asymptotic result.
 
 - Initial estimates are generic mAb-scale defaults, not derived from any
   specific trial. The archetypes are scaffolds; users must override the
-  numeric starting values in
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) when
-  fitting a real dataset.
+  numeric starting values in `ini()` when fitting a real dataset.
 - All concentration-bearing quantities (drug, free target, complex) are
   in `mg/L`. The `kon` parameter has units `L/(mg*day)`. For a given
   molecular weight, a conversion to the more conventional molar units

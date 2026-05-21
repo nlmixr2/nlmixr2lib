@@ -42,9 +42,8 @@ The same metadata is available programmatically via
 
 ## Source trace
 
-Every [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html)
-parameter carries an in-file comment pointing back to the source. The
-table below collects those pointers in one place.
+Every `ini()` parameter carries an in-file comment pointing back to the
+source. The table below collects those pointers in one place.
 
 | Equation / parameter | Value | Source location |
 |----|----|----|
@@ -69,9 +68,9 @@ table below collects those pointers in one place.
 | ODE structure (DAR0–DAR8 chains, 1:1 deconjugation, DM4 ⇄ MeDM4) | n/a | Pouzin 2022 Online Resource 1 (Monolix `.mlxtran`); main-text Methods § “Model development” |
 
 The published additive ADC residual SD of **1.03 µg/mL** is converted to
-µM in [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) by
-dividing by the SAR408701 molecular weight (150 000 g/mol) and
-multiplying by 1000 mL/L: `1.03 / 150000 * 1000 = 0.006867 µM`.
+µM in `ini()` by dividing by the SAR408701 molecular weight (150 000
+g/mol) and multiplying by 1000 mL/L:
+`1.03 / 150000 * 1000 = 0.006867 µM`.
 
 ## Virtual cohort and simulation
 

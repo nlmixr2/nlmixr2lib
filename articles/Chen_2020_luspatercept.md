@@ -45,9 +45,8 @@ The same information is available programmatically via
 ## Source trace
 
 Per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/specificDrugs/Chen_2020_luspatercept.R`. The table below
-collects them for review.
+`ini()` entry in `inst/modeldb/specificDrugs/Chen_2020_luspatercept.R`.
+The table below collects them for review.
 
 | Equation / parameter | Value | Source location |
 |----|----|----|
@@ -291,12 +290,6 @@ intervals <- data.frame(
 )
 
 nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
-#>  ■■■■■■                            17% |  ETA: 18s
-#>  ■■■■■■■■■■■                       32% |  ETA: 15s
-#>  ■■■■■■■■■■■■■■■                   46% |  ETA: 11s
-#>  ■■■■■■■■■■■■■■■■■■■               61% |  ETA:  8s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■           74% |  ETA:  5s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      89% |  ETA:  2s
 summary(nca_res)
 #>  start end      treatment   N    auclast        cmax              tmax
 #>      0  21  1.0 mg/kg q3w 500 149 [40.3] 9.48 [29.9] 4.00 [3.00, 5.00]

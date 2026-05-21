@@ -64,9 +64,8 @@ The same metadata is available programmatically via
 ## Source trace
 
 The per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/specificDrugs/Melhem_2022_dostarlimab.R`. The table below
-collects them in one place for review.
+`ini()` entry in `inst/modeldb/specificDrugs/Melhem_2022_dostarlimab.R`.
+The table below collects them in one place for review.
 
 | Parameter (model name) | Value | Source |
 |----|----|----|
@@ -277,7 +276,6 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
-#>  ■■■■■■■■■■■■■■■■■■■■■■            69% |  ETA:  1s
 knitr::kable(summary(nca_res),
              caption = "Simulated NCA parameters (3rd dosing interval, days 21-42 after first dose)")
 ```
@@ -323,16 +321,14 @@ by day 1) is consistent with the published Table 4 mean of 177 mg/L.
 - **Imax parameterization.** I_max is always negative in the source
   (-0.161). To keep every individual I_max strictly negative under
   log-normal IIV, the model stores log\|I_max\| and applies the negative
-  sign in the
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html)
-  block: `Imax_i <- -exp(lImax + etalImax)`. The table’s omega^2_Imax =
-  0.537 maps to omega = sqrt(0.537) = 0.733, which the paper labels
-  “73.3% CV” — i.e., omega is reported as a CV without the log-normal CV
-  = sqrt(exp(omega^2) - 1) correction. The packaged model uses 0.537
-  directly as the variance of `etalImax`, preserving the paper’s table
-  value at the cost of a ~10 percentage- point divergence between
-  “labelled CV” and “true log-normal CV”; the same parameterization is
-  used by `Masters_2022_avelumab.R`.
+  sign in the `model()` block: `Imax_i <- -exp(lImax + etalImax)`. The
+  table’s omega^2_Imax = 0.537 maps to omega = sqrt(0.537) = 0.733,
+  which the paper labels “73.3% CV” — i.e., omega is reported as a CV
+  without the log-normal CV = sqrt(exp(omega^2) - 1) correction. The
+  packaged model uses 0.537 directly as the variance of `etalImax`,
+  preserving the paper’s table value at the cost of a ~10 percentage-
+  point divergence between “labelled CV” and “true log-normal CV”; the
+  same parameterization is used by `Masters_2022_avelumab.R`.
 - **Albumin units typo in Methods.** The Methods text describes the
   reference patient with “ALB 39 g dL-1”, but Table 2 lists albumin in
   g/L (median 39, range 19-51). 39 g/dL is physiologically impossible

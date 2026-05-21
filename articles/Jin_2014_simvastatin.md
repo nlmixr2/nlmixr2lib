@@ -57,8 +57,7 @@ nlmixr2lib::readModelDb("Jin_2014_simvastatin")$population
 
 ## Source trace
 
-Per-parameter origin is recorded inline next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
+Per-parameter origin is recorded inline next to each `ini()` entry in
 `inst/modeldb/specificDrugs/Jin_2014_simvastatin.R`. The table below
 collects the same provenance for review.
 

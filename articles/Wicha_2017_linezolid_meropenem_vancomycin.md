@@ -82,8 +82,7 @@ is encoded by the `(1 - Emax_MER,Eagle * E_MER,Eagle)` correction inside
 the same bracket.
 
 The full per-parameter source trace is recorded as in-file comments next
-to each [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html)
-entry in
+to each `ini()` entry in
 `inst/modeldb/pharmacodynamics/Wicha_2017_linezolid_meropenem_vancomycin.R`.
 The table below collects them in one place. All values come from Wicha
 2017 Table 1.
@@ -137,12 +136,10 @@ deviations section for justification of the non-canonical names):
 ## Helper: build a time-kill scenario
 
 The published experiment used static drug concentrations applied at t =
-0. The helper below builds an
-[`et()`](https://nlmixr2.github.io/rxode2/reference/et.html) event table
-for an arbitrary combination of LZD, MER, and VAN starting
-concentrations. Drug doses are inserted as bolus events into the drug
-compartments with `amt` interpreted as the initial bath concentration in
-mg/L.
+0. The helper below builds an `et()` event table for an arbitrary
+combination of LZD, MER, and VAN starting concentrations. Drug doses are
+inserted as bolus events into the drug compartments with `amt`
+interpreted as the initial bath concentration in mg/L.
 
 ``` r
 
@@ -344,12 +341,10 @@ ggplot(ari, aes(time, Cc, color = scenario)) +
   mass.
 - **Bacterial counts on linear scale internally.** Table 1 reports CFU0
   and CFUmax in log10 units; the ODEs operate on linear CFU/mL. The
-  model converts in
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html):
-  initial condition `gro(0) <- 10^cfu0` and capacity term
-  `1 - cfu_total / 10^cfumax`. A `1e-6` floor is added inside the
-  `log10(...)` observation to avoid `log10(0)` when all bacterial states
-  are driven to zero by combined regimens.
+  model converts in `model()`: initial condition `gro(0) <- 10^cfu0` and
+  capacity term `1 - cfu_total / 10^cfumax`. A `1e-6` floor is added
+  inside the `log10(...)` observation to avoid `log10(0)` when all
+  bacterial states are driven to zero by combined regimens.
 - **No IIV / random effects.** Wicha 2017 explicitly states that
   between-replicate variability was small and no random effects were
   required (page 4). The only stochastic component in the published
@@ -366,13 +361,11 @@ ggplot(ari, aes(time, Cc, color = scenario)) +
   `[1 - E_MER * (1 - Emax_MER,Eagle * E_MER,Eagle) * (1 - E_VAN)] * (1 - Emax_VAN * E_VAN)`,
   where the inner `(1 - E_VAN)` gates the MER contribution and the outer
   `(1 - Emax_VAN * E_VAN)` enforces the 74.3% Emax cap on VAN’s effect.
-  This is the form encoded in
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html). It
-  reproduces (a) MER alone reaches 100% inhibition at optimal
-  concentrations and 67.2% in the Eagle range, (b) VAN alone reaches at
-  most 74.3% inhibition, and (c) high VAN + high MER reduces to
-  VAN-alone behaviour, matching the paper’s “limited to VAN” claim (M4
-  vs V4M4 in Figure 2).
+  This is the form encoded in `model()`. It reproduces (a) MER alone
+  reaches 100% inhibition at optimal concentrations and 67.2% in the
+  Eagle range, (b) VAN alone reaches at most 74.3% inhibition, and (c)
+  high VAN + high MER reduces to VAN-alone behaviour, matching the
+  paper’s “limited to VAN” claim (M4 vs V4M4 in Figure 2).
 - **Out-of-scope: human PK linkage and clinical-trial simulation.**
   Wicha 2017 also performs a clinical-trial simulation by linking the
   semimechanistic PD model to upstream published popPK models for LZD

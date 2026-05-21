@@ -428,13 +428,11 @@ covariate-effect implementation are coherent.
 - **OCC = 5 conditional plasma residual error.** NONMEM’s \$ERROR block
   uses `Y2 = F*(1 + ERR(5)) + ERR(6)` for OCC = 5 (volunteer on BC) and
   `Y1 = F*(1 + ERR(1))` for every other OCC. The conditional error is
-  implemented inside
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html) by
-  selecting between the OCC != 5 (`CcpropSd`) and OCC = 5
-  (`Cc_oc5_propSd`, `Cc_oc5_addSd`) SD pairs based on an `oc5`
-  indicator; there is no canonical `<output>_<segment>_propSd` name in
-  `naming-conventions.md`, so the OCC = 5 sub-arm parameters use
-  paper-specific names that may trigger a
+  implemented inside `model()` by selecting between the OCC != 5
+  (`CcpropSd`) and OCC = 5 (`Cc_oc5_propSd`, `Cc_oc5_addSd`) SD pairs
+  based on an `oc5` indicator; there is no canonical
+  `<output>_<segment>_propSd` name in `naming-conventions.md`, so the
+  OCC = 5 sub-arm parameters use paper-specific names that may trigger a
   [`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
   warning.
 - **Compartment-naming warnings.** The three `urine_*`
@@ -452,23 +450,20 @@ covariate-effect implementation are coherent.
   diagonal entries are variances on the linear scale (because the .mod’s
   \$ERROR uses `Y = F*(1 + ERR(i))` and `Y = F*(1 + ERR(j)) + ERR(k)`,
   both linear-scale forms); nlmixr2’s `prop()` and `add()` arguments are
-  SDs. Each residual-SD parameter in
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) is
-  declared as `sqrt(<NONMEM SIGMA value>)` and the conversion is
-  documented in the per-parameter source comment.
+  SDs. Each residual-SD parameter in `ini()` is declared as
+  `sqrt(<NONMEM SIGMA value>)` and the conversion is documented in the
+  per-parameter source comment.
 - **Sulphate-formation IIV.** The .mod fixes ETA(3) (IIV on CL_sulphate)
   at 0 (`$OMEGA 0 FIX`), so the model file declares no `etalcl_sulf`
   slot. Should a future re-fit estimate this IIV, the natural addition
   is `etalcl_sulf ~ <variance>` and a multiplicative `exp(etalcl_sulf)`
-  wrapper inside
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html)’s
-  `cl_sulf` expression.
+  wrapper inside `model()`’s `cl_sulf` expression.
 - **PKNCA on a typical-value sweep.** The PKNCA call above runs on the
-  [`zeroRe()`](https://nlmixr2.github.io/rxode2/reference/zeroRe.html)
-  typical-value trajectories rather than a stochastic VPC. Per-cohort
-  PKNCA values are therefore deterministic and have no IIV envelope; the
-  goal here is structural-model validation (covariate-effect ordering,
-  half-life direction), not VPC-style predictive checking.
+  `zeroRe()` typical-value trajectories rather than a stochastic VPC.
+  Per-cohort PKNCA values are therefore deterministic and have no IIV
+  envelope; the goal here is structural-model validation
+  (covariate-effect ordering, half-life direction), not VPC-style
+  predictive checking.
 - **Multiple-dose and steady-state regimens.** Allegaert 2015 also
   reports multiple-dose regimens (the bundle’s
   `Simulated_APAP_YoungWomen.csv` carries 6-hourly redosing in several

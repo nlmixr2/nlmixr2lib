@@ -90,10 +90,10 @@ str(mod_meta$population, max.level = 1)
 
 ## Source trace
 
-Every [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html)
-value in `inst/modeldb/specificDrugs/Yang_2024_axatilimab.R` cites a
-Yang 2024 Table 1 row in its trailing comment. The table below collects
-the equations and parameter origins for review:
+Every `ini()` value in
+`inst/modeldb/specificDrugs/Yang_2024_axatilimab.R` cites a Yang 2024
+Table 1 row in its trailing comment. The table below collects the
+equations and parameter origins for review:
 
 | Symbol / equation | Value | Source location |
 |----|----|----|
@@ -134,7 +134,7 @@ the equations and parameter origins for review:
 | Cancer cohort on BL_NCMC | β = 1.22 | Table 1 |
 | Healthy cohort on BL_NCMC | β = 0.618 | Table 1 |
 | CPK on BL_NCMC | β = 0.376, ref 63 U/L | Table 1 |
-| Random effects (omega; squared in [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html)) | 0.235, 1.09, 0.289, 0.187, 0.868, 0.464, 0.755 | Table 1 |
+| Random effects (omega; squared in `ini()`) | 0.235, 1.09, 0.289, 0.187, 0.868, 0.464, 0.755 | Table 1 |
 | Residual error (Cc, CSF1, NCMC add, NCMC prop, AST, CPK) | 0.375, 0.321, 0.977, 0.676, 0.324, 0.462 | Table 1 |
 
 ## Errata

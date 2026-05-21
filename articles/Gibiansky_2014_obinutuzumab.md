@@ -50,10 +50,9 @@ The same information is available programmatically via the model’s
 
 ## Source trace
 
-Parameter origin is recorded as in-file comments next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/specificDrugs/Gibiansky_2014_obinutuzumab.R`. The table
-below collects them in one place.
+Parameter origin is recorded as in-file comments next to each `ini()`
+entry in `inst/modeldb/specificDrugs/Gibiansky_2014_obinutuzumab.R`. The
+table below collects them in one place.
 
 | Equation / parameter | Value | Source location |
 |----|----|----|

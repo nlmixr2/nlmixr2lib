@@ -81,8 +81,7 @@ baseline albumin 39 g/L, and baseline CRP 0.837 mg/dL.
 - **CV% to log-normal variance.** Wang 2020 Table 2 reports
   between-subject variability as CV% on the linear-parameter scale. The
   nlmixr2 convention is log-normal IIV on the log-transformed parameter;
-  the conversion `omega^2 = log(CV^2 + 1)` is applied in
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html). The
+  the conversion `omega^2 = log(CV^2 + 1)` is applied in `ini()`. The
   paper does not report off-diagonal correlations, so the IIVs on Ka,
   CL/F, and Vc/F are coded as independent.
 - **Unit conversions.** The paper reports rates in 1/h, clearances in
@@ -270,8 +269,6 @@ intervals <- data.frame(
 )
 
 nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
-#>  ■■■■■■■■■■■                       35% |  ETA:  6s
-#>  ■■■■■■■■■■■■■■■■■■■■■■            69% |  ETA:  3s
 summary(nca_res)
 #>  start end  treatment   N       auclast         cmax           cmin
 #>      0  28  150mg_Q4W 200 283000 [47.4] 14900 [34.2]    3160 [1010]

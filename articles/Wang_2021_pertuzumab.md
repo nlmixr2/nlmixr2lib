@@ -54,12 +54,11 @@ The same metadata is available programmatically via
 ## Source trace
 
 The per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/specificDrugs/Wang_2021_pertuzumab.R`. The table below
-collects them in one place for review. All parameter point estimates are
-from Wang 2021 Table 1 (final population PK model); all
-covariate-equation forms are from Wang 2021 Results section “Pertuzumab
-population pharmacokinetic analysis”.
+`ini()` entry in `inst/modeldb/specificDrugs/Wang_2021_pertuzumab.R`.
+The table below collects them in one place for review. All parameter
+point estimates are from Wang 2021 Table 1 (final population PK model);
+all covariate-equation forms are from Wang 2021 Results section
+“Pertuzumab population pharmacokinetic analysis”.
 
 | Equation / parameter | Value | Source location |
 |----|----|----|

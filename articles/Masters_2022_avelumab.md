@@ -56,9 +56,8 @@ The same metadata is available programmatically via
 ## Source trace
 
 The per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/specificDrugs/Masters_2022_avelumab.R`. The table below
-collects them in one place for review.
+`ini()` entry in `inst/modeldb/specificDrugs/Masters_2022_avelumab.R`.
+The table below collects them in one place for review.
 
 | Parameter (model name) | Value | Source |
 |----|----|----|
@@ -263,8 +262,6 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
-#>  ■■■■■■■■■■■■■■■                   46% |  ETA:  4s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■       87% |  ETA:  1s
 knitr::kable(summary(nca_res),
              caption = "Simulated NCA parameters (3rd dosing interval, days 28-42)")
 ```
@@ -296,8 +293,7 @@ Simulated NCA parameters (3rd dosing interval, days 28-42) {.table}
 - **Imax parameterization:** $`I_{\max}`$ is always negative in the
   source ($`-0.08533`$). To keep every individual $`I_{\max,i}`$
   strictly negative under log-normal IIV, the model stores
-  $`\log|I_{\max}|`$ and applies the negative sign in the
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html)
+  $`\log|I_{\max}|`$ and applies the negative sign in the `model()`
   block: `Imax_i <- -exp(lImax + etalImax)`. This is equivalent to a
   log-normal distribution on the magnitude of the decrease.
 - **ω²(V2) = 1.204 (RSE 109.7%):** This is a very large log-normal

@@ -432,21 +432,18 @@ median, matching the inverse of the published CL multipliers of 1.33 /
   Methods covariate-effect equation is fitted as a categorical
   four-level effect (C1 reference; C2, C3, C4 each with their own
   estimated coefficient). The model file reconstructs the C1-C4 levels
-  inside
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html)
-  from the canonical binary inputs `CYP3A5_EXPR` (recipient) and
-  `CYP3A5_EXPR_DONOR` (donor), so the underlying recipient + donor
-  biology is explicit in the dataset. Users supplying the four-level
-  combination as a single categorical column must derive the two binary
-  indicators upstream (`CYP3A5_EXPR = c(0, 1, 0, 1)[combination]`,
+  inside `model()` from the canonical binary inputs `CYP3A5_EXPR`
+  (recipient) and `CYP3A5_EXPR_DONOR` (donor), so the underlying
+  recipient + donor biology is explicit in the dataset. Users supplying
+  the four-level combination as a single categorical column must derive
+  the two binary indicators upstream
+  (`CYP3A5_EXPR = c(0, 1, 0, 1)[combination]`,
   `CYP3A5_EXPR_DONOR = c(0, 0, 1, 1)[combination]`).
 
-- **Concentration unit conversion baked into
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html).**
-  Tacrolimus concentrations are reported in ug/L (= ng/mL) by the
-  LC-MS/MS assay. With dose in mg and Vc in L, the internal
-  `central / vc` quantity is in mg/L; the `* 1000` factor on the
-  observation line converts to ug/L.
+- **Concentration unit conversion baked into `model()`.** Tacrolimus
+  concentrations are reported in ug/L (= ng/mL) by the LC-MS/MS assay.
+  With dose in mg and Vc in L, the internal `central / vc` quantity is
+  in mg/L; the `* 1000` factor on the observation line converts to ug/L.
 
 - **Body-weight discrepancy between Table 1 and Results section.** Moes
   2016 Table 1 reports the popPK cohort body weight as 84 +/- 18 kg

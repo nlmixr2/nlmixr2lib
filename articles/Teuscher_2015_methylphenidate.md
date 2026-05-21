@@ -60,8 +60,7 @@ nlmixr2lib::readModelDb("Teuscher_2015_methylphenidate")$population
 
 ## Source trace
 
-Per-parameter origin is recorded inline next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
+Per-parameter origin is recorded inline next to each `ini()` entry in
 `inst/modeldb/specificDrugs/Teuscher_2015_methylphenidate.R`. The table
 below collects the same provenance for review.
 
@@ -280,8 +279,6 @@ dose_obj <- PKNCA::PKNCAdose(ev_dose,
                              doseu = "mg")
 nca_res  <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj,
                                            intervals = intervals))
-#>  ■■■■■■■■■■■■                      36% |  ETA:  3s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     93% |  ETA:  0s
 
 knitr::kable(as.data.frame(summary(nca_res)),
              caption = "Simulated single-dose NCA -- MPH-MLR 40 mg in a 45 kg pediatric subject (ng/mL, h).")
@@ -422,8 +419,7 @@ packaged PK + Emax workflow. {.table}
   = 64.7 L (literal) and flags the discrepancy here; users who need to
   reproduce the paper’s Cmax / Emax simulations should replace
   `vc <- exp(lvc + etalvc)` with `vc <- exp(lvc + etalvc) * WT` in
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html) and
-  re-run.
+  `model()` and re-run.
 - **Proportional residual error magnitude.** Table 1 reports the
   proportional residual error as epsilon = 1.94 (RSE 6.2 %). Taken
   literally as the SD of the proportional error term, this implies a
@@ -440,12 +436,10 @@ packaged PK + Emax workflow. {.table}
   omega_V. The packaged model therefore declines IIV on Ka1, Ka2, F1,
   and tlag; setting any of these as additional random effects is left to
   the user.
-- **PD parameters not encoded in
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html).** Emax
-  = -34.96 and EC50 = 5.77 ng/mL appear only in the vignette code and
-  the source-trace table; they are not part of the packaged model’s
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) block.
-  If a future use case calls for a single combined PK/PD model file, the
+- **PD parameters not encoded in `ini()`.** Emax = -34.96 and EC50 =
+  5.77 ng/mL appear only in the vignette code and the source-trace
+  table; they are not part of the packaged model’s `ini()` block. If a
+  future use case calls for a single combined PK/PD model file, the
   natural extension is a sibling `Teuscher_2015_methylphenidate_pkpd.R`
   model carrying both the PK ODE structure and a turnover-style PD
   compartment driven by Cc rather than Cmax.

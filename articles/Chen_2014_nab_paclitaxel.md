@@ -79,7 +79,7 @@ programmatically via
 ## Source trace
 
 Per-parameter origin is recorded as in-file comments alongside each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
+`ini()` entry in
 `inst/modeldb/specificDrugs/Chen_2014_nab_paclitaxel.R`. The table below
 collects the full source trace in one place.
 
@@ -287,8 +287,7 @@ sim_pk_typ |>
        colour = "Regimen",
        title = "Figure 3C (replicated): paclitaxel concentration vs the 720 ng/mL threshold",
        caption = "Median typical-value profile across n = 200 virtual subjects per regimen. Dashed line: 720 ng/mL neutropenia threshold from Chen 2014.")
-#> Warning in scale_y_log10(): log-10 transformation introduced
-#> infinite values.
+#> Warning in scale_y_log10(): log-10 transformation introduced infinite values.
 ```
 
 ![](Chen_2014_nab_paclitaxel_files/figure-html/figure-3c-1.png)
@@ -363,8 +362,7 @@ sim_pk_typ |>
        y = "Plasma paclitaxel (ng/mL, log scale)",
        title = "Typical-value paclitaxel PK -- 300 mg/m^2 IV over 30 min, n = 200",
        caption = "Three-compartment PK with saturable distribution and saturable elimination; reproduces the rapid biexponential decline reported in Chen 2014.")
-#> Warning in scale_y_log10(): log-10 transformation introduced
-#> infinite values.
+#> Warning in scale_y_log10(): log-10 transformation introduced infinite values.
 ```
 
 ![](Chen_2014_nab_paclitaxel_files/figure-html/figure-pk-24h-1.png)
@@ -408,14 +406,6 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
-#>  ■■■                                8% |  ETA: 22s
-#>  ■■■■■■■                           20% |  ETA: 19s
-#>  ■■■■■■■■■■■                       32% |  ETA: 17s
-#>  ■■■■■■■■■■■■■■■                   45% |  ETA: 13s
-#>  ■■■■■■■■■■■■■■■■■■                58% |  ETA: 10s
-#>  ■■■■■■■■■■■■■■■■■■■■■■            71% |  ETA:  7s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■        84% |  ETA:  4s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    96% |  ETA:  1s
 
 knitr::kable(
   as.data.frame(summary(nca_res)),
@@ -477,11 +467,9 @@ variability.
 - **Age dichotomisation form.** Chen 2014 dichotomised AGE at 65 years
   for the PD Slope covariate (Results, Population PD Model -\> Covariate
   analysis). The canonical `AGE` covariate is continuous; the binary
-  indicator is derived inside
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html) as
-  `age_gte65 <- (AGE >= 65)`. This is the same pattern used in
-  `Robbie_2012_palivizumab.R` for the ADA-titer-derived `ada_is80`
-  indicator.
+  indicator is derived inside `model()` as `age_gte65 <- (AGE >= 65)`.
+  This is the same pattern used in `Robbie_2012_palivizumab.R` for the
+  ADA-titer-derived `ada_is80` indicator.
 - **Covariate normalisation reference values.** Chen 2014 Methods states
   that “continuous covariates were centered to their median values”. The
   PK-population median albumin (3.9 g/dL, N = 150) is used as the

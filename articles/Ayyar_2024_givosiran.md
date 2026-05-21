@@ -139,10 +139,9 @@ The validation simulations below use the typical-value parameter set
 [`rxode2::zeroRe()`](https://nlmixr2.github.io/rxode2/reference/zeroRe.html))
 for a 70 kg adult. Where the paper publishes a Monte Carlo-based 90
 percent prediction interval, this vignette reports the typical-value
-central trajectory only - the omegas in
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) reproduce
-the paper’s assumed 20% CV on k_a, V_c, and k_int and can be used by
-downstream consumers to regenerate stochastic prediction intervals.
+central trajectory only - the omegas in `ini()` reproduce the paper’s
+assumed 20% CV on k_a, V_c, and k_int and can be used by downstream
+consumers to regenerate stochastic prediction intervals.
 
 ## Replicate Ayyar 2024 Figure 6: human plasma PK at 0.35, 1, 2.5, 5 mg/kg SC
 
@@ -542,18 +541,13 @@ four dose arms.
 - **k_deg = k_int by paper assumption.** Footnote b of Table 1 states
   “k_deg = k_int assumed”, so the packaged model uses the same numerical
   value (1.9 1/h, calibrated) for both. They are exposed as separate
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html)
-  parameters (`lkdeg`, `lkint`) so a user could decouple them in a
-  sensitivity analysis.
-- **k_syn and k_on are derived inside
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html),
-  not estimated.** Ayyar 2024 Table 1 footnotes flag the receptor
-  synthesis rate as secondary (`k_syn = k_deg * R_tot`) and the
-  binding-on rate as secondary (`k_on = k_off / K_D`). They are computed
-  in [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html)
-  rather than carried as redundant
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html)
-  parameters.
+  `ini()` parameters (`lkdeg`, `lkint`) so a user could decouple them in
+  a sensitivity analysis.
+- **k_syn and k_on are derived inside `model()`, not estimated.** Ayyar
+  2024 Table 1 footnotes flag the receptor synthesis rate as secondary
+  (`k_syn = k_deg * R_tot`) and the binding-on rate as secondary
+  (`k_on = k_off / K_D`). They are computed in `model()` rather than
+  carried as redundant `ini()` parameters.
 - **Free ASGPR initial condition.** Setting `target(0) = R_tot * V_c`
   (in nmol) places the free receptor at its drug-free steady state
   (`Rf = R_tot` in nM). Without this initialization the first hour of

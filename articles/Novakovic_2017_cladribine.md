@@ -71,8 +71,7 @@ validation in this vignette uses an analogous virtual cohort.
 ## Source trace
 
 Per-parameter origin (also recorded as in-file comments next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry of
-`inst/modeldb/ddmore/Novakovic_2017_cladribine.R`):
+`ini()` entry of `inst/modeldb/ddmore/Novakovic_2017_cladribine.R`):
 
 | Equation / parameter | Value | Source location |
 |----|----|----|
@@ -507,9 +506,8 @@ and the translation choices, not errors in the bundle itself.
   individually – refitting the model would re-estimate the covariance
   matrix entries directly rather than the variance / correlation
   decomposition. The Cholesky-derived numeric values are documented
-  inline in the model file’s
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) block
-  so the decomposition can be reproduced from the source by a reader.
+  inline in the model file’s `ini()` block so the decomposition can be
+  reproduced from the source by a reader.
 
 - **`etap1..etap5` are unpaired with single fixed-effect parameters.**
   [`nlmixr2lib::checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
@@ -528,8 +526,7 @@ and the translation choices, not errors in the bundle itself.
   non-physical placeholder (“mg / no concentration output …”) only to
   satisfy the convention check’s expectation that `dosing` and
   `concentration` numerators share units. No drug concentration is
-  computed inside
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html).
+  computed inside `model()`.
 
 - **Cumulative cladribine dose `CD` as a covariate, not via PK.** The
   source model represents drug exposure via the time-varying CD

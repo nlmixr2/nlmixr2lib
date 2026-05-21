@@ -60,7 +60,7 @@ The same metadata is available programmatically via
 ## Source trace
 
 The per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
+`ini()` entry in
 `inst/modeldb/specificDrugs/Schoemaker_2017_brivaracetam.R`. The table
 below collects them in one place for review. All point estimates are
 from Schoemaker 2017 Table 1 (“NONMEM estimates” column);
@@ -790,14 +790,12 @@ Monte-Carlo sampling noise.
   interindividual variability … IIV was calculated as the square root of
   the diagonal element in the omega matrix.” The Table 1 IIV column is
   therefore the log-scale omega (SD), not a linear-scale CV; the
-  packaged
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) squares
-  each reported value to obtain the variance required by nlmixr2’s
-  `eta ~ var` syntax (e.g., `etalcl ~ 0.0520 == 0.228^2`). For small
-  values of omega (\< 0.30) this is numerically indistinguishable from
-  the lognormal CV; for the Ka IIV (0.319) the lognormal-CV
-  approximation diverges slightly, but the source convention is
-  unambiguous.
+  packaged `ini()` squares each reported value to obtain the variance
+  required by nlmixr2’s `eta ~ var` syntax (e.g.,
+  `etalcl ~ 0.0520 == 0.228^2`). For small values of omega (\< 0.30)
+  this is numerically indistinguishable from the lognormal CV; for the
+  Ka IIV (0.319) the lognormal-CV approximation diverges slightly, but
+  the source convention is unambiguous.
 - **AED-effect functional form.** Schoemaker 2017 Methods (page 2)
   states “Categorical covariates were investigated in the SCM approach
   using a linear model”; PsN SCM “linear” categorical corresponds to

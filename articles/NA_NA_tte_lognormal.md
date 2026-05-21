@@ -259,11 +259,8 @@ dataset is outside this package and not redistributed.
   - AGE coefficient: 50.9 / 1000 = 0.0509 per year above 55
 
 - **[`pnorm()`](https://rdrr.io/r/stats/Normal.html) used in place of
-  NONMEM
-  [`phi()`](https://nlmixr2.github.io/rxode2/reference/phi.html).** The
-  .mod \$DES uses NONMEM’s intrinsic
-  [`phi()`](https://nlmixr2.github.io/rxode2/reference/phi.html) for the
-  standard normal CDF. rxode2’s equivalent is
+  NONMEM `phi()`.** The .mod \$DES uses NONMEM’s intrinsic `phi()` for
+  the standard normal CDF. rxode2’s equivalent is
   [`pnorm()`](https://rdrr.io/r/stats/Normal.html); the two are
   mathematically identical.
 

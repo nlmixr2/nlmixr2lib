@@ -601,7 +601,7 @@ the model is loaded.</p>
 <h2 id="source-trace">Source trace<a class="anchor" aria-label="anchor" href="#source-trace"></a>
 </h2>
 <p>Per-parameter origin (also recorded as in-file comments next to each
-<code><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini()</a></code> entry of
+<code>ini()</code> entry of
 <code>inst/modeldb/ddmore/Svensson_2018_rifampicin.R</code>):</p>
 <table class="table">
 <colgroup>
@@ -894,7 +894,7 @@ asymptotic induction).</p>
 </h2>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxode2.html" class="external-link">rxode2</a></span><span class="op">(</span><span class="fu"><a href="../reference/readModelDb.html">readModelDb</a></span><span class="op">(</span><span class="st">"Svensson_2018_rifampicin"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> parameter labels from comments will be replaced by 'label()'</span></span>
+<span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
 <span><span class="co">#&gt; Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_bio_1, etaiov_bio_2, etaiov_mtt_1, etaiov_mtt_2, etaiov_km_1, etaiov_km_2, etaiov_ka_1, etaiov_ka_2</span></span>
 <span><span class="co">#&gt; as a work-around try putting the mu-referenced expression on a simple line</span></span>
 <span></span>
@@ -916,7 +916,7 @@ the random effects so the prediction is deterministic:</p>
 <span>  keep   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"FFM"</span>, <span class="st">"DOSE"</span>, <span class="st">"OCC"</span><span class="op">)</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalkm', 'etalvmax', 'etalvc', 'etalmtt', 'etalnn', 'etalka', 'etaiov_bio_1', 'etaiov_bio_2', 'etaiov_mtt_1', 'etaiov_mtt_2', 'etaiov_km_1', 'etaiov_km_2', 'etaiov_ka_1', 'etaiov_ka_2'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalkm', 'etalvmax', 'etalvc', 'etalmtt', 'etalnn', 'etalka', 'etaiov_bio_1', 'etaiov_bio_2', 'etaiov_mtt_1', 'etaiov_mtt_2', 'etaiov_km_1', 'etaiov_km_2', 'etaiov_ka_1', 'etaiov_ka_2'</span></span>
 <span><span class="co">#&gt; Warning: multi-subject simulation without without 'omega'</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -985,41 +985,41 @@ its own ETAs and EPS, which differ from the seeds drawn here.</p>
 <span>    .groups <span class="op">=</span> <span class="st">"drop"</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
-<span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_ribbon.html" class="external-link">geom_ribbon</a></span><span class="op">(</span></span>
+<span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu">ggplot</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_ribbon</span><span class="op">(</span></span>
 <span>    data <span class="op">=</span> <span class="va">stoch_quantiles</span>,</span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">tad</span>, ymin <span class="op">=</span> <span class="va">Q05</span>, ymax <span class="op">=</span> <span class="va">Q95</span>,</span>
+<span>    <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">tad</span>, ymin <span class="op">=</span> <span class="va">Q05</span>, ymax <span class="op">=</span> <span class="va">Q95</span>,</span>
 <span>        fill <span class="op">=</span> <span class="st">"rxode2 5th-95th percentile (n = 60, IIV+IOV on)"</span><span class="op">)</span>,</span>
 <span>    alpha <span class="op">=</span> <span class="fl">0.20</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span></span>
 <span>    data <span class="op">=</span> <span class="va">typical_lines</span>,</span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">tad</span>, y <span class="op">=</span> <span class="va">Cc</span>,</span>
+<span>    <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">tad</span>, y <span class="op">=</span> <span class="va">Cc</span>,</span>
 <span>        colour <span class="op">=</span> <span class="st">"rxode2 typical value (zero IIV/IOV/EPS)"</span><span class="op">)</span>,</span>
 <span>    linewidth <span class="op">=</span> <span class="fl">0.7</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
 <span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">bundle_obs</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">bundle_obs</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="va">p</span> <span class="op">&lt;-</span> <span class="va">p</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span></span>
+<span>  <span class="va">p</span> <span class="op">&lt;-</span> <span class="va">p</span> <span class="op">+</span> <span class="fu">geom_point</span><span class="op">(</span></span>
 <span>    data <span class="op">=</span> <span class="va">bundle_obs</span>,</span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">time</span>, y <span class="op">=</span> <span class="va">Cc</span>,</span>
+<span>    <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">time</span>, y <span class="op">=</span> <span class="va">Cc</span>,</span>
 <span>        shape <span class="op">=</span> <span class="st">"DDMORE bundle observation (600 mg, OCC = 1)"</span><span class="op">)</span>,</span>
 <span>    alpha <span class="op">=</span> <span class="fl">0.7</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="va">p</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_log10</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_colour_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"rxode2 typical value (zero IIV/IOV/EPS)"</span> <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_fill_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"rxode2 5th-95th percentile (n = 60, IIV+IOV on)"</span> <span class="op">=</span> <span class="st">"steelblue"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span>  <span class="fu">scale_y_log10</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">scale_colour_manual</span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"rxode2 typical value (zero IIV/IOV/EPS)"</span> <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">scale_fill_manual</span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"rxode2 5th-95th percentile (n = 60, IIV+IOV on)"</span> <span class="op">=</span> <span class="st">"steelblue"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span></span>
 <span>    x <span class="op">=</span> <span class="st">"Time after dose (h)"</span>,</span>
 <span>    y <span class="op">=</span> <span class="st">"Cc (mg/L)"</span>,</span>
 <span>    colour <span class="op">=</span> <span class="cn">NULL</span>, fill <span class="op">=</span> <span class="cn">NULL</span>, shape <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>    title <span class="op">=</span> <span class="st">"Self-consistency: rxode2 vs DDMORE bundle (600 mg, FFM = 34.87, OCC = 1, ~day 7)"</span>,</span>
 <span>    caption <span class="op">=</span> <span class="st">"If the bundle CSV is not yet installed under inst/extdata/ddmore/, only the rxode2 cohort is shown."</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"bottom"</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu">theme</span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"bottom"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Svensson_2018_rifampicin_files/figure-html/bundle-overlay-1.png" class="r-plt" alt="" width="672"></p>
 </div>
 <div class="section level2">
@@ -1063,20 +1063,20 @@ auto-induction plateau.</p>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>day <span class="op">=</span> <span class="va">time</span> <span class="op">/</span> <span class="fl">24</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalkm', 'etalvmax', 'etalvc', 'etalmtt', 'etalnn', 'etalka', 'etaiov_bio_1', 'etaiov_bio_2', 'etaiov_mtt_1', 'etaiov_mtt_2', 'etaiov_km_1', 'etaiov_km_2', 'etaiov_ka_1', 'etaiov_ka_2'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalkm', 'etalvmax', 'etalvc', 'etalmtt', 'etalnn', 'etalka', 'etaiov_bio_1', 'etaiov_bio_2', 'etaiov_mtt_1', 'etaiov_mtt_2', 'etaiov_km_1', 'etaiov_km_2', 'etaiov_ka_1', 'etaiov_ka_2'</span></span>
 <span></span>
 <span><span class="va">induction_plot</span> <span class="op">&lt;-</span> <span class="va">sim_long</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">day</span>, <span class="va">enzyme</span>, <span class="va">Cc</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">enzyme</span>, <span class="va">Cc</span><span class="op">)</span>, names_to <span class="op">=</span> <span class="st">"var"</span>, values_to <span class="op">=</span> <span class="st">"value"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">induction_plot</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">day</span>, <span class="va">value</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span> <span class="va">var</span>, scales <span class="op">=</span> <span class="st">"free_y"</span>,</span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">induction_plot</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">day</span>, <span class="va">value</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">facet_wrap</span><span class="op">(</span><span class="op">~</span> <span class="va">var</span>, scales <span class="op">=</span> <span class="st">"free_y"</span>,</span>
 <span>             labeller <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/as_labeller.html" class="external-link">as_labeller</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>               enzyme <span class="op">=</span> <span class="st">"Enzyme amount (auto-induction state)"</span>,</span>
 <span>               Cc     <span class="op">=</span> <span class="st">"Plasma rifampicin Cc (mg/L)"</span></span>
 <span>             <span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span></span>
 <span>    x <span class="op">=</span> <span class="st">"Time (days)"</span>,</span>
 <span>    y <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>    title <span class="op">=</span> <span class="st">"Typical-value auto-induction over 21 days (600 mg QD, FFM = 34.87)"</span></span>
@@ -1103,17 +1103,17 @@ trial. The chunk below shows the typical-value <code>bio</code>
 <span><span class="va">bio_grid</span>  <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">+</span> <span class="va">femax_val</span> <span class="op">*</span> <span class="op">(</span><span class="va">dose_grid</span> <span class="op">-</span> <span class="fl">450</span><span class="op">)</span> <span class="op">/</span></span>
 <span>                  <span class="op">(</span><span class="va">fed50_val</span> <span class="op">+</span> <span class="op">(</span><span class="va">dose_grid</span> <span class="op">-</span> <span class="fl">450</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span></span>
+<span><span class="fu">ggplot</span><span class="op">(</span></span>
 <span>  <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>DOSE <span class="op">=</span> <span class="va">dose_grid</span>, bio <span class="op">=</span> <span class="va">bio_grid</span><span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">DOSE</span>, <span class="va">bio</span><span class="op">)</span></span>
+<span>  <span class="fu">aes</span><span class="op">(</span><span class="va">DOSE</span>, <span class="va">bio</span><span class="op">)</span></span>
 <span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">600</span>, <span class="fl">1200</span>, <span class="fl">2100</span><span class="op">)</span>, linetype <span class="op">=</span> <span class="st">"dotted"</span>,</span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_vline</span><span class="op">(</span>xintercept <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">600</span>, <span class="fl">1200</span>, <span class="fl">2100</span><span class="op">)</span>, linetype <span class="op">=</span> <span class="st">"dotted"</span>,</span>
 <span>             colour <span class="op">=</span> <span class="st">"grey40"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/annotate.html" class="external-link">annotate</a></span><span class="op">(</span><span class="st">"text"</span>, x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">600</span>, <span class="fl">1200</span>, <span class="fl">2100</span><span class="op">)</span>, y <span class="op">=</span> <span class="fl">1.02</span>,</span>
+<span>  <span class="fu">annotate</span><span class="op">(</span><span class="st">"text"</span>, x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">600</span>, <span class="fl">1200</span>, <span class="fl">2100</span><span class="op">)</span>, y <span class="op">=</span> <span class="fl">1.02</span>,</span>
 <span>           label <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"600 mg"</span>, <span class="st">"1200 mg"</span>, <span class="st">"2100 mg"</span><span class="op">)</span>,</span>
 <span>           hjust <span class="op">=</span> <span class="op">-</span><span class="fl">0.1</span>, size <span class="op">=</span> <span class="fl">3</span>, colour <span class="op">=</span> <span class="st">"grey20"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span></span>
 <span>    x <span class="op">=</span> <span class="st">"Rifampicin dose (mg)"</span>,</span>
 <span>    y <span class="op">=</span> <span class="st">"Saturable bioavailability multiplier (relative to 450 mg)"</span>,</span>
 <span>    title <span class="op">=</span> <span class="st">"Dose-dependent bioavailability (typical value)"</span></span>
@@ -1273,18 +1273,18 @@ curve.</p>
 <span>    .groups <span class="op">=</span> <span class="st">"drop"</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">iov_summary</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">tad</span>, <span class="va">Q50</span>, colour <span class="op">=</span> <span class="va">occasion</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_ribbon.html" class="external-link">geom_ribbon</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>ymin <span class="op">=</span> <span class="va">Q05</span>, ymax <span class="op">=</span> <span class="va">Q95</span>, fill <span class="op">=</span> <span class="va">occasion</span><span class="op">)</span>,</span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">iov_summary</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">tad</span>, <span class="va">Q50</span>, colour <span class="op">=</span> <span class="va">occasion</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_ribbon</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>ymin <span class="op">=</span> <span class="va">Q05</span>, ymax <span class="op">=</span> <span class="va">Q95</span>, fill <span class="op">=</span> <span class="va">occasion</span><span class="op">)</span>,</span>
 <span>              alpha <span class="op">=</span> <span class="fl">0.15</span>, colour <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_log10</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span>  <span class="fu">scale_y_log10</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span></span>
 <span>    x <span class="op">=</span> <span class="st">"Time after dose (h)"</span>,</span>
 <span>    y <span class="op">=</span> <span class="st">"Cc (mg/L)"</span>,</span>
 <span>    colour <span class="op">=</span> <span class="cn">NULL</span>, fill <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>    title <span class="op">=</span> <span class="st">"Steady-state Cc by occasion (600 mg QD, n = 60 per OCC, 90% spread)"</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"bottom"</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu">theme</span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"bottom"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Svensson_2018_rifampicin_files/figure-html/iov-spread-1.png" class="r-plt" alt="" width="672"></p>
 </div>
 <div class="section level2">
@@ -1408,7 +1408,7 @@ them but the <code>$PK</code> / <code>$DES</code> / <code>$ERROR</code>
 blocks reference only <code>FFM</code>, <code>DOSE</code>, and
 <code>OCC</code>. The packaged <code>covariateData</code> declares only
 the three effective covariates; the others remain in the bundle CSV for
-downstream analysis but are dropped by <code><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve()</a></code>.</p></li>
+downstream analysis but are dropped by <code>rxSolve()</code>.</p></li>
 <li>
 <p><strong><code><a href="../reference/checkModelConventions.html">checkModelConventions()</a></code> flags three
 justified deviations.</strong> The packaged model trips three warnings
@@ -1439,16 +1439,16 @@ scope here.</metab>
 analogous IOV-MTT, IOV-KM, IOV-KA pairs) follow the
 <code>etaiov_&lt;param&gt;_&lt;occasion&gt;</code> shape but the
 <code>param</code> token <code>bio</code> does not match any
-<code><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini()</a></code> fixed-effect parameter (the canonical IOV check
+<code>ini()</code> fixed-effect parameter (the canonical IOV check
 accepts <code>&lt;param&gt;</code>, <code>l&lt;param&gt;</code>,
 <code>ltv&lt;param&gt;</code>, or <code>lv&lt;param&gt;</code>). The
 bioavailability multiplier <code>bio</code> is computed inside
-<code><a href="https://nlmixr2.github.io/rxode2/reference/model.html" class="external-link">model()</a></code> from <code>femax</code>, <code>fed50</code>,
+<code>model()</code> from <code>femax</code>, <code>fed50</code>,
 <code>DOSE</code>, and the IOV eta itself; there is no structural
 <code>lbio</code> parameter to anchor the IOV name to, because the
 typical-value bioavailability at the reference 450 mg dose is exactly 1
 by construction. Adding a fictitious
-<code>lbio &lt;- fixed(log(1))</code> to <code><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini()</a></code> solely to
+<code>lbio &lt;- fixed(log(1))</code> to <code>ini()</code> solely to
 satisfy the convention checker would be artificial and misleading. The
 IOV-MTT / IOV-KM / IOV-KA pairs <em>do</em> anchor cleanly via
 <code>lmtt</code> / <code>lkm</code> / <code>lka</code> respectively

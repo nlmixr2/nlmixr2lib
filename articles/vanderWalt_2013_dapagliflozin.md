@@ -40,7 +40,7 @@ The same information is available programmatically as
 ## Source trace
 
 The per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
+`ini()` entry in
 `inst/modeldb/specificDrugs/vanderWalt_2013_dapagliflozin.R`. The table
 below collects them in one place.
 
@@ -340,10 +340,9 @@ mean closer to 84 kg, etc.).
   users want plasma PK only, and (ii) urine modelling adds two extra
   excretion compartments and two extra residual-error parameters without
   changing the typical plasma trajectory. Users who need the urine
-  submodel should extend the ODEs in
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html) to
-  add d/dt(urine_dapa) and d/dt(urine_d3og) accumulators driven by
-  CLP_renal and CLM respectively.
+  submodel should extend the ODEs in `model()` to add d/dt(urine_dapa)
+  and d/dt(urine_d3og) accumulators driven by CLP_renal and CLM
+  respectively.
 
 - **Replicate residual-error cross-correlation dropped.** The source
   paper reports a “replicate” residual error term that captures the
@@ -362,12 +361,10 @@ mean closer to 84 kg, etc.).
 - **Bioavailability logit form.** The paper uses a logit-transformed BIO
   parameter so the individual estimate of bioavailability stays in (0,
   1). This is reproduced exactly:
-  `logitfdepot <- log(BIO_tv / (1 - BIO_tv))` in
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) and
+  `logitfdepot <- log(BIO_tv / (1 - BIO_tv))` in `ini()` and
   `fdepot <- 1 / (1 + exp(-(logitfdepot + etalogitfdepot)))` in
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html).
-  The IIV on `logitfdepot` is reported by the paper as 11.1% CV
-  back-transformed (footnote g); the raw omega on the logit scale is
+  `model()`. The IIV on `logitfdepot` is reported by the paper as 11.1%
+  CV back-transformed (footnote g); the raw omega on the logit scale is
   recovered via the delta-method approximation
   `omega ~= (CV / (1 - F_tv))^2` giving 0.611.
 

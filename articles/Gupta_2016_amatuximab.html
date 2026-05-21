@@ -836,14 +836,14 @@ a typical-value reference pass via <code><a href="https://nlmixr2.github.io/rxod
 <span><span class="va">sim_full</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod</span>, events <span class="op">=</span> <span class="va">d_sim</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>time_day <span class="op">=</span> <span class="va">time</span> <span class="op">/</span> <span class="fl">24</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> parameter labels from comments will be replaced by 'label()'</span></span>
+<span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
 <span></span>
 <span><span class="va">mod_typ</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/zeroRe.html" class="external-link">zeroRe</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> parameter labels from comments will be replaced by 'label()'</span></span>
+<span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
 <span><span class="va">sim_typ</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_typ</span>, events <span class="op">=</span> <span class="va">d_sim</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>time_day <span class="op">=</span> <span class="va">time</span> <span class="op">/</span> <span class="fl">24</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvmax'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvmax'</span></span>
 <span><span class="co">#&gt; Warning: multi-subject simulation without without 'omega'</span></span></code></pre></div>
 </div>
 <div class="section level3">
@@ -969,7 +969,6 @@ so results can be rolled up separately for ADA-negative and ADA titer
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="http://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_obj</span>, <span class="va">dose_obj</span>, intervals <span class="op">=</span> <span class="va">intervals</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■       </span>  80% |  ETA:  1s</span></span>
 <span><span class="va">nca_summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">result</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">PPTESTCD</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cmax"</span>, <span class="st">"tmax"</span>, <span class="st">"cmin"</span>, <span class="st">"auclast"</span>, <span class="st">"cav"</span>, <span class="st">"half.life"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">treatment</span>, <span class="va">PPTESTCD</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -980,21 +979,21 @@ so results can be rolled up separately for ADA-negative and ADA titer
 <span>    .groups <span class="op">=</span> <span class="st">"drop"</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="va">nca_summary</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 12 × 5</span></span></span>
+<span><span class="co">#&gt; # A tibble: 12 × 5</span></span>
 <span><span class="co">#&gt;    treatment      PPTESTCD   median     p05     p95</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> ADA titer &gt; 64 auclast    <span style="text-decoration: underline;">6</span>732.  <span style="text-decoration: underline;">3</span>575.    <span style="text-decoration: underline;">9</span>789. </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> ADA titer &gt; 64 cav          40.1   21.3     58.3</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> ADA titer &gt; 64 cmax        102.    67.2    151. </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> ADA titer &gt; 64 cmin         12.9    2.35    24.0</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> ADA titer &gt; 64 half.life    68.6   24.1     91.1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> ADA titer &gt; 64 tmax          1      1        1  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> ADA-negative   auclast   <span style="text-decoration: underline;">10</span>346.  <span style="text-decoration: underline;">5</span>658.   <span style="text-decoration: underline;">20</span>712. </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> ADA-negative   cav          61.6   33.7    123. </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> ADA-negative   cmax        117.    79.6    208. </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> ADA-negative   cmin         32.1    7.95    81.8</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span> ADA-negative   half.life   108.    54.4    168. </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">12</span> ADA-negative   tmax          1      1        1</span></span></code></pre></div>
+<span><span class="co">#&gt;    &lt;chr&gt;          &lt;chr&gt;       &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1 ADA titer &gt; 64 auclast    6732.  3575.    9789. </span></span>
+<span><span class="co">#&gt;  2 ADA titer &gt; 64 cav          40.1   21.3     58.3</span></span>
+<span><span class="co">#&gt;  3 ADA titer &gt; 64 cmax        102.    67.2    151. </span></span>
+<span><span class="co">#&gt;  4 ADA titer &gt; 64 cmin         12.9    2.35    24.0</span></span>
+<span><span class="co">#&gt;  5 ADA titer &gt; 64 half.life    68.6   24.1     91.1</span></span>
+<span><span class="co">#&gt;  6 ADA titer &gt; 64 tmax          1      1        1  </span></span>
+<span><span class="co">#&gt;  7 ADA-negative   auclast   10346.  5658.   20712. </span></span>
+<span><span class="co">#&gt;  8 ADA-negative   cav          61.6   33.7    123. </span></span>
+<span><span class="co">#&gt;  9 ADA-negative   cmax        117.    79.6    208. </span></span>
+<span><span class="co">#&gt; 10 ADA-negative   cmin         32.1    7.95    81.8</span></span>
+<span><span class="co">#&gt; 11 ADA-negative   half.life   108.    54.4    168. </span></span>
+<span><span class="co">#&gt; 12 ADA-negative   tmax          1      1        1</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="comparison-against-published-values">Comparison against published values<a class="anchor" aria-label="anchor" href="#comparison-against-published-values"></a>
@@ -1016,13 +1015,13 @@ so results can be rolled up separately for ADA-negative and ADA titer
 <span>  <span class="st">"Exposure-response threshold for OS"</span>,                    <span class="fl">38.2</span>,      <span class="cn">NA_real_</span>,           <span class="st">"ug/mL"</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">comparison</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 4</span></span></span>
+<span><span class="co">#&gt; # A tibble: 4 × 4</span></span>
 <span><span class="co">#&gt;   metric                                               published simulated units</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                                    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> SS Cmin, 5 mg/kg QW, ADA-negative (paper simulation)      83.1      32.1 ug/mL</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> SS Cmin, 5 mg/kg QW, ADA titer &gt; 64 (paper simulati…      26.9      12.9 ug/mL</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> Observed median Cmin, Study 003 MPM (5 mg/kg D1+D8 …      38.2      <span style="color: #BB0000;">NA</span>   ug/mL</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> Exposure-response threshold for OS                        38.2      <span style="color: #BB0000;">NA</span>   ug/mL</span></span></code></pre></div>
+<span><span class="co">#&gt;   &lt;chr&gt;                                                    &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;</span></span>
+<span><span class="co">#&gt; 1 SS Cmin, 5 mg/kg QW, ADA-negative (paper simulation)      83.1      32.1 ug/mL</span></span>
+<span><span class="co">#&gt; 2 SS Cmin, 5 mg/kg QW, ADA titer &gt; 64 (paper simulati…      26.9      12.9 ug/mL</span></span>
+<span><span class="co">#&gt; 3 Observed median Cmin, Study 003 MPM (5 mg/kg D1+D8 …      38.2      NA   ug/mL</span></span>
+<span><span class="co">#&gt; 4 Exposure-response threshold for OS                        38.2      NA   ug/mL</span></span></code></pre></div>
 <p>Interpretation: The model reproduces the directionality and the ADA
 effect magnitude (simulated
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>C</mi><mi mathvariant="normal">min</mi></msub><annotation encoding="application/x-tex">C_\min</annotation></semantics></math>

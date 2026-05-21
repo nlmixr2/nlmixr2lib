@@ -539,9 +539,7 @@ binding QSS model). {.table}
   convert mg input doses to molar units (nM) for the binding equations;
   not reported numerically in Papachristos 2020. The 149 kDa value is
   the standard reference for the marketed antibody and is documented as
-  a model assumption in the model file’s
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html)
-  block.
+  a model assumption in the model file’s `model()` block.
 - **Free VEGF-A effective molecular weight (MW_VEGF ≈ 45,000 g/mol).**
   Back-calculated from the paper’s BM0 dual-unit reporting (0.0137 nM ≡
   616.5 ng/L → MW = 45 kDa, consistent with the homodimeric VEGF-A165

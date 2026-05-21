@@ -535,7 +535,7 @@ compared with bulk supply).</li>
 <h2 id="source-trace">Source trace<a class="anchor" aria-label="anchor" href="#source-trace"></a>
 </h2>
 <p>Per-parameter origin is recorded as an in-file comment next to each
-<code><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini()</a></code> entry in
+<code>ini()</code> entry in
 <code>inst/modeldb/specificDrugs/DoldanMartelli_2013_EGF_IFN_chimera.R</code>.
 The table below consolidates the references.</p>
 <table class="table">
@@ -552,7 +552,7 @@ The table below consolidates the references.</p>
 <tbody>
 <tr class="odd">
 <td>Eq. 6 (<code>k_c_i</code>)</td>
-<td>derived in <code><a href="https://nlmixr2.github.io/rxode2/reference/model.html" class="external-link">model()</a></code>
+<td>derived in <code>model()</code>
 </td>
 <td>Doldan-Martelli 2013, p. 6, Eq. 6</td>
 </tr>
@@ -756,7 +756,7 @@ normalization-by-A convention (Methods, p. 6, paragraph after Eq.
 </tr>
 </tbody>
 </table>
-<p>Unit conversion steps inside <code><a href="https://nlmixr2.github.io/rxode2/reference/model.html" class="external-link">model()</a></code>:</p>
+<p>Unit conversion steps inside <code>model()</code>:</p>
 <ul>
 <li>
 <code>V1_L = A * (h1 + a) * 1e-19</code> converts (um^2) x
@@ -783,7 +783,7 @@ dividing by N_av and the reaction volume.</li>
 <span><span class="va">mod_typ</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/zeroRe.html" class="external-link">zeroRe</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: No omega parameters in the model</span></span>
 <span><span class="co">#&gt; Warning: No sigma parameters in the model</span></span></code></pre></div>
-<p>The model has no etas and no residual error, so <code><a href="https://nlmixr2.github.io/rxode2/reference/zeroRe.html" class="external-link">zeroRe()</a></code>
+<p>The model has no etas and no residual error, so <code>zeroRe()</code>
 is a no-op beyond silencing the “no omega/sigma parameters”
 warnings.</p>
 </div>
@@ -798,8 +798,8 @@ counts indefinitely. This verifies the initial conditions
 after Eq. 15.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod_off</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini</a></span><span class="op">(</span><span class="va">mod_typ</span>, L <span class="op">=</span> <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">ev</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/et.html" class="external-link">et</a></span><span class="op">(</span>amt <span class="op">=</span> <span class="fl">0</span>, time <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/et.html" class="external-link">et</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">480</span>, by <span class="op">=</span> <span class="fl">30</span><span class="op">)</span><span class="op">)</span>  <span class="co"># 8 hours</span></span>
-<span><span class="va">s_off</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_off</span>, <span class="va">ev</span><span class="op">)</span></span>
+<span><span class="va">ev</span> <span class="op">&lt;-</span> <span class="fu">et</span><span class="op">(</span>amt <span class="op">=</span> <span class="fl">0</span>, time <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">et</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">480</span>, by <span class="op">=</span> <span class="fl">30</span><span class="op">)</span><span class="op">)</span>  <span class="co"># 8 hours</span></span>
+<span><span class="va">s_off</span> <span class="op">&lt;-</span> <span class="fu">rxSolve</span><span class="op">(</span><span class="va">mod_off</span>, <span class="va">ev</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/range.html" class="external-link">range</a></span><span class="op">(</span><span class="va">s_off</span><span class="op">$</span><span class="va">egfr</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5640</span>, <span class="fl">5640</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/range.html" class="external-link">range</a></span><span class="op">(</span><span class="va">s_off</span><span class="op">$</span><span class="va">ifnr</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3600</span>, <span class="fl">3600</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/all.html" class="external-link">all</a></span><span class="op">(</span><span class="va">s_off</span><span class="op">$</span><span class="va">c_egf</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span>
@@ -819,8 +819,8 @@ that the <em>difference</em> between initial and current totals equals
 the cumulative flux through <code>ke1 * c_egf + ke3 * c_full</code>.
 Likewise for IFNR.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">ev_fine</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/et.html" class="external-link">et</a></span><span class="op">(</span>amt <span class="op">=</span> <span class="fl">0</span>, time <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/et.html" class="external-link">et</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">480</span>, by <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_typ</span>, <span class="va">ev_fine</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">ev_fine</span> <span class="op">&lt;-</span> <span class="fu">et</span><span class="op">(</span>amt <span class="op">=</span> <span class="fl">0</span>, time <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">et</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">480</span>, by <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu">rxSolve</span><span class="op">(</span><span class="va">mod_typ</span>, <span class="va">ev_fine</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">total_egfr_side</span> <span class="op">&lt;-</span> <span class="va">s</span><span class="op">$</span><span class="va">egfr</span> <span class="op">+</span> <span class="va">s</span><span class="op">$</span><span class="va">c_egf</span> <span class="op">+</span> <span class="va">s</span><span class="op">$</span><span class="va">c_full</span></span>
 <span><span class="va">total_ifnr_side</span> <span class="op">&lt;-</span> <span class="va">s</span><span class="op">$</span><span class="va">ifnr</span> <span class="op">+</span> <span class="va">s</span><span class="op">$</span><span class="va">c_ifn</span> <span class="op">+</span> <span class="va">s</span><span class="op">$</span><span class="va">c_full</span></span>
@@ -850,24 +850,24 @@ hours. The figure is on an hours scale, but the rapid internalization
 half-life ~3.5 min) means the rise-and-fall happens within the first
 30-60 minutes of the 8-hour window.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">s_d</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_typ</span>, <span class="va">ev_fine</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">s_d</span> <span class="op">&lt;-</span> <span class="fu">rxSolve</span><span class="op">(</span><span class="va">mod_typ</span>, <span class="va">ev_fine</span><span class="op">)</span></span>
 <span><span class="va">s_d_long</span> <span class="op">&lt;-</span> <span class="va">s_d</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">c_egf</span>, <span class="va">c_ifn</span>, <span class="va">c_full</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span><span class="op">-</span><span class="va">time</span>, names_to <span class="op">=</span> <span class="st">"species"</span>, values_to <span class="op">=</span> <span class="st">"molecules"</span><span class="op">)</span></span>
+<span>  <span class="fu">select</span><span class="op">(</span><span class="va">time</span>, <span class="va">c_egf</span>, <span class="va">c_ifn</span>, <span class="va">c_full</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">pivot_longer</span><span class="op">(</span><span class="op">-</span><span class="va">time</span>, names_to <span class="op">=</span> <span class="st">"species"</span>, values_to <span class="op">=</span> <span class="st">"molecules"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">s_d_long</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">time</span> <span class="op">/</span> <span class="fl">60</span>, y <span class="op">=</span> <span class="va">molecules</span>, colour <span class="op">=</span> <span class="va">species</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_colour_manual</a></span><span class="op">(</span></span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">s_d_long</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">time</span> <span class="op">/</span> <span class="fl">60</span>, y <span class="op">=</span> <span class="va">molecules</span>, colour <span class="op">=</span> <span class="va">species</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">scale_colour_manual</span><span class="op">(</span></span>
 <span>    values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>c_egf <span class="op">=</span> <span class="st">"black"</span>, c_ifn <span class="op">=</span> <span class="st">"grey50"</span>, c_full <span class="op">=</span> <span class="st">"steelblue"</span><span class="op">)</span>,</span>
 <span>    labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>c_egf <span class="op">=</span> <span class="st">"C1 (EGF-only)"</span>, c_ifn <span class="op">=</span> <span class="st">"C2 (IFN-only)"</span>, c_full <span class="op">=</span> <span class="st">"C3 (chimeric)"</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span></span>
 <span>    x <span class="op">=</span> <span class="st">"Time (hours)"</span>, y <span class="op">=</span> <span class="st">"Number of complexes per cell"</span>,</span>
 <span>    colour <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>    title <span class="op">=</span> <span class="st">"Doldan-Martelli 2013, Figure 2d (WT chimera, Daudi-EGFR cells)"</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu">theme_minimal</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="DoldanMartelli_2013_EGF_IFN_chimera_files/figure-html/fig2d-1.png" class="r-plt" alt="" width="672"></p>
 </div>
 <div class="section level2">
@@ -886,7 +886,7 @@ low-affinity IFN mutants.</p>
 <span>      <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini</a></span><span class="op">(</span>R1_0 <span class="op">=</span> <span class="va">R1_v</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>      <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini</a></span><span class="op">(</span>R2_0 <span class="op">=</span> <span class="va">R2_v</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
-<span>  <span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">ev_fine</span><span class="op">)</span></span>
+<span>  <span class="va">s</span> <span class="op">&lt;-</span> <span class="fu">rxSolve</span><span class="op">(</span><span class="va">m</span>, <span class="va">ev_fine</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>    scenario <span class="op">=</span> <span class="va">label</span>,</span>
 <span>    max_ifn_active <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">s</span><span class="op">$</span><span class="va">ifn_active</span><span class="op">)</span>,</span>
@@ -894,7 +894,7 @@ low-affinity IFN mutants.</p>
 <span>  <span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
-<span><span class="va">scenarios</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span></span>
+<span><span class="va">scenarios</span> <span class="op">&lt;-</span> <span class="fu">bind_rows</span><span class="op">(</span></span>
 <span>  <span class="fu">run_scenario</span><span class="op">(</span><span class="st">"WT, Daudi"</span>,            <span class="fl">0.22</span>,  <span class="fl">0.66</span>, <span class="fl">22</span>,    <span class="fl">2800</span><span class="op">)</span>,</span>
 <span>  <span class="fu">run_scenario</span><span class="op">(</span><span class="st">"K133A, Daudi"</span>,         <span class="fl">0.041</span>, <span class="fl">1.08</span>, <span class="fl">22</span>,    <span class="fl">2800</span><span class="op">)</span>,</span>
 <span>  <span class="fu">run_scenario</span><span class="op">(</span><span class="st">"R144A, Daudi"</span>,         <span class="fl">0.021</span>, <span class="fl">2.58</span>, <span class="fl">22</span>,    <span class="fl">2800</span><span class="op">)</span>,</span>
@@ -951,11 +951,11 @@ finding (paper Results section “Selectivity is enhanced in chimeras with
 reduced IFN affinity”, p. 4):</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sel</span> <span class="op">&lt;-</span> <span class="va">scenarios</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>variant <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">sub</a></span><span class="op">(</span><span class="st">",.*"</span>, <span class="st">""</span>, <span class="va">scenario</span><span class="op">)</span>,</span>
+<span>  <span class="fu">mutate</span><span class="op">(</span>variant <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">sub</a></span><span class="op">(</span><span class="st">",.*"</span>, <span class="st">""</span>, <span class="va">scenario</span><span class="op">)</span>,</span>
 <span>         cell    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/trimws.html" class="external-link">trimws</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">sub</a></span><span class="op">(</span><span class="st">".*,"</span>, <span class="st">""</span>, <span class="va">scenario</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">variant</span>, <span class="va">cell</span>, <span class="va">max_ifn_active</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html" class="external-link">pivot_wider</a></span><span class="op">(</span>names_from <span class="op">=</span> <span class="va">cell</span>, values_from <span class="op">=</span> <span class="va">max_ifn_active</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>selectivity_ratio <span class="op">=</span> <span class="va">`Daudi-EGFR`</span> <span class="op">/</span> <span class="va">Daudi</span><span class="op">)</span></span>
+<span>  <span class="fu">select</span><span class="op">(</span><span class="va">variant</span>, <span class="va">cell</span>, <span class="va">max_ifn_active</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">pivot_wider</span><span class="op">(</span>names_from <span class="op">=</span> <span class="va">cell</span>, values_from <span class="op">=</span> <span class="va">max_ifn_active</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">mutate</span><span class="op">(</span>selectivity_ratio <span class="op">=</span> <span class="va">`Daudi-EGFR`</span> <span class="op">/</span> <span class="va">Daudi</span><span class="op">)</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">sel</span>, digits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>,</span>
 <span>             caption <span class="op">=</span> <span class="st">"Selectivity = Daudi-EGFR / Daudi maximum IFN active complexes."</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
@@ -1008,7 +1008,7 @@ high activity only when EGFR is plentiful).</p>
 <span>  K133A <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>k2on <span class="op">=</span> <span class="fl">0.041</span>, k2off <span class="op">=</span> <span class="fl">1.08</span><span class="op">)</span>,</span>
 <span>  R144A <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>k2on <span class="op">=</span> <span class="fl">0.021</span>, k2off <span class="op">=</span> <span class="fl">2.58</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="va">sweep</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">variants</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">v</span><span class="op">)</span> <span class="op">{</span></span>
+<span><span class="va">sweep</span> <span class="op">&lt;-</span> <span class="fu">bind_rows</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">variants</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">v</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">pars</span> <span class="op">&lt;-</span> <span class="va">variants</span><span class="op">[[</span><span class="va">v</span><span class="op">]</span><span class="op">]</span></span>
 <span>  <span class="va">rows</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">grid</span><span class="op">)</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="va">R1</span> <span class="op">&lt;-</span> <span class="va">grid</span><span class="op">$</span><span class="va">R1</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>; <span class="va">R2</span> <span class="op">&lt;-</span> <span class="va">grid</span><span class="op">$</span><span class="va">R2</span><span class="op">[</span><span class="va">i</span><span class="op">]</span></span>
@@ -1018,21 +1018,21 @@ high activity only when EGFR is plentiful).</p>
 <span>        <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini</a></span><span class="op">(</span>R1_0 <span class="op">=</span> <span class="va">R1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>        <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini</a></span><span class="op">(</span>R2_0 <span class="op">=</span> <span class="va">R2</span><span class="op">)</span></span>
 <span>    <span class="op">)</span></span>
-<span>    <span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">ev_fine</span><span class="op">)</span></span>
+<span>    <span class="va">s</span> <span class="op">&lt;-</span> <span class="fu">rxSolve</span><span class="op">(</span><span class="va">m</span>, <span class="va">ev_fine</span><span class="op">)</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>variant <span class="op">=</span> <span class="va">v</span>, R1 <span class="op">=</span> <span class="va">R1</span>, R2 <span class="op">=</span> <span class="va">R2</span>, max_ifn <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">s</span><span class="op">$</span><span class="va">ifn_active</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="op">}</span><span class="op">)</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">rows</span><span class="op">)</span></span>
+<span>  <span class="fu">bind_rows</span><span class="op">(</span><span class="va">rows</span><span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">sweep</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">R1</span>, y <span class="op">=</span> <span class="va">R2</span>, fill <span class="op">=</span> <span class="va">max_ifn</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_tile.html" class="external-link">geom_tile</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html" class="external-link">scale_fill_viridis_c</a></span><span class="op">(</span>option <span class="op">=</span> <span class="st">"plasma"</span>, trans <span class="op">=</span> <span class="st">"log10"</span>,</span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">sweep</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">R1</span>, y <span class="op">=</span> <span class="va">R2</span>, fill <span class="op">=</span> <span class="va">max_ifn</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_tile</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">scale_fill_viridis_c</span><span class="op">(</span>option <span class="op">=</span> <span class="st">"plasma"</span>, trans <span class="op">=</span> <span class="st">"log10"</span>,</span>
 <span>                       name <span class="op">=</span> <span class="st">"max\nC2 + C3"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_x_log10</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_log10</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span> <span class="va">variant</span>, nrow <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"EGFR copies per cell (R1)"</span>, y <span class="op">=</span> <span class="st">"IFNR copies per cell (R2)"</span>,</span>
+<span>  <span class="fu">scale_x_log10</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu">scale_y_log10</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">facet_wrap</span><span class="op">(</span><span class="op">~</span> <span class="va">variant</span>, nrow <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"EGFR copies per cell (R1)"</span>, y <span class="op">=</span> <span class="st">"IFNR copies per cell (R2)"</span>,</span>
 <span>       title <span class="op">=</span> <span class="st">"Doldan-Martelli 2013, Figure 4 (max IFN-active complexes vs receptor expression)"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu">theme_minimal</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="DoldanMartelli_2013_EGF_IFN_chimera_files/figure-html/fig4-1.png" class="r-plt" alt="" width="864"></p>
 </div>
 <div class="section level2">
@@ -1058,10 +1058,10 @@ convention expects mass/volume). Again this is a faithful representation
 of the paper: the state and output are counts of molecular species on
 one cell’s surface, not a bulk-fluid concentration.</li>
 <li>
-<strong>Mu-reference aliasing.</strong> Each <code><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini()</a></code>
+<strong>Mu-reference aliasing.</strong> Each <code>ini()</code>
 THETA is aliased to a model-local variable
 (<code>k1on -&gt; kk1on</code>, <code>A -&gt; AA</code>, …) at the top
-of <code><a href="https://nlmixr2.github.io/rxode2/reference/model.html" class="external-link">model()</a></code>. nlmixr2est’s parser forbids more than one bare
+of <code>model()</code>. nlmixr2est’s parser forbids more than one bare
 THETA in a single expression, and the ODE right-hand sides reference
 many THETAs each. The aliases carry the same values; this is a syntax
 workaround, not a numerical change.</li>
@@ -1084,7 +1084,7 @@ the most defensible single value.</li>
 paper’s Methods (p. 6, paragraph after Eq. 15 referring to Supplementary
 Text S1), the extracellular ligand concentration is treated as constant
 during the simulated assay window. This is parameter <code>L</code> in
-<code><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini()</a></code>, not a state. A user who wants to model ligand
+<code>ini()</code>, not a state. A user who wants to model ligand
 depletion should add a state and adjust the <code>k1on * egfr * L</code>
 / <code>k2on * ifnr * L</code> terms accordingly.</li>
 <li>

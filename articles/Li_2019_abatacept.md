@@ -86,8 +86,7 @@ count 16, not on concomitant NSAIDs, treated with the phase-3
 
 - **Time-unit conversion.** Li 2019 reports `CL` and `Q` in L/h and `KA`
   in 1/h. The nlmixr2lib convention is time in days, so each of these
-  values is multiplied by 24 inside `log(...)` in
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html).
+  values is multiplied by 24 inside `log(...)` in `ini()`.
 - **Logit-F parameterisation.** Li 2019 constrains absolute
   bioavailability to (0, 1) via an inverse-logit link:
   `F_abs = 1 / (1 + exp(-F_TV))` with
@@ -364,7 +363,6 @@ intervals_sc <- data.frame(start = 0, end = tau_sc,
                            cmax = TRUE, cmin = TRUE, tmax = TRUE,
                            auclast = TRUE, cav = TRUE)
 nca_sc <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj_sc, dose_obj_sc, intervals = intervals_sc))
-#>  ■■■■■■■■■■■■■                     41% |  ETA:  2s
 summary(nca_sc)
 #>  start end treatment   N    auclast        cmax        cmin              tmax
 #>      0   7 SC_125_QW 400 123 [38.1] 19.4 [35.7] 14.9 [44.0] 2.00 [1.00, 3.00]

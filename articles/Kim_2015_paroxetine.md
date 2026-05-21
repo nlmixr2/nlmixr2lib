@@ -329,8 +329,7 @@ distribution.
   model parameter, the packaged model does not parameterise a
   formulation indicator. Default simulation reflects IR dosing (F = 1).
   Users simulating CR dosing should scale the `amt` column by 0.67
-  (`amt = nominal_mg * 0.67`) before passing to
-  [`rxSolve()`](https://nlmixr2.github.io/rxode2/reference/rxSolve.html).
+  (`amt = nominal_mg * 0.67`) before passing to `rxSolve()`.
 - **Ka and Vd/F fixed to literature values.** Kim 2015 Methods
   explicitly fixed Ka to 0.908 1/h (Venkatakrishnan 2005) and Vd/F to
   1020 L (17 L/kg x 60 kg from Findling 1999) because the sparse

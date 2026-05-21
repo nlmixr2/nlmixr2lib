@@ -42,7 +42,7 @@ paper by the saturable CPG2-mediated hydrolysis term. The same
 ## Source trace
 
 The per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
+`ini()` entry in
 `inst/modeldb/specificDrugs/Kimura_2023_glucarpidase.R`. The table below
 collects them in one place.
 

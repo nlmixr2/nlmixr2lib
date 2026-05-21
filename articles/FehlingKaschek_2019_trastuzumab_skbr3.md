@@ -39,7 +39,7 @@ returns the same metadata programmatically once the model is loaded via
 ## Source trace
 
 The per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
+`ini()` entry in
 `inst/modeldb/specificDrugs/FehlingKaschek_2019_trastuzumab_skbr3.R`.
 The table below collects them in one place for review. All numeric
 values come from Table 3 (Model B, right column) of the paper.
@@ -78,8 +78,7 @@ the default (`drug_start_min = 0`, `drug_stop_min = 60`) preceded by a
 `affib_stop_min = 1e6`). Users select alternative conditions (chase
 periods, post-fixation Affibody labeling, shorter or longer drug
 exposures) by overriding the four time parameters via `params = c(...)`
-in
-[`rxSolve()`](https://nlmixr2.github.io/rxode2/reference/rxSolve.html).
+in `rxSolve()`.
 
 ``` r
 
@@ -339,15 +338,13 @@ ggplot(sim_chase, aes(time, nobs_norm)) +
   mechanistic / endogenous models (`igg_kim_2006`,
   `phenylalanine_charbonneau_2021`).
 - **No dosing events.** The trastuzumab and Affibody baths are modeled
-  as time-gated boolean switches inside
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html)
-  (`trast_on`, `affib_on`) controlled by four user-overridable time
-  parameters (`drug_start_min`, `drug_stop_min`, `affib_start_min`,
+  as time-gated boolean switches inside `model()` (`trast_on`,
+  `affib_on`) controlled by four user-overridable time parameters
+  (`drug_start_min`, `drug_stop_min`, `affib_start_min`,
   `affib_stop_min`). This avoids introducing experimental-control
   covariates that are not patient-level demographics. Users select
   alternative scenarios by overriding the four time parameters via
-  `params = c(...)` in
-  [`rxSolve()`](https://nlmixr2.github.io/rxode2/reference/rxSolve.html).
+  `params = c(...)` in `rxSolve()`.
 - **Effective rate constants vs raw rates.** Table 3 reports the
   products `kact_R * T0`, `kact_F * T0`, and `kon * A0` rather than the
   underlying second-order rate constants. The model uses these effective

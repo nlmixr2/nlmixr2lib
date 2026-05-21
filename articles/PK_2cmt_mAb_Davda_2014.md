@@ -33,7 +33,7 @@ The same information is available programmatically via
 ## Source trace
 
 Per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
+`ini()` entry in
 `inst/modeldb/pharmacokinetics/PK_2cmt_mAb_Davda_2014.R`. The table
 below collects them for review.
 
@@ -61,9 +61,7 @@ below collects them for review.
 Davda 2014 uses the convention that reported “%CV” is `omega × 100`
 where `omega` is the standard deviation of the log-normally distributed
 random effect. The diagonal of OMEGA is therefore simply `(CV/100)^2`.
-This is the encoding used in the
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) block
-above.
+This is the encoding used in the `ini()` block above.
 
 ## Virtual cohort
 
@@ -261,18 +259,6 @@ intervals <- data.frame(
 nca_res <- PKNCA::pk.nca(
   PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 )
-#>  ■■■                                8% |  ETA: 41s
-#>  ■■■■■                             14% |  ETA: 37s
-#>  ■■■■■■■                           22% |  ETA: 34s
-#>  ■■■■■■■■■■                        28% |  ETA: 31s
-#>  ■■■■■■■■■■■■                      36% |  ETA: 28s
-#>  ■■■■■■■■■■■■■■                    42% |  ETA: 25s
-#>  ■■■■■■■■■■■■■■■■                  50% |  ETA: 22s
-#>  ■■■■■■■■■■■■■■■■■■■               58% |  ETA: 17s
-#>  ■■■■■■■■■■■■■■■■■■■■■             68% |  ETA: 13s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■         78% |  ETA:  8s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■       88% |  ETA:  4s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    98% |  ETA:  1s
 
 summary(nca_res)
 #>  start end treatment   N        cmax                 tmax   half.life

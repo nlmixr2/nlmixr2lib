@@ -56,7 +56,7 @@ mod <- readModelDb("Gilkey_2015_DiRnanoparticle")
 ## Source trace
 
 The per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
+`ini()` entry in
 `inst/modeldb/pharmacokinetics/Gilkey_2015_DiRnanoparticle.R`. The table
 below collects them in one place for review.
 
@@ -100,9 +100,8 @@ below collects them in one place for review.
 | Distribution ratios (`rl`, …, `rko`) | dimensionless |
 
 Dose is applied as an initial condition on `plasma` (set in the
-[`model()`](https://nlmixr2.github.io/rxode2/reference/model.html) block
-to `5 ug/mL x 1.70 mL = 8.5 ug`); the model does not take an explicit
-dosing event.
+`model()` block to `5 ug/mL x 1.70 mL = 8.5 ug`); the model does not
+take an explicit dosing event.
 
 ## Simulation
 

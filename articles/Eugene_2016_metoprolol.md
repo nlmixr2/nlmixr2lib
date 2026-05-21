@@ -35,9 +35,8 @@ The same information is available programmatically via
 ## Source trace
 
 Per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/specificDrugs/Eugene_2016_metoprolol.R`. The table below
-collects them for review.
+`ini()` entry in `inst/modeldb/specificDrugs/Eugene_2016_metoprolol.R`.
+The table below collects them for review.
 
 | Equation / parameter | Value | Source location |
 |----|----|----|

@@ -396,10 +396,8 @@ review.
   `sdihe`) blocks. Since the drug compartments are collapsed to scalar
   covariates in this implementation, the guard is reproduced as a
   multiplicative factor `(EMB > 0)` (resp. `(INH > 0)`) on the parameter
-  inside
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html).
-  The numeric behavior is identical because the source compartments are
-  constant in time at the covariate value.
+  inside `model()`. The numeric behavior is identical because the source
+  compartments are constant in time at the covariate value.
 - **`Output_real_*.lst` is a `$TABLE` export, not a NONMEM listing.**
   The bundle’s `Output_real_MTP-GPDI.lst` is a 1,021-row text table
   starting `TABLE NO. 1. ID ...` (a NONMEM `$TABLE` output) rather than

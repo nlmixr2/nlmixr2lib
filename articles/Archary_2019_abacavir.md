@@ -42,8 +42,7 @@ loaded.
 ## Source trace
 
 Per-parameter origin (also recorded as in-file comments next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry of
-`inst/modeldb/specificDrugs/Archary_2019_abacavir.R`):
+`ini()` entry of `inst/modeldb/specificDrugs/Archary_2019_abacavir.R`):
 
 | Equation / parameter | Value | Source location |
 |----|----|----|

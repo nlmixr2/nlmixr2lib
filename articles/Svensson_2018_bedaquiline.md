@@ -81,7 +81,7 @@ str(ui$meta$population, max.level = 1)
 ## Source trace
 
 Per-parameter origins are recorded as inline comments next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
+`ini()` entry in
 `inst/modeldb/specificDrugs/Svensson_2018_bedaquiline.R`. The table
 below collects them in one place.
 
@@ -367,11 +367,10 @@ residual correlation (53.1%). Differences \> 20% would prompt
 investigation of the model file – they should not be tuned away.
 
 The +23% formulation effect on typical MAT (encoded as
-`e_susp_mat = 0.23` in
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html)) implies
-a small delay in Tmax for the suspended arm (Table 3: 4.3 -\> 4.9 h,
-+14%) and a slight decrease in typical Cmax (-5% per the paper’s
-Discussion). Average exposure (AUC) is unchanged.
+`e_susp_mat = 0.23` in `ini()`) implies a small delay in Tmax for the
+suspended arm (Table 3: 4.3 -\> 4.9 h, +14%) and a slight decrease in
+typical Cmax (-5% per the paper’s Discussion). Average exposure (AUC) is
+unchanged.
 
 ## Assumptions and deviations
 
@@ -426,10 +425,9 @@ validates against.
   bedaquiline popPK with full covariate handling for MDR-TB patient
   populations should use the Svensson 2016 model instead.
 - **The 6 h MAT upper bound (Pharmacokinetic-analysis paragraph 1) is
-  not enforced as a hard ceiling on `mat` in
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html).**
-  The maximum-MAT enforcement only mattered during NONMEM estimation to
-  keep the search bounded; for forward simulation the typical-value
+  not enforced as a hard ceiling on `mat` in `model()`.** The
+  maximum-MAT enforcement only mattered during NONMEM estimation to keep
+  the search bounded; for forward simulation the typical-value
   `mat = 2.63 * mat_form` and the BSV-distributed individual values
   rarely approach 6 h (variance 0.368 gives a 95% range of
   `exp(log(2.63) +/- 1.96 * sqrt(0.368))` = (0.85, 8.18) h, so ~5% of

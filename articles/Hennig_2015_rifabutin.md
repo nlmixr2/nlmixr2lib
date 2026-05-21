@@ -85,8 +85,7 @@ str(mod_obj$population, vec.len = 2, no.list = TRUE)
 
 ## Source trace
 
-Per-parameter origin is recorded next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
+Per-parameter origin is recorded next to each `ini()` entry in
 `inst/modeldb/specificDrugs/Hennig_2015_rifabutin.R`. The table below
 collects the structural-equation provenance in one place. All numeric
 values come from Hennig 2015 Table 2 ‘Final model’ column. The Hennig

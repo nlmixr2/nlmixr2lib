@@ -70,10 +70,10 @@ str(rxode2::rxode2(readModelDb("Sampson_2014_azithromycin"))$meta$population)
 
 ## Source trace
 
-Every [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html)
-value in `inst/modeldb/specificDrugs/Sampson_2014_azithromycin.R` is
-from Sampson 2014 Table 1 (Model estimate column). The structural ODEs
-implement Figure 2 of the same paper.
+Every `ini()` value in
+`inst/modeldb/specificDrugs/Sampson_2014_azithromycin.R` is from Sampson
+2014 Table 1 (Model estimate column). The structural ODEs implement
+Figure 2 of the same paper.
 
 | Equation / parameter | Value | Source location |
 |----|---:|----|
@@ -179,8 +179,7 @@ ggplot(sim_long, aes(time, conc, colour = matrix, linetype = dose_label)) +
        colour = "Matrix", linetype = "Dose",
        title = "Replicates Sampson 2014 Figure 1",
        caption = "Typical-individual predictions; 250 mg and 1,000 mg single oral dose.")
-#> Warning in scale_y_log10(): log-10 transformation introduced
-#> infinite values.
+#> Warning in scale_y_log10(): log-10 transformation introduced infinite values.
 ```
 
 ![](Sampson_2014_azithromycin_files/figure-html/figure-1-1.png)
@@ -379,27 +378,22 @@ individual has no IIV on absorption rate.
   `eta_CL12-CL13/F` shared between the two intercompartmental clearances
   (Table 1 footnote: “eta_CL12-CL13/F is the shared eta estimate for
   CL12 and CL13”). Implemented by adding the single random effect
-  `etalqpbmc_qpmn` to both `lqpbmc` and `lqpmn` inside
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html).
-  The cellular intercompartmental parameter names are written without an
+  `etalqpbmc_qpmn` to both `lqpbmc` and `lqpmn` inside `model()`. The
+  cellular intercompartmental parameter names are written without an
   internal underscore (`lqpbmc`, `lqpmn`, `lclpbmc`, `lclpmn`) so
   [`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
   recognises `etalqpbmc_qpmn` as a valid shared-eta suffix.
 - **CL41 = CL14/2 and C = B/1,000 are structural constraints, not
   estimates.** Both are reported in the Table 1 footnote; CL41 = 36.6
-  L/h (= 73.2 / 2) is implemented as `q41 = q / 2` inside
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html),
-  and `c_blood = b_blood / 1000` is the analogous derived value for the
-  PMN coefficient. They are not separately listed in
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) so the
-  original two-degree-of-freedom encoding from the paper is preserved.
+  L/h (= 73.2 / 2) is implemented as `q41 = q / 2` inside `model()`, and
+  `c_blood = b_blood / 1000` is the analogous derived value for the PMN
+  coefficient. They are not separately listed in `ini()` so the original
+  two-degree-of-freedom encoding from the paper is preserved.
 - **Bioavailability is not separately identified.** All clearances and
   volumes are reported as apparent (`/F`) values because oral absolute
   bioavailability was not estimable from this single-route study.
   `f(depot)` is therefore left at the rxode2 default of 1; the `cl`,
-  `vc`, etc. inside
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html) are
-  interpretable as `CL/F`, `V/F`, etc.
+  `vc`, etc. inside `model()` are interpretable as `CL/F`, `V/F`, etc.
 - **No covariates.** The paper text reports “the data did not support
   the addition of any covariates”; `covariateData` is
   [`list()`](https://rdrr.io/r/base/list.html).

@@ -55,9 +55,8 @@ class(mod_fn)
 ## Source trace
 
 The per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/specificDrugs/Xia_2024_warfarin.R`. The table below
-collects them in one place.
+`ini()` entry in `inst/modeldb/specificDrugs/Xia_2024_warfarin.R`. The
+table below collects them in one place.
 
 | Equation / parameter | Value | Source location |
 |----|----|----|
@@ -674,12 +673,11 @@ Units in each ODE term, walked once for review:
 
 - **PK observations are absent in the source dataset.** All structural
   PK parameters are reproduced from the Hamberg literature model as
-  inline constants in
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) wrapped
-  in `fixed()`. The original Hamberg publication is not on disk; Xia
-  2024 itself reports the inherited Hamberg values numerically in Table
-  3, so the model file’s values come directly from the on-disk Xia 2024
-  paper rather than from training-data recall of the Hamberg paper.
+  inline constants in `ini()` wrapped in `fixed()`. The original Hamberg
+  publication is not on disk; Xia 2024 itself reports the inherited
+  Hamberg values numerically in Table 3, so the model file’s values come
+  directly from the on-disk Xia 2024 paper rather than from
+  training-data recall of the Hamberg paper.
 - **Amiodarone effect encoding.** Xia 2024 supplement Section 1.3 Eq 9
   describes the categorical-covariate model as a piecewise
   multiplicative factor `P_TV * (1 + theta)`; the model file encodes the

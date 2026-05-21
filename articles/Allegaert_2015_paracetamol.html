@@ -911,7 +911,7 @@ recover &gt;= 90% of the IV bolus from plasma even in the high-CL
 pregnant arm.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/readModelDb.html">readModelDb</a></span><span class="op">(</span><span class="st">"Allegaert_2015_paracetamol"</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/zeroRe.html" class="external-link">zeroRe</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> parameter labels from comments will be replaced by 'label()'</span></span>
+<span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
 <span></span>
 <span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span></span>
 <span>  <span class="va">mod</span>,</span>
@@ -920,7 +920,7 @@ pregnant arm.</p>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalvc', 'etalcl_gluc', 'etalcl_renal'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalvc', 'etalcl_gluc', 'etalcl_renal'</span></span>
 <span><span class="co">#&gt; Warning: multi-subject simulation without without 'omega'</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -935,17 +935,17 @@ share the baseline parameters. The OCC = 5 stratum (volunteer on BC)
 inherits the OCC = 4 typical-value parameters but adds a 1.46 x scalar
 on CL_gluc through the CONMED_BIRTHCONTROL covariate.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">sim</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">Cc</span>, colour <span class="op">=</span> <span class="va">cohort</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_log10</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="fu">ggplot</span><span class="op">(</span><span class="va">sim</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">time</span>, <span class="va">Cc</span>, colour <span class="op">=</span> <span class="va">cohort</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">scale_y_log10</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span></span>
 <span>    x <span class="op">=</span> <span class="st">"Time after dose (h)"</span>,</span>
 <span>    y <span class="op">=</span> <span class="st">"Plasma paracetamol Cc (mg/L)"</span>,</span>
 <span>    colour <span class="op">=</span> <span class="st">"Cohort"</span>,</span>
 <span>    title <span class="op">=</span> <span class="st">"Typical-value plasma APAP after 2 g propacetamol IV infusion (20 min)"</span>,</span>
 <span>    caption <span class="op">=</span> <span class="st">"DDMODEL00000267 / Allegaert 2015. Five OCC strata shown."</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu">theme_minimal</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Allegaert_2015_paracetamol_files/figure-html/figure-plasma-apap-1.png" class="r-plt" alt="" width="672"></p>
 <p>The cumulative urine outputs trace the metabolite-formation and
 renal-elimination pathways. Glucuronide is the dominant urinary
@@ -958,16 +958,16 @@ stratum adds an additional ~46% on top of the OCC = 4 baseline.</p>
 <span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">urineApap</span>, <span class="va">urineGluc</span>, <span class="va">urineSulf</span><span class="op">)</span>,</span>
 <span>                      names_to <span class="op">=</span> <span class="st">"output"</span>, values_to <span class="op">=</span> <span class="st">"amount_mg"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">sim_urine</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">amount_mg</span>, colour <span class="op">=</span> <span class="va">cohort</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span> <span class="va">output</span>, scales <span class="op">=</span> <span class="st">"free_y"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">sim_urine</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">time</span>, <span class="va">amount_mg</span>, colour <span class="op">=</span> <span class="va">cohort</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">facet_wrap</span><span class="op">(</span><span class="op">~</span> <span class="va">output</span>, scales <span class="op">=</span> <span class="st">"free_y"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span></span>
 <span>    x <span class="op">=</span> <span class="st">"Time after dose (h)"</span>,</span>
 <span>    y <span class="op">=</span> <span class="st">"Cumulative amount in urine (mg)"</span>,</span>
 <span>    colour <span class="op">=</span> <span class="st">"Cohort"</span>,</span>
 <span>    title <span class="op">=</span> <span class="st">"Cumulative urinary excretion by output and cohort"</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu">theme_minimal</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Allegaert_2015_paracetamol_files/figure-html/figure-urine-1.png" class="r-plt" alt="" width="672"></p>
 </div>
 <div class="section level2">
@@ -1141,7 +1141,7 @@ in the model file's `covariateData[[TERM_BIRTH]]$</span>notes`.</li>
 <strong>OCC = 5 conditional plasma residual error.</strong> NONMEM’s
 $ERROR block uses <code>Y2 = F*(1 + ERR(5)) + ERR(6)</code> for OCC = 5
 (volunteer on BC) and <code>Y1 = F*(1 + ERR(1))</code> for every other
-OCC. The conditional error is implemented inside <code><a href="https://nlmixr2.github.io/rxode2/reference/model.html" class="external-link">model()</a></code> by
+OCC. The conditional error is implemented inside <code>model()</code> by
 selecting between the OCC != 5 (<code>CcpropSd</code>) and OCC = 5
 (<code>Cc_oc5_propSd</code>, <code>Cc_oc5_addSd</code>) SD pairs based
 on an <code>oc5</code> indicator; there is no canonical
@@ -1169,7 +1169,7 @@ Phase-II conjugates.</li>
 (because the .mod’s $ERROR uses <code>Y = F*(1 + ERR(i))</code> and
 <code>Y = F*(1 + ERR(j)) + ERR(k)</code>, both linear-scale forms);
 nlmixr2’s <code>prop()</code> and <code>add()</code> arguments are SDs.
-Each residual-SD parameter in <code><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini()</a></code> is declared as
+Each residual-SD parameter in <code>ini()</code> is declared as
 <code>sqrt(&lt;NONMEM SIGMA value&gt;)</code> and the conversion is
 documented in the per-parameter source comment.</li>
 <li>
@@ -1178,11 +1178,11 @@ on CL_sulphate) at 0 (<code>$OMEGA 0 FIX</code>), so the model file
 declares no <code>etalcl_sulf</code> slot. Should a future re-fit
 estimate this IIV, the natural addition is
 <code>etalcl_sulf ~ &lt;variance&gt;</code> and a multiplicative
-<code>exp(etalcl_sulf)</code> wrapper inside <code><a href="https://nlmixr2.github.io/rxode2/reference/model.html" class="external-link">model()</a></code>’s
+<code>exp(etalcl_sulf)</code> wrapper inside <code>model()</code>’s
 <code>cl_sulf</code> expression.</li>
 <li>
 <strong>PKNCA on a typical-value sweep.</strong> The PKNCA call
-above runs on the <code><a href="https://nlmixr2.github.io/rxode2/reference/zeroRe.html" class="external-link">zeroRe()</a></code> typical-value trajectories
+above runs on the <code>zeroRe()</code> typical-value trajectories
 rather than a stochastic VPC. Per-cohort PKNCA values are therefore
 deterministic and have no IIV envelope; the goal here is
 structural-model validation (covariate-effect ordering, half-life

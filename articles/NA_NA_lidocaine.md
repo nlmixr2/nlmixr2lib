@@ -79,9 +79,8 @@ rxode2::rxode2(readModelDb("NA_NA_lidocaine"))$meta$population
 ## Source trace
 
 Per-parameter source-trace comments are recorded in-file alongside each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/ddmore/NA_NA_lidocaine.R`. The table below collects them
-in one place for review. All values come from the
+`ini()` entry in `inst/modeldb/ddmore/NA_NA_lidocaine.R`. The table
+below collects them in one place for review. All values come from the
 `Output_real_data_original_final_run249.res` listing (the bundle’s
 NONMEM `.lst` from running the model on the original real dataset) after
 `MINIMIZATION SUCCESSFUL`, OBJ = 10219.922.
@@ -180,7 +179,7 @@ head(events, 4)
 Wrap the model with
 [`rxode2::rxode2()`](https://nlmixr2.github.io/rxode2/reference/rxode2.html)
 and zero out the random effects for typical-value simulations, then call
-[`rxSolve()`](https://nlmixr2.github.io/rxode2/reference/rxSolve.html):
+`rxSolve()`:
 
 ``` r
 
@@ -453,11 +452,10 @@ covariate set.
   `units$concentration = "mg/L"` are operator-default placeholders
   chosen so the values flow through
   [`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
-  consistently. The numeric values in
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) are
-  unchanged from the `.res` listing regardless of the unit
-  interpretation. If the linked publication is later identified, the
-  units may need to be revised; the parameter values stay correct.
+  consistently. The numeric values in `ini()` are unchanged from the
+  `.res` listing regardless of the unit interpretation. If the linked
+  publication is later identified, the units may need to be revised; the
+  parameter values stay correct.
 - **Time-unit physiological plausibility.** Under the operator-default
   `units$time = "h"`, total lidocaine elimination =
   `k_megx_form + k_xyl_form = 0.037 1/h` with apparent t1/2 =

@@ -81,10 +81,9 @@ str(mod_meta$population)
 ## Source trace
 
 The per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/specificDrugs/Shekar_2014_meropenem.R`. The table below
-collects them in one place; values come from Shekar 2014 Table 2 final
-covariate-model column (the “Model Mean” column).
+`ini()` entry in `inst/modeldb/specificDrugs/Shekar_2014_meropenem.R`.
+The table below collects them in one place; values come from Shekar 2014
+Table 2 final covariate-model column (the “Model Mean” column).
 
 | Parameter / equation | Value | Source location |
 |----|----|----|
@@ -454,8 +453,6 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- suppressWarnings(PKNCA::pk.nca(nca_data))
-#>  ■■■■■■■■■■■■■■■                   45% |  ETA:  4s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■        85% |  ETA:  1s
 
 knitr::kable(
   summary(nca_res),
@@ -538,10 +535,8 @@ observed Cmin of 4.9 mg/L.
   `theta_1 = CL` in typesetting. The “CrCL in L/h” conversion
   (CrCL_mL_min
 
-  - 60 / 1000) is applied inside
-    [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html)
-    so that the dimensionless published `CL_CRCL = 1.89` produces CL in
-    L/h.
+  - 60 / 1000) is applied inside `model()` so that the dimensionless
+    published `CL_CRCL = 1.89` produces CL in L/h.
 
   No NONMEM control stream is available on disk to cross-check the
   equation form, so this resolution depends on the only reading that

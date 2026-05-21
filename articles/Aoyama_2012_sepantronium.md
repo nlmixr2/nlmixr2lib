@@ -83,7 +83,7 @@ str(mod_meta$population)
 ## Source trace
 
 The per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
+`ini()` entry in
 `inst/modeldb/specificDrugs/Aoyama_2012_sepantronium.R`. The table below
 collects them in one place; values come from Aoyama 2012 Table 3
 final-model “Estimate” column unless otherwise noted.
@@ -592,10 +592,10 @@ Analytic Css vs simulated median Cav (96-168 h) by cancer type. {.table}
   the model.
 
 - \*\*Concentration units (ng/mL) require an explicit \*1000 scaling in
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html).\*\*
-  With dose in mg and `vc` in L, the ratio `central / vc` carries units
-  of mg/L = 1000 ng/mL. The `Cc` output in the model multiplies by 1000
-  to express concentrations in the paper’s reported ng/mL units.
+  `model()`.\*\* With dose in mg and `vc` in L, the ratio `central / vc`
+  carries units of mg/L = 1000 ng/mL. The `Cc` output in the model
+  multiplies by 1000 to express concentrations in the paper’s reported
+  ng/mL units.
   [`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
   issues an info-level message flagging this dosing-vs-concentration
   magnitude mismatch; the scaling is intentional and documented in the

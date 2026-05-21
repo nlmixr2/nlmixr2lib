@@ -101,9 +101,8 @@ The same metadata is available programmatically via
 ## Source trace
 
 The per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/specificDrugs/Hwang_2022_tremelimumab.R`. The table below
-collects them in one place for review.
+`ini()` entry in `inst/modeldb/specificDrugs/Hwang_2022_tremelimumab.R`.
+The table below collects them in one place for review.
 
 | Parameter (model name) | Value | Source |
 |----|----|----|
@@ -502,10 +501,9 @@ cat(sprintf("Typical-subject terminal half-life = %.1f days\n", t_half))
   reported “approximately 16%” (page 1609).
 - **Convention deviation: `etacl_tmax` IIV.** The shared additive eta on
   the regimen-active Tmax does not pair with a single fixed-effect
-  parameter named `cl_tmax` in
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html);
-  instead, two regimen-specific `cl_tmax_mono` and `cl_tmax_combo` fixed
-  effects are mixed at runtime by `COMBO_DURVA`.
+  parameter named `cl_tmax` in `ini()`; instead, two regimen-specific
+  `cl_tmax_mono` and `cl_tmax_combo` fixed effects are mixed at runtime
+  by `COMBO_DURVA`.
   [`nlmixr2lib::checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
   flags this with a `parameter_naming` warning. The structure faithfully
   encodes Hwang 2022’s NONMEM control stream and is not changed.

@@ -36,9 +36,8 @@ The same information is available programmatically via
 
 ## Source trace
 
-Parameter provenance for each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry
-(also recorded as a comment beside the value in the model file):
+Parameter provenance for each `ini()` entry (also recorded as a comment
+beside the value in the model file):
 
 | Equation / parameter | Value | Source location |
 |----|----|----|

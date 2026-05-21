@@ -49,9 +49,8 @@ inspect [`formals()`](https://rdrr.io/r/base/formals.html)).
 ## Source trace
 
 Per-parameter origins are recorded as in-file comments next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/ddmore/Valitalo_2017_morphine.R`. The table below collects
-them in one place.
+`ini()` entry in `inst/modeldb/ddmore/Valitalo_2017_morphine.R`. The
+table below collects them in one place.
 
 | nlmixr2 parameter | Source | Value | NONMEM .mod \$THETA / \$OMEGA |
 |----|----|----|----|
@@ -160,8 +159,7 @@ F.2 anchor 1: typical-value latent pain at CP = 0, t = 0 matches
 Valitalo 2017 Table 2. {.table}
 
 All three values should match the paper to numerical precision (\< 1e-10
-absolute error) because they are read directly out of
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html).
+absolute error) because they are read directly out of `ini()`.
 
 ### F.2 anchor 2: Figure 5a (concentration-effect during suctioning)
 
@@ -382,10 +380,9 @@ observer. {.table}
   observation as the formal `vas_pred ~ add(vas_add)` – the only
   observation type that nlmixr2 fits directly. The full
   categorical-likelihood machinery (per-grade probabilities
-  `peq1..peq8`) is still computed in
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html) for
-  source-trace fidelity and for vignette analysis, but is not exercised
-  as the fitted-observation in this nlmixr2 implementation. F.2
+  `peq1..peq8`) is still computed in `model()` for source-trace fidelity
+  and for vignette analysis, but is not exercised as the
+  fitted-observation in this nlmixr2 implementation. F.2
   mechanistic-sanity validation is restricted to the latent-pain
   trajectory and the typical-value VAS prediction;
   categorical-item-grade VPC validation against Figure 3 / Figure 4 is
@@ -427,8 +424,7 @@ observer. {.table}
   difficulty thetas to their graded-response sub-model estimates and did
   not test covariates on them in the PD layer (only on baseline pain and
   on the morphine / time slopes). This nlmixr2lib model therefore
-  exposes them all as `fixed()` in
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html).
+  exposes them all as `fixed()` in `ini()`.
 - **Sex split not reported.** Valitalo 2017 does not tabulate sex
   distribution in the available trimmed source;
   `population$sex_female_pct = NA_real_`.

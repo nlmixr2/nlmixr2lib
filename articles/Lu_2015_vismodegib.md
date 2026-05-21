@@ -49,9 +49,8 @@ The same information is available programmatically via
 ## Source trace
 
 The per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/specificDrugs/Lu_2015_vismodegib.R`. The table below
-collects them in one place for review.
+`ini()` entry in `inst/modeldb/specificDrugs/Lu_2015_vismodegib.R`. The
+table below collects them in one place for review.
 
 | Equation / parameter | Value | Source location |
 |----|----|----|
@@ -333,8 +332,7 @@ sim_sd |>
        title = "Single 150 mg oral dose: total plasma vismodegib (typical patient)",
        caption = "Replicates the qualitative shape of Lu 2015 single-dose data (SHH3925g Stage 1, < 7 days post-dose)") +
   theme_minimal()
-#> Warning in scale_y_log10(): log-10 transformation introduced
-#> infinite values.
+#> Warning in scale_y_log10(): log-10 transformation introduced infinite values.
 ```
 
 ![](Lu_2015_vismodegib_files/figure-html/figure-singledose-cc-1.png)
@@ -350,8 +348,7 @@ sim_sd |>
        title = "Single 150 mg oral dose: unbound plasma vismodegib (typical patient)",
        caption = "Unbound concentrations are 100-200x lower than total at baseline AAG and decline faster as AAG binding saturates less.") +
   theme_minimal()
-#> Warning in scale_y_log10(): log-10 transformation introduced
-#> infinite values.
+#> Warning in scale_y_log10(): log-10 transformation introduced infinite values.
 ```
 
 ![](Lu_2015_vismodegib_files/figure-html/figure-singledose-cu-1.png)
@@ -426,13 +423,12 @@ patient). {.table}
   kDa.
 - **Saturable AAG binding solved analytically.** The mass-balance
   fast-equilibrium binding `Ctotal = Cu + AAG * Cu / (KDAAG + Cu)` is
-  solved as a quadratic in Cu inside
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html)
-  (positive root). The supplement (Supplementary Appendix S2) was not on
-  disk; the closed-form quadratic is the standard solution given the
-  paper’s stated mass-balance + fast-equilibrium assumption (Methods
-  Structural model + Discussion paragraph citing Widmer 2006 and
-  Mager-Krzyzanski 2005 / Gibiansky 2008 TMDD QSS literature).
+  solved as a quadratic in Cu inside `model()` (positive root). The
+  supplement (Supplementary Appendix S2) was not on disk; the
+  closed-form quadratic is the standard solution given the paper’s
+  stated mass-balance + fast-equilibrium assumption (Methods Structural
+  model + Discussion paragraph citing Widmer 2006 and Mager-Krzyzanski
+  2005 / Gibiansky 2008 TMDD QSS literature).
 - **Residual error encoded as proportional in linear space.** Lu 2015
   Methods state “an additive error model on the log-transformed data was
   applied”; in nlmixr2 this is equivalent to proportional error in

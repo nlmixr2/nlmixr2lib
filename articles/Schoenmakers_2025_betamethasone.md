@@ -380,9 +380,8 @@ AUC0-inf vs (Dose / CL) ratio raises.
   “Apparent intercompartmental clearance (Q/F; L)” prints the units as
   “L” (a volume). Q/F is necessarily a clearance (the row above for CL/F
   is “L/h”), so this is a publication unit-label typo. The model file
-  declares `lq = log(99.8)` with units L/h and the model
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html)
-  block uses it as a clearance in the rate equations.
+  declares `lq = log(99.8)` with units L/h and the model `model()` block
+  uses it as a clearance in the rate equations.
 
 - **Body weight not in the structural model.** Forward-inclusion at P \<
   0.05 retained body-weight covariates on CL and on Vc, but

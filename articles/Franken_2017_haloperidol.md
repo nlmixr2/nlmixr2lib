@@ -45,7 +45,7 @@ information is available programmatically via
 ## Source trace
 
 The per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
+`ini()` entry in
 `inst/modeldb/specificDrugs/Franken_2017_haloperidol.R`. The table below
 collects them in one place.
 
@@ -231,9 +231,6 @@ intervals_ss <- data.frame(
 nca_res <- PKNCA::pk.nca(
   PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals_ss)
 )
-#>  ■■■■■                             13% |  ETA:  8s
-#>  ■■■■■■■■■■■■■■■■                  50% |  ETA:  4s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■       88% |  ETA:  1s
 knitr::kable(
   as.data.frame(summary(nca_res)),
   caption = "Simulated NCA across the steady-state 60-72 h dosing interval."

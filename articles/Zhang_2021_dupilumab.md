@@ -87,9 +87,8 @@ creatinine clearance, and ADA-negative.
   “Estimate” column as `omega^2` (variance on the log scale of the
   log-normal random effect). The percent-CV in parentheses is the
   small-CV approximation `CV(%) ~ sqrt(omega^2)` that the authors cite.
-  We use the reported `omega^2` values verbatim in
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) (this
-  is the NONMEM convention nlmixr2 expects).
+  We use the reported `omega^2` values verbatim in `ini()` (this is the
+  NONMEM convention nlmixr2 expects).
 - **ADA effect on Ke.** Encoded as a proportional multiplier
   `Ke = Ke_typical * (1 + 0.191 * ADA_POS)`, matching the published
   equation. The 19.1% increase in Ke corresponds to a ~16% decrease in

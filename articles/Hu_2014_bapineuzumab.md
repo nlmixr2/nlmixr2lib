@@ -47,11 +47,10 @@ The same information is available programmatically via
 ## Source trace
 
 Per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/specificDrugs/Hu_2014_bapineuzumab.R`. The table collects
-them in one place for review. Reference subject for typical-value PK
-parameters: Caucasian (`RACE_WHITE = 1`), 70 kg standardized body
-weight.
+`ini()` entry in `inst/modeldb/specificDrugs/Hu_2014_bapineuzumab.R`.
+The table collects them in one place for review. Reference subject for
+typical-value PK parameters: Caucasian (`RACE_WHITE = 1`), 70 kg
+standardized body weight.
 
 | Equation / parameter | Value | Source location |
 |----|----|----|
@@ -318,8 +317,6 @@ first_interval <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = first_interval)
 nca_res  <- suppressWarnings(PKNCA::pk.nca(nca_data))
-#>  ■■■■■■■■■■■■                      36% |  ETA:  6s
-#>  ■■■■■■■■■■■■■■■■■■■■■■            70% |  ETA:  3s
 
 nca_summary <- summary(nca_res)
 knitr::kable(

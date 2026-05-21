@@ -193,8 +193,7 @@ ggplot(fig1, aes(time, Q50, colour = dose_label, fill = dose_label)) +
        colour = "Dose", fill = "Dose",
        title = "Simulated VPC by oral torsemide dose",
        caption = "Replicates Figure 1 of Jeong 2022 (n = 200 subjects per phenotype stratum across each dose).")
-#> Warning in scale_y_log10(): log-10 transformation introduced
-#> infinite values.
+#> Warning in scale_y_log10(): log-10 transformation introduced infinite values.
 ```
 
 ![Replicates Figure 1 of Jeong 2022: simulated stochastic 5th / 50th /

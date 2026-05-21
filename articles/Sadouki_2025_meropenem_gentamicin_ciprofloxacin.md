@@ -85,7 +85,7 @@ mod$population
 ## Source trace
 
 The per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
+`ini()` entry in
 `inst/modeldb/pharmacodynamics/Sadouki_2025_meropenem_gentamicin_ciprofloxacin.R`.
 The table below collects them in one place.
 
@@ -526,9 +526,8 @@ metadata, file under `inst/modeldb/pharmacodynamics/`”).
 - **Random effects are between-experiment, not between-subject.** The
   paper’s Methods section (page 2): “Random effects (eta) were
   distinguishing variability between experiments”. The eta values in
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) are
-  kept for faithfulness to the published model but are not “IIV” in the
-  standard pop-PK sense.
+  `ini()` are kept for faithfulness to the published model but are not
+  “IIV” in the standard pop-PK sense.
 - **PKNCA validation is replaced with figure replication.** PKNCA is not
   the right validation target for an in-vitro bacterial-load model –
   there is no dose, no absorption, no exposure profile to integrate. The

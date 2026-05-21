@@ -48,9 +48,8 @@ male with BMI 22 and GFR 130 mL/min (Aksenov 2018 Appendix 2 Table 2).
 ## Source trace
 
 The per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/endogenous/Aksenov_2018_uricAcid.R`. The table below
-collects them in one place for review.
+`ini()` entry in `inst/modeldb/endogenous/Aksenov_2018_uricAcid.R`. The
+table below collects them in one place for review.
 
 | Equation / parameter | Value | Source location |
 |----|----|----|
@@ -92,8 +91,7 @@ The table below verifies that every term in `d/dt(serum)` and
 | **Right-hand-side** for `d/dt(urine)` | **mg/h** | matches state units mg / time units h -\> consistent |
 
 The single non-trivial unit conversion is for the renal flux: the source
-paper reports GFR in mL/min (Cockcroft-Gault), so the
-[`model()`](https://nlmixr2.github.io/rxode2/reference/model.html) block
+paper reports GFR in mL/min (Cockcroft-Gault), so the `model()` block
 converts to L/h via `gfr_lh <- CRCL * 60 / 1000` before using GFR in any
 ODE term. With GFR = 130 mL/min the converted value is 7.8 L/h.
 
@@ -458,5 +456,4 @@ placebo wash-out window.
   `NA_NA_lidocaine.R`, where the `.ctl` does not state the
   BSA-normalisation method but the column is registered under `CRCL`.
   Users importing data with a column called `GFR` should rename to
-  `CRCL` before passing to
-  [`rxSolve()`](https://nlmixr2.github.io/rxode2/reference/rxSolve.html).
+  `CRCL` before passing to `rxSolve()`.

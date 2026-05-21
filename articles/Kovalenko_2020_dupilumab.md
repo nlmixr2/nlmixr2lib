@@ -66,11 +66,9 @@ The paper’s Methods section explicitly defines omega as *“omega (omega,
 standard deviation \[SD\] of between-subject variability)”* and sigma as
 *“sigma (sigma, SD of measurement error)”*. nlmixr2’s `etalxxx ~ value`
 syntax stores the **variance** (omega^2), so the Supp. Table S2 SDs are
-squared in
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html). The
-Model 1 shrinkage in SD reported by the paper (10.4% / 25.2% / 22.9% /
-23.2% / 54.9% for Vc / ke / Vm / ka / MTT) is consistent with IIV-as-SD
-accounting.
+squared in `ini()`. The Model 1 shrinkage in SD reported by the paper
+(10.4% / 25.2% / 22.9% / 23.2% / 54.9% for Vc / ke / Vm / ka / MTT) is
+consistent with IIV-as-SD accounting.
 
 ### Parameterization notes
 
@@ -253,7 +251,6 @@ intervals <- data.frame(
 )
 
 nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
-#>  ■■■■■■■■■■■■                      36% |  ETA:  2s
 summary(nca_res)
 #>  start end    treatment   N     auclast        cmax        cmin         cav
 #>      0  14 300mg_Q2W_SS 400 1190 [43.9] 95.0 [41.9] 70.4 [49.2] 85.1 [43.9]
@@ -328,12 +325,11 @@ Typical-subject steady-state exposure (WT = 75 kg; IIV zeroed). {.table}
   prevents non-physical negative MTT draws during simulation. All other
   etas match the paper’s random-effect structure directly.
 - IIV (omega) is reported in Kovalenko 2020 as a standard deviation, per
-  the Methods definition. Values in
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) are
-  squared to yield the variance that nlmixr2 stores with the `~`
-  operator. An earlier version of this file stored the SDs directly on
-  the RHS (i.e. as variances), which would understate IIV magnitude at
-  the mAb-relevant scale; the current file is the corrected form.
+  the Methods definition. Values in `ini()` are squared to yield the
+  variance that nlmixr2 stores with the `~` operator. An earlier version
+  of this file stored the SDs directly on the RHS (i.e. as variances),
+  which would understate IIV magnitude at the mAb-relevant scale; the
+  current file is the corrected form.
 - The reference body weight (75 kg) is inherited from Kovalenko 2016
   (<doi:10.1002/psp4.12136>); Kovalenko 2020 does not restate the
   reference weight. See the file header comment for details.

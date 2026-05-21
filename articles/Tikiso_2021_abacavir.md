@@ -40,9 +40,9 @@ The same information is available programmatically via
 ## Source trace
 
 The per-parameter origin is recorded as a trailing in-file comment next
-to each [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html)
-entry in `inst/modeldb/specificDrugs/Tikiso_2021_abacavir.R`. The table
-below collects them in one place.
+to each `ini()` entry in
+`inst/modeldb/specificDrugs/Tikiso_2021_abacavir.R`. The table below
+collects them in one place.
 
 | Equation / parameter | Value | Source location (Tikiso 2021) |
 |----|----|----|
@@ -518,10 +518,9 @@ bioavailability.
   on Ka (77.3% CV), F (39.2% CV), and MTT (132% CV) are not in the model
   file because BVV / BOV require visit / occasion identifiers that are
   not standardised across nlmixr2lib datasets. Users who wish to include
-  these variability components should augment the
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) block
-  with the appropriate eta terms keyed to per-visit / per-occasion
-  indicators in their event data.
+  these variability components should augment the `ini()` block with the
+  appropriate eta terms keyed to per-visit / per-occasion indicators in
+  their event data.
 
 - **Ages assigned per weight band.** The validation vignette assigns a
   representative age to each WHO weight band (3-4.9 kg = 0.25 yr, 5-6.9

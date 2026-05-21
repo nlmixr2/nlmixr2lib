@@ -56,9 +56,8 @@ The same metadata is available programmatically as
 ## Source trace
 
 Per-parameter origin is recorded as in-file comments alongside each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/specificDrugs/Ozawa_2007_docetaxel.R`. The table below
-collects the full source trace in one place.
+`ini()` entry in `inst/modeldb/specificDrugs/Ozawa_2007_docetaxel.R`.
+The table below collects the full source trace in one place.
 
 | Equation / parameter | Value | Source location |
 |----|----|----|
@@ -309,8 +308,7 @@ sim_pk_typ |>
        title = "Typical-value docetaxel PK -- 96 mg IV over 1 h, n = 200",
        caption = "Three-compartment IV PK, reproduces the qualitative biexponential decay reported in Ozawa 2007 Figure 3.")
 #> Warning in transformation$transform(x): NaNs produced
-#> Warning in scale_y_log10(): log-10 transformation introduced
-#> infinite values.
+#> Warning in scale_y_log10(): log-10 transformation introduced infinite values.
 #> Warning: Removed 16000 rows containing missing values or values outside the scale range
 #> (`geom_line()`).
 ```
@@ -479,11 +477,10 @@ and bootstrap parameter consistency (Table 4).
   `CL V1 Q2 V2 Q3 V3` carried as input columns). This nlmixr2 model
   reproduces both layers as a single joint typical-value system so that
   simulation propagates both PK and PD variability in one solve. The IIV
-  reported separately in Tables 2 and 3 are encoded together in
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html); the
-  resulting joint covariance matrix is block-diagonal between PK etas
-  (CL, V1) and PD etas (MTT, SLOPE, IP0) because the original analyses
-  estimated no cross-block correlations.
+  reported separately in Tables 2 and 3 are encoded together in `ini()`;
+  the resulting joint covariance matrix is block-diagonal between PK
+  etas (CL, V1) and PD etas (MTT, SLOPE, IP0) because the original
+  analyses estimated no cross-block correlations.
 - **Model-only covariates.** Ozawa 2007 tested a wide range of
   patient-factor covariates (age, albumin, BSA, creatinine clearance,
   total bilirubin, AGP, platelets, sex, performance status, prior

@@ -530,7 +530,7 @@ non-valvular atrial fibrillation, and deep vein thrombosis.</li>
 <h2 id="source-trace">Source trace<a class="anchor" aria-label="anchor" href="#source-trace"></a>
 </h2>
 <p>The per-parameter origin is recorded as an in-file comment next to
-each <code><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini()</a></code> entry in
+each <code>ini()</code> entry in
 <code>inst/modeldb/specificDrugs/Xia_2024_warfarin.R</code>. The table
 below collects them in one place.</p>
 <table class="table">
@@ -737,7 +737,7 @@ chain (MTT2 ~ 4.6 days) relaxes well past five chain time constants.</p>
 </h2>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/readModelDb.html">readModelDb</a></span><span class="op">(</span><span class="st">"Xia_2024_warfarin"</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/zeroRe.html" class="external-link">zeroRe</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> parameter labels from comments will be replaced by 'label()'</span></span>
+<span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
 <span></span>
 <span><span class="va">ev_typical</span> <span class="op">&lt;-</span> <span class="fu">make_warfarin_events</span><span class="op">(</span>dose_mg <span class="op">=</span> <span class="fl">2.5</span><span class="op">)</span></span>
 <span><span class="va">sim_typical</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod</span>, events <span class="op">=</span> <span class="va">ev_typical</span>,</span>
@@ -746,7 +746,7 @@ chain (MTT2 ~ 4.6 days) relaxes well past five chain time constants.</p>
 <span>                                        <span class="st">"VKORC1_1639G_COUNT"</span>,</span>
 <span>                                        <span class="st">"CONMED_AMIO"</span>, <span class="st">"INR_BASE"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span></code></pre></div>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="replicate-published-reference-steady-state-dose-inr-mapping-supplement-section-1-6">Replicate published reference: steady-state dose-INR mapping
@@ -800,30 +800,30 @@ simulation.</p>
 <span>  <span class="kw">else</span> <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"Age 40"</span>, <span class="va">scn</span><span class="op">)</span><span class="op">)</span>     <span class="fu">ss_inr</span><span class="op">(</span><span class="va">d</span>, age <span class="op">=</span> <span class="fl">40</span><span class="op">)</span></span>
 <span>  <span class="kw">else</span>                                <span class="fu">ss_inr</span><span class="op">(</span><span class="va">d</span><span class="op">)</span></span>
 <span><span class="op">}</span>, <span class="va">scenarios</span><span class="op">$</span><span class="va">scenario</span>, <span class="va">scenarios</span><span class="op">$</span><span class="va">dose</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
 <span></span>
 <span><span class="va">scenarios</span> <span class="op">&lt;-</span> <span class="va">scenarios</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>percent_diff <span class="op">=</span> <span class="fl">100</span> <span class="op">*</span> <span class="op">(</span><span class="va">simulated_inr</span> <span class="op">-</span> <span class="va">published_inr</span><span class="op">)</span> <span class="op">/</span> <span class="va">published_inr</span><span class="op">)</span></span>
+<span>  <span class="fu">mutate</span><span class="op">(</span>percent_diff <span class="op">=</span> <span class="fl">100</span> <span class="op">*</span> <span class="op">(</span><span class="va">simulated_inr</span> <span class="op">-</span> <span class="va">published_inr</span><span class="op">)</span> <span class="op">/</span> <span class="va">published_inr</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">scenarios</span>, digits <span class="op">=</span> <span class="fl">3</span>,</span>
 <span>             caption <span class="op">=</span> <span class="st">"Simulated vs Xia 2024 supplement Section 1.6 targets."</span><span class="op">)</span></span></code></pre></div>
@@ -1031,273 +1031,273 @@ coadministration, and weight stratification.</p>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>stratum <span class="op">=</span> <span class="va">name</span>, dose <span class="op">=</span> <span class="va">dose_grid</span>, inr <span class="op">=</span> <span class="va">inr</span><span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span></code></pre></div>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span></code></pre></div>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">f2</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">dose</span>, y <span class="op">=</span> <span class="va">inr</span>, colour <span class="op">=</span> <span class="va">stratum</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">0.6</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span>, alpha <span class="op">=</span> <span class="fl">0.4</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">2.5</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span>, alpha <span class="op">=</span> <span class="fl">0.4</span>, colour <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Daily warfarin dose (mg)"</span>,</span>
+<code class="sourceCode R"><span><span class="fu">ggplot</span><span class="op">(</span><span class="va">f2</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">dose</span>, y <span class="op">=</span> <span class="va">inr</span>, colour <span class="op">=</span> <span class="va">stratum</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">0.6</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_hline</span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span>, alpha <span class="op">=</span> <span class="fl">0.4</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_hline</span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">2.5</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span>, alpha <span class="op">=</span> <span class="fl">0.4</span>, colour <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Daily warfarin dose (mg)"</span>,</span>
 <span>       y <span class="op">=</span> <span class="st">"Steady-state INR (mean of days 56-60)"</span>,</span>
 <span>       title <span class="op">=</span> <span class="st">"Steady-state INR vs daily warfarin dose by covariate stratum"</span>,</span>
 <span>       caption <span class="op">=</span> <span class="st">"Reproduces the structure of Xia 2024 Figure 2; dashed lines mark INR = 2, 2.5, 3."</span>,</span>
@@ -1325,7 +1325,7 @@ the subject baseline indefinitely.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ev_no_drug</span> <span class="op">&lt;-</span> <span class="fu">make_warfarin_events</span><span class="op">(</span>dose_mg <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
 <span><span class="va">sim_no_drug</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod</span>, events <span class="op">=</span> <span class="va">ev_no_drug</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/range.html" class="external-link">range</a></span><span class="op">(</span><span class="va">sim_no_drug</span><span class="op">$</span><span class="va">INR</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.13</span>, <span class="fl">1.13</span><span class="op">)</span>, tolerance <span class="op">=</span> <span class="fl">1e-6</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/range.html" class="external-link">range</a></span><span class="op">(</span><span class="va">sim_no_drug</span><span class="op">$</span><span class="va">coag_s3</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>, tolerance <span class="op">=</span> <span class="fl">1e-6</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/range.html" class="external-link">range</a></span><span class="op">(</span><span class="va">sim_no_drug</span><span class="op">$</span><span class="va">coag_l3</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>, tolerance <span class="op">=</span> <span class="fl">1e-6</span><span class="op">)</span><span class="op">)</span></span>
@@ -1344,13 +1344,13 @@ INR to baseline.</p>
 <span><span class="va">ev_wd</span> <span class="op">&lt;-</span> <span class="fu">make_warfarin_events</span><span class="op">(</span>dose_mg <span class="op">=</span> <span class="fl">2.5</span>, days <span class="op">=</span> <span class="va">days_total</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="op">(</span><span class="va">EVID</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="va">TIME</span> <span class="op">&gt;=</span> <span class="va">dose_days</span> <span class="op">*</span> <span class="fl">24</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">sim_wd</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod</span>, events <span class="op">=</span> <span class="va">ev_wd</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> omega/sigma items treated as zero: 'etalec50'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalec50'</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">sim_wd</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">time</span> <span class="op">/</span> <span class="fl">24</span>, <span class="va">INR</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">1.13</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span>, colour <span class="op">=</span> <span class="st">"grey60"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="va">dose_days</span>, linetype <span class="op">=</span> <span class="st">"dotted"</span>, colour <span class="op">=</span> <span class="st">"grey40"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time (days)"</span>, y <span class="op">=</span> <span class="st">"INR"</span>,</span>
+<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">sim_wd</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">time</span> <span class="op">/</span> <span class="fl">24</span>, <span class="va">INR</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_hline</span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">1.13</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span>, colour <span class="op">=</span> <span class="st">"grey60"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_vline</span><span class="op">(</span>xintercept <span class="op">=</span> <span class="va">dose_days</span>, linetype <span class="op">=</span> <span class="st">"dotted"</span>, colour <span class="op">=</span> <span class="st">"grey40"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Time (days)"</span>, y <span class="op">=</span> <span class="st">"INR"</span>,</span>
 <span>       title <span class="op">=</span> <span class="st">"INR returns to baseline after warfarin is withdrawn"</span>,</span>
 <span>       caption <span class="op">=</span> <span class="st">"Daily 2.5 mg dosing for the first 14 days; observation continues to day 60."</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Xia_2024_warfarin_files/figure-html/withdrawal-recovery-1.png" class="r-plt" alt="" width="675"></p>
@@ -1389,7 +1389,7 @@ fractional coagulation-factor activity).</li>
 <li>
 <strong>PK observations are absent in the source dataset.</strong>
 All structural PK parameters are reproduced from the Hamberg literature
-model as inline constants in <code><a href="https://nlmixr2.github.io/rxode2/reference/ini.html" class="external-link">ini()</a></code> wrapped in
+model as inline constants in <code>ini()</code> wrapped in
 <code>fixed()</code>. The original Hamberg publication is not on disk;
 Xia 2024 itself reports the inherited Hamberg values numerically in
 Table 3, so the model file’s values come directly from the on-disk Xia

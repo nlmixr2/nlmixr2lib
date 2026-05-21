@@ -48,11 +48,11 @@ The same metadata are available programmatically via
 
 ## Source trace
 
-Every [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html)
-parameter in `inst/modeldb/specificDrugs/Tadayasu_2014_linagliptin.R`
-carries an inline source-trace comment. The table below collects them in
-one place for review; numeric values are reproduced verbatim from
-Tadayasu 2014 Table 3.
+Every `ini()` parameter in
+`inst/modeldb/specificDrugs/Tadayasu_2014_linagliptin.R` carries an
+inline source-trace comment. The table below collects them in one place
+for review; numeric values are reproduced verbatim from Tadayasu 2014
+Table 3.
 
 | Equation / parameter | Value | Source location |
 |----|----|----|
@@ -293,7 +293,6 @@ nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 suppressWarnings({
   nca_res <- PKNCA::pk.nca(nca_data)
 })
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      89% |  ETA:  0s
 
 nca_summary <- summary(nca_res)
 knitr::kable(

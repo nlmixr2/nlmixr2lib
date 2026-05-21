@@ -61,9 +61,8 @@ The same information is available programmatically:
 
 ## Source trace
 
-Per-parameter origin (recorded as in-file comments next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry of
-`inst/modeldb/specificDrugs/Taylor_2020_methotrexate.R`):
+Per-parameter origin (recorded as in-file comments next to each `ini()`
+entry of `inst/modeldb/specificDrugs/Taylor_2020_methotrexate.R`):
 
 | Equation / parameter | Value | Source location |
 |----|----|----|
@@ -279,8 +278,6 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- PKNCA::pk.nca(nca_data)
-#>  ■■■■■■■■■                         26% |  ETA:  5s
-#>  ■■■■■■■■■■■■■■■■■■■■              64% |  ETA:  3s
 
 nca_summary <- as.data.frame(nca_res$result) |>
   dplyr::filter(PPTESTCD %in% c("cmax", "tmax", "auclast", "half.life")) |>

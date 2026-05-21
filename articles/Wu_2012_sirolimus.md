@@ -68,9 +68,8 @@ str(rxode2::rxode(mod)$population)
 ## Source trace
 
 The per-parameter origin is recorded as an in-file comment next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/specificDrugs/Wu_2012_sirolimus.R`. The table below
-collects the same information in one place for review.
+`ini()` entry in `inst/modeldb/specificDrugs/Wu_2012_sirolimus.R`. The
+table below collects the same information in one place for review.
 
 | Equation / parameter | Value | Source location |
 |----|----|----|
@@ -267,8 +266,7 @@ ggplot(typical, aes(time, Cc, colour = factor(dose_mg), group = dose_mg)) +
   labs(x = "Time (h)", y = "Cc (ng/mL)", colour = "Dose (mg)",
        title = "Typical-value PK profiles across the Wu 2012 dose range",
        caption = "Saturable absorption delays Tmax at higher doses (Wu 2012 Discussion).")
-#> Warning in scale_y_log10(): log-10 transformation introduced
-#> infinite values.
+#> Warning in scale_y_log10(): log-10 transformation introduced infinite values.
 ```
 
 ![](Wu_2012_sirolimus_files/figure-html/saturable-absorption-1.png)
@@ -358,11 +356,6 @@ intervals <- data.frame(
 
 nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- suppressWarnings(PKNCA::pk.nca(nca_data))
-#>  ■■■■■■                            16% |  ETA: 14s
-#>  ■■■■■■■■■■■                       34% |  ETA: 11s
-#>  ■■■■■■■■■■■■■■■■■                 52% |  ETA:  8s
-#>  ■■■■■■■■■■■■■■■■■■■■■■            70% |  ETA:  5s
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      90% |  ETA:  2s
 nca_tbl  <- as.data.frame(nca_res$result)
 
 nca_summary <- nca_tbl |>

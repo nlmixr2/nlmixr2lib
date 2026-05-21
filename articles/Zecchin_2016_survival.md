@@ -70,9 +70,8 @@ str(m$meta$population, max.level = 1)
 ## Source trace
 
 Per-parameter origin is captured as in-file comments next to each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
-`inst/modeldb/ddmore/Zecchin_2016_survival.R`. The table below collects
-them in one place.
+`ini()` entry in `inst/modeldb/ddmore/Zecchin_2016_survival.R`. The
+table below collects them in one place.
 
 | Equation / parameter | Value | Source location |
 |----|----|----|

@@ -25,8 +25,7 @@ progression (TTP) in hepatocellular-carcinoma patients:
 
 A separate Cox-style time-to-tumor-progression hazard model
 `h(t) = b0 * exp(b1 * dAUC24h_sVEGFR2)` is described in the paper but
-evaluated post-simulation here, not encoded as an ODE in
-[`model()`](https://nlmixr2.github.io/rxode2/reference/model.html).
+evaluated post-simulation here, not encoded as an ODE in `model()`.
 
 ## Population
 
@@ -51,7 +50,7 @@ readModelDb("Ait-Oudhia_2016_sunitinib")$population
 ## Source trace
 
 The per-parameter origin is recorded as an in-file comment on each
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) entry in
+`ini()` entry in
 `inst/modeldb/specificDrugs/Ait-Oudhia_2016_sunitinib.R`. The table
 collects the trail in one place.
 
@@ -272,13 +271,11 @@ ggplot(tum_vpc, aes(day, Q50)) +
 ## Time-to-tumor progression hazard (post-simulation)
 
 The TTP hazard `h(t) = b0 * exp(b1 * dAUC24h_sVEGFR2)` is documented in
-the paper (Eq 9) but evaluated outside
-[`model()`](https://nlmixr2.github.io/rxode2/reference/model.html)
-because the 24-hour rolling AUC of `dsVEGFR2` is not a natural ODE state
-and the paper’s TTP analysis ran over months on the post-fit individual
-predictions, not as a joint estimation target. Compute `dAUC24h_sVEGFR2`
-for the typical subject and apply Eq 9 to derive the simulated hazard
-trajectory:
+the paper (Eq 9) but evaluated outside `model()` because the 24-hour
+rolling AUC of `dsVEGFR2` is not a natural ODE state and the paper’s TTP
+analysis ran over months on the post-fit individual predictions, not as
+a joint estimation target. Compute `dAUC24h_sVEGFR2` for the typical
+subject and apply Eq 9 to derive the simulated hazard trajectory:
 
 ``` r
 
@@ -341,8 +338,7 @@ ggplot(ttp_input, aes(month, hazard_per_month)) +
   `beta = 2.12`, Table 2). The cohort-median `Ktrans` value required to
   centre that power covariate is not reported anywhere in the paper or
   its supplements (the supplement is not on disk). Without the median,
-  the covariate is not deployable; the effect is omitted from
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html)
+  the covariate is not deployable; the effect is omitted from `model()`
   here. The `beta = 2.12` value is preserved in the source-trace table
   for future re-enablement if the median becomes available
   (Supplementary Table S1 in the paper, or author correspondence).
@@ -371,8 +367,7 @@ ggplot(ttp_input, aes(month, hazard_per_month)) +
 
 - **kout time-scale.** The sVEGFR2 elimination rate is reported in Table
   2 in `1/day` (kout = 0.175 /day, fixed from Lindauer 2010); the PK is
-  in 1/h. The model converts `kout` to 1/h inside
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html)
+  in 1/h. The model converts `kout` to 1/h inside `model()`
   (`kout_svegfr2_h <- kout_svegfr2 / 24`) so all ODEs share a single
   time scale.
 
@@ -388,8 +383,7 @@ ggplot(ttp_input, aes(month, hazard_per_month)) +
   24-hour rolling AUC of `dsVEGFR2` that is not a natural ODE state; the
   paper’s TTP fit was a post-hoc step on individual predictions, not a
   joint estimation. The hazard is therefore computed post-simulation in
-  the vignette, not in
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html).
+  the vignette, not in `model()`.
 
 - **No PKNCA validation.** The paper reports no NCA parameters (no Cmax
   / Tmax / AUC tables for sunitinib or SU12662); only VPC plots and the

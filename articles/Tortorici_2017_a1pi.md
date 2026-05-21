@@ -95,7 +95,7 @@ DP2 = DP1 plus a phase-2 increment.
 | `e_fev1_dpr` (FEV1 effect on decline rate) | 0.56 (g/L/year)/L | Table 3 theta5 |
 | Reference FEV1 for linear-deviation effect | 1.6 L | Table 1 mean FEV1 (1.6 L in both arms) |
 | Knot day | 720 | Equations 7-10; “the slope transition from DPi1 to DPi2 at tijk = 720 days, when the Extension study begins” (paper page 2389) |
-| Days-per-year unit conversion | 365.25 | Tables 2 and 3 report decline rates in g/L/year while equations 7-10 carry t in days; t is converted to years inside [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html) for dimensional consistency with the published slopes |
+| Days-per-year unit conversion | 365.25 | Tables 2 and 3 report decline rates in g/L/year while equations 7-10 carry t in days; t is converted to years inside `model()` for dimensional consistency with the published slopes |
 | 3x3 IIV BLOCK on (Int, DPR, Cc-effect) – variances | (15.28^2, 1.32^2, 0.09^2) = (233.48, 1.7424, 0.0081) | Table 3 omega1..3 (SDs) |
 | 3x3 IIV BLOCK – correlations | (omega12 = -0.270, omega13 = 0.26, omega23 = -0.75) | Table 3 |
 | 3x3 IIV BLOCK – lower-triangle covariances | (-5.4476, 0.3576, -0.0891) | derived from SDs and correlations above |
@@ -597,8 +597,7 @@ equations.
 
 - **Exposure-response time variable.** Tables 2 and 3 report decline
   rates in g/L/year while Equations 7-10 carry t in days. The model file
-  converts `t` from days to years inside
-  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html)
+  converts `t` from days to years inside `model()`
   (`t_yr <- t / 365.25`) for dimensional consistency with the published
   slopes; the knot day is 720 days (~1.971 years).
 

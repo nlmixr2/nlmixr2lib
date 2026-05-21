@@ -328,9 +328,6 @@ intervals <- data.frame(
 
 nca_data <- PKNCAdata(conc_obj, dose_obj, intervals = intervals)
 nca_res  <- pk.nca(nca_data)
-#> Warning: Too few points for half-life calculation (min.hl.points=3 with only 2
-#> points)
-#>  ■■■                                8% |  ETA: 18s
 #> Warning: Too few points for half-life calculation (min.hl.points=3 with only 2 points)
 #> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
 #> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
@@ -356,8 +353,6 @@ nca_res  <- pk.nca(nca_data)
 #> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
 #> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
 #> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
-#>  ■■■■■■■■                          25% |  ETA: 14s
-#> Warning: Too few points for half-life calculation (min.hl.points=3 with only 2 points)
 #> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
 #> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
 #> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
@@ -371,8 +366,9 @@ nca_res  <- pk.nca(nca_data)
 #> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
 #> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
 #> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
-#>  ■■■■■■■■■■■■■■                    42% |  ETA: 10s
-#> Warning: Too few points for half-life calculation (min.hl.points=3 with only 2 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
 #> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
 #> Warning: Too few points for half-life calculation (min.hl.points=3 with only 1
 #> points)
@@ -387,17 +383,6 @@ nca_res  <- pk.nca(nca_data)
 #> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
 #> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
 #> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
-#>  ■■■■■■■■■■■■■■■■■■■               60% |  ETA:  7s
-#> Warning: Too few points for half-life calculation (min.hl.points=3 with only 2 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
-#> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■          77% |  ETA:  4s
-#> Warning: Too few points for half-life calculation (min.hl.points=3 with only 2 points)
 #> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
 #> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
 #> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
@@ -415,9 +400,16 @@ nca_res  <- pk.nca(nca_data)
 #> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
 #> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
 #> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
-#>  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     95% |  ETA:  1s
-#> Warning: Too few points for half-life calculation (min.hl.points=3 with only 2
-#> points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
+#> Too few points for half-life calculation (min.hl.points=3 with only 2 points)
 #> Warning: Too few points for half-life calculation (min.hl.points=3 with only 1
 #> points)
 knitr::kable(

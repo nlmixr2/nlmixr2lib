@@ -62,13 +62,12 @@ str(mod_meta$population)
 
 ## Source trace
 
-Every parameter in the model file’s
-[`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) block
-carries an in-file provenance comment pointing back to the DDMORE
-bundle. The table below collects them in one place; THETA / OMEGA /
-SIGMA values come from the `FINAL PARAMETER ESTIMATE` block of
-`Output_real_run35b.lst` after `MINIMIZATION SUCCESSFUL`, equation forms
-come from `Executable_run35b_ddm2.mod` `$PK` / `$DES` / `$ERROR`.
+Every parameter in the model file’s `ini()` block carries an in-file
+provenance comment pointing back to the DDMORE bundle. The table below
+collects them in one place; THETA / OMEGA / SIGMA values come from the
+`FINAL PARAMETER ESTIMATE` block of `Output_real_run35b.lst` after
+`MINIMIZATION SUCCESSFUL`, equation forms come from
+`Executable_run35b_ddm2.mod` `$PK` / `$DES` / `$ERROR`.
 
 | Parameter / equation | Value | Source location |
 |----|----|----|
@@ -394,8 +393,7 @@ Cmax / AUC / Cmin values reported by Germovsek et al.
   `$THETA / $OMEGA / $SIGMA` blocks are initial estimates and are NOT
   used for parameter values. T50 and Hill on PMA were FIXED in the
   source (\$THETA `55.4 FIX`, `3.33 FIX`) and are wrapped in
-  `fixed(...)` in
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html).
+  `fixed(...)` in `ini()`.
 
 - **`MINIMIZATION SUCCESSFUL HOWEVER, PROBLEMS OCCURRED WITH THE MINIMIZATION.`**
   The `.lst` flagged minimization difficulties: “REGARD THE RESULTS OF
@@ -452,9 +450,8 @@ Cmax / AUC / Cmin values reported by Germovsek et al.
 - **Allometric exponents (1, 0.75, 0.632) are FIXED.** None of the
   exponents (CL, Q/Q2, V1/V2/V3 weight scaling) were estimated as
   `THETA(...)`s – they are hard-coded in the `.mod` `$PK` block. They
-  are wrapped in `fixed(...)` in
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) so
-  estimation does not perturb them.
+  are wrapped in `fixed(...)` in `ini()` so estimation does not perturb
+  them.
 
 - **Sex (`GIRL`), gestational age (`GA`), study indicator (`STUDY`), and
   occasion (`OCC`) are present in the source `$INPUT` but not used in
