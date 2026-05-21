@@ -243,15 +243,14 @@
     # the antiplatelet-active diastereomer. Used in parent-plus-
     # metabolite popPK models (Danielak 2017 doi:10.1007/s00228-017-2334-z).
     "h4",
-    # Vitamin K2 (menaquinone-4 / menatetrenone) co-administered as a
-    # warfarin antagonist in the perioperative period of catheter
-    # ablation. Not a metabolite of warfarin but a co-administered
-    # perpetrator that stimulates clotting-factor synthesis (the
-    # opposite arm to warfarin's VKORC1-mediated inhibition); the
-    # suffix marks the non-parent species in 2-drug PK/PD models
-    # (Zhou 2016 doi:10.1186/s40780-016-0053-8). Same pattern as
-    # `cpg2` for the glucarpidase / methotrexate antagonist case.
-    "vk2"
+    # Mycophenolic acid glucuronide (MPAG, the 7-O-glucuronide phase II
+    # metabolite of mycophenolic acid produced by UGT1A9 and UGT2B7).
+    # MPAG is the major plasma metabolite of mycophenolic acid after
+    # mycophenolate mofetil (MMF) dosing in renal transplant recipients.
+    # Used in parent-plus-metabolite popPK models with explicit competitive
+    # protein binding and enterohepatic recirculation
+    # (de Winter 2009 doi:10.1007/s10928-009-9136-6).
+    "mpag"
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` denotes the time-varying decay arm.
