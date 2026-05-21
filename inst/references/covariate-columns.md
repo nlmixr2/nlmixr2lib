@@ -369,7 +369,8 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Source aliases:**
   - `SCR_mean` -- used in `Hennig 2013` (Eq. 5: `f_SCR = (SCR_mean / SCR)^theta_SCR`); also Llanos-Paez 2020 paper notation for the Ceriotti 2008 age/sex-matched physiological mean SCR.
   - `Scrmean` -- Llanos-Paez 2017 paper notation; computed from Ceriotti et al. 2008 age- and sex-stratified medians (Clin Chem 54:559-566, doi:10.1373/clinchem.2007.099648).
-- **Example models:** `Hennig_2013_tobra.R`, `Llanos_2017_gentamicin.R` (umol/L; computed externally per Ceriotti et al. 2008), `Llanos-Paez_2020_gentamicin.R` (umol/L; ratio `(CREAT_REF / CREAT)^0.58` multiplies the maturation-scaled CL).
+  - `SCR_standardised` -- Germovsek 2018 paper notation; PMA-adjusted standardisation of raw SCR per the paper's reference 28 (a previously-developed Standing-style PMA stratification).
+- **Example models:** `Hennig_2013_tobra.R`, `Llanos_2017_gentamicin.R` (umol/L; computed externally per Ceriotti et al. 2008), `Llanos-Paez_2020_gentamicin.R` (umol/L; ratio `(CREAT_REF / CREAT)^0.58` multiplies the maturation-scaled CL), `Germovsek_2018_meropenem.R` (umol/L; ratio `(CREAT_REF / CREAT)^0.40` multiplies the maturation-scaled CL for renal meropenem clearance in neonates and young infants; PMA-stratification reference per Germovsek 2018 Methods reference 28).
 - **Notes:** Specific scope because the formula used to derive the reference value is paper-defined (Hennig 2013 cites a combination of Ceriotti 2008, Junge 2004 and Johansson 2011 reference-interval relationships; Llanos-Paez 2017 and 2020 both use Ceriotti 2008); a future paper that uses a different reference-SCR derivation (e.g., a CKD-EPI-style adult-only reference, or a Schwartz-derived paediatric-only reference) should pin its formula in `covariateData[[CREAT_REF]]$notes` so that a user assembling a virtual cohort can reproduce it. When no covariate data are available to compute `CREAT_REF`, set `CREAT_REF = CREAT` so the renal-function factor evaluates to 1 (matching the Hennig 2013 'covariate set to 1 for missing data' rule). Ratified canonically on 2026-05-08 alongside the Hennig 2013 tobramycin extraction.
 
 ### BUN (**canonical for blood urea nitrogen**)
@@ -437,6 +438,18 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
   - `TP` -- common clinical-chemistry abbreviation.
 - **Example models:** `Frey_2010_tocilizumab.R` (g/L, reference 74; exponent -1.1 on V1).
 - **Notes:** Distinct from `ALB` (serum albumin, the largest single component of total protein). Frey 2010 retains both `TPRO` and `ALB` on V1 as separate covariates with opposite signs (TPRO negative, ALB positive) and notes there is no clear mechanistic explanation; the joint effect may reflect serum-volume modifications. `TPRO` ratified canonically on 2026-04-28 alongside the Frey 2010 extraction.
+
+### CSF_TPRO (**canonical for cerebrospinal-fluid total protein**)
+- **Description:** Total protein concentration measured in cerebrospinal fluid (baseline or time-varying). CNS-compartment analogue of `TPRO`; used in popPK models of CSF-penetrating drugs as a surrogate for blood-brain-barrier integrity (elevated CSF protein indicates inflammation or barrier breakdown and typically correlates with increased CNS penetration of small-molecule drugs).
+- **Units:** g/L (most common in popPK papers); occasionally mg/dL (1 g/L = 100 mg/dL). Document per-model via `covariateData[[CSF_TPRO]]$units`.
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- enters either as an additive term on the logit-scale CSF uptake / barrier parameter, or as a power scaling `(CSF_TPRO / ref)^exponent` on a penetration fraction. Reference value observed: 1.2 g/L (Germovsek 2018 typical-infant value; sick-neonate cohort median).
+- **Source aliases:**
+  - `CSF_protein` -- Germovsek 2018 paper notation.
+  - `CSFPROT` / `CSF_PROT` -- compact column-name forms common in NONMEM control streams.
+- **Example models:** `Germovsek_2018_meropenem.R` (g/L, reference 1.2; additive on the logit CSF barrier parameter with coefficient theta_CSFproteins = -0.17 per g/L deviation from 1.2; ratified canonically on 2026-05-21 alongside the Germovsek 2018 meropenem extraction).
+- **Notes:** Distinct from `TPRO` (serum total protein) -- the two are biologically independent because the blood-brain barrier prevents free equilibration of serum protein into CSF. Normal CSF protein is approximately 0.15-0.45 g/L in healthy adults; sick neonates and meningitis patients can reach several g/L. The covariate is typically time-varying because CSF protein evolves over the course of CNS inflammation; missing values are commonly imputed to the cohort median when the source paper does not report a per-sample CSF protein measurement.
 
 ### IGG (**canonical for serum immunoglobulin G**)
 - **Description:** Serum total immunoglobulin G concentration (baseline or time-varying). Used in mAb PK analyses as a competition-for-FcRn-recycling covariate on therapeutic-mAb clearance -- high endogenous IgG is hypothesized to displace the therapeutic mAb from FcRn salvage and increase its catabolic clearance.
