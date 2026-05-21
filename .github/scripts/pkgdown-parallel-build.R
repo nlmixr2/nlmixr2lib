@@ -66,6 +66,43 @@ launch_one <- function(name) {
       ns = "rmarkdown"
     ), silent = TRUE)
 
+    # Per-fork pkgdown:::copy_article_images.
+    #
+    # pkgdown:::copy_article_images writes a fixed-name tempfile at
+    #   <path_dir(input_path)>/--find-assets.html
+    # (it has to live next to the Rmd so rmarkdown::find_external_resources
+    # can resolve the HTML's relative paths -- tempdir() wouldn't work),
+    # then calls find_external_resources on it, then unlinks it via
+    # withr::defer. The filename is hard-coded, so two forks rendering
+    # articles in the same source directory (vignettes/articles/) collide
+    # on creation/deletion -- surfaces as
+    #   "[EEXIST] Failed to copy ... to .../vignettes/articles/--find-assets.html"
+    #   "[ENOENT] Failed to remove .../vignettes/articles/--find-assets.html"
+    # Patch the function in this fork's pkgdown namespace copy to use a
+    # pid-scoped filename. Same logic as the rmarkdown patch above.
+    try(assignInNamespace(
+      "copy_article_images",
+      function(built_path, input_path, output_path) {
+        ext_src <- rmarkdown::find_external_resources(input_path)
+        tempfile <- fs::path(
+          fs::path_dir(input_path),
+          paste0("--find-assets-", Sys.getpid(), ".html")
+        )
+        withr::defer(try(fs::file_delete(tempfile), silent = TRUE))
+        fs::file_copy(built_path, tempfile)
+        ext_post <- rmarkdown::find_external_resources(tempfile)
+        ext <- rbind(ext_src, ext_post)
+        ext <- ext[!duplicated(ext$path), ]
+        is_child <- fs::path_has_parent(ext$path, ".")
+        ext_path <- ext$path[(ext$web | ext$explicit) & is_child]
+        src <- fs::path(fs::path_dir(input_path), ext_path)
+        dst <- fs::path(fs::path_dir(output_path), ext_path)
+        fs::dir_create(unique(fs::path_dir(dst)))
+        fs::file_copy(src, dst, overwrite = TRUE)
+      },
+      ns = "pkgdown"
+    ), silent = TRUE)
+
     t_start <- Sys.time()
     tryCatch({
       pkgdown::build_article(name = name, pkg = pkg,
