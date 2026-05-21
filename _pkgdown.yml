@@ -86,8 +86,6 @@ navbar:
         href: articles/Hu_2014_bapineuzumab.html
       - text: "BAY81 8973 (Garmann 2017)"
         href: articles/Garmann_2017_BAY81_8973.html
-      - text: "Bedaquiline (Svensson 2014)"
-        href: articles/Svensson_2014_bedaquiline.html
       - text: "Bedaquiline (Svensson 2018)"
         href: articles/Svensson_2018_bedaquiline.html
       - text: "Belantamab (Papathanasiou 2025)"
@@ -378,6 +376,8 @@ navbar:
         href: articles/Martial_2017_micafungin.html
       - text: "Midazolam (Brill 2014)"
         href: articles/Brill_2014_midazolam.html
+      - text: "Miltefosine (Dorlo 2017)"
+        href: articles/Dorlo_2017_miltefosine.html
       - text: "Miridesap (Sahota 2015)"
         href: articles/Sahota_2015_miridesap.html
       - text: "Mirikizumab (Chua 2025)"
