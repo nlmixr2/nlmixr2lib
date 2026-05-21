@@ -190,6 +190,8 @@ navbar:
         href: articles/Talke_2018_dexmedetomidine.html
       - text: "Digoxin (Jelliffe 2014)"
         href: articles/Jelliffe_2014_digoxin.html
+      - text: "Digoxin (Zhou 2010)"
+        href: articles/Zhou_2010_digoxin.html
       - text: "Dilmapimod (Yang 2016)"
         href: articles/Yang_2016_dilmapimod.html
       - text: "Docetaxel (Ozawa 2007)"
@@ -1290,7 +1292,7 @@ articles:
   - articles/Zhang_2022_ormutivimab
   - articles/Zheng_2016_sifalimumab
   - articles/Zhong_2026_abatacept
-  - articles/Zhou_2016_warfarin_vk2
+  - articles/Zhou_2010_digoxin
   - articles/Zhou_2021_belimumab
   - articles/Zhou_2025_brentuximab
   - articles/Zhu_2014_tacrolimus

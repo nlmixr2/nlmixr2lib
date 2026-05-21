@@ -3400,6 +3400,17 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Xu_2023_MBG453.R` (exponential effect on CL: `exp(0.0194 * CONMED_SPART)`; not statistically significant in the full covariate model but retained because Xu 2023 used the full-covariate-model approach).
 - **Notes:** Parallels `COMBO_NIVO` (ipilimumab + nivolumab) and `COMBO_DURVA` (durvalumab combinations) but for spartalizumab. Promote to general scope if a second paper reports a spartalizumab-coadministration covariate with comparable encoding.
 
+### CONMED_SPIRON (**canonical for concomitant spironolactone coadministration indicator**)
+- **Description:** 1 = subject is coadministered spironolactone (aldosterone-receptor antagonist; potassium-sparing diuretic; renal P-glycoprotein / OATP inhibitor at the digoxin tubular-secretion site) during the study, 0 = no concomitant spironolactone. Spironolactone is widely combined with digoxin in CHF therapy and inhibits digoxin renal tubular excretion, raising digoxin serum concentration.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no concomitant spironolactone).
+- **Source aliases:**
+  - `SPI` -- used in `Zhou_2010_digoxin.R` (Zhou 2010 Table 1 and Table 7 column label).
+- **Example models:** `Zhou_2010_digoxin.R` (multiplicative linear-deviation form on Cl/F: `cl *= (1 - 0.412 * CONMED_SPIRON)`, i.e. ~41% lower Cl/F with concomitant spironolactone in the older Chinese CHF cohort; Zhou 2010 Table 7).
+- **Notes:** 32 of 119 subjects (27%) in Zhou 2010 were coadministered spironolactone. The clinical rationale (Zhou 2010 Discussion) is that spironolactone inhibits the renal-tubular secretion of digoxin via competition for the renal P-glycoprotein transporter, raising digoxin steady-state concentration. Promote to general scope if a second popPK paper reports a spironolactone-coadministration covariate with comparable encoding. Ratified canonically on 2026-05-21 alongside the Zhou 2010 digoxin extraction.
+
 ### CONMED_STATIN (**canonical for concomitant conmed_statin (HMG-CoA reductase inhibitor) therapy**)
 - **Description:** 1 = patient coadministered a conmed_statin (HMG-CoA reductase inhibitor) during the study, 0 = no conmed_statin coadministration.
 - **Units:** (binary)
