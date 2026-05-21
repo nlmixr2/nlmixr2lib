@@ -24,7 +24,13 @@ jobs:
       # .github/scripts/pkgdown-parallel-build.R. Leave blank to use
       # parallel::detectCores(); set to a positive integer to override
       # (e.g. "16" to cap memory on a 32-core larger runner).
-      PKGDOWN_WORKERS: ""
+      #
+      # EXPERIMENT: post-races-fixed re-run with 6 workers (oversubscribes
+      # the 4-vCPU ubuntu-latest runner). Compares end-to-end throughput
+      # against the 4-worker baseline now that both the rmarkdown
+      # tmpfile_pattern race and the pkgdown --find-assets.html race are
+      # fixed on main.
+      PKGDOWN_WORKERS: "6"
     permissions:
       contents: write
     steps:
