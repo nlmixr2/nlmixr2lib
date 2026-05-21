@@ -612,6 +612,8 @@ navbar:
         href: articles/Lu_2019_tacrolimus_industry_meta.html
       - text: "Tacrolimus metaanalysis (Nanga 2019)"
         href: articles/Nanga_2019_tacrolimus_metaanalysis.html
+      - text: "Tacrolimus thoracic (Sikma 2020)"
+        href: articles/Sikma_2020_tacrolimus_thoracic.html
       - text: "Tacrolimus unbound plasma (Sikma 2020)"
         href: articles/Sikma_2020_tacrolimus_unbound_plasma.html
       - text: "Tefibazumab (Cao 2013)"
@@ -1172,6 +1174,7 @@ articles:
   - articles/Sherer_2012_AAA
   - articles/Shoji_2017_fosdagrocorat_oc
   - articles/Shoji_2017_fosdagrocorat_p1np
+  - articles/Sikma_2020_tacrolimus_thoracic
   - articles/Sikma_2020_tacrolimus_unbound_plasma
   - articles/Soehoel_2022_tralokinumab
   - articles/Stein_2019_Tisagenlecleucel
