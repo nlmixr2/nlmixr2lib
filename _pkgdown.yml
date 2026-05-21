@@ -68,8 +68,8 @@ navbar:
         href: articles/Almquist_2022_anifrolumab.html
       - text: "Anrukinzumab (Hua 2015)"
         href: articles/Hua_2015_anrukinzumab.html
-      - text: "Aripiprazole (Knights 2015)"
-        href: articles/Knights_2015_aripiprazole.html
+      - text: "Artemisinin (Birgersson 2016)"
+        href: articles/Birgersson_2016_artemisinin.html
       - text: "Artesunate (Hendriksen 2013)"
         href: articles/Hendriksen_2013_artesunate.html
       - text: "Artesunate (Tan 2009)"
@@ -896,6 +896,7 @@ articles:
   - articles/Bergmann_2014_tacrolimus
   - articles/Bienczak_2016_nevirapine
   - articles/Bienczak_2025_ligelizumab
+  - articles/Birgersson_2016_artemisinin
   - articles/Birgersson_2019_artesunate
   - articles/Bisaso_2014_albumin
   - articles/Bista_2015_fentanyl
