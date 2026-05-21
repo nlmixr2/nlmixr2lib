@@ -86,6 +86,8 @@ navbar:
         href: articles/Hu_2014_bapineuzumab.html
       - text: "BAY81 8973 (Garmann 2017)"
         href: articles/Garmann_2017_BAY81_8973.html
+      - text: "Bedaquiline (Svensson 2017)"
+        href: articles/Svensson_2017_bedaquiline.html
       - text: "Bedaquiline (Svensson 2018)"
         href: articles/Svensson_2018_bedaquiline.html
       - text: "Belantamab (Papathanasiou 2025)"
@@ -1176,6 +1178,7 @@ articles:
   - articles/Svensson_2014_bedaquiline
   - articles/Svensson_2016_bedaquiline
   - articles/Svensson_2016_rifampicin
+  - articles/Svensson_2017_bedaquiline
   - articles/Svensson_2018_bedaquiline
   - articles/Svensson_2018_rifampicin
   - articles/Tadayasu_2014_linagliptin
