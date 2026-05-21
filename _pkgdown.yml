@@ -68,6 +68,8 @@ navbar:
         href: articles/Almquist_2022_anifrolumab.html
       - text: "Anrukinzumab (Hua 2015)"
         href: articles/Hua_2015_anrukinzumab.html
+      - text: "Aripiprazole (Knights 2015)"
+        href: articles/Knights_2015_aripiprazole.html
       - text: "Artesunate (Hendriksen 2013)"
         href: articles/Hendriksen_2013_artesunate.html
       - text: "Astegolimab (Kotani 2022)"
@@ -1037,6 +1039,7 @@ articles:
   - articles/Kloprogge_2013_lumefantrine
   - articles/Kloprogge_2014_quinine
   - articles/Knibbe_2009_morphine
+  - articles/Knights_2015_aripiprazole
   - articles/Koloskoff_2025_ganciclovir
   - articles/Koopman_2023_factorix
   - articles/Kotani_2022_astegolimab
