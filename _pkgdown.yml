@@ -462,6 +462,8 @@ navbar:
         href: articles/Cao_2013_PAmAb.html
       - text: "Paracetamol (Krekels 2015)"
         href: articles/Krekels_2015_paracetamol.html
+      - text: "Paracetamol (Wattanakul 2016)"
+        href: articles/Wattanakul_2016_paracetamol.html
       - text: "Paroxetine (Kim 2015)"
         href: articles/Kim_2015_paroxetine.html
       - text: "Patritumab (Lu 2022)"
@@ -1258,6 +1260,7 @@ articles:
   - articles/Wang_2020_ontamalimab
   - articles/Wang_2021_pertuzumab
   - articles/Wang_2024_sugemalimab
+  - articles/Wattanakul_2016_paracetamol
   - articles/Wicha_2017_linezolid_meropenem_vancomycin
   - articles/Wilbaux_2015_prostate
   - articles/Wilkins_2008_rifampicin
