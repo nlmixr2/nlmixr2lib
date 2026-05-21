@@ -488,6 +488,8 @@ navbar:
         href: articles/Diepstraten_2013_propofol.html
       - text: "Pyrazinamide (Alsultan 2017)"
         href: articles/Alsultan_2017_pyrazinamide.html
+      - text: "Quinine (Kloprogge 2014)"
+        href: articles/Kloprogge_2014_quinine.html
       - text: "Quinine rat (Sheng 2016)"
         href: articles/Sheng_2016_quinine_rat.html
       - text: "Ranibizumab (Mulyukov 2018)"
@@ -1022,6 +1024,7 @@ articles:
   - articles/Kirubakaran_2022_tacrolimus
   - articles/Kloft_2004_sibrotuzumab
   - articles/Kloprogge_2013_lumefantrine
+  - articles/Kloprogge_2014_quinine
   - articles/Knibbe_2009_morphine
   - articles/Koloskoff_2025_ganciclovir
   - articles/Koopman_2023_factorix
