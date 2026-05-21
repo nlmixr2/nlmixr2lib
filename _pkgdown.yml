@@ -404,8 +404,8 @@ navbar:
         href: articles/Laffont_2024_naloxone.html
       - text: "Necitumumab (Long 2017)"
         href: articles/Long_2017_necitumumab.html
-      - text: "Nevirapine (Schipani 2011)"
-        href: articles/Schipani_2011_nevirapine.html
+      - text: "Nevirapine (Bienczak 2016)"
+        href: articles/Bienczak_2016_nevirapine.html
       - text: "Nimotuzumab (Castro-Surez 2020)"
         href: articles/Castro-Surez_2020_nimotuzumab.html
       - text: "Nipocalimab (Valenzuela 2025)"
@@ -877,6 +877,7 @@ articles:
   - articles/Benkali_2010_tacrolimus
   - articles/Berends_2019_infliximab
   - articles/Bergmann_2014_tacrolimus
+  - articles/Bienczak_2016_nevirapine
   - articles/Bienczak_2025_ligelizumab
   - articles/Birgersson_2019_artesunate
   - articles/Bisaso_2014_albumin
