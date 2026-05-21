@@ -71,7 +71,15 @@
     # glucose elimination and itself first-order eliminated). Each
     # state holds a concentration (mmol/L) rather than an amount,
     # mirroring the source paper's mass-balance parameterisation.
-    "glucose", "lactate"
+    "glucose", "lactate",
+    # Plasma non-esterified fatty acids (NEFA / free fatty acids) used
+    # by lipid-turnover PD models with feedback control (Ahlstrom 2010:
+    # NiAc inhibits hydrolysis of TG to NEFA; NEFA formation is also
+    # suppressed by a moderator transit chain (precursor1..precursor8)
+    # representing insulin-like delayed feedback, with a NiAc-independent
+    # capillary release term setting the lower physiological limit).
+    # State holds a concentration (mmol/L) rather than an amount.
+    "nefa"
   ),
   # Bare numbered chains (transit / effect / precursor / lat / dar /
   # depot) and metabolite-suffixed compartments are validated

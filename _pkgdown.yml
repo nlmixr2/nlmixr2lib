@@ -396,8 +396,8 @@ navbar:
         href: articles/Pierre_2017_morphine.html
       - text: "Moxifloxacin (Hong 2015)"
         href: articles/Hong_2015_moxifloxacin.html
-      - text: "Mycophenolic acid (deWinter 2009)"
-        href: articles/deWinter_2009_mycophenolic_acid.html
+      - text: "MRNA3927 (Attarwala 2023)"
+        href: articles/Attarwala_2023_mRNA3927.html
       - text: "Nalmefene (Kyhl 2016)"
         href: articles/Kyhl_2016_nalmefene.html
       - text: "Nalmefene (Laffont 2024)"
@@ -406,8 +406,8 @@ navbar:
         href: articles/Laffont_2024_naloxone.html
       - text: "Necitumumab (Long 2017)"
         href: articles/Long_2017_necitumumab.html
-      - text: "Nevirapine (Bienczak 2016)"
-        href: articles/Bienczak_2016_nevirapine.html
+      - text: "NicotinicAcid rat (Ahlstrom 2010)"
+        href: articles/Ahlstrom_2010_nicotinicAcid_rat.html
       - text: "Nimotuzumab (Castro-Surez 2020)"
         href: articles/Castro-Surez_2020_nimotuzumab.html
       - text: "Nipocalimab (Valenzuela 2025)"
@@ -859,6 +859,7 @@ articles:
   - articles/Abboud_2009_epinephrine
   - articles/Aguiar_2021_ustekinumab
   - articles/Ahamadi_2017_pembrolizumab
+  - articles/Ahlstrom_2010_nicotinicAcid_rat
   - articles/Ait-Oudhia_2016_sunitinib
   - articles/AitOudhia_2012_canakinumab
   - articles/Akbar_2025_voriconazole
@@ -1279,15 +1280,5 @@ articles:
   - articles/Zou_2012_MI_219
   - articles/Zuo_2016_UDCA
   - articles/Zurlinden_2016_paracetamol
-  - articles/deHoogd_2017_morphine
-  - articles/deKock_2017_sulfadoxinePyrimethamine
-  - articles/deVriesSchultink_2020_zenocutuzumab
-  - articles/deWinter_2009_mycophenolic_acid
-  - articles/deWit_2016_everolimus
-  - articles/vanHasselt_2015_eribulin
-  - articles/vanRongen_2016_acetaminophen
-  - articles/vanRongen_2018_midazolam
-  - articles/vanWijk_2019_paracetamol
-  - articles/vanderWalt_2013_dapagliflozin
   internal: true
 # AUTOGEN:articles:END
