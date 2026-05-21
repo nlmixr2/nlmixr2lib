@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Ahn 2014 parathyroid hormone ([doi:10.4196/kjpp.2014.18.3.217](https://doi.org/10.4196/kjpp.2014.18.3.217)) -- healthy Korean adults receiving oral calcium (Geumjin thermal spring water or calcium carbonate tablets); ratifies new `FORM_CACO3` covariate canonical.
+* Add Hoglund 2012 piperaquine ([doi:10.1186/1475-2875-11-398](https://doi.org/10.1186/1475-2875-11-398)) -- pregnant and non-pregnant Sudanese women with uncomplicated *Plasmodium falciparum* malaria.
 * Add Schoemaker 2017 brivaracetam ([doi:10.1007/s00228-017-2230-6](https://doi.org/10.1007/s00228-017-2230-6)) -- paediatric patients with epilepsy aged 1 month to 16 years; ratifies new `CONMED_PB`, `CONMED_CBZ`, and `CONMED_VPA` covariate canonicals.
 * Add Nanga 2019 tacrolimus meta-model ([doi:10.1111/bcp.14110](https://doi.org/10.1111/bcp.14110)) -- pooled paediatric and adult solid-organ transplant recipients (n = 281; 201 liver and 80 kidney) on oral tacrolimus; ratifies new `TX_LIVER` and `FORM_SYRUP` covariate canonicals.
 * Rewrite Fiedler-Kelly 2019 fremanezumab ([doi:10.1111/bcp.14096](https://doi.org/10.1111/bcp.14096)) to support both IV and SC routes -- the packaged model now carries the route-specific central volume (Vc,IV = 2.98 L FIXED vs Vc,SC = 1.88 L) and the route-specific residual-error structure (IV proportional-only vs SC additive+proportional) from Fiedler-Kelly 2019 Table 2, switched by the `ROUTE_IV` covariate column. Removes the previous spurious allometric weight effect on Vp (the source paper holds Vp FIXED with no weight effect).
