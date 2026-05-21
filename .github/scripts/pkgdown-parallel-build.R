@@ -45,6 +45,27 @@ t0 <- Sys.time()
 # Spawn a forked worker rendering one article. Returns the mcparallel job.
 launch_one <- function(name) {
   parallel::mcparallel({
+    # Per-fork rmarkdown tempfile prefix.
+    #
+    # rmarkdown::render() writes pandoc include files (header / before-body /
+    # after-body) via as_tmpfile() into tempdir() using the package-global
+    # prefix `tmpfile_pattern` ("rmarkdown-str"), and after each render
+    # calls clean_tmpfiles() which unlinks every file in tempdir() matching
+    # ^rmarkdown-str[0-9a-f]+\.html$.
+    #
+    # All forks inherit the parent's tempdir() path AND the same default
+    # prefix, so worker B's clean_tmpfiles() can wipe worker A's include
+    # files mid-pandoc -- surfaces as
+    #   "pandoc: /tmp/RtmpXXX/rmarkdown-strYYY.html: withBinaryFile: does not exist"
+    # Giving each fork a pid-scoped prefix scopes both the writes and the
+    # cleanup to that fork, eliminating the race. The cleanup regex still
+    # matches because the suffix is still [0-9a-f]+\.html.
+    try(assignInNamespace(
+      "tmpfile_pattern",
+      paste0("rmarkdown-str-", Sys.getpid(), "-"),
+      ns = "rmarkdown"
+    ), silent = TRUE)
+
     t_start <- Sys.time()
     tryCatch({
       pkgdown::build_article(name = name, pkg = pkg,
