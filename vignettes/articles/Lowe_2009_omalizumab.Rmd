@@ -43,7 +43,7 @@ Compared with Hayashi 2007 the model here adds:
 2. Baseline IgE as a covariate on Kd.
 3. Bodyweight covariates on the IgE production and clearance parameters.
 
-* Citation: `r readModelDb("Lowe_2009_omalizumab")$reference`
+* Citation: `r rxode2::rxode(readModelDb("Lowe_2009_omalizumab"))$reference`
 * Article: <https://doi.org/10.1111/j.1365-2125.2009.03401.x>
 * PMID: 19660004
 * PMC: PMC2732941
