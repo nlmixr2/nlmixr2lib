@@ -20,6 +20,11 @@ jobs:
       group: pkgdown-${{ github.event_name != 'pull_request' || github.run_id }}
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      # Parallel article rendering knob, consumed by
+      # .github/scripts/pkgdown-parallel-build.R. Leave blank to use
+      # parallel::detectCores(); set to a positive integer to override
+      # (e.g. "16" to cap memory on a 32-core larger runner).
+      PKGDOWN_WORKERS: ""
     permissions:
       contents: write
     steps:
@@ -34,9 +39,8 @@ jobs:
           extra-packages: any::pkgdown, local::.
           needs: website
 
-      - name: Build site
-        run: pkgdown::build_site_github_pages(new_process = FALSE, install = FALSE)
-        shell: Rscript {0}
+      - name: Build site (parallel articles)
+        run: Rscript .github/scripts/pkgdown-parallel-build.R
 
       - name: Deploy to GitHub pages 🚀
         if: github.event_name != 'pull_request'
