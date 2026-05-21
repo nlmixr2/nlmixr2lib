@@ -124,6 +124,8 @@ navbar:
         href: articles/Choe_2012_busulfan.html
       - text: "Busulfan (Lawson 2022)"
         href: articles/Lawson_2022_busulfan.html
+      - text: "C3G (Jeon 2012)"
+        href: articles/Jeon_2012_C3G.html
       - text: "Cabazitaxel (Ferron 2013)"
         href: articles/Ferron_2013_cabazitaxel.html
       - text: "Canakinumab (AitOudhia 2012)"
@@ -1027,7 +1029,7 @@ articles:
   - articles/Jackson_2022_ixekizumab
   - articles/Jager_2011_gemtuzumab
   - articles/Jelliffe_2014_digoxin
-  - articles/Jeon_2013_interferonAlfa2a
+  - articles/Jeon_2012_C3G
   - articles/Jeong_2022_torsemide
   - articles/Jia_2015_unfractionatedHeparin
   - articles/Jin_2014_simvastatin
