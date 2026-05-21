@@ -368,12 +368,8 @@ navbar:
         href: articles/Taylor_2020_methotrexate.html
       - text: "Methylphenidate (Teuscher 2015)"
         href: articles/Teuscher_2015_methylphenidate.html
-      - text: "Metoprolol (Eugene 2016)"
-        href: articles/Eugene_2016_metoprolol.html
       - text: "MHD rat (Clinckers 2008)"
         href: articles/Clinckers_2008_MHD_rat.html
-      - text: "MI 219 (Zou 2012)"
-        href: articles/Zou_2012_MI_219.html
       - text: "Micafungin (Martial 2017)"
         href: articles/Martial_2017_micafungin.html
       - text: "Midazolam (Brill 2014)"
@@ -396,8 +392,6 @@ navbar:
         href: articles/Hong_2015_moxifloxacin.html
       - text: "MRNA3927 (Attarwala 2023)"
         href: articles/Attarwala_2023_mRNA3927.html
-      - text: "Nab paclitaxel (Chen 2014)"
-        href: articles/Chen_2014_nab_paclitaxel.html
       - text: "Nalmefene (Kyhl 2016)"
         href: articles/Kyhl_2016_nalmefene.html
       - text: "Nalmefene (Laffont 2024)"
@@ -666,6 +660,8 @@ navbar:
         href: articles/Pouzin_2022_tusamitamab.html
       - text: "UDCA (Zuo 2016)"
         href: articles/Zuo_2016_UDCA.html
+      - text: "UnfractionatedHeparin (Jia 2015)"
+        href: articles/Jia_2015_unfractionatedHeparin.html
       - text: "Ustekinumab (Aguiar 2021)"
         href: articles/Aguiar_2021_ustekinumab.html
       - text: "Valganciclovir (Vezina 2010)"
@@ -1010,7 +1006,7 @@ articles:
   - articles/Jelliffe_2014_digoxin
   - articles/Jeon_2013_interferonAlfa2a
   - articles/Jeong_2022_torsemide
-  - articles/Ji_2018_tacrolimus
+  - articles/Jia_2015_unfractionatedHeparin
   - articles/Jin_2014_simvastatin
   - articles/Jonckheere_2019_cefepime
   - articles/Jonsson_2005_disufenton
