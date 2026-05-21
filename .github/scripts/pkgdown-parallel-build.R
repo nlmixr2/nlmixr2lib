@@ -81,7 +81,8 @@ abort_with <- function(failed_name, err) {
 }
 
 while (length(running) < ncores && length(pending) > 0) {
-  nm <- pending[1]; pending <- pending[-1]
+  nm <- pending[1]
+  pending <- pending[-1]
   job <- launch_one(nm)
   log_line("START ", nm, "  (pid ", job$pid, ")")
   running[[nm]] <- job
@@ -106,7 +107,8 @@ while (length(running) > 0) {
     log_line("DONE  ", article_name, "  (", sprintf("%.1fs", r$secs), ")")
   }
   while (length(running) < ncores && length(pending) > 0) {
-    nm <- pending[1]; pending <- pending[-1]
+    nm <- pending[1]
+    pending <- pending[-1]
     job <- launch_one(nm)
     log_line("START ", nm, "  (pid ", job$pid, ")")
     running[[nm]] <- job
