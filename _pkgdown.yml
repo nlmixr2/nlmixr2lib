@@ -680,6 +680,8 @@ navbar:
         href: articles/Cao_2013_tefibazumab.html
       - text: "Temozolomide (Mazzocco 2015)"
         href: articles/Mazzocco_2015_temozolomide.html
+      - text: "Tenofovir emtricitabine (Chen 2016)"
+        href: articles/Chen_2016_tenofovir_emtricitabine.html
       - text: "Theophylline (Rovei 1982)"
         href: articles/Rovei_1982_theophylline.html
       - text: "Ticagrelor (Almquist 2016)"
@@ -978,6 +980,7 @@ articles:
   - articles/Chakraborty_2012_canakinumab
   - articles/Chen_2014_nab_paclitaxel
   - articles/Chen_2015_voriconazole
+  - articles/Chen_2016_tenofovir_emtricitabine
   - articles/Chen_2017_TB_MTP_GPDI_mouse
   - articles/Chen_2020_luspatercept
   - articles/Chen_2021_ganciclovir

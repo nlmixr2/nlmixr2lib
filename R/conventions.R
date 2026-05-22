@@ -89,7 +89,21 @@
     # representing insulin-like delayed feedback, with a NiAc-independent
     # capillary release term setting the lower physiological limit).
     # State holds a concentration (mmol/L) rather than an amount.
-    "nefa"
+    "nefa",
+    # Endogenous deoxynucleoside triphosphate (dNTP) pool components
+    # used by indirect-response PD models for nucleoside-analog
+    # antiretrovirals (Chen 2016 tenofovir / emtricitabine PKPD). Each
+    # state holds the intracellular concentration (fmol/10^6 PBMC).
+    # The deoxypurines (dATP, dGTP) are inhibited by tenofovir
+    # diphosphate; the deoxypyrimidines (dCTP, TTP) are inhibited by
+    # emtricitabine triphosphate.
+    "datp", "dgtp", "dctp", "ttp",
+    # Intracellular active triphosphate anabolites of the nucleoside-
+    # analog antiretrovirals tenofovir (TFV) and emtricitabine (FTC).
+    # TFV-DP and FTC-TP each accumulate inside peripheral-blood
+    # mononuclear cells via phosphorylation of the plasma parent drug.
+    # Used by the Chen 2016 linked PKPD model.
+    "tfvdp", "ftctp"
   ),
   # Bare numbered chains (transit / effect / precursor / lat / dar /
   # depot) and metabolite-suffixed compartments are validated
@@ -269,13 +283,25 @@
     # protein binding and enterohepatic recirculation
     # (de Winter 2009 doi:10.1007/s10928-009-9136-6).
     "mpag",
-    # S-norketamine, the active N-demethyl metabolite of S-ketamine
-    # produced primarily by CYP-mediated N-demethylation. Pharmacologically
-    # active (about one-third the sedative potency of the parent S-ketamine);
-    # used as the metabolite suffix in parent-plus-metabolite popPK models
-    # for S-ketamine in pediatric continuous-infusion sedation
-    # (Flint 2017 doi:10.1111/pan.13239).
-    "snk"
+    # Emtricitabine (FTC) suffix used as a non-parent analyte tag in
+    # joint TFV+FTC popPK / PD models where neither drug is "the
+    # parent" — both nucleoside-analog antiretrovirals are co-
+    # administered in the TDF/FTC fixed-dose combination and the
+    # paper models both plasma drugs in parallel
+    # (Chen 2016 doi:10.1371/journal.pone.0165505). The parent
+    # canonical-naming slot is occupied by tenofovir (TFV); FTC plasma
+    # compartments and parameters carry the _ftc suffix. Mirrors the
+    # pattern used for parent + co-perpetrator (`cpg2`) and stereo-
+    # isomer (`r`, `s`) suffixes already in this list.
+    "ftc",
+    # Intracellular triphosphate anabolites of tenofovir and
+    # emtricitabine used as second-token suffixes for compartments
+    # and parameters in the Chen 2016 linked PKPD model. Each
+    # anabolite is modelled with a hybrid first-order-formation +
+    # saturation link from its plasma parent and a two-compartment
+    # "recycle" elimination structure (compartment 4 + compartment 6
+    # in the source paper's NONMEM diagram).
+    "tfvdp", "ftctp"
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` denotes the time-varying decay arm.
