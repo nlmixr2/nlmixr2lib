@@ -504,6 +504,8 @@ navbar:
         href: articles/Ouerdani_2015_pazopanib.html
       - text: "Pazopanib mouse (Ouerdani 2015)"
         href: articles/Ouerdani_2015_pazopanib_mouse.html
+      - text: "Peginesatide (Naik 2013)"
+        href: articles/Naik_2013_peginesatide.html
       - text: "Peginterferon beta 1a (Hu 2017)"
         href: articles/Hu_2017_peginterferon_beta_1a.html
       - text: "Pembrolizumab (Ahamadi 2017)"
@@ -1180,6 +1182,7 @@ articles:
   - articles/NA_NA_tte_gompertz_ev2
   - articles/NA_NA_tte_loglogistic
   - articles/NA_NA_tte_lognormal
+  - articles/Naik_2013_peginesatide
   - articles/Naik_2016_vortioxetine
   - articles/Nanga_2019_tacrolimus_metaanalysis
   - articles/Narwal_2013_sifalimumab
