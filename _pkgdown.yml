@@ -258,6 +258,8 @@ navbar:
         href: articles/Nestorov_2014_factorviii.html
       - text: "Farletuzumab (Farrell 2012)"
         href: articles/Farrell_2012_farletuzumab.html
+      - text: "Fenofibrate (Back 2018)"
+        href: articles/Back_2018_fenofibrate.html
       - text: "Fentanyl (Bista 2015)"
         href: articles/Bista_2015_fentanyl.html
       - text: "Fentanyl (Oosten 2016)"
@@ -926,6 +928,7 @@ articles:
   - articles/Aregbe_2012_alvespimycin
   - articles/Attarwala_2023_mRNA3927
   - articles/Ayyar_2024_givosiran
+  - articles/Back_2018_fenofibrate
   - articles/Bajaj_2017_nivolumab
   - articles/Bajaj_2017_nivolumab_ddmore
   - articles/Bellanti_2015_deferoxamine
