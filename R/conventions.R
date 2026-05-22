@@ -49,6 +49,16 @@
     # region; total brain concentration including residual plasma is
     # derived as `Cbrain_<region>` in model().
     "cerebellum", "hippocampus", "striatum", "cortex", "choroid_plexus",
+    # Physiological brain sub-compartments used by hybrid physiology-
+    # based PK-PD models that resolve the blood-brain barrier transport
+    # as two coupled states: drug in cerebral capillary blood
+    # (brain_vascular, volume Vbv, fed by cerebral blood flow CLbv from
+    # systemic central) and drug in brain tissue beyond the BBB
+    # (brain_extravascular, volume Vbev, fed via the BBB-clearance term
+    # CLbev which scales the unbound concentration on each side via the
+    # fixed fu_plasma and fu_brain fractions). Used by
+    # Johnson_2011_olanzapine_rat.
+    "brain_vascular", "brain_extravascular",
     # Gallbladder / biliary recirculation compartment used by
     # enterohepatic-circulation (EHC) popPK models (Ide_2009_pravastatin
     # and similar). Drug accumulates from the central compartment via

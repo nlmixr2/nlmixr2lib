@@ -4216,6 +4216,18 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
   - `Fiedler-Kelly_2019_fremanezumab.R` (per-subject indicator switching both the central volume of distribution (Vc,IV = 2.98 L FIXED vs Vc,SC = 1.88 L) and the residual-error structure (IV: proportional-only with SD = sqrt(0.0467) = 0.21610; SC: combined additive sqrt(0.204) + proportional sqrt(0.0531)) in the pooled phase 1/2b/3 fremanezumab popPK).
 - **Notes:** This is the per-subject covariate-equation indicator, distinct from the dosing-event `cmt` column that names the target compartment. When simulating, set `ROUTE_IV = 1` for IV cohorts and dose into the central compartment; set `ROUTE_IV = 0` for SC cohorts and dose into the depot. Scope: specific because the set of parameters that differ by route is paper-specific (Yu 2022 carries route-specific exponential effects on disposition parameters; Zierhut 2008, Wang 2021, and Fiedler-Kelly 2019 carry route-specific PK observation residual SDs; Fiedler-Kelly 2019 additionally carries a route-specific central volume of distribution).
 
+### ROUTE_IP (**canonical for intraperitoneal-vs-non-IP administration route indicator**)
+- **Description:** 1 = subject (or dose record) received intraperitoneal (IP) administration; 0 = subcutaneous (SC), intravenous (IV), or any other non-IP route. Per-dose-record covariate flagging the IP route when a preclinical popPK pools multiple routes with route-specific bioavailability and the IP arm is the only route that carries a non-unity F.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-IP, typically SC or IV with bioavailability fixed at 1).
+- **Source aliases:**
+  - "IP" (route label in Johnson 2011 Table I, per-study route designation across 12 rat studies — IP studies 1-6b, SC studies 7-11, IV study 12).
+- **Example models:**
+  - `Johnson_2011_olanzapine_rat.R` (per-dose-record indicator selecting the IP bioavailability `FIP = 0.636` with 87% CV log-normal IIV; ROUTE_IP = 0 selects F = 1 for SC and IV. The encoding `f(central) <- exp(ROUTE_IP * (lfip + etalfip))` collapses to 1 when ROUTE_IP = 0 because exp(0) = 1, so subjects dosed via SC or IV inherit complete bioavailability without IIV on F).
+- **Notes:** This is the per-dose-record covariate-equation indicator, distinct from the dosing-event `cmt` column that names the target compartment (Johnson 2011 doses all routes directly into `central` because the absorption rate constant was not estimable from the available data). When simulating IP doses, set `ROUTE_IP = 1` on the dose record(s); set `ROUTE_IP = 0` for SC and IV dose records. Scope: specific because the IP-vs-other contrast and which parameter it modifies (here, bioavailability) is paper-specific; complementary to `ROUTE_IV` (IV-vs-SC indicator) — a future tri-route study could use both indicators jointly.
+
 ### DEVICE_AI (**canonical for autoinjector-vs-prefilled-syringe SC device indicator**)
 - **Description:** 1 = subject's SC dose delivered via autoinjector (AI), 0 = prefilled syringe (PFS). Per-subject (study-fixed) covariate flagging the SC delivery device when a model carries device-specific PK effects.
 - **Units:** (binary)
