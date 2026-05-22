@@ -574,6 +574,8 @@ navbar:
         href: articles/Peng_2024_SAL003.html
       - text: "Sacituzumab (Sathe 2024)"
         href: articles/Sathe_2024_sacituzumab.html
+      - text: "Sapropterin (Muntau 2017)"
+        href: articles/Muntau_2017_sapropterin.html
       - text: "Sapropterin (Qi 2014)"
         href: articles/Qi_2014_sapropterin.html
       - text: "Sarilumab (Xu 2019)"
@@ -1150,6 +1152,7 @@ articles:
   - articles/Mould_2007_alemtuzumab
   - articles/Mukai_2019_mogamulizumab
   - articles/Mulyukov_2018_ranibizumab
+  - articles/Muntau_2017_sapropterin
   - articles/NA_NA_lidocaine
   - articles/NA_NA_miridesap
   - articles/NA_NA_paracetamol
