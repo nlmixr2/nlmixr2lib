@@ -258,7 +258,14 @@
     # Used in parent-plus-metabolite popPK models with explicit competitive
     # protein binding and enterohepatic recirculation
     # (de Winter 2009 doi:10.1007/s10928-009-9136-6).
-    "mpag"
+    "mpag",
+    # S-norketamine, the active N-demethyl metabolite of S-ketamine
+    # produced primarily by CYP-mediated N-demethylation. Pharmacologically
+    # active (about one-third the sedative potency of the parent S-ketamine);
+    # used as the metabolite suffix in parent-plus-metabolite popPK models
+    # for S-ketamine in pediatric continuous-infusion sedation
+    # (Flint 2017 doi:10.1111/pan.13239).
+    "snk"
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` denotes the time-varying decay arm.

@@ -570,6 +570,8 @@ navbar:
         href: articles/Macpherson_2015_rosuvastatin.html
       - text: "Rucaparib (Wang 2015)"
         href: articles/Wang_2015_rucaparib.html
+      - text: "S ketamine (Flint 2017)"
+        href: articles/Flint_2017_s_ketamine.html
       - text: "SAL003 (Peng 2024)"
         href: articles/Peng_2024_SAL003.html
       - text: "Sacituzumab (Sathe 2024)"
@@ -1013,6 +1015,7 @@ articles:
   - articles/Fiedler-Kelly_2019_fremanezumab
   - articles/FiedlerKelly_2020_fremanezumab_cm
   - articles/FiedlerKelly_2020_fremanezumab_em
+  - articles/Flint_2017_s_ketamine
   - articles/Franken_2015_morphine
   - articles/Franken_2017_haloperidol
   - articles/Frey_2010_tocilizumab
