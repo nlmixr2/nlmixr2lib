@@ -534,6 +534,8 @@ navbar:
         href: articles/Diepstraten_2013_propofol.html
       - text: "Propofol (Przybylowski 2015)"
         href: articles/Przybylowski_2015_propofol.html
+      - text: "Propofol (Wang 2012)"
+        href: articles/Wang_2012_propofol.html
       - text: "Pyrazinamide (Alsultan 2017)"
         href: articles/Alsultan_2017_pyrazinamide.html
       - text: "Quinine (Kloprogge 2014)"
@@ -1300,6 +1302,7 @@ articles:
   - articles/Vinnard_2017_rifampicin
   - articles/Voller_2017_phenobarbital
   - articles/Wade_2015_certolizumab
+  - articles/Wang_2012_propofol
   - articles/Wang_2013_morphine
   - articles/Wang_2015_rucaparib
   - articles/Wang_2017_benralizumab
