@@ -524,6 +524,8 @@ navbar:
         href: articles/Boer-Perez_2026_piperacillin.html
       - text: "Piperaquine (Hoglund 2012)"
         href: articles/Hoglund_2012_piperaquine.html
+      - text: "Piperaquine (Hoglund 2017)"
+        href: articles/Hoglund_2017_piperaquine.html
       - text: "Polatuzumab (Lu 2019)"
         href: articles/Lu_2019_polatuzumab.html
       - text: "Posdinemab (PerezRuixo 2025)"
@@ -1067,6 +1069,7 @@ articles:
   - articles/Hennig_2015_phenytoin
   - articles/Hennig_2015_rifabutin
   - articles/Hoglund_2012_piperaquine
+  - articles/Hoglund_2017_piperaquine
   - articles/Hong_2015_moxifloxacin
   - articles/Hong_2025_datopotamab
   - articles/Hood_2021_medi7836
