@@ -396,6 +396,8 @@ navbar:
         href: articles/Germovsek_2018_meropenem.html
       - text: "Meropenem (Shekar 2014)"
         href: articles/Shekar_2014_meropenem.html
+      - text: "Methotrexate (Ruhs 2012)"
+        href: articles/Ruhs_2012_methotrexate.html
       - text: "Methotrexate (Taylor 2020)"
         href: articles/Taylor_2020_methotrexate.html
       - text: "Methylphenidate (Teuscher 2015)"
@@ -1229,6 +1231,7 @@ articles:
   - articles/Rosario_2015_vedolizumab
   - articles/Rose_2016_follitropin_delta
   - articles/Rovei_1982_theophylline
+  - articles/Ruhs_2012_methotrexate
   - articles/Sadouki_2025_meropenem_gentamicin_ciprofloxacin
   - articles/Sahota_2015_miridesap
   - articles/Salinger_2013_magnesiumSulfate
