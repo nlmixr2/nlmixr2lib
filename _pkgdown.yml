@@ -198,6 +198,8 @@ navbar:
         href: articles/Varatharajan_2016_daunorubicin.html
       - text: "Decitabine (Han 2015)"
         href: articles/Han_2015_decitabine.html
+      - text: "Deferoxamine (Bellanti 2015)"
+        href: articles/Bellanti_2015_deferoxamine.html
       - text: "Dexmedetomidine (Talke 2018)"
         href: articles/Talke_2018_dexmedetomidine.html
       - text: "Digoxin (Jelliffe 2014)"
@@ -926,6 +928,7 @@ articles:
   - articles/Ayyar_2024_givosiran
   - articles/Bajaj_2017_nivolumab
   - articles/Bajaj_2017_nivolumab_ddmore
+  - articles/Bellanti_2015_deferoxamine
   - articles/Bender_2014_trastuzumabEmtansine_mechanistic
   - articles/Bender_2014_trastuzumabEmtansine_reduced
   - articles/Benkali_2010_tacrolimus
