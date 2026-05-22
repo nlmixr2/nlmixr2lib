@@ -1836,6 +1836,76 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `deKock_2017_sulfadoxinePyrimethamine.R` (-24.8% scaling on observed sulfadoxine concentrations; -5.4% scaling on observed pyrimethamine concentrations).
 - **Notes:** Specific scope; pairs with `REGION_MOZAMBIQUE` and `REGION_SUDAN`. Ratified canonically on 2026-05-18.
 
+### REGION_POLAND (**canonical for Poland EPPICC enrollment-country indicator**)
+- **Description:** 1 = subject enrolled at the Polish EPPICC cohort site (Medical University Warsaw / Regional Hospital of Infectious Disease), 0 = otherwise. Country-level enrollment-country indicator used in the multi-country European Pregnancy and Paediatric HIV Cohort Collaboration (EPPICC) HIV/HCV coinfection study.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-Poland EPPICC sites; specific reference set varies per model -- in Majekodunmi 2017 the reference is Ukraine).
+- **Source aliases:** none yet; canonical name preferred.
+- **Example models:** `Majekodunmi_2017_HIV_HCV_CD4_recovery.R` (additive +0.44 shift on pre-ART CD4 z-score intercept; Ukraine reference).
+- **Notes:** Specific scope; pairs with `REGION_RUSSIA`, `REGION_SWITZERLAND`, `REGION_UK`, `REGION_SPAIN`, `REGION_GERMANY`, `REGION_ITALY` for the EPPICC 8-country pediatric HIV cohort with Ukraine as the implicit reference. Distinct from a Polish race/ethnicity indicator. Ratified canonically on 2026-05-22.
+
+### REGION_RUSSIA (**canonical for Russia EPPICC enrollment-country indicator**)
+- **Description:** 1 = subject enrolled at the Russian EPPICC cohort site (Republican Hospital of Infectious Diseases, St Petersburg), 0 = otherwise. Country-level enrollment-country indicator used in the EPPICC HIV/HCV coinfection study.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-Russia EPPICC sites; specific reference set varies per model -- in Majekodunmi 2017 the reference is Ukraine).
+- **Source aliases:** none yet; canonical name preferred.
+- **Example models:** `Majekodunmi_2017_HIV_HCV_CD4_recovery.R` (additive +0.69 shift on pre-ART CD4 z-score intercept; Ukraine reference).
+- **Notes:** Specific scope; pairs with `REGION_POLAND`, `REGION_SWITZERLAND`, `REGION_UK`, `REGION_SPAIN`, `REGION_GERMANY`, `REGION_ITALY` for the EPPICC 8-country pediatric HIV cohort with Ukraine as the implicit reference. Ratified canonically on 2026-05-22.
+
+### REGION_SWITZERLAND (**canonical for Switzerland EPPICC enrollment-country indicator**)
+- **Description:** 1 = subject enrolled at the Swiss Mother and Child HIV Cohort Study (MoCHiV), 0 = otherwise. Country-level enrollment-country indicator used in the EPPICC HIV/HCV coinfection study.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-Switzerland EPPICC sites; specific reference set varies per model -- in Majekodunmi 2017 the reference is Ukraine).
+- **Source aliases:** none yet; canonical name preferred.
+- **Example models:** `Majekodunmi_2017_HIV_HCV_CD4_recovery.R` (additive +0.02 shift on pre-ART CD4 z-score intercept; Ukraine reference).
+- **Notes:** Specific scope; pairs with the other EPPICC REGION indicators. Ratified canonically on 2026-05-22.
+
+### REGION_UK (**canonical for United Kingdom EPPICC enrollment-country indicator**)
+- **Description:** 1 = subject enrolled in the UK Collaborative HIV Paediatric Study (CHIPS), 0 = otherwise. Country-level enrollment-country indicator used in the EPPICC HIV/HCV coinfection study.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-UK EPPICC sites; specific reference set varies per model -- in Majekodunmi 2017 the reference is Ukraine).
+- **Source aliases:** none yet; canonical name preferred.
+- **Example models:** `Majekodunmi_2017_HIV_HCV_CD4_recovery.R` (additive -17.5 shift on pre-ART CD4 z-score intercept with Ukraine reference; magnitude implausibly large for a z-score effect and anchored on a UK cohort of only 2 subjects -- reproduced verbatim per the published table and flagged in the model file and vignette as a small-sample artifact).
+- **Notes:** Specific scope; pairs with the other EPPICC REGION indicators. Distinct from any Britain/England/Scotland-specific indicator. Ratified canonically on 2026-05-22.
+
+### REGION_SPAIN (**canonical for Spain EPPICC enrollment-country indicator**)
+- **Description:** 1 = subject enrolled at the Spanish Paediatric HIV Network (CoRISpe; Madrid and Barcelona), 0 = otherwise. Country-level enrollment-country indicator used in the EPPICC HIV/HCV coinfection study.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-Spain EPPICC sites; specific reference set varies per model -- in Majekodunmi 2017 the reference is Ukraine).
+- **Source aliases:** none yet; canonical name preferred.
+- **Example models:** `Majekodunmi_2017_HIV_HCV_CD4_recovery.R` (additive +2.89 shift on pre-ART CD4 z-score intercept; Ukraine reference).
+- **Notes:** Specific scope; pairs with the other EPPICC REGION indicators. Ratified canonically on 2026-05-22.
+
+### REGION_GERMANY (**canonical for Germany EPPICC enrollment-country indicator**)
+- **Description:** 1 = subject enrolled in the German Competence Network on HIV-infected Children, 0 = otherwise. Country-level enrollment-country indicator used in the EPPICC HIV/HCV coinfection study.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-Germany EPPICC sites; specific reference set varies per model -- in Majekodunmi 2017 the reference is Ukraine).
+- **Source aliases:** none yet; canonical name preferred.
+- **Example models:** `Majekodunmi_2017_HIV_HCV_CD4_recovery.R` (additive +0.34 shift on pre-ART CD4 z-score intercept; Ukraine reference).
+- **Notes:** Specific scope; pairs with the other EPPICC REGION indicators. Ratified canonically on 2026-05-22.
+
+### REGION_ITALY (**canonical for Italy EPPICC enrollment-country indicator**)
+- **Description:** 1 = subject enrolled in the Italian Register for HIV-infection in Children, 0 = otherwise. Country-level enrollment-country indicator used in the EPPICC HIV/HCV coinfection study.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-Italy EPPICC sites; specific reference set varies per model -- in Majekodunmi 2017 the reference is Ukraine).
+- **Source aliases:** none yet; canonical name preferred.
+- **Example models:** `Majekodunmi_2017_HIV_HCV_CD4_recovery.R` (additive -3.63 shift on pre-ART CD4 z-score intercept; Ukraine reference; small-sample subgroup with n = 2).
+- **Notes:** Specific scope; pairs with the other EPPICC REGION indicators. Ratified canonically on 2026-05-22.
+
 ## Pediatric comorbidities
 
 ### CLD_PREM (**canonical for chronic lung disease of prematurity**)
@@ -2372,6 +2442,17 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
   - `TB` -- used in `Bisaso_2014_albumin.R` (paper text and Table 1 stratification column with values 0 = HIV only, 1 = HIV + TB co-infection; same orientation as the canonical).
 - **Example models:** `Bisaso_2014_albumin.R` (multiplicative additive shift on baseline albumin secretion rate Q0: `Q0 = exp(lq0) * (1 + e_tb_pos_q0 * TB_POS)` with `e_tb_pos_q0 = -0.308`; TB-positive subjects have ~30.8% lower Q0 than the HIV-only reference -- equivalent to the paper text's "44.2% lower" framing relative to the TB-HIV cohort).
 - **Notes:** Parallels the `_POS` suffix convention used by `HIV_POS`, `ADA_POS`, `SARS_SEROPOS`, and other serostatus / disease-state indicators. Distinct from any TB-treatment-regimen indicator (e.g. `CONMED_RIF_LPVR4` for concomitant rifampicin) -- `TB_POS` is the active-disease flag; the medication exposure is a separate concept. In Bisaso 2014 all 158 TB-positive subjects were also on rifampicin-based anti-TB therapy, so the two are confounded in that single cohort; the canonical preserves the conceptual distinction for future studies that decouple them. Ratified canonically on 2026-05-20 alongside the Bisaso 2014 albumin extraction.
+
+### HCV_POS (**canonical for HCV coinfection / hepatitis C virus positive indicator**)
+- **Description:** 1 = chronic hepatitis C virus (HCV) coinfection at study entry (HCV antibody positive and/or >= 2 positive HCV RNA detections on separate visits at least 3 months apart, with subjects of known spontaneous HCV clearance excluded), 0 = HCV uninfected / HCV cleared. Time-fixed per subject. Used as a binary comorbidity / coinfection indicator on PD parameters (e.g., immune-reconstitution recovery rates) or PK parameters when a study pools HCV-coinfected and HCV-uninfected subjects on a non-HCV primary indication (HIV ART, transplant medicine, IBD biologics, etc.).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (HCV uninfected).
+- **Source aliases:**
+  - `HCV` -- used in `Majekodunmi_2017_HIV_HCV_CD4_recovery.R` (paper Methods 'Definitions' and Table 2 covariate 'C:Coinf' for HIV/HCV coinfected vs HIV monoinfected; same orientation as the canonical).
+- **Example models:** `Majekodunmi_2017_HIV_HCV_CD4_recovery.R` (multiplicative fractional reduction on the CD4 z-score recovery-rate constant c: `c = (c_pop + etac) * (1 + e_hcv_pos_c * HCV_POS)` with `e_hcv_pos_c = -0.77`; HCV-coinfected children recover at 23% of the HIV-monoinfected rate -- 0.357 /year versus 1.55 /year typical).
+- **Notes:** Parallels the `_POS` suffix convention used by `HIV_POS`, `TB_POS`, `ADA_POS`, `SARS_SEROPOS`, and other serostatus / disease-state indicators. Distinct from any anti-HCV treatment-regimen indicator (e.g., pegylated interferon + ribavirin in Majekodunmi 2017's coinfected subset of 10 children) and from any HCV-genotype indicator (1/2/3/4 distribution reported in Majekodunmi 2017 Table 1 but not used as a covariate). Distinct from a primary disease-state indicator like `DIS_HCV` (not yet registered) -- `HCV_POS` is the coinfection / comorbidity flag in non-HCV-primary indications. Ratified canonically on 2026-05-22 alongside the Majekodunmi 2017 CD4 recovery extraction.
 
 ### EARLY_ART (**canonical for early-vs-delayed antiretroviral-treatment-initiation arm indicator**)
 - **Description:** Trial randomization-arm indicator: 1 = subject was randomized to initiate antiretroviral treatment (ART) early (within the first 14 days of admission, before nutritional recovery), 0 = subject was randomized to delayed ART initiation (after nutritional recovery, > 14 days from admission). Time-fixed per subject within the trial. The indicator captures the early-vs-delayed-ART contrast tested in the Archary 2019 / MATCH (Malnutrition and ART Timing in Children with HIV) trial in severely malnourished HIV-infected children; the early-ART arm exhibits ~31% higher abacavir bioavailability than the delayed-ART arm.
