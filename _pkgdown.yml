@@ -376,6 +376,8 @@ navbar:
         href: articles/Archary_2018_lopinavir.html
       - text: "Lumefantrine (Kloprogge 2013)"
         href: articles/Kloprogge_2013_lumefantrine.html
+      - text: "Lumefantrine (Kloprogge 2018)"
+        href: articles/Kloprogge_2018_lumefantrine.html
       - text: "Lumiracoxib rat (VasquezBahena 2009)"
         href: articles/VasquezBahena_2009_lumiracoxib_rat.html
       - text: "Luspatercept (Chen 2020)"
@@ -1108,6 +1110,7 @@ articles:
   - articles/Kloft_2004_sibrotuzumab
   - articles/Kloprogge_2013_lumefantrine
   - articles/Kloprogge_2014_quinine
+  - articles/Kloprogge_2018_lumefantrine
   - articles/Knibbe_2009_morphine
   - articles/Knights_2015_aripiprazole
   - articles/Koloskoff_2025_ganciclovir
