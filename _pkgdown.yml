@@ -308,6 +308,8 @@ navbar:
         href: articles/Ngo_2020_HL2351.html
       - text: "Haloperidol (Franken 2017)"
         href: articles/Franken_2017_haloperidol.html
+      - text: "Hydroxyurea (Paule 2011)"
+        href: articles/Paule_2011_hydroxyurea.html
       - text: "Imatinib (Chien 2022)"
         href: articles/Chien_2022_imatinib.html
       - text: "Imatinib (Schindler 2017)"
@@ -1184,6 +1186,7 @@ articles:
   - articles/Park_2001_ketoprofen
   - articles/Passey_2011_tacrolimus
   - articles/Patel_2017_selumetinib
+  - articles/Paule_2011_hydroxyurea
   - articles/Peng_2024_SAL003
   - articles/PerezRuixo_2025_posdinemab
   - articles/Petrov_2024_romiplostim
