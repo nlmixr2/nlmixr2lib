@@ -190,6 +190,8 @@ navbar:
         href: articles/vanderWalt_2013_dapagliflozin.html
       - text: "Dapsone (Hall 2017)"
         href: articles/Hall_2017_dapsone.html
+      - text: "Daptomycin (Garonzik 2016)"
+        href: articles/Garonzik_2016_daptomycin.html
       - text: "Daratumumab (Xu 2020)"
         href: articles/Xu_2020_daratumumab.html
       - text: "Datopotamab (Hong 2025)"
@@ -1050,6 +1052,7 @@ articles:
   - articles/Gandhi_2021_abatacept
   - articles/Garg_2014_pertuzumab
   - articles/Garmann_2017_BAY81_8973
+  - articles/Garonzik_2016_daptomycin
   - articles/Germovsek_2016_gentamicin
   - articles/Germovsek_2018_meropenem
   - articles/Gibiansky_2014_obinutuzumab
