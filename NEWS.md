@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Li 2015 taspoglutide MBMA ([doi:10.1016/j.jsps.2014.11.008](https://doi.org/10.1016/j.jsps.2014.11.008)) -- adults with type 2 diabetes (model-based meta-analysis of placebo-adjusted FPG and HbA1c efficacy of once-weekly subcutaneous taspoglutide; 8 trials, 3,702 patients).
+* Add Renard 2011 indacaterol ([doi:10.1186/1465-9921-12-54](https://doi.org/10.1186/1465-9921-12-54)) -- adults with moderate-to-severe COPD (MBMA study-level Emax dose-response for trough FEV1 across 11 placebo-controlled trials).
 * Add Tarning 2012 artemether and dihydroartemisinin ([doi:10.1186/1475-2875-11-293](https://doi.org/10.1186/1475-2875-11-293)) -- pregnant women with uncomplicated Plasmodium falciparum malaria in Uganda (joint parent + DHA popPK with zero-order dissolution and 6-compartment transit absorption).
 * Add Schoemaker 2017 brivaracetam ([doi:10.1007/s00228-017-2230-6](https://doi.org/10.1007/s00228-017-2230-6)) -- paediatric patients with epilepsy aged 1 month to 16 years; ratifies new `CONMED_PB`, `CONMED_CBZ`, and `CONMED_VPA` covariate canonicals.
 * Add Nanga 2019 tacrolimus meta-model ([doi:10.1111/bcp.14110](https://doi.org/10.1111/bcp.14110)) -- pooled paediatric and adult solid-organ transplant recipients (n = 281; 201 liver and 80 kidney) on oral tacrolimus; ratifies new `TX_LIVER` and `FORM_SYRUP` covariate canonicals.
