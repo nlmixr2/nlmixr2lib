@@ -704,6 +704,16 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Liesenfeld_2013_dabigatran.R`.
 - **Notes:** Pairs with `DIAL` and `BFR`. Ratified canonically on 2026-05-16 alongside the Liesenfeld 2013 dabigatran extraction.
 
+### ECMO_PUMP_SPEED (**canonical for extracorporeal-membrane-oxygenation centrifugal-pump rotational speed**)
+- **Description:** Rotational speed of the extracorporeal-membrane-oxygenation (ECMO) centrifugal blood pump during VA-ECMO or VV-ECMO support. Continuous covariate; treated as time-fixed per subject in Yang 2017 (the per-subject pump speed reported in the source data was the prevailing speed during the PK sampling window; pump-speed adjustments during sampling were not modelled as time-varying). For future models that resolve session-level changes in pump speed, the covariate is naturally time-varying and the per-model `covariateData[[ECMO_PUMP_SPEED]]$notes` should document the time resolution.
+- **Units:** RPM (revolutions per minute)
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- enters as a power-centered effect `(ECMO_PUMP_SPEED / ref)^exponent`. The reference value is paper-specific (median pump speed in the source cohort): Yang 2017 uses 2350 RPM (cohort median; Table 1 / Results: "median ECMO pump speeds of 2350 RPM").
+- **Source aliases:** none known.
+- **Example models:** `Yang_2017_remifentanil.R` (power effect on remifentanil CL: `(ECMO_PUMP_SPEED / 2350)^2.04`; higher pump speed associated with higher CL, hypothesised mechanism is increased spontaneous drug degradation at high centrifugal-pump shear).
+- **Notes:** Distinct from blood flow rate (BFR, mL/min) and from dialysate flow rate (DFR, mL/min) which characterise renal-replacement-therapy circuits. ECMO circuits use a centrifugal pump whose rotational speed sets the cardiac-output augmentation; the resulting blood flow rate (LPM) is a separate measured quantity that depends on circuit resistance and patient hemodynamics. Yang 2017 tested both ECMO pump speed (RPM) and ECMO flow rate (LPM) and only pump speed was retained as a significant covariate (ECMO flow rate was not significantly associated with PK parameters). Ratified canonically on 2026-05-23 alongside the Yang 2017 remifentanil extraction.
+
 ## Hematology
 
 ### HGB (**canonical for hemoglobin**)

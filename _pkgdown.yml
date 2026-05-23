@@ -562,8 +562,8 @@ navbar:
         href: articles/Sheng_2016_quinine_rat.html
       - text: "Ranibizumab (Mulyukov 2018)"
         href: articles/Mulyukov_2018_ranibizumab.html
-      - text: "RFIXFc (Diao 2014)"
-        href: articles/Diao_2014_rFIXFc.html
+      - text: "Remifentanil (Yang 2017)"
+        href: articles/Yang_2017_remifentanil.html
       - text: "Rifabutin (Hennig 2015)"
         href: articles/Hennig_2015_rifabutin.html
       - text: "Rifampicin (Clewe 2015)"
@@ -1365,6 +1365,7 @@ articles:
   - articles/Xu_2023_MBG453
   - articles/Yamada_2025_zolbetuximab
   - articles/Yang_2016_dilmapimod
+  - articles/Yang_2017_remifentanil
   - articles/Yang_2021_cemiplimab
   - articles/Yang_2024_axatilimab
   - articles/Yao_2018_guselkumab
