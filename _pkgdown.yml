@@ -676,6 +676,8 @@ navbar:
         href: articles/Sikma_2020_tacrolimus_thoracic.html
       - text: "Tacrolimus unbound plasma (Sikma 2020)"
         href: articles/Sikma_2020_tacrolimus_unbound_plasma.html
+      - text: "Taspoglutide mbma (Li 2015)"
+        href: articles/Li_2015_taspoglutide_mbma.html
       - text: "Tefibazumab (Cao 2013)"
         href: articles/Cao_2013_tefibazumab.html
       - text: "Temozolomide (Mazzocco 2015)"
@@ -1141,6 +1143,8 @@ articles:
   - articles/LeTilly_2021_trastuzumab
   - articles/Leuppi-Taegtmeyer_2019_colistin
   - articles/Li_2006_meropenem
+  - articles/Li_2015_taspoglutide_mbma
+  - articles/Li_2017_CC292
   - articles/Li_2017_brentuximab
   - articles/Li_2017_CC292
   - articles/Li_2017_cediranib

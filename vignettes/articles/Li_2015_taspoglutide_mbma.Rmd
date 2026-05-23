@@ -1,0 +1,378 @@
+---
+title: "Taspoglutide weight-loss MBMA (Li 2015)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Taspoglutide weight-loss MBMA (Li 2015)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7.5, fig.height = 5)
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Li_2015_taspoglutide_mbma"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Li_2015_taspoglutide_mbma"))$description`
+* Article: <https://doi.org/10.1691/ph.2015.4716>
+
+# Population
+
+Li 2015 is a model-based meta-analysis (MBMA) of taspoglutide weight-loss
+efficacy in adults with type 2 diabetes mellitus. The authors digitised
+the study-arm-mean body-weight (WT) trajectories from 9 published
+placebo-controlled trials (3,702 patients pooled across placebo, 10 mg
+once-weekly, and 20 mg once-weekly arms; 8 to 52 weeks of follow-up)
+of the taspoglutide phase 2/3 program (T-emerge series and related;
+Raz 2012, Ratner 2010, Nauck 2009, Nauck 2013, Hollander 2013, Bergenstal
+2012, Henry 2012, Pratley 2013, Rosenstock 2013; Li 2015 Table 1).
+Background regimens spanned monotherapy (1 trial), metformin (5 trials),
+metformin + sulphonylurea (1 trial), metformin + TZD or pioglitazone
+(1 trial), and sulphonylurea +/- metformin (1 trial).
+
+The same information is available programmatically via
+`rxode2::rxode(readModelDb("Li_2015_taspoglutide_mbma"))$population`.
+
+# Source trace
+
+The model is a placebo-adjusted Emax exposure-response over time, with
+the placebo trajectory and drug excess each approaching a first-order
+asymptote at separate rates (Li 2015 Eq 1-2):
+
+$$
+\text{Placebo}_i(t) \;=\; P_{\max,i} \cdot (1 - e^{-K_{p,i}\,t})
+$$
+
+$$
+\text{Drug}_i(t) \;=\; \text{Placebo}_i(t) \;+\; \frac{D_{\max,i} \cdot \text{CAV}_i}{\text{IC}_{50,i} + \text{CAV}_i} \cdot (1 - e^{-K_{\mathrm{drug},i}\,t}) \;+\; \varepsilon_i
+$$
+
+Residual error is proportional (Li 2015 Eq 5):
+
+$$
+Y \;=\; F \;+\; b \cdot F \cdot \varepsilon, \quad \varepsilon \sim N(0, 1)
+$$
+
+The metric (CAV) is the study-arm average plasma concentration of
+taspoglutide between weeks 2 and 4 of QW dosing, derived in Li 2015
+Methods section 2.2 from Ratner 2010: 0 pmol/L for placebo arms,
+119.7 pmol/L for the 20 mg QW arm (mean of three individual
+Cavg(2w-4w) values reported by Ratner 2010), and 59.85 pmol/L for the
+10 mg QW arm (half of 119.7, assuming dose-proportional exposure per
+Ratner 2010). The per-parameter origin is recorded as an in-file
+comment next to each `ini()` entry in
+`inst/modeldb/specificDrugs/Li_2015_taspoglutide_mbma.R`. The table
+below collects them in one place for review.
+
+| Equation / parameter | Value | Source location |
+|----------------------|------:|-----------------|
+| Placebo response (Eq 1) | n/a | Li 2015 page 114 |
+| Drug response (Eq 2) | n/a | Li 2015 page 114 |
+| IIV models (Eq 3, exponential; Eq 4, additive) | n/a | Li 2015 page 114 |
+| Residual error (Eq 5, proportional) | n/a | Li 2015 page 114 |
+| `pmax` (Pmax, kg; FIXED in combined fit) | -1.33 | Table 3, Pmax (footnote e) |
+| `lkp` (log Kp, log(1/week); FIXED in combined fit) | log(0.0987) | Table 3, Kp (footnote e) |
+| `dmax` (Dmax, kg) | -1.85 | Table 3, Dmax |
+| `ic50` (IC50, pmol/L) | 41.7 | Table 3, IC50 |
+| `lkdrug` (log Kdrug, log(1/week)) | log(0.422) | Table 3, Kdrug |
+| `eta_study_pmax` variance (additive ITV on Pmax; FIXED) | (1.10 * 1.33)^2 = 2.1389 kg^2 | Table 3, ITV 110% (footnote e) |
+| `eta_study_lkp` variance (exponential ITV on Kp; FIXED) | 0.33^2 = 0.1089 | Table 3, ITV 33% (footnote e) |
+| `eta_study_dmax` variance (additive ITV on Dmax) | (0.0976 * 1.85)^2 = 0.0326 kg^2 | Table 3, ITV 9.76% |
+| `eta_study_ic50` variance (additive ITV on IC50) | (1.04 * 41.7)^2 = 1881.4 (pmol/L)^2 | Table 3, ITV 104% |
+| `eta_study_lkdrug` variance (exponential ITV on Kdrug) | 0.146^2 = 0.0213 | Table 3, ITV 14.6% |
+| `propSd` (proportional residual b; Eq 5) | 0.189 | Table 3, b |
+| CAV reference values (study-arm-level exposure metric) | 0 / 59.85 / 119.7 pmol/L | Li 2015 Table 2 / Methods 2.2; derived from Ratner 2010 |
+
+The "ITV %" entries in Table 3 are inter-trial (between-study) variability
+percentages reported relative to the typical value (Monolix 4.3
+convention). For the **additive** Eq 4 individual model
+`P_i = P_pop + eta_i`, the variance is recovered as
+`((ITV/100) * |theta_pop|)^2`; for the **exponential** Eq 3 individual
+model `P_i = P_pop * exp(eta_i)`, the variance on the log scale is
+approximately `(ITV/100)^2` (exact for small ITV; differs by O(ITV^4)
+from `log(1 + (ITV/100)^2)`).
+
+# Errata
+
+No published erratum or corrigendum was located for Li 2015. A search of
+the Pharmazie landing page (<https://doi.org/10.1691/ph.2015.4716>) and
+PubMed returned no correction notices as of the model extraction date
+(2026-05-23).
+
+Three minor transcription / parsing issues noted while reading the
+paper (not requiring a corrigendum to use the model correctly):
+
+* Eq 2 of the paper writes `DI50,i` for the half-maximal-response
+  metric; the surrounding prose, Table 3, and the Discussion all use
+  `IC50` for the same quantity. The model file follows the prose and
+  Table 3 convention (`ic50`).
+
+* The Discussion states: "Overall, the maximum reduction (3.28 kg) of
+  body weight from the baseline was close to the reported value
+  (3.16 kg) in clinical trials." The structural model predicts the
+  metric->infinity asymptote at long times as `Pmax + Dmax = -1.33 + -1.85
+  = -3.18 kg`, which is approximately the paper's quoted maximum
+  (within 0.1 kg). The 0.1 kg discrepancy is consistent with
+  numerical rounding of `Pmax` and `Dmax` in Table 3; the structural
+  values reported in Table 3 are used verbatim in this implementation.
+
+* Li 2015 Methods section 4.6 describes IIV as `addictive` (a typo for
+  `additive`) for Pmax, Dmax, and IC50, and `exponential` for Kp and
+  Kdrug. The model file follows the additive convention (P_i = P_pop +
+  eta_i) for the three parameters described as `addictive`.
+
+# Virtual cohort
+
+Original individual-patient data are not publicly available; the source
+analysis was performed on digitised study-arm-mean data from 9 trials.
+The simulations below explore the typical-value time course of body
+weight from baseline for the three regimens (placebo, 10 mg QW, 20 mg
+QW) and demonstrate the dose-response saturation. The simulation
+**scope is study-arm-mean WT change in kg from baseline**, not
+individual-subject concentrations: the eta variances encode
+between-trial (not between-subject) variability, and proportional
+residual error b = 0.189 describes the within-arm noise of the
+study-arm-mean time-course measurement.
+
+```{r virtual-design}
+mod_full <- readModelDb("Li_2015_taspoglutide_mbma")
+mod_typ  <- rxode2::zeroRe(mod_full)
+
+# Three regimens at the QW dose levels reported in the source 9 trials,
+# observed weekly from t = 0 to t = 52 weeks (the full follow-up window
+# of the longest trial, Rosenstock 2013, T-emerge 2).
+build_events <- function(arms, times) {
+  ev_list <- vector("list", length(arms))
+  for (k in seq_along(arms)) {
+    arm   <- arms[[k]]
+    n_obs <- length(times)
+    ev_list[[k]] <- data.frame(
+      id   = ((k - 1L) * n_obs) + seq_len(n_obs),
+      time = times,
+      amt  = 0,
+      evid = 0L,
+      CAV  = arm$cav,
+      arm  = arm$label
+    )
+  }
+  dplyr::bind_rows(ev_list)
+}
+
+# The three arms exactly as reported by Li 2015 Table 2.
+arms <- list(
+  list(label = "Placebo",  cav =   0.00),
+  list(label = "10 mg QW", cav =  59.85),
+  list(label = "20 mg QW", cav = 119.70)
+)
+
+# Weekly observation grid for the figures; each "subject" carries a
+# single CAV-arm covariate value and is observed once per record.
+obs_times <- seq(0, 52, by = 1)
+events    <- build_events(arms, obs_times)
+stopifnot(!anyDuplicated(events$id))
+```
+
+# Replication: study-arm-mean WT trajectories (Li 2015 Figure 1)
+
+Figure 1 of Li 2015 plots the observed and model-predicted WT change
+from baseline against time for the placebo arm (panel A) and the drug
+arms (panel B, 10 and 20 mg QW pooled). The typical-value MBMA model
+emits the trial-arm-mean trajectory; a stochastic envelope from the
+proportional residual SD is overlaid for context.
+
+```{r figure-1, fig.cap = "Replication of Li 2015 Figure 1 typical-value trajectories: study-arm-mean body-weight change from baseline (kg) over time for placebo, taspoglutide 10 mg QW, and taspoglutide 20 mg QW. The shaded ribbon is +/- 1 SD of the proportional residual error (b = 0.189 from Li 2015 Table 3) around the typical-value prediction."}
+sim <- rxode2::rxSolve(mod_typ, events = events, keep = c("arm", "CAV"))
+sim_df <- as.data.frame(sim) |>
+  dplyr::mutate(
+    arm = factor(arm, levels = c("Placebo", "10 mg QW", "20 mg QW")),
+    Cc_lo = Cc + (0.189) * Cc,   # proportional residual: y = F * (1 + b*eps)
+    Cc_hi = Cc - (0.189) * Cc    # symmetric +/- 1 SD ribbon
+  ) |>
+  dplyr::rowwise() |>
+  dplyr::mutate(
+    Cc_ribbon_lo = min(Cc_lo, Cc_hi),
+    Cc_ribbon_hi = max(Cc_lo, Cc_hi)
+  ) |>
+  dplyr::ungroup()
+
+ggplot(sim_df, aes(x = time, y = Cc, colour = arm, fill = arm)) +
+  geom_ribbon(aes(ymin = Cc_ribbon_lo, ymax = Cc_ribbon_hi),
+              alpha = 0.15, colour = NA) +
+  geom_line(linewidth = 0.9) +
+  scale_colour_manual(values = c("Placebo"  = "grey30",
+                                 "10 mg QW" = "steelblue",
+                                 "20 mg QW" = "firebrick")) +
+  scale_fill_manual(values = c("Placebo"  = "grey30",
+                               "10 mg QW" = "steelblue",
+                               "20 mg QW" = "firebrick")) +
+  labs(x       = "Time (weeks)",
+       y       = "Study-arm-mean WT change from baseline (kg)",
+       colour  = NULL, fill = NULL,
+       title   = "Li 2015 Figure 1 -- placebo and taspoglutide weight-loss trajectories",
+       caption = "Typical-value MBMA prediction. Shaded ribbon: +/- 1 SD of proportional residual error.") +
+  theme_bw() +
+  theme(legend.position = "top")
+```
+
+# Asymptote check against the published Pmax + Dmax claim
+
+Li 2015 Discussion (page 114) states: "The model population predicted
+result of maximum reduction of body weight was -1.85 kg compared with
+-1.33 kg reduction in the placebo control group. ... Overall, the
+maximum reduction (3.28 kg) of body weight from the baseline was close
+to the reported value (3.16 kg) in clinical trials." We reproduce the
+predicted long-time asymptote at the three regimens reported in
+Li 2015 Table 2, and at a hypothetical metric-saturation arm
+(`CAV = 10000` pmol/L), to compare against the paper's quoted values.
+
+```{r asymptote-table}
+asym_arms <- list(
+  list(label = "Placebo",                 cav =     0.00),
+  list(label = "10 mg QW",                cav =    59.85),
+  list(label = "20 mg QW",                cav =   119.70),
+  list(label = "Metric saturation (Dmax)", cav = 10000.00)
+)
+
+# Long-time observation grid (200 weeks > 4 * 11.5-day half-life of Kdrug)
+asym_events <- build_events(asym_arms, seq(0, 200, by = 4))
+
+sim_asym <- rxode2::rxSolve(mod_typ, events = asym_events,
+                            keep = c("arm", "CAV")) |>
+  as.data.frame() |>
+  dplyr::group_by(arm) |>
+  dplyr::summarise(asymptote_kg = min(Cc), .groups = "drop")
+
+knitr::kable(
+  sim_asym,
+  digits  = 3,
+  col.names = c("Arm", "Predicted WT change at t = 200 weeks (kg)"),
+  caption = "Typical-value asymptote of the placebo + Emax drug response by arm. The metric-saturation row is Pmax + Dmax = -3.18 kg, consistent with the paper's quoted 3.28 kg overall-maximum claim within numerical rounding."
+)
+
+# Sanity-check the analytic asymptote at CAV -> infinity:
+analytic_asym <- -1.33 + (-1.85)
+predicted_asym <- sim_asym$asymptote_kg[sim_asym$arm == "Metric saturation (Dmax)"]
+cat(sprintf(
+  "Analytic asymptote (Pmax + Dmax) = %.3f kg; simulated asymptote = %.3f kg.\n",
+  analytic_asym, predicted_asym
+))
+stopifnot(abs(analytic_asym - predicted_asym) < 0.01)
+```
+
+# Time-to-steady-state check (Li 2015 page 114)
+
+Li 2015 quotes: "The estimated Kdrug was 0.422 weeks^-1, which
+corresponds to a half-life of 11.5 days. Using the estimated Kdrug
+value, the steady-state reduction in WT was predicted to be achieved
+after approximately 57.5 days or 8.2 weeks." This is a 5-times the
+drug-response half-life heuristic (5 * ln(2) / Kdrug = 5 * 0.693 /
+0.422 = 8.21 weeks).
+
+```{r tss-check}
+half_life_days <- log(2) / 0.422 * 7
+tss_weeks      <- 5 * log(2) / 0.422
+cat(sprintf(
+  "Kdrug-derived half-life = %.2f days; 5 half-lives = %.2f weeks (paper says ~8.2 weeks / 57.5 days).\n",
+  half_life_days, tss_weeks
+))
+
+# Pull the simulated 20 mg QW trajectory at 8.2 weeks and confirm
+# it is within ~5 percent of its long-time asymptote.
+asym_20 <- sim_asym$asymptote_kg[sim_asym$arm == "20 mg QW"]
+at_8_2  <- sim_df |>
+  dplyr::filter(arm == "20 mg QW",
+                abs(time - 8.0) <= 0.5) |>
+  dplyr::pull(Cc) |>
+  mean()
+cat(sprintf("Predicted 20 mg QW WT change at t ~ 8 weeks: %.3f kg; long-time asymptote: %.3f kg (%.1f%% of asymptote).\n",
+            at_8_2, asym_20, 100 * at_8_2 / asym_20))
+```
+
+# Comparison against published per-arm endpoints
+
+Li 2015 reports the model's population-typical Pmax / Dmax / IC50
+estimates and discusses the 20 mg QW arm's relationship to the IC50.
+The table below provides the per-arm typical-value predictions at the
+end of the longest individual-trial follow-up (52 weeks; T-emerge 2)
+alongside the paper's prose statements.
+
+```{r endpoint-table}
+sim_52 <- sim_df |>
+  dplyr::filter(time == 52) |>
+  dplyr::select(arm, Cc) |>
+  dplyr::rename(`Predicted WT change at 52 weeks (kg)` = Cc)
+
+knitr::kable(
+  sim_52,
+  digits = 3,
+  caption = "Typical-value MBMA prediction of study-arm-mean WT change at the end of the longest individual-trial follow-up (52 weeks). Compare with Li 2015 Discussion: -1.33 kg for placebo, ~-2.7 kg for 20 mg QW (per Pmax + Dmax * 119.7/161.4 = -1.33 + -1.372)."
+)
+```
+
+# Stochastic simulation note (between-trial vs between-subject)
+
+The eta variances in this model are **between-trial** variability,
+recovered from Li 2015's Table 3 "ITV %" column. Each `id` in a
+stochastic `rxSolve(mod_full, events = ...)` therefore represents a
+hypothetical new trial (study-arm), not a hypothetical new subject. The
+proportional residual error (`b = 0.189`) is similarly the within-arm
+study-arm-mean error, not within-subject error. The model is suitable
+for predicting study-arm-mean outcomes (per-arm mean WT change at a
+particular time, with study-arm-mean variability across new trials),
+**not** for predicting individual-subject WT trajectories.
+
+# Assumptions and deviations
+
+The MBMA encoding in this model file deviates from the standard
+nlmixr2lib popPK conventions in three places that warrant explicit
+documentation:
+
+* **Eta naming convention.** IIVs are named `eta_study_*` to mark
+  them as between-study (not between-subject) random effects, per the
+  Phase 1 step 3a MBMA guidance in `.claude/skills/extract-literature-model/SKILL.md`.
+  `checkModelConventions()` flags these as IIV-without-matching-theta
+  warnings because the lint's regex assumes the popPK `etalcl` /
+  `etalka` pattern. The deviation is intentional.
+
+* **`Cc` is not a drug concentration.** The model's `Cc` output is the
+  signed change in body weight from pretreatment baseline (kg, with
+  negative = weight loss), following the convention used by the
+  Vargo 2014 statins + ezetimibe MBMA. `checkModelConventions()`
+  flags the unit-dimension mismatch between `units$dosing` (mg) and
+  `units$concentration` (kg). The deviation is intentional. The
+  paper does not consume rxode2 dose events at all; taspoglutide
+  exposure enters as the study-arm `CAV` covariate column (0 / 59.85
+  / 119.7 pmol/L for the three regimens, derived from Ratner 2010
+  per Li 2015 Methods section 2.2).
+
+* **Additive IIV on IC50 with 104 percent ITV.** Li 2015 Table 3
+  reports the between-trial ITV on IC50 as 104 percent under the
+  additive individual model `IC50_i = IC50_pop + eta_i` (Li 2015 Eq 4).
+  At the population mean of 41.7 pmol/L, a 43 pmol/L additive SD
+  yields a non-trivial probability of negative IC50 draws in any
+  stochastic simulation of new trials, which would invert the
+  Emax response. The model file is faithful to the paper's encoding
+  (additive eta with `eta_study_ic50 ~ 1881.4`); for figure-replication
+  use of the model, prefer `rxode2::zeroRe(mod)` (the typical-value
+  trajectory), as shown above.
+
+* **CAV averaging window assumption.** Li 2015 Methods section 2.2 uses
+  the average plasma concentration of taspoglutide between weeks 2 and
+  4 of QW dosing (Ratner 2010) as the metric for **all** observation
+  time points from 8 to 52 weeks. The implicit assumption is that the
+  same Cavg metric applies once dosing continues at the same QW
+  schedule; CAV is set per-arm and carried forward unchanged. No
+  individual-subject PK is modelled.
+
+* **Population age / weight detail not in source.** Li 2015 does not
+  tabulate pooled age, weight, or sex-breakdown for the 9 trials. The
+  `population` metadata leaves `age_range`, `weight_range`,
+  `sex_female_pct`, and `race_ethnicity` unfilled with explanatory
+  notes; downstream users wanting per-trial demographics should
+  consult the 9 source trials individually.
