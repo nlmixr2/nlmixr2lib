@@ -90,20 +90,14 @@
     # capillary release term setting the lower physiological limit).
     # State holds a concentration (mmol/L) rather than an amount.
     "nefa",
-    # Endogenous deoxynucleoside triphosphate (dNTP) pool components
-    # used by indirect-response PD models for nucleoside-analog
-    # antiretrovirals (Chen 2016 tenofovir / emtricitabine PKPD). Each
-    # state holds the intracellular concentration (fmol/10^6 PBMC).
-    # The deoxypurines (dATP, dGTP) are inhibited by tenofovir
-    # diphosphate; the deoxypyrimidines (dCTP, TTP) are inhibited by
-    # emtricitabine triphosphate.
-    "datp", "dgtp", "dctp", "ttp",
-    # Intracellular active triphosphate anabolites of the nucleoside-
-    # analog antiretrovirals tenofovir (TFV) and emtricitabine (FTC).
-    # TFV-DP and FTC-TP each accumulate inside peripheral-blood
-    # mononuclear cells via phosphorylation of the plasma parent drug.
-    # Used by the Chen 2016 linked PKPD model.
-    "tfvdp", "ftctp"
+    # Fetal disposition compartment used by maternal-fetal popPK models
+    # of placentally-transferred drugs (Ngamprasertwong 2016 propofol
+    # sheep maternal-fetal model: drug enters maternal `central`, exits
+    # via maternal `cl` to elimination and via QM-F to/from a single
+    # `fetus` compartment of volume VFetus; fetal clearance was set to
+    # zero because the source paper found it negligible). Drug amount
+    # in mg; per-compartment concentration derived as fetus / vfetus.
+    "fetus"
   ),
   # Bare numbered chains (transit / effect / precursor / lat / dar /
   # depot) and metabolite-suffixed compartments are validated

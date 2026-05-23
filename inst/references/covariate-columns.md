@@ -307,6 +307,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 
 ## Vital signs
 
+### HR (**canonical for heart rate**)
+- **Description:** Subject heart rate, in beats per minute. Captured in popPK studies where hemodynamic state modifies hepatic blood flow and hence clearance of high-extraction-ratio drugs (e.g., propofol). May be time-varying when serial intra-operative or intensive-monitoring values are recorded; many studies summarise as the per-subject median across the observation window and treat the covariate as time-fixed. Document baseline-vs-time-varying status in `covariateData[[HR]]$notes` per model.
+- **Units:** beats/min
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- used with power scaling `(HR / ref)^exponent` or linear-deviation forms `(1 + e * (HR - ref))`. Reference values observed: 158 beats/min (Ngamprasertwong 2016; population reference encoded in the Table 2 equation `CL = theta1 * (HR/158)^theta2`).
+- **Source aliases:**
+  - `HR` -- same orientation as the canonical, no value transformation; used in `Ngamprasertwong_2016_propofol_sheep.R` (per-subject median HR over the propofol-infusion observation window, treated as time-fixed in line with the cohort-typical sheep hemodynamic state).
+- **Example models:** `Ngamprasertwong_2016_propofol_sheep.R` (power effect on maternal propofol clearance: `CL_indiv = theta1 * (HR/158)^theta2` with `theta2 = 0.764`; clearance increases with heart rate, plausibly reflecting heart-rate-driven increases in hepatic blood flow that govern propofol's high hepatic-extraction-ratio elimination).
+- **Notes:** General scope because heart rate is a universally applicable vital sign suitable for any model where hemodynamic state modulates clearance. Future models can use a different reference HR (typical adult human is ~70 beats/min vs the sheep cohort 158 beats/min); document the reference in `covariateData[[HR]]$notes`. Distinct from `HR_BAND` or `HRV` (not yet registered) which would be a heart-rate-band stratifier or heart-rate variability metric, respectively. Ratified canonically on 2026-05-23 alongside the Ngamprasertwong 2016 propofol maternal-fetal sheep extraction.
+
 ### BODYTEMP (**canonical for body temperature**)
 - **Description:** Subject body temperature (typically axillary or oral) at the relevant clinical observation. Captured at study admission in acute-infection PK studies (fever as a marker of acute illness severity); may be time-varying when serial temperature measurements are recorded across visits. Document baseline-vs-time-varying status in `covariateData[[BODYTEMP]]$notes` per model.
 - **Units:** degC
