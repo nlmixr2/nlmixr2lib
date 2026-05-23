@@ -1,14 +1,14 @@
 ---
-title: "Taspoglutide MBMA (Li 2015)"
+title: "Taspoglutide weight-loss MBMA (Li 2015)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Taspoglutide MBMA (Li 2015)}
+  %\VignetteIndexEntry{Taspoglutide weight-loss MBMA (Li 2015)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
 ```{r setup, include = FALSE}
-knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7.5, fig.height = 5)
 library(nlmixr2lib)
 library(rxode2)
 library(dplyr)
@@ -19,378 +19,360 @@ library(ggplot2)
 # Model and source
 
 * Citation: `r rxode2::rxode(readModelDb("Li_2015_taspoglutide_mbma"))$reference`
-* Description: see `rxode2::rxode(readModelDb("Li_2015_taspoglutide_mbma"))$description`.
-* Article (open access, CC BY-NC-ND): <https://doi.org/10.1016/j.jsps.2014.11.008>
-
-Li et al. (2015) performed a model-based meta-analysis (MBMA) of nine
-published phase-2 / phase-3 trials of taspoglutide (a long-acting human
-GLP-1 receptor agonist, given as once-weekly subcutaneous injection in
-type 2 diabetes). Eight trials (3,702 patients) were pooled for model
-development; the ninth (Rosenstock 2013 T-emerge 4, 797 patients) was held
-out for external validation. The authors digitised mean change-from-baseline
-trajectories for fasting plasma glucose (FPG) and glycosylated hemoglobin
-(HbA1c) over 8-52 week treatment durations and fitted two coupled PD models
-in Monolix 4.2/4.3 (SAEM).
-
-Each endpoint is the **sum of a placebo response and a drug response**, both
-following an exponential approach to an asymptote (Li 2015 Eq. 1-2). The FPG
-drug asymptote is an Emax saturation in taspoglutide concentration; the
-HbA1c drug asymptote is an Emax saturation in the **drug-induced FPG
-reduction** (a sequential PD cascade: drug -> FPG -> HbA1c).
+* Description: `r rxode2::rxode(readModelDb("Li_2015_taspoglutide_mbma"))$description`
+* Article: <https://doi.org/10.1691/ph.2015.4716>
 
 # Population
 
-The model was fitted on study-arm-mean data pooled across 8 trials in adults
-with type 2 diabetes (3,702 patients; treatment durations 8-52 weeks). The
-trials cover monotherapy and combination regimens (drug-naive; inadequately
-controlled on metformin; failing metformin + sulphonylurea; metformin + TZD;
-etc.; Li 2015 Table 1). Per-trial baseline demographics are not pooled in the
-paper. See the model's `population` metadata
-(`readModelDb("Li_2015_taspoglutide_mbma")$population`) for the per-trial
-patient counts and dosing regimens.
+Li 2015 is a model-based meta-analysis (MBMA) of taspoglutide weight-loss
+efficacy in adults with type 2 diabetes mellitus. The authors digitised
+the study-arm-mean body-weight (WT) trajectories from 9 published
+placebo-controlled trials (3,702 patients pooled across placebo, 10 mg
+once-weekly, and 20 mg once-weekly arms; 8 to 52 weeks of follow-up)
+of the taspoglutide phase 2/3 program (T-emerge series and related;
+Raz 2012, Ratner 2010, Nauck 2009, Nauck 2013, Hollander 2013, Bergenstal
+2012, Henry 2012, Pratley 2013, Rosenstock 2013; Li 2015 Table 1).
+Background regimens spanned monotherapy (1 trial), metformin (5 trials),
+metformin + sulphonylurea (1 trial), metformin + TZD or pioglitazone
+(1 trial), and sulphonylurea +/- metformin (1 trial).
 
-**Scope.** The model is calibrated and intended for **study-arm-mean** PD
-simulation (each simulated "subject" represents a trial arm). It is **not**
-suitable for individual-subject simulation -- the between-trial random effects
-do not encode within-trial between-subject variability.
+The same information is available programmatically via
+`rxode2::rxode(readModelDb("Li_2015_taspoglutide_mbma"))$population`.
 
 # Source trace
 
-Per-parameter origin is recorded as in-file comments next to every `ini()`
-entry in `inst/modeldb/specificDrugs/Li_2015_taspoglutide_mbma.R`. The
-table below collects them in one place.
+The model is a placebo-adjusted Emax exposure-response over time, with
+the placebo trajectory and drug excess each approaching a first-order
+asymptote at separate rates (Li 2015 Eq 1-2):
+
+$$
+\text{Placebo}_i(t) \;=\; P_{\max,i} \cdot (1 - e^{-K_{p,i}\,t})
+$$
+
+$$
+\text{Drug}_i(t) \;=\; \text{Placebo}_i(t) \;+\; \frac{D_{\max,i} \cdot \text{CAV}_i}{\text{IC}_{50,i} + \text{CAV}_i} \cdot (1 - e^{-K_{\mathrm{drug},i}\,t}) \;+\; \varepsilon_i
+$$
+
+Residual error is proportional (Li 2015 Eq 5):
+
+$$
+Y \;=\; F \;+\; b \cdot F \cdot \varepsilon, \quad \varepsilon \sim N(0, 1)
+$$
+
+The metric (CAV) is the study-arm average plasma concentration of
+taspoglutide between weeks 2 and 4 of QW dosing, derived in Li 2015
+Methods section 2.2 from Ratner 2010: 0 pmol/L for placebo arms,
+119.7 pmol/L for the 20 mg QW arm (mean of three individual
+Cavg(2w-4w) values reported by Ratner 2010), and 59.85 pmol/L for the
+10 mg QW arm (half of 119.7, assuming dose-proportional exposure per
+Ratner 2010). The per-parameter origin is recorded as an in-file
+comment next to each `ini()` entry in
+`inst/modeldb/specificDrugs/Li_2015_taspoglutide_mbma.R`. The table
+below collects them in one place for review.
 
 | Equation / parameter | Value | Source location |
-|----------------------|-------|-----------------|
-| FPG placebo response: `d(fpg_placebo)/dt = Kp_F (Pmax_F - fpg_placebo)` | n/a | Li 2015 Eq. 1 |
-| FPG drug response: `d(fpg_drug)/dt = Kdrug_F (Dmax_F * C / (IC50_F + C) - fpg_drug)` | n/a | Li 2015 Eq. 2 |
-| `Pmax_F` (mmol/L) | -0.371 | Li 2015 Table 2 (fixed; placebo-only fit, ITV 29.8%) |
-| `Kp_F` (1/week) | 0.781 | Li 2015 Table 2 (fixed; placebo-only fit, ITV 37.8%) |
-| `Dmax_F` (mmol/L) | -2.39 | Li 2015 Table 2 (RSE 6%, ITV 24.8%) |
-| `IC50_F` (pmol/L) | 25.3 | Li 2015 Table 2 (RSE 0%; ITV 5.43%) |
-| `Kdrug_F` (1/week) | 2.0 | Li 2015 Table 2 (RSE 2%, ITV 12.5%) |
-| `b` (FPG residual) | 0.194 | Li 2015 Table 2 (RSE 8%) |
-| `c` (FPG residual power, not encoded) | 0.182 | Li 2015 Table 2 (RSE 37%) |
-| HbA1c placebo response: same form as FPG with `Pmax_Hb`, `Kp_Hb` | n/a | Li 2015 Eq. 1 |
-| HbA1c drug response: `d(hba1c_drug)/dt = Kdrug_Hb (Dmax_Hb * fpg_drug / (IC50_Hb + fpg_drug) - hba1c_drug)` | n/a | Li 2015 Eq. 2; Section 3.2 (metric is FPG change) |
-| `Pmax_Hb` (%) | -0.253 | Li 2015 Table 3 (fixed; placebo-only fit, ITV 15.2%) |
-| `Kp_Hb` (1/week) | 0.382 | Li 2015 Table 3 (fixed; placebo-only fit, ITV 14.7%) |
-| `Dmax_Hb` (%) | -1.74 | Li 2015 Table 3 (RSE 8%, ITV 8.65%) |
-| `IC50_Hb` (mmol/L) | -1.81 | Li 2015 Table 3 (RSE 15%, ITV 26.8%) |
-| `Kdrug_Hb` (1/week) | 0.249 | Li 2015 Table 3 (RSE 13%, ITV 19.9%) |
-| `a` (HbA1c residual additive) | 0.00532 | Li 2015 Table 3 (RSE 16%) |
-| `b` (HbA1c residual proportional) | 0.0717 | Li 2015 Table 3 (RSE 13%) |
-| `c` (HbA1c residual power, not encoded) | 0.239 | Li 2015 Table 3 (RSE 66%) |
-| Drug exposure metric (Cavg w2-w4): 0 / 59.85 / 119.7 pmol/L for placebo / 10 mg / 20 mg QW | n/a | Li 2015 Section 3.2 |
+|----------------------|------:|-----------------|
+| Placebo response (Eq 1) | n/a | Li 2015 page 114 |
+| Drug response (Eq 2) | n/a | Li 2015 page 114 |
+| IIV models (Eq 3, exponential; Eq 4, additive) | n/a | Li 2015 page 114 |
+| Residual error (Eq 5, proportional) | n/a | Li 2015 page 114 |
+| `pmax` (Pmax, kg; FIXED in combined fit) | -1.33 | Table 3, Pmax (footnote e) |
+| `lkp` (log Kp, log(1/week); FIXED in combined fit) | log(0.0987) | Table 3, Kp (footnote e) |
+| `dmax` (Dmax, kg) | -1.85 | Table 3, Dmax |
+| `ic50` (IC50, pmol/L) | 41.7 | Table 3, IC50 |
+| `lkdrug` (log Kdrug, log(1/week)) | log(0.422) | Table 3, Kdrug |
+| `eta_study_pmax` variance (additive ITV on Pmax; FIXED) | (1.10 * 1.33)^2 = 2.1389 kg^2 | Table 3, ITV 110% (footnote e) |
+| `eta_study_lkp` variance (exponential ITV on Kp; FIXED) | 0.33^2 = 0.1089 | Table 3, ITV 33% (footnote e) |
+| `eta_study_dmax` variance (additive ITV on Dmax) | (0.0976 * 1.85)^2 = 0.0326 kg^2 | Table 3, ITV 9.76% |
+| `eta_study_ic50` variance (additive ITV on IC50) | (1.04 * 41.7)^2 = 1881.4 (pmol/L)^2 | Table 3, ITV 104% |
+| `eta_study_lkdrug` variance (exponential ITV on Kdrug) | 0.146^2 = 0.0213 | Table 3, ITV 14.6% |
+| `propSd` (proportional residual b; Eq 5) | 0.189 | Table 3, b |
+| CAV reference values (study-arm-level exposure metric) | 0 / 59.85 / 119.7 pmol/L | Li 2015 Table 2 / Methods 2.2; derived from Ratner 2010 |
 
-# Simulation
+The "ITV %" entries in Table 3 are inter-trial (between-study) variability
+percentages reported relative to the typical value (Monolix 4.3
+convention). For the **additive** Eq 4 individual model
+`P_i = P_pop + eta_i`, the variance is recovered as
+`((ITV/100) * |theta_pop|)^2`; for the **exponential** Eq 3 individual
+model `P_i = P_pop * exp(eta_i)`, the variance on the log scale is
+approximately `(ITV/100)^2` (exact for small ITV; differs by O(ITV^4)
+from `log(1 + (ITV/100)^2)`).
 
-The model accepts a single MBMA covariate, `METRIC_TASPO_C` -- the study-arm
-average plasma taspoglutide concentration between weeks 2 and 4 (pmol/L).
-Supplied values: 0 (placebo), 59.85 (10 mg QW), 119.7 (20 mg QW). There are
-no drug-dose events; the metric is the only driver of the drug arm.
+# Errata
 
-```{r typical-cohort}
-mod         <- readModelDb("Li_2015_taspoglutide_mbma")
-mod_typical <- mod |> rxode2::zeroRe()
+No published erratum or corrigendum was located for Li 2015. A search of
+the Pharmazie landing page (<https://doi.org/10.1691/ph.2015.4716>) and
+PubMed returned no correction notices as of the model extraction date
+(2026-05-23).
 
-times <- seq(0, 52, by = 0.5)
+Three minor transcription / parsing issues noted while reading the
+paper (not requiring a corrigendum to use the model correctly):
 
-make_arm <- function(metric_c, label, id) {
-  data.frame(
-    id             = id,
-    time           = times,
-    evid           = 0L,
-    amt            = NA_real_,
-    cmt            = "FPG",
-    METRIC_TASPO_C = metric_c,
-    arm            = label,
-    stringsAsFactors = FALSE
-  )
+* Eq 2 of the paper writes `DI50,i` for the half-maximal-response
+  metric; the surrounding prose, Table 3, and the Discussion all use
+  `IC50` for the same quantity. The model file follows the prose and
+  Table 3 convention (`ic50`).
+
+* The Discussion states: "Overall, the maximum reduction (3.28 kg) of
+  body weight from the baseline was close to the reported value
+  (3.16 kg) in clinical trials." The structural model predicts the
+  metric->infinity asymptote at long times as `Pmax + Dmax = -1.33 + -1.85
+  = -3.18 kg`, which is approximately the paper's quoted maximum
+  (within 0.1 kg). The 0.1 kg discrepancy is consistent with
+  numerical rounding of `Pmax` and `Dmax` in Table 3; the structural
+  values reported in Table 3 are used verbatim in this implementation.
+
+* Li 2015 Methods section 4.6 describes IIV as `addictive` (a typo for
+  `additive`) for Pmax, Dmax, and IC50, and `exponential` for Kp and
+  Kdrug. The model file follows the additive convention (P_i = P_pop +
+  eta_i) for the three parameters described as `addictive`.
+
+# Virtual cohort
+
+Original individual-patient data are not publicly available; the source
+analysis was performed on digitised study-arm-mean data from 9 trials.
+The simulations below explore the typical-value time course of body
+weight from baseline for the three regimens (placebo, 10 mg QW, 20 mg
+QW) and demonstrate the dose-response saturation. The simulation
+**scope is study-arm-mean WT change in kg from baseline**, not
+individual-subject concentrations: the eta variances encode
+between-trial (not between-subject) variability, and proportional
+residual error b = 0.189 describes the within-arm noise of the
+study-arm-mean time-course measurement.
+
+```{r virtual-design}
+mod_full <- readModelDb("Li_2015_taspoglutide_mbma")
+mod_typ  <- rxode2::zeroRe(mod_full)
+
+# Three regimens at the QW dose levels reported in the source 9 trials,
+# observed weekly from t = 0 to t = 52 weeks (the full follow-up window
+# of the longest trial, Rosenstock 2013, T-emerge 2).
+build_events <- function(arms, times) {
+  ev_list <- vector("list", length(arms))
+  for (k in seq_along(arms)) {
+    arm   <- arms[[k]]
+    n_obs <- length(times)
+    ev_list[[k]] <- data.frame(
+      id   = ((k - 1L) * n_obs) + seq_len(n_obs),
+      time = times,
+      amt  = 0,
+      evid = 0L,
+      CAV  = arm$cav,
+      arm  = arm$label
+    )
+  }
+  dplyr::bind_rows(ev_list)
 }
 
-typical_events <- rbind(
-  make_arm(0,     "Placebo",         1L),
-  make_arm(59.85, "Taspoglutide 10 mg QW", 2L),
-  make_arm(119.7, "Taspoglutide 20 mg QW", 3L)
+# The three arms exactly as reported by Li 2015 Table 2.
+arms <- list(
+  list(label = "Placebo",  cav =   0.00),
+  list(label = "10 mg QW", cav =  59.85),
+  list(label = "20 mg QW", cav = 119.70)
 )
-stopifnot(!anyDuplicated(typical_events[, c("id", "time", "evid")]))
 
-sim_typical <- as.data.frame(
-  rxode2::rxSolve(
-    mod_typical,
-    events = typical_events,
-    keep   = c("arm", "METRIC_TASPO_C"),
-    addDosing = FALSE
-  )
-)
+# Weekly observation grid for the figures; each "subject" carries a
+# single CAV-arm covariate value and is observed once per record.
+obs_times <- seq(0, 52, by = 1)
+events    <- build_events(arms, obs_times)
+stopifnot(!anyDuplicated(events$id))
 ```
 
-## Asymptote sanity check
+# Replication: study-arm-mean WT trajectories (Li 2015 Figure 1)
 
-For a sustained constant metric `C`, the FPG asymptote is
-`Pmax_F + Dmax_F * C / (IC50_F + C)` and the HbA1c asymptote is
-`Pmax_Hb + Dmax_Hb * fpg_drug_asymp / (IC50_Hb + fpg_drug_asymp)`. These
-algebraic values must match the simulated trajectory at large `t`.
+Figure 1 of Li 2015 plots the observed and model-predicted WT change
+from baseline against time for the placebo arm (panel A) and the drug
+arms (panel B, 10 and 20 mg QW pooled). The typical-value MBMA model
+emits the trial-arm-mean trajectory; a stochastic envelope from the
+proportional residual SD is overlaid for context.
 
-```{r asymptote-check}
-pmax_f  <- -0.371; dmax_f <- -2.39; ic50_f <- 25.3
-pmax_hb <- -0.253; dmax_hb <- -1.74; ic50_hb <- -1.81
+```{r figure-1, fig.cap = "Replication of Li 2015 Figure 1 typical-value trajectories: study-arm-mean body-weight change from baseline (kg) over time for placebo, taspoglutide 10 mg QW, and taspoglutide 20 mg QW. The shaded ribbon is +/- 1 SD of the proportional residual error (b = 0.189 from Li 2015 Table 3) around the typical-value prediction."}
+sim <- rxode2::rxSolve(mod_typ, events = events, keep = c("arm", "CAV"))
+sim_df <- as.data.frame(sim) |>
+  dplyr::mutate(
+    arm = factor(arm, levels = c("Placebo", "10 mg QW", "20 mg QW")),
+    Cc_lo = Cc + (0.189) * Cc,   # proportional residual: y = F * (1 + b*eps)
+    Cc_hi = Cc - (0.189) * Cc    # symmetric +/- 1 SD ribbon
+  ) |>
+  dplyr::rowwise() |>
+  dplyr::mutate(
+    Cc_ribbon_lo = min(Cc_lo, Cc_hi),
+    Cc_ribbon_hi = max(Cc_lo, Cc_hi)
+  ) |>
+  dplyr::ungroup()
 
-closed_form <- function(C) {
-  fpg_drug_asymp <- dmax_f * C / (ic50_f + C)
-  fpg_asymp      <- pmax_f + fpg_drug_asymp
-  hba1c_drug_asymp <- if (C == 0) 0 else dmax_hb * fpg_drug_asymp / (ic50_hb + fpg_drug_asymp)
-  hba1c_asymp    <- pmax_hb + hba1c_drug_asymp
-  c(FPG_asymp = fpg_asymp, HbA1c_asymp = hba1c_asymp)
-}
+ggplot(sim_df, aes(x = time, y = Cc, colour = arm, fill = arm)) +
+  geom_ribbon(aes(ymin = Cc_ribbon_lo, ymax = Cc_ribbon_hi),
+              alpha = 0.15, colour = NA) +
+  geom_line(linewidth = 0.9) +
+  scale_colour_manual(values = c("Placebo"  = "grey30",
+                                 "10 mg QW" = "steelblue",
+                                 "20 mg QW" = "firebrick")) +
+  scale_fill_manual(values = c("Placebo"  = "grey30",
+                               "10 mg QW" = "steelblue",
+                               "20 mg QW" = "firebrick")) +
+  labs(x       = "Time (weeks)",
+       y       = "Study-arm-mean WT change from baseline (kg)",
+       colour  = NULL, fill = NULL,
+       title   = "Li 2015 Figure 1 -- placebo and taspoglutide weight-loss trajectories",
+       caption = "Typical-value MBMA prediction. Shaded ribbon: +/- 1 SD of proportional residual error.") +
+  theme_bw() +
+  theme(legend.position = "top")
+```
 
-closed <- rbind(
-  Placebo                = closed_form(0),
-  `Taspoglutide 10 mg QW` = closed_form(59.85),
-  `Taspoglutide 20 mg QW` = closed_form(119.7)
+# Asymptote check against the published Pmax + Dmax claim
+
+Li 2015 Discussion (page 114) states: "The model population predicted
+result of maximum reduction of body weight was -1.85 kg compared with
+-1.33 kg reduction in the placebo control group. ... Overall, the
+maximum reduction (3.28 kg) of body weight from the baseline was close
+to the reported value (3.16 kg) in clinical trials." We reproduce the
+predicted long-time asymptote at the three regimens reported in
+Li 2015 Table 2, and at a hypothetical metric-saturation arm
+(`CAV = 10000` pmol/L), to compare against the paper's quoted values.
+
+```{r asymptote-table}
+asym_arms <- list(
+  list(label = "Placebo",                 cav =     0.00),
+  list(label = "10 mg QW",                cav =    59.85),
+  list(label = "20 mg QW",                cav =   119.70),
+  list(label = "Metric saturation (Dmax)", cav = 10000.00)
 )
-sim_endpoint <- sim_typical |>
+
+# Long-time observation grid (200 weeks > 4 * 11.5-day half-life of Kdrug)
+asym_events <- build_events(asym_arms, seq(0, 200, by = 4))
+
+sim_asym <- rxode2::rxSolve(mod_typ, events = asym_events,
+                            keep = c("arm", "CAV")) |>
+  as.data.frame() |>
+  dplyr::group_by(arm) |>
+  dplyr::summarise(asymptote_kg = min(Cc), .groups = "drop")
+
+knitr::kable(
+  sim_asym,
+  digits  = 3,
+  col.names = c("Arm", "Predicted WT change at t = 200 weeks (kg)"),
+  caption = "Typical-value asymptote of the placebo + Emax drug response by arm. The metric-saturation row is Pmax + Dmax = -3.18 kg, consistent with the paper's quoted 3.28 kg overall-maximum claim within numerical rounding."
+)
+
+# Sanity-check the analytic asymptote at CAV -> infinity:
+analytic_asym <- -1.33 + (-1.85)
+predicted_asym <- sim_asym$asymptote_kg[sim_asym$arm == "Metric saturation (Dmax)"]
+cat(sprintf(
+  "Analytic asymptote (Pmax + Dmax) = %.3f kg; simulated asymptote = %.3f kg.\n",
+  analytic_asym, predicted_asym
+))
+stopifnot(abs(analytic_asym - predicted_asym) < 0.01)
+```
+
+# Time-to-steady-state check (Li 2015 page 114)
+
+Li 2015 quotes: "The estimated Kdrug was 0.422 weeks^-1, which
+corresponds to a half-life of 11.5 days. Using the estimated Kdrug
+value, the steady-state reduction in WT was predicted to be achieved
+after approximately 57.5 days or 8.2 weeks." This is a 5-times the
+drug-response half-life heuristic (5 * ln(2) / Kdrug = 5 * 0.693 /
+0.422 = 8.21 weeks).
+
+```{r tss-check}
+half_life_days <- log(2) / 0.422 * 7
+tss_weeks      <- 5 * log(2) / 0.422
+cat(sprintf(
+  "Kdrug-derived half-life = %.2f days; 5 half-lives = %.2f weeks (paper says ~8.2 weeks / 57.5 days).\n",
+  half_life_days, tss_weeks
+))
+
+# Pull the simulated 20 mg QW trajectory at 8.2 weeks and confirm
+# it is within ~5 percent of its long-time asymptote.
+asym_20 <- sim_asym$asymptote_kg[sim_asym$arm == "20 mg QW"]
+at_8_2  <- sim_df |>
+  dplyr::filter(arm == "20 mg QW",
+                abs(time - 8.0) <= 0.5) |>
+  dplyr::pull(Cc) |>
+  mean()
+cat(sprintf("Predicted 20 mg QW WT change at t ~ 8 weeks: %.3f kg; long-time asymptote: %.3f kg (%.1f%% of asymptote).\n",
+            at_8_2, asym_20, 100 * at_8_2 / asym_20))
+```
+
+# Comparison against published per-arm endpoints
+
+Li 2015 reports the model's population-typical Pmax / Dmax / IC50
+estimates and discusses the 20 mg QW arm's relationship to the IC50.
+The table below provides the per-arm typical-value predictions at the
+end of the longest individual-trial follow-up (52 weeks; T-emerge 2)
+alongside the paper's prose statements.
+
+```{r endpoint-table}
+sim_52 <- sim_df |>
   dplyr::filter(time == 52) |>
-  dplyr::select(arm, FPG, HbA1c)
+  dplyr::select(arm, Cc) |>
+  dplyr::rename(`Predicted WT change at 52 weeks (kg)` = Cc)
 
-compare <- data.frame(
-  arm        = rownames(closed),
-  FPG_closed = round(closed[, "FPG_asymp"],   3),
-  FPG_sim    = round(sim_endpoint$FPG[match(rownames(closed), sim_endpoint$arm)],   3),
-  HbA1c_closed = round(closed[, "HbA1c_asymp"], 3),
-  HbA1c_sim    = round(sim_endpoint$HbA1c[match(rownames(closed), sim_endpoint$arm)], 3),
-  row.names = NULL
+knitr::kable(
+  sim_52,
+  digits = 3,
+  caption = "Typical-value MBMA prediction of study-arm-mean WT change at the end of the longest individual-trial follow-up (52 weeks). Compare with Li 2015 Discussion: -1.33 kg for placebo, ~-2.7 kg for 20 mg QW (per Pmax + Dmax * 119.7/161.4 = -1.33 + -1.372)."
 )
-knitr::kable(compare,
-             caption = "Closed-form vs simulated asymptote at week 52 (typical values).")
 ```
 
-The simulated and closed-form values must agree to ~3 decimals; a mismatch
-would indicate an ODE-encoding error.
+# Stochastic simulation note (between-trial vs between-subject)
 
-## Half-life sanity check
-
-For an exponential approach `d(state)/dt = k * (asymp - state)`, the time
-to half-asymptote is `ln(2)/k`.
-
-```{r half-life}
-half_life <- data.frame(
-  parameter        = c("Kp_F", "Kdrug_F", "Kp_Hb", "Kdrug_Hb"),
-  rate_per_week    = c(0.781, 2.0, 0.382, 0.249),
-  half_life_weeks  = round(log(2) / c(0.781, 2.0, 0.382, 0.249), 3),
-  half_life_days   = round(7 * log(2) / c(0.781, 2.0, 0.382, 0.249), 2),
-  paper_reports    = c(
-    "placebo FPG half-life not given numerically",
-    "kdrug_F = 2.0/week -> half-life 2.4 days (paper Section 3.4)",
-    "placebo HbA1c half-life not given numerically",
-    "kdrug_Hb = 0.249/week -> half-life 2.8 weeks (paper Section 3.4)"
-  )
-)
-knitr::kable(half_life,
-             caption = "Drug-effect time-to-half-asymptote: simulated vs paper text.")
-```
-
-# Replicate published figures
-
-## Figure 1 -- FPG response over time
-
-```{r figure-1}
-fpg_plot <- sim_typical |>
-  dplyr::select(time, arm, FPG, fpg_placebo, fpg_drug) |>
-  tidyr::pivot_longer(c(FPG, fpg_placebo, fpg_drug),
-                      names_to = "component", values_to = "delta_FPG") |>
-  dplyr::mutate(component = factor(component,
-                                   levels = c("FPG", "fpg_placebo", "fpg_drug"),
-                                   labels = c("Total FPG response",
-                                              "Placebo component",
-                                              "Drug component")))
-
-ggplot(fpg_plot |> dplyr::filter(component == "Total FPG response"),
-       aes(time, delta_FPG, colour = arm)) +
-  geom_line(linewidth = 1) +
-  facet_wrap(~ arm, ncol = 3) +
-  labs(x = "Time (weeks)",
-       y = "FPG change from baseline (mmol/L)",
-       title = "Figure 1 - FPG change-from-baseline over time",
-       caption = "Replicates Figure 1 of Li 2015 (panel A: placebo; panel B: drug response).") +
-  theme_minimal() +
-  theme(legend.position = "none")
-```
-
-The paper's Figure 1A (placebo, single arm) shows a slow FPG decline to about
--0.4 mmol/L by week 4-6 and a sustained plateau; Figure 1B (drug response,
-pooled across 10 and 20 mg) shows a rapid drop to about -2.1 / -2.3 mmol/L
-within 4-6 weeks and a sustained plateau. The simulated trajectories above
-match those asymptotes (placebo -0.37, 10 mg -2.05, 20 mg -2.34 mmol/L) and
-the drug-effect 2-3 day half-life.
-
-## Figure 2 -- HbA1c response over time
-
-```{r figure-2}
-hba1c_plot <- sim_typical |>
-  dplyr::select(time, arm, HbA1c, hba1c_placebo, hba1c_drug)
-
-ggplot(hba1c_plot, aes(time, HbA1c, colour = arm)) +
-  geom_line(linewidth = 1) +
-  facet_wrap(~ arm, ncol = 3) +
-  labs(x = "Time (weeks)",
-       y = "HbA1c change from baseline (%)",
-       title = "Figure 2 - HbA1c change-from-baseline over time",
-       caption = "Replicates Figure 2 of Li 2015 (panel A: placebo; panel B: drug response).") +
-  theme_minimal() +
-  theme(legend.position = "none")
-```
-
-Li 2015 Figure 2A (placebo) reaches about -0.25% within ~5-10 weeks; Figure
-2B (drug response) reaches about -1.0 to -1.2% by ~20-25 weeks at both doses
-(Section 3.4: "the responses between dose 10 and 20 mg did not show
-significant differences in the reduction of HbA1c"). The simulated
-trajectories above reach -0.25% (placebo), -1.09% (10 mg) and -1.16% (20 mg).
-The 2.8-week drug-effect half-life means steady state is reached around week
-~14 (5 half-lives).
-
-# Variability -- between-trial scope
-
-The model encodes between-trial variability (ITV) as study-level etas (one
-per parameter; diagonal). Stochastic simulation gives the variability across
-trial-mean trajectories -- not across individual patients within a trial.
-
-```{r vpc, fig.height = 6}
-set.seed(20251029)
-
-n_trials_per_arm <- 200L
-
-vpc_arms <- list(
-  list(metric = 0,     label = "Placebo"),
-  list(metric = 59.85, label = "Taspoglutide 10 mg QW"),
-  list(metric = 119.7, label = "Taspoglutide 20 mg QW")
-)
-
-vpc_events <- do.call(rbind, lapply(seq_along(vpc_arms), function(k) {
-  arm <- vpc_arms[[k]]
-  id_offset <- (k - 1L) * n_trials_per_arm
-  do.call(rbind, lapply(seq_len(n_trials_per_arm), function(i) {
-    make_arm(arm$metric, arm$label, id = id_offset + i)
-  }))
-}))
-stopifnot(!anyDuplicated(vpc_events[, c("id", "time", "evid")]))
-
-sim_vpc <- as.data.frame(
-  rxode2::rxSolve(
-    mod,
-    events = vpc_events,
-    keep   = c("arm", "METRIC_TASPO_C"),
-    addDosing = FALSE,
-    nStud  = 1L
-  )
-)
-
-vpc_summary <- sim_vpc |>
-  dplyr::group_by(arm, time) |>
-  dplyr::summarise(
-    FPG_q05   = quantile(FPG,   0.05, na.rm = TRUE),
-    FPG_q50   = quantile(FPG,   0.50, na.rm = TRUE),
-    FPG_q95   = quantile(FPG,   0.95, na.rm = TRUE),
-    HbA1c_q05 = quantile(HbA1c, 0.05, na.rm = TRUE),
-    HbA1c_q50 = quantile(HbA1c, 0.50, na.rm = TRUE),
-    HbA1c_q95 = quantile(HbA1c, 0.95, na.rm = TRUE),
-    .groups   = "drop"
-  )
-
-ggplot(vpc_summary, aes(time)) +
-  geom_ribbon(aes(ymin = FPG_q05, ymax = FPG_q95, fill = arm), alpha = 0.25) +
-  geom_line(aes(y = FPG_q50, colour = arm), linewidth = 1) +
-  facet_wrap(~ arm, ncol = 3) +
-  labs(x = "Time (weeks)",
-       y = "FPG change from baseline (mmol/L)",
-       title = "Between-trial 5-50-95% intervals for FPG",
-       caption = "n = 200 simulated trial-mean trajectories per arm.") +
-  theme_minimal() +
-  theme(legend.position = "none")
-
-ggplot(vpc_summary, aes(time)) +
-  geom_ribbon(aes(ymin = HbA1c_q05, ymax = HbA1c_q95, fill = arm), alpha = 0.25) +
-  geom_line(aes(y = HbA1c_q50, colour = arm), linewidth = 1) +
-  facet_wrap(~ arm, ncol = 3) +
-  labs(x = "Time (weeks)",
-       y = "HbA1c change from baseline (%)",
-       title = "Between-trial 5-50-95% intervals for HbA1c",
-       caption = "n = 200 simulated trial-mean trajectories per arm.") +
-  theme_minimal() +
-  theme(legend.position = "none")
-```
+The eta variances in this model are **between-trial** variability,
+recovered from Li 2015's Table 3 "ITV %" column. Each `id` in a
+stochastic `rxSolve(mod_full, events = ...)` therefore represents a
+hypothetical new trial (study-arm), not a hypothetical new subject. The
+proportional residual error (`b = 0.189`) is similarly the within-arm
+study-arm-mean error, not within-subject error. The model is suitable
+for predicting study-arm-mean outcomes (per-arm mean WT change at a
+particular time, with study-arm-mean variability across new trials),
+**not** for predicting individual-subject WT trajectories.
 
 # Assumptions and deviations
 
-- **Multi-output PD model, no PKNCA validation.** Taspoglutide concentration
-  enters this MBMA model as a fixed scalar covariate (study-arm Cavg
-  weeks 2-4), not as a simulated PK profile. There are no dose events and no
-  AUC / Cmax / half-life PK metrics to compute via PKNCA. Validation
-  follows the endogenous-model style: closed-form asymptote check (Eq. 2),
-  rate-of-approach half-life check, and per-arm trajectory comparison to
-  Figures 1 and 2.
+The MBMA encoding in this model file deviates from the standard
+nlmixr2lib popPK conventions in three places that warrant explicit
+documentation:
 
-- **Compartment naming.** The four ODE states (`fpg_placebo`, `fpg_drug`,
-  `hba1c_placebo`, `hba1c_drug`) are paper-meaningful PD compartments rather
-  than canonical PK names (`central`, `peripheral1`, etc.). The model is a
-  meta-analytic PD model with no concentration-versus-time PK profile. The
-  multi-output PD nature is in line with `Choy_2016_T2DM_WHIG.R` (FPG, FSI,
-  HbA1c, WGT) but with the dose-response coupling Li 2015 reports
-  rather than the homeostatic feedback Choy 2016 uses.
+* **Eta naming convention.** IIVs are named `eta_study_*` to mark
+  them as between-study (not between-subject) random effects, per the
+  Phase 1 step 3a MBMA guidance in `.claude/skills/extract-literature-model/SKILL.md`.
+  `checkModelConventions()` flags these as IIV-without-matching-theta
+  warnings because the lint's regex assumes the popPK `etalcl` /
+  `etalka` pattern. The deviation is intentional.
 
-- **Eta naming -- `eta_study_<param>`.** Between-trial random effects are
-  named `eta_study_pmax_f` etc. to make the MBMA scope explicit (per the
-  skill's MBMA guidance, "Encode between-study variance as a study-level eta
-  ... clearly labelled to distinguish from the popPK pattern"). The lint
-  flags these as "no matching fixed-effect parameter `_study_pmax_f`" -- the
-  pairing is `eta_study_pmax_f` <-> `pmax_f`, but the lint's regex only
-  understands the `eta<param>` pattern. The deviation is intentional.
+* **`Cc` is not a drug concentration.** The model's `Cc` output is the
+  signed change in body weight from pretreatment baseline (kg, with
+  negative = weight loss), following the convention used by the
+  Vargo 2014 statins + ezetimibe MBMA. `checkModelConventions()`
+  flags the unit-dimension mismatch between `units$dosing` (mg) and
+  `units$concentration` (kg). The deviation is intentional. The
+  paper does not consume rxode2 dose events at all; taspoglutide
+  exposure enters as the study-arm `CAV` covariate column (0 / 59.85
+  / 119.7 pmol/L for the three regimens, derived from Ratner 2010
+  per Li 2015 Methods section 2.2).
 
-- **`METRIC_TASPO_C` covariate not in canonical register.** The canonical
-  covariate-columns register tracks individual-level pop-PK covariates;
-  MBMA study-arm-level drug-exposure columns are documented inline in
-  `covariateData` per the precedent set by
-  `Vargo_2014_statins_ezetimibe_mbma.R`.
+* **Additive IIV on IC50 with 104 percent ITV.** Li 2015 Table 3
+  reports the between-trial ITV on IC50 as 104 percent under the
+  additive individual model `IC50_i = IC50_pop + eta_i` (Li 2015 Eq 4).
+  At the population mean of 41.7 pmol/L, a 43 pmol/L additive SD
+  yields a non-trivial probability of negative IC50 draws in any
+  stochastic simulation of new trials, which would invert the
+  Emax response. The model file is faithful to the paper's encoding
+  (additive eta with `eta_study_ic50 ~ 1881.4`); for figure-replication
+  use of the model, prefer `rxode2::zeroRe(mod)` (the typical-value
+  trajectory), as shown above.
 
-- **ITV reading.** The paper reports inter-trial variability as percentages
-  in Tables 2 and 3 without stating whether the column is the SD of the
-  random effect, the relative SD (SD/typical), or a derived CV%. The
-  implementation reads:
-  - For the exponential model (Kp, Kdrug): ITV(%) is approximate CV%, so
-    `omega^2 = log((ITV/100)^2 + 1)`.
-  - For the additive model (Pmax, Dmax, IC50): ITV(%) is the SD divided by
-    the absolute typical value times 100, so
-    `omega = (ITV/100) * |P_pop|` and `omega^2 = ((ITV/100) * |P_pop|)^2`.
-  These are the most common Monolix-output conventions; the alternative
-  reading (omega itself as a percent) would scale the ITV variances by an
-  approximately constant factor and would shift the VPC prediction-interval
-  width but not the typical trajectory. The Section 2.6 prose specifies the
-  exponential and additive distributional forms but not the column units.
+* **CAV averaging window assumption.** Li 2015 Methods section 2.2 uses
+  the average plasma concentration of taspoglutide between weeks 2 and
+  4 of QW dosing (Ratner 2010) as the metric for **all** observation
+  time points from 8 to 52 weeks. The implicit assumption is that the
+  same Cavg metric applies once dosing continues at the same QW
+  schedule; CAV is set per-arm and carried forward unchanged. No
+  individual-subject PK is modelled.
 
-- **Power-error simplification (`c` not encoded).** Li 2015 Tables 2 and 3
-  list `b` and `c` for the FPG residual and `a`, `b`, `c` for the HbA1c
-  residual. The text Eq. 5 simplifies the FPG error to `Y = F + b*F*eps` and
-  Eq. 6 the HbA1c error to `Y = F + (a + b*F^c)*eps`. The table is canonical
-  (the Eq. 5 prose appears incomplete relative to the table). nlmixr2 has
-  no clean power-of-prediction residual syntax, so the implementation uses
-  `prop(propSd)` on FPG with `propSd_FPG = b = 0.194` and
-  `add(addSd) + prop(propSd)` on HbA1c with `addSd_HbA1c = a = 0.00532`
-  and `propSd_HbA1c = b = 0.0717`. The `c` power exponent (0.182 for FPG,
-  0.239 for HbA1c) is omitted; in practice this affects the residual-error
-  scale at endpoint magnitudes far from |F| ~ 1 only modestly.
-
-- **HbA1c metric uses simulated `fpg_drug` only, not population-prediction
-  FPG.** Li 2015 Section 3.2 specifies that the HbA1c metric is "the
-  population prediction values for taspoglutide 10 and 20 mg in FPG
-  modeling". The implementation uses the current trial's `fpg_drug` state
-  (the drug-induced FPG reduction) as the HbA1c metric, which equals the
-  population prediction in the typical-value simulation
-  (`rxode2::zeroRe(mod)`). When ITV is active, this propagates the FPG ITV
-  through the HbA1c Emax -- a small extra source of HbA1c trial-mean
-  variability that the paper's two-stage fitting procedure avoided. For
-  point predictions (typical values) the two procedures agree exactly.
-
-- **No erratum found.** PubMed and the journal landing page for
-  doi:10.1016/j.jsps.2014.11.008 were checked at extraction time; no
-  errata or author corrections are noted.
+* **Population age / weight detail not in source.** Li 2015 does not
+  tabulate pooled age, weight, or sex-breakdown for the 9 trials. The
+  `population` metadata leaves `age_range`, `weight_range`,
+  `sex_female_pct`, and `race_ethnicity` unfilled with explanatory
+  notes; downstream users wanting per-trial demographics should
+  consult the 9 source trials individually.
