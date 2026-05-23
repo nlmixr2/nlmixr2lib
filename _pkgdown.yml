@@ -646,6 +646,8 @@ navbar:
         href: articles/Ait-Oudhia_2016_sunitinib.html
       - text: "Sunitinib irinotecan mouse (Wilson 2015)"
         href: articles/Wilson_2015_sunitinib_irinotecan_mouse.html
+      - text: "Tacrine (Holford 1992)"
+        href: articles/Holford_1992_tacrine.html
       - text: "Tacrolimus (Benkali 2010)"
         href: articles/Benkali_2010_tacrolimus.html
       - text: "Tacrolimus (Bergmann 2014)"
@@ -1088,7 +1090,7 @@ articles:
   - articles/Hennig_2015_phenytoin
   - articles/Hennig_2015_rifabutin
   - articles/Hoglund_2012_piperaquine
-  - articles/Hoglund_2017_piperaquine
+  - articles/Holford_1992_tacrine
   - articles/Hong_2015_moxifloxacin
   - articles/Hong_2025_datopotamab
   - articles/Hood_2021_medi7836

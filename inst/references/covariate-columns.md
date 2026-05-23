@@ -83,6 +83,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Zhou_2021_belimumab.R` (reference 40.69 kg; exponents 0.673 on CL and 0.891 on V1), `Aguiar_2021_ustekinumab.R` (reference 45 kg; power exponents 0.598 on CL, 0.590 on Vc, 0.586 on Vp).
 - **Notes:** Distinct from `LBM` (lean body mass) which is sometimes computed by the Boer or Hume formulae. When the source paper reports the body-composition formula it used (e.g., Janmahasatian for FFM), record it in `covariateData[[FFM]]$notes`. FFM is preferred over total body weight when scaling monoclonal-antibody PK because mAb distribution is largely confined to extracellular fluid; muscle / lean tissue tracks extracellular volume better than total weight in heavier patients.
 
+### IBW (**canonical for ideal body weight**)
+- **Description:** Ideal body weight in kg, typically derived from height and sex using the Devine formula or its variants. Time-fixed at baseline unless the source paper states otherwise. Used in size-normalisation of clearance / dose-rate in adult popPK models where the source paper reports IBW as the preferred size descriptor over total body weight (e.g., when overweight subjects pull clearance scaling away from the typical pattern).
+- **Units:** kg
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- used with a linear ratio `(IBW / ref)` for clearance / dose-rate normalisation. Reference values observed: 60 kg (Holford 1992 tacrine adult Alzheimer's population mean IBW).
+- **Source aliases:**
+  - `IBW` -- standard abbreviation used directly in Holford 1992.
+- **Example models:** `Holford_1992_tacrine.R` (reference 60 kg; tacrine "clearance" relative to IBW = 60 enters as the dose-rate normalisation factor `(60 / IBW)` driving the tacrine effect-compartment input; the Holford-Peace Devine variant is documented in `covariateData[[IBW]]$notes`).
+- **Notes:** Specific scope until a second adult-popPK model ratifies the name; at that point promote to `general`. Per-model `covariateData[[IBW]]$notes` should record the formula the source paper used. The Holford-Peace 1992 variant is: men IBW (kg) = 52 + 0.75 * (height_cm - 152); women IBW (kg) = 49 + 0.67 * (height_cm - 152). The classic Devine 1974 formula is: men 50 + 2.3 * (height_in - 60); women 45.5 + 2.3 * (height_in - 60). Other variants (Robinson 1983, Miller 1983, Hamwi 1964) exist; the per-paper choice should be recorded so a user simulating against IBW can match the source's derivation. When the source dataset supplies IBW pre-computed, the column name is typically `IBW` directly. When only `HT` + `SEXF` are provided, the user must compute IBW externally using the source-paper formula before passing it to the model.
+
 ### HT (**canonical for body height at baseline**)
 - **Description:** Subject body height at baseline. Time-fixed unless the source paper states otherwise.
 - **Units:** cm
@@ -1860,6 +1871,17 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
   - `REGION_RoW` -- mixed-case variant in some source publications (e.g., Naik 2016).
 - **Example models:** `Hong_2025_datopotamab.R` (multiplicative effect 1 + 0.196 = 1.196 on DXd clearance versus US/Japan reference), `Naik_2016_vortioxetine.R` (additive intercept-shift form: TVCL_RoW = 38 L/hr is the typical CL/F when `REGION_ROW = 1`, versus USA reference TVCL = 51 L/hr; the RoW group for Naik 2016 spans study sites in Canada, Australia, and Asia).
 - **Notes:** "Rest of the World" composition is paper-specific (e.g., Hong 2025 = study sites outside US, Japan, and Europe; Naik 2016 = Canada, Australia, and Asia). Document the subject set in `covariateData[[REGION_ROW]]$notes` per model.
+
+### REGION_FRANCE (**canonical for France study-site / enrollment-country indicator**)
+- **Description:** 1 = study site in France (or French-population enrollment), 0 = otherwise. Country-level study-site indicator used when a multi-regional trial reports a France-vs-other contrast in popPK / PD parameters (cultural / behavioural-response differences, regional dosing-practice differences, etc.).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-France study sites; in Holford 1992 tacrine the reference cohort is the US protocol 970-01).
+- **Source aliases:**
+  - `PROT == 4` -- protocol-number alias used in Holford 1992 (the France cohort is protocol 970-04, encoded as `PROT = 4`; the US cohort is protocol 970-01, encoded as `PROT = 1`). Derive `REGION_FRANCE = as.integer(PROT == 4)`.
+- **Example models:** `Holford_1992_tacrine.R` (multiplicative scale factors on baseline ADAS-cog `(1 + e_region_france_s0 * REGION_FRANCE)` with `e_region_france_s0 = 0.08`; on placebo potency `(1 + e_region_france_betap * REGION_FRANCE)` with `e_region_france_betap = 0.76`; on placebo elimination half-time `(1 + e_region_france_t12elp * REGION_FRANCE)` with `e_region_france_t12elp = 1.78` -- so the France cohort has 8 percent higher baseline ADAS-cog, 76 percent larger placebo response, and 2.78x longer placebo wash-out half-time relative to the US cohort).
+- **Notes:** Distinct from `RACE_FRENCH` (subject ancestry, no canonical at present). Holford 1992 introduces this as a behavioural-response covariate rather than a PK exposure covariate; the underlying mechanism is hypothesised cultural / clinical-trial-conduct differences, not pharmacology. Pair with `REGION_JAPAN`, `REGION_EUROPE`, `REGION_ROW` etc. when the same model needs to encode multiple geographic contrasts. Specific scope until a second model ratifies the name; at that point promote to `general`. Ratified canonically on 2026-05-23 alongside the Holford 1992 tacrine extraction.
 
 ### REGION_MOZAMBIQUE (**canonical for Mozambique study-site / enrollment-country indicator**)
 - **Description:** 1 = study site in Mozambique, 0 = otherwise. Country-level study-site indicator used in multi-country sub-Saharan African trials of intermittent preventive treatment of malaria in pregnancy (IPTp).
