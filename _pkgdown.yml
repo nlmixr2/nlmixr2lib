@@ -702,6 +702,8 @@ navbar:
         href: articles/Chen_2016_tenofovir_emtricitabine.html
       - text: "Theophylline (Rovei 1982)"
         href: articles/Rovei_1982_theophylline.html
+      - text: "Theophylline (Suda 2008)"
+        href: articles/Suda_2008_theophylline.html
       - text: "Ticagrelor (Almquist 2016)"
         href: articles/Almquist_2016_ticagrelor.html
       - text: "Tisagenlecleucel (Stein 2019)"
@@ -1299,6 +1301,7 @@ articles:
   - articles/Stein_2019_Tisagenlecleucel
   - articles/Stevens_2012_remoxipride
   - articles/Storset_2014_tacrolimus
+  - articles/Suda_2008_theophylline
   - articles/Suleiman_2019_risankizumab
   - articles/Suri_2018_brentuximab
   - articles/Svensson_2014_bedaquiline
