@@ -358,6 +358,8 @@ navbar:
         href: articles/Archary_2019_lamivudine.html
       - text: "Lampalizumab (Le 2015)"
         href: articles/Le_2015_lampalizumab.html
+      - text: "Landiolol (Kunisawa 2015)"
+        href: articles/Kunisawa_2015_landiolol.html
       - text: "Lanreotide (Buil-Bruna 2015)"
         href: articles/Buil-Bruna_2015_lanreotide.html
       - text: "Lebrikizumab (Zhu 2017)"
@@ -1142,6 +1144,7 @@ articles:
   - articles/Kuchimanchi_2024_dostarlimab
   - articles/Kunarajah_2017_doxorubicin
   - articles/Kunisawa_2014_olprinone
+  - articles/Kunisawa_2015_landiolol
   - articles/Kyhl_2016_nalmefene
   - articles/Laffont_2024_nalmefene
   - articles/Laffont_2024_naloxone
