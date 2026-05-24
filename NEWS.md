@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Shin 2014 sevoflurane ([doi:10.3349/ymj.2014.55.6.1624](https://doi.org/10.3349/ymj.2014.55.6.1624)) -- pediatric dental-surgery patients (mentally intact and mentally disabled) during emergence from sevoflurane general anesthesia (ratifies new `MENT_DISABLED` and `ETSEVO` covariate canonicals).
+* Add Kim 2017 fimasartan ([doi:10.12793/tcp.2017.25.1.43](https://doi.org/10.12793/tcp.2017.25.1.43)) -- healthy adult Korean men and men with mild or moderate hepatic impairment (popPK-PD with mixed zero-and-first-order absorption and indirect-response SBP/DBP with fixed cosinor circadian baseline).
 * Add Tarning 2012 artemether and dihydroartemisinin ([doi:10.1186/1475-2875-11-293](https://doi.org/10.1186/1475-2875-11-293)) -- pregnant women with uncomplicated Plasmodium falciparum malaria in Uganda (joint parent + DHA popPK with zero-order dissolution and 6-compartment transit absorption).
 * Add Schoemaker 2017 brivaracetam ([doi:10.1007/s00228-017-2230-6](https://doi.org/10.1007/s00228-017-2230-6)) -- paediatric patients with epilepsy aged 1 month to 16 years; ratifies new `CONMED_PB`, `CONMED_CBZ`, and `CONMED_VPA` covariate canonicals.
 * Add Nanga 2019 tacrolimus meta-model ([doi:10.1111/bcp.14110](https://doi.org/10.1111/bcp.14110)) -- pooled paediatric and adult solid-organ transplant recipients (n = 281; 201 liver and 80 kidney) on oral tacrolimus; ratifies new `TX_LIVER` and `FORM_SYRUP` covariate canonicals.
