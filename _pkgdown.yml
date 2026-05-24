@@ -250,6 +250,8 @@ navbar:
         href: articles/Moein_2022_etrolizumab.html
       - text: "Everolimus (deWit 2016)"
         href: articles/deWit_2016_everolimus.html
+      - text: "Everolimus (TerHeine 2018)"
+        href: articles/TerHeine_2018_everolimus.html
       - text: "Evinacumab (Pu 2021)"
         href: articles/Pu_2021_evinacumab.html
       - text: "Evolocumab (Kuchimanchi 2018)"
@@ -654,8 +656,8 @@ navbar:
         href: articles/Wang_2024_sugemalimab.html
       - text: "SulfadoxinePyrimethamine (deKock 2017)"
         href: articles/deKock_2017_sulfadoxinePyrimethamine.html
-      - text: "Sumatriptan (Lee 2015)"
-        href: articles/Lee_2015_sumatriptan.html
+      - text: "SulfadoxinePyrimethamine (Odongo 2015)"
+        href: articles/Odongo_2015_sulfadoxinePyrimethamine.html
       - text: "Sunitinib (Ait-Oudhia 2016)"
         href: articles/Ait-Oudhia_2016_sunitinib.html
       - text: "Sunitinib irinotecan mouse (Wilson 2015)"
@@ -1328,6 +1330,7 @@ articles:
   - articles/Tarning_2012_artemether
   - articles/Taylor_2020_methotrexate
   - articles/TerHeine_2014_tamoxifen
+  - articles/TerHeine_2018_everolimus
   - articles/Terranova_2018_paclitaxel
   - articles/Tetschke_2018_erythropoiesis
   - articles/Teuscher_2015_methylphenidate
