@@ -618,6 +618,8 @@ navbar:
         href: articles/Overgaard_2019_semaglutide.html
       - text: "Sepantronium (Aoyama 2012)"
         href: articles/Aoyama_2012_sepantronium.html
+      - text: "Sevoflurane (Shin 2014)"
+        href: articles/Shin_2014_sevoflurane.html
       - text: "Sglt qsp (Lu 2014)"
         href: articles/Lu_2014_sglt_qsp.html
       - text: "Sibutramine (Han 2015)"
@@ -1295,7 +1297,7 @@ articles:
   - articles/Shen_2013_belatacept
   - articles/Sheng_2016_quinine_rat
   - articles/Sherer_2012_AAA
-  - articles/Sherwin_2012_risperidone
+  - articles/Shin_2014_sevoflurane
   - articles/Shin_2017_levetiracetam
   - articles/Shoji_2017_fosdagrocorat_oc
   - articles/Shoji_2017_fosdagrocorat_p1np
