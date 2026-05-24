@@ -277,25 +277,17 @@
     # protein binding and enterohepatic recirculation
     # (de Winter 2009 doi:10.1007/s10928-009-9136-6).
     "mpag",
-    # Emtricitabine (FTC) suffix used as a non-parent analyte tag in
-    # joint TFV+FTC popPK / PD models where neither drug is "the
-    # parent" — both nucleoside-analog antiretrovirals are co-
-    # administered in the TDF/FTC fixed-dose combination and the
-    # paper models both plasma drugs in parallel
-    # (Chen 2016 doi:10.1371/journal.pone.0165505). The parent
-    # canonical-naming slot is occupied by tenofovir (TFV); FTC plasma
-    # compartments and parameters carry the _ftc suffix. Mirrors the
-    # pattern used for parent + co-perpetrator (`cpg2`) and stereo-
-    # isomer (`r`, `s`) suffixes already in this list.
-    "ftc",
-    # Intracellular triphosphate anabolites of tenofovir and
-    # emtricitabine used as second-token suffixes for compartments
-    # and parameters in the Chen 2016 linked PKPD model. Each
-    # anabolite is modelled with a hybrid first-order-formation +
-    # saturation link from its plasma parent and a two-compartment
-    # "recycle" elimination structure (compartment 4 + compartment 6
-    # in the source paper's NONMEM diagram).
-    "tfvdp", "ftctp"
+    # (+/-)-9-hydroxyrisperidone (paliperidone), the major active
+    # metabolite of risperidone produced primarily by CYP2D6 (and
+    # secondarily by CYP3A4) 9-hydroxylation. Used in parent-plus-
+    # metabolite popPK models for oral risperidone that simultaneously
+    # fit risperidone and (+/-)-9-hydroxyrisperidone plasma
+    # concentrations (Sherwin 2012 Ther Drug Monit 34(5):535-544
+    # doi:10.1097/FTD.0b013e318261c240). The numeric prefix is fine --
+    # `.matchesCompartment()` checks for `_<metab>` suffix membership
+    # rather than treating the metabolite token as a bare R identifier,
+    # mirroring the existing `3oh` / `7dm` agomelatine metabolites.
+    "9oh"
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` denotes the time-varying decay arm.

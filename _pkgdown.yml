@@ -584,6 +584,8 @@ navbar:
         href: articles/Suleiman_2019_risankizumab.html
       - text: "Risankizumab (Thakre 2022)"
         href: articles/Thakre_2022_risankizumab.html
+      - text: "Risperidone (Sherwin 2012)"
+        href: articles/Sherwin_2012_risperidone.html
       - text: "Rivipansel (Tammara 2017)"
         href: articles/Tammara_2017_rivipansel.html
       - text: "Rocatinlimab (Okada 2025)"
@@ -1287,6 +1289,7 @@ articles:
   - articles/Shen_2013_belatacept
   - articles/Sheng_2016_quinine_rat
   - articles/Sherer_2012_AAA
+  - articles/Sherwin_2012_risperidone
   - articles/Shin_2017_levetiracetam
   - articles/Shoji_2017_fosdagrocorat_oc
   - articles/Shoji_2017_fosdagrocorat_p1np
