@@ -766,6 +766,8 @@ navbar:
         href: articles/Vezina_2010_valganciclovir.html
       - text: "Valganciclovir (Vezina 2014)"
         href: articles/Vezina_2014_valganciclovir.html
+      - text: "Valsartan (Kim 2015)"
+        href: articles/Kim_2015_valsartan.html
       - text: "Vancomycin (Chung 2013)"
         href: articles/Chung_2013_vancomycin.html
       - text: "Vancomycin (Goti 2018)"
@@ -1134,6 +1136,7 @@ articles:
   - articles/Khan_2015_ciprofloxacin
   - articles/Kielbasa_2020_galcanezumab
   - articles/Kim_2015_paroxetine
+  - articles/Kim_2015_valsartan
   - articles/Kimura_2023_glucarpidase
   - articles/Kirubakaran_2022_tacrolimus
   - articles/Kloft_2004_sibrotuzumab
