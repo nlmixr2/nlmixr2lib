@@ -650,8 +650,8 @@ navbar:
         href: articles/Wang_2024_sugemalimab.html
       - text: "SulfadoxinePyrimethamine (deKock 2017)"
         href: articles/deKock_2017_sulfadoxinePyrimethamine.html
-      - text: "SulfadoxinePyrimethamine (Odongo 2015)"
-        href: articles/Odongo_2015_sulfadoxinePyrimethamine.html
+      - text: "Sumatriptan (Lee 2015)"
+        href: articles/Lee_2015_sumatriptan.html
       - text: "Sunitinib (Ait-Oudhia 2016)"
         href: articles/Ait-Oudhia_2016_sunitinib.html
       - text: "Sunitinib irinotecan mouse (Wilson 2015)"
@@ -1166,7 +1166,7 @@ articles:
   - articles/Laouenan_2015_ribavirin
   - articles/Lawson_2022_busulfan
   - articles/Le_2015_lampalizumab
-  - articles/Leshinsky_2017_caspofungin_cat
+  - articles/Lee_2015_sumatriptan
   - articles/Lestini_2015_tgfbinhibitor
   - articles/LeTilly_2021_trastuzumab
   - articles/Leuppi-Taegtmeyer_2019_colistin
