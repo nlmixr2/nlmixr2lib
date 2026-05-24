@@ -568,8 +568,8 @@ navbar:
         href: articles/Sheng_2016_quinine_rat.html
       - text: "Ranibizumab (Mulyukov 2018)"
         href: articles/Mulyukov_2018_ranibizumab.html
-      - text: "Remifentanil (Yang 2017)"
-        href: articles/Yang_2017_remifentanil.html
+      - text: "RFIXFc (Diao 2014)"
+        href: articles/Diao_2014_rFIXFc.html
       - text: "Rifabutin (Hennig 2015)"
         href: articles/Hennig_2015_rifabutin.html
       - text: "Rifampicin (Clewe 2015)"
@@ -636,6 +636,8 @@ navbar:
         href: articles/Wu_2012_sirolimus.html
       - text: "Sirukumab (Xu 2011)"
         href: articles/Xu_2011_sirukumab.html
+      - text: "SKL10406 (Park 2014)"
+        href: articles/Park_2014_SKL10406.html
       - text: "Sodium nitrite qsp (VegaVilla 2013)"
         href: articles/VegaVilla_2013_sodium_nitrite_qsp.html
       - text: "Somatropin human (Thorsted 2016)"
@@ -1166,8 +1168,6 @@ articles:
   - articles/LeTilly_2021_trastuzumab
   - articles/Leuppi-Taegtmeyer_2019_colistin
   - articles/Li_2006_meropenem
-  - articles/Li_2015_taspoglutide_mbma
-  - articles/Li_2017_CC292
   - articles/Li_2017_brentuximab
   - articles/Li_2017_CC292
   - articles/Li_2017_cediranib
@@ -1244,6 +1244,7 @@ articles:
   - articles/Papathanasiou_2025_belantamab
   - articles/Parhiz_2024_mRNALNP
   - articles/Park_2001_ketoprofen
+  - articles/Park_2014_SKL10406
   - articles/Passey_2011_tacrolimus
   - articles/Patel_2017_selumetinib
   - articles/Paule_2011_hydroxyurea
