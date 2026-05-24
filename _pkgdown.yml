@@ -138,6 +138,8 @@ navbar:
         href: articles/Choe_2012_busulfan.html
       - text: "Busulfan (Lawson 2022)"
         href: articles/Lawson_2022_busulfan.html
+      - text: "Busulfan (Long-Boyle 2015)"
+        href: articles/Long-Boyle_2015_busulfan.html
       - text: "C3G (Jeon 2012)"
         href: articles/Jeon_2012_C3G.html
       - text: "Cabazitaxel (Ferron 2013)"
@@ -1170,6 +1172,7 @@ articles:
   - articles/Llanos-Paez_2017_gentamicin
   - articles/Llanos-Paez_2020_gentamicin
   - articles/Lon_2013_abatacept
+  - articles/Long-Boyle_2015_busulfan
   - articles/Long_2017_necitumumab
   - articles/Lowe_2009_omalizumab
   - articles/Lu_2014_sglt_qsp
