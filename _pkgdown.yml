@@ -180,6 +180,8 @@ navbar:
         href: articles/Yuan_2019_concizumab.html
       - text: "Crisantaspase (Sassen 2017)"
         href: articles/Sassen_2017_crisantaspase.html
+      - text: "Cyclophosphamide mouse (Campagne 2019)"
+        href: articles/Campagne_2019_cyclophosphamide_mouse.html
       - text: "Cyclosporin (Debord 2001)"
         href: articles/Debord_2001_cyclosporin.html
       - text: "Dabigatran (Liesenfeld 2013)"
@@ -1003,7 +1005,7 @@ articles:
   - articles/Budha_2023_tislelizumab
   - articles/Buil-Bruna_2015_lanreotide
   - articles/Caldes_2009_ganciclovir
-  - articles/Candelaria_2018_rituximab
+  - articles/Campagne_2019_cyclophosphamide_mouse
   - articles/Cao_2013_GNbAC1
   - articles/Cao_2013_MEDI528
   - articles/Cao_2013_PAmAb

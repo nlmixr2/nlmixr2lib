@@ -13,13 +13,22 @@
 #' @noRd
 .nlmixr2libConventionsStatic <- list(
   pkParams = c(
-    "lka", "lcl", "lvc", "lvp", "lvp2", "lvp3", "lq", "lq2", "lq3", "lfdepot",
-    "lvmax", "lcl_ss", "lcl_time", "lcl_renal", "lcl_nonren"
+    "lka", "lcl", "lvc", "lvp", "lvp2", "lq", "lq2", "lfdepot",
+    "lvmax", "lcl_ss", "lcl_time", "lcl_renal", "lcl_nonren",
+    # Influx (plasma -> tissue ECF/CSF) and efflux (tissue -> plasma)
+    # clearances used by physiological CNS-distribution popPK models
+    # in which the brain/tumor extracellular fluid is parameterised as
+    # a separate compartment connected to plasma central via two
+    # asymmetric clearances driven by unbound drug. Used in Campagne
+    # 2019 cyclophosphamide mouse CNS penetration popPK.
+    "lclin", "lclef"
   ),
   pkBareParams = c(
-    "ka", "cl", "vc", "vp", "vp2", "vp3", "q", "q2", "q3", "kel",
-    "k12", "k21", "k13", "k31", "k14", "k41", "fdepot",
-    "vmax", "cl_ss", "cl_time", "cl_renal", "cl_nonren"
+    "ka", "cl", "vc", "vp", "vp2", "q", "q2", "kel",
+    "k12", "k21", "k13", "k31", "fdepot",
+    "vmax", "cl_ss", "cl_time", "cl_renal", "cl_nonren",
+    # Bare counterparts of `lclin` / `lclef` (see pkParams).
+    "clin", "clef"
   ),
   compartments = c(
     "depot", "central", "peripheral1", "peripheral2", "peripheral3", "effect",
@@ -43,6 +52,11 @@
     # models with multiple body-fluid distribution volumes
     # (Perez-Ruixo_2025_posdinemab).
     "csf", "isf",
+    # Brain / tumor extracellular fluid compartment used by cerebral-
+    # microdialysis-based CNS-distribution popPK models in which the
+    # ECF compartment carries unbound drug delivered via influx /
+    # efflux clearances (Campagne 2019 cyclophosphamide mouse).
+    "ecf",
     # Anatomic brain-region compartments used by mAb brain-distribution
     # PK models (Grimm_2023_trontinemab, Grimm_2023_gantenerumab). Each
     # state holds the extracellular drug concentration in the named
@@ -276,17 +290,15 @@
     # protein binding and enterohepatic recirculation
     # (de Winter 2009 doi:10.1007/s10928-009-9136-6).
     "mpag",
-    # (+/-)-9-hydroxyrisperidone (paliperidone), the major active
-    # metabolite of risperidone produced primarily by CYP2D6 (and
-    # secondarily by CYP3A4) 9-hydroxylation. Used in parent-plus-
-    # metabolite popPK models for oral risperidone that simultaneously
-    # fit risperidone and (+/-)-9-hydroxyrisperidone plasma
-    # concentrations (Sherwin 2012 Ther Drug Monit 34(5):535-544
-    # doi:10.1097/FTD.0b013e318261c240). The numeric prefix is fine --
-    # `.matchesCompartment()` checks for `_<metab>` suffix membership
-    # rather than treating the metabolite token as a bare R identifier,
-    # mirroring the existing `3oh` / `7dm` agomelatine metabolites.
-    "9oh"
+    # Sequential metabolites of cyclophosphamide: 4-hydroxy-
+    # cyclophosphamide ("4ohctx") is the activated metabolite formed
+    # via CYP2B6/2C9/3A4 hydroxylation; carboxyethylphosphoramide
+    # mustard ("cepm") is the downstream inactive metabolite formed
+    # by aldehyde dehydrogenase oxidation of aldophosphamide (an
+    # equilibrium tautomer of 4OH-CTX). Used in Campagne 2019
+    # popPK of CTX + metabolites in mice with brain/tumor ECF
+    # disposition (doi:10.18433/jpps30608).
+    "4ohctx", "cepm"
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` denotes the time-varying decay arm.
@@ -325,7 +337,13 @@
     # from `kmet` (formation rate constant): FM is unitless and
     # bounded in (0, 1] while kmet has rate units. Used in
     # Danielak 2017 clopidogrel -> H4 (doi:10.1007/s00228-017-2334-z).
-    "fm"
+    "fm",
+    # Fraction unbound in plasma, used as a fixed unitless multiplier
+    # in cerebral-microdialysis-style CNS-distribution models where
+    # only free drug crosses the BBB and the BBB transfer term is
+    # CLin * fu * Cp. Reported in [0, 1]; usually held fixed at the
+    # in-vitro equilibrium-dialysis-derived value (Campagne 2019).
+    "fu"
   ),
   requiredUnits = c("time", "dosing", "concentration"),
   requiredMetadata = c("description", "reference", "units"),
