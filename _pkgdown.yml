@@ -666,8 +666,8 @@ navbar:
         href: articles/Ait-Oudhia_2016_sunitinib.html
       - text: "Sunitinib irinotecan mouse (Wilson 2015)"
         href: articles/Wilson_2015_sunitinib_irinotecan_mouse.html
-      - text: "Tacrine (Holford 1992)"
-        href: articles/Holford_1992_tacrine.html
+      - text: "Tacrolimus (Andrews 2017)"
+        href: articles/Andrews_2017_tacrolimus.html
       - text: "Tacrolimus (Benkali 2010)"
         href: articles/Benkali_2010_tacrolimus.html
       - text: "Tacrolimus (Bergmann 2014)"
@@ -965,6 +965,7 @@ articles:
   - articles/Almquist_2016_ticagrelor
   - articles/Almquist_2022_anifrolumab
   - articles/Alsultan_2017_pyrazinamide
+  - articles/Andrews_2017_tacrolimus
   - articles/Aoyama_2012_sepantronium
   - articles/Archary_2018_lopinavir
   - articles/Archary_2019_abacavir

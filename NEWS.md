@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Catalan-Latorre 2018 taurine ([doi:10.1017/S0007114518000156](https://doi.org/10.1017/S0007114518000156)) -- preclinical male Wistar rats, well-nourished and protein-energy undernourished.
+* Add Andrews 2017 tacrolimus ([doi:10.1007/s40262-017-0567-8](https://doi.org/10.1007/s40262-017-0567-8)) -- paediatric kidney transplant recipients during the first 6 weeks post-transplantation (ratifies new `DONOR_DECEASED` and `IMMUNOASSAY` covariate canonicals).
 * Add Tarning 2012 artemether and dihydroartemisinin ([doi:10.1186/1475-2875-11-293](https://doi.org/10.1186/1475-2875-11-293)) -- pregnant women with uncomplicated Plasmodium falciparum malaria in Uganda (joint parent + DHA popPK with zero-order dissolution and 6-compartment transit absorption).
 * Add Schoemaker 2017 brivaracetam ([doi:10.1007/s00228-017-2230-6](https://doi.org/10.1007/s00228-017-2230-6)) -- paediatric patients with epilepsy aged 1 month to 16 years; ratifies new `CONMED_PB`, `CONMED_CBZ`, and `CONMED_VPA` covariate canonicals.
 * Add Nanga 2019 tacrolimus meta-model ([doi:10.1111/bcp.14110](https://doi.org/10.1111/bcp.14110)) -- pooled paediatric and adult solid-organ transplant recipients (n = 281; 201 liver and 80 kidney) on oral tacrolimus; ratifies new `TX_LIVER` and `FORM_SYRUP` covariate canonicals.
