@@ -195,7 +195,9 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Units:** months
 - **Type:** continuous
 - **Scope:** general
-- **Example models:** `Hu_2026_clesrovimab.R`.
+- **Source aliases:**
+  - `PNA` -- used in Zhao 2018 (paper Methods 'Population pharmacokinetic-pharmacogenetic modelling' and Table 2 report PNA in DAYS; the canonical PNA carries months, so Zhao 2018's `F_PNA = (PNA_days / 38)^0.472` is reparameterised inside `model()` as `F_PNA = (PNA_months / 1.249)^0.472` using the conversion `PNA_months = PNA_days / 30.4375` and reference `1.249 months = 38 days / 30.4375`).
+- **Example models:** `Hu_2026_clesrovimab.R`, `Zhao_2018_omeprazole.R` (power effect on the formation clearance of 5-hydroxy-omeprazole: `(PNA / 1.249)^0.472`; PNA reference 1.249 months / 38 days from Zhao 2018 Table 2 cohort median).
 
 ### GA (**canonical for gestational age at birth**)
 - **Description:** Gestational age at birth. Time-fixed per subject.
@@ -4356,6 +4358,50 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
   - `CYP2C19*2` -- Danielak 2017 (paper Methods 'Determination of genetic polymorphisms' and Table 2 final-model `Effect of CYP2C19*2 on FM (COV)` row; PCR-RFLP genotyping for rs4244285). The Danielak 2017 cohort had no *2/*2 homozygous-poor-metabolizers, so heterozygous *1/*2 carriers were pooled into the binary CYP2C19_S2_CARRIER = 1 group with no information loss.
 - **Example models:** `Danielak_2017_clopidogrel.R` (linear-deviation effect on the fraction of clopidogrel metabolised to the active thiol H4: `fm = TVFM * (1 + e_cyp2c19_s2_fm * CYP2C19_S2_CARRIER)` with `e_cyp2c19_s2_fm = -0.45`; carriers convert 45% less of the absorbed clopidogrel to the active H4 metabolite, giving a 36.7% lower predicted AUC of H4 vs non-carriers; Danielak 2017 Table 2 final-model and Results page 1628).
 - **Notes:** CYP2C19*2 is the dominant *loss-of-function* CYP2C19 allele in clopidogrel pharmacogenetics; it reduces clopidogrel's metabolic activation to the antiplatelet-active H4 thiol and is associated with elevated rates of stent thrombosis and major adverse cardiovascular events on clopidogrel therapy (FDA boxed warning, 2010). The paired *17 ultra-rapid-metabolizer allele (rs12248560) is typically registered separately when present (a `CYP2C19_S17_CARRIER` indicator following the same pattern). The continuous-individual-activity-score consolidation TODO logged on `CYP2D6` line 3321 also applies prospectively to CYP2C19, but the binary carrier indicator remains the standard discrete encoding used by most published clopidogrel popPK / PD models. Ratified canonically on 2026-05-20 alongside the Danielak 2017 clopidogrel extraction.
+
+### CYP2C19_IM (**canonical for CYP2C19 intermediate-metabolizer phenotype indicator**)
+- **Description:** 1 = subject is a CYP2C19 intermediate metabolizer (one functional and one loss-of-function allele; e.g., `*1/*2`, `*2/*17`); 0 = any other CYP2C19 phenotype (EM, UM, PM, or RM). Time-fixed per subject (germline genotype-derived phenotype). Paired with `CYP2C19_PM` to encode the three-level EM/UM (reference, both indicators 0) / IM (`CYP2C19_IM = 1`) / PM (`CYP2C19_PM = 1`) phenotype with two binary indicators.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (EM, UM, PM, or RM phenotype). Reference category when paired with `CYP2C19_PM = 0` is the extensive / ultrarapid-metabolizer phenotype pool used in Zhao 2018.
+- **Source aliases:**
+  - `CYP2C19 IM` / `IM` -- Zhao 2018 (paper Table 2 reports `F_CYP2C19 IM = 0.449` relative to the EM/UM reference; genotypes pooled into IM: `*1/*2`, `*2/*17`).
+- **Example models:** `Zhao_2018_omeprazole.R` (power-of-binary-indicator multiplicative factor on CLOMZ-M1 formation clearance: `e_cyp2c19_im_kmet_5oh ^ CYP2C19_IM` with `e_cyp2c19_im_kmet_5oh = 0.449`; IM subjects have ~55% lower formation clearance of 5-hydroxy-omeprazole than the EM/UM reference; Zhao 2018 Table 2).
+- **Notes:** Follows the `CYP2B6_IM` / `CYP2B6_SM` / `CYP2B6_USM` three-binary precedent for multi-level metabolizer phenotypes. The Zhao 2018 cohort pooled extensive (EM, `*1/*1`) and ultrarapid (UM, `*1/*17`, `*17/*17`) metabolizers into a single reference because the typical-value clearance of 5-hydroxy-omeprazole formation was indistinguishable between the two strata in n = 38 EM/UM subjects (Zhao 2018 Methods 'Population pharmacokinetic-pharmacogenetic modelling'). Future extractions that fit a separate UM coefficient should register a paired `CYP2C19_UM` companion indicator following this pattern. Distinct from `CYP2C19_S2_CARRIER` (binary `*2`-allele carrier indicator used by Danielak 2017 clopidogrel) -- `CYP2C19_S2_CARRIER` pools heterozygous and homozygous `*2` carriers into a single 0/1 contrast, while `CYP2C19_IM` resolves the heterozygous `*2` (IM) stratum separately from the homozygous `*2/*2` (PM) stratum that `CYP2C19_PM` flags. Ratified canonically on 2026-05-25 alongside the Zhao 2018 omeprazole extraction.
+
+### CYP2C19_PM (**canonical for CYP2C19 poor-metabolizer phenotype indicator**)
+- **Description:** 1 = subject is a CYP2C19 poor metabolizer (two loss-of-function alleles, e.g., `*2/*2`); 0 = any other CYP2C19 phenotype (EM, UM, IM, or RM). Time-fixed per subject (germline genotype-derived phenotype). Paired with `CYP2C19_IM` to encode the three-level EM/UM (reference) / IM / PM phenotype with two binary indicators.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (EM, UM, IM, or RM phenotype). Reference category when paired with `CYP2C19_IM = 0` is the extensive / ultrarapid-metabolizer phenotype pool used in Zhao 2018.
+- **Source aliases:**
+  - `CYP2C19 PM` / `PM` -- Zhao 2018 (paper Table 2 reports `F_CYP2C19 PM = 0.125` relative to the EM/UM reference; genotype pooled into PM: `*2/*2`).
+- **Example models:** `Zhao_2018_omeprazole.R` (power-of-binary-indicator multiplicative factor on CLOMZ-M1 formation clearance: `e_cyp2c19_pm_kmet_5oh ^ CYP2C19_PM` with `e_cyp2c19_pm_kmet_5oh = 0.125`; PM subjects have 87.5% lower formation clearance of 5-hydroxy-omeprazole than the EM/UM reference; Zhao 2018 Table 2).
+- **Notes:** Companion to `CYP2C19_IM`. See `CYP2C19_IM` Notes for the three-level decomposition rationale. The PM phenotype indicator carries a separate typical-value coefficient because the Zhao 2018 cohort observed `*2/*2` poor metabolizers (n = 2) had substantially lower 5-OH-omeprazole formation clearance than the heterozygous `*1/*2` and `*2/*17` intermediate metabolizers (12.5% vs 44.9% of EM/UM reference). Ratified canonically on 2026-05-25 alongside the Zhao 2018 omeprazole extraction.
+
+### ABCB1_C3435T_HET (**canonical for ABCB1 C3435T heterozygote indicator**)
+- **Description:** Binary genotype indicator for the *ABCB1* (P-glycoprotein, MDR1) C3435T heterozygote group at rs1045642 (exon 26, synonymous Ile1145Ile). 1 = subject carries exactly one variant allele (genotype C/T); 0 = otherwise (the union of C/C homozygous wild-type and T/T homozygous variant strata; the paired indicator `ABCB1_C3435T_MUT` flags the homozygous variant group). Time-fixed per subject (germline genotype).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (C/C homozygous wild-type, when paired with `ABCB1_C3435T_MUT = 0`). The reference group is the homozygous wild-type C/C stratum; `ABCB1_C3435T_MUT` flags the homozygous-variant T/T stratum.
+- **Source aliases:**
+  - `ABCB1 C3435T C/T` / `C/T` -- Zhao 2018 (paper Table 2 reports a multiplicative scaling factor of 1.86 on Ka for the heterozygote stratum relative to the C/C reference).
+- **Example models:** `Zhao_2018_omeprazole.R` (power-of-binary-indicator multiplicative factor on absorption rate constant Ka: `e_abcb1_c3435t_het_ka ^ ABCB1_C3435T_HET` with `e_abcb1_c3435t_het_ka = 1.86`; C/T heterozygotes have an absorption rate constant approximately 86% higher than the C/C wild-type reference; paired with `ABCB1_C3435T_MUT` and used jointly).
+- **Notes:** Follows the `CYP3A5_STAR1_HET` / `CYP3A5_STAR1_HOM` and `SLCO1B1_HAP15_HET` / `SLCO1B1_HAP15_HOM` paired-binary precedent for a three-level genotype where each stratum carries a distinct typical-value covariate effect. Distinct from the `ABCB1_HAP_TTT` haplotype canonical (which jointly tests the cis combination of rs1128503 / rs2032582 / rs1045642 SNPs as a single haplotype block; used in de Wit 2016 everolimus). Use `ABCB1_C3435T_HET` + `ABCB1_C3435T_MUT` when the source paper fits a distinct typical-value covariate effect to the single rs1045642 SNP without phasing it into a haplotype, and when both the heterozygous and homozygous-variant strata are large enough to identify independent effects (Zhao 2018 cohort: n = 22 heterozygotes, 43.1%, and n = 4 homozygous variant, 7.8%, with n = 25 wild-type, 49.0%, as the reference). Mechanistically the C3435T variant has been associated with altered P-gp expression and substrate efflux in some studies (often via linkage with functional variants in the same haplotype block), though directionality of the effect on substrate exposure varies across substrates and tissues. Ratified canonically on 2026-05-25 alongside the Zhao 2018 omeprazole extraction.
+
+### ABCB1_C3435T_MUT (**canonical for ABCB1 C3435T homozygous-variant indicator**)
+- **Description:** Binary genotype indicator for the *ABCB1* (P-glycoprotein, MDR1) C3435T homozygous-variant group at rs1045642 (exon 26, synonymous Ile1145Ile). 1 = subject carries two variant alleles (genotype T/T); 0 = otherwise (the union of C/C homozygous wild-type and C/T heterozygote strata; the paired indicator `ABCB1_C3435T_HET` flags the heterozygous group). Time-fixed per subject (germline genotype).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (C/C homozygous wild-type, when paired with `ABCB1_C3435T_HET = 0`). The reference group is the homozygous wild-type C/C stratum; `ABCB1_C3435T_HET` flags the heterozygous C/T stratum.
+- **Source aliases:**
+  - `ABCB1 C3435T T/T` / `T/T` -- Zhao 2018 (paper Table 2 reports a multiplicative scaling factor of 6.93 on Ka for the homozygous-variant stratum relative to the C/C reference).
+- **Example models:** `Zhao_2018_omeprazole.R` (power-of-binary-indicator multiplicative factor on absorption rate constant Ka: `e_abcb1_c3435t_mut_ka ^ ABCB1_C3435T_MUT` with `e_abcb1_c3435t_mut_ka = 6.93`; T/T homozygotes have an absorption rate constant approximately 6.93-fold higher than the C/C wild-type reference; paired with `ABCB1_C3435T_HET` and used jointly).
+- **Notes:** Companion to `ABCB1_C3435T_HET`. See `ABCB1_C3435T_HET` Notes for the three-level decomposition rationale, the distinction from the `ABCB1_HAP_TTT` haplotype canonical, and the Zhao 2018 cohort distribution. Ratified canonically on 2026-05-25 alongside the Zhao 2018 omeprazole extraction.
 
 ### ABCB1_HAP_TTT (**canonical for ABCB1 TTT haplotype carrier indicator**)
 - **Description:** Binary haplotype indicator for the *ABCB1* `TTT` haplotype across the rs1128503 (1236C>T, exon 12, synonymous Gly412Gly) / rs2032582 (2677G>T/A, exon 21, Ala893Ser/Thr) / rs1045642 (3435C>T, exon 26, synonymous Ile1145Ile) SNP block. 1 = subject carries at least one `TTT` haplotype (heterozygous or homozygous; pooled because the homozygote frequency was < 0.1 in the de Wit 2016 cohort); 0 = no `TTT` haplotype. Time-fixed per subject (germline haplotype).

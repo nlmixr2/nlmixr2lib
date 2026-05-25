@@ -502,6 +502,8 @@ navbar:
         href: articles/Hayashi_2007_omalizumab.html
       - text: "Omalizumab (Lowe 2009)"
         href: articles/Lowe_2009_omalizumab.html
+      - text: "Omeprazole (Zhao 2018)"
+        href: articles/Zhao_2018_omeprazole.html
       - text: "Ontamalimab (Wang 2020)"
         href: articles/Wang_2020_ontamalimab.html
       - text: "Ormutivimab (Zhang 2022)"
@@ -1432,6 +1434,7 @@ articles:
   - articles/Zhang_2019_nivolumab
   - articles/Zhang_2021_dupilumab
   - articles/Zhang_2022_ormutivimab
+  - articles/Zhao_2018_omeprazole
   - articles/Zheng_2016_sifalimumab
   - articles/Zhong_2026_abatacept
   - articles/Zhou_2010_digoxin
