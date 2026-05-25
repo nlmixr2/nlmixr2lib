@@ -236,6 +236,8 @@ navbar:
         href: articles/DoldanMartelli_2013_EGF_IFN_chimera.html
       - text: "Elotuzumab (Ide 2020)"
         href: articles/Ide_2020_elotuzumab.html
+      - text: "Emicizumab (Yoneyama 2017)"
+        href: articles/Yoneyama_2017_emicizumab.html
       - text: "Epinephrine (Abboud 2009)"
         href: articles/Abboud_2009_epinephrine.html
       - text: "Epinephrine (Oualha 2014)"
@@ -1398,6 +1400,7 @@ articles:
   - articles/Yao_2018_guselkumab
   - articles/Yassen_2025_asundexian
   - articles/Yin_2021_trastuzumabDeruxtecan
+  - articles/Yoneyama_2017_emicizumab
   - articles/Yu_2022_ofatumumab
   - articles/Yuan_2019_concizumab
   - articles/Yukawa_1990_phenytoin
