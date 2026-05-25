@@ -408,6 +408,16 @@ navbar:
         href: articles/Xu_2023_MBG453.html
       - text: "MEDI528 (Cao 2013)"
         href: articles/Cao_2013_MEDI528.html
+      - text: "MHD rat (Clinckers 2008)"
+        href: articles/Clinckers_2008_MHD_rat.html
+      - text: "MI 219 (Zou 2012)"
+        href: articles/Zou_2012_MI_219.html
+      - text: "MRNA3927 (Attarwala 2023)"
+        href: articles/Attarwala_2023_mRNA3927.html
+      - text: "Magnesium sulfate (Easterling 2018)"
+        href: articles/Easterling_2018_magnesium_sulfate.html
+      - text: "MagnesiumSulfate (Salinger 2013)"
+        href: articles/Salinger_2013_magnesiumSulfate.html
       - text: "Medi7836 (Hood 2021)"
         href: articles/Hood_2021_medi7836.html
       - text: "Mepolizumab (Cao 2013)"
@@ -1060,6 +1070,7 @@ articles:
   - articles/Drweesh_2026_adalimumab
   - articles/Dunlap_2025_tacrolimus
   - articles/Dunn_2025_tranexamicAcid
+  - articles/Easterling_2018_magnesium_sulfate
   - articles/Ekhart_2008_carboplatin
   - articles/Elassaiss-Schaap_2017_pembrolizumab
   - articles/Elishmereni_2011_il21
