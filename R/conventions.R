@@ -13,16 +13,16 @@
 #' @noRd
 .nlmixr2libConventionsStatic <- list(
   pkParams = c(
-    "lka", "lcl", "lvc", "lvp", "lvp2", "lq", "lq2", "lfdepot",
+    "lka", "lcl", "lvc", "lvp", "lvp2", "lvp3", "lq", "lq2", "lq3", "lfdepot",
     "lvmax", "lcl_ss", "lcl_time", "lcl_renal", "lcl_nonren"
   ),
   pkBareParams = c(
-    "ka", "cl", "vc", "vp", "vp2", "q", "q2", "kel",
-    "k12", "k21", "k13", "k31", "fdepot",
+    "ka", "cl", "vc", "vp", "vp2", "vp3", "q", "q2", "q3", "kel",
+    "k12", "k21", "k13", "k31", "k14", "k41", "fdepot",
     "vmax", "cl_ss", "cl_time", "cl_renal", "cl_nonren"
   ),
   compartments = c(
-    "depot", "central", "peripheral1", "peripheral2", "effect",
+    "depot", "central", "peripheral1", "peripheral2", "peripheral3", "effect",
     "target", "complex", "total_target",
     # Semi-physiological liver compartment used by paper-specific
     # extraction-ratio first-pass models (Xie_2019_agomelatine).
@@ -90,14 +90,13 @@
     # capillary release term setting the lower physiological limit).
     # State holds a concentration (mmol/L) rather than an amount.
     "nefa",
-    # Fetal disposition compartment used by maternal-fetal popPK models
-    # of placentally-transferred drugs (Ngamprasertwong 2016 propofol
-    # sheep maternal-fetal model: drug enters maternal `central`, exits
-    # via maternal `cl` to elimination and via QM-F to/from a single
-    # `fetus` compartment of volume VFetus; fetal clearance was set to
-    # zero because the source paper found it negligible). Drug amount
-    # in mg; per-compartment concentration derived as fetus / vfetus.
-    "fetus"
+    # Circulating-cell compartment in Friberg-style semi-mechanistic
+    # myelosuppression PK/PD models (Friberg 2002 JCO 20(24):4713-4721;
+    # Schmitt 2018 BJCP 84(7):1506-1517; and many other anticancer popPK/PD
+    # extractions). Holds the circulating neutrophil / leukocyte / platelet
+    # concentration (10^9 cells/L); paired with `precursor1..precursorN`
+    # for the proliferation + transit-compartment chain feeding circ.
+    "circ"
   ),
   # Bare numbered chains (transit / effect / precursor / lat / dar /
   # depot) and metabolite-suffixed compartments are validated

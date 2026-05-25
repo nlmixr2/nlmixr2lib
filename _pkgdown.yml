@@ -788,6 +788,8 @@ navbar:
         href: articles/Moore_2016_vancomycin.html
       - text: "Vedolizumab (Rosario 2015)"
         href: articles/Rosario_2015_vedolizumab.html
+      - text: "Vinflunine (Schmitt 2018)"
+        href: articles/Schmitt_2018_vinflunine.html
       - text: "Visilizumab (Cao 2013)"
         href: articles/Cao_2013_visilizumab.html
       - text: "Vismodegib (Lu 2015)"
@@ -1304,6 +1306,7 @@ articles:
   - articles/Schindler_2017_imatinib
   - articles/Schipani_2011_nevirapine
   - articles/Schipani_2013_atazanavir_ritonavir
+  - articles/Schmitt_2018_vinflunine
   - articles/Schoemaker_2017_brivaracetam
   - articles/Schoemaker_2018_levetiracetam
   - articles/Schoenmakers_2025_betamethasone

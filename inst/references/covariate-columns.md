@@ -3542,6 +3542,17 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Schoemaker_2017_brivaracetam.R` (multiplicative effect on apparent oral clearance: `cl *= (1 + 0.408 * CONMED_PB)`; +40.8% relative to no-PB reference, corresponding to ~29% lower brivaracetam exposure, Schoemaker 2017 Table 1).
 - **Notes:** Drug-specific CONMED_* indicator anticipated in the [[CONMED_AED]] notes; used when a paper estimates a separate phenobarbital-induction effect distinct from the pooled EIAED / AED class effect. Per-model `covariateData[[CONMED_PB]]$notes` should document whether primidone is pooled with phenobarbital (Schoemaker 2017 pools them because primidone is metabolised to phenobarbital). Distinct from the broader [[CONMED_EIAED]] (any enzyme-inducing AED) and [[CONMED_AED]] (any concomitant AED). When a paper distinguishes individual AEDs separately, use the drug-specific canonicals [[CONMED_CBZ]], `CONMED_PB`, [[CONMED_VPA]] rather than collapsing into the class-level indicator. Ratified canonically on 2026-05-20 alongside the Schoemaker 2017 brivaracetam paediatric extraction.
 
+### CONMED_PLDH (**canonical for concomitant PEGylated liposomal doxorubicin combination indicator**)
+- **Description:** 1 = subject is receiving the modelled drug in combination with PEGylated liposomal doxorubicin (PLDH; Doxil / Caelyx), 0 = otherwise (no concomitant PLDH). Encodes the PLDH co-administration regimen as a study-design covariate on clearance.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no concomitant PEGylated liposomal doxorubicin).
+- **Source aliases:**
+  - `PLDH` -- used in `Schmitt_2018_vinflunine.R` (Schmitt 2018 NONMEM dataset; 1 = vinflunine + PEGylated liposomal doxorubicin combination cohort).
+- **Example models:** `Schmitt_2018_vinflunine.R` (power-form effect on vinflunine clearance: `cl *= 0.865^CONMED_PLDH` -- vinflunine apparent CL is reduced to 86.5% of single-agent value when coadministered with PLDH, Schmitt 2018 Table 2 and explicit CL formula on p.1607).
+- **Notes:** PEGylated liposomal doxorubicin (PLDH) is a long-circulating doxorubicin formulation used in oncology combination regimens. The Schmitt 2018 vinflunine analysis is the first paper in this register to use PLDH as a popPK combination covariate; promote to general scope when a second paper ratifies the same encoding. Distinct from `CONMED_AVD` (brentuximab vedotin + AVD chemotherapy backbone, which includes free doxorubicin rather than the PEGylated liposomal formulation) and from `PRIOR_ANTHRACYCLINE_DOSE` (cumulative prior anthracycline exposure, not concomitant). Ratified canonically on 2026-05-25 alongside the Schmitt 2018 vinflunine extraction.
+
 ### CONMED_PDE5I (**canonical for concomitant PDE5-inhibitor monotherapy indicator in PAH**)
 - **Description:** 1 = patient is on a concomitant phosphodiesterase type 5 inhibitor (PDE5I) PAH therapy (e.g., sildenafil, tadalafil) alone -- i.e. on a PDE5 inhibitor but NOT also on an endothelin-receptor antagonist; 0 = otherwise. Time-fixed per subject for the PK/PD analysis (PAH comedication at baseline, stable dose required before selexipag start).
 - **Units:** (binary)
