@@ -594,8 +594,8 @@ navbar:
         href: articles/Suleiman_2019_risankizumab.html
       - text: "Risankizumab (Thakre 2022)"
         href: articles/Thakre_2022_risankizumab.html
-      - text: "Risperidone (Sherwin 2012)"
-        href: articles/Sherwin_2012_risperidone.html
+      - text: "Rituximab (Candelaria 2018)"
+        href: articles/Candelaria_2018_rituximab.html
       - text: "Rivipansel (Tammara 2017)"
         href: articles/Tammara_2017_rivipansel.html
       - text: "Rocatinlimab (Okada 2025)"
@@ -1003,6 +1003,11 @@ articles:
   - articles/Budha_2023_tislelizumab
   - articles/Buil-Bruna_2015_lanreotide
   - articles/Caldes_2009_ganciclovir
+  - articles/Candelaria_2018_rituximab
+  - articles/Cao_2013_GNbAC1
+  - articles/Cao_2013_MEDI528
+  - articles/Cao_2013_PAmAb
+  - articles/Cao_2013_PRO95780
   - articles/Cao_2013_adecatumumab
   - articles/Cao_2013_gevokizumab
   - articles/Cao_2013_GNbAC1
