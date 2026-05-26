@@ -252,6 +252,8 @@ navbar:
         href: articles/Diep_2022_eplontersen.html
       - text: "Eribulin (vanHasselt 2015)"
         href: articles/vanHasselt_2015_eribulin.html
+      - text: "Ethambutol (Horita 2018)"
+        href: articles/Horita_2018_ethambutol.html
       - text: "Ethanol (Nemoto 2017)"
         href: articles/Nemoto_2017_ethanol.html
       - text: "Etrolizumab (Moein 2022)"
@@ -358,6 +360,8 @@ navbar:
         href: articles/Brillac_2025_isatuximab.html
       - text: "Isatuximab (Fau 2020)"
         href: articles/Fau_2020_isatuximab.html
+      - text: "Isoniazid (Horita 2018)"
+        href: articles/Horita_2018_isoniazid.html
       - text: "Itraconazole (Hennig 2006)"
         href: articles/Hennig_2006_itraconazole.html
       - text: "Itraconazole (Hennig 2007)"
@@ -576,6 +580,8 @@ navbar:
         href: articles/Ngamprasertwong_2016_propofol_sheep.html
       - text: "Pyrazinamide (Alsultan 2017)"
         href: articles/Alsultan_2017_pyrazinamide.html
+      - text: "Pyrazinamide (Horita 2018)"
+        href: articles/Horita_2018_pyrazinamide.html
       - text: "Quinine (Kloprogge 2014)"
         href: articles/Kloprogge_2014_quinine.html
       - text: "Quinine rat (Sheng 2016)"
@@ -588,6 +594,8 @@ navbar:
         href: articles/Hennig_2015_rifabutin.html
       - text: "Rifampicin (Clewe 2015)"
         href: articles/Clewe_2015_rifampicin.html
+      - text: "Rifampicin (Horita 2018)"
+        href: articles/Horita_2018_rifampicin.html
       - text: "Rifampicin (Svensson 2016)"
         href: articles/Svensson_2016_rifampicin.html
       - text: "Rifampicin (Vinnard 2017)"
@@ -1137,6 +1145,10 @@ articles:
   - articles/Hong_2015_moxifloxacin
   - articles/Hong_2025_datopotamab
   - articles/Hood_2021_medi7836
+  - articles/Horita_2018_ethambutol
+  - articles/Horita_2018_isoniazid
+  - articles/Horita_2018_pyrazinamide
+  - articles/Horita_2018_rifampicin
   - articles/Hu_2014_bapineuzumab
   - articles/Hu_2017_peginterferon_beta_1a
   - articles/Hu_2026_clesrovimab

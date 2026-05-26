@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Zhao 2018 omeprazole ([doi:10.1111/bcp.13526](https://doi.org/10.1111/bcp.13526)) -- Caucasian neonates and young infants on oral omeprazole (parent + 5-hydroxy-omeprazole + omeprazole sulfone popPK with CYP2C19 metabolizer phenotype, ABCB1 C3435T, and postnatal-age covariates; ratifies new `5oh` and `sfn` registered metabolite suffixes and new `CYP2C19_IM`, `CYP2C19_PM`, `ABCB1_C3435T_HET`, `ABCB1_C3435T_MUT` covariate canonicals).
+* Add Horita 2018 rifampicin, isoniazid, pyrazinamide, and ethambutol ([doi:10.1128/AAC.00008-18](https://doi.org/10.1128/AAC.00008-18)) -- Ghanaian children with active tuberculosis (four-drug paediatric anti-TB regimen popPK; ratifies new `NAT2_SLOW` covariate canonical for the slow-acetylator phenotype on isoniazid clearance).
 * Add Tarning 2012 artemether and dihydroartemisinin ([doi:10.1186/1475-2875-11-293](https://doi.org/10.1186/1475-2875-11-293)) -- pregnant women with uncomplicated Plasmodium falciparum malaria in Uganda (joint parent + DHA popPK with zero-order dissolution and 6-compartment transit absorption).
 * Add Schoemaker 2017 brivaracetam ([doi:10.1007/s00228-017-2230-6](https://doi.org/10.1007/s00228-017-2230-6)) -- paediatric patients with epilepsy aged 1 month to 16 years; ratifies new `CONMED_PB`, `CONMED_CBZ`, and `CONMED_VPA` covariate canonicals.
 * Add Nanga 2019 tacrolimus meta-model ([doi:10.1111/bcp.14110](https://doi.org/10.1111/bcp.14110)) -- pooled paediatric and adult solid-organ transplant recipients (n = 281; 201 liver and 80 kidney) on oral tacrolimus; ratifies new `TX_LIVER` and `FORM_SYRUP` covariate canonicals.
