@@ -428,8 +428,8 @@ navbar:
         href: articles/Germovsek_2018_meropenem.html
       - text: "Meropenem (Shekar 2014)"
         href: articles/Shekar_2014_meropenem.html
-      - text: "Methotrexate (Ruhs 2012)"
-        href: articles/Ruhs_2012_methotrexate.html
+      - text: "Metformin (vanRongen 2018)"
+        href: articles/vanRongen_2018_metformin.html
       - text: "Methotrexate (Taylor 2020)"
         href: articles/Taylor_2020_methotrexate.html
       - text: "Methylphenidate (Teuscher 2015)"
@@ -1486,7 +1486,7 @@ articles:
   - articles/deWit_2016_everolimus
   - articles/vanHasselt_2015_eribulin
   - articles/vanRongen_2016_acetaminophen
-  - articles/vanRongen_2017_midazolam
+  - articles/vanRongen_2018_metformin
   - articles/vanRongen_2018_midazolam
   - articles/vanWijk_2019_paracetamol
   - articles/vanderWalt_2013_dapagliflozin
