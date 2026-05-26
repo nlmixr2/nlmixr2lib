@@ -240,6 +240,8 @@ navbar:
         href: articles/Ogasawara_2020_durvalumab.html
       - text: "EGF IFN chimera (DoldanMartelli 2013)"
         href: articles/DoldanMartelli_2013_EGF_IFN_chimera.html
+      - text: "Efavirenz (Olagunju 2018)"
+        href: articles/Olagunju_2018_efavirenz.html
       - text: "Elotuzumab (Ide 2020)"
         href: articles/Ide_2020_elotuzumab.html
       - text: "Emicizumab (Yoneyama 2017)"
@@ -1275,6 +1277,7 @@ articles:
   - articles/Odongo_2015_sulfadoxinePyrimethamine
   - articles/Ogasawara_2020_durvalumab
   - articles/Okada_2025_rocatinlimab
+  - articles/Olagunju_2018_efavirenz
   - articles/Oosten_2016_fentanyl
   - articles/Othman_2014_daclizumab
   - articles/Oualha_2014_epinephrine
