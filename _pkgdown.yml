@@ -158,8 +158,8 @@ navbar:
         href: articles/Ekhart_2008_carboplatin.html
       - text: "Casirivimab (Lin 2024)"
         href: articles/Lin_2024_casirivimab.html
-      - text: "Cebranopadol (Kleideiter 2018)"
-        href: articles/Kleideiter_2018_cebranopadol.html
+      - text: "CC292 (Li 2017)"
+        href: articles/Li_2017_CC292.html
       - text: "Cediranib (Li 2017)"
         href: articles/Li_2017_cediranib.html
       - text: "Cefepime (Jonckheere 2019)"
@@ -628,6 +628,8 @@ navbar:
         href: articles/Sathe_2024_sacituzumab.html
       - text: "SAL003 (Peng 2024)"
         href: articles/Peng_2024_SAL003.html
+      - text: "Salbutamol (Heuberger 2018)"
+        href: articles/Heuberger_2018_salbutamol.html
       - text: "Sapropterin (Qi 2014)"
         href: articles/Qi_2014_sapropterin.html
       - text: "Sarilumab (Xu 2019)"
@@ -1024,11 +1026,6 @@ articles:
   - articles/Budha_2023_tislelizumab
   - articles/Buil-Bruna_2015_lanreotide
   - articles/Caldes_2009_ganciclovir
-  - articles/Campagne_2019_cyclophosphamide_mouse
-  - articles/Cao_2013_GNbAC1
-  - articles/Cao_2013_MEDI528
-  - articles/Cao_2013_PAmAb
-  - articles/Cao_2013_PRO95780
   - articles/Cao_2013_adecatumumab
   - articles/Cao_2013_gevokizumab
   - articles/Cao_2013_GNbAC1
