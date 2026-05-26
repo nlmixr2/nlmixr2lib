@@ -270,16 +270,16 @@
     # protein binding and enterohepatic recirculation
     # (de Winter 2009 doi:10.1007/s10928-009-9136-6).
     "mpag",
-    # Sibling-drug suffixes for the Hill-McManus 2017 dual-urate-lowering-
-    # therapy PKPD model (doi:10.1111/bcp.13427), where febuxostat (`febx`,
-    # xanthine oxidase inhibitor) and lesinurad (`lesn`, URAT1 uricosuric)
-    # are co-administered and neither is the "parent"; both PK subsystems
-    # use canonical compartment / PK-param names with the drug suffix
-    # (`central_febx`, `lcl_febx`, `central_lesn`, `lcl_lesn`, etc.).
-    # Same precedent as the existing co-administered-perpetrator (`cpg2`)
-    # and stereoisomer (`r`, `s`) entries: registered for the
-    # `<canonical>_<sibling>` pattern, not as chemical metabolites.
-    "febx", "lesn"
+    # Mycophenolic acid (MPA, the active moiety released from the prodrug
+    # mycophenolate mofetil MMF) and MPA acyl glucuronide (AcMPAG, the
+    # acyl-linked phase II conjugate of MPA). Used as non-parent-analyte
+    # suffixes in the Kim 2018 integrated tacrolimus + MMF drug-drug-
+    # interaction model, where tacrolimus is the parent and the MPA /
+    # MPAG / AcMPAG system is the co-administered perpetrator drug
+    # (Kim 2018 doi:10.1038/s41598-018-20071-3). Follows the `cpg2`
+    # two-drug precedent (a co-administered species marked with a
+    # metabolite-style suffix, not a metabolite of the parent).
+    "mpa", "acmpag"
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` the time-varying decay arm; `_renal`

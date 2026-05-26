@@ -726,6 +726,8 @@ navbar:
         href: articles/Grover_2011_tacrolimus.html
       - text: "Tacrolimus (Ji 2018)"
         href: articles/Ji_2018_tacrolimus.html
+      - text: "Tacrolimus (Kim 2018)"
+        href: articles/Kim_2018_tacrolimus.html
       - text: "Tacrolimus (Kirubakaran 2022)"
         href: articles/Kirubakaran_2022_tacrolimus.html
       - text: "Tacrolimus (Lu 2015)"
@@ -1208,8 +1210,7 @@ articles:
   - articles/Khan_2015_ciprofloxacin
   - articles/Kielbasa_2020_galcanezumab
   - articles/Kim_2015_paroxetine
-  - articles/Kim_2015_valsartan
-  - articles/Kim_2017_fimasartan
+  - articles/Kim_2018_tacrolimus
   - articles/Kimura_2023_glucarpidase
   - articles/Kirubakaran_2022_tacrolimus
   - articles/Kleideiter_2018_cebranopadol
