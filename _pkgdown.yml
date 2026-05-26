@@ -284,8 +284,6 @@ navbar:
         href: articles/Farrell_2012_farletuzumab.html
       - text: "Febuxostat lesinurad (HillMcManus 2017)"
         href: articles/HillMcManus_2017_febuxostat_lesinurad.html
-      - text: "Fenofibrate (Back 2018)"
-        href: articles/Back_2018_fenofibrate.html
       - text: "Fentanyl (Bista 2015)"
         href: articles/Bista_2015_fentanyl.html
       - text: "Fentanyl (Oosten 2016)"
@@ -1173,9 +1171,7 @@ articles:
   - articles/Hennig_2013_tobra
   - articles/Hennig_2015_phenytoin
   - articles/Hennig_2015_rifabutin
-  - articles/Heuberger_2018_salbutamol
   - articles/HillMcManus_2017_febuxostat_lesinurad
-  - articles/Hodiamont_2017_gentamicin
   - articles/Hoglund_2012_piperaquine
   - articles/Hoglund_2017_piperaquine
   - articles/Holford_1992_tacrine

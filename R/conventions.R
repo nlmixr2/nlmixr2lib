@@ -83,18 +83,13 @@
     # capillary release term setting the lower physiological limit).
     # State holds a concentration (mmol/L) rather than an amount.
     "nefa",
-    # Airway interstitial-fluid (ISF) compartments used by the Rymut 2023
-    # MTPS9579A anti-tryptase mechanistic PK/PD model. Three concentration
-    # states (nM) in the airway target tissue: free monoclonal antibody
-    # in ISF (mab_isf), free inactive tryptase monomer (monomer_isf), and
-    # the mAb-monomer complex (complex_monomer_isf). The active tetrameric
-    # tryptase and the mAb-tetramer complex use the canonical target_isf /
-    # complex_isf names; these three additional names extend the convention
-    # for models whose target exists in multiple oligomeric forms with
-    # distinct binding partners. Lymph turnover (klf_tissue) absorbs the
-    # ISF volume into the rate constant, so states are tracked as
-    # concentrations rather than amounts.
-    "mab_isf", "monomer_isf", "complex_monomer_isf"
+    # Purine metabolism PD compartments used by semi-mechanistic
+    # xanthine / uric-acid turnover models (Hill-McManus 2017
+    # doi:10.1111/bcp.13427). `xanthine` and `urate` hold serum amounts
+    # (mg); `xanthine_urine` and `urate_urine` hold cumulative urinary
+    # excretion amounts (mg) integrated from CLX / CLUA renal-clearance
+    # outflows for direct comparison with 24-h urinary collection data.
+    "xanthine", "urate", "xanthine_urine", "urate_urine"
   ),
   # Bare numbered chains (transit / effect / precursor / lat / dar /
   # depot) and metabolite-suffixed compartments are validated
@@ -127,6 +122,165 @@
   # ADA_POSITIVE, FORM_CHO_PHASE2). Semantic interpretation of the
   # trailing tokens is handled by .classifyCovEffect().
   covEffectPattern = "^e_[A-Za-z0-9]+(_[A-Za-z0-9]+){1,5}$",
+  # Lowercase paper / payload names allowed as a third-token suffix on
+  # parameters and compartments for a non-parent species. The set is
+  # extended whenever a new ADC payload, target binding partner, or
+  # secondary-analyte appears in a model. Keep mutually disjoint from
+  # pkBareParams and clComponents to preserve covariate-effect
+  # disambiguation.
+  registeredMetabolites = c(
+    "mmae", "dxd", "sn38", "dm4", "medm4", "mcmmaf",
+    "complex", "ige", "il1b", "tab", "nab",
+    "dar0", "dar1", "dar2", "dar3", "dar4", "dar5", "dar6", "dar7", "dar8",
+    # Small-molecule metabolites of agomelatine (Xie 2019): 3-hydroxy
+    # and 7-desmethyl. Suffixes start with a digit; this is fine
+    # because the convention check matches on `endsWith(name, "_<metab>")`
+    # rather than treating the metabolite name itself as an R identifier.
+    "3oh", "7dm",
+    # N-desmethyl-bedaquiline metabolite (M2) of bedaquiline
+    # (Svensson 2016 DDMODEL00000219).
+    "m2",
+    # Endoxifen (4-hydroxy-N-desmethyltamoxifen), the major active
+    # metabolite of tamoxifen -- Ter Heine 2014.
+    "endx",
+    # Lidocaine sequential metabolites (DDMODEL00000281, NA_NA_lidocaine):
+    # MEGX = monoethylglycinexylidide (LID -> MEGX via CYP1A2/3A4),
+    # GX   = glycinexylidide (MEGX -> GX), and 2,6-XYL = 2,6-xylidide
+    # (LID -> 2,6-XYL minor pathway). Each metabolite is a separate
+    # central compartment with its own apparent volume in the source's
+    # ADVAN5 parent + 3-metabolite structure.
+    "megx", "gx", "xyl",
+    # Morphine-3-glucuronide and morphine-6-glucuronide, the two major
+    # glucuronide metabolites of morphine -- Knibbe 2009 DDMODEL00000248.
+    "m3g", "m6g",
+    # Phase-II conjugates: glucuronide (gluc) and sulphate (sulf).
+    # Used for paracetamol-glucuronide / paracetamol-sulphate plasma
+    # metabolite compartments in Allegaert 2015 (DDMODEL00000267).
+    "gluc", "sulf",
+    # Paracetamol (APAP) phase-II conjugate metabolites -- APAP-glucuronide
+    # ("apapg") and APAP-sulphate ("apaps") used in the Cook 2016 newborn
+    # model (DDMODEL00000271).
+    "apapg", "apaps",
+    # Colistin, the active polymyxin generated in vivo by hydrolysis of
+    # the prodrug colistimethate sodium (CMS). Used as a metabolite
+    # suffix in parent-prodrug CMS / metabolite-active-drug colistin
+    # popPK models (Leuppi-Taegtmeyer 2019 DDMODEL00000295).
+    "col",
+    # Dihydroartemisinin, the active metabolite of artesunate
+    # (Birgersson 2019 DDMODEL00000297).
+    "dha",
+    # Hydroxy-itraconazole (OH-ITZ), the major active metabolite of
+    # itraconazole produced by CYP3A4 hydroxylation. Used as a metabolite
+    # suffix in parent + metabolite simultaneous popPK models
+    # (Hennig 2006 Clin Pharmacokinet 45(11):1099-1114; Hennig 2007 BJCP
+    # 63(4):438-450).
+    "ohi",
+    # Doxorubicinol, the C-13 alcohol metabolite of doxorubicin
+    # (Kunarajah 2017 paediatric oncology popPK/PD model).
+    "doxol",
+    # Daunorubicinol (DOL), the C-13 alcohol metabolite of
+    # daunorubicin formed primarily by carbonyl reductase 1 (CBR1)
+    # in adult AML patients (Varatharajan 2016 Cancer Chemother
+    # Pharmacol 78(5):1051-1058 doi:10.1007/s00280-016-3166-8).
+    "dol",
+    # 25-O-desacetyl rifabutin, the primary active metabolite of
+    # rifabutin formed by arylacetamide deacetylase (Hennig 2015
+    # AAC doi:10.1128/AAC.01195-15).
+    "desrbn",
+    # AZ5104 (N-desmethyl osimertinib), an active EGFR-inhibitor
+    # metabolite of osimertinib formed predominantly via CYP3A4/5
+    # (Brown 2017 BJCP 83(6):1216-1226 doi:10.1111/bcp.13223).
+    "az5104",
+    # N-desmethyl-selumetinib (also reported as the active selumetinib
+    # metabolite, ~3-5-fold more potent for MEK1 inhibition than the
+    # parent), formed by oxidative N-demethylation of selumetinib
+    # (Patel 2017 CPT Pharmacometrics Syst Pharmacol 6(5):305-314
+    # doi:10.1002/psp4.12175).
+    "ndsel",
+    # Capecitabine sequential metabolites (Urien 2005
+    # doi:10.1007/s10928-005-0018-2): 5'-DFCR (5'-deoxy-5-
+    # fluorocytidine, formed in the liver by carboxylesterase from
+    # capecitabine), 5'-DFUR (5'-deoxy-5-fluorouridine, formed from
+    # 5'-DFCR by cytidine deaminase in liver and tumour cells), and
+    # 5-FU (5-fluorouracil, formed from 5'-DFUR by thymidine
+    # phosphorylase preferentially in tumour tissue). Each metabolite
+    # has its own central compartment with apparent volume fixed to
+    # 1 L (only output rate constants K23, K34, K40 are identifiable
+    # in the source NONMEM ADVAN6 fit).
+    "dfcr", "dfur", "5fu",
+    # AS(N-1)3' truncated antisense strand of GalNAc-conjugated
+    # siRNAs (givosiran and other galnac-siRNA conjugates), formed
+    # by removal of the 3'-terminal nucleotide from the antisense
+    # strand. Treated as the active metabolite that is equipotent
+    # with the parent in terms of RISC loading and target mRNA
+    # silencing (Ayyar 2024 doi:10.1016/j.xphs.2023.10.026).
+    "asn1",
+    # 10-monohydroxy derivative (MHD, also "10-hydroxy-carbazepine"),
+    # the primary active metabolite of oxcarbazepine produced by
+    # cytosolic arylketone reductases (Rodrigues 2017 BJCP
+    # doi:10.1111/bcp.13392).
+    "mhd",
+    # Stereo-isomer (R / S) suffixes for enantiomer-resolved popPK
+    # models in which both enantiomers are followed in plasma but no
+    # interconversion is modelled (e.g. Valitalo 2017 ketorolac BJCP
+    # doi:10.1111/bcp.13311). Treated as "non-parent analyte" suffixes
+    # under the same registry as metabolites; neither enantiomer is the
+    # parent.
+    "r", "s",
+    # Roflumilast N-oxide, the active metabolite of roflumilast that
+    # contributes about 90% of total PDE4 inhibitory activity (tPDE4i).
+    # Used as a metabolite suffix in parent-plus-metabolite popPK models
+    # where parent (roflumilast) and metabolite (N-oxide) are fitted
+    # jointly but with independent apparent absorption parameters
+    # (Lahu 2010 doi:10.2165/11536600-000000000-00000).
+    "noxide",
+    # Combined acetaminophen cysteine + mercapturate compartment used by
+    # CYP2E1-oxidation popPK models that lump the two oxidation
+    # metabolites (acetaminophen cysteine and acetaminophen mercapturate)
+    # into a single observation compartment because the two species are
+    # in rapid equilibrium with overlapping disposition (van Rongen 2016
+    # Clin Pharmacokinet doi:10.1007/s40262-015-0357-0).
+    "cysmer",
+    # Glucarpidase (CPG2), the bacterial carboxypeptidase G2 enzyme
+    # given as a rescue therapy after high-dose methotrexate (MTX). Not
+    # a metabolite of MTX but a co-administered perpetrator that
+    # enzymatically hydrolyzes the substrate; the suffix marks the
+    # non-parent species in 2-drug PK/PD models (Kimura 2023
+    # doi:10.21873/anticanres.16351).
+    "cpg2",
+    # 3-N-acetyl-3,4-diaminopyridine (3-Ac DAP), the inactive N-acetyl
+    # metabolite of 3,4-diaminopyridine (amifampridine) free base
+    # produced by N-acetyltransferases. Used in parent-plus-metabolite
+    # popPK models for amifampridine in patients with Lambert-Eaton
+    # myasthenia (Thakkar 2017 doi:10.1002/psp4.12218).
+    "acdap",
+    # H4 (active thiol) metabolite of clopidogrel: the pharmacologically
+    # active species responsible for P2Y12 receptor inhibition, formed
+    # via sequential CYP-mediated oxidation of clopidogrel (CYP2C19 is
+    # the dominant isoform for the second oxidation step). The "H4"
+    # designator refers to the H4 stereoisomer specifically, which is
+    # the antiplatelet-active diastereomer. Used in parent-plus-
+    # metabolite popPK models (Danielak 2017 doi:10.1007/s00228-017-2334-z).
+    "h4",
+    # Mycophenolic acid glucuronide (MPAG, the 7-O-glucuronide phase II
+    # metabolite of mycophenolic acid produced by UGT1A9 and UGT2B7).
+    # MPAG is the major plasma metabolite of mycophenolic acid after
+    # mycophenolate mofetil (MMF) dosing in renal transplant recipients.
+    # Used in parent-plus-metabolite popPK models with explicit competitive
+    # protein binding and enterohepatic recirculation
+    # (de Winter 2009 doi:10.1007/s10928-009-9136-6).
+    "mpag",
+    # Sibling-drug suffixes for the Hill-McManus 2017 dual-urate-lowering-
+    # therapy PKPD model (doi:10.1111/bcp.13427), where febuxostat (`febx`,
+    # xanthine oxidase inhibitor) and lesinurad (`lesn`, URAT1 uricosuric)
+    # are co-administered and neither is the "parent"; both PK subsystems
+    # use canonical compartment / PK-param names with the drug suffix
+    # (`central_febx`, `lcl_febx`, `central_lesn`, `lcl_lesn`, etc.).
+    # Same precedent as the existing co-administered-perpetrator (`cpg2`)
+    # and stereoisomer (`r`, `s`) entries: registered for the
+    # `<canonical>_<sibling>` pattern, not as chemical metabolites.
+    "febx", "lesn"
+  ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` the time-varying decay arm; `_renal`
   # the glomerular-filtration / tubular-secretion arm; `_nonren` the
