@@ -144,7 +144,7 @@ ref_covariates <- list(
   FORM_CAPSULE  = 0L,
   FORM_SOLUTION = 0L,
   CYP2C9_EM     = 0L,
-  CYP2C9_PIM    = 0L,
+  CYP2C9_PM_IM  = 0L,
   DIS_HEALTHY   = 0L,
   DIS_DPN       = 0L,
   DIS_BUN       = 0L
@@ -166,7 +166,7 @@ make_arm <- function(arm_label, override = list(), id_offset = 0L) {
     FORM_CAPSULE  = cov$FORM_CAPSULE,
     FORM_SOLUTION = cov$FORM_SOLUTION,
     CYP2C9_EM     = cov$CYP2C9_EM,
-    CYP2C9_PIM    = cov$CYP2C9_PIM,
+    CYP2C9_PM_IM  = cov$CYP2C9_PM_IM,
     DIS_HEALTHY   = cov$DIS_HEALTHY,
     DIS_DPN       = cov$DIS_DPN,
     DIS_BUN       = cov$DIS_BUN
@@ -239,7 +239,7 @@ events <- bind_rows(dose_recs, obs_recs) |>
   select(id, time, amt, evid, cmt, arm,
          SEXF, AGE, WT, CRCL, ALT,
          FORM_CAPSULE, FORM_SOLUTION,
-         CYP2C9_EM, CYP2C9_PIM,
+         CYP2C9_EM, CYP2C9_PM_IM,
          DIS_HEALTHY, DIS_DPN, DIS_BUN)
 
 stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
@@ -425,8 +425,8 @@ shape. See Assumptions and deviations for details.
   and form the model's CYP2C9 reference category. The canonical
   `CYP2C9_EM` covariate's standard reference (in Jeong 2022) is IM/PM only,
   not unknown. In the Kleideiter 2018 model, the 0-level of `CYP2C9_EM`
-  pools unknown + non-EM phenotypes, and a sibling new canonical
-  `CYP2C9_PIM` carries the PIM-vs-unknown contrast. Both indicators are 0
+  pools unknown + non-EM phenotypes, and the sibling canonical
+  `CYP2C9_PM_IM` carries the PM/IM-vs-unknown contrast. Both indicators are 0
   for the reference-arm simulations above.
 - **Four-level disease-state encoding via three indicators.** The model
   encodes the four-category disease factor (LBP and OA reference + healthy,

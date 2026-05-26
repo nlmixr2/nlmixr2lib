@@ -73,7 +73,7 @@ Kleideiter_2018_cebranopadol <- function() {
       notes              = "Only 38.3% of the analysis cohort had a known CYP2C9 phenotype; the remaining 61.7% were assigned 'unknown' which is the model's reference category. Multiplicative effect on CL: 82.4 / 74.3 = 1.109 (about +11% CL vs unknown reference); Kleideiter 2018 Table 13.",
       source_name        = "CYP2C9"
     ),
-    CYP2C9_PIM = list(
+    CYP2C9_PM_IM = list(
       description        = "CYP2C9 poor- or intermediate-metabolizer phenotype indicator (pooled)",
       units              = "(binary)",
       type               = "binary",
@@ -128,7 +128,7 @@ Kleideiter_2018_cebranopadol <- function() {
     # Structural PK parameters at the Table 13 reference covariate set:
     #   SEXF = 1 (female; the Table 13 most-common-category reference), AGE = 55 y,
     #   WT = 82 kg, CRCL = 106.4 mL/min, ALT = 19 U/L,
-    #   FORM_CAPSULE = FORM_SOLUTION = 0 (tablet), CYP2C9_EM = CYP2C9_PIM = 0 (unknown),
+    #   FORM_CAPSULE = FORM_SOLUTION = 0 (tablet), CYP2C9_EM = CYP2C9_PM_IM = 0 (unknown),
     #   DIS_HEALTHY = DIS_DPN = DIS_BUN = 0 (LBP / OA reference).
     lcl    <- log(74.3);     label("Apparent oral clearance at the reference covariate set (CL/F, L/h)")                       # Kleideiter 2018 Table 13 'Clearance Reference value'
     lvc    <- log(225);      label("Apparent central volume of distribution at the reference covariate set (Vc/F, L)")         # Kleideiter 2018 Table 13 'Volume central compartment Reference value'
@@ -140,7 +140,7 @@ Kleideiter_2018_cebranopadol <- function() {
     # Covariate effects on CL (Kleideiter 2018 Table 13)
     e_male_cl   <- 1.176;    label("Male-vs-female CL ratio (87.4 / 74.3); applied as ratio^(1 - SEXF)")                       # Kleideiter 2018 Table 13: Male CL 87.4 vs Female CL 74.3 = 1.176
     e_em_cl     <- 1.109;    label("CYP2C9 EM-vs-unknown CL ratio (82.4 / 74.3); applied as ratio^CYP2C9_EM")                  # Kleideiter 2018 Table 13: EM CL 82.4 vs Reference 74.3 = 1.109
-    e_pim_cl    <- 0.790;    label("CYP2C9 PIM-vs-unknown CL ratio (58.7 / 74.3); applied as ratio^CYP2C9_PIM")                # Kleideiter 2018 Table 13: PIM CL 58.7 vs Reference 74.3 = 0.790
+    e_pim_cl    <- 0.790;    label("CYP2C9 PIM-vs-unknown CL ratio (58.7 / 74.3); applied as ratio^CYP2C9_PM_IM")                # Kleideiter 2018 Table 13: PIM CL 58.7 vs Reference 74.3 = 0.790
     e_alt_cl    <- -0.156;   label("Power exponent of ALT on CL (unitless; reference 19 U/L)")                                 # Kleideiter 2018 Table 13 'Effect of ALT (exponential)'
     e_crcl_cl   <-  0.349;   label("Power exponent of CrCl on CL (unitless; reference 106.4 mL/min)")                          # Kleideiter 2018 Table 13 'Effect of CrCl (exponential)'
 
@@ -202,7 +202,7 @@ Kleideiter_2018_cebranopadol <- function() {
     cl <- exp(lcl + etalcl) *
       e_male_cl^(1 - SEXF) *
       e_em_cl^CYP2C9_EM *
-      e_pim_cl^CYP2C9_PIM *
+      e_pim_cl^CYP2C9_PM_IM *
       (ALT  / 19   )^e_alt_cl *
       (CRCL / 106.4)^e_crcl_cl
     vc <- exp(lvc + etalvc) *
