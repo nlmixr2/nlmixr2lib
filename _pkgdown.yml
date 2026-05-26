@@ -604,6 +604,8 @@ navbar:
         href: articles/Svensson_2016_rifampicin.html
       - text: "Rifampicin (Vinnard 2017)"
         href: articles/Vinnard_2017_rifampicin.html
+      - text: "Rifampicin (Wicha 2018)"
+        href: articles/Wicha_2018_rifampicin.html
       - text: "Rilotumumab (Zhang 2016)"
         href: articles/Zhang_2016_rilotumumab.html
       - text: "Risankizumab (Suleiman 2019)"
@@ -1421,6 +1423,7 @@ articles:
   - articles/Wang_2024_sugemalimab
   - articles/Wattanakul_2016_paracetamol
   - articles/Wicha_2017_linezolid_meropenem_vancomycin
+  - articles/Wicha_2018_rifampicin
   - articles/Wilbaux_2015_prostate
   - articles/Wilkins_2008_rifampicin
   - articles/Wilson_2015_sunitinib_irinotecan_mouse
