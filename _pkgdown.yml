@@ -288,6 +288,8 @@ navbar:
         href: articles/Kim_2017_fimasartan.html
       - text: "Follitropin delta (Rose 2016)"
         href: articles/Rose_2016_follitropin_delta.html
+      - text: "Fondaparinux (Zufferey 2018)"
+        href: articles/Zufferey_2018_fondaparinux.html
       - text: "Fosdagrocorat oc (Shoji 2017)"
         href: articles/Shoji_2017_fosdagrocorat_oc.html
       - text: "Fosdagrocorat p1np (Shoji 2017)"
@@ -1474,6 +1476,7 @@ articles:
   - articles/Zhu_2017_lebrikizumab
   - articles/Zierhut_2008_osteoprotegerin
   - articles/Zou_2012_MI_219
+  - articles/Zufferey_2018_fondaparinux
   - articles/Zuo_2016_UDCA
   - articles/Zurlinden_2016_paracetamol
   - articles/deHoogd_2017_morphine
