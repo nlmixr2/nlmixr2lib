@@ -442,6 +442,8 @@ navbar:
         href: articles/Martial_2017_micafungin.html
       - text: "Midazolam (Brill 2014)"
         href: articles/Brill_2014_midazolam.html
+      - text: "Midazolam pbpk (Brussee 2018)"
+        href: articles/Brussee_2018_midazolam_pbpk.html
       - text: "Miltefosine (Dorlo 2017)"
         href: articles/Dorlo_2017_miltefosine.html
       - text: "Miridesap (Sahota 2015)"
@@ -1018,6 +1020,7 @@ articles:
   - articles/Brooks_2021_tacrolimus
   - articles/Brown_2017_osimertinib
   - articles/Bruno_2005_trastuzumab
+  - articles/Brussee_2018_midazolam_pbpk
   - articles/Budha_2023_tislelizumab
   - articles/Buil-Bruna_2015_lanreotide
   - articles/Caldes_2009_ganciclovir

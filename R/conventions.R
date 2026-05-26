@@ -290,17 +290,11 @@
     # protein binding and enterohepatic recirculation
     # (de Winter 2009 doi:10.1007/s10928-009-9136-6).
     "mpag",
-    # 5-hydroxy-omeprazole (5-OH-OMZ), the major active metabolite of
-    # omeprazole formed by CYP2C19 hydroxylation. Used as a metabolite
-    # suffix in parent-plus-metabolite popPK models where omeprazole
-    # and 5-OH-omeprazole are fitted jointly with metabolite apparent
-    # volume V_M/F fixed to 1 L (Zhao 2018 doi:10.1111/bcp.13526).
-    "5oh",
-    # Omeprazole sulfone, the CYP3A4-derived metabolite of omeprazole.
-    # Used as a metabolite suffix in parent-plus-metabolite popPK
-    # models with metabolite apparent volume V_M/F fixed to 1 L
-    # (Zhao 2018 doi:10.1111/bcp.13526).
-    "sfn"
+    # 1-OH-midazolam (alpha-hydroxymidazolam), the major active
+    # metabolite of midazolam formed by CYP3A in the liver and gut
+    # wall. Used in parent-plus-metabolite semi-physiological popPK
+    # models (Brussee 2018 doi:10.1002/psp4.12295).
+    "1ohm"
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` denotes the time-varying decay arm.
