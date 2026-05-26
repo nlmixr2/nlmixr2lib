@@ -442,8 +442,8 @@ navbar:
         href: articles/Martial_2017_micafungin.html
       - text: "Midazolam (Brill 2014)"
         href: articles/Brill_2014_midazolam.html
-      - text: "Midazolam pbpk (Brussee 2018)"
-        href: articles/Brussee_2018_midazolam_pbpk.html
+      - text: "Midazolam (vanRongen 2017)"
+        href: articles/vanRongen_2017_midazolam.html
       - text: "Miltefosine (Dorlo 2017)"
         href: articles/Dorlo_2017_miltefosine.html
       - text: "Miridesap (Sahota 2015)"
@@ -1476,5 +1476,16 @@ articles:
   - articles/Zou_2012_MI_219
   - articles/Zuo_2016_UDCA
   - articles/Zurlinden_2016_paracetamol
+  - articles/deHoogd_2017_morphine
+  - articles/deKock_2017_sulfadoxinePyrimethamine
+  - articles/deVriesSchultink_2020_zenocutuzumab
+  - articles/deWinter_2009_mycophenolic_acid
+  - articles/deWit_2016_everolimus
+  - articles/vanHasselt_2015_eribulin
+  - articles/vanRongen_2016_acetaminophen
+  - articles/vanRongen_2017_midazolam
+  - articles/vanRongen_2018_midazolam
+  - articles/vanWijk_2019_paracetamol
+  - articles/vanderWalt_2013_dapagliflozin
   internal: true
 # AUTOGEN:articles:END
