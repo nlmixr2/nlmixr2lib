@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Golubovic 2019 sirolimus ([doi:10.2478/jomb-2018-0030](https://doi.org/10.2478/jomb-2018-0030)) -- adult kidney transplant recipients on triple immunosuppression (sirolimus + mycophenolate mofetil + corticosteroids) from routine therapeutic drug monitoring.
+* Add Bastida 2018 tocilizumab ([doi:10.1111/bcp.13500](https://doi.org/10.1111/bcp.13500)) -- adults with rheumatoid arthritis on intravenous tocilizumab (single-center Hospital Clinic Barcelona).
 * Add Tarning 2012 artemether and dihydroartemisinin ([doi:10.1186/1475-2875-11-293](https://doi.org/10.1186/1475-2875-11-293)) -- pregnant women with uncomplicated Plasmodium falciparum malaria in Uganda (joint parent + DHA popPK with zero-order dissolution and 6-compartment transit absorption).
 * Add Schoemaker 2017 brivaracetam ([doi:10.1007/s00228-017-2230-6](https://doi.org/10.1007/s00228-017-2230-6)) -- paediatric patients with epilepsy aged 1 month to 16 years; ratifies new `CONMED_PB`, `CONMED_CBZ`, and `CONMED_VPA` covariate canonicals.
 * Add Nanga 2019 tacrolimus meta-model ([doi:10.1111/bcp.14110](https://doi.org/10.1111/bcp.14110)) -- pooled paediatric and adult solid-organ transplant recipients (n = 281; 201 liver and 80 kidney) on oral tacrolimus; ratifies new `TX_LIVER` and `FORM_SYRUP` covariate canonicals.

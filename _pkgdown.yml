@@ -746,6 +746,8 @@ navbar:
         href: articles/Hennig_2008_tobramycin.html
       - text: "Tobramycin inhaled (Ting 2014)"
         href: articles/Ting_2014_tobramycin_inhaled.html
+      - text: "Tocilizumab (Bastida 2018)"
+        href: articles/Bastida_2018_tocilizumab.html
       - text: "Tocilizumab (Frey 2010)"
         href: articles/Frey_2010_tocilizumab.html
       - text: "Tocilizumab (Frey 2013)"
@@ -996,7 +998,7 @@ articles:
   - articles/Back_2018_fenofibrate
   - articles/Bajaj_2017_nivolumab
   - articles/Bajaj_2017_nivolumab_ddmore
-  - articles/Bellanti_2015_deferoxamine
+  - articles/Bastida_2018_tocilizumab
   - articles/Bender_2014_trastuzumabEmtansine_mechanistic
   - articles/Bender_2014_trastuzumabEmtansine_reduced
   - articles/Benkali_2010_tacrolimus
