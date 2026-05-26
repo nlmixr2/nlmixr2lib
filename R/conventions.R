@@ -104,15 +104,13 @@
     # capillary release term setting the lower physiological limit).
     # State holds a concentration (mmol/L) rather than an amount.
     "nefa",
-    # Cumulative renal-excretion compartment used by simultaneous
-    # plasma + urine popPK / popPK-PD fits where the source data
-    # include a cumulative urinary amount column (Aksenov 2018 uric
-    # acid; Barnett 2018 coproporphyrin I and rosuvastatin; Allegaert
-    # 2015 paracetamol; etc.). State holds the cumulative excreted
-    # amount (nmol, ug, mg, etc.; document the unit per-model via
-    # `units$dosing` or in `description`); the rate of accumulation
-    # is typically `CL_renal * Cc`.
-    "urine"
+    # Purine metabolism PD compartments used by semi-mechanistic
+    # xanthine / uric-acid turnover models (Hill-McManus 2017
+    # doi:10.1111/bcp.13427). `xanthine` and `urate` hold serum amounts
+    # (mg); `xanthine_urine` and `urate_urine` hold cumulative urinary
+    # excretion amounts (mg) integrated from CLX / CLUA renal-clearance
+    # outflows for direct comparison with 24-h urinary collection data.
+    "xanthine", "urate", "xanthine_urine", "urate_urine"
   ),
   # Bare numbered chains (transit / effect / precursor / lat / dar /
   # depot) and metabolite-suffixed compartments are validated
@@ -292,11 +290,16 @@
     # protein binding and enterohepatic recirculation
     # (de Winter 2009 doi:10.1007/s10928-009-9136-6).
     "mpag",
-    # 1-OH-midazolam (alpha-hydroxymidazolam), the major active
-    # metabolite of midazolam formed by CYP3A in the liver and gut
-    # wall. Used in parent-plus-metabolite semi-physiological popPK
-    # models (Brussee 2018 doi:10.1002/psp4.12295).
-    "1ohm"
+    # Sibling-drug suffixes for the Hill-McManus 2017 dual-urate-lowering-
+    # therapy PKPD model (doi:10.1111/bcp.13427), where febuxostat (`febx`,
+    # xanthine oxidase inhibitor) and lesinurad (`lesn`, URAT1 uricosuric)
+    # are co-administered and neither is the "parent"; both PK subsystems
+    # use canonical compartment / PK-param names with the drug suffix
+    # (`central_febx`, `lcl_febx`, `central_lesn`, `lcl_lesn`, etc.).
+    # Same precedent as the existing co-administered-perpetrator (`cpg2`)
+    # and stereoisomer (`r`, `s`) entries: registered for the
+    # `<canonical>_<sibling>` pattern, not as chemical metabolites.
+    "febx", "lesn"
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` denotes the time-varying decay arm.
