@@ -596,6 +596,8 @@ navbar:
         href: articles/Diao_2014_rFIXFc.html
       - text: "Rifabutin (Hennig 2015)"
         href: articles/Hennig_2015_rifabutin.html
+      - text: "Rifampicin (Barnett 2018)"
+        href: articles/Barnett_2018_rifampicin.html
       - text: "Rifampicin (Clewe 2015)"
         href: articles/Clewe_2015_rifampicin.html
       - text: "Rifampicin (Horita 2018)"
@@ -622,6 +624,8 @@ navbar:
         href: articles/Lahu_2010_roflumilast.html
       - text: "Romiplostim (Petrov 2024)"
         href: articles/Petrov_2024_romiplostim.html
+      - text: "Rosuvastatin (Barnett 2018)"
+        href: articles/Barnett_2018_rosuvastatin.html
       - text: "Rosuvastatin (Macpherson 2015)"
         href: articles/Macpherson_2015_rosuvastatin.html
       - text: "Rucaparib (Wang 2015)"
@@ -1004,7 +1008,9 @@ articles:
   - articles/Back_2018_fenofibrate
   - articles/Bajaj_2017_nivolumab
   - articles/Bajaj_2017_nivolumab_ddmore
-  - articles/Bastida_2018_tocilizumab
+  - articles/Barnett_2018_coproporphyrin_I
+  - articles/Barnett_2018_rifampicin
+  - articles/Barnett_2018_rosuvastatin
   - articles/Bender_2014_trastuzumabEmtansine_mechanistic
   - articles/Bender_2014_trastuzumabEmtansine_reduced
   - articles/Benkali_2010_tacrolimus

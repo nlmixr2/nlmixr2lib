@@ -104,13 +104,15 @@
     # capillary release term setting the lower physiological limit).
     # State holds a concentration (mmol/L) rather than an amount.
     "nefa",
-    # Circulating-cell compartment in Friberg-style semi-mechanistic
-    # myelosuppression PK/PD models (Friberg 2002 JCO 20(24):4713-4721;
-    # Schmitt 2018 BJCP 84(7):1506-1517; and many other anticancer popPK/PD
-    # extractions). Holds the circulating neutrophil / leukocyte / platelet
-    # concentration (10^9 cells/L); paired with `precursor1..precursorN`
-    # for the proliferation + transit-compartment chain feeding circ.
-    "circ"
+    # Cumulative renal-excretion compartment used by simultaneous
+    # plasma + urine popPK / popPK-PD fits where the source data
+    # include a cumulative urinary amount column (Aksenov 2018 uric
+    # acid; Barnett 2018 coproporphyrin I and rosuvastatin; Allegaert
+    # 2015 paracetamol; etc.). State holds the cumulative excreted
+    # amount (nmol, ug, mg, etc.; document the unit per-model via
+    # `units$dosing` or in `description`); the rate of accumulation
+    # is typically `CL_renal * Cc`.
+    "urine"
   ),
   # Bare numbered chains (transit / effect / precursor / lat / dar /
   # depot) and metabolite-suffixed compartments are validated
