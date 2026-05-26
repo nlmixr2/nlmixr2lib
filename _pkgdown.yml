@@ -658,6 +658,8 @@ navbar:
         href: articles/Nikanjam_2019_siltuximab.html
       - text: "Simvastatin (Jin 2014)"
         href: articles/Jin_2014_simvastatin.html
+      - text: "Sirolimus (Golubovic 2019)"
+        href: articles/Golubovic_2019_sirolimus.html
       - text: "Sirolimus (Wu 2012)"
         href: articles/Wu_2012_sirolimus.html
       - text: "Sirukumab (Xu 2011)"
@@ -1115,6 +1117,7 @@ articles:
   - articles/Gilkey_2015_DiRnanoparticle
   - articles/Girard_2012_pimasertib
   - articles/Goel_2016_Sonidegib
+  - articles/Golubovic_2019_sirolimus
   - articles/Goti_2018_vancomycin
   - articles/Grimm_2023
   - articles/Grover_2011_tacrolimus
