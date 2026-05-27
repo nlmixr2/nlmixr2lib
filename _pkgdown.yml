@@ -162,8 +162,8 @@ navbar:
         href: articles/Ekhart_2008_carboplatin.html
       - text: "Casirivimab (Lin 2024)"
         href: articles/Lin_2024_casirivimab.html
-      - text: "Cebranopadol (Kleideiter 2018)"
-        href: articles/Kleideiter_2018_cebranopadol.html
+      - text: "CC292 (Li 2017)"
+        href: articles/Li_2017_CC292.html
       - text: "Cediranib (Li 2017)"
         href: articles/Li_2017_cediranib.html
       - text: "Cefepime (Jonckheere 2019)"
@@ -832,6 +832,8 @@ navbar:
         href: articles/Chung_2013_vancomycin.html
       - text: "Vancomycin (Goti 2018)"
         href: articles/Goti_2018_vancomycin.html
+      - text: "Vancomycin (Ji 2017)"
+        href: articles/Ji_2017_vancomycin.html
       - text: "Vancomycin (Moore 2016)"
         href: articles/Moore_2016_vancomycin.html
       - text: "Vedolizumab (Rosario 2015)"
@@ -1250,8 +1252,6 @@ articles:
   - articles/LeTilly_2021_trastuzumab
   - articles/Leuppi-Taegtmeyer_2019_colistin
   - articles/Li_2006_meropenem
-  - articles/Li_2015_taspoglutide_mbma
-  - articles/Li_2017_CC292
   - articles/Li_2017_brentuximab
   - articles/Li_2017_CC292
   - articles/Li_2017_cediranib
