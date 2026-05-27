@@ -610,6 +610,10 @@ navbar:
         href: articles/Kloprogge_2014_quinine.html
       - text: "Quinine rat (Sheng 2016)"
         href: articles/Sheng_2016_quinine_rat.html
+      - text: "RFIXFc (Diao 2014)"
+        href: articles/Diao_2014_rFIXFc.html
+      - text: "Radiation radiosensitizer mouse (Cardilin 2018)"
+        href: articles/Cardilin_2018_radiation_radiosensitizer_mouse.html
       - text: "Ranibizumab (Mulyukov 2018)"
         href: articles/Mulyukov_2018_ranibizumab.html
       - text: "RFIXFc (Diao 2014)"
@@ -1070,6 +1074,7 @@ articles:
   - articles/Cao_2013_siltuximab
   - articles/Cao_2013_tefibazumab
   - articles/Cao_2013_visilizumab
+  - articles/Cardilin_2018_radiation_radiosensitizer_mouse
   - articles/CarlssonPetri_2021_liraglutide
   - articles/Castro-Surez_2020_nimotuzumab
   - articles/Catalan-Latorre_2018_taurine_rat
