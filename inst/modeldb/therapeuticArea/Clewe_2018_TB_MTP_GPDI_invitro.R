@@ -40,10 +40,10 @@ Clewe_2018_TB_MTP_GPDI_invitro <- function() {
         "The stability of the drugs allowed assessment of activity during the 6 days",
         "of the experiment without the need for replenishment.' Tested concentrations in",
         "the source experiment (Figure 1): rifampicin 0.002, 0.008, 0.03, 0.125, 0.5, 8",
-        "mg/L. Set to 0 in regimens without rifampicin. Paper-specific covariate not in",
-        "inst/references/covariate-columns.md because the canonical concentration concept",
-        "in nlmixr2lib is a state-derived plasma concentration (Cc), not a static",
-        "exogenous-drug-concentration covariate used to drive an in vitro PD model."
+        "mg/L. Set to 0 in regimens without rifampicin. Registered as the canonical",
+        "CONC_RIF_MGL in inst/references/covariate-columns.md, an in-vitro applied",
+        "drug-concentration covariate (the CONC_<DRUG>_MGL in-vitro family is distinct",
+        "from the state-derived plasma concentration Cc and the CP_<DRUG> plasma PD-driver family)."
       ),
       source_name        = "CRIF (Clewe 2018 Materials and methods)"
     ),

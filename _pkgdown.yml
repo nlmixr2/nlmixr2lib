@@ -162,8 +162,6 @@ navbar:
         href: articles/Lin_2024_casirivimab.html
       - text: "Cebranopadol (Kleideiter 2017)"
         href: articles/Kleideiter_2017_cebranopadol.html
-      - text: "Cebranopadol (Kleideiter 2018)"
-        href: articles/Kleideiter_2018_cebranopadol.html
       - text: "Cediranib (Li 2017)"
         href: articles/Li_2017_cediranib.html
       - text: "Cefepime (Jonckheere 2019)"
@@ -1234,7 +1232,6 @@ articles:
   - articles/Kimura_2023_glucarpidase
   - articles/Kirubakaran_2022_tacrolimus
   - articles/Kleideiter_2017_cebranopadol
-  - articles/Kleideiter_2018_cebranopadol
   - articles/Kloft_2004_sibrotuzumab
   - articles/Kloprogge_2013_lumefantrine
   - articles/Kloprogge_2014_quinine

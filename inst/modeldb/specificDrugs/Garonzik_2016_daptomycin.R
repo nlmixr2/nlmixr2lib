@@ -26,10 +26,10 @@ Garonzik_2016_daptomycin <- function() {
         "expressions fire) -- a deliberately conspicuous failure rather",
         "than silent interpolation; if a user wants intermediate HS levels",
         "they must add the corresponding factive value or interpolate",
-        "outside the model. In-vitro experimental indicator -- not in",
-        "inst/references/covariate-columns.md (the canonical register is",
-        "for human pop-PK covariates and does not apply to this in-vitro",
-        "PD model)."
+        "outside the model. Registered as the canonical HS in",
+        "inst/references/covariate-columns.md under Preclinical experimental",
+        "conditions (an in-vitro experimental condition rather than a human",
+        "pop-PK covariate)."
       ),
       source_name        = "% Human Serum (paper Methods + Table 2)"
     )

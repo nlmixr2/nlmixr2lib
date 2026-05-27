@@ -24,7 +24,7 @@ Renard_2011_indacaterol <- function() {
       units              = "ug/day",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "MBMA study-arm-level covariate (per-arm constant dose). The canonical register in inst/references/covariate-columns.md is for individual-level pop-PK covariates and does not directly fit MBMA study-arm-level dose columns; this column mirrors the Vargo 2014 MBMA precedent (drug-specific dose columns documented inline rather than registered). Indacaterol dose range across the 11 trials was 18.75 to 600 ug once daily (Renard 2011 Table 1); the six discrete reported doses are 18.75, 37.5, 75, 150, 300, and 600 ug.",
+      notes              = "MBMA study-arm-level covariate (per-arm constant dose). Registered as the canonical DOSE_IND in inst/references/covariate-columns.md, a drug-specific per-arm inhaled-dose covariate (sibling to the drug-specific DOSE_PHT_MGKGD dose canonical). Indacaterol dose range across the 11 trials was 18.75 to 600 ug once daily (Renard 2011 Table 1); the six discrete reported doses are 18.75, 37.5, 75, 150, 300, and 600 ug.",
       source_name        = "Indacaterol dose (Renard 2011 Table 1)"
     )
   )
