@@ -490,6 +490,8 @@ navbar:
         href: articles/Laffont_2024_nalmefene.html
       - text: "Naloxone (Laffont 2024)"
         href: articles/Laffont_2024_naloxone.html
+      - text: "Naproxen mbma (Boucher 2018)"
+        href: articles/Boucher_2018_naproxen_mbma.html
       - text: "Necitumumab (Long 2017)"
         href: articles/Long_2017_necitumumab.html
       - text: "Nevirapine (Bienczak 2016)"
@@ -1048,6 +1050,7 @@ articles:
   - articles/Bista_2015_fentanyl
   - articles/Bizzotto_2016_glucose
   - articles/Boer-Perez_2026_piperacillin
+  - articles/Boucher_2018_naproxen_mbma
   - articles/Brill_2014_midazolam
   - articles/Brillac_2025_isatuximab
   - articles/Brooks_2021_tacrolimus
