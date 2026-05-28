@@ -1224,6 +1224,28 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `FiedlerKelly_2020_fremanezumab_em.R`, `FiedlerKelly_2020_fremanezumab_cm.R`, `Schoemaker_2018_levetiracetam.R` (DDMODEL00000239; LEV plasma concentration in mg/L), `Svensson_2017_bedaquiline.R` (weekly-average bedaquiline concentration in mg/L driving an Emax effect on the mycobacterial-load half-life; EC50 = 1.42 mg/L, Emax fixed at -100%; placebo subjects use CAV = 0), `Li_2015_taspoglutide_mbma.R` (MBMA study-arm-level Cavg of taspoglutide between weeks 2 and 4 of QW dosing, in pmol/L; 0 / 59.85 / 119.7 pmol/L for placebo / 10 mg / 20 mg arms; drives an additive Emax response on body-weight change).
 - **Notes:** Specific scope because the value is intrinsically tied to the modelled drug -- there is no shared meaning across drugs or studies. Each model's `covariateData[[CAV]]$notes` should state how the Cav values are derived (e.g., empirical-Bayes from a referenced population PK model) and that the column is set to 0 for placebo periods. The averaging window is also model-specific (per-dosing-interval Cav = AUC_tau / tau in Schoemaker 2018 / Fiedler-Kelly 2020, but weekly-rolling-mean Cav_W in Svensson 2017 -- where the bedaquiline once-daily loading + thrice-weekly maintenance schedule makes "per dosing interval" ambiguous; weeks 2-4 Cavg in Li 2015 carried forward for the entire 8-52 week follow-up); document the averaging convention in each model's `covariateData[[CAV]]$notes`. MBMA usage (Li 2015) treats CAV as a study-arm-level (not individual-level) exposure metric -- the meaning is the same (period-averaged plasma concentration of the modelled drug) so a separate canonical is not warranted.
 
+### DOSE_NAL_MGD (**canonical for daily naltrexone dose**)
+- **Description:** Time-varying covariate carrying the current daily naltrexone dose at each record (mg/day). Constant within an inter-dose interval and updated when the dosing regimen changes (e.g. during the Contrave 4-week titration ramp from 8 -> 32 mg/day, or off-treatment / placebo records where the dose is set to 0).
+- **Units:** mg/day
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters as the time-varying NAL input in the combined-Emax dose-Hill drug-effect term `NAL/(ED50_NAL + NAL)`. Reference value: full Contrave maintenance dose 32 mg/day (4 tablets/day of the 8 mg naltrexone + 90 mg bupropion fixed-dose combination); placebo arm = 0 mg/day.
+- **Source aliases:**
+  - `NAL` -- used in `Sharma_2018_naltrexone_bupropion.R` (the paper's Eq. 4 dose variable; renamed to `DOSE_NAL_MGD` here to follow the `DOSE_<DRUG>_MGD` register pattern alongside `DOSE_BUP_MGD` and `DOSE_PHT_MGKGD`).
+- **Example models:** `Sharma_2018_naltrexone_bupropion.R` (combined-Emax dose-Hill term with ED50_NAL = 54.6 mg/day; placebo subjects use `DOSE_NAL_MGD = 0`).
+- **Notes:** Specific scope because the absolute coefficient ED50_NAL is intrinsically tied to naltrexone exposure (and to the Contrave 8 mg / 90 mg fixed-dose combination's titration schedule). Drug-self-dose covariates for other drugs in combination-product papers should register sibling canonicals (e.g., `DOSE_BUP_MGD`) rather than reuse this name -- the absolute ED50 values are not transferable across drugs. Distinct from the generic `DOSE` register entry (which is single-drug papers' record-level dose column). Ratified canonically on 2026-05-28 alongside the Sharma 2018 naltrexone+bupropion extraction.
+
+### DOSE_BUP_MGD (**canonical for daily bupropion dose**)
+- **Description:** Time-varying covariate carrying the current daily bupropion dose at each record (mg/day). Constant within an inter-dose interval and updated when the dosing regimen changes (e.g. during the Contrave 4-week titration ramp from 90 -> 360 mg/day, or off-treatment / placebo records where the dose is set to 0).
+- **Units:** mg/day
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters as the time-varying BUP input in the combined-Emax dose-Hill drug-effect term `BUP/(ED50_BUP + BUP)`. Reference value: full Contrave maintenance dose 360 mg/day (4 tablets/day of the 8 mg naltrexone + 90 mg bupropion fixed-dose combination); placebo arm = 0 mg/day.
+- **Source aliases:**
+  - `BUP` -- used in `Sharma_2018_naltrexone_bupropion.R` (the paper's Eq. 4 dose variable; renamed to `DOSE_BUP_MGD` here to follow the `DOSE_<DRUG>_MGD` register pattern alongside `DOSE_NAL_MGD` and `DOSE_PHT_MGKGD`).
+- **Example models:** `Sharma_2018_naltrexone_bupropion.R` (combined-Emax dose-Hill term with ED50_BUP = 645 mg/day; placebo subjects use `DOSE_BUP_MGD = 0`).
+- **Notes:** Specific scope because the absolute coefficient ED50_BUP is intrinsically tied to bupropion exposure (and to the Contrave 8 mg / 90 mg fixed-dose combination's titration schedule). Drug-self-dose covariates for other drugs in combination-product papers should register sibling canonicals (e.g., `DOSE_NAL_MGD`) rather than reuse this name -- the absolute ED50 values are not transferable across drugs. Distinct from the generic `DOSE` register entry. Ratified canonically on 2026-05-28 alongside the Sharma 2018 naltrexone+bupropion extraction.
+
 ### DOSE_PHT_MGKGD (**canonical for daily phenytoin dose per kg body weight**)
 - **Description:** Patient's own total daily dose of phenytoin (mg) divided by current body weight (kg), expressed as mg/kg/d. Per-dose-record covariate; constant within an inter-dose interval and updated when the prescriber alters the daily dose.
 - **Units:** mg/kg/d
@@ -2161,6 +2183,7 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
   - `NA_NA_paracetamol.R` (DDMODEL00000228).
   - `Guiastrennec_2016_gastric_emptying.R` (multiplicative -81.1% depression of POTcarbC, the carbohydrate potency on CCK release; all other parameters are common across cohorts).
   - `Lu_2014_sglt_qsp.R` (multiplicative +17.6% shift on the typical-value Vmax2 of SGLT2 in the renal-glucose-reabsorption QSP model: Vmax2_T2DM = 110 mmol/h vs Vmax2_healthy = 93.5 mmol/h per Lu 2014 Table 2 calibration; coded for the Lu 2014 evaluation cohort, where the pre-modern-classification 'diabetics' of Mogensen 1971 are also coded T2DM = 1).
+  - `Sharma_2018_naltrexone_bupropion.R` (multiplicative fractional shifts on Emax, kout, kpro, and baseline BW in obese subjects with T2DM relative to the obese non-diabetic reference: Emax -20.3%, kout -29.8%, kpro +286% relative to the FIXED nondiabetic 0.7 kg/y, baseline BW +4.7%; obese-non-diabetic is the T2DM = 0 reference cohort -- 89.1% of the analysis population).
 - **Notes:** Distinct from the existing `DIAB` canonical (which deliberately does not distinguish Type 1 vs Type 2). Specific scope because the reference cohort is study-specific and the mechanism in the example models is a Type-2-versus-healthy stratification of OGTT or SGLT response; a future T2DM-specific study (e.g., a popPK/PD analysis stratifying by HbA1c level) can ratify the same canonical and document the reference cohort in `covariateData[[T2DM]]$notes`.
 
 ### HYPERT (**canonical for hypertension comorbidity / medical-history indicator**)

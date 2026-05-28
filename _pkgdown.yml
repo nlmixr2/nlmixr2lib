@@ -488,8 +488,8 @@ navbar:
         href: articles/Laffont_2024_nalmefene.html
       - text: "Naloxone (Laffont 2024)"
         href: articles/Laffont_2024_naloxone.html
-      - text: "Naproxen mbma (Boucher 2018)"
-        href: articles/Boucher_2018_naproxen_mbma.html
+      - text: "Naltrexone bupropion (Sharma 2018)"
+        href: articles/Sharma_2018_naltrexone_bupropion.html
       - text: "Necitumumab (Long 2017)"
         href: articles/Long_2017_necitumumab.html
       - text: "Nevirapine (Bienczak 2016)"
@@ -1103,7 +1103,9 @@ articles:
   - articles/deKock_2017_sulfadoxinePyrimethamine
   - articles/Delattre_2010_amikacin
   - articles/Delor_2013_alzheimer
-  - articles/Denti_2018_levofloxacin
+  - articles/deVriesSchultink_2020_zenocutuzumab
+  - articles/deWinter_2009_mycophenolic_acid
+  - articles/deWit_2016_everolimus
   - articles/Diao_2014_rFIXFc
   - articles/Diao_2016_daclizumab_cd25
   - articles/Diao_2016_daclizumab_cd56bright
@@ -1377,6 +1379,7 @@ articles:
   - articles/Schoemaker_2018_levetiracetam
   - articles/Schoenmakers_2025_betamethasone
   - articles/Shah_2012_mAb_PBPK
+  - articles/Sharma_2018_naltrexone_bupropion
   - articles/Shekar_2014_meropenem
   - articles/Shen_2013_belatacept
   - articles/Sheng_2016_quinine_rat
