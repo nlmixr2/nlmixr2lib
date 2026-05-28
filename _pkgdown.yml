@@ -576,6 +576,8 @@ navbar:
         href: articles/Ahamadi_2017_pembrolizumab.html
       - text: "Pembrolizumab (Elassaiss-Schaap 2017)"
         href: articles/Elassaiss-Schaap_2017_pembrolizumab.html
+      - text: "Penicillin G (Padari 2018)"
+        href: articles/Padari_2018_penicillin_G.html
       - text: "Pertuzumab (Garg 2014)"
         href: articles/Garg_2014_pertuzumab.html
       - text: "Pertuzumab (Wang 2021)"
@@ -1355,6 +1357,7 @@ articles:
   - articles/Ouerdani_2015_pazopanib_mouse
   - articles/Overgaard_2019_semaglutide
   - articles/Ozawa_2007_docetaxel
+  - articles/Padari_2018_penicillin_G
   - articles/Panoilia_2015_bevacizumab
   - articles/Papachristos_2020_bevacizumab_pk
   - articles/Papachristos_2020_bevacizumab_pkpd
