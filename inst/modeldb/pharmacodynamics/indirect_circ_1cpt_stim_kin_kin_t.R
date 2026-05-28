@@ -8,8 +8,8 @@ indirect_circ_1cpt_stim_kin_kin_t <- function() {
     lrm  <- 0.62; label ("Mean Baseline for drug response (mesor)(Rm)")
     lra  <- 0.62; label ("Amplitude of drug response (Ra)")
     ltz  <- 0.62; label ("peak time (Acrophase) (Tz)")
-    lEC50 <- 0.67; label("Drug concentration producing 50% of maximum stimulation at effect site (EC50)")
-    lEmax <- 0.85; label("Maximum effect attributed to drug (Emax)")
+    lec50 <- 0.67; label("Drug concentration producing 50% of maximum stimulation at effect site (ec50)")
+    lemax <- 0.85; label("Maximum effect attributed to drug (emax)")
     lkout <- 0.34; label("First-order rate constant for loss of drug response")
     lfdepot <- 0.4; label("Bioavailability (F)")
     propSd <- 0.5 ; label("Proportional residual error (fraction)")
@@ -20,8 +20,8 @@ indirect_circ_1cpt_stim_kin_kin_t <- function() {
     rm <- exp(lrm)
     ra <- exp(lra)
     tz <- exp(ltz)
-    EC50 <- exp(lEC50)
-    Emax <- exp(lEmax)
+    ec50 <- exp(lec50)
+    emax <- exp(lemax)
     kout <- exp(lkout)
     fdepot   <- exp(lfdepot)
     
@@ -31,7 +31,7 @@ indirect_circ_1cpt_stim_kin_kin_t <- function() {
     d/dt(depot)      <- -ka*depot
     f(depot)         <- fdepot
     d/dt(central)    <- ka*depot -kel*central
-    d/dt(effect) <- kin_t*(1+Emax*Cc/(Cc + IC50)) - kout*effect
+    d/dt(effect) <- kin_t*(1+emax*Cc/(Cc + ic50)) - kout*effect
     
     Cc ~ prop(propSd)
   })

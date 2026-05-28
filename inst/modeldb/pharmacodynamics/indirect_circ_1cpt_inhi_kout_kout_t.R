@@ -8,8 +8,8 @@ indirect_circ_1cpt_inhi_kout_kout_t  <- function() {
     lrm  <- 0.62; label ("Mean Baseline for drug response (mesor)(Rm)")
     lra  <- 0.62; label ("Amplitude of drug response (Ra)")
     ltz  <- 0.62; label ("peak time (Acrophase) (Tz)")
-    lIC50 <- 0.67; label("Drug concentration producing 50% of maximum inhibition at effect site (IC50)")
-    limax <- 0.56; label("Maximum inhibitory factor attributed to drug (Imax)")
+    lic50 <- 0.67; label("Drug concentration producing 50% of maximum inhibition at effect site (ic50)")
+    limax <- 0.56; label("Maximum inhibitory factor attributed to drug (imax)")
     lkin <- 0.34; label("Zero-order rate constant for production of drug response")
     lfdepot <- 0.4; label("Bioavailability (F)")
     propSd <- 0.5 ; label("Proportional residual error (fraction)")
@@ -21,7 +21,7 @@ indirect_circ_1cpt_inhi_kout_kout_t  <- function() {
     ra <- exp(lra)
     tz <- exp(ltz)
     imax <- exp(limax)
-    IC50 <- exp(lIC50)
+    ic50 <- exp(lic50)
     kin <- exp(lkin)
     fdepot   <- exp(lfdepot)
     
@@ -32,7 +32,7 @@ indirect_circ_1cpt_inhi_kout_kout_t  <- function() {
     d/dt(depot)      <- -ka*depot
     f(depot)         <- fdepot
     d/dt(central)    <- ka*depot -(cl/vc)*central
-    d/dt(effect) <- kin - kout_t*(1-imax*Cc/(Cc + IC50))*effect
+    d/dt(effect) <- kin - kout_t*(1-imax*Cc/(Cc + ic50))*effect
     
     Cc ~ prop(propSd)
   })

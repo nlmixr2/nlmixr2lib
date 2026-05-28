@@ -22,7 +22,7 @@ Cao_2013_tefibazumab <- function() {
   ini({
     sigma1 <- 0.902; label("Vascular reflection coefficient for tight tissues (unitless)")  # Cao 2013 Table 2 (Model A): 0.902 (CV 7.37%)
     sigma2 <- 0.815; label("Vascular reflection coefficient for leaky tissues (unitless)")  # Cao 2013 Table 2 (Model A): 0.815 (CV 7.56%)
-    lclp   <- log(0.22392); label("Plasma clearance (CLp, L/day)")                          # Cao 2013 Table 2 (Model A): CLp = 0.00933 L/hr (CV 4.19%) = 0.22392 L/day
+    lcl   <- log(0.22392); label("Plasma clearance (CLp, L/day)")                          # Cao 2013 Table 2 (Model A): CLp = 0.00933 L/hr (CV 4.19%) = 0.22392 L/day
   })
 
   model({
@@ -38,7 +38,7 @@ Cao_2013_tefibazumab <- function() {
     l2      <- 0.67 * lymphflow
     vlymph  <- vplasma
 
-    clp <- exp(lclp)
+    cl <- exp(lcl)
 
     cp     <- plasma / vplasma
     ctight <- tight  / vtight
@@ -48,7 +48,7 @@ Cao_2013_tefibazumab <- function() {
     d/dt(plasma) <- clymph * lymphflow -
                     cp * l1 * (1 - sigma1) -
                     cp * l2 * (1 - sigma2) -
-                    clp * cp
+                    cl * cp
     d/dt(tight)  <- l1 * (1 - sigma1) * cp -
                     l1 * (1 - sigmal) * ctight
     d/dt(leaky)  <- l2 * (1 - sigma2) * cp -

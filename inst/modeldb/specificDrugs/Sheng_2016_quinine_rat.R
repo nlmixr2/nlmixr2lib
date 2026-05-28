@@ -1,5 +1,5 @@
 Sheng_2016_quinine_rat <- function() {
-  description <- "Preclinical (rat). Two generalized Poisson (2GP) mixture PD model for bimodal lick-count data from rodent brief-access taste aversion (BATA) experiments with quinine hydrochloride dihydrate; the drug effect enters via a sigmoid Emax on a logistic-transformed mixing probability between a low-count and a right-truncated high-count generalized-Poisson distribution. The fitted compound is quinine HCl dihydrate used as a model bitter stimulus. STIM_QUININE_MM is the applied sipper-tube concentration (mM); there is no PK ODE and no time evolution (each record is an 8-second presentation)."
+  description <- "Preclinical (rat). Two generalized Poisson (2GP) mixture PD model for bimodal lick-count data from rodent brief-access taste aversion (BATA) experiments with quinine hydrochloride dihydrate; the drug effect enters via a sigmoid emax on a logistic-transformed mixing probability between a low-count and a right-truncated high-count generalized-Poisson distribution. The fitted compound is quinine HCl dihydrate used as a model bitter stimulus. STIM_QUININE_MM is the applied sipper-tube concentration (mM); there is no PK ODE and no time evolution (each record is an 8-second presentation)."
   reference <- paste(
     "Sheng Y, Soto J, Orlu Gul M, Cortina-Borja M, Tuleu C, Standing JF. (2016).",
     "New Generalized Poisson Mixture Model for Bimodal Count Data With Drug Effect:",
@@ -17,7 +17,7 @@ Sheng_2016_quinine_rat <- function() {
 
   covariateData <- list(
     STIM_QUININE_MM = list(
-      description        = "Applied sipper-tube concentration of quinine HCl dihydrate (mM) presented to the rat during the 8-second BATA trial; drives the sigmoid-Emax effect on the logistic mixing probability between the low-count and high-count generalized-Poisson distributions.",
+      description        = "Applied sipper-tube concentration of quinine HCl dihydrate (mM) presented to the rat during the 8-second BATA trial; drives the sigmoid-emax effect on the logistic mixing probability between the low-count and high-count generalized-Poisson distributions.",
       units              = "mM",
       type               = "continuous",
       reference_category = NULL,
@@ -52,21 +52,21 @@ Sheng_2016_quinine_rat <- function() {
     # Model equations come from the Methods section "Models for the
     # first distribution" (Eq. for Poisson, NB, GP), "Truncated models
     # for the second distribution" (right-truncation at 61), and "Model
-    # for the drug effect" (sigmoid Emax on logistic mixing probability,
-    # parameterized by RIC50 rather than the apparent IC50).
+    # for the drug effect" (sigmoid emax on logistic mixing probability,
+    # parameterized by RIC50 rather than the apparent ic50).
     # ------------------------------------------------------------------
 
-    lEmax  <- log(21.7);    label("Log of Emax of the logistic drug-effect on mixing probability (unitless)")
-    # Table 2 2GP column: Emax = 21.7 (RSE 2%); bootstrap CI (16.9, 35.8).
+    lemax  <- log(21.7);    label("Log of emax of the logistic drug-effect on mixing probability (unitless)")
+    # Table 2 2GP column: emax = 21.7 (RSE 2%); bootstrap CI (16.9, 35.8).
 
-    lRIC50 <- log(0.0423);  label("Log of real IC50 (RIC50, mM quinine HCl dihydrate)")
+    lRIC50 <- log(0.0423);  label("Log of real ic50 (RIC50, mM quinine HCl dihydrate)")
     # Table 2 2GP column: RIC50 = 0.0423 mM (RSE 0.3%); bootstrap CI (0.0358, 0.0551).
-    # Distinct from the apparent IC50 (derived from E0, Emax, RIC50;
-    # Sheng 2016 reports apparent IC50 = 1.18 mM for the 2GP model).
+    # Distinct from the apparent ic50 (derived from e0, emax, RIC50;
+    # Sheng 2016 reports apparent ic50 = 1.18 mM for the 2GP model).
 
     e0     <- -1.57;        label("Baseline logit of the low-count mixture probability at zero quinine concentration (unitless)")
-    # Table 2 2GP column: E0 = -1.57 (RSE 0.1%); bootstrap CI (-1.60, -1.55).
-    # logistic(E0) = 0.172 = minimum proportion of the low-count
+    # Table 2 2GP column: e0 = -1.57 (RSE 0.1%); bootstrap CI (-1.60, -1.55).
+    # logistic(e0) = 0.172 = minimum proportion of the low-count
     # distribution (water group baseline). Negative typical value; IIV
     # encoded as multiplicative log-normal preserves sign.
 
@@ -87,7 +87,7 @@ Sheng_2016_quinine_rat <- function() {
     # d2 < 0 -> underdispersion in the high-count peak (Methods);
     # this is what the 2NB model could not capture and motivated the 2GP.
 
-    lc     <- log(0.701);   label("Log of the sigmoid Emax slope coefficient c (Hill exponent, unitless)")
+    lc     <- log(0.701);   label("Log of the sigmoid emax slope coefficient c (Hill exponent, unitless)")
     # Table 2 2GP column: c = 0.701 (RSE 1.2%); bootstrap CI (0.705, 0.715).
     # Methods: c is the only structural parameter that does NOT carry IIV.
 
@@ -108,9 +108,9 @@ Sheng_2016_quinine_rat <- function() {
     # inside model() following the paper's "added to E" wording.
     #
     # The CV% -> omega^2 conversion uses omega^2 = log(1 + (CV/100)^2):
-    #   Emax  14.8% -> 0.0218
+    #   emax  14.8% -> 0.0218
     #   RIC50  1.0% -> 0.000100
-    #   E0     2.2% -> 0.000484
+    #   e0     2.2% -> 0.000484
     #   k1    42.9% -> 0.169
     #   k2    18.4% -> 0.0335
     #   d1    11.4% -> 0.0129
@@ -119,11 +119,11 @@ Sheng_2016_quinine_rat <- function() {
     # ------------------------------------------------------------------
 
     etalEmax  ~ 0.0218
-    # Table 2 2GP column: omega^2 on Emax reported as CV% = 14.8% (RSE 0).
+    # Table 2 2GP column: omega^2 on emax reported as CV% = 14.8% (RSE 0).
     etalRIC50 ~ 0.000100
     # Table 2 2GP column: omega^2 on RIC50 reported as CV% = 1% (RSE 35.6).
     etae0     ~ 0.000484
-    # Table 2 2GP column: omega^2 on E0 reported as CV% = 2.2% (RSE 8.8).
+    # Table 2 2GP column: omega^2 on e0 reported as CV% = 2.2% (RSE 8.8).
     etalk1    ~ 0.169
     # Table 2 2GP column: omega^2 on k1 reported as CV% = 42.9% (RSE 4.8).
     etalk2    ~ 0.0335
@@ -153,7 +153,7 @@ Sheng_2016_quinine_rat <- function() {
     # ------------------------------------------------------------------
     # Individual structural parameters (multiplicative log-normal IIV).
     # ------------------------------------------------------------------
-    Emax_i  <- exp(lEmax  + etalEmax)
+    emax_i  <- exp(lemax  + etalEmax)
     RIC50_i <- exp(lRIC50 + etalRIC50)
     e0_i    <- e0    * exp(etae0)     # negative typical value; sign preserved
     k1_i    <- exp(lk1    + etalk1)
@@ -163,18 +163,18 @@ Sheng_2016_quinine_rat <- function() {
     c_i     <- exp(lc)                # no IIV per source
 
     # ------------------------------------------------------------------
-    # Sigmoid Emax drug effect on the LOGIT of the low-count mixture
+    # Sigmoid emax drug effect on the LOGIT of the low-count mixture
     # probability (Sheng 2016, "Model for the drug effect" section):
-    #   E      = E0 + Emax * conc^c / (RIC50^c + conc^c) + eta_E
+    #   E      = e0 + emax * conc^c / (RIC50^c + conc^c) + eta_E
     #   p      = expit(E) = exp(E) / (1 + exp(E))
     # where p is the proportion of the low-count generalized-Poisson
-    # distribution. logistic(E0) is the minimum mixing probability (at
-    # conc = 0); logistic(E0 + Emax) is the maximum (at conc -> Inf).
-    # RIC50 is the real IC50 producing half-maximal drug effect (Eq. for
-    # RIC50 transformation in Methods); the apparent IC50 is a derived
+    # distribution. logistic(e0) is the minimum mixing probability (at
+    # conc = 0); logistic(e0 + emax) is the maximum (at conc -> Inf).
+    # RIC50 is the real ic50 producing half-maximal drug effect (Eq. for
+    # RIC50 transformation in Methods); the apparent ic50 is a derived
     # hybrid parameter, not used directly here.
     # ------------------------------------------------------------------
-    drugEmax <- Emax_i * (conc^c_i) / (RIC50_i^c_i + conc^c_i)
+    drugEmax <- emax_i * (conc^c_i) / (RIC50_i^c_i + conc^c_i)
     E        <- e0_i + drugEmax + etae
     p_low    <- exp(E) / (1 + exp(E))
     p_high   <- 1 - p_low

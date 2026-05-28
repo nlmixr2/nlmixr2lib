@@ -22,7 +22,7 @@ Cao_2013_adecatumumab <- function() {
   ini({
     sigma1 <- 0.883; label("Vascular reflection coefficient for tight tissues (unitless)")  # Cao 2013 Table 2 (Model A): 0.883 (CV 9.64%)
     sigma2 <- 0.524; label("Vascular reflection coefficient for leaky tissues (unitless)")  # Cao 2013 Table 2 (Model A): 0.524 (CV 7.37%)
-    lclp   <- log(0.720); label("Plasma clearance (CLp, L/day)")                            # Cao 2013 Table 2 (Model A): CLp = 0.0300 L/hr (CV 3.19%) = 0.720 L/day
+    lcl   <- log(0.720); label("Plasma clearance (CLp, L/day)")                            # Cao 2013 Table 2 (Model A): CLp = 0.0300 L/hr (CV 3.19%) = 0.720 L/day
   })
 
   model({
@@ -38,7 +38,7 @@ Cao_2013_adecatumumab <- function() {
     l2      <- 0.67 * lymphflow
     vlymph  <- vplasma
 
-    clp <- exp(lclp)
+    cl <- exp(lcl)
 
     cp     <- plasma / vplasma
     ctight <- tight  / vtight
@@ -48,7 +48,7 @@ Cao_2013_adecatumumab <- function() {
     d/dt(plasma) <- clymph * lymphflow -
                     cp * l1 * (1 - sigma1) -
                     cp * l2 * (1 - sigma2) -
-                    clp * cp
+                    cl * cp
     d/dt(tight)  <- l1 * (1 - sigma1) * cp -
                     l1 * (1 - sigmal) * ctight
     d/dt(leaky)  <- l2 * (1 - sigma2) * cp -

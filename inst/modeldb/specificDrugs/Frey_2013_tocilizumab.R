@@ -1,5 +1,5 @@
 Frey_2013_tocilizumab <- function() {
-  description <- "Indirect-response PK/PD model of tocilizumab on the 28-joint Disease Activity Score (DAS28) in adults with rheumatoid arthritis (Levi/Grange/Frey 2013, OPTION + TOWARD phase III pool, n = 1703 patients with 12,618 DAS28 observations). Tocilizumab inhibits the DAS28 production rate Kin via a sigmoid Emax function whose driving concentration is the sum of circulating tocilizumab and a constant DMARD background term expressed in tocilizumab concentration units. The PK driver is the two-compartment, parallel linear + Michaelis-Menten model of Frey 2010 (PMID 20097931), reused unchanged for the exposure-response analysis."
+  description <- "Indirect-response PK/PD model of tocilizumab on the 28-joint Disease Activity Score (DAS28) in adults with rheumatoid arthritis (Levi/Grange/Frey 2013, OPTION + TOWARD phase III pool, n = 1703 patients with 12,618 DAS28 observations). Tocilizumab inhibits the DAS28 production rate kin via a sigmoid emax function whose driving concentration is the sum of circulating tocilizumab and a constant DMARD background term expressed in tocilizumab concentration units. The PK driver is the two-compartment, parallel linear + Michaelis-Menten model of Frey 2010 (PMID 20097931), reused unchanged for the exposure-response analysis."
   reference <- "Levi M, Grange S, Frey N. Exposure-response relationship of tocilizumab, an anti-IL-6 receptor monoclonal antibody, in a large population of patients with rheumatoid arthritis. J Clin Pharmacol. 2013;53(2):151-159. doi:10.1177/0091270012437585. PMID 23436260. PK backbone from Frey N, Grange S, Woodworth T. Population pharmacokinetic analysis of tocilizumab in patients with rheumatoid arthritis. J Clin Pharmacol. 2010;50(7):754-766. doi:10.1177/0091270009350623."
   vignette <- "Frey_2013_tocilizumab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL", response = "DAS28 (unitless 0-10 score)")
@@ -10,7 +10,7 @@ Frey_2013_tocilizumab <- function() {
       units              = "pg/mL",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed at baseline. Frey 2013 enters IL-6 on the natural-log scale through the dimensionless ratio (log(IL-6 * 1000) / 9.9), where 9.9 = log(20000) corresponds to a reference IL-6 of ~20 pg/mL (the OPTION/TOWARD median of 19.9-22 pg/mL per Supplementary Table S1). The same log-IL-6 ratio enters three different parameters in the final model (Table 2): EC50 with exponent -4.4, BASE with exponent +0.13, and the DMARD background-effect parameter with exponent -6.4. The canonical column carries the raw IL-6 in pg/mL; the log transform is applied inside model().",
+      notes              = "Time-fixed at baseline. Frey 2013 enters IL-6 on the natural-log scale through the dimensionless ratio (log(IL-6 * 1000) / 9.9), where 9.9 = log(20000) corresponds to a reference IL-6 of ~20 pg/mL (the OPTION/TOWARD median of 19.9-22 pg/mL per Supplementary Table S1). The same log-IL-6 ratio enters three different parameters in the final model (Table 2): ec50 with exponent -4.4, BASE with exponent +0.13, and the DMARD background-effect parameter with exponent -6.4. The canonical column carries the raw IL-6 in pg/mL; the log transform is applied inside model().",
       source_name        = "IL-6"
     ),
     SEXF = list(
@@ -18,7 +18,7 @@ Frey_2013_tocilizumab <- function() {
       units              = "(binary)",
       type               = "binary",
       reference_category = "1 (female)",
-      notes              = "Frey 2013 Table 2 reports the sex effect on Emax with female as the reference (Emax_female = Emax * 1.0; Emax_male = Emax * 1.1, +11% in males). The canonical SEXF column is 1 = female, 0 = male, so the model applies the equation Emax = Emax_typ * (1 + 0.11 * (1 - SEXF)) which preserves the female-as-reference NONMEM parameterization. The +11% male offset is below the known DAS28 measurement error (0.6 units) and is not clinically significant per the paper's Discussion.",
+      notes              = "Frey 2013 Table 2 reports the sex effect on emax with female as the reference (Emax_female = emax * 1.0; Emax_male = emax * 1.1, +11% in males). The canonical SEXF column is 1 = female, 0 = male, so the model applies the equation emax = Emax_typ * (1 + 0.11 * (1 - SEXF)) which preserves the female-as-reference NONMEM parameterization. The +11% male offset is below the known DAS28 measurement error (0.6 units) and is not clinically significant per the paper's Discussion.",
       source_name        = "SEX"
     ),
     RACE_ASIAN_AMIND_OTH = list(
@@ -26,7 +26,7 @@ Frey_2013_tocilizumab <- function() {
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (White or Black)",
-      notes              = "Frey 2013 pools the smaller-N race groups (Asian, American Indian/Alaska Native, Other) into a single Asian-and-others composite and uses White + Black as the reference. The composite covers ~21-27% of the OPTION/TOWARD pool per Supplementary Table S1. Multiplicative effect on Kout: Kout = Kout_typ * (1 + (-0.25) * RACE_ASIAN_AMIND_OTH), i.e., Kout is 25% lower in the Asian/AmInd/Other composite than in the White+Black reference. Paper-defined composite grouping; see the canonical RACE_ASIAN_AMIND_OTH register entry for the rationale.",
+      notes              = "Frey 2013 pools the smaller-N race groups (Asian, American Indian/Alaska Native, Other) into a single Asian-and-others composite and uses White + Black as the reference. The composite covers ~21-27% of the OPTION/TOWARD pool per Supplementary Table S1. Multiplicative effect on kout: kout = Kout_typ * (1 + (-0.25) * RACE_ASIAN_AMIND_OTH), i.e., kout is 25% lower in the Asian/AmInd/Other composite than in the White+Black reference. Paper-defined composite grouping; see the canonical RACE_ASIAN_AMIND_OTH register entry for the rationale.",
       source_name        = "RACE"
     ),
     BLHAQ = list(
@@ -113,9 +113,9 @@ Frey_2013_tocilizumab <- function() {
     # BLHAQ = 1.6, PAIN = 60, BLPHYVAS = 65, SEXF = 1 (female), and
     # RACE_ASIAN_AMIND_OTH = 0 (White or Black).
     # ------------------------------------------------------------------
-    lEC50  <- log(3.7);   label("Tocilizumab concentration at 50% of Emax (ug/mL)")             # Frey 2013 Table 1, EC50
-    lEmax  <- log(0.73);  label("Maximum tocilizumab effect on DAS28 production rate Kin (fraction)") # Frey 2013 Table 1, Emax
-    lKout  <- log(0.038); label("First-order DAS28 'loss' rate Kout (1/day)")                   # Frey 2013 Table 1, Kout
+    lec50  <- log(3.7);   label("Tocilizumab concentration at 50% of emax (ug/mL)")             # Frey 2013 Table 1, ec50
+    lemax  <- log(0.73);  label("Maximum tocilizumab effect on DAS28 production rate kin (fraction)") # Frey 2013 Table 1, emax
+    lkout  <- log(0.038); label("First-order DAS28 'loss' rate kout (1/day)")                   # Frey 2013 Table 1, kout
     lgamma <- log(0.64);  label("Sigmoidicity (Hill) coefficient (unitless)")                   # Frey 2013 Table 1, GAMMA
     lBase  <- log(6.8);   label("Typical baseline DAS28 score (unitless 0-10)")                 # Frey 2013 Table 1, Baseline DAS28
     lDMARD <- log(0.30);  label("DMARD background effect, in tocilizumab concentration units (ug/mL)") # Frey 2013 Table 1, DMARD effect
@@ -123,9 +123,9 @@ Frey_2013_tocilizumab <- function() {
     # ------------------------------------------------------------------
     # Covariate effects on PD parameters (Frey 2013 Table 2 formulas).
     # ------------------------------------------------------------------
-    e_lil6_ec50    <- -4.4;   label("Power exponent of (log(IL6 * 1000)/9.9) on EC50 (unitless)")           # Frey 2013 Table 2 EC50 row
-    e_sexm_emax    <-  0.11;  label("Fractional increase in Emax for males (unitless)")                    # Frey 2013 Table 2 SEX row (+11% male)
-    e_race_amind_oth_kout    <- -0.25;  label("Fractional change in Kout for RACE_ASIAN_AMIND_OTH = 1 (unitless)")         # Frey 2013 Table 2 RACE row (-25%)
+    e_lil6_ec50    <- -4.4;   label("Power exponent of (log(IL6 * 1000)/9.9) on ec50 (unitless)")           # Frey 2013 Table 2 ec50 row
+    e_sexm_emax    <-  0.11;  label("Fractional increase in emax for males (unitless)")                    # Frey 2013 Table 2 SEX row (+11% male)
+    e_race_amind_oth_kout    <- -0.25;  label("Fractional change in kout for RACE_ASIAN_AMIND_OTH = 1 (unitless)")         # Frey 2013 Table 2 RACE row (-25%)
     e_blhaq_base   <-  0.043; label("Power exponent of (BLHAQ/1.6) on BASE (unitless)")                    # Frey 2013 Table 2 HAQ row
     e_lil6_base    <-  0.13;  label("Power exponent of (log(IL6 * 1000)/9.9) on BASE (unitless)")          # Frey 2013 Table 2 log-IL-6 on BASE row
     e_pain_base    <-  0.062; label("Power exponent of (PAIN/60) on BASE (unitless)")                      # Frey 2013 Table 2 PAIN row
@@ -136,18 +136,18 @@ Frey_2013_tocilizumab <- function() {
     # IIV - PD parameters (Frey 2013 Table 1 CV%).
     # Convert each CV to NONMEM-style log-normal variance:
     #   omega^2 = log(CV^2 + 1)
-    #     EC50   CV 170%  -> omega^2 = log(1.70^2 + 1) = log(3.89)   = 1.358
-    #     Emax   CV  11%  -> omega^2 = log(0.11^2 + 1) = log(1.0121) = 0.01203
-    #     Kout   CV  60%  -> omega^2 = log(0.60^2 + 1) = log(1.36)   = 0.3075
+    #     ec50   CV 170%  -> omega^2 = log(1.70^2 + 1) = log(3.89)   = 1.358
+    #     emax   CV  11%  -> omega^2 = log(0.11^2 + 1) = log(1.0121) = 0.01203
+    #     kout   CV  60%  -> omega^2 = log(0.60^2 + 1) = log(1.36)   = 0.3075
     #     BASE   CV   9.4% -> omega^2 = log(0.094^2 + 1) = log(1.00884) = 0.008805
     #     DMARD  CV 193%  -> omega^2 = log(1.93^2 + 1) = log(4.7249) = 1.553
-    # Correlation EC50-Emax = 0.44 (Table 1, "Correlation EC50-Emax" row)
-    #   cov(EC50, Emax) = 0.44 * sqrt(1.358) * sqrt(0.01203)
+    # Correlation ec50-emax = 0.44 (Table 1, "Correlation ec50-emax" row)
+    #   cov(ec50, emax) = 0.44 * sqrt(1.358) * sqrt(0.01203)
     #                   = 0.44 * 1.166 * 0.1097 = 0.05626
     # ------------------------------------------------------------------
-    etalEC50 + etalEmax ~ c(1.358,
-                            0.05626, 0.01203)   # Frey 2013 Table 1: EC50 IIV 170% CV, Emax IIV 11% CV, EC50-Emax correlation 0.44
-    etalKout  ~ 0.3075     # Frey 2013 Table 1: Kout IIV 60% CV
+    etalec50 + etalEmax ~ c(1.358,
+                            0.05626, 0.01203)   # Frey 2013 Table 1: ec50 IIV 170% CV, emax IIV 11% CV, ec50-emax correlation 0.44
+    etalKout  ~ 0.3075     # Frey 2013 Table 1: kout IIV 60% CV
     etalBase  ~ 0.008805   # Frey 2013 Table 1: Baseline IIV 9.4% CV
     etalDMARD ~ 1.553      # Frey 2013 Table 1: DMARD effect IIV 193% CV
 
@@ -181,9 +181,9 @@ Frey_2013_tocilizumab <- function() {
     haq_floored  <- max(0.010, BLHAQ) / 1.6     # Frey 2013 Table 2: HAQ floored at 0.010 to keep the power form well-defined when HAQ = 0
     pain_floored <- max(0.010, PAIN ) / 60      # Frey 2013 Table 2: PAIN floored at 0.010 to keep the power form well-defined when PAIN = 0
 
-    EC50  <- exp(lEC50  + etalEC50 ) * lil6_ratio^e_lil6_ec50
-    Emax  <- exp(lEmax  + etalEmax ) * (1 + e_sexm_emax * (1 - SEXF))
-    Kout  <- exp(lKout  + etalKout ) * (1 + e_race_amind_oth_kout * RACE_ASIAN_AMIND_OTH)
+    ec50  <- exp(lec50  + etalec50 ) * lil6_ratio^e_lil6_ec50
+    emax  <- exp(lemax  + etalEmax ) * (1 + e_sexm_emax * (1 - SEXF))
+    kout  <- exp(lkout  + etalKout ) * (1 + e_race_amind_oth_kout * RACE_ASIAN_AMIND_OTH)
     gamma <- exp(lgamma)
     Base  <- exp(lBase  + etalBase ) *
              haq_floored^e_blhaq_base *
@@ -191,7 +191,7 @@ Frey_2013_tocilizumab <- function() {
              pain_floored^e_pain_base *
              (BLPHYVAS / 65)^e_blphyvas_base
     DMARD <- exp(lDMARD + etalDMARD) * lil6_ratio^e_lil6_dmard
-    Kin   <- Kout * Base
+    kin   <- kout * Base
 
     # ------------------------------------------------------------------
     # 3. Two-compartment tocilizumab PK with parallel linear and
@@ -209,15 +209,15 @@ Frey_2013_tocilizumab <- function() {
                           (q / vp) * peripheral1
 
     # ------------------------------------------------------------------
-    # 4. Indirect-response DAS28 with sigmoid-Emax inhibition of Kin.
+    # 4. Indirect-response DAS28 with sigmoid-emax inhibition of kin.
     #    Effective drug concentration includes the DMARD background
     #    expressed in tocilizumab concentration units.
     # ------------------------------------------------------------------
     CeffP <- Cc + DMARD
-    Eff   <- Emax * CeffP^gamma / (EC50^gamma + CeffP^gamma)
+    Eff   <- emax * CeffP^gamma / (ec50^gamma + CeffP^gamma)
 
     das28(0)    <- Base
-    d/dt(das28) <- Kin * (1 - Eff) - Kout * das28
+    d/dt(das28) <- kin * (1 - Eff) - kout * das28
 
     # ------------------------------------------------------------------
     # 5. Observation and error model.  Tocilizumab Cc is solved as a

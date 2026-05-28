@@ -1,5 +1,5 @@
 Ma_2020_sarilumab_das28crp <- function() {
-  description <- "Indirect-response PK/PD model of sarilumab on the 28-joint disease activity score by C-reactive protein (DAS28-CRP) in adults with rheumatoid arthritis (Ma 2020). Sarilumab inhibits the DAS28-CRP production rate (kin) via a sigmoid Emax function that includes a background DMARD placebo component (PLB). The PK driver is the two-compartment, parallel linear + Michaelis-Menten model of Xu 2019 evaluated at its typical covariate-reference values (adult female, 71 kg, ADA-negative, commercial drug product, ALBR = 0.78, CrCl = 100 mL/min/1.73 m^2, baseline CRP = 14.2 mg/L)."
+  description <- "Indirect-response PK/PD model of sarilumab on the 28-joint disease activity score by C-reactive protein (DAS28-CRP) in adults with rheumatoid arthritis (Ma 2020). Sarilumab inhibits the DAS28-CRP production rate (kin) via a sigmoid emax function that includes a background DMARD placebo component (PLB). The PK driver is the two-compartment, parallel linear + Michaelis-Menten model of Xu 2019 evaluated at its typical covariate-reference values (adult female, 71 kg, ADA-negative, commercial drug product, ALBR = 0.78, CrCl = 100 mL/min/1.73 m^2, baseline CRP = 14.2 mg/L)."
   reference <- "Ma L, Xu C, Paccaly A, Kanamaluru V. Population Pharmacokinetic-Pharmacodynamic Relationships of Sarilumab Using Disease Activity Score 28-Joint C-Reactive Protein and Absolute Neutrophil Counts in Patients with Rheumatoid Arthritis. Clin Pharmacokinet. 2020;59(11):1451-1466. doi:10.1007/s40262-020-00899-7. PMID: 32451909. PK backbone from Xu C, Su Y, Paccaly A, Kanamaluru V. Population Pharmacokinetics of Sarilumab in Patients with Rheumatoid Arthritis. Clin Pharmacokinet. 2019;58(11):1455-1467. doi:10.1007/s40262-019-00765-1."
   vignette <- "Ma_2020_sarilumab_das28crp"
   units <- list(time = "day", dosing = "mg", concentration = "mg/L", response = "DAS28-CRP score (unitless, 0-10 scale)")
@@ -18,7 +18,7 @@ Ma_2020_sarilumab_das28crp <- function() {
       units              = "mg/L",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on BASE and additive log-linear effect on the logit-transformed Emax (Ma 2020 Table 3); reference 15.7 mg/L is the median baseline CRP of the DAS28-CRP dataset per paper narrative. Source column 'CRP' (baseline CRP, standard assay) maps to the canonical general-scope CRP covariate; the baseline-only and standard-assay semantics are documented here in the covariateData entry rather than via a separate CRP canonical.",
+      notes              = "Power effect on BASE and additive log-linear effect on the logit-transformed emax (Ma 2020 Table 3); reference 15.7 mg/L is the median baseline CRP of the DAS28-CRP dataset per paper narrative. Source column 'CRP' (baseline CRP, standard assay) maps to the canonical general-scope CRP covariate; the baseline-only and standard-assay semantics are documented here in the covariateData entry rather than via a separate CRP canonical.",
       source_name        = "CRP"
     ),
     BLPHYVAS = list(
@@ -42,7 +42,7 @@ Ma_2020_sarilumab_das28crp <- function() {
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (no prior corticosteroid use)",
-      notes              = "Time-fixed per subject. Multiplicative effect on Kout (Ma 2020 Table 3): Kout_i = Kout * 1.26^PRICORT. Paper narrative confirms 0.0333 vs 0.0264 day^-1 for PRICORT = 1 vs 0.",
+      notes              = "Time-fixed per subject. Multiplicative effect on kout (Ma 2020 Table 3): Kout_i = kout * 1.26^PRICORT. Paper narrative confirms 0.0333 vs 0.0264 day^-1 for PRICORT = 1 vs 0.",
       source_name        = "PRICORT"
     )
   )
@@ -100,9 +100,9 @@ Ma_2020_sarilumab_das28crp <- function() {
     # DAS28-CRP dataset): CRP 15.7 mg/L, BLPHYVAS 66, BLHAQ 1.75, WT 72.8 kg.
     # --------------------------------------------------------------------------
     lBase  <- log(6.06);  label("Typical DAS28-CRP baseline (unitless score)")            # Ma 2020 Table 3, BASE row (6.06)
-    lEmax  <- 0.237;      label("Logit-transformed maximum drug effect on kin (unitless)") # Ma 2020 Table 3, Log(Emax) row; Emax = 1/(1+exp(-lEmax)) = 0.559, matching the paper's stated 55.9% maximum decrease
-    lIC50  <- log(2.32);  label("Sarilumab concentration at 50% of Emax (mg/L)")          # Ma 2020 Table 3, IC50 row (2.32 mg/L)
-    lKout  <- log(0.0264);label("First-order loss rate constant Kout (1/day)")            # Ma 2020 Table 3, Kout row (0.0264 day^-1)
+    lemax  <- 0.237;      label("Logit-transformed maximum drug effect on kin (unitless)") # Ma 2020 Table 3, Log(emax) row; emax = 1/(1+exp(-lemax)) = 0.559, matching the paper's stated 55.9% maximum decrease
+    lic50  <- log(2.32);  label("Sarilumab concentration at 50% of emax (mg/L)")          # Ma 2020 Table 3, ic50 row (2.32 mg/L)
+    lkout  <- log(0.0264);label("First-order loss rate constant kout (1/day)")            # Ma 2020 Table 3, kout row (0.0264 day^-1)
     lPLB   <- log(0.991); label("Placebo/background DMARD effect, in sarilumab concentration units (mg/L)") # Ma 2020 Table 3, PLB row (0.991 mg/L)
     gamma  <- fixed(1);   label("Hill coefficient for the sigmoidal drug effect (unitless)") # Ma 2020 Table 3, gamma row (1 fixed)
 
@@ -113,11 +113,11 @@ Ma_2020_sarilumab_das28crp <- function() {
     e_blhaq_base    <- 0.0779; label("Power exponent of BLHAQ/1.75 on BASE (unitless)")   # Ma 2020 Table 3, BLHAQ on BASE row
     e_wt_base       <- 0.0522; label("Power exponent of WT/72.8 on BASE (unitless)")      # Ma 2020 Table 3, Weight on BASE row
 
-    # Covariate effect on logit-transformed Emax (additive on log ratio scale).
-    e_crp_lemax   <- 0.333;  label("Additive effect of log(CRP/15.7) on lEmax (unitless)") # Ma 2020 Table 3, CRP on Log(Emax) row
+    # Covariate effect on logit-transformed emax (additive on log ratio scale).
+    e_crp_lemax   <- 0.333;  label("Additive effect of log(CRP/15.7) on lemax (unitless)") # Ma 2020 Table 3, CRP on Log(emax) row
 
-    # Binary-covariate multiplier on Kout.
-    e_pricort_kout  <- 1.26;   label("Multiplicative effect on Kout for PRICORT = 1 (unitless)") # Ma 2020 Table 3, PRICORT on Kout row; paper narrative 0.0333 vs 0.0264 day^-1
+    # Binary-covariate multiplier on kout.
+    e_pricort_kout  <- 1.26;   label("Multiplicative effect on kout for PRICORT = 1 (unitless)") # Ma 2020 Table 3, PRICORT on kout row; paper narrative 0.0333 vs 0.0264 day^-1
 
     # --------------------------------------------------------------------------
     # IIV - PK (Xu 2019 Table 3, CV% converted to omega^2 = log(CV^2 + 1))
@@ -134,15 +134,15 @@ Ma_2020_sarilumab_das28crp <- function() {
     # --------------------------------------------------------------------------
     # IIV - DAS28-CRP PD (Ma 2020 Table 3, CV% converted to omega^2 = log(CV^2 + 1))
     #   BASE     CV  8.05% -> omega^2 = log(0.0805^2 + 1) = 0.00646
-    #   lEmax    CV 71.2%  -> omega^2 = log(0.712^2 + 1) = 0.4105
-    #   IC50     CV 158%   -> omega^2 = log(1.58^2  + 1) = 1.252
-    #   Kout     CV 84.2%  -> omega^2 = log(0.842^2 + 1) = 0.5360
+    #   lemax    CV 71.2%  -> omega^2 = log(0.712^2 + 1) = 0.4105
+    #   ic50     CV 158%   -> omega^2 = log(1.58^2  + 1) = 1.252
+    #   kout     CV 84.2%  -> omega^2 = log(0.842^2 + 1) = 0.5360
     #   PLB      CV 105%   -> omega^2 = log(1.05^2  + 1) = 0.7431
     # --------------------------------------------------------------------------
     etalBase ~ 0.00646   # Ma 2020 Table 3: BASE IIV 8.05% CV
-    etalEmax ~ 0.4105    # Ma 2020 Table 3: Log(Emax) IIV 71.2% CV
-    etalIC50 ~ 1.252     # Ma 2020 Table 3: IC50 IIV 158% CV
-    etalKout ~ 0.5360    # Ma 2020 Table 3: Kout IIV 84.2% CV
+    etalEmax ~ 0.4105    # Ma 2020 Table 3: Log(emax) IIV 71.2% CV
+    etalic50 ~ 1.252     # Ma 2020 Table 3: ic50 IIV 158% CV
+    etalKout ~ 0.5360    # Ma 2020 Table 3: kout IIV 84.2% CV
     etalPLB  ~ 0.7431    # Ma 2020 Table 3: PLB IIV 105% CV
 
     # --------------------------------------------------------------------------
@@ -170,21 +170,21 @@ Ma_2020_sarilumab_das28crp <- function() {
     # ------------------------------------------------------------------
     # 2. Individual DAS28-CRP PD parameters (Ma 2020 Table 3).
     #    BASE carries four continuous covariates (power form).
-    #    Emax on the logit scale carries one continuous covariate
+    #    emax on the logit scale carries one continuous covariate
     #      (additive in log-ratio space).
-    #    Kout carries one binary covariate (multiplicative).
+    #    kout carries one binary covariate (multiplicative).
     # ------------------------------------------------------------------
     Base <- exp(lBase + etalBase) *
             (CRP    / 15.7)^e_crp_base    *
             (BLPHYVAS / 66  )^e_blphyvas_base *
             (BLHAQ    / 1.75)^e_blhaq_base    *
             (WT       / 72.8)^e_wt_base
-    lEmax_i <- lEmax + etalEmax + e_crp_lemax * log(CRP / 15.7)
-    Emax    <- 1 / (1 + exp(-lEmax_i))
-    IC50    <- exp(lIC50 + etalIC50)
-    Kout    <- exp(lKout + etalKout) * e_pricort_kout^PRICORT
+    lEmax_i <- lemax + etalEmax + e_crp_lemax * log(CRP / 15.7)
+    emax    <- 1 / (1 + exp(-lEmax_i))
+    ic50    <- exp(lic50 + etalic50)
+    kout    <- exp(lkout + etalKout) * e_pricort_kout^PRICORT
     PLB     <- exp(lPLB  + etalPLB)
-    Kin     <- Kout * Base
+    kin     <- kout * Base
 
     # ------------------------------------------------------------------
     # 3. Two-compartment sarilumab PK with parallel linear + MM clearance
@@ -206,10 +206,10 @@ Ma_2020_sarilumab_das28crp <- function() {
     #    placebo PLB: CeffP = Cc + PLB (Ma 2020 Fig. 1 caption equation).
     # ------------------------------------------------------------------
     CeffP <- Cc + PLB
-    Eff   <- Emax * CeffP^gamma / (IC50^gamma + CeffP^gamma)
+    Eff   <- emax * CeffP^gamma / (ic50^gamma + CeffP^gamma)
 
     das28(0)  <- Base
-    d/dt(das28) <- Kin * (1 - Eff) - Kout * das28
+    d/dt(das28) <- kin * (1 - Eff) - kout * das28
 
     # ------------------------------------------------------------------
     # 5. Observation and error model.

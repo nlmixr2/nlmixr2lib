@@ -98,7 +98,7 @@ Kuchimanchi_2024_dostarlimab <- function() {
     # (same pattern as Melhem 2022 dostarlimab). The resulting maximum
     # reduction at t >> T50 is 1 - exp(I_max) = 1 - exp(-0.113) = 0.107
     # (10.7%), matching the paper's narrative.
-    lImax <- log(0.113); label("log|I_max|; magnitude of the log-CL reduction at t >> T50 (unitless)") # Kuchimanchi 2024 Table 2: Imax = -0.113
+    limax <- log(0.113); label("log|I_max|; magnitude of the log-CL reduction at t >> T50 (unitless)") # Kuchimanchi 2024 Table 2: imax = -0.113
     lt50  <- log(145);   label("log T50; time at half of I_max (days)")                                # Kuchimanchi 2024 Table 2: T50 = 145 days
     lhill <- log(7.05);  label("log Hill; sigmoid steepness coefficient (unitless)")                   # Kuchimanchi 2024 Table 2: Hill = 7.05
 
@@ -167,10 +167,10 @@ Kuchimanchi_2024_dostarlimab <- function() {
     # Time-dependent CL (Hill function of time since first dose; t in days).
     # I_max < 0; sign applied here to keep individual values strictly negative
     # under log-normal IIV on |I_max|.
-    Imax_i <- -exp(lImax + etalImax)
+    imax_i <- -exp(limax + etalImax)
     t50    <- exp(lt50)
     hill   <- exp(lhill)
-    td_cl  <- exp(Imax_i * t^hill / (t50^hill + t^hill))
+    td_cl  <- exp(imax_i * t^hill / (t50^hill + t^hill))
 
     # Individual PK parameters. CL_base is at t=0 for the reference patient;
     # td_cl folds in the time dependency.
