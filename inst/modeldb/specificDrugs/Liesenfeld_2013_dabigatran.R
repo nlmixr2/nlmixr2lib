@@ -54,7 +54,7 @@ Liesenfeld_2013_dabigatran <- function() {
     lq      <- log(152);   label("Apparent inter-compartmental clearance (Q/F, L/h)")                    # Liesenfeld 2013 Table 2
     lvp     <- log(499);   label("Apparent peripheral volume of distribution (V3/F, L)")                 # Liesenfeld 2013 Table 2
     lka     <- log(0.821); label("First-order absorption rate constant (ka, 1/h)")                       # Liesenfeld 2013 Table 2
-    lalag   <- log(1.67);  label("Absorption lag time for the fed condition (ALAG, h)")                  # Liesenfeld 2013 Table 2
+    ltlag   <- log(1.67);  label("Absorption lag time for the fed condition (ALAG, h)")                  # Liesenfeld 2013 Table 2
     lkoa    <- log(313);   label("Hemodialyzer mass transfer-area coefficient (KoA, mL/min)")            # Liesenfeld 2013 Table 2
 
     # Relative bioavailability fixed at 1.0 (Liesenfeld 2013 Table 2 footnote b).
@@ -90,7 +90,7 @@ Liesenfeld_2013_dabigatran <- function() {
     vc       <- exp(lvc  + etalvc)
     vp       <- exp(lvp)
     q        <- exp(lq)
-    alag_d   <- exp(lalag)
+    alag_d   <- exp(ltlag)
     fdepot   <- exp(lfdepot + etalfdepot)
     koa      <- exp(lkoa)
 

@@ -38,7 +38,7 @@ Ngo_2020_HL2351 <- function() {
     la_fcrn_t <- log(749);      label("Total active amount of FcRn in distribution space (AFcRn_t, nmol)")          # Ngo 2020 Table 1: AFcRn_t = 749 nmol
     lkss2     <- log(14.5);     label("Drug-IL1R QSS dissociation constant in central (KSS2, nmol/L)")              # Ngo 2020 Table 1: KSS2 = 14.5 nmol/L
     lc_il1r_t <- log(2.23);     label("Total active concentration of IL1R in central (CIL1R_t, nmol/L)")            # Ngo 2020 Table 1: CIL1R_t = 2.23 nmol/L
-    lalag     <- log(0.312);    label("Subcutaneous absorption lag time (Alag, h)")                                 # Ngo 2020 Table 1: Alag = 0.312 h
+    ltlag     <- log(0.312);    label("Subcutaneous absorption lag time (Alag, h)")                                 # Ngo 2020 Table 1: Alag = 0.312 h
 
     # IIV - Ngo 2020 Table 1 IIV section reports CV%; omega^2 = log(CV^2 + 1)
     etalka1   ~ 0.6672   # 97.4% CV  -> log(1 + 0.974^2)  = 0.6672
@@ -47,7 +47,7 @@ Ngo_2020_HL2351 <- function() {
     etalkdeg1 ~ 0.0729   # 27.5% CV  -> log(1 + 0.275^2)  = 0.0729
     etalkup   ~ 0.5973   # 90.4% CV  -> log(1 + 0.904^2)  = 0.5973 (typical Kup is FIXED but IIV is estimated; Ngo 2020 Table 1)
     etalcl    ~ 0.0511   # 22.9% CV  -> log(1 + 0.229^2)  = 0.0511
-    etalalag  ~ 0.2685   # 55.5% CV  -> log(1 + 0.555^2)  = 0.2685
+    etaltlag  ~ 0.2685   # 55.5% CV  -> log(1 + 0.555^2)  = 0.2685
 
     # Residual error - Ngo 2020 Table 1 residual variability section. Observed
     # serum concentrations are in nmol/L (additive units must match concentration units).
@@ -71,7 +71,7 @@ Ngo_2020_HL2351 <- function() {
     a_fcrn_t <- exp(la_fcrn_t)
     kss2     <- exp(lkss2)
     c_il1r_t <- exp(lc_il1r_t)
-    alag_t   <- exp(lalag  + etalalag)
+    alag_t   <- exp(ltlag  + etaltlag)
 
     # Linear-disposition micro-rate constants from CL/F, Vc/F, Q/F, Vp/F
     kel <- cl / vc

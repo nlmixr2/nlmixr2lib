@@ -82,7 +82,7 @@ Clinckers_2008_MHD_rat <- function() {
     # so the THETA values map 1:1 onto the published estimates; the
     # asymmetric biophase kinetics (k23 != k32, plus three condition-
     # specific V3 values) cannot be re-expressed as a single Q. The
-    # non-canonical names (lkel, lk23, lk32, lv3a/b/c, lalag, lfr, ld2)
+    # non-canonical names (lkel, lk23, lk32, lv3a/b/c, ltlag, lfr, ld2)
     # are listed in the vignette Assumptions and deviations.
     # Volumes from Table 2 are converted from mL to L (V2 = 484 mL = 0.484 L,
     # etc.) so that concentrations expressed as central/vc are in
@@ -114,7 +114,7 @@ Clinckers_2008_MHD_rat <- function() {
     lv3c <- log(0.407)
     label("Biophase volume of distribution V3 during efflux-transporter blockade V3c (L)")  # Clinckers 2008 Table 2: V3c = 407 mL = 0.407 L (P < 0.05 vs V3a)
 
-    lalag <- log(3.23)
+    ltlag <- log(3.23)
     label("Lag time for first-order absorption ALAG1 (min)")                          # Clinckers 2008 Table 2: ALAG1 = 3.23 min
 
     lfr  <- log(0.347)
@@ -202,7 +202,7 @@ Clinckers_2008_MHD_rat <- function() {
            v3c * (1 - SEIZURE_ACUTE) *      EFFLUX_INHIB
 
     # Absorption modifiers
-    alag <- exp(lalag)
+    alag <- exp(ltlag)
     fr   <- exp(lfr + etalfr)
     d2   <- exp(ld2 + etald2)
 

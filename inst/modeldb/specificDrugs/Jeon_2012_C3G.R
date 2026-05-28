@@ -44,7 +44,7 @@ Jeon_2012_C3G <- function() {
     lka    <- log(9.94);  label("Absorption rate constant Ka (1/h)")                 # Jeon 2012 Table 3: Ka = 9.94 1/h (%RSE 30.7)
     lcl    <- log(3420);  label("Apparent oral clearance CL/F (L/h)")                # Jeon 2012 Table 3: CL/F = 3420 L/h (%RSE 8.68)
     lvc    <- log(7280);  label("Apparent oral central volume of distribution V/F (L)")  # Jeon 2012 Table 3: V/F = 7280 L (%RSE 6.84)
-    lalag  <- log(0.217); label("Absorption lag time ALAG (h)")                      # Jeon 2012 Table 3: ALAG = 0.217 h (%RSE 3.67)
+    ltlag  <- log(0.217); label("Absorption lag time ALAG (h)")                      # Jeon 2012 Table 3: ALAG = 0.217 h (%RSE 3.67)
 
     # Log-normal IIV on CL/F and V/F (correlated, rho = 0.883) plus IIV on Ka.
     # The paper reports CV% per parameter; the internal variance is
@@ -78,7 +78,7 @@ Jeon_2012_C3G <- function() {
     ka    <- exp(lka + etalka)
     cl    <- exp(lcl + etalcl)
     vc    <- exp(lvc + etalvc)
-    alag1 <- exp(lalag)
+    alag1 <- exp(ltlag)
 
     # One-compartment first-order absorption with first-order elimination
     # from the central compartment. Dose lands in the depot via the user

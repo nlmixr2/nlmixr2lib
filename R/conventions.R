@@ -19,16 +19,21 @@
     # used when no explicit `vc` is estimated). Canonical lkel adopted
     # 2026-05-28 per the naming audit (replaces `lke`).
     "lkel",
-    # Canonical lag-time name. Replaces the legacy `lalag`, `llag`,
-    # `ltz` forms per the 2026-05-28 naming audit.
-    "ltlag"
+    # Canonical lag-time name. Replaces the legacy `lalag`, `llag`
+    # forms per the 2026-05-28 naming audit.
+    "ltlag",
+    # Canonical acrophase (peak-time) name for circadian-IDR templates.
+    # Replaces the legacy `ltz` form; semantically distinct from a
+    # lag-time even though both denote a time-shift parameter
+    # (operator clarification, 2026-05-28).
+    "ltacro"
   ),
   pkBareParams = c(
     "ka", "cl", "vc", "vp", "vp2", "q", "q2", "kel",
     "k12", "k21", "k13", "k31", "fdepot",
     "vmax", "cl_ss", "cl_time", "cl_renal", "cl_nonren",
-    # Bare form of the canonical lag-time parameter.
-    "tlag"
+    # Bare form of the canonical lag-time and acrophase parameters.
+    "tlag", "tacro"
   ),
   compartments = c(
     "depot", "central", "peripheral1", "peripheral2", "effect",

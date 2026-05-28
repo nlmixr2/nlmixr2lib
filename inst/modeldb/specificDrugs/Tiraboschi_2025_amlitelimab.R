@@ -55,7 +55,7 @@ Tiraboschi_2025_amlitelimab <- function() {
     lq       <- log(0.569);                      label("Intercompartmental clearance (Q, L/day)")                                           # Table S2 TVQ2
     lvmax    <- log(0.0362);                     label("Maximum velocity of nonlinear (TMDD) elimination (Vmax, mg/day)")                   # Table S2 TVVM (labeled 'ug/day' in Table S2, verified mg/day via the paper's 66% TMDD-fraction at LLOQ 0.0469 ug/mL and 20% at 1 ug/mL)
     lkm      <- log(0.0783);                     label("Michaelis-Menten constant (Km, ug/mL)")                                             # Table S2 TVKM
-    lalag    <- log(0.0351);                     label("Absorption lag time (ALAG, day)")                                                   # Table S2 TVALAG
+    ltlag    <- log(0.0351);                     label("Absorption lag time (ALAG, day)")                                                   # Table S2 TVALAG
     logitf1  <- log(0.888 / (1 - 0.888));        label("Typical subcutaneous bioavailability on the logit scale (linear F = 0.888 at population-median albumin 47 g/L)")  # Table S2 TVFsc = 0.888 on linear scale
 
     # Allometric exponents on body weight (reference 75 kg)
@@ -72,7 +72,7 @@ Tiraboschi_2025_amlitelimab <- function() {
                         0.0240, 0.0482)  # Table S2 omega^2 V1, omega(V1,CL), omega^2 CL
     etalvp     ~ 0.0693  # Table S2 omega^2 V2
     etalogitf1 ~ 1.18    # Table S2 omega^2 Fsc (IIV applied on logit scale per the source NONMEM control stream)
-    etalalag   ~ 0.151   # Table S2 omega^2 ALAG
+    etaltlag   ~ 0.151   # Table S2 omega^2 ALAG
     etalka     ~ 0.135   # Table S2 omega^2 Ka
 
     # Residual error (proportional; variance 0.0248 -> CV = sqrt(0.0248) = 0.1575 = 15.75%)
@@ -88,7 +88,7 @@ Tiraboschi_2025_amlitelimab <- function() {
     q    <- exp(lq)
     vmax <- exp(lvmax)
     km   <- exp(lkm)
-    alag <- exp(lalag + etalalag)
+    alag <- exp(ltlag + etaltlag)
 
     # Fsc: population on logit scale -> invert to linear, add additive albumin term, re-logit, then apply the logit-scale eta
     # (Tiraboschi 2025 Table S2 footnote f: Fsc = TVFsc + 0.598 * ((BALB/47) - 1); the source NONMEM code then uses

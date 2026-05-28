@@ -49,7 +49,7 @@ Toukam_2025_biib107 <- function() {
     lvmax   <- log(1.89);           label("Maximum rate of saturable target-mediated elimination (Vmax, mg/day)")  # Toukam 2025 Table 3 (Vmax 1890 ug/day)
     lkm     <- fixed(log(0.00435)); label("Michaelis-Menten constant (Km, mg/L = ug/mL; FIXED at in vitro Kd)")    # Toukam 2025 Table 3 (Km 0.00435 ug/mL FIXED)
     lfdepot <- log(0.738);          label("SC bioavailability (F, fraction)")                               # Toukam 2025 Table 3 (F 73.8%)
-    lalag   <- fixed(log(0.0793));  label("Absorption lag time for SC doses (Tlag/ALAG1, day; FIXED)")      # Toukam 2025 Table 3 (Tlag 0.0793 day FIXED)
+    ltlag   <- fixed(log(0.0793));  label("Absorption lag time for SC doses (Tlag/ALAG1, day; FIXED)")      # Toukam 2025 Table 3 (Tlag 0.0793 day FIXED)
 
     # Allometric exponents on body weight (reference 70 kg). Toukam 2025
     # Table 3: exponent on CL was estimated at 1.07 (RSE 39.7%); exponents
@@ -133,7 +133,7 @@ Toukam_2025_biib107 <- function() {
     d/dt(peripheral1) <-                                                       k12 * central - k21 * peripheral1
 
     f(depot)    <- exp(lfdepot)
-    alag(depot) <- exp(lalag)
+    alag(depot) <- exp(ltlag)
 
     # ------------------------------------------------------------------
     # Direct sigmoidal Emax PD: alpha-4 integrin receptor saturation.

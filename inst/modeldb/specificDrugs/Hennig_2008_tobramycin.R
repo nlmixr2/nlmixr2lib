@@ -55,7 +55,7 @@ Hennig_2008_tobramycin <- function() {
     e_wt_vc_vp <- fixed(1.00); label("Allometric (WT) exponent on Vc and Vper (unitless)")  # Hennig 2008 Table 2 footnote
 
     # Dose-record adjustments
-    llag <- log(0.40);   label("Lag between infusion hang time and drug entry into vein (h)")  # Hennig 2008 Table 2 (tlag, Covariate model)
+    ltlag <- log(0.40);   label("Lag between infusion hang time and drug entry into vein (h)")  # Hennig 2008 Table 2 (tlag, Covariate model)
     ldur <- fixed(log(0.5)); label("Fixed infusion duration into central compartment (h, hospital protocol)")  # Hennig 2008 Table 2 (D2, fixed); Methods page 503
 
     # Inter-individual variability (full block on CL, Vc, Vper).
@@ -98,7 +98,7 @@ Hennig_2008_tobramycin <- function() {
 
     # Fixed 30 min nominal infusion duration and estimated infusion lag
     dur(central) <- exp(ldur)
-    lag(central) <- exp(llag)
+    lag(central) <- exp(ltlag)
 
     # Concentration in central compartment: dose in mg, volume in L -> mg/L
     Cc <- central / vc

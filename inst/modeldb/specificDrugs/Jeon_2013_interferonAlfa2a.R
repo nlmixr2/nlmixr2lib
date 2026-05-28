@@ -68,7 +68,7 @@ Jeon_2013_interferonAlfa2a <- function() {
     lvc  <- log(691)     ; label("Apparent central volume of distribution V/F (L)")                                     # Jeon 2013 Table 4: V/F = 691 L
     ld2  <- log(20.2)    ; label("Duration of zero-order absorption D2 (h)")                                            # Jeon 2013 Table 4: D2 = 20.2 h
     lka  <- log(0.00653) ; label("First-order absorption rate constant Ka (1/h)")                                       # Jeon 2013 Table 4: Ka = 0.00653 1/h
-    lalag <- log(85.7)   ; label("Lag time to start of first-order absorption ALAG (h)")                                # Jeon 2013 Table 4: ALAG = 85.7 h
+    ltlag <- log(85.7)   ; label("Lag time to start of first-order absorption ALAG (h)")                                # Jeon 2013 Table 4: ALAG = 85.7 h
     lrf  <- log(0.185)   ; label("Logit parameter RF for zero-order absorbed fraction; Fz = exp(RF)/(1 + exp(RF))")     # Jeon 2013 Table 4: RF = 0.185 (Fz = e^RF / (1 + e^RF) per Table 4 footnote b)
 
     # ---------------------------------------------------------------
@@ -150,7 +150,7 @@ Jeon_2013_interferonAlfa2a <- function() {
     vc   <- exp(lvc   + etalvc)
     d2   <- exp(ld2   + etald2)
     ka   <- exp(lka   + etalka)
-    alag <- exp(lalag)
+    alag <- exp(ltlag)
     rf   <- exp(lrf   + etalrf)
     # Fz: zero-order absorbed fraction via logit transform of RF
     # (Jeon 2013 Table 4 footnote b: Fz = e^RF / (1 + e^RF)).

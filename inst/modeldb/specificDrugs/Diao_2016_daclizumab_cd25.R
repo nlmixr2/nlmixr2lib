@@ -64,7 +64,7 @@ Diao_2016_daclizumab_cd25 <- function() {
     lvp      <- log(2.52);       label("Peripheral volume of distribution for a 70 kg adult (Vp, L)") # Othman 2014 Table 2
     lq       <- log(0.044 * 24); label("Inter-compartmental clearance for a 70 kg adult (Q, L/day)")  # Othman 2014 Table 2
     lfdepot  <- log(0.84);       label("SC bioavailability for 100-300 mg doses (F, fraction)")       # Othman 2014 Table 2
-    lalag    <- log(2 / 24);     label("Absorption lag time for SC doses (Tlag, day; 2 h)")           # Othman 2014 Table 2
+    ltlag    <- log(2 / 24);     label("Absorption lag time for SC doses (Tlag, day; 2 h)")           # Othman 2014 Table 2
 
     e_wt_cl_q <- 0.54; label("Allometric exponent on CL and Q (unitless)")  # Othman 2014 Table 2
     e_wt_vc_vp <- 0.64; label("Allometric exponent on Vc and Vp (unitless)") # Othman 2014 Table 2
@@ -143,7 +143,7 @@ Diao_2016_daclizumab_cd25 <- function() {
     d/dt(central)     <-  ka * depot - kel * central - k12 * central + k21 * peripheral1
     d/dt(peripheral1) <-  k12 * central - k21 * peripheral1
 
-    alag(depot) <- exp(lalag)
+    alag(depot) <- exp(ltlag)
     f(depot)    <- exp(lfdepot) * (1 + e_dose_50mg_f * DOSE_50MG)
 
     Cc <- central / vc

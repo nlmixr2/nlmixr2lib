@@ -63,7 +63,7 @@ Hennig_2006_itraconazole <- function() {
     label("Log-ratio shift on ka for capsule formulation (unitless)")
 
     # Lag time (same for capsule and oral solution per the .ctl).
-    llag <- log(19.1 / 60);                                                                                      # Hennig 2006 Table II, final model: t_lag = 19.1 min = 0.3183 h
+    ltlag <- log(19.1 / 60);                                                                                      # Hennig 2006 Table II, final model: t_lag = 19.1 min = 0.3183 h
     label("Absorption lag time (h)")
 
     # Relative bioavailability: oral solution Frel fixed to 1 (reference);
@@ -145,7 +145,7 @@ Hennig_2006_itraconazole <- function() {
     # Bioavailability and lag on the depot (lag is the same for both
     # formulations per Table II).
     f(depot)   <- fdepot
-    lag(depot) <- exp(llag)
+    lag(depot) <- exp(ltlag)
 
     # Observations.
     Cc     <- central / vc

@@ -208,7 +208,7 @@ Odongo_2015_sulfadoxinePyrimethamine <- function() {
     label("Sulfadoxine apparent inter-compartmental CL (L/h)")            # Table 2: Q_TV = 0.029 L/h (RSE 17.4%)
     lvp     <- log(161.71)
     label("Sulfadoxine apparent peripheral volume V3/F (L)")              # Table 2: V3/F_TV = 161.71 L (RSE 33.8%)
-    lalag   <- log(0.371)
+    ltlag   <- log(0.371)
     label("Sulfadoxine absorption lag time, ALAG (h)")                    # Table 2: ALAG_TV = 0.371 h (RSE 11.8%)
     lfdepot <- fixed(log(1))
     label("Sulfadoxine relative bioavailability F (unitless, FIXED at 1)") # Section 3.1: "bioavailability was assumed to be equal to 1"
@@ -331,7 +331,7 @@ Odongo_2015_sulfadoxinePyrimethamine <- function() {
     vc <- exp(lvc) * exp(e_ga_vc * (GA - ga_ref))
     q  <- exp(lq + etalq)
     vp <- exp(lvp)
-    alag <- exp(lalag)
+    alag <- exp(ltlag)
 
     # ------------------------------------------------------------
     # Pyrimethamine individual PK parameters.

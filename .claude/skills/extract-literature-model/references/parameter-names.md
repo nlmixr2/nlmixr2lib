@@ -114,11 +114,23 @@ Inside `model()` the bare names are `mtt` and `ktr`. Source-paper aliases
 Canonical lag-time prefix: **`ltlag`** (log absorption-lag time).
 
 Source-paper aliases that translate to `ltlag` without sidecar:
-`ALAG1` (NONMEM), `tlag`, `Tlag`, `alag`, `LAG`, `Tz`, `Tz1`. The legacy
-forms `lalag`, `llag`, `ltz` are deprecated in favour of `ltlag`.
+`ALAG1` (NONMEM), `tlag`, `Tlag`, `alag`, `LAG`. The legacy forms
+`lalag`, `llag` are deprecated in favour of `ltlag`.
 
 Inside `model()` the bare name is `tlag`. Apply via `alag(depot) <- tlag`
 or `alag(<cmt>) <- tlag` (preferred over carrying a separate `lag` compartment).
+
+### Acrophase / circadian peak time
+
+Canonical acrophase prefix: **`ltacro`** (log time of peak in a
+circadian-rhythm rate constant). Distinct from absorption-lag time:
+`tacro` is a phase shift inside a sinusoidal modulation of `kin` /
+`kout` rather than a delay between dose administration and absorption.
+
+Used in `indirect_circ_*` circadian-IDR templates with kinetic forms
+such as `kout_t <- kin + amp * sin(2*pi*(t - tacro) / period)` (and
+the cos / amplitude-ratio variants). The legacy form `ltz` is
+deprecated in favour of `ltacro`.
 
 ## Indirect-response (IDR) / turnover parameters
 
