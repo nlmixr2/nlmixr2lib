@@ -126,7 +126,7 @@ Mulyukov_2018_ranibizumab <- function() {
     #   row 2  cov(g0, lkout),    var(lkout)
     #   row 3  cov(g0, lEmaxss),  cov(lkout, lEmaxss),  var(lEmaxss)
     #   row 4  cov(g0, ldEmax0),  cov(lkout, ldEmax0),  cov(lEmaxss, ldEmax0),  var(ldEmax0)
-    etag0res + etalkout + etalemaxss + etaldemax0 ~ c(
+    etag0res + etalkout + etalEmaxss + etaldEmax0 ~ c(
        16.81,
       -1.14719,  3.99434,
        0.98578, -1.10344, 0.79299,
