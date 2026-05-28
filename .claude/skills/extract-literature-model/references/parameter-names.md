@@ -2,6 +2,8 @@
 
 Authoritative source: `vignettes/create-model-library.Rmd` and `R/conventions.R`. Covers structural PK parameters, transform prefixes, fixed parameters, IIV, covariate-effect parameters, endogenous / mechanistic parameters, residual error, and file-level metadata.
 
+**Stop-and-ask gate (Phase 1 pre-flight + Phase 3 drafting):** If the model you are extracting needs a parameter name that is NOT in this document, file a sidecar BEFORE writing the model file. Propose: the canonical name (with `l` prefix if log-transformed), its role (one sentence), source paper's local name(s) it would replace, why it isn't an alias of an existing canonical (e.g., why this isn't just `cl_ss` / `cl_time` / `cl_renal` / `cl_nonren` under a different label), and any cross-precedent in existing registered model files. Wait for operator approval before committing. Trivial notation differences (case-only, NONMEM `V1`/`V2`/`V3` → `vc`/`vp`/`vp2`, paper's `Kel` → canonical `kel`) translate silently and do NOT need a sidecar.
+
 ## Structural PK parameters
 
 Log-transform any parameter that must be positive. Prefix `l` (lower-case L).

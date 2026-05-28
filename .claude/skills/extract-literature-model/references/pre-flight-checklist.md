@@ -17,7 +17,8 @@ Read this once at dispatch, before starting the 6-phase workflow. Every trigger 
 - **Covariate encoding ambiguous.** Reference category, units, transformation not fully specified.
 - **Source column name not in `inst/references/covariate-columns.md`.** Propose a new entry and confirm before adding.
 - **Source column is an alias of an existing canonical name with value inversion or reference-category flip.** Confirm sign and reference-category implications.
-- **Parameter name deviates from nlmixr2lib standard.** Propose canonical name and confirm.
+- **Parameter name not in `references/parameter-names.md`.** Trivial notation differences (case, NONMEM `V1`/`V2`/`V3` → `vc`/`vp`/`vp2`, paper's `Kel` → canonical `kel`, etc.) translate silently. Any *new structural concept* (new clearance-component suffix like `cl_renal_intermittent`, new transform prefix, new endogenous-system parameter family, etc.) requires a sidecar BEFORE drafting the model. Propose: canonical name, role (one sentence), source paper's local name(s) it replaces, and any cross-precedent in existing registered models. Do not invent a "seems obvious" name silently.
+- **Compartment name not in `references/compartment-names.md`.** Trivial casing differences translate silently. Any *new compartment role* (new endogenous-state compartment, new drug-suffix pattern beyond the registered list, new effect-compartment variant) requires a sidecar BEFORE drafting. Never introduce numbered `cmt1` / `cmt2` / `compartment_3` placeholders silently — propose a canonical role-based name and confirm. Same applies to drug-specific suffix patterns: don't extend `_tfvdp` → `_newdrugX` without operator sign-off on the suffix.
 
 ## Worktree state (Phase 2)
 
