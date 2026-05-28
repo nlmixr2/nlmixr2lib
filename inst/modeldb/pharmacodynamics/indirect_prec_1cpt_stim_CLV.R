@@ -33,8 +33,8 @@ indirect_prec_1cpt_stim_CLV  <- function() {
     d/dt(depot)      <- -ka*depot
     f(depot)         <- fdepot
     d/dt(central)    <- ka*depot-kel*central
-    d/dt(precursor)  <- kpin -(kin + kpout)*(1+emax*Cc/(Cc + EC50))*precursor
-    d/dt(effect)   <- kin*(1+emax*Cc/(Cc + EC50))*precursor-kout*effect
+    d/dt(precursor1)  <- kpin -(kin + kpout)*(1+emax*Cc/(Cc + EC50))*precursor1
+    d/dt(effect)   <- kin*(1+emax*Cc/(Cc + EC50))*precursor1-kout*effect
     
     Cc ~ prop(propSd)
   })

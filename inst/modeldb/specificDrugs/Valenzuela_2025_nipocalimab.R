@@ -42,7 +42,7 @@ Valenzuela_2025_nipocalimab <- function() {
       units              = "(score)",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed (baseline); power-form effect (MGADL/7)^E_IgG on SIgG and (MGADL/7)^E_ADL on IDec_placebo. Set MGADL = 0 for healthy participants so that MG-ADL response predictions collapse to 0. Vivacity-MG participants ranged 6-24 points (mean 9.8).",
+      notes              = "Time-fixed (baseline); power-form effect (MGADL/7)^E_IgG on sigg and (MGADL/7)^E_ADL on IDec_placebo. Set MGADL = 0 for healthy participants so that MG-ADL response predictions collapse to 0. Vivacity-MG participants ranged 6-24 points (mean 9.8).",
       source_name        = "MGADL"
     )
   )
@@ -92,11 +92,11 @@ Valenzuela_2025_nipocalimab <- function() {
 
     # ---- MG-ADL PD (Table 3) ----
     lke0        <- log(0.414); label("IgG effect-compartment rate constant for MG-ADL (1/day)")           # Table 3: ke0 = 0.414 1/d
-    SIgG        <- -0.216;     label("Slope between MG-ADL change and IgG reduction (points per 10% IgG reduction)") # Table 3: S_IgG = -0.216 pts/10%reduction; note the 10x unit conversion in model()
+    sigg        <- -0.216;     label("Slope between MG-ADL change and IgG reduction (points per 10% IgG reduction)") # Table 3: S_IgG = -0.216 pts/10%reduction; note the 10x unit conversion in model()
     EIgG        <- 0.871;      label("Exponent of MG-ADL baseline effect on S_IgG (unitless)")            # Table 3: E_IgG = 0.871
-    IDecplacebo <- -1.08;      label("Typical initial placebo decrease in MG-ADL after treatment start (points)") # Table 3: IDec_placebo = -1.08 pts
+    idecplacebo <- -1.08;      label("Typical initial placebo decrease in MG-ADL after treatment start (points)") # Table 3: IDec_placebo = -1.08 pts
     EADL        <- 1.23;       label("Exponent of MG-ADL baseline effect on IDec_placebo (unitless)")      # Table 3: E_ADL = 1.23
-    Splacebo    <- -0.0594;    label("Slope of placebo effect over time on MG-ADL (points/week)")          # Table 3: S_placebo = -0.0594 pts/week
+    splacebo    <- -0.0594;    label("Slope of placebo effect over time on MG-ADL (points/week)")          # Table 3: S_placebo = -0.0594 pts/week
 
     # ---- IIV (exponential on PK / FcRn / IgG params; additive on MG-ADL params) ----
     # omega^2 = log(CV^2 + 1) for log-normal parameters:
@@ -115,11 +115,11 @@ Valenzuela_2025_nipocalimab <- function() {
 
     # MG-ADL additive IIV values reported in Table 3 (1.89 and 3.76 under "IIV, CV%" column
     # but MG-ADL model uses additive IIV per paper Methods; values are interpreted as NONMEM
-    # OMEGA variances in squared parameter units). Correlation between etaIDecplacebo and
-    # etaSIgG is -0.733; covariance = -0.733 * sqrt(1.89) * sqrt(3.76) = -1.954.
-    etaIDecplacebo + etaSIgG ~ c(1.89,
+    # OMEGA variances in squared parameter units). Correlation between etaidecplacebo and
+    # etasigg is -0.733; covariance = -0.733 * sqrt(1.89) * sqrt(3.76) = -1.954.
+    etaidecplacebo + etasigg ~ c(1.89,
                                  -1.954, 3.76)
-    etaSplacebo ~ 0.125     # Table 3 IIV (additive; variance in (pts/week)^2)
+    etasplacebo ~ 0.125     # Table 3 IIV (additive; variance in (pts/week)^2)
 
     # ---- Residual error (Table 3) ----
     # Paper reports PK additive RUVs in nmol/L; converted to ug/mL here using
@@ -174,9 +174,9 @@ Valenzuela_2025_nipocalimab <- function() {
 
     # ---- Individual MG-ADL parameters ----
     ke0         <- exp(lke0)
-    IDec_i      <- (IDecplacebo + etaIDecplacebo) * (MGADL / 7)^EADL
-    SIgG_i      <- (SIgG + etaSIgG)
-    Splacebo_i  <- (Splacebo + etaSplacebo)
+    idec_i      <- (idecplacebo + etaidecplacebo) * (MGADL / 7)^EADL
+    sigg_i      <- (sigg + etasigg)
+    splacebo_i  <- (splacebo + etasplacebo)
 
     # Dose in mg (rxode2 convention) goes directly into the central compartment
     # as an amount in mg; with vc in L, Cc = central/vc is in mg/L = ug/mL.
@@ -225,8 +225,8 @@ Valenzuela_2025_nipocalimab <- function() {
     # MG-ADL absolute change from baseline (points). Placebo effect turns on after first dose
     # (t > 0 gate). IgG-driven effect: S_IgG is reported per 10% IgG reduction; multiply by 10
     # to convert the fractional effect-compartment output to "number of 10% reductions".
-    placebo_cfb <- (t > 0) * (IDec_i + Splacebo_i * t / 7)
-    igg_cfb     <- 10 * SIgG_i * effect * (MGADL / 7)^EIgG
+    placebo_cfb <- (t > 0) * (idec_i + splacebo_i * t / 7)
+    igg_cfb     <- 10 * sigg_i * effect * (MGADL / 7)^EIgG
     dMGADL      <- placebo_cfb + igg_cfb
 
     # ---- Residual-error models (per-assay / per-phase switches on PK; single form on others) ----

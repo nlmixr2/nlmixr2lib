@@ -34,8 +34,8 @@ indirect_prec_1cpt_inhi_r0rmaxcrmax  <- function() {
     d/dt(depot)      <- -ka*depot
     f(depot)         <- fdepot
     d/dt(central)    <- ka*depot-kel*central
-    d/dt(precursor)  <- kpin -(kin + kpout)*(1-imax*Cc/(Cc + IC50))*precursor
-    d/dt(effect)   <- kin*(1-imax*Cc/(Cc + IC50))*precursor-kout*effect
+    d/dt(precursor1)  <- kpin -(kin + kpout)*(1-imax*Cc/(Cc + IC50))*precursor1
+    d/dt(effect)   <- kin*(1-imax*Cc/(Cc + IC50))*precursor1-kout*effect
     
     Cc ~ prop(propSd)
   })

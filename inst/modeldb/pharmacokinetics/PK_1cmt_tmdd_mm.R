@@ -24,7 +24,7 @@ PK_1cmt_tmdd_mm <- function() {
     lvc     <- log(3);    label("Central volume of distribution (Vc, L)")                   # Gibiansky 2008 Eq 10 (V); generic mAb-scale default
 
     # Saturable (target-mediated) elimination
-    lVm     <- log(0.1);  label("Maximum target-mediated elimination rate (Vm, mg/L/day)")  # Gibiansky 2008 Eq 10 (V_m = k_int * R0); generic TMDD default
+    lvmax     <- log(0.1);  label("Maximum target-mediated elimination rate (Vm, mg/L/day)")  # Gibiansky 2008 Eq 10 (V_m = k_int * R0); generic TMDD default
     lKm     <- log(1.1);  label("MM constant for target-mediated elimination (Km, mg/L)")   # Gibiansky 2008 Eq 10 (K_m approx Kss)
 
     # IIV (generic archetype; single eta on each of CL, Vc, Ka)
@@ -42,16 +42,16 @@ PK_1cmt_tmdd_mm <- function() {
     cl   <- exp(lcl + etalcl)
     vc   <- exp(lvc + etalvc)
     kel  <- cl / vc
-    vm   <- exp(lVm)
+    vmax   <- exp(lvmax)
     km   <- exp(lKm)
 
     # central holds total drug amount; Cc is concentration in mg/L.
     Cc <- central / vc
 
     # Gibiansky 2008 Eq 10: linear clearance + saturable (MM) target-mediated clearance.
-    # MM term vm * Cc / (km + Cc) has units mg/L/day; multiplied by vc -> mg/day.
+    # MM term vmax * Cc / (km + Cc) has units mg/L/day; multiplied by vc -> mg/day.
     d/dt(depot)   <- -ka * depot
-    d/dt(central) <-  ka * depot - kel * central - vm * Cc * vc / (km + Cc)
+    d/dt(central) <-  ka * depot - kel * central - vmax * Cc * vc / (km + Cc)
 
     f(depot) <- fdep
 

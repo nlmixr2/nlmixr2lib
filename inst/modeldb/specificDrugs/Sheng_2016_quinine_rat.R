@@ -136,7 +136,7 @@ Sheng_2016_quinine_rat <- function() {
     # push a small fraction (~2.5%) of simulated d2 samples below -1,
     # the GP-validity bound. Clip in simulation if it matters; see the
     # vignette "Assumptions and deviations" section.
-    etaE      ~ 0.0721
+    etae      ~ 0.0721
     # Table 2 2GP column: omega^2 on the composite drug effect E reported
     # as CV% = 27.2% (RSE 34.8). Added additively to E inside model()
     # because E can change sign across the concentration range.
@@ -175,7 +175,7 @@ Sheng_2016_quinine_rat <- function() {
     # hybrid parameter, not used directly here.
     # ------------------------------------------------------------------
     drugEmax <- Emax_i * (conc^c_i) / (RIC50_i^c_i + conc^c_i)
-    E        <- e0_i + drugEmax + etaE
+    E        <- e0_i + drugEmax + etae
     p_low    <- exp(E) / (1 + exp(E))
     p_high   <- 1 - p_low
 
