@@ -5,7 +5,7 @@ Sadouki_2025_meropenem_gentamicin_ciprofloxacin <- function() {
   units <- list(time = "hour", dosing = "mg/L", concentration = "mg/L")
 
   covariateData <- list(
-    MER_PRESENT = list(
+    CONMED_MER = list(
       description        = "Indicator that meropenem is present in the experimental regimen",
       units              = "(binary)",
       type               = "binary",
@@ -13,7 +13,7 @@ Sadouki_2025_meropenem_gentamicin_ciprofloxacin <- function() {
       notes              = "1 if the regimen includes meropenem, 0 otherwise. Drives the combination categorical effect on BETA and the proportional MER-presence effect on Cip IC50 (Sadouki 2025 Table 1, Drug interactions section). In-vitro experimental indicator -- not in inst/references/covariate-columns.md (the canonical register is for human pop-PK covariates and does not apply to this in-vitro PD model).",
       source_name        = "Mer regimen flag (paper Methods)"
     ),
-    GEN_PRESENT = list(
+    CONMED_GEN = list(
       description        = "Indicator that gentamicin is present in the experimental regimen",
       units              = "(binary)",
       type               = "binary",
@@ -21,15 +21,15 @@ Sadouki_2025_meropenem_gentamicin_ciprofloxacin <- function() {
       notes              = "1 if the regimen includes gentamicin, 0 otherwise. Drives the combination categorical effect on BETA and the proportional GEN-presence effect on Cip IC50 (Sadouki 2025 Table 1).",
       source_name        = "Gen regimen flag (paper Methods)"
     ),
-    CIP_PRESENT = list(
+    CONMED_CIP = list(
       description        = "Indicator that ciprofloxacin is present in the experimental regimen",
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (ciprofloxacin absent)",
-      notes              = "1 if the regimen includes ciprofloxacin, 0 otherwise. Used together with MER_PRESENT and GEN_PRESENT to compute the combination indicator that triggers the -1 categorical shift on BETA (Sadouki 2025 Table 1).",
+      notes              = "1 if the regimen includes ciprofloxacin, 0 otherwise. Used together with CONMED_MER and CONMED_GEN to compute the combination indicator that triggers the -1 categorical shift on BETA (Sadouki 2025 Table 1).",
       source_name        = "Cip regimen flag (paper Methods)"
     ),
-    Cgen = list(
+    CONMED_GEN_CC = list(
       description        = "Gentamicin concentration applied during the time-kill experiment (constant over the 24-h window)",
       units              = "mg/L",
       type               = "continuous",
@@ -37,7 +37,7 @@ Sadouki_2025_meropenem_gentamicin_ciprofloxacin <- function() {
       notes              = "Static concentration in CAMHB. The paper studied multiples of the MIC of 1 mg/L (range 0.25-16x MIC = 0.25-16 mg/L). Set to 0 when gentamicin is absent.",
       source_name        = "Gen concentration (paper Methods)"
     ),
-    Ccip = list(
+    CONMED_CIP_CC = list(
       description        = "Ciprofloxacin concentration applied during the time-kill experiment (constant over the 24-h window)",
       units              = "mg/L",
       type               = "continuous",
@@ -211,7 +211,7 @@ Sadouki_2025_meropenem_gentamicin_ciprofloxacin <- function() {
     bmax_eff <- bmax + cat_bmax_lowinoc * LOWINOC
 
     # ---- Combination-presence indicator (1 if 2- or 3-way regimen) ----
-    n_drugs   <- MER_PRESENT + GEN_PRESENT + CIP_PRESENT
+    n_drugs   <- CONMED_MER + CONMED_GEN + CONMED_CIP
     i_combo   <- n_drugs >= 2
 
     # ---- BETA modifiers per drug ----
@@ -220,14 +220,14 @@ Sadouki_2025_meropenem_gentamicin_ciprofloxacin <- function() {
 
     # Gen BETA is shifted by gentamicin concentration (Emax on BETA) and combo.
     beta_gen_eff <- beta_gen +
-      emax_betagen * (Cgen ^ hill_betagen) /
-        (ic50_betagen ^ hill_betagen + Cgen ^ hill_betagen) +
+      emax_betagen * (CONMED_GEN_CC ^ hill_betagen) /
+        (ic50_betagen ^ hill_betagen + CONMED_GEN_CC ^ hill_betagen) +
       combo_beta * i_combo
 
     # Cip BETA is shifted by ciprofloxacin concentration and combo.
     beta_cip_eff <- beta_cip +
-      emax_betacip * (Ccip ^ hill_betacip) /
-        (ic50_betacip ^ hill_betacip + Ccip ^ hill_betacip) +
+      emax_betacip * (CONMED_CIP_CC ^ hill_betacip) /
+        (ic50_betacip ^ hill_betacip + CONMED_CIP_CC ^ hill_betacip) +
       combo_beta * i_combo
 
     # ---- Mer TAU shifted by Mer concentration (proportional) ----
@@ -235,7 +235,7 @@ Sadouki_2025_meropenem_gentamicin_ciprofloxacin <- function() {
 
     # ---- Cip IC50 shifted by Mer or Gen presence (proportional, multiplicative) ----
     ic50_cip_eff <- ic50_cip_base *
-      (1 + mer_on_ic50cip * MER_PRESENT + gen_on_ic50cip * GEN_PRESENT)
+      (1 + mer_on_ic50cip * CONMED_MER + gen_on_ic50cip * CONMED_GEN)
 
     # ---- Drug effect terms (Hill * (1 - BETA*(1 - exp(-t*TAU)))) ----
     # Each Effect_drug is the per-drug killing rate (1/h); summed below.
@@ -243,12 +243,12 @@ Sadouki_2025_meropenem_gentamicin_ciprofloxacin <- function() {
       (ic50_mer ^ hill_mer + mer ^ hill_mer) *
       (1 - beta_mer_eff * (1 - exp(-t * tau_mer_eff)))
 
-    eff_gen <- emax_gen * (Cgen ^ hill_gen) /
-      (ic50_gen ^ hill_gen + Cgen ^ hill_gen) *
+    eff_gen <- emax_gen * (CONMED_GEN_CC ^ hill_gen) /
+      (ic50_gen ^ hill_gen + CONMED_GEN_CC ^ hill_gen) *
       (1 - beta_gen_eff * (1 - exp(-t * tau_gen)))
 
-    eff_cip <- emax_cip * (Ccip ^ hill_cip) /
-      (ic50_cip_eff ^ hill_cip + Ccip ^ hill_cip) *
+    eff_cip <- emax_cip * (CONMED_CIP_CC ^ hill_cip) /
+      (ic50_cip_eff ^ hill_cip + CONMED_CIP_CC ^ hill_cip) *
       (1 - beta_cip_eff * (1 - exp(-t * tau_cip)))
 
     # ---- ODE system ----

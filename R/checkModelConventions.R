@@ -585,7 +585,14 @@ checkModelConventions <- function(model, verbose = TRUE) {
         "Add a `units` field (use \"(binary)\" or \"(categorical)\" where appropriate)."
       ))
     }
-    if (!(nm %in% covs)) {
+    # Check that the covariateData entry corresponds to a name actually
+    # used inside model(). Use the unfiltered ui$covariates list so
+    # that names also declared in `depends` (e.g. operational data-table
+    # identifiers like TYPE / DILmer / DILcol / STUDY_DD that the
+    # model body reads but treats as upstream inputs rather than
+    # epidemiological effect modifiers) are correctly recognised when
+    # they appear in BOTH depends and covariateData.
+    if (!(nm %in% covs_all)) {
       issues <- rbind(issues, .issue(
         "covariates", "warning", nm,
         sprintf("covariateData[['%s']] has an entry but is not referenced in model().", nm),

@@ -14,21 +14,21 @@ Khan_2015_ciprofloxacin <- function() {
   replicate_of <- NULL
 
   covariateData <- list(
-    STR = list(
+    CONMED_STR_CC = list(
       description        = "Bacterial strain identifier (E. coli K-12 derivative). Values 347, 202, 378, 534, 625, 693, 707 select the matching strain-specific EC50 in `model()`. Strain LM202 is the wild-type reference (estimated EC50); the other six are quinolone-resistant single-step mutants with fixed published EC50s.",
       units              = "(integer code)",
       type               = "categorical",
       reference_category = "202",
-      notes              = "Per-tube fixed covariate. The DDMORE bundle's cipro_simulated.csv ships only STR=202; cipro202.csv and cipro378.csv carry the real-data fits for those two strains. Any STR value outside {347, 202, 378, 534, 625, 693, 707} drives the strain cascade in `model()` to ec50 = 0, which is intentionally unsafe (drug effect would diverge); guard the input data accordingly. In vitro experimental-design column, not a population-PK covariate; not added to the canonical inst/references/covariate-columns.md register.",
-      source_name        = "STR"
+      notes              = "Per-tube fixed covariate. The DDMORE bundle's cipro_simulated.csv ships only CONMED_STR_CC=202; cipro202.csv and cipro378.csv carry the real-data fits for those two strains. Any CONMED_STR_CC value outside {347, 202, 378, 534, 625, 693, 707} drives the strain cascade in `model()` to ec50 = 0, which is intentionally unsafe (drug effect would diverge); guard the input data accordingly. In vitro experimental-design column, not a population-PK covariate; not added to the canonical inst/references/covariate-columns.md register.",
+      source_name        = "CONMED_STR_CC"
     ),
-    CAB = list(
+    CONMED_CAB_CC = list(
       description        = "Static (constant-during-tube) ciprofloxacin concentration in the in vitro time-kill experiment. Drives the Hill-Emax DRUGS / DRUGS2 kill terms and the active <-> non-colony-forming transition rates.",
       units              = "mg/L",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Per-tube fixed covariate. CAB = 0 represents the no-drug control arm (drug effect is identically 0). The original Khan 2015 experiment static-dosed CAB at 0, 0.0625, 0.125, 0.25, 1, 2, 4, 8, and 16 x MIC for each strain; the bundle's cipro_simulated.csv replays a similar grid for STR = 202 (CAB in {0, 0.0029, 0.0059, 0.0118, 0.0235, 0.047, 0.094, 0.188, 0.376} mg/L). In vitro experimental-design column, not a population-PK covariate.",
-      source_name        = "CAB"
+      notes              = "Per-tube fixed covariate. CONMED_CAB_CC = 0 represents the no-drug control arm (drug effect is identically 0). The original Khan 2015 experiment static-dosed CONMED_CAB_CC at 0, 0.0625, 0.125, 0.25, 1, 2, 4, 8, and 16 x MIC for each strain; the bundle's cipro_simulated.csv replays a similar grid for CONMED_STR_CC = 202 (CONMED_CAB_CC in {0, 0.0029, 0.0059, 0.0118, 0.0235, 0.047, 0.094, 0.188, 0.376} mg/L). In vitro experimental-design column, not a population-PK covariate.",
+      source_name        = "CONMED_CAB_CC"
     ),
     BASE = list(
       description        = "Per-tube logarithm (natural-ln) of the baseline bacterial inoculum (log CFU/mL). Sets sbase = exp(BASE), which seeds the susceptible-growing compartment at sbase * (1 - mut*1e-6) and the pre-existing resistant-growing compartment at sbase * mut * 1e-6.",
@@ -47,9 +47,9 @@ Khan_2015_ciprofloxacin <- function() {
     weight_range   = NA_character_,
     sex_female_pct = NA_real_,
     disease_state  = "Static in vitro time-kill experiments on Escherichia coli K-12 MG1655 wild-type and six gyrA/gyrB/parC/parE single-step mutants (LM347, LM378, LM534, LM625, LM693, LM707) raised on the same K-12 MG1655 background. Bacteria were grown in Mueller-Hinton broth and exposed to a static ciprofloxacin concentration; viable counts were obtained by serial-dilution colony counting at 0, 1, 2, 4, 6, 9, 12, and 24 hours. NOT a human population-PK study.",
-    dose_range     = "Static (constant-during-tube) ciprofloxacin concentrations: 0 (no-drug control) plus a per-strain grid of MIC multipliers (0.0625x, 0.125x, 0.25x, 1x, 2x, 4x, 8x, 16x of each strain's measured MIC). LM202 wild-type MIC = 0.047 mg/L. The DDMORE bundle's simulated dataset uses the same grid for STR = 202 only.",
+    dose_range     = "Static (constant-during-tube) ciprofloxacin concentrations: 0 (no-drug control) plus a per-strain grid of MIC multipliers (0.0625x, 0.125x, 0.25x, 1x, 2x, 4x, 8x, 16x of each strain's measured MIC). LM202 wild-type MIC = 0.047 mg/L. The DDMORE bundle's simulated dataset uses the same grid for CONMED_STR_CC = 202 only.",
     regions        = NA_character_,
-    notes          = "DDMODEL00000225's bundle does NOT include the original Khan 2015 publication, the published Table 1 (per-strain MICs and EC50s) or Table 2 (model parameter estimates) -- the doi:10.1093/jac/dkv233 article is paywalled and is not on disk in this worktree. Population-style demographic fields (n_subjects, age, weight, sex) do not apply to an in vitro bacterial culture experiment and are intentionally NA. The simulated dataset cipro_simulated.csv ships 9 tubes (one per CAB level for STR = 202) with 4 sample-position replicates per observation time, totalling 207 rows. See the validation vignette's Assumptions and deviations / Errata section for the full list of bundle-versus-publication caveats."
+    notes          = "DDMODEL00000225's bundle does NOT include the original Khan 2015 publication, the published Table 1 (per-strain MICs and EC50s) or Table 2 (model parameter estimates) -- the doi:10.1093/jac/dkv233 article is paywalled and is not on disk in this worktree. Population-style demographic fields (n_subjects, age, weight, sex) do not apply to an in vitro bacterial culture experiment and are intentionally NA. The simulated dataset cipro_simulated.csv ships 9 tubes (one per CONMED_CAB_CC level for CONMED_STR_CC = 202) with 4 sample-position replicates per observation time, totalling 207 rows. See the validation vignette's Assumptions and deviations / Errata section for the full list of bundle-versus-publication caveats."
   )
 
   ini({
@@ -96,7 +96,7 @@ Khan_2015_ciprofloxacin <- function() {
     # ksnc_max gates active -> NC; knc_factor gates NC -> active back to
     # the active pool when drug pressure relaxes.
     lksnc_max  <- log(5.83)              ; label("Maximum rate of active -> non-colony-forming transition kSNc,max (1/h)")                      # .mod $THETA(15) = (0, 5.83); init 5.83
-    lknc_factor <- log(0.17)             ; label("NC -> active transition rate factor sfNcS (unitless; multiplies EC50/CAB to give 1/h)")        # .mod $THETA(16) = (0, 0.17); init 0.17
+    lknc_factor <- log(0.17)             ; label("NC -> active transition rate factor sfNcS (unitless; multiplies EC50/CONMED_CAB_CC to give 1/h)")        # .mod $THETA(16) = (0, 0.17); init 0.17
     lgam_nc    <- fixed(log(20))         ; label("Hill exponent for active -> NC transition (unitless)")                                        # .mod $THETA(17) = (0, 20) FIX
     ltr50      <- log(0.24)              ; label("Fold-EC50 ratio at which active -> NC transition is 50% saturated (unitless)")                # .mod $THETA(18) = (0, 0.24); init 0.24
 
@@ -130,39 +130,39 @@ Khan_2015_ciprofloxacin <- function() {
     tr50       <- exp(ltr50)
     tmtime     <- exp(ltmtime)
 
-    # Strain-specific EC50 cascade (mg/L). The seven STR codes are
-    # mutually exclusive; (STR == X) evaluates to 1 for the matching
+    # Strain-specific EC50 cascade (mg/L). The seven CONMED_STR_CC codes are
+    # mutually exclusive; (CONMED_STR_CC == X) evaluates to 1 for the matching
     # strain and 0 otherwise, so the sum picks exactly one EC50 per
-    # tube. Mirrors the .mod $PK lines 39-45 IF(STR.EQ.X) cascade.
-    ec50 <- exp(lec50_347) * (STR == 347) +
-            exp(lec50_202) * (STR == 202) +
-            exp(lec50_378) * (STR == 378) +
-            exp(lec50_534) * (STR == 534) +
-            exp(lec50_625) * (STR == 625) +
-            exp(lec50_693) * (STR == 693) +
-            exp(lec50_707) * (STR == 707)
+    # tube. Mirrors the .mod $PK lines 39-45 IF(CONMED_STR_CC.EQ.X) cascade.
+    ec50 <- exp(lec50_347) * (CONMED_STR_CC == 347) +
+            exp(lec50_202) * (CONMED_STR_CC == 202) +
+            exp(lec50_378) * (CONMED_STR_CC == 378) +
+            exp(lec50_534) * (CONMED_STR_CC == 534) +
+            exp(lec50_625) * (CONMED_STR_CC == 625) +
+            exp(lec50_693) * (CONMED_STR_CC == 693) +
+            exp(lec50_707) * (CONMED_STR_CC == 707)
 
     # Hill-Emax drug effect on bacterial kill, separately for each
-    # subpopulation. The .mod guards the division with IF(CAB > 1e-11);
-    # since gam > 0 always (lower bound 0.5 in the .mod), CAB^gam is
-    # exactly 0 at CAB = 0 and the +1e-30 below avoids 0/0 only at the
+    # subpopulation. The .mod guards the division with IF(CONMED_CAB_CC > 1e-11);
+    # since gam > 0 always (lower bound 0.5 in the .mod), CONMED_CAB_CC^gam is
+    # exactly 0 at CONMED_CAB_CC = 0 and the +1e-30 below avoids 0/0 only at the
     # double-zero limit.
-    drugs  <- emax * CAB^gam / (ec50^gam  + CAB^gam + 1e-30)
-    drugs2 <- emax * CAB^gam / (ec502^gam + CAB^gam + 1e-30)
+    drugs  <- emax * CONMED_CAB_CC^gam / (ec50^gam  + CONMED_CAB_CC^gam + 1e-30)
+    drugs2 <- emax * CONMED_CAB_CC^gam / (ec502^gam + CONMED_CAB_CC^gam + 1e-30)
 
     # Active -> non-colony-forming (NC) transition rates, drug-driven
     # via a Hill curve in fold-EC50 with exponent gam_nc and half-max
     # at fold-ratio tr50.
-    ksnc_1 <- ksnc_max * (CAB / ec50 )^gam_nc /
-              ((CAB / ec50 )^gam_nc + tr50^gam_nc + 1e-30)
-    ksnc_2 <- ksnc_max * (CAB / ec502)^gam_nc /
-              ((CAB / ec502)^gam_nc + tr50^gam_nc + 1e-30)
+    ksnc_1 <- ksnc_max * (CONMED_CAB_CC / ec50 )^gam_nc /
+              ((CONMED_CAB_CC / ec50 )^gam_nc + tr50^gam_nc + 1e-30)
+    ksnc_2 <- ksnc_max * (CONMED_CAB_CC / ec502)^gam_nc /
+              ((CONMED_CAB_CC / ec502)^gam_nc + tr50^gam_nc + 1e-30)
 
     # NC -> active transition rates: fast when drug is gone, asymptote
-    # to 0 when CAB >> EC50. The .mod adds 1e-10 to the denominator to
-    # avoid division by zero when CAB == 0; reproduced verbatim.
-    knc_s_1 <- knc_factor * ec50  / (CAB + 1e-10)
-    knc_s_2 <- knc_factor * ec502 / (CAB + 1e-10)
+    # to 0 when CONMED_CAB_CC >> EC50. The .mod adds 1e-10 to the denominator to
+    # avoid division by zero when CONMED_CAB_CC == 0; reproduced verbatim.
+    knc_s_1 <- knc_factor * ec50  / (CONMED_CAB_CC + 1e-10)
+    knc_s_2 <- knc_factor * ec502 / (CONMED_CAB_CC + 1e-10)
 
     # MTIME(2) gate: 1 while t < tmtime, 0 thereafter. Closes off
     # the active -> NC transition once the experiment has run past

@@ -22,14 +22,14 @@ Chen_2017_TB_MTP_GPDI_mouse <- function() {
   )
 
   covariateData <- list(
-    DOSE_INH_MGKG = list(
+    CONMED_INH_DOSE = list(
       description        = "Per-subject assigned isoniazid dose level (mg/kg/day)",
       units              = "mg/kg/day",
       type               = "continuous",
       reference_category = NULL,
       notes              = paste(
         "Used to compute the dose-dependent isoniazid clearance:",
-        "CL_inh = CL_inh_lowest * (1 - slope_inh * (DOSE_INH_MGKG - 12.5))",
+        "CL_inh = CL_inh_lowest * (1 - slope_inh * (CONMED_INH_DOSE - 12.5))",
         "(Chen 2017 Table 1 footnote b; lowest dose = 12.5 mg/kg).",
         "Paper-specific covariate not in inst/references/covariate-columns.md",
         "because the canonical DOSE entry is single-drug and this model carries",
@@ -114,7 +114,7 @@ Chen_2017_TB_MTP_GPDI_mouse <- function() {
     slope_inh <- 7.50e-3
     label("Isoniazid CL/F dose-dependence slope (1/(mg/kg); Slope sigma)")
     # Chen 2017 Table 1: Slope sigma = 7.50e-3, RSE 16.8%.
-    # CL_inh = lcl_inh_lowdose * (1 - slope_inh * (DOSE_INH_MGKG - 12.5)).
+    # CL_inh = lcl_inh_lowdose * (1 - slope_inh * (CONMED_INH_DOSE - 12.5)).
 
     lvc_inh <- log(811)
     label("Isoniazid apparent central volume V/F (mL/kg)")
@@ -263,10 +263,10 @@ Chen_2017_TB_MTP_GPDI_mouse <- function() {
     ka_inh <- exp(lka_inh)
     cl_inh_lowdose <- exp(lcl_inh_lowdose)
     vc_inh <- exp(lvc_inh)
-    cl_inh <- cl_inh_lowdose * (1 - slope_inh * (DOSE_INH_MGKG - 12.5))
+    cl_inh <- cl_inh_lowdose * (1 - slope_inh * (CONMED_INH_DOSE - 12.5))
     # Chen 2017 Table 1 footnote b. cl_inh evaluates to ~612 at H12.5,
     # ~554 at H25, and ~440 at H50; the simulation reference R10H25 uses
-    # DOSE_INH_MGKG = 25.
+    # CONMED_INH_DOSE = 25.
     kel_inh <- cl_inh / vc_inh
 
     ka_emb <- exp(lka_emb)

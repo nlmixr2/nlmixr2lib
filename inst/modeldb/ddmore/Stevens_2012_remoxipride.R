@@ -17,6 +17,7 @@ Stevens_2012_remoxipride <- function() {
   ddmore_id <- "DDMODEL00000268"
   replicate_of <- NULL
 
+  depends <- c("STUDY_DD")
   covariateData <- list(
     STUDY_DD = list(
       description = "Double-dosing-study indicator: 1 = subject was enrolled in the double-dosing protocol (Stevens 2012 'study 3'), 0 = single-dose (intravenous or intranasal) protocols pooled in the same fit.",
