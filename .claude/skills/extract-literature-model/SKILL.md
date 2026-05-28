@@ -212,6 +212,13 @@ Follow `references/compartment-names.md` and `references/parameter-names.md` str
 - Residual error: `propSd`, `addSd`, `expSd`. Multi-output: `propSd_<output>`, `addSd_<output>`, etc.
 - Compartments: `depot`, `central`, `peripheral1`, `peripheral2`, `effect`, `target`, `complex`, `csf`, `isf`, etc. Observation: `Cc`.
 
+**Stop-and-ask before introducing any new canonical parameter or compartment name.** The authoritative lists live in `references/parameter-names.md` (~263 lines covering structural PK params, transform prefixes, IIV/eta names, residual error, covariate-effect parameters, file-level metadata) and `references/compartment-names.md` (~71 lines covering canonical compartments and drug-suffix patterns). Treat these the same way as `inst/references/covariate-columns.md`:
+
+- If the paper's local name is just notation for an existing canonical (e.g., paper uses `Kel`, canonical is `kel`; paper uses `V1/V2/V3`, canonical is `vc/vp/vp2`), translate to canonical and proceed — no sidecar needed for trivial casing or notation differences explicitly covered by the references.
+- If the paper introduces a structural concept that ISN'T in the references at all (e.g., a new clearance component suffix, a new compartment role, a new transform prefix), **sidecar-ask before writing the model file**. Propose the new canonical name with: its role (one sentence), its source-paper local name(s) it would replace, why it isn't an alias of an existing canonical, and any cross-precedent in the existing registered models (cite filenames). Wait for operator approval before committing the model file and the new entry to `parameter-names.md` / `compartment-names.md`.
+- Do NOT pick a "seems obvious" extension silently (e.g., choosing `kel_distinct_<suffix>` when nothing in the registry uses that pattern, or registering `compartment_NN` numbered names instead of role-based names). Even when the new name looks like a natural extension of an existing one, file the sidecar so the operator can decide whether it's actually a new canonical or a synonym of something that already exists.
+- After the operator approves, the new entry is committed alongside the model file in the same PR (same convention as `covariate-columns.md`). Append the new name to the appropriate H2 section in the reference file with a one-paragraph description and a `Founding example: <Author_Year_drug.R>` citation. Do not add a change-log or history section — `git log` is the record.
+
 Covariate columns come from `inst/references/covariate-columns.md`. Before writing any covariate into the file:
 
 - If the canonical name exists, use it and record the source column name in `covariateData[[name]]$source_name`.
