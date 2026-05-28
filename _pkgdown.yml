@@ -592,6 +592,10 @@ navbar:
         href: articles/Lin_2024_pozelimab.html
       - text: "Pravastatin (Ide 2009)"
         href: articles/Ide_2009_pravastatin.html
+      - text: "Pregabalin rat binary (Bender 2009)"
+        href: articles/Bender_2009_pregabalin_rat.html
+      - text: "Pregabalin rat smetab (Bender 2009)"
+        href: articles/Bender_2009_pregabalin_rat.html
       - text: "Propofol (Diepstraten 2013)"
         href: articles/Diepstraten_2013_propofol.html
       - text: "Propofol (Przybylowski 2015)"
@@ -1042,11 +1046,7 @@ articles:
   - articles/Back_2018_fenofibrate
   - articles/Bajaj_2017_nivolumab
   - articles/Bajaj_2017_nivolumab_ddmore
-  - articles/Barnett_2018_coproporphyrin_I
-  - articles/Barnett_2018_rifampicin
-  - articles/Barnett_2018_rosuvastatin
-  - articles/Bastida_2018_tocilizumab
-  - articles/Bellanti_2015_deferoxamine
+  - articles/Bender_2009_pregabalin_rat
   - articles/Bender_2014_trastuzumabEmtansine_mechanistic
   - articles/Bender_2014_trastuzumabEmtansine_reduced
   - articles/Benkali_2010_tacrolimus
