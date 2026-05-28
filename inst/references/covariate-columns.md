@@ -5645,81 +5645,29 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** specific
-- **Reference category:** 0 (no local efflux-transporter inhibitor co-perfusion; non-blocked control animal).
-- **Source aliases:**
-  - `B` -- used in `Clinckers_2008_MHD_rat.R` (Clinckers 2008 efflux-inhibition indicator; 1 = verapamil 5 mM co-perfusion at the brain microdialysis probe, 0 = no inhibitor).
-- **Example models:** `Clinckers_2008_MHD_rat.R` (mutually-exclusive selection of the verapamil-specific biophase volume V3c in place of the control V3a inside the V3 expression: `v3 = v3a*(1-SEIZURE_ACUTE)*(1-EFFLUX_INHIB) + v3b*SEIZURE_ACUTE*(1-EFFLUX_INHIB) + v3c*(1-SEIZURE_ACUTE)*EFFLUX_INHIB`), `Delor_2013_alzheimer.R`.
-- **Notes:** Scope: specific because the indicator's semantics are tied to local pharmacological efflux-transporter blockade (verapamil 5 mM for P-glycoprotein / MDT) at the brain microdialysis sampling site in preclinical BBB / biophase PK designs. Mutually exclusive with `SEIZURE_ACUTE` in Clinckers 2008 (each rat is allocated to exactly one of {control, seizure, efflux-inhibition}); the model() encoding uses `(1 - SEIZURE_ACUTE) * (1 - EFFLUX_INHIB)` as the control multiplier, so any data record that asserts both flags as 1 would zero out the V3a control term -- data assemblers should preserve mutual exclusivity. Future preclinical studies that test a local efflux-inhibitor-vs-control contrast should extend the example list; promote to general scope once a second model legitimately ratifies the name. Ratified canonically on 2026-05-16 alongside the Clinckers 2008 extraction.
+- **Reference category:** n/a -- `T_ENTRY` is a per-subject time-offset covariate that anchors the time-since-study-entry clock used by post-entry-only model terms (placebo / learning effects, study-design transient drops).
+- **Source aliases:** none standardized; this canonical originates with the Delor 2013 AD disease-progression extraction. The source paper's NONMEM dataset handles the global / study-time split internally (the dataset is staged with TIME = study time and the model uses a fixed offset to align with DOT); when porting to rxode2 / nlmixr2 the per-subject offset is exposed as a covariate so simulation event tables can carry it explicitly.
+- **Example models:** `Delor_2013_alzheimer.R`, `Clinckers_2008_MHD_rat.R` (mutually-exclusive selection of the verapamil-specific biophase volume V3c in place of the control V3a inside the V3 expression; see the V3 expression quoted under `SEIZURE_ACUTE`).
+- **Notes:** Scope: specific because the variable is paper-domain-bound -- it only makes sense for models that operate on a global disease-time axis distinct from per-subject study-entry timing. For a typical-value reproduction the user supplies `T_ENTRY` per subject in the simulation event table; a reasonable construction is `T_ENTRY = DOT_individual + a few years of established disease` so the patient is observed during disease progression (see the Delor 2013 vignette for the construction used to reproduce Figures 2-4). Ratified canonically on 2026-05-16 alongside the Delor 2013 extraction.
 
-### HUMAN_SERUM_PCT (**canonical for human-serum supplementation percentage in an in-vitro time-kill experiment**)
-- **Description:** Percentage (v/v) of human serum supplementing the Mueller-Hinton broth growth medium in an in-vitro antibacterial time-kill experiment. Drives the protein-binding active-fraction `factive(HUMAN_SERUM_PCT)` that scales the total static drug concentration to the effective (free) concentration. Categorical experimental level, not a continuous interpolatable axis.
-- **Units:** % v/v
-- **Type:** categorical
-- **Scope:** specific
-- **Reference category:** 0 (no human serum; the active fraction factive is forced to 1).
-- **Source aliases:**
-  - `HS` -- Garonzik 2016 (paper Methods + Table 2, "% Human Serum"; the model column was renamed from the short `HS` to the spelled-out canonical `HUMAN_SERUM_PCT` on 2026-05-27 to align with the register's naming standards and avoid an ambiguous two-letter abbreviation).
-- **Example models:** `Garonzik_2016_daptomycin.R` (five experimental levels {0, 10, 30, 50, 70} percent; drives factive multiplying the static daptomycin concentration to the effective concentration DAP_EF, Garonzik 2016 Eq 2; factive estimates 0.346 / 0.284 / 0.239 / 0.252 at 10 / 30 / 50 / 70 percent and 1 at 0 percent by construction).
-- **Notes:** Specific scope because the discrete serum-percentage levels and the associated factive estimates are tied to the Garonzik 2016 daptomycin in-vitro design. An in-vitro experimental condition rather than a human pop-PK covariate; HUMAN_SERUM_PCT values outside the studied discrete set make factive = 0 inside the model (a deliberately conspicuous failure rather than silent interpolation). The spelled-out name follows the register's anti-abbreviation principle (cf. the `DIS_BUNIONECTOMY` entry's avoidance of `DIS_BUN`). Future in-vitro protein-binding-versus-serum experiments should extend the example list. Ratified canonically on 2026-05-27 alongside the Garonzik 2016 daptomycin extraction.
+## Infectious-disease subtype indicators
 
-## Receptor-binding ligand selection and pharmacological-chain inputs
-
-### OPIOID_ID (**canonical for opioid-agonist ligand selector in the Mann 2022 mu-receptor binding panel**)
-- **Description:** Integer 1..13 selecting which ligand from the Mann 2022 Supplement 1 Table S2 binding-kinetic panel (1..12) or the Laffont 2024 Supplementary Table S3 scaling-derived extension (13 = nalmefene) occupies the opioid-agonist slot of a multi-ligand competitive mu-opioid-receptor binding model at simulation time. The same compiled binding model can simulate any agonist in the panel without re-instantiation by varying OPIOID_ID per subject (or per simulation arm). Mapping (preserved verbatim in `Mann_2022_mu_receptor_binding.R::ini()`): 1 = alfentanil; 2 = buprenorphine; 3 = butyryl fentanyl; 4 = carfentanil; 5 = fluorobutyryl fentanyl; 6 = fentanyl; 7 = fluoroisobutyryl fentanyl; 8 = furanyl fentanyl; 9 = isobutyryl fentanyl; 10 = naloxone; 11 = remifentanil; 12 = sufentanil; 13 = nalmefene (added by task 131 from Laffont 2024 Supp Table S3 scaling approach over Cassel 2005). Out-of-range values cause every dispatch indicator to evaluate to 0, which zeros the agonist slot rates rather than throwing an error.
-- **Units:** (categorical)
-- **Type:** categorical
-- **Scope:** specific
-- **Reference category:** n/a (every value selects a distinct ligand parameter set).
-- **Source aliases:** none (new canonical introduced with Mann 2022 extraction).
-- **Example models:** `Mann_2022_mu_receptor_binding.R`.
-- **Notes:** Scope: specific because the integer-to-ligand mapping is anchored to Mann 2022 Table S2 row order, with the Laffont 2024 / Laffont 2025 13th-ligand extension preserving that anchoring (nalmefene appended at index 13, not inserted alphabetically). The 2026-05-29 sidecar 132/request-001 operator response authorises this 13th-ligand expansion; task 131 (2026-05-29) executed it after confirming the nalmefene Kon/Koff/n values are explicitly published as final values in Laffont 2024 Supplementary Table S3 (a primary source on disk). Ratified canonically on 2026-05-29 alongside the Mann 2022 translational-model extraction; 13th-ligand extension committed by task 131 on the same day.
-
-### ANTAGONIST_ID (**canonical for opioid-antagonist ligand selector in the Mann 2022 mu-receptor binding panel**)
-- **Description:** Integer 1..13 selecting which ligand from the Mann 2022 Supplement 1 Table S2 (1..12) or the Laffont 2024 Supplementary Table S3 scaling-derived extension (13 = nalmefene) occupies the antagonist slot of the multi-ligand competitive mu-opioid-receptor binding model at simulation time. Uses the same integer-to-ligand mapping as `OPIOID_ID`. Mann 2022 itself uses only naloxone (10) as the antagonist; Laffont 2024 / Laffont 2025 add nalmefene (13) as the second commercially-relevant intranasal antagonist option. The wider 1..13 range is retained so downstream tasks can flip slots without code changes (e.g., partial-agonist buprenorphine `2` in the antagonist slot to model receptor occupancy without full agonist effect).
-- **Units:** (categorical)
-- **Type:** categorical
-- **Scope:** specific
-- **Reference category:** n/a (every value selects a distinct ligand parameter set).
-- **Source aliases:** none.
-- **Example models:** `Mann_2022_mu_receptor_binding.R`.
-- **Notes:** Scope: specific. Same row-order semantics as `OPIOID_ID` (Mann 2022 Table S2 rows 1..12 verbatim; Laffont 2024 Supp Table S3 nalmefene at row 13). Out-of-range values zero the antagonist slot rates safely. Ratified canonically on 2026-05-29 alongside the Mann 2022 translational-model extraction; 13th-ligand extension committed by task 131 on the same day.
-
-### L_OPIOID_pM (**canonical for time-varying opioid-agonist effect-site concentration input to the Mann 2022 binding layer**)
-- **Description:** Time-varying opioid-agonist effect-site (biophase) concentration in picomolar (pM), supplied as a data covariate to the multi-ligand competitive mu-receptor binding model. The pM unit matches the per-second Kon units (pM^-n s^-1) tabulated in Mann 2022 Supplement 1 Table S2; the binding ODE inside `Mann_2022_mu_receptor_binding.R` consumes this column directly. In a composed Mann 2022 chain, the upstream IV-opioid PK layer (`Mann_2022_fentanyl_iv.R` or `Mann_2022_carfentanil_iv.R`) exposes its effect-site `Ce_pM` as this covariate; in standalone use, the operator supplies it as a time-varying data column on the subject's records.
-- **Units:** pM (picomolar)
-- **Type:** continuous
-- **Scope:** specific
-- **Reference category:** n/a.
-- **Source aliases:** `Ce_pM` (upstream PK output name when composed in-chain).
-- **Example models:** `Mann_2022_mu_receptor_binding.R`.
-- **Notes:** Scope: specific because the unit choice (pM) is tied to the Mann 2022 binding-rate parameterisation. A future binding model that uses nM or mg/L should register a separately named canonical (e.g., `L_OPIOID_nM`) rather than reusing this name with a different unit, because the binding model's downstream math depends on the unit match. Ratified canonically on 2026-05-29 alongside the Mann 2022 translational-model extraction.
-
-### L_ANTAGONIST_pM (**canonical for time-varying opioid-antagonist effect-site concentration input to the Mann 2022 binding layer**)
-- **Description:** Time-varying opioid-antagonist effect-site concentration in picomolar (pM), supplied as a data covariate to the multi-ligand competitive mu-receptor binding model. Antagonist analogue of `L_OPIOID_pM`. In a composed Mann 2022 + Laffont 2024 / 2025 chain, the upstream antagonist PK layer (`Laffont_2024_naloxone` or `Laffont_2024_nalmefene`) is post-processed in the vignette by (a) converting time to minutes, (b) convolving plasma concentration with the Mann 2022 ke0 = 0.001774 1/s effect-site equilibration (carried into Laffont 2024 Supp Table S3 unchanged for both nalmefene and naloxone), and (c) converting ng/mL to pM via the antagonist's free-base molecular weight (naloxone 327.37 g/mol, nalmefene 339.43 g/mol); the resulting per-subject time series is supplied as this covariate.
-- **Units:** pM (picomolar)
-- **Type:** continuous
-- **Scope:** specific
-- **Reference category:** n/a.
-- **Source aliases:** none.
-- **Example models:** `Mann_2022_mu_receptor_binding.R`.
-- **Notes:** Scope: specific. Same pM-unit / Table-S2-Kon-unit alignment requirement as `L_OPIOID_pM`. Ratified canonically on 2026-05-29 alongside the Mann 2022 translational-model extraction.
-
-### CAR_OPIOID (**canonical for time-varying fraction of mu-opioid receptors bound by an agonist input to the Mann 2022 physiology layer**)
-- **Description:** Time-varying fraction (0..1) of mu-opioid receptors bound by an opioid agonist. The Mann 2022 respiratory-physiology layer consumes this as a data covariate to drive opioid-induced reductions in wakefulness drive (W - Wmax * CAR^P3) and in chemoreflex drives (factor 1 - CAR^P1). In the composed Mann 2022 chain, this is the `RL_op` output of `Mann_2022_mu_receptor_binding.R`; in standalone physiology-only use, the operator supplies CAR_OPIOID as a time-varying data column.
-- **Units:** fraction (0..1)
-- **Type:** continuous
-- **Scope:** specific
-- **Reference category:** n/a; 0 = no receptor occupancy = baseline ventilation.
-- **Source aliases:** `RL_op` / `CAR` (binding-model output name).
-- **Example models:** `Mann_2022_respiratory_physiology.R`.
-- **Notes:** Scope: specific because the semantics are anchored to mu-opioid receptor occupancy in the Mann 2022 translational chain. Future opioid-pharmacology models that consume a different receptor-occupancy concept (e.g., kappa-opioid or delta-opioid) should register a separately named canonical with the receptor subtype in the name (e.g., `CAR_KAPPA`). Ratified canonically on 2026-05-29 alongside the Mann 2022 translational-model extraction.
-
-### OPIOID_PATIENT_TYPE (**canonical for opioid-naive vs chronic-opioid-user indicator in the Mann 2022 respiratory-depression PD layer**)
-- **Description:** Binary indicator selecting the pharmacodynamic-sensitivity parameter set in the Mann 2022 respiratory-physiology layer. 0 = healthy opioid-naive volunteer (P1 = 2.875, P3 = 0.9); 1 = chronic opioid user with established tolerance (P1 = 4.226, P3 = 1.323). P2 (metabolism exponent) is shared across both patient types at 0.06319. The naive vs chronic split is empirically calibrated against Algera 2021 (Clin Pharmacol Ther 2021;109(3):637-645) and Stoeckel 1982 (Br J Anaesth 1982;54(10):1087-1095); the numeric P1, P3 values are taken from FDA simulateToGetOD_IM.R lines 185-192 (Mann 2022 reference implementation).
+### HCV_GT1B (**canonical for hepatitis C virus genotype-1 subtype indicator: GT1B vs GT1A**)
+- **Description:** Binary indicator of the HCV genotype-1 subtype assigned to the subject. 1 = patient infected with HCV genotype 1B (GT1B); 0 = patient infected with HCV genotype 1A (GT1A; the reference subtype in the source paper's IC50 estimates). Time-fixed per subject because the HCV subtype is determined at the time of infection and does not change over the modelled treatment window. Distinct from the broader genotype number (HCV genotype 1, 2, 3, ...) because the GT1A vs GT1B contrast within genotype 1 carries meaningful PK/PD differences (replicon susceptibility, resistance-associated substitutions, drug-resistance trajectory) for direct-acting antivirals; a future model that needs a genotype-2-vs-1 contrast or a 4-level genotype indicator should register a sibling canonical rather than overloading `HCV_GT1B`.
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** specific
-- **Reference category:** 0 (healthy opioid-naive).
-- **Source aliases:** none.
-- **Example models:** `Mann_2022_respiratory_physiology.R`.
-- **Notes:** Scope: specific because the two parameter sets are tied to the Mann 2022 chronic-vs-naive opioid pharmacology calibration. A future model that captures a graded tolerance (e.g., a continuous "tolerance index") rather than a two-class binary should register a separate continuous canonical. Ratified canonically on 2026-05-29 alongside the Mann 2022 translational-model extraction.
+- **Reference category:** 0 (HCV GT1A; the source-paper reference category for IC50 estimates and the dominant subtype in the Wang 2018 VD modelling cohort at 77 percent / 55 of 72 patients).
+- **Source aliases:** none standardized; the source paper reports cohort composition as the `Genotype 1A (%)` percentage in Table 2 (Wang 2018) and switches IC50 and the resistance coefficient `Kr` via fixed scaling factors rather than via a tabulated covariate column.
+- **Example models:** `Wang_2018_daclatasvir_asunaprevir.R` (multiplicative effect on IC50 of both drugs via the fixed scaling factors SCL_IC50_DCV = 0.18 and SCL_IC50_ASV = 0.30; the encoding is `ic50_dcv_t0 = exp(lic50_dcv_gt1a + etalic50_dcv) * scl_ic50_dcv^HCV_GT1B` and `ic50_asv_t0 = exp(lic50_asv_gt1a + etalic50_asv) * scl_ic50_asv^HCV_GT1B`. Also switches the DCV resistance coefficient Kr_DCV between 0.43 /day for GT1A and 0.13 /day for GT1B; Kr_ASV is the same for both subtypes).
+- **Notes:** Scope: specific because the binary GT1B vs GT1A semantics are tied to the within-genotype-1 subtype contrast used by the Wang 2018 DCV/ASV integrated PK/VD model. Future HCV antiviral extractions that share the same dichotomy (e.g., other DAA combination-therapy popPKPD models that report separate IC50 / EC50 estimates per GT1 subtype) should extend this entry's example list rather than register a new canonical. Future extractions that require a different dichotomy (genotype 2 vs 3, GT4 indicator, multi-level genotype categorical with a reference choice other than GT1A) should register a sibling canonical (`HCV_GT2`, `HCV_GT3`, `HCV_GT4`, etc.). Ratified canonically on 2026-05-28 alongside the Wang 2018 daclatasvir + asunaprevir extraction.
+
+### FORM_ASV_LIQUID (**canonical for asunaprevir liquid (suspension or solution) vs solid (capsule or tablet) formulation indicator**)
+- **Description:** Binary indicator of the asunaprevir formulation administered. 1 = ASV given as a suspension or oral solution (the high-fraction zero-order absorption case, with the source's `FK_Sus/Sol` typical value of 0.334); 0 = ASV given as a capsule or tablet (low-fraction zero-order absorption, source's `FK_Cap/Tab` typical value of 0.184). The covariate switches the structural zero-order absorption fraction `FK` (Wang 2018 Table 3) between two typical-value anchors with a shared inter-arm-variability random effect on the logit scale. Per-dose-occasion indicator in principle, but in Wang 2018 each subject received a single ASV formulation throughout a trial; for typical-value simulation set FORM_ASV_LIQUID to 0 (capsule/tablet) to reproduce the source paper's Phase 2/3 combination-therapy regimens, or to 1 (suspension/solution) to reproduce the Phase 1 ASV solution and suspension SAD/MAD arms.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (capsule or tablet; the source paper's reference ASV formulation in the Phase 2/3 combination-therapy regimens).
+- **Source aliases:** none standardized; the source paper reports the formulation as a textual column in Table 1 (values 'Capsule', 'Tablet', 'Suspension', 'Solution') and uses two formulation-specific FK estimates rather than a single covariate column. The indicator collapses the four formulation labels into the (solid / liquid) absorption-physics dichotomy used by the structural model.
+- **Example models:** `Wang_2018_daclatasvir_asunaprevir.R` (selects between `logit_fk_cap_asv` and `logit_fk_sol_asv` typical-value anchors for the asunaprevir zero-order absorption fraction; the shared inter-arm random effect `eta_study_logit_fk_asv` is added on the logit scale).
+- **Notes:** Scope: specific because the (capsule or tablet) vs (suspension or solution) absorption-fraction dichotomy is tied to the Wang 2018 asunaprevir simultaneous zero-plus-first-order absorption parameterisation. Distinct from `FORM_TABLET` (Kyhl 2016 nalmefene tablet vs solution: residual-error switch and a single ka shift, not a zero-order-fraction switch), `FORM_CAPSULE` (Hennig 2006 / 2007 capsule vs solution: residual bioavailability and ka shift), and `FORM_SUSPENSION` (Svensson 2018 bedaquiline: tablets-suspended-in-water-before-swallowing vs swallowed-whole, a same-tablet manipulation rather than a separate drug product) because here the structural absorption mechanism (split between two parallel absorption routes with a shared random effect) is unique to the source paper. Future asunaprevir extractions or future direct-acting-antiviral models that share the same simultaneous-absorption parameterisation should extend the example list. Ratified canonically on 2026-05-28 alongside the Wang 2018 daclatasvir + asunaprevir extraction.
