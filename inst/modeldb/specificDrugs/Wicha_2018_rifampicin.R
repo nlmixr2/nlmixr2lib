@@ -223,7 +223,7 @@ Wicha_2018_rifampicin <- function() {
     # Wicha 2018 Table 1 F0 = 4.1/mL FIX (Clewe 2016 ref 4); the hollow-fiber
     # column lists 4.1 * 50 to account for the larger inoculum, not used here.
 
-    ls0      <- fixed(log(9770))
+    lrbase      <- fixed(log(9770))
     label("Initial bacterial number of slow-multiplying state S0 (1/mL)")
     # Wicha 2018 Table 1 S0 = 9770/mL FIX (Clewe 2016 ref 4); hollow-fiber
     # column lists 9770 * 50 inoculum, not used here.
@@ -337,7 +337,7 @@ Wicha_2018_rifampicin <- function() {
     kfslin     <- exp(lkfslin)
     kg         <- exp(lkg)
     f0         <- exp(lf0)
-    s0         <- exp(ls0)
+    rbase         <- exp(lrbase)
     bmax       <- exp(lbmax)
     fg_k       <- exp(lfg_k)
     fd_emax    <- exp(lfd_emax)
@@ -463,7 +463,7 @@ Wicha_2018_rifampicin <- function() {
                   nd_drug * nonm
 
     fast(0) <- f0
-    slow(0) <- s0
+    slow(0) <- rbase
     nonm(0) <- 0
 
     # -----------------------------------------------------------------------

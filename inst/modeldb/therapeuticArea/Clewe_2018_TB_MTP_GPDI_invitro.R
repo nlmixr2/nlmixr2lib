@@ -144,7 +144,7 @@ Clewe_2018_TB_MTP_GPDI_invitro <- function() {
     label("F0 -- initial fast-multiplying state count (CFU/mL)")
     # Clewe 2018 Table 1: F0 = 209e3 CFU/mL, RSE 17%.
 
-    ls0 <- log(324e3)
+    lrbase <- log(324e3)
     label("S0 -- initial slow-multiplying state count (CFU/mL)")
     # Clewe 2018 Table 1: S0 = 324e3 CFU/mL, RSE 12%.
 
@@ -369,7 +369,7 @@ Clewe_2018_TB_MTP_GPDI_invitro <- function() {
     ksf      <- exp(lksf)
     kns      <- exp(lkns)
     f0       <- exp(lf0)
-    s0       <- exp(ls0)
+    rbase       <- exp(lrbase)
 
     emax_fg_rif  <- exp(lemax_fg_rif)
     ec50_fg_rif  <- exp(lec50_fg_rif)
@@ -527,7 +527,7 @@ Clewe_2018_TB_MTP_GPDI_invitro <- function() {
     #    populated by F->N and S->N transfer over time).
     # ================================================================
     fbugs(0) <- f0
-    sbugs(0) <- s0
+    sbugs(0) <- rbase
     nbugs(0) <- 0
 
     d/dt(fbugs) <- fbugs * kg * e_fg_rif + ksf * sbugs -
