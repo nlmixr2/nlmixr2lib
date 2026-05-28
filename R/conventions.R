@@ -83,13 +83,19 @@
     # capillary release term setting the lower physiological limit).
     # State holds a concentration (mmol/L) rather than an amount.
     "nefa",
-    # Purine metabolism PD compartments used by semi-mechanistic
-    # xanthine / uric-acid turnover models (Hill-McManus 2017
-    # doi:10.1111/bcp.13427). `xanthine` and `urate` hold serum amounts
-    # (mg); `xanthine_urine` and `urate_urine` hold cumulative urinary
-    # excretion amounts (mg) integrated from CLX / CLUA renal-clearance
-    # outflows for direct comparison with 24-h urinary collection data.
-    "xanthine", "urate", "xanthine_urine", "urate_urine"
+    # Viral-dynamics compartments used by Neumann-style biphasic-decline
+    # PK/VD models for hepatitis C and other viral-replication mechanisms
+    # (Wang 2018 daclatasvir/asunaprevir HCV PK/VD MBMA; Neumann et al
+    # 1998 baseline framework). `infected` = productively infected cells
+    # (state I in the source paper); `virus` = free virus (state V); the
+    # paper's uninfected target cells (T) re-use the canonical `target`
+    # compartment (HCV target cells are hepatocytes, not the TMDD soluble
+    # / membrane-bound receptor target that `target` was originally
+    # registered for, but the semantic role - the unbound, drug-naive
+    # species the virus / drug acts on - is the same). State holds a
+    # concentration (cells/mL for `infected`, IU/mL or virion-copies/mL
+    # for `virus`) rather than an amount.
+    "infected", "virus"
   ),
   # Bare numbered chains (transit / effect / precursor / lat / dar /
   # depot) and metabolite-suffixed compartments are validated
@@ -270,16 +276,20 @@
     # protein binding and enterohepatic recirculation
     # (de Winter 2009 doi:10.1007/s10928-009-9136-6).
     "mpag",
-    # Mycophenolic acid (MPA, the active moiety released from the prodrug
-    # mycophenolate mofetil MMF) and MPA acyl glucuronide (AcMPAG, the
-    # acyl-linked phase II conjugate of MPA). Used as non-parent-analyte
-    # suffixes in the Kim 2018 integrated tacrolimus + MMF drug-drug-
-    # interaction model, where tacrolimus is the parent and the MPA /
-    # MPAG / AcMPAG system is the co-administered perpetrator drug
-    # (Kim 2018 doi:10.1038/s41598-018-20071-3). Follows the `cpg2`
-    # two-drug precedent (a co-administered species marked with a
-    # metabolite-style suffix, not a metabolite of the parent).
-    "mpa", "acmpag"
+    # Asunaprevir (ASV, BMS-650032), the NS3/4A protease-inhibitor direct-
+    # acting antiviral (DAA) used as the second drug in the Wang 2018
+    # daclatasvir + asunaprevir integrated PK/VD model for genotype-1
+    # chronic hepatitis C. Asunaprevir is not a metabolite of daclatasvir
+    # but is co-administered alongside it; the suffix marks the non-parent
+    # drug under the same multi-drug naming convention used by deKock 2017
+    # sulfadoxine + pyrimethamine (where pyrimethamine carries the `pyra`
+    # suffix and sulfadoxine is the unsuffixed parent). The Wang 2018
+    # model uses daclatasvir as the unsuffixed parent (mentioned first in
+    # the paper's title, the lead NS5A inhibitor in the regimen) and
+    # asunaprevir with `_asv` everywhere
+    # (depot_asv, central_asv, peripheral1_asv, effect_asv, Cc_asv,
+    # lka_asv, lcl_asv, etc.).
+    "asv"
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` the time-varying decay arm; `_renal`
