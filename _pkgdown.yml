@@ -258,6 +258,8 @@ navbar:
         href: articles/Oualha_2014_epinephrine.html
       - text: "Eplontersen (Diep 2022)"
         href: articles/Diep_2022_eplontersen.html
+      - text: "Eribulin (Kawamura 2018)"
+        href: articles/Kawamura_2018_eribulin.html
       - text: "Eribulin (vanHasselt 2015)"
         href: articles/vanHasselt_2015_eribulin.html
       - text: "Ethambutol (Horita 2018)"
@@ -1217,6 +1219,7 @@ articles:
   - articles/Jonckheere_2019_cefepime
   - articles/Jonsson_2005_disufenton
   - articles/Jonsson_2011_ethambutol
+  - articles/Kawamura_2018_eribulin
   - articles/Khan_2015_ciprofloxacin
   - articles/Kielbasa_2020_galcanezumab
   - articles/Kim_2015_paroxetine
