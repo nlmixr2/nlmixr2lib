@@ -18,8 +18,73 @@ Lower case. Snake case only when combining concepts.
 - `target` — free (unbound) target species in explicit-binding TMDD models.
 - `complex` — drug–target complex in explicit-binding TMDD models (Mager & Jusko 2001).
 - `total_target` — total (free + bound) target in QSS / MM TMDD approximations where the bound species is not carried as a separate state (Gibiansky et al. 2008).
-- `liver`, `renal_cortex`, `csf`, `isf`, `cumhaz` — semi-physiologic / hazard compartments registered in `R/conventions.R`.
+- `liver`, `kidney`, `renal_cortex`, `csf`, `isf`, `cumhaz` — semi-physiologic / hazard compartments registered in `R/conventions.R`. Use `liver` / `kidney` (full English names) — never `liv` / `kid`.
+- `circ` — terminal circulating-cell compartment in Friberg-style
+  myelosuppression chains (Friberg 2002 paclitaxel and derivatives).
+  Replaces a paper-naming `central` for circulating neutrophils /
+  platelets / lymphocytes when the model is a maturation
+  `precursor1 ... precursorN -> circ` chain rather than a
+  classical-PK central compartment.
+- `circ_<celltype>` — paired-output Friberg chains: `circ_anc`,
+  `circ_plt`, `circ_wbc`, etc. Use the celltype suffix when a single
+  model produces more than one circulating-cell output.
+- `urine` — single urinary excretion compartment for renally cleared drugs.
+- `urine_<metab>` — per-metabolite urinary excretion compartment
+  (e.g., `urine_apap`, `urine_gluc`, `urine_sulf`, `urine_m3g`,
+  `urine_m6g`) for parent + metabolite renal-elimination models. The
+  `<metab>` suffix must be a registered metabolite from
+  `R/conventions.R::registeredMetabolites`.
 - Therapeutic-area or mechanism-specific compartments: open a GitHub issue before adding new names.
+
+### Brain-region compartments (`brain_<region>` namespace)
+
+Mechanistic brain-PBPK / brain-distribution models use a `brain_<region>`
+namespace (underscore, not dot) for anatomically distinct CNS
+compartments. Each state holds the extracellular drug concentration in
+the named region; total brain concentration including residual plasma is
+derived as `Cbrain_<region>` in `model()`.
+
+Registered brain regions:
+
+- `brain_cerebellum`
+- `brain_hippocampus`
+- `brain_striatum`
+- `brain_cortex`
+- `brain_choroid_plexus`
+- `brain_csf` — cerebrospinal-fluid compartment (formerly `brain_ecf`).
+- `brain_deep` — deep-brain extravascular compartment (e.g., Xie 2000
+  morphine rat-brain microdialysis model).
+
+Add new regions only via this register — never introduce bare
+`cerebellum` / `hippocampus` / etc. without the `brain_` prefix, even if
+the source paper uses the bare name. Note that `renal_cortex` (renal
+cortex accumulation; aminoglycoside nephrotoxicity models) is a
+**separate** non-brain compartment and is not subject to the `brain_`
+prefix rule.
+
+### mPBPK exception: Cao 2013 mAb mPBPK family
+
+The mAb mPBPK series (Cao 2013 et seq.: `Cao_2013_*`, `Yuan_2019_concizumab`,
+and any minimal-PBPK extensions following the same parameterisation)
+uses paper-anatomical compartment names that are an **explicit exception**
+to the standard `central` / `peripheral1` / `peripheral2` convention:
+
+- `plasma` — central plasma compartment (instead of `central`).
+- `tight` — tight-tissue distribution compartment.
+- `leaky` — leaky-tissue (vascular-permeable) distribution compartment.
+- `lymph` — lymphatic recycling compartment.
+
+This exception is codified to preserve alignment with the published
+mPBPK literature; the physiological meaning of each compartment is
+load-bearing and would be lost under the generic `peripheralN` renaming.
+Use this naming pattern only for genuinely mPBPK-class models; do not
+import it into 2-compartment / 3-compartment classical-PK extractions.
+
+The associated **vascular reflection coefficients** that gate
+plasma-to-tight and plasma-to-leaky transport must use the
+non-residual names `sigma_tight` and `sigma_leaky` (or `lsigma_tight` /
+`lsigma_leaky` when log-transformed) — never bare `sigma1` / `sigma2`,
+which clash with the NONMEM residual-error `$SIGMA` block.
 
 The `target` / `complex` / `total_target` names follow the convention proposed by @iamstein in review of PR #60 and are standard in the TMDD literature.
 

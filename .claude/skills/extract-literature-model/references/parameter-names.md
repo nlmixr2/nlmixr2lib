@@ -26,6 +26,20 @@ maps directly: `v1` → `vc`, `v2` → `vp`, `v3` → `vp2`.
 
 **Michaelis-Menten Vmax**: always `lvmax` / `vmax`. Never `lvm` / `vm`.
 
+### K-PD / single-rate-constant parameterisation
+
+Some popPK papers report a single first-order elimination rate constant
+(K-PD or one-compartment-without-explicit-V parameterisation) rather than the
+`cl`/`vc` decomposition. In these models the elimination rate constant is a
+**primary** `ini()` parameter, not a derived micro-constant:
+
+- `lkel` — log first-order elimination rate constant (K-PD / single-rate-constant form).
+- Inside `model()` the bare name is `kel`. When `vc` is also estimated, use the
+  derived form `kel <- cl/vc` (canonical) — `lkel` as a primary parameter is
+  reserved for the K-PD case where no explicit `vc` exists.
+
+Never use `lke` for this role; standardise on `lkel`.
+
 ### Multi-component clearance
 
 Some models report two CL terms (a steady-state component and a
@@ -84,6 +98,103 @@ dar7_central, dar7_peripheral1, dar7_peripheral2
 
 Cc_dar0, Cc_dar1, ... Cc_dar7
 ```
+
+## Absorption: transit and lag-time
+
+### Transit-absorption chain (Savic parameterisation)
+
+- `lmtt` — log mean transit time.
+- `lktr` — log first-order transit rate constant (= n_transit / MTT for a chain of length n).
+
+Inside `model()` the bare names are `mtt` and `ktr`. Source-paper aliases
+(`MAT`, `MTT`, `KTR`) translate silently.
+
+### Lag-time
+
+Canonical lag-time prefix: **`ltlag`** (log absorption-lag time).
+
+Source-paper aliases that translate to `ltlag` without sidecar:
+`ALAG1` (NONMEM), `tlag`, `Tlag`, `alag`, `LAG`, `Tz`, `Tz1`. The legacy
+forms `lalag`, `llag`, `ltz` are deprecated in favour of `ltlag`.
+
+Inside `model()` the bare name is `tlag`. Apply via `alag(depot) <- tlag`
+or `alag(<cmt>) <- tlag` (preferred over carrying a separate `lag` compartment).
+
+## Indirect-response (IDR) / turnover parameters
+
+Canonical rate-constant prefixes for indirect-response and turnover-model
+families (Dayneka 1993; Jusko & Friberg traditions). Use these as
+primary `ini()` parameters when the paper reports the IDR / turnover
+rate constants directly:
+
+- `lkin` — log zero-order production rate constant (synthesis into a turnover pool).
+- `lkout` — log first-order elimination rate constant of the turnover pool.
+- `lkdeg` — log first-order degradation rate constant (synonym for elimination in some papers).
+- `lksyn` — log zero-order synthesis rate constant (alternate name for `kin`).
+- `lkpin` — log zero-order rate constant for production of a **precursor** pool (used in `indirect_prec_*` precursor-pool models).
+- `lkpout` — log first-order rate constant for loss of a **precursor** pool (used in `indirect_prec_*` precursor-pool models).
+
+Inside `model()` the bare names are `kin`, `kout`, `kdeg`, `ksyn`,
+`kpin`, `kpout`. Suffix variants `lkin_<analyte>` etc. are permitted
+for multi-analyte / combination-therapy IDR models.
+
+### Baseline values
+
+Canonical baseline-value prefix: **`lrbase`** (log baseline value of a
+turnover state, in the units of the state). Use this for the steady-state
+"R0" value of IDR / turnover / endogenous-cycle models, regardless of
+the paper's local terminology.
+
+Source-paper aliases that translate to `lrbase` without sidecar:
+`R0`, `Base`, `BASE`, `BL`, `S0`, `TS0`, `R_baseline`. The legacy forms
+`lr0`, `lbl`, `lbase`, `lBase`, `ls0`, `lts0` are deprecated in favour
+of `lrbase`.
+
+Inside `model()` the bare name is `rbase`. The compartment initial
+condition is set as `<state>(0) <- rbase`. For TGI models with an
+estimated initial tumour size, use `lrbase` (per-output baseline can be
+suffixed: `lrbase_tumor`, `lrbase_anc`).
+
+## Sigmoidal PD shape parameters
+
+Canonical Hill-coefficient prefix: **`lhill`** (log Hill exponent in
+sigmoidal Emax / Imax functions).
+
+The canonical pattern is the sigmoidal Emax / Imax form
+
+```
+eff = emax * Cc^hill / (ec50^hill + Cc^hill)
+```
+
+(or the Imax / inhibitor analogue). Use `lhill` as the primary `ini()`
+parameter whenever the source paper reports a Hill coefficient for a
+sigmoidal stimulation / inhibition function — regardless of whether the
+paper calls it "γ", "gamma", "hill", or "n".
+
+Inside `model()` the bare name is `hill`.
+
+**Role distinction — `lgamma` is NOT a synonym for `lhill`.** Several
+mechanistic roles carry the paper-symbol `γ` but are NOT Hill exponents
+and should retain their `lgamma` / `gamma` name:
+
+- **Friberg myelosuppression feedback exponent** in `(Circ0/circ)^gamma`
+  — the feedback amplification on circulating-cell count. Keep as `lgamma`.
+- **TGI power-law / generalised von Bertalanffy / generalised logistic
+  growth exponents** (`tumorSize^gamma`, `kge*tumorSize^gamma`,
+  `(tumorSize/tsmax)^gamma`). Keep as `lgamma`.
+- **Linear amplification factors** (e.g., Tetschke 2018 EPO feedback,
+  `Fb <- gamma * (THB_MASS - thb) / THB_MASS`). Keep as `lgamma`.
+- **Death-rate / kill-rate constants** named `γ` in the source paper
+  (e.g., Mazzocco 2015 TMZ tumour-cell death-rate constant). Keep as
+  `lgamma`.
+- **Gamma-distribution shape parameters** for distributional / hazard
+  models. Keep as `lgamma`.
+- **Power coefficients on transit inputs** (e.g., Ait-Oudhia 2012
+  CRP-transit amplification). Keep as `lgamma`.
+
+The `lnn` / `nn_fix` form is reserved for Wang & co-authors'
+sigmoidicity exponent in specific BDE / morphine-like models and is a
+distinct canonical from `lhill`.
 
 ## Transform prefixes
 

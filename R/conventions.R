@@ -14,19 +14,31 @@
 .nlmixr2libConventionsStatic <- list(
   pkParams = c(
     "lka", "lcl", "lvc", "lvp", "lvp2", "lq", "lq2", "lfdepot",
-    "lvmax", "lcl_ss", "lcl_time", "lcl_renal", "lcl_nonren"
+    "lvmax", "lcl_ss", "lcl_time", "lcl_renal", "lcl_nonren",
+    # K-PD / single-rate-constant elimination (primary `ini()` form
+    # used when no explicit `vc` is estimated). Canonical lkel adopted
+    # 2026-05-28 per the naming audit (replaces `lke`).
+    "lkel",
+    # Canonical lag-time name. Replaces the legacy `lalag`, `llag`,
+    # `ltz` forms per the 2026-05-28 naming audit.
+    "ltlag"
   ),
   pkBareParams = c(
     "ka", "cl", "vc", "vp", "vp2", "q", "q2", "kel",
     "k12", "k21", "k13", "k31", "fdepot",
-    "vmax", "cl_ss", "cl_time", "cl_renal", "cl_nonren"
+    "vmax", "cl_ss", "cl_time", "cl_renal", "cl_nonren",
+    # Bare form of the canonical lag-time parameter.
+    "tlag"
   ),
   compartments = c(
     "depot", "central", "peripheral1", "peripheral2", "effect",
     "target", "complex", "total_target",
-    # Semi-physiological liver compartment used by paper-specific
-    # extraction-ratio first-pass models (Xie_2019_agomelatine).
-    "liver",
+    # Semi-physiological liver and kidney compartments used by paper-specific
+    # extraction-ratio first-pass models (Xie_2019_agomelatine) and
+    # whole-organ PBPK extractions (Ayyar_2024_givosiran,
+    # Gilkey_2015_DiRnanoparticle). Always use the full English name -
+    # never `liv` / `kid`.
+    "liver", "kidney",
     # Cumulative-hazard state used by time-to-event / dropout sub-models
     # (Girard_2012_pimasertib). The state integrates the instantaneous
     # hazard so that survival = exp(-cumhaz); the source NONMEM idiom is
@@ -44,11 +56,42 @@
     # (Perez-Ruixo_2025_posdinemab).
     "csf", "isf",
     # Anatomic brain-region compartments used by mAb brain-distribution
-    # PK models (Grimm_2023_trontinemab, Grimm_2023_gantenerumab). Each
-    # state holds the extracellular drug concentration in the named
-    # region; total brain concentration including residual plasma is
-    # derived as `Cbrain_<region>` in model().
-    "cerebellum", "hippocampus", "striatum", "cortex", "choroid_plexus",
+    # PK models (Grimm_2023_trontinemab, Grimm_2023_gantenerumab) and
+    # other mechanistic brain-PBPK extractions (Xie_2000_m3g_rat,
+    # Stevens_2012_remoxipride). Each state holds the extracellular
+    # drug concentration in the named region; total brain concentration
+    # including residual plasma is derived as `Cbrain_<region>` in
+    # model(). The `brain_<region>` namespace was adopted 2026-05 to
+    # disambiguate brain-anatomical compartments from same-named
+    # non-brain compartments (e.g., renal cortex). The bare region
+    # names (`cerebellum`, `hippocampus`, `striatum`, `choroid_plexus`,
+    # `brain_ecf`) are deprecated in favour of the prefixed forms;
+    # `brain_csf` replaces the older `brain_ecf` for the cerebrospinal-
+    # fluid compartment per the 2026-05-28 naming audit.
+    "brain_cerebellum", "brain_hippocampus", "brain_striatum",
+    "brain_cortex", "brain_choroid_plexus", "brain_csf", "brain_deep",
+    # Friberg-style myelosuppression circulating-cell compartment
+    # (Friberg 2002 paclitaxel and derivatives). The terminal
+    # compartment of a `precursor1 ... precursorN -> circ` maturation
+    # chain; replaces a paper-naming `central` for circulating
+    # neutrophils / platelets / lymphocytes when the model is a
+    # maturation chain rather than a classical-PK central compartment.
+    # Suffix-form `circ_<celltype>` (e.g., `circ_anc`, `circ_plt`) is
+    # accepted for paired-output multi-cell-type models.
+    "circ",
+    # Urinary-excretion compartment used by renally cleared small
+    # molecules (single bare `urine` for the parent drug, and per-
+    # metabolite `urine_<metab>` for parent-plus-metabolite renal-
+    # elimination models like Allegaert 2015 / Cook 2016 paracetamol
+    # phase-II conjugates).
+    "urine",
+    # Cao 2013 mAb mPBPK family (Cao_2013_*, Yuan_2019_concizumab) uses
+    # paper-anatomical compartment names that are an explicit exception
+    # to the standard `central` / `peripheral1` / `peripheral2`
+    # convention. The physiological meaning of plasma / tight / leaky /
+    # lymph is load-bearing and would be lost under the generic
+    # `peripheralN` renaming. Codified 2026-05-28 per the naming audit.
+    "plasma", "tight", "leaky", "lymph",
     # Gallbladder / biliary recirculation compartment used by
     # enterohepatic-circulation (EHC) popPK models (Ide_2009_pravastatin
     # and similar). Drug accumulates from the central compartment via
@@ -258,7 +301,20 @@
     # Used in parent-plus-metabolite popPK models with explicit competitive
     # protein binding and enterohepatic recirculation
     # (de Winter 2009 doi:10.1007/s10928-009-9136-6).
-    "mpag"
+    "mpag",
+    # Cell-type suffixes used with Friberg-style `circ_<celltype>`
+    # myelosuppression compartments and `precursor1_<celltype>` ...
+    # `precursorN_<celltype>` maturation chains for paired-output
+    # multi-cell models (Han_2015_decitabine and similar):
+    #   anc = absolute neutrophil count, plt = platelet, wbc = white
+    #   blood cell. Registered 2026-05-28 per the naming audit.
+    "anc", "plt", "wbc",
+    # Parent-drug suffixes used with `urine_<X>` (or `central_<X>`)
+    # excretion compartments in parent + metabolite renal-elimination
+    # models where the parent itself is also tracked in urine
+    # (Allegaert_2015_paracetamol: urine_apap; Pierre_2017_morphine:
+    # urine_morphine). Registered 2026-05-28 per the naming audit.
+    "apap", "morphine"
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` denotes the time-varying decay arm.
@@ -297,7 +353,25 @@
     # from `kmet` (formation rate constant): FM is unitless and
     # bounded in (0, 1] while kmet has rate units. Used in
     # Danielak 2017 clopidogrel -> H4 (doi:10.1007/s00228-017-2334-z).
-    "fm"
+    "fm",
+    # Indirect-response / turnover rate constants (Dayneka 1993;
+    # Jusko traditions). `kin` = zero-order production; `kout` =
+    # first-order elimination of the turnover pool; `kdeg` = first-
+    # order degradation (paper-synonym for elimination); `kpin` /
+    # `kpout` = precursor-pool production / loss in `indirect_prec_*`
+    # templates. Codified 2026-05-28 per the naming audit.
+    "kin", "kout", "kdeg", "kpin", "kpout",
+    # Canonical Hill / sigmoid-shape coefficient in sigmoidal Emax /
+    # Imax functions (Cc^hill / (ec50^hill + Cc^hill)). Codified 2026-
+    # 05-28 per the naming audit. Distinct from `gamma` for Friberg
+    # myelosuppression feedback / TGI power-law growth exponents,
+    # which retain `gamma` as a mechanistic-role designator.
+    "hill",
+    # Canonical baseline-value parameter for IDR / turnover state
+    # initial conditions and TGI initial tumour sizes. Codified 2026-
+    # 05-28 per the naming audit (replaces `r0`, `bl`, `base`, `s0`,
+    # `ts0`).
+    "rbase"
   ),
   requiredUnits = c("time", "dosing", "concentration"),
   requiredMetadata = c("description", "reference", "units"),
