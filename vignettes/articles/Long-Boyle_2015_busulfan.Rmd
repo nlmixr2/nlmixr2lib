@@ -85,7 +85,7 @@ make_dosing_events <- function(weight_kg, age_yr, dose_mg, treatment,
   # Infusion rate = dose / 2 h (paper specifies a 2-h infusion every 6 h x 16).
   ev <- rxode2::et(amt = dose_mg, ii = 6, addl = 15,
                    cmt = "central", rate = dose_mg / 2)
-  ev <- rxode2::et(ev, time = seq(0, 100, by = 0.5), evid = 0, amt = 0)
+  ev <- rxode2::et(ev, seq(0, 100, by = 0.5))
   as.data.frame(ev) |>
     dplyr::mutate(
       id = id_offset + 1L,
@@ -199,7 +199,7 @@ events_vpc <- purrr::pmap_dfr(cohort, \(id, AGE, WT) {
   dose_mg <- 0.8 * WT
   ev <- rxode2::et(amt = dose_mg, ii = 6, addl = 15,
                    cmt = "central", rate = dose_mg / 2) |>
-    rxode2::et(time = seq(0, 100, by = 1), evid = 0, amt = 0) |>
+    rxode2::et(seq(0, 100, by = 1)) |>
     as.data.frame()
   ev$id <- id
   ev$WT <- WT
