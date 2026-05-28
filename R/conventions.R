@@ -131,11 +131,26 @@
     # Soluble vascular endothelial growth factor receptor 2 (sVEGFR2)
     # plasma compartment used by indirect-response biomarker PD models
     # for angiogenesis inhibitors (Ait-Oudhia 2016, Hansson 2013a).
-    "svegfr2",
+    # `svegfr3` is the sibling sVEGFR-3 turnover compartment used
+    # alongside sVEGFR-2 in the Hansson 2013 sunitinib biomarker
+    # panel; registered 2026-05-28 per the naming audit.
+    "svegfr2", "svegfr3",
     # Tumor volume / size compartment used by tumor growth inhibition
     # (TGI) models in oncology (Ait-Oudhia 2016, NA_NA_sunitinib,
-    # Schindler 2016, Wilbaux 2015 and similar).
-    "tumor",
+    # Schindler 2016, Wilbaux 2015 and similar). `tumor_size` is the
+    # snake-case canonical output-state name registered by the 2026-
+    # 05-28 audit for the TGI template family (tgi_no_sat_*, tgi_sat_*,
+    # Ouerdani 2015 pazopanib, Mazzocco 2015, Zecchin 2016, Wilson
+    # 2015 sunitinib_irinotecan_mouse). `carrying_capacity` is the
+    # Gompertz / generalised-logistic ceiling K used alongside
+    # tumor_size in saturable-growth variants.
+    "tumor", "tumor_size", "carrying_capacity",
+    # Oncology TGI cell-cycle decomposition states (Simeoni 2004 /
+    # Wilson 2015 sunitinib_irinotecan_mouse): drug-driven killing
+    # routes proliferating cells through three damaged-cell
+    # transit compartments before the cells are cleared. Codified
+    # 2026-05-28 per the naming audit.
+    "cycling_cells", "damaged_cells1", "damaged_cells2", "damaged_cells3",
     # Endogenous plasma metabolic species used by glucose / lactate
     # turnover sub-models with drug-stimulated production (Oualha 2014
     # epinephrine: glucose zero-order production is stimulated by Ep
@@ -158,7 +173,49 @@
     # (mg); `xanthine_urine` and `urate_urine` hold cumulative urinary
     # excretion amounts (mg) integrated from CLX / CLUA renal-clearance
     # outflows for direct comparison with 24-h urinary collection data.
-    "xanthine", "urate", "xanthine_urine", "urate_urine"
+    "xanthine", "urate", "xanthine_urine", "urate_urine",
+    # Multistate Tuberculosis Pharmacometric (MTP) bacterial-state
+    # compartments used by TB time-kill / popPK-PD models
+    # (Clewe 2016 rifampicin, Chen 2017 mouse, Clewe 2018 TB MTP GPDI
+    # in vitro, Svensson 2016 / Wicha 2018 rifampicin). The bacterial
+    # population is partitioned into three states: `fast` / `fbugs`
+    # (fast-multiplying), `slow` / `sbugs` (slow-multiplying), and
+    # `nonm` / `nbugs` (non-multiplying). The original Clewe series
+    # uses the `*bugs` form; later Svensson / Wicha rifampicin papers
+    # use the bare `fast` / `slow` / `nonm` form. Both are canonical
+    # under the MTP exception, registered 2026-05-28 per the naming
+    # audit.
+    "fast", "slow", "nonm", "fbugs", "sbugs", "nbugs",
+    # Enzyme-induction reservoirs used by autoinduction popPK models
+    # (Clewe 2015 / Svensson 2016 rifampicin: enz_pool drives
+    # time-varying CL via an indirect-response loop on the central
+    # enzyme pool; Wicha 2018 / Svensson 2018 rifampicin: bare
+    # `enzyme` compartment for the autoinduction mass-action term).
+    # Registered 2026-05-28 per the naming audit.
+    "enzyme", "enz_pool",
+    # DAS28 disease-activity score output compartment used by
+    # rheumatoid-arthritis PD models (Frey 2013 tocilizumab,
+    # Ma 2020 sarilumab DAS28-CRP). Single PD output, paper-named.
+    # Registered 2026-05-28 per the naming audit.
+    "das28",
+    # Body-weight PD output compartment used by drug-induced weight-
+    # change models (Han 2015 sibutramine, Thorsted 2016 somatropin
+    # rat: rhGH-driven bodyweight gain). The state is the kg / g body-
+    # weight value with first-order turnover driven by drug-modulated
+    # production. Registered 2026-05-28 per the naming audit.
+    "bw",
+    # IGF-1 (insulin-like growth factor 1) plasma biomarker
+    # compartment used by somatropin / GH PK/PD models (Thorsted 2016
+    # somatropin rat + human). Stimulated by central GH via an Emax
+    # function; drives downstream body-weight dynamics. Registered
+    # 2026-05-28 per the naming audit.
+    "igf1",
+    # Gastric / stomach compartment used by gastric-emptying transit
+    # models (Guiastrennec 2016 paracetamol, Back 2018 fenofibrate)
+    # where the gastric mass-balance is resolved as a distinct state
+    # ahead of the duodenal absorption depot. Registered 2026-05-28
+    # per the naming audit.
+    "stomach"
   ),
   # Bare numbered chains (transit / effect / precursor / lat / dar /
   # depot) and metabolite-suffixed compartments are validated
@@ -168,10 +225,15 @@
   # parallel-absorption models with two or more depots.
   compartmentRegex = "^(transit|effect|precursor|lat|depot)[0-9]+$",
   darCompartmentRegex = "^dar[0-9]+_(central|peripheral[0-9]?)$",
-  # Target species in physiologic body-fluid compartments
-  # (e.g., target_csf, target_isf, complex_csf, complex_isf). Used by
-  # mechanistic mAb / TMDD models with multiple distribution volumes.
-  targetLocationRegex = "^(target|complex)_(csf|isf)$",
+  # Target species in physiologic body-fluid or named peripheral
+  # compartments (e.g., target_csf, target_isf, target_peripheral,
+  # target_peripheral1, complex_csf, complex_isf, complex_peripheral).
+  # Used by mechanistic mAb / TMDD models with multiple distribution
+  # volumes; the `_peripheral` variant covers extracellular target /
+  # complex states tracked in a numbered peripheral compartment
+  # (NA_NA_miridesap, Aguiar 2021 ustekinumab, Sahota 2015 miridesap).
+  # Extended 2026-05-28 per the naming audit.
+  targetLocationRegex = "^(target|complex)_(csf|isf|peripheral[0-9]?)$",
   observationVar = "Cc",
   # propSd and addSd are the canonical proportional and additive
   # residual-error SDs used with `~ prop(...)`, `~ add(...)`, and the
@@ -360,7 +422,16 @@
     # Same precedent as the existing co-administered-perpetrator (`cpg2`)
     # and stereoisomer (`r`, `s`) entries: registered for the
     # `<canonical>_<sibling>` pattern, not as chemical metabolites.
-    "febx", "lesn"
+    "febx", "lesn",
+    # Sibling-drug suffixes for fixed-combination antimalarial and
+    # antibiotic models. `pyra` = pyrimethamine (paired with
+    # sulfadoxine in Odongo 2015 / deKock 2017 sulfadoxine-
+    # pyrimethamine models, with `depot_pyra` / `central_pyra` /
+    # `peripheral1_pyra` PK subsystem). `mer` = meropenem (paired
+    # with gentamicin / ciprofloxacin in Sadouki 2025 and with
+    # linezolid / vancomycin in Wicha 2017). Registered 2026-05-28
+    # per the naming audit.
+    "pyra", "mer"
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` denotes the time-varying decay arm.
