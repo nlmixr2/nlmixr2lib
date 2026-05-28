@@ -114,6 +114,8 @@ navbar:
         href: articles/Papathanasiou_2025_belantamab.html
       - text: "Belatacept (Shen 2013)"
         href: articles/Shen_2013_belatacept.html
+      - text: "Belimumab (Struemper 2017)"
+        href: articles/Struemper_2017_belimumab.html
       - text: "Belimumab (Zhou 2021)"
         href: articles/Zhou_2021_belimumab.html
       - text: "Benralizumab (Wang 2017)"
@@ -1431,6 +1433,7 @@ articles:
   - articles/Stein_2019_Tisagenlecleucel
   - articles/Stevens_2012_remoxipride
   - articles/Storset_2014_tacrolimus
+  - articles/Struemper_2017_belimumab
   - articles/Suda_2008_theophylline
   - articles/Suleiman_2019_risankizumab
   - articles/Suri_2018_brentuximab

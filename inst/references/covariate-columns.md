@@ -48,9 +48,10 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Units:** kg
 - **Type:** continuous
 - **Scope:** general
-- **Reference category:** n/a -- used with allometric scaling `(WT / ref_wt)^exponent`. Reference weights observed: 70 kg (adults), 75 kg, 84.8 kg, 56 kg (Kloprogge 2014 quinine cohort typical), 5 kg (infants).
-- **Source aliases:** none known.
-- **Example models:** `Clegg_2024_nirsevimab.R`, `Hu_2026_clesrovimab.R`, `Zhu_2017_lebrikizumab.R`, `Kovalenko_2020_dupilumab.R`, `CarlssonPetri_2021_liraglutide.R`, `Cirincione_2017_exenatide.R`, `Grimm_2023_gantenerumab.R`, `Grimm_2023_trontinemab.R`, `Kyhl_2016_nalmefene.R`, `Soehoel_2022_tralokinumab.R`, `Xie_2019_agomelatine.R`, `PK_2cmt_mAb_Davda_2014.R`, `phenylalanine_charbonneau_2021.R`, `Chua_2025_mirikizumab.R`, `Jackson_2022_ixekizumab.R`, `Kotani_2022_astegolimab.R`, `Ma_2020_sarilumab_anc.R`, `Ma_2020_sarilumab_das28crp.R`, `Moein_2022_etrolizumab.R`, `Tiraboschi_2025_amlitelimab.R`, `Robbie_2012_palivizumab.R`, `Bajaj_2017_nivolumab.R`, `Quartino_2019_trastuzumab.R`, `Wang_2020_ontamalimab.R`, `Fau_2020_isatuximab.R`, `Okada_2025_rocatinlimab.R`, `Kunisawa_2014_olprinone.R`, `Xu_2020_daratumumab.R` (reference 78.6 kg; power exponents 0.451 on linear CL and 0.375 on V1).
+- **Reference category:** n/a -- used with allometric scaling `(WT / ref_wt)^exponent`. Reference weights observed: 70 kg (adults), 75 kg, 84.8 kg, 67 kg (Struemper 2017 belimumab SC, population median), 56 kg (Kloprogge 2014 quinine cohort typical), 5 kg (infants).
+- **Source aliases:**
+  - `BWT` (baseline body weight) -- used in Struemper 2017 belimumab SC and many other popPK papers that fix weight at baseline. Maps directly to `WT`; baseline-vs-time-varying status documented in per-model notes.
+- **Example models:** `Clegg_2024_nirsevimab.R`, `Hu_2026_clesrovimab.R`, `Zhu_2017_lebrikizumab.R`, `Kovalenko_2020_dupilumab.R`, `CarlssonPetri_2021_liraglutide.R`, `Cirincione_2017_exenatide.R`, `Grimm_2023_gantenerumab.R`, `Grimm_2023_trontinemab.R`, `Kyhl_2016_nalmefene.R`, `Soehoel_2022_tralokinumab.R`, `Xie_2019_agomelatine.R`, `PK_2cmt_mAb_Davda_2014.R`, `phenylalanine_charbonneau_2021.R`, `Chua_2025_mirikizumab.R`, `Jackson_2022_ixekizumab.R`, `Kotani_2022_astegolimab.R`, `Ma_2020_sarilumab_anc.R`, `Ma_2020_sarilumab_das28crp.R`, `Moein_2022_etrolizumab.R`, `Tiraboschi_2025_amlitelimab.R`, `Robbie_2012_palivizumab.R`, `Bajaj_2017_nivolumab.R`, `Quartino_2019_trastuzumab.R`, `Wang_2020_ontamalimab.R`, `Fau_2020_isatuximab.R`, `Okada_2025_rocatinlimab.R`, `Kunisawa_2014_olprinone.R`, `Xu_2020_daratumumab.R` (reference 78.6 kg; power exponents 0.451 on linear CL and 0.375 on V1), `Struemper_2017_belimumab.R` (reference 67 kg; fixed allometric exponents 0.75 on CL and Q, 1.00 on Vc, 0.8 on Vp; baseline-only, source column BWT).
 - **Notes:** Universal. Verify time-varying vs. baseline-only against the source paper.
 
 ### AGE (**canonical for subject age**)
@@ -122,8 +123,9 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Type:** continuous
 - **Scope:** general
 - **Reference category:** n/a -- used with a linear-deviation form (`1 + e * (BMI - ref)`) or a power form (`(BMI / ref)^e`). Document the reference value in `covariateData[[BMI]]$notes`.
-- **Source aliases:** none known.
-- **Example models:** `Chua_2025_mirikizumab.R` (reference 24.75 kg/m^2; linear-deviation effect on logit of bioavailability), `NA_NA_lidocaine.R` (DDMODEL00000281; binary stratification at threshold 27.93 kg/m^2 adding +0.939 to the GX rate constant K30 in the BMI > 27.93 cohort).
+- **Source aliases:**
+  - `BBMI` (baseline BMI) -- used in `Struemper_2017_belimumab.R`. Maps directly to `BMI`; baseline-only.
+- **Example models:** `Chua_2025_mirikizumab.R` (reference 24.75 kg/m^2; linear-deviation effect on logit of bioavailability), `NA_NA_lidocaine.R` (DDMODEL00000281; binary stratification at threshold 27.93 kg/m^2 adding +0.939 to the GX rate constant K30 in the BMI > 27.93 cohort), `Struemper_2017_belimumab.R` (kg/m^2, reference 24.7; power exponent -0.610 on Vc; baseline-only, source column BBMI).
 - **Notes:** Universal clinical-trial demographic. Derived as `WT / (height_m)^2`; assume time-fixed at baseline unless the source paper states otherwise.
 
 ### BMIZ (**canonical for body-mass-index z-score (age- and sex-standardised)**)
@@ -452,7 +454,7 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Reference category:** n/a -- used with power scaling `(ALB / ref)^exponent`.
 - **Source aliases:**
   - `BALB` (baseline albumin) -- used in `Zhou_2021_belimumab.R`. Maps directly to `ALB`; baseline-vs-time-varying status documented in per-model notes.
-- **Example models:** `Fasanmade_2009_infliximab.R` (g/dL, reference 4.1), `Thakre_2022_risankizumab.R` (g/L, reference 45), `Chua_2025_mirikizumab.R`, `Moein_2022_etrolizumab.R`, `Tiraboschi_2025_amlitelimab.R`, `Yamada_2025_zolbetuximab.R`, `Li_2019_abatacept.R` (g/dL, reference 4.0; the Li 2019 Methods states 'mg/dL' which is a publication typo -- see the model's `covariateData[[ALB]]$notes`), `Quartino_2019_trastuzumab.R` (g/dL, reference 4; source column `ALBU`; negative exponent -0.998 on linear CL), `Wang_2020_ontamalimab.R` (g/L, reference 39), `Zhou_2021_belimumab.R` (g/L, reference 40; baseline-only, source column `BALB`), `Okada_2025_rocatinlimab.R` (g/L, reference 44; source column `ALBU`; power exponent -1.30 on linear CL), `Xu_2020_daratumumab.R` (g/L, reference 37.0; power exponent -1.149 on linear CL).
+- **Example models:** `Fasanmade_2009_infliximab.R` (g/dL, reference 4.1), `Thakre_2022_risankizumab.R` (g/L, reference 45), `Chua_2025_mirikizumab.R`, `Moein_2022_etrolizumab.R`, `Tiraboschi_2025_amlitelimab.R`, `Yamada_2025_zolbetuximab.R`, `Li_2019_abatacept.R` (g/dL, reference 4.0; the Li 2019 Methods states 'mg/dL' which is a publication typo -- see the model's `covariateData[[ALB]]$notes`), `Quartino_2019_trastuzumab.R` (g/dL, reference 4; source column `ALBU`; negative exponent -0.998 on linear CL), `Wang_2020_ontamalimab.R` (g/L, reference 39), `Zhou_2021_belimumab.R` (g/L, reference 40; baseline-only, source column `BALB`), `Struemper_2017_belimumab.R` (g/L, reference 41; baseline-only, source column `BALB`; power exponent -0.736 on linear CL), `Okada_2025_rocatinlimab.R` (g/L, reference 44; source column `ALBU`; power exponent -1.30 on linear CL), `Xu_2020_daratumumab.R` (g/L, reference 37.0; power exponent -1.149 on linear CL).
 - **Notes:** Ratified canonically on 2026-04-19 after cross-model review. Unit varies by paper (g/dL in US-convention papers, g/L in SI-convention papers); the per-model `covariateData[[ALB]]$units` field is load-bearing. Effect-coefficient magnitude is meaningless without the unit.
 
 ### TPRO (**canonical for total serum protein**)
@@ -484,11 +486,11 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Units:** g/L (typical in SI-convention papers); also reported as mg/dL in US-convention papers -- document the unit used in each model via `covariateData[[IGG]]$units`.
 - **Type:** continuous
 - **Scope:** general
-- **Reference category:** n/a -- used with power scaling `(IGG / ref)^exponent`. Reference values observed: 14.8 g/L (Zhou 2021), 9.65 g/L (Yang 2021).
+- **Reference category:** n/a -- used with power scaling `(IGG / ref)^exponent`. Reference values observed: 14.8 g/L (Zhou 2021), 13.7 g/L (Struemper 2017 SC belimumab), 9.65 g/L (Yang 2021).
 - **Source aliases:**
-  - `BIGG` (baseline IgG) -- used in `Zhou_2021_belimumab.R`.
+  - `BIGG` (baseline IgG) -- used in `Zhou_2021_belimumab.R` and `Struemper_2017_belimumab.R`.
   - `IGGBL` (baseline IgG) -- used in `Yang_2021_cemiplimab.R`.
-- **Example models:** `Zhou_2021_belimumab.R` (g/L, reference 14.8; baseline-only; exponent 0.293 on CL), `Yang_2021_cemiplimab.R` (g/L, reference 9.65; small positive exponent 0.184 on shared CL/Q).
+- **Example models:** `Zhou_2021_belimumab.R` (g/L, reference 14.8; baseline-only; exponent 0.293 on CL), `Struemper_2017_belimumab.R` (g/L, reference 13.7; baseline-only; exponent 0.347 on CL), `Yang_2021_cemiplimab.R` (g/L, reference 9.65; small positive exponent 0.184 on shared CL/Q).
 - **Notes:** Mechanistically meaningful for monoclonal-antibody PK because endogenous IgG competes with the therapeutic mAb for FcRn-mediated recycling. The per-model `covariateData[[IGG]]$units` field is load-bearing (1 g/L ~= 100 mg/dL). Baseline-vs-time-varying status documented in `covariateData[[IGG]]$notes`. Distinct from `lIgG0` / IgG-as-a-state in mechanistic FcRn-competition TMDD models (e.g., `Valenzuela_2025_nipocalimab.R`), where IgG is a dynamic state, not a baseline covariate; use `IGG` only when the source paper treats IgG as a static (baseline) covariate column.
 
 ### IGM (**canonical for serum immunoglobulin M**)
