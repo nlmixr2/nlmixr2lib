@@ -15,12 +15,93 @@
 #' @keywords internal
 #' @noRd
 .nlmixr2libConventionsStatic <- list(
-  # Numbered-chain compartment pattern. Bare numbered chains (transit /
-  # effect / precursor / lat / depot) and metabolite-suffixed
-  # compartments are validated separately via .matchesCompartment() so
-  # that the registered metabolite list can be honored at runtime; this
-  # static regex covers only the numbered-chain patterns. `depot[0-9]+`
-  # accommodates parallel-absorption models with two or more depots.
+  pkParams = c(
+    "lka", "lcl", "lvc", "lvp", "lvp2", "lq", "lq2", "lfdepot",
+    "lvmax", "lcl_ss", "lcl_time", "lcl_renal", "lcl_nonren"
+  ),
+  pkBareParams = c(
+    "ka", "cl", "vc", "vp", "vp2", "q", "q2", "kel",
+    "k12", "k21", "k13", "k31", "fdepot",
+    "vmax", "cl_ss", "cl_time", "cl_renal", "cl_nonren"
+  ),
+  compartments = c(
+    "depot", "central", "peripheral1", "peripheral2", "effect",
+    "target", "complex", "total_target",
+    # Semi-physiological liver compartment used by paper-specific
+    # extraction-ratio first-pass models (Xie_2019_agomelatine).
+    "liver",
+    # Cumulative-hazard state used by time-to-event / dropout sub-models
+    # (Girard_2012_pimasertib). The state integrates the instantaneous
+    # hazard so that survival = exp(-cumhaz); the source NONMEM idiom is
+    # `$MODEL COMP=(CUMHAZ)` with `DADT(<cumhaz>) = HAZARD`.
+    "cumhaz",
+    # Renal-cortex accumulation compartment used by aminoglycoside
+    # nephrotoxicity models (Llanos-Paez_2017_gentamicin). Tracks drug
+    # amount sequestered in the renal cortex via saturable uptake from
+    # the central compartment plus first-order tubular reabsorption back
+    # out (Rougier 2003 / Croes 2011 mechanism).
+    "renal_cortex",
+    # Cerebrospinal-fluid (CSF) and interstitial-fluid (ISF) physiologic
+    # compartments used by mechanistic mAb / target-mediated disposition
+    # models with multiple body-fluid distribution volumes
+    # (Perez-Ruixo_2025_posdinemab).
+    "csf", "isf",
+    # Anatomic brain-region compartments used by mAb brain-distribution
+    # PK models (Grimm_2023_trontinemab, Grimm_2023_gantenerumab). Each
+    # state holds the extracellular drug concentration in the named
+    # region; total brain concentration including residual plasma is
+    # derived as `Cbrain_<region>` in model().
+    "cerebellum", "hippocampus", "striatum", "cortex", "choroid_plexus",
+    # Gallbladder / biliary recirculation compartment used by
+    # enterohepatic-circulation (EHC) popPK models (Ide_2009_pravastatin
+    # and similar). Drug accumulates from the central compartment via
+    # biliary excretion (k12) and re-enters central after a delay
+    # (k21 gated by gallbladder-emptying time tg), producing the
+    # characteristic second-peak phenomenon.
+    "gallbladder",
+    # Soluble vascular endothelial growth factor receptor 2 (sVEGFR2)
+    # plasma compartment used by indirect-response biomarker PD models
+    # for angiogenesis inhibitors (Ait-Oudhia 2016, Hansson 2013a).
+    "svegfr2",
+    # Tumor volume / size compartment used by tumor growth inhibition
+    # (TGI) models in oncology (Ait-Oudhia 2016, NA_NA_sunitinib,
+    # Schindler 2016, Wilbaux 2015 and similar).
+    "tumor",
+    # Endogenous plasma metabolic species used by glucose / lactate
+    # turnover sub-models with drug-stimulated production (Oualha 2014
+    # epinephrine: glucose zero-order production is stimulated by Ep
+    # via an Emax function, and lactate is produced at the rate of
+    # glucose elimination and itself first-order eliminated). Each
+    # state holds a concentration (mmol/L) rather than an amount,
+    # mirroring the source paper's mass-balance parameterisation.
+    "glucose", "lactate",
+    # Plasma non-esterified fatty acids (NEFA / free fatty acids) used
+    # by lipid-turnover PD models with feedback control (Ahlstrom 2010:
+    # NiAc inhibits hydrolysis of TG to NEFA; NEFA formation is also
+    # suppressed by a moderator transit chain (precursor1..precursor8)
+    # representing insulin-like delayed feedback, with a NiAc-independent
+    # capillary release term setting the lower physiological limit).
+    # State holds a concentration (mmol/L) rather than an amount.
+    "nefa",
+    # Airway interstitial-fluid (ISF) compartments used by the Rymut 2023
+    # MTPS9579A anti-tryptase mechanistic PK/PD model. Three concentration
+    # states (nM) in the airway target tissue: free monoclonal antibody
+    # in ISF (mab_isf), free inactive tryptase monomer (monomer_isf), and
+    # the mAb-monomer complex (complex_monomer_isf). The active tetrameric
+    # tryptase and the mAb-tetramer complex use the canonical target_isf /
+    # complex_isf names; these three additional names extend the convention
+    # for models whose target exists in multiple oligomeric forms with
+    # distinct binding partners. Lymph turnover (klf_tissue) absorbs the
+    # ISF volume into the rate constant, so states are tracked as
+    # concentrations rather than amounts.
+    "mab_isf", "monomer_isf", "complex_monomer_isf"
+  ),
+  # Bare numbered chains (transit / effect / precursor / lat / dar /
+  # depot) and metabolite-suffixed compartments are validated
+  # separately via .matchesCompartment() so that the registered
+  # metabolite list can be honored at runtime; this static regex
+  # covers only the numbered-chain patterns. `depot[0-9]+` accommodates
+  # parallel-absorption models with two or more depots.
   compartmentRegex = "^(transit|effect|precursor|lat|depot)[0-9]+$",
   # Membrane-limited PBPK sub-compartment pattern: paper-prefix +
   # spelled-out organ name. Recognises the recurring `<sub>_<organ>`

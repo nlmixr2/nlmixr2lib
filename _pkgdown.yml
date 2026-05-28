@@ -68,6 +68,8 @@ navbar:
         href: articles/Almquist_2022_anifrolumab.html
       - text: "Anrukinzumab (Hua 2015)"
         href: articles/Hua_2015_anrukinzumab.html
+      - text: "Anti tryptase (Rymut 2023)"
+        href: articles/Rymut_2023_anti_tryptase.html
       - text: "Aripiprazole (Knights 2015)"
         href: articles/Knights_2015_aripiprazole.html
       - text: "Artemether (Tarning 2012)"
@@ -1358,7 +1360,7 @@ articles:
   - articles/Rosario_2015_vedolizumab
   - articles/Rose_2016_follitropin_delta
   - articles/Rovei_1982_theophylline
-  - articles/Ruhs_2012_methotrexate
+  - articles/Rymut_2023_anti_tryptase
   - articles/Sadouki_2025_meropenem_gentamicin_ciprofloxacin
   - articles/Sahota_2015_miridesap
   - articles/Salinger_2013_magnesiumSulfate
