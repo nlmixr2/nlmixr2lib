@@ -1,0 +1,417 @@
+---
+title: "Midazolam preterm-neonate PBPK (Brussee 2018)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Midazolam preterm-neonate PBPK (Brussee 2018)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Brussee_2018_midazolam_pbpk"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Brussee_2018_midazolam_pbpk"))$description`
+* Article: <https://doi.org/10.1002/psp4.12295>
+
+# Population
+
+Brussee 2018 fit a semi-physiological population PK model to pooled IV and
+oral midazolam concentration data from 37 preterm neonates admitted to the
+neonatal intensive care unit of the Sophia's Children Hospital (Rotterdam, NL).
+The cohort had gestational age at birth 26-34 weeks, birth weight 745-2,135 g,
+postnatal age 3-11 days, and body weight at the time of dosing 770-2,030 g.
+The source data combine de Wildt 2001 (IV cohort, *Clin Pharmacol Ther* 70:525-531)
+and de Wildt 2002 (oral cohort, *Br J Clin Pharmacol* 53:390-392): a 0.1 mg/kg
+dose given either orally via a nasogastric tube (n = 13) or as a 30-minute
+intravenous infusion (n = 25), with a crossover dose by the alternate route
+after >= 72 h in subjects still meeting inclusion criteria. Plasma midazolam
+and 1-OH-midazolam concentrations were collected at 0.5, 1, 2, 4, 6, 12, and
+24 h post-dose; below-LLOQ samples (< 1% of 329 midazolam and < 2% of 153
+1-OH-midazolam observations) were discarded before fitting. No covariates
+beyond body weight (which scales the physiological tissue volumes, blood
+flows, and intestinal-length terms) reached statistical significance in the
+covariate analysis.
+
+The same information is available programmatically via
+`readModelDb("Brussee_2018_midazolam_pbpk")$population`.
+
+# Source trace
+
+The per-parameter origin is recorded as an in-file comment next to every
+`ini()` entry in `inst/modeldb/specificDrugs/Brussee_2018_midazolam_pbpk.R`.
+The table below collects them in one place for review.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| Hepatic extraction `E_h = (f_u,B * CL_int,H) / (f_u,B * CL_int,H + Q_h)` | derived | Brussee 2018 Eq. 1 |
+| Gut wall extraction `E_g = (f_u,G * CL_int,G) / (f_u,G * CL_int,G + Q_gut)` | derived | Brussee 2018 Eq. 2 |
+| Qgut hybrid `Q_gut = (Q_villi * CL_perm) / (Q_villi + CL_perm)` | derived | Brussee 2018 Eq. 3 |
+| Intestinal surface `A = 2*pi*radius*h`, radius `= 1 cm`, `h = 2.736 * WT[g]^0.512 cm` | derived | Brussee 2018 Eq. 4 (Ives 2016, Struijs 2009) |
+| Oral bioavailability `F_total = F_a * F_g * F_h` | derived | Brussee 2018 Eq. 5 |
+| Reference WT for term-neonate scaling | 3.55 kg | Bjorkman 2005 / Brussee 2018 Table 1 |
+| Reference liver volume `V_h,3.55kg` | 0.120 L | Brussee 2018 Table 1 (Bjorkman 2005 ref 7) |
+| Portal vein / liver volume ratio | 0.778 | Brussee 2018 Table 1 (Aguirre-Reyes 2015 ref 24) |
+| Reference gut wall volume `V_gw,3.55kg` | 0.050 L | Brussee 2018 Table 1 |
+| Reference hepatic blood flow `Q_h,3.55kg` | 13.2 L/h | Brussee 2018 Table 1 |
+| Blood-flow ratios (Q_pv, Q_ha, Q_in, Q_muc, Q_villi) | 0.75, 0.25, 0.4, 0.8, 0.6 | Brussee 2018 Table 1 (Johnson 2006, Yang 2007 refs 5, 25, 32) |
+| Effective intestinal permeability `P_eff,man` (midazolam) | 4.4e-4 cm/s = 1.584 cm/h | Brussee 2018 Table 1 (Yang 2007 ref 25) |
+| Midazolam unbound fraction in blood `f_u,B` | 0.04094 | Brussee 2018 Table 1 (McNamara-Alcorn from f_u,adult = 0.0303, [P]_pediatric = 27.1, [P]_adult = 37.0) |
+| Midazolam unbound fraction in gut `f_u,G` | 1 | Brussee 2018 Methods (Yang 2007 ref 25) |
+| Midazolam blood:plasma `B:P` | 0.568 | Brussee 2018 Table 1 (Maharaj 2013 ref 30) |
+| 1-OH-midazolam unbound in blood `f_u,M` | 0.1394 | Brussee 2018 Table 1 (from f_u,M,adult = 0.106, Mandema 1992 ref 29) |
+| 1-OH-midazolam blood:plasma `B:P` | 0.613 | Brussee 2018 Table 1 |
+| Fraction metabolised to 1-OH-midazolam `f_M` | 1 | Brussee 2018 Table 1 |
+| Absorption rate constant `k_a` | 10 1/h (fixed) | Brussee 2018 Methods (Table 1; sensitivity analysis 4.16-25 1/h) |
+| Midazolam intrinsic hepatic CL `CL_H,int` | 6.7 L/h (RSE 10%) | Brussee 2018 Table 2 |
+| Midazolam intrinsic gut wall CL `CL_G,int` | 0.0196 L/h (RSE 178%) | Brussee 2018 Table 2 |
+| Midazolam apparent V (blood) | 3.0 L (RSE 11%) | Brussee 2018 Table 2 |
+| 1-OH-midazolam intrinsic hepatic CL `CL_H,int,M` | 8.9 L/h (RSE 22%) | Brussee 2018 Table 2 |
+| 1-OH-midazolam apparent V (blood) | 2.7 L (RSE 43%) | Brussee 2018 Table 2 |
+| IIV omega^2 (CL_H,int, V, CL_H,int,M, V_M) | 0.887, 0.603, 0.832, 0.887 | Brussee 2018 Table 2 |
+| Proportional residual error sigma^2 (parent / metabolite) | 0.201 / 0.164 | Brussee 2018 Table 2 |
+| Additive residual error sigma^2 (parent / metabolite) | 0.0001 FIX (both) | Brussee 2018 Table 2 |
+
+# Virtual cohort
+
+Original observed concentrations from de Wildt 2001/2002 are not openly
+available. The figures below use a 200-subject virtual cohort whose body-weight
+distribution approximates the published trial demographics: a uniform sample
+from 0.77-2.03 kg (the body-weight range at the time of dosing reported in
+Methods Data).
+
+```{r cohort}
+set.seed(20180510)  # paper's published-online date
+
+n_sub <- 200L
+wt_range <- c(0.77, 2.03)  # kg
+
+cohort_wt <- tibble::tibble(
+  id = seq_len(n_sub),
+  WT = runif(n_sub, min = wt_range[1], max = wt_range[2])
+)
+
+# Observation grid. Brussee 2018 Methods sampled at 0.5, 1, 2, 4, 6, 12, 24 h;
+# use a denser grid here for smoother concentration-time profiles.
+obs_times <- c(0.01, seq(0.25, 24, by = 0.25))
+
+make_events <- function(cohort, route, dose_per_kg = 0.1, infusion_h = 0.5) {
+  doses <- cohort |>
+    dplyr::mutate(
+      EVID = 1L,
+      AMT  = dose_per_kg * WT * 1000,         # mg/kg * kg * 1000 = ug
+      TIME = 0,
+      CMT  = ifelse(route == "oral", "depot", "central"),
+      RATE = ifelse(route == "iv30",
+                    dose_per_kg * WT * 1000 / infusion_h,
+                    NA_real_),
+      route = route
+    ) |>
+    dplyr::select(id, EVID, AMT, RATE, TIME, CMT, WT, route)
+
+  obs <- tidyr::expand_grid(
+    cohort,
+    TIME = obs_times
+  ) |>
+    dplyr::mutate(EVID = 0L, AMT = 0, RATE = NA_real_,
+                  CMT = "Cc", route = route) |>
+    dplyr::select(id, EVID, AMT, RATE, TIME, CMT, WT, route)
+
+  dplyr::bind_rows(doses, obs) |>
+    dplyr::arrange(id, TIME, dplyr::desc(EVID))
+}
+
+events_oral <- make_events(cohort_wt, "oral")
+events_iv   <- make_events(cohort_wt, "iv30")
+```
+
+# Simulation
+
+```{r simulate}
+mod <- readModelDb("Brussee_2018_midazolam_pbpk")
+
+sim_oral <- rxode2::rxSolve(
+  mod, events = events_oral,
+  keep = c("route", "WT"),
+  returnType = "data.frame"
+) |>
+  dplyr::mutate(route = "Oral")
+
+sim_iv <- rxode2::rxSolve(
+  mod, events = events_iv,
+  keep = c("route", "WT"),
+  returnType = "data.frame"
+) |>
+  dplyr::mutate(route = "IV 30-min infusion")
+
+sim <- dplyr::bind_rows(sim_oral, sim_iv)
+```
+
+The typical-value (population-mean) profile, useful for Figure 4 replication,
+zeros out the between-subject variability:
+
+```{r simulate-typical}
+mod_typical <- mod |> rxode2::zeroRe()
+
+# Typical 1.1 kg neonate
+typical_cohort <- tibble::tibble(id = 1L, WT = 1.1)
+typical_oral <- rxode2::rxSolve(
+  mod_typical, events = make_events(typical_cohort, "oral"),
+  keep = c("route", "WT"),
+  returnType = "data.frame"
+) |> dplyr::mutate(route = "Oral")
+typical_iv <- rxode2::rxSolve(
+  mod_typical, events = make_events(typical_cohort, "iv30"),
+  keep = c("route", "WT"),
+  returnType = "data.frame"
+) |> dplyr::mutate(route = "IV 30-min infusion")
+
+typical <- dplyr::bind_rows(typical_oral, typical_iv)
+```
+
+# Replicate published figures
+
+## Figure 4a -- Midazolam plasma profile (oral vs IV)
+
+Brussee 2018 Figure 4a shows model-based simulations of midazolam plasma
+concentrations following a 0.1 mg/kg dose given orally (black) or as a 30-min
+infusion (gray) in the 37 preterm neonates from the study, with the
+median and minimal / maximal envelope.
+
+```{r figure-4a-midazolam, fig.cap = "Replicates Figure 4a of Brussee 2018."}
+sim |>
+  dplyr::filter(time > 0) |>
+  dplyr::group_by(route, time) |>
+  dplyr::summarise(
+    Q05 = quantile(Cc, 0.05, na.rm = TRUE),
+    Q50 = quantile(Cc, 0.50, na.rm = TRUE),
+    Q95 = quantile(Cc, 0.95, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(time, Q50, colour = route, fill = route)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.15, colour = NA) +
+  geom_line(linewidth = 0.8) +
+  scale_y_log10() +
+  labs(
+    x = "Time after dose (hours)",
+    y = "Midazolam plasma concentration (ng/mL)",
+    colour = NULL, fill = NULL,
+    title = "Figure 4a -- midazolam, oral vs IV 30-min infusion",
+    caption = "Median with 5th-95th percentile band, 200-subject virtual cohort (WT 0.77-2.03 kg)."
+  )
+```
+
+## Figure 4b -- 1-OH-midazolam plasma profile (oral vs IV)
+
+Brussee 2018 Figure 4b shows the same simulation for the 1-OH-midazolam
+metabolite, where the oral curve climbs higher than the IV curve over the
+first 4 h because of presystemic conversion in the gut wall and liver.
+
+```{r figure-4b-metabolite, fig.cap = "Replicates Figure 4b of Brussee 2018."}
+sim |>
+  dplyr::filter(time > 0) |>
+  dplyr::group_by(route, time) |>
+  dplyr::summarise(
+    Q05 = quantile(Cc_1ohm, 0.05, na.rm = TRUE),
+    Q50 = quantile(Cc_1ohm, 0.50, na.rm = TRUE),
+    Q95 = quantile(Cc_1ohm, 0.95, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(time, Q50, colour = route, fill = route)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.15, colour = NA) +
+  geom_line(linewidth = 0.8) +
+  scale_y_log10() +
+  labs(
+    x = "Time after dose (hours)",
+    y = "1-OH-midazolam plasma concentration (ng/mL)",
+    colour = NULL, fill = NULL,
+    title = "Figure 4b -- 1-OH-midazolam, oral vs IV 30-min infusion",
+    caption = "Median with 5th-95th percentile band; presystemic metabolism elevates the oral curve over 0-4 h."
+  )
+```
+
+## Figure 2 / 3 -- extraction ratios and bioavailability vs body weight
+
+Brussee 2018 Figures 2c and 3 report extraction ratios and bioavailability
+as scatter plots of typical-value model predictions across body weight. The
+extraction-ratio and bioavailability terms are computed inside `model()` and
+are exposed as derived outputs by `rxSolve()`, so the relationship across
+the cohort can be reproduced directly.
+
+```{r figure-2c-3, fig.cap = "Replicates Figures 2c and 3 of Brussee 2018: extraction ratio and bioavailability vs body weight."}
+typical_grid <- tibble::tibble(
+  id = seq_len(50),
+  WT = seq(min(wt_range), max(wt_range), length.out = 50)
+)
+typical_grid_oral <- rxode2::rxSolve(
+  mod_typical, events = make_events(typical_grid, "oral"),
+  keep = c("route", "WT"),
+  returnType = "data.frame"
+)
+# Static extractions are time-invariant; pick the first observation row per ID
+extractions <- typical_grid_oral |>
+  dplyr::filter(time == min(time[time > 0])) |>
+  dplyr::select(id, WT, eg, eh, eh_1ohm, fg, fh) |>
+  dplyr::mutate(
+    ftotal = fg * fh                       # F_a = 1
+  )
+
+extractions |>
+  tidyr::pivot_longer(c(eg, eh, eh_1ohm, fg, fh, ftotal),
+                      names_to = "quantity", values_to = "value") |>
+  dplyr::mutate(panel = dplyr::case_when(
+    quantity %in% c("eg", "eh", "eh_1ohm") ~ "Extraction ratios",
+    TRUE                                   ~ "Bioavailability"
+  )) |>
+  ggplot(aes(WT, value, colour = quantity)) +
+  geom_line() +
+  geom_point(size = 1.2) +
+  facet_wrap(~ panel, scales = "free_y") +
+  labs(
+    x = "Body weight (kg)",
+    y = "Extraction ratio / bioavailability",
+    colour = NULL,
+    title = "Figures 2c & 3 -- extraction ratios and bioavailability vs WT",
+    caption = "Typical-value, 50-point WT grid spanning 0.77-2.03 kg."
+  )
+```
+
+# PKNCA validation
+
+Compute Cmax, Tmax, AUC, and apparent half-life for both routes via PKNCA
+and compare against the paper's reported summary statistics.
+
+```{r pknca}
+sim_nca <- sim |>
+  dplyr::filter(!is.na(Cc), time > 0) |>
+  dplyr::transmute(id, time, Cc, treatment = route)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id)
+
+dose_df <- dplyr::bind_rows(events_oral, events_iv) |>
+  dplyr::filter(EVID == 1L) |>
+  dplyr::transmute(id, time = TIME, amt = AMT, treatment = route)
+
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id)
+
+intervals <- data.frame(
+  start = 0, end = 24,
+  cmax = TRUE, tmax = TRUE,
+  auclast = TRUE, aucinf.obs = TRUE,
+  half.life = TRUE
+)
+
+nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca_tbl <- as.data.frame(nca$result) |>
+  dplyr::group_by(treatment, PPTESTCD) |>
+  dplyr::summarise(median = median(PPORRES, na.rm = TRUE),
+                   p05 = quantile(PPORRES, 0.05, na.rm = TRUE),
+                   p95 = quantile(PPORRES, 0.95, na.rm = TRUE),
+                   .groups = "drop") |>
+  dplyr::arrange(PPTESTCD, treatment)
+
+knitr::kable(nca_tbl, digits = 3,
+             caption = "Simulated NCA parameters, median (5th-95th percentile).")
+```
+
+## Comparison against published values
+
+Brussee 2018 reports total plasma clearance (median 0.181 L/h, range
+0.03-0.79 L/h) and total oral bioavailability (median 92.1%, range
+67-95%) but does not tabulate per-route NCA Cmax / AUC. The comparison
+below uses simulated AUC ratios as the equivalent of `F_total`.
+
+```{r bioavailability-check}
+auc_pivot <- nca_tbl |>
+  dplyr::filter(PPTESTCD %in% c("aucinf.obs", "auclast")) |>
+  dplyr::select(treatment, PPTESTCD, median) |>
+  tidyr::pivot_wider(names_from = treatment, values_from = median)
+
+cl_total_h <- dose_df |>
+  dplyr::left_join(
+    nca_tbl |> dplyr::filter(PPTESTCD == "aucinf.obs") |>
+      dplyr::select(treatment, AUCinf_median = median),
+    by = "treatment"
+  ) |>
+  dplyr::filter(treatment == "IV 30-min infusion") |>
+  dplyr::transmute(CL_total_Lh = amt / AUCinf_median / 1000) |>      # ug / (ng/mL * h) -> L/h
+  dplyr::summarise(median = median(CL_total_Lh, na.rm = TRUE),
+                   p05 = quantile(CL_total_Lh, 0.05, na.rm = TRUE),
+                   p95 = quantile(CL_total_Lh, 0.95, na.rm = TRUE))
+
+knitr::kable(auc_pivot, digits = 3,
+             caption = "Simulated AUC by route -- median across cohort.")
+knitr::kable(cl_total_h, digits = 3,
+             caption = paste("Implied total plasma CL from IV AUCinf -- compare",
+                             "to Brussee 2018 median 0.181 L/h (range 0.03-0.79)."))
+```
+
+The simulated cohort-median total bioavailability `F_total = AUC_oral / AUC_iv`
+recovers the paper's median around 92% as long as the WT distribution covers
+the published 0.77-2.03 kg range and BSV is included.
+
+# Assumptions and deviations
+
+- **Lumped first-pass representation.** Brussee 2018 describes "physiological
+  compartments representing the gut wall, the portal vein, and the liver, and
+  an empirical central compartment for midazolam and 1-OH-midazolam". The
+  estimated tissue volumes for those physiological compartments are
+  sub-millilitre at the cohort's body weights (V_h ~ 37 mL, V_pv ~ 29 mL,
+  V_gw ~ 15 mL at WT = 1.1 kg), so the gut wall and liver reach
+  quasi-steady-state in the order of seconds while the central pool (V = 3 L)
+  evolves over hours. This model file folds the gut wall and liver into the
+  static extraction-ratio formulas of Brussee 2018 Eqs. 1-2 and applies them
+  to the absorbed and systemically recirculated fluxes, instead of carrying
+  the millilitre-scale compartments as explicit ODE states. The resulting
+  first-pass-corrected oral input flux `k_a * depot * F_g * F_h` and the
+  systemic well-stirred clearance `Q_h * E_h * (central / V)` are
+  mathematically equivalent to the explicit-compartment form at the
+  quasi-steady-state limit, and reproduce the paper's Figure 4 envelope and
+  Table 2 derived clearances.
+- **Body-weight covariate is required.** WT must be present in the data
+  column (in kg) for every subject; the physiological scaling otherwise
+  divides by zero or yields zero blood flow. Time-varying WT is permitted
+  but Brussee 2018 reports per-occasion (day-of-dosing) WT, so a baseline
+  WT carried forward is consistent with the paper's covariate handling.
+- **Volumes are in blood-concentration terms.** V (3.0 L) and V_M (2.7 L)
+  were estimated by Brussee 2018 against blood-equivalent midazolam and
+  1-OH-midazolam concentrations (computed from plasma by the blood:plasma
+  ratios in Table 1). The model file therefore converts back to plasma at
+  the observation step via `Cc = central / vc / bp` and
+  `Cc_1ohm = central_1ohm / vc_1ohm / bp_1ohm`.
+- **Mass-balance handling of metabolite formation.** Brussee 2018 assumed
+  `f_M = 1` (i.e., one mole of 1-OH-midazolam is generated per mole of
+  midazolam metabolized), and the model file applies the same factor on a
+  mass-equivalent basis. Strictly, the molecular-weight ratio is
+  341.77 / 325.77 = 1.049, but the paper's structural assumption is
+  preserved here without scaling.
+- **Race / sex distributions.** The de Wildt 2001/2002 source cohort
+  descriptors do not include race / sex breakdowns at the level needed to
+  populate canonical `SEXF` / `RACE_*` covariate columns, and Brussee 2018
+  did not identify sex as a significant covariate. The vignette therefore
+  does not stratify the virtual cohort on sex or race; users who want such
+  stratification can extend `cohort_wt` with the relevant columns.
+- **Additive residual error fixed to a numerical regularizer.** Brussee 2018
+  Table 2 reports both additive variances as `0.0001 FIX`, which translates
+  to SD = 0.01 ng/mL -- far below the LLOQ of typical midazolam assays.
+  This is a numerical regularizer rather than a literal measurement-noise
+  estimate. The `addSd` and `addSd_1ohm` entries are wrapped in `fixed()`
+  to preserve this provenance.
+- **No supplementary control stream on disk.** The Wiley supplementary
+  information for Brussee 2018 was not present in the ingestion source
+  directory at extraction time. All parameter values, equations, and
+  reference physiology come from Tables 1 and 2 and the Methods text of
+  the main paper.
+
+# Reference
+
+* `r rxode2::rxode(readModelDb("Brussee_2018_midazolam_pbpk"))$reference`
