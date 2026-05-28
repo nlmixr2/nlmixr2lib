@@ -14,15 +14,24 @@
 .nlmixr2libConventionsStatic <- list(
   pkParams = c(
     "lka", "lcl", "lvc", "lvp", "lvp2", "lq", "lq2", "lfdepot",
-    "lvmax", "lcl_ss", "lcl_time", "lcl_renal", "lcl_nonren"
+    "lvmax", "lcl_ss", "lcl_time", "lcl_renal", "lcl_nonren",
+    # Influx (plasma -> tissue ECF/CSF) and efflux (tissue -> plasma)
+    # clearances used by physiological CNS-distribution popPK models
+    # in which the brain/tumor extracellular fluid is parameterised as
+    # a separate compartment connected to plasma central via two
+    # asymmetric clearances driven by unbound drug. Used in Campagne
+    # 2019 cyclophosphamide mouse CNS penetration popPK.
+    "lclin", "lclef"
   ),
   pkBareParams = c(
     "ka", "cl", "vc", "vp", "vp2", "q", "q2", "kel",
     "k12", "k21", "k13", "k31", "fdepot",
-    "vmax", "cl_ss", "cl_time", "cl_renal", "cl_nonren"
+    "vmax", "cl_ss", "cl_time", "cl_renal", "cl_nonren",
+    # Bare counterparts of `lclin` / `lclef` (see pkParams).
+    "clin", "clef"
   ),
   compartments = c(
-    "depot", "central", "peripheral1", "peripheral2", "effect",
+    "depot", "central", "peripheral1", "peripheral2", "peripheral3", "effect",
     "target", "complex", "total_target",
     # Semi-physiological liver compartment used by paper-specific
     # extraction-ratio first-pass models (Xie_2019_agomelatine).
@@ -43,12 +52,27 @@
     # models with multiple body-fluid distribution volumes
     # (Perez-Ruixo_2025_posdinemab).
     "csf", "isf",
+    # Brain / tumor extracellular fluid compartment used by cerebral-
+    # microdialysis-based CNS-distribution popPK models in which the
+    # ECF compartment carries unbound drug delivered via influx /
+    # efflux clearances (Campagne 2019 cyclophosphamide mouse).
+    "ecf",
     # Anatomic brain-region compartments used by mAb brain-distribution
     # PK models (Grimm_2023_trontinemab, Grimm_2023_gantenerumab). Each
     # state holds the extracellular drug concentration in the named
     # region; total brain concentration including residual plasma is
     # derived as `Cbrain_<region>` in model().
     "cerebellum", "hippocampus", "striatum", "cortex", "choroid_plexus",
+    # Physiological brain sub-compartments used by hybrid physiology-
+    # based PK-PD models that resolve the blood-brain barrier transport
+    # as two coupled states: drug in cerebral capillary blood
+    # (brain_vascular, volume Vbv, fed by cerebral blood flow CLbv from
+    # systemic central) and drug in brain tissue beyond the BBB
+    # (brain_extravascular, volume Vbev, fed via the BBB-clearance term
+    # CLbev which scales the unbound concentration on each side via the
+    # fixed fu_plasma and fu_brain fractions). Used by
+    # Johnson_2011_olanzapine_rat.
+    "brain_vascular", "brain_extravascular",
     # Gallbladder / biliary recirculation compartment used by
     # enterohepatic-circulation (EHC) popPK models (Ide_2009_pravastatin
     # and similar). Drug accumulates from the central compartment via
@@ -79,7 +103,14 @@
     # representing insulin-like delayed feedback, with a NiAc-independent
     # capillary release term setting the lower physiological limit).
     # State holds a concentration (mmol/L) rather than an amount.
-    "nefa"
+    "nefa",
+    # Purine metabolism PD compartments used by semi-mechanistic
+    # xanthine / uric-acid turnover models (Hill-McManus 2017
+    # doi:10.1111/bcp.13427). `xanthine` and `urate` hold serum amounts
+    # (mg); `xanthine_urine` and `urate_urine` hold cumulative urinary
+    # excretion amounts (mg) integrated from CLX / CLUA renal-clearance
+    # outflows for direct comparison with 24-h urinary collection data.
+    "xanthine", "urate", "xanthine_urine", "urate_urine"
   ),
   # Bare numbered chains (transit / effect / precursor / lat / dar /
   # depot) and metabolite-suffixed compartments are validated
@@ -258,7 +289,17 @@
     # Used in parent-plus-metabolite popPK models with explicit competitive
     # protein binding and enterohepatic recirculation
     # (de Winter 2009 doi:10.1007/s10928-009-9136-6).
-    "mpag"
+    "mpag",
+    # Sibling-drug suffixes for the Hill-McManus 2017 dual-urate-lowering-
+    # therapy PKPD model (doi:10.1111/bcp.13427), where febuxostat (`febx`,
+    # xanthine oxidase inhibitor) and lesinurad (`lesn`, URAT1 uricosuric)
+    # are co-administered and neither is the "parent"; both PK subsystems
+    # use canonical compartment / PK-param names with the drug suffix
+    # (`central_febx`, `lcl_febx`, `central_lesn`, `lcl_lesn`, etc.).
+    # Same precedent as the existing co-administered-perpetrator (`cpg2`)
+    # and stereoisomer (`r`, `s`) entries: registered for the
+    # `<canonical>_<sibling>` pattern, not as chemical metabolites.
+    "febx", "lesn"
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` denotes the time-varying decay arm.
@@ -297,7 +338,13 @@
     # from `kmet` (formation rate constant): FM is unitless and
     # bounded in (0, 1] while kmet has rate units. Used in
     # Danielak 2017 clopidogrel -> H4 (doi:10.1007/s00228-017-2334-z).
-    "fm"
+    "fm",
+    # Fraction unbound in plasma, used as a fixed unitless multiplier
+    # in cerebral-microdialysis-style CNS-distribution models where
+    # only free drug crosses the BBB and the BBB transfer term is
+    # CLin * fu * Cp. Reported in [0, 1]; usually held fixed at the
+    # in-vitro equilibrium-dialysis-derived value (Campagne 2019).
+    "fu"
   ),
   requiredUnits = c("time", "dosing", "concentration"),
   requiredMetadata = c("description", "reference", "units"),
