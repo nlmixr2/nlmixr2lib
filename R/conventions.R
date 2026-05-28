@@ -580,7 +580,41 @@
     # a_<organ>_ag compartment names pass the metabolite-suffix check
     # without rewriting the source-paper notation. Registered 2026-
     # 05-28 per the naming audit.
-    "as", "ag"
+    "as", "ag",
+    # Paper-specific metabolite / sibling-drug suffix additions
+    # discovered during the 2026-05-28 naming-audit eta + residual-SD
+    # cleanup pass. Each is the canonical lowercase abbreviation used
+    # by its source paper for a non-parent species tracked alongside
+    # the parent. Drug-specific compartment / parameter / residual-SD
+    # names with these suffixes (`central_<suffix>`, `lcl_<suffix>`,
+    # `propSd_<suffix>`, etc.) pass the canonical metabolite-suffix
+    # check.
+    #
+    # `1ohm`  = 1'-hydroxymidazolam (Brussee 2018 midazolam PBPK)
+    # `4ohctx`= 4-hydroxycyclophosphamide (Campagne 2019 cyclophosphamide
+    #           mouse CNS)
+    # `cepm`  = carboxyethylphosphoramide-mustard (Campagne 2019)
+    # `ftc`   = emtricitabine (Chen 2016 tenofovir+emtricitabine)
+    # `tfvdp` = tenofovir diphosphate (Chen 2016)
+    # `ftctp` = emtricitabine triphosphate (Chen 2016)
+    # `snk`   = S-norketamine (Flint 2017 S-ketamine)
+    # `acid`  = simvastatin acid (Jin 2014 simvastatin)
+    # `act`   = ACT-333679 selexipag active metabolite (Krause 2017)
+    # `rtv`   = ritonavir (Schipani 2013 atazanavir+ritonavir)
+    # `9oh`   = 9-hydroxyrisperidone (Sherwin 2012 risperidone)
+    # `5oh`   = 5-hydroxyomeprazole (Zhao 2018 omeprazole)
+    # `sfn`   = omeprazole sulfone (Zhao 2018)
+    # `d3og`  = dapagliflozin 3-O-glucuronide (vanderWalt 2013)
+    # `su12662` = SU12662 sunitinib metabolite (Ait-Oudhia 2016)
+    # `tam`   = tamoxifen (Almquist 2016 ticagrelor; note: documented
+    #           as the ticagrelor-paired tracking species)
+    # `vact`  = vascular-active state (Schindler 2017 imatinib tumor;
+    #           lesion-specific tumour-state suffix)
+    # `vell`  = vascular-extracellular-lesion state (Schindler 2017)
+    # `dens`  = lesion-density state (Schindler 2017)
+    "1ohm", "4ohctx", "cepm", "ftc", "tfvdp", "ftctp", "snk",
+    "acid", "act", "rtv", "9oh", "5oh", "sfn", "d3og",
+    "su12662", "tam", "vact", "vell", "dens"
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` denotes the time-varying decay arm.
