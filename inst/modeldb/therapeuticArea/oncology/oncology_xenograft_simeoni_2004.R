@@ -1,8 +1,8 @@
 oncology_xenograft_simeoni_2004 <- function() {
   description <- "Oncology tumor growth model in xenograft models"
   reference <- "Monica Simeoni, Paolo Magni, Cristiano Cammia, Giuseppe De Nicolao, Valter Croci, Enrico Pesenti, Massimiliano Germani, Italo Poggesi, Maurizio Rocchetti; Predictive Pharmacokinetic-Pharmacodynamic Modeling of Tumor Growth Kinetics in Xenograft Models after Administration of Anticancer Agents. Cancer Res 1 February 2004; 64 (3): 1094–1101. https://doi.org/10.1158/0008-5472.CAN-03-2524"
-  depends<- "Cc"
-  units<-list(time="day")
+  depends <- c("Cc", "tumor_vol0")
+  units <- list(time = "day", dosing = "dose_unit", concentration = "conc_unit/vol_unit")
   # Values for damageTransit (k1), drugSlope (k2), tumorExpGrowth (lambda0),
   # tumorLinGrowth (lambda1) are from paclitaxel experiment 1 reported in Table
   # 2 from the reference (limits are not from the reference). The values from
@@ -13,8 +13,8 @@ oncology_xenograft_simeoni_2004 <- function() {
     ldrugSlope <- log(c(0.00001, 0.000629, 0.1)) ; label("Linear drug effect on cycling cells (1/(day*ng/mL))")
     ltumorExpGrowth <- log(c(0.001, 0.273, 2)) ; label("Tumor exponential growth rate (1/day)")
     ltumorLinGrowth <- log(c(0.01, 0.814, 5)) ; label("Tumor linear growth rate (tumor volume/day)")
-    propSd_tumorVol <- 0.2 ; label("Proportional residual error (fraction)")
-    addSd_tumorVol <- 30 ; label("Additive residual error (tumor volume)")
+    propSd_tumor_vol <- 0.2 ; label("Proportional residual error (fraction)")
+    addSd_tumor_vol <- 30 ; label("Additive residual error (tumor volume)")
   })
   model({
     damageTransit <- exp(ldamageTransit)
@@ -34,7 +34,7 @@ oncology_xenograft_simeoni_2004 <- function() {
     d/dt(damaged_cells1) <- drugEffectCyclingCells*cycling_cells - damageTransit*damaged_cells1
     d/dt(damaged_cells2) <- damageTransit*(damaged_cells1 - damaged_cells2)
     d/dt(damaged_cells3) <- damageTransit*(damaged_cells2 - damaged_cells3)
-    tumor_vol ~ prop(propSd_tumorVol) + add(addSd_tumorVol)
+    tumor_vol ~ prop(propSd_tumor_vol) + add(addSd_tumor_vol)
   })
 }
 

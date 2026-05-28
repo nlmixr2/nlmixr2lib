@@ -1,5 +1,6 @@
 indirect_1cpt_stim_kout_r0rmaxcrmax <- function() {
   description <- "One compartment indirect response model with stimulation of kout."
+  depends <- c("Emax", "EC50")
   reference <- "nlmixr2lib template"
   units <- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")
   ini({

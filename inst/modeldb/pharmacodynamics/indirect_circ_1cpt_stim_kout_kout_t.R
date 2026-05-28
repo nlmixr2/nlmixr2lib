@@ -1,5 +1,6 @@
 indirect_circ_1cpt_stim_kout_kout_t <- function() {
   description <- "One compartment indirect response model with stimulation of kout and circadian kout_t.Parameterized using rate cosntants"
+  depends <- c("vc", "kin_t", "kout", "ic50")
   reference <- "nlmixr2lib template"
   units <- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")
   ini({

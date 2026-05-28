@@ -10,7 +10,7 @@ updateOncologyXenograftSimeoni2004(
   damagedCmtName = "damaged_cells",
   drugEffectName = "drugEffectCyclingCells",
   undamagedCmtName = "cycling_cells",
-  tumorVolName = "tumorVol",
+  tumorVolName = "tumor_vol",
   transitRateName = "damageTransit"
 )
 }

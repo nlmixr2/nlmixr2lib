@@ -17,7 +17,7 @@ updateOncologyXenograftSimeoni2004 <- function(object, ncmt,
                                                damagedCmtName = "damaged_cells",
                                                drugEffectName = "drugEffectCyclingCells",
                                                undamagedCmtName = "cycling_cells",
-                                               tumorVolName = "tumorVol",
+                                               tumorVolName = "tumor_vol",
                                                transitRateName = "damageTransit") {
   checkmate::assert_integerish(ncmt, lower = 1, upper = 100, any.missing = FALSE, len = 1, null.ok = FALSE)
   if (is.function(object)) {

@@ -1,5 +1,6 @@
 tgi_sat_genLogistic <- function() {
   description <- "One compartment TGI model with tumor growth proportional to tumor size through a generalized logistic function, with saturation."
+  depends <- c("kge")
   reference <- "nlmixr2lib template"
   units <- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")
   ini({

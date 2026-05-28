@@ -1,5 +1,6 @@
 tgi_sat_logistic <- function() {
   description <- "One compartment TGI model with with exponential tumor growth that decelerates linearly, with saturation."
+  depends <- c("kge")
   reference <- "nlmixr2lib template"
   units <- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")
   ini({

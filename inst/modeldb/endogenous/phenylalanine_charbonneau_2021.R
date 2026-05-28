@@ -1,13 +1,14 @@
 phenylalanine_charbonneau_2021 <- function() {
   description <- "Phenylalanine model for absorption and metabolism in healthy subjects and patients with PKU"
   reference <- "Charbonneau, M.R., Denney, W.S., Horvath, N.G. et al. Development of a mechanistic model to predict synthetic biotic activity in healthy volunteers and patients with phenylketonuria. Commun Biol 4, 898 (2021). https://doi.org/10.1038/s42003-021-02183-1"
-  covariates <-
-    list(
-      WT = "Body weight in kg",
-      time = "Time in hours",
-      f_pah = "Fraction of healthy PAH activity (healthy = 1; PKU patient = 0 to 0.03)",
-      bl_phe = "Typical values are about 0.075 mmol/L in healthy subjects and 1.18 mmol/L in patients"
+  covariateData <- list(
+    WT = list(
+      description = "Body weight in kg",
+      units = "kg",
+      type = "continuous"
     )
+  )
+  depends <- c("f_pah", "bl_phe")
   # parameters come from Table 4 in paper
   ini({
     bl_phe <- 1.18; label("Baseline Phenylalanine (Phe) concentration (mmol/L)")

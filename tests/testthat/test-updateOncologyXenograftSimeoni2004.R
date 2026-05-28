@@ -14,12 +14,12 @@ test_that("updateOncologyXenograftSimeoni2004", {
   # the new tumor line is added
   expect_no_match(
     deparse(as.function(newModel), width.cutoff = 500),
-    "tumorVol <- cycling_cells \\+ damaged_cells1 \\+ damaged_cells2 \\+ damaged_cells3 \\+ damaged_cells4 \\+ damaged_cells5", # nolint: line_length_linter.
+    "tumor_vol <- cycling_cells \\+ damaged_cells1 \\+ damaged_cells2 \\+ damaged_cells3 \\+ damaged_cells4 \\+ damaged_cells5", # nolint: line_length_linter.
     all = FALSE
   )
   expect_match(
     deparse(as.function(newModel), width.cutoff = 500),
-    "tumorVol <- cycling_cells \\+ damaged_cells1 \\+ damaged_cells2 \\+ damaged_cells3 \\+ damaged_cells4 \\+ damaged_cells5", # nolint: line_length_linter.
+    "tumor_vol <- cycling_cells \\+ damaged_cells1 \\+ damaged_cells2 \\+ damaged_cells3 \\+ damaged_cells4 \\+ damaged_cells5", # nolint: line_length_linter.
     all = FALSE
   )
 })
