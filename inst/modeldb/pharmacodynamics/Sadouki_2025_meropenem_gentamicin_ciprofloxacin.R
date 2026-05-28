@@ -178,8 +178,8 @@ Sadouki_2025_meropenem_gentamicin_ciprofloxacin <- function() {
 
     # ---- Residual error ----
     # 'Additive on logarithmic data' per Sadouki 2025 Table 1. Implemented as
-    # an additive error on log_bact = log(bacteria) (natural log of CFU/mL).
-    log_bact_addSd <- 0.864
+    # an additive error on log_cfu = log(bacteria) (natural log of CFU/mL).
+    addSd_log_cfu <- 0.864
     label("Additive residual SD on log(bacteria) (log CFU/mL)")  # Sadouki 2025 Table 1, Residual variability
   })
 
@@ -264,7 +264,7 @@ Sadouki_2025_meropenem_gentamicin_ciprofloxacin <- function() {
     bacteria(0) <- 10 ^ b0_eff
 
     # ---- Observation: log(bacteria) (natural log of CFU/mL) with additive error
-    log_bact <- log(bacteria)
-    log_bact ~ add(log_bact_addSd)
+    log_cfu <- log(bacteria)
+    log_cfu ~ add(addSd_log_cfu)
   })
 }

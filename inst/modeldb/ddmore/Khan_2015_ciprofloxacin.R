@@ -203,7 +203,7 @@ Khan_2015_ciprofloxacin <- function() {
     # plate count; reproduced verbatim. The +1e-8 floor matches the .mod
     # $ERROR line 132: IPRED = LOG(ATOT + 1E-8).
     counted_bact <- bact_s + bact_r + bact_spe + bact_rpe
-    lnBact <- log(counted_bact + 1e-8)
-    lnBact ~ add(addSd)
+    log_cfu <- log(counted_bact + 1e-8)
+    log_cfu ~ add(addSd)
   })
 }

@@ -23,12 +23,12 @@ oncology_sdm_lobo_2002 <- function() {
 
     drugEffectTumorVol <- kmax*Cc/(ec50 + Cc)
 
-    tumorVol(0) <- tumorVol0
-    d/dt(tumorVol) <- kng*tumorVol - transit4*tumorVol
+    tumor_vol(0) <- tumor_vol0
+    d/dt(tumor_vol) <- kng*tumor_vol - transit4*tumor_vol
     d/dt(transit1) <- (drugEffectTumorVol - transit1)/tau
     d/dt(transit2) <- (transit1 - transit2)/tau
     d/dt(transit3) <- (transit2 - transit3)/tau
     d/dt(transit4) <- (transit3 - transit4)/tau
-    tumorVol ~ prop(propSd_tumorVol) + add(addSd_tumorVol)
+    tumor_vol ~ prop(propSd_tumorVol) + add(addSd_tumorVol)
   })
 }

@@ -219,7 +219,13 @@ checkModelConventions <- function(model, verbose = TRUE) {
       sprintf("Add `%s <- ...` at the top of the model function body.", fld)
     ))
   }
-  uses_covariates <- length(ui$covariates %||% character()) > 0
+  # `depends` lists names that are provided by an upstream model when
+  # this model is composed downstream (e.g. PD templates inheriting Cc
+  # from a PK model); subtract them so they don't trigger a spurious
+  # covariateData-missing error.
+  depends <- meta$depends %||% character()
+  covs_for_check <- setdiff(ui$covariates %||% character(), depends)
+  uses_covariates <- length(covs_for_check) > 0
   if (uses_covariates && is.null(meta$covariateData)) {
     issues <- rbind(issues, .issue(
       "file_metadata", "error", "covariateData",
@@ -646,13 +652,38 @@ checkModelConventions <- function(model, verbose = TRUE) {
   if (is.null(pred) || nrow(pred) == 0) return(issues)
   obs_vars <- unique(pred$cond)
   if (length(obs_vars) == 1 && obs_vars != conv$observationVar) {
-    issues <- rbind(issues, .issue(
-      "observation", "warning", obs_vars,
-      sprintf("Single-output observation variable '%s' should be named '%s'.",
-              obs_vars, conv$observationVar),
-      sprintf("Rename observation and its residual-error assignment to '%s'.",
-              conv$observationVar)
-    ))
+    obs <- obs_vars
+    # Cc is canonical for drug-concentration outputs; per the 2026-05-28
+    # naming-audit operator clarification, single-output PD models may
+    # use any registered output-state name (tumor_size, das28, ANC via
+    # circ_anc, etc.). Treat the observation as canonical when it
+    # matches the compartment register (which now includes the PD-output
+    # canonicals registered in D19) or one of the canonical observation
+    # variants (Cc itself and the Cc_<metab> metabolite outputs).
+    is_canon_pd <- .matchesCompartment(obs, conv) ||
+      startsWith(obs, "Cc_")
+    if (!is_canon_pd) {
+      issues <- rbind(issues, .issue(
+        "observation", "warning", obs,
+        sprintf(
+          paste0(
+            "Single-output observation variable '%s' is not canonical: ",
+            "use 'Cc' for drug-concentration outputs, or a registered ",
+            "PD-output canonical compartment / state name otherwise."
+          ),
+          obs
+        ),
+        sprintf(
+          paste0(
+            "Rename to '%s' for plasma-drug-concentration outputs, ",
+            "or register the PD output name as a canonical compartment ",
+            "in R/conventions.R if it is a recurring paper-mechanistic ",
+            "endpoint."
+          ),
+          conv$observationVar
+        )
+      ))
+    }
     return(issues)
   }
   # Multi-output: flag deprecated `C<metab>` style (e.g. Cmmae, Cdxd, Cdar0)

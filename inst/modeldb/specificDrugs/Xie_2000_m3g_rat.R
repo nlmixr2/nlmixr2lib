@@ -148,7 +148,7 @@ Xie_2000_m3g_rat <- function() {
     # fit (Model B, Table 3). The plasma error model belonging to Model A
     # is not tabulated in the published paper, so a plasma observation
     # with an invented residual-error magnitude would not be source-traceable.
-    Cbrain_ecf <- cu_br_csf
-    Cbrain_ecf ~ prop(propSd)
+    Cbrain_csf <- cu_br_csf
+    Cbrain_csf ~ prop(propSd)
   })
 }

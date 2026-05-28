@@ -271,7 +271,39 @@
     #   bldeg   = blood-pool LNP degradation reservoir (Parhiz 2024)
     #   bcc     = central blood cells (Shah 2012 mAb PBPK)
     #   lnode   = lymph-node return compartment (Shah 2012)
-    "blood", "bldeg", "bcc", "lnode"
+    "blood", "bldeg", "bcc", "lnode",
+    # Standard clinical PD-output biomarkers registered as canonical
+    # compartments / output-state names so single-output PD models
+    # using them pass the relaxed `Cc` rule. Each name is the
+    # internationally standardised clinical abbreviation:
+    #   ANC, PLT, WBC, RBC = cell counts (absolute neutrophil count,
+    #     platelet, white blood cell, red blood cell)
+    #   INR, PT, aPTT      = coagulation tests (international
+    #     normalised ratio, prothrombin time, activated partial
+    #     thromboplastin time)
+    #   hb                  = hemoglobin
+    #   PSA                 = prostate-specific antigen
+    #   P1NP                = procollagen type I N-terminal propeptide
+    #     (bone formation biomarker)
+    #   OC                  = osteocalcin (bone turnover biomarker)
+    #   TT                  = total testosterone / thrombin time
+    #     (paper-dependent; both share the TT abbreviation in the
+    #     contexts where it appears)
+    # Registered 2026-05-28 per the naming audit (operator decision:
+    # spell out paper-mechanistic names but the standard clinical
+    # abbreviations are themselves canonical and need not be expanded).
+    "ANC", "PLT", "WBC", "RBC", "INR", "PT", "aPTT", "hb",
+    "PSA", "P1NP", "OC", "TT",
+    # Bacterial-count PD output canonicals for TB / antibiotic models.
+    # `cfu` is the linear colony-forming-unit count (Clewe 2016
+    # rifampicin: cfu = fbugs + sbugs, proportional residual error).
+    # `log_cfu` is the log-transformed sputum / culture CFU output
+    # (universal TB-PK/PD endpoint, used by the Clewe 2018 / Khan 2015
+    # / Mohamed 2016 / Sadouki 2025 / Svensson 2016 / Wicha 2018
+    # rifampicin and combination-antibiotic models). The transform
+    # base (ln vs log10) is paper-dependent and documented in each
+    # source file. Registered 2026-05-28 per the naming audit.
+    "cfu", "log_cfu"
   ),
   # Bare numbered chains (transit / effect / precursor / lat / dar /
   # depot) and metabolite-suffixed compartments are validated

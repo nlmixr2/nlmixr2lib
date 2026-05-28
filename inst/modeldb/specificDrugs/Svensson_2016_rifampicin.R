@@ -231,7 +231,7 @@ Svensson_2016_rifampicin <- function() {
     #         time point and midtime point methods provided similar OFV'
     #         to the sample-compartment method. See vignette Assumptions
     #         and deviations.
-    Sputum_lnCFU <- log(fast + slow + 1e-6)
-    Sputum_lnCFU ~ add(addSd)
+    log_cfu <- log(fast + slow + 1e-6)
+    log_cfu ~ add(addSd)
   })
 }

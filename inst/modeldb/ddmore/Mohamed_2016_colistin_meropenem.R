@@ -173,7 +173,7 @@ Mohamed_2016_colistin_meropenem <- function() {
     # All SIGMAs are FIXED. Per-row variance is (SIGMA(1) + SIGMA(REPL+1)) on log10 scale; combined SD on
     # natural-log scale = sqrt(SIGMA(1) + SIGMA(2)) * log(10) (since all replicate-specific SIGMAs are equal).
     # Verbatim collapse to a single additive residual on the log-bacteria observation:
-    addSd_logBact <- fixed(sqrt(0.422 + 0.0364) * log(10)); label("Combined residual SD on natural-log scale (sqrt(SIGMA(1)+SIGMA(2))*log(10) per .lst SIGMA block lines 877-889)") # SIGMA, .mod L521-526
+    addSd_log_cfu <- fixed(sqrt(0.422 + 0.0364) * log(10)); label("Combined residual SD on natural-log scale (sqrt(SIGMA(1)+SIGMA(2))*log(10) per .lst SIGMA block lines 877-889)") # SIGMA, .mod L521-526
   })
 
   model({
@@ -611,7 +611,7 @@ Mohamed_2016_colistin_meropenem <- function() {
     # =====================================================================
     ATOT <- S + R + S_mut + R_mut
     if (ATOT < 1e-5) ATOT <- 1e-5
-    logBact <- log(ATOT)
-    logBact ~ add(addSd_logBact)
+    log_cfu <- log(ATOT)
+    log_cfu ~ add(addSd_log_cfu)
   })
 }

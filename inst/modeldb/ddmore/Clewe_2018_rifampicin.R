@@ -277,7 +277,7 @@ Clewe_2018_rifampicin <- function() {
     # ====================================================================
     totBugs   <- Fbugs + Sbugs + Nbugs
     nBugs     <- Nbugs
-    logFSbugs <- log(Fbugs + Sbugs)
-    logFSbugs ~ add(addSd)
+    log_cfu <- log(Fbugs + Sbugs)
+    log_cfu ~ add(addSd)
   })
 }

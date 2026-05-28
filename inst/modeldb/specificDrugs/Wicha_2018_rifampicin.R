@@ -20,7 +20,7 @@ Wicha_2018_rifampicin <- function() {
   units <- list(
     time          = "day",
     dosing        = "mg",
-    concentration = "mg/L for plasma Cc and ELF Celf and PAE Cpae; CFU/mL for the bacterial states (the Sputum_lnCFU observation is on the natural-log scale)"
+    concentration = "mg/L for plasma Cc and ELF Celf and PAE Cpae; CFU/mL for the bacterial states (the log_cfu observation is on the natural-log scale)"
   )
 
   covariateData <- list(
@@ -304,7 +304,7 @@ Wicha_2018_rifampicin <- function() {
     label("Proportional residual error on log-Cc plasma rifampicin (carried from Svensson 2018)")
     # Svensson 2018 .lst SIGMA(1,1) FINAL = 5.55e-2 = 0.2356^2.
 
-    addSd_Sputum_lnCFU <- 1.124
+    addSd_log_cfu <- 1.124
     label("Additive residual SD on natural-log(F+S)/mL sputum CFU (carried from Svensson 2016 combined estimate)")
     # Svensson 2016 Table 2 sigma_e = 110% CV + sigma_e,repl = 23.1% CV,
     # combined as sqrt(1.10^2 + 0.231^2) = 1.124 per Svensson_2016_rifampicin.R
@@ -470,13 +470,13 @@ Wicha_2018_rifampicin <- function() {
     # 11. Observations.
     #     - Cc: plasma rifampicin concentration (mg/L), proportional residual
     #       error carried from Svensson 2018.
-    #     - Sputum_lnCFU: natural log of culturable bacteria (F + S, with
+    #     - log_cfu: natural log of culturable bacteria (F + S, with
     #       the N state excluded because it is nonculturable per Clewe
     #       2016 / Svensson 2016 Methods), additive residual on the log
     #       scale carried from Svensson 2016 combined estimate.
     # -----------------------------------------------------------------------
-    Sputum_lnCFU <- log(fast + slow + 1e-6)
+    log_cfu <- log(fast + slow + 1e-6)
     Cc           ~ prop(propSd)
-    Sputum_lnCFU ~ add(addSd_Sputum_lnCFU)
+    log_cfu ~ add(addSd_log_cfu)
   })
 }
