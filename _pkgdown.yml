@@ -856,6 +856,8 @@ navbar:
         href: articles/Vezina_2014_valganciclovir.html
       - text: "Valsartan (Kim 2015)"
         href: articles/Kim_2015_valsartan.html
+      - text: "Vancomycin (Alqahtani 2018)"
+        href: articles/Alqahtani_2018_vancomycin.html
       - text: "Vancomycin (Chung 2013)"
         href: articles/Chung_2013_vancomycin.html
       - text: "Vancomycin (Goti 2018)"
@@ -1046,6 +1048,7 @@ articles:
   - articles/Allegaert_2015_paracetamol
   - articles/Almquist_2016_ticagrelor
   - articles/Almquist_2022_anifrolumab
+  - articles/Alqahtani_2018_vancomycin
   - articles/Alsultan_2017_pyrazinamide
   - articles/Andrews_2017_tacrolimus
   - articles/Aoyama_2012_sepantronium
