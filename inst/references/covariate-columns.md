@@ -1566,16 +1566,49 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Sheng_2016_quinine_rat.R` (sigmoid Emax on the logistic mixing probability between a low-count generalized-Poisson distribution and a right-truncated high-count generalized-Poisson distribution; STIM_QUININE_MM is the only model covariate).
 - **Notes:** Specific scope because the canonical name is bound to quinine HCl dihydrate as the bitter stimulus. Distinct from `CAV` (systemic average drug plasma concentration over a dosing interval) and the `CP_*` family (instantaneous plasma concentration as time-varying PD driver) -- STIM_QUININE_MM is the applied stimulus concentration in solution that contacts the taste receptors directly, with no PK absorption / distribution involved. Future BATA-style extractions with a different bitter compound (caffeine, denatonium, etc.) should register a parallel canonical (e.g. `STIM_CAFFEINE_MM`) rather than overload this name; the `STIM_<drug>_<units>` pattern mirrors the established `CP_<drug>_<units>` precedent. Ratified canonically alongside the Sheng 2016 quinine BATA extraction.
 
-### ETSEVO (**canonical for end-tidal sevoflurane concentration in the breathing circuit**)
-- **Description:** End-tidal sevoflurane concentration (vol %) recorded continuously by an anesthesia gas monitor during sevoflurane general anesthesia. Distinct from a systemic plasma concentration -- ETSEVO is the alveolar / breathing-circuit concentration in vol %, used directly as the PD driver in sigmoid-Emax models of consciousness / recovery endpoints. Per-record covariate (per observation epoch); decreases during emergence from approximately the maintenance MAC value (e.g. 1 MAC, 1.5-1.7 vol % in school-aged children with 50% N2O) to 0.
-- **Units:** vol % (volume percent in the breathing circuit; equivalent to fractional inspired/expired sevoflurane x 100)
+### STIM_CHLOROQUINE_NM (**canonical for applied chloroquine drug-well concentration in an in vitro Plasmodium falciparum drug-susceptibility assay**)
+- **Description:** Applied drug-well concentration of chloroquine (nM) presented to a Plasmodium falciparum-infected red-blood-cell suspension during an in vitro hypoxanthine-uptake-inhibition susceptibility assay. Each plate row is a serial doubling-dilution from 10,255.9 nM down to 10.02 nM in Simpson 2013 (Methods, In vitro Drug Assay). The "subject" in the NLME model is a parasite isolate, not a host patient; this column is the per-record stimulus concentration that drives the sigmoid Emax inhibition of parasite hypoxanthine uptake.
+- **Units:** nM
 - **Type:** continuous
 - **Scope:** specific
-- **Reference category:** n/a -- enters directly as the concentration argument C in a sigmoid Emax probability expression `P(ROC) = C50^gamma / (C50^gamma + C^gamma)` (Shin 2014 Methods). Reference values observed: typical C50 for return of consciousness 0.37 vol % (mentally intact) and 0.19 vol % (mentally disabled) in Shin 2014 Table 2; literature MAC-awake for sevoflurane is 0.6-0.78 vol % in healthy adults / children.
+- **Reference category:** n/a -- enters as a Hill term in the sigmoid-Emax expression `E = E0 + (Emax - E0) * (1 - C^gamma / (EC50^gamma + C^gamma))` (Simpson 2013, Methods Eq. 1). Set to 0 for the drug-free control well (Methods: "drug-free controls, were generated in duplicate"). Reference values observed: Simpson 2013 doubling-dilution range 10.02 to 10,255.9 nM (Methods, In vitro Drug Assay); the final-model EC50 in the wild-type reference parasites is 242 nM (Table 3, Genotype 1).
 - **Source aliases:**
-  - `DOSE` -- used in `Shin_2014_sevoflurane.R` (Shin 2014 Appendix 1 $INPUT column name; the NONMEM column is labelled DOSE but holds the per-record end-tidal concentration, not an administered dose -- the model uses it directly in `PROB = 1 - DOSE**GAM/(CE50**GAM + DOSE**GAM)`).
-- **Example models:** `Shin_2014_sevoflurane.R` (drives the sigmoid-Emax probability of return of consciousness in pediatric dental-surgery patients during emergence from sevoflurane / N2O general anesthesia).
-- **Notes:** Specific scope because the canonical name is bound to sevoflurane as the volatile anesthetic. Future emergence-from-anesthesia PD extractions for a different volatile (isoflurane, desflurane) should register a parallel canonical (e.g. `ETISO`, `ETDES`) rather than overload this name; the `ET<agent>` pattern parallels the `CP_<drug>_<units>` precedent for IV PD drivers. Distinct from `CP_*` (systemic plasma concentration), `CAV` (steady-state average plasma exposure), and `STIM_*` (applied non-systemic stimulus concentration): ETSEVO is the alveolar / circuit concentration that equilibrates with brain tissue during inhalation anesthesia, sampled at the exhalation peak.
+  - `C` -- used directly in Simpson 2013 Methods Eq. 1 (the drug concentration in the plate well; no formal column name is given because the NONMEM control stream is not in the on-disk supplement).
+- **Example models:** `Simpson_2013_chloroquine.R` (sigmoid-Emax inhibition of normalised hypoxanthine uptake by per-well chloroquine concentration; `STIM_CHLOROQUINE_NM` is the only per-record continuous covariate driving the predicted-effect curve).
+- **Notes:** Specific scope because the canonical name is bound to chloroquine as the applied antimalarial. Sibling canonicals `STIM_MEFLOQUINE_NM`, `STIM_LUMEFANTRINE_NM`, and `STIM_ARTESUNATE_NM` cover the other three drugs studied in Simpson 2013 with the same in vitro assay format. Distinct from `CAV` (systemic average drug plasma concentration over a dosing interval) and the `CP_*` family (instantaneous plasma concentration as time-varying PD driver) -- STIM_CHLOROQUINE_NM is the in vitro applied drug-well concentration that contacts the parasite-infected RBCs directly, with no host-PK absorption / distribution involved. Follows the `STIM_<drug>_<units>` pattern established by `STIM_QUININE_MM`. Ratified canonically alongside the Simpson 2013 antimalarial in vitro susceptibility extraction.
+
+### STIM_MEFLOQUINE_NM (**canonical for applied mefloquine drug-well concentration in an in vitro Plasmodium falciparum drug-susceptibility assay**)
+- **Description:** Applied drug-well concentration of mefloquine (nM) presented to a Plasmodium falciparum-infected red-blood-cell suspension during an in vitro hypoxanthine-uptake-inhibition susceptibility assay. Each plate row is a serial doubling-dilution from 1646.6 nM down to 1.62 nM in Simpson 2013 (Methods, In vitro Drug Assay). The "subject" in the NLME model is a parasite isolate, not a host patient; this column is the per-record stimulus concentration that drives the sigmoid Emax inhibition of parasite hypoxanthine uptake.
+- **Units:** nM
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters as a Hill term in the sigmoid-Emax expression `E = E0 + (Emax - E0) * (1 - C^gamma / (EC50^gamma + C^gamma))` (Simpson 2013, Methods Eq. 1). Set to 0 for the drug-free control well. Reference values observed: Simpson 2013 doubling-dilution range 1.62 to 1646.6 nM; the final-model EC50 in the wild-type reference parasites is 53.0 nM (Table 3, Genotype 1).
+- **Source aliases:**
+  - `C` -- used directly in Simpson 2013 Methods Eq. 1.
+- **Example models:** `Simpson_2013_mefloquine.R` (sigmoid-Emax inhibition of normalised hypoxanthine uptake by per-well mefloquine concentration).
+- **Notes:** Specific scope because the canonical name is bound to mefloquine as the applied antimalarial. Sibling canonicals `STIM_CHLOROQUINE_NM`, `STIM_LUMEFANTRINE_NM`, and `STIM_ARTESUNATE_NM`. See `STIM_CHLOROQUINE_NM` Notes for the broader rationale. Ratified canonically alongside the Simpson 2013 antimalarial in vitro susceptibility extraction.
+
+### STIM_LUMEFANTRINE_NM (**canonical for applied lumefantrine drug-well concentration in an in vitro Plasmodium falciparum drug-susceptibility assay**)
+- **Description:** Applied drug-well concentration of lumefantrine (nM) presented to a Plasmodium falciparum-infected red-blood-cell suspension during an in vitro hypoxanthine-uptake-inhibition susceptibility assay. Each plate row is a serial doubling-dilution from 235.8 nM down to 2.40 nM in Simpson 2013 (Methods, In vitro Drug Assay). The "subject" in the NLME model is a parasite isolate, not a host patient; this column is the per-record stimulus concentration that drives the sigmoid Emax inhibition of parasite hypoxanthine uptake.
+- **Units:** nM
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters as a Hill term in the sigmoid-Emax expression `E = E0 + (Emax - E0) * (1 - C^gamma / (EC50^gamma + C^gamma))` (Simpson 2013, Methods Eq. 1). Set to 0 for the drug-free control well. Reference values observed: Simpson 2013 doubling-dilution range 2.40 to 235.8 nM; the final-model EC50 in the wild-type reference parasites is 35.7 nM (Table 3, Genotype 1).
+- **Source aliases:**
+  - `C` -- used directly in Simpson 2013 Methods Eq. 1.
+- **Example models:** `Simpson_2013_lumefantrine.R` (sigmoid-Emax inhibition of normalised hypoxanthine uptake by per-well lumefantrine concentration).
+- **Notes:** Specific scope because the canonical name is bound to lumefantrine as the applied antimalarial. Sibling canonicals `STIM_CHLOROQUINE_NM`, `STIM_MEFLOQUINE_NM`, and `STIM_ARTESUNATE_NM`. See `STIM_CHLOROQUINE_NM` Notes for the broader rationale. Ratified canonically alongside the Simpson 2013 antimalarial in vitro susceptibility extraction.
+
+### STIM_ARTESUNATE_NM (**canonical for applied artesunate drug-well concentration in an in vitro Plasmodium falciparum drug-susceptibility assay**)
+- **Description:** Applied drug-well concentration of artesunate (nM) presented to a Plasmodium falciparum-infected red-blood-cell suspension during an in vitro hypoxanthine-uptake-inhibition susceptibility assay. Each plate row is a serial doubling-dilution from 87.0 nM down to 0.044 nM in Simpson 2013 (Methods, In vitro Drug Assay). The "subject" in the NLME model is a parasite isolate, not a host patient; this column is the per-record stimulus concentration that drives the sigmoid Emax inhibition of parasite hypoxanthine uptake.
+- **Units:** nM
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters as a Hill term in the sigmoid-Emax expression `E = E0 + (Emax - E0) * (1 - C^gamma / (EC50^gamma + C^gamma))` (Simpson 2013, Methods Eq. 1). Set to 0 for the drug-free control well. Reference values observed: Simpson 2013 doubling-dilution range 0.044 to 87.0 nM; the final-model EC50 in the wild-type reference parasites is 2.3 nM (Table 3, Genotype 1).
+- **Source aliases:**
+  - `C` -- used directly in Simpson 2013 Methods Eq. 1.
+- **Example models:** `Simpson_2013_artesunate.R` (sigmoid-Emax inhibition of normalised hypoxanthine uptake by per-well artesunate concentration).
+- **Notes:** Specific scope because the canonical name is bound to artesunate as the applied antimalarial. Sibling canonicals `STIM_CHLOROQUINE_NM`, `STIM_MEFLOQUINE_NM`, and `STIM_LUMEFANTRINE_NM`. See `STIM_CHLOROQUINE_NM` Notes for the broader rationale. Ratified canonically alongside the Simpson 2013 antimalarial in vitro susceptibility extraction.
 
 ### FPG (**canonical for baseline fasting plasma glucose**)
 - **Description:** Fasting plasma glucose concentration at baseline (or time-varying baseline-style observation; document per-model). Distinct from `GLU` (time-varying plasma glucose regressor input for mechanistic glucose-kinetics models).
@@ -4516,6 +4549,54 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
   - `ADH1B` (the source NONMEM indicator used in `Nemoto_2017_ethanol.R`; 1 for *2/*2 homozygotes, 0 for *2/*1 heterozygotes; Nemoto 2017 Table II structural model encodes the Vmax conditional via two separate THETAs).
 - **Example models:** `Nemoto_2017_ethanol.R` (additive shift on Vmax: +176 mg/h for *2/*2 homozygotes relative to the *2/*1 reference Vmax of 7790 mg/h; Nemoto 2017 Table II final model).
 - **Notes:** ADH1B*2 is the East-Asian high-activity alcohol-dehydrogenase variant (rs1229984 Arg47His); the *2 allele encodes a ~40x faster ethanol oxidation rate than the *1 wild-type. Allele frequency in Japanese populations is ~70%, so most subjects are *2/*2 or *1/*2 with a small *1/*1 minority (~9% expected). Nemoto 2017 inherits the two-Vmax parameterization from Seng et al. 2014 (which estimated Vmax separately for *2/*1 and *2/*2 in a Chinese + Indian cohort) and does not report an ADH1B genotype distribution for its 34-subject Japanese cohort; the structural model is silent on ADH1B*1/*1 subjects. Future ADH1B-aware ethanol-PK extractions that explicitly model all three genotypes should register `ADH1B_S2_HET` as a companion indicator following the `SLCO1B1_HAP15_HET` / `SLCO1B1_HAP15_HOM` precedent. Ratified canonically on 2026-05-18 alongside the Nemoto 2017 ethanol extraction.
+
+## Pathogen / parasite genotype
+
+The canonicals in this section encode genotype of an infectious-disease pathogen (parasite, bacterium, virus) rather than of the human host. The "subject" carrying the variant is the pathogen isolate (or a parasite copy-number variant within an isolate), not the patient. This section is distinct from the host-genome `## Pharmacogenetics` and `## Pharmacogenomic SNPs` sections above; pathogen-genotype indicators must not be confused with host pharmacogenetic indicators because they describe a different organism's genome and they drive a different mechanism (intrinsic pathogen susceptibility / resistance, not host metabolism or transport).
+
+### PFMDR1_86Y (**canonical for Plasmodium falciparum pfmdr1 codon-86 tyrosine mutant indicator**)
+- **Description:** 1 = the Plasmodium falciparum isolate carries the pfmdr1 codon-86 tyrosine (Y) mutant allele on a single-copy pfmdr1 background (Simpson 2013 Genotype 2: single-copy + 86Y mutation); 0 = otherwise (the union of single-copy wild-type, single-copy 1042D mutant, and any multi-copy isolate). Time-fixed per isolate (the parasite's genotype is set when the clinical sample is drawn). The reference category is Simpson 2013 Genotype 1: single-copy pfmdr1 with wild-type alleles 86N and 1042N, encoded as `PFMDR1_86Y = 0`, `PFMDR1_1042D = 0`, `PFMDR1_CN2 = 0`, `PFMDR1_CN3PLUS = 0`.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (the union of single-copy wild-type 86N/1042N, single-copy 1042D, double-copy WT, and triple-or-more-copy WT, when paired with the other three pfmdr1 indicators all at 0). The implicit four-indicators-all-zero reference is Simpson 2013 Genotype 1 (single-copy wild-type 86N/1042N).
+- **Source aliases:**
+  - `X1` -- used directly in Simpson 2013 Methods (the second NLME analysis modifying Eq. 2 with binary indicators X1-X4 for the four non-reference genotype groups; X1 corresponds to single-copy with 86Y mutation, see paper text after Table 3).
+- **Example models:** `Simpson_2013_chloroquine.R`, `Simpson_2013_mefloquine.R`, `Simpson_2013_lumefantrine.R`, `Simpson_2013_artesunate.R` (proportional-shift effect on EC50: `EC50_i = EC50 * (1 + e_pfmdr1_86y_ec50 * PFMDR1_86Y + ...) * exp(eta_i)`; Simpson 2013 Table 3 percent-change row for Genotype 2 vs reference).
+- **Notes:** First pathogen-genotype canonical in the register; the entity carrying the genotype is a Plasmodium falciparum clinical isolate, not the human host. The orientation follows the source paper's encoding (`X1 = 1` for the 86Y mutant) and the source paper's choice of the single-copy wild-type 86N/1042N parasite as the reference category. The four pfmdr1 indicators (`PFMDR1_86Y`, `PFMDR1_1042D`, `PFMDR1_CN2`, `PFMDR1_CN3PLUS`) are mutually exclusive in the Simpson 2013 cohort because Thai pfmdr1 mutations occur almost exclusively in single-copy parasites (Simpson 2013 Methods, Molecular Analysis of pfmdr1, citing reference [11,15]) and amplifications occur exclusively in wild-type 86N/1042N parasites -- the all-zero combination encodes Genotype 1 (single-copy WT), and at most one of the four indicators can be 1 per isolate. Data assemblers should preserve mutual exclusivity unless a future paper reports the 86Y / 1042D / multi-copy combinations directly. Ratified canonically alongside the Simpson 2013 antimalarial in vitro susceptibility extraction.
+
+### PFMDR1_1042D (**canonical for Plasmodium falciparum pfmdr1 codon-1042 aspartate mutant indicator**)
+- **Description:** 1 = the Plasmodium falciparum isolate carries the pfmdr1 codon-1042 aspartate (D) mutant allele on a single-copy pfmdr1 background (Simpson 2013 Genotype 3: single-copy + 1042D mutation); 0 = otherwise. Time-fixed per isolate. Mutually exclusive with `PFMDR1_86Y`, `PFMDR1_CN2`, and `PFMDR1_CN3PLUS` in the Simpson 2013 cohort.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (Simpson 2013 Genotype 1, single-copy wild-type 86N/1042N, when paired with the other three pfmdr1 indicators all at 0).
+- **Source aliases:**
+  - `X2` -- used directly in Simpson 2013 Methods (the second NLME analysis modifying Eq. 2 with binary indicators X1-X4; X2 corresponds to single-copy with 1042D mutation).
+- **Example models:** `Simpson_2013_chloroquine.R`, `Simpson_2013_mefloquine.R`, `Simpson_2013_lumefantrine.R`, `Simpson_2013_artesunate.R` (proportional-shift effect on EC50; Simpson 2013 Table 3 percent-change row for Genotype 3 vs reference).
+- **Notes:** Paired with `PFMDR1_86Y`, `PFMDR1_CN2`, `PFMDR1_CN3PLUS` to encode the five-level pfmdr1 genotype categorical with single-copy wild-type as the implicit reference. See `PFMDR1_86Y` Notes for the broader rationale. Ratified canonically alongside the Simpson 2013 antimalarial in vitro susceptibility extraction.
+
+### PFMDR1_CN2 (**canonical for Plasmodium falciparum pfmdr1 double-copy wild-type amplification indicator**)
+- **Description:** 1 = the Plasmodium falciparum isolate carries two copies of pfmdr1, all of which carry the wild-type 86N/1042N alleles (Simpson 2013 Genotype 4: double copy, all WT); 0 = otherwise. Time-fixed per isolate. Mutually exclusive with `PFMDR1_86Y`, `PFMDR1_1042D`, and `PFMDR1_CN3PLUS` in the Simpson 2013 cohort.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (Simpson 2013 Genotype 1, single-copy wild-type 86N/1042N, when paired with the other three pfmdr1 indicators all at 0).
+- **Source aliases:**
+  - `X3` -- used directly in Simpson 2013 Methods (the second NLME analysis modifying Eq. 2 with binary indicators X1-X4; X3 corresponds to two copies with all wild-type alleles).
+- **Example models:** `Simpson_2013_chloroquine.R`, `Simpson_2013_mefloquine.R`, `Simpson_2013_lumefantrine.R`, `Simpson_2013_artesunate.R` (proportional-shift effect on EC50; Simpson 2013 Table 3 percent-change row for Genotype 4 vs reference).
+- **Notes:** pfmdr1 gene amplification on the western Thai-Myanmar border occurs almost exclusively on a wild-type 86N/1042N background (Simpson 2013 Methods, Molecular Analysis of pfmdr1). Paired with `PFMDR1_86Y`, `PFMDR1_1042D`, and `PFMDR1_CN3PLUS` to encode the five-level pfmdr1 genotype categorical. See `PFMDR1_86Y` Notes for the broader rationale. Ratified canonically alongside the Simpson 2013 antimalarial in vitro susceptibility extraction.
+
+### PFMDR1_CN3PLUS (**canonical for Plasmodium falciparum pfmdr1 triple-or-more-copy wild-type amplification indicator**)
+- **Description:** 1 = the Plasmodium falciparum isolate carries three or more copies of pfmdr1, all of which carry the wild-type 86N/1042N alleles (Simpson 2013 Genotype 5: triple or more copy, all WT); 0 = otherwise. Time-fixed per isolate. Mutually exclusive with `PFMDR1_86Y`, `PFMDR1_1042D`, and `PFMDR1_CN2` in the Simpson 2013 cohort.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (Simpson 2013 Genotype 1, single-copy wild-type 86N/1042N, when paired with the other three pfmdr1 indicators all at 0).
+- **Source aliases:**
+  - `X4` -- used directly in Simpson 2013 Methods (the second NLME analysis modifying Eq. 2 with binary indicators X1-X4; X4 corresponds to three or more copies with all wild-type alleles).
+- **Example models:** `Simpson_2013_chloroquine.R`, `Simpson_2013_mefloquine.R`, `Simpson_2013_lumefantrine.R`, `Simpson_2013_artesunate.R` (proportional-shift effect on EC50; Simpson 2013 Table 3 percent-change row for Genotype 5 vs reference).
+- **Notes:** Future Plasmodium falciparum drug-susceptibility extractions that resolve copy number at finer granularity (e.g., separate indicators for 3, 4, 5+ copies) should register paired canonicals (`PFMDR1_CN3`, `PFMDR1_CN4`, `PFMDR1_CN5PLUS`) rather than overload `PFMDR1_CN3PLUS`. See `PFMDR1_86Y` Notes for the broader rationale. Ratified canonically alongside the Simpson 2013 antimalarial in vitro susceptibility extraction.
 
 ## Lifestyle / medical history
 
