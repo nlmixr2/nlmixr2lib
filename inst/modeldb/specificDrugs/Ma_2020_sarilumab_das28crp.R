@@ -140,9 +140,9 @@ Ma_2020_sarilumab_das28crp <- function() {
     #   PLB      CV 105%   -> omega^2 = log(1.05^2  + 1) = 0.7431
     # --------------------------------------------------------------------------
     etalrbase ~ 0.00646   # Ma 2020 Table 3: BASE IIV 8.05% CV
-    etalEmax ~ 0.4105    # Ma 2020 Table 3: Log(emax) IIV 71.2% CV
+    etalemax ~ 0.4105    # Ma 2020 Table 3: Log(emax) IIV 71.2% CV
     etalic50 ~ 1.252     # Ma 2020 Table 3: ic50 IIV 158% CV
-    etalKout ~ 0.5360    # Ma 2020 Table 3: kout IIV 84.2% CV
+    etalkout ~ 0.5360    # Ma 2020 Table 3: kout IIV 84.2% CV
     etalPLB  ~ 0.7431    # Ma 2020 Table 3: PLB IIV 105% CV
 
     # --------------------------------------------------------------------------
@@ -179,10 +179,10 @@ Ma_2020_sarilumab_das28crp <- function() {
             (BLPHYVAS / 66  )^e_blphyvas_base *
             (BLHAQ    / 1.75)^e_blhaq_base    *
             (WT       / 72.8)^e_wt_base
-    lEmax_i <- lemax + etalEmax + e_crp_lemax * log(CRP / 15.7)
-    emax    <- 1 / (1 + exp(-lEmax_i))
+    lemax_i <- lemax + etalemax + e_crp_lemax * log(CRP / 15.7)
+    emax    <- 1 / (1 + exp(-lemax_i))
     ic50    <- exp(lic50 + etalic50)
-    kout    <- exp(lkout + etalKout) * e_pricort_kout^PRICORT
+    kout    <- exp(lkout + etalkout) * e_pricort_kout^PRICORT
     PLB     <- exp(lPLB  + etalPLB)
     kin     <- kout * rbase
 

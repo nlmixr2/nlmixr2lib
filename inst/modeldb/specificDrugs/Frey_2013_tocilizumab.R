@@ -145,9 +145,9 @@ Frey_2013_tocilizumab <- function() {
     #   cov(ec50, emax) = 0.44 * sqrt(1.358) * sqrt(0.01203)
     #                   = 0.44 * 1.166 * 0.1097 = 0.05626
     # ------------------------------------------------------------------
-    etalec50 + etalEmax ~ c(1.358,
+    etalec50 + etalemax ~ c(1.358,
                             0.05626, 0.01203)   # Frey 2013 Table 1: ec50 IIV 170% CV, emax IIV 11% CV, ec50-emax correlation 0.44
-    etalKout  ~ 0.3075     # Frey 2013 Table 1: kout IIV 60% CV
+    etalkout  ~ 0.3075     # Frey 2013 Table 1: kout IIV 60% CV
     etalrbase  ~ 0.008805   # Frey 2013 Table 1: Baseline IIV 9.4% CV
     etalDMARD ~ 1.553      # Frey 2013 Table 1: DMARD effect IIV 193% CV
 
@@ -182,8 +182,8 @@ Frey_2013_tocilizumab <- function() {
     pain_floored <- max(0.010, PAIN ) / 60      # Frey 2013 Table 2: PAIN floored at 0.010 to keep the power form well-defined when PAIN = 0
 
     ec50  <- exp(lec50  + etalec50 ) * lil6_ratio^e_lil6_ec50
-    emax  <- exp(lemax  + etalEmax ) * (1 + e_sexm_emax * (1 - SEXF))
-    kout  <- exp(lkout  + etalKout ) * (1 + e_race_amind_oth_kout * RACE_ASIAN_AMIND_OTH)
+    emax  <- exp(lemax  + etalemax ) * (1 + e_sexm_emax * (1 - SEXF))
+    kout  <- exp(lkout  + etalkout ) * (1 + e_race_amind_oth_kout * RACE_ASIAN_AMIND_OTH)
     hill <- exp(lhill)
     rbase  <- exp(lrbase  + etalrbase ) *
              haq_floored^e_blhaq_base *

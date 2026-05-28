@@ -118,7 +118,7 @@ Sheng_2016_quinine_rat <- function() {
     #   E_add 27.2% -> 0.0721
     # ------------------------------------------------------------------
 
-    etalEmax  ~ 0.0218
+    etalemax  ~ 0.0218
     # Table 2 2GP column: omega^2 on emax reported as CV% = 14.8% (RSE 0).
     etalRIC50 ~ 0.000100
     # Table 2 2GP column: omega^2 on RIC50 reported as CV% = 1% (RSE 35.6).
@@ -153,7 +153,7 @@ Sheng_2016_quinine_rat <- function() {
     # ------------------------------------------------------------------
     # Individual structural parameters (multiplicative log-normal IIV).
     # ------------------------------------------------------------------
-    emax_i  <- exp(lemax  + etalEmax)
+    emax_i  <- exp(lemax  + etalemax)
     RIC50_i <- exp(lRIC50 + etalRIC50)
     e0_i    <- e0    * exp(etae0)     # negative typical value; sign preserved
     k1_i    <- exp(lk1    + etalk1)

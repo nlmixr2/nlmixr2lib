@@ -129,7 +129,7 @@ Kuchimanchi_2024_dostarlimab <- function() {
     # omega^2_Vc = 0.0278, omega^2_Imax = 0.903.
     etalcl + etalvc ~ c(0.0563,
                         0.0193, 0.0278)
-    etalImax ~ 0.903
+    etalimax ~ 0.903
 
     # Residual error (combined additive + proportional). Kuchimanchi 2024
     # Table 2 reports two proportional residual errors (GARNET 0.16, RUBY
@@ -167,7 +167,7 @@ Kuchimanchi_2024_dostarlimab <- function() {
     # Time-dependent CL (Hill function of time since first dose; t in days).
     # I_max < 0; sign applied here to keep individual values strictly negative
     # under log-normal IIV on |I_max|.
-    imax_i <- -exp(limax + etalImax)
+    imax_i <- -exp(limax + etalimax)
     t50    <- exp(lt50)
     hill   <- exp(lhill)
     td_cl  <- exp(imax_i * t^hill / (t50^hill + t^hill))

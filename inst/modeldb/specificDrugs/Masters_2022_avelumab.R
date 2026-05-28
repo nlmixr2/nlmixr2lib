@@ -70,7 +70,7 @@ Masters_2022_avelumab <- function() {
       0.03048, 0.03776,
       0.08418, 0.01799, 1.204
     )
-    etalImax ~ 0.1052  # Masters 2022 Table 1: omega^2_Imax = 0.1052
+    etalimax ~ 0.1052  # Masters 2022 Table 1: omega^2_Imax = 0.1052
 
     # Residual error (combined proportional + additive). The table column
     # is "sigma" (standard deviation, not variance).
@@ -87,7 +87,7 @@ Masters_2022_avelumab <- function() {
     # Time-dependent clearance modifier (Hill function of time since first dose).
     hill  <- exp(lhill)
     t50    <- exp(lt50)
-    imax_i <- -exp(limax + etalImax)
+    imax_i <- -exp(limax + etalimax)
     cl     <- cl_base * (1 + imax_i * t^hill / (t50^hill + t^hill))
 
     # Two-compartment micro-constants.

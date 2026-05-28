@@ -111,7 +111,7 @@ Melhem_2022_dostarlimab <- function() {
     #   omega^2_Imax        = 0.537
     etalcl + etalvc ~ c(0.0551,
                         0.0210, 0.0258)
-    etalImax ~ 0.537
+    etalimax ~ 0.537
 
     # Residual error (combined additive + proportional). Melhem 2022 Table 3
     # reports proportional 0.133 (unitless) and additive 2.79 mg/L. The
@@ -143,7 +143,7 @@ Melhem_2022_dostarlimab <- function() {
     # Time-dependent CL (Hill function of time since first dose; t in days).
     # I_max < 0; sign applied here to keep individual values strictly negative
     # under log-normal IIV on |I_max|.
-    imax_i <- -exp(limax + etalImax)
+    imax_i <- -exp(limax + etalimax)
     t50    <- exp(lt50)
     hill   <- exp(lhill)
     td_cl  <- exp(imax_i * t^hill / (t50^hill + t^hill))

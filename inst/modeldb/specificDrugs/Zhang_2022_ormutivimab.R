@@ -92,7 +92,7 @@ Zhang_2022_ormutivimab <- function() {
     # omega^2 = log(CV^2 + 1).
     #   omega(emax) 9.0%   -> log(0.09^2  + 1) = 0.008068
     #   omega(hill) 56.1% -> log(0.561^2 + 1) = 0.273690
-    etalEmax  ~ 0.008068  # Zhang 2022 Table 3: omega(emax)  =  9.0%; log(0.09^2 + 1)  = 0.008068
+    etalemax  ~ 0.008068  # Zhang 2022 Table 3: omega(emax)  =  9.0%; log(0.09^2 + 1)  = 0.008068
     etalhill ~ 0.273690  # Zhang 2022 Table 3: omega(Gamma) = 56.1%; log(0.561^2 + 1) = 0.273690
 
     # Residual error - combined proportional + additive (Zhang 2022 Table 3
@@ -111,7 +111,7 @@ Zhang_2022_ormutivimab <- function() {
 
     # Individual parameters - log-normal IIV on emax and hill; ET50 and e0
     # carry only the typical value (no eta in final model per Table 3).
-    emax  <- emax_tv * exp(etalEmax)
+    emax  <- emax_tv * exp(etalemax)
     ET50  <- ET50_tv
     hill <- exp(lhill + etalhill)
 
