@@ -80,8 +80,8 @@ Kovalenko_2016_dupilumab_ddmore <- function() {
     lvc      <- 0.705    ; label("V2 covariate parameter; log(V2) at 75 kg (log L)")           # .lst FINAL TH 1 (POPV2)
 
     # Linear elimination rate constant (1/d), log scale.  KE = exp(MU_2 + ETA(2)).
-    # .lst final TH 2 = -1.40 -> typical ke = exp(-1.40) ~ 0.247 1/d (vs Table 2: 0.0459 1/d).
-    lke      <- -1.40    ; label("Linear elimination rate constant ke (log 1/d)")              # .lst FINAL TH 2 (POPKE)
+    # .lst final TH 2 = -1.40 -> typical kel = exp(-1.40) ~ 0.247 1/d (vs Table 2: 0.0459 1/d).
+    lkel      <- -1.40    ; label("Linear elimination rate constant kel (log 1/d)")              # .lst FINAL TH 2 (POPKE)
 
     # Maximum target-mediated elimination rate Vmax (mg/L/d), log scale.
     # VM = exp(MU_3 + ETA(3)).  .lst final TH 3 = -1.08 -> Vmax ~ 0.339 mg/L/d
@@ -126,7 +126,7 @@ Kovalenko_2016_dupilumab_ddmore <- function() {
     # below are NOT representative of population variability in Kovalenko 2016.
     # Use the specificDrugs/ counterpart for population-simulation work.
     etalvc                ~ 2.92e-06                                  # .lst FINAL OMEGA(1,1) (ETAV2)
-    etalke + etalvmax     ~ c(2.26e-07, -1.72e-07, 1.36e-07)          # .lst FINAL OMEGA BLOCK(2): var2, cov, var3
+    etalkel + etalvmax     ~ c(2.26e-07, -1.72e-07, 1.36e-07)          # .lst FINAL OMEGA BLOCK(2): var2, cov, var3
     etalka                ~ 7.32e-08                                  # .lst FINAL OMEGA(4,4) (ETAKA)
 
     # Residual error.  The .ctl $ERROR computes
@@ -150,7 +150,7 @@ Kovalenko_2016_dupilumab_ddmore <- function() {
     # Individual PK parameters
     # V2 follows the bundle's non-standard form: log(V2) is proportional to c1.
     vc   <- exp((lvc + etalvc) * c1)
-    ke   <- exp(lke + etalke)
+    kel   <- exp(lkel + etalkel)
     vmax <- exp(lvmax + etalvmax)
     ka   <- exp(lka + etalka)
 
@@ -159,7 +159,7 @@ Kovalenko_2016_dupilumab_ddmore <- function() {
     # to central).  The .ctl's COMP=(AUC) integrator is omitted; users can
     # request AUC at solve time.
     d/dt(depot)       <- -ka * depot
-    d/dt(central)     <-  ka * depot - ke * central -
+    d/dt(central)     <-  ka * depot - kel * central -
                           k23 * central + k32 * peripheral1 -
                           central * vmax / (Km + central / vc)
     d/dt(peripheral1) <-  k23 * central - k32 * peripheral1

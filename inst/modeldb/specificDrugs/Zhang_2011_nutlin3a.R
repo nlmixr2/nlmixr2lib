@@ -43,7 +43,7 @@ Zhang_2011_nutlin3a <- function() {
     # paper's description of "very rapid" clearance at low concentration. See
     # the vignette Assumptions and deviations section for the unit decision.
     lka      <- log(0.409)   ; label("First-order oral absorption rate (1/h)")             # Table 2 (ka = 0.409)
-    lke      <- log(0.0160)  ; label("Hepatic linear elimination clearance ke (L/h), acts on arterial concentration per liver ODE") # Table 2 (Ke = 0.0160)
+    lkel      <- log(0.0160)  ; label("Hepatic linear elimination clearance kel (L/h), acts on arterial concentration per liver ODE") # Table 2 (Ke = 0.0160)
     lvmax    <- log(0.0287)  ; label("Saturable elimination Vmax in arterial blood (mg/h)") # Table 2 (Vmax = 0.0287)
     lkm      <- log(0.050)   ; label("Michaelis constant for arterial saturable elimination (mg/L)") # Table 2 (Km = 0.050)
 
@@ -85,7 +85,7 @@ Zhang_2011_nutlin3a <- function() {
     # IIV -- Table 2 reports CV% values. omega^2 on the log scale is
     # log(CV^2 + 1) for log-normal random effects.
     etalka   ~ 0.0926   # log(0.312^2 + 1); Table 2 (IIV ka = 31.2%)
-    etalke   ~ 0.00408  # log(0.064^2 + 1); Table 2 (IIV ke =  6.4%)
+    etalkel   ~ 0.00408  # log(0.064^2 + 1); Table 2 (IIV kel =  6.4%)
     etalvmax ~ 0.153    # log(0.406^2 + 1); Table 2 (IIV Vmax = 40.6%)
 
     # Residual error (Table 2): 35.6% -- encoded as proportional SD on the
@@ -103,7 +103,7 @@ Zhang_2011_nutlin3a <- function() {
     # is converted to L/h here.
     # ------------------------------------------------------------------
     ka      <- exp(lka   + etalka)
-    ke_cl   <- exp(lke   + etalke)
+    ke_cl   <- exp(lkel   + etalkel)
     vmax    <- exp(lvmax + etalvmax)
     km      <- exp(lkm)
 
@@ -240,7 +240,7 @@ Zhang_2011_nutlin3a <- function() {
 
     # Liver -- hepatic artery inflow + portal returns from spleen and
     # intestine, outflow proportional to combined liver flow, plus a
-    # linear elimination term. The paper writes ke x C_ART for the
+    # linear elimination term. The paper writes kel x C_ART for the
     # elimination term; the literal form is preserved here. See vignette
     # Assumptions and deviations.
     d/dt(liver) <-

@@ -14,8 +14,8 @@ Kovalenko_2016_dupilumab <- function() {
   # Parameterization (as published): 2-compartment model with parallel linear
   # and Michaelis-Menten elimination from the central compartment, and
   # first-order absorption from a SC depot.  The paper parameterizes the
-  # linear elimination as a first-order rate constant ke (1/d) acting on the
-  # central amount (ke * central) rather than as clearance CL.
+  # linear elimination as a first-order rate constant kel (1/d) acting on the
+  # central amount (kel * central) rather than as clearance CL.
   # Intercompartmental transport is parameterized as k23 (1/d, central to
   # peripheral) and k32 (1/d, peripheral to central) rather than as Q and Vp;
   # the paper notes V3 = V2 * k23 / k32.  Km was fixed at 0.01 mg/L because
@@ -54,7 +54,7 @@ Kovalenko_2016_dupilumab <- function() {
   ini({
     # Structural PK parameters - final estimates from Table 2, "BLQ data included" column
     lvc     <- log(2.74);   label("central volume at 75 kg (L)")                     # Table 2: V2 = 2.74 L
-    lke     <- log(0.0459); label("linear elimination rate constant (1/d)")           # Table 2: ke = 0.0459 1/d
+    lkel     <- log(0.0459); label("linear elimination rate constant (1/d)")           # Table 2: kel = 0.0459 1/d
     lk23    <- log(0.0652); label("central-to-peripheral rate constant (1/d)")        # Table 2: k23 = 0.0652 1/d
     lk32    <- log(0.129);  label("peripheral-to-central rate constant (1/d)")        # Table 2: k32 = 0.129 1/d
     lka     <- log(0.254);  label("first-order absorption rate constant (1/d)")       # Table 2: ka = 0.254 1/d
@@ -67,7 +67,7 @@ Kovalenko_2016_dupilumab <- function() {
 
     # Inter-individual variability - Table 2 reports omega^2 directly
     etalvc ~ 0.0225  # Table 2: omega^2(V2) = 0.0225
-    etalke ~ 0.131   # Table 2: omega^2(ke) = 0.131
+    etalkel ~ 0.131   # Table 2: omega^2(kel) = 0.131
     etalka ~ 0.251   # Table 2: omega^2(ka) = 0.251
     etalvmax ~ 0.0428  # Table 2: omega^2(Vm) = 0.0428
 
@@ -79,14 +79,14 @@ Kovalenko_2016_dupilumab <- function() {
   model({
     # Individual PK parameters; weight-adjusted central volume per Eq. 1
     vc  <- exp(lvc + etalvc) * (WT / 75)^e_wt_vc
-    ke  <- exp(lke + etalke)
+    kel  <- exp(lkel + etalkel)
     k23 <- exp(lk23)
     k32 <- exp(lk32)
     ka  <- exp(lka + etalka)
     vmax <- exp(lvmax + etalvmax)
 
     d/dt(depot)       <- -ka * depot
-    d/dt(central)     <-  ka * depot - ke * central - k23 * central + k32 * peripheral1 -
+    d/dt(central)     <-  ka * depot - kel * central - k23 * central + k32 * peripheral1 -
                           central * (vmax / (Km + central / vc))
     d/dt(peripheral1) <-                              k23 * central - k32 * peripheral1
 

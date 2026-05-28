@@ -59,15 +59,15 @@ Jager_2011_gemtuzumab <- function() {
     lku    <- log(310);     label("Drug-receptor dissociation (unbinding) rate ku (1/h)")                                  # parObj POP_ku
     lki    <- log(0.624);   label("Drug-receptor complex internalization rate ki (1/h)")                                   # parObj POP_ki
 
-    # Free CD33 receptor turnover (zero-order production rp, first-order elimination ke).
-    lke    <- log(0.199);   label("Free receptor first-order elimination rate ke (1/h)")                                   # parObj POP_ke
+    # Free CD33 receptor turnover (zero-order production rp, first-order elimination kel).
+    lkel    <- log(0.199);   label("Free receptor first-order elimination rate kel (1/h)")                                   # parObj POP_ke
     lrp    <- log(823);     label("Free receptor zero-order production rate rp (MDL native receptor units / h)")           # parObj POP_rp
 
     # Leukemic blast cell dynamics (linear depletion at typical-population rate alph).
     lalph  <- log(0.0755);  label("Leukemic blast first-order depletion rate alpha (1/h)")                                 # parObj POP_alph
     ln0    <- log(1.32e-5); label("Initial leukemic blast count n0 at t = 0 (MDL native cell-count units)")                # parObj POP_n0
 
-    # Inter-individual variability -- only ki, ke, and rp carry non-zero IIV in the parObj.
+    # Inter-individual variability -- only ki, kel, and rp carry non-zero IIV in the parObj.
     # The MDL declares omega_X with `type is sd`, so the parObj value IS the standard deviation;
     # nlmixr2 expects a variance for the `~` form, hence the squared values below.
     # The MDL parObj also declares an OMEGA correlation block among ETA_k, ETA_alph, ETA_n0,
@@ -75,7 +75,7 @@ Jager_2011_gemtuzumab <- function() {
     # so the correlation block is mathematically vestigial and is dropped here. See the
     # vignette Errata.
     etalki ~ 0.258^2  # parObj omega_ki (sd 0.258 -> variance 0.0666)
-    etalke ~ 0.281^2  # parObj omega_ke (sd 0.281 -> variance 0.0790)
+    etalkel ~ 0.281^2  # parObj omega_ke (sd 0.281 -> variance 0.0790)
     etalrp ~ 0.611^2  # parObj omega_rp (sd 0.611 -> variance 0.3733)
 
     # Residual error - additive on the predicted central concentration output1 = central / vc.
@@ -85,7 +85,7 @@ Jager_2011_gemtuzumab <- function() {
 
   model({
     # Individual parameters - log-linear with random effects only where the parObj reports a
-    # non-zero IIV sd (ki, ke, rp); typical-value-only otherwise.
+    # non-zero IIV sd (ki, kel, rp); typical-value-only otherwise.
     vc   <- exp(lvc)
     k    <- exp(lk)
     km   <- exp(lkm)
@@ -93,7 +93,7 @@ Jager_2011_gemtuzumab <- function() {
     kb   <- exp(lkb)
     ku   <- exp(lku)
     ki   <- exp(lki + etalki)
-    ke   <- exp(lke + etalke)
+    kel   <- exp(lkel + etalkel)
     rp   <- exp(lrp + etalrp)
     alph <- exp(lalph)
     n0   <- exp(ln0)
@@ -106,9 +106,9 @@ Jager_2011_gemtuzumab <- function() {
     vblood <- 4.8
 
     # Initial conditions per the MDL DEQ block. The free receptor starts at the steady-state
-    # baseline rp / ke; the drug-receptor complex starts empty; leukemic blasts start at n0;
+    # baseline rp / kel; the drug-receptor complex starts empty; leukemic blasts start at n0;
     # both drug compartments start empty (dosing populates `central` via amt).
-    target(0)      <- rp / ke
+    target(0)      <- rp / kel
     complex(0)     <- 0
     cells(0)       <- n0
     central(0)     <- 0
@@ -121,7 +121,7 @@ Jager_2011_gemtuzumab <- function() {
     #   A4 -> cells         leukemic blast cell population
     #   A5 -> peripheral1   drug peripheral compartment (Monolix re-fit addition)
     d/dt(central)     <- (-kb * central * target + vc * ku * complex) * cells / (vblood * nav) - k * central - km * central + kn * peripheral1
-    d/dt(target)      <- -(kb / vc) * central * target + ku * complex + rp - ke * target
+    d/dt(target)      <- -(kb / vc) * central * target + ku * complex + rp - kel * target
     d/dt(complex)     <-  (kb / vc) * central * target - ku * complex - ki * complex
     d/dt(cells)       <- -alph * cells
     d/dt(peripheral1) <-  km * central - kn * peripheral1
