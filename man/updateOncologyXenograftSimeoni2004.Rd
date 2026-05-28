@@ -7,9 +7,9 @@
 updateOncologyXenograftSimeoni2004(
   object,
   ncmt,
-  damagedCmtName = "damagedCells",
+  damagedCmtName = "damaged_cells",
   drugEffectName = "drugEffectCyclingCells",
-  undamagedCmtName = "cyclingCells",
+  undamagedCmtName = "cycling_cells",
   tumorVolName = "tumorVol",
   transitRateName = "damageTransit"
 )

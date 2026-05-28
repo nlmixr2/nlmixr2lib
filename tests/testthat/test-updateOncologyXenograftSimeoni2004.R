@@ -8,18 +8,18 @@ test_that("updateOncologyXenograftSimeoni2004", {
   expect_s3_class(newModel, class = "rxUi")
 
   # the new states are added
-  expect_false("damagedCells5" %in% origModel$state)
-  expect_true("damagedCells5" %in% newModel$state)
+  expect_false("damaged_cells5" %in% origModel$state)
+  expect_true("damaged_cells5" %in% newModel$state)
 
   # the new tumor line is added
   expect_no_match(
     deparse(as.function(newModel), width.cutoff = 500),
-    "tumorVol <- cyclingCells \\+ damagedCells1 \\+ damagedCells2 \\+ damagedCells3 \\+ damagedCells4 \\+ damagedCells5", # nolint: line_length_linter.
+    "tumorVol <- cycling_cells \\+ damaged_cells1 \\+ damaged_cells2 \\+ damaged_cells3 \\+ damaged_cells4 \\+ damaged_cells5", # nolint: line_length_linter.
     all = FALSE
   )
   expect_match(
     deparse(as.function(newModel), width.cutoff = 500),
-    "tumorVol <- cyclingCells \\+ damagedCells1 \\+ damagedCells2 \\+ damagedCells3 \\+ damagedCells4 \\+ damagedCells5", # nolint: line_length_linter.
+    "tumorVol <- cycling_cells \\+ damaged_cells1 \\+ damaged_cells2 \\+ damaged_cells3 \\+ damaged_cells4 \\+ damaged_cells5", # nolint: line_length_linter.
     all = FALSE
   )
 })
