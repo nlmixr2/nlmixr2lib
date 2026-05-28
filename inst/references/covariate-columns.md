@@ -99,13 +99,13 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Description:** Subject body height at baseline. Time-fixed unless the source paper states otherwise.
 - **Units:** cm
 - **Type:** continuous
-- **Scope:** specific
-- **Reference category:** n/a -- used with a linear-deviation form `(HT - ref)` or with a power-style scaling. Reference values observed: 167 cm (Naik 2016, vortioxetine adult MDD/GAD population median).
+- **Scope:** general
+- **Reference category:** n/a -- used with a linear-deviation form `(HT - ref)` or with a power-style scaling. Reference values observed: 167 cm (Naik 2016, vortioxetine adult MDD/GAD population median), 165 cm (Zhang 2018, flurbiprofen Chinese adult postoperative-pain population median).
 - **Source aliases:**
   - `HGT` -- height (cm) abbreviation appearing in some NONMEM control streams.
   - `HEIGHT` -- spelled-out form.
-- **Example models:** `Naik_2016_vortioxetine.R` (reference 167 cm; linear-additive effect 0.40 L/hr per (HT - 167) cm on CL/F, retained over weight and BMI in stepwise selection because it produced the larger reduction in CL IIV).
-- **Notes:** Height is sometimes retained as a size covariate when allometric scaling on weight performs less well; it is also an input to BSA, BMI, FFM, and LBM derivations, so a model that retains `HT` alongside one of those derived covariates should document the dependency in `covariateData[[HT]]$notes`. Specific scope until a second adult-popPK model ratifies the name; at that point promote to `general`.
+- **Example models:** `Naik_2016_vortioxetine.R` (reference 167 cm; linear-additive effect 0.40 L/hr per (HT - 167) cm on CL/F, retained over weight and BMI in stepwise selection because it produced the larger reduction in CL IIV); `Zhang_2018_flurbiprofen.R` (reference 165 cm; linear-multiplicative effect `1 + theta_height * (HT - 165)` on the effect-compartment equilibration rate Ke alongside a paired linear-multiplicative WT effect).
+- **Notes:** Height is sometimes retained as a size covariate when allometric scaling on weight performs less well; it is also an input to BSA, BMI, FFM, and LBM derivations, so a model that retains `HT` alongside one of those derived covariates should document the dependency in `covariateData[[HT]]$notes`. Promoted to `general` after Zhang 2018 ratified the same baseline-time-fixed body-height semantics that Naik 2016 introduced.
 
 ### BSA (**canonical for body surface area**)
 - **Description:** Body surface area (typically computed by DuBois, Mosteller, or Haycock from height and weight).

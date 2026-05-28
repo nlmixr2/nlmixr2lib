@@ -300,6 +300,8 @@ navbar:
         href: articles/Plock_2014_ferumoxytol.html
       - text: "Fimasartan (Kim 2017)"
         href: articles/Kim_2017_fimasartan.html
+      - text: "Flurbiprofen (Zhang 2018)"
+        href: articles/Zhang_2018_flurbiprofen.html
       - text: "Follitropin delta (Rose 2016)"
         href: articles/Rose_2016_follitropin_delta.html
       - text: "Fondaparinux (Zufferey 2018)"
@@ -1533,6 +1535,7 @@ articles:
   - articles/Zecchin_2016_tumorovarian
   - articles/Zhang_2011_nutlin3a
   - articles/Zhang_2016_rilotumumab
+  - articles/Zhang_2018_flurbiprofen
   - articles/Zhang_2019_nivolumab
   - articles/Zhang_2021_dupilumab
   - articles/Zhang_2022_ormutivimab
