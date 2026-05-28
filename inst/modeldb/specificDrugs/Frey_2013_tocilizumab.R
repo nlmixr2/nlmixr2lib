@@ -116,7 +116,7 @@ Frey_2013_tocilizumab <- function() {
     lec50  <- log(3.7);   label("Tocilizumab concentration at 50% of emax (ug/mL)")             # Frey 2013 Table 1, ec50
     lemax  <- log(0.73);  label("Maximum tocilizumab effect on DAS28 production rate kin (fraction)") # Frey 2013 Table 1, emax
     lkout  <- log(0.038); label("First-order DAS28 'loss' rate kout (1/day)")                   # Frey 2013 Table 1, kout
-    lgamma <- log(0.64);  label("Sigmoidicity (Hill) coefficient (unitless)")                   # Frey 2013 Table 1, GAMMA
+    lhill <- log(0.64);  label("Sigmoidicity (Hill) coefficient (unitless)")                   # Frey 2013 Table 1, GAMMA
     lBase  <- log(6.8);   label("Typical baseline DAS28 score (unitless 0-10)")                 # Frey 2013 Table 1, Baseline DAS28
     lDMARD <- log(0.30);  label("DMARD background effect, in tocilizumab concentration units (ug/mL)") # Frey 2013 Table 1, DMARD effect
 
@@ -184,7 +184,7 @@ Frey_2013_tocilizumab <- function() {
     ec50  <- exp(lec50  + etalec50 ) * lil6_ratio^e_lil6_ec50
     emax  <- exp(lemax  + etalEmax ) * (1 + e_sexm_emax * (1 - SEXF))
     kout  <- exp(lkout  + etalKout ) * (1 + e_race_amind_oth_kout * RACE_ASIAN_AMIND_OTH)
-    gamma <- exp(lgamma)
+    hill <- exp(lhill)
     Base  <- exp(lBase  + etalBase ) *
              haq_floored^e_blhaq_base *
              lil6_ratio^e_lil6_base *
@@ -214,7 +214,7 @@ Frey_2013_tocilizumab <- function() {
     #    expressed in tocilizumab concentration units.
     # ------------------------------------------------------------------
     CeffP <- Cc + DMARD
-    Eff   <- emax * CeffP^gamma / (ec50^gamma + CeffP^gamma)
+    Eff   <- emax * CeffP^hill / (ec50^hill + CeffP^hill)
 
     das28(0)    <- Base
     d/dt(das28) <- kin * (1 - Eff) - kout * das28

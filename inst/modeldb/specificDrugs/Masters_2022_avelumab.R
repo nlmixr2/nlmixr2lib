@@ -42,14 +42,14 @@ Masters_2022_avelumab <- function() {
     lq     <- log(0.03352 * 24); label("Intercompartmental clearance Q for an 80 kg adult (L/day)")    # Masters 2022 Table 1 theta_Q, corrected via its own 95% CI to 0.03352 L/h
 
     # Time-dependent clearance modifier (Hill-type):
-    #   CL(t) = CL_baseline * (1 + imax * t^gamma / (T50^gamma + t^gamma))
+    #   CL(t) = CL_baseline * (1 + imax * t^hill / (T50^hill + t^hill))
     # imax is reported as -0.08533 (fractional decrease in CL at t >> T50).
     # Parameterized here via log|imax| so the magnitude is log-normally
     # distributed with IIV and the negative sign is applied in model(),
     # keeping imax < 0 across all simulated individuals.
     limax  <- log(0.08533);      label("log|imax| - magnitude of the fractional change in CL at t >> T50 (unitless)") # Masters 2022 Table 1: theta_Imax = -0.08533 (sign applied in model())
     lt50   <- log(99.24);        label("log T50 - time at which half of imax is reached (days)")       # Masters 2022 Table 1: theta_T50 = 99.24 days
-    lgamma <- log(2.086);        label("log gamma - Hill shape coefficient of the time-on-CL function (unitless)")    # Masters 2022 Table 1: theta_gamma = 2.086
+    lhill <- log(2.086);        label("log hill - Hill shape coefficient of the time-on-CL function (unitless)")    # Masters 2022 Table 1: theta_gamma = 2.086
 
     # Allometric exponents on body weight (reference 80 kg). Exponent on Q
     # is fixed to 1 per Masters 2022 Methods ("Study overview").
@@ -85,10 +85,10 @@ Masters_2022_avelumab <- function() {
     q       <- exp(lq)           * (WT / 80)
 
     # Time-dependent clearance modifier (Hill function of time since first dose).
-    gamma  <- exp(lgamma)
+    hill  <- exp(lhill)
     t50    <- exp(lt50)
     imax_i <- -exp(limax + etalImax)
-    cl     <- cl_base * (1 + imax_i * t^gamma / (t50^gamma + t^gamma))
+    cl     <- cl_base * (1 + imax_i * t^hill / (t50^hill + t^hill))
 
     # Two-compartment micro-constants.
     kel <- cl / vc

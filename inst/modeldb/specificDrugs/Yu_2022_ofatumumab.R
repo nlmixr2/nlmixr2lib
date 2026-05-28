@@ -125,7 +125,7 @@ Yu_2022_ofatumumab <- function() {
     lb0      <- log(194);      label("Population baseline central-compartment B cell count B0 (cells/uL)")                  # Yu 2022 Table 3
     lemax    <- log(159);      label("Population maximum B-cell-lysis stimulatory effect Emax (unitless)")                  # Yu 2022 Table 3
     lec50    <- log(0.0057);   label("Population free-drug concentration producing 50% of Emax EC50 (mg/L)")                # Yu 2022 Table 3
-    lgamma   <- log(2.81);     label("Hill / sigmoidicity parameter for the lysis stimulatory function (unitless)")         # Yu 2022 Table 3
+    lhill   <- log(2.81);     label("Hill / sigmoidicity parameter for the lysis stimulatory function (unitless)")         # Yu 2022 Table 3
     lkout    <- log(0.0124);   label("Population B cell elimination rate kout (1/day)")                                     # Yu 2022 Table 3
     lqb      <- fixed(log(0.78));     label("Inter-B-cell-compartment flow QB (L/day; FIXED)")                              # Yu 2022 Table 3 (fixed; no IIV reported)
     lvb      <- log(3.7);      label("Peripheral B cell compartment volume Vb (L)")                                         # Yu 2022 Table 3
@@ -201,7 +201,7 @@ Yu_2022_ofatumumab <- function() {
     etalq          ~ 0.705^2  # Yu 2022 Table 3
     etalb0         ~ 0.394^2  # Yu 2022 Table 3
     etalec50       ~ 0.927^2  # Yu 2022 Table 3
-    etalgamma      ~ 1.46^2   # Yu 2022 Table 3
+    etalhill      ~ 1.46^2   # Yu 2022 Table 3
 
     # ---- Residual error (Yu 2022 Table 3 final-model estimates) -------------
     propSd       <- 0.278;    label("Proportional residual error for ofatumumab plasma concentration (fraction)")  # Yu 2022 Table 3
@@ -232,7 +232,7 @@ Yu_2022_ofatumumab <- function() {
     b0_ind   <- exp(lb0       + etalb0)       * (WT / 70)^e_wt_b0    * (AGE / 38)^e_age_b0
     emax     <- exp(lemax     + etalemax)     * (BLBCELL / 200)^e_blbc_emax * exp(e_aplios_emax * STUDY_APLIOS)
     ec50     <- exp(lec50     + etalec50)
-    gamma    <- exp(lgamma    + etalgamma)
+    hill    <- exp(lhill    + etalhill)
     kout     <- exp(lkout     + etalkout)     * (WT / 70)^e_wt_kout  * exp(e_mirror_kout * STUDY_MIRROR)
     qb       <- exp(lqb)
     vb       <- exp(lvb       + etalvb)
@@ -292,7 +292,7 @@ Yu_2022_ofatumumab <- function() {
     # The 2-B-cell-compartment exchange terms cancel at steady state because
     # Bp(0) = B0 * Vb / Vc is the exact algebraic solution of dBp/dt = 0.
     kin      <- kout * b0_ind
-    stim     <- emax * lc^gamma / (ec50^gamma + lc^gamma)
+    stim     <- emax * lc^hill / (ec50^hill + lc^hill)
     d/dt(bcell)         <- kin - kout * (1 + stim) * bcell - (qb / vc) * bcell + (qb / vb) * bcell_periph
     d/dt(bcell_periph)  <-                                    (qb / vc) * bcell - (qb / vb) * bcell_periph
 

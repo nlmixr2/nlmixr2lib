@@ -47,7 +47,7 @@ Kretsos_2014_olokizumab <- function() {
     le0      <- log(3.32);     label("Baseline CRP E0 (ug/mL)")                                      # Kretsos 2014 Table 1 Final: baseline CRP = 3.32 ug/mL (%RSE 15.3)
     emax     <- fixed(0.99);   label("Maximum fractional CRP suppression Imax (unitless)")           # Kretsos 2014 Table 1 (all columns): Emax = 0.99 (fixed); supplement PD NONMEM stream hard-codes 0.99 inline (EFF = BASE*(1 - 0.99*CE^GAM/(EC50^GAM + CE^GAM)))
     lec50    <- log(0.415);    label("Effect-site OKZ for half-maximal CRP suppression EC50 (ug/mL)") # Kretsos 2014 Table 1 Final: EC50 = 0.415 ug/mL (%RSE 23.4)
-    lgamma   <- log(0.869);    label("Sigmoidicity factor gamma (unitless)")                         # Kretsos 2014 Table 1 Final: gamma = 0.869 (%RSE 17.4)
+    lhill   <- log(0.869);    label("Sigmoidicity factor hill (unitless)")                         # Kretsos 2014 Table 1 Final: hill = 0.869 (%RSE 17.4)
     lke0     <- log(0.0858);   label("Effect-compartment equilibration rate ke0 (1/day)")            # Kretsos 2014 Table 1 Final: ke0 = 0.0858 day^-1 (%RSE 27)
 
     # === IIV (Kretsos 2014 Table 1, Final column; diagonal $OMEGA per supplement PD NONMEM stream) ===
@@ -63,7 +63,7 @@ Kretsos_2014_olokizumab <- function() {
     etalendo  ~ 0.1069    # CV 32.7% on log endo  -> (0.327)^2 = 0.1069; Kretsos 2014 Table 1 Final IIV on endogenous anti-IL-6
     etale0    ~ 1.0506    # CV 102.5% on log E0   -> (1.025)^2 = 1.0506; Kretsos 2014 Table 1 Final IIV on E0
     etalec50  ~ 0.6100    # CV 78.1% on log EC50  -> (0.781)^2 = 0.6100; Kretsos 2014 Table 1 Final IIV on EC50
-    etalgamma ~ 1.0302    # CV 101.5% on log gamma-> (1.015)^2 = 1.0302; Kretsos 2014 Table 1 Final IIV on gamma
+    etalhill ~ 1.0302    # CV 101.5% on log hill-> (1.015)^2 = 1.0302; Kretsos 2014 Table 1 Final IIV on hill
     etalke0   ~ 0.7868    # CV 88.7% on log ke0   -> (0.887)^2 = 0.7868; Kretsos 2014 Table 1 Final IIV on ke0
     # NOTE: Kretsos 2014 Table 1 reports no IIV on Q (inter-compartmental clearance) or
     # F (SC bioavailability); both are population-only here.
@@ -86,7 +86,7 @@ Kretsos_2014_olokizumab <- function() {
     # === Individual structural PD parameters ===
     e0      <- exp(le0    + etale0)
     ec50    <- exp(lec50  + etalec50)
-    gamma   <- exp(lgamma + etalgamma)
+    hill   <- exp(lhill + etalhill)
     ke0     <- exp(lke0   + etalke0)
 
     # === Micro-rate constants ===
@@ -121,7 +121,7 @@ Kretsos_2014_olokizumab <- function() {
     Cc  <- ccent + endo
 
     # PD: CRP follows a sigmoid Imax suppression of the baseline driven by the effect compartment
-    crp <- e0 * (1 - emax * effect^gamma / (ec50^gamma + effect^gamma))
+    crp <- e0 * (1 - emax * effect^hill / (ec50^hill + effect^hill))
 
     Cc  ~ prop(propSd)
     crp ~ prop(propSd_crp)

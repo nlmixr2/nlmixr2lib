@@ -39,7 +39,7 @@ Zhang_2022_ormutivimab <- function() {
     # ini() values reproduce the point estimates verbatim). The structural
     # equation is the time-dependent emax model (Zhang 2022 Eq. 10):
     #
-    #     Y2(t) = e0 + emax * t^gamma / (ET50^gamma + t^gamma)
+    #     Y2(t) = e0 + emax * t^hill / (ET50^hill + t^hill)
     #
     # with the typical-value covariate equations (Zhang 2022 Eq. 11):
     #
@@ -48,7 +48,7 @@ Zhang_2022_ormutivimab <- function() {
     #     ET50 = ET50_HRIG + 0       if HRIG
     #     ET50 = ET50_HRIG - 3.8     if rHRIG (Ormutivimab)
     #
-    # IIV is log-normal on emax and gamma (Zhang 2022 Eq. 1: P_i = P_TV *
+    # IIV is log-normal on emax and hill (Zhang 2022 Eq. 1: P_i = P_TV *
     # exp(eta_i)); ET50 and e0 have no IIV in the final model. Residual
     # error is the combined proportional + additive form (Zhang 2022 Eq. 4:
     # Y_obs = Y_pred * (1 + eps1) + eps2).
@@ -71,9 +71,9 @@ Zhang_2022_ormutivimab <- function() {
     e_drug_ormu_ET50 <- -3.8;   label("Additive Ormutivimab-vs-HRIG shift in typical ET50 (day)")    # Zhang 2022 Table 3: theta2 -3.8 (RSE 19.1%); Eq. 11
 
     # Hill / sigmoidicity exponent of the time-dependent emax model. The
-    # paper does not separately partition gamma by drug type, so this is a
+    # paper does not separately partition hill by drug type, so this is a
     # shared typical value across HRIG and Ormutivimab arms.
-    lgamma <- log(7.66); label("Hill / sigmoidicity exponent of the time-dependent emax model (unitless)")  # Zhang 2022 Table 3: Gamma 7.66 (RSE 22.6%)
+    lhill <- log(7.66); label("Hill / sigmoidicity exponent of the time-dependent emax model (unitless)")  # Zhang 2022 Table 3: Gamma 7.66 (RSE 22.6%)
 
     # e0 baseline offset. NOT log-transformed because the fitted value is
     # negative (-3.19): Y2 at t = 0 equals e0, and the linear-scale emax
@@ -91,9 +91,9 @@ Zhang_2022_ormutivimab <- function() {
     # so eta is on log(P) and the reported CV% maps to omega^2 via
     # omega^2 = log(CV^2 + 1).
     #   omega(emax) 9.0%   -> log(0.09^2  + 1) = 0.008068
-    #   omega(gamma) 56.1% -> log(0.561^2 + 1) = 0.273690
+    #   omega(hill) 56.1% -> log(0.561^2 + 1) = 0.273690
     etalEmax  ~ 0.008068  # Zhang 2022 Table 3: omega(emax)  =  9.0%; log(0.09^2 + 1)  = 0.008068
-    etalgamma ~ 0.273690  # Zhang 2022 Table 3: omega(Gamma) = 56.1%; log(0.561^2 + 1) = 0.273690
+    etalhill ~ 0.273690  # Zhang 2022 Table 3: omega(Gamma) = 56.1%; log(0.561^2 + 1) = 0.273690
 
     # Residual error - combined proportional + additive (Zhang 2022 Table 3
     # row "Residual Error"; corresponds to Eq. 4: Y_obs = Y_pred * (1 + eps1)
@@ -109,20 +109,20 @@ Zhang_2022_ormutivimab <- function() {
     emax_tv <- exp(lemax) + e_drug_ormu_emax * DRUG_ORMU
     ET50_tv <- exp(lET50) + e_drug_ormu_ET50 * DRUG_ORMU
 
-    # Individual parameters - log-normal IIV on emax and gamma; ET50 and e0
+    # Individual parameters - log-normal IIV on emax and hill; ET50 and e0
     # carry only the typical value (no eta in final model per Table 3).
     emax  <- emax_tv * exp(etalEmax)
     ET50  <- ET50_tv
-    gamma <- exp(lgamma + etalgamma)
+    hill <- exp(lhill + etalhill)
 
     # Time-dependent vaccine-induced RVNA emax (Zhang 2022 Eq. 10). The
-    # guard at t <= 0 avoids a NaN from t^gamma at negative integration
-    # times that some solvers visit during initialization (gamma is
-    # non-integer, so (-eps)^gamma is undefined in R).
+    # guard at t <= 0 avoids a NaN from t^hill at negative integration
+    # times that some solvers visit during initialization (hill is
+    # non-integer, so (-eps)^hill is undefined in R).
     if (t <= 0) {
       Cc <- e0
     } else {
-      Cc <- e0 + emax * t^gamma / (ET50^gamma + t^gamma)
+      Cc <- e0 + emax * t^hill / (ET50^hill + t^hill)
     }
 
     # Combined residual error (Zhang 2022 Eq. 4 / Table 3).
