@@ -211,8 +211,8 @@ fit
 #> 
 #> ── Time (sec fit$time): ──
 #> 
-#>            setup optimize covariance table compress    other
-#> elapsed 0.030697 0.004026   0.004028 0.063    0.002 4.079249
+#>           setup optimize covariance table compress    other
+#> elapsed 0.02962 0.004852   0.004854 0.054    0.002 3.870674
 #> 
 #> ── (fit$parFixed or fit$parFixedDf): ──
 #> 
