@@ -182,7 +182,7 @@ mod_typical <- mod |> rxode2::zeroRe()
 #> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_ka_td_1, etaiov_ka_td_2, etaiov_ka_td_3, etaiov_ka_td_4, etaiov_ka_td_5, etaiov_ka_td_6, etaiov_ka_td_7, etaiov_ka_td_8, etaiov_ka_td_9, etaiov_ka_td_10
 #> as a work-around try putting the mu-referenced expression on a simple line
 typical_ev <- rxode2::et(amt = patch_dose_ug, cmt = "depot2") |>
-  rxode2::et(amt = 0, evid = 0, time = seq(0, 168, by = 0.25))
+  rxode2::et(seq(0, 168, by = 0.25))
 typical_ev$WT  <- 70
 typical_ev$OCC <- 1L
 typical_sim <- rxode2::rxSolve(mod_typical, typical_ev)
@@ -218,8 +218,8 @@ knitr::kable(tibble::tibble(
 
 | Quantity                             | Predicted | Oosten 2016 reported   |
 |:-------------------------------------|:----------|:-----------------------|
-| Tmax (h)                             | NA        | ~20.5 (Discussion)     |
-| Cmax (ng/mL)                         | NA        | Not directly tabulated |
+| Tmax (h)                             | 20.5      | ~20.5 (Discussion)     |
+| Cmax (ng/mL)                         | 0.792     | Not directly tabulated |
 | Elimination half-life (h)            | 3.91      | 3.91 (Discussion)      |
 | Transdermal absorption half-life (h) | 51.3      | 51.3 (Discussion)      |
 
@@ -330,9 +330,9 @@ knitr::kable(tibble::tibble(
 
 | Percentile | Simulated | Oosten 2016 Figure 4 caption / Results |
 |:-----------|:----------|:---------------------------------------|
-| 10th       | 0.95      | 0.87                                   |
-| Median     | 1.76      | 1.68                                   |
-| 90th       | 3.03      | 3.22                                   |
+| 10th       | 1.04      | 0.87                                   |
+| Median     | 1.64      | 1.68                                   |
+| 90th       | 2.77      | 3.22                                   |
 
 Plasma concentration 12 h after patch application (rotation 12-h
 scheme). {.table}

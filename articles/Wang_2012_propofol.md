@@ -1,0 +1,572 @@
+# Propofol (Wang 2012)
+
+## Model and source
+
+- Citation: Wang C, Peeters MYM, Allegaert K, Blusse van Oud-Alblas HJ,
+  Krekels EHJ, Tibboel D, Danhof M, Knibbe CAJ. (2012). A
+  bodyweight-dependent allometric exponent for scaling clearance across
+  the human life-span. Pharmaceutical Research 29(6):1570-1581.
+  <doi:10.1007/s11095-012-0668-x>.
+- Description: Three-compartment intravenous population PK model for
+  propofol across the human life-span (Wang 2012; 174 subjects pooled
+  across seven previously published studies covering preterm and term
+  neonates, infants, toddlers, children, adolescents, and adults; body
+  weight 0.68-122.7 kg, age 1 day-81 years). Final ‘bodyweight-dependent
+  exponent (BDE)’ model (Model IV / Final PK model, Table IV): clearance
+  is scaled by total body weight via a power function whose exponent k
+  changes sigmoidally with body weight from k0 = 1.34 at a theoretical 0
+  kg to k0 - kmax = 0.55 at large body weights, with k50 = 3.78 kg and a
+  Hill coefficient gamma = 5.24 governing the steepness of the decline.
+  The slow inter-compartmental clearance Q3 and the second peripheral
+  volume V3 scale linearly with body weight (BW/70); the first
+  peripheral volume V2 scales as (BW/70)^0.55; the fast
+  inter-compartmental clearance Q2 is independent of body weight. The
+  central volume V1 = 7.58 L is constant for subjects with postnatal age
+  \>= 100 days and scales linearly as V1 \* (BW/70) for younger
+  subjects. Inter-individual variability (log-normal) was retained on
+  CL, V1, V2, V3, and Q3; no IIV on Q2. Additive residual error on
+  log-transformed concentrations was used, equivalent to a proportional
+  error on the linear concentration scale.
+- Article: [Pharmaceutical Research
+  2012;29(6):1570-1581](https://doi.org/10.1007/s11095-012-0668-x)
+
+Wang et al. (2012) pooled propofol pharmacokinetic data from seven
+previously published studies that together span the entire human
+life-span – preterm and term neonates, infants, toddlers, children,
+adolescents, and adults – and used NONMEM VI (FOCEI) to compare four
+bodyweight-based allometric scaling models for propofol clearance. The
+“bodyweight-dependent exponent” model (Model IV) identifies a single
+continuous covariate equation in which the allometric exponent on body
+weight changes sigmoidally with body weight, varying from 1.34 at a
+hypothetical body weight of 0 kg down to 0.55 at large body weights.
+Model IV was further refined into the Final PK model by adding a
+postnatal-age indicator on V1 and a power-form body weight effect on V2;
+the Final PK model parameter values (Wang 2012 Table IV) are the values
+packaged here.
+
+## Population
+
+The pooled cohort comprised 174 subjects contributing 4,396 propofol
+concentration observations across seven studies (Wang 2012 Table I):
+
+- **Neonates** (n = 25): postnatal age median 8 days (range 1-25),
+  gestational age 37 weeks (26-40), body weight 2.93 kg (0.68-4.03). 3
+  mg/kg IV bolus for chest-tube removal / placement or endotracheal
+  intubation.
+- **Infants** (n = 20 of 22 originally enrolled): age 10 months
+  (3.8-17.3), body weight 9 kg (4.8-12.5). 2-4 mg/kg/h IV infusion for
+  ~12.5 h after major craniofacial surgery.
+- **Toddlers** (n = 12): age 18 months (12-31), body weight 11.2 kg
+  (8.7-18.9). 4 mg/kg IV bolus before bathing of minor burns.
+- **Children** (n = 53): age 7 years (3-11), body weight 23.3 kg
+  (15-60.5). 3 mg/kg IV bolus (subset n = 20), or 3.5 mg/kg loading dose
+  followed by maintenance infusion at 0.15 or 0.20 then 0.125 mg/kg/min
+  (subset n = 33).
+- **Adolescents** (n = 14): age 14.7 years (9.8-20.1), body weight 51 kg
+  (36.6-82). 2-10 mg/kg/h IV infusion during scoliosis surgery (~6.8 h).
+- **Female adults** (n = 24): age 45.5 years (33-57), body weight 68.5
+  kg (55-80). 2.5 mg/kg IV bolus over 60 s for gynaecological-surgery
+  induction.
+- **Healthy adult volunteers** (n = 24): age 53 years (26-81), body
+  weight 79.4 kg (44.4-122.7). IV bolus followed 1 h later by a 60-min
+  infusion at 25, 50, 100, or 200 mg/kg/min.
+
+The same demographic block is available programmatically via
+`readModelDb("Wang_2012_propofol")$population`.
+
+## Source trace
+
+The per-parameter origin is recorded as an in-file comment next to each
+`ini()` entry in `inst/modeldb/specificDrugs/Wang_2012_propofol.R`. This
+table collects them in one place.
+
+| Equation / parameter | Value | Source location |
+|----|----|----|
+| `lcl` = log(2.02) | Cl_p = 2.02 L/min at 70 kg | Wang 2012 Table IV Final model |
+| `lvc` = log(7.58) | V1_p = 7.58 L | Wang 2012 Table IV Final model |
+| `lq` = log(1.77) | Q2 = 1.77 L/min | Wang 2012 Table IV Final model |
+| `lvp` = log(15.5) | V2_p = 15.5 L at 70 kg | Wang 2012 Table IV Final model |
+| `lq2` = log(1.65) | Q3_p = 1.65 L/min at 70 kg | Wang 2012 Table IV Final model |
+| `lvp2` = log(221) | V3_p = 221 L at 70 kg | Wang 2012 Table IV Final model |
+| `k0_cl` = 1.34 FIX | BDE exponent at WT = 0 kg | Wang 2012 Table IV Final model |
+| `kmax_cl` = 0.79 | BDE max decrement | Wang 2012 Table IV Final model |
+| `k50_cl` = 3.78 kg | BDE half-decrement weight | Wang 2012 Table IV Final model |
+| `hill_cl` = 5.24 FIX | BDE Hill coefficient | Wang 2012 Table IV Final model |
+| `e_wt_vp` = 0.55 | Power exponent of WT/70 on V2 | Wang 2012 Table IV Final model |
+| `etalcl` = 0.09 | omega^2 CL | Wang 2012 Table IV Final model |
+| `etalvc` = 1.19 | omega^2 V1 | Wang 2012 Table IV Final model |
+| `etalvp` = 0.52 | omega^2 V2 | Wang 2012 Table IV Final model |
+| `etalvp2` = 0.71 | omega^2 V3 | Wang 2012 Table IV Final model |
+| `etalq2` = 0.25 | omega^2 Q3 | Wang 2012 Table IV Final model |
+| `propSd` = sqrt(0.06) | sigma^2 = 0.06 additive on log scale | Wang 2012 Table IV Final model |
+| CL covariate equation | `CL_i = Cl_p * (WT/70)^k` with `k = k0 - kmax * WT^hill / (k50^hill + WT^hill)` | Wang 2012 Eq. 5 (Methods, “Covariate Models” -\> Model IV) |
+| V1 covariate equation | `V1_i = V1_p * (WT/70)` if PNA \< 100 days, else `V1_i = V1_p` | Wang 2012 Table IV V1 row (Results paragraph identifying the V1 linear-body-weight relationship for children younger than 100 days) |
+| V2 covariate equation | `V2_i = V2_p * (WT/70)^m`, m = 0.55 | Wang 2012 Table IV Final model V2 row |
+| Q3 / V3 covariate equation | `Q3_i = Q3_p * (WT/70)`, `V3_i = V3_p * (WT/70)` | Wang 2012 Table IV Final model Q3 / V3 rows |
+| Q2 covariate equation | `Q2_i = Q2` (no body-weight scaling) | Wang 2012 Table IV Final model Q2 row |
+| Three-compartment ODE | `d/dt(central), d/dt(peripheral1), d/dt(peripheral2)` for a 3-cmt IV mass-balance system | Wang 2012 Methods, “Structural Model” |
+| Residual error form | additive on log-transformed concentrations = proportional on linear | Wang 2012 Methods, “Statistical Model” |
+
+## Virtual cohort
+
+The original observed data are not publicly available. Three virtual
+cohorts are constructed below to exercise the model across the published
+body weight and age ranges: a “neonate” cohort (PNA = 8 days, dosed with
+a 3 mg/kg IV bolus), a “toddler” cohort (PNA = 18 months, dosed with a 4
+mg/kg IV bolus), and a “healthy adult volunteer” cohort (PNA
+approximately 53 years converted to months, dosed with a 1.5 mg/kg IV
+bolus followed by a 60-min infusion at 100 mg/kg/min). All times are in
+minutes; PNA values supplied in the canonical register’s units of
+months.
+
+``` r
+
+set.seed(20260522)
+
+days_per_month <- 30.4375
+
+make_cohort <- function(n, wt_mean, wt_sd, pna_days,
+                        bolus_mg_per_kg = NA_real_,
+                        bolus_mg_fixed = NA_real_,
+                        infusion_mg_per_kg_per_min = 0,
+                        infusion_duration_min = 0,
+                        obs_end_min,
+                        treatment_label,
+                        id_offset = 0L) {
+  per_subject <- tibble::tibble(
+    id        = id_offset + seq_len(n),
+    WT        = pmax(0.5, rnorm(n, wt_mean, wt_sd)),
+    PNA       = pna_days / days_per_month,
+    treatment = treatment_label
+  ) |>
+    dplyr::mutate(
+      bolus_amt = ifelse(is.na(bolus_mg_fixed),
+                         bolus_mg_per_kg * WT,
+                         bolus_mg_fixed),
+      infusion_rate_mg_per_min = infusion_mg_per_kg_per_min * WT
+    )
+
+  bolus_rows <- per_subject |>
+    dplyr::transmute(id, time = 0, evid = 1L, cmt = "central",
+                     amt = bolus_amt, rate = 0, WT, PNA, treatment)
+
+  if (infusion_duration_min > 0) {
+    infusion_rows <- per_subject |>
+      dplyr::transmute(
+        id,
+        time = 60,  # Wang 2012 healthy-volunteer protocol: infusion 1 h after bolus
+        evid = 1L, cmt = "central",
+        amt  = infusion_rate_mg_per_min * infusion_duration_min,
+        rate = infusion_rate_mg_per_min,
+        WT, PNA, treatment
+      )
+  } else {
+    infusion_rows <- bolus_rows[0, ]
+  }
+
+  obs_grid <- sort(unique(c(0.25, 0.5, 1, 2, 3, 5, 7.5, 10, 15, 20, 30,
+                            45, 60, 90, 120, 180, 240, 360, obs_end_min)))
+  obs_grid <- obs_grid[obs_grid <= obs_end_min]
+
+  obs_rows <- per_subject |>
+    tidyr::expand_grid(time = obs_grid) |>
+    dplyr::transmute(id, time, evid = 0L, cmt = "central",
+                     amt = 0, rate = 0, WT, PNA, treatment)
+
+  dplyr::bind_rows(bolus_rows, infusion_rows, obs_rows) |>
+    dplyr::arrange(id, time, dplyr::desc(evid))
+}
+
+events <- dplyr::bind_rows(
+  # Neonate: PNA below the 100-day V1-scaling threshold; V1 = V1p * (WT/70).
+  make_cohort(
+    n = 40,
+    wt_mean = 2.93, wt_sd = 0.6,
+    pna_days = 8,
+    bolus_mg_per_kg = 3,
+    obs_end_min = 240,
+    treatment_label = "neonate",
+    id_offset = 0L
+  ),
+  # Toddler: PNA above the 100-day V1-scaling threshold; V1 = V1p constant.
+  make_cohort(
+    n = 40,
+    wt_mean = 11.2, wt_sd = 2,
+    pna_days = 18 * days_per_month,
+    bolus_mg_per_kg = 4,
+    obs_end_min = 240,
+    treatment_label = "toddler",
+    id_offset = 1000L
+  ),
+  # Healthy adult volunteer: bolus 1 h before a 60-min 100 mg/kg/min infusion.
+  make_cohort(
+    n = 40,
+    wt_mean = 79.4, wt_sd = 15,
+    pna_days = 53 * 365.25,
+    bolus_mg_per_kg = 1.5,
+    infusion_mg_per_kg_per_min = 0.100,
+    infusion_duration_min = 60,
+    obs_end_min = 360,
+    treatment_label = "adult_volunteer",
+    id_offset = 2000L
+  )
+)
+
+stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
+```
+
+## Simulation
+
+``` r
+
+mod <- readModelDb("Wang_2012_propofol")
+sim <- rxode2::rxSolve(
+  mod,
+  events = events,
+  keep   = c("treatment", "WT", "PNA")
+) |>
+  as.data.frame() |>
+  tibble::as_tibble()
+#> ℹ parameter labels from comments will be replaced by 'label()'
+```
+
+For deterministic replication (no inter-individual variability), zero
+out the random effects:
+
+``` r
+
+mod_typical <- mod |> rxode2::zeroRe()
+#> ℹ parameter labels from comments will be replaced by 'label()'
+sim_typical <- rxode2::rxSolve(
+  mod_typical,
+  events = events,
+  keep   = c("treatment", "WT", "PNA")
+) |>
+  as.data.frame() |>
+  tibble::as_tibble()
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalvp2', 'etalq2'
+#> Warning: multi-subject simulation without without 'omega'
+```
+
+## Replicate published figures
+
+### Figure 2 – bodyweight-dependent allometric exponent k vs body weight
+
+Wang 2012 Figure 2 plots the value of the bodyweight-dependent
+allometric exponent `k` for CL as a function of body weight. With the
+Final model parameters (k0 = 1.34, kmax = 0.79, k50 = 3.78 kg, gamma =
+5.24), `k` declines sigmoidally from 1.34 at WT = 0 kg to 0.55 (= 1.34 -
+0.79) at large body weights, with the half-decrement reached at 3.78 kg.
+
+``` r
+
+k0   <- 1.34
+kmax <- 0.79
+k50  <- 3.78
+hill <- 5.24
+
+wt_grid <- seq(0.5, 130, length.out = 400)
+fig2_df <- tibble::tibble(
+  WT = wt_grid,
+  k  = k0 - kmax * WT^hill / (k50^hill + WT^hill)
+)
+
+ggplot(fig2_df, aes(WT, k)) +
+  geom_line(linewidth = 0.7) +
+  geom_hline(yintercept = c(0.75, k0, k0 - kmax),
+             linetype = "dashed", colour = "grey60") +
+  annotate("text", x = 100, y = 0.78, label = "k = 0.75 (3/4 allometric reference)",
+           hjust = 1, vjust = 0, size = 3, colour = "grey40") +
+  labs(x = "Body weight (kg)",
+       y = "Bodyweight-dependent allometric exponent k",
+       title = "Figure 2 -- BDE exponent k vs body weight",
+       caption = "Replicates Figure 2 of Wang 2012.") +
+  coord_cartesian(xlim = c(0, 130), ylim = c(0.4, 1.4))
+```
+
+![](Wang_2012_propofol_files/figure-html/figure-2-1.png)
+
+### Figure 1 (Model IV panel) – typical-value propofol CL vs body weight
+
+Wang 2012 Figure 1 shows the population-predicted clearance curve for
+the bodyweight-dependent exponent model (Model IV) overlaid against
+post-hoc clearances. The typical-value CL curve recovered from the
+structural model matches the Model IV panel of Figure 1.
+
+``` r
+
+cl_pop <- 2.02
+
+fig1_df <- tibble::tibble(
+  WT = wt_grid,
+  k  = k0 - kmax * WT^hill / (k50^hill + WT^hill)
+) |>
+  dplyr::mutate(CL_pop_Lmin = cl_pop * (WT / 70)^k)
+
+ggplot(fig1_df, aes(WT, CL_pop_Lmin)) +
+  geom_line(linewidth = 0.7) +
+  scale_x_log10() +
+  scale_y_log10() +
+  labs(x = "Body weight (kg, log scale)",
+       y = "Population propofol clearance (L/min, log scale)",
+       title = "Figure 1 (Model IV) -- typical-value CL vs body weight",
+       caption = "Replicates the Model IV panel of Figure 1 of Wang 2012.")
+```
+
+![](Wang_2012_propofol_files/figure-html/figure-1-model-iv-1.png)
+
+### Whole-blood concentration-time profiles by cohort
+
+``` r
+
+sim |>
+  dplyr::filter(time > 0) |>
+  dplyr::group_by(time, treatment) |>
+  dplyr::summarise(
+    Q05 = quantile(Cc, 0.05, na.rm = TRUE),
+    Q50 = quantile(Cc, 0.50, na.rm = TRUE),
+    Q95 = quantile(Cc, 0.95, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(time, Q50, colour = treatment, fill = treatment)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.20, colour = NA) +
+  geom_line(linewidth = 0.7) +
+  scale_y_log10() +
+  labs(x = "Time after first dose (minutes)",
+       y = "Simulated propofol Cc (mg/L)",
+       title = "Simulated propofol Cc profiles by cohort",
+       caption = "Neonate 3 mg/kg IV bolus; toddler 4 mg/kg IV bolus; adult 1.5 mg/kg IV bolus + 60-min 0.1 mg/kg/min infusion 1 h later.")
+```
+
+![](Wang_2012_propofol_files/figure-html/conc-time-vpc-1.png)
+
+## PKNCA validation
+
+Wang 2012 does not tabulate NCA parameters (Cmax / AUC / half-life) by
+cohort, so this section computes simulated NCA values per cohort as a
+sanity check on the implementation. The values should fall within the
+range expected for IV propofol whole-blood concentrations.
+
+``` r
+
+sim_nca <- sim |>
+  dplyr::filter(!is.na(Cc), time > 0) |>
+  dplyr::select(id, time, Cc, treatment)
+
+dose_df <- events |>
+  dplyr::filter(evid == 1) |>
+  dplyr::group_by(id, treatment) |>
+  dplyr::summarise(time = min(time), amt = sum(amt), .groups = "drop")
+
+conc_obj <- PKNCA::PKNCAconc(
+  sim_nca,
+  Cc ~ time | treatment + id,
+  concu = "mg/L",
+  timeu = "min"
+)
+dose_obj <- PKNCA::PKNCAdose(
+  dose_df,
+  amt ~ time | treatment + id,
+  doseu = "mg"
+)
+
+intervals <- data.frame(
+  start       = 0,
+  end         = Inf,
+  cmax        = TRUE,
+  tmax        = TRUE,
+  aucinf.obs  = TRUE,
+  half.life   = TRUE
+)
+
+nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
+nca_res  <- PKNCA::pk.nca(nca_data)
+#> Warning: Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.25) is not allowed
+nca_summary <- summary(nca_res)
+knitr::kable(
+  nca_summary,
+  caption = "Simulated propofol NCA parameters by cohort (no per-cohort published reference)."
+)
+```
+
+| Interval Start | Interval End | treatment | N | Cmax (mg/L) | Tmax (min) | Half-life (min) | AUCinf,obs (min\*mg/L) |
+|---:|---:|:---|:---|:---|:---|:---|:---|
+| 0 | Inf | adult_volunteer | 40 | 12.1 \[75.1\] | 0.250 \[0.250, 120\] | 185 \[137\] | NC |
+| 0 | Inf | neonate | 40 | 5.64 \[48.1\] | 0.250 \[0.250, 0.250\] | 183 \[156\] | NC |
+| 0 | Inf | toddler | 40 | 5.36 \[124\] | 0.250 \[0.250, 0.250\] | 98.5 \[58.0\] | NC |
+
+Simulated propofol NCA parameters by cohort (no per-cohort published
+reference). {.table}
+
+## Assumptions and deviations
+
+- **Variance vs CV%.** Wang 2012 Table IV reports inter-individual
+  variability directly as omega^2 (the variance of the eta normal
+  distribution on the log scale) in the column labelled “omega^2”; the
+  percentages in parentheses are the bootstrap-derived CV% on the
+  variance estimate itself, NOT the log-normal CV of the parameter
+  (Methods, “Statistical Model”: theta_i = theta_TV \* exp(eta_i), eta_i
+  ~ N(0, omega^2); the values 0.09 / 1.19 / 0.52 / 0.71 / 0.25 reproduce
+  the variance entries verbatim). The omega^2 = 1.19 on V1 corresponds
+  to a log-normal CV of approximately 113%, reflecting the large
+  variability in V1 across the highly heterogeneous neonate-to-adult
+  pooled cohort.
+- **Residual error.** Wang 2012 fits the residual error as additive on
+  log-transformed concentrations: `log(C_ij) = log(C_pred,ij) + eps_ij`
+  with `eps ~ N(0, sigma^2)`, sigma^2 = 0.06, equivalent to a
+  proportional error of sqrt(0.06) = 0.2449 on the linear concentration
+  scale (Methods, “Statistical Model”). This is encoded as
+  `propSd = sqrt(0.06)` with a `prop(propSd)` residual.
+- **Fixed parameters.** k0 = 1.34 and gamma = 5.24 are fixed in the
+  Final model because the covariance step did not succeed when they were
+  estimated; the values come from the successful run without covariance
+  step (Wang 2012 Results paragraph on Model IV: “the exponent of
+  bodyweight at 0 kg (k_0) and the hill factor (gamma) were fixed to the
+  estimated values from a successful run without covariance step, which
+  were 1.35 and 5.24”). The Table IV Final model row gives k0 = 1.34
+  (slightly different from the 1.35 in Table II Model IV); the encoding
+  here uses the Table IV Final value.
+- **V1 cut-point threshold.** The source paper reports the
+  V1-by-body-weight relationship as “PNA \< 100 days”. The canonical
+  `PNA` register stores postnatal age in months; the 100-day threshold
+  is converted internally as `100 / 30.4375` so that callers supply
+  `PNA` in months (consistent with the rest of the nlmixr2lib paediatric
+  models).
+- **No covariate other than WT and PNA.** Methods reports that
+  bodyweight proved superior over age as a covariate for CL, and that
+  the Final model retained only WT (on CL, V2, Q3, V3) and the binary
+  PNA \< 100-day indicator (on V1). No age, sex, race, gestational-age,
+  or cohort-of-origin covariate is retained.
+- **Q2 has no IIV.** Table IV Final model leaves the Q2 IIV row blank,
+  meaning IIV on Q2 was not estimated. The model file therefore omits
+  `etalq` entirely.
+- **Concentration assay.** Methods does not state whether the assayed
+  concentrations are plasma or whole blood; published propofol popPK
+  literature is split between the two. The blood-to-plasma ratio of
+  propofol is approximately 1 in adult human, so the distinction is
+  small for downstream simulations but worth flagging when comparing
+  against external plasma-PK studies.
+- **Simulated regimens** follow the cohort-specific dosing descriptions
+  in Wang 2012 Methods but are generic representatives chosen to
+  exercise the published body-weight and age ranges; the original
+  individual-patient dosing records and concentration data are not
+  public.
