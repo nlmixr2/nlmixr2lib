@@ -398,6 +398,8 @@ navbar:
         href: articles/Gupta_2016_lenvatinib.html
       - text: "Levetiracetam (Shin 2017)"
         href: articles/Shin_2017_levetiracetam.html
+      - text: "Levofloxacin (Denti 2018)"
+        href: articles/Denti_2018_levofloxacin.html
       - text: "Ligelizumab (Bienczak 2025)"
         href: articles/Bienczak_2025_ligelizumab.html
       - text: "Linagliptin (Retlich 2015)"
@@ -1100,9 +1102,7 @@ articles:
   - articles/deKock_2017_sulfadoxinePyrimethamine
   - articles/Delattre_2010_amikacin
   - articles/Delor_2013_alzheimer
-  - articles/deVriesSchultink_2020_zenocutuzumab
-  - articles/deWinter_2009_mycophenolic_acid
-  - articles/deWit_2016_everolimus
+  - articles/Denti_2018_levofloxacin
   - articles/Diao_2014_rFIXFc
   - articles/Diao_2016_daclizumab_cd25
   - articles/Diao_2016_daclizumab_cd56bright
