@@ -24,16 +24,16 @@ oncology_xenograft_simeoni_2004 <- function() {
 
     # tumorVol0 is provided in the data as the initial volume of the tumor.  It
     # can also be estimated.
-    cyclingCells(0) <- tumorVol0
+    cycling_cells(0) <- tumorVol0
     psi <- 20 # psi is defined in the paper to cause a rapid switch between exponential and linear regimes
-    tumorVol <- cyclingCells + damagedCells1 + damagedCells2 + damagedCells3
+    tumorVol <- cycling_cells + damaged_cells1 + damaged_cells2 + damaged_cells3
     # Cc is provided in the data (or in an appended model) as the drug
     # concentration.  Units for Cc will be apply to k2.
     drugEffectCyclingCells <- drugSlope*Cc
-    d/dt(cyclingCells) <- tumorExpGrowth*cyclingCells/(1 + (tumorExpGrowth/tumorLinGrowth * tumorVol)^psi)^(1/psi) - drugEffectCyclingCells*cyclingCells
-    d/dt(damagedCells1) <- drugEffectCyclingCells*cyclingCells - damageTransit*damagedCells1
-    d/dt(damagedCells2) <- damageTransit*(damagedCells1 - damagedCells2)
-    d/dt(damagedCells3) <- damageTransit*(damagedCells2 - damagedCells3)
+    d/dt(cycling_cells) <- tumorExpGrowth*cycling_cells/(1 + (tumorExpGrowth/tumorLinGrowth * tumorVol)^psi)^(1/psi) - drugEffectCyclingCells*cycling_cells
+    d/dt(damaged_cells1) <- drugEffectCyclingCells*cycling_cells - damageTransit*damaged_cells1
+    d/dt(damaged_cells2) <- damageTransit*(damaged_cells1 - damaged_cells2)
+    d/dt(damaged_cells3) <- damageTransit*(damaged_cells2 - damaged_cells3)
     tumorVol ~ prop(propSd_tumorVol) + add(addSd_tumorVol)
   })
 }

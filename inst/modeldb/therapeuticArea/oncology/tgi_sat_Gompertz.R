@@ -12,8 +12,8 @@ tgi_sat_Gompertz<- function() {
     lalpha <- 0.6; label("parameter one")
     lbeta <- 0.8; label("parameter two")
     propSd <- 0.5 ; label("PK proportional residual error (fraction)")
-    propSd_tumorSize <- 0.5 ; label("Tumor size proportional residual error (fraction)")
-    addSd_tumorSize <- 30 ; label("Tumor size additive residual error (tumor volume)")
+    propSd_tumor_size <- 0.5 ; label("Tumor size proportional residual error (fraction)")
+    addSd_tumor_size <- 30 ; label("Tumor size additive residual error (tumor volume)")
   })
   model({
     rbase <- exp(lrbase)
@@ -26,14 +26,14 @@ tgi_sat_Gompertz<- function() {
     beta <- exp(lbeta)
     
     kel <- cl / vc
-    tumorSize(0) <- rbase
+    tumor_size(0) <- rbase
 
     d/dt(depot) <- -ka*depot
     d/dt(central) <- ka*depot-kel*central
-    d/dt(tumorSize) <- (alpha-beta*log(tumorSize))*tumorSize
+    d/dt(tumor_size) <- (alpha-beta*log(tumor_size))*tumor_size
     
     Cc <- central / vc
     Cc ~ prop(propSd)
-    tumorSize ~ prop(propSd_tumorSize) + add(addSd_tumorSize)
+    tumor_size ~ prop(propSd_tumor_size) + add(addSd_tumor_size)
   })
 }

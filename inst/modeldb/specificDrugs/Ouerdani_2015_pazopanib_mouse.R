@@ -1,5 +1,5 @@
 Ouerdani_2015_pazopanib_mouse <- function() {
-  description <- "Preclinical (mouse, CB-17 SCID with CAKI-2 renal-cell carcinoma xenografts). Semi-mechanistic tumour growth and angiogenesis-inhibition (TGI) model for pazopanib (Ouerdani 2015): logistic tumour growth (state tumorSize) limited by a separately tracked vasculature-determined carrying capacity (state carryingCapacity), with an antiangiogenic drug effect on carrying-capacity loss (power form in AUC_PAZO) and a putative cytotoxic drug effect on tumour decay (exponentially declining resistance, no AUC effect after the cytotoxic exponent was fixed to 0)."
+  description <- "Preclinical (mouse, CB-17 SCID with CAKI-2 renal-cell carcinoma xenografts). Semi-mechanistic tumour growth and angiogenesis-inhibition (TGI) model for pazopanib (Ouerdani 2015): logistic tumour growth (state tumor_size) limited by a separately tracked vasculature-determined carrying capacity (state carrying_capacity), with an antiangiogenic drug effect on carrying-capacity loss (power form in AUC_PAZO) and a putative cytotoxic drug effect on tumour decay (exponentially declining resistance, no AUC effect after the cytotoxic exponent was fixed to 0)."
   reference <- paste(
     "Ouerdani A, Struemper H, Suttle AB, Ouellet D, Ribba B.",
     "Preclinical modeling of tumor growth and angiogenesis inhibition",
@@ -27,7 +27,7 @@ Ouerdani_2015_pazopanib_mouse <- function() {
       source_name        = "AUC"
     ),
     TUM_VOL = list(
-      description        = "Per-animal observed baseline tumour volume at randomisation; used as the per-subject initial condition for the tumorSize ODE state.",
+      description        = "Per-animal observed baseline tumour volume at randomisation; used as the per-subject initial condition for the tumor_size ODE state.",
       units              = "mm^3",
       type               = "continuous",
       reference_category = NULL,
@@ -127,23 +127,23 @@ Ouerdani_2015_pazopanib_mouse <- function() {
     # ----- ODE system (Ouerdani 2015 Equation 1, mouse fit with n = 1) -----
     #   dP/dt = k * P * (1 - P/K) - a * exp(-d*t) * P
     #   dK/dt = b * P^n           - c * K
-    # P  = tumorSize         (mm^3)
-    # K  = carryingCapacity  (mm^3); biologically the maximum tumour volume
+    # P  = tumor_size         (mm^3)
+    # K  = carrying_capacity  (mm^3); biologically the maximum tumour volume
     #      sustainable by current vasculature.
     # t  is rxode2 simulation time in days; treatment start is taken as t = 0
     # so the exp(-d*t) resistance term decays from 1 at study start.
-    d/dt(tumorSize)        <- k_tumor * tumorSize * (1 - tumorSize / carryingCapacity) -
-                              cyto_rate * exp(-k_res * t) * tumorSize
-    d/dt(carryingCapacity) <- k_cap * tumorSize^n - aa_rate * carryingCapacity
+    d/dt(tumor_size)        <- k_tumor * tumor_size * (1 - tumor_size / carrying_capacity) -
+                              cyto_rate * exp(-k_res * t) * tumor_size
+    d/dt(carrying_capacity) <- k_cap * tumor_size^n - aa_rate * carrying_capacity
 
     # Initial state. P0 is per-animal (covariate TUM_VOL); K0 is a
     # population-typical-value parameter with IIV (etalK0).
-    tumorSize(0)        <- TUM_VOL
-    carryingCapacity(0) <- K0
+    tumor_size(0)        <- TUM_VOL
+    carrying_capacity(0) <- K0
 
     # ----- Observation and combined residual error -----
     # Tumour volume is observed in mm^3 by caliper. Combined additive +
     # proportional residual error per Table 1 footnote.
-    tumorSize ~ add(addSd) + prop(propSd)
+    tumor_size ~ add(addSd) + prop(propSd)
   })
 }

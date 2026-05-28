@@ -10,8 +10,8 @@ tgi_no_sat_Koch <- function() {
     lkgl <- 0.7; label("Zero-order linear growth rate")
     lkge <- 0.7; label("First-order exponential growth rate")
     propSd <- 0.5 ; label("PK proportional residual error (fraction)")
-    propSd_tumorSize <- 0.5 ; label("Tumor size proportional residual error (fraction)")
-    addSd_tumorSize <- 30 ; label("Tumor size additive residual error (tumor volume)")
+    propSd_tumor_size <- 0.5 ; label("Tumor size proportional residual error (fraction)")
+    addSd_tumor_size <- 30 ; label("Tumor size additive residual error (tumor volume)")
   })
   model({
     rbase <- exp(lrbase)
@@ -22,14 +22,14 @@ tgi_no_sat_Koch <- function() {
     kgl <- exp(lkgl)
     
     kel <- cl / vc
-    tumorSize(0) <- rbase
+    tumor_size(0) <- rbase
     
     d/dt(depot) <- -ka*depot
     d/dt(central) <- ka*depot-kel*central
-    d/dt(tumorSize) <- (2*kge*kgl*tumorSize)/(kgl+2*kge*tumorSize)
+    d/dt(tumor_size) <- (2*kge*kgl*tumor_size)/(kgl+2*kge*tumor_size)
     
     Cc <- central / vc
     Cc ~ prop(propSd)
-    tumorSize ~ prop(propSd_tumorSize) + add(addSd_tumorSize)
+    tumor_size ~ prop(propSd_tumor_size) + add(addSd_tumor_size)
   })
 }
