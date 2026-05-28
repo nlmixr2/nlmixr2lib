@@ -127,7 +127,7 @@ Xie_2000_m3g_rat <- function() {
     # amount to V_u,br (the latter has units of L/g-brain), giving
     # uM = umol/L on the same scale as Cu_pl.
     cu_pl     <- central     / vc
-    cu_br_ecf <- brain_ecf   / vubr1
+    cu_br_csf <- brain_csf   / vubr1
     cu_br_dp  <- brain_deep  / vubr2
 
     # ---- ODE system (Xie 2000 Model B, equation 2, plus a one-cmt
@@ -136,10 +136,10 @@ Xie_2000_m3g_rat <- function() {
     # body amount at steady state, so brain efflux does not feed back
     # into the central ODE).
     d/dt(central)    <- -kel * central
-    d/dt(brain_ecf)  <-  cluin  * cu_pl -
-                         cluout * cu_br_ecf -
-                         qbr    * (cu_br_ecf - cu_br_dp)
-    d/dt(brain_deep) <-  qbr    * (cu_br_ecf - cu_br_dp)
+    d/dt(brain_csf)  <-  cluin  * cu_pl -
+                         cluout * cu_br_csf -
+                         qbr    * (cu_br_csf - cu_br_dp)
+    d/dt(brain_deep) <-  qbr    * (cu_br_csf - cu_br_dp)
 
     # ---- Observation: unbound M3G in brain ECF (paper-named output) ----
     # The plasma concentration cu_pl is computed above for diagnostic /
@@ -148,7 +148,7 @@ Xie_2000_m3g_rat <- function() {
     # fit (Model B, Table 3). The plasma error model belonging to Model A
     # is not tabulated in the published paper, so a plasma observation
     # with an invented residual-error magnitude would not be source-traceable.
-    Cbrain_ecf <- cu_br_ecf
+    Cbrain_ecf <- cu_br_csf
     Cbrain_ecf ~ prop(propSd)
   })
 }
