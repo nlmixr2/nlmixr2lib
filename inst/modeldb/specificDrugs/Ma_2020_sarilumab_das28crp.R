@@ -99,7 +99,7 @@ Ma_2020_sarilumab_das28crp <- function() {
     # Reference covariate values taken from Ma 2020 narrative (median of the
     # DAS28-CRP dataset): CRP 15.7 mg/L, BLPHYVAS 66, BLHAQ 1.75, WT 72.8 kg.
     # --------------------------------------------------------------------------
-    lBase  <- log(6.06);  label("Typical DAS28-CRP baseline (unitless score)")            # Ma 2020 Table 3, BASE row (6.06)
+    lrbase  <- log(6.06);  label("Typical DAS28-CRP baseline (unitless score)")            # Ma 2020 Table 3, BASE row (6.06)
     lemax  <- 0.237;      label("Logit-transformed maximum drug effect on kin (unitless)") # Ma 2020 Table 3, Log(emax) row; emax = 1/(1+exp(-lemax)) = 0.559, matching the paper's stated 55.9% maximum decrease
     lic50  <- log(2.32);  label("Sarilumab concentration at 50% of emax (mg/L)")          # Ma 2020 Table 3, ic50 row (2.32 mg/L)
     lkout  <- log(0.0264);label("First-order loss rate constant kout (1/day)")            # Ma 2020 Table 3, kout row (0.0264 day^-1)
@@ -139,7 +139,7 @@ Ma_2020_sarilumab_das28crp <- function() {
     #   kout     CV 84.2%  -> omega^2 = log(0.842^2 + 1) = 0.5360
     #   PLB      CV 105%   -> omega^2 = log(1.05^2  + 1) = 0.7431
     # --------------------------------------------------------------------------
-    etalBase ~ 0.00646   # Ma 2020 Table 3: BASE IIV 8.05% CV
+    etalrbase ~ 0.00646   # Ma 2020 Table 3: BASE IIV 8.05% CV
     etalEmax ~ 0.4105    # Ma 2020 Table 3: Log(emax) IIV 71.2% CV
     etalic50 ~ 1.252     # Ma 2020 Table 3: ic50 IIV 158% CV
     etalKout ~ 0.5360    # Ma 2020 Table 3: kout IIV 84.2% CV
@@ -174,7 +174,7 @@ Ma_2020_sarilumab_das28crp <- function() {
     #      (additive in log-ratio space).
     #    kout carries one binary covariate (multiplicative).
     # ------------------------------------------------------------------
-    Base <- exp(lBase + etalBase) *
+    rbase <- exp(lrbase + etalrbase) *
             (CRP    / 15.7)^e_crp_base    *
             (BLPHYVAS / 66  )^e_blphyvas_base *
             (BLHAQ    / 1.75)^e_blhaq_base    *
@@ -184,7 +184,7 @@ Ma_2020_sarilumab_das28crp <- function() {
     ic50    <- exp(lic50 + etalic50)
     kout    <- exp(lkout + etalKout) * e_pricort_kout^PRICORT
     PLB     <- exp(lPLB  + etalPLB)
-    kin     <- kout * Base
+    kin     <- kout * rbase
 
     # ------------------------------------------------------------------
     # 3. Two-compartment sarilumab PK with parallel linear + MM clearance
@@ -208,7 +208,7 @@ Ma_2020_sarilumab_das28crp <- function() {
     CeffP <- Cc + PLB
     Eff   <- emax * CeffP^gamma / (ic50^gamma + CeffP^gamma)
 
-    das28(0)  <- Base
+    das28(0)  <- rbase
     d/dt(das28) <- kin * (1 - Eff) - kout * das28
 
     # ------------------------------------------------------------------

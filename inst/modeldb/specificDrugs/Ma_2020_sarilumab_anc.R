@@ -72,7 +72,7 @@ Ma_2020_sarilumab_anc <- function() {
     # ---------------------------------------------------------------------
     # PD parameters (Ma 2020 Table 4 ANC PopPK/PD)
     # ---------------------------------------------------------------------
-    lbase  <- log(5.38); label("Typical baseline ANC (10^9/L)")                            # Ma 2020 Table 4
+    lrbase  <- log(5.38); label("Typical baseline ANC (10^9/L)")                            # Ma 2020 Table 4
     lemax  <- log(1.50); label("Maximum drug-induced stimulation of ANC elimination (Emax, unitless)")  # Ma 2020 Table 4
     lec50  <- log(10.3); label("Sarilumab concentration at 50% of Emax (EC50, mg/L)")      # Ma 2020 Table 4
 
@@ -90,7 +90,7 @@ Ma_2020_sarilumab_anc <- function() {
 
     # Covariate effect parameters (power-form exponents)
     e_wt_kout       <- 0.875; label("Weight exponent on Kout (ref 71 kg, unitless)")                           # Ma 2020 Table 4
-    e_smoke_base    <- 1.15;  label("Smoking multiplier on baseline ANC (power-form: BASE * 1.15^SMOKE)")      # Ma 2020 Table 4
+    e_smoke_rbase    <- 1.15;  label("Smoking multiplier on baseline ANC (power-form: BASE * 1.15^SMOKE)")      # Ma 2020 Table 4
     e_pricort_emax  <- 0.819; label("Prior corticosteroid multiplier on Emax (power-form: Emax * 0.819^PRICORT)")  # Ma 2020 Table 4
 
     # ---------------------------------------------------------------------
@@ -109,7 +109,7 @@ Ma_2020_sarilumab_anc <- function() {
     # PD IIV (Ma 2020 Table 4)
     # BASE 32.1%, Emax 61.9%, EC50 36.9%, Kout 227% (very high; preserved as
     # reported), hill 80.4%.
-    etalbase  ~ 0.09807                                                                        # Ma 2020 Table 4 (32.1% CV)
+    etalrbase  ~ 0.09807                                                                        # Ma 2020 Table 4 (32.1% CV)
     etalemax  ~ 0.32423                                                                        # Ma 2020 Table 4 (61.9% CV)
     etalec50  ~ 0.12762                                                                        # Ma 2020 Table 4 (36.9% CV)
     etalkout  ~ 1.81707                                                                        # Ma 2020 Table 4 (227% CV)
@@ -157,18 +157,18 @@ Ma_2020_sarilumab_anc <- function() {
     #   Eff          = Emax * Cc^hill / (EC50^hill + Cc^hill)
     # At baseline (Cc = 0): Kin = Kout * BASE, so effect(0) = BASE.
     # -------------------------------------------------------------------
-    base  <- exp(lbase  + etalbase)  * (e_smoke_base)^SMOKE
+    rbase  <- exp(lrbase  + etalrbase)  * (e_smoke_rbase)^SMOKE
     emax  <- exp(lemax  + etalemax)  * (e_pricort_emax)^PRICORT
     ec50  <- exp(lec50  + etalec50)
     kout  <- exp(lkout  + etalkout)  * (WT / 71)^e_wt_kout
     hill <- exp(lhill + etalhill)
 
-    kin <- kout * base
+    kin <- kout * rbase
 
     eff <- emax * Cc^hill / (ec50^hill + Cc^hill)
 
     d/dt(effect) <- kin - kout * (1 + eff) * effect
-    effect(0)    <- base
+    effect(0)    <- rbase
 
     ANC <- effect
 

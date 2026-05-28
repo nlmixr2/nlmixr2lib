@@ -117,7 +117,7 @@ Frey_2013_tocilizumab <- function() {
     lemax  <- log(0.73);  label("Maximum tocilizumab effect on DAS28 production rate kin (fraction)") # Frey 2013 Table 1, emax
     lkout  <- log(0.038); label("First-order DAS28 'loss' rate kout (1/day)")                   # Frey 2013 Table 1, kout
     lhill <- log(0.64);  label("Sigmoidicity (Hill) coefficient (unitless)")                   # Frey 2013 Table 1, GAMMA
-    lBase  <- log(6.8);   label("Typical baseline DAS28 score (unitless 0-10)")                 # Frey 2013 Table 1, Baseline DAS28
+    lrbase  <- log(6.8);   label("Typical baseline DAS28 score (unitless 0-10)")                 # Frey 2013 Table 1, Baseline DAS28
     lDMARD <- log(0.30);  label("DMARD background effect, in tocilizumab concentration units (ug/mL)") # Frey 2013 Table 1, DMARD effect
 
     # ------------------------------------------------------------------
@@ -148,7 +148,7 @@ Frey_2013_tocilizumab <- function() {
     etalec50 + etalEmax ~ c(1.358,
                             0.05626, 0.01203)   # Frey 2013 Table 1: ec50 IIV 170% CV, emax IIV 11% CV, ec50-emax correlation 0.44
     etalKout  ~ 0.3075     # Frey 2013 Table 1: kout IIV 60% CV
-    etalBase  ~ 0.008805   # Frey 2013 Table 1: Baseline IIV 9.4% CV
+    etalrbase  ~ 0.008805   # Frey 2013 Table 1: Baseline IIV 9.4% CV
     etalDMARD ~ 1.553      # Frey 2013 Table 1: DMARD effect IIV 193% CV
 
     # ------------------------------------------------------------------
@@ -185,13 +185,13 @@ Frey_2013_tocilizumab <- function() {
     emax  <- exp(lemax  + etalEmax ) * (1 + e_sexm_emax * (1 - SEXF))
     kout  <- exp(lkout  + etalKout ) * (1 + e_race_amind_oth_kout * RACE_ASIAN_AMIND_OTH)
     hill <- exp(lhill)
-    Base  <- exp(lBase  + etalBase ) *
+    rbase  <- exp(lrbase  + etalrbase ) *
              haq_floored^e_blhaq_base *
              lil6_ratio^e_lil6_base *
              pain_floored^e_pain_base *
              (BLPHYVAS / 65)^e_blphyvas_base
     DMARD <- exp(lDMARD + etalDMARD) * lil6_ratio^e_lil6_dmard
-    kin   <- kout * Base
+    kin   <- kout * rbase
 
     # ------------------------------------------------------------------
     # 3. Two-compartment tocilizumab PK with parallel linear and
@@ -216,7 +216,7 @@ Frey_2013_tocilizumab <- function() {
     CeffP <- Cc + DMARD
     Eff   <- emax * CeffP^hill / (ec50^hill + CeffP^hill)
 
-    das28(0)    <- Base
+    das28(0)    <- rbase
     d/dt(das28) <- kin * (1 - Eff) - kout * das28
 
     # ------------------------------------------------------------------

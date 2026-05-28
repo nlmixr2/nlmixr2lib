@@ -75,7 +75,7 @@ Wilbaux_2015_prostate <- function() {
     # The paper fixes LV0 = 1 ("LV corresponded to the fractional change
     # in the latent variable from baseline"). The .mod fixes THETA(1) at
     # 1 and OMEGA(1,1) at 1e-7 FIX (effectively no IIV).
-    lts0 <- fix(log(1)); label("Log of latent tumour-variable initial / baseline value LV0 (AU; fixed at 1 per Wilbaux 2015 Methods; .mod TH(1) = 1 FIX)")  # .lst FINAL TH 1 = 1.00E+00 (FIX)
+    lrbase <- fix(log(1)); label("Log of latent tumour-variable initial / baseline value LV0 (AU; fixed at 1 per Wilbaux 2015 Methods; .mod TH(1) = 1 FIX)")  # .lst FINAL TH 1 = 1.00E+00 (FIX)
 
     # --- K-PD elimination rates (1/day) ---
     lk1 <- log(0.248);  label("Log of chemotherapy K-PD elimination rate constant Kc (1/day)") # .lst FINAL TH 2 = 2.48E-01; paper Table 1 Kc = 0.248
@@ -165,7 +165,7 @@ Wilbaux_2015_prostate <- function() {
 
     # The .mod also declares ETA(1) on LV0 (FIX 1e-7) and ETA(14) on W1
     # (FIX 1e-7). Both are treated as fixed-typical-only here: LV0 is
-    # supplied as `lts0 <- fix(log(1))` above; W1 has no IIV and only
+    # supplied as `lrbase <- fix(log(1))` above; W1 has no IIV and only
     # carries the population value `lw1 <- log(0.300)`.
 
     # ------------------------------------------------------------------
@@ -196,7 +196,7 @@ Wilbaux_2015_prostate <- function() {
     # parameters K0 and LS use additive (typical + eta) reconstruction
     # to match the .mod's MU-reference (no LOG() on THETA(11), THETA(12)).
     # ------------------------------------------------------------------
-    ts0       <- exp(lts0)
+    rbase       <- exp(lrbase)
     k1        <- exp(lk1     + etalk1)
     k2        <- exp(lk2     + etalk2)
     q501      <- exp(lq501   + etalq501)
@@ -213,7 +213,7 @@ Wilbaux_2015_prostate <- function() {
 
     # Latent-variable production rate. .mod $PK: KINTS = TS0 * KOUTTS /
     # (TH / (1 + TH)) = TS0 * KOUTTS * (1 + SFLV) / SFLV.
-    kints <- ts0 * koutts * (1 + sflv) / sflv
+    kints <- rbase * koutts * (1 + sflv) / sflv
 
     # Saturable Emax inhibition by both K-PD compartments. Defined here
     # so the d/dt(latent_tumor) line below can reference them in CMT
@@ -230,7 +230,7 @@ Wilbaux_2015_prostate <- function() {
     #   IF (T .GT. ALAG5) A7 = A(7)
     # This ensures the cell-lifespan integral for CTC starts cleanly
     # from baseline. Reproduce by guarding the CTC ODE input.
-    latent_tumor_d_eff <- ifelse(t > lag5_ind, latent_tumor_d, ts0)
+    latent_tumor_d_eff <- ifelse(t > lag5_ind, latent_tumor_d, rbase)
 
     # ------------------------------------------------------------------
     # ODE system. Compartments are declared in CMT order (1..8) because
@@ -250,7 +250,7 @@ Wilbaux_2015_prostate <- function() {
     # CMT 3: latent tumour variable LV(t). Indirect-response ODE with
     # saturable Emax inhibition by both K-PD compartments.
     d/dt(latent_tumor) <- kints * (1 - inh_chemo) * (1 - inh_hormo) - koutts * latent_tumor
-    latent_tumor(0) <- ts0
+    latent_tumor(0) <- rbase
 
     # CMT 4: CTC count. The .mod implements the cell-lifespan model via
     #   DADT(4) = K0 * A(3) - K0 * A7
@@ -289,7 +289,7 @@ Wilbaux_2015_prostate <- function() {
     # ~= LV0 at typical sflv), so the lagged copy stays approximately at
     # LV0 until t > lag5_ind.
     d/dt(latent_tumor_d) <- kints * (1 - inh_chemo_d) * (1 - inh_hormo_d) - koutts * latent_tumor_d
-    latent_tumor_d(0) <- ts0
+    latent_tumor_d(0) <- rbase
 
     # CMT 8: PSA concentration. Indirect-response ODE driven by the
     # CURRENT (un-lagged) latent variable per .mod $DES line:

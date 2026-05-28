@@ -79,7 +79,7 @@ Conrado_2014_alzheimer <- function() {
 
     # Structural parameters -- Richards three-parameter logistic for the
     # population mean ADAS-Cog/70.
-    lbl <- log(22.2) ; label("Log of typical baseline ADAS-Cog total score (0-70 scale)")
+    lrbase <- log(22.2) ; label("Log of typical baseline ADAS-Cog total score (0-70 scale)")
     # Output_real_CPathAD.lst FINAL PARAMETER ESTIMATE TH 1 = 2.22E+01.
 
     sl <- 0.153 ; label("Typical disease-progression slope (1/year on the bounded 0-1 ADAS-Cog/70 scale, before back-transformation through the Richards growth function)")
@@ -107,11 +107,11 @@ Conrado_2014_alzheimer <- function() {
     e_bl_apoe4 <- 0.0372 ; label("Fractional change in typical baseline ADAS-Cog per APOE-epsilon-4 allele count unit above 0.72 (multiplicative on baseline: factor = 1 + e_bl_apoe4 * (APOE4_COUNT - 0.72))")
     # Output_real_CPathAD.lst FINAL PARAMETER ESTIMATE TH 9 = 3.72E-02.
 
-    # Subject-level inter-individual variability -- BLOCK(2) on (etalbl, etasl).
-    # etalbl is on the log-baseline scale (multiplicative log-normal IIV on BL);
+    # Subject-level inter-individual variability -- BLOCK(2) on (etalrbase, etasl).
+    # etalrbase is on the log-baseline scale (multiplicative log-normal IIV on BL);
     # etasl is on the natural slope scale (additive IIV on SL). The off-diagonal
     # is the cross-scale covariance reported by NONMEM directly.
-    etalbl + etasl ~ c(0.156,
+    etalrbase + etasl ~ c(0.156,
                        0.0224, 0.0413)
     # Output_real_CPathAD.lst FINAL PARAMETER ESTIMATE OMEGA BLOCK(2) #1:
     # ETA1,ETA1 = 1.56E-01, ETA1,ETA2 = 2.24E-02, ETA2,ETA2 = 4.13E-02.
@@ -153,11 +153,11 @@ Conrado_2014_alzheimer <- function() {
     sl_cov <- sl_age_factor * sl_apoe4_factor * sl_conmed_factor
 
     # 3. Individual baseline and slope. The source applies a multiplicative
-    # log-normal IIV on baseline (etalbl on the log scale) and an additive IIV
+    # log-normal IIV on baseline (etalrbase on the log scale) and an additive IIV
     # on slope (etasl on the natural slope scale). The covariate factors enter
     # multiplicatively in both cases; on the log-baseline scale, the
     # multiplicative bl_cov is added as log(bl_cov).
-    bl <- exp(lbl + log(bl_cov) + etalbl)
+    rbase <- exp(lrbase + log(bl_cov) + etalrbase)
     sl_indiv <- (sl + etasl) * sl_cov
 
     # 4. Richards three-parameter logistic mean on the bounded 0-1 ADAS-Cog/70
@@ -172,11 +172,11 @@ Conrado_2014_alzheimer <- function() {
     # equivalent to the bounded Richards growth from initial value BL/70 toward
     # asymptote 1; we keep the literal source form for traceability.
     shape <- exp(lshape)
-    den1  <- bl^shape
-    den2  <- 70^shape - bl^shape
+    den1  <- rbase^shape
+    den2  <- 70^shape - rbase^shape
     den3  <- exp(-shape * sl_indiv * yt)
     denn  <- den1 + den2 * den3
-    mur   <- bl / denn^(1/shape)
+    mur   <- rbase / denn^(1/shape)
 
     # 5. Beta-distribution shape parameters from the source $PRED block.
     tau   <- exp(ltau)

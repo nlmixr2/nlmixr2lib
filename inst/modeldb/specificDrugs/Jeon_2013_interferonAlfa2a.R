@@ -74,7 +74,7 @@ Jeon_2013_interferonAlfa2a <- function() {
     # ---------------------------------------------------------------
     # PD STRUCTURAL PARAMETERS - Jeon 2013 Table 4, "Pharmacodynamics" rows
     # ---------------------------------------------------------------
-    lbase <- log(5.85)   ; label("Baseline serum neopterin BASE (nmol/L)")                                              # Jeon 2013 Table 4: BASE = 5.85 nmol/L
+    lrbase <- log(5.85)   ; label("Baseline serum neopterin BASE (nmol/L)")                                              # Jeon 2013 Table 4: BASE = 5.85 nmol/L
     lkout <- log(0.0311) ; label("First-order elimination rate of serum neopterin Kout (1/h)")                          # Jeon 2013 Table 4: Kout = 0.0311 1/h
     lemax <- log(16.1)   ; label("Maximum stimulatory effect on neopterin production EMAX (unitless multiplier on Kin)") # Jeon 2013 Table 4: EMAX = 16.1
     lga   <- log(1.24)   ; label("Hill coefficient GA on the sigmoid stimulation function (unitless)")                  # Jeon 2013 Table 4: GA = 1.24
@@ -109,7 +109,7 @@ Jeon_2013_interferonAlfa2a <- function() {
     #   omega^2_GA   = log(0.1351^2 + 1) = 0.01814
     #   omega^2_ECB  = log(0.2131^2 + 1) = 0.04445
     #   omega^2_MTT  = log(0.1336^2 + 1) = 0.01773
-    etalbase ~ 0.01906                                                                                                  # Jeon 2013 Table 4: omega_BASE = 13.85% -> omega^2 = log(0.1385^2 + 1)
+    etalrbase ~ 0.01906                                                                                                  # Jeon 2013 Table 4: omega_BASE = 13.85% -> omega^2 = log(0.1385^2 + 1)
     etalcb   ~ 0.28367                                                                                                  # Jeon 2013 Table 4: omega_CB = 57.31% -> omega^2 = log(0.5731^2 + 1)
     etalga   ~ 0.01814                                                                                                  # Jeon 2013 Table 4: omega_GA = 13.51% -> omega^2 = log(0.1351^2 + 1)
     etalecb  ~ 0.04445                                                                                                  # Jeon 2013 Table 4: omega_ECB = 21.31% -> omega^2 = log(0.2131^2 + 1)
@@ -162,7 +162,7 @@ Jeon_2013_interferonAlfa2a <- function() {
     # Individual PD parameters (log-normal IIV where reported; typical-
     # value-only for Kout, EMAX, CA per Table 4)
     # ---------------------------------------------------------------
-    base <- exp(lbase + etalbase)
+    rbase <- exp(lrbase + etalrbase)
     kout <- exp(lkout)
     emax <- exp(lemax)
     ga   <- exp(lga   + etalga)
@@ -176,7 +176,7 @@ Jeon_2013_interferonAlfa2a <- function() {
     # placed between Kin and the observed neopterin, the mean transit
     # time MTT is interpreted as 1 / Ktr (residence time in the transit
     # compartment); steady state for the transit state is Kin / Ktr.
-    kin <- base * kout
+    kin <- rbase * kout
     ktr <- 1 / mtt
 
     # ---------------------------------------------------------------
@@ -214,10 +214,10 @@ Jeon_2013_interferonAlfa2a <- function() {
     d/dt(effect)   <-  ktr * transit1    - kout * effect
 
     # Initial conditions: pre-dose steady state of the turnover system.
-    # dT/dt = Kin - Ktr*T = 0    -> T_ss   = Kin/Ktr = base * Kout * MTT
-    # dE/dt = Ktr*T - Kout*E = 0 -> E_ss   = Kin/Kout = base
-    transit1(0) <- base * kout * mtt
-    effect(0)   <- base
+    # dT/dt = Kin - Ktr*T = 0    -> T_ss   = Kin/Ktr = rbase * Kout * MTT
+    # dE/dt = Ktr*T - Kout*E = 0 -> E_ss   = Kin/Kout = rbase
+    transit1(0) <- rbase * kout * mtt
+    effect(0)   <- rbase
 
     # ---------------------------------------------------------------
     # Absorption controls

@@ -6,7 +6,7 @@ indirect_1cpt_inhi_kin_r0rmaxcrmax <- function() {
     lka     <- 0.45 ; label("Absorption rate (Ka)")
     lvc     <- 3.45 ; label("Central volume of distribution (Vc)")
     lcl     <- 0.85 ; label("Clearance (Cl)")
-    lr0     <- 0.2  ; label("Baseline response prior to drug administration (R0)")
+    lrbase     <- 0.2  ; label("Baseline response prior to drug administration (R0)")
     lrmax   <- 0.9  ; label("Maximal response (CRmax)")
     ls1     <- 1.0  ; label("Initial slope of the response versus time curve (S1)")
     limax   <- 0.56 ; label("Maximum inhibitory factor attributed to drug (Imax)")
@@ -18,7 +18,7 @@ indirect_1cpt_inhi_kin_r0rmaxcrmax <- function() {
     ka     <- exp(lka)
     vc     <- exp(lvc)
     cl     <- exp(lcl)
-    r0     <- exp(lr0)
+    rbase     <- exp(lrbase)
     rmax   <- exp(lrmax)
     s1     <- exp(ls1)
     imax   <- exp(limax)
@@ -26,10 +26,10 @@ indirect_1cpt_inhi_kin_r0rmaxcrmax <- function() {
     fdepot <- exp(lfdepot)
     
     kel <- cl/vc
-    imax <- (r0-rmax)/r0
+    imax <- (rbase-rmax)/rbase
     kin <- -s1/imax
-    kout <- kin/r0
-    IC50 <- crmax*(rmax-(1-imax)*r0)/(r0-rmax)
+    kout <- kin/rbase
+    IC50 <- crmax*(rmax-(1-imax)*rbase)/(rbase-rmax)
     
     d/dt(depot)      <- -ka*depot
     f(depot)         <- fdepot

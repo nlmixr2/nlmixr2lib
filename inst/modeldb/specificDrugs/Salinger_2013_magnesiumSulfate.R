@@ -47,7 +47,7 @@ Salinger_2013_magnesiumSulfate <- function() {
     lvc     <- log(15.6);  label("Volume of distribution for the reference subject (V, L)")    # Salinger 2013 Table 2 (156 dL)
     lka     <- log(0.317); label("Intramuscular first-order absorption rate (KA, 1/h)")        # Salinger 2013 Table 2
     lfdepot <- log(0.862); label("Intramuscular bioavailability (F, fraction)")                # Salinger 2013 Table 2
-    lbl     <- log(20.8);  label("Endogenous steady-state baseline magnesium (BL, mg/L)")      # Salinger 2013 Table 2 (0.85 mmol/L = 2.08 mg/dL = 20.8 mg/L)
+    lrbase     <- log(20.8);  label("Endogenous steady-state baseline magnesium (BL, mg/L)")      # Salinger 2013 Table 2 (0.85 mmol/L = 2.08 mg/dL = 20.8 mg/L)
 
     # Covariate effects from Salinger 2013 Table 2.
     e_wt_vc    <- 0.692; label("Power exponent of body weight on V (theta_1, unitless)")              # Salinger 2013 Table 2
@@ -72,7 +72,7 @@ Salinger_2013_magnesiumSulfate <- function() {
     cl <- exp(lcl) * (0.8 / CREAT)^e_creat_cl
     vc <- exp(lvc) * (WT  / 55)^e_wt_vc
     ka <- exp(lka)
-    bl <- exp(lbl)
+    rbase <- exp(lrbase)
 
     # One-compartment model with first-order IM absorption. The depot compartment
     # is dosed for IM administration; IV doses go directly into the central
@@ -88,8 +88,8 @@ Salinger_2013_magnesiumSulfate <- function() {
     f(depot) <- exp(lfdepot)
 
     # Observation: administered magnesium concentration (central / vc) plus the
-    # endogenous baseline (bl). Concentration units are mg/L of elemental Mg.
-    Cc <- central / vc + bl
+    # endogenous baseline (rbase). Concentration units are mg/L of elemental Mg.
+    Cc <- central / vc + rbase
 
     Cc ~ prop(propSd)
   })

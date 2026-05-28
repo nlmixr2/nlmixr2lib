@@ -95,7 +95,7 @@ Svensson_2016_rifampicin <- function() {
     lkns    <- fixed(log(0.00123))      ; label("Transfer rate from non- to slow-multiplying state kNS (1/day)")                         # Svensson 2016 Table 2 kNS = 0.00123/day FIX
     lkfslin <- fixed(log(0.00166))      ; label("Time-dependent slope of the fast-to-slow transfer rate kFSlin (1/day^2)")               # Svensson 2016 Table 2 kFSlin = 0.00166/day^2 FIX
     lf0     <- fixed(log(4.10))         ; label("Initial bacterial number of fast-multiplying state at infection F0 (1/mL)")             # Svensson 2016 Table 2 F0 = 4.10/mL FIX
-    ls0     <- fixed(log(9770))         ; label("Initial bacterial number of slow-multiplying state at infection S0 (1/mL)")             # Svensson 2016 Table 2 S0 = 9770/mL FIX
+    lrbase     <- fixed(log(9770))         ; label("Initial bacterial number of slow-multiplying state at infection S0 (1/mL)")             # Svensson 2016 Table 2 S0 = 9770/mL FIX
     lbmax   <- log(2.61e9)              ; label("System carrying capacity Bmax (1/mL); estimated typical value")                         # Svensson 2016 Table 2 Bmax = 2.61e9/mL (RSE 30.5%, 95% CI 1.51e9-4.52e9); only MTP parameter re-estimated in the clinical fit
 
     # =========================================================================
@@ -210,7 +210,7 @@ Svensson_2016_rifampicin <- function() {
     # infection; the nonmultiplying pool fills up over time via the kFN
     # and kSN transfers).
     fast(0) <- exp(lf0)
-    slow(0) <- exp(ls0)
+    slow(0) <- exp(lrbase)
     nonm(0) <- 0.0
 
     # --- 9. Bioavailability.

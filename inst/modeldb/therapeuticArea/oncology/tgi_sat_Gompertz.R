@@ -3,7 +3,7 @@ tgi_sat_Gompertz<- function() {
   reference <- "nlmixr2lib template"
   units <- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")
   ini({
-    lts0 <- 0.3; label("Initial tumor size (TS0)") 
+    lrbase <- 0.3; label("Initial tumor size (TS0)") 
     ltsmax <- 0.9; label("Maximum tumor size at saturation (TSmax)")
     lka <- 0.45 ; label("Absorption rate (Ka)")
     lcl <- 1 ; label("Clearance (CL)")
@@ -16,7 +16,7 @@ tgi_sat_Gompertz<- function() {
     addSd_tumorSize <- 30 ; label("Tumor size additive residual error (tumor volume)")
   })
   model({
-    ts0 <- exp(lts0)
+    rbase <- exp(lrbase)
     tsmax <- exp(ltsmax)
     ka <- exp(lka)
     cl <- exp(lcl)
@@ -26,7 +26,7 @@ tgi_sat_Gompertz<- function() {
     beta <- exp(lbeta)
     
     kel <- cl / vc
-    tumorSize(0) <- ts0
+    tumorSize(0) <- rbase
 
     d/dt(depot) <- -ka*depot
     d/dt(central) <- ka*depot-kel*central
