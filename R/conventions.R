@@ -303,7 +303,43 @@
     # rifampicin and combination-antibiotic models). The transform
     # base (ln vs log10) is paper-dependent and documented in each
     # source file. Registered 2026-05-28 per the naming audit.
-    "cfu", "log_cfu"
+    "cfu", "log_cfu", "MBL",
+    # Paper-specific PD-endpoint output state names registered 2026-
+    # 05-28 per the naming audit as canonical-compartment / output-
+    # state names so single-output PD models that use them pass the
+    # relaxed Cc rule.
+    #
+    # Cognitive / dementia scores:
+    #   ADAS_cog  = Alzheimer Disease Assessment Scale - cognitive subscale
+    #   ADAS_NORM = ADAS normalised (per-paper rescaling)
+    #   cdr_mix   = Clinical Dementia Rating mixture-of-progression-rates output
+    # Oncology / tumour endpoints:
+    #   tumor_vol = TGI tumour volume output (Lobo 2002, Simeoni 2004)
+    #   aescore   = composite adverse-event score (Girard 2012 pimasertib)
+    # Ophthalmology:
+    #   bcva      = best-corrected visual acuity (Mulyukov 2018 ranibizumab)
+    # Pain / symptom scales:
+    #   score          = generic pain score (Plan 2012)
+    #   vas_pred       = visual-analog-scale prediction (Valitalo 2017 morphine)
+    #   fatigue_grade  = fatigue grade (Hansson 2013c sunitinib)
+    #   walkDist       = 6-minute walk test distance (Hamuro 2017 DMD)
+    #   fev1pp         = FEV1 percent predicted (Harun 2019 cystic fibrosis)
+    #   msHeadacheDays = monthly headache-day count (FiedlerKelly 2020 fremanezumab)
+    #   migraineDays   = monthly migraine-day count (FiedlerKelly 2020 fremanezumab)
+    # Virology / infection:
+    #   viralLoad = viral load (Koloskoff 2025 ganciclovir)
+    # Imaging / observation models:
+    #   prob_roc  = probability output for ROC-style logistic PD models (Shin 2014 sevoflurane)
+    # Endocrinology:
+    #   prolactin = serum prolactin output (Stevens 2012 remoxipride)
+    # Other tracked clinical states:
+    #   aaaSize   = abdominal aortic aneurysm size (Sherer 2012 AAA)
+    #   cel_count = cell counts in MS lesions (VelezdeMendizabal 2013 multiple sclerosis)
+    #   G         = endogenous glucose output (Bizzotto 2016 glucose)
+    "ADAS_cog", "ADAS_NORM", "cdr_mix", "tumor_vol", "aescore",
+    "bcva", "score", "vas_pred", "fatigue_grade", "walkDist",
+    "fev1pp", "msHeadacheDays", "migraineDays", "viralLoad",
+    "prob_roc", "prolactin", "aaaSize", "cel_count", "G"
   ),
   # Bare numbered chains (transit / effect / precursor / lat / dar /
   # depot) and metabolite-suffixed compartments are validated

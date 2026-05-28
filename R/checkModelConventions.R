@@ -666,9 +666,15 @@ checkModelConventions <- function(model, verbose = TRUE) {
     # circ_anc, etc.). Treat the observation as canonical when it
     # matches the compartment register (which now includes the PD-output
     # canonicals registered in D19) or one of the canonical observation
-    # variants (Cc itself and the Cc_<metab> metabolite outputs).
+    # variants (Cc itself and the Cc_<metab> metabolite outputs). Also
+    # accept derived `C<canonical-compartment>` aliases (e.g.
+    # Cbrain_csf <- ... where brain_csf is the underlying canonical
+    # compartment); the C-prefix denotes the concentration-derived
+    # output state corresponding to a registered compartment amount.
     is_canon_pd <- .matchesCompartment(obs, conv) ||
-      startsWith(obs, "Cc_")
+      startsWith(obs, "Cc_") ||
+      (startsWith(obs, "C") && nchar(obs) > 1 &&
+       .matchesCompartment(substr(obs, 2, nchar(obs)), conv))
     if (!is_canon_pd) {
       issues <- rbind(issues, .issue(
         "observation", "warning", obs,
