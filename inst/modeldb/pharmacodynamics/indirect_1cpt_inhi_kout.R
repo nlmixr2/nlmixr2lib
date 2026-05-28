@@ -24,7 +24,7 @@ indirect_1cpt_inhi_kout  <- function() {
     
     d/dt(depot)      <- -ka*depot
     f(depot)         <- fdepot
-    d/dt(central)    <- ka*depot -(cl/vc)*central
+    d/dt(central)    <- ka*depot -kel*central
     
     Cc <-  central/vc
     

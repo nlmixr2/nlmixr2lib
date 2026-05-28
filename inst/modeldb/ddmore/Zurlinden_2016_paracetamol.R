@@ -266,43 +266,43 @@ Zurlinden_2016_paracetamol <- function() {
     # APAP tissues
     CF_APAP  <- a_fat_apap / VF
     CVF_APAP <- CF_APAP / PF_APAP
-    CK_APAP  <- a_kid_apap / VK
+    CK_APAP  <- a_kidney_apap / VK
     CVK_APAP <- CK_APAP / PK_APAP
-    CM_APAP  <- a_mus_apap / VM
+    CM_APAP  <- a_muscle_apap / VM
     CVM_APAP <- CM_APAP / PM_APAP
-    CL_APAP  <- a_liv_apap / VL
+    CL_APAP  <- a_liver_apap / VL
     CVL_APAP <- CL_APAP / PL_APAP
-    CR_APAP  <- a_rap_apap / VR
+    CR_APAP  <- a_rapidly_perfused_apap / VR
     CVR_APAP <- CR_APAP / PR_APAP
-    CS_APAP  <- a_slo_apap / VS
+    CS_APAP  <- a_slowly_perfused_apap / VS
     CVS_APAP <- CS_APAP / PS_APAP
 
     # AS tissues
     CF_AS    <- a_fat_as / VF
     CVF_AS   <- CF_AS / PF_AS
-    CK_AS    <- a_kid_as / VK
+    CK_AS    <- a_kidney_as / VK
     CVK_AS   <- CK_AS / PK_AS
-    CM_AS    <- a_mus_as / VM
+    CM_AS    <- a_muscle_as / VM
     CVM_AS   <- CM_AS / PM_AS
-    CL_AS    <- a_liv_as / VL
+    CL_AS    <- a_liver_as / VL
     CVL_AS   <- CL_AS / PL_AS
-    CR_AS    <- a_rap_as / VR
+    CR_AS    <- a_rapidly_perfused_as / VR
     CVR_AS   <- CR_AS / PR_AS
-    CS_AS    <- a_slo_as / VS
+    CS_AS    <- a_slowly_perfused_as / VS
     CVS_AS   <- CS_AS / PS_AS
 
     # AG tissues
     CF_AG    <- a_fat_ag / VF
     CVF_AG   <- CF_AG / PF_AG
-    CK_AG    <- a_kid_ag / VK
+    CK_AG    <- a_kidney_ag / VK
     CVK_AG   <- CK_AG / PK_AG
-    CM_AG    <- a_mus_ag / VM
+    CM_AG    <- a_muscle_ag / VM
     CVM_AG   <- CM_AG / PM_AG
-    CL_AG    <- a_liv_ag / VL
+    CL_AG    <- a_liver_ag / VL
     CVL_AG   <- CL_AG / PL_AG
-    CR_AG    <- a_rap_ag / VR
+    CR_AG    <- a_rapidly_perfused_ag / VR
     CVR_AG   <- CR_AG / PR_AG
-    CS_AG    <- a_slo_ag / VS
+    CS_AG    <- a_slowly_perfused_ag / VS
     CVS_AG   <- CS_AG / PS_AG
 
     # ---------------------------------------------------------------------
@@ -317,14 +317,14 @@ Zurlinden_2016_paracetamol <- function() {
     #    same .model so changing the volumes here would invalidate the
     #    parameter values.
     # ---------------------------------------------------------------------
-    CA_APAP    <- a_art_apap / VBLV   # bundle line 712 (APAP only -- see Errata)
-    CV_APAP    <- a_ven_apap / VBLA   # bundle line 713 (APAP only -- see Errata)
+    CA_APAP    <- a_arterial_apap / VBLV   # bundle line 712 (APAP only -- see Errata)
+    CV_APAP    <- a_venous_apap / VBLA   # bundle line 713 (APAP only -- see Errata)
     Cplasma_apap <- CV_APAP / BP_APAP
-    CA_AS      <- a_art_as / VBLA     # bundle line 716
-    CV_AS      <- a_ven_as / VBLV     # bundle line 717
+    CA_AS      <- a_arterial_as / VBLA     # bundle line 716
+    CV_AS      <- a_venous_as / VBLV     # bundle line 717
     Cplasma_as <- CV_AS / BP_APAP     # bundle line 718 (BP_APAP reused for AS)
-    CA_AG      <- a_art_ag / VBLA     # bundle line 720
-    CV_AG      <- a_ven_ag / VBLV     # bundle line 721
+    CA_AG      <- a_arterial_ag / VBLA     # bundle line 720
+    CV_AG      <- a_venous_ag / VBLV     # bundle line 721
     Cplasma_ag <- CV_AG / BP_APAP     # bundle line 722 (BP_APAP reused for AG)
 
     # ---------------------------------------------------------------------
@@ -336,14 +336,14 @@ Zurlinden_2016_paracetamol <- function() {
     r_sult  <- SULT_Vmax * CL_APAP * a_paps /
                 ((SULT_Km_apap + CL_APAP + CL_APAP^2 / SULT_Ki) *
                  (SULT_Km_paps + a_paps))
-    r_ugt   <- UGT_Vmax  * CL_APAP * a_ga /
+    r_ugt   <- UGT_Vmax  * CL_APAP * a_gut /
                 ((UGT_Km   + CL_APAP + CL_APAP^2 / UGT_Ki) *
-                 (UGT_Km_GA + a_ga))
+                 (UGT_Km_GA + a_gut))
 
     # Hepatocyte-to-liver-blood transport rates for the conjugates
     # (mcmol/hr). Bundle lines 786, 819.
-    r_hep_as <- Vmax_AS * a_hep_as / (Km_AS + a_hep_as)
-    r_hep_ag <- Vmax_AG * a_hep_ag / (Km_AG + a_hep_ag)
+    r_hep_as <- Vmax_AS * a_hepatic_as / (Km_AS + a_hepatic_as)
+    r_hep_ag <- Vmax_AG * a_hepatic_ag / (Km_AG + a_hepatic_ag)
 
     # ---------------------------------------------------------------------
     # 9. Renal elimination rates (mcmol/hr) and gastric-emptying input
@@ -370,52 +370,52 @@ Zurlinden_2016_paracetamol <- function() {
     #     Arterial blood: receives venous output, supplies tissues.
     #     Urine: cumulative mass excreted via the kidney.
     # ---------------------------------------------------------------------
-    d/dt(a_liv_apap) <- QL * CA_APAP + gastric_in - QL * CVL_APAP - r_napqi - r_sult - r_ugt
+    d/dt(a_liver_apap) <- QL * CA_APAP + gastric_in - QL * CVL_APAP - r_napqi - r_sult - r_ugt
     d/dt(a_fat_apap) <- QF * (CA_APAP - CVF_APAP)
-    d/dt(a_mus_apap) <- QM * (CA_APAP - CVM_APAP)
-    d/dt(a_kid_apap) <- QK * (CA_APAP - CVK_APAP) - r_renal_apap
-    d/dt(a_rap_apap) <- QR * (CA_APAP - CVR_APAP)
-    d/dt(a_slo_apap) <- QS * (CA_APAP - CVS_APAP)
-    d/dt(a_ven_apap) <- QF * CVF_APAP + QM * CVM_APAP + QK * CVK_APAP +
+    d/dt(a_muscle_apap) <- QM * (CA_APAP - CVM_APAP)
+    d/dt(a_kidney_apap) <- QK * (CA_APAP - CVK_APAP) - r_renal_apap
+    d/dt(a_rapidly_perfused_apap) <- QR * (CA_APAP - CVR_APAP)
+    d/dt(a_slowly_perfused_apap) <- QS * (CA_APAP - CVS_APAP)
+    d/dt(a_venous_apap) <- QF * CVF_APAP + QM * CVM_APAP + QK * CVK_APAP +
                         QL * CVL_APAP + QR * CVR_APAP + QS * CVS_APAP -
                         QC * CV_APAP
-    d/dt(a_art_apap) <- QC * (CV_APAP - CA_APAP)
-    d/dt(a_uri_apap) <- r_renal_apap
+    d/dt(a_arterial_apap) <- QC * (CV_APAP - CA_APAP)
+    d/dt(a_urine_apap) <- r_renal_apap
 
     # ---------------------------------------------------------------------
     # 11. AS (sulfate) ODE system (10 states). Bundle lines 786-813.
-    #     Hepatocyte sub-compartment a_hep_as accumulates AS from
+    #     Hepatocyte sub-compartment a_hepatic_as accumulates AS from
     #     sulfation (r_sult) and empties to liver-blood via Vmax/Km
     #     (r_hep_as). Tissue + blood + urine equations mirror APAP.
     # ---------------------------------------------------------------------
-    d/dt(a_hep_as) <- r_sult - r_hep_as
-    d/dt(a_liv_as) <- QL * (CA_AS - CVL_AS) + r_hep_as
+    d/dt(a_hepatic_as) <- r_sult - r_hep_as
+    d/dt(a_liver_as) <- QL * (CA_AS - CVL_AS) + r_hep_as
     d/dt(a_fat_as) <- QF * (CA_AS - CVF_AS)
-    d/dt(a_mus_as) <- QM * (CA_AS - CVM_AS)
-    d/dt(a_kid_as) <- QK * (CA_AS - CVK_AS) - r_renal_as
-    d/dt(a_rap_as) <- QR * (CA_AS - CVR_AS)
-    d/dt(a_slo_as) <- QS * (CA_AS - CVS_AS)
-    d/dt(a_ven_as) <- QF * CVF_AS + QM * CVM_AS + QK * CVK_AS +
+    d/dt(a_muscle_as) <- QM * (CA_AS - CVM_AS)
+    d/dt(a_kidney_as) <- QK * (CA_AS - CVK_AS) - r_renal_as
+    d/dt(a_rapidly_perfused_as) <- QR * (CA_AS - CVR_AS)
+    d/dt(a_slowly_perfused_as) <- QS * (CA_AS - CVS_AS)
+    d/dt(a_venous_as) <- QF * CVF_AS + QM * CVM_AS + QK * CVK_AS +
                       QL * CVL_AS + QR * CVR_AS + QS * CVS_AS -
                       QC * CV_AS
-    d/dt(a_art_as) <- QC * (CV_AS - CA_AS)
-    d/dt(a_uri_as) <- r_renal_as
+    d/dt(a_arterial_as) <- QC * (CV_AS - CA_AS)
+    d/dt(a_urine_as) <- r_renal_as
 
     # ---------------------------------------------------------------------
     # 12. AG (glucuronide) ODE system (10 states). Bundle lines 819-846.
     # ---------------------------------------------------------------------
-    d/dt(a_hep_ag) <- r_ugt - r_hep_ag
-    d/dt(a_liv_ag) <- QL * (CA_AG - CVL_AG) + r_hep_ag
+    d/dt(a_hepatic_ag) <- r_ugt - r_hep_ag
+    d/dt(a_liver_ag) <- QL * (CA_AG - CVL_AG) + r_hep_ag
     d/dt(a_fat_ag) <- QF * (CA_AG - CVF_AG)
-    d/dt(a_mus_ag) <- QM * (CA_AG - CVM_AG)
-    d/dt(a_kid_ag) <- QK * (CA_AG - CVK_AG) - r_renal_ag
-    d/dt(a_rap_ag) <- QR * (CA_AG - CVR_AG)
-    d/dt(a_slo_ag) <- QS * (CA_AG - CVS_AG)
-    d/dt(a_ven_ag) <- QF * CVF_AG + QM * CVM_AG + QK * CVK_AG +
+    d/dt(a_muscle_ag) <- QM * (CA_AG - CVM_AG)
+    d/dt(a_kidney_ag) <- QK * (CA_AG - CVK_AG) - r_renal_ag
+    d/dt(a_rapidly_perfused_ag) <- QR * (CA_AG - CVR_AG)
+    d/dt(a_slowly_perfused_ag) <- QS * (CA_AG - CVS_AG)
+    d/dt(a_venous_ag) <- QF * CVF_AG + QM * CVM_AG + QK * CVK_AG +
                       QL * CVL_AG + QR * CVR_AG + QS * CVS_AG -
                       QC * CV_AG
-    d/dt(a_art_ag) <- QC * (CV_AG - CA_AG)
-    d/dt(a_uri_ag) <- r_renal_ag
+    d/dt(a_arterial_ag) <- QC * (CV_AG - CA_AG)
+    d/dt(a_urine_ag) <- r_renal_ag
 
     # ---------------------------------------------------------------------
     # 13. Cofactor dynamics (relative-amount states, 1.0 at baseline).
@@ -424,12 +424,12 @@ Zurlinden_2016_paracetamol <- function() {
     #     proportional to the deficit (1 - a_cofactor).
     # ---------------------------------------------------------------------
     d/dt(a_paps) <- -r_sult + kPAPS_syn * (1 - a_paps)
-    d/dt(a_ga)   <- -r_ugt  + kGA_syn   * (1 - a_ga)
+    d/dt(a_gut)   <- -r_ugt  + kGA_syn   * (1 - a_gut)
 
     # Initial conditions: cofactors at baseline 1.0 (bundle Initialize{}
     # lines 654-655). All tissue and blood states default to 0.
     a_paps(0) <- 1
-    a_ga(0)   <- 1
+    a_gut(0)   <- 1
 
     # ---------------------------------------------------------------------
     # 14. Plasma-concentration outputs in mcg/L (= ng/mL). The bundle's

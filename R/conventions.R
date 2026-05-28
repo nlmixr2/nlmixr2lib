@@ -215,7 +215,63 @@
     # where the gastric mass-balance is resolved as a distinct state
     # ahead of the duodenal absorption depot. Registered 2026-05-28
     # per the naming audit.
-    "stomach"
+    "stomach",
+    # PBPK organ-amount compartments (a_<organ>) used by mass-balance
+    # whole-body PBPK extractions (Zurlinden 2016 paracetamol). Each
+    # state holds the drug amount in the named organ. The organ
+    # vocabulary is spelled out (never abbreviated) per the operator
+    # clarification on the 2026-05-28 naming audit:
+    #   a_liver       = liver organ (Q_L * (CA - CVL))
+    #   a_hepatic     = hepatic intermediate metabolite pool (distinct
+    #                   from a_liver; Zurlinden treats hepatic
+    #                   metabolite formation as a separate
+    #                   compartment from the liver organ for the
+    #                   APAP-sulfate and APAP-glucuronide species)
+    #   a_fat         = adipose tissue compartment
+    #   a_muscle      = muscle tissue
+    #   a_kidney      = kidney organ
+    #   a_rapidly_perfused = lumped rapidly perfused tissues (highly
+    #                   perfused organs not modelled individually)
+    #   a_slowly_perfused  = lumped slowly perfused tissues
+    #   a_venous      = venous blood compartment
+    #   a_arterial    = arterial blood compartment
+    #   a_urine       = urinary excretion compartment (note this is
+    #                   distinct from the bare `urine` compartment
+    #                   above; PBPK models track urine on the
+    #                   a_<organ> namespace alongside the other
+    #                   amount-tracking compartments, while
+    #                   non-PBPK renal-clearance models use the bare
+    #                   `urine` form. Both are acceptable for their
+    #                   respective conventions.)
+    #   a_gut         = gut absorption / intestinal compartment
+    "a_liver", "a_hepatic", "a_fat", "a_muscle", "a_kidney",
+    "a_rapidly_perfused", "a_slowly_perfused", "a_venous",
+    "a_arterial", "a_urine", "a_gut",
+    # PBPK organ-vascular concentration compartments (vp_<organ>)
+    # used by membrane-limited PBPK extractions where each organ
+    # vascular volume is a distinct state (Parhiz 2024 mRNA-LNP,
+    # Shah 2012 mAb PBPK). Spelled-out organ vocabulary; abbreviated
+    # forms (vp_li / vp_lu / vp_ki / vp_sp / vp_he / vp_ht / vp_mu /
+    # vp_sk / vp_ad / vp_bo / vp_br / vp_si / vp_lr / vp_pa / vp_th /
+    # vp_po / vp_re / vp_ot) are deprecated per the 2026-05-28 audit.
+    "vp_liver", "vp_lung", "vp_kidney", "vp_spleen", "vp_heart",
+    "vp_muscle", "vp_skin", "vp_adipose", "vp_bone", "vp_brain",
+    "vp_small_intestine", "vp_large_intestine", "vp_pancreas",
+    "vp_thymus", "vp_portal", "vp_remainder", "vp_other",
+    # Bimodal disease-progression state compartments used by the
+    # Delor 2013 Alzheimer mixture-of-fast-and-slow-growths PD model
+    # (per-subject mixture weight selects between a fast-progression
+    # arm `a_fast` and a slow-progression arm `a_slow`). Distinct
+    # from the PBPK perfusion compartments a_rapidly_perfused /
+    # a_slowly_perfused above (different mechanistic role).
+    "a_fast", "a_slow",
+    # Whole-body blood compartments and helper states used by
+    # membrane-limited PBPK models:
+    #   blood   = whole-body central blood (Parhiz 2024 mRNA-LNP)
+    #   bldeg   = blood-pool LNP degradation reservoir (Parhiz 2024)
+    #   bcc     = central blood cells (Shah 2012 mAb PBPK)
+    #   lnode   = lymph-node return compartment (Shah 2012)
+    "blood", "bldeg", "bcc", "lnode"
   ),
   # Bare numbered chains (transit / effect / precursor / lat / dar /
   # depot) and metabolite-suffixed compartments are validated
@@ -224,6 +280,22 @@
   # covers only the numbered-chain patterns. `depot[0-9]+` accommodates
   # parallel-absorption models with two or more depots.
   compartmentRegex = "^(transit|effect|precursor|lat|depot)[0-9]+$",
+  # Membrane-limited PBPK sub-compartment pattern: paper-prefix +
+  # spelled-out organ name. Recognises the recurring
+  # `<sub>_<organ>` shape used in Shah 2012 mAb PBPK and Parhiz 2024
+  # mRNA-LNP extractions:
+  #   bc   = vascular blood cells
+  #   eu   = endosomal unbound
+  #   eb   = endosomal FcRn-bound (mAb-FcRn complex)
+  #   fr   = endosomal free FcRn
+  #   is   = interstitial space
+  #   int  = intracellular (Parhiz)
+  #   mrna = mRNA pool (Parhiz)
+  #   luc  = luciferase reporter (Parhiz)
+  # The organ vocabulary mirrors the spelled-out a_<organ> / vp_<organ>
+  # canonicals registered above. Registered 2026-05-28 per the naming
+  # audit (operator clarification on spelled-out PBPK names).
+  pbpkSubCompartmentRegex = "^(bc|eu|eb|fr|is|int|mrna|luc)_(liver|lung|kidney|spleen|heart|muscle|skin|adipose|bone|brain|small_intestine|large_intestine|pancreas|thymus|portal|remainder|other|hepatic|fat|rapidly_perfused|slowly_perfused|venous|arterial|urine|gut)$",
   darCompartmentRegex = "^dar[0-9]+_(central|peripheral[0-9]?)$",
   # Target species in physiologic body-fluid or named peripheral
   # compartments (e.g., target_csf, target_isf, target_peripheral,
@@ -431,7 +503,16 @@
     # with gentamicin / ciprofloxacin in Sadouki 2025 and with
     # linezolid / vancomycin in Wicha 2017). Registered 2026-05-28
     # per the naming audit.
-    "pyra", "mer"
+    "pyra", "mer",
+    # Zurlinden 2016 paracetamol PBPK metabolite shorthand:
+    # `as` = APAP-sulfate (the same chemical species as the existing
+    # `apaps` Cook 2016 suffix but using the Zurlinden notation), and
+    # `ag` = APAP-glucuronide (paired with `apapg`). Registered as a
+    # separate suffix here so the Zurlinden a_<organ>_as /
+    # a_<organ>_ag compartment names pass the metabolite-suffix check
+    # without rewriting the source-paper notation. Registered 2026-
+    # 05-28 per the naming audit.
+    "as", "ag"
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` denotes the time-varying decay arm.
@@ -735,6 +816,8 @@
   if (grepl(conv$compartmentRegex, name)) return(TRUE)
   if (grepl(conv$darCompartmentRegex, name)) return(TRUE)
   if (grepl(conv$targetLocationRegex, name)) return(TRUE)
+  if (!is.null(conv$pbpkSubCompartmentRegex) &&
+      grepl(conv$pbpkSubCompartmentRegex, name)) return(TRUE)
   for (metab in conv$registeredMetabolites) {
     suf <- paste0("_", metab)
     if (endsWith(name, suf)) {

@@ -25,7 +25,7 @@ indirect_circ_1cpt_stim_kout_kout_t <- function() {
     kin <- exp(lkin)
     fdepot   <- exp(lfdepot)
     
-    kout_t <- kin + 0.2616*ra*sin(0.2616*(t-tacro))/(rm+ra*cos*(0.2616*(t-tacro)))
+    kout_t <- kin + 0.2616*ra*sin(0.2616*(t-tacro))/(rm+ra*cos(0.2616*(t-tacro)))
     Cc <-  central/vc
     
     d/dt(depot)      <- -ka*depot
