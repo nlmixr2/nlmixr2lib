@@ -31,7 +31,7 @@ Read on demand based on the paper's model class. The most-used references are li
 
 **Scripts:**
 - `scripts/acquire-paper.R` — open-access PDF acquisition (Phase 1 Step 0).
-- `scripts/lint-conventions.R` — pretty-print `checkModelConventions()` results (Phase 6 step 3).
+- `scripts/lint-conventions.R` — pretty-print `checkModelConventions()` results (Phase 6 step 4).
 
 ## Phase 1 — Source acquisition and scoping
 
@@ -298,9 +298,45 @@ Naming conventions for mechanistic parameters are documented in `references/para
 
 ## Phase 6 — Registration, tests, docs, PR
 
+**Hard rule for the entire phase: if the vignette does not render cleanly, the task is BLOCKED.** No `git add` of the model file or vignette, no `git commit`, no `git push`, no PR description, no "renders in ~Xs" claim in any commit message or PR body — until step 2 below returns exit 0 with an HTML file ≥ 1 KB on disk. A failed render is not a soft warning that gets resolved in CI; it is a stop-the-line condition. CI catching the failure for you is a process violation, not an acceptable workflow. Past extractions (e.g. HillMcManus 2017 in PR #433, which failed CI on `Assertion on 'amt' failed: May not have names.` despite a commit message claiming "vignette renders in ~11 s") have demonstrated that fabricating this evidence breaks the entire downstream merge / release pipeline. Do not do it.
+
 1. Re-confirm the branch is on top of fresh `origin/main` (`git fetch origin && git rebase origin/main` if needed).
-2. Run `nlmixr2lib::buildModelDb()` to regenerate `data/modeldb.rda` and `inst/modeldb.qs2`. Confirm the new model appears in `modellib()`. **When verifying in R, do `devtools::load_all(".")` first so `modellib()` reads the worktree's in-development package, not the stale system install** — see `references/verification-checklist.md` § "Verifying against the worktree's nlmixr2lib" for why a bare `library(nlmixr2lib)` can return a misleading `FALSE`.
-3. Run the convention lint and review the output:
+
+2. **Render the vignette locally and verify it completes without error in under 5 minutes of wall-clock time. This is the single highest-value pre-push gate.** Run this BEFORE `buildModelDb()`, BEFORE the convention lint, BEFORE any `git add` of the model file or vignette — if the render is broken, fixing it is the only thing that matters. The gate catches the failure modes pkgdown CI surfaces (missing data columns, time-varying covariates assigned to rxEt objects that get silently dropped, PKNCA formulas referencing absent columns, simulation crashes, named-scalar arguments to `rxode2::et()`, vignettes exceeding the time budget) and surfaces them in seconds.
+
+   Run the command, capture stdout/stderr to a log file, then check BOTH the exit code AND the HTML byte size:
+
+   ```bash
+   STEM="<FirstAuthor>_<Year>_<drug>"
+   LOG="/tmp/vignette-render-${STEM}.log"
+   timeout 300 Rscript --vanilla -e "
+     pkgload::load_all('.', quiet = TRUE)
+     rmarkdown::render(
+       'vignettes/articles/${STEM}.Rmd',
+       quiet = FALSE
+     )
+   " 2>&1 | tee "$LOG"
+   RC=${PIPESTATUS[0]}
+   HTML="vignettes/articles/${STEM}.html"
+   BYTES=$(stat -c%s "$HTML" 2>/dev/null || echo MISSING)
+   echo "RENDER_GATE stem=$STEM exit=$RC html_bytes=$BYTES"
+   ```
+
+   Interpret the printed `RENDER_GATE` line:
+
+   - **`exit=0` AND `html_bytes` is a number ≥ 1024** → gate passed; proceed to step 3.
+   - **`exit` non-zero (R error)** → STOP. Do not `git add` anything. Read the traceback in `$LOG`; the most common causes are (a) a `select()` / PKNCA formula referencing a column that was never created (add it in the preceding `mutate()`), (b) a variable name used before it is defined (reorder chunks), (c) a simulation that errors because covariate values are out of range for the model, (d) `event_table$col <- vector` syntax against an `rxEt` object — rxode2 silently drops these assignments, so always materialize via `as.data.frame()` and add covariate columns there before passing to `rxSolve()`, (e) a named scalar passed as `amt =` to `rxode2::et()` (e.g. `doses["fbx"]` instead of `doses[["fbx"]]`) — rxode2 rejects names with `Assertion on 'amt' failed: May not have names.`. Fix the vignette, re-run this step, and only proceed when both `exit=0` and `html_bytes ≥ 1024` come back clean.
+   - **`exit=124` (timeout)** → the vignette exceeds 5 minutes. Reduce simulation size: cut `nSub` (stochastic VPC subjects), shorten the observation grid, or move expensive chunks behind `eval = FALSE` with a note. Do **not** skip the time budget — pkgdown CI has strict wall-time limits and a slow vignette breaks the build for everyone.
+   - **`html_bytes=MISSING`** → render exited but no HTML was written. Treat as a failure even if `exit=0`; pandoc may have aborted silently. Re-run with `quiet = FALSE` (already set above) and read the bottom of `$LOG`.
+   - **C-level segfault (`*** caught segfault ***`)** → broken R / rxode2 / nlmixr2 install, not a model-file problem. Stop, sidecar-ask the operator to fix the environment; do not work around with `--no-build-vignettes`.
+
+   Do not interpret silence as success — read `$LOG`, confirm the final lines show a successful pandoc invocation, and confirm the HTML file ≥ 1 KB landed next to the `.Rmd`. Do not assume "checkModelConventions was clean, the vignette must be fine" — those are independent failure modes. Do not claim "vignette renders in ~Xs" in the commit message or PR body unless you actually observed `exit=0` with `html_bytes ≥ 1024` in the current shell on the current file contents; fabricating that line is a process violation that masks real CI failures (and HAS done so — see the hard rule above). Always re-run the gate after any edit to the vignette or the model file, even cosmetic edits — pkgdown CI does, and you must too.
+
+   **Record the result.** Copy the printed `RENDER_GATE stem=... exit=... html_bytes=...` line verbatim — it goes into the PR body in step 9 as evidence the gate actually ran on the final file contents.
+
+3. Run `nlmixr2lib::buildModelDb()` to regenerate `data/modeldb.rda` and `inst/modeldb.qs2`. Confirm the new model appears in `modellib()`. **When verifying in R, do `devtools::load_all(".")` first so `modellib()` reads the worktree's in-development package, not the stale system install** — see `references/verification-checklist.md` § "Verifying against the worktree's nlmixr2lib" for why a bare `library(nlmixr2lib)` can return a misleading `FALSE`.
+
+4. Run the convention lint and review the output:
 
    ```bash
    Rscript .claude/skills/extract-literature-model/scripts/lint-conventions.R \
@@ -308,26 +344,6 @@ Naming conventions for mechanistic parameters are documented in `references/para
    ```
 
    The script wraps `nlmixr2lib::checkModelConventions()` and emits PR-paste-ready output. Exit 0 = clean; exit 1 = warnings only; exit 2 = errors. Any deviations from the canonical parameter / IIV / residual-error / covariate / compartment conventions (see `references/compartment-names.md`, `references/parameter-names.md`, and `inst/references/covariate-columns.md`) should be either fixed in the model file before committing, or explicitly justified in the vignette's Assumptions and deviations section. `buildModelDb()` runs `checkModelConventions()` implicitly at package-build time, but running the lint explicitly on your new model surfaces drift before commit. Paste the lint output into the PR body so a reviewer can see what was checked.
-4. **Render the vignette locally and verify it completes without error in under 5 minutes of wall-clock time. This is a mandatory pre-push gate — the worker MUST run this command and verify exit 0 / HTML present before any `git commit` / `git push` of the new vignette.** It catches the same failure modes pkgdown CI does — missing data columns, time-varying covariates assigned to rxEt objects that get silently dropped, PKNCA formulas referencing absent columns, simulation crashes — and surfaces them in seconds rather than after a CI cycle.
-
-   ```bash
-   timeout 300 Rscript --vanilla -e "
-     pkgload::load_all('.', quiet = TRUE)
-     rmarkdown::render(
-       'vignettes/articles/<FirstAuthor>_<Year>_<drug>.Rmd',
-       quiet = FALSE
-     )
-   "
-   ```
-
-   Interpret the result:
-
-   - **Exit 0, output HTML present** → vignette is clean; the gate is passed; proceed to commit.
-   - **Exit non-zero with an R error** → fix the vignette before committing. Read the traceback carefully; the most common causes are (a) a `select()` / PKNCA formula referencing a column that was never created (add it in the preceding `mutate()`), (b) a variable name used before it is defined (reorder chunks), (c) a simulation that errors because covariate values are out of range for the model, (d) `event_table$col <- vector` syntax against an `rxEt` object — rxode2 silently drops these assignments, so always materialize via `as.data.frame()` and add covariate columns there before passing to `rxSolve()`.
-   - **Exit 124 (timeout)** → the vignette exceeds 5 minutes. Reduce simulation size: cut `nSub` (stochastic VPC subjects), shorten the observation grid, or move expensive chunks behind `eval = FALSE` with a note. Do **not** skip the time budget — pkgdown CI has strict wall-time limits and a slow vignette breaks the build for everyone.
-   - **C-level segfault (`*** caught segfault ***`)** → broken R / rxode2 / nlmixr2 install, not a model-file problem. Stop, sidecar-ask the operator to fix the environment; do not work around with `--no-build-vignettes`.
-
-   Do not interpret silence as success — re-run with `quiet = FALSE` and confirm an HTML output file landed next to the `.Rmd`. Do not assume "checkModelConventions was clean, vignette must be fine" — those are independent failure modes. The render gate is the only one that exercises the full data path the way pkgdown CI does.
 
 5. **Verify no non-ASCII characters in the new model file or vignette (mandatory pre-push gate).** R CMD check warns on non-ASCII strings in package data — the `description <-` field of every model file is reified into `data/modeldb.rda`, so a single em-dash, en-dash, multiplication sign, or Greek letter in the description triggers a `WARNING: found non-ASCII strings` on every platform. Apply the gate to both the `.R` file and the `.Rmd` vignette.
 
@@ -369,7 +385,9 @@ Naming conventions for mechanistic parameters are documented in `references/para
    anything else that lives in the model file's metadata or vignette. A
    reviewer who wants those details clicks through to the model file.
 8. Commit the model file, the vignette under `vignettes/articles/`, the regenerated `modeldb.rda` / `modeldb.qs2` / `modeldb.Rd`, the `NEWS.md` entry, and any updates to `inst/references/covariate-columns.md` (if a new covariate was registered) together on the feature branch.
-9. Push the branch and open a PR against `main`. Use `gh pr create` with a title like `Add <Author> <Year> <drug> model`. **Before pushing, confirm steps 4 (vignette render) and 5 (non-ASCII check) were both run on the final state of the model and vignette files and both exited clean.** If either file was edited after the last gate run — even for a typo fix or a cosmetic comment change — re-run both gates; do not push on the strength of an earlier check against an older copy.
+9. Push the branch and open a PR against `main`. Use `gh pr create` with a title like `Add <Author> <Year> <drug> model`. **Before pushing, confirm steps 2 (vignette render) and 5 (non-ASCII check) were both run on the final state of the model and vignette files and both exited clean.** If either file was edited after the last gate run — even for a typo fix or a cosmetic comment change — re-run both gates; do not push on the strength of an earlier check against an older copy.
+
+   The PR body MUST include the verbatim `RENDER_GATE stem=... exit=0 html_bytes=...` line printed by step 2 (and a matching line for any re-runs after edits). Reviewers use this line to confirm the gate actually ran on the file contents in the PR head — a missing or fabricated line is grounds for the reviewer to request a fresh render before merge.
 
 ## Stop-and-ask triggers
 

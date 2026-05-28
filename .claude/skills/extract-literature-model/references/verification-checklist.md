@@ -92,6 +92,8 @@ See `references/endogenous-validation.md` for full recipes.
 
 ## G. Registration
 
+- [ ] **Vignette renders end-to-end (mandatory pre-push gate; HIGHEST priority).** Run this BEFORE anything else in this section — if the render is broken, fixing it is the only thing that matters until it returns clean. The gate catches the failure modes that pkgdown CI surfaces (missing data columns, time-varying covariates assigned to rxEt objects that get silently dropped, PKNCA formulas referencing absent columns, simulation crashes, named scalars passed as `amt =` to `rxode2::et()`, vignettes exceeding the time budget). If the render fails, the task is BLOCKED — no `git add`, no `git commit`, no `git push`, no PR description, no "renders in ~Xs" claim in any commit message. See SKILL.md Phase 6 step 2 for the full command (with stdout capture, exit-code check, and HTML byte-size check) and the verbatim `RENDER_GATE` evidence line that must be pasted into the PR body. Past extractions have fabricated this evidence and broken CI for downstream merges — do not.
+
 - [ ] `nlmixr2lib::buildModelDb()` runs to completion.
 - [ ] The new model appears in `modellib()`.
 - [ ] `nlmixr2lib::checkModelConventions(model = "<...>")` returns clean (or all deviations are justified in the vignette's Assumptions and deviations section and noted in the PR body).
@@ -123,25 +125,7 @@ See `references/endogenous-validation.md` for full recipes.
    | Greek letters in prose (`η`, `λ`, etc.) | spell out (`eta`, `lambda`) |
    | `§` | `Section ` |
 
-- [ ] **Render the new vignette end-to-end** (mandatory pre-push gate). Run the exact command below on the worktree, with a 5-minute wall-clock budget — do not skip it, do not interpret silence as success, and do not push if it errors. This is the single highest-value gate the worker performs: it catches the failure modes that pkgdown CI also surfaces (missing data columns, time-varying covariates assigned to rxEt objects that get silently dropped, PKNCA formulas referencing absent columns, simulation crashes, vignettes exceeding the time budget).
-
-   ```bash
-   timeout 300 Rscript --vanilla -e "
-     pkgload::load_all('.', quiet = TRUE)
-     rmarkdown::render(
-       'vignettes/articles/<FirstAuthor>_<Year>_<drug>.Rmd',
-       quiet = FALSE
-     )
-   "
-   ```
-
-   Interpret the exit code:
-   - `0` with output HTML present → gate passed; proceed.
-   - non-zero R error → fix the vignette before committing. The traceback identifies the failing chunk; the most common causes are listed in SKILL.md Phase 6 step 4.
-   - `124` (timeout) → reduce simulation size; do not skip the gate.
-   - C-level segfault → broken environment; stop and sidecar-ask. Do **not** work around with `--no-build-vignettes`.
-
-- [ ] `devtools::check()` passes (warnings OK to discuss; errors are blocking). A C-level segfault during `check()` or vignette rendering is a red flag — stop, sidecar-ask the operator to investigate the environment, and do **not** work around with `--no-build-vignettes` or similar flags. See SKILL.md Phase 6 step 4.
+- [ ] `devtools::check()` passes (warnings OK to discuss; errors are blocking). The vignette-render gate above (the top item in § G) is the cheap, fast, vignette-only version of the same check; this `devtools::check()` is the full-package gate that also covers R CMD check warnings and tests. A C-level segfault during `check()` or vignette rendering is a red flag — stop, sidecar-ask the operator to investigate the environment, and do **not** work around with `--no-build-vignettes` or similar flags. See SKILL.md Phase 6 step 2.
 - [ ] `NEWS.md` entry added.
 
 ### Verifying against the **worktree's** nlmixr2lib, not the system install
