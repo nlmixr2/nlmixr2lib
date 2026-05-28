@@ -1,0 +1,482 @@
+---
+title: "TB combination therapy MTP-GPDI in vitro (Clewe 2018)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{TB combination therapy MTP-GPDI in vitro (Clewe 2018)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 5)
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Clewe_2018_TB_MTP_GPDI_invitro"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Clewe_2018_TB_MTP_GPDI_invitro"))$description`
+* Article: <https://doi.org/10.1093/jac/dkx380>
+
+# Population
+
+The model was developed from in vitro time-kill experiments using the
+Mycobacterium tuberculosis Beijing VN 2002-1585 (BE1585) genotype strain,
+cultured in Middlebrook 7H9 broth + 10% OADC + 0.5% glycerol + 0.02% Tween 20
+under shaking conditions (96 rpm, 37 C) at the Erasmus Medical Centre,
+Rotterdam, NL. Static drug concentrations were used as input to the PD
+modelling; the stability of rifampicin, isoniazid, and ethambutol over the
+6-day experiment allowed activity assessment without replenishment.
+
+The limit of quantification was 5 CFU; data below LOQ were handled in NONMEM
+with the M3 method. Tested concentrations (Clewe 2018 Figure 1): rifampicin
+0.002 - 8 mg/L; isoniazid 0.01 - 40 mg/L; ethambutol 0.0078 - 32 mg/L. Duo
+and trio combinations sampled cross-products of selected concentrations,
+including clinically relevant unbound Cmax values (RIF 2, INH 10, EMB 8
+mg/L).
+
+The `population` metadata field of the model carries the same information
+programmatically:
+
+```{r population}
+rxode2::rxode(readModelDb("Clewe_2018_TB_MTP_GPDI_invitro"))$population
+```
+
+# Source trace
+
+Every `ini()` entry carries an in-file comment pointing to the Clewe 2018 (or
+upstream Clewe 2016 MTP) source location. The table below collects them for
+reviewer use.
+
+| Block | Parameter | Value | Units | Source |
+|-------|-----------|-------|-------|--------|
+| MTP growth | `lkg`       | log(0.796)     | 1/day  | Clewe 2018 Table 1 (RSE 5%) |
+| MTP growth | `lkfs_lin`  | log(1.66e-3) FIX | 1/day^2 | Clewe 2018 Table 1 footnote b (fixed from Clewe 2016) |
+| MTP growth | `lkfn`      | log(8.97e-7) FIX | 1/day | Clewe 2018 Table 1 footnote b |
+| MTP growth | `lksn`      | log(0.186) FIX   | 1/day | Clewe 2018 Table 1 footnote b |
+| MTP growth | `lksf`      | log(0.0145) FIX  | 1/day | Clewe 2018 Table 1 footnote b |
+| MTP growth | `lkns`      | log(1.23e-3) FIX | 1/day | Clewe 2018 Table 1 footnote b |
+| MTP init   | `lf0`       | log(209000)    | CFU/mL | Clewe 2018 Table 1 (RSE 17%) |
+| MTP init   | `ls0`       | log(324000)    | CFU/mL | Clewe 2018 Table 1 (RSE 12%) |
+| RIF mono   | `lemax_fg_rif` | log(1) FIX   | 1/day  | Clewe 2018 Table 1 (Emax fixed at 1) |
+| RIF mono   | `lec50_fg_rif` | log(0.388)   | mg/L   | Clewe 2018 Table 1 (RSE 19%) |
+| RIF mono   | `gamma_fg_r`   | 2.8          | unitless | Clewe 2018 Table 1 (RSE 28%) |
+| RIF mono   | `lemax_fd_rif` | log(1.97)    | 1/day  | Clewe 2018 Table 1 (RSE 3%) |
+| RIF mono   | `lec50_fd_rif` | log(0.00303) | mg/L   | Clewe 2018 Table 1 (RSE 10%) |
+| RIF mono   | `lemax_sd_rif` | log(1.79)    | 1/day  | Clewe 2018 Table 1 (RSE 4%) |
+| RIF mono   | `lec50_sd_rif` | log(0.0113)  | mg/L   | Clewe 2018 Table 1 (RSE 32%) |
+| RIF mono   | `lknd_rif`     | log(3.29)    | L/mg/day | Clewe 2018 Table 1 (RSE 17%) |
+| INH mono   | `lemax_fd_inh` | log(22.2)    | 1/day  | Clewe 2018 Table 1 (RSE 35%) |
+| INH mono   | `lec50_fd_inh` | log(0.168)   | mg/L   | Clewe 2018 Table 1 (RSE 34%) |
+| INH mono   | `gamma_fd_h`   | 1.9          | unitless | Clewe 2018 Table 1 (RSE 11%) |
+| INH mono   | `lemax_sd_inh` | log(8.55)    | 1/day  | Clewe 2018 Table 1 (RSE 17%) |
+| INH mono   | `lec50_sd_inh` | log(0.0329)  | mg/L   | Clewe 2018 Table 1 (RSE 49%) |
+| INH mono   | `gamma_sd_h`   | 1.74         | unitless | Clewe 2018 Table 1 (RSE 25%) |
+| INH AR     | `lkon`         | log(0.0206)  | L/mg/day | Clewe 2018 Table 1 (RSE 31%) |
+| INH AR     | `lkar_fd_inh`  | log(522)     | unitless | Clewe 2018 Table 1 (RSE 46%) |
+| INH AR     | `lkar_sd_inh`  | log(2350)    | unitless | Clewe 2018 Table 1 (RSE 51%) |
+| EMB mono   | `lemax_fd_emb` | log(2.21)    | 1/day  | Clewe 2018 Table 1 (RSE 1%) |
+| EMB mono   | `lec50_fd_emb` | log(0.86)    | mg/L   | Clewe 2018 Table 1 (RSE 16%) |
+| EMB mono   | `gamma_fd_e`   | 2.46         | unitless | Clewe 2018 Table 1 (RSE 23%) |
+| EMB mono   | `lksd_emb`     | log(4.39)    | L/mg/day | Clewe 2018 Table 1 (RSE 69%) |
+| GPDI F     | `int_fd_rif_inh` | -0.679     | fractional | Clewe 2018 Table 3 (RSE 11%) |
+| GPDI F     | `int_fd_inh_rif` | 0 FIX      | fractional | Clewe 2018 Table 3 footnote b |
+| GPDI F     | `int_fd_emb_inh` | 1.72       | fractional | Clewe 2018 Table 3 (RSE 15%) |
+| GPDI F     | `int_fd_inh_emb` | 0 FIX      | fractional | Clewe 2018 Table 3 footnote b |
+| GPDI F     | `int_fd_rif_emb` | -0.99 FIX  | fractional | Clewe 2018 Table 3 footnote c |
+| GPDI F     | `int_fd_emb_rif` | -0.668     | fractional | Clewe 2018 Table 3 (RSE 22%) |
+| GPDI S     | `int_sd_rif_inh` | 1.42       | fractional | Clewe 2018 Table 3 (RSE 22%) |
+| GPDI S     | `int_sd_inh_rif` | 15.2       | fractional | Clewe 2018 Table 3 (RSE 49%) |
+| GPDI S     | `int_sd_emb_inh` | 0.0963     | fractional | Clewe 2018 Table 3 (RSE 81%) |
+| GPDI S     | `int_sd_inh_emb` | 164        | fractional | Clewe 2018 Table 3 (RSE 259%) |
+| GPDI S     | `int_sd_rif_emb` | 486        | fractional | Clewe 2018 Table 3 (RSE 12%) |
+| GPDI S     | `int_sd_emb_rif` | 2.09       | fractional | Clewe 2018 Table 3 (RSE 32%) |
+| GPDI trio  | `int_sd_rif_inh_emb` | -0.749 | fractional | Clewe 2018 Table 3 (RSE 18%) |
+| Residual   | `addSd`        | 1.0 FIX      | log(CFU/mL) | placeholder; not tabulated in Clewe 2018 (see Errata) |
+
+Equation references:
+
+* Adaptive resistance dynamics: Clewe 2018 Eqs 1-2 (with Eq 2 mass-balance
+  correction noted in Errata).
+* Bliss Independence combination of three drug effects on F and S: Clewe 2018
+  Eq 8 (F bacterial sub-state) and Eq 9 (S bacterial sub-state).
+* N-state ODE with only rifampicin acting: Clewe 2018 Eq 10.
+* GPDI interaction term form: Clewe 2018 Table 3 footer ("The interaction
+  parameters INT were estimated as 1 + INT_A,B * C_A / (EC50_A,B + C_A)") and
+  Materials and methods, GPDI section (least complex baseline:
+  EC50_A,B = EC50_A).
+* MTP natural-growth transfer rates kFSlin, kSF, kFN, kSN, kNS fixed from the
+  in vitro H37Rv MTP fit of Clewe 2016 JAC dkv416 (Clewe 2018 Table 1
+  footnote b).
+* Linear adaptive-resistance functional form (EC50_eff = EC50 * (1 + kAR *
+  AR_on)): adapted from Mohamed 2014 JAC dkt520 for colistin /
+  Pseudomonas aeruginosa adaptive resistance (Clewe 2018 reference 9).
+
+# Virtual cohort
+
+The simulations below reproduce the typical-value trajectories of Clewe 2018
+Figure 1 (mean observed log10 cfu vs time) for natural growth and the three
+mono-drug time-kill panels. Because drug concentrations are static (not PK
+events), the cohort design uses a single dosing-free event table per regimen
+and varies the three concentration covariates between simulations.
+
+```{r cohort}
+# Static observation grid spanning the 6-day in vitro experiment. The model
+# carries five state ODEs (fbugs, sbugs, nbugs, ar_off, ar_on) and three
+# covariates (CONC_RIF_MGL, CONC_INH_MGL, CONC_EMB_MGL); there are no dosing
+# events because the in vitro drug concentrations are constant by design.
+
+obs_grid <- seq(0, 6, by = 0.05)
+
+# One regimen helper -- returns a self-contained event table with the static
+# drug concentrations encoded as covariate columns.
+make_regimen <- function(id, regimen,
+                         conc_rif = 0, conc_inh = 0, conc_emb = 0,
+                         times = obs_grid) {
+  tibble(
+    id   = id,
+    time = times,
+    amt  = 0,
+    evid = 0L,
+    cmt  = "Cc",
+    CONC_RIF_MGL = conc_rif,
+    CONC_INH_MGL = conc_inh,
+    CONC_EMB_MGL = conc_emb,
+    regimen      = regimen
+  )
+}
+
+# Concentrations replicated from Clewe 2018 Figure 1 panels.
+events <- bind_rows(
+  make_regimen( 1L, "Natural growth",         conc_rif = 0),
+  make_regimen( 2L, "RIF 0.002 mg/L",         conc_rif = 0.002),
+  make_regimen( 3L, "RIF 0.008 mg/L",         conc_rif = 0.008),
+  make_regimen( 4L, "RIF 0.03 mg/L",          conc_rif = 0.03),
+  make_regimen( 5L, "RIF 0.125 mg/L",         conc_rif = 0.125),
+  make_regimen( 6L, "RIF 0.5 mg/L",           conc_rif = 0.5),
+  make_regimen( 7L, "RIF 8 mg/L",             conc_rif = 8),
+  make_regimen( 8L, "INH 0.01 mg/L",          conc_inh = 0.01),
+  make_regimen( 9L, "INH 0.039 mg/L",         conc_inh = 0.039),
+  make_regimen(10L, "INH 0.156 mg/L",         conc_inh = 0.156),
+  make_regimen(11L, "INH 0.625 mg/L",         conc_inh = 0.625),
+  make_regimen(12L, "INH 2.5 mg/L",           conc_inh = 2.5),
+  make_regimen(13L, "INH 10 mg/L",            conc_inh = 10),
+  make_regimen(14L, "INH 40 mg/L",            conc_inh = 40),
+  make_regimen(15L, "EMB 0.0078 mg/L",        conc_emb = 0.0078),
+  make_regimen(16L, "EMB 0.031 mg/L",         conc_emb = 0.031),
+  make_regimen(17L, "EMB 0.125 mg/L",         conc_emb = 0.125),
+  make_regimen(18L, "EMB 0.5 mg/L",           conc_emb = 0.5),
+  make_regimen(19L, "EMB 2 mg/L",             conc_emb = 2),
+  make_regimen(20L, "EMB 8 mg/L",             conc_emb = 8),
+  make_regimen(21L, "EMB 32 mg/L",            conc_emb = 32),
+  # Clinical-Cmax trio at last studied timepoint, used to check antagonism /
+  # synergy classifications against Clewe 2018 Figure 5b.
+  make_regimen(22L, "RIF 2 + INH 10 + EMB 8", conc_rif = 2, conc_inh = 10, conc_emb = 8)
+)
+
+stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
+```
+
+# Simulation
+
+```{r simulate}
+mod <- readModelDb("Clewe_2018_TB_MTP_GPDI_invitro")
+
+sim <- rxode2::rxSolve(
+  mod, events = events,
+  keep = c("regimen", "CONC_RIF_MGL", "CONC_INH_MGL", "CONC_EMB_MGL"),
+  returnType = "data.frame"
+) %>%
+  as_tibble() %>%
+  mutate(
+    total_bugs = pmax(fbugs + sbugs + nbugs, 1),
+    log10_total = log10(total_bugs)
+  )
+```
+
+# Replicate published figures
+
+## Figure 1 -- natural growth and rifampicin monotherapy
+
+```{r figure-1-rif}
+# Replicates Clewe 2018 Figure 1 top-left (natural growth) and top-right (RIF
+# monotherapy at six concentrations).
+rif_regimens <- c("Natural growth",
+                  "RIF 0.002 mg/L", "RIF 0.008 mg/L", "RIF 0.03 mg/L",
+                  "RIF 0.125 mg/L", "RIF 0.5 mg/L",   "RIF 8 mg/L")
+
+sim %>%
+  filter(regimen %in% rif_regimens) %>%
+  mutate(regimen = factor(regimen, levels = rif_regimens)) %>%
+  ggplot(aes(time, log10_total, colour = regimen)) +
+  geom_line(linewidth = 0.7) +
+  scale_y_continuous(name = "log10(CFU/mL)", limits = c(-0.2, 8)) +
+  scale_x_continuous(name = "Time (days)", breaks = 0:6) +
+  labs(title = "Clewe 2018 Figure 1 -- natural growth and rifampicin time-kill",
+       caption = "Replicates Figure 1 top-left (open circles, natural growth) and top-right (RIF mono).") +
+  theme_minimal() +
+  theme(legend.title = element_blank())
+```
+
+## Figure 1 -- isoniazid monotherapy with adaptive resistance
+
+```{r figure-1-inh}
+# Replicates Clewe 2018 Figure 1 middle-left (INH mono, seven concentrations).
+# At low INH (0.01-0.156 mg/L) the kill effect is weak and natural growth
+# dominates. At intermediate INH (0.625-2.5 mg/L) the model shows initial kill
+# followed by an apparent plateau / regrowth as the AR_on state grows and
+# reduces INH potency. At high INH (10-40 mg/L) the kill is still meaningful
+# despite adaptive resistance.
+inh_regimens <- c("INH 0.01 mg/L", "INH 0.039 mg/L", "INH 0.156 mg/L",
+                  "INH 0.625 mg/L", "INH 2.5 mg/L",  "INH 10 mg/L",  "INH 40 mg/L")
+
+sim %>%
+  filter(regimen %in% inh_regimens) %>%
+  mutate(regimen = factor(regimen, levels = inh_regimens)) %>%
+  ggplot(aes(time, log10_total, colour = regimen)) +
+  geom_line(linewidth = 0.7) +
+  scale_y_continuous(name = "log10(CFU/mL)", limits = c(-0.2, 8)) +
+  scale_x_continuous(name = "Time (days)", breaks = 0:6) +
+  labs(title = "Clewe 2018 Figure 1 -- isoniazid time-kill",
+       caption = "Replicates Figure 1 middle-left. Adaptive-resistance loop modulates INH potency over time.") +
+  theme_minimal() +
+  theme(legend.title = element_blank())
+```
+
+## Figure 1 -- ethambutol monotherapy
+
+```{r figure-1-emb}
+# Replicates Clewe 2018 Figure 1 middle-right (EMB mono, seven concentrations).
+emb_regimens <- c("EMB 0.0078 mg/L", "EMB 0.031 mg/L", "EMB 0.125 mg/L",
+                  "EMB 0.5 mg/L",    "EMB 2 mg/L",     "EMB 8 mg/L",    "EMB 32 mg/L")
+
+sim %>%
+  filter(regimen %in% emb_regimens) %>%
+  mutate(regimen = factor(regimen, levels = emb_regimens)) %>%
+  ggplot(aes(time, log10_total, colour = regimen)) +
+  geom_line(linewidth = 0.7) +
+  scale_y_continuous(name = "log10(CFU/mL)", limits = c(-0.2, 8)) +
+  scale_x_continuous(name = "Time (days)", breaks = 0:6) +
+  labs(title = "Clewe 2018 Figure 1 -- ethambutol time-kill",
+       caption = "Replicates Figure 1 middle-right. EMB acts as Emax on F-kill and linear on S-kill.") +
+  theme_minimal() +
+  theme(legend.title = element_blank())
+```
+
+# Validation checks (endogenous / mechanistic)
+
+This is a typical-value mechanistic in vitro PD model; there is no
+patient-level IIV and no PK structure. PKNCA-style NCA is not applicable.
+The validation strategy follows the endogenous / mechanistic-model pattern
+(`endogenous-validation.md` in the extraction skill): natural-growth
+trajectory check, monotherapy potency check, conservation check for the
+adaptive-resistance loop, and a combination antagonism / synergy check
+against Figure 5b.
+
+### 1. Natural-growth trajectory
+
+With no drug, the F-state grows exponentially at rate kG = 0.796 1/day. The
+S-state is drained by kSN to feed N and replenished by kFS(t) = kFSlin * t
+from F; the N-state accumulates from F->N (slow) and S->N (faster). The total
+CFU/mL at day 6 should be in the high 10^7 range, matching the open-circles
+trajectory of Clewe 2018 Figure 1 top-left (terminal log10 ~ 7.5).
+
+```{r natural-growth-check}
+ng_traj <- sim %>%
+  filter(regimen == "Natural growth", time %in% c(0, 1, 2, 3, 4, 5, 6)) %>%
+  select(time, fbugs, sbugs, nbugs, total_bugs, log10_total)
+knitr::kable(ng_traj, digits = 3, caption = "Natural-growth trajectory of F, S, N (CFU/mL).")
+```
+
+### 2. Rifampicin monotherapy potency check
+
+Clewe 2018 Figure 1 top-right shows RIF 0.5 mg/L driving log10 CFU/mL to
+roughly 1-2 by day 6, and RIF 8 mg/L driving log10 CFU/mL below the LOQ
+(log10 = 0.7). The simulation should reproduce both qualitative endpoints
+(deeper kill with higher RIF concentration; saturating at the LOQ).
+
+```{r rif-potency-check}
+sim %>%
+  filter(regimen %in% c("Natural growth", "RIF 0.125 mg/L", "RIF 0.5 mg/L", "RIF 8 mg/L"),
+         time == 6) %>%
+  select(regimen, time, log10_total) %>%
+  knitr::kable(digits = 3, caption = "Day-6 log10(CFU/mL) under increasing RIF monotherapy.")
+```
+
+### 3. Adaptive-resistance conservation
+
+The AR_off and AR_on states represent the bacterial population fraction
+susceptible vs adapted to isoniazid. With koff = 0 (no resistance reversal),
+the kinetics are unidirectional: AR_off + AR_on must equal 1 at all times.
+At any non-zero INH concentration, AR_on grows monotonically from 0 toward
+1; in the limit of saturating INH for long enough, AR_on -> 1 and INH
+becomes ineffective.
+
+```{r ar-conservation-check}
+sim %>%
+  filter(regimen %in% c("Natural growth", "INH 0.625 mg/L", "INH 10 mg/L", "INH 40 mg/L"),
+         time %in% c(0, 1, 3, 6)) %>%
+  mutate(ar_total = ar_off + ar_on) %>%
+  select(regimen, time, ar_off, ar_on, ar_total) %>%
+  knitr::kable(digits = 4,
+               caption = "AR_off / AR_on / total over time -- total must equal 1.")
+```
+
+### 4. Trio combination at clinical Cmax (Figure 5b reference)
+
+Clewe 2018 Figure 5b reports the model-predicted EBA (log10 cfu/mL/day) at
+the clinically relevant unbound Cmax values RIF 2 mg/L, INH 10 mg/L, and
+EMB 8 mg/L using the last studied timepoint (6 days). The published value
+for the full triple combination is 1.34 log10 cfu/mL/day (classified as
+antagonism relative to expected additivity). The simulation total log10
+drop over 6 days corresponds to that EBA scaled by 6.
+
+```{r trio-check}
+sim %>%
+  filter(regimen == "RIF 2 + INH 10 + EMB 8", time %in% c(0, 1, 3, 6)) %>%
+  select(time, fbugs, sbugs, nbugs, log10_total) %>%
+  knitr::kable(digits = 3,
+               caption = "Clinical-Cmax trio (RIF 2 + INH 10 + EMB 8 mg/L) over the 6-day window.")
+```
+
+# Assumptions and deviations
+
+* **GPDI functional form -- least-complex baseline EC50 anchors.** Clewe 2018
+  Table 3 reports only INT magnitudes for the thirteen interactions; no
+  EC50_INT parameters are tabulated, and the paper text states the "least
+  complex" GPDI model was used as a starting point in which EC50_A,B = EC50_A
+  (the modifier's mono EC50 for the same mechanism). The Materials and
+  methods note that "Estimates of separate INT and interaction EC50
+  parameters were then evaluated for statistical significance", but the
+  Table 3 absence of EC50_INT values strongly suggests the least-complex
+  baseline was retained for the final model. Implemented here: every
+  modulation factor uses
+  factor = 1 + INT_A,B * C_A / (EC50_A + C_A),
+  where EC50_A is the modifier's mono EC50 for the same bacterial-state
+  mechanism. When the modifier has no mechanism-specific EC50 (EMB has linear
+  S-kill kSD_EMB; RIF has linear N-kill kND_RIF), the modifier's F-kill EC50
+  is used as the saturation anchor. The Clewe 2018 Supplementary NONMEM model
+  code (referenced in the paper but not on disk) would resolve this anchor
+  choice unambiguously; users with access to that file should cross-check.
+* **Linear adaptive resistance functional form.** Clewe 2018 Materials and
+  methods presents Eq 3 (Emax form on isoniazid Emax) and Eq 4 (Emax form on
+  isoniazid EC50) as the AR_max / AR_50 Hill-type adaptive-resistance
+  alternatives evaluated, but Table 1 of the final model reports linear
+  k_AR_FD_INH = 522 and k_AR_SD_INH = 2350 in place of (AR_max, AR_50)
+  pairs. Implemented here as a linear modulation on EC50 (the published
+  Discussion describes the resistance as affecting INH potency, not Emax):
+  EC50_FD_INH_eff = EC50_FD_INH * (1 + k_AR_FD_INH * AR_on),
+  EC50_SD_INH_eff = EC50_SD_INH * (1 + k_AR_SD_INH * AR_on).
+  The units "(days^-1)" listed in Clewe 2018 Table 1 for k_AR are treated as
+  a label slip because AR_on is dimensionless and the EC50 multiplier must be
+  dimensionless. The supplement would confirm or refute this interpretation.
+* **Mass-balance correction in adaptive-resistance Eq 2.** The published
+  Clewe 2018 Eq 2 reads dAR_off/dt = -k_on * AR_off, but the conjugate Eq 1
+  is dAR_on/dt = k_on * C_INH * AR_off. Without the C_INH factor on the
+  outflow, AR_off + AR_on is not conserved. The model file encodes the
+  mass-balanced form dAR_off/dt = -k_on * C_INH * AR_off so that AR_off +
+  AR_on = 1 at all times. This is the form consistent with both Eq 1 and
+  Materials and methods text ("rate of development of resistance ... was
+  described using kon"), and the simulated AR_off + AR_on does indeed sum
+  to 1 in the conservation check above.
+* **kNF term in published Eq 8.** Clewe 2018 Eq 8 includes a "+ kNF * N"
+  term that has no corresponding entry in Table 1 and no N->F arrow in
+  Figure 2. The canonical Clewe 2016 MTP and the Chen 2017 mouse twin
+  (modellib("Chen_2017_TB_MTP_GPDI_mouse")) omit any N->F transfer. This
+  term is treated as a typographical inclusion and is not encoded; the F
+  ODE in the model file matches the standard MTP structure
+  dF/dt = kG * F * E_FG - kFS * F + kSF * S - kFN * F - E_FD * F.
+* **Initial non-multiplying bacterial inoculum N0 = 0.** Clewe 2018
+  Materials and methods does not list an initial N0; the standard MTP
+  setup starts F0 and S0 from Table 1 and lets the N pool fill from
+  F->N and S->N transfer. Encoded literally as `nbugs(0) <- 0`.
+* **Static drug concentrations as covariates.** The in vitro experiment
+  used fixed nominal drug concentrations over the 6-day window. The model
+  encodes these as time-invariant covariates (`CONC_RIF_MGL`,
+  `CONC_INH_MGL`, `CONC_EMB_MGL`) rather than as dosing events; the value
+  is constant per simulation and varies between simulations. A future
+  extension that adds a PK layer (e.g., for clinical EBA simulations) can
+  reuse this PD layer with time-varying drug concentrations supplied by
+  an upstream PK ODE -- see the in vivo twin
+  modellib("Chen_2017_TB_MTP_GPDI_mouse") for the same MTP-GPDI PD layer
+  driven by parallel one- and two-compartment PK ODEs.
+* **Residual error placeholder.** Clewe 2018 does not tabulate the
+  residual SD used in NONMEM (the M3-method censoring at the 5 CFU LOQ is
+  described but the sigma value is absent from Table 1, Table 3, and the
+  main text). The model file carries `addSd = fixed(1.0)` on the
+  natural-log CFU/mL scale as a placeholder so the model is
+  nlmixr2-fit-compatible; this is the same order of magnitude as the
+  natural-log SD encoded by the Chen 2017 mouse twin (`sqrt(1.23) * log(10)
+  ~ 2.55` on natural-log CFU/lungs after the log10-to-ln rescaling).
+  Downstream users fitting this model to their own data should overwrite
+  via `mod$ini` rather than relying on the placeholder.
+* **No PD interaction on E_FG_RIF (RIF inhibition of F growth).** Clewe 2018
+  Table 2 explicitly lists "none identified" for the PD interaction on
+  E_FG_RIF. Implemented literally -- E_FG_RIF depends only on CONC_RIF_MGL
+  and the four RIF / F-growth parameters (Emax_FG_RIF, EC50_FG_RIF,
+  gamma_FG_R, kG).
+* **No PD interaction on E_ND_RIF (RIF kill of N).** Clewe 2018 Table 2
+  lists "none identified" for E_ND_RIF. Implemented literally -- the linear
+  kND_RIF * CONC_RIF_MGL slope is the entire N-state kill effect.
+* **Trio modulator anchor EC50.** The Clewe 2018 trio modulator
+  INT^SD_RIF,INH|EMB = -0.749 applies to the
+  INT^SD_RIF,INH * (1 + INT^SD_RIF,INH|EMB * C_EMB / (EC50_anchor + C_EMB))
+  product. The paper provides no EC50_anchor value for the trio modulation;
+  the model uses EC50_FD_EMB (= 0.86 mg/L) as the EMB saturation anchor
+  because EMB has no S-kill EC50 (it is linear). The supplement would
+  confirm this choice.
+* **INT^FD_RIF,EMB encoded as -0.99 rather than -0.9999.** Clewe 2018
+  Table 3 footnote c sets INT^FD_RIF,EMB to -0.9999 reflecting "a maximal
+  decrease in EC50 identified in mono exposure". The model file encodes
+  -0.99 to keep the multiplier (1 + INT) numerically well-conditioned
+  (-0.9999 leaves a factor of 1e-4 in the denominator that can dominate
+  rounding). The qualitative simulation behavior is unchanged at -0.99 vs
+  -0.9999 within the saturating Emax term.
+* **Non-canonical compartment names.** The model uses bacterial-state
+  compartments `fbugs` / `sbugs` / `nbugs` and adaptive-resistance states
+  `ar_off` / `ar_on` (mirroring the Chen 2017 mouse twin). These do not
+  match the canonical `depot` / `central` / `peripheral1` register and may
+  trigger `checkModelConventions()` warnings; the deviation is intentional
+  because the model carries no PK structure -- the three bacterial states
+  and two resistance states are the entire state space.
+* **Paper-specific drug-concentration covariates.** `CONC_RIF_MGL`,
+  `CONC_INH_MGL`, and `CONC_EMB_MGL` are not in
+  `inst/references/covariate-columns.md` because the canonical concentration
+  concept in nlmixr2lib is a state-derived plasma concentration (`Cc`), not
+  a static exogenous-drug-concentration covariate used to drive an in vitro
+  PD model. These covariates are scoped to this specific model.
+
+# Errata
+
+* No erratum, corrigendum, or author correction was identified for the
+  Clewe 2018 J Antimicrob Chemother article via the journal landing page
+  (https://academic.oup.com/jac/article/73/2/437/4604762) or a PubMed
+  "erratum" search as of 2026-05-22.
+* Clewe 2018 Supplementary Data (containing Figures S1, S2 and the final
+  MTP-GPDI NONMEM model code) is referenced in the paper but is not on
+  disk in `from_people/literature_2018_search`. The model file extracts
+  every parameter value verbatim from Table 1 (MTP + monotherapy effects)
+  and Table 3 (GPDI interactions); the functional forms of the GPDI
+  interactions, the linear adaptive-resistance form, and the mass-balance
+  correction in Eq 2 are reconstructed from the canonical Wicha 2017 GPDI
+  formulation, the Mohamed 2014 adaptive-resistance literature, and the
+  Chen 2017 in vivo mouse twin (sharing senior authorship), and are
+  documented above in Assumptions and deviations. A future operator with
+  access to the Clewe 2018 Supplementary NONMEM file should cross-check
+  the GPDI modulation-factor shape (Emax-style anchor, EC50 anchor for the
+  trio modulator, and the linear vs Hill form of adaptive resistance).
+* The published Eq 8 (F-state ODE) contains a "+ kNF * N" term with no
+  Table 1 parameter and no corresponding arrow in Figure 2; treated here
+  as a typographical inclusion (see Assumptions and deviations).
+* The published Eq 2 (AR_off ODE) is missing the `C_INH` factor required
+  for mass balance with Eq 1; the model file uses the conjugate
+  mass-balanced form (see Assumptions and deviations).
+* Table 1 lists the units of k_on and k_AR as "L*mg^-1*days" and "days^-1"
+  respectively; both are treated as label slips. `k_on` (L*mg^-1*day^-1)
+  multiplies `C_INH` (mg/L) and `AR_off` (unitless) to give a rate
+  (1/day), and `k_AR` (dimensionless) multiplies `AR_on` (unitless) to
+  give a dimensionless EC50 multiplier.

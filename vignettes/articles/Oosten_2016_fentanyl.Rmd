@@ -176,7 +176,7 @@ for a 70 kg patient receiving a single 50 ug/h patch (3600 ug bolus into
 ```{r typical-td}
 mod_typical <- mod |> rxode2::zeroRe()
 typical_ev <- rxode2::et(amt = patch_dose_ug, cmt = "depot2") |>
-  rxode2::et(amt = 0, evid = 0, time = seq(0, 168, by = 0.25))
+  rxode2::et(seq(0, 168, by = 0.25))
 typical_ev$WT  <- 70
 typical_ev$OCC <- 1L
 typical_sim <- rxode2::rxSolve(mod_typical, typical_ev)

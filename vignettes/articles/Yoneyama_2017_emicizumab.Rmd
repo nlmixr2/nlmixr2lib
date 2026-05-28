@@ -1,0 +1,434 @@
+---
+title: "Emicizumab (Yoneyama 2017)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Emicizumab (Yoneyama 2017)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 4.5
+)
+```
+
+```{r setup, message = FALSE}
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(PKNCA)
+```
+
+# Model and source
+
+* Citation: Yoneyama K, Schmitt C, Kotani N, Levy GG, Kasai R, Iida S,
+  Shima M, Kawanishi T. A Pharmacometric Approach to Substitute for a
+  Conventional Dose-Finding Study in Rare Diseases: Example of Phase III
+  Dose Selection for Emicizumab in Hemophilia A.
+  *Clin Pharmacokinet*. 2018 May;57(5):613-619.
+* Article: [doi:10.1007/s40262-017-0616-3](https://doi.org/10.1007/s40262-017-0616-3)
+* Trial registries:
+  [NCT01290263](https://clinicaltrials.gov/study/NCT01290263) (Japanese
+  single-ascending-dose phase I, healthy volunteers),
+  [NCT01747980](https://clinicaltrials.gov/study/NCT01747980) (Caucasian
+  single-ascending-dose phase I),
+  [JapicCTI-121934](https://www.clinicaltrials.jp/) (Japanese
+  multiple-ascending-dose phase I, severe hemophilia A patients).
+
+Emicizumab (ACE910) is a recombinant, humanised, bispecific IgG4 monoclonal
+antibody that simultaneously binds activated factor IX (FIXa) and factor X
+(FX), thereby mimicking the cofactor function of activated factor VIII
+(FVIII). It is approved for prophylaxis of bleeding in patients with
+severe hemophilia A with or without FVIII inhibitors. Yoneyama 2017 is the
+pharmacometric analysis used to substitute for a conventional dose-finding
+study and select the three phase III maintenance regimens (1.5 mg/kg QW,
+3 mg/kg Q2W, 6 mg/kg Q4W) following a 3 mg/kg QW loading dose for the
+first 4 weeks.
+
+This vignette packages the structural population PK model from Section 3.2
+of Yoneyama 2017 (Table 2). The companion repeated time-to-event (RTTE)
+bleeding-hazard model from Section 3.3 (Table 3) is **not** included in
+nlmixr2lib at this time -- nlmixr2lib does not currently support TTE-style
+hazard models. Users interested in coupling exposure to bleeding hazard
+should consult Section 2.4 and Table 3 of the paper.
+
+# Population
+
+The popPK dataset pooled three studies (Table 1 of Yoneyama 2017):
+
+* **24 Japanese healthy male adult volunteers** (single SC dose of 0.01,
+  0.1, 0.3, or 1 mg/kg). An additional 6 Japanese volunteers received
+  0.001 mg/kg but were excluded from the popPK dataset because all plasma
+  concentrations were below the assay LLOQ (< 0.05 ug/mL).
+* **18 Caucasian healthy male adult volunteers** (single SC dose of 0.1,
+  0.3, or 1 mg/kg). One Caucasian volunteer developed anti-emicizumab
+  neutralising antibodies (NAbs).
+* **18 Japanese male adult/adolescent patients with severe hemophilia A**
+  (FVIII activity < 1 IU/dL) across three cohorts: Cohort 1 (n = 6,
+  1 mg/kg SC loading + 0.3 mg/kg QW SC), Cohort 2 (n = 6, 3 mg/kg SC
+  loading + 1 mg/kg QW SC), Cohort 3 (n = 6, 3 mg/kg QW SC). 11 of 18
+  patients carried FVIII inhibitors at baseline.
+
+Pooled-cohort weights ranged 41-87 kg (median 60-70 kg by cohort); ages
+ranged 12-58 years; all 60 subjects were male. The model standardises
+typical values for a 70 kg, NAb-negative healthy volunteer (Table 2
+footnote b); the canonical `DIS_HEALTHY` register convention shifts the
+structural typicals to the patient state -- see "Source trace" below.
+
+The same information is available programmatically via the model's
+`population` metadata
+(`readModelDb("Yoneyama_2017_emicizumab")$population`).
+
+# Source trace
+
+The per-parameter origin is recorded as an in-file comment next to each
+`ini()` entry in `inst/modeldb/specificDrugs/Yoneyama_2017_emicizumab.R`.
+The table below collects them in one place for review.
+
+| Parameter / equation | Value | Source location |
+|----------------------|-------|-----------------|
+| `lka` (ka, derived from t_(1/2),abs = 1.56 days) | log(ln(2)/1.56) = -0.811 | Yoneyama 2017 Table 2 |
+| `lcl` (patient-typical CL/F at WT 70 kg, ADA-) | log(0.222) + 0.232 = -1.273 | Yoneyama 2017 Table 2 (HV-typical 0.222 L/day + patient effect 0.232) |
+| `lvc` (patient-typical Vd/F at WT 70 kg) | log(10.2) + 0.175 = 2.498 | Yoneyama 2017 Table 2 (HV-typical 10.2 L + patient effect 0.175) |
+| `e_wt_cl` (allometric exponent on CL/F) | 0.75 (fixed) | Yoneyama 2017 Table 2 |
+| `e_wt_vc` (allometric exponent on Vd/F) | 1 (fixed) | Yoneyama 2017 Table 2 |
+| `e_dis_healthy_cl` (DIS_HEALTHY effect on log-CL/F) | -0.232 (= -1 x paper PATIENT effect) | Yoneyama 2017 Table 2 |
+| `e_dis_healthy_vc` (DIS_HEALTHY effect on log-Vd/F) | -0.175 (= -1 x paper PATIENT effect) | Yoneyama 2017 Table 2 |
+| `e_ada_pos_cl` (NAb effect on log-CL/F) | 2.01 | Yoneyama 2017 Table 2 |
+| `tNab` (onset time of NAb effect, days) | 33.4 | Yoneyama 2017 Table 2 (NONMEM MTIME) |
+| `etalcl + etalvc` block | Var(CL) = 0.0737; Cov(CL, Vc) = 0.0278; Var(Vc) = 0.0455 | Yoneyama 2017 Table 2 |
+| `etalka` IIV | 0.502 (paper reports Var(t_(1/2),abs) = 0.502 on log-scale; equal magnitude on lka because ka = ln(2)/t_(1/2),abs) | Yoneyama 2017 Table 2 |
+| Additive residual error | 0.0149 ug/mL (SD) | Yoneyama 2017 Table 2 |
+| Proportional residual error | 0.128 (12.8 % CV) | Yoneyama 2017 Table 2 |
+| `d/dt(depot)`, `d/dt(central)` | one-compartment SC PK with first-order absorption | Yoneyama 2017 Methods Section 2.3 |
+| Eq. 1 (continuous covariate, power form) | `P = P_TV * (Cov/CovTV)^theta * exp(eta)` | Yoneyama 2017 Methods Section 2.3 |
+| Eq. 2 (categorical covariate, exp form) | `P = P_TV * exp(Cov * theta) * exp(eta)` | Yoneyama 2017 Methods Section 2.3 |
+
+# Covariate column naming
+
+| Source column (paper) | Canonical column used here | Notes |
+|-----------------------|----------------------------|-------|
+| `BW` | `WT` | Body weight; reference 70 kg. |
+| `PATIENT` (1 = severe hemophilia A patient, 0 = healthy volunteer) | `DIS_HEALTHY` (1 = healthy volunteer, 0 = patient) | Canonical orientation is the inverse of the paper's. The model file shifts the structural typicals so the model is mathematically identical to the paper's Eq. 2. |
+| `NAb` | `ADA_POS` | Time-fixed once the subject has seroconverted; the 33.4-day onset time post first dose is encoded inside `model()` via `nab_active <- ADA_POS * (t > tNab)`. |
+
+# Virtual cohort
+
+Original observed data are not publicly available. The cohort below
+reproduces the three phase III dosing regimens that Yoneyama 2017 used to
+generate Figure 5 (typical-value plasma emicizumab concentration-time
+profiles): 3 mg/kg QW loading for the first 4 weeks followed by 1.5 mg/kg
+QW, 3 mg/kg Q2W, or 6 mg/kg Q4W maintenance. The reference subject is the
+typical patient (DIS_HEALTHY = 0, ADA_POS = 0) at 70 kg, the
+standardisation used in the paper for the typical-value simulations.
+
+```{r cohort}
+set.seed(20171206)  # online publication date 6 Dec 2017
+
+mod <- readModelDb("Yoneyama_2017_emicizumab")
+
+# Simulation horizon: 52 weeks total (4-week loading + 48-week maintenance)
+sim_end_day  <- 52 * 7  # 364 days
+loading_days <- seq(0, by = 7, length.out = 4)  # weeks 0, 1, 2, 3
+
+build_regimen <- function(label, maintenance_dose_mg_per_kg,
+                          maintenance_interval_days, n_sub = 200,
+                          wt_mean = 70, wt_cv = 0.20, id_offset = 0L) {
+  ids <- id_offset + seq_len(n_sub)
+  wt  <- pmax(40, wt_mean * exp(rnorm(n_sub, 0, sqrt(log(1 + wt_cv^2)))))
+
+  # Loading: 3 mg/kg QW x 4 weeks (weeks 0, 1, 2, 3)
+  loading_doses <- tidyr::expand_grid(id = ids, time = loading_days) |>
+    dplyr::left_join(tibble(id = ids, WT = wt), by = "id") |>
+    dplyr::mutate(
+      amt  = 3 * WT,                     # mg per kg x kg = mg
+      evid = 1L,
+      cmt  = "depot"
+    )
+
+  # Maintenance: starts at day 28 (= week 4) at the regimen-specific interval
+  maint_times <- seq(from = 28, to = sim_end_day - 1,
+                     by = maintenance_interval_days)
+  maint_doses <- tidyr::expand_grid(id = ids, time = maint_times) |>
+    dplyr::left_join(tibble(id = ids, WT = wt), by = "id") |>
+    dplyr::mutate(
+      amt  = maintenance_dose_mg_per_kg * WT,
+      evid = 1L,
+      cmt  = "depot"
+    )
+
+  # Observation grid: dense in the first 4 weeks, weekly thereafter
+  obs_grid <- sort(unique(c(
+    seq(0, 28, by = 1),
+    seq(28, sim_end_day, by = 3.5)
+  )))
+  obs <- tidyr::expand_grid(id = ids, time = obs_grid) |>
+    dplyr::left_join(tibble(id = ids, WT = wt), by = "id") |>
+    dplyr::mutate(
+      amt  = NA_real_,
+      evid = 0L,
+      cmt  = "Cc"
+    )
+
+  dplyr::bind_rows(loading_doses, maint_doses, obs) |>
+    dplyr::arrange(id, time, evid) |>
+    dplyr::mutate(
+      DIS_HEALTHY = 0L,    # severe hemophilia A patient reference state
+      ADA_POS     = 0L,    # NAb-negative subjects (the modal case)
+      regimen     = label
+    )
+}
+
+events <- dplyr::bind_rows(
+  build_regimen("1.5 mg/kg QW",  1.5, 7,  n_sub = 200, id_offset =    0L),
+  build_regimen("3 mg/kg Q2W",   3.0, 14, n_sub = 200, id_offset =  200L),
+  build_regimen("6 mg/kg Q4W",   6.0, 28, n_sub = 200, id_offset =  400L)
+)
+stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
+```
+
+# Simulation
+
+```{r simulate}
+# Stochastic VPC-style simulation across the three phase III regimens.
+sim <- rxode2::rxSolve(
+  mod, events = events,
+  keep = c("WT", "DIS_HEALTHY", "ADA_POS", "regimen")
+) |>
+  as.data.frame() |>
+  dplyr::filter(!is.na(Cc))
+
+# Typical-value (no IIV) replication of Figure 5 of Yoneyama 2017.
+sim_typ <- rxode2::rxSolve(
+  rxode2::zeroRe(mod), events = events,
+  keep = c("WT", "DIS_HEALTHY", "ADA_POS", "regimen")
+) |>
+  as.data.frame() |>
+  dplyr::filter(!is.na(Cc))
+```
+
+# Replicate published figures
+
+## Figure 5 -- typical-value concentration-time profiles by phase III regimen
+
+Yoneyama 2017 Figure 5 presents the simulated median (with 5th-95th
+percentile shading) plasma emicizumab concentration-time profile at each
+of the three selected phase III dosing regimens. The target efficacious
+exposure of 45 ug/mL (dashed line) is reached at steady-state trough by
+the QW and Q2W maintenance regimens and approached -- but slightly under
+-- by the Q4W maintenance regimen, as Figure 5(c) of the paper shows.
+
+```{r figure-5, fig.cap = "Replicates Figure 5 of Yoneyama 2017: 5-50-95 % VPC of plasma emicizumab concentration-time profiles at the three phase III dosing regimens (3 mg/kg QW loading x 4 weeks followed by 1.5 mg/kg QW, 3 mg/kg Q2W, or 6 mg/kg Q4W maintenance). Dashed line: target efficacious exposure of 45 ug/mL for >= 50 % zero-bleeding probability at steady state."}
+sim |>
+  dplyr::group_by(time, regimen) |>
+  dplyr::summarise(
+    Q05 = quantile(Cc, 0.05, na.rm = TRUE),
+    Q50 = quantile(Cc, 0.50, na.rm = TRUE),
+    Q95 = quantile(Cc, 0.95, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  dplyr::mutate(regimen = factor(regimen,
+    levels = c("1.5 mg/kg QW", "3 mg/kg Q2W", "6 mg/kg Q4W"))) |>
+  ggplot(aes(time / 7, Q50)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.25) +
+  geom_line(linewidth = 0.7) +
+  geom_hline(yintercept = 45, linetype = "dashed", colour = "firebrick") +
+  facet_wrap(~ regimen, ncol = 3) +
+  labs(x = "Time (weeks)", y = "Plasma emicizumab Cc (ug/mL)",
+       title = "Figure 5 -- VPC by phase III dosing regimen",
+       caption = "Dashed line: 45 ug/mL target efficacious exposure (Yoneyama 2017 Section 3.4).")
+```
+
+## Steady-state trough comparison
+
+Yoneyama 2017 Table S1 of the ESM (referenced from Section 3.5 of the
+main text) lists predicted median steady-state trough concentrations
+(C_trough,ss) for each phase III regimen. The simulated medians from the
+VPC above are summarised at the last observation time prior to the next
+maintenance dose for each regimen.
+
+```{r ss-trough}
+trough_times <- list(
+  "1.5 mg/kg QW" = sim_end_day - 0.5,
+  "3 mg/kg Q2W"  = sim_end_day - 0.5,
+  "6 mg/kg Q4W"  = sim_end_day - 0.5
+)
+ss_trough <- sim |>
+  dplyr::filter(time >= sim_end_day - 28) |>
+  dplyr::group_by(regimen) |>
+  dplyr::summarise(
+    n             = dplyr::n_distinct(id),
+    trough_median = stats::median(
+      Cc[time == max(time[time < sim_end_day])], na.rm = TRUE),
+    .groups = "drop"
+  )
+knitr::kable(ss_trough,
+  caption = "Simulated median plasma emicizumab C_trough at week 52 by phase III regimen.")
+```
+
+# PKNCA validation
+
+PKNCA is applied to the last steady-state cycle of each maintenance
+regimen (last full dosing interval before week 52). Single-dose AUC,
+Cmax, Tmax, and effective accumulated half-life are computed per subject
+within each regimen for cross-comparison; the per-regimen summary table
+is presented below.
+
+```{r pknca}
+# Per-regimen last-dose interval and last-dose time
+last_dose_per_regimen <- list(
+  "1.5 mg/kg QW" = list(t_dose = 357, interval = 7),
+  "3 mg/kg Q2W"  = list(t_dose = 350, interval = 14),
+  "6 mg/kg Q4W"  = list(t_dose = 336, interval = 28)
+)
+ss_window <- dplyr::bind_rows(lapply(names(last_dose_per_regimen), function(r) {
+  ld <- last_dose_per_regimen[[r]]
+  sim |>
+    dplyr::filter(regimen == r, time >= ld$t_dose,
+                  time <= ld$t_dose + ld$interval, Cc > 0) |>
+    dplyr::mutate(
+      t_in_interval = time - ld$t_dose,
+      treatment     = r
+    )
+}))
+
+sim_nca <- ss_window |>
+  dplyr::transmute(id, time = t_in_interval, Cc, treatment)
+
+# Per-subject doses (the last maintenance dose) - one row per subject per regimen
+dose_nca <- events |>
+  dplyr::filter(evid == 1) |>
+  dplyr::group_by(id, regimen) |>
+  dplyr::slice_max(time, n = 1, with_ties = FALSE) |>
+  dplyr::ungroup() |>
+  dplyr::transmute(id, time = 0, amt, treatment = regimen)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(dose_nca, amt ~ time | treatment + id)
+
+intervals <- data.frame(
+  start      = 0,
+  end        = Inf,
+  cmax       = TRUE,
+  tmax       = TRUE,
+  auclast    = TRUE,
+  half.life  = TRUE
+)
+
+nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
+nca_res  <- PKNCA::pk.nca(nca_data)
+nca_summary <- summary(nca_res)
+knitr::kable(nca_summary,
+  caption = "PKNCA over the last steady-state dosing interval, by phase III regimen.")
+```
+
+## Comparison against published values
+
+| Quantity | Paper value (Yoneyama 2017) | Packaged-model typical |
+|----------|------------------------------|------------------------|
+| Elimination half-life (healthy volunteers) | 31.8 days | `r sprintf("%.1f", log(2) * 10.2 / 0.222)` days (= ln(2) x Vd/F / (CL/F) at HV typicals) |
+| Elimination half-life (patients) | 30.1 days | `r sprintf("%.1f", log(2) * (10.2 * exp(0.175)) / (0.222 * exp(0.232)))` days (= ln(2) x Vd_patient / CL_patient) |
+| Patient/HV CL/F ratio | 1.26-fold | `r sprintf("%.3f", exp(0.232))`-fold (= exp(0.232)) |
+| Patient/HV Vd/F ratio | 1.19-fold | `r sprintf("%.3f", exp(0.175))`-fold (= exp(0.175)) |
+| Absorption half-life | 1.56 days | 1.56 days (`exp(-lka) * ln(2)`) |
+| Target efficacious exposure | 45 ug/mL | Reproduced visually in Figure 5 |
+| NAb-positive CL/F multiplier (effect active) | exp(2.01) = 7.46 | exp(2.01) = `r sprintf("%.2f", exp(2.01))` |
+| NAb onset time post first dose | 33.4 days | 33.4 days |
+
+The simulated steady-state trough at 6 mg/kg Q4W is slightly below 45
+ug/mL (matching the Section 3.5 narrative in the paper: "a maintenance
+dose of 6 mg/kg Q4W was predicted to result in a median C_trough,ss
+slightly lower than 45 ug/mL"). The QW and Q2W regimens reach the target
+at steady state.
+
+# Assumptions and deviations
+
+* **Companion RTTE bleeding-hazard model not included.** Yoneyama 2017
+  develops both a popPK model (Section 2.3, Table 2) and an inhibitory
+  Emax repeated time-to-event (RTTE) bleeding-hazard model (Section 2.4,
+  Table 3). nlmixr2lib does not currently encode TTE/RTTE models in the
+  same package framework as continuous-PK/PD models; this vignette
+  validates only the popPK layer (Figure 5 of the paper, plus the
+  steady-state trough quantification of Section 3.5). Users seeking to
+  reproduce the bleeding-frequency simulations of Figure 4 and Figure 6
+  should consult Section 2.4 and Table 3 of the paper directly.
+
+* **Canonical `DIS_HEALTHY` reference orientation.** Yoneyama 2017 Table 2
+  reports typical values for a 70 kg, NAb-negative HEALTHY VOLUNTEER and
+  encodes the cohort effect via a PATIENT flag (1 = patient). The
+  canonical `DIS_HEALTHY` register orients the indicator as 1 = healthy
+  volunteer with reference category 0 = patient. The packaged model
+  shifts the structural typicals to the patient state
+  (`lcl = log(0.222) + 0.232`, `lvc = log(10.2) + 0.175`) and negates the
+  covariate coefficients (`e_dis_healthy_cl = -0.232`,
+  `e_dis_healthy_vc = -0.175`) so the model is mathematically identical
+  to Eq. 2 of the paper at every (`DIS_HEALTHY`, `ADA_POS`, `WT`) tuple.
+  This is the same canonical-rotation pattern used in
+  `Lu_2015_tacrolimus.R`.
+
+* **NAb effect activation time.** The paper estimates the NAb-effect
+  onset time as 33.4 days post the first SC dose of emicizumab and
+  encodes it via the NONMEM MTIME/MPAST functionality (Section 2.3,
+  Table 2 footnote e). The packaged `model()` reproduces this as
+  `nab_active <- ADA_POS * (t > tNab)` with `tNab = 33.4` days, so the
+  effect activates when simulation time exceeds 33.4 days for any subject
+  with `ADA_POS = 1`. The NAb-effect estimate is informed by only one
+  positive Caucasian healthy volunteer (Table 1 / Section 3.2); the wide
+  95 % CI (1.26-2.74) in Table 2 reflects that single-subject
+  identifiability. For most simulation use cases users will set
+  `ADA_POS = 0` (the modal case in the dataset, 59 of 60 subjects).
+
+* **Reference body weight 70 kg.** Yoneyama 2017 Table 2 footnote b
+  states this explicitly ("Standardized for a 70 kg, NAb-negative healthy
+  volunteer"). The Caucasian cohort median was 70 kg (Table 1); Japanese
+  cohort medians were 60 kg for both healthy volunteers and Cohorts 1-3
+  patients. The 70 kg reference therefore reflects the Caucasian-weighted
+  pooled-cohort typical rather than the per-cohort median.
+
+* **IIV on absorption rate `lka` vs the paper's IIV on `t_(1/2),abs`.**
+  The paper parameterises absorption via the half-life `t_(1/2),abs` and
+  reports `Var(t_(1/2),abs) = 0.502` on the log-normal scale. The
+  packaged model uses the nlmixr2lib canonical absorption parameter
+  `lka` and assigns the same variance magnitude (`etalka ~ 0.502`)
+  because `ka = ln(2) / t_(1/2),abs` implies `eta_lka = -eta_l_t_half`
+  and variance is sign-invariant. The marginal individual ka
+  distributions are identical between the two parameterisations.
+
+* **One-compartment SC model.** Yoneyama 2017 Section 2.3 states
+  explicitly: "A one-compartment model with first-order absorption and
+  elimination was employed for the structural model for SC dosing." No
+  peripheral compartment is fit. The packaged model preserves this --
+  the IV phase I single-ascending-dose data is not included in the
+  Yoneyama 2017 analysis.
+
+* **Combined additive-plus-proportional residual error.** The paper
+  parameterises the additive term as a standard deviation (0.0149 ug/mL)
+  and the proportional term as a coefficient of variation (12.8 %); the
+  packaged model uses the matching nlmixr2 syntax
+  `Cc ~ add(addSd) + prop(propSd)`.
+
+* **Phase III regimens used for validation.** The Figure 5 simulations
+  in this vignette use the phase III maintenance regimens identified in
+  Section 3.5 of the paper: 3 mg/kg QW loading for the first 4 weeks
+  followed by 1.5 mg/kg QW, 3 mg/kg Q2W, or 6 mg/kg Q4W. The actual
+  phase III HAVEN-1 / HAVEN-3 / HAVEN-4 trials confirmed these regimens.
+  The 45 ug/mL target efficacious exposure is from the integrated
+  PopPK-RTTE simulation reported in Section 3.4 (Figure 4).
+
+# Provenance summary
+
+| Source on disk | Used for |
+|----------------|----------|
+| `Yoneyama_2018_A_Pharmacometric_Approach_to_Substitute__4df84e.pdf` | Main paper Methods, Results, Table 1, Table 2, Figure 5, Section 3.5 narrative on phase III regimen selection. |
+| `Yoneyama_2018_A_Pharmacometric_Approach_to_Substitute__4df84e_trimmed.md` | Same content, trimmed-markdown form used during extraction for searchability. |
+
+The Electronic Supplementary Material (ESM Methods, Table S1, Figures
+S1-S6) is referenced in the paper but is not on disk for this
+extraction; all parameter values used by the packaged model are present
+in Table 2 of the main paper. No author correspondence was required.

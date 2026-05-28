@@ -26,17 +26,26 @@
     # Replaces the legacy `ltz` form; semantically distinct from a
     # lag-time even though both denote a time-shift parameter
     # (operator clarification, 2026-05-28).
-    "ltacro"
+    "ltacro",
+    # Influx (plasma -> tissue ECF/CSF) and efflux (tissue -> plasma)
+    # clearances used by physiological CNS-distribution popPK models
+    # in which the brain/tumor extracellular fluid is parameterised as
+    # a separate compartment connected to plasma central via two
+    # asymmetric clearances driven by unbound drug. Used in Campagne
+    # 2019 cyclophosphamide mouse CNS penetration popPK.
+    "lclin", "lclef"
   ),
   pkBareParams = c(
     "ka", "cl", "vc", "vp", "vp2", "q", "q2", "kel",
     "k12", "k21", "k13", "k31", "fdepot",
     "vmax", "cl_ss", "cl_time", "cl_renal", "cl_nonren",
     # Bare form of the canonical lag-time and acrophase parameters.
-    "tlag", "tacro"
+    "tlag", "tacro",
+    # Bare counterparts of `lclin` / `lclef` (see pkParams).
+    "clin", "clef"
   ),
   compartments = c(
-    "depot", "central", "peripheral1", "peripheral2", "effect",
+    "depot", "central", "peripheral1", "peripheral2", "peripheral3", "effect",
     "target", "complex", "total_target",
     # Semi-physiological liver and kidney compartments used by paper-specific
     # extraction-ratio first-pass models (Xie_2019_agomelatine) and
@@ -60,6 +69,11 @@
     # models with multiple body-fluid distribution volumes
     # (Perez-Ruixo_2025_posdinemab).
     "csf", "isf",
+    # Brain / tumor extracellular fluid compartment used by cerebral-
+    # microdialysis-based CNS-distribution popPK models in which the
+    # ECF compartment carries unbound drug delivered via influx /
+    # efflux clearances (Campagne 2019 cyclophosphamide mouse).
+    "ecf",
     # Anatomic brain-region compartments used by mAb brain-distribution
     # PK models (Grimm_2023_trontinemab, Grimm_2023_gantenerumab) and
     # other mechanistic brain-PBPK extractions (Xie_2000_m3g_rat,
@@ -75,6 +89,16 @@
     # fluid compartment per the 2026-05-28 naming audit.
     "brain_cerebellum", "brain_hippocampus", "brain_striatum",
     "brain_cortex", "brain_choroid_plexus", "brain_csf", "brain_deep",
+    # Physiological brain sub-compartments used by hybrid physiology-
+    # based PK-PD models that resolve the blood-brain barrier transport
+    # as two coupled states: drug in cerebral capillary blood
+    # (brain_vascular, volume Vbv, fed by cerebral blood flow CLbv from
+    # systemic central) and drug in brain tissue beyond the BBB
+    # (brain_extravascular, volume Vbev, fed via the BBB-clearance term
+    # CLbev which scales the unbound concentration on each side via the
+    # fixed fu_plasma and fu_brain fractions). Used by
+    # Johnson_2011_olanzapine_rat.
+    "brain_vascular", "brain_extravascular",
     # Friberg-style myelosuppression circulating-cell compartment
     # (Friberg 2002 paclitaxel and derivatives). The terminal
     # compartment of a `precursor1 ... precursorN -> circ` maturation
@@ -127,7 +151,14 @@
     # representing insulin-like delayed feedback, with a NiAc-independent
     # capillary release term setting the lower physiological limit).
     # State holds a concentration (mmol/L) rather than an amount.
-    "nefa"
+    "nefa",
+    # Purine metabolism PD compartments used by semi-mechanistic
+    # xanthine / uric-acid turnover models (Hill-McManus 2017
+    # doi:10.1111/bcp.13427). `xanthine` and `urate` hold serum amounts
+    # (mg); `xanthine_urine` and `urate_urine` hold cumulative urinary
+    # excretion amounts (mg) integrated from CLX / CLUA renal-clearance
+    # outflows for direct comparison with 24-h urinary collection data.
+    "xanthine", "urate", "xanthine_urine", "urate_urine"
   ),
   # Bare numbered chains (transit / effect / precursor / lat / dar /
   # depot) and metabolite-suffixed compartments are validated
@@ -319,7 +350,17 @@
     # models where the parent itself is also tracked in urine
     # (Allegaert_2015_paracetamol: urine_apap; Pierre_2017_morphine:
     # urine_morphine). Registered 2026-05-28 per the naming audit.
-    "apap", "morphine"
+    "apap", "morphine",
+    # Sibling-drug suffixes for the Hill-McManus 2017 dual-urate-lowering-
+    # therapy PKPD model (doi:10.1111/bcp.13427), where febuxostat (`febx`,
+    # xanthine oxidase inhibitor) and lesinurad (`lesn`, URAT1 uricosuric)
+    # are co-administered and neither is the "parent"; both PK subsystems
+    # use canonical compartment / PK-param names with the drug suffix
+    # (`central_febx`, `lcl_febx`, `central_lesn`, `lcl_lesn`, etc.).
+    # Same precedent as the existing co-administered-perpetrator (`cpg2`)
+    # and stereoisomer (`r`, `s`) entries: registered for the
+    # `<canonical>_<sibling>` pattern, not as chemical metabolites.
+    "febx", "lesn"
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` denotes the time-varying decay arm.
@@ -376,7 +417,13 @@
     # initial conditions and TGI initial tumour sizes. Codified 2026-
     # 05-28 per the naming audit (replaces `r0`, `bl`, `base`, `s0`,
     # `ts0`).
-    "rbase"
+    "rbase",
+    # Fraction unbound in plasma, used as a fixed unitless multiplier
+    # in cerebral-microdialysis-style CNS-distribution models where
+    # only free drug crosses the BBB and the BBB transfer term is
+    # CLin * fu * Cp. Reported in [0, 1]; usually held fixed at the
+    # in-vitro equilibrium-dialysis-derived value (Campagne 2019).
+    "fu"
   ),
   requiredUnits = c("time", "dosing", "concentration"),
   requiredMetadata = c("description", "reference", "units"),
