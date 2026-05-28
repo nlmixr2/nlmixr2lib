@@ -38,8 +38,8 @@ Yuan_2019_concizumab <- function() {
     visf   <- fixed(15.6);    label("Total interstitial fluid volume (L)")                                                      # Yuan 2019 Table 2 (Cao 2013)
     vlymph <- fixed(5.2);     label("Lymph volume (L)")                                                                         # Yuan 2019 Table 2 (Cao 2013)
     ltot   <- fixed(2.904);   label("Total lymph flow (L/day)")                                                                 # Yuan 2019 Table 2 (Cao 2013)
-    sigma1 <- fixed(0.945);   label("Vascular reflection coefficient for tight tissues (unitless)")                             # Yuan 2019 Table 2 (Cao 2013)
-    sigma2 <- fixed(0.697);   label("Vascular reflection coefficient for leaky tissues (unitless)")                             # Yuan 2019 Table 2 (Cao 2013)
+    sigma_tight <- fixed(0.945);   label("Vascular reflection coefficient for tight tissues (unitless)")                             # Yuan 2019 Table 2 (Cao 2013)
+    sigma_leaky <- fixed(0.697);   label("Vascular reflection coefficient for leaky tissues (unitless)")                             # Yuan 2019 Table 2 (Cao 2013)
     sigmal <- fixed(0.2);     label("Lymphatic vascular reflection coefficient (unitless)")                                     # Yuan 2019 Table 2 (Cao 2013)
     kp     <- fixed(0.4);     label("Fraction of interstitial space available for IgG4 antibody distribution (unitless)")       # Yuan 2019 Table 2 (Cao 2013); 0.4 for IgG4, 0.8 for IgG1
 
@@ -144,8 +144,8 @@ Yuan_2019_concizumab <- function() {
     d/dt(a_p) <- ka * depot -
                  rsp_bind_plasma -
                  rmp_bind_plasma -
-                 (1 - sigma1) * l1 * c_ap -
-                 (1 - sigma2) * l2 * c_ap +
+                 (1 - sigma_tight) * l1 * c_ap -
+                 (1 - sigma_leaky) * l2 * c_ap +
                  ltot * c_a_lm -
                  clup * c_ap +
                  krec * fcrna_e1 +
@@ -159,8 +159,8 @@ Yuan_2019_concizumab <- function() {
 
     # Eq. (4) Antibody-sTFPI complex in plasma
     d/dt(astfpi_p) <- rsp_bind_plasma -
-                      (1 - sigma1) * l1 * c_astfpi_p -
-                      (1 - sigma2) * l2 * c_astfpi_p +
+                      (1 - sigma_tight) * l1 * c_astfpi_p -
+                      (1 - sigma_leaky) * l2 * c_astfpi_p +
                       ltot * c_astfpi_lm -
                       clup * c_astfpi_p +
                       krec * fcrnastfpi_e2
@@ -231,19 +231,19 @@ Yuan_2019_concizumab <- function() {
                            krec * fcrnastfpi_e2
 
     # Eq. (18) Free antibody in tight tissue
-    d/dt(a_t) <- (1 - sigma1) * l1 * c_ap -
+    d/dt(a_t) <- (1 - sigma_tight) * l1 * c_ap -
                  (1 - sigmal) * l1 * c_a_t
 
     # Eq. (19) Antibody-sTFPI complex in tight tissue
-    d/dt(astfpi_t) <- (1 - sigma1) * l1 * c_astfpi_p -
+    d/dt(astfpi_t) <- (1 - sigma_tight) * l1 * c_astfpi_p -
                       (1 - sigmal) * l1 * c_astfpi_t
 
     # Eq. (20) Free antibody in leaky tissue
-    d/dt(a_lk) <- (1 - sigma2) * l2 * c_ap -
+    d/dt(a_lk) <- (1 - sigma_leaky) * l2 * c_ap -
                   (1 - sigmal) * l2 * c_a_lk
 
     # Eq. (21) Antibody-sTFPI complex in leaky tissue
-    d/dt(astfpi_lk) <- (1 - sigma2) * l2 * c_astfpi_p -
+    d/dt(astfpi_lk) <- (1 - sigma_leaky) * l2 * c_astfpi_p -
                        (1 - sigmal) * l2 * c_astfpi_lk
 
     # Eq. (22) Free antibody in lymph

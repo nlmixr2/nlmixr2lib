@@ -20,8 +20,8 @@ Cao_2013_PRO95780 <- function() {
   )
 
   ini({
-    sigma1 <- 0.984; label("Vascular reflection coefficient for tight tissues (unitless)")  # Cao 2013 Table 2 (Model A): 0.984 (CV 10.3%)
-    sigma2 <- 0.638; label("Vascular reflection coefficient for leaky tissues (unitless)")  # Cao 2013 Table 2 (Model A): 0.638 (CV 19.4%)
+    sigma_tight <- 0.984; label("Vascular reflection coefficient for tight tissues (unitless)")  # Cao 2013 Table 2 (Model A): 0.984 (CV 10.3%)
+    sigma_leaky <- 0.638; label("Vascular reflection coefficient for leaky tissues (unitless)")  # Cao 2013 Table 2 (Model A): 0.638 (CV 19.4%)
     lcl   <- log(0.2976); label("Plasma clearance (CLp, L/day)")                           # Cao 2013 Table 2 (Model A): CLp = 0.0124 L/hr (CV 18.3%) = 0.2976 L/day
   })
 
@@ -46,12 +46,12 @@ Cao_2013_PRO95780 <- function() {
     clymph <- lymph  / vlymph
 
     d/dt(plasma) <- clymph * lymphflow -
-                    cp * l1 * (1 - sigma1) -
-                    cp * l2 * (1 - sigma2) -
+                    cp * l1 * (1 - sigma_tight) -
+                    cp * l2 * (1 - sigma_leaky) -
                     cl * cp
-    d/dt(tight)  <- l1 * (1 - sigma1) * cp -
+    d/dt(tight)  <- l1 * (1 - sigma_tight) * cp -
                     l1 * (1 - sigmal) * ctight
-    d/dt(leaky)  <- l2 * (1 - sigma2) * cp -
+    d/dt(leaky)  <- l2 * (1 - sigma_leaky) * cp -
                     l2 * (1 - sigmal) * cleaky
     d/dt(lymph)  <- l1 * (1 - sigmal) * ctight +
                     l2 * (1 - sigmal) * cleaky -

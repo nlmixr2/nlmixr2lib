@@ -16,12 +16,12 @@ Cao_2013_tefibazumab <- function() {
     disease_state  = "End-stage renal disease requiring hemodialysis (tefibazumab humanized IgG1 anti-clumping factor A from Staphylococcus aureus).",
     dose_range     = "10, 20 mg/kg IV (Cao 2013 Figure 5 tefibazumab panel)",
     regions        = NA,
-    notes          = "Cao 2013 Table 2, Model A. Parameters fit by Cao et al. to plasma concentration profiles digitized from Hetherington S et al. Antimicrob Agents Chemother 2006;50:3499-3500 (PMID 17005843). Cao 2013 notes that Model A is preferred for tefibazumab on the basis of the latent constraint sigma1 > sigma2, even though Model B has a slightly lower objective function value."
+    notes          = "Cao 2013 Table 2, Model A. Parameters fit by Cao et al. to plasma concentration profiles digitized from Hetherington S et al. Antimicrob Agents Chemother 2006;50:3499-3500 (PMID 17005843). Cao 2013 notes that Model A is preferred for tefibazumab on the basis of the latent constraint sigma_tight > sigma_leaky, even though Model B has a slightly lower objective function value."
   )
 
   ini({
-    sigma1 <- 0.902; label("Vascular reflection coefficient for tight tissues (unitless)")  # Cao 2013 Table 2 (Model A): 0.902 (CV 7.37%)
-    sigma2 <- 0.815; label("Vascular reflection coefficient for leaky tissues (unitless)")  # Cao 2013 Table 2 (Model A): 0.815 (CV 7.56%)
+    sigma_tight <- 0.902; label("Vascular reflection coefficient for tight tissues (unitless)")  # Cao 2013 Table 2 (Model A): 0.902 (CV 7.37%)
+    sigma_leaky <- 0.815; label("Vascular reflection coefficient for leaky tissues (unitless)")  # Cao 2013 Table 2 (Model A): 0.815 (CV 7.56%)
     lcl   <- log(0.22392); label("Plasma clearance (CLp, L/day)")                          # Cao 2013 Table 2 (Model A): CLp = 0.00933 L/hr (CV 4.19%) = 0.22392 L/day
   })
 
@@ -46,12 +46,12 @@ Cao_2013_tefibazumab <- function() {
     clymph <- lymph  / vlymph
 
     d/dt(plasma) <- clymph * lymphflow -
-                    cp * l1 * (1 - sigma1) -
-                    cp * l2 * (1 - sigma2) -
+                    cp * l1 * (1 - sigma_tight) -
+                    cp * l2 * (1 - sigma_leaky) -
                     cl * cp
-    d/dt(tight)  <- l1 * (1 - sigma1) * cp -
+    d/dt(tight)  <- l1 * (1 - sigma_tight) * cp -
                     l1 * (1 - sigmal) * ctight
-    d/dt(leaky)  <- l2 * (1 - sigma2) * cp -
+    d/dt(leaky)  <- l2 * (1 - sigma_leaky) * cp -
                     l2 * (1 - sigmal) * cleaky
     d/dt(lymph)  <- l1 * (1 - sigmal) * ctight +
                     l2 * (1 - sigmal) * cleaky -
