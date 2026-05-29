@@ -452,8 +452,8 @@ navbar:
         href: articles/Cao_2013_MEDI528.html
       - text: "Medi7836 (Hood 2021)"
         href: articles/Hood_2021_medi7836.html
-      - text: "Mefloquine (Simpson 2013)"
-        href: articles/Simpson_2013_mefloquine.html
+      - text: "Mefloquine (Hoglund 2018)"
+        href: articles/Hoglund_2018_mefloquine.html
       - text: "Mepolizumab (Cao 2013)"
         href: articles/Cao_2013_mepolizumab.html
       - text: "Meropenem (Germovsek 2018)"
@@ -1230,6 +1230,7 @@ articles:
   - articles/HillMcManus_2017_febuxostat_lesinurad
   - articles/Hoglund_2012_piperaquine
   - articles/Hoglund_2017_piperaquine
+  - articles/Hoglund_2018_mefloquine
   - articles/Holford_1992_tacrine
   - articles/Hong_2015_moxifloxacin
   - articles/Hong_2025_datopotamab

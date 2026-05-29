@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Hanberg 2018 meropenem ([doi:10.1128/AAC.02390-17](https://doi.org/10.1128/AAC.02390-17)) -- critically ill adults on extracorporeal membrane oxygenation (joint plasma + microdialysis subcutaneous-tissue popPK with eCLCr-driven CL).
+* Add Hoglund 2018 mefloquine ([doi:10.1186/s12936-018-2466-3](https://doi.org/10.1186/s12936-018-2466-3)) -- Burmese adults with acute uncomplicated Plasmodium falciparum malaria on the standard 3-day artesunate-mefloquine combination (Thai-Myanmar border).
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
 * Add Tarning 2012 artemether and dihydroartemisinin ([doi:10.1186/1475-2875-11-293](https://doi.org/10.1186/1475-2875-11-293)) -- pregnant women with uncomplicated Plasmodium falciparum malaria in Uganda (joint parent + DHA popPK with zero-order dissolution and 6-compartment transit absorption).
 * Add Schoemaker 2017 brivaracetam ([doi:10.1007/s00228-017-2230-6](https://doi.org/10.1007/s00228-017-2230-6)) -- paediatric patients with epilepsy aged 1 month to 16 years; ratifies new `CONMED_PB`, `CONMED_CBZ`, and `CONMED_VPA` covariate canonicals.
