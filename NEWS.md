@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Perez-Guille 2018 dexmedetomidine ([doi:10.1213/ANE.0000000000003413](https://doi.org/10.1213/ANE.0000000000003413)) -- Mexican Mestizo children (2-18 y) undergoing ambulatory surgery.
+* Add Takechi 2018 propranolol ([doi:10.1002/jcph.1149](https://doi.org/10.1002/jcph.1149)) -- Japanese infants (53-150 days postnatal) with infantile hemangioma.
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
 * Add Tarning 2012 artemether and dihydroartemisinin ([doi:10.1186/1475-2875-11-293](https://doi.org/10.1186/1475-2875-11-293)) -- pregnant women with uncomplicated Plasmodium falciparum malaria in Uganda (joint parent + DHA popPK with zero-order dissolution and 6-compartment transit absorption).
 * Add Schoemaker 2017 brivaracetam ([doi:10.1007/s00228-017-2230-6](https://doi.org/10.1007/s00228-017-2230-6)) -- paediatric patients with epilepsy aged 1 month to 16 years; ratifies new `CONMED_PB`, `CONMED_CBZ`, and `CONMED_VPA` covariate canonicals.

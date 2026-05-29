@@ -102,8 +102,6 @@ navbar:
         href: articles/Yang_2024_axatilimab.html
       - text: "Azithromycin (Sampson 2014)"
         href: articles/Sampson_2014_azithromycin.html
-      - text: "Azithromycin (Zheng 2018)"
-        href: articles/Zheng_2018_azithromycin.html
       - text: "Bapineuzumab (Hu 2014)"
         href: articles/Hu_2014_bapineuzumab.html
       - text: "BAY81 8973 (Garmann 2017)"
@@ -628,6 +626,8 @@ navbar:
         href: articles/Wang_2012_propofol.html
       - text: "Propofol sheep (Ngamprasertwong 2016)"
         href: articles/Ngamprasertwong_2016_propofol_sheep.html
+      - text: "Propranolol (Takechi 2018)"
+        href: articles/Takechi_2018_propranolol.html
       - text: "Pyrazinamide (Alsultan 2017)"
         href: articles/Alsultan_2017_pyrazinamide.html
       - text: "Pyrazinamide (Horita 2018)"
@@ -1460,6 +1460,7 @@ articles:
   - articles/Svensson_2018_rifampicin
   - articles/Tadayasu_2014_linagliptin
   - articles/Takahashi_2023_abatacept
+  - articles/Takechi_2018_propranolol
   - articles/Takeuchi_2023_ozoralizumab
   - articles/Talke_2018_dexmedetomidine
   - articles/Tammara_2017_rivipansel
