@@ -410,6 +410,8 @@ navbar:
         href: articles/Valitalo_2017_ketorolac.html
       - text: "Lamivudine (Archary 2019)"
         href: articles/Archary_2019_lamivudine.html
+      - text: "Lamivudine (Moore 1999)"
+        href: articles/Moore_1999_lamivudine.html
       - text: "Lampalizumab (Le 2015)"
         href: articles/Le_2015_lampalizumab.html
       - text: "Landiolol (Kunisawa 2015)"
@@ -1358,6 +1360,7 @@ articles:
   - articles/Moein_2022_etrolizumab
   - articles/Moes_2016_tacrolimus
   - articles/Mohamed_2016_colistin_meropenem
+  - articles/Moore_1999_lamivudine
   - articles/Moore_2016_vancomycin
   - articles/Morris_2011_artesunate
   - articles/Mould_2007_alemtuzumab
