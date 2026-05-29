@@ -2,6 +2,8 @@ Suri_2018_brentuximab <- function() {
   description <- "Coupled population PK model for brentuximab vedotin antibody-drug conjugate (ADC) and its released payload monomethyl auristatin E (MMAE) in 380 patients with CD30-positive malignancies (Hodgkin lymphoma, systemic anaplastic large-cell lymphoma, mycosis fungoides, primary cutaneous ALCL) pooled from six clinical studies including the phase III ALCANZA study (Suri 2018). ADC is described by a linear 3-compartment model with zero-order input and first-order elimination; MMAE by a 2-compartment model with first-order elimination, fed from ADC by (a) a saturable target-binding flux Kd*Target*ADC (initial Target = 1, irreversibly depleted) and (b) a proteolytic flux FM*exp(-ALFM*tad)*K10*ADC whose conversion fraction declines as a function of time after the most recent dose. Both fluxes accumulate in an intermediate Lag compartment that empties to MMAE central with rate Klag (FM is fixed to 1)."
   reference <- "Suri A, Mould DR, Liu Y, Jang G, Venkatakrishnan K. Population PK and Exposure-Response Relationships for the Antibody-Drug Conjugate Brentuximab Vedotin in CTCL Patients in the Phase III ALCANZA Study. Clin Pharmacol Ther. 2018;104(5):989-999. doi:10.1002/cpt.1037. PMID 29377077."
   vignette <- "Suri_2018_brentuximab"
+  paper_specific_compartments <- c("lag")
+
   units <- list(
     time          = "hour",
     dosing        = "umol",

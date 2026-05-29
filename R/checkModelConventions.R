@@ -699,8 +699,28 @@ checkModelConventions <- function(model, verbose = TRUE) {
 .checkCompartments <- function(ui, conv) {
   issues <- .emptyIssues()
   cmts <- ui$props$cmt %||% character()
+  # Model files may declare paper-mechanistic compartments that are not
+  # in the canonical register via a `paper_specific_compartments`
+  # metadata field. The validator subtracts these from the warning set
+  # so the author can explicitly document a model's per-paper named
+  # states (similar in spirit to the `depends` mechanism for upstream
+  # covariate inputs). Two declaration forms are accepted:
+  #
+  #   paper_specific_compartments <- c("name1", "name2", ...)
+  #     a literal vector of compartment names to skip
+  #
+  #   paper_specific_compartment_pattern <- "^bact_"
+  #     a single regex pattern matched against compartment names; if
+  #     any element matches, the name is skipped
+  meta <- as.list(ui$meta)
+  paper_specific <- meta$paper_specific_compartments %||% character()
+  paper_specific_re <- meta$paper_specific_compartment_pattern %||% character()
   for (cm in cmts) {
     if (.matchesCompartment(cm, conv)) next
+    if (length(paper_specific) > 0L && cm %in% paper_specific) next
+    if (length(paper_specific_re) > 0L &&
+        any(sapply(paper_specific_re,
+                   function(p) grepl(p, cm)))) next
     # Tailor the message: a capital-prefixed name is almost never
     # canonical because the convention is lowercase compartment names
     # (observation variables like Cc are the exception). Surface that

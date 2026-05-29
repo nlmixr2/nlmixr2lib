@@ -350,7 +350,7 @@
     # remainder vascular and tissue compartments.
     "venous", "arterial", "adipose", "adrenal", "bonemarrow",
     "muscle", "spleen", "intestine", "retina", "vitreous",
-    "res_vasc", "res_tis", "lung", "brain", "bone",
+    "res_vasc", "res_tis", "lung", "brain", "bone", "other",
     # GI segment compartments used by paracetamol GI-emptying models
     # (NA_NA_paracetamol, Allegaert 2015): duodenum / jejunum / ileum
     # are the canonical small-intestine subsegments downstream of
@@ -393,7 +393,89 @@
     # incretin PBPK models (NA_NA_paracetamol reference extraction).
     # `glp1` = glucagon-like peptide 1; `gip` = glucose-dependent
     # insulinotropic polypeptide.
-    "glp1", "gip"
+    "glp1", "gip",
+    # Category B: standard clinical-biomarker / endogenous-output
+    # compartments registered 2026-05-29 per the naming-audit
+    # long-tail compartment cleanup. These are widely-recognised
+    # clinical lab values, endogenous biomarkers, immune-cell
+    # populations, and standard organ-anatomy compartments used as
+    # PD output states.
+    #
+    # Lab values / biomarkers (paper-specific lower case):
+    #   crp   = C-reactive protein (Yang 2016 dilmapimod, AitOudhia
+    #           2012 IL-1beta cascade head)
+    #   sdma  = symmetric dimethylarginine (Guo 2022 PRMT5 inhibitor)
+    #   ldl   = LDL-cholesterol (Pu 2021 evinacumab)
+    #   cox2  = COX-2 enzyme activity (VasquezBahena 2009 lumiracoxib)
+    #   ast   = aspartate aminotransferase (Yang 2024 axatilimab)
+    #   cpk   = creatine phosphokinase (Yang 2024)
+    #   csf1  = colony-stimulating factor 1 (Yang 2024)
+    #   igg   = IgG endogenous turnover (Kim 2006 igg model)
+    #   total_IgG = total serum IgG (Valenzuela 2025 nipocalimab)
+    #   phe   = phenylalanine (Charbonneau 2021)
+    #   pth   = parathyroid hormone (Ahn 2014)
+    #   ca    = serum calcium (Ahn 2014)
+    #   ca_unobs = unobserved calcium pool (Ahn 2014)
+    #   thb   = total hemoglobin (Tetschke 2018 erythropoiesis)
+    #   psa   = prostate-specific antigen (Wilbaux 2015)
+    #   sld   = sum of longest diameters (Schindler 2016 sunitinib;
+    #           RECIST-style TGI endpoint)
+    #   mbl   = mean bacterial load (Svensson 2017 bedaquiline;
+    #           lowercase alias of registered observation MBL)
+    #   aaa   = abdominal aortic aneurysm (Sherer 2012; bare alias
+    #           of registered aaaSize)
+    #   serum = generic serum compartment (Aksenov 2018 uric acid)
+    "crp", "sdma", "ldl", "cox2", "ast", "cpk", "csf1", "igg",
+    "total_IgG", "phe", "pth", "ca", "ca_unobs", "thb", "psa",
+    "sld", "mbl", "aaa", "serum",
+    # Cell-population / lymphoid-tissue compartments:
+    #   bcell, bcell_periph = B-lymphocyte central / peripheral pool
+    #     (Yu 2022 ofatumumab)
+    #   pbmc = peripheral blood mononuclear cells (Sampson 2014
+    #     azithromycin)
+    #   pmn  = polymorphonuclear leukocytes (Sampson 2014)
+    #   erythrocytes = red blood cell pool (Dao 2020 sultiame)
+    #   cells = generic cell population (Jager 2011 gemtuzumab)
+    #   lactotroph = anterior-pituitary lactotroph cells (Stevens
+    #     2012 remoxipride)
+    #   ncmc = non-classical monocytes (Yang 2024 axatilimab)
+    "bcell", "bcell_periph", "pbmc", "pmn", "erythrocytes",
+    "cells", "lactotroph", "ncmc",
+    # PD output / regulatory states:
+    #   urine_vol = urine volume (Heuberger 2018 salbutamol)
+    #   weight = body weight output (Choy 2016 T2DM model)
+    #   fc = Fc-receptor / IgG-Fc pool (Aguiar 2021 ustekinumab)
+    #   gut = gut compartment (Charbonneau 2021 phenylalanine; bare
+    #     alias of a_gut canonical)
+    #   bacteria = generic bacterial pool (Sadouki 2025; bare alias
+    #     of the registered cfu canonical)
+    "urine_vol", "weight", "fc", "gut", "bacteria",
+    # Category C: PD biomarker chain / survival hazard canonicals.
+    # AitOudhia 2012 canakinumab IL-1beta -> CRP transit cascade
+    # (crp1 / crp2 / crp3 are the three CRP transit compartments
+    # feeding the acute-response level acrl).
+    "crp1", "crp2", "crp3", "acrl",
+    # Hansson 2013 sunitinib soluble biomarkers (vegf, skit) and
+    # the b-paper drug- and placebo-arm sKIT outputs.
+    "vegf", "skit", "skit_drug", "skit_pla",
+    # Survival / dropout cumulative-hazard compartments used by
+    # oncology / time-to-event sub-models (Schindler 2016 OS and
+    # dropout hazards; Zecchin 2016 generic cumulative-hazard).
+    "cumHaz_os", "cumHaz_drop", "cumHazard",
+    # Category D: MBMA placebo / drug arm output compartments
+    # (Li 2015 taspoglutide MBMA: separate placebo and drug arms
+    # for each clinical endpoint; the placebo arm captures the
+    # background placebo response and the drug arm carries the
+    # drug-driven delta).
+    "fpg_placebo", "fpg_drug", "hba1c_placebo", "hba1c_drug",
+    # Category E: depot dosing-route compartments. The depot_<route>
+    # / depot_<location> pattern distinguishes parallel dosing
+    # routes when a model carries more than one (Dunn 2025
+    # tranexamic acid: depot_im intramuscular plus depot_oral oral;
+    # Stevens 2012 remoxipride: depot_brain intranasal direct-to-
+    # brain depot). Sibling of the canonical depot / depot2 numbered
+    # form.
+    "depot_im", "depot_oral", "depot_brain"
   ),
   # Bare numbered chains (transit / effect / precursor / lat / dar /
   # depot) and metabolite-suffixed compartments are validated

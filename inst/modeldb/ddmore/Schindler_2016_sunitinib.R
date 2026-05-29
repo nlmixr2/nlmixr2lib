@@ -10,6 +10,8 @@ Schindler_2016_sunitinib <- function() {
     sep = " "
   )
   vignette     <- "Schindler_2016_sunitinib"
+  paper_specific_compartments <- c("suv1", "suv2", "suv3", "suv4", "suv5")
+
   units        <- list(time = "hour", dosing = "mg", concentration = "n/a (non-PK outputs only: SUVmax unitless and SLD in mm)")
   ddmore_id    <- "DDMODEL00000221"
   replicate_of <- NULL

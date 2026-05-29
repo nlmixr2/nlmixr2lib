@@ -10,6 +10,8 @@ Ozawa_2007_docetaxel <- function() {
     sep = " "
   )
   vignette <- "Ozawa_2007_docetaxel"
+  paper_specific_compartments <- c("input")
+
   units <- list(
     time          = "hour",
     dosing        = "mg",

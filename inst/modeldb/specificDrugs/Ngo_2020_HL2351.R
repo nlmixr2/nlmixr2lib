@@ -79,13 +79,13 @@ Ngo_2020_HL2351 <- function() {
     kpc <- q  / vp
 
     # QSS approximation - Eqs. (4) and (5) of Ngo 2020.
-    # The state variables are TOTAL drug amounts: dist holds free drug + FcRn-drug
+    # The state variables are TOTAL drug amounts: peripheral1 holds free drug + FcRn-drug
     # complex (Atot1, nmol); central holds free drug + IL1R-drug complex
     # (total amount = Ctot2 * Vc, nmol). Free amounts/concentrations are derived
     # from the totals via the QSS quadratic.
-    diff1     <- dist - a_fcrn_t - a_kss1
-    a_dfree1  <- 0.5 * (diff1 + sqrt(diff1 * diff1 + 4 * a_kss1 * dist))
-    a_fcrn_d  <- dist - a_dfree1                                     # FcRn-drug complex amount (nmol)
+    diff1     <- peripheral1 - a_fcrn_t - a_kss1
+    a_dfree1  <- 0.5 * (diff1 + sqrt(diff1 * diff1 + 4 * a_kss1 * peripheral1))
+    a_fcrn_d  <- peripheral1 - a_dfree1                                     # FcRn-drug complex amount (nmol)
 
     c_tot2    <- central / vc
     diff2     <- c_tot2 - c_il1r_t - kss2
@@ -95,7 +95,7 @@ Ngo_2020_HL2351 <- function() {
 
     # ODEs - mass balance on TOTAL drug amounts in each space (Ngo 2020 Figure 1a)
     d/dt(depot)       <- -ka1 * depot
-    d/dt(dist)        <-  ka1 * depot - krec * a_fcrn_d - ka2 * a_dfree1 - kdeg1 * a_dfree1 + kup * a_dfree2
+    d/dt(peripheral1)        <-  ka1 * depot - krec * a_fcrn_d - ka2 * a_dfree1 - kdeg1 * a_dfree1 + kup * a_dfree2
     d/dt(central)     <-  krec * a_fcrn_d + ka2 * a_dfree1 - kup * a_dfree2 - kel * a_dfree2 - kdeg2 * a_il1r_d - kcp * a_dfree2 + kpc * peripheral1
     d/dt(peripheral1) <-  kcp * a_dfree2 - kpc * peripheral1
 

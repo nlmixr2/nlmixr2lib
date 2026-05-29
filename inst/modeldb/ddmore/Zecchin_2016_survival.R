@@ -14,6 +14,8 @@ Zecchin_2016_survival <- function() {
     sep = " "
   )
   vignette <- "Zecchin_2016_survival"
+  paper_specific_compartments <- c("wts")
+
   units <- list(
     time          = "day",
     dosing        = "n/a (no drug-dosing events; drug exposure enters as time-varying per-cycle AUC_CARBO and AUC_GEM)",

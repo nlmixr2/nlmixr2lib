@@ -10,6 +10,8 @@
     sep = " "
   )
   vignette <- "Leuppi-Taegtmeyer_2019_colistin"
+  paper_specific_compartments <- c("filter", "filter_col", "cart", "cart_col", "effl", "effl_col")
+
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   ddmore_id <- "DDMODEL00000295"

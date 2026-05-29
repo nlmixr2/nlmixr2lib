@@ -2,6 +2,8 @@ Pu_2021_evinacumab <- function() {
   description <- "Population PK/PD model for evinacumab in healthy volunteers and adults / pediatric patients with homozygous familial hypercholesterolemia (Pu 2021): two-compartment PK with first-order SC absorption (with lag time) and parallel linear plus Michaelis-Menten elimination from the central compartment, linked to a Type 1 indirect-response model for low-density lipoprotein cholesterol (LDL-C) where evinacumab inhibits LDL-C production."
   reference   <- "Pu X, Sale M, Yang F, Zhang Y, Davis JD, Al-Huniti N. Population pharmacokinetics and exposure-response modeling for evinacumab in homozygous familial hypercholesterolemia. CPT Pharmacometrics Syst Pharmacol. 2021;10(11):1412-1421. doi:10.1002/psp4.12711"
   vignette    <- "Pu_2021_evinacumab"
+  paper_specific_compartments <- c("LDL")
+
   units       <- list(time = "day", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(

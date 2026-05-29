@@ -9,6 +9,8 @@ Zurlinden_2016_paracetamol <- function() {
     sep = " "
   )
   vignette <- "Zurlinden_2016_paracetamol"
+  paper_specific_compartments <- c("a_paps")
+
   units <- list(
     time          = "hour",
     dosing        = "mg",

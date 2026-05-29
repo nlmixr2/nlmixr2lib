@@ -20,6 +20,8 @@ Wilson_2015_sunitinib_irinotecan_mouse <- function() {
     sep = " "
   )
   vignette <- "Wilson_2015_sunitinib_irinotecan_mouse"
+  paper_specific_compartments <- c("intIrinotecan", "cumSunitinibFrozen", "sunitinib", "irinotecan")
+
   units <- list(
     time          = "day",
     dosing        = "unitless (K-PD; each oral sunitinib or IV irinotecan dose enters its drug-amount compartment with magnitude 1)",

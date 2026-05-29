@@ -28,6 +28,8 @@ Lu_2014_sglt_qsp <- function() {
     sep = " "
   )
   vignette <- "Lu_2014_sglt_qsp"
+  paper_specific_compartments <- c("glu_pct1", "glu_pct2", "glu_pct3", "glu_pct4", "glu_pct5", "glu_pct6", "glu_pst1", "glu_pst2", "glu_pst3", "glu_bladder", "glu_urine", "glu_reabs", "drug_pct1", "drug_pct2", "drug_pct3", "drug_pct4", "drug_pct5", "drug_pct6", "drug_pst1", "drug_pst2", "drug_pst3", "drug_bladder", "drug_urine")
+
   units <- list(
     time          = "h",
     dosing        = "mmol",

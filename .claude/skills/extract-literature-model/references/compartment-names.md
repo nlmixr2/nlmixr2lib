@@ -36,6 +36,41 @@ Lower case. Snake case only when combining concepts.
   `R/conventions.R::registeredMetabolites`.
 - Therapeutic-area or mechanism-specific compartments: open a GitHub issue before adding new names.
 
+### Paper-specific compartments
+
+When a model has genuinely paper-mechanistic compartments that do not
+fit any canonical pattern (e.g. Bizzotto 2016 glucose-insulin phase
+compartments `X` / `Z` / `xHL1` / `xPER1..4`, Yuan 2019 concizumab
+TFPI mPBPK target/complex chain, FehlingKaschek 2019 trastuzumab QSP
+cell-binding states, Schindler 2016/2017 oncology lesion-stratified
+states, Bizzotto / Lu / VegaVilla QSP states, Chen 2016 nucleotide
+triphosphate intracellular pools, etc.), declare them via a
+`paper_specific_compartments` metadata field at the top of the model
+function body (analogous to the `depends` field for upstream-imported
+covariates):
+
+```r
+my_model <- function() {
+  description <- "..."
+  reference <- "..."
+  paper_specific_compartments <- c("X", "Z", "xHL1", "xPER1", "xPER2")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+  ...
+}
+```
+
+A regex form is also accepted for chain-prefix patterns:
+
+```r
+  paper_specific_compartment_pattern <- "^bact_"
+```
+
+`checkModelConventions()` subtracts these from the compartment-warning
+set so the author can explicitly document a model's per-paper named
+states. New extractions should prefer canonical names whenever
+possible; the `paper_specific_compartments` field is for legitimately
+paper-mechanistic states that do not generalise.
+
 ### Brain-region compartments (`brain_<region>` namespace)
 
 Mechanistic brain-PBPK / brain-distribution models use a `brain_<region>`

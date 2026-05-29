@@ -2,6 +2,8 @@ Ayyar_2024_givosiran <- function() {
   description <- "Mechanistic translational PK model for the GalNAc-siRNA givosiran (Ayyar & Song 2024) parameterized for human (70 kg adult). 22-ODE system covering SC depot, central plasma (parent + AS(N-1)3' active metabolite), competitive ASGPR receptor binding (free target, parent-target complex, metabolite-target complex), receptor-mediated hepatocyte internalization, endolysosomal sequestration / degradation / endosomal escape, free cytoplasmic siRNA, RISC-loaded siRNA (combined parent + metabolite), kidney vascular and tissue distribution with a deep bound pool and GFR elimination - for parent and metabolite. Pharmacodynamic ALAS1 mRNA silencing (rat-only in the paper) is not included in the human parameterization."
   reference <- "Ayyar VS, Song D. Mechanistic Pharmacokinetics and Pharmacodynamics of GalNAc-siRNA: Translational Model Involving Competitive Receptor-Mediated Disposition and RISC-Dependent Gene Silencing Applied to Givosiran. J Pharm Sci. 2024;113(1):176-190. doi:10.1016/j.xphs.2023.10.026"
   vignette <- "Ayyar_2024_givosiran"
+  paper_specific_compartments <- c("cyto", "cyto_asn1", "risc")
+
   units <- list(
     time = "h",
     dosing = "nmol",

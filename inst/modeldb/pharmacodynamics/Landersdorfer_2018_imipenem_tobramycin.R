@@ -9,6 +9,8 @@ Landersdorfer_2018_imipenem_tobramycin <- function() {
     sep = " "
   )
   vignette <- "Landersdorfer_2018_imipenem_tobramycin"
+  paper_specific_compartments <- c("s1_ss", "s2_ss", "s1_ri", "s2_ri", "s1_ir", "s2_ir")
+
   units <- list(time = "hour", dosing = "mg/L (drug input concentration)", concentration = "log10 CFU/mL (observation); mg/L (drug covariates)")
 
   covariateData <- list(

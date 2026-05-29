@@ -26,6 +26,8 @@ Schindler_2017_imatinib <- function() {
     "doi:10.1002/psp4.12195."
   )
   vignette <- "Schindler_2017_imatinib"
+  paper_specific_compartments <- c("mtd_l1", "mtd_l2", "vactual_l1", "vactual_l2", "vellipsoid_l1", "vellipsoid_l2", "density_l1", "density_l2")
+
   units <- list(
     time          = "week",
     dosing        = "mg/day",

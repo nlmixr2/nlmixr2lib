@@ -10,6 +10,8 @@ Xia_2024_warfarin <- function() {
     "as reported in Table 3 of Xia 2024."
   )
   vignette <- "Xia_2024_warfarin"
+  paper_specific_compartments <- c("coag_s1", "coag_s2", "coag_s3", "coag_l1", "coag_l2", "coag_l3")
+
   units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(

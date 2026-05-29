@@ -11,6 +11,8 @@ Wilbaux_2015_prostate <- function() {
     sep = " "
   )
   vignette <- "Wilbaux_2015_prostate"
+  paper_specific_compartments <- c("chemo", "hormo", "latent_tumor", "ctc", "chemo_d", "hormo_d", "latent_tumor_d")
+
   units <- list(
     time          = "day",
     dosing        = "AU (arbitrary unit per treatment cycle; the K-PD chemo/hormo compartments accept AMT = 1 per administered cycle)",

@@ -297,8 +297,8 @@ Chen_2017_TB_MTP_GPDI_mouse <- function() {
     d/dt(depot_emb)     <- -ka_emb * depot_emb
     d/dt(central_emb)   <-  ka_emb * depot_emb -
                             (kel_emb + k12_emb) * central_emb +
-                            k21_emb * peripheral_emb
-    d/dt(peripheral_emb) <- k12_emb * central_emb - k21_emb * peripheral_emb
+                            k21_emb * peripheral1_emb
+    d/dt(peripheral1_emb) <- k12_emb * central_emb - k21_emb * peripheral1_emb
 
     d/dt(depot_pza)   <- -ka_pza * depot_pza
     d/dt(central_pza) <-  ka_pza * depot_pza - kel_pza * central_pza

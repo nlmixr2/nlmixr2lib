@@ -14,6 +14,8 @@ NA_NA_sunitinib <- function() {
     sep = " "
   )
   vignette <- "NA_NA_sunitinib"
+  paper_specific_compartments <- c("biom1", "biom2", "biom3", "biom4", "resistance", "lat_signal", "parent_integ", "lam_feedback")
+
   units <- list(time = "day", dosing = "mg", concentration = "mg/mL")
   ddmore_id <- "DDMODEL00000231"
   replicate_of <- NULL

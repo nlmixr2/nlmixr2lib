@@ -10,6 +10,8 @@ Terranova_2018_paclitaxel <- function() {
     sep = " "
   )
   vignette <- "Terranova_2018_paclitaxel"
+  paper_specific_compartments <- c("bodyZ", "bodyEn", "tumor1", "tumor2", "tumor3", "tumor4")
+
   units <- list(
     time          = "day",
     dosing        = "amu",

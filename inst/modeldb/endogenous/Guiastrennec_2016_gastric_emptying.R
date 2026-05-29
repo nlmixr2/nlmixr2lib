@@ -46,6 +46,8 @@ Guiastrennec_2016_gastric_emptying <- function() {
     sep = " "
   )
   vignette <- "Guiastrennec_2016_gastric_emptying"
+  paper_specific_compartments <- c("upper_si", "stom_fat", "stom_prot", "stom_carb", "fat_usi", "prot_usi", "carb_usi", "fat_duod", "prot_duod", "carb_duod", "fat_jej", "prot_jej", "carb_jej", "pool_f", "cckf", "pool_l", "cckl")
+
   units <- list(
     time          = "min",
     dosing        = "mg (acetaminophen) and g (fats / proteins / carbohydrates) into the per-substrate stomach compartments",

@@ -81,9 +81,9 @@ Gilkey_2015_DiRnanoparticle <- function() {
     # States are mass amounts (ug); concentrations (ug/mL) are amount / volume.
     cp   <- plasma / vp
     cliv <- liver    / vliv
-    cspl <- spl    / vspl
+    cspl <- spleen    / vspl
     ckid <- kidney    / vkid
-    coth <- oth    / voth
+    coth <- other    / voth
 
     # === Mass-balance ODEs (paper equations 6 through 10) ===
     # Equations are written in the paper as time derivatives of CONCENTRATION
@@ -108,7 +108,7 @@ Gilkey_2015_DiRnanoparticle <- function() {
                     (cliv / rl) * (ql + qo)
 
     # Spleen (paper Eq 8)
-    d/dt(spl)    <- cp * qs +
+    d/dt(spleen)    <- cp * qs +
                     qo * (coth / rso) -
                     (cspl / rs) * (qs + qo)
 
@@ -118,7 +118,7 @@ Gilkey_2015_DiRnanoparticle <- function() {
                     (ckid / rk) * (qk + qo + kk)
 
     # 'Other' / virtual compartment (paper Eq 10)
-    d/dt(oth)    <- qo * (cp - coth / ro)
+    d/dt(other)    <- qo * (cp - coth / ro)
 
     # === Initial conditions ===
     # Paper treats t = 0 as a step input with plasma concentration = injection

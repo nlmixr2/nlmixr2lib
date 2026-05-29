@@ -95,8 +95,8 @@ Kovalenko_2020_dupilumab <- function() {
     d/dt(transit2) <- ktr*(transit1 - transit2)
     d/dt(transit3) <- ktr*transit2 - ka*transit3
     # Linear and Michaelis-Menten clearance
-    d/dt(central) <-                 ka*transit3 - kel*central - kcp*central + kpc*periph - central*(vmax/(Km + central/vc))
-    d/dt(periph) <-                                             kcp*central - kpc*periph
+    d/dt(central) <-                 ka*transit3 - kel*central - kcp*central + kpc*peripheral1 - central*(vmax/(Km + central/vc))
+    d/dt(peripheral1) <-                                             kcp*central - kpc*peripheral1
 
     f(depot) <- exp(lfdepot)
     # No unit conversion is required to change mg/L (dosing amount/central

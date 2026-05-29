@@ -10,6 +10,8 @@ Mohamed_2016_colistin_meropenem <- function() {
     sep = " "
   )
   vignette <- "Mohamed_2016_colistin_meropenem"
+  paper_specific_compartments <- c("mero_ce", "mero_bindoff", "col_ce", "col_bindoff", "S_mut", "R_mut")
+
   units <- list(time = "h", dosing = "CFU/mL", concentration = "mg/L")
 
   ddmore_id <- "DDMODEL00000173"

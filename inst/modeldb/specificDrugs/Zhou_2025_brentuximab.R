@@ -2,6 +2,8 @@ Zhou_2025_brentuximab <- function() {
   description <- "Coupled population PK model for brentuximab vedotin antibody-drug conjugate (ADC) and its released payload monomethyl auristatin E (MMAE) in pediatric patients (5-18 years) with relapsed/refractory or newly diagnosed Hodgkin lymphoma or systemic anaplastic large-cell lymphoma (Zhou 2025). ADC is described by a linear 3-compartment model with first-order elimination; MMAE by a 2-compartment model with first-order elimination. ADC -> MMAE flux is the sum of (a) a one-time saturable target-binding flux Kd*Target*ADC (initial Target = 1 unitless, irreversibly depleted) and (b) a proteolytic flux FM*exp(-ALFM*tad)*K10*ADC where the conversion fraction declines as a function of time after the most recent dose. Both fluxes accumulate in an intermediate Lag compartment that empties to MMAE central with rate Klag. Final-model parameter values come from Zhou 2025 supplementary Tables S1 (ADC) and S2 (MMAE); equations come from the NONMEM control streams in Zhou 2025 Supplementary Methods."
   reference <- "Zhou X, Mould DR, Gore L, Bai X, Gupta N. Optimizing Brentuximab Vedotin Dosing in Pediatric Patients with Advanced Hodgkin Lymphoma: A Population Pharmacokinetic and Exposure-Response Analysis. Clin Pharmacol Ther. 2025;117(6):1803-1810. doi:10.1002/cpt.3629. PMID 40095373."
   vignette <- "Zhou_2025_brentuximab"
+  paper_specific_compartments <- c("lag")
+
   units <- list(
     time          = "hour",
     dosing        = "umol",

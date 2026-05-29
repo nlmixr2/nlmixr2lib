@@ -17,6 +17,8 @@ Mazzocco_2015_temozolomide <- function() {
     sep = " "
   )
   vignette <- "Mazzocco_2015_temozolomide"
+  paper_specific_compartments <- c("kpdConc", "prolif", "quiesc", "quiescDam")
+
   units <- list(
     time          = "month",
     dosing        = "arbitrary unit per TMZ cycle (K-PD bolus to the kpdConc virtual drug compartment; the source paper represents each 5-day daily-dosing TMZ cycle as a single bolus of arbitrary magnitude, with the dose units absorbed into the typical-value gamma)",
