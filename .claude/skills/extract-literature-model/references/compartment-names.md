@@ -1,6 +1,6 @@
 # Compartment naming for nlmixr2lib models
 
-Authoritative source: `vignettes/create-model-library.Rmd` and `R/conventions.R`. When in doubt, prefer this file; if this file conflicts with `create-model-library.Rmd`, raise the conflict with the user.
+**Machine-readable source of truth:** `inst/references/compartment-names.md` in the `nlmixr2lib` package. That file is parsed at runtime by `R/conventions.R::.parseTypedNamesMd` and seeds the canonical `compartments` and `registeredMetabolites` (metabolite / sibling-drug suffix) lists used by `checkModelConventions()`. New canonical compartments and metabolite suffixes MUST be added there; this skill reference is the user-facing summary kept in sync with that file. Companion references: `vignettes/create-model-library.Rmd` (narrative). When in doubt, prefer the machine-readable register; if this file conflicts with `create-model-library.Rmd`, raise the conflict with the user.
 
 **Stop-and-ask gate (Phase 1 pre-flight + Phase 3 drafting):** If the model you are extracting needs a compartment role that is NOT in this document, file a sidecar BEFORE writing the model file. Propose the canonical role-based name, its source-paper local name(s), and any cross-precedent in existing registered models. Wait for operator approval. Never introduce numbered placeholders like `cmt1` / `compartment_3` / `c1` silently — those are red flags that the role hasn't been canonicalised. Trivial casing differences (the paper's `Central` → canonical `central`) translate silently and do NOT need a sidecar.
 
