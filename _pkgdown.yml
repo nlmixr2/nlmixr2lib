@@ -882,8 +882,8 @@ navbar:
         href: articles/Chung_2013_vancomycin.html
       - text: "Vancomycin (Goti 2018)"
         href: articles/Goti_2018_vancomycin.html
-      - text: "Vancomycin (Ji 2017)"
-        href: articles/Ji_2017_vancomycin.html
+      - text: "Vancomycin (Li 2018)"
+        href: articles/Li_2018_vancomycin.html
       - text: "Vancomycin (Moore 2016)"
         href: articles/Moore_2016_vancomycin.html
       - text: "Vedolizumab (Rosario 2015)"
@@ -1317,6 +1317,7 @@ articles:
   - articles/Li_2017_brentuximab
   - articles/Li_2017_CC292
   - articles/Li_2017_cediranib
+  - articles/Li_2018_vancomycin
   - articles/Li_2019_abatacept
   - articles/Liesenfeld_2013_dabigatran
   - articles/Lin_2024_casirivimab
