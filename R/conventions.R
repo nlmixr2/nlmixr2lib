@@ -339,7 +339,61 @@
     "ADAS_cog", "ADAS_NORM", "cdr_mix", "tumor_vol", "aescore",
     "bcva", "score", "vas_pred", "fatigue_grade", "walkDist",
     "fev1pp", "msHeadacheDays", "migraineDays", "viralLoad",
-    "prob_roc", "prolactin", "aaaSize", "cel_count", "G"
+    "prob_roc", "prolactin", "aaaSize", "cel_count", "G",
+    # PBPK bare organ-amount compartments used by Zhang 2011 nutlin3a
+    # (and similar full-body PBPK extractions that don't prefix the
+    # organ name with `a_` / `vp_`). Registered 2026-05-29 per the
+    # naming-audit compartment-warning cleanup; new PBPK extractions
+    # should prefer the spelled-out `a_<organ>` namespace, but the
+    # bare forms remain canonical for paper-mechanistic models that
+    # already use them. `res_vasc` and `res_tis` are the lumped
+    # remainder vascular and tissue compartments.
+    "venous", "arterial", "adipose", "adrenal", "bonemarrow",
+    "muscle", "spleen", "intestine", "retina", "vitreous",
+    "res_vasc", "res_tis", "lung", "brain", "bone",
+    # GI segment compartments used by paracetamol GI-emptying models
+    # (NA_NA_paracetamol, Allegaert 2015): duodenum / jejunum / ileum
+    # are the canonical small-intestine subsegments downstream of
+    # the stomach.
+    "duodenum", "jejunum", "ileum",
+    # Adaptive-resistance bacterial state compartments used by
+    # in vitro time-kill TB / antibiotic-combination PD models
+    # (Clewe 2018 rifampicin: aron / aroff drive the dynamic
+    # isoniazid EC50 adaptive-resistance switch; Wicha 2017 + 2018
+    # rifampicin: aron_<drug> / aroff_<drug> per-drug adaptive-
+    # resistance states). The bare `aron` / `aroff` pair plus
+    # drug-suffixed `aron_<drug>` / `aroff_<drug>` (via the
+    # registered `_<drug>` metabolite suffixes above) pass
+    # canonical-with-metab-suffix validation.
+    "aron", "aroff",
+    # Bare drug-state PK compartments for combination-antibiotic and
+    # combination-TB PD models (Mohamed 2016: bare `mero` / `col`;
+    # Wicha 2017: bare `mer` / `lzd` / `van`). These are the
+    # central-compartment drug states named after the drug INN
+    # abbreviation; sibling to (and accepted alongside) the
+    # `central_<drug>` canonical-with-metab-suffix form used by
+    # Chen 2017 TB MTP-GPDI mouse and similar.
+    "lzd", "mer", "mero", "van", "col", "dap",
+    # Bacterial subpopulation state compartments. Lowercase `S` and
+    # `R` susceptible / resistant pair plus the casing variants and
+    # mutation suffixes used by combination-antibiotic time-kill
+    # models (Mohamed 2016: bare `S` / `R` for the two bacterial
+    # populations, plus `S_mut` / `R_mut` for the resistant mutant
+    # subpopulations; the Clewe / Wicha series uses lowercase fast /
+    # slow / nonm and `Fbugs` / `Sbugs` / `Nbugs` casing variants
+    # already registered above).
+    "S", "R", "Fbugs", "Sbugs", "Nbugs",
+    # Bare drug-effect / paper-mechanistic state compartments used
+    # by combination-PD models. `gro` / `repl` / `pers` are growing
+    # / replicating / persistent bacterial states (Wicha 2017
+    # linezolid+meropenem+vancomycin). Registered as canonical
+    # paper-mechanistic states.
+    "gro", "repl", "pers",
+    # Hormonal PD output compartments used by paracetamol / GLP-1 /
+    # incretin PBPK models (NA_NA_paracetamol reference extraction).
+    # `glp1` = glucagon-like peptide 1; `gip` = glucose-dependent
+    # insulinotropic polypeptide.
+    "glp1", "gip"
   ),
   # Bare numbered chains (transit / effect / precursor / lat / dar /
   # depot) and metabolite-suffixed compartments are validated
@@ -614,7 +668,48 @@
     # `dens`  = lesion-density state (Schindler 2017)
     "1ohm", "4ohctx", "cepm", "ftc", "tfvdp", "ftctp", "snk",
     "acid", "act", "rtv", "9oh", "5oh", "sfn", "d3og",
-    "su12662", "tam", "vact", "vell", "dens"
+    "su12662", "tam", "vact", "vell", "dens",
+    # TB-treatment drug suffixes used in combination-antibiotic
+    # `central_<drug>` / `depot_<drug>` / `peripheral1_<drug>` PK
+    # subsystems (Chen 2017 TB MTP-GPDI mouse: rif/inh/emb; Clewe
+    # 2018 rifampicin; Mohamed 2016 colistin+meropenem; Wicha 2017
+    # linezolid+meropenem+vancomycin; Sadouki 2025 meropenem+
+    # gentamicin+ciprofloxacin). Each suffix is the canonical drug
+    # INN lowercase abbreviation.
+    "rif", "inh", "emb",
+    # Antibiotic combination-PK drug suffixes (linezolid, vancomycin,
+    # meropenem long form, colistin, daptomycin) for the bare
+    # drug-state and combination-stratified PD models.
+    "lzd", "van", "mero", "col", "dap",
+    # Glucuronide suffix (`glu`) used by paracetamol PBPK in the
+    # `NA_NA_paracetamol.R` reference / template extraction; sibling
+    # of the existing `gluc` registered for Allegaert 2015.
+    "glu",
+    # Generic metabolite suffix used by template / placeholder models
+    # that track an unnamed metabolite (NA_NA_sunitinib reference
+    # extraction). Documented as "the active metabolite of the
+    # parent drug" without naming a specific INN; the suffix is
+    # `metab`.
+    "metab",
+    # Ursodeoxycholic acid (UDCA) suffix used by the Zuo 2016
+    # enterohepatic-recycling UDCA PBPK (stomach_udca / intestine_udca
+    # / portal_udca / liver_udca / biliary_udca / blood_udca).
+    "udca",
+    # Conjugated UDCA forms tracked by Zuo 2016: GUDCA = glycine-
+    # conjugated UDCA, TUDCA = taurine-conjugated UDCA. Sibling
+    # suffixes of `udca` for the conjugate pools.
+    "gudca", "tudca",
+    # Pyrazinamide (PZA), the fourth first-line anti-TB drug
+    # alongside rifampicin / isoniazid / ethambutol. Used in
+    # Chen 2017 TB MTP-GPDI mouse `depot_pza` / `central_pza` /
+    # `peripheral1_pza` PK subsystem.
+    "pza",
+    # PBPK organ sub-compartment suffixes used by Ayyar 2024
+    # givosiran whole-organ extractions: `<organ>_endo` = endosomal
+    # pool inside the named organ; `<organ>_deep` = deep-bound /
+    # sequestered pool; `<organ>_vas` = vascular pool (alongside the
+    # existing `vp_<organ>` membrane-limited form).
+    "endo", "deep", "vas"
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` denotes the time-varying decay arm.
@@ -931,6 +1026,15 @@
       # a metabolite central compartment (deHoogd 2017 morphine model:
       # transit1_m3g..transit5_m3g and transit1_m6g..transit2_m6g).
       if (grepl(conv$compartmentRegex, base)) return(TRUE)
+      # Recursive: strip one metabolite suffix and re-check whether
+      # the base matches another canonical pattern (compartment list,
+      # chain regex, DAR regex, target-location regex, PBPK sub-
+      # compartment regex, or another metabolite-suffixed canonical).
+      # Lets multi-suffix compartments pass, e.g.
+      # `liver_endo_asn1` -> strip `_asn1` -> `liver_endo` -> strip
+      # `_endo` -> `liver` (canonical). Used by Ayyar 2024 givosiran
+      # parent + metabolite PBPK extraction.
+      if (.matchesCompartment(base, conv)) return(TRUE)
     }
   }
   FALSE
