@@ -64,6 +64,8 @@ navbar:
         href: articles/Delattre_2010_amikacin.html
       - text: "Amlitelimab (Tiraboschi 2025)"
         href: articles/Tiraboschi_2025_amlitelimab.html
+      - text: "Amoxicillin (Tang 2019)"
+        href: articles/Tang_2019_amoxicillin.html
       - text: "Anifrolumab (Almquist 2022)"
         href: articles/Almquist_2022_anifrolumab.html
       - text: "Anrukinzumab (Hua 2015)"
@@ -1452,6 +1454,7 @@ articles:
   - articles/Tammara_2017_rivipansel
   - articles/Tan_2009_artesunate
   - articles/Tanaka_2012_phenytoin
+  - articles/Tang_2019_amoxicillin
   - articles/Tarning_2012_artemether
   - articles/Taylor_2020_methotrexate
   - articles/TerHeine_2014_tamoxifen
