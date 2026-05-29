@@ -308,8 +308,8 @@ navbar:
         href: articles/Plock_2014_ferumoxytol.html
       - text: "Fimasartan (Kim 2017)"
         href: articles/Kim_2017_fimasartan.html
-      - text: "Flurbiprofen (Zhang 2018)"
-        href: articles/Zhang_2018_flurbiprofen.html
+      - text: "Finafloxacin (Taubert 2018)"
+        href: articles/Taubert_2018_finafloxacin.html
       - text: "Follitropin delta (Rose 2016)"
         href: articles/Rose_2016_follitropin_delta.html
       - text: "Fondaparinux (Zufferey 2018)"
@@ -1468,6 +1468,7 @@ articles:
   - articles/Tanaka_2012_phenytoin
   - articles/Tang_2019_amoxicillin
   - articles/Tarning_2012_artemether
+  - articles/Taubert_2018_finafloxacin
   - articles/Taylor_2020_methotrexate
   - articles/TerHeine_2014_tamoxifen
   - articles/TerHeine_2018_everolimus
