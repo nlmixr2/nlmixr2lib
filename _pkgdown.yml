@@ -458,6 +458,8 @@ navbar:
         href: articles/Cao_2013_mepolizumab.html
       - text: "Meropenem (Germovsek 2018)"
         href: articles/Germovsek_2018_meropenem.html
+      - text: "Meropenem (Hanberg 2018)"
+        href: articles/Hanberg_2018_meropenem.html
       - text: "Meropenem (Shekar 2014)"
         href: articles/Shekar_2014_meropenem.html
       - text: "Meropenem ciprofloxacin (Rees 2018)"
@@ -1210,6 +1212,7 @@ articles:
   - articles/Hamuro_2017_DMD_6MWT
   - articles/Han_2015_decitabine
   - articles/Han_2015_sibutramine
+  - articles/Hanberg_2018_meropenem
   - articles/Hansson_2013a_sunitinib
   - articles/Hansson_2013b_sunitinib
   - articles/Hansson_2013c_sunitinib
