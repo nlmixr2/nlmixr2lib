@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Ku 2018 diazepam ([doi:10.1002/psp4.12349](https://doi.org/10.1002/psp4.12349)) -- children aged 3 months to 18 years treated for status epilepticus.
+* Add Zhi 2018 cefathiamidine ([doi:10.2147/DDDT.S160329](https://doi.org/10.2147/DDDT.S160329)) -- children (2.0-11.8 years) with hematologic disease.
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
 * Add Tarning 2012 artemether and dihydroartemisinin ([doi:10.1186/1475-2875-11-293](https://doi.org/10.1186/1475-2875-11-293)) -- pregnant women with uncomplicated Plasmodium falciparum malaria in Uganda (joint parent + DHA popPK with zero-order dissolution and 6-compartment transit absorption).
 * Add Schoemaker 2017 brivaracetam ([doi:10.1007/s00228-017-2230-6](https://doi.org/10.1007/s00228-017-2230-6)) -- paediatric patients with epilepsy aged 1 month to 16 years; ratifies new `CONMED_PB`, `CONMED_CBZ`, and `CONMED_VPA` covariate canonicals.

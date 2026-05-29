@@ -174,6 +174,8 @@ navbar:
         href: articles/Kleideiter_2017_cebranopadol.html
       - text: "Cediranib (Li 2017)"
         href: articles/Li_2017_cediranib.html
+      - text: "Cefathiamidine (Zhi 2018)"
+        href: articles/Zhi_2018_cefathiamidine.html
       - text: "Cefepime (Jonckheere 2019)"
         href: articles/Jonckheere_2019_cefepime.html
       - text: "Ceftazidime (Shi 2018)"
@@ -1552,7 +1554,7 @@ articles:
   - articles/Zhang_2022_ormutivimab
   - articles/Zhao_2018_omeprazole
   - articles/Zheng_2016_sifalimumab
-  - articles/Zheng_2018_azithromycin
+  - articles/Zhi_2018_cefathiamidine
   - articles/Zhong_2026_abatacept
   - articles/Zhou_2010_digoxin
   - articles/Zhou_2016_warfarin_vk2
