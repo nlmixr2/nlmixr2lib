@@ -898,6 +898,8 @@ navbar:
         href: articles/Akbar_2025_voriconazole.html
       - text: "Voriconazole (Chen 2015)"
         href: articles/Chen_2015_voriconazole.html
+      - text: "Voriconazole (Lin 2018)"
+        href: articles/Lin_2018_voriconazole.html
       - text: "Vortioxetine (Naik 2016)"
         href: articles/Naik_2016_vortioxetine.html
       - text: "Vrc01 (Huang 2017)"
@@ -1320,6 +1322,7 @@ articles:
   - articles/Li_2018_vancomycin
   - articles/Li_2019_abatacept
   - articles/Liesenfeld_2013_dabigatran
+  - articles/Lin_2018_voriconazole
   - articles/Lin_2024_casirivimab
   - articles/Lin_2024_pozelimab
   - articles/Llanos_2017_gentamicin
