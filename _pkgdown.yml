@@ -296,6 +296,8 @@ navbar:
         href: articles/Koopman_2023_factorix.html
       - text: "Factorviii (Nestorov 2014)"
         href: articles/Nestorov_2014_factorviii.html
+      - text: "Factorviii fanhdi (Chelle 2019)"
+        href: articles/Chelle_2019_factorviii_fanhdi.html
       - text: "Farletuzumab (Farrell 2012)"
         href: articles/Farrell_2012_farletuzumab.html
       - text: "Febuxostat lesinurad (HillMcManus 2017)"
@@ -1128,6 +1130,7 @@ articles:
   - articles/Castro-Surez_2020_nimotuzumab
   - articles/Catalan-Latorre_2018_taurine_rat
   - articles/Chakraborty_2012_canakinumab
+  - articles/Chelle_2019_factorviii_fanhdi
   - articles/Chen_2014_nab_paclitaxel
   - articles/Chen_2015_voriconazole
   - articles/Chen_2016_tenofovir_emtricitabine

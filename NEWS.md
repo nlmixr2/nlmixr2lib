@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Xiang 2018 baicalein ([doi:10.3389/fphar.2018.00793](https://doi.org/10.3389/fphar.2018.00793)) -- in vitro RAW264.7 mouse macrophage cell line; ratifies new `CONC_BAI_UM` covariate canonical.
+* Add Chelle 2019 Fanhdi/Alphanate factor VIII ([doi:10.1007/s10928-019-09637-4](https://doi.org/10.1007/s10928-019-09637-4)) -- hemophilia A patients aged 1-72 years pooled from 12 hemophilia centers in the WAPPS-Hemo platform.
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
 * Add Tarning 2012 artemether and dihydroartemisinin ([doi:10.1186/1475-2875-11-293](https://doi.org/10.1186/1475-2875-11-293)) -- pregnant women with uncomplicated Plasmodium falciparum malaria in Uganda (joint parent + DHA popPK with zero-order dissolution and 6-compartment transit absorption).
 * Add Schoemaker 2017 brivaracetam ([doi:10.1007/s00228-017-2230-6](https://doi.org/10.1007/s00228-017-2230-6)) -- paediatric patients with epilepsy aged 1 month to 16 years; ratifies new `CONMED_PB`, `CONMED_CBZ`, and `CONMED_VPA` covariate canonicals.
