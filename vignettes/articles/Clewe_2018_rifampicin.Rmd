@@ -236,9 +236,33 @@ events_plot <- dplyr::bind_rows(events, plot_grid) |>
 ```{r typical-value-simulation}
 mod <- readModelDb("Clewe_2018_rifampicin")
 mod_typical <- rxode2::zeroRe(mod)
-sim <- rxode2::rxSolve(mod_typical, events = events_plot,
-                       keep = c("scenario", "DV", "RIF", "INH", "EMB"),
-                       returnType = "data.frame")
+# The model's `covariateData` declares the in vitro exposures as
+# `CONMED_RIF_CC`, `CONMED_INH_CC`, `CONMED_EMB_CC` (per the 2026-05-28
+# audit's canonical CONMED_<drug>_CC pattern). Map the vignette-local
+# shorthand columns onto the canonical names before solving, and
+# reorder so the canonical event-table columns lead.
+events_solve <- events_plot |>
+  dplyr::rename(
+    CONMED_RIF_CC = RIF,
+    CONMED_INH_CC = INH,
+    CONMED_EMB_CC = EMB
+  ) |>
+  dplyr::select(id, time, evid, cmt, dplyr::everything())
+sim <- rxode2::rxSolve(
+  mod_typical, events = events_solve,
+  keep = c("scenario", "DV",
+           "CONMED_RIF_CC", "CONMED_INH_CC", "CONMED_EMB_CC"),
+  returnType = "data.frame"
+)
+# Restore the shorthand column names in the simulation output so the
+# downstream summary / plotting code that uses RIF / INH / EMB
+# continues to work unchanged.
+sim <- sim |>
+  dplyr::rename(
+    RIF = CONMED_RIF_CC,
+    INH = CONMED_INH_CC,
+    EMB = CONMED_EMB_CC
+  )
 cat("Simulation rows:", nrow(sim),
     " unique IDs:", length(unique(sim$id)), "\n")
 ```
@@ -247,15 +271,15 @@ cat("Simulation rows:", nrow(sim),
 
 The DDMORE bundle's `DV` column is a NONMEM-simulated stochastic observation
 (`IPRED + EPS(1)`, EPS variance 0.937 on the natural-log scale). Our
-typical-value re-simulation produces `logFSbugs` = ln(Fbugs + Sbugs) which
+typical-value re-simulation produces `log_cfu` = ln(Fbugs + Sbugs) which
 corresponds directly to NONMEM's `IPRED`. For each observation we compare
-`logFSbugs` (rxode2 typical-value) against `DV` (NONMEM-simulated stochastic).
+`log_cfu` (rxode2 typical-value) against `DV` (NONMEM-simulated stochastic).
 
 ```{r consistency-summary}
 diff_df <- sim |>
   dplyr::filter(!is.na(DV)) |>
   dplyr::mutate(
-    residual_log = DV - logFSbugs,
+    residual_log = DV - log_cfu,
     abs_residual = abs(residual_log)
   )
 
@@ -264,14 +288,14 @@ summary_df <- diff_df |>
   dplyr::summarise(
     n              = dplyr::n(),
     median_dv      = stats::median(DV),
-    median_logfs   = stats::median(logFSbugs),
+    median_logfs   = stats::median(log_cfu),
     rmse           = sqrt(mean(residual_log^2)),
     median_abs_res = stats::median(abs_residual),
     .groups = "drop"
   )
 knitr::kable(summary_df, digits = 3,
              caption = paste("Per-scenario self-consistency summary.",
-                             "RMSE / median |DV - logFSbugs| are on natural-log scale."))
+                             "RMSE / median |DV - log_cfu| are on natural-log scale."))
 ```
 
 The expected per-observation residual under perfect translation is the NONMEM
@@ -281,14 +305,14 @@ trajectory is consistent with the source model; values much larger flag a
 translation defect.
 
 ```{r consistency-figure, fig.cap = "Typical-value rxode2 trajectory (line) vs DDMORE-bundle simulated DV (points), one panel per scenario."}
-ggplot(sim, aes(time, logFSbugs)) +
+ggplot(sim, aes(time, log_cfu)) +
   geom_line(color = "steelblue", linewidth = 0.7) +
   geom_point(data = diff_df, aes(y = DV), alpha = 0.7, size = 1.6) +
   facet_wrap(~ scenario, scales = "free_y") +
   labs(x = "Time (days)", y = "ln(Fbugs + Sbugs)  (CFU/mL on log scale)",
        title = "Self-consistency: rxode2 typical value vs DDMORE-simulated DV",
        caption = paste("Points: bundle DV (NONMEM-simulated stochastic);",
-                       "line: rxode2::rxSolve typical-value `logFSbugs`."))
+                       "line: rxode2::rxSolve typical-value `log_cfu`."))
 ```
 
 # Mechanistic-sanity check (F.3)
@@ -381,11 +405,11 @@ of the source model. Each is flagged here for downstream review.
   M3 method (`F_FLAG = 1`, `Y = PHI((LLOQ - IPRED)/SD)`) with
   `LLOQ = ln(5) = 1.6094`. nlmixr2 handles below-LOQ data via the
   `cens` event-table column at fit time; the model file declares only
-  the standard additive residual on `logFSbugs`. Users fitting against
+  the standard additive residual on `log_cfu`. Users fitting against
   censored data should populate the dataset's `cens` column accordingly.
 * **Non-canonical observation, compartments, and covariates** flagged as
   10 `checkModelConventions()` warnings -- `Fbugs` / `Sbugs` / `Nbugs` /
-  `aron` / `aroff` are non-canonical compartments, `logFSbugs` is the
+  `aron` / `aroff` are non-canonical compartments, `log_cfu` is the
   paper-named observation (the canonical `Cc` is misleading for a log
   bacterial-density observation), `RIF` / `INH` / `EMB` are dataset-tied
   in vitro exposure columns rather than reusable population covariates
