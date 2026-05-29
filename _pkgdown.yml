@@ -230,6 +230,8 @@ navbar:
         href: articles/Smuszkiewicz_2017_dexmedetomidine.html
       - text: "Dexmedetomidine (Talke 2018)"
         href: articles/Talke_2018_dexmedetomidine.html
+      - text: "Diazepam (Ku 2018)"
+        href: articles/Ku_2018_diazepam.html
       - text: "Digoxin (Jelliffe 2014)"
         href: articles/Jelliffe_2014_digoxin.html
       - text: "Digoxin (Zhou 2010)"
@@ -1277,6 +1279,7 @@ articles:
   - articles/Krause_2017_selexipag
   - articles/Krekels_2015_paracetamol
   - articles/Kretsos_2014_olokizumab
+  - articles/Ku_2018_diazepam
   - articles/Kuchimanchi_2018_evolocumab
   - articles/Kuchimanchi_2024_dostarlimab
   - articles/Kunarajah_2017_doxorubicin
