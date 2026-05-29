@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Moore 1999 lamivudine ([doi:10.1128/aac.43.12.3025](https://doi.org/10.1128/aac.43.12.3025)) -- HIV-1-infected adults pooled from the NUCA3001 and NUCA3002 phase III trials.
+* Add Mann 2022 translational opioid-overdose model ([doi:10.1002/cpt.2696](https://doi.org/10.1002/cpt.2696)) -- four-layer chain (Mann_2022_fentanyl_iv, Mann_2022_carfentanil_iv, Mann_2022_mu_receptor_binding with all 12 Table-S2 ligands, Mann_2022_respiratory_physiology with cardiac-arrest event); ratifies new `OPIOID_ID`, `ANTAGONIST_ID`, `L_OPIOID_pM`, `L_ANTAGONIST_pM`, `CAR_OPIOID`, and `OPIOID_PATIENT_TYPE` covariate canonicals.
 * Add van Rongen 2018 metformin ([doi:10.1007/s40272-018-0293-1](https://doi.org/10.1007/s40272-018-0293-1)) -- overweight and obese Caucasian adolescents.
 * Add Tarning 2012 artemether and dihydroartemisinin ([doi:10.1186/1475-2875-11-293](https://doi.org/10.1186/1475-2875-11-293)) -- pregnant women with uncomplicated Plasmodium falciparum malaria in Uganda (joint parent + DHA popPK with zero-order dissolution and 6-compartment transit absorption).
 * Add Schoemaker 2017 brivaracetam ([doi:10.1007/s00228-017-2230-6](https://doi.org/10.1007/s00228-017-2230-6)) -- paediatric patients with epilepsy aged 1 month to 16 years; ratifies new `CONMED_PB`, `CONMED_CBZ`, and `CONMED_VPA` covariate canonicals.
