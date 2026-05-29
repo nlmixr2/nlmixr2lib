@@ -164,15 +164,15 @@ the initial free FcRn (equal to `fcrn_M * V_endo_tissue`). Verify in
 the heart endosome:
 
 ```{r fcrn-conservation}
-fcrn_init_ht <- 4.98e-5 * 1e9 * 0.00171  # nmol; v_ht_e = 0.00171 L
+fcrn_init_heart <- 4.98e-5 * 1e9 * 0.00171  # nmol; v_he_e = 0.00171 L
 fcrn_check <- sim_no_deg |>
   filter(time %in% c(0, 24, 100, 200)) |>
   transmute(
-    time_h         = time,
-    fr_ht          = round(fr_ht, 6),
-    eb_ht          = round(eb_ht, 6),
-    sum_fr_eb_ht   = round(fr_ht + eb_ht, 6),
-    expected       = round(fcrn_init_ht, 6)
+    time_h            = time,
+    fr_heart          = round(fr_heart, 6),
+    eb_heart          = round(eb_heart, 6),
+    sum_fr_eb_heart   = round(fr_heart + eb_heart, 6),
+    expected          = round(fcrn_init_heart, 6)
   )
 knitr::kable(fcrn_check,
              caption = "FcRn mass balance in the heart endosome.")

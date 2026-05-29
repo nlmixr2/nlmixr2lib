@@ -189,8 +189,8 @@ end_inf <- sim_typical |>
   filter(time == 240) |>
   transmute(arm,
             cu_pl,
-            cu_br_ecf,
-            ratio = cu_br_ecf / cu_pl)
+            cu_br_csf,
+            ratio = cu_br_csf / cu_pl)
 
 knitr::kable(
   end_inf |> distinct(),
@@ -204,7 +204,7 @@ The ratio at `t = 240 min` slightly under-reads the strict asymptotic `CL_u,in /
 ```{r late-ratio}
 late <- sim_typical |>
   filter(time == 360) |>
-  transmute(arm, cu_pl, cu_br_ecf, ratio = cu_br_ecf / cu_pl)
+  transmute(arm, cu_pl, cu_br_csf, ratio = cu_br_csf / cu_pl)
 knitr::kable(
   late |> distinct(),
   digits = 4,
