@@ -390,6 +390,19 @@ checkModelConventions <- function(model, verbose = TRUE) {
                ini$neta1 == ini$neta2, , drop = FALSE]
   reserr <- ini[!is.na(ini$err), , drop = FALSE]
 
+  # Optional paper-specific exception fields (analogous to the
+  # `paper_specific_compartments` mechanism for compartment names):
+  #   paper_specific_etas <- c("etalogit", "etap1", ...) -- IIV names
+  #     whose typical-value parameter is a paper-mechanistic structural
+  #     equation rather than a 1-to-1 `lX` ini parameter; the
+  #     "no matching fixed-effect parameter" check is skipped.
+  #   paper_specific_residual_sds <- c("propSd_vact_l1", ...) -- residual
+  #     SD names with paper-specific multi-token output suffixes that
+  #     the canonical propSd_<output> matcher does not recognise.
+  meta <- as.list(ui$meta)
+  paper_specific_etas <- meta$paper_specific_etas %||% character()
+  paper_specific_reserr <- meta$paper_specific_residual_sds %||% character()
+
   for (nm in fixed$name) {
     cls <- .classifyParam(nm, conv)
     if (cls == "bare_pk") {
@@ -440,6 +453,11 @@ checkModelConventions <- function(model, verbose = TRUE) {
         # lcl_form_m3g_le10 / _gt10 age brackets, eta_study_<param>_<f|hb>
         # pairing with paper-stratified ini params, etc.). No issue
         # is emitted.
+      } else if (nm %in% paper_specific_etas) {
+        # Paper-specific eta declared via the `paper_specific_etas`
+        # metadata field. The author has explicitly documented that
+        # the underlying typical-value parameter is a paper-mechanistic
+        # structural equation rather than a 1-to-1 `lX` ini parameter.
       } else {
         issues <- rbind(issues, .issue(
           "parameter_naming", "warning", nm,
@@ -453,6 +471,7 @@ checkModelConventions <- function(model, verbose = TRUE) {
   obs_vars <- unique(ui$predDf$cond %||% character())
   canonical_reserr <- .canonicalResidualErrorNames(obs_vars, conv)
   for (nm in reserr$name) {
+    if (nm %in% paper_specific_reserr) next
     if (!(nm %in% canonical_reserr) && !.matchesDeprecatedReserr(nm, conv)) {
       issues <- rbind(issues, .issue(
         "parameter_naming", "warning", nm,

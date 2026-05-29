@@ -208,6 +208,36 @@ The `lnn` / `nn_fix` form is reserved for Wang & co-authors'
 sigmoidicity exponent in specific BDE / morphine-like models and is a
 distinct canonical from `lhill`.
 
+## Paper-specific etas and residual-SDs
+
+For models with genuinely paper-mechanistic IIV / residual-error
+parameter names that do not pair 1-to-1 with an `lX` fixed-effect
+parameter, declare them via the `paper_specific_etas` and
+`paper_specific_residual_sds` metadata fields at the top of the
+model function body (analogous to the `depends` field for
+upstream-imported covariates and the `paper_specific_compartments`
+field for paper-mechanistic compartment names):
+
+```r
+my_model <- function() {
+  description <- "..."
+  reference <- "..."
+  paper_specific_etas <- c("etalogit", "etap1", "etap2")
+  paper_specific_residual_sds <- c("propSd_vact_l1", "propSd_vact_l2")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+  ...
+}
+```
+
+`checkModelConventions()` subtracts these from the parameter-naming
+warning set. Use sparingly: when an eta's underlying typical-value
+parameter is part of a paper-mechanistic structural equation
+(mixture-probability logit transform, transit-rate fractions,
+indirect-response baselines, etc.) rather than a 1-to-1 `lX` ini
+parameter; or when a residual SD uses a paper-specific multi-token
+output suffix (`propSd_vact_l1` for a lesion-stratified PD output)
+that the canonical `propSd_<output>` matcher does not recognise.
+
 ## Transform prefixes
 
 - `l` — natural log (`lka`, `lcl`, `lfdepot`)

@@ -9,6 +9,8 @@ Girard_2012_pimasertib <- function() {
     sep = " "
   )
   vignette <- "Girard_2012_pimasertib"
+  paper_specific_etas <- c("etalogit")
+
   units <- list(
     time          = "week",
     dosing        = "(K-PD AUC; AMT column carries the per-week pimasertib AUC, ng*h/mL or paper unit)",

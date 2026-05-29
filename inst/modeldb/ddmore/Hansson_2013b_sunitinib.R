@@ -13,6 +13,8 @@ Hansson_2013b_sunitinib <- function() {
     sep = " "
   )
   vignette <- "Hansson_2013b_sunitinib"
+  paper_specific_etas <- c("etaibase")
+
   units <- list(time = "hour", dosing = "mg", concentration = "mm (tumor SLD)")
   ddmore_id <- "DDMODEL00000198"
   replicate_of <- NULL

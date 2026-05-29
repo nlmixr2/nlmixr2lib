@@ -27,6 +27,8 @@ Schindler_2017_imatinib <- function() {
   )
   vignette <- "Schindler_2017_imatinib"
   paper_specific_compartments <- c("mtd_l1", "mtd_l2", "vactual_l1", "vactual_l2", "vellipsoid_l1", "vellipsoid_l2", "density_l1", "density_l2")
+  paper_specific_residual_sds <- c("propSd_vact_l1", "propSd_vact_l2", "propSd_vell_l1", "propSd_vell_l2", "propSd_dens_l1", "propSd_dens_l2")
+
 
   units <- list(
     time          = "week",
