@@ -858,6 +858,8 @@ navbar:
         href: articles/Bender_2014_trastuzumabEmtansine_reduced.html
       - text: "Tremelimumab (Hwang 2022)"
         href: articles/Hwang_2022_tremelimumab.html
+      - text: "Treosulfan (Danielak 2017)"
+        href: articles/Danielak_2017_treosulfan.html
       - text: "Trontinemab (Grimm 2023)"
         href: articles/Grimm_2023.html
       - text: "Tusamitamab (Pouzin 2022)"
@@ -1147,6 +1149,7 @@ articles:
   - articles/Conrado_2014_alzheimer
   - articles/Cook_2016_paracetamol
   - articles/Danielak_2017_clopidogrel
+  - articles/Danielak_2017_treosulfan
   - articles/Dao_2020_sultiame
   - articles/Debord_2001_cyclosporin
   - articles/deHoogd_2017_morphine
