@@ -29,6 +29,7 @@ Mann_2022_fentanyl_iv <- function() {
     "FDA code repository for the integrated model:",
     "https://github.com/FDA/Mechanistic-PK-PD-Model-to-Rescue-Opioid-Overdose"
   )
+  vignette <- "Laffont_2025_opioid_overdose_reversal_simulation"
   units <- list(
     time          = "min",
     dosing        = "mg",

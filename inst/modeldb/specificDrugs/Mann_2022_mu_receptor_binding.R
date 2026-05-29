@@ -30,8 +30,22 @@ Mann_2022_mu_receptor_binding <- function() {
     "assays at 12 ligands against transfected human mu-opioid receptor",
     "in rat C6 glioma cells (C6-hMOR). Equation 1 (single-ligand) and",
     "the implicit multi-ligand competitive extension are stated in",
-    "Supplement 1 Receptor Binding Component section."
+    "Supplement 1 Receptor Binding Component section.",
+    "Nalmefene (13th ligand) Kon, Koff, n values are from Laffont CM,",
+    "Purohit P, Delcamp N, Gonzalez-Garcia I, Skolnick P. Comparison of",
+    "intranasal naloxone and intranasal nalmefene in a translational",
+    "model assessing the impact of synthetic opioid overdose on",
+    "respiratory depression and cardiac arrest. Front Psychiatry.",
+    "2024;15:1399803. doi:10.3389/fpsyt.2024.1399803, Supplementary",
+    "Table S3 (scaling approach: Laffont 2024 Methods 2.3 multiplied",
+    "the Mann 2022 naloxone Kon and Koff by the nalmefene/naloxone",
+    "ratios reported in Cassel et al. 2005, [3H]Alvimopan binding to",
+    "the mu-opioid receptor: comparative binding kinetics of opioid",
+    "antagonists. Eur J Pharmacol. 2005;520(1-3):29-36.",
+    "doi:10.1016/j.ejphar.2005.08.008; the steepness parameter n was",
+    "assumed identical to naloxone)."
   )
+  vignette <- "Laffont_2025_opioid_overdose_reversal_simulation"
   units <- list(
     time          = "min",
     dosing        = "(not applicable; ligand concentrations are time-varying covariates)",
@@ -40,7 +54,7 @@ Mann_2022_mu_receptor_binding <- function() {
 
   covariateData <- list(
     OPIOID_ID = list(
-      description        = "Integer 1..12 selecting which Table-S2 ligand fills the opioid agonist slot at runtime",
+      description        = "Integer 1..13 selecting which Table-S2 (Mann 2022) or Table-S3 (Laffont 2024) ligand fills the opioid agonist slot at runtime",
       units              = "(categorical)",
       type               = "categorical",
       reference_category = NULL,
@@ -51,28 +65,29 @@ Mann_2022_mu_receptor_binding <- function() {
         "4 = carfentanil; 5 = fluorobutyryl fentanyl;",
         "6 = fentanyl; 7 = fluoroisobutyryl fentanyl;",
         "8 = furanyl fentanyl; 9 = isobutyryl fentanyl;",
-        "10 = naloxone; 11 = remifentanil; 12 = sufentanil.",
+        "10 = naloxone; 11 = remifentanil; 12 = sufentanil;",
+        "13 = nalmefene (added by task 131 from Laffont 2024",
+        "Supplementary Table S3 scaling approach over Cassel 2005).",
         "Used in model() to gate which Kon_<ligand>, Koff_<ligand>,",
         "n_<ligand> values are routed into the opioid binding ODE."
       ),
       source_name        = "(none; new canonical covariate registered for this model)"
     ),
     ANTAGONIST_ID = list(
-      description        = "Integer 1..12 selecting which Table-S2 ligand fills the opioid antagonist slot at runtime",
+      description        = "Integer 1..13 selecting which Table-S2 (Mann 2022) or Table-S3 (Laffont 2024) ligand fills the opioid antagonist slot at runtime",
       units              = "(categorical)",
       type               = "categorical",
       reference_category = NULL,
       notes              = paste(
         "Same integer-to-ligand mapping as OPIOID_ID. In the Mann 2022",
-        "context only naloxone (10) is used as the antagonist; the wider",
-        "range is retained so downstream tasks (e.g.,",
-        "Laffont_2024_nalmefene which would be added as ligand 13 if/when",
-        "the wider Mann 2022 binding table is extended) can flip slots",
-        "by setting ANTAGONIST_ID without code changes. Buprenorphine",
-        "(2) is a partial agonist with the slowest dissociation kinetics",
-        "in Table S2; routing it into the antagonist slot models",
-        "buprenorphine occupying the receptor without producing the",
-        "full ventilatory-depression effect coupled to the agonist slot."
+        "context only naloxone (10) is used as the antagonist; in the",
+        "Laffont 2024 / Laffont 2025 expansion, nalmefene (13) is the",
+        "second antagonist option, parameterised from Laffont 2024",
+        "Supplementary Table S3. Buprenorphine (2) is a partial agonist",
+        "with the slowest dissociation kinetics in Table S2; routing it",
+        "into the antagonist slot models buprenorphine occupying the",
+        "receptor without producing the full ventilatory-depression",
+        "effect coupled to the agonist slot."
       ),
       source_name        = "(none; new canonical covariate registered for this model)"
     ),
@@ -138,7 +153,7 @@ Mann_2022_mu_receptor_binding <- function() {
       "only (the binding model is a typical-value mechanism without",
       "between-subject variability)."
     ),
-    n_ligands      = 12L
+    n_ligands      = 13L
   )
 
   ini({
@@ -243,6 +258,19 @@ Mann_2022_mu_receptor_binding <- function() {
     label("Sufentanil dissociation rate Koff (s^-1, FIXED, Table S2)")      # Table S2 row 12
     n_sufentanil    <- fixed(1.02)
     label("Sufentanil binding slope n (unitless, FIXED, Table S2)")         # Table S2 row 12
+
+    # 13 - nalmefene (Laffont 2024 Supplement Table S3; added by task 131
+    # since Mann 2022 Table S2 did not include nalmefene). Values derived
+    # by Laffont 2024 Methods 2.3 scaling approach: nalmefene-to-naloxone
+    # Kon and Koff ratios from Cassel 2005 multiplied by the Mann 2022
+    # naloxone Kon and Koff to keep the binding panel internally
+    # consistent. n was assumed identical to naloxone (0.86).
+    kon_nalmefene  <- fixed(2.06e-04)
+    label("Nalmefene association rate Kon (pM^-n s^-1, FIXED, Laffont 2024 Supp Table S3)")  # Laffont 2024 Supp Table S3: nalmefene kon = 2.06e-04 pM^-n s^-1 (scaling from Cassel 2005 over Mann 2022 naloxone)
+    koff_nalmefene <- fixed(1.35e-02)
+    label("Nalmefene dissociation rate Koff (s^-1, FIXED, Laffont 2024 Supp Table S3)")      # Laffont 2024 Supp Table S3: nalmefene koff = 1.35e-02 s^-1; ~2.9x slower than naloxone (3.96e-02) -> dissociation t1/2 = 0.86 min vs naloxone 0.29 min
+    n_nalmefene    <- fixed(0.86)
+    label("Nalmefene binding slope n (unitless, FIXED, assumed identical to naloxone)")     # Laffont 2024 Supp Table S3 / Methods 2.3: n for nalmefene assumed equal to naloxone (0.86)
   })
 
   model({
@@ -268,7 +296,8 @@ Mann_2022_mu_receptor_binding <- function() {
       (OPIOID_ID ==  9) * kon_isobutyrylfentanyl       +
       (OPIOID_ID == 10) * kon_naloxone                 +
       (OPIOID_ID == 11) * kon_remifentanil             +
-      (OPIOID_ID == 12) * kon_sufentanil
+      (OPIOID_ID == 12) * kon_sufentanil               +
+      (OPIOID_ID == 13) * kon_nalmefene
     Koff_op_per_s <-
       (OPIOID_ID ==  1) * koff_alfentanil               +
       (OPIOID_ID ==  2) * koff_buprenorphine            +
@@ -281,7 +310,8 @@ Mann_2022_mu_receptor_binding <- function() {
       (OPIOID_ID ==  9) * koff_isobutyrylfentanyl       +
       (OPIOID_ID == 10) * koff_naloxone                 +
       (OPIOID_ID == 11) * koff_remifentanil             +
-      (OPIOID_ID == 12) * koff_sufentanil
+      (OPIOID_ID == 12) * koff_sufentanil               +
+      (OPIOID_ID == 13) * koff_nalmefene
     n_op <-
       (OPIOID_ID ==  1) * n_alfentanil               +
       (OPIOID_ID ==  2) * n_buprenorphine            +
@@ -294,7 +324,8 @@ Mann_2022_mu_receptor_binding <- function() {
       (OPIOID_ID ==  9) * n_isobutyrylfentanyl       +
       (OPIOID_ID == 10) * n_naloxone                 +
       (OPIOID_ID == 11) * n_remifentanil             +
-      (OPIOID_ID == 12) * n_sufentanil
+      (OPIOID_ID == 12) * n_sufentanil               +
+      (OPIOID_ID == 13) * n_nalmefene
 
     # ANTAGONIST slot: same dispatch by ANTAGONIST_ID. Both slots may be
     # set to the same integer if a single-ligand simulation is desired,
@@ -312,7 +343,8 @@ Mann_2022_mu_receptor_binding <- function() {
       (ANTAGONIST_ID ==  9) * kon_isobutyrylfentanyl       +
       (ANTAGONIST_ID == 10) * kon_naloxone                 +
       (ANTAGONIST_ID == 11) * kon_remifentanil             +
-      (ANTAGONIST_ID == 12) * kon_sufentanil
+      (ANTAGONIST_ID == 12) * kon_sufentanil               +
+      (ANTAGONIST_ID == 13) * kon_nalmefene
     Koff_an_per_s <-
       (ANTAGONIST_ID ==  1) * koff_alfentanil               +
       (ANTAGONIST_ID ==  2) * koff_buprenorphine            +
@@ -325,7 +357,8 @@ Mann_2022_mu_receptor_binding <- function() {
       (ANTAGONIST_ID ==  9) * koff_isobutyrylfentanyl       +
       (ANTAGONIST_ID == 10) * koff_naloxone                 +
       (ANTAGONIST_ID == 11) * koff_remifentanil             +
-      (ANTAGONIST_ID == 12) * koff_sufentanil
+      (ANTAGONIST_ID == 12) * koff_sufentanil               +
+      (ANTAGONIST_ID == 13) * koff_nalmefene
     n_an <-
       (ANTAGONIST_ID ==  1) * n_alfentanil               +
       (ANTAGONIST_ID ==  2) * n_buprenorphine            +
@@ -338,7 +371,8 @@ Mann_2022_mu_receptor_binding <- function() {
       (ANTAGONIST_ID ==  9) * n_isobutyrylfentanyl       +
       (ANTAGONIST_ID == 10) * n_naloxone                 +
       (ANTAGONIST_ID == 11) * n_remifentanil             +
-      (ANTAGONIST_ID == 12) * n_sufentanil
+      (ANTAGONIST_ID == 12) * n_sufentanil               +
+      (ANTAGONIST_ID == 13) * n_nalmefene
 
     # Convert per-second to per-minute time scale (matches the per-minute
     # time scale used by the Mann 2022 PK layers Mann_2022_fentanyl_iv /

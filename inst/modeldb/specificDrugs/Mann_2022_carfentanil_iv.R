@@ -35,6 +35,7 @@ Mann_2022_carfentanil_iv <- function() {
     "Figure_7/simulateToGetOD_IM.R lines 169-183",
     "(useCarfentanilLikePK = useFasterBiophaseEquilibriumForCarfentanil = yes)."
   )
+  vignette <- "Laffont_2025_opioid_overdose_reversal_simulation"
   units <- list(
     time          = "min",
     dosing        = "mg",

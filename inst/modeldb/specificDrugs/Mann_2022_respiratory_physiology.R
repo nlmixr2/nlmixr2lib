@@ -44,6 +44,7 @@ Mann_2022_respiratory_physiology <- function() {
     "with delaypars.R (parameter table) and fentanyl_pars.txt (P1, P2",
     "overrides for naive vs chronic patient types)."
   )
+  vignette <- "Laffont_2025_opioid_overdose_reversal_simulation"
   units <- list(
     time          = "min",
     dosing        = "(not applicable; CAR is a time-varying covariate input from the binding layer)",
