@@ -768,6 +768,8 @@ navbar:
         href: articles/Dunlap_2025_tacrolimus.html
       - text: "Tacrolimus (Grover 2011)"
         href: articles/Grover_2011_tacrolimus.html
+      - text: "Tacrolimus (Hao 2018)"
+        href: articles/Hao_2018_tacrolimus.html
       - text: "Tacrolimus (Ji 2018)"
         href: articles/Ji_2018_tacrolimus.html
       - text: "Tacrolimus (Kim 2018)"
@@ -1217,6 +1219,7 @@ articles:
   - articles/Hansson_2013b_sunitinib
   - articles/Hansson_2013c_sunitinib
   - articles/Hanzel_2021_infliximab
+  - articles/Hao_2018_tacrolimus
   - articles/Harun_2019_cysticFibrosis
   - articles/Hayashi_2007_omalizumab
   - articles/Hendriksen_2013_artesunate
