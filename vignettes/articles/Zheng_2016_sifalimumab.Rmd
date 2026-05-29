@@ -188,7 +188,12 @@ virtual cohort matches the paper's reported variability.
 ```{r simulate}
 mod <- readModelDb("Zheng_2016_sifalimumab")
 
-events_sim <- events %>% rename(id = ID)
+events_sim <- events %>%
+  rename(id = ID) %>%
+  # Put canonical event-table columns first so rxode2's column
+  # heuristic recognises DOSE as a model parameter taken from the
+  # events table rather than a missing covariate.
+  select(id, time, amt, evid, cmt, dur, everything())
 # `treatment` is already on every row of `events_sim` (carried from `pop`
 # via the dose_rows / obs_rows construction above). Carry it through
 # rxSolve via `keep = ...` rather than a fragile post-hoc left_join
