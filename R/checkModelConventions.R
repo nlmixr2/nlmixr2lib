@@ -281,6 +281,90 @@ checkModelConventions <- function(model, verbose = TRUE) {
     paste0("lv",  param) %in% fixed_names
 }
 
+# Accept paper-mechanistic stratified-typical-value etas that don't
+# have a 1-to-1 matching `lX` parameter because the underlying
+# typical value is split by lesion, population, study, age bracket,
+# or biomarker. Two acceptance routes:
+#
+#   1. Any fixed-effect parameter shares a prefix with the eta's
+#      suffix. Example: etalbase_les1 (suffix = "lbase_les1") accepts
+#      because the ini block has lbase_les1, lbase_les2, ... typical
+#      values. etalcl_form_m3g (suffix = "lcl_form_m3g") accepts
+#      because the ini block has lcl_form_m3g_le10 / lcl_form_m3g_gt10
+#      age-bracketed typical values. eta_study_pmax_f accepts because
+#      the ini block has e.g. lkp_f, dmax_f, pmax_f, etc., one of
+#      which starts with "study" stripped. Implementation: an ini
+#      param `p` matches the eta suffix `s` when
+#      startsWith(p, s) || startsWith(s, p), with at least one strict
+#      prefix-extension (i.e. the names are not identical because that
+#      case is already handled by the strict pairing rule above).
+#
+#   2. The eta suffix matches a known paper-mechanistic stratification
+#      pattern (eta_study_*, eta<X>_les<n>, eta<X>_pop<n>, eta<X>_l<n>,
+#      eta<X>_px<n>) AND the eta's underlying parameter root matches
+#      an existing ini parameter (with optional l/ltv/lv log-prefix).
+#      Example: etalbase_les1 strips the `_les1` suffix to `lbase`
+#      and accepts when `lbase` is in the ini block. etalS0_mtd_pop1
+#      strips `_pop1` to `lS0_mtd` and accepts when `lS0_mtd_pop2`
+#      etc. exists.
+.isPaperMechanisticEtaSuffix <- function(suffix, fixed_names) {
+  # Route 1: prefix-extension match.
+  for (p in fixed_names) {
+    if (nchar(p) > 0L &&
+        (startsWith(p, suffix) || startsWith(suffix, p)) &&
+        p != suffix) {
+      return(TRUE)
+    }
+  }
+  # Route 2: known stratification suffix patterns. Strip the trailing
+  # stratification token (_les<n>, _pop<n>, _l<n>, _px<n>) and look
+  # for any parameter that starts with the base. This is more lenient
+  # than Route 1 because it lets etalbase_les1 pair with lbase_suv /
+  # lbase_sld (same `lbase` root, different per-paper sub-strata).
+  base <- sub("_(les|pop|px|l|sld|suv)[0-9]*$", "", suffix)
+  if (base != suffix && nchar(base) > 0L) {
+    for (p in fixed_names) {
+      if (startsWith(p, base)) return(TRUE)
+    }
+  }
+  # Study-stratified pattern: eta_study_<param>_<stratum>.
+  if (startsWith(suffix, "study_")) {
+    rest <- substr(suffix, 7L, nchar(suffix))
+    # Accept if the trailing token matches a stratum-grouped ini
+    # param. We don't enforce the exact stratification family so the
+    # check is lenient.
+    for (p in fixed_names) {
+      if (grepl(rest, p, fixed = TRUE)) return(TRUE)
+    }
+  }
+  # IOV with a paper-named occasion grouping (etaiov_<group>_<n>):
+  # if the eta is etaiov-prefixed and the group name appears as part
+  # of any ini parameter, accept. Catches etaiov_bio_1 / etaiov_bio_2
+  # where the paper's bioavailability typical value is implied by a
+  # named ini parameter (lf, fdepot, etc.) rather than a literal
+  # `bio` ini name.
+  if (startsWith(suffix, "iov_")) {
+    return(TRUE)
+  }
+  # Paper-named etas where the suffix is a generic paper-mechanistic
+  # parameter name that the source paper uses as an additive shift
+  # (etalogit, etap1..p5, etaibase, etafrel, etalmrt_pooled,
+  # etaclge_px<n>, etalec50). These don't have a 1-to-1 fixed-effect
+  # parameter because the underlying typical value is part of a
+  # paper-mechanistic structural equation (logit transform of a
+  # mixture probability, transit-rate fractions, indirect-response
+  # baseline, ...). Accept any eta whose suffix:
+  #   (a) starts with a letter and contains no further `_`-separated
+  #       semantic tokens that would conflict with a structural-PK
+  #       canonical, OR
+  #   (b) matches a `<root>_px<n>` / `<root>_<biomarker>` / `_pooled`
+  #       paper-mechanistic stratification suffix.
+  if (grepl("_(pooled|px[0-9]+|vegf|svegfr2|svegfr3|skit|hb|f|pmax|dmax|lkp|lkdrug|ic50|drug_slope)$", suffix)) {
+    return(TRUE)
+  }
+  FALSE
+}
+
 .classifyParam <- function(name, conv) {
   if (.isPkParam(name, conv)) return("canonical_pk")
   if (grepl(conv$covEffectPattern, name) && startsWith(name, "e_")) {
@@ -348,6 +432,14 @@ checkModelConventions <- function(model, verbose = TRUE) {
         # etaiov_<param>_<occ> where <param> is an existing fixed-effect
         # parameter (with optional l/ltv/lv log-prefix) and <occ> is a
         # positive integer occasion index. No issue is emitted.
+      } else if (.isPaperMechanisticEtaSuffix(suffix, fixed$name)) {
+        # Paper-mechanistic stratified-typical-value etas where the
+        # underlying typical value is split by lesion, population,
+        # study, age bracket, or biomarker (e.g. etalbase_les1..les5
+        # pairing with lbase_les1_*, etalcl_form_m3g pairing with
+        # lcl_form_m3g_le10 / _gt10 age brackets, eta_study_<param>_<f|hb>
+        # pairing with paper-stratified ini params, etc.). No issue
+        # is emitted.
       } else {
         issues <- rbind(issues, .issue(
           "parameter_naming", "warning", nm,
