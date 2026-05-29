@@ -215,7 +215,10 @@ make_subject <- function(id, wt_kg, alb_gL, sexf_ind, tumtp_bc_ind,
     cycle_troughs
   )))
   obs <- rxode2::et(obs_times, cmt = "Cc")
-  ev <- rbind(doses, obs)
+  # Convert to data.frame before attaching covariates so columns survive
+  # the per-subject rbind and downstream rxSolve event-table handling
+  # (rxode2's as.data.frame.rxEt method drops non-canonical columns).
+  ev <- as.data.frame(rbind(doses, obs))
   ev$id <- id
   ev$WT  <- wt_kg
   ev$ALB <- alb_gL
@@ -236,7 +239,6 @@ events <- do.call(
                  hep_mild[i], hep_mod_m[i])
   })
 )
-events <- as.data.frame(events)
 
 stopifnot(length(unique(events$id)) == n_subj)
 ```

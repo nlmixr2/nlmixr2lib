@@ -337,7 +337,7 @@
       state <- "aliases"
       after <- sub("^- \\*\\*Source aliases:\\*\\*\\s*", "", line)
       if (grepl("^none\\b", after, ignore.case = TRUE)) next
-      after <- strsplit(after, "\\s+—\\s+", perl = TRUE)[[1]][1]
+      after <- strsplit(after, "\\s+\u2014\\s+", perl = TRUE)[[1]][1]
       inline <- regmatches(after, gregexpr("`([^`]+)`", after))[[1]]
       for (tok in inline) {
         inner <- gsub("`", "", tok)
