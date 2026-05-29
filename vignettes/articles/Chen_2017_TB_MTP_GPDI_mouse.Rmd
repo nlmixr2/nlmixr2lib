@@ -366,11 +366,10 @@ sim_obs %>%
   the deviation is intentional because the model carries four parallel
   drugs and three bacterial states that cannot collapse into a single
   canonical PK tree.
-* **Paper-specific covariate (now registered as canonical).**
-  `CONMED_INH_DOSE` is registered in
-  `inst/references/covariate-columns.md` as the canonical "daily dose
-  of a co-administered named drug" entry for isoniazid. In this
-  four-drug combination model only isoniazid needs a per-subject
+* **Paper-specific covariate.** `CONMED_INH_DOSE` is the canonical
+  "daily dose of a co-administered named drug" entry for isoniazid
+  (`inst/references/covariate-columns.md`). In this four-drug
+  combination model only isoniazid needs a per-subject
   dose-level covariate (its clearance is dose-dependent per Chen 2017
   Table 1 footnote b). The other three drugs have linear or fixed-dose
   PK and their assigned dose enters the simulation only through the

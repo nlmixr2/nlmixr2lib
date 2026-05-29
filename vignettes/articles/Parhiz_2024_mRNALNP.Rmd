@@ -130,8 +130,9 @@ sim_bal <- as.data.frame(rxSolve(mod_no_deg, events = ev_bal))
 
 lnp_cols <- c(
   "blood", "bldeg",
-  paste0("vp_", c("lu", "he", "ki", "sp", "li", "po", "re")),
-  paste0("int_", c("lu", "he", "ki", "sp", "li"))
+  paste0("vp_", c("lung", "heart", "kidney", "spleen", "liver",
+                  "portal", "remainder")),
+  paste0("int_", c("lung", "heart", "kidney", "spleen", "liver"))
 )
 sim_bal$total_lnp <- rowSums(sim_bal[, lnp_cols])
 

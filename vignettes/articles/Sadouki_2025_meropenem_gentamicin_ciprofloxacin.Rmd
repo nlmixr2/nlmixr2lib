@@ -141,11 +141,11 @@ ev <- scenarios |>
       evid = c(1L, rep(0L, length(times))),
       amt  = c(sc$Cmer_init, rep(NA_real_, length(times))),
       cmt  = c("mer", rep(NA_character_, length(times))),
-      MER_PRESENT = sc$mer_in,
-      GEN_PRESENT = sc$gen_in,
-      CIP_PRESENT = sc$cip_in,
-      Cgen        = sc$Cgen,
-      Ccip        = sc$Ccip,
+      CONMED_MER    = sc$mer_in,
+      CONMED_GEN    = sc$gen_in,
+      CONMED_CIP    = sc$cip_in,
+      CONMED_GEN_CC = sc$Cgen,
+      CONMED_CIP_CC = sc$Ccip,
       LOWINOC     = 0L,
       regimen     = sc$regimen,
       mic_mult    = sc$mic_mult
@@ -156,8 +156,9 @@ ev <- scenarios |>
 sim <- rxode2::rxSolve(
   mod_typ,
   events     = ev,
-  keep       = c("regimen", "mic_mult", "MER_PRESENT", "GEN_PRESENT", "CIP_PRESENT",
-                 "Cgen", "Ccip"),
+  keep       = c("regimen", "mic_mult",
+                 "CONMED_MER", "CONMED_GEN", "CONMED_CIP",
+                 "CONMED_GEN_CC", "CONMED_CIP_CC"),
   returnType = "data.frame"
 ) |>
   dplyr::as_tibble() |>
@@ -223,7 +224,7 @@ synergy terms).
 ```{r figure-2-effect, fig.height = 7, fig.width = 8}
 peak_effect <- sim |>
   filter(time == 0) |>  # Effect at t = 0 isolates the Hill curve from the regrowth term
-  select(regimen, mic_mult, MER_PRESENT, GEN_PRESENT, CIP_PRESENT,
+  select(regimen, mic_mult, CONMED_MER, CONMED_GEN, CONMED_CIP,
          eff_mer, eff_gen, eff_cip)
 
 # Hill curves -- peak Emax * C^h / (IC50^h + C^h)

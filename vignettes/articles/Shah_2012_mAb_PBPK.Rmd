@@ -126,18 +126,17 @@ ev <- et(amt = dose_nmol, cmt = "plasma", time = 0) |>
   et(seq(0, 200, by = 4))
 sim_no_deg <- as.data.frame(rxSolve(mod_no_deg, events = ev))
 
+organ_suffix <- c("heart", "lung", "muscle", "skin", "adipose",
+                  "bone", "brain", "kidney", "liver",
+                  "small_intestine", "large_intestine",
+                  "pancreas", "thymus", "spleen", "other")
 igg_cols <- c(
   "plasma", "bcc", "lnode",
-  paste0("vp_", c("ht","lu","mu","sk","ad","bo","br","ki",
-                  "li","si","lr","pa","th","sp","ot")),
-  paste0("bc_", c("ht","lu","mu","sk","ad","bo","br","ki",
-                  "li","si","lr","pa","th","sp","ot")),
-  paste0("eu_", c("ht","lu","mu","sk","ad","bo","br","ki",
-                  "li","si","lr","pa","th","sp","ot")),
-  paste0("eb_", c("ht","lu","mu","sk","ad","bo","br","ki",
-                  "li","si","lr","pa","th","sp","ot")),
-  paste0("is_", c("ht","lu","mu","sk","ad","bo","br","ki",
-                  "li","si","lr","pa","th","sp","ot"))
+  paste0("vp_", organ_suffix),
+  paste0("bc_", organ_suffix),
+  paste0("eu_", organ_suffix),
+  paste0("eb_", organ_suffix),
+  paste0("is_", organ_suffix)
 )
 sim_no_deg$total_igg <- rowSums(sim_no_deg[, igg_cols])
 

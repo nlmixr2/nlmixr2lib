@@ -220,10 +220,10 @@ eba_per_subject <- sim_vpc |>
   dplyr::mutate(day_on_treatment = time - preincub) |>
   dplyr::group_by(id, mgkg_label) |>
   dplyr::summarise(
-    sputum0  = Sputum_lnCFU[which.min(abs(day_on_treatment - 0))],
-    sputum2  = Sputum_lnCFU[which.min(abs(day_on_treatment - 2))],
-    sputum5  = Sputum_lnCFU[which.min(abs(day_on_treatment - 5))],
-    sputum14 = Sputum_lnCFU[which.min(abs(day_on_treatment - 14))],
+    sputum0  = log_cfu[which.min(abs(day_on_treatment - 0))],
+    sputum2  = log_cfu[which.min(abs(day_on_treatment - 2))],
+    sputum5  = log_cfu[which.min(abs(day_on_treatment - 5))],
+    sputum14 = log_cfu[which.min(abs(day_on_treatment - 14))],
     .groups  = "drop"
   ) |>
   dplyr::mutate(
@@ -407,7 +407,7 @@ knitr::kable(nca_summary,
 - **Residual error sources.** Wicha 2018 is a forward simulation and
   does not refit observation residual error. The plasma `propSd` =
   0.2356 is the Svensson 2018 SIGMA(1,1) FINAL ESTIMATE; the
-  `addSd_Sputum_lnCFU` = 1.124 is the combined two-component Svensson
+  `addSd_log_cfu` = 1.124 is the combined two-component Svensson
   2016 residual SD on log(CFU/mL). These make the model usable for
   VPC-style stochastic simulation; they are not load-bearing for the
   EBA prediction itself.

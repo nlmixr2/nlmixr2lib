@@ -236,10 +236,9 @@ events_plot <- dplyr::bind_rows(events, plot_grid) |>
 ```{r typical-value-simulation}
 mod <- readModelDb("Clewe_2018_rifampicin")
 mod_typical <- rxode2::zeroRe(mod)
-# The model's `covariateData` declares the in vitro exposures as
-# `CONMED_RIF_CC`, `CONMED_INH_CC`, `CONMED_EMB_CC` (per the 2026-05-28
-# audit's canonical CONMED_<drug>_CC pattern). Map the vignette-local
-# shorthand columns onto the canonical names before solving, and
+# The model expects the canonical CONMED_<drug>_CC covariate names
+# (`CONMED_RIF_CC`, `CONMED_INH_CC`, `CONMED_EMB_CC`). Map the
+# vignette-local shorthand columns to those names before solving, and
 # reorder so the canonical event-table columns lead.
 events_solve <- events_plot |>
   dplyr::rename(

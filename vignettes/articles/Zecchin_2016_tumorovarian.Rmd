@@ -35,13 +35,13 @@ Equations were extracted from `Executable_SLD.mod` (`$PK` and `$DES` blocks) and
 
 | Equation / parameter           | Value                          | Source location                                                                                |
 |--------------------------------|--------------------------------|------------------------------------------------------------------------------------------------|
-| `d/dt(tumorSize)`              | n/a                            | `Executable_SLD.mod` `$DES` (`DADT(1) = KG/1000 * A(1) - (KD0/1000 * E0 + KD1/100 * E1) * A(1)`) |
+| `d/dt(tumor_size)`              | n/a                            | `Executable_SLD.mod` `$DES` (`DADT(1) = KG/1000 * A(1) - (KD0/1000 * E0 + KD1/100 * E1) * A(1)`) |
 | Initial tumour size            | `ibase * 1000` mm              | `Executable_SLD.mod` `$PK` (`A_0(1) = IBASE*1000`)                                            |
 | `lkg` (tumour growth rate)     | `log(0.611)`                   | `Output_real_SLD.lst` FINAL TH1                                                               |
 | `lkd0` (carboplatin death)     | `log(0.0497)`                  | `Output_real_SLD.lst` FINAL TH2                                                               |
 | `lkd1` (gemcitabine death)     | `log(0.0164)`                  | `Output_real_SLD.lst` FINAL TH3                                                               |
 | `libase` (baseline SLD, m)     | `log(0.0713)`                  | `Output_real_SLD.lst` FINAL TH4                                                               |
-| `addSd_tumorSize` (mm)         | `18.4`                         | `Output_real_SLD.lst` FINAL TH5                                                               |
+| `addSd_tumor_size` (mm)         | `18.4`                         | `Output_real_SLD.lst` FINAL TH5                                                               |
 | `etalkg`                       | `1.72`                         | `Output_real_SLD.lst` FINAL OMEGA(1,1)                                                        |
 | `etalkd0_kd1` (shared)         | `1.09`                         | `Output_real_SLD.lst` FINAL OMEGA(2,2) -- shared by KD0 and KD1 per `$PK` block               |
 | `etalibase`                    | `0.515`                        | `Output_real_SLD.lst` FINAL OMEGA(3,3)                                                        |
@@ -124,7 +124,7 @@ sim_typical <- rxode2::rxSolve(
 # Population-typical median trajectories per arm
 typical_summary <- sim_typical |>
   group_by(arm, time) |>
-  summarise(median_SLD = median(tumorSize), .groups = "drop")
+  summarise(median_SLD = median(tumor_size), .groups = "drop")
 
 ggplot(typical_summary, aes(time, median_SLD, colour = arm)) +
   geom_line(linewidth = 1) +
@@ -141,7 +141,7 @@ ggplot(typical_summary, aes(time, median_SLD, colour = arm)) +
 The expected qualitative pattern holds:
 
 * **Tumour shrinks during treatment.** Both arms show a downward trajectory while AUC_CARBO and AUC_GEM are non-zero (cycles 1-6, days 0-126). The combination arm declines faster than the carboplatin-only arm because both cytotoxic-death terms contribute additively (`kd0 * AUC_CARBO + kd1 * AUC_GEM`, `$DES` block).
-* **Tumour regrows after treatment ends.** Once the AUC inputs drop to zero (after day 126), the death terms vanish and the growth term `kg * tumorSize` takes over, producing exponential regrowth. This matches the model's structural assumption of no resistance.
+* **Tumour regrows after treatment ends.** Once the AUC inputs drop to zero (after day 126), the death terms vanish and the growth term `kg * tumor_size` takes over, producing exponential regrowth. This matches the model's structural assumption of no resistance.
 * **Initial value tracks `IBASE * 1000`.** At time 0 the trajectory begins at `exp(libase) * 1000` ~= 71 mm, exactly the published baseline-SLD scale.
 
 # Stochastic simulation (between-subject variability)
@@ -159,9 +159,9 @@ sim_iiv <- rxode2::rxSolve(
 iiv_summary <- sim_iiv |>
   group_by(arm, time) |>
   summarise(
-    Q05 = quantile(tumorSize, 0.05, na.rm = TRUE),
-    Q50 = quantile(tumorSize, 0.50, na.rm = TRUE),
-    Q95 = quantile(tumorSize, 0.95, na.rm = TRUE),
+    Q05 = quantile(tumor_size, 0.05, na.rm = TRUE),
+    Q50 = quantile(tumor_size, 0.50, na.rm = TRUE),
+    Q95 = quantile(tumor_size, 0.95, na.rm = TRUE),
     .groups = "drop"
   )
 
@@ -193,7 +193,7 @@ linear_check <- function(scale_factor) {
   ) |>
     as.data.frame() |>
     filter(time == n_cycles * cycle_days, arm == "carboplatin alone") |>
-    summarise(SLD_at_end_of_treatment = median(tumorSize),
+    summarise(SLD_at_end_of_treatment = median(tumor_size),
               scale_factor = scale_factor)
 }
 
@@ -215,7 +215,7 @@ A side-by-side comparison against the bundle's `Output_simulated_SLD.lst` IPRED 
 
 # Assumptions, deviations, and Errata
 
-* **`checkModelConventions()` deviations.** `nlmixr2lib::checkModelConventions("Zecchin_2016_tumorovarian")` reports three warnings (no errors): (1) the `tumorSize` compartment is not on the canonical-compartment list; (2) the single-output observation variable should be `Cc`; (3) `units$concentration` does not contain `/` (the mass/volume divider). All three are intrinsic to a tumour-size-dynamics model and apply to every existing tumour-size model in the package (e.g., `tgi_no_sat_expo`, `oncology_xenograft_simeoni_2004`): SLD is a **length** (mm), not a drug concentration; the `Cc` canonical name is reserved for plasma drug concentrations and does not fit a tumour-size endpoint; the convention checker's mass/volume unit pattern is also drug-concentration-specific. Renaming `tumorSize` to `Cc` here would mislead readers about what the observation actually represents. The deviations are intentional.
+* **`checkModelConventions()` deviations.** `nlmixr2lib::checkModelConventions("Zecchin_2016_tumorovarian")` reports three warnings (no errors): (1) the `tumor_size` compartment is not on the canonical-compartment list; (2) the single-output observation variable should be `Cc`; (3) `units$concentration` does not contain `/` (the mass/volume divider). All three are intrinsic to a tumour-size-dynamics model and apply to every existing tumour-size model in the package (e.g., `tgi_no_sat_expo`, `oncology_xenograft_simeoni_2004`): SLD is a **length** (mm), not a drug concentration; the `Cc` canonical name is reserved for plasma drug concentrations and does not fit a tumour-size endpoint; the convention checker's mass/volume unit pattern is also drug-concentration-specific. Renaming `tumor_size` to `Cc` here would mislead readers about what the observation actually represents. The deviations are intentional.
 * **`MINIMIZATION SUCCESSFUL` with caveats.** The source `.lst` reports `MINIMIZATION SUCCESSFUL` but adds `HOWEVER, PROBLEMS OCCURRED WITH THE MINIMIZATION. REGARD THE RESULTS OF THE ESTIMATION STEP CAREFULLY, AND ACCEPT THEM ONLY AFTER CHECKING THAT THE COVARIANCE STEP PRODUCES REASONABLE OUTPUT.` The reported correlation matrix shows THETA-THETA correlations near `+/-0.98-1.00`, indicating near-non-identifiability of the structural parameters. ETA-shrinkage on KG is `55.3%` and on the shared KD eta is `28.2%`. This is consistent with a small-N (336 patients), short-follow-up SLD model trying to estimate three structural parameters plus three random-effect variances simultaneously. The values are extracted as published; **the high correlations and shrinkage should be borne in mind when interpreting individual parameter estimates from this model.**
 * **No external publication-table cross-check.** The publication PDF (Zecchin 2016, BJCP, doi:10.1111/bcp.12994) was not on disk for this extraction. Parameter values come exclusively from `Output_real_SLD.lst`; the `Model_Accomodations.text` file that DDMORE bundles usually ship was also not present in this directory. Citation metadata was confirmed via PubMed E-utilities (PMID 27136318).
 * **No in-bundle `Model_Accomodations.text`.** The DDMORE bundle for `DDMODEL00000217` does not ship a `Model_Accomodations` reference file (one of the optional bundle artefacts described in `references/ddmore-source.md`). The publication mapping used here was reconstructed from the PubMed citation match for the task metadata.
