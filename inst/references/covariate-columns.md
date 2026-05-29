@@ -1782,6 +1782,17 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Landersdorfer_2018_imipenem_tobramycin.R` (externally-supplied time-varying unbound tobramycin concentration driving the Emax kill function and the 70-fold imipenem-KC50 synergy reduction against population 3 when CONC_TOB_MGL >= 1.15 mg/L; HFIM simulated the two-compartment unbound profile of 7 mg/kg q24h 0.5-h infusions).
 - **Notes:** Specific scope because the value is bound to tobramycin and the in-vitro HFIM design. Member of the in-vitro applied-drug-concentration `CONC_<DRUG>_MGL` family (siblings `CONC_RIF_MGL`, `CONC_INH_MGL`, `CONC_EMB_MGL`, `CONC_IPM_MGL`). Renamed from the model's earlier bare `Ctob` column on 2026-05-27 for consistency with the `CONC_<DRUG>_MGL` family. Ratified canonically on 2026-05-27 alongside the Landersdorfer 2018 extraction.
 
+### CONC_BAI_UM (**canonical for static in-vitro baicalein concentration driving a cellular anti-inflammatory PD model**)
+- **Description:** Static (time-invariant) baicalein concentration in the cell-culture medium of an in-vitro cellular pharmacodynamic experiment, supplied as an exogenous covariate that drives the log-linear inhibition function `f(Bai) = alpha * log(CONC_BAI_UM + 1)` on the LPS-stimulated TNF-alpha production rate. Applied experimental concentration in the in-vitro matrix; distinct from `Cc` and the `CP_<DRUG>` plasma-PD-driver family.
+- **Units:** uM (micromolar)
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters the log-linear inhibition function f(Bai); set to 0 for control (LPS-only) wells, where the +1 shift inside the log handles ln(0).
+- **Source aliases:**
+  - `C_Bai` -- used in `Xiang_2018_baicalein.R` (Xiang 2018 Eq 2, "f(Bai) = alpha * ln(C_Bai)" with the +1 shift documented in vignette Errata as a controllable-control-arm encoding).
+- **Example models:** `Xiang_2018_baicalein.R` (static baicalein concentration driving the TNF-alpha production inhibition in LPS-stimulated RAW264.7 mouse macrophages; tested concentrations 0, 10, 20, 40 uM per Materials and Methods).
+- **Notes:** Specific scope because the value is bound to baicalein and the Xiang 2018 in-vitro RAW264.7 cellular-PD design. Sibling of the in-vitro applied-drug-concentration `CONC_<DRUG>_<UNITS>` family (`CONC_RIF_MGL`, `CONC_INH_MGL`, `CONC_EMB_MGL`, `CONC_IPM_MGL`, `CONC_TOB_MGL`); the `_UM` suffix follows the family's `_<UNITS>` convention (the Clewe / Landersdorfer in-vitro antibacterial models use mg/L, hence `_MGL`; the Xiang model reports baicalein in micromolar, hence `_UM`). Use this canonical for exogenous static or time-varying drug concentrations supplied in micromolar units. Ratified canonically on 2026-05-29 alongside the Xiang 2018 extraction.
+
 ## Count / Markov-feedback PD covariates
 
 These columns are specific to count / Markov / time-to-event PD models that
